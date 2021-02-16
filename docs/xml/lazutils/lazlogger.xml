@@ -10,7 +10,7 @@
       <short>Provides a log framework</short>
       <descr>
         <p>
-          LazLogger provides logging facilities to write message to a file. Messages can be logged plain, or enclosed in begin/end like blocks, adding indent to all messages between to points (blocks can be nested). It also has the ability to filter groups of messages.
+          <file>LazLogger.pas</file> provides logging facilities to write message to a file. Messages can be logged plain, or enclosed in begin/end like blocks, adding indent to all messages between to points (blocks can be nested). It also has the ability to filter groups of messages.
         </p>
         <p>
           It can reads the command line and environment to find the desired filename. By default it looks for --debug-log= on the command line or "appname"_debuglog in environment.
@@ -20,6 +20,9 @@
         </p>
         <p>
           The easiest method is to use the unit and put "DebugLn"/ "DbgOut" / "DebugLnEnter"/ "DebugLnExit" in your code. This works without any further setup.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
         </p>
       </descr>
 

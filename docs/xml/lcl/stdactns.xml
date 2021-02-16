@@ -2,463 +2,456 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    StdActns
-  ====================================================================
--->
+    ====================================================================
+      StdActns
+    ====================================================================
+    -->
     <module name="StdActns">
-      <short>Defines some standard actions to be used in Action Lists in the LCL</short>
-      <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="ActnList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Dialogs">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="THintAction">
+      <short>
+        Defines standard actions to be used in Action Lists in the LCL
+      </short>
+      <descr>
+        <p>
+          <file>stdactns.pas</file> contains <var>TAction</var> descendents
+          which can be used in <var>TActionList</var> for common actions
+          performed using controls. This file is part of the Lazarus Component
+          Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are registered but not displayed on the
+          Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Edit</b> Actions
+        </p>
+        <ul>
+          <li>TEditCut</li>
+          <li>TEditCopy</li>
+          <li>TEditPaste</li>
+          <li>TEditSelectAll</li>
+          <li>TEditUndo</li>
+          <li>TEditDelete</li>
+        </ul>
+        <p>
+          <b>Search</b> Actions
+        </p>
+        <ul>
+          <li>TSearchFind</li>
+          <li>TSearchReplace</li>
+          <li>TSearchFindFirst</li>
+          <li>TSearchFindNext</li>
+        </ul>
+        <p>
+          <b>Help</b> Actions
+        </p>
+        <ul>
+          <li>THelpAction</li>
+          <li>THelpContents</li>
+          <li>THelpTopicSearch</li>
+          <li>THelpOnHelp</li>
+          <li>THelpContextAction</li>
+        </ul>
+        <p>
+          <b>Dialog</b> Actions
+        </p>
+        <ul>
+          <li>TFontEdit</li>
+          <li>TColorSelect</li>
+        </ul>
+        <p>
+          <b>File</b> Actions
+        </p>
+        <ul>
+          <li>TFileOpen</li>
+          <li>TFileOpenWith</li>
+          <li>TFileSaveAs</li>
+          <li>TFileExit</li>
+        </ul>
+      </descr>
+
+      <!-- unresolved references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="ActnList"/>
+      <element name="Forms"/>
+      <element name="Dialogs"/>
+      <element name="StdCtrls"/>
+      <element name="Clipbrd"/>
+
+      <element name="THintAction" link="#lcl.forms.TCustomHintAction">
         <short>
-          <var>THintAction </var>- standard action for dealing with requests for a <var>Hint</var>
+          <var>THintAction </var>- standard action for dealing with requests
+          for a <var>Hint</var>
         </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="THintAction.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="THintAction.Create.TheOwner">
-        <short/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="THintAction.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+
       <element name="TEditAction">
         <short>
-          <var>TEditAction </var>- base class for actions associated with the various <var>Edit</var> menu options</short>
+          <var>TEditAction </var>- base class for actions associated with the
+          various <var>Edit</var> menu options
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.actnlist.TAction">TAction</link>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
+
       <element name="TEditAction.FControl">
         <short>
-          <var>FControl</var> - local variable holding the Edit control associated with this action</short>
-        <descr/>
-        <seealso/>
+          <var>FControl</var> - local variable holding the Edit control
+          associated with this action
+        </short>
       </element>
-      <!-- procedure Visibility: private -->
+
       <element name="TEditAction.SetControl">
         <short>
-          <var>SetControl</var> - specifies the Edit control associated with this action</short>
+          <var>SetControl</var> - specifies the Edit control associated with
+          this action
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditAction.SetControl.AValue">
         <short/>
       </element>
-      <!-- function Visibility: protected -->
-      <element name="TEditAction.GetControl">
-        <short/>
+
+      <element name="TEditAction.Notification" link="#rtl.classes.TComponent.Notification">
+        <short>
+          Handles notifcations when a control in the class instance is added
+          or removed
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="TEditAction.GetControl.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TEditAction.GetControl.Target">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TEditAction.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="TEditAction.Notification.AComponent">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditAction.Notification.Operation">
         <short/>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TEditAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
+
+      <element name="TEditAction.Destroy" link="#rtl.classes.TBasicAction.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          Calls the inherited destructor.
+        </descr>
         <seealso/>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TEditAction.HandlesTarget" link="#rtl.Classes.TBasicAction.HandlesTarget">
+
+      <element name="TEditAction.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TEditAction.HandlesTarget.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditAction.HandlesTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditAction.UpdateTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TEditAction.UpdateTarget.Target">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
+
       <element name="TEditAction.Control">
         <short>The Edit <var>Control</var> associated with this action</short>
-        <descr/>
+        <descr>
+          <p>
+            Limits the target for the action to a specific control.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TEditCut">
         <short>
-          <var>TEditCut</var>- standard action associated with the <var>Edit Cut</var> menu option</short>
+          <var>TEditCut</var>- standard action associated with the
+          <var>Edit Cut</var> menu option
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TEditAction"/>
+        </seealso>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditCut.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TEditCut.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditCut.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TEditCopy">
-        <short>
-          <var>TEditCopy</var> - standard action associated with the <var>Edit Copy</var> menu option</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditCopy.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TEditCut.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
+      <element name="TEditCut.UpdateTarget.Target">
+        <short/>
+      </element>
+
+      <element name="TEditCopy">
+        <short>
+          <var>TEditCopy</var> - standard action associated with the
+          <var>Edit Copy</var> menu option
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TEditAction"/>
+        </seealso>
+      </element>
+
+      <element name="TEditCopy.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
       <element name="TEditCopy.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
-      <element name="TEditPaste">
-        <short>
-          <var>TEditPaste</var> - standard action associated with the <var>Edit Paste</var> menu option</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditPaste.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="TEditCopy.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
+      <element name="TEditCopy.UpdateTarget.Target">
+        <short/>
+      </element>
+
+      <element name="TEditPaste">
+        <short>
+          <var>TEditPaste</var> - standard action associated with the
+          <var>Edit Paste</var> menu option
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TEditPaste.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
       <element name="TEditPaste.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditPaste.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TEditPaste.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditPaste.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TEditSelectAll">
         <short>
-          <var>TEditSelectAll</var> - standard action associated with the <var>Edit Select All </var>menu option</short>
+          <var>TEditSelectAll</var> - standard action associated with the
+          <var>Edit Select All </var>menu option
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditSelectAll.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TEditSelectAll.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditSelectAll.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditSelectAll.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="TEditSelectAll.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditSelectAll.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TEditUndo">
         <short>
-          <var>TEditUndo</var> - standard action associated with the <var>Edit Undo</var> menu option</short>
+          <var>TEditUndo</var> - standard action associated with the
+          <var>Edit Undo</var> menu option
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditUndo.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TEditUndo.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditUndo.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditUndo.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="TEditUndo.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditUndo.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TEditDelete">
         <short>
-          <var>TEditDelete</var> - standard action associated with the <var>Edit Delete</var> menu option</short>
+          <var>TEditDelete</var> - standard action associated with the
+          <var>Edit Delete</var> menu option
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditDelete.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TEditDelete.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditDelete.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TEditDelete.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="TEditDelete.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TEditDelete.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="THelpAction">
         <short>
-          <var>THelpAction</var> - base class for actions associated with the various <var>Help</var> menu options</short>
+          <var>THelpAction</var> - base class for actions associated with
+          the various <var>Help</var> menu options
+        </short>
         <descr/>
-        <errors/>
+        <seealso>
+          <link id="#lcl.actnlist.TAction">TAction</link>
+        </seealso>
+      </element>
+
+      <element name="THelpAction.Create" link="#rtl.classes.TBasicAction.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          Calls the inherited constructor.
+        </descr>
         <seealso/>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="THelpAction.Create" link="#rtl.Classes.TBasicAction.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="THelpAction.Create.TheOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
-      <!-- function Visibility: public -->
-      <element name="THelpAction.HandlesTarget" link="#rtl.Classes.TBasicAction.HandlesTarget">
+
+      <element name="THelpAction.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="THelpAction.HandlesTarget.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpAction.HandlesTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="THelpAction.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="THelpAction.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpAction.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="THelpContents">
         <short>
-          <var>THelpContents</var> - standard action associated with the <var>Help Contents</var> menu option</short>
+          <var>THelpContents</var> - standard action associated with the
+          <var>Help Contents</var> menu option
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
+
       <element name="THelpContents.ExecuteTarget" link="#rtlClasses.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpContents.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="THelpTopicSearch">
         <short>
-          <var>THelpTopicSearch</var> - standard action associated with the <var>Help Topic Search</var> menu option</short>
+          <var>THelpTopicSearch</var> - standard action associated with the
+          <var>Help Topic Search</var> menu option
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="THelpTopicSearch.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="THelpTopicSearch.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpTopicSearch.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="THelpOnHelp">
         <short>
-          <var>THelpOnHelp</var> - standard action associated with the <var>Help On Help</var> menu item (i.e. how to get help)</short>
+          <var>THelpOnHelp</var> - standard action associated with the
+          <var>Help On Help</var> menu item (i.e. how to get help)
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
+
       <element name="THelpOnHelp.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpOnHelp.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="THelpContextAction">
         <short>
-          <var>THelpContextAction</var> - standard action for providing context-sensitive <var>Help</var>
+          <var>THelpContextAction</var> - standard action for providing
+          context-sensitive <var>Help</var>
         </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="THelpContextAction.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="THelpContextAction.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpContextAction.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="THelpContextAction.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="THelpContextAction.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THelpContextAction.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- "class of" type Visibility: default -->
+
       <element name="TCommonDialogClass">
         <short>
           <var>TCommonDialogClass</var> - class of <var>TCommonDialog</var>
@@ -466,1109 +459,928 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TCommonDialogAction">
         <short>
-          <var>TCommonDialogAction</var> - base class for providing actions associated with <var>Dialogs</var>
+          <var>TCommonDialogAction</var> - base class for providing actions
+          associated with <var>Dialogs</var>
         </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.actnlist.TCustomAction">TCustomAction</link>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialogAction.FBeforeExecute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialogAction.FExecuteResult">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialogAction.FOnAccept">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TCommonDialogAction.FOnCancel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: protected -->
+
+      <element name="TCommonDialogAction.FBeforeExecute"/>
+      <element name="TCommonDialogAction.FExecuteResult"/>
+      <element name="TCommonDialogAction.FOnAccept"/>
+      <element name="TCommonDialogAction.FOnCancel"/>
+
       <element name="TCommonDialogAction.FDialog">
         <short>
-          <var>FDialog</var> - local variable holding the Dialog associated with this action</short>
-        <descr/>
-        <seealso/>
+          <var>FDialog</var> - local variable holding the Dialog associated
+          with this action
+        </short>
       </element>
-      <!-- procedure Visibility: protected -->
+
       <element name="TCommonDialogAction.DoAccept">
         <short>
-          <var>DoAccept</var> - perform the code for the <var>OnAccept</var> event</short>
+          <var>DoAccept</var> - perform the code for the
+          <var>OnAccept</var> event
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- procedure Visibility: protected -->
+
+      <element name="TCommonDialogAction.DoBeforeExecute">
+        <short>Performs the BeforeExecute notification when assigned</short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TCommonDialogAction.DoCancel">
         <short>
-          <var>DoCancel</var> - perform the code for the <var>OnCancel</var> event</short>
+          <var>DoCancel</var> - perform the code for the
+          <var>OnCancel</var> event
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function Visibility: protected -->
+
       <element name="TCommonDialogAction.GetDialogClass">
         <short>
-          <var>GetDialogClass</var> - returns the class of dialog associated with this action</short>
+          <var>GetDialogClass</var> - returns the class type for the dialog
+          associated with this action
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCommonDialogAction.GetDialogClass.Result">
         <short/>
       </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCommonDialogAction.Notification">
-        <short/>
-        <descr/>
-        <errors/>
+
+      <element name="TCommonDialogAction.CreateDialog">
+        <short>
+          Create a new instance of the class type used in the Dialog property
+        </short>
+        <descr>
+          <p>
+            Calls GetDialogClass to get the class reference used to create
+            the dialog instance. When assigned, it is created and stored in
+            the Dialog property. It Name is set to the ClassName for the
+            class reference, and it is marked as a sub-component for the
+            class instance.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="TCommonDialogAction.Notification.AComponent">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TCommonDialogAction.Notification.Operation">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TCommonDialogAction.SetupDialog">
-        <short/>
+
+      <element name="TCommonDialogAction.Create" link="#rtl.classes.TBasicAction.Create">
+        <short>Constructor for the class instance</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TCommonDialogAction.Create" link="#rtl.Classes.TBasicAction.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="TCommonDialogAction.Create.TheOwner">
-        <short/>
+        <short>Owner for the class instance</short>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TCommonDialogAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TCommonDialogAction.Handlestarget" link="#rtl.Classes.TBasicAction.HandlesTarget">
+
+      <element name="TCommonDialogAction.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TCommonDialogAction.Handlestarget.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCommonDialogAction.Handlestarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TCommonDialogAction.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TCommonDialogAction.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TCommonDialogAction.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TCommonDialogAction.ExecuteResult">
         <short>
-          <var>ExecuteResult</var> - the result of the execution: True if successful</short>
+          <var>ExecuteResult</var> - the result of the execution:
+          True if successful
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TCommonDialogAction.BeforeExecute">
         <short>
-          <var>BeforeExecute</var> - event handler for performance before execution of the action</short>
+          <var>BeforeExecute</var> - event handler for performance before
+          execution of the action
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TCommonDialogAction.OnAccept">
         <short>
-          <var>OnAccept</var> - event handler for a press of the Accept button</short>
+          <var>OnAccept</var> - event handler for a press of the Accept button
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TCommonDialogAction.OnCancel">
         <short>
-          <var>OnCancel</var> - event handler for a press of the Cancel button</short>
+          <var>OnCancel</var> - event handler for a press of the Cancel button
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+
+      <element name="TCommonDialogAction.OnUpdate">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TFileAction">
         <short>
-          <var>TFileAction</var> - base class for providing actions associated with various file dialogs and menu options</short>
+          <var>TFileAction</var> - base class for providing actions associated
+          with various file dialogs and menu options
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCommonDialogAction"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TFileAction.GetFileName">
-        <short/>
+        <short>
+          Gets the value for the FileName property
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileAction.FileName"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileAction.GetFileName.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- procedure Visibility: private -->
+
       <element name="TFileAction.SetFileName">
-        <short/>
+        <short>
+          Sets the value for the FileName property
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileAction.FileName"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TFileAction.SetFileName.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
-      <!-- function Visibility: protected -->
+
       <element name="TFileAction.GetDialog">
         <short>
-          <var>GetDialog</var> - returns a <var>TOpenDialog</var> for use in this File action</short>
+          <var>GetDialog</var> - returns a <var>TOpenDialog</var> for use in
+          this File action
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.dialogs.TOpenDialog">TOpenDialog</link>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileAction.GetDialog.Result">
-        <short/>
+        <short>TOpenDialog instance used in the class</short>
       </element>
-      <!-- property Visibility: protected -->
+
       <element name="TFileAction.FileName">
-        <short>The <var>FileName</var> on which this action performs</short>
-        <descr/>
-        <seealso/>
+        <short>
+          File name returned from the dialog in the action
+        </short>
+        <descr>
+          <p>
+            <var>FileName</var> is a <var>TFileName</var> property with the
+            file name returned in the Open dialog for the action.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileAction.GetDialog"/>
+        </seealso>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TFileOpen">
         <short>
-          <var>TFileOpen</var> - standard action (including opening a dialog) associated with the <var>File Open</var> menu option</short>
+          <var>TFileOpen</var> - standard action (including opening a dialog)
+          associated with the <var>File Open</var> menu option
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileAction"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TFileOpen.FUseDefaultApp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
+
+      <element name="TFileOpen.FUseDefaultApp"/>
+
       <element name="TFileOpen.GetDialog">
-        <short/>
+        <short>
+          Gets the value for the Dialog property
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileOpen.Dialog"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileOpen.GetDialog.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: protected -->
-      <element name="TFileOpen.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
-        <short/>
+
+      <element name="TFileOpen.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
+        <short>
+          Gets the class reference used to create the Dialog for the action
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileOpen.Dialog"/>
+          <link id="TCommonDialogClass"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileOpen.GetDialogClass.Result">
-        <short/>
+        <short>TCommonDialogClass reference used to create the Dialog</short>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TFileOpen.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TFileOpen.Create.TheOwner">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TFileOpen.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TFileOpen.ExecuteTarget.Target">
-        <short/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.Caption" link="#LCL.ActnList.TCustomAction.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TFileOpen.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+
       <element name="TFileOpen.Dialog">
-        <short>The Open<var>Dialog</var> to be used with this action</short>
-        <descr/>
-        <seealso/>
+        <short>The Open <var>Dialog</var> to be used with this action</short>
+        <descr>
+          <p>
+            <var>Dialog</var> is a read-only <var>TOpenDialog</var> property
+            with the dialog used to select a file for the File Open action.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileAction.FileName"/>
+        </seealso>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.Hint" link="#LCL.ActnList.TCustomAction.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TFileOpen.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TFileOpen.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TFileOpen.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TFileOpen.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TFileOpen.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TFileOpen.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TFileOpen.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TFileOpen.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+
       <element name="TFileOpen.UseDefaultApp">
         <short>
-          <var>UseDefaultApp</var> - if True, the default application should be used with this action</short>
-        <descr/>
-        <seealso/>
+          Indicates if the default application should be used to open the
+          file for the action
+        </short>
+        <descr>
+          <p>
+            <var>UseDefaultApp</var> is a <var>Boolean</var> property which
+            indicates if the default application should be used to open the
+            selected <var>FileName</var>. The default value for the proprety is
+            <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileAction.FileName"/>
+        </seealso>
+        <notes>
+          <note>UseDefaultApp is never actually used anywhere.</note>
+        </notes>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.Visible" link="#LCL.ActnList.TCustomAction.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpen.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+
+      <element name="TFileOpen.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TFileOpen.BeforeExecute" link="#lcl.stdactns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TFileOpen.OnAccept" link="#lcl.stdactns.TCommonDialogAction.OnAccept"/>
+      <element name="TFileOpen.OnCancel" link="#lcl.stdactns.TCommonDialogAction.OnCancel"/>
+      <element name="TFileOpen.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
       <element name="TFileOpenWith">
         <short>
-          <var>TFileOpenWith</var> - standard action (including opening a dialog) associated with the <var>File Open With</var> menu option</short>
+          <var>TFileOpenWith</var> - standard action (including opening a
+          dialog) associated with the <var>File Open With</var> menu option
+        </short>
         <descr>
           <p>
-            <var>TFileOpenWith</var> - standard action (including opening a dialog) associated with the <var>File Open With</var> menu option</p>
-          <p>Gives the User an opportunity to choose the application with which to open a file</p>
+            <var>TFileOpenWith</var> is a standard action (including opening a
+            dialog) associated with the <var>File Open With</var> menu option.
+            Gives the User an opportunity to choose the application with which
+            to open a file.
+          </p>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileOpen"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: private -->
-      <element name="TFileOpenWith.FAfterOpen">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TFileOpenWith.FFileName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TFileOpenWith.ExecuteTarget">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TFileOpenWith.ExecuteTarget.Target">
-        <short/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TFileOpenWith.FAfterOpen"/>
+      <element name="TFileOpenWith.FFileName"/>
+
       <element name="TFileOpenWith.FileName">
-        <short/>
-        <descr/>
+        <short>File name for the Open With action</short>
+        <descr>
+          <var>FileName</var> is a <var>TFileName</var> property with the
+          file name used in the Open With action.
+        </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpenWith.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpenWith.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpenWith.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileOpenWith.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
       <element name="TFileOpenWith.AfterOpen">
         <short>
-          <var>AfterOpen</var> - event handler to be performed after file is opened</short>
+          <var>AfterOpen</var> - event handler to be performed after file
+          is opened
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- object Visibility: default -->
+
       <element name="TFileSaveAs">
         <short>
-          <var>TFileSaveAs</var> - standard action (including opening a dialog) associated with the <var>File Save As</var> menu option</short>
+          <var>TFileSaveAs</var> - standard action (including opening a dialog)
+          associated with the <var>File Save As</var> menu option
+        </short>
         <descr>
           <p>
-            <var>TFileSaveAs</var> - standard action (including opening a dialog) associated with the <var>File Save As</var> menu option</p>
-          <p>Gives the user an opportunity to select or enter a name to use for saving the file</p>
+            <var>TFileSaveAs</var> is a standard action (including opening a
+            dialog) associated with the <var>File Save As</var> menu option.
+            Gives the user an opportunity to select or enter a name to use for
+            saving the file.
+          </p>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileAction"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TFileSaveAs.GetSaveDialog">
-        <short/>
+        <short>Gets the value for the Dialog property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileSaveAs.Dialog"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileSaveAs.GetSaveDialog.Result">
-        <short/>
+        <short>Value for the Dialog property</short>
       </element>
-      <!-- function Visibility: protected -->
-      <element name="TFileSaveAs.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+
+      <element name="TFileSaveAs.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileSaveAs.GetDialogClass.Result">
         <short/>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TFileSaveAs.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TFileSaveAs.Create.TheOwner">
-        <short/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Caption" link="#LCL.ActnList.TCustomAction.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TFileSaveAs.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+
       <element name="TFileSaveAs.Dialog">
-        <short>The Save<var>Dialog</var> to be used with this action</short>
+        <short>The Save <var>Dialog</var> to be used with this action</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Hint" link="#LCL.ActnList.TCustomAction.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.Visible" link="#LCL.ActnList.TCustomAction.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileSaveAs.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+
+      <element name="TFileSaveAs.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TFileSaveAs.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TFileSaveAs.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TFileSaveAs.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TFileSaveAs.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TFileSaveAs.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TFileSaveAs.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TFileSaveAs.BeforeExecute" link="#lcl.stdactns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TFileSaveAs.OnAccept" link="#lcl.stdactns.TCommonDialogAction.OnAccept"/>
+      <element name="TFileSaveAs.OnCancel" link="#lcl.stdactns.TCommonDialogAction.OnCancel"/>
+      <element name="TFileSaveAs.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
       <element name="TFileExit">
         <short>
-          <var>TFileExit</var> - standard action (closing file and terminating application) associated with the <var>File Exit</var> menu option</short>
+          <var>TFileExit</var> - standard action (closing file and terminating
+          application) associated with the <var>File Exit</var> menu option
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.actnlist.TCustomAction">TCustomAction</link>
+        </seealso>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TFileExit.HandlesTarget" link="#rtl.Classes.TBasicAction.HandlesTarget">
+
+      <element name="TFileExit.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFileExit.HandlesTarget.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TFileExit.HandlesTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TFileExit.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TFileExit.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TFileExit.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.Caption" link="#LCL.ActnList.TCustomAction.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.Hint" link="#LCL.ActnList.TCustomAction.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.Visible" link="#LCL.ActnList.TCustomAction.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFileExit.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+
+      <element name="TFileExit.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+      <element name="TFileExit.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TFileExit.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TFileExit.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TFileExit.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TFileExit.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TFileExit.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TFileExit.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TFileExit.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TFileExit.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TFileExit.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
       <element name="TSearchAction">
         <short>
-          <var>TSearchAction</var> - base class for the actions associated with the various <var>Search</var> menu options</short>
+          <var>TSearchAction</var> - base class for the actions associated
+          with the various <var>Search</var> menu options
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCommonDialogAction"/>
+        </seealso>
       </element>
-      <!-- variable Visibility: protected -->
+
       <element name="TSearchAction.FControl">
         <short>
-          <var>FControl</var> - local variable holding the control for use with this action</short>
+          <var>FControl</var> - local variable holding the control for
+          use with this action
+        </short>
+      </element>
+
+      <element name="TSearchAction.CreateDialog">
+        <short>Creates the class instance used in the Dialog property</short>
+        <descr>
+          <p>
+            Calls the inherited CreateDialog method, and assigns the Search
+            method as the OnFind event handler in Dialog.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TSearchAction.Notification" link="#rtl.classes.TComponent.Notification">
+        <short>
+          Handles notifcations when a control in the class instance is added
+          or removed
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- variable Visibility: protected -->
-      <element name="TSearchAction.FFindFirst">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TSearchAction.Notification" link="#rtl.Classes.TComponent.Notification">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
       <element name="TSearchAction.Notification.AComponent">
-        <short/>
+        <short>Component for the notification</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSearchAction.Notification.Operation">
-        <short/>
+        <short>Operation for the notification</short>
       </element>
-      <!-- constructor Visibility: public -->
-      <element name="TSearchAction.Create" link="#rtl.Classes.TBasicAction.Create">
-        <short/>
+
+      <element name="TSearchAction.UpdateControl">
+        <short>
+          Updates the internal Control to the value in NewControl
+        </short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
+      <element name="TSearchAction.UpdateControl.NewControl">
+        <short>New value for the internal Control</short>
+      </element>
+
+      <element name="TSearchAction.PerformSearch">
+        <short>Performs the seach action using the Dialog options</short>
+        <descr>
+          <p>
+            Performs the search action using the options and search criteria
+            set in the <var>Dialog</var> property. Called from the
+            <var>Search</var> method.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSearchAction.PerformSearch.Result">
+        <short>
+          True when the search value is found in the text for the
+          internal Control
+        </short>
+      </element>
+
+      <element name="TSearchAction.ShowNotFound">
+        <short>Displays a dialog with a "Not Found" message</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TSearchAction.Create" link="#rtl.classes.TBasicAction.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Calls the inherited constructor, and sets the value for the
+            internal Control to <b>Nil</b>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
       <element name="TSearchAction.Create.TheOwner">
-        <short/>
+        <short>Owner for the class instance</short>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TSearchAction.Destroy" link="#rtl.Classes.TBasicAction.Destroy">
-        <short/>
-        <descr/>
-        <errors/>
+
+      <element name="TSearchAction.Destroy" link="#rtl.classes.TBasicAction.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            Removes the free notification for the internal Control
+            (when assigned), and calls the inherited destructor.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function Visibility: public -->
-      <element name="TSearchAction.HandlesTarget" link="#rtl.Classes.TBasicAction.HandlesTarget">
+
+      <element name="TSearchAction.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TSearchAction.HandlesTarget.Result">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSearchAction.HandlesTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
+
       <element name="TSearchAction.Search">
-        <short>Performs the <var>Search</var>
-        </short>
+        <short>Performs the <var>Search</var> action</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSearchAction.Search.Sender">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TSearchAction.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget">
+
+      <element name="TSearchAction.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSearchAction.UpdateTarget.Target">
         <short/>
       </element>
-      <!-- procedure Visibility: public -->
-      <element name="TSearchAction.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget">
+
+      <element name="TSearchAction.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TSearchAction.ExecuteTarget.Target">
         <short/>
       </element>
-      <!-- object Visibility: default -->
+
+      <element name="TSearchFind">
+        <short>
+          <var>TSearchFind</var> - the action associated with a Search and
+          Find dialog (as opposed to search and replace)
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TSearchAction"/>
+        </seealso>
+      </element>
+
+      <element name="TSearchFind.GetFindDialog"/>
+      <element name="TSearchFind.GetFindDialog.Result"/>
+
+      <element name="TSearchFind.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
+        <short/>
+        <descr>
+          <p>
+            Returns the <var>TFindDialog</var> class type in <var>TSearchFind</var>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TSearchFind.GetDialogClass.Result">
+        <short>Returns TFindDialog for the action</short>
+      </element>
+
+      <element name="TSearchFind.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+
+      <element name="TSearchFind.Dialog">
+        <short>The Find<var>Dialog</var> to be used with this action</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TSearchFind.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TSearchFind.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TSearchFind.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TSearchFind.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TSearchFind.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TSearchFind.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TSearchFind.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TSearchFind.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TSearchFind.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TSearchFind.BeforeExecute" link="#lcl.stdactns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TSearchFind.OnAccept" link="#lcl.stdactns.TCommonDialogAction.OnAccept"/>
+      <element name="TSearchFind.OnCancel" link="#lcl.stdactns.TCommonDialogAction.OnCancel"/>
+      <element name="TSearchFind.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
+      <element name="TSearchReplace">
+        <short>
+          <var>TSearchReplace</var> - action associated with the <var>Search
+          and Replace</var> menu option and dialogs
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TSearchAction"/>
+        </seealso>
+      </element>
+
+      <element name="TSearchReplace.GetReplaceDialog"/>
+      <element name="TSearchReplace.GetReplaceDialog.Result"/>
+
+      <element name="TSearchReplace.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TSearchReplace.CreateDialog" link="#lcl.stdactns.TCommonDialogAction.CreateDialog"/>
+
+      <element name="TSearchReplace.Replace">
+        <short>
+          <var>Replace</var> - the method to perform the Replace action once
+          the specified text has been found
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TSearchReplace.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+
+      <element name="TSearchReplace.Dialog">
+        <short>The Replace<var>Dialog</var> to be used with this action</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TSearchReplace.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TSearchReplace.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TSearchReplace.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TSearchReplace.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TSearchReplace.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TSearchReplace.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TSearchReplace.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TSearchReplace.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TSearchReplace.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TSearchReplace.BeforeExecute" link="#lcl.stdactns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TSearchReplace.OnAccept" link="#lcl.stdactns.TCommonDialogAction.OnAccept"/>
+      <element name="TSearchReplace.OnCancel" link="#lcl.stdactns.TCommonDialogAction.OnCancel"/>
+      <element name="TSearchReplace.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
+      <element name="TSearchFindFirst">
+        <short>
+          <var>TSearchFindFirst</var> - Search action to find the first match
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TSearchFind"/>
+        </seealso>
+      </element>
+
+      <element name="TSearchFindNext">
+        <short>
+          <var>TSearchFindNext</var> - search action to find the next match
+        </short>
+        <descr/>
+        <seealso>
+          <link id="TCustomAction"/>
+        </seealso>
+      </element>
+
+      <element name="TSearchFindNext.FSearchFind"/>
+      <element name="TSearchFindNext.SetSearchFind"/>
+      <element name="TSearchFindNext.SetSearchFind.AValue"/>
+
+      <element name="TSearchFindNext.Create" link="#rtl.classes.TBasicAction.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TSearchFindNext.Create.TheOwner">
+        <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TSearchFindNext.HandlesTarget" link="#rtl.classes.TBasicAction.HandlesTarget"/>
+      <element name="TSearchFindNext.HandlesTarget.Result"/>
+      <element name="TSearchFindNext.HandlesTarget.Target"/>
+
+      <element name="TSearchFindNext.UpdateTarget" link="#rtl.classes.TBasicAction.UpdateTarget"/>
+      <element name="TSearchFindNext.UpdateTarget.Target"/>
+
+      <element name="TSearchFindNext.ExecuteTarget" link="#rtl.classes.TBasicAction.ExecuteTarget"/>
+      <element name="TSearchFindNext.ExecuteTarget.Target"/>
+
+      <element name="TSearchFindNext.Notification" link="#rtl.classes.TComponent.Notification">
+        <short>
+          Handles notifcations when a component used in the class instance is
+          added or removed
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TSearchFindNext.Notification.AComponent"/>
+      <element name="TSearchFindNext.Notification.Operation"/>
+
+      <element name="TSearchFindNext.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+      <element name="TSearchFindNext.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TSearchFindNext.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TSearchFindNext.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TSearchFindNext.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TSearchFindNext.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TSearchFindNext.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+
+      <element name="TSearchFindNext.SearchFind">
+        <short>The <var>SearchFind</var> action to use for searching</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TSearchFindNext.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TSearchFindNext.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TSearchFindNext.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TSearchFindNext.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
       <element name="TFontEdit">
         <short>
-          <var>TFontEdit </var>- standard action for opening a <var>Font Edit</var> dialog</short>
+          <var>TFontEdit </var>- standard action for opening a
+          <var>Font Edit</var> dialog
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+      <seealso>
+        <link id="TCommonDialogAction"/>
+      </seealso>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TFontEdit.GetDialog">
-        <short/>
+        <short>Gets the value for the Dialog property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFontEdit.Dialog"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFontEdit.GetDialog.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
-      <!-- function Visibility: protected -->
-      <element name="TFontEdit.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+
+      <element name="TFontEdit.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TFontEdit.GetDialogClass.Result">
         <short/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.Caption" link="#LCL.ActnList.TCustomAction.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TFontEdit.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+
       <element name="TFontEdit.Dialog">
         <short>The Font<var>Dialog</var> to use for this action</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.Hint" link="#LCL.ActnList.TCustomAction.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.Visible" link="#LCL.ActnList.TCustomAction.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TFontEdit.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- object Visibility: default -->
+
+      <element name="TFontEdit.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TFontEdit.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TFontEdit.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TFontEdit.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TFontEdit.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TFontEdit.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TFontEdit.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TFontEdit.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TFontEdit.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TFontEdit.BeforeExecute" link="#lcl.stdactns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TFontEdit.OnAccept" link="#lcl.stdactns.TCommonDialogAction.OnAccept"/>
+      <element name="TFontEdit.OnCancel" link="#lcl.stdactns.TCommonDialogAction.OnCancel"/>
+      <element name="TFontEdit.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
       <element name="TColorSelect">
         <short>
-          <var>TColorSelect</var> - standard action for opening a <var>Color Selection</var> dialog</short>
+          <var>TColorSelect</var> - standard action for opening a <var>Color
+          Selection</var> dialog
+        </short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TCommonDialogAction"/>
+        </seealso>
       </element>
-      <!-- function Visibility: private -->
+
       <element name="TColorSelect.GetDialog">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TColorSelect.GetDialog.Result">
         <short/>
       </element>
-      <!-- function Visibility: protected -->
-      <element name="TColorSelect.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass">
+
+      <element name="TColorSelect.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
         <short/>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TColorSelect.GetDialogClass.Result">
         <short/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.Caption" link="#LCL.ActnList.TCustomAction.Caption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
+
+      <element name="TColorSelect.Caption" link="#lcl.actnlist.TCustomAction.Caption"/>
+
       <element name="TColorSelect.Dialog">
         <short>The Color<var>Dialog</var> to use with this action</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
-        <short/>
-        <descr/>
+
+      <element name="TColorSelect.Enabled" link="#lcl.actnlist.TCustomAction.Enabled"/>
+      <element name="TColorSelect.HelpContext" link="#lcl.actnlist.TCustomAction.HelpContext"/>
+      <element name="TColorSelect.HelpKeyword" link="#lcl.actnlist.TCustomAction.HelpKeyword"/>
+      <element name="TColorSelect.HelpType" link="#lcl.actnlist.TCustomAction.HelpType"/>
+      <element name="TColorSelect.Hint" link="#lcl.actnlist.TCustomAction.Hint"/>
+      <element name="TColorSelect.ImageIndex" link="#lcl.actnlist.TCustomAction.ImageIndex"/>
+      <element name="TColorSelect.ShortCut" link="#lcl.actnlist.TCustomAction.ShortCut"/>
+      <element name="TColorSelect.SecondaryShortCuts" link="#lcl.actnlist.TCustomAction.SecondaryShortCuts"/>
+      <element name="TColorSelect.Visible" link="#lcl.actnlist.TCustomAction.Visible"/>
+      <element name="TColorSelect.BeforeExecute" link="#lcl.stdactns.TCommonDialogAction.BeforeExecute"/>
+      <element name="TColorSelect.OnAccept" link="#lcl.stdactns.TCommonDialogAction.OnAccept"/>
+      <element name="TColorSelect.OnCancel" link="#lcl.stdactns.TCommonDialogAction.OnCancel"/>
+      <element name="TColorSelect.OnHint" link="#lcl.actnlist.TCustomAction.OnHint"/>
+
+      <element name="Register">
+        <short>Registers component for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            The following components are registered but not displayed on the
+            Lazarus IDE component palette:
+          </p>
+          <p>
+            <b>Edit</b> Actions
+          </p>
+          <ul>
+            <li>TEditCut</li>
+            <li>TEditCopy</li>
+            <li>TEditPaste</li>
+            <li>TEditSelectAll</li>
+            <li>TEditUndo</li>
+            <li>TEditDelete</li>
+          </ul>
+          <p>
+            <b>Search</b> Actions
+          </p>
+          <ul>
+            <li>TSearchFind</li>
+            <li>TSearchReplace</li>
+            <li>TSearchFindFirst</li>
+            <li>TSearchFindNext</li>
+          </ul>
+          <p>
+            <b>Help</b> Actions
+          </p>
+          <ul>
+            <li>THelpAction</li>
+            <li>THelpContents</li>
+            <li>THelpTopicSearch</li>
+            <li>THelpOnHelp</li>
+            <li>THelpContextAction</li>
+          </ul>
+          <p>
+            <b>Dialog</b> Actions
+          </p>
+          <ul>
+            <li>TFontEdit</li>
+            <li>TColorSelect</li>
+          </ul>
+          <p>
+            <b>File</b> Actions
+          </p>
+          <ul>
+            <li>TFileOpen</li>
+            <li>TFileOpenWith</li>
+            <li>TFileSaveAs</li>
+            <li>TFileExit</li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.HelpType" link="#LCL.ActnList.TCustomAction.HelpType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.Hint" link="#LCL.ActnList.TCustomAction.Hint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.Visible" link="#LCL.ActnList.TCustomAction.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorSelect.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TEditCut.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget"/>
-      <element name="TEditCopy.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget"/>
-      <element name="TCommonDialogAction.DoBeforeExecute">
-        <short>
-          <var>DoBeforeExecute</var> - perform the code for the <var>BeforeExecute</var> event</short>
-      </element>
-      <element name="TCommonDialogAction.CreateDialog">
-        <short>
-          <var>CreateDialog</var> - method for creating the dialog</short>
-      </element>
-      <element name="TSearchAction.CreateDialog" link="#LCL.StdActns.TCommonDialogAction.CreateDialog"/>
-      <element name="TSearchAction.UpdateControl">
-        <short>
-          <var>UpdateControl</var> - brings the control performing the action up to date</short>
-      </element>
-      <element name="TSearchAction.PerformSearch">
-        <short>
-          <var>PerformSearch</var> - returns True if the search is to be performed</short>
-      </element>
-      <element name="TSearchAction.ShowNotFound">
-        <short>
-          <var>ShowNotFound</var> - method to display the 'Not Found' message</short>
-      </element>
-      <element name="TSearchFind">
-        <short>
-          <var>TSearchFind</var> - the action associated with a Search and Find dialog (as opposed to search and replace)</short>
-      </element>
-      <element name="TSearchFind.GetFindDialog"/>
-      <element name="TSearchFind.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass"/>
-      <element name="TSearchFind.Caption" link="#LCL.ActnList.TCustomAction.Caption"/>
-      <element name="TSearchFind.Dialog">
-        <short>The Find<var>Dialog</var> to be used with this action</short>
-      </element>
-      <element name="TSearchFind.Enabled" link="#LCL.ActnList.TCustomAction.Enabled"/>
-      <element name="TSearchFind.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext"/>
-      <element name="TSearchFind.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword"/>
-      <element name="TSearchFind.HelpType" link="#LCL.ActnList.TCustomAction.HelpType"/>
-      <element name="TSearchFind.Hint" link="#LCL.ActnList.TCustomAction.Hint"/>
-      <element name="TSearchFind.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex"/>
-      <element name="TSearchFind.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut"/>
-      <element name="TSearchFind.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts"/>
-      <element name="TSearchFind.Visible" link="#LCL.ActnList.TCustomAction.Visible"/>
-      <element name="TSearchFind.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute"/>
-      <element name="TSearchFind.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept"/>
-      <element name="TSearchFind.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel"/>
-      <element name="TSearchFind.OnHint" link="#LCL.ActnList.TCustomAction.OnHint"/>
-      <element name="TSearchReplace">
-        <short>
-          <var>TSearchReplace</var> - action associated with the <var>Search and Replace</var> menu option and dialogs</short>
-      </element>
-      <element name="TSearchReplace.GetDialogClass" link="#LCL.StdActns.TCommonDialogAction.GetDialogClass"/>
-      <element name="TSearchReplace.CreateDialog" link="#LCL.StdActns.TCommonDialogAction.CreateDialog"/>
-      <element name="TSearchReplace.Replace">
-        <short>
-          <var>Replace</var> - the method to perform the Replace action once the specified text has been found</short>
-      </element>
-      <element name="TSearchReplace.Caption" link="#LCL.ActnList.TCustomAction.Caption"/>
-      <element name="TSearchReplace.Dialog">
-        <short>The Replace<var>Dialog</var> to be used with this action</short>
-      </element>
-      <element name="TSearchReplace.Enabled" link="#LCL.ActnList.TCustomAction.Enabled"/>
-      <element name="TSearchReplace.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext"/>
-      <element name="TSearchReplace.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword"/>
-      <element name="TSearchReplace.HelpType" link="#LCL.ActnList.TCustomAction.HelpType"/>
-      <element name="TSearchReplace.Hint" link="#LCL.ActnList.TCustomAction.Hint"/>
-      <element name="TSearchReplace.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex"/>
-      <element name="TSearchReplace.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut"/>
-      <element name="TSearchReplace.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts"/>
-      <element name="TSearchReplace.Visible" link="#LCL.ActnList.TCustomAction.Visible"/>
-      <element name="TSearchReplace.BeforeExecute" link="#LCL.StdActns.TCommonDialogAction.BeforeExecute"/>
-      <element name="TSearchReplace.OnAccept" link="#LCL.StdActns.TCommonDialogAction.OnAccept"/>
-      <element name="TSearchReplace.OnCancel" link="#LCL.StdActns.TCommonDialogAction.OnCancel"/>
-      <element name="TSearchReplace.OnHint" link="#LCL.ActnList.TCustomAction.OnHint"/>
-      <element name="TSearchFindFirst">
-        <short>
-          <var>TSearchFindFirst</var> - Search action to find the first match</short>
-      </element>
-      <element name="TSearchFindNext">
-        <short>
-          <var>TSearchFindNext</var> - search action to find the next match</short>
-      </element>
-      <element name="TSearchFindNext.Create" link="#rtl.Classes.TBasicAction.Create"/>
-      <element name="TSearchFindNext.HandlesTarget" link="#rtl.Classes.TBasicAction.HandlesTarget"/>
-      <element name="TSearchFindNext.UpdateTarget" link="#rtl.Classes.TBasicAction.UpdateTarget"/>
-      <element name="TSearchFindNext.ExecuteTarget" link="#rtl.Classes.TBasicAction.ExecuteTarget"/>
-      <element name="TSearchFindNext.Notification" link="#rtl.Classes.TComponent.Notification"/>
-      <element name="TSearchFindNext.Caption" link="#LCL.ActnList.TCustomAction.Caption"/>
-      <element name="TSearchFindNext.Enabled" link="#LCL.ActnList.TCustomAction.Enabled"/>
-      <element name="TSearchFindNext.HelpContext" link="#LCL.ActnList.TCustomAction.HelpContext"/>
-      <element name="TSearchFindNext.HelpKeyword" link="#LCL.ActnList.TCustomAction.HelpKeyword"/>
-      <element name="TSearchFindNext.HelpType" link="#LCL.ActnList.TCustomAction.HelpType"/>
-      <element name="TSearchFindNext.Hint" link="#LCL.ActnList.TCustomAction.Hint"/>
-      <element name="TSearchFindNext.ImageIndex" link="#LCL.ActnList.TCustomAction.ImageIndex"/>
-      <element name="TSearchFindNext.SearchFind">
-        <short>The <var>SearchFind</var> action to use for searching</short>
-      </element>
-      <element name="TSearchFindNext.ShortCut" link="#LCL.ActnList.TCustomAction.ShortCut"/>
-      <element name="TSearchFindNext.SecondaryShortCuts" link="#LCL.ActnList.TCustomAction.SecondaryShortCuts"/>
-      <element name="TSearchFindNext.Visible" link="#LCL.ActnList.TCustomAction.Visible"/>
-      <element name="TSearchFindNext.OnHint" link="#LCL.ActnList.TCustomAction.OnHint"/>
+
     </module>
     <!-- StdActns -->
   </package>

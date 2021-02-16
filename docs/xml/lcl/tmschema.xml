@@ -1,8254 +1,1583 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
+  <package name="lcl">
+  <!--
+    ====================================================================
     TmSchema
-  ====================================================================
--->
-
-<module name="TmSchema">
-<short/>
-<descr>
-</descr>
-
-<!-- constant Visibility: default -->
-<element name="THEMEMGR_VERSION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="BGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BT_IMAGEFILE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BT_BORDERFILL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BT_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="IMAGELAYOUT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="IL_VERTICAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="IL_HORIZONTAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="BORDERTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BT_RECT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BT_ROUNDRECT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BT_ELLIPSE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="FILLTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FT_SOLID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FT_VERTGRADIENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FT_HORZGRADIENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FT_RADIALGRADIENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FT_TILEIMAGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SIZINGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ST_TRUESIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ST_STRETCH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ST_TILE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HALIGN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HA_LEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HA_CENTER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HA_RIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CONTENTALIGNMENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CA_LEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CA_CENTER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CA_RIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="VALIGN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VA_TOP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VA_CENTER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VA_BOTTOM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="OFFSETTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_TOPLEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_TOPRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_TOPMIDDLE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_BOTTOMLEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_BOTTOMRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_BOTTOMMIDDLE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_MIDDLELEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_MIDDLERIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_LEFTOFCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_RIGHTOFCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_LEFTOFLASTBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_RIGHTOFLASTBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_ABOVELASTBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="OT_BELOWLASTBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="ICONEFFECT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ICE_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ICE_GLOW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ICE_SHADOW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ICE_PULSE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ICE_ALPHA">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TEXTSHADOWTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TST_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TST_SINGLE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TST_CONTINUOUS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="GLYPHTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GT_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GT_IMAGEGLYPH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GT_FONTGLYPH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="IMAGESELECTTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="IST_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="IST_SIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="IST_DPI">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TRUESIZESCALINGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TSST_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TSST_SIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TSST_DPI">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="GLYPHFONTSIZINGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GFST_NONE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GFST_SIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GFST_DPI">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_STRING">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BOOL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_COLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MARGINS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FILENAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_POSITION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_RECT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INTLIST">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_COLORSCHEMES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SIZES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CHARSET">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_DISPLAYNAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOOLTIP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_COMPANY">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_AUTHOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_COPYRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_URL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_VERSION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_DESCRIPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRST_RCSTRING_NAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LAST_RCSTRING_NAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CAPTIONFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SMALLCAPTIONFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENUFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_STATUSFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MSGBOXFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ICONTITLEFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRSTFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LASTFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FLATMENUS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRSTBOOL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LASTBOOL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SIZINGBORDERWIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SCROLLBARWIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SCROLLBARHEIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CAPTIONBARWIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CAPTIONBARHEIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SMCAPTIONBARWIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SMCAPTIONBARHEIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENUBARWIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENUBARHEIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRSTSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LASTSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINCOLORDEPTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRSTINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LASTINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CSSNAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_XMLNAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRSTSTRING">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LASTSTRING">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SCROLLBAR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BACKGROUND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ACTIVECAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INACTIVECAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENU">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_WINDOW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_WINDOWFRAME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENUTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_WINDOWTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CAPTIONTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ACTIVEBORDER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INACTIVEBORDER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_APPWORKSPACE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_HIGHLIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_HIGHLIGHTTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BTNFACE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BTNSHADOW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRAYTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BTNTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INACTIVECAPTIONTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BTNHIGHLIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_DKSHADOW3D">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LIGHT3D">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INFOTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INFOBK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BUTTONALTERNATEFACE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_HOTTRACKING">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTACTIVECAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTINACTIVECAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENUHILIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MENUBAR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FIRSTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_LASTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMHUE1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMHUE2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMHUE3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMHUE4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMHUE5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOHUE1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOHUE2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOHUE3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOHUE4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOHUE5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMCOLOR1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMCOLOR2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMCOLOR3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMCOLOR4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FROMCOLOR5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOCOLOR1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOCOLOR2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOCOLOR3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOCOLOR4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TOCOLOR5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TRANSPARENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_AUTOSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BORDERONLY">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_COMPOSITED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BGFILL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHTRANSPARENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHONLY">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ALWAYSSHOWSIZINGBAR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MIRRORIMAGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_UNIFORMSIZING">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_INTEGRALSIZING">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SOURCEGROW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SOURCESHRINK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGECOUNT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ALPHALEVEL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BORDERSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ROUNDCORNERWIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ROUNDCORNERHEIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTRATIO1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTRATIO2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTRATIO3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTRATIO4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTRATIO5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_PROGRESSCHUNKSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_PROGRESSSPACESIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SATURATION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXTBORDERSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ALPHATHRESHOLD">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_WIDTH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_HEIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHINDEX">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TRUESIZESTRETCHMARK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINDPI1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINDPI2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINDPI3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINDPI4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINDPI5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHFONT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGEFILE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGEFILE1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGEFILE2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGEFILE3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGEFILE4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGEFILE5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_STOCKIMAGEFILE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHIMAGEFILE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_OFFSET">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXTSHADOWOFFSET">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINSIZE1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINSIZE2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINSIZE3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINSIZE4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_MINSIZE5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_NORMALSIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SIZINGMARGINS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CONTENTMARGINS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CAPTIONMARGINS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BORDERCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FILLCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_EDGELIGHTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_EDGEHIGHLIGHTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_EDGESHADOWCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_EDGEDKSHADOWCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_EDGEFILLCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TRANSPARENTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTCOLOR1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTCOLOR2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTCOLOR3">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTCOLOR4">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GRADIENTCOLOR5">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SHADOWCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLOWCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXTBORDERCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXTSHADOWCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHTEXTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHTRANSPARENTCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FILLCOLORHINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BORDERCOLORHINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ACCENTCOLORHINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BORDERTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_FILLTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_SIZINGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_HALIGN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_CONTENTALIGNMENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_VALIGN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_OFFSETTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_ICONEFFECT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TEXTSHADOWTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGELAYOUT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_IMAGESELECTTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_GLYPHFONTSIZINGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_TRUESIZESCALINGTYPE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_USERPICTURE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_DEFAULTPANESIZE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TMT_BLENDCOLOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="WINDOWPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WINDOWPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_CAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MINCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLMINCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MAXCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLMAXCAPTION">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_FRAMELEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_FRAMERIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_FRAMEBOTTOM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLFRAMELEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLFRAMERIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLFRAMEBOTTOM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SYSBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MDISYSBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MINBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MDIMINBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MAXBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_CLOSEBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLCLOSEBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MDICLOSEBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_RESTOREBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MDIRESTOREBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_HELPBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_MDIHELPBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_HORZSCROLL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_HORZTHUMB">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_VERTSCROLL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_VERTTHUMB">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_DIALOG">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_CAPTIONSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLCAPTIONSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_FRAMELEFTSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLFRAMELEFTSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_FRAMERIGHTSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLFRAMERIGHTSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_FRAMEBOTTOMSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="WP_SMALLFRAMEBOTTOMSIZINGTEMPLATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="FRAMESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FRAMEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FS_ACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FS_INACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CAPTIONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CAPTIONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CS_ACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CS_INACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MAXCAPTIONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MAXCAPTIONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MXCS_ACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MXCS_INACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MXCS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MINCAPTIONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MINCAPTIONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MNCS_ACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MNCS_INACTIVE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MNCS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HORZSCROLLSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HORZSCROLLStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HSS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HSS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HSS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HSS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HORZTHUMBSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HORZTHUMBStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HTS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HTS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HTS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HTS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="VERTSCROLLSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VERTSCROLLStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VSS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VSS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VSS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VSS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="VERTTHUMBSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VERTTHUMBStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VTS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VTS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VTS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="VTS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SYSBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SYSBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MINBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MINBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MINBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MINBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MINBS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MINBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MAXBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MAXBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MAXBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MAXBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MAXBS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MAXBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="RESTOREBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RESTOREBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HELPBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HELPBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HBS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CLOSEBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CLOSEBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_PUSHED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="BUTTONPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BUTTONPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BP_PUSHBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BP_RADIOBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BP_CHECKBOX">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BP_GROUPBOX">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BP_USERBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="PUSHBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PUSHBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PBS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PBS_DEFAULTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="RADIOBUTTONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RADIOBUTTONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_UNCHECKEDNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_UNCHECKEDHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_UNCHECKEDPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_UNCHECKEDDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_CHECKEDNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_CHECKEDHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_CHECKEDPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RBS_CHECKEDDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CHECKBOXSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CHECKBOXStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_UNCHECKEDNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_UNCHECKEDHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_UNCHECKEDPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_UNCHECKEDDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_CHECKEDNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_CHECKEDHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_CHECKEDPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_CHECKEDDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_MIXEDNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_MIXEDHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_MIXEDPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBS_MIXEDDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="GROUPBOXSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GROUPBOXStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="REBARPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="REBARPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RP_GRIPPER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RP_GRIPPERVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RP_BAND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RP_CHEVRON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="RP_CHEVRONVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CHEVRONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CHEVRONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CHEVS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CHEVS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CHEVS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOOLBARPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOOLBARPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TP_BUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TP_DROPDOWNBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TP_SPLITBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TP_SPLITBUTTONDROPDOWN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TP_SEPARATOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TP_SEPARATORVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOOLBARSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOOLBARStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TS_CHECKED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TS_HOTCHECKED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="STATUSPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="STATUSPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SP_PANE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SP_GRIPPERPANE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SP_GRIPPER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MENUPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MENUPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MP_MENUITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MP_MENUDROPDOWN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MP_MENUBARITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MP_MENUBARDROPDOWN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MP_CHEVRON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MP_SEPARATOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MENUSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MENUStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MS_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MS_DEMOTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="LISTVIEWPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LISTVIEWPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LVP_LISTITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LVP_LISTGROUP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LVP_LISTDETAIL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LVP_LISTSORTEDDETAIL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LVP_EMPTYTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="LISTITEMSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LISTITEMStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LIS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LIS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LIS_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LIS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LIS_SELECTEDNOTFOCUS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HP_HEADERITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HP_HEADERITEMLEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HP_HEADERITEMRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HP_HEADERSORTARROW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERITEMSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERITEMStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HIS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HIS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HIS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERITEMLEFTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERITEMLEFTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HILS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HILS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HILS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERITEMRIGHTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERITEMRIGHTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HIRS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HIRS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HIRS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERSORTARROWSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERSORTARROWStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HSAS_SORTEDUP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HSAS_SORTEDDOWN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="PROGRESSPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PROGRESSPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PP_BAR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PP_BARVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PP_CHUNK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PP_CHUNKVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TABPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TABITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TABITEMLEFTEDGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TABITEMRIGHTEDGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TABITEMBOTHEDGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TOPTABITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TOPTABITEMLEFTEDGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TOPTABITEMRIGHTEDGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_TOPTABITEMBOTHEDGE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_PANE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABP_BODY">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TABITEMSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABITEMStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIS_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TABITEMLEFTEDGESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABITEMLEFTEDGEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TILES_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TILES_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TILES_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TILES_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TILES_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TABITEMRIGHTEDGESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABITEMRIGHTEDGEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIRES_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIRES_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIRES_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIRES_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIRES_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TABITEMBOTHEDGESSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TABITEMBOTHEDGESStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIBES_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIBES_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIBES_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIBES_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TIBES_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOPTABITEMSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOPTABITEMStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIS_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOPTABITEMLEFTEDGESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOPTABITEMLEFTEDGEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTILES_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTILES_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTILES_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTILES_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTILES_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOPTABITEMRIGHTEDGESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOPTABITEMRIGHTEDGEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIRES_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIRES_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIRES_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIRES_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIRES_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOPTABITEMBOTHEDGESSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOPTABITEMBOTHEDGESStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIBES_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIBES_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIBES_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIBES_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTIBES_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TRACKBARPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRACKBARPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_TRACK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_TRACKVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_THUMB">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_THUMBBOTTOM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_THUMBTOP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_THUMBVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_THUMBLEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_THUMBRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_TICS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKP_TICSVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TRACKBARSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRACKBARStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TKS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TRACKSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRACKStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TRACKVERTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRACKVERTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRVS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THUMBSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="THUMBStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THUMBBOTTOMSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="THUMBBOTTOMStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUBS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUBS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THUMBTOPSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="THUMBTOPStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUTS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUTS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUTS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUTS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUTS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THUMBVERTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="THUMBVERTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THUMBLEFTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="THUMBLEFTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVLS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVLS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVLS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVLS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVLS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THUMBRIGHTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="THUMBRIGHTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVRS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVRS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVRS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVRS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TUVRS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TICSSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TICSStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TSS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TICSVERTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TICSVERTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TSVS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TOOLTIPPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TOOLTIPPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTP_STANDARD">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTP_STANDARDTITLE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTP_BALLOON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTP_BALLOONTITLE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTP_CLOSE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CLOSESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CLOSEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTCS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTCS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTCS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="STANDARDSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="STANDARDStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTSS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTSS_LINK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="BALLOONSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="BALLOONStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TTBS_LINK">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TREEVIEWPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREEVIEWPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TVP_TREEITEM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TVP_GLYPH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TVP_BRANCH">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TREEITEMSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREEITEMStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREIS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREIS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREIS_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREIS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TREIS_SELECTEDNOTFOCUS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="GLYPHSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GLYPHStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GLPS_CLOSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="GLPS_OPENED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SPINPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPINPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPNP_UP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPNP_DOWN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPNP_UPHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPNP_DOWNHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="UPSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="DOWNSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DOWNStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="UPHORZSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPHORZStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPHZS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPHZS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPHZS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="UPHZS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="DOWNHORZSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DOWNHORZStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNHZS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNHZS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNHZS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="DNHZS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="PAGEPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PAGEPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PGRP_UP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PGRP_DOWN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PGRP_UPHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="PGRP_DOWNHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SCROLLBARPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SCROLLBARPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_ARROWBTN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_THUMBBTNHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_THUMBBTNVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_LOWERTRACKHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_UPPERTRACKHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_LOWERTRACKVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_UPPERTRACKVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_GRIPPERHORZ">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_GRIPPERVERT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SBP_SIZEBOX">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="ARROWBTNSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ARROWBTNStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_UPNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_UPHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_UPPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_UPDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_DOWNNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_DOWNHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_DOWNPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_DOWNDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_LEFTNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_LEFTHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_LEFTPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_LEFTDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_RIGHTNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_RIGHTHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_RIGHTPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ABS_RIGHTDISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SCROLLBARSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SCROLLBARStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SCRBS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SCRBS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SCRBS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SCRBS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SIZEBOXSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SIZEBOXStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SZB_RIGHTALIGN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SZB_LEFTALIGN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="EDITPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EDITPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EP_EDITTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EP_CARET">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="EDITTEXTSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EDITTEXTStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_SELECTED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_FOCUSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_READONLY">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="ETS_ASSIST">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="COMBOBOXPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="COMBOBOXPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CP_DROPDOWNBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="COMBOBOXSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="COMBOBOXStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBXS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBXS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBXS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CBXS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CLOCKPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CLOCKPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CLP_TIME">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="CLOCKSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CLOCKStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="CLS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TRAYNOTIFYPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TRAYNOTIFYPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TNP_BACKGROUND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TNP_ANIMBACKGROUND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TASKBARPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TASKBARPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_BACKGROUNDBOTTOM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_BACKGROUNDRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_BACKGROUNDTOP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_BACKGROUNDLEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_SIZINGBARBOTTOM">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_SIZINGBARRIGHT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_SIZINGBARTOP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TBP_SIZINGBARLEFT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TASKBANDPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TASKBANDPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TDP_GROUPCOUNT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TDP_FLASHBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="TDP_FLASHBUTTONGROUPMENU">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="STARTPANELPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="STARTPANELPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_USERPANE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_MOREPROGRAMS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_MOREPROGRAMSARROW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_PROGLIST">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_PROGLISTSEPARATOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_PLACESLIST">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_PLACESLISTSEPARATOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_LOGOFF">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_LOGOFFBUTTONS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_USERPICTURE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPP_PREVIEW">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MOREPROGRAMSARROWSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MOREPROGRAMSARROWStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="LOGOFFBUTTONSSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LOGOFFBUTTONSStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPLS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPLS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPLS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="EXPLORERBARPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EXPLORERBARPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_HEADERBACKGROUND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_HEADERCLOSE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_HEADERPIN">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_IEBARMENU">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_NORMALGROUPBACKGROUND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_NORMALGROUPCOLLAPSE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_NORMALGROUPEXPAND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_NORMALGROUPHEAD">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_SPECIALGROUPBACKGROUND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_SPECIALGROUPCOLLAPSE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_SPECIALGROUPEXPAND">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBP_SPECIALGROUPHEAD">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERCLOSESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERCLOSEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHC_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHC_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHC_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="HEADERPINSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="HEADERPINStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHP_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHP_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHP_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHP_SELECTEDNORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHP_SELECTEDHOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBHP_SELECTEDPRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="IEBARMENUSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="IEBARMENUStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBM_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBM_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBM_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="NORMALGROUPCOLLAPSESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="NORMALGROUPCOLLAPSEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBNGC_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBNGC_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBNGC_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="NORMALGROUPEXPANDSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="NORMALGROUPEXPANDStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBNGE_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBNGE_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBNGE_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SPECIALGROUPCOLLAPSESTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPECIALGROUPCOLLAPSEStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBSGC_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBSGC_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBSGC_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="SPECIALGROUPEXPANDSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="SPECIALGROUPEXPANDStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBSGE_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBSGE_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="EBSGE_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MENUBANDPARTS">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MENUBANDPartFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDP_NEWAPPBUTTON">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDP_SEPERATOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="MENUBANDSTATES">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MENUBANDStateFiller0">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDS_NORMAL">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDS_HOT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDS_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDS_DISABLED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDS_CHECKED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="MDS_HOTCHECKED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-</module> <!-- TmSchema -->
-
-</package>
+    ====================================================================
+  -->
+  <module name="TmSchema">
+    <short>
+      Contains types and constants used for theme elements and details in theme services
+    </short>
+    <descr>
+    <p>
+      <file>tmschema.pas</file> contains types and constants used for theme elements and theme element details in <var>TThemeServices</var>.
+    </p>
+    </descr>
+
+    <element name="TMTVS_RESERVEDLOW"/>
+    <element name="TMTVS_RESERVEDHIGH"/>
+    <element name="VSCLASS_AEROWIZARDSTYLE"/>
+    <element name="VSCLASS_AEROWIZARD"/>
+    <element name="AEROWIZARDPARTS"/>
+    <element name="AW_TITLEBAR"/>
+    <element name="AW_HEADERAREA"/>
+    <element name="AW_CONTENTAREA"/>
+    <element name="AW_COMMANDAREA"/>
+    <element name="AW_BUTTON"/>
+    <element name="AEROWIZARDSTYLEPARTS"/>
+    <element name="TITLEBARSTATES"/>
+    <element name="AW_S_TITLEBAR_ACTIVE"/>
+    <element name="AW_S_TITLEBAR_INACTIVE"/>
+    <element name="HEADERAREASTATES"/>
+    <element name="AW_S_HEADERAREA_NOMARGIN"/>
+    <element name="CONTENTAREASTATES"/>
+    <element name="AW_S_CONTENTAREA_NOMARGIN"/>
+    <element name="VSCLASS_BUTTONSTYLE"/>
+    <element name="VSCLASS_BUTTON"/>
+    <element name="BUTTONPARTS"/>
+    <element name="BP_PUSHBUTTON"/>
+    <element name="BP_RADIOBUTTON"/>
+    <element name="BP_CHECKBOX"/>
+    <element name="BP_GROUPBOX"/>
+    <element name="BP_USERBUTTON"/>
+    <element name="BP_COMMANDLINK"/>
+    <element name="BP_COMMANDLINKGLYPH"/>
+    <element name="BUTTONSTYLEPARTS"/>
+    <element name="PUSHBUTTONSTATES"/>
+    <element name="PBS_NORMAL"/>
+    <element name="PBS_HOT"/>
+    <element name="PBS_PRESSED"/>
+    <element name="PBS_DISABLED"/>
+    <element name="PBS_DEFAULTED"/>
+    <element name="PBS_DEFAULTED_ANIMATING"/>
+    <element name="RADIOBUTTONSTATES"/>
+    <element name="RBS_UNCHECKEDNORMAL"/>
+    <element name="RBS_UNCHECKEDHOT"/>
+    <element name="RBS_UNCHECKEDPRESSED"/>
+    <element name="RBS_UNCHECKEDDISABLED"/>
+    <element name="RBS_CHECKEDNORMAL"/>
+    <element name="RBS_CHECKEDHOT"/>
+    <element name="RBS_CHECKEDPRESSED"/>
+    <element name="RBS_CHECKEDDISABLED"/>
+    <element name="CHECKBOXSTATES"/>
+    <element name="CBS_UNCHECKEDNORMAL"/>
+    <element name="CBS_UNCHECKEDHOT"/>
+    <element name="CBS_UNCHECKEDPRESSED"/>
+    <element name="CBS_UNCHECKEDDISABLED"/>
+    <element name="CBS_CHECKEDNORMAL"/>
+    <element name="CBS_CHECKEDHOT"/>
+    <element name="CBS_CHECKEDPRESSED"/>
+    <element name="CBS_CHECKEDDISABLED"/>
+    <element name="CBS_MIXEDNORMAL"/>
+    <element name="CBS_MIXEDHOT"/>
+    <element name="CBS_MIXEDPRESSED"/>
+    <element name="CBS_MIXEDDISABLED"/>
+    <element name="CBS_IMPLICITNORMAL"/>
+    <element name="CBS_IMPLICITHOT"/>
+    <element name="CBS_IMPLICITPRESSED"/>
+    <element name="CBS_IMPLICITDISABLED"/>
+    <element name="CBS_EXCLUDEDNORMAL"/>
+    <element name="CBS_EXCLUDEDHOT"/>
+    <element name="CBS_EXCLUDEDPRESSED"/>
+    <element name="CBS_EXCLUDEDDISABLED"/>
+    <element name="GROUPBOXSTATES"/>
+    <element name="GBS_NORMAL"/>
+    <element name="GBS_DISABLED"/>
+    <element name="COMMANDLINKSTATES"/>
+    <element name="CMDLS_NORMAL"/>
+    <element name="CMDLS_HOT"/>
+    <element name="CMDLS_PRESSED"/>
+    <element name="CMDLS_DISABLED"/>
+    <element name="CMDLS_DEFAULTED"/>
+    <element name="CMDLS_DEFAULTED_ANIMATING"/>
+    <element name="COMMANDLINKGLYPHSTATES"/>
+    <element name="CMDLGS_NORMAL"/>
+    <element name="CMDLGS_HOT"/>
+    <element name="CMDLGS_PRESSED"/>
+    <element name="CMDLGS_DISABLED"/>
+    <element name="CMDLGS_DEFAULTED"/>
+    <element name="VSCLASS_COMBOBOXSTYLE"/>
+    <element name="VSCLASS_COMBOBOX"/>
+    <element name="COMBOBOXPARTS"/>
+    <element name="CP_DROPDOWNBUTTON"/>
+    <element name="CP_BACKGROUND"/>
+    <element name="CP_TRANSPARENTBACKGROUND"/>
+    <element name="CP_BORDER"/>
+    <element name="CP_READONLY"/>
+    <element name="CP_DROPDOWNBUTTONRIGHT"/>
+    <element name="CP_DROPDOWNBUTTONLEFT"/>
+    <element name="CP_CUEBANNER"/>
+    <element name="COMBOBOXSTYLEPARTS"/>
+    <element name="COMBOBOXSTYLESTATES"/>
+    <element name="CBXS_NORMAL"/>
+    <element name="CBXS_HOT"/>
+    <element name="CBXS_PRESSED"/>
+    <element name="CBXS_DISABLED"/>
+    <element name="DROPDOWNBUTTONRIGHTSTATES"/>
+    <element name="CBXSR_NORMAL"/>
+    <element name="CBXSR_HOT"/>
+    <element name="CBXSR_PRESSED"/>
+    <element name="CBXSR_DISABLED"/>
+    <element name="DROPDOWNBUTTONLEFTSTATES"/>
+    <element name="CBXSL_NORMAL"/>
+    <element name="CBXSL_HOT"/>
+    <element name="CBXSL_PRESSED"/>
+    <element name="CBXSL_DISABLED"/>
+    <element name="TRANSPARENTBACKGROUNDSTATES"/>
+    <element name="CBTBS_NORMAL"/>
+    <element name="CBTBS_HOT"/>
+    <element name="CBTBS_DISABLED"/>
+    <element name="CBTBS_FOCUSED"/>
+    <element name="BORDERSTATES"/>
+    <element name="CBB_NORMAL"/>
+    <element name="CBB_HOT"/>
+    <element name="CBB_FOCUSED"/>
+    <element name="CBB_DISABLED"/>
+    <element name="READONLYSTATES"/>
+    <element name="CBRO_NORMAL"/>
+    <element name="CBRO_HOT"/>
+    <element name="CBRO_PRESSED"/>
+    <element name="CBRO_DISABLED"/>
+    <element name="CUEBANNERSTATES"/>
+    <element name="CBCB_NORMAL"/>
+    <element name="CBCB_HOT"/>
+    <element name="CBCB_PRESSED"/>
+    <element name="CBCB_DISABLED"/>
+    <element name="VSCLASS_COMMUNICATIONSSTYLE"/>
+    <element name="VSCLASS_COMMUNICATIONS"/>
+    <element name="COMMUNICATIONSPARTS"/>
+    <element name="CSST_TAB"/>
+    <element name="COMMUNICATIONSSTYLEPARTS"/>
+    <element name="TABSTATES"/>
+    <element name="CSTB_NORMAL"/>
+    <element name="CSTB_HOT"/>
+    <element name="CSTB_SELECTED"/>
+    <element name="VSCLASS_CONTROLPANELSTYLE"/>
+    <element name="VSCLASS_CONTROLPANEL"/>
+    <element name="CONTROLPANELPARTS"/>
+    <element name="CPANEL_NAVIGATIONPANE"/>
+    <element name="CPANEL_CONTENTPANE"/>
+    <element name="CPANEL_NAVIGATIONPANELABEL"/>
+    <element name="CPANEL_CONTENTPANELABEL"/>
+    <element name="CPANEL_TITLE"/>
+    <element name="CPANEL_BODYTEXT"/>
+    <element name="CPANEL_HELPLINK"/>
+    <element name="CPANEL_TASKLINK"/>
+    <element name="CPANEL_GROUPTEXT"/>
+    <element name="CPANEL_CONTENTLINK"/>
+    <element name="CPANEL_SECTIONTITLELINK"/>
+    <element name="CPANEL_LARGECOMMANDAREA"/>
+    <element name="CPANEL_SMALLCOMMANDAREA"/>
+    <element name="CPANEL_BUTTON"/>
+    <element name="CPANEL_MESSAGETEXT"/>
+    <element name="CPANEL_NAVIGATIONPANELINE"/>
+    <element name="CPANEL_CONTENTPANELINE"/>
+    <element name="CPANEL_BANNERAREA"/>
+    <element name="CPANEL_BODYTITLE"/>
+    <element name="CONTROLPANELSTYLEPARTS"/>
+    <element name="HELPLINKSTATES"/>
+    <element name="CPHL_NORMAL"/>
+    <element name="CPHL_HOT"/>
+    <element name="CPHL_PRESSED"/>
+    <element name="CPHL_DISABLED"/>
+    <element name="TASKLINKSTATES"/>
+    <element name="CPTL_NORMAL"/>
+    <element name="CPTL_HOT"/>
+    <element name="CPTL_PRESSED"/>
+    <element name="CPTL_DISABLED"/>
+    <element name="CPTL_PAGE"/>
+    <element name="CONTENTLINKSTATES"/>
+    <element name="CPCL_NORMAL"/>
+    <element name="CPCL_HOT"/>
+    <element name="CPCL_PRESSED"/>
+    <element name="CPCL_DISABLED"/>
+    <element name="SECTIONTITLELINKSTATES"/>
+    <element name="CPSTL_NORMAL"/>
+    <element name="CPSTL_HOT"/>
+    <element name="VSCLASS_DATEPICKERSTYLE"/>
+    <element name="VSCLASS_DATEPICKER"/>
+    <element name="DATEPICKERPARTS"/>
+    <element name="DP_DATETEXT"/>
+    <element name="DP_DATEBORDER"/>
+    <element name="DP_SHOWCALENDARBUTTONRIGHT"/>
+    <element name="DATEPICKERSTYLEPARTS"/>
+    <element name="DATETEXTSTATES"/>
+    <element name="DPDT_NORMAL"/>
+    <element name="DPDT_DISABLED"/>
+    <element name="DPDT_SELECTED"/>
+    <element name="DATEBORDERSTATES"/>
+    <element name="DPDB_NORMAL"/>
+    <element name="DPDB_HOT"/>
+    <element name="DPDB_FOCUSED"/>
+    <element name="DPDB_DISABLED"/>
+    <element name="SHOWCALENDARBUTTONRIGHTSTATES"/>
+    <element name="DPSCBR_NORMAL"/>
+    <element name="DPSCBR_HOT"/>
+    <element name="DPSCBR_PRESSED"/>
+    <element name="DPSCBR_DISABLED"/>
+    <element name="VSCLASS_DRAGDROPSTYLE"/>
+    <element name="VSCLASS_DRAGDROP"/>
+    <element name="DRAGDROPPARTS"/>
+    <element name="DD_COPY"/>
+    <element name="DD_MOVE"/>
+    <element name="DD_UPDATEMETADATA"/>
+    <element name="DD_CREATELINK"/>
+    <element name="DD_WARNING"/>
+    <element name="DD_NONE"/>
+    <element name="DD_IMAGEBG"/>
+    <element name="DD_TEXTBG"/>
+    <element name="DRAGDROPSTYLEPARTS"/>
+    <element name="COPYSTATES"/>
+    <element name="DDCOPY_HIGHLIGHT"/>
+    <element name="DDCOPY_NOHIGHLIGHT"/>
+    <element name="MOVESTATES"/>
+    <element name="DDMOVE_HIGHLIGHT"/>
+    <element name="DDMOVE_NOHIGHLIGHT"/>
+    <element name="UPDATEMETADATASTATES"/>
+    <element name="DDUPDATEMETADATA_HIGHLIGHT"/>
+    <element name="DDUPDATEMETADATA_NOHIGHLIGHT"/>
+    <element name="CREATELINKSTATES"/>
+    <element name="DDCREATELINK_HIGHLIGHT"/>
+    <element name="DDCREATELINK_NOHIGHLIGHT"/>
+    <element name="WARNINGSTATES"/>
+    <element name="DDWARNING_HIGHLIGHT"/>
+    <element name="DDWARNING_NOHIGHLIGHT"/>
+    <element name="NONESTATES"/>
+    <element name="DDNONE_HIGHLIGHT"/>
+    <element name="DDNONE_NOHIGHLIGHT"/>
+    <element name="VSCLASS_EDITSTYLE"/>
+    <element name="VSCLASS_EDIT"/>
+    <element name="EDITPARTS"/>
+    <element name="EP_EDITTEXT"/>
+    <element name="EP_CARET"/>
+    <element name="EP_BACKGROUND"/>
+    <element name="EP_PASSWORD"/>
+    <element name="EP_BACKGROUNDWITHBORDER"/>
+    <element name="EP_EDITBORDER_NOSCROLL"/>
+    <element name="EP_EDITBORDER_HSCROLL"/>
+    <element name="EP_EDITBORDER_VSCROLL"/>
+    <element name="EP_EDITBORDER_HVSCROLL"/>
+    <element name="EDITSTYLEPARTS"/>
+    <element name="EDITTEXTSTATES"/>
+    <element name="ETS_NORMAL"/>
+    <element name="ETS_HOT"/>
+    <element name="ETS_SELECTED"/>
+    <element name="ETS_DISABLED"/>
+    <element name="ETS_FOCUSED"/>
+    <element name="ETS_READONLY"/>
+    <element name="ETS_ASSIST"/>
+    <element name="ETS_CUEBANNER"/>
+    <element name="BACKGROUNDSTATES"/>
+    <element name="EBS_NORMAL"/>
+    <element name="EBS_HOT"/>
+    <element name="EBS_DISABLED"/>
+    <element name="EBS_FOCUSED"/>
+    <element name="EBS_READONLY"/>
+    <element name="EBS_ASSIST"/>
+    <element name="BACKGROUNDWITHBORDERSTATES"/>
+    <element name="EBWBS_NORMAL"/>
+    <element name="EBWBS_HOT"/>
+    <element name="EBWBS_DISABLED"/>
+    <element name="EBWBS_FOCUSED"/>
+    <element name="EDITBORDER_NOSCROLLSTATES"/>
+    <element name="EPSN_NORMAL"/>
+    <element name="EPSN_HOT"/>
+    <element name="EPSN_FOCUSED"/>
+    <element name="EPSN_DISABLED"/>
+    <element name="EDITBORDER_HSCROLLSTATES"/>
+    <element name="EPSH_NORMAL"/>
+    <element name="EPSH_HOT"/>
+    <element name="EPSH_FOCUSED"/>
+    <element name="EPSH_DISABLED"/>
+    <element name="EDITBORDER_VSCROLLSTATES"/>
+    <element name="EPSV_NORMAL"/>
+    <element name="EPSV_HOT"/>
+    <element name="EPSV_FOCUSED"/>
+    <element name="EPSV_DISABLED"/>
+    <element name="EDITBORDER_HVSCROLLSTATES"/>
+    <element name="EPSHV_NORMAL"/>
+    <element name="EPSHV_HOT"/>
+    <element name="EPSHV_FOCUSED"/>
+    <element name="EPSHV_DISABLED"/>
+    <element name="VSCLASS_EXPLORERBARSTYLE"/>
+    <element name="VSCLASS_EXPLORERBAR"/>
+    <element name="EXPLORERBARPARTS"/>
+    <element name="EBP_HEADERBACKGROUND"/>
+    <element name="EBP_HEADERCLOSE"/>
+    <element name="EBP_HEADERPIN"/>
+    <element name="EBP_IEBARMENU"/>
+    <element name="EBP_NORMALGROUPBACKGROUND"/>
+    <element name="EBP_NORMALGROUPCOLLAPSE"/>
+    <element name="EBP_NORMALGROUPEXPAND"/>
+    <element name="EBP_NORMALGROUPHEAD"/>
+    <element name="EBP_SPECIALGROUPBACKGROUND"/>
+    <element name="EBP_SPECIALGROUPCOLLAPSE"/>
+    <element name="EBP_SPECIALGROUPEXPAND"/>
+    <element name="EBP_SPECIALGROUPHEAD"/>
+    <element name="EXPLORERBARSTYLEPARTS"/>
+    <element name="HEADERCLOSESTATES"/>
+    <element name="EBHC_NORMAL"/>
+    <element name="EBHC_HOT"/>
+    <element name="EBHC_PRESSED"/>
+    <element name="HEADERPINSTATES"/>
+    <element name="EBHP_NORMAL"/>
+    <element name="EBHP_HOT"/>
+    <element name="EBHP_PRESSED"/>
+    <element name="EBHP_SELECTEDNORMAL"/>
+    <element name="EBHP_SELECTEDHOT"/>
+    <element name="EBHP_SELECTEDPRESSED"/>
+    <element name="IEBARMENUSTATES"/>
+    <element name="EBM_NORMAL"/>
+    <element name="EBM_HOT"/>
+    <element name="EBM_PRESSED"/>
+    <element name="NORMALGROUPCOLLAPSESTATES"/>
+    <element name="EBNGC_NORMAL"/>
+    <element name="EBNGC_HOT"/>
+    <element name="EBNGC_PRESSED"/>
+    <element name="NORMALGROUPEXPANDSTATES"/>
+    <element name="EBNGE_NORMAL"/>
+    <element name="EBNGE_HOT"/>
+    <element name="EBNGE_PRESSED"/>
+    <element name="SPECIALGROUPCOLLAPSESTATES"/>
+    <element name="EBSGC_NORMAL"/>
+    <element name="EBSGC_HOT"/>
+    <element name="EBSGC_PRESSED"/>
+    <element name="SPECIALGROUPEXPANDSTATES"/>
+    <element name="EBSGE_NORMAL"/>
+    <element name="EBSGE_HOT"/>
+    <element name="EBSGE_PRESSED"/>
+    <element name="VSCLASS_FLYOUTSTYLE"/>
+    <element name="VSCLASS_FLYOUT"/>
+    <element name="FLYOUTPARTS"/>
+    <element name="FLYOUT_HEADER"/>
+    <element name="FLYOUT_BODY"/>
+    <element name="FLYOUT_LABEL"/>
+    <element name="FLYOUT_LINK"/>
+    <element name="FLYOUT_DIVIDER"/>
+    <element name="FLYOUT_WINDOW"/>
+    <element name="FLYOUT_LINKAREA"/>
+    <element name="FLYOUT_LINKHEADER"/>
+    <element name="FLYOUTSTYLEPARTS"/>
+    <element name="LABELSTATES"/>
+    <element name="FLS_NORMAL"/>
+    <element name="FLS_SELECTED"/>
+    <element name="FLS_EMPHASIZED"/>
+    <element name="FLS_DISABLED"/>
+    <element name="LINKSTATES"/>
+    <element name="FLYOUTLINK_NORMAL"/>
+    <element name="FLYOUTLINK_HOVER"/>
+    <element name="BODYSTATES"/>
+    <element name="FBS_NORMAL"/>
+    <element name="FBS_EMPHASIZED"/>
+    <element name="LINKHEADERSTATES"/>
+    <element name="FLH_NORMAL"/>
+    <element name="FLH_HOVER"/>
+    <element name="VSCLASS_HEADERSTYLE"/>
+    <element name="VSCLASS_HEADER"/>
+    <element name="HEADERPARTS"/>
+    <element name="HP_HEADERITEM"/>
+    <element name="HP_HEADERITEMLEFT"/>
+    <element name="HP_HEADERITEMRIGHT"/>
+    <element name="HP_HEADERSORTARROW"/>
+    <element name="HP_HEADERDROPDOWN"/>
+    <element name="HP_HEADERDROPDOWNFILTER"/>
+    <element name="HP_HEADEROVERFLOW"/>
+    <element name="HEADERSTYLEPARTS"/>
+    <element name="HEADERSTYLESTATES"/>
+    <element name="HBG_DETAILS"/>
+    <element name="HBG_ICON"/>
+    <element name="HEADERITEMSTATES"/>
+    <element name="HIS_NORMAL"/>
+    <element name="HIS_HOT"/>
+    <element name="HIS_PRESSED"/>
+    <element name="HIS_SORTEDNORMAL"/>
+    <element name="HIS_SORTEDHOT"/>
+    <element name="HIS_SORTEDPRESSED"/>
+    <element name="HIS_ICONNORMAL"/>
+    <element name="HIS_ICONHOT"/>
+    <element name="HIS_ICONPRESSED"/>
+    <element name="HIS_ICONSORTEDNORMAL"/>
+    <element name="HIS_ICONSORTEDHOT"/>
+    <element name="HIS_ICONSORTEDPRESSED"/>
+    <element name="HEADERITEMLEFTSTATES"/>
+    <element name="HILS_NORMAL"/>
+    <element name="HILS_HOT"/>
+    <element name="HILS_PRESSED"/>
+    <element name="HEADERITEMRIGHTSTATES"/>
+    <element name="HIRS_NORMAL"/>
+    <element name="HIRS_HOT"/>
+    <element name="HIRS_PRESSED"/>
+    <element name="HEADERSORTARROWSTATES"/>
+    <element name="HSAS_SORTEDUP"/>
+    <element name="HSAS_SORTEDDOWN"/>
+    <element name="HEADERDROPDOWNSTATES"/>
+    <element name="HDDS_NORMAL"/>
+    <element name="HDDS_SOFTHOT"/>
+    <element name="HDDS_HOT"/>
+    <element name="HEADERDROPDOWNFILTERSTATES"/>
+    <element name="HDDFS_NORMAL"/>
+    <element name="HDDFS_SOFTHOT"/>
+    <element name="HDDFS_HOT"/>
+    <element name="HEADEROVERFLOWSTATES"/>
+    <element name="HOFS_NORMAL"/>
+    <element name="HOFS_HOT"/>
+    <element name="VSCLASS_LISTBOXSTYLE"/>
+    <element name="VSCLASS_LISTBOX"/>
+    <element name="LISTBOXPARTS"/>
+    <element name="LBCP_BORDER_HSCROLL"/>
+    <element name="LBCP_BORDER_HVSCROLL"/>
+    <element name="LBCP_BORDER_NOSCROLL"/>
+    <element name="LBCP_BORDER_VSCROLL"/>
+    <element name="LBCP_ITEM"/>
+    <element name="LISTBOXSTYLEPARTS"/>
+    <element name="BORDER_HSCROLLSTATES"/>
+    <element name="LBPSH_NORMAL"/>
+    <element name="LBPSH_FOCUSED"/>
+    <element name="LBPSH_HOT"/>
+    <element name="LBPSH_DISABLED"/>
+    <element name="BORDER_HVSCROLLSTATES"/>
+    <element name="LBPSHV_NORMAL"/>
+    <element name="LBPSHV_FOCUSED"/>
+    <element name="LBPSHV_HOT"/>
+    <element name="LBPSHV_DISABLED"/>
+    <element name="BORDER_NOSCROLLSTATES"/>
+    <element name="LBPSN_NORMAL"/>
+    <element name="LBPSN_FOCUSED"/>
+    <element name="LBPSN_HOT"/>
+    <element name="LBPSN_DISABLED"/>
+    <element name="BORDER_VSCROLLSTATES"/>
+    <element name="LBPSV_NORMAL"/>
+    <element name="LBPSV_FOCUSED"/>
+    <element name="LBPSV_HOT"/>
+    <element name="LBPSV_DISABLED"/>
+    <element name="ITEMSTATES"/>
+    <element name="LBPSI_HOT"/>
+    <element name="LBPSI_HOTSELECTED"/>
+    <element name="LBPSI_SELECTED"/>
+    <element name="LBPSI_SELECTEDNOTFOCUS"/>
+    <element name="VSCLASS_LISTVIEWSTYLE"/>
+    <element name="VSCLASS_LISTVIEW"/>
+    <element name="LISTVIEWPARTS"/>
+    <element name="LVP_LISTITEM"/>
+    <element name="LVP_LISTGROUP"/>
+    <element name="LVP_LISTDETAIL"/>
+    <element name="LVP_LISTSORTEDDETAIL"/>
+    <element name="LVP_EMPTYTEXT"/>
+    <element name="LVP_GROUPHEADER"/>
+    <element name="LVP_GROUPHEADERLINE"/>
+    <element name="LVP_EXPANDBUTTON"/>
+    <element name="LVP_COLLAPSEBUTTON"/>
+    <element name="LVP_COLUMNDETAIL"/>
+    <element name="LISTVIEWSTYLEPARTS"/>
+    <element name="LISTITEMSTATES"/>
+    <element name="LISS_NORMAL"/>
+    <element name="LISS_HOT"/>
+    <element name="LISS_SELECTED"/>
+    <element name="LISS_DISABLED"/>
+    <element name="LISS_SELECTEDNOTFOCUS"/>
+    <element name="LISS_HOTSELECTED"/>
+    <element name="GROUPHEADERSTATES"/>
+    <element name="LVGH_OPEN"/>
+    <element name="LVGH_OPENHOT"/>
+    <element name="LVGH_OPENSELECTED"/>
+    <element name="LVGH_OPENSELECTEDHOT"/>
+    <element name="LVGH_OPENSELECTEDNOTFOCUSED"/>
+    <element name="LVGH_OPENSELECTEDNOTFOCUSEDHOT"/>
+    <element name="LVGH_OPENMIXEDSELECTION"/>
+    <element name="LVGH_OPENMIXEDSELECTIONHOT"/>
+    <element name="LVGH_CLOSE"/>
+    <element name="LVGH_CLOSEHOT"/>
+    <element name="LVGH_CLOSESELECTED"/>
+    <element name="LVGH_CLOSESELECTEDHOT"/>
+    <element name="LVGH_CLOSESELECTEDNOTFOCUSED"/>
+    <element name="LVGH_CLOSESELECTEDNOTFOCUSEDHOT"/>
+    <element name="LVGH_CLOSEMIXEDSELECTION"/>
+    <element name="LVGH_CLOSEMIXEDSELECTIONHOT"/>
+    <element name="GROUPHEADERLINESTATES"/>
+    <element name="LVGHL_OPEN"/>
+    <element name="LVGHL_OPENHOT"/>
+    <element name="LVGHL_OPENSELECTED"/>
+    <element name="LVGHL_OPENSELECTEDHOT"/>
+    <element name="LVGHL_OPENSELECTEDNOTFOCUSED"/>
+    <element name="LVGHL_OPENSELECTEDNOTFOCUSEDHOT"/>
+    <element name="LVGHL_OPENMIXEDSELECTION"/>
+    <element name="LVGHL_OPENMIXEDSELECTIONHOT"/>
+    <element name="LVGHL_CLOSE"/>
+    <element name="LVGHL_CLOSEHOT"/>
+    <element name="LVGHL_CLOSESELECTED"/>
+    <element name="LVGHL_CLOSESELECTEDHOT"/>
+    <element name="LVGHL_CLOSESELECTEDNOTFOCUSED"/>
+    <element name="LVGHL_CLOSESELECTEDNOTFOCUSEDHOT"/>
+    <element name="LVGHL_CLOSEMIXEDSELECTION"/>
+    <element name="LVGHL_CLOSEMIXEDSELECTIONHOT"/>
+    <element name="EXPANDBUTTONSTATES"/>
+    <element name="LVEB_NORMAL"/>
+    <element name="LVEB_HOVER"/>
+    <element name="LVEB_PUSHED"/>
+    <element name="COLLAPSEBUTTONSTATES"/>
+    <element name="LVCB_NORMAL"/>
+    <element name="LVCB_HOVER"/>
+    <element name="LVCB_PUSHED"/>
+    <element name="VSCLASS_MENUSTYLE"/>
+    <element name="VSCLASS_MENU"/>
+    <element name="MENUPARTS"/>
+    <element name="MENU_MENUITEM_TMSCHEMA"/>
+    <element name="MENU_MENUDROPDOWN_TMSCHEMA"/>
+    <element name="MENU_MENUBARITEM_TMSCHEMA"/>
+    <element name="MENU_MENUBARDROPDOWN_TMSCHEMA"/>
+    <element name="MENU_CHEVRON_TMSCHEMA"/>
+    <element name="MENU_SEPARATOR_TMSCHEMA"/>
+    <element name="MENU_BARBACKGROUND"/>
+    <element name="MENU_BARITEM"/>
+    <element name="MENU_POPUPBACKGROUND"/>
+    <element name="MENU_POPUPBORDERS"/>
+    <element name="MENU_POPUPCHECK"/>
+    <element name="MENU_POPUPCHECKBACKGROUND"/>
+    <element name="MENU_POPUPGUTTER"/>
+    <element name="MENU_POPUPITEM"/>
+    <element name="MENU_POPUPSEPARATOR"/>
+    <element name="MENU_POPUPSUBMENU"/>
+    <element name="MENU_SYSTEMCLOSE"/>
+    <element name="MENU_SYSTEMMAXIMIZE"/>
+    <element name="MENU_SYSTEMMINIMIZE"/>
+    <element name="MENU_SYSTEMRESTORE"/>
+    <element name="MENUSTYLEPARTS"/>
+    <element name="BARBACKGROUNDSTATES"/>
+    <element name="MB_ACTIVE"/>
+    <element name="MB_INACTIVE"/>
+    <element name="BARITEMSTATES"/>
+    <element name="MBI_NORMAL"/>
+    <element name="MBI_HOT"/>
+    <element name="MBI_PUSHED"/>
+    <element name="MBI_DISABLED"/>
+    <element name="MBI_DISABLEDHOT"/>
+    <element name="MBI_DISABLEDPUSHED"/>
+    <element name="POPUPCHECKSTATES"/>
+    <element name="MC_CHECKMARKNORMAL"/>
+    <element name="MC_CHECKMARKDISABLED"/>
+    <element name="MC_BULLETNORMAL"/>
+    <element name="MC_BULLETDISABLED"/>
+    <element name="POPUPCHECKBACKGROUNDSTATES"/>
+    <element name="MCB_DISABLED"/>
+    <element name="MCB_NORMAL"/>
+    <element name="MCB_BITMAP"/>
+    <element name="POPUPITEMSTATES"/>
+    <element name="MPI_NORMAL"/>
+    <element name="MPI_HOT"/>
+    <element name="MPI_DISABLED"/>
+    <element name="MPI_DISABLEDHOT"/>
+    <element name="POPUPSUBMENUSTATES"/>
+    <element name="MSM_NORMAL"/>
+    <element name="MSM_DISABLED"/>
+    <element name="SYSTEMCLOSESTATES"/>
+    <element name="MSYSC_NORMAL"/>
+    <element name="MSYSC_DISABLED"/>
+    <element name="SYSTEMMAXIMIZESTATES"/>
+    <element name="MSYSMX_NORMAL"/>
+    <element name="MSYSMX_DISABLED"/>
+    <element name="SYSTEMMINIMIZESTATES"/>
+    <element name="MSYSMN_NORMAL"/>
+    <element name="MSYSMN_DISABLED"/>
+    <element name="SYSTEMRESTORESTATES"/>
+    <element name="MSYSR_NORMAL"/>
+    <element name="MSYSR_DISABLED"/>
+    <element name="VSCLASS_NAVIGATION"/>
+    <element name="NAVIGATIONPARTS"/>
+    <element name="NAV_BACKBUTTON"/>
+    <element name="NAV_FORWARDBUTTON"/>
+    <element name="NAV_MENUBUTTON"/>
+    <element name="NAV_BACKBUTTONSTATES"/>
+    <element name="NAV_BB_NORMAL"/>
+    <element name="NAV_BB_HOT"/>
+    <element name="NAV_BB_PRESSED"/>
+    <element name="NAV_BB_DISABLED"/>
+    <element name="NAV_FORWARDBUTTONSTATES"/>
+    <element name="NAV_FB_NORMAL"/>
+    <element name="NAV_FB_HOT"/>
+    <element name="NAV_FB_PRESSED"/>
+    <element name="NAV_FB_DISABLED"/>
+    <element name="NAV_MENUBUTTONSTATES"/>
+    <element name="NAV_MB_NORMAL"/>
+    <element name="NAV_MB_HOT"/>
+    <element name="NAV_MB_PRESSED"/>
+    <element name="NAV_MB_DISABLED"/>
+    <element name="VSCLASS_PROGRESSSTYLE"/>
+    <element name="VSCLASS_PROGRESS"/>
+    <element name="PROGRESSPARTS"/>
+    <element name="PP_BAR"/>
+    <element name="PP_BARVERT"/>
+    <element name="PP_CHUNK"/>
+    <element name="PP_CHUNKVERT"/>
+    <element name="PP_FILL"/>
+    <element name="PP_FILLVERT"/>
+    <element name="PP_PULSEOVERLAY"/>
+    <element name="PP_MOVEOVERLAY"/>
+    <element name="PP_PULSEOVERLAYVERT"/>
+    <element name="PP_MOVEOVERLAYVERT"/>
+    <element name="PP_TRANSPARENTBAR"/>
+    <element name="PP_TRANSPARENTBARVERT"/>
+    <element name="PROGRESSSTYLEPARTS"/>
+    <element name="TRANSPARENTBARSTATES"/>
+    <element name="PBBS_NORMAL"/>
+    <element name="PBBS_PARTIAL"/>
+    <element name="TRANSPARENTBARVERTSTATES"/>
+    <element name="PBBVS_NORMAL"/>
+    <element name="PBBVS_PARTIAL"/>
+    <element name="FILLSTATES"/>
+    <element name="PBFS_NORMAL"/>
+    <element name="PBFS_ERROR"/>
+    <element name="PBFS_PAUSED"/>
+    <element name="PBFS_PARTIAL"/>
+    <element name="FILLVERTSTATES"/>
+    <element name="PBFVS_NORMAL"/>
+    <element name="PBFVS_ERROR"/>
+    <element name="PBFVS_PAUSED"/>
+    <element name="PBFVS_PARTIAL"/>
+    <element name="VSCLASS_REBARSTYLE"/>
+    <element name="VSCLASS_REBAR"/>
+    <element name="REBARPARTS"/>
+    <element name="RP_GRIPPER"/>
+    <element name="RP_GRIPPERVERT"/>
+    <element name="RP_BAND"/>
+    <element name="RP_CHEVRON"/>
+    <element name="RP_CHEVRONVERT"/>
+    <element name="RP_BACKGROUND"/>
+    <element name="RP_SPLITTER"/>
+    <element name="RP_SPLITTERVERT"/>
+    <element name="REBARSTYLEPARTS"/>
+    <element name="CHEVRONSTATES"/>
+    <element name="CHEVS_NORMAL"/>
+    <element name="CHEVS_HOT"/>
+    <element name="CHEVS_PRESSED"/>
+    <element name="CHEVRONVERTSTATES"/>
+    <element name="CHEVSV_NORMAL"/>
+    <element name="CHEVSV_HOT"/>
+    <element name="CHEVSV_PRESSED"/>
+    <element name="SPLITTERSTATES"/>
+    <element name="SPLITS_NORMAL"/>
+    <element name="SPLITS_HOT"/>
+    <element name="SPLITS_PRESSED"/>
+    <element name="SPLITTERVERTSTATES"/>
+    <element name="SPLITSV_NORMAL"/>
+    <element name="SPLITSV_HOT"/>
+    <element name="SPLITSV_PRESSED"/>
+    <element name="VSCLASS_SCROLLBARSTYLE"/>
+    <element name="VSCLASS_SCROLLBAR"/>
+    <element name="SCROLLBARPARTS"/>
+    <element name="SBP_ARROWBTN"/>
+    <element name="SBP_THUMBBTNHORZ"/>
+    <element name="SBP_THUMBBTNVERT"/>
+    <element name="SBP_LOWERTRACKHORZ"/>
+    <element name="SBP_UPPERTRACKHORZ"/>
+    <element name="SBP_LOWERTRACKVERT"/>
+    <element name="SBP_UPPERTRACKVERT"/>
+    <element name="SBP_GRIPPERHORZ"/>
+    <element name="SBP_GRIPPERVERT"/>
+    <element name="SBP_SIZEBOX"/>
+    <element name="SCROLLBARSTYLEPARTS"/>
+    <element name="ARROWBTNSTATES"/>
+    <element name="ABS_UPNORMAL"/>
+    <element name="ABS_UPHOT"/>
+    <element name="ABS_UPPRESSED"/>
+    <element name="ABS_UPDISABLED"/>
+    <element name="ABS_DOWNNORMAL"/>
+    <element name="ABS_DOWNHOT"/>
+    <element name="ABS_DOWNPRESSED"/>
+    <element name="ABS_DOWNDISABLED"/>
+    <element name="ABS_LEFTNORMAL"/>
+    <element name="ABS_LEFTHOT"/>
+    <element name="ABS_LEFTPRESSED"/>
+    <element name="ABS_LEFTDISABLED"/>
+    <element name="ABS_RIGHTNORMAL"/>
+    <element name="ABS_RIGHTHOT"/>
+    <element name="ABS_RIGHTPRESSED"/>
+    <element name="ABS_RIGHTDISABLED"/>
+    <element name="ABS_UPHOVER"/>
+    <element name="ABS_DOWNHOVER"/>
+    <element name="ABS_LEFTHOVER"/>
+    <element name="ABS_RIGHTHOVER"/>
+    <element name="SCROLLBARSTYLESTATES"/>
+    <element name="SCRBS_NORMAL"/>
+    <element name="SCRBS_HOT"/>
+    <element name="SCRBS_PRESSED"/>
+    <element name="SCRBS_DISABLED"/>
+    <element name="SCRBS_HOVER"/>
+    <element name="SIZEBOXSTATES"/>
+    <element name="SZB_RIGHTALIGN"/>
+    <element name="SZB_LEFTALIGN"/>
+    <element name="SZB_TOPRIGHTALIGN"/>
+    <element name="SZB_TOPLEFTALIGN"/>
+    <element name="SZB_HALFBOTTOMRIGHTALIGN"/>
+    <element name="SZB_HALFBOTTOMLEFTALIGN"/>
+    <element name="SZB_HALFTOPRIGHTALIGN"/>
+    <element name="SZB_HALFTOPLEFTALIGN"/>
+    <element name="VSCLASS_SPINSTYLE"/>
+    <element name="VSCLASS_SPIN"/>
+    <element name="SPINPARTS"/>
+    <element name="SPNP_UP"/>
+    <element name="SPNP_DOWN"/>
+    <element name="SPNP_UPHORZ"/>
+    <element name="SPNP_DOWNHORZ"/>
+    <element name="SPINSTYLEPARTS"/>
+    <element name="UPSTATES"/>
+    <element name="UPS_NORMAL"/>
+    <element name="UPS_HOT"/>
+    <element name="UPS_PRESSED"/>
+    <element name="UPS_DISABLED"/>
+    <element name="DOWNSTATES"/>
+    <element name="DNS_NORMAL"/>
+    <element name="DNS_HOT"/>
+    <element name="DNS_PRESSED"/>
+    <element name="DNS_DISABLED"/>
+    <element name="UPHORZSTATES"/>
+    <element name="UPHZS_NORMAL"/>
+    <element name="UPHZS_HOT"/>
+    <element name="UPHZS_PRESSED"/>
+    <element name="UPHZS_DISABLED"/>
+    <element name="DOWNHORZSTATES"/>
+    <element name="DNHZS_NORMAL"/>
+    <element name="DNHZS_HOT"/>
+    <element name="DNHZS_PRESSED"/>
+    <element name="DNHZS_DISABLED"/>
+    <element name="VSCLASS_STATUSSTYLE"/>
+    <element name="VSCLASS_STATUS"/>
+    <element name="STATUSPARTS"/>
+    <element name="SP_PANE"/>
+    <element name="SP_GRIPPERPANE"/>
+    <element name="SP_GRIPPER"/>
+    <element name="STATUSSTYLEPARTS"/>
+    <element name="VSCLASS_TABSTYLE"/>
+    <element name="VSCLASS_TAB"/>
+    <element name="TABPARTS"/>
+    <element name="TABP_TABITEM"/>
+    <element name="TABP_TABITEMLEFTEDGE"/>
+    <element name="TABP_TABITEMRIGHTEDGE"/>
+    <element name="TABP_TABITEMBOTHEDGE"/>
+    <element name="TABP_TOPTABITEM"/>
+    <element name="TABP_TOPTABITEMLEFTEDGE"/>
+    <element name="TABP_TOPTABITEMRIGHTEDGE"/>
+    <element name="TABP_TOPTABITEMBOTHEDGE"/>
+    <element name="TABP_PANE"/>
+    <element name="TABP_BODY"/>
+    <element name="TABP_AEROWIZARDBODY"/>
+    <element name="TABSTYLEPARTS"/>
+    <element name="TABITEMSTATES"/>
+    <element name="TIS_NORMAL"/>
+    <element name="TIS_HOT"/>
+    <element name="TIS_SELECTED"/>
+    <element name="TIS_DISABLED"/>
+    <element name="TIS_FOCUSED"/>
+    <element name="TABITEMLEFTEDGESTATES"/>
+    <element name="TILES_NORMAL"/>
+    <element name="TILES_HOT"/>
+    <element name="TILES_SELECTED"/>
+    <element name="TILES_DISABLED"/>
+    <element name="TILES_FOCUSED"/>
+    <element name="TABITEMRIGHTEDGESTATES"/>
+    <element name="TIRES_NORMAL"/>
+    <element name="TIRES_HOT"/>
+    <element name="TIRES_SELECTED"/>
+    <element name="TIRES_DISABLED"/>
+    <element name="TIRES_FOCUSED"/>
+    <element name="TABITEMBOTHEDGESTATES"/>
+    <element name="TIBES_NORMAL"/>
+    <element name="TIBES_HOT"/>
+    <element name="TIBES_SELECTED"/>
+    <element name="TIBES_DISABLED"/>
+    <element name="TIBES_FOCUSED"/>
+    <element name="TOPTABITEMSTATES"/>
+    <element name="TTIS_NORMAL"/>
+    <element name="TTIS_HOT"/>
+    <element name="TTIS_SELECTED"/>
+    <element name="TTIS_DISABLED"/>
+    <element name="TTIS_FOCUSED"/>
+    <element name="TOPTABITEMLEFTEDGESTATES"/>
+    <element name="TTILES_NORMAL"/>
+    <element name="TTILES_HOT"/>
+    <element name="TTILES_SELECTED"/>
+    <element name="TTILES_DISABLED"/>
+    <element name="TTILES_FOCUSED"/>
+    <element name="TOPTABITEMRIGHTEDGESTATES"/>
+    <element name="TTIRES_NORMAL"/>
+    <element name="TTIRES_HOT"/>
+    <element name="TTIRES_SELECTED"/>
+    <element name="TTIRES_DISABLED"/>
+    <element name="TTIRES_FOCUSED"/>
+    <element name="TOPTABITEMBOTHEDGESTATES"/>
+    <element name="TTIBES_NORMAL"/>
+    <element name="TTIBES_HOT"/>
+    <element name="TTIBES_SELECTED"/>
+    <element name="TTIBES_DISABLED"/>
+    <element name="TTIBES_FOCUSED"/>
+    <element name="VSCLASS_TASKDIALOGSTYLE"/>
+    <element name="VSCLASS_TASKDIALOG"/>
+    <element name="TASKDIALOGPARTS"/>
+    <element name="TDLG_PRIMARYPANEL"/>
+    <element name="TDLG_MAININSTRUCTIONPANE"/>
+    <element name="TDLG_MAINICON"/>
+    <element name="TDLG_CONTENTPANE"/>
+    <element name="TDLG_CONTENTICON"/>
+    <element name="TDLG_EXPANDEDCONTENT"/>
+    <element name="TDLG_COMMANDLINKPANE"/>
+    <element name="TDLG_SECONDARYPANEL"/>
+    <element name="TDLG_CONTROLPANE"/>
+    <element name="TDLG_BUTTONSECTION"/>
+    <element name="TDLG_BUTTONWRAPPER"/>
+    <element name="TDLG_EXPANDOTEXT"/>
+    <element name="TDLG_EXPANDOBUTTON"/>
+    <element name="TDLG_VERIFICATIONTEXT"/>
+    <element name="TDLG_FOOTNOTEPANE"/>
+    <element name="TDLG_FOOTNOTEAREA"/>
+    <element name="TDLG_FOOTNOTESEPARATOR"/>
+    <element name="TDLG_EXPANDEDFOOTERAREA"/>
+    <element name="TDLG_PROGRESSBAR"/>
+    <element name="TDLG_IMAGEALIGNMENT"/>
+    <element name="TDLG_RADIOBUTTONPANE"/>
+    <element name="TASKDIALOGSTYLEPARTS"/>
+    <element name="CONTENTPANESTATES"/>
+    <element name="TDLGCPS_STANDALONE"/>
+    <element name="EXPANDOBUTTONSTATES"/>
+    <element name="TDLGEBS_NORMAL"/>
+    <element name="TDLGEBS_HOVER"/>
+    <element name="TDLGEBS_PRESSED"/>
+    <element name="TDLGEBS_EXPANDEDNORMAL"/>
+    <element name="TDLGEBS_EXPANDEDHOVER"/>
+    <element name="TDLGEBS_EXPANDEDPRESSED"/>
+    <element name="VSCLASS_TEXTSTYLE"/>
+    <element name="TEXTSTYLEPARTS"/>
+    <element name="TEXT_MAININSTRUCTION"/>
+    <element name="TEXT_INSTRUCTION"/>
+    <element name="TEXT_BODYTITLE"/>
+    <element name="TEXT_BODYTEXT"/>
+    <element name="TEXT_SECONDARYTEXT"/>
+    <element name="TEXT_HYPERLINKTEXT"/>
+    <element name="TEXT_EXPANDED"/>
+    <element name="TEXT_LABEL"/>
+    <element name="TEXT_CONTROLLABEL"/>
+    <element name="HYPERLINKTEXTSTATES"/>
+    <element name="TS_HYPERLINK_NORMAL"/>
+    <element name="TS_HYPERLINK_HOT"/>
+    <element name="TS_HYPERLINK_PRESSED"/>
+    <element name="TS_HYPERLINK_DISABLED"/>
+    <element name="CONTROLLABELSTATES"/>
+    <element name="TS_CONTROLLABEL_NORMAL"/>
+    <element name="TS_CONTROLLABEL_DISABLED"/>
+    <element name="VSCLASS_TOOLBARSTYLE"/>
+    <element name="VSCLASS_TOOLBAR"/>
+    <element name="TOOLBARPARTS"/>
+    <element name="TP_BUTTON"/>
+    <element name="TOOLBARSTYLEPARTS"/>
+    <element name="TOOLBARSTYLESTATES"/>
+    <element name="TS_NORMAL"/>
+    <element name="TS_HOT"/>
+    <element name="TS_PRESSED"/>
+    <element name="TS_DISABLED"/>
+    <element name="TS_CHECKED"/>
+    <element name="TS_HOTCHECKED"/>
+    <element name="TS_NEARHOT"/>
+    <element name="TS_OTHERSIDEHOT"/>
+    <element name="VSCLASS_TOOLTIPSTYLE"/>
+    <element name="VSCLASS_TOOLTIP"/>
+    <element name="TOOLTIPPARTS"/>
+    <element name="TTP_STANDARD"/>
+    <element name="TTP_STANDARDTITLE"/>
+    <element name="TTP_BALLOON"/>
+    <element name="TTP_BALLOONTITLE"/>
+    <element name="TTP_CLOSE"/>
+    <element name="TTP_BALLOONSTEM"/>
+    <element name="TTP_WRENCH"/>
+    <element name="TOOLTIPSTYLEPARTS"/>
+    <element name="CLOSESTATES"/>
+    <element name="TTCS_NORMAL"/>
+    <element name="TTCS_HOT"/>
+    <element name="TTCS_PRESSED"/>
+    <element name="STANDARDSTATES"/>
+    <element name="TTSS_NORMAL"/>
+    <element name="TTSS_LINK"/>
+    <element name="BALLOONSTATES"/>
+    <element name="TTBS_NORMAL"/>
+    <element name="TTBS_LINK"/>
+    <element name="BALLOONSTEMSTATES"/>
+    <element name="TTBSS_POINTINGUPLEFTWALL"/>
+    <element name="TTBSS_POINTINGUPCENTERED"/>
+    <element name="TTBSS_POINTINGUPRIGHTWALL"/>
+    <element name="TTBSS_POINTINGDOWNRIGHTWALL"/>
+    <element name="TTBSS_POINTINGDOWNCENTERED"/>
+    <element name="TTBSS_POINTINGDOWNLEFTWALL"/>
+    <element name="WRENCHSTATES"/>
+    <element name="TTWS_NORMAL"/>
+    <element name="TTWS_HOT"/>
+    <element name="TTWS_PRESSED"/>
+    <element name="VSCLASS_TRACKBARSTYLE"/>
+    <element name="VSCLASS_TRACKBAR"/>
+    <element name="TRACKBARPARTS"/>
+    <element name="TKP_TRACK"/>
+    <element name="TKP_TRACKVERT"/>
+    <element name="TKP_THUMB"/>
+    <element name="TKP_THUMBBOTTOM"/>
+    <element name="TKP_THUMBTOP"/>
+    <element name="TKP_THUMBVERT"/>
+    <element name="TKP_THUMBLEFT"/>
+    <element name="TKP_THUMBRIGHT"/>
+    <element name="TKP_TICS"/>
+    <element name="TKP_TICSVERT"/>
+    <element name="TRACKBARSTYLEPARTS"/>
+    <element name="TRACKBARSTYLESTATES"/>
+    <element name="TKS_NORMAL"/>
+    <element name="TRACKSTATES"/>
+    <element name="TRS_NORMAL"/>
+    <element name="TRACKVERTSTATES"/>
+    <element name="TRVS_NORMAL"/>
+    <element name="THUMBSTATES"/>
+    <element name="TUS_NORMAL"/>
+    <element name="TUS_HOT"/>
+    <element name="TUS_PRESSED"/>
+    <element name="TUS_FOCUSED"/>
+    <element name="TUS_DISABLED"/>
+    <element name="THUMBBOTTOMSTATES"/>
+    <element name="TUBS_NORMAL"/>
+    <element name="TUBS_HOT"/>
+    <element name="TUBS_PRESSED"/>
+    <element name="TUBS_FOCUSED"/>
+    <element name="TUBS_DISABLED"/>
+    <element name="THUMBTOPSTATES"/>
+    <element name="TUTS_NORMAL"/>
+    <element name="TUTS_HOT"/>
+    <element name="TUTS_PRESSED"/>
+    <element name="TUTS_FOCUSED"/>
+    <element name="TUTS_DISABLED"/>
+    <element name="THUMBVERTSTATES"/>
+    <element name="TUVS_NORMAL"/>
+    <element name="TUVS_HOT"/>
+    <element name="TUVS_PRESSED"/>
+    <element name="TUVS_FOCUSED"/>
+    <element name="TUVS_DISABLED"/>
+    <element name="THUMBLEFTSTATES"/>
+    <element name="TUVLS_NORMAL"/>
+    <element name="TUVLS_HOT"/>
+    <element name="TUVLS_PRESSED"/>
+    <element name="TUVLS_FOCUSED"/>
+    <element name="TUVLS_DISABLED"/>
+    <element name="THUMBRIGHTSTATES"/>
+    <element name="TUVRS_NORMAL"/>
+    <element name="TUVRS_HOT"/>
+    <element name="TUVRS_PRESSED"/>
+    <element name="TUVRS_FOCUSED"/>
+    <element name="TUVRS_DISABLED"/>
+    <element name="TICSSTATES"/>
+    <element name="TSS_NORMAL"/>
+    <element name="TICSVERTSTATES"/>
+    <element name="TSVS_NORMAL"/>
+    <element name="VSCLASS_TREEVIEWSTYLE"/>
+    <element name="VSCLASS_TREEVIEW"/>
+    <element name="TREEVIEWPARTS"/>
+    <element name="TVP_TREEITEM"/>
+    <element name="TVP_GLYPH"/>
+    <element name="TVP_BRANCH"/>
+    <element name="TVP_HOTGLYPH"/>
+    <element name="TREEVIEWSTYLEPARTS"/>
+    <element name="TREEITEMSTATES"/>
+    <element name="TREIS_NORMAL"/>
+    <element name="TREIS_HOT"/>
+    <element name="TREIS_SELECTED"/>
+    <element name="TREIS_DISABLED"/>
+    <element name="TREIS_SELECTEDNOTFOCUS"/>
+    <element name="TREIS_HOTSELECTED"/>
+    <element name="GLYPHSTATES"/>
+    <element name="GLPS_CLOSED"/>
+    <element name="GLPS_OPENED"/>
+    <element name="HOTGLYPHSTATES"/>
+    <element name="HGLPS_CLOSED"/>
+    <element name="HGLPS_OPENED"/>
+    <element name="VSCLASS_WINDOWSTYLE"/>
+    <element name="VSCLASS_WINDOW"/>
+    <element name="WINDOWPARTS"/>
+    <element name="WP_CAPTION"/>
+    <element name="WP_SMALLCAPTION"/>
+    <element name="WP_MINCAPTION"/>
+    <element name="WP_SMALLMINCAPTION"/>
+    <element name="WP_MAXCAPTION"/>
+    <element name="WP_SMALLMAXCAPTION"/>
+    <element name="WP_FRAMELEFT"/>
+    <element name="WP_FRAMERIGHT"/>
+    <element name="WP_FRAMEBOTTOM"/>
+    <element name="WP_SMALLFRAMELEFT"/>
+    <element name="WP_SMALLFRAMERIGHT"/>
+    <element name="WP_SMALLFRAMEBOTTOM"/>
+    <element name="WP_SYSBUTTON"/>
+    <element name="WP_MDISYSBUTTON"/>
+    <element name="WP_MINBUTTON"/>
+    <element name="WP_MDIMINBUTTON"/>
+    <element name="WP_MAXBUTTON"/>
+    <element name="WP_CLOSEBUTTON"/>
+    <element name="WP_SMALLCLOSEBUTTON"/>
+    <element name="WP_MDICLOSEBUTTON"/>
+    <element name="WP_RESTOREBUTTON"/>
+    <element name="WP_MDIRESTOREBUTTON"/>
+    <element name="WP_HELPBUTTON"/>
+    <element name="WP_MDIHELPBUTTON"/>
+    <element name="WP_HORZSCROLL"/>
+    <element name="WP_HORZTHUMB"/>
+    <element name="WP_VERTSCROLL"/>
+    <element name="WP_VERTTHUMB"/>
+    <element name="WP_DIALOG"/>
+    <element name="WP_CAPTIONSIZINGTEMPLATE"/>
+    <element name="WP_SMALLCAPTIONSIZINGTEMPLATE"/>
+    <element name="WP_FRAMELEFTSIZINGTEMPLATE"/>
+    <element name="WP_SMALLFRAMELEFTSIZINGTEMPLATE"/>
+    <element name="WP_FRAMERIGHTSIZINGTEMPLATE"/>
+    <element name="WP_SMALLFRAMERIGHTSIZINGTEMPLATE"/>
+    <element name="WP_FRAMEBOTTOMSIZINGTEMPLATE"/>
+    <element name="WP_SMALLFRAMEBOTTOMSIZINGTEMPLATE"/>
+    <element name="WP_FRAME"/>
+    <element name="WINDOWSTYLEPARTS"/>
+    <element name="FRAMESTATES"/>
+    <element name="FS_ACTIVE"/>
+    <element name="FS_INACTIVE"/>
+    <element name="CAPTIONSTATES"/>
+    <element name="CS_ACTIVE"/>
+    <element name="CS_INACTIVE"/>
+    <element name="CS_DISABLED"/>
+    <element name="MAXCAPTIONSTATES"/>
+    <element name="MXCS_ACTIVE"/>
+    <element name="MXCS_INACTIVE"/>
+    <element name="MXCS_DISABLED"/>
+    <element name="MINCAPTIONSTATES"/>
+    <element name="MNCS_ACTIVE"/>
+    <element name="MNCS_INACTIVE"/>
+    <element name="MNCS_DISABLED"/>
+    <element name="HORZSCROLLSTATES"/>
+    <element name="HSS_NORMAL"/>
+    <element name="HSS_HOT"/>
+    <element name="HSS_PUSHED"/>
+    <element name="HSS_DISABLED"/>
+    <element name="HORZTHUMBSTATES"/>
+    <element name="HTS_NORMAL"/>
+    <element name="HTS_HOT"/>
+    <element name="HTS_PUSHED"/>
+    <element name="HTS_DISABLED"/>
+    <element name="VERTSCROLLSTATES"/>
+    <element name="VSS_NORMAL"/>
+    <element name="VSS_HOT"/>
+    <element name="VSS_PUSHED"/>
+    <element name="VSS_DISABLED"/>
+    <element name="VERTTHUMBSTATES"/>
+    <element name="VTS_NORMAL"/>
+    <element name="VTS_HOT"/>
+    <element name="VTS_PUSHED"/>
+    <element name="VTS_DISABLED"/>
+    <element name="SYSBUTTONSTATES"/>
+    <element name="SBS_NORMAL"/>
+    <element name="SBS_HOT"/>
+    <element name="SBS_PUSHED"/>
+    <element name="SBS_DISABLED"/>
+    <element name="MINBUTTONSTATES"/>
+    <element name="MINBS_NORMAL"/>
+    <element name="MINBS_HOT"/>
+    <element name="MINBS_PUSHED"/>
+    <element name="MINBS_DISABLED"/>
+    <element name="MAXBUTTONSTATES"/>
+    <element name="MAXBS_NORMAL"/>
+    <element name="MAXBS_HOT"/>
+    <element name="MAXBS_PUSHED"/>
+    <element name="MAXBS_DISABLED"/>
+    <element name="RESTOREBUTTONSTATES"/>
+    <element name="RBS_NORMAL"/>
+    <element name="RBS_HOT"/>
+    <element name="RBS_PUSHED"/>
+    <element name="RBS_DISABLED"/>
+    <element name="HELPBUTTONSTATES"/>
+    <element name="HBS_NORMAL"/>
+    <element name="HBS_HOT"/>
+    <element name="HBS_PUSHED"/>
+    <element name="HBS_DISABLED"/>
+    <element name="CLOSEBUTTONSTATES"/>
+    <element name="CBS_NORMAL"/>
+    <element name="CBS_HOT"/>
+    <element name="CBS_PUSHED"/>
+    <element name="CBS_DISABLED"/>
+    <element name="BG"/>
+    <element name="BT_IMAGEFILE"/>
+    <element name="BT_BORDERFILL"/>
+    <element name="BT_NONE"/>
+    <element name="IMAGELAYOUT"/>
+    <element name="IL_VERTICAL"/>
+    <element name="IL_HORIZONTAL"/>
+    <element name="BORDER"/>
+    <element name="BT_RECT"/>
+    <element name="BT_ROUNDRECT"/>
+    <element name="BT_ELLIPSE"/>
+    <element name="FILL"/>
+    <element name="FT_SOLID"/>
+    <element name="FT_VERTGRADIENT"/>
+    <element name="FT_HORZGRADIENT"/>
+    <element name="FT_RADIALGRADIENT"/>
+    <element name="FT_TILEIMAGE"/>
+    <element name="SIZING"/>
+    <element name="ST_TRUESIZE"/>
+    <element name="ST_STRETCH"/>
+    <element name="ST_TILE"/>
+    <element name="HALIGN"/>
+    <element name="HA_LEFT"/>
+    <element name="HA_CENTER"/>
+    <element name="HA_RIGHT"/>
+    <element name="CONTENTALIGNMENT"/>
+    <element name="CA_LEFT"/>
+    <element name="CA_CENTER"/>
+    <element name="CA_RIGHT"/>
+    <element name="VALIGN"/>
+    <element name="VA_TOP"/>
+    <element name="VA_CENTER"/>
+    <element name="VA_BOTTOM"/>
+    <element name="OFFSET"/>
+    <element name="OT_TOPLEFT"/>
+    <element name="OT_TOPRIGHT"/>
+    <element name="OT_TOPMIDDLE"/>
+    <element name="OT_BOTTOMLEFT"/>
+    <element name="OT_BOTTOMRIGHT"/>
+    <element name="OT_BOTTOMMIDDLE"/>
+    <element name="OT_MIDDLELEFT"/>
+    <element name="OT_MIDDLERIGHT"/>
+    <element name="OT_LEFTOFCAPTION"/>
+    <element name="OT_RIGHTOFCAPTION"/>
+    <element name="OT_LEFTOFLASTBUTTON"/>
+    <element name="OT_RIGHTOFLASTBUTTON"/>
+    <element name="OT_ABOVELASTBUTTON"/>
+    <element name="OT_BELOWLASTBUTTON"/>
+    <element name="ICONEFFECT"/>
+    <element name="ICE_NONE"/>
+    <element name="ICE_GLOW"/>
+    <element name="ICE_SHADOW"/>
+    <element name="ICE_PULSE"/>
+    <element name="ICE_ALPHA"/>
+    <element name="TEXTSHADOW"/>
+    <element name="TST_NONE"/>
+    <element name="TST_SINGLE"/>
+    <element name="TST_CONTINUOUS"/>
+    <element name="GLYPH"/>
+    <element name="GT_NONE"/>
+    <element name="GT_IMAGEGLYPH"/>
+    <element name="GT_FONTGLYPH"/>
+    <element name="IMAGESELECT"/>
+    <element name="IST_NONE"/>
+    <element name="IST_SIZE"/>
+    <element name="IST_DPI"/>
+    <element name="TRUESIZESCALING"/>
+    <element name="TSST_NONE"/>
+    <element name="TSST_SIZE"/>
+    <element name="TSST_DPI"/>
+    <element name="GLYPHFONTSIZING"/>
+    <element name="GFST_NONE"/>
+    <element name="GFST_SIZE"/>
+    <element name="GFST_DPI"/>
+    <element name="TMT_RESERVEDLOW"/>
+    <element name="TMT_RESERVEDHIGH"/>
+    <element name="TMT_DIBDATA"/>
+    <element name="TMT_GLYPHDIBDATA"/>
+    <element name="TMT_ENUM"/>
+    <element name="TMT_STRING"/>
+    <element name="TMT_INT"/>
+    <element name="TMT_BOOL"/>
+    <element name="TMT_COLOR"/>
+    <element name="TMT_MARGINS"/>
+    <element name="TMT_FILENAME"/>
+    <element name="TMT_SIZE"/>
+    <element name="TMT_POSITION"/>
+    <element name="TMT_RECT"/>
+    <element name="TMT_FONT"/>
+    <element name="TMT_INTLIST"/>
+    <element name="TMT_HBITMAP"/>
+    <element name="TMT_DISKSTREAM"/>
+    <element name="TMT_STREAM"/>
+    <element name="TMT_BITMAPREF"/>
+    <element name="TMT_COLORSCHEMES"/>
+    <element name="TMT_SIZES"/>
+    <element name="TMT_CHARSET"/>
+    <element name="TMT_NAME"/>
+    <element name="TMT_DISPLAYNAME"/>
+    <element name="TMT_TOOLTIP"/>
+    <element name="TMT_COMPANY"/>
+    <element name="TMT_AUTHOR"/>
+    <element name="TMT_COPYRIGHT"/>
+    <element name="TMT_URL"/>
+    <element name="TMT_VERSION"/>
+    <element name="TMT_DESCRIPTION"/>
+    <element name="TMT_FIRST_RCSTRING_NAME"/>
+    <element name="TMT_LAST_RCSTRING_NAME"/>
+    <element name="TMT_CAPTIONFONT"/>
+    <element name="TMT_SMALLCAPTIONFONT"/>
+    <element name="TMT_MENUFONT"/>
+    <element name="TMT_STATUSFONT"/>
+    <element name="TMT_MSGBOXFONT"/>
+    <element name="TMT_ICONTITLEFONT"/>
+    <element name="TMT_HEADING1FONT"/>
+    <element name="TMT_HEADING2FONT"/>
+    <element name="TMT_BODYFONT"/>
+    <element name="TMT_FIRSTFONT"/>
+    <element name="TMT_LASTFONT"/>
+    <element name="TMT_FLATMENUS"/>
+    <element name="TMT_FIRSTBOOL"/>
+    <element name="TMT_LASTBOOL"/>
+    <element name="TMT_SIZINGBORDERWIDTH"/>
+    <element name="TMT_SCROLLBARWIDTH"/>
+    <element name="TMT_SCROLLBARHEIGHT"/>
+    <element name="TMT_CAPTIONBARWIDTH"/>
+    <element name="TMT_CAPTIONBARHEIGHT"/>
+    <element name="TMT_SMCAPTIONBARWIDTH"/>
+    <element name="TMT_SMCAPTIONBARHEIGHT"/>
+    <element name="TMT_MENUBARWIDTH"/>
+    <element name="TMT_MENUBARHEIGHT"/>
+    <element name="TMT_PADDEDBORDERWIDTH"/>
+    <element name="TMT_FIRSTSIZE"/>
+    <element name="TMT_LASTSIZE"/>
+    <element name="TMT_MINCOLORDEPTH"/>
+    <element name="TMT_FIRSTINT"/>
+    <element name="TMT_LASTINT"/>
+    <element name="TMT_CSSNAME"/>
+    <element name="TMT_XMLNAME"/>
+    <element name="TMT_LASTUPDATED"/>
+    <element name="TMT_ALIAS"/>
+    <element name="TMT_FIRSTSTRING"/>
+    <element name="TMT_LASTSTRING"/>
+    <element name="TMT_SCROLLBAR"/>
+    <element name="TMT_BACKGROUND"/>
+    <element name="TMT_ACTIVECAPTION"/>
+    <element name="TMT_INACTIVECAPTION"/>
+    <element name="TMT_MENU"/>
+    <element name="TMT_WINDOW"/>
+    <element name="TMT_WINDOWFRAME"/>
+    <element name="TMT_MENUTEXT"/>
+    <element name="TMT_WINDOWTEXT"/>
+    <element name="TMT_CAPTIONTEXT"/>
+    <element name="TMT_ACTIVEBORDER"/>
+    <element name="TMT_INACTIVEBORDER"/>
+    <element name="TMT_APPWORKSPACE"/>
+    <element name="TMT_HIGHLIGHT"/>
+    <element name="TMT_HIGHLIGHTTEXT"/>
+    <element name="TMT_BTNFACE"/>
+    <element name="TMT_BTNSHADOW"/>
+    <element name="TMT_GRAYTEXT"/>
+    <element name="TMT_BTNTEXT"/>
+    <element name="TMT_INACTIVECAPTIONTEXT"/>
+    <element name="TMT_BTNHIGHLIGHT"/>
+    <element name="TMT_DKSHADOW3D"/>
+    <element name="TMT_LIGHT3D"/>
+    <element name="TMT_INFOTEXT"/>
+    <element name="TMT_INFOBK"/>
+    <element name="TMT_BUTTONALTERNATEFACE"/>
+    <element name="TMT_HOTTRACKING"/>
+    <element name="TMT_GRADIENTACTIVECAPTION"/>
+    <element name="TMT_GRADIENTINACTIVECAPTION"/>
+    <element name="TMT_MENUHILIGHT"/>
+    <element name="TMT_MENUBAR"/>
+    <element name="TMT_FIRSTCOLOR"/>
+    <element name="TMT_LASTCOLOR"/>
+    <element name="TMT_FROMHUE1"/>
+    <element name="TMT_FROMHUE2"/>
+    <element name="TMT_FROMHUE3"/>
+    <element name="TMT_FROMHUE4"/>
+    <element name="TMT_FROMHUE5"/>
+    <element name="TMT_TOHUE1"/>
+    <element name="TMT_TOHUE2"/>
+    <element name="TMT_TOHUE3"/>
+    <element name="TMT_TOHUE4"/>
+    <element name="TMT_TOHUE5"/>
+    <element name="TMT_FROMCOLOR1"/>
+    <element name="TMT_FROMCOLOR2"/>
+    <element name="TMT_FROMCOLOR3"/>
+    <element name="TMT_FROMCOLOR4"/>
+    <element name="TMT_FROMCOLOR5"/>
+    <element name="TMT_TOCOLOR1"/>
+    <element name="TMT_TOCOLOR2"/>
+    <element name="TMT_TOCOLOR3"/>
+    <element name="TMT_TOCOLOR4"/>
+    <element name="TMT_TOCOLOR5"/>
+    <element name="TMT_TRANSPARENT"/>
+    <element name="TMT_AUTOSIZE"/>
+    <element name="TMT_BORDERONLY"/>
+    <element name="TMT_COMPOSITED"/>
+    <element name="TMT_BGFILL"/>
+    <element name="TMT_GLYPHTRANSPARENT"/>
+    <element name="TMT_GLYPHONLY"/>
+    <element name="TMT_ALWAYSSHOWSIZINGBAR"/>
+    <element name="TMT_MIRRORIMAGE"/>
+    <element name="TMT_UNIFORMSIZING"/>
+    <element name="TMT_INTEGRALSIZING"/>
+    <element name="TMT_SOURCEGROW"/>
+    <element name="TMT_SOURCESHRINK"/>
+    <element name="TMT_DRAWBORDERS"/>
+    <element name="TMT_NOETCHEDEFFECT"/>
+    <element name="TMT_TEXTAPPLYOVERLAY"/>
+    <element name="TMT_TEXTGLOW"/>
+    <element name="TMT_TEXTITALIC"/>
+    <element name="TMT_COMPOSITEDOPAQUE"/>
+    <element name="TMT_LOCALIZEDMIRRORIMAGE"/>
+    <element name="TMT_IMAGECOUNT"/>
+    <element name="TMT_ALPHALEVEL"/>
+    <element name="TMT_BORDERSIZE"/>
+    <element name="TMT_ROUNDCORNERWIDTH"/>
+    <element name="TMT_ROUNDCORNERHEIGHT"/>
+    <element name="TMT_GRADIENTRATIO1"/>
+    <element name="TMT_GRADIENTRATIO2"/>
+    <element name="TMT_GRADIENTRATIO3"/>
+    <element name="TMT_GRADIENTRATIO4"/>
+    <element name="TMT_GRADIENTRATIO5"/>
+    <element name="TMT_PROGRESSCHUNKSIZE"/>
+    <element name="TMT_PROGRESSSPACESIZE"/>
+    <element name="TMT_SATURATION"/>
+    <element name="TMT_TEXTBORDERSIZE"/>
+    <element name="TMT_ALPHATHRESHOLD"/>
+    <element name="TMT_WIDTH"/>
+    <element name="TMT_HEIGHT"/>
+    <element name="TMT_GLYPHINDEX"/>
+    <element name="TMT_TRUESIZESTRETCHMARK"/>
+    <element name="TMT_MINDPI1"/>
+    <element name="TMT_MINDPI2"/>
+    <element name="TMT_MINDPI3"/>
+    <element name="TMT_MINDPI4"/>
+    <element name="TMT_MINDPI5"/>
+    <element name="TMT_TEXTGLOWSIZE"/>
+    <element name="TMT_FRAMESPERSECOND"/>
+    <element name="TMT_PIXELSPERFRAME"/>
+    <element name="TMT_ANIMATIONDELAY"/>
+    <element name="TMT_GLOWINTENSITY"/>
+    <element name="TMT_OPACITY"/>
+    <element name="TMT_COLORIZATIONCOLOR"/>
+    <element name="TMT_COLORIZATIONOPACITY"/>
+    <element name="TMT_GLYPHFONT"/>
+    <element name="TMT_IMAGEFILE"/>
+    <element name="TMT_IMAGEFILE1"/>
+    <element name="TMT_IMAGEFILE2"/>
+    <element name="TMT_IMAGEFILE3"/>
+    <element name="TMT_IMAGEFILE4"/>
+    <element name="TMT_IMAGEFILE5"/>
+    <element name="TMT_GLYPHIMAGEFILE"/>
+    <element name="TMT_TEXT"/>
+    <element name="TMT_CLASSICVALUE"/>
+    <element name="TMT_OFFSET"/>
+    <element name="TMT_TEXTSHADOWOFFSET"/>
+    <element name="TMT_MINSIZE"/>
+    <element name="TMT_MINSIZE1"/>
+    <element name="TMT_MINSIZE2"/>
+    <element name="TMT_MINSIZE3"/>
+    <element name="TMT_MINSIZE4"/>
+    <element name="TMT_MINSIZE5"/>
+    <element name="TMT_NORMALSIZE"/>
+    <element name="TMT_SIZINGMARGINS"/>
+    <element name="TMT_CONTENTMARGINS"/>
+    <element name="TMT_CAPTIONMARGINS"/>
+    <element name="TMT_BORDERCOLOR"/>
+    <element name="TMT_FILLCOLOR"/>
+    <element name="TMT_TEXTCOLOR"/>
+    <element name="TMT_EDGELIGHTCOLOR"/>
+    <element name="TMT_EDGEHIGHLIGHTCOLOR"/>
+    <element name="TMT_EDGESHADOWCOLOR"/>
+    <element name="TMT_EDGEDKSHADOWCOLOR"/>
+    <element name="TMT_EDGEFILLCOLOR"/>
+    <element name="TMT_TRANSPARENTCOLOR"/>
+    <element name="TMT_GRADIENTCOLOR1"/>
+    <element name="TMT_GRADIENTCOLOR2"/>
+    <element name="TMT_GRADIENTCOLOR3"/>
+    <element name="TMT_GRADIENTCOLOR4"/>
+    <element name="TMT_GRADIENTCOLOR5"/>
+    <element name="TMT_SHADOWCOLOR"/>
+    <element name="TMT_GLOWCOLOR"/>
+    <element name="TMT_TEXTBORDERCOLOR"/>
+    <element name="TMT_TEXTSHADOWCOLOR"/>
+    <element name="TMT_GLYPHTEXTCOLOR"/>
+    <element name="TMT_GLYPHTRANSPARENTCOLOR"/>
+    <element name="TMT_FILLCOLORHINT"/>
+    <element name="TMT_BORDERCOLORHINT"/>
+    <element name="TMT_ACCENTCOLORHINT"/>
+    <element name="TMT_TEXTCOLORHINT"/>
+    <element name="TMT_HEADING1TEXTCOLOR"/>
+    <element name="TMT_HEADING2TEXTCOLOR"/>
+    <element name="TMT_BODYTEXTCOLOR"/>
+    <element name="TMT_BGTYPE"/>
+    <element name="TMT_BORDERTYPE"/>
+    <element name="TMT_FILLTYPE"/>
+    <element name="TMT_SIZINGTMT_HALIGN"/>
+    <element name="TMT_CONTENTALIGNMENT"/>
+    <element name="TMT_VALIGN"/>
+    <element name="TMT_OFFSETTYPE"/>
+    <element name="TMT_ICONEFFECT"/>
+    <element name="TMT_TEXTSHADOWTYPE"/>
+    <element name="TMT_IMAGELAYOUT"/>
+    <element name="TMT_GLYPHTYPE"/>
+    <element name="TMT_IMAGESELECTYPE"/>
+    <element name="TTMT_GLYPHFONTSIZINGTYPE"/>
+    <element name="TMT_TRUESIZESCALINGTYPE"/>
+    <element name="TMT_USERPICTURE"/>
+    <element name="TMT_DEFAULTPANESIZE"/>
+    <element name="TMT_BLENDCOLOR"/>
+    <element name="TMT_CUSTOMSPLITRECT"/>
+    <element name="TMT_ANIMATIONBUTTONRECT"/>
+    <element name="TMT_ANIMATIONDURATION"/>
+    <element name="TMT_TRANSITIONDURATIONS"/>
+    <element name="TMT_SCALEDBACKGROUND"/>
+    <element name="TMT_ATLASIMAGE"/>
+    <element name="TMT_ATLASINPUTIMAGE"/>
+    <element name="TMT_ATLASRECT"/>
+    <element name="VSCLASS_LINK"/>
+    <element name="LINKPARTS"/>
+    <element name="LP_HYPERLINK"/>
+    <element name="HYPERLINKSTATES"/>
+    <element name="HLS_NORMALTEXT"/>
+    <element name="HLS_LINKTEXT"/>
+    <element name="VSCLASS_EMPTYMARKUP"/>
+    <element name="EMPTYMARKUPPARTS"/>
+    <element name="EMP_MARKUPTEXT"/>
+    <element name="MARKUPTEXTSTATES"/>
+    <element name="EMT_NORMALTEXT"/>
+    <element name="EMT_LINKTEXT"/>
+    <element name="VSCLASS_STATIC"/>
+    <element name="STATICPARTS"/>
+    <element name="STAT_TEXT"/>
+    <element name="VSCLASS_PAGE"/>
+    <element name="PAGEPARTS"/>
+    <element name="PGRP_UP"/>
+    <element name="PGRP_DOWN"/>
+    <element name="PGRP_UPHORZ"/>
+    <element name="PGRP_DOWNHORZ"/>
+    <element name="VSCLASS_MONTHCAL"/>
+    <element name="MONTHCALPARTS"/>
+    <element name="MC_BACKGROUND"/>
+    <element name="MC_BORDERS"/>
+    <element name="MC_GRIDBACKGROUND"/>
+    <element name="MC_COLHEADERSPLITTER"/>
+    <element name="MC_GRIDCELLBACKGROUND"/>
+    <element name="MC_GRIDCELL"/>
+    <element name="MC_GRIDCELLUPPER"/>
+    <element name="MC_TRAILINGGRIDCELL"/>
+    <element name="MC_TRAILINGGRIDCELLUPPER"/>
+    <element name="MC_NAVNEXT"/>
+    <element name="MC_NAVPREV"/>
+    <element name="GRIDCELLBACKGROUNDSTATES"/>
+    <element name="MCGCB_SELECTED"/>
+    <element name="MCGCB_HOT"/>
+    <element name="MCGCB_SELECTEDHOT"/>
+    <element name="MCGCB_SELECTEDNOTFOCUSED"/>
+    <element name="MCGCB_TODAY"/>
+    <element name="GRIDCELLSTATES"/>
+    <element name="MCGC_HOT"/>
+    <element name="MCGC_HASSTATE"/>
+    <element name="MCGC_HASSTATEHOT"/>
+    <element name="MCGC_TODAY"/>
+    <element name="GRIDCELLUPPERSTATES"/>
+    <element name="MCGCU_HOT"/>
+    <element name="MCGCU_HASSTATE"/>
+    <element name="MCGCU_HASSTATEHOT"/>
+    <element name="TRAILINGGRIDCELLSTATES"/>
+    <element name="MCTGC_HOT"/>
+    <element name="MCTGC_HASSTATE"/>
+    <element name="MCTGC_HASSTATEHOT"/>
+    <element name="MCTGC_TODAY"/>
+    <element name="TRAILINGGRIDCELLUPPERSTATES"/>
+    <element name="MCTGCU_HOT"/>
+    <element name="MCTGCU_HASSTATE"/>
+    <element name="MCTGCU_HASSTATEHOT"/>
+    <element name="NAVNEXTSTATES"/>
+    <element name="MCNN_NORMAL"/>
+    <element name="MCNN_HOT"/>
+    <element name="MCNN_PRESSED"/>
+    <element name="MCNN_DISABLED"/>
+    <element name="NAVPREVSTATES"/>
+    <element name="MCNP_NORMAL"/>
+    <element name="MCNP_HOT"/>
+    <element name="MCNP_PRESSED"/>
+    <element name="MCNP_DISABLED"/>
+    <element name="VSCLASS_CLOCK"/>
+    <element name="CLOCKPARTS"/>
+    <element name="CLP_TIME"/>
+    <element name="CLOCKSTATES"/>
+    <element name="CLS_NORMAL"/>
+    <element name="CLS_HOT"/>
+    <element name="CLS_PRESSED"/>
+    <element name="VSCLASS_TRAYNOTIFY"/>
+    <element name="TRAYNOTIFYPARTS"/>
+    <element name="TNP_BACKGROUND"/>
+    <element name="TNP_ANIMBACKGROUND"/>
+    <element name="VSCLASS_TASKBAR"/>
+    <element name="TASKBARPARTS"/>
+    <element name="TBP_BACKGROUNDBOTTOM"/>
+    <element name="TBP_BACKGROUNDRIGHT"/>
+    <element name="TBP_BACKGROUNDTOP"/>
+    <element name="TBP_BACKGROUNDLEFT"/>
+    <element name="TBP_SIZINGBARBOTTOM"/>
+    <element name="TBP_SIZINGBARRIGHT"/>
+    <element name="TBP_SIZINGBARTOP"/>
+    <element name="TBP_SIZINGBARLEFT"/>
+    <element name="VSCLASS_TASKBAND"/>
+    <element name="TASKBANDPARTS"/>
+    <element name="TDP_GROUPCOUNT"/>
+    <element name="TDP_FLASHBUTTON"/>
+    <element name="TDP_FLASHBUTTONGROUPMENU"/>
+    <element name="VSCLASS_STARTPANEL"/>
+    <element name="STARTPANELPARTS"/>
+    <element name="SPP_USERPANE"/>
+    <element name="SPP_MOREPROGRAMS"/>
+    <element name="SPP_MOREPROGRAMSARROW"/>
+    <element name="SPP_PROGLIST"/>
+    <element name="SPP_PROGLISTSEPARATOR"/>
+    <element name="SPP_PLACESLIST"/>
+    <element name="SPP_PLACESLISTSEPARATOR"/>
+    <element name="SPP_LOGOFF"/>
+    <element name="SPP_LOGOFFBUTTONS"/>
+    <element name="SPP_USERPICTURE"/>
+    <element name="SPP_PREVIEW"/>
+    <element name="SPP_MOREPROGRAMSTAB"/>
+    <element name="SPP_NSCHOST"/>
+    <element name="SPP_SOFTWAREEXPLORER"/>
+    <element name="SPP_OPENBOX"/>
+    <element name="SPP_SEARCHVIEW"/>
+    <element name="SPP_MOREPROGRAMSARROWBACK"/>
+    <element name="SPP_TOPMATCH"/>
+    <element name="SPP_LOGOFFSPLITBUTTONDROPDOWN"/>
+    <element name="MOREPROGRAMSTABSTATES"/>
+    <element name="SPMPT_NORMAL"/>
+    <element name="SPMPT_HOT"/>
+    <element name="SPMPT_SELECTED"/>
+    <element name="SPMPT_DISABLED"/>
+    <element name="SPMPT_FOCUSED"/>
+    <element name="SOFTWAREEXPLORERSTATES"/>
+    <element name="SPSE_NORMAL"/>
+    <element name="SPSE_HOT"/>
+    <element name="SPSE_SELECTED"/>
+    <element name="SPSE_DISABLED"/>
+    <element name="SPSE_FOCUSED"/>
+    <element name="OPENBOXSTATES"/>
+    <element name="SPOB_NORMAL"/>
+    <element name="SPOB_HOT"/>
+    <element name="SPOB_SELECTED"/>
+    <element name="SPOB_DISABLED"/>
+    <element name="SPOB_FOCUSED"/>
+    <element name="MOREPROGRAMSARROWSTATES"/>
+    <element name="SPS_NORMAL"/>
+    <element name="SPS_HOT"/>
+    <element name="SPS_PRESSED"/>
+    <element name="MOREPROGRAMSARROWBACKSTATES"/>
+    <element name="SPSB_NORMAL"/>
+    <element name="SPSB_HOT"/>
+    <element name="SPSB_PRESSED"/>
+    <element name="LOGOFFBUTTONSSTATES"/>
+    <element name="SPLS_NORMAL"/>
+    <element name="SPLS_HOT"/>
+    <element name="SPLS_PRESSED"/>
+    <element name="VSCLASS_MENUBAND"/>
+    <element name="MENUBANDPARTS"/>
+    <element name="MDP_NEWAPPBUTTON"/>
+    <element name="MDP_SEPERATOR"/>
+    <element name="MENUBANDSTATES"/>
+    <element name="MDS_NORMAL"/>
+    <element name="MDS_HOT"/>
+    <element name="MDS_PRESSED"/>
+    <element name="MDS_DISABLED"/>
+    <element name="MDS_CHECKED"/>
+    <element name="MDS_HOTCHECKED"/>
+
+  </module>
+   <!-- TmSchema -->
+  </package>
 </fpdoc-descriptions>

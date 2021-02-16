@@ -2,15 +2,25 @@
 <fpdoc-descriptions>
   <package name="lazutils">
     <!--
-      ====================================================================
-        Laz2_XMLCfg
-      ====================================================================
+    ====================================================================
+      Laz2_XMLCfg
+    ====================================================================
     -->
     <module name="Laz2_XMLCfg">
       <short>
         Implements classes used to read and write configuration data files in XML format
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>laz2_xmlcfg.pas</file> contains classes, type and routines used to read and write configuration data files in XML format.
+        </p>
+        <p>
+          It is copied from the FreePascal Free Component Library (<b>FCL</b>) and adapted to use UTF-8 strings instead of WideStrings.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
+      </descr>
 
       <element name="Classes"/>
       <element name="SysUtils"/>
@@ -1357,11 +1367,9 @@ ACfg.SetValue('list/items/item[2]/value', 'valueC');
   &lt;/items&gt;
 &lt;/list&gt;
           </code>
-
           <remark>
             There is no overloaded variant of the SetValue method which handles writing a TRect data type in the current implementation. You must write the Top, Left, Right, and Bottom coordinates as separate calls to SetValue using the desired path.
           </remark>
-
           <remark>
             Contrary to suggestions in source code comments, the syntax used for path specifiers in TXMLConfig is not fully XPath-compatible.
           </remark>

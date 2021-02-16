@@ -2050,6 +2050,7 @@
       <element name="TPaintBox.Visible" link="#lcl.controls.TControl.Visible"/>
       <element name="TPaintBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
       <element name="TPaintBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TPaintBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TPaintBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
       <element name="TPaintBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
       <element name="TPaintBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -2621,6 +2622,7 @@
       <element name="TImage.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TImage.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
       <element name="TImage.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TImage.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TImage.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
       <element name="TImage.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
       <element name="TImage.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>

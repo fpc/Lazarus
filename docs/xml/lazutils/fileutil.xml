@@ -8,12 +8,17 @@
     -->
     <module name="FileUtil">
       <short>
-        Miscellaneous procedures, functions, types, and classes for manipulating files and file names
+        Miscellaneous routines, types, and classes for manipulating files, file names, and paths
       </short>
-      <descr><p>This unit contains functions, procedures, types, and classes used to maintain compatibility with the FileUtil unit in Delphi. File routines that deal with UTF-8 file names are located in the LazFileUtils unit.
-        </p><p>File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (MacOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b>
-          string operator.
-        </p><p>This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the defauilt system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOSX. Normally these OS's use UTF-8 as system encoding so the WideStringManager is not needed.
+      <descr>
+        <p>
+          <file>fileutils.pas</file> contains routines, types, and classes used to maintain compatibility with the FileUtil unit in Delphi. File routines that deal with UTF-8 file names are located in the <file>LazFileUtils</file> unit.
+        </p>
+        <p>
+          File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (MacOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b> string operator.
+        </p>
+        <p>
+          This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the default system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOSX. Normally these operating systems use UTF-8 as system encoding so the WideStringManager is not needed.
         </p>
       </descr>
 
@@ -33,21 +38,24 @@
 
       <element name="FilenamesCaseSensitive">
         <short>
-          When True, uppercase and lowercase file names are treated as equivalent
+          When True, uppercase and lowercase file names are equivalent
         </short>
         <descr>
-          The value is determined by the presence of the <b>CaseInsensitiveFilenames</b> compiler define.
+          <p>
+            FilenamesCaseSensitive is present when the <b>CaseInsensitiveFilenames</b> compiler define exists.
+          </p>
         </descr>
         <seealso/>
       </element>
 
       <element name="FilenamesLiteral">
         <short>
-          When True, file names can be compared using the <b>=</b>
-          string operator
+          When True, file names can be compared using the <b>=</b> string operator
         </short>
         <descr>
-          The value is determined by the presence of the <b>NotLiteralFilenames</b> compiler define.
+          <p>
+            FilenamesLiteral is present when the <b>NotLiteralFilenames</b> compiler define exists.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -57,27 +65,22 @@
         <descr/>
         <seealso/>
       </element>
+      <element name="ComparePhysicalFilenames.Result">
+        <short/>
+      </element>
       <element name="ComparePhysicalFilenames.Filename1">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <element name="ComparePhysicalFilenames.Filename2">
         <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="ComparePhysicalFilenames.Result">
-        <short/>
-        <descr/>
-        <seealso/>
       </element>
 
       <element name="CompareFilenames">
         <short>
-          <var>CompareFileNames</var>
-          - compares two file names to see whether they are equal
+          <var>CompareFileNames</var> compares two file names to see whether they are equal
         </short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CompareFilenames.Result">
         <short>
@@ -103,23 +106,51 @@
       </element>
 
       <element name="ExtractShortPathNameUTF8">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Gets a short path name using the 8.3 notation from the UTF-8-encoded value</short>
+        <descr>
+          <p>
+            <var>ExtractShortPathNameUTF8</var> is a <var>String</var> function used to get a short path name from the UTF-8-encoded value in FileName. Short path names use the familiar 8.3 notation, where the file name contains a maximum of 8 chararacters, and the optional file extension has a maximum of 3 characters.
+          </p>
+          <p>
+            ExtractShortPathNameUTF8 is similar to the <var>ExtractShortPathName</var> routine in the RTL <file>sysutils</file> unit, but accepts a String value in <var>FileName</var> and returns a String value in the result which uses UTF-8 encoding.The RTL routine uses UnicodeString for both.
+          </p>
+          <p>
+            The WinCE platform does not support the concept of short file names; the return value is set to the value in FileName.
+          </p>
+          <p>
+            For Windows platforms after version 5, the <var>GetShortPathNameW</var> routine is called to get the shortened path name.The UTF-16 value is converted to UTF-8 for use in the return value.
+          </p>
+          <p>
+            For all other platforms, FileName is converted to the system encoding and the ExtractShortPathName routine in the RTL is used to shorten the path name. The value is converted to UTF-8 for use in the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.sysutils.ExtractShortPathName"/>
+        </seealso>
       </element>
       <element name="ExtractShortPathNameUTF8.FileName">
-        <short/>
+        <short>Path name examined in the routine</short>
       </element>
       <element name="ExtractShortPathNameUTF8.Result">
-        <short/>
+        <short>Path name using the familiar 8.3 notation</short>
       </element>
 
       <element name="DeleteDirectory">
         <short>
-          <var>DeleteDirectory</var> - Delete the named directory (or only its contents if <var>OnlyChildren</var> is True)
+          Deletes the specified directory (or only its contents when <var>OnlyChildren</var> is True)
         </short>
+        <descr>
+          <p>
+            Returns <b>True</b> when the specified entries are deleted on the local file system. Returns <b>False</b> when:
+          </p>
+          <ul>
+            <li>DirectoryName is one of the relative path indicatiors like '.' or '..'</li>
+            <li>DirectoryName is an empty string ('')</li>
+            <li>DirectoryName does not exist on the local file system</li>
+            <li>The process does not have permissions needed to delete the directory or its content</li>
+          </ul>
+        </descr>
         <errors>
-          If there was an error, such as trying to removing . or .., or there were insufficient permissions, or the file did not exist, False is returned
         </errors>
       </element>
       <element name="DeleteDirectory.Result">
@@ -133,46 +164,86 @@
       </element>
 
       <element name="ProgramDirectory">
-        <short>
-          <var>ProgramDirectory</var> - returns the directory in which the currently running program resides
-        </short>
+        <short>Gets the directory where the current program is located</short>
+        <descr>
+          <p>
+            <var>ProgramDirectory</var> is a <var>String</var> function which gets the path to the directory where the current program is located.
+          </p>
+            <p>
+              ProgramDirectory calls <var>ParamStrUTF8</var> to get the command line and arguments used to start the current process. If the initial argument (the executable name) does not include a path to the file, the <b>PATH</b> environment variable was used to locate and start the process. <var>SearchFileInPath</var> is called to search each of the directory paths included in the PATH environment variable.
+            </p>
+            <p>
+              ProgramDirectory calls <var>GetPhysicalFilename</var> to resolve a symbolic link in the path to the executable. <var>ExpandFileNameUTF8</var> is called to expand drive letters or relative path references in the return value.
+            </p>
+            <p>
+              The return value is an empty string if the executable was not located on local file system.
+            </p>
+        </descr>
+        <seealso>
+          <link id="SearchFileInPath"/>
+          <link id="#lazutils.lazutf8.ParamStrUTF8">ParamStrUTF8</link>
+          <link id="#lazutils.lazutf8.GetEnvironmentVariableUTF8">GetEnvironmentVariableUTF8</link>
+          <link id="#lazutils.lazfileutils.GetPhysicalFilename">GetPhysicalFilename</link>
+          <link id="#lazutils.lazfileutils.ExpandFileNameUTF8">ExpandFileNameUTF8</link>
+        </seealso>
       </element>
       <element name="ProgramDirectory.Result">
-        <short>
-          Returns the name of the directory in which the current program is found
-        </short>
+        <short>Path to the directory where the current program is located</short>
       </element>
 
       <element name="ProgramDirectoryWithBundle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Gets the directory for the current executable without the MacOS bundle post-fix
+        </short>
+        <descr>
+          <p>
+            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the MacOS operating system. It calls ProgramDirectory to get the return value,  and removes the bundle post-fix ('.app/Contents/MacOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
+          </p>
+        </descr>
+        <notes><note>Routine name is misleading.</note></notes>
+        <seealso>
+          <link id="ProgramDirectory"/>
+        </seealso>
       </element>
       <element name="ProgramDirectoryWithBundle.Result">
-        <short/>
+        <short>Path to the executable without the MacOS bundle post-fix</short>
       </element>
 
       <element name="ExpandUNCFileNameUTF8">
-        <short/>
+        <short>Expands the specified UTF-8-encoded UNC file name</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.sysutils.ExpandUNCFileName">ExpandUNCFileName</link>
+          <link id="#rtl.sysutils.ExpandFileName">ExpandFileName</link>
+        </seealso>
       </element>
       <element name="ExpandUNCFileNameUTF8.FileName">
-        <short/>
+        <short>File name expanded in the routine</short>
       </element>
       <element name="ExpandUNCFileNameUTF8.Result">
-        <short/>
+        <short>The expanded file name</short>
       </element>
 
       <element name="FileSize">
-        <short>
-          <var>FileSize</var> - finds the size of the named file</short>
+        <short>Gets the size for the specified file name</short>
+        <descr>
+          <p>
+            <var>FileSize</var> is an overloaded <var>Int64</var> function used to get the size for the file specified in the <var>FileName</var> parameter. FileSize is similar to the FileSize routine in the FPC RTL, but accepts a file name instead of a FileRec argument.
+          </p>
+          <p>
+            FileSize calls <var>FileSizeUtf8</var> to get the return value for the function.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazfileutils.FileSizeUtf8">FileSizeUtf8</link>
+          <link id="#rtl.system.FileSize">FileSize</link>
+        </seealso>
       </element>
       <element name="FileSize.Result">
-        <short>Returns the size of the file, or -1 if not there</short>
+        <short>Returns the size of the file, or -1 if the file does not exist</short>
       </element>
       <element name="FileSize.Filename">
-        <short>The name of the file for checking</short>
+        <short>The name of the file examined in the routine</short>
       </element>
 
       <element name="FilenameIsPascalUnit">
@@ -282,9 +353,11 @@
       <element name="CreateAbsolutePath">
         <short>Deprecated</short>
         <descr>
-          Deprecated. Use the function from the LazFileUtils unit.
+          Deprecated. Use the function from the <file>LazFileUtils</file> unit.
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="@lazutils.lazfileutils.CreateAbsolutePath">CreateAbsolutePath</link>
+        </seealso>
       </element>
       <element name="CreateAbsolutePath.Filename">
         <short/>
@@ -298,7 +371,7 @@
 
       <element name="GetAllFilesMask">
         <short>
-          File mask representing all files suitable for showing in a file filter.
+          Gets the file mask representing all files suitable for showing in a file filter.
         </short>
         <descr>
           GetAllFilesMask returns a File Mask suitable for showing in a filter of a Open File Dialog. For Windows, '*.*' is returned; on other operating systems just '*'.
@@ -307,7 +380,7 @@
         <seealso/>
       </element>
       <element name="GetAllFilesMask.Result">
-        <short/>
+        <short>All files mask for the platform</short>
       </element>
 
       <element name="GetExeExt">
@@ -316,7 +389,7 @@
         </short>
       </element>
       <element name="GetExeExt.Result">
-        <short>Returns '.exe' in Windows, nothing in other systems.</short>
+        <short>Returns '.exe' on Windows, or an empty string for other platforms</short>
       </element>
 
       <element name="ReadFileToString">
@@ -329,7 +402,7 @@
           </p>
         </descr>
         <errors>
-          If there is an error in reading the file, an exception is raised and an empty string is returned.
+          If there is an error while reading the file, an Exception is raised and an empty string is returned.
         </errors>
       </element>
       <element name="ReadFileToString.Result">
@@ -342,95 +415,184 @@
       </element>
 
       <element name="TSearchFileInPathFlag">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Flags used to control options used when searching for file(s) in a given path</short>
+        <descr>
+          <p>
+            <var>TSearchFileInPathFlag</var> is an enumerated type with values that enable search options when locating files in a given path. Values in TSearchFileInPathFlag are stored in the <var>TSearchFileInPathFlags</var> set type and passed as an argument to the <var>SearchFileInPath</var> and <var>SearchAllFilesInPath</var> routines.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSearchFileInPathFlags"/>
+          <link id="SearchFileInPath"/>
+          <link id="SearchAllFilesInPath"/>
+        </seealso>
       </element>
       <element name="TSearchFileInPathFlag.sffDontSearchInBasePath">
-        <short/>
+        <short>Do not search in BasePath, search only in SearchPath</short>
       </element>
       <element name="TSearchFileInPathFlag.sffSearchLoUpCase">
         <short/>
+        <notes><note>I can guess the intent... but I cannot find an example of usage.</note></notes>
       </element>
       <element name="TSearchFileInPathFlag.sffFile">
-        <short/>
+        <short>Must be a file, and not a directory</short>
       </element>
       <element name="TSearchFileInPathFlag.sffExecutable">
-        <short/>
+        <short>File must be an executable file for the platform</short>
       </element>
       <element name="TSearchFileInPathFlag.sffDequoteSearchPath">
-        <short/>
+        <short>Removes ANSI Quotation Marks in a search path or file name</short>
       </element>
 
       <element name="TSearchFileInPathFlags">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set type used to store values from the TSearchFileInPathFlag enumeration</short>
+        <descr>
+          <p>
+            <var>TSearchFileInPathFlags</var> is a <b>Set</b> type used to store zero (0) or more values from the <var>TSearchFileInPathFlag</var> enumeration. It is the type passed as an argument to the <var>SearchFileInPath</var> and <var>SearchAllFilesInPath</var> routines.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSearchFileInPathFlag"/>
+          <link id="SearchFileInPath"/>
+          <link id="SearchAllFilesInPath"/>
+        </seealso>
       </element>
 
       <element name="sffFindProgramInPath">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Search flags used to find a program file in a path on the current platform
+        </short>
+        <descr>
+          <p>
+            <var>sffFindProgramInPath</var> is a constant which contains the default <var>TSearchFileInPathFlag</var> enumeration values used to locate a program file on the current platform.
+          </p>
+          <p>
+            For the Windows platform, sffFindProgramInPath contains the following values:
+          </p>
+          <code>[ sffDequoteSearchPath, sffFile, sffExecutable ]</code>
+          <p>
+            For UNIX-like platforms, sffFindProgramInPath contains the following values:
+          </p>
+          <code>[ sffDontSearchInBasePath, sffFile, sffExecutable ]</code>
+          <p>
+            For all other platforms, sffFindProgramInPath contains the following values:
+          </p>
+          <code>[ sffFile, sffExecutable ]</code>
+          <p>
+            sffFindProgramInPath is used in the implementation of the <var>FindDefaultExecutablePath</var> routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FindDefaultExecutablePath"/>
+        </seealso>
       </element>
 
       <element name="SearchFileInPath">
         <short>
-          <var>SearchFileInPath</var> - searches for <var>Filename</var> in the given <var>SearchPath</var> using the supplied <var>BasePath</var> with the specified <var>Delimiter</var> and the options listed in <var>Flags</var>
+          Searches for a file name in a given path using the specified base path and options
         </short>
         <descr>
           <p>
-            Searches the whole path. Relative folder file names are expanded using BasePath. By default if BasePath is set it is searched as well, unless <var>sffDontSearchInBasePath</var> flag is present.
+            <var>SearchFileInPath</var> is a <var>String</var> function used to get the fully-qualified name for the specified <var>FileName</var> in the specified search paths. When FileName contains an absolute path, and the file exists in the file system, no other directories are checked in the routine.
           </p>
           <p>
-            Returns the first file that matches the supplied criteria.
+            <var>SearchPath</var> contains the delimited list of search paths examined in the routine. Search paths are separated using the value in <var>Delimter</var>.
+          </p>
+          <p>
+            <var>BasePath</var> contains the path used to resolve relative path references in SearchPath. By default, BasePath is also searched unless <var>sffDontSearchInBasePath</var> is included in the <var>Flags</var> parameter.
+          </p>
+          <p>
+            <var>Flags</var> contains values from the <var>TSearchFileInPathFlag</var> enumeration used to control the file matching logic used in the routine. For example:
+          </p>
+          <dl>
+            <dt>sffDontSearchInBasePath</dt>
+            <dd>Prevents searching in the directory represented by BasePath.</dd>
+            <dt>sffFile</dt>
+            <dd>Excludes a directory entry that matches the file name.</dd>
+            <dt>sffExecutable</dt>
+            <dd>Exclude any file or directory name that is not an executable.</dd>
+          </dl>
+          <p>
+            By default, the current directory is searched first. Each of the paths in SearchPaths are also searched until a file with the specified FileName is found.
+          </p>
+          <p>
+            The return value contains the fully-qualified path to the file including the file name and extension (when used). The first file that matches the supplied criteria is used in the return value. It may contain an empty string when a file with the given file name was not located.
           </p>
         </descr>
-        <errors>If the file does not exist, an empty string is returned</errors>
       </element>
       <element name="SearchFileInPath.Result">
         <short>
-          Returns fully specified file name of the first file that matches the supplied criteria, or empty string if file not found
+          Fully qualified file name for the file, or an empty string if the file was not found
         </short>
       </element>
       <element name="SearchFileInPath.Filename">
-        <short>The name of the file for searching</short>
+        <short>The name of the file to locate in the routine</short>
       </element>
       <element name="SearchFileInPath.BasePath">
-        <short>The
-          <var>BasePath
-          </var>to be used for the search</short>
+        <short>Path used to resolve realtive path references in a search path</short>
       </element>
       <element name="SearchFileInPath.SearchPath">
-        <short>The path for searching</short>
+        <short>List of search paths examined in the routine</short>
       </element>
       <element name="SearchFileInPath.Delimiter">
-        <short>The directory <var>Delimiter</var> to be used in the search</short>
+        <short>Delimiter used to separate search paths</short>
       </element>
       <element name="SearchFileInPath.Flags">
-        <short>
-          <var>Flags </var>specifying how to search: e.g. don't search in base path, case independent search
-        </short>
+        <short>Controls the file matching logic and behavior used in the routine</short>
       </element>
 
       <element name="SearchAllFilesInPath">
         <short>
-          <var>SearchAllFilesInPath</var> - searches for all files named <var>Filename</var> in the given <var>SearchPath</var> using the supplied <var>BasePath</var> with the specified <var>Delimiter</var> and the options listed in
-          <var>Flags</var>
+          <var>SearchAllFilesInPath</var> - searches for all files named <var>Filename</var> in the given <var>SearchPath</var> using the supplied <var>BasePath</var> with the specified <var>Delimiter</var> and the options listed in <var>Flags</var>
         </short>
         <descr>
           <p>
-            <var>SearchAllFilesInPath</var> searches the whole path unless the <var>sffDontSearchInBasePath</var>
-            flag is present.
+            <var>SearchAllFilesInPath</var> is a TStrings function used to get a list with all file names matching the value in <var>FileName</var>.
           </p>
           <p>
-            Returns all files that match the supplied criteria
+            SearchAllFilesInPath creates the TStringList instance in the return value when needed. The return value can be <b>Nil</b> if no files or directories were found that match the FileName parameter.
           </p>
+          <p>
+            Files or directories stored in the return value are fully-qualified path names, with relative path references resolved to the path in <var>BasePath</var>. If FileName contains an absolute path name, the return value has a single entry with the normalized value for FileName.
+          </p>
+          <p>
+            <var>SearchPath</var> contains one or more search paths examined in the routine. Each search path is separated by the value in <var>Delimiter</var>.
+          </p>
+          <p>
+            <var>Flags</var> is a set type which contains zero or more options enabled for the search. It can include values from the <var>TSearchFileInPathFlag</var> enumeration, including:
+          </p>
+          <dl>
+            <dt>sffDontSearchInBasePath</dt>
+            <dd>
+              Omits the directory in BasePath from the search process. Uses only the directories in SearchPath. When not used, matching files in BasePath are included in the search results.
+            </dd>
+            <dt>sffFile</dt>
+            <dd>
+              Matching entries must be a file and not a directory. Directory names which match FileName are ignored.
+            </dd>
+            <dt>sffExecutable</dt>
+            <dd>
+              Matching entries must be an executable file for the platform. Non-executable files are ignored.
+            </dd>
+            <dt>sffDequoteSearchPath</dt>
+            <dd>
+              Removes ANSI Quotation Marks found in the sanitized name for a matching file.
+            </dd>
+          </dl>
         </descr>
+        <seealso>
+          <link id="TSearchFileInPathFlag"/>
+          <link id="TSearchFileInPathFlags"/>
+          <link id="#lazutils.lazfileutils.FilenameIsAbsolute">FilenameIsAbsolute</link>
+          <link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
+          <link id="#lazutils.lazfileutils.CleanAndExpandDirectory">CleanAndExpandDirectory</link>
+          <link id="#lazutils.lazfileutils.FileExistsUTF8">FileExistsUTF8</link>
+          <link id="#lazutils.lazfileutils.DirectoryExistsUTF8">DirectoryExistsUTF8</link>
+        </seealso>
       </element>
       <element name="SearchAllFilesInPath.Result">
         <short>
-          Returns fully specified file names of all files that match the supplied criteria, or empty string if file not found
+          Returns a fully qualified file name for all files that match the supplied criteria, or an empty string if the file is not found
         </short>
       </element>
       <element name="SearchAllFilesInPath.Filename">
@@ -445,9 +607,7 @@
         <short>The path for searching</short>
       </element>
       <element name="SearchAllFilesInPath.Delimiter">
-        <short>
-          The directory <var>Delimiter</var> to be used in the search
-        </short>
+        <short>The delimiter used between search paths</short>
       </element>
       <element name="SearchAllFilesInPath.Flags">
         <short>
@@ -461,7 +621,7 @@
         </short>
         <descr>
           <p>
-            <var>FindDiskFilename</var> - finds the file that best fits the supplied filename. Searches for the filename case on disk. The file must exist.
+            <var>FindDiskFilename</var> finds the file that best fits the supplied filename. Searches for the filename case on disk. The file must exist.
           </p>
           <p>
             For example: If Filename='file' and there is only a 'File', then 'File' will be returned.
@@ -492,13 +652,10 @@
       </element>
 
       <element name="FindDefaultExecutablePath">
-        <short>
-          <var>FindDefaultExecutablePath</var>
-          - finds the default path to the named Executable file
-        </short>
+        <short>Finds the default path to the named Executable file</short>
         <descr>
           <p>
-            <var>FindDefaultExecutablePath</var> - finds the default path to the named Executable file. On Windows systems, it looks for files both with and without the '.EXE' extension.
+            <var>FindDefaultExecutablePath</var> finds the default path to the named Executable file. On Windows systems, it looks for files both with and without the '.EXE' extension.
           </p>
           <p>
             If Executable is not an absolute filename the executable is searched using the environment variable PATH. Relative directories in PATH are expanded using BaseDir.
@@ -520,204 +677,283 @@
       </element>
 
       <element name="TFileIterator">
-        <short>Class for getting info about found file or directory.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Implements an iterator for file and directory names on the local file system</short>
+        <descr>
+          <p>
+            <var>TFileIterator</var> is a class used to implement an iterator for file and directory names on the local file system. TFileIterator provides properties and methods used to represent the path and file name for values found when searching the local file system. It is not very useful on its own, but serves as the base class for the <var>TFileSearcher</var> ancestor.
+          </p>
+          <p>
+            TFileIterator is the type passed as an argument to <var>TFileFoundEvent</var>, <var>TDirectoryFoundEvent</var>, and <var>TDirectoryEnterEvent</var> event handlers.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher"/>
+          <link id="TFileFoundEvent"/>
+          <link id="TDirectoryFoundEvent"/>
+          <link id="TDirectoryEnterEvent"/>
+        </seealso>
       </element>
 
-      <element name="TFileIterator.FPath">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFileIterator.FLevel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFileIterator.FFileInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TFileIterator.FSearching">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TFileIterator.FPath"/>
+      <element name="TFileIterator.FLevel"/>
+      <element name="TFileIterator.FFileInfo"/>
+      <element name="TFileIterator.FSearching"/>
 
       <element name="TFileIterator.GetFileName">
-        <short/>
+        <short>Gets the value for the  FileName property</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileIterator.FileName"/>
+        </seealso>
       </element>
       <element name="TFileIterator.GetFileName.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TFileIterator.Stop">
-        <short>Stops the searching process.</short>
-        <descr/>
-        <errors/>
+        <short>Stops the search process</short>
+        <descr>
+          <p>
+            Changes the value in <var>Searching</var> to <b>False</b>.
+          </p>
+        </descr>
         <seealso>
+          <link id="TFileIterator.Searching"/>
           <link id="TFileSearcher.Search"/>
         </seealso>
       </element>
 
       <element name="TFileIterator.IsDirectory">
-        <short>If the current file is directory.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>True when the current file system entry is a directory</short>
+        <descr>
+          <p>
+            <var>IsDirectory</var> is a <var>Boolean</var> function which indicates if the current file entry is a directory on the local file system. Checks the file attributes in <var>FileInfo</var> to determine if the <var>faDirectory</var> attribute is included for the file. Returns <b>True</b> when the attribute in included in the <var>TSearchRec</var> value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+          <link id="#rtl.sysutils.faDirectory">faDirectory</link>
+        </seealso>
       </element>
       <element name="TFileIterator.IsDirectory.Result">
-        <short/>
+        <short>True if the current file entry is a directory</short>
       </element>
 
       <element name="TFileIterator.FileName">
-        <short>Gets the current file name.</short>
-        <descr/>
-        <seealso/>
+        <short>The qualified file name for the current file entry</short>
+        <descr>
+          <p>
+            <var>FileName</var> is a read-only <var>String</var> property which contains the qualified file name for the current file entry. FileName includes the value in <var>Path</var> as a prefix and the file name indicated in <var>FileInfo</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.Path"/>
+          <link id="TFileIterator.FileInfo"/>
+        </seealso>
       </element>
 
       <element name="TFileIterator.FileInfo">
-        <short>Gets the current file info.</short>
-        <descr/>
-        <seealso/>
+        <short>Contains file information for the current entry in the iterator</short>
+        <descr>
+          <p>
+            <var>FileInfo</var> is a read-only <var>TSearchRec</var> property with the file information for the current entry in the iterator. FileInfo is used in the IsDirectory method to determine the faDirectory file attribute exists in the file information. Values in the Path, FileName, and FileInfo properties are updated in descendent classes which perform the search operation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.IsDirectory"/>
+          <link id="TFileIterator.FileName"/>
+          <link id="TFileIterator.Path"/>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
       <element name="TFileIterator.Level">
-        <short>Gets the current file path level relative to base search path.</short>
-        <descr/>
-        <seealso/>
+        <short>Gets the current directory level relative to the base search path</short>
+        <descr>
+          <p>
+            <var>Level</var> is a read-only <var>Integer</var> property which contains the directory level for the current entry in the <var>FileInfo</var> property. The level indicates the number of sub-directories relative to the the base search path. The value in Level is maintained in descendent classes that perform a search operation using the iterator.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="TFileIterator.IsDirectory"/>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
       <element name="TFileIterator.Path">
-        <short>Gets the current file path.</short>
-        <descr/>
-        <seealso/>
+        <short>Contains the path to the current file or directory in the iterator</short>
+        <descr>
+          <p>
+            <var>Path</var> is a read-only <var>String</var> property which contains the fully-qualified path to the current file or directory in the <var>FileInfo</var> properties. Values in the Path, FileName, and FileInfo properties are updated in descendent classes which perform the search operation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="TFileIterator.FileName"/>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
       <element name="TFileIterator.Searching">
-        <short>If the searching is in process.</short>
-        <descr/>
-        <seealso/>
+        <short>Indicates if a search process is active</short>
+        <descr>
+          <p>
+            <var>Searching</var> is a read-only <var>Boolean</var> property which indicates if a search process is active for the iterator. The property value is updated in descendent classes which perform the search operation.
+          </p>
+          <p>
+            Searching is set to <b>False</b> when the <var>Stop</var> method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.Stop"/>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
       <element name="TFileFoundEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled when a file name is found for the specified iterator
+        </short>
+        <descr>
+          <p>
+            <var>TFileFoundEvent</var> is an object procedure type which specifies an event handler signalled when a file name is found using the specified iterator. <var>FileIterator</var> contains the <var>TFileIterator</var> instance for the event notification.
+          </p>
+          <p>
+            TFileFoundEvent is the type used to implement the <var>TFileSearcher.OnFileFound</var> event handler. Applications can implement a procedure using the event signature to perform actions needed to process the file in a FileIterator.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.OnFileFound"/>
+        </seealso>
       </element>
       <element name="TFileFoundEvent.FileIterator">
-        <short/>
+        <short>File iterator with the file information for the event</short>
       </element>
 
       <element name="TDirectoryFoundEvent">
-        <short/>
-        <descr/>
+        <short>
+          Specifies an event handler signalled when a directory is found for the specified iterator
+        </short>
+        <descr>
+          <p>
+            <var>TDirectoryFoundEvent</var> is an object procedure type which specifies an event handler signalled when a directory is located for the iterator in <var>FileIterator</var>.
+          </p>
+          <p>
+            TDirectoryFoundEvent is the type used to implement the <var>TFileSearcher.OnDirectoryFound</var> event handler. Applications can implement a procedure using the event signature to perform actions needed to process the directory in a FileIterator.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TDirectoryFoundEvent.FileIterator">
-        <short/>
+        <short>File iterator with the directory information for the event</short>
       </element>
 
       <element name="TDirectoryEnterEvent">
-        <short/>
-        <descr/>
+        <short>
+          Specifies an event handler signalled when a new directory is processed with the specified iterator
+        </short>
+        <descr>
+          <p>
+            <var>TDirectoryEnterEvent</var> is an object procedure type which specifies an event handler signalled when a new directory is processed for the iterator in <var>FileIterator</var>.
+          </p>
+          <p>
+            TDirectoryEnterEvent is the type used to implement the <var>TFileSearcher.OnDirectoryEnter</var> event handler. Applications can implement a procedure using the event signature to perform actions needed to process the directory in a FileIterator.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TDirectoryEnterEvent.FileIterator">
-        <short/>
+        <short>File iterator with the directory information for the event</short>
       </element>
 
       <element name="TFileSearcher">
-        <short>Class for searching files</short>
+        <short>Implements an iterator used to search for files or directories</short>
         <descr>
-          TFileSearcher is a TFileIterator descendant used to search for files that match s search mask in a given directory path.
+          <p>
+            <var>TFileSearcher</var> is a <var>TFileIterator</var> descendant used to search for files or directories that match a search mask in a given directory path. TFileSearcher extends the ancestor class with additional properties, methods, and events needed to search and process files or directories on the local file system.
+          </p>
+          <p>
+            It implements the <var>Search</var> method to perform a search using the specified path(s) and file mask(s).
+          </p>
+          <p>
+            Use <var>MaskSeparator</var> to specify the delimiter used to separate a list of mask values passed to the method. Use <var>PathSeparator</var> to specify the delimiter used to separate a list of file paths passed to the method.
+          </p>
+          <p>
+            Use <var>FileAttribute</var> and <var>DirectoryAttribute</var> to specify the file system attributes needed for files or directories considered a match in the Search method. Use <var>FollowSymLink</var> to indicate whether symbolic links on the file system are followed in the Search method.
+          </p>
+          <p>
+            Use the <var>OnFileFound</var>, <var>OnDirectoryFound</var>, and <var>OnDirectoryEnter</var> event handlers to perform the actions needed for files or directories found using the Search method.
+          </p>
+          <p>
+            TFileSearcher is the ancestor class for more specialized descendants like <var>TListFileSearcher</var> and <var>TListDirectoriesSearcher</var>.
+          </p>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="TFileIterator"/>
+          <link id="TListFileSearcher"/>
+          <link id="TListDirectoriesSearcher"/>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.FMaskSeparator"/>
       <element name="TFileSearcher.FPathSeparator"/>
       <element name="TFileSearcher.FFollowSymLink"/>
-
-      <element name="TFileSearcher.FOnFileFound">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TFileSearcher.FOnDirectoryFound">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TFileSearcher.FOnDirectoryEnter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TFileSearcher.FFileAttribute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TFileSearcher.FDirectoryAttribute">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TFileSearcher.FOnFileFound"/>
+      <element name="TFileSearcher.FOnDirectoryFound"/>
+      <element name="TFileSearcher.FOnDirectoryEnter"/>
+      <element name="TFileSearcher.FFileAttribute"/>
+      <element name="TFileSearcher.FDirectoryAttribute"/>
 
       <element name="TFileSearcher.RaiseSearchingError">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Raises an Exception if Search is called when Searching is already set to True</short>
       </element>
 
       <element name="TFileSearcher.DoDirectoryEnter">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Signals the OnDirectoryEnter event handler (when assigned)</short>
       </element>
 
       <element name="TFileSearcher.DoDirectoryFound">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Signals the OnDirectoryFound event handler (when assigned)</short>
       </element>
 
       <element name="TFileSearcher.DoFileFound">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>Signals the OnFileFound event handler (when assigned)</short>
       </element>
 
       <element name="TFileSearcher.Create">
-        <short>Creates a new file searcher object</short>
-        <descr/>
-        <errors/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create sets the default values used in the following properties:
+          </p>
+          <dl>
+            <dt>MaskSeparator</dt>
+            <dd>Set to ';'.</dd>
+            <dt>PathSeparator</dt>
+            <dd>Set to ';'.</dd>
+            <dt>FollowSymLink</dt>
+            <dd>Set to True.</dd>
+            <dt>FileAttribute</dt>
+            <dd>Set to faAnyFile.</dd>
+            <dt>DirectoryAttribute</dt>
+            <dd>Set to faDirectory.</dd>
+            <dt>Searching</dt>
+            <dd>Set to False.</dd>
+          </dl>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TFileSearcher.Search">
         <short>
-          Searches for files in specified path with passed options
+          Searches for files or directories in the specified path(s) using the specified options
         </short>
         <descr>
           <p>
-            Searches for files matching a specified mask found in the specified search paths. <var>ASearchPath</var> contains the locations examined in the method, and can contain multiple path names separated by the value in <var>PathSeparator</var>. Each delimited path value in <var>ASearchPath</var> is resolved by calling the <var>ResolveDots</var> function, and processed in the method.
+            Search is a method used to search for files or directories matching a specified mask found in the specified search paths. <var>ASearchPath</var> contains the locations examined in the method, and can contain multiple path names separated by the value in <var>PathSeparator</var>. Each delimited path value in <var>ASearchPath</var> is resolved by calling the <var>ResolveDots</var> function, and processed in the method.
           </p>
           <p>
             The value in the <var>CaseSensitive</var> argument is used to add or remove mask options for the search mask in ASearchMask. Set CaseSensitive to <b>True</b> before calling Search to perform file name comparisions with case sensitivity.
@@ -735,11 +971,12 @@
             Set the value in <var>FollowSymLink</var> to indicate whether symbolic links in the file system are followed in the method.
           </p>
           <p>
-            When a matching file is found, the OnFileFound event is signalled. For directories, the OnDirectoryFound event is signalled. When a new directory is processed in the method, the OnDirectoryEnter events is signalled. Applications must assign a handler to the events to respond to the notifications. You can abort the search process by calling the Stop method in the handler for these events.
+            When a matching file is found, the OnFileFound event is signalled. For directories, the OnDirectoryFound event is signalled. When a new directory is processed in the method, the OnDirectoryEnter events is signalled. Applications must assign a handler for the events to respond to the notifications. You can abort the search process by calling the Stop method in the handlers for these events.
           </p>
         </descr>
         <errors>
-          <p>Calls RaiseSearchingError to raise an exception if the Search method has already been called and has not completed.
+          <p>
+            Calls RaiseSearchingError to raise an exception if the Search method has already been called and has not completed.
           </p>
         </errors>
         <seealso>
@@ -768,74 +1005,210 @@
       </element>
 
       <element name="TFileSearcher.MaskSeparator">
-        <short>
-          Character used as a delimiter between file masks in the search critera
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Character used as a delimiter between file masks</short>
+        <descr>
+          <p>
+            <var>MaskSeparator</var> is a <var>Char</var> property which contains the character used as a delimiter between file masks in the search critera. The default value for the property is '<b>;</b>' as assigned in the <var>Create</var> method.
+          </p>
+          <p>
+            MaskSeparator is used in<var>Search</var> to fill an internal <var>TMaskList</var> instance used in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.PathSeparator"/>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.Create"/>
+          <link id="#lazutils.masks.TMaskList"/>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.PathSeparator">
-        <short>
-          Character used as a delimiter between directory paths in the search criteria
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Character used as a delimiter between directory paths</short>
+        <descr>
+          <p>
+            <var>PathSeparator</var> is a <var>Char</var> property which contains the character used as a delimiter between directory paths in the search criteria. The default value for the property is '<b>;</b>' as assigned in the <var>Create</var> method.
+          </p>
+          <p>
+            PathSeparator is used in the <var>Search</var> method to fill an internal <var>TStringList</var> instance with the directory paths specified in the search criteria.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.MaskSeparator"/>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.Create"/>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.FollowSymLink">
-        <short>
-          Indicates if a search should follow paths that are symbolic links
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Indicates if a search process directory paths that are symbolic links</short>
+        <descr>
+          <p>
+            <var>FollowSymLink</var> is a <var>Boolean</var> property which indicates if the <var>Search</var> method should process directory paths that are symbolic links on the local file system. The default value for the property is <b>True</b> as assigned in the <var>Create</var> method.
+          </p>
+          <p>
+            FollowSymLink is used in the Search method when a directory entry is detected in <var>FileInfo</var> that <var>FileIsSymLink</var> identifies as a symbolic link. When set to <b>False</b>, the directory is <b>not</b> processed; the <var>OnDirectoryEnter</var> event handler is <b>not</b> signalled and the method ignores the directory path. The <var>OnDirectoryFound</var> event handler is signalled for the iterator value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.Create"/>
+          <link id="TFileSearcher.OnDirectoryFound"/>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="TFileIterator.IsDirectory"/>
+          <link id="#lazutils.lazfileutils.FileIsSymLink">FileIsSymLink</link>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.FileAttribute">
-        <short/>
+        <short>File attribute needed for any file considered a match in the Search method</short>
         <descr>
-          FileAttribute is a Word property. The default value for the property is
-          <var>faAnyfile</var>.
+          <p>
+            <var>FileAttribute</var> is a <var>Word</var> property. The default value for the property is <var>faAnyfile</var>, and means that any of the file attribute constants are allowed for files.
+          </p>
+          <p>
+            FileAttribute is used in the <var>Search</var> method to determine whether a file in a given search path can be considered a match based on its file attributes. The value is passed as an argument to <var>FindFirstUTF8</var> and <var>FindNextUTF8</var>. The value is compared to the file attributes returned in a <var>TSearchRec</var> instance from those routines.
+          </p>
+          <p>
+            Use <var>DirectoryAttribute</var> to specify the file attributes needed for directories processed in the Search method.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.DirectoryAttribute"/>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="#lazutils.lazfileutils.FindFirstUTF8">FindFirstUTF8</link>
+          <link id="#lazutils.lazfileutils.FindNextUTF8">FindNextUTF8</link>
+          <link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.DirectoryAttribute">
-        <short/>
+        <short>File attribute needed for directories considered a match in the Search method</short>
         <descr>
-          DirectoryAttribute is a Word property. The default value for the property is
-          <var>faDirectory</var>.
+          <p>
+            <var>DirectoryAttribute</var> is a <var>Word</var> property with the file attribute needed for directories considered a match in the Search method. The default value for the property is <var>faDirectory</var>.
+          </p>
+          <p>
+            DirectoryAttribute is used in the <var>Search</var> method to determine whether a file system entry in a given search path can be considered a match based on its file attributes. The value is passed as an argument to <var>FindFirstUTF8</var> and <var>FindNextUTF8</var>. The value is compared to the file attributes returned in a <var>TSearchRec</var> instance from those routines.
+          </p>
+          <p>
+            Use <var>FollowSymLink</var> to include or exclude directories which are symbolic links on the local file system.
+          </p>
+          <p>
+            Use <var>FileAttribute</var> to set the file attributes needed for files considered a match in the Search method.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.FileAttribute"/>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="#lazutils.lazfileutils.FindFirstUTF8">FindFirstUTF8</link>
+          <link id="#lazutils.lazfileutils.FindNextUTF8">FindNextUTF8</link>
+          <link id="#rtl.sysutils.TSearchRec">TSearchRec</link>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.OnDirectoryFound">
-        <short>Is invoked when directory is found.</short>
-        <descr/>
-        <seealso/>
+        <short>Event handler signalled when a new directory is found in the Search method</short>
+        <descr>
+          <p>
+            <var>OnDirectoryFound</var> is a <var>TDirectoryFoundEvent</var> property with the event handler signalled when a new directory is found in the Search method. It is signalled after values in the <var>Path</var>, <var>FileInfo</var>, and <var>Level</var> properties have been updated in the file iterator.
+          </p>
+          <p>
+            An application must implement and assign an object procedure to the handler to respond to the event notification. The <var>FileIterator</var> argument is the <var>TFileIterator</var> instance for the event notification, and allows access to its properties and methods. Call the <var>Stop</var> method in FileIterator to stop the search process.
+          </p>
+          <p>
+            Use <var>OnDirectoryEnter</var> to perform actions needed when a new directory is processed in the search method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.DirectoryAttribute"/>
+          <link id="TFileSearcher.OnDirectoryEnter"/>
+          <link id="TFileIterator"/>
+          <link id="TFileIterator.Path"/>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="TFileIterator.Level"/>
+          <link id="TDirectoryFoundEvent"/>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.OnFileFound">
-        <short>Is invoked when file is found.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when a file matching the file mask is found in the Search method
+        </short>
+        <descr>
+          <p>
+            <var>OnFileFound</var> is a <var>TFileFoundEvent</var> property with the event handler signalled when a file matching the search criteria is found in the Search method. It is signalled for each file that matches the search path and file mask arguments passed to the method. The event occurs after values in the <var>Path</var>, <var>FileInfo</var>, and <var>Level</var> properties have been updated in the file iterator.
+          </p>
+          <p>
+            An application must implement and assign an object procedure to the handler to respond to the event notification. The <var>FileIterator</var> argument is the <var>TFileIterator</var> instance for the event notification, and allows access to its properties and methods. Call the <var>Stop</var> method in FileIterator to stop the search process.
+          </p>
+          <p>
+            Use <var>OnDirectoryFound</var> to respond to directory names found in the Search method.
+          </p>
+          <p>
+            Use <var>OnDirectoryEnter</var> to respond to a new directory processed in the Search method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.DirectoryAttribute"/>
+          <link id="TFileSearcher.OnDirectoryFound"/>
+          <link id="TFileSearcher.OnDirectoryEnter"/>
+          <link id="TFileIterator"/>
+          <link id="TFileIterator.Path"/>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="TFileIterator.Level"/>
+          <link id="TFileFoundEvent"/>
+        </seealso>
       </element>
 
       <element name="TFileSearcher.OnDirectoryEnter">
-        <short>Event handler signalled when the searcher enters a new directory</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when a new directory is processed in the Search method
+        </short>
+        <descr>
+          <p>
+            <var>OnDirectoryEnter</var> is a <var>TDirectoryEnterEvent</var> property with the event handler signalled when a new directory is processed in the <var>Search</var> method. It is signalled after the new directory name has been stored in Path, FileInfo, and Level in the file iterator. It occurs immediately before the search in the directory path is performed.
+          </p>
+          <p>
+            An application must implement and assign an object procedure to the handler to respond to the event notification. The <var>FileIterator</var> argument is the <var>TFileIterator</var> instance for the event notification, and allows access to its properties and methods. Call the <var>Stop</var> method in FileIterator to stop the search process.
+          </p>
+          <p>
+            Use <var>OnDirectoryFound</var> to respond to directory names found in the Search method.
+          </p>
+          <p>
+            Use <var>OnFileFound</var> to respond to a new file name processed as a match in the Search method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+          <link id="TFileSearcher.DirectoryAttribute"/>
+          <link id="TFileSearcher.OnDirectoryFound"/>
+          <link id="TFileSearcher.OnFileFound"/>
+          <link id="TFileIterator"/>
+          <link id="TFileIterator.Path"/>
+          <link id="TFileIterator.FileInfo"/>
+          <link id="TFileIterator.Level"/>
+          <link id="TDirectoryEnterEvent"/>
+        </seealso>
       </element>
 
       <element name="TListFileSearcher">
         <short>
-          Stores file matching a search criteria in a TStrings class instance
+          Stores file names matching a search criteria in a TStrings class instance
         </short>
         <descr>
-          TListFileSearcher is a TFileSearcher descendant used to used store files matching a specified
-          search criteria in a TStrings class instance.
+          <p>
+            <var>TListFileSearcher</var> is a <var>TFileSearcher</var> descendant used to used store file names matching a specified search criteria in a <var>TStrings</var> class instance. It provides an overridden methods used to add file names to the string list when a matching file name is found. An alternate constructor is provided to specify the TStrings instance used to store the file names found in the <var>Search</var> method.
+          </p>
+          <remark>
+            Resources allocated to the TStrings instance must be freed by the caller. TListFileSearcher does not own or manage the resources for the TStrings instance.
+          </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TFileSearcher"/>
+        </seealso>
       </element>
 
       <element name="TListFileSearcher.FList">
@@ -851,11 +1224,14 @@
       </element>
 
       <element name="TListFileSearcher.Create">
-        <short>
-          Constructor for the class instance
-        </short>
+        <short>Constructor for the class instance</short>
         <descr>
-          Create is the constructor for the class instance. Create calls the inherited constructor, and stores the TStrings instance in AList to the the internal member used in the class instance.
+          <p>
+            <var>Create</var> is an alternate constructor for the class instance. Create calls the inherited constructor, and stores the <var>TStrings</var> instance in <var>AList</var> to the the internal member used in the class instance.
+          </p>
+          <remark>
+            Resources allocated to the TStrings instance must be freed by the caller. TListFileSearcher does not own or manage the resources for the TStrings instance.
+          </remark>
         </descr>
         <seealso/>
       </element>
@@ -865,10 +1241,12 @@
 
       <element name="TListDirectoriesSearcher">
         <short>
-          Stores directory names matching a search criteria in a TStrings class instance
+          Stores directory names matching a given search criteria in a TStrings class instance
         </short>
         <descr>
-          TListDirectoriesSearcher is a TFileSearcher descendant used to store directory names matching the specified search criteria in a TStrings class instance.
+          <p>
+            <var>TListDirectoriesSearcher</var> is a <var>TFileSearcher</var> descendant used to store directory names matching the specified search criteria in a TStrings class instance.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -890,7 +1268,12 @@
           Constructor for the class instance
         </short>
         <descr>
-          Create is the constructor for the class instance. Create calls the inherited constructor, and stores the value in AList to the internal member used to capture matching directory names in the class instance.
+          <p>
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor, and stores the value in <var>AList</var> to the internal member used to capture matching directory names in the class instance.
+          </p>
+          <remark>
+            Resources allocated to the TStrings instance must be freed by the caller. TListFileSearcher does not own or manage the resources for the TStrings instance.
+          </remark>
         </descr>
         <seealso/>
       </element>
@@ -906,25 +1289,32 @@
         <short>
           Returns the list of files in the specified path matching the search criteria
         </short>
-        <descr><p>FindAllFiles is an overloaded method used to populate a TStringList class instance with a list of files match the specified search criteria.
-The procedure variant uses an existing TStringList class instance to store the matching file names.
-The function variant creates the TStringList class instance used as the return value for the method.
-</p>
+        <descr>
+          <p>
+            <var>FindAllFiles</var> is an overloaded routine used to populate a <var>TStringList</var> class instance with a list of files match the specified search criteria. The procedure variant uses an existing TStringList class instance to store the matching file names. The function variant creates the TStringList class instance used as the return value for the method.
+          </p>
+          <remark>
+            The function variant of <var>FindAllFiles</var> creates the string list internally. This may seem  very convenient at first, but it is very easy to create memory leaks if string list instances are not freed properly.
+          </remark>
         </descr>
         <seealso/>
-      
-      <errors>The function <var>FindAllFiles</var> creates the stringlist internally. This may look very convenient at first sight, but it is very easy to create memory leaks that way.
-</errors><example file="examples/fileutil.findallfiles.pas"/>
+        <example file="examples/fileutil.findallfiles.pas"/>
       </element>
       <element name="FindAllFiles.Result">
         <short>List of file names matching the search criteria</short>
-        <descr>The StringList is created in the FindAllFiles function; you should not instantiate it before calling the function.
-</descr>
+        <descr>
+          <p>
+            The StringList is created in the FindAllFiles function; you should not instantiate it before calling the function.
+          </p>
+        </descr>
       </element>
       <element name="FindAllFiles.AList">
         <short>TStringList used to store file names matching the search criteria</short>
-        <descr>AList must be instantiated before it is passed as an argument to the method. The TStringList instance must also be freed by the routine where it was created.
-</descr>
+        <descr>
+          <p>
+            AList must be instantiated before it is passed as an argument to the method. The TStringList instance must also be freed by the routine where it was created.
+          </p>
+        </descr>
       </element>
       <element name="FindAllFiles.SearchPath">
         <short>Base path for searching files</short>
@@ -933,13 +1323,19 @@ The function variant creates the TStringList class instance used as the return v
         <short>
           A list of masks, separated by a semicolon (;) to which found files should match
         </short>
-        <descr>A list of masks, separated by a semicolon (;) to which found files should match. The mask can contain wildcards like * and ? and it also supports sets like [a-d,x]. See the Masks unit for more details.
-</descr>
+        <descr>
+          <p>
+            A list of masks, separated by a semicolon (;) to which found files should match. The mask can contain wildcards like * and ? and it also supports sets like [a-d,x]. See the Masks unit for more details.
+          </p>
+        </descr>
       </element>
       <element name="FindAllFiles.SearchSubDirs">
-        <short>If search recursively sub directories</short>
-      <descr>Parameter DirAttr is int file attribute: if file-system item has this attribute(s), it is considered as a directory. It can be <var>faDirectory</var>, <var>faSymLink</var>, (<var>faDirectory</var>+<var>faSymLink</var>) or maybe another bits can be used.
-</descr>
+        <short>True to search sub-directories in the process</short>
+        <descr>
+          <p>
+            Parameter DirAttr is int file attribute: if file-system item has this attribute(s), it is considered as a directory. It can be <var>faDirectory</var>, <var>faSymLink</var>, (<var>faDirectory</var>+<var>faSymLink</var>) or maybe another bits can be used.
+          </p>
+        </descr>
       </element>
       <element name="FindAllFiles.PathSeparator">
         <short>If search recursively sub directories</short>
@@ -949,128 +1345,173 @@ The function variant creates the TStringList class instance used as the return v
         <short>
           Stores directory names matching the search criteria in a TStringList class instance
         </short>
-        <descr><p>FindAllDirectories is an overloaded routine used to store directory path names that match the specified search criteria in a TStringList class instance. The procedure variant uses an existing TStringList class instance to store the matching directory names. The function variant allocates a TStringList class instance used to capture the matching directory names.
+        <descr>
+          <p>
+            <var>FindAllDirectories</var> is an overloaded routine used to store directory path names that match the specified search criteria in a <var>TStringList</var> class instance. The procedure variant uses an existing TStringList class instance to store the matching directory names. The function variant allocates a TStringList class instance used to capture the matching directory names.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="FindAllDirectories.Result">
         <short>Stores directory names matching the search criteria</short>
-        <descr/>
-        <seealso/>
       </element>
       <element name="FindAllDirectories.AList">
         <short>Stores directory names matching the search criteria</short>
-        <descr/>
-        <seealso/>
       </element>
       <element name="FindAllDirectories.SearchPath">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Path(s) to the directories examined in the routine</short>
       </element>
       <element name="FindAllDirectories.SearchSubDirs">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>True to recurse into sub-sirectories in the search</short>
       </element>
       <element name="FindAllDirectories.PathSeparator">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Delimiter used to separate path names in the SearchPath parameter</short>
       </element>
 
       <element name="TCopyFileFlag">
-        <short/>
+        <short>Contains flags used to control actions performed in CopyFile or CopyDirTree</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCopyFileFlags"/>
+          <link id="CopyFile"/>
+          <link id="CopyDirTree"/>
+        </seealso>
       </element>
       <element name="TCopyFileFlag.cffOverwriteFile">
-        <short/>
+        <short>Oerwrites the destination file if it already exists</short>
       </element>
       <element name="TCopyFileFlag.cffCreateDestDirectory">
-        <short/>
+        <short>Create the directory for the destination fil if it does not already exist</short>
       </element>
       <element name="TCopyFileFlag.cffPreserveTime">
-        <short/>
+        <short>Preserves the timestamp for the source file in the destination file</short>
       </element>
 
       <element name="TCopyFileFlags">
-        <short/>
+        <short>Set type used to store TCopyFileFlag enumeration values</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCopyFileFlag"/>
+          <link id="CopyFile"/>
+          <link id="CopyDirTree"/>
+        </seealso>
       </element>
 
       <element name="CopyFile">
-        <short>
-          <var>CopyFile</var> - copies Source file to Destination file, optionally preserving the timestamp of the original file
-        </short>
+        <short>Copies the source file to the destination file using the specified options</short>
+        <descr>
+          <p>
+            <var>CopyFile</var> is an overloaded <var>Boolean</var> function used to copy the file in <var>SrcFilename</var> to the destination in <var>DestFilename</var>. Both parameters contain a fully-qualified path with file name and extension (if needed) for the respective files.
+          </p>
+          <p>
+            <var>Flags</var> contains <var>TCopyFileFlag</var> value(s) that are enforced in the copy operation. The default value for the parameter is <var>[cffOverwriteFile]</var> and indicates that the destination file is overwritten if it already exists on the local file system.
+          </p>
+          <p>
+            <var>PreserveTime</var> indicates if the timestamp for the source file is preserved in the destination file when the copy operation has been completed. It is an alternative to using the Flags arguments in the overloaded variant.
+          </p>
+          <p>
+            The return value is set to <b>True</b> when the copy operation has been completed successfully. Otherwise, the return value is <b>False</b>.
+          </p>
+        </descr>
         <errors>
-          An exception is raised if the copy process does not complete successfully or correctly.
+          An Exception is raised if the copy process does not complete successfully or correctly.
         </errors>
       </element>
       <element name="CopyFile.Result">
         <short>Returns True if successful, False if there was an error</short>
       </element>
       <element name="CopyFile.SrcFilename">
-        <short>The source filename for the Copy</short>
+        <short>The source file name for the copy operation</short>
       </element>
       <element name="CopyFile.DestFilename">
-        <short>The destination filename for the Copy</short>
+        <short>The destination file name for the copy operation</short>
       </element>
       <element name="CopyFile.Flags">
-        <short/>
+        <short>Set with flags enabled for the copy operation</short>
       </element>
       <element name="CopyFile.PreserveTime">
         <short>If True, the timestamp of the original file is preserved in the copied file</short>
       </element>
       <element name="CopyFile.ExceptionOnError">
-        <short/>
+        <short>If True, and exception is raised if the copy operation cannot be performed</short>
       </element>
 
       <element name="CopyDirTree">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Copies all file system entries in a source directory to the destination directory using the specified options
+        </short>
+        <descr>
+          <p>
+            <var>CopyDirTree</var> is a <var>Boolean</var> function used to copy file system entries from the directory in <var>SourceDir</var> to the directory in <var>TargetDir</var>.
+          </p>
+          <p>
+            Values in SourceDir and TargetDir are fully-qualified path names for the directories. TargetDir cannot be a sub-directory located in SourceDir. No actions are performed in the routine when TargetDir is located within the specified SourceDir.
+          </p>
+          <p>
+            Flags contains values representing the options enabled in the copy operation. The default value for the parameters is an empty set (<b>[]</b>) and indicates that none of the <var>TCopyFileFlag</var> options are enabled. The value <var>cffCreateDestDirectory</var> is always added to the values in Flags internally; CopyDirTree requires the destination directory to be created if it does not already exist.
+          </p>
+          <p>
+            See <link id="TCopyFileFlag">TCopyFileFlag</link> for more information about the option values and their meanings.
+          </p>
+          <p>
+            The return value is <b>True</b> when all file system entries in SourceDir are successfully copied in the routine. Please note that a portion of the copy operation may have been performed successfully even when the return value is <b>False</b>.
+          </p>
+          <p>
+            Use <var>CopyFile</var> to copy a single file with a given name to a new file name.
+          </p>
+        </descr>
+        <seealso>
+          <link id="CopyFile"/>
+          <link id="TCopyFileFlags"/>
+        </seealso>
       </element>
       <element name="CopyDirTree.Result">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>True when all files are successfully copied in the routine</short>
       </element>
       <element name="CopyDirTree.SourceDir">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Directory with the files copied in the routine</short>
       </element>
       <element name="CopyDirTree.TargetDir">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Directory where the copied files are stored</short>
       </element>
       <element name="CopyDirTree.Flags">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Options enabled for the copy operation; default value is an empty set []</short>
       </element>
 
       <element name="PascalFileExt">
-        <short>
-          <var>PascalFileExt</var>
-          - typically '.pas', '.pp' or '.p'
-        </short>
+        <short>File extensions used for Pascal source code files</short>
+        <descr>
+          <p>
+            <var>PascalFileExt</var> is an <b>array constant</b> which contains the file extensions (including the initial '.') used for Pascal source code files (units).
+          </p>
+        </descr>
+        <seealso>
+          <link id="PascalSourceExt"/>
+        </seealso>
       </element>
 
       <element name="PascalSourceExt">
-        <short>An array of file extensions considered to be Pascal source code</short>
-        <descr/>
-        <seealso/>
+        <short>File extensions considered to be Pascal source code</short>
+        <descr>
+          <p>
+            <var>PascalSourceExt</var> is an <b>array constant</b> which contains the file extensions (including the initial '.') used for Pascal source code files. Similar to <var>PascalFileExt</var>, but includes extensions used for project and package files.
+          </p>
+        </descr>
+        <seealso>
+          <link id="PascalFileExt"/>
+        </seealso>
       </element>
 
       <element name="AllDirectoryEntriesMask">
-        <short>File masked used to match all directories entries</short>
-        <descr/>
-        <seealso/>
+        <short>File masked used to match all directories entries on the local file system</short>
+        <descr>
+          <p>
+            Used in the implementation of the <var>TFileSearcher.Search</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
     </module>

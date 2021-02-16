@@ -8,8 +8,22 @@
     -->
     <module name="ButtonPanel">
       <short>Provides a panel with Bitmap buttons</short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>buttonpanel.pas</file> contains classes and types used to implement <var>TButtonPanel</var>, a panel which contains common buttons used in an application form. It is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE:
+        </p>
+        <p>
+          <b>Misc</b> Tab
+        </p>
+        <ul>
+          <li>TButtonPanel</li>
+        </ul>
+      </descr>
 
+      <!-- unresolved references -->
       <element name="Math"/>
       <element name="Types"/>
       <element name="SysUtils"/>

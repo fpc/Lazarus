@@ -8,8 +8,13 @@
       -->
     <module name="LazSysUtils">
       <short></short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>lazsysutils.pas</file> contains utility functions for the various supported platforms. This file is part of the <file>LazUtils</file> package.
+        </p>
+      </descr>
 
+      <!-- unresolved external references -->
       <element name="SysUtils"/>
 
       <element name="NowUTC">

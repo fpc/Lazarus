@@ -8,13 +8,22 @@
     -->
     <module name="ExtendedStrings">
       <short>
-        Defines <var>TExtendedStrings</var> which is a normal <var>TStringList</var>, except that the Objects property can hold any type of records
+        Implements an extended string list that allows its Objects property to hold records
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>extendedstrings.pas</file> implements <var>TExtendedStrings</var>, which is a <var>TStringList</var> that allows its <var>Objects</var> property to hold any type of records.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
+        <p>
+          Author: Mattias Gaertner
+        </p>
+      </descr>
 
-      <!-- unresolved type reference Visibility: default -->
+      <!-- unresolved references -->
       <element name="Classes"/>
-      <!-- unresolved type reference Visibility: default -->
       <element name="SysUtils"/>
 
       <!-- enumeration type Visibility: default -->

@@ -1,62 +1,25 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    Clipbrd
-  ====================================================================
--->
+      ====================================================================
+        Clipbrd
+      ====================================================================
+    -->
     <module name="Clipbrd">
       <short>Definitions for the Clipboard to hold Cut or Copied data for Pasting</short>
-      <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="FPCAdds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLIntf">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="GraphType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <descr>
+        <p>
+          <file>clipbrd.pp</file> contains classes, types, and routines used to implement TClipboard. TClipboard encapsulates the system clipboard for supported platforms. This file is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+      </descr>
+
+      <!-- unresolved references -->
+      <element name="UTF8BIDI"/>
+      <element name="Windows"/>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+
       <!-- function Visibility: default -->
       <element name="CF_Text">
         <short/>
@@ -144,17 +107,26 @@
       <!-- object Visibility: default -->
       <element name="TClipboard">
         <short>
-          <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting</short>
+          <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting
+        </short>
         <descr>
           <p>
-            <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting.</p>
-          <p>The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object: <link id="PrimarySelection"/>, <link id="SecondarySelection"/> and <link id="Clipboard"/>. There is no difference between the three objects except their type.</p>
-          <p>A lot of information about Clipboard Formats, including predefined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
-          <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>,
-          <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>,
-          <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
-          <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
-          <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
+            <var>TClipboard</var> - area for holding information that has been cut or copied, ready for pasting.
+          </p>
+          <p>
+            The clipboard object encapsulates the Windows clipboard and the three standard Gtk selections. For each of the three clipboards/selections there is an object:
+              <link id="PrimarySelection">PrimarySelection</link>,
+              <link id="SecondarySelection">SecondarySelection</link> and
+              <link id="Clipboard">Clipboard</link>.
+              There is no difference between the three objects except their type.
+          </p>
+          <p>
+            A lot of information about Clipboard Formats, including predefined formats for Delphi/Kylix compatibility, is found in the LCLType unit, at
+            <link id="#lcl.lcltype.TClipboardFormat">TClipboardFormat</link>,
+            <link id="#lcl.lcltype.TClipboardType">TClipboardType</link>,
+            <link id="#lcl.lcltype.ClipboardTypeName">ClipboardTypeName</link>,
+            <link id="#lcl.lcltype.TPredefinedClipboardFormat">TPredefinedClipboardFormat</link>,
+            <link id="#lcl.lcltype.PredefinedClipboardMimeTypes">PredefinedClipboardMimeTypes</link>
           </p>
         </descr>
         <errors/>
@@ -777,22 +749,35 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       <!-- property Visibility: public -->
       <element name="TClipboard.OnRequest">
         <short>
-          <var>OnRequest</var> - event handler for a request for clipboard data</short>
+          <var>OnRequest</var> - event handler for a request for clipboard data
+        </short>
         <descr>
           <p>
-            <var>OnRequest</var> - event handler for a request for clipboard data</p>
-          <p>If the clipboard has the ownership,  this event will be called each time data are requested from the clipboard by the application or another application. </p>
+            <var>OnRequest</var> - event handler for a request for clipboard data.
+          </p>
+          <p>
+            If the clipboard has the ownership,  this event will be called each time data are requested from the clipboard by the application or another application.
+          </p>
           <p>There is one special case: </p>
-          <p>If the clipboard loses ownership the <var>OnRequest</var> event will be called with FormatID=0. This event will be erased on lost of ownership.</p>
-          <p>If the <var>OnRequest</var> event was already set before, the prior method will be called with FormatID=0 to be notified of the loss.</p>
+          <p>
+            If the clipboard loses ownership the <var>OnRequest</var> event will be called with FormatID=0. This event will be erased on lost of ownership.
+          </p>
+          <p>
+            If the <var>OnRequest</var> event was already set before, the prior method will be called with FormatID=0 to be notified of the loss.
+          </p>
         </descr>
         <seealso/>
       </element>
       <!-- function Visibility: default -->
       <element name="PrimarySelection">
         <short>
-          <var>PrimarySelection</var> - the first selection if multiple clipboards exist</short>
-        <descr>The PrimarySelection is available on platforms like X. Normally when the user selects some text with the mouse the primary selection is set and when the user clicks the middle mouse button the text is copied to the mouse position. On platforms without multiple clipboards, the PrimarySelection still works in the LCL application, but does not communicate with other applications.</descr>
+          <var>PrimarySelection</var> - the first selection if multiple clipboards exist
+        </short>
+        <descr>
+          <p>
+            The PrimarySelection is available on platforms like X. Normally when the user selects some text with the mouse the primary selection is set and when the user clicks the middle mouse button the text is copied to the mouse position. On platforms without multiple clipboards, the PrimarySelection still works in the LCL application, but does not communicate with other applications.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -803,8 +788,13 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       <!-- function Visibility: default -->
       <element name="SecondarySelection">
         <short>
-          <var>SecondarySelection</var> - the second selection if multiple clipboards exist</short>
-        <descr>The SecondarySelection is available on platforms like X. See PrimarySelection for more details. There is no standard how to use the secondary selection, so it is free to use. X supports a dozen more selections, but they are not supported by the LCL.</descr>
+          <var>SecondarySelection</var> - the second selection if multiple clipboards exist
+        </short>
+        <descr>
+          <p>
+            The SecondarySelection is available on platforms like X. See PrimarySelection for more details. There is no standard how to use the secondary selection, so it is free to use. X supports a dozen more selections, but they are not supported by the LCL.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>
@@ -815,8 +805,13 @@ The format CF_TEXT is handled by AsText and SetTextBuf. Use those functions inst
       <!-- function Visibility: default -->
       <element name="Clipboard">
         <short>
-          <var>Clipboard</var> the function called to access the clipboard with an optional type specifier</short>
-        <descr>The Clipboard is available on most platforms and normally used by Copy/Paste.</descr>
+          <var>Clipboard</var> the function called to access the clipboard with an optional type specifier
+        </short>
+        <descr>
+          <p>
+            The Clipboard is available on most platforms and normally used by Copy/Paste.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>

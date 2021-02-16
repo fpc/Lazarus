@@ -1,1257 +1,857 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-<package name="lcl">
-
-<!--
-  ====================================================================
+  <package name="lcl">
+    <!--
+    ====================================================================
     HelpIntfs
-  ====================================================================
--->
-
-<module name="HelpIntfs">
-<short/>
-<descr>
-</descr>
-
-<!-- unresolved type references -->
-<element name="Classes"/>
-<element name="SysUtils"/>
-<element name="LCLProc"/>
-
-<element name="EHelpSystemException">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration type Visibility: default -->
-<element name="TShowHelpResult">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrNone">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrSuccess">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrCancel">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrDatabaseNotFound">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrContextNotFound">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrViewerNotFound">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrHelpNotFound">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrViewerError">
-<short/>
-</element>
-
-<!-- enumeration value Visibility: default -->
-<element name="TShowHelpResult.shrSelectorError">
-<short/>
-</element>
-
-<!-- set type Visibility: default -->
-<element name="TShowHelpResults">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="THelpDatabaseID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQuery">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQuery.FHelpDatabaseID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQuery.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQuery.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQuery.HelpDatabaseID">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryTOC">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryContext.FContext">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQueryContext.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryContext.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryContext.Create.TheContext">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryContext.Context">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryKeyword.FKeyword">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQueryKeyword.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryKeyword.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryKeyword.Create.TheKeyWord">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryKeyword.Keyword">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQuerySourcePosition">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQuerySourcePosition.FFilename">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQuerySourcePosition.FSourcePosition">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQuerySourcePosition.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQuerySourcePosition.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQuerySourcePosition.Create.TheFilename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQuerySourcePosition.Create.SrcPos">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQuerySourcePosition.Filename">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQuerySourcePosition.SourcePosition">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryPascalContexts">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryPascalContexts.FContextLists">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQueryPascalContexts.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryPascalContexts.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryPascalContexts.Create.TheFilename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryPascalContexts.Create.SrcPos">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryPascalContexts.Create.ContextLists">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryPascalContexts.ListOfPascalHelpContextList">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryMessage">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryMessage.FMessageParts">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryMessage.FWholeMessage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQueryMessage.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryMessage.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryMessage.Create.TheMessage">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryMessage.Create.TheMessageParts">
-<short/>
-</element>
-
-<!-- destructor Visibility: public -->
-<element name="THelpQueryMessage.Destroy">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryMessage.WholeMessage">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryMessage.MessageParts">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpQueryClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="THelpQueryClass.FTheClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constructor Visibility: public -->
-<element name="THelpQueryClass.Create">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryClass.Create.TheHelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpQueryClass.Create.AClass">
-<short/>
-</element>
-
-<!-- property Visibility: public -->
-<element name="THelpQueryClass.TheClass">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- object Visibility: default -->
-<element name="THelpManager">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.DoHelpNotFound">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.DoHelpNotFound.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.DoHelpNotFound.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowTableOfContents.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowTableOfContents.ErrMsg">
-<short/>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="THelpManager.ShowError">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowError.ShowResult">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowError.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForQuery">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForQuery.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForQuery.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForQuery.AutoFreeQuery">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForQuery.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForContext.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForContext.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForKeyword.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForPascalContexts">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForPascalContexts.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForPascalContexts.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForPascalContexts.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForSourcePosition">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForSourcePosition.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForSourcePosition.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForSourcePosition.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForMessageLine">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForMessageLine.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForMessageLine.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForMessageLine.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpForClass">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpForClass.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForClass.Query">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpForClass.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelpFile">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelpFile.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpFile.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpFile.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpFile.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelpFile.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: public -->
-<element name="THelpManager.ShowHelp">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="THelpManager.ShowHelp.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelp.URL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelp.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelp.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="THelpManager.ShowHelp.ErrMsg">
-<short/>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="HelpManager">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowTableOfContents">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowTableOfContents.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowTableOfContents.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpOrErrorForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpOrErrorForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForContext.HelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForContext.HelpContext">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpForContext">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpForContext.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForContext.HelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForContext.HelpContext">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForContext.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpOrErrorForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpOrErrorForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForKeyword.HelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForKeyword.HelpKeyword">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpForKeyword">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpForKeyword.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForKeyword.HelpDatabaseID">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForKeyword.HelpKeyword">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForKeyword.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpForPascalContexts">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpForPascalContexts.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForPascalContexts.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForPascalContexts.SourcePosition">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForPascalContexts.ListOfPascalHelpContextList">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForPascalContexts.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpOrErrorForSourcePosition">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpOrErrorForSourcePosition.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForSourcePosition.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForSourcePosition.SourcePosition">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpForMessageLine">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpForMessageLine.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForMessageLine.MessageLine">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForMessageLine.MessageParts">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpForMessageLine.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpOrErrorForMessageLine">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpOrErrorForMessageLine.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForMessageLine.MessageLine">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrErrorForMessageLine.MessageParts">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpFile">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpFile.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFile.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFile.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFile.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFile.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpFileOrError">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpFileOrError.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFileOrError.Filename">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFileOrError.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpFileOrError.MimeType">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelp">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelp.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelp.URL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelp.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelp.MimeType">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelp.ErrMsg">
-<short/>
-</element>
-
-<!-- function Visibility: default -->
-<element name="ShowHelpOrError">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="ShowHelpOrError.Result">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrError.URL">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrError.Title">
-<short/>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="ShowHelpOrError.MimeType">
-<short/>
-</element>
-</module> <!-- HelpIntfs -->
-</package>
+    ====================================================================
+    -->
+    <module name="HelpIntfs">
+      <short>Interfaces to define the abstract HelpSystem</short>
+      <descr>
+        <p>
+          <file>helpintfs.pas</file> contains interfaces to define the abstract HelpSystem.
+        </p>
+        <p>
+          You can create your own HelpSystem based on these interfaces, or use the LCL help system in <file>lazhelpintf.pas</file>. <var>THTMLHelpDatabase</var> and <var>THTMLBrowserHelpViewer</var> in <file>lazhelphtml.pas</file> use the LCL help system. To create your own help system, implement a descendant of <var>THelpManager</var>.
+        </p>
+        <p>
+          This file is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          Author: Mattias Gaertner
+        </p>
+      </descr>
+
+      <!-- unresolved type references -->
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LCLProc"/>
+
+      <element name="EHelpSystemException">
+        <short>Exception raised for Help system errors</short>
+        <descr>
+          <p>
+            All help-specific errors should use this Exception type.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TShowHelpResult">
+        <short>Represents result codes returned by THelpManager</short>
+        <descr>
+          <p>
+            <var>TShowHelpResult</var> is an enumerated type with values that represent result codes for help requests using <var>THelpManager</var>. It is also the type returned from convenience methods like <var>ShowTableOfContents</var>, <var>ShowHelpForKeyword</var>, <var>ShowHelpForPascalContexts</var>, et. al.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpManager"/>
+        </seealso>
+      </element>
+      <element name="TShowHelpResult.shrNone">
+        <short>No help result available (help error)</short>
+      </element>
+      <element name="TShowHelpResult.shrSuccess">
+        <short>Help request successfully completed</short>
+      </element>
+      <element name="TShowHelpResult.shrCancel">
+        <short>Help request was canceled</short>
+      </element>
+      <element name="TShowHelpResult.shrDatabaseNotFound">
+        <short>Help database was not found</short>
+      </element>
+      <element name="TShowHelpResult.shrContextNotFound">
+        <short>Help database found, but the context was not found</short>
+      </element>
+      <element name="TShowHelpResult.shrViewerNotFound">
+        <short>No Help viewer registered for this format</short>
+      </element>
+      <element name="TShowHelpResult.shrHelpNotFound">
+        <short>No Help found for the keyword or directive</short>
+      </element>
+      <element name="TShowHelpResult.shrViewerError">
+        <short>Help viewer could not display a help node</short>
+      </element>
+      <element name="TShowHelpResult.shrSelectorError">
+        <short>No help node(s) found for the help selector</short>
+      </element>
+
+      <element name="TShowHelpResults">
+        <short>Set type used to store values from the TShowHelpResult enumeration</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpDatabaseID">
+        <short>Identifier used to represent a Help database</short>
+        <descr>
+          <p>
+            <var>THelpDatabaseID</var> is an alias for the <var>String</var> type.
+          </p>
+          <p>
+            THelpDatabaseID is the type used to implement the <var>THelpQuery.HelpDatabaseID</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THelpQuery.HelpDatabaseID"/>
+        </seealso>
+      </element>
+
+      <element name="THelpQuery">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQuery.FHelpDatabaseID"/>
+
+      <element name="THelpQuery.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQuery.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+
+      <element name="THelpQuery.HelpDatabaseID">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryTOC">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryContext">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryContext.FContext"/>
+
+      <element name="THelpQueryContext.Create">
+        <short/><short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQueryContext.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+      <element name="THelpQueryContext.Create.TheContext">
+        <short/>
+      </element>
+
+      <element name="THelpQueryContext.Context">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryKeyword">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryKeyword.FKeyword"/>
+
+      <element name="THelpQueryKeyword.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQueryKeyword.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+      <element name="THelpQueryKeyword.Create.TheKeyWord">
+        <short/>
+      </element>
+
+      <element name="THelpQueryKeyword.Keyword">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQuerySourcePosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQuerySourcePosition.FFilename"/>
+      <element name="THelpQuerySourcePosition.FSourcePosition"/>
+
+      <element name="THelpQuerySourcePosition.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQuerySourcePosition.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+      <element name="THelpQuerySourcePosition.Create.TheFilename">
+        <short/>
+      </element>
+      <element name="THelpQuerySourcePosition.Create.SrcPos">
+        <short/>
+      </element>
+
+      <element name="THelpQuerySourcePosition.Filename">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQuerySourcePosition.SourcePosition">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryPascalContexts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryPascalContexts.FContextLists"/>
+
+      <element name="THelpQueryPascalContexts.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQueryPascalContexts.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+      <element name="THelpQueryPascalContexts.Create.TheFilename">
+        <short/>
+      </element>
+      <element name="THelpQueryPascalContexts.Create.SrcPos">
+        <short/>
+      </element>
+      <element name="THelpQueryPascalContexts.Create.ContextLists">
+        <short/>
+      </element>
+
+      <element name="THelpQueryPascalContexts.ListOfPascalHelpContextList">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryMessage">
+        <short/>
+        <descr>
+          <p>
+            THelpQueryMessage is a THelpQuery descendant which contains a query for messages, like the compiler warnings and errors.
+          </p>
+          <p>
+            WholeMessage is a string with the complete message.
+          </p>
+          <p>
+            MessageParts contains Name/Value pairs prepared by the IDE. Common names and values in the property include:
+          </p>
+          <dl>
+            <dt>Stage</dt>
+            <dd>
+              Indicates what part of the build process the message belongs to. Common values are 'FPC', 'Linker' or 'make'.
+            </dd>
+            <dt>Type</dt>
+            <dd>
+              For FPC: 'Hint', 'Note', 'Warning', 'Error', 'Fatal', 'Panic', 'Compiling', 'Assembling', For make: ?. For Linker: ?.
+            </dd>
+            <dt>Line</dt>
+            <dd>An integer with the line number as given by FPC (in brackets).</dd>
+            <dt>Column</dt>
+            <dd>An integer with the column number as given by FPC (in brackets).</dd>
+            <dt>Message</dt>
+            <dd>The message text without other parsed items.</dd>
+          </dl>
+          <pre>
+  Example:
+
+    Message written by FPC:
+      unit1.pas(21,3) Warning: unit buttons not used
+
+    Results in:
+      Stage=FPC
+      Type=Warning
+      Line=21
+      Column=3
+      Message=unit buttons not used
+            </pre>
+        </descr>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryMessage.FMessageParts"/>
+      <element name="THelpQueryMessage.FWholeMessage"/>
+
+      <element name="THelpQueryMessage.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQueryMessage.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+      <element name="THelpQueryMessage.Create.TheMessage">
+        <short/>
+      </element>
+      <element name="THelpQueryMessage.Create.TheMessageParts">
+        <short/>
+      </element>
+
+      <element name="THelpQueryMessage.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryMessage.WholeMessage">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryMessage.MessageParts">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+
+      <element name="THelpQueryClass.FTheClass"/>
+
+      <element name="THelpQueryClass.Create">
+        <short>Constructor for the class instance</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpQueryClass.Create.TheHelpDatabaseID">
+        <short/>
+      </element>
+      <element name="THelpQueryClass.Create.AClass">
+        <short/>
+      </element>
+
+      <element name="THelpQueryClass.TheClass">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="THelpManager">
+        <short>
+          Defines a help manager used to display a help query or a table of contents
+        </short>
+        <descr>
+          <p>
+            <var>THelpManager</var> is a <var>TObject</var> descendant which defines a help manager. It provides methods used to display help for specific help query types, or a help table of contents. It also provides methods used to display/handle error messages.
+          </p>
+          <p>
+            On its own, THelpManager is not particulary useful. All of the methods return the shrHelpNotFound help result. They are, however, declared as abstract/virtual and should be implemented/overridden in a descendent class which provides support for a specific help format like HTML, CHM, INF, or other content type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lazhelpintf.THelpDatabases">THelpDatabases</link>
+        </seealso>
+      </element>
+
+      <element name="THelpManager.DoHelpNotFound">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.DoHelpNotFound.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.DoHelpNotFound.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowTableOfContents">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowTableOfContents.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowTableOfContents.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowError.ShowResult">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowError.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForQuery">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForQuery.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForQuery.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForQuery.AutoFreeQuery">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForQuery.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForContext">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForContext.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForContext.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForContext.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForKeyword">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForKeyword.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForKeyword.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForKeyword.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForPascalContexts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForPascalContexts.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForPascalContexts.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForPascalContexts.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForSourcePosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForSourcePosition.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForSourcePosition.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForSourcePosition.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForMessageLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForMessageLine.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForMessageLine.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForMessageLine.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpForClass">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpForClass.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForClass.Query">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpForClass.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelpFile">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelpFile.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpFile.Filename">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpFile.Title">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpFile.MimeType">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelpFile.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="THelpManager.ShowHelp">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="THelpManager.ShowHelp.Result">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelp.URL">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelp.Title">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelp.MimeType">
+        <short/>
+      </element>
+      <element name="THelpManager.ShowHelp.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="HelpManager">
+        <short/>
+        <descr>
+          <p>
+            <var>HelpManager</var> is a <var>THelpManager</var> variable with the unit global singleton for the class instance. Its value is assigned by the Lazarus IDE when the LCL Help System is initialized. LCL applications can call <var>CreateLCLHelpSystem</var> in <file>LazHelpIntf</file>.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="ShowTableOfContents">
+        <short>Display the Help table of contents</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowTableOfContents.Result">
+        <short/>
+      </element>
+      <element name="ShowTableOfContents.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpOrErrorForContext">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpOrErrorForContext.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForContext.HelpDatabaseID">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForContext.HelpContext">
+        <short/>
+      </element>
+
+      <element name="ShowHelpForContext">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpForContext.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpForContext.HelpDatabaseID">
+        <short/>
+      </element>
+      <element name="ShowHelpForContext.HelpContext">
+        <short/>
+      </element>
+      <element name="ShowHelpForContext.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpOrErrorForKeyword">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpOrErrorForKeyword.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForKeyword.HelpDatabaseID">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForKeyword.HelpKeyword">
+        <short/>
+      </element>
+
+      <element name="ShowHelpForKeyword">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpForKeyword.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpForKeyword.HelpDatabaseID">
+        <short/>
+      </element>
+      <element name="ShowHelpForKeyword.HelpKeyword">
+        <short/>
+      </element>
+      <element name="ShowHelpForKeyword.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpForPascalContexts">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpForPascalContexts.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpForPascalContexts.Filename">
+        <short/>
+      </element>
+      <element name="ShowHelpForPascalContexts.SourcePosition">
+        <short/>
+      </element>
+      <element name="ShowHelpForPascalContexts.ListOfPascalHelpContextList">
+        <short/>
+      </element>
+      <element name="ShowHelpForPascalContexts.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpOrErrorForSourcePosition">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpOrErrorForSourcePosition.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForSourcePosition.Filename">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForSourcePosition.SourcePosition">
+        <short/>
+      </element>
+
+      <element name="ShowHelpForMessageLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpForMessageLine.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpForMessageLine.MessageLine">
+        <short/>
+      </element>
+      <element name="ShowHelpForMessageLine.MessageParts">
+        <short/>
+      </element>
+      <element name="ShowHelpForMessageLine.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpOrErrorForMessageLine">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpOrErrorForMessageLine.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForMessageLine.MessageLine">
+        <short/>
+      </element>
+      <element name="ShowHelpOrErrorForMessageLine.MessageParts">
+        <short/>
+      </element>
+
+      <element name="ShowHelpFile">
+        <short>Displays a Help file wih the given file name and MIME type</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpFile.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpFile.Filename">
+        <short/>
+      </element>
+      <element name="ShowHelpFile.Title">
+        <short/>
+      </element>
+      <element name="ShowHelpFile.MimeType">
+        <short/>
+      </element>
+      <element name="ShowHelpFile.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpFileOrError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpFileOrError.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpFileOrError.Filename">
+        <short/>
+      </element>
+      <element name="ShowHelpFileOrError.Title">
+        <short/>
+      </element>
+      <element name="ShowHelpFileOrError.MimeType">
+        <short/>
+      </element>
+
+      <element name="ShowHelp">
+        <short>Display a Help file wih the give URL and MIME type</short>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelp.Result">
+        <short/>
+      </element>
+      <element name="ShowHelp.URL">
+        <short/>
+      </element>
+      <element name="ShowHelp.Title">
+        <short/>
+      </element>
+      <element name="ShowHelp.MimeType">
+        <short/>
+      </element>
+      <element name="ShowHelp.ErrMsg">
+        <short/>
+      </element>
+
+      <element name="ShowHelpOrError">
+        <short/>
+        <descr/>
+        <errors/>
+        <seealso/>
+      </element>
+      <element name="ShowHelpOrError.Result">
+        <short/>
+      </element>
+      <element name="ShowHelpOrError.URL">
+        <short/>
+      </element>
+      <element name="ShowHelpOrError.Title">
+        <short/>
+      </element>
+      <element name="ShowHelpOrError.MimeType">
+        <short/>
+      </element>
+
+      <topic name="HelpDisplay-HowItWorks">
+        <short>Displaying Help (How It Works)</short>
+        <descr>
+          <ul>
+            <li>
+              Start the help system, if not already started.
+            </li>
+            <li>
+              Search all appropriate help Databases for the given context. If multiple contexts fit, a help selector is shown and the user chooses one.
+            </li>
+            <li>
+              Calls the help Database to show the context. The help Database will search for an appropriate help viewer and start the application.
+            </li>
+          </ul>
+        </descr>
+        <seealso/>
+      </topic>
+
+    </module>
+    <!-- HelpIntfs -->
+  </package>
 </fpdoc-descriptions>

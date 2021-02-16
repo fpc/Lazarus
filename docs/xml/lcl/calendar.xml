@@ -10,40 +10,31 @@
       <short>
         Classes and types used to implement TCalendar, a graphic control allowing selection of a date from a calendar display
       </short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>calendar.pp</file> contains classes and types used to implement <var>TCalendar</var>, a graphic control allowing selection of a date from a calendar display. It is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Misc</b> Tab
+        </p>
+        <ul>
+          <li>TCalendar</li>
+        </ul>
+      </descr>
 
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Types">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLStrConsts">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="lMessages">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short></short>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short></short>
-      </element>
+      <!-- unresolved references -->
+      <element name="LCLProc"/>
+      <element name="Types"/>
+      <element name="SysUtils"/>
+      <element name="Classes"/>
+      <element name="LCLType"/>
+      <element name="LCLStrConsts"/>
+      <element name="lMessages"/>
+      <element name="Controls"/>
+      <element name="LResources"/>
 
       <!-- enumeration type Visibility: default -->
       <element name="TDisplaySetting">
@@ -738,7 +729,18 @@
 
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short></short>
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            Register is the procedure used to register components for use in the Lazarus IDE. The following components are added to the Lazarus IDE component palette:
+          </p>
+          <p>
+            <b>Misc</b> Tab
+          </p>
+          <ul>
+            <li>TCalendar</li>
+          </ul>
+        </descr>
       </element>
     </module>
     <!-- Calendar -->

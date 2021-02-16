@@ -8,18 +8,29 @@
 -->
     <module name="LResources">
       <short>
-        This unit maintains and stores all standard Lazarus resources in the global <link id="#LCL.LResources.LazarusResources">LazarusResources</link> list and provides methods and types for component streaming.
+        Maintains a global list of Lazarus resources and provides methods and types to stream components
       </short>
       <descr>
-        <p>A <link id="TLResource">Lazarus resource</link> is streamed as an UTF-8 string,
-          with a name, value and value type.
+        <p>
+          <file>lresources.pp</file> maintains and stores all standard Lazarus resources in the global <link id="#LCL.LResources.LazarusResources">LazarusResources</link> list and provides methods and types for component streaming.
         </p>
-        <p>Lazarus resources are normally included via an include directive
-          in the initialization part of a unit.
-          To create such include files use the <var>BinaryToLazarusResourceCode</var> procedure.</p>
-        <p>To create an LRS file from an LFM file use the <var>LFMtoLRSfile</var> function
-          which transforms the LFM text to binary format and stores it as Lazarus resource include file.</p>
+        <p>
+          A <link id="TLResource">Lazarus resource</link> is streamed as an UTF-8 string, with a name, value and value type.
+        </p>
+        <p>
+          Lazarus resources are normally included via an include directive in the initialization part of a unit. To create such include files use the <var>BinaryToLazarusResourceCode</var> procedure.
+        </p>
+        <p>
+          To create an LRS file from an LFM file use the <var>LFMtoLRSfile</var> function which transforms the LFM text to binary format and stores it as Lazarus resource include file.
+        </p>
+        <p>
+          Author: Mattias Gaertner
+        </p>
+        <p>
+          This file is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
       </descr>
+
       <!-- unresolved type reference Visibility: default -->
       <element name="Classes"/>
       <element name="SysUtils"/>

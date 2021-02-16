@@ -8,7 +8,11 @@
     -->
     <module name="DBLogDlg">
       <short>Contains forms and routines used to implement a database login dialog</short>
-      <descr/>
+      <descr>
+        <p>
+          <file>dblogdlg.pas</file> contains the <var>TLoginDialog</var> dialog form used to capture the user name and password used to login to a database. The <var>LoginDialogEx</var> routine is provided to create, configure, and execute a TLogInDialog instance.
+        </p>
+      </descr>
 
       <!-- used units -->
       <element name="System"/>

@@ -211,9 +211,6 @@
           </p>
         </descr>
         <seealso/>
-        <notes>
-          <note>!!! This needs review for accuracy.</note>
-        </notes>
       </element>
       <element name="GuessEncoding.Result">
         <short>Encoding name detected, or a default value</short>
@@ -299,12 +296,14 @@
       <element name="GetDefaultTextEncoding">
         <short/>
         <descr>
-          This routine should obtain the encoding utilized by AnsiString in the RTL.
+          <p>
+            This routine gets the default encoding name used for text from the DefaultTextEncoding unit variable. It contains the encoding use for AnsiString in the RTL.
+          </p>
         </descr>
         <seealso/>
       </element>
       <element name="GetDefaultTextEncoding.Result">
-        <short/>
+        <short>Returns the value in the EncodingAnsi constant ('ansi')</short>
       </element>
 
       <element name="GetConsoleTextEncoding">
@@ -312,7 +311,8 @@
         <descr>
           <p>
             This routine returns the console text encoding, which might be different from the normal system encoding on some Windows systems. See
-            <url href="http://mantis.freepascal.org/view.php?id=20552">http://mantis.freepascal.org/view.php?id=20552</url>
+              <url href="http://mantis.freepascal.org/view.php?id=20552">
+              http://mantis.freepascal.org/view.php?id=20552</url>
           </p>
         </descr>
         <seealso/>
@@ -1179,20 +1179,6 @@
             <li>'UTF-8'</li>
             <li>'UTF-8BOM'</li>
             <li>'Ansi'</li>
-            <li>'ISO-8859-1'</li>
-            <li>'ISO-8859-2'</li>
-            <li>'ISO-8859-15'</li>
-            <li>'KOI8-R'</li>
-            <li>'KOI8-U'</li>
-            <li>'KOI8-RU'</li>
-            <li>'Macintosh'</li>
-            <li>'UCS-2LE'</li>
-            <li>'UCS-2BE'</li>
-          </ul>
-          <p>
-            The uppercase variants of the following constants are also added to the list:
-          </p>
-          <ul>
             <li>EncodingCP1250</li>
             <li>EncodingCP1251</li>
             <li>EncodingCP1252</li>
@@ -1216,6 +1202,20 @@
             <li>EncodingCP936</li>
             <li>EncodingCP950</li>
             <li>EncodingCP949</li>
+          </ul>
+          <p>
+             The following encoding names are added to the end of the list:
+          </p>
+          <ul>
+            <li>'ISO-8859-1'</li>
+            <li>'ISO-8859-2'</li>
+            <li>'ISO-8859-15'</li>
+            <li>'KOI8-R'</li>
+            <li>'KOI8-U'</li>
+            <li>'KOI8-RU'</li>
+            <li>'Macintosh'</li>
+            <li>'UCS-2LE'</li>
+            <li>'UCS-2BE'</li>
           </ul>
         </descr>
         <seealso/>

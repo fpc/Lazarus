@@ -6234,7 +6234,7 @@ docs/xml/lcl/dbactns.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbctrls.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dbextctrls.xml svneol=native#text/plain
 docs/xml/lcl/dbgrids.xml svneol=LF#text/xml eol=lf
-docs/xml/lcl/dblogdlg.xml -text svneol=native#text/plain
+docs/xml/lcl/dblogdlg.xml svneol=native#text/plain
 docs/xml/lcl/defaulttranslator.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dialogs.xml svneol=LF#text/xml eol=lf
 docs/xml/lcl/dialogs/displaymessagebox.pas svneol=native#text/pascal

@@ -2,1117 +2,1337 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    ColorBox
-  ====================================================================
--->
+      ====================================================================
+        ColorBox
+      ====================================================================
+    -->
     <module name="ColorBox">
-      <short>Defines Classes for selecting color from a list or ComboBox</short>
-      <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LResources">
-        <short/>
+      <short>Defines classes for selecting a color from a combo-box or a list box</short>
+      <descr>
+        <p>
+          <file>colorbox.pas</file> contains <var>TColorBox</var> and <var>TColorListBox</var>. TColorBox is a component that displays colors in a combo-box control. TColorListBox is a component that displays colors in a list box control. This file is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Additional</b> Tab
+        </p>
+        <ul>
+          <li>TColorBox</li>
+          <li>TColorListBox</li>
+        </ul>
+      </descr>
+
+      <!-- unresolved references -->
+      <element name="LResources"/>
+      <element name="SysUtils"/>
+      <element name="Types"/>
+      <element name="Classes"/>
+      <element name="StrUtils"/>
+      <element name="LCLProc"/>
+      <element name="LCLType"/>
+      <element name="LCLStrConsts"/>
+      <element name="Graphics"/>
+      <element name="Controls"/>
+      <element name="Forms"/>
+      <element name="Dialogs"/>
+      <element name="StdCtrls"/>
+      <element name="LazStringUtils"/>
+
+      <element name="cDefaultColorRectWidth">
+        <short>Default width for the color sample (swatch) in a color combo-box or list box</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomColorBox.ColorRectWidth"/>
+          <link id="TColorBox.ColorRectWidth"/>
+          <link id="TCustomColorListBox.ColorRectWidth"/>
+          <link id="TColorListBox.ColorRectWidth"/>
+        </seealso>
       </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Graphics">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Forms">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Dialogs">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="StdCtrls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- enumeration type Visibility: default -->
-      <element name="TColorPalette">
+
+      <element name="cDefaultColorRectOffset">
         <short>
-          <var>TColorPalette</var> - enumerated type: whether default or full palette is to be used</short>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TColorPalette.cpDefault">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TColorPalette.cpFull">
-        <short/>
-      </element>
-      <!-- object Visibility: default -->
-      <element name="TColorBox">
-        <short>
-          <var>TColorBox</var> - presents the user with a ComboBox with a drop-down list from which to select a color</short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TColorBox.FPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TColorBox.GetSelection">
-        <short>Read specifier for selection property</short>
-        <descr>Use GetSelection to convert the item selected into a system color.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TColorBox.GetSelection.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TColorBox.SetSelection">
-        <short>Write specifier for selection property</short>
-        <descr>Use SetSelection to set the item in the ColorBox when appointed a color from code.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.SetSelection.Value">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TColorBox.GetColor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TColorBox.GetColor.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.GetColor.Index">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TColorBox.GetSelected">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TColorBox.GetSelected.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TColorBox.SetSelected">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.SetSelected.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TColorBox.SetPalette">
-        <short>Write specifier for the Palette property</short>
-        <descr>Use SetPalette to determine whether to reset the colorlist in the ColorBox based on the type of palette.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.SetPalette.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TColorBox.SetStyle" link="#LCL.StdCtrls.TCustomComboBox.SetStyle">
-        <descr>Use SetStyle to prevent the style to be changed to anything else than csOwnerDrawFixed.
-</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.SetStyle.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem">
-        <descr>Use DrawItem to customdraw an item in the ColorBox. A color preview is drawn and the item rectangle is made smaller and given to the inherited method to draw the corresponding text. The Brush color and Pen color where changed and reset to their original values.
-</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.DrawItem.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.DrawItem.Rect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.DrawItem.State">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TColorBox.Create" link="#rtl.Classes.TComponent.Create">
-        <descr>Use Create to create an instance of TColorBox and initialize all properties and variables.
-</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.Create.AOwner">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TColorBox.SetColorList">
-        <short>Write specifier for the ColorList property</short>
-        <descr>Use SetColorList to fill the itemlist in the ColorBox with the right color entries. Based on the value of the Palette property.</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TColorBox.Selection">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TColorBox.Palette">
-        <short>The <var>Palette</var> of colors to be used for the drop-down list</short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TColorBox.Colors">
-        <short>
-          <var>Colors</var> - the indexed color values available for the list</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorBox.Colors.Index">
-        <short/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Align" link="#LCL.Controls.TControl.Align">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ArrowKeysTraverseList" link="#LCL.StdCtrls.TCustomComboBox.ArrowKeysTraverseList">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.AutoComplete" link="#LCL.StdCtrls.TCustomComboBox.AutoComplete">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.AutoCompleteText" link="#LCL.StdCtrls.TCustomComboBox.AutoCompleteText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.AutoDropDown" link="#LCL.StdCtrls.TCustomComboBox.AutoDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.AutoSize" link="#LCL.Controls.TControl.AutoSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Color" link="#LCL.Controls.TControl.Color">
-        <short>
-          <var>Color</var> - this is the color for the display of the actual control, not the color selected from the list</short>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Ctl3D" link="#LCL.Controls.TControl.Ctl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.DragMode" link="#LCL.Controls.TControl.DragMode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.DropDownCount" link="#LCL.StdCtrls.TCustomComboBox.DropDownCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Enabled" link="#LCL.Controls.TControl.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Font" link="#LCL.Controls.TControl.Font">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ItemHeight" link="#LCL.StdCtrls.TCustomComboBox.ItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ItemIndex" link="#LCL.StdCtrls.TCustomComboBox.ItemIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Items" link="#LCL.StdCtrls.TCustomComboBox.Items">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ItemWidth" link="#LCL.StdCtrls.TCustomComboBox.ItemWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.MaxLength" link="#LCL.StdCtrls.TCustomComboBox.MaxLength">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ParentCtl3D" link="#LCL.Controls.TWinControl.ParentCtl3D">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Selected" link="#LCL.ColorBox.TCustomColorBox.Selected"/>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Sorted" link="#LCL.StdCtrls.TCustomComboBox.Sorted">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Text" link="#LCL.StdCtrls.TCustomComboBox.Text">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.Visible" link="#LCL.Controls.TControl.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnChange" link="#LCL.StdCtrls.TCustomComboBox.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnCloseUp" link="#LCL.StdCtrls.TCustomComboBox.OnCloseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnDrawItem" link="#LCL.StdCtrls.TCustomComboBox.OnDrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnDropDown" link="#LCL.StdCtrls.TCustomComboBox.OnDropDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnEditingDone" link="#LCL.Controls.TControl.OnEditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnMeasureItem" link="#LCL.StdCtrls.TCustomComboBox.OnMeasureItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorBox.OnSelect" link="#LCL.StdCtrls.TCustomComboBox.OnSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- class Visibility: default -->
-      <element name="TColorListBox">
-        <short>
-          <var>TColorListBox</var> - a box containing a simple list of colors from which to select</short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TColorListBox.FPalette">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TColorListBox.GetColor">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TColorListBox.GetColor.Result">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.GetColor.Index">
-        <short/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TColorListBox.GetSelected">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- function result Visibility: default -->
-      <element name="TColorListBox.GetSelected.Result">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TColorListBox.SetSelected">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.SetSelected.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TColorListBox.SetPalette">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.SetPalette.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TColorListBox.SetStyle">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.SetStyle.Value">
-        <short/>
-      </element>
-      <!-- procedure Visibility: protected -->
-      <element name="TColorListBox.DrawItem">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.DrawItem.Index">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.DrawItem.Rect">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.DrawItem.State">
-        <short/>
-      </element>
-      <!-- constructor Visibility: public -->
-      <element name="TColorListBox.Create" link="#rtl.Classes.TComponent.Create">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.Create.AOwner">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TColorListBox.SetColorList">
-        <short>
-          <var>SetColorList</var> - stores the list of colors</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TColorListBox.Colors">
-        <short>
-          <var>Colors</var> - the indexed color values available for the list</short>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="TColorListBox.Colors.Index">
-        <short/>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TColorListBox.Selected">
-        <short>The color that has been <var>Selected</var> from the list</short>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Align" link="#LCL.Controls.TControl.Align">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Anchors" link="#LCL.Controls.TControl.Anchors">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.BorderStyle" link="#LCL.Controls.TWinControl.BorderStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ClickOnSelChange" link="#LCL.StdCtrls.TCustomListBox.ClickOnSelChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Color" link="#LCL.Controls.TControl.Color">
-        <short>
-          <var>Color</var> - Determine the color for the display of the actual control, not the color selected from the list</short>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Constraints" link="#LCL.Controls.TControl.Constraints">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.DragCursor" link="#LCL.Controls.TControl.DragCursor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.DragMode" link="#LCL.Controls.TControl.DragMode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Enabled" link="#LCL.Controls.TControl.Enabled">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ExtendedSelect" link="#LCL.StdCtrls.TCustomListBox.ExtendedSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Font" link="#LCL.Controls.TControl.Font">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.IntegralHeight" link="#LCL.StdCtrls.TCustomListBox.IntegralHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ItemHeight" link="#LCL.StdCtrls.TCustomListBox.ItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Items" link="#LCL.StdCtrls.TCustomListBox.Items">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.MultiSelect" link="#LCL.StdCtrls.TCustomListBox.MultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Palette">
-        <short>The <var>Palette</var> of colors from which selection is to be made</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ParentColor" link="#LCL.Controls.TControl.ParentColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ParentFont" link="#LCL.Controls.TControl.ParentFont">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ParentShowHint" link="#LCL.Controls.TControl.ParentShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.ShowHint" link="#LCL.Controls.TControl.ShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Sorted" link="#LCL.StdCtrls.TCustomListBox.Sorted">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.TabOrder" link="#LCL.Controls.TWinControl.TabOrder">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.TabStop" link="#LCL.Controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.TopIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.Visible" link="#LCL.Controls.TControl.Visible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnClick" link="#LCL.Controls.TControl.OnClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDblClick" link="#LCL.Controls.TControl.OnDblClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDragDrop" link="#LCL.Controls.TControl.OnDragDrop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDragOver" link="#LCL.Controls.TControl.OnDragOver">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnDrawItem" link="#LCL.StdCtrls.TCustomListBox.OnDrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnEndDrag" link="#LCL.Controls.TControl.OnEndDrag">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnEnter" link="#LCL.Controls.TWinControl.OnEnter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnExit" link="#LCL.Controls.TWinControl.OnExit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnKeyDown" link="#LCL.Controls.TWinControl.OnKeyDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnKeyPress" link="#LCL.Controls.TWinControl.OnKeyPress">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnKeyUp" link="#LCL.Controls.TWinControl.OnKeyUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseEnter" link="#LCL.Controls.TControl.OnMouseEnter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseLeave" link="#LCL.Controls.TControl.OnMouseLeave">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseWheel" link="#LCL.Controls.TControl.OnMouseWheel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseWheelDown" link="#LCL.Controls.TControl.OnMouseWheelDown">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnMouseWheelUp" link="#LCL.Controls.TControl.OnMouseWheelUp">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnResize" link="#LCL.Controls.TControl.OnResize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnSelectionChange" link="#LCL.StdCtrls.TCustomListBox.OnSelectionChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnShowHint" link="#LCL.Controls.TControl.OnShowHint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- property Visibility: published -->
-      <element name="TColorListBox.OnStartDrag" link="#LCL.Controls.TControl.OnStartDrag">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- procedure Visibility: default -->
-      <element name="Register">
-        <short>Register procedure for colorbox</short>
-        <descr>This procedure registers the component to the Additional menu</descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TColorBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TColorListBox.OnUTF8KeyPress" link="#LCL.Controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TCustomColorBox">
-        <short>
-          <var>TCustomColorBox</var> - base class for <var>TColorBox</var>
+          Default spacing between the color sample (swatch) and the color name in a combo-box or list box
         </short>
+        <descr/>
+        <seealso>
+          <link id="TCustomColorBox.ColorRectOffset"/>
+          <link id="TColorBox.ColorRectOffset"/>
+          <link id="TCustomColorListBox.ColorRectOffset"/>
+          <link id="TColorListBox.ColorRectOffset"/>
+        </seealso>
       </element>
-      <element name="TCustomColorBox.SetStyle" link="#LCL.StdCtrls.TCustomComboBox.SetStyle"/>
-      <element name="TCustomColorBox.DrawItem" link="#LCL.StdCtrls.TCustomComboBox.DrawItem"/>
-      <element name="TCustomColorBox.Create">
+
+      <element name="TColorBoxStyles">
+        <short>Represents the available colors and the name display style used in color controls</short>
+        <descr>
+          <p>
+            <var>TColorBoxStyles</var> is an enumerated type with values that represent the available colors and the display style used in color controls like <var>TColorBox</var> and <var>TColorListBox</var>. Values from TColorBoxStyles are stored in the <var>TColorBoxStyle</var> set type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorBoxStyle"/>
+          <link id="TCustomColorBox"/>
+          <link id="TColorBox"/>
+          <link id="TCustomColorListBox"/>
+          <link id="TColorListBox"/>
+        </seealso>
+      </element>
+       <element name="TColorBoxStyles.cbStandardColors">
+         <short>16 standard colors (as defined in graphics.pp)</short>
+       </element>
+       <element name="TColorBoxStyles.cbExtendedColors">
+         <short>16 standard colors and 4 extended colors (as defined in graphics.pp)</short>
+       </element>
+       <element name="TColorBoxStyles.cbSystemColors">
+         <short>System colors (as defined in graphics.pp)</short>
+       </element>
+       <element name="TColorBoxStyles.cbIncludeNone">
+         <short>Includes clNone in the list of colors</short>
+       </element>
+       <element name="TColorBoxStyles.cbIncludeDefault">
+         <short>Includes clDefault in the list of colors</short>
+       </element>
+       <element name="TColorBoxStyles.cbCustomColor">
+         <short>The first color is customizable</short>
+       </element>
+       <element name="TColorBoxStyles.cbPrettyNames">
+         <short>
+           Uses "pretty" names in the color names instead of the color value; like Red for clRed
+         </short>
+       </element>
+       <element name="TColorBoxStyles.cbCustomColors">
+         <short>Uses the OnGetColors event handler to get the list of colors</short>
+       </element>
+
+      <element name="TColorBoxStyle">
+        <short>Set type used to store values from the TColorBoxStyles enumeration</short>
+        <descr>
+          <p>
+            <var>TColorBoxStyle</var> is a <var>Set</var> type used to store zero or more values from the <var>TColorBoxStyles</var> enumeration. TColorBoxStyle is the type used to implement the <var>TColorBox.Style</var> and <var>TColorListBox.Style</var> properties.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorBoxStyles"/>
+          <link id="TCustomColorBox.Style"/>
+          <link id="TCustomColorListBox.Style"/>
+          <link id="TColorBox.Style"/>
+          <link id="TColorListBox.Style"/>
+        </seealso>
+      </element>
+
+      <element name="TGetColorsEvent">
+        <short>Specifies an event handler used to get the colors in a color control</short>
+        <descr>
+          <p>
+            <var>TGetColorsEvent</var> is an object procedure type which specifies an event handler used to get the colors names and values used in a color control.
+          </p>
+          <p>
+            <var>Sender</var> is the control for the event notification and the location where the color values are used.
+          </p>
+          <p>
+            TGetColorsEvent is the type used for the <var>TColorBox.OnGetColors</var> and <var>TColorListBox.OnGetColors</var> event handlers.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.OnGetColors"/>
+          <link id="TColorBox.OnGetColors"/>
+          <link id="TCustomColorListBox.OnGetColors"/>
+          <link id="TColorListBox.OnGetColors"/>
+        </seealso>
+      </element>
+      <element name="TGetColorsEvent.Sender">
+        <short>Object for the event notification</short>
+      </element>
+      <element name="TGetColorsEvent.Items">
+        <short>TStrings instance with the color names and values used in the control</short>
+      </element>
+
+      <element name="TCustomColorBox">
+        <short>The base class for TColorBox</short>
+        <descr>
+          <p>
+            <var>TCustomColorBox</var> is a <var>TCustomComboBox</var> descendant which implements the base class for <var>TColorBox</var>. TCustomColorBox displays available colors in a combo-box control. Each item in the control has a small rectangle where the color is displayed (swatch) and the color name.
+          </p>
+          <p>
+            The <var>Style</var> property is used to configure the list of available colors and their display names. Style may also trigger use of the <var>OnGetColors</var> event handler to get the items displayed in the combo-box control.
+          </p>
+          <p>
+            The <var>ColorRectWidth</var> and <var>ColorRectOffset</var> properties can be used to control the size and spacing for the color swatch displayed for the list items.
+          </p>
+          <p>
+            <var>Colors</var> allows indexed access to the <var>TColor</var> values in the list of items. When included in the Style property, colors like <var>clDefault</var> and/or <var>clNone</var> may be included in the list of Colors. The <var>DefaultColorColor</var> and <var>NoneColorColor</var> properties can be used to specify the TColor values used for those color constants.
+          </p>
+          <p>
+            ColorNames allows indexed access to the names for the values in Colors.
+          </p>
+          <p>
+            Do not create instances of TCustomColorBox; use the TColorBox descendant instead.
+          </p>
+          <p>
+            Use <var>TCustomColorListBox</var>  / <var>TColorListBox</var> to display color names and values in a list box control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorBox"/>
+          <link id="TCustomColorListBox"/>
+          <link id="TColorListBox"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorBox.FColorRectWidth"/>
+      <element name="TCustomColorBox.FColorRectOffset"/>
+      <element name="TCustomColorBox.FDefaultColorColor"/>
+      <element name="TCustomColorBox.FNoneColorColor"/>
+      <element name="TCustomColorBox.FOnGetColors"/>
+      <element name="TCustomColorBox.FStyle"/>
+      <element name="TCustomColorBox.FSelected"/>
+
+      <element name="TCustomColorBox.GetColor">
+        <short>Gets the value for the indexed Colors property</short>
+      </element>
+      <element name="TCustomColorBox.GetColor.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TCustomColorBox.GetColor.Index">
+        <short>Ordinal position in the list for the color value</short>
+      </element>
+
+      <element name="TCustomColorBox.GetColorName">
+        <short>Gets the value for the indexed ColorNames property</short>
+      </element>
+      <element name="TCustomColorBox.GetColorName.Result">
+        <short>Value for the property</short>
+      </element>
+      <element name="TCustomColorBox.GetColorName.Index">
+        <short>Ordinal position in the list for the color name</short>
+      </element>
+
+      <element name="TCustomColorBox.GetColorRectWidth"/>
+      <element name="TCustomColorBox.GetColorRectWidth.Result"/>
+      <element name="TCustomColorBox.GetSelected"/>
+      <element name="TCustomColorBox.GetSelected.Result"/>
+      <element name="TCustomColorBox.SetColorRectWidth"/>
+      <element name="TCustomColorBox.SetColorRectWidth.AValue"/>
+      <element name="TCustomColorBox.SetColorRectOffset"/>
+      <element name="TCustomColorBox.SetColorRectOffset.AValue"/>
+      <element name="TCustomColorBox.SetDefaultColorColor"/>
+      <element name="TCustomColorBox.SetDefaultColorColor.AValue"/>
+      <element name="TCustomColorBox.SetNoneColorColor"/>
+      <element name="TCustomColorBox.SetNoneColorColor.AValue"/>
+      <element name="TCustomColorBox.SetSelected"/>
+      <element name="TCustomColorBox.SetSelected.Value"/>
+      <element name="TCustomColorBox.SetStyle" link="#lcl.stdctrls.TCustomColorBox.SetStyle"/>
+      <element name="TCustomColorBox.SetStyle.AValue"/>
+      <element name="TCustomColorBox.ColorProc"/>
+      <element name="TCustomColorBox.ColorProc.s"/>
+      <element name="TCustomColorBox.UpdateCombo"/>
+
+      <!-- protected -->
+      <element name="TCustomColorBox.ColorRectWidthStored">
+        <short>Implements the storage specifier for the ColorRectWidth property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomColorBox.ColorRectWidth"/>
+        </seealso>
+      </element>
+      <element name="TCustomColorBox.ColorRectWidthStored.Result">
+        <short>True when the property has a value other than the default value</short>
+      </element>
+
+      <element name="TCustomColorBox.DrawItem">
+        <short>Draws an item in the combo-box control</short>
+        <descr>
+          <p>
+            DrawItem is an overridden method used to custom draw an item in the ColorBox.
+          </p>
+          <p>
+            A color preview is drawn using the value in Colors. For clNone and clDefault, the value in NoneColorColor and DefaultColorColor are used to draw the color preview. The value in State is updated to include odBackgroundPainted in the state flags.
+          </p>
+          <p>
+            The item rectangle is made smaller and passed to the inherited method to draw the text for the item.
+          </p>
+          <p>
+            The Brush color and Pen color for the control Canavas are reset to their original values after drawing the item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomComboBox.DrawItem">TCustomComboBox.DrawItem</link>
+        </seealso>
+      </element>
+      <element name="TCustomColorBox.DrawItem.Index">
+        <short>Ordinal position for the item drawn in the method</short>
+      </element>
+      <element name="TCustomColorBox.DrawItem.Rect">
+        <short>Rectanlge with the bounds for the item</short>
+      </element>
+      <element name="TCustomColorBox.DrawItem.State">
+        <short>Owner draw state for the item</short>
+      </element>
+
+      <element name="TCustomColorBox.SetColorList">
+        <short>Loads the list of colors used in the control</short>
+        <descr>
+          <p>
+            <var>SetColorList</var> is used to fill the <var>Items</var> in the control with the <var>Colors</var> and <var>ColorNames</var> available in the combo-box.
+          </p>
+          <p>
+            SetColorList clears any existing values in Items, and loads the predefined colors needed for the settings in the <var>Style</var> property. When Style included the value <var>cbCustomColors</var> , the <var>OnGetColors</var> event handler is signalled to load custom colors in the Items, Colors, and ColorNames properties.
+          </p>
+          <p>
+            The value in <var>Selected</var> is restored prior to exiting from the method.
+          </p>
+        </descr>
+      </element>
+
+      <element name="TCustomColorBox.Loaded" link="#lcl.controls.TWinControl.Loaded">
         <short>
-          <var>Create</var> - constructor for TCustomColorBox: calls inherited <var>Create</var>, sets style, default colors and color list, and Selected properties</short>
+          Performs actions needed when LCL component streaming has been completed
+        </short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorBox.InitializeWnd" link="#lcl.stdctrls.TCustomComboBox.InitializeWnd">
+        <short/>
+        <descr>
+          <p>
+            Updates the combo-box control when its handled is (re-)allocated. Ensures that ItemIndex is updated to reflect the value in Selected.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomComboBox.InitializeWnd">TCustomComboBox.InitializeWnd</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorBox.DoAutoAdjustLayout" link="#lcl.controls.TControl.DoAutoAdjustLayout">
+        <short/>
+        <descr>
+          <p>
+            Called when an auto adjust policy is applied for the control. Ensures that ColorRectWidth is scaled when needed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+        </seealso>
+      </element>
+      <element name="TCustomColorBox.DoAutoAdjustLayout.AMode">
+        <short/>
+      </element>
+      <element name="TCustomColorBox.DoAutoAdjustLayout.AXProportion">
+        <short/>
+      </element>
+      <element name="TCustomColorBox.DoAutoAdjustLayout.AYProportion">
+        <short/>
+      </element>
+
+      <element name="TCustomColorBox.DoGetColors">
+        <short>Signals the OnGetColors event handler (when assigned)</short>
+        <descr>
+          <p>
+            Called when the <var>Colors</var> in the control are (re-)loaded after setting a new value in <var>Style</var>. It is called if <var>cbCustomColors</var> has been included in Style.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.Style"/>
+          <link id="TCustomColorBox.Colors"/>
+          <link id="TColorBoxStyles"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorBox.CloseUp" link="#lcl.stdctrls.TCustomComboBox.CloseUp">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomComboBox.CloseUp">TCustomComboBox.CloseUp</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorBox.PickCustomColor">
+        <short>Selects a custom color using a color dialog</short>
+        <descr>
+          <p>
+            PickCustomColor is a Boolean function used to select a custom color rather than one of the standard colors in the Colors property.
+          </p>
+          <p>
+            PickCustomColor is used when cbCustomColor is included in the Style for the control and ItemIndex is set to 0. This position was reserved for a custom color when the list of colors was loaded for the Style settings in the control.
+          </p>
+          <p>
+            PickCustomColor creates and executes a TColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to True and the control is redrawn.
+          </p>
+          <p>
+            The color selection dialog is not displayed at design-time, and the return value is always set to False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.Style"/>
+          <link id="TColorBoxStyle"/>
+        </seealso>
+      </element>
+      <element name="TCustomColorBox.PickCustomColor.Result">
+        <short>True when a custom color was selected in the method</short>
+      </element>
+
+      <element name="TCustomColorBox.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for <var>TCustomColorBox</var>. It calls the inherited <var>Create</var> method, and sets the Style flags needed for the owner-drawn control. Create sets the default values for properties, including:
+            </p>
+            <ul>
+              <li>ColorRectWidth</li>
+              <li>ColorRectOffset</li>
+              <li>Style</li>
+              <li>NoneColorColor</li>
+              <li>DefaultColorColor</li>
+              <li>Selected</li>
+            </ul>
+            <p>
+              Create calls SetColorList to load the colors needed for the control.
+            </p>
+        </descr>
         <seealso>
           <link id="#LCL.StdCtrls.TCustomCombobox.Create">TCustomCombobox.Create</link>
         </seealso>
       </element>
-      <element name="TCustomColorBox.SetColorList">
-        <short>
-          <var>SetColorList</var> - specifies the list of colors to be presented in the drop-down</short>
+
+      <element name="TCustomColorBox.ColorRectWidth">
+        <short>Width for the color sample (swatch) displayed for colors in the item list</short>
+        <descr>
+          <p>
+            ColorRectWidth is an Integer property which contains the number of pixels used to draw the color sample (or swatch) for each of the Colors in the combo-box control. The height is determined using the item height for the combo-box control.
+          </p>
+          <p>
+            If an explicit value has not been assigned to the property, the value in cDefaultColorRectWidth is scaled to the current display density and used in the property value.
+          </p>
+          <p>
+            Setting a new value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Use ColorRectOffset for the number of pixels used between the color sample and its name.
+          </p>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TCustomColorBox.Colors">
-        <short>
-          <var>Colors</var> the color specified by the Index</short>
+
+      <element name="TCustomColorBox.ColorRectOffset">
+        <short>Number of pixels between the color sample and the color name</short>
+        <descr>
+          <p>
+            ColorRectOffset is an Integer property with the number of pixels used to separate the color sample (or swatch) and the color name displayed for the Items in the control. The default value for the property is cDefaultColorRectOffset.
+          </p>
+          <p>
+            Setting a new value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Use ColorRectWidth for the width of the color sample displayed in the list items.
+          </p>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TCustomColorBox.Palette">
-        <short>The <var>Palette</var> of colors to be included</short>
-      </element>
-      <element name="TCustomColorBox.Selected">
-        <short>The color that has been <var>Selected</var> from the ComboBox</short>
-      </element>
-      <element name="TCustomColorListBox">
-        <short>
-          <var>TCustomColorListBox</var> - base class for <var>TColorListBox</var>
-        </short>
-      </element>
-      <element name="TCustomColorListBox.SetStyle">
-        <short>
-          <var>SetStyle</var> - specify the Style</short>
-      </element>
-      <element name="TCustomColorListBox.DrawItem" link="#LCL.StdCtrls.TCustomListBox.DrawItem"/>
-      <element name="TCustomColorListBox.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomColorListBox</var>: calls inherited <var>Create</var>, initializes style, default colors and sets color list</short>
+
+      <element name="TCustomColorBox.Style">
+        <short>Settings which determine the colors available in the control and their display style</short>
+        <descr>
+          <p>
+            Style is a TColorBoxStyle property with settings to determine the colors available in the control and their display style. Include values from the TColorBoxStyles enumeration to enable a particular setting. For instance:
+          </p>
+          <dl>
+            <dt>cbStandardColors</dt>
+            <dd>16 standard colors (as defined in graphics.pp); like cRed, clBlack, et. al.</dd>
+            <dt>cbExtendedColors</dt>
+            <dd>
+              4 extended colors (as defined in graphics.pp); like clMoneyGreen, clSkyBlue, et. al.
+            </dd>
+            <dt>cbSystemColors</dt>
+            <dd>System colors (as defined in graphics.pp); like clScrollBar, clWindow, clForm, .et. al.</dd>
+            <dt>cbIncludeNone</dt>
+            <dd>Includes clNone in the list of colors.</dd>
+            <dt>cbIncludeDefault</dt>
+            <dd>Includes clDefault in the list of colors.</dd>
+            <dt>cbCustomColor</dt>
+            <dd>The first color is customizable by selection from a dialog.</dd>
+            <dt>cbPrettyNames</dt>
+            <dd>
+              Uses "pretty" names in the color names instead of the color value; like Red for clRed.
+            </dd>
+            <dt>cbCustomColors</dt>
+            <dd>Uses the OnGetColors event handler to get the list of colors.</dd>
+          </dl>
+          <p>
+            The default value for the property is: [cbStandardColors, cbExtendedColors, cbSystemColors]. This enables the corresponding TColor values defined in the <file>graphics.pp</file> unit. By including cbCustomColor in Style, the custom color is stored as the first value in the Colors property.
+          </p>
+          <p>
+            Setting a new value for the property causes the SetColorList method to be called to reload the color names and values.
+          </p>
+        </descr>
         <seealso>
-          <link id="#LCL.StdCtrls.TCustomListBox.Create">TCustomListBox.Create</link>
+          <link id="TCustomColorBox.SetColorList"/>
+          <link id="TColorBoxStyles"/>
+          <link id="TColorBoxStyle"/>
+          <link id="#lcl.graphics.Colors">Colors</link>
         </seealso>
       </element>
-      <element name="TCustomColorListBox.SetColorList">
-        <short>
-          <var>SetColorList</var> - specifies the list of colors</short>
-      </element>
-      <element name="TCustomColorListBox.Colors">
-        <short>The <var>Colors</var> specified by <var>Index</var>
-        </short>
-      </element>
-      <element name="TCustomColorListBox.Selected" link="#LCL.StdCtrls.TCustomListBox.Selected"/>
-      <element name="TCustomColorListBox.Palette">
-        <short>The <var>Palette</var> to be used to supply the colors</short>
-      </element>
-      <element name="TColorBoxStyle">
-        <short>
-          <var>TColorBoxStyle</var> - set of <var>TColorBoxStyles</var>
-        </short>
-      </element>
-      <element name="TCustomColorBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
-      <element name="TCustomColorBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd"/>
-      <element name="TCustomColorBox.DoGetColors">
-        <short>
-          <var>DoGetColors</var> - perform the code for getting colors</short>
-      </element>
-      <element name="TCustomColorBox.Change" link="#LCL.StdCtrls.TCustomComboBox.Change"/>
-      <element name="TCustomColorBox.PickCustomColor">
-        <short>
-          <var>PickCustomColor</var> - if True, a custom color is picked rather than one of the standard list</short>
-      </element>
-      <element name="TCustomColorBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
-      <element name="TCustomColorBox.ColorNames">
-        <short>
-          <var>ColorNames</var> - the name of the specified (indexed) color, stored as a string</short>
-      </element>
-      <element name="TCustomColorBox.DefaultColorColor">
-        <short>
-          <var>DefaultColorColor</var> - the default color, expressed as a Color value</short>
+
+      <element name="TCustomColorBox.Colors">
+        <short>Provides indexed access to the TColor value for items in the control</short>
         <descr>
           <p>
-            <var>DefaultColorColor</var> - the default color, expressed as a Color value</p>
-          <p>The use of the construct <var>..ColorColor</var> denotes the value of a color as a TColor, as opposed to an index value</p>
+            Colors is an indexed read-only TColor property which provides access to the colors in the control by their ordinal position in the list of Items.
+          </p>
+          <p>
+            Use ColorNames to access the name for a color at a specific position in the list.
+          </p>
+          <p>
+            Use Style to determine the colors and names available in the combo-box control.
+          </p>
         </descr>
+        <seealso>
+          <link id="TCustomColorBox.ColorNames"/>
+          <link id="TCustomColorBox.Style"/>
+        </seealso>
       </element>
+      <element name="TCustomColorBox.Colors.Index">
+        <short>Ordinal position for the property value in the list of items</short>
+      </element>
+
+      <element name="TCustomColorBox.ColorNames">
+        <short>Provides indexed access to the names for the Colors used in the control </short>
+        <descr>
+          <p>
+            <var>ColorNames</var> is a read-only String property which provides indexed access to the names for the values stored in Colors property.
+          </p>
+          <p>
+            Use Colors to get the TColor value for one the Items in the control.
+          </p>
+          <p>
+            Use Style to determine the colors and names available in the combo-box control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.Colors"/>
+          <link id="TCustomColorBox.Items"/>
+          <link id="TCustomColorBox.Style"/>
+        </seealso>
+      </element>
+      <element name="TCustomColorBox.ColorNames.Index">
+        <short>Ordinal position for the color name accessed in the Items for the control</short>
+      </element>
+
+      <element name="TCustomColorBox.Selected">
+        <short>The TColor value for the selected item in the combo-box control</short>
+        <descr>
+          <p>
+            Selected is a TColor property with the color for the selected item in combo-box control. The default value for the property is clBlack.
+          </p>
+          <p>
+            Selected contains the value in Colors found at the position in ItemIndex. If ItemIndex is -1 (for no selection) or the handle for the control has not been assigned, the existing TColor value in the member is returned as the property value.
+          </p>
+          <p>
+            Setting a new value for the property causes the values in Colors to be searched, and the ItemIndex is set to the location for the color value. If the new value is not in Colors, ItemIndex is set to -1. The inherited Change method is called to signal the OnChange event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.Colors"/>
+          <link id="#lcl.graphics.TColor">TColor</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.ItemIndex">TCustomComboBox.ItemIndex</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.Change">TCustomComboBox.Change</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.OnChange">TCustomComboBox.OnChange</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorBox.DefaultColorColor">
+        <short>TColor used for the clDefault color constant</short>
+        <descr>
+          <p>
+            <var>DefaultColorColor</var> is a <var>TColor</var> property with the value used for the <var>clDefault</var> color constant.
+          </p>
+          <p>
+            clDefault does not have any meaning without a context where it is applied. The default color is a different value for Forms, Buttons, Windows, etc. This property allows clDefault to be resolved to an actual TColor value when needed.
+          </p>
+          <p>
+            The default value for the property is <var>clBlack</var>.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            DefaultColorColor is used in the <var>DrawItem</var> method to resolve the clDefault color constant when drawing items in the control.
+          </p>
+          <p>
+            Use <var>NoneColorColor</var> for the TColor value used for the <var>clNone</var> color constant.
+          </p>
+          <p>
+            Use <var>Style</var> to include or exclude the clDefault and clNone color constants in the Colors for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.Colors"/>
+          <link id="TCustomColorBox.NoneColorColor"/>
+          <link id="TCustomColorBox.Style"/>
+          <link id="TCustomColorBox.DrawItem"/>
+        </seealso>
+      </element>
+
       <element name="TCustomColorBox.NoneColorColor">
-        <short>
-          <var>NoneColorColor</var> - the color to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
-        </short>
+        <short>TColor used for the clNone color constant</short>
+        <descr>
+          <p>
+            <var>NoneColorColor</var> is a <var>TColor</var> property with the color value used for the <var>clNone</var> color constant.
+          </p>
+          <p>
+            Like <var>clDefault</var>, clNone does not have any meaning without a context where it is applied. Its actual value is different for Forms, Buttons, Windows, etc. This property allows clNone to be resolved to an actual TColor value when needed.
+          </p>
+          <p>
+            The default value for the property is <var>clBlack</var>.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            NoneColorColor is used in the <var>DrawItem</var> method to resolve the clNone color constant when drawing items in the control.
+          </p>
+          <p>
+            Use <var>DefaultColorColor</var> for the TColor value used for the <var>clDefault</var> color constant.
+          </p>
+          <p>
+            Use <var>Style</var> to include or exclude the clDefault and clNone color constants in the Colors for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.Colors"/>
+          <link id="TCustomColorBox.DefaultColorColor"/>
+          <link id="TCustomColorBox.Style"/>
+          <link id="TCustomColorBox.DrawItem"/>
+        </seealso>
       </element>
+
       <element name="TCustomColorBox.OnGetColors">
         <short>
-          <var>OnGetColors</var> - event handler for the instruction to get colors</short>
-      </element>
-      <element name="TColorBox.DefaultColorColor" link="#LCL.ColorBox.TCustomColorBox.DefaultColorColor"/>
-      <element name="TColorBox.NoneColorColor" link="#LCL.ColorBox.TCustomColorBox.NoneColorColor"/>
-      <element name="TColorBox.Style" link="#LCL.StdCtrls.TCustomComboBox.Style"/>
-      <element name="TColorBox.OnGetColors" link="#LCL.ColorBox.TCustomColorBox.OnGetColors"/>
-      <element name="TCustomColorListBox.Loaded" link="#rtl.Classes.TComponent.Loaded"/>
-      <element name="TCustomColorListBox.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd"/>
-      <element name="TCustomColorListBox.DoGetColors">
-        <short>
-          <var>DoGetColors</var> - perform the code for getting the colors</short>
-      </element>
-      <element name="TCustomColorListBox.DoSelectionChange" link="#LCL.StdCtrls.TCustomListBox.DoSelectionChange"/>
-      <element name="TCustomColorListBox.PickCustomColor">
-        <short>
-          <var>PickCustomColor</var> - if True, a custom color is picked rather than one from the standard list</short>
-      </element>
-      <element name="TCustomColorListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
-      <element name="TCustomColorListBox.ColorNames">
-        <short>
-          <var>ColorNames</var> - the name of the indexed color, stored as a string</short>
-      </element>
-      <element name="TCustomColorListBox.DefaultColorColor">
-        <short>
-          <var>DefaultColorColor</var> - the default color, expressed as a Color value</short>
+          <var>OnGetColors</var> - event handler for the instruction to get colors
+        </short>
         <descr>
           <p>
-            <var>DefaultColorColor</var> - the default color, expressed as a Color value</p>
-          <p>The use of the construct <var>..ColorColor</var> denotes the value of a color as a TColor, as opposed to an index value</p>
+            <var>OnGetColors</var> is a <var>TGetColorsEvent</var> property with the event handler signalled to get custom colors used in the combo-box control.
+          </p>
+          <p>
+            An application must implement and assign an object procedure using the signature in TGetColorsEvent to respond to the notification. <var>Sender</var> is the <var>TCustomColorBox</var> control for the event notification. <var>Items</var> is the <var>TStrings</var> instance with the existing color names and values stored in the control.
+          </p>
+          <p>
+            The event handler can perform any actions needed to populate the list of Items. This can include clearing the Items, adding or removing selected names and color values, or using color names and/or values not defined as color constants in the graphics.pp unit. It could also be used to implement a custom color palette with specific pre-defined color combinations.
+          </p>
+          <p>
+            Some common operations:
+          </p>
+          <p>
+            Clear the list of ltems:
+          </p>
+<code>Items.Clear;</code>
+          <p>
+            Add a specific color:
+          </p>
+<code>Items.AddObject(rsSkyBlueColorCaption, TObject(PtrInt(clSkyBlue)));</code>
+          <p>
+            Delete a specific color:
+          </p>
+<code>iPos := Items.IndexOf(rsSkyBlueColorCaption);
+if iPos <> -1 then
+  Items.Delete(iPos);</code>
+          <p>
+            OnGetColors is signalled (when assigned) when the color list is loaded for the control, and <var>cbCustomColors</var> has been included in the <var>Style</var> for the control. This occurs when a new value is assigned to the Style property.
+          </p>
         </descr>
+        <seealso>
+          <link id="TCustomColorBox.Style"/>
+          <link id="TCustomColorBox.Colors"/>
+          <link id="TCustomColorBox.ColorNames"/>
+          <link id="TGetColorsEvent"/>
+          <link id="TColorBoxStyles"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Items">TCustomComboBox.Items</link>
+        </seealso>
       </element>
-      <element name="TCustomColorListBox.NoneColorColor">
+
+      <element name="TColorBox">
+        <short>Implements combo-box control used to select a color name or value</short>
+        <descr>
+          <p>
+            <var>TColorBox</var> is a <var>TCustomColorBox</var> descendant which implements the a combo-box control used to display and select available color names and values. Each item in the control has a small rectangle where the color is displayed (swatch) and the color name.
+          </p>
+          <p>
+            The <var>Style</var> property is used to configure the list of available colors and their display names. Style may also trigger use of the <var>OnGetColors</var> event handler to get the items displayed in the combo-box control.
+          </p>
+          <p>
+            The <var>ColorRectWidth</var> and <var>ColorRectOffset</var> properties can be used to control the size and spacing for the color swatch displayed for the list items.
+          </p>
+          <p>
+            <var>Colors</var> allows indexed access to the <var>TColor</var> values in the list of items. When included in the Style property, colors like <var>clDefault</var> and/or <var>clNone</var> may be included in the list of Colors. The <var>DefaultColorColor</var> and <var>NoneColorColor</var> properties can be used to specify the TColor values used for those color constants.
+          </p>
+          <p>
+            ColorNames allows indexed access to the names for the values in Colors.
+          </p>
+          <p>
+            Use <var>TCustomColorListBox</var>  / <var>TColorListBox</var> to display color names and values in a list box control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox"/>
+          <link id="TCustomColorListBox"/>
+          <link id="TColorListBox"/>
+        </seealso>
+      </element>
+
+      <element name="TColorBox.ColorRectWidth" link="#lcl.colorbox.TCustomColorBox.ColorRectWidth"/>
+      <element name="TColorBox.ColorRectOffset" link="#lcl.colorbox.TCustomColorBox.ColorRectOffset"/>
+      <element name="TColorBox.DefaultColorColor" link="#lcl.colorbox.TCustomColorBox.DefaultColorColor"/>
+      <element name="TColorBox.NoneColorColor" link="#lcl.colorbox.TCustomColorBox.NoneColorColor"/>
+      <element name="TColorBox.Selected" link="#lcl.colorbox.TCustomColorBox.Selected"/>
+      <element name="TColorBox.Style" link="#lcl.colorbox.TCustomColorBox.Style"/>
+      <element name="TColorBox.OnGetColors" link="#lcl.colorbox.TCustomColorBox.OnGetColors"/>
+      <element name="TColorBox.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TColorBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TColorBox.ArrowKeysTraverseList" link="#lcl.stdctrls.TCustomComboBox.ArrowKeysTraverseList"/>
+      <element name="TColorBox.AutoComplete" link="#lcl.stdctrls.TCustomComboBox.AutoComplete"/>
+      <element name="TColorBox.AutoCompleteText" link="#lcl.stdctrls.TCustomComboBox.AutoCompleteText"/>
+      <element name="TColorBox.AutoDropDown" link="#lcl.stdctrls.TCustomComboBox.AutoDropDown"/>
+      <element name="TColorBox.AutoSelect" link="#lcl.stdctrls.TCustomComboBox.AutoSelect"/>
+      <element name="TColorBox.AutoSize" link="#lcl.stdctrls.TCustomComboBox.AutoSize"/>
+      <element name="TColorBox.BidiMode" link="#lcl.controls.TControl.BidiMode"/>
+      <element name="TColorBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TColorBox.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TColorBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
+      <element name="TColorBox.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TColorBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TColorBox.DropDownCount" link="#lcl.stdctrls.TCustomComboBox.DropDownCount"/>
+      <element name="TColorBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TColorBox.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TColorBox.ItemHeight" link="#lcl.stdctrls.TCustomComboBox.ItemHeight"/>
+      <element name="TColorBox.ItemWidth" link="#lcl.stdctrls.TCustomComboBox.ItemWidth"/>
+      <element name="TColorBox.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
+      <element name="TColorBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+      <element name="TColorBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TColorBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
+      <element name="TColorBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TColorBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+      <element name="TColorBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TColorBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TColorBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TColorBox.OnDropDown" link="#lcl.stdctrls.TCustomComboBox.OnDropDown"/>
+      <element name="TColorBox.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+      <element name="TColorBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+      <element name="TColorBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+      <element name="TColorBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+      <element name="TColorBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+      <element name="TColorBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+      <element name="TColorBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+      <element name="TColorBox.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TColorBox.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TColorBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+      <element name="TColorBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TColorBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TColorBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TColorBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TColorBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TColorBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
+      <element name="TColorBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
+      <element name="TColorBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
+      <element name="TColorBox.ParentColor" link="#lcl.stdctrls.TCustomComboBox.ParentColor"/>
+      <element name="TColorBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TColorBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+      <element name="TColorBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TColorBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+      <element name="TColorBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TColorBox.TabStop" link="#lcl.stdctrls.TCustomComboBox.TabStop"/>
+      <element name="TColorBox.Visible" link="#lcl.controls.TControl.Visible"/>
+
+      <element name="TLBGetColorsEvent">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLBGetColorsEvent.Sender">
+        <short/>
+      </element>
+      <element name="TLBGetColorsEvent.Items">
+        <short/>
+      </element>
+
+      <element name="TCustomColorListBox">
+        <short>Implements the base class for TColorListBox</short>
+        <descr>
+          <p>
+            <var>TCustomColorListBox</var> is a <var>TCustomListBox</var> descendant which implements a list box control used to display and select color names and values. TCustomColorListBox is the base class for the <var>TColorListBox</var> control. Each item in the control has a small rectangle where the color is displayed (swatch) and the color name.
+          </p>
+          <p>
+            The <var>Style</var> property is used to configure the list of available colors and their display names. Style may also trigger use of the <var>OnGetColors</var> event handler to get the items displayed in the combo-box control.
+          </p>
+          <p>
+            The <var>ColorRectWidth</var> and <var>ColorRectOffset</var> properties can be used to control the size and spacing for the color swatch displayed for the list items.
+          </p>
+          <p>
+            <var>Colors</var> allows indexed access to the <var>TColor</var> values in the list of items. When included in the Style property, colors like <var>clDefault</var> and/or <var>clNone</var> may be included in the list of Colors. The <var>DefaultColorColor</var> and <var>NoneColorColor</var> properties can be used to specify the TColor values used for those color constants.
+          </p>
+          <p>
+            ColorNames allows indexed access to the names for the values in Colors.
+          </p>
+          <p>
+            Do not create instances of TCustomColorListBox; use the TColorL:istBox descendant instead.
+          </p>
+          <p>
+            Use <var>TCustomColorBox</var>  / <var>TColorBox</var> to display color names and values in a combo-box control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorListBox"/>
+          <link id="TCustomColorBox"/>
+          <link id="TColorBox"/>
+          <link id="#lcl.stdctrls.TCustomListBox"/>
+        </seealso>
+      </element>
+
+      <!-- private -->
+      <element name="TCustomColorListBox.FColorRectWidth"/>
+      <element name="TCustomColorListBox.FColorRectOffset"/>
+      <element name="TCustomColorListBox.FDefaultColorColor"/>
+      <element name="TCustomColorListBox.FNoneColorColor"/>
+      <element name="TCustomColorListBox.FOnGetColors"/>
+      <element name="TCustomColorListBox.FSelected"/>
+      <element name="TCustomColorListBox.FStyle"/>
+
+      <element name="TCustomColorListBox.GetColorRectWidth"/>
+      <element name="TCustomColorListBox.GetColorRectWidth.Result"/>
+      <element name="TCustomColorListBox.GetColors"/>
+      <element name="TCustomColorListBox.GetColors.Result"/>
+      <element name="TCustomColorListBox.GetColors.Index"/>
+      <element name="TCustomColorListBox.GetColorName"/>
+      <element name="TCustomColorListBox.GetColorName.Result"/>
+      <element name="TCustomColorListBox.GetColorName.Index"/>
+      <element name="TCustomColorListBox.GetSelected"/>
+      <element name="TCustomColorListBox.GetSelected.Result"/>
+      <element name="TCustomColorListBox.SetColorRectOffset"/>
+      <element name="TCustomColorListBox.SetColorRectOffset.AValue"/>
+      <element name="TCustomColorListBox.SetColorRectWidth"/>
+      <element name="TCustomColorListBox.SetColorRectWidth.AValue"/>
+      <element name="TCustomColorListBox.SetColors"/>
+      <element name="TCustomColorListBox.SetColors.Index"/>
+      <element name="TCustomColorListBox.SetColors.AValue"/>
+      <element name="TCustomColorListBox.SetDefaultColorColor"/>
+      <element name="TCustomColorListBox.SetDefaultColorColor.AValue"/>
+      <element name="TCustomColorListBox.SetNoneColorColor"/>
+      <element name="TCustomColorListBox.SetNoneColorColor.AValue"/>
+      <element name="TCustomColorListBox.SetSelected"/>
+      <element name="TCustomColorListBox.SetSelected.Value"/>
+      <element name="TCustomColorListBox.SetStyle"/>
+      <element name="TCustomColorListBox.SetStyle.AValue"/>
+      <element name="TCustomColorListBox.ColorProc"/>
+      <element name="TCustomColorListBox.ColorProc.s"/>
+
+      <!-- protected -->
+      <element name="TCustomColorListBox.ColorRectWidthStored">
+        <short>Implements the storage specifier for the ColorRectWidth property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomColorListBox.ColorRectWidth"/>
+        </seealso>
+      </element>
+      <element name="ColorRectWidthStored.Result">
+        <short>True when the property has a value other than the default</short>
+      </element>
+
+      <element name="TCustomColorListBox.DrawItem">
+        <short>Draws the color preview and name for an item in list box control</short>
+        <descr>
+          <p>
+            DrawItem is an overridden method used to custom draw an item in the control.
+          </p>
+          <p>
+            A color preview is drawn using the value in Colors. For clNone and clDefault, the value in NoneColorColor and DefaultColorColor are used to draw the color preview. The value in State is updated to include odBackgroundPainted in the state flags.
+          </p>
+          <p>
+            The item rectangle is made smaller and passed to the inherited method to draw the text for the item.
+          </p>
+          <p>
+            The Brush color and Pen color for the control Canavas are reset to their original values after drawing the item.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.DrawItem">TCustomListBox.DrawItem</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorListBox.SetColorList">
+        <short>Loads the list of colors used in the control</short>
+        <descr>
+          <p>
+            <var>SetColorList</var> is used to fill the <var>Items</var> in the control with the <var>Colors</var> and <var>ColorNames</var> available in the list box.
+          </p>
+          <p>
+            SetColorList clears any existing values in Items, and loads the predefined colors needed for the settings in the <var>Style</var> property. When Style included the value <var>cbCustomColors</var> , the <var>OnGetColors</var> event handler is signalled to load custom colors in the Items, Colors, and ColorNames properties.
+          </p>
+          <p>
+            The value in <var>Selected</var> is restored prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomColorListBox.Loaded">
         <short>
-          <var>NoneColorColor</var> - the color to be used when no selection has been made, or when <var>None</var> is selected, stored as a <var>TColor</var>
+          Performs actions needed when LCL component streaming has been completed
         </short>
+        <descr/>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Loaded">TComponent.Loaded</link>
+        </seealso>
       </element>
+
+      <element name="TCustomColorListBox.InitializeWnd">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="#lcl.controls.TWincontrol.InitializeWnd">TWincontrol.InitializeWnd</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorListBox.DoAutoAdjustLayout">
+        <short/>
+        <descr/>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.DoAutoAdjustLayout">
+            TCustomListBox.DoAutoAdjustLayout
+          </link>
+        </seealso>
+      </element>
+      <element name="TCustomColorListBox.DoAutoAdjustLayout.AMode">
+        <short/>
+      </element>
+      <element name="TCustomColorListBox.DoAutoAdjustLayout.AXProportion">
+        <short/>
+      </element>
+      <element name="TCustomColorListBox.DoAutoAdjustLayout.AYProportion">
+        <short/>
+      </element>
+
+      <element name="TCustomColorListBox.DoGetColors">
+        <short>Signals the OnGetColors event handler (when assigned)</short>
+        <descr>
+          <p>
+            Called when the <var>Colors</var> in the control are (re-)loaded after setting a new value in <var>Style</var>. It is called if <var>cbCustomColors</var> has been included in Style.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomColorListBox.DoSelectionChange">
+        <short>Performs actions needed when the selection in the control is changed</short>
+        <descr>
+          <p>
+            DoSelectionChange is an overridden method used to perform actions needed when the value in the ItemIndex property is changed.
+          </p>
+          <p>
+            The User parameter indicates the origin of the change. When User is True, the change occurred due to user interaction with the control. When User is False, the change occurred when the ItemIndex property was updated by another method in the control.
+          </p>
+          <p>
+            When User is True, the Style property is examined to see if a custom color can be used in the Colors for the control. When Style includes the value cbCustomColor, and ItemIndex is set to 0, the PickCustomColor method is called to select a custom color using a color dialog. If a custom color was successfully selected, the TColor value in Colors for the ITtmIndex  is stored in the Selected property.
+          </p>
+          <p>
+            The color dialog is not displayed, and Selected is not updated when User is set to False.
+          </p>
+          <p>
+            DoSelectionChange calls the inherited method prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.DoSelectionChange">
+            TCustomListBox.DoSelectionChange
+          </link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorListBox.PickCustomColor">
+        <short>Selects a custom color using a color dialog</short>
+        <descr>
+          <p>
+            PickCustomColor is a Boolean function used to select a custom color rather than one of the standard colors in the Colors property.
+          </p>
+          <p>
+            PickCustomColor is used when cbCustomColor is included in the Style for the control and ItemIndex is set to 0. This position was reserved for a custom color when the list of colors was loaded for the Style settings in the control.
+          </p>
+          <p>
+            PickCustomColor creates and executes a TColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to True and the control is redrawn.
+          </p>
+          <p>
+            The color selection dialog is not displayed at design-time, and the return value is always set to False.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomColorListBox.PickCustomColor.Result">
+        <short>True when a custom color was selected in the color dialog</short>
+      </element>
+
+      <element name="TCustomColorListBox.Create">
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for <var>TCustomColorListBox</var>. Create calls the inherited Create method, and sets the Style flags needed for the owner-drawn control. It also sets the default values for properties in the class instance, including:
+          </p>
+          <ul>
+            <li>ColorRectWidth</li>
+            <li>ColorRectOffset</li>
+            <li>Style</li>
+            <li>NoneColorColor</li>
+            <li>DefaultColorColor</li>
+            <li>Selected</li>
+          </ul>
+          <p>
+            Create calls SetColorList to load the colors needed for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.Create">TCustomListBox.Create</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorListBox.ColorRectWidth">
+        <short>Width for the color sample (swatch) displayed for colors in the item list</short>
+        <descr>
+          <p>
+            ColorRectWidth is an Integer property which contains the number of pixels used to draw the color sample (or swatch) for each of the Colors in the list box control. The height for the list Item is in the ItemHeight property.
+          </p>
+          <p>
+            If an explicit value has not been assigned to ColorRectWidth, the value in cDefaultColorRectWidth is scaled to the current display density and used as the property value.
+          </p>
+          <p>
+            Setting a new value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Use ColorRectOffset for the number of pixels used between the color sample and its color name.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomColorListBox.ColorRectOffset">
+        <short>Number of pixels between the color sample and the color name</short>
+        <descr>
+          <p>
+            ColorRectOffset is an Integer property with the number of pixels used to separate the color sample (or swatch) and the color name displayed for the Items in the control. The default value for the property is cDefaultColorRectOffset.
+          </p>
+          <p>
+            Setting a new value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Use ColorRectWidth for the width of the color sample displayed in the list items.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomColorListBox.Style">
+        <short>Settings which determine the colors available in the control and their display style</short>
+        <descr>
+          <p>
+            Style is a TColorBoxStyle property with settings to determine the colors available in the control and their display style. Include values from the TColorBoxStyles enumeration to enable a particular setting. For instance:
+          </p>
+          <dl>
+            <dt>cbStandardColors</dt>
+            <dd>16 standard colors (as defined in graphics.pp); like cRed, clBlack, et. al.</dd>
+            <dt>cbExtendedColors</dt>
+            <dd>
+              4 extended colors (as defined in graphics.pp); like clMoneyGreen, clSkyBlue, et. al.
+            </dd>
+            <dt>cbSystemColors</dt>
+            <dd>System colors (as defined in graphics.pp); like clScrollBar, clWindow, clForm, .et. al.</dd>
+            <dt>cbIncludeNone</dt>
+            <dd>Includes clNone in the list of colors.</dd>
+            <dt>cbIncludeDefault</dt>
+            <dd>Includes clDefault in the list of colors.</dd>
+            <dt>cbCustomColor</dt>
+            <dd>The first color is customizable by selection from a dialog.</dd>
+            <dt>cbPrettyNames</dt>
+            <dd>
+              Uses "pretty" names in the color names instead of the color value; like Red for clRed.
+            </dd>
+            <dt>cbCustomColors</dt>
+            <dd>Uses the OnGetColors event handler to get the list of colors.</dd>
+          </dl>
+          <p>
+            The default value for the property is: [cbStandardColors, cbExtendedColors, cbSystemColors]. This enables the corresponding TColor values defined in the <file>graphics.pp</file> unit. By including cbCustomColor in Style, the custom color is stored as the first value in the Colors property.
+          </p>
+          <p>
+            Setting a new value for the property causes the SetColorList method to be called to reload the color names and values.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.Style">TCustomListBox.Style</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorListBox.Colors">
+        <short>Provides indexed access to the TColor value for items in the control</short>
+        <descr>
+          <p>
+            Colors is an indexed TColor property which provides access to the colors in the control by their ordinal position in the list of Items. Setting a new TColor value in the indexed  property causes the control to be redrawn.
+          </p>
+          <p>
+            Values in Colors and ColorNames are used in the DrawItem method when the color sample and the color name for an item is drawn on the control Canvas.
+          </p>
+          <p>
+            Use ColorNames to access the name for the color at a specific position in the Items for the control.
+          </p>
+          <p>
+            Use Style to determine the colors and names available in the list box control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomColorListBox.Colors.Index">
+        <short>Ordinal position in Items for the color value</short>
+      </element>
+
+      <element name="TCustomColorListBox.ColorNames">
+        <short>Provides indexed access to the names for the Colors used in the control </short>
+        <descr>
+          <p>
+            <var>ColorNames</var> is a String property which provides indexed access to the names for the values stored in Colors property. Setting a new value for the indexed property causes the control to be redrawn.
+          </p>
+          <p>
+            Values in Colors and ColorNames are used in the DrawItem method when the color sample and the color name for an item is drawn on the control Canvas.
+          </p>
+          <p>
+            Use Colors to get the TColor value for one the Items in the control.
+          </p>
+          <p>
+            Use Style to determine the colors and names available in the combo-box control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomColorListBox.ColorNames.Index">
+        <short>Ordinal position in Items for the color name</short>
+      </element>
+
+      <element name="TCustomColorListBox.Selected">
+        <short>The TColor value for the selected item in the list box control</short>
+        <descr>
+          <p>
+            Selected is a TColor property with the color for the selected item in list box control. The default value for the property is clBlack.
+          </p>
+          <p>
+            Selected contains the value in Colors found at the position in ItemIndex. If ItemIndex is -1 (for no selection) or the handle for the control has not been assigned, the existing TColor value in the member is returned as the property value.
+          </p>
+          <p>
+            Setting a new value for the property causes the values in Colors to be searched, and the ItemIndex is set to the location for the color value. If the new value is not in Colors, ItemIndex is set to -1.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomListBox.Selected">TCustomListBox.Selected</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomColorListBox.DefaultColorColor">
+        <short>TColor used for the clDefault color constant</short>
+        <descr>
+          <p>
+            <var>DefaultColorColor</var> is a <var>TColor</var> property with the value used for the <var>clDefault</var> color constant.
+          </p>
+          <p>
+            clDefault does not have any meaning without a context where it is applied. The default color is a different value for Forms, Buttons, Windows, etc. This property allows clDefault to be resolved to an actual TColor value when needed.
+          </p>
+          <p>
+            The default value for the property is <var>clBlack</var>.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            DefaultColorColor is used in the <var>DrawItem</var> method to resolve the clDefault color constant when drawing items in the control.
+          </p>
+          <p>
+            Use <var>NoneColorColor</var> for the TColor value used for the <var>clNone</var> color constant.
+          </p>
+          <p>
+            Use <var>Style</var> to include or exclude the clDefault and clNone color constants in the Colors for the control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TCustomColorListBox.NoneColorColor">
+        <short>TColor used for the clNone color constant</short>
+        <descr>
+          <p>
+            <var>NoneColorColor</var> is a <var>TColor</var> property with the color value used for the <var>clNone</var> color constant.
+          </p>
+          <p>
+            Like <var>clDefault</var>, clNone does not have any meaning without a context where it is applied. Its actual value is different for Forms, Buttons, Windows, etc. This property allows clNone to be resolved to an actual TColor value when needed.
+          </p>
+          <p>
+            The default value for the property is <var>clBlack</var>.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            NoneColorColor is used in the <var>DrawItem</var> method to resolve the clNone color constant when drawing items in the control.
+          </p>
+          <p>
+            Use <var>DefaultColorColor</var> for the TColor value used for the <var>clDefault</var> color constant.
+          </p>
+          <p>
+            Use <var>Style</var> to include or exclude the clDefault and clNone color constants in the Colors for the control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="TCustomColorListBox.OnGetColors">
         <short>
-          <var>OnGetColors</var> - event handler for the instruction to get colors</short>
+          <var>OnGetColors</var> - event handler for the instruction to get colors
+        </short>
+        <descr>
+          <p>
+            <var>OnGetColors</var> is a <var>TGetColorsEvent</var> property with the event handler signalled to get custom colors used in the list box control.
+          </p>
+          <p>
+            An application must implement and assign an object procedure using the signature in TGetColorsEvent to respond to the notification. <var>Sender</var> is the <var>TCustomColorBox</var> control for the event notification. <var>Items</var> is the <var>TStrings</var> instance with the existing color names and values stored in the control.
+          </p>
+          <p>
+            The event handler can perform any actions needed to populate the list of Items. This can include clearing the Items, adding or removing selected names and color values, or using color names and/or values not defined as color constants in the graphics.pp unit. It could also be used to implement a custom color palette with specific pre-defined color combinations.
+          </p>
+          <p>
+            Some common operations:
+          </p>
+          <p>
+            Clear the list of ltems:
+          </p>
+<code>Items.Clear;</code>
+          <p>
+            Add a specific color:
+          </p>
+<code>Items.AddObject(rsSkyBlueColorCaption, TObject(PtrInt(clSkyBlue)));</code>
+          <p>
+            Delete a specific color:
+          </p>
+<code>iPos := Items.IndexOf(rsSkyBlueColorCaption);
+if iPos <> -1 then
+  Items.Delete(iPos);</code>
+          <p>
+            OnGetColors is signalled (when assigned) when the color list is loaded for the control, and <var>cbCustomColors</var> has been included in the <var>Style</var> for the control. This occurs when a new value is assigned to the Style property.
+          </p>
+        </descr>
+        <seealso/>
       </element>
-      <element name="TColorListBox.DefaultColorColor" link="#LCL.ColorBox.TCustomColorListBox.DefaultColorColor"/>
-      <element name="TColorListBox.NoneColorColor" link="#LCL.ColorBox.TCustomColorListBox.NoneColorColor"/>
-      <element name="TColorListBox.Style" link="#LCL.StdCtrls.TCustomListBox.Style"/>
-      <element name="TColorListBox.OnGetColors" link="#LCL.ColorBox.TCustomColorListBox.OnGetColors"/>
-      <element name="TColorListBox.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup"/>
-      <element name="TColorListBox.ParentBidiMode" link="#LCL.Controls.TControl.ParentBiDiMode"/>
-      <element name="TColorListBox.BidiMode" link="#LCL.Controls.TControl.BiDiMode"/>
+
+      <element name="TColorListBox">
+        <short>Implements a list box control used to display and select color names and values</short>
+        <descr>
+          <p>
+            <var>TColorListBox</var> is a <var>TCustomColorListBox</var> descendant which implements a list box control used to display and select color names and values. Each item in the control has a small rectangle where the color is displayed (swatch) and the color name.
+          </p>
+          <p>
+            The <var>Style</var> property is used to configure the list of available colors and their display names. Style may also trigger use of the <var>OnGetColors</var> event handler to get the items displayed in the list box control.
+          </p>
+          <p>
+            The <var>ColorRectWidth</var> and <var>ColorRectOffset</var> properties can be used to control the size and spacing for the color swatch displayed for the list items.
+          </p>
+          <p>
+            <var>Colors</var> allows indexed access to the <var>TColor</var> values in the list of items. When included in the Style property, colors like <var>clDefault</var> and/or <var>clNone</var> may be included in the list of Colors. The <var>DefaultColorColor</var> and <var>NoneColorColor</var> properties can be used to specify the TColor values used for those color constants.
+          </p>
+          <p>
+            ColorNames allows indexed access to the names for the values in Colors.
+          </p>
+          <p>
+            Use <var>TCustomColorBox</var>  / <var>TColorBox</var> to display color names and values in a combo-box control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorListBox"/>
+        </seealso>
+      </element>
+
+      <element name="TColorListBox.ColorRectWidth" link="#lcl.colorbox.TCustomColorListBox.ColorRectWidth"/>
+      <element name="TColorListBox.ColorRectOffset" link="#lcl.colorbox.TCustomColorListBox.ColorRectOffset"/>
+      <element name="TColorListBox.DefaultColorColor" link="#lcl.colorbox.TCustomColorListBox.DefaultColorColor"/>
+      <element name="TColorListBox.NoneColorColor" link="#lcl.colorbox.TCustomColorListBox.NoneColorColor"/>
+      <element name="TColorListBox.Style" link="#lcl.colorbox.TCustomColorListBox.Style"/>
+      <element name="TColorListBox.OnGetColors" link="#lcl.colorbox.TCustomColorListBox.OnGetColors"/>
+
+      <element name="TColorListBox.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TColorListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+      <element name="TColorListBox.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TColorListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TColorListBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TColorListBox.ClickOnSelChange" link="#lcl.stdctrls.TCustomListBox.ClickOnSelChange"/>
+      <element name="TColorListBox.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TColorListBox.Constraints" link="#lcl.stdctrls.TCustomListBox.Constraints"/>
+      <element name="TColorListBox.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TColorListBox.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TColorListBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TColorListBox.ExtendedSelect" link="#lcl.stdctrls.TCustomListBox.ExtendedSelect"/>
+      <element name="TColorListBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TColorListBox.Font" link="#lcl.stdctrls.TCustomListBox.Font"/>
+      <element name="TColorListBox.IntegralHeight" link="#lcl.stdctrls.TCustomListBox.IntegralHeight"/>
+      <element name="TColorListBox.ItemHeight" link="#lcl.stdctrls.TCustomListBox.ItemHeight"/>
+      <element name="TColorListBox.OnChangeBounds" link="#lcl.stdctrls.TCustomListBox.OnChangeBounds"/>
+      <element name="TColorListBox.OnClick" link="#lcl.stdctrls.TCustomListBox.OnClick"/>
+      <element name="TColorListBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TColorListBox.OnDblClick" link="#lcl.stdctrls.TCustomListBox.OnDblClick"/>
+      <element name="TColorListBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+      <element name="TColorListBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+      <element name="TColorListBox.OnEnter" link="#lcl.stdctrls.TCustomListBox.OnEnter"/>
+      <element name="TColorListBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+      <element name="TColorListBox.OnExit" link="#lcl.stdctrls.TCustomListBox.OnExit"/>
+      <element name="TColorListBox.OnKeyPress" link="#lcl.stdctrls.TCustomListBox.OnKeyPress"/>
+      <element name="TColorListBox.OnKeyDown" link="#lcl.stdctrls.TCustomListBox.OnKeyDown"/>
+      <element name="TColorListBox.OnKeyUp" link="#lcl.stdctrls.TCustomListBox.OnKeyUp"/>
+      <element name="TColorListBox.OnMouseDown" link="#lcl.stdctrls.TCustomListBox.OnMouseDown"/>
+      <element name="TColorListBox.OnMouseEnter" link="#lcl.stdctrls.TCustomListBox.OnMouseEnter"/>
+      <element name="TColorListBox.OnMouseLeave" link="#lcl.stdctrls.TCustomListBox.OnMouseLeave"/>
+      <element name="TColorListBox.OnMouseMove" link="#lcl.stdctrls.TCustomListBox.OnMouseMove"/>
+      <element name="TColorListBox.OnMouseUp" link="#lcl.stdctrls.TCustomListBox.OnMouseUp"/>
+      <element name="TColorListBox.OnMouseWheel" link="#lcl.stdctrls.TCustomListBox.OnMouseWheel"/>
+      <element name="TColorListBox.OnMouseWheelDown" link="#lcl.stdctrls.TCustomListBox.OnMouseWheelDown"/>
+      <element name="TColorListBox.OnMouseWheelUp" link="#lcl.stdctrls.TCustomListBox.OnMouseWheelUp"/>
+      <element name="TColorListBox.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+      <element name="TColorListBox.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+      <element name="TColorListBox.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
+      <element name="TColorListBox.OnResize" link="#lcl.stdctrls.TCustomListBox.OnResize"/>
+      <element name="TColorListBox.OnSelectionChange" link="#lcl.stdctrls.TCustomListBox.OnSelectionChange"/>
+      <element name="TColorListBox.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
+      <element name="TColorListBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
+      <element name="TColorListBox.OnUTF8KeyPress" link="#lcl.stdctrls.TCustomListBox.OnUTF8KeyPress"/>
+      <element name="TColorListBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
+      <element name="TColorListBox.ParentColor" link="#lcl.stdctrls.TCustomListBox.ParentColor"/>
+      <element name="TColorListBox.ParentShowHint" link="#lcl.stdctrls.TCustomListBox.ParentShowHint"/>
+      <element name="TColorListBox.ParentFont" link="#lcl.stdctrls.TCustomListBox.ParentFont"/>
+      <element name="TColorListBox.PopupMenu" link="#lcl.stdctrls.TCustomListBox.PopupMenu"/>
+      <element name="TColorListBox.ShowHint" link="#lcl.stdctrls.TCustomListBox.ShowHint"/>
+      <element name="TColorListBox.TabOrder" link="#lcl.stdctrls.TCustomListBox.TabOrder"/>
+      <element name="TColorListBox.TabStop" link="#lcl.stdctrls.TCustomListBox.TabStop"/>
+      <element name="TColorListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
+      <element name="TColorListBox.Visible" link="#lcl.stdctrls.TCustomListBox.Visible"/>
+
+      <element name="Register">
+        <short>Register components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            The following components are added to the Lazarus IDE component palette:
+          </p>
+          <p>
+            <b>Additional</b> Tab
+          </p>
+          <ul>
+            <li>TColorBox</li>
+            <li>TColorListBox</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+
     </module>
     <!-- ColorBox -->
   </package>

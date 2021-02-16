@@ -8,7 +8,11 @@
     -->
     <module name="CalcForm">
       <short>Contains classes and types used in TCalculatorForm</short>
-      <descr/>
+      <descr>
+        <p>
+          <file>calcform.pas</file> contains classes and types used in <var>TCalculatorForm</var>, a dialog form used to display a calculator. It is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+      </descr>
 
       <!-- used units -->
       <element name="Classes"/>

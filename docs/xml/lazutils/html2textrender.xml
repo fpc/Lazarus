@@ -22,7 +22,7 @@
       <element name="LConvEncoding"/>
 
       <element name="THTML2TextRenderer">
-        <short></short>
+        <short>Implements an HTML-to-Text renderer</short>
         <descr>
           <p>
             <var>THTML2TextRenderer</var> is an HTML-to-Text renderer. It converts HTML into plain text by stripping tags and their attributes. Converted text includes configurable indentation for HTML tags that affect the indentation level. The following HTML tags include special processing in the renderer:
@@ -58,12 +58,12 @@
             A UTF-8 Byte Order Mark in the HTML is ignored.
           </p>
           <p>
-            Set values for properties in the class instance to customize the content and formatting produced in the output. Use the Render method to parse and process the HTML content passed to the constructor, and generate the output for the class instance.
+            Set property values in the class instance to customize the content and formatting produced in the output. Use the Render method to parse and process the HTML content passed to the constructor, and generate the output for the class instance.
           </p>
         </descr>
         <seealso>
-          <link id="THTML2TextRenderer.Render"/>
           <link id="THTML2TextRenderer.Create"/>
+          <link id="THTML2TextRenderer.Render"/>
         </seealso>
       </element>
 
@@ -149,13 +149,13 @@
             AddOutput ensures that a space character is included for wrapped lines in the HTML when there are no pending new lines . Otherwise, the required number of line ending sequences are appended to the output for the render and the line count is increased accordingly.  If the line count exceeds the maximum number allowed in <var>Render</var>, the value in <var>MoreMark</var> is appended to the output.
           </p>
           <p>
-            Pending new line(s) also cause required indentation spaces to be appended to the output.
+            Pending new line(s) also cause indentation spaces to be appended to the output.
           </p>
           <p>
             The value in aText is appended to the output for the renderer prior to exiting from the method.
           </p>
           <p>
-            AddOutput is used in the implementation of the <var>Render</var>,      <var>HtmlTag</var>, and <var>HtmlEntity</var> methods.
+            AddOutput is used in the implementation of the <var>Render</var>, <var>HtmlTag</var>, and <var>HtmlEntity</var> methods.
           </p>
         </descr>
         <seealso>
@@ -182,37 +182,28 @@
           <dl>
             <dt>HTML</dt>
             <dd>Sets the FInHeader flag to indicate that the content is for a whole page.</dd>
-
             <dt>BODY</dt>
             <dd>Call Reset to initialize the renderer.</dd>
-
             <dt>P, /P, BR, /UL</dt>
             <dd>Adds a new line sequence to the output.</dd>
-
             <dt>DIV CLASS="Title"</dt>
             <dd>
               Sets the fInDivTitle flag, and adds a NewLine and a TitleMark to the output. When the CLASS attribute is omitted or has a different value, only a NewLine sequence is appended.
             </dd>
-
             <dt>/DIV</dt>
             <dd>
               Appends a trailing TitleMark, resets the FInDivTitle flag, and appends a NewLine sequence and decrements the indentation level.
             </dd>
-
             <dt>LI</dt>
             <dd>
               Increments the indentation level and adds a single NewLine prior to adding the content in the list.
             </dd>
-
             <dt>/LI</dt>
             <dd>Decrements the indentation level.</dd>
-
             <dt>A</dt>
             <dd>Appends a Space character and the LinkBegin sequence to the output.</dd>
-
             <dt>/A</dt>
             <dd>Appends a LinkEnd sequence and a Space character to the output.</dd>
-
             <dt>HR</dt>
             <dd>Adds a single NewLine and the content in HorzLine to the output.</dd>
           </dl>
@@ -220,7 +211,7 @@
             All other tag names are ignored in the method.
           </p>
           <p>
-          The return value contains <b>True</b> when the HTML content is successfully added by calling <var>AddOutput</var>. The return value is <b>False</b> when the maximum number of lines specified in the <var>Render</var> method is exceeded.
+          The return value is <b>True</b> when the HTML content is successfully added by calling <var>AddOutput</var>. The return value is <b>False</b> when the maximum number of lines specified in the <var>Render</var> method is exceeded.
           </p>
         </descr>
         <notes>
@@ -231,7 +222,7 @@
       </element>
       <element name="THTML2TextRenderer.HtmlTag.Result">
         <short>
-          True when output is successfully added to the output; False when the maximum number of lines is exceeded
+          True when output is successfully added; False when the maximum number of lines is exceeded
         </short>
       </element>
 
@@ -239,7 +230,7 @@
         <short>Handles an HTML character entity</short>
         <descr>
           <p>
-            <var>HtmlEntity</var> is a <var>Boolean</var> function used to convert  common character entities in HTML to their plain text equivalent. The following Named character entities are converted to their plain text equivalent:
+            <var>HtmlEntity</var> is a <var>Boolean</var> function used to convert common character entities in HTML to their plain text equivalent. The following Named character entities are converted to their plain text equivalent:
           </p>
           <dl>
             <dt>&amp;nbsp;</dt>
@@ -277,7 +268,7 @@
         <short>Constructor for the class instance</short>
         <descr>
           <p>
-            <var>Create</var> is the overloaded constructor for the class instance. An argument passed to the method contains the HTML content examined in the class as either a <var>String</var> value or a <var>TStream</var> instance. The Stream-based variant reads the content in Stream into a String variable for processing. The position in the stream is not changed prior to or after reading its content.
+            <var>Create</var> is the overloaded constructor for the class instance. HTML content is passed as an argument to the method using either a <var>String</var> value or a <var>TStream</var> instance. The Stream-based variant reads the content in Stream into a String variable for processing. The position in the stream is not changed prior to or after reading its content.
           </p>
           <p>
             Create stores the HTML content in <var>aHTML</var> to an internal member used when parsing and processing using methods in the class. A UTF-8 Byte Order Mark (BOM) at the start of the HTML content is removed prior to processing.
@@ -306,7 +297,7 @@
             <dd>Set to 2.</dd>
           </dl>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="THTML2TextRenderer.Create.aHTML">
         <short>String with the HTML content examined in the class</short>
@@ -322,7 +313,7 @@
             <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the inherited destructor.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="THTML2TextRenderer.Render">
@@ -334,7 +325,7 @@
             <var>Render</var> is a <var>String</var> function used to parse the HTML passed as an argument to the constructor, and to render the plain text output in the return value. The output is limited to the number of lines specified in the <var>aMaxLines</var> argument. The default value for the argument is the <var>MaxInt</var> constant.
           </p>
           <remark>
-            Please note: <var>AddOutput</var>, <var>HtmlTag</var>, and <var>HtmlEntity</var> return <b>False</b> if <var>aMaxLines</var> was exceeded.
+            <var>AddOutput</var>, <var>HtmlTag</var>, and <var>HtmlEntity</var> return <b>False</b> if <var>aMaxLines</var> was exceeded.
           </remark>
           <p>
             Renders calls the <var>Reset</var> method to set the initial values for members and flags used in the class instance. The parsing mechanism looks for HTML tags and character entities/references, processes their content, and calls the <var>AddOutput</var> method. Whitespace (characters #32, #9, #10, and #13) between tags and entities is always normalized into a single space character.
@@ -343,7 +334,7 @@
             Render calls the HtmlTag, HtmlEntity, and AddOutput methods to process the HTML content passed to the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="THTML2TextRenderer.Render.aMaxLines">
         <short>Maximum number of lines to process in the method</short>
@@ -380,7 +371,7 @@
             <var>HorzLineMark</var> is used in the implementation of the <var>HtmlTag</var> method when a <b>HR</b> tag is encountered in the HTML content. The default value for the property is the UTF-8  characters '——————————————————' (Eighteen Hex #$2013 characters).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
 
       <element name="THTML2TextRenderer.LinkBeginMark">

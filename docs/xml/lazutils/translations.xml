@@ -7,900 +7,751 @@
   ====================================================================
 -->
 <module name="Translations">
-      <short>
-        Contains classes and routines used to load/check/maintain translations from .po (portable object) files.
-      </short>
-      <descr></descr>
+<short>
+Contains classes and routines used to load/check/maintain translations from .po (portable object) files.
+</short>
+<descr>
+<p>
+  <file>translations.pas</file> contains classes and routines used to load/check/maintain translations from .po (portable object) files.
+</p>
+<p>
+  This file is part of the <file>LazUtils</file> package.
+</p>
+<p>
+  Initial authors: Mattias Gaertner, Bart Broersma, Giuliano Colla
+</p>
+<p>
+  <b>Example 1</b>: Load a specific .po file
+</p>
+<code>
+  procedure TForm1.FormCreate(Sender: TObject);
+  var
+    PODirectory: String;
+  begin
+    PODirectory := '/path/to/lazarus/lcl/languages/';
+    TranslateUnitResourceStrings('LCLStrConsts',
+      PODirectory+'lcl.%s.po', 'nl', '');
+    MessageDlg('Title', 'Text', mtInformation, [mbOk, mbCancel, mbYes], 0);
+  end;
+</code>
+  <p>
+    <b>Example 2</b>: Load the current language file using the GetLanguageIDs function of the gettext unit in the project lpr file:
+  </p>
+<code>
+    uses
+      ...
+      Translations, LCLProc;
 
-<!-- enumeration type Visibility: default -->
+    procedure TranslateLCL;
+    var
+      PODirectory, Lang, FallbackLang: String;
+    begin
+      PODirectory := '/path/to/lazarus/lcl/languages/';
+      Lang := '';
+      FallbackLang:='';
+      LCLGetLanguageIDs(Lang, FallbackLang); // in unit LCLProc
+      Translations.TranslateUnitResourceStrings('LCLStrConsts',
+        PODirectory+'lclstrconsts.%s.po', Lang, FallbackLang);
+    end;
+
+    begin
+      TranslateLCL;
+      Application.Initialize;
+      Application.CreateForm(TForm1, Form1);
+      Application.Run;
+    end.
+</code>
+  <p>
+    <b>Note for Mac OS X</b>:
+  </p>
+  <p>
+    The supported language IDs should be added into the application bundle property list to CFBundleLocalizations key, see <file>lazarus.app/Contents/Info.plist</file> for an example.
+  </p>
+</descr>
+
 <element name="TStringsType">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TStringsType.stLrj">
-        <short>Lazarus resource string table in JSON format</short>
+<short>Lazarus resource string table in JSON format</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TStringsType.stRst">
-        <short>FPC resource string table (prior to FPC 2.7.1)</short>
+<short>FPC resource string table (prior to FPC 2.7.1)</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TStringsType.stRsj">
-        <short>FPC resource string table in JSON format (since FPC 2.7.1)</short>
+<short>FPC resource string table in JSON format (since FPC 2.7.1)</short>
 </element>
 
-<!-- enumeration type Visibility: default -->
 <element name="TTranslateUnitResult">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TTranslateUnitResult.turOK">
-<short></short>
+<short/>
 </element>
 <element name="TTranslateUnitResult.turNoLang">
-<short></short>
+<short/>
 </element>
 <element name="TTranslateUnitResult.turNoFBLang">
-<short></short>
+<short/>
 </element>
 <element name="TTranslateUnitResult.turEmptyParam">
-<short></short>
+<short/>
 </element>
 
-      <element name="TTranslationStatistics">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TTranslationStatistics.Translated">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TTranslationStatistics.Untranslated">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TTranslationStatistics.Fuzzy">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+<element name="TTranslationStatistics">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTranslationStatistics.Translated">
+<short/>
+</element>
+<element name="TTranslationStatistics.Untranslated">
+<short/>
+</element>
+<element name="TTranslationStatistics.Fuzzy">
+<short/>
+</element>
 
-<!-- class Visibility: default -->
 <element name="TPOFileItem">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-      <element name="TPOFileItem.FInitialFuzzyState"/>
-      <element name="TPOFileItem.FVirtualTranslation"/>
+<element name="TPOFileItem.FInitialFuzzyState"/>
+<element name="TPOFileItem.FVirtualTranslation"/>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.Tag">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.LineNr">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.Comments">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.IdentifierLow">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.Original">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.Translation">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.Flags">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.PreviousID">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TPOFileItem.Context">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TPOFileItem.Create">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFileItem.Create.TheIdentifierLow">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFileItem.Create.TheOriginal">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFileItem.Create.TheTranslated">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFileItem.ModifyFlag">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<errors></errors>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFileItem.ModifyFlag.AFlag">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFileItem.ModifyFlag.Check">
-<short></short>
+<short/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFileItem.Identifier">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- class Visibility: default -->
 <element name="TPOFile">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<errors></errors>
+<seealso/>
 </element>
 
-      <element name="TPOFile.FStatisticsUpdated"/>
-      <element name="TPOFile.FStatistics"/>
-      <element name="TPOFile.GetStatistics"/>
-      <element name="TPOFile.GetStatistics.Result"/>
+<element name="TPOFile.FStatisticsUpdated"/>
+<element name="TPOFile.FStatistics"/>
+<element name="TPOFile.GetStatistics"/>
+<element name="TPOFile.GetStatistics.Result"/>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FItems">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FIdentifierLowToItem">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FOriginalToItem">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FCharSet">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FHeader">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FAllEntries">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FTag">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FModified">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TPOFile.FHelperList">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
 <element name="TPOFile.FPoName">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
 <element name="TPOFile.Remove">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.Remove.Index">
-<short></short>
+<short/>
 </element>
-      <element name="TPOFile.Remove.Result">
-<short></short>
+<element name="TPOFile.Remove.Result">
+<short/>
 </element>
 
 <element name="TPOFile.GetCount">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.GetCount.Result">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TPOFile.SetCharSet">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.SetCharSet.AValue">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TPOFile.GetPoItem">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: protected -->
 <element name="TPOFile.GetPoItem.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.GetPoItem.Index">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TPOFile.ReadPOText">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.ReadPOText.AStream">
-<short></short>
+<short/>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TPOFile.Create">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Create.Full">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Create.AFilename">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Create.AStream">
-<short></short>
+<short/>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TPOFile.Destroy">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- argument Visibility: default -->
+<!-- Params for the Overload -->
 <element name="TPOFile.ReadPOText.Txt">
-<short></short>
+<short/>
 </element>
 
 <element name="TPOFile.Translate">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<errors></errors>
+<seealso/>
 </element>
-
-<!-- function result Visibility: public -->
 <element name="TPOFile.Translate.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Translate.Identifier">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Translate.OriginalValue">
-<short></short>
+<short/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.CharSet">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFile.Report">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<errors></errors>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Report.StartIndex">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Report.StopIndex">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Report.DisplayHeader">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.Report.Log">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFile.CreateHeader">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFile.UpdateStrings">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.UpdateStrings.InputLines">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.UpdateStrings.SType">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFile.SaveToStrings">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.SaveToStrings.OutLst">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFile.SaveToFile">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.SaveToFile.AFilename">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TPOFile.UpdateItem">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.UpdateItem.Identifier">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TPOFile.UpdateItem.Original">
-<short></short>
+<short/>
 </element>
-      <element name="TPOFile.UpdateItem.Flags">
-<short></short>
+<element name="TPOFile.UpdateItem.Flags">
+<short/>
 </element>
-      <element name="TPOFile.UpdateItem.ProcessingTranslation">
-<short></short>
-</element>
-
-      <element name="TPOFile.FillItem">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
-</element>
-      <element name="TPOFile.FillItem.CurrentItem">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.Identifier">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.Original">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.Translation">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.Comments">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.Context">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.Flags">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.PreviousID">
-        <short></short>
-      </element>
-      <element name="TPOFile.FillItem.LineNr">
-        <short></short>
-      </element>
-
-<!-- procedure Visibility: public -->
-      <element name="TPOFile.UpdateTranslation">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<element name="TPOFile.UpdateItem.ProcessingTranslation">
+<short/>
 </element>
 
-<!-- argument Visibility: default -->
-      <element name="TPOFile.UpdateTranslation.BasePOFile">
-<short></short>
+<element name="TPOFile.FillItem">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPOFile.FillItem.CurrentItem">
+<short/>
+</element>
+<element name="TPOFile.FillItem.Identifier">
+<short/>
+</element>
+<element name="TPOFile.FillItem.Original">
+<short/>
+</element>
+<element name="TPOFile.FillItem.Translation">
+<short/>
+</element>
+<element name="TPOFile.FillItem.Comments">
+<short/>
+</element>
+<element name="TPOFile.FillItem.Context">
+<short/>
+</element>
+<element name="TPOFile.FillItem.Flags">
+<short/>
+</element>
+<element name="TPOFile.FillItem.PreviousID">
+<short/>
+</element>
+<element name="TPOFile.FillItem.LineNr">
+<short/>
+</element>
+
+<element name="TPOFile.UpdateTranslation">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPOFile.UpdateTranslation.BasePOFile">
+<short/>
 </element>
 
 <element name="TPOFile.UntagAll">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-      <element name="TPOFile.RemoveTaggedItems">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="TPOFile.RemoveTaggedItems">
+<short/>
+<descr/>
+<seealso/>
 </element>
-      <element name="TPOFile.RemoveTaggedItems.aTag">
-<short></short>
+<element name="TPOFile.RemoveTaggedItems.aTag">
+<short/>
 </element>
 
-      <element name="TPOFile.RemoveIdentifier">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="TPOFile.RemoveIdentifier">
+<short/>
+<descr/>
+<seealso/>
 </element>
-      <element name="TPOFile.RemoveIdentifier.AIdentifier">
-<short></short>
+<element name="TPOFile.RemoveIdentifier.AIdentifier">
+<short/>
 </element>
 
 <element name="TPOFile.RemoveIdentifiers">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.RemoveIdentifiers.AIdentifiers">
-<short></short>
+<short/>
 </element>
 
-      <element name="TPOFile.RemoveOriginal">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
-      <element name="TPOFile.RemoveOriginal.AOriginal">
-        <short></short>
-      </element>
+<element name="TPOFile.RemoveOriginal">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPOFile.RemoveOriginal.AOriginal">
+<short/>
+</element>
 
 <element name="TPOFile.RemoveOriginals">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.RemoveOriginals.AOriginals">
-<short></short>
+<short/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.Tag">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.Modified">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.Items">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.PoName">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.PoRename">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- property Visibility: public -->
-      <element name="TPOFile.Statistics">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="TPOFile.Statistics">
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-      <element name="TPOFile.InvalidateStatistics">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="TPOFile.InvalidateStatistics">
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TPOFile.FindPoItem">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.FindPoItem.Result">
-<short></short>
+<short/>
 </element>
 <element name="TPOFile.FindPoItem.Identifier">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TPOFile.OriginalToItem">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.OriginalToItem.Result">
-<short></short>
+<short/>
 </element>
 <element name="TPOFile.OriginalToItem.Data">
-<short></short>
+<short/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.PoItems">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 <element name="TPOFile.PoItems.Index">
-<short></short>
+<short/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.Count">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TPOFile.Header">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- class Visibility: default -->
 <element name="EPOFileError">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- variable Visibility: public -->
 <element name="EPOFileError.ResFileName">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
-
-<!-- variable Visibility: public -->
 <element name="EPOFileError.POFileName">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="SystemCharSetIsUTF8">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="TranslateUnitResourceStrings">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TranslateUnitResourceStrings.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateUnitResourceStrings.ResUnitName">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateUnitResourceStrings.BaseFilename">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateUnitResourceStrings.Lang">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateUnitResourceStrings.FallbackLang">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateUnitResourceStrings.AFilename">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateUnitResourceStrings.po">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="TranslateResourceStrings">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TranslateResourceStrings.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateResourceStrings.po">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateResourceStrings.AFilename">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateResourceStrings.BaseFilename">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateResourceStrings.Lang">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TranslateResourceStrings.FallbackLang">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UTF8ToSystemCharSet">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="UTF8ToSystemCharSet.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="UTF8ToSystemCharSet.s">
-<short></short>
+<short/>
 </element>
 
-<!-- function Visibility: default -->
 <element name="UpdatePoFile">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="UpdatePoFile.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="UpdatePoFile.RSTFiles">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="UpdatePoFile.POFilename">
-<short></short>
+<short/>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="UpdatePoFileTranslations">
-<short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+<short/>
+<descr/>
+<errors></errors>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="UpdatePoFileTranslations.BasePOFilename">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="UpdatePoFileTranslations.BasePOFile">
-<short></short>
+<short/>
 </element>
 
-<!-- constant Visibility: default -->
-      <element name="sFuzzyFlag">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="sFuzzyFlag">
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-<!-- constant Visibility: default -->
-      <element name="sBadFormatFlag">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="sBadFormatFlag">
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-      <element name="sFormatFlag">
-<short></short>
-        <descr></descr>
-        <seealso></seealso>
+<element name="sFormatFlag">
+<short/>
+<descr/>
+<seealso/>
 </element>
 
-      <element name="sNoFormatFlag">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
-      </element>
+<element name="sNoFormatFlag">
+<short/>
+<descr/>
+<seealso/>
+</element>
 
-    </module>
-    <!-- Translations -->
-
+</module>
+<!-- Translations -->
 </package>
 </fpdoc-descriptions>

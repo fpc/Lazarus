@@ -19327,12 +19327,30 @@
         <short/>
       </element>
 
+      <element name="TCustomTreeView.GetBuiltinIconSize">
+        <short>Gets the size for built-in icons used for items in the control</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomTreeView.GetBuiltinIconSize.Result">
+        <short>TSize instance with the Width and Height for an icon</short>
+      </element>
+
       <element name="TCustomTreeView.GetDragImages" link="#LCL.Controls.TControl.GetDragImages">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetDragImages.Result">
+        <short/>
+      </element>
+
+      <element name="TCustomTreeView.GetImageSize">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomTreeView.GetImageSize.Result">
         <short/>
       </element>
 

@@ -7,6 +7,12 @@
     ============================================================================
     -->
     <module name="LazTracer">
+      <short>Contains types and routines used to implement exceptions and stack traces</short>
+      <descr>
+        <p>
+          <file>laztracer.pas</file> contains types and routines used to implement exceptions and stack traces in the Lazarus IDE and Debugger. This file is part of the <file>LazUtils</file> package.
+        </p>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="Classes"/>

@@ -28,7 +28,7 @@
 
       <element name="TCommentType">
         <short>Represents comment styles available in CommentText</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="CommentText"/>
           <link id="TCommentTypes"/>
@@ -61,7 +61,7 @@
 
       <element name="TCommentTypes">
         <short>Set type for TCommentType enumeration values</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TCommentType"/>
           <link id="CommentText"/>
@@ -80,10 +80,100 @@
         </seealso>
       </element>
 
+      <element name="PosI">
+        <short>A case-insensitive version of the Pos routine</short>
+        <descr>
+          <p>
+            <var>PosI</var> implements a case-insensitive version of the <var>Pos</var> routine found the RTL <file>system</file> unit. It only accepts <var>String</var> values in its parameters, unlike the RTL overloaded variants which accept combinations of the Char, ShortString, AnsiString, UnicodeString, WideString, and Variant types.
+          </p>
+          <p>
+            It is also an alternative to the <var>ContainsText</var> routine in the RTL <file>StrUtils</file> unit, which has a <b>very</b> slow implementation.
+          </p>
+          <p>
+            <var>SubStr</var> contains the value to locate in <var>S</var>.
+          </p>
+          <p>
+            PosI supports ASCII comparison. It converts the values in SubStr and S to lowercase char by char for fast comparisons. The result is much faster than Pos(Lowercase(SubStr),Lowercase(S)) which is often used.
+          </p>
+          <p>
+            The return value contains the position in S where SubStr is located, or 0 when SubStr does not occur in S. The position is 1-based just like indexed access to values in the String type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.system.Pos">Pos</link>
+          <link id="#rtl.strutils.ContainsText">ContainsText</link>
+        </seealso>
+      </element>
+      <element name="PosI.Result">
+        <short>Positionof the sub-string witin the searched value, or 0 when not found</short>
+      </element>
+      <element name="PosI.SubStr">
+        <short>Value to locate in the searched value</short>
+      </element>
+      <element name="PosI.S">
+        <short>Value searched for the specified sub-string</short>
+      </element>
+
+      <element name="LazStartsText">
+        <short>Determines if a string occurs at the beginning of the specified text</short>
+        <descr>
+          <p>
+            <var>LazStartsText</var> is a fast implementation of <var>StartsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
+          </p>
+          <p>
+            LazStartsText calls <var>StrLIComp</var> to perform a case-insensitive comparison between <var>ASubText</var> and <var>AText</var> for the number of characters in ASubText.
+          </p>
+          <p>
+            The return value is <b>True</b> when ASubText and AText start with the same values. It is False when StrLIComp returns a non-zero value, when ASubText is an empty string, or when ASubText is longer than AText.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.strutils.StartsText">StartsText</link>
+          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
+        </seealso>
+      </element>
+      <element name="LazStartsText.Result">
+        <short>True when the sub-text is at the start of the string value</short>
+      </element>
+      <element name="LazStartsText.ASubText">
+        <short>Value to locate at the start of the string</short>
+      </element>
+      <element name="LazStartsText.AText">
+        <short>String value used in the comparison</short>
+      </element>
+
+      <element name="LazEndsText">
+        <short>Determines if a string occurs at the end of the specified text</short>
+        <descr>
+          <p>
+            <var>LazEndsText</var> is a fast implementation of <var>EndsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
+          </p>
+          <p>
+            LazEndsText calls <var>StrLIComp</var> to perform a case-insensitive comparison between <var>ASubText</var> and <var>AText</var> for the number of characters in ASubText at the end of the value in AText.
+          </p>
+          <p>
+            The return value is <b>True</b> when AText ends with the value in ASubText. It is False when StrLIComp returns a non-zero value, when ASubText is an empty string, or when ASubText is longer than AText.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.strutils.EndsText">EndsText</link>
+          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
+        </seealso>
+      </element>
+      <element name="LazEndsText.Result">
+        <short>True when the sub-text is at the end of the string value</short>
+      </element>
+      <element name="LazEndsText.ASubText">
+        <short>Value to locate at the end of the string</short>
+      </element>
+      <element name="LazEndsText.AText">
+        <short>String value used in the comparison</short>
+      </element>
+
       <element name="IsNumber">
         <short>True when characters in S are in the range <b>'0'..'9'</b></short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsNumber.Result">
         <short>True when characters in S are in the range '0'..'9'</short>
@@ -94,8 +184,8 @@
 
       <element name="LineEndingCount">
         <short>Gets the number of LineEnding sequences in the specified text</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="LineEndingCount.Result">
         <short>Number of LineEnding sequences in the text</short>
@@ -117,7 +207,7 @@
             ChangeLineEndings iterates over the byte values in S, and replaces any occurrences of <b>CR</b> (<b>#13</b>), <b>LF</b> (<b>#10</b>), or <b>CR+LF</b> (<b>#13#10</b>) to the specified end-of-line character sequence. No actions are performed in the function when S is an empty string (<b>''</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ChangeLineEndings.Result">
         <short>Value from S after conversion of line endings</short>
@@ -136,7 +226,7 @@
             Calls ChangeLineEndings to normalize line ending sequences to the value in LineEnding.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="LineBreaksToSystemLineBreaks.Result">
         <short>Value after line ending sequences have been replaced</short>
@@ -147,8 +237,8 @@
 
       <element name="LineBreaksToDelimiter">
         <short>Converts CR or LF characters in a string to the specified delimiter character</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="LineBreaksToDelimiter.Result">
         <short>Value after converting CR, LF to the delimiter character </short>
@@ -161,17 +251,17 @@
       </element>
 
       <element name="ConvertLineEndings">
-        <short></short>
+        <short/>
         <descr>
           <remark>Deprecated. Use LineBreaksToSystemLineBreaks instead.</remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="ConvertLineEndings.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="ConvertLineEndings.s">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TabsToSpaces">
@@ -181,7 +271,7 @@
             Replaces all <b>Tab</b> characters (<b>#9</b>) in <var>S</var> with the specified number of space characters.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TabsToSpaces.Result">
         <short>String  value after converting Tab characters to spaces</short>
@@ -244,14 +334,14 @@
             Used in the implementation of the Clean Directory and Change Encoding dialogs in the Lazarus IDE.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
         <notes><note>?</note></notes>
       </element>
       <element name="SimpleSyntaxToRegExpr.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="SimpleSyntaxToRegExpr.Src">
-        <short></short>
+        <short/>
       </element>
 
       <element name="BinaryStrToText">
@@ -261,7 +351,7 @@
             Replaces control characters (<b>#0..#31</b>) with Pascal-style character constants using the <b>#nnn</b> notation.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="BinaryStrToText.Result">
         <short>String after replacing binary characters</short>
@@ -277,7 +367,7 @@
             Converts special characters (<b>#0..#31, #127</b>) to a Space character. Converts line breaks to a single Space character (<b>#32</b>). Trims leading and trailing Spaces. Calls <var>UTF8FixBroken</var> when <var>FixUTF8</var> is <b>True</b>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="SpecialCharsToSpaces.Result">
         <short>String after converting special characters</short>
@@ -431,8 +521,8 @@
         <short>
           Creates and populates a TStringList with lines determined using the specified delimiter character
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="SplitString.Result">
         <short>TStrings instance created and populated in the routine</short>
@@ -452,8 +542,8 @@
 
       <element name="StringListToText">
         <short>Gets a string with the lines of text from the specified TStrings instance</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="StringListToText.Result">
         <short>String with the delimited lines of text from the TStrings instance</short>
@@ -524,7 +614,7 @@
             Adds a <b>LF</b> (<b>#10</b>) character to the end of text lines in the string list. Quotes each string value which ends with a LF character using surrounding <b>Quote</b> (<b>'</b>) characters.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="StringListToString.Result">
         <short>String representing the contents of the TStrings instance</short>
@@ -540,7 +630,7 @@
       </element>
       <element name="StringListToString.IgnoreEmptyLines">
         <short>Indicates if empty lines are excluded from the result</short>
-        <short></short>
+        <short/>
       </element>
 
       <element name="StringToStringList">
@@ -550,7 +640,7 @@
             <b>LF</b> (<b>#10</b>) characters found in <var>s</var> control when a line of text is added in the <var>TStrings</var> instance. The end-of-line character is not stored in the TStrings instance. If no end-of-line characters are found in S, then a single line of text is added to the string list.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="StringToStringList.s">
         <short>String with values extracted and stored in the method</short>
@@ -581,7 +671,7 @@
             The value in Position is incremented to skip both the character values and the delimiter for the list item.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetNextDelimitedItem.Result">
         <short>Value for the list item at the specified position</short>
@@ -633,24 +723,24 @@
       </element>
 
       <element name="FindNextDelimitedItem">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short/>
+        <descr/>
+        <seealso/>
       </element>
       <element name="FindNextDelimitedItem.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="FindNextDelimitedItem.List">
-        <short></short>
+        <short/>
       </element>
       <element name="FindNextDelimitedItem.Delimiter">
-        <short></short>
+        <short/>
       </element>
       <element name="FindNextDelimitedItem.Position">
-        <short></short>
+        <short/>
       </element>
       <element name="FindNextDelimitedItem.FindItem">
-        <short></short>
+        <short/>
       </element>
 
       <element name="MergeWithDelimiter">
@@ -660,7 +750,7 @@
             The value in <var>Delimiter</var> is omitted from the return value if either <var>A</var> or <var>B</var> is an empty string (<b>''</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="MergeWithDelimiter.Result">
         <short>Combined values using the specified delimiter</short>
@@ -688,7 +778,7 @@
             The value in ALine is a constant parameter and is not altered in any way in the routine.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="StripLn.Result">
         <short>Text in the initial line of text</short>
@@ -698,31 +788,30 @@
       </element>
 
       <element name="GetPart">
-        <short></short>
+        <short/>
         <descr>
           GetPart is an overloaded String function.
           It is used to implement facilities in the debugger.
-          In a dark place we find ourselves, and a little more knowledge lights our way.
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="GetPart.Result">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.ASkipTo">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.AnEnd">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.ASource">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.AnIgnoreCase">
-        <short></short>
+        <short/>
       </element>
       <element name="GetPart.AnUpdateSource">
-        <short></short>
+        <short/>
       </element>
 
       <element name="TextToSingleLine">
@@ -732,7 +821,7 @@
             Replaces <b>CR</b> and <b>LF</b> characters in <var>AText</var> with <b>Space</b> characters. Duplicate Space characters in the return value are converted to a single Space character.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="TextToSingleLine.Result">
         <short>Text after removing end-of-line characters and duplicate spaces</short>
@@ -748,7 +837,7 @@
             Inverts the case for characters in the specified string value. Like using LowerCase and UpperCase simultaneously.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="SwapCase.Result">
         <short>String with values after inverting the case for each character</short>
@@ -813,7 +902,7 @@
             The return value contains the ordinal position of the element in ACase which matches the value in AString. The return value is <b>-1</b> if no match was found for the value in AString.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="StringCase.Result">
         <short>Ordinal position for the case selector, or -1 when a match is not found</short>
@@ -838,7 +927,7 @@
             Returns <var>False</var> if either <var>P1</var> or <var>P2</var> are unassigned (contain <b>Nil</b>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="SamePChar.Result">
         <short>True when P1 and P2 have the same content, or are the same pointer</short>
@@ -862,7 +951,7 @@
             When c is located in P, the return value is a <var>PChar</var> pointer to the location where c was located.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso/>
       </element>
       <element name="StrLScan.Result">
         <short>Pointer to the character located in P, or Nil</short>

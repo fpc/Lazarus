@@ -6931,6 +6931,7 @@ end;
       <element name="TMemo.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
       <element name="TMemo.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
       <element name="TMemo.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TMemo.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <element name="TMemo.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
       <element name="TMemo.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TMemo.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
@@ -8688,6 +8689,7 @@ end;
       <element name="TToggleBox.Hint" link="#lcl.controls.TControl.Hint"/>
       <element name="TToggleBox.OnChange" link="#lcl.stdctrls.TButtonControl.OnChange"/>
       <element name="TToggleBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TToggleBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TToggleBox.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
       <element name="TToggleBox.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
       <element name="TToggleBox.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
@@ -8698,6 +8700,10 @@ end;
       <element name="TToggleBox.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
       <element name="TToggleBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
       <element name="TToggleBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+      <element name="TToggleBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TToggleBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TToggleBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TToggleBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <element name="TToggleBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
       <element name="TToggleBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
       <element name="TToggleBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>

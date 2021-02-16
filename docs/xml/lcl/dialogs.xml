@@ -7,8 +7,34 @@
   ====================================================================
 -->
     <module name="Dialogs">
-      <short>Some dialogs commonly used in Lazarus applications. Look at the Procedures as well as the Classes</short>
-      <descr/>
+      <short>Contains common dialogs used in Lazarus LCL applications</short>
+      <descr>
+        <p>
+          <file>dialogs.pp</file> contains classes, types, and routines used to implement common dialogs in an application. This file is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Dialogs</b> Tab
+        </p>
+        <ul>
+          <li>TOpenDialog</li>
+          <li>TSaveDialog</li>
+          <li>TSelectDirectoryDialog</li>
+          <li>TColorDialog</li>
+          <li>TFontDialog</li>
+          <li>TFindDialog</li>
+          <li>TReplaceDialog</li>
+          <li>TTaskDialog</li>
+        </ul>
+        <p>
+          <b>Misc</b> Tab
+        </p>
+        <ul>
+          <li>TColorButton</li>
+        </ul>
+      </descr>
 
       <element name="Types"/>
       <element name="TypInfo"/>

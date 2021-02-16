@@ -2,43 +2,35 @@
 <fpdoc-descriptions>
   <package name="lcl">
     <!--
-  ====================================================================
-    Arrow
-  ====================================================================
--->
+      ====================================================================
+        Arrow
+      ====================================================================
+    -->
     <module name="Arrow">
-      <short>Defines the Arrow symbol widely used in Forms</short>
-      <descr/>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="Controls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="lMessages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <short>Defines an Arrow symbol widely used in forms</short>
+      <descr>
+        <p>
+          <file>arrow.pp</file> implements a control used to draw an arrow. Its size, direction, color and shadow can be adjusted. It is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+        <p>
+          The following components are added to the Lazarus IDE component palette:
+        </p>
+        <p>
+          <b>Misc</b> Tab
+        </p>
+        <ul>
+          <li>TArrow</li>
+        </ul>
+      </descr>
+
+      <!-- unresolved references -->
+      <element name="Classes"/>
+      <element name="Types"/>
+      <element name="Math"/>
+      <element name="Controls"/>
+      <element name="Graphics"/>
+      <element name="IndustrialBase"/>
+
       <!-- enumeration type Visibility: default -->
       <element name="TArrowType">
         <short/>
@@ -129,7 +121,10 @@
       <element name="TArrow.SetShadowType.AValue">
         <short/>
       </element>
-      <!-- function Visibility: private -->
+
+      <element name="TArrow.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
+
+       <!-- function Visibility: private -->
       <element name="TArrow.GetArrowType">
         <short/>
         <descr/>
@@ -159,14 +154,14 @@
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
-      <element name="TArrow.Paint" link="#LCL.Controls.TCustomControl.Paint">
+      <element name="TArrow.Paint" link="#lcl.controls.TCustomControl.Paint">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TArrow.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TArrow.Create" link="#rtl.classes.TComponent.Create">
         <short/>
         <descr/>
         <errors/>
@@ -177,34 +172,34 @@
         <short/>
       </element>
       <!-- destructor Visibility: public -->
-      <element name="TArrow.Destroy" link="#rtl.Classes.TComponent.Destroy">
+      <element name="TArrow.Destroy" link="#rtl.classes.TComponent.Destroy">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TArrow.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TArrow.Loaded" link="#rtl.classes.TComponent.Loaded">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- procedure Visibility: public -->
-      <element name="TArrow.InitializeWnd" link="#LCL.Controls.TWinControl.InitializeWnd">
+      <element name="TArrow.InitializeWnd" link="#lcl.controls.TWinControl.InitializeWnd">
         <short/>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.Align" link="#LCL.Controls.TControl.Align">
+      <element name="TArrow.Align" link="#lcl.controls.TControl.Align">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.Anchors" link="#LCL.Controls.TControl.Anchors">
+      <element name="TArrow.Anchors" link="#lcl.controls.TControl.Anchors">
         <short/>
         <descr/>
         <seealso/>
@@ -217,7 +212,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.BorderSpacing" link="#LCL.Controls.TControl.BorderSpacing">
+      <element name="TArrow.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing">
         <short/>
         <descr/>
         <seealso/>
@@ -230,69 +225,80 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.Visible" link="#LCL.Controls.TControl.Visible">
+      <element name="TArrow.Visible" link="#lcl.controls.TControl.Visible">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnClick" link="#LCL.Controls.TControl.OnClick">
+      <element name="TArrow.OnClick" link="#lcl.controls.TControl.OnClick">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnMouseMove" link="#LCL.Controls.TControl.OnMouseMove">
+      <element name="TArrow.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnMouseDown" link="#LCL.Controls.TControl.OnMouseDown">
+      <element name="TArrow.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnMouseUp" link="#LCL.Controls.TControl.OnMouseUp">
+      <element name="TArrow.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnChangeBounds" link="#LCL.Controls.TControl.OnChangeBounds">
+      <element name="TArrow.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnResize" link="#LCL.Controls.TControl.OnResize">
+      <element name="TArrow.OnResize" link="#lcl.controls.TControl.OnResize">
         <short/>
         <descr/>
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TArrow.OnContextPopup" link="#LCL.Controls.TControl.OnContextPopup">
+      <element name="TArrow.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup">
         <short/>
         <descr/>
         <seealso/>
       </element>
+
+      <element name="TArrow.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+
       <!-- property Visibility: published -->
-      <element name="TArrow.PopupMenu" link="#LCL.Controls.TControl.PopupMenu">
+      <element name="TArrow.PopupMenu" link="#lcl.controls.TControl.PopupMenu">
         <short/>
         <descr/>
         <seealso/>
       </element>
+
       <!-- procedure Visibility: default -->
       <element name="Register">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Registers components for use in the Lazarus IDE</short>
+        <descr>
+          <p>
+            The following components are added to the Lazarus IDE component palette:
+          </p>
+          <p>
+            <b>Misc</b> Tab
+          </p>
+          <ul>
+            <li>TArrow</li>
+          </ul>
+        </descr>
         <seealso/>
       </element>
-      <element name="TArrow.GetControlClassDefaultSize" link="#LCL.Controls.TControl.GetControlClassDefaultSize"/>
-      <element name="TArrow.OnDblClick" link="#LCL.Controls.TControl.OnDblClick"/>
-      <element name="TArrow.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
+
     </module>
     <!-- Arrow -->
   </package>

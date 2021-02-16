@@ -8,7 +8,17 @@
     -->
     <module name="LazLinkedList">
       <short>Defines a simple doubly linked list</short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>lazlinkedlist.pas</file> defines a simple doubly linked list (TLinkList). It supports Adding, Deleting, getting First and getting Last in O(1). Finding can be done in time O(n).
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
+        <p>
+          Authors: Mattias Gaertner, Jeroen van Iddekinge
+        </p>
+      </descr>
 
       <!-- used units -->
       <element name="Classes"/>

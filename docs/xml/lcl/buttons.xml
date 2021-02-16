@@ -2734,6 +2734,8 @@
         <seealso></seealso>
       </element>
 
+      <element name="TSpeedButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+
       <element name="TSpeedButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick">
         <descr>
           <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>

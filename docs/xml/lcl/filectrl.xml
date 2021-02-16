@@ -7,7 +7,9 @@
       ====================================================================
     -->
     <module name="FileCtrl">
-      <short>Implements list box and combo-box controls used to select files on the local file system</short>
+      <short>
+        Implements list box and combo-box controls used to select files on the local file system
+      </short>
       <descr>
         <p>
           <file>filectrl.pp</file> contains classes, types, and routines used to implement list box and combo-box controls used to select files on the local file system. It adds the following components to the <b>Misc</b> tab in the Lazarus IDE Component Palette:
@@ -35,7 +37,7 @@
             <var>TFileAttr</var> is an enumerated type with values that represent file and directory attributes for a selection in <var>TFileListBox</var>. Values from TFileAttr are stored in the <var>TFileType</var> set, which is used to implement the <var>FileType</var> property in TFileListBox.
           </p>
           <p>
-            Values in TFileAttr generally correspond to the file attributes used in <var>TSearchRec</var> from the FreePascal RTL (Run-Time Library). The exceptions are:
+            Values in TFileAttr generally correspond to the file attributes used in <var>TSearchRec</var> from the FreePascal RTL (Run-Time Library). The differences are:
           </p>
           <dl>
             <dt>ftNormal</dt>
@@ -44,7 +46,7 @@
             </dd>
             <dt>fsAnyFile</dt>
             <dd>
-              This value from TSearchRec is not represented in TFileAttr; it is a search mask and not an actual  file attribute.
+              This value from TSearchRec is not represented in TFileAttr; it is a search mask and not an actual file attribute.
             </dd>
           </dl>
         </descr>
@@ -953,7 +955,7 @@ Binaries (*.exe)</pre>
             No actions are performed in the routine when path information is not included in FileName. Normalizes all path delimiters in the file name to the first path delimiter found in the argument.
           </p>
           <p>
-            When FileName is longer than the value in MaxWidth, directory names are dropped and replaced with one <b>'...'</b> string value until the shortened file name fits within the specified width.
+            When FileName is longer than the value in MaxWidth, directory names are dropped and replaced with a single <b>'...'</b> string value until the shortened file name fits within the specified width. Please note that this is a string with three (3) period ('.') characters, and <b>NOT</b> an Ellipsis (…)(#$2026) character.
           </p>
         </descr>
       </element>

@@ -18,17 +18,6 @@
           Author: Mattias Gaertner
         </p>
       </descr>
-      <notes>
-        <note>
-          ToDo:
-          <ul>
-            <li>Fix TCHMHelpViewer descendant.</li>
-            <li>Make THelpDatabase and THelpViewer components usable in the designer.</li>
-            <li>Add localization support.</li>
-            <li>Add Help Editing functions.</li>
-          </ul>
-        </note>
-      </notes>
 
       <!-- unresolved type references Visibility: default -->
       <element name="Classes"/>

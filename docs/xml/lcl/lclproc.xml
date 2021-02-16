@@ -7,8 +7,12 @@
       ====================================================================
     -->
     <module name="LCLProc">
-      <short>Useful lower level helper functions and classes</short>
-      <descr/>
+      <short>Useful lower-level helper functions and classes</short>
+      <descr>
+        <p>
+          <file>lclproc.pas</file> contains lower-level  classes and helper routines that are useful in LCL applications. This file is part of the Lazarus Component Library (<b>LCL</b>).
+        </p>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="MacOSAll"/>
@@ -26,236 +30,64 @@
       <element name="LCLStrConsts"/>
       <element name="LCLType"/>
 
-      <!-- object Visibility: default -->
       <element name="TMethodList">
-        <short>A list for method references.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TMethodList.FItems" link="#lcl.lclproc.TMethodList.Items"/>
-      <!-- variable Visibility: private -->
-      <element name="TMethodList.FCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TMethodList.GetItems" link="#lcl.lclproc.TMethodList.Items"/>
-      <element name="TMethodList.GetItems.Result">
-        <short/>
-      </element>
-      <element name="TMethodList.GetItems.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetItems" link="#lcl.lclproc.TMethodList.Items"/>
-      <element name="TMethodList.SetItems.Index">
-        <short/>
-      </element>
-      <element name="TMethodList.SetItems.AValue">
-        <short/>
-      </element>
-      <!-- destructor Visibility: public -->
-      <element name="TMethodList.Destroy"/>
-      <!-- function Visibility: public -->
-      <element name="TMethodList.Count">
-        <short>Checked number of Items, can be called with a non-existent object.</short>
-      </element>
-      <element name="TMethodList.Count.Result">
-        <short/>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TMethodList.NextDownIndex">
-        <short>Checked decrement of Index, can be called with a non-existent object.</short>
-        <descr>The resulting Index is lower than Count.
-        </descr>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.NextDownIndex.Result">
-        <short>True when the Index is valid.
-        </short>
-      </element>
-      <element name="TMethodList.NextDownIndex.Index">
-        <short>The decremented Index, or -1 if the object doesn't exist.</short>
-      </element>
-      <!-- function Visibility: public -->
-      <element name="TMethodList.IndexOf">
-        <short>Returns the list index of AMethod.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.IndexOf.Result">
-        <short>The list index, or -1 if not found or the list doesn't exist.</short>
-      </element>
-      <element name="TMethodList.IndexOf.AMethod">
-        <short>The method to find.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.Delete">
-        <short>Removes the indexed Item.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.Delete.Index">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.Remove">
-        <short>Removes the first occurrence of AMethod from the list.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.Remove.AMethod">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.Add">
-        <short>Adds AMethod to the list, as the first or last member.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.Add.AMethod">
-        <short/>
-      </element>
-      <element name="TMethodList.Add.AsLast">
-        <short>Add as first (False) or last (True) member.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.Insert">
-        <short>Inserts AMethod at Index.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.Insert.Index">
-        <short/>
-      </element>
-      <element name="TMethodList.Insert.AMethod">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.Move">
-        <short>Moves an Item within the list.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.Move.OldIndex">
-        <short/>
-      </element>
-      <element name="TMethodList.Move.NewIndex">
-        <short/>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.RemoveAllMethodsOfObject">
-        <short>Deletes all occurrences of methods of AnObject from the list.</short>
-        <descr/>
-        <errors/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.RemoveAllMethodsOfObject.AnObject">
-        <short>The object whose methods shall be removed.</short>
-      </element>
-      <!-- procedure Visibility: public -->
-      <element name="TMethodList.CallNotifyEvents">
-        <short>Invokes all methods in the list, as notification handlers.</short>
+        <short>A list for method references</short>
         <descr>
-          All listed methods <b>must</b> take exactly one argument of type TObject!
+        <p>
+          <var>TMethodList</var> is an alias for the TMethodList type in the <file>LazMethodList</file> unit.
+        </p>
         </descr>
         <seealso>
+          <link id="#lazutils.lazmethodlist.TMethodList">TMethodList</link>
         </seealso>
       </element>
-      <element name="TMethodList.CallNotifyEvents.Sender">
-        <short>The reference to pass as the argument to all methods.</short>
-      </element>
-      <!-- property Visibility: public -->
-      <element name="TMethodList.Items">
-        <short>Indexed access to the methods in the list.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMethodList.Items.Index">
-        <short/>
-      </element>
-<!-- array type Visibility: default -->
-      <element name="TStackTracePointers">
-        <short>A dynamic pointer array type.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
-      </element>
-      <!-- class Visibility: default -->
+
       <element name="TDebugLCLItemInfo">
         <short>
           A node in TDebugLCLItems, holding information about a heap object
         </short>
-        <descr>
-        </descr>
-        <errors>
+        <descr/>
+<errors>
         </errors>
         <seealso>
           <link id="TDebugLCLItems"/>
         </seealso>
       </element>
-      <!-- variable Visibility: public -->
+
       <element name="TDebugLCLItemInfo.Item">
         <short>The address of the item.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- variable Visibility: public -->
+
       <element name="TDebugLCLItemInfo.IsDestroyed">
         <short>True when the item has been destroyed.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- variable Visibility: public -->
+
       <element name="TDebugLCLItemInfo.Info">
-        <short>A descriptive string
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>A descriptive string</short>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- variable Visibility: public -->
+
       <element name="TDebugLCLItemInfo.CreationStack">
-        <short>Stack trace at creation of the object
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Stack trace at creation of the object</short>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- variable Visibility: public -->
+
       <element name="TDebugLCLItemInfo.DestructionStack">
-        <short>Stack trace at destruction of the object
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Stack trace at destruction of the object</short>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TDebugLCLItemInfo.AsString">
-        <short>All information about the object.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>All information about the object</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TDebugLCLItemInfo.AsString.Result">
         <short/>
@@ -263,9 +95,13 @@
       <element name="TDebugLCLItemInfo.AsString.WithStackTraces">
         <short>True means include stack traces.</short>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TDebugLCLItemInfo.Destroy"/>
-      <!-- class Visibility: default -->
+
+      <element name="TDebugLCLItemInfo.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TDebugLCLItems">
         <short>
           A list describing dynamically allocated (and destroyed) memory objects.
@@ -273,40 +109,41 @@
         <descr>
           The list holds descriptive information about the object, and stack traces of its creation and destruction.
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
-      <!-- variable Visibility: private -->
+
       <element name="TDebugLCLItems.FItems">
-        <short>The list entries, organized as an AVL tree.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The list entries, organized as an AVL tree</short>
       </element>
-      <!-- variable Visibility: private -->
+
       <element name="TDebugLCLItems.FName" link="#lcl.lclproc.TDebugLCLItems.Name"/>
-      <!-- constructor Visibility: public -->
+
       <element name="TDebugLCLItems.Create">
-        <short>Assigns TheName to the list.</short>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            Sets the <var>Name</var> property to the value in <var>TheName</var>. Allocates resources for the internal <var>TAvlTree</var> instance used in the class.
+          </p>
+        </descr>
       </element>
       <element name="TDebugLCLItems.Create.TheName">
         <short>The descriptive name of the list.</short>
       </element>
-      <!-- destructor Visibility: public -->
-      <element name="TDebugLCLItems.Destroy"/>
-      <!-- function Visibility: public -->
+
+      <element name="TDebugLCLItems.Destroy">
+        <short>Destructor for the class instance</short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <element name="TDebugLCLItems.FindInfo">
         <short>
           Returns information about an item, optionally creating an entry if not found
         </short>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TDebugLCLItems.FindInfo.Result">
         <short>The item information, or Nil if none was found or created</short>
@@ -317,17 +154,13 @@
       <element name="TDebugLCLItems.FindInfo.CreateIfNotExists">
         <short>True means create an according list entry, if none existed yet</short>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TDebugLCLItems.IsDestroyed">
-        <short>
-          True when the item has been created and destroyed.
-        </short>
-        <descr>
-        </descr>
+        <short>True when the item has been created and destroyed</short>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TDebugLCLItems.IsDestroyed.Result">
         <short>
@@ -337,94 +170,84 @@
       <element name="TDebugLCLItems.IsDestroyed.p">
         <short>The address to find.</short>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TDebugLCLItems.IsCreated">
-        <short>True when the item is alive.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>True when the item is alive</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TDebugLCLItems.IsCreated.Result">
-        <short>True when the item is listed and has not yet been destroyed.</short>
+        <short>True when the item is listed and has not yet been destroyed</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TDebugLCLItems.IsCreated.p">
-        <short>The address to find.</short>
+        <short>The address to find</short>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TDebugLCLItems.MarkCreated">
-        <short>Checked insert of an item.</short>
-        <descr>
-        </descr>
+        <short>Checked insert of an item</short>
+        <descr/>
         <errors>
           GDB exception 'RaiseDoubleCreated' when the address is already in use.
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="TDebugLCLItems.MarkCreated.Result">
-        <short>The info object describing the address.</short>
+        <short>The info object describing the address</short>
       </element>
       <element name="TDebugLCLItems.MarkCreated.p">
-        <short>The address to add.</short>
+        <short>The address to add</short>
       </element>
       <element name="TDebugLCLItems.MarkCreated.InfoText">
-        <short>Descriptive text about the item.</short>
+        <short>Descriptive text about the item</short>
       </element>
-      <!-- procedure Visibility: public -->
+
       <element name="TDebugLCLItems.MarkDestroyed">
-        <short>Checked destruction notification.</short>
-        <descr>
-        </descr>
+        <short>Checked destruction notification</short>
+        <descr/>
         <errors>
           <ul>
-            <li>GDB exception 'TDebugLCLItems.MarkDestroyed' when the item was not yet created.</li>
-            <li>GDB exception 'RaiseDoubleDestroyed' when the item was already destroyed.</li>
+            <li>
+              GDB exception 'TDebugLCLItems.MarkDestroyed' when the item was not yet created.
+            </li>
+            <li>
+              GDB exception 'RaiseDoubleDestroyed' when the item was already destroyed.
+            </li>
           </ul>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
-      <!-- argument Visibility: default -->
+
       <element name="TDebugLCLItems.MarkDestroyed.p">
-        <short>The address to mark as destroyed.</short>
+        <short>The address to mark as destroyed</short>
       </element>
-      <!-- function Visibility: public -->
+
       <element name="TDebugLCLItems.GetInfo">
-        <short>Returns textual information about an object.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Returns textual information about an object</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TDebugLCLItems.GetInfo.Result">
-        <short>The descriptive string.</short>
+        <short>The descriptive string</short>
       </element>
       <element name="TDebugLCLItems.GetInfo.p">
-        <short>The address to find.</short>
+        <short>The address to find</short>
       </element>
       <element name="TDebugLCLItems.GetInfo.WithStackTraces">
-        <short>True means include stack traces.</short>
+        <short>True means include stack traces</short>
       </element>
-      <!-- property Visibility: public -->
+
       <element name="TDebugLCLItems.Name">
-        <short>The descriptive name of the list.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>The descriptive name of the list</short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="CompareDebugLCLItemInfos">
-        <short>Compare function for the TDebugLCLItems AVL tree
-        </short>
-        <descr>Compares the Item addresses.
+        <short>Compare function for the TDebugLCLItems AVL tree</short>
+        <descr>
+          Compares the Item addresses.
         </descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="CompareDebugLCLItemInfos.Result">
         <short/>
@@ -437,12 +260,9 @@
       </element>
 
       <element name="CompareItemWithDebugLCLItemInfo">
-        <short>Compare function for <link id="TDebugLCLItems.FindInfo"/>.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Compare function for <link id="TDebugLCLItems.FindInfo"/></short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="CompareItemWithDebugLCLItemInfo.Result">
         <short/>
@@ -455,11 +275,9 @@
       </element>
 
       <element name="TStringsSortCompare">
-        <short>Compare function type for TStrings Strings[].</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Compare function type for TStrings Strings[]</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TStringsSortCompare.Result">
         <short/>
@@ -470,19 +288,17 @@
       <element name="TStringsSortCompare.Item2">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="MergeSort">
-        <short>Sorting TStrings or TFPList.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Sorting TStrings or TFPList</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="MergeSort.List">
-        <short>The list to sort (overloaded type).</short>
+        <short>The list to sort (overloaded type)</short>
       </element>
       <element name="MergeSort.OnCompare">
-        <short>The sort compare function.</short>
+        <short>The sort compare function</short>
       </element>
       <element name="MergeSort.StartIndex">
         <short/>
@@ -518,10 +334,8 @@
         <short/>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ShortCutToText">
-        <short>Returns the textual representation of an shortcut
-        </short>
+        <short>Returns the textual representation of an shortcut</short>
         <descr/>
         <seealso/>
       </element>
@@ -544,7 +358,6 @@
         <short/>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="TextToShortCut">
         <short>Converts the textual representation of an shortcut into an shortcut</short>
         <descr/>
@@ -569,23 +382,19 @@
         <short/>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="GetCompleteText">
-        <short>Find an string in a list, given its first few characters.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Find an string in a list, given its first few characters</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="GetCompleteText.Result">
-        <short>The found string.</short>
+        <short>The found string</short>
       </element>
       <element name="GetCompleteText.sText">
-        <short>The begin of the string to find.</short>
+        <short>The begin of the string to find</short>
       </element>
       <element name="GetCompleteText.iSelStart">
-        <short>The list index where the search should start.</short>
+        <short>The list index where the search should start</short>
       </element>
       <element name="GetCompleteText.bCaseSensitive">
         <short>True means case-sensitive comparison</short>
@@ -594,26 +403,21 @@
         <short>True means search ascending from iSelStart</short>
       </element>
       <element name="GetCompleteText.slTextList">
-        <short>The list to search.
-        </short>
+        <short>The list to search</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="IsEditableTextKey">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="IsEditableTextKey.Result">
         <short/>
       </element>
       <element name="IsEditableTextKey.Key">
-        <short>The virtual key code.</short>
+        <short>The virtual key code</short>
       </element>
 
-      <!-- function type Visibility: default -->
       <element name="TSendApplicationMessageFunction">
         <short/>
         <descr/>
@@ -678,7 +482,6 @@
         <short/>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="OwnerFormDesignerModified">
         <short/>
         <descr/>
@@ -688,35 +491,31 @@
       <element name="OwnerFormDesignerModified.AComponent">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="FreeThenNil">
-        <short>Free the TObject, before setting the reference to Nil.</short>
+        <short>Free the TObject, before setting the reference to Nil</short>
         <descr/>
         <seealso/>
       </element>
       <element name="FreeThenNil.obj">
-        <short>The object reference (variable).</short>
+        <short>The object reference (variable)</short>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="RegisterInterfaceInitializationHandler">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="RegisterInterfaceInitializationHandler.p">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="CallInterfaceInitializationHandlers">
-        <short>Invokes the registered handlers.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Invokes the registered handlers</short>
+        <descr/>
+        <seealso/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="RegisterInterfaceFinalizationHandler">
         <short/>
         <descr/>
@@ -726,24 +525,21 @@
       <element name="RegisterInterfaceFinalizationHandler.p">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="CallInterfaceFinalizationHandlers">
-        <short>Invokes the registered handlers.
-        </short>
+        <short>Invokes the registered handlers</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="OffsetRect">
-        <short>Increments the TopLeft and BottomRight coordinates of the rectangle.
-        </short>
+        <short>Increments the TopLeft and BottomRight coordinates of the rectangle</short>
         <descr/>
         <seealso/>
       </element>
       <element name="OffsetRect.Result">
-        <short>True when the TopLeft coordinates are all positive.
-        </short>
+        <short>True when the TopLeft coordinates are all positive</short>
       </element>
       <element name="OffsetRect.ARect">
         <short/>
@@ -754,7 +550,7 @@
       <element name="OffsetRect.dy">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="MoveRect">
         <short>Makes the rectangle originate at the given coordinates.</short>
         <descr/>
@@ -769,7 +565,7 @@
       <element name="MoveRect.y">
         <short/>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="MoveRectToFit">
         <short>Adjusts an rectangle to fit entirely into another one.</short>
         <descr/>
@@ -781,7 +577,7 @@
       <element name="MoveRectToFit.MaxRect">
         <short>The bounding rectangle.</short>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="MakeMinMax">
         <short>Eventually swaps the variable contents,
           so that i1 is not higher than i2.
@@ -795,7 +591,7 @@
       <element name="MakeMinMax.i2">
         <short>Receives the maximum value of both variables.</short>
       </element>
-      <!-- procedure Visibility: default -->
+
       <element name="CalculateLeftTopWidthHeight">
         <short>Converts coordinates into kind of a rectangle with positive Width and Height.</short>
         <descr/>
@@ -825,6 +621,7 @@
       <element name="CalculateLeftTopWidthHeight.Height">
         <short/>
       </element>
+
       <element name="DeleteAmpersands">
         <short>
           Replaces all '&amp;x' with 'x', and returns the position of the first adjusted letter in the resulting string.
@@ -889,16 +686,14 @@
       <element name="CompareRect.R2">
         <short/>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="ComparePoints">
         <short>Compares the coordinates (y first) and returns the Sign of the difference.
         </short>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="ComparePoints.Result">
         <short/>
@@ -1051,9 +846,11 @@
       </element>
 
       <element name="RaiseGDBException">
-        <short>Raises an exception.</short>
+        <short>Raises a catchable exception</short>
         <descr>
-          Normally, GDB does not catch fpc Exception objects, therefore this procedure raises a standard divide by zero exception which is caught by GDB.
+          <p>
+            Normally, GDB does not catch FPC Exception objects. This procedure raises a standard divide by zero exception which is caught by GDB.
+          </p>
         </descr>
         <errors/>
         <seealso/>
@@ -1125,12 +922,10 @@
 
       <element name="DebugLnEnter">
         <short/>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       <notes><note>?</note>
         </notes>
       </element>
@@ -1161,14 +956,10 @@
 
       <element name="DebugLnExit">
         <short/>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
-      <notes><note>?</note>
-        </notes>
+        <seealso/>
       </element>
       <element name="DebugLnExit.s">
         <short/>
@@ -1206,8 +997,6 @@
       </element>
       <element name="DbgOut.Args">
         <short/>
-      <notes><note>?</note>
-        </notes>
       </element>
       <element name="DbgOut.s1"/>
       <element name="DbgOut.s2"/>
@@ -1232,7 +1021,9 @@
             <li>TComponentState: set.</li>
             <li>TObject: Name:ClassName.</li>
             <li>TClass: ClassName.</li>
-            <li>string, WideString: chars &gt; #126 are translated into #nn (#nnnn) format.</li>
+            <li>
+              String, WideString: chars &gt; #126 are translated into #nn (or #nnnn) character constants.
+            </li>
           </ul>
         </descr>
         <seealso/>
@@ -1312,7 +1103,8 @@
       </element>
 
       <element name="DbgStr">
-        <short>Converts control characters or above #126 into #hex format.
+        <short>
+          Converts control characters, or characters above #126 into #hex format.
         </short>
         <descr/>
         <seealso/>
@@ -1326,12 +1118,10 @@
 
       <element name="DbgWideStr">
         <short>
-          Converts control characters or above #126 into #hex format.
+          Converts control characters, or characters above #126 into #hex format.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DbgWideStr.Result">
         <short/>
@@ -1343,10 +1133,8 @@
       <element name="dbgMemRange">
         <short>Provides an hex dump of a memory section.
         </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="dbgMemRange.Result">
         <short>The formatted dump.</short>
@@ -1362,17 +1150,14 @@
       </element>
 
       <element name="dbgMemStream">
-        <short>Provides an hex dump of an memory stream.
-        </short>
-        <descr>
-        </descr>
+        <short>Provides a hex dump of an memory stream</short>
+        <descr/>
         <errors>
           <p>
             The dump starts at the <b>current</b> stream position, the position moves to the end of the dumped range.
           </p>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="dbgMemStream.Result">
         <short/>
@@ -1385,14 +1170,11 @@
       </element>
 
       <element name="dbgObjMem">
-        <short>Provides an hex dump of an TObject.
-        </short>
-        <descr>
-        </descr>
+        <short>Provides an hex dump of an TObject</short>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="dbgObjMem.Result">
         <short/>
@@ -1402,14 +1184,11 @@
       </element>
 
       <element name="dbghex">
-        <short>Provides an hex dump of an Int64, (sign + absolute value).
-        </short>
-        <descr>
-        </descr>
+        <short>Provides an hex dump of an Int64 value, (sign + absolute value)</short>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="dbghex.Result">
         <short/>
@@ -1420,10 +1199,8 @@
 
       <element name="DbgSWindowPosFlags">
         <short>Provides an dump of SetWindowPosition flags.</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DbgSWindowPosFlags.Result">
         <short/>
@@ -1433,12 +1210,9 @@
       </element>
 
       <element name="DbgsVKCode">
-        <short>Translates an virtual key code into its VK_... name.
-        </short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <short>Converts a virtual key code to its String representation</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DbgsVKCode.Result">
         <short/>
@@ -1449,10 +1223,8 @@
 
       <element name="DbgOutThreadLog">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DbgOutThreadLog.Msg">
         <short/>
@@ -1460,10 +1232,8 @@
 
       <element name="DebuglnThreadLog">
         <short/>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DebuglnThreadLog.Msg">
         <short/>
@@ -1476,10 +1246,8 @@
 
       <element name="DbgSaveData">
         <short>Writes data into an file</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DbgSaveData.FileName">
         <short/>
@@ -1493,10 +1261,8 @@
 
       <element name="DbgAppendToFile">
         <short>Appends a line to the given file</short>
-        <descr>
-        </descr>
-        <seealso>
-        </seealso>
+        <descr/>
+        <seealso/>
       </element>
       <element name="DbgAppendToFile.FileName">
         <short/>
@@ -1507,12 +1273,10 @@
 
       <element name="DbgAppendToFileWithoutLn">
         <short>Appends (preformatted) text to an file</short>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="DbgAppendToFileWithoutLn.FileName">
         <short/>
@@ -1523,12 +1287,10 @@
 
       <element name="CloseDebugOutput">
         <short/>
-        <descr>
-        </descr>
+        <descr/>
         <errors>
         </errors>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
 
       <element name="ClassCase">
@@ -1621,8 +1383,7 @@
       <element name="CreateFirstIdentifier">
         <short>Replaces last digits with 1</short>
         <descr>For example Name321 becomes Name1</descr>
-        <seealso>
-        </seealso>
+        <seealso/>
       </element>
       <element name="CreateFirstIdentifier.Result">
         <short/>
@@ -1668,6 +1429,18 @@
       </element>
 
       <element name="DebugText">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="DebugLnProc">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="DebugOutProc">
         <short/>
         <descr/>
         <seealso/>

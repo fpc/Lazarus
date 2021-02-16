@@ -7,8 +7,16 @@
   ====================================================================
 -->
 <module name="LMessages">
-<short/>
+<short>
+Contains Lazarus message codes and their mapping to message codes
+for other platforms/widgetsets
+</short>
 <descr>
+<p>
+<file>lmessages.pp</file> contains Lazarus message codes and their mapping
+to message codes for other platforms/widgetsets.
+This file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
 </descr>
 
 <!-- unresolved external references -->

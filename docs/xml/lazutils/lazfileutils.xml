@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          <file>lazfileutils.pas</file> contains types, procedures, and functions used for file and directory operations. This file is part of the LazUtils package.
+          <file>lazfileutils.pas</file> contains types, procedures, and functions used for file and directory operations. This file is part of the <file>LazUtils</file> package.
         </p>
         <remark>
           All functions are thread safe unless explicitly stated.
@@ -132,28 +132,19 @@
         <errors/>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CompareFileExt.Result">
         <short>Relative sort order for the compared values</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFileExt.Filename">
         <short>File name for the comparison</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFileExt.Ext">
         <short>File extension for the comparison</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFileExt.CaseSensitive">
         <short>True if case sensitive comparison is needed</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CompareFilenameStarts">
         <short>
           Compares file names using the number characters in common
@@ -170,28 +161,18 @@
           <link id="CompareFileNames"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CompareFilenameStarts.Result">
         <short>Relative sort order for the compared values</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFilenameStarts.Filename1">
         <short>First file name for the comparison</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFilenameStarts.Filename2">
         <short>Second file name for the comparison</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFilenames.Len1">
         <short>Length of the first file name</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFilenames.Len2">
         <short>Length of the seconds file name</short>
       </element>
@@ -230,32 +211,92 @@
         <short>Indicates if case differences in file name comparisons are ignored</short>
       </element>
 
-      <!-- function Visibility: default -->
+      <element name="FilenameExtIs">
+        <short>Determines if the Filename has the specified file extension</short>
+        <descr>
+          <p>
+            <var>FilenameExtIs</var> is a <var>Boolean</var> function used to determines if the file in the <var>Filename</var> parameter has the specified file extension in <var>Ext</var>.
+          </p>
+          <p>
+            Ext can contain the '<b>.</b>' (<b>Period</b>) character used in the extension, but it is not required.
+          </p>
+          <p>
+            <var>CaseSensitive</var> indicates if case-sensitivity is used when comparing parameter values. When set to <b>True</b>, the comparision is limited to values in the ASCII character set. <var>StrLComp</var> or <var>StrLIComp</var> is called to compare the values in Filename to the values in Ext.
+          </p>
+          <p>
+            The return value is <b>True</b> when Filename uses the file extension in Ext. The return value is <b>False</b> when Filename is an empty string (<b>''</b>), does not include a '<b>.</b>' character that marks the start of the file extension, or does not use the file extension in Ext.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FilenameExtIn"/>
+        </seealso>
+      </element>
+      <element name="FilenameExtIs.Result">
+        <short>Returns True if the Filename has the specified file extension</short>
+      </element>
+      <element name="FilenameExtIs.Filename">
+        <short>File name examined in the routine</short>
+      </element>
+      <element name="FilenameExtIs.Ext">
+        <short>File extension expected in the file name</short>
+      </element>
+      <element name="FilenameExtIs.CaseSensitive">
+        <short>True to use case-sensitive comparison in the routine</short>
+      </element>
+
+      <element name="FilenameExtIn">
+        <short>Determies if the file name uses one of the specified file extensions</short>
+        <descr>
+          <p>
+            <var>FilenameExtIn</var> is a <var>Boolean</var> function used to determine if the file name in the <var>Filename</var> parameter uses one of the file extension in <var>Exts</var>.
+          </p>
+          <p>
+            Exts is an array type with the file extensions expected in the routine. Values in Exts can contain the '<b>.</b>' (<b>Period</b>) character used in the extension, but it is not required.
+          </p>
+          <p>
+            <var>CaseSensitive</var> indicates if case-sensitivity is used when comparing the parameter values. When set to <b>True</b>, the comparison is limited to characters in the ASCII character set. <var>StrLComp</var> or <var>StrLIComp</var> is called to compare the value in Filename to the values in Exts.
+          </p>
+          <p>
+            The return value is <b>True</b> when Filename uses one the file extension in Exts. The return value is <b>False</b>when Filename is an empty string (<b>''</b>), does not include a '<b>.</b>' character that marks the start of the file extension, or does not use one of the values in Exts.
+          </p>
+        </descr>
+        <seealso>
+          <link id="FilenameExtIs"/>
+        </seealso>
+      </element>
+      <element name="FilenameExtIn.Result">
+        <short>Returns True if the Filename has one of the specified file extensions</short>
+      </element>
+      <element name="FilenameExtIn.Filename">
+        <short>File name examined in the routine</short>
+      </element>
+      <element name="FilenameExtIn.Exts">
+        <short>File extensions expected in the file name</short>
+      </element>
+      <element name="FilenameExtIn.CaseSensitive">
+        <short>True to use case-sensitive comparison in the routine</short>
+      </element>
+
       <element name="DirPathExists">
         <short>
-          Indicates if the specified directory name exists in the file system
+          Indicates if the specified directory name exists on the local file system
         </short>
         <descr>
           <p>
-            <var>DirPathExists</var> is a <var>Boolean</var> function which indicates if the specified directory name exists in the file system. DirectoryName can contain a trailing path delimiter, but it is removed in the function. DirPathExists calls DirectoryExistsUTF8 to get the return value.
+            <var>DirPathExists</var> is a <var>Boolean</var> function which indicates if the specified directory name exists on the file system. DirectoryName can contain a trailing path delimiter, but it is removed in the function. DirPathExists calls DirectoryExistsUTF8 to get the return value.
           </p>
         </descr>
         <seealso>
           <link id="DirectoryExistsUTF8"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="DirPathExists.Result">
         <short>True when the specified directory exists in the file system</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="DirPathExists.DirectoryName">
         <short>Directory Name to locate</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="DirectoryIsWritable">
         <short>
           Indicates if the specified directory name is writable
@@ -281,41 +322,31 @@
           <link id="#rtl.sysutils.FileClose">FileClose</link>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="DirectoryIsWritable.Result">
         <short>True if the specified directory is writable</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="DirectoryIsWritable.DirectoryName">
         <short>Directory name to examine in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ExtractFileNameOnly">
         <short>
           Gets the base file name (without the file extension) in the specified path
         </short>
         <descr>
           <p>
-            <var>ExtractFileNameOnly</var> is a <var>String</var> function used to extract the base file name (without the file extension) from the value in AFilename. Path information, up to the last directory separator ('/' or '\') or device separator (':') character, in AFileName is ignored. The file extension, starting at the '.' character, is also omitted.
+            <var>ExtractFileNameOnly</var> is a <var>String</var> function used to extract the base file name (without the file extension) from the value in <var>AFilename</var>. Path information, up to the last directory separator ('<b>/</b>' or '<b>\</b>') or device separator ('<b>:</b>') character, in AFileName is ignored. The file extension, starting at the '<b>.</b>' character, is also omitted.
           </p>
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="ExtractFileNameOnly.Result">
         <short>Base file name in the file path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ExtractFileNameOnly.AFilename">
         <short>File path and name to examine in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FilenameIsAbsolute">
         <short>
           Determines if the specified value is an absolute file path (not a relative one)
@@ -2157,6 +2188,59 @@ Modified: MM/DD/YYYY hh:mm
         <short>File name examined in the function</short>
       </element>
 
+      <element name="ReadAllLinks">
+        <short>
+          Resolves a symbolic link to an actual file name
+        </short>
+        <descr>
+          <p>
+            <var>ReadAllLinks</var> is a <var>String</var> function used to resolve a symbolic link to an actual file name. It does not resolve symbolic links in parent (or ancestor) directories. If a symlink cannot be resolved, and ExceptionOnError is False, the function returns an empty string (''). If ExceptionOnError is True, it raises an EFOpenError with a message, containing more details. For the Windows platform, it simply returns the value in the Filename argument.
+          </p>
+        </descr>
+      </element>
+
+      <element name="TryReadAllLinks">
+        <short>
+          Resolves a symlink to the real file
+        </short>
+        <descr>
+          <p>
+            If a symlink can not be resolved it returns Filename. It calls the ReadAllLinks function.
+          </p>
+        </descr>
+      </element>
+
+      <element name="GetShellLinkTarget">
+        <short>Resolve a Shell Link to the file path for the shortcut</short>
+        <descr>
+          <p>
+            <var>GetShellLinkTarget</var> is a <var>String</var> function used to resolve the Shell Link file in the <var>FileName</var> parameter to a path on the local system. The return value contains the qualified path to the Shell object in the Link file.
+          </p>
+          <p>
+            Shell links are a feature available in Windows desktop and server operating systems. It relies on the Shell Object namespace, and provides access to files, folders, disk drives and printers on the system. The Shell Link allows access to an object from anywhere in the Shell namespace, and does not need to know the current name and / or location for the object.
+          </p>
+          <p>
+            GetShellLinkTarget is implemented for UNIX-like platforms and Amiga, but simply returns the value in the FileName parameter.
+          </p>
+          <p>
+            The Windows CE platform does not have the IShellLinkW interface; the value in FileName is always used as the return value.
+          </p>
+          <p>
+            FileName must contain a file name that uses the <b>.lnk</b> file extension, as created using the Create Shortcut option in Windows Explorer. No actions are performed in the routine when FileName does not use the .lnk file extension; the return value contains the original value passed in the FileName parameter.
+          </p>
+          <p>
+            GetShellLinkTarget uses the IShellLinkW interface to resolve the Shell Link to the path for the Shell object.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="GetShellLinkTarget.Result">
+        <short>Path to the Shell object for the link</short>
+      </element>
+      <element name="GetShellLinkTarget.FileName">
+        <short>Shell Link shortcut file to resolve in the routine</short>
+      </element>
+
       <element name="DbgSFileAttr">
         <short>Displays information for file attributes in the debugger</short>
         <descr>
@@ -2192,28 +2276,6 @@ Modified: MM/DD/YYYY hh:mm
       </element>
       <element name="DbgSFileAttr.Attr">
         <short>File attributes examined in the routine</short>
-      </element>
-
-      <element name="ReadAllLinks">
-        <short>
-          Resolves a symbolic link to an actual file name
-        </short>
-        <descr>
-          <p>
-            <var>ReadAllLinks</var> is a <var>String</var> function used to resolve a symbolic link to an actual file name. It does not resolve symbolic links in parent (or ancestor) directories. If a symlink cannot be resolved, and ExceptionOnError is False, the function returns an empty string (''). If ExceptionOnError is True, it raises an EFOpenError with a message, containing more details. For the Windows platform, it simply returns the value in the Filename argument.
-          </p>
-        </descr>
-      </element>
-
-      <element name="TryReadAllLinks">
-        <short>
-          Resolves a symlink to the real file
-        </short>
-        <descr>
-          <p>
-            If a symlink can not be resolved it returns Filename. It calls the ReadAllLinks function.
-          </p>
-        </descr>
       </element>
 
       <element name="TPhysicalFilenameOnError">
@@ -2748,6 +2810,5 @@ C:\
 
     </module>
     <!-- LazFileUtils -->
-
   </package>
 </fpdoc-descriptions>

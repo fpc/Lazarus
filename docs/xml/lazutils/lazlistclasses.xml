@@ -15,8 +15,7 @@
           <file>lazlistclasses.pas</file> contains list classes implemented using generics. The lists are provided as "object" and "class" versions. Each list can be specialized to hold either items of a given type (specialized to type at compile-time) or untyped data with the size specified as a run-time argument to the constructor.
         </p>
         <remark>
-          Please note: The current implementations for these list classess are not suitable for managed
-          types, such as String.
+          Please note: The current implementations for these list classess are not suitable for managed types, such as String.
         </remark>
         <p>
           <b>TLazShiftBufferList</b>
@@ -166,6 +165,9 @@ TLazPagedListObj = object
             The data in the "From" block will be undefined afterwards (except for any overlaps with "To").
           </li>
         </ul>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
       </descr>
       <version>Initial revision: May 2015</version>
 

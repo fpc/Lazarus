@@ -10,7 +10,7 @@
       <short>Unit renamed to LazSysUtils</short>
       <descr>
         <p>
-          lazutf8sysutils.pas was renamed to lazsysutils.pas.
+          <file>lazutf8sysutils.pas</file> was renamed to <file>lazsysutils.pas</file>.
           All routines will give a "deprecated" warning; the unit will be removed later.
         </p>
       </descr>
