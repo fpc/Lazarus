@@ -52,7 +52,7 @@ type
     FAutoSizeControlList: TObjectList;
   protected
     function GetTabDisplayState: TTabDisplayState; override;
-    function GetTabDisplayStateEditor(Index: TSourceEditorInterface): TTabDisplayState; override;
+    function GetTabDisplayStateEditor(ASourceEditor: TSourceEditorInterface): TTabDisplayState; override;
   public
     constructor Create;
     destructor Destroy; override;
@@ -115,13 +115,13 @@ begin
   Result := GetTabDisplayStateEditor(SourceEditorManagerIntf.ActiveEditor);
 end;
 
-function TDockedTabMaster.GetTabDisplayStateEditor(Index: TSourceEditorInterface): TTabDisplayState;
+function TDockedTabMaster.GetTabDisplayStateEditor(ASourceEditor: TSourceEditorInterface): TTabDisplayState;
 var
   LPageCtrl: TModulePageControl;
 begin
-  if Index = nil then
+  if ASourceEditor = nil then
     Exit(tdsNone);
-  LPageCtrl := SourceEditorWindows.FindModulePageControl(Index);
+  LPageCtrl := SourceEditorWindows.FindModulePageControl(ASourceEditor);
   if LPageCtrl = nil then Exit(tdsNone);
   case LPageCtrl.PageIndex of
     0: Exit(tdsCode);
@@ -592,7 +592,7 @@ begin
       else begin
         for LSourceEditorPageControl in LSourceEditorWindow.PageControlList do
           if (LSourceEditorPageControl.PageControl.DesignForm = LDesignForm) and (LSourceEditorPageControl.PageControl <> Sender) then
-            IDETabMaster.ShowCode(LSourceEditorPageControl.SourceEditor);
+            DockedTabMaster.ShowCode(LSourceEditorPageControl.SourceEditor);
       end;
 
     LSourceEditorWindow.ActiveDesignForm := LDesignForm;
@@ -662,12 +662,12 @@ begin
         Exit;
     end;
   end;
-  IDETabMaster.ShowDesigner(SourceEditorManagerIntf.ActiveEditor);
+  DockedTabMaster.ShowDesigner(SourceEditorManagerIntf.ActiveEditor);
 end;
 
 class procedure TDockedMainIDE.OnShowSrcEditor(Sender: TObject);
 begin
-  IDETabMaster.ShowCode(Sender as TSourceEditorInterface);
+  DockedTabMaster.ShowCode(Sender as TSourceEditorInterface);
 end;
 
 class procedure TDockedMainIDE.OnDesignShowMethod(const Name: String);
@@ -695,11 +695,11 @@ begin
 
   if Assigned(LSecondEditor) then
   begin
-    IDETabMaster.ShowCode(LSecondEditor);
+    DockedTabMaster.ShowCode(LSecondEditor);
     LazarusIDE.DoShowMethod(LSecondEditor, Name);
   end else
     if Assigned(LDesignForm.LastActiveSourceWindow) then
-      IDETabMaster.ShowCode(LDesignForm.LastActiveSourceWindow.ActiveEditor);
+      DockedTabMaster.ShowCode(LDesignForm.LastActiveSourceWindow.ActiveEditor);
 end;
 
 class procedure TDockedMainIDE.OnDesignRefreshPropertyValues;
