@@ -471,11 +471,11 @@ begin
           SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].ActiveDesignForm := nil;
     end;
 
-    LPageCtrl.InitPage;
     if LPageCtrl.DesignerPageActive then
     begin
       if not LDesignForm.Hiding then
       begin
+        SourceEditorWindows.ShowCodeTabSkipCurrent(LPageCtrl, LDesignForm);
         LPageCtrl.AdjustPage;
         // don't focus designer here, focus can be on ObjectInspector, then
         // <Del> in OI Events deletes component instead event handler
@@ -483,6 +483,7 @@ begin
     end else begin
       if LDesignForm <> nil then
         LDesignForm.HideWindow;
+      LPageCtrl.InitPage;
     end;
   end
   else
@@ -557,7 +558,6 @@ class procedure TDockedMainIDE.TabChange(Sender: TObject);
 var
   LActiveSourceWindowInterface: TSourceEditorWindowInterface;
   LSourceEditorWindow: TSourceEditorWindow;
-  LSourceEditorPageControl: TSourceEditorPageControl;
   LDesigner: TIDesigner;
   LDesignForm: TDesignForm;
   LPageCtrl: TModulePageControl;
@@ -585,20 +585,10 @@ begin
     LPageCtrl.InitPage;
     LActiveSourceWindowInterface.ActiveEditor.EditorControl.SetFocus;
   end else begin
-    // deactivate design tab in other source editor page control
-    for LSourceEditorWindow in SourceEditorWindows do
-      if LSourceEditorWindow.SourceEditorWindowInterface = LActiveSourceWindowInterface then
-        LPageCtrl.DesignForm := LDesignForm
-      else begin
-        for LSourceEditorPageControl in LSourceEditorWindow.PageControlList do
-          if (LSourceEditorPageControl.PageControl.DesignForm = LDesignForm) and (LSourceEditorPageControl.PageControl <> Sender) then
-            DockedTabMaster.ShowCode(LSourceEditorPageControl.SourceEditor);
-      end;
-
     LSourceEditorWindow.ActiveDesignForm := LDesignForm;
     // enable autosizing after creating a new form
     DockedTabMaster.EnableAutoSizing(LDesignForm.Form);
-    LPageCtrl.InitPage;
+    SourceEditorWindows.ShowCodeTabSkipCurrent(LPageCtrl, LDesignForm);
     LPageCtrl.DesignerSetFocus;
   end;
 end;

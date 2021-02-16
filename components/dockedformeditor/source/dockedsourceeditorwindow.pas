@@ -73,13 +73,14 @@ type
     function GetSourceEditorWindow(AWindowInterface: TSourceEditorWindowInterface): TSourceEditorWindow;
   public
     destructor Destroy; override;
-    function Contains(AWindowInterface: TSourceEditorWindowInterface): Boolean;
-    function Contains(ASrcEditor: TSourceEditorWindow): Boolean;
+    procedure ShowCodeTabSkipCurrent(CurrentPageCtrl: TModulePageControl; ADesignForm: TDesignForm);
+    function  Contains(AWindowInterface: TSourceEditorWindowInterface): Boolean;
+    function  Contains(ASrcEditor: TSourceEditorWindow): Boolean;
     procedure DeleteItem(Index: Integer);
-    function FindDesignForm(AModulePageCtrl: TModulePageControl): TDesignForm;
-    function FindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl; overload;
-    function FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl; overload;
-    function IndexOf(AWindowInterface: TSourceEditorWindowInterface): Integer; overload;
+    function  FindDesignForm(AModulePageCtrl: TModulePageControl): TDesignForm;
+    function  FindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl; overload;
+    function  FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl; overload;
+    function  IndexOf(AWindowInterface: TSourceEditorWindowInterface): Integer; overload;
     procedure RefreshAllSourceWindowsModulePageControl;
     procedure Remove(AWindowInterface: TSourceEditorWindowInterface); overload;
   public
@@ -242,6 +243,22 @@ begin
   while Count > 0 do
     DeleteItem(0);
   inherited Destroy;
+end;
+
+procedure TSourceEditorWindows.ShowCodeTabSkipCurrent(CurrentPageCtrl: TModulePageControl; ADesignForm: TDesignForm);
+var
+  LSourceEditorWindow: TSourceEditorWindow;
+  LSourceEditorPageControl: TSourceEditorPageControl;
+begin
+  for LSourceEditorWindow in Self do
+    for LSourceEditorPageControl in LSourceEditorWindow.PageControlList do
+      if LSourceEditorPageControl.PageControl = CurrentPageCtrl then
+      begin
+        LSourceEditorPageControl.PageControl.DesignForm := ADesignForm;
+        LSourceEditorPageControl.PageControl.InitPage;
+      end else
+        if LSourceEditorPageControl.PageControl.DesignForm = ADesignForm then
+          LSourceEditorPageControl.PageControl.ShowCode;
 end;
 
 function TSourceEditorWindows.Contains(AWindowInterface: TSourceEditorWindowInterface): Boolean;
