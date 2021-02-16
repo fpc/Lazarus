@@ -191,22 +191,22 @@ procedure TScaledImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
   AIndex: Integer; AOverlay: TOverlay; ADrawingStyle: TDrawingStyle;
   AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect);
 var
-  OverlayIndex: Integer;
+  OverlayI: Integer;
 begin
-  OverlayIndex := Resolution.FImageList.FOverlays[AOverlay];
+  OverlayI := Resolution.FImageList.FOverlays[AOverlay];
 
   if SameValue(FScaleFactor, 1) then
   begin
     Resolution.Draw(ACanvas, AX, AY, AIndex, ADrawingStyle, AImageType, ADrawEffect);
-    if (OverlayIndex >= 0) and (OverlayIndex < Resolution.Count) then
-      Resolution.Draw(ACanvas, AX, AY, OverlayIndex, ADrawingStyle, AImageType, ADrawEffect);
+    if (OverlayI >= 0) and (OverlayI < Resolution.Count) then
+      Resolution.Draw(ACanvas, AX, AY, OverlayI, ADrawingStyle, AImageType, ADrawEffect);
   end else
   begin
     Resolution.StretchDraw(ACanvas, AIndex,
       Rect(AX, AY, AX + Width, AY + Height),
       ADrawEffect<>gdeDisabled);
-    if (OverlayIndex >= 0) and (OverlayIndex < Resolution.Count) then
-      Resolution.StretchDraw(ACanvas, OverlayIndex,
+    if (OverlayI >= 0) and (OverlayI < Resolution.Count) then
+      Resolution.StretchDraw(ACanvas, OverlayI,
         Rect(AX, AY, AX + Width, AY + Height),
         ADrawEffect<>gdeDisabled);
   end;
@@ -418,7 +418,7 @@ procedure TCustomImageListResolution.DrawOverlay(ACanvas: TCanvas; AX, AY,
   AIndex: Integer; AOverlay: TOverlay; ADrawingStyle: TDrawingStyle;
   AImageType: TImageType; ADrawEffect: TGraphicsDrawEffect);
 var
-  OverlayIndex: Integer;
+  OverlayI: Integer;
 begin
   if (AIndex < 0) or (AIndex >= FCount) then Exit;
 
@@ -426,10 +426,10 @@ begin
   TWSCustomImageListResolutionClass(WidgetSetClass).Draw(Self, AIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
                           FImageList.BkColor, FImageList.BlendColor, ADrawEffect, ADrawingStyle, AImageType);
 
-  OverlayIndex := FImageList.FOverlays[AOverlay];
-  if (OverlayIndex < 0) or (OverlayIndex >= FCount) then Exit;
+  OverlayI := FImageList.FOverlays[AOverlay];
+  if (OverlayI < 0) or (OverlayI >= FCount) then Exit;
 
-  TWSCustomImageListResolutionClass(WidgetSetClass).Draw(Self, OverlayIndex, ACanvas, Rect(AX, AY, FWidth, FHeight),
+  TWSCustomImageListResolutionClass(WidgetSetClass).Draw(Self, OverlayI, ACanvas, Rect(AX, AY, FWidth, FHeight),
                           clNone, FImageList.BlendColor, ADrawEffect, ADrawingStyle, AImageType);
 end;
 

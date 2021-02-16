@@ -4958,27 +4958,28 @@ begin
   end;
 end;
 
+function InvertNdColor(AColor: TColor): TColor;
+var
+  Red, Green, Blue: integer;
+begin
+  if AColor<>clHighlight then begin
+    Result:=clWhite;
+    Red:=(AColor shr 16) and $ff;
+    Green:=(AColor shr 8) and $ff;
+    Blue:=AColor and $ff;
+    if Red+Green+Blue>$180 then
+      Result:=clBlack;
+    //DebugLn(['[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue]);
+  end
+  else
+    Result := clHighlightText;
+end;
+
 procedure TCustomTreeView.DoPaintNode(Node: TTreeNode);
 var
   NodeRect: TRect;
   VertMid, VertDelta, RealExpandSignSize, RealIndent: integer;
   NodeSelected, HasExpandSign: boolean;
-
-  function InvertColor(AColor: TColor): TColor;
-  var Red, Green, Blue: integer;
-  begin
-    if AColor<>clHighlight then begin
-      Result:=clWhite;
-      Red:=(AColor shr 16) and $ff;
-      Green:=(AColor shr 8) and $ff;
-      Blue:=AColor and $ff;
-      if Red+Green+Blue>$180 then
-        Result:=clBlack;
-      //DebugLn(['[TCustomTreeView.DoPaintNode.InvertColor] Result=',Result,' ',Red,',',Green,',',Blue]);
-    end
-    else
-      Result := clHighlightText;
-  end;
 
   procedure DrawVertLine(X, Y1, Y2: Integer);
   begin
@@ -5293,7 +5294,7 @@ var
     end;
   end;
 
-  procedure DrawNodeText(IsSelected: Boolean; NodeRect: TRect; AText: String);
+  procedure DrawNodeText(IsSelected: Boolean; NdRect: TRect; AText: String);
   var
     Details: TThemedElementDetails;
     NeedUnderline: Boolean;
@@ -5308,19 +5309,21 @@ var
         Details := ThemeServices.GetElementDetails(ttItemSelectedNotFocus);
       if not (tvoRowSelect in Options) then
         if (tvoThemedDraw in Options) then
-          ThemeServices.DrawElement(Canvas.Handle, Details, NodeRect, nil)
+          ThemeServices.DrawElement(Canvas.Handle, Details, NdRect, nil)
         else
         begin
           Canvas.Brush.Color := FSelectedColor;
-          Canvas.Font.Color := IfThen(FSelectedFontColorUsed, FSelectedFontColor, InvertColor(FSelectedColor));
-          Canvas.FillRect(NodeRect);
+          Canvas.Font.Color := IfThen(FSelectedFontColorUsed,
+                                      FSelectedFontColor, InvertNdColor(FSelectedColor));
+          Canvas.FillRect(NdRect);
         end
       else
       if not (tvoThemedDraw in Options) then
       begin
         Canvas.Brush.Color := FSelectedColor;
-        Canvas.Font.Color := IfThen(FSelectedFontColorUsed, FSelectedFontColor, InvertColor(FSelectedColor));
-        Canvas.FillRect(NodeRect);
+        Canvas.Font.Color := IfThen(FSelectedFontColorUsed,
+                                    FSelectedFontColor, InvertNdColor(FSelectedColor));
+        Canvas.FillRect(NdRect);
       end;
     end
     else
@@ -5336,18 +5339,18 @@ var
         Canvas.Font.Color := FHotTrackColor;
     end;
 
-    NodeRect.Offset(ScaleX(2, 96), 0);
+    NdRect.Offset(ScaleX(2, 96), 0);
     if (tvoThemedDraw in Options) then
     begin
       if not Enabled then
         Details.State := 4; // TmSchema.TREIS_DISABLED = 4
-      ThemeServices.DrawText(Canvas, Details, AText, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
+      ThemeServices.DrawText(Canvas, Details, AText, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
     end
     else
     begin
       if not Enabled and (FDisabledFontColor<>clNone) then
         Canvas.Font.Color := FDisabledFontColor;
-      DrawText(Canvas.Handle, PChar(AText), -1, NodeRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
+      DrawText(Canvas.Handle, PChar(AText), -1, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
     end;
 
     if NeedUnderline then
