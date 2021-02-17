@@ -60,6 +60,10 @@ unit registersqldb;
 {$IF FPC_FULLVERSION >= 20701}
   {$DEFINE HASMYSQL57CONNECTION}
 {$ENDIF}
+{$IF FPC_FULLVERSION >= 30302}
+  // ToDo: set to 30301 when https://bugs.freepascal.org/view.php?id=38501 is applied
+  {$DEFINE HASMYSQL80CONNECTION}
+{$ENDIF}
 
 interface
 
@@ -96,6 +100,9 @@ uses
   {$ENDIF}
   {$IFDEF HASMYSQL57CONNECTION}
     mysql57conn,
+  {$ENDIF}
+  {$IFDEF HASMYSQL80CONNECTION}
+    mysql80conn,
   {$ENDIF}
   {$IFDEF HASSQLITE3CONNECTION}
     sqlite3conn,
@@ -267,6 +274,9 @@ begin
 {$ENDIF}
 {$IFDEF HASMYSQL57CONNECTION}
     ,TMySQL57Connection
+{$ENDIF}
+{$IFDEF HASMYSQL80CONNECTION}
+    ,TMySQL80Connection
 {$ENDIF}
 {$IFDEF HASSQLITE3CONNECTION}
     ,TSQLite3Connection

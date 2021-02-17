@@ -31,6 +31,9 @@ tmysql56connection_200.png
 tmysql57connection.png
 tmysql57connection_150.png
 tmysql57connection_200.png
+tmysql80connection.png
+tmysql80connection_150.png
+tmysql80connection_200.png
 tmysqlconnection.png
 tmysqlconnection_150.png
 tmysqlconnection_200.png
