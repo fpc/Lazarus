@@ -60,8 +60,7 @@ unit registersqldb;
 {$IF FPC_FULLVERSION >= 20701}
   {$DEFINE HASMYSQL57CONNECTION}
 {$ENDIF}
-{$IF FPC_FULLVERSION >= 30302}
-  // ToDo: set to 30301 when https://bugs.freepascal.org/view.php?id=38501 is applied
+{$IF FPC_FULLVERSION >= 30301}
   {$DEFINE HASMYSQL80CONNECTION}
 {$ENDIF}
 

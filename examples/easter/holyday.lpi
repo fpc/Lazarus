@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="12"/>
+    <Version Value="11"/>
     <General>
       <Flags>
         <SaveClosedFiles Value="False"/>
         <SaveOnlyProjectUnits Value="True"/>
         <LRSInOutputDirectory Value="False"/>
-        <CompatibilityMode Value="True"/>
       </Flags>
+      <MainUnit Value="0"/>
       <Title Value="holyday"/>
     </General>
     <BuildModes Count="1">
@@ -48,7 +48,7 @@
         <UnitName Value="Main"/>
         <IsVisibleTab Value="True"/>
         <TopLine Value="93"/>
-        <CursorPos X="40" Y="120"/>
+        <CursorPos X="34" Y="117"/>
         <UsageCount Value="23"/>
         <Loaded Value="True"/>
       </Unit1>
@@ -67,5 +67,12 @@
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
+    <Linking>
+      <Options>
+        <Win32>
+          <GraphicApplication Value="True"/>
+        </Win32>
+      </Options>
+    </Linking>
   </CompilerOptions>
 </CONFIG>
