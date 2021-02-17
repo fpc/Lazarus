@@ -58,6 +58,7 @@ type
     DefaultAnchorBottomColor  = $FFAA00;
     DefaultResizerColor       = $AAFFAA;
   private
+    FAllowSizing: Boolean;
     FAnchorBorderColor: TColor;
     FAnchorBottomColor: TColor;
     FAnchorControlColor: TColor;
@@ -76,6 +77,7 @@ type
     FTreatAlign: Boolean;
     FTreatBorder: Boolean;
     function  GetModified: Boolean;
+    procedure SetAllowSizing(AValue: Boolean);
     procedure SetAnchorBorderColor(AValue: TColor);
     procedure SetAnchorBottomColor(AValue: TColor);
     procedure SetAnchorControlColor(AValue: TColor);
@@ -103,6 +105,7 @@ type
     property ChangeStamp: Integer read FChangeStamp;
     property Modified: Boolean read GetModified write SetModified;
 
+    property AllowSizing: Boolean read FAllowSizing write SetAllowSizing;
     property AnchorBorderColor: TColor read FAnchorBorderColor write SetAnchorBorderColor;
     property AnchorControlColor: TColor read FAnchorControlColor write SetAnchorControlColor;
     property AnchorTabVisible: Boolean read FAnchorTabVisible write SetAnchorTabVisible;
@@ -134,6 +137,13 @@ implementation
 function TDockedOptions.GetModified: Boolean;
 begin
   Result := FLastSavedChangeStamp <> FChangeStamp;
+end;
+
+procedure TDockedOptions.SetAllowSizing(AValue: Boolean);
+begin
+  if FAllowSizing = AValue then Exit;
+  FAllowSizing := AValue;
+  IncreaseChangeStamp;
 end;
 
 procedure TDockedOptions.SetAnchorBorderColor(AValue: TColor);
@@ -251,6 +261,7 @@ end;
 
 constructor TDockedOptions.Create;
 begin
+  FAllowSizing        := False;
   FAnchorBorderColor  := DefaultAnchorBorderColor;
   FAnchorControlColor := DefaultAnchorControlColor;
   FAnchorTabVisible   := True;
@@ -296,6 +307,7 @@ var
 begin
   Cfg := GetIDEConfigStorage(AFilename, False);
   try
+    Cfg.SetDeleteValue('AllowSizing/Value',        AllowSizing,        False);
     Cfg.SetDeleteValue('AnchorBorderColor/Value',  AnchorBorderColor,  DefaultAnchorBorderColor);
     Cfg.SetDeleteValue('AnchorControlColor/Value', AnchorControlColor, DefaultAnchorControlColor);
     Cfg.SetDeleteValue('AnchorTopColor/Value',     AnchorTopColor,     DefaultAnchorTopColor);
@@ -322,6 +334,7 @@ var
 begin
   Cfg := GetIDEConfigStorage(AFilename, True);
   try
+    AllowSizing        := Cfg.GetValue('AllowSizing/Value',        False);
     AnchorBorderColor  := Cfg.GetValue('AnchorBorderColor/Value',  DefaultAnchorBorderColor);
     AnchorControlColor := Cfg.GetValue('AnchorControlColor/Value', DefaultAnchorControlColor);
     AnchorTopColor     := Cfg.GetValue('AnchorTopColor/Value',     DefaultAnchorTopColor);

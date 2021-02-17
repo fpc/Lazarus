@@ -12,6 +12,14 @@ msgstr ""
 "X-Generator: Poedit 1.8.7.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
+#: dockedstrconsts.sallowsizingcaption
+msgid "Allow size changing"
+msgstr ""
+
+#: dockedstrconsts.sallowsizinghint
+msgid "Grips can change size in Anchor Editor"
+msgstr ""
+
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
 msgstr ""

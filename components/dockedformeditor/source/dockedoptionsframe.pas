@@ -33,6 +33,7 @@ type
     CheckBoxForceRefreshing: TCheckBox;
     CheckBoxTreatAlign: TCheckBox;
     CheckBoxTreatBorder: TCheckBox;
+    CheckBoxAllowSizing: TCheckBox;
     ColorBoxResizer: TColorBox;
     ComboBoxTabPosition: TComboBox;
     DividerBevelAnchors: TDividerBevel;
@@ -50,6 +51,7 @@ type
     procedure AnchorsColorListBoxGetColors(Sender: TCustomColorListBox; Items: TStrings);
     procedure AnchorsColorListBoxSelectionChange(Sender: TObject; User: Boolean);
   private
+    FLastAllowSizing: Boolean;
     FLastAnchorBorderColor: TColor;
     FLastAnchorControlColor: TColor;
     FLastAnchorTabsVisible: Boolean;
@@ -83,6 +85,7 @@ implementation
 
 procedure TFrameDockedOptions.CheckBoxAnchorTabVisibleChange(Sender: TObject);
 begin
+  CheckBoxAllowSizing.Enabled       := CheckBoxAnchorTabVisible.Checked;
   CheckBoxTreatAlign.Enabled        := CheckBoxAnchorTabVisible.Checked;
   CheckBoxTreatBorder.Enabled       := CheckBoxAnchorTabVisible.Checked;
   LabelColors.Enabled               := CheckBoxAnchorTabVisible.Checked;
@@ -130,6 +133,7 @@ begin
   for ATabPosition := Low(TTabPosition) to High(TTabPosition) do
     ComboBoxTabPosition.Items.Add(STabPosition[ATabPosition]);
 
+  CheckBoxAllowSizing.Caption      := SAllowSizingCaption;
   CheckBoxAnchorTabVisible.Caption := SAnchorTabVisibleCaption;
   CheckBoxForceRefreshing.Caption  := SForceRefreshingCaption;
   CheckBoxTreatAlign.Caption       := STreatAlignCaption;
@@ -141,6 +145,7 @@ begin
   LabelCaptureDistance.Caption     := SCaptureDistanceCaption;
   LabelMouseBorderFactor.Caption   := SMouseBorderFactorCaption;
 
+  CheckBoxAllowSizing.Hint       := SAllowSizingHint;
   CheckBoxAnchorTabVisible.Hint  := SAnchorTabVisibleHint;
   CheckBoxTreatAlign.Hint        := STreatAlignHint;
   CheckBoxTreatBorder.Hint       := StreatBorderHint;
@@ -153,6 +158,7 @@ end;
 
 procedure TFrameDockedOptions.ReadSettings(AOptions: TAbstractIDEOptions);
 begin
+  FLastAllowSizing        := DockedOptions.AllowSizing;
   FLastAnchorBorderColor  := DockedOptions.AnchorBorderColor;
   FLastAnchorControlColor := DockedOptions.AnchorControlColor;
   FLastAnchorTabsVisible  := DockedOptions.AnchorTabVisible;
@@ -174,6 +180,7 @@ end;
 
 procedure TFrameDockedOptions.WriteSettings(AOptions: TAbstractIDEOptions);
 begin
+  DockedOptions.AllowSizing        := CheckBoxAllowSizing.Checked;
   DockedOptions.AnchorBorderColor  := AnchorsColorListBox.Colors[ord(acControlBorder)];
   DockedOptions.AnchorControlColor := AnchorsColorListBox.Colors[ord(acControl)];
   DockedOptions.AnchorTopColor     := AnchorsColorListBox.Colors[ord(acAnchorTop)];
@@ -209,6 +216,7 @@ begin
   AnchorsColorListBox.Colors[ord(acAnchorTarget)]  := DockedOptions.AnchorTargetColor;
   CheckBoxAnchorTabVisible.Checked := FLastAnchorTabsVisible;
   CheckBoxAnchorTabVisible.OnChange(nil);
+  CheckBoxAllowSizing.Checked      := FLastAllowSizing;
   CheckBoxForceRefreshing.Checked  := FLastForceRefreshing;
   CheckBoxTreatAlign.Checked       := FLastTreatAlign;
   CheckBoxTreatBorder.Checked      := FLastTreatBorder;

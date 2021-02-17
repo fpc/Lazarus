@@ -73,9 +73,8 @@ type
     procedure PopupMenuAdapt(Sender: TObject);
     procedure SelectedAdaptAnchors;
     procedure SelectedAdaptBorder;
-    procedure SelectedAdaptBounds(RemoveAnchorSides: Boolean);
+    procedure SelectedAdaptBounds;
     procedure SelectedAnchorNewTarget(AKind: TAnchorKind);
-    procedure SetParent(AValue: TWinControl); override;
     procedure SetSelectedControl(AValue: TAnchorControl);
   public
     constructor Create(ADesignForm: TDesignForm; AParent: TWinControl);
@@ -85,6 +84,7 @@ type
     procedure EndUpdate; override;
     procedure Invalidate; override;
     procedure Refresh; override;
+    procedure SetParent(AValue: TWinControl); override;
   public
     property SelectedControl: TAnchorControl read FSelectedControl write SetSelectedControl;
     property State: TAnchorStates read FState write FState;
@@ -139,6 +139,8 @@ end;
 
 procedure TAnchorDesigner.AnchorControlMouseMove(Sender: TObject;
   Shift: TShiftState; X, Y: Integer);
+var
+  LAllowMoving: Boolean;
 begin
   if not State.IsMouseDown then Exit;
   if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
@@ -154,15 +156,22 @@ begin
     if not State.IsBordering then
     begin
       FBackGround.Invalidate;
-      FState := FState + [asAnchorTop, asAnchorLeft, asAnchorRight, asAnchorBottom];
-      if (akTop in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akTop].Control) then
-        FState := FState - [asAnchorTop];
-      if (akLeft in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akLeft].Control) then
-        FState := FState - [asAnchorLeft];
-      if (akRight in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akRight].Control) then
-        FState := FState - [asAnchorRight];
-      if (akBottom in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akBottom].Control) then
-        FState := FState - [asAnchorBottom];
+      if DockedOptions.AllowSizing then
+        FState := FState + [asAnchorTop, asAnchorLeft, asAnchorRight, asAnchorBottom]
+      else
+      begin
+        LAllowMoving := True;
+        if (akTop in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akTop].Control) then
+          LAllowMoving := False;
+        if (akLeft in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akLeft].Control) then
+          LAllowMoving := False;
+        if (akRight in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akRight].Control) then
+          LAllowMoving := False;
+        if (akBottom in FPreviousControl.Anchors) and Assigned(FPreviousControl.AnchorSide[akBottom].Control) then
+          LAllowMoving := False;
+        if LAllowMoving then
+          FState := FState + [asAnchorTop, asAnchorLeft, asAnchorRight, asAnchorBottom]
+      end;
     end;
   end;
 
@@ -172,7 +181,7 @@ begin
     SelectedAdaptBorder;
   end else begin
     // sizing
-    SelectedAdaptBounds(False);
+    SelectedAdaptBounds;
   end;
   AdjustGrips;
 end;
@@ -294,8 +303,7 @@ begin
       FTargetControl.Color := DockedOptions.AnchorTargetColor;
     end else begin
       // size control
-      SelectedAdaptBounds(True);
-      FState := [asMouseDown, asMoving];
+      SelectedAdaptBounds;
       FTargetControl.Color := DockedOptions.AnchorControlColor;
       FTargetControl := nil;
     end;
@@ -316,6 +324,23 @@ begin
   begin
     Abort;
     Exit;
+  end;
+  if not DockedOptions.AllowSizing then
+  begin
+    if State.IsAnchoringLeft and (FSelectedControl.AnchorSide[akLeft].Control = nil) then
+    begin
+      FSelectedControl.Left  := FPreviousControl.Left;
+      FSelectedControl.Width := FPreviousControl.Width;
+    end;
+    if State.IsAnchoringRight and (FSelectedControl.AnchorSide[akRight].Control = nil) then
+      FSelectedControl.Width := FPreviousControl.Width;
+    if State.IsAnchoringTop and (FSelectedControl.AnchorSide[akTop].Control = nil) then
+    begin
+      FSelectedControl.Height := FPreviousControl.Height;
+      FSelectedControl.Top := FPreviousControl.Top;
+    end;
+    if State.IsAnchoringBottom and (FSelectedControl.AnchorSide[akBottom].Control = nil) then
+      FSelectedControl.Height := FPreviousControl.Height;
   end;
   FSelectedControl.AssignToRoot_Anchors;
   FSelectedControl.AssignToRoot_ControlsBounds(True);
@@ -773,7 +798,7 @@ begin
   FSelectedControl.BorderSpacing.Bottom := Max(0, LBottomBorder);
 end;
 
-procedure TAnchorDesigner.SelectedAdaptBounds(RemoveAnchorSides: Boolean);
+procedure TAnchorDesigner.SelectedAdaptBounds;
 var
   LMouseOffset: TPoint;
   LRect: TRect;
@@ -783,36 +808,28 @@ begin
 
   if State.IsAnchoringLeft then
   begin
+    FSelectedControl.RemoveAnchorSide(akLeft);
     LRect.Left := LRect.Left + LMouseOffset.x;
-    if RemoveAnchorSides then
-      FSelectedControl.RemoveAnchorSide(akLeft);
   end else
-    if RemoveAnchorSides then
-      FSelectedControl.AssignAnchor(FPreviousControl, akLeft);
+    FSelectedControl.AssignAnchor(FPreviousControl, akLeft);
   if State.IsAnchoringRight then
   begin
+    FSelectedControl.RemoveAnchorSide(akRight);
     LRect.Right := LRect.Right + LMouseOffset.x;
-    if RemoveAnchorSides then
-      FSelectedControl.RemoveAnchorSide(akRight);
   end else
-    if RemoveAnchorSides then
-      FSelectedControl.AssignAnchor(FPreviousControl, akRight);
+    FSelectedControl.AssignAnchor(FPreviousControl, akRight);
   if State.IsAnchoringTop then
   begin
+    FSelectedControl.RemoveAnchorSide(akTop);
     LRect.Top := LRect.Top + LMouseOffset.y;
-    if RemoveAnchorSides then
-      FSelectedControl.RemoveAnchorSide(akTop);
   end else
-    if RemoveAnchorSides then
-      FSelectedControl.AssignAnchor(FPreviousControl, akTop);
+    FSelectedControl.AssignAnchor(FPreviousControl, akTop);
   if State.IsAnchoringBottom then
   begin
+    FSelectedControl.RemoveAnchorSide(akBottom);
     LRect.Bottom := LRect.Bottom + LMouseOffset.y;
-    if RemoveAnchorSides then
-      FSelectedControl.RemoveAnchorSide(akBottom);
   end else
-    if RemoveAnchorSides then
-      FSelectedControl.AssignAnchor(FPreviousControl, akBottom);
+    FSelectedControl.AssignAnchor(FPreviousControl, akBottom);
 
   if FSelectedControl.RootControl.Constraints.MaxWidth > 0 then
     LRect.Width := Min(LRect.Width, FSelectedControl.RootControl.Constraints.MaxWidth);
@@ -834,13 +851,6 @@ begin
   else
     FSelectedControl.AnchorSide[AKind].Side := FTargetVertSide;
   FSelectedControl.Anchors := FSelectedControl.Anchors + [AKind];
-end;
-
-procedure TAnchorDesigner.SetParent(AValue: TWinControl);
-begin
-  inherited SetParent(AValue);
-  if Assigned(FBackGround) then
-    FBackGround.Parent := Parent;
 end;
 
 procedure TAnchorDesigner.SetSelectedControl(AValue: TAnchorControl);
@@ -934,6 +944,13 @@ begin
   FAnchorControls.CheckProperties;
   FAnchorControls.CheckAnchors;
   Invalidate;
+end;
+
+procedure TAnchorDesigner.SetParent(AValue: TWinControl);
+begin
+  inherited SetParent(AValue);
+  if Assigned(FBackGround) then
+    FBackGround.Parent := Parent;
 end;
 
 end.

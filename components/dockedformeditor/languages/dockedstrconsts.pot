@@ -1,6 +1,14 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: dockedstrconsts.sallowsizingcaption
+msgid "Allow size changing"
+msgstr ""
+
+#: dockedstrconsts.sallowsizinghint
+msgid "Grips can change size in Anchor Editor"
+msgstr ""
+
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
 msgstr ""

@@ -12,6 +12,8 @@ resourceString
   SCode                       = 'Code';
   SDesigner                   = 'Form';
   SAnchors                    = 'Anchors';
+  SAllowSizingCaption         = 'Allow size changing';
+  SAllowSizingHint            = 'Grips can change size in Anchor Editor';
   SAnchorControlBorderCaption = 'Border Around Control';
   SAnchorControlColorCaption  = 'Control Background';
   SAnchorTabVisibleCaption    = 'Show Anchors Tab';
