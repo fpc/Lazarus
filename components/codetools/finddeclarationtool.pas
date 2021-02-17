@@ -3466,7 +3466,7 @@ begin
           try
             Params.SetIdentifier(Tool,@Tool.Src[Tool.CurPos.StartPos],nil);
             Params.Flags:=[fdfSearchInAncestors,fdfSearchInHelpers];
-            if not FindIdentifierInAncestors(Node.Parent.Parent,Params) then break;
+            if not Tool.FindIdentifierInAncestors(Node.Parent.Parent,Params) then break;
             Tool:=Params.NewCodeTool;
             Node:=Params.NewNode;
           finally
@@ -7856,6 +7856,7 @@ var
   SearchDefaultAncestor: Boolean;
 begin
   Result:=false;
+  {$IFDEF CheckNodeTool}CheckNodeTool(ClassNode);{$ENDIF}
 
   if not (fdfSearchInAncestors in Params.Flags) then exit;
 
