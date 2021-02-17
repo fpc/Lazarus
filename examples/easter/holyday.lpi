@@ -9,6 +9,7 @@
         <LRSInOutputDirectory Value="False"/>
         <CompatibilityMode Value="True"/>
       </Flags>
+      <SessionStorage Value="InIDEConfig"/>
       <Title Value="holyday"/>
     </General>
     <BuildModes Count="1">
@@ -33,11 +34,6 @@
       <Unit0>
         <Filename Value="holyday.lpr"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="2"/>
-        <CursorPos X="4" Y="14"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -46,11 +42,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Main"/>
-        <IsVisibleTab Value="True"/>
-        <TopLine Value="93"/>
-        <CursorPos X="33" Y="123"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="about.pas"/>
@@ -58,10 +49,6 @@
         <ComponentName Value="AboutBox"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="48" Y="13"/>
-        <UsageCount Value="23"/>
-        <Loaded Value="True"/>
       </Unit2>
     </Units>
   </ProjectOptions>
