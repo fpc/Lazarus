@@ -222,31 +222,18 @@ end;
 
 procedure TDockedTabMaster.OptionsModified;
 var
-  LSourceEditorWindow: TSourceEditorWindow;
-  LSourceEditorPageControl: TSourceEditorPageControl;
   LPageCtrl: TModulePageControl;
-  LRefreshDesigner: Boolean;
   LPageIndex: Integer;
 begin
   LPageCtrl := SourceEditorWindows.FindModulePageControl(LastActiveSourceEditor);
-  LRefreshDesigner := Assigned(LPageCtrl) and LPageCtrl.DesignerPageActive;
   LPageIndex := LPageCtrl.PageIndex;
-  LPageCtrl.CreateTabSheetAnchors;
-
   DesignForms.RemoveAllAnchorDesigner;
-
-  for LSourceEditorWindow in SourceEditorWindows do
-    for LSourceEditorPageControl in LSourceEditorWindow.PageControlList do
-    begin
-      LSourceEditorPageControl.PageControl.TabPosition := DockedOptions.TabPosition;
-      LSourceEditorPageControl.PageControl.RefreshResizer;
-      ShowCode(LSourceEditorPageControl.SourceEditor);
-    end;
-
-  if not LRefreshDesigner then Exit;
-  LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LastActiveSourceEditorWindow];
-  LSourceEditorWindow.ActiveDesignForm := nil;
-  ShowDesigner(LastActiveSourceEditor, LPageIndex);
+  SourceEditorWindows.ShowCodeTabSkipCurrent(nil, nil);
+  SourceEditorWindows.RefreshActivePageControls;
+  TDockedMainIDE.EditorActivated(LastActiveSourceEditor);
+  if LPageIndex = 0 then Exit;
+  LPageCtrl.TabIndex := LPageIndex;
+  LPageCtrl.OnChange(LPageCtrl);
 end;
 
 { TDockedMainIDE }
@@ -487,7 +474,7 @@ begin
     end;
   end
   else
-    SourceEditorWindows.RefreshAllSourceWindowsModulePageControl;
+    SourceEditorWindows.RefreshActivePageControls;
 end;
 
 class procedure TDockedMainIDE.EditorCreate(Sender: TObject);
