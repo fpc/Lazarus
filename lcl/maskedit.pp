@@ -1165,8 +1165,10 @@ procedure TCustomMaskEdit.SetEditText(const AValue: string);
 //Note: This is not Delphi compatible, but by design
 //Delphi lets you just set EditText of any length, which is extremely dangerous!
 var
-  S: String;
+  S, OldS: String;
   i: Integer;
+  ULen: PtrInt;
+  ClearCh: TUTF8Char;
 begin
   if (not IsMasked) then
   begin
@@ -1181,7 +1183,22 @@ begin
     for i := 1 to Utf8Length(S) do
       if IsLiteral(FMask[i]) then SetCodePoint(S,i,ClearChar(i));
     //Pad resulting string with ClearChar if text is too short
-    while Utf8Length(S) < FMaskLength do S := S + ClearChar(Utf8Length(S)+1);
+
+    //while Utf8Length(S) < FMaskLength do S := S + ClearChar(Utf8Length(S)+1);
+    //the above should work again after the release of fpc 3.2.2?
+    //for the time being do it like this:
+    while Utf8Length(S) < FMaskLength do
+    begin
+      //workaround for fpc issue #0038337
+      //Utf8Length(S) corrupts S, so concatenation with ClearChar() fails, leading to an endless loop.
+      //See issue #0038505
+      OldS := S;
+      ULen := Utf8Length(S);
+      ClearCh := ClearChar(Ulen+1);
+      //DbgOut(['TCustomMaskEdit.SetEditText: S="',S,'", Utf8Length(S)=',ULen,', FMaskLength=',FMaskLength,', ClearChar(',Ulen+1,')=',ClearCh]);
+      S := OldS + ClearCh;
+      //debugln(' --> S:',S);
+    end;
     RealSetTextWhileMasked(S);
   end;
 end;
