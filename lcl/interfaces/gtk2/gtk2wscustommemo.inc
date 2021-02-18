@@ -108,6 +108,9 @@ begin
   SignalConnect(AWidgetInfo^.CoreWidget, 'cut-clipboard', @Gtk2WS_MemoCutToClip, AWidgetInfo);
   SignalConnect(AWidgetInfo^.CoreWidget, 'copy-clipboard', @Gtk2WS_MemoCopyToClip, AWidgetInfo);
   SignalConnect(AWidgetInfo^.CoreWidget, 'paste-clipboard', @Gtk2WS_MemoPasteFromClip, AWidgetInfo);
+
+  g_signal_connect_after(PGtkObject(AWidgetInfo^.CoreWidget), 'populate-popup',
+    gtk_signal_func(@gtkDefaultPopupMenuCloseFix), AWidgetInfo);
 end;
 
 class function TGtk2WSCustomMemo.CreateHandle(const AWinControl: TWinControl;
