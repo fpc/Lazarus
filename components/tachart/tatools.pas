@@ -686,7 +686,6 @@ begin
   i := FChart.ActiveToolIndex;
   if (i <> Index) and InRange(i, 0, Toolset.Tools.Count) then
     Toolset[i].Deactivate;
-  FCurrentDrawer := nil;
   inherited;
   SetCursor;
 end;
@@ -2012,7 +2011,6 @@ end;
 
 procedure TDataPointCrosshairTool.MouseDown(APoint: TPoint);
 begin
-  FCurrentDrawer := nil;
   MouseMove(APoint);
 end;
 
