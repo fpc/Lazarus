@@ -1226,6 +1226,12 @@ begin
     (SpeedButton.GroupIndex = (Action as TCustomAction).GroupIndex);
 end;
 
+function TSpeedButtonActionLink.IsImageIndexLinked: Boolean;
+begin
+  Result := inherited IsImageIndexLinked and
+    (TSpeedButton(FClient).ImageIndex = (Action as TCustomAction).ImageIndex);
+end;
+
 procedure TSpeedButtonActionLink.SetGroupIndex(Value: Integer);
 begin
   if IsGroupIndexLinked then TCustomSpeedButton(FClient).GroupIndex := Value;
@@ -1234,6 +1240,12 @@ end;
 procedure TSpeedButtonActionLink.SetChecked(Value: Boolean);
 begin
   if IsCheckedLinked then TCustomSpeedButton(FClient).Down := Value;
+end;
+
+procedure TSpeedButtonActionLink.SetImageIndex(Value: Integer);
+begin
+  if IsImageIndexLinked then
+    TSpeedButton(FClient).ImageIndex := Value;
 end;
 
 

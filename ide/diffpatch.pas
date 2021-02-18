@@ -616,6 +616,8 @@ begin
       // chomp empty lines at end
       fPart1.GetPrevLineExtends(Cur1);
       fPart2.GetPrevLineExtends(Cur2);
+      if (Cur1.LineNumber < 1) or (Cur2.LineNumber < 1) then
+        break;
     until not LinesAreEqual(Cur1,Cur2);
   end;
 end;
