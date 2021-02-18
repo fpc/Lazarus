@@ -482,7 +482,7 @@ begin
   if (selMI=nil) then
     Exit;
   selShadow:=TShadowItem(FShadowMenu.GetShadowForMenuItem(selMI));
-  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
+  if selShadow=nil then Exit;
   if not ShouldBeVisible then begin
     if selMI.IsInMenuBar then
       selShadow.BottomFake:=nil
@@ -534,7 +534,7 @@ begin
   if (selMI=nil) then
     Exit;
   selShadow:=TShadowItem(FShadowMenu.GetShadowForMenuItem(selMI));
-  Assert(selShadow<>nil,'TFake.SetVisibilitySizeAndPosition: selectedItem is nil');
+  if selShadow=nil then Exit;
   if not ShouldBeVisible then begin
     if selMI.IsInMenuBar then
       selShadow.RightFake:=nil
@@ -2007,9 +2007,14 @@ begin
   if (sepCount > 0) then begin
     FShadowMenu.HideFakes;
     ShowAllUnSelected;
-    nearestMI:=GetNextNonSepItem(FShadowMenu.SelectedMenuItem);
-    if (nearestMI = nil) then
-      nearestMI:=GetPreviousNonSepItem(FShadowMenu.SelectedMenuItem);
+    nearestMI:=FShadowMenu.SelectedMenuItem;
+    if assigned(nearestMI) and nearestMI.IsLine then begin
+      nearestMI:=GetNextNonSepItem(FShadowMenu.SelectedMenuItem);
+      if (nearestMI = nil) then
+        nearestMI:=GetPreviousNonSepItem(FShadowMenu.SelectedMenuItem);
+    end
+    else
+      FShadowMenu.SelectedMenuItem := nil;
     if (nearestMI = nil) then
       nearestMI:=FParentMenuItem;
     for i:=ParentMenuItem.Count-1 downto 0 do
@@ -2030,6 +2035,7 @@ begin
     else begin
       FShadowMenu.UpdateBoxLocationsAndSizes;
       FShadowMenu.SetSelectedMenuItem(nearestMI, False, True);
+      LocateShadows;
     end;
   end;
 end;
@@ -2042,6 +2048,7 @@ begin
   if (ShadowList.Count = 0) then
     Exit;
   FShadowList.Sort(@SortByItemMenuIndex);
+  DisableAutoSizing;
   if IsMenuBar then begin
     len:=0;
     for si in FShadowList do begin
@@ -2059,6 +2066,7 @@ begin
       Inc(t, h);
     end;
   end;
+  EnableAutoSizing;
 end;
 
 constructor TShadowBox.CreateWithParentBox(aSMenu: TShadowMenu;

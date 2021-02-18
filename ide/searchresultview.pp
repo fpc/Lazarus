@@ -1185,21 +1185,17 @@ var
 begin
   if (fUpdateCount = 0) then
     RaiseGDBException('TLazSearchResultTV.EndUpdate');
-
   Dec(fUpdateCount);
   if (fUpdateCount = 0) then
   begin
     ShortenPaths;
     fUpdating:= false;
     FreeObjectsTN(Items);
-
     Items.BeginUpdate;
     Items.Clear;
     fFilenameToNode.Clear;
-
     for i := 0 to fUpdateStrings.Count - 1 do
       AddNode(fUpdateStrings[i], TLazSearchMatchPos(fUpdateStrings.Objects[i]));
-
     Items.EndUpdate;
   end;//if
 end;//EndUpdate
@@ -1225,7 +1221,6 @@ begin
     FreeSrcList:=true;
   end;
   try
-
     // find shared path (the path of all filenames, that is the same)
     SharedPath:='';
     for i:=0 to SrcList.Count-1 do begin
