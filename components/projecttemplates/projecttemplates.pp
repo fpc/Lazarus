@@ -143,10 +143,8 @@ begin
 end;
 
 Function SimpleFileCopy(Const Source,Dest : String) : Boolean;
-
 Var
   F1,F2 : TFileStream;
-
 begin
   Result:=False;
   try
@@ -314,6 +312,11 @@ begin
           FExclude:=ReadString(SProject,KeyExclude,'');
           If (FExclude<>'') then
             FExclude:=FExclude+',';
+          // Don't change ico and res files
+          If pos('.ico,',FExclude)<=0 then
+            FExclude:=FExclude+'.ico,';
+          If pos('.res,',FExclude)<=0 then
+            FExclude:=FExclude+'.res,';
           ReadSectionValues(SVariables,FVariables);
         Finally
           Free;
@@ -500,7 +503,5 @@ procedure TProjectTemplate.CreateProject(const ProjectDir: String;
 begin
   CopyAndSubstituteDir(Directory,ProjectDir,Values);
 end;
-
-
 
 end.

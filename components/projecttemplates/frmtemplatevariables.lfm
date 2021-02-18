@@ -9,14 +9,14 @@ object ProjectVariablesForm: TProjectVariablesForm
   OnCreate = FormCreate
   OnShow = ProjectVariablesFormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ProjNameLabel: TLabel
     AnchorSideTop.Control = EProjectName
     AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 13
-    Top = 21
-    Width = 124
+    Height = 15
+    Top = 20
+    Width = 118
     Alignment = taRightJustify
     Caption = '&Name for new project:'
     Layout = tlCenter
@@ -26,9 +26,9 @@ object ProjectVariablesForm: TProjectVariablesForm
     AnchorSideTop.Control = DEDestDir
     AnchorSideTop.Side = asrCenter
     Left = 8
-    Height = 13
-    Top = 53
-    Width = 107
+    Height = 15
+    Top = 52
+    Width = 100
     Alignment = taRightJustify
     Caption = 'Create in &directory:'
     Layout = tlCenter
@@ -60,7 +60,7 @@ object ProjectVariablesForm: TProjectVariablesForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 156
+    Height = 158
     Top = 141
     Width = 527
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -70,10 +70,11 @@ object ProjectVariablesForm: TProjectVariablesForm
     DefaultColWidth = 120
     Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goEditing, goAlwaysShowEditor, goDblClickAutoSize, goSmoothScroll]
     TabOrder = 3
+    OnSelectEditor = SGVariablesSelectEditor
     ColWidths = (
       120
+      201
       202
-      203
     )
   end
   object EProjectName: TEdit
@@ -81,10 +82,10 @@ object ProjectVariablesForm: TProjectVariablesForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 138
+    Left = 132
     Height = 23
     Top = 16
-    Width = 395
+    Width = 401
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
@@ -93,10 +94,10 @@ object ProjectVariablesForm: TProjectVariablesForm
   object DEDestDir: TDirectoryEdit
     AnchorSideLeft.Control = EProjectName
     AnchorSideRight.Side = asrBottom
-    Left = 138
+    Left = 132
     Height = 23
     Top = 48
-    Width = 393
+    Width = 399
     ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
@@ -106,8 +107,8 @@ object ProjectVariablesForm: TProjectVariablesForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 36
-    Top = 303
+    Height = 34
+    Top = 305
     Width = 527
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
