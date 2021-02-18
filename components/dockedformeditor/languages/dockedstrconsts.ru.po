@@ -13,11 +13,11 @@ msgstr ""
 
 #: dockedstrconsts.sallowsizingcaption
 msgid "Allow size changing"
-msgstr ""
+msgstr "Разрешить изменение размера"
 
 #: dockedstrconsts.sallowsizinghint
 msgid "Grips can change size in Anchor Editor"
-msgstr ""
+msgstr "Менять размер компонента узлами захвата в редакторе привязок"
 
 #: dockedstrconsts.sanchorbottomcolorcaption
 msgid "Bottom Anchor"
