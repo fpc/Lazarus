@@ -1638,8 +1638,9 @@ end;
 destructor TMainIDE.Destroy;
 begin
   ToolStatus:=itExiting;
-
-  IDECommandList.RemoveCustomUpdateEvent(@UpdateMainIDECommands);
+  // IDECommandList may be Nil if the IDE is aborted before updating configuration.
+  if Assigned(IDECommandList) then
+    IDECommandList.RemoveCustomUpdateEvent(@UpdateMainIDECommands);
 
   if Assigned(ExternalTools) then
     ExternalTools.TerminateAll;
