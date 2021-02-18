@@ -138,32 +138,33 @@ end;
 {$ENDIF}
 
 function PosI(const SubStr, S: string): integer;
-// A case-insensitive version of Pos().
-// Note: StrUtils has ContainsText but its implementation is VERY slow.
+// A case-insensitive optimized version of Pos(). Comparison Supports only ASCII.
+// Can be used instead of common but slower Pos(UpperCase(SubStr),UpperCase(S));
 var
-  Len1, Len2, Cnt1, Cnt2: integer;
-  SubFirst: Char;
+  SubLen, SLen: integer;
+  SubP, SP, SPEnd: PChar;
+  SubBP: PByte absolute SubP;
+  SBP: PByte absolute SP;
 begin
-  Len1 := Length(SubStr);
-  Len2 := Length(S);
-  if (Len1 = 0) or (Len1 > Len2) then
-    Exit(0);
-  SubFirst := LowerCase(SubStr[1]);
   Result := 0;
-  for Cnt1 := 1 to Len2-Len1+1 do
-  begin                         // Outer loop finds the first matching character.
-    if LowerCase(S[Cnt1]) = SubFirst then
-    begin                       // Maybe a start of the substring.
-      Result := Cnt1;
-      for Cnt2 := 2 to Len1 do
-        if LowerCase(S[Cnt1+Cnt2-1]) <> LowerCase(SubStr[Cnt2]) then
-        begin
-          Result := 0;          // No match
-          break;
-        end;
-    end;
-    if Result > 0 then
-      break;
+  SubLen := Length(SubStr);
+  SLen := Length(S);
+  if (SubLen = 0) or (SubLen > SLen) then
+    Exit;
+  SubP := @SubStr[1];
+  SP := @S[1];
+  SPEnd := SP + SLen - SubLen;
+  while True do
+  begin
+    while (SP <= SPEnd) and ((SubBP^ xor SBP^) and $DF <> 0) do
+      Inc(SP);         // Not equal even after removing the $20 upper/lower diff
+    if SP > SPEnd then
+      Break;
+    // Now they may be equal but could be false positive
+    if (Char(SBP^ and $DF) in ['A'..'Z']) or (SP^ = SubP^) then
+      if StrLIComp(SubP+1, SP+1, SubLen-1) = 0 then // First char matched
+        Exit(SP - @S[1] + 1);                       // .. and also the rest of it
+    Inc(SP);
   end;
 end;
 

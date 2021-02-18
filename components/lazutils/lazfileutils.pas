@@ -423,7 +423,7 @@ begin
     Dec(ExtLen);
   end;
   if ExtLen <> FnExtLen then
-    exit(False);          // Ext has different length than Filename
+    exit(False);          // Ext has different length than Filename's extension
   // compare extensions
   if CaseSensitive then
     Result := StrLComp(ExtP, FnP, ExtLen) = 0
@@ -460,7 +460,7 @@ begin
       Dec(ExtLen);
     end;
     if ExtLen <> FnExtLen then
-      continue;           // Ext has different length than Filename
+      continue;           // Ext has different length than Filename's extension
     // compare extensions
     if CaseSensitive then
       Result := StrLComp(ExtP, FnP, ExtLen) = 0
