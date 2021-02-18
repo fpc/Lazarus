@@ -6,7 +6,8 @@ interface
 
 uses
   ContNrs, SysUtils, Classes, Variants,
-  LazUtf8, Controls, StdCtrls, Grids, LResources, Dialogs, LCLType;
+  LazUtf8, Controls, StdCtrls, Grids, LResources, Dialogs, LCLType,
+  LCLStrConsts;
 
 type
 
@@ -1350,6 +1351,8 @@ begin
   //debugln('TValueListEditor.SetRowCount: AValue=',DbgS(AValue));
   OldValue := inherited RowCount;
   if OldValue = AValue then Exit;
+  if FixedRows > AValue then
+    Raise EGridException.Create(rsFixedRowsTooBig);
   NewCount := AValue - FixedRows;
   if (NewCount > Strings.Count) then
   begin
