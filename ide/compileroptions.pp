@@ -414,8 +414,10 @@ type
     FOtherDefines: TStrings; // list of user selectable defines for custom options
     FFPCMsgFile: TFPCMsgFilePoolItem;
     FCreateMakefileOnBuild: boolean;
+    procedure AppendDefaultExt(var aFilename: string);
     function GetExecuteAfter: TCompilationToolOptions;
     function GetExecuteBefore: TCompilationToolOptions;
+    procedure PrependDefaultType(var AFilename: string);
     procedure SetCreateMakefileOnBuild(AValue: boolean);
   protected
     function GetCompilerPath: String; override;
@@ -1940,66 +1942,51 @@ begin
     end;
 end;
 
-{------------------------------------------------------------------------------
-  TBaseCompilerOptions CreateTargetFilename
-------------------------------------------------------------------------------}
-function TBaseCompilerOptions.CreateTargetFilename: string;
-
-  procedure AppendDefaultExt(var aFilename: string);
-  var
-    Ext: String;
-  begin
-    if (ExtractFileName(aFilename)='') then exit;
-    Ext:=GetTargetFileExt;
-    if Ext<>'' then begin
-      aFilename:=ChangeFileExt(aFilename,Ext);
-      //debugln ( 'Filename is ',AFilename,' in AppendDefaultExt' );
-      exit;
-    end;
-  end;
-
-  procedure PrependDefaultType(var AFilename: string);
-  var
-    Prefix: String;
-    FileName: String;
-    PathName: String;
-    CurTargetOS: String;
-    aSrcOS: String;
-  begin
-    //debugln ( 'Filename AFilename is ',AFilename, ' in PrependDefaultType' );
-    if (ExtractFileName(AFilename)='')
-    or (CompareText(copy(ExtractFileName(AFilename),1,3), 'lib') = 0) then exit;
-    Prefix:=GetTargetFilePrefix;
-    if Prefix<>'' then begin
-      FileName := ExtractFileName(AFilename);
-      PathName := ExtractFilePath(AFilename);
-      //debugln ( 'Filename is ',FileName, ' in PrependDefaultType' );
-      CurTargetOS:=TargetOS;
-      if CurTargetOS='' then CurTargetOS:=GetCompiledTargetOS;
-      aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
-      if (CompareText(aSrcOS, 'unix') = 0)
-      then begin
-        AFilename:=PathName+Prefix+UTF8LowerCase(FileName);
-      end else begin
-        AFilename:=PathName+Prefix+FileName;
-      end;
-      //debugln ( 'AFilename is ',AFilename, ' in PrependDefaultType' );
-      exit;
-    end;
-  end;
-
+procedure TBaseCompilerOptions.AppendDefaultExt(var aFilename: string);
 var
-  UnitOutDir: String;
-  OutFilename: String;
-  Dir: String;
+  Ext: String;
+begin
+  if ExtractFileName(aFilename)='' then exit;
+  Ext:=GetTargetFileExt;
+  if (Ext<>'') and (CompareFileExt(aFilename,Ext)<>0) then
+    aFilename:=aFilename+Ext;
+  //DebugLn('Filename is ',AFilename,' in AppendDefaultExt');
+end;
+
+procedure TBaseCompilerOptions.PrependDefaultType(var AFilename: string);
+var
+  Prefix, FileName, PathName, CurTargetOS, aSrcOS: String;
+begin
+  //DebugLn('Filename AFilename is ',AFilename, ' in PrependDefaultType');
+  if (ExtractFileName(AFilename)='')
+  or (CompareText(copy(ExtractFileName(AFilename),1,3), 'lib') = 0) then exit;
+  Prefix:=GetTargetFilePrefix;
+  if Prefix<>'' then
+  begin
+    FileName := ExtractFileName(AFilename);
+    PathName := ExtractFilePath(AFilename);
+    //debugln ( 'Filename is ',FileName, ' in PrependDefaultType' );
+    CurTargetOS:=TargetOS;
+    if CurTargetOS='' then CurTargetOS:=GetCompiledTargetOS;
+    aSrcOS:=GetDefaultSrcOSForTargetOS(CurTargetOS);
+    if CompareText(aSrcOS, 'unix') = 0 then
+      AFilename:=PathName+Prefix+UTF8LowerCase(FileName)
+    else
+      AFilename:=PathName+Prefix+FileName;
+    //DebugLn('AFilename is ',AFilename, ' in PrependDefaultType');
+    exit;
+  end;
+end;
+
+function TBaseCompilerOptions.CreateTargetFilename: string;
+var
+  UnitOutDir, OutFilename, Dir: String;
 begin
   Result:=TargetFilename;
   if Assigned(ParsedOpts.OnLocalSubstitute) then
-  begin
-    Result:=ParsedOpts.OnLocalSubstitute(Result,false);
-  end else begin
+    Result:=ParsedOpts.OnLocalSubstitute(Result,false)
+  else
     Result:=ParseString(ParsedOpts,Result,false);
-  end;
   if (Result<>'') and FilenameIsAbsolute(Result) then begin
     // fully specified target filename
   end else if Result<>'' then begin

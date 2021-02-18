@@ -2828,8 +2828,8 @@ type
     nsVisible,       // = Node.Visible
     nsBound          // bound to a tree, e.g. has Parent or is top lvl node
     );
-
   TNodeStates = set of TNodeState;
+
   TNodeAttachMode = (
     naAdd,           // add as last sibling of Destination
     naAddFirst,      // add as first sibling of Destination
@@ -2970,7 +2970,7 @@ type
     function CompareCount(CompareMe: Integer): Boolean;
     function DoCanExpand(ExpandIt: Boolean): Boolean;
     procedure DoExpand(ExpandIt: Boolean);
-    procedure ExpandItem(ExpandIt: Boolean; Recurse: Boolean);
+    procedure ExpandItem(ExpandIt, Recurse: Boolean);
     function GetAbsoluteIndex: Integer;
     function GetDeleting: Boolean;
     function GetHasChildren: Boolean;

@@ -694,7 +694,6 @@ end;
 
 procedure TTreeNode.ExpandItem(ExpandIt: Boolean; Recurse: Boolean);
 var
-  //Flag: Integer;
   ANode: TTreeNode;
 begin
   if Recurse then begin
@@ -1272,7 +1271,8 @@ end;
 
 procedure TTreeNode.Unbind;
 // unbind from parent and neighbor siblings, but not from owner
-var OldIndex, i: integer;
+var
+  OldIndex, i: integer;
   HigherNode: TTreeNode;
   TheTreeView: TCustomTreeView;
 begin
@@ -1332,8 +1332,13 @@ begin
       ReAllocMem(FParent.FItems,SizeOf(Pointer)*FParent.FCapacity);
     end;
     if FParent.Count=0 then begin
-      FParent.Expanded:=false;
-      FParent.HasChildren:=false;
+      TheTreeView.BeginUpdate;
+      try
+        FParent.Expanded:=false;
+        FParent.HasChildren:=false;
+      finally
+        TheTreeView.EndUpdate;
+      end;
     end;
     FParent:=nil;
   end;
@@ -5447,7 +5452,8 @@ end;
 
 procedure TCustomTreeView.GetImageIndex(Node: TTreeNode);
 begin
-  if Assigned(FOnGetImageIndex) then FOnGetImageIndex(Self, Node);
+  if Assigned(FOnGetImageIndex) then
+    FOnGetImageIndex(Self, Node);
 end;
 
 procedure TCustomTreeView.GetSelectedIndex(Node: TTreeNode);
@@ -5458,7 +5464,8 @@ end;
 function TCustomTreeView.CanChange(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(Node) and Assigned(FOnChanging) then FOnChanging(Self, Node, Result);
+  if Assigned(Node) and Assigned(FOnChanging) then
+    FOnChanging(Self, Node, Result);
 end;
 
 procedure TCustomTreeView.Change(Node: TTreeNode);
@@ -5472,39 +5479,44 @@ begin
   if Assigned(FOnDeletion) then FOnDeletion(Self, Node);
 end;
 
-procedure TCustomTreeView.Expand(Node: TTreeNode);
-begin
-  UpdateScrollbars;
-  if Assigned(FOnExpanded) then FOnExpanded(Self, Node);
-end;
-
 function TCustomTreeView.ExpandSignSizeIsStored: Boolean;
 begin
   Result := FExpandSignSize >= 0;
 end;
 
+procedure TCustomTreeView.Expand(Node: TTreeNode);
+begin
+  UpdateScrollbars;
+  if Assigned(FOnExpanded) and not (tvsUpdating in FStates) then
+    FOnExpanded(Self, Node);
+end;
+
 function TCustomTreeView.CanExpand(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(FOnExpanding) then FOnExpanding(Self, Node, Result);
+  if Assigned(FOnExpanding) and not (tvsUpdating in FStates) then
+    FOnExpanding(Self, Node, Result);
 end;
 
 procedure TCustomTreeView.Collapse(Node: TTreeNode);
 begin
   UpdateScrollbars;
-  if Assigned(FOnCollapsed) then FOnCollapsed(Self, Node);
+  if Assigned(FOnCollapsed) and not (tvsUpdating in FStates) then
+    FOnCollapsed(Self, Node);
 end;
 
 function TCustomTreeView.CanCollapse(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(FOnCollapsing) then FOnCollapsing(Self, Node, Result);
+  if Assigned(FOnCollapsing) and not (tvsUpdating in FStates) then
+    FOnCollapsing(Self, Node, Result);
 end;
 
 function TCustomTreeView.CanEdit(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(FOnEditing) then FOnEditing(Self, Node, Result);
+  if Assigned(FOnEditing) then
+    FOnEditing(Self, Node, Result);
 end;
 
 procedure TCustomTreeView.EndEditing(Cancel: boolean);
