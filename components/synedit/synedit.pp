@@ -1280,6 +1280,7 @@ type
     property Width;
     // inherited events
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnTripleClick;
     property OnQuadClick;
@@ -1325,6 +1326,7 @@ type
     property Lines;
     property MaxLeftChar;
     property MaxUndo;
+    property OnResize;
     property Options;
     property Options2;
     property MouseOptions;

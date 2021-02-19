@@ -438,6 +438,7 @@ type
     property Transparent;
     property Visible;
     property OnClick;
+    property OnContextPopup;
     property OnDblClick;
     property OnMouseDown;
     property OnMouseEnter;

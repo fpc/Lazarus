@@ -1022,6 +1022,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
     property ParentBidiMode;
@@ -1414,6 +1415,7 @@ type
     property Hint;
     property OnChange;
     property OnClick;
+    property OnContextPopup;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -1427,6 +1429,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
+    property OnResize;
     property OnStartDrag;
     property ParentBidiMode;
     property ParentDoubleBuffered;
