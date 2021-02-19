@@ -413,7 +413,8 @@ end;
 
 procedure TAnchorDesigner.CreateAnchorGrips;
 begin
-  FAnchorGrips := TAnchorGrips.Create(FBackGround);
+  FAnchorGrips := TAnchorGrips.Create;
+  FAnchorGrips.Parent := Parent;
   FAnchorGrips.BackGround := FBackGround;
   FAnchorGrips.OnMouseDown := @AnchorGripMouseDown;
   FAnchorGrips.OnMouseMove := @AnchorGripMouseMove;
@@ -949,8 +950,8 @@ end;
 procedure TAnchorDesigner.SetParent(AValue: TWinControl);
 begin
   inherited SetParent(AValue);
-  if Assigned(FBackGround) then
-    FBackGround.Parent := Parent;
+  if Assigned(FBackGround) then FBackGround.Parent := Parent;
+  if Assigned(FAnchorGrips) then FAnchorGrips.Parent := Parent;
 end;
 
 end.

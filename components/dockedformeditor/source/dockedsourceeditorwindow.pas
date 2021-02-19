@@ -336,7 +336,6 @@ end;
 procedure TSourceEditorWindows.RefreshAllPageControls;
 var
   LWindow: TSourceEditorWindow;
-  LPageCtrl: TModulePageControl;
   LSourceEditorPageControl: TSourceEditorPageControl;
 begin
   for LWindow in SourceEditorWindows do

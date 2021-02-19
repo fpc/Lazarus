@@ -58,9 +58,10 @@ type
     procedure SetOnMouseDown(AValue: TMouseEvent);
     procedure SetOnMouseMove(AValue: TMouseMoveEvent);
     procedure SetOnMouseUp(AValue: TMouseEvent);
+    procedure SetParent(AValue: TWinControl);
     procedure SetPopupMenu(AValue: TPopupMenu);
   public
-    constructor Create(AParent: TWinControl);
+    constructor Create;
     destructor Destroy; override;
     procedure AdjustGrips(AControl: TControl);
     procedure BringToFront;
@@ -80,6 +81,7 @@ type
     property OnMouseDown: TMouseEvent read FOnMouseDown write SetOnMouseDown;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write SetOnMouseMove;
     property OnMouseUp: TMouseEvent read FOnMouseUp write SetOnMouseUp;
+    property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupMenu read GetPopupMenu write SetPopupMenu;
   end;
 
@@ -176,6 +178,16 @@ begin
     FGrip[i].OnMouseUp := AValue;
 end;
 
+procedure TAnchorGrips.SetParent(AValue: TWinControl);
+var
+  i: Integer;
+begin
+  if FParent = AValue then Exit;
+  FParent := AValue;
+  for i := 0 to 7 do
+    FGrip[i].Parent := AValue;
+end;
+
 procedure TAnchorGrips.SetPopupMenu(AValue: TPopupMenu);
 var
   i: Integer;
@@ -185,11 +197,10 @@ begin
     FGrip[i].PopupMenu := AValue;
 end;
 
-constructor TAnchorGrips.Create(AParent: TWinControl);
+constructor TAnchorGrips.Create;
 var
   i: Integer;
 begin
-  FParent := AParent;
   FGripSize := ScaleX(GRIP_SIZE, 96);
 
   for i := 0 to 7 do
