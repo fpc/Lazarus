@@ -333,7 +333,7 @@ var
 begin
   Result := False;
   ModeCnt := 0;
-  if PrepareForCompileWithMsg <> mrOk then exit;
+  if PrepareForCompileWithMsg <> mrOk then Exit;
   BMList := TBuildModesCheckList.Create(lisCompileFollowingModes);
   ModeList := TList.Create;
   try
@@ -351,31 +351,38 @@ begin
         else
           ModeList.Add(md);
     end;
-    // Build first the active mode so we don't have to switch many times.
-    if BuildActiveMode then
-    begin
-      LastMode := (ModeList.Count=0);
-      if not BuildOneMode(LastMode) then Exit;
-    end
-    else if ModeList.Count=0 then
-    begin
-      IDEMessageDialog(lisExit, lisPleaseSelectAtLeastOneBuildMode,
-                       mtInformation, [mbOK]);
-      Exit(False);
+    try
+      // Build first the active mode so we don't have to switch many times.
+      if BuildActiveMode then
+      begin
+        DebugLn('BuildManyModes: Active Mode');
+        LastMode := (ModeList.Count=0);
+        if not BuildOneMode(LastMode) then Exit;
+      end
+      else if ModeList.Count=0 then
+      begin
+        IDEMessageDialog(lisExit, lisPleaseSelectAtLeastOneBuildMode,
+                         mtInformation, [mbOK]);
+        Exit;
+      end;
+      // Build rest of the modes.
+      DebugLn('BuildManyModes: Rest of the Modes');
+      for i := 0 to ModeList.Count-1 do
+      begin
+        LastMode := (i=(ModeList.Count-1));
+        Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
+        if not BuildOneMode(LastMode) then Exit;
+      end;
+      Result:=True;
+    finally
+      // Switch back to original mode.
+      DebugLn('BuildManyModes: Switch back to ActiveMode');
+      Project1.ActiveBuildMode := ActiveMode;
+      LazarusIDE.DoSaveProject([]);
+      if Result then
+        IDEMessageDialog(lisSuccess, Format(lisSelectedModesWereCompiled, [ModeCnt]),
+                         mtInformation, [mbOK]);
     end;
-    // Build rest of the modes.
-    for i := 0 to ModeList.Count-1 do
-    begin
-      LastMode := (i=(ModeList.Count-1));
-      Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
-      if not BuildOneMode(LastMode) then Exit;
-    end;
-    // Switch back to original mode.
-    Project1.ActiveBuildMode := ActiveMode;
-    LazarusIDE.DoSaveProject([]);
-    IDEMessageDialog(lisSuccess, Format(lisSelectedModesWereCompiled, [ModeCnt]),
-                     mtInformation, [mbOK]);
-    Result:=True;
   finally
     ModeList.Free;
     BMList.Free;
@@ -860,6 +867,8 @@ begin
     if ManyBMs.IndexOf(BM) >= 0 then
       FListForm.CheckListBox1.Checked[i]:=True;
   end;
+  if ManyBMs.Count=0 then  // No persistent selections -> select all by default.
+    SelectAll;
 end;
 
 destructor TBuildModesCheckList.Destroy;
