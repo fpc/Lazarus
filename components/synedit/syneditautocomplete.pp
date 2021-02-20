@@ -44,8 +44,8 @@ unit SynEditAutoComplete;
 interface
 
 uses
-  Classes, StrUtils,
-  LCLIntf, LCLType, LCLProc, Controls, SysUtils, Menus,
+  Classes, SysUtils, StrUtils,
+  LCLIntf, LCLType, Controls, LCLProc,
   LazStringUtils, LazUTF8,
   SynEdit, SynEditKeyCmds, SynEditPlugins;
 
@@ -167,16 +167,15 @@ begin
   inherited Create(AOwner);
   fAutoCompleteList := TStringList.Create;
   TStringList(fAutoCompleteList).OnChange := @CompletionListChanged;
-  fCompletions := TStringList.Create;
-  fCompletionComments := TStringList.Create;
-  fCompletionValues := TStringList.Create;
+  fCompletions := TStringListUTF8Fast.Create;
+  fCompletionComments := TStringListUTF8Fast.Create;
+  fCompletionValues := TStringListUTF8Fast.Create;
   fEditors := TList.Create;
   fEOTokenChars := '()[]{}.';
   fAttributes:=TFPList.Create;
 end;
 
-function TCustomSynAutoComplete.GetCompletionAttributes(Index: integer
-  ): TStrings;
+function TCustomSynAutoComplete.GetCompletionAttributes(Index: integer): TStrings;
 begin
   Result:=TStrings(fAttributes[Index]);
 end;
@@ -405,74 +404,47 @@ begin
 end;
 
 procedure TCustomSynAutoComplete.ParseCompletionList;
-
-  procedure RemoveFirstLine(var Pattern: string);
-  var
-    i: Integer;
-  begin
-    // remove first line (i.e. macro enabled flag)
-    i:=1;
-    while (i<=length(Pattern)) and (not (Pattern[i] in [#10,#13])) do inc(i);
-    if (i<length(Pattern)) and (Pattern[i+1] in [#10,#13])
-    and (Pattern[i+1]<>Pattern[i]) then
-      inc(i);
-    delete(Pattern,1,i);
-  end;
-
 var
-  BorlandDCI: boolean;
-  i, j, Len: integer;
-  s, sCompl, sComment, sComplValue: string;
-  TemplateStarted: Boolean;
+  sComplKey, sComment, sComplValue: string;
 
   procedure SaveEntry;
   var
     CurAttributes: TStrings;
-    Lines: TStringList;
-    LastLineHasEnding: boolean;
-    l: Integer;
+    StartI, EndI: Integer;
   begin
-    fCompletions.Add(sCompl);
-    sCompl := '';
+    fCompletions.Add(sComplKey);
+    sComplKey := '';
     fCompletionComments.Add(sComment);
     sComment := '';
-    CurAttributes:=TStringList.Create;
-    if copy(sComplValue,1,length(CodeTemplateMacroMagic))=CodeTemplateMacroMagic
-    then begin
-      RemoveFirstLine(sComplValue);
-      CurAttributes.Values[CodeTemplateEnableMacros]:='true';
-    end else if copy(sComplValue,1,length(CodeTemplateAttributesStartMagic))
-      =CodeTemplateAttributesStartMagic
-    then begin
-      Lines:=TStringList.Create;
-      Lines.Text:=sComplValue;
-      LastLineHasEnding:=(sComplValue<>'') and (sComplValue[length(sComplValue)] in [#10,#13]);
-      Lines.Delete(0);
-      while (Lines.Count>0) and (Lines[0]<>CodeTemplateAttributesEndMagic) do
-      begin
-        CurAttributes.Add(Lines[0]);
-        Lines.Delete(0);
-      end;
-      if Lines.Count>0 then
-        Lines.Delete(0);
-      sComplValue:=Lines.Text;
-      if not LastLineHasEnding then begin
-        l:=length(sComplValue);
-        if (l>0) and (sComplValue[l] in [#10,#13]) then begin
-          dec(l);
-          if (l>0) and (sComplValue[l] in [#10,#13])
-          and (sComplValue[l]<>sComplValue[l+1]) then
-            dec(l);
-          sComplValue:=copy(sComplValue,1,l);
-        end;
-      end;
-      Lines.Free;
+    CurAttributes:=TStringListUTF8Fast.Create;
+    Assert(not StartsStr(CodeTemplateMacroMagic, sComplValue), 'SaveEntry: Found '+CodeTemplateMacroMagic);
+    if StartsStr(CodeTemplateAttributesStartMagic, sComplValue) then
+    begin
+      // Start of attributes
+      StartI := Length(CodeTemplateAttributesStartMagic) + 1;
+      while (StartI <= Length(sComplValue)) and (sComplValue[StartI] in [#10,#13]) do
+        Inc(StartI);
+      EndI := Pos(CodeTemplateAttributesEndMagic, sComplValue, StartI);
+      if EndI = 0 then
+        raise Exception.Create('TCustomSynAutoComplete.ParseCompletionList: "'
+                              + CodeTemplateAttributesEndMagic + '" not found.');
+      CurAttributes.Text := Copy(sComplValue, StartI, EndI-StartI);
+      // Start of value
+      StartI := EndI + Length(CodeTemplateAttributesEndMagic);
+      while (StartI <= Length(sComplValue)) and (sComplValue[StartI] in [#10,#13]) do
+        Inc(StartI);
+      sComplValue := Copy(sComplValue, StartI, Length(sComplValue));
     end;
     fCompletionValues.Add(sComplValue);
     sComplValue := '';
     fAttributes.Add(CurAttributes);
   end;
 
+var
+  BorlandDCI: boolean;
+  i, j, Len: integer;
+  S: string;
+  TemplateStarted: Boolean;
 begin
   fCompletions.Clear;
   fCompletionComments.Clear;
@@ -480,62 +452,60 @@ begin
   ClearAttributes;
 
   if fAutoCompleteList.Count > 0 then begin
-    s := fAutoCompleteList[0];
-    BorlandDCI := (s <> '') and (s[1] = '[');
-
-    sCompl := '';
-    sComment := '';
-    sComplValue := '';
+    S := fAutoCompleteList[0];
+    DebugLn(['TCustomSynAutoComplete.ParseCompletionList: ', S]);
+    BorlandDCI := (S <> '') and (S[1] = '[');
+    Assert((sComplKey='') and (sComment='') and (sComplValue=''), 'ParseCompletionList: strings not empty.');
     TemplateStarted:=false;
     for i := 0 to fAutoCompleteList.Count - 1 do begin
-      s := fAutoCompleteList[i];
-      Len := Length(s);
+      S := fAutoCompleteList[i];
+      Len := Length(S);
       if BorlandDCI then begin
         // the style of the Delphi32.dci file
-        if (Len > 0) and (s[1] = '[') then begin
+        if (Len > 0) and (S[1] = '[') then begin
           // save last entry
-          if sCompl <> '' then
+          if sComplKey <> '' then
             SaveEntry;
           // new completion entry
           j := 2;
-          while (j <= Len) and (s[j] > ' ') do
+          while (j <= Len) and (S[j] > ' ') do
             Inc(j);
-          sCompl := Copy(s, 2, j - 2);
+          sComplKey := Copy(S, 2, j - 2);
           // start of comment in DCI file
-          while (j <= Len) and (s[j] <= ' ') do
+          while (j <= Len) and (S[j] <= ' ') do
             Inc(j);
-          if (j <= Len) and (s[j] = '|') then
+          if (j <= Len) and (S[j] = '|') then
             Inc(j);
-          while (j <= Len) and (s[j] <= ' ') do
+          while (j <= Len) and (S[j] <= ' ') do
             Inc(j);
-          sComment := Copy(s, j, Len);
+          sComment := Copy(S, j, Len);
           if sComment[Length(sComment)] = ']' then
             SetLength(sComment, Length(sComment) - 1);
           TemplateStarted:=true;
         end else begin
           if not TemplateStarted then
-            sComplValue := sComplValue + #13#10;
+            sComplValue := sComplValue + LineEnding;
           TemplateStarted:=false;
-          sComplValue := sComplValue + s;
+          sComplValue := sComplValue + S;
         end;
       end else begin
         // the original style
-        if (Len > 0) and (s[1] <> '=') then begin
+        if (Len > 0) and (S[1] <> '=') then begin
           // save last entry
-          if sCompl <> '' then
+          if sComplKey <> '' then
             SaveEntry;
           // new completion entry
-          sCompl := s;
+          sComplKey := S;
           TemplateStarted:=true;
-        end else if (Len > 0) and (s[1] = '=') then begin
+        end else if (Len > 0) and (S[1] = '=') then begin
           if not TemplateStarted then
-            sComplValue := sComplValue + #13#10;
+            sComplValue := sComplValue + LineEnding;
           TemplateStarted:=false;
-          sComplValue := sComplValue + Copy(s, 2, Len);
+          sComplValue := sComplValue + Copy(S, 2, Len);
         end;
       end;
     end;
-    if sCompl <> '' then                                                        //mg 2000-11-07
+    if sComplKey <> '' then
       SaveEntry;
   end;
   fParsed:=true;
