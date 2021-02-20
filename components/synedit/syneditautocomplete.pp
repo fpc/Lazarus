@@ -453,9 +453,7 @@ begin
 
   if fAutoCompleteList.Count > 0 then begin
     S := fAutoCompleteList[0];
-    DebugLn(['TCustomSynAutoComplete.ParseCompletionList: ', S]);
     BorlandDCI := (S <> '') and (S[1] = '[');
-    Assert((sComplKey='') and (sComment='') and (sComplValue=''), 'ParseCompletionList: strings not empty.');
     TemplateStarted:=false;
     for i := 0 to fAutoCompleteList.Count - 1 do begin
       S := fAutoCompleteList[i];
