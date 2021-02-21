@@ -10,7 +10,7 @@ version=0.0
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) .
+unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../../ideintf/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../lazcontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) ../../buildintf/units/$(CPU_TARGET)-$(OS_TARGET) .
 options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
