@@ -1,8 +1,12 @@
-lazarus (2.0.10.0) stable; urgency=low
+lazarus (2.0.12.0) stable; urgency=low
 
   * Final Release.
 
- -- Mattias Gaertner <mattias@freepascal.org>  Fri, 3 Jul 2020 23:46:22 +0100
+lazarus (2.0.12.0) stable; urgency=low
+
+  * Final Release.
+
+ -- Mattias Gaertner <mattias@freepascal.org>  Sun, 21 Feb 2021 15:08:22 +0100
 
 lazarus (2.0.8.0) stable; urgency=low
 
