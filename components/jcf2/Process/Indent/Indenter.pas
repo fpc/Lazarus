@@ -364,17 +364,15 @@ begin
 
     liClassNestingCount := CountClassNesting(pt);
     liIndentCount := liIndentCount + (liClassNestingCount - 1);
-
-    if FormattingSettings.Indent.IndentNestedTypes then
+    liTypeNestingCount := CountTypeNesting(pt);
+    if (liTypeNestingCount > 1) then
     begin
-      liTypeNestingCount := CountTypeNesting(pt);
-      if (liTypeNestingCount > 1) then
-      begin
-        if pt.TokenType = ttType then
-          liIndentCount := liIndentCount + (liTypeNestingCount - 2)
-        else
-          liIndentCount := liIndentCount + (liTypeNestingCount - 1);
-      end;
+      if not FormattingSettings.Indent.IndentNestedTypes then
+        liTypeNestingCount:=1;
+      if pt.TokenType = ttType then
+        liIndentCount := liIndentCount + (liTypeNestingCount - 2)
+      else
+        liIndentCount := liIndentCount + (liTypeNestingCount - 1);
     end;
   end
 
