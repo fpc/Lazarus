@@ -639,7 +639,7 @@
             Delete a specific color:
           </p>
 <code>iPos := Items.IndexOf(rsSkyBlueColorCaption);
-if iPos <> -1 then
+if iPos &lt;&gt; -1 then
   Items.Delete(iPos);</code>
           <p>
             OnGetColors is signalled (when assigned) when the color list is loaded for the control, and <var>cbCustomColors</var> has been included in the <var>Style</var> for the control. This occurs when a new value is assigned to the Style property.
@@ -1218,7 +1218,7 @@ if iPos <> -1 then
             Delete a specific color:
           </p>
 <code>iPos := Items.IndexOf(rsSkyBlueColorCaption);
-if iPos <> -1 then
+if iPos &lt;&gt; -1 then
   Items.Delete(iPos);</code>
           <p>
             OnGetColors is signalled (when assigned) when the color list is loaded for the control, and <var>cbCustomColors</var> has been included in the <var>Style</var> for the control. This occurs when a new value is assigned to the Style property.

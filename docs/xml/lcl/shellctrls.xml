@@ -469,7 +469,7 @@
         <short>Tree node with the name for the file system entry</short>
       </element>
       <element name="TCustomShellTreeView.DrawBuiltInIcon.ARect">
-        <short>Rectangle where the icon is drawn</short/>
+        <short>Rectangle where the icon is drawn</short>
       </element>
 
       <element name="TCustomShellTreeView.GetBuiltinIconSize">
