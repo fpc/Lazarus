@@ -2301,13 +2301,16 @@ components/jcf2/Contributions/StyleEditor/JCFStyle.bdsproj svneol=native#text/pl
 components/jcf2/Contributions/StyleEditor/JCFStyle.cfg svneol=native#text/plain
 components/jcf2/Contributions/StyleEditor/JCFStyle.res -text
 components/jcf2/Contributions/StyleEditor/Readme.txt svneol=native#text/plain
+components/jcf2/IdePlugin/lazarus/Default_JCFSETTINGS.cfg -text svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/Makefile svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/Makefile.compiled svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/Makefile.fpc svneol=native#text/plain
+components/jcf2/IdePlugin/lazarus/README_DefaultConfiguration.txt -text svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/jcfidelazarus.lpk svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/jcfidelazarus.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/jcfidemain.pas svneol=native#text/pascal
 components/jcf2/IdePlugin/lazarus/jcfideregister.pas svneol=native#text/pascal
+components/jcf2/IdePlugin/lazarus/jcfsettings.rc -text svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/jcfsettings.res -text
 components/jcf2/IdePlugin/lazarus/jcfuiconsts.pas svneol=native#text/plain
 components/jcf2/IdePlugin/lazarus/languages/jcfuiconsts.cs.po svneol=native#text/plain
