@@ -847,11 +847,12 @@ var
 begin
   cmdstr := 'qRcmd,' + FHexEncodeStr(s);
   result := FSendCmdWaitForReply(cmdstr, reply);
-  if Result then
-   begin
+
+  // Check if reply is not hex encoded, else decode reply
+  if Result and not((reply = '') or (reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
      reply := FHexDecodeStr(reply);
-     DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
-   end;
+
+  DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
 end;
 
 function TRspConnection.Init: integer;
