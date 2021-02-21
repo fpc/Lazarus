@@ -424,7 +424,7 @@ var
       StartI := Length(CodeTemplateAttributesStartMagic) + 1;
       while (StartI <= Length(sComplValue)) and (sComplValue[StartI] in [#10,#13]) do
         Inc(StartI);
-      EndI := Pos(CodeTemplateAttributesEndMagic, sComplValue, StartI);
+      EndI := PosEx(CodeTemplateAttributesEndMagic, sComplValue, StartI);
       if EndI = 0 then
         raise Exception.Create('TCustomSynAutoComplete.ParseCompletionList: "'
                               + CodeTemplateAttributesEndMagic + '" not found.');
