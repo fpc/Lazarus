@@ -201,7 +201,7 @@ implementation
 {$R *.lfm}
 
 uses 
-  LHelpControl, MouseAndkeyInput;
+  LHelpControl;
 
 const
   DigitsInPID=5; // Number of digits in the formatted PID according to the Help Protocol
