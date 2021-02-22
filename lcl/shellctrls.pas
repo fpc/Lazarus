@@ -144,6 +144,7 @@ type
     property HotTrack;
     property Images;
     property Indent;
+    property MultiSelectStyle;
     //property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
