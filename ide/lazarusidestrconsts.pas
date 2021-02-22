@@ -2828,7 +2828,7 @@ resourcestring
   dlgPromptOnReplace = '&Prompt on replace';
   lisAskBeforeReplacingEachFoundText = 'Ask before replacing each found text';
   dlgSROrigin = 'Origin';
-  dlgFromCursor = '&From cursor';
+  dlgFromCursor = 'From c&ursor';
   dlgFromBeginning = 'From b&eginning';
   dlgSearchScope = 'Search scope';
   dlgProject = 'Project';
