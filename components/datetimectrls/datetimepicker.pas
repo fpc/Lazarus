@@ -530,6 +530,7 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property OnResize;
+    property OnShowHint;
     property OnUTF8KeyPress;
   end;
 
