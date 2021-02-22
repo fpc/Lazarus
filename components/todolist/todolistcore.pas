@@ -35,7 +35,18 @@ unit ToDoListCore;
 interface
 
 uses
-  Classes, SysUtils, ComCtrls, Laz_AVL_Tree, ToDoListStrConsts;
+  // FCL, RTL
+  Classes, SysUtils, StrUtils, Laz_AVL_Tree,
+  // LCL
+  LCLType, LclIntf, Controls, Dialogs, ComCtrls,
+  // LazUtils
+  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase,
+  // Codetools
+  CodeToolManager, FileProcs, CodeCache, BasicCodeTools,
+  // IDEIntf
+  PackageIntf, ProjectIntf,
+  // ToDoList
+  ToDoListStrConsts;
 
 type
   TToDoType = (tdToDo, tdDone, tdNote);
@@ -128,19 +139,8 @@ type
       );
   end;
 
-implementation
 
-uses
-  // FCL, RTL
-  StrUtils,
-  // LCL
-  LCLType, LclIntf, Controls, Dialogs, Forms, ActnList, ExtCtrls,
-  // LazUtils
-  LazFileUtils, LazStringUtils, LazFileCache, LazLoggerBase, LazTracer,
-  // Codetools
-  CodeToolManager, FileProcs, CodeCache, BasicCodeTools,
-  // IDEIntf
-  LazIDEIntf, IDEImagesIntf, PackageIntf, ProjectIntf;
+implementation
 
 const
   TODO_TOKENS : array [TTokenStyle, TToDoType] of string
@@ -370,7 +370,7 @@ begin
     Exit; // Not a Todo/Done item, leave
 
   // Remove the ending comment chars from input string
-  if (aEndComment <> '') and StartsStr(aEndComment, lParsingString) then
+  if (aEndComment <> '') and EndsStr(aEndComment, lParsingString) then
     SetLength(lParsingString, Length(lParsingString)-Length(aEndComment));
 
   // Remove the Token

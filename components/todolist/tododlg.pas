@@ -36,8 +36,12 @@ uses
   // LCL
   LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
   Buttons, ButtonPanel, Menus, Spin, XMLPropStorage,
+  // LazUtils
+  LazFileUtils,
+  // BuildIntf
+  PackageIntf,
   // IdeIntf
-  IDECommands, MenuIntf, ToolBarIntf, PackageIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
+  IDECommands, MenuIntf, ToolBarIntf, SrcEditorIntf, IDEWindowIntf, LazIDEIntf,
   // TodoList
   ToDoList, ToDoListStrConsts, ToDoListCore;
 
@@ -79,9 +83,6 @@ procedure CreateIDEToDoWindow(Sender: TObject; aFormName: string;
                           var AForm: TCustomForm; DoDisableAutoSizing: boolean);
 
 implementation
-
-uses
-  LazFileUtils;
 
 {$R *.lfm}
 
