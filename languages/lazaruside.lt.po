@@ -2158,7 +2158,9 @@ msgid "From b&eginning"
 msgstr "Iš p&radžių"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+#, fuzzy
+#| msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "Nuo žy&meklio"
 
 #: lazarusidestrconsts.dlgglobal

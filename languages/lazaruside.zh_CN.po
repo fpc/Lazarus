@@ -2161,7 +2161,9 @@ msgid "From b&eginning"
 msgstr "从连接"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+#, fuzzy
+#| msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "从光标(&F)"
 
 #: lazarusidestrconsts.dlgglobal

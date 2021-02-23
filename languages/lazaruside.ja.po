@@ -2156,7 +2156,9 @@ msgid "From b&eginning"
 msgstr "フォームの冒頭(&E)"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+#, fuzzy
+#| msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "カーソルから(&F)"
 
 #: lazarusidestrconsts.dlgglobal

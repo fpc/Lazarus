@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-10-24 02:08+0300\n"
+"PO-Revision-Date: 2021-02-24 01:12+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -2106,7 +2106,7 @@ msgid "From b&eginning"
 msgstr "С на&чала"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "От &курсора"
 
 #: lazarusidestrconsts.dlgglobal

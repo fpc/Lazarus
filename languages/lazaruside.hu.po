@@ -2105,7 +2105,9 @@ msgid "From b&eginning"
 msgstr "&Elejétől"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+#, fuzzy
+#| msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "Beszúrási jeltől"
 
 #: lazarusidestrconsts.dlgglobal

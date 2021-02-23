@@ -2077,7 +2077,9 @@ msgid "From b&eginning"
 msgstr "Başlangıçta&n itibaren"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+#, fuzzy
+#| msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "&İmleçten"
 
 #: lazarusidestrconsts.dlgglobal

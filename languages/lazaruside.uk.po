@@ -2108,7 +2108,9 @@ msgid "From b&eginning"
 msgstr "З по&чатку"
 
 #: lazarusidestrconsts.dlgfromcursor
-msgid "&From cursor"
+#, fuzzy
+#| msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "&Від курсора"
 
 #: lazarusidestrconsts.dlgglobal

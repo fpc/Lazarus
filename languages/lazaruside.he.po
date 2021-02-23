@@ -2223,7 +2223,7 @@ msgstr ""
 #: lazarusidestrconsts.dlgfromcursor
 #, fuzzy
 #| msgid "&From Cursor"
-msgid "&From cursor"
+msgid "From c&ursor"
 msgstr "סמן טפסים"
 
 #: lazarusidestrconsts.dlgglobal
