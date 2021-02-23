@@ -522,8 +522,20 @@ states directory (also variants with appendix _69 and _75)
 	state_unknown
 	state_warning
 
+windows directory
+  win_formeditor.ico
+  win_main.ico 
+  win_message.ico
+  win_objectinspector.ico
+  win_sourceditor.ico
+
 images root folder
-	folder.png
+  folder.png
+  includefile.ico
+  LazarusForm.ico
+  lazaruspackage.ico
+  LazarusSource.ico
+  lprfile.ico
 	template.png
 
 -----------------------------------------
