@@ -103,11 +103,13 @@ begin
   TestMask('', '?', False);
   TestMask('', 'a', False);
   TestMask('', '[a]', False);
+  TestMask('', 'ä', False);
+  TestMask('', '[ä]', False);
 end;
 
 procedure TTestMask.TestAnyText;
 begin
-  TestMask('abc', '*', True);
+  TestMask('abc', '*', True);              // ASCII
   TestMask('abc', 'a*', True);
   TestMask('abc', '*c', True);
   TestMask('abc', '*a*', True);
@@ -117,54 +119,107 @@ begin
   TestMask('abc', '*bc', True);
   TestMask('abc', 'ab*', True);
 
-  TestMask('abcde', '*', True);
+  TestMask('äöæ', '*', True);              // Unicode
+  TestMask('äöæ', 'ä*', True);
+  TestMask('äöæ', '*æ', True);
+  TestMask('äöæ', '*ä*', True);
+  TestMask('äöæ', '*ö*', True);
+  TestMask('äöæ', '*æ*', True);
+  TestMask('äöæ', 'ä*æ', True);
+  TestMask('äöæ', '*öæ', True);
+  TestMask('äöæ', 'äö*', True);
+
+  TestMask('abcde', '*', True);            // ASCII
   TestMask('abcde', 'a*e', True);
   TestMask('abcde', 'a*b*e', True);
   TestMask('abcde', 'a*d*e', True);
   TestMask('abcde', 'a*c*e', True);
   TestMask('abcde', 'a*b*e', True);
 
-  TestMask('abc', '*b', False);
+  TestMask('äöæ獵豹☺', '*', True);         // Unicode
+  TestMask('äöæ獵豹☺', 'ä*☺', True);
+  TestMask('äöæ獵豹☺', 'ä*ö*☺', True);
+  TestMask('äöæ獵豹☺', 'ä*獵豹*☺', True);
+  TestMask('äöæ獵豹☺', 'ä*æ*☺', True);
+  TestMask('äöæ獵豹☺', 'ä*ö*☺', True);
+
+  TestMask('abc', '*b', False);            // ASCII
   TestMask('abc', 'b*', False);
   TestMask('abc', '*a', False);
   TestMask('abc', 'c*', False);
   TestMask('abc', 'ab*d', False);
 
-  TestMask('abcde', 'a*d', False);
+  TestMask('äöæ', '*ö', False);            // Unicode
+  TestMask('äöæ', 'ö*', False);
+  TestMask('äöæ', '*ä', False);
+  TestMask('äöæ', 'æ*', False);
+  TestMask('äöæ', 'äö*ũ', False);
+
+  TestMask('abcde', 'a*d', False);         // ASCII
   TestMask('abcde', 'a*c*d', False);
   TestMask('abcde', 'b*d*e', False);
+
+  TestMask('äöæ獵豹☺', 'ä*獵豹', False);   // Unicode
+  TestMask('äöæ獵豹☺', 'ä*æ*獵豹', False);
+  TestMask('äöæ獵豹☺', 'ö*獵豹*☺', False);
 end;
 
 procedure TTestMask.TestAnyChar;
 begin
-  TestMask('abc', '?bc', True);
+  TestMask('abc', '?bc', True);            // ASCII
   TestMask('abc', '?b?', True);
   TestMask('abc', '???', True);
 
-  TestMask('abc', '?*?', True);
+  TestMask('äöæ', '?öæ', True);            // Unicode
+  TestMask('äöæ', '?ö?', True);
+  TestMask('äöæ', '???', True);
+
+  TestMask('abc', '?*?', True);            // ASCII
   TestMask('abc', '?*??', True);
   TestMask('abc', '?*?*?', True);
 
-  TestMask('abc', 'a?', False);
+  TestMask('äöæ', '?*?', True);            // Unicode
+  TestMask('äöæ', '?*??', True);
+  TestMask('äöæ', '?*?*?', True);
+
+  TestMask('abc', 'a?', False);            // ASCII
   TestMask('abc', 'abc?', False);
   TestMask('abc', '?abc', False);
   TestMask('abc', '??*??', False);
   TestMask('abc', '?*?*??', False);
+
+  TestMask('äöæ', 'ä?', False);            // Unicode
+  TestMask('äöæ', 'äöæ?', False);
+  TestMask('äöæ', '?äöæ', False);
+  TestMask('äöæ', '??*??', False);
+  TestMask('äöæ', '?*?*??', False);
 end;
 
 procedure TTestMask.TestCharSet;
 begin
-  TestMask('c', '[c]', True);
+  TestMask('c', '[c]', True);              // ASCII
   TestMask('c', '[!b]', True);
   TestMask('c', '[a-c]', True);
   TestMask('c', '[a-d]', True);
   TestMask('c', '[!a-b]', True);
   TestMask('c', '[abc]', True);
 
-  TestMask('c', '[a]', False);
+  TestMask('ö', '[ö]', True);              // Unicode
+  TestMask('ö', '[!ä]', True);
+  //TestMask('ö', '[a-c]', True);
+  //TestMask('ö', '[a-d]', True);
+  //TestMask('ö', '[!a-b]', True);
+  TestMask('ö', '[äbc]', True);
+
+  TestMask('c', '[a]', False);             // ASCII
   TestMask('c', '[!c]', False);
   TestMask('c', '[a-b]', False);
   TestMask('c', '[abd]', False);
+
+  TestMask('ö', '[ä]', False);             // Unicode
+  TestMask('ö', '[!ö]', False);
+  //TestMask('ö', '[a-b]', False);
+  TestMask('ö', '[äũæ]', False);
 end;
 
 begin
