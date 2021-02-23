@@ -1,7 +1,7 @@
 {
  *****************************************************************************
  *                                                                           *
- *  This file is part of the Lazarus Component Library (LCL)                 *
+ *  This file is part of the LazUtils                                        *
  *                                                                           *
  *  See the file COPYING.LCL, included in this distribution,                 *
  *  for details about the copyright.                                         *
@@ -12,17 +12,18 @@
  *                                                                           *
  *****************************************************************************
  
-  LCL Test 6_1
-
+  LazUtils Test
   Mask creating and matching test.
 }
-program test6_1masks;
+program TestMasks;
 
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Forms, GuiTestRunner, Masks,
-  Classes, SysUtils, fpcunit, testutils, testregistry;
+  Classes, SysUtils, fpcunit, testutils, testregistry,
+  Interfaces, Forms,
+  GuiTestRunner,
+  Masks;
 
 type
 
