@@ -8,7 +8,7 @@ Homepage: https://www.lazarus-ide.org/
 Architecture: ARCH
 Replaces: lazarus, lazarus-doc, lazarus-ide, lazarus-ide-gtk2, lazarus-ide-qt4, lazarus-src
 Conflicts: lazarus, lazarus-doc, lazarus-ide, lazarus-ide-gtk2, lazarus-ide-qt4, lazarus-src
-Depends: libgtk2.0-dev (>=2.6.0), libxtst-dev, fpc-laz (=FPCVERSION), fpc-src (=FPCVERSION)
+Depends: libgtk2.0-dev (>=2.6.0), fpc-laz (=FPCVERSION), fpc-src (=FPCVERSION)
 Installed-Size: LAZSIZE
 Description: RAD tool for freepascal
  Lazarus is a free and opensource IDE and RAD tool for Free Pascal using the
