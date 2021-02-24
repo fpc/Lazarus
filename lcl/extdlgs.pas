@@ -24,9 +24,9 @@ uses
   Types, Classes, SysUtils,
   // LCL
   LResources, LCLType, LCLStrConsts, LCLPlatformDef, InterfaceBase, Controls,
-  Dialogs, Graphics, ExtCtrls, StdCtrls, Forms, Calendar, Buttons, Masks, CalcForm,
+  Dialogs, Graphics, ExtCtrls, StdCtrls, Forms, Calendar, Buttons, CalcForm,
   // LazUtils
-  GraphType, FileUtil, LazFileUtils;
+  GraphType, FileUtil, LazFileUtils, Masks;
 
 type
 

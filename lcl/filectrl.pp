@@ -29,8 +29,9 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, StdCtrls, FileUtil, LazFileUtils, Masks, Graphics,
-  ShellCtrls;
+  Classes, SysUtils,
+  StdCtrls, Graphics, ShellCtrls,
+  FileUtil, LazFileUtils, Masks;
 
 Type
 
