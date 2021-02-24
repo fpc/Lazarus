@@ -475,7 +475,7 @@ type
     property Anchors;
     property BiDiMode;
     property BorderSpacing;
-    property Color default clWindow;
+    property Color default clForm;
     property Constraints;
     property DoubleBuffered;
     property DragCursor;
@@ -727,7 +727,7 @@ begin
   Height := DEFAULT_CHART_HEIGHT;
 
   FSeries := TChartSeriesList.Create;
-  Color := clWindow;
+  Color := clForm;
   FBackColor := clWindow;
   FIsZoomed := false;
   FLegend := TChartLegend.Create(Self);
