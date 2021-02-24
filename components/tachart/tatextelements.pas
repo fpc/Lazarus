@@ -593,7 +593,7 @@ begin
   InitHelper(FBrush, TBrush);
   FBrush.Color := FOwner.Color;
   InitHelper(FFont, TFont);
-  FFont.Color := clBlue;
+  FFont.Color := clDefault;
   InitHelper(FFrame, TChartTitleFramePen);
   FMargin := DEF_MARGIN;
   FText := TStringList.Create;

@@ -192,7 +192,7 @@ type
     property Grid: TChartAxisGridPen read FGrid write SetGrid;
     property Intervals: TChartAxisIntervalParams
       read GetIntervals write SetIntervals;
-    property TickColor: TColor read FTickColor write SetTickColor default clBlack;
+    property TickColor: TColor read FTickColor write SetTickColor default clDefault;
     property TickInnerLength: Integer
       read FTickInnerLength write SetTickInnerLength default 0;
     property TickLength: Integer read FTickLength write SetTickLength;
@@ -243,6 +243,7 @@ type
       AFixedCoord: Integer; AMark: Double; const AText: String);
     procedure EndDrawing; virtual; abstract;
     procedure GetClipRange(out AMin, AMax: Integer); virtual; abstract;
+    function GetDefaultPenColor: TColor;
     function GraphToImage(AGraph: Double): Integer; virtual; abstract;
   end;
 
@@ -349,15 +350,25 @@ begin
 
   if FAxis.Grid.Visible then begin
     FDrawer.Pen := FAxis.Grid;
+    if (FAxis.Grid.Color = clDefault) then
+      FDrawer.SetPenColor(GetDefaultPenColor);
     FDrawer.SetBrushParams(bsClear, clTAColor);
     GridLine(coord);
     FPrevCoord := coord;
   end;
 
   if FAxis.Marks.Visible then begin
-    FDrawer.PrepareSimplePen(FAxis.TickColor);
+    if (FAxis.TickColor = clDefault) then
+      FDrawer.PrepareSimplePen(GetDefaultPenColor)
+    else
+      FDrawer.PrepareSimplePen(FAxis.TickColor);
     DrawLabelAndTick(coord, AFixedCoord, AText);
   end;
+end;
+
+function TAxisDrawHelper.GetDefaultPenColor: TColor;
+begin
+  Result := TCustomChart(FAxis.Collection.Owner).GetDefaultColor(dctFont);
 end;
 
 procedure TAxisDrawHelper.InternalAxisLine(
@@ -368,6 +379,8 @@ var
 begin
   if not APen.Visible and not FAxis.Arrow.Visible then exit;
   FDrawer.Pen := APen;
+  if (APen.Color = clDefault) then
+    FDrawer.SetPenColor(GetDefaultPenColor);
   if APen.Visible then
     LineZ(AStart, AEnd);
   if FAxis.Arrow.Visible then begin
@@ -713,7 +726,7 @@ begin
   FGrid := TChartAxisGridPen.Create;
   FGrid.OnChange := @StyleChanged;
   // FMarks must be created in descendants.
-  FTickColor := clBlack;
+  FTickColor := clDefault;
   FVisible := true;
 end;
 

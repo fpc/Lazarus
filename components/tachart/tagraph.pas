@@ -412,7 +412,7 @@ type
       read FAntialiasingMode write SetAntialiasingMode default amDontCare;
     property AxisList: TChartAxisList read FAxisList write SetAxisList;
     property AxisVisible: Boolean read FAxisVisible write SetAxisVisible default true;
-    property BackColor: TColor read FBackColor write SetBackColor default clBtnFace;
+    property BackColor: TColor read FBackColor write SetBackColor default clWindow;
     property BottomAxis: TChartAxis index calBottom read GetAxisByAlign write SetAxisByAlign stored false;
     property Depth: TChartDistance read FDepth write SetDepth default 0;
     property ExpandPercentage: Integer
@@ -475,7 +475,7 @@ type
     property Anchors;
     property BiDiMode;
     property BorderSpacing;
-    property Color default clBtnFace;
+    property Color default clWindow;
     property Constraints;
     property DoubleBuffered;
     property DragCursor;
@@ -727,8 +727,8 @@ begin
   Height := DEFAULT_CHART_HEIGHT;
 
   FSeries := TChartSeriesList.Create;
-  Color := clBtnFace;
-  FBackColor := clBtnFace;
+  Color := clWindow;
+  FBackColor := clWindow;
   FIsZoomed := false;
   FLegend := TChartLegend.Create(Self);
 
@@ -1030,6 +1030,7 @@ var
   defaultDrawing: Boolean = true;
   ic: IChartTCanvasDrawer;
   scaled_depth: Integer;
+  clr: TColor;
 begin
   if Assigned(OnBeforeCustomDrawBackWall) then
     OnBeforeCustomDrawBackWall(self, ADrawer, FClipRect, defaultDrawing)
@@ -1040,10 +1041,18 @@ begin
   if defaultDrawing then
     with ADrawer do begin
       if FFrame.Visible then
-        Pen := FFrame
+      begin
+        Pen := FFrame;
+        if FFrame.Color = clDefault then
+          SetPenColor(GetDefaultColor(dctFont));
+      end
       else
         SetPenParams(psClear, clTAColor);
-      SetBrushParams(bsSolid, BackColor);
+      if BackColor = clDefault then
+        clr := GetDefaultColor(dctBrush)
+      else
+        clr := BackColor;
+      SetBrushParams(bsSolid, clr);
       with FClipRect do
         Rectangle(Left, Top, Right + 1, Bottom + 1);
     end;

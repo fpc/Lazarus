@@ -58,6 +58,7 @@ type
     procedure Assign(ASource: TPersistent); override;
     function EffVisible: Boolean; inline;
   published
+    property Color default clDefault;
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
