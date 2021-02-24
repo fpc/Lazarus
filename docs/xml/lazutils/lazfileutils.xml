@@ -19,7 +19,6 @@
         </remark>
       </descr>
 
-    <!-- function Visibility: default -->
       <element name="CompareFilenames">
         <short>
           Gets the relative sort order for the specified file names
@@ -45,22 +44,18 @@
         </seealso>
       </element>
 
-      <!-- function result Visibility: default -->
       <element name="CompareFilenames.Result">
         <short>Relative sort order for the specified file names</short>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="CompareFilenames.Filename1">
         <short>First file name for the comparison</short>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="CompareFilenames.Filename2">
         <short>Second file name for the comparison</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CompareFilenamesIgnoreCase">
         <short>
           Gets the relative sort order for case-insensitive file names
@@ -86,23 +81,16 @@
           <link id="CompareFilenames"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CompareFilenamesIgnoreCase.Result">
         <short>Relative sort order for the file names</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFilenamesIgnoreCase.Filename1">
         <short>First file name for the comparison</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CompareFilenamesIgnoreCase.Filename2">
         <short>Second file name for the comparison</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CompareFileExt">
         <short>
           Performs a sort order comparison for the specified file name and extension
@@ -221,11 +209,25 @@
             Ext can contain the '<b>.</b>' (<b>Period</b>) character used in the extension, but it is not required.
           </p>
           <p>
-            <var>CaseSensitive</var> indicates if case-sensitivity is used when comparing parameter values. When set to <b>True</b>, the comparision is limited to values in the ASCII character set. <var>StrLComp</var> or <var>StrLIComp</var> is called to compare the values in Filename to the values in Ext.
+            <var>CaseSensitive</var> indicates if case-sensitivity is used when comparing parameter values. When set to <b>True</b>, the comparison is limited to values in the ASCII character set. <var>StrLComp</var> or <var>StrLIComp</var> is called to compare the values in Filename to the values in Ext.
           </p>
           <p>
-            The return value is <b>True</b> when Filename uses the file extension in Ext. The return value is <b>False</b> when Filename is an empty string (<b>''</b>), does not include a '<b>.</b>' character that marks the start of the file extension, or does not use the file extension in Ext.
+            The return value is <b>True</b> when Filename uses the file extension in Ext. The return value is <b>False</b> for the following conditions:
           </p>
+          <ul>
+            <li>
+              Filename is an empty string (<b>''</b>).
+            </li>
+            <li>
+              Filename does not have a '<b>.</b>' character that marks the start of the file extension.
+            </li>
+            <li>
+              The extension in Filename has a different length than Ext.
+            </li>
+            <li>
+              Filename has a different file extension than Ext.
+            </li>
+          </ul>
         </descr>
         <seealso>
           <link id="FilenameExtIn"/>
@@ -245,7 +247,7 @@
       </element>
 
       <element name="FilenameExtIn">
-        <short>Determies if the file name uses one of the specified file extensions</short>
+        <short>Determines if the file name uses one of the specified file extensions</short>
         <descr>
           <p>
             <var>FilenameExtIn</var> is a <var>Boolean</var> function used to determine if the file name in the <var>Filename</var> parameter uses one of the file extension in <var>Exts</var>.
@@ -362,7 +364,7 @@
             On Windows, the FilenameIsWinAbsolute function is called in the implementation. FilenameIsWinAbsolute takes Device identifiers into consideration when examining the value in TheFilename. For example:
           </p>
           <code>
-            D:\db\employee.fdb
+D:\db\employee.fdb
           </code>
           <p>
             The return value is False if TheFilename (without the optional device identifier) is an empty string (''), or does not start with the directory separator for the environment.
@@ -370,18 +372,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FilenameIsAbsolute.Result">
         <short>True when the file name is not a relative path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FilenameIsAbsolute.TheFilename">
         <short>Path and file name to use in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FilenameIsWinAbsolute">
         <short>
           Determines if the specified value is an absolute file path (not a relative one)
@@ -394,7 +391,7 @@
             On Windows, the FilenameIsWinAbsolute function is called in the implementation of FilenameIsAbsolute. FilenameIsWinAbsolute takes Device identifiers into consideration when examine the value in TheFilename. For example:
           </p>
           <code>
-            D:\db\employee.fdb
+D:\db\employee.fdb
           </code>
           <p>
             The return value is False if TheFilename (without the optional device identifier)is an empty string (''), or does not start with the directory separator for the environment.
@@ -402,18 +399,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FilenameIsWinAbsolute.Result">
         <short>True when the file name is not a relative path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FilenameIsWinAbsolute.TheFilename">
         <short>Path and file name to use in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FilenameIsUnixAbsolute">
         <short>
           Determines if the specified value is an absolute file path (not a relative one)
@@ -428,13 +420,9 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FilenameIsUnixAbsolute.Result">
         <short>True when the file name is not a relative path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FilenameIsUnixAbsolute.TheFilename">
         <short>Path and file name to use in the function</short>
       </element>
@@ -445,7 +433,7 @@
         </short>
         <descr>
           <p>
-            <var>ForceDirectory</var>  is a Boolean function which creates the specified directory if it does not already exist. ForceDirectory ensures that a trailing path delimiter exists in <var>DirectoryName</var> prior to checking the file system. Duplicate adjacent path delimiters (like '//foo//bar/foobar/' or '\\foo\\bar\foobar\') are removed prior to checking the directory path.
+            <var>ForceDirectory</var> is a Boolean function which creates the specified directory if it does not already exist. ForceDirectory ensures that a trailing path delimiter exists in <var>DirectoryName</var> prior to checking the file system. Duplicate adjacent path delimiters (like '//foo//bar/foobar/' or '\\foo\\bar\foobar\') are removed prior to checking the directory path.
           </p>
           <p>
             Each directory in the specified path is validated by calling <var>DirPathExists</var>. ForceDirectory calls <var>CreateDirUTF8</var> if a directory does not exist, and may exit with a return value of <b>False</b> if directory creation is not successful.
@@ -467,7 +455,6 @@
         <short>Path information for the operation</short>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="CheckIfFileIsExecutable">
         <short>
           Examines the specified file to see if it is executable
@@ -523,13 +510,10 @@
           </dl>
         </errors>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CheckIfFileIsExecutable.AFilename">
         <short>File name to examine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileIsExecutable">
         <short>
           Determines if the specified file name is executable
@@ -541,13 +525,9 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileIsExecutable.Result">
         <short>True if the file is executable on the platform or OS</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsExecutable.AFilename">
         <short>File name to examine</short>
       </element>
@@ -601,7 +581,6 @@
         <short>File name examined in the routine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileIsReadable">
         <short>
           Indicates if the specified file name is readable
@@ -616,48 +595,38 @@
           <link id="#rtl.baseunix.FpAccess">FpAccess</link>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileIsReadable.Result">
         <short>True when the specified file name is readable</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsReadable.AFilename">
         <short>File name to examine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileIsWritable">
         <short>
           Indicates if the specified file name is writable
         </short>
         <descr>
           <p>
-            FileIsWritable is a Boolean function which indicates if the specified file name is writable. For UNIX-like environments, FpAccess is used to get the return value. For Windows, FileGetAttrUTF8 is used to determine if faReadOnly is omitted from the attributes for the file.
+            <var>FileIsWritable</var> is a <var>Boolean</var> function which indicates if the specified file name is writable. For UNIX-like environments, FpAccess is used to get the return value. For Windows, FileGetAttrUTF8 is used to determine if faReadOnly is omitted from the attributes for the file.
           </p>
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileIsWritable.Result">
         <short>True when the specified file name is writable</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsWritable.AFilename">
         <short>File name to examine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileIsText">
         <short>
           Determines if the specified file contains plain text content
       </short>
         <descr>
           <p>
-            FileIsText is a Boolean function used to determine if the specified file contains plain text content. The overloaded variant that includes the FileReadable argument is used to examine the content in the file.
+            <var>FileIsText</var> is a <var>Boolean</var> function used to determine if the specified file contains plain text content. The overloaded variant that includes the FileReadable argument is used to examine the content in the file.
           </p>
           <p>
             FileIsText calls FileOpenUtf8 for the specified file name. The return value is False is the file handle contains feInvalidHandle.
@@ -676,28 +645,21 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileIsText.Result">
         <short>True when the file contains plain text content</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsText.AFilename">
         <short>File name to examine in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsText.FileReadable">
         <short>Indicates if the specified file was successfully opened and read</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FilenameIsTrimmed">
         <short/>
         <descr>
           <p>
-            FilenameIsTrimmed is an overloaded Boolean function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
+            <var>FilenameIsTrimmed</var> is an overloaded <var>Boolean</var> function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
           </p>
           <p>
             Use TrimFilename to remove leading or trailing whitespace, duplicate directory separators, or relative path symbols.
@@ -705,34 +667,25 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FilenameIsTrimmed.Result">
         <short>False when the file name needs to trimmed</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FilenameIsTrimmed.TheFilename">
         <short>File name to examine in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FilenameIsTrimmed.StartPos">
         <short>PChar with the file name value</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FilenameIsTrimmed.NameLen">
         <short>Length of the file name</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="TrimFilename">
         <short>
           Removes leading and trailing spaces, and resolves special characters
         </short>
         <descr>
-          <var>TrimFilename</var> is a String function used to remove leading and trailing spaces (Decimal 32) in the specified path and file name. In addition, ResolveDots is called to expand directory characters (like '.' and '..') and to remove duplicate path delimiters (like '//').
+          <var>TrimFilename</var> is a <var>String</var> function used to remove leading and trailing spaces (Decimal 32) in the specified path and file name. In addition, ResolveDots is called to expand directory characters (like '.' and '..') and to remove duplicate path delimiters (like '//').
         </descr>
         <errors/>
         <seealso>
@@ -744,13 +697,9 @@
           <link id="TrimAndExpandDirectory"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="TrimFilename.Result">
         <short>New value  for the path and file name</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TrimFilename.AFilename">
         <short>Path and file name for the operation</short>
       </element>
@@ -772,30 +721,24 @@
         <short>File name examined in the routine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CleanAndExpandFilename">
         <short>
           Removes whitespace and resolves special characters in the specified file name
         </short>
         <descr>
           <p>
-            CleanAndExpandFilename is a String function used to remove whitespace and to resolve special characters in the specified file name. CleanAndExpandFilename calls TrimFilename and ExpandFileNameUTF8 to get the return value for the function. The return value is the current directory when Filename contains an empty string ('').
+            <var>CleanAndExpandFilename</var> is a <var>String</var> function used to remove whitespace and to resolve special characters in the specified file name. CleanAndExpandFilename calls TrimFilename and ExpandFileNameUTF8 to get the return value for the function. The return value is the current directory when Filename contains an empty string ('').
           </p>
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CleanAndExpandFilename.Result">
         <short>File name with whitespace removed and special characters resolved</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CleanAndExpandFilename.Filename">
         <short>File name to examine in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CleanAndExpandDirectory">
         <short>
           Removes whitespace and resolves special characters in the specified path
@@ -810,20 +753,15 @@
           <link id="AppendPathDelim"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CleanAndExpandDirectory.Result">
         <short>
           Path information after removing whitespace and resolving special characters
         </short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CleanAndExpandDirectory.Filename">
         <short>Path information for the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="TrimAndExpandFilename">
         <short>
           Cleans and resolves a file path to the specified base directory name
@@ -838,23 +776,16 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="TrimAndExpandFilename.Result">
         <short>Cleaned and resolved file path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TrimAndExpandFilename.Filename">
         <short>File name for the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TrimAndExpandFilename.BaseDir">
         <short>Base directory name used for a relative file path</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="TrimAndExpandDirectory">
         <short>
           Cleans and resolves a relative path to a base directory
@@ -872,23 +803,16 @@
           <link id="TrimFilename"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="TrimAndExpandDirectory.Result">
         <short>Path information cleaned and resolved to the specified base directory</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TrimAndExpandDirectory.Filename">
         <short>Path information for the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="TrimAndExpandDirectory.BaseDir">
         <short>Base directory used to resolve a relative path</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CreateRelativePath">
         <short>
           Creates a relative path from BaseDirectory to Filename
@@ -906,30 +830,21 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CreateRelativePath.Result">
         <short>Relative path from the base directory for the file name</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CreateRelativePath.Filename">
         <short>File name for the operation</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CreateRelativePath.BaseDirectory">
         <short>Base directory for the relative path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CreateRelativePath.UsePointDirectory">
         <short>
           True if '.' (current directory symbol) is prepended to the relative path
         </short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileIsInPath">
         <short>
           Returns True if Filename exists in the specified Path
@@ -953,18 +868,12 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileIsInPath.Result">
         <short>True when the file exists in the specified path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsInPath.Filename">
         <short>File name to locate</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsInPath.Path">
         <short>Path used for the operation</short>
       </element>
@@ -1012,7 +921,7 @@
         <seealso/>
       </element>
       <element name="ShortDisplayFilename.Result">
-        <short>Shortened version of the specifed file name</short>
+        <short>Shortened version of the specified file name</short>
       </element>
       <element name="ShortDisplayFilename.aFileName">
         <short>File name examined in the routine</short>
@@ -1091,7 +1000,6 @@
         <short>File name examined in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="AppendPathDelim">
         <short>
           Adds a trailing path delimiter when needed
@@ -1103,18 +1011,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="AppendPathDelim.Result">
         <short>Path value with a trailing path delimiter</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="AppendPathDelim.Path">
         <short>Path value to examine</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ChompPathDelim">
         <short>
           Removes a trailing path delimiter from the specified value
@@ -1126,13 +1029,9 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="ChompPathDelim.Result">
         <short>Path information after removing the trailing path delimiter</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ChompPathDelim.Path">
         <short>Path information for the function</short>
       </element>
@@ -1392,7 +1291,6 @@
         <short>Length in characters for the search paths list</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileExistsUTF8">
         <short>
           Indicates if the specified file name exists
@@ -1405,17 +1303,14 @@
         <seealso/>
       </element>
 
-      <!-- function result Visibility: default -->
       <element name="FileExistsUTF8.Result">
         <short>True when the specified file name exists</short>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="FileExistsUTF8.Filename">
         <short>UTF-8-encoded file name to locate in the local file system</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileAgeUTF8">
         <short>
           Returns the last modification time for the file in FileDate format
@@ -1433,18 +1328,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileAgeUTF8.Result">
         <short>Last modification time for the file in FileDate format</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileAgeUTF8.FileName">
         <short>File name examined in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="DirectoryExistsUTF8">
         <short>
           Determine if the specified path exists on the local file system
@@ -1456,18 +1346,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="DirectoryExistsUTF8.Result">
         <short>True when the directory exists in the file system</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="DirectoryExistsUTF8.Directory">
         <short>Directory name to locate in the file system</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ExpandFileNameUTF8">
         <short>
           Expands the values in FileName and BaseDir to an absolute file name
@@ -1486,23 +1371,16 @@
           <link id="ResolveDots"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="ExpandFileNameUTF8.Result">
         <short>The file name with an absolute path</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ExpandFileNameUTF8.FileName">
         <short>File name examined in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ExpandFileNameUTF8.BaseDir">
         <short>Base directory used to resolve a relative path</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FindFirstUTF8">
         <short>
           Starts searching for files matching the specified path value
@@ -1523,28 +1401,19 @@
           <link id="#rtl.sysutils.FindFirst">FindFirst</link>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FindFirstUTF8.Result">
         <short>Last error number encountered in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FindFirstUTF8.Path">
         <short>Path and/or file name to locate</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FindFirstUTF8.Attr">
         <short>File attributes to include in the search</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FindFirstUTF8.Rslt">
         <short>Search record for the first matching file</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FindNextUTF8">
         <short>
           Locates another file matching the search criteria
@@ -1562,18 +1431,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FindNextUTF8.Result">
         <short>Last error number</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FindNextUTF8.Rslt">
         <short>Search criteria for the function</short>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="FindCloseUTF8">
         <short>
           Frees resources allocated to the specified search record
@@ -1586,12 +1450,10 @@
         <seealso/>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="FindCloseUTF8.F">
         <short>Search record to free in the procedure</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileSetDateUTF8">
         <short>
           Sets the last modification time for the file
@@ -1609,23 +1471,16 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileSetDateUTF8.Result">
         <short>Last error number in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileSetDateUTF8.FileName">
         <short>File name to update in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileSetDateUTF8.Age">
         <short>New value for the last modification time</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileGetAttrUTF8">
           <short>
             Gets the value of file attributes for the specified file name
@@ -1666,18 +1521,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileGetAttrUTF8.Result">
         <short>File attribute value for the specified file name</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileGetAttrUTF8.FileName">
         <short>File name for the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileSetAttrUTF8">
         <short>
           Sets the file attribute value for the specified file name
@@ -1721,23 +1571,16 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileSetAttrUTF8.Result">
         <short>Last error number from the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileSetAttrUTF8.Filename">
         <short>File name to update in the function</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileSetAttrUTF8.Attr">
         <short>File attribute value for the specified file name</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="DeleteFileUTF8">
         <short>
           Deletes the specified file name
@@ -1755,18 +1598,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="DeleteFileUTF8.Result">
         <short>True if the specified file name is deleted</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="DeleteFileUTF8.FileName">
         <short>File name to delete in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="RenameFileUTF8">
         <short>
           Renames a file to the specified value
@@ -1785,23 +1623,16 @@
         <errors/>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="RenameFileUTF8.Result">
         <short>True if the file is successfully renamed to the new value</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="RenameFileUTF8.OldName">
         <short>Existing name for the file</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="RenameFileUTF8.NewName">
         <short>New name for the file</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileSearchUTF8">
         <short>
           Searches for a file with the specified name in the list of directory paths
@@ -1822,23 +1653,16 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileSearchUTF8.Result">
         <short>Path and file name for the matching file, or an empty string</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileSearchUTF8.Name">
         <short>File name to locate in the list of directory paths</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileSearchUTF8.DirList">
         <short>The delimited list of directory paths to search</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="FileIsReadOnlyUTF8">
         <short>
           Determines if the specified file is marked as read-only
@@ -1850,18 +1674,13 @@
         </descr>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="FileIsReadOnlyUTF8.Result">
         <short>True when the file is marked as read-only</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="FileIsReadOnlyUTF8.FileName">
         <short>File name to examine in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="GetCurrentDirUTF8">
         <short>
           Gets the name for the current directory
@@ -1881,13 +1700,10 @@
           <link id="#rtl.sysutils.GetCurrentDir">GetCurrentDir</link>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="GetCurrentDirUTF8.Result">
         <short>Name for the current directory</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="SetCurrentDirUTF8">
         <short>
           Sets the current directory to the specified name
@@ -1916,18 +1732,13 @@
         </errors>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="SetCurrentDirUTF8.Result">
         <short>True if the current directory was successfully changed to the new value</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="SetCurrentDirUTF8.NewDir">
         <short>Directory name to use as the current directory</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="CreateDirUTF8">
         <short>
           Creates a new directory with the specified name
@@ -1947,18 +1758,13 @@
         </errors>
         <seealso/>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="CreateDirUTF8.Result">
         <short>True if the new directory is successfully created</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="CreateDirUTF8.NewDir">
         <short>Name for the new directory</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="RemoveDirUTF8">
         <short>
           Removes the directory with the specified name
@@ -1981,25 +1787,20 @@
           <link id="#rtl.sysutils.RemoveDir">RemoveDir</link>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="RemoveDirUTF8.Result">
         <short>True when the directory is successfully removed</short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="RemoveDirUTF8.Dir">
         <short>Name of the directory to remove in the function</short>
       </element>
 
-      <!-- function Visibility: default -->
       <element name="ForceDirectoriesUTF8">
         <short>
           Creates the specified directories if they do not already exist
         </short>
         <descr>
           <p>
-            <var>ForceDirectories</var>  is a <var>Boolean</var> function which creates the specified directories if they do not already exist. ForceDirectories examines the value in Dir to determine if it contains a Windows device identifier or a UNC name. If a device identifier or UNC name is found, but not supported on the platform, no actions are performed in the function.
+            <var>ForceDirectories</var> is a <var>Boolean</var> function which creates the specified directories if they do not already exist. ForceDirectories examines the value in Dir to determine if it contains a Windows device identifier or a UNC name. If a device identifier or UNC name is found, but not supported on the platform, no actions are performed in the function.
           </p>
           <p>
             ForceDirectories raises an <var>EInOutError</var> exception with the message in <var>SCannotCreateEmptyDir</var> when Dir contains an empty string ('').
@@ -2020,15 +1821,11 @@
           <link id="ForceDirectory"/>
         </seealso>
       </element>
-
-      <!-- function result Visibility: default -->
       <element name="ForceDirectoriesUTF8.Result">
         <short>
           True when directories exist or are successfully created in the function
         </short>
       </element>
-
-      <!-- argument Visibility: default -->
       <element name="ForceDirectoriesUTF8.Dir">
         <short>Path information to examine the function</short>
       </element>
@@ -2151,7 +1948,7 @@ ld-rwxrwxrwx Owner: UID.GID Size: 99999 Modified: MM/DD/YYYY hh:nn
             For the Amiga platform, the content in the return value is derived using a  TFileInfoBlock for a shared lock on the file. The return value can be an empty string if the file could not be locked using a shared lock on the file system. It can contain values like the following:
           </p>
         <code>
- asperwd
+asperwd
         </code>
         <dl>
           <dt>a</dt>
@@ -2172,9 +1969,7 @@ ld-rwxrwxrwx Owner: UID.GID Size: 99999 Modified: MM/DD/YYYY hh:nn
         <p>
           For Windows platforms, the return value contains only the modification date/time for the file using the format:
         </p>
-        <code>
-Modified: MM/DD/YYYY hh:mm
-        </code>
+        <code>Modified: MM/DD/YYYY hh:mm</code>
         <p>
           The return value can be 'Modified: ?' if an exception is encountered when getting the date/time value for the file.
         </p>
@@ -2414,7 +2209,7 @@ Modified: MM/DD/YYYY hh:mm
             If the directory does not exist and Create contains True, the <var>ForceDirectoriesUTF8</var> routine is called to create any missing directories for the path. An <var>EInOutError</var> exception is raised if any missing directory in the path cannot be created.
           </p>
           <p>
-            GetAppConfigDirUTF8 is used in the implementation of the Lazarus IDE and help viewer  (LHelp).
+            GetAppConfigDirUTF8 is used in the implementation of the Lazarus IDE and help viewer (LHelp).
           </p>
         </descr>
         <seealso>
@@ -2572,7 +2367,7 @@ Modified: MM/DD/YYYY hh:mm
             ExtractUNCVolume calls the <var>IsUNCPath</var> function to determine if the value in <var>Path</var> starts with the UNC naming delimiters. The return value is an empty string (<b>''</b>), and no additional actions are performed in the function, when Path does not use UNC notation.
           </p>
           <p>
-            ExtractUNCVolume examines the characters in Path to determine if it uses the long or the short format for UNC notation. Long format notation begins with the characters <b>'\\?\'</b>  or <b>'\\?\UNC\'</b> followed by a drive designation and optional path information such as 'c:\'. Short format notation uses a host name and a shared resource identifier such as <b>'\\mypc\nas-drive\'</b>.
+            ExtractUNCVolume examines the characters in Path to determine if it uses the long or the short format for UNC notation. Long format notation begins with the characters <b>'\\?\'</b> or <b>'\\?\UNC\'</b> followed by a drive designation and optional path information such as 'c:\'. Short format notation uses a host name and a shared resource identifier such as <b>'\\mypc\nas-drive\'</b>.
           </p>
         </descr>
         <seealso>
@@ -2739,7 +2534,6 @@ C:\
         <short>Command line option examined in the function</short>
       </element>
 
-      <!-- procedure type Visibility: default -->
       <element name="TInvalidateFileStateCacheEvent">
         <short>
           Specifies the event signalled for an invalid file state in the file cache
@@ -2755,12 +2549,10 @@ C:\
         </seealso>
       </element>
 
-      <!-- argument Visibility: default -->
       <element name="TInvalidateFileStateCacheEvent.Filename">
         <short>File name for the event notification</short>
       </element>
 
-      <!-- variable Visibility: default -->
       <element name="OnInvalidateFileStateCache">
         <short>
           Implements the event handler for a file with an invalid file state
@@ -2778,7 +2570,6 @@ C:\
         </seealso>
       </element>
 
-      <!-- procedure Visibility: default -->
       <element name="InvalidateFileStateCache">
         <short>
           Signals the OnInvalidateFileStateCache event handler

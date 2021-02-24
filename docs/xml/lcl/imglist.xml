@@ -78,7 +78,6 @@
         <short>Handle for the image list updated in the method</short>
       </element>
 
-      <!-- object Visibility: default -->
       <element name="TChangeLink">
         <short>
           Performs notifications when images are added or deleted in TImageList
@@ -100,11 +99,9 @@
         </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TChangeLink.FSender" link="#lcl.imglist.TChangeLink.Sender"/>
       <element name="TChangeLink.FOnChange" link="#lcl.imglist.TChangeLink.OnChange"/>
 
-      <!-- destructor Visibility: public -->
       <element name="TChangeLink.Destroy">
         <short>Destructor for the class instance</short>
         <descr>
@@ -118,10 +115,9 @@
         </seealso>
       </element>
 
-      <!-- procedure Visibility: public -->
       <element name="TChangeLink.Change">
         <short>
-          Fires the OnChange event handler
+          Signals the OnChange event handler
         </short>
         <descr>
           <p>
@@ -133,14 +129,13 @@
         </seealso>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TChangeLink.OnChange">
         <short>
           Event handler signalled for a change in the image list
         </short>
         <descr>
           <p>
-            <var>OnChange</var>is a TNotifyEvent property that represents the event handler signalled for a change in the image list. OnChange is signalled from the Change method.
+            <var>OnChange</var> is a <var>TNotifyEvent</var> property that represents the event handler signalled for a change in the image list. OnChange is signalled from the Change method.
           </p>
         </descr>
         <seealso>
@@ -155,7 +150,6 @@
         </short>
       </element>
 
-      <!-- enumeration type Visibility: default -->
       <element name="TDrawingStyle">
         <short>
           Defines drawing styles for images
@@ -182,7 +176,6 @@
         <short>Always draw transparently, ignore BkColor and BlendColor</short>
       </element>
 
-      <!-- enumeration type Visibility: default -->
       <element name="TImageType">
         <short>
           Indicates if an image contains display data or a mask for its transparent parts
@@ -203,11 +196,11 @@
 
       <element name="TOverlay">
         <short>
-          Represents the valid indices that can be used to access overlay images
+          Represents the valid index positions used to access overlay image assignments
         </short>
         <descr>
           <p>
-            <var>TOverlay</var> is a range type with values in the range 0..14. TOverlay represents the valid indices that can be used to access overlays used in TCustomImageList. The range type mirrors the values available in the WIN ImageList_SetOverlayImage API.
+            <var>TOverlay</var> is a range type with values in the range 0..14. TOverlay represents the valid indices that can be used to access images in the list that are used as Overlays. The range type mirrors the values available in the WIN ImageList_SetOverlayImage API. 0 is normally used when an overlay is not needed.
           </p>
         </descr>
         <seealso>
@@ -318,7 +311,7 @@
 
       <element name="TCustomImageListResolution.InternalInsert">
         <short>
-          Performs actions needed to insert raw image data at the specified position
+          Performs actions to insert raw image data at the specified position
         </short>
         <descr/>
       </element>
@@ -331,7 +324,7 @@
 
       <element name="TCustomImageListResolution.InternalMove">
         <short>
-          Performs actions needed to move the storage position for image data
+          Performs actions to move the storage position for image data
         </short>
         <descr/>
       </element>
@@ -349,7 +342,7 @@
 
       <element name="TCustomImageListResolution.InternalReplace">
         <short>
-          Performs actions needed to replace image data at the specified position
+          Performs actions to replace image data at the specified position
         </short>
         <descr/>
       </element>
@@ -362,7 +355,7 @@
 
       <element name="TCustomImageListResolution.InternalSetData">
         <short>
-          Performs actions needed to store raw image data at the specified position
+          Performs actions to store raw image data at the specified position
         </short>
         <descr/>
       </element>
@@ -413,7 +406,7 @@
             <var>Clear</var> is a procedure used to remove the 32-bit RGBA raw image data stored in the class instance. No actions are performed in the method when images have not been stored using the resolution.
           </p>
           <p>
-            For widget sets that allocate a handle for an image list, the Reference class is used to call its Clear method for the current class instance.
+            For widgetsets that allocate a handle for an image list, the Reference class is used to call its Clear method for the current class instance.
           </p>
           <p>
             Clear sets the length of the internal storage for image data and the allocation count to 0 (zero).
@@ -432,13 +425,13 @@
             <var>Delete</var> is a procedure used to delete the image at the specified position in the resolution.
           </p>
           <p>
-            AIndex contains the ordinal position in the list for the image deleted in the method. When AIndex contains <b>-1</b>, all images in the list are removed by calling the Clear method. Delete calls the CheckIndex method to ensure that AIndex contains a valid ordinal position in the list. When the position in AIndex is not the last item in the list, it is moved to that position.
+            <var>AIndex</var> contains the ordinal position in the list for the image deleted in the method. When AIndex contains <b>-1</b>, all images in the list are removed by calling the Clear method. Delete calls the CheckIndex method to ensure that AIndex contains a valid ordinal position in the list. When AIndex is not the last item in the list, any following images are shifted to fill the deleted position.
           </p>
           <p>
             Delete decrements the value in the Count property to reflect the new length of the list.
           </p>
           <p>
-            For widget sets that allocate a handle for an image list, the Reference class is used to call its Delete method for the specified index position.
+            For widgetsets that allocate a handle for its image list, the Reference class is used to call its Delete method for the specified index position.
           </p>
           <remark>
             The current implementation does not adjust the number of allocated data blocks for the resolution after an image is deleted.
@@ -452,7 +445,7 @@
 
       <element name="TCustomImageListResolution.GetFullRawImage">
         <short>
-          Stores raw image data for all images in the resolution to the specified bitmap
+          Stores raw image data for all images in the resolution to a bitmap
         </short>
         <descr>
           <p>
@@ -490,10 +483,10 @@
             <var>WriteData</var> is a procedure used to write the raw image data for all images in the resolution to the specified stream.
           </p>
           <p>
-            AStream contains the TStream class instance where raw image data is stored in the method. The current position in AStream is used when values are written in the method.
+            <var>AStream</var> contains the <var>TStream</var> class instance where raw image data is stored in the method. The current position in AStream is used when values are written in the method.
           </p>
           <p>
-            ACompress indicates if compression is applied to raw image data before it is written to the stream. When ACompress is <b>True</b>, a temporary TCompressionStream class instance is used to get the compressed values written to the stream. ACompress also determines the image list signature written at the start of AStream. When ACompress is <b>False</b>, the value in SIG_LAZ3 is written as the image list signature. When ACompressed is <b>True</b>, the value in SIG_LAZ4 is used.
+            <var>ACompress</var> indicates if compression is applied to raw image data before it is written to the stream. When ACompress is <b>True</b>, a temporary TCompressionStream class instance is used to get the compressed values written to the stream. ACompress also determines the image list signature written at the start of AStream. When ACompress is <b>False</b>, the value in SIG_LAZ3 is written as the image list signature. When ACompressed is <b>True</b>, the value in SIG_LAZ4 is used.
           </p>
           <p>
             WriteData writes a signature and header to the stream in AStream. First, the image list signature is written as described in the preceding paragraph. Second, a header is written that contains Integer values for the Count, Width, and Height properties (in that order). Finally, the raw image data is written to the stream (using optional compression when ACompress is <b>True</b>). The uncompressed values represent the 32-bit RGBA raw image data for the entire resolution. Raw image data is not written if the Count property contains 0 (zero).
@@ -523,10 +516,10 @@
             <var>ReadData</var> is a procedure used to read the raw image data for all images in the resolution from the specified stream.
           </p>
           <p>
-            AStream contains the TStream class instance with the raw image data read in the method.  The current position in AStream is used when values are read in the method. The stream is positioned immediately after the raw image values when values are  read in the method.
+            <var>AStream</var> contains the <var>TStream</var> class instance with the raw image data read in the method.  The current position in AStream is used when values are read in the method. The stream is positioned immediately after the raw image values when values are  read in the method.
           </p>
           <p>
-            ReadData calls the Clear method to remove any existing image data stored in the resolution.
+            ReadData calls the <var>Clear</var> method to remove any existing image data stored in the resolution.
           </p>
           <p>
             ReadData reads the signature for the image list from the stream. The signature identifies whether image data was written by various versions of the Lazarus or Delphi IDEs, and defines the header information expected in the stream. Methods are provided to read header and image data for the following image list signatures:
@@ -567,7 +560,7 @@
             If an image list signature is not found, it was created using the Delphi 2 image list format which did not include a signature. In this scenario, the stream in AStream is moved to its original position prior to reading  image data from the stream.
           </p>
           <p>
-            ReadData is used in the implementation of the TCustomImageList.ReadData method.
+            ReadData is used in the implementation of the <var>TCustomImageList.ReadData</var> method.
           </p>
         </descr>
         <seealso>
@@ -582,7 +575,7 @@
         <short>Gets the Handle for the Reference image list</short>
         <descr>
           <p>
-            <var>GetReferenceHandle</var> is an overridden method used to get the handle for the TWSCustomImageListReference class for the widget set. Some (all?) platforms / widget sets require a handle when manipulating an image list. GetReferenceHandle uses the value in the Reference property to supply the value for the Handle.
+            <var>GetReferenceHandle</var> is an overridden method used to get the handle for the TWSCustomImageListReference class for the widgetset. Some (all?) platforms / widgetsets require a handle when manipulating an image list. GetReferenceHandle uses the value in the Reference property to supply the value for the Handle.
           </p>
         </descr>
         <seealso>
@@ -595,7 +588,7 @@
 
       <element name="TCustomImageListResolution.WSCreateReference">
         <short>
-          Creates the Reference image list using the facilities for the widget set
+          Creates the Reference image list using the facilities for the widgetset
         </short>
         <descr/>
         <seealso/>
@@ -609,13 +602,13 @@
 
       <element name="TCustomImageListResolution.WSRegisterClass">
         <short>
-          Registers the class type used to create references for the widget set
+          Registers the class type used to create references for the widgetset
         </short>
       </element>
 
       <element name="TCustomImageListResolution.ReferenceDestroying">
         <short>
-          Notifies an image list list that the handle for the resolution is being freed
+          Notifies an image list list when the handle for the resolution is freed
         </short>
         <descr>
           <p>
@@ -645,7 +638,7 @@
 
       <element name="TCustomImageListResolution.FillDescription">
         <short>
-          Stores descriptive information about the raw image data for the resolution
+          Stores the image description for the raw image data for the resolution
         </short>
         <descr>
           <p>
@@ -719,16 +712,16 @@
             <var>GetBitmap</var> is an overloaded procedure used to a bitmap for the specified image in the resolution.
           </p>
           <p>
-            Index contains the ordinal position for the image requested in the method.
+            <var>Index</var> contains the ordinal position for the image requested in the method.
           </p>
           <p>
-            Image is the TCustomBitmap class instance where the bitmap for the image is stored.
+            <var>Image</var> is the TCustomBitmap class instance where the bitmap for the image is stored.
           </p>
           <p>
-            AEffect contains a value from the TGraphicsDrawEffect enumeration that indicates a drawing effect applied to the raw image data, and stored in the bitmap. Values in AEffect determine whether the image is rendered normally, as a disabled (or grayed) image, highlighted, shadowed, or as a monochrome bitmap mask.
+            <var>AEffect</var> contains a value from the TGraphicsDrawEffect enumeration that indicates a drawing effect applied to the raw image data, and stored in the bitmap. Values in AEffect determine whether the image is rendered normally, as a disabled (or grayed) image, highlighted, shadowed, or as a monochrome bitmap mask.
           </p>
           <p>
-            GetBitmap creates a temporary TRawImage class instance that is used to get the 32-bit RGBA raw image data, and to apply the drawing effect in AEffect. For platforms or widget sets that do not support 32-bit image data, a device image is used to get the pixel content for the image.
+            GetBitmap creates a temporary TRawImage class instance that is used to get the 32-bit RGBA raw image data, and to apply the drawing effect in AEffect. For platforms or widgetsets that do not support 32-bit image data, a device image is used to get the pixel content for the image.
           </p>
           <p>
             An overloaded variant of the method is provided which omits the drawing effect argument, and assumes the image is rendered in the "normal" display state.
@@ -758,16 +751,16 @@
             <var>GetIcon</var> is an overloaded procedure used to get an image in TIcon format stored at the specified position in the resolution.
           </p>
           <p>
-            Index contains the ordinal position of the image retrieved in the method.
+            <var>Index</var> contains the ordinal position of the image retrieved in the method.
           </p>
           <p>
-            Image is a TIcon class instance where image data is stored in the method.
+            <var>Image</var> is a TIcon class instance where image data is stored in the method.
           </p>
           <p>
-            AEffect contains a value from the TGraphicsDrawEffect enumeration that indicates a drawing effect applied to the raw image data, and stored in the icon. Values in AEffect determine whether the image is rendered normally, as a disabled (or grayed) image, highlighted, shadowed, or as a monochrome bitmap mask.
+            <var>AEffect</var> contains a value from the TGraphicsDrawEffect enumeration that indicates a drawing effect applied to the raw image data, and stored in the icon. Values in AEffect determine whether the image is rendered normally, as a disabled (or grayed) image, highlighted, shadowed, or as a monochrome bitmap mask.
           </p>
           <p>
-            GetIcon creates a temporary TRawImage class instance that is used to get the 32-bit RGBA raw image data, and to apply the drawing effect in AEffect. For platforms or widget sets that do not support 32-bit image data, a device image is used to get the pixel content for the image.
+            GetIcon creates a temporary TRawImage class instance that is used to get the 32-bit RGBA raw image data, and to apply the drawing effect in AEffect. For platforms or widgetsets that do not support 32-bit image data, a device image is used to get the pixel content for the image.
           </p>
           <p>
             An overloaded variant of the method is provided which omits the drawing effect argument, and assumes the image is rendered in the "normal" display state.
@@ -803,7 +796,7 @@
             AEffect contains a value from the TGraphicsDrawEffect enumeration that indicates a drawing effect applied to the raw image data, and stored in the bitmap. Values in AEffect determine whether the images are rendered normally, as a disabled (or grayed) image, highlighted, shadowed, or as a monochrome bitmap mask.
           </p>
           <p>
-            GetFullBitmap creates a temporary TRawImage class instance that is used to get the 32-bit RGBA raw image data, and to apply the drawing effect in AEffect. For platforms or widget sets that do not support 32-bit image data, a device image is used to get the pixel content for the image.
+            GetFullBitmap creates a temporary TRawImage class instance that is used to get the 32-bit RGBA raw image data, and to apply the drawing effect in AEffect. For platforms or widgetsets that do not support 32-bit image data, a device image is used to get the pixel content for the image.
           </p>
           <p>
             The vertical size in Image is determined by the Height property. The horizontal size in Image is set to <b>Width * Count</b>.
@@ -888,7 +881,7 @@
             AImageType contains a value from the <var>TImageType</var> enumeration, and indicates whether the image uses a mask.
           </p>
           <p>
-            The Draw method requires a valid <var>TWSCustomImageListReference</var> class instance to access the handle for its image list. The widget set class is used to call its Draw method using the specified parameter values as arguments. The values in the BkColor and BlendColor properties for the ImageList are also passed in the arguments to the widget set class.
+            The Draw method requires a valid <var>TWSCustomImageListReference</var> class instance to access the handle for its image list. The widgetset class is used to call its Draw method using the specified parameter values as arguments. The values in the BkColor and BlendColor properties for the ImageList are also passed in the arguments to the widgetset class.
           </p>
           <p>
             No actions are performed in the method when AIndex contains a value that is an invalid position for the images in the resolution.
@@ -945,7 +938,7 @@
             StretchDraw compares the image size (using the <var>Height</var> and <var>Width</var> properties) to the size of the target rectangle in ARect. When they are the same size, the Draw method is used to render the specified image. When the sizes are different, the <var>StretchDraw</var> method in ACanvas is used to render the image bitmap expanded or contracted to fit within the specified boundaries.
           </p>
           <p>
-            StretchDraw is used in the implementation of the StretchDraw and DrawOverlay methods in <var>TScaledImageListResolution</var>.
+            StretchDraw is used in the implementation of the <var>Draw</var> and <var>DrawOverlay</var> methods in <var>TScaledImageListResolution</var>.
           </p>
         </descr>
         <seealso>
@@ -953,7 +946,7 @@
           <link id="TCustomImageListResolution.Height"/>
           <link id="TCustomImageListResolution.GetBitmap"/>
           <link id="TCustomImageListResolution.Draw"/>
-          <link id="TScaledImageListResolution.StretchDraw"/>
+          <link id="TScaledImageListResolution.Draw"/>
           <link id="TScaledImageListResolution.DrawOverlay"/>
         </seealso>
       </element>
@@ -974,28 +967,28 @@
         <short>Draws the specified image with the given overlay</short>
         <descr>
           <p>
-            <var>DrawOverlay</var> is an overloaded procedure used to draw the specified image with an overlay. An overlay is an masked image drawn transparently over another image. The overlay image is generally used to convey state or status information about the image it adorns. The overlay images are stored in the image list (or the resolution) just like the images they decorate.
+            <var>DrawOverlay</var> is an overloaded procedure used to draw the specified image with an overlay. An overlay is an masked image drawn transparently over another image. The overlay image is generally used to convey state or status information about the image it adorns. The overlay images are stored in the image list  resolution just like the images they decorate.
           </p>
           <p>
-            ACanvas is the <var>TCanvas</var> instance where the image and the overlay are rendered.
+            <var>ACanvas</var> is the <var>TCanvas</var> instance where the image and the overlay are rendered.
           </p>
           <p>
-            AX and AY contain the canvas offsets (horizontal and vertical) where the overlay image is drawn.
+            <var>AX</var> and <var>AY</var> contain the canvas offsets (horizontal and vertical) where the overlay image is drawn.
           </p>
           <p>
-            AIndex contains the ordinal position for the base image drawn in the method.
+            <var>AIndex</var> contains the ordinal position for the base image drawn in the method.
           </p>
           <p>
-            AOverlay contains the position in the <var>ImageList.Overlay</var> property where the index position for the overlay image is stored. The value in AOverlay must be in the range 0..14 (the range defined in <var>TOverlay</var>).
+            <var>AOverlay</var> contains the position where the index for an overlay image was stored using <var>Overlay</var>. The value in AOverlay must be in the range 0..14 (the range defined in <var>TOverlay</var>).
           </p>
           <p>
-            ADrawingStyle contains the <var>TDrawingStyle</var> enumeration value applied to the rendered image.
+            <var>ADrawingStyle</var> contains the <var>TDrawingStyle</var> enumeration value applied to the rendered image.
           </p>
           <p>
-            AImageType contains a <var>TImageType</var> enumeration value that indicates if the image contains a mask.
+            <var>AImageType</var> contains a <var>TImageType</var> enumeration value that indicates if the content is an image or contains a mask.
           </p>
           <p>
-            ADrawEffect contains a <var>TGraphicsDrawEffect</var> enumeration value that indicates the drawing effect applied to the rendered image.
+            <var>ADrawEffect</var> contains a <var>TGraphicsDrawEffect</var> enumeration value that indicates the drawing effect applied to the rendered image.
           </p>
           <p>
             Overloaded variants of the method are provided which use the <var>BlendColor</var>, <var>BkColor</var>, <var>DrawingStyle</var>, and <var>ImageType</var> properties in ImageList as default values in the methods.
@@ -1004,10 +997,10 @@
             No actions are performed in the method when AIndex does not contain a valid index position in the resolution.
           </p>
           <p>
-            DrawOverlay requires a valid <var>Reference</var> class instance to access the handles used for the image list and the resolution. The reference class calls its Draw method to render the base image represented by the value in AIndex to the specified canvas. Arguments passed to the method determine the drawing style or drawing effect applied to the rendered image.
+            DrawOverlay requires a valid <var>Reference</var> instance to access the handles used for the image list and the resolution. The reference class calls its Draw method to render the base image represented by the value in AIndex to the specified canvas. Arguments passed to the method determine the drawing style or drawing effect applied to the rendered image.
           </p>
           <p>
-            The reference class is also used to render the overlay image indicated by the  AOverlay parameter. The overlay image is drawn to the canvas at the offsets in AX and AY using the Width and Height for images in the resolution. The overlay image is not drawn if AOverlay contains a value outside the range allowed in TOverlay.
+            The reference class is also used to render an overlay image indicated by the  AOverlay parameter. The overlay image is drawn to the canvas at the offsets in AX and AY using the Width and Height for images in the resolution. The overlay image is not drawn if AOverlay contains a value outside the range allowed in TOverlay, or does not map to a valid image index in the image list.
           </p>
         </descr>
         <seealso/>
@@ -1026,7 +1019,7 @@
       </element>
       <element name="TCustomImageListResolution.DrawOverlay.AOverlay">
         <short>
-          Position in the Overlays property for the image list drawn as the overlay image
+          Position in the internal array with the index for an overlay image
         </short>
       </element>
       <element name="TCustomImageListResolution.DrawOverlay.AEnabled">
@@ -1069,7 +1062,7 @@
             The value in Width is assigned when raw image data is loaded using the <var>ReadData</var> method, or when an image resolution is dynamically created when reading the <var>Resolution</var> property or using the <var>GetResolution</var> method in <var>ImageList</var>.
           </p>
           <p>
-            Use Height to get the vertical size of the images stored in the resolution. Use Count to determine the number of images stored in the resolution.
+            Use <var>Height</var> to get the vertical size of the images stored in the resolution. Use <var>Count</var> to determine the number of images stored in the resolution.
           </p>
         </descr>
         <seealso>
@@ -1091,7 +1084,7 @@
             The value in Height is assigned when raw image data is loaded using the <var>ReadData</var> method, or when an image resolution is dynamically created using the <var>Resolution</var> property or the <var>GetResolution</var> method in <var>ImageList</var>.
           </p>
           <p>
-            Use Width to get the horizontal size of the images stored in the resolution. Use Count to determine the number of images stored in the resolution.
+            Use <var>Width</var> to get the horizontal size of the images stored in the resolution. Use <var>Count</var> to determine the number of images stored in the resolution.
           </p>
         </descr>
         <seealso>
@@ -1115,7 +1108,7 @@
             The value in Count is updated when raw image data is loaded using the <var>ReadData</var> method, and when the images in the resolution are updated using the <var>Add</var>, <var>Delete</var>, or <var>Clear</var> methods.
           </p>
           <p>
-            Count determines the upper range boundary for index positions used to  access  bitmaps, icons, or raw images in the resolution (<b>Count - 1</b>). The lower range boundary is always <b>0</b> (<b>zero</b>).
+            Count determines the upper boundary for index positions used to access bitmaps, icons, or raw images in the resolution (<b>Count - 1</b>). The lower boundary is always <b>0</b> (<b>zero</b>).
           </p>
         </descr>
         <seealso>
@@ -1147,11 +1140,11 @@
 
       <element name="TCustomImageListResolution.Reference">
         <short>
-          Reference to the widget set image list using this resolution
+          Reference to the widgetset image list using this resolution
         </short>
         <descr>
           <p>
-            <var>Reference</var> is a read-only <var>TWSCustomImageListReference</var> property that represents the reference class for an image list implementation in the current widget set. Reading the value in the property causes the reference class for the resolution to be created if it has not already been allocated.
+            <var>Reference</var> is a read-only <var>TWSCustomImageListReference</var> property that represents the reference class for an image list implementation in the current widgetset. Reading the value in the property causes the reference class for the resolution to be created if it has not already been allocated.
           </p>
           <p>
             Reference is used get access to the handle for the image list used in the resolution. The handle is a required argument in  <var>TWSCustomImageListResolutionClass</var> methods.
@@ -1303,34 +1296,60 @@
       </element>
 
       <element name="TScaledImageListResolution.DrawOverlay" link="#lcl.imglist.TCustomImageListResolution.DrawOverlay">
-        <short>Draws an overlay using the scaled image at the specified position</short>
+        <short>Draws an image with an overlay at the specified canvas position</short>
+        <descr>
+          <p>
+            <var>DrawOverlay</var> is an overloaded method used to draw an image with an overlay at the given position on a canvas. The overloaded variants allow the enabled state, drawing effect, or drawing style for the image(s) to be specified.
+          </p>
+          <p>
+            DrawOverlay scales both the image and the overlay (when needed) using the internal scaling factor stored in the image <var>Resolution</var>.
+          </p>
+          <p>
+            Image scaling is not performed when the scaling factor is 1.0. In this case the <var>Draw</var> method in Resolution is called to draw the image. When a valid image index has been assigned in <var>AOverlay</var>, The Draw method is called to draw the overlay image.
+          </p>
+          <p>
+            When image scaling is needed, the <var>StretchDraw</var> method in Resolution is called to draw both the image and a valid overlay. The images are resized to the <var>Width</var> and <var>Height</var> for the image Resolution. StretchDraw uses the enabled state for the images when <var>ADrawEffect</var> contains any value other than <var>gdeDisabled</var>.
+          </p>
+          <p>
+            Use the <var>Draw</var> or <var>StretchDraw</var> methods when an overlay image is not needed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScaledImageListResolution.Height"/>
+          <link id="TScaledImageListResolution.Width"/>
+          <link id="TScaledImageListResolution.Resolution"/>
+          <link id="TScaledImageListResolution.Draw"/>
+          <link id="TScaledImageListResolution.StretchDraw"/>
+          <link id="TCustomImageListResolution.Draw"/>
+          <link id="TCustomImageListResolution.StretchDraw"/>
+        </seealso>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ACanvas">
-        <short/>
+        <short>Canvas where the image and overlay are drawn</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AX">
-        <short/>
+        <short>Horizontal coordinate on the canvas where the image is drawn</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AY">
-        <short/>
+        <short>Vertical coordinate on the canvas where the image is drawn</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AIndex">
-        <short/>
+        <short>Ordinal position for the image drawn in the method</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AOverlay">
-        <short/>
+        <short>Position for the overlay image applied in the method</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AEnabled">
-        <short/>
+        <short>True when the image is drawn in the enabled state (default)</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ADrawEffect">
-        <short/>
+        <short>TGraphicsDrawEffect value applied to the image</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ADrawingStyle">
-        <short/>
+        <short>TDrawingStyle value applied to the image</short>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.AImageType">
-        <short/>
+        <short>Indicates if the content is the image or a mask</short>
       </element>
 
       <element name="TScaledImageListResolution.Width">
@@ -1355,7 +1374,7 @@
 
       <element name="TScaledImageListResolution.Valid">
         <short>
-          Indicates if the source image resolution has been assigned for the class instance
+          Indicates if the source resolution is assigned for the class instance
         </short>
         <descr>
           <p>
@@ -1371,7 +1390,7 @@
 
       <element name="TCustomImageListResolutions">
         <short>
-          Implements support for multiple image resolutions in TCustomImageList
+          Provides multiple image resolutions in TCustomImageList
         </short>
         <descr>
           <p>
@@ -1403,7 +1422,7 @@
 
       <element name="TCustomImageListResolutions.Find">
         <short>
-          Check for an existing image resolution in the Items property
+          Checks for an existing image resolution in the Items property
         </short>
         <descr>
           <p>
@@ -1874,7 +1893,7 @@
         </short>
         <descr>
           <p>
-            <var>TCustomImageList</var> is a TLCLComponent descendant that implements the base class for <var>TImageList</var>. Image lists are used to provide images, icons, and overlays in controls like TMenu, TToolBar, TCoolBar, TActionList, TComboEx, TTabControl, TDBNav, and others.
+            <var>TCustomImageList</var> is a TLCLComponent descendant that implements the base class for <var>TImageList</var>. Image lists are used to provide images, icons, and overlays in controls like TMenu, TToolBar, TCoolBar, TActionList, TComboEx, TTabControl, TDBNav, TListView, TTreeView, and others.
           </p>
           <p>
             Historically, TCustomImageList was based on the Win32 image list implemented in Delphi. Internally, the image list contained images (bitmaps or icons) of the same Width and Height. The images were stored in one big bitmap, whose total width was <b>Width * Count</b> pixels. This reduced the number of handles allocated when images in the image list were accessed.
@@ -1883,7 +1902,7 @@
             Starting with LCL version 1.9, the concept of multiple image resolutions (or sizes) was introduced in TCustomImageList. This allowed the image list to contain multiple sizes for a given image. Multiple resolutions are implemented as parallel image lists, with images of the same size stored in a single image list. Image scaling was also introduced in TCustomImageList using its new support classes, and allowed resizing of images for high PPI (pixels per inch) displays.
           </p>
           <p>
-            Images stored in TCustomImageList are represented using 32-bit RGBA (Red Green Blue Alpha) raw image data. Transparency is implemented using the Alpha channel in the raw image data,  but not all platforms/widget sets support an 8-bit Alpha channel. Any image type descended from <var>TCustomBitmap</var> can be added to an image list, including:
+            Images stored in TCustomImageList are represented using 32-bit RGBA (Red Green Blue Alpha) raw image data. Transparency is implemented using the Alpha channel in the raw image data,  but not all platforms/widgetsets support an 8-bit Alpha channel. Any image type descended from <var>TCustomBitmap</var> can be added to an image list, including:
           </p>
           <ul>
             <li>TBitmap</li>
@@ -1939,7 +1958,6 @@
         </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TCustomImageList.FDrawingStyle" link="#lcl.imglist.TCustomImageList.DrawingStyle"/>
 
       <element name="TCustomImageList.FData">
@@ -2279,7 +2297,7 @@
 
       <element name="TCustomImageList.DoDestroyResolutionReference">
         <short>
-          Performs actions needed when the reference class for a resolution is freed
+          Performs actions when the reference class for a resolution is freed
         </short>
         <descr>
           <p>
@@ -2334,7 +2352,7 @@
 
       <element name="TCustomImageList.GetResolutionClass">
         <short>
-          Gets the class type used to create image resolutions in the image list
+          Gets the class type used to create image resolutions in the list
         </short>
         <descr>
           <p>
@@ -2404,7 +2422,7 @@
             <dd>dsNormal</dd>
           </dl>
           <p>
-            The <var>ClearOverlays</var> method is called to store the unassigned value for index positions in the Overlays property.
+            The <var>ClearOverlays</var> method is called to reset any images assigned as overlay images in the image list.
           </p>
           <p>
             Initialize is used in the <var>Create</var> and <var>CreateSize</var> constructors. Create sets the default values for the <var>Height</var> and <var>Width</var> properties to <b>16</b>. CreateSize uses the arguments passed to the constructor as the value for the properties.
@@ -2466,7 +2484,7 @@
         </short>
         <descr>
           <p>
-            <var>SetWidthHeight</var> is a a procedure used to set the values in the <var>Width</var> and <var>Height</var> properties to the values in the <var>NewWidth</var> and <var>NewHeight</var> parameters. Width and Height establish the default resolution (or image size) used in the image list. Changing either of their values in the method causes the image list, its <var>Resolutions</var>, and <var>Overlays</var> to be discarded by calling the <var>Clear</var> method.
+            <var>SetWidthHeight</var> is a a procedure used to set the values in the <var>Width</var> and <var>Height</var> properties to the values in the <var>NewWidth</var> and <var>NewHeight</var> parameters. Width and Height establish the default resolution (or image size) used in the image list. Changing either of the values in the method causes the image list, its <var>Resolutions</var>, and assigned <var>Overlay</var> images to be discarded by calling the <var>Clear</var> method.
           </p>
           <p>
             Set the values in the Height and Width properties prior to adding images to the image list. Or, use the <var>CreateSize</var> constructor to specify the default resolution when the image list is created.
@@ -2494,11 +2512,11 @@
 
       <element name="TCustomImageList.ClearOverlays">
         <short>
-          Clears the index positions stored in the Overlays property
+          Clears images indexes assigned as overlay images in the image list
         </short>
         <descr>
           <p>
-            <var>ClearOverlays</var> is a procedure used to reset the index positions stored in the Overlays property. ClearOverlays sets each TOverlay index position to the value <b>-1</b> to indicate that it does not point to an overlay image in the image list.
+            <var>ClearOverlays</var> is a procedure used to reset the image indexes assigned in the internal array for use as an overlay images. ClearOverlays sets each TOverlay index position to the value <b>-1</b> to indicate that it does not point to an overlay image in the image list.
           </p>
           <p>
             ClearOverlays is used in the implementation of the <var>Clear</var> and <var>Initialize</var> methods.
@@ -2831,7 +2849,7 @@
 
       <element name="TCustomImageList.ReadAdvData">
         <short>
-          Reads the image content for multiple resolutions from the specified stream
+          Reads the image content for multiple resolutions from a stream
         </short>
         <descr>
           <p>
@@ -3187,9 +3205,7 @@
       </element>
 
       <element name="TCustomImageList.AddIcon">
-        <short>
-          Adds an icon to the image list
-        </short>
+        <short>Adds an icon to the image list</short>
         <descr>
           <p>
             <var>AddIcon</var> is used to add the <var>TIcon</var> instance in the Image parameter to the image list. AddIcon calls <var>InsertIcon</var> to store the Image at the ordinal position represented by the <var>Count</var> property. The return value contains the index of the newly added icon, or -1 if the icon could not be added to the list.
@@ -3296,7 +3312,7 @@
       </element>
       <element name="TCustomImageList.AddLazarusResource.MaskColor">
         <short>
-          The mask color for transparent images. clNone for solid (opaque) images.
+          The mask color for transparent images. clNone for solid (opaque) images
         </short>
       </element>
 
@@ -3344,7 +3360,7 @@
       </element>
       <element name="TCustomImageList.AddResourceName.MaskColor">
         <short>
-          Color for transparent areas in the image, clNone for an opaque (solid) image
+          Color for transparent areas in the image, clNone for an opaque image
         </short>
       </element>
 
@@ -3388,7 +3404,10 @@
         </short>
         <descr>
           <p>
-            <var>Clear</var> is a procedure used to remove all images stored in the image list. Clear ensures that the content for all of the image resolutions is removed from the list, and calls <var>ClearOverlays</var> to reset any index positions used in the <var>Overlays</var> property. Clear sets the internal Changed flag for the class instance to <b>True</b>, and calls the <var>Change</var> method to perform change notifications.
+            <var>Clear</var> is a procedure used to remove all images stored in the image list.
+          </p>
+          <p>
+            Clear ensures that the content for all of the image resolutions is removed from the list, and calls <var>ClearOverlays</var> to reset any index positions used in the <var>Overlays</var> property. Clear sets the internal Changed flag for the class instance to <b>True</b>, and calls the <var>Change</var> method to perform change notifications.
           </p>
         </descr>
         <seealso>
@@ -3569,7 +3588,7 @@
       </element>
       <element name="TCustomImageList.DrawForPPI.AEnabled">
         <short>
-          Indicates id the image is rendered in the enabled state
+          Indicates if the image is rendered in the enabled state
         </short>
       </element>
       <element name="TCustomImageList.DrawForPPI.ADrawEffect">
@@ -3669,7 +3688,7 @@
             <var>Image</var> is the <var>TCustomBitmap</var> class instance where the requested image data is stored in the method.
           </p>
           <p>
-            An overloaded variant of the method includes the <var>AEffect</var> parameter which specifies the drawing effect applied to the image data and stored in Image. The default value for AEffect is <var>gdeNormal</var> and cause the image to be rendered using the normal enabled style for the widget set.
+            An overloaded variant of the method includes the <var>AEffect</var> parameter which specifies the drawing effect applied to the image data and stored in Image. The default value for AEffect is <var>gdeNormal</var> and cause the image to be rendered using the normal enabled style for the widgetset.
           </p>
           <p>
             GetBitmap calls <var>GetResolution</var> to locate the default image resolution which uses the width specified in the <var>Width</var> property. The <var>TCustomImageListResolution</var> class instance is used to call its <var>GetBitmap</var> method using the parameters supplied to the method.
@@ -3704,7 +3723,7 @@
             <var>Image</var> is the <var>TCustomBitmap</var> instance where the image data is stored in the method.
           </p>
           <p>
-            <var>AEffect</var> is a value from the <var>TGraphicsDrawEffect</var> enumeration that indicates the drawing effect applied to the rendered images and stored in Image. The default value for the parameter is <var>gdeNormal</var> and causes the normal enabled drawing effect for the widget set to be used.
+            <var>AEffect</var> is a value from the <var>TGraphicsDrawEffect</var> enumeration that indicates the drawing effect applied to the rendered images and stored in Image. The default value for the parameter is <var>gdeNormal</var> and causes the normal enabled drawing effect for the widgetset to be used.
           </p>
           <p>
             GetFullBitmap calls the <var>GetResolution</var> method to retrieve the image resolution which uses the value in the <var>Width</var> property. The <var>TCustomImageListResolution</var> class instance is used to call its <var>GetFullBitmap</var> method passing <var>Image</var> and <var>AEffect</var> as arguments.
@@ -3878,7 +3897,7 @@
 
       <element name="TCustomImageList.Move">
         <short>
-          Moves images from the position at <var>CurIndex</var> to <var>NewIndex.</var>
+          Moves an image from the position at CurIndex to NewIndex
         </short>
         <descr>
           <p>
@@ -3888,7 +3907,7 @@
             Move calls CheckIndex to verify that the values in ANewIndex and ACurIndex are valid index positions in the image list. An exception is raised in CheckIndex if either value is invalid for the bounds in the image list.
           </p>
           <p>
-            Move uses the Resolutions enumerator to visit each of the image resolutions in the image list. The InternalMove method in the TCustomImageListResolution instance is called to relocate image data using the specified positions. If the handle for the image resolution has been allocated, the widget set class calls its Move method to mirror the change to the image list.
+            Move uses the Resolutions enumerator to visit each of the image resolutions in the image list. The InternalMove method in the TCustomImageListResolution instance is called to relocate image data using the specified positions. If the handle for the image resolution has been allocated, the widgetset class calls its Move method to mirror the change to the image list.
           </p>
           <p>
             Move sets the value in the internal Changed flag to True, and calls the Change method to perform notifications for the change event.
@@ -3909,22 +3928,36 @@
 
       <element name="TCustomImageList.Overlay">
         <short>
-          Stores the specified image index for use as an overlay in the image list
+          Assigns an overlay index for the specified image in the image list
         </short>
         <descr>
           <p>
-            <var>Overlay</var> is a procedure used to store the image index in AIndex as an overlay image for the image list. Overlay is a <var>TOverlay</var> value that indicates the position in the internal array of overlay indexes where the value in AIndex is stored.
+            <var>Overlay</var> is a procedure which makes an image in the image list an overlay. An overlay image is drawn transparently over another image. An image list can have up 15 images designated as overlay images (0 is reserved for none).
           </p>
           <p>
-            Overlay sets the value in the <var>HasOverlays</var> property to True when AIndex contains a valid index position in the image list. Otherwise, the image indexes in each overlay position are re-examined to determine the value for HasOverlays.
+            <var>AIndex</var> contains the position in the image list for the image to use as an overlay image.
           </p>
           <p>
-            Use <var>ClearOverlays</var> to reset the image indexes stored in the internal member to the used value (-1).
+            <var>Overlay</var> is a <var>TOverlay</var> value that indicates the position in the internal array of overlay indexes where the value in AIndex is stored. The overlay indexes are essentially one-based because an overlay index of zero means that no overlay image is needed.
+          </p>
+          <p>
+            The Overlay method tells the image list that the image in AIndex is an overlay image referenced using the value in the Overlay parameter instead of the ordinal position in the image list.
+          </p>
+          <p>
+            Overlay sets the value in the <var>HasOverlays</var> property to <b>True</b> when AIndex contains a valid index position in the image list. Otherwise, the image indexes in each of the internal overlay positions are re-examined to determine the value for HasOverlays.
+          </p>
+          <p>
+            Use the <var>DrawOverlay</var> method to draw an image along with a specific overlay image.
+          </p>
+          <p>
+            Use <var>ClearOverlays</var> to reset the image indexes stored in the internal member to the unused value (-1).
           </p>
         </descr>
         <seealso>
           <link id="TCustomImageList.HasOverlays"/>
           <link id="TCustomImageList.ClearOverlays"/>
+          <link id="TCustomImageList.DrawOverlay"/>
+          <link id="TCustomImageListResolution.DrawOverlay"/>
           <link id="TOverlay"/>
         </seealso>
       </element>
@@ -3933,27 +3966,31 @@
       </element>
       <element name="TCustomImageList.Overlay.Overlay">
         <short>
-          Ordinal position in the overlay array where the image index is stored
+          Ordinal position in the internal array where the image index is stored
         </short>
       </element>
 
       <element name="TCustomImageList.HasOverlays">
         <short>
-          Indicates if any images in the list have been designated as an overlay image
+          Indicates if any images in the list have been used as an overlay image
         </short>
         <descr>
           <p>
-            <var>HasOverlays</var> is a read-only Boolean property that indicates if any images in the list have been designated as an overlay image. The value in HasOverlays is updated when the <var>Overlay</var> method is used to store an image index to a position the internal overlays array.
+            <var>HasOverlays</var> is a read-only <var>Boolean</var> property that indicates if any images in the list have been designated as an overlay image. The value in HasOverlays is updated when the <var>Overlay</var> method is used to store an image index to a position the internal overlays array.
+          </p>
+          <p>
+            The value in HasOverlays can be used to determine the correct drawing method to call when drawing an image in the image list; Draw when HasOverlays is <b>False</b>, DrawOverlay when HasOverlays is <b>True</b>.
+          </p>
+          <p>
+            Use <var>ClearOverlays</var> to reset the image assignments made in the Overlay method.
           </p>
         </descr>
         <seealso>
           <link id="TCustomImageList.Overlay"/>
+          <link id="TCustomImageList.ClearOverlay"/>
+          <link id="TCustomImageList.DrawOverlay"/>
+          <link id="TCustomImageList.Draw"/>
         </seealso>
-        <notes>
-          <note>
-            The value in HasOverlays is not reset in the ClearOverlays method for the current implementation.
-          </note>
-        </notes>
       </element>
 
       <element name="TCustomImageList.Replace">
@@ -4332,7 +4369,6 @@
         <short>Image resolution class located in the method</short>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TCustomImageList.AllocBy">
         <short>
           Size used to increment the allocated data count
@@ -4660,7 +4696,7 @@
         </short>
         <descr>
           <p>
-            <var>Reference</var> is an indexed read-only TWSCustomImageListReference property which provides access to the reference class for a resolution using the specified image width. Reading the value in the property causes the image resolution and its reference class to be created if it has not already been allocated.
+            <var>Reference</var> is an indexed read-only TWSCustomImageListReference property which provides access to the class instance for a resolution using the specified image width. Reading the value in the property causes the image resolution and its reference class to be created if it has not already been allocated.
           </p>
           <p>
             Reference is used get access to the handle for the image list used in the resolution. The handle is a required argument in  <var>TWSCustomImageListResolutionClass</var> methods.
@@ -4678,7 +4714,7 @@
         </short>
         <descr>
           <p>
-            <var>ReferenceForPPI</var> is an indexed read-only <var>TWSCustomImageListReference</var> property used to get the Reference class for an image resolution using the specified image width and display density. The reference class allows access to the widget set implementation for an image list. It is used mainly in situations that need the handle for an image list.
+            <var>ReferenceForPPI</var> is an indexed read-only <var>TWSCustomImageListReference</var> property used to get the class instance for an image resolution using the specified image width and display density. The reference class allows access to the widgetset implementation for an image list. It is used mainly in situations that need the handle for an image list.
           </p>
           <p>
             <var>AImageWidth</var> is an Integer value that contains the image width for the requested reference class.
@@ -4908,14 +4944,13 @@
         <seealso/>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TCustomImageList.ImageType">
         <short>
-          Controls whether images are drawn with or without a mask.
+          Controls whether images are drawn with or without a mask
         </short>
         <descr>
           <p>
-            <var>ImageType</var> is a <var>TImageType</var> property that controls whether images are drawn with or without a mask. The value in ImageType is used as the default value for arguments passed to widget set classes in the <var>Draw</var>, <var>DrawOverlay</var>, and <var>StretchDraw methods</var>.
+            <var>ImageType</var> is a <var>TImageType</var> property that controls whether images are drawn with or without a mask. The value in ImageType is used as the default value for arguments passed to widgetset classes in the <var>Draw</var>, <var>DrawOverlay</var>, and <var>StretchDraw methods</var>.
           </p>
           <p>
             Set the value in ImageType to <var>itMask</var> when a mask that defines the transparent areas in an image is stored in the raw image data. The default value for the property is <var>itImage</var>.
@@ -4958,7 +4993,7 @@
       </element>
       <element name="TLCLGlyphsMissingResources.gmrAllMustExist">
         <short>
-          Show an exception if any image resolution is missing for a resource.
+          Show an exception if any image resolution is missing for a resource
         </short>
       </element>
       <element name="TLCLGlyphsMissingResources.gmrOneMustExist">

@@ -81,10 +81,10 @@
       </element>
 
       <element name="PosI">
-        <short>A case-insensitive version of the Pos routine</short>
+        <short>A case-insensitive optimized version of the Pos routine</short>
         <descr>
           <p>
-            <var>PosI</var> implements a case-insensitive version of the <var>Pos</var> routine found the RTL <file>system</file> unit. It only accepts <var>String</var> values in its parameters, unlike the RTL overloaded variants which accept combinations of the Char, ShortString, AnsiString, UnicodeString, WideString, and Variant types.
+            <var>PosI</var> implements a case-insensitive optimized version of the <var>Pos</var> routine found the RTL <file>system</file> unit. It only accepts <var>String</var> values in its parameters, unlike the RTL overloaded variants which accept combinations of the Char, ShortString, AnsiString, UnicodeString, WideString, and Variant types.
           </p>
           <p>
             It is also an alternative to the <var>ContainsText</var> routine in the RTL <file>StrUtils</file> unit, which has a <b>very</b> slow implementation.
@@ -105,7 +105,7 @@
         </seealso>
       </element>
       <element name="PosI.Result">
-        <short>Positionof the sub-string witin the searched value, or 0 when not found</short>
+        <short>Position of the sub-string within the searched value, or 0 when not found</short>
       </element>
       <element name="PosI.SubStr">
         <short>Value to locate in the searched value</short>
@@ -236,7 +236,9 @@
       </element>
 
       <element name="LineBreaksToDelimiter">
-        <short>Converts CR or LF characters in a string to the specified delimiter character</short>
+        <short>
+          Converts CR or LF characters in a string to the specified delimiter character
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -251,11 +253,13 @@
       </element>
 
       <element name="ConvertLineEndings">
-        <short/>
+        <short>Deprecated</short>
         <descr>
           <remark>Deprecated. Use LineBreaksToSystemLineBreaks instead.</remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="LineBreaksToSystemLineBreaks"/>
+        </seealso>
       </element>
       <element name="ConvertLineEndings.Result">
         <short/>
@@ -437,7 +441,7 @@
           <p>
             <var>BeautifyLineXY</var> is a <var>String</var> function used to combine the values in the <var>Filename</var>, <var>Line</var>, <var>X</var> and <var>Y</var> arguments into a formatted message. The message is in the form:
           </p>
-<code>LazStringUtils.pas (742, 1) Invalid UTF-8 codepoint found in the specified argument(s).</code>
+<code>examplefile.pas (123, 1) The error message goes here.</code>
           <p>
             <var>Filename</var> contains a file name used at the start of the formatted message.
           </p>
@@ -634,19 +638,25 @@
       </element>
 
       <element name="StringToStringList">
-        <short>Stores the specified string as lines in a TStrings instance</short>
+        <short>Stores a multi-line string as seperate lines in a TStrings instance</short>
         <descr>
           <p>
-            <b>LF</b> (<b>#10</b>) characters found in <var>s</var> control when a line of text is added in the <var>TStrings</var> instance. The end-of-line character is not stored in the TStrings instance. If no end-of-line characters are found in S, then a single line of text is added to the string list.
+            <var>StringToStringList</var> is a procedure used to convert the multi-line String in <var>S</var> to separate lines of text in a <var>TStrings</var> instance.
+          </p>
+          <p>
+            The <b>LF</b> (<b>#10</b>) character is used to mark the end of a line in <var>S</var>, and causes the preceeding text to be added to the string list in <var>List</var>. The LF character is not included in the value added to the string list.
+          </p>
+          <p>
+            If no end-of-line characters are found in <var>S</var>, then a single line of text is added to the string list.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="StringToStringList.s">
-        <short>String with values extracted and stored in the method</short>
+        <short>String with values extracted and stored in the string list</short>
       </element>
       <element name="StringToStringList.List">
-        <short>TStrings instance where values are stored in the method</short>
+        <short>TStrings instance where values are stored in the routine</short>
       </element>
 
       <element name="GetNextDelimitedItem">
@@ -723,24 +733,48 @@
       </element>
 
       <element name="FindNextDelimitedItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Finds the next occurrence of a specific value in a delimited list</short>
+        <descr>
+          <p>
+            <var>FindNextDelimitedItem</var> is a <var>String</var> function used to find the next occurrence of a specific value in a delimited list of values.
+          </p>
+          <p>
+            <var>List</var> is the list with the delimited values searched in the routine.
+          </p>
+          <p>
+            <var>Delimiter</var> is the character used to separate the values in List.
+          </p>
+          <p>
+            <var>Position</var> is a variable parameter with the character index in List where the find operation is started. Position is 1-based, like using indexed access to the values in a String.
+          </p>
+          <p>
+            FindItem is the value to locate in List starting at the given position.
+          </p>
+          <p>
+            FindNextDelimitedItem calls the <var>GetNextDelimitedItem</var> routine to get the individual delimited values in List. GetNextDelimitedItem updates the value in Position when an item is retrieved. The value in Position is set to <b>Len(List)+1</b> if FindItem is not found in the routine.
+          </p>
+          <p>
+            The return value is set to the value in FindItem if it is found in List. The return value is an empty string (<b>''</b>) if FindItem is not found in the List starting at the given position.
+          </p>
+        </descr>
+        <seealso>
+          <link id="GetNextDelimitedItem"/>
+        </seealso>
       </element>
       <element name="FindNextDelimitedItem.Result">
-        <short/>
+        <short>The value in FindItem when found, or an empty string</short>
       </element>
       <element name="FindNextDelimitedItem.List">
-        <short/>
+        <short>List with delimited values examined in the routine</short>
       </element>
       <element name="FindNextDelimitedItem.Delimiter">
-        <short/>
+        <short>Character used to separate values in the list</short>
       </element>
       <element name="FindNextDelimitedItem.Position">
-        <short/>
+        <short>Starting position for the values examined in the routine</short>
       </element>
       <element name="FindNextDelimitedItem.FindItem">
-        <short/>
+        <short>Item value to locate in List</short>
       </element>
 
       <element name="MergeWithDelimiter">
@@ -847,7 +881,7 @@
       </element>
 
       <element name="ReplaceSubstring">
-        <short>Replaces (or appends) values the specified number of bytes at a give position</short>
+        <short>Replaces (or appends) the specified number of bytes at a given position</short>
         <descr>
           <p>
             <var>ReplaceSubstring</var> is a procedure used to replace a portion of a string with the specified value.

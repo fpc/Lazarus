@@ -12,7 +12,7 @@
       <short>Implements the TValueListEditor grid control</short>
       <descr>
         <p>
-          <file>valedit.pas</file> contains classes and types needed for the TValueListEditor control. It is a specialized grid control used to display and edit name / value pairs.
+          <file>valedit.pas</file> contains classes and types needed for the TValueListEditor control. It is a specialized 2-column grid control used to display and edit key / value pairs.
         </p>
         <p>
           The following components are added to the Additional tab in the Lazarus IDE component palette:
@@ -34,30 +34,28 @@
       <element name="LResources"/>
       <element name="Dialogs"/>
       <element name="LCLType"/>
+      <element name="Laz2_XMLCfg"/>
+      <element name="LCLStrConsts"/>
 
-      <!-- enumeration type Visibility: default -->
       <element name="TEditStyle">
         <short>
           Indicates the editor style for items in TValueListEditor
         </short>
         <descr>
           <p>
-            <var>TEditStyle</var> is an enumeration type with values that indicates the editor style used for items in <var>TValueListEditor</var>. TEditStyle is the type used for the <var>TItemProp.EditStyle</var> property.
+            <var>TEditStyle</var> is an enumeration type with values that indicate the editor style used for an item in <var>TValueListEditor</var>. TEditStyle is the type used for the <var>TItemProp.EditStyle</var> property.
           </p>
         </descr>
         <seealso>
           <link id="TItemProp.EditStyle">TItemProp.EditStyle</link>
         </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEditStyle.esSimple">
         <short>Displays an editor without decoration for the cell</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEditStyle.esEllipsis">
         <short>Displays an ellipsis button next to the cell editor</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TEditStyle.esPickList">
         <short>Displays a pick list for the cell editor</short>
       </element>
@@ -68,24 +66,21 @@
         </short>
         <descr>
             <p>
-              <var>TVleSortCol</var> is an enumeration type with values that indicate the sort order for items in <var>TValueListEditor</var>. Values in TVleSortCol refer to the ordinal position of the column used in the overloaded <var>TValueListEditor.Sort</var> method.
+              <var>TVleSortCol</var> is an enumeration type with values that indicate the sort order for items in <var>TValueListEditor</var>. Values in TVleSortCol refer to the ordinal position of the column used in the <var>TValueListEditor.Sort</var> method.
             </p>
         </descr>
         <seealso>
           <link id="TValueListEditor.Sort">TValueListEditor.Sort</link>
         </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TVleSortCol.colKey">
         <short>The Key column is used to sort items</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TVleSortCol.colValue">
-        <short>The Value column is used to sort iterms</short>
+        <short>The Value column is used to sort items</short>
       </element>
 
-      <!-- class Visibility: default -->
-      <element name="TItemProp" link="#rtl.Classes.TPersistent">
+      <element name="TItemProp" link="#rtl.classes.TPersistent">
         <short>
           Represents items in the TValueListEditor control
         </short>
@@ -94,11 +89,11 @@
             <var>TItemProp</var> is a <var>TPersistent</var> descendant that represents items in the <var>TValueListEditor</var> control. TItemProp provides properties and methods to define the editor used for a Key-Value pair. These include the editor style, editing mask, maximum length, pick list values, and read-only status for the item.
           </p>
           <p>
-            TItemProp maintains a reference to the TValueListEditor for the item, and allows access to the properties, methods, and events for the control.
+            TItemProp maintains a reference to the TValueListEditor for the item, and allows access to the properties, methods, and events for the grid control.
           </p>
           <p>
             TItemProp is the type used for items in the <var>TItemPropList</var> container, and
-            in the <var>TValueListEditor.ItemProps</var> property.
+            stored in the <var>TValueListEditor.ItemProps</var> property.
           </p>
         </descr>
         <seealso>
@@ -107,7 +102,6 @@
         </seealso>
       </element>
 
-      <!-- variable Visibility:default -->
       <element name="TItemProp.FGrid"/>
       <element name="TItemProp.FEditMask"/>
       <element name="TItemProp.FEditStyle"/>
@@ -116,66 +110,95 @@
       <element name="TItemProp.FReadOnly"/>
       <element name="TItemProp.FKeyDesc"/>
 
-      <!-- function visibility: private -->
       <element name="TItemProp.GetPickList">
-        <short></short>
+        <short>Gets the value for the PickList property</short>
+        <descr/>
+        <seealso>
+          <link id="TItemProp.PickList"/>
+        </seealso>
       </element>
       <element name="TItemProp.GetPickList.Result">
-        <short></short>
+        <short>Value for the property</short>
       </element>
 
-      <!-- procedure  visibility: private -->
       <element name="TItemProp.PickListChange">
-        <short></short>
+        <short>Implements the OnChange event handler for the PickList property</short>
+        <descr></descr>
+        <seealso>
+          <link id="TItemProp.PickList"/>
+        </seealso>
       </element>
       <element name="TItemProp.PickListChange.Sender">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetEditMask">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetEditMask.AValue">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetMaxLength">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetMaxLength.AValue">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetReadOnly">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetReadOnly.AValue">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetEditStyle">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetEditStyle.AValue">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetPickList">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetPickList.AValue">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetKeyDesc">
-        <short></short>
-      </element>
-      <element name="TItemProp.SetKeyDesc.AValue">
-        <short></short>
+        <short>Object for the event notification</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
-      <element name="TItemProp.AssignTo" link="#rtl.Classes.TPersistent.AssignTo">
+      <element name="TItemProp.SetEditMask">
+        <short>Sets the value for the EditMask property</short>
+        <seealso>
+          <link id="TItemProp.EditMask"/>
+        </seealso>
+      </element>
+      <element name="TItemProp.SetEditMask.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TItemProp.SetMaxLength">
+        <short>Sets the value for the MaxLength property</short>
+        <seealso>
+          <link id="TItemProp.MaxLength"/>
+        </seealso>
+      </element>
+      <element name="TItemProp.SetMaxLength.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TItemProp.SetReadOnly">
+        <short>Sets the value for the ReadOnly property</short>
+        <seealso>
+          <link id="TItemProp.ReadOnly"/>
+        </seealso>
+      </element>
+      <element name="TItemProp.SetReadOnly.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TItemProp.SetEditStyle">
+        <short>Sets the value for the EditStyle property</short>
+        <seealso>
+          <link id="TItemProp.EditStyle"/>
+        </seealso>
+      </element>
+      <element name="TItemProp.SetEditStyle.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TItemProp.SetPickList">
+        <short>Sets the value for the PickList property</short>
+        <seealso>
+          <link id="TItemProp.PickList"/>
+        </seealso>
+      </element>
+      <element name="TItemProp.SetPickList.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TItemProp.SetKeyDesc">
+        <short>Sets the value for the KeyDesc property</short>
+        <seealso>
+          <link id="TItemProp.KeyDesc"/>
+        </seealso>
+      </element>
+      <element name="TItemProp.SetKeyDesc.AValue">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TItemProp.AssignTo">
         <short>
           Stores property values to the specified persistent object
         </short>
         <descr>
           <p>
-            <var>AssignTo</var> is a procedure used to store property values for the class instance in the specified persistent object. AssignTo ensures that <var>Dest</var> is a <var>ItemProp</var> class instance prior to storing the following properties in the target:
+            <var>AssignTo</var> is a procedure used to store property values in the class instance to the specified persistent object. AssignTo ensures that <var>Dest</var> is a <var>ItemProp</var> class instance prior to storing the following properties in the target:
           </p>
           <ul>
             <li>EditMask</li>
@@ -189,13 +212,14 @@
             If Dest is not a TItemProp class instance, the inherited AssignTo method is called.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TPersistent.AssignTo">TPersistent.AssignTo</link>
+        </seealso>
       </element>
       <element name="TItemProp.AssignTo.Dest">
         <short>Persistent object to receive values from the class</short>
       </element>
 
-      <!-- constructor Visibility: public -->
       <element name="TItemProp.Create">
         <short>
           Constructor for the class instance
@@ -213,7 +237,6 @@
         <short>Owner of the class instance</short>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TItemProp.Destroy">
         <short>
           Destructor for the class instance
@@ -228,10 +251,9 @@
         </seealso>
       </element>
 
-      <!-- property Visibility: published -->
       <element name="TItemProp.EditMask">
         <short>
-          Specifies the edit mask used when editing the item
+          Specifies the edit mask used when editing the value for the item
         </short>
         <descr>
           <p>
@@ -278,7 +300,7 @@
               <dd>Trims leading space characters</dd>
           </dl>
           <p>
-            Changing the value in EditMask causes the TValueListEditor (which owns the item) to be redrawn when its EditorMode is <b>True</b>.
+            Changing the value in EditMask causes the TValueListEditor (which owns the item) to be redrawn when its EditorMode property is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -295,7 +317,7 @@
             <var>EditStyle</var> is a <var>TEditStyle</var> property which indicates the editor style to use for the item value. See <var>TEditStyle</var> for more information about the enumeration values and their meanings.
           </p>
           <p>
-            Changing the value in EditStyle causes the <var>TValueListEditor</var> (which owns the item)  to be redrawn when its EditorMode is <b>True</b>.
+            Changing the value in EditStyle causes the <var>TValueListEditor</var> (which owns the item) to be redrawn when its EditorMode property is set to <b>True</b>.
           </p>
           <remark>
             At run-time, adding values to the <var>PickList</var> overrides use of <var>esSimple</var> in EditStyle; the value <var>esPickList</var> will automatically be used.
@@ -329,13 +351,13 @@
         </short>
         <descr>
           <p>
-            <var>PickList</var> is a <var>TStrings</var> property which contains values that can be selected for the item in <var>TValueListEditor</var>. Values in PickList are displayed using a ComboBox-style drop down when editing the item.
+            <var>PickList</var> is a <var>TStrings</var> property which contains values that can be selected for the item in <var>TValueListEditor</var>. Values in PickList are displayed using a combo-box-style drop down when editing the item.
           </p>
           <p>
             Reading the value in PickList ensures that a TStringList class instance is assigned for the property. Its OnChange event handler is set to the private PickListChange method which adjusts the EditStyle to match the intended usage for the item. In other words, an EditStyle of esSimple is changed to esPickList when it contains values.
           </p>
           <p>
-            Assigning a new  TStringList to PickList causes existing values to be overwritten. The TValueListEditor (which owns the item) is redrawn when its EditorMode is <b>True</b>.
+            Assigning a new  TStringList to PickList causes existing values to be overwritten. The TValueListEditor (which owns the item) is redrawn when its EditorMode property is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -352,7 +374,7 @@
         </short>
         <descr>
           <p>
-            <var>MaxLength</var> is an <var>Integer</var> property that specifies the maximum length of the item value in <var>TValueListEditor</var>. Changing the value in MaxLength causes the TValueListEditor (which owns the item) to be redrawn when its EditorMode is True.
+            <var>MaxLength</var> is an <var>Integer</var> property that specifies the maximum length of the item value in <var>TValueListEditor</var>. Changing the value in MaxLength causes the TValueListEditor (which owns the item) to be redrawn when its EditorMode property is set to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -363,12 +385,10 @@
       </element>
 
       <element name="TItemProp.ReadOnly">
-        <short>
-          Indicates if the value for the item can be changed
-        </short>
+        <short>Indicates if the value for the item can be changed</short>
         <descr>
           <p>
-            <var>ReadOnly</var> is a <var>Boolean</var> property which indicates if the value for the item can be changed in <var>TValueListEditor</var>. When ReadOnly contains <b>True</b>, the value for the item cannot be changed. Changing the value in ReadOnly causes the TValueListEditor (which owns the item) to be redrawn when its EditorMode is <b>True</b>.
+            <var>ReadOnly</var> is a <var>Boolean</var> property which indicates if the value for the item can be changed in <var>TValueListEditor</var>. When ReadOnly is <b>True</b>, the value for the item cannot be changed. Changing the value in ReadOnly causes the TValueListEditor (which owns the item) to be redrawn when its <var>EditorMode</var> is <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -378,7 +398,6 @@
         </seealso>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TItemPropList">
         <short>
           Implements a storage container for items added to TValueListEditor
@@ -398,38 +417,45 @@
         </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
       <element name="TItemPropList.FList"/>
       <element name="TItemPropList.FStrings"/>
 
-      <!-- function Visibility: private -->
       <element name="TItemPropList.GetCount">
-        <short></short>
+        <short>Gets the value for the Count property</short>
+        <seealso>
+          <link id="TItemPropList.Count"/>
+        </seealso>
       </element>
       <element name="TItemPropList.GetCount.Result">
-        <short></short>
-      </element>
-      <element name="TItemPropList.GetItem">
-        <short></short>
-      </element>
-      <element name="TItemPropList.GetItem.Index">
-        <short></short>
-      </element>
-      <element name="TItemPropList.GetItem.Result">
-        <short></short>
-      </element>
-      <!-- procedure Visibility: private -->
-      <element name="TItemPropList.SetItem">
-        <short></short>
-      </element>
-      <element name="TItemPropList.SetItem.Index">
-        <short></short>
-      </element>
-      <element name="TItemPropList.SetItem.AValue">
-        <short></short>
+        <short>Value for the property</short>
       </element>
 
-      <!-- Visibility: public -->
+      <element name="TItemPropList.GetItem">
+        <short>Gets the value for the indexed Items property</short>
+        <seealso>
+          <link id="TItemPropList.Items"/>
+        </seealso>
+      </element>
+      <element name="TItemPropList.GetItem.Index">
+        <short>Ordinal position in the container with the property value</short>
+      </element>
+      <element name="TItemPropList.GetItem.Result">
+        <short>Value for the indexed property</short>
+      </element>
+
+      <element name="TItemPropList.SetItem">
+        <short>Sets the value for the indexed Items property</short>
+        <seealso>
+          <link id="TItemPropList.Items"/>
+        </seealso>
+      </element>
+      <element name="TItemPropList.SetItem.Index">
+        <short>Ordinal position in the container with the property value</short>
+      </element>
+      <element name="TItemPropList.SetItem.AValue">
+        <short>New value for the indexed property</short>
+      </element>
+
       <element name="TItemPropList.Add">
         <short>
           Appends the specified item to the list
@@ -458,13 +484,15 @@
         </short>
         <descr>
           <p>
-            <var>Assign</var> is a procedure which sets the items in the container to the values specified in Source. Assign iterates over the TItemProp instances in Source, and creates new TItemProp instances and calls Assign to update the persistent objects. The newly created items are added to the list for the container.
+            <var>Assign</var> is a procedure which sets the items in the container to the values specified in Source. Assign iterates over the TItemProp instances in Source, and creates new TItemProp instances and calls Assign to update the persistent objects. The newly created items are added to the internal list in the container.
           </p>
           <p>
             No actions are performed in the method when Source is unassigned (contains <var>Nil</var>).
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemProp"/>
+        </seealso>
       </element>
       <element name="TItemPropList.Assign.Source">
         <short>New values to store in the list for the container</short>
@@ -482,7 +510,10 @@
             Use Delete or Insert to append or insert a new item for the list.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Delete"/>
+          <link id="TItemPropList.Insert"/>
+        </seealso>
       </element>
 
       <element name="TItemPropList.Delete">
@@ -496,8 +527,15 @@
           <p>
             Use Clear to remove all items in the container.
           </p>
+          <p>
+            Use Add or Insert to store an item in the container.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Clear"/>
+          <link id="TItemPropList.Add"/>
+          <link id="TItemPropList.Insert"/>
+        </seealso>
       </element>
       <element name="TItemPropList.Delete.Index">
         <short>Ordinal position for the item</short>
@@ -526,7 +564,7 @@
 
       <element name="TItemPropList.Insert">
         <short>
-          Insert the new item at the specified position in the container
+          Inserts the new item at the specified position in the container
         </short>
         <descr>
           <p>
@@ -536,7 +574,9 @@
             Use Add to append a new item to the container.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Add"/>
+        </seealso>
       </element>
       <element name="TItemPropList.Insert.Index">
         <short>Ordinal position for the new item</short>
@@ -554,10 +594,13 @@
             <var>Create</var> is the constructor for the container. Create stores the value in AOwner as the owner of the container. Create allocates the internal TFPObjectList instance used to store Items in the list; objects in the list are owner by the container.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Items"/>
+          <link id="TItemPropList.Destroy"/>
+        </seealso>
       </element>
       <element name="TItemPropList.Create.AOwner">
-        <short></short>
+        <short>Owner for the container class instance</short>
       </element>
 
       <element name="TItemPropList.Destroy">
@@ -566,22 +609,27 @@
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy ensures that resources allocated to the internal list are freed; objects in the list are free as well. Destroy calls the inherited destructor.
+            <var>Destroy</var> is the destructor for the class instance. Destroy ensures that resources allocated to the internal list are freed; the Items in the list are freed as well. Destroy calls the inherited destructor.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Items"/>
+          <link id="TItemPropList.Create"/>
+        </seealso>
       </element>
 
       <element name="TItemPropList.Count">
         <short>
-          Indicates the number of items in the list for the container
+          Number of items in the list for the container
         </short>
         <descr>
           <p>
-            <var>Count</var> is a read-only Integer property that indicates the number of items in the internal list for the container. Count returns the value from the TFPObjectList.Count property.
+            <var>Count</var> is a read-only Integer property that indicates the number of Items in the internal list for the container. Count returns the value from the TFPObjectList.Count property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Items"/>
+        </seealso>
       </element>
 
       <element name="TItemPropList.Items">
@@ -590,7 +638,7 @@
         </short>
         <descr>
           <p>
-            <var>Items</var> is an indexed TItemProp property that provides access to items in the container by their ordinal position. Index is the ordinal position in the container in the range <var>0..Count-1</var>.
+            <var>Items</var> is an indexed <var>TItemProp</var> property that provides access to items in the container by their ordinal position. Index is the ordinal position in the container in the range <var>0..Count-1</var>.
           </p>
           <p>
             Items is the default property for the class.
@@ -598,39 +646,74 @@
           <p>
             Use Add to append a new item in the container. Use Insert to insert an item in the list at a specific position.
           </p>
+          <p>
+            Use Delete to remove an item at a specific position in the container. Use Clear to remove all items in the container.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Add"/>
+          <link id="TItemPropList.Insert"/>
+          <link id="TItemPropList.Delete"/>
+          <link id="TItemPropList.Clear"/>
+          <link id="TItemPropList.Count"/>
+        </seealso>
       </element>
 
-      <!-- class Visibility: default -->
-      <element name="TValueListStrings" link="#rtl.Classes.TStringList">
+      <element name="TValueListStrings" link="#rtl.classes.TStringList">
         <short>
           Stores values and item definitions used in TValueListEditor
         </short>
         <descr>
           <p>
-            <var>TValueListStrings</var> is a TStringList descendant used to store keys, values, and item definitions used in TValueListEditor. TValueListStrings provides methods needed to add, maintain, and sort the content in the class instance.
+            <var>TValueListStrings</var> is a <var>TStringList</var> descendant used to store keys, values, and item definitions used in TValueListEditor. TValueListStrings provides methods needed to add, maintain, and sort the content in the class instance.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.Keys"/>
+          <link id="TValueListEditor.Values"/>
+          <link id="TValueListEditor.ItemProps"/>
+          <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
 
-      <!-- Visibility: private -->
       <element name="TValueListStrings.FGrid"/>
       <element name="TValueListStrings.FItemProps"/>
 
       <element name="TValueListStrings.GetItemProp">
-        <short></short>
+        <short>Gets the item definition for the specified key name or index position</short>
+        <descr>
+          <p>
+            GetItemProp is a <var>TItemProp</var> function used to get an item definition for the specified key name or index position in the AKeyOrIndex argument. AKeyOrIndex is a variant type and contains the string with the name for a key, or the Integer row number  for the item.
+          </p>
+          <p>
+            When a String value is used, the IIndexOfName method is called to get the ordinal position for the key name. An Exception is raised if the key name does not exist in the string list.
+          </p>
+          <p>
+            The item definition in the associated grid control is retrieved using the ordinal position, and stored in the return value. An Exception is raised if the item definition in the list has not been assigned (contains Nil).
+          </p>
+          <p>
+            No actions are performed in the method when Count is zero (0), or when UpdateCount contains a non-zero value. The return value is Nil for either case.
+          </p>
+        </descr>
+        <errors>
+          <p>
+            Raises an Exception if a key with the specified name was not found in the item property list for the grid control.
+          </p>
+          <p>
+            Raises an Exception if the item property for the key name in unassigned (contains <b>Nil</b>).
+          </p>
+        </errors>
       </element>
       <element name="TValueListStrings.GetItemProp.AKeyOrIndex">
-        <short></short>
+        <short>Key name or index position for the item definition</short>
       </element>
       <element name="TValueListStrings.GetItemProp.Result">
-        <short></short>
+        <short>TItemProp instance with the definition for the requested key name or index</short>
       </element>
 
       <element name="TValueListStrings.QuickSortStringsAndItemProps">
-        <short></short>
+        <short>Performs a quick sort for the string and TItemProp instances in the list</short>
         <descr>
           <p>
             Duplicates the functionality of TStringList.QuickSort, but also sorts the ItemProps.
@@ -638,36 +721,41 @@
         </descr>
       </element>
       <element name="TValueListStrings.QuickSortStringsAndItemProps.L">
-        <short></short>
+        <short>Index position for the first value in the sort</short>
       </element>
       <element name="TValueListStrings.QuickSortStringsAndItemProps.R">
-        <short></short>
+        <short>Index position for the second value in the sort</short>
       </element>
       <element name="TValueListStrings.QuickSortStringsAndItemProps.CompareFn">
-        <short></short>
+        <short>Compare function used to implement the sort routine</short>
       </element>
 
       <element name="TValueListStrings.CanHideShowingEditorAtIndex">
-        <short></short>
+        <short>Indicates if the cell editor for the control is visible but not focused</short>
       </element>
       <element name="TValueListStrings.CanHideShowingEditorAtIndex.Index">
-        <short></short>
+        <short>Index for the non-title row in the associated grid control</short>
       </element>
       <element name="TValueListStrings.CanHideShowingEditorAtIndex.Result">
-        <short></short>
+        <short>True when the cell editor for the control is visible but not focused</short>
       </element>
 
-      <!-- Visibility: protected -->
       <element name="TValueListStrings.InsertItem">
         <short>
           Inserts an item with the specified value at the position in Index
         </short>
         <descr>
           <p>
-            <var>InsertItem</var> is an overloaded procedure used to insert an item with the specified value at the position in Index. InsertItem uses properties and methods in the TValueListEditor that owns the class instance to invalidate its cached row and to hide a visible editor in the control. InsertItem calls the TItemPropList.Insert method to insert a new item definition at the position in Index. A Visible editor in TValueListEditor is restored after the item has been inserted.
+            <var>InsertItem</var> is an overloaded procedure used to insert an item with the specified value(s) at the position in <var>Index</var>.
+          </p>
+          <p>
+            InsertItem hides a visible cell editor in the control during the insert operation. InsertItem calls the <var>TItemPropList.Insert</var> method to insert a new item definition at the position in Index. A visible cell editor is restored after the item has been inserted.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList.Insert"/>
+          <link id="#rtl.classes.TStringList.InsertItem">TStringList.InsertItem</link>
+        </seealso>
       </element>
       <element name="TValueListStrings.InsertItem.Index">
         <short>Ordinal position for the new item and value</short>
@@ -676,19 +764,22 @@
         <short>Value for the new item</short>
       </element>
       <element name="TValueListStrings.InsertItem.AObject">
-        <short></short>
+        <short>Object with the definition for the new item</short>
       </element>
 
       <element name="TValueListStrings.Put">
         <short>
-          Stores a value at the specified ordinal position
+          Sets the value for the indexed Strings property
         </short>
         <descr>
           <p>
-            <var>Put</var> is a procedure used to store a value at the specified ordinal position. Put ensures that the TValueListEditor which owns the class hides a visible editor for the specified ordinal position. Put calls the inherited method to store the value in S at the position in Index. A visible editor in TValueListEditor is restored when needed.
+            <var>Put</var> is a procedure used to store a value at the specified ordinal position. Put ensures that the <var>TValueListEditor</var> which owns the class instance hides a visible cell editor at the specified ordinal position. Put calls the inherited method to store the value in <var>S</var> at the position in <var>Index</var>. A visible cell editor in TValueListEditor is restored when needed.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Put">TStringList.Put</link>
+          <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
+        </seealso>
       </element>
       <element name="TValueListStrings.Put.Index">
         <short>Ordinal position for the value</short>
@@ -697,17 +788,18 @@
         <short>Value to store at the specified position</short>
       </element>
 
-      <!-- Visibility: public -->
       <element name="TValueListStrings.Create">
         <short>
           Constructor for the class instance
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor. Create uses the value in AOwner as the owner of the class instance. Create allocates resources need for the internal TItemPropList used for item defintions.
+            <var>Create</var> is the constructor for the class instance. Create calls the inherited constructor. Create uses the value in <var>AOwner</var> as the owner of the class instance. Create allocates resources need for the internal <var>TItemPropList</var> used for item definitions in the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TItemPropList"/>
+        </seealso>
       </element>
       <element name="TValueListStrings.Create.AOwner">
         <short>TValueListEditor that owns the class instance</short>
@@ -719,10 +811,12 @@
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy ensures that resources allocated for internal item definitions are freed. Destroy calls the inherited destructor.
+            <var>Destroy</var> is the destructor for the class instance. Destroy ensures that resources allocated for the internal item definitions are freed. Destroy calls the inherited destructor.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Destroy">TStringList.Destroy</link>
+        </seealso>
       </element>
 
       <element name="TValueListStrings.Assign">
@@ -731,25 +825,35 @@
         </short>
         <descr>
           <p>
-            <var>Assign</var> is a procedure used to store properties from Source in the current class instance. Assign uses the TValueListEditor which own the class instance to invalidate cached rows in the control. Assign calls Clear to remove any existing values and to prevent an exception when sorting values. Assign calls the inherited method using Source as an argument. If Source is a TValueListStrings class instance, its internal item definitions are stored in the current class instance.
+            <var>Assign</var> is an overridden procedure used to store properties from <var>Source</var> in the current class instance.
+          </p>
+          <p>
+            Assign uses the <var>TValueListEditor</var> which own the class instance to invalidate cached rows in the control. Assign calls Clear to remove any existing values and to prevent an exception when sorting values. Assign calls the inherited method using <var>Source</var> as an argument. If Source is a <var>TValueListStrings</var> instance, its internal item definitions are stored in the current class instance.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor"/>
+          <link id="TValueListStrings"/>
+          <link id="#rtl.classes.TStrings.Assign">TStrings.Assign</link>
+        </seealso>
       </element>
       <element name="TValueListStrings.Assign.Source">
-        <short></short>
+        <short>Persistent object with properties copied into the current class instance</short>
       </element>
 
       <element name="TValueListStrings.Clear">
         <short>
-          Removes all item values and definitions in the class
+          Removes all item values and definitions in the class instance
         </short>
         <descr>
           <p>
-            <var>Clear</var> is a procedure used to remove all item values and definitions in the class instance. Clear uses the TValueListEditor which owns the class instance to clear its cached rows, and to hide a visibile editor in the control. Clear calls the inherited method, and clears the internal list of item definitions for the class. TValueListEditor restores a visible editor when needed.
+            <var>Clear</var> is an overridden procedure used to remove all item names, values,  and item definitions in the class instance. Clear uses the <var>TValueListEditor</var> which owns the class instance to clear its cached rows, and to hide a visible editor in the control. Clear calls the inherited method, and clears the internal list of item definitions for the class. TValueListEditor restores a visible editor when needed.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor"/>
+          <link id="#rtl.classes.TStringList.Clear">TStringList.Clear</link>
+        </seealso>
       </element>
 
       <element name="TValueListStrings.CustomSort">
@@ -761,7 +865,9 @@
             <var>CustomSort</var> is an overridden procedure re-implemented to provide access to the inherited QuickSortStringsAndItemProps method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListStrings.QuickSortStringsAndItemProps"/>
+        </seealso>
       </element>
       <element name="TValueListStrings.CustomSort.Compare">
         <short>Comparison routine for the sorting operation</short>
@@ -773,7 +879,10 @@
         </short>
         <descr>
           <p>
-            <var>Delete</var> is a procedure used to delete the item value and definition at the specified ordinal position. Delete uses the TValueListEditor that owns the class to invalidate any cached rows in the control. A visible editor in the control is also hidden. Delete calls the inherited method using Index as an argument. Deletes removes the internal item definition at the position speecified in Index. A visible editor in TValueListEditor is restored when needed.
+            <var>Delete</var> is a procedure used to delete the item value and definition at the specified ordinal position.
+          </p>
+          <p>
+            Delete uses the <var>TValueListEditor</var> owner to invalidate any cached rows in the control. A visible editor in the control is also hidden. Delete calls the inherited method using <var>Index</var> as an argument. Deletes removes the internal item definition at the position specified in Index. A visible editor in TValueListEditor is restored when needed.
           </p>
         </descr>
         <seealso></seealso>
@@ -788,7 +897,10 @@
         </short>
         <descr>
           <p>
-            <var>Exchange</var> is a procedure used to swap the values and item definitions at the specified positions. Exchange uses the TValueListEditor that owns the class to invalidate any cached rows in the control. A visible editor in the control is also hidden. Exchange calls the inherited method using the values in Index1 and Index2 as arguments. Exchange swaps the item defintions at the specified positions as well. A visible editor in TValueListEditor is restored when needed.
+            <var>Exchange</var> is a procedure used to swap the values and item definitions at the specified positions.
+          </p>
+          <p>
+            Exchange uses the <var>TValueListEditor</var> that owns the class to invalidate any cached rows in the control. A visible editor in the control is also hidden. Exchange calls the inherited method using the values in <var>Index1</var> and <var>Index2</var> as arguments. Exchange swaps the item definitions at the specified positions as well. A visible editor in TValueListEditor is restored when needed.
           </p>
         </descr>
         <seealso></seealso>
@@ -800,15 +912,16 @@
         <short>Position of the item value and definition to swap</short>
       </element>
 
-      <!-- type Visibility: default -->
       <element name="TKeyValuePair">
-        <short></short>
+        <short>Stores Key and Value information used for items in TValueListEditor</short>
         <descr>
           <p>
-            <var>TKeyValuePair</var> is a record type used to store Key and Value information for rows in TValueListEditor. TKeyValuePair is used when an editor is activated for a row in TValueListEditor.
+            <var>TKeyValuePair</var> is a record type used to store Key and Value information for the rows in TValueListEditor. TKeyValuePair is used when an editor is activated for a row in <var>TValueListEditor</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor"/>
+        </seealso>
       </element>
       <element name="TKeyValuePair.Key">
         <short>Key data a row</short>
@@ -817,14 +930,13 @@
         <short>Value data for a row</short>
       </element>
 
-      <!-- enumeration type Visibility: default -->
       <element name="TDisplayOption">
         <short>
-          Enumeration type with values that define display capabiities in TValueListEditor
+          Represents display capabilities in TValueListEditor
         </short>
         <descr>
           <p>
-            <var>TDisplayOption</var> is an enumeration type with values that define display capabiities in TValueListEditor. TDisplayOption is the type stored in the TDisplayOptions set.
+            <var>TDisplayOption</var> is an enumeration type with values that define display capabilities available in TValueListEditor. TDisplayOption values are stored in the TDisplayOptions set type.
           </p>
         </descr>
         <seealso>
@@ -832,27 +944,23 @@
           <link id="TValueListEditor.DisplayOptions">TValueListEditor.DisplayOptions</link>
         </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDisplayOption.doColumnTitles">
         <short>Displays column titles</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDisplayOption.doAutoColResize">
-        <short>Automatcally resizes columns to the width of its content</short>
+        <short>Automatically resizes columns to the width of its content</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TDisplayOption.doKeyColFixed">
         <short>Displays the Key names column as a fixed caption column</short>
       </element>
 
-      <!-- set type Visibility: default -->
       <element name="TDisplayOptions">
         <short>
           Set type used to store TDisplayOption enumeration values
         </short>
         <descr>
           <p>
-            <var>TDisplayOptions</var> is a set type used to store values from the TDisplayOption enumeration. TDisplayOptions is the type used for the TValueListEditor.DisplayOptions property.
+            <var>TDisplayOptions</var> is a set type used to store values from the <var>TDisplayOption</var> enumeration. TDisplayOptions is the type used for the <var>TValueListEditor.DisplayOptions</var> property.
           </p>
         </descr>
         <seealso>
@@ -861,12 +969,11 @@
         </seealso>
       </element>
 
-      <!-- enumeration type Visibility: default -->
       <element name="TKeyOption">
-        <short></short>
+        <short>Represents Key actions used in TValueListEditor</short>
         <descr>
           <p>
-            <var>TKeyOption</var> is an enumeration type with values that control Key actions for Key-Value data in TValueListEditor. TKeyOption values are stored in the TKeyOptions set type.
+            <var>TKeyOption</var> is an enumeration type with values that control key actions allowed for Key-Value data in <var>TValueListEditor</var>. TKeyOption values are stored in the <var>TKeyOptions</var> set type.
           </p>
         </descr>
         <seealso>
@@ -874,31 +981,26 @@
           <link id="TValueListEditor.KeyOptions">TValueListEditor.KeyOptions</link>
         </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TKeyOption.keyEdit">
         <short>Allows editing of Key data</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TKeyOption.keyAdd">
         <short>Allows adding new Key data</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TKeyOption.keyDelete">
         <short>Allows deleting Key data</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TKeyOption.keyUnique">
         <short>Key data must be unique</short>
       </element>
 
-      <!-- set type Visibility: default -->
       <element name="TKeyOptions">
         <short>
           Stores values from the TKeyOption enumeration
         </short>
         <descr>
           <p>
-            <var>TKeyOptions</var> is a set type used to store values from the TKeyOption enumeration. TKeyOptions is the type used to implement the TValueListEditor.KeyOptions property.
+            <var>TKeyOptions</var> is a set type used to store values from the <var>TKeyOption</var> enumeration. TKeyOptions is the type used to implement the <var>TValueListEditor.KeyOptions</var> property.
           </p>
         </descr>
         <seealso>
@@ -907,148 +1009,120 @@
         </seealso>
       </element>
 
-      <!-- procedure type Visibility: default -->
       <element name="TGetPickListEvent">
         <short>
           Specifies an event handler signalled when loading the PickList for an item in TValueListEditor
         </short>
         <descr>
           <p>
-            <var>TGetPickListEvent</var> is an object procedure which specifies an event handler signalled when loading the PickList for an item in TValueListEditor. TGetPickListEvent allows the application to provide custom PickList values for an item using esPickList editor style.
+            <var>TGetPickListEvent</var> is an object procedure which specifies an event handler signalled when loading the PickList for an item in <var>TValueListEditor</var>. TGetPickListEvent allows the application to provide custom values in the PickList for an item using the esPickList editor style.
           </p>
           <p>
-            TGetPickListEvent is the type used for the TValueListEditor.OnGetPickList event handler.
+            TGetPickListEvent is the type used for the <var>TValueListEditor.OnGetPickList</var> event handler.
           </p>
         </descr>
         <seealso>
           <link id="TValueListEditor.OnGetPickList">TValueListEditor.OnGetPickList</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TGetPickListEvent.Sender">
         <short>TValueListEditor for the event notification</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TGetPickListEvent.KeyName">
         <short>Key name for the selected row</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TGetPickListEvent.Values">
         <short>Pick list values for the selected row</short>
       </element>
 
-      <!-- procedure type Visibility: default -->
       <element name="TOnValidateEvent">
         <short>
-          Specifies an event handler signalled when changes to a row in TValueListEditor are validated
+          Specifies an event handler signalled to validate a changed row in TValueListEditor
         </short>
         <descr>
           <p>
-            <var>TOnValidateEvent</var> is an object procedure type that specifies an event handler signalled when changes to a row in TValueListEditor are validated. Arguments passed to the event hander identify the control, row and col in the control, and the Key name and data.
+            <var>TOnValidateEvent</var> is an object procedure type that specifies an event handler signalled when changes to a row in <var>TValueListEditor</var> are validated. Arguments passed to the event handler identify the control, column and row numbers, and the Key name and value.
           </p>
           <p>
-            TOnValidateEvent is the type used to implement the TValueListEditor.OnValidate event handler property.
+            TOnValidateEvent is the type used to implement the <var>TValueListEditor.OnValidate</var> event handler.
           </p>
         </descr>
         <seealso>
           <link id="TValueListEditor.OnValidate">TValueListEditor.OnValidate</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOnValidateEvent.Sender">
         <short>TValueListEditor instance for the event notification</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOnValidateEvent.ACol">
         <short>Column number in the control</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOnValidateEvent.ARow">
         <short>Row number on the control</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOnValidateEvent.KeyName">
         <short>Key name for the modified row</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TOnValidateEvent.KeyValue">
         <short>Key data for the modified row</short>
       </element>
 
-      <!-- class Visibility: default -->
       <element name="TValueListEditor" link="#lcl.grids.TCustomStringGrid">
         <short>
-          A visual component for editing Key-Value pairs
+          A visual grid control for editing Key-Value pairs
         </short>
         <descr>
           <p>
-            <var>TValueListEditor</var> is a TCustomStringGrid descendant which implements an editor control for Key-Value pairs. TValueListEditor displays a two column grid where the first column is read-only, listing the key names. The second column is for editing the associated values. The value column supports masks, combobox selection, and a popup-dialog through an ellipsis button.
+            <var>TValueListEditor</var> is a <var>TCustomStringGrid</var> descendant which implements a grid-style editor control for Key-Value pairs. TValueListEditor displays a two column grid where the first column is read-only, and lists the key names. The second column is for editing the associated values for the key names.
           </p>
           <p>
-            TValueListEditor support item definitions in the control using the ItemProps property. TValueListEditor provides properties to access the Keys, Values, and Strings in the control. Features and behavior for the control can be specified using the Options, DisplayOptions, and KeyOptions properties.
+            TValueListEditor provides properties with the Keys and Values displayed in the rows for the control. The Cells property allows access using the familiar column and row number mechanism used in grid controls. The Strings property allows access to the strings used for the Key and Value in a row.
           </p>
           <p>
-            TValueListEditor implements method which can be used to perform editing actions in the control, such as: Clear, DeleteRow, DeleteColRow, FindRow, InsertRow, InsertRowWithValues, and Sort.
+            The ItemProps property is used to configure the cell editors used for the Keys and Values. This includes setting the editor style, edit mask, maximum length for the value, a list of selectable pick list values, and a read-only flag. Descriptive text for the Key name can also be stored  in the ItemProps.
           </p>
+          <p>
+            Features and behavior for the control can be specified using the Options, DisplayOptions, and KeyOptions properties.
+          </p>
+          <p>
+            TValueListEditor implements methods used to perform editing actions in the control, including:
+          </p>
+          <ul>
+            <li>Clear</li>
+            <li>DeleteRow</li>
+            <li>DeleteColRow</li>
+            <li>FindRow</li>
+            <li>InsertRow</li>
+            <li>InsertRowWithValues</li>
+            <li>Sort</li>
+          </ul>
         </descr>
         <seealso>
+          <link id="TItemPropList"/>
+          <link id="TItemProp"/>
           <link id="#LCL.Grids.TCustomStringGrid">TCustomStringGrid</link>
         </seealso>
       </element>
 
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FTitleCaptions">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FStrings">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FKeyOptions">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FDisplayOptions">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FDropDownRows">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FOnGetPickList">
-        <short></short>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TValueListEditor.FOnStringsChange">
-        <short></short>
-      </element>
-      <!-- function Visibility: private -->
-      <element name="TValueListEditor.FOnStringsChanging">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FOnValidate">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FRowTextOnEnter">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FLastEditedRow">
-        <short></short>
-      </element>
-      <!-- variable Visibility: private -->
-      <element name="TValueListEditor.FUpdatingKeyOptions">
-        <short></short>
-      </element>
+      <element name="TValueListEditor.FTitleCaptions"/>
+      <element name="TValueListEditor.FStrings"/>
+      <element name="TValueListEditor.FKeyOptions"/>
+      <element name="TValueListEditor.FDisplayOptions"/>
+      <element name="TValueListEditor.FDropDownRows"/>
+      <element name="TValueListEditor.FOnGetPickList"/>
+      <element name="TValueListEditor.FOnStringsChange"/>
+      <element name="TValueListEditor.FOnStringsChanging"/>
+      <element name="TValueListEditor.FOnValidate"/>
+      <element name="TValueListEditor.FRowTextOnEnter"/>
+      <element name="TValueListEditor.FLastEditedRow"/>
+      <element name="TValueListEditor.FUpdatingKeyOptions"/>
 
       <element name="TValueListEditor.GetItemProp">
         <short>Gets the value for the indexed ItemProps property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.ItemProps"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.GetItemProp.AKeyOrIndex">
         <short>Key name or position for the item definition</short>
@@ -1060,7 +1134,9 @@
       <element name="TValueListEditor.SetItemProp">
         <short>Sets the value for the indexed ItemProps property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.ItemProps"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.SetItemProp.AKeyOrIndex">
         <short>Key name or position for the item definition</short>
@@ -1072,173 +1148,169 @@
       <element name="TValueListEditor.StringsChange">
         <short>Implements the OnChange event handler for the Strings property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.StringsChange.Sender">
-        <short>Component triggering the event notification</short>
+        <short>Control triggering the event notification</short>
       </element>
 
       <element name="TValueListEditor.StringsChanging">
         <short>Implements the OnChanging event handler in the Strings property</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.StringsChanging.Sender">
-        <short>Component triggering the event notification</short>
+        <short>Control triggering the event notification</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TValueListEditor.GetOptions">
         <short>Gets the value for the Options property</short>
         <descr></descr>
         <errors></errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Options"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TValueListEditor.GetOptions.Result">
         <short>Value for the property</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TValueListEditor.GetKey">
         <short>Gets the value for the indexed Keys property</short>
         <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Key"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TValueListEditor.GetKey.Result">
         <short>Value for the property</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.GetKey.Index">
         <short>Position for the Key name in Keys</short>
       </element>
 
-      <!-- function Visibility: private -->
       <element name="TValueListEditor.GetValue">
         <short>Gets the value for the indexed Values property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.Values"/>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TValueListEditor.GetValue.Result">
         <short>Value for the property</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.GetValue.Key">
         <short>Key name to find in the method</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetDisplayOptions">
         <short>Sets the values in the DisplayOptions property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.DisplayOptions"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetDisplayOptions.AValue">
         <short>New values for the property</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetDropDownRows">
         <short>Sets the value in the DropDownRows property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.DropDownRows"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetDropDownRows.AValue">
         <short>New value for the property</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetKeyOptions">
         <short>Sets the values in the KeyOptions property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.KeyOptions"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetKeyOptions.AValue">
         <short>New values for the property</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetKey">
         <short>Sets the value in the indexed Keys property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.Keys"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetKey.Index">
-        <short>Position of the Key name in component</short>
+        <short>Position of the Key name in the item definitions</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetKey.Value">
         <short>New value for the Key name</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetValue">
         <short>Sets the value in the indexed Values property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.Values"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetValue.Key">
         <short>Key name for the specified value</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetValue.Value">
         <short>New value for the specified Key name</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetOptions">
         <short>Sets the values in the Options property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.Options"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetOptions.AValue">
-        <short></short>
+        <short>New value for the property</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetStrings">
         <short>Sets the values in the Strings property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetStrings.AValue">
         <short>New values for the property</short>
       </element>
 
-      <!-- procedure Visibility: private -->
       <element name="TValueListEditor.SetTitleCaptions">
         <short>Sets the values in the TitleCaptions property</short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.TitleCaptions"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetTitleCaptions.AValue">
         <short>New values for the property</short>
       </element>
 
       <element name="TValueListEditor.UpdateTitleCaptions">
-        <short>Updates TitleCaptions with the specified key and value captions</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>Updates TitleCaptions with the captions for the key and value columns</short>
+        <descr>
+          <p>
+            Clears existing values in TitleCaptions.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TValueListEditor.TitleCaptions"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.UpdateTitleCaptions.KeyCap">
         <short>Caption used for the Key column</short>
@@ -1247,9 +1319,12 @@
         <short>Caption used for the Value column</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.WSRegisterClass">
         <short>Registers the class type for the widget set</short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.WSRegisterClass">TCustomGrid.WSRegisterClass</link>
+        </seealso>
       </element>
 
       <element name="TValueListEditor.SetFixedCols">
@@ -1258,26 +1333,27 @@
         </short>
         <descr>
           <p>
-            <var>SetFixedCols</var> is a procedure used to set the value for the FixedCols property.
+            <var>SetFixedCols</var> is a procedure used to set the value for the <var>FixedCols</var> property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.FixedCols"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.SetFixedCols.AValue">
         <short>New value for the property</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.ShowColumnTitles">
         <short>
           Assigns and displays the column titles for the Key and Value columns
         </short>
         <descr>
           <p>
-            <var>ShowColumnTitles</var> is a procedure used to assign and display the column titles for the Key and Value columns in the component. ShowColumnTitles requires that column titles be enabled by including the value doColumnTitles in the DisplayOptions property. No actions are performed in the method if column titles have not been enabled.
+            <var>ShowColumnTitles</var> is a procedure used to assign and display the column titles for the Key and Value columns in the control. ShowColumnTitles requires  column titles to be enabled by including the value <var>doColumnTitles</var> in the <var>DisplayOptions</var> property. No actions are performed in the method if column titles have not been enabled.
           </p>
           <p>
-            The values used for column titles are derived from resource strings, or the TitleCaptions property (when assigned). The default values are:
+            The text used in column titles is derived from resource strings, or values in the <var>TitleCaptions</var> property (when assigned). The default column titles are:
           </p>
           <dl>
             <dt>rsVLEKey</dt>
@@ -1286,7 +1362,7 @@
             <dd>Resource string with the caption for the Value column</dd>
           </dl>
           <p>
-            Values in TitleCaptions are used when the property contains a value at the following ordinal positions:
+            Values in TitleCaptions are used when the property contains a values at the following ordinal positions:
           </p>
           <dl>
             <dt>0</dt>
@@ -1295,39 +1371,48 @@
             <dd>Value used as the caption for the Value column</dd>
           </dl>
           <p>
-            ShowColumnTitles uses the Cells property to assign the corresponding values to the  first row in the component.
+            ShowColumnTitles stores the column titles to the first row in the grid control using the <var>Cells</var> property.
           </p>
           <p>
-            ShowColumnTitles is performed automatically when the component is created,  and when values in DisplayOptions and TitleCaptions are changed.
+            ShowColumnTitles is called automatically when the control is created,  and when values in <var>DisplayOptions</var> or <var>TitleCaptions</var> are changed.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Cells"/>
+          <link id="TValueListEditor.DisplayOptions"/>
+          <link id="TValueListEditor.TitleCaptions"/>
+          <link id="TDisplayOption"/>
+        </seealso>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.AdjustRowCount">
         <short>
           Sets the number of visible rows for the control
         </short>
         <descr>
           <p>
-            AdjustRowCount is a procedure used to set the number of visible rows for the control. AdjustRowCount uses the Strings property to get the total number of rows needed for the control, including  the fixed caption row (if needed). When the value differs from RowCount, the Row and RowCount properties are updated.
+            <var>AdjustRowCount</var> is a procedure used to set the number of visible rows for the control. AdjustRowCount uses the <var>Strings</var> property to get the total number of rows needed for the control, including  the fixed caption row (if needed). When the value differs from <var>RowCount</var>, the <var>Row</var> and RowCount properties are updated.
           </p>
           <p>
-            AdjustRowCount is called from the StringsChange and TitlesChanged methods, and when values in DisplayOptions are changed.
+            AdjustRowCount is called from event hansdlers when values in Strings or <var>TitleCaptions</var> are changed, and when values are included in or excluded from <var>DisplayOptions</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.TitleCaptions"/>
+          <link id="TValueListEditor.DisplayOptions"/>
+          <link id="TValueListEditor.RowCount"/>
+          <link id="TValueListEditor.Row"/>
+        </seealso>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.ColRowExchanged" link="#lcl.grids.TCustomDrawGrid.ColRowExchanged">
         <short>
           Exchanges row values at the specified positions
         </short>
         <descr>
           <p>
-            <var>ColRowExchanged</var> is a procedure used to exchange row values at the specified positions. ColRowExchanged extends the inherited method by applying the changes to the Strings property after adjusting the index positions for the number of FixedRows in the control. ColRowExchanged calls the inherited method using IsColumn, Index, and WithIndex as arguments.
+            <var>ColRowExchanged</var> is a procedure used to exchange row values at the specified positions. ColRowExchanged extends the inherited method by applying the changes to the <var>Strings</var> property after adjusting the index positions for the number of FixedRows in the control. ColRowExchanged calls the inherited method using <var>IsColumn</var>, <var>Index</var>, and <var>WithIndex</var> as arguments.
           </p>
         </descr>
         <seealso></seealso>
@@ -1346,11 +1431,11 @@
 
       <element name="TValueListEditor.ColRowDeleted" link="#lcl.grids.TCustomDrawGrid.ColRowDeleted">
         <short>
-          Performs actions needed when a row is deleted in the component
+          Performs actions needed when a row is deleted in the control
         </short>
         <descr>
           <p>
-            <var>ColRowDeleted</var> is an overridden procedure used to perform actions needed when a Key-Value row is deleted in the component. ColRowDeleted ensures that EditorMode is set to False, and deletes the active row in the Strings property. ColRowDeleted calls the inherited method using IsColumn and Index as arguments.
+            <var>ColRowDeleted</var> is an overridden procedure used to perform actions needed when a Key-Value row is deleted in the control. ColRowDeleted ensures that <var>EditorMode</var> is set to <b>False</b>, and deletes the active row in the <var>Strings</var> property. ColRowDeleted calls the inherited method using <var>IsColumn</var> and <var>Index</var> as arguments.
           </p>
         </descr>
         <seealso></seealso>
@@ -1368,10 +1453,12 @@
         </short>
         <descr>
           <remark>
-            <var>DefineCellsProperty</var> has an empty implementation in TValueListEditor to prevent reading and writing the Cells property as defined in an ancestor class.
+            <var>DefineCellsProperty</var> has an empty implementation in <var>TValueListEditor</var> to prevent reading and writing the <var>Cells</var> property as defined in an ancestor class.
           </remark>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomStringGrid.DefineCellsProperty">TCustomStringGrid.DefineCellsProperty</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.DefineCellsProperty.Filer">
         <short>Component streamer for the class</short>
@@ -1379,14 +1466,14 @@
 
       <element name="TValueListEditor.InvalidateCachedRow">
         <short>
-          Resets the last edited row number for the component
+          Resets the last edited row number for the control
         </short>
         <descr>
           <p>
-            <var>InvalidateCachedRow</var> is a procedure used to invalidate the internal member variable used to track the last row edited in the component. When Strings contains data, the internal tracker is set to -1. When Strings has no data (length is 0), the internal tracker defaults to the first visibile non-fixed row. The editing buffer for Key and Value are also cleared.
+            <var>InvalidateCachedRow</var> is a procedure used to invalidate the internal member variable used to track the last row edited in the control. When <var>Strings</var> contains data, the internal tracker is set to -1. When Strings has no data (length is 0), the internal tracker defaults to the first visible non-fixed row. The editing buffers for both the key and value are cleared.
           </p>
           <p>
-            InvalidateCachedRow is called when the TValueListStrings instance in Strings performs Add, Delete, Insert, and Sort operations.
+            InvalidateCachedRow is called when the <var>TValueListStrings</var> instance in <var>Strings</var> performs <var>Add</var>, <var>Delete</var>, <var>Insert</var>, and <var>Sort</var> operations.
           </p>
         </descr>
         <seealso>
@@ -1397,11 +1484,14 @@
 
       <element name="TValueListEditor.GetAutoFillColumnInfo" link="#lcl.grids.TCustomGrid.GetAutoFillColumnInfo">
         <short>
-          Gets the display priority for a column
+          Gets the display priority for an auto-fill column
         </short>
         <descr>
           <p>
-            <var>GetAutoFillColumnInfo</var> is a procedure used to get the minimum and maximum width, as well as the relative display priority, for an automatically sized column in the grid. GetAutoFillColumnInfo overrides the behavior from an ancestor class to account for the two column grid used in the component. Index is the column number examined in the method. When Index is 1 (the Value column), the relative priority is set to 1. When Index is 0 (the Key column), DisplayOptions is used to determine if the Key column is fixed. The priority is 0 when fixed, or 1 when DisplayOptions does not include the value doKeyColFixed.
+            <var>GetAutoFillColumnInfo</var> is used to get the minimum and maximum width, and relative display priority, for an automatically sized column in the grid. GetAutoFillColumnInfo overrides the behavior from the ancestor class to account for the two column limit for the grid.
+          </p>
+          <p>
+            <var>Index</var> is the column number examined in the method. When Index is 1 (the Value column), the relative priority is set to 1. When Index is 0 (the Key column), <var>DisplayOptions</var> is used to determine if the Key column is fixed. The priority is set to 0 when fixed, or 1 when DisplayOptions does not include the value <var>doKeyColFixed</var>.
           </p>
           <remark>
             Values in the aMin and aMax arguments are not used; they were used in an ancestor class, but are not required in TValueListEditor.
@@ -1422,42 +1512,43 @@
         <short>Relative display priority for the column</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TValueListEditor.GetEditText">
         <short>
           Gets the value used in the editor for the specified cell
         </short>
         <descr>
           <p>
-            <var>GetEditText</var> is a String function used to get the value used in the editor for the cell at the specified coordinates. The return vaslue contain the content in Cells stored at the coordinates specified in ACol and ARow. GetEditText signals the OnGetEditText event handler (when assigned) to allow a custom value to be provided to the cell editor.
+            <var>GetEditText</var> is a <var>String</var> function used to get the value used in the editor for the cell at the specified coordinates. The return value contains the content in <var>Cells</var> stored at the coordinates in <var>ACol</var> and <var>ARow</var>.
+          </p>
+          <p>
+            GetEditText signals the <var>OnGetEditText</var> event handler (when assigned) to allow a custom value to be provided to the cell editor.
           </p>
         </descr>
         <seealso></seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TValueListEditor.GetEditText.Result">
         <short>Value for the cell editor</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.GetEditText.ACol">
         <short>Column number</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.GetEditText.ARow">
         <short>Row number</short>
       </element>
 
-      <!-- function Visibility: protected -->
       <element name="TValueListEditor.GetCells">
         <short>
           Gets the value in Cells at the specified row and column numbers
         </short>
         <descr>
           <p>
-            GetCells is a String function used to get the value in the Cells property at the specified row and column numbers. GetCells extends the behavior from the ancestor class by using the Strings property as the source of data in the component. When ACol contains 0 (the Key column), the Names property in Strings is used to get the value for the current row. When ACol contains 1 (the Value column), the ValueFromIndex method in Strings is used to get the value for the current row.
+            <var>GetCells</var> is a <var>String</var> function used to get the value in the Cells property at the specified row and column numbers. GetCells extends the behavior from the ancestor class by using the Strings property as the source of data in the control.
           </p>
           <p>
-            The return value is an empty string ('') when ARow is 0 (zero) and column titles are enabled in DisplayOptions. Use the TitleCaptions property to set the values displayed when DisplayOptions includes the value doColumnTitles.
+            When <var>ACol</var> contains 0 (the Key column), the <var>Names</var> property in <var>Strings</var> is used to get the value for the current row. When ACol contains 1 (the Value column), the <var>ValueFromIndex</var> method in Strings is used to get the value for the current row.
+          </p>
+          <p>
+            The return value is an empty string (<b>''</b>) when ARow is 0 (zero) and column titles are enabled in <var>DisplayOptions</var>. Use the <var>TitleCaptions</var> property to set the values displayed when DisplayOptions includes the value <var>doColumnTitles</var>.
           </p>
         </descr>
         <seealso>
@@ -1467,26 +1558,21 @@
           <link id="#rtl.classes.TStrings.ValueFromIndex">TStrings.ValueFromIndex</link>
         </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="TValueListEditor.GetCells.Result">
         <short>Value for the cell at the specified row and column number</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.GetCells.ACol">
         <short>Column number to read in Cells</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.GetCells.ARow">
         <short>Row number to read in Cells</short>
       </element>
 
       <element name="TValueListEditor.GetDefaultEditor">
-        <short>
-          Gets the editor control for the specified column number
-        </short>
+        <short>Gets the editor control for the specified column number</short>
         <descr>
           <p>
-            <var>GetDefaultEditor</var> is a TWinControl function used to get the editor control for the specified column number. The return value is the TWinControl used as the editor for the cell in the specified column number.
+            <var>GetDefaultEditor</var> is a <var>TWinControl</var> function used to get the editor control for the specified column number. The return value is the TWinControl used as the editor for the cell in the specified column number.
           </p>
           <p>
             GetDefaultEditor saves the current contents in Cells for the selected Row number to allow use of RestoreCurrentRow. GetDefaultEditor calls the inherited method to enable the logic implemented in the ancestor class.
@@ -1495,18 +1581,18 @@
             KeyOptions is used to determine if the <var>VK_Delete</var> key needs to be be handled in  the editor control. EditorOptions is updated to include or exclude the value <var>EO_HOOKKEYDOWN</var> based on the presence of KeyDelete in KeyOptions.
           </p>
           <p>
-            When Column contains 1 (the Value column), GetDefaultEditor retrieves the ItemProps item defintion in Strings for the specified column number. Its EditStyle is applied by calling the EditorByStyle method. For a PickList-style editor, pick list values in the item defintion are assigned to the ComboBox editor control and its drop-down row count is set to the value in DropDownRows. In addition, the OnGetPickList event handler is signalled (when assigned) to allow use of user-defined values in the editor control. The read-only status for the editor is updated to reflect the value in the item defintion.
+            When Column contains 1 (the Value column), the item definition in ItemProps is used to configure the default editor. Its EditStyle is applied by calling the EditorByStyle method. For a PickList-style editor, pick list values in the item definition are assigned to the combo-box editor control and its drop-down row count is set to the value in DropDownRows. The OnGetPickList event handler is signalled (when assigned) to get user-defined values in the editor control. The read-only status for the editor is updated to reflect the value in the item definition.
           </p>
           <p>
-            When Column contains 0 (the Key column), the editor is marked as read-only when KeyOptions does not include the value KeyEdit.
+            When Column contains 0 (the Key column), the editor is marked as read-only when <var>KeyOptions</var> does <b>not</b> include the value <var>KeyEdit</var>.
           </p>
         </descr>
         <seealso>
-          <link id="TValueListEditor.KeyOptions">TValueListEditor.KeyOptions</link>
-          <link id="TValueListEditor.ItemProps">TValueListEditor.ItemProps</link>
-          <link id="TValueListEditor.OnGetPickList">TValueListEditor.OnGetPickList</link>
-          <link id="TItemProp.EditStyle">TItemProp.EditStyle</link>
-          <link id="TItemProp.ReadOnly">TItemProp.ReadOnly</link>
+          <link id="TValueListEditor.KeyOptions"/>
+          <link id="TValueListEditor.ItemProps"/>
+          <link id="TValueListEditor.OnGetPickList"/>
+          <link id="TItemProp.EditStyle"/>
+          <link id="TItemProp.ReadOnly"/>
           <link id="#lcl.grids.TCustomGrid.EditorOptions">TCustomGrid.EditorOptions</link>
         </seealso>
       </element>
@@ -1518,19 +1604,25 @@
       </element>
 
       <element name="TValueListEditor.GetRowCount" link="#lcl.grids.TCustomGrid.GetRowCount">
-        <short></short>
+        <short>Gets the value for the RowCount property</short>
+        <descr/>
+        <seealso>
+          <link id="TValueListEditor.RowCount"/>
+          <link id="#lcl.grids.TCustomGrid.GetRowCount">TCustomGrid.GetRowCount</link>
+          <link id="#lcl.grids.TCustomGrid.GetRowCount">TCustomGrid.RowCount</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.GetRowCount.Result">
-        <short>Row count for the component</short>
+        <short>Row count for the grid control</short>
       </element>
 
       <element name="TValueListEditor.KeyDown">
         <short>
-          Provides support for special keys used in the component
+          Provides support for special keys used in the control
         </short>
         <descr>
           <p>
-            <var>KeyDown</var> is a procedure used to provide support for special keys used in the component. KeyDown calls the inherited method. The KeyOptions property is used to determine if actions are performed for the corresponding keystrokes, including:
+            <var>KeyDown</var> is a procedure used to provide support for special keys used in the control. KeyDown calls the inherited method. The <var>KeyOptions</var> property is used to determine if actions are performed for keystrokes, including:
           </p>
           <dl>
             <dt>KeyAdd (<var>VK_INSERT</var>)</dt>
@@ -1552,16 +1644,14 @@
         </seealso>
       </element>
       <element name="TValueListEditor.KeyDown.Key">
-        <short>Key code value</short>
+        <short>Key code for the key down event</short>
       </element>
       <element name="TValueListEditor.KeyDown.Shift">
-        <short>Shift state value</short>
+        <short>Shift / Ctrl / Alt modifier for the key down event</short>
       </element>
 
       <element name="TValueListEditor.LoadContent">
-        <short>
-          Loads configuration and content for the control from the specified XML configuration file
-        </short>
+        <short>Loads configuration and content from the specified XML configuration file</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -1569,22 +1659,22 @@
         <short>XML configuration file with values loaded in the method</short>
       </element>
       <element name="TValueListEditor.LoadContent.Version">
-        <short>Control vrsion for the stored content</short>
+        <short>Control version for the stored content</short>
       </element>
 
       <element name="TValueListEditor.ResetDefaultColWidths">
         <short>
-          Resets columns to their default widths
+          Resets grid columns to their default widths
         </short>
         <descr>
           <p>
-            <var>ResetDefaultColWidths</var> is a procedure used to reset columns to their default widths for the component. ResetDefaultColWidths uses values in the AutoFillColumns and DisplayOptions properties to determine the actions required in the method. When AutoFillColumns contains False, the inherited ResetDefaultColWidths method is called to set the default column widths.
+            <var>ResetDefaultColWidths</var> is a procedure used to reset grid columns to their default widths. ResetDefaultColWidths uses values in the <var>AutoFillColumns</var> and <var>DisplayOptions</var> properties to determine the actions needed in the method. When AutoFillColumns is <b>False</b>, the inherited <var>ResetDefaultColWidths</var> method is called to set the default column widths.
           </p>
           <p>
-            Otherwise, DisplayOptions is used to determine if the Key column is displayed as a fixed column. When DisplayOptions contains the value doKeyColFixed, the Key column (column 0) is resized to fit the longest value in the Keys property and the component is redrawn.
+            Otherwise, DisplayOptions is used to determine if the Key column is displayed as a fixed column. When DisplayOptions contains the value <var>doKeyColFixed</var>, the Key column (column 0) is resized to fit the longest value in the <var>Keys</var> property and the control is redrawn.
           </p>
           <p>
-            No actions are performed in the method when AutoFillColumns contains True and DisplayOptions does not include the value doKeyColFixed.
+            No actions are performed in the method when AutoFillColumns is <b>True</b> and <var>DisplayOptions</var> does not include the value <var>doKeyColFixed</var>.
           </p>
         </descr>
         <seealso>
@@ -1595,7 +1685,7 @@
 
       <element name="TValueListEditor.SaveContent">
         <short>
-          Saves the configuration and content in the control to the specified XML configuration file
+          Saves configuration and content in the control to the specified XML configuration file
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -1604,20 +1694,19 @@
         <short>XML configuration file where values are stored in the method</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.SetCells" link="#lcl.grids.TCustomStringGrid.SetCells">
         <short>
           Sets the value in the Cells property at the specified position
         </short>
         <descr>
           <p>
-            <var>SetCells</var> is an overridden procedure used to set the value in the Cells property at the specified row and column position. SetCells ensures that values written to the Cells property are also stored in the Strings property using the "Key=Value" convention used in the component. The new cell value in AValue is applied to either the Key or the Value based on the column number in ACol (0 is for Key, 1 is for Value).
+            <var>SetCells</var> is an overridden procedure used to set the value in the Cells property at the specified row and column position. SetCells ensures that values written to the Cells property are also stored in the Strings property using the "Key=Value" convention used in the control. The new cell value in AValue is applied to either the Key or the Value based on the column number in ACol (0 is for Key, 1 is for Value).
           </p>
           <p>
-            Cells with a row number of 0 (zero) are used for fixed title captions when they are enabled in the DisplayOptions for the component. When DisplayOptions contains the value doColumnTitles, the inherited SetCells method is called to display the new title caption entered at run-time. Use TitleCaptions to set the column title captions at design-time.
+            Cells with a row number of 0 (zero) are used for fixed title captions when they are enabled in the DisplayOptions for the control. When DisplayOptions contains the value <var>doColumnTitles</var>, the inherited SetCells method is called to display the new title caption entered at run-time. Use <var>TitleCaptions</var> to set the text for column title captions at design-time.
           </p>
           <p>
-            Use Cells to read or write values in the property.
+            Use <var>Cells</var> to read or write a value in the property.
           </p>
         </descr>
         <seealso>
@@ -1626,42 +1715,37 @@
           <link id="TValueListEditor.DisplayOptions">TValueListEditor.DisplayOptions</link>
         </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetCells.ACol">
         <short>Column number for the new cell value</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetCells.ARow">
         <short>Row number for the new cell value</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetCells.AValue">
         <short>New value for the cell</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.SetEditText" link="#lcl.grids.TCustomStringGrid.SetEditText">
         <short>
           Sets the cell value at the specified position
         </short>
         <descr>
           <p>
-            <var>SetEditText</var> is an overridden procedure used to set the value for the cell at the specified row and column position. SetEditText calls the inherited method, and stores the string in AValue in the Cells for the component.
+            <var>SetEditText</var> is an overridden procedure used to set the value for the cell at the specified column and row position. SetEditText calls the inherited method, and stores the string in AValue in the <var>Cells</var> property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Cells"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetEditText.ACol">
         <short>Column number for the new value</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetEditText.ARow">
         <short>Row number for the new value</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.SetEditText.Value">
-        <short>Value to store in the Cells for the component</short>
+        <short>Value to store in the Cells for the control</short>
       </element>
 
       <element name="TValueListEditor.SetFixedRows">
@@ -1670,87 +1754,113 @@
         </short>
         <descr>
           <p>
-            <var>SetFixedRows</var> is a procedure used to set the value in the FixedRows property. SetFixedRows is overriden in TValueListEditor to update the DisplayOptions for the component when the property value is changed. AValue is the number of fixed rows to use for title captions in the control. No actions are performed in the method when AValue contains a value other than 0 or 1.
+            <var>SetFixedRows</var> is a procedure used to set the value in the FixedRows property. SetFixedRows is overridden in <var>TValueListEditor</var> to update the <var>DisplayOptions</var> for the control when the property value is changed.
           </p>
           <p>
-            SetFixedRows updates the DisplayOptions property to reflect the requested value in AValue. When AValue is 0, the value doColumnTitles is excluded from the DisplayOptions property. When AValue is 1, the value doColumnTitles is included in the DisplayOptions property.
+            <var>AValue</var> is the number of fixed rows to use for title captions in the control. No actions are performed in the method when AValue contains a value other than 0 or 1.
           </p>
           <p>
-            Use TitleCaptions to set the title captions for columns at design-time. Use DisplayOptions to enable or disable title captions for the component.
+            When <var>AValue</var> is 0, the value doColumnTitles is excluded from the DisplayOptions property. When AValue is 1, the value <var>doColumnTitles</var> is included in the DisplayOptions property.
+          </p>
+          <p>
+            Use <var>TitleCaptions</var> to set the title captions for columns at design-time. Use DisplayOptions to enable or disable title captions for the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.FixedRows"/>
+          <link id="TValueListEditor.DisplayOptions"/>
+          <link id="TValueListEditor.TitleCaptions"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.SetFixedRows.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TValueListEditor.SetRowCount" link="#lcl.grids.TCustomGrid.SetRowCount">
+      <element name="TValueListEditor.SetRowCount">
         <short>
           Sets the value in the RowCount property
         </short>
         <descr>
           <p>
-            <var>SetRowCount</var> is an overridden procedure used to set the value in the RowCount property. AValue specifies the new value for the property. SetRowCount uses the value in RowCount to determine if any actions are required in the method. No actions are performed in the method when RowCount contains the same value as AValue. The new row count value is adjusted to account for the value in FixedRows.
+            <var>SetRowCount</var> is an overridden procedure used to set the value in the <var>RowCount</var> property. <var>AValue</var> contains the new value for the property.
           </p>
           <p>
-            SetRowCount provides support for the Strings property used in the component. When the new row count value is different than the number of entries in Strings, lines are added to or removed from Strings until the number of rows are the same.
+            AValue cannot contain a value smaller  than the number of <var>FixedRows</var> for the grid  control. An <var>EGridException</var> exception is raised when AValue is less than the number of FixedRows for the control.
+          </p>
+          <p>
+            SetRowCount uses the <var>RowCount</var> value inherited from the grid to determine if any actions are required in the method. No actions are performed in the method when the inherited RowCount contains the same value as AValue.
+          </p>
+          <p>
+            SetRowCount ensures that the <var>Strings</var> property contains the number of entries needed for the new property value minus the FixedRows for the grid. Lines are added to or deleted from Strings until the number of entries matches the needed value.
           </p>
         </descr>
-        <seealso></seealso>
+        <errors>
+          Raises an EGridException exception with the message in rsFixedRowsTooBig when the number of FixedRows is larger than the new value for the property.
+        </errors>
+        <seealso>
+          <link id="TValueListEditor.RowCount"/>
+          <link id="TValueListEditor.Strings"/>
+          <link id="#lcl.grids.TCustomDrawGrid.FixedRows">TCustomDrawGrid.FixedRows</link>
+          <link id="#lcl.grids.TCustomDrawGrid.RowCount">TCustomDrawGrid.RowCount</link>
+          <link id="#lcl.grids.TCustomDrawGrid.SetRowCount">TCustomDrawGrid.SetRowCount</link>
+          <link id="#lcl.grids.EGridException">EGridException</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.SetRowCount.AValue">
         <short>New value for the property</short>
       </element>
 
-      <element name="TValueListEditor.Sort" link="#lcl.grids.TCustomGrid.Sort">
+      <element name="TValueListEditor.Sort">
         <short>
           Sorts the values in Strings
         </short>
         <descr>
           <p>
-            <var>Sort</var> is a procedure used to sort the values in Strings. Sort disables an active editor in the component prior to sorting values when Options includes the value goAlwaysShowEditor. The active editor is restored when the sorting operation is completed.
+            <var>Sort</var> is a procedure used to sort the values in Strings. Sort disables an active editor in the control prior to sorting values when <var>Options</var> includes the value <var>goAlwaysShowEditor</var>. The active editor is restored when the sorting operation is completed.
           </p>
           <p>
-            Sort calls the inherited method using the values in Index, IndxFrom, and IndxTo as arguments. Please note that the ColSorting is not actually used in the sort operation; the True is always used for column sorting.
+            Sort calls the inherited method using the values in Index, IndxFrom, and IndxTo as arguments. Please note that the <var>ColSorting</var> argument is not actually used in the sort operation; <b>True</b> is always used for column sorting.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.Sort">TCustomGrid.Sort</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.Sort.ColSorting">
         <short>Not used n the current implementation</short>
       </element>
 
-      <!-- procedure Visibility: protected -->
       <element name="TValueListEditor.TitlesChanged">
         <short>
-          Default event handler signalled when TitleCaptions is changed
+          Event handler signalled when TitleCaptions is changed
         </short>
         <descr>
           <p>
-            <var>TitlesChanged</var> is a procedure which provides a default implementation for the event handler signalled when values in TitleCaptions are changed. TitlesChanged calls ShowColumnTitles and AdjustRowCount methods to update the component, and calls Invalidate to force the component to be redrawn.
+            <var>TitlesChanged</var> is a procedure which provides a default implementation for the event handler signalled when values in <var>TitleCaptions</var> are changed. TitlesChanged calls <var>ShowColumnTitles</var> and <var>AdjustRowCount</var> methods, and calls <var>Invalidate</var> to force the control to be redrawn.
           </p>
           <p>
-            TitlesChanged is assigned to the OnChange event handler in TitleCaptions when the component is created.
+            TitlesChanged is assigned to the <var>OnChange</var> event handler in <var>TitleCaptions</var> when the control is created.
           </p>
         </descr>
         <seealso></seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.TitlesChanged.Sender">
-        <short>Component triggering the event notification</short>
+        <short>Control triggering the event notification</short>
       </element>
 
       <element name="TValueListEditor.ValidateEntry">
         <short>
-          Validates data entered in a cell in the component
+          Validates data entered in a cell in the control
         </short>
         <descr>
           <p>
-            <var>ValidateEntry</var> is an overridden Boolean function used to validate data entered in a cell in the component. The return value is True if NewValue is acceptable for use in the cell at the specified coordinates.
+            <var>ValidateEntry</var> is an overridden <b>Boolean</b> function used to validate data entered in a cell in the control. The return value is <b>True</b> if NewValue is acceptable for use in the cell at the specified coordinates.
           </p>
           <p>
-            ValidateEntry calls the inherited method, which also signals the OnValidateEntry event handler. ValidateEntry extends the ancestor class to check for duplicate names in the Key column when the value KeyUnique is included in the KeyOptions property. The return value is False if a duplicate Key name is found in Strings. A dialog message is displayed with the message in rsVLEDuplicateKey, and the Editor re-selects the content to resolve the duplicate value.
+            ValidateEntry calls the inherited method, which signals the <var>OnValidateEntry</var> event handler (when assigned). ValidateEntry checks for duplicate names in the Key column when the value <var>KeyUnique</var> is included in the <var>KeyOptions</var> property.
+          </p>
+          <p>
+            The return value is <b>False</b> if a duplicate Key name is found in <var>Strings</var>. A dialog message is displayed with the message in <var>rsVLEDuplicateKey</var>, and the Editor re-selects the content in the control.
           </p>
         </descr>
         <seealso></seealso>
@@ -1771,14 +1881,13 @@
         <short>True if the cell value is valid</short>
       </element>
 
-      <!-- constructor Visibility: public -->
       <element name="TValueListEditor.Create">
         <short>
           Constructor for the class instance
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the class instance. Create allocates resources for the Strings and TitleCaptions properties, and calls the inherited constructor. Creates set the event handlers in Strings and TitleCaptions to the methods in the class instance. Create sets the default values for the following properties:
+            <var>Create</var> is the constructor for the class instance. Create allocates resources for the <var>Strings</var> and <var>TitleCaptions</var> properties, and calls the inherited constructor. Create sets the event handlers in Strings and TitleCaptions to methods in the class instance. Create sets the default values for the following properties:
           </p>
           <dl>
             <dt>ColCount</dt>
@@ -1797,39 +1906,45 @@
             <dd>True</dd>
           </dl>
           <p>
-            Create initializes the value for internal member variable used to track the last row edited in the component.
+            Create initializes the value for internal member used to track the last row edited in the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Destroy"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.Create.AOwner">
-        <short>Owner of the component instance</short>
+        <short>Owner of the control instance</short>
       </element>
 
-      <!-- destructor Visibility: public -->
       <element name="TValueListEditor.Destroy">
         <short>
           Destructor for the class instance
         </short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for the class instance. Destroy frees resources allocated to the Strings and TitleCaptions properties, and calls the inherited Destroy method.
+            <var>Destroy</var> is the destructor for the class instance. Destroy frees resources allocated to the <var>Strings</var> and <var>TitleCaptions</var> properties, and calls the inherited Destroy method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Create"/>
+        </seealso>
       </element>
 
       <element name="TValueListEditor.Clear">
         <short>
-          Removes the content in the component
+          Removes the content in the control
         </short>
         <descr>
           <p>
-            <var>Clear</var> is a procedure used to remove the content in the component. Clear calls the Clear method in Strings to remove the Name/Value information stored in the property.
+            <var>Clear</var> is a procedure used to remove the content in the control. Clear calls the Clear method in <var>Strings</var> to remove all Key / Value information stored in the property. This action also frees the item definitions stored in an internal list in Strings.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TItemPropList.Clear"/>
+          <link id="TItemProp"/>
+        </seealso>
       </element>
 
       <element name="TValueListEditor.DeleteColRow">
@@ -1838,19 +1953,25 @@
         </short>
         <descr>
           <p>
-            <var>DeleteColRow</var> is a procedure used to delete the column or row at the specified position. IsColumn indicates whether the action is intended for a column or a row. Index is the ordinal position of the row or column in the component.
+            <var>DeleteColRow</var> is a procedure used to delete the column or row at the specified position.
           </p>
           <p>
-            When IsColumn contains True, the DeleteCol method is called to remove the specified column number. Otherwise, the DeleteRow method is called to remove the specified row number.
+            <var>IsColumn</var> indicates whether the action is intended for a column or a row. <var>Index</var> is the ordinal position for the column or row removed in the method.
+          </p>
+          <p>
+            When IsColumn is <b>True</b>, the <var>DeleteCol</var> method is called. This results in an exception being raised in DeleteCol; columns cannot be removed in TValueListEditor. Otherwise, the <var>DeleteRow</var> method is called to remove the specified row number.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.DeleteRow"/>
+          <link id="TValueListEditor.DeleteCol"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.DeleteColRow.IsColumn">
         <short>True when a column is affected in the method</short>
       </element>
       <element name="TValueListEditor.DeleteColRow.Index">
-        <short>Position of the row or column in the component</short>
+        <short>Position of the row or column in the control</short>
       </element>
 
       <element name="TValueListEditor.DeleteRow">
@@ -1859,13 +1980,17 @@
         </short>
         <descr>
           <p>
-            <var>DeleteRow</var> is an overridden procedure used to delete row at the specified position in the component. DeleteRow ensures that the row specified in Index is not a fixed title caption, and that Strings contains data. No actions are performed in the method when these conditions are not met.
+            <var>DeleteRow</var> is an overridden procedure used to delete the row at the specified position in the control. DeleteRow ensures that the row in <var>Index</var> is not a fixed row with title captions, and that <var>Strings</var> contains data. No actions are performed in the method when these conditions are not met.
           </p>
           <p>
-            DeleteRow calls the inherited method to remove the specified row number in the component.
+            DeleteRow calls the inherited method to remove the specified row number in the grid.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.FixedRows"/>
+          <link id="TValueListEditor.Strings"/>
+          <link id="#lcl.grids.TCustomDrawGrid.DeleteRow">TCustomDrawGrid.DeleteRow</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.DeleteRow.Index">
         <short>Position of the row to be deleted</short>
@@ -1873,19 +1998,26 @@
 
       <element name="TValueListEditor.DeleteCol">
         <short>
-          Deletes the column at the specified position
+          Prevents column deletion in control
         </short>
         <descr>
           <p>
-            <var>DeleteCol</var> is an overridden procedure in TValueListEditor. DeleteCol is not a valid operation for the component, and is overridden to prevent access to the inherited method. DeleteCol raises an EGridException exception with the message in rsVLEInvalidRowColOperation.
+            <var>DeleteCol</var> is an overridden procedure in <var>TValueListEditor</var>.
+             Deleting a column is not a valid operation in TValueListEditor, and is overridden to block access to the inherited method.
+          </p>
+          <p>
+            DeleteCol raises an <var>EGridException</var> exception with the message in <var>rsVLEInvalidRowColOperation</var>.
           </p>
         </descr>
         <errors>
           <p>
-            EGridException exception raised with the message in rsVLEInvalidRowColOperation.
+            Raises an EGridException exception with the message in rsVLEInvalidRowColOperation.
           </p>
         </errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="EGridException"/>
+          <link id="rsVLEInvalidRowColOperation"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.DeleteCol.Index">
         <short>Position of the column to be deleted</short>
@@ -1897,13 +2029,20 @@
         </short>
         <descr>
           <p>
-            <var>FindRow</var> is a Boolean function used to locate the row with the specified Key name in the component. aRow contains the relative row number where KeyName was located. The row mumber is relative to the fixed title caption row (when visible).The value in aRow is not updated if KeyName is not found in Strings.
+            <var>FindRow</var> is a <var>Boolean</var> function used to locate the row with the specified Key name.
           </p>
           <p>
-            The return value is True when KeyName exists in the Strings property.
+            <var>aRow</var> contains the relative row number where <var>KeyName</var> was located. The row number is relative to the fixed title caption row (when visible).The value in aRow is not updated if <var>KeyName</var> is not found in <var>Strings</var>.
+          </p>
+          <p>
+            The return value is <b>True</b> when KeyName exists in the Strings property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.FixedRows"/>
+          <link id="#rtl.classes.TStrings.IndexOfName">TStrings.IndexOfName</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.FindRow.KeyName">
         <short>Key name to locate in the method</short>
@@ -1912,19 +2051,22 @@
         <short>Relative row number for the specified key name</short>
       </element>
       <element name="TValueListEditor.FindRow.Result">
-        <short>True when the key name exists in the component</short>
+        <short>True when the key name exists in the control</short>
       </element>
 
       <element name="TValueListEditor.InsertColRow">
         <short>
-          Inserts a row or column at the specified position
+          Inserts a column or a row at the specified position
         </short>
         <descr>
           <p>
-            <var>InsertColRow</var> is a procedure used to add a row or column at the specified position in the component. IsColumn indicates if a column is being inserted in the method. When IsColumn contains False, a row is inserted at the specified position.  Index contains the row number where a blank item is inserted in Strings. Index is relative the number of FixedRows in the component; ie. when FixedRows = 1 and Index = 1, the item is inserted at position 0 in Strings. When FixedRows = 0 and Index = 1, the item is inserted at position 1 in Strings.
+            <var>InsertColRow</var> is a procedure used to add a column or a row at the specified position in the control.
           </p>
           <p>
-            When IsColumn contains True, an EGridException exception is raised with the message in rsVLEInvalidRowColOperation. Inserting a column is not a valid operation in TValueListEditor.
+            <var>IsColumn</var> indicates if a column is being inserted in the method. When IsColumn contains <b>False</b>, a row is inserted at the specified position. <var>Index</var> contains the row number where a blank item is inserted in Strings. Index is relative the number of FixedRows in the control; ie. when FixedRows = 1 and Index = 1, the item is inserted at position 0 in Strings. When FixedRows = 0 and Index = 1, the item is inserted at position 1 in Strings.
+          </p>
+          <p>
+            When IsColumn is <b>True</b>, an <var>EGridException</var> exception is raised with the message in rsVLEInvalidRowColOperation. Inserting a column is not a valid operation in <var>TValueListEditor</var>.
           </p>
         </descr>
         <errors>
@@ -1932,7 +2074,11 @@
             Raises an EGridException exception with the message in rsVLEInvalidRowColOperation when adding a column in the control.
           </p>
         </errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.FixedRows"/>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListStrings.InsertItem"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.InsertColRow.IsColumn">
         <short>False if the insert operation is for a row</short>
@@ -1947,13 +2093,26 @@
         </short>
         <descr>
           <p>
-            <var>InsertRow</var> is an Integer function used to insert a row with the specified KeyName and Value at the current Row in the component. Append indicates if the inserted row is added after the current Row in the component. When Append is False, the values in KeyName and Value are inserted at the current row. Row is updated to reflect the row number for the inserted values.
+            <var>InsertRow</var> is an <var>Integer</var> function used to insert a row with the specified <var>KeyName</var> and <var>Value</var> at the current <var>Row</var> in the control.
+          </p>
+          <p>
+            <var>Append</var> indicates if the inserted row is added after the current Row in the control. When Append is <b>False</b>, the values in KeyName and Value are inserted at the current row. Row is updated to reflect the row number for the inserted values.
           </p>
           <p>
             The return value contains the row number relative to the fixed title captions where the KeyName and Value were inserted.
           </p>
+          <p>
+            Use <var>InsertRowWithValues</var> to insert a new row with the key and value passed in an array argument.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.Cells"/>
+          <link id="TValueListEditor.Row"/>
+          <link id="TValueListEditor.FixedRows"/>
+          <link id="TValueListEditor.InsertRowWithValues"/>
+          <link id="TValueListStrings.InsertItem"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.InsertRow.KeyName">
         <short>Key name to  use in the new row</short>
@@ -1974,16 +2133,22 @@
         </short>
         <descr>
           <p>
-            <var>InsertRowWithValues</var> is a procedure used to insert a row with the specified values at the specified row number in the component. Index contains the position in Strings where the new row is inserted.
+            <var>InsertRowWithValues</var> is a procedure used to insert a row with the specified values at the specified row number in the control. <var>Index</var> contains the position in <var>Strings</var> where the new row is inserted.
           </p>
           <p>
-            Values is an array of Strings with the Key name and value for the inserted row. Values should contain two elements in the array. The first is the key name. The second is the value. The second array element can be omitted, and defaults to an empty string (''). No other elements in the array are used in the method.
+            <var>Values</var> is an array of <var>Strings</var> with the Key name and value for the inserted row. Values should contain two elements in the array. The first is the key name. The second is the item value. The second array element can be omitted, and defaults to an empty string (<b>''</b>). Additional elements present in the array are <b>not</b> used in the method.
           </p>
           <p>
-            InsertRowWithValues inserts the key name and value in Strings at the specified position using the "Key=Value" convention used in the component.
+            InsertRowWithValues inserts the key name and value in Strings at the specified position using the "Key=Value" convention used in the control.
+          </p>
+          <p>
+            Use <var>InsertRow</var> to insert a new row using seperate key and item value parameters.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.InsertRow"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.InsertRowWithValues.Index">
         <short>Position for the inserted row</short>
@@ -1998,15 +2163,18 @@
         </short>
         <descr>
           <p>
-            <var>ExchangeColRow</var> is an overridden procedure used to swap the columns or rows at the specified positions in the component. IsColumn indicates if the exchanged values are in a column or in a row in the component. The two-column layout  in TValueListEditor prevents exchanging column values. When IsColumn contains True, an EGridException exception is raised with the message in rsVLEInvalidRowColOperation.
+            <var>ExchangeColRow</var> is an overridden procedure used to swap the columns or rows at the specified positions in the control.
           </p>
           <p>
-            When IsColumn contains False, the inherited ExchangeColRow method is called using Index and WithIndex as arguments.
+            <var>IsColumn</var> indicates if the exchanged values are in a column or in a row in the control. The two-column layout in TValueListEditor prevents exchanging column values. When IsColumn is <b>True</b>, an <var>EGridException</var> exception is raised with the message in <var>rsVLEInvalidRowColOperation</var>.
+          </p>
+          <p>
+            When IsColumn is <b>False</b>, the inherited ExchangeColRow method is called using <var>Index</var> and <var>WithIndex</var> as arguments.
           </p>
         </descr>
         <errors>
           <p>
-            EGridException raised with the message in rsVLEInvalidRowColOperation when exchanging column values in the component.
+            An EGridException exception is raised with the message in rsVLEInvalidRowColOperation when trying to exchange column values in the control.
           </p>
         </errors>
         <seealso></seealso>
@@ -2027,13 +2195,17 @@
         </short>
         <descr>
           <p>
-            <var>IsEmptyRow</var> is an overloaded Boolean function used to determine the Key name and Value for a row contain empty string values (''). One variant omits a row number parameter, and assumes the current row is used for the comparison. The other variant includes a row number, and performs the actual string comparisons.
+            <var>IsEmptyRow</var> is an overloaded <var>Boolean</var> function used to determine the Key name and Value for a row contain empty string values (<b>''</b>). One variant omits the row number parameter, and assumes the current <var>Row</var> is used for the comparison. The other variant includes the row number parameter and performs the check for empty values.
           </p>
           <p>
-            The return value is True when Strings contains no entries, or when Cells for the specified row number have empty string values ('') in both columns in the component.
+            The return value is <b>True</b> when <var>Strings</var> contains no entries, or when <var>Cells</var> for the specified row number have empty string values (<b>''</b>) in both columns.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.Cells"/>
+          <link id="TValueListEditor.Row"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.IsEmptyRow.aRow">
         <short>Row number to examine in the method</short>
@@ -2077,13 +2249,16 @@
         </short>
         <descr>
           <p>
-            <var>MoveColRow</var> is a procedure used to move the specified column or row to the new position. IsColumn indicates if the positions are in a column or in a row in the component. The two-column layout  in TValueListEditor prevents moving  column values. When IsColumn contains True, an EGridException exception is raised with the message in rsVLEInvalidRowColOperation.
+            <var>MoveColRow</var> is a procedure used to move the specified column or row to the new position. <var>IsColumn</var> indicates if the positions are in a column or in a row in the control. The two-column layout  in TValueListEditor prevents moving  column values. When IsColumn is <b>True</b>, an <var>EGridException</var> exception is raised with the message in <var>rsVLEInvalidRowColOperation</var>.
           </p>
           <p>
-            When IsColumn contains False, the values in Strings stored at the relative position in FromIndex are deleted. The values are re-inserted in Strings at the relative position in ToIndex.
+            When IsColumn is <b>False</b>, the values in <var>Strings</var> stored at the relative position in <var>FromIndex</var> are deleted. The values are re-inserted in Strings at the relative position in <var>ToIndex</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="EGridException"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.MoveColRow.IsColumn">
         <short>True if the operation affects a column</short>
@@ -2101,13 +2276,13 @@
         </short>
         <descr>
           <p>
-            <var>RestoreCurrentRow</var> is a Boolean function used to restore the values for the current row to their state prior to editing in the component. If an editor has been assigned and has focus, it is hidden by calling EditorHide.
+            <var>RestoreCurrentRow</var> is a Boolean function used to restore the values for the current row to their state prior to editing in the control. If an editor has been assigned and has focus, it is hidden by calling EditorHide.
           </p>
           <p>
             Values in the internal TKeyValuePair for the last row edited are restored in the Cells for the current Row. The EditorShow method is called to show the active editor after the row values are restored.
           </p>
           <p>
-            The return value True if the pre-editing values were successfully restored in the current Row. The return is False if values were not edited, or an editor was not assigned and focused in the component.
+            The return value is <b>True</b> if the pre-editing values were successfully restored in the current Row. The return is  <b>False</b> if values were not edited, or an editor was not assigned and focused in the control.
           </p>
         </descr>
         <seealso></seealso>
@@ -2118,649 +2293,282 @@
 
       <element name="TValueListEditor.Sort">
         <short>
-          Sorts values in the component by the names in the Key column
+          Sorts column values in the control
         </short>
         <descr>
           <p>
-            <var>Sort</var> is an overloaded procedure used to sort values in the component by the names in the Key column.
+            <var>Sort</var> is an overloaded procedure used to sort column values in the grid control. The overloaded variants provide different parameters for the sort operation.
+          </p>
+          <p>
+            <var>ACol</var> is a <var>TVleSortCol</var> value that indicates whether key names or values are sorted in the method. When the variant with aACol is used, the <var>SortColRow</var> method is called to perform the sort.
+          </p>
+          <p>
+            Index contain the position for the column sorted in the method.
+          </p>
+          <p>
+            IndxFrom and IndxTo specifiy the starting and ending row numbers affected by the sort operation. When the variant with column and row indexes is used, the inherited <var>Sort</var> method is called to perform the sort.
+          </p>
+          <p>
+            Sort hides a visible cell editor during the sort operation. The cell editor is restored (when needed) prior to exiting from the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.SortColRow"/>
+          <link id="TVleSortCol"/>
+          <link id="#lcl.grids.TCustomGrid.Sort">TCustomGrid.Sort</link>
+        </seealso>
       </element>
       <element name="TValueListEditor.Sort.Index">
-        <short>Ordinal position of the column for the sort operation</short>
+        <short>Ordinal position of the column sorted in the method</short>
       </element>
       <element name="TValueListEditor.Sort.IndxFrom">
-        <short></short>
+        <short>Row with the initial value included in the sort</short>
       </element>
       <element name="TValueListEditor.Sort.IndxTo">
-        <short></short>
+        <short>Row with the final value included in the sort</short>
       </element>
       <element name="TValueListEditor.Sort.ACol">
         <short>Column used for the sort operation</short>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TValueListEditor.Modified">
         <short>
-          Indicates if changes have been made in the component
+          Indicates if changes have been made to items in the control
         </short>
         <descr>
           <p>
-            <var>Modified</var> is a Boolean property which indicates if values in the component  have been modified. Modified is updated in the StringsChange event handler method when values in the Strings property have been added, changed, or deleted.
+            <var>Modified</var> is a <var>Boolean</var> property which indicates if items in the control have been modified. The value in Modified is updated when the <var>OnChange</var> event handler for the <var>Strings</var> property is signalled.
+          </p>
+          <p>
+            Use the <var>OnStringsChange</var> event handler to perform actions needed when the property value has been changed. This event occurs after updating Modified and RowCount, and redrawing the control.
+          </p>
+          <p>
+            Use the <var>OnStringsChanging</var> event handler to perform actions needed prior to storing changes in the Strings property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.RowCount"/>
+          <link id="TValueListEditor.OnStringsChanging"/>
+          <link id="TValueListEditor.OnStringsChange"/>
+          <link id="#lcl.grids.TCustomStringGrid.Modified">TCustomStringGrid.Modified</link>
+        </seealso>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TValueListEditor.Keys">
         <short>
-          Provides indexed access to Key names in the component
+          Provides indexed access to Key names in the control
         </short>
         <descr>
           <p>
-            <var>Keys</var> is an indexed String property which provides access to key names in the component. Index specifies the ordinal row number in Cells used to read or write the value for the property. The column number in Cells is always 0 (the Key column).
+            <var>Keys</var> is an indexed <var>String</var> property which provides access to key names in the control.
           </p>
           <p>
-            Use Values to access the value for a specifc Key name in the component.
+            <var>Index</var> specifies the ordinal row number in <var>Cells</var> used to read or write the value for the property. The column number in Cells is always 0 (the Key column).
+          </p>
+          <p>
+            Use <var>Values</var> to access the value for a specific Key name in the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Values"/>
+          <link id="TValueListEditor.Cells"/>
+          <link id="TValueListEditor.Strings"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.Keys.Index">
-        <short>Row number for the Key name in the component</short>
+        <short>Row number for the Key name in the control</short>
       </element>
 
-      <!-- property Visibility: public -->
       <element name="TValueListEditor.Values">
         <short>
-          Provides indexed access to Values in the component
+          Provides indexed access to Values stored in the control
         </short>
         <descr>
           <p>
-            <var>Values</var> is an indexed String property which provides access to values for Key names in the component. Key is a String value with the key name to locate in the Strings for the component. The property value is read from and written to the Cells property in the Value column (1). If Key does not already exist during write access, a new Key/Value pair is added to Strings.
+            <var>Values</var> is an indexed <var>String</var> property which provides access to values for Key names in the control.
           </p>
           <p>
-            Use Keys to read or write key names in the component.
+            <var>Key</var> is a <var>String</var> value with the key name to locate in the <var>Strings</var> for the control. The property value is read from and written to the <var>Cells</var> property in the Value column (1). If Key does not already exist during write access, a new Key/Value pair is added to Strings.
+          </p>
+          <p>
+            Use <var>Keys</var> to read or write key name values used for the items in the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Keys"/>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.Cells"/>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TValueListEditor.Values.Key">
         <short>Key name for the specified value</short>
       </element>
 
       <element name="TValueListEditor.ItemProps">
         <short>
-          Provides indexed access to item definitions in the component
+          Provides indexed access to item definitions in the control
         </short>
         <descr>
           <p>
-            <var>ItemProps</var> is an indexed TItemProp property which provides access to item definitions used in the component. ItemProps provides properties and methods to define the editor used for a Key-Value pair. These include the editor style, editing mask, maximum length, pick list values, and read-only status for the item.
+            <var>ItemProps</var> is an indexed <var>TItemProp</var> property which provides access to item definitions used in the control. ItemProps provides acces to the properties and methods used to define the editor for a Key-Value pair. These include the editor style, editing mask, maximum length, pick list values, and read-only status for the item.
           </p>
           <p>
-            AKeyOrIndex is a variant value that specifies the Key name (String) or the ordinal position (Integer) for the TItemProp instance in the property. Read and write access to ItemProps is redirected to the TItemPropList in the Strings property.
+            <var>AKeyOrIndex</var> is a <var>Variant</var> value that specifies the key name (String) or the ordinal position (Integer) for the TItemProp instance in the property. Read and write access to instances in ItemProps is redirected to the <var>TItemPropList</var> member in the <var>Strings</var> property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TItemProp"/>
+          <link id="TItemPropList"/>
+        </seealso>
       </element>
       <element name="TValueListEditor.ItemProps.AKeyOrIndex">
         <short>Key name or position for the item definition</short>
       </element>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Align" link="#lcl.controls.TControl.Align">
-        <short></short>
-      </element>
+      <element name="TValueListEditor.Align" link="#lcl.grids.TCustomDrawGrid.Align"/>
+      <element name="TValueListEditor.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor"/>
+      <element name="TValueListEditor.Anchors" link="#lcl.grids.TCustomDrawGrid.Anchors"/>
+      <element name="TValueListEditor.AutoAdvance" link="#lcl.grids.TCustomDrawGrid.AutoAdvance"/>
+      <element name="TValueListEditor.AutoEdit" link="#lcl.grids.TCustomGrid.AutoEdit"/>
+      <element name="TValueListEditor.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
+      <element name="TValueListEditor.BorderSpacing" link="#lcl.grids.TCustomDrawGrid.BorderSpacing"/>
+      <element name="TValueListEditor.BorderStyle" link="#lcl.grids.TCustomDrawGrid.BorderStyle"/>
+      <element name="TValueListEditor.Color" link="#lcl.grids.TCustomDrawGrid.Color"/>
+      <element name="TValueListEditor.Constraints" link="#lcl.grids.TCustomDrawGrid.Constraints"/>
+      <element name="TValueListEditor.DefaultColWidth" link="#lcl.grids.TCustomDrawGrid.DefaultColWidth"/>
+      <element name="TValueListEditor.DefaultDrawing" link="#lcl.grids.TCustomDrawGrid.DefaultDrawing"/>
+      <element name="TValueListEditor.DefaultRowHeight" link="#lcl.grids.TCustomDrawGrid.DefaultRowHeight"/>
+      <element name="TValueListEditor.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+      <element name="TValueListEditor.DragKind" link="#lcl.controls.TControl.DragKind"/>
+      <element name="TValueListEditor.DragMode" link="#lcl.controls.TControl.DragMode"/>
+      <element name="TValueListEditor.Enabled" link="#lcl.grids.TCustomDrawGrid.Enabled"/>
+      <element name="TValueListEditor.ExtendedSelect" link="#lcl.grids.TCustomStringGrid.ExtendedSelect"/>
+      <element name="TValueListEditor.FixedColor" link="#lcl.grids.TCustomDrawGrid.FixedColor"/>
+      <element name="TValueListEditor.FixedCols" link="#lcl.grids.TCustomDrawGrid.FixedCols"/>
+      <element name="TValueListEditor.Flat" link="#lcl.grids.TCustomDrawGrid.Flat"/>
+      <element name="TValueListEditor.Font" link="#lcl.grids.TCustomDrawGrid.Font"/>
+      <element name="TValueListEditor.GridLineWidth" link="#lcl.grids.TCustomDrawGrid.GridLineWidth"/>
+      <element name="TValueListEditor.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones"/>
+      <element name="TValueListEditor.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
+      <element name="TValueListEditor.MouseWheelOption" link="#lcl.grids.TCustomGrid.MouseWheelOption"/>
+      <element name="TValueListEditor.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.AlternateColor" link="#lcl.grids.TCustomGrid.AlternateColor">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Anchors" link="#lcl.controls.TControl.Anchors">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.AutoEdit" link="#lcl.grids.TCustomGrid.AutoEdit">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.BiDiMode" link="#lcl.controls.TControl.BiDiMode">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Color" link="#lcl.controls.TControl.Color">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Constraints" link="#lcl.controls.TControl.Constraints">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DefaultColWidth" link="#lcl.grids.TCustomGrid.DefaultColWidth">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DefaultDrawing" link="#lcl.grids.TCustomGrid.DefaultDrawing">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DefaultRowHeight" link="#lcl.grids.TCustomGrid.DefaultRowHeight">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DragCursor" link="#lcl.controls.TControl.DragCursor">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DragKind" link="#lcl.controls.TControl.DragKind">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DragMode" link="#lcl.controls.TControl.DragMode">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Enabled" link="#lcl.controls.TControl.Enabled">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.ExtendedSelect" link="#lcl.grids.TCustomGrid.ExtendedSelect">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Flat" link="#lcl.grids.TCustomGrid.Flat">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Font" link="#lcl.controls.TControl.Font">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.MouseWheelOption" link="#lcl.grids.TCustomGrid.MouseWheelOption">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
       <element name="TValueListEditor.ParentColor" link="#lcl.controls.TControl.ParentColor">
-        <short></short>
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is <b>False</b> in <var>TValueListEditor</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.ParentFont" link="#lcl.controls.TControl.ParentFont">
-        <short></short>
+      <element name="TValueListEditor.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TValueListEditor.ParentShowHint" link="#lcl.grids.TCustomDrawGrid.ParentShowHint"/>
+      <element name="TValueListEditor.PopupMenu" link="#lcl.grids.TCustomDrawGrid.PopupMenu"/>
+
+      <element name="TValueListEditor.RowCount" link="#lcl.grids.TCustomDrawGrid.RowCount">
+        <short/>
+        <descr>
+          <p>
+            Read and write access specifiers for the <var>RowCount</var> property are re-implemented in <var>TValueListEditor</var>. They are redirected to the inherited property value, and additional validation is performed when setting a new value for the property. See <link id="TValueListEditor.SetRowCount">SetRowCount</link>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TValueListEditor.GetRowCount"/>
+          <link id="TValueListEditor.SetRowCount"/>
+          <link id="#lcl.grids.TCustomDrawGrid.RowCount">TCustomDrawGrid.RowCount</link>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint">
-        <short></short>
-      </element>
+      <element name="TValueListEditor.ScrollBars" link="#lcl.grids.TCustomDrawGrid.ScrollBars"/>
+      <element name="TValueListEditor.ShowHint" link="#lcl.grids.TCustomDrawGrid.ShowHint"/>
+      <element name="TValueListEditor.TabOrder" link="#lcl.grids.TCustomDrawGrid.TabOrder"/>
+      <element name="TValueListEditor.TabStop" link="#lcl.grids.TCustomDrawGrid.TabStop"/>
+      <element name="TValueListEditor.TitleFont" link="#lcl.grids.TCustomGrid.TitleFont"/>
+      <element name="TValueListEditor.TitleImageList" link="#lcl.grids.TCustomGrid.TitleImageList"/>
+      <element name="TValueListEditor.TitleStyle" link="#lcl.grids.TCustomGrid.TitleStyle"/>
+      <element name="TValueListEditor.UseXORFeatures" link="#lcl.grids.TCustomStringGrid.UseXORFeatures"/>
+      <element name="TValueListEditor.Visible" link="#lcl.grids.TCustomDrawGrid.Visible"/>
+      <element name="TValueListEditor.VisibleColCount" link="#lcl.grids.TCustomDrawGrid.VisibleColCount"/>
+      <element name="TValueListEditor.VisibleRowCount" link="#lcl.grids.TCustomDrawGrid.VisibleRowCount"/>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.PopupMenu" link="#lcl.controls.TControl.PopupMenu">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.RowCount" link="#lcl.grids.TCustomGrid.RowCount">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.ScrollBars" link="#lcl.grids.TCustomGrid.ScrollBars">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.ShowHint" link="#lcl.controls.TControl.ShowHint">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.TabOrder" link="#lcl.controls.TWinControl.TabOrder">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.TabStop" link="#lcl.controls.TWinControl.TabStop">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.TitleFont" link="#lcl.grids.TCustomGrid.TitleFont">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.TitleImageList" link="#lcl.grids.TCustomGrid.TitleImageList">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.TitleStyle" link="#lcl.grids.TCustomGrid.TitleStyle">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.UseXORFeatures" link="#lcl.grids.TCustomGrid.UseXORFeatures">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.Visible" link="#lcl.controls.TControl.Visible">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.VisibleColCount" link="#lcl.grids.TCustomGrid.VisibleColCount">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.VisibleRowCount" link="#lcl.grids.TCustomGrid.VisibleRowCount">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection">
-        <short></short>
-      </element>
-
-      <element name="TValueListEditor.OnButtonClick" link="#lcl.grids.TCustomGrid.OnButtonClick">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnChangeBounds" link="#lcl.grids.TStringGrid.OnChangeBounds">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnCheckboxToggled" link="#lcl.grids.TCustomGrid.OnCheckboxToggled">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnClick" link="#lcl.grids.TCustomDrawGrid.OnClick">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnColRowDeleted" link="#lcl.grids.TCustomDrawGrid.OnColRowDeleted">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnColRowExchanged" link="#lcl.grids.TCustomDrawGrid.OnColRowExchanged">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnColRowInserted" link="#lcl.grids.TCustomDrawGrid.OnColRowInserted">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnColRowMoved" link="#lcl.grids.TCustomDrawGrid.OnColRowMoved">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnCompareCells" link="#lcl.grids.TCustomGrid.OnCompareCells">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnDragOver" link="#lcl.controls.TControl.OnDragOver">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnDblClick" link="#lcl.controls.TControl.OnDblClick">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnDrawCell" link="#lcl.grids.TCustomGrid.OnDrawCell">
-        <short></short>
-      </element>
+      <element name="TValueListEditor.OnBeforeSelection" link="#lcl.grids.TCustomDrawGrid.OnBeforeSelection"/>
+      <element name="TValueListEditor.OnButtonClick" link="#lcl.grids.TCustomDrawGrid.OnButtonClick"/>
+      <element name="TValueListEditor.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+      <element name="TValueListEditor.OnCheckboxToggled" link="#lcl.grids.TCustomGrid.OnCheckboxToggled"/>
+      <element name="TValueListEditor.OnClick" link="#lcl.grids.TCustomDrawGrid.OnClick"/>
+      <element name="TValueListEditor.OnColRowDeleted" link="#lcl.grids.TCustomDrawGrid.OnColRowDeleted"/>
+      <element name="TValueListEditor.OnColRowExchanged" link="#lcl.grids.TCustomDrawGrid.OnColRowExchanged"/>
+      <element name="TValueListEditor.OnColRowInserted" link="#lcl.grids.TCustomDrawGrid.OnColRowInserted"/>
+      <element name="TValueListEditor.OnColRowMoved" link="#lcl.grids.TCustomDrawGrid.OnColRowMoved"/>
+      <element name="TValueListEditor.OnCompareCells" link="#lcl.grids.TCustomDrawGrid.OnCompareCells"/>
+      <element name="TValueListEditor.OnContextPopup" link="#lcl.grids.TCustomDrawGrid.OnContextPopup"/>
+      <element name="TValueListEditor.OnDragDrop" link="#lcl.grids.TCustomDrawGrid.OnDragDrop"/>
+      <element name="TValueListEditor.OnDragOver" link="#lcl.grids.TCustomDrawGrid.OnDragOver"/>
+      <element name="TValueListEditor.OnDblClick" link="#lcl.grids.TCustomDrawGrid.OnDblClick"/>
+      <element name="TValueListEditor.OnDrawCell" link="#lcl.grids.TCustomDrawGrid.OnDrawCell"/>
 
       <element name="TValueListEditor.OnEditButtonClick">
-        <short>Deprecated; use OnButtonClick</short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnEditingDone" link="#lcl.MaskEdit.TCustomMaskEdit.OnEditingDone">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnEndDock" link="#lcl.controls.TControl.OnEndDock">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnEnter" link="#lcl.controls.TWinControl.OnEnter">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnExit" link="#lcl.controls.TWinControl.OnExit">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnGetEditMask" link="#lcl.grids.TCustomDrawGrid.OnGetEditMask">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnGetEditText" link="#lcl.grids.TCustomDrawGrid.OnGetEditText">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnGetPickList">
-        <short>
-          Event handler signalled when loading the PickList for an item
-        </short>
+        <short>Deprecated</short>
         <descr>
-          <p>
-            <var>OnGetPickList</var> is a TGetPickListEvent property that provides an event handler signalled when loading the PickList for an item with a specific Key name. OnGetPickList allows the application to provide custom PickList values for an item using esPickList editor style.
-          </p>
+          Use OnButtonClick instead.
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.OnButtonClick"/>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnHeaderClick" link="#lcl.grids.TCustomDrawGrid.OnHeaderClick">
-        <short></short>
-      </element>
+      <element name="TValueListEditor.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+      <element name="TValueListEditor.OnEndDock" link="#lcl.grids.TCustomDrawGrid.OnEndDock"/>
+      <element name="TValueListEditor.OnEndDrag" link="#lcl.grids.TCustomDrawGrid.OnEndDrag"/>
+      <element name="TValueListEditor.OnEnter" link="#lcl.grids.TCustomDrawGrid.OnEnter"/>
+      <element name="TValueListEditor.OnExit" link="#lcl.grids.TCustomDrawGrid.OnExit"/>
+      <element name="TValueListEditor.OnGetEditMask" link="#lcl.grids.TCustomDrawGrid.OnGetEditMask"/>
+      <element name="TValueListEditor.OnGetEditText" link="#lcl.grids.TCustomDrawGrid.OnGetEditText"/>
+      <element name="TValueListEditor.OnHeaderClick" link="#lcl.grids.TCustomDrawGrid.OnHeaderClick"/>
+      <element name="TValueListEditor.OnHeaderSized" link="#lcl.grids.TCustomDrawGrid.OnHeaderSized"/>
+      <element name="TValueListEditor.OnHeaderSizing" link="#lcl.grids.TCustomDrawGrid.OnHeaderSizing"/>
+      <element name="TValueListEditor.OnKeyDown" link="#lcl.grids.TCustomDrawGrid.OnKeyDown"/>
+      <element name="TValueListEditor.OnKeyPress" link="#lcl.grids.TCustomDrawGrid.OnKeyPress"/>
+      <element name="TValueListEditor.OnKeyUp" link="#lcl.grids.TCustomDrawGrid.OnKeyUp"/>
+      <element name="TValueListEditor.OnMouseDown" link="#lcl.grids.TCustomDrawGrid.OnMouseDown"/>
+      <element name="TValueListEditor.OnMouseEnter" link="#lcl.grids.TCustomDrawGrid.OnMouseEnter"/>
+      <element name="TValueListEditor.OnMouseLeave" link="#lcl.grids.TCustomDrawGrid.OnMouseLeave"/>
+      <element name="TValueListEditor.OnMouseMove" link="#lcl.grids.TCustomDrawGrid.OnMouseMove"/>
+      <element name="TValueListEditor.OnMouseUp" link="#lcl.grids.TCustomDrawGrid.OnMouseUp"/>
+      <element name="TValueListEditor.OnMouseWheel" link="#lcl.grids.TCustomDrawGrid.OnMouseWheel"/>
+      <element name="TValueListEditor.OnMouseWheelDown" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelDown"/>
+      <element name="TValueListEditor.OnMouseWheelUp" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelUp"/>
+      <element name="TValueListEditor.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+      <element name="TValueListEditor.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+      <element name="TValueListEditor.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
+      <element name="TValueListEditor.OnPickListSelect" link="#lcl.grids.TCustomDrawGrid.OnPickListSelect"/>
+      <element name="TValueListEditor.OnPrepareCanvas" link="#lcl.grids.TCustomDrawGrid.OnPrepareCanvas"/>
+      <element name="TValueListEditor.OnResize" link="#lcl.controls.TControl.OnResize"/>
+      <element name="TValueListEditor.OnSelectEditor" link="#lcl.grids.TCustomDrawGrid.OnSelectEditor"/>
+      <element name="TValueListEditor.OnSelection" link="#lcl.grids.TCustomDrawGrid.OnSelection"/>
+      <element name="TValueListEditor.OnSelectCell" link="#lcl.grids.TCustomDrawGrid.OnSelectCell"/>
+      <element name="TValueListEditor.OnSetEditText" link="#lcl.grids.TCustomDrawGrid.OnSetEditText"/>
+      <element name="TValueListEditor.OnShowHint" link="#lcl.controls.TControl.OnShowHint"/>
+      <element name="TValueListEditor.OnStartDock" link="#lcl.grids.TCustomDrawGrid.OnStartDock"/>
+      <element name="TValueListEditor.OnStartDrag" link="#lcl.grids.TCustomDrawGrid.OnStartDrag"/>
+      <element name="TValueListEditor.OnTopLeftChanged" link="#lcl.grids.TCustomDrawGrid.OnTopLeftChanged"/>
+      <element name="TValueListEditor.OnUserCheckboxBitmap" link="#lcl.grids.TCustomGrid.OnUserCheckboxBitmap"/>
+      <element name="TValueListEditor.OnUTF8KeyPress" link="#lcl.grids.TCustomDrawGrid.OnUTF8KeyPress"/>
+      <element name="TValueListEditor.OnValidateEntry" link="#lcl.grids.TCustomDrawGrid.OnValidateEntry"/>
 
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnHeaderSized" link="#lcl.grids.TCustomDrawGrid.OnHeaderSized">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnHeaderSizing" link="#lcl.grids.TCustomDrawGrid.OnHeaderSizing">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown">
-        <short></short>
-      </element>
-
-      <element name="TValueListEditor.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter">
-        <short></short>
-      </element>
-
-      <element name="TValueListEditor.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp">
-        <short></short>
-      </element>
-
-      <element name="TValueListEditor.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz">
-        <short></short>
-      </element>
-
-      <element name="TValueListEditor.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft">
-        <short></short>
-      </element>
-
-      <element name="TValueListEditor.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnPickListSelect" link="#lcl.grids.TCustomGrid.OnPickListSelect">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnPrepareCanvas" link="#lcl.grids.TCustomGrid.OnPrepareCanvas">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnResize" link="#lcl.controls.TControl.OnResize">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnSelectEditor" link="#lcl.grids.TCustomGrid.OnSelectEditor">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnSelection" link="#lcl.grids.TCustomGrid.OnSelection">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnSelectCell" link="#lcl.grids.TCustomDrawGrid.OnSelectCell">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnSetEditText" link="#lcl.grids.TCustomDrawGrid.OnSetEditText">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnShowHint" link="#lcl.controls.TControl.OnShowHint">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnStartDock" link="#lcl.controls.TControl.OnStartDock">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnStringsChange">
-        <short>
-          Event handler signalled when values in the Strings property are changed
-        </short>
-        <descr>
-          <p>
-            <var>OnStringsChange</var> is a TNotifyEvent property that implement the event handler signalled when values in the Strings property are changed. Applications can assign a procedure to the event handler to perform action needed in the component. OnStringsChange is triggered in the StringsChange method after updating the row count and redrawing the component.
-          </p>
-          <p>
-            Use OnStringsChanging to perform actions needed prior to setting values in Strings.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnStringsChanging">
-        <short>
-          Event handler signalled prior to updating the Strings property
-        </short>
-        <descr>
-          <p>
-            <var>OnStringsChanging</var> is a TNotifyEvent property that implements the event handler signalled prior to updating values in the Strings property. Applications can aassign a procedure to the event handler to respond to the event notification. OnStringsChanging is triggered in the StringsChanging method.
-          </p>
-          <p>
-            Use OnStringsChange to perform actions needed after values are updated in Strings.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnTopLeftChanged" link="#lcl.grids.TCustomGrid.OnTopLeftChanged">
-        <short>
-        </short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnUserCheckboxBitmap" link="#lcl.grids.TCustomGrid.OnUserCheckboxBitmap">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnValidate">
-        <short>
-          Not used in the current implementation
-        </short>
-        <descr>
-          <p>
-            <var>OnValidate</var> is a TOnValidateEvent property that implements the event handler signalled to validate a modififed value in the  grid. Not used in the current implementation.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.OnValidateEntry" link="#lcl.grids.TCustomGrid.OnValidateEntry">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
-      <element name="TValueListEditor.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered">
-        <short></short>
-      </element>
-
-      <!-- property Visibility: published -->
       <element name="TValueListEditor.DisplayOptions">
         <short>
-          Enables or disables display features and behaviors in the component
+          Enables or disables display features and behaviors in the control
         </short>
         <descr>
           <p>
-            <var>DisplayOptions</var> is a TDisplayOptions property which enables or disables display features and behaviors in the component. DisplayOptions is a set type, and can store 0 (zero) or more TDisplayOption values. The default value for the property includes the following enumeration values:
+            <var>DisplayOptions</var> is a <var>TDisplayOptions</var> property which enables or disables display features and behaviors in the control. DisplayOptions is a set type, and can store 0 (zero) or more <var>TDisplayOption</var> values. The default value for the property includes the following enumeration values:
           </p>
           <dl>
             <dt>doColumnTitles</dt>
@@ -2771,55 +2579,75 @@
             <dd>Displays the Key as a fixed caption column</dd>
           </dl>
           <p>
-            Changing the value in DisplayOptions may require updates to the RowCount and FixedRows properties; they are adjusted to reflect the current status for doColumnTitles in the property. In addition, the AutFillColumns property is updated to reflect the presence of doAutoColResize in the property.
+            Changing the value in DisplayOptions may cause updates to the <var>RowCount</var> and <var>FixedRows</var> properties; they are adjusted to reflect use of <var>doColumnTitles</var> in the property. In addition, the <var>AutoFillColumns</var> property is updated to reflect use of <var>doAutoColResize</var> in the property.
           </p>
           <p>
             The value in DisplayOptions is updated when the value in FixedRows is changed.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.RowCount"/>
+          <link id="TValueListEditor.FixedRows"/>
+          <link id="TDisplayOptions"/>
+          <link id="TDisplayOption"/>
+          <link id="#lcl.grids.TCustomDrawGrid.AutoFillColumns">TCustomDrawGrid.AutoFillColumns</link>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
+      <element name="TValueListEditor.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
+
       <element name="TValueListEditor.DropDownRows">
         <short>
           Number of rows displayed for an item with a PickList editor style
         </short>
         <descr>
           <p>
-            <var>DropDownRows</var> is an Integer property with the number of rows displayed for an item with a PickList editor style. The default value for the property is 8. DropDownRows is used in the GetDefaultEditor method to set the value in TComboBox.DrowDownCount for items in ItemProps using the esPickList editor style.
+            <var>DropDownRows</var> is an <var>Integer</var> property with the number of rows displayed for an item with a PickList editor style. The default value for the property is 8.
           </p>
           <p>
-            Use ItemProps to maintain the items defined for the component.
+            DropDownRows is used in the <var>GetDefaultEditor</var> method to configure the TComboBox control used for the editor style.
+          </p>
+          <p>
+            Use the indexed ItemProps property to maintain an item definition used in the grid control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.GetDefaultEditor"/>
+          <link id="TValueListEditor.ItemProps"/>
+          <link id="TItemProp.EditStyle"/>
+          <link id="TItemProp.PickList"/>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
       <element name="TValueListEditor.KeyOptions">
         <short>
-          Controls actions that can be performed for Keys in the component
+          Controls actions that can be performed for Keys in the control
         </short>
         <descr>
           <p>
-            <var>KeyOptions</var> is a TKeyOptions property used to control actions that can be performed for Keys in the component. KeyOptions is a set type, and can contain 0 (zero) or more values from the TKeyOption enumeration. The default value for the property is an empty set ([]).
+            <var>KeyOptions</var> is a <var>TKeyOptions</var> property used to control actions that can be performed for keys in the control. KeyOptions is a set type, and can contain 0 (zero) or more values from the TKeyOption enumeration. The default value for the property is an empty set (<b>[]</b>).
           </p>
           <p>
-            Settings the values in KeyOptions causes the internal UpdatingKeyOptions flag to be set. Including the value KeyAdd in KeyOptions requires KeyEdit to be added as well. The Options property may also be updated to include or exclude the value goAutoAddRows based on the presence of KeyAdd in the property. The internal UpdatingKeyOptions flag is cleared proper to exiting from the method.
+            Settings the values in KeyOptions causes the internal UpdatingKeyOptions flag to be set. Including the value <var>KeyAdd</var> in KeyOptions requires <var>KeyEdit</var> to be added as well. The <var>Options</var> property may also be updated to include or exclude the value <var>goAutoAddRows</var> based on use of KeyAdd in the property. The internal <var>UpdatingKeyOptions</var> flag is cleared prior to exiting from the method.
+          </p>
+          <p>
+            Values in KeyOptions are used in the <var>GetDefaultEditor</var> method to configure the cell editor for an item.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.Options"/>
+          <link id="TValueListEditor.GetDefaultEditor"/>
+          <link id="TKeyOptions"/>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
       <element name="TValueListEditor.Options">
         <short>
-          Specifies the options enabled for the two-column grid in the component
+          Specifies the options enabled for the Key-Value grid
         </short>
         <descr>
           <p>
-            <var>Options</var> is a TGridOptions property used to specify the options enabled for the two-column grid displayed in the component. Options is a set type that can contain 0 (zero) or more TGridOption values. The default values for the property include the following enumeration values:
+            <var>Options</var> is a <var>TGridOptions</var> property used to specify the options enabled for the two-column grid displayed in the control. Options is a set type that can contain 0 (zero) or more <var>TGridOption</var> values. By default, the property includes the following enumeration values:
           </p>
           <ul>
             <li>goFixedVertLine</li>
@@ -2832,42 +2660,154 @@
             <li>goThumbTracking</li>
           </ul>
           <p>
-            See TGridOption for more information about values and meanings in the enumeration.
+            See <link id="#lcl.grids.TGridOption">TGridOption</link> for more information about values and meanings in the enumeration.
           </p>
           <p>
-            Changing the value in Options causes additional validation to be performed.  goColMoving is always excluded from the property value; this is not a valid operation in TValueListEditor. goAutoAddRowsSkipContentCheck is also excluded from the property. If the internal UpdatingKeyOptions flas has not been set, and component streaming has completed, the KeyOptions property is updated to reflect the state of goAutoAddRows in the property value.
+            Changing the value in Options causes additional validation to be performed:
           </p>
+          <ul>
+            <li>
+              <var>goColMoving</var> is always excluded from the property value; column moving is not a valid operation in TValueListEditor.
+            </li>
+            <li>
+              <var>goAutoAddRowsSkipContentCheck</var> is also excluded from the property.
+            </li>
+            <li>
+              If the internal UpdatingKeyOptions flag has not been set, and component streaming has completed, the <var>KeyOptions</var> property is updated to include <var>goAutoAddRows</var>.
+            </li>
+          </ul>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.KeyOptions"/>
+          <link id="#lcl.grids.TGridOption">TGridOption</link>
+          <link id="#lcl.grids.TGridOptions">TGridOptions</link>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
       <element name="TValueListEditor.Strings">
         <short>
-          Provides storage for the Keys, Values, and item definitions in the component
+          Stores the keys, values, and item definitions in the control
         </short>
         <descr>
           <p>
-            <var>Strings</var> is a TValueListStrings property which provides storage for the Keys, Values, and item definitions in the component. Strings uses the "Key=Value" convention to store the string data needed for the Keys and Values properties. Strings also contains an internal TItemPropList member used to store the item definitions for the component.
+            <var>Strings</var> is a <var>TValueListStrings</var> property which provides storage for the <var>Keys</var>, <var>Values</var>, and item definitions in the control. Strings uses the "Key=Value" convention to store the string data needed for the Keys and Values properties.
             </p>
             <p>
-              Use the Keys property to read and write key names by their ordinal position in the component. Use Values to read or write the data stored for a specific Key name. Use ItemPtops to maintain the item defintions in the component.
+              Use the Keys property to read and write key names by their ordinal position in the control. Use Values to read or write the data stored for a specific Key name.
+            </p>
+            <p>
+              Strings also contains an internal <var>TItemPropList</var> member used to store the item definitions for the control. Use <var>ItemProps</var> to maintain the item definitions in the control.
+            </p>
+            <p>
             </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.ItemProps"/>
+          <link id="TValueListEditor.Keys"/>
+          <link id="TValueListEditor.Values"/>
+          <link id="TValueListStrings"/>
+          <link id="TItemPropList"/>
+          <link id="TItemProp"/>
+        </seealso>
       </element>
 
-      <!-- property Visibility: published -->
       <element name="TValueListEditor.TitleCaptions">
         <short>
-          Title captions used for columns in the component
+          Title captions used for columns in the control
         </short>
         <descr>
           <p>
-            <var>TitleCaptions</var> is a TStrings property with the title captions used for columns in the component. TitleCaptions should have 2 lines with the values used for the Key and Value columns in the component. When TitleCaptions is empty (0 lines), the values in rsVLEKey and rsVLEValue are used as the captions for their respective columns. If a line is omitted in TitleCaptions, the corresponding resource string is used as the default value for the caption. TitleCaptions is used in the ShowColumnTitles method to assign and display the fixed caption values.
+            <var>TitleCaptions</var> is a <var>TStrings</var> property with the title captions used for columns in the control. TitleCaptions should have 2 lines with the titles used for the Key and Value columns in the grid.
+          </p>
+          <p>
+            When TitleCaptions is empty (0 lines), the values in <var>rsVLEKey</var> and <var>rsVLEValue</var> are used as the captions for the respective columns. If a line is omitted in TitleCaptions, the corresponding resource string is used as the default value for the caption.
+          </p>
+          <p>
+            TitleCaptions is used in the <var>ShowColumnTitles</var> method to assign and display the column titles. Values in TitleCaptions are updated when <var>LoadContent</var> or <var>LoadFromCSVStream</var> is called. Changing values in TitleCaptions causes the control to be redrawn.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TValueListEditor.ShowColumnTitles"/>
+          <link id="TValueListEditor.LoadContent"/>
+          <link id="TValueListEditor.LoadFromCSVStream"/>
+          <link id="rsVLEKey"/>
+          <link id="rsVLEValue"/>
+        </seealso>
+      </element>
+
+      <element name="TValueListEditor.OnGetPickList">
+        <short>Event handler signalled to load values for the PickList in an item</short>
+        <descr>
+          <p>
+            <var>OnGetPickList</var> is a <var>TGetPickListEvent</var> property with the event handler signalled to load the PickList for the item with a specific key name.
+             OnGetPickList allows the application to provide custom selectable values for an item which uses the <var>esPickList</var> editor style.
+           </p>
+           <p>
+             OnGetPickList is signalled from the <var>GetDefaultEditor</var> method when an item definition in <var>ItemProps</var> uses <var>esPickList</var> in its <var>EditStyle</var> property.
+           </p>
+           <p>
+             An application must implement and assign a routine to the event handler to respond to the notification. The arguments for the event handler include the control instance, the key name for the item, and a TStrings instance where the values for the pick list can be stored.  Existing values in the pick list can be modified or replaced entirely.
+           </p>
+        </descr>
+        <seealso>
+          <link id="TValueListEditor.GetDefaultEditor"/>
+          <link id="TValueListEditor.ItemProps"/>
+          <link id="TGetPickListEvent"/>
+          <link id="TItemProp.EditStyle"/>
+          <link id="TItemProp.PickList"/>
+          <link id="TEditStyle"/>
+        </seealso>
+      </element>
+
+      <element name="TValueListEditor.OnStringsChange">
+        <short>Event handler signalled when values in the Strings property are changed</short>
+        <descr>
+          <p>
+            <var>OnStringsChange</var> is a <var>TNotifyEvent</var> property with the event handler signalled when values in the <var>Strings</var> property are changed. Applications can assign a procedure to the event handler to perform actions needed in the control.
+          </p>
+          <p>
+            OnStringsChange is triggered in the <var>StringsChange</var> method after updating the row count and redrawing the control.
+          </p>
+          <p>
+            Use <var>OnStringsChanging</var> to perform actions needed prior to setting values in Strings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.OnStringsChanging"/>
+        </seealso>
+      </element>
+
+      <element name="TValueListEditor.OnStringsChanging">
+        <short>Event handler signalled prior to updating the Strings property</short>
+        <descr>
+          <p>
+            <var>OnStringsChanging</var> is a <var>TNotifyEvent</var> property with the event handler signalled prior to updating values in the <var>Strings</var> property. Applications can assign a procedure to the event handler to respond to the event notification.
+          </p>
+          <p>
+            OnStringsChanging is triggered in the <var>StringsChanging</var> method.
+          </p>
+          <p>
+            Use <var>OnStringsChange</var> to perform actions needed after values are updated in Strings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TValueListEditor.Strings"/>
+          <link id="TValueListEditor.OnStringsChange"/>
+        </seealso>
+      </element>
+
+      <element name="TValueListEditor.OnValidate">
+        <short>Not used in the current implementation</short>
+        <descr>
+          <p>
+            <var>OnValidate</var> is a <var>TOnValidateEvent</var> property that implements the event handler signalled to validate a modified value in the  grid. Not used in the current implementation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.OnValidateEntry">TCustomGrid.OnValidateEntry</link>
+          <link id="#lcl.grids.TCustomGrid.ValidateEntry">TCustomGrid.ValidateEntry</link>
+        </seealso>
       </element>
 
       <element name="rsVLEDuplicateKey">
@@ -2875,36 +2815,43 @@
           Message displayed when a duplicate Key name is found
         </short>
       </element>
+
       <element name="rsVLEKey">
         <short>
           Default caption for the Key column; value is 'Key'
         </short>
       </element>
+
       <element name="rsVLEValue">
         <short>
           Default caption for the Value column; value is 'Value'
         </short>
       </element>
+
       <element name="rsVLEInvalidRowColOperation">
         <short>
           Exception message for an invalid row or column operation
         </short>
       </element>
+
       <element name="rsVLENoRowCountFound">
         <short>
           Error message displayed when a row count is not found when loading content in TValueListEditor
         </short>
       </element>
+
       <element name="rsVLERowIndexOutOfBounds">
         <short>
           Error message displayed when an invalid row number is found when loading content in TValueListEditor
         </short>
       </element>
+
       <element name="rsVLEColIndexOutOfBounds">
         <short>
           Error message displayed when an invalid column number is found when loading content in TValueListEditor
         </short>
       </element>
+
       <element name="rsVLEIllegalColCount">
         <short>
           Error message displayed when an invalid column count is found when loading content in TValueListEditor; column count is always 2 in TValueListEditor
@@ -2915,7 +2862,7 @@
         <short>Register components for use in the Lazarus IDE</short>
         <descr>
           <p>
-            <var>Register</var> is the procedure used to register components for use in th Lazarus IDE. Register adds the following components to the Lazarus IDE component palette:
+            <var>Register</var> is the procedure used to register components for use in the Lazarus IDE. Register adds the following components to the Lazarus IDE component palette:
           </p>
           <p>
             <b>Additional</b> Tab
@@ -2928,6 +2875,5 @@
 
     </module>
     <!-- ValEdit -->
-
   </package>
 </fpdoc-descriptions>
