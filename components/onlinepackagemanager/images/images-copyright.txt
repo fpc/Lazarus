@@ -1,0 +1,67 @@
+The following program images were created by Roland Hahn.
+
+in folder ide
+- pkg_opm.png
+
+in folders Toolbar/Dis and Toolbar/Nor
+- 00 Refresh.png
+- 01 Download.png
+- 01 Filter.png
+- 02 Download.png
+- 02 Install.png
+- 03 Install.png
+- 03 Update.png
+- 04 Uninstall.png
+- 04 Update.png
+- 05 LocalRepo.png
+- 05 Uninstall.png
+- 06 CleanUp.png
+- 07 Repository.png
+- 08 Options.png
+- 09 Help.png
+
+in folder Tree_Buttons
+- 00 Repository.png
+- 01 PackageName.png
+- 02 PackageFile.png
+- 03 Description.png
+- 04 Author.png
+- 05 LazCompatibility.png
+- 06 FPCCompatibility.png
+- 07 WidgetSet.png
+- 08 PackageType.png
+- 09 Dependencies.png
+- 10 License.png
+- 11 Miscellaneous.png
+- 12 Category.png
+- 13 RepositoryFile.png
+- 14 RepositorySize.png
+- 15 RepositoryHash.png
+- 16 RepositoryDate.png
+- 17 HomePage.png
+- 18 DownloadLink.png
+- 19 SVN.png
+- 20 UpToDate.png
+- Clear.png
+- Confirmation.png
+- Database.png
+- Error.png
+- FileVersion.png
+- Info.png
+- magnifier-minus.png
+- magnifier-plus.png
+- New_Package.png
+- Ok.png
+- package_del.png
+- package_minus.png
+- Refresh.png
+- Refresh1.png
+- StarEmpty.png
+- StarFull.png
+- StarFull_Blue.png
+- StarHalfFull.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

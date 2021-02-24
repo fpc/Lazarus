@@ -1,0 +1,12 @@
+The following component palette icons (including equally named
+files with appendix _150 and _200) were created by Roland Hahn.
+
+- tipfiledataprovider.png
+- tiphtmldataprovider.png
+- tiphtmlpanel.png
+- ttiphttpdataprovider.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

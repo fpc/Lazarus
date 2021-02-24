@@ -1,0 +1,32 @@
+The following component palette icons (including equally named
+files with appendix _150 and _200) were created by Roland Hahn.
+
+- tfbadmin.png
+- tfbeventmonitor.png
+- tibconnection.png
+- tmssqlconnection.png
+- tmysql40connection.png
+- tmysql41connection.png
+- tmysql50connection.png
+- tmysql51connection.png
+- tmysql55connection.png
+- tmysql56connection.png
+- tmysql57connection.png
+- tmysql80connection.png
+- tmysqlconnection.png
+- todbcconnection.png
+- toracleconnection.png
+- tpqconnection.png
+- tpqteventmonitor.png
+- tsqlconnector.png
+- tsqldblibraryloader.png
+- tsqlite3connection.png
+- tsqlquery.png
+- tsqlscript.png
+- tsqltransaction.png
+- tsybaseconnection.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

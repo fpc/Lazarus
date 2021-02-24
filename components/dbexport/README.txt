@@ -27,3 +27,13 @@ this in the designer.
 
 TStandardExports - Drop this on a form to register standard export types in
 your application.
+
+--------------------------------------------------------------------------------
+
+The following component palette icons (including equally named
+files with appendix _150 and _200) were created by Roland Hahn.
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

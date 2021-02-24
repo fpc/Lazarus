@@ -1,0 +1,31 @@
+The following component palette icons (including equally named
+files with appendix _150 and _200) were created by Roland Hahn.
+
+- baseicon.png
+- tmultipropertylink.png
+- ttibutton.png
+- tticalendar.png
+- tticheckbox.png
+- tticheckgroup.png
+- ttichecklistbox.png
+- tticolorbutton.png
+- tticombobox.png
+- ttiedit.png
+- ttifloatspinedit.png
+- ttigrid.png
+- ttigroupbox.png
+- ttiimage.png
+- ttilabel.png
+- ttilistbox.png
+- ttimaskedit.png
+- ttimemo.png
+- ttiprogressbar.png
+- ttipropertygrid.png
+- ttiradiogroup.png
+- ttispinedit.png
+- ttitrackbar.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

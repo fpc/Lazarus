@@ -1,0 +1,10 @@
+The following component palette icons were created by Roland Hahn.
+
+- tdbf.png
+- tdbf_150.png
+- tdbf_200.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

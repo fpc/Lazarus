@@ -1,0 +1,48 @@
+The following images (including equally named
+files with appendix _150 and _200) were created by Roland Hahn.
+
+- laz_vt_check_dark.png
+- laz_vt_check_dark_150.png
+- laz_vt_check_dark_200.png
+- laz_vt_check_light.png
+- laz_vt_check_light_150.png
+- laz_vt_check_light_200.png
+- laz_vt_flat.png
+- laz_vt_flat_150.png
+- laz_vt_flat_200.png
+- laz_vt_moveall_bmp.png
+- laz_vt_moveall_bmp_150.png
+- laz_vt_moveall_bmp_200.png
+- laz_vt_moveew_bmp.png
+- laz_vt_moveew_bmp_150.png
+- laz_vt_moveew_bmp_200.png
+- laz_vt_movens_bmp.png
+- laz_vt_movens_bmp_150.png
+- laz_vt_movens_bmp_200.png
+- laz_vt_tick_dark.png
+- laz_vt_tick_dark_150.png
+- laz_vt_tick_dark_200.png
+- laz_vt_tick_light.png
+- laz_vt_tick_light_150.png
+- laz_vt_tick_light_200.png
+- laz_vt_utilities.png
+- laz_vt_utilities_150.png
+- laz_vt_utilities_200.png
+- laz_vt_xp.png
+- laz_vt_xpbuttonminus.png
+- laz_vt_xpbuttonminus_150.png
+- laz_vt_xpbuttonminus_200.png
+- laz_vt_xpbuttonplus.png
+- laz_vt_xpbuttonplus_150.png
+- laz_vt_xpbuttonplus_200.png
+- laz_vt_xp_150.png
+- laz_vt_xp_200.png
+
+- components/tlazvirtualdrawtree.png
+- components/tlazvirtualstringtree.png
+- components/tlazvtheaderpopupmenu.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.

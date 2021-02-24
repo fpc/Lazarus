@@ -1,0 +1,29 @@
+The following component palette icons (including equally named
+files with appendix _150 and _200) were created by Roland Hahn.
+
+- tcalculatedchartsource.png
+- tchart.png
+- tchartaxistransformations.png
+- tchartcombobox.png
+- tchartextentlink.png
+- tchartguiconnectorbgra.png
+- tchartimagelist.png
+- tchartlegendpanel.png
+- tchartlistbox.png
+- tchartliveview.png
+- tchartnavpanel.png
+- tchartnavscrollbar.png
+- tchartstyles.png
+- tcharttoolset.png
+- tdatetimeintervalchartsource.png
+- tdbchartsource.png
+- tintervalchartsource.png
+- tlistchartsource.png
+- trandomchartsource.png
+- tsortedchartsource.png
+- tuserdefinedchartsource.png
+
+These images can be used freely without any restrictions.
+
+svg sources can be found on Lazarus Components and Code Repository, 
+folder image_sources.
