@@ -713,7 +713,7 @@ begin
       end;
     end;
 
-  if TDbgAvrThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+  if TDbgAvrThread(AThread).FIsPaused and SingleStep then  // in case of deInternal, it may not be paused and can be ignored
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then
   begin
     TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
