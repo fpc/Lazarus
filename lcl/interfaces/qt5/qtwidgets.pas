@@ -9918,14 +9918,21 @@ end;
 procedure TQtTextEdit.setSelection(const AStart, ALength: Integer);
 var
   TextCursor: QTextCursorH;
+  maxPosition: Integer;
+  doc: QTextDocumentH;
 begin
   if AStart >= 0 then
   begin
     TextCursor := QTextCursor_create();
     QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+
+    doc := QTextCursor_document(Textcursor);
+    maxPosition := QTextDocument_characterCount(doc) - 1;
+
     QTextCursor_clearSelection(TextCursor);
-    QTextCursor_setPosition(TextCursor, AStart);
-    QTextCursor_setPosition(TextCursor, AStart + ALength, QTextCursorKeepAnchor);
+    QTextCursor_setPosition(TextCursor, Min(AStart, maxPosition));
+    QTextCursor_setPosition(TextCursor, Min(AStart + ALength, maxPosition), QTextCursorKeepAnchor);
+
     QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
     QTextCursor_destroy(TextCursor);
   end;
