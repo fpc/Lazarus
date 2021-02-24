@@ -11,17 +11,17 @@
         <LRSInOutputDirectory Value="False"/>
         <SaveJumpHistory Value="False"/>
         <SaveFoldState Value="False"/>
-        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <Title Value="fpcunitproject1"/>
+      <Title Value="TestMasks"/>
+      <ResourceType Value="res"/>
     </General>
     <VersionInfo>
       <Language Value=""/>
       <CharSet Value=""/>
     </VersionInfo>
-    <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+    <BuildModes>
+      <Item Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -31,31 +31,28 @@
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
       <FormatVersion Value="2"/>
-      <Modes Count="1">
-        <Mode0 Name="default">
+      <Modes>
+        <Mode Name="default">
           <local>
             <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
           </local>
-        </Mode0>
+        </Mode>
       </Modes>
     </RunParams>
-    <RequiredPackages Count="3">
-      <Item1>
-        <PackageName Value="LazUtils"/>
-      </Item1>
-      <Item2>
+    <RequiredPackages>
+      <Item>
         <PackageName Value="FPCUnitTestRunner"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <PackageName Value="FCL"/>
-      </Item3>
+      </Item>
     </RequiredPackages>
-    <Units Count="1">
-      <Unit0>
+    <Units>
+      <Unit>
         <Filename Value="testmasks.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TestMasks"/>
-      </Unit0>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -63,16 +60,16 @@
     <PathDelim Value="\"/>
   </CompilerOptions>
   <Debugging>
-    <Exceptions Count="3">
-      <Item1>
+    <Exceptions>
+      <Item>
         <Name Value="ECodetoolError"/>
-      </Item1>
-      <Item2>
+      </Item>
+      <Item>
         <Name Value="EFOpenError"/>
-      </Item2>
-      <Item3>
+      </Item>
+      <Item>
         <Name Value="EConvertError"/>
-      </Item3>
+      </Item>
     </Exceptions>
   </Debugging>
 </CONFIG>

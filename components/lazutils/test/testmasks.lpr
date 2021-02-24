@@ -58,7 +58,7 @@ procedure TTestMask.TestMaskException(const S, Mask: String; AFail: Boolean);
 begin
   FS := S;
   FMask := Mask;
-  if AFail then
+  if AFail then                                // Exception type will be EMaskError
     AssertException('Invalid syntax: ' + S + ' match ' + Mask + ': ', EConvertError, @Test)
   else
     try
@@ -206,10 +206,10 @@ begin
 
   TestMask('ö', '[ö]', True);              // Unicode
   TestMask('ö', '[!ä]', True);
-  //TestMask('ö', '[a-c]', True);
+  TestMask('ö', '[ä-ũ]', True);
   //TestMask('ö', '[a-d]', True);
-  //TestMask('ö', '[!a-b]', True);
-  TestMask('ö', '[äbc]', True);
+  TestMask('ö', '[!☺-☂]', True);
+  TestMask('ö', '[äũö]', True);
 
   TestMask('c', '[a]', False);             // ASCII
   TestMask('c', '[!c]', False);
