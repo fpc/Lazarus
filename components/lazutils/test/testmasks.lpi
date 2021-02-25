@@ -62,13 +62,7 @@
   <Debugging>
     <Exceptions>
       <Item>
-        <Name Value="ECodetoolError"/>
-      </Item>
-      <Item>
-        <Name Value="EFOpenError"/>
-      </Item>
-      <Item>
-        <Name Value="EConvertError"/>
+        <Name Value="EMaskError"/>
       </Item>
     </Exceptions>
   </Debugging>

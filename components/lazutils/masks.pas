@@ -25,6 +25,8 @@ type
 
   TUtf8Char = String[7];
 
+  EMaskError=class(EConvertError);
+
   TMaskChar = record
     case CharType: TMaskCharType of
       mcChar: (CharValue: TUtf8Char);
@@ -229,7 +231,7 @@ var
 
   procedure CharSetError;
   begin
-    raise EConvertError.CreateFmt(lrsInvalidCharSet, [AValue]);
+    raise EMaskError.CreateFmt(lrsInvalidCharSet, [AValue]);
   end;
 
   procedure AddAnyText;

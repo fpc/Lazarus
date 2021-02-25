@@ -58,8 +58,8 @@ procedure TTestMask.TestMaskException(const S, Mask: String; AFail: Boolean);
 begin
   FS := S;
   FMask := Mask;
-  if AFail then                                // Exception type will be EMaskError
-    AssertException('Invalid syntax: ' + S + ' match ' + Mask + ': ', EConvertError, @Test)
+  if AFail then
+    AssertException('Invalid syntax: ' + S + ' match ' + Mask + ': ', EMaskError, @Test)
   else
     try
       Test;
