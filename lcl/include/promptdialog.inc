@@ -277,7 +277,19 @@ var
   function GetButtonSize(AButton: TBitBtn): TPoint;
   begin
     AButton.HandleNeeded;
+
+    // Issue 32704: Fix button size at high dpi
+    // CalcPreferredSize uses the real font size although the button's
+    // Font.PixelsPerInch is still at 96ppi here.
+    // Because the general LCL scaling procedure, AutoAdjustLayout, will
+    // later scale the button size again, we must scale the output of
+    // GetPreferredSize down to 96 ppi here.
+    AButton.Font.PixelsPerInch := Monitor.PixelsPerInch;
     TBitBtnAccess(AButton).CalculatePreferredSize(Result.x, Result.y, True);
+    Result.x := AButton.ScaleFontTo96(Result.x);
+    Result.y := AButton.ScaleFontTo96(Result.y);
+    AButton.Font.PixelsPerInch := 96;
+
     if MinBtnHeight < Result.y then
       MinBtnHeight := Result.y
     else
