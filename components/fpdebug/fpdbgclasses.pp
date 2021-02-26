@@ -127,8 +127,8 @@ type
   private
     FHasReadAllAvailableFrames: boolean;
   protected
-    procedure SetHasReadAllAvailableFrames;
   public
+    procedure SetHasReadAllAvailableFrames;
     procedure Clear;
     property HasReadAllAvailableFrames: boolean read FHasReadAllAvailableFrames;
   end;

@@ -77,6 +77,8 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
+
+    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); override;
   end;
 
   { TDbgAvrProcess }
@@ -490,6 +492,117 @@ begin
 
   DebugLn(DBG_VERBOSE, 'TDbgRspThread.GetStackPointerRegisterValue requesting stack registers.');
   ReadDebugReg(SPindex, result);
+end;
+
+procedure TDbgAvrThread.PrepareCallStackEntryList(AFrameRequired: Integer);
+const
+  MAX_FRAMES = 50000; // safety net
+  // Use fake dwarf indexes, these seem to be for lookup in RegisterValueList only?
+  PC = 0;
+  BP = 1;
+  SP = 2;
+  nPC = 'PC';
+  nBP = 'BP';
+  nSP = 'SP';
+  DataOffset = $800000;
+  Size = 2;
+var
+  Address, FrameBase, LastFrameBase: QWord;
+  CountNeeded, CodeReadErrCnt: integer;
+  AnEntry: TDbgCallstackEntry;
+  R: TDbgRegisterValue;
+  NextIdx: LongInt;
+  OutSideFrame: Boolean;
+  StackPtr: TDBGPtr;
+begin
+  // TODO: use AFrameRequired // check if already partly done
+  if FCallStackEntryList = nil then
+    FCallStackEntryList := TDbgCallstackEntryList.Create;
+  if AFrameRequired = -2 then
+    exit;
+
+  if (AFrameRequired >= 0) and (AFrameRequired < FCallStackEntryList.Count) then
+    exit;
+
+  FCallStackEntryList.FreeObjects:=true;
+  if FCallStackEntryList.Count > 0 then begin
+    AnEntry := FCallStackEntryList[FCallStackEntryList.Count - 1];
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(PC);
+    if R = nil then exit;
+    Address := R.NumValue;
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(BP);
+    if R = nil then exit;
+    FrameBase := R.NumValue;
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(SP);
+    if R = nil then exit;
+    StackPtr := R.NumValue;
+  end
+  else begin
+    Address := GetInstructionPointerRegisterValue;
+    FrameBase := GetStackBasePointerRegisterValue;
+    StackPtr := GetStackPointerRegisterValue;
+    AnEntry := TDbgCallstackEntry.create(Self, 0, FrameBase, Address);
+    // Top level could be without entry in registerlist / same as GetRegisterValueList / but some code tries to find it here ....
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PC);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(FrameBase, IntToStr(FrameBase),Size, BP);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+    FCallStackEntryList.Add(AnEntry);
+  end;
+
+  NextIdx := FCallStackEntryList.Count;
+  if AFrameRequired < 0 then
+    AFrameRequired := MaxInt;
+  CountNeeded := AFrameRequired - FCallStackEntryList.Count;
+  LastFrameBase := 0;
+  CodeReadErrCnt := 0;
+  while (CountNeeded > 0) and (FrameBase <> 0) and (FrameBase > LastFrameBase) do
+  begin
+    if not Process.Disassembler.GetFunctionFrameInfo(Address, OutSideFrame) then begin
+      if Process.Disassembler.LastErrorWasMemReadErr then begin
+      inc(CodeReadErrCnt);
+      if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
+      end;
+        OutSideFrame := False;
+    end;
+    LastFrameBase := FrameBase;
+
+    if (not OutSideFrame) and (NextIdx = 1) and (AnEntry.ProcSymbol <> nil) then begin
+      OutSideFrame := Address = LocToAddrOrNil(AnEntry.ProcSymbol.Address); // the top frame must be outside frame, if it is at entrypoint / needed for exceptions
+    end;
+
+    if OutSideFrame then begin
+      // at start of prologue, before pushing starts, so return PC should be at current SP+1
+      // To read SRAM this needs to be masked by $800000
+      if not Process.ReadData(DataOffset or StackPtr + 1, Size, Address) or (Address = 0) then Break;
+      // Convert return address from BE to LE, shl 1 to get byte address
+      Address := BEtoN(word(Address)) shl 1;
+      {$PUSH}{$R-}{$Q-}
+      StackPtr := StackPtr + 1 * Size + 1; // After popping return-addr from "StackPtr"
+      LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
+      {$POP}
+    end
+    else begin
+      // Need to add localsize and saved register count to frame pointer (Y) to locate saved return PC
+      break;
+      //{$PUSH}{$R-}{$Q-}
+      //StackPtr := FrameBase + 2 * Size; // After popping return-addr from "FrameBase + Size"
+      //{$POP}
+      //if not Process.ReadData(DataOffset or (FrameBase + Size), Size, Address) or (Address = 0) then Break;
+      //if not Process.ReadData(DataOffset or FrameBase, Size, FrameBase) then Break;
+    end;
+    AnEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PC);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(FrameBase, IntToStr(FrameBase),Size, BP);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+    FCallStackEntryList.Add(AnEntry);
+    Dec(CountNeeded);
+    inc(NextIdx);
+    CodeReadErrCnt := 0;
+    If (NextIdx > MAX_FRAMES) then
+      break;
+  end;
+  if CountNeeded > 0 then // there was an error / not possible to read more frames
+    FCallStackEntryList.SetHasReadAllAvailableFrames;
 end;
 
 { TDbgAvrProcess }

@@ -72,15 +72,19 @@ type
 { TAvrAsmDecoder }
 
   TAvrAsmDecoder = class(TDbgAsmDecoder)
+  private const
+    MAX_CODEBIN_LEN = 20*2; // About 20 instructions
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
+    FCodeBin: array[0..MAX_CODEBIN_LEN-1] of byte;
     FLastInstr: TAvrAsmInstruction;
   protected
     function GetLastErrorWasMemReadErr: Boolean; override;
     function GetMaxInstrSize: integer; override;
     function GetMinInstrSize: integer; override;
     function GetCanReverseDisassemble: boolean; override;
+    function ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal): Boolean; inline;
 
   public
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
@@ -228,6 +232,13 @@ end;
 function TAvrAsmDecoder.GetCanReverseDisassemble: boolean;
 begin
   Result := true;
+end;
+
+function TAvrAsmDecoder.ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal
+  ): Boolean;
+begin
+  Result := FProcess.ReadData(AnAddress, ALen, FCodeBin[0], ALen);
+  FLastErrWasMem := not Result;
 end;
 
 procedure TAvrAsmDecoder.Disassemble(var AAddress: Pointer; out
@@ -847,8 +858,75 @@ end;
 
 function TAvrAsmDecoder.GetFunctionFrameInfo(AnAddress: TDBGPtr; out
   AnIsOutsideFrame: Boolean): Boolean;
+var
+  ADataLen: Cardinal;
+  AData: PByte;
 begin
-  result := false;
+{ AVR function entry example
+  3e:	df 93       	push	r29
+  40:	cf 93       	push	r28
+  42:	3f 92       	push	r3
+  44:	2f 92       	push	r2
+
+  // Load SP and calculate BP
+  46:	cd b7       	in	r28, 0x3d	; 61    // SPL
+  48:	de b7       	in	r29, 0x3e	; 62    // SPH
+  4a:	c6 50       	subi	r28, 0x06	; 6
+  4c:	d0 40       	sbci	r29, 0x00	; 0
+  // Disable interrupts
+  4e:	0f b6       	in	r0, 0x3f	; 63
+  50:	f8 94       	cli
+  // Then write out new SP
+  52:	de bf       	out	0x3e, r29	; 62
+  // Interleaved with restoring SREG
+  54:	0f be       	out	0x3f, r0	; 63
+  56:	cd bf       	out	0x3d, r28	; 61
+  // Copy param to stack
+  58:	8a 83       	std	Y+2, r24	; 0x02
+  5a:	9b 83       	std	Y+3, r25	; 0x03
+}
+
+  // Should be an even size
+  ADataLen := MAX_CODEBIN_LEN; // Not sure how much data to process??
+  Result := False;
+  if not ReadCodeAt(AnAddress, ADataLen) then
+    exit;
+  AData := @FCodeBin[0];
+
+  while (ADataLen > 0) and (AData[0] = $00) and (AData[1] = $00) do begin // nop
+    inc(AData, 2);
+    dec(ADataLen, 2);
+  end;
+  Result := ADataLen > 0;
+  if not Result then
+    exit;
+
+  AnIsOutsideFrame := False;
+  // in	r28, 0x3d = cd b7
+  if (AData[0] = $cd) and (AData[1] = $b7) then begin
+    AnIsOutsideFrame := True;
+    exit;
+  end;
+
+  // ret / reti $9508 / $9518
+  if (AData[0] in [$08, $18]) and (AData[1] = $95) then begin
+    AnIsOutsideFrame := True;
+    exit;
+  end;
+
+  // Swallow push instructions until the loading of SPL
+  // // PUSH 1001 001d dddd 1111
+  if ((AData[0] and $0f) = $0f) and ((Adata[1] and $92) = $92) then begin // push
+    while (ADataLen > 1) and ((AData[0] and $0f) = $0f) and ((Adata[1] and $92) = $92) do begin
+      inc(AData, 2);
+      dec(ADataLen, 2);
+    end;
+    // in	r28, 0x3d = cd b7
+    if (AData[0] = $cd) and (AData[1] = $b7) then begin
+      AnIsOutsideFrame := True;
+      exit;
+    end;
+  end;
 end;
 
 constructor TAvrAsmDecoder.Create(AProcess: TDbgProcess);
