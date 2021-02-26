@@ -10478,7 +10478,7 @@ begin
   debugln('[TMainIDE.DoGoToPascalBlockOtherEnd] ************');
   {$ENDIF}
   if CodeToolBoss.FindBlockCounterPart(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.LogicalCaretXY.X,
     ActiveSrcEdit.EditorComponent.CaretY,
     NewSource,NewX,NewY,NewTopLine) then
   begin
@@ -10502,13 +10502,13 @@ begin
   debugln('[TMainIDE.DoGoToPascalBlockStart] ************');
   {$ENDIF}
   if CodeToolBoss.FindBlockStart(ActiveUnitInfo.Source,
-    ActiveSrcEdit.EditorComponent.CaretX,
+    ActiveSrcEdit.EditorComponent.LogicalCaretXY.X,
     ActiveSrcEdit.EditorComponent.CaretY,
     NewSource,NewX,NewY,NewTopLine,true) then
   begin
     Flags:=[jfFocusEditor];
     if (ActiveSrcEdit.EditorComponent.CaretY<>NewY)
-    or (Abs(ActiveSrcEdit.EditorComponent.CaretX-NewX)>10)
+    or (Abs(ActiveSrcEdit.EditorComponent.LogicalCaretXY.X-NewX)>10)
     then
       Include(Flags,jfAddJumpPoint);
     DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
