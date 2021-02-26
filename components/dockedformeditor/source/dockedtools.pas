@@ -24,10 +24,20 @@ uses
   // DockedFormEditor
   DockedDesignForm;
 
-function FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
+function  EnumerationString(Str1, Str2: String): String;
+function  FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 procedure IDEMessage(AString: String);
+function  LinedString(Str1, Str2: String): String;
 
 implementation
+
+function EnumerationString(Str1, Str2: String): String;
+begin
+  if Str1.IsEmpty then
+    Result := Str2
+  else
+    Result := Str1 + ', ' + Str2;
+end;
 
 function FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 var
@@ -44,6 +54,14 @@ begin
   DebugLn(AString);
   if Assigned(IDEMessagesWindow) then
     IDEMessagesWindow.AddCustomMessage(mluNone, AString, '');
+end;
+
+function LinedString(Str1, Str2: String): String;
+begin
+  if Str1.IsEmpty then
+    Result := Str2
+  else
+    Result := Str1 + LineEnding + Str2;
 end;
 
 end.

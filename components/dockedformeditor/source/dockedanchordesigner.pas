@@ -23,7 +23,7 @@ uses
   PropEdits,
   // DockedFormEditor
   DockedDesignForm, DockedBasicAnchorDesigner, DockedAnchorControl,
-  DockedOptionsIDE, DockedAnchorGrip, DockedStrConsts;
+  DockedOptionsIDE, DockedAnchorGrip, DockedTools, DockedStrConsts;
 
 type
 
@@ -44,6 +44,7 @@ type
     FPopupMenu: TPopupMenu;
     FPopupAnchors: TAnchors;
     FPreviousControl: TAnchorControl;
+    FPreviewHint: THintWindow;
     FSelectedControl: TAnchorControl;
     FState: TAnchorStates;
     FTargetControl: TAnchorControl;
@@ -76,6 +77,7 @@ type
     procedure SelectedAdaptBounds;
     procedure SelectedAnchorNewTarget(AKind: TAnchorKind);
     procedure SetSelectedControl(AValue: TAnchorControl);
+    procedure ShowPreviousHint;
   public
     constructor Create(ADesignForm: TDesignForm; AParent: TWinControl);
     destructor Destroy; override;
@@ -183,6 +185,7 @@ begin
     // sizing
     SelectedAdaptBounds;
   end;
+  ShowPreviousHint;
   AdjustGrips;
 end;
 
@@ -204,6 +207,7 @@ begin
     Abort;
     Exit;
   end;
+  FPreviewHint.Hide;
   FSelectedControl.AssignToRoot_Full;
   FreeAndNil(FPreviousControl);
 
@@ -308,6 +312,7 @@ begin
       FTargetControl := nil;
     end;
   end;
+  ShowPreviousHint;
   AdjustGrips;
 end;
 
@@ -342,6 +347,7 @@ begin
     if State.IsAnchoringBottom and (FSelectedControl.AnchorSide[akBottom].Control = nil) then
       FSelectedControl.Height := FPreviousControl.Height;
   end;
+  FPreviewHint.Hide;
   FSelectedControl.AssignToRoot_Anchors;
   FSelectedControl.AssignToRoot_ControlsBounds(True);
 
@@ -867,6 +873,62 @@ begin
   end;
 end;
 
+procedure TAnchorDesigner.ShowPreviousHint;
+var
+  LPos: TPoint;
+  s: String;
+  LRect: TRect;
+  LKind: TAnchorKind;
+begin
+  LPos := Point(0, 0);
+  GetCursorPos(LPos);
+
+  s := EmptyStr;
+  if FPreviousControl.BorderSpacing.Around <> FSelectedControl.BorderSpacing.Around then
+    s := LinedString(s, 'BorderSpacing Around: ' + FSelectedControl.BorderSpacing.Around.ToString);
+  if FPreviousControl.BorderSpacing.Left <> FSelectedControl.BorderSpacing.Left then
+    s := LinedString(s, 'BorderSpacing Left: ' + FSelectedControl.BorderSpacing.Left.ToString);
+  if FPreviousControl.BorderSpacing.Top <> FSelectedControl.BorderSpacing.Top then
+    s := LinedString(s, 'BorderSpacing Top: ' + FSelectedControl.BorderSpacing.Top.ToString);
+  if FPreviousControl.BorderSpacing.Right <> FSelectedControl.BorderSpacing.Right then
+    s := LinedString(s, 'BorderSpacing Right: ' + FSelectedControl.BorderSpacing.Right.ToString);
+  if FPreviousControl.BorderSpacing.Bottom <> FSelectedControl.BorderSpacing.Bottom then
+    s := LinedString(s, 'BorderSpacing Bottom: ' + FSelectedControl.BorderSpacing.Bottom.ToString);
+
+  if FPreviousControl.Left <> FSelectedControl.Left then
+    s := LinedString(s, 'Left: ' + FSelectedControl.Left.ToString);
+  if FPreviousControl.Top <> FSelectedControl.Top then
+    s := LinedString(s, 'Top: ' + FSelectedControl.Top.ToString);
+  if FPreviousControl.Width <> FSelectedControl.Width then
+    s := LinedString(s, 'Width: ' + FSelectedControl.Width.ToString);
+  if FPreviousControl.Height <> FSelectedControl.Height then
+    s := LinedString(s, 'Height: ' + FSelectedControl.Height.ToString);
+
+  if FPreviousControl.Anchors <> FSelectedControl.Anchors then
+    s := LinedString(s, 'Anchors: ' + FSelectedControl.Anchors.ToString);
+
+  for LKind := akTop to akBottom do
+    if (FSelectedControl.AnchorSide[LKind].Control <> nil)
+    and ((FPreviousControl.AnchorSide[LKind].Control <> FSelectedControl.AnchorSide[LKind].Control)
+      or (FPreviousControl.AnchorSide[LKind].Side    <> FSelectedControl.AnchorSide[LKind].Side))
+    then
+      s := LinedString(s, FSelectedControl.AnchorSideStr(LKind));
+
+  LRect := FPreviewHint.CalcHintRect(Screen.Width div 4, s, nil);
+  LRect.Left   := LPos.x;
+  LRect.Top    := LPos.y;
+  LRect.Right  := LRect.Right  + LPos.x;
+  LRect.Bottom := LRect.Bottom + LPos.y;
+  FPreviewHint.Caption := s;
+  FPreviewHint.SetBounds(LRect.Left, LRect.Top, LRect.Width, LRect.Height);
+  if s.IsEmpty then
+    FPreviewHint.Hide
+  else begin
+    FPreviewHint.Show;
+    FPreviewHint.Invalidate;
+  end;
+end;
+
 constructor TAnchorDesigner.Create(ADesignForm: TDesignForm; AParent: TWinControl);
 begin
   FState := [];
@@ -876,6 +938,7 @@ begin
   FDesignControl := FDesignForm.DesignWinControl;
   FAnchorControls := TAnchorControls.Create;
   FBorderControl := TBorderControl.Create(nil);
+  FPreviewHint := THintWindow.Create(nil);
   CreateBackGround;
   CreateAnchorGrips;
   CreatePopupMenu;
@@ -883,6 +946,7 @@ end;
 
 destructor TAnchorDesigner.Destroy;
 begin
+  FPreviewHint.Free;
   FBorderControl.Free;
   FAnchorGrips.Free;
   FAnchorControls.Free;
@@ -891,6 +955,7 @@ end;
 
 procedure TAnchorDesigner.Abort;
 begin
+  FPreviewHint.Hide;
   if Assigned(FTargetControl) then FTargetControl.Color := DockedOptions.AnchorControlColor;
   FTargetControl := nil;
   if Assigned(FPreviousControl) then

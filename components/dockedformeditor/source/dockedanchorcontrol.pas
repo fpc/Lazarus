@@ -21,7 +21,15 @@ uses
   // LCL
   Controls, ExtCtrls, Graphics, LCLProc, Dialogs, IDEDialogs,
   // DockedFormEditor
-  DockedOptionsIDE, DockedStrConsts;
+  DockedOptionsIDE, DockedStrConsts, DockedTools;
+
+type
+
+  { TAnchorsHelper }
+
+  TAnchorsHelper = type helper for TAnchors
+    function ToString: String;
+  end;
 
 const
   AnchorSideReferenceStr: array[Low(TAnchorSideReference)..High(TAnchorSideReference)] of String =
@@ -80,12 +88,12 @@ type
     FState: TAnchorControlStates;
     FTargetAnchorSides: TTargetAnchorSides;
     procedure AnchorControlShowHint(Sender: TObject; HintInfo: PHintInfo);
-    function  AnchorSideStr(AKind: TAnchorKind): String;
     function  BorderSpacingStr: String;
     function  BoundsString: String;
   public
     constructor Create(AParent: TWinControl; ARootControl: TControl); reintroduce;
     destructor Destroy; override;
+    function  AnchorSideStr(AKind: TAnchorKind): String;
     function  AnchorsString: String;
     function  AnchorValid(AKind: TAnchorKind; AControl: TControl; ASide: TAnchorSideReference): Boolean;
     function  AnchorsValid: Boolean;
@@ -138,6 +146,18 @@ type
   end;
 
 implementation
+
+{ TAnchorsHelper }
+
+function TAnchorsHelper.ToString: String;
+begin
+  Result := EmptyStr;
+  if akLeft   in Self then Result := EnumerationString(Result, STabPositionLeft);
+  if akTop    in Self then Result := EnumerationString(Result, STabPositionTop);
+  if akRight  in Self then Result := EnumerationString(Result, STabPositionRight);
+  if akBottom in Self then Result := EnumerationString(Result, STabPositionBottom);
+  Result := '[' + Result + ']';
+end;
 
 { TAnchorStatesHelper }
 
@@ -222,15 +242,6 @@ begin
   HintInfo^.HideTimeout := 5000;
 end;
 
-function TAnchorControl.AnchorSideStr(AKind: TAnchorKind): String;
-begin
-  if not Assigned(AnchorSide[AKind].Control) or not (AnchorSide[AKind].Control is TAnchorControl) then
-    Result := 'Control: nil'
-  else
-    Result := 'Control: ' + TAnchorControl(AnchorSide[AKind].Control).Caption +
-              ', Side: ' + AnchorSideReferenceStr[AnchorSide[AKind].Side];
-end;
-
 function TAnchorControl.BorderSpacingStr: String;
 begin
   Result := 'Around: ' + BorderSpacing.Around.ToString +
@@ -275,26 +286,31 @@ begin
   inherited Destroy;
 end;
 
+function TAnchorControl.AnchorSideStr(AKind: TAnchorKind): String;
+begin
+  case AKind of
+    akLeft:   Result := 'Anchor Left [';
+    akTop:    Result := 'Anchor Top [';
+    akRight:  Result := 'Anchor Right [';
+    akBottom: Result := 'Anchor Bottom [';
+  end;
+  if not Assigned(AnchorSide[AKind].Control) or not (AnchorSide[AKind].Control is TAnchorControl) then
+    Result := Result +
+              'Control: nil]'
+  else
+    Result := Result +
+              'Control: ' + TAnchorControl(AnchorSide[AKind].Control).Caption +
+              ', Side: ' + AnchorSideReferenceStr[AnchorSide[AKind].Side] + ']';
+end;
+
 function TAnchorControl.AnchorsString: String;
+var
+  LKind: TAnchorKind;
 begin
   Result := '';
-  if akLeft in Anchors then
-    Result := 'Anchor Left [' + AnchorSideStr(akLeft) + ']';
-  if akTop in Anchors then
-    if Result.IsEmpty then
-      Result := 'Anchor Top [' + AnchorSideStr(akTop) + ']'
-    else
-      Result := Result + LineEnding + 'Anchor Top [' + AnchorSideStr(akTop) + ']';
-  if akRight in Anchors then
-    if Result.IsEmpty then
-      Result := 'Anchor Right [' + AnchorSideStr(akRight) + ']'
-    else
-      Result := Result + LineEnding + 'Anchor Right [' + AnchorSideStr(akRight) + ']';
-  if akBottom in Anchors then
-    if Result.IsEmpty then
-      Result := 'Anchor Bottom [' + AnchorSideStr(akBottom) + ']'
-    else
-      Result := Result + LineEnding + 'Anchor Bottom [' + AnchorSideStr(akBottom) + ']';
+  for LKind := akTop to akBottom do
+    if LKind in Anchors then
+      Result := LinedString(Result, AnchorSideStr(LKind));
   if not Result.IsEmpty then
     Result := Result + LineEnding;
 end;
