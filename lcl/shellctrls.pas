@@ -680,7 +680,7 @@ var
   MaskList: TMaskList;
   Files: TList;
   FileItem: TFileItem;
-  MaskOptions: TMaskOptions;
+  CaseSens: Boolean;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -696,14 +696,12 @@ begin
       Delete(AMask, Length(AMask), 1);
     if Trim(AMask) = '' then
       AMask := AllFilesMask;
-    MaskOptions := [];  // was moDisableSets
     {$ifdef NotLiteralFilenames}
-    if (ACaseSensitivity = mcsCaseSensitive) then
+    CaseSens := ACaseSensitivity = mcsCaseSensitive;
     {$else}
-    if (ACaseSensitivity <> mcsCaseInsensitive) then
+    CaseSens := ACaseSensitivity <> mcsCaseInsensitive;
     {$endif}
-      Include(MaskOptions, moCaseSensitive);
-    MaskList := TMaskList.Create(AMask, ';', MaskOptions);
+    MaskList := TMaskList.Create(AMask, ';', CaseSens);
     try
       if AFileSortType = fstNone then
         Files:=nil
