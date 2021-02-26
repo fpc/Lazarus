@@ -1094,7 +1094,7 @@ end;
 constructor TMaskList.CreateSysNative(const AValue: String; ASeparator: Char; CaseSensitive: Boolean);
 begin
   {$IFDEF Windows}
-  CreateWindows(AValue, ASeparator, CaseSensitive));
+  CreateWindows(AValue, ASeparator, CaseSensitive);
   {$ELSE}
   Create(AValue, ASeparator, CaseSensitive);
   {$ENDIF}
