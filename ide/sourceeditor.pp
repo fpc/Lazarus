@@ -425,7 +425,6 @@ type
     procedure BreakLinesInSelection;
     procedure InvertAssignment;
     procedure SelectToBrace;
-    procedure SelectCodeBlock;
     procedure SelectWord;
     procedure SelectLine;
     procedure SelectParagraph;
@@ -4147,7 +4146,6 @@ Begin
   ecSelectionBreakLines:       BreakLinesInSelection;
   ecInvertAssignment:          InvertAssignment;
   ecSelectToBrace:             SelectToBrace;
-  ecSelectCodeBlock:           SelectCodeBlock;
   ecSelectLine:                SelectLine;
   ecSelectWord:                SelectWord;
   ecSelectParagraph:           SelectParagraph;
@@ -4552,12 +4550,6 @@ end;
 procedure TSourceEditor.SelectToBrace;
 begin
   EditorComponent.SelectToBrace;
-end;
-
-procedure TSourceEditor.SelectCodeBlock;
-begin
-  // ToDo:
-  DebugLn('TSourceEditor.SelectCodeBlock: not implemented yet');
 end;
 
 procedure TSourceEditor.SelectWord;

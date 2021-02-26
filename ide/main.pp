@@ -914,6 +914,7 @@ type
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
+    procedure SelectCodeBlock;
     procedure DoJumpToGuessedUnclosedBlock(FindNextUTF8: boolean);
     {$IFDEF GuessMisplacedIfdef}
     procedure DoJumpToGuessedMisplacedIFDEF(FindNextUTF8: boolean);
@@ -3574,6 +3575,7 @@ begin
   ecFindOverloads:            DoFindOverloads;
   ecFindBlockOtherEnd:        DoGoToPascalBlockOtherEnd;
   ecFindBlockStart:           DoGoToPascalBlockStart;
+  ecSelectCodeBlock:          SelectCodeBlock;
   ecGotoIncludeDirective:     DoGotoIncludeDirective;
   ecCompleteCode:             DoCompleteCodeAtCursor(False);
   ecCompleteCodeInteractive:  DoCompleteCodeAtCursor(True);
@@ -10515,6 +10517,60 @@ begin
       NewSource, NewX, NewY, NewTopLine, NewY, NewY, Flags);
   end else
     DoJumpToCodeToolBossError;
+end;
+
+procedure TMainIDE.SelectCodeBlock;
+var
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  OldX, OldY,
+  NewX, NewY, NewX2, NewY2, NewTopLine, NewTopLine2: integer;
+  Flags: TJumpToCodePosFlags;
+  s: String;
+begin
+  ActiveSrcEdit:=nil;
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then
+    exit;
+
+  if ActiveSrcEdit.SelectionAvailable and not ActiveSrcEdit.EditorComponent.IsBackwardSel then begin
+    OldY := ActiveSrcEdit.BlockBegin.y;
+    OldX := ActiveSrcEdit.BlockBegin.x;
+  end
+  else begin
+    OldY := ActiveSrcEdit.EditorComponent.CaretY;
+    OldX := ActiveSrcEdit.EditorComponent.LogicalCaretXY.X;
+  end;
+
+  if not CodeToolBoss.FindBlockStart(ActiveUnitInfo.Source,
+    OldX, OldY,
+    NewSource,NewX,NewY,NewTopLine,true) then
+  begin
+    DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  if not CodeToolBoss.FindBlockCounterPart(ActiveUnitInfo.Source,
+    NewX, NewY,
+    NewSource,NewX2,NewY2,NewTopLine2,
+    true) then
+  begin
+    DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  s := ActiveSrcEdit.EditorComponent.TextBetweenPoints[Point(1, NewY2), Point(NewX2+1, NewY2)];
+  NewX2 := Min(NewX2, Length(s)+1);
+  while (NewX2 > 1) and (s[NewX2-1] in [#9,#32]) do
+    dec(NewX2);
+
+  Flags:=[jfFocusEditor];
+  if (OldY<>NewY2) or (Abs(OldX-NewX2)>10) then
+    Include(Flags,jfAddJumpPoint);
+
+  DoJumpToCodePosition(ActiveSrcEdit, ActiveUnitInfo,
+    NewSource, NewX2, NewY2, NewTopLine, NewY, NewY2, Flags);
+  ActiveSrcEdit.SelectText(Point(NewX, NewY), Point(NewX2, NewY2));
 end;
 
 procedure TMainIDE.DoJumpToGuessedUnclosedBlock(FindNextUTF8: boolean);

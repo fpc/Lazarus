@@ -447,7 +447,8 @@ type
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
-          out NewX, NewY, NewTopLine: integer): boolean;
+          out NewX, NewY, NewTopLine: integer;
+          IncludeCloseToken: Boolean = false): boolean;
     function FindBlockStart(Code: TCodeBuffer; X,Y: integer;
           out NewCode: TCodeBuffer;
           out NewX, NewY, NewTopLine: integer;
@@ -3690,9 +3691,9 @@ begin
   {$ENDIF}
 end;
 
-function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer;
-  X, Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer
-  ): boolean;
+function TCodeToolManager.FindBlockCounterPart(Code: TCodeBuffer; X,
+  Y: integer; out NewCode: TCodeBuffer; out NewX, NewY, NewTopLine: integer;
+  IncludeCloseToken: Boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -3710,7 +3711,7 @@ begin
   DebugLn('TCodeToolManager.FindBlockCounterPart B ',dbgs(FCurCodeTool.Scanner<>nil));
   {$ENDIF}
   try
-    Result:=FCurCodeTool.FindBlockCounterPart(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindBlockCounterPart(CursorPos,NewPos,NewTopLine,IncludeCloseToken);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

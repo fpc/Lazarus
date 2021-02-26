@@ -260,7 +260,8 @@ type
 
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(const CursorPos: TCodeXYPosition;
-          out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+          out NewPos: TCodeXYPosition; out NewTopLine: integer;
+          IncludeCloseToken: Boolean = false): boolean;
     function FindBlockStart(const CursorPos: TCodeXYPosition;
           out NewPos: TCodeXYPosition; out NewTopLine: integer;
           SkipStart: boolean = true): boolean;
@@ -5092,8 +5093,8 @@ begin
 end;
 
 function TStandardCodeTool.FindBlockCounterPart(
-  const CursorPos: TCodeXYPosition;
-  out NewPos: TCodeXYPosition; out NewTopLine: integer): boolean;
+  const CursorPos: TCodeXYPosition; out NewPos: TCodeXYPosition; out
+  NewTopLine: integer; IncludeCloseToken: Boolean): boolean;
 // jump from bracket-open to bracket-close or 'begin' to 'end'
 // or 'until' to 'repeat' ...
 var CleanCursorPos: integer;
@@ -5130,6 +5131,8 @@ begin
     end else
       exit;
   end;
+  if IncludeCloseToken then
+    ReadNextAtom;
   // CursorPos now contains the counter block keyword
   Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
 end;
