@@ -261,7 +261,7 @@ end;
 
 constructor TDockedOptions.Create;
 begin
-  FAllowSizing        := False;
+  FAllowSizing        := True;
   FAnchorBorderColor  := DefaultAnchorBorderColor;
   FAnchorControlColor := DefaultAnchorControlColor;
   FAnchorTabVisible   := True;
@@ -307,7 +307,7 @@ var
 begin
   Cfg := GetIDEConfigStorage(AFilename, False);
   try
-    Cfg.SetDeleteValue('AllowSizing/Value',        AllowSizing,        False);
+    Cfg.SetDeleteValue('AllowSizing/Value',        AllowSizing,        True);
     Cfg.SetDeleteValue('AnchorBorderColor/Value',  AnchorBorderColor,  DefaultAnchorBorderColor);
     Cfg.SetDeleteValue('AnchorControlColor/Value', AnchorControlColor, DefaultAnchorControlColor);
     Cfg.SetDeleteValue('AnchorTopColor/Value',     AnchorTopColor,     DefaultAnchorTopColor);
@@ -334,7 +334,7 @@ var
 begin
   Cfg := GetIDEConfigStorage(AFilename, True);
   try
-    AllowSizing        := Cfg.GetValue('AllowSizing/Value',        False);
+    AllowSizing        := Cfg.GetValue('AllowSizing/Value',        True);
     AnchorBorderColor  := Cfg.GetValue('AnchorBorderColor/Value',  DefaultAnchorBorderColor);
     AnchorControlColor := Cfg.GetValue('AnchorControlColor/Value', DefaultAnchorControlColor);
     AnchorTopColor     := Cfg.GetValue('AnchorTopColor/Value',     DefaultAnchorTopColor);
