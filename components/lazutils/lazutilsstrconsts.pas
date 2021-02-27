@@ -16,6 +16,7 @@ interface
 
 resourceString
   lrsModified = '  modified ';
+  lrsInvalidCharSet = 'The char set in mask "%s" is not valid!';
   lrsSize = '  size ';
   lrsFileDoesNotExist = 'file "%s" does not exist';
   lrsFileIsADirectoryAndNotAnExecutable = 'file "%s" is a directory and not an'
@@ -40,15 +41,6 @@ resourceString
   lrsListIndexExceedsBounds = 'List index exceeds bounds (%d)';
   lrsERRORInCode = 'ERROR in code: ';
   lrsCreatingGdbCatchableError = 'Creating gdb catchable error:';
-
-  // Masks
-  rsInvalidCharMaskAt = 'Invalid char mask "%s" at %d';
-  rsInvalidCharMask = 'Invalid char mask "%s"';
-  rsMissingCloseCharMaskAt = 'Missing close char mask "%s" at %d';
-  rsMissingCloseCharMask = 'Missing close char mask "%s"';
-  rsIncompleteMask = 'Reached end of mask, but missing close/escape sequence.';
-  rsInvalidEscapeChar = 'Escape character must be ASCII <= 127';
-  rsInternalError = 'Internal %s error.';
 
   // XPath
   lrsNodeSet = 'node set';

@@ -675,12 +675,12 @@ procedure GetFilesInDir(const ABaseDir: string; AMask: string;
 var
   DirInfo: TSearchRec;
   FindResult, i: Integer;
-  IsDirectory, IsValidDirectory, IsHidden, AddFile: Boolean;
+  IsDirectory, IsValidDirectory, IsHidden, AddFile, UseMaskList: Boolean;
   SearchStr, ShortFilename: string;
   MaskList: TMaskList;
   Files: TList;
   FileItem: TFileItem;
-  CaseSens: Boolean;
+  MaskOptions: TMaskOptions;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -696,26 +696,50 @@ begin
       Delete(AMask, Length(AMask), 1);
     if Trim(AMask) = '' then
       AMask := AllFilesMask;
-    {$ifdef NotLiteralFilenames}
-    CaseSens := ACaseSensitivity = mcsCaseSensitive;
-    {$else}
-    CaseSens := ACaseSensitivity <> mcsCaseInsensitive;
-    {$endif}
-    MaskList := TMaskList.Create(AMask, ';', CaseSens);
+    //Use a TMaksList if more than 1 mask is specified or if MaskCaseSensitivity differs from the platform default behaviour
+    UseMaskList := (Pos(';', AMask) > 0) or
+                   {$ifdef NotLiteralFilenames}
+                   (ACaseSensitivity = mcsCaseSensitive)
+                   {$else}
+                   (ACaseSensitivity = mcsCaseInsensitive)
+                   {$endif}
+                   ;
+    if UseMaskList then
+    begin
+      //Disable the use of sets in the masklist.
+      //this behaviour would be incompatible with the situation if no MaskList was used
+      //and it would break backwards compatibilty and could raise unexpected EConvertError where it did not in the past.
+      //If you need sets in the MaskList, use the OnAddItem event for that. (BB)
+      MaskOptions := [moDisableSets];
+      {$ifdef NotLiteralFilenames}
+      if (ACaseSensitivity = mcsCaseSensitive) then
+        MaskOptions := [moDisableSets, moCaseSensitive];
+      {$else}
+      if (ACaseSensitivity <> mcsCaseInsensitive) then
+        MaskOptions := [moDisableSets, moCaseSensitive];
+      {$endif}
+      MaskList := TMaskList.Create(AMask, ';', MaskOptions);  //False by default
+    end;
+
     try
       if AFileSortType = fstNone then
         Files:=nil
       else
         Files := TList.Create;
+
       i := 0;
-      SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask;
+      if UseMaskList then
+        SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AllFilesMask
+      else
+        SearchStr := IncludeTrailingPathDelimiter(ABaseDir) + AMask; //single mask, let FindFirst/FindNext handle matching
+
       FindResult := FindFirstUTF8(SearchStr, faAnyFile, DirInfo);
       while (FindResult = 0) do
       begin
         ShortFilename := DirInfo.Name;
         IsValidDirectory := (ShortFilename <> '.') and (ShortFilename <> '..');
         //no need to call MaskListMatches (which loops through all masks) if ShortFileName is '.' or '..' since we never process this
-        if MaskList.Matches(DirInfo.Name) and IsValidDirectory then
+        if ((not UseMaskList) or MaskList.Matches(DirInfo.Name)) and IsValidDirectory  then
         begin
           inc(i);
           if i = 100 then
