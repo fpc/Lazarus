@@ -46,6 +46,7 @@ object SearchResultsView: TSearchResultsView
         Caption = 'RefreshButton'
         ImageIndex = 2
         OnClick = RefreshButtonClick
+        Visible = False
       end
       object SearchAgainButton: TToolButton
         Left = 24
