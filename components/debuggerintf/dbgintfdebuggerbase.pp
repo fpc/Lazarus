@@ -987,6 +987,7 @@ type
      destructor Destroy; override;
      property Name: String read FName;
      property Value: String read GetValue write SetValue;
+     // TODO: DisplayFormat => does each thread/stackframe need to store a separet setting // InvalidateItems (soleved issue 62591) therefore must keep all of them
      property DisplayFormat: TRegisterDisplayFormat read FDisplayFormat write SetDisplayFormat;
      property Modified: Boolean read FModified write FModified;
      property DataValidity: TDebuggerDataState read FDataValidity write SetDataValidity;
@@ -1003,11 +1004,14 @@ type
     FDataValidity: TDebuggerDataState;
     function GetEntry(AnIndex: Integer): TRegisterValue;
     function GetEntryByName(const AName: String): TRegisterValue;
+    // TODO: setting to requested will not affect TRegisterValue
+    // TODO: since TRegisterValue are kept, any registers that are no longer avail, must be removed at some point (i.e. when this is set valid, and some TRegisterValue are still unknown/requested)
     procedure SetDataValidity(AValue: TDebuggerDataState);
   protected
     function CreateEntry: TDbgEntityValue; override;
      procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
   public
+    procedure InvalidateItems;
     function Count: Integer; reintroduce; virtual;
     property Entries[AnIndex: Integer]: TRegisterValue read GetEntry; default;
     property EntriesByName[const AName: String]: TRegisterValue read GetEntryByName; // autocreate
@@ -3383,6 +3387,15 @@ begin
   //
 end;
 
+procedure TRegisters.InvalidateItems;
+var
+  i: Integer;
+begin
+  DataValidity := ddsUnknown;
+  for i := 0 to (inherited Count) - 1 do // The current count, without triggering request.
+    Entries[i].DataValidity := ddsUnknown;
+end;
+
 function TRegisters.Count: Integer;
 begin
   if FDataValidity = ddsValid then
@@ -3411,7 +3424,7 @@ begin
   if Count = 0 then
     exit;
   for i := 0 to Count-1 do begin
-    EntriesByIdx[i].DataValidity := ddsUnknown;
+    EntriesByIdx[i].InvalidateItems;
   end;
   DoCleared;
 end;
