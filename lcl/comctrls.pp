@@ -724,6 +724,7 @@ type
   protected
     FHandleCreated: TNotifyEvent;
     procedure CreateHandle; override;
+    procedure AdjustXY(var X, Y: Integer);
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;

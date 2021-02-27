@@ -134,6 +134,16 @@ begin
     FHandleCreated(self);
 end;
 
+procedure TNoteBookStringsTabControl.AdjustXY(var X, Y: Integer);
+var
+  Offs: TPoint;
+begin
+  Offs := ClientOrigin;
+  Offs := Offs.Subtract(Parent.ClientOrigin);
+  x := x + Offs.X;
+  Y := Y + Offs.Y;
+end;
+
 procedure TNoteBookStringsTabControl.DoStartDrag(var DragObject: TDragObject);
 begin
   if (Parent is TTabControl) then
@@ -149,39 +159,49 @@ end;
 procedure TNoteBookStringsTabControl.DragDrop(Source: TObject; X, Y: Integer);
 begin
   inherited DragDrop(Source, X, Y);
-  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnDragDrop) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnDragDrop) then begin
+    AdjustXY(X, Y);
     TTabControl(Parent).OnDragDrop(Parent, Source, X, Y);
+  end;
 end;
 
 procedure TNoteBookStringsTabControl.DragOver(Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
   inherited DragOver(Source, X, Y, State, Accept);
-  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnDragOver) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnDragOver) then begin
+    AdjustXY(X, Y);
     TTabControl(Parent).OnDragOver(Parent, Source, X, Y, State, Accept);
+  end;
 end;
 
 procedure TNoteBookStringsTabControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseDown) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseDown) then begin
+    AdjustXY(X, Y);
     TTabControl(Parent).OnMouseDown(Parent, Button, Shift, X, Y);
+  end;
 end;
 
 procedure TNoteBookStringsTabControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, X, Y);
-  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseMove) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseMove) then begin
+    AdjustXY(X, Y);
     TTabControl(Parent).OnMouseMove(Parent, Shift, X, Y);
+  end;
 end;
 
 procedure TNoteBookStringsTabControl.MouseUp(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseUp) then
+  if (Parent is TTabControl) and Assigned(TTabControl(Parent).OnMouseUp) then begin
+    AdjustXY(X, Y);
     TTabControl(Parent).OnMouseUp(Parent, Button, Shift, X, Y);
+  end;
 end;
 
 procedure TNoteBookStringsTabControl.MouseEnter;
