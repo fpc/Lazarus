@@ -84,7 +84,7 @@ type
     procedure DoSelectionChanged; override;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function CanExpand(Node: TTreeNode): Boolean; override;
-
+(*
   {$ifdef mswindows}
   private
     FBuiltinIconSize: TSize;
@@ -92,6 +92,7 @@ type
     function DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize; override;
     function GetBuiltinIconSize: TSize; override;
   {$endif}
+*)
 
   public
     { Basic methods }
@@ -375,7 +376,8 @@ procedure Register;
 implementation
 
 {$ifdef windows}
-uses Windows, ShellApi;
+//uses Windows, ShellApi;
+uses Windows;
 {$endif}
 
 const
@@ -996,6 +998,7 @@ begin
     FOnAddItem(Self, ABasePath, AFileInfo, CanAdd);
 end;
 
+(*
 {$ifdef mswindows}
 { Extracts the windows shell icon of the specified file. }
 function GetShellIcon(const AFileName: WideString): TIcon;
@@ -1054,6 +1057,7 @@ begin
     Result := Types.Size(0, 0);
 end;
 {$endif}
+*)
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 begin
