@@ -95,13 +95,12 @@ type
 function SetCalendarDisplayOptionsTimer(data: gpointer): gboolean; cdecl;
 Var
   AGtkCalendarInternalTimer : PGtkCalendarInternalTimer absolute data;
-  Agboolean : gboolean;
   AGtkCalendar: PGtkCalendar;
 begin
   Result := False;
   AGtkCalendar := TGtk2WSCustomCalendar.GetCalendar(AGtkCalendarInternalTimer^.ACalendar);
   gtk_Calendar_Display_options(AGtkCalendar, AGtkCalendarInternalTimer^.gtkcalendardisplayoptions);
-  Agboolean := g_source_remove(AGtkCalendarInternalTimer^.ATimerSourceID);
+  g_source_remove(AGtkCalendarInternalTimer^.ATimerSourceID);
   Dispose(AGtkCalendarInternalTimer);
 end;
 

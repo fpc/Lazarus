@@ -412,7 +412,7 @@ begin
     Result := nil;
 end;
 
-procedure gtkDefaultPopupMenuDeactivate(Widget: PGtkWidget; data: gPointer); cdecl;
+procedure gtkDefaultPopupMenuDeactivate({%H-}Widget: PGtkWidget; {%H-}data: gPointer); cdecl;
 begin
   LastMouse.Button := 0;
   LastMouse.ClickCount := 0;
@@ -422,9 +422,10 @@ begin
   LastMouse.WinControl := nil;
 end;
 
-function gtkDefaultPopupMenuCloseFix(Widget: PGtkWidget; Menu: PGtkMenu;
-  data: gPointer): gboolean; cdecl;
+function gtkDefaultPopupMenuCloseFix({%H-}Widget: PGtkWidget; Menu: PGtkMenu;
+  {%H-}data: gPointer): gboolean; cdecl;
 begin
+  Result:=CallBackDefaultReturn;
   // needed because closing popup menu without clicking on any menu item
   // freezes various controls, eg SpeedButton
   g_signal_connect(PGtkObject(Menu), 'deactivate',

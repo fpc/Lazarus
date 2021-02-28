@@ -3394,7 +3394,7 @@ begin
   
   if selection_data^.data <> nil then // data is list of uri
   try
-    SetLength(Files, 0);
+    SetLength(Files{%H-}, 0);
     S := TStringList.Create;
     try
       S.Text := PChar(selection_data^.data);

@@ -875,7 +875,7 @@ function gtk_message_dialog_get_message_area(Dialog:PGtkMessageDialog):PGtkWidge
 procedure set_message_text(Dialog:PGtkMessageDialog;const msg: string;const is_pango_markup:boolean=false);
 var
   ma:PGtkWidget;
-  mainList,ChildList:PgList;
+  mainList:PgList;
 begin
   if is_pango_markup then
     gtk_message_dialog_set_markup(Dialog, PGChar(msg))

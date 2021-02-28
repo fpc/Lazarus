@@ -673,13 +673,13 @@ const
 
 function CompareDebugLCLItemInfos(Data1, Data2: Pointer): integer;
 begin
-  Result:=ComparePointers(TDebugLCLItemInfo(Data1).Item,
+  Result:={%H-}ComparePointers(TDebugLCLItemInfo(Data1).Item,
                           TDebugLCLItemInfo(Data2).Item);
 end;
 
 function CompareItemWithDebugLCLItemInfo(Item, DebugItemInfo: Pointer): integer;
 begin
-  Result:=ComparePointers(Item,TDebugLCLItemInfo(DebugItemInfo).Item);
+  Result:={%H-}ComparePointers(Item,TDebugLCLItemInfo(DebugItemInfo).Item);
 end;
 
 function KeyCodeToKeyString(Key: TShortCut; Localized: boolean): string;

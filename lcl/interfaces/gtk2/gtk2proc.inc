@@ -3365,7 +3365,7 @@ begin
     // get all values for this keycode for all groups and level
     if not gdk_keymap_get_entries_for_keycode(GdkKeymap, KeyCode, KeymapKeys, KeyVals, @KeySymCount) then
       Continue;
-    SetLength(KeySyms, KeySymCount);
+    SetLength(KeySyms{%H-}, KeySymCount);
     Move(KeyVals^, KeySyms[0], SizeOf(KeySyms[0]) * KeySymCount);
     g_free(KeymapKeys); // unused but we cannot pass a nil as param
     g_free(KeyVals);

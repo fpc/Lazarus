@@ -6454,7 +6454,7 @@ end;
 {$IFDEF HASX}
 {.$DEFINE DEBUGGTK2FRAMESIZE}
 
-function Gtk2DummyWidgetEvent(AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): gboolean; cdecl;
+function Gtk2DummyWidgetEvent({%H-}AWidget: PGtkWidget; AEvent: PGdkEvent; AData: GPointer): gboolean; cdecl;
 begin
   Result := CallBackDefaultReturn;
   if (AEvent^._type = GDK_EXPOSE) then

@@ -1317,7 +1317,7 @@ begin
 
   // Choose a large enough amount of points
   n_points := Max(X2-X1,Y2-Y1) * 4;
-  SetLength(points, n_points);
+  SetLength(points{%H-}, n_points);
   // And fill them iterating through the ellipse
   for i := 0 to n_points - 1 do
   begin
@@ -2726,7 +2726,7 @@ begin
       Exit;
     end;
 
-    SetLength(AStr,Count);
+    SetLength(AStr{%H-},Count);
     if Count>0 then
       System.Move(Str^,AStr[1],Count);
 
@@ -6908,7 +6908,7 @@ begin
   if NumPts <= 0 then Exit(True);
 
   //Create a copy of the points so we can freely alter them
-  SetLength(ThePoints, NumPts);
+  SetLength(ThePoints{%H-}, NumPts);
   for i := 0 to NumPts - 1 do ThePoints[i] := Points[i];
   PThePoints := @ThePoints[0];
 

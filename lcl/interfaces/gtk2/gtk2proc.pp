@@ -103,7 +103,7 @@ procedure gtkchanged_editbox_delete_text(Widget: PGtkWidget;
 procedure gtkchanged_editbox_insert_text(Widget: PGtkWidget; {%H-}ANewText: PgChar;
   {%H-}ANewTextLength: gint; {%H-}APosition: pgint; {%H-}data: gPointer); cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
-function gtkchanged_editbox_delete(widget: PGtkWidget;
+function gtkchanged_editbox_delete({%H-}widget: PGtkWidget;
   {%H-}AType: TGtkDeleteType; {%H-}APos: gint; {%H-}data: gPointer): GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtktoggledCB( widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
