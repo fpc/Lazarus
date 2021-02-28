@@ -3532,10 +3532,6 @@ begin
     end;
   end;
 
-  // optional: hint modifier
-  if CurPos.Flag=cafWord then
-    ReadHintModifiers(false);
-
   if (ParentNode.Desc=ctnVarSection) then begin
     // optional: initial value
     if CurPos.Flag=cafEqual then
@@ -3543,6 +3539,10 @@ begin
         ReadConstExpr; // read constant
     end;
   end;
+
+  // optional: hint modifier
+  if CurPos.Flag=cafWord then
+    ReadHintModifiers(false);
 
   HasSemicolon:=false;
   if CurPos.Flag=cafSemicolon then begin
@@ -5498,7 +5498,7 @@ end;
 
 function TPascalParserTool.GetExtraction(InUpperCase: boolean): string;
 begin
-  SetLength(Result,ExtractMemStream.Position);
+  SetLength(Result{%H-},ExtractMemStream.Position);
   ExtractMemStream.Position:=0;
   if Result<>'' then
     ExtractMemStream.Read(Result[1],length(Result));
