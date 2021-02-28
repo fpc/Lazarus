@@ -1591,6 +1591,8 @@ begin
               Pointer(Pointer(NewVMT)+vmtMethodStart)^,
               vmtTailSize);
 
+  //debugln(['TJITComponentList.CreateNewJITClass AncestorClass=',AncestorClass.ClassName,' NewClassName=',NewClassName,' NewUnitName=',NewUnitName,' vmtTailSize=',vmtTailSize]);
+
   // override 'ValidateRename' for TComponent descendants
   if AncestorClass.InheritsFrom(TComponent) then begin
     PPointer(Pointer(NewVMT)+TComponentValidateRenameOffset)^:=
