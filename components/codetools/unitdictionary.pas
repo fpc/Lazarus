@@ -776,7 +776,7 @@ var
       while (p<EndP) and (p^ in ['0'..'9','A'..'Z']) do inc(p);
       if (StartP=p) or (p^<>';') then
         e('unit id expected, but found "'+dbgstr(p^)+'"');
-      SetLength(UnitID,p-StartP);
+      SetLength(UnitID{%H-},p-StartP);
       Move(StartP^,UnitID[1],length(UnitID));
       inc(p); // skip semicolon
 
@@ -787,7 +787,7 @@ var
         while (p<EndP) and (p^ in ['0'..'9']) do inc(p);
         if (StartP=p) or (p^<>';') then
           e('unit use count expected, but found "'+dbgstr(p^)+'"');
-        SetLength(s,p-StartP);
+        SetLength(s{%H-},p-StartP);
         Move(StartP^,s[1],length(s));
         UseCount:=StrToInt64Def(s,0);
         inc(p); // skip semicolon
@@ -798,7 +798,7 @@ var
       while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
       if (StartP=p) or (p^<>';') then
         e('unit name expected, but found "'+dbgstr(p^)+'"');
-      SetLength(CurUnitName,p-StartP);
+      SetLength(CurUnitName{%H-},p-StartP);
       Move(StartP^,CurUnitName[1],length(CurUnitName));
       inc(p); // skip semicolon
 
@@ -807,7 +807,7 @@ var
       while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
       if (StartP=p) or (not (p^ in [#10,#13])) then
         e('file name expected, but found "'+dbgstr(p^)+'"');
-      SetLength(UnitFilename,p-StartP);
+      SetLength(UnitFilename{%H-},p-StartP);
       Move(StartP^,UnitFilename[1],length(UnitFilename));
       ReadLineEnding;
 
@@ -828,7 +828,7 @@ var
         if (not (p^ in [#10,#13])) then
           e('identifier expected, but found "'+dbgstr(p^)+'"');
         if p=StartP then break;
-        SetLength(Identifier,p-StartP);
+        SetLength(Identifier{%H-},p-StartP);
         Move(StartP^,Identifier[1],length(Identifier));
         ReadLineEnding;
         if not Skip then begin
@@ -863,7 +863,7 @@ var
       while (p<EndP) and (p^ in ['0'..'9','A'..'Z','a'..'z','_','.']) do inc(p);
       if (p^<>';') then
         e('group name expected, but found "'+dbgstr(p^)+'"');
-      SetLength(GroupName,p-StartP);
+      SetLength(GroupName{%H-},p-StartP);
       if GroupName<>'' then
         Move(StartP^,GroupName[1],length(GroupName));
       inc(p); // skip semicolon
@@ -875,7 +875,7 @@ var
         while (p<EndP) and (p^ in ['0'..'9']) do inc(p);
         if (StartP=p) or (p^<>';') then
           e('group use count expected, but found "'+dbgstr(p^)+'"');
-        SetLength(s,p-StartP);
+        SetLength(s{%H-},p-StartP);
         Move(StartP^,s[1],length(s));
         UseCount:=StrToInt64Def(s,0);
         inc(p); // skip semicolon
@@ -886,7 +886,7 @@ var
       while (p<EndP) and (not (p^ in [#10,#13])) do inc(p);
       if (not (p^ in [#10,#13])) then
         e('file name expected, but found "'+dbgstr(p^)+'"');
-      SetLength(GroupFilename,p-StartP);
+      SetLength(GroupFilename{%H-},p-StartP);
       if GroupFilename<>'' then
         Move(StartP^,GroupFilename[1],length(GroupFilename));
       ReadLineEnding;
@@ -903,7 +903,7 @@ var
         if (not (p^ in [#10,#13])) then
           e('unit identifier expected, but found "'+dbgstr(p^)+'"');
         if p=StartP then break;
-        SetLength(UnitID,p-StartP);
+        SetLength(UnitID{%H-},p-StartP);
         Move(StartP^,UnitID[1],length(UnitID));
         ReadLineEnding;
 
