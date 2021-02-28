@@ -417,7 +417,7 @@ begin
   '  c: char deprecated;',
   '  b: boolean deprecated ''b'';',
   '  deprecated: boolean;',
-  '  e: word =1 deprecated;',
+  '  e: word platform = 1 deprecated;',
   'procedure DoIt; deprecated;',
   'begin end;',
   'begin']);
