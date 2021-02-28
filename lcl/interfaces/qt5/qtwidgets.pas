@@ -9667,7 +9667,7 @@ begin
     Result := Point(0, 0)
   else
   begin
-    Result.X := QTextCursor_position(TextCursor);
+    Result.X := QTextCursor_positionInBlock(TextCursor);
     Result.Y := QTextCursor_blockNumber(TextCursor);
   end;
   QTextCursor_destroy(TextCursor);
