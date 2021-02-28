@@ -237,8 +237,8 @@ type
   TX86AsmDecoder = class(TDbgAsmDecoder)
   private const
     MAX_CODEBIN_LEN = 50;
-    FMaxInstructionSize = 16;
-    FMinInstructionSize = 1;
+    //FMaxInstructionSize = 16;
+    //FMinInstructionSize = 1;
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;

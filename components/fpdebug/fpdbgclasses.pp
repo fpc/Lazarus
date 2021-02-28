@@ -1340,7 +1340,6 @@ function TDbgMemReader.WriteRegister(ARegNum: Cardinal; const AValue: TDbgPtr; A
 var
   ARegister: TDbgRegisterValue;
   StackFrame: Integer;
-  AFrame: TDbgCallstackEntry;
   CtxThread: TDbgThread;
 begin
   result := false;

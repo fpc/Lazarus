@@ -1421,7 +1421,6 @@ end;
 function TDbgController.Run: boolean;
 var
   Flags: TStartInstanceFlags;
-  Err: TFpError;
 begin
   result := False;
   FLastError := NoError;

@@ -57,7 +57,6 @@ type
     FAsmDecoder: TAvrAsmDecoder;
     FAddress: TDBGPtr;
     FCodeBin: array[0..INSTR_CODEBIN_LEN-1] of byte;
-    FInstrLen: Integer;
     FFlags: set of (diCodeRead, diCodeReadError);
   protected
     procedure ReadCode; inline;
@@ -83,6 +82,7 @@ type
     function GetMinInstrSize: integer; override;
     function GetCanReverseDisassemble: boolean; override;
 
+  public
     procedure Disassemble(var AAddress: Pointer; out ACodeBytes: String; out ACode: String); override;
     function GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction; override;
 
@@ -123,9 +123,6 @@ const
   statusFlagNames: array[0..7] of char = ('c', 'z', 'n', 'v', 's', 'h', 't', 'i');
   branchIfSetNames: array[0..7] of string = ('brcs', 'breq', 'brmi', 'brvs', 'brlt', 'brhs', 'brts', 'brie');
   branchIfClrNames: array[0..7] of string = ('brcc', 'brne', 'brpl', 'brvc', 'brge', 'brhc', 'brtc', 'brid');
-
-var
-  DBG_WARNINGS: PLazLoggerLogGroup;
 
 procedure get_r_d_10(o: word; out r, d: byte);
 begin
@@ -865,7 +862,9 @@ begin
   inherited Destroy;
 end;
 
+//var DBG_WARNINGS: PLazLoggerLogGroup;
 initialization
-  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  //DBG_WARNINGS :=
+  DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 
 end.
