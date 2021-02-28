@@ -1249,11 +1249,6 @@ msgstr "Neplatná registrační akce"
 msgid "Invalid action unregistration"
 msgstr "Neplatná odregistrační akce"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Znaková sada v masce \"%s\" není platná!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Neplatná velikost obrázku"

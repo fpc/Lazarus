@@ -1280,11 +1280,6 @@ msgstr "Ugyldig handlings-registrering"
 msgid "Invalid action unregistration"
 msgstr "Ugyldig handlings-avregistrering"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Tegnsettet i maske \"%s\" er ikke gyldig!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Ugyldig bildestørrelse"

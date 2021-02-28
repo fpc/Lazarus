@@ -1277,11 +1277,6 @@ msgstr "Enregistrament d'acció no vàlid"
 msgid "Invalid action unregistration"
 msgstr "Acció de desenregistrar invàlida"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "El caràcter de la màscara \"%s\" no és vàlid!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Mida de la imatge no vàlida"

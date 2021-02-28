@@ -1278,11 +1278,6 @@ msgstr "Registrasi action tidak benar"
 msgid "Invalid action unregistration"
 msgstr "Pembatalan registrasi action tidak benar"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "set karakter dalam mask \"%s\" tidak benar!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Ukuran gambar tidak benar"

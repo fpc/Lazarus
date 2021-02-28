@@ -1249,11 +1249,6 @@ msgstr "Ungültige Action-Registrierung"
 msgid "Invalid action unregistration"
 msgstr "Ungültige Action-Registierungsaufhebung"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Der Zeichensatz in der Maske \"%s\" ist ungültig!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Ungültige Bildgröße"

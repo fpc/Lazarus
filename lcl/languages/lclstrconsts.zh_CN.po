@@ -1249,11 +1249,6 @@ msgstr "无效动作注册"
 msgid "Invalid action unregistration"
 msgstr "无效动作未注册"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "无效图像的大小"

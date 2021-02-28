@@ -1248,11 +1248,6 @@ msgstr "アクション登録が無効です"
 msgid "Invalid action unregistration"
 msgstr "アクション登録解除が無効です"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "マスク \"%s\" のキャラクタセットが有効なものではありません！"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "無効なイメージサイズ"

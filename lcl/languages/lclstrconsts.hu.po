@@ -1247,11 +1247,6 @@ msgstr "Érvénytelen művelet regisztrálás"
 msgid "Invalid action unregistration"
 msgstr "Érvénytelen művelet kiregisztrálás"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "A karakterkészlet a \"%s\" maszkban érvénytelen!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Érvénytelen képméret"

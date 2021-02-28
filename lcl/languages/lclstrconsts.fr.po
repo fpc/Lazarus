@@ -1247,11 +1247,6 @@ msgstr "Référencement d'action incorrecte"
 msgid "Invalid action unregistration"
 msgstr "Déréférencement d'action incorrecte"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Le caractère placé dans le masque \"%s\" est incorrect !"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Taille d'image incorrecte"

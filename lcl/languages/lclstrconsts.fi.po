@@ -1245,11 +1245,6 @@ msgstr "Kelvoton toiminnon rekisteröinti"
 msgid "Invalid action unregistration"
 msgstr "Kelvoton toiminnon rekisteröinnin purku"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Maskin \"%s\" merkkijoukko on kelvoton!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Kelvoton kuvan koko"

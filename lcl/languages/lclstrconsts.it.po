@@ -1251,11 +1251,6 @@ msgstr "Registrazione azione non valida"
 msgid "Invalid action unregistration"
 msgstr "Deregistrazione azione non valida"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Il charset nella maschera \"%s\" non è valido"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Grandezza immagine non valida"

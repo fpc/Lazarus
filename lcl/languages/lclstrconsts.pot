@@ -1240,11 +1240,6 @@ msgstr ""
 msgid "Invalid action unregistration"
 msgstr ""
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr ""

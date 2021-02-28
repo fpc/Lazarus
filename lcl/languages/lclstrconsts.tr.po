@@ -1247,11 +1247,6 @@ msgstr "Geçersiz eylem kaydetme"
 msgid "Invalid action unregistration"
 msgstr "Geçersiz eylem kaydı silme"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Maskede \"%s\" ile gösterilen karakter geçerli değil!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Geçersiz görüntü boyutu"

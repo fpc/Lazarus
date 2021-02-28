@@ -1271,11 +1271,6 @@ msgstr "רישום פעולה לא חוקי"
 msgid "Invalid action unregistration"
 msgstr "ביטול רישום פעולה לא חוקי"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "ערכת התווים במסכה \"%s\" לא חוקית"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "גודל דמות לא חוקי"

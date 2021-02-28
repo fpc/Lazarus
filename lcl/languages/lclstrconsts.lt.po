@@ -1250,11 +1250,6 @@ msgstr "Netinkamas veiksmo registravimas"
 msgid "Invalid action unregistration"
 msgstr "Netinakamas veiksmo išregistravimas"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Netinkama kaukės „%s“ koduotė!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Netinkamas paveikslo dydis"

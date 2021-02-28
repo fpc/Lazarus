@@ -1255,11 +1255,6 @@ msgstr "Ongeldige aktie registratie"
 msgid "Invalid action unregistration"
 msgstr "Ongeldige aktie de-registratie"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "De characterset in mask \"%s\" is niet geldig!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Ongeldig formaat voor afbeelding "

@@ -1248,11 +1248,6 @@ msgstr "Registro de una acción inválida"
 msgid "Invalid action unregistration"
 msgstr "Anulación del registro de una acción inválida"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "¡La máscara \"%s\" del conjunto de caracteres no es válida!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Tamaño de imagen inválido"

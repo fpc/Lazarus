@@ -1247,11 +1247,6 @@ msgstr "Неверная регистрация действия"
 msgid "Invalid action unregistration"
 msgstr "Неверная разрегистрация действия"
 
-#: lclstrconsts.sinvalidcharset
-#, object-pascal-format
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Набор символов в маске \"%s\" неверен!"
-
 #: lclstrconsts.sinvalidimagesize
 msgid "Invalid image size"
 msgstr "Неверный размер рисунка"
