@@ -9714,7 +9714,11 @@ begin
   if InputHistories<>nil then
     DiskEncoding:=InputHistories.FileEncodings[Filename];
   if DiskEncoding='' then
-    DiskEncoding:=GuessEncoding(Source);
+    DiskEncoding:=GuessEncoding(Source)
+  else if DiskEncoding=EncodingUTF8BOM then begin
+    if (Source='') or not CompareMem(@UTF8BOM[1],@Source[1],length(UTF8BOM)) then
+      DiskEncoding:=EncodingUTF8;
+  end;
   MemEncoding:=EncodingUTF8;
   if (DiskEncoding<>MemEncoding) then begin
     {$IFDEF VerboseIDEEncoding}
