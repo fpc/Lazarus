@@ -200,6 +200,7 @@ begin
   if ASourceEditor = nil then Exit;
   LPageCtrl := SourceEditorWindows.FindModulePageControl(ASourceEditor);
   LPageCtrl.ShowCode;
+  ASourceEditor.EditorControl.SetFocus;
 end;
 
 procedure TDockedTabMaster.ShowDesigner(ASourceEditor: TSourceEditorInterface; AIndex: Integer);
