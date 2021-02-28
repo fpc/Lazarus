@@ -3532,17 +3532,20 @@ begin
     end;
   end;
 
+  // optional: hint modifier
+  if CurPos.Flag=cafWord then
+    ReadHintModifiers(false);
+
   if (ParentNode.Desc=ctnVarSection) then begin
     // optional: initial value
     if CurPos.Flag=cafEqual then
       if ParentNode.Parent.Desc in AllCodeSections+[ctnProcedure] then begin
         ReadConstExpr; // read constant
-    end;
+        // optional: hint modifier (fpc allows both places: var w:word platform = 1 platform;)
+        if CurPos.Flag=cafWord then
+          ReadHintModifiers(false);
+      end;
   end;
-
-  // optional: hint modifier
-  if CurPos.Flag=cafWord then
-    ReadHintModifiers(false);
 
   HasSemicolon:=false;
   if CurPos.Flag=cafSemicolon then begin
