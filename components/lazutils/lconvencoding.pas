@@ -358,7 +358,11 @@ end;
 
 function UTF8BOMToUTF8(const s: string): string;
 begin
-  Result:=copy(s,4,length(s));
+  if s='' then exit('');
+  if CompareMem(@UTF8BOM[1],@s[1],length(UTF8BOM)) then
+    Result:=copy(s,4,length(s))
+  else
+    Result:=s;
 end;
 
 function ISO_8859_1ToUTF8(const s: string): string;
