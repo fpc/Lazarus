@@ -303,7 +303,7 @@ begin
     end else begin
       LineLen:=fLineRanges[Index].EndPos-fLineRanges[Index].StartPos
     end;
-    SetLength(Result,LineLen);
+    SetLength(Result{%H-},LineLen);
     if LineLen>0 then
       System.Move(fSource[fLineRanges[Index].StartPos],Result[1],LineLen);
   end else
@@ -753,7 +753,7 @@ begin
   try
     fs := TFileStream.Create(Filename, fmOpenRead or fmShareDenyNone);
     try
-      SetLength(s, fs.Size);
+      SetLength(s{%H-}, fs.Size);
       if s <> '' then
         fs.Read(s[1], length(s));
       FDiskEncoding := '';
@@ -854,7 +854,7 @@ begin
       EndPos:=FLineRanges[EndLine].StartPos
     else
       EndPos:=FLineRanges[EndLine-1].EndPos;
-    SetLength(Result,EndPos-StartPos);
+    SetLength(Result{%H-},EndPos-StartPos);
     System.Move(FSource[StartPos],Result[1],length(Result));
   end else
     Result:='';
