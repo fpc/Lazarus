@@ -914,19 +914,12 @@ begin
     then
       s := LinedString(s, FSelectedControl.AnchorSideStr(LKind));
 
-  LRect := FPreviewHint.CalcHintRect(Screen.Width div 4, s, nil);
-  LRect.Left   := LPos.x;
-  LRect.Top    := LPos.y;
-  LRect.Right  := LRect.Right  + LPos.x;
-  LRect.Bottom := LRect.Bottom + LPos.y;
-  FPreviewHint.Caption := s;
-  FPreviewHint.SetBounds(LRect.Left, LRect.Top, LRect.Width, LRect.Height);
-  if s.IsEmpty then
-    FPreviewHint.Hide
-  else begin
-    FPreviewHint.Show;
-    FPreviewHint.Invalidate;
-  end;
+  LRect := FPreviewHint.CalcHintRect(0, s, nil);  //no maxwidth
+  LRect.Left := LPos.x + 15;
+  LRect.Top  := LPos.y + 15;
+  LRect.Right  := LRect.Left + LRect.Right;
+  LRect.Bottom := LRect.Top  + LRect.Bottom;
+  FPreviewHint.ActivateHint(LRect, s);
 end;
 
 constructor TAnchorDesigner.Create(ADesignForm: TDesignForm; AParent: TWinControl);
@@ -939,6 +932,9 @@ begin
   FAnchorControls := TAnchorControls.Create;
   FBorderControl := TBorderControl.Create(nil);
   FPreviewHint := THintWindow.Create(nil);
+  FPreviewHint.Visible := False;
+  FPreviewHint.HideInterval := 4000;
+  FPreviewHint.AutoHide := True;
   CreateBackGround;
   CreateAnchorGrips;
   CreatePopupMenu;
