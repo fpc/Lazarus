@@ -6701,6 +6701,7 @@ end;
 
 procedure TProjectDefineTemplates.AllChanged(AActivating: boolean);
 begin
+  if AActivating then ;
   UpdateSrcDirIfDef;
   SourceDirectoriesChanged;
   CustomDefinesChanged;
