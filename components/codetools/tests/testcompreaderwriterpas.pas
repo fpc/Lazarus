@@ -923,7 +923,7 @@ function TTestCompReaderWriterPas.WriteDescendant(Component: TComponent;
 begin
   Writer.WriteDescendant(Component,Ancestor);
   FStream.Position:=0;
-  SetLength(Result,FStream.size);
+  SetLength(Result{%H-},FStream.size);
   if Result<>'' then
     FStream.Read(Result[1],length(Result));
   {$IFDEF VerboseCompWriterPas}
@@ -950,6 +950,8 @@ begin
   if cwpoNoSelf in Writer.Options then
     ExpS:=ExpS+'end;'+LineEnding;
   ExpS:=ExpS+CSPDefaultSignatureEnd+LineEnding;
+  //writeln('TTestCompReaderWriterPas.TestWriteDescendant ACTUAL=',Actual);
+  //writeln('TTestCompReaderWriterPas.TestWriteDescendant EXP=',ExpS);
   CheckDiff(Msg,ExpS,Actual);
   AssertEquals(Msg+' NeedAccessClass',NeedAccessClass,Writer.NeedAccessClass);
 end;
@@ -1178,9 +1180,9 @@ begin
       DefABoolean:=not ABoolean;
       AByteBool:=boolean(high(byte));
       DefAByteBool:=not AByteBool;
-      AWordBool:=boolean(high(word));
+      AWordBool:=wordbool(high(word));
       DefAWordBool:=not AWordBool;
-      ALongBool:=boolean(high(longword));
+      ALongBool:=longbool(high(longword));
       DefALongBool:=not ALongBool;
       AByte:=high(byte);
       DefAByte:=AByte-1;
