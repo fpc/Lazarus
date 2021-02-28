@@ -273,8 +273,8 @@ type
     procedure UpdateShowArrowButton;
     procedure DestroyUpDown;
     procedure DestroyArrowBtn;
-    procedure ArrowMouseDown(Sender: TObject; Button: TMouseButton;
-                                            Shift: TShiftState; X, Y: Integer);
+    procedure ArrowMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+                                            {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure SetFocusIfPossible;
     procedure AutoResizeButton;
@@ -304,7 +304,7 @@ type
     procedure MouseLeave; override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
+    function DoMouseWheel({%H-}Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean; override;
     procedure UpdateDate(const CallChangeFromSetDateTime: Boolean = False); virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -314,7 +314,7 @@ type
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); override;
     procedure CalculatePreferredSize(var PreferredWidth,
-                  PreferredHeight: integer; WithThemeSpace: Boolean); override;
+                  PreferredHeight: integer; {%H-}WithThemeSpace: Boolean); override;
     procedure SetBiDiMode(AValue: TBiDiMode); override;
 
     procedure IncreaseCurrentTextPart;
