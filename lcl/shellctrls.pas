@@ -679,7 +679,7 @@ var
   FindResult, i: Integer;
   IsDirectory, IsValidDirectory, IsHidden, AddFile, UseMaskList: Boolean;
   SearchStr, ShortFilename: string;
-  MaskList: TMaskList;
+  MaskList: TMaskList = nil;
   Files: TList;
   FileItem: TFileItem;
   MaskOptions: TMaskOptions;
