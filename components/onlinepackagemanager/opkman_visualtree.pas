@@ -746,7 +746,7 @@ var
     I: Integer;
   begin
     for I := 0 to ACnt - 1 do
-      imgres.Draw(ACanvas, AX + I*AWidth + 5, AY, AStartIndex + ATyp);
+      imgres.Draw(ACanvas, AX + I*AWidth, AY, AStartIndex + ATyp);
   end;
 
 var
