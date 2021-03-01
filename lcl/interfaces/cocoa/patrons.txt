@@ -2,23 +2,30 @@ The following people have been providing a financial support for Cocoa developme
 
 Active (in alphabetical order):
  Alexey Torgashin
+ Andrzej Kilijański
  Christopher Rorden
  Dan Star
  Daniele Ponteggia
  Esteban Vignolo
+ Igor
  Frederick Vollmer
+ Giorgio Fuggetta 
+ Jer Haan
  Johannes W. Dietrich
  Jonas Maebe
- Marc Hanisch
- Marcus Fernstrom
  Max Terentiev
- Siegfried Rohdewald
- Sergey
- Siegfried Rohdewald
+ Michalis Kamburelis
  Tobias Giesen
  Trevor Roydhouse
+ Vladimir Rybant
+ Евгений Крюков
 
 Former:
  Andrea Mauri
- Mike Margerum
  Andrew Fox
+ Esteban Vignolo
+ Marc Hanisch
+ Marcus Fernstrom
+ Mike Margerum
+ Sergey
+ Siegfried Rohdewald
