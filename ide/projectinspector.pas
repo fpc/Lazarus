@@ -1747,6 +1747,7 @@ begin
   end;
 
   Project1.ActiveBuildMode := NewMode;
+  Project1.DefineTemplates.AllChanged(false);
   MainBuildBoss.SetBuildTargetProject1(false);
   MainIDE.UpdateCaption;
   if Assigned(ProjInspector) then
