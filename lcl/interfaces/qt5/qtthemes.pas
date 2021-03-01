@@ -137,6 +137,8 @@ var
   dx, dy: integer;
   APalette: QPaletteH;
   W: WideString;
+  ABgColor: TQColor;
+  Alpha: Word;
 
   procedure DrawSplitterInternal;
   var
@@ -442,6 +444,27 @@ begin
               begin
                 opt := QStyleOptionFrame_create();
               end;
+
+            QStylePE_PanelButtonTool:
+            begin
+              opt := QStyleOption_create(Ord(QStyleOptionVersion), Ord(QStyleOptionSO_Default));
+              //issue #38356 - when button is in hot state bg color should be same as parent color.
+              if Assigned(Context.Parent) and
+                (StyleState and QStyleState_MouseOver <> 0) and (StyleState and QStyleState_AutoRaise = 0) then
+              begin
+                ABgColor := QBrush_color(QPainter_brush(Context.Widget))^;
+                Alpha := ABgColor.Alpha;
+                APalette := QPalette_Create(QWidget_palette(Context.Parent));
+                ColorRefToTQColor(ColorToRGB(Context.GetBkColor), ABgColor);
+                ABgColor.Alpha := Alpha;
+                ABrush := QBrush_create(PQColor(@ABgColor));
+                QPalette_setBrush(APalette, QPaletteAll, QPaletteButton, ABrush);
+                QStyleOption_setPalette(opt, APalette);
+                QBrush_destroy(ABrush);
+                QPalette_destroy(APalette);
+              end;
+            end;
+
             QStylePE_IndicatorBranch:
               begin
 
