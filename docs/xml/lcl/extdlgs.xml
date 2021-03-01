@@ -37,11 +37,11 @@
       <element name="Forms"/>
       <element name="Calendar"/>
       <element name="Buttons"/>
-      <element name="Masks"/>
       <element name="CalcForm"/>
       <element name="GraphType"/>
       <element name="FileUtil"/>
       <element name="LazFileUtils"/>
+      <element name="Masks"/>
 
       <element name="TPreviewFileControl">
         <short>

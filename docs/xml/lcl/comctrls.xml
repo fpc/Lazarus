@@ -120,7 +120,7 @@
         <short>Represents the style used for a panel on a status bar</short>
         <descr>
           <p>
-            <var>TStatusPanelStyle</var> is an enumerated type representing the style used for a panel on a status bar. TStatusPanelStyle is the type used to implement the <var>Style</var> property in <var>TStatusPanel</var>, and used in widget set classes which initialize or update a status bar panel.
+            <var>TStatusPanelStyle</var> is an enumerated type representing the style used for a panel on a status bar. TStatusPanelStyle is the type used to implement the <var>Style</var> property in <var>TStatusPanel</var>, and used in widgetset classes which initialize or update a status bar panel.
           </p>
         </descr>
         <seealso>
@@ -272,8 +272,8 @@
       </element>
 
       <element name="TStatusPanel.FIntfFlag">
-        <short>Field used  by Widget set classes. Do not use it in the LCL.</short>
-        <descr>Field used  by Widget set classes. Do not use it in the LCL.</descr>
+        <short>Field used  by Widgetset classes. Do not use it in the LCL.</short>
+        <descr>Field used  by Widgetset classes. Do not use it in the LCL.</descr>
         <seealso/>
       </element>
 
@@ -591,7 +591,7 @@
       <element name="TStatusBar.SetSimpleText">
         <short>Sets the value for the SimpleText property</short>
         <descr>
-          Notifies the widget set class of the value change when a handle has been allocated and SimplePanel is set to True.
+          Notifies the widgetset class of the value change when a handle has been allocated and SimplePanel is set to True.
         </descr>
         <seealso>
           <link id="TStatusBar.SimpleText"/>
@@ -826,7 +826,7 @@
         </short>
         <descr>
           <p>
-            <var>InvalidatePanel</var> renders the panel with specified index non-valid. Calls <var>UpdateHandleObject</var> to ensure that the widget set class is notified of the change to the specified panel.
+            <var>InvalidatePanel</var> renders the panel with specified index non-valid. Calls <var>UpdateHandleObject</var> to ensure that the widgetset class is notified of the change to the specified panel.
           </p>
           <remark>
             No actions are performed in the method when the PanelParts argument is an empty set (<b>[]</b>).
@@ -993,7 +993,7 @@
       <element name="TStatusBar.UseSystemFont">
         <short>Indicates the System font is used for the control</short>
         <descr>
-          This is used to provide VCL-compatibility in widget set classes.
+          This is used to provide VCL-compatibility in widgetset classes.
         </descr>
         <seealso/>
       </element>
@@ -1107,7 +1107,7 @@
       <element name="TCustomPage.SetImageIndex">
         <short>Sets the value for the ImageIndex property</short>
         <descr>
-          Notifies the widget set class of changes to properties in the custom page.
+          Notifies the widgetset class of changes to properties in the custom page.
         </descr>
         <seealso>
           <link id="TCustomPage.ImageIndex"/>
@@ -1129,7 +1129,7 @@
       </element>
 
       <element name="TCustomPage.WSRegisterClass">
-        <short>Registers the widget set class used for the class instance</short>
+        <short>Registers the widgetset class used for the class instance</short>
         <descr/>
         <seealso/>
       </element>
@@ -2252,7 +2252,7 @@
 
       <element name="TCustomTabControl.DoImageListDestroyResolutionHandle">
         <short>
-          Notifies the widget set class when the handle for the image resolution is freed
+          Notifies the widgetset class when the handle for the image resolution is freed
         </short>
         <descr/>
         <seealso>
@@ -2814,7 +2814,7 @@
             <var>ImagesWidth</var> specifies the width used for the <var>Images</var> in the control. ImagesWidth determines the resolution (either selected or resized) for the current display density (PPI).
           </p>
           <p>
-            Changing the value in the property causes the <var>DoImageListChange</var> method to be called to select the image resolution, and to notify the widget set class of the change. The <var>UpdateTabProperties</var> method is called to propogate the change to all tabs in the control.
+            Changing the value in the property causes the <var>DoImageListChange</var> method to be called to select the image resolution, and to notify the widgetset class of the change. The <var>UpdateTabProperties</var> method is called to propogate the change to all tabs in the control.
           </p>
         </descr>
         <seealso>
@@ -2963,9 +2963,7 @@
       </element>
 
       <element name="TCustomTabControl.TabWidth">
-        <short>
-          <var>TabWidth</var> - width of the tabs
-        </short>
+        <short>Width of the tabs displayed on the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -2980,18 +2978,15 @@
       </element>
 
       <element name="TTabSheet">
-        <short>
-          <var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var>
-        </short>
+        <short>An individual page used in TPageControl</short>
         <descr>
           <p>
-            <var>TTabSheet</var> - individual page of a <var>TPageControl</var>; a more elaborate version of <var>TPage</var>.
+            <var>TTabSheet</var> - individual page of a <var>TPageControl</var>. It is a more elaborate version of <var>TPage</var>, and adds the following features:
           </p>
-          <p>Contains the following features lacked by <var>TPage</var>:</p>
           <ul>
             <li>Drag/Drop properties</li>
             <li>Ability to Enable/Disable the page</li>
-            <li>Ability to make the Tab visible or not</li>
+            <li>Ability to make the Tab visible or hidden</li>
           </ul>
         </descr>
         <seealso>
@@ -3794,6 +3789,31 @@
         <seealso/>
       </element>
 
+      <element name="TNoteBookStringsTabControl.AdjustXY">
+        <short>Adjusts the specified coordinates to the ClientOrigin for the parent</short>
+        <descr>
+          <p>
+            The adjustment amount is the difference between the <var>ClientOrigin</var> for the control and the <var>ClientOrigin</var> for the <var>Parent</var> of the control. The offset amounts are then applied to the values <var>X</var> and <var>Y</var>.
+          </p>
+          <p>
+            Called from the <var>DragDrop</var>, <var>DragOver</var>, <var>MouseMove</var>, <var>MouseDown</var>, and <var>MouseUp</var> methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TNoteBookStringsTabControl.DragDrop"/>
+          <link id="TNoteBookStringsTabControl.DragOver"/>
+          <link id="TNoteBookStringsTabControl.MouseMove"/>
+          <link id="TNoteBookStringsTabControl.MouseDown"/>
+          <link id="TNoteBookStringsTabControl.MouseUp"/>
+        </seealso>
+      </element>
+      <element name="TNoteBookStringsTabControl.AdjustXY.X">
+        <short>Horizontal coordinate adjusted in the method</short>
+      </element>
+      <element name="TNoteBookStringsTabControl.AdjustXY.Y">
+        <short>Vertical coordinate adjusted in the method</short>
+      </element>
+
       <element name="TNoteBookStringsTabControl.DoStartDrag">
         <short/>
         <descr/>
@@ -4567,7 +4587,7 @@
         <short/>
         <descr>
           <p>
-            <var>WSRegisterClass</var> is an overridden class procedure used to register the widget set class used to create new instances of the class. WSRegisterClass calls the inherited method, and calls RegisterPropertyToSkip to omit the <var>OnDrawTab</var> property when the component is loaded at run-time. OnDrawTab was used in an older version of the Lazarus LCL.
+            <var>WSRegisterClass</var> is an overridden class procedure used to register the widgetset class used to create new instances of the class. WSRegisterClass calls the inherited method, and calls RegisterPropertyToSkip to omit the <var>OnDrawTab</var> property when the component is loaded at run-time. OnDrawTab was used in an older version of the Lazarus LCL.
           </p>
         </descr>
         <seealso/>
@@ -6018,7 +6038,7 @@
       </element>
 
       <element name="TListItemsFlag">
-        <short>Widget set flags applied to the TListItems container</short>
+        <short>Widgetset flags applied to the TListItems container</short>
         <descr/>
         <seealso/>
       </element>
@@ -6184,7 +6204,7 @@
 
       <element name="TListItems.WSCreateItems">
         <short>
-          <var>WSCreateItems</var> - instruction to the Widget Set to create Items
+          <var>WSCreateItems</var> - instruction to the widgetset to create Items
         </short>
         <descr/>
         <seealso/>
@@ -8353,7 +8373,7 @@
             <var>DoAutoAdjustLayout</var> is an overridden procedure used to adjust the layout for the list view using the specified arguments. DoAutoAdjustLayout calls the inherited method.
           </p>
           <p>
-            DoAutoAdjustLayout extends the ancestor method to include support for sizing the columns in the list view using the proportions specified in AXProportion and AYProportion for the display density (DPI). DoAutoAdjustLayout also ensures that the widget set class is initialized for each of the image list sizes represented by the TListViewImageList enumeration.
+            DoAutoAdjustLayout extends the ancestor method to include support for sizing the columns in the list view using the proportions specified in AXProportion and AYProportion for the display density (DPI). DoAutoAdjustLayout also ensures that the widgetset class is initialized for each of the image list sizes represented by the TListViewImageList enumeration.
           </p>
           <p>
             No actions are performed in the method if AMode does NOT include one of the following values: lapAutoAdjustWithoutHorizontalScrolling or lapAutoAdjustForDPI.
@@ -9883,7 +9903,7 @@
 
       <element name="TCustomProgressBar.BarShowText">
         <short>
-          <var>BarShowText</var> - some widget sets allow text to be displayed on the bar to indicate its position (e.g. 32%)
+          <var>BarShowText</var> - some widgetsets allow text to be displayed on the bar to indicate its position (e.g. 32%)
         </short>
         <descr/>
         <seealso/>
@@ -22271,14 +22291,14 @@
 
       <element name="RegisterCustomPage">
         <short>
-          Calls WSRegisterCustomPage to register a custom page using the widget set classes
+          Calls WSRegisterCustomPage to register a custom page using the widgetset classes
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="RegisterCustomTabControl">
-        <short>Registers TCustomTabControl and its widget set class type when needed</short>
+        <short>Registers TCustomTabControl and its widgetset class type when needed</short>
         <descr/>
         <seealso/>
       </element>

@@ -3874,7 +3874,7 @@
         <short>The Monitor where the form is shown</short>
         <descr>
           <p>
-            <var>Monitor</var> is a read-only <var>TMonitor</var> property wich contains the monitor where the form was displayed. Monitor defaults to the <var>TMonitor</var> instance for the Parent form when it has been assigned.
+            <var>Monitor</var> is a read-only <var>TMonitor</var> property which contains the monitor where the form was displayed. Monitor defaults to the <var>TMonitor</var> instance for the Parent form when it has been assigned.
           </p>
           <p>
             When the parent form has not been assigned, and a handle exists for the form instance, the widgetset class is notified of the current coordinates for the form. The <var>MonitorFromWindow</var> method in the <var>Screen</var> singleton is called to locate the window closest to the the form (using its handle).

@@ -1,164 +1,170 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
   ====================================================================
     LCLPlatformDef
   ====================================================================
 -->
-
 <module name="LCLPlatformDef">
-<short></short>
+<short>Contains the non-GUI dependent parts of LCL Platform definition</short>
 <descr>
+<file>lclplatformdef.pas</file> contains types, constants, variables and
+routines used in non-GUI dependent parts of LCL Platform definition.
+This file is part of the Lazarus Component Library (<b>LCL</b>).
 </descr>
 
-<!-- enumeration type Visibility: default -->
 <element name="TLCLPlatform">
-<short></short>
+<short>Represents the platforms supported in the LCL</short>
 <descr>
 </descr>
 <seealso>
+<link id="LCLPlatformDirNames"/>
+<link id="TLCLPlatforms"/>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpGtk">
-<short></short>
+<short>GIMP ToolKit</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpGtk2">
-<short></short>
+<short>GTK version 2</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpGtk3">
-<short></short>
+<short>GTK version 3</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpWin32">
-<short></short>
+<short>Windows API (formerly called Win32 API)</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpWinCE">
-<short></short>
+<short>Windows CE</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpCarbon">
-<short></short>
+<short>MacOS Carbon API</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpQT">
-<short></short>
+<short>QT version 4</short>
 </element>
-
 <element name="TLCLPlatform.lpQt5">
-<short></short>
+<short>QT version 5</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpfpGUI">
-<short></short>
+<short>FreePascal GUI</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpNoGUI">
-<short></short>
+<short>No GUI</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpCocoa">
-<short></short>
+<short>MacOS Cocoa API</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TLCLPlatform.lpCustomDrawn">
-<short></short>
+<short>Custom-drawn</short>
 </element>
-
 <element name="TLCLPlatform.lpMUI">
-<short></short>
+<short>Magic User Interface (MUI) for AmigaOS, AROS</short>
 </element>
 
-<!-- set type Visibility: default -->
 <element name="TLCLPlatforms">
-<short></short>
+<short>Set type used to store TLCLPlatform value(s)</short>
 <descr>
 </descr>
 <seealso>
+<link id="TLCLPlatform"/>
 </seealso>
 </element>
 
-<!-- function Visibility: default -->
 <element name="DirNameToLCLPlatform">
-<short></short>
+<short>Gets the platform enumeration value for the specified directory name</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="DirNameToLCLPlatform.Result">
-<short></short>
+<short>TLCLPlatform enumeration value for the given directory name</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DirNameToLCLPlatform.ADirName">
-<short></short>
+<short>DIrectory name to convert to a TLCLPlatform enumertation value</short>
 </element>
 
-<!-- function Visibility: default -->
 <element name="GetBuildLCLWidgetType">
-<short></short>
+<short>Gets the value in the BuildLCLWidgetType variable</short>
 <descr>
+<p>
+Used in the <var>lazbuild</var> utility to get the target widgetset using the
+platform defines.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="BuildLCLWidgetType"/>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="GetBuildLCLWidgetType.Result">
-<short></short>
+<short>TLCLPlatform enumeration value for the platform</short>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LCLPlatformDirNames">
-<short></short>
+<short>Array constant with the directory names for supported LCL platforms</short>
 <descr>
+<p>
+LCLPlatformDirNames is a array of Strings with directory names for the supported
+LCL platforms. The directory names are relative to the './lcl/interfaces/' base path.
+Values in the array are indexed by TLCLPlatform enumeration values. For example:
+</p>
+<code>
+// var SDir, SName: String;
+
+// SDir contains 'win32'
+SDir := LCLPlatformDirNames[lpWin32];
+
+// SName contains 'win32/win64'
+SName := LCLPlatformDisplayNames[lpWin32];
+</code>
+<p>
+Use LCLPlatformDisplayNames to get the display name for a given TLCLPlatform
+enumeration value.
+</p>
 </descr>
 <seealso>
+<link id="LCLPlatformDisplayNames"/>
 </seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LCLPlatformDisplayNames">
-<short></short>
+<short>Array constant with the display names for supported LCL platforms</short>
 <descr>
+  <p>
+  LCLPlatformDisplayNames is a array of Strings with display names for the supported
+  LCL platforms. Values in the array are indexed by TLCLPlatform enumeration values.
+  For example:
+  </p>
+  <code>
+  // var SDir, SName: String;
+
+  // SDir contains 'win32'
+  SDir := LCLPlatformDirNames[lpWin32];
+
+  // SName contains 'win32/win64'
+  SName := LCLPlatformDisplayNames[lpWin32];
+  </code>
+  <p>
+  Use LCLPlatformDirNames to get the directory name for a given TLCLPlatform
+  enumeration value.
+  </p>
 </descr>
 <seealso>
+  <link id="LCLPlatformDirNames"/>
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="BuildLCLWidgetType">
-<short></short>
+<short>Gets the TLCLPlatform enumeration value for the current platform</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-</module> <!-- LCLPlatformDef -->
-
+</module>
+<!-- LCLPlatformDef -->
 </package>
 </fpdoc-descriptions>

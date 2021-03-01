@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
   <package name="lcl">
-
+    <!-- Buttons -->
     <module name="Buttons">
       <short>Contains types and classes used to implement specialized buttons</short>
       <descr>
@@ -14,7 +14,7 @@
         </ul>
       </descr>
 
-      <!-- unresolved type references -->
+      <!-- unresolved references -->
       <element name="Types"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
@@ -578,37 +578,88 @@
 
       <element name="TButtonGlyph.Draw">
         <short>
-          Draws the image in the specified rectangle, within the client rectangle at a specified offset, with the specified state and transparency
+          Draws the glyph for the button using the specified settings
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>Draw</var> is a method used to draw the glyph for the button using the target and configuration specified in the arguments. Draw is overloaded to provide a variant which uses a scalilng factor for the glyph image.
+          </p>
+          <p>
+            <var>Canvas</var> is the TCanvas instance where the glyph is rendered.
+          </p>
+          <p>
+            <var>Client</var> is a TRectangle instance with the client coordinates for the drawing operation.
+          </p>
+          <p>
+            <var>Offset</var> is a TPoint instance which contains the offset where the glyph is drawn in the Client rectangle.
+          </p>
+          <p>
+            <var>State</var> contains the button drawing state and is used to get both the glyph image and graphic drawing effect applied in the method.
+          </p>
+          <p>
+            <var>Transparent</var> indicates if the glyph is draw transparently.
+          </p>
+          <p>
+            <var>PPI</var> indicates the display density for the image resolution requested in the method.
+          </p>
+          <p>
+            <var>ScaleFactor</var> is the canvas scaling factor applied when the image is drawn.
+          </p>
+          <p>
+            Images used for button glyphs can be loaded from three (3) different sources.
+          </p>
+          <ul>
+            <li>LCLGlyphResourceName property</li>
+            <li>ExternalImages property</li>
+            <li>Images property</li>
+          </ul>
+          <p>
+            By default, the LCL Glyph resource is used when the button is created. Setting values for the corresponding properties changes the source for the glyph image.
+          </p>
+          <p>
+            Draw calls <var>GetImageIndexAndEffect</var> to get the image resolution needed for the value in PPI, and the index for the image drawn in the method. The  <var>TScaledImageListResolution.Draw</var> method is called to render the selected glyph in the resolution to the Canvas using the Client, Offset, and derived graphics drawing effect.
+          </p>
+          <p>
+            No actions are performed in the method when an bitmap has not been assigned to the Glyph property, when the coordinates in Client are invalid, or when an image resolution / image index was not found.
+          </p>
+          <p>
+            The return value is a TRectangle instance with the original value passed in Client. Please note, this is different than the Delphi VCL; it returns the text rectangle.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TButtonGlyph.LCLGlyphName"/>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.Images"/>
+          <link id="TButtonGlyph.GetImageIndexAndEffect"/>
+          <link id="#lcl.imglist.TScaledImageListResolution">TScaledImageListResolution</link>
+        </seealso>
       </element>
       <element name="TButtonGlyph.Draw.Result">
-        <short></short>
+        <short>Rectangle where the glyph was drawn</short>
       </element>
       <element name="TButtonGlyph.Draw.Canvas">
-        <short></short>
+        <short>Canvas where the glyph is rendered</short>
       </element>
       <element name="TButtonGlyph.Draw.Client">
-        <short></short>
+        <short>Ciient coodintates for the drawing operation</short>
       </element>
       <element name="TButtonGlyph.Draw.Offset">
-        <short></short>
+        <short>Offset in the client coordinates where the glyph is drawn</short>
       </element>
       <element name="TButtonGlyph.Draw.State">
-        <short></short>
+        <short>Button state</short>
       </element>
       <element name="TButtonGlyph.Draw.Transparent">
-        <short></short>
+        <short>True if the glyph is drawn transparently</short>
       </element>
       <element name="TButtonGlyph.Draw.BiDiFlags">
-        <short></short>
+        <short>Not used in the current implementation</short>
       </element>
       <element name="TButtonGlyph.Draw.PPI">
-        <short></short>
+        <short>Pixels Per Inch for the image resolution requested in the method</short>
       </element>
       <element name="TButtonGlyph.Draw.ScaleFactor">
-        <short></short>
+        <short>Canvas scaling factor used in the method</short>
       </element>
 
       <element name="TButtonGlyph.Refresh">
@@ -732,7 +783,7 @@
           Contains a reference to an existing list of images available for use in the Glyph property
         </short>
         <descr>
-          <!-- TODO: discuss ExternalImages vs LCLGlyphResourceName vs Images -->
+          <!-- TODO:  -->
         </descr>
         <seealso></seealso>
       </element>
@@ -2726,10 +2777,15 @@
 
       <element name="TSpeedButton.OnClick" link="#lcl.controls.TControl.OnClick">
         <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>.
+          <p>
+            Standard properties, which should be supported by all descendants.
           </p>
-          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
+          <p>
+            This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>.
+          </p>
+          <p>
+            Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -2738,9 +2794,13 @@
 
       <element name="TSpeedButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick">
         <descr>
-          <p>Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.</p>
+          <p>
+            Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TControl.OnDblClick">TControl.OnDblClick</link>
+        </seealso>
       </element>
 
       <element name="TSpeedButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
@@ -2853,9 +2913,18 @@
           Loads the bitmap for the specified Glyph using the image for the specified button identifier
         </short>
         <descr>
-          LoadGlyphFromStock is a procedure used to load a TBitmap into the AGlyph argument with the image used for the button identifier in idButton. LoadGlyphFromStock calls the GetButtonIcon routine to load the graphic image for the button identifier. Used in the implementation of the LoadGlyphFromStock method in both TCustomBitBtn and TCustomSpeedButton.
+          <p>
+            <var>LoadGlyphFromStock</var> is a procedure used to load a <var>TBitmap</var> into the <var>AGlyph</var> argument with the image used for the button identifier in <var>idButton</var>. LoadGlyphFromStock calls the <var>GetButtonIcon</var> routine to load the graphic image for the button identifier.
+          </p>
+          <p>
+            Used in the implementation of the <var>LoadGlyphFromStock</var> method in both <var>TCustomBitBtn</var> and <var>TCustomSpeedButton</var>.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="CustomBitBtn.LoadGlyphFromStock"/>
+          <link id="TCustomSpeedButton.LoadGlyphFromStock"/>
+          <link id="GetButtonIcon"/>
+        </seealso>
       </element>
       <element name="LoadGlyphFromStock.AGlyph">
         <short>TButtonGlyph where the bitmap is stored</short>
@@ -2975,25 +3044,35 @@
         <short>Contains resource names for corresponding button identifiers in TBitBtn</short>
         <descr>
           <p>
-            BitBtnResNames is an Array constant that contains Strings with the resource name for button identifiers used in TBitBtn. Values in BitBtnResNames are indexed by the range of values defined in BitBtnImages as idButtonOk..idButtonNoToAll.
+            <var>BitBtnResNames</var> is an <var>Array</var> constant that contains Strings with the resource name for button identifiers used in TBitBtn. Values in BitBtnResNames are indexed by the range of values defined in <var>BitBtnImages</var>: <b><var>idButtonOk</var>..<var>idButtonNoToAll</var></b>.
           </p>
           <p>
-            BitBtnResNames is used in the implementation of the RealizeKind method in TCustomBitBtn.
+            BitBtnResNames is used in the implementation of the <var>RealizeKind</var> method in <var>TCustomBitBtn</var>.
           </p>
         </descr>
         <seealso>
           <link id="BitBtnImages"/>
+          <link id="TCustomBitBtn.RealizeKind"/>
         </seealso>
       </element>
 
       <element name="Register">
         <short>Registers components for use in the Lazarus IDE</short>
         <descr>
-          Registers the <var>TBitBtn</var> and <var>TSpeedButton</var> components on the <b>Additional</b> tab in the Lazarus IDE component palette.
+          <p>
+            Register is the procedure used to register components for us in the Lazarus IDE. The following components are added to the Lazarus IDE:
+          </p>
+           <p>
+             <b>Additional</b> Tab
+           </p>
+           <ul>
+             <li>TBitBtn</li>
+             <li>TSpeedButton</li>
+           </ul>
         </descr>
       </element>
 
     </module>
-
+    <!-- Buttons -->
   </package>
 </fpdoc-descriptions>

@@ -27,3464 +27,2504 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <element name="GraphType"/>
 <element name="Messages"/>
 
-<!-- constant Visibility: default -->
 <element name="LM_USER">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="WM_USER">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_DESTROY">
+<element name="LM_LCL">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_ACTIVATEITEM">
 <short/>
 <descr>
+GTK internal. Should be removed later.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_FOCUS">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CLICKED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_PRESSED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_RELEASED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_MOVECURSOR">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_ENTER">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_LEAVE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CHECKRESIZE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_INSERTTEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_DELETETEXT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_SETEDITABLE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOVEWORD">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOVEPAGE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOVETOROW">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOVETOCOLUMN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KILLCHAR">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KILLWORD">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KILLLINE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_CUTTOCLIP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_COPYTOCLIP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_PASTEFROMCLIP">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_EXPOSEEVENT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_CONFIGUREEVENT">
 <short/>
 <descr>
+GTK internal. Should be removed later.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_PAINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_OK_CLICKED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_CANCEL_CLICKED">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="LM_TIMER">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_EXIT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CLOSEQUERY">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_DRAGSTART">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_DEACTIVATE">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_QUIT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MONTHCHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_YEARCHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_DAYCHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOUSEFIRST2">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_LBUTTONTRIPLECLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_LBUTTONQUADCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MBUTTONTRIPLECLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MBUTTONQUADCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_RBUTTONTRIPLECLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_RBUTTONQUADCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOUSEENTER">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOUSELEAVE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_XBUTTONTRIPLECLK">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_XBUTTONQUADCLK">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_MOUSELAST2">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_GRABFOCUS">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_DRAWLISTITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_DEFERREDEDIT">
+<short/>
+<descr>
+Used in TCustomDBComboBox.
+</descr>
+</element>
+
 <element name="LM_SETCURSOR">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_INTERNALPAINT">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- constant Visibility: default -->
 <element name="LM_INTERFACEFIRST">
 <short/>
 <descr>
+IDs reserved for internal messages in the interfaces.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_INTERFACELAST">
 <short/>
 <descr>
+IDs reserved for internal messages in the interfaces.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_UNKNOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_SIZE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_MOVE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_MINIMIZE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_MAXIMIZE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_NEXTWINDOW">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_PREVWINDOW">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_CLOSE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_VSCROLL">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_HSCROLL">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_MOUSEMENU">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_KEYMENU">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_ARRANGE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_RESTORE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_TASKLIST">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_SCREENSAVE">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_HOTKEY">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_DEFAULT">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_MONITORPOWER">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_CONTEXTHELP">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="SC_SEPARATOR">
 <short/>
 <descr>
+System Menu Command.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NULL">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_CREATE">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_DESTROY">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_MOVE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SIZE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_ACTIVATE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SETFOCUS">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KILLFOCUS">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_ENABLE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_GETTEXTLENGTH">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_PAINT">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_ERASEBKGND">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SHOWWINDOW">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CANCELMODE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_SETCURSOR">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_DRAWITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MEASUREITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_DELETEITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_VKEYTOITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CHARTOITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SETFONT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_COMPAREITEM">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_WINDOWPOSCHANGING">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_WINDOWPOSCHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NOTIFY">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_HELP">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_NOTIFYFORMAT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_CONTEXTMENU">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_NCCALCSIZE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCHITTEST">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCPAINT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCACTIVATE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_GETDLGCODE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCMOUSEMOVE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCLBUTTONDOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCLBUTTONUP">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_NCLBUTTONDBLCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KEYFIRST">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KEYDOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KEYUP">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CHAR">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SYSKEYDOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SYSKEYUP">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SYSCHAR">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_KEYLAST">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_COMMAND">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SYSCOMMAND">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_TIMER">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_HSCROLL">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_VSCROLL">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLORMSGBOX">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLOREDIT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLORLISTBOX">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLORBTN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLORDLG">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLORSCROLLBAR">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CTLCOLORSTATIC">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOUSEFIRST">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOUSEMOVE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_LBUTTONDOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_LBUTTONUP">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_LBUTTONDBLCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_RBUTTONDOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_RBUTTONUP">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_RBUTTONDBLCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
-<element name="LM_MButtonDown">
+<element name="LM_MBUTTONDOWN">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MBUTTONUP">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MBUTTONDBLCLK">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_MOUSEWHEEL">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="LM_XBUTTONDOWN">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_XBUTTONUP">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_XBUTTONDBLCLICK">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_MOUSEHWHEEL">
+<short/>
+<descr/>
+</element>
+
 <element name="LM_MOUSELAST">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_PARENTNOTIFY">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_CAPTURECHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_DROPFILES">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="LM_SELCHANGE">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
-<element name="UINT">
+<element name="LM_DPICHANGED">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
-<element name="BOOL">
+<element name="LM_CUT">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
+<element name="LM_COPY">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_PASTE">
+<short/>
+<descr/>
+</element>
+
+<element name="LM_CLEAR">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMDrawItems">
 <short/>
 <descr>
+Message from the interface to the LCL.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMDrawItems.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMDrawItems.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMDrawItems.Ctl">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMDrawItems.DrawItemStruct">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMDrawItems.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMDrawListItem">
 <short/>
 <descr>
+Message from the interface to the LCL.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMDrawListItem.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMDrawListItem.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMDrawListItem.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMDrawListItem.DrawListItemStruct">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMDrawListItem.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMMeasureItem">
 <short/>
 <descr>
+Message from the interface to the LCL.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMeasureItem.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMMeasureItem.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMMeasureItem.idCtl">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMeasureItem.MeasureItemStruct">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMeasureItem.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMNoParams">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TLMCanvasCreate">
+<element name="TLMNoParams.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLMCanvasCreate.pparent">
+<element name="TLMNoParams.UnusedMsg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLMCanvasCreate.pCanvas">
+<element name="TLMNoParams.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="pTLMCanvasCreate">
+<element name="TLMNoParams.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PLMCanvasDrawRect">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMCanvasDrawRect">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawRect.R">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawRect.ReDraw">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawRect.PenColor">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PLMCanvasDrawLine">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMCanvasDrawLine">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawLine.x1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawLine.y1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawLine.x2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawLine.y2">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawLine.PenColor">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawLine.ReDraw">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
-<element name="PLMCanvasDrawText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMCanvasDrawText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawText.x1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawText.y1">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawText.Str">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawText.Font">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawText.PenColor">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMCanvasDrawText.ReDraw">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
 <element name="TLMEraseBkgnd">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMEraseBkgnd.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMEraseBkgnd.DC">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMEraseBkgnd.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMGetText">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMGetText.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMGetText.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMGetText.TextMax">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMGetText.Text">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMGetText.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMGetTextLength">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PLMInsertText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMInsertText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMInsertText.Msg">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMInsertText.NewText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMInsertText.Length">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMInsertText.Position">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMInsertText.UserData">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
 <element name="TLMKey">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMKey.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMKey.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMKey.CharCode">
 <short/>
 <descr>
+Virtual Key constant (VK_XXX).
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMKey.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMKey.Unused2">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMKey.KeyData">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMKey.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMChar">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMKeyDown">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMKeyUp">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMSysChar">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMSysKeyDown">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMSysKeyUp">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
+<element name="TCMWantSpecialKey">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMGetDlgCode">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMGetDlgCode.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMGetDlgCode.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMGetDlgCode.CharCode">
+<short/>
+<descr>
+Virtual Key constant (VK_XXX).
+</descr>
+</element>
+
+<element name="TLMGetDlgCode.Unused">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMGetDlgCode.UnusedL">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMGetDlgCode.Result">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMCut">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMCopy">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMPaste">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.CursorWnd">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.HitTest">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.MouseMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.Dummy">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSetCursor.Result">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMMouse">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMouse.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMouse.Keys">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMMouse.XPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMouse.YPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMouse.Pos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMouse.Dummy">
+<short/>
+<descr>
+Needed for 64-bit alignment.
+</descr>
+</element>
+
+<element name="TLMMouse.Result">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMMouseMove">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMMove">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMove.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMMove.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMMove.MoveType">
 <short/>
 <descr>
+0 = update, 1 = force RequestAlign, 128 = Source is Interface (Widget has moved).
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- record type Visibility: default -->
+<element name="TLMMove.XPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMove.YPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMove.Pos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMove.Dummy">
+<short/>
+<descr>
+Needed for 64-bit alignment.
+</descr>
+</element>
+
+<element name="TLMMove.Result">
+<short/>
+<descr/>
+</element>
+
+<element name="WA_INACTIVE">
+<short/>
+<descr/>
+</element>
+
+<element name="WA_ACTIVE">
+<short/>
+<descr/>
+</element>
+
+<element name="WA_CLICKACTIVE">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMActivate">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMActivate.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMActivate.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMActivate.Active">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMActivate.Minimized">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMActivate.Unused">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMActivate.ActiveWindow">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMActivate.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMNCActivate">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNCActivate.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNCActivate.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNCActivate.Active">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNCActivate.Unused2">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNCActivate.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNCActivate.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMNotify">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNotify.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNotify.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNotify.IDCtrl">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNotify.NMHdr">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNotify.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMNotifyFormat">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNotifyFormat.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNotifyFormat.From">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.Command">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNotifyFormat.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMPaint">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMPaint.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMPaint.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMPaint.DC">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMPaint.PaintStruct">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMPaint.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TLMResize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMResize.Msg">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMResize.Left">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMResize.Top">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMResize.Width">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMResize.Height">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMResize.UserData">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- alias type Visibility: default -->
-<element name="TLMMoveResize">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
 <element name="PWindowPos">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="tagWINDOWPOS">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.hwnd">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.hwndInsertAfter">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.x">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.y">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.cx">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.cy">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagWINDOWPOS.flags">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TWindowPos">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="WINDOWPOS">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMWindowPosMsg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMWindowPosMsg.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMWindowPosMsg.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.WindowPos">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMWindowPosMsg.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMWindowPosChanged">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMWindowPosChanging">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- pointer type Visibility: default -->
 <element name="PNCCalcSizeParams">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="tagNCCalcSize_Params">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagNCCalcSize_Params.rgrc">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="tagNCCalcSize_Params.lpPos">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TNCCalcSizeParams">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="ncCalcSizeParams">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMNCCalcSize">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNCCalcSize.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNCCalcSize.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNCCalcSize.CalcValidRects">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNCCalcSize.Unused">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNCCalcSize.CalcSize_Params">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNCCalcSize.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMSysColorChange">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMSysCommand">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSysCommand.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
+<element name="TLMSysCommand.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.CmdType">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.ActiveWnd">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.Result">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.Key">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.Unused">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.XPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSysCommand.YPos">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSysDeadChar">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMSysDeadChar.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSysDeadChar.CharCode">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMSysDeadChar.Unused2">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSysDeadChar.KeyData">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSysDeadChar.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMSystemError">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSystemError.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMSystemError.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSystemError.ErrSpec">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMSystemError.Unused1">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSystemError.Unused2">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSystemError.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSystemError.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMTimeChange">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- pointer type Visibility: default -->
-<element name="PLMSetControlText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
-<element name="TLMSetControlText">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSetControlText.fCompStyle">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSetControlText.Panel">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMSetControlText.Userdata">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- record type Visibility: default -->
 <element name="TLMSetText">
 <short/>
 <descr>
+ToDo: Remove TLMSetText.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSetText.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMSetText.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSetText.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSetText.Text">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSetText.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TLMKeyEvent">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.Msg">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.KeyChar">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.Key">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.State">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.Length">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.Str">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: default -->
-<element name="TLMKeyEvent.UserData">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
 <element name="PLMMouseEvent">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMMouseEvent">
 <short/>
 <descr>
+Similar to TCMMouseWheel from Delphi. Be very careful
+when changing because some ported components depend
+on the similarity.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMouseEvent.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMMouseEvent.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMMouseEvent.Button">
 <short/>
 <descr>
+1=left, 2=right, 3=middle.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMouseEvent.WheelDelta">
 <short/>
 <descr>
+-1 for up, 1 for down.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLMMouseEvent.State">
+<element name="TLMMouseEvent.Unused1">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMouseEvent.X">
 <short/>
 <descr>
+Under GTK this is LongInt.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMMouseEvent.Y">
 <short/>
 <descr>
+Under GTK this is LongInt.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMMouseEvent.Unused2">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMMouseEvent.Result">
+<short/>
+<descr>
+To fit standard message size.
+</descr>
+</element>
+
 <element name="TLMMouseEvent.UserData">
 <short/>
 <descr>
+Used under GTK.
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMMouseEvent.State">
+<short/>
+<descr>
+For Windows, this is the equivalent of button.
+</descr>
+</element>
+
 <element name="TLMLButtonDown">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMRButtonDown">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMMButtonDown">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMXButtonDown">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMLButtonDblClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMRButtonDblClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMMButtonDblClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMXButtonDblClk">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMLButtonTripleClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMRButtonTripleClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMMButtonTripleClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMXButtonTripleClk">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMLButtonQuadClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMRButtonQuadClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMMButtonQuadClk">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMXButtonQuadClk">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMLButtonUp">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMRButtonUp">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMMButtonUp">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
+<element name="TLMXButtonUp">
+<short/>
+<descr/>
+</element>
+
+<element name="TLastMouseInfo">
+<short/>
+<descr/>
+</element>
+
+<element name="TLastMouseInfo.WinHandle">
+<short/>
+<descr/>
+</element>
+
+<element name="TLastMouseInfo.WinControl">
+<short/>
+<descr>
+Can be Nil in special cases.
+</descr>
+</element>
+
+<element name="TLastMouseInfo.MousePos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLastMouseInfo.Time">
+<short/>
+<descr/>
+</element>
+
+<element name="TLastMouseInfo.ClickCount">
+<short/>
+<descr/>
+</element>
+
+<element name="TLastMouseInfo.Button">
+<short/>
+<descr>
+1=left, 2=right, 3=middle, 4=Extra.
+</descr>
+</element>
+
+<element name="TLastMouseInfo.Down">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSetFocus">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSetFocus.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMSetFocus.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMSetFocus.FocusedWnd">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSetFocus.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMSetFocus.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMSize">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
-<element name="TLMNoPara">
+<element name="TLMSize.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSize.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSize.SizeType">
 <short/>
 <descr>
+See <file>lcltype.pp</file> (e. g. Size_Restored).
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- variable Visibility: default -->
-<element name="TLMNoPara.Msg">
+<element name="TLMSize.Width">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- pointer type Visibility: default -->
+<element name="TLMSize.Height">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSize.Unused">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMSize.Result">
+<short/>
+<descr/>
+</element>
+
 <element name="PLMessage">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMessage">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMessage.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.WParam">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.LParam">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.Result">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.WParamLo">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.WParamHi">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.LParamLo">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.LParamHi">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.ResultLo">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMessage.ResultHi">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMEnter">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMExit">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMScroll">
 <short/>
 <descr>
+<p>
+TLMScroll does not have the same size as the VCL / Winapi counterpart.
+</p>
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMScroll.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMScroll.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMScroll.ScrollCode">
+<short/>
+<descr>
+SB_xxx.
+</descr>
+</element>
+
+<element name="TLMScroll.SmallPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMScroll.Unused">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMScroll.ScrollBar">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMScroll.Result">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMScroll.Pos">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMHScroll">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMVScroll">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
 <element name="TLMShowWindow">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMShowWindow.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMShowWindow.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMShowWindow.Show">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMShowWindow.Unused">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMShowWindow.Status">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMShowWindow.Result">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMKillFocus">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMNCHITTEST">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMNCHITTEST.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMNCHITTEST.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMNCHITTEST.Unused">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- alias type Visibility: default -->
+<element name="TLMNCHITTEST.XPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMNCHITTEST.YPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMNCHITTEST.Pos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMNCHITTEST.Dummy">
+<short/>
+<descr>
+Needed for 64-bit alignment.
+</descr>
+</element>
+
+<element name="TLMNCHITTEST.Result">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMDestroy">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLMCommand">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMCommand.Msg">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMCommand.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMCommand.ItemID">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMCommand.NotifyCode">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
+<element name="TLMCommand.Unused">
+<short/>
+<descr/>
+</element>
+
 <element name="TLMCommand.Ctl">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLMCommand.Result">
 <short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<descr/>
 </element>
 
-<!-- constant Visibility: default -->
+<element name="TLMContextMenu">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.hWnd">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.XPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.YPos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.Pos">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMContextMenu.Dummy">
+<short/>
+<descr>
+Needed for 64-bit alignment.
+</descr>
+</element>
+
+<element name="TLMContextMenu.Result">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMHelp">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMHelp.Msg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMHelp.UnusedMsg">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMHelp.Unused">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMHelp.HelpInfo">
+<short/>
+<descr/>
+</element>
+
+<element name="TLMHelp.Result">
+<short/>
+<descr/>
+</element>
+
 <element name="CBN_ERRSPACE">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_SELCHANGE">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_DBLCLK">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_SETFOCUS">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_KILLFOCUS">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_EDITCHANGE">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_EDITUPDATE">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_DROPDOWN">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_CLOSEUP">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_SELENDOK">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- constant Visibility: default -->
 <element name="CBN_SELENDCANCEL">
 <short/>
 <descr>
+Combo-Box Notification Code
 </descr>
-<seealso>
-</seealso>
 </element>
 
-<!-- function Visibility: default -->
 <element name="GetMessageName">
-<short/>
+<short>Gets the string representation for the specified message constant</short>
 <descr>
+<p>
+<var>GetMessageName</var> can be used to convert the Integer value in
+<var>AMessage</var> to a <var>String</var> representing the message name.
+It handles LCL-specific messages <b>RECEIVED</b> from the interface. There
+are no defines for the messages sent <b>TO</b> the interface.
+</p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="GetMessageName.Result">
-<short/>
+<short>String with the name for the message</short>
+</element>
+<element name="GetMessageName.AMessage">
+<short>Message number converted in the routine</short>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="GetMessageName.AMessage">
-<short/>
-</element>
-</module> <!-- LMessages -->
+</module>
+<!-- LMessages -->
 </package>
 </fpdoc-descriptions>

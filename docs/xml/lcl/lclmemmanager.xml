@@ -1,292 +1,276 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lcl">
-
 <!--
-  ====================================================================
-    LCLMemManager
-  ====================================================================
+====================================================================
+LCLMemManager
+====================================================================
 -->
-
 <module name="LCLMemManager">
-<short/>
+<short>Base class for a mempry manager used in the LCL and its interfaces</short>
 <descr>
+<p>
+<file>lclmemmanager.pas</file> contains classes and type used to define the base
+class for  various memory managers used in the Lazarus Component Library
+(<b>LCL</b>) and its interfaces. An own memory manager is somewhat faster and
+makes debugging and profiling easier.
+</p>
+<p>
+This file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
+<p>
+Author: Mattias Gaertner
+</p>
 </descr>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="Classes">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- unresolved references -->
+<element name="Classes"/>
+<element name="Math"/>
 
-<!-- unresolved type reference Visibility: default -->
-<element name="SysUtils">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- pointer type Visibility: default -->
 <element name="PLCLMemManagerItem">
-<short/>
+<short>Pointer to a TLCLMemManagerItem type</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- record type Visibility: default -->
 <element name="TLCLMemManagerItem">
-<short/>
+<short>
+Represents a memory manager item with a pointer to the next item in the list
+</short>
 <descr>
 </descr>
 <seealso>
+<link id="PLCLMemManagerItem"/>
 </seealso>
 </element>
 
-<!-- variable Visibility: default -->
 <element name="TLCLMemManagerItem.Next">
-<short/>
+<short>Pointer to the next item in the memory manager</short>
 <descr>
 </descr>
 <seealso>
+<link id="PLCLMemManagerItem"/>
 </seealso>
 </element>
 
-<!-- object Visibility: default -->
 <element name="TLCLMemManager">
-<short/>
+<short>Template for memory manager implementations</short>
 <descr>
+<p>
+<var>TLCLMemManager</var> is a class which provides a template for memory
+manager implementations used in the LCL. It is used as a base class for
+specialized memory managers in widgetset classes.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: private -->
 <element name="TLCLMemManager.SetMaxFreeRatio">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
+<short>Sets the value for the MaximumFreeCountRatio property</short>
 <seealso>
+<link id="TLCLMemManager.MaximumFreeCountRatio"/>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLCLMemManager.SetMaxFreeRatio.NewValue">
-<short/>
+<short>New value for the property</short>
 </element>
 
-<!-- procedure Visibility: private -->
 <element name="TLCLMemManager.SetMinFree">
-<short/>
-<descr>
-</descr>
-<errors>
-</errors>
+<short>Sets the value for the MinimumFreeCount property</short>
 <seealso>
+<link id="TLCLMemManager.MinimumFreeCount"/>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLCLMemManager.SetMinFree.NewValue">
-<short/>
+<short>New value for the property</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FFirstFree">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Internal member with the pointer the first item in the memory manager
+</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FFreeCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Member used to store the value for the FreeCount property</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Member used to store the value for the Count property</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FMinFree">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Member used to store the value for the MinimumFreeCount property</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FMaxFreeRatio">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Member used to store the value for the MaximumFreeCountRatio property
+</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FAllocatedCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Member used to store the value for the AllocatedCount property
+</short>
 </element>
 
-<!-- variable Visibility: protected -->
 <element name="TLCLMemManager.FFreedCount">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Member used to store the value for the FreedCount property
+</short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TLCLMemManager.DisposeItem">
-<short/>
+<short>
+Maintains values in FreeCount and Count when the memory manager item is freed
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLMemManager.FreeCount"/>
+<link id="TLCLMemManager.MinimumFreeCount"/>
+<link id="TLCLMemManager.MaximumFreeCountRatio"/>
+<link id="TLCLMemManager.Count"/>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLCLMemManager.DisposeItem.AnItem">
-<short/>
+<short>Pointer to the memory manager item</short>
 </element>
 
-<!-- function Visibility: protected -->
 <element name="TLCLMemManager.NewItem">
-<short/>
+<short>
+Gets a pointer to a free memory manager item, or creates a new one
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLMemManager.FFirstFree"/>
+<link id="TLCLMemManager.FreeCount"/>
+<link id="TLCLMemManager.AllocatedCount"/>
+<link id="TLCLMemManager.Count"/>
+<link id="PLCLMemManagerItem"/>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TLCLMemManager.NewItem.Result">
-<short/>
+<short>Pointer to the new memory manager item</short>
 </element>
 
-<!-- procedure Visibility: protected -->
 <element name="TLCLMemManager.FreeFirstItem">
-<short/>
+<short>
+Frees the first item in the memory manager and maintains the list
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLMemManager.FFirstFree"/>
+<link id="PLCLMemManagerItem"/>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLMemManager.MinimumFreeCount">
-<short/>
+<short>
+Minimum block size that can be freed in the memory manager
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLMemManager.MaximumFreeCountRatio">
-<short/>
+<short>
+Threshold which determines if the memory manager marks a block or frees it
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLMemManager.Count">
-<short/>
+<short>
+Total number of items in the memory manager list
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLMemManager.FreeCount">
-<short/>
+<short>
+Number of items marked as free in the list
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLMemManager.AllocatedCount">
-<short/>
+<short>
+Number of items allocated in the memory manager list
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLMemManager.FreedCount">
-<short/>
+<short>
+Number of freed memory blocks in the list
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TLCLMemManager.Clear">
-<short/>
+<short>
+Frees all items in the memory manager list
+</short>
 <descr>
+<p>
+Called from the destructor for the class instance.
+</p>
 </descr>
 <errors>
 </errors>
 <seealso>
+<link id="TLCLMemManager.FreeFirstItem"/>
+<link id="TLCLMemManager.FreeCount"/>
+<link id="TLCLMemManager.FreedCount"/>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TLCLMemManager.Create">
-<short/>
+<short>Constructor for the class instance</short>
 <descr>
+<p>
+Calls the inherited constructor on entry, and sets the default values for
+properties in the class instance.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLMemManager.Destroy"/>
 </seealso>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TLCLMemManager.Destroy">
-<short/>
+<short>
+Destructor for the class instance
+</short>
 <descr>
+<p>
+Calls Clear to remove all items in the memory manager list. Calls the inherited
+destructor prior to exit.
+</p>
 </descr>
 <errors>
 </errors>
@@ -294,23 +278,21 @@
 </seealso>
 </element>
 
-<!-- procedure type Visibility: default -->
 <element name="TLCLEnumItemsMethod">
-<short/>
+<short>
+Defines an object procedure type used to enumerate memory manager items
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLCLEnumItemsMethod.Item">
-<short/>
+<short>Pointer to a memory manager item enumerated in the procedure</short>
 </element>
 
-<!-- object Visibility: default -->
 <element name="TLCLNonFreeMemManager">
-<short/>
+<short>A memory manager for records without freeing</short>
 <descr>
 </descr>
 <errors>
@@ -319,7 +301,6 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FItemSize">
 <short/>
 <descr>
@@ -328,7 +309,6 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FItems">
 <short/>
 <descr>
@@ -337,7 +317,6 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FCurItem">
 <short/>
 <descr>
@@ -346,7 +325,6 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FEndItem">
 <short/>
 <descr>
@@ -355,7 +333,6 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FCurSize">
 <short/>
 <descr>
@@ -364,7 +341,6 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
 <element name="TLCLNonFreeMemManager.FFirstSize">
 <short/>
 <descr>
@@ -373,113 +349,175 @@
 </seealso>
 </element>
 
-<!-- variable Visibility: public -->
 <element name="TLCLNonFreeMemManager.ClearOnCreate">
-<short/>
+<short>
+Public member used to control zero-filling memory allocated for items
+</short>
 <descr>
+Used in the NewItem method.
 </descr>
 <seealso>
+<link id="TLCLNonFreeMemManager.NewItem"/>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLCLNonFreeMemManager.ItemSize">
-<short/>
+<short>
+Size of the memory allocated for each item in the list
+</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TLCLNonFreeMemManager.Clear">
-<short/>
+<short>
+Frees memory allocated to items, and frees the list
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
 </seealso>
 </element>
 
-<!-- constructor Visibility: public -->
 <element name="TLCLNonFreeMemManager.Create">
-<short/>
+<short>
+Constructor for the class instance
+</short>
 <descr>
+<p>
+Sets ItemSize to the value specified in TheItemSize, and sets the size of the
+first item to 4 times the ItemSize value.
+</p>
 </descr>
 <errors>
 </errors>
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLCLNonFreeMemManager.Create.TheItemSize">
 <short/>
 </element>
 
-<!-- destructor Visibility: public -->
 <element name="TLCLNonFreeMemManager.Destroy">
-<short/>
+<short>
+Destructor for the class instance
+</short>
 <descr>
+<p>
+Calls Clear on entry.
+Calls the inherited destructor prior to exit.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLNonFreeMemManager.Create"/>
 </seealso>
 </element>
 
-<!-- function Visibility: public -->
 <element name="TLCLNonFreeMemManager.NewItem">
-<short/>
+<short>Gets a Pointer to a new item in the list</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLNonFreeMemManager.ClearOnCreate"/>
+<link id="TLCLNonFreeMemManager.ItemSize"/>
+<link id="TLCLNonFreeMemManager.FItems"/>
+<link id="TLCLNonFreeMemManager.FCurItem"/>
+<link id="TLCLNonFreeMemManager.FEndItem"/>
+<link id="TLCLNonFreeMemManager.FCurSize"/>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TLCLNonFreeMemManager.NewItem.Result">
-<short/>
+<short>Pointer to the item added to the internal list</short>
 </element>
 
-<!-- procedure Visibility: public -->
 <element name="TLCLNonFreeMemManager.EnumerateItems">
-<short/>
+<short>
+  Enumerates items in the list using the specified object procedure
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TLCLNonFreeMemManager.ItemSize"/>
+<link id="TLCLNonFreeMemManager.FItems"/>
+<link id="TLCLNonFreeMemManager.FFirstSize"/>
+<link id="TLCLEnumItemsMethod"/>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLCLNonFreeMemManager.EnumerateItems.Method">
-<short/>
+<short>Object procedure used to enumerate the items in the list</short>
 </element>
 
-<!-- object Visibility: default -->
+<element name="TStreamSizeType">
+<short>
+Alias to the type used for stream sizes
+</short>
+<descr>
+<p>
+<var>PtrInt</var> for FPC 2.04.02 or higher.
+<var>LongInt</var> for versions prior to FPC 2.04.02.
+</p>
+</descr>
+<seealso/>
+</element>
+
 <element name="TExtMemoryStream">
-<short/>
+<short>
+Implements an extended memory stream with a minimum growth factor
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
 <seealso>
+</seealso>
+<notes>
+<note>
+Realloc performs the same action as in TMemoryStream now;
+grow by 25% minimum.
+</note>
+</notes>
+</element>
+
+<element name="TExtMemoryStream.Realloc">
+<short>
+Reallocates memory for the stream using the specified capacity
+</short>
+<descr>
+<p>
+<var>Realloc</var> is an overridden method in <var>TExtMemoryStream</var>.
+It ensures that the new <var>Capacity</var> is at least 25% larger than the
+existing Capacity. Realloc calls the inherited method to re-allocate memory to the
+size needed.
+</p>
+</descr>
+<seealso>
+<link id="TExtMemoryStream.Capacity"/>
+<link id="#rtl.classes.TMemoryStream.Realloc">TMemoryStream.Realloc</link>
+</seealso>
+</element>
+<element name="TExtMemoryStream.Realloc.Result">
+<short>Pointer to the newly allocated memory for the stream</short>
+</element>
+<element name="TExtMemoryStream.Realloc.NewCapacity">
+<short>New capacity requested in the method</short>
+</element>
+
+<element name="TExtMemoryStream.Capacity">
+<short>Size of the allocated memory for the stream</short>
+<descr>
+<p>
+<var>Capacity</var> is a public <var>PtrInt</var> property in TExtMemoryStream
+which contains the memory size allocated for the stream. Setting a new value for
+the property causes the <var>Realloc</var> method to be called to re-allocate
+memory to the requested value.
+</p>
+</descr>
+<seealso>
+<link id="TExtMemoryStream.Realloc"/>
 </seealso>
 </element>
 
-<!-- property Visibility: public -->
-<element name="TExtMemoryStream.Capacity">
-<short/>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-</module> <!-- LCLMemManager -->
+</module>
+<!-- LCLMemManager -->
 </package>
 </fpdoc-descriptions>

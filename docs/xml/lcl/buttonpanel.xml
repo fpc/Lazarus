@@ -7,7 +7,7 @@
       ====================================================================
     -->
     <module name="ButtonPanel">
-      <short>Provides a panel with Bitmap buttons</short>
+      <short>Provides a panel with buttons using glyph images</short>
       <descr>
         <p>
           <file>buttonpanel.pas</file> contains classes and types used to implement <var>TButtonPanel</var>, a panel which contains common buttons used in an application form. It is part of the Lazarus Component Library (<b>LCL</b>).
@@ -45,21 +45,37 @@
         </short>
         <descr>
           <p>
-            <var>TButtonOrder</var> is an enumeration with values which indicate the display order used for buttons on <var>TButtonPanel</var>.
+            <var>TButtonOrder</var> is an enumeration with values which indicate the display order used for buttons on <var>TCustomButtonPanel</var> and <var>TButtonPanel</var>.
+          </p>
+          <p>
+            The value <var>boDefault</var> has a special meaning, and causes the button order to be set to the sequence normally used for the platform or operating system.
+          </p>
+          <p>
+            For example:
+          </p>
+          <dl>
+            <dt>UNIX-like environments</dt>
+            <dd>Uses Ok, Cancel, Close, and Help button order.</dd>
+            <dt>All other platforms</dt>
+            <dd>Uses Cancel, Ok, Close, and Help button order.</dd>
+          </dl>
+          <p>
+            TButtonOrder is the type used to implement the <var>TCustomButtonPanel.ButtonOrder</var> property.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomButtonPanel.ButtonOrder"/>
           <link id="TButtonPanel"/>
         </seealso>
       </element>
       <element name="TButtonOrder.boDefault">
-        <short>Uses the default button order; OK, Cancel, Close, Help</short>
+        <short>Uses the common button order for the platform or operating system</short>
       </element>
       <element name="TButtonOrder.boCloseCancelOK">
-        <short>Use the button order Close, Cancel, OK</short>
+        <short>Use the button order Close, Cancel, OK, Help</short>
       </element>
       <element name="TButtonOrder.boCloseOKCancel">
-        <short>Use the button order Close, OK, Cancel</short>
+        <short>Use the button order Close, OK, Cancel, Help</short>
       </element>
 
       <element name="TPanelButton">
@@ -224,7 +240,7 @@
         <short>Defines the base class for TButtonPanel</short>
         <descr>
           <p>
-            <var>TCustomButtonPanel</var> is a <var>TCustomPanel</var> descendant which defines the base class for <var>TButtonPanel</var>,  a panel containing Bitmap buttons. Buttons are provided for <b>OK</b>, <b>Help</b>, <b>Close</b>, and <b>Cancel</b> operations. Other properties are provided to control the display order for the buttons, the default button for the panel, visibility of the available buttons, and the use of glyphs.
+            <var>TCustomButtonPanel</var> is a <var>TCustomPanel</var> descendant which defines the base class for <var>TButtonPanel</var>,  a panel containing buttons with glyph images. Buttons are provided for <b>OK</b>, <b>Help</b>, <b>Close</b>, and <b>Cancel</b> operations. Other properties are provided to control the display order for the buttons, the default button for the panel, visibility of the available buttons, and the use of glyphs.
           </p>
           <p>
             Applications should not create instances of <var>TCustomButtonPanel</var>; use the <var>TButtonPanel</var> ancestor which specifies the visibility of properties (including event handlers).
@@ -467,7 +483,7 @@
             <var>UpdateBevel</var> is called when a value is assigned to the <var>ShowBevel</var> property.
           </p>
           <remark>
-            Please note: No actions are performed in the method when <var>ShowBevel</var> contains <b>False</b>.
+            No actions are performed in the method when <var>ShowBevel</var> is set to <b>False</b>.
           </remark>
         </descr>
         <seealso>
@@ -553,10 +569,18 @@
 
       <element name="TCustomButtonPanel.IsLastButton">
         <short>
-          Indicates if the specified button is the last one defined in the button order for the panel
+          Indicates if the specified button is the last one defined in the button order
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>IsLastButton</var> is a <var>Boolean</var> function used to determine if the button in <var>AControl</var> is the last button in the <var>ButtonOrder</var> for the panel. The return value is <b>True</b> when AControl is a visible <var>TPanelBitBtn</var> instance which occurs last in the tab order for the visible buttons.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.ButtonOrder"/>
+          <link id="TCustomButtonPanel.ShowButtons"/>
+          <link id="TPanelBitBtn"/>
+        </seealso>
       </element>
       <element name="TCustomButtonPanel.IsLastButton.Result">
         <short>True when the specified button is the last in the button order</short>
@@ -637,12 +661,29 @@
         </seealso>
       </element>
 
-      <element name="TCustomButtonPanel.Notification" link="#rtl.Classes.TComponent.Notification"/>
+      <element name="TCustomButtonPanel.Notification">
+        <short>Called by components that are freed and which received a FreeNotification</short>
+        <descr>
+          <p>
+            <var>Notification</var> is called whenever a child component is destroyed, inserted or removed from the list of owned components. Components that were requested to send a notification when they are freed (with FreeNotification) will also call Notification when they are freed.
+          </p>
+          <p>
+            The <var>AComponent</var> parameter specifies which component sends the notification, and <var>Operation</var> specifies whether the component is being inserted into or removed from the child component list, or whether it is being destroyed.
+          </p>
+          <p>
+            Notification is overridden in <var>TCustomButtonPanel</var> to ensure that <var>TPanelBitBtn</var> instances which are freed are excluded from the <var>ShowButtons</var> property, and their internal storage is <b>Nil</b>'d. If the panel control is not being destroyed, the remaining buttons are re-sized and re-aligned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.ShowButtons"/>
+          <link id="#rtl.classes.TComponent.Notification">TComponent.Notification</link>
+        </seealso>
+      </element>
       <element name="TCustomButtonPanel.Notification.AComponent">
-        <short></short>
+        <short>Component for the notification</short>
       </element>
       <element name="TCustomButtonPanel.Notification.Operation">
-        <short></short>
+        <short>Operation performed for the component</short>
       </element>
 
       <element name="TCustomButtonPanel.SetAlign">
@@ -715,7 +756,9 @@
             Create calls the DoShowButtons method to create and configure the TPanelBitBtn instances used in the panel class.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomButtonPanel.Destroy"/>
+        </seealso>
       </element>
       <element name="TCustomButtonPanel.Create.AOwner">
         <short>Owner for the class instance</short>
@@ -728,7 +771,9 @@
             <var>Destroy</var> is the overridden destructor for the class instance. Destroy ensures that <var>TBitmap</var> instances created for button glyphs in the panel are freed. Destroy calls the inherited destructor prior to exiting from the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomButtonPanel.Create"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.Align">
@@ -737,52 +782,188 @@
         </short>
         <descr>
           <p>
-            <var>Align</var> is a public property in <var>TCustomButtonPanel</var> used to specify the border (or edge) where the panel (and its buttons and bevel) are aligned. The default value for the property is <var>alBottom</var>. Changing the value in <var>Align</var> causes the <var>UpdateButtonLayout</var>, <var>UpdateBevel</var>, and <var>UpdateSizes</var> methods to be called.
+            <var>Align</var> is a public property in <var>TCustomButtonPanel</var> used to specify the border (or edge) where the panel (and its buttons and bevel) are aligned. The default value for the property is <var>alBottom</var>.
+          </p>
+          <p>
+            Changing the value in <var>Align</var> causes the private <var>UpdateButtonLayout</var>, <var>UpdateBevel</var>, and <var>UpdateSizes</var> methods to be called.
+          </p>
+          <p>
+            Use <var>AutoSize</var> to enable or disable auto-sizing for the non-aligned or anchored dimensions in the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomButtonPanel.AutoSize"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.AutoSize">
         <short>Indicates if the panel can automatically adjust its size</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>AutoSize</var> is a <var>Boolean</var> property which indicates if the button panel can automatically adjust its size. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            Please note that auto-sizing is affected by the value in the <var>Align</var> property. When Align is set to <var>alBottom</var> (the default), the panel width is determined by the available width for the parent. <var>Height</var> will be automatically sized, but <var>Width</var> will not.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.Align"/>
+          <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+          <link id="#lcl.controls.TControl.AdjustSize">TControl.AdjustSize</link>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.OKButton">
         <short>
           <var>OKButton</var> - a button with the caption 'OK' signifying acceptance by the user
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OKButton</var> is a read-only <var>TPanelBitBtn</var> property which provides access to the <b>OK</b> button for the panel. Read access is redirected to the internal array of buttons in the class instance.
+          </p>
+          <p>
+            Use OKButton to set custom values for properties in the TPanelBitBtn instance, including:
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>Cursor</li>
+            <li>DefaultCaption</li>
+            <li>Enabled</li>
+            <li>Font</li>
+            <li>Glyph</li>
+            <li>Name</li>
+            <li>PopupMenu</li>
+            <li>ShowHint</li>
+            <li>Tag</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.CancelButton"/>
+          <link id="TCustomButtonPanel.CloseButton"/>
+          <link id="TCustomButtonPanel.HelpButton"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.HelpButton">
         <short>
-          <var>HelpButton</var> - a button with the 'Help' caption, for requesting help</short>
-        <descr/>
-        <seealso/>
+          <var>HelpButton</var> - a button with the 'Help' caption, for requesting help
+        </short>
+        <descr>
+          <p>
+            <var>HelpButton</var> is a read-only <var>TPanelBitBtn</var> property which provides access to the <b>Help</b> button for the panel. Read access is redirected to the internal array of buttons in the class instance.
+          </p>
+          <p>
+            Use HelpButton to set custom values for properties in the TPanelBitBtn instance, including:
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>Cursor</li>
+            <li>DefaultCaption</li>
+            <li>Enabled</li>
+            <li>Font</li>
+            <li>Glyph</li>
+            <li>Name</li>
+            <li>PopupMenu</li>
+            <li>ShowHint</li>
+            <li>Tag</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.CancelButton"/>
+          <link id="TCustomButtonPanel.CloseButton"/>
+          <link id="TCustomButtonPanel.OkButton"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.CloseButton">
         <short>
-          <var>CloseButton</var> - a button with the 'Close' caption for terminating the Form or panel</short>
-        <descr/>
-        <seealso/>
+          <var>CloseButton</var> - a button with the 'Close' caption for terminating the Form or panel
+        </short>
+        <descr>
+          <p>
+            <var>CloseButton</var> is a read-only <var>TPanelBitBtn</var> property which provides access to the <b>Close</b> button for the panel. Read access is redirected to the internal array of buttons in the class instance.
+          </p>
+          <p>
+            Use CloseButton to set custom values for properties in the TPanelBitBtn instance, including:
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>Cursor</li>
+            <li>DefaultCaption</li>
+            <li>Enabled</li>
+            <li>Font</li>
+            <li>Glyph</li>
+            <li>Name</li>
+            <li>PopupMenu</li>
+            <li>ShowHint</li>
+            <li>Tag</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.CancelButton"/>
+          <link id="TCustomButtonPanel.HelpButton"/>
+          <link id="TCustomButtonPanel.OkButton"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.CancelButton">
         <short>
-          <var>CancelButton</var> - a button with the 'Cancel' caption for cancelling the operation</short>
-        <descr/>
-        <seealso/>
+          <var>CancelButton</var> - a button with the 'Cancel' caption for cancelling the operation
+        </short>
+        <descr>
+          <p>
+            <var>CancelButton</var> is a read-only <var>TPanelBitBtn</var> property which provides access to the <b>Cancel</b> button for the panel. Read access is redirected to the internal array of buttons in the class instance.
+          </p>
+          <p>
+            Use CancelButton to set custom values for properties in the TPanelBitBtn instance, including:
+          </p>
+          <ul>
+            <li>Caption</li>
+            <li>Cursor</li>
+            <li>DefaultCaption</li>
+            <li>Enabled</li>
+            <li>Font</li>
+            <li>Glyph</li>
+            <li>Name</li>
+            <li>PopupMenu</li>
+            <li>ShowHint</li>
+            <li>Tag</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.CloseButton"/>
+          <link id="TCustomButtonPanel.HelpButton"/>
+          <link id="TCustomButtonPanel.OkButton"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.ButtonOrder">
         <short>
-          <var>ButtonOrder</var> - the order in which the series of buttons will appear on the panel</short>
-        <descr/>
-        <seealso/>
+          <var>ButtonOrder</var> - the order in which the series of buttons will appear on the panel
+        </short>
+        <descr>
+          <p>
+            <var>ButtonOrder</var> is a <var>TButtonOrder</var> property which indicates the order of the buttons displayed on the panel. The default value for the property is <var>boDefault</var>, and causes the button order to be set to the sequence normally used for the platform or operating system.
+          </p>
+          <p>
+            For example:
+          </p>
+          <dl>
+            <dt>UNIX-like environments</dt>
+            <dd>Uses Ok, Cancel, Close, and Help button order.</dd>
+            <dt>All other platforms</dt>
+            <dd>Uses Cancel, Ok, Close, and Help button order.</dd>
+          </dl>
+          <p>
+            Use <var>boCloseCancelOK</var> or <var>boCloseOKCancel</var> to set the button order where <b>Help</b> is always the last button displayed.
+          </p>
+          <p>
+            Changing the value in ButtonOrder causes the button panel to be re-drawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TButtonOrder"/>
+        </seealso>
       </element>
 
       <element name="TCustomButtonPanel.DefaultButton">
@@ -791,7 +972,7 @@
         </short>
         <descr>
           <p>
-            <var>DefaultButton</var> contains the button used as the default action performed when the <b>Return</b> or <b>Enter</b> key is pressed.
+            <var>DefaultButton</var> contains the button which performs the default action when the <b>Return</b> or <b>Enter</b> key is pressed.
           </p>
         </descr>
         <seealso>
@@ -799,27 +980,60 @@
       </element>
 
       <element name="TCustomButtonPanel.ShowButtons">
-        <short>
-          Indicates if buttons are displayed on the panel
-        </short>
+        <short>Indicates the buttons displayed on the panel</short>
         <descr>
           <p>
-            <var>ShowButtons</var> is a Boolean property which Indicates if buttons are displayed on the panel.
+            <var>ShowButtons</var> is a <var>TPanelButtons</var> property which contains the set of buttons displayed on the panel. The default value for the property is defined in the <var>DefShowButtons</var> constant.
           </p>
+          <p>
+            Changing the values in the property causes the panel and its buttons to be re-sized and re-drawn.
+          </p>
+          <p>
+            Use ShowGlyphs to indicate which buttons have an image displayed on the button surface.
+          </p>
+          <p>
+            For example:
+          </p>
+<code>
+// var aButtonPanel: TButtonPanel...
+// use Ok and Cancel buttons only
+AButtonPanel.ShowButtons := [pbOk, pbCancel];
+AButtonPanel.ShowGlyphs := [pbOk, pbCancel];
+</code>
         </descr>
         <seealso/>
       </element>
 
       <element name="TCustomButtonPanel.ShowGlyphs">
-        <short>
-          Indicates whether Glyphs (small images) are shown on the buttons for the panel
-        </short>
+        <short>Indicates the panel buttons displayed with Glyphs (small images)</short>
         <descr>
           <p>
-            <var>ShowGlyphs</var> is a Boolean property which indicates whether Glyphs (small images) are shown on the buttons for the panel.
+            <var>ShowGlyphs</var> contains values from the <var>TPanelButton</var> enumeration,  and defines which panel buttons in <var>ShowButtons</var> are displayed with glyph images. The default value for the property is defined in the <var>DefShowGlyphs</var> constant.
           </p>
+          <p>
+            Changing the values in the property causes the panel and its buttons to be re-sized and re-drawn.
+          </p>
+          <p>
+            A default glyph image is provided for each TPanelBitBtn instance on the panel using the internal button name, like "OKButton" or "CancelButton". The default glyph image is loaded from LCL glyph resources when the button is created. Use OkButton, CancelButton, CloseButton, and HelpButton to provide custom values used in the panel buttons.
+          </p>
+          <p>
+            Use ShowButtons to control which buttons are displayed on the panel. For example:
+          </p>
+<code>
+// var aButtonPanel: TButtonPanel...
+// use Ok and Cancel buttons only
+AButtonPanel.ShowButtons := [pbOk, pbCancel];
+AButtonPanel.ShowGlyphs := [pbOk, pbCancel];
+</code>
         </descr>
         <seealso>
+          <link id="TCustomButtonPanel.OkButton"/>
+          <link id="TCustomButtonPanel.CancelButton"/>
+          <link id="TCustomButtonPanel.CloseButton"/>
+          <link id="TCustomButtonPanel.HelpButton"/>
+          <link id="TCustomButtonPanel.ShowButtons"/>
+          <link id="TPanelBitBtn"/>
+          <link id="DefShowGlyphs"/>
         </seealso>
       </element>
 
@@ -827,7 +1041,7 @@
         <short>Indicates if a bevel is displayed for the button panel</short>
         <descr>
           <p>
-            <var>ShowBevel</var> is a <var>Boolean</var> property which indicates if a TBevel is displayed on the edge opposite of the alignment for the panel. Changing the value for the property causes a <var>TBevel</var> instance to be created (or freed), and the <var>UpdateBevel</var> method to be called.
+            <var>ShowBevel</var> is a <var>Boolean</var> property which indicates if a <var>TBevel</var> is displayed on the edge opposite of the alignment for the panel. Changing the value for the property causes a TBevel instance to be created (or re-created). The private <var>UpdateBevel</var> method is called to apply the size, shape, and alignment needed for the bevel.
           </p>
         </descr>
         <seealso>
@@ -856,7 +1070,7 @@
         <short>Implements a panel with Bitmap Button instances</short>
         <descr>
           <p>
-            <var>TButtonPanel</var> is a <var>TCustomButtonPanel</var> descendant which implements a panel containing Bitmap buttons. Buttons are provided for <b>OK</b>, <b>Help</b>, <b>Close</b>, and <b>Cancel</b> operations. Other properties are provided to control the display order for the buttons, the default button for the panel, visibility of the available buttons, and the use of glyphs.
+            <var>TButtonPanel</var> is a <var>TCustomButtonPanel</var> descendant which implements a panel containing buttons with glyph images. Buttons are provided for <b>OK</b>, <b>Help</b>, <b>Close</b>, and <b>Cancel</b> operations. Other properties are provided to control the display order for the buttons, the default button for the panel, visibility of the available buttons, and the use of glyphs.
           </p>
         </descr>
         <seealso>
@@ -888,13 +1102,13 @@
       <element name="TButtonPanel.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
       <element name="TButtonPanel.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
       <element name="TButtonPanel.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
-      <element name="TButtonPanel.OnMouseDown" link="#lcl.controls.TControl.OnMouseEnter"/>
-      <element name="TButtonPanel.OnMouseDown" link="#lcl.controls.TControl.OnMouseLeave"/>
+      <element name="TButtonPanel.OnMouseEnter" link="#lcl.controls.TControl.OnMouseEnter"/>
+      <element name="TButtonPanel.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
       <element name="TButtonPanel.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
       <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseWheel"/>
-      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseWheelDown"/>
-      <element name="TButtonPanel.OnMouseUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TButtonPanel.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TButtonPanel.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TButtonPanel.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
       <element name="TButtonPanel.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <element name="TButtonPanel.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TButtonPanel.ShowButtons" link="#lcl.buttonpanel.TCustomButtonPanel.ShowButtons"/>
@@ -906,8 +1120,14 @@
         <short>Registers the TButtonPanel class in the Lazarus IDE</short>
         <descr>
           <p>
-            <var>Register</var> is a procedure used to register the <var>TButtonPanel</var> component on the <b>Misc</b> tab in the Lazarus IDE.
+            <var>Register</var> is the procedure used to register components for use in the Lazarus IDE. The following components are added to the Lazarus IDE:
           </p>
+          <p>
+            <b>Misc</b> Tab
+          </p>
+          <ul>
+            <li>TButtonPanel</li>
+          </ul>
         </descr>
         <seealso/>
       </element>

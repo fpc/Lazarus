@@ -24,11 +24,11 @@
       <element name="Classes"/>
       <element name="SysUtils"/>
       <element name="StdCtrls"/>
+      <element name="Graphics"/>
+      <element name="ShellCtrls"/>
       <element name="FileUtil"/>
       <element name="LazFileUtils"/>
       <element name="Masks"/>
-      <element name="Graphics"/>
-      <element name="ShellCtrls"/>
 
       <element name="TFileAttr">
         <short>Enumerated type with file and directory attributes used in TFileListBox</short>
@@ -79,7 +79,7 @@
       </element>
       <element name="TFileAttr.ftDirectory">
         <short>
-          File is a directory entry.
+          File attribute for a directory entry.
         </short>
       </element>
       <element name="TFileAttr.ftArchive">
@@ -516,7 +516,7 @@
         <short>Contains the mask for files selected for the control</short>
         <descr>
           <p>
-            <var>Mask</var> should be filled with one or more file masks separated by semi-colons. For example: <b>'*.pdf;*.svg'</b> will show all files with the extensions pdf and svg. The default value for the property is "*" which is the generic mask meaning any file or directory. Do not use the Windows specific mask <b>'*.*'</b> to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control '*.*' will require the file name to have an extension.
+            <var>Mask</var> should be filled with one or more file masks separated by semi-colons. For example: <b>'*.pdf;*.svg'</b> will show all files with the extensions pdf and svg. The default value for the property is <b>'*'</b> which is the generic mask meaning any file or directory. Do not use the Windows specific mask <b>'*.*'</b> to attempt to show all files, which is the behavior from Delphi. In the LCL version of the control '*.*' will <b>require</b> the file name to have an extension.
           </p>
           <p>
             Allowed wildcards include <b>'*.*'</b> which means zero or more characters, and <b>'?'</b> which means exactly 1 character with any value. Other characters represent themselves with one important detail: The file matching algorithm is <b>not</b> case sensitive. So if you set '*.PDF' in the mask, then 'PostScript.pdf' will also be shown, even on Linux which is a case sensitive file system.
