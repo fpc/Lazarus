@@ -368,7 +368,9 @@ end;
 
 function TAxisDrawHelper.GetDefaultPenColor: TColor;
 begin
-  Result := TCustomChart(FAxis.Collection.Owner).GetDefaultColor(dctFont);
+  Result := clWindowText;
+  // Not like this: (crashes)
+  // TCustomChart(FAxis.Collection.Owner).GetDefaultColor(dctFont);
 end;
 
 procedure TAxisDrawHelper.InternalAxisLine(
