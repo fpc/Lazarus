@@ -24,7 +24,6 @@ unitdir=. $(LAZDIR)/components/lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) \
           $(LAZDIR)/components/cairocanvas/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
           $(LAZDIR)/components/turbopower_ipro/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
           $(LAZDIR)/components/printers/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-          $(LAZDIR)/components/mouseandkeyinput/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
           ../packages/help/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
 targetdir=.
 
