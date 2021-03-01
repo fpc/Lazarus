@@ -8478,7 +8478,7 @@ end;
 
 function TQtFrame.CanPaintBackground: Boolean;
 begin
-  Result := CanSendLCLMessage and getEnabled and
+  Result := CanSendLCLMessage and {getEnabled and}
     (LCLObject.Color <> clBackground) and (LCLObject.Color <> clDefault);
 end;
 
