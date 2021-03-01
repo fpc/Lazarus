@@ -313,7 +313,7 @@ begin
    end;
   FShowHintFrm := TShowHintFrm.Create(nil);
   if AImgList <> nil then
-    FStarSize := AImgList.WidthForPPI[FVSt.ImagesWidth, FVST.Font.PixelsPerInch]
+    FStarSize := FVST.Scale96ToForm(AImgList.Width)
   else
     FStarSize := 0;
 end;
@@ -1955,7 +1955,7 @@ begin
              if Data^.DataType = 1 then
              begin
                R := FVST.GetDisplayRect(Node, DownColumn, False);
-               Data^.Rating := Trunc((FHoverP.X - R.Left - 1)/16) + 1;
+               Data^.Rating := Trunc((FHoverP.X - R.Left - 1)/FStarSize) + 1;
                if Data^.Rating > 5 then
                  Data^.Rating := 5;
                MetaPkg := SerializablePackages.Items[Data^.PID];
