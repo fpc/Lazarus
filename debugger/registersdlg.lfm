@@ -1,20 +1,22 @@
 object RegistersDlg: TRegistersDlg
   Left = 342
-  Height = 253
+  Height = 380
   Top = 117
-  Width = 346
+  Width = 519
   ActiveControl = lvRegisters
   BorderStyle = bsSizeToolWin
   Caption = 'Registers'
-  ClientHeight = 253
-  ClientWidth = 346
+  ClientHeight = 380
+  ClientWidth = 519
+  DesignTimePPI = 144
   LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
-    Height = 26
+    Height = 39
     Top = 0
-    Width = 346
+    Width = 519
     Caption = 'ToolBar1'
+    ParentFont = False
     ShowCaptions = True
     TabOrder = 1
     object ToolButtonPower: TToolButton
@@ -28,14 +30,14 @@ object RegistersDlg: TRegistersDlg
       Style = tbsCheck
     end
     object ToolButton1: TToolButton
-      Left = 24
-      Height = 22
+      Left = 36
+      Height = 33
       Top = 2
       Caption = 'ToolButton1'
       Style = tbsSeparator
     end
     object ToolButtonDispType: TToolButton
-      Left = 32
+      Left = 44
       Top = 2
       Caption = '...'
       DropdownMenu = PopupDispType
@@ -47,28 +49,35 @@ object RegistersDlg: TRegistersDlg
   end
   object lvRegisters: TStringGridAllowRightMouse
     Left = 0
-    Height = 227
-    Top = 26
-    Width = 346
+    Height = 341
+    Top = 39
+    Width = 519
     Align = alClient
     AutoEdit = False
     ColCount = 3
     ColumnClickSorts = True
     Columns = <    
       item
+        MinSize = 15
+        MaxSize = 300
         Title.Caption = ' '
-        Width = 18
+        Width = 27
       end    
       item
+        MinSize = 15
+        MaxSize = 300
         Title.Caption = 'Name'
-        Width = 70
+        Width = 105
       end    
       item
+        MinSize = 15
+        MaxSize = 300
         Title.Caption = 'Value'
-        Width = 400
+        Width = 600
       end>
     FixedCols = 0
     Options = [goFixedVertLine, goRangeSelect, goColSizing, goRowSelect, goThumbTracking, goSmoothScroll, goFixedColSizing]
+    ParentFont = False
     PopupMenu = PopupMenu1
     RowCount = 1
     TabOrder = 0
@@ -77,19 +86,44 @@ object RegistersDlg: TRegistersDlg
   end
   object ImageList1: TImageList
     Height = 8
+    Scaled = True
     Width = 8
-    left = 96
-    top = 104
+    Left = 144
+    Top = 156
     Bitmap = {
-      4C7A010000000800000008000000630000000000000078DA6360200EC4DCEDFA
-      6F7C35FF7FEABDFEFFE872FE974BFE8B1EF3FC2F7ECCFBBF0890F63F5B84A246
-      72BBCD7F9ECD06406C08A6453758A0C8FBED89FDCFBC40EA3FCB4219202DF93F
-      60673C861DDE9BC2FF8BCD55FF1FB615538E120000CF852E03
+      4C7A010000000800000008000000730000000000000078DA6360200E582FB075
+      8FBF9DBCD6EF46C05AF5991A6EE8725D4F26FC5BF172FD7F20FD1FA8E61FEF34
+      3EB81AA0BE7520B95B9F1FFF07D140FE7FD1B3626B61F240F5EB40FA90F4FFE7
+      3DCD079707D9073213A40F24A7745EF91FE3144657643780EC0399C97B866F2D
+      BA1C3E000042A545C6
+    }
+    BitmapAdv = {
+      4C69020000004C7A010000000C0000000C0000002C0100000000000078DA6360
+      201FB049B2312864280AA9656B182B642B19CBA6C80A718873E054EFBAC1D33B
+      F156EAEE8CBBB937A36EC5DE74BDECB15B69A5B2373673416A6B1F36FD99FE6C
+      EEFFF9CF97FEEF7CD2FF3FE36ECE7FC76B2E7F84960A7B318823D483DC003217
+      A476EFBBA3FF4F7DB8F47FC5AB75FF6B1F36FF0FBA11FA5FFAACEC2EC6244641
+      987AB51C0D13A01B6E81CC05A9BDF5F9F1FF8DAF77FC6F79D4F93FEC66E47FB9
+      F3F2371953198DE1E6672B1A83DC0B7203C85C90DA1940BB8AEE97FFF7BCEEF3
+      5FECACF84D861406B87A503880FC06722FC80D2073416A41661B5F36FDCF7992
+      7317431203DC3DA030038503C86F20F782D481CC05A9153D2BF68761218327B2
+      7F6100140E20BF81DC0B7203D85C905A5C006806301C84C07E4B653002BB419C
+      8122000001BB9CD74C7A010000001000000010000000340100000000000078DA
+      6360187CC0F88C31ABDFB540579FEB8145AED73D8ACC2F9BBB3AEC776021466F
+      C8CD08DBB43BD9B70BEF95FD07E1F43BD9FF436F46FCB7BDE2704BE982920D21
+      BD403D3F3A1EF7FD9FF6740E1883D820734066985DB6F821765ACC1A979B41F6
+      82D42F7BB9E6FFAEB707C118C4068981DCE17ACDFDBFE279E59B0CFB1930FC02
+      F22FC81E909D207DB73E3F0663101B240692F3BD1EF05FE382E67F96532CCEE8
+      FA7D6E049612AB9FE9145331BA7ED7EBEEC5203712E1FEFF0CC7198AD0F583E2
+      081446207BF084DF7FD133A2FF194E3160B81F14BFA03802A903D98525FEC076
+      B39C64B9812DFC400014BFA03802B913E4571006B141F682F4729EE2FCC1708C
+      C10A5F1A00C52F288E40E104C2207D203783ED25A0170E80EE6339CDE2C27492
+      A990E1244321D8BF38DC3CD000000D3B1715
     }
   end
   object ActionList1: TActionList
-    left = 200
-    top = 112
+    Left = 300
+    Top = 168
     object actPower: TAction
       Enabled = False
       OnExecute = actPowerExecute
@@ -120,8 +154,8 @@ object RegistersDlg: TRegistersDlg
     end
   end
   object PopupDispType: TPopupMenu
-    left = 200
-    top = 176
+    Left = 300
+    Top = 264
     object DispDefault: TMenuItem
       Caption = 'New Item1'
       OnClick = DispDefaultClick
@@ -148,8 +182,8 @@ object RegistersDlg: TRegistersDlg
     end
   end
   object PopupMenu1: TPopupMenu
-    left = 95
-    top = 178
+    Left = 143
+    Top = 267
     object popFormat: TMenuItem
       Caption = 'New Item1'
       object PopDispDefault: TMenuItem

@@ -342,6 +342,28 @@ end;
 
 procedure TRegistersDlg.lvRegistersDrawCell(Sender: TObject; aCol,
   aRow: Integer; aRect: TRect; aState: TGridDrawState);
+var
+  sz: TSize;
+begin
+  if (aCol = 0) and (aRow > 0) and
+     (lvRegisters.Objects[0, aRow] <> nil)
+  then begin
+    sz := ImageList1.SizeForPPI[ImageList1.Width, Font.PixelsPerInch];
+    ImageList1.DrawForPPI(
+      lvRegisters.Canvas,
+      (aRect.Left + aRect.Right - sz.CX) div 2,
+      (aRect.Top + aRect.Bottom - sz.CY) div 2,
+      0,
+      ImageList1.Width,
+      Font.PixelsPerInch,
+      GetCanvasScaleFactor
+    );
+  end;
+end;
+
+{
+procedure TRegistersDlg.lvRegistersDrawCell(Sender: TObject; aCol,
+  aRow: Integer; aRect: TRect; aState: TGridDrawState);
 begin
   if (aCol = 0) and (aRow > 0) and
      (lvRegisters.Objects[0, aRow] <> nil)
@@ -350,7 +372,7 @@ begin
                                         (aRect.Top + aRect.Bottom - ImageList1.Height) div 2, 0);
   end;
 end;
-
+}
 procedure TRegistersDlg.lvRegistersSelection(Sender: TObject; aCol,
   aRow: Integer);
 var

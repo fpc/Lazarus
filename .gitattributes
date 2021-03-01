@@ -8447,6 +8447,9 @@ images/debugger/evaluate_no_hist_200.png -text svneol=unset#image/png
 images/debugger/evaluate_up.png -text
 images/debugger/evaluate_up_150.png -text svneol=unset#image/png
 images/debugger/evaluate_up_200.png -text svneol=unset#image/png
+images/debugger/registers.png -text svneol=unset#image/png
+images/debugger/registers_150.png -text svneol=unset#image/png
+images/debugger/registers_200.png -text svneol=unset#image/png
 images/designer/add_item_above.png -text svneol=unset#image/png
 images/designer/add_item_above_150.png -text
 images/designer/add_item_above_200.png -text
