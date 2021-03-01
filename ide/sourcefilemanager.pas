@@ -5366,6 +5366,7 @@ var
   Owners: TFPList;
   OldFileExisted: Boolean;
   ConvTool: TConvDelphiCodeTool;
+  AEditor: TSourceEditor;
 begin
   // Project is marked as changed already here.
   Project1.BeginUpdate(true);
@@ -5519,10 +5520,16 @@ begin
     else
       Project1.SessionModified:=true;
     AnUnitInfo.ClearModifieds;
-    for i := 0 to AnUnitInfo.EditorInfoCount -1 do
-      if AnUnitInfo.EditorInfo[i].EditorComponent <> nil then
-        TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent).CodeBuffer := NewSource;
+    for i := 0 to AnUnitInfo.EditorInfoCount -1 do begin
+      AEditor := TSourceEditor(AnUnitInfo.EditorInfo[i].EditorComponent);
+      if AEditor <> nil then begin
         // the code is not changed, therefore the marks are kept
+        AEditor.CodeBuffer := NewSource;
+        // change unitname on SourceNotebook
+        S := CreateSrcEditPageName(NewUnitName, AnUnitInfo.Filename, AEditor);
+        AEditor.PageName := S;
+      end;
+    end;
 
     // change unitname in lpi and in main source file
     AnUnitInfo.Unit_Name:=NewUnitName;
@@ -5533,10 +5540,6 @@ begin
       then
         DebugLn(['RenameUnit CodeToolBoss.RenameMainInclude failed: AnUnitInfo.Source="',AnUnitInfo.Source,'" ResourceCode="',ExtractFilename(LRSCode.Filename),'"']);
     end;
-
-    // change unitname on SourceNotebook
-    if AnUnitInfo.OpenEditorInfoCount > 0 then
-      UpdateSourceNames;
 
     // change syntax highlighter
     NewHighlighter:=FilenameToLazSyntaxHighlighter(NewFilename);
@@ -5570,7 +5573,6 @@ begin
     OldFileExisted:=FilenameIsAbsolute(OldFilename) and FileExistsUTF8(OldFilename);
 
     // delete ambiguous files
-    NewFilePath:=ExtractFilePath(NewFilename);
     AmbiguousFiles:=
       FindFilesCaseInsensitive(NewFilePath,ExtractFilename(NewFilename),true);
     if AmbiguousFiles<>nil then begin
@@ -5676,7 +5678,7 @@ begin
                 OutDir:=TLazPackage(Owners[i]).CompilerOptions.GetUnitOutPath(false);
               end;
               if (OutDir<>'') and FilenameIsAbsolute(OutDir) then begin
-                OldPPUFilename:=AppendPathDelim(OutDir)+ChangeFileExt(ExtractFilenameOnly(OldFilename),'.ppu');
+                OldPPUFilename:=AppendPathDelim(OutDir)+ChangeFileExt(ExtractFilename(OldFilename),'.ppu');
                 if FileExistsUTF8(OldPPUFilename) then begin
                   Result:=DeleteFileInteractive(OldPPUFilename,[mbAbort]);
                   if Result=mrAbort then exit;
