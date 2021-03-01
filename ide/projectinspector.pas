@@ -68,9 +68,10 @@ uses
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   // IDE
-  LazarusIDEStrConsts, MainBase, IDEProcs, DialogProcs, IDEOptionDefs, Project, InputHistory,
-  EnvironmentOpts, AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg,
-  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs, PackageSystem, BuildManager;
+  LazarusIDEStrConsts, MainBase, IDEProcs, DialogProcs, IDEOptionDefs, Project,
+  InputHistory, TransferMacros, EnvironmentOpts, BuildManager,
+  ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs, PackageSystem,
+  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg;
 
 type
   TOnAddUnitToProject =
@@ -1748,6 +1749,7 @@ begin
 
   Project1.ActiveBuildMode := NewMode;
   Project1.DefineTemplates.AllChanged(false);
+  IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTargetProject1(false);
   MainIDE.UpdateCaption;
   if Assigned(ProjInspector) then

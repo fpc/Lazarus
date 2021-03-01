@@ -4425,6 +4425,8 @@ begin
     if not Project1.OtherDefines.Equals(Project1.CompilerOptions.OtherDefines) then
       Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
     Project1.Modified:=True;
+    Project1.DefineTemplates.AllChanged(false);
+    IncreaseCompilerParseStamp;
     MainBuildBoss.SetBuildTargetProject1(false);
     MainIDE.UpdateCaption;
   end;
@@ -5206,9 +5208,6 @@ begin
     UpdateCaption;
     if Assigned(ProjInspector) then
       ProjInspector.UpdateTitle;
-    Project1.DefineTemplates.AllChanged(false);
-    IncreaseCompilerParseStamp;
-
     if Project1.UseAsDefault then
     begin
       // save as default
