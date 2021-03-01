@@ -194,6 +194,10 @@ var
 begin
   WakeMainThread := @OnWakeMainThread;
 
+  {issue #38319 - since Qt-4.7 there's no way to set RTL over widgets}
+  if Application.BidiMode = bdRightToLeft then
+    QGuiApplication_setLayoutDirection(QtRightToLeft);
+
   {
     check whether this hook crashes on linux & darwin and why it is so
     we need this hook to catch release messages
