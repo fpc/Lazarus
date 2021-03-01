@@ -5353,25 +5353,16 @@ end;
 function RenameUnit(AnUnitInfo: TUnitInfo; NewFilename, NewUnitName: string;
   var LFMCode, LRSCode: TCodeBuffer): TModalResult;
 var
-  NewLFMFilename: String;
-  OldSourceCode: String;
   NewSource: TCodeBuffer;
-  NewFilePath: String;
-  NewLRSFilePath: String;
-  OldFilePath: String;
-  OldLRSFilePath: String;
-  OldFilename: String;
-  NewLRSFilename: String;
+  NewLFMFilename, NewLRSFilename: String;
+  NewFilePath, NewLRSFilePath: String;
+  OldFilename, OldLFMFilename, OldLRSFilename, OldPPUFilename: String;
+  OldFilePath, OldLRSFilePath: String;
+  OldSourceCode, OldUnitPath: String;
+  AmbiguousFilename, OutDir, S: string;
   NewHighlighter: TLazSyntaxHighlighter;
   AmbiguousFiles: TStringList;
-  AmbiguousText: string;
   i: Integer;
-  AmbiguousFilename: String;
-  OldUnitPath: String;
-  OldLFMFilename: String;
-  OldLRSFilename: String;
-  OldPPUFilename: String;
-  OutDir: string;
   Owners: TFPList;
   OldFileExisted: Boolean;
   ConvTool: TConvDelphiCodeTool;
@@ -5588,11 +5579,11 @@ begin
         and (CompareFilenames(OldFilePath,NewFilePath)=0)
         and (CompareFilenames(AmbiguousFiles[0],ExtractFilename(OldFilename))=0)
         then
-          AmbiguousText:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)])
+          S:=Format(lisDeleteOldFile, [ExtractFilename(OldFilename)])
         else
-          AmbiguousText:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
+          S:=Format(lisThereAreOtherFilesInTheDirectoryWithTheSameName,
                           [LineEnding, LineEnding, AmbiguousFiles.Text, LineEnding]);
-        Result:=IDEMessageDialog(lisAmbiguousFilesFound, AmbiguousText,
+        Result:=IDEMessageDialog(lisAmbiguousFilesFound, S,
           mtWarning,[mbYes,mbNo,mbAbort]);
         if Result=mrAbort then exit;
         if Result=mrYes then begin
