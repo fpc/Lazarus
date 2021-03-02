@@ -251,7 +251,8 @@ begin
   LDesignForm := DesignForms.Find(LForm);
   if LDesignForm = nil then Exit;
   LSourceEditorWindowInterface := LDesignForm.LastActiveSourceWindow;
-  Result := SourceEditorWindows.FindModulePageControl(LSourceEditorWindowInterface);
+  if not Assigned(LSourceEditorWindowInterface) then Exit;
+  Result := SourceEditorWindows.FindModulePageControl(LSourceEditorWindowInterface.ActiveEditor);
 end;
 
 class procedure TDockedMainIDE.Screen_FormAdded(Sender: TObject; AForm: TCustomForm);
@@ -604,7 +605,7 @@ begin
     LSourceEditorWindow.ActiveDesignForm := LDesignForm;
     if LDesignForm <> nil then
     begin
-      LPageCtrl := SourceEditorWindows.FindModulePageControl(LSourceEditorWindowInterface);
+      LPageCtrl := SourceEditorWindows.FindModulePageControl(LSourceEditorWindowInterface.ActiveEditor);
       if not Assigned(LPageCtrl) then Exit;
       LResizer := LPageCtrl.Resizer;
       if not Assigned(LResizer) then Exit;

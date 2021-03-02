@@ -54,8 +54,7 @@ type
     destructor Destroy; override;
     procedure AddPageCtrl(ASourceEditor: TSourceEditorInterface; APageControl: TModulePageControl);
     procedure AdjustPageControl;
-    function  FindModulePageControl(ASourceEditor: TSourceEditorInterface): TModulePageControl; overload;
-    function  FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl; overload;
+    function  FindModulePageControl(ASourceEditor: TSourceEditorInterface): TModulePageControl;
     procedure RemoveActiveDesignForm;
     procedure RemovePageCtrl(ASourceEditor: TSourceEditorInterface);
   public
@@ -78,8 +77,7 @@ type
     function  Contains(ASrcEditor: TSourceEditorWindow): Boolean;
     procedure DeleteItem(Index: Integer);
     function  FindDesignForm(AModulePageCtrl: TModulePageControl): TDesignForm;
-    function  FindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl; overload;
-    function  FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl; overload;
+    function  FindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl;
     function  IndexOf(AWindowInterface: TSourceEditorWindowInterface): Integer; overload;
     procedure RefreshActivePageControls;
     procedure RefreshAllPageControls;
@@ -128,7 +126,7 @@ begin
       FActiveDesignForm.HideWindow;
   FActiveDesignForm := AValue;
 
-  LPageCtrl := FindModulePageControl(FSourceEditorWindowInterface);
+  LPageCtrl := FindModulePageControl(ActiveEditor);
   // important when we want back to tab where was oppened form
   if (AValue <> nil) then
     LazarusIDE.DoShowDesignerFormOfSrc(ActiveEditor);
@@ -142,7 +140,7 @@ var
   LPageCtrl: TModulePageControl;
 begin
   FNotebookPageChanged(Sender);
-  LPageCtrl := FindModulePageControl(FSourceEditorWindowInterface.ActiveEditor);
+  LPageCtrl := FindModulePageControl(ActiveEditor);
   if not Assigned(LPageCtrl) then Exit;
   if LPageCtrl.DesignerPageActive then
   begin
@@ -180,7 +178,7 @@ procedure TSourceEditorWindow.AdjustPageControl;
 var
   LPageCtrl: TModulePageControl;
 begin
-  LPageCtrl := FindModulePageControl(FSourceEditorWindowInterface);
+  LPageCtrl := FindModulePageControl(ActiveEditor);
   if LPageCtrl <> nil then
     LPageCtrl.AdjustPage;
 end;
@@ -199,11 +197,6 @@ begin
     LParent := LParent.Parent;
   end;
   Result := nil;
-end;
-
-function TSourceEditorWindow.FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl;
-begin
-  Result := FindModulePageControl(AForm.ActiveEditor);
 end;
 
 procedure TSourceEditorWindow.RemoveActiveDesignForm;
@@ -277,7 +270,7 @@ begin
   begin
     if AModulePageCtrl.Owner = LSourceEditorWindow.SourceEditorWindowInterface then
     begin
-      LSourceEditorInterface := LSourceEditorWindow.SourceEditorWindowInterface.ActiveEditor;
+      LSourceEditorInterface := LSourceEditorWindow.ActiveEditor;
       if LSourceEditorInterface = nil then Exit;
       Result := DesignForms.Find(LSourceEditorInterface.GetDesigner(True));
       Exit;
@@ -293,11 +286,6 @@ begin
   for LSourceEditorWindow in Self do
     if LSourceEditorWindow.PageControlList.Contains(ASrcEditor) then
       Exit(LSourceEditorWindow.PageControlList.PageControl[ASrcEditor]);
-end;
-
-function TSourceEditorWindows.FindModulePageControl(AForm: TSourceEditorWindowInterface): TModulePageControl;
-begin
-  Result := FindModulePageControl(AForm.ActiveEditor);
 end;
 
 function TSourceEditorWindows.IndexOf(AWindowInterface: TSourceEditorWindowInterface): Integer;
@@ -317,12 +305,12 @@ var
 begin
   for LWindow in Self do
   begin
-    LPageCtrl := LWindow.FindModulePageControl(LWindow.SourceEditorWindowInterface);
+    LPageCtrl := LWindow.FindModulePageControl(LWindow.ActiveEditor);
     // for example LPageCtrl is nil when we clone module to new window
     if (LPageCtrl = nil) or (csDestroying in LWindow.SourceEditorWindowInterface.ComponentState) then
       Continue;
-    if (LWindow.SourceEditorWindowInterface.ActiveEditor = nil)
-    or (LWindow.SourceEditorWindowInterface.ActiveEditor.GetDesigner(True) <> nil)
+    if (LWindow.ActiveEditor = nil)
+    or (LWindow.ActiveEditor.GetDesigner(True) <> nil)
     then
       LPageCtrl.RemoveDesignPages
     else begin
