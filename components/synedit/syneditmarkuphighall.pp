@@ -1384,7 +1384,7 @@ begin
     Len := length(o.SearchTerm);
     MatchBegin := MatchEnd - Len - FFindLineTextLower + FFindLineText;
 
-    if o.MatchCase and not StartsStr(o.SearchTerm, MatchBegin) then begin
+    if o.MatchCase and not StrLComp(MatchBegin, PChar(o.SearchTerm), Len) then begin
       MatchIdx := FTermDict.GetIndexForNextWordOccurrence(MatchIdx);
       continue;
     end;
