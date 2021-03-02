@@ -770,7 +770,7 @@ begin
     if Ms.Size > 0 then
     begin
       Ms.Position := 0;
-      SetLength(AJSON, MS.Size);
+      SetLength({%H-}AJSON, MS.Size);
       MS.Read(Pointer(AJSON)^, Length(AJSON));
       Result := True;
     end;

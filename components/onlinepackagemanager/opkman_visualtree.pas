@@ -248,27 +248,27 @@ begin
      end;
      with Header.Columns.Add do
      begin
-        Position := 4;
-        Width := FVST.Scale96ToForm(280);
-        {$IFDEF LCLCarbon}
-        Options := Options - [coResizable];
-        {$ENDIF}
-        Text := rsMainFrm_VSTHeaderColumn_Data;
+       Position := 4;
+       Width := FVST.Scale96ToForm(280);
+       {$IFDEF LCLCarbon}
+       Options := Options - [coResizable];
+       {$ENDIF}
+       Text := rsMainFrm_VSTHeaderColumn_Data;
       end;
      with Header.Columns.Add do
      begin
-        Position := 5;
-        Alignment := taCenter;
-        Width := FVST.Scale96ToForm(88);
-        Options := Options - [coResizable];
-        Text := rsMainFrm_VSTHeaderColumn_Rating;
-      end;
+       Position := 5;
+       Alignment := taCenter;
+       Width := FVST.Scale96ToForm(81);
+       Options := Options - [coResizable];
+       Text := rsMainFrm_VSTHeaderColumn_Rating;
+     end;
      with Header.Columns.Add do
      begin
-        Position := 6;
-        Alignment := taCenter;
-        Width := FVST.Scale96ToForm(20);
-        Options := Options - [coResizable];
+       Position := 6;
+       Alignment := taCenter;
+       Width := FVST.Scale96ToForm(20);
+       Options := Options - [coResizable];
      end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoShowHint];
      {$IFDEF LCLCarbon}
@@ -313,7 +313,7 @@ begin
    end;
   FShowHintFrm := TShowHintFrm.Create(nil);
   if AImgList <> nil then
-    FStarSize := FVST.Scale96ToForm(AImgList.Width)
+    FStarSize := Application.MainForm.Scale96ToForm(AImgList.Width)
   else
     FStarSize := 0;
 end;

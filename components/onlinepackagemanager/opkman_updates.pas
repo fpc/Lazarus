@@ -320,7 +320,7 @@ procedure TUpdates.CheckForOpenSSL;
   var
     SysPath: WideString;
   begin
-    SetLength(SysPath, Windows.MAX_PATH);
+    SetLength({%H-}SysPath, Windows.MAX_PATH);
     SetLength(SysPath, Windows.GetSystemDirectoryW(PWideChar(SysPath), Windows.MAX_PATH));
     Result := AppendPathDelim(String(SysPath));
   end;

@@ -283,7 +283,7 @@ begin
     try
       MS.LoadFromFile(JSONFile);
       MS.Position := 0;
-      SetLength(JSON, MS.Size);
+      SetLength({%H-}JSON, MS.Size);
       MS.Read(Pointer(JSON)^, Length(JSON));
       try
         SuccessfullyLoaded := SerializablePackages.JSONToPackages(JSON);
