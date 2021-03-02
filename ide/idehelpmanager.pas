@@ -192,6 +192,10 @@ type
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
+    function CollectBuiltInIdentifiers(CodeBuffer: TCodeBuffer; const CodePos: TPoint;
+      out Identifier: string): TShowHelpResult;
+    function CollectDeclarations(CodeBuffer: TCodeBuffer; const CodePos: TPoint;
+      out Complete: boolean; var ErrMsg: string): TShowHelpResult;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1242,6 +1246,102 @@ begin
   GetDefaultBrowser(DefaultBrowser, Params);
 end;
 
+function TIDEHelpManager.CollectBuiltInIdentifiers(CodeBuffer: TCodeBuffer;
+  const CodePos: TPoint; out Identifier: string): TShowHelpResult;
+// Collect keywords and show help if possible
+var
+  p: Integer;
+  IdentStart, IdentEnd: integer;
+  KeyWord: String;
+  ErrorMsg: String;
+begin
+  Result:=shrHelpNotFound;
+  Identifier:='';
+  p:=0;
+  CodeBuffer.LineColToPosition(CodePos.Y,CodePos.X,p);
+  if p<1 then exit;
+  GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
+  if IdentEnd<=IdentStart then exit;
+  Identifier:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
+  if (IdentStart > 1) and (CodeBuffer.Source[IdentStart - 1] in ['$','%']) then
+    Dec(IdentStart);
+  KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
+  ErrorMsg:='';
+  if KeyWord[1] = '$' then
+    Result:=ShowHelpForDirective('',FPCDirectiveHelpPrefix+Keyword,ErrorMsg)
+  else if KeyWord[1] = '%' then
+    Result:=ShowHelpForDirective('',IDEDirectiveHelpPrefix+Keyword,ErrorMsg)
+  else begin
+    // ToDo: check build-in functions
+    Result:=ShowHelpForKeyword('',FPCKeyWordHelpPrefix+Keyword,ErrorMsg);
+  end;
+  if Result=shrSuccess then
+    exit;
+  if Result in [shrNone,shrDatabaseNotFound,shrContextNotFound,shrHelpNotFound] then
+    exit(shrHelpNotFound); // not an FPC keyword
+  // viewer error
+  HelpManager.ShowError(Result,ErrorMsg);
+  Result:=shrCancel;
+end;
+
+function TIDEHelpManager.CollectDeclarations(CodeBuffer: TCodeBuffer;
+  const CodePos: TPoint; out Complete: boolean; var ErrMsg: string
+  ): TShowHelpResult;
+// Collect declarations and show help if possible
+var
+  NewList: TPascalHelpContextList;
+  PascalHelpContextLists: TList;
+  ListOfPCodeXYPosition: TFPList;
+  CurCodePos: PCodeXYPosition;
+  i: Integer;
+  Flags: TFindDeclarationListFlags;
+begin
+  Complete:=false;
+  Result:=shrHelpNotFound;
+  ListOfPCodeXYPosition:=nil;
+  PascalHelpContextLists:=nil;
+  try
+    // get all possible declarations of this identifier
+    debugln(['CollectDeclarations ',CodeBuffer.Filename,' line=',CodePos.Y,' col=',CodePos.X]);
+    Flags:=[fdlfWithoutEmptyProperties,fdlfWithoutForwards];
+    if CombineSameIdentifiersInUnit then
+      Include(Flags,fdlfOneOverloadPerUnit);
+    if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
+      ListOfPCodeXYPosition,Flags)
+    then begin
+      if ListOfPCodeXYPosition=nil then exit;
+      debugln('TIDEHelpManager.ShowHelpForSourcePosition Success, number of declarations: ',dbgs(ListOfPCodeXYPosition.Count));
+      // convert the source positions in Pascal help context list
+      for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
+        CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
+        debugln('TIDEHelpManager.ShowHelpForSourcePosition Declaration at ',dbgs(CurCodePos));
+        NewList:=ConvertCodePosToPascalHelpContext(CurCodePos);
+        if NewList<>nil then begin
+          if PascalHelpContextLists=nil then
+            PascalHelpContextLists:=TList.Create;
+          PascalHelpContextLists.Add(NewList);
+        end;
+      end;
+      if PascalHelpContextLists=nil then exit;
+
+      // invoke help system
+      Complete:=true;
+      debugln(['TIDEHelpManager.ShowHelpForSourcePosition PascalHelpContextLists.Count=',PascalHelpContextLists.Count,' calling ShowHelpForPascalContexts...']);
+      Result:=ShowHelpForPascalContexts(CodeBuffer.Filename,CodePos,PascalHelpContextLists,ErrMsg);
+    end else if CodeToolBoss.ErrorCode<>nil then begin
+      MainIDEInterface.DoJumpToCodeToolBossError;
+      Complete:=True;
+    end;
+  finally
+    FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    if PascalHelpContextLists<>nil then begin
+      for i:=0 to PascalHelpContextLists.Count-1 do
+        TObject(PascalHelpContextLists[i]).Free;
+      PascalHelpContextLists.Free;
+    end;
+  end;
+end;
+
 constructor TIDEHelpManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -1331,99 +1431,6 @@ end;
 
 function TIDEHelpManager.ShowHelpForSourcePosition(const Filename: string;
   const CodePos: TPoint; var ErrMsg: string): TShowHelpResult;
-  
-  function CollectKeyWords(CodeBuffer: TCodeBuffer; out Identifier: string): TShowHelpResult;
-  // Collect keywords and show help if possible
-  var
-    p: Integer;
-    IdentStart, IdentEnd: integer;
-    KeyWord: String;
-    ErrorMsg: String;
-  begin
-    Result:=shrHelpNotFound;
-    Identifier:='';
-    p:=0;
-    CodeBuffer.LineColToPosition(CodePos.Y,CodePos.X,p);
-    if p<1 then exit;
-    GetIdentStartEndAtPosition(CodeBuffer.Source,p,IdentStart,IdentEnd);
-    if IdentEnd<=IdentStart then exit;
-    Identifier:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
-    if (IdentStart > 1) and (CodeBuffer.Source[IdentStart - 1] in ['$','%']) then
-      Dec(IdentStart);
-    KeyWord:=copy(CodeBuffer.Source,IdentStart,IdentEnd-IdentStart);
-    ErrorMsg:='';
-    if KeyWord[1] = '$' then
-      Result:=ShowHelpForDirective('',FPCDirectiveHelpPrefix+Keyword,ErrorMsg)
-    else if KeyWord[1] = '%' then
-      Result:=ShowHelpForDirective('',IDEDirectiveHelpPrefix+Keyword,ErrorMsg)
-    else
-      Result:=ShowHelpForKeyword('',FPCKeyWordHelpPrefix+Keyword,ErrorMsg);
-    if Result=shrSuccess then
-      exit;
-    if Result in [shrNone,shrDatabaseNotFound,shrContextNotFound,shrHelpNotFound] then
-      exit(shrHelpNotFound); // not an FPC keyword
-    // viewer error
-    HelpManager.ShowError(Result,ErrorMsg);
-    Result:=shrCancel;
-  end;
-
-  function CollectDeclarations(CodeBuffer: TCodeBuffer;
-    out Complete: boolean): TShowHelpResult;
-  // Collect declarations and show help if possible
-  var
-    NewList: TPascalHelpContextList;
-    PascalHelpContextLists: TList;
-    ListOfPCodeXYPosition: TFPList;
-    CurCodePos: PCodeXYPosition;
-    i: Integer;
-    Flags: TFindDeclarationListFlags;
-  begin
-    Complete:=false;
-    Result:=shrHelpNotFound;
-    ListOfPCodeXYPosition:=nil;
-    PascalHelpContextLists:=nil;
-    try
-      // get all possible declarations of this identifier
-      debugln(['CollectDeclarations ',CodeBuffer.Filename,' line=',CodePos.Y,' col=',CodePos.X]);
-      Flags:=[fdlfWithoutEmptyProperties,fdlfWithoutForwards];
-      if CombineSameIdentifiersInUnit then
-        Include(Flags,fdlfOneOverloadPerUnit);
-      if CodeToolBoss.FindDeclarationAndOverload(CodeBuffer,CodePos.X,CodePos.Y,
-        ListOfPCodeXYPosition,Flags)
-      then begin
-        if ListOfPCodeXYPosition=nil then exit;
-        debugln('TIDEHelpManager.ShowHelpForSourcePosition Success, number of declarations: ',dbgs(ListOfPCodeXYPosition.Count));
-        // convert the source positions in Pascal help context list
-        for i:=0 to ListOfPCodeXYPosition.Count-1 do begin
-          CurCodePos:=PCodeXYPosition(ListOfPCodeXYPosition[i]);
-          debugln('TIDEHelpManager.ShowHelpForSourcePosition Declaration at ',dbgs(CurCodePos));
-          NewList:=ConvertCodePosToPascalHelpContext(CurCodePos);
-          if NewList<>nil then begin
-            if PascalHelpContextLists=nil then
-              PascalHelpContextLists:=TList.Create;
-            PascalHelpContextLists.Add(NewList);
-          end;
-        end;
-        if PascalHelpContextLists=nil then exit;
-
-        // invoke help system
-        Complete:=true;
-        debugln(['TIDEHelpManager.ShowHelpForSourcePosition PascalHelpContextLists.Count=',PascalHelpContextLists.Count,' calling ShowHelpForPascalContexts...']);
-        Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
-      end else if CodeToolBoss.ErrorCode<>nil then begin
-        MainIDEInterface.DoJumpToCodeToolBossError;
-        Complete:=True;
-      end;
-    finally
-      FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-      if PascalHelpContextLists<>nil then begin
-        for i:=0 to PascalHelpContextLists.Count-1 do
-          TObject(PascalHelpContextLists[i]).Free;
-        PascalHelpContextLists.Free;
-      end;
-    end;
-  end;
-
 var
   CodeBuffer: TCodeBuffer;
   Complete: boolean;
@@ -1439,10 +1446,11 @@ begin
   if mrOk<>LoadCodeBuffer(CodeBuffer,FileName,[lbfCheckIfText],false) then
     exit;
 
-  Result:=CollectDeclarations(CodeBuffer,Complete);
+  Result:=CollectDeclarations(CodeBuffer,CodePos,Complete,ErrMsg);
   if Complete then exit;
-  debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords...']);
-  Result:=CollectKeyWords(CodeBuffer,Identifier);
+
+  debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords and built-in functions...']);
+  Result:=CollectBuiltInIdentifiers(CodeBuffer,CodePos,Identifier);
   if Result in [shrCancel,shrSuccess] then exit;
   if IsValidIdent(Identifier) and ShowCodeBrowserOnUnknownIdentifier then
   begin
