@@ -6536,13 +6536,13 @@ begin
        State=iwgfDisabled,LazarusIDE.OwningComponent);
     ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
-    ProjInspector.OnAddDependency:=@PkgBoss.OnProjectInspectorAddDependency;
+    ProjInspector.OnAddDependency:=@PkgBoss.ProjectInspectorAddDependency;
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
-    ProjInspector.OnRemoveDependency:=@PkgBoss.OnProjectInspectorRemoveDependency;
-    ProjInspector.OnReAddDependency:=@PkgBoss.OnProjectInspectorReAddDependency;
-    ProjInspector.OnDragOverTreeView:=@PkgBoss.OnProjectInspectorDragOverTreeView;
-    ProjInspector.OnDragDropTreeView:=@PkgBoss.OnProjectInspectorDragDropTreeView;
-    ProjInspector.OnCopyMoveFiles:=@PkgBoss.OnProjectInspectorCopyMoveFiles;
+    ProjInspector.OnRemoveDependency:=@PkgBoss.ProjectInspectorRemoveDependency;
+    ProjInspector.OnReAddDependency:=@PkgBoss.ProjectInspectorReAddDependency;
+    ProjInspector.OnDragOverTreeView:=@PkgBoss.ProjectInspectorDragOverTreeView;
+    ProjInspector.OnDragDropTreeView:=@PkgBoss.ProjectInspectorDragDropTreeView;
+    ProjInspector.OnCopyMoveFiles:=@PkgBoss.ProjectInspectorCopyMoveFiles;
 
     ProjInspector.LazProject:=Project1;
   end else if STate=iwgfDisabled then

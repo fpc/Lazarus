@@ -284,18 +284,18 @@ type
                                   ADependency: TPkgDependency): TModalResult; override;
     function AddProjectDependencies(AProject: TProject; const Packages: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
-    function OnProjectInspectorAddDependency(Sender: TObject;
+    function ProjectInspectorAddDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
-    function OnProjectInspectorRemoveDependency(Sender: TObject;
+    function ProjectInspectorRemoveDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
-    function OnProjectInspectorReAddDependency(Sender: TObject;
+    function ProjectInspectorReAddDependency(Sender: TObject;
                            ADependency: TPkgDependency): TModalResult; override;
-    procedure OnProjectInspectorDragDropTreeView(Sender, Source: TObject;
+    procedure ProjectInspectorDragDropTreeView(Sender, Source: TObject;
       X, Y: Integer); override;
-    function OnProjectInspectorDragOverTreeView(Sender, Source: TObject;
+    function ProjectInspectorDragOverTreeView(Sender, Source: TObject;
       X, Y: Integer; out TargetTVNode: TTreeNode;
       out TargetTVType: TTreeViewInsertMarkType): boolean; override;
-    procedure OnProjectInspectorCopyMoveFiles(Sender: TObject); override;
+    procedure ProjectInspectorCopyMoveFiles(Sender: TObject); override;
 
     // package editors
     function CanClosePackageEditor(APackage: TLazPackage): TModalResult; override;
@@ -6370,13 +6370,13 @@ begin
   end;
 end;
 
-function TPkgManager.OnProjectInspectorAddDependency(Sender: TObject;
+function TPkgManager.ProjectInspectorAddDependency(Sender: TObject;
   ADependency: TPkgDependency): TModalResult;
 begin
   Result:=AddProjectDependency(Project1,ADependency);
 end;
 
-function TPkgManager.OnProjectInspectorRemoveDependency(Sender: TObject;
+function TPkgManager.ProjectInspectorRemoveDependency(Sender: TObject;
   ADependency: TPkgDependency): TModalResult;
 var
   ShortUnitName: String;
@@ -6406,7 +6406,7 @@ begin
   end;
 end;
 
-function TPkgManager.OnProjectInspectorReAddDependency(Sender: TObject;
+function TPkgManager.ProjectInspectorReAddDependency(Sender: TObject;
   ADependency: TPkgDependency): TModalResult;
 begin
   Result:=mrOk;
@@ -6418,7 +6418,7 @@ begin
   end;
 end;
 
-procedure TPkgManager.OnProjectInspectorDragDropTreeView(Sender, Source: TObject;
+procedure TPkgManager.ProjectInspectorDragDropTreeView(Sender, Source: TObject;
   X, Y: Integer);
 begin
   {$IFDEF VerbosePkgEditDrag}
@@ -6430,7 +6430,7 @@ begin
   {$ENDIF}
 end;
 
-function TPkgManager.OnProjectInspectorDragOverTreeView(Sender,
+function TPkgManager.ProjectInspectorDragOverTreeView(Sender,
   Source: TObject; X, Y: Integer; out TargetTVNode: TTreeNode; out
   TargetTVType: TTreeViewInsertMarkType): boolean;
 var
@@ -6447,7 +6447,7 @@ begin
     aFileCount, aDependencyCount, aDirectoryCount, TargetTVNode, TargetTVType);
 end;
 
-procedure TPkgManager.OnProjectInspectorCopyMoveFiles(Sender: TObject);
+procedure TPkgManager.ProjectInspectorCopyMoveFiles(Sender: TObject);
 begin
   CopyMoveFiles(Sender);
 end;

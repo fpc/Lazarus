@@ -92,18 +92,18 @@ type
     function CheckProjectHasInstalledPackages(AProject: TProject; Interactive: boolean): TModalResult; virtual; abstract;
     function CanOpenDesignerForm(AnUnitInfo: TUnitInfo; 
                                  Interactive: boolean): TModalResult; virtual; abstract;
-    function OnProjectInspectorAddDependency(Sender: TObject;
+    function ProjectInspectorAddDependency(Sender: TObject;
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
-    function OnProjectInspectorRemoveDependency(Sender: TObject;
+    function ProjectInspectorRemoveDependency(Sender: TObject;
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
-    function OnProjectInspectorReAddDependency(Sender: TObject;
+    function ProjectInspectorReAddDependency(Sender: TObject;
                   ADependency: TPkgDependency): TModalResult; virtual; abstract;
-    procedure OnProjectInspectorDragDropTreeView(Sender, Source: TObject;
+    procedure ProjectInspectorDragDropTreeView(Sender, Source: TObject;
       X, Y: Integer); virtual; abstract;
-    function OnProjectInspectorDragOverTreeView(Sender, Source: TObject;
+    function ProjectInspectorDragOverTreeView(Sender, Source: TObject;
       X, Y: Integer; out TargetTVNode: TTreeNode;
       out TargetTVType: TTreeViewInsertMarkType): boolean; virtual; abstract;
-    procedure OnProjectInspectorCopyMoveFiles(Sender: TObject); virtual; abstract;
+    procedure ProjectInspectorCopyMoveFiles(Sender: TObject); virtual; abstract;
 
     // package editors
     function CanClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
