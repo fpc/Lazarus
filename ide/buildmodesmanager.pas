@@ -174,12 +174,18 @@ begin
   end;
 end;
 
+procedure PrepareForBuild;
+begin
+  Project1.DefineTemplates.AllChanged(false);
+  IncreaseBuildMacroChangeStamp;
+  BuildBoss.SetBuildTargetProject1;
+end;
+
 procedure SwitchBuildMode(aBuildModeID: string);
 begin
   OnSaveIDEOptionsHook(Nil, Project1.CompilerOptions);    // Save changes
   Project1.ActiveBuildModeID := aBuildModeID;             // Switch
-  IncreaseBuildMacroChangeStamp;
-  BuildBoss.SetBuildTargetProject1;
+  PrepareForBuild;
   OnLoadIDEOptionsHook(Nil, Project1.CompilerOptions);    // Load options
 end;
 
@@ -371,6 +377,7 @@ begin
       begin
         LastMode := (i=(ModeList.Count-1));
         Project1.ActiveBuildMode := TProjectBuildMode(ModeList[i]);
+        PrepareForBuild;
         if not BuildOneMode(LastMode) then Exit;
       end;
       Result:=True;
@@ -378,6 +385,7 @@ begin
       // Switch back to original mode.
       DebugLn('BuildManyModes: Switch back to ActiveMode');
       Project1.ActiveBuildMode := ActiveMode;
+      PrepareForBuild;
       LazarusIDE.DoSaveProject([]);
       if Result then
         IDEMessageDialog(lisSuccess, Format(lisSelectedModesWereCompiled, [ModeCnt]),

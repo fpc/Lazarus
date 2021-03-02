@@ -2238,7 +2238,6 @@ var
     CurFiles: TStrings;
     OutFilename: String;
     CurUnitName: String;
-    Ext: String;
     S2SItem: PStringToStringItem;
     OldFilename: String;
     SeparateOutDir: Boolean;
@@ -3352,6 +3351,7 @@ begin
   Result:=mrOk;
   AProject.AddRequiredDependency(ADependency);
   PackageGraph.OpenDependency(ADependency,false);
+  Project1.DefineTemplates.AllChanged(false);
   if (ADependency.RequiredPackage<>nil)
   and (not ADependency.RequiredPackage.Missing)
   and ADependency.RequiredPackage.AddToProjectUsesSection
@@ -6385,6 +6385,7 @@ begin
   Result:=mrOk;
   Project1.RemoveRequiredDependency(ADependency);
   //debugln('TPkgManager.OnProjectInspectorRemoveDependency A');
+  Project1.DefineTemplates.AllChanged(false);
   if (Project1.MainUnitID>=0)
   and (pfMainUnitIsPascalSource in Project1.Flags)
   then begin

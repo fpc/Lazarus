@@ -4426,7 +4426,7 @@ begin
       Project1.OtherDefines.Assign(Project1.CompilerOptions.OtherDefines);
     Project1.Modified:=True;
     Project1.DefineTemplates.AllChanged(false);
-    IncreaseCompilerParseStamp;
+    IncreaseBuildMacroChangeStamp;
     MainBuildBoss.SetBuildTargetProject1(false);
     MainIDE.UpdateCaption;
   end;
