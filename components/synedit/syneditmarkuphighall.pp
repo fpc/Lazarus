@@ -817,7 +817,7 @@ procedure TSynSearchDictionary.BuildDictionary;
        memory consumption, since they have 4 continuation bytes (array size 64)
        to bring down the average.
     *)
-    SetLength(Result, Length(ATerm));
+    SetLength(Result{%H-}, Length(ATerm));
     for i := 1 to Length(ATerm) do begin
       c := ATerm[i];
       if c < #128
@@ -1384,7 +1384,7 @@ begin
     Len := length(o.SearchTerm);
     MatchBegin := MatchEnd - Len - FFindLineTextLower + FFindLineText;
 
-    if o.MatchCase and not StrLComp(MatchBegin, PChar(o.SearchTerm), Len) then begin
+    if o.MatchCase and (StrLComp(MatchBegin, PChar(o.SearchTerm), Len)<>0) then begin
       MatchIdx := FTermDict.GetIndexForNextWordOccurrence(MatchIdx);
       continue;
     end;
