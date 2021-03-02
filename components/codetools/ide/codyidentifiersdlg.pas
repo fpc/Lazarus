@@ -37,7 +37,7 @@ unit CodyIdentifiersDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, contnrs, Laz_AVL_Tree,
+  Classes, SysUtils, Math, LCLProc, contnrs, Laz_AVL_Tree,
   // LCL
   Forms, Controls, Dialogs, ButtonPanel, StdCtrls, ExtCtrls, LCLType, Buttons, Menus,
   // IdeIntf
@@ -924,7 +924,7 @@ begin
   case Key of
   VK_DOWN:
     if i<0 then
-      ItemsListBox.ItemIndex:=0
+      ItemsListBox.ItemIndex:=Min(ItemsListBox.Items.Count-1,0)
     else if i<ItemsListBox.Count-1 then
       ItemsListBox.ItemIndex:=i+1;
   VK_UP:
