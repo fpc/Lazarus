@@ -208,7 +208,7 @@ var
     // and can be overidden by a package like turbopoweriprodsgn.lpk
   CreateIDEHTMLProvider: TCreateIDEHTMLProviderEvent = nil;// will be set by the IDE
 
-  FPCKeyWordHelpPrefix: string = 'FPCKeyword_';
+  FPCKeyWordHelpPrefix: string = 'FPCKeyword_'; // built-in identifiers, e.g. if and delete
   FPCDirectiveHelpPrefix: string = 'FPCDirective_';
   IDEDirectiveHelpPrefix: string = 'IDEDirective_';
 
