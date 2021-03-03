@@ -1521,7 +1521,7 @@ begin
           OtherFile.AddToUsesPkgSection:=false;
       end;
     end;
-    LazPackage.ModifySilently;
+    LazPackage.Modified:=True;
   end;
 end;
 
@@ -1564,7 +1564,7 @@ begin
       continue;
     CurFile.HasRegisterProc:=FPropGui.CallRegisterProcCheckBox.Checked;
     if not NodeData.Removed then
-      LazPackage.ModifySilently;
+      LazPackage.Modified:=True;
   end;
 end;
 
@@ -1593,7 +1593,7 @@ begin
           continue;
         CurFile.FileType:=CurPFT;
         if not NodeData.Removed then
-          LazPackage.ModifySilently;
+          LazPackage.Modified:=True;
       end;
       exit;
     end;
@@ -3005,7 +3005,6 @@ begin
   else
     Moved := LazPackage.MoveRequiredDependencyDown(Dependency);
   if not Moved then exit;
-  LazPackage.ModifySilently;
   RequiredBranch:=FilterEdit.GetExistingBranch(FRequiredPackagesNode);
   OldIndex:=RequiredBranch.Items.IndexOf(Dependency.AsString(False,True)+OPNote(Dependency));
   NewIndex:=OldIndex+Offset;
