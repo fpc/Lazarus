@@ -279,6 +279,7 @@ const
     { Required methods }
     constructor Create(TheOwner : TComponent); override;
     procedure Clear;
+    procedure SelectAll; override;
     procedure ValidateEdit; virtual;
     property Modified: Boolean read GetModified write SetModified;
   end;
@@ -2186,7 +2187,22 @@ begin
   else Inherited Clear;
 end;
 
-
+procedure TCustomMaskEdit.SelectAll;
+var
+  S: String;
+begin
+  if IsMasked then
+  begin
+    S := inherited RealGetText;
+    if (S <> '') then
+    begin
+      SetSelStart(0);
+      SetSelLength(UTF8Length(S));
+    end;
+  end
+  else
+    inherited SelectAll;
+end;
 
 procedure TCustomMaskEdit.ValidateEdit;
 var

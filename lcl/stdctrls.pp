@@ -833,7 +833,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Clear;
-    procedure SelectAll;
+    procedure SelectAll; virtual;
     procedure ClearSelection; virtual;
     procedure CopyToClipboard; virtual;
     procedure CutToClipboard; virtual;
