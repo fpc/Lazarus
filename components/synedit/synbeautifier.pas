@@ -604,7 +604,7 @@ begin
     dec(BackCounter);
     Temp := GetLine(BackCounter);
     if Temp <> '' then begin
-      SetLength(Temp, GetIndentForLine(FCurrentEditor, Temp, False));
+      Temp := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
       PhysLen := GetIndentForLine(FCurrentEditor, Temp, True);
       if (PhysLen > KnownPhysLen) and StartsStr(BasedMix, Temp) then
       begin
@@ -714,7 +714,7 @@ begin
   //  Temp := Lines[FoundLine-1]
   //else
   //  FoundLine := BackCounter + 1;
-  SetLength(Temp, GetIndentForLine(Editor, Temp, False));
+  Temp := copy(Temp, 1, GetIndentForLine(Editor, Temp, False));
 
   case FIndentType of
     sbitCopySpaceTab:

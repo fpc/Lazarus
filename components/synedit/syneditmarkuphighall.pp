@@ -2713,7 +2713,7 @@ function TSynEditMarkupHighlightAllCaret.GetCurrentText: String;
     Result := copy(s, i, MaxInt);
     i := length(Result);
     while (i > 0) and (Result[i] in [#1..#32]) do dec(i);
-    SetLength(Result, i);
+    Result := copy(Result, 1, i);
   end;
 var
   LowBnd, UpBnd: TPoint;
