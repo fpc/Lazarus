@@ -14137,7 +14137,7 @@ var
         Val(addrtxt, addr, e);
         if e <> 0 then
           Exit;
-        //AnExpression := Lowercase(ResultInfo.TypeName);
+        AnExpression := Lowercase(ResultInfo.TypeName);
         case StringCase(ResultInfo.TypeName,
                         ['char', 'character', 'ansistring', '__vtbl_ptr_type',
                          'wchar', 'widechar', 'widestring', 'unicodestring',
