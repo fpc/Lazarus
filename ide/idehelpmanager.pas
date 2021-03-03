@@ -192,7 +192,7 @@ type
     procedure RegisterIDEHelpDatabases;
     procedure RegisterDefaultIDEHelpViewers;
     procedure FindDefaultBrowser(var DefaultBrowser, Params: string);
-    function CollectBuiltInIdentifiers(CodeBuffer: TCodeBuffer; const CodePos: TPoint;
+    function CollectKeywords(CodeBuffer: TCodeBuffer; const CodePos: TPoint;
       out Identifier: string): TShowHelpResult;
     function CollectDeclarations(CodeBuffer: TCodeBuffer; const CodePos: TPoint;
       out Complete: boolean; var ErrMsg: string): TShowHelpResult;
@@ -1246,7 +1246,7 @@ begin
   GetDefaultBrowser(DefaultBrowser, Params);
 end;
 
-function TIDEHelpManager.CollectBuiltInIdentifiers(CodeBuffer: TCodeBuffer;
+function TIDEHelpManager.CollectKeywords(CodeBuffer: TCodeBuffer;
   const CodePos: TPoint; out Identifier: string): TShowHelpResult;
 // Collect keywords and show help if possible
 var
@@ -1271,10 +1271,8 @@ begin
     Result:=ShowHelpForDirective('',FPCDirectiveHelpPrefix+Keyword,ErrorMsg)
   else if KeyWord[1] = '%' then
     Result:=ShowHelpForDirective('',IDEDirectiveHelpPrefix+Keyword,ErrorMsg)
-  else begin
-    // ToDo: check build-in functions
+  else
     Result:=ShowHelpForKeyword('',FPCKeyWordHelpPrefix+Keyword,ErrorMsg);
-  end;
   if Result=shrSuccess then
     exit;
   if Result in [shrNone,shrDatabaseNotFound,shrContextNotFound,shrHelpNotFound] then
@@ -1450,7 +1448,7 @@ begin
   if Complete then exit;
 
   debugln(['TIDEHelpManager.ShowHelpForSourcePosition no declaration found, trying keywords and built-in functions...']);
-  Result:=CollectBuiltInIdentifiers(CodeBuffer,CodePos,Identifier);
+  Result:=CollectKeywords(CodeBuffer,CodePos,Identifier);
   if Result in [shrCancel,shrSuccess] then exit;
   if IsValidIdent(Identifier) and ShowCodeBrowserOnUnknownIdentifier then
   begin
