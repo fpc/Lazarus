@@ -36,7 +36,7 @@ uses
   { lazarus }
   LazIDEIntf, MenuIntf, IdeCommands,
   { local }
-  LazCHMHelp, InterfaceBase;
+  LazCHMHelp;
 
 const
   HELP_CURRENT_NAME  = 'chpHelp';
