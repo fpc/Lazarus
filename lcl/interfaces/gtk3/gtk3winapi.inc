@@ -3199,6 +3199,7 @@ begin
   Result := AWidget <> nil;
   if Result then
   begin
+    if AWidget.Widget = nil then exit;
     if AWidget.GetContainerWidget^.has_grab then
       gtk_grab_remove(AWidget.GetContainerWidget)
     else
@@ -3418,7 +3419,7 @@ begin
     if IsValidHandle(AHandle) then
     begin
       TGtk3Widget(AHandle).SetCapture;
-      if (Result <> 0) then
+      //if (Result <> 0) then
       begin
         Message.Msg := 0;
         FillChar(Message, SizeOf(Message), 0);

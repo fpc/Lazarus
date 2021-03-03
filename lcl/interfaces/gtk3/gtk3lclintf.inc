@@ -693,6 +693,8 @@ begin
     Height := R.Bottom - R.Top;
   end;
 
+  WorkMask:=nil;
+
   if (Width = Image.Width) and (Height = Image.Height) then
   begin
     WorkImage := Image;
@@ -745,6 +747,7 @@ begin
       if InvertPixels then
         WorkMask.invertPixels(QImageInvertRGB);
         *)
+      if WorkMask.bits<>nil then
       Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
       // if InvertPixels then
       //  WorkMask.invertPixels(QImageInvertRGB);

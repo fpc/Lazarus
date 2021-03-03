@@ -1712,11 +1712,14 @@ begin
   Result := False;
   FillChar(Msg, SizeOf(Msg), #0);
   if Event^.type_ = GDK_ENTER_NOTIFY then
-    Msg.Msg := LM_MOUSEENTER
+  begin
+    Msg.Msg := LM_MOUSEENTER;
+    NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  end
   else
     Msg.Msg := LM_MOUSELEAVE;
 
-  NotifyApplicationUserInput(LCLObject, Msg.Msg);
+  //NotifyApplicationUserInput(LCLObject, Msg.Msg);
   Result := DeliverMessage(Msg, True) <> 0;
   {$IFDEF GTK3DEBUGCORE}
   MousePos.X := Round(Event^.crossing.x);
@@ -2838,6 +2841,12 @@ var
   Alloc: TGtkAllocation;
   AMinSize, ANaturalSize: gint;
 begin
+    if Self is TGtk3Button then
+    begin
+      dec(Awidth,4);
+      dec(Aheight,4);
+    end;
+
   ARect.x := ALeft;
   ARect.y := ATop;
   ARect.width := AWidth;
@@ -2854,6 +2863,9 @@ begin
     {fixes gtk3 assertion}
     Widget^.get_preferred_width(@AMinSize, @ANaturalSize);
     Widget^.get_preferred_height(@AMinSize, @ANaturalSize);
+
+
+    Widget^.set_size_request(AWidth,AHeight);
 
     Widget^.size_allocate(@ARect);
     Widget^.set_allocation(@Alloc);
@@ -3106,12 +3118,19 @@ var
 begin
   FHasPaint := True;
   FBorderStyle := bsNone;
+
   // wtLayout = using GtkLayout
   // FWidgetType := [wtWidget, wtLayout];
   // Result := TGtkLayout.new(nil, nil);
+
   FWidgetType := [wtWidget, wtContainer];
-  Result := TGtkFixed.new;
+  Result := TGtkFixed.new();
   Result^.set_has_window(True);
+  // as GtkFixed have no child control here - nobody triggers resizing
+  // GNOME takes care of it, but other WM - not
+  // this is here to make TGtk3Panel shown under Plasma
+  Result^.set_size_request(LCLObject.Width,LCLObject.Height);
+
   // AColor := Result^.style^.bg[0];
   // writeln('BG COLOR R=',AColor.red,' G=',AColor.green,' B=',AColor.blue);
   // now we make panel completely transparent.
@@ -3184,7 +3203,7 @@ begin
   fWidgetRGBA[0].Alpha:=0.7;
   PgtkFrame(Result)^.override_color(GTK_STATE_NORMAL,@Self.FWidgetRGBA[0]);}
   // nil resets color to gtk default
-  FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
+  //FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
 end;
 
 function TGtk3GroupBox.getText: String;
@@ -7085,7 +7104,7 @@ begin
   if not Assigned(LCLObject.Parent) then
   begin
     Result := TGtkWindow.new(GTK_WINDOW_TOPLEVEL);
-    Result^.set_size_request(0,0);
+    //Result^.set_size_request(0,0);
     gtk_widget_realize(Result);
     decor:=decoration_flags(AForm);
     gdk_window_set_decorations(Result^.window, decor);
