@@ -3793,7 +3793,7 @@ begin
 
   AText:=Format(lisUEReplaceThisOccurrenceOfWith,[Shorten(ASearch),LineEnding,Shorten(AReplace)]);
 
-  GetDialogPosition(300,150,X,Y);
+  GetDialogPosition(FEditor.Scale96ToFont(300), FEditor.Scale96ToFont(150), X, Y);
   a:=MessageDlgPos(AText,mtconfirmation,
             [mbYes,mbYesToAll,mbNo,mbCancel],0,X,Y);
 
