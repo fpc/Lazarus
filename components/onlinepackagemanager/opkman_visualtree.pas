@@ -173,6 +173,7 @@ type
     function ResolveDependencies: TModalResult;
     function GetCheckedRepositoryPackages: Integer;
     procedure SetupColors;
+    procedure AutoAdjustLayout(AXProportion, AYProportion: Double);
   published
     property OnChecking: TOnChecking read FOnChecking write FOnChecking;
     property OnChecked: TNotifyEvent read FOnChecked write FOnChecked;
@@ -201,24 +202,24 @@ begin
      Anchors := [akLeft, akTop, akRight];
      Images := AImgList;
      PopupMenu := APopupMenu;
-     DefaultNodeHeight := FVST.Scale96ToForm(25);
-     Indent := FVST.Scale96ToForm(22);
+     DefaultNodeHeight := 25;
+     Indent := 22;
      TabOrder := 1;
      DefaultText := '';
      Header.AutoSizeIndex := 4;
-     Header.Height := FVST.Scale96ToForm(25);
+     Header.Height := 25;
      Colors.DisabledColor := clBlack;
      with Header.Columns.Add do
      begin
        Position := 0;
-       Width := FVST.Scale96ToForm(270);
+       Width := 270;
        Text := rsMainFrm_VSTHeaderColumn_PackageName;
      end;
      with Header.Columns.Add do
      begin
        Position := 1;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(90);
+       Width := 90;
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -228,7 +229,7 @@ begin
      begin
        Position := 2;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(110);
+       Width := 110;
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -239,7 +240,7 @@ begin
      begin
        Position := 3;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(110);
+       Width := 110;
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -249,7 +250,7 @@ begin
      with Header.Columns.Add do
      begin
        Position := 4;
-       Width := FVST.Scale96ToForm(280);
+       Width := 280;
        {$IFDEF LCLCarbon}
        Options := Options - [coResizable];
        {$ENDIF}
@@ -259,7 +260,7 @@ begin
      begin
        Position := 5;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(81);
+       Width := 80;
        Options := Options - [coResizable];
        Text := rsMainFrm_VSTHeaderColumn_Rating;
      end;
@@ -267,7 +268,7 @@ begin
      begin
        Position := 6;
        Alignment := taCenter;
-       Width := FVST.Scale96ToForm(20);
+       Width := 20;
        Options := Options - [coResizable];
      end;
      Header.Options := [hoAutoResize, hoColumnResize, hoRestrictDrag, hoShowSortGlyphs, hoVisible, hoShowHint];
@@ -313,7 +314,7 @@ begin
    end;
   FShowHintFrm := TShowHintFrm.Create(nil);
   if AImgList <> nil then
-    FStarSize := Application.MainForm.Scale96ToForm(AImgList.Width)
+    FStarSize := AImgList.Width
   else
     FStarSize := 0;
 end;
@@ -1438,6 +1439,11 @@ begin
     FVST.Color := clDefault;
     FVST.TreeOptions.PaintOptions := FVST.TreeOptions.PaintOptions - [toAlwaysHideSelection];
   end;
+end;
+
+procedure TVisualTree.AutoAdjustLayout(AXProportion, AYProportion: Double);
+begin
+  FStarSize := round(FStarSize * AXProportion);
 end;
 
 procedure TVisualTree.VSTCompareNodes(Sender: TBaseVirtualTree; Node1,

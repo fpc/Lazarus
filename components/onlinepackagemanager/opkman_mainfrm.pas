@@ -178,6 +178,9 @@ type
     function UpdateP(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
     procedure Rebuild;
     function CheckDstDir(const ADstDir: String): Boolean;
+  protected
+    procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+      const AXProportion, AYProportion: Double); override;
   public
     procedure ShowOptions(const AActivePageIndex: Integer = 0);
   end;
@@ -345,6 +348,14 @@ begin
   end;
 end;
 
+
+procedure TMainFrm.DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
+  const AXProportion, AYProportion: Double);
+begin
+  inherited;
+  if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
+    VisualTree.AutoAdjustLayout(AXProportion, AYProportion);
+end;
 
 function TMainFrm.Download(const ADstDir: String; var ADoExtract: Boolean): TModalResult;
 begin
