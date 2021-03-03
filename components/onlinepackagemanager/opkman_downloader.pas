@@ -254,7 +254,7 @@ end;
 
 procedure TThreadDownload.DoOnJSONDownloadCompleted;
 var
-  JSON: TJSONStringType;
+  JSON: TJSONStringType = '';
   JSONFile: String;
 begin
   if Assigned(FOnJSONComplete) then

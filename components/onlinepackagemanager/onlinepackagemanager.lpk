@@ -150,9 +150,10 @@ For more info please visit: http://wiki.freepascal.org/Online_Package_Manager"/>
       </Item29>
       <Item30>
         <Filename Value="opkman_opensslfrm.pas"/>
-        <UnitName Value="opkman_opensslfrm"/>
+        <UnitName Value="opkman_OpenSSLfrm"/>
       </Item30>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
