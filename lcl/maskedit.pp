@@ -1376,7 +1376,12 @@ procedure TCustomMaskEdit.DeleteChars(NextChar : Boolean);
 begin
   if NextChar then
   begin//VK_DELETE
-    if HasSelection then DeleteSelected
+    if HasSelection then
+    begin
+      DeleteSelected;
+      if IsLiteral(FMask[FCursorPos]) then
+        SelectNextChar;
+    end
     else
     begin
       //cannot delete beyond length of string
@@ -1391,7 +1396,12 @@ begin
   else
   begin//VK_BACK
     //if selected text > 1 char then delete selection
-    if HasExtSelection then DeleteSelected
+    if HasExtSelection then
+    begin
+      DeleteSelected;
+      if IsLiteral(FMask[FCursorPos]) then
+        SelectNextChar;
+    end
     else
     begin
       //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
