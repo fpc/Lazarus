@@ -44,7 +44,7 @@ uses
   LazFileUtils, LazUTF8,
   // CodeTools
   FileProcs, CodeToolManager,
-  // IdeIntf
+  // BuildIntf
   MacroIntf, MacroDefIntf,
   // IDE
   LazarusIDEStrConsts;

@@ -209,7 +209,7 @@ begin
   UpALevel := '..' + DirectorySeparator;
   RelPath := ExtractRelativePath(FTopDir, AFilename);
   Adjusted := False;
-  while StartsStr(UpALevel, RelPath) do
+  while LazStartsStr(UpALevel, RelPath) do
   begin
     FTopDir := FTopDir + UpALevel; // This file is in upper dir. Move TopDir up, too.
     Delete(RelPath, 1, 3);

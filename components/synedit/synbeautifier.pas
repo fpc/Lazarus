@@ -606,7 +606,7 @@ begin
     if Temp <> '' then begin
       Temp := copy(Temp, 1, GetIndentForLine(FCurrentEditor, Temp, False));
       PhysLen := GetIndentForLine(FCurrentEditor, Temp, True);
-      if (PhysLen > KnownPhysLen) and (copy(temp, 1, length(BasedMix)) = BasedMix) then
+      if (PhysLen > KnownPhysLen) and LazStartsStr(BasedMix, Temp) then
       begin
         KnownMix := Temp;
         KnownPhysLen := PhysLen;

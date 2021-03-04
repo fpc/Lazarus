@@ -39,7 +39,7 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, strutils, Laz_AVL_Tree,
+  Classes, SysUtils, StrUtils, Laz_AVL_Tree,
   // LazUtils
   LazFileUtils, LazStringUtils, LazUTF8,
   // Codetools
@@ -434,7 +434,7 @@ begin
   // search for include directives
   repeat
     Atom:=ReadNextPascalAtom(Source,Position,AtomStart);
-    if StartsStr('{$',Atom) or StartsStr('(*$', Atom) then begin
+    if LazStartsStr('{$',Atom) or LazStartsStr('(*$', Atom) then begin
       SplitCompilerDirective(Atom,DirectiveName,Filename);
       if (DirectiveName='i') or (DirectiveName='I')
       or (CompareText(DirectiveName,'include')=0) then begin
@@ -485,8 +485,8 @@ function SplitCompilerDirective(const Directive:string;
    out DirectiveName,Parameters:string):boolean;
 var EndPos,DirStart,DirEnd:integer;
 begin
-  if StartsStr('{$',Directive) or StartsStr('(*$',Directive) then begin
-    if StartsStr('{$',Directive) then begin
+  if LazStartsStr('{$',Directive) or LazStartsStr('(*$',Directive) then begin
+    if LazStartsStr('{$',Directive) then begin
       DirStart:=3;
       DirEnd:=length(Directive);
     end else begin

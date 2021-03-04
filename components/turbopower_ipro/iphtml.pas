@@ -2872,7 +2872,7 @@ uses
   {$IFDEF Html_Print}
   Printers, PrintersDlgs, IpHtmlPv,
   {$ENDIF}
-  StrUtils, ipHtmlBlockLayout, ipHtmlTableLayout;
+  ipHtmlBlockLayout, ipHtmlTableLayout;
 
 {$R *.res}
 
@@ -11329,7 +11329,7 @@ var
   begin
     FormData := TIpFormDataEntity.Create(nil);
     for i := 0 to Pred(FList.Count) do
-      if StartsStr('file://', VList[i]) then
+      if LazStartsStr('file://', VList[i]) then
         FormData.AddFile(copy(VList[i], 8, length(VList[i])),
           Accept, 'plain', embinary)
       else

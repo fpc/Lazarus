@@ -17,7 +17,7 @@ unit IDEWindowIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, StrUtils,
+  Math, Classes, SysUtils,
   // LCL
   LCLIntf, LCLType, Forms, Controls,
   // LazUtils
@@ -580,7 +580,7 @@ var
   I: Integer;
 begin
   for I := 0 to FOptList.Count-1 do
-  if StartsStr(FOptList[I], aFormID) then
+  if LazStartsStr(FOptList[I], aFormID) then
     Exit(TIDEWindowGlobalOption(FOptList.Objects[I]).CanSetVisibility);
   Result := True;//default is true
 end;

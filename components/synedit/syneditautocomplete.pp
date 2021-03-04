@@ -266,7 +266,7 @@ begin
         s := fCompletions[i];
         if s = AToken then
           break
-        else if StartsStr(AToken, s) then begin
+        else if LazStartsStr(AToken, s) then begin
           Inc(NumMaybe);
           IdxMaybe := i;
         end;
@@ -417,8 +417,8 @@ var
     fCompletionComments.Add(sComment);
     sComment := '';
     CurAttributes:=TStringListUTF8Fast.Create;
-    Assert(not StartsStr(CodeTemplateMacroMagic, sComplValue), 'SaveEntry: Found '+CodeTemplateMacroMagic);
-    if StartsStr(CodeTemplateAttributesStartMagic, sComplValue) then
+    Assert(not LazStartsStr(CodeTemplateMacroMagic, sComplValue), 'SaveEntry: Found '+CodeTemplateMacroMagic);
+    if LazStartsStr(CodeTemplateAttributesStartMagic, sComplValue) then
     begin
       // Start of attributes
       StartI := Length(CodeTemplateAttributesStartMagic) + 1;

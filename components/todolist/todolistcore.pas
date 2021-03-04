@@ -370,7 +370,7 @@ begin
     Exit; // Not a Todo/Done item, leave
 
   // Remove the ending comment chars from input string
-  if (aEndComment <> '') and EndsStr(aEndComment, lParsingString) then
+  if (aEndComment <> '') and LazEndsStr(aEndComment, lParsingString) then
     SetLength(lParsingString, Length(lParsingString)-Length(aEndComment));
 
   // Remove the Token

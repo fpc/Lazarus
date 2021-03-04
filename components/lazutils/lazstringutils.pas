@@ -37,13 +37,11 @@ type
 const
   EndOfLine: shortstring = LineEnding;
 
-{$IF FPC_FULLVERSION=30004}
-function StartsStr(const ASubText, AText: string): Boolean;
-function EndsStr(const ASubText, AText: string): Boolean;
-{$ENDIF}
-function PosI(const SubStr, S: string): integer;
+function LazStartsStr(const ASubText, AText: string): Boolean;
+function LazEndsStr(const ASubText, AText: string): Boolean;
 function LazStartsText(const ASubText, AText: string): Boolean;
 function LazEndsText(const ASubText, AText: string): Boolean;
+function PosI(const SubStr, S: string): integer;
 function IsNumber(s: String): Boolean;
 
 // Functions for line endings
@@ -118,24 +116,60 @@ const
 
 implementation
 
-{$IF FPC_FULLVERSION=30004}                  // Is found in versions > 3.0.4
-function StartsStr(const ASubText, AText: string): Boolean;
+function LazStartsStr(const ASubText, AText: string): Boolean;
+// A fixed version of StartsStr from StrUtils.
+// Returns True for empty ASubText which is compatible with Delphi.
 begin
-  if (Length(AText) >= Length(ASubText)) and (ASubText <> '') then
+  if ASubText = '' then
+    Exit(True);
+  if Length(AText) >= Length(ASubText) then
     Result := StrLComp(PChar(ASubText), PChar(AText), Length(ASubText)) = 0
   else
     Result := False;
 end;
 
-function EndsStr(const ASubText, AText: string): Boolean;
+function LazEndsStr(const ASubText, AText: string): Boolean;
+// A fixed version of EndsStr from StrUtils.
+// Returns True for empty ASubText which is compatible with Delphi.
 begin
+  if ASubText = '' then
+    Exit(True);
   if Length(AText) >= Length(ASubText) then
     Result := StrLComp(PChar(ASubText),
       PChar(AText) + Length(AText) - Length(ASubText), Length(ASubText)) = 0
   else
     Result := False;
 end;
-{$ENDIF}
+
+function LazStartsText(const ASubText, AText: string): Boolean;
+// A fast implementation of StartsText.
+// The version in RTL calls AnsiCompareText and is VERY slow.
+// Returns True for empty ASubText which is compatible with Delphi.
+begin
+  if ASubText = '' then
+    Exit(True);
+  if Length(AText) >= Length(ASubText) then
+    Result := StrLIComp(PChar(ASubText), PChar(AText), Length(ASubText)) = 0
+  else
+    Result := False;
+end;
+
+function LazEndsText(const ASubText, AText: string): Boolean;
+// A fast implementation of EndsText.
+// The version in RTL calls AnsiCompareText and is VERY slow.
+// Returns True for empty ASubText which is compatible with Delphi.
+var
+  LS, LT: SizeInt;
+begin
+  LS := Length(ASubText);
+  if LS = 0 then
+    Exit(True);
+  LT := Length(AText);
+  if LT >= LS then
+    Result := StrLIComp(PChar(ASubText), @AText[LT-LS+1], LS) = 0
+  else
+    Result := False;
+end;
 
 function PosI(const SubStr, S: string): integer;
 // A case-insensitive optimized version of Pos(). Comparison Supports only ASCII.
@@ -167,31 +201,6 @@ begin
     Inc(SP);
   end;
 end;
-
-function LazStartsText(const ASubText, AText: string): Boolean;
-// A fast implementation of StartsText.
-// The version in RTL calls AnsiCompareText and is VERY slow.
-begin
-  if (Length(AText) >= Length(ASubText)) and (ASubText <> '') then
-    Result := StrLIComp(PChar(ASubText), PChar(AText), Length(ASubText)) = 0
-  else
-    Result := False;
-end;
-
-function LazEndsText(const ASubText, AText: string): Boolean;
-// A fast implementation of StartsText.
-// The version in RTL calls AnsiCompareText and is VERY slow.
-var
-  LS, LT: SizeInt;
-begin
-  LS := Length(ASubText);
-  LT := Length(AText);
-  if (LT >= LS) and (ASubText <> '') then
-    Result := StrLIComp(PChar(ASubText), @AText[LT-LS+1], LS) = 0
-  else
-    Result := False;
-end;
-
 
 function IsNumber(s: String): Boolean;
 var

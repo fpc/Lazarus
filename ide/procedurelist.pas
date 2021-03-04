@@ -38,7 +38,7 @@ unit ProcedureList;
 interface
 
 uses
-  Classes, SysUtils, StrUtils,
+  Classes, SysUtils,
   // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
   Graphics, Grids,
@@ -608,13 +608,13 @@ begin
   end
   else
   if not pSearchAll and tbFilterStart.Down then
-    Result := ClassMatches and StartsStr(pSearchStr, pProcName)
+    Result := ClassMatches and LazStartsStr(pSearchStr, pProcName)
   else
   if not pSearchAll and tbFilterAny.Down then
     Result := ClassMatches and FilterFits(pSearchStr, pProcName)
   else
   if pSearchAll and tbFilterStart.Down then
-    Result := StartsStr(pSearchStr, pProcName)
+    Result := LazStartsStr(pSearchStr, pProcName)
   else
   if pSearchAll then
     Result := FilterFits(pSearchStr, pProcName);

@@ -54,7 +54,7 @@ uses
 {$IFDEF UNIX}
    Unix, BaseUnix, termio,
 {$ENDIF}
-  Classes, SysUtils, strutils, math, fgl, Variants, process,
+  Classes, SysUtils, StrUtils, Math, fgl, Variants, process,
   // LCL
   Controls, Dialogs, Forms,
   // LazUtils
@@ -2860,7 +2860,7 @@ begin
   HadTimeout := HadTimeout and LastExecwasTimeOut;
   if R.State <> dsError
   then begin
-    if StartsStr('type = ^Exception', R.Values)
+    if LazStartsStr('type = ^Exception', R.Values)
     then include(TargetInfo^.TargetFlags, tfFlagMaybeDwarf3);
     if LazStartsText('type = ^EXCEPTION', R.Values)
     then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
@@ -3106,9 +3106,9 @@ var
   begin
     DebugLn(DBG_VERBOSE, '[Debugger] Log output: ', Line);
     Warning := Line;
-    if StartsStr('&"', Warning) then
+    if LazStartsStr('&"', Warning) then
       Delete(Warning, 1, 2);
-    if EndsStr('\n"', Warning) then
+    if LazEndsStr('\n"', Warning) then
       SetLength(Warning, Length(Warning) - 3);
     if InLogWarning then
     begin
@@ -11851,14 +11851,14 @@ begin
     if (s = '') or (s = '#') then
       continue;
 
-    if StartsStr('#!', s) then begin
+    if LazStartsStr('#!', s) then begin
       delete(s, 1, 2);
       s := LowerCase(Trim(s));
-      if StartsStr(OptTimeout, s) then begin
+      if LazStartsStr(OptTimeout, s) then begin
         t := StrToIntDef(copy(s, 1+length(OptTimeout), MaxInt), DefaultTimeOut);
       end;
 
-      if StartsStr(OptTimeoutWarn, s) then begin
+      if LazStartsStr(OptTimeoutWarn, s) then begin
         if copy(s, 1+length(OptTimeout), MaxInt) = 'true' then
           f := []
         else

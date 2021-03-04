@@ -33,18 +33,12 @@ interface
 
 uses
   Classes, SysUtils, typinfo, math, fpjson, Laz_AVL_Tree,
-  {$IF FPC_FULLVERSION>30004}
-  StrUtils, // StartsStr
-  {$ENDIF}
   // LCL
   Controls, Forms, Dialogs, LCLIntf, LCLType, LclStrConsts,
   LResources, LCLMemManager,
   // LazUtils
-  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase, LazUtilities,
-  {$IF FPC_FULLVERSION=30004}
-  LazStringUtils, // StartsStr
-  {$ENDIF}
-  LazUTF8, LazTracer, AvgLvlTree,
+  LConvEncoding, LazFileCache, FileUtil, LazFileUtils, LazLoggerBase,
+  LazUtilities, LazStringUtils, LazUTF8, LazTracer, AvgLvlTree,
   // Codetools
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -866,7 +860,7 @@ procedure TFileOpener.CheckInternalFile;
 var
   NewBuf: TCodeBuffer;
 begin
-  if StartsStr(EditorMacroVirtualDrive, FFileName) then
+  if LazStartsStr(EditorMacroVirtualDrive, FFileName) then
   begin
     FUnitIndex:=Project1.IndexOfFilename(FFilename);
     if (FUnitIndex < 0) then begin
@@ -2407,7 +2401,7 @@ begin
 
   if (uifInternalFile in AnUnitInfo.Flags) then
   begin
-    if StartsStr(EditorMacroVirtualDrive, AnUnitInfo.Filename) then
+    if LazStartsStr(EditorMacroVirtualDrive, AnUnitInfo.Filename) then
     begin
       // save to macros
       EMacro := MacroListViewer.MacroByFullName(AnUnitInfo.Filename);

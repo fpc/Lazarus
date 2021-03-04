@@ -13,7 +13,7 @@ unit LazFreeTypeFontCollection;
 interface
 
 uses
-  Classes, SysUtils, StrUtils, Laz_AVL_Tree,
+  Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
   LazStringUtils, LazUTF8,
   // FreeType
@@ -946,7 +946,7 @@ begin
   begin
     with TCustomFontCollectionItem(enumerator.Current.Data) do
     begin
-      if StartsStr(AFolder, Filename) then
+      if LazStartsStr(AFolder, Filename) then
         toBeDeleted.Add(Filename);
     end;
   end;

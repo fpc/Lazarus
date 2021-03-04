@@ -20,7 +20,7 @@ unit ColorBox;
 interface
 
 uses
-  LResources, SysUtils, Types, Classes, StrUtils,
+  LResources, SysUtils, Types, Classes,
   LCLProc, LCLType, LCLStrConsts, Graphics, Controls, Forms, Dialogs, StdCtrls,
   LazStringUtils;
 
@@ -364,7 +364,7 @@ begin
   if not FindInMap(ColorName, Result) then
   begin
     Result := ColorName;
-    if StartsStr('cl', Result) then
+    if LazStartsStr('cl', Result) then
       Delete(Result, 1, 2);
   end;
 end;
