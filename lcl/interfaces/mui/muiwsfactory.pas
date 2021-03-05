@@ -542,7 +542,7 @@ end;
 
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
 begin
-  Reult := False;
+  Result := False;
 end;
 
 
