@@ -203,6 +203,7 @@ begin
     t.Dependencies.AddUnit('win32wsimglist');
     t.Dependencies.AddUnit('win32wsmenus');
     t.Dependencies.AddUnit('win32wspairsplitter');
+    t.Dependencies.AddUnit('win32wsshellctlrs');
     t.Dependencies.AddUnit('win32wsspin');
     t.Dependencies.AddUnit('win32wsstdctrls');
     t.Dependencies.AddUnit('win32wstoolwin');
@@ -535,6 +536,7 @@ begin
     P.Targets.AddImplicitUnit('win32/win32wsmenus.pp');
     P.Targets.AddImplicitUnit('win32/win32wspairsplitter.pp');
     P.Targets.AddImplicitUnit('win32/win32wsspin.pp');
+    P.Targets.AddImplicitUnit('win32/win32wsshellctrls.pp');
     P.Targets.AddImplicitUnit('win32/win32wsstdctrls.pp');
     P.Targets.AddImplicitUnit('win32/win32wstoolwin.pp');
     P.Targets.AddImplicitUnit('wince/interfaces.pp');

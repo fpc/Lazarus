@@ -13,79 +13,79 @@
         <UnitOutputDirectory Value="../units/$(TargetCPU)-$(TargetOS)/$(LCLWidgetType)"/>
       </SearchPaths>
       <Conditionals Value="// LCLWidgetType
-if LCLWidgetType+''='' then begin
-  if GetIDEValue('OS')=TargetOS then begin
+if LCLWidgetType+&apos;&apos;=&apos;&apos; then begin
+  if GetIDEValue(&apos;OS&apos;)=TargetOS then begin
     // use the same widgettype as the IDE
-    LCLWidgetType := GetIDEValue('LCLWidgetType');
-    if LCLWidgetType='nogui' then
-      LCLWidgetType:='';
+    LCLWidgetType := GetIDEValue(&apos;LCLWidgetType&apos;);
+    if LCLWidgetType=&apos;nogui&apos; then
+      LCLWidgetType:=&apos;&apos;;
   end;
-  if LCLWidgetType+''='' then begin
-    if (TargetOS='win32') or (TargetOS='win64') then
-      LCLWidgetType := 'win32'
-    else if TargetOS='wince' then
-      LCLWidgetType := 'wince'
-    else if TargetOS='darwin' then
-      LCLWidgetType := 'carbon'
-    else if (TargetOS='amiga') or (TargetOS='aros') or (TargetOS='morphos') then
-      LCLWidgetType := 'mui'
+  if LCLWidgetType+&apos;&apos;=&apos;&apos; then begin
+    if (TargetOS=&apos;win32&apos;) or (TargetOS=&apos;win64&apos;) then
+      LCLWidgetType := &apos;win32&apos;
+    else if TargetOS=&apos;wince&apos; then
+      LCLWidgetType := &apos;wince&apos;
+    else if TargetOS=&apos;darwin&apos; then
+      LCLWidgetType := &apos;carbon&apos;
+    else if (TargetOS=&apos;amiga&apos;) or (TargetOS=&apos;aros&apos;) or (TargetOS=&apos;morphos&apos;) then
+      LCLWidgetType := &apos;mui&apos;
     else
-      LCLWidgetType:='gtk2';
+      LCLWidgetType:=&apos;gtk2&apos;;
   end;
 end;
 
 // widget set specific options
-base := LCLWidgetType+'/';
-if LCLWidgetType='gtk3' then
+base := LCLWidgetType+&apos;/&apos;;
+if LCLWidgetType=&apos;gtk3&apos; then
 begin
-  CustomOptions := '-dgtk3';
-  UnitPath := base + 'gtk3bindings';
+  CustomOptions := &apos;-dgtk3&apos;;
+  UnitPath := base + &apos;gtk3bindings&apos;;
 end else
-if LCLWidgetType='gtk' then
-  CustomOptions := '-dgtk1'
-else if LCLWidgetType='carbon' then begin
-  CustomOptions := '-dcarbon';
-  UnitPath := base+'objc;'
-             +base+'pascocoa/appkit;'
-             +base+'pascocoa/foundation';
+if LCLWidgetType=&apos;gtk&apos; then
+  CustomOptions := &apos;-dgtk1&apos;
+else if LCLWidgetType=&apos;carbon&apos; then begin
+  CustomOptions := &apos;-dcarbon&apos;;
+  UnitPath := base+&apos;objc;&apos;
+             +base+&apos;pascocoa/appkit;&apos;
+             +base+&apos;pascocoa/foundation&apos;;
   IncPath := UnitPath;
-end else if LCLWidgetType='cocoa' then begin
-  CustomOptions := '-dcocoa';
-  if TargetCPU&lt;>'i386' then
-    CustomOptions += ' -dNoCarbon';
-end else if LCLWidgetType='wince' then begin
-  CustomOptions := '-dDisableChecks';
-end else if LCLWidgetType='fpgui' then begin
+end else if LCLWidgetType=&apos;cocoa&apos; then begin
+  CustomOptions := &apos;-dcocoa&apos;;
+  if TargetCPU&lt;>&apos;i386&apos; then
+    CustomOptions += &apos; -dNoCarbon&apos;;
+end else if LCLWidgetType=&apos;wince&apos; then begin
+  CustomOptions := &apos;-dDisableChecks&apos;;
+end else if LCLWidgetType=&apos;fpgui&apos; then begin
   if undefined(fpGUIPlatform) then begin
-    if TargetOS='win32' then
-      fpGUIPlatform := 'gdi'
+    if TargetOS=&apos;win32&apos; then
+      fpGUIPlatform := &apos;gdi&apos;
     else
-      fpGUIPlatform := 'x11';
+      fpGUIPlatform := &apos;x11&apos;;
   end;
-  CustomOptions := ' -dfpgui'+fpGUIPlatform;
-  UnitPath := base+'src/gui;'
-             +base+'src/corelib;'
-             +base+'src/corelib/'+fpGUIPlatform+';'
-             +base+'src/corelib/reportengine;';
-  IncPath := UnitPath+base+'src;';
-end else if LCLWidgetType='customdrawn' then begin
-  UnitPath := base+'android;';
+  CustomOptions := &apos; -dfpgui&apos;+fpGUIPlatform;
+  UnitPath := base+&apos;src/gui;&apos;
+             +base+&apos;src/corelib;&apos;
+             +base+&apos;src/corelib/&apos;+fpGUIPlatform+&apos;;&apos;
+             +base+&apos;src/corelib/reportengine;&apos;;
+  IncPath := UnitPath+base+&apos;src;&apos;;
+end else if LCLWidgetType=&apos;customdrawn&apos; then begin
+  UnitPath := base+&apos;android;&apos;;
 end;
 
 // linker options
-if TargetOS='darwin' then begin
-  if LCLWidgetType='gtk' then
-    UsageLibraryPath := '/usr/X11R6/lib;/sw/lib'
-  else if LCLWidgetType='gtk2' then
-    UsageLibraryPath := '/usr/X11R6/lib;/sw/lib;/sw/lib/pango-ft219/lib'
-  else if LCLWidgetType='carbon' then begin
-    UsageLinkerOptions := '-framework Carbon'
-      +' -framework OpenGL'
-      +' ''-dylib_file'' ''/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib''';
-  end else if LCLWidgetType='cocoa' then
-    UsageLinkerOptions := '-framework Cocoa';
-end else if TargetOS='solaris' then begin
-  UsageLibraryPath:='/usr/X11R6/lib';
+if TargetOS=&apos;darwin&apos; then begin
+  if LCLWidgetType=&apos;gtk&apos; then
+    UsageLibraryPath := &apos;/usr/X11R6/lib;/sw/lib&apos;
+  else if LCLWidgetType=&apos;gtk2&apos; then
+    UsageLibraryPath := &apos;/usr/X11R6/lib;/sw/lib;/sw/lib/pango-ft219/lib&apos;
+  else if LCLWidgetType=&apos;carbon&apos; then begin
+    UsageLinkerOptions := &apos;-framework Carbon&apos;
+      +&apos; -framework OpenGL&apos;
+      +&apos; &apos;&apos;-dylib_file&apos;&apos; &apos;&apos;/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib:/System/Library/Frameworks/OpenGL.framework/Versions/A/Libraries/libGL.dylib&apos;&apos;&apos;;
+  end else if LCLWidgetType=&apos;cocoa&apos; then
+    UsageLinkerOptions := &apos;-framework Cocoa&apos;;
+end else if TargetOS=&apos;solaris&apos; then begin
+  UsageLibraryPath:=&apos;/usr/X11R6/lib&apos;;
 end;"/>
       <BuildMacros>
         <Count Value="2"/>
@@ -130,7 +130,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Minor="1"/>
-    <Files Count="487">
+    <Files Count="488">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2413,7 +2413,13 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="CocoaWSCheckLst"/>
       </Item487>
+      <Item488>
+        <Filename Value="win32/win32wsshellctrls.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="win32wsshellctrls"/>
+      </Item488>
     </Files>
+    <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
     <i18n>
       <EnableI18N Value="True"/>
@@ -2439,28 +2445,28 @@ end;"/>
           <_Value Value="case Defaults.OS of"/>
         </_CustomCodeItem1>
         <_CustomCodeItem2 Items="Value">
-          <_Value Value="  darwin        : LCLWidgetTypeVariant.DefaultPackageVariantName:='carbon';"/>
+          <_Value Value="  darwin        : LCLWidgetTypeVariant.DefaultPackageVariantName:=&apos;carbon&apos;;"/>
         </_CustomCodeItem2>
         <_CustomCodeItem3 Items="Value">
-          <_Value Value="  win32, win64  : LCLWidgetTypeVariant.DefaultPackageVariantName:='win32';"/>
+          <_Value Value="  win32, win64  : LCLWidgetTypeVariant.DefaultPackageVariantName:=&apos;win32&apos;;"/>
         </_CustomCodeItem3>
         <_CustomCodeItem4 Items="Value">
-          <_Value Value="  wince         : LCLWidgetTypeVariant.DefaultPackageVariantName:='wince';"/>
+          <_Value Value="  wince         : LCLWidgetTypeVariant.DefaultPackageVariantName:=&apos;wince&apos;;"/>
         </_CustomCodeItem4>
         <_CustomCodeItem5 Items="Value">
           <_Value Value="else"/>
         </_CustomCodeItem5>
         <_CustomCodeItem6 Items="Value">
-          <_Value Value="  LCLWidgetTypeVariant.DefaultPackageVariantName:='gtk2';"/>
+          <_Value Value="  LCLWidgetTypeVariant.DefaultPackageVariantName:=&apos;gtk2&apos;;"/>
         </_CustomCodeItem6>
         <_CustomCodeItem7 Items="Value">
           <_Value Value="end;"/>
         </_CustomCodeItem7>
         <_CustomCodeItem8 Items="Value">
-          <_Value Value="P.Dependencies.Add('gtk2', AllUnixOSes+[Win32,Win64]-[darwin,iphonesim,Android]);"/>
+          <_Value Value="P.Dependencies.Add(&apos;gtk2&apos;, AllUnixOSes+[Win32,Win64]-[darwin,iphonesim,Android]);"/>
         </_CustomCodeItem8>
         <_CustomCodeItem9 Items="Value">
-          <_Value Value="gtk3VariantItem.IncludePath.add('gtk3/gtk3bindings');"/>
+          <_Value Value="gtk3VariantItem.IncludePath.add(&apos;gtk3/gtk3bindings&apos;);"/>
         </_CustomCodeItem9>
         <_PackageVariants Items="Items">
           <_Items Items="Count/Item1">

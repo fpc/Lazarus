@@ -75,6 +75,7 @@ type
     procedure SetShellListView(const Value: TCustomShellListView);
     procedure SetUseBuiltinIcons(const AValue: Boolean);
   protected
+    class procedure WSRegisterClass; override;
     procedure DoCreateNodeClass(var NewNodeClass: TTreeNodeClass); override;
     procedure Loaded; override;
     function CreateNode: TTreeNode; override;
@@ -84,16 +85,8 @@ type
     procedure DoSelectionChanged; override;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function CanExpand(Node: TTreeNode): Boolean; override;
-(*
-  {$ifdef mswindows}
-  private
-    FBuiltinIconSize: TSize;
-  protected
     function DrawBuiltInIcon(ANode: TTreeNode; ARect: TRect): TSize; override;
     function GetBuiltinIconSize: TSize; override;
-  {$endif}
-*)
-
   public
     { Basic methods }
     constructor Create(AOwner: TComponent); override;
@@ -375,10 +368,10 @@ procedure Register;
 
 implementation
 
+uses WSShellCtrls
 {$ifdef windows}
-//uses Windows, ShellApi;
-uses Windows;
-{$endif}
+  ,Windows, ShellApi
+{$endif};
 
 const
   //no need to localize, it's a message for the programmer
@@ -998,66 +991,21 @@ begin
     FOnAddItem(Self, ABasePath, AFileInfo, CanAdd);
 end;
 
-(*
-{$ifdef mswindows}
-{ Extracts the windows shell icon of the specified file. }
-function GetShellIcon(const AFileName: WideString): TIcon;
-var
-  FileInfo: TSHFileInfoW;
-  imgHandle: DWORD_PTR;
-begin
-  imgHandle := SHGetFileInfoW(PWideChar(AFileName), 0, FileInfo, SizeOf(FileInfo),
-    SHGFI_ICON + SHGFI_SMALLICON + SHGFI_SYSICONINDEX);
-  if imgHandle <> 0 then
-  begin
-    Result := TIcon.Create;
-    Result.Handle := FileInfo.hIcon;
-  end else
-    Result := nil;
-end;
-
 function TCustomShellTreeView.DrawBuiltinIcon(ANode: TTreeNode; ARect: TRect): TSize;
-var
-  filename: widestring;
-  ico: TIcon;
 begin
   if FUseBuiltinIcons then
-  begin
-    fileName := widestring(GetPathFromNode(ANode));
-    ico := GetShellIcon(fileName);
-    try
-      Canvas.Draw(ARect.Left, (ARect.Top + ARect.Bottom - ico.Height) div 2, ico);
-      Result := Types.Size(ico.Width, ico.Height);
-    finally
-      ico.Free;
-    end;
-  end else
-    Result := Types.Size(0, 0);
+    Result := TWSCustomShellTreeViewClass(WidgetSetClass).DrawBuiltinIcon(Self, ANode, ARect)
+  else
+    Result := inherited;
 end;
 
 function TCustomShellTreeView.GetBuiltinIconSize: TSize;
-var
-  ico: TIcon;
 begin
   if FUseBuiltinIcons then
-  begin
-    if (FBuiltinIconSize.CX > 0) and (FBuiltinIconSize.CY > 0) then
-      Result := FBuiltinIconSize
-    else
-    begin
-      ico := GetShellIcon(WideString('C:'));
-      try
-        Result := Types.Size(ico.Width, ico.Height);
-        FBuiltinIconSize := Result;
-      finally
-        ico.Free;
-      end;
-    end;
-  end else
-    Result := Types.Size(0, 0);
+    Result := TWSCustomShellTreeViewClass(WidgetsetClass).GetBuiltinIconSize
+  else
+    Result := inherited;
 end;
-{$endif}
-*)
 
 function TCustomShellTreeView.GetPathFromNode(ANode: TTreeNode): string;
 begin
@@ -1405,6 +1353,12 @@ begin
     sl.free;
     EndUpdate;
   end;
+end;
+
+class procedure TCustomShellTreeView.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomShellTreeView;
 end;
 
 

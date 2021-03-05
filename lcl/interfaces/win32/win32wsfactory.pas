@@ -5,7 +5,7 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
+  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus, ShellCtrls,
   WSLCLClasses;
 
 // imglist
@@ -94,6 +94,8 @@ function RegisterPairSplitterSide: Boolean;
 function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
+// ShellCtrls
+function RegisterCustomShellTreeView: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -111,6 +113,7 @@ uses
   Win32WSGrids,
   Win32WSImgList,
   Win32WSMenus,
+  Win32WSShellCtrls,
   Win32WSSpin,
   Win32WSStdCtrls;
 
@@ -554,6 +557,13 @@ end;
 function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
 begin
   Result := False;
+end;
+
+// ShellCtrls
+function RegisterCustomShellTreeView: Boolean; alias : 'WSRegisterCustomShellTreeView';
+begin
+  RegisterWSComponent(TCustomShellTreeView, TWin32WSCustomShellTreeView);
+  Result := True;
 end;
 
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';

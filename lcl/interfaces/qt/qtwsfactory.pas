@@ -94,6 +94,8 @@ function RegisterPairSplitterSide: Boolean;
 function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
+// ShellCtrls
+function RegisterCustomShellTreeView: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -551,6 +553,12 @@ function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand'
 begin
   RegisterWSComponent(TCustomRubberBand, TQtWSCustomRubberBand);
   Result := True;
+end;
+
+// ShellCtrls
+function RegisterCustomShellTreeView: Boolean; alias : 'WSRegisterCustomShellTreeView';
+begin
+  Result := False;
 end;
 
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';

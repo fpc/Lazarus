@@ -99,6 +99,10 @@ function RegisterPairSplitterSide: Boolean;
 function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
+// ShellCtrls
+function RegisterCustomShellTreeView: Boolean;
+// LazDeviceAPIs
+function RegisterLazDeviceAPIs: Boolean;
 
 implementation
 
@@ -529,6 +533,16 @@ end;
 function RegisterCustomRubberBand: Boolean; alias : 'WSRegisterCustomRubberBand';
 begin
   Result := False;
+end;
+
+function RegisterCustomShellTreeView: Boolean; alias : 'WSRegisterCustomShellTreeView';
+begin
+  Result := False;
+end;
+
+function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
+begin
+  Reult := False;
 end;
 
 
