@@ -1347,7 +1347,7 @@ function TCustomListView.GetNextItem(StartItem: TListItem;
   Direction: TSearchDirection; States: TListItemStates): TListItem;
 var
   ACount: Integer;
-  AIndex: Integer;
+  StartIndex, AIndex: Integer;
 
   {TODO: create public property States which reads states of item}
   function GetItemStatesInternal(AItem: TListItem): TListItemStates;
@@ -1362,48 +1362,39 @@ var
 
 begin
   Result := nil;
-  if Assigned(StartItem) then
-  begin
-    AIndex := StartItem.Index;
-    ACount := Items.Count;
-    case Direction of
-      sdAbove:
-        while AIndex>0 do
-        begin
-          dec(AIndex);
-          if States <= GetItemStatesInternal(Items[AIndex]) then
-          begin
-            Result := Items[AIndex];
-            exit;
-         end;
-        end;
-      sdBelow:
-        while AIndex < ACount-1 do
-        begin
-          inc(AIndex);
-          if States <= GetItemStatesInternal(Items[AIndex]) then
-          begin
-            Result := Items[AIndex];
-            exit;
-          end;
-        end;
-      sdAll:
-        while True do
-        begin
-          inc(AIndex);
-          if AIndex = StartItem.Index then Exit;
-          if AIndex > ACount-1 then
-          begin
-            AIndex := -1;
-            continue;
-          end;
-          if States <= GetItemStatesInternal(Items[AIndex]) then
-          begin
-            Result := Items[AIndex];
-            exit;
-          end;
-        end;
-    end;
+  if StartItem = nil then
+    Exit;
+  StartIndex := StartItem.Index;
+  AIndex := StartIndex;
+  ACount := Items.Count;
+  case Direction of
+    sdAbove:
+      while AIndex>0 do
+      begin
+        dec(AIndex);
+        if States <= GetItemStatesInternal(Items[AIndex]) then
+          Exit(Items[AIndex]);
+      end;
+    sdBelow:
+      while AIndex < ACount-1 do
+      begin
+        inc(AIndex);
+        if States <= GetItemStatesInternal(Items[AIndex]) then
+          Exit(Items[AIndex]);
+      end;
+    sdAll:
+      while True do
+      begin
+        inc(AIndex);
+        Assert(AIndex <> StartIndex, 'TCustomListView.GetNextItem: AIndex=StartIndex');
+        if AIndex >= ACount then
+          Exit;
+{       begin           Do not wrap around. Will never return Nil. Issue #38565.
+          AIndex := -1;  continue;
+        end;  }
+        if States <= GetItemStatesInternal(Items[AIndex]) then
+          Exit(Items[AIndex]);
+      end;
   end;
 end;
 
