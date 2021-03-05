@@ -71,7 +71,7 @@ uses
   LazarusIDEStrConsts, MainBase, IDEProcs, DialogProcs, IDEOptionDefs, Project,
   InputHistory, TransferMacros, EnvironmentOpts, BuildManager,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs, PackageSystem,
-  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg;
+  AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, LResources;
 
 type
   TOnAddUnitToProject =
@@ -480,6 +480,8 @@ function TProjectInspectorForm.AddOneFile(aFilename: string): TModalResult;
 var
   NewFile: TUnitInfo;
   NewFN: String;
+  LFMType, LFMComponentName, LFMClassName: String;
+  LFMFilename: String;
 begin
   Result := mrOK;
   NewFN:=CleanAndExpandFilename(aFilename);
@@ -490,6 +492,13 @@ begin
   end else begin
     NewFile:=TUnitInfo.Create(nil);
     NewFile.Filename:=aFilename;
+    LFMFilename := NewFile.UnitResourceFileformat.GetUnitResourceFilename(NewFile.Filename, True);
+    if LFMFilename <> '' then
+    begin
+      if ReadLFMHeaderFromFile(LFMFilename, LFMType, LFMComponentName, LFMClassName) then
+        if (LFMComponentName <> '') and (LFMClassName <> '') then
+           NewFile.ComponentName := LFMComponentName;
+    end;
     LazProject.AddFile(NewFile,false);
   end;
   NewFile.IsPartOfProject:=true;
