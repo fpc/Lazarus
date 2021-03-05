@@ -6369,10 +6369,7 @@ begin
   end;
   try
     if not FilenameExtIs(LFMFilename,'lfm',true) then
-    begin
-      // no lfm format -> keep old info
-      exit(true);
-    end;
+      exit(true);          // no lfm format -> keep old info
     // clear old info
     AnUnitInfo.ResourceBaseClass:=pfcbcNone;
     AnUnitInfo.ComponentName:='';
