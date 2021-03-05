@@ -166,8 +166,11 @@ begin
   LCLProc.SendApplicationMessageFunction:=nil;
   OnGetApplicationName := nil;
 
-  if Application=Self then
+  if Application=Self then begin
+    Assert(CustomApplication=Application, 'TApplication.Destroy: CustomApplication is wrong.');
     Application:=nil;
+    CustomApplication:=nil;
+  end;
 end;
 
 procedure TApplication.ActivateHint(CursorPos: TPoint; CheckHintControlChange: Boolean);

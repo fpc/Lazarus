@@ -2246,6 +2246,7 @@ begin
   end;
   Application.Free;
   Application:=nil;
+  CustomApplication:=nil;
   FreeAllClipBoards;
   CallInterfaceFinalizationHandlers;
   WidgetSet.Free;
@@ -2298,14 +2299,18 @@ end;
 initialization
   LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   ThemesImageDrawEvent:=@ImageDrawEvent;
-  IsFormDesign := @IsFormDesignFunction;
+  IsFormDesign:=@IsFormDesignFunction;
   Screen:=TScreen.Create(nil);
   Application:=TApplication.Create(nil);
+  Assert(CustomApplication=Nil, 'CustomApplication is assigned in Forms initialization.');
+  CustomApplication:=Application;
+
 finalization
   //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
   HintWindowClass:=nil;
   FreeThenNil(Application);
+  CustomApplication:=nil;
   FreeThenNil(Screen);
 
 end.
