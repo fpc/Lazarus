@@ -364,7 +364,9 @@ begin
   // This can raise an exception. Catch it, and restore old name
   try
     FCurrentVariable.Name:=EName.Text;
+    LBVariables.Sorted:=False;
     LBVariables.Items[FCurrentIndex]:=FCurrentVariable.Name;
+    LBVariables.Sorted:=True;
   except
     On E : Exception do
       begin
