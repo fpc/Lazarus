@@ -69,7 +69,7 @@ uses
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   // IDE
   LazarusIDEStrConsts, MainBase, IDEProcs, DialogProcs, IDEOptionDefs, Project,
-  InputHistory, TransferMacros, EnvironmentOpts, BuildManager,
+  InputHistory, TransferMacros, EnvironmentOpts, BuildManager, BasePkgManager,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs, PackageSystem,
   AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, LResources;
 
@@ -1100,13 +1100,8 @@ begin
   CurDependency:=GetSingleSelectedDependency;
   if (LazProject=nil) or (CurDependency=nil)
   or not FPropGui.CheckApplyDependency(CurDependency) then exit;
-  // Try to load the package again. Min/max version may have changed.
-  CurDependency.LoadPackageResult := lprUndefined;
-  // This calls UpdateRequiredPackages from PackageGraph.OnEndUpdate,
-  //  and also updates all package editors which is useless here.
-  PackageGraph.OpenDependency(CurDependency, False);
-  //fForcedFlags:=[pefNeedUpdateRequiredPkgs];
   LazProject.Modified:=True;
+  PkgBoss.ApplyDependency(CurDependency);
 end;
 
 function TProjectInspectorForm.CreateToolButton(AName, ACaption, AHint, AImageName: String;

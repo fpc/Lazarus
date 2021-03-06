@@ -118,6 +118,7 @@ type
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; virtual; abstract;
+    function ApplyDependency(CurDependency: TPkgDependency): TModalResult; virtual; abstract;
     function IsPackageEditorForm(AForm: TCustomForm): boolean; virtual; abstract;
     procedure OpenHiddenModifiedPackages; virtual; abstract;
 

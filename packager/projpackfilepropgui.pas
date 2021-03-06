@@ -99,13 +99,12 @@ type
     property OnGetPkgDep: TGetPkgDepEvent read fOnGetPkgDep write fOnGetPkgDep;
   end;
 
-  function GetNodeData(TVNode: TTreeNode): TPENodeData;
-  function NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
-  function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
-  function OPNote(ADep: TPkgDependencyID): string;
-  function OpmAddOrOpenDependency(ADep: TPkgDependencyID): Boolean;
-  procedure OpmInstallPendingDependencies;
-
+function GetNodeData(TVNode: TTreeNode): TPENodeData;
+function NodeTreeIsIn(xIterNode, xParentNode: TTreeNode): Boolean;
+function FindOPLink(const ADependency: TPkgDependencyID): TPackageLink;
+function OPNote(ADep: TPkgDependencyID): string;
+function OpmAddOrOpenDependency(ADep: TPkgDependencyID): Boolean;
+procedure OpmInstallPendingDependencies;
 
 implementation
 
@@ -459,7 +458,7 @@ begin
     // Assign relevant data to temp variables
     Flags:=aDep.Flags;
     MinVers.Assign(aDep.MinVersion);
-    MaxVers.Assign(aDep.MinVersion);
+    MaxVers.Assign(aDep.MaxVersion);
 
     // read minimum version
     if UseMinVersionCheckBox.Checked then begin

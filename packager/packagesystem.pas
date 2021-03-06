@@ -446,9 +446,8 @@ type
     procedure AddDependencyToPackage(APackage, RequiredPackage: TLazPackage);
     procedure RemoveDependencyFromPackage(APackage: TLazPackage;
                          Dependency: TPkgDependency; AddToRemovedList: boolean);
-    //procedure ChangeDependency(Dependency, NewDependency: TPkgDependency);
     function OpenDependency(Dependency: TPkgDependency;
-                            ShowAbort: boolean): TLoadPackageResult;
+                            ShowAbort: boolean; IgnorePackage: TLazPackage = nil): TLoadPackageResult;
     function FindAlternativeLPK(APackage: TLazPackage): string;
     procedure OpenInstalledDependency(Dependency: TPkgDependency;
                           InstallType: TPackageInstallType; var Quiet: boolean);
@@ -5757,21 +5756,9 @@ begin
   IncreaseBuildMacroChangeStamp;
   EndUpdate;
 end;
-{
-procedure TLazPackageGraph.ChangeDependency(Dependency, NewDependency: TPkgDependency);
-begin
-  if Dependency.Compare(NewDependency)=0 then exit;
-  BeginUpdate(true);
-  Dependency.Assign(NewDependency);
-  Dependency.LoadPackageResult:=lprUndefined;
-  IncreaseBuildMacroChangeStamp;
-  OpenDependency(Dependency,false);
-  DoDependencyChanged(Dependency);
-  EndUpdate;
-end;
-}
+
 function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
-  ShowAbort: boolean): TLoadPackageResult;
+  ShowAbort: boolean; IgnorePackage: TLazPackage): TLoadPackageResult;
 
   procedure OpenFile(AFilename: string);
   var
@@ -5808,7 +5795,7 @@ begin
     // search compatible package in opened packages
     ANode:=FindNodeOfDependency(Dependency,fpfSearchEverywhere);
     if (ANode<>nil) then begin
-      // there is already a package that fits name and version
+      // there is already a loaded package that fits name and version
       APackage:=TLazPackage(ANode.Data);
       Dependency.RequiredPackage:=APackage;
       Dependency.LoadPackageResult:=lprSuccess;
@@ -5831,12 +5818,12 @@ begin
       end;
     end;
     if Dependency.LoadPackageResult=lprUndefined then begin
-      // no compatible package yet open
+      // no compatible package open yet
       Dependency.RequiredPackage:=nil;
       Dependency.LoadPackageResult:=lprNotFound;
-      APackage:=FindPackageWithName(Dependency.PackageName,nil);
+      APackage:=FindPackageWithName(Dependency.PackageName,IgnorePackage);
       if APackage=nil then begin
-        // no package with same name open
+        // no compatible package with same name open
         if Dependency.DependencyType=pdtLazarus then begin
           // -> try package links
           IgnoreFiles:=nil;

@@ -323,6 +323,7 @@ type
     function WarnAboutMissingPackageFiles(APackage: TLazPackage): TModalResult;
     function AddPackageDependency(APackage: TLazPackage; const ReqPackage: string;
                                   OnlyTestIfPossible: boolean = false): TModalResult; override;
+    function ApplyDependency(CurDependency: TPkgDependency): TModalResult; override;
     function GetPackageOfEditorItem(Sender: TObject): TIDEPackage; override;
 
     // package compilation
@@ -5368,6 +5369,34 @@ begin
   finally
     NewDependency.Free;
   end;
+end;
+
+function TPkgManager.ApplyDependency(CurDependency: TPkgDependency
+  ): TModalResult;
+// apply
+var
+  OldPkg: TLazPackage;
+  PkgEdit: TPackageEditorForm;
+begin
+  Result:=mrOk;
+  OldPkg:=CurDependency.RequiredPackage;
+  if (OldPkg<>nil) and CurDependency.IsCompatible(OldPkg) then
+    exit(mrOk);
+
+  PkgEdit:=PackageEditors.FindEditor(OldPkg);
+  if PkgEdit<>nil then
+  begin
+    if PkgEdit.CanCloseEditor<>mrOk then
+      exit(mrCancel);
+  end;
+
+  // Try to load the package again. Min/max version may have changed.
+  CurDependency.LoadPackageResult := lprUndefined;
+  // This calls UpdateRequiredPackages from PackageGraph.OnEndUpdate,
+  //  and also updates all package editors which is useless here.
+  if PackageGraph.OpenDependency(CurDependency, False, OldPkg)<>lprSuccess then
+    Result:=mrCancel;
+  //fForcedFlags:=[pefNeedUpdateRequiredPkgs];
 end;
 
 function TPkgManager.GetPackageOfEditorItem(Sender: TObject): TIDEPackage;
