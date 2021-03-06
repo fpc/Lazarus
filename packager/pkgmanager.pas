@@ -3277,10 +3277,21 @@ function TPkgManager.OpenProjectDependencies(AProject: TProject;
 var
   BrokenDependencies: TFPList;
   OpmRes: TModalResult;
+  Dependency: TPkgDependency;
+  IgnorePackage: TLazPackage;
 begin
   Result := mrOk;
   OpmRes := mrOk;
-  PackageGraph.OpenRequiredDependencyList(AProject.FirstRequiredDependency);
+
+  Dependency:=AProject.FirstRequiredDependency;
+  while Dependency<>nil do begin
+    IgnorePackage:=PackageGraph.FindPackageWithName(Dependency.PackageName,nil);
+    if (IgnorePackage<>nil) and Dependency.IsCompatible(IgnorePackage) then
+      IgnorePackage:=nil;
+    PackageGraph.OpenDependency(Dependency,false,IgnorePackage);
+    Dependency:=Dependency.NextRequiresDependency;
+  end;
+
   if ReportMissing then begin
     BrokenDependencies := PackageGraph.FindAllBrokenDependencies(nil,
                                                AProject.FirstRequiredDependency);
