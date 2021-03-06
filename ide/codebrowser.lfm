@@ -8,6 +8,7 @@ object CodeBrowserView: TCodeBrowserView
   ClientHeight = 563
   ClientWidth = 645
   OnActivate = FormActivate
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
