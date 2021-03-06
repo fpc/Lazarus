@@ -1820,6 +1820,8 @@ begin
   if IsMasked and (not ReadOnly) then
   begin
     RealSetTextWhileMasked(FTextOnEnter);
+    FCursorPos := FFirstFreePos-1;
+    SetCursorPos;
   end;
 end;
 
