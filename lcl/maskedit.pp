@@ -181,13 +181,13 @@ const
     FRealMask        : String;            // Real mask inserted
     FMask            : TInternalMask;     // Actual internal mask
     FMaskLength      : Integer;           // Length of internal mask
-    FFirstFreePos    : Integer;           // First position where user can enter text
+    FFirstFreePos    : Integer;           // First position where user can enter text (it is 1-based, in contrast to FCursorPos. Maybe adjust this? BB)
     FMaskSave        : Boolean;           // Save mask as part of the data
     FTrimType        : TMaskEditTrimType; // Trim leading or trailing spaces in GetText
     FSpaceChar       : Char;              // Char for space (default '_')
     FCurrentText     : TCaption;          // FCurrentText is our backup. See notes above!
     FTextOnEnter     : String;            // Text when user enters the control, used for Reset()
-    FCursorPos       : Integer;           // Current caret position
+    FCursorPos       : Integer;           // Current caret position (so it is zero-based)
     FChangeAllowed   : Boolean;           // We do not allow text changes by the OS (cut/clear via context menu)
     FInitialText     : String;            // Text set in the formdesigner (must be handled in Loaded)
     FInitialMask     : String;            // EditMask set in the formdesigner (must be handled in Loaded)
