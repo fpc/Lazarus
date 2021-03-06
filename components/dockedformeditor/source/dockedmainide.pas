@@ -327,8 +327,10 @@ class procedure TDockedMainIDE.WindowCreate(Sender: TObject);
 var
   LSourceEditorWindow: TSourceEditorWindowInterface;
 begin
+  if not (Sender is TSourceEditorWindowInterface) then Exit;
   if Sender.ClassNameIs('TSourceNotebook') then
   begin
+    {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.WindowCreate SourceEditor created'); {$ENDIF}
     LSourceEditorWindow := Sender as TSourceEditorWindowInterface;
     SourceEditorWindows.Add(TSourceEditorWindow.Create(LSourceEditorWindow));
   end;
@@ -338,6 +340,8 @@ class procedure TDockedMainIDE.WindowDestroy(Sender: TObject);
 var
   LDesignForm: TDesignForm;
 begin
+  if not (Sender is TSourceEditorWindowInterface) then Exit;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.WindowDestroy'); {$ENDIF}
   for LDesignForm in DesignForms do
     if LDesignForm.LastActiveSourceWindow = Sender then
       LDesignForm.LastActiveSourceWindow := nil;
@@ -351,6 +355,7 @@ var
   LSourceEditorWindow: TSourceEditorWindow;
   LDesignForm: TDesignForm;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.WindowHide'); {$ENDIF}
   LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[Sender as TSourceEditorWindowInterface];
   if not Assigned(LSourceEditorWindow) or (LSourceEditorWindow.ActiveDesignForm = nil) then
     Exit;
@@ -363,6 +368,7 @@ var
   LSourceEditorWindow: TSourceEditorWindow;
   LDesignForm: TDesignForm;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.WindowShow'); {$ENDIF}
   LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[Sender as TSourceEditorWindowInterface];
   if not Assigned(LSourceEditorWindow) or (LSourceEditorWindow.ActiveDesignForm = nil) then
     Exit;
@@ -410,6 +416,7 @@ var
 begin
   if Sender is TSourceEditorInterface then
   begin
+    {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorActivated');{$ENDIF}
     LSourceEditor := TSourceEditorInterface(Sender);
     // if we create directly new project then Activate is called without EditorCreate...
     if not (LSourceEditor.EditorControl.Parent.Parent is TModulePageControl) then
@@ -486,6 +493,7 @@ var
   LParent: TWinControl;
   LPageCtrl: TModulePageControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorCreate'); {$ENDIF}
   LSourceEditor := Sender as TSourceEditorInterface;
   if LSourceEditor.EditorControl.Parent.Parent is TModulePageControl then Exit;
   LParent := LSourceEditor.EditorControl.Parent;
@@ -505,6 +513,7 @@ var
   LSourceEditorWindow: TSourceEditorWindow;
   LDesignForm: TDesignForm;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorDestroyed'); {$ENDIF}
   // sender is here as special parameter, because is possible situation where is moved editor
   // to another window and was not triggered EditorDestroy - for more info goto editoractivate
   if Sender = nil then
@@ -551,6 +560,7 @@ var
   LDesignForm: TDesignForm;
   LPageCtrl: TModulePageControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.TabChange'); {$ENDIF}
   // activate proper source editor window when user is clicking on page.
   // (at clicking time can be active other source window)
   LActiveSourceWindowInterface := TComponent(Sender).Owner as TSourceEditorWindowInterface;
@@ -590,6 +600,7 @@ var
   LPageCtrl: TModulePageControl;
   LResizer: TResizer;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.GlobalSNOnChangeBounds'); {$ENDIF}
   // Check parent. Maybe is different? If yes then window changed state (docked/undocked) and we need to perform few actions
   LSourceEditorWindowInterface := Sender as TSourceEditorWindowInterface;
 
@@ -623,6 +634,7 @@ var
   LSourceEditorWindow: TSourceEditorWindow;
   LSourceEditorInterface: TSourceEditorInterface;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnShowDesignerForm'); {$ENDIF}
   LDesignForm := DesignForms.Find(TCustomForm(Sender).Designer);
   if (LDesignForm = nil) or LDesignForm.Hiding then Exit;
   LPageCtrl := SourceEditorWindows.FindModulePageControl(SourceEditorManagerIntf.ActiveEditor);
@@ -646,6 +658,7 @@ end;
 
 class procedure TDockedMainIDE.OnShowSrcEditor(Sender: TObject);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnShowSrcEditor'); {$ENDIF}
   DockedTabMaster.ShowCode(Sender as TSourceEditorInterface);
 end;
 
@@ -656,6 +669,7 @@ var
   LSourceEditorWindowInterface: TSourceEditorWindowInterface;
   i: Integer;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignShowMethod'); {$ENDIF}
   if FormEditingHook = nil then Exit;
   LDesignForm := DesignForms.Find(FormEditingHook.GetCurrentDesigner);
   if LDesignForm = nil then Exit;
@@ -706,6 +720,7 @@ var
   end;
 
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignRefreshPropertyValues'); {$ENDIF}
   if not (GlobalDesignHook.LookupRoot is TCustomFrame)
   and not (GlobalDesignHook.LookupRoot is TCustomForm) then Exit;
 
@@ -719,6 +734,7 @@ class procedure TDockedMainIDE.OnDesignModified(Sender: TObject);
 var
   LPageCtrl: TModulePageControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignModified'); {$ENDIF}
   LPageCtrl := GetCurrentPageControl;
   if not Assigned(LPageCtrl) then Exit;
   if not Assigned(LPageCtrl.Resizer) then Exit;
@@ -727,11 +743,13 @@ end;
 
 class procedure TDockedMainIDE.OnDesignPersistentAdded(APersistent: TPersistent; Select: Boolean);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignPersistentAdded'); {$ENDIF}
   OnDesignModified(nil);
 end;
 
 class procedure TDockedMainIDE.OnDesignPersistentDeleted(APersistent: TPersistent);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignPersistentDeleted'); {$ENDIF}
   OnDesignModified(nil);
 end;
 
@@ -740,6 +758,7 @@ class procedure TDockedMainIDE.OnDesignMouseDown(Sender: TObject;
 var
   LPageCtrl: TModulePageControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} writeln('TDockedMainIDE.OnDesignMouseDown'); {$ENDIF}
   LPageCtrl := GetCurrentPageControl;
   if not Assigned(LPageCtrl) then Exit;
   LPageCtrl.DesignerSetFocus;
@@ -751,6 +770,7 @@ var
   LDesignForm: TDesignForm;
   LSelectedControl: TControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.OnDesignSetSelection'); {$ENDIF}
   LDesignForm := DesignForms.Find(FormEditingHook.GetCurrentDesigner);
   if LDesignForm = nil then Exit;
   if (ASelection.Count = 1) and (ASelection[0] is TControl) then
