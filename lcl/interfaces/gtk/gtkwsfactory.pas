@@ -97,6 +97,7 @@ function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
 // ShellCtrls
 function RegisterCustomShellTreeView: Boolean;
+function RegisterCustomShellListView: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -617,6 +618,11 @@ end;
 
 // ShellCtrls
 function RegisterCustomShellTreeView: Boolean; alias : 'WSRegisterCustomShellTreeView';
+begin
+  Result := False;
+end;
+
+function RegisterCustomShellListView: Boolean; alias : 'WSRegisterCustomShellListView';
 begin
   Result := False;
 end;

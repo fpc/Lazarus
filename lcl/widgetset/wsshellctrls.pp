@@ -42,13 +42,13 @@ uses
 ////////////////////////////////////////////////////
   ShellCtrls, ComCtrls,
 ////////////////////////////////////////////////////
-  WSControls, WSFactory, WSLCLClasses;
+  WSControls, WSFactory, WSLCLClasses, WSComCtrls;
 
 type
 
   { TWSCustomShellTreeView }
 
-  TWSCustomShellTreeView = class(TWSCustomControl)
+  TWSCustomShellTreeView = class(TWSCustomTreeView)
   published
     class function DrawBuiltInIcon(ATreeView: TCustomShellTreeView;
       ANode: TTreeNode; ARect: TRect): TSize; virtual;
@@ -56,7 +56,18 @@ type
   end;
   TWSCustomShellTreeViewClass = class of TWSCustomShellTreeView;
 
+  { TWSCustomShellListView }
+
+  TWSCustomShellListView = class(TWSCustomListView)
+  published
+    class function GetBuiltInImageIndex(AListView: TCustomShellListView;
+      const AFileName: String; ALargeImage: Boolean): Integer; virtual;
+  end;
+  TWSCustomShellListViewClass = class of TWSCustomShellListView;
+
 procedure RegisterCustomShellTreeView;
+procedure RegisterCustomShellListView;
+
 
 implementation
 
@@ -78,13 +89,38 @@ begin
   Result.CY := 0;
 end;
 
+
+{ TWSCustomShellListView }
+
+class function TWSCustomShellListView.GetBuiltInImageIndex(
+  AListView: TCustomShellListView; const AFileName: String;
+  ALargeImage: Boolean): Integer;
+begin
+  Result := -1;
+end;
+
+
+{ Registration }
+
 procedure RegisterCustomShellTreeView;
 const
   Done: Boolean = False;
 begin
   if Done then exit;
+  //WSRegisterCustomShellTreeView;
   if not WSRegisterCustomShellTreeView then
     RegisterWSComponent(TCustomShellTreeView, TWSCustomShellTreeView);
+  Done := True;
+end;
+
+procedure RegisterCustomShellListView;
+const
+  Done: Boolean = False;
+begin
+  if Done then exit;
+//  WSRegisterCustomShellListView;
+  if not WSRegisterCustomShellListView then
+    RegisterWSComponent(TCustomShellListView, TWSCustomShellListView);
   Done := True;
 end;
 

@@ -213,6 +213,7 @@ type
     FObjectTypes: TObjectTypes;
     FRoot: string;
     FShellTreeView: TCustomShellTreeView;
+    FUseBuiltInIcons: Boolean;
     FOnAddItem: TAddItemEvent;
     FOnFileAdded: TCSLVFileAddedEvent;
     { Setters and getters }
@@ -222,9 +223,11 @@ type
     procedure SetRoot(const Value: string);
   protected
     { Methods specific to Lazarus }
+    class procedure WSRegisterClass; override;
     procedure PopulateWithRoot();
     procedure Resize; override;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
+    function GetBuiltinImageIndex(const AFileName: String; ALargeImage: Boolean): Integer;
     property OnFileAdded: TCSLVFileAddedEvent read FOnFileAdded write FOnFileAdded;
   public
     { Basic methods }
@@ -238,6 +241,7 @@ type
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
     property Root: string read FRoot write SetRoot;
     property ShellTreeView: TCustomShellTreeView read FShellTreeView write SetShellTreeView;
+    property UseBuiltInIcons: Boolean read FUseBuiltinIcons write FUseBuiltInIcons default true;
     property OnAddItem: TAddItemEvent read FOnAddItem write FOnAddItem;
     { Protected properties which users may want to access, see bug 15374 }
     property Items;
@@ -1457,6 +1461,8 @@ constructor TCustomShellListView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
+  FUseBuiltInIcons := true;
+
   // Initial property values
   ViewStyle := vsReport;
   ObjectTypes := [otNonFolders];
@@ -1476,6 +1482,14 @@ destructor TCustomShellListView.Destroy;
 begin
   ShellTreeView := nil;
   inherited Destroy;
+end;
+
+function TCustomShellListView.GetBuiltinImageIndex(const AFileName: String;
+  ALargeImage: Boolean): Integer;
+begin
+  Result := TWSCustomShellListViewClass(WidgetsetClass).GetBuiltInImageIndex(
+    self, AFileName, ALargeImage
+  );
 end;
 
 procedure TCustomShellListView.PopulateWithRoot();
@@ -1522,6 +1536,14 @@ begin
           NewItem.SubItems.Add(Format(sShellCtrlsMB, [IntToStr(CurFileSize div (1024 * 1024))]));
         // Third column - Type
         NewItem.SubItems.Add(ExtractFileExt(CurFileName));
+        // Image index
+        if FUseBuiltInIcons then
+        begin
+          if (ViewStyle = vsIcon) and (LargeImages = nil) then
+            NewItem.ImageIndex := GetBuiltInImageIndex(CurFilePath, true)
+          else if (ViewStyle <> vsIcon) and (SmallImages = nil) then
+            NewItem.ImageIndex := GetBuiltinImageIndex(CurFilePath, false);
+        end;
         if Assigned(FOnFileAdded) then FOnFileAdded(Self,NewItem);
       end;
     end;
@@ -1577,6 +1599,12 @@ end;
 function TCustomShellListView.GetPathFromItem(ANode: TListItem): string;
 begin
   Result := IncludeTrailingPathDelimiter(FRoot) + ANode.Caption;
+end;
+
+class procedure TCustomShellListView.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomShellListView;
 end;
 
 procedure Register;

@@ -124,6 +124,7 @@ function WSRegisterCustomFloatSpinEdit: Boolean;external name 'WSRegisterCustomF
 function WSRegisterCustomRubberBand: Boolean;   external name 'WSRegisterCustomRubberBand';
 // ShellCtrls
 function WSRegisterCustomShellTreeView: Boolean; external name 'WSRegisterCustomShellTreeView';
+function WSRegisterCustomShellListView: Boolean; external name 'WSRegisterCustomShellListView';
 // LazDeviceAPIs
 function WSRegisterLazDeviceAPIs: Boolean;   external name 'WSRegisterLazDeviceAPIs';
 

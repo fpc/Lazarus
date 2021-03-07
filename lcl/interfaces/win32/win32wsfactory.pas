@@ -96,6 +96,7 @@ function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
 // ShellCtrls
 function RegisterCustomShellTreeView: Boolean;
+function RegisterCustomShellListView: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -563,6 +564,12 @@ end;
 function RegisterCustomShellTreeView: Boolean; alias : 'WSRegisterCustomShellTreeView';
 begin
   RegisterWSComponent(TCustomShellTreeView, TWin32WSCustomShellTreeView);
+  Result := True;
+end;
+
+function RegisterCustomShellListView: Boolean; alias : 'WSRegisterCustomShellListView';
+begin
+  RegisterWSComponent(TCustomShellListView, TWin32WSCustomShellListView);
   Result := True;
 end;
 

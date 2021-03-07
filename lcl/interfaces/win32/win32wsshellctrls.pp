@@ -41,6 +41,12 @@ type
     class function GetBuiltinIconSize: TSize; override;
   end;
 
+  { TWin32WSCustomShellListView }
+  TWin32WSCustomShellListView = class(TWSCustomShellListView)
+  published
+    class function GetBuiltInImageIndex(AListView: TCustomShellListView;
+      const AFileName: String; ALargeImage: Boolean): Integer; override;
+  end;
 
 implementation
 
@@ -101,5 +107,41 @@ begin
     Result := ShellIconSize;
 end;
 
+
+{ TWin32WSCustomShellListView }
+
+class function TWin32WSCustomShellListView.GetBuiltInImageIndex(
+  AListView: TCustomShellListView; const AFileName: String;
+  ALargeImage: Boolean): Integer;
+var
+  fullName: WideString;
+  info: TSHFILEINFOW;
+  sysImageHandle: DWORD_PTR;
+  listHandle: HWND;
+  flags: DWord;
+  lvsil: LongInt;
+begin
+  Result := -1;
+  fullName := WideString(AFileName);
+  if ALargeImage then begin
+    flags := SHGFI_LARGEICON or SHGFI_SYSICONINDEX;
+    lvsil := LVSIL_NORMAL;
+  end else
+  begin
+    flags := SHGFI_SMALLICON or SHGFI_SYSICONINDEX;
+    lvsil := LVSIL_SMALL;
+  end;
+  sysImageHandle := SHGetFileInfoW(PWideChar(fullName), 0, info, SizeOf(info), flags);
+  if sysImageHandle = 0 then
+    Exit;
+  listHandle := AListView.Handle;
+  if ListView_GetImageList(ListHandle, lvsil) = 0 then
+  begin
+    SetWindowLong(listHandle, GWL_STYLE,
+      GetWindowLong(listHandle, GWL_STYLE) or LVS_SHAREIMAGELISTS);
+    ListView_SetImageList(listHandle, sysImageHandle, lvsil);
+  end;
+  Result := info.iIcon;
+end;
 
 end.
