@@ -1871,7 +1871,7 @@ var
     Assert(APersistent=nil, 'GetDefinePersistent: APersistent is assigned.');
 
     // try to find the AClassName in the registered components
-    //if APersistent=nil then begin
+    if APersistent=nil then begin
       CacheItem.RegisteredComponent:=IDEComponentPalette.FindRegComponent(AClassName);
       if (CacheItem.RegisteredComponent<>nil)
       and (CacheItem.RegisteredComponent.ComponentClass<>nil) then begin
@@ -1879,19 +1879,19 @@ var
         if not CreateTempPersistent(CacheItem.RegisteredComponent.ComponentClass)
         then exit;
       end;
-    //end;
+    end;
     
     // try to find the AClassName in the registered TPersistent classes
-    //if APersistent=nil then begin
+    if APersistent=nil then begin
       APersistentClass:=Classes.GetClass(AClassName);
       if APersistentClass<>nil then begin
         //debugln('TCustomFormEditor.FindDefineProperty PersistentClass ',AClassName,' is registered');
         Assert(APersistent=nil, 'GetDefinePersistent: APersistent is assigned.');
         if not CreateTempPersistent(APersistentClass) then exit;
       end;
-    //end;
+    end;
 
-    //if APersistent=nil then begin
+    if APersistent=nil then begin
       // try to find the AClassName in the open forms/datamodules
       Assert(APersistent=nil, 'GetDefinePersistent: APersistent is assigned.');
       APersistent:=FindJITComponentByClassName(AClassName);
@@ -1899,7 +1899,7 @@ var
         debugln('TCustomFormEditor.FindDefineProperty ComponentClass ',
           AClassName,' is a resource,'
           +' but inheriting design properties is not yet implemented');
-    //end;
+    end;
 
     // try default classes
     if (APersistent=nil) then begin
@@ -1935,7 +1935,7 @@ begin
       if not GetDefinePersistent(AncestorClassName) then exit;
 
     if APersistent<>nil then begin
-      //debugln('TCustomFormEditor.FindDefineProperty Getting define properties for ',APersistent.ClassName);
+      debugln('Info: (lazarus) TCustomFormEditor.FindDefineProperty Getting define properties for ',APersistent.ClassName);
 
       // try creating a component class and call DefineProperties
       DefinePropertiesReader:=nil;
@@ -1947,7 +1947,7 @@ begin
           DefinePropertiesPersistent.PublicDefineProperties(DefinePropertiesReader);
         except
           on E: Exception do begin
-            DbgOut('TCustomFormEditor.FindDefineProperty Error calling DefineProperties for ');
+            DbgOut('Warning: (lazarus) TCustomFormEditor.FindDefineProperty Error calling DefineProperties for ');
             if (CacheItem.RegisteredComponent<>nil) then begin
               DbgOut(CacheItem.RegisteredComponent.ComponentClass.Classname);
             end;
@@ -1961,7 +1961,7 @@ begin
             APersistent.Free;
           except
             on E: Exception do begin
-              debugln('TCustomFormEditor.FindDefineProperty Error freeing ',
+              debugln('Warning: (lazarus) TCustomFormEditor.FindDefineProperty Error freeing ',
                 OldClassName,': ',E.Message);
             end;
           end;
@@ -1972,14 +1972,14 @@ begin
         and (DefinePropertiesReader.DefinePropertyNames<>nil) then begin
           CacheItem.DefineProperties:=TStringListUTF8Fast.Create;
           CacheItem.DefineProperties.Assign(DefinePropertiesReader.DefinePropertyNames);
-          debugln('TCustomFormEditor.FindDefineProperty Class=',APersistentClassName,
+          debugln('Info: (lazarus) TCustomFormEditor.FindDefineProperty Class=',APersistentClassName,
             ' DefineProps="',CacheItem.DefineProperties.Text,'"');
         end;
         DefinePropertiesReader.Free;
         DefinePropertiesPersistent.Free;
       end;
     end else begin
-      debugln('TCustomFormEditor.FindDefineProperty Persistent is NOT registered');
+      debugln('Info: (lazarus) TCustomFormEditor.FindDefineProperty Persistent is NOT registered');
     end;
     //debugln('TCustomFormEditor.FindDefineProperty END APersistentClassName="',APersistentClassName,'" AncestorClassName="',AncestorClassName,'"');
   end else begin
