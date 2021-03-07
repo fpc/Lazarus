@@ -6476,16 +6476,14 @@ begin
 end;
 
 function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
-  const aComponentClassName: string;
-  OpenFlags: TOpenFlags;
+  const aComponentClassName: string; OpenFlags: TOpenFlags;
   out AncestorClass: TComponentClass;
   out AncestorUnitInfo: TUnitInfo): TModalResult;
 var
-  AncestorClassName, IgnoreBtnText: String;
+  AncsClsName, S: String;
   CodeBuf: TCodeBuffer;
   GrandAncestorClass, DefAncestorClass: TComponentClass;
 begin
-  AncestorClassName:='';
   AncestorClass:=nil;
   AncestorUnitInfo:=nil;
 
@@ -6496,22 +6494,22 @@ begin
     if Result<>mrOk then exit;
     AnUnitInfo.Source:=CodeBuf;
   end;
-  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,aComponentClassName,
-                                       AncestorClassName,true)
-  then begin
-    DebugLn('LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" ClassName=',aComponentClassName,'. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
-  end;
 
-  // try the base designer classes
-  if not FindBaseComponentClass(AnUnitInfo,AncestorClassName,
-    aComponentClassName,AncestorClass) then
-  begin
-    DebugLn(['LoadAncestorDependencyHidden FindUnitComponentClass failed for AncestorClassName=',AncestorClassName]);
-    exit(mrCancel);
-  end;
+  S:=aComponentClassName;
+  repeat
+    if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,S,AncsClsName,true) then
+      DebugLn('LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" ClassName=',aComponentClassName,
+              '. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
+    // try the base designer classes
+    if not FindBaseComponentClass(AnUnitInfo,AncsClsName,S,AncestorClass) then
+    begin
+      DebugLn(['LoadAncestorDependencyHidden FindUnitComponentClass failed for AncsClsName=',AncsClsName]);
+      exit(mrCancel);
+    end;
+    S:=AncsClsName;
+  until Assigned(AncestorClass);
 
   // try loading the ancestor first (unit, lfm and component instance)
-
   if AnUnitInfo.UnitResourceFileformat<>nil then
     DefAncestorClass:=AnUnitInfo.UnitResourceFileformat.DefaultComponentClass
   else
@@ -6521,13 +6519,11 @@ begin
     DefAncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
 
   if (AncestorClass=nil) then begin
-    IgnoreBtnText:='';
+    S:='';
     if DefAncestorClass<>nil then
-      IgnoreBtnText:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]);
-
-    Result:=LoadComponentDependencyHidden(AnUnitInfo,AncestorClassName,
-             OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,
-             IgnoreBtnText);
+      S:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]);
+    Result:=LoadComponentDependencyHidden(AnUnitInfo,AncsClsName,OpenFlags,
+                      false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,S);
     if Result<>mrOk then begin
       DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed AnUnitInfo=',AnUnitInfo.Filename]);
     end;
@@ -6543,7 +6539,7 @@ begin
     end;
   end;
 
-  //DebugLn('LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClassName=',AncestorClassName,' AncestorClass=',dbgsName(AncestorClass));
+  //DebugLn('LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncsClsName=',AncsClsName,' AncestorClass=',dbgsName(AncestorClass));
   if AncestorClass=nil then
     AncestorClass:=DefAncestorClass;
   Result:=mrOk;
