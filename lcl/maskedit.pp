@@ -1379,7 +1379,7 @@ begin
     if HasExtSelection then
     begin
       DeleteSelected;
-      if IsLiteral(FCursorPos) then
+      if IsLiteral(FCursorPos+1) then
         SelectNextChar;
     end
     else
