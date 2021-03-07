@@ -6155,7 +6155,8 @@ begin
         end;
         {$ENDIF}
 
-        AnUnitInfo.ResourceBaseClass:=GetComponentBaseClass(NewComponent.ClassType);
+        if NewComponent<>nil then
+          AnUnitInfo.ResourceBaseClass:=GetComponentBaseClass(NewComponent.ClassType);
 
         Project1.InvalidateUnitComponentDesignerDependencies;
         AnUnitInfo.Component:=NewComponent;
