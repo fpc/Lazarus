@@ -6446,29 +6446,28 @@ begin
     if AComponentClass<>nil then
       exit(true);
   end;
-  if AComponentClassName<>'' then begin
-    if (DescendantClassName<>'')
-    and (SysUtils.CompareText(AComponentClassName,'TCustomForm')=0) then begin
-      // this is a common user mistake
-      IDEMessageDialog(lisCodeTemplError,
-        Format(lisTheResourceClassDescendsFromProbablyThisIsATypoFor,
-               [DescendantClassName, AComponentClassName]),
-        mtError,[mbCancel]);
-      Result:=false;
-      exit;
-    end else if (DescendantClassName<>'')
-    and (SysUtils.CompareText(AComponentClassName,'TComponent')=0) then begin
-      // this is not yet implemented
-      IDEMessageDialog(lisCodeTemplError,
-        Format(lisUnableToOpenDesignerTheClassDoesNotDescendFromADes,
-               [LineEnding, DescendantClassName]),
-        mtError,[mbCancel]);
-      Result:=false;
-      exit;
-    end else begin
-      // search in the registered base classes
-      AComponentClass:=FormEditor1.FindDesignerBaseClassByName(AComponentClassName,true);
+  if AComponentClassName<>'' then
+  begin
+    if DescendantClassName<>'' then begin
+      if CompareText(AComponentClassName,'TCustomForm')=0 then begin
+        // this is a common user mistake
+        IDEMessageDialog(lisCodeTemplError,
+                      Format(lisTheResourceClassDescendsFromProbablyThisIsATypoFor,
+                             [DescendantClassName, AComponentClassName]),
+                      mtError,[mbCancel]);
+        exit(false);
+      end
+      else if CompareText(AComponentClassName,'TComponent')=0 then begin
+        // this is not yet implemented
+        IDEMessageDialog(lisCodeTemplError,
+                      Format(lisUnableToOpenDesignerTheClassDoesNotDescendFromADes,
+                             [LineEnding, DescendantClassName]),
+                      mtError,[mbCancel]);
+        exit(false);
+      end;
     end;
+    // search in the registered base classes
+    AComponentClass:=FormEditor1.FindDesignerBaseClassByName(AComponentClassName,true);
   end else begin
     // default is TForm
     AComponentClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
@@ -6863,7 +6862,6 @@ var
       {$ENDIF}
       exit;
     end;
-    AncestorClassName:='';
     Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
     if Code=nil then begin
       debugln(['FindComponentClass unable to load ',AnUnitInfo.Filename]);

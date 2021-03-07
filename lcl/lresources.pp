@@ -2076,14 +2076,14 @@ begin
     - LFMComponentName is the second word
     - LFMClassName is the fourth token
   }
-  
+
   // read first word => LFMType
   p:=1;
   while (p<=length(LFMSource))
   and (LFMSource[p] in ['a'..'z','A'..'Z','0'..'9','_']) do
     inc(p);
   LFMType:=copy(LFMSource,1,p-1);
-  
+
   // read second word => LFMComponentName
   while (p<=length(LFMSource)) and (LFMSource[p] in [' ',#9]) do inc(p);
   StartPos:=p;

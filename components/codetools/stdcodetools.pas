@@ -220,7 +220,7 @@ type
           const NewFormName, NewFormClassName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function FindFormAncestor(const AClassName: string;
-          var AncestorClassName: string): boolean;
+          out AncestorClassName: string): boolean;
 
     // published variables
     function FindPublishedVariable(const AClassName, AVarName: string;
@@ -3097,7 +3097,7 @@ begin
 end;
 
 function TStandardCodeTool.FindFormAncestor(const AClassName: string;
-  var AncestorClassName: string): boolean;
+  out AncestorClassName: string): boolean;
 var
   ClassNode: TCodeTreeNode;
 begin

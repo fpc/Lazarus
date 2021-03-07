@@ -819,7 +819,7 @@ type
       const OldFormName, OldFormClassName: string;
       const NewFormName, NewFormClassName: string): boolean;
     function FindFormAncestor(Code: TCodeBuffer; const FormClassName: string;
-      var AncestorClassName: string; DirtySearch: boolean): boolean;
+      out AncestorClassName: string; DirtySearch: boolean): boolean;
 
     // form components
     function CompleteComponent(Code: TCodeBuffer;
@@ -5698,7 +5698,7 @@ begin
 end;
 
 function TCodeToolManager.FindFormAncestor(Code: TCodeBuffer;
-  const FormClassName: string; var AncestorClassName: string;
+  const FormClassName: string; out AncestorClassName: string;
   DirtySearch: boolean): boolean;
 begin
   Result:=false;
