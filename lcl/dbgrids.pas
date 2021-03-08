@@ -166,7 +166,6 @@ type
     FList: TFPList; // list of TBookmark
     FGrid: TCustomDbGrid;
     FDataset: TDataset;
-    FUseCompareBookmarks: boolean;
     FCanDoBinarySearch: boolean;
     function GetCount: integer;
     function GetCurrentRowSelected: boolean;
@@ -4630,13 +4629,6 @@ begin
 
   // Note.
   //
-  // Some dataset descendants do not implement CompareBookmarks, for these we
-  // use MyCompareBookmarks in the hope the allocated bookmark memory is used
-  // to hold some kind of record index.
-  FUseCompareBookmarks := TMethod(@FDataset.CompareBookmarks).Code<>pointer(@TDataset.CompareBookmarks);
-
-  // Note.
-  //
   // fpc help say CompareBookmarks should return -1, 0 or 1 ... which imply that
   // bookmarks should be a sorted array (or list). In this scenario binary search
   // is the prefered method for finding a bookmark.
@@ -4731,22 +4723,6 @@ type
   TDs=class(TDataset)
   end;
 
-function MyCompareBookmarks(ds:Tdataset; b1,b2:pointer): Integer;
-begin
-  if b1=b2 then
-    result := 0
-  else
-  if b1=nil then
-    result := 1
-  else
-  if b2=nil then
-    result := -1
-  else begin
-    // Note: Tds(ds).bookmarksize is set at creation of TDataSet and does not change
-    result := CompareMemRange(b1,b2,Tds(ds).bookmarksize);
-  end;
-end;
-
 function TBookmarkList.Find(const Item: TBookmark; var AIndex: Integer): boolean;
 var
   L, R, I: Integer;
@@ -4759,10 +4735,7 @@ var
     while (L <= R) do
     begin
       I := L + (R - L) div 2;
-      if FUseCompareBookmarks then
-        CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]))
-      else
-        CompareRes := MyCompareBookmarks(FDataset, pointer(Item), FList[I]);
+      CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
       if (CompareRes > 0) then
         L := I + 1
       else
@@ -4783,10 +4756,7 @@ var
     AIndex := 0;
     i := 0;
     while i<FList.Count do begin
-      if FUseCompareBookmarks then
-        CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]))
-      else
-        CompareRes := MyCompareBookmarks(FDataset, pointer(Item), FList[I]);
+      CompareRes := FDataset.CompareBookmarks(Item, TBookmark(FList[I]));
       if CompareRes=0 then begin
         result := true;
         AIndex := i;
