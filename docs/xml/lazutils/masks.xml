@@ -70,8 +70,26 @@
         <descr/>
         <seealso/>
       </element>
+
+      <element name="EMaskError">
+        <short>Exception raised for an invalid character in TMask</short>
+        <descr>
+          <p>
+            <var>EMaskError</var> is a <var>EConvertError</var> descendant representing the exception raised when an invalid character is found in a value passed to the  <var>TMask.Create</var> constructor.
+          </p>
+          <p>
+            Mask specifications in TMask are limited to the single-byte code points in the UTF-8 character set. EMaskError is raised when a value with a muti-byte code point is encountered.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMask.Create"/>
+          <link id="#rtl.sysutils.EConvertError">EConvertError</link>
+          <link id="#lazutils.lazutilsstrconsts.lrsInvalidCharSet">lrsInvalidCharSet</link>
+        </seealso>
+      </element>
+
       <element name="TMaskChar">
-        <short>Represent details for mask character types in  the TMaskCharType enumeration</short>
+        <short>Represents details for mask character types in the TMaskCharType enumeration</short>
         <descr>
           <p>
             <var>TMaskChar</var> is a variant record type with members used to represent details for mask character types in the <var>TMaskCharType</var> enumeration. TMaskChar is used to implement the <var>Chars</var> member in the <var>TMaskString</var> record type.
@@ -131,20 +149,21 @@
         <descr/>
         <seealso/>
       </element>
+
       <element name="TMask">
         <short>The TMask class represents a mask and performs comparisons</short>
         <descr>
           <p>
-            A mask is a comparison pattern built using wildcards, sets and/or literal characters.
+            A mask is a comparison pattern built using wildcards, sets and/or literal characters. The mask is limited to the single-byte code points in the UTF-8 encoding. Using multi-byte code points in TMask causes an <var>EMaskError</var> exception to be raised.
           </p>
           <p>
             Each <b>literal character</b> must match a single character in the string. Case sensitivity requires the value <link id="TMaskOption">moCaseSensitive</link> in the options passed to the constructor.
           </p>
           <p>
-            A <b>set</b> starts with "<b>[</b>" and ends with "<b>]</b>". Each element of a set is a literal character and or a range. A range is defined as first-last literal character. One character of a set must match a single character in the string. A set [!...] matches if the character is not in the set. The option value <link id="TMaskOption">moDisableSets</link> passed to the constructor disables set processing.
+            A <b>set</b> starts with "<b>[</b>" and ends with "<b>]</b>". Each element of a set is a literal character and or a range. A range is defined as a first-to-last literal character string. One character of a set must match a single character in the string. A set [!...] matches if the character is not in the set. The option value <link id="TMaskOption">moDisableSets</link> passed to the constructor disables set processing.
           </p>
           <p>
-            <b>Wildcards</b> are the * and ? characters. An asterisk matches any number of characters. A question mark matches a single character.
+            <b>Wildcards</b> are the <b>*</b> and <b>?</b> characters. An asterisk matches any number of characters. A question mark matches a single character.
           </p>
           <p>
             For example: 'Hello world' matches to the mask 'H?ll[xoy] w*d'.
@@ -152,8 +171,22 @@
         </descr>
         <seealso>
           <link id="MasksOverview"/>
+          <link id="EMaskError"/>
         </seealso>
       </element>
+
+      <element name="TMask.FMask"/>
+      <element name="TMask.FInitialMask"/>
+      <element name="TMask.FOptions"/>
+
+      <element name="TMask.InitMaskString">
+        <short>Initializes the internal TMaskString instance used in the class</short>
+      </element>
+
+      <element name="TMask.ClearMaskString">
+        <short>Frees resources allocated in the internal TMaskString instance</short>
+      </element>
+
       <element name="TMask.Create">
         <short>Constructor for the class instance</short>
         <descr>
@@ -161,7 +194,7 @@
             <var>Create</var> is the overloaded constructor for the class instance. Overloaded variants are provided with parameter values that are used to configure the class instance.
           </p>
           <p>
-            <var>AValue</var> contain the mask value compared to a given file name in the method for the class.
+            <var>AValue</var> contains the pattern compared to a given file name in methods for the class. While defined as a <var>String</var> type, AValue is limited to the single-byte code points in the UTF-8 encoding. Using a multi-byte UTF-8 code point in AValue causes an <var>EMaskError</var> exception to be raised.
           </p>
           <p>
             Each UTF-8 code point in AValue is examined, and the internal TMaskString is updated to reflect how the mask character is applied. For example:
@@ -183,7 +216,7 @@
             <var>AOptions</var> contains zero or more TMaskOption values which enable or disable features in the methods for the class instance.
           </p>
           <p>
-            Create calls the <var>InitMaskString</var> method to initial the internal <var>TMaskString</var> instance used in the class.
+            Create calls the private <var>InitMaskString</var> method to initialize the internal <var>TMaskString</var> instance used in the class.
           </p>
           <remark>
             The overloaded variant which does not have an AOptions parameter has been deprecated. It will be removed in a future Lazarus version.
@@ -193,6 +226,8 @@
           <link id="TMaskString"/>
           <link id="TMaskOptions"/>
           <link id="TMaskOption"/>
+          <link id="EMaskError"/>
+          <link id="#lazutils.lazutilsstrconsts.lrsInvalidCharSet">lrsInvalidCharSet</link>
         </seealso>
       </element>
       <element name="TMask.Create.AValue">

@@ -444,9 +444,7 @@
 
       <!--
 
-      <element name="TCustomShellTreeView.FBuiltinIconSize">
-        <descr>Defined for the Windows platform only.</descr>
-      </element>
+      The code is stil a Work-In-Progress, and these items were reverted. I expect they will return at some point - so these topics are commented instead of deleted.
 
       <element name="TCustomShellTreeView.DrawBuiltInIcon">
         <short>Draws the Shell Icon for the specified tree node</short>
@@ -953,6 +951,7 @@
       <element name="TCustomShellListView.FObjectTypes"/>
       <element name="TCustomShellListView.FRoot"/>
       <element name="TCustomShellListView.FShellTreeView"/>
+      <element name="TCustomShellListView.FUseBuiltInIcons"/>
       <element name="TCustomShellListView.FOnAddItem"/>
       <element name="TCustomShellListView.FOnFileAdded"/>
 
@@ -1010,6 +1009,24 @@
         <short>New value for the property</short>
       </element>
 
+      <element name="TCustomShellListView.WSRegisterClass" link="#lcl.controls.TWinControl.WSRegisterClass">
+        <short/>
+        <descr>
+          <p>
+            <var>WSRegisterClass</var> is an overridden class method in <var>TCustomShellListView</var>. It registers properties that are ignored in the class instance during LCL component streaming, including:
+          </p>
+          <ul>
+            <li>ItemIndex (Used in older LCL versions)</li>
+            <li>BevelKind (Provided for Delphi compatibility)</li>
+            <li>TListItem.OverlayIndex (Provided for Delphi compatibility)</li>
+          </ul>
+          <p>
+            It calls the inherited method, and registers the companion widgetset class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="TCustomShellListView.PopulateWithRoot">
         <short>Fills the list view with file system information for the root directory</short>
         <descr>
@@ -1020,7 +1037,13 @@
             No actions are performed in the method at design-time, or when <var>Root</var>  contains an empty string (<b>''</b>).
           </p>
           <p>
-            <var>PopulateWithRoot</var> calls the internal <var>GetFilesInDir</var> helper to get a list of file system items for the path which match the <var>Mask</var> and <var>ObjectTypes</var> specified for the control. Each of the files in the list are passed to <var>DoAddItem</var> and <var>OnAddItem</var> to determine if they can be added to the <var>Items</var> in the control. The <var>OnFileAdded</var> event handler is signalled (when assigned) for each new entry added to Items.
+            <var>PopulateWithRoot</var> calls the internal <var>GetFilesInDir</var> helper to get a list of file system items for the path which match the <var>Mask</var> and <var>ObjectTypes</var> specified for the control. Each of the files in the list are passed to <var>DoAddItem</var> / <var>OnAddItem</var> to determine if they can be added to the <var>Items</var> in the control.
+          </p>
+          <p>
+            A <var>TListItem</var> instance is added to Items to represent the files or directories. The <var>Data</var> property in the list item is used to store a pointer to the file size. Values are added to SubItems with the string representation for the file size, and the file extension. When <var>UseBuiltInIcons</var> is set to <b>True</b>, the <var>GetBuiltInImageIndex</var> method is called to get the <var>ImageIndex</var> for the built-in icon used for the list item.
+          </p>
+          <p>
+            The <var>OnFileAdded</var> event handler is signalled (when assigned) for each new entry added to Items.
           </p>
           <p>
             The <var>Sort</var> method is called prior to exit to order the Items in the control using the option specified in the <var>FileSortType</var> property.
@@ -1031,6 +1054,7 @@
           <link id="TCustomShellListView.Items"/>
           <link id="TCustomShellListView.Mask"/>
           <link id="TCustomShellListView.ObjectTypes"/>
+          <link id="TCustomShellListView.UseBuiltInIcons"/>
           <link id="TCustomShellTreeView.FileSortType"/>
           <link id="TCustomShellListView.DoAddItem"/>
           <link id="TCustomShellListView.OnAddItem"/>
@@ -1083,6 +1107,47 @@
         </short>
       </element>
 
+    <element name="TCustomShellListView.GetBuiltinImageIndex">
+      <short>
+        Gets the index position for the built-in icon used for the specified path or file name
+      </short>
+      <descr>
+        <p>
+          <var>GetBuiltinImageIndex</var> is an <var>Integer</var> function used to get the image index for a built-in icon provided by the operating system or platform.
+        </p>
+        <p>
+          The return value contains the ordinal position for the image used for the file name or path specified in <var>AFilename</var>. The return value is <b>-1</b> if an image could not be selected for the value in AFileName.
+        </p>
+        <p>
+          When <var>ALargeImage</var> is <b>True</b>, the index value refers to a large image as used in the vsIcon view style. When set to <b>False</b>, it refers to a small image as used in the other view styles.
+        </p>
+        <p>
+          GetBuiltinImageIndex calls the GetBuiltInImageIndex method in the widgetset class to get the return value for the method. The widgetset class handles storing the built-in image to the correct image list when the handle for the image list has not already been assigned.
+        </p>
+        <p>
+          GetBuiltinImageIndex is called from the <var>PopulateWithRoot</var> method when <var>UseBuiltInIcons</var> is set to <b>True</b>.
+        </p>
+        <remark>
+          In the current LCL version, GetBuiltinImageIndex is implemented for the Windows platform only.
+        </remark>
+      </descr>
+      <seealso>
+        <link id="TCustomShellListView.UseBuiltInIcons"/>
+        <link id="TCustomShellListView.PopulateWithRoot"/>
+        <link id="#lcl.comctrls.TCustomListView.LargeImages">TCustomListView.LargeImages</link>
+        <link id="#lcl.comctrls.TCustomListView.SmallImages">TCustomListView.SmallImages</link>
+      </seealso>
+    </element>
+    <element name="TCustomShellListView.GetBuiltinImageIndex.Result">
+      <short>Ordinal position for the built-in image</short>
+    </element>
+    <element name="TCustomShellListView.GetBuiltinImageIndex.AFileName">
+      <short>File name or path used to find the associated image</short>
+    </element>
+    <element name="TCustomShellListView.GetBuiltinImageIndex.ALargeImage">
+      <short>True if the large image list is used for the image</short>
+    </element>
+
       <element name="TCustomShellListView.OnFileAdded">
         <short>
           Event handler signalled when a file is added to the Items in the control
@@ -1111,6 +1176,8 @@
             <var>Create</var> is the overridden constructor for the class instance. <var>Create</var> calls the inherited method using <var>AOwner</var> as the owner of the class instance. <var>Create</var> sets the default values for properties in the class instance, including:
           </p>
           <dl>
+            <dt>UseBuiltInIcons</dt>
+            <dd>True</dd>
             <dt>ViewStyle</dt>
             <dd>vsReport view style</dd>
             <dt>ObjectTypes</dt>
@@ -1254,6 +1321,34 @@
           <link id="TCustomShellTreeView"/>
           <link id="#lcl.comctrls.TCustomTreeView.Selected">TCustomTreeView.Selected</link>
           <link id="#lcl.comctrls.TCustomListView.Clear">TCustomListView.Clear</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomShellListView.UseBuiltInIcons">
+        <short>
+          Indicates if icons provided by the OS or platform are used for items in the list
+        </short>
+        <descr>
+          <p>
+            <var>UseBuiltInIcons</var> is a <var>Boolean</var> property which indicates if icons provided by the OS or platform are used for the <var>Items</var> in the list view control. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            UseBuiltInIcons is used when the list view control is populated with the names for the file and/or directories on the local file system. When set to <b>True</b>, the <var>GetBuiltInImageIndex</var> method is called to get the image index for a <var>TListItem</var> stored in the <var>Items</var> property.
+          </p>
+          <p>
+            Set UseBuiltInIcons to <b>False</b> to use custom images provided in the <var>LargeImages</var> or <var>SmallImages</var> properties.
+          </p>
+          <remark>
+            UseBuiltInIcons and GetBuiltInImageIndex require support in the widgetset class to use system-provided icons. This support is currently implemented for the Windows platform only.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TCustomShellListView.GetBuiltInImageIndex"/>
+          <link id="TCustomShellListView.Items"/>
+          <link id="TCustomShellListView.PopulateWithRoot"/>
+          <link id="TListItem.ImageIndex"/>
+          <link id="#lcl.comctrls.TCustomListView.LargeImages">TCustomListView.LargeImages</link>
+          <link id="#lcl.comctrls.TCustomListView.SmallImages">TCustomListView.SmallImages</link>
         </seealso>
       </element>
 

@@ -80,6 +80,118 @@
         </seealso>
       </element>
 
+      <element name="LazStartsStr">
+        <short>Determines if a string starts wih the specified value</short>
+        <descr>
+          <p>
+            <var>LazStartsStr</var> is a <var>Boolean</var> function used to determine if the string in <var>AText</var> starts wih the text specified in <var>ASubText</var>. It is a modified version of <var>StartsStr</var> from the RTL <file>strutils.pp</file> unit.
+          </p>
+          <p>
+            LazStartsStr casts the values in ASubText and AText to PChar types, and calls <var>StrLComp</var> to perform the comparison.
+          </p>
+          <p>
+            The returns value is <b>True</b> when AText begins with the specified sub-text. It also returns <b>True</b> when ASubText is an empty string (<b>''</b>), which is Delphi compatible.
+          </p>
+        </descr>
+        <seealso>
+          <link id="LazEndsStr"/>
+          <link id="LazStartsText"/>
+        </seealso>
+      </element>
+      <element name="LazStartsStr.Result">
+        <short>True when the string starts with the specified sub-text</short>
+      </element>
+      <element name="LazStartsStr.ASubText">
+        <short>Value to look for at the start of the text</short>
+      </element>
+      <element name="LazStartsStr.AText">
+        <short>Text examined in the routine</short>
+      </element>
+
+      <element name="LazEndsStr">
+        <short>Determines if a string ends wih the specified value</short>
+        <descr>
+          <p>
+            <var>LazEndsStr</var> is a <var>Boolean</var> function used to determine if the string in <var>AText</var> ends wih the text specified in <var>ASubText</var>. It is a modified version of <var>EndsStr</var> from the RTL <file>strutils.pp</file> unit.
+          </p>
+          <p>
+            LazEndsStr casts the values in ASubText and AText to PChar types, and calls <var>StrLComp</var> to perform the comparison.
+          </p>
+          <p>
+            The returns value is <b>True</b> when AText ends with the specified sub-text. It also returns <b>True</b> when ASubText is an empty string (<b>''</b>), which is Delphi compatible.
+          </p>
+        </descr>
+        <seealso>
+          <link id="LazStartsStr"/>
+          <link id="LazEndsText"/>
+        </seealso>
+      </element>
+      <element name="LazEndsStr.Result">
+        <short>True when the string ends with the specified value</short>
+      </element>
+      <element name="LazEndsStr.ASubText">
+        <short>Text to look for at the end of the string</short>
+      </element>
+      <element name="LazEndsStr.AText">
+        <short>String examined in the routine</short>
+      </element>
+
+      <element name="LazStartsText">
+        <short>Determines if a string occurs at the beginning of the specified text</short>
+        <descr>
+            <p>
+            <var>LazStartsText</var> is a fast implementation of <var>StartsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
+          </p>
+          <p>
+            LazStartsText casts the values in <var>ASubText</var> and <var>AText</var> to <var>PChar</var> types, and calls <var>StrLIComp</var> to perform a case-insensitive comparison for the number of characters in ASubText.
+          </p>
+          <p>
+            The return value is <b>True</b> when ASubText and AText start with the same values. The return value is also <b>True</b> when ASubText is an empty string (<b>''</b>); this is Delphi compatible. The return value is <b>False</b> when StrLIComp returns a non-zero value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.strutils.StartsText">StartsText</link>
+          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
+        </seealso>
+      </element>
+      <element name="LazStartsText.Result">
+        <short>True when the sub-text is at the start of the string value</short>
+      </element>
+      <element name="LazStartsText.ASubText">
+        <short>Value to locate at the start of the string</short>
+      </element>
+      <element name="LazStartsText.AText">
+        <short>String value used in the comparison</short>
+      </element>
+
+      <element name="LazEndsText">
+        <short>Determines if a string occurs at the end of the specified text</short>
+        <descr>
+          <p>
+            <var>LazEndsText</var> is a fast implementation of <var>EndsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
+          </p>
+          <p>
+            LazEndsText casts the values in <var>ASubText</var> and <var>AText</var> to PChar types, and calls <var>StrLIComp</var> to perform a case-insensitive comparison for the number of characters in ASubText at the end of the value in AText.
+          </p>
+          <p>
+            The return value is <b>True</b> when AText ends with the value in ASubText. The return value is <b>True</b> when ASubText is an empty string (<b>''</b>); this is Delphi compatible. It is False when StrLIComp returns a non-zero value, or when ASubText is longer than AText.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.strutils.EndsText">EndsText</link>
+          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
+        </seealso>
+      </element>
+      <element name="LazEndsText.Result">
+        <short>True when the sub-text is at the end of the string value</short>
+      </element>
+      <element name="LazEndsText.ASubText">
+        <short>Value to locate at the end of the string</short>
+      </element>
+      <element name="LazEndsText.AText">
+        <short>String value used in the comparison</short>
+      </element>
+
       <element name="PosI">
         <short>A case-insensitive optimized version of the Pos routine</short>
         <descr>
@@ -112,62 +224,6 @@
       </element>
       <element name="PosI.S">
         <short>Value searched for the specified sub-string</short>
-      </element>
-
-      <element name="LazStartsText">
-        <short>Determines if a string occurs at the beginning of the specified text</short>
-        <descr>
-          <p>
-            <var>LazStartsText</var> is a fast implementation of <var>StartsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
-          </p>
-          <p>
-            LazStartsText calls <var>StrLIComp</var> to perform a case-insensitive comparison between <var>ASubText</var> and <var>AText</var> for the number of characters in ASubText.
-          </p>
-          <p>
-            The return value is <b>True</b> when ASubText and AText start with the same values. It is False when StrLIComp returns a non-zero value, when ASubText is an empty string, or when ASubText is longer than AText.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.strutils.StartsText">StartsText</link>
-          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
-        </seealso>
-      </element>
-      <element name="LazStartsText.Result">
-        <short>True when the sub-text is at the start of the string value</short>
-      </element>
-      <element name="LazStartsText.ASubText">
-        <short>Value to locate at the start of the string</short>
-      </element>
-      <element name="LazStartsText.AText">
-        <short>String value used in the comparison</short>
-      </element>
-
-      <element name="LazEndsText">
-        <short>Determines if a string occurs at the end of the specified text</short>
-        <descr>
-          <p>
-            <var>LazEndsText</var> is a fast implementation of <var>EndsText</var>. The version in the RTL <file>strutils.pp</file> unit calls <var>AnsiCompareText</var> and is <b>very</b> slow.
-          </p>
-          <p>
-            LazEndsText calls <var>StrLIComp</var> to perform a case-insensitive comparison between <var>ASubText</var> and <var>AText</var> for the number of characters in ASubText at the end of the value in AText.
-          </p>
-          <p>
-            The return value is <b>True</b> when AText ends with the value in ASubText. It is False when StrLIComp returns a non-zero value, when ASubText is an empty string, or when ASubText is longer than AText.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#rtl.strutils.EndsText">EndsText</link>
-          <link id="#rtl.sysutils.StrLIComp">StrLIComp</link>
-        </seealso>
-      </element>
-      <element name="LazEndsText.Result">
-        <short>True when the sub-text is at the end of the string value</short>
-      </element>
-      <element name="LazEndsText.ASubText">
-        <short>Value to locate at the end of the string</short>
-      </element>
-      <element name="LazEndsText.AText">
-        <short>String value used in the comparison</short>
       </element>
 
       <element name="IsNumber">
@@ -441,7 +497,7 @@
           <p>
             <var>BeautifyLineXY</var> is a <var>String</var> function used to combine the values in the <var>Filename</var>, <var>Line</var>, <var>X</var> and <var>Y</var> arguments into a formatted message. The message is in the form:
           </p>
-<code>examplefile.pas (123, 1) The error message goes here.</code>
+<pre>examplefile.pas (123, 1) The error message goes here.</pre>
           <p>
             <var>Filename</var> contains a file name used at the start of the formatted message.
           </p>

@@ -7601,7 +7601,12 @@
           </p>
         </descr>
         <errors>
-          Destroy calls <var>RaiseGDBException</var> to raise an exception if the current class instance is unassigned (contains <b>Nil</b>). Uses the exception message 'TApplication.Destroy Self=nil'.
+          <p>
+            Destroy calls <var>RaiseGDBException</var> to raise an exception if the current class instance is unassigned (contains <b>Nil</b>). Uses the exception message 'TApplication.Destroy Self=nil'.
+          </p>
+          <p>
+            Raises an <var>EAssertFalied</var> exception if the CustomApplication and Application variables do not contain the same TCustomApplication instance.
+          </p>
         </errors>
         <seealso/>
       </element>

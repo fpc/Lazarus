@@ -29,7 +29,6 @@
       <element name="SysUtils"/>
       <element name="Types"/>
       <element name="Classes"/>
-      <element name="StrUtils"/>
       <element name="LCLProc"/>
       <element name="LCLType"/>
       <element name="LCLStrConsts"/>

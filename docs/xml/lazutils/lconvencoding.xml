@@ -404,14 +404,21 @@
 
       <element name="UTF8BOMToUTF8">
         <short>Removes the UTF-8 BOM from the UTF-8 encoded value</short>
-        <descr/>
+        <descr>
+          <p>
+            The return value is the value in <var>s</var> after removing the Byte Order Mark in <var>UTF8BOM</var> from the start of the string. The return value is the same as the value in s when UTF8BOM is not found in the string.
+          </p>
+          <p>
+            No actions are performed in the routine when <var>s</var> is an empty string (<b>''</b>). The return value is also an empty string.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8BOMToUTF8.Result">
-        <short/>
+        <short>Value after removing the UTF-8 BOM</short>
       </element>
       <element name="UTF8BOMToUTF8.s">
-        <short/>
+        <short>UTF-8-encoded value examined in the routine</short>
       </element>
 
       <element name="ISO_8859_1ToUTF8">
