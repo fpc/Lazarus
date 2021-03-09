@@ -1439,7 +1439,7 @@ function TCustomMaskEdit.ApplyMaskToText(Value: TCaption): TCaption;
       if IsLiteral(i) then
       begin
         FoundAt := i;
-        ALiteral := FMask[i].Literal; // ClearChar(i);
+        ALiteral := ClearChar(i);//don't use FMask[i].Literal here, since it is EmptyStr for Char_HourSeparator and Char_DateSeparator; Issue #0038606
         Result := True;
         Exit;
       end;
