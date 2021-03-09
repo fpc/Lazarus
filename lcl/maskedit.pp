@@ -129,6 +129,7 @@ type
 
   TInternalMask = array[1..255] of TIntMaskRec;
   TMaskeditTrimType = (metTrimLeft, metTrimRight);
+  TMaskEditValidationErrorMode = (mvemException, mvemEvent);
 
   { Exception class }
 type
@@ -203,6 +204,9 @@ const
     FTextChangedBySetText: Boolean;
     FInRealSetTextWhileMasked: Boolean;
 
+    FValidationErrorMode: TMaskEditValidationErrorMode;
+    FOnValidationError: TNotifyEvent;
+
     procedure ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
     procedure AddToMask(ALiteral: TUtf8Char);
     procedure AddToMask(AMaskType: TMaskedType);
@@ -236,6 +240,7 @@ const
     function ApplyMaskToText(Value: TCaption): TCaption;
     function CanShowEmulatedTextHint: Boolean; override;
     function DisableMask(const NewText: String): Boolean;
+    procedure DoValidationError;
     function RestoreMask(const NewText: String): Boolean;
     procedure RealSetText(const AValue: TCaption); override;
     function RealGetText: TCaption; override;
@@ -275,6 +280,7 @@ const
     property SpaceChar: Char read FSpaceChar write SetSpaceChar;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
     property EditMask: string read FRealMask write SetMask;
+    property ValidationErrorMode: TMaskEditValidationErrorMode read FValidationErrorMode write FValidationErrorMode default mvemException; experimental;
   public
     procedure CutToClipBoard; override;
     procedure PasteFromClipBoard; override;
@@ -284,6 +290,8 @@ const
     procedure SelectAll; override;
     procedure ValidateEdit; virtual;
     property Modified: Boolean read GetModified write SetModified;
+
+    property OnValidationError: TNotifyEvent read FOnValidationError write FOnValidationError; experimental;
   end;
 
   { TMaskEdit }
@@ -292,6 +300,7 @@ const
   public
     property IsMasked;
     property EditText;
+    property ValidationErrorMode;
   published
     property Align;
     property Alignment;
@@ -1059,6 +1068,12 @@ begin
     Result := False;
   end;
   Text := NewText;
+end;
+
+procedure TCustomMaskEdit.DoValidationError;
+begin
+  if Assigned(FOnValidationError) then
+    FOnValidationError(Self);
 end;
 
 // Restore a saved mask
@@ -2223,7 +2238,10 @@ begin
     begin
       SetCursorPos;
       FValidationFailed := True;
-      Raise EDBEditError.Create(SMaskEditNoMatch);
+      case FValidationErrorMode of
+        mvemException: Raise EDBEditError.Create(SMaskEditNoMatch);
+        mvemEvent: DoValidationError;
+      end;
     end;
   end;
 end;
