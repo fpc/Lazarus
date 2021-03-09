@@ -517,6 +517,7 @@ begin
   FInitialMask   := '';
   FValidationFailed := False;
   FMaskIsPushed := False;
+  FValidationErrorMode := mvemException;
 end;
 
 procedure TCustomMaskEdit.ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
