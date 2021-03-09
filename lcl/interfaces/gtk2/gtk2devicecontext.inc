@@ -1156,7 +1156,7 @@ var
     for i := Low(ADashes) to High(ADashes) do
       ADashes[i] := ADashes[i] * Multiplier;
 
-    laz_gdk_gc_set_dashes(GC, 4096, @ADashes[0], Length(ADashes))
+    laz_gdk_gc_set_dashes(GC, 0, @ADashes[0], Length(ADashes))
   end;
 
 begin
@@ -1223,10 +1223,10 @@ begin
 
   // Paul Ishenin: I compared patterns with windows
   case PenStyle of
-    PS_DASH:       SetDashes([3,1]);
-    PS_DOT:        SetDashes([1,1]);
-    PS_DASHDOT:    SetDashes([3,1,1,1]);
-    PS_DASHDOTDOT: SetDashes([3,1,1,1,1,1]);
+    PS_DASH:       SetDashes([4,2]);
+    PS_DOT:        SetDashes([1,2]);
+    PS_DASHDOT:    SetDashes([4,2,1,2]);
+    PS_DASHDOTDOT: SetDashes([4,2,1,2,1,2]);
     PS_USERSTYLE:  laz_gdk_gc_set_dashes(GC, 0, CurrentPen^.GDIPenDashes, CurrentPen^.GDIPenDashesCount);
   end;
   {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
