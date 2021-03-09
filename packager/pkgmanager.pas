@@ -4453,7 +4453,7 @@ begin
   try
     Result:=GetUnitsAndDepsForComps(ComponentClasses, Dependencies, UnitNames);
     if Result<>mrOk then exit;
-
+    Assert(Assigned(UnitNames), 'TPkgManager.AddUnitDepsForCompClasses: UnitNames=Nil.');
     if (Dependencies<>nil) then
     begin
       Result:=FilterMissingDepsForUnit(UnitFilename,Dependencies,MissingDependencies);

@@ -23,7 +23,7 @@ uses
   // LCL
   LCLMemManager, Forms, LResources,
   // LazUtils
-  UITypes;
+  UITypes, LazStringUtils;
 
 type
 
@@ -45,7 +45,7 @@ type
       out MissingClasses: TStrings// e.g. MyFrame2:TMyFrame
       ): TModalResult; virtual; abstract;
     class function Priority: integer; virtual; // higher priority is tested first
-    class function DefaultComponentClass: TComponentClass; virtual;
+    class function DefaultComponentClass(aClassName: string): TComponentClass; virtual;
     class function FindComponentClass({%H-}aClassName: string): TComponentClass; virtual;
   end;
   TUnitResourcefileFormatClass = class of TUnitResourcefileFormat;
@@ -62,7 +62,7 @@ type
     class function GetClassNameFromStream(s: TStream; out IsInherited: Boolean): shortstring; override;
     class function CreateReader(s: TStream; var DestroyDriver: boolean): TReader; override;
     class function CreateWriter(s: TStream; var DestroyDriver: boolean): TWriter; override;
-    class function DefaultComponentClass: TComponentClass; override;
+    class function DefaultComponentClass(aClassName: string): TComponentClass; override;
     class function FindComponentClass(aClassName: string): TComponentClass; override;
   end;
 
@@ -150,9 +150,15 @@ begin
   Result := CreateLRSWriter(s, DestroyDriver);
 end;
 
-class function TCustomLFMUnitResourceFileFormat.DefaultComponentClass: TComponentClass;
-begin
-  Result := FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
+class function TCustomLFMUnitResourceFileFormat.DefaultComponentClass(
+  aClassName: string): TComponentClass;
+begin   // Use heuristics to get a default class.
+  if PosI('DataModule',aClassName) > 0 then
+    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TDataModule]
+  else if PosI('Frame',aClassName) > 0 then
+    Result:=FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TFrame]
+  else
+    Result := FormEditingHook.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
 end;
 
 class function TCustomLFMUnitResourceFileFormat.FindComponentClass(
@@ -175,7 +181,7 @@ begin
   Result:=0;
 end;
 
-class function TUnitResourcefileFormat.DefaultComponentClass: TComponentClass;
+class function TUnitResourcefileFormat.DefaultComponentClass(aClassName: string): TComponentClass;
 begin
   Result:=TForm;
 end;
