@@ -41,7 +41,7 @@ uses
   // LazControls
   TreeFilterEdit,
   // IdeIntf
-  FormEditingIntf, PropEdits, ComponentReg,
+  FormEditingIntf, IDEImagesIntf, PropEdits, ComponentReg,
   // IDE
   LazarusIDEStrConsts, PackageDefs, IDEOptionDefs, EnvironmentOpts, Designer;
 
@@ -135,8 +135,8 @@ begin
   Name:=NonModalIDEWindowNames[nmiwComponentList];
   FActiveTree := ListTree;
 
+  IDEImages.AssignImage(SelectionToolButton, 'tmouse');
   with SelectionToolButton do begin
-    LoadGlyphFromResourceName(hInstance, 'tmouse');
     ShowHint := EnvironmentOptions.ShowHintsForComponentPalette;
     Width := ComponentPaletteBtnWidth;
     BorderSpacing.Around := (FilterPanel.Height - ComponentPaletteImageHeight) div 2;

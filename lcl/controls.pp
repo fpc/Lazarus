@@ -346,7 +346,8 @@ type
     procedure DrawForControl(ACanvas: TCanvas; AX, AY, AIndex, AImageWidthAt96PPI: Integer;
       AControl: TControl; ADrawEffect: TGraphicsDrawEffect); overload;
 
-    property ResolutionForControl[AImageWidth: Integer; AControl: TControl]: TScaledImageListResolution read GetResolutionForControl;
+    property ResolutionForControl[AImageWidth: Integer; AControl: TControl]: TScaledImageListResolution
+                                     read GetResolutionForControl;
   end;
 
   TDragImageList = class;

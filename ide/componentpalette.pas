@@ -403,18 +403,18 @@ end;
 
 procedure TComponentPage.CreateSelectionButton(aButtonUniqueName: string; aScrollBox: TScrollBox);
 var
-  {%H-}Pal: TComponentPalette;
+  Pal: TComponentPalette;
   Btn: TSpeedButton;
 begin
   if Assigned(SelectButton) then Exit;
   Pal := TComponentPalette(Palette);
   Btn := TSpeedButton.Create(nil);
   SelectButton:=Btn;
+  IDEImages.AssignImage(Btn, 'tmouse');
   with Btn do begin
     Name := CompPalSelectionToolBtnPrefix + aButtonUniqueName;
     OnClick := @Pal.SelectionToolClick;
     OnMouseWheel := @Pal.OnPageMouseWheel;
-    IDEImages.AssignImage(Btn, 'tmouse');
     Flat := True;
     GroupIndex:= 1;
     Down := True;
