@@ -2413,7 +2413,7 @@ var
           while true do begin
             while (j <= l) and (S2[j] in ['^','(', ' ']) do
               inc(j);
-            if StrLIComp('array ', @S2[j], 6) = 0 then begin
+            if (j <= l) and (StrLIComp('array ', @S2[j], 6) = 0) then begin
               inc(j, 5+3);
               while (j <= l) and
                     not ( (S2[j-3] = ' ') and (S2[j-2] in ['o','O']) and (S2[j-1] in ['f','F']) and (S2[j] = ' ') )
@@ -2423,7 +2423,7 @@ var
             end;
             break;
           end;
-          if (StrLIComp('record ', @S2[j], 7) = 0) and
+          if (j <= l) and (StrLIComp('record ', @S2[j], 7) = 0) and
              not( (copy(S2, j+7, 1) = ';') or (copy(S2, j+7, 6) = '{...};') )
           then begin
             i := 1;
