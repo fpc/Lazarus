@@ -258,13 +258,13 @@ begin
   end;
 end;
 
-(* Get the maximum length of the given string in pixels *)
+(*  Get the maximum length of the given string in pixels *)
 function StringSize(const aCaption: String; const aHDC: HDC): TSize;
 var
   tmpRect: Windows.RECT;
   WideBuffer: widestring;
 begin
-  FillChar(tmpRect, SizeOf(tmpRect), 0);
+  tmpRect := Rect(0, 0, 0, 0);
   WideBuffer := UTF8ToUTF16(aCaption);
   DrawTextW(aHDC, PWideChar(WideBuffer), length(WideBuffer), @TmpRect, DT_CALCRECT);
 
