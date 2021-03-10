@@ -64,7 +64,7 @@
         <PackageName Value="SynEdit"/>
       </Item8>
     </RequiredPackages>
-    <Units Count="242">
+    <Units Count="243">
       <Unit0>
         <Filename Value="lazarus.pp"/>
         <IsPartOfProject Value="True"/>
@@ -82,7 +82,9 @@
         <Filename Value="frames/files_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="FilesOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Files_Options"/>
       </Unit2>
       <Unit3>
         <Filename Value="frames/desktop_options.pas"/>
@@ -90,6 +92,7 @@
         <ComponentName Value="DesktopOptionsFrame"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Desktop_Options"/>
       </Unit3>
       <Unit4>
         <Filename Value="frames/window_options.pas"/>
@@ -110,6 +113,7 @@
         <IsPartOfProject Value="True"/>
         <ComponentName Value="BackupOptionsFrame"/>
         <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="Backup_Options"/>
       </Unit6>
       <Unit7>
         <Filename Value="frames/naming_options.pas"/>
@@ -136,6 +140,7 @@
         <Filename Value="frames/editor_display_options.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="EditorDisplayOptionsFrame"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
       </Unit10>
       <Unit11>
@@ -776,6 +781,7 @@
       <Unit114>
         <Filename Value="lfmunitresource.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="lfmUnitResource"/>
       </Unit114>
       <Unit115>
         <Filename Value="sourcemarks.pas"/>
@@ -786,6 +792,7 @@
         <Filename Value="checklfmdlg.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="CheckLFMDlg"/>
       </Unit116>
       <Unit117>
         <Filename Value="sortselectiondlg.pas"/>
@@ -862,6 +869,7 @@
       <Unit130>
         <Filename Value="componentpalette.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="ComponentPalette"/>
       </Unit130>
       <Unit131>
         <Filename Value="codecontextform.pas"/>
@@ -937,7 +945,10 @@
       <Unit146>
         <Filename Value="diskdiffsdialog.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="DiskDiffsDlg"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="DiskDiffsDialog"/>
       </Unit146>
       <Unit147>
         <Filename Value="unusedunitsdlg.pas"/>
@@ -982,6 +993,7 @@
         <Filename Value="newprojectdlg.pp"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="NewProjectDlg"/>
       </Unit155>
       <Unit156>
         <Filename Value="codetoolsoptions.pas"/>
@@ -1011,6 +1023,7 @@
       <Unit161>
         <Filename Value="transfermacros.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="TransferMacros"/>
       </Unit161>
       <Unit162>
         <Filename Value="publishmodule.pas"/>
@@ -1434,6 +1447,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="ExtToolsIDE"/>
       </Unit241>
+      <Unit242>
+        <Filename Value="frames/idestartup_options.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="IdeStartupFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="IdeStartup_Options"/>
+      </Unit242>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

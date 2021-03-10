@@ -681,6 +681,7 @@ type
     FRecentPackageFiles: TStringList;
     FMaxRecentPackageFiles: integer;
     FOpenLastProjectAtStart: boolean;
+    FNewProjectTemplateAtStart: string;
     FMultipleInstances: TIDEMultipleInstancesOption;
     // Prevent repopulating Recent project files menu with example projects if it was already cleared up.
     FAlreadyPopulatedRecentFiles : Boolean;
@@ -979,6 +980,8 @@ type
     property LastOpenPackages: TLastOpenPackagesList read FLastOpenPackages;
     property OpenLastProjectAtStart: boolean read FOpenLastProjectAtStart
                                              write FOpenLastProjectAtStart;
+    property NewProjectTemplateAtStart: string read FNewProjectTemplateAtStart
+                                               write FNewProjectTemplateAtStart;
     property MultipleInstances: TIDEMultipleInstancesOption read FMultipleInstances
                                                            write FMultipleInstances;
     property FileDialogFilter: string read FFileDialogFilter write FFileDialogFilter;
@@ -2576,6 +2579,7 @@ begin
     FAutoSaveIntervalInSecs:=FXMLCfg.GetValue(Path+'AutoSave/IntervalInSecs',DefaultAutoSaveIntervalInSecs);
     FLastSavedProjectFile:=FXMLCfg.GetValue(Path+'AutoSave/LastSavedProjectFile','');
     FOpenLastProjectAtStart:=FXMLCfg.GetValue(Path+'AutoSave/OpenLastProjectAtStart',true);
+    FNewProjectTemplateAtStart:=FXMLCfg.GetValue(Path+'NewProjectTemplateAtStart/Value','Application');
     FShowCompileDialog:=FXMLCfg.GetValue(Path+'ShowCompileDialog/Value',false);
     FAutoCloseCompileDialog:=FXMLCfg.GetValue(Path+'AutoCloseCompileDialog/Value',false);
     FAutoSaveActiveDesktop:=FXMLCfg.GetValue(Path+'AutoSave/ActiveDesktop',True);
@@ -2951,6 +2955,8 @@ begin
     FXMLCfg.SetDeleteValue(Path+'AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs,DefaultAutoSaveIntervalInSecs);
     FXMLCfg.SetDeleteValue(Path+'AutoSave/LastSavedProjectFile',FLastSavedProjectFile,'');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/OpenLastProjectAtStart',FOpenLastProjectAtStart,true);
+
+    FXMLCfg.SetDeleteValue(Path+'NewProjectTemplateAtStart/Value',FNewProjectTemplateAtStart,'Application');
     FXMLCfg.SetDeleteValue(Path+'AutoSave/ActiveDesktop', FAutoSaveActiveDesktop, True);
     FXMLCfg.DeletePath(Path+'AutoSave/LastOpenPackages/');
     if FOpenLastProjectAtStart then

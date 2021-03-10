@@ -114,7 +114,7 @@ uses
   ChgEncodingDlg, ConvertDelphi, MissingPropertiesDlg, LazXMLForms,
   // environment option frames
   editor_general_options, componentpalette_options, formed_options, OI_options,
-  MsgWnd_Options, files_options, desktop_options, window_options,
+  MsgWnd_Options, Files_Options, Desktop_Options, window_options, IdeStartup_Options,
   Backup_Options, naming_options, fpdoc_options, idecoolbar_options, editortoolbar_options,
   editor_display_options, editor_keymapping_options, editor_mouseaction_options,
   editor_mouseaction_options_advanced, editor_color_options, editor_markup_options,
@@ -2298,6 +2298,7 @@ procedure TMainIDE.SetupStartProject;
 var
   ProjectLoaded: Boolean;
   AProjectFilename: String;
+  PrjDesc: TProjectDescriptor;
   CmdLineFiles: TStrings;
   i: Integer;
   OpenFlags: TOpenFlags;
@@ -2386,7 +2387,10 @@ begin
       // IDE was closed without a project => restore that state
     end else begin
       // create new project
-      DoNewProject(ProjectDescriptorApplication);
+      PrjDesc := ProjectDescriptors.FindByName(EnvironmentOptions.NewProjectTemplateAtStart);
+      if PrjDesc = nil then
+        PrjDesc := ProjectDescriptorApplication;  // Fallback to Application
+      DoNewProject(PrjDesc);
     end;
   end;
 

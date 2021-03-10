@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-unit desktop_options;
+unit Desktop_Options;
 
 {$mode objfpc}{$H+}
 

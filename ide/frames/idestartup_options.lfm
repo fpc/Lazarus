@@ -1,0 +1,108 @@
+object IdeStartupFrame: TIdeStartupFrame
+  Left = 0
+  Height = 470
+  Top = 0
+  Width = 589
+  ClientHeight = 470
+  ClientWidth = 589
+  TabOrder = 0
+  DesignLeft = 317
+  DesignTop = 418
+  object OpenLastProjectAtStartCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = lblProjectToOpen
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 22
+    Top = 91
+    Width = 231
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'OpenLastProjectAtStartCheckBox'
+    OnChange = OpenLastProjectAtStartCheckBoxChange
+    TabOrder = 0
+  end
+  object lblFileAssociation: TDividerBevel
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 18
+    Top = 0
+    Width = 597
+    Caption = 'Using File Association in OS'
+    Anchors = [akLeft, akRight]
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object lblProjectToOpen: TDividerBevel
+    AnchorSideTop.Control = MultipleInstancesComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 18
+    Top = 67
+    Width = 597
+    Caption = 'Project to Open or Create'
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 11
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object LazarusInstancesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MultipleInstancesComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 1
+    Height = 18
+    Top = 31
+    Width = 139
+    BorderSpacing.Left = 1
+    Caption = 'LazarusInstancesLabel'
+    ParentColor = False
+  end
+  object MultipleInstancesComboBox: TComboBox
+    AnchorSideLeft.Control = LazarusInstancesLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = lblFileAssociation
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 148
+    Height = 32
+    Top = 24
+    Width = 441
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 8
+    BorderSpacing.Top = 6
+    ItemHeight = 18
+    Style = csDropDownList
+    TabOrder = 1
+  end
+  object ProjectTypeRG: TRadioGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 1
+    Height = 348
+    Top = 122
+    Width = 588
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Left = 1
+    BorderSpacing.Top = 9
+    Caption = 'New Project Type'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    TabOrder = 2
+  end
+end

@@ -22,7 +22,7 @@
     Frame for environment options for main paths, like
     Lazarus directory, compiler path.
 }
-unit files_options;
+unit Files_Options;
 
 {$mode objfpc}{$H+}
 
@@ -49,7 +49,6 @@ type
 
   TFilesOptionsFrame = class(TAbstractIDEOptionsEditor)
     AutoCloseCompileDialogCheckBox: TCheckBox;
-    MultipleInstancesComboBox: TComboBox;
     CompilerTranslationFileButton:TButton;
     CompilerTranslationFileComboBox:TComboBox;
     CompilerTranslationFileLabel:TLabel;
@@ -59,7 +58,6 @@ type
     FPCSourceDirButton:TButton;
     FPCSourceDirComboBox:TComboBox;
     FPCSourceDirLabel:TLabel;
-    MultipleInstancesLabel: TLabel;
     lblCenter: TLabel;
     LazarusDirButton:TButton;
     LazarusDirComboBox:TComboBox;
@@ -71,7 +69,6 @@ type
     MaxRecentOpenFilesLabel: TLabel;
     MaxRecentProjectFilesSpin: TSpinEdit;
     MaxRecentProjectFilesLabel: TLabel;
-    OpenLastProjectAtStartCheckBox: TCheckBox;
     ShowCompileDialogCheckBox: TCheckBox;
     TestBuildDirButton:TButton;
     TestBuildDirComboBox:TComboBox;
@@ -99,7 +96,6 @@ type
     fOldFppkcConfigurationFilename: string;
     FOldMaxRecentOpenFiles: integer;
     FOldMaxRecentProjectFiles: integer;
-    FOldOpenLastProjectAtStart: boolean;
     fOldShowCompileDialog: boolean;
     fOldAutoCloseCompileDialog: boolean;
     function CheckLazarusDir(Buttons: TMsgDlgButtons): boolean;
@@ -109,7 +105,6 @@ type
     function CheckMake: boolean;
     function CheckFPCMsgFile: boolean;
   public
-    constructor Create(AOwner: TComponent); override;
     function Check: Boolean; override;
     function GetTitle: String; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -280,7 +275,6 @@ begin
   MaxRecentOpenFilesLabel.Hint:=dlgMaxRecentHint;
   MaxRecentProjectFilesLabel.Caption:=dlgMaxRecentProjs;
   MaxRecentProjectFilesLabel.Hint:=dlgMaxRecentHint;
-  OpenLastProjectAtStartCheckBox.Caption:=dlgQOpenLastPrj;
   ShowCompileDialogCheckBox.Visible:=false;
   AutoCloseCompileDialogCheckBox.Visible:=false;
   LazarusDirLabel.Caption:=dlgLazarusDir;
@@ -290,16 +284,6 @@ begin
     Add(ProgramDirectoryWithBundle);
     EndUpdate;
   end;
-  MultipleInstancesLabel.Caption := dlgMultipleInstances;
-  with MultipleInstancesComboBox.Items do
-  begin
-    BeginUpdate;
-    Add(dlgMultipleInstances_AlwaysStartNew);
-    Add(dlgMultipleInstances_OpenFilesInRunning);
-    Add(dlgMultipleInstances_ForceSingleInstance);
-    EndUpdate;
-  end;
-  Assert(MultipleInstancesComboBox.Items.Count = Ord(High(TIDEMultipleInstancesOption))+1);
 
   CompilerPathLabel.Caption:=Format(dlgFpcExecutable,[GetDefaultCompilerFilename]);
   FPCSourceDirLabel.Caption:=dlgFpcSrcPath;
@@ -436,12 +420,6 @@ begin
     MaxRecentOpenFilesSpin.Value := MaxRecentOpenFiles;
     FOldMaxRecentProjectFiles := MaxRecentProjectFiles;
     MaxRecentProjectFilesSpin.Value := MaxRecentProjectFiles;
-    FOldOpenLastProjectAtStart := OpenLastProjectAtStart;
-
-    // open last project at start
-    OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
-
-    MultipleInstancesComboBox.ItemIndex := Ord(MultipleInstances);
 
     // compile dialog
     fOldShowCompileDialog:=ShowCompileDialog;
@@ -474,8 +452,6 @@ begin
     // recent files and directories
     MaxRecentOpenFiles := MaxRecentOpenFilesSpin.Value;
     MaxRecentProjectFiles := MaxRecentProjectFilesSpin.Value;
-    OpenLastProjectAtStart:=OpenLastProjectAtStartCheckBox.Checked;
-    MultipleInstances := TIDEMultipleInstancesOption(MultipleInstancesComboBox.ItemIndex);
     ShowCompileDialog := ShowCompileDialogCheckBox.Checked;
     AutoCloseCompileDialog := AutoCloseCompileDialogCheckBox.Checked;
   end;
@@ -497,7 +473,6 @@ begin
     // recent files and directories
     MaxRecentOpenFiles := FOldMaxRecentOpenFiles;
     MaxRecentProjectFiles := FOldMaxRecentProjectFiles;
-    OpenLastProjectAtStart := FOldOpenLastProjectAtStart;
     ShowCompileDialog := fOldShowCompileDialog;
     AutoCloseCompileDialog := fOldAutoCloseCompileDialog;
   end;
@@ -618,11 +593,6 @@ begin
     end;
   end;
   Result:=true;
-end;
-
-constructor TFilesOptionsFrame.Create(AOwner: TComponent); // ~bk to be removed
-begin
-  inherited Create(AOwner);
 end;
 
 class function TFilesOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;

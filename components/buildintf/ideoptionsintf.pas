@@ -161,6 +161,7 @@ const
     EnvOptionsOI            = 500;
     EnvOptionsMessages      = 550;
     EnvOptionsFpDoc         = 600;
+    EnvOptionsIdeStartup    = 650;
     EnvOptionsBackup        = 700;
     EnvOptionsNaming        = 800;
     EnvOptionsFileFilters   = 900;

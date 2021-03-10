@@ -152,14 +152,6 @@ resourcestring
   lisMoveUp = 'Move Up';
   lisMoveDown = 'Move Down';
 
-  dlgMultipleInstances = 'Multiple Lazarus instances';
-  dlgMultipleInstances_AlwaysStartNew = 'always start a new instance';
-  dlgMultipleInstances_OpenFilesInRunning = 'open files in a running instance';
-  dlgMultipleInstances_ForceSingleInstance = 'do not allow multiple instances';
-  dlgRunningInstanceModalError = 'The running Lazarus instance cannot accept any files.'+sLineBreak+'Do you want to open them in a new IDE instance?'+sLineBreak+sLineBreak+'%s';
-  dlgForceUniqueInstanceModalError = 'The running Lazarus instance cannot accept any files.';
-  dlgRunningInstanceNotRespondingError = 'Lazarus instance is running but not responding.';
-
   // *** Rest of the resource strings ***
 
   lisImportPackageListXml = 'Import package list (*.xml)';
@@ -1315,8 +1307,7 @@ resourcestring
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
   dlgEnvFiles = 'Files';
-
-  //
+  dlgEnvIdeStartup = 'IDE Startup';
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   lisInformation = 'Information';
@@ -1475,7 +1466,6 @@ resourcestring
   dlgMaxRecentFiles = 'Max recent files';
   dlgMaxRecentProjs = 'Max recent project files';
   dlgMaxRecentHint = 'Value 0 means unlimited.';
-  dlgQOpenLastPrj = 'Open last project and packages at start';
   dlgLazarusDir = 'Lazarus directory (default for all projects)';
   dlgFpcExecutable = 'Compiler executable (e.g. %s)';
   dlgFpcSrcPath = 'FPC source directory';
@@ -1607,6 +1597,7 @@ resourcestring
   lisShowsDescriptionForSelectedProperty = 'A box at the bottom shows '
     +'description for the selected property.';
   lisShowPropertyFilterInObjectInspector = 'Show property filter';
+
   dlgEnvBackupHelpNote = 'Notes: Project files are all files in the project directory';
   lisEnvOptDlgInvalidDebuggerFilename = 'Invalid debugger filename';
   lisEnvOptDlgInvalidDebuggerFilenameMsg = 'The debugger file "%s" is not an executable.';
@@ -1618,6 +1609,20 @@ resourcestring
   lisPkgMangThePackageFailedToCompileRemoveItFromTheInstallati = 'The package "%s" '
     +'failed to compile.%sRemove it from the installation list?';
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
+
+  // Ide Startup options
+  dlgFileAssociationInOS = 'Using File Association in OS';
+  dlgLazarusInstances = 'Lazarus instances';
+  dlgMultipleInstances_AlwaysStartNew = 'always start a new instance';
+  dlgMultipleInstances_OpenFilesInRunning = 'open files in a running instance';
+  dlgMultipleInstances_ForceSingleInstance = 'do not allow multiple instances';
+  dlgRunningInstanceModalError = 'The running Lazarus instance cannot accept any files.'
+    +sLineBreak+'Do you want to open them in a new IDE instance?'+sLineBreak+sLineBreak+'%s';
+  dlgForceUniqueInstanceModalError = 'The running Lazarus instance cannot accept any files.';
+  dlgRunningInstanceNotRespondingError = 'Lazarus instance is running but not responding.';
+  dlgProjectToOpenOrCreate = 'Project to Open or Create';
+  dlgQOpenLastPrj = 'Open last project and packages at start';
+  dlgNewProjectType = 'New Project Type';
 
   // open-dialog filters
   dlgFilterAll = 'All files';
