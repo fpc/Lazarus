@@ -647,7 +647,8 @@ begin
   result := nil;
   AProcess := TProcessUTF8.Create(nil);
   try
-    AProcess.Options:=[poDebugProcess, poNewProcessGroup];
+    // To debug sub-processes, this needs to be poDebugProcess
+    AProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
     if siForceNewConsole in AFlags then
       AProcess.Options:=AProcess.Options+[poNewConsole];
     AProcess.Executable:=AFilename;
