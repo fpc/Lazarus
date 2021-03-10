@@ -1420,9 +1420,9 @@
         <UnitName Value="InputhistoryWithSearchOpt"/>
       </Unit238>
       <Unit239>
-        <Filename Value="projectdescriptors.pas"/>
+        <Filename Value="projectdescriptortypes.pas"/>
         <IsPartOfProject Value="True"/>
-        <UnitName Value="ProjectDescriptors"/>
+        <UnitName Value="ProjectDescriptorTypes"/>
       </Unit239>
       <Unit240>
         <Filename Value="etpas2jsmsgparser.pas"/>

@@ -90,7 +90,7 @@ uses
   ApplicationBundle, ExtTools, ExtToolsIDE,
   // projects
   ProjectResources, Project, ProjectDefs, NewProjectDlg,
-  PublishModuleDlg, ProjectInspector, PackageDefs, ProjectDescriptors,
+  PublishModuleDlg, ProjectInspector, PackageDefs, ProjectDescriptorTypes,
   // help manager
   IDEContextHelpEdit, IDEHelpIntf, IDEHelpManager, CodeHelp, HelpOptions,
   // designer

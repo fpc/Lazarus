@@ -1,4 +1,4 @@
-unit ProjectDescriptors;
+unit ProjectDescriptorTypes;
 
 {$mode objfpc}{$H+}
 
