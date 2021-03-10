@@ -27,7 +27,7 @@ interface
 uses
   Classes, SysUtils, math,
   // LCL
-  LCLProc, LCLType, StdCtrls, Controls, Graphics,
+  LCLProc, LCLType, StdCtrls, Controls, Graphics, ImgList,
   // LazControls
   DividerBevel,
   // SynEdit
@@ -35,7 +35,7 @@ uses
   // IdeIntf
   IDEOptionsIntf, IDEOptEditorIntf, IDEUtils, SrcEditorIntf,
   // IDE
-  EditorOptions, LazarusIDEStrConsts;
+  EditorOptions, LazarusIDEStrConsts, SourceMarks;
 
 type
   TPreviewEditor = TSynEdit;
@@ -90,11 +90,10 @@ type
     procedure ScrollPastEndFileCheckBoxChange(Sender: TObject);
     procedure ScrollPastEndLineCheckBoxChange(Sender: TObject);
   private
-    FDefaultBookmarkImages: TImageList;
     FDialog: TAbstractOptionsEditorDialog;
     FPasExtendedKeywordsMode: Boolean;
     FPasStringKeywordMode: TSynPasStringMode;
-    function DefaultBookmarkImages: TImageList;
+    function DefaultBookmarkImages: TCustomImageList;
     procedure SetExtendedKeywordsMode(const AValue: Boolean);
     procedure SetStringKeywordMode(const AValue: TSynPasStringMode);
   protected
@@ -423,19 +422,9 @@ begin
   SetPreviewOption(ScrollPastEndLineCheckBox.Checked, eoScrollPastEoL);
 end;
 
-function TEditorGeneralOptionsFrame.DefaultBookmarkImages: TImageList;
-var
-  i: integer;
+function TEditorGeneralOptionsFrame.DefaultBookmarkImages: TCustomImageList;
 begin
-  if FDefaultBookmarkImages = nil then
-  begin
-    FDefaultBookmarkImages := TImageList.Create(Self);
-    FDefaultBookmarkImages.Width := 11;
-    FDefaultBookmarkImages.Height := 11;
-    for i in TBookmarkNumRange do
-      FDefaultBookmarkImages.AddResourceName(HInstance, 'bookmark' + IntToStr(i));
-  end;
-  Result := FDefaultBookmarkImages;
+  Result := SourceEditorMarks.ImgList;
 end;
 
 procedure TEditorGeneralOptionsFrame.SetExtendedKeywordsMode(const AValue: Boolean);
