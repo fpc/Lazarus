@@ -141,7 +141,6 @@ type
     actPrevPage: TAction;
     ActionList: TActionList;
     ControlBar1: TPanel;
-    PageLabel: TLabel;
     MenuItem1: TMenuItem;
     mniCollapseAll: TMenuItem;
     mniExpandAll: TMenuItem;

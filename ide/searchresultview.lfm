@@ -13,7 +13,6 @@ object SearchResultsView: TSearchResultsView
   OnClose = FormClose
   OnCreate = Form1Create
   OnKeyDown = FormKeyDown
-  LCLVersion = '2.1.0.0'
   object ControlBar1: TPanel
     Left = 0
     Height = 26
@@ -26,16 +25,14 @@ object SearchResultsView: TSearchResultsView
     TabOrder = 1
     TabStop = True
     object PageToolBar: TToolBar
-      AnchorSideLeft.Control = PageLabel
-      AnchorSideLeft.Side = asrBottom
-      Left = 40
+      AnchorSideLeft.Control = ControlBar1
+      Left = 1
       Height = 22
       Top = 2
       Width = 70
       Align = alNone
       Anchors = [akTop, akLeft, akBottom]
       AutoSize = True
-      BorderSpacing.Left = 3
       EdgeInner = esNone
       EdgeOuter = esNone
       TabOrder = 0
@@ -68,10 +65,10 @@ object SearchResultsView: TSearchResultsView
       AnchorSideLeft.Control = PageToolBar
       AnchorSideLeft.Side = asrBottom
       AnchorSideRight.Control = CloseTabs
-      Left = 133
+      Left = 128
       Height = 23
       Top = 2
-      Width = 460
+      Width = 465
       ButtonWidth = 23
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Left = 21
@@ -124,16 +121,6 @@ object SearchResultsView: TSearchResultsView
         Top = 0
         Action = actCloseAll
       end
-    end
-    object PageLabel: TLabel
-      AnchorSideTop.Control = ControlBar1
-      AnchorSideTop.Side = asrCenter
-      Left = 6
-      Height = 18
-      Top = 4
-      Width = 31
-      Caption = 'Page'
-      ParentColor = False
     end
   end
   object ResultsNoteBook: TExtendedNotebook
