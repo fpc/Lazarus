@@ -1731,6 +1731,10 @@ msgstr "文件"
 msgid "Grid"
 msgstr "网格"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1786,6 +1790,10 @@ msgstr "附加行间距"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "使用外部gdb调试符号文件"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2518,6 +2526,10 @@ msgstr "末尾 (也就是代码的的最后)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus目录 (所有工程的默认目录)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "指示线 左(Left),上(Top)"
@@ -3146,10 +3158,6 @@ msgstr "移动光标到页底"
 msgid "Enable multi-caret for column selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "多个Lazarus实例"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "总是开始一个新实例"
@@ -3202,6 +3210,10 @@ msgstr "命名"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "新建桌面..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3518,6 +3530,10 @@ msgstr "工程选项"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "工程:%s选项"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

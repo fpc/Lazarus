@@ -1675,6 +1675,10 @@ msgstr "Dosyalar"
 msgid "Grid"
 msgstr "Izgara"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1726,6 +1730,10 @@ msgstr "Ekstra satır aralığı"
 #: lazarusidestrconsts.dlgextsymb
 msgid "Use external debug symbols file"
 msgstr "Harici hata ayıklama sembolleri dosyasını kullan"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2419,6 +2427,10 @@ msgstr "Son (yani kaynağın sonunda)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus dizini (tüm projeler için varsayılan)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Kılavuz Çizgileri Sol, Üst"
@@ -3026,10 +3038,6 @@ msgstr "İmleçle birlikte çok satırlı hareket"
 msgid "Enable multi-caret for column selection"
 msgstr "Sütun seçimi için çoklu dizge etkinleştir"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Aynı anda birden çok Lazarus çalıştırma"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "her zaman yeni bir Lazarus da dosyayı aç"
@@ -3081,6 +3089,10 @@ msgstr "Adlandırma"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Yeni masaüstü ..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3388,6 +3400,10 @@ msgstr "Proje Seçenekleri"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Proje Seçenekleri: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

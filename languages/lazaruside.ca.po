@@ -1729,6 +1729,10 @@ msgstr "Fitxers"
 msgid "Grid"
 msgstr "Graella"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1783,6 +1787,10 @@ msgstr "Espaiat extra entre línies"
 
 #: lazarusidestrconsts.dlgextsymb
 msgid "Use external debug symbols file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
@@ -2511,6 +2519,10 @@ msgstr "Últim (p.ex. al final del codi font)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Directori Lazarus (predeterminat per a tots els projectes)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 #, fuzzy
 #| msgid "Guid lines Left,Top"
@@ -3137,10 +3149,6 @@ msgstr ""
 msgid "Enable multi-caret for column selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr ""
@@ -3191,6 +3199,10 @@ msgstr "Anomenat"
 
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
@@ -3512,6 +3524,10 @@ msgstr "Opcions del projecte"
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
 msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles

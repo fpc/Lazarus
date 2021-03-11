@@ -1685,6 +1685,10 @@ msgstr "Fichiers"
 msgid "Grid"
 msgstr "Grille"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1736,6 +1740,10 @@ msgstr "Interligne supplémentaire"
 #: lazarusidestrconsts.dlgextsymb
 msgid "Use external debug symbols file"
 msgstr "Utiliser un fichier d'informations de débogage externe"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2450,6 +2458,10 @@ msgstr "À la fin du code source"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Répertoire de Lazarus (par défaut pour tous les projets)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Lignes directrices (gauche, haut)"
@@ -3061,10 +3073,6 @@ msgstr "Les touches de navigation déplacent tous les curseurs"
 msgid "Enable multi-caret for column selection"
 msgstr "Activer les curseurs multiples pour la sélection de colonne"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Plusieurs instances de Lazarus"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "toujours démarrer une nouvelle instance"
@@ -3116,6 +3124,10 @@ msgstr "Nommage"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Nouveau bureau..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3424,6 +3436,10 @@ msgstr "Options du projet"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Options pour le projet : %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

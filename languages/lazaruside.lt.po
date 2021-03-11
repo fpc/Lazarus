@@ -1732,6 +1732,10 @@ msgstr "Failai"
 msgid "Grid"
 msgstr "Tinklelis"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1787,6 +1791,10 @@ msgstr "Papildomas tarpas tarp eilučių"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "Naudoti išorinį „gdb“ derinimo simbolių failą"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2511,6 +2519,10 @@ msgstr "Pačiame gale"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus aplankas (numatytas visiems projektams)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Kairioji bei viršutinė orientavimo linija"
@@ -3138,10 +3150,6 @@ msgstr "Daugelį žymeklių perkelti žymekliu"
 msgid "Enable multi-caret for column selection"
 msgstr "Įgalinti daugelį žymeklių žymėjimui stulpeliais"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Ne vienas „Lazarus“ programos egzempliorius"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "visada stratuoti naują egzempliorių"
@@ -3195,6 +3203,10 @@ msgstr "Pavadinimų suteikimas"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Naujas darbalaukis…"
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3510,6 +3522,10 @@ msgstr "Projekto parinktys"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Projekto parinktys: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

@@ -1732,6 +1732,10 @@ msgstr "Archivos"
 msgid "Grid"
 msgstr "Rejilla"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1787,6 +1791,10 @@ msgstr "Espaciando línea extra"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "Usar archivo externo de símbolos de depuración para gdb"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2533,6 +2541,10 @@ msgstr "El último (es decir, al final del código)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Directorio de Lazarus (predeterminado para todos los proyectos)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Líneas guía Izquierda,Arriba"
@@ -3167,10 +3179,6 @@ msgstr "Teclas de navegación mueven todos los simbolos de intercalación"
 msgid "Enable multi-caret for column selection"
 msgstr "Habilitar múltiple-símbolo de intercalación para la selección de columna"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Instancias de Lazarus multiple"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "siempre iniciar una nueva instancia"
@@ -3224,6 +3232,10 @@ msgstr "Nombrar"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Nuevo escritorio ..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3545,6 +3557,10 @@ msgstr "Opciones del Proyecto"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Opciones para el Proyecto: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

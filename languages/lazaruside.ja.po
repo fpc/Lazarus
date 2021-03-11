@@ -1727,6 +1727,10 @@ msgstr "ファイル"
 msgid "Grid"
 msgstr "グリッド"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1783,6 +1787,10 @@ msgstr "行間隔の追加分"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "外部のgdbデバッグシンボルファイルを使用"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2509,6 +2517,10 @@ msgstr "最後（ソースの末尾）"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarusディレクトリ(全てのプロジェクトの既定値)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "ガイドライン 左、上"
@@ -3136,10 +3148,6 @@ msgstr "複数キャレットをカーソルとともに移動"
 msgid "Enable multi-caret for column selection"
 msgstr "列選択のために複数キャレットを可能にする"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "複数のLazarusインスタンス"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "常に新しいインスタンスを開始"
@@ -3193,6 +3201,10 @@ msgstr "ネーミング"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "新しいデスクトップ ..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3508,6 +3520,10 @@ msgstr "プロジェクトオプション"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "プロジェクトのオプション: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

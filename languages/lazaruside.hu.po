@@ -1683,6 +1683,10 @@ msgstr "Fájlok"
 msgid "Grid"
 msgstr "Rács"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1734,6 +1738,10 @@ msgstr "Extra sorköz"
 #: lazarusidestrconsts.dlgextsymb
 msgid "Use external debug symbols file"
 msgstr "Külső hibakereső szimbólum fájl használata"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2448,6 +2456,10 @@ msgstr "Utolsó (pl. a forráskód végén)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus könyvtára (alapértelmezett minden projekthez)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Segédvonalak balra, fent"
@@ -3059,10 +3071,6 @@ msgstr "A navigáló billentyűk az összes beszúrási jelet mozgatják"
 msgid "Enable multi-caret for column selection"
 msgstr "Többszörös beszúrási jel engedélyezése oszlopkijelöléskor"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Több Lazarus példány"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "Mindig új példány indítása"
@@ -3114,6 +3122,10 @@ msgstr "Elnevezések"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Új felület ..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3422,6 +3434,10 @@ msgstr "Projekt beállításai"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Projekt beállításai: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

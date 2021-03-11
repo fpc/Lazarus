@@ -1714,6 +1714,10 @@ msgstr "Dateien"
 msgid "Grid"
 msgstr "Gitter"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1769,6 +1773,10 @@ msgstr "Zusätzlicher Zeilenabstand"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "Externe Datei mit gdb-Debugsymbolen nutzen"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2493,6 +2501,10 @@ msgstr "Letzter (d.h. am Ende des Quelltexts)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Lazarus-Verzeichnis (Voreinstellung für alle Projekte)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Farbe für links, oben"
@@ -3112,10 +3124,6 @@ msgstr ""
 msgid "Enable multi-caret for column selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Mehrfache Lazarus-Instanzen"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "immer eine neue Instanz öffnen"
@@ -3169,6 +3177,10 @@ msgstr "Namensvergabe"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Neuer Desktop ..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3484,6 +3496,10 @@ msgstr "Projekteinstellungen"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Einstellungen für Projekt: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

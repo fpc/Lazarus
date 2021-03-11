@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-02-24 01:12+0300\n"
+"PO-Revision-Date: 2021-03-12 01:30+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -1684,6 +1684,10 @@ msgstr "Файлы"
 msgid "Grid"
 msgstr "Сетка"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr "Запуск IDE"
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1735,6 +1739,10 @@ msgstr "Межстрочный интервал"
 #: lazarusidestrconsts.dlgextsymb
 msgid "Use external debug symbols file"
 msgstr "Использовать внешний файл отладочных символов"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr "Открытие файлов из ОС"
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2447,6 +2455,10 @@ msgstr "Последними (т.е. в конце исходного кода)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Каталог Lazarus (общий для всех проектов)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr "Экземпляры Lazarus"
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr "Левая и верхняя линии позиционирования"
@@ -3058,10 +3070,6 @@ msgstr "Перемещать все курсоры за основным"
 msgid "Enable multi-caret for column selection"
 msgstr "Включить несколько курсоров при выделении столбца"
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr "Несколько экземпляров Lazarus"
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr "всегда запускать новый экземпляр"
@@ -3113,6 +3121,10 @@ msgstr "Именование"
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
 msgstr "Новый рабочий стол ..."
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
+msgstr "Тип нового проекта"
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
 msgid "No automatic renaming"
@@ -3421,6 +3433,10 @@ msgstr "Параметры проекта"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Параметры проекта: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr "Открываемый или создаваемый проект"
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

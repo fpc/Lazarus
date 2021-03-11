@@ -1775,6 +1775,10 @@ msgstr "קבצים"
 msgid "Grid"
 msgstr "רשת"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1834,6 +1838,10 @@ msgstr "מרווח שורה מוגדל"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "השתמש בקובץ סמלים חצוני של מנפה השגיאות gdb"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2578,6 +2586,10 @@ msgstr "אחרון (כלומר בסוף קוד המקור)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "תיקיית לזארוס (ברירת מחדל לכל הפרויקטים)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 #, fuzzy
 #| msgid "Guid lines Left,Top"
@@ -3226,10 +3238,6 @@ msgstr ""
 msgid "Enable multi-caret for column selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr ""
@@ -3284,6 +3292,10 @@ msgstr "מתן שם"
 
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
@@ -3624,6 +3636,10 @@ msgstr "אפשרויות פרויקט"
 #, object-pascal-format, fuzzy, badformat
 msgid "Options for Project: %s"
 msgstr "אפשרויות לפרוייקט: s%"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 #, fuzzy

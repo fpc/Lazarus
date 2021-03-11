@@ -1712,6 +1712,10 @@ msgstr "Súbory"
 msgid "Grid"
 msgstr "Mriežka"
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1771,6 +1775,10 @@ msgstr "Dodatočná medzera medzi riadkami"
 #| msgid "Use external gdb debug symbols file"
 msgid "Use external debug symbols file"
 msgstr "Použiť externý súbor ladiacich symbolov gdb"
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
+msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
 msgid "File extensions"
@@ -2502,6 +2510,10 @@ msgstr "Posledný (tj. na konci kódu)"
 msgid "Lazarus directory (default for all projects)"
 msgstr "Adresár Lazarus (predvolený pre všetky projekty)"
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 #, fuzzy
 #| msgid "Guid lines Left,Top"
@@ -3134,10 +3146,6 @@ msgstr ""
 msgid "Enable multi-caret for column selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr ""
@@ -3188,6 +3196,10 @@ msgstr "Pomenovanie"
 
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
@@ -3518,6 +3530,10 @@ msgstr "Voľby projektu"
 #, object-pascal-format
 msgid "Options for Project: %s"
 msgstr "Voľby projektu: %s"
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
+msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
 msgid "Project Files"

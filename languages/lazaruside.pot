@@ -1674,6 +1674,10 @@ msgstr ""
 msgid "Grid"
 msgstr ""
 
+#: lazarusidestrconsts.dlgenvidestartup
+msgid "IDE Startup"
+msgstr ""
+
 #: lazarusidestrconsts.dlgenvlanguage
 msgctxt "lazarusidestrconsts.dlgenvlanguage"
 msgid "Language"
@@ -1724,6 +1728,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgextsymb
 msgid "Use external debug symbols file"
+msgstr ""
+
+#: lazarusidestrconsts.dlgfileassociationinos
+msgid "Opening files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
@@ -2435,6 +2443,10 @@ msgstr ""
 msgid "Lazarus directory (default for all projects)"
 msgstr ""
 
+#: lazarusidestrconsts.dlglazarusinstances
+msgid "Lazarus instances"
+msgstr ""
+
 #: lazarusidestrconsts.dlglefttopclr
 msgid "Guide lines Left,Top"
 msgstr ""
@@ -3046,10 +3058,6 @@ msgstr ""
 msgid "Enable multi-caret for column selection"
 msgstr ""
 
-#: lazarusidestrconsts.dlgmultipleinstances
-msgid "Multiple Lazarus instances"
-msgstr ""
-
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
 msgstr ""
@@ -3100,6 +3108,10 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgnewdesktop
 msgid "New desktop ..."
+msgstr ""
+
+#: lazarusidestrconsts.dlgnewprojecttype
+msgid "New Project Type"
 msgstr ""
 
 #: lazarusidestrconsts.dlgnoautomaticrenaming
@@ -3406,6 +3418,10 @@ msgstr ""
 #: lazarusidestrconsts.dlgprojectoptionsfor
 #, object-pascal-format
 msgid "Options for Project: %s"
+msgstr ""
+
+#: lazarusidestrconsts.dlgprojecttoopenorcreate
+msgid "Project to Open or Create"
 msgstr ""
 
 #: lazarusidestrconsts.dlgprojfiles
