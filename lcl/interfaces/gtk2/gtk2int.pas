@@ -474,7 +474,7 @@ begin
 
   for i := 0 to Count - 2 do
   begin
-    if AnsiCompareText(Strings[i], Strings[i + 1]) < 0 then
+    if DoCompareText(Strings[i], Strings[i + 1]) < 0 then
     begin
       Sort;
       Break;
@@ -550,12 +550,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Sort;
 var
-  sl: TStringListUTF8Fast;
+  sl: TStringList;
   OldSorted: Boolean;
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
-  sl := TStringListUTF8Fast.Create;
+  sl := TStringList.Create;
   sl.Assign(Self);
   sl.Sort;
   OldSorted := Sorted;
@@ -623,7 +623,7 @@ begin
       // => don't change if the content is already the same
       if Sorted then
       begin
-        CmpList := TStringListUTF8Fast.Create;
+        CmpList := TStringList.Create;
         CmpList.Assign(TStrings(Source));
         TStringList(CmpList).Sort;
       end
@@ -833,7 +833,7 @@ begin
   while (L <= R) do
   begin
     I := L + (R - L) div 2;
-    CompareRes := AnsiCompareText(S, Strings[I]);
+    CompareRes := DoCompareText(S, Strings[I]);
     if (CompareRes > 0) then
       L := I + 1
     else

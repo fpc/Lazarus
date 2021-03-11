@@ -23,8 +23,6 @@ interface
 
 uses
   Classes, SysUtils,
-  // LazUtils
-  LazUTF8,
   // LCL
   Controls, LazGtk3, LazGObject2, LazGLib2;
 
@@ -320,12 +318,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStoreStringList.Sort;
 var
-  sl: TStringListUTF8Fast;
+  sl: TStringList;
   OldSorted: Boolean;
 begin
   BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
-  sl := TStringListUTF8Fast.Create;
+  sl := TStringList.Create;
   sl.Assign(Self);
   sl.Sort;
   OldSorted := Sorted;
@@ -393,7 +391,7 @@ begin
       // => don't change if the content is already the same
       if Sorted then
       begin
-        CmpList := TStringListUTF8Fast.Create;
+        CmpList := TStringList.Create;
         CmpList.Assign(TStrings(Source));
         TStringList(CmpList).Sort;
       end
