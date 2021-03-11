@@ -155,7 +155,6 @@ begin
   ListTree.Images := TPkgComponent.Images;
   PalletteTree.Images := TPkgComponent.Images;
   InheritanceTree.Images := TPkgComponent.Images;
-  PageControl.ActivePage := TabSheetList;
   if Assigned(IDEComponentPalette) then
   begin
     UpdateComponents;
@@ -165,6 +164,7 @@ begin
   end;
   chbKeepOpen.Checked := EnvironmentOptions.ComponentListKeepOpen;
   PageControl.PageIndex := EnvironmentOptions.ComponentListPageIndex;
+  PageControlChange(Nil);
 end;
 
 procedure TComponentListForm.AddSelectedComponent;
