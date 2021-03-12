@@ -41,6 +41,7 @@ type
     MajorVersionLabel: TLabel;
     MajorVersionSpinEdit: TSpinEdit;
     procedure clbAttributesClickCheck(Sender: TObject);
+    procedure VersionSpinEditChange(Sender: TObject);
     procedure UseVersionInfoCheckBoxChange(Sender: TObject);
   private
     FVersionInfo: TProjectVersionInfo;
@@ -95,13 +96,30 @@ end;
 procedure TProjectVersionInfoOptionsFrame.clbAttributesClickCheck(Sender: TObject);
 begin
   if clbAttributes.Checked[Ord(pvaPrivateBuild)] then
-    DeleteKey('PrivateBuild')
+    AddKey('PrivateBuild')
   else
-    AddKey('PrivateBuild');
+    DeleteKey('PrivateBuild');
   if clbAttributes.Checked[Ord(pvaSpecialBuild)] then
-    DeleteKey('SpecialBuild')
+    AddKey('SpecialBuild')
   else
-    AddKey('SpecialBuild');
+    DeleteKey('SpecialBuild');
+end;
+
+procedure TProjectVersionInfoOptionsFrame.VersionSpinEditChange(
+  Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to StringInfo.RowCount - 1 do
+    if UTF8LowerCase(StringInfo.Cells[0, I]) = UTF8LowerCase('FileVersion') then
+    begin
+      StringInfo.Cells[1, I] :=
+        IntToStr(MajorVersionSpinEdit.Value) + '.' +
+        IntToStr(MinorVersionSpinEdit.Value) + '.' +
+        IntToStr(RevisionSpinEdit.Value) + '.' +
+        IntToStr(BuildSpinEdit.Value);
+      Exit;
+    end;
 end;
 
 procedure TProjectVersionInfoOptionsFrame.EnableVersionInfo(UseVersionInfo: boolean);
@@ -112,7 +130,7 @@ begin
   AttributesGroupBox.Enabled := UseVersionInfo;
 end;
 
-procedure TProjectVersionInfoOptionsFrame.AddKey(AKey: String);
+procedure TProjectVersionInfoOptionsFrame.DeleteKey(AKey: String);
 var
   I: Integer;
 begin
@@ -121,7 +139,7 @@ begin
       StringInfo.DeleteRow(I);
 end;
 
-procedure TProjectVersionInfoOptionsFrame.DeleteKey(AKey: String);
+procedure TProjectVersionInfoOptionsFrame.AddKey(AKey: String);
 var
   I: Integer;
 begin

@@ -93,6 +93,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Top = 24
       Width = 70
       MaxValue = 65535
+      OnChange = VersionSpinEditChange
       TabOrder = 0
     end
     object MinorVersionSpinEdit: TSpinEdit
@@ -104,6 +105,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Top = 24
       Width = 70
       MaxValue = 65535
+      OnChange = VersionSpinEditChange
       TabOrder = 1
     end
     object RevisionSpinEdit: TSpinEdit
@@ -115,6 +117,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Top = 24
       Width = 70
       MaxValue = 65535
+      OnChange = VersionSpinEditChange
       TabOrder = 2
     end
     object AutomaticallyIncreaseBuildCheckBox: TCheckBox
@@ -141,6 +144,7 @@ object ProjectVersionInfoOptionsFrame: TProjectVersionInfoOptionsFrame
       Top = 24
       Width = 70
       MaxValue = 65535
+      OnChange = VersionSpinEditChange
       TabOrder = 3
     end
   end
