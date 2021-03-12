@@ -140,6 +140,7 @@ type
 
 const
   SInvalidCodePoint = 'The (hexadecimal) sequence %s is not a valid UTF8 codepoint.';
+  SIndexOutOfRangeForFMask = 'Range check error trying to access FMask[%d]. Index should be between 1 and %d';
 
 
 { ***********************************************************************************************
@@ -208,6 +209,7 @@ const
     FOnValidationError: TNotifyEvent;
 
     procedure ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
+    procedure CheckRange(Index: Integer);
     procedure AddToMask(ALiteral: TUtf8Char);
     procedure AddToMask(AMaskType: TMaskedType);
     function GetModified: Boolean;
@@ -526,6 +528,12 @@ begin
   FillChar(AMask, SizeOf(TInternalMask), 0);
   ALengthIndicator := 0;
   {$POP}
+end;
+
+procedure TCustomMaskEdit.CheckRange(Index: Integer);
+begin
+  if (Index < 1) or (Index > FMaskLength) then
+    raise ERangeError.CreateFmt(SIndexOutOfRangeForFMask,[Index, FMaskLength]);
 end;
 
 procedure TCustomMaskEdit.AddToMask(ALiteral: TUtf8Char);
@@ -883,6 +891,7 @@ procedure TCustomMaskEdit.JumpToNextDot(Dot: Char);
     i: Integer;
   begin
     Result := 0;
+    CheckRange(Start);
     for i := Start to FMaskLength do
     begin
       if (FMask[i].MaskType = Char_IsLiteral) and (FMask[i].Literal = Sub) then
@@ -955,6 +964,7 @@ end;
 //Return if the index passed contains a literal in FMask (so it cannot be altered)
 function TCustomMaskEdit.IsLiteral(Index: Integer): Boolean;
 begin
+  CheckRange(Index);
   Result := (FMask[Index].MaskType in [Char_IsLiteral, Char_HourSeparator, Char_DateSeparator]);
 end;
 
@@ -984,7 +994,8 @@ var
   Ok: Boolean;
 begin
   Result := False;
-  if (Position < 1) or (Position > FMaskLength) then Exit;
+  CheckRange(Position);
+  //if (Position < 1) or (Position > FMaskLength) then Exit;
   Current := FMask[Position].MaskType;
   case Current Of
     Char_Number              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9',#32]);
@@ -1208,6 +1219,7 @@ end;
 function TCustomMaskEdit.ClearChar(Position : Integer) : TUtf8Char;
 begin
   //For Delphi compatibilty, only literals remain, all others will be blanked
+  CheckRange(Position);
   case FMask[Position].MaskType Of
     Char_Number,
     Char_NumberFixed,
@@ -1280,6 +1292,7 @@ function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char;
 Var
   Current : tMaskedType;
 Begin
+  CheckRange(Position);
   Current := FMask[Position].MaskType;
   Result  := False;
 
