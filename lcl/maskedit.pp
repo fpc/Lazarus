@@ -186,13 +186,13 @@ const
     FRealMask        : String;            // Real mask inserted
     FMask            : TInternalMask;     // Actual internal mask
     FMaskLength      : Integer;           // Length of internal mask
-    FFirstFreePos    : Integer;           // First position where user can enter text (it is 1-based, in contrast to FCursorPos. Maybe adjust this? BB)
+    FFirstFreePos    : Integer;           // First position where user can enter text (it is 1-based)
     FMaskSave        : Boolean;           // Save mask as part of the data
     FTrimType        : TMaskEditTrimType; // Trim leading or trailing spaces in GetText
     FSpaceChar       : Char;              // Char for space (default '_')
     FCurrentText     : TCaption;          // FCurrentText is our backup. See notes above!
     FTextOnEnter     : String;            // Text when user enters the control, used for Reset()
-    FCursorPos       : Integer;           // Current caret position (so it is zero-based)
+    FCharPos         : Integer;           // Current character position (1-based)
     FChangeAllowed   : Boolean;           // We do not allow text changes by the OS (cut/clear via context menu)
     FInitialText     : String;            // Text set in the formdesigner (must be handled in Loaded)
     FInitialMask     : String;            // EditMask set in the formdesigner (must be handled in Loaded)
@@ -813,25 +813,25 @@ begin
   //no need to do this when in designmode, it actually looks silly if we do
   if not (csDesigning in ComponentState) then
   begin
-    if FCursorPos < 0 then FCursorPos := 0
-    else if FCursorPos  > FMaskLength then FCursorPos := FMaskLength;
-    if (FCursorPos + 1 > FMaskLength) or not Focused then
-      SetSel(FCursorPos, FCursorPos)
+    if FCharPos < 1 then FCharPos := 1
+    else if (FCharPos > FMaskLength + 1) then FCharPos := FMaskLength + 1;
+    if (FCharPos > FMaskLength) or not Focused then
+      SetSel(FCharPos-1, FCharPos-1)
     else
-      SetSel(FCursorPos, FCursorPos + 1);
+      SetSel(FCharPos-1, FCharPos);
   end;
 end;
 
 //Move to next char, skip any mask-literals
 procedure TCustomMaskEdit.SelectNextChar;
 begin
-  if (FCursorPos + 1) > FMaskLength then Exit;
-  Inc(FCursorPos);
-  While (FCursorPos + 1 < FMaskLength) and (IsLiteral(FCursorPos + 1)) do
+  if (FCharPos) > FMaskLength then Exit;
+  Inc(FCharPos);
+  While (FCharPos < FMaskLength) and (IsLiteral(FCharPos)) do
   begin
-    Inc(FCursorPos);
+    Inc(FCharPos);
   end;
-  if IsLiteral(FCursorPos + 1) then Inc(FCursorPos);
+  if IsLiteral(FCharPos) then Inc(FCharPos);
   SetCursorPos;
 end;
 
@@ -843,27 +843,27 @@ var
   AStop: Integer;
 begin
   GetSel(AStart, AStop);
-  if (FCursorPos = 0) and (AStop - AStart <= 1) then Exit;
-  P := FCursorPos;
-  Dec(FCursorPos);
-  While (FCursorPos > 0) and IsLiteral(FCursorPos + 1) do
+  if (FCharPos = 1) and (AStop - AStart <= 1) then Exit;
+  P := FCharPos;
+  Dec(FCharPos);
+  While (FCharPos > 1) and IsLiteral(FCharPos) do
   begin
-    Dec(FCursorPos);
+    Dec(FCharPos);
   end;
-  if (FCursorPos = 0) and (P <> 0) and IsLiteral(FCursorPos + 1) then FCursorPos := P;
+  if (FCharPos = 1) and (P <> 1) and IsLiteral(FCharPos) then FCharPos := P;
   SetCursorPos;
 end;
 
 
 procedure TCustomMaskEdit.SelectFirstChar;
 begin
-  FCursorPos := 0;
+  FCharPos := 1;
   SetCursorPos;
 end;
 
 procedure TCustomMaskEdit.GotoEnd;
 begin
-  FCursorPos := FMaskLength;
+  FCharPos := FMaskLength + 1;
   SetCursorPos;
 end;
 
@@ -898,7 +898,7 @@ var
   P, P2: Integer;
 begin
   if not (Dot in [Period, Comma]) then Exit;
-  P := MaskPos(Dot, FCursorPos + 1);
+  P := MaskPos(Dot, FCharPos);
   HasNextDot := P > 0;
   If (Dot = Period) then
   begin
@@ -918,7 +918,7 @@ begin
   CanJump := HasNextDot and (P < FMaskLength) and (not IsLiteral(P+1));
   if CanJump then
   begin
-    FCursorPos := P;
+    FCharPos := P+1;
     SetCursorPos;
   end;
 end;
@@ -1253,7 +1253,7 @@ Var
   S: String;
   i, SelectionStart, SelectionStop: Integer;
 begin
-  if CanInsertChar(FCursorPos + 1, Ch) then
+  if CanInsertChar(FCharPos, Ch) then
   begin
     S := inherited RealGetText;
     if HasSelection then
@@ -1264,7 +1264,7 @@ begin
       GetSel(SelectionStart, SelectionStop);
       for i := SelectionStart + 1 to SelectionStop do SetCodePoint(S, i, ClearChar(i));
     end;
-    SetCodePoint(S, FCursorPos + 1, Ch);
+    SetCodePoint(S, FCharPos, Ch);
     RealSetTextWhileMasked(S);
     SelectNextChar;
   end
@@ -1375,13 +1375,13 @@ begin
     if HasSelection then
     begin
       DeleteSelected;
-      if IsLiteral(FCursorPos) then
+      if IsLiteral(FCharPos) then
         SelectNextChar;
     end
     else
     begin
       //cannot delete beyond length of string
-      if FCursorPos < FMaskLength then
+      if (FCharPos < FMaskLength + 1) then
       begin
         //This will select the appropriate char in the control
         SetCursorPos;
@@ -1395,13 +1395,13 @@ begin
     if HasExtSelection then
     begin
       DeleteSelected;
-      if IsLiteral(FCursorPos+1) then
+      if IsLiteral(FCharPos) then
         SelectNextChar;
     end
     else
     begin
       //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
-      if FCursorPos > FFirstFreePos - 1 then
+      if FCharPos > FFirstFreePos then
       begin
         //This will select the previous character
         //If there are MaskLiterals just in front of the current position, they will be skipped
@@ -1816,7 +1816,7 @@ begin
   if IsMasked and (not ReadOnly) then
   begin
     RealSetTextWhileMasked(FTextOnEnter);
-    FCursorPos := FFirstFreePos-1;
+    FCharPos := FFirstFreePos;
     SetCursorPos;
   end;
 end;
@@ -1828,7 +1828,7 @@ begin
   if IsMasked then
   begin
     //debugln('TCustomMaskEdit.DoEnter: FValidationFailed = ',DbgS(FValidationFailed));
-    FCursorPos := GetSelStart;
+    FCharPos := GetSelStart + 1;
     //Only save FTextOnEnter if validation did not fail in last DoExit that occurred
     if not FValidationFailed then
       FTextOnEnter := inherited RealGetText
@@ -1838,11 +1838,11 @@ begin
     if (AutoSelect and not (csLButtonDown in ControlState)) then
     begin
       SelectAll;
-      FCursorPos := GetSelStart;
+      FCharPos := GetSelStart + 1;
     end
     else
     begin
-    if ((FCursorPos = 0) and (IsLiteral(1))) then
+    if ((FCharPos = 1) and (IsLiteral(1))) then
       //On entering select first editable char
       SelectNextChar
     else
@@ -1896,7 +1896,7 @@ begin
   begin
     Exit;
   end;
-  FCursorPos := GetSelStart;
+  FCharPos := GetSelStart + 1;
   // shift and arrowkey -> old procedure
   if (ssShift in Shift) then
   begin
@@ -2049,9 +2049,9 @@ begin
   begin
     Exit;
   end;
-  FCursorPos := GetSelStart;
+  FCharPos := GetSelStart + 1;
   //If the cursor is on a MaskLiteral then go to the next writable position if a key is pressed (Delphi compatibility)
-  if IsLiteral(FCursorPos + 1) then
+  if IsLiteral(FCharPos) then
   begin
     SelectNextChar;
     Key := EmptyStr;
@@ -2060,7 +2060,7 @@ begin
   // Insert a char
   if  not ((Length(Key) = 1) and (Key[1] in [#0..#31])) then
   begin
-    if ((Key = Period) or (Key = Comma)) and not (CanInsertChar(FCursorPos + 1, Key)) then
+    if ((Key = Period) or (Key = Comma)) and not (CanInsertChar(FCharPos, Key)) then
     begin//Try to jump to next period or comma, if at all possible
       JumpToNextDot(Key[1]);
     end
@@ -2103,7 +2103,7 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   if IsMasked then
   begin
-    FCursorPos := GetSelStart;
+    FCharPos := GetSelStart + 1;
     if not HasSelection then SetCursorPos;
   end;
 end;
@@ -2146,7 +2146,7 @@ begin
    ClipText := ClipBoard.AsText;
    if (Utf8Length(ClipText) > 0) then
    begin
-     P := FCursorPos + 1;
+     P := FCharPos;
      DeleteSelected;
      S := inherited RealGetText;
      i := 1;
@@ -2195,7 +2195,7 @@ begin
     S  := '';
     for I := 1 To FMaskLength do S := S + ClearChar(I);
     RealSetTextWhileMasked(S);
-    FCursorPos := 0;
+    FCharPos := 1;
     SetCursorPos;
   end
   else Inherited Clear;
