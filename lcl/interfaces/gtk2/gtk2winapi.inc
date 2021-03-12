@@ -5252,10 +5252,12 @@ begin
                 PangoDesc := pango_context_get_font_description(pango_layout_get_context(AFont));
 
               AFontSize := pango_font_description_get_size(PangoDesc);
-              if not pango_font_description_get_size_is_absolute(PangoDesc) or (AFontSize >= PANGO_SCALE) then
-                AFontSize := AFontSize div PANGO_SCALE;
+              if not pango_font_description_get_size_is_absolute(PangoDesc) then
+                AFontSize := MulDiv(AFontSize, Screen.PixelsPerInch, 72 * PANGO_SCALE)
+              else
+                AFontSize := AFontSize div PANGO_SCALE;;
 
-              PLogfont(Buf)^.lfHeight := MulDiv(AFontSize, Screen.PixelsPerInch, 72);
+              PLogfont(Buf)^.lfHeight := AFontSize;
             end;
           end;
         end else
