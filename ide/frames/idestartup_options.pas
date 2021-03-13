@@ -28,33 +28,33 @@ unit IdeStartup_Options;
 interface
 
 uses
-  SysUtils,
   // LCL
-  StdCtrls, Dialogs, Controls, Spin, CheckLst, ExtCtrls,
+  StdCtrls, Controls, Dialogs,
+  // LazControls
+  DividerBevel,
   // LazUtils
-  FileUtil, LazFileUtils, LazLoggerBase,
-  // IDE
-  EnvironmentOpts,
+  LazFileUtils, LazLoggerBase,
   // CodeTools
   CodeToolManager, DefineTemplates,
   // BuildIntf
-  ProjectIntf,
+  ProjectIntf, IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEDialogs, IDEUtils, DividerBevel,
+  IDEOptEditorIntf,
   // IDE
-  LazarusIDEStrConsts, InputHistory, LazConf, DialogProcs, InitialSetupProc, Classes;
+  EnvironmentOpts, LazarusIDEStrConsts;
 
 type
 
   { TIdeStartupFrame }
 
   TIdeStartupFrame = class(TAbstractIDEOptionsEditor)
+    ProjectTypeLabel: TLabel;
+    ProjectTypeCB: TComboBox;
     lblFileAssociation: TDividerBevel;
     lblProjectToOpen: TDividerBevel;
-    MultipleInstancesComboBox: TComboBox;
+    LazarusInstancesCB: TComboBox;
     LazarusInstancesLabel: TLabel;
     OpenLastProjectAtStartCheckBox: TCheckBox;
-    ProjectTypeRG: TRadioGroup;
     procedure OpenLastProjectAtStartCheckBoxChange(Sender: TObject);
   private
     FOldOpenLastProjectAtStart: boolean;
@@ -77,7 +77,7 @@ implementation
 
 procedure TIdeStartupFrame.OpenLastProjectAtStartCheckBoxChange(Sender: TObject);
 begin
-  ProjectTypeRG.Enabled := not (Sender as TCheckBox).Checked;
+  ProjectTypeCB.Enabled := not (Sender as TCheckBox).Checked;
 end;
 {
 function TIdeStartupFrame.Check: Boolean;
@@ -93,11 +93,12 @@ end;
 procedure TIdeStartupFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 var
   i: Integer;
+  pd: TProjectDescriptor;
 begin
   // Using File Association in OS
   lblFileAssociation.Caption := dlgFileAssociationInOS;
   LazarusInstancesLabel.Caption := dlgLazarusInstances;
-  with MultipleInstancesComboBox.Items do
+  with LazarusInstancesCB.Items do
   begin
     BeginUpdate;
     Add(dlgMultipleInstances_AlwaysStartNew);
@@ -105,46 +106,57 @@ begin
     Add(dlgMultipleInstances_ForceSingleInstance);
     EndUpdate;
   end;
-  Assert(MultipleInstancesComboBox.Items.Count = Ord(High(TIDEMultipleInstancesOption))+1);
+  Assert(LazarusInstancesCB.Items.Count = Ord(High(TIDEMultipleInstancesOption))+1);
   // Project to Open or Create
   lblProjectToOpen.Caption := dlgProjectToOpenOrCreate;
   OpenLastProjectAtStartCheckBox.Caption := dlgQOpenLastPrj;
-  ProjectTypeRG.Caption := dlgNewProjectType;
+  ProjectTypeLabel.Caption := dlgNewProjectType;
   for i:=0 to ProjectDescriptors.Count-1 do
-    if ProjectDescriptors[i].VisibleInNewDialog then
-      ProjectTypeRG.Items.Add(ProjectDescriptors[i].Name);  // GetLocalizedName
+  begin
+    pd := ProjectDescriptors[i];
+    if pd.VisibleInNewDialog then
+      ProjectTypeCB.Items.AddObject(pd.GetLocalizedName, pd);
+  end;
 end;
 
 procedure TIdeStartupFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   i: Integer;
+  pd: TProjectDescriptor;
 begin
   with AOptions as TEnvironmentOptions do
   begin
-    MultipleInstancesComboBox.ItemIndex := Ord(MultipleInstances);
+    LazarusInstancesCB.ItemIndex := Ord(MultipleInstances);
 
     FOldOpenLastProjectAtStart := OpenLastProjectAtStart;
     OpenLastProjectAtStartCheckBox.Checked:=OpenLastProjectAtStart;
 
     FOldProjectTemplateAtStart := NewProjectTemplateAtStart;
-    for i := 0 to ProjectTypeRG.Items.Count-1 do
-      if ProjectTypeRG.Items[i] = FOldProjectTemplateAtStart then
+    for i := 0 to ProjectTypeCB.Items.Count-1 do
+    begin
+      pd := TProjectDescriptor(ProjectTypeCB.Items.Objects[i]);
+      if pd.Name = FOldProjectTemplateAtStart then
       begin
-        ProjectTypeRG.ItemIndex := i;
+        ProjectTypeCB.ItemIndex := i;
         Exit;
       end;
-    ProjectTypeRG.ItemIndex := 0;
+    end;
+    ProjectTypeCB.ItemIndex := 0;
   end;
 end;
 
 procedure TIdeStartupFrame.WriteSettings(AOptions: TAbstractIDEOptions);
+var
+  pd: TProjectDescriptor;
 begin
   with AOptions as TEnvironmentOptions do
   begin
-    MultipleInstances := TIDEMultipleInstancesOption(MultipleInstancesComboBox.ItemIndex);
+    MultipleInstances := TIDEMultipleInstancesOption(LazarusInstancesCB.ItemIndex);
 
     OpenLastProjectAtStart := OpenLastProjectAtStartCheckBox.Checked;
-    NewProjectTemplateAtStart := ProjectTypeRG.Items[ProjectTypeRG.ItemIndex];
+    // Don't use the localized name from ProjectTypeCB.Text.
+    pd := TProjectDescriptor(ProjectTypeCB.Items.Objects[ProjectTypeCB.ItemIndex]);
+    NewProjectTemplateAtStart := pd.Name;
   end;
 end;
 

@@ -1611,7 +1611,7 @@ resourcestring
   lisEnvOptDlgTestDirNotFoundMsg = 'Test directory "%s" not found.';
 
   // Ide Startup options
-  dlgFileAssociationInOS = 'Opening files from OS';
+  dlgFileAssociationInOS = 'Opening Files from OS';
   dlgLazarusInstances = 'Lazarus instances';
   dlgMultipleInstances_AlwaysStartNew = 'always start a new instance';
   dlgMultipleInstances_OpenFilesInRunning = 'open files in a running instance';
