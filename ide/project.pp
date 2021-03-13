@@ -6657,6 +6657,7 @@ begin
       // add directory
       FSrcDirectories.AddChild(SrcDirDefTempl);
     end;
+    DebugLn('TProjectDefineTemplates.UpdateSourceDirectories: Calling CodeToolBoss.DefineTree.ClearCache');
     CodeToolBoss.DefineTree.ClearCache;
   finally
     NewSourceDirs.Free;
@@ -6680,10 +6681,14 @@ begin
   if OptionsDefTempl=nil then begin
     // no custom options -> delete old template
     if (FSrcDirIf<>nil) and FSrcDirIf.DeleteChild('Custom Options') then
+    begin
+      DebugLn('TProjectDefineTemplates.UpdateDefinesForCustomDefines: Calling CodeToolBoss.DefineTree.ClearCache');
       CodeToolBoss.DefineTree.ClearCache;
+    end;
   end else begin
     UpdateSrcDirIfDef;
     FSrcDirIf.ReplaceChild(OptionsDefTempl);
+    DebugLn('TProjectDefineTemplates.UpdateDefinesForCustomDefines: Calling CodeToolBoss.DefineTree.ClearCache');
     CodeToolBoss.DefineTree.ClearCache;
   end;
 end;

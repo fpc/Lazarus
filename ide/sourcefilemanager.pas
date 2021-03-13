@@ -3664,22 +3664,18 @@ var
 begin
   EditorInfoIndex := 0;
   SourceEditorManager.IncUpdateLock;
+  Project1.BeginUpdate(true);
   try
-    Project1.BeginUpdate(true);
-    try
-      // call ProjectOpening handlers
-      HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpening, Project1);
-      if ProjInspector<>nil then
-        ProjInspector.LazProject:=Project1;
+    // call ProjectOpening handlers
+    HandlerResult:=MainIDE.DoCallProjectChangedHandler(lihtProjectOpening, Project1);
+    if ProjInspector<>nil then
+      ProjInspector.LazProject:=Project1;
 
-      // read project info file
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B3');{$ENDIF}
-      Project1.ReadProject(AFilename, EnvironmentOptions.BuildMatrixOptions, True);
-      {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B4');{$ENDIF}
-      Result:=CompleteLoadingProjectInfo;
-    finally
-      Project1.EndUpdate;
-    end;
+    // read project info file
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B3');{$ENDIF}
+    Project1.ReadProject(AFilename, EnvironmentOptions.BuildMatrixOptions, True);
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B4');{$ENDIF}
+    Result:=CompleteLoadingProjectInfo;
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('InitOpenedProjectFile B5');{$ENDIF}
     if Result<>mrOk then exit;
 
@@ -3786,11 +3782,11 @@ begin
     end;
 
     Project1.UpdateAllVisibleUnits;
-
     IncreaseCompilerParseStamp;
     IDEProtocolOpts.LastProjectLoadingCrashed := False;
     Result:=mrOk;
   finally
+    Project1.EndUpdate;
     SourceEditorManager.DecUpdateLock;
     if (Result<>mrOk) and (Project1<>nil) then begin
       // mark all files, that are left to open as unloaded:
