@@ -125,6 +125,7 @@ function WndText(Wnd: HWND): String; inline;
 { String functions that may be moved to the RTL in the future }
 function WideStrLCopy(dest, source: PWideChar; maxlen: SizeInt): PWideChar;
 procedure UpdateWindowsVersion;
+function ValidateWindowTitle(const Str: String): String;
 
 type 
   PStayOnTopWindowsInfo = ^TStayOnTopWindowsInfo;
@@ -1661,6 +1662,11 @@ begin
   else
     WindowsVersion := wvLater;
   end;
+end;
+
+function ValidateWindowTitle(const Str: String): String;
+begin
+  Result := Copy(Str, 1, MAXWORD);
 end;
 
 procedure DoInitialization;

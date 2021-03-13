@@ -1571,7 +1571,7 @@ begin
   begin
     pClassName := @EditClsName[0];
     SubClassWndProc := @MemoWndProc;
-    WindowTitle := StrCaption;
+    WindowTitle := ValidateWindowTitle(StrCaption);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
