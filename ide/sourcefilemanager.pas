@@ -7425,10 +7425,8 @@ begin
 
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1, MainIDE.IDEStarted);
-
-  //DebugLn('CompleteLoadingProjectInfo ',Project1.IDAsString);
   Project1.DefineTemplates.Active:=true;
-
+  MainIDE.UpdateDefineTemplates;
   Result:=mrOk;
 end;
 

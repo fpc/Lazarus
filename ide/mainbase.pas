@@ -200,6 +200,7 @@ type
     procedure DoOpenRecentFile(AFilename: string);
 
     procedure UpdateHighlighters(Immediately: boolean = false); override;
+    procedure UpdateDefineTemplates;
 
     procedure FindInFilesPerDialog(AProject: TProject); override;
     procedure FindInFiles(AProject: TProject; const FindText: string); override;
@@ -1752,6 +1753,11 @@ begin
   end
   else
     Include(FIdleIdeActions, iiaUpdateHighlighters);
+end;
+
+procedure TMainIDEBase.UpdateDefineTemplates;
+begin
+  Include(FIdleIdeActions, iiaUpdateDefineTemplates);
 end;
 
 procedure TMainIDEBase.FindInFilesPerDialog(AProject: TProject);
