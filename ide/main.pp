@@ -12158,8 +12158,10 @@ begin
 
   SrcNB := TSourceNotebook(Sender);
   if (SrcNB.EditorCount = 1) then begin
-    DoCloseEditorFile(SrcNB.Editors[0], [cfSaveFirst]);
-    CloseAction := caFree;
+    if DoCloseEditorFile(SrcNB.Editors[0], [cfSaveFirst]) = mrOK then
+      CloseAction := caFree
+    else
+      CloseAction := caNone;
     exit;
   end;
 
