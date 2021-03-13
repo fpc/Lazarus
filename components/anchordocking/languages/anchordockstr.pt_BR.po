@@ -119,6 +119,14 @@ msgstr "Achatar cabeçalhos"
 msgid "Flatten headers of docked controls"
 msgstr "Achatar cabeçalhos dos controles aportados"
 
+#: anchordockstr.adrsfreewindowonclose
+msgid "Free window on close"
+msgstr ""
+
+#: anchordockstr.adrsfreewindowonclosehint
+msgid "Free window on close, don't just hide it"
+msgstr ""
+
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr "Opções gerais de ancoragem"

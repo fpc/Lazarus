@@ -81,6 +81,8 @@ resourcestring
   adrsFlattenHeadersHint = 'Flatten headers of docked controls';
   adrsFilledHeaders = 'Fill headers';
   adrsFilledHeadersHint = 'Fill headers of docked controls';
+  adrsFreeWindowOnClose = 'Free window on close';
+  adrsFreeWindowOnCloseHint = 'Free window on close, don''t just hide it';
   adrsHighlightFocused = 'Highlight focused';
   adrsHighlightFocusedHint = 'Highlight header of focused docked control';
   adrsAllowDockSitesToBeMinimized = 'Allow dock sites to be minimized';

@@ -39,6 +39,7 @@ type
     HighlightFocusedCheckBox: TCheckBox;
     DockSitesCanBeMinimized: TCheckBox;
     ScaleOnResizeCheckBox: TCheckBox;
+    FreeWindowOnCloseCheckBox: TCheckBox;
     ShowHeaderCaptionCheckBox: TCheckBox;
     ShowHeaderCheckBox: TCheckBox;
     SplitterWidthLabel: TLabel;
@@ -356,6 +357,7 @@ begin
   TheSettings.HeaderStyle:=DockMaster.HeaderStyleName2ADHeaderStyle.Data[HeaderStyleComboBox.ItemIndex].StyleDesc.Name;
   TheSettings.HeaderHighlightFocused:=HighlightFocusedCheckBox.Checked;
   TheSettings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized.Checked;
+  TheSettings.FreeWindowOnClose:=FreeWindowOnCloseCheckBox.Checked;
 end;
 
 procedure TAnchorDockOptionsFrame.LoadFromSettings(
@@ -436,6 +438,10 @@ begin
   DockSitesCanBeMinimized.Checked:=TheSettings.DockSitesCanBeMinimized;
   DockSitesCanBeMinimized.Caption:=adrsAllowDockSitesToBeMinimized;
   DockSitesCanBeMinimized.Hint:=adrsAllowDockSitesToBeMinimized;
+
+  FreeWindowOnCloseCheckBox.Checked:=TheSettings.FreeWindowOnClose;
+  FreeWindowOnCloseCheckBox.Caption:=adrsFreeWindowOnClose;
+  FreeWindowOnCloseCheckBox.Hint:=adrsFreeWindowOnCloseHint;
 end;
 
 end.
