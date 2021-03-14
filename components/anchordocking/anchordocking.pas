@@ -6623,6 +6623,8 @@ begin
     inc(PreferredWidth,2);
     inc(PreferredHeight,2);
     {$ENDIF}
+    PreferredWidth:=ScaleDesignToForm(PreferredWidth);
+    PreferredHeight:=ScaleDesignToForm(PreferredHeight);
   end;
 end;
 
@@ -6662,6 +6664,8 @@ begin
     inc(PreferredWidth,2);
     inc(PreferredHeight,2);
     {$ENDIF}
+    PreferredWidth:=ScaleDesignToForm(PreferredWidth);
+    PreferredHeight:=ScaleDesignToForm(PreferredHeight);
   end;
 end;
 
