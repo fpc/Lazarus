@@ -6569,17 +6569,17 @@ function TAnchorDockCloseButton.GetDrawDetails: TThemedElementDetails;
 function WindowPart: TThemedWindow;
   begin
     // no check states available
-    Result := twSmallCloseButtonNormal;
+    Result := twCloseButtonNormal;
     if not IsEnabled then
-      Result := twSmallCloseButtonDisabled
+      Result := twCloseButtonDisabled
     else
     if FState in [bsDown, bsExclusive] then
-      Result := twSmallCloseButtonPushed
+      Result := twCloseButtonPushed
     else
     if FState = bsHot then
-      Result := twSmallCloseButtonHot
+      Result := twCloseButtonHot
     else
-      Result := twSmallCloseButtonNormal;
+      Result := twCloseButtonNormal;
   end;
 
 begin
