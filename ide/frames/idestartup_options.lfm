@@ -14,9 +14,9 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Side = asrBottom
     Left = 6
-    Height = 22
-    Top = 97
-    Width = 231
+    Height = 19
+    Top = 84
+    Width = 195
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'OpenLastProjectAtStartCheckBox'
@@ -26,8 +26,8 @@ object IdeStartupFrame: TIdeStartupFrame
   object lblFileAssociation: TDividerBevel
     AnchorSideTop.Control = Owner
     Left = 0
-    Height = 18
-    Top = 0
+    Height = 15
+    Top = 2
     Width = 597
     Caption = 'Opening Files from OS'
     Anchors = [akLeft, akRight]
@@ -39,8 +39,8 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Control = LazarusInstancesCB
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 18
-    Top = 73
+    Height = 15
+    Top = 63
     Width = 597
     Caption = 'Project to Open or Create'
     Anchors = [akTop, akLeft, akRight]
@@ -54,9 +54,9 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Control = LazarusInstancesCB
     AnchorSideTop.Side = asrCenter
     Left = 3
-    Height = 18
-    Top = 33
-    Width = 139
+    Height = 15
+    Top = 29
+    Width = 116
     BorderSpacing.Left = 3
     Caption = 'LazarusInstancesLabel'
     ParentColor = False
@@ -68,14 +68,14 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 150
-    Height = 32
-    Top = 26
-    Width = 439
+    Left = 127
+    Height = 23
+    Top = 25
+    Width = 462
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 8
-    ItemHeight = 18
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 0
   end
@@ -84,16 +84,17 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = OpenLastProjectAtStartCheckBox
     AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 117
-    Height = 32
-    Top = 130
-    Width = 459
+    Left = 104
+    Height = 23
+    Top = 114
+    Width = 485
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 11
-    DropDownCount = 12
-    ItemHeight = 18
+    DropDownCount = 20
+    ItemHeight = 15
     Style = csDropDownList
     TabOrder = 2
   end
@@ -102,9 +103,9 @@ object IdeStartupFrame: TIdeStartupFrame
     AnchorSideTop.Control = ProjectTypeCB
     AnchorSideTop.Side = asrCenter
     Left = 3
-    Height = 18
-    Top = 137
-    Width = 106
+    Height = 15
+    Top = 118
+    Width = 93
     BorderSpacing.Left = 3
     Caption = 'New Project Type'
     ParentColor = False
