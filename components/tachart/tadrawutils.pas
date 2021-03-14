@@ -15,7 +15,7 @@ unit TADrawUtils;
 interface
 
 uses
-  Classes, FPCanvas, FPImage, Types, TAChartUtils;
+  SysUtils, Classes, FPCanvas, FPImage, Types, TAChartUtils;
 
 type
   // Same types as in Graphics unit, but without dependency.
@@ -191,10 +191,14 @@ type
   function FPColorToChartColor(AFPColor: TFPColor): TChartColor;
   function ColorDef(AColor, ADefaultColor: TChartColor): TChartColor; inline;
 
+  function Wordwrap(const AText: String; ADrawer: IChartDrawer;
+    AMaxWidth: Integer; ATextFormat: TChartTextFormat): String;
+
+
 implementation
 
 uses
-  Math, fasthtmlparser, htmlutil, TAGeometry, TAHtml;
+  StrUtils, Math, fasthtmlparser, htmlutil, TAGeometry, TAHtml;
 
 const
   LINE_INTERVAL = 2;
@@ -796,6 +800,66 @@ end;
 function TBasicDrawer.TextOut: TChartTextOut;
 begin
   Result := TChartTextOut.Create(Self);
+end;
+
+// Inserts LineEndings into the provided string AText such that its width 
+// does not exceed the given width.
+function WordWrap(const AText: String; ADrawer: IChartDrawer;
+  AMaxWidth: Integer; ATextFormat: TChartTextFormat): string;
+var
+  L: TStrings;
+  sa: TStringArray;
+  line, testline: String;
+  s: String;
+  w, ws, wspace: Integer;
+  i: Integer;
+begin
+  Result := '';
+
+  if ATextFormat = tfNormal then
+  begin
+    wspace := ADrawer.TextExtent(' ').X;
+    L := TStringList.Create;
+    try
+      L.Text := AText;
+      for i := 0 to L.Count-1 do
+      begin
+        sa := SplitString(L[i], ' ');
+        line := '';
+        w := 0;
+        for s in sa do
+        begin
+          ws := ADrawer.TextExtent(s).X;
+          if w + wspace + ws <= AMaxWidth then
+          begin
+            line := IfThen(line='', s, line + ' ' + s);
+            w := w + wspace + ws;
+          end else
+          begin
+            if line = '' then
+            begin
+              Result := IfThen(Result='', s, Result + LineEnding + s);
+              line := '';
+              w := 0;
+            end else
+            begin
+              Result := IfThen(Result='', line, Result + LineEnding + line);
+              line := s;
+              w := ws;
+            end;
+          end;
+        end;
+        if line <> '' then
+          Result := IfThen(Result='', line, Result + LineEnding + line);
+        if i <> L.Count-1 then
+          Result := Result + LineEnding;
+      end;
+    finally
+      L.Free;
+    end;
+  end else
+    // ToDo: Implement wordwrap for html format
+    Result := AText;
 end;
 
 end.

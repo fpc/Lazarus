@@ -41,11 +41,13 @@ type
   strict private
     FCaption: String;
     FPositionOnMarks: Boolean;
+    FWordwrap: Boolean;
 
     function GetFont: TFont;
     procedure SetCaption(AValue: String);
     procedure SetFont(AValue: TFont);
     procedure SetPositionOnMarks(AValue: Boolean);
+    procedure SetWordwrap(AValue: Boolean);
   public
     constructor Create(AOwner: TCustomChart);
 
@@ -60,6 +62,7 @@ type
       read FPositionOnMarks write SetPositionOnMarks default false;
     property TextFormat;
     property Visible default false;
+    property Wordwrap: Boolean read FWordwrap write SetWordwrap default false;
   end;
 
   ICoordTransformer = interface
@@ -602,6 +605,14 @@ begin
   FPositionOnMarks := AValue;
   StyleChanged(Self);
 end;
+
+procedure TChartAxisTitle.SetWordwrap(AValue: Boolean);
+begin
+  if FWordwrap = AValue then exit;
+  FWordwrap := AValue;
+  StyleChanged(Self);
+end;
+
 
 { TCustomChartAxisMarks }
 

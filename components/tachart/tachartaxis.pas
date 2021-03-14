@@ -116,11 +116,14 @@ type
     FRange: TChartRange;
     FTitle: TChartAxisTitle;
     FTransformations: TChartAxisTransformations;
+    FWrappedTitle: String;
     FZPosition: TChartDistance;
 
     function GetMarks: TChartAxisMarks; inline;
+    function GetRealTitle: String;
     function GetValue(AIndex: Integer): TChartValueText; inline;
     function GetValueCount: Integer; inline;
+    function IsWordwrappedTitle: Boolean;
     function PositionIsStored: Boolean;
     procedure SetAtDataOnly(AValue: Boolean);
     procedure SetAxisPen(AValue: TChartAxisPen);
@@ -139,6 +142,7 @@ type
     procedure SetTitle(AValue: TChartAxisTitle);
     procedure SetTransformations(AValue: TChartAxisTransformations);
     procedure SetZPosition(AValue: TChartDistance);
+    procedure WordwrapTitle(ADrawer: IChartDrawer; AClipRect: TRect);
 
   protected
     function GetDisplayName: String; override;
@@ -160,8 +164,8 @@ type
     function IsFlipped: Boolean; override;
     function IsPointInside(const APoint: TPoint): Boolean;
     function IsVertical: Boolean; inline;
-    procedure Measure(
-      const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
+    procedure Measure(const AExtent: TDoubleRect; const AClipRect: TRect;
+      var AMeasureData: TChartAxisGroup);
     function MeasureLabelSize(ADrawer: IChartDrawer): Integer;
     function PositionToCoord(const ARect: TRect): Integer;
     procedure PrepareHelper(
@@ -235,8 +239,8 @@ type
     procedure Draw(ACurrentZ: Integer; var AIndex: Integer);
     function GetAxisByAlign(AAlign: TChartAxisAlignment): TChartAxis;
     function GetEnumerator: TChartAxisEnumerator;
-    function Measure(
-      const AExtent: TDoubleRect; ADepth: Integer): TChartAxisMargins;
+    function Measure(const AExtent: TDoubleRect; const AClipRect: TRect;
+      ADepth: Integer): TChartAxisMargins;
     procedure Prepare(ARect: TRect);
     procedure PrepareGroups;
     procedure SetAxisByAlign(AAlign: TChartAxisAlignment; AValue: TChartAxis);
@@ -276,7 +280,8 @@ type
 implementation
 
 uses
-  LResources, Math, PropEdits, TAChartStrConsts, TAGeometry, TAMath;
+  LResources, Math, PropEdits,
+  TAChartStrConsts, TAGeometry, TAMath;
 
 var
   VIdentityTransform: TChartAxisTransformations;
@@ -636,7 +641,7 @@ begin
   end;
   TPointBoolArr(p)[IsVertical] := FTitlePos;
   p += FHelper.FZOffset;
-  Title.DrawLabel(FHelper.FDrawer, p, p, Title.Caption, FTitlePolygon);
+  Title.DrawLabel(FHelper.FDrawer, p, p, GetRealTitle, FTitlePolygon);
 end;
 
 function TChartAxis.GetAlignment: TChartAxisAlignment;
@@ -664,6 +669,14 @@ function TChartAxis.GetMarks: TChartAxisMarks;
 begin
   Result := TChartAxisMarks(inherited Marks);
 end{%H-}; // to silence the compiler warning of impossible inherited inside inline proc
+
+function TChartAxis.GetRealTitle: String;
+begin
+  if Title.Visible and IsWordwrappedTitle then
+    Result := FWrappedTitle
+  else
+    Result := Title.Caption;
+end;
 
 procedure TChartAxis.GetMarkValues;
 var
@@ -763,6 +776,13 @@ begin
   Result := Alignment in [calLeft, calRight];
 end;
 
+function TChartAxis.IsWordwrappedTitle: Boolean;
+begin
+  Result := Title.Wordwrap and (
+    ((FAlignment in [calLeft, calRight]) and (abs(Title.LabelFont.Orientation) = 900)) or
+    ((FAlignment in [calTop, calBottom]) and (Title.LabelFont.Orientation = 0)) );
+end;
+
 function TChartAxis.MakeValuesInRangeParams(
   AMin, AMax: Double): TValuesInRangeParams;
 begin
@@ -779,7 +799,7 @@ begin
 end;
 
 procedure TChartAxis.Measure(
-  const AExtent: TDoubleRect; var AMeasureData: TChartAxisGroup);
+  const AExtent: TDoubleRect; const AClipRect: TRect; var AMeasureData: TChartAxisGroup);
 var
   v: Boolean;
   d: IChartDrawer;
@@ -788,7 +808,7 @@ var
   begin
     if not Title.Visible or (Title.Caption = '') then exit(0);
     // Workaround for issue #19780, fix after upgrade to FPC 2.6.
-    with Title.MeasureLabel(d, Title.Caption) do
+    with Title.MeasureLabel(d, GetRealTitle) do
       Result := IfThen(v, cx, cy);
     if Title.DistanceToCenter then
       Result := Result div 2;
@@ -856,11 +876,16 @@ begin
       maxi := i;
     end;
   end;
+
+  if Title.Visible and IsWordwrappedTitle then
+    WordwrapTitle(d, AClipRect);
+
   with AMeasureData do begin
     FSize := Max(sz, FSize);
     FTitleSize := Max(TitleSize, FTitleSize);
     FMargin := Max(Margin, FMargin);
   end;
+
   if minc < MaxInt then begin
     UpdateFirstLast(minc, mini, rmin, rmax);
     UpdateFirstLast(maxc, maxi, rmin, rmax);
@@ -1139,6 +1164,24 @@ begin
 end;
 }
 
+procedure TChartAxis.WordwrapTitle(ADrawer: IChartDrawer; AClipRect: TRect);
+var
+  w: Integer;
+begin
+  if Alignment in [calLeft, calRight] then
+    w := AClipRect.Height
+  else if Alignment in [calBottom, calTop] then
+    w := AClipRect.Width
+  else
+  begin
+    FWrappedTitle := Title.Caption;
+    exit;
+  end;
+  ADrawer.Font := Title.LabelFont;
+  FWrappedTitle := TADrawUtils.WordWrap(Title.Caption, ADrawer, w, Title.TextFormat);
+end;
+
+
 { TChartAxisList }
 
 function TChartAxisList.Add: TChartAxis; inline;
@@ -1210,8 +1253,8 @@ begin
   AList.Sort(ACompare);
 end;
 
-function TChartAxisList.Measure(
-  const AExtent: TDoubleRect; ADepth: Integer): TChartAxisMargins;
+function TChartAxisList.Measure(const AExtent: TDoubleRect;
+  const AClipRect: TRect; ADepth: Integer): TChartAxisMargins;
 var
   g: ^TChartAxisGroup;
 
@@ -1239,14 +1282,14 @@ begin
     for j := 0 to g^.FCount - 1 do begin
       axis := TChartAxis(FGroupOrder[ai]);
       try
-        axis.Measure(AExtent, g^);
+        axis.Measure(AExtent, AClipRect, g^);
       except
         axis.Visible := false;
         raise;
       end;
       ai += 1;
     end;
-    // Axises of the same group should have the same Alignment, Position and ZPosition.
+    // Axes of the same group should have the same Alignment, Position and ZPosition.
     if axis.IsDefaultPosition then
       Result[axis.Alignment] += Max(0,
         g^.FSize + g^.FTitleSize + g^.FMargin +

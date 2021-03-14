@@ -1521,7 +1521,7 @@ begin
   CalculateTransformationCoeffs(scSeriesMargins, scChartMargins, scMinDataSpace);
   cr := FClipRect;
   for tries := 1 to 10 do begin
-    axisMargin := AxisList.Measure(CurrentExtent, scDepth);
+    axisMargin := AxisList.Measure(CurrentExtent, FClipRect, scDepth);
     axisMargin[calLeft] := Max(axisMargin[calLeft], scDepth);
     axisMargin[calBottom] := Max(axisMargin[calBottom], scDepth);
     FClipRect := cr;
