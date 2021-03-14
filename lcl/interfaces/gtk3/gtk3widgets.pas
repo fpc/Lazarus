@@ -2370,7 +2370,7 @@ begin
       *)
     end else
     begin
-      ARgba := TColortoTGdkRGBA(AValue);
+      ARgba := TColortoTGdkRGBA(ColorToRGB(AValue));
       {$info GTK3: set GdkRGBA.alpah to 1.0?}
 
       {ColorToCairoRGB(ColorToRGB(AValue), R, G, B);
@@ -6734,10 +6734,15 @@ begin
   Result := PGtkWidget(check);
   check^.set_use_underline(True);
   {fWidgetRGBA[0].G:=0.8;
-  fWidgetRGBA[0].Alpha:=0.7;
-  check^.override_color(GTK_STATE_NORMAL,@Self.FWidgetRGBA[0]);}
+  fWidgetRGBA[0].Alpha:=1;
+  check^.override_color(GTK_STATE_FLAG_NORMAL,@Self.FWidgetRGBA[0]);}
+  (*fWidgetRGBA[0].G:=0.8;
+  fWidgetRGBA[0].B:=0.9;
+  fWidgetRGBA[0].Alpha:=0.9;
+  check^.override_color(GTK_STATE_FLAG_ACTIVE,@Self.FWidgetRGBA[0]); *)
   // nil resets color to gtk default
-  FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);
+ { FWidget^.override_color(GTK_STATE_FLAG_NORMAL, nil);
+  FWidget^.override_background_color(GTK_STATE_FLAG_NORMAL, nil);}
 end;
 
 { TGtk3RadioButton }

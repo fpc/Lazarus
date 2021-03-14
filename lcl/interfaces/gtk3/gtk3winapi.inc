@@ -600,11 +600,9 @@ end;
 function TGtk3WidgetSet.DrawFrameControl(DC: HDC; const aRect: TRect; uType,
   uState: Cardinal): Boolean;
 begin
-  {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  DebugLn('WARNING: TGtk3WidgetSet.DrawFrameControl not implemented ...');
-  {$ENDIF}
-  Result := False;
-  // inherited DrawFrameControl(DC, aRect, uType, uState);
+  Result:=false;
+  if IsValidDC(DC) then
+    Result:=TGtk3DeviceContext(DC).drawFrameControl(aRect,uType,uState);
 end;
 
 function TGtk3WidgetSet.DrawFocusRect(DC: HDC; const aRect: TRect): boolean;

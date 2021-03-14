@@ -180,6 +180,8 @@ begin
   Result:=inherited GetAcceleratorString(AVKey,AShiftState);
 end;
 
+
+
 {------------------------------------------------------------------------------
   Function: RawImage_CreateBitmap
   Params: ARawImage:
@@ -196,6 +198,9 @@ var
   NewData: PByte;
   ImageFormat: cairo_format_t;
   ARowStride: PtrUInt;
+  x,y:integer;
+  src,dst,pdst,psrc,SrcRowPtr,DstRowPtr:pbyte;
+  ridx,gidx,bidx,aidx:byte;
 begin
   Result := False;
   ABitmap := 0;
@@ -203,8 +208,57 @@ begin
 
   if ARawImage.DataSize > 0 then
   begin
-    NewData := GetMem(ARawImage.DataSize);
-    Move(ARawImage.Data^, NewData^, ARawImage.DataSize);
+    case Desc.LineEnd of
+    rileQWordBoundary:
+      begin
+        ARowStride := Desc.Width;
+        if Desc.Width and 1 <> 0 then Inc(ARowStride);
+        ARowStride := ARowStride shl 2;
+      end;
+    rileDQWordBoundary:
+      begin
+        ARowStride := Desc.Width shr 1;
+        if Desc.Width and 3 <> 0 then Inc(ARowStride);
+        ARowStride := ARowStride shl 3;
+      end;
+    else
+      ARowStride := Desc.Width shl 2;
+    end;
+
+    // check if the pixels are in order, pixbuf expects them in R-G-B-A
+    Desc.GetRGBIndices(Ridx, Gidx, Bidx, AIdx);
+
+    GetMem(NewData, ArawImage.DataSize);
+
+    //if (Ridx <> 0) or (Gidx <> 1) or (Bidx <> 2) or (AIdx <> 3) then
+    begin
+      // put components in right order
+
+      DstRowPtr := NewData;
+      SrcRowPtr := ArawImage.Data;
+      y := Desc.Height;
+      while y > 0 do
+      begin
+        Src := SrcRowPtr;
+        Dst := DstRowPtr;
+        x := Desc.Width;
+        while x > 0 do
+        begin
+          Dst[0] := Src[Ridx];
+          Dst[1] := Src[Gidx];
+          Dst[2] := Src[Bidx];
+          Dst[3] := $ff;//Src[Aidx] ;
+
+          Inc(Src, 4);
+          Inc(Dst, 4);
+          Dec(x);
+        end;
+        Inc(SrcRowPtr, ARowstride);
+        Inc(DstRowPtr, ARowstride);
+        Dec(y);
+      end;
+    end;
+
   end
   else
     NewData := nil;
@@ -218,21 +272,26 @@ begin
   end;
   ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
   ABitmap := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, ImageFormat,
-                     not ASkipMask));  // Using ASkipMask for DataOwner param prevents a crash later.
+                     {not ASkipMask}true));  // Using ASkipMask for DataOwner param prevents a crash later.
   Result := ABitmap <> 0;
+
+ { if ASkipMask then
+  FreeMem(NewData); }
 
   if ASkipMask then Exit;
 
   if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
     NewData := GetMem(ARawImage.MaskSize);
+    //FillChar(NewData^,  ARawImage.MaskSize,$ff);
     Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
   end
   else
     NewData := nil;
 
-  ARowStride := GetBytesPerLine(Desc.Width, Desc.BitsPerPixel, rileDWordBoundary);
-  AMask := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, CAIRO_FORMAT_A1, True));
+
+  ARowStride := GetBytesPerLine(Desc.Width, {Desc.BitsPerPixel}8, rileDWordBoundary);
+  AMask := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, CAIRO_FORMAT_A8, True));
 
 end;
 
@@ -747,7 +806,7 @@ begin
       if InvertPixels then
         WorkMask.invertPixels(QImageInvertRGB);
         *)
-      if WorkMask.bits<>nil then
+      if (WorkMask.bits<>nil) and (ARawImage.Mask<>nil) then
       Move(WorkMask.bits^, ARawImage.Mask^, ARawImage.MaskSize);
       // if InvertPixels then
       //  WorkMask.invertPixels(QImageInvertRGB);

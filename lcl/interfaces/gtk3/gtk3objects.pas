@@ -264,6 +264,7 @@ type
     procedure fillRect(x, y, w, h: Integer; ABrush: HBRUSH); overload;
     procedure fillRect(x, y, w, h: Integer); overload;
     function RoundRect(X1, Y1, X2, Y2: Integer; RX, RY: Integer): Boolean;
+    function drawFrameControl(arect:TRect;uType,uState:cardinal):boolean;
     function drawFocusRect(const aRect: TRect): boolean;
     function getBpp: integer;
     function getDepth: integer;
@@ -714,11 +715,12 @@ begin
     sz:=fHandle^.get_size;
     if fHandle^.get_size_is_absolute then
     begin
-      sz:=12;// sz div PANGO_SCALE;
+      sz:= sz div PANGO_SCALE;
     end else
     begin
       { in points }
-      sz:=round(96*sz/PANGO_SCALE/72);//round(2.03*sz/PANGO_SCALE);
+      //sz:=round(96*sz/PANGO_SCALE/72);//round(2.03*sz/PANGO_SCALE);
+      sz := MulDiv(sz, 96{Screen.PixelsPerInch}, 72 * PANGO_SCALE)
     end;
 
     fLogFont.lfHeight:=sz;//round(sz/PANGO_SCALE);
@@ -2101,6 +2103,79 @@ begin
   finally
     cairo_translate(pcr, -DX, -DY);
   end;
+end;
+
+function TGtk3DeviceContext.drawFrameControl(arect:TRect;uType,uState:cardinal):boolean;
+var
+  Context: PGtkStyleContext;
+  AValue: TGValue;
+  pw:PGtkWidget;
+  path:PGtkwIdgetPath;
+  pc:pgchar;
+  w:PgtkWidget;
+begin
+
+  Result:=false;
+
+ { if Parent <> nil then
+    Context := Parent^.get_style_context
+  else
+  begin
+    Context:=TGtkStyleContext.new();
+    Context^.add_class('button');
+  end;
+  if Context = nil then
+  begin
+    DebugLn('WARNING: TGtk3WidgetSet.DrawFrameControl on non widget context isn''t implemented.');
+    exit;
+  end;  }
+
+  w:=nil;
+
+  if uType=DFC_BUTTON then
+  begin
+    w:=GetStyleWidget(lgsButton);
+  end else
+  if uType=DFC_MENU then
+  begin
+    w:=GetStyleWidget(lgsMenu);
+  end;
+
+  if not Assigned(w) then exit;
+
+  Context:=w^.get_style_context;
+  path:=w^.get_path;
+  gtk_style_context_set_path (context, path);
+  gtk_style_context_set_state (context,(* gtk_widget_path_iter_get_state (path, -1)*) -1);
+
+  {GTK_STATE_FLAG_NORMAL: TGtkStateFlags = 0;
+  GTK_STATE_FLAG_ACTIVE: TGtkStateFlags = 1;
+  GTK_STATE_FLAG_PRELIGHT: TGtkStateFlags = 2;
+  GTK_STATE_FLAG_SELECTED: TGtkStateFlags = 4;
+  GTK_STATE_FLAG_INSENSITIVE: TGtkStateFlags = 8;
+  GTK_STATE_FLAG_INCONSISTENT: TGtkStateFlags = 16;
+  GTK_STATE_FLAG_FOCUSED: TGtkStateFlags = 32;
+  GTK_STATE_FLAG_BACKDROP: TGtkStateFlags = 64;
+  GTK_STATE_FLAG_DIR_LTR: TGtkStateFlags = 128;
+  GTK_STATE_FLAG_DIR_RTL: TGtkStateFlags = 256;
+  }
+  gtk_style_context_set_state (context, GTK_STATE_FLAG_FOCUSED or GTK_STATE_FLAG_PRELIGHT);
+
+  pw:=w;
+  while Assigned(pw) do
+  begin
+
+    Context:=pw^.get_style_context;
+    path:=pw^.get_path;
+    with aRect do
+    begin
+      gtk_render_background(Context,pcr, Left, Top, Right - Left, Bottom - Top);
+      gtk_render_frame(Context,pcr, Left, Top, Right - Left, Bottom - Top);
+    end;
+    pw:=pw^.parent;
+  end;
+
+  Result := True;
 end;
 
 function TGtk3DeviceContext.drawFocusRect(const aRect: TRect): boolean;
