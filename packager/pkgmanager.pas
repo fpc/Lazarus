@@ -4453,7 +4453,9 @@ begin
   try
     Result:=GetUnitsAndDepsForComps(ComponentClasses, Dependencies, UnitNames);
     if Result<>mrOk then exit;
-    Assert(Assigned(UnitNames), 'TPkgManager.AddUnitDepsForCompClasses: UnitNames=Nil.');
+    // TODO: Frame instances are not registered components, UnitNames is not assigned
+    if (UnitNames=nil) then exit(mrCancel);
+
     if (Dependencies<>nil) then
     begin
       Result:=FilterMissingDepsForUnit(UnitFilename,Dependencies,MissingDependencies);

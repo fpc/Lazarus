@@ -49,14 +49,14 @@ uses
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
-  ObjectInspector, ComponentReg, SrcEditorIntf, EditorSyntaxHighlighterDef,
+  ObjectInspector, ComponentReg, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
   MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
   SourceSynEditor, SourceEditor, EditorOptions, EnvironmentOpts, CustomFormEditor,
   ControlSelection, FormEditor, EmptyMethodsDlg, BaseDebugManager, TransferMacros,
   BuildManager, EditorMacroListViewer, FindRenameIdentifier, BuildModesManager,
-  ViewUnit_Dlg, InputHistory, CheckLFMDlg, etMessagesWnd, UnitResources,
+  ViewUnit_Dlg, InputHistory, CheckLFMDlg, etMessagesWnd,
   ConvCodeTool, BasePkgManager, PackageDefs, PackageSystem, Designer, DesignerProcs;
 
 type
@@ -6480,65 +6480,103 @@ function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
   out AncestorClass: TComponentClass;
   out AncestorUnitInfo: TUnitInfo): TModalResult;
 var
-  AncestorClsName, S: String;
+  AncestorClsName, IgnoreBtnText, ClsName: String;
   CodeBuf: TCodeBuffer;
   GrandAncestorClass, DefAncestorClass: TComponentClass;
   ResFormat: TUnitResourcefileFormatClass;
+  ClsUnitInfo: TUnitInfo;
 begin
   AncestorClass:=nil;
   AncestorUnitInfo:=nil;
 
-  // find the ancestor type in the source
-  if AnUnitInfo.Source=nil then begin
-    Result:=LoadCodeBuffer(CodeBuf,AnUnitInfo.Filename,
-                           [lbfUpdateFromDisk,lbfCheckIfText],true);
-    if Result<>mrOk then exit;
-    AnUnitInfo.Source:=CodeBuf;
-  end;
-
-  if not CodeToolBoss.FindFormAncestor(AnUnitInfo.Source,aComponentClassName,
-                                       AncestorClsName,true) then
-    DebugLn('LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" ClassName=',aComponentClassName,
-            '. Unable to find ancestor class: ',CodeToolBoss.ErrorMessage);
-  // try the base designer classes
-  if not FindBaseComponentClass(AnUnitInfo,AncestorClsName,aComponentClassName,
-                                AncestorClass) then
-  begin
-    DebugLn(['LoadAncestorDependencyHidden FindUnitComponentClass failed for AncestorClsName=',AncestorClsName]);
-    exit(mrCancel);
-  end;
-
-  // try loading the ancestor first (unit, lfm and component instance)
-  ResFormat:=AnUnitInfo.UnitResourceFileformat;
+  // fallback ancestor is defined by the resource file format of the form/frame/component being loaded
+  // this is offered to the user in case a lookup fails
+  ResFormat:= AnUnitInfo.UnitResourceFileformat;
   if ResFormat<>nil then
-    DefAncestorClass:=ResFormat.DefaultComponentClass(aComponentClassName)
+    DefAncestorClass:=ResFormat.DefaultComponentClass
   else
+    DefAncestorClass:=nil;
+  // use TForm as default ancestor
+  if DefAncestorClass=nil then
     DefAncestorClass:=BaseFormEditor1.StandardDesignerBaseClasses[DesignerBaseClassId_TForm];
+  IgnoreBtnText:='';
+  if DefAncestorClass<>nil then
+    IgnoreBtnText:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]);
 
-  if (AncestorClass=nil) then begin
-    S:='';
-    if DefAncestorClass<>nil then
-      S:=Format(lisIgnoreUseAsAncestor, [DefAncestorClass.ClassName]);
-    Result:=LoadComponentDependencyHidden(AnUnitInfo,AncestorClsName,OpenFlags,
-                      false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,S);
+  // traverse the chain of ancestors until either:
+  //   - an error occurs
+  //   - FindBaseComponentClass locates an editor class
+  //   - LoadComponentDependencyHidden loads a full LFM
+  //   - no further class parents exist
+  ClsName:=aComponentClassName;
+  ClsUnitInfo:=AnUnitInfo;
+  repeat
+    // if Source is not already loaded, load from Filename
+    if not Assigned(ClsUnitInfo.Source) then begin
+      Result:=LoadCodeBuffer(CodeBuf,ClsUnitInfo.Filename,
+                             [lbfUpdateFromDisk,lbfCheckIfText],true);
+      if Result<>mrOk then exit;
+      ClsUnitInfo.Source:=CodeBuf;
+      if FilenameIsPascalSource(ClsUnitInfo.Filename) then
+        ClsUnitInfo.ReadUnitNameFromSource(true);
+    end;
+
+    // get ancestor of ClsName from current ClsUnitInfo
+    if CodeToolBoss.FindFormAncestor(ClsUnitInfo.Source,ClsName,AncestorClsName,true) then begin
+      // is this ancestor a designer class?
+      if not FindBaseComponentClass(ClsUnitInfo,AncestorClsName,ClsName,AncestorClass) then
+      begin
+        DebugLn(['LoadAncestorDependencyHidden FindUnitComponentClass failed for AncsClsName=',AncestorClsName]);
+        exit(mrCancel);
+      end;
+
+      if Assigned(AncestorClass) then
+        break
+      else begin
+        // immediately go to next ancestor
+        ClsName:=AncestorClsName;
+        continue;
+      end;
+    end;
+    // -> the declaration of ClsName is not in ClsUnitInfo, let LoadComponentDependencyHidden locate it
+
+    // try loading the ancestor (unit, lfm and component instance)
+    Result:=LoadComponentDependencyHidden(ClsUnitInfo,ClsName,
+             OpenFlags,false,AncestorClass,AncestorUnitInfo,GrandAncestorClass,
+             IgnoreBtnText);
     if Result<>mrOk then begin
-      DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed AnUnitInfo=',AnUnitInfo.Filename]);
+      DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden failed ClsUnitInfo=',ClsUnitInfo.Filename]);
     end;
     case Result of
     mrAbort: exit;
     mrOk: ;
-    mrIgnore:
-      AncestorUnitInfo:=nil;
+    mrIgnore: break;
     else
       // cancel
-      Result:=mrCancel;
-      exit;
+      exit(mrCancel);
     end;
-  end;
 
-  //DebugLn('LoadAncestorDependencyHidden Filename="',AnUnitInfo.Filename,'" AncestorClsName=',AncestorClsName,' AncestorClass=',dbgsName(AncestorClass));
-  if AncestorClass=nil then
+    // possible outcomes of LoadComponentDependencyHidden:
+    if Assigned(AncestorClass) then
+      // loaded something and got a component class for it -> done, everything is set
+      break
+    else if Assigned(AncestorUnitInfo) then
+      // loaded the unit containing ClsName, but it does not have the ComponentClass -> let FindFormAncestor/FindBaseComponentClass try again
+      ClsUnitInfo:= AncestorUnitInfo
+    else begin
+      // likely a bug: declaration is nowhere and was not caught by user interaction in LoadComponentDependencyHidden
+      DebugLn(['LoadAncestorDependencyHidden DoLoadComponentDependencyHidden empty returns for ClsName=',ClsName, ' ClsUnitInfo=',ClsUnitInfo.Filename]);
+      exit(mrCancel);
+    end;
+  until Assigned(AncestorClass) or (ClsName = '') or not Assigned(ClsUnitInfo);
+
+  if AncestorClass=nil then begin
+    // nothing was found, clear any attempted references
+    AncestorUnitInfo:= nil;
+
+    //DebugLn('LoadAncestorDependencyHidden Filename="',ClsUnitInfo.Filename,'" AncsClsName=',AncestorClsName,' AncestorClass=',dbgsName(AncestorClass));
     AncestorClass:=DefAncestorClass;
+  end;
   Result:=mrOk;
 end;
 
@@ -6551,6 +6589,8 @@ function FindComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: st
       designer component
    - AComponentClass<>nil and ComponentUnitInfo=nil
       registered componentclass
+   - AComponentClass=nil and ComponentUnitInfo<>nil
+      componentclass does not exist, but the unit declaring AComponentClassName was found
    - LFMFilename<>''
       lfm of an used unit
    - AncestorClass<>nil
@@ -6695,6 +6735,19 @@ var
     Result:=true;
   end;
 
+  procedure StoreComponentClassDeclaration(UnitFilename: string);
+  begin
+    // The Unit declaring AComponentClassName was located, save UnitInfo for return regardless of AComponentClass instance
+    ComponentUnitInfo:= Project1.UnitInfoWithFilename(UnitFilename);
+    if not Assigned(ComponentUnitInfo) then begin
+      // File was not previously loaded, add reference to project (without loading source for now)
+      ComponentUnitInfo:=TUnitInfo.Create(nil);
+      ComponentUnitInfo.Filename:=UnitFilename;
+      ComponentUnitInfo.IsPartOfProject:=false;
+      Project1.AddFile(ComponentUnitInfo,false);
+    end;
+  end;
+
   function TryFindDeclaration(out TheModalResult: TModalResult): boolean;
   var
     Tool: TCodeTool;
@@ -6814,6 +6867,7 @@ var
         debugln(['FindComponentClass ',AComponentClassName,' is not a TComponent at ',NewTool.CleanPosToStr(NewNode.StartPos,true)]);
         exit;
       end;
+      StoreComponentClassDeclaration(NewTool.MainFilename);
       AncestorNode:=InheritedNode.FirstChild;
       AncestorClassName:=GetIdentifier(@NewTool.Src[AncestorNode.StartPos]);
       //debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' ancestor="',AncestorClassName,'"']);
@@ -6874,6 +6928,7 @@ var
       {$ENDIF}
       exit;
     end;
+    StoreComponentClassDeclaration(UnitFilename);
     if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
       exit(true);
   end;
@@ -6902,7 +6957,7 @@ begin
   {$ifdef VerboseFormEditor}
   debugln('FindComponentClass START ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName);
   {$endif}
-  // first search the resource of ComponentUnitInfo
+  // first search the resource of AnUnitInfo
   if AnUnitInfo<>nil then begin
     if TryUnitComponent(AnUnitInfo.Filename,Result) then exit;
   end;
@@ -6966,6 +7021,8 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       designer component
    - AComponentClass<>nil and ComponentUnitInfo=nil
       registered componentclass
+   - AComponentClass=nil and ComponentUnitInfo<>nil
+      componentclass does not exist, but the unit declaring AComponentClassName was found
    - Only for MustHaveLFM=false: AncestorClass<>nil
       componentclass does not exist, but the ancestor is a registered class
   mrCancel:
@@ -7058,6 +7115,7 @@ begin
   AComponentClass:=nil;
   Quiet:=([ofProjectLoading,ofQuiet]*Flags<>[]);
   HideAbort:=not (ofProjectLoading in Flags);
+
 {  Will be checked in FindComponentClass()
   if not IsValidIdent(AComponentClassName) then
   begin
@@ -7065,6 +7123,7 @@ begin
     exit(mrCancel);
   end;
 }
+
   // check for cycles
   if AnUnitInfo.LoadingComponent then begin
     Result:=IDEQuestionDialogAb(lisCodeTemplError,
@@ -7091,6 +7150,8 @@ begin
     //   designer component
     //- AComponentClass<>nil and ComponentUnitInfo=nil
     //   registered componentclass
+    //- AComponentClass=nil and ComponentUnitInfo<>nil
+    //   componentclass does not exist, but the unit declaring AComponentClassName was found
     //- LFMFilename<>''
     //   lfm of an used unit
     //- AncestorClass<>nil
