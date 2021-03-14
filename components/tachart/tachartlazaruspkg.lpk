@@ -151,6 +151,7 @@
       </Item26>
       <Item27>
         <Filename Value="tachartaxisutils.pas"/>
+        <HasRegisterProc Value="True"/>
         <UnitName Value="TAChartAxisUtils"/>
       </Item27>
       <Item28>

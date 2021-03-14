@@ -35,6 +35,7 @@ begin
   RegisterUnit('TALegendPanel', @TALegendPanel.Register);
   RegisterUnit('TANavigation', @TANavigation.Register);
   RegisterUnit('TAIntervalSources', @TAIntervalSources.Register);
+  RegisterUnit('TAChartAxisUtils', @TAChartAxisUtils.Register);
   RegisterUnit('TAChartListbox', @TAChartListbox.Register);
   RegisterUnit('TAChartExtentLink', @TAChartExtentLink.Register);
   RegisterUnit('TAToolEditors', @TAToolEditors.Register);
