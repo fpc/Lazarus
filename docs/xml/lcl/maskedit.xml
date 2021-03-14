@@ -356,7 +356,7 @@
             Raised in the <var>TCustomMaskEdit.ValidateEdit</var> method when exiting the edit control where its text is in an invalid state for its edit mask.
           </p>
           <remark>
-            There is no good reason for the name used for this exception. It has nothing to do with databases.
+            Despite the name, this has nothing to do with a database error.
           </remark>
         </descr>
         <seealso/>
@@ -399,8 +399,20 @@
         </seealso>
       </element>
 
+      <element name="SIndexOutOfRangeForFMask">
+        <short>Exception message used when a position in the internal mask is not valid</short>
+        <descr>
+          <p>
+            Contains the text for the <var>ERangeError</var> exception raised in the CheckRange method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ERangeError"/>
+        </seealso>
+      </element>
+
       <element name="TCustomMaskEdit">
-        <short>Ancestor for TMaskEdit</short>
+        <short>The base class for TMaskEdit</short>
         <descr>
           <p>
             <var>TCustomMaskEdit</var> is a TCustomEdit descendant, and the base class for <var>TMaskEdit</var>. TCustomMaskEdit provides an Edit box with masking features for characters displayed (or hidden) in the control.
@@ -471,22 +483,22 @@
         <short/>
       </element>
       <element name="TCustomMaskEdit.FValidationFailed">
-        <short>Flag used in DoEnter</short>
+        <short>Flag used in DoEnter. Set to mvemException by default.</short>
       </element>
       <element name="TCustomMaskEdit.FMaskIsPushed">
-        <short/>
+        <short>True when the internal mask has been saved in DisableMask</short>
       </element>
       <element name="TCustomMaskEdit.FSavedMask">
-        <short/>
+        <short>Saved internal mask</short>
       </element>
       <element name="TCustomMaskEdit.FSavedMaskLength">
-        <short/>
+        <short>Length of the saved internal mask</short>
       </element>
       <element name="TCustomMaskEdit.FTextChangedBySetText">
-        <short/>
+        <short>Used with FInRealSetTextWhileMasked to determine real value for Modified</short>
       </element>
       <element name="TCustomMaskEdit.FInRealSetTextWhileMasked">
-        <short/>
+        <short>Used with FTextChangedBySetText to determine real value for Modified</short>
       </element>
 
       <element name="TCustomMaskEdit.ClearInternalMask">
@@ -501,6 +513,24 @@
         <short>Set to zero (0) to indicate that the mask is empty</short>
       </element>
 
+      <element name="TCustomMaskEdit.CheckRange">
+        <short>Ensures Index is the range allowed for the internal mask</short>
+        <descr>
+          <p>
+            <var>Index</var> must be in the range <b>1..<var>FMaskLength</var></b>. An <var>ERangeError</var> exception is raised when Index is not in the required range.
+          </p>
+          <p>
+            Called from the JumpToNextDot, IsLiteral, CharMatchesMask, ClearChar, and CanInsertChar methods.
+          </p>
+        </descr>
+        <errors>
+          Raises an ERangeError exception with the message in SIndexOutOfRangeForFMask when Index is not in the allowed range.
+        </errors>
+        <seealso/>
+      </element>
+      <element name="TCustomMaskEdit.CheckRange.Index">
+        <short>Position in the internal mask validated in the method</short>
+      </element>
 
       <element name="TCustomMaskEdit.AddToMask">
         <short>
@@ -673,7 +703,7 @@
             If a mask contains both Period and Comma characters, only the first character can be accesses using the method. A mask literal cannot appear after the requested occurrance of Dot, and the next occurrance cannot be the last character in the mask.
           </p>
           <p>
-            JumpToNextDot calls the <var>SetCursorPos</var> method to update the caret position in the edit control.
+            The cursor position is set to the next character after the mask literal, when allowed. JumpToNextDot calls the <var>SetCursorPos</var> method to update the caret position in the edit control.
           </p>
           <p>
             JumpToNextDot is used in the implementation of the <var>HandleKeyPress</var> method.
@@ -682,7 +712,7 @@
         <seealso/>
       </element>
       <element name="TCustomMaskEdit.JumpToNextDot.Dot">
-        <short>Character to locate in the edit mask for the control</short>
+        <short>Mask literal to locate in the edit mask for the control</short>
       </element>
 
       <element name="TCustomMaskEdit.HasSelection">
@@ -719,27 +749,35 @@
         </short>
         <descr>
           <p>
-            <var>IsLiteral</var> is a <var>Boolean</var> function which indicates whether the Integer vaule in <var>Index</var> represents a mask literal which cannot be edited in the control. The return value is <b>False</b> for any of the following conditions:
+            <var>IsLiteral</var> is a <var>Boolean</var> function which indicates whether the Integer vaule in <var>Index</var> represents a mask literal which cannot be edited in the control.
           </p>
-          <ul>
-            <li>
-              IsMaskChar(Ch) returns False
-            </li>
-            <li>
-              IsMaskChar(Ch) does not return Char_HourSeparator or Char_DateSeparator
-            </li>
-          </ul>
+          <p>
+            IsLiteral calls <var>CheckRange</var> to validate the character position in Index. An exception is raised in CheckRange when Index is not valid for the edit mask used in the control.
+          </p>
+          <p>
+            The return value is <b>False</b> when the mask type for the character in Index is <b>not</b> one for the following TMaskType values:
+          </p>
+          <dl>
+            <dt>Char_IsLiteral</dt>
+            <dd>A mask literal.</dd>
+            <dt>Char_HourSeparator</dt>
+            <dd>The time separator character.</dd>
+            <dt>Char_DateSeparator</dt>
+            <dd>The date separator character.</dd>
+          </dl>
           <p>
             IsLiteral is used in the implementation of methods like <var>SetMask</var>, <var>SetSpaceChar</var>, <var>SelectNextChar</var>, <var>SelectPrevChar</var>, <var>JumpToNextDot</var>, and <var>SetEditText</var>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TMaskType"/>
+        </seealso>
       </element>
       <element name="TCustomMaskEdit.IsLiteral.Result">
-        <short/>
+        <short>True if the specified character is a mask literal</short>
       </element>
       <element name="TCustomMaskEdit.IsLiteral.Index">
-        <short/>
+        <short>Character position examined in the method</short>
       </element>
 
       <element name="TCustomMaskEdit.TextIsValid">
@@ -770,16 +808,13 @@
             <var>CharMatchesMask</var> is a <var>Boolean</var> function used to determine if a character in the value for the control is valid for its EditMask. <var>Ch</var> contains the UTF-8 character examined in the method.
           </p>
           <p>
-            <var>Position</var> contains the offset into the EditMask for the mask character compared in the method. Position is in the range <b>1..MaxLength</b>. When Position is not in this range, no actions are performed in the method and the return value is set to <b>False</b>.
+            <var>Position</var> contains the offset into the EditMask for the mask character compared in the method. Position is in the range <b>1..MaxLength</b>. The CheckRange method is called to ensure that Position is the range needed for the edit mask in the control. An exception is raised in CheckRange when Position contains an invalid position.
           </p>
           <p>
-            CharMatchesMask uses the internal TInternalMask instance to examine the mask definition at the specified position. The value in Ch is compared to the allowed values for the mask character type in the definition.
+            CharMatchesMask uses the internal TInternalMask instance to determine if the value in Ch matches the mask definition at the specified position. The return value is <b>True</b> when Ch contains a valid character value for the mask character type.
           </p>
           <p>
-            If an unrecognized mask character type is found in the in the EditMask, an <var>EDBEditError</var> exception is raised. I'm sure there is a reason for raising a database exception, but there is no indication why it was chosen.
-          </p>
-          <p>
-            The return value is <b>True</b> when Ch contains a valid character value for the mask character type.
+            If an unrecognized mask character type is found in the in the EditMask, an <var>EDBEditError</var> exception is raised. It is not really a database exception; it's just an identifer, defined in this unit, with a confusingly  unfortunate name.
           </p>
           <p>
             CharMatchesMask is used in the implementation of the <var>TextIsValid</var> method.
@@ -793,6 +828,7 @@
           <link id="TCustomMaskEdit.EditMask"/>
           <link id="TCustomMaskEdit.ValidateEdit"/>
           <link id="TMaskType"/>
+          <link id="EDBEditError"/>
         </seealso>
       </element>
       <element name="TCustomMaskEdit.CharMatchesMask.Result">
@@ -813,7 +849,9 @@
           <p>
             Fixed literals, like date or time separators, and escaped characters are ignored in the method. For Delphi compatibilty, only literals remain; all other character values are replaced with the character designated in the <var>SpaceChar</var> property.
           </p>
-          <notes><note>Raises an EDBEditError exception.</note></notes>
+          <p>
+            Calls CheckRange to ensure that Position is valid for the EditMask defined in the control. CheckRange raises an exception when Position is not in the requird range.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomMaskEdit.ApplyMaskToText"/>
@@ -888,7 +926,17 @@
         <short>
           Indicates if the specified character can be inserted at a given position in the control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Calls CheckRange to ensure that Position is in the range required for the EditMask in the control.
+          </p>
+          <p>
+            The value in Ch is converted to the case required for the mask type (when needed), and compared to value(s) permitted for the mask type. The return value is True when Ch contains a value permitted for the TMaskType.
+          </p>
+          <p>
+            Special logic is used when Ch contains a Space (#32) character, and is being applied using Paste from Clipboard. Delphi allows the Space character during Paste - even when it is invalid for the mask character type. In this case, the return value is always set to True.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomMaskEdit.CanInsertChar.Result">

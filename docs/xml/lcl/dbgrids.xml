@@ -760,7 +760,6 @@
       <element name="TBookmarkList.FList"/>
       <element name="TBookmarkList.FGrid"/>
       <element name="TBookmarkList.fDataset"/>
-      <element name="TBookmarkList.fUseCompareBookmarks"/>
       <element name="TBookmarkList.fCanDoBinarySearch"/>
 
       <element name="TBookmarkList.GetCount">
@@ -840,7 +839,10 @@
             CheckActive is a procedure used to ensure that the bookmark list is active and properly configured.  CheckActive examines the DataLink for the Grid to determine if it is active. An EInvalidGridOperation exception is raised if the dataset is not already active.
           </p>
           <p>
-            CheckActive compares the datasets in the  bookmark list and the associated Grid control. If they are the same Dataset, no additional processing is performed in the method. Otherwise, the Dataset for the bookmark list is set to the Dataset from the associated Grid control.
+            CheckActive compares the dataset in the  bookmark list to the the dataset in the associated Grid control. If they are the same Dataset, no additional processing is performed in the method. Otherwise, the Dataset for the bookmark list is set to the Dataset from the associated Grid control.
+          </p>
+          <p>
+            CheckActive sets the value for the internal flag which indicates if a binary search can be used to locate bookmarks. Hint: Binary search is not used for TSQLQuery and TBufDataset descendants.
           </p>
         </descr>
         <errors>
@@ -914,14 +916,24 @@
 
       <element name="TBookmarkList.Find">
         <short>
-          <var>Find</var> locates the specified Bookmark and its position in the list
-         </short>
+          <var>Find</var> locates the specified Bookmark and its position in the bookmark list
+        </short>
         <descr>
           <p>
-          <var>Find</var> is a Boolean function used to locate the specified bookmark in the Items for the bookmark list. AIndex contains the position in the list where the bookmark was located. The return value is True when the specified bookmark is located in the bookmark list.
-        </p>
+            <var>Find</var> is a <var>Boolean</var> function used to locate the bookmark specified in <var>Item</var> in the Items for the bookmark list. No actions are performed in the method, and the return value is <b>False</b>, when a <var>TBookmark</var> instance has not been assigned to Item.
+          </p>
+          <p>
+            For datasets where the bookmark contains an index value, a binary search is used to locate the bookmark in Items. For other datasets, like TSQLQuery and TBufDataset, each bookmark in Items is visited to compare the values.
+          </p>
+          <p>
+            Find calls the <var>TDataset.CompareBookmarks</var> method to compare the value in Item to the bookmarks in Items. <var>AIndex</var> is set to the position in Items where the bookmark was located. The return value is <b>True</b> when the specified bookmark is located in the bookmark list.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TBookmarkList.Items"/>
+          <link id="TBookmark"/>
+          <link id="#fcl.db.TDataset.CompareBookmarks">TDataset.CompareBookmarks</link>
+        </seealso>
       </element>
       <element name="TBookmarkList.Find.Result">
         <short>True when the bookmark is located in the list</short>
