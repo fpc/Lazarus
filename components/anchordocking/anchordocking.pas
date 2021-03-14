@@ -5748,9 +5748,7 @@ begin
               if IsMainForm then
                 Application.Terminate
               else begin
-                NeedEnableAutoSizing:=false;
-                Release;
-                AForm.Release;
+                Close;
                 exit;
               end;
             end;
