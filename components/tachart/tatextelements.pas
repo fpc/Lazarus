@@ -135,12 +135,18 @@ type
     FMargin: TChartDistance;
     FPolygon: TPointArray;
     FText: TStrings;
+    FWordWrap: Boolean;
+    FWrappedCaption: String;
 
+    function GetRealCaption: String;
+    function IsWordwrapped: Boolean;
     procedure SetBrush(AValue: TBrush);
     procedure SetFont(AValue: TFont);
     procedure SetFrame(AValue: TChartTitleFramePen);
     procedure SetMargin(AValue: TChartDistance);
     procedure SetText(AValue: TStrings);
+    procedure SetWordwrap(AValue: Boolean);
+    procedure WordWrapCaption(ADrawer: IChartDrawer; AMaxWidth: Integer);
   strict protected
     function GetFrame: TChartPen; override;
     function GetLabelBrush: TBrush; override;
@@ -167,6 +173,7 @@ type
     property Text: TStrings read FText write SetText;
     property TextFormat;
     property Visible default false;
+    property Wordwrap: Boolean read FWordwrap write SetWordwrap default false;
   end;
 
   TChartMarkAttachment = (maDefault, maEdge, maCenter);
@@ -613,7 +620,7 @@ end;
 procedure TChartTitle.Draw(ADrawer: IChartDrawer);
 begin
   if not Visible or (Text.Count = 0) then exit;
-  DrawLabel(ADrawer, FCenter, FCenter, Text.Text, FPolygon);
+  DrawLabel(ADrawer, FCenter, FCenter, GetRealCaption, FPolygon);
 end;
 
 function TChartTitle.GetFrame: TChartPen;
@@ -631,9 +638,22 @@ begin
   Result := Font;
 end;
 
+function TChartTitle.GetRealCaption: String;
+begin
+  if IsWordWrapped then
+    Result := FWrappedCaption
+  else
+    Result := Text.Text;
+end;
+
 function TChartTitle.IsPointInBounds(APoint: TPoint): Boolean;
 begin
   Result := IsPointInPolygon(APoint, FPolygon);
+end;
+
+function TChartTitle.IsWordWrapped: Boolean;
+begin
+  Result := FWordWrap and (Font.Orientation = 0);
 end;
 
 procedure TChartTitle.Measure(ADrawer: IChartDrawer;
@@ -642,7 +662,11 @@ var
   ptSize: TPoint;
 begin
   if not Visible or (Text.Count = 0) then exit;
-  ptSize := MeasureLabel(ADrawer, Text.Text);
+
+  if IsWordWrapped then
+    WordwrapCaption(ADrawer, ARight - ALeft);
+
+  ptSize := MeasureLabel(ADrawer, GetRealCaption);
   case Alignment of
     taLeftJustify: FCenter.X := ALeft + ptSize.X div 2;
     taRightJustify: FCenter.X := ARight - ptSize.X div 2;
@@ -683,12 +707,25 @@ begin
   StyleChanged(Self);
 end;
 
+procedure TChartTitle.SetWordWrap(AValue: Boolean);
+begin
+  if FWordwrap = AValue then exit;
+  FWordwrap := AValue;
+  StyleChanged(Self);
+end;
+
 procedure TChartTitle.UpdateBidiMode;
 begin
   case Alignment of
     taLeftJustify  : Alignment := taRightJustify;
     taRightJustify : Alignment := taLeftJustify;
   end;
+end;
+
+procedure TChartTitle.WordwrapCaption(ADrawer: IChartDrawer; AMaxWidth: Integer);
+begin
+  ADrawer.Font := Font;
+  FWrappedCaption := TADrawUtils.Wordwrap(Text.Text, ADrawer, AMaxWidth, TextFormat);
 end;
 
 { TGenericChartMarks }
