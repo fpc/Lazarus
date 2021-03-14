@@ -808,7 +808,7 @@ function WordWrap(const AText: String; ADrawer: IChartDrawer;
   AMaxWidth: Integer; ATextFormat: TChartTextFormat): string;
 var
   L: TStrings;
-  sa: TStringArray;
+  words: TStrings;
   line, testline: String;
   s: String;
   w, ws, wspace: Integer;
@@ -820,14 +820,15 @@ begin
   begin
     wspace := ADrawer.TextExtent(' ').X;
     L := TStringList.Create;
+    words := TStringList.Create;
     try
       L.Text := AText;
       for i := 0 to L.Count-1 do
       begin
-        sa := SplitString(L[i], ' ');
+        Split(L[i], words, ' ');
         line := '';
         w := 0;
-        for s in sa do
+        for s in words do
         begin
           ws := ADrawer.TextExtent(s).X;
           if w + wspace + ws <= AMaxWidth then
@@ -855,6 +856,7 @@ begin
           Result := Result + LineEnding;
       end;
     finally
+      words.Free;
       L.Free;
     end;
   end else
