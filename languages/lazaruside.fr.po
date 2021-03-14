@@ -1742,7 +1742,7 @@ msgid "Use external debug symbols file"
 msgstr "Utiliser un fichier d'informations de débogage externe"
 
 #: lazarusidestrconsts.dlgfileassociationinos
-msgid "Opening files from OS"
+msgid "Opening Files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts

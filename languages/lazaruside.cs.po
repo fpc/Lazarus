@@ -1754,7 +1754,7 @@ msgid "Use external debug symbols file"
 msgstr "Používat externí soubor ladících symbolů GDB"
 
 #: lazarusidestrconsts.dlgfileassociationinos
-msgid "Opening files from OS"
+msgid "Opening Files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts

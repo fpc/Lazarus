@@ -1782,7 +1782,7 @@ msgid "Use external debug symbols file"
 msgstr "Użyj zewnętrznego pliku symboli odpluskiwacza"
 
 #: lazarusidestrconsts.dlgfileassociationinos
-msgid "Opening files from OS"
+msgid "Opening Files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts

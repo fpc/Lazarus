@@ -1740,7 +1740,7 @@ msgid "Use external debug symbols file"
 msgstr "Usar arquivo de símbolos de depuração externo"
 
 #: lazarusidestrconsts.dlgfileassociationinos
-msgid "Opening files from OS"
+msgid "Opening Files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts

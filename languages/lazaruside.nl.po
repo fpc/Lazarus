@@ -1792,7 +1792,7 @@ msgid "Use external debug symbols file"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileassociationinos
-msgid "Opening files from OS"
+msgid "Opening Files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts

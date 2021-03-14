@@ -1732,7 +1732,7 @@ msgid "Use external debug symbols file"
 msgstr "Harici hata ayıklama sembolleri dosyasını kullan"
 
 #: lazarusidestrconsts.dlgfileassociationinos
-msgid "Opening files from OS"
+msgid "Opening Files from OS"
 msgstr ""
 
 #: lazarusidestrconsts.dlgfileexts
