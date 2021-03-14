@@ -92,6 +92,7 @@ object IdeStartupFrame: TIdeStartupFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 11
+    DropDownCount = 12
     ItemHeight = 18
     Style = csDropDownList
     TabOrder = 2

@@ -19,7 +19,9 @@
  ***************************************************************************
 
   Abtract:
-    Frame for environment options for new projects.
+    Frame for environment options for things happening during startup.
+    - Single Lazarus IDE instance / multiple instances.
+    - The project that gets opened or created.
 }
 unit IdeStartup_Options;
 
