@@ -119,14 +119,6 @@ msgstr "Aplatir les en-têtes"
 msgid "Flatten headers of docked controls"
 msgstr "Aplatir les en-têtes des contrôles amarrés"
 
-#: anchordockstr.adrsfreewindowonclose
-msgid "Free window on close"
-msgstr ""
-
-#: anchordockstr.adrsfreewindowonclosehint
-msgid "Free window on close, don't just hide it"
-msgstr ""
-
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr "Options générales d'amarrage"

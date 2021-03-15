@@ -197,8 +197,7 @@ begin
   try
     Config:=GetIDEConfigStorage('anchordockoptions.xml',true);
     try
-      if FileExistsUTF8(Config.GetFilename) then
-        FSettings.LoadFromConfig(Config);
+      FSettings.LoadFromConfig(Config);
     finally
       Config.Free;
     end;

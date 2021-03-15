@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Version Value="1"/>
   <MainConfig>
     <Nodes ChildCount="1">
       <Item1 Name="MainIDE" Type="CustomSite" ChildCount="1">
@@ -71,5 +70,4 @@
       </Item1>
     </Nodes>
   </MainConfig>
-  <Settings FreeWindowOnClose="True"/>
 </CONFIG>

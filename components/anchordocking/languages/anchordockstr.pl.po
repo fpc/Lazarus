@@ -120,14 +120,6 @@ msgstr ""
 msgid "Flatten headers of docked controls"
 msgstr ""
 
-#: anchordockstr.adrsfreewindowonclose
-msgid "Free window on close"
-msgstr ""
-
-#: anchordockstr.adrsfreewindowonclosehint
-msgid "Free window on close, don't just hide it"
-msgstr ""
-
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
 msgstr "Ogólne opcje dokowania"

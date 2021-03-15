@@ -512,7 +512,6 @@ type
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
-    FFreeWindowOnClose: boolean;
     FPageAreaInPercent: integer;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
@@ -528,7 +527,6 @@ type
     procedure SetHeaderHint(AValue: string);
     procedure SetHeaderStyle(AValue: THeaderStyleName);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
-    procedure SetFreeWindowOnClose(AValue: boolean);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
     procedure SetShowHeader(AValue: boolean);
@@ -551,7 +549,6 @@ type
     property ShowHeader: boolean read FShowHeader write SetShowHeader;
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption;
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl write SetHideHeaderCaptionFloatingControl;
-    property FreeWindowOnClose: boolean read FFreeWindowOnClose write SetFreeWindowOnClose;
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging;
     property HeaderStyle: THeaderStyleName read FHeaderStyle write SetHeaderStyle;
     property HeaderFlatten: boolean read FHeaderFlatten write SetHeaderFlatten;
@@ -597,7 +594,6 @@ type
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
     FDockSitesCanBeMinimized: boolean;
-    FFreeWindowOnClose: Boolean;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
     FOnCreateControl: TADCreateControlEvent;
@@ -658,7 +654,6 @@ type
     procedure SetDragTreshold(AValue: integer);
     procedure SetHeaderHint(AValue: string);
     procedure SetHeaderStyle(AValue: THeaderStyleName);
-    procedure SetFreeWindowOnClose(AValue: Boolean);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
 
@@ -786,7 +781,6 @@ type
     property ShowHeaderCaption: boolean read FShowHeaderCaption write SetShowHeaderCaption default true; // set to false to remove the text in the headers
     property HideHeaderCaptionFloatingControl: boolean read FHideHeaderCaptionFloatingControl
                           write SetHideHeaderCaptionFloatingControl default true; // disables ShowHeaderCaption for floating controls
-    property FreeWindowOnClose: Boolean read FFreeWindowOnClose write SetFreeWindowOnClose default false; // free window or just hide so it doesn't lose its content
     property HeaderAlignTop: integer read FHeaderAlignTop write SetHeaderAlignTop default 80; // move header to top, when (width/height)*100<=HeaderAlignTop
     property HeaderAlignLeft: integer read FHeaderAlignLeft write SetHeaderAlignLeft default 120; // move header to left, when (width/height)*100>=HeaderAlignLeft
     property HeaderHint: string read FHeaderHint write SetHeaderHint; // if empty it uses resourcestring adrsDragAndDockC
@@ -1347,13 +1341,6 @@ begin
   IncreaseChangeStamp;
 end;
 
-procedure TAnchorDockSettings.SetFreeWindowOnClose(AValue: boolean);
-begin
-  if FFreeWindowOnClose=AValue then Exit;
-  FFreeWindowOnClose:=AValue;
-  IncreaseChangeStamp;
-end;
-
 procedure TAnchorDockSettings.SetPageAreaInPercent(AValue: integer);
 begin
   if FPageAreaInPercent=AValue then Exit;
@@ -1438,7 +1425,6 @@ begin
   FSplitterWidth := Source.FSplitterWidth;
   FHeaderHighlightFocused:=Source.FHeaderHighlightFocused;
   FDockSitesCanBeMinimized:=Source.FDockSitesCanBeMinimized;
-  FFreeWindowOnClose := Source.FreeWindowOnClose;
 end;
 
 procedure TAnchorDockSettings.IncreaseChangeStamp;
@@ -1466,7 +1452,6 @@ begin
   HeaderFilled:=Config.GetValue('HeaderFilled',true);
   HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
   DockSitesCanBeMinimized:=Config.GetValue('DockSitesCanBeMinimized',False);
-  FreeWindowOnClose:=Config.GetValue('FreeWindowOnClose',false);
   Config.UndoAppendBasePath;
 end;
 
@@ -1490,7 +1475,6 @@ begin
   Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
   Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
   Config.SetDeleteValue(Path+'DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
-  Config.SetDeleteValue(Path+'FreeWindowOnClose',FreeWindowOnClose,false);
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
@@ -1513,7 +1497,6 @@ begin
   Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
   Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
   Config.SetDeleteValue('DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
-  Config.SetDeleteValue('FreeWindowOnClose',FreeWindowOnClose,false);
   Config.UndoAppendBasePath;
 end;
 
@@ -1537,7 +1520,6 @@ begin
       and (HeaderFilled=Settings.HeaderFilled)
       and (HeaderHighlightFocused=Settings.HeaderHighlightFocused)
       and (DockSitesCanBeMinimized=Settings.DockSitesCanBeMinimized)
-      and (FreeWindowOnClose=Settings.FreeWindowOnClose)
       ;
 end;
 
@@ -1561,7 +1543,6 @@ begin
   HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
   HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
   DockSitesCanBeMinimized:=Config.GetValue(Path+'DockSitesCanBeMinimized',False);
-  FreeWindowOnClose:=Config.GetValue(Path+'FreeWindowOnClose',false);
 end;
 
 { TAnchorDockMaster }
@@ -2624,13 +2605,6 @@ begin
   InvalidateHeaders;
 end;
 
-procedure TAnchorDockMaster.SetFreeWindowOnClose(AValue: Boolean);
-begin
-  if FFreeWindowOnClose=AValue then Exit;
-  FFreeWindowOnClose:=AValue;
-  OptionsChanged;
-end;
-
 procedure TAnchorDockMaster.SetPageAreaInPercent(AValue: integer);
 begin
   if FPageAreaInPercent=AValue then Exit;
@@ -2671,7 +2645,6 @@ begin
   EnableAllAutoSizing;
   OptionsChanged;
 end;
-
 procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
 begin
   if FScaleOnResize=AValue then Exit;
@@ -2891,7 +2864,6 @@ begin
   FRestoreLayouts:=TAnchorDockRestoreLayouts.Create;
   FHeaderHighlightFocused:=false;
   FDockSitesCanBeMinimized:=false;
-  FFreeWindowOnClose:=false;
   FOverlappingForm:=nil;
   FHeaderStyleName2ADHeaderStyle:=THeaderStyleName2ADHeaderStylesMap.create;
 end;
@@ -3572,7 +3544,6 @@ begin
   HeaderFilled                     := Settings.HeaderFilled;
   HeaderHighlightFocused           := Settings.HeaderHighlightFocused;
   DockSitesCanBeMinimized          := Settings.DockSitesCanBeMinimized;
-  FreeWindowOnClose                := Settings.FreeWindowOnClose;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
@@ -3594,7 +3565,6 @@ begin
   Settings.HeaderFilled:=HeaderFilled;
   Settings.HeaderHighlightFocused:=HeaderHighlightFocused;
   Settings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized;
-  Settings.FreeWindowOnClose:=FreeWindowOnClose;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
@@ -5165,22 +5135,7 @@ begin
 end;
 
 procedure TAnchorDockHostSite.DoClose(var CloseAction: TCloseAction);
-var
-  AControl: TControl;
-  AForm: TCustomForm absolute AControl;
 begin
-  if DockMaster.FreeWindowOnClose then
-  begin
-    AControl:=GetOneControl;
-    if AControl is TCustomForm then
-    begin
-      AForm.Close;
-      if csDestroying in AForm.ComponentState then
-        CloseAction:=caFree
-      else
-        CloseAction:=caNone;
-    end;
-  end;
   inherited DoClose(CloseAction);
 end;
 
@@ -5731,7 +5686,7 @@ begin
           AForm:=TCustomForm(AControl);
           IsMainForm := (Application.MainForm = AForm)
                         or (AForm.IsParentOf(Application.MainForm));
-          if IsMainForm or DockMaster.FreeWindowOnClose then
+          if IsMainForm then
             CloseAction := caFree
           else
             CloseAction := caHide;
@@ -5748,7 +5703,9 @@ begin
               if IsMainForm then
                 Application.Terminate
               else begin
-                Close;
+                NeedEnableAutoSizing:=false;
+                Release;
+                AForm.Release;
                 exit;
               end;
             end;
