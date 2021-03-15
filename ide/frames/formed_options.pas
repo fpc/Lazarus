@@ -41,7 +41,8 @@ type
     dcGrabber,
     dcMarker,
     dcRuberbandSelection,
-    dcRuberbandCreation
+    dcRuberbandCreation,
+    dcNonFormBackgroundColor
   );
 
   { TFormEditorOptionsFrame }
@@ -169,6 +170,7 @@ begin
     ColorsListBox.Items.Objects[Ord(dcGridLinesRightBottom)] := TObject(PtrInt(GuideLineColorRightBottom));
     ColorsListBox.Items.Objects[Ord(dcGrabber)] := TObject(PtrInt(GrabberColor));
     ColorsListBox.Items.Objects[Ord(dcMarker)] := TObject(PtrInt(MarkerColor));
+    ColorsListBox.Items.Objects[Ord(dcNonFormBackgroundColor)] := TObject(PtrInt(NonFormBackgroundColor));
     ColorsListBox.Items.Objects[Ord(dcRuberbandSelection)] := TObject(PtrInt(RubberbandSelectionColor));
     ColorsListBox.Items.Objects[Ord(dcRuberbandCreation)] := TObject(PtrInt(RubberbandCreationColor));
 
@@ -205,6 +207,7 @@ begin
     GuideLineColorRightBottom := ColorsListBox.Colors[Ord(dcGridLinesRightBottom)];
     GrabberColor := ColorsListBox.Colors[Ord(dcGrabber)];
     MarkerColor := ColorsListBox.Colors[Ord(dcMarker)];
+    NonFormBackgroundColor := ColorsListBox.Colors[Ord(dcNonFormBackgroundColor)];
     RubberbandSelectionColor := ColorsListBox.Colors[Ord(dcRuberbandSelection)];
     RubberbandCreationColor := ColorsListBox.Colors[Ord(dcRuberbandCreation)];
 
@@ -253,6 +256,7 @@ begin
   Items.Add(dlgMarkerColor);
   Items.Add(dlgRuberbandSelectionColor);
   Items.Add(dlgRuberbandCreationColor);
+  Items.Add(dlgNonFormBackgroundColor);
 end;
 
 procedure TFormEditorOptionsFrame.ColorBoxChange(Sender: TObject);

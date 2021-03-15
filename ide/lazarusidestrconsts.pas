@@ -1501,6 +1501,7 @@ resourcestring
   dlgRightBottomClr = 'Guide lines Right,Bottom';
   dlgGrabberColor = 'Grabber color';
   dlgMarkerColor = 'Marker color';
+  dlgNonFormBackgroundColor = 'Non Form Designer background color';
   dlgRuberbandSelectionColor = 'Rubberband Selection';
   dlgRuberbandCreationColor = 'Rubberband Creation';
   dlgRubberbandSelectsGrandChildren = 'Select grandchildren';

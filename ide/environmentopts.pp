@@ -592,6 +592,7 @@ type
     FRightClickSelects: boolean;
     FGrabberColor: TColor;
     FMarkerColor: TColor;
+    FNonFormBackgroundColor: TColor;
     FRubberbandSelectionColor: TColor;
     FRubberbandCreationColor: TColor;
     FRubberbandSelectsGrandChilds: boolean;
@@ -852,6 +853,8 @@ type
                                         write FRightClickSelects;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
+    property NonFormBackgroundColor: TColor read FNonFormBackgroundColor
+                                            write FNonFormBackgroundColor;
     property RubberbandSelectionColor: TColor read FRubberbandSelectionColor
                                               write FRubberbandSelectionColor;
     property RubberbandCreationColor: TColor read FRubberbandCreationColor
@@ -2132,6 +2135,7 @@ begin
   FRightClickSelects:=true;
   FGrabberColor:=clBlack;
   FMarkerColor:=clDkGray;
+  FNonFormBackgroundColor:=clWhite;
   FRubberbandSelectionColor:=clNavy;
   FRubberbandCreationColor:=clMaroon;
   FRubberbandSelectsGrandChilds:=DefaultRubberbandSelectsGrandChilds;
@@ -2615,6 +2619,7 @@ begin
     FRightClickSelects:=FXMLCfg.GetValue(Path+'FormEditor/RightClickSelects',true);
     FGrabberColor:=FXMLCfg.GetValue(Path+'FormEditor/GrabberColor/Value',FGrabberColor);
     FMarkerColor:=FXMLCfg.GetValue(Path+'FormEditor/MarkerColor/Value',FMarkerColor);
+    FNonFormBackgroundColor:=FXMLCfg.GetValue(Path+'FormEditor/NonFormBackgroundColor/Value',FNonFormBackgroundColor);
     FRubberbandSelectionColor:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/SelectionColor/Value',
        FRubberbandSelectionColor);
     FRubberbandCreationColor:=FXMLCfg.GetValue(Path+'FormEditor/Rubberband/CreationColor/Value',
@@ -2981,6 +2986,7 @@ begin
     FXMLCfg.SetDeleteValue(Path+'FormEditor/RightClickSelects',FRightClickSelects,true);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/GrabberColor/Value',FGrabberColor,clBlack);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/MarkerColor/Value',FMarkerColor,clDkGray);
+    FXMLCfg.SetDeleteValue(Path+'FormEditor/NonFormBackgroundColor/Value',FNonFormBackgroundColor,clWhite);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/Rubberband/SelectionColor/Value',
        FRubberbandSelectionColor,clBlack);
     FXMLCfg.SetDeleteValue(Path+'FormEditor/Rubberband/CreationColor/Value',
