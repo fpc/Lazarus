@@ -313,11 +313,13 @@ begin
     or (LWindow.ActiveEditor.GetDesigner(True) <> nil)
     then
       LPageCtrl.RemoveDesignPages
-    else begin
-      LPageCtrl.CreateTabSheetDesigner;
-      if not (LPageCtrl.DesignForm.Form is TNonControlProxyDesignerForm) then
-        LPageCtrl.CreateTabSheetAnchors;
-    end;
+    else
+      if Assigned(LPageCtrl.DesignForm) then
+      begin
+        LPageCtrl.CreateTabSheetDesigner;
+        if not (LPageCtrl.DesignForm.Form is TNonControlProxyDesignerForm) then
+          LPageCtrl.CreateTabSheetAnchors;
+      end;
   end;
 end;
 
