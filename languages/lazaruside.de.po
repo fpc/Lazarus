@@ -3194,6 +3194,10 @@ msgstr "Keine verfügbaren Units zum Hinzufügen."
 msgid "No Highlight"
 msgstr "Keine Hervorhebung"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Reiterpositionen des Quell-Notebooks"

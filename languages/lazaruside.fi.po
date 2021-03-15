@@ -3128,6 +3128,10 @@ msgstr "Ei ole lisättäviä käännösyksiköitä."
 msgid "No Highlight"
 msgstr "Ei korostusta"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Lähdekoodieditorin välilehtien paikka"

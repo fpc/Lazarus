@@ -3227,6 +3227,10 @@ msgstr "没有可用单元来添加."
 msgid "No Highlight"
 msgstr "不予高亮"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 #, fuzzy
 msgid "Source notebook tabs position"

@@ -3142,6 +3142,10 @@ msgstr "Немає наявних модулів щоб додати."
 msgid "No Highlight"
 msgstr "Без підсвічування"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Початкове положення вкладок блокноту"

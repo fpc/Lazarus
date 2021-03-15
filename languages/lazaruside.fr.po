@@ -3141,6 +3141,10 @@ msgstr "Pas d'unité disponible à ajouter."
 msgid "No Highlight"
 msgstr "Pas de surlignage"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Position des onglets de l'éditeur de source"

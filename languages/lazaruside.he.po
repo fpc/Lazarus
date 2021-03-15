@@ -3310,6 +3310,10 @@ msgstr ""
 msgid "No Highlight"
 msgstr "ללא הדגשה"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "מקור מיקום לשוניות הפנקס"

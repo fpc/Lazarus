@@ -3249,6 +3249,10 @@ msgstr "No hay unidades disponible a añadir."
 msgid "No Highlight"
 msgstr "Sin Realce"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Posición de las pestañas en el editor"

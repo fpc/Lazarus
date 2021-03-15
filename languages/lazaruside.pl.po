@@ -3240,6 +3240,10 @@ msgstr "Brak modułów dostępnych do dodania."
 msgid "No Highlight"
 msgstr "Nie podświetlaj"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Pozycja zakładek w edytorze źródeł"

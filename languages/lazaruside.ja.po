@@ -3218,6 +3218,10 @@ msgstr "追加できるユニットがありません。"
 msgid "No Highlight"
 msgstr "強調しない"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "ソースノートブックのタブ位置"

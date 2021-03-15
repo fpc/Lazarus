@@ -3161,6 +3161,10 @@ msgstr "Žádná dostupná jednotka k přidání."
 msgid "No Highlight"
 msgstr "Bez zvýrazňování"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Umístění záložky zdrojového zápisníku"

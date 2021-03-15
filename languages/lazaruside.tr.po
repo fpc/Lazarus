@@ -3106,6 +3106,10 @@ msgstr "Eklenebilecek birim yok."
 msgid "No Highlight"
 msgstr "Vurgulama Yok"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Kaynak sekmeleri konumu"

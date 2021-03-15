@@ -3220,6 +3220,10 @@ msgstr "Nėra įkeltinų modulių."
 msgid "No Highlight"
 msgstr "Jokių paryškinimų"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Rengyklės kortelių vieta"

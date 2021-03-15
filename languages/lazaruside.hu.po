@@ -3139,6 +3139,10 @@ msgstr "Nincsenek hozzáadható unit-ok."
 msgid "No Highlight"
 msgstr "Nincs kiemelés"
 
+#: lazarusidestrconsts.dlgnonformbackgroundcolor
+msgid "Other Designer background color (e. g. TDataModule)"
+msgstr ""
+
 #: lazarusidestrconsts.dlgnotebooktabpos
 msgid "Source notebook tabs position"
 msgstr "Forráskódszerkesztő füleinek helye"
