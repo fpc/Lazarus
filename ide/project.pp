@@ -3344,7 +3344,8 @@ begin
   // save the Publish Options
   PublishOptions.SaveToXMLConfig(FXMLConfig,Path+'PublishOptions/',fCurStorePathDelim);
   // save the Run and Build parameter options
-  RunParameterOptions.LegacySave(FXMLConfig,Path,fCurStorePathDelim);
+  if pfCompatibilityMode in Flags then
+    RunParameterOptions.LegacySave(FXMLConfig,Path,fCurStorePathDelim);
   RunParameterOptions.Save(FXMLConfig,Path+'RunParams/',fCurStorePathDelim,rpsLPI, UseLegacyLists);
   // save dependencies
   SavePkgDependencyList(FXMLConfig,Path+'RequiredPackages/',
