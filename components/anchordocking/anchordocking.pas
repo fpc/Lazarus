@@ -618,6 +618,7 @@ type
     fNeedSimplify: TFPList; // list of TControl
     fNeedFree: TFPList; // list of TControl
     fSimplifying: boolean;
+    FAllClosing: Boolean;
     fUpdateCount: integer;
     fDisabledAutosizing: TFPList; // list of TControl
     fTreeNameToDocker: TADNameToControl; // TAnchorDockHostSite, TAnchorDockSplitter or custom docksite
@@ -2865,6 +2866,7 @@ begin
   FHeaderHighlightFocused:=false;
   FDockSitesCanBeMinimized:=false;
   FOverlappingForm:=nil;
+  FAllClosing:=False;
   FHeaderStyleName2ADHeaderStyle:=THeaderStyleName2ADHeaderStylesMap.create;
 end;
 
@@ -3211,6 +3213,7 @@ var
   AForm: TCustomForm;
   AControl: TWinControl;
 begin
+  FAllClosing:=True;
   // hide all forms
   i:=Screen.CustomFormCount-1;
   while i>=0 do begin
@@ -3236,6 +3239,7 @@ begin
     end;
     i:=Min(i,Screen.CustomFormCount)-1;
   end;
+  FAllClosing:=False;
 end;
 
 procedure TAnchorDockMaster.SaveLayoutToConfig(Config: TConfigStorage);
@@ -5135,7 +5139,22 @@ begin
 end;
 
 procedure TAnchorDockHostSite.DoClose(var CloseAction: TCloseAction);
+var
+  AControl: TControl;
+  AForm: TCustomForm absolute AControl;
 begin
+  if (GetSiteCount=0) and not DockMaster.FAllClosing then
+  begin
+    AControl:=GetOneControl;
+    if (AControl is TCustomForm) then
+    begin
+      AForm.Close;
+      if csDestroying in AForm.ComponentState then
+        CloseAction:=caFree
+      else if AForm.Visible then
+        CloseAction:=caNone;
+    end;
+  end;
   inherited DoClose(CloseAction);
 end;
 
