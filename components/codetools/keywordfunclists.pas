@@ -912,6 +912,7 @@ begin
     Add('CDECL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COMPILERPROC' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DISCARDRESULT',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPERIMENTAL' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXPORT'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('EXTDECL'      ,{$ifdef FPC}@{$endif}AllwaysTrue); // used often for macros
