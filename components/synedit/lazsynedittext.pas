@@ -1226,6 +1226,7 @@ var
   Offs: Integer;
 begin
   AViewedXYInfo.CorrectedViewedXY := AViewedXY;
+  AViewedXYInfo.FirstViewedX := 1;
 
   if AFlags * [vifReturnPhysXY, vifReturnLogEOL] <> [] then begin
     AViewedXYInfo.PhysXY := AViewedXYInfo.CorrectedViewedXY;
