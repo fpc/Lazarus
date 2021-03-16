@@ -1772,6 +1772,10 @@ begin
   FEndLinePos          := src.FEndLinePos; // 1 based
   FEndBytePos          := src.FEndBytePos; // 1 based
   FPersistent          := src.FPersistent;
+  FLeftCharPos         := src.FLeftCharPos;
+  FRightCharPos        := src.FRightCharPos;
+  FAltStartLinePos     := src.FAltStartLinePos;
+  FAltStartBytePos     := src.FAltStartBytePos;
   FFlags := FFLags - [sbViewedFirstPosValid, sbViewedLastPosValid];
 end;
 

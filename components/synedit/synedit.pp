@@ -7980,11 +7980,12 @@ var
   nFound: integer;
   bBackward, bFromCursor: boolean;
   bPrompt: boolean;
-  bReplace, bReplaceAll: boolean;
+  bReplace, bReplaceAll, SelIsColumn: boolean;
   nAction: TSynReplaceAction;
   CurReplace: string;
   ptFoundStart, ptFoundEnd: TPoint;
   ptFoundStartSel, ptFoundEndSel: TPoint;
+  ReplaceBlockSelection: TSynEditSelection;
 
 
   function InValidSearchRange(First, Last: integer): boolean;
@@ -8011,6 +8012,7 @@ var
 
 begin
   Result := 0;
+  ReplaceBlockSelection := nil;
   // can't search for or replace an empty string
   if Length(ASearch) = 0 then exit;
   // get the text range to search in, ignore the "Search in selection only"
@@ -8020,6 +8022,7 @@ begin
   bReplace := (ssoReplace in AOptions);
   bReplaceAll := (ssoReplaceAll in AOptions);
   bFromCursor := not (ssoEntireScope in AOptions);
+  SelIsColumn := False;
   if not SelAvail then Exclude(AOptions, ssoSelectedOnly);
   if (ssoSelectedOnly in AOptions) then begin
     ptStart := BlockBegin;
@@ -8037,6 +8040,10 @@ begin
       end;
     // ignore the cursor position when searching in the selection
     if bBackward then ptCurrent := ptEnd else ptCurrent := ptStart;
+
+    SelIsColumn := FBlockSelection.ActiveSelectionMode = smColumn;
+    ReplaceBlockSelection := TSynEditSelection.Create(FTheLinesView, False);
+    ReplaceBlockSelection.AssignFrom(FBlockSelection);
   end else begin
     ptStart := Point(1, 1);
     ptEnd.Y := FTheLinesView.Count;
@@ -8066,9 +8073,12 @@ begin
     begin
       //DebugLn(['TCustomSynEdit.SearchReplace FOUND ptStart=',dbgs(ptStart),' ptEnd=',dbgs(ptEnd),' ptFoundStart=',dbgs(ptFoundStart),' ptFoundEnd=',dbgs(ptFoundEnd)]);
       // check if found place is entirely in range
-      if (FBlockSelection.ActiveSelectionMode <> smColumn)
-      or ((ptFoundStart.Y=ptFoundEnd.Y)
-          and (ptFoundStart.X >= ptStart.X) and (ptFoundEnd.X <= ptEnd.X)) then
+      if (not SelIsColumn) or
+         ( (ptFoundStart.Y=ptFoundEnd.Y) and
+           (ptFoundStart.X >= ReplaceBlockSelection.ColumnStartBytePos[ptFoundStart.Y]) and
+           (ptFoundEnd.X   <= ReplaceBlockSelection.ColumnEndBytePos[ptFoundStart.Y])
+         )
+      then
       begin
         // pattern found
         Inc(Result);
@@ -8139,6 +8149,7 @@ begin
     end;
   finally
     SetFoundCaretAndSel;
+    FreeAndNil(ReplaceBlockSelection);
     EndUndoBlock;
     DecPaintLock;
   end;
