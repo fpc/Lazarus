@@ -60,11 +60,9 @@ function GetShellIcon(const AFileName: WideString): TIcon;
 var
   FileInfo: TSHFileInfoW;
   imgHandle: DWORD_PTR;
-  attr: LongInt;
 begin
-  attr := FileGetAttr(AFileName);
-  imgHandle := SHGetFileInfoW(PWideChar(AFileName), attr, FileInfo, SizeOf(FileInfo),
-    SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SYSICONINDEX or SHGFI_USEFILEATTRIBUTES);
+  imgHandle := SHGetFileInfoW(PWideChar(AFileName), 0, FileInfo, SizeOf(FileInfo),
+    SHGFI_ICON or SHGFI_SMALLICON or SHGFI_SYSICONINDEX);
   if imgHandle <> 0 then
   begin
     Result := TIcon.Create;
