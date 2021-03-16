@@ -263,6 +263,7 @@ type
                        AnEvalFlags: TDBGEvaluateFlags;
                        ACallback: TDBGEvaluateResultCallback
                       );
+    destructor Destroy; override;
     procedure Abort;
   end;
 
@@ -811,23 +812,39 @@ end;
 procedure TFpThreadWorkerCmdEval.DoCallback_DecRef(Data: PtrInt);
 var
   CB: TDBGEvaluateResultCallback;
+  Dbg: TFpDebugDebuggerBase;
+  Res: Boolean;
+  ResText: String;
+  ResDbgType: TDBGType;
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerCmdEval.DoCallback_DecRef: system.ThreadID = classes.MainThreadID');
+  CB := nil;
   try
     if FEvalFlags * [defNoTypeInfo, defSimpleTypeInfo, defFullTypeInfo] = [defNoTypeInfo] then
       FreeAndNil(FResText);
 
-    if FCallback <> nil then begin
+    if (FCallback <> nil) then begin
+      // All to local vars, because SELF may be destroyed before/while the callback happens
       CB := FCallback;
+      Dbg := FDebugger;
+      Res := FRes;
+      ResText := FResText;
+      ResDbgType := FResDbgType;
+      FResDbgType := nil; // prevent from being freed => will be freed in callback
       FCallback := nil; // Ensure callback is never called a 2nd time (e.g. if Self.Abort is called, while in Callback)
-      CB(Self, FRes, FResText, FResDbgType);
-      // If Abort was called (during CB), then self is now invalid
-      // Abort would be called, if a new Evaluate Request is made. FEvalWorkItem<>nil
+      (* We cannot call Callback here, because ABORT can be called, and prematurely call UnQueue_DecRef,
+         removing the last ref to this object *)
     end;
   except
   end;
 
   UnQueue_DecRef;
+
+  // Self may now be invalid, unless FDebugger.FEvalWorkItem still has a reference.
+  // Abort may be called (during CB), removing this refence.
+  // Abort would be called, if a new Evaluate Request is made. FEvalWorkItem<>nil
+  if CB <> nil then
+    CB(Dbg, Res, ResText, ResDbgType);
 end;
 
 procedure TFpThreadWorkerCmdEval.DoExecute;
@@ -844,6 +861,12 @@ begin
   inherited Create(ADebugger, APriority, AnExpression, AStackFrame, AThreadId, wdfDefault, 0,
     AnEvalFlags);
   FCallback := ACallback;
+end;
+
+destructor TFpThreadWorkerCmdEval.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FResDbgType);
 end;
 
 procedure TFpThreadWorkerCmdEval.Abort;
