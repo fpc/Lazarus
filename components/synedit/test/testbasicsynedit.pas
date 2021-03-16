@@ -1178,7 +1178,7 @@ var
       TestCaret.LineCharPos := point(X, Y);
       if ChangeToLine > 0 then TestCaret.LinePos := ChangeToLine;
       if UseLock then TestCaret.Unlock;
-    end;♠
+    end;
     procedure DoOneSetByte(Y, X, {%H-}O: Integer; ChangeToLine: Integer = -1);
     begin
       if UseLock then TestCaret.Lock;
