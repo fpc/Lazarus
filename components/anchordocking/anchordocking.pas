@@ -6547,15 +6547,15 @@ function WindowPart: TThemedWindow;
     // no check states available
     Result := twCloseButtonNormal;
     if not IsEnabled then
-      Result := twCloseButtonDisabled
+      Result := {$IFDEF LCLWIN32}twCloseButtonDisabled{$ELSE}twSmallCloseButtonDisabled{$ENDIF}
     else
     if FState in [bsDown, bsExclusive] then
-      Result := twCloseButtonPushed
+      Result := {$IFDEF LCLWIN32}twCloseButtonPushed{$ELSE}twSmallCloseButtonPushed{$ENDIF}
     else
     if FState = bsHot then
-      Result := twCloseButtonHot
+      Result := {$IFDEF LCLWIN32}twCloseButtonHot{$ELSE}twSmallCloseButtonHot{$ENDIF}
     else
-      Result := twCloseButtonNormal;
+      Result := {$IFDEF LCLWIN32}twCloseButtonNormal;{$ELSE}twSmallCloseButtonNormal;{$ENDIF}
   end;
 
 begin
