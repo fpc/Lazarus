@@ -893,6 +893,7 @@ begin
       LNonFormProxyDesignerClass := BaseFormEditor1.NonFormProxyDesignerForm[NonControlProxyDesignerFormId];
       Result := TNonFormProxyDesignerForm(LNonFormProxyDesignerClass.NewInstance);
       Result.Create(nil, TNonControlDesignerForm.Create(Result));
+      Result.Color := EnvironmentOptions.NonFormBackgroundColor;
     end;
     Result.Name:='_Designer_'+LookupRoot.Name;
     (Result as INonFormDesigner).LookupRoot := LookupRoot;
