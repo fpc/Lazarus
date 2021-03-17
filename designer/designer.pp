@@ -3628,6 +3628,7 @@ begin
       else
         Icon.Canvas.Brush.Color := clBtnFace;
       Icon.Canvas.FillRect(TextRect);
+      Icon.Canvas.Font.Color := clWindowText;
       DrawText(Icon.Canvas.Handle, PChar(AComponent.Name), -1, TextRect,
         DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOCLIP);
       TextRect.Left := (ItemLeft + ItemRight - LongInt(Round(TextSize.cx/ScaleFactor))) div 2;
