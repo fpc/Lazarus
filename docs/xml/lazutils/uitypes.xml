@@ -10,7 +10,14 @@
       <short>
         Contains types and constants used in modal dialogs
       </short>
-      <descr/>
+      <descr>
+        <p>
+          <file>uitypes.pas</file> contains types and constants used in modal dialogs.
+        </p>
+        <p>
+          This file is part of the <file>lazutils</file> package.
+        </p>
+      </descr>
 
       <element name="Classes"/>
       <element name="SysUtils"/>
