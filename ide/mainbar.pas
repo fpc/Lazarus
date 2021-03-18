@@ -673,7 +673,7 @@ begin
   if EnvironmentOptions.Desktop.ComponentPaletteOptions.Visible then
   begin
     CoolBar.Align := alLeft;
-    CoolBar.Width := EnvironmentOptions.Desktop.IDECoolBarOptions.Width;
+    CoolBar.Width := Scale96ToForm(EnvironmentOptions.Desktop.IDECoolBarOptions.Width);
   end
   else
     CoolBar.Align := alClient;
@@ -803,7 +803,7 @@ end;
 
 procedure TMainIDEBar.MainSplitterMoved(Sender: TObject);
 begin
-  EnvironmentOptions.Desktop.IDECoolBarOptions.Width := CoolBar.Width;
+  EnvironmentOptions.Desktop.IDECoolBarOptions.Width := ScaleFormTo96(CoolBar.Width);
   SetMainIDEHeight;
 end;
 
