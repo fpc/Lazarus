@@ -235,6 +235,7 @@ procedure TCustomLabel.TextChanged;
 begin
   Invalidate;
   UpdateSize;
+  AccessibleValue := Caption;
 end;
 
 procedure TCustomLabel.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);

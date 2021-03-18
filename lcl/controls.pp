@@ -987,6 +987,7 @@ type
   );
 
   TLazAccessibilityRole = (
+    larIgnore, // Default value. Something to be ignored. For example a blank space between other objects.
     larAnimation, // An object that displays an animation.
     larButton, // A button.
     larCell, // A cell in a table.
@@ -994,11 +995,11 @@ type
     larCheckBox, // An object that can be checked or unchecked, or sometimes in an intermediary state
     larClock, // A clock displaying time.
     larColorPicker, // A control which allows selecting a color.
+    larColumn, // A generic column that goes in a table.
     larComboBox, // A list of choices that the user can select from.
     larDateField, // A controls which displays and possibly allows one to choose a date.
     larGrid, // A grid control which displays cells
     larGroup, // A control which groups others, such as a TGroupBox.
-    larIgnore, // Something to be ignored. For example a blank space between other objects.
     larImage, // A graphic or picture or an icon.
     larLabel, // A text label as usually placed near other widgets.
     larListBox, // A list of items, from which the user can select one or more items.
@@ -1008,14 +1009,19 @@ type
     larProgressIndicator, // A control which shows a progress indication.
     larRadioButton, // A radio button, see for example TRadioButton.
     larResizeGrip, // A grip that the user can drag to change the size of widgets.
+    larRow, // A generic row that goes in a table.
     larScrollBar, // A control to scroll another one
     larSpinner, // A control which allows one to increment / decrement a value.
     larTabControl, // A control with tabs, like TPageControl.
+    larText, // Text inside of a control, like text in a row cell
     larTextEditorMultiline, // A multi-line text editor (for example: TMemo, SynEdit)
     larTextEditorSingleline, // A single-line text editor (for example: TEdit)
+    larToolBar, // A control that holds ToolButtons
+    larToolBarButton, // A button on a ToolBar
     larTrackBar, // A control which allows one to drag a slider.
     larTreeView, // A list of items in a tree structure.
     larTreeItem, // An item in a tree structure.
+    larUnknown, // An item that doesn't fit any of the other categories.
     larWindow // A top level window.
   );
 
@@ -1037,27 +1043,28 @@ type
 
   TLazAccessibleObject = class
   private
-    FHandle: PtrInt;
     FPosition: TPoint;
     FSize: TSize;
     // only for GetChildAccessibleObject(Index)
     FLastSearchNode: TAvlTreeNode;
     FLastSearchIndex: Integer;
     FLastSearchInSubcontrols: Boolean;
-    function GetHandle: PtrInt;
     function GetPosition: TPoint;
     function GetSize: TSize;
     procedure SetHandle(AValue: PtrInt);
     procedure SetPosition(AValue: TPoint);
     procedure SetSize(AValue: TSize);
   protected
+    FHandle: PtrInt;
     FChildrenSortedForDataObject: TAvlTree; // of TLazAccessibleObject
+    FAccessibleName: TCaption;
     FAccessibleDescription: TCaption;
     FAccessibleValue: TCaption;
     FAccessibleRole: TLazAccessibilityRole;
     class procedure WSRegisterClass; virtual;//override;
     // provided for descendents to override and implement
     function GetAccessibleValue: TCaption; virtual;
+    function GetHandle: PtrInt; virtual;
   public
     OwnerControl: TControl;
     Parent: TLazAccessibleObject;
@@ -1067,11 +1074,12 @@ type
     destructor Destroy; override;
     function HandleAllocated: Boolean;
     procedure InitializeHandle; virtual;
+    procedure SetAccessibleName(const AName: TCaption);
     procedure SetAccessibleDescription(const ADescription: TCaption);
     procedure SetAccessibleValue(const AValue: TCaption);
     procedure SetAccessibleRole(const ARole: TLazAccessibilityRole);
     function FindOwnerWinControl: TWinControl;
-    function AddChildAccessibleObject: TLazAccessibleObject; virtual;
+    function AddChildAccessibleObject(ADataObject: TObject = nil): TLazAccessibleObject;
     procedure InsertChildAccessibleObject(AObject: TLazAccessibleObject);
     procedure ClearChildAccessibleObjects;
     procedure RemoveChildAccessibleObject(AObject: TLazAccessibleObject; AFreeObject: Boolean = True);
@@ -1086,6 +1094,7 @@ type
     function GetSelectedChildAccessibleObject: TLazAccessibleObject; virtual;
     function GetChildAccessibleObjectAtPos(APos: TPoint): TLazAccessibleObject; virtual;
     // Primary information
+    property AccessibleName: TCaption read FAccessibleName write SetAccessibleName;
     property AccessibleDescription: TCaption read FAccessibleDescription write SetAccessibleDescription;
     property AccessibleValue: TCaption read GetAccessibleValue write SetAccessibleValue;
     property AccessibleRole: TLazAccessibilityRole read FAccessibleRole write SetAccessibleRole;
@@ -1213,6 +1222,7 @@ type
     FVisible: Boolean;
     function CaptureMouseButtonsIsStored: boolean;
     procedure DoActionChange(Sender: TObject);
+    function GetAccessibleName: TCaption;
     function GetAccessibleDescription: TCaption;
     function GetAccessibleValue: TCaption;
     function GetAccessibleRole: TLazAccessibilityRole;
@@ -1241,6 +1251,7 @@ type
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
                           Shift: TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    procedure SetAccessibleName(AValue: TCaption);
     procedure SetAccessibleDescription(AValue: TCaption);
     procedure SetAccessibleValue(AValue: TCaption);
     procedure SetAccessibleRole(AValue: TLazAccessibilityRole);
@@ -1695,6 +1706,7 @@ type
     procedure RemoveHandlerOnMouseWheel(const OnMouseWheelEvent: TMouseWheelEvent);
   public
     // standard properties, which should be supported by all descendants
+    property AccessibleName: TCaption read GetAccessibleName write SetAccessibleName;
     property AccessibleDescription: TCaption read GetAccessibleDescription write SetAccessibleDescription;
     property AccessibleValue: TCaption read GetAccessibleValue write SetAccessibleValue;
     property AccessibleRole: TLazAccessibilityRole read GetAccessibleRole write SetAccessibleRole;

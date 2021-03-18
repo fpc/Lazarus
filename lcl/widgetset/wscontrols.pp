@@ -72,6 +72,7 @@ type
   public
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; virtual;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); virtual;
+    class procedure SetAccessibleName(const AObject: TLazAccessibleObject; const AName: string); virtual;
     class procedure SetAccessibleDescription(const AObject: TLazAccessibleObject; const ADescription: string); virtual;
     class procedure SetAccessibleValue(const AObject: TLazAccessibleObject; const AValue: string); virtual;
     class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); virtual;
@@ -179,6 +180,11 @@ end;
 
 class procedure TWSLazAccessibleObject.DestroyHandle(
   const AObject: TLazAccessibleObject);
+begin
+
+end;
+
+class procedure TWSLazAccessibleObject.SetAccessibleName(const AObject: TLazAccessibleObject; const AName: string);
 begin
 
 end;

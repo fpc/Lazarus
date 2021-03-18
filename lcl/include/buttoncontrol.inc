@@ -60,7 +60,6 @@ begin
   inherited Create(TheOwner);
   ControlStyle := ControlStyle-csMultiClicks-[csAcceptsControls,csCaptureMouse];
   AccessibleRole := larButton;
-  AccessibleDescription := 'Button';
 end;
 
 { TButtonActionLink }

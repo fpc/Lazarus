@@ -54,6 +54,7 @@ begin
   ControlStyle := [csCaptureMouse, csSetCaption, csDesignNoSmoothResize];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
+  AccessibleRole := larToolBarButton;
 end;
 
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -496,6 +497,7 @@ begin
   if ([csLoading,csDestroying]*ComponentState=[]) then
   begin
     InvalidatePreferredSize;
+    GetAccessibleObject.AccessibleName := AValue;
     inherited RealSetText(AValue);
     AdjustSize;
   end

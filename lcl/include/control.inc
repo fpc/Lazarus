@@ -24,7 +24,10 @@
 
 function TLazAccessibleObjectEnumerator.GetCurrent: TLazAccessibleObject;
 begin
-  Result:=TLazAccessibleObject(FCurrent.Data);
+  if Assigned(FCurrent) then
+    Result:=TLazAccessibleObject(FCurrent.Data)
+  else
+    Result := nil;
 end;
 
 { TLazAccessibleObject }
@@ -37,7 +40,8 @@ begin
   if (WidgetsetClass <> nil) and (FHandle = 0) then
   begin
     FHandle := WidgetsetClass.CreateHandle(Self);
-    InitializeHandle();
+    if FHandle <> 0 then
+      InitializeHandle();
   end;
   Result := FHandle;
 end;
@@ -71,7 +75,8 @@ procedure TLazAccessibleObject.SetHandle(AValue: PtrInt);
 begin
   if AValue = FHandle then Exit;
   FHandle := AValue;
-  InitializeHandle();
+  if FHandle <> 0 then
+    InitializeHandle();
 end;
 
 procedure TLazAccessibleObject.SetPosition(AValue: TPoint);
@@ -104,7 +109,7 @@ constructor TLazAccessibleObject.Create(AOwner: TControl);
 begin
   inherited Create;//(AOwner);
   OwnerControl := AOwner;
-  FChildrenSortedForDataObject := TAvlTree.Create(@CompareDataObjectWithLazAccessibleObject);
+  FChildrenSortedForDataObject := TAvlTree.Create(@CompareLazAccessibleObjectsByDataObject);
   WSRegisterClass();
 end;
 
@@ -116,6 +121,8 @@ begin
   ClearChildAccessibleObjects();
   if (WidgetsetClass <> nil) and (FHandle <> 0) then
     WidgetsetClass.DestroyHandle(Self);
+  if Assigned(Parent) then
+    Parent.RemoveChildAccessibleObject(self, False);
   FreeAndNil(FChildrenSortedForDataObject);
   inherited Destroy;
 end;
@@ -130,9 +137,20 @@ var
   WidgetsetClass: TWSLazAccessibleObjectClass;
 begin
   WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SetAccessibleName(Self, FAccessibleName);
   WidgetsetClass.SetAccessibleDescription(Self, FAccessibleDescription);
   WidgetsetClass.SetAccessibleValue(Self, FAccessibleValue);
   WidgetsetClass.SetAccessibleRole(Self, FAccessibleRole);
+end;
+
+procedure TLazAccessibleObject.SetAccessibleName(const AName: TCaption);
+var
+  WidgetsetClass: TWSLazAccessibleObjectClass;
+begin
+  if FAccessibleName=AName then Exit;
+  FAccessibleName := AName;
+  WidgetsetClass := TWSLazAccessibleObjectClass(GetWSLazAccessibleObject());
+  WidgetsetClass.SetAccessibleName(Self, AName);
 end;
 
 procedure TLazAccessibleObject.SetAccessibleDescription(const ADescription: TCaption);
@@ -169,16 +187,23 @@ function TLazAccessibleObject.FindOwnerWinControl: TWinControl;
 begin
   Result := nil;
   if OwnerControl is TWinControl then Exit(TWinControl(OwnerControl));
+  if OwnerControl is TControl then Exit(OwnerControl.Parent);
   if Self.Parent = nil then Exit;
   Result := Self.Parent.FindOwnerWinControl();
 end;
 
-function TLazAccessibleObject.AddChildAccessibleObject: TLazAccessibleObject;
-begin
+function TLazAccessibleObject.AddChildAccessibleObject(
+   ADataObject: TObject = nil): TLazAccessibleObject;begin
   Result := nil;
   if FChildrenSortedForDataObject = nil then Exit;
+  if (ADataObject <> nil) then begin
+    Result := GetChildAccessibleObjectWithDataObject(ADataObject);
+    if Result <> nil then
+      Exit;
+  end;
   Result := TLazAccessibleObject.Create(OwnerControl);
   Result.Parent := Self;
+  Result.DataObject := ADataObject;
   FChildrenSortedForDataObject.Add(Result);
   //DebugLn('[TControl.AddChildAccessibleObject] Name=%s', [Name]);
 end;
@@ -187,6 +212,10 @@ procedure TLazAccessibleObject.InsertChildAccessibleObject(
   AObject: TLazAccessibleObject);
 begin
   if FChildrenSortedForDataObject = nil then Exit;
+  if (AObject.Parent <> nil) and (AObject.Parent <> Self) then
+    AObject.Parent.RemoveChildAccessibleObject(AObject, False);
+  AObject.Parent := Self;
+  if (FChildrenSortedForDataObject.Find(AObject) <> nil) then exit;
   FChildrenSortedForDataObject.Add(AObject);
 end;
 
@@ -201,8 +230,10 @@ begin
   AVLNode:=FChildrenSortedForDataObject.FindLowest;
   while AVLNode<>nil do begin
     lXObject := TLazAccessibleObject(AVLNode.Data);
-    if lXObject.OwnerControl = OwnerControl then
+    if lXObject.OwnerControl = OwnerControl then begin
+      lXObject.Parent := nil;  // Clear parent so .Free doesn't recurse
       lXObject.Free;
+    end;
     AVLNode:=FChildrenSortedForDataObject.FindSuccessor(AVLNode);
   end;
   FChildrenSortedForDataObject.Clear;
@@ -214,6 +245,8 @@ var
   Node: TAvlTreeNode;
 begin
   if FChildrenSortedForDataObject = nil then Exit;
+  if Assigned(AObject.Parent) then
+    AObject.Parent := nil;
   Node:=FChildrenSortedForDataObject.Find(AObject);
   if Node=nil then exit;
   FChildrenSortedForDataObject.Delete(Node);
@@ -254,6 +287,9 @@ begin
   else if AIndex = FLastSearchIndex-1 then
     lNode := FChildrenSortedForDataObject.FindPrecessor(FLastSearchNode);
 
+  FLastSearchIndex := AIndex;
+  FLastSearchNode := lNode;
+
   if lNode = nil then Exit;
 
   Result := TLazAccessibleObject(lNode.Data);
@@ -279,13 +315,14 @@ begin
   Result := nil;
   if not FLastSearchInSubcontrols then
   begin
-    if GetChildAccessibleObjectsCount() < FLastSearchIndex then
-      Result := GetChildAccessibleObject(FLastSearchIndex)
+    if FLastSearchIndex < GetChildAccessibleObjectsCount() then
+      Result := GetChildAccessibleObject(FLastSearchIndex + 1)
     else if OwnerControl is TWinControl then
     begin
       FLastSearchIndex := 1;
       FLastSearchInSubcontrols := True;
-      Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
+      if (TWinControl(OwnerControl).ControlCount > 0) then
+        Result := TWinControl(OwnerControl).Controls[0].GetAccessibleObject();
     end;
   end
   else
@@ -1765,6 +1802,11 @@ begin
   if Assigned(FOnDragDrop) then FOnDragDrop(Self, Source,X,Y);
 end;
 
+procedure TControl.SetAccessibleName(AValue: TCaption);
+begin
+  FAccessibleObject.AccessibleName := AValue;
+end;
+
 procedure TControl.SetAccessibleDescription(AValue: TCaption);
 begin
   FAccessibleObject.AccessibleDescription := AValue;
@@ -2036,6 +2078,11 @@ end;
 procedure TControl.DoActionChange(Sender: TObject);
 begin
   if Sender = Action then ActionChange(Sender, False);
+end;
+
+function TControl.GetAccessibleName: TCaption;
+begin
+  Result := FAccessibleObject.AccessibleName;
 end;
 
 function TControl.GetAccessibleDescription: TCaption;

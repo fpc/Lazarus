@@ -2366,11 +2366,10 @@ begin
     ok:=true;
     if ok and (Owner<>nil) and (Owner.AccessibilityOn) then
     begin
-      lAccessibleObject := FOwner.GetAccessibleObject().AddChildAccessibleObject();
+      lAccessibleObject := FOwner.GetAccessibleObject().AddChildAccessibleObject(Result);
       lAccessibleObject.AccessibleDescription := 'Item';
       lAccessibleObject.AccessibleValue := S;
       lAccessibleObject.AccessibleRole := larTreeItem;
-      lAccessibleObject.DataObject := Result;
     end;
   finally
     Include(FOwner.FStates, tvsScrollbarChanged);
