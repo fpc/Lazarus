@@ -78,7 +78,7 @@ type
     FProps: TStringList;
     FWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
     FCentralWidgetRGBA: array [0{GTK_STATE_NORMAL}..4{GTK_STATE_INSENSITIVE}] of TDefaultRGBA;
-
+    fText:string;
     function CanSendLCLMessage: Boolean;
     function GetCairoContext: Pcairo_t;
     function GetEnabled: Boolean;
@@ -618,12 +618,10 @@ type
   TGtk3Panel = class(TGtk3Bin)
   private
     FBorderStyle: TBorderStyle;
-    FText: String;
   protected
     procedure SetColor(AValue: TColor); override;
     function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
     procedure DoBeforeLCLPaint; override;
-    function getText: String; override;
     procedure setText(const AValue: String); override;
   public
     property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle;
@@ -799,12 +797,9 @@ type
   { TGtk3HintWindow }
 
   TGtk3HintWindow = class(TGtk3Window)
-    private
-      FText: String;
-    protected
-      function getText: String; override;
-      procedure setText(const AValue: String); override;
-      function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
+  private
+  protected
+    function CreateWidget(const Params: TCreateParams):PGtkWidget; override;
   end;
 
   { TGtk3Dialog }
@@ -2514,11 +2509,12 @@ end;
 
 function TGtk3Widget.getText: String;
 begin
-  Result := '';
+  Result := fText; // default text storage
 end;
 
 procedure TGtk3Widget.setText(const AValue: String);
 begin
+  fText:=AValue;
   // DebugLn('WARNING: ',dbgsName(LCLObject),' self=',dbgsName(Self),' does not implement setText !');
 end;
 
@@ -3170,11 +3166,6 @@ begin
     DC.CurrentPen.Color := ColorToRGB(clBtnShadow); // not sure what color to use here?
     DC.drawRect(0, 0, LCLObject.Width, LCLObject.Height, False, True);
   end;
-end;
-
-function TGtk3Panel.getText: String;
-begin
-  Result := FText;
 end;
 
 procedure TGtk3Panel.setText(const AValue: String);
@@ -7409,16 +7400,6 @@ begin
 end;
 
 { TGtk3HintWindow }
-
-function TGtk3HintWindow.getText: String;
-begin
-  Result := FText;
-end;
-
-procedure TGtk3HintWindow.setText(const AValue: String);
-begin
-  FText := AValue;
-end;
 
 function TGtk3HintWindow.CreateWidget(const Params: TCreateParams): PGtkWidget;
 var
