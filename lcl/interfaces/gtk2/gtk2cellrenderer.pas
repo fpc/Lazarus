@@ -425,10 +425,10 @@ var
   ListItem: TListItem;
   Value: TGValue;
 begin
-  FillByte(Value{%H-},SizeOf(Value),0);
   if G_IS_OBJECT(cell) = false then
     exit;
 
+  FillByte(Value{%H-},SizeOf(Value),0);
   APath := gtk_tree_model_get_path(tree_model,iter);
   LCLCellRenderer^.Index := gtk_tree_path_get_indices(APath)^;
   LCLCellRenderer^.ColumnIndex := -1;
@@ -442,16 +442,16 @@ begin
     not (TCustomComboBox(WidgetInfo^.LCLObject).Style.HasEditBox) and
     not (TCustomComboBox(WidgetInfo^.LCLObject).DroppedDown) then
   begin
-    Value.g_type := G_TYPE_UINT;
-    Value.data[0].v_uint := 0;
-    g_object_get_property(PgObject(cell),'ypad',@Value);
-    Value.data[0].v_int := 0;
+    g_value_init(@value, G_TYPE_UINT);
+    g_value_set_uint(@value, 0);
+    g_object_get_property(PgObject(cell), 'ypad', @Value);
+    g_value_set_uint(@value, 0);
     g_object_set_property(PGObject(cell), 'ypad', @Value);
+    g_value_unset(@value);
   end else
   if (WidgetInfo <> nil) and (WidgetInfo^.LCLObject.InheritsFrom(TCustomListView)) then
   begin
     // DebugLn(['LCLIntfCellRenderer_CellDataFunc stamp=',iter^.stamp,' tree_model=',dbgs(tree_model),' cell=',dbgs(cell),' WidgetInfo=',WidgetInfo <> nil,' Time=',TimeToStr(Now)]);
-    Value.g_type := G_TYPE_STRING;
     gtk_tree_model_get(tree_model, iter, [0, @ListItem, -1]);
     if (ListItem = nil) and TCustomListView(WidgetInfo^.LCLObject).OwnerData then
       ListItem := TCustomListView(WidgetInfo^.LCLObject).Items[LCLCellRenderer^.Index];
@@ -469,8 +469,10 @@ begin
       if ListColumn.Index-1 <= ListItem.SubItems.Count-1 then
         Str := ListItem.SubItems.Strings[LCLCellRenderer^.ColumnIndex-1];
 
-    Value.data[0].v_pointer := PChar(Str);
+    g_value_init(@value, G_TYPE_STRING);
+    g_value_set_string(@value, PChar(Str));
     g_object_set_property(PGObject(cell), 'text', @Value);
+    g_value_unset(@value);
   end;
 
   // DebugLn(['LCLIntfCellRenderer_CellDataFunc ItemIndex=',LCLCellRenderer^.Index]);
