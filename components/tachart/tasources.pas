@@ -719,6 +719,18 @@ begin
         FData.Add(pcd); // don't use ItemAdd() here
         pcd := nil;
       end;
+
+      // Remove NaN-points from the end. They can occur when ASource is
+      // a DbChartSource for which RecordCount may be too large.
+      for i := Count-1 downto 0 do
+      begin
+        pcd := FData[i];
+        if IsNaN(pcd^.Point) then begin
+          Dispose(pcd);
+          FData.Delete(i);
+        end else
+          break;
+      end;
     except
       if pcd <> nil then
         Dispose(pcd);
