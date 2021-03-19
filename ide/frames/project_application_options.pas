@@ -26,6 +26,8 @@ type
   TProjectApplicationOptionsFrame = class(TAbstractIDEOptionsEditor)
     AppSettingsGroupBox: TGroupBox;
     DefaultIconButton: TBitBtn;
+    LblNSPrincipalClass: TLabel;
+    EdNSPrincipalClass: TEdit;
     LongPathCheckBox: TCheckBox;
     DarwinDividerBevel: TDividerBevel;
     AnsiUTF8CheckBox: TCheckBox;
@@ -63,6 +65,7 @@ type
     procedure IconTrackChange(Sender: TObject);
     procedure LoadIconButtonClick(Sender: TObject);
     procedure SaveIconButtonClick(Sender: TObject);
+    procedure UseAppBundleCheckBoxChange(Sender: TObject);
     procedure UseXPManifestCheckBoxChange(Sender: TObject);
   private
     FProject: TProject;
@@ -107,7 +110,7 @@ begin
   else
     TargetExeName := AProject.CompilerOptions.CreateTargetFilename;
 
-  if not (CreateApplicationBundle(TargetExeName, AProject.GetTitle, True) in
+  if not (CreateApplicationBundle(TargetExeName, AProject.GetTitle, True, AProject) in
     [mrOk, mrIgnore]) then
   begin
     IDEMessageDialog(lisCCOErrorCaption, Format(
@@ -191,6 +194,12 @@ begin
     IconImage.Picture.SaveToFile(SavePictureDialog1.FileName);
 end;
 
+procedure TProjectApplicationOptionsFrame.UseAppBundleCheckBoxChange(
+  Sender: TObject);
+begin
+  EdNSPrincipalClass.Enabled := UseAppBundleCheckBox.Checked;
+end;
+
 procedure TProjectApplicationOptionsFrame.EnableManifest(aEnable: Boolean);
 begin
   DpiAwareLabel.Enabled := aEnable;
@@ -250,6 +259,7 @@ begin
   UseLCLScalingCheckBox.Checked := False;
   UseAppBundleCheckBox.Caption := dlgPOUseAppBundle;
   UseAppBundleCheckBox.Checked := False;
+  LblNSPrincipalClass.Caption := dlgNSPrincipalClass;
 
   // Windows specific, Manifest
   WindowsDividerBevel.Caption := lisForWindows;
@@ -310,6 +320,7 @@ begin
     else
       UseLCLScalingCheckBox.Enabled := False; // Disable for a console program.
     UseAppBundleCheckBox.Checked := UseAppBundle;
+    EdNSPrincipalClass.Text := NSPrincipalClass;
     // Manifest
     with ProjResources.XPManifest do
     begin
@@ -352,6 +363,7 @@ begin
       end;
     end;
     UseAppBundle := UseAppBundleCheckBox.Checked;
+    NSPrincipalClass := EdNSPrincipalClass.Text;
     with ProjResources.XPManifest do
     begin
       UseManifest := UseXPManifestCheckBox.Checked;

@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, FileUtil, LazFileUtils,
-  DialogProcs;
+  DialogProcs, Project;
 
 type
   EApplicationBundleException = Exception;
@@ -44,10 +44,10 @@ type
 
   TApplicationPropertyList = class(TStringList)
   public
-    constructor Create(const ExeName: String; Title: String = ''; const Version: String = '0.1');
+    constructor Create(const ExeName: String; Title: String = ''; const Version: String = '0.1'; AProject: TProject = nil);
   end;
 
-function CreateApplicationBundle(const Filename: String; Title: String = ''; Recreate: boolean = false): TModalResult;
+function CreateApplicationBundle(const Filename: String; Title: String = ''; Recreate: boolean = false; AProject: TProject = nil): TModalResult;
 function CreateAppBundleSymbolicLink(const {%H-}Filename: String; {%H-}Recreate: boolean = false): TModalResult;
   
 const
@@ -63,7 +63,8 @@ implementation
 
 { TApplicationPropertyList }
 
-constructor TApplicationPropertyList.Create(const ExeName: String; Title: String; const Version: String = '0.1');
+constructor TApplicationPropertyList.Create(const ExeName: String;
+  Title: String; const Version: String; AProject: TProject);
 begin
   inherited Create;
   
@@ -73,6 +74,10 @@ begin
   Add('<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">');
   Add('<plist version="1.0">');
   Add('<dict>');
+  if (AProject <> nil) and (AProject.NSPrincipalClass <> '') then begin
+    Add('  <key>NSPrincipalClass</key>');
+    Add('  <string>' + AProject.NSPrincipalClass + '</string>');
+  end;
   Add('  <key>CFBundleDevelopmentRegion</key>');
   Add('  <string>English</string>');
   Add('  <key>CFBundleExecutable</key>');
@@ -119,7 +124,7 @@ begin
 end;
 
 function CreateApplicationBundle(const Filename: String; Title: String;
-  Recreate: boolean): TModalResult;
+  Recreate: boolean; AProject: TProject): TModalResult;
 var
   AppBundleDir: String;
   ContentsDir: String;
@@ -137,7 +142,7 @@ begin
   if Result<>mrOk then exit;
 
   // create Info.plist file
-  sl:=TApplicationPropertyList.Create(ExtractFileNameOnly(Filename), Title);
+  sl:=TApplicationPropertyList.Create(ExtractFileNameOnly(Filename), Title, '0.1', AProject);
   Result:=SaveStringListToFile(ContentsDir + PropertyListFileName,'Info.plist part of Application bundle',sl);
   sl.Free;
   if Result<>mrOk then exit;

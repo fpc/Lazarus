@@ -3127,6 +3127,7 @@ begin
     {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
     FFileVersion:= FXMLConfig.GetValue(ProjOptionsPath+'Version/Value',0);
     UseAppBundle := FXMLConfig.GetValue(ProjOptionsPath+'General/UseAppBundle/Value', True);
+    NSPrincipalClass := FXMLConfig.GetValue(ProjOptionsPath+'General/NSPrincipalClass/Value', '');
     if FLoadAllOptions then
       LoadFromLPI;
     // Resources
@@ -3316,6 +3317,7 @@ begin
   FXMLConfig.SetDeleteValue(Path+'General/Title/Value', Title,'');
   FXMLConfig.SetDeleteValue(Path+'General/Scaled/Value', Scaled,False);
   FXMLConfig.SetDeleteValue(Path+'General/UseAppBundle/Value', UseAppBundle, True);
+  FXMLConfig.SetDeleteValue(Path+'General/NSPrincipalClass/Value', NSPrincipalClass, '');
 
   // fpdoc
   FXMLConfig.SetDeleteValue(Path+'LazDoc/Paths',

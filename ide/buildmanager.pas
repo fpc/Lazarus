@@ -1749,7 +1749,7 @@ begin
     Exit;
   TargetExeName := Project1.CompilerOptions.CreateTargetFilename;
 
-  if not (CreateApplicationBundle(TargetExeName, Project1.GetTitle, True) in
+  if not (CreateApplicationBundle(TargetExeName, Project1.GetTitle, True, Project1) in
     [mrOk, mrIgnore]) then
     Exit;
   if not (CreateAppBundleSymbolicLink(TargetExeName, True) in [mrOk, mrIgnore]) then

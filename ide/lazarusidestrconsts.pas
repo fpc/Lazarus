@@ -2711,6 +2711,7 @@ resourcestring
   lisForWindows = 'For Windows';
   lisForMacOSDarwin = 'For macOS (Darwin)';
   dlgPOUseAppBundle = 'Use Application Bundle for running and debugging';
+  dlgNSPrincipalClass = 'NSPrincipalClass';
   dlgPOCreateAppBundle = 'Create Application Bundle';
   dlgPOUseManifest = 'Use manifest resource (and enable themes)';
   dlgPODpiAwareness = 'DPI awareness';

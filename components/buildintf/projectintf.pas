@@ -491,6 +491,7 @@ type
     FCustomSessionData: TStringToStringTree;
     FExecutableType: TProjectExecutableType;
     FFPDocPackageName: string;
+    FNSPrincipalClass: string;
     FProjectSessionFile: string;
     FScaled: Boolean;
     FSessionModified: boolean;
@@ -502,6 +503,7 @@ type
     procedure SetCleanSourcesFileMask(const AValue: string);
     procedure SetFPDocPackageName(AValue: string);
     procedure SetFPDocPaths(const AValue: string);
+    procedure SetNSPrincipalClass(AValue: string);
     procedure SetScaled(const AScaled: Boolean);
     procedure SetUseAppBundle(AValue: Boolean);
   protected
@@ -586,6 +588,7 @@ type
     property CustomData: TStringToStringTree read FCustomData;
     property CustomSessionData: TStringToStringTree read FCustomSessionData;
     property UseAppBundle: Boolean read FUseAppBundle write SetUseAppBundle;
+    property NSPrincipalClass: string read FNSPrincipalClass write SetNSPrincipalClass;
     property Resources: TObject read FResources; // TAbstractProjectResources
     property UseManifest: boolean read GetUseManifest write SetUseManifest;
     property RunParameters: TAbstractRunParamsOptions read FRunParameters;
@@ -1402,6 +1405,13 @@ begin
   if FFPDocPaths=AValue then exit;
   FFPDocPaths:=AValue;
   Modified:=true;
+end;
+
+procedure TLazProject.SetNSPrincipalClass(AValue: string);
+begin
+  if FNSPrincipalClass = AValue then Exit;
+  FNSPrincipalClass := AValue;
+  Modified := True;
 end;
 
 procedure TLazProject.SetUseAppBundle(AValue: Boolean);

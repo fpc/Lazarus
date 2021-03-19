@@ -1,23 +1,23 @@
 object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
   Left = 0
-  Height = 563
+  Height = 585
   Top = 0
   Width = 487
-  ClientHeight = 563
+  ClientHeight = 585
   ClientWidth = 487
   TabOrder = 0
   DesignLeft = 437
   DesignTop = 182
   object AppSettingsGroupBox: TGroupBox
     Left = 0
-    Height = 541
+    Height = 567
     Top = 0
     Width = 487
     Align = alTop
     Anchors = []
     AutoSize = True
     Caption = 'AppSettingsGroupBox'
-    ClientHeight = 521
+    ClientHeight = 547
     ClientWidth = 483
     TabOrder = 0
     object TitleLabel: TLabel
@@ -26,7 +26,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 6
       Height = 15
       Top = 10
-      Width = 51
+      Width = 50
       BorderSpacing.Left = 6
       Caption = 'TitleLabel'
       ParentColor = False
@@ -49,7 +49,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 240
       Height = 15
       Top = 161
-      Width = 79
+      Width = 78
       BorderSpacing.Top = 8
       Caption = 'IconTrackLabel'
       ParentColor = False
@@ -73,9 +73,10 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 6
       Height = 19
       Top = 465
-      Width = 150
+      Width = 151
       BorderSpacing.Top = 3
       Caption = 'UseAppBundleCheckBox'
+      OnChange = UseAppBundleCheckBoxChange
       TabOrder = 13
     end
     object UseXPManifestCheckBox: TCheckBox
@@ -85,7 +86,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 6
       Height = 19
       Top = 254
-      Width = 151
+      Width = 152
       BorderSpacing.Top = 3
       Caption = 'UseXPManifestCheckBox'
       OnChange = UseXPManifestCheckBoxChange
@@ -143,7 +144,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 27
       Height = 19
       Top = 328
-      Width = 119
+      Width = 120
       BorderSpacing.Top = 3
       Caption = 'UIAccessCheckBox'
       TabOrder = 8
@@ -154,10 +155,10 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DpiAwareComboBox
       AnchorSideRight.Side = asrBottom
-      Left = 163
+      Left = 164
       Height = 23
       Top = 302
-      Width = 314
+      Width = 313
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
       ItemHeight = 15
@@ -171,7 +172,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 27
       Height = 15
       Top = 306
-      Width = 106
+      Width = 107
       Caption = 'ExecutionLevelLabel'
       ParentColor = False
     end
@@ -193,11 +194,11 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
     end
     object CreateAppBundleButton: TBitBtn
       AnchorSideLeft.Control = UseAppBundleCheckBox
-      AnchorSideTop.Control = UseAppBundleCheckBox
+      AnchorSideTop.Control = EdNSPrincipalClass
       AnchorSideTop.Side = asrBottom
       Left = 27
       Height = 25
-      Top = 490
+      Top = 516
       Width = 155
       AutoSize = True
       BorderSpacing.Left = 21
@@ -227,10 +228,10 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = TitleEdit
       AnchorSideRight.Side = asrBottom
-      Left = 163
+      Left = 164
       Height = 23
       Top = 276
-      Width = 314
+      Width = 313
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Left = 30
       BorderSpacing.Top = 3
@@ -245,7 +246,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 6
       Height = 19
       Top = 211
-      Width = 149
+      Width = 150
       Caption = 'UseLCLScalingCheckBox'
       TabOrder = 4
     end
@@ -293,10 +294,10 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DpiAwareComboBox
       AnchorSideRight.Side = asrBottom
-      Left = 163
+      Left = 164
       Height = 23
       Top = 392
-      Width = 314
+      Width = 313
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
       TabOrder = 11
@@ -308,10 +309,10 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = DpiAwareComboBox
       AnchorSideRight.Side = asrBottom
-      Left = 163
+      Left = 164
       Height = 23
       Top = 418
-      Width = 314
+      Width = 313
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 3
       TabOrder = 12
@@ -324,7 +325,7 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Left = 27
       Height = 19
       Top = 349
-      Width = 123
+      Width = 124
       BorderSpacing.Top = 2
       Caption = 'LongPathCheckBox'
       TabOrder = 9
@@ -399,13 +400,42 @@ object ProjectApplicationOptionsFrame: TProjectApplicationOptionsFrame
       Caption = 'AnsiUTF8CheckBox'
       TabOrder = 10
     end
+    object LblNSPrincipalClass: TLabel
+      AnchorSideLeft.Control = UseAppBundleCheckBox
+      AnchorSideTop.Control = EdNSPrincipalClass
+      AnchorSideTop.Side = asrCenter
+      Left = 27
+      Height = 15
+      Top = 491
+      Width = 104
+      BorderSpacing.Left = 21
+      Caption = 'LblNSPrincipalClass'
+      ParentColor = False
+    end
+    object EdNSPrincipalClass: TEdit
+      AnchorSideLeft.Control = LblNSPrincipalClass
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = UseAppBundleCheckBox
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = TitleEdit
+      AnchorSideRight.Side = asrBottom
+      Left = 161
+      Height = 23
+      Top = 487
+      Width = 316
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 30
+      BorderSpacing.Top = 3
+      TabOrder = 15
+      Text = 'EdNSPrincipalClass'
+    end
   end
   object OpenPictureDialog1: TOpenPictureDialog
-    Left = 385
-    Top = 190
+    left = 385
+    top = 190
   end
   object SavePictureDialog1: TSavePictureDialog
-    Left = 385
-    Top = 249
+    left = 385
+    top = 249
   end
 end

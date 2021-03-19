@@ -7001,7 +7001,7 @@ begin
       and ((MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCarbon])
           or (MainBuildBoss.GetLCLWidgetType=LCLPlatformDirNames[lpCocoa]))
       then begin
-        Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName);
+        Result:=CreateApplicationBundle(TargetExeName, Project1.GetTitleOrName, false, Project1);
         if not (Result in [mrOk,mrIgnore]) then begin
           debugln(['Error: (lazarus) [TMainIDE.DoBuildProject] CreateApplicationBundle "',TargetExeName,'" failed']);
           exit;
