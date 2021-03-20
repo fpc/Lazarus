@@ -9,6 +9,7 @@ object CreateRepositoryPackagesFrm: TCreateRepositoryPackagesFrm
   ClientWidth = 904
   Constraints.MinHeight = 450
   Constraints.MinWidth = 650
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PopupMode = pmExplicit

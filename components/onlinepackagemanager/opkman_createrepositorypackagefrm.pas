@@ -104,6 +104,7 @@ type
     procedure edDisplayNameKeyPress(Sender: TObject; var Key: char);
     procedure edPackageDirAcceptDirectory(Sender: TObject; Var Value: String);
     procedure edPackageDirButtonClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure spCategoriesClick(Sender: TObject);
@@ -119,6 +120,7 @@ type
     FPackageOperation: TPackageOperation;
     FTyp: Integer;
     FFocusChanging: Boolean;
+    FPreventClose: Boolean;
     procedure VSTPackagesGetText(Sender: TBaseVirtualTree; Node: PVirtualNode;
       Column: TColumnIndex; {%H-}TextType: TVSTTextType; var CellText: String);
     procedure VSTPackagesGetImageIndex(Sender: TBaseVirtualTree; Node: PVirtualNode;
@@ -151,6 +153,7 @@ type
     procedure DoOnUploadError(Sender: TObject; AErrMsg: String);
     procedure DoOnUploadCompleted(Sender: TObject);
     procedure CreatePackage;
+    procedure ChangeCursor(ACursor: TCursor);
   public
     procedure SetType(const ATyp: Integer);
     property DestDir: String read FDestDir write FDestDir;
@@ -557,7 +560,6 @@ begin
     end
     else
       ShowHideControls(0);
-
   end;
 end;
 
@@ -565,6 +567,12 @@ procedure TCreateRepositoryPackagesFrm.edPackageDirButtonClick(Sender: TObject);
 begin
   edPackageDir.DialogTitle := rsCreateRepositoryPackageFrm_SDDTitleSrc;
   edPackageDir.Directory := Options.LastPackagedirSrc;
+end;
+
+procedure TCreateRepositoryPackagesFrm.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
+begin
+  CanClose := not FPreventClose;
 end;
 
 procedure TCreateRepositoryPackagesFrm.spCategoriesClick(Sender: TObject);
@@ -651,14 +659,20 @@ begin
   Result := True;
 end;
 
+procedure TCreateRepositoryPackagesFrm.ChangeCursor(ACursor: TCursor);
+begin
+  pnMessage.Cursor := ACursor;
+  pnButtons.Cursor := ACursor;
+end;
+
 procedure TCreateRepositoryPackagesFrm.CreatePackage;
 var
   RootNode: PVirtualNode;
   RootData: PData;
 begin
+  FPreventClose := True;
+  ChangeCursor(crHourGlass);
   FPackageOperation := poCreate;
-  Screen.Cursor := crHourGlass;
-  ShowHideControls(1);
   FPackageZipper := TPackageZipper.Create;
   FPackageZipper.OnZipError := @DoOnZippError;
   FPackageZipper.OnZipCompleted := @DoOnZipCompleted;
@@ -679,11 +693,12 @@ procedure TCreateRepositoryPackagesFrm.bCreateClick(Sender: TObject);
 begin
   if not CanCreate then
     Exit;
+  ShowHideControls(1);
+  EnableDisableControls(False);
   if FTyp = 0 then
   begin
     SDD.Title := rsCreateRepositoryPackageFrm_SDDTitleDst;
     SDD.InitialDir := Options.LastPackagedirDst;
-    EnableDisableControls(False);
     if SDD.Execute then
     begin
       FDestDir := AppendPathDelim(SDD.FileName);
@@ -692,7 +707,10 @@ begin
       CreatePackage;
     end
     else
+    begin
+      ShowHideControls(2);
       EnableDisableControls(True);
+    end;
   end
   else if FTyp = 1 then
   begin
@@ -710,9 +728,10 @@ begin
   if not CanCreate then
     Exit;
   FPackageOperation := poSubmit;
+  FPreventClose := True;
+  ChangeCursor(crHourGlass);
   EnableDisableControls(False);
   ShowHideControls(1);
-  Screen.Cursor := crHourGlass;
   fPackageZipper := TPackageZipper.Create;
   fPackageZipper.OnZipError := @DoOnZippError;
   fPackageZipper.OnZipCompleted := @DoOnZipCompleted;
@@ -1005,7 +1024,8 @@ end;
 procedure TCreateRepositoryPackagesFrm.DoOnZippError(Sender: TObject;
   AZipFile: String; const AErrMsg: String);
 begin
-  Screen.Cursor := crDefault;
+  FPreventClose := False;
+  ChangeCursor(crDefault);
   MessageDlgEx(rsCreateRepositoryPackageFrm_Error1 + ' "' + AZipFile + '". ' + rsProgressFrm_Error1 + sLineBreak +
                AErrMsg, mtError, [mbOk], Self);
   ShowHideControls(2);
@@ -1205,6 +1225,8 @@ begin
   ErrMsg := '';
   if not CreateJSON(ErrMsg) then
   begin
+    FPreventClose := False;
+    ChangeCursor(crDefault);
     MessageDlgEx(ErrMsg, mtError, [mbOk], Self);
     Exit;
   end;
@@ -1214,6 +1236,8 @@ begin
     ErrMsg := '';
     if not CreateJSONForUpdates(ErrMsg) then
     begin
+      FPreventClose := False;
+      ChangeCursor(crDefault);
       MessageDlgEx(ErrMsg, mtError, [mbOk], Self);
       Exit;
     end;
@@ -1222,7 +1246,8 @@ begin
   case FPackageOperation of
     poCreate:
       begin
-        Screen.Cursor := crDefault;
+        FPreventClose := False;
+        ChangeCursor(crDefault);
         ShowHideControls(2);
         EnableDisableControls(True);
         if FTyp = 0 then
@@ -1255,7 +1280,8 @@ end;
 procedure TCreateRepositoryPackagesFrm.DoOnUploadError(Sender: TObject;
   AErrMsg: String);
 begin
-  Screen.Cursor := crDefault;
+  FPreventClose := False;
+  ChangeCursor(crDefault);
   ShowHideControls(2);
   EnableDisableControls(True);
   MessageDlgEx(AErrMsg, mtError, [mbOk], Self);
@@ -1263,7 +1289,8 @@ end;
 
 procedure TCreateRepositoryPackagesFrm.DoOnUploadCompleted(Sender: TObject);
 begin
-  Screen.Cursor := crDefault;
+  FPreventClose := False;
+  ChangeCursor(crDefault);
   ShowHideControls(2);
   EnableDisableControls(True);
   Uploader := nil;
