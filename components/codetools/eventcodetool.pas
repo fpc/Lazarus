@@ -1437,6 +1437,10 @@ begin
   BuildTree(lsrImplementationStart);
   //debugln(['TEventsCodeTool.GetCompatiblePublishedMethods START']);
   ClassNode:=FindClassNodeInInterface(AClassName,true,false,true);
+  if ClassNode=nil then begin
+    debugln(['Warning: TEventsCodeTool.GetCompatiblePublishedMethods class ClassName="',AClassName,'" not found in "',MainFilename,'" PropInstance=',DbgSName(PropInstance),' PropName="',PropName,'"']);
+    exit;
+  end;
   {$IFDEF VerboseMethodPropEdit}
   debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ClassName="',AClassName,'" PropInstance=',DbgSName(PropInstance),' PropName="',PropName,'" classnode=',ClassNode.DescAsString]);
   {$ENDIF}
@@ -1447,6 +1451,10 @@ begin
   Params:=TFindDeclarationParams.Create;
   try
     SearchedExprList:=CreateExprListFromInstanceProperty(PropInstance,PropName);
+    if SearchedExprList=nil then begin
+      debugln(['Warning: TEventsCodeTool.GetCompatiblePublishedMethods published property not found: PropInstance=',DbgSName(PropInstance),' PropName="',PropName,'" Unit="',MainFilename,'" ClassName="',AClassName,'"']);
+      exit;
+    end;
     {$IFDEF VerboseMethodPropEdit}
     debugln(['TEventsCodeTool.GetCompatiblePublishedMethods ExprList=',SearchedExprList.AsString]);
     {$ENDIF}
