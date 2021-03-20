@@ -331,10 +331,11 @@ begin
     Searcher.FTargetDir:=TrimFilename(SetDirSeparators(TargetDir));
 
     // Don't even try to copy to a subdirectory of SourceDir.
+    //append a pathedelim, otherwise CopyDirTree('/home/user/foo','/home/user/foobar') will fail at this point. Issue #0038644
     {$ifdef CaseInsensitiveFilenames}
-      if AnsiStartsText(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      if AnsiStartsText(AppendPathDelim(Searcher.FSourceDir), AppendPathDelim(Searcher.FTargetDir)) then Exit;
     {$ELSE}
-      if AnsiStartsStr(Searcher.FSourceDir, Searcher.FTargetDir) then Exit;
+      if AnsiStartsStr(AppendPathDelim(Searcher.FSourceDir), AppendPathDelim(Searcher.FTargetDir)) then Exit;
     {$ENDIF}
     Searcher.Search(SourceDir);
     Result:=Searcher.FCopyFailedCount=0;
