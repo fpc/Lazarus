@@ -89,6 +89,7 @@ type
     procedure SetFont(AValue: PPangoFontDescription);
     procedure SetVisible(AValue: Boolean);
     procedure SetStyleContext(AValue: PGtkStyleContext);
+    class procedure destroy_event(w:Tgtk3Widget;data:gpointer);cdecl;
   protected
     // IUnknown implementation
     function QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
@@ -2507,6 +2508,12 @@ begin
     GetContainerWidget^.set_style(AValue);}
 end;
 
+class procedure TGtk3Widget.destroy_event(w: Tgtk3Widget; data: gpointer); cdecl;
+begin
+  if Assigned(w) then
+    w.fWidget:=nil;
+end;
+
 function TGtk3Widget.getText: String;
 begin
   Result := fText; // default text storage
@@ -2647,8 +2654,8 @@ begin
 
   // move signal connections into attach events
   FWidget^.set_events(GDK_DEFAULT_EVENTS_MASK);
+  g_signal_connect_data(FWidget, 'destroy', TGCallback(@TGtk3Widget.destroy_event), Self, nil, 0);
   g_signal_connect_data(FWidget, 'event', TGCallback(@Gtk3WidgetEvent), Self, nil, 0);
-
 
   for i := GTK_STATE_NORMAL to GTK_STATE_INSENSITIVE do
   begin
@@ -2661,7 +2668,6 @@ begin
       Alpha := ARgba.alpha;
     end;
   end;
-
 
   if FCentralWidget <> nil then
   begin
