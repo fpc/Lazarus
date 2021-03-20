@@ -1495,8 +1495,10 @@ begin
   tbHelp.Caption := rsMainFrm_TBHelp_Caption;
   tbHelp.Hint := rsMainFrm_TBHelp_Hint;
 
-  miFromRepository.Caption := rsMainFrm_miFromRepository;
-  miFromExteranlSource.Caption := rsMainFrm_miFromExternalSource;
+  miFromRepository.Caption := rsMainFrm_VSTHeaderColumn_Repository;
+  miFromRepository.Hint := rsMainFrm_VSTHeaderColumn_Repository_Hint;
+  miFromExteranlSource.Caption := rsMainFrm_VSTHeaderColumn_Update;
+  miFromExteranlSource.Hint := rsMainFrm_VSTHeaderColumn_Update_Hint;
   miCreateRepositoryPackage.Caption := rsMainFrm_miCreateRepositoryPackage;
   miCreateJSONForUpdates.Caption := rsMainFrm_miCreateJSONForUpdates;
   miCreateRepository.Caption := rsMainFrm_miCreateRepository;
