@@ -1014,10 +1014,10 @@ begin
     Char_AlphaNumFixedDowncase:OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
     Char_All                 : OK := True;
     Char_AllFixed            : OK := (Ch <> FSpaceChar);
-    Char_AllUpCase           : OK := True;
-    Char_AllDownCase         : OK := True;
-    Char_AllFixedUpCase      : OK := (Ch <> FSpaceChar);
-    Char_AllFixedDownCase    : OK := (Ch <> FSpaceChar);
+    Char_AllUpCase           : OK := (Ch = Utf8UpperCase(Ch));
+    Char_AllDownCase         : OK := (Ch = Utf8LowerCase(Ch));
+    Char_AllFixedUpCase      : OK := (Ch <> FSpaceChar) and (Ch = Utf8UpperCase(Ch));
+    Char_AllFixedDownCase    : OK := (Ch <> FSpaceChar) and (Ch = Utf8LowerCase(Ch));
    {Char_Space               : OK := (Length(Ch) = 1) and (Ch in [' ', '_']);  //not Delphi compatible, see notes above}
     Char_HourSeparator       : OK := (Ch = DefaultFormatSettings.TimeSeparator);
     Char_DateSeparator       : OK := (Ch = DefaultFormatSettings.DateSeparator);
