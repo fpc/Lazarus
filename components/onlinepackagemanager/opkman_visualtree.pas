@@ -334,6 +334,9 @@ var
   LazarusPkg: TLazarusPackage;
   UniqueID: Integer;
 begin
+  FHoverNode := nil;
+  FHoverNodeOld := nil;
+  FOldButtonNode := nil;
   FVST.Clear;
   FVST.NodeDataSize := SizeOf(TData);
   UniqueID := 0;
@@ -512,6 +515,7 @@ begin
        GrandChildData^.OrphanedPackage := SerializablePackages.Items[I].OrphanedPackage;
        GrandChildData^.DataType := 21;
        Data^.OrphanedPackage := SerializablePackages.Items[I].OrphanedPackage;
+       FVST.IsVisible[GrandChildNode] := False;
     end;
     FVST.SortTree(0, laz.VirtualTrees.sdAscending);
     ExpandEx;
