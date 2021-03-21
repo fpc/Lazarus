@@ -995,40 +995,39 @@ var
 begin
   Result := False;
   CheckRange(Position);
-  //if (Position < 1) or (Position > FMaskLength) then Exit;
   Current := FMask[Position].MaskType;
   case Current Of
-    Char_Number              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9',#32]);
+    Char_Number              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9',FSpaceChar{#32}]);
     Char_NumberFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
-    Char_NumberPlusMin       : OK := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-',#32]);
-    Char_Letter              : OK := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z',#32]);
+    Char_NumberPlusMin       : OK := (Length(Ch) = 1) and (Ch[1] in ['0'..'9','+','-',FSpaceChar{#32}]);
+    Char_Letter              : OK := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z',FSpaceChar{#32}]);
     Char_LetterFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['a'..'z', 'A'..'Z']);
-    Char_LetterUpCase        : OK := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z',#32]);
-    Char_LetterDownCase      : OK := (Length(Ch) = 1) and (Ch[1] In ['a'..'z',#32]);
+    Char_LetterUpCase        : OK := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z',FSpaceChar{#32}]);
+    Char_LetterDownCase      : OK := (Length(Ch) = 1) and (Ch[1] In ['a'..'z',FSpaceChar{#32}]);
     Char_LetterFixedUpCase   : OK := (Length(Ch) = 1) and (Ch[1] In ['A'..'Z']);
     Char_LetterFixedDownCase : OK := (Length(Ch) = 1) and (Ch[1] In ['a'..'z']);
-    Char_AlphaNum            : OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9',#32]);
+    Char_AlphaNum            : OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9',FSpaceChar{#32}]);
     Char_AlphaNumFixed       : OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', 'A'..'Z', '0'..'9']);
-    Char_AlphaNumUpCase      : OK := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9',#32]);
-    Char_AlphaNumDownCase    : OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9',#32]);
+    Char_AlphaNumUpCase      : OK := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9',FSpaceChar{#32}]);
+    Char_AlphaNumDownCase    : OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9',FSpaceChar{#32}]);
     Char_AlphaNumFixedUpCase : OK := (Length(Ch) = 1) and (Ch[1] in ['A'..'Z', '0'..'9']);
     Char_AlphaNumFixedDowncase:OK := (Length(Ch) = 1) and (Ch[1] in ['a'..'z', '0'..'9']);
     Char_All                 : OK := True;
-    Char_AllFixed            : OK := True;
+    Char_AllFixed            : OK := (Ch <> FSpaceChar);
     Char_AllUpCase           : OK := True;
     Char_AllDownCase         : OK := True;
-    Char_AllFixedUpCase      : OK := True;
-    Char_AllFixedDownCase    : OK := True;
+    Char_AllFixedUpCase      : OK := (Ch <> FSpaceChar);
+    Char_AllFixedDownCase    : OK := (Ch <> FSpaceChar);
    {Char_Space               : OK := (Length(Ch) = 1) and (Ch in [' ', '_']);  //not Delphi compatible, see notes above}
     Char_HourSeparator       : OK := (Ch = DefaultFormatSettings.TimeSeparator);
     Char_DateSeparator       : OK := (Ch = DefaultFormatSettings.DateSeparator);
-    Char_Hex                 : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F',#32]);
+    Char_Hex                 : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F',FSpaceChar{#32}]);
     Char_HexFixed            : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f','A'..'F']);
-    Char_HexUpCase           : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F',#32]);
-    Char_HexDownCase         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f',#32]);
+    Char_HexUpCase           : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F',FSpaceChar{#32}]);
+    Char_HexDownCase         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f',FSpaceChar{#32}]);
     Char_HexFixedUpCase      : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','A'..'F']);
     Char_HexFixedDownCase    : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
-    Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',#32]);
+    Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',FSpaceChar{#32}]);
     Char_BinaryFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
 
     Char_IsLiteral           : OK := (Ch = FMask[Position].Literal);
@@ -1292,9 +1291,11 @@ function TCustomMaskEdit.CanInsertChar(Position: Integer; var Ch: TUtf8Char;
 Var
   Current : tMaskedType;
 Begin
+  Result  := False;
+  if (Position > FMaskLength) then
+    Exit;
   CheckRange(Position);
   Current := FMask[Position].MaskType;
-  Result  := False;
 
   // If in UpCase convert the input char
   if (Current = Char_LetterUpCase     ) Or
@@ -2064,7 +2065,7 @@ begin
   end;
   FCharPos := GetSelStart + 1;
   //If the cursor is on a MaskLiteral then go to the next writable position if a key is pressed (Delphi compatibility)
-  if IsLiteral(FCharPos) then
+  if (FCharPos <= FMaskLength) and IsLiteral(FCharPos) then
   begin
     SelectNextChar;
     Key := EmptyStr;
@@ -2234,20 +2235,11 @@ end;
 procedure TCustomMaskEdit.ValidateEdit;
 var
   S: String;
-  _MaskSave: Boolean;
 begin
   //Only validate if IsMasked
   if IsMasked then
   begin
-    {
-     if FMaskSave = False then literal and spaces are trimmed from Text
-     and TextIsValid might wrongly return False
-     We need the text with literals and FSpaceChar translated to #32
-    }
-    _MaskSave := FMaskSave;
-    FMaskSave := True;
-    S := Text;
-    FMaskSave := _MaskSave;
+    S := inherited RealGetText;
     if not TextIsValid(S) then
     begin
       SetCursorPos;
