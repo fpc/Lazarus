@@ -407,7 +407,8 @@ begin
   end;
   LAnchorControl.Validate;
   LAnchorControl.Visible := True;
-  if AControl is TWinControl then
+  if (AControl is TWinControl)
+  and not (csOwnedChildrenNotSelectable in AControl.ControlStyle) then
   begin
     LWinControl := TWinControl(AControl);
     for i := 0 to LWinControl.ControlCount - 1 do
