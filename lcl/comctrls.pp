@@ -1054,6 +1054,7 @@ type
     function DisplayRect(Code: TDisplayCode): TRect;
     function DisplayRectSubItem(subItem: integer;Code: TDisplayCode): TRect;
     function EditCaption: Boolean;
+    function GetStates: TListItemStates;
 
     property Caption : String read GetCaption write SetCaption;
     property Checked : Boolean read GetChecked write SetChecked;

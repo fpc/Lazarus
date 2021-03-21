@@ -147,6 +147,7 @@ type
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; override;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; override; // returns True if supported
+    class function  ItemGetStates(const ALV: TCustomListView; const AIndex: Integer; out AStates: TListItemStates): Boolean; override;
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); override;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); override;
@@ -173,6 +174,7 @@ type
     class function GetTopItem(const ALV: TCustomListView): Integer; override;
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
+    class function GetNextItem(const ALV: TCustomListView; const StartItem: TListItem; const Direction: TSearchDirection; const States: TListItemStates): TListItem; override;
 
     class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;

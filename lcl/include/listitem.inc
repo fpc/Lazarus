@@ -561,6 +561,30 @@ begin
   else Result := AState in FStates;
 end;
 
+{------------------------------------------------------------------------------}
+{   TListItem GetStates                                                         }
+{------------------------------------------------------------------------------}
+function TListItem.GetStates: TListItemStates;
+var
+  States: TListItemStates;
+  LV: TCustomListView;
+begin
+  LV := FOwner.FOwner;
+
+  if TWSCustomListViewClass(LV.WidgetSetClass).ItemGetStates(LV, GetIndex, States)
+  then
+    Result := States
+  else
+  begin
+    Result := [];
+    if GetState(Ord(lisCut)) then ;
+    if GetState(Ord(lisDropTarget)) then ;
+    if GetState(Ord(lisSelected)) then ;
+    if GetState(Ord(lisFocused)) then ;
+    Result := FStates;
+  end;
+end;
+
 function TListItem.GetLeft: Integer;
 begin
   Result := Position.X;

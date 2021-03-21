@@ -650,6 +650,31 @@ begin
   Result := True;
 end;
 
+class function TWin32WSCustomListView.ItemGetStates(const ALV: TCustomListView; const AIndex: Integer; out AStates: TListItemStates): Boolean;
+const
+  MASK = LVIS_CUT or LVIS_DROPHILITED or LVIS_FOCUSED or LVIS_SELECTED;
+var
+  Flags: Integer;
+begin
+  Result := False;
+
+  if not WSCheckHandleAllocated(ALV, 'ItemGetStates')
+  then Exit;
+
+  AStates := [];
+  Flags := ListView_GetItemState(ALV.Handle, AIndex, MASK);
+  if (Flags and LVIS_CUT) <> 0 then
+    Include(AStates, lisCut);
+  if (Flags and LVIS_DROPHILITED) <> 0 then
+    Include(AStates, lisDropTarget);
+  if (Flags and LVIS_FOCUSED) <> 0 then
+    Include(AStates, lisFocused);
+  if (Flags and LVIS_SELECTED) <> 0 then
+    Include(AStates, lisSelected);
+
+  Result := True;
+end;
+
 class procedure TWin32WSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
 var
   lvi: TLvItem;
@@ -1435,4 +1460,32 @@ begin
   Windows.InvalidateRect(AHandle, nil, true);
 end;
 
+class function TWin32WSCustomListView.GetNextItem(const ALV: TCustomListView; const StartItem: TListItem;
+  const Direction: TSearchDirection; const States: TListItemStates): TListItem;
+var
+  Flags, Index: Integer;
+begin
+  Result := nil;
 
+  if not WSCheckHandleAllocated(ALV, 'GetNextItem')
+  then Exit;
+
+  Flags := 0;
+  case Direction of
+    sdAbove: Flags := LVNI_ABOVE;
+    sdBelow: Flags := LVNI_BELOW;
+    sdLeft: Flags := LVNI_TOLEFT;
+    sdRight: Flags := LVNI_TORIGHT;
+    sdAll: Flags := LVNI_ALL;
+  end;
+
+  if StartItem <> nil then Index := StartItem.Index else Index := -1;
+
+  if lisCut in States then Flags := Flags or LVNI_CUT;
+  if lisDropTarget in States then Flags := Flags or LVNI_DROPHILITED;
+  if lisFocused in States then Flags := Flags or LVNI_FOCUSED;
+  if lisSelected in States then Flags := Flags or LVNI_SELECTED;
+
+  Index := ListView_GetNextItem(ALV.Handle, Index, Flags);
+  if Index <> -1 then Result := ALV.Items[Index];
+end;

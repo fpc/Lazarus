@@ -23516,6 +23516,8 @@ OldExpanded.Free;
         <seealso/>
       </element>
 
+    <element name="TListItem.GetStates"><short>Returns all the states for this list item</short>
+      </element>
     </module>
     <!-- ComCtrls -->
   </package>

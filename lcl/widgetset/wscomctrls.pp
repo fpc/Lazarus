@@ -130,6 +130,7 @@ type
     class function  ItemGetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem): Boolean; virtual;
     class function  ItemGetPosition(const ALV: TCustomListView; const AIndex: Integer): TPoint; virtual;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; out AIsSet: Boolean): Boolean; virtual; // returns True if supported
+    class function  ItemGetStates(const ALV: TCustomListView; const AIndex: Integer; out AStates: TListItemStates): Boolean; virtual; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
     class procedure ItemSetChecked(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AChecked: Boolean); virtual;
     class procedure ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer); virtual;
@@ -155,6 +156,7 @@ type
     class function GetTopItem(const ALV: TCustomListView): Integer; virtual;
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; virtual;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; virtual;
+    class function GetNextItem(const ALV: TCustomListView; const StartItem: TListItem; const Direction: TSearchDirection; const States: TListItemStates): TListItem; virtual;
 
     class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); virtual;
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); virtual;
@@ -587,6 +589,12 @@ begin
   AIsSet:=false;
 end;
 
+class function TWSCustomListView.ItemGetStates(const ALV: TCustomListView; const AIndex: Integer; out AStates: TListItemStates): Boolean;
+begin
+  // returns True if supported
+  Result := False;
+end;
+
 class procedure TWSCustomListView.ItemInsert(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem);
 begin
@@ -781,6 +789,50 @@ class procedure TWSCustomListView.SelectAll(const ALV: TCustomListView;
   const AIsSet: Boolean);
 begin
 
+end;
+
+//Default implementation
+class function TWSCustomListView.GetNextItem(const ALV: TCustomListView;
+  const StartItem: TListItem; const Direction: TSearchDirection; const States: TListItemStates): TListItem;
+var
+  ACount: Integer;
+  StartIndex, AIndex: Integer;
+begin
+  Result := nil;
+  if StartItem = nil then
+    Exit;
+  StartIndex := StartItem.Index;
+  AIndex := StartIndex;
+  ACount := ALV.Items.Count;
+  case Direction of
+    sdAbove:
+      while AIndex>0 do
+      begin
+        dec(AIndex);
+        if States <= ALV.Items[AIndex].GetStates then
+          Exit(ALV.Items[AIndex]);
+      end;
+    sdBelow:
+      while AIndex < ACount-1 do
+      begin
+        inc(AIndex);
+        if States <= ALV.Items[AIndex].GetStates then
+          Exit(ALV.Items[AIndex]);
+      end;
+    sdAll:
+      while True do
+      begin
+        inc(AIndex);
+        Assert(AIndex <> StartIndex, 'TWSCustomListView.GetNextItem: AIndex=StartIndex');
+        if AIndex >= ACount then
+          Exit;
+{       begin           Do not wrap around. Will never return Nil. Issue #38565.
+          AIndex := -1;  continue;
+        end;  }
+        if States <= ALV.Items[AIndex].GetStates then
+          Exit(ALV.Items[AIndex]);
+      end;
+  end;
 end;
 
 { TWSProgressBar }
