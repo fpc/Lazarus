@@ -119,6 +119,8 @@ end;
 
 procedure TAnchorDesigner.AnchorControlMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  LSelectedControl: TAnchorControl;
 begin
   PopupMenuAdapt(Sender);
   if not (State = []) then Exit;
@@ -129,7 +131,11 @@ begin
     Invalidate;
     Exit;
   end;
-  SelectedControl := TAnchorControl(Sender);
+  LSelectedControl := TAnchorControl(Sender);
+  if LSelectedControl.IsChildControl then
+    SelectedControl := TAnchorControl(LSelectedControl.Parent)
+  else
+    SelectedControl := LSelectedControl;
   Invalidate;
   if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
   GetCursorPos(FMousePos);
@@ -197,7 +203,7 @@ begin
 
   if not State.IsMoving then
   begin
-    GlobalDesignHook.SelectOnlyThis(TAnchorControl(Sender).RootControl);
+    GlobalDesignHook.SelectOnlyThis(SelectedControl.RootControl);
     Exit;
   end;
   Exclude(FState, asMoving);
@@ -218,7 +224,7 @@ begin
 
   FState := [];
   GlobalDesignHook.Modified(Self, 'Anchors');
-  GlobalDesignHook.SelectOnlyThis(TAnchorControl(Sender).RootControl);
+  GlobalDesignHook.SelectOnlyThis(SelectedControl.RootControl);
 end;
 
 procedure TAnchorDesigner.AnchorControlMouseWheel(Sender: TObject;
@@ -391,6 +397,8 @@ var
   LWinControl: TWinControl;
   i, LIndex: Integer;
 begin
+  if csNoDesignSelectable in AControl.ControlStyle then
+    Exit;
   LIndex := FAnchorControls.IndexOf(AControl);
   if LIndex >= 0 then
   begin
@@ -866,6 +874,11 @@ begin
   if FSelectedControl = AValue then Exit;
   if Assigned(FSelectedControl) then
     FSelectedControl.State := [acsNone];
+  if Assigned(AValue) and AValue.IsChildControl then
+  begin
+    FSelectedControl := nil;
+    Exit;
+  end;
   FSelectedControl := AValue;
   if Assigned(FSelectedControl) then
   begin

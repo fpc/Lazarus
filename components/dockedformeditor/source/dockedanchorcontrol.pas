@@ -19,7 +19,8 @@ uses
   // RTL, FCL
   Classes, SysUtils, fgl, FPCanvas,
   // LCL
-  Controls, ExtCtrls, Graphics, LCLProc, Dialogs, IDEDialogs,
+  Controls, ExtCtrls, Graphics, LCLProc, Dialogs, PairSplitter, ComCtrls,
+  LCLType, IDEDialogs,
   // DockedFormEditor
   DockedOptionsIDE, DockedStrConsts, DockedTools;
 
@@ -84,12 +85,15 @@ type
 
   TAnchorControl = class(TPanel)
   private
+    FIsChildControl: Boolean;
     FRootControl: TControl;
     FState: TAnchorControlStates;
     FTargetAnchorSides: TTargetAnchorSides;
     procedure AnchorControlShowHint(Sender: TObject; HintInfo: PHintInfo);
     function  BorderSpacingStr: String;
     function  BoundsString: String;
+    procedure CheckIsChildControl;
+    procedure CreateCaption;
   public
     constructor Create(AParent: TWinControl; ARootControl: TControl); reintroduce;
     destructor Destroy; override;
@@ -115,6 +119,7 @@ type
     procedure TargetAnchorSidesGet(AAnchorControl: TAnchorControl);
     procedure Validate;
   public
+    property IsChildControl: Boolean read FIsChildControl;
     property RootControl: TControl read FRootControl;
     property State: TAnchorControlStates read FState write FState;
   end;
@@ -259,15 +264,31 @@ begin
             ', Height: ' + Height.ToString;
 end;
 
+procedure TAnchorControl.CheckIsChildControl;
+begin
+  FIsChildControl :=
+    (FRootControl is TPairSplitterSide) or
+    ((FRootControl is TSplitter) and (FRootControl.Parent is TPairSplitter)) or
+    (FRootControl is TToolButton) or
+    (FRootControl is TPage) or
+    (FRootControl is TTabSheet);
+end;
+
+procedure TAnchorControl.CreateCaption;
+begin
+  if not FRootControl.Name.IsEmpty then
+    Caption := FRootControl.Name
+  else
+    Caption := FRootControl.ClassName;
+end;
+
 constructor TAnchorControl.Create(AParent: TWinControl; ARootControl: TControl);
 begin
   inherited Create(nil);
   FTargetAnchorSides := TTargetAnchorSides.Create;
   FRootControl := ARootControl;
-  if not ARootControl.Name.IsEmpty then
-    Caption := ARootControl.Name
-  else
-    Caption := ARootControl.ClassName;
+  CreateCaption;
+  CheckIsChildControl;
   SetBounds(ARootControl.Left, ARootControl.Top, ARootControl.Width, ARootControl.Height);
   BorderSpacing := ARootControl.BorderSpacing;
   Align := ARootControl.Align;
@@ -635,7 +656,7 @@ var
   i, LLeft, LTop, LWidth, LHeight: Integer;
 begin
   for i := 1 to Count - 1 do
-    if Self[i].IsInvalid then
+    if Self[i].IsInvalid or Self[i].IsChildControl then
       Continue
     else
     begin
@@ -651,11 +672,7 @@ begin
 
       Self[i].Align := Self[i].RootControl.Align;
       Self[i].BorderSpacing := Self[i].RootControl.BorderSpacing;
-
-      if not Self[i].FRootControl.Name.IsEmpty then
-        Self[i].Caption := Self[i].FRootControl.Name
-      else
-        Self[i].Caption := Self[i].FRootControl.ClassName;
+      Self[i].CreateCaption;
     end;
 end;
 
