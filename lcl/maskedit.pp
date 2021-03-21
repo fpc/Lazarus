@@ -839,7 +839,7 @@ begin
   begin
     Inc(FCharPos);
   end;
-  if IsLiteral(FCharPos) then Inc(FCharPos);
+  if (FCharPos <= FMaskLength) and IsLiteral(FCharPos) then Inc(FCharPos);
   SetCursorPos;
 end;
 
