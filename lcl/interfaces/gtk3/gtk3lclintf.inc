@@ -247,7 +247,7 @@ begin
           Dst[0] := Src[Ridx];
           Dst[1] := Src[Gidx];
           Dst[2] := Src[Bidx];
-          Dst[3] := $ff;//Src[Aidx] ;
+          Dst[3] := Src[Aidx] ;
 
           Inc(Src, 4);
           Inc(Dst, 4);
@@ -282,15 +282,15 @@ begin
 
   if (ARawImage.Mask <> nil) and (ARawImage.MaskSize > 0) then
   begin
-    NewData := GetMem(ARawImage.MaskSize);
-    //FillChar(NewData^,  ARawImage.MaskSize,$ff);
-    Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize);
+    NewData := GetMem(ARawImage.MaskSize*8);
+    FillChar(NewData^,  ARawImage.MaskSize*8,$00);
+    //Move(ARawImage.Mask^, NewData^, ARawImage.MaskSize*8);
   end
   else
     NewData := nil;
 
 
-  ARowStride := GetBytesPerLine(Desc.Width, {Desc.BitsPerPixel}8, rileDWordBoundary);
+  ARowStride := GetBytesPerLine(Desc.Width, {Desc.BitsPerPixel}8, rilebyteBoundary);
   AMask := HBitmap(TGtk3Image.Create(NewData, Desc.Width, Desc.Height, ARowStride, CAIRO_FORMAT_A8, True));
 
 end;
