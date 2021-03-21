@@ -206,7 +206,6 @@ begin
       OnError:=pfeEmpty
     else
       OnError:=pfeOriginal;
-    writeln('GetPhysicalFilenameCached GGG1');
     Result:=GetPhysicalFilename(AFilename,OnError);
   end;
 end;
