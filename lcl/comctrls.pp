@@ -3193,7 +3193,6 @@ type
     function GetCount: Integer;
     function GetOwner: TPersistent; override;
     procedure SetItem(Index: Integer; AValue: TTreeNode);
-    procedure SetUpdateState(Updating: Boolean);
   public
     constructor Create(AnOwner: TCustomTreeView);
     destructor Destroy; override;
@@ -3269,7 +3268,6 @@ type
     tvsIsEditing,
     tvsStateChanging,
     tvsManualNotify,
-    tvsUpdating,
     tvsPainting,
     tvoFocusedPainting,
     tvsDblClicked,

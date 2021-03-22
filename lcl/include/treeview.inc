@@ -2596,27 +2596,18 @@ end;
 
 procedure TTreeNodes.BeginUpdate;
 begin
-  if FUpdateCount = 0 then SetUpdateState(True);
   Inc(FUpdateCount);
-end;
-
-procedure TTreeNodes.SetUpdateState(Updating: Boolean);
-begin
-  //SendMessage(Handle, WM_SETREDRAW, Ord(not Updating), 0);
-  if Updating then
-    Include(Owner.FStates,tvsUpdating)
-  else begin
-    Exclude(Owner.FStates,tvsUpdating);
-    Include(Owner.FStates,tvsScrollbarChanged);
-    Owner.UpdateScrollbars;
-    Owner.Invalidate;
-  end;
 end;
 
 procedure TTreeNodes.EndUpdate;
 begin
   Dec(FUpdateCount);
-  if FUpdateCount = 0 then SetUpdateState(False);
+  if FUpdateCount = 0 then
+  begin
+    Include(Owner.FStates,tvsScrollbarChanged);
+    Owner.UpdateScrollbars;
+    Owner.Invalidate;
+  end;
 end;
 
 procedure TTreeNodes.FreeAllNodeData;
@@ -4872,7 +4863,7 @@ var
   Node: TTreeNode;
   InsertMarkRect: TRect;
 begin
-  if [tvsUpdating,tvsPainting] * FStates <> [] then Exit;
+  if [tvsPainting] * FStates <> [] then Exit;
   Include(FStates, tvsPainting);
   try
     if Focused then
@@ -5549,28 +5540,32 @@ end;
 procedure TCustomTreeView.Expand(Node: TTreeNode);
 begin
   UpdateScrollbars;
-  if Assigned(FOnExpanded) and not (tvsUpdating in FStates) then
+  if Assigned(FOnExpanded) then
     FOnExpanded(Self, Node);
 end;
 
 function TCustomTreeView.CanExpand(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(FOnExpanding) and not (tvsUpdating in FStates) then
+  if Assigned(FOnExpanding)then
     FOnExpanding(Self, Node, Result);
 end;
 
 procedure TCustomTreeView.Collapse(Node: TTreeNode);
 begin
+  if csDestroying in ComponentState then
+    exit;
   UpdateScrollbars;
-  if Assigned(FOnCollapsed) and not (tvsUpdating in FStates) then
+  if Assigned(FOnCollapsed) then
     FOnCollapsed(Self, Node);
 end;
 
 function TCustomTreeView.CanCollapse(Node: TTreeNode): Boolean;
 begin
   Result := True;
-  if Assigned(FOnCollapsing) and not (tvsUpdating in FStates) then
+  if csDestroying in ComponentState then
+    exit;
+  if Assigned(FOnCollapsing) then
     FOnCollapsing(Self, Node, Result);
 end;
 
