@@ -3155,6 +3155,10 @@ msgstr "Ne legyen sortörés ez után:"
 msgid "Do not split line in front of"
 msgstr "Ne legyen sortörés ez előtt:"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

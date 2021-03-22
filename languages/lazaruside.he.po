@@ -3330,6 +3330,10 @@ msgstr "אל תחצה את השורה אחרי:"
 msgid "Do not split line in front of"
 msgstr "אל תחצה את השורה לפני:"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

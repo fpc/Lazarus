@@ -3234,6 +3234,10 @@ msgstr "後の行を分割しない"
 msgid "Do not split line in front of"
 msgstr "前の行を分割しない"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

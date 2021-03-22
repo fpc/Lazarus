@@ -3249,6 +3249,10 @@ msgstr "Jangan pisah baris setelah:"
 msgid "Do not split line in front of"
 msgstr "Jangan pisah baris Di depan dari:"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 #, fuzzy
 msgctxt "lazarusidestrconsts.dlgobjinsp"

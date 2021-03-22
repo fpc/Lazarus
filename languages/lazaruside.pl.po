@@ -3256,6 +3256,10 @@ msgstr "Nie dziel wiersza po"
 msgid "Do not split line in front of"
 msgstr "Nie dziel wiersza przed"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

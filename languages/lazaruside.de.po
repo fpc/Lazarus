@@ -3210,6 +3210,10 @@ msgstr "Zeile nicht teilen nach:"
 msgid "Do not split line in front of"
 msgstr "Zeile nicht teilen vor:"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

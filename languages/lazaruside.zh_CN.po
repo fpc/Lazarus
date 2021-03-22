@@ -3244,6 +3244,10 @@ msgstr "不要断行 在...后"
 msgid "Do not split line in front of"
 msgstr "不要断行 在...前面"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

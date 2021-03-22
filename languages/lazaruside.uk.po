@@ -3158,6 +3158,10 @@ msgstr "Не розривати рядок після"
 msgid "Do not split line in front of"
 msgstr "Не розривати рядок перед"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

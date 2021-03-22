@@ -3239,6 +3239,10 @@ msgstr "No separis la línia després de:"
 msgid "Do not split line in front of"
 msgstr "No separis la línia abans de:"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 #, fuzzy
 msgctxt "lazarusidestrconsts.dlgobjinsp"

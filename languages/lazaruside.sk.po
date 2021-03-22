@@ -3232,6 +3232,10 @@ msgstr "Nerozdeľovať riadok za"
 msgid "Do not split line in front of"
 msgstr "Nerozdeľovať riadok pred"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

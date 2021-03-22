@@ -3157,6 +3157,10 @@ msgstr "Ne pas couper la ligne après"
 msgid "Do not split line in front of"
 msgstr "Ne pas couper la ligne devant"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"

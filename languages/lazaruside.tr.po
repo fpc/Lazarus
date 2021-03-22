@@ -3122,6 +3122,10 @@ msgstr "Satırın sonuna bölme"
 msgid "Do not split line in front of"
 msgstr "Satırın önüne bölme"
 
+#: lazarusidestrconsts.dlgnsprincipalclass
+msgid "NSPrincipalClass"
+msgstr ""
+
 #: lazarusidestrconsts.dlgobjinsp
 msgctxt "lazarusidestrconsts.dlgobjinsp"
 msgid "Object Inspector"
