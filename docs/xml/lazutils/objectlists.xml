@@ -12,7 +12,7 @@
       </short>
       <descr>
         <p>
-          Defines classes used to associate objects/pointers with objects/pointers. Converted to use generics by Juha. Item and Object types can now be defined.
+          <file>objectlists.pas</file> defines classes used to associate objects/pointers with objects/pointers. Converted to use generics by Juha. Item and Object types can now be defined.
         </p>
       </descr>
 

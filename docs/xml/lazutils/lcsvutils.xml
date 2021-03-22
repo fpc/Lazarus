@@ -11,7 +11,7 @@
         Contains routines used to read and process Comma-separated values from a file or a stream
       </short>
       <descr>
-        lcsvutils.pas contains routines used to read and process Comma-separated values from a file or a stream. It is used in the implementation of the LazUtils package and the TGrid component.
+        <file>lcsvutils.pas</file> contains routines used to read and process Comma-separated values from a file or a stream. It is used in the implementation of the LazUtils package and the TGrid component.
       </descr>
 
       <!-- procedure type Visibility: default -->

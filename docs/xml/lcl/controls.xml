@@ -4582,11 +4582,11 @@
             Another example:
           </p>
           <pre>
-            +-------+
+                  +-------+
             +---+ |       |
             | A | |   B   |
             +---+ |       |
-            +-------+
+                  +-------+
           </pre>
           <p>
             Centering A relative to B:
@@ -5182,6 +5182,9 @@
           <link id="TLazAccessibleObject"/>
         </seealso>
       </element>
+      <element name="TLazAccessibilityRole.larIgnore">
+        <short>Something to be ignored. For example a blank space between other objects</short>
+      </element>
       <element name="TLazAccessibilityRole.larAnimation">
         <short>An object that displays an animation</short>
       </element>
@@ -5203,6 +5206,9 @@
       <element name="TLazAccessibilityRole.larColorPicker">
         <short>A control which allows selecting a color</short>
       </element>
+      <element name="TLazAccessibilityRole.larColumn">
+        <short>A generic column in a table</short>
+      </element>
       <element name="TLazAccessibilityRole.larComboBox">
         <short>A list of choices that the user can select from</short>
       </element>
@@ -5214,9 +5220,6 @@
       </element>
       <element name="TLazAccessibilityRole.larGroup">
         <short>A control which groups others, such as a TGroupBox</short>
-      </element>
-      <element name="TLazAccessibilityRole.larIgnore">
-        <short>Something to be ignored. For example a blank space between other objects</short>
       </element>
       <element name="TLazAccessibilityRole.larImage">
         <short>A graphic or picture or an icon</short>
@@ -5245,6 +5248,9 @@
       <element name="TLazAccessibilityRole.larResizeGrip">
         <short>A grip that the user can drag to change the size of widgets</short>
       </element>
+      <element name="TLazAccessibilityRole.larRow">
+        <short>A generic row in a table</short>
+      </element>
       <element name="TLazAccessibilityRole.larScrollBar">
         <short>A control to scroll another one</short>
       </element>
@@ -5254,11 +5260,20 @@
       <element name="TLazAccessibilityRole.larTabControl">
         <short>A control with tabs, like TPageControl</short>
       </element>
+      <element name="TLazAccessibilityRole.larText">
+        <short>Text inside of a control, like text in a row cell</short>
+      </element>
       <element name="TLazAccessibilityRole.larTextEditorMultiline">
         <short>A multi-line text editor (for example: TMemo, SynEdit)</short>
       </element>
       <element name="TLazAccessibilityRole.larTextEditorSingleline">
         <short>A single-line text editor (for example: TEdit)</short>
+      </element>
+      <element name="TLazAccessibilityRole.larToolBar">
+        <short>A control that holds ToolButtons</short>
+      </element>
+      <element name="TLazAccessibilityRole.larToolBarButton">
+        <short>A button on a ToolBar</short>
       </element>
       <element name="TLazAccessibilityRole.larTrackBar">
         <short>A control which allows one to drag a slider</short>
@@ -5268,6 +5283,9 @@
       </element>
       <element name="TLazAccessibilityRole.larTreeItem">
         <short>An item in a tree structure</short>
+      </element>
+      <element name="TLazAccessibilityRole.larUnknown">
+        <short>An item that doesn't fit any of the other categories</short>
       </element>
       <element name="TLazAccessibilityRole.larWindow">
         <short>A top level window</short>
@@ -5319,19 +5337,11 @@
         </seealso>
       </element>
 
-      <element name="TLazAccessibleObject.FHandle"/>
       <element name="TLazAccessibleObject.FPosition"/>
       <element name="TLazAccessibleObject.FSize"/>
       <element name="TLazAccessibleObject.FLastSearchNode"/>
       <element name="TLazAccessibleObject.FLastSearchIndex"/>
       <element name="TLazAccessibleObject.FLastSearchInSubcontrols"/>
-
-      <element name="TLazAccessibleObject.GetHandle">
-        <short>Gets the value for the Handle property</short>
-      </element>
-      <element name="TLazAccessibleObject.GetHandle.Result">
-         <short>Value for the property</short>
-      </element>
 
       <element name="TLazAccessibleObject.GetPosition">
         <short>Gets the value for the Position property</short>
@@ -5381,7 +5391,9 @@
          <short>New value for the property</short>
       </element>
 
+      <element name="TLazAccessibleObject.FHandle"/>
       <element name="TLazAccessibleObject.FChildrenSortedForDataObject"/>
+      <element name="TLazAccessibleObject.FAccessibleName"/>
       <element name="TLazAccessibleObject.FAccessibleDescription"/>
       <element name="TLazAccessibleObject.FAccessibleValue"/>
       <element name="TLazAccessibleObject.FAccessibleRole"/>
@@ -5394,6 +5406,15 @@
         <seealso/>
       </element>
       <element name="TLazAccessibleObject.GetAccessibleValue.Result">
+         <short>Value for the property</short>
+      </element>
+
+      <element name="TLazAccessibleObject.GetHandle">
+        <short>Gets the value for the Handle property</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazAccessibleObject.GetHandle.Result">
          <short>Value for the property</short>
       </element>
 
@@ -5449,6 +5470,15 @@
         <seealso/>
       </element>
 
+      <element name="TLazAccessibleObject.SetAccessibleName">
+        <short>Sets the value for AccessibleName</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TLazAccessibleObject.SetAccessibleName.AName">
+        <short/>
+      </element>
+
       <element name="TLazAccessibleObject.SetAccessibleDescription">
         <short>Setter for the property AccessibleDescription</short>
       </element>
@@ -5467,6 +5497,12 @@
 
       <element name="TLazAccessibleObject.AddChildAccessibleObject">
         <short>Creates a new child accessible object and returns it</short>
+      </element>
+      <element name="TLazAccessibleObject.AddChildAccessibleObject.Result">
+        <short/>
+      </element>
+      <element name="TLazAccessibleObject.AddChildAccessibleObject.ADataObject">
+        <short/>
       </element>
 
       <element name="TLazAccessibleObject.InsertChildAccessibleObject">
@@ -5511,6 +5547,12 @@
         <seealso>
           <link id="TControl.GetChildAccessibleObjectAtPos"/>
         </seealso>
+      </element>
+
+      <element name="TLazAccessibleObject.AccessibleName">
+        <short>The name for this accessible object</short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TLazAccessibleObject.AccessibleDescription">
@@ -16757,7 +16799,7 @@ If you want to have the top of B the same as the top of C:
 <code>Example2
 For centering A relative to B:
 
-        +-------+
+      +-------+
 +---+ |       |
 | A | |   B   |
 +---+ |       |

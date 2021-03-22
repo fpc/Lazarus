@@ -7,53 +7,72 @@
   ====================================================================
 -->
     <module name="DynHashArray">
-      <short>Module of managing dynamic sets or associative arrays</short>
+      <short>Contains classes used to manage dynamic sets or associative arrays</short>
       <descr>
-        <p>Extends the functionality of Pascal by offering alternative data structure : set like array (the order is not kept) with fast find/delete. Its size can change automatically during the execution of the program.  The price is that it is somewhat slower than a number indexes access of an array. </p>
-        <p>This unit defines TDynHashArray, which is very similar to a TList, since
-    it also stores pointer/objects. </p>
-        <p>It supports Add, Remove, Contains, First, Count and Clear.</p>
-        <p>Because of the hashing nature the operations adding, removing and finding is
-    done in constant time on average.</p>
-        <code>Inner structure:
-      There are three parts:
-        1. The array itself (FItems). Every entry is a pointer to the first
-           TDynHashArrayItem of a list with the same hash index. The first item
-           of every same index list is the list beginning and its IsOverflow
-           flag is set to false. All other items are overflow items.
-           To get all items with the same hash index, do a FindHashItem. Then
-           search through all "Next" items until Next is nil or its IsOverflow
-           flag is set to false.
-        2. The items beginning with FFirstItem is a 2-way-connected list of
-           TDynHashArrayItem. This list contains all used items.
-        3. To reduce GetMem/FreeMem calls, free items are cached.
-
-  Issues:
-    The maximum capacity is the PrimeNumber. You can store more items, but the
-    performance decreases. The best idea is to provide your own hash function.
-
-    Important: Items in the TDynHashArray must not change their key.
-      When changing the key of an item, remove it and add it after the change.
-</code>
+        <p>
+          <file>DynHashArray.pp</file> extends the functionality of Pascal by
+          offering alternative data structure: set like array (the order is not kept)
+          with fast find/delete. Its size can change automatically during the
+          execution of the program.  The price is that it is somewhat slower than
+          a number indexes access of an array.
+        </p>
+        <p>
+          This unit defines TDynHashArray, which is very similar to a TList, since
+          it also stores pointer/objects.
+        </p>
+        <p>
+          It supports Add, Remove, Contains, First, Count and Clear.
+        </p>
+        <p>
+          Because of the hashing nature the operations adding, removing and
+          finding is done in constant time on average.
+        </p>
+        <p>
+          <b>Inner structure:</b>
+        </p>
+        <p>
+          There are three parts:
+        </p>
+        <ul>
+          <li>
+            The array itself (FItems). Every entry is a pointer to the first
+               TDynHashArrayItem of a list with the same hash index.
+               The first item of every same index list is the list beginning
+               and its IsOverflow flag is set to false. All other items are
+               overflow items. To get all items with the same hash index,
+               do a FindHashItem. Then search through all "Next" items
+               until Next is nil or its IsOverflow flag is set to false.
+          </li>
+          <li>
+            The items beginning with FFirstItem is a 2-way-connected list
+            of TDynHashArrayItem. This list contains all used items.
+          </li>
+          <li>
+          To reduce GetMem/FreeMem calls, free items are cached.
+        </li>
+        </ul>
+        <p>
+          <b>Issues:</b>
+        </p>
+        <p>
+          The maximum capacity is the PrimeNumber. You can store more items,
+          but the performance decreases. The best idea is to provide your own
+          hash function.
+        </p>
+        <p>
+          Important: Items in the TDynHashArray must not change their key. When
+          changing the key of an item, remove it and add it after the change.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
       </descr>
+
       <!-- unresolved type reference Visibility: default -->
-      <element name="Classes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="SysUtils">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <!-- unresolved type reference Visibility: default -->
-      <element name="LCLProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="Classes"/>
+      <element name="SysUtils"/>
+      <element name="LazLoggerBase"/>
+
       <!-- function type Visibility: default -->
       <element name="THashFunction">
         <short>Type for hash function</short>

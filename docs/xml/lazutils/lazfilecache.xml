@@ -9,1038 +9,1356 @@
 -->
 
 <module name="LazFileCache">
-<short></short>
+<short>
+Implements a caching mechanism for file and directory state information
+</short>
 <descr>
+<p>
+<file>lazfilecache.pas</file> implement a caching mechanism used for file and
+directory state information. It is used in the implementation of the Lazarus IDE,
+and in the LCL package system.
+</p>
+<p>
+This file is part of the <file>LazUtils</file> package.
+</p>
 </descr>
+
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="Laz_AVL_Tree"/>
+<element name="LazDbgLog"/>
+<element name="LazFileUtils"/>
 
 <!-- enumeration type Visibility: default -->
 <element name="TFileStateCacheItemFlag">
-<short></short>
+<short>
+Represents flag values used for files or directories in the
+state caching mechanism
+</short>
 <descr>
+<p>
+<var>TFileStateCacheItemFlag</var> is an enumerated type with values that
+represent flags used for files or directories in the state caching mechanism.
+Values from the enumeration are stored in the <var>TFileStateCacheItemFlags</var>
+set type, and used in the implementation of the <var>TFileStateCacheItem</var>
+class.
+</p>
 </descr>
 <seealso>
+<link id="TFileStateCacheItemFlags"/>
+<link id="TFileStateCacheItem"/>
+<link id="TFileStateCache"/>
 </seealso>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciExists">
-<short></short>
+<short>File or directory exists</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciDirectory">
-<short></short>
+<short>File exists and is a directory</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciReadable">
-<short></short>
+<short>File is readable</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciWritable">
-<short></short>
+<short>File is writable</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciDirectoryReadable">
-<short></short>
+<short>File is a directory and can be searched</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciDirectoryWritable">
-<short></short>
+<short>File is a directory and allows new files to be created</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciText">
-<short></short>
+<short>File is a text (not an executable binary) file</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciExecutable">
-<short></short>
+<short>File is an executable binary file</short>
 </element>
 
 <!-- enumeration value Visibility: default -->
 <element name="TFileStateCacheItemFlag.fsciAge">
-<short></short>
+<short>file age is valid</short>
+</element>
+
+<element name="TFileStateCacheItemFlag.fsciPhysical">
+<short>Physical file name for the file is valid</short>
 </element>
 
 <!-- set type Visibility: default -->
 <element name="TFileStateCacheItemFlags">
-<short></short>
-<descr>
-</descr>
+<short>Set type used to store TFileStateCacheItemFlag enumeration values</short>
+<descr/>
 <seealso>
+<link id="TFileStateCacheItemFlag"/>
+<link id="TFileStateCacheItem.Flags"/>
+<link id="TFileStateCache"/>
 </seealso>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TFileStateCacheItem">
-<short></short>
+<short>
+Contains information about a file or directory in the state caching mechanism
+</short>
 <descr>
+<p>
+<var>TFileStateCacheItem</var> is a class which contains information about a file or
+directory in the state caching mechanism. TFileStateCacheItem has properties
+used to represent a file or directory name (symbolic and physical), a timestamp,
+and status flags.
+</p>
+<p>
+TFileStateCacheItem is the type creates and stored in the internal AVL tree in
+<var>TFileStateCache</var> using its <var>FindFile</var> method.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.FindFile"/>
 </seealso>
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TFileStateCacheItem.FAge">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCacheItem.FFilename">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCacheItem.FFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCacheItem.FTestedFlags">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCacheItem.FTimeStamp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<element name="TFileStateCacheItem.FAge"/>
+<element name="TFileStateCacheItem.FFilename"/>
+<element name="TFileStateCacheItem.FFlags"/>
+<element name="TFileStateCacheItem.FTestedFlags"/>
+<element name="TFileStateCacheItem.FTimeStamp"/>
 
 <!-- constructor Visibility: public -->
 <element name="TFileStateCacheItem.Create">
-<short></short>
+<short>Constructor for the class instance</short>
 <descr>
+<p>
+<var>Create</var> is the constructor for the class instance. It sets the
+initial values for the following properties:
+</p>
+<dl>
+<dt>Filename</dt>
+<dd>Set to the value passed in TheFilename.</dd>
+<dt>TimeStamp</dt>
+<dd>Set to the value passed in NewTimeStamp.</dd>
+</dl>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.TimeStamp"/>
 </seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCacheItem.Create.TheFilename">
-<short></short>
+<short>Name for the file or directory in the cache item</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCacheItem.Create.NewTimeStamp">
-<short></short>
+<short>Timestamp value for the file or directory</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCacheItem.CalcMemSize">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
+<short>Gets the memory size needed to store the class instance</short>
+<descr/>
 <seealso>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="#rtl.system.TObject.InstanceSize">TObject.InstanceSize</link>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCacheItem.CalcMemSize.Result">
-<short></short>
+<short>
+Number of bytes needed to store the class instance and its assigned data
+</short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFileStateCacheItem.Filename">
-<short></short>
-<descr>
-</descr>
+<short>Name for the file or directory in the cache item</short>
+<descr/>
 <seealso>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="TFileStateCacheItem.Flags"/>
+</seealso>
+</element>
+
+<element name="TFileStateCacheItem.PhysicalFilename">
+<short>Physical name for the file or directory in the cache item</short>
+<descr/>
+<seealso>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.Flags"/>
 </seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFileStateCacheItem.Flags">
-<short></short>
-<descr>
-</descr>
+<short>Contains status flags for the cached file or directory item</short>
+<descr/>
 <seealso>
+<link id="TFileStateCacheItem.TestedFlags"/>
+<link id="TFileStateCache.Check"/>
 </seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFileStateCacheItem.TestedFlags">
-<short></short>
-<descr>
-</descr>
+<short>
+Contains status flags that have been tested for the cached item
+</short>
+<descr/>
 <seealso>
+<link id="TFileStateCacheItem.Flags"/>
+<link id="TFileStateCache.Check"/>
 </seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFileStateCacheItem.TimeStamp">
-<short></short>
+<short>Timestamp for the cached item</short>
 <descr>
+<p>
+<var>Timestamp</var> is an <var>Int64</var> property with a timestamp value for
+an item in the state caching mechanism. It is not actually a time value; it is
+a counter that is assigned when the item is added to the TFileStateCache class.
+It can be compared to the <var>Timestamp</var> value in the state cache to
+determine when the item is potentially out-of-date.
+</p>
+<p>
+Use <var>TFileStateCache.Timestamp</var> to determine when the cached item is
+invalid.
+</p>
 </descr>
 <seealso>
+<link id="TFileStateCache.Timestamp"/>
+<link id="TFileStateCache.IncreaseTimeStamp"/>
+<link id="TFileStateCache.FindFile"/>
 </seealso>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFileStateCacheItem.Age">
-<short></short>
+<short>FileAge value for the file or directory</short>
 <descr>
+<p>
+<var>Age</var> is a <var>LongInt</var> property with the file age for the file or
+directory in the cache item. The value for the property is assigned when the
+TFileStateCache.FileAgeCached method is called, and contains the value returned
+from the FileAge routine in <file>SysUtils</file>.
+</p>
 </descr>
 <seealso>
+<link id="TFileStateCache.FileAgeCached"/>
+<link id="#rtl.sysutils.FileAge">FileAge</link>
 </seealso>
 </element>
 
 <!-- procedure type Visibility: default -->
 <element name="TOnChangeFileStateTimeStamp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Specifies an event handler signalled when the timestamp for a cached item
+is changed
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnChangeFileStateTimeStamp.Sender">
-<short></short>
+<short>Object instance for the event notification</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnChangeFileStateTimeStamp.AFilename">
-<short></short>
+<short>Name for the affected file or directory</short>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TFileStateCache">
-<short></short>
+<short>
+Implements a state caching mechanism for files and directories
+</short>
 <descr>
+<p>
+<var>TFileStateCache</var> is a class which implements a state caching
+mechanism for files and directories. TFileStateCache uses an internal AVL
+tree to store <var>TFileStateCacheItem</var> instances for the items in
+the state caching mechanism. The tree stores values sorted in file name
+(or path) order.
+</p>
+<p>
+The <var>TimeStamp</var> property contains a counter value, assigned in the
+constructor, which is maintained when items are added or updated in cache
+storage. The value is assigned to cached items, and provides an indication
+when the cached item may be out-of-date in the cache.
+</p>
+<p>
+TFileStateCache provides methods to add and update items in the cache, and to
+access and verify state flags for the TFileStateCacheItem instances.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCacheItem"/>
+<link id="TFileStateCacheItemFlags"/>
+<link id="TFileStateCacheItemFlag"/>
+<link id="#lazutils.laz_avl_tree.TAVLTree">TAVLTree</link>
 </seealso>
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TFileStateCache.FFiles">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCache.FTimeStamp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCache.FLockCount">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TFileStateCache.FChangeTimeStampHandler">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<element name="TFileStateCache.FFiles"/>
+<element name="TFileStateCache.FTimeStamp"/>
+<element name="TFileStateCache.FLockCount"/>
+<element name="TFileStateCache.FChangeTimeStampHandler"/>
 
 <!-- procedure Visibility: private -->
 <element name="TFileStateCache.SetFlag">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Includes or excludes a value in the Flags property</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TFileStateCache.SetFlag.AFile">
-<short></short>
+<short>File or directory name for the cached item</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TFileStateCache.SetFlag.AFlag">
-<short></short>
+<short>Identifies the Flag affected in the method</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TFileStateCache.SetFlag.NewValue">
-<short></short>
+<short>True to include the flag, False to exclude it</short>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TFileStateCache.Create">
-<short></short>
+<short>Constructor for the class instance</short>
 <descr>
+<p>
+<var>Create</var> is the constructor for the class instance. It allocates
+resources needed for the internal AVL tree used to store the file or directory
+items in the cache mechanism. The address for the <var>CompareFileStateItems</var>
+routine is used to compare and sort the items added to the AVL tree. It also
+sets the initial value in the <var>Timestamp</var> property.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.TimeStamp"/>
+<link id="CompareFileStateItems"/>
+<link id="#lazutils.laz_avl_tree.TAVLTree">TAVLTree</link>
 </seealso>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TFileStateCache.Destroy">
-<short></short>
+<short>Destructor for the class instance</short>
 <descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It
+frees resources allocated in and for the internal AVL tree used to store
+cached file or directories. It also frees any change handler routines assigned
+by calling the <var>AddChangeTimeStampHandler</var> method.
+</p>
+<p>
+Destroy calls the inherited method prior to exit.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.AddChangeTimeStampHandler"/>
 </seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFileStateCache.Lock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
+<short>Increments the lock count for the caching mechanism</short>
+<descr/>
 <seealso>
+<link id="TFileStateCache.Unlock"/>
+<link id="TFileStateCache.Locked"/>
 </seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFileStateCache.Unlock">
-<short></short>
+<short>Decrements the lock count for the caching mechanism</short>
 <descr>
+<p>
+Raises an <var>Exception</var> if the lock count is 0 (or less) when the
+method is called.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.Lock"/>
+<link id="TFileStateCache.Locked"/>
 </seealso>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.Locked">
-<short></short>
+<short>Indicates Lock has been called without a corresponding Unlock call</short>
 <descr>
+The return value is <b>True</b> when the internal lock count has a positive
+non-zero value.
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.Lock"/>
+<link id="TFileStateCache.Unlock"/>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.Locked.Result">
-<short></short>
+<short>True when the internal lock count has a positive non-zero value</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFileStateCache.IncreaseTimeStamp">
-<short></short>
+<short>
+Increments the change counter or updates an item in the state cache
+</short>
 <descr>
+<p>
+<var>AFileName</var> contains the file or directory name to update in the
+storage for the cache.
+</p>
+<p>
+When AFileName is an empty string (<b>''</b>), the entire cache is invalidated
+by incrementing the change counter in the <var>TimeStamp</var> property.
+If a value is provided in AFileName, a single item is invalidated in the cache
+storage. The <var>FindFile</var> method is called to retrieve the
+<var>TFileStateCacheItem</var> entry and to reset the values in its
+<var>TestedFlags</var> property.
+</p>
+<p>
+IncreaseTimeStamp signals each of the assigned change handlers for the
+class instance using the value in AFileName as an argument.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.FindFile"/>
+<link id="TFileStateCache.TimeStamp"/>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="TFileStateCacheItem.TestedFlags"/>
 </seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.IncreaseTimeStamp.AFilename">
-<short></short>
+<short>
+Name for the file or directory invalidated in the cache, or an empty string
+to invalidate all cached items
+</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FileExistsCached">
-<short></short>
+<short>
+Ensures that a cached item has an up-to-date "file exists" flag value
+</short>
 <descr>
+<p>
+<var>FileExistsCached</var> ensures that a cached item with the name in
+<var>AFileName</var> has an up-to-date "file exists" flag value in the cache.
+</p>
+<p>
+Calls <var>Check</var> to use the valid flag value for an existing
+<var>TFileStateCacheItem</var> instance in the cache. If the return value from
+Check is <b>True</b>, no additional actions are performed in the method.
+</p>
+<p>
+Otherwise, the flag value was not present for the specified cache item. The
+<var>FileExistsUTF8</var> routine is called to determine if the file exists on
+the local file system. <var>SetFlag</var> is called to update the
+<var>fsciExists</var> flag for the cache item with the given name.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.Check"/>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.Flags"/>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileExistsCached.Result">
-<short></short>
+<short>True if the file exists on the local file system and in the cache</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FileExistsCached.AFilename">
-<short></short>
+<short>Name for the file to examine in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.DirPathExistsCached">
-<short></short>
+<short>
+Ensures that a cached item has an up-to-date "directory path exists" flag value
+</short>
 <descr>
+<p>
+<var>DirPathExistsCached</var> ensures that a cached item with the name in
+<var>AFileName</var> has an up-to-date "directory path exists" flag value in
+the cache.
+</p>
+<p>
+Calls <var>Check</var> to use the valid flag value for an existing
+<var>TFileStateCacheItem</var> instance in the cache. If the return value from
+Check is <b>True</b>, no additional actions are performed in the method.
+</p>
+<p>
+Otherwise, the flag value was not present for the specified cache item. The
+<var>DirPathExists</var> routine is called to determine if the file exists on
+the local file system. <var>SetFlag</var> is called to update the
+<var>fsciDirectory</var> flag for the cache item with the given name.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.Check"/>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="TFileStateCacheItem.Flags"/>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.DirPathExistsCached.Result">
-<short></short>
+<short>
+True if the directory exists on the local file system and in the cache
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.DirPathExistsCached.AFilename">
-<short></short>
+<short>Name of the directory to examine in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.DirectoryIsWritableCached">
-<short></short>
+<short>
+Ensures that a cached item has an up-to-date "Directory is Writable" flag
+</short>
 <descr>
+<p>
+<var>DirectoryIsWritableCached</var> ensures that the specified directory
+has an up-to-date value for its "Directory is Writable" flag in the cache. It
+calls <var>Check</var> to use a valid flag value for an existing
+<var>TFileStateCacheItem</var> instance in the cache. If the return value from
+Check is <b>True</b>, no additional actions are performed in the method.
+</p>
+<p>
+Otherwise, the flag value was not present for the specified cache item. The
+<var>DirectoryIsWritable</var> routine is called to determine if the directory
+allows new entries to be created in the path. <var>SetFlag</var> is called to
+update the <var>fsciDirectoryWritable</var> flag for the cache item with the
+given name.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.Check"/>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="TFileStateCacheItem.Flags"/>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.DirectoryIsWritableCached.Result">
-<short></short>
+<short>
+True if the specified directory is writable in the local file system
+and in the cache
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.DirectoryIsWritableCached.DirectoryName">
-<short></short>
+<short>Name of the directory to examine in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FileIsExecutableCached">
-<short></short>
+<short>
+Ensures that the "File is Executable" flag is up-to-date for a cache item
+</short>
 <descr>
+<p>
+<var>FileIsExecutableCached</var> ensures that the cache item for the specified
+file has an up-to-date value in its "File is Executable" flag. It calls
+<var>Check</var> to get the cache item with the given name, and to examine its
+flag values. If Check returns <b>True</b> for the flag, no additional actions
+are performed in the method.
+</p>
+<p>
+Otherwise, the <var>FileIsExecutable</var> routine is called to get the return
+value. <var>SetFlag</var> is called to apply the <var>fsciExecutable</var> flag
+value to the cached item.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.Check"/>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="TFileStateCacheItem.Flags"/>
+<link id="#lazutils.lazfileutils.FileIsExecutable">FileIsExecutable</link>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileIsExecutableCached.Result">
-<short></short>
+<short>True if the specified file is an executable binary</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FileIsExecutableCached.AFilename">
-<short></short>
+<short>Name for the file examined in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FileIsReadableCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Ensures that the "File is Readable" flag is up-to-date for a cache item
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileIsReadableCached.Result">
-<short></short>
+<short>True if the specified file is not read-only</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FileIsReadableCached.AFilename">
-<short></short>
+<short>Name for the file examined in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FileIsWritableCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Ensures that the "File is Writable" flag is up-to-date for a cache item
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileIsWritableCached.Result">
-<short></short>
+<short>
+True if the file is writable
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FileIsWritableCached.AFilename">
-<short></short>
+<short>
+Name for the file examined in the method
+</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FileIsTextCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Ensures that the "File is Text" flag is up-to-date for a cache item
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileIsTextCached.Result">
-<short></short>
+<short>True if the file is a text file (not a binary executable)</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FileIsTextCached.AFilename">
-<short></short>
+<short>Name for the file examined in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FileAgeCached">
-<short></short>
+<short>
+Ensures that the file age is up-to-date for a cache item
+</short>
 <descr>
+<p>
+<var>FileAgeCached</var> differs from the related methods in the class instance.
+It returns a <var>LongInt</var> value instead of a <var>Boolean</var>, and
+contains the value from the <var>FileAge</var> routine in the RTL
+<file>SysUtils</file> unit. The value represents the last date that the file
+was modified, and the integer value does not include any time-related information
+for the modification timestamp.
+</p>
+<p>
+FileAgeCached cannot be used for directory names; the value is always <b>-1</b>
+when used for a directory name.
+</p>
+<p>
+FileAge is not related to the <var>TimeStamp</var> property for the cache.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="#rtl.sysutils.FileAge">FileAge</link>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FileAgeCached.Result">
-<short></short>
+<short>File age (last modification date) for the file</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FileAgeCached.AFileName">
-<short></short>
+<short>Name for the file examined in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.FindFile">
-<short></short>
+<short>Gets (or creates) the cached item with the specified name</short>
 <descr>
+<p>
+<var>FindFile</var> is a <var>TFileStateCacheItem</var> function used to get,
+or optionally create, a cache entry for the file or directory in
+<var>Filename</var>.
+</p>
+<p>
+FindFile resolves a relative path used in Filename by calling the
+<var>ResolveDots</var> routine. The normalized name is used to get the
+TFileStateCacheItem instance in the cache used as the return value for the
+method.
+</p>
+<p>
+If Filename was not found in the cache, and <var>CreateIfNotExists</var> is
+set to <b>True</b>, a TFileStateCacheItem instance is created with the
+<var>Timestamp</var> for the cache and added to the internal storage. An
+<var>Exception</var> is raised if the cache item could not be added
+(and retrieved) using the internal AVL tree storage.
+</p>
+<p>
+If Filename was not found in the cache, and CreateIfNotExists is set to
+<b>False</b>, the return value is <b>Nil</b>.
+</p>
+<p>
+FindFile is used to implement the <var>Check</var> and
+<var>IncreaseTimeStamp</var> methods.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.TimeStamp"/>
+<link id="TFileStateCache.Check"/>
+<link id="TFileStateCache.IncreaseTimeStamp"/>
+<link id="TFileStateCacheItem"/>
+<link id="#lazutils.laz_avl_tree.TAVLTree">TAVLTree</link>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.FindFile.Result">
-<short></short>
+<short>Cached item with the specified name, or Nil</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FindFile.Filename">
-<short></short>
+<short>Name for the file or directory to locate in the cache</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.FindFile.CreateIfNotExists">
-<short></short>
+<short>True to create a cache item if it does not already exist</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.Check">
-<short></short>
+<short>
+Checks the specified cache item to get a specific flag value
+</short>
 <descr>
+<p>
+<var>Check</var> is a <var>Boolean</var> function used to check a flag value
+in a cache item with the name in <var>Filename</var>.
+</p>
+<p>
+<var>AFlag</var> identifies the flag value checked for the cache item.
+</p>
+<p>
+<var>AFile</var> contains the cache item used to get the value for the
+specified flag. The <var>FindFile</var> method is called to get (or create) a
+cache item for the specified file or directory name. AFile is an output
+parameter, and is used to return the <var>TFileStateCacheItem</var> instance to
+the caller.
+</p>
+<p>
+Check ensures that the cache item is valid (recent) using the
+<var>Timestamp</var> for the class instance. When TimeStamp is more recent than
+the value in the cache item, the cache item is updated with the current
+Timestamp and its tested flags are cleared.
+</p>
+<p>
+<var>FlagIsSet</var> is a variable parameter which contains the state for the
+specific flag. <b>True</b> indicates the flag is set for the cache item.
+<b>False</b> indicates that the flag was not already set in the cache item, or
+has not been tested after resetting the Timestamp for an invalid cache item.
+</p>
+<p>
+The return value is <b>True</b> when the flag in AFlag is one of the tested
+flags in an existing cache item. It is <b>False</b> if the flag value has not
+been accessed in the cache item, or when the Timestamp for an invalid cache
+item was reset.
+</p>
+<p>
+Check is used to implement methods which get or set specific flag values,
+including:
+</p>
+<ul>
+<li>FileExistsCached</li>
+<li>DirPathExistsCached</li>
+<li>DirectoryIsWritableCached</li>
+<li>FileIsExecutableCached</li>
+<li>FileIsReadableCached</li>
+<li>FileIsWritableCached</li>
+<li>FileIsTextCached</li>
+<li>FileAgeCached</li>
+<li>GetPhysicalFilenameCached</li>
+</ul>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCache.FindFile"/>
+<link id="TFileStateCache.TimeStamp"/>
+<link id="TFileStateCache.FileExistsCached"/>
+<link id="TFileStateCache.DirPathExistsCached"/>
+<link id="TFileStateCache.DirectoryIsWritableCached"/>
+<link id="TFileStateCache.FileIsExecutableCached"/>
+<link id="TFileStateCache.FileIsReadableCached"/>
+<link id="TFileStateCache.FileIsWritableCached"/>
+<link id="TFileStateCache.FileIsTextCached"/>
+<link id="TFileStateCache.FileAgeCached"/>
+<link id="TFileStateCache.GetPhysicalFilenameCached"/>
+<link id="TFileStateCacheItem.TimeStamp"/>
+<link id="TFileStateCacheItem.Flags"/>
+<link id="TFileStateCacheItem.TestedFlags"/>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.Check.Result">
-<short></short>
+<short>True if the flag is has been tested and set for the cache item</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.Check.Filename">
-<short></short>
+<short>File or directory to locate in the cache</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.Check.AFlag">
-<short></short>
+<short>Flag to examine for the cache item</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.Check.AFile">
-<short></short>
+<short>The cache item examined in the method</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.Check.FlagIsSet">
-<short></short>
-</element>
-
-<!-- procedure Visibility: public -->
-<element name="TFileStateCache.WriteDebugReport">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>True if the flag was tested and set for the cache item</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFileStateCache.AddChangeTimeStampHandler">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Adds the specified handler routine to the class instance
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.AddChangeTimeStampHandler.Handler">
-<short></short>
+<short>Handler routine added in the method</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TFileStateCache.RemoveChangeTimeStampHandler">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Removes the specified handler routine in the class instance
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TFileStateCache.RemoveChangeTimeStampHandler.Handler">
-<short></short>
+<short>Handler routine removed in the method</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TFileStateCache.CalcMemSize">
-<short></short>
+<short>
+Gets the memory size needed for the class instance and its data
+</short>
 <descr>
+<p>
+<var>CalcMemSize</var> is a <var>name</var> function used to get the amount of
+memory needed for the class instance, including data stored in its properties.
+The return value is a sum of the <var>InstanceSize</var> and the lengths for
+the String values in <var>FileName</var> and <var>PhysicalFilename</var>.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="TFileStateCacheItem.Filename"/>
+<link id="TFileStateCacheItem.PhysicalFilename"/>
+<link id="#rtl.system.TObject.InstanceSize">TObject.InstanceSize</link>
 </seealso>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TFileStateCache.CalcMemSize.Result">
-<short></short>
+<short>Memory size needed to store the class instance and its data</short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TFileStateCache.TimeStamp">
-<short></short>
-<descr>
-</descr>
+<short>
+Timestamp (or revision) value for the cache storage
+</short>
+<descr/>
 <seealso>
+<link id="TFileStateCacheItem.TimeStamp"/>
 </seealso>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="FileStateCache">
-<short></short>
+<short>
+Unit global variable with the class instance for the state caching mechanism
+</short>
 <descr>
+<p>
+<var>FileStateCache</var> is a <var>FileStateCache</var> variable which contains
+the class instance used for the state caching mechanism. The default value for
+the variable is Nil (unassigned).
+</p>
 </descr>
 <seealso>
+<link id="TFileStateCache"/>
 </seealso>
 </element>
 
 <!-- function Visibility: default -->
 <element name="FileExistsCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the File Exists flag value for the specified file name
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="FileExistsCached.Result">
-<short></short>
+<short>True if the file exists on the local file system</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FileExistsCached.AFilename">
-<short></short>
+<short>File name examined in the routine</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DirPathExistsCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the Path Exists flag value for the specified directory path
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="DirPathExistsCached.Result">
-<short></short>
+<short>True if the path exists on the local file system</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="DirPathExistsCached.AFilename">
-<short></short>
+<short>Path to the directory examined in the routine</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DirectoryIsWritableCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the Directory is Writable flag value for the specified path
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="DirectoryIsWritableCached.Result">
-<short></short>
+<short>
+True if the specified directory allows files or sub-directories to be created
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="DirectoryIsWritableCached.ADirectoryName">
-<short></short>
+<short>Path examined in the routine</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="FileIsExecutableCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the File is Executable flag value for the specified file name
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="FileIsExecutableCached.Result">
-<short></short>
+<short>
+True if the specified file is an executable (binary) file
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FileIsExecutableCached.AFilename">
-<short></short>
+<short>
+Name for the file examined in the routine
+</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="FileIsReadableCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the File is Readable flag value for the specified file name
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="FileIsReadableCached.Result">
-<short></short>
+<short>
+True if the specified file is readable
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FileIsReadableCached.AFilename">
-<short></short>
+<short>
+Name for the file examined in the routine
+</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="FileIsWritableCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the File is Writable flag value for the specified file name
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="FileIsWritableCached.Result">
-<short></short>
+<short>
+True if the specified file is writable (not read-only)
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FileIsWritableCached.AFilename">
-<short></short>
+<short>
+Name for the file examined in the routine
+</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="FileIsTextCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the File is Text flag for the specified file name
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="FileIsTextCached.Result">
-<short></short>
+<short>
+True if the specified file is a text (not a binary executable) file
+</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FileIsTextCached.AFilename">
-<short></short>
+<short>
+Name for the file examined in the routine
+</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="FileAgeCached">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+Gets the file age for the specified file or directory
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="FileAgeCached.Result">
-<short></short>
+<short>File age for the specified file or directory</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="FileAgeCached.AFileName">
-<short></short>
+<short>File or directory name examined in the routine</short>
+</element>
+
+<element name="GetPhysicalFilenameCached">
+<short>
+Gets the physical file name for the specified file or directory name
+</short>
+<descr>
+<p>
+<var>GetPhysicalFilenameCached</var> is a <var>String</var> function used to
+get the physical file name for the value specified in <var>AFileName</var>.
+The return value contains the actual file name for a symbolic link or reference
+on the local file system.
+</p>
+<p>
+<var>EmptyOnError</var> indicates that the return value can be an empty string
+(<b>''</b>) if AFilename cannot be resolved. When set to <b>False</b>, the
+original file in AFileName is used as the return value.
+</p>
+<p>
+GetPhysicalFilenameCached provides two (2) ways to resolve the value in
+AFilename:
+</p>
+<ul>
+<li>
+Calling the GetPhysicalFilenameCached method in the FileStateCache
+singleton (when assigned). This is the default code path in the routine.
+</li>
+<li>
+Calling the GetPhysicalFilename routine.
+</li>
+</ul>
+</descr>
+<seealso>
+<link id="TFileStateCache.GetPhysicalFilenameCached"/>
+<link id="GetPhysicalFilename"/>
+<link id="FileStateCache"/>
+</seealso>
+</element>
+<element name="GetPhysicalFilenameCached.Result">
+<short>Actual file name for the symbolic link or reference</short>
+</element>
+<element name="GetPhysicalFilenameCached.AFilename">
+<short>File name resolved in the routine</short>
+</element>
+<element name="GetPhysicalFilenameCached.EmptyOnError">
+<short>True to return an empty string if AFilename is not found</short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="InvalidateFileStateCache">
-<short></short>
+<short>
+Invalidates one or more items in the state cache
+</short>
 <descr>
+<p>
+Calls the <var>IncreaseTimeStamp</var> method in <var>FileStateCache</var>
+using the value in <var>FileName</var> as the target. When FileName exists
+in the cache, it is the only item affected in the method. If FileName is an
+empty string (<b>''</b>), all items in the cache are invalidated.
+</p>
 </descr>
-<errors>
-</errors>
 <seealso>
+<link id="FileStateCache"/>
+<link id="TFileStateCache.IncreaseTimeStamp"/>
+<link id="TFileStateCache.TimeStamp"/>
+<link id="TFileStateCacheItem.TimeStamp"/>
 </seealso>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="InvalidateFileStateCache.Filename">
-<short></short>
+<short>Name for the file or directory invalidated in the cache</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="CompareFileStateItems">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
+<notes><note>TODO</note></notes>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="CompareFileStateItems.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="CompareFileStateItems.Data1">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="CompareFileStateItems.Data2">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: default -->
 <element name="CompareFilenameWithFileStateCacheItem">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short/>
+<descr/>
+<seealso/>
+<notes><note>TODO</note></notes>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="CompareFilenameWithFileStateCacheItem.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="CompareFilenameWithFileStateCacheItem.Key">
-<short></short>
+<short/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="CompareFilenameWithFileStateCacheItem.Data">
-<short></short>
-</element>
-
-<!-- constant Visibility: default -->
-<element name="FileStateCacheItemFlagNames">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short/>
 </element>
 
 <!-- constant Visibility: default -->
 <element name="LUInvalidChangeStamp">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Integer value used as the invalid timestamp value for the cache mechanism
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- constant Visibility: default -->
 <element name="LUInvalidChangeStamp64">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Int64 value used as the invalid timestamp value for the cache mechanism
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="LUIncreaseChangeStamp">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Increments the specified Integer timestamp value</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="LUIncreaseChangeStamp.ChangeStamp">
-<short></short>
+<short>Timestamp value modified in the routine</short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="LUIncreaseChangeStamp64">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Increments the specified Int64 timestamp value</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="LUIncreaseChangeStamp64.ChangeStamp">
-<short></short>
+<short>Timestamp value modified in the routine</short>
 </element>
 
 <!-- function type Visibility: default -->
 <element name="TOnFileExistsCached">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Specifies an event handler signalled to get the "file exists" flag for an item
+in the cache
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TOnFileExistsCached.Result">
-<short></short>
+<short>True if the file exists on the local file system</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnFileExistsCached.Filename">
-<short></short>
+<short>File name examined in the event handler</short>
 </element>
 
 <!-- function type Visibility: default -->
 <element name="TOnFileAgeCached">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Specifies an event handler signalled to get the file age for an item in the cache
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- function result Visibility: default -->
 <element name="TOnFileAgeCached.Result">
-<short></short>
+<short>File age for the specified file or directory</short>
 </element>
 
 <!-- argument Visibility: default -->
 <element name="TOnFileAgeCached.Filename">
-<short></short>
+<short>File or directory examined in the handler</short>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="OnFileExistsCached">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+Event handler signalled to get the File Exists flag for the specified file name
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: default -->
 <element name="OnFileAgeCached">
-<short></short>
+<short>
+Event handler signalled to get the file age for the specified file name
+</short>
 <descr>
+<p>
+<var>OnFileAgeCached</var> is a <var>TOnFileAgeCached</var> variable with the
+unit global event handler used to get the file age for a given file name.
+It is signalled from the <var>FileAgeCached</var> routine (when assigned), and
+is used instead of calling the <var>TFileStateCache.FileAgeCached</var> method
+or the <var>FileAgeUTF8</var> routine in <file>LazUtils</file>.
+</p>
 </descr>
 <seealso>
+<link id="TOnFileAgeCached"/>
+<link id="FileAgeCached"/>
+<link id="FileStateCache"/>
+<link id="TFileStateCache.FileAgeCached"/>
+<link id="#lazutils.lazfileutils.FileAgeUTF8">FileAgeUTF8</link>
 </seealso>
 </element>
 
-</module> <!-- LazFileCache -->
-
+</module>
+<!-- LazFileCache -->
 </package>
 </fpdoc-descriptions>

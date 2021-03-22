@@ -9,7 +9,7 @@
     <module name="LazUtilsStrConsts">
       <short>Resource strings used in the LazUtils package</short>
       <descr>
-        LazUtilsStrConsts contains resource strings used in the LazUtils package. The resource strings are translated using the corresponding .pot file found in the languages directory.
+        <file>LazUtilsStrConsts</file> contains resource strings used in the <file>LazUtils</file> package. The resource strings are translated using the corresponding .pot file found in the languages directory.
       </descr>
 
       <!-- resource string Visibility: default -->

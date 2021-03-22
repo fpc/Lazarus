@@ -1445,7 +1445,7 @@
             <var>CopyDirTree</var> is a <var>Boolean</var> function used to copy file system entries from the directory in <var>SourceDir</var> to the directory in <var>TargetDir</var>.
           </p>
           <p>
-            Values in SourceDir and TargetDir are fully-qualified path names for the directories. TargetDir cannot be a sub-directory located in SourceDir. No actions are performed in the routine when TargetDir is located within the specified SourceDir.
+            Values in SourceDir and TargetDir are fully-qualified path names for the directories. If a trailing path delimiter is omitted in SourceDir or TargetDir, it is appended (when needed) to the values. TargetDir cannot be a sub-directory located in SourceDir. No actions are performed in the routine when TargetDir is located within the specified SourceDir.
           </p>
           <p>
             Flags contains values representing the options enabled in the copy operation. The default value for the parameters is an empty set (<b>[]</b>) and indicates that none of the <var>TCopyFileFlag</var> options are enabled. The value <var>cffCreateDestDirectory</var> is always added to the values in Flags internally; CopyDirTree requires the destination directory to be created if it does not already exist.

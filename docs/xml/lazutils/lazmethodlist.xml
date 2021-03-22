@@ -8,7 +8,14 @@
     -->
     <module name="LazMethodList">
       <short>Implements a list of TMethod entries</short>
-      <descr></descr>
+      <descr>
+          <p>
+            <file>lazmethodlist.pas</file> implements a list used TMethod instances representing event handler routines in LCL components.
+          </p>
+          <p>
+            This file is part of the <file>LazUtils</file> package.
+          </p>
+      </descr>
 
       <!-- class Visibility: default -->
       <element name="TMethodList">

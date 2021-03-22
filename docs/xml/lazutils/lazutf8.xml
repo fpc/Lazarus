@@ -11,7 +11,12 @@
         Routines for managing UTF-8-encoded strings
       </short>
       <descr>
-        <file>lazutf8.pas</file> contains useful routines for managing UTF-8-encoded strings. All routines are thread-safe unless explicitly stated.
+        <p>
+          <file>lazutf8.pas</file> contains useful routines for managing UTF-8-encoded strings. All routines are thread-safe unless explicitly stated.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
       </descr>
 
       <!-- unresolved externals -->
