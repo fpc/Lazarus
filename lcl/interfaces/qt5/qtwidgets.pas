@@ -8115,53 +8115,30 @@ var
   LeftMargin: Integer;
   TopMargin: Integer;
   RightMargin: Integer;
-  BottomMargin: Integer;
-  {$IFDEF HASX11}
-  Font: QFontH;
-  FontMetrics: QFontMetricsH;
-  FontHeight: Integer;
-  {$ENDIF}
+  BottomMargin, AStyleMetric: Integer;
 begin
   if ALayout = nil then
     exit;
   QWidget_getContentsMargins(AWidget,@LeftMargin, @TopMargin, @RightMargin, @BottomMargin);
 
-  {if contentsMargins TopMargin is huge then we must rethink about TopMargin
-   size (eg.oxygen theme have 32 top margin while plastique have 19
-   with same font height) }
-  {$IFDEF HASX11}
-  Font := QWidget_font(AWidget);
-  FontMetrics := QFontMetrics_create(Font);
-  try
-    FontHeight := QFontMetrics_height(FontMetrics);
-  finally
-    QFontMetrics_destroy(FontMetrics);
-  end;
-  {currently applies only to wrong TopMargin calculation (eg.gtk style).}
-  if (TopMargin - FontHeight < 2) then
-    TopMargin := FontHeight + 2 // top & bottom +1px
-  else {currently applies only to oxygen & nitrogen theme.}
-  if ((TopMargin - BottomMargin - 2) > FontHeight) then
-  begin
-    {do not touch fusion style !}
-    if QtWidgetSet.StyleName <> 'fusion' then
-    begin
-      TopMargin := TopMargin - BottomMargin - 3;
-      BottomMargin := 0;
-    end;
-  end;
-  {$ENDIF}
-  {if there's no text set margin to bottom margin size. issue #23642}
-  if getText = '' then
+  AStyleMetric := QStyle_pixelMetric(QApplication_style(), QStyleSE_DockWidgetTitleBarText, nil, Widget);
+
+  {issue #37576}
+  {if (AStyle = 'fusion') or (AStyle = 'gtk2') or
+    (AStyle = 'qt5ct-style') then}
+  if AStyleMetric = 0 then
+  else
+  if (getText = '') then
     TopMargin := BottomMargin;
+
   QLayout_setContentsMargins(ALayout, LeftMargin, TopMargin, RightMargin, BottomMargin);
   QLayout_invalidate(ALayout);
 
   if (LCLObject <> nil) and testAttribute(QtWA_Mapped) then
   begin
-    {.$IFDEF VerboseQtResize}
+    {$IFDEF VerboseQtResize}
     DebugLn('TQtGroupBox.setLayoutThemeMargins: ',dbgsName(LCLObject),' casp: ',dbgs(caspComputingBounds in LCLObject.AutoSizePhases),' mapped ',dbgs(testAttribute(QtWA_Mapped)));
-    {.$ENDIF}
+    {$ENDIF}
     LCLObject.DoAdjustClientRectChange(False);
     LCLObject.InvalidateClientRectCache(True);
   end;
@@ -8378,7 +8355,15 @@ var
   L, T, R, B: Integer;
   ASize: TSize;
 begin
-  QWidget_getContentsMargins(Widget,@L, @T, @R, @B);
+  if WithThemeSpace then
+    QWidget_getContentsMargins(Widget,@L, @T, @R, @B)
+  else
+  begin
+    L := 0;
+    T := 0;
+    R := 0;
+    B := 0;
+  end;
   QGroupBox_minimumSizeHint(QGroupBoxH(Widget), @ASize);
   PreferredWidth := ASize.cx + L + R;
   PreferredHeight := ASize.cy + B + T;
