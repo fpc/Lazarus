@@ -68,7 +68,7 @@ const
   cMask_AlphaNum      = 'a'; // an alphanumeric char (['A'..'Z','a..'z','0'..'9']) but not necessary
   cMask_AlphaNumFixed = 'A'; // an alphanumeric char
   cMask_AllChars      = 'c'; // any Utf8 char but not necessary
-  cMask_AllCharsFixed = 'C'; // any Utf8 char #32 - #255
+  cMask_AllCharsFixed = 'C'; // any Utf8 but NOT FSpaceChar
   cMask_Number        = '9'; // only a number but not necessary
   cMask_NumberFixed   = '0'; // only a number
   cMask_NumberPlusMin = '#'; // only a number or + or -, but not necessary
