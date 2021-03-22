@@ -87,7 +87,8 @@ const
 
 type
   { Type for mask (internal) }
-  tMaskedType = (Char_IsLiteral,
+  tMaskedType = (Char_Invalid,
+                 Char_IsLiteral,
                  Char_Number,
                  Char_NumberFixed,
                  Char_NumberPlusMin,
@@ -1029,10 +1030,9 @@ begin
     Char_HexFixedDownCase    : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
     Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',FSpaceChar{#32}]);
     Char_BinaryFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
-
     Char_IsLiteral           : OK := (Ch = FMask[Position].Literal);
-    otherwise
-      Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found unexpected MaskType at index %d with ordinal value %d',[Position, Integer(Current)]);
+    Char_Invalid:
+      Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
   end;//case
   //DebugLn('Position = ',DbgS(Position),' Current = ',MaskCharToChar[Current],' Ch = "',Ch,'" Ok = ',DbgS(Ok));
   Result := Ok;
@@ -1253,8 +1253,8 @@ begin
     Char_HourSeparator        : Result := DefaultFormatSettings.TimeSeparator;
     Char_DateSeparator        : Result := DefaultFormatSettings.DateSeparator;
     Char_IsLiteral            : Result := FMask[Position].Literal;
-    otherwise
-       raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found unexpected MaskType at index %d with ordinal value %d',[Position, Integer(FMask[Position].MaskType)]);
+    Char_Invalid:
+      Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
   end;
 end;
 
@@ -1356,6 +1356,8 @@ Begin
        Char_Binary,
        Char_BinaryFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
        Char_IsLiteral           : Result := False;
+       Char_Invalid:
+         Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
   end;
   //while typing a space is not allowed in these cases, whilst pasting Delphi allows it nevertheless
   if not Result and IsPasting and (Ch = #32) and
