@@ -373,16 +373,11 @@ implementation
 //Define this to prevent validation when the control looses focus
 { $DEFINE MASKEDIT_NOVALIDATEONEXIT}
 
-{$ifdef debug_maskedit}
-// For debugging purposes only
-const
-  MaskCharToChar: array[tMaskedType] of Char = (#0, cMask_Number, cMask_NumberFixed, cMask_NumberPlusMin,
-     cMask_Letter, cMask_LetterFixed, cMask_Letter, cMask_Letter, cMask_LetterFixed, cMask_LetterFixed,
-     cMask_AlphaNum, cMask_AlphaNumFixed, cMask_AlphaNum, cMask_AlphaNum, cMask_AlphaNumFixed, cMask_AlphaNumFixed,
-     cMask_AllChars, cMask_AllCharsFixed, cMask_AllChars, cMask_AllChars, cMask_AllCharsFixed, cMask_AllCharsFixed,
-     cMask_HourSeparator, cMask_DateSeparator, #0);
 
-{$endif}
+function DbgS(AMaskType: TMaskedType): String; overload;
+begin
+  WriteStr(Result, AMaskType);
+end;
 
 const
   Period = '.';
@@ -1034,7 +1029,7 @@ begin
     Char_Invalid:
       Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
   end;//case
-  //DebugLn('Position = ',DbgS(Position),' Current = ',MaskCharToChar[Current],' Ch = "',Ch,'" Ok = ',DbgS(Ok));
+  //DebugLn('Position = ',DbgS(Position),' Current = ',DbgS(Current),' Ch = "',Ch,'" Ok = ',DbgS(Ok));
   Result := Ok;
 end;
 
