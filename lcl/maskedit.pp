@@ -186,7 +186,7 @@ const
 
   TCustomMaskEdit = Class(TCustomEdit)
   private
-    FRealMask        : String;            // Real mask inserted
+    FRealEditMask    : String;            // Real EditMask inserted
     FMask            : TInternalMask;     // Actual internal mask
     FMaskLength      : Integer;           // Length of internal mask
     FFirstFreePos    : Integer;           // First position where user can enter text (it is 1-based)
@@ -215,7 +215,7 @@ const
     procedure AddToMask(AMaskType: TMaskedType);
     function GetModified: Boolean;
     function GetMask(Index: Integer): TIntMaskRec; //use this to read FMask values
-    procedure SetMask(Value : String);
+    procedure SetEditMask(Value : String);
     function  GetIsMasked : Boolean;
     procedure SetModified(AValue: Boolean);
     procedure SetSpaceChar(Value : Char);
@@ -283,7 +283,7 @@ const
     property IsMasked: Boolean read GetIsMasked;
     property SpaceChar: Char read FSpaceChar write SetSpaceChar;
     property MaxLength: Integer read GetMaxLength write SetMaxLength;
-    property EditMask: string read FRealMask write SetMask;
+    property EditMask: string read FRealEditMask write SetEditMask;
     property ValidationErrorMode: TMaskEditValidationErrorMode read FValidationErrorMode write FValidationErrorMode default mvemException; experimental;
   public
     procedure CutToClipBoard; override;
@@ -502,7 +502,7 @@ begin
   FSettingInitialText := False;
   FTextChangedBySetText := False;
   FInRealSetTextWhileMasked := False;
-  FRealMask      := '';
+  FRealEditMask      := '';
   ClearInternalMask(FMask, FMaskLength);
   ClearInternalMask(FSavedMask, FSavedMaskLength);
   FSpaceChar     := '_';
@@ -575,7 +575,7 @@ begin
 end;
 
 // Prepare the real internal Mask
-procedure TCustomMaskEdit.SetMask(Value : String);
+procedure TCustomMaskEdit.SetEditMask(Value : String);
 Var
   S            : ShortString;
   I            : Integer;
@@ -589,15 +589,15 @@ begin
     FInitialMask := Value;
     Exit;
   end;
-  if FRealMask <> Value then
+  if FRealEditMask <> Value then
   begin
-    FRealMask := Value;
+    FRealEditMask := Value;
     FValidationFailed := False;
     FMaskIsPushed := False;
     ClearInternalMask(FMask, FMaskLength);
     ClearInternalMask(FSavedMask, FSavedMaskLength);
 
-    SplitEditMask(FRealMask, Value, FMaskSave, FSpaceChar);
+    SplitEditMask(FRealEditMask, Value, FMaskSave, FSpaceChar);
 
     // Construct Actual Internal Mask
     // init
@@ -1765,7 +1765,7 @@ procedure TCustomMaskEdit.Loaded;
 begin
   inherited Loaded;
   FSettingInitialText := True;
-  if (FInitialMask <> '') then SetMask(FInitialMask);
+  if (FInitialMask <> '') then SetEditMask(FInitialMask);
   if (FInitialText <> '') then SetTextApplyMask(FInitialText);
   FSettingInitialText := False;
 end;
