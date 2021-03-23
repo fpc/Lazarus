@@ -141,7 +141,8 @@ type
 
 const
   SInvalidCodePoint = 'The (hexadecimal) sequence %s is not a valid UTF8 codepoint.';
-  SIndexOutOfRangeForFMask = 'Range check error trying to access FMask[%d]. Index should be between 1 and %d';
+  SIndexOutOfRangeForFMask = 'MaskEdit Internal Error'^m'Range check error trying to access FMask[%d]. Index should be between 1 and %d';
+  SFoundChar_Invalid= 'MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d';
 
 
 { ***********************************************************************************************
@@ -210,10 +211,10 @@ const
     FOnValidationError: TNotifyEvent;
 
     procedure ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
-    procedure CheckRange(Index: Integer);
     procedure AddToMask(ALiteral: TUtf8Char);
     procedure AddToMask(AMaskType: TMaskedType);
     function GetModified: Boolean;
+    function GetMask(Index: Integer): TIntMaskRec; //use this to read FMask values
     procedure SetMask(Value : String);
     function  GetIsMasked : Boolean;
     procedure SetModified(AValue: Boolean);
@@ -526,11 +527,6 @@ begin
   {$POP}
 end;
 
-procedure TCustomMaskEdit.CheckRange(Index: Integer);
-begin
-  if (Index < 1) or (Index > FMaskLength) then
-    raise ERangeError.CreateFmt(SIndexOutOfRangeForFMask,[Index, FMaskLength]);
-end;
 
 procedure TCustomMaskEdit.AddToMask(ALiteral: TUtf8Char);
 begin
@@ -562,6 +558,19 @@ begin
       Result := True
     else
       Result := inherited Modified;
+  end;
+end;
+
+//Do sanity checks when reading FMask
+function TCustomMaskEdit.GetMask(Index: Integer): TIntMaskRec;
+begin
+  Result := FMask[Index];
+  if (Result.MaskType = Char_Invalid) then
+  begin
+    if (Index < 1) or (Index > FMaskLength) then
+      raise ERangeError.CreateFmt(SIndexOutOfRangeForFMask,[Index, FMaskLength])
+    else
+      raise EDBEditError.CreateFmt(SFoundChar_Invalid,[Index]);
   end;
 end;
 
@@ -887,10 +896,9 @@ procedure TCustomMaskEdit.JumpToNextDot(Dot: Char);
     i: Integer;
   begin
     Result := 0;
-    CheckRange(Start);
     for i := Start to FMaskLength do
     begin
-      if (FMask[i].MaskType = Char_IsLiteral) and (FMask[i].Literal = Sub) then
+      if (GetMask(i).MaskType = Char_IsLiteral) and (GetMask(i).Literal = Sub) then
       begin
         Result := i;
         exit;
@@ -960,8 +968,7 @@ end;
 //Return if the index passed contains a literal in FMask (so it cannot be altered)
 function TCustomMaskEdit.IsLiteral(Index: Integer): Boolean;
 begin
-  CheckRange(Index);
-  Result := (FMask[Index].MaskType in [Char_IsLiteral, Char_HourSeparator, Char_DateSeparator]);
+  Result := (GetMask(Index).MaskType in [Char_IsLiteral, Char_HourSeparator, Char_DateSeparator]);
 end;
 
 
@@ -990,8 +997,7 @@ var
   Ok: Boolean;
 begin
   Result := False;
-  CheckRange(Position);
-  Current := FMask[Position].MaskType;
+  Current := GetMask(Position).MaskType;
   case Current Of
     Char_Number              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9',FSpaceChar{#32}]);
     Char_NumberFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9']);
@@ -1025,9 +1031,7 @@ begin
     Char_HexFixedDownCase    : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
     Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',FSpaceChar{#32}]);
     Char_BinaryFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
-    Char_IsLiteral           : OK := (Ch = FMask[Position].Literal);
-    Char_Invalid:
-      Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
+    Char_IsLiteral           : OK := (Ch = FMask[Position].Literal);  // no need to use GetMask() here, since FMask[FPosition] has already been validated
   end;//case
   //DebugLn('Position = ',DbgS(Position),' Current = ',DbgS(Current),' Ch = "',Ch,'" Ok = ',DbgS(Ok));
   Result := Ok;
@@ -1213,8 +1217,7 @@ end;
 function TCustomMaskEdit.ClearChar(Position : Integer) : TUtf8Char;
 begin
   //For Delphi compatibilty, only literals remain, all others will be blanked
-  CheckRange(Position);
-  case FMask[Position].MaskType Of
+  case GetMask(Position).MaskType Of
     Char_Number,
     Char_NumberFixed,
     Char_NumberPlusMin,
@@ -1247,9 +1250,7 @@ begin
     {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
     Char_HourSeparator        : Result := DefaultFormatSettings.TimeSeparator;
     Char_DateSeparator        : Result := DefaultFormatSettings.DateSeparator;
-    Char_IsLiteral            : Result := FMask[Position].Literal;
-    Char_Invalid:
-      Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
+    Char_IsLiteral            : Result := FMask[Position].Literal; //No need to use GetMask, FMask[Position] already has been validated
   end;
 end;
 
@@ -1289,8 +1290,7 @@ Begin
   Result  := False;
   if (Position > FMaskLength) then
     Exit;
-  CheckRange(Position);
-  Current := FMask[Position].MaskType;
+  Current := GetMask(Position).MaskType;
 
   // If in UpCase convert the input char
   if (Current = Char_LetterUpCase     ) Or
@@ -1652,7 +1652,7 @@ Begin
   //FSpaceChar can be used as a literal in the mask, so put it back
   for i := 1 to FMaskLength do
   begin
-    if IsLiteral(i) and (FMask[i].Literal = FSpaceChar) then
+    if IsLiteral(i) and (FMask[i].Literal = FSpaceChar) then   //IsLiteral(i) alrady validates FMask[i], so this is safe
     begin
       SetCodePoint(S, i, FSpaceChar);
     end;
@@ -1686,7 +1686,7 @@ Begin
   //FSpaceChar can be used as a literal in the mask, so put it back
   for i := 1 to FMaskLength do
   begin
-    if IsLiteral(i) and (FMask[i].Literal = FSpaceChar) then
+    if IsLiteral(i) and (FMask[i].Literal = FSpaceChar) then  //IsLiteral(i) already validates FMask[i], so this is safe
     begin
       SetCodePoint(Result, i, FSpaceChar);
     end;
