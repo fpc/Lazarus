@@ -7,6 +7,8 @@ object CodeBrowserView: TCodeBrowserView
   Caption = 'CodeBrowserView'
   ClientHeight = 563
   ClientWidth = 645
+  Constraints.MinHeight = 450
+  Constraints.MinWidth = 520
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
