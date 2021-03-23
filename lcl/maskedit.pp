@@ -521,10 +521,8 @@ end;
 
 procedure TCustomMaskEdit.ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
 begin
-  {$PUSH}{$HINTS OFF}
-  FillChar(AMask, SizeOf(TInternalMask), 0);
+  AMask := Default(TInternalMask);
   ALengthIndicator := 0;
-  {$POP}
 end;
 
 
