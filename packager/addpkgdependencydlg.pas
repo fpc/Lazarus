@@ -155,18 +155,18 @@ var
 begin
   with (Control as TListBox).Canvas do
   begin
+    Pkg := TLazPackageID(DependPkgNameListBox.Items.Objects[Index]);
     if odSelected In State then
     begin
       Pen.Color := clHighlightText;
       Brush.Color := clHighlight;
+      if (Pkg is TPackageLink) and (TPackageLink(Pkg).Origin = ploOnline) then
+        Font.Style := Font.Style + [fsBold]
     end
     else begin
       Pen.Color := (Control as TListBox).Font.Color;
-      Pkg := TLazPackageID(DependPkgNameListBox.Items.Objects[Index]);
       if (Pkg is TPackageLink) and (TPackageLink(Pkg).Origin = ploOnline) then
-        Brush.Color := pnOnlinePkg.Color
-      else
-        Brush.Color := pnLocalPkg.Color
+        Font.Style := Font.Style + [fsBold]
     end;
     FillRect(ARect);
     Txt := (Control as TListBox).Items[Index];

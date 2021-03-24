@@ -160,7 +160,6 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     BevelOuter = bvNone
     ClientHeight = 22
     ClientWidth = 60
-    Color = 15138790
     ParentColor = False
     TabOrder = 1
     object cbLocalPkg: TCheckBox
@@ -192,7 +191,6 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     BevelOuter = bvNone
     ClientHeight = 22
     ClientWidth = 69
-    Color = 14017529
     ParentColor = False
     TabOrder = 2
     object cbOnlinePkg: TCheckBox
