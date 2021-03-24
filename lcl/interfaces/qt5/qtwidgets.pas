@@ -787,7 +787,6 @@ type
     function CanPaintBackground: Boolean; override;
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl; override;
     function getClientBounds: TRect; override;
-    function getClientOffset: TPoint; override;
     function getText: WideString; override;
     procedure preferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
@@ -8282,15 +8281,6 @@ begin
     else
       Result := inherited EventFilter(Sender, Event);
   end;
-end;
-
-function TQtGroupBox.getClientOffset: TPoint;
-begin
-  Result:=inherited getClientOffset;
-  // issue #28155
-  // there's no client offset since FCentralWidget is at it's position 0,0
-  if testAttribute(QtWA_Mapped) and QWidget_testAttribute(FCentralWidget, QtWA_Mapped) then
-    Result := Point(0, 0);
 end;
 
 function TQtGroupBox.getClientBounds: TRect;
