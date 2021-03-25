@@ -12607,23 +12607,19 @@ function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  ShortUnitName: String;
-  OkToAdd: boolean;
 begin
   Result:=mrOk;
   AnUnitInfo.IsPartOfProject:=true;
   //debugln(['TMainIDE.ProjInspectorAddUnitToProject ',AnUnitInfo.Filename]);
   ActiveSourceEditor:=nil;
   BeginCodeTool(ActiveSourceEditor,ActiveUnitInfo,[]);
-  OkToAdd:=True;
   if FilenameHasPascalExt(AnUnitInfo.Filename) then begin
-    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,False);
+    CheckDirIsInSearchPath(AnUnitInfo,False);
     if (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags) then begin
       AnUnitInfo.ReadUnitNameFromSource(false);
-      ShortUnitName:=AnUnitInfo.Unit_Name;
-      if (ShortUnitName<>'') then begin
+      if (AnUnitInfo.Unit_Name<>'') then begin
         if CodeToolBoss.AddUnitToMainUsesSectionIfNeeded(
-                       Project1.MainUnitInfo.Source,ShortUnitName,'') then begin
+               Project1.MainUnitInfo.Source, AnUnitInfo.Unit_Name, '') then begin
           ApplyCodeToolChanges;
           Project1.MainUnitInfo.Modified:=true;
         end else begin
@@ -12634,9 +12630,7 @@ begin
     end;
   end
   else if FilenameExtIs(AnUnitInfo.Filename,'inc') then
-    OkToAdd:=CheckDirIsInSearchPath(AnUnitInfo,True);
-  if OkToAdd then
-    ;
+    CheckDirIsInSearchPath(AnUnitInfo,True);
   Project1.Modified:=true;
 end;
 

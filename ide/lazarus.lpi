@@ -941,6 +941,7 @@
         <Filename Value="projectinspector.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="ProjectInspector"/>
       </Unit145>
       <Unit146>
         <Filename Value="diskdiffsdialog.pas"/>
@@ -983,6 +984,7 @@
         <Filename Value="buildmodesmanager.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="BuildModesManager"/>
       </Unit153>
       <Unit154>
         <Filename Value="codetoolsdefpreview.pas"/>
@@ -1231,6 +1233,7 @@
       <Unit201>
         <Filename Value="ideoptiondefs.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="IDEOptionDefs"/>
       </Unit201>
       <Unit202>
         <Filename Value="sourceeditprocs.pas"/>
