@@ -216,8 +216,8 @@ function FindSourceFileImpl(const AFilename, BaseDirectory: string;
                             Flags: TFindSourceFlags): string;
 function FindUnitsOfOwnerImpl(TheOwner: TObject; Flags: TFindUnitsOfOwnerFlags): TStrings;
 // project
-function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
 function AddActiveUnitToProject: TModalResult;
+function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
 function RemoveFromProjectDialog: TModalResult;
 function InitNewProject(ProjectDesc: TProjectDescriptor): TModalResult;
 function InitOpenedProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
@@ -1753,17 +1753,21 @@ begin
   MainIDE.SaveEnvironment;
 end;
 
+function AddActiveUnitToProject: TModalResult;
+begin
+  Result := AddUnitToProject(nil);
+end;
+
 function AddUnitToProject(const AEditor: TSourceEditorInterface): TModalResult;
 var
   ActiveSourceEditor: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  s, ShortUnitName, LFMFilename, LFMType, LFMComponentName, LFMClassName: string;
+  s, ShortUnitName: string;
   OkToAdd, IsPascal: boolean;
   Owners: TFPList;
   i: Integer;
   APackage: TLazPackage;
   MsgResult: TModalResult;
-  LFMCode: TCodeBuffer;
 begin
   Result:=mrCancel;
   if AEditor<>nil then
@@ -1864,28 +1868,7 @@ begin
 
   if Project1.AutoCreateForms and IsPascal
   and (pfMainUnitHasCreateFormStatements in Project1.Flags) then
-  begin
     UpdateUnitInfoResourceBaseClass(ActiveUnitInfo,true);
-    if ActiveUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcCustomForm,pfcbcDataModule] then
-    begin
-      LFMFilename:=ActiveUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(ActiveUnitInfo.Filename,true);
-      if LoadCodeBuffer(LFMCode,LFMFilename,[lbfUpdateFromDisk],false)=mrOk then
-      begin
-        // read lfm header
-        ReadLFMHeader(LFMCode.Source,LFMType,LFMComponentName,LFMClassName);
-        if (LFMComponentName<>'')
-        and (LFMClassName<>'') then begin
-          if IDEMessageDialog(lisAddToStartupComponents,
-            Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS, [
-              LFMComponentName]),
-            mtInformation,[mbYes,mbNo])=mrYes then
-          begin
-            Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
-          end;
-        end;
-      end;
-    end;
-  end;
 end;
 
 procedure UpdateSourceNames;
@@ -3530,11 +3513,6 @@ begin
     Owners.Free;
     UnitToFilename.Free;
   end;
-end;
-
-function AddActiveUnitToProject: TModalResult;
-begin
-  Result := AddUnitToProject(nil);
 end;
 
 function RemoveFromProjectDialog: TModalResult;

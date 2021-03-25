@@ -981,9 +981,9 @@ type
     function UpdateIsPartOfProjectFromMainUnit: TModalResult;
 
     // Application.CreateForm statements
-    function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
+    function AddCreateFormToProjectFile(const AClassName, AName:string): boolean;
     function RemoveCreateFormFromProjectFile(const AName: string): boolean;
-    function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
+    function FormIsCreatedInProjectFile(const AClassname, AName:string): boolean;
     function GetAutoCreatedFormsList: TStrings;
     property TmpAutoCreatedForms: TStrings read FTmpAutoCreatedForms write FTmpAutoCreatedForms;
 
@@ -4072,16 +4072,11 @@ begin
   until ProjectUnitWithShortFilename(Result)=nil;
 end;
 
-function TProject.AddCreateFormToProjectFile(const AClassName, AName: string):boolean;
+function TProject.AddCreateFormToProjectFile(const AClassName, AName: string): boolean;
 begin
-  if (pfMainUnitHasCreateFormStatements in Project1.Flags) then begin
-    Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,AClassName,AName);
-    if Result then begin
-      MainUnitInfo.Modified:=true;
-    end;
-  end else begin
-    Result:=false;
-  end;
+  Result:=CodeToolBoss.AddCreateFormStatement(MainUnitInfo.Source,AClassName,AName);
+  if Result then
+    MainUnitInfo.Modified:=true;
 end;
 
 function TProject.RemoveCreateFormFromProjectFile(const AName:string):boolean;
@@ -4091,7 +4086,7 @@ begin
     MainUnitInfo.Modified:=true;
 end;
 
-function TProject.FormIsCreatedInProjectFile(const AClassname,AName:string):boolean;
+function TProject.FormIsCreatedInProjectFile(const AClassname,AName:string): boolean;
 var p: integer;
 begin
   Result:=(CodeToolBoss.FindCreateFormStatement(MainUnitInfo.Source,

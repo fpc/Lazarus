@@ -289,7 +289,7 @@ implementation
 
 function UpdateUnitInfoResourceBaseClass(AnUnitInfo: TUnitInfo; Quiet: boolean): boolean;
 var
-  LFMFilename, LFMClassName, LFMType, Ancestor, LFMComponentName: String;
+  LFMFilename, LFMType, Ancestor, LFMClassName, LFMComponentName: String;
   LFMCode, Code: TCodeBuffer;
   LoadFileFlags: TLoadBufferFlags;
   ClearOldInfo: Boolean;
@@ -354,7 +354,7 @@ begin
       if Node=nil then
         exit(Tool.FindImplementationNode<>nil); // class not found, reliable if whole interface was read
 
-      if (Node=nil) or (Node.Desc<>ctnTypeDefinition)
+      if (Node.Desc<>ctnTypeDefinition)
       or (Node.FirstChild=nil) or (Node.FirstChild.Desc<>ctnClass) then
         exit(true); // this is not a class
       Tool.FindClassAndAncestors(Node.FirstChild,ListOfPFindContext,false);
@@ -366,22 +366,41 @@ begin
         Ancestor:=UpperCase(Context^.Tool.ExtractClassName(Context^.Node,false));
         if (Ancestor='TFORM') then begin
           AnUnitInfo.ResourceBaseClass:=pfcbcForm;
-          exit(true);
+          Result:=true;
+          Break;
         end else if (Ancestor='TCUSTOMFORM') then begin
           AnUnitInfo.ResourceBaseClass:=pfcbcCustomForm;
-          exit(true);
+          Result:=true;
+          Break;
         end else if Ancestor='TDATAMODULE' then begin
           AnUnitInfo.ResourceBaseClass:=pfcbcDataModule;
-          exit(true);
+          Result:=true;
+          Break;
         end else if (Ancestor='TFRAME') or (Ancestor='TCUSTOMFRAME') then begin
           AnUnitInfo.ResourceBaseClass:=pfcbcFrame;
-          exit(true);
-        end else if Ancestor='TCOMPONENT' then
-          exit(true);
+          Result:=true;
+          Break;
+        end else if Ancestor='TCOMPONENT' then begin
+          Result:=true;
+          Break;
+        end;
       end;
     except
       exit; // syntax error or unit not found
     end;
+    if not Result then exit;
+
+    // Maybe auto-create it
+    //   (pfMainUnitHasCreateFormStatements in Project1.Flags)
+    //   and Project1.AutoCreateForms are checked by caller.
+    if (AnUnitInfo.ResourceBaseClass in [pfcbcForm,pfcbcCustomForm,pfcbcDataModule])
+    and (LFMComponentName<>'')
+    and (IDEMessageDialog(lisAddToStartupComponents,
+                          Format(lisShouldTheComponentBeAutoCreatedWhenTheApplicationS,
+                                 [LFMComponentName]),
+                          mtInformation,[mbYes,mbNo])=mrYes)
+    then
+      Project1.AddCreateFormToProjectFile(LFMClassName,LFMComponentName);
   finally
     FreeListOfPFindContext(ListOfPFindContext);
   end;
