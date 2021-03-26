@@ -166,9 +166,15 @@ type
   protected
     class procedure WSRegisterClass; override;
     class function GetControlClassDefaultSize: TSize; override;
+
+    procedure UpdateOpaque;
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetParentBackground(const AParentBackground: Boolean); override;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
+
+    property ParentBackground default True;
   end;
 
 
@@ -194,6 +200,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
+    property ParentBackground;
     property ParentBidiMode;
     property ParentColor;
     property ParentDoubleBuffered;

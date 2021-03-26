@@ -20,6 +20,21 @@ begin
   Result.CY := 105;
 end;
 
+procedure TCustomGroupBox.SetParentBackground(const AParentBackground: Boolean);
+begin
+  inherited SetParentBackground(AParentBackground);
+
+  UpdateOpaque;
+end;
+
+procedure TCustomGroupBox.UpdateOpaque;
+begin
+  if ParentBackground then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
+end;
+
 procedure TCustomGroupBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -33,9 +48,18 @@ constructor TCustomGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csGroupBox;
-  ControlStyle := ControlStyle + [csAcceptsControls];
+  ControlStyle := ControlStyle + [csAcceptsControls, csParentBackground];
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);
+end;
+
+procedure TCustomGroupBox.CMParentColorChanged(var Message: TLMessage);
+begin
+  inherited;
+
+  if csLoading in ComponentState then Exit;
+
+  UpdateOpaque;
 end;
 
 // included by stdctrls.pp
