@@ -135,7 +135,9 @@ type
   PGDBMITargetInfo = ^TGDBMITargetInfo;
 
   TConvertToGDBPathType = (cgptNone, cgptCurDir, cgptExeName);
+  TCharsetToGDBType = (cctEnv, cctExeArgs, cctExeFileName, cctCurDirPath, cctUnknown);
 
+  TGDBMIDebuggerCharsetEncoding = (gdceDefault, gdceLocale, gdceUtf8);
   TGDBMIDebuggerFilenameEncoding = (
     gdfeNone, gdfeDefault, gdfeEscSpace, gdfeQuote
   );
@@ -198,6 +200,10 @@ type
 
   TGDBMIDebuggerPropertiesBase = class(TCommonDebuggerProperties)
   private
+    FEncodingForEnvironment: TGDBMIDebuggerCharsetEncoding;
+    FEncodingForExeArgs: TGDBMIDebuggerCharsetEncoding;
+    FEncodingForExeFileName: TGDBMIDebuggerCharsetEncoding;
+    FEncodingForCurrentDirPath: TGDBMIDebuggerCharsetEncoding;
     FEventProperties: TGDBMIDebuggerGdbEventPropertiesBase;
     FAssemblerStyle: TGDBMIDebuggerAssemblerStyle;
     FCaseSensitivity: TGDBMIDebuggerCaseSensitivity;
@@ -258,6 +264,14 @@ type
              read FEncodeCurrentDirPath write FEncodeCurrentDirPath default gdfeDefault;
     property EncodeExeFileName: TGDBMIDebuggerFilenameEncoding
              read FEncodeExeFileName write FEncodeExeFileName default gdfeDefault;
+    property EncodingForEnvironment: TGDBMIDebuggerCharsetEncoding
+             read FEncodingForEnvironment write FEncodingForEnvironment default gdceDefault;
+    property EncodingForExeArgs: TGDBMIDebuggerCharsetEncoding
+             read FEncodingForExeArgs write FEncodingForExeArgs default gdceDefault;
+    property EncodingForExeFileName: TGDBMIDebuggerCharsetEncoding
+             read FEncodingForExeFileName write FEncodingForExeFileName default gdceDefault;
+    property EncodingForCurrentDirPath: TGDBMIDebuggerCharsetEncoding
+             read FEncodingForCurrentDirPath write FEncodingForCurrentDirPath default gdceDefault;
     property InternalStartBreak: TGDBMIDebuggerStartBreak
              read FInternalStartBreak write FInternalStartBreak default gdsbDefault;
     property UseAsyncCommandMode: Boolean read FUseAsyncCommandMode write FUseAsyncCommandMode;
@@ -932,9 +946,11 @@ type
     // GDB info (move to ?)
     FGDBVersion: String;
     FGDBVersionMajor, FGDBVersionMinor, FGDBVersionRev: Integer;
+    FGDBFullTarget: String;
     FGDBCPU: String;
     FGDBPtrSize: integer; // PointerSize of the GDB-cpu
     FGDBOS: String;
+    FIsCygWin: Boolean;
 
     // Target info (move to record ?)
     FTargetInfo: TGDBMITargetInfo;
@@ -1005,6 +1021,7 @@ type
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 
     function ConvertToGDBPath(APath: string; ConvType: TConvertToGDBPathType = cgptNone): string;
+    function EncodeCharsetForGDB(AString: string; ConvType: TCharsetToGDBType): string;
     function  ChangeFileName: Boolean; override;
     function  CreateBreakPoints: TDBGBreakPoints; override;
     function  CreateLocals: TLocalsSupplier; override;
@@ -3365,9 +3382,16 @@ function TGDBMIDebuggerBase.ConvertToGDBPath(APath: string; ConvType: TConvertTo
 var
   esc: TGDBMIDebuggerFilenameEncoding;
 begin
-  Result := UTF8ToWinCP(APath);
   // no need to process empty filename
   if Result = '' then exit;
+
+  case ConvType of
+    cgptNone:    Result := EncodeCharsetForGDB(APath, cctUnknown);
+    cgptCurDir:  Result := EncodeCharsetForGDB(APath, cctCurDirPath);
+    cgptExeName: Result := EncodeCharsetForGDB(APath, cctExeArgs);
+    else         Result := EncodeCharsetForGDB(APath, cctUnknown);
+  end;
+
 
   case ConvType of
     cgptNone: esc := gdfeNone;
@@ -3410,6 +3434,37 @@ begin
   if esc = gdfeQuote
   then Result := '\"' + Result + '\"';
   Result := '"' + Result + '"';
+end;
+
+function TGDBMIDebuggerBase.EncodeCharsetForGDB(AString: string;
+  ConvType: TCharsetToGDBType): string;
+var
+  ct: TGDBMIDebuggerCharsetEncoding;
+begin
+  ct := gdceDefault;
+  case ConvType of
+    cctEnv:         ct := TGDBMIDebuggerPropertiesBase(GetProperties).EncodingForEnvironment;
+    cctExeArgs:     ct := TGDBMIDebuggerPropertiesBase(GetProperties).EncodingForExeArgs;
+    cctExeFileName: ct := TGDBMIDebuggerPropertiesBase(GetProperties).EncodingForExeFileName;
+    cctCurDirPath:  ct := TGDBMIDebuggerPropertiesBase(GetProperties).EncodingForCurrentDirPath;
+  end;
+
+  if ct = gdceDefault then begin
+    {$IFDEF WINDOWS}
+    if FIsCygWin then
+      ct := gdceUtf8
+    else
+      ct := gdceLocale;
+    {$ELSE}
+    ct := gdceUtf8;
+    {$ENDIF}
+  end;
+
+  case ct of
+    gdceDefault: Result := AString;
+    gdceLocale:  Result := UTF8ToWinCP(AString);
+    gdceUtf8:    Result := AString;
+  end;
 end;
 
 { TGDBMIDebuggerCommandChangeFilename }
@@ -3485,6 +3540,32 @@ function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
     FTheDebugger.FGDBVersionRev := StrToIntDef(copy(s,1,i-1), -1);
   end;
 
+  procedure ParseTarget;
+  var
+    S, S2: String;
+  begin
+    S := FTheDebugger.FGDBFullTarget;
+    S2 := GetPart('', '-', S);
+    if (S2 <> '') and
+       ( (strlicomp(PChar(S2), 'mingw', 5) = 0) or
+         (strlicomp(PChar(S2), 'w32-mingw', 9) = 0) or
+         (strlicomp(PChar(S2), 'w64-mingw', 9) = 0) or
+         (strlicomp(PChar(S2), 'cygwin', 6) = 0) or
+         (strlicomp(PChar(S2), 'pc-cygwin', 9) = 0)
+       )
+    then begin
+      FTheDebugger.FGDBOS := S2;
+      exit;
+    end;
+
+    FTheDebugger.FGDBCPU := S2;
+
+    //GetPart('-', '-', S); // TODO strip vendor
+    if (S <> '') and (S[1] = '-') then
+      Delete(S, 1, 1);
+    FTheDebugger.FGDBOS := S; // GetPart(['-'], ['-', ''], S);
+  end;
+
   function ParseGDBVersionMI: Boolean;
   var
     R: TGDBMIExecResult;
@@ -3498,11 +3579,8 @@ function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
     List := TGDBMINameValueList.Create(R);
 
     FTheDebugger.FGDBVersion := List.Values['version'];
-    S := List.Values['target'];
-
-    FTheDebugger.FGDBCPU := GetPart('', '-', S);
-    GetPart('-', '-', S); // strip vendor
-    FTheDebugger.FGDBOS := GetPart(['-'], ['-', ''], S);
+    FTheDebugger.FGDBFullTarget := List.Values['target'];
+    ParseTarget;
 
     List.Free;
 
@@ -3510,12 +3588,17 @@ function TGDBMIDebuggerCommandInitDebugger.DoExecute: Boolean;
     then exit;
 
     // maybe a none MI result
-    S := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
-    if Pos('--target=', S) <> 0 then
-      S := GetPart('--target=', '', S);
-    FTheDebugger.FGDBCPU := GetPart('', '-', S);
-    GetPart('-', '-', S); // strip vendor
-    FTheDebugger.FGDBOS := GetPart('-', '-', S);
+    FTheDebugger.FGDBFullTarget := GetPart(['configured as \"'], ['\"'], R.Values, False, False);
+    if Pos('--target=', FTheDebugger.FGDBFullTarget) <> 0 then
+      FTheDebugger.FGDBFullTarget := GetPart('--target=', '', S);
+    ParseTarget;
+
+
+    FTheDebugger.FGDBVersion := GetPart(['GNU gdb (GDB)'], [#10, #13], R.Values, False, False);
+    if StoreGdbVersionAsNumber then Exit;
+
+    FTheDebugger.FGDBVersion := GetPart(['GNU gdb '], [#10, #13], R.Values, False, False);
+    if StoreGdbVersionAsNumber then Exit;
 
     FTheDebugger.FGDBVersion := GetPart(['('], [')'], R.Values, False, False);
     if StoreGdbVersionAsNumber then Exit;
@@ -3554,6 +3637,11 @@ begin
   ExecuteCommand('set width 50000', []);
 
   ParseGDBVersionMI;
+  {$IFDEF WINDOWS}
+  FTheDebugger.FIsCygWin := PosI('cygwin', FTheDebugger.FGDBFullTarget) > 0;
+  {$ELSE}
+  FTheDebugger.FIsCygWin := False;
+  {$ENDIF}
   DoSetInternalError;
 
   FTheDebugger.FAsyncModeEnabled := False;
@@ -5191,6 +5279,16 @@ begin
                    [ClassName, FStartAddr, FEndAddr, FLinesBefore, FLinesAfter]);
 end;
 
+function RemoveLineBreaks(AInput: string): string;
+(* Linebreaks can not be passed to gdb.
+   So next best thing => pass spaces / act as separator
+ *)
+begin
+  Result := StringReplace(AInput, LineEnding, ' ', [rfReplaceAll]);
+  Result := StringReplace(Result, #10, ' ', [rfReplaceAll]);
+  Result := StringReplace(Result, #13, ' ', [rfReplaceAll]);
+end;
+
 { TGDBMIDebuggerCommandStartDebugging }
 
 function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
@@ -5645,7 +5743,8 @@ begin
 
     // also call execute -exec-arguments if there are no arguments in this run
     // so the possible arguments of a previous run are cleared
-    ExecuteCommand('-exec-arguments %s', [UTF8ToWinCP(FTheDebugger.Arguments)], [cfCheckState]);
+    ExecuteCommand('-exec-arguments %s',
+      [FTheDebugger.EncodeCharsetForGDB(RemoveLineBreaks(FTheDebugger.Arguments), cctExeArgs)], [cfCheckState]);
 
     {$IF defined(UNIX) or defined(DBG_ENABLE_TERMINAL)}
     InitConsole;
@@ -8318,6 +8417,10 @@ begin
   FWarnOnInternalError := TGDBMIDebuggerShowWarning.OncePerRun;
   FEncodeCurrentDirPath := gdfeDefault;
   FEncodeExeFileName := gdfeDefault;
+  FEncodingForEnvironment := gdceDefault;
+  FEncodingForExeArgs := gdceDefault;
+  FEncodingForExeFileName := gdceDefault;
+  FEncodingForCurrentDirPath := gdceDefault;
   FInternalStartBreak := gdsbDefault;
   FUseAsyncCommandMode := False;
   FDisableLoadSymbolsForLibraries := False;
@@ -8360,6 +8463,10 @@ begin
     FWarnOnInternalError  := TGDBMIDebuggerPropertiesBase(Source).FWarnOnInternalError;
     FEncodeCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodeCurrentDirPath;
     FEncodeExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodeExeFileName;
+    FEncodingForEnvironment := TGDBMIDebuggerPropertiesBase(Source).FEncodingForEnvironment;
+    FEncodingForExeArgs := TGDBMIDebuggerPropertiesBase(Source).FEncodingForExeArgs;
+    FEncodingForExeFileName := TGDBMIDebuggerPropertiesBase(Source).FEncodingForExeFileName;
+    FEncodingForCurrentDirPath := TGDBMIDebuggerPropertiesBase(Source).FEncodingForCurrentDirPath;
     FInternalStartBreak := TGDBMIDebuggerPropertiesBase(Source).FInternalStartBreak;
     FUseAsyncCommandMode := TGDBMIDebuggerPropertiesBase(Source).FUseAsyncCommandMode;
     FDisableLoadSymbolsForLibraries := TGDBMIDebuggerPropertiesBase(Source).FDisableLoadSymbolsForLibraries;
@@ -9341,38 +9448,6 @@ begin
   Result := 0;
 end;
 
-function EscapeGDBCommand(const AInput: string): string;
-var
-  lPiece: string;
-  I, lPos, len: integer;
-begin
-  lPos := 1;
-  Result := '';
-  repeat
-    I := PosSetEx(#9#10#13, AInput, lPos);
-    { copy unmatched characters }
-    if I > 0 then
-      len := I-lPos
-    else
-      len := Length(AInput)+1-lPos;
-    Result := Result + Copy(AInput, lPos, len);
-    { replace a matched character or be done }
-    if I > 0 then
-    begin
-      case AInput[I] of
-        #9:  lPiece := '\t';
-        #10: lPiece := '\n';
-        #13: lPiece := '\r';
-      else
-        lPiece := '';
-      end;
-      Result := Result + lPiece;
-      lPos := I+1;
-    end else
-      exit;
-  until false;
-end;
-
 function TGDBMIDebuggerBase.GDBDisassemble(AAddr: TDbgPtr; ABackward: Boolean;
   out ANextAddr: TDbgPtr; out ADump, AStatement, AFile: String; out ALine: Integer): Boolean;
 var
@@ -9432,12 +9507,12 @@ begin
 
   if State = dsRun
   then GDBPause(True, True);
+
+  S := EncodeCharsetForGDB(RemoveLineBreaks(AVariable), cctEnv);
   if ASet then
   begin
-    S := EscapeGDBCommand(AVariable);
     ExecuteCommand('-gdb-set env %s', [S], [cfscIgnoreState, cfNoThreadContext]);
   end else begin
-    S := AVariable;
     ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfscIgnoreState, cfNoThreadContext]);
   end;
 end;
