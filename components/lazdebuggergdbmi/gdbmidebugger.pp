@@ -1020,6 +1020,7 @@ type
     procedure QueueCommand(const ACommand: TGDBMIDebuggerCommand; ForceQueue: Boolean = False);
     procedure UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 
+    function ConvertPathFromGdbToLaz(APath: string; UnEscapeBackslash: Boolean = True): string;
     function ConvertToGDBPath(APath: string; ConvType: TConvertToGDBPathType = cgptNone): string;
     function EncodeCharsetForGDB(AString: string; ConvType: TCharsetToGDBType): string;
     function  ChangeFileName: Boolean; override;
@@ -1595,6 +1596,7 @@ type
 
   TGDBMIDisassembleResultList = class(TGDBMINameValueBasedList)
   private
+    FDbg: TGDBMIDebuggerBase;
     FCount: Integer;
     FHasSourceInfo: Boolean;
     FItems: array of record
@@ -1621,7 +1623,8 @@ type
     function SortByAddress: Boolean;
   public
     // only valid as long a src object exists, and not modified
-    constructor CreateSubList(ASource: TGDBMIDisassembleResultList; AStartIdx, ACount: Integer);
+    constructor Create(AResult: TGDBMIExecResult; ADbg: TGDBMIDebuggerBase);
+    constructor CreateSubList(ASource: TGDBMIDisassembleResultList; AStartIdx, ACount: Integer; ADbg: TGDBMIDebuggerBase);
     procedure   InitSubList(ASource: TGDBMIDisassembleResultList; AStartIdx, ACount: Integer);
   end;
 
@@ -1644,7 +1647,7 @@ type
                        ALastSubListEndAddr: TDBGPtr;
                        AnAddressToLocate, AnAddForLineAfterCounter: TDBGPtr);
     function EOL: Boolean;
-    function NextSubList(var AResultList: TGDBMIDisassembleResultList): Boolean;
+    function NextSubList(var AResultList: TGDBMIDisassembleResultList; ADbg: TGDBMIDebuggerBase): Boolean;
 
     // Current SubList
     function IsFirstSubList: Boolean;
@@ -3912,8 +3915,8 @@ begin
       EList.SetPath('frame');
       addr := StrToQWordDef(EList.Values['addr'], 0);
       func := EList.Values['func'];
-      filename := ConvertGdbPathAndFile(EList.Values['file']);
-      fullname := ConvertGdbPathAndFile(EList.Values['fullname']);
+      filename := FTheDebugger.ConvertPathFromGdbToLaz(EList.Values['file']);
+      fullname := FTheDebugger.ConvertPathFromGdbToLaz(EList.Values['fullname']);
       line := StrToIntDef(EList.Values['line'], 0);
 
       EList.SetPath('args');
@@ -4103,10 +4106,19 @@ begin
   HasItemPointerList := True;
 end;
 
-constructor TGDBMIDisassembleResultList.CreateSubList(ASource: TGDBMIDisassembleResultList;
-  AStartIdx, ACount: Integer);
+constructor TGDBMIDisassembleResultList.Create(AResult: TGDBMIExecResult;
+  ADbg: TGDBMIDebuggerBase);
 begin
-  Create;
+  FDbg := ADbg;
+  inherited Create(AResult);
+end;
+
+constructor TGDBMIDisassembleResultList.CreateSubList(
+  ASource: TGDBMIDisassembleResultList; AStartIdx, ACount: Integer;
+  ADbg: TGDBMIDebuggerBase);
+begin
+  FDbg := ADbg;
+  inherited Create();
   InitSubList(ASource, AStartIdx, ACount);
 end;
 
@@ -4141,7 +4153,7 @@ begin
   then exit;
   AsmList := TGDBMINameValueList.Create(FItems[Index].AsmEntry);
 
-  FItems[Index].ParsedInfo.SrcFileName := ConvertGdbPathAndFile(PCLenToString(FItems[Index].SrcFile, True));
+  FItems[Index].ParsedInfo.SrcFileName := FDbg.ConvertPathFromGdbToLaz(PCLenToString(FItems[Index].SrcFile, True));
   FItems[Index].ParsedInfo.SrcFileLine := PCLenToInt(FItems[Index].SrcLine, 0);
   // SrcStatementIndex, SrcStatementCount are already set
 
@@ -4212,8 +4224,9 @@ begin
   Result := FStartIdx > FMaxIdx ;
 end;
 
-function TGDBMIDisassembleResultFunctionIterator.NextSubList
-  (var AResultList: TGDBMIDisassembleResultList): Boolean;
+function TGDBMIDisassembleResultFunctionIterator.NextSubList(
+  var AResultList: TGDBMIDisassembleResultList; ADbg: TGDBMIDebuggerBase
+  ): Boolean;
 var
   WasBeforeStart: Boolean;
   HasPrcName: Boolean;
@@ -4274,7 +4287,7 @@ begin
   end;
 
   if AResultList = nil
-  then AResultList := TGDBMIDisassembleResultList.CreateSubList(FList, FStartIdx, NextIdx - FStartIdx)
+  then AResultList := TGDBMIDisassembleResultList.CreateSubList(FList, FStartIdx, NextIdx - FStartIdx, ADbg)
   else AResultList.InitSubList(FList, FStartIdx, NextIdx - FStartIdx);
   FStartIdx := NextIdx;
 
@@ -4566,7 +4579,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     ExecuteCommand('-data-disassemble -s %u -e %u -- %d', [AStartAddr, AnEndAddr, WS], R);
     if Result <> nil
     then Result.Init(R)
-    else Result := TGDBMIDisassembleResultList.Create(R);
+    else Result := TGDBMIDisassembleResultList.Create(R, FTheDebugger);
     if ACutBeforeEndAddr and Result.HasSourceInfo
     then Result.SortByAddress;
     while ACutBeforeEndAddr and (Result.Count > 0) and (Result.LastItem^.Addr >= AnEndAddr)
@@ -4853,7 +4866,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
         // add without source
         while not DisAssIterator.EOL
         do begin
-          DisAssIterator.NextSubList(DisAssListCurrentSub);
+          DisAssIterator.NextSubList(DisAssListCurrentSub, FTheDebugger);
           // ignore StopAfterNumLines, until we have at least the source;
 
           if (not DisAssIterator.IsFirstSubList) and (DisAssListCurrentSub.Item[0]^.Offset <> 0)
@@ -4975,7 +4988,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
       while not DisAssIterator.EOL
       do begin
         if (dcsCanceled in SeenStates) then break;
-        DisAssIterator.NextSubList(DisAssListCurrentSub);
+        DisAssIterator.NextSubList(DisAssListCurrentSub, FTheDebugger);
         CopyToRange(DisAssListCurrentSub, NewRange, 0, DisAssListCurrentSub.Count); // Do not add the Sourcelist as last param, or it will get re-sorted
 
         // check for gap
@@ -5082,7 +5095,7 @@ function TGDBMIDebuggerCommandDisassemble.DoExecute: Boolean;
     while not DisAssIterator.EOL
     do begin
       if (dcsCanceled in SeenStates) then break;
-      BlockOk := DisAssIterator.NextSubList(DisAssListCurrentSub);
+      BlockOk := DisAssIterator.NextSubList(DisAssListCurrentSub, FTheDebugger);
 
       // Do we have enough lines (without the current block)?
       if (DisAssIterator.CountLinesAfterCounterAddr > StopAfterNumLines)
@@ -5497,9 +5510,9 @@ function TGDBMIDebuggerCommandStartDebugging.DoExecute: Boolean;
         StoppedAtEntryPoint := Result = FTheDebugger.FMainAddrBreak.BreakId[iblCustomAddr];
         List.SetPath('frame');
         StoppedAddr := StrToInt64Def(List.Values['addr'], -1);
-        StoppedFile := List.Values['fullname'];
+        StoppedFile := FTheDebugger.ConvertPathFromGdbToLaz(List.Values['fullname']);
         if StoppedFile = '' then
-          StoppedFile := List.Values['file'];
+          StoppedFile := FTheDebugger.ConvertPathFromGdbToLaz(List.Values['file']);
         StoppedLine := List.Values['line'];
       end;
     except
@@ -6210,7 +6223,7 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
         if ExecuteCommand('info line *%s', [S], R)
         then begin
             Result.SrcLine := StrToIntDef(GetPart('Line ', ' of', R.Values), -1);
-            Result.SrcFile := ConvertGdbPathAndFile(GetPart('\"', '\"', R.Values));
+            Result.SrcFile := FTheDebugger.ConvertPathFromGdbToLaz(GetPart('\"', '\"', R.Values));
         end;
       end;
 
@@ -7515,7 +7528,7 @@ var
     then
       exit;
 
-    DisAsm := TGDBMIDisassembleResultList.Create(R);
+    DisAsm := TGDBMIDisassembleResultList.Create(R, FTheDebugger);
     try
       if (FExecType in [ectStepOver, ectStepInto, ectStepOut]) and
          IsSehFinallyFuncName(DisAsm.Item[0]^.FuncName)
@@ -7899,8 +7912,8 @@ var
       Val(AFrameInfo.Values['addr'], addr, e);
       if e=0 then ;
       func := AFrameInfo.Values['func'];
-      filename := ConvertGdbPathAndFile(AFrameInfo.Values['file']);
-      fullname := ConvertGdbPathAndFile(AFrameInfo.Values['fullname']);
+      filename := FTheDebugger.ConvertPathFromGdbToLaz(AFrameInfo.Values['file']);
+      fullname := FTheDebugger.ConvertPathFromGdbToLaz(AFrameInfo.Values['fullname']);
       line := AFrameInfo.Values['line'];
     end;
 
@@ -8993,7 +9006,7 @@ begin
   // input: =library-loaded,id="C:\\Windows\\system32\\ntdll.dll",target-name="C:\\Windows\\system32\\ntdll.dll",host-name="C:\\Windows\\system32\\ntdll.dll",symbols-loaded="0",thread-group="i1"
   List := TGDBMINameValueList.Create(S);
   ThreadGroup := List.Values['thread-group'];
-  Result := Format('Module Load: "%s". %s. Thread Group: %s (%s)', [ConvertGdbPathAndFile(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  Result := Format('Module Load: "%s". %s. Thread Group: %s (%s)', [ConvertPathFromGdbToLaz(List.Values['id']), DebugInfo[List.Values['symbols-loaded'] = '1'], ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
   List.Free;
 end;
 
@@ -9005,7 +9018,7 @@ begin
   // input: =library-unloaded,id="C:\\Windows\\system32\\advapi32.dll",target-name="C:\\Windows\\system32\\advapi32.dll",host-name="C:\\Windows\\system32\\advapi32.dll",thread-group="i1"
   List := TGDBMINameValueList.Create(S);
   ThreadGroup := List.Values['thread-group'];
-  Result := Format('Module Unload: "%s". Thread Group: %s (%s)', [ConvertGdbPathAndFile(List.Values['id']), ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
+  Result := Format('Module Unload: "%s". Thread Group: %s (%s)', [ConvertPathFromGdbToLaz(List.Values['id']), ThreadGroup, FThreadGroups.Values[ThreadGroup]]);
   List.Free;
 end;
 
@@ -9344,6 +9357,28 @@ end;
 procedure TGDBMIDebuggerBase.UnQueueCommand(const ACommand: TGDBMIDebuggerCommand);
 begin
   FCommandQueue.Remove(ACommand);
+end;
+
+function TGDBMIDebuggerBase.ConvertPathFromGdbToLaz(APath: string;
+  UnEscapeBackslash: Boolean): string;
+begin
+  if UnEscapeBackslash then
+    Result := UnEscapeBackslashed(APath, [uefOctal])
+  else
+    Result := APath;
+  Result := AnsiToUtf8(Result);
+
+  if FIsCygWin then begin
+    if (Length(APath) >= 12) and
+       (strlicomp(PChar(APath), '/cygdrive/', 10) = 0) and
+       (APath[12] = '/') and
+       (APath[11] in ['a'..'z', 'A'..'Z'])
+    then begin
+      Result := APath[11] + ':\' + StringReplace(copy(APath, 13, Length(APath)), '/', '\', [rfReplaceAll]);
+    end;
+  end;
+
+  Result := ConvertPathDelims(Result);
 end;
 
 procedure TGDBMIDebuggerBase.CancelAllQueued;
@@ -12687,8 +12722,8 @@ begin
   Val(Frame.Values['addr'], Result.Address, e);
   if e=0 then ;
   Result.FuncName := Frame.Values['func'];
-  Result.SrcFile := ConvertGdbPathAndFile(Frame.Values['file']);
-  Result.SrcFullName := ConvertGdbPathAndFile(Frame.Values['fullname']);
+  Result.SrcFile := FTheDebugger.ConvertPathFromGdbToLaz(Frame.Values['file']);
+  Result.SrcFullName := FTheDebugger.ConvertPathFromGdbToLaz(Frame.Values['fullname']);
   Result.SrcLine := StrToIntDef(Frame.Values['line'], -1);
 
   Frame.Free;
@@ -12868,9 +12903,9 @@ begin
   FBreaks[ALoc].BreakGdbId    := StrToIntDef(ResultList.Values['number'], -1);
   FBreaks[ALoc].BreakAddr     := StrToQWordDef(ResultList.Values['addr'], 0);
   FBreaks[ALoc].BreakFunction := ResultList.Values['func'];
-  FBreaks[ALoc].BreakFile     := ResultList.Values['fullname'];
+  FBreaks[ALoc].BreakFile     := ACmd.FTheDebugger.ConvertPathFromGdbToLaz(ResultList.Values['fullname']);
   if FBreaks[ALoc].BreakFile = '' then
-    FBreaks[ALoc].BreakFile     := ResultList.Values['file'];
+    FBreaks[ALoc].BreakFile     := ACmd.FTheDebugger.ConvertPathFromGdbToLaz(ResultList.Values['file']);
   FBreaks[ALoc].BreakLine     := ResultList.Values['line'];
   ResultList.Free;
 end;

@@ -59,7 +59,7 @@ function MakePrintable(const AString: String): String; // Make a pascal like str
 function UnEscapeBackslashed(const AValue: String; AFlags: TGdbUnEscapeFlags = [uefOctal]; ATabWidth: Integer = 0): String;
 function UnQuote(const AValue: String): String;
 function Quote(const AValue: String; AForce: Boolean=False): String;
-function ConvertGdbPathAndFile(const AValue: String): String; // fix path, delim, unescape, and to utf8
+function ConvertGdbPathAndFile(const AValue: String): String; deprecated 'use ConvertPathFromGdbToLaz'; // fix path, delim, unescape, and to utf8
 function ParseGDBString(const AValue: String): String; // remove quotes(') and convert #dd chars: #9'ab'#9'x'
 function GetLeadingAddr(var AValue: String; out AnAddr: TDBGPtr; ARemoveFromValue: Boolean = False): Boolean;
 function UpperCaseSymbols(s: string): string;
