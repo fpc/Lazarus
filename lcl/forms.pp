@@ -302,13 +302,18 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     procedure SetParent(AParent: TWinControl); override;
+    procedure SetParentBackground(const AParentBackground: Boolean); override;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
     procedure DefineProperties(Filer: TFiler); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
+    procedure UpdateOpaque;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     class function GetControlClassDefaultSize: TSize; override;
+
+    property ParentBackground default True;
   end;
 
   TCustomFrameClass = class of TCustomFrame;
@@ -370,6 +375,7 @@ type
     property OnStartDock;
     property OnStartDrag;
     property OnUnDock;
+    property ParentBackground;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;

@@ -137,6 +137,19 @@ begin
   end;
 end;
 
+procedure TCustomFrame.SetParentBackground(const AParentBackground: Boolean);
+begin
+  inherited SetParentBackground(AParentBackground);
+  UpdateOpaque;
+end;
+
+procedure TCustomFrame.CMParentColorChanged(var Message: TLMessage);
+begin
+  inherited;
+  if csLoading in ComponentState then Exit;
+  UpdateOpaque;
+end;
+
 class function TCustomFrame.GetControlClassDefaultSize: TSize;
 begin
   Result.CX := 320;
@@ -167,6 +180,14 @@ begin
   end;
   inherited CalculatePreferredSize(PreferredWidth, PreferredHeight,
     WithThemeSpace);
+end;
+
+procedure TCustomFrame.UpdateOpaque;
+begin
+  if ParentBackground then
+    ControlStyle := ControlStyle - [csOpaque]
+  else
+    ControlStyle := ControlStyle + [csOpaque];
 end;
 
 constructor TCustomFrame.Create(AOwner: TComponent);
