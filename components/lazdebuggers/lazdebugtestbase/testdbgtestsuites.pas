@@ -41,6 +41,7 @@ type
     function GetCompiler: TTestDbgCompiler;
     function GetDebugger: TTestDbgDebugger;
   protected
+    FIgnoreReason: String;
     // TestResults
     procedure AddTestError  (s: string; MinDbgVers: Integer = 0; AIgnoreReason: String = '');
     procedure AddTestError  (s: string; MinDbgVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
@@ -190,6 +191,8 @@ begin
       IgnoreReason := 'FPC ('+IntToStr(i)+') to old, required:'+IntToStr(MinFpcVers);
   end;
   IgnoreReason := IgnoreReason + AIgnoreReason;
+  if IgnoreReason = '' then
+    IgnoreReason := FIgnoreReason;
 
   if IgnoreReason <> '' then begin
     FIgnoredErrors := FIgnoredErrors + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
@@ -591,6 +594,7 @@ begin
   FTotalErrorCnt := 0;
   FTotalIgnoredErrorCnt := 0;
   FTotalUnexpectedSuccessCnt := 0;
+  FIgnoreReason := '';
 
   for i := 0 to DebugLogger.LogGroupList.Count - 1 do
     DebugLogger.LogGroupList[i]^.Enabled := True;

@@ -20,6 +20,10 @@ version=070000
 symbols=none,gs,gw,gwset
 bits=64
 //symbols=none,gs,gw,gwset,gw3
+//flags=no_env_u2,no_arg_u2
+  // no_env_u2 Does not support full utf8 for env
+  // no_arg_u2 Does not support full utf8 for exec-args
+
 
 [gdb 7.3-50 with patches]
 exe=C:\GDB\7.3-50\gdb.exe

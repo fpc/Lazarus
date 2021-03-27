@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
   TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazFileUtils,
-  LazLoggerBase, FileUtil, DbgIntfDebuggerBase, fpcunit;
+  LazLoggerBase, FileUtil, LazStringUtils, DbgIntfDebuggerBase, fpcunit;
 
 type
 
@@ -29,6 +29,8 @@ type
   public
     constructor Create(AnExternalExeInfo: TExternalExeInfo);
     function FullName: String;
+    function HasFlag(const f: string): boolean;
+    function HasFlags(const f: array of string): boolean;
 
     property Name: string read GetName;
     property Version: Integer read GetVersion;
@@ -199,6 +201,23 @@ begin
   Result := Name;
 end;
 
+function TTestDbgExternalExe.HasFlag(const f: string): boolean;
+begin
+  Result := HasFlags([f]);
+end;
+
+function TTestDbgExternalExe.HasFlags(const f: array of string): boolean;
+var
+  s: String;
+begin
+  Result := True;
+  for s in f do
+    if PosI(','+s+',', FullInfo._CustomFlags) > 0 then
+      exit;
+
+  Result := False;
+end;
+
 { TTestDbgCompiler }
 
 function TTestDbgCompiler.GetCpuBitType: TCpuBitType;
@@ -285,7 +304,7 @@ begin
     NamePostFix := NamePostFix + NewExeID;
   end;
 
-  AnExeName := ExePath + AnExeName + '_'+IntToStr(GetProcessID)+'_'+ SymbolTypeNames[SymbolType] + '_' + NameToFileName(Self.Name) + NamePostFix + GetExeExt;
+  AnExeName := ExePath + AnExeName + NamePostFix + '_'+IntToStr(GetProcessID)+'_'+ SymbolTypeNames[SymbolType] + '_' + NameToFileName(Self.Name) + GetExeExt;
 
   {$IFDEF windows}
   ExtraArgs := ExtraArgs + ' -WG';

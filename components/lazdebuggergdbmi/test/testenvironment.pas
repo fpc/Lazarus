@@ -7,111 +7,158 @@ interface
 uses
   SysUtils, fpcunit, testutils, testregistry, TestBase, GDBMIDebugger, LCLProc,
   DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites, TestDbgConfig,
-  TestWatches;
+  TestWatches, TestArgV;
 
-const
-  BREAK_LINE_ENV1 = 10;
-  BREAK_LINE_ENV2 = 12;
 
 type
 
   { TTestEnvironment }
 
-  TTestEnvironment = class(TGDBTestCase)
+  TTestEnvironment = class(TTestArgBase)
   private
     FCurLine: Integer;
   protected
-    procedure DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
+    //function TestHex(const s: array of string): String; override;
+
+    function TestSourceName: String; override;
+    function TestBreakLine: integer; override;
   published
-    procedure TestEnv;
+    procedure TestEnvBasic;
+    procedure TestEnvBasicTab;
+    procedure TestEnvBasicQuote;
+    procedure TestEnvUtf1;
+    procedure TestEnvUtf2;
   end;
 
 implementation
 var
-  ControlTestEnvironment: Pointer;
+  ControlTestEnvironment, ControlTestEnvironmentBasic, ControlTestEnvironmentTab,
+  ControlTestEnvironmentUtf1, ControlTestEnvironmentUtf2: Pointer;
 
 { TTestEnvironment }
 
-procedure TTestEnvironment.DoCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
+//function TTestEnvironment.TestHex(const s: array of string): String;
+//var
+//  w: WideString;
+//  i: Integer;
+//begin
+//  w := '';
+//  for i := 0 to Length(s) - 1 do begin
+//    if w <> '' then w := w + ' ';
+//    w := w + UTF8Decode(s[i]);
+//  end;
+//  Result := TestHex64(w);
+//end;
+
+function TTestEnvironment.TestSourceName: String;
 begin
-  FCurLine := ALocation.SrcLine;
+  Result := 'EnvPrg.pas';
 end;
 
-procedure TTestEnvironment.TestEnv;
+function TTestEnvironment.TestBreakLine: integer;
+begin
+  Result := 25;
+end;
+
+procedure TTestEnvironment.TestEnvBasic;
 var
   dbg: TGDBMIDebugger;
-  TestExeName, s: string;
-  IgnoreRes: String;
 begin
-  if SkipTest then exit;
-  if not TestControlCanTest(ControlTestEnvironment) then exit;
+  if not StartTest(ControlTestEnvironmentUtf2, dbg) then
+    exit;
+  if Debugger.HasFlag('no_env') then
+    FIgnoreReason := 'no_env flag';
 
-  ClearTestErrors;
-  TestCompile(AppDir + 'EnvPrg.pas', TestExeName);
-
-  IgnoreRes := '';
-  {$IFDEF Windows}
-  if (DebuggerInfo.Version > 060600) and
-     (DebuggerInfo.Version < 070400)
-  then
-    IgnoreRes := 'broken gdb';
-  {$ENDIF}
-
-  s := 'env value 1';
-  dbg := StartGDB(AppDir, TestExeName);
   try
-    dbg.OnCurrent  := @DoCurrent;
     dbg.Environment.Add('ETEST1=ab123c');
-    with dbg.BreakPoints.Add('EnvPrg.pas', BREAK_LINE_ENV1) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-    with dbg.BreakPoints.Add('EnvPrg.pas', BREAK_LINE_ENV2) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-
-    dbg.Run;
-
-    TestTrue(s+' not in error state', dbg.State <> dsError, 0);
-	TestTrue(s+' at break', FCurLine = BREAK_LINE_ENV1, 0, IgnoreRes);
+    RunAndCheckVal(dbg, 'ab123c', ['ab123c']);
   finally
-    dbg.Done;
-    CleanGdb;
-    dbg.Free;
+    EndTest(dbg);
   end;
-
-  s := 'env value 2';
-  dbg := StartGDB(AppDir, TestExeName);
-  try
-    dbg.OnCurrent  := @DoCurrent;
-    dbg.Environment.Add('ETEST1=xxx');
-    with dbg.BreakPoints.Add('EnvPrg.pas', BREAK_LINE_ENV1) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-    with dbg.BreakPoints.Add('EnvPrg.pas', BREAK_LINE_ENV2) do begin
-      InitialEnabled := True;
-      Enabled := True;
-    end;
-
-    dbg.Run;
-
-    TestTrue(s+' not in error state', dbg.State <> dsError, 0);
-	TestTrue(s+' at break', FCurLine = BREAK_LINE_ENV2, 0);
-  finally
-    dbg.Done;
-    CleanGdb;
-    dbg.Free;
-  end;
-
-
-  AssertTestErrors;
 end;
+
+procedure TTestEnvironment.TestEnvBasicTab;
+var
+  dbg: TGDBMIDebugger;
+begin
+  if not StartTest(ControlTestEnvironmentTab, dbg) then
+    exit;
+  if Debugger.HasFlag('no_env') then
+    FIgnoreReason := 'no_env flag';
+
+  try
+    dbg.Environment.Add('ETEST1=a'#9'b');
+    RunAndCheckVal(dbg, 'a'#9'b', ['a'#9'b']);
+  finally
+    EndTest(dbg);
+  end;
+end;
+
+procedure TTestEnvironment.TestEnvBasicQuote;
+var
+  dbg: TGDBMIDebugger;
+begin
+  if not StartTest(ControlTestEnvironmentBasic, dbg) then
+    exit;
+  if Debugger.HasFlag('no_env') then
+    FIgnoreReason := 'no_env flag';
+
+  try
+    dbg.Environment.Add('ETEST1=ab123c"'' \" a\b$^!)\''x');
+    RunAndCheckVal(dbg, 'ab123c"'' \" a\b$^!)\''x', ['ab123c"'' \" a\b$^!)\''x']);
+  finally
+    EndTest(dbg);
+  end;
+end;
+
+procedure TTestEnvironment.TestEnvUtf1;
+var
+  dbg: TGDBMIDebugger;
+begin
+  if not StartTest(ControlTestEnvironmentUtf1, dbg) then
+    exit;
+  if Debugger.HasFlag('no_env') then
+    FIgnoreReason := 'no_env flag';
+  if Compiler.Version < 030000 then
+    FIgnoreReason := FIgnoreReason + 'fpc to old';
+
+  try
+    dbg.Environment.Add('ETEST1=aäöx');
+    RunAndCheckVal(dbg, 'aäöx', ['aäöx']);
+  finally
+    EndTest(dbg);
+  end;
+end;
+
+procedure TTestEnvironment.TestEnvUtf2;
+var
+  dbg: TGDBMIDebugger;
+begin
+  if not StartTest(ControlTestEnvironment, dbg) then
+    exit;
+  if Debugger.HasFlag('no_env') then
+    FIgnoreReason := 'no_env flag';
+  if Debugger.HasFlag('no_env_u2') then
+    FIgnoreReason := 'no_env_u2 flag';
+  if Compiler.Version < 030000 then
+    FIgnoreReason := FIgnoreReason + 'fpc to old';
+
+  try
+    dbg.Environment.Add('ETEST1=a b c ä ö 😁 X あｓｆ');
+    RunAndCheckVal(dbg, 'a b c ä ö 😁 X あｓｆ', ['a b c ä ö 😁 X あｓｆ']);
+  finally
+    EndTest(dbg);
+  end;
+end;
+
 
 initialization
   RegisterDbgTest(TTestEnvironment);
   ControlTestEnvironment        := TestControlRegisterTest('TTestEnvironment');
+  ControlTestEnvironmentBasic   := TestControlRegisterTest('TTestEnvironment Basic', ControlTestEnvironment);
+  ControlTestEnvironmentTab     := TestControlRegisterTest('TTestEnvironment Tab', ControlTestEnvironment);
+  ControlTestEnvironmentUtf1    := TestControlRegisterTest('TTestEnvironment Utf1', ControlTestEnvironment);
+  ControlTestEnvironmentUtf2    := TestControlRegisterTest('TTestEnvironment Utf2', ControlTestEnvironment);
 
 end.
 

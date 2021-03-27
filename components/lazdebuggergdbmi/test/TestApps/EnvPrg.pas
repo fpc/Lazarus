@@ -1,13 +1,31 @@
 program EnvPrg;
+{$H-}
 
-uses sysutils;
+uses
+  {$IFDEF UNIX} cwstring, {$ENDIF}
+  sysutils;
 
 var
-  s: String;
+  u: UnicodeString;
+  e, S: string;
+  i: Integer;
 begin
-  s := GetEnvironmentVariable('ETEST1');
-  if s = 'ab123c' then
-    Freemem(GetMem(1))
-  else
-    Freemem(GetMem(2));
+  {$IFDEF UNIX}
+  e := GetEnvironmentVariable(AnsiString('ETEST1'));
+  {$ELSE}
+  u := GetEnvironmentVariable(UnicodeString('ETEST1'));
+  e := UTF8Encode(u);
+  {$ENDIF}
+  s := '';
+  for i := 1 to length(e) do
+      s := s + IntToHex(ord(e[i]), 2);
+
+  while false do  ;
+  while false do  ;
+  while false do  ;
+  while false do  ;
+  while false do  ;
+  while false do  ;
+  while false do  ;
+  while false do  ;
 end.

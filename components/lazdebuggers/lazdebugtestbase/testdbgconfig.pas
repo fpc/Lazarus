@@ -50,6 +50,7 @@ type
     SymbolTypes: TSymbolTypes;
     CpuBitTypes: TCpuBitTypes;
     ExtraOpts: string;
+    CustomFlags, _CustomFlags: string;
   end;
 
 type
@@ -176,7 +177,7 @@ end;
 
 procedure TBaseList.SetAttribute(AIndex: Integer; const AAttr, AValue: string);
 begin
-  case StringCase(AAttr, ['exe', 'symbols', 'opts', 'vers', 'version', 'bittype', 'bits'], True, False) of
+  case StringCase(AAttr, ['exe', 'symbols', 'opts', 'vers', 'version', 'bittype', 'bits', 'flags'], True, False) of
     0: begin // exe
         FList[AIndex].ExeName := AValue;
       end;
@@ -191,6 +192,11 @@ begin
       end;
     5,6: begin
         FList[AIndex].CpuBitTypes := StrToCpuBitTypes(AValue);
+      end;
+    7: begin // flags
+        FList[AIndex].CustomFlags := AValue;
+        // each flag enclosed by , / ,flag1,flag2,
+        FList[AIndex]._CustomFlags := ','+StringReplace(lowercase(AValue), ' ', '', [rfReplaceAll])+',';
       end;
   end;
 end;

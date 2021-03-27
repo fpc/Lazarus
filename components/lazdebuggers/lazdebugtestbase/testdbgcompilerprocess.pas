@@ -37,7 +37,6 @@ type
 
   procedure ClearFilesAndDirs;
 
-implementation
 
 type
 
@@ -66,6 +65,8 @@ type
 var
   CreatedExecutableList: TCreatedExecutableList;
   CreatedLibDirList: TCreatedExecutableList;
+
+implementation
 
 class operator TCreatedExecutable. = (a, b: TCreatedExecutable): Boolean;
 begin
@@ -326,9 +327,12 @@ end;
 function TCompilerProcess.TestCompile(const FpcExe, FpcOpts, PascalPrgFile,
   ExeName: string; ForceReCompile: Boolean): boolean;
 var
-  CmdLine: string;
+  CmdLine, s: string;
 begin
-  CmdLine := FpcExe + ' -B -MObjFPC  -FUlib -o'+ ExeName + ' ' + FpcOpts + ' ' + PascalPrgFile;
+  s := ExeName;
+  if pos(' ', s) > 0 then
+    s := '"' + s + '"';
+  CmdLine := FpcExe + ' -B -MObjFPC  -FUlib -o'+ s + ' ' + FpcOpts + ' ' + PascalPrgFile;
 
   if ForceReCompile then begin
     Result := False;
