@@ -1712,7 +1712,7 @@ begin
           SelectObject(DC, StaticText.Font.Reference.Handle);
           Flags := 0;
           ARect := Classes.Rect(0, 0, 0, 0);
-          WideBuffer := UTF8ToUTF16(TCustomGroupBox(WindowInfo^.WinControl).Caption);
+          WideBuffer := UTF8ToUTF16(TCustomStaticText(WindowInfo^.WinControl).Caption);
           DrawTextW(DC, PWideChar(WideBuffer), Length(WideBuffer), ARect, Flags or DT_CALCRECT);
           if StaticText.BiDiMode = bdRightToLeft then
           begin
