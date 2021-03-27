@@ -126,6 +126,8 @@ type
 
     procedure OffsetMousePos(APoint: PPoint); virtual;
 
+    function ClientToScreen(var P:TPoint):boolean;
+
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function GtkEventMouseEnterLeave(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
     function GtkEventKey(Sender: PGtkWidget; Event: PGdkEvent; AKeyPress: Boolean): Boolean; virtual; cdecl;
@@ -2566,7 +2568,7 @@ end;
 
 procedure TGtk3Widget.DestroyWidget;
 begin
-  if IsWidgetOk and FOwnWidget then
+  if IsWidgetOk and FOwnWidget and Assigned(fWidget) then
     FWidget^.destroy_;
   FWidget := nil;
 end;
@@ -2777,6 +2779,46 @@ begin
     dec(APoint^.x, x);
     dec(APoint^.y, y);
   end;
+end;
+
+function TGtk3Widget.ClientToScreen(var P: TPoint): boolean;
+var
+  TempAlloc: TGtkAllocation;
+  Pt: TPoint;
+  w,tw:PgtkWidget;
+  x,y:integer;
+  gw:PgdkWindow;
+begin
+  Result := False;
+  Pt := Point(0, 0);
+
+  if not IsWidgetOk then
+  begin
+    DebugLn('TGtk3Widget.ClientToScreen invalid widget ...');
+    exit;
+  end;
+
+  { most usable source
+    https://stackoverflow.com/questions/2088962/how-do-you-find-the-absolute-position-of-a-gtk-widget-in-a-window
+  }
+
+  w:=fWidget;
+  tw:=w^.get_toplevel;
+  gw:=tw^.window;
+  while Assigned(w) {and (w<>tw)} do
+  begin
+    w^.get_allocation(@TempAlloc);
+    pt.X:=pt.X+TempAlloc.X;
+    pt.Y:=pt.Y+TempAlloc.Y;
+    w:=w^.parent;
+  end;
+
+  gw^.get_origin(@x,@y);
+  pt.x+=x;
+  pt.y+=y;
+  p:=pt;
+  Result:=true;
+
 end;
 
 function TGtk3Widget.DeliverMessage(var Msg; const AIsInputEvent: Boolean

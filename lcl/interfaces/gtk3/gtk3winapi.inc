@@ -96,42 +96,15 @@ begin
 end;
 
 function TGtk3WidgetSet.ClientToScreen(Handle: HWND; var P: TPoint): Boolean;
-var
-  AWidget: TGtk3Widget;
-  TempAlloc: TGtkAllocation;
-  Pt: TPoint;
 begin
   {$ifdef VerboseGtk3WinApi}
     DebugLn('Trace:> [TGtk3WidgetSet.ClientToScreen] ',dbgs(P));
   {$endif}
   // Result:=inherited ClientToScreen(Handle, P);
   Result := False;
-  Pt := Point(0, 0);
+  P := Point(0, 0);
   if IsValidHandle(Handle) then
-  begin
-    AWidget := TGtk3Widget(Handle);
-    if not AWidget.IsWidgetOk then
-    begin
-      DebugLn('TGtk3WidgetSet.ClientToScreen invalid widget ...');
-      exit;
-    end;
-    if Gtk3IsGdkWindow(AWidget.Widget^.window) then
-    begin
-      gdk_window_get_origin(AWidget.Widget^.window, @Pt.X, @Pt.Y);
-      gtk_widget_get_allocation(AWidget.Widget, @TempAlloc);
-      Pt.X += TempAlloc.x;
-      Pt.Y += TempAlloc.y;
-    end
-    else
-    begin
-      gtk_widget_get_allocation(AWidget.Widget, @TempAlloc);
-      Pt.X := TempAlloc.x;
-      Pt.Y := TempAlloc.y;
-    end;
-    Result := True;
-    inc(P.X, Pt.X);
-    inc(P.Y, Pt.Y);
-  end;
+    Result := TGtk3Widget(Handle).ClientToScreen(P);
   {$ifdef VerboseGtk3WinApi}
     DebugLn('Trace:< [TGtk3WidgetSet.ClientToScreen] ',dbgs(P),' result=',dbgs(Result));
   {$endif}
