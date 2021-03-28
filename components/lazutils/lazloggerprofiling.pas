@@ -273,6 +273,7 @@ end;
 
 constructor TLazLoggerBlockMemWatch.Create;
 begin
+  inherited;
   MaxDepth := 100;
   FMem[0] := GetHeapStatus.TotalAllocated;
   FNested[0] := 0;
@@ -330,6 +331,7 @@ end;
 
 constructor TLazLoggerBlockTimer.Create;
 begin
+  inherited;
   MaxDepth := 100;
   FTimes[0] := GetTickCount64;
   FNested[0] := 0;

@@ -543,6 +543,7 @@ end;
 
 constructor TLazLoggerLogGroupList.Create;
 begin
+  inherited;
   FList := TFPList.Create;
 end;
 
@@ -788,6 +789,7 @@ end;
 
 constructor TLazLogger.Create;
 begin
+  inherited;
   InitCriticalSection(FLoggerCriticalSection);
   FIsInitialized := False;
   FUseGlobalLogGroupList := False;
