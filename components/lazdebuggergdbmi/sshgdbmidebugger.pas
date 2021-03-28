@@ -98,6 +98,10 @@ type
     property WarnOnInternalError;
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
+    property EncodingForEnvironment;
+    property EncodingForExeArgs;
+    property EncodingForExeFileName;
+    property EncodingForCurrentDirPath;
     property InternalStartBreak;
     property UseNoneMiRunCommands;
     property DisableLoadSymbolsForLibraries;

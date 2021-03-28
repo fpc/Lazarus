@@ -325,6 +325,10 @@ type
     property WarnOnInternalError;
     property EncodeCurrentDirPath;
     property EncodeExeFileName;
+    property EncodingForEnvironment;
+    property EncodingForExeArgs;
+    property EncodingForExeFileName;
+    property EncodingForCurrentDirPath;
     property InternalStartBreak;
     property UseAsyncCommandMode;
     property UseNoneMiRunCommands;
