@@ -9,7 +9,12 @@
     <module name="lazCollections">
       <short>Contains classes used to implement thread-safe collections</short>
       <descr>
-        <file>lazCollections.pas</file> contains classes used to implement thread-safe collections.
+        <p>
+          <file>lazCollections.pas</file> contains classes used to implement thread-safe collections.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
       </descr>
 
       <!-- unresolved external references -->
@@ -154,8 +159,23 @@
       </element>
 
       <element name="TLazFifoQueue">
-        <short/>
-        <descr/>
+        <short>
+          Implements a First-In-First-Out queue for entries using a generic item type
+        </short>
+        <descr>
+          <p>
+            <var>TLazFifoQueue</var> implements a FIFO queue using a generic type for the items in the queue. A FIFO queue processes the oldest (first) entry, or head of the queue, before any subsequent items added to the buffer.
+          </p>
+          <p>
+            TLazFifoQueue uses an internal array to store the queue items with the type used in the specialization. The queue size (or depth) can be specified when the class instance is created, and adjusted using the <var>Grow</var> method.
+          </p>
+          <p>
+            Use the <var>PushItem</var> and <var>PopItem</var> methods to add or remove entries in the queue.
+          </p>
+          <p>
+            Elements in the internal array are reused when the entry is popped off of the head of the queue. The head is moved to the next element in the internal array.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -165,93 +185,210 @@
       <element name="TLazFifoQueue.FTotalItemsPushed"/>
 
       <element name="TLazFifoQueue.GetIsEmpty">
-        <short/>
+        <short>Gets the value for the IsEmpty property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazFifoQueue.IsEmpty"/>
+        </seealso>
       </element>
       <element name="TLazFifoQueue.GetIsEmpty.Result">
-        <short/>
+        <short>
+          True if the number of items pushed onto and popped off of the queue are the same
+        </short>
       </element>
 
       <element name="TLazFifoQueue.GetIsFull">
-        <short/>
+        <short>Gets the value for the IsFull property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazFifoQueue.IsFull"/>
+        </seealso>
       </element>
       <element name="TLazFifoQueue.GetIsFull.Result">
-        <short/>
+        <short>
+          True when the number of items remaining in the queue is the same as the QueueSize
+        </short>
       </element>
 
       <element name="TLazFifoQueue.Create">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <var>Create</var> is the constructor for the class instance, and calls <var>Grow</var> using the value in <var>AQueueDepth</var> as an argument. This sets the initial size for the internal queue storage to the specified number of entries.
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.Grow"/>
+        </seealso>
       </element>
       <element name="TLazFifoQueue.Create.AQueueDepth">
-        <short/>
+        <short>Number of items allocated in the internal storage for the queue</short>
       </element>
 
       <element name="TLazFifoQueue.Grow">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Resizes the internal storage for the queue by the specified Delta value</short>
+        <descr>
+          <p>
+            <var>Grow</var> is a method used to resize the internal storage for the queue by the specified Delta value.
+          </p>
+          <p>
+            When <var>ADelta</var> is a position Integer value, the size for the internal array is enlarged by the value specified number of entries. When ADelta is a negative Integer value, the internal storage is shrunk by the specified number of entries.
+          </p>
+          <p>
+            Grow reallocates the internal array used to store the item types for the specialization. Exisitng items in the queue are moved to the new array, and the internal storage is updated.
+          </p>
+          <p>
+            The value in the <var>QueueSize</var> property is set to the new length for the internal array.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.QueueSize"/>
+        </seealso>
       </element>
       <element name="TLazFifoQueue.Grow.ADelta">
-        <short/>
+        <short>Number of entries to add to (or remove from) the queue size</short>
       </element>
 
       <element name="TLazFifoQueue.PushItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Pushes an item of the specified type onto the tail of the queue</short>
+        <descr>
+          <p>
+            <var>Pushitem</var> is a <var>Boolean</var> function used to add the value in <var>AItem</var> to the tail of the queue. The return value is <b>True</b> if the queue was not full when the method was called. No actions are performed in the method when a slot is not available in the internal storage for the queue.
+          </p>
+          <p>
+            PushItem stores the value in AItem at the next element in the internal array, and increments the value in the <var>TotalItemsPushed</var> property.
+          </p>
+          <p>
+            Use <var>PopItem</var> to remove the item at the head of the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.IsFull"/>
+          <link id="TLazFifoQueue.QueueSize"/>
+          <link id="TLazFifoQueue.TotalItemsPushed"/>
+          <link id="TLazFifoQueue.TotalItemsPopped"/>
+          <link id="TLazFifoQueue.PopItem"/>
+        </seealso>
       </element>
       <element name="TLazFifoQueue.PushItem.Result">
-        <short/>
+        <short>
+          True if the specified item was added to the queue, or False when the queue is full
+        </short>
       </element>
       <element name="TLazFifoQueue.PushItem.AItem">
-        <short/>
+        <short>Item added to the tail of the queue</short>
       </element>
 
       <element name="TLazFifoQueue.PopItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Pops an item of the specified type off of the head of the queue</short>
+        <descr>
+          <p>
+            <var>PopItem</var> is a <var>Boolean</var> function used to get the value in AItem from the head of the queue. The return value is <b>True</b> if the queue was not empty when the method was called. No actions are performed in the method when items have not been stored in the internal storage for the queue.
+          </p>
+          <p>
+            PopItem retrieves the value in AItem from the storage slot at TotalItemsPopped mod QueueSize, and increments the value in the <var>TotalItemsPopped</var> property.
+          </p>
+          <p>
+            Use <var>PushItem</var> to add an item to the tail of the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.IsEmpty"/>
+          <link id="TLazFifoQueue.QueueSize"/>
+          <link id="TLazFifoQueue.PushItem"/>
+        </seealso>
       </element>
       <element name="TLazFifoQueue.PopItem.Result">
-        <short/>
+        <short>
+          True if the item was retrieved from the queue storage, False if the queue is empty
+        </short>
       </element>
       <element name="TLazFifoQueue.PopItem.AItem">
-        <short/>
+        <short>Item retrieved from the head of the queue</short>
       </element>
 
       <element name="TLazFifoQueue.QueueSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Size (or depth) for the queue</short>
+        <descr>
+          <p>
+            Indicates the number of storage slots available in the internal storage for the queue.
+          </p>
+          <p>
+            Use TotalItemsPushed and TotalItemsPopped to determine the utilization level for the queue. Use IsFull or IsEmpty to determine if all or none of the storage slots have been filled in the queue. Use Grow to increase (or decrease) the queue depth.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.TotalItemsPopped"/>
+          <link id="TLazFifoQueue.TotalItemsPushed"/>
+          <link id="TLazFifoQueue.IsFull"/>
+          <link id="TLazFifoQueue.IsEmpty"/>
+          <link id="TLazFifoQueue.Grow"/>
+        </seealso>
       </element>
 
       <element name="TLazFifoQueue.TotalItemsPopped">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Total number of entries that have been popped off of the queue</short>
+        <descr>
+          <p>
+            Used with <var>QueueSize</var> to determine the next position (head) for the queue. (TotalItemsPopped mod QueueSize). Used with <var>TotalItemsPushed</var> to determine if the queue is empty or full. The value for the property is incremented in the <var>PopItem</var> method after the item at the head of the queue has been retrieved from the internal storage.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.TotalItemsPushed"/>
+          <link id="TLazFifoQueue.QueueSize"/>
+          <link id="TLazFifoQueue.PopItem"/>
+        </seealso>
       </element>
 
       <element name="TLazFifoQueue.TotalItemsPushed">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Total number of entries that have been pushed onto the queue</short>
+        <descr>
+          <p>
+            Used with <var>QueueSize</var> to determine the last position (tail) for the queue. (TotalItemsPushed mod QueueSize). Used with <var>TotalItemsPopped</var> to determine if the queue is empty or full. The value for the property is incremented in the <var>PushItem</var> method after the item has been stored in the internal storage at the tail for the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.TotalItemsPopped"/>
+          <link id="TLazFifoQueue.QueueSize"/>
+          <link id="TLazFifoQueue.PushItem"/>
+        </seealso>
       </element>
 
       <element name="TLazFifoQueue.IsEmpty">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Indicates if none of the internal storage slots have been used in the queue storage
+        </short>
+        <descr>
+          <p>
+            <var>IsEmpty</var> is a read-only <var>Boolean</var> property which indicates if none of the storage slots are used in the internal storage for the queue. The value is <b>True</b> when <var>TotalItemsPushed</var> and <var>TotalItemsPopped</var> have the same value.
+          </p>
+          <p>
+            Use <var>IsFull</var> to determine if all available storage slots are in use in the internal storage for the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.TotalItemsPopped"/>
+          <link id="TLazFifoQueue.TotalItemsPushed"/>
+          <link id="TLazFifoQueue.IsFull"/>
+        </seealso>
       </element>
 
       <element name="TLazFifoQueue.IsFull">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Indicates if all of the internal storage slots have been used in the queue storage
+        </short>
+        <descr>
+          <p>
+            <var>IsFull</var> is a read-only <var>Boolean</var> property which indicates if all of the storage slots are used in the internal storage for the queue. The value is <b>True</b> when <var>TotalItemsPushed</var> - <var>TotalItemsPopped</var> = <var>QueueSize</var>.
+          </p>
+          <p>
+            Use <var>IsEmpty</var> to determine if none of the available storage slots are in use in the internal storage for the queue.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TLazFifoQueue.TotalItemsPopped"/>
+          <link id="TLazFifoQueue.TotalItemsPushed"/>
+          <link id="TLazFifoQueue.QueueSize"/>
+          <link id="TLazFifoQueue.IsEmpty"/>
+        </seealso>
       </element>
 
       <element name="TLazThreadedQueue">
@@ -262,11 +399,11 @@
           <p>
             <var>TLazThreadedQueue</var> is generic class which implements a thread-safe FIFO queue using a generic type for its items. The class requires specialization to specify the type stored in the items for the queue. For example:
           </p>
-          <code>
-            TLazThreadedQueueString = specialize TLazThreadedQueue&lt;String&gt;;
-            TLazThreadedQueueInt = specialize TLazThreadedQueue&lt;Integer&gt;;
-            TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
-          </code>
+<code>
+TLazThreadedQueueString = specialize TLazThreadedQueue&lt;String&gt;;
+TLazThreadedQueueInt = specialize TLazThreadedQueue&lt;Integer&gt;;
+TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
+</code>
           <p>
             <var>TLazThreadedQueue</var> uses an internal <var>TLazMonitor</var> member to synchronize access to resources in the queue between executing threads. Methods in the class which require thread-safe access use the monitor to enable/disable resource protection. Items in the queue are maintained using the <var>PushItem</var>, <var>PopItem</var>, and <var>PopItemTimeout</var> methods. Properties are provided to determine the size of the queue, and the number of items added or removed.
           </p>
@@ -274,13 +411,16 @@
             TLazThreadedQueue specializations are used in the implementation of the <var>fpdserver</var> component, and its integration into the Lazarus IDE.
           </p>
         </descr>
+        <notes><note>TODO: Discuss the RTL events and their usage.</note></notes>
         <seealso>
           <link id="TLazMonitor"/>
         </seealso>
       </element>
 
       <element name="TLazThreadedQueue.TLazTypedFifoQueue">
-        <short/>
+        <short>
+          Type used to the specialize the internal TLazFifoQueue instance for the class
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -295,30 +435,34 @@
       <element name="TLazThreadedQueue.FShutDown"/>
 
       <element name="TLazThreadedQueue.GetQueueSize">
-        <short/>
+        <short>Gets the value for the QueueSize property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazThreadedQueue.QueueSize"/>
+        </seealso>
       </element>
       <element name="TLazThreadedQueue.GetQueueSize.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TLazThreadedQueue.GetTotalItemsPopped">
-        <short/>
+        <short>Gets the value for the TotalItemsPopped property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TLazThreadedQueue.GetTotalItemsPopped.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TLazThreadedQueue.GetTotalItemsPushed">
-        <short/>
+        <short>Gets the value for the TotalItemsPushed property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazThreadedQueue.TotalItemsPushed"/>
+        </seealso>
       </element>
       <element name="TLazThreadedQueue.GetTotalItemsPushed.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TLazThreadedQueue.TryPushItem">
@@ -379,31 +523,39 @@
       </element>
 
       <element name="TLazThreadedQueue.Lock">
-        <short/>
+        <short>Enters the Monitor used for resource protection</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazThreadedQueue.Unlock"/>
+        </seealso>
       </element>
 
       <element name="TLazThreadedQueue.Unlock">
-        <short/>
+        <short>Leaves the Monitor used for resource protection</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazThreadedQueue.Lock"/>
+        </seealso>
       </element>
 
       <element name="TLazThreadedQueue.CreateFifoQueue">
-        <short/>
+        <short>Creates the TLazTypedFifoQueue instance used in the class</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLazThreadedQueue.TLazTypedFifoQueue"/>
+        </seealso>
       </element>
       <element name="TLazThreadedQueue.CreateFifoQueue.Result">
-        <short/>
+        <short>TLazTypedFifoQueue instance used in the class</short>
       </element>
       <element name="TLazThreadedQueue.CreateFifoQueue.AQueueDepth">
-        <short/>
+        <short>Initial setting for the queue depth (or size)</short>
       </element>
 
       <element name="TLazThreadedQueue.FifoQueue">
-        <short/>
+        <short>
+          Provides access to the TLazTypedFifoQueue instance used in the class
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -464,14 +616,33 @@
       </element>
 
       <element name="TLazThreadedQueue.Grow">
-        <short>Increases the allocated storage for the queue by the specified size</short>
+        <short>
+          Expands (or shrinks) the allocated storage for the queue by the specified size
+        </short>
         <descr>
           <p>
-            <var>Grow</var> is a procedure which increases the storage allocated for items in the queue by the specified value in <var>ADelta</var>. The internal queue size is incremented by the value in <var>ADelta</var>. The length of the internal storage for the queue is increased to match the new queue size.
+            <var>Grow</var> is a method used to resize the internal storage for the queue by the specified Delta value.
+          </p>
+          <p>
+            When <var>ADelta</var> is a position Integer value, the size for the internal array is enlarged by the value specified number of entries. When ADelta is a negative Integer value, the internal storage is shrunk by the specified number of entries.
+          </p>
+          <p>
+            Grow reallocates the internal array used to store the item types for the specialization. Exisitng items in the queue are moved to the new array, and the internal storage is updated.
+          </p>
+          <p>
+            The value in the <var>QueueSize</var> property is set to the new length for the internal array.
+          </p>
+          <p>
+            Grows uses resource protection when calling the Grow method in the internal TLazFifoQueue instance in the class.
           </p>
         </descr>
-        <seealso/>
-        <notes><note>Update needed. Internal storage is now re-allocated.</note></notes>
+        <seealso>
+          <link id="TLazThreadedQueue.Lock"/>
+          <link id="TLazThreadedQueue.Unlock"/>
+          <link id="TLazThreadedQueue.TLazTypedFifoQueue"/>
+          <link id="TLazFifoQueue.Grow"/>
+          <link id="TLazMonitor"/>
+        </seealso>
       </element>
       <element name="TLazThreadedQueue.Grow.ADelta">
         <short>Value used to increase the size of the queue</short>

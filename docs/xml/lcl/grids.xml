@@ -2614,17 +2614,23 @@
       </element>
 
       <element name="TGridColumnTitle.FixDesignFontsPPI">
-        <short/>
+        <short>Corrects the design-time PPI for the column title</short>
         <descr>
           <p>
-            <var>FixDesignFontsPPI</var> is a procedure used to...
+            <var>FixDesignFontsPPI</var> is a procedure used to correct the design-time Pixels Per Inch setting for the component. Pixels Per Inch for Fonts is not saved in LFM files, and the design-time setting may differ from the run-time setting on a target machine. This adversely affects font scaling.
+          </p>
+          <p>
+            FixDesignFontsPPI calls the DoFixDesignFontPPI method in the Grid control for the column to adjust the font PPI to the value specified in ADesignTimePPI.
           </p>
         </descr>
-        <seealso/>
-        <notes><note>TODO</note></notes>
+        <seealso>
+          <link id="TGridColumnTitle.Font"/>
+          <link id="TGridColumn.Grid"/>
+          <link id="#lcl.controls.TControl.DoFixDesignFontPPI">TControl.DoFixDesignFontPPI</link>
+        </seealso>
       </element>
       <element name="TGridColumnTitle.FixDesignFontsPPI.ADesignTime">
-        <short/>
+        <short>Design-time display density applied in the method</short>
       </element>
 
       <element name="TGridColumnTitle.ScaleFontsPPI">
@@ -2645,12 +2651,33 @@
       </element>
 
       <element name="TGridColumnTitle.IsDefault">
-        <short>Returns True if the column title uses a default value</short>
-        <descr/>
-         <seealso/>
+        <short>Returns True if the column title uses the default property values</short>
+        <descr>
+          <p>
+            <var>IsDefault</var> is a <var>Boolean</var> function used to determine if the column title uses the default values assigned when the class instance was created. The return value is <b>True</b> when <b>all</b> of the following conditions are met:
+          </p>
+          <ul>
+            <li>Alignment is Nil (unassigned).</li>
+            <li>Caption is Nil  (unassigned).</li>
+            <li>Color is Nil (unassigned).</li>
+            <li>Layout is Nil  (unassigned).</li>
+            <li>ImageIndex is 0 (zero).</li>
+            <li>ImageLayout is blGlyphRight.</li>
+            <li>IsDefaultFont returns True.</li>
+          </ul>
+          <p>
+            IsDefault is when the coloumns for the parent grid are streamed using the LCL component streaming mechanism. Columns which contain defauilt values (including the title) are not written during component streaming.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TGridColumn.IsDefault"/>
+          <link id="TGridColumn.Title"/>
+          <link id="TGridColumns"/>
+          <link id="TGrid.Columns"/>
+        </seealso>
       </element>
       <element name="TGridColumnTitle.IsDefault.Result">
-        <short/>
+        <short>True if the column title uses the default property values</short>
       </element>
 
       <element name="TGridColumnTitle.Column">
@@ -2660,7 +2687,9 @@
       </element>
 
       <element name="TGridColumnTitle.Alignment">
-        <short>The <var>Alignment</var> (whether justified or centered) for the column title</short>
+        <short>
+          The <var>Alignment</var> (whether justified or centered) for the column title
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -3419,17 +3448,23 @@
       </element>
 
       <element name="TGridColumn.FixDesignFontsPPI">
-        <short/>
+        <short>Corrects the design-time PPI for the column title</short>
         <descr>
           <p>
-            <var>FixDesignFontsPPI</var> is a procedure used to...
+            <var>FixDesignFontsPPI</var> is a procedure used to correct the design-time Pixels Per Inch setting for the component. Pixels Per Inch for Fonts is not saved in LFM files, and the design-time setting may differ from the run-time setting on a target machine. This adversely affects font scaling.
+          </p>
+          <p>
+            FixDesignFontsPPI calls the DoFixDesignFontPPI method in the Grid control to adjust the font PPI to the value specified in ADesignTimePPI.
           </p>
         </descr>
-        <seealso/>
-        <notes><note>TODO</note></notes>
+        <seealso>
+          <link id="TGridColumn.Font"/>
+          <link id="TGridColumn.Grid"/>
+          <link id="#lcl.controls.TControl.DoFixDesignFontPPI">TControl.DoFixDesignFontPPI</link>
+        </seealso>
       </element>
       <element name="TGridColumn.FixDesignFontsPPI.ADesignTime">
-        <short/>
+        <short>Design-time display density applied in the method</short>
       </element>
 
       <element name="TGridColumn.ScaleFontsPPI">
@@ -8450,7 +8485,7 @@
         <descr>
           GetSmoothScroll determines whether the smooth scroll setting (goSmoothScroll) has been included in the Options for the grid control.
         </descr>
-        <notes><note>?</note></notes>
+        <notes><note>Needs an explanation of what "smooth scroll" really means.</note></notes>
         <seealso/>
       </element>
       <element name="TCustomGrid.GetSmoothScroll.Result">
@@ -9946,7 +9981,6 @@
             <var>Sort</var> is a method used to sort items in the grid. When <var>ColSorting</var> is <b>True</b>, it sorts the items in a column. Otherwise, it sorts a row. The three index values specify the items to be sorted.
           </p>
         </descr>
-        <notes><note>TODO: Describe sort algorithm and argument usage</note></notes>
         <seealso/>
       </element>
       <element name="TCustomGrid.Sort.ColSorting">
@@ -13087,11 +13121,16 @@
         <short>Column or row number deleted in the method</short>
       </element>
 
-      <!-- WIP -->
       <element name="TCustomDrawGrid.DeleteCol">
         <short>Deletes the column at the specified position</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls <var>DeleteColRow</var> to delete the column number specified in <var>Index</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.DeleteColRow"/>
+        </seealso>
       </element>
       <element name="TCustomDrawGrid.DeleteCol.Index">
         <short>Position for the column removed in the method</short>
@@ -13099,8 +13138,14 @@
 
       <element name="TCustomDrawGrid.DeleteRow">
         <short>Deletes the row at the specified position</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls <var>DeleteColRow</var> to delete the row number specified in <var>Index</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDrawGrid.DeleteColRow"/>
+        </seealso>
       </element>
       <element name="TCustomDrawGrid.DeleteRow.Index">
         <short>Position for the row removed in the method</short>
@@ -13134,8 +13179,35 @@
       </element>
 
       <element name="TCustomDrawGrid.MoveColRow">
-        <short>Moves a column or a row from a specified position to a new position in the grid</short>
-        <descr/>
+        <short>
+          Moves a column or a row from a specified position to a new position in the grid
+        </short>
+        <descr>
+          <p>
+            Implemented using the DoOPMoveColRow method.
+          </p>
+          <p>
+            Values in FromIndex and ToIndex must be valid column or row numbers for the control. An EGridException is raised if either value is not valid.
+          </p>
+          <p>
+            No actions are performed in the method if FromIndex and ToIndex have the same value.
+          </p>
+          <p>
+            No actions are performed in the method if IsColumn is <b>True</b> and columns are locked using the GridFlags. This occurs when a column index is being updated in the control.
+          </p>
+          <p>
+            Calls ColRowMoved to perform a notification when the column or row has been moved.
+          </p>
+          <p>
+            Calls VisualChange if the Columns collection has not been enabled in the control, or when IsColumn is <b>False</b>.
+          </p>
+          <p>
+            Updates the bounds for the cell editor when it is located in a column or row affected in the method.
+          </p>
+          <p>
+            Updates the value in SortColumn if it is affected in the method.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomDrawGrid.MoveColRow.IsColumn">
@@ -13149,7 +13221,7 @@
       </element>
 
       <element name="TCustomDrawGrid.SortColRow">
-        <short>Sorts the data in the specified column or row using the specified positions</short>
+        <short>Sorts the data in a column or row using the specified positions</short>
         <descr/>
         <seealso/>
       </element>
@@ -14187,23 +14259,32 @@
         <short>Checkbox state derived for the specified cell</short>
       </element>
 
-      <!-- WIP -->
       <element name="TCustomStringGrid.GetEditText">
         <short>Gets the text displayed in the Editor for the specified cell</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>GetEditText</var> is an overridden method used to get the text displayed in the Editor for the cell with the specified column and row numbers. GetEditText re-implements the method defined in the ancestor class.
+          </p>
+          <p>
+            The return value contains the string stored in <var>Cells</var> at the specified column and row numbers.
+          </p>
+          <p>
+            GetEditText signals the <var>OnGetEditText</var> event handler (when assigned) to validate or modify the return value for the method.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomGrid.GetEditText"/>
           <link id="TCustomDrawGrid.GetEditText"/>
         </seealso>
       </element>
       <element name="TCustomStringGrid.GetEditText.Result">
-        <short/>
+        <short>Textual content for the cell at the specified column and row number</short>
       </element>
       <element name="TCustomStringGrid.GetEditText.aCol">
-        <short/>
+        <short>Column number for the cell value</short>
       </element>
       <element name="TCustomStringGrid.GetEditText.aRow">
-        <short/>
+        <short>Row number for the cell value</short>
       </element>
 
       <element name="TCustomStringGrid.LoadContent">
@@ -14324,8 +14405,14 @@
       </element>
 
       <element name="TCustomStringGrid.OnCellProcess">
-        <short>Event handler signalled when copying or pasting content for Cells in the grid</short>
-        <descr/>
+        <short>
+          Event handler signalled when copying or pasting content for Cells in the grid
+        </short>
+        <descr>
+          <p>
+            Allows the textual value for the clipboard operation (not the HTML interchange data) to be changed before it is applied. Signalled from the DoCellProcess method when assigned.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -15180,9 +15267,9 @@
         <notes>
           <note>
             ToDo:
-            Samples of what can be made and what to leave for OnDrawCell?
+            OnDrawCell examples
             Discuss OnEditingDone.
-            Examples for editing a pick list.
+            Editing a pick list example
           </note>
         </notes>
       </topic>

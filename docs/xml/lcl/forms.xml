@@ -1505,6 +1505,29 @@
       <element name="TCustomFrame.SetParent.AParent">
         <short>Value assigned to the Parent property</short>
       </element>
+
+      <element name="TCustomFrame.SetParentBackground">
+        <short>Sets the value for the ParentBackground property</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomFrame.ParentBackground"/>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.SetParentBackground.AParentBackground">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomFrame.CMParentColorChanged">
+        <short>Handles the CM_PARENTCOLORCHANGED message for the control</short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.CMParentColorChanged.Message">
+        <short>Control message handled in the method</short>
+      </element>
+
       <element name="TCustomFrame.DefineProperties" link="#rtl.classes.TComponent.DefineProperties"/>
       <element name="TCustomFrame.DefineProperties.Filer">
         <short/>
@@ -1555,6 +1578,22 @@
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
         <short/>
       </element>
+
+      <element name="TCustomFrame.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground">
+        <short>Indicates if the control uses the background from the parent</short>
+        <descr>
+          <p>
+            The write access specifier is overridden in TCustomFrame, and calls the <var>UpdateOpaque</var> method.
+          </p>
+          <p>
+            The default value for the property is <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+        </seealso>
+      </element>
+
       <!-- "class of" type Visibility: default -->
       <element name="TCustomFrameClass" link="#lcl.forms.TCustomFrame"/>
       <!-- object Visibility: default -->

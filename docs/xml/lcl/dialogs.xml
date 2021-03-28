@@ -3922,19 +3922,25 @@ end;
       </element>
 
       <element name="InputQuery">
-        <short>Use InputQuery to show a dialog box to get some input from the user</short>
+        <short>Use InputQuery to show a dialog box to get input from the user</short>
         <descr>
           <p>
             Two versions of this function which displays a prompt and expects user input of textual data.
           </p>
           <p>
-            The first includes a MaskInput boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password), the second omits this property.
+            The first includes a <var>MaskInput</var> boolean argument which determines whether the user input is masked out by asterisks in the text-input box (like during entry of a password). The second variant omits this argument. Omitting the MaskInput argument is equivalent to setting it to <b>False</b>.
           </p>
           <p>
-            The text entered by the user is returned in the variable argument 'Value'. The function result is a boolean which returns TRUE if the OK button was pressed, or FALSE if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar).
+            <var>Value</var> contains the initial text displayed in the edit control for the dialog. The text entered by the user is also returned in the variable argument Value.
           </p>
           <p>
-            Omitting the MaskInput argument is equivalent to setting it FALSE.
+            The function result is a boolean which returns <b>True</b> if the OK button was pressed, or <var>False</var> if the box was closed by any other mechanism (such as clicking the 'Close' icon on the top title bar).
+          </p>
+          <p>
+            Another overloaded variant allows Arrays with String values to be passed in the APrompts and AValues arguments. They are used to create labels and edit controls on the dialog form, where the user can supply multiple values. The number of labels and edit controls on the dialog is determined by the length of the AValues array. An exception is raised when the APrompts and AValues arrays do not have the same length.
+          </p>
+          <p>
+            An event handler routine can be provided in the ACloseEvent argument to validate the input values, and determine if the dialog can be closed. It is signalled when the input dialog is closed by clicking the Cancel button or the Close icon on the dialog form. The handler returns an Array of String values input using the dialog.
           </p>
         </descr>
         <seealso>
@@ -3948,7 +3954,7 @@ end;
           Returns True of OK button was pressed, False if Cancel was pressed or abnormal exit
         </short>
         <descr>
-          Result is True if the user pressed OK or hit RETURN in the dialog box. If the user pressed Cancel or the dialog was closed without pressing a button the result will be false.
+          Result is <b>True</b> if the user pressed OK or hit RETURN in the dialog box. If the user pressed Cancel or the dialog was closed without pressing a button the result will be <b>False</b>.
         </descr>
       </element>
       <element name="InputQuery.ACaption">
@@ -3967,9 +3973,15 @@ end;
         <short>The value the user entered</short>
         <descr>
           <p>
-            When the DialogBox is shown the text in the Editbox will be Value. This string can be altered or amended by the user. When ENTER is pressed or OK clicked, Value will be the (possibly amended) text from the Editbox.
+            When the DialogBox is shown the text in the edit control will be Value. This string can be altered or amended by the user. When ENTER is pressed or OK clicked, Value will contain the edited text from the dialog.
           </p>
         </descr>
+      </element>
+      <element name="InputQuery.APrompts">
+        <short>Array with strings values used as labels on the input dialog</short>
+      </element>
+      <element name="InputQuery.AValues">
+        <short>Arrays with string values used in edit controls for the associated labels</short>
       </element>
 
       <element name="DefaultInputDialog">
@@ -4096,9 +4108,35 @@ end;
 
       <element name="Register">
         <short>
-          Register the components used in the current application, so that they can be recognized
+          Registers components for use in the Lazarus IDE
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Register is the procedure used to register components for use in the Lazarus IDE.
+          </p>
+          <p>
+            The following components are added to the Component Palette in the Lazarus IDE:
+          </p>
+          <p>
+            <b>Dialogs</b> Tab
+          </p>
+          <ul>
+            <li>TOpenDialog</li>
+            <li>TSaveDialog</li>
+            <li>TSelectDirectoryDialog</li>
+            <li>TColorDialog</li>
+            <li>TFontDialog</li>
+            <li>TFindDialog</li>
+            <li>TReplaceDialog</li>
+            <li>TTaskDialog</li>
+          </ul>
+          <p>
+            <b>Misc</b> Tab
+          </p>
+          <ul>
+            <li>TColorButton</li>
+          </ul>
+        </descr>
         <seealso>
           <link id="#rtl.classes.RegisterComponents">RegisterComponents</link>
         </seealso>

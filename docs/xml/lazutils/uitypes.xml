@@ -238,7 +238,7 @@
         </short>
         <descr>
           <p>
-            ModalResultStr is array of ShortString values that contains the string representations for values in TModalResult. ModalResultStr values can be accessed using the corresponding numeric modal result value. For example:
+            ModalResultStr is an array of ShortString values that contains the string representations for the values in TModalResult. ModalResultStr values can be accessed using the corresponding numeric modal result value. For example:
           </p>
           <code>
             sResult := ModalResultStr[mrNone]; // returns 'mrNone'

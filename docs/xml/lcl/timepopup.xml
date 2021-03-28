@@ -10,7 +10,7 @@
       <short>Contains forms, types, and routines used to display a pop-up for TTimeEdit</short>
       <descr>
         <p>
-          Contains the <var>TTimePopupForm</var> form and the <var>ShowTimePopup</var> routine used to create, configure, and display the pop-up form.
+          <file>timepopup.pas</file> contains the <var>TTimePopupForm</var> form and the <var>ShowTimePopup</var> routine used to create, configure, and display the pop-up form.
         </p>
         <p>
           Author: Michael Fuchs

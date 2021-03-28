@@ -13133,7 +13133,6 @@
       <element name="TJPEGImage.InitializeReader.AReader">
         <short>FCL-compatible image reader class updated in the method</short>
       </element>
-      <!-- WIP -->
       <element name="TJPEGImage.InitialWriter">
         <short>Initializes the FCL-compatible Image Writer for the image type</short>
         <descr/>
@@ -13528,7 +13527,6 @@
       <element name="TGIFImage.FTransparent"/>
       <element name="TGIFImage.FInterlaced"/>
       <element name="TGIFImage.FBitsPerPixel"/>
-      <!-- WIP -->
       <element link="#lcl.graphics.TFPImageBitmap.InitializeReader" name="TGIFImage.InitializeReader">
         <short/>
         <descr/>

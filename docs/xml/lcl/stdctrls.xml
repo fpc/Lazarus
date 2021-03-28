@@ -797,6 +797,18 @@
         <short>Default size for new instances of the class</short>
       </element>
 
+       <element name="TCustomGroupBox.UpdateOpaque">
+         <short>Updates the control style when the parent background is used</short>
+         <descr>
+           <p>
+             UpdateOpaque is a method used to update the control style flags when the parent background is used for the control. When the ParentBackground property is set to True, ControlStyle is updated to remove the csOpaque flag. If ParentBackground is not enabled, CornStyle is updated to include the csOpaque flag.
+           </p>
+         </descr>
+         <seealso>
+           <link id="TCustomGroupBox.ParentBackground"/>
+         </seealso>
+       </element>
+
       <element name="TCustomGroupBox.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
         <short>Ensures that creation parameters are updated for the control</short>
         <descr>
@@ -814,6 +826,34 @@
         <short>Creation parameters updated in the method</short>
       </element>
 
+      <element name="TCustomGroupBox.SetParentBackground">
+        <short>Sets the value for the ParentBackground proprety</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomGroupBox.SetParentBackground"/>
+        </seealso>
+      </element>
+      <element name="TCustomGroupBox.SetParentBackground.AParentBackground">
+        <short>New value for the property</short>
+      </element>
+
+      <element name="TCustomGroupBox.CMParentColorChanged">
+        <short>Handles the CM_PARENTCOLORCHANGED message for the control</short>
+        <descr>
+          <p>
+            Calls the inherited method on entry to update the value in the <var>Color</var> property. Calls <var>UpdateOpaque</var> to adjust the control style flags when the parent color is applied.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGroupBox.ParentColor"/>
+          <link id="TCustomGroupBox.UpdateOpaque"/>
+          <link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
+        </seealso>
+      </element>
+      <element name="TCustomGroupBox.CMParentColorChanged.Message">
+        <short>Control message handled in the method</short>
+      </element>
+
       <element name="TCustomGroupBox.Create">
         <short>Constructor for the class instance</short>
         <descr>
@@ -829,6 +869,22 @@
       </element>
       <element name="TCustomGroupBox.Create.AOwner">
         <short>Owner of the class instance</short>
+      </element>
+
+      <element name="TCustomGroupBox.ParentBackground">
+        <short>Indicates if the control uses the background from the parent</short>
+        <descr>
+          <p>
+            The write access specifier is overridden in TCustomGroupBox, and calls the <var>UpdateOpaque</var> method.
+          </p>
+          <p>
+            The default value for the property is <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGroupBox.UpdateOpaque"/>
+          <link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+        </seealso>
       </element>
 
       <element name="TGroupBox">
@@ -867,6 +923,7 @@
       <element name="TGroupBox.DragMode" link="#lcl.controls.TControl.DragMode"/>
       <element name="TGroupBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TGroupBox.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TGroupBox.ParentBackground" link="#lcl.stdctrls.TCustomGroupBox.ParentBackground"/>
       <element name="TGroupBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
       <element name="TGroupBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TGroupBox.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>

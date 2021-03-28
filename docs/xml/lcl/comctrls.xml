@@ -38,6 +38,9 @@
           <li>TToolButton</li>
           <li>TTabSheet</li>
         </ul>
+        <p>
+          This file is part of the <file>LCL</file> package.
+        </p>
       </descr>
 
       <!-- unresolved references -->
@@ -1000,7 +1003,7 @@
       </element>
 
       <element name="TStatusBar.SizeGrip">
-        <short>DIsplays a sizing grip used to resize the parent form</short>
+        <short>Displays a sizing grip used to resize the parent form</short>
         <descr>
           <p>
             <var>SizeGrip</var> is a <var>Boolean</var> property which indicates if a sizing grip (or grabber) is visible for the status bar. The sizing grip is a triangular shape displayed at the bottom-right of the status bar, and provides an alternate way to resize the parent form using the mouse. It presents a larger mouse target than a window border.
@@ -1175,7 +1178,7 @@
         <short>Handles the LM_PAINT message for the control</short>
         <descr>
           <p>
-            <var>WMPaint</var> is an overridden method in <var>TCustomPage</var> which handles the LM_PAINT message for the control. It calls the inherited method to render the control. No actions are performed in themethod if the Parent is a TCustomTabControl descendant and the class instance is not the current page in the Parent control.
+            <var>WMPaint</var> is an overridden method in <var>TCustomPage</var> which handles the LM_PAINT message for the control. It calls the inherited method to render the control. No actions are performed in the method if the Parent is a TCustomTabControl descendant and the class instance is not the current page in the Parent control.
           </p>
         </descr>
         <seealso>
@@ -1748,7 +1751,7 @@
             <var>GetObject</var> is an overridden method in <var>TNBPages</var>, and redirects indexed object access to the <var>PageList</var> property. The return value is a <var>TObject</var> instance, and must be cast to <var>TCustomPage</var> to access its properties and methods.
           </p>
           <p>
-            Use <var>GetPage</var> to get a page in PageList as a TCustomPage isntance.
+            Use <var>GetPage</var> to get a page in PageList as a TCustomPage instance.
           </p>
         </descr>
         <seealso>
@@ -2744,7 +2747,7 @@
       </element>
 
       <element name="TCustomTabControl.IndexOfPageAt">
-        <short>Gets the index for the page at the specified client coodinates</short>
+        <short>Gets the index for the page at the specified client coordinates</short>
         <descr/>
         <seealso/>
       </element>
@@ -2948,7 +2951,7 @@
             <var>TabIndex</var> is an <var>Integer</var> property which contains the ordinal position for the active Tab in the tabbed control. It is the same as the <var>PageIndex</var> property; they read and write the same member value. The default value for the property is <b>-1</b>, and indicates that an active tab (page) has not been selected in the control.
           </p>
           <p>
-            Setting a new value for the property causes the <var>OnChange</var> event handler to be signalled when <var>nboDoChangeOnSetIndex</var> has been included in the <var>Options</var> for the control. The event handlre is not signalled at design-time, during LCL component streaming, or when the control is freed.
+            Setting a new value for the property causes the <var>OnChange</var> event handler to be signalled when <var>nboDoChangeOnSetIndex</var> has been included in the <var>Options</var> for the control. The event handler is not signalled at design-time, during LCL component streaming, or when the control is freed.
           </p>
           <p>
             No actions are performed in the method when the new property value is not in the range <b>-1..<var>PageCount</var>-1</b>, or when the new value is the same as the existing value.
@@ -2986,7 +2989,7 @@
 
       <element name="TCustomTabControl.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomTabControl</var>: calls inherited <var>Create</var> creates a pagelist, then sets initial bounds and default values for local variables and properties
+          <var>Create</var> - constructor for <var>TCustomTabControl</var>: calls inherited <var>Create</var> creates a page list, then sets initial bounds and default values for local variables and properties
         </short>
         <descr/>
         <seealso>
@@ -3246,7 +3249,7 @@
         <descr>
           <p>The set of  <var>Options</var> for the Notebook: </p>
           <p>
-            <var>nboShowCloseButtons</var> (display a little CloseButton on the Tab next to the label to allow a user to close that tab),</p>
+            <var>nboShowCloseButtons</var> (display a little Close Button on the Tab next to the label to allow a user to close that tab),</p>
           <p>
             <var>nboMultiLine</var> (allows multi-line captions on the Tabs)</p>
         </descr>
@@ -3867,7 +3870,7 @@
 
       <element name="TTabControlStrings.SetMultiLine">
         <short>
-          <var>SetMultiLine</var> - specifies whether multiline captions are to be used</short>
+          <var>SetMultiLine</var> - specifies whether multi-line captions are used</short>
         <descr/>
         <seealso/>
       </element>
@@ -3962,7 +3965,7 @@
       </element>
 
       <element name="TTabControlStrings.GetSize">
-        <short>Gets the size for the String displayed on a tab conrtol</short>
+        <short>Gets the size for the String displayed on a tab control</short>
         <descr/>
         <seealso/>
       </element>
@@ -5245,7 +5248,7 @@
       </element>
 
       <element name="TTabControl.TabRect">
-        <short>Gets the rectangle where the tab at the specified psition is drawn</short>
+        <short>Gets the rectangle where the tab at the specified position is drawn</short>
         <descr/>
         <seealso/>
       </element>
@@ -5408,7 +5411,7 @@
           <var>TCustomDrawStateFlag</var> - series of flags to define the DrawState</short>
         <descr>
           <p>
-            <var>TCustomDrawStateFlag</var> is an enumerated type with values repersenting the drawing states available in custom-drawn controls. Values from the enumeration are stored in the <var>TCustomDrawState</var> set type passed as an argument to event handlers in list view and tree view controls, and stored internally in the controls.
+            <var>TCustomDrawStateFlag</var> is an enumerated type with values representing the drawing states available in custom-drawn controls. Values from the enumeration are stored in the <var>TCustomDrawState</var> set type passed as an argument to event handlers in list view and tree view controls, and stored internally in the controls.
           </p>
         </descr>
         <seealso>
@@ -5827,7 +5830,7 @@
 
       <element name="TListItem">
         <short>
-          Repesents the items created in TCustomListView and descendants
+          Represents the items created in TCustomListView and descendants
         </short>
         <descr>
           <p>
@@ -6194,11 +6197,11 @@
         </seealso>
       </element>
       <element name="TListItem.IsOwnerData.Result">
-        <short>Tru if the list item has an owner with a valid handle</short>
+        <short>True if the list item has an owner with a valid handle</short>
       </element>
 
       <element name="TListItem.GetCheckedInternal">
-        <short>Truen if the member variable for the Checked property contains True</short>
+        <short>True if the member variable for the Checked property contains True</short>
         <descr>
           <p>
             Used in methods in the widgetset class.
@@ -6249,7 +6252,7 @@
         </seealso>
       </element>
       <element name="TListItem.Assign.ASource">
-        <short>Persistent objct with values copied in the method</short>
+        <short>Persistent object with values copied in the method</short>
       </element>
 
       <element name="TListItem.Create">
@@ -6299,7 +6302,7 @@
 
       <element name="TListItem.MakeVisible">
         <short>
-          Makes the item visibile in the list view control which owns the container and the list item
+          Makes the item visible in the list view control which owns the container and the list item
         </short>
         <descr/>
         <seealso/>
@@ -6364,6 +6367,19 @@
       </element>
       <element name="TListItem.EditCaption.Result">
         <short>True if the control is not ReadOnly and the editor is valid, otherwise False</short>
+      </element>
+
+      <element name="TListItem.GetStates">
+        <short>Returns all the states for this list item</short>
+        <descr>
+          <p>
+            <var>GetStates</var> is a <var>TListItemStates</var> function used to get the state values for an item in a list view control. The state values are retrieved using methods in the widgetset class for the <var>TCustomListView</var> control which owns the list item. If the widgetset class does not return the values,  the return value contains the existing values in the States member for the <var>TListItem</var> instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TListItem.GetStates.Result">
+        <short>State values for the list item</short>
       </element>
 
       <element name="TListItem.Caption">
@@ -6480,7 +6496,7 @@
       </element>
 
       <element name="TListItemClass">
-        <short>Class refernce used to create new instances of TListItem</short>
+        <short>Class reference used to create new instances of TListItem</short>
         <descr/>
         <seealso/>
       </element>
@@ -8067,7 +8083,7 @@
         <short>Represents the FlatScrollBars property in TCustomListView</short>
       </element>
       <element name="TListViewProperty.lvpFullDrag">
-        <short>Represents the FuillDrag property in TCustomListView</short>
+        <short>Represents the FullDrag property in TCustomListView</short>
       </element>
       <element name="TListViewProperty.lvpGridLines">
         <short>Represents the GridLines property in TCustomListView</short>
@@ -8112,7 +8128,7 @@
             <var>TListViewProperties</var> is a set type used to store zero or more values from the <var>TListViewProperty</var> enumeration.
           </p>
           <p>
-            The set represents Boolean property values found in TCustomListView / TListView. When a value is included in the set, the correspondng property in TCustomListView has been set to True. The value is excluded from the set when the correspondng property in TCustomListView is set to False.
+            The set represents Boolean property values found in TCustomListView / TListView. When a value is included in the set, the corresponding property in TCustomListView has been set to True. The value is excluded from the set when the corresponding property in TCustomListView is set to False.
           </p>
           <p>
             TListViewProperties is the type used to implement the internal FProperties member in TCustomListView.
@@ -8175,7 +8191,7 @@
         </short>
         <descr>
           <p>
-            <var>TListHotTrackStyles</var> is a set type used to store zero or more values from the <var>TListHotTrackStyle</var> enumertation. TListHotTrackStyles is the type used to implement the <var>TCustomListView.HotTrackStyles</var> property.
+            <var>TListHotTrackStyles</var> is a set type used to store zero or more values from the <var>TListHotTrackStyle</var> enumeration. TListHotTrackStyles is the type used to implement the <var>TCustomListView.HotTrackStyles</var> property.
           </p>
         </descr>
         <seealso>
@@ -8418,7 +8434,7 @@
       </element>
 
       <element name="TCustomListView.GetColumnFromIndex">
-        <short>Gets the value for the indexd Column property</short>
+        <short>Gets the value for the indexed Column property</short>
         <descr/>
         <seealso>
           <link id="TCustomListView.Column"/>
@@ -8604,13 +8620,13 @@
             ResizeLastColumn is relevant when <var>ViewStyle</var> is set to <var>vsList</var> or <var>vsReport</var>, and <var>ColumnCount</var> is not set to 0 (zero). No actions are performed in the method if both conditions are not met.
           </p>
           <p>
-            ResizeLastColumn examines the values in <var>Columns</var> (in reverse order) to find the last <var>TListColumn</var> instance with its <var>Visible</var> property set to <b>True</b>. The accumulated width for the preceeding visible columns (and borders) is calculated. The difference between ClientWidth and the accumulated width is used for the last column when it is a positive non-zero value.
+            ResizeLastColumn examines the values in <var>Columns</var> (in reverse order) to find the last <var>TListColumn</var> instance with its <var>Visible</var> property set to <b>True</b>. The accumulated width for the preceding visible columns (and borders) is calculated. The difference between ClientWidth and the accumulated width is used for the last column when it is a positive non-zero value.
           </p>
           <p>
             The column affected in the method has its <var>AutoSize</var>, <var>MinWidth</var>, and <var>MaxWidth</var> properties reset before applying the new <var>Width</var>.
           </p>
           <p>
-            ResizeLastColumn is used when <var>AutoWidthLastColumn</var> is set to <b>True</b>. The method is called when the bounds for the control have been changed, or when the vaule in AutoWidthLastColumn has been changed.
+            ResizeLastColumn is used when <var>AutoWidthLastColumn</var> is set to <b>True</b>. The method is called when the bounds for the control have been changed, or when the value in AutoWidthLastColumn has been changed.
           </p>
         </descr>
         <seealso>
@@ -8806,7 +8822,7 @@
 
       <element name="TCustomListView.SetItemVisible">
         <short>
-          Notifies the widgetset class when the visibiity for a list item has been changed
+          Notifies the widgetset class when the visibility for a list item has been changed
         </short>
         <descr>
           <p>
@@ -9061,7 +9077,7 @@
 
       <element name="TCustomListView.SetImageListAsync">
         <short>
-          Performs an asynchonous notificaton when an image list in the control is changed
+          Performs an asynchronous notification when an image list in the control is changed
         </short>
         <descr>
           <p>
@@ -9105,7 +9121,7 @@
       </element>
 
       <element name="TCustomListView.ShowEditor">
-        <short>DIsplays the editor for the list view</short>
+        <short>Displays the editor for the list view</short>
         <descr/>
         <seealso/>
       </element>
@@ -10347,7 +10363,7 @@
           <p>
             The default list of emphasis possibilities is given by the definition.
           </p>
-          <code>TListHotTrackStyle = (htHandPoint, htUnderlineCold, htUnderlineHot)</code>
+<code>TListHotTrackStyle = (htHandPoint, htUnderlineCold, htUnderlineHot)</code>
           <p>In other words:</p>
           <ul>
             <li>
@@ -10672,7 +10688,7 @@
               <var>TCustomProgressBar</var> is a <var>TWinControl</var> descendant which implements a progress bar control.
             </p>
             <p>
-              A progress bar is used to indicate the progress for a lengthy operation. It contains an indicator bar that is updated with the completion percentage for the task. A progess bar can use either horizontal or vertical orientations. The visual appeance of the control can be configured using drawing styles, themes, and other property settings.
+              A progress bar is used to indicate the progress for a lengthy operation. It contains an indicator bar that is updated with the completion percentage for the task. A progress bar can use either horizontal or vertical orientations. The visual appearance of the control can be configured using drawing styles, themes, and other property settings.
             </p>
             <p>
               TCustomProgressBar is the ancestor for <var>TProgressBar</var>.
@@ -10988,7 +11004,7 @@
         </short>
         <descr>
           <p>
-            <var>Orientation</var> is a <var>TProgressBarOrientation</var> property whiich indicates the orientation and direction for the progress bar. The default value is <var>pbHorizontal</var>, and orients the progress bar horizontally. As the value in <var>Position</var> is increased, the progress bar is moved from left to right.
+            <var>Orientation</var> is a <var>TProgressBarOrientation</var> property which indicates the orientation and direction for the progress bar. The default value is <var>pbHorizontal</var>, and orients the progress bar horizontally. As the value in <var>Position</var> is increased, the progress bar is moved from left to right.
           </p>
           <p>
             See <var>TProgressBarOrientation</var> for the available values and their meanings.
@@ -11036,7 +11052,7 @@
 
       <element name="TCustomProgressBar.Smooth">
         <short>
-          Indicates if the progress bar indicator is drawn as a amooth solid bar, as opposed to individual bar segments
+          Indicates if the progress bar indicator is drawn as a smooth solid bar, as opposed to individual bar segments
         </short>
         <descr>
           <p>
@@ -11182,7 +11198,7 @@
         </short>
         <descr>
             <p>
-              <var>TUpDownDirection</var> is an enumerated type with values that indicates whether a value is being increased, decreased, or not changed in a <var>TCustomUpDown</var> control. TUpDownDirection is the type passed as an argument to <var>TUDChangingEventEx</var> event handers.
+              <var>TUpDownDirection</var> is an enumerated type with values that indicates whether a value is being increased, decreased, or not changed in a <var>TCustomUpDown</var> control. TUpDownDirection is the type passed as an argument to <var>TUDChangingEventEx</var> event handlers.
             </p>
         </descr>
         <seealso/>
@@ -12407,7 +12423,7 @@
 
       <element name="TToolButton.AssignTo">
         <short>
-          <var>AssignTo</var> calls inherited method: if the destination is of correct type, copies <var>ImageIindex</var> to destination and sets the Checked property
+          <var>AssignTo</var> calls inherited method: if the destination is of correct type, copies <var>ImageIndex</var> to destination and sets the Checked property
         </short>
         <descr/>
         <seealso>
@@ -14062,7 +14078,7 @@
             <var>TCoolBand</var> is a <var>TCollectionItem</var> descendant which implements a band displayed on the <var>TCoolBar</var> control.
           </p>
           <p>
-            A band contains a single Control that is displayed as a moveable, sizeable area on the TCoolBar control. It has a Grabber (sizing grip) that is used to move and resize the band. It can also have a bitmap image and text displayed at the start of the band prior its Control. The band be configured with a fixed size, and may occupy the entire width for the TCoolBar.
+            A band contains a single Control that is displayed as a movable, sizable area on the TCoolBar control. It has a Grabber (sizing grip) that is used to move and resize the band. It can also have a bitmap image and text displayed at the start of the band prior its Control. The band be configured with a fixed size, and may occupy the entire width for the TCoolBar.
           </p>
           <p>
             TCoolBand is the type used for the items in the TCoolBands collection.
@@ -14339,7 +14355,7 @@
             Reserves space needed for elements in the TCoolBand instance, including:
           </p>
           <ul>
-            <li>Indent spacing for the Grabber (SIzing Grip)</li>
+            <li>Indent spacing for the Grabber (Sizing Grip)</li>
             <li>Horizontal spacing</li>
             <li>The space needed for the Text</li>
             <li>The space needed for the Image (scaled to the current PPI)</li>
@@ -14378,7 +14394,7 @@
 
       <element name="TCoolBand.CalcTextWidth">
         <short>
-          Gets the numer of pixels needed for Text using the Font in the parent control
+          Gets the number of pixels needed for Text using the Font in the parent control
         </short>
         <descr/>
         <seealso/>
@@ -14420,7 +14436,7 @@
             <li>Width (cDefWidth)</li>
           </ul>
           <p>
-            Create calls the inherited method using aCollection as rthe owner of the colleciton item. An exception is raised if ACollection is not a TCoolBands descendant.
+            Create calls the inherited method using aCollection as the owner of the collection item. An exception is raised if ACollection is not a TCoolBands descendant.
           </p>
           <p>
             The internal TCoolBar reference in the class instance is set to the reference used in aCollection.
@@ -14468,7 +14484,7 @@
         </short>
         <descr>
           <p>
-            Calls the inherirted Changed method to update the current collection item, and to notify the parent control of a change to the collection.
+            Calls the inherited Changed method to update the current collection item, and to notify the parent control of a change to the collection.
           </p>
         </descr>
         <seealso/>
@@ -14547,7 +14563,7 @@
         <short>Control displayed on the band</short>
         <descr>
           <p>
-            Setting a new value for the property causes the Collection for the class to be updated. The existing control on the band is Nil'd anf the nwe value is assigned. The Parent property in the control is set to the TCoolBar instance.
+            Setting a new value for the property causes the Collection for the class to be updated. The existing control on the band is Nil'd and the new value is assigned. The Parent property in the control is set to the TCoolBar instance.
           </p>
         </descr>
         <seealso/>
@@ -14784,7 +14800,7 @@
       </element>
 
       <element name="TCustomCoolBar">
-        <short>Implements a Rebar-like control with resizable bannds</short>
+        <short>Implements a Rebar-like control with resizable bands</short>
         <descr>
           <p>
             <var>TCustomCoolBar</var> is a <var>TToolWindow</var> descendant which implements a control like the Windows Rebar control. It provides a collection of windowed controls which are displayed in movable, resizable bands.
@@ -14793,7 +14809,7 @@
             Each band (or <var>TCoolBand</var>) on the control can have a configurable sizing grip (or grabber), a bitmap, a text label, and a single windowed control. The CoolBar handles the size and position for the control when its band is moved.  Each band can have a fixed size, or can automatically re-size to the contained control. Bands can be displayed one band per line, or re-sized and positioned to fill the available width or height for the CoolBar control.
           </p>
           <p>
-            A common use case is hosting multiple toolbars in an application. Separate TTooolbar instance are created and configured with event handlers or actions as needed. Each toolbar is assigned as the control for a band. A perfect example is the Lazarus IDE, which uses TCoolbar to host the file, view and run toolbars in its interface.
+            A common use case is hosting multiple toolbars in an application. Separate TToolbar instance are created and configured with event handlers or actions as needed. Each toolbar is assigned as the control for a band. A perfect example is the Lazarus IDE, which uses TCoolbar to host the file, view and run toolbars in its interface.
           </p>
           <p>
             Do not create instances of TCustomCoolBar; use the TCoolBar descendant which sets the visibility for the properties in the control.
@@ -16067,7 +16083,7 @@
         <short>Enumerated type denoting the state for a TreeNode</short>
         <descr>
           <p>
-            <var>TNodeState</var> is an enumerted type with values representing the state a tree node. The values reflect the settings in property values in a TTreeNode instance, or the use a node in a tree structure. Value(s) from the enumeration are stored in the TNodeStates type.
+            <var>TNodeState</var> is an enumerated type with values representing the state a tree node. The values reflect the settings in property values in a TTreeNode instance, or the use a node in a tree structure. Value(s) from the enumeration are stored in the TNodeStates type.
           </p>
         </descr>
         <seealso>
@@ -16224,7 +16240,7 @@
       </element>
 
       <element name="ETreeViewError">
-        <short>Exception tytpe raised for errors in a tree view</short>
+        <short>Exception type raised for errors in a tree view</short>
         <descr>
           <p>
             <var>ETreeViewError</var> is a <var>ETreeNodeError</var> descendant and the exception raised for errors in a tree structure.
@@ -17317,25 +17333,27 @@
       </element>
 
       <element name="TTreeNode.GetOwner">
-        <short/>
+        <short>Gets the owner of the object instance</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNode.GetOwner.Result">
-        <short/>
+        <short>Persistent object which owns the object instance</short>
       </element>
 
       <element name="TTreeNode.Create">
-        <short>
-          <var>Create</var> - constructor for TTreeNode: calls inherited <var>Create</var> then initializes indexes and sets subtree count to 1
-        </short>
-        <descr/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for <var>TTreeNode</var>, and calls the inherited <var>Create</var> on entry. Create sets the default values for properties and members in the class instance. The value in <var>SubTreeCount</var> is set to <b>1</b>. The owner of the class instance is set to the <var>TTreeNodes</var> instance in <var>AnOwner</var>.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
       <element name="TTreeNode.Create.AnOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
 
       <element name="TTreeNode.Destroy">
@@ -17677,7 +17695,7 @@
 
       <element name="TTreeNode.GetNextMultiSelected">
         <short>
-          <var>GetNextMultiSelected</var> - returns the next node in a multiselection
+          <var>GetNextMultiSelected</var> - returns the next node in a multi-selection
         </short>
         <descr/>
         <seealso/>
@@ -18161,7 +18179,7 @@
       </element>
 
       <element name="TTreeNode.Level">
-        <short>The <var>Level</var> of descendance of indentation of the current node</short>
+        <short>The descendency level or indentation for the tree node</short>
         <descr/>
         <seealso/>
       </element>
@@ -18583,34 +18601,6 @@
       </element>
       <element name="TTreeNodes.SetItem.AValue">
         <short/>
-      </element>
-
-      <element name="TTreeNodes.SetUpdateState">
-        <short>Sets the update state in the TreeView which owns the node tree</short>
-        <descr>
-          <p>
-            <var>SetUpdateState</var> is a procedure used to set the update state in the TreeView which owns the class instance. <var>Updating</var> indicates the <var>TTreeViewState</var> value(s) that are included in or excluded from the States property in the <var>Owner</var>.
-          </p>
-          <p>
-            When <var>Updating</var> is <b>True</b>, the value <var>tvsUpdating</var> is included in the <var>States</var> property in Owner.
-          </p>
-          <p>
-            When Updating is <b>False</b>, <var>tvsUpdating</var> is excluded from and <var>tvsScrollbarChanged</var> is included in the States property in Owner. This also causes the TreeView to update its scrollbars and repaint the control .
-          </p>
-          <p>
-            SetUpdateState is used to implement the <var>BeginUpdate</var> and <var>EndUpdate</var> methods.
-          </p>
-        </descr>
-        <seealso>
-          <link id="TTreeNodes.Owner"/>
-          <link id="TTreeNodes.BeginUpdate"/>
-          <link id="TTreeNodes.EndUpdate"/>
-          <link id="TCustomTreeView.States"/>
-          <link id="TTreeViewState"/>
-        </seealso>
-      </element>
-      <element name="TTreeNodes.SetUpdateState.Updating">
-        <short>True when the tree nodes are being updated, False when the update has been completed</short>
       </element>
 
       <element name="TTreeNodes.Create">
@@ -19220,75 +19210,83 @@
         </short>
         <descr>
           <p>
-            <var>TTreeViewState</var> is an enumerated type containing the permissible state values for <var>TTreeView</var>.
+            <var>TTreeViewState</var> is an enumerated type containing the permissible state values for <var>TCustomTreeView</var> and <var>TTreeView</var>.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TTreeViewState.tvsScrollbarChanged">
-        <short/>
+        <short>
+          Scrollbar visibility or position has been changed in the control
+        </short>
       </element>
       <element name="TTreeViewState.tvsMaxRightNeedsUpdate">
-        <short/>
+        <short>
+          The maximum width for expanded nodes needs to be recalculated
+        </short>
       </element>
       <element name="TTreeViewState.tvsTopsNeedsUpdate">
-        <short/>
+        <short>
+          The top coordinate for visible expanded nodes needs to be recalculated
+        </short>
       </element>
       <element name="TTreeViewState.tvsMaxLvlNeedsUpdate">
-        <short/>
+        <short>The maximum level for all nodes needs to be recalculated</short>
       </element>
       <element name="TTreeViewState.tvsTopItemNeedsUpdate">
-        <short/>
+        <short>The first visible node on the control has changed</short>
       </element>
       <element name="TTreeViewState.tvsBottomItemNeedsUpdate">
-        <short/>
+        <short>The last visible node on the control has changed</short>
       </element>
       <element name="TTreeViewState.tvsCanvasChanged">
-        <short/>
+        <short>The canvas for the control has been changed</short>
       </element>
       <element name="TTreeViewState.tvsDragged">
-        <short/>
+        <short>A node has been dragged to a new location in the tree</short>
       </element>
       <element name="TTreeViewState.tvsIsEditing">
-        <short/>
+        <short>The BeginEditing method has been called for the control</short>
       </element>
       <element name="TTreeViewState.tvsStateChanging">
-        <short/>
+        <short>Values in the States property for the control have been changed</short>
       </element>
       <element name="TTreeViewState.tvsManualNotify">
-        <short/>
-      </element>
-      <element name="TTreeViewState.tvsUpdating">
-        <short/>
+        <short>A tree node has been expanded or collapsed using code</short>
       </element>
       <element name="TTreeViewState.tvsPainting">
-        <short/>
+        <short>The control has called it Paint method</short>
       </element>
       <element name="TTreeViewState.tvsMouseCapture">
-        <short/>
+        <short>Not used in the current LCL implementation</short>
       </element>
       <element name="TTreeViewState.tvsWaitForDragging">
-        <short/>
+        <short>A Drag operation and its timer has been started</short>
       </element>
       <element name="TTreeViewState.tvsDblClicked">
-        <short/>
+        <short>A mouse double click event has been handled for the control</short>
       </element>
       <element name="TTreeViewState.tvsTripleClicked">
-        <short/>
+        <short>A mouse triple click event has been handled for the control</short>
       </element>
       <element name="TTreeViewState.tvsQuadClicked">
-        <short/>
+        <short>A mouse quadruple click event has been handled for the control</short>
       </element>
       <element name="TTreeViewState.tvsSelectionChanged">
-        <short/>
+        <short>The selected node(s) have been changed in the control</short>
       </element>
 
       <element name="TTreeViewStates">
         <short>
-          <var>TTreeViewStates</var> - set of <var>TTreeViewState</var>
+          Set type used to store values from the TTreeViewState enumeration
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          TTreeViewStates is a set type used to store zero or more values from the TTreeViewState enumeration. TTreeViewStates is the type used for the States property in TCustomTreeView.
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.States"/>
+          <link id="TTreeViewState"/>
+        </seealso>
       </element>
 
       <element name="TTreeViewOption">
@@ -19373,28 +19371,37 @@
         </short>
       </element>
       <element name="TTreeViewOption.tvoNoDoubleClickExpand">
-        <short>Prevents toggling the expanded state for the treeview item when it is double clicked</short>
+        <short>Prevents toggling the expanded state for the tree view item when it is double clicked</short>
       </element>
       <element name="TTreeViewOption.tvoThemedDraw">
-        <short>Treeview item is drawn using settings from theme services</short>
+        <short>Tree view item is drawn using settings from theme services</short>
       </element>
       <element name="TTreeViewOption.tvoEmptySpaceUnselect">
-        <short>Indicates if empty space can be be drawn below unselected items in the treeview</short>
+        <short>Indicates if empty space can be be drawn below unselected items in the tree view</short>
       </element>
 
       <element name="TTreeViewOptions">
         <short>
-          <var>TTreeViewOptions</var> - set of <var>TTreeViewOption</var>
+          Set type used to store values from the TTreeViewOption enumeration
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TTreeViewOptions</var> is a set type used to store zero (0) or more values from the TTreeViewOption enumeration. Values included in the set indicate that a  feature or behavior is enabled for a tree view control.
+          </p>
+          <p>
+            TTreeViewOptions is the type used for the <var>TCustomTreeView.Options</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.Options"/>
+        </seealso>
       </element>
 
       <element name="DefaultTreeViewOptions">
         <short>A set of TreeViewOptions which are set be default.</short>
         <descr>
           <p>
-            A series of defaults used to set the options of a TreeView object when first placed on a form. This set consists of the following items:
+            A set of default values used to set the options of a TreeView object when first placed on a form. This set consists of the following items:
           </p>
           <ul>
             <li>tvoShowRoot</li>
@@ -19406,16 +19413,20 @@
             <li>tvoAutoItemHeight</li>
           </ul>
           <p>
-            For the meaning of these options, see the documentation of <var>TTreeView</var>.
+            For the meaning of these options, see the <var>TTreeViewOption</var> documentation.
           </p>
         </descr>
         <seealso>
-          <link id="TTreeView"/>
+          <link id="TTreeViewOption"/>
+          <link id="TTreeViewOptions"/>
+          <link id="TCustomTreeView.Options"/>
         </seealso>
       </element>
 
       <element name="DefaultMultiSelectStyle">
-        <short>Default value for the MultiSelectStyle property in TCustomTreeView</short>
+        <short>
+          Default value(s) used for the MultiSelectStyle property in TCustomTreeView
+        </short>
         <descr/>
         <seealso>
           <link id="TCustomTreeView.MultiSelectStyle"/>
@@ -19431,20 +19442,32 @@
       </element>
 
       <element name="DefaultTreeNodeExpandSignSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Default size used for expand and collapse indicators in TCustomTreeView</short>
+        <descr>
+          <p>
+            DefaultTreeNodeExpandSignSize contains thew default value used in the TCustomTreeView.ExpandSignSize property. The value may be scaled at run-time in TCustomTreeView if the PPI (Pixels Per Inch) setting in the control differs from the value used at design-time.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.ExpandSignSize"/>
+        </seealso>
       </element>
 
       <element name="TTreeViewExpandSignType">
         <short>
-          <var>TTreeViewExpandSignType</var> is an enumerated type which specifies the symbol displayed in a Treeview to denote the expanded state for a given node.
+          Represents symbols types used for expanded or collapsed tree nodes
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TTreeViewExpandSignType</var> is an enumerated type which specifies the symbol displayed in a Treeview to denote the expanded or collapsed state for a given tree node. TTreeViewExpandSignType is the type used to implement the <var>TCustomTreeView.ExpandSignType</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.ExpandSignType"/>
+        </seealso>
       </element>
       <element name="TTreeViewExpandSignType.tvestTheme">
-        <short>Uses the value provided by Them Services</short>
+        <short>Uses the mechanism provided by Theme Services</short>
       </element>
       <element name="TTreeViewExpandSignType.tvestPlusMinus">
         <short>Uses a Plus or Minus sign</short>
@@ -19457,15 +19480,21 @@
       </element>
 
       <element name="TTreeViewInsertMarkType">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Represents insert mark locations used in TCustomTreeView</short>
+        <descr>
+          <p>
+            <var>TTreeViewInsertMarkType</var> is an enumerated type with values representing insert mark locations used for nodes in the <var>TCustomTreeView</var> control. TTreeViewInsertMarkType is the type used to implement the <var>InsertMarkType</var> property in TCustomTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.InsertMarkType"/>
+        </seealso>
       </element>
       <element name="TTreeViewInsertMarkType.tvimNone">
-        <short/>
+        <short>No insert mark is used in a tree view</short>
       </element>
       <element name="TTreeViewInsertMarkType.tvimAsFirstChild">
-        <short/>
+        <short>Uses an insert mark for the root or first child node in a tree view</short>
       </element>
       <element name="TTreeViewInsertMarkType.tvimAsNextSibling">
         <short/>
@@ -19607,860 +19636,391 @@
       </element>
 
       <element name="TCustomTreeView.GetBackgroundColor">
-        <short/>
+        <short>Gets the value for the BackgroundColor property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.BackgroundColor"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.GetBackgroundColor.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TCustomTreeView.GetBottomItem">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Gets the value for the BottomItem property</short>
       </element>
       <element name="TCustomTreeView.GetBottomItem.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TCustomTreeView.GetDropTarget">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Gets the value for the DropTarget property</short>
       </element>
       <element name="TCustomTreeView.GetDropTarget.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetExpandSignSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetExpandSignSize.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetHideSelection">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetHideSelection.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetHotTrack">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetHotTrack.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetIndent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetIndent.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetKeepCollapsedNodes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetKeepCollapsedNodes.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetMultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetMultiSelect.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetReadOnly.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetRightClickSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetRightClickSelect.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetRowSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetRowSelect.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetSelection">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetSelection.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetSelectionCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetSelectionCount.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetSelections">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetSelections.Result">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.GetSelections.AIndex">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetShowButtons">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetShowButtons.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetShowLines">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetShowLines.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetShowRoot">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetShowRoot.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetShowSeparators">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetShowSeparators.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetToolTips">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetToolTips.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.GetTopItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.GetTopItem.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.IsStoredBackgroundColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.IsStoredBackgroundColor.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.HintMouseLeave">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.HintMouseLeave.Sender">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.ImageListChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.ImageListChange.Sender">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.NodeIsSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.NodeIsSelected.Result">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.NodeIsSelected.ANode">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.OnChangeTimer">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.OnChangeTimer.Sender">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetAutoExpand">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetAutoExpand.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetBackgroundColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetBackgroundColor.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetBottomItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetBottomItem.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetDefaultItemHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetDefaultItemHeight.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetExpandSignType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetExpandSignType.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetDropTarget">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetDropTarget.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetHideSelection">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetHideSelection.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetHotTrack">
-        <short>
-          <var>SetHotTrack</var> - specifies the status of HotTrack
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetHotTrack.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetIndent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetIndent.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetImages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetImages.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetImagesWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetImagesWidth.AImagesWidth">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetInsertMarkNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetInsertMarkNode.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetInsertMarkType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetInsertMarkType.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetKeepCollapsedNodes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetKeepCollapsedNodes.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetMultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetMultiSelect.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetMultiSelectStyle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetMultiSelectStyle.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetReadOnly">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetReadOnly.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetRightClickSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetRightClickSelect.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetRowSelect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetRowSelect.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetScrollBars">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetScrollBars.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetScrolledLeft">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetScrolledLeft.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetScrolledTop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetScrolledTop.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetSelectedColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetSelectedColor.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetSelectedFontColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetSelectedFontColor.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetSelection">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetSelection.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetSeparatorColor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetSeparatorColor.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetShowButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetShowButton.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetShowLines">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetShowLines.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetShowRoot">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetShowRoot.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetShowScrollbar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetShowScrollbar.Which">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.SetShowScrollbar.AShow">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetShowSeparators">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetShowSeparators.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetSortType">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetSortType.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetStateImages">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetStateImages.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetStateImagesWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetStateImagesWidth.AStateImagesWidth">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetToolTips">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetToolTips.Value">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetTreeLineColor">
-        <short>Sets the value for the TreeLineColor property</short>
-        <descr/>
-        <seealso>
-          <link id="TCustomTreeView.TreeLineColor"/>
-        </seealso>
-      </element>
-      <element name="TCustomTreeView.SetTreeLineColor.Value">
-        <short>New value for the property</short>
-      </element>
-
-      <element name="TCustomTreeView.SetTreeNodes">
-        <short>Sets the value for the Items property</short>
-        <descr/>
-        <seealso>
-          <link id="TCustomTreeView.Items"/>
-        </seealso>
-      </element>
-      <element name="TCustomTreeView.SetTreeNodes.Value">
-        <short>New value for the property</short>
-      </element>
-
-      <element name="TCustomTreeView.SetTopItem">
-        <short>Sets the value for the TopItem property</short>
-        <descr/>
-        <seealso>
-          <link id="TCustomTreeView.TopItem"/>
-        </seealso>
-      </element>
-      <element name="TCustomTreeView.SetTopItem.Value">
-        <short>New value for the property</short>
-      </element>
-
-      <element name="TCustomTreeView.UpdateAllTops">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateBottomItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateHotTrack">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.UpdateHotTrack.X">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.UpdateHotTrack.Y">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateMaxLvl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateMaxRight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateTopItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateScrollbars">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.UpdateTooltip">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.UpdateTooltip.X">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.UpdateTooltip.Y">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.InternalSelectionChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.AllowMultiSelectWithCtrl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.AllowMultiSelectWithCtrl.Result">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.AllowMultiSelectWithCtrl.AState">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.AllowMultiSelectWithShift">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.AllowMultiSelectWithShift.Result">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.AllowMultiSelectWithShift.AState">
-        <short/>
-      </element>
-
-      <element name="TCustomTreeView.SetExpandSignSize">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetExpandSignSize.AExpandSignSize">
-        <short/>
-      </element>
-
+        <short>Value for the property</short>
+      </element>
+
+      <!-- private -->
+      <element name="TCustomTreeView.GetExpandSignSize"/>
+      <element name="TCustomTreeView.GetExpandSignSize.Result"/>
+      <element name="TCustomTreeView.GetHideSelection"/>
+      <element name="TCustomTreeView.GetHideSelection.Result"/>
+      <element name="TCustomTreeView.GetHotTrack"/>
+      <element name="TCustomTreeView.GetHotTrack.Result"/>
+      <element name="TCustomTreeView.GetIndent"/>
+      <element name="TCustomTreeView.GetIndent.Result"/>
+      <element name="TCustomTreeView.GetKeepCollapsedNodes"/>
+      <element name="TCustomTreeView.GetKeepCollapsedNodes.Result"/>
+      <element name="TCustomTreeView.GetMultiSelect"/>
+      <element name="TCustomTreeView.GetMultiSelect.Result"/>
+      <element name="TCustomTreeView.GetReadOnly"/>
+      <element name="TCustomTreeView.GetReadOnly.Result"/>
+      <element name="TCustomTreeView.GetRightClickSelect"/>
+      <element name="TCustomTreeView.GetRightClickSelect.Result"/>
+      <element name="TCustomTreeView.GetRowSelect"/>
+      <element name="TCustomTreeView.GetRowSelect.Result"/>
+      <element name="TCustomTreeView.GetSelection"/>
+      <element name="TCustomTreeView.GetSelection.Result"/>
+      <element name="TCustomTreeView.GetSelectionCount"/>
+      <element name="TCustomTreeView.GetSelectionCount.Result"/>
+      <element name="TCustomTreeView.GetSelections"/>
+      <element name="TCustomTreeView.GetSelections.Result"/>
+      <element name="TCustomTreeView.GetSelections.AIndex"/>
+      <element name="TCustomTreeView.GetShowButtons"/>
+      <element name="TCustomTreeView.GetShowButtons.Result"/>
+      <element name="TCustomTreeView.GetShowLines"/>
+      <element name="TCustomTreeView.GetShowLines.Result"/>
+      <element name="TCustomTreeView.GetShowRoot"/>
+      <element name="TCustomTreeView.GetShowRoot.Result"/>
+      <element name="TCustomTreeView.GetShowSeparators"/>
+      <element name="TCustomTreeView.GetShowSeparators.Result"/>
+      <element name="TCustomTreeView.GetToolTips"/>
+      <element name="TCustomTreeView.GetToolTips.Result"/>
+      <element name="TCustomTreeView.GetTopItem"/>
+      <element name="TCustomTreeView.GetTopItem.Result"/>
+      <element name="TCustomTreeView.IsStoredBackgroundColor"/>
+      <element name="TCustomTreeView.IsStoredBackgroundColor.Result"/>
+      <element name="TCustomTreeView.HintMouseLeave"/>
+      <element name="TCustomTreeView.HintMouseLeave.Sender"/>
+      <element name="TCustomTreeView.ImageListChange"/>
+      <element name="TCustomTreeView.ImageListChange.Sender"/>
+      <element name="TCustomTreeView.NodeIsSelected"/>
+      <element name="TCustomTreeView.NodeIsSelected.Result"/>
+      <element name="TCustomTreeView.NodeIsSelected.ANode"/>
+      <element name="TCustomTreeView.OnChangeTimer"/>
+      <element name="TCustomTreeView.OnChangeTimer.Sender"/>
+      <element name="TCustomTreeView.SetAutoExpand"/>
+      <element name="TCustomTreeView.SetAutoExpand.Value"/>
+      <element name="TCustomTreeView.SetBackgroundColor"/>
+      <element name="TCustomTreeView.SetBackgroundColor.Value"/>
+      <element name="TCustomTreeView.SetBottomItem"/>
+      <element name="TCustomTreeView.SetBottomItem.Value"/>
+      <element name="TCustomTreeView.SetDefaultItemHeight"/>
+      <element name="TCustomTreeView.SetDefaultItemHeight.Value"/>
+      <element name="TCustomTreeView.SetExpandSignType"/>
+      <element name="TCustomTreeView.SetExpandSignType.Value"/>
+      <element name="TCustomTreeView.SetDropTarget"/>
+      <element name="TCustomTreeView.SetDropTarget.Value"/>
+      <element name="TCustomTreeView.SetHideSelection"/>
+      <element name="TCustomTreeView.SetHideSelection.Value"/>
+      <element name="TCustomTreeView.SetHotTrack"/>
+      <element name="TCustomTreeView.SetHotTrack.Value"/>
+      <element name="TCustomTreeView.SetIndent"/>
+      <element name="TCustomTreeView.SetIndent.Value"/>
+      <element name="TCustomTreeView.SetImages"/>
+      <element name="TCustomTreeView.SetImages.Value"/>
+      <element name="TCustomTreeView.SetImagesWidth"/>
+      <element name="TCustomTreeView.SetImagesWidth.AImagesWidth"/>
+      <element name="TCustomTreeView.SetInsertMarkNode"/>
+      <element name="TCustomTreeView.SetInsertMarkNode.AValue"/>
+      <element name="TCustomTreeView.SetInsertMarkType"/>
+      <element name="TCustomTreeView.SetInsertMarkType.AValue"/>
+      <element name="TCustomTreeView.SetKeepCollapsedNodes"/>
+      <element name="TCustomTreeView.SetKeepCollapsedNodes.Value"/>
+      <element name="TCustomTreeView.SetMultiSelect"/>
+      <element name="TCustomTreeView.SetMultiSelect.AValue"/>
+      <element name="TCustomTreeView.SetMultiSelectStyle"/>
+      <element name="TCustomTreeView.SetMultiSelectStyle.AValue"/>
+      <element name="TCustomTreeView.SetReadOnly"/>
+      <element name="TCustomTreeView.SetReadOnly.Value"/>
+      <element name="TCustomTreeView.SetRightClickSelect"/>
+      <element name="TCustomTreeView.SetRightClickSelect.Value"/>
+      <element name="TCustomTreeView.SetRowSelect"/>
+      <element name="TCustomTreeView.SetRowSelect.Value"/>
+      <element name="TCustomTreeView.SetScrollBars"/>
+      <element name="TCustomTreeView.SetScrollBars.Value"/>
+      <element name="TCustomTreeView.SetScrolledLeft"/>
+      <element name="TCustomTreeView.SetScrolledLeft.AValue"/>
+      <element name="TCustomTreeView.SetScrolledTop"/>
+      <element name="TCustomTreeView.SetScrolledTop.AValue"/>
+      <element name="TCustomTreeView.SetSelectedColor"/>
+      <element name="TCustomTreeView.SetSelectedColor.Value"/>
+      <element name="TCustomTreeView.SetSelectedFontColor"/>
+      <element name="TCustomTreeView.SetSelectedFontColor.Value"/>
+      <element name="TCustomTreeView.SetSelection"/>
+      <element name="TCustomTreeView.SetSelection.Value"/>
+      <element name="TCustomTreeView.SetSeparatorColor"/>
+      <element name="TCustomTreeView.SetSeparatorColor.AValue"/>
+      <element name="TCustomTreeView.SetShowButton"/>
+      <element name="TCustomTreeView.SetShowButton.Value"/>
+      <element name="TCustomTreeView.SetShowLines"/>
+      <element name="TCustomTreeView.SetShowLines.Value"/>
+      <element name="TCustomTreeView.SetShowRoot"/>
+      <element name="TCustomTreeView.SetShowRoot.Value"/>
+      <element name="TCustomTreeView.SetShowScrollbar"/>
+      <element name="TCustomTreeView.SetShowScrollbar.Which"/>
+      <element name="TCustomTreeView.SetShowScrollbar.AShow"/>
+      <element name="TCustomTreeView.SetShowSeparators"/>
+      <element name="TCustomTreeView.SetShowSeparators.Value"/>
+      <element name="TCustomTreeView.SetSortType"/>
+      <element name="TCustomTreeView.SetSortType.Value"/>
+      <element name="TCustomTreeView.SetStateImages"/>
+      <element name="TCustomTreeView.SetStateImages.Value"/>
+      <element name="TCustomTreeView.SetStateImagesWidth"/>
+      <element name="TCustomTreeView.SetStateImagesWidth.AStateImagesWidth"/>
+      <element name="TCustomTreeView.SetToolTips"/>
+      <element name="TCustomTreeView.SetToolTips.Value"/>
+      <element name="TCustomTreeView.SetTreeLineColor"/>
+      <element name="TCustomTreeView.SetTreeLineColor.Value"/>
+      <element name="TCustomTreeView.SetTreeNodes"/>
+      <element name="TCustomTreeView.SetTreeNodes.Value"/>
+      <element name="TCustomTreeView.SetTopItem"/>
+      <element name="TCustomTreeView.SetTopItem.Value"/>
+      <element name="TCustomTreeView.UpdateAllTops"/>
+      <element name="TCustomTreeView.UpdateBottomItem"/>
+      <element name="TCustomTreeView.UpdateHotTrack"/>
+      <element name="TCustomTreeView.UpdateHotTrack.X"/>
+      <element name="TCustomTreeView.UpdateHotTrack.Y"/>
+      <element name="TCustomTreeView.UpdateMaxLvl"/>
+      <element name="TCustomTreeView.UpdateMaxRight"/>
+      <element name="TCustomTreeView.UpdateTopItem"/>
+      <element name="TCustomTreeView.UpdateScrollbars"/>
+      <element name="TCustomTreeView.UpdateTooltip"/>
+      <element name="TCustomTreeView.UpdateTooltip.X"/>
+      <element name="TCustomTreeView.UpdateTooltip.Y"/>
+      <element name="TCustomTreeView.InternalSelectionChanged"/>
+      <element name="TCustomTreeView.AllowMultiSelectWithCtrl"/>
+      <element name="TCustomTreeView.AllowMultiSelectWithCtrl.Result"/>
+      <element name="TCustomTreeView.AllowMultiSelectWithCtrl.AState"/>
+      <element name="TCustomTreeView.AllowMultiSelectWithShift"/>
+      <element name="TCustomTreeView.AllowMultiSelectWithShift.Result"/>
+      <element name="TCustomTreeView.AllowMultiSelectWithShift.AState"/>
+      <element name="TCustomTreeView.SetExpandSignSize"/>
+      <element name="TCustomTreeView.SetExpandSignSize.AExpandSignSize"/>
+
+      <!-- protected -->
       <element name="TCustomTreeView.FChangeTimer">
-        <short>
-          <var>FChangeTimer</var> - local variable to act as timer for changes
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Member with the OnChange timer for the control</short>
       </element>
 
       <element name="TCustomTreeView.FEditor">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>TEdit used as the editor in the tree view control</short>
       </element>
 
       <element name="TCustomTreeView.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCustomTreeView.GetControlClassDefaultSize">
-        <short/>
+        <short>Gets the default dimensions used for new instances of the class</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetControlClassDefaultSize.Result">
-        <short/>
+        <short>Size for the new control instance</short>
       </element>
 
       <element name="TCustomTreeView.Added">
-        <short/>
-        <descr/>
+        <short>
+          Performs actions needed when the specified tree node is added to Items
+        </short>
+        <descr>
+          <p>
+            Signals the OnAddition event handler (when assigned).
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.Added.Node">
-        <short/>
+        <short>Tree nodes added to the Items for the control</short>
       </element>
 
       <element name="TCustomTreeView.EditorEditingDone">
-        <short/>
+        <short>Implements the OnEditingDone event handler for the Editor in the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.EditorEditingDone.Sender">
-        <short/>
+        <short>Object for the event notification</short>
       </element>
 
       <element name="TCustomTreeView.EditorKeyDown">
-        <short/>
+        <short>Implements the OnKeyDown event handler for the Editor in the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.EditorKeyDown.Sender">
-        <short/>
+        <short>Object for the event notification</short>
       </element>
       <element name="TCustomTreeView.EditorKeyDown.Key">
-        <short/>
+        <short>Virtual key code for the notification</short>
       </element>
       <element name="TCustomTreeView.EditorKeyDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key down event</short>
       </element>
 
       <element name="TCustomTreeView.BeginAutoDrag" link="#lcl.controls.TControl.BeginAutoDrag"/>
 
       <element name="TCustomTreeView.BeginEditing">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Prepares the control to edit the text for the specified tree node</short>
+        <descr>
+          <p>
+            No actions are performed in the method for any of the following conditions:
+          </p>
+          <ul>
+            <li>ANode has not been assigned (contains Nil).</li>
+            <li>ANode is not visible.</li>
+            <li>BeginEditing has been called and EndEditing has not yet been called.</li>
+            <li>CanEdit (and the OnEditing event handler) returns False.</li>
+          </ul>
+          <p>
+            If a different node is being edited in the control, the EndEditing method is called.
+          </p>
+          <p>
+            BeginEditing updates the States property to include the value tvsIsEditing.
+          </p>
+          <p>
+            The TEdit control used as the Editor in the tree view is created (when needed), configured, and aligned to the display rectangle for the tree node. The value in the TTreeNode.Text property is assigned to the Editor, its content is selected, and the Editor is given focus.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.States"/>
+          <link id="TCustomTreeView.EndEditing"/>
+          <link id="TTreeNode.Text"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.BeginEditing.ANode">
-        <short/>
+        <short>Tree node with the text value for the Editor in the control</short>
       </element>
 
       <element name="TCustomTreeView.DoDragMsg" link="Controls.TWinControl.DoDragMsg"/>
-      <element name="TCustomTreeView.DoDragMsg.Result">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.DoDragMsg.ADragMessage">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.DoDragMsg.APosition">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.DoDragMsg.ADragObject">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.DoDragMsg.ATarget">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.DoDragMsg.ADocking">
-        <short/>
-      </element>
+      <element name="TCustomTreeView.DoDragMsg.Result"/>
+      <element name="TCustomTreeView.DoDragMsg.ADragMessage"/>
+      <element name="TCustomTreeView.DoDragMsg.APosition"/>
+      <element name="TCustomTreeView.DoDragMsg.ADragObject"/>
+      <element name="TCustomTreeView.DoDragMsg.ATarget"/>
+      <element name="TCustomTreeView.DoDragMsg.ADocking"/>
 
       <element name="TCustomTreeView.CanChange">
         <short>
-          <var>CanChange</var> - returns True if a given TreeNode can be changed
+          True if the specified tree node can be used in the Selected or Selections properties
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signals the <var>OnChanging</var> event handler (when assigned) to determine if a change is allowed for the specified tree node. Change entails using the tree node as the current Selected node, or including it in Selections when multi-select is enabled in the Options for the control.
+          </p>
+          <p>
+            The return value is updated in the event handler, and can be set to <b>True</b> to allow a change to the tree node. The return value is always <b>True</b> if the OnChanging event handler has not been assigned.
+          </p>
+          <p>
+            Use CanEdit to determine if the text for the tree node can edited in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.OnChanging"/>
+          <link id="TCustomTreeView.OnChange"/>
+          <link id="TCustomTreeView.CanEdit"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.CanChange.Result">
-        <short/>
+        <short>
+          True if the specified tree node can be used in the Selected or Selections properties
+        </short>
       </element>
       <element name="TCustomTreeView.CanChange.Node">
-        <short/>
+        <short>Tree node examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.CanCollapse">
-        <short>
-          <var>CanCollapse</var> returns True if a given TreeNode is able to be collapsed
-        </short>
-        <descr/>
+        <short>Returns True if a given TreeNode can be collapsed</short>
+        <descr>
+          <p>
+            <var>CanCollapse</var> is a <var>Boolean</var> function used to determine if the tree node in <var>Node</var> can be collapsed. CanCollapse signals the <var>OnCollapsing</var> event handler (when assigned) to determine if the tree node can be collapsed.
+          </p>
+          <p>
+            The return value is updated in the event handler, and can be set to <b>True</b> when the node has child nodes and is currently expanded. The return value should be set to False if the node does not have any child nodes.
+          </p>
+          <p>
+            The return value is always <b>True</b> if the OnCollapsing event handler has not been assigned, or when the component is being freed.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CanCollapse.Result">
-        <short/>
+        <short>True if the specified node can be collapsed</short>
       </element>
       <element name="TCustomTreeView.CanCollapse.Node">
-        <short/>
+        <short>Tree node examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.CanEdit">
-        <short>
-          <var>CanEdit</var> - returns True if a Given TreeNode is allowed to be edited
-        </short>
-        <descr/>
+        <short>Returns True if the specified tree node can be edited</short>
+        <descr>
+          <p>
+            <var>CanEdit</var> is a <var>Boolean</var> function used to determine if the tree node in <var>Node</var> can be edited. CanEdit signals the OnEditing event handler (when assigned) to determine if the TTreeNode instance can be modified.
+          </p>
+          <p>
+            The return value is updated in the event handler, and can be set to True if the tree view control is not configured to be read-only and the tree node is eligible for modification. Use the Options property in the tree view control to check for the read-only setting. The return value is always True if the OnEditing event handler has not been assigned.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CanEdit.Result">
-        <short/>
+        <short>True if the specified tree node can modify its property values</short>
       </element>
       <element name="TCustomTreeView.CanEdit.Node">
-        <short/>
+        <short>Tree node examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.CanExpand">
-        <short>
-          <var>CanExpand</var> - returns True if the specified TreeNode can be expanded
-        </short>
-        <descr/>
+        <short>True if the specified tree node can be expanded</short>
+        <descr>
+          <p>
+            <var>CanExpand</var> is a <var>Boolean</var> function used to determine if the tree node specified in <var>Node</var> can be expanded. CanExpand signals the <var>OnExpanding</var> event handler (when assigned) to get  the return value for the method.
+          </p>
+          <p>
+            The return value can be set to <b>True</b> when Node is visible and contains child nodes. The return value is always <b>True</b> if the OnExpanding event handler has not been assigned.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CanExpand.Result">
-        <short/>
+        <short>True if the specified node can be expanded</short>
       </element>
       <element name="TCustomTreeView.CanExpand.Node">
-        <short/>
+        <short>Tree node examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.CreateNode">
         <short>
           <var>CreateNode</var> - creates a new node in a TreeView and returns its content
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>CreateNode</var> is a <var>TTreeNode</var> function used to create a new tree node for the control. The <var>OnCustomCreateItem</var> event handler is signalled (when assigned) to create the class instance used as the return value. If the event handler has not been assigned, or returns a <b>Nil</b> value, the <var>TTreeNodeClass</var> class reference is used to create the tree node in the return value.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CreateNode.Result">
-        <short/>
+        <short>New tree node instance created in the method</short>
       </element>
 
       <element name="TCustomTreeView.CreateNodes">
-        <short/>
+        <short>Creates a TTreeNodes container for the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CreateNodes.Result">
-        <short/>
+        <short>TTreeNodes instance created in the method</short>
       </element>
 
       <element name="TCustomTreeView.CustomDraw">
@@ -20522,63 +20082,87 @@
       </element>
 
       <element name="TCustomTreeView.DefaultItemHeightIsStored">
-        <short/>
+        <short>Implements the storage specifier for the DefaultItemHeight property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.DefaultItemHeightIsStored.Result">
-        <short/>
+        <short>True when tvoAutoItemHeight in not in the Options for the control</short>
       </element>
 
       <element name="TCustomTreeView.DoAutoAdjustLayout">
-        <short/>
+        <short>Applies a layout adjustment policy using the specified scaling factors</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.DoAutoAdjustLayout">TControl.DoAutoAdjustLayout</link>
+        </seealso>
       </element>
       <element name="TCustomTreeView.DoAutoAdjustLayout.AMode">
-        <short/>
+        <short>Layout adjustment policy applied in the method</short>
       </element>
       <element name="TCustomTreeView.DoAutoAdjustLayout.AXProportion">
-        <short/>
+        <short>Horizontal scaling factor for the layout policy</short>
       </element>
       <element name="TCustomTreeView.DoAutoAdjustLayout.AYProportion">
-        <short/>
+        <short>Vertical scaling factor for the layout policy</short>
       </element>
 
       <element name="TCustomTreeView.ExpandSignSizeIsStored">
-        <short/>
+        <short>Implements the storage specifier for the ExpandSignSize property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.ExpandSignSizeIsStored.Result">
-        <short/>
+        <short>True when ExpandSignSize has a value other than the default (-1)</short>
       </element>
 
       <element name="TCustomTreeView.GetBuiltinIconSize">
-        <short>Gets the size for built-in icons used for items in the control</short>
-        <descr/>
+        <short>Gets the default size for icons when Images has not been assigned</short>
+        <descr>
+          <p>
+            The <var>TSize</var> instance contains 0 (zero) in both the Width and Height members.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetBuiltinIconSize.Result">
         <short>TSize instance with the Width and Height for an icon</short>
       </element>
 
-      <element name="TCustomTreeView.GetDragImages" link="#lcl.controls.TControl.GetDragImages">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.GetDragImages">
+        <short>Gets the image list with the Drag images for the control</short>
+        <descr>
+          <p>
+            <var>GetDragImages</var> is an overridden <var>TDragImageList</var> function used to get the image list with images displayed during drag and drop operations in the control. GetDragImages re-implements the method to use the TDragImageList member defined in the class instance (when assigned and not empty). Otherwise, <b>Nil</b> is returned from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.GetDragImages">TControl.GetDragImages</link>
+        </seealso>
       </element>
       <element name="TCustomTreeView.GetDragImages.Result">
-        <short/>
+        <short>Image list with drag and drop images for the control</short>
       </element>
 
       <element name="TCustomTreeView.GetImageSize">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Gets a TSize instance with the dimensions for images in the control</short>
+        <descr>
+          <p>
+            <var>GetImageSize</var> is a <var>TSize</var> function used to get the dimensions for images displayed in the tree view control. The return value has <var>Width</var> and <var>Height</var> members with the image dimensions.
+          </p>
+          <p>
+            When an image list has been assigned to the <var>Images</var> property, its <var>SizeForPPI</var> method is used to scale the value in <var>ImagesWidth</var> to the current display density in <var>Font</var>. When Images has not been assigned, the <var>GetBuiltinIconSize</var> method is called to get the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.GetBuiltinIconSize"/>
+          <link id="TCustomTreeView.Images"/>
+          <link id="TCustomTreeView.ImagesWidth"/>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
+        </seealso>
       </element>
       <element name="TCustomTreeView.GetImageSize.Result">
-        <short/>
+        <short>TSize instance with the dimensions for images in the control</short>
       </element>
 
       <element name="TCustomTreeView.GetMaxLvl">
@@ -20616,7 +20200,7 @@
 
       <element name="TCustomTreeView.GetNodeAtY">
         <short>
-          <var>GetNodeAtY</var> - returns the node at the specified (absolute) Y coordinate
+          <var>GetNodeAtY</var> - returns the node at the specified vertical coordinate
         </short>
         <descr/>
         <seealso/>
@@ -20644,9 +20228,7 @@
       </element>
 
       <element name="TCustomTreeView.GetNodeDrawAreaHeight">
-        <short>
-          <var>GetNodeDrawAreaHeight</var> - returns the height for the area in which node is drawn
-        </short>
+        <short>Gets the height for the usable drawing area in the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -20655,9 +20237,7 @@
       </element>
 
       <element name="TCustomTreeView.GetNodeDrawAreaWidth">
-        <short>
-          <var>GetNodeDrawAreaWidth</var> - returns the width for the area in which node is drawn
-        </short>
+        <short>Gets the width for the usable drawing area in the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -20666,43 +20246,52 @@
       </element>
 
       <element name="TCustomTreeView.IndentIsStored">
-        <short/>
+        <short>Implements the storage specifier for the Indent property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.IndentIsStored.Result">
-        <short/>
+        <short>True when Indent has a value other than the default (-1)</short>
       </element>
 
       <element name="TCustomTreeView.IsCustomDrawn">
         <short>
-          <var>IsCustomDrawn</var> - returns True if the specified target node is custom drawn
+          <var>IsCustomDrawn</var> - returns True if the specified target is custom drawn
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.OnCustomDraw"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDraw"/>
+          <link id="TCustomTreeView.OnCustomDrawItem"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDrawItem"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.IsCustomDrawn.Result">
-        <short/>
+        <short>
+          True when event handlers have been assigned for the specified target and stage
+        </short>
       </element>
       <element name="TCustomTreeView.IsCustomDrawn.Target">
-        <short/>
+        <short>Drawing target examined in the method</short>
       </element>
       <element name="TCustomTreeView.IsCustomDrawn.Stage">
-        <short/>
+        <short>Drawing stage  examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.IsNodeVisible">
         <short>
-          <var>IsNodeVisible</var> - returns True if the specified node is visible
+          Returns True if the specified tree node and its parent nodes are visible and expanded
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.IsNodeVisible.Result">
-        <short/>
+        <short>
+          True if the specified tree node and its parent nodes are visible and expanded
+        </short>
       </element>
       <element name="TCustomTreeView.IsNodeVisible.ANode">
-        <short/>
+        <short>Tree node examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.IsNodeHeightFullVisible">
@@ -20731,46 +20320,96 @@
       </element>
 
       <element name="TCustomTreeView.MoveSelection">
-        <short/>
-        <descr/>
+        <short>Makes the specified node selected in the tree view control</short>
+        <descr>
+          <p>
+            <var>MoveSelection</var> is a method used to make the tree node in <var>ANewNode</var> a selected node in the tree view control. The actions performed depend on the multi-selection setting for the control. When <var>tvoAllowMultiSelect</var> has been included in the <var>Options</var> property, the node is included in <var>Selections</var> when <var>ASelect</var> is <b>True</b>.
+          </p>
+          <p>
+            If multi-selection has not been enabled for the control, the value in ANewNode is assigned to the <var>Selected</var> property.
+          </p>
+          <p>
+            The <var>MakeVisible</var> method in the <var>TTreeNode</var> instance is called to make the node visible, and the scrollbars for the control are updated.
+          </p>
+          <p>
+            Used in the implementation of the <var>KeyDown</var> method. Used to implement methods like <var>MoveHome</var>, <var>MoveEnd</var>, <var>MovePageDown</var>, <var>MovePageUp</var>, <var>MoveToNexNode</var>, and <var>MoveToNexNode</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveSelection.ANewNode">
-        <short/>
+        <short>Tree node to select in the control</short>
       </element>
       <element name="TCustomTreeView.MoveSelection.ASelect">
-        <short/>
+        <short>
+          True to include the tree node in Selections (when enabled), False to select only the  specified node
+        </short>
       </element>
 
       <element name="TCustomTreeView.Change">
         <short>
-          <var>Change</var> - software emulation of the <var>OnChange</var> event
+          Performs actions needed when the selection in the control has been changed to include the specified tree node
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Change is a method used to perform actions needed when the selection in the control has been changed. Node contains the tree node  that was used in the control selection. Change signals the OnChange event handler (when assigned).
+          </p>
+          <p>
+            Change is called from the event handler used for the internal timer activated when a new selection is made and the control synchronizes the tree nodes to the  visual display.
+          </p>
+          <p>
+            Use the OnSelectionChange event handler for the notification that occurs before the node is included in the control selection.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.Change.Node">
-        <short/>
+        <short>Tree node included in the selection for the control</short>
       </element>
 
       <element name="TCustomTreeView.Collapse">
-        <short>
-          <var>Collapse</var> - software emulation of the <var>OnCollapsed</var> event
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Performs actions needed when the specified tree node is collapsed</short>
+        <descr>
+          <p>
+            <var>Collapse</var> is a method used to perform actions needed when the tree node in <var>Node</var> is collapsed. Collapse updates the visibility and position for the scrollbars in the control. The <var>OnCollapsed</var> event handler is signalled (when assigned) for the tree node in Node.
+          </p>
+          <p>
+            No actions are performed in the method when the component is being freed.
+          </p>
+          <p>
+            Collapse is called when the Collapse method in the <var>TTreeNode</var> instance is called.
+          </p>
+          <p>
+            See <var>Expand</var> for the actions performed when a tree node is expanded.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.Expand"/>
+          <link id="TTreeNode.Expanded"/>
+          <link id="TTreeNode.Collapse"/>
+          <link id="TTreeNode.ExpandItem"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.Collapse.Node">
-        <short/>
+        <short>Tree node collapsed in the control</short>
       </element>
 
-      <element name="TCustomTreeView.CreateWnd" link="#lcl.controls.TWinControl.CreateWnd">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.CreateWnd">
+        <short>Performs actions needed when the handle for the control is (re-)created</short>
+        <descr>
+          <p>
+            <var>CreateWnd</var> is an overridden method in <var>TCustomTreeView</var> used to perform actions needed when the handle for the control is created or re-created. CreateWnd ensures that the <var>States</var> property is updated to remove the value <var>tvsStateChanging</var>. The internal flags for scrollbar visibility are reset, and the inherited method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CreateWnd"/>
+        </seealso>
       </element>
 
-      <element name="TCustomTreeView.Click" link="#lcl.controls.TControl.Click">
+      <element name="TCustomTreeView.Click">
+        <short>
+          Performs actions needed when mouse is clicked on a tree node in the control
+        </short>
         <descr>
           <p>
             <var>Click</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when a tree node has been selected using a mouse down event. No actions are performed in the method when a tree node has not been selected using the mouse.
@@ -20781,7 +20420,10 @@
         </seealso>
       </element>
 
-      <element name="TCustomTreeView.DblClick" link="#lcl.controls.TControl.DblClick">
+      <element name="TCustomTreeView.DblClick">
+        <short>
+          Performs actions needed when the Left mouse button is double clicked on a selected tree node
+        </short>
         <descr>
           <p>
             <var>DblClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when a tree node has been double clicked using the mouse. No actions are performed in the method when a tree node has not been selected and a double click event occurs.
@@ -20809,25 +20451,38 @@
       </element>
 
       <element name="TCustomTreeView.Delete">
-        <short>
-          <var>Delete</var> - remove the specified node from the tree structure (software emulation of the <var>OnDeletion</var> event)
-        </short>
-        <descr/>
+        <short>Performs actions needed when the specified tree node is deleted</short>
+        <descr>
+          <p>
+            <var>Delete</var> is a method used to perform actions needed when the specified tree node is deleted from the list of tree nodes in <var>Items</var>. Delete signals the <var>OnDeletion</var> event handler (when assigned) for the tree node specified in <var>Node</var>. No actions are performed in the method if OnDeletion has not been assigned.
+          </p>
+          <p>
+            Delete is called when a <var>TTreeNode</var> instance is freed, or when the Delete method in <var>TTreeNodes</var> is executed.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.Delete.Node">
-        <short/>
+        <short>Tree node deleted from the Items in the control</short>
       </element>
 
-      <element name="TCustomTreeView.DestroyWnd" link="#lcl.controls.TWinControl.DestroyWnd">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.DestroyWnd">
+        <short>Performs actions needed when the handle for the control is destroyed</short>
+        <descr>
+          <p>
+            Includes the <var>tvsStateChanging</var> flag in the <var>States</var> property, and calls the inherited method. Ensures that the Canvas handle has been freed after calling the inherited method. Resets size values in the ScrollInfo for the horizontal and vertical scrollbars.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.DestroyWnd"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.DoCreateNodeClass">
         <short/>
-        <descr/>
+        <descr>
+          Signals the OnCreateNodeClass event handler (when assigned).
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.DoCreateNodeClass.NewNodeClass">
@@ -20836,7 +20491,11 @@
 
       <element name="TCustomTreeView.DoEndDrag" link="#lcl.controls.TControl.DoEndDrag">
         <short/>
-        <descr/>
+        <descr>
+          <p>
+            Ensures that the previous drop target is reset, and that the drag scroll timer is disabled. Restores the Tooltips to their previous values.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.DoEndDrag.Target">
@@ -20882,22 +20541,68 @@
       </element>
 
       <element name="TCustomTreeView.DoPaint">
-        <short>
-          <var>DoPaint</var> - perform the actual painting
-        </short>
-        <descr/>
+        <short>Implements the Paint method for the control</short>
+        <descr>
+          <p>
+            <var>DoPaint</var> is a method used render the control to its canvas. It Implements the  overridden <var>Paint</var> method. No actions are performed in the method when <var>tvsPainting</var> has been included in the <var>States</var> property (Paint has already been called).
+          </p>
+          <p>
+            DoPaint includes the value tvsPainting in the States property to indicate that the paint method is active. It includes the value <var>tvoFocusedPainting</var> in States when <var>Focused</var> is <b>True</b>, or excludes the value when Focused is <var>False</var>.
+          </p>
+          <p>
+            The UpdateDefaultItemHeight is called when <var>tvoAutoItemHeight</var> is included in the <var>Options</var> for the control. The existing value in DefaultItemHeight is used when the Option is omitted.
+          </p>
+          <p>
+            DoPaint performs the multi-stage drawing process for nodes in the tree view control using its Canvas and a display rectangle using the <var>ClientWidth</var> for the control. If the control includes event handlers for the cdPrePaint stage, the <var>CustomDraw</var> method is called.
+          </p>
+          <p>
+            DoPaint draws the nodes on the tree view starting at the node in TopItem. If the node is Visible, the <var>DoPaintNode</var> method is called to render the tree node. The next visible node in the tree is retrieved, and the process is repeated until no more nodes are available or the drawing area is filled.
+          </p>
+          <p>
+            An <var>InsertMark</var> is drawn for the root node if needed.
+          </p>
+          <p>
+            Borders are drawn around the control using the value in <var>BorderWidth</var>.
+          </p>
+          <p>
+            If the control has event handlers for the cdPostPaint stage, the CustomDraw method is called.
+          </p>
+          <p>
+            The value <var>tvsPainting</var> is excluded from the States property prior to exit.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.DoPaintNode">
-        <short>
-          <var>DoPaintNode</var> - perform the actual painting of the specified node
-        </short>
-        <descr/>
+        <short>Renders the specified tree node to the canvas for the control</short>
+        <descr>
+          <p>
+            DoPaintNode is a method used to render the tree node specified in Node to the Canvas for the control. DoPaintNode is called from the DoPaint method, and occurs for visible nodes processed in the method. No actions are performed in the method when the Node is not in the visible client area for the control.
+          </p>
+          <p>
+            DoPaintNode draws the elements which represent a given tree node, including:
+          </p>
+          <ul>
+            <li>Text for the tree node.</li>
+            <li>An Image or State Image for the node.</li>
+            <li>Expand or Collapse indicators for the node.</li>
+            <li>Background for the node using theme services or node state.</li>
+            <li>An Insert mark for the initial child node in the tree hierarchy.</li>
+            <li>Horizontal and vertical lines used to join nodes in the tree hierarchy.</li>
+            <li>The Separator line drawn after a node.</li>
+          </ul>
+          <p>
+            DoPaintNode retrieves scaled image resolutions needed for the Images and StateImages in the control. The images sizes  are determined by applying the scaling factor in Canvas to the current Pixels Per Inch setting in Font.
+          </p>
+          <p>
+            Use of multi-stage custom drawing is supported. If event handlers are provided for the cdPrePaint and cdPostPaint stages, the CustomDraw and CustomDrawItem methods are used to render the node with the drawing state for the node.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.DoPaintNode.Node">
-        <short/>
+        <short>Tree node rendered in the method</short>
       </element>
 
       <element name="TCustomTreeView.DoStartDrag" link="#lcl.controls.TControl.DoStartDrag">
@@ -20931,18 +20636,46 @@
       </element>
 
       <element name="TCustomTreeView.EndEditing">
-        <short>
-          <var>EndEditing</var> - finish editing
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Updates the specified tree node and hides editor</short>
+        <descr>
+          <p>
+            No actions are performed in the method if <var>tvsIsEditing</var> has not been included in the <var>States</var> property (<var>BeginEditing</var> was not called).
+          </p>
+          <p>
+            EndEditing removes the value tvsIsEditing from the States property to indicate that editing has been completed for the control.
+          </p>
+          <p>
+            The <var>OnEdited</var> event handler is signalled (when assigned) to validate or modify the new text value, and the text is stored in <var>Node</var>.
+          </p>
+          <p>
+            EndEditing calls the <var>Invalidate</var> method to force the control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.States"/>
+          <link id="TCustomTreeView.BeginEditing"/>
+          <link id="TCustomTreeView.OnEdited"/>
+          <link id="TTreeNode.Text"/>
+          <link id="TTreeViewStates"/>
+          <link id="TTreeViewState"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.EnsureNodeIsVisible">
         <short>
-          <var>EnsureNodeIsVisible</var> - method to make sure specified node is visible
+          Ensures parent nodes are expanded, and the specified node is visible in the control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            No actions are performed in the method if <var>ANode</var> has not been assigned (contains <b>Nil</b>).
+          </p>
+          <p>
+            Calls the <var>ExpandParents</var> method in ANode to expand any parent nodes not already expanded. Ensures that the tree node in ANode is visible in the client area for the control.
+          </p>
+          <p>
+            EnsureNodeIsVisible is used in the <var>TTreeNode.MakeVisible</var> method, and called from <var>BeginEditing</var> when the editor is displayed for the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.EnsureNodeIsVisible.ANode">
@@ -20951,35 +20684,56 @@
 
       <element name="TCustomTreeView.Expand">
         <short>
-          <var>Expand</var> the specified node
+          Expands the specified tree node and updates the scrollbars for the control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Expand is a method used to expand the tree node specified in Node on the tree view control. Expand is called after when the TTreeNode instance in Node has updated its States property and notified the Items container of the change.
+          </p>
+          <p>
+            Expand updates the scrollbars for the control. The OnExpanded event handler is signalled (when assigned) to performs actions needed after the tree node has been expanded.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.Expand.Node">
-        <short/>
+        <short>Tree node expanded in the method</short>
       </element>
 
       <element name="TCustomTreeView.GetImageIndex">
-        <short>
-          <var>GetImageIndex</var> - returns the index of the image associated with the specified node
-        </short>
-        <descr/>
+        <short>Gets the index of the image for the specified node</short>
+        <descr>
+          <p>
+            Allows the image index for the tree node to be updated before the node is drawn. Signals the OnGetImageIndex event handler (when assigned) where the image index can be determined and stored in the specified tree node.
+          </p>
+          <p>
+            Called from the DoPaintNode method for any unselected nodes in the tree view. Use the OnGetSelectedIndex event handler to get the image index for a selected node.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetImageIndex.Node">
-        <short/>
+        <short>
+          Tree node examined in the method (and possibly updated in the event handler)
+        </short>
       </element>
 
       <element name="TCustomTreeView.GetSelectedIndex">
-        <short>
-          <var>GetSelectedIndex</var> - returns the index of the selected node
-        </short>
-        <descr/>
+        <short>Gets the index for the image used a selected node in the control</short>
+        <descr>
+          <p>
+            Allows the image index for a selected node to be updated before the node is drawn. Signals the OnGetSelectedIndex event handler (when assigned) where the image index can be determined and stored in the specified tree node.
+          </p>
+          <p>
+            Called from the DoPaintNode method for any a selected node in the tree view. Use the OnGetImageIndex event handler to get the image index for a node that is not selected.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetSelectedIndex.Node">
-        <short/>
+        <short>
+          Tree node examine in the method (and possibly updated in the event handler)
+        </short>
       </element>
 
       <element name="TCustomTreeView.InitializeWnd" link="#lcl.controls.TWinControl.InitializeWnd">
@@ -20989,15 +20743,74 @@
       </element>
 
       <element name="TCustomTreeView.KeyDown" link="#lcl.controls.TWinControl.KeyDown">
-        <short/>
-        <descr/>
+        <short>Handles key down events for the control</short>
+        <descr>
+          <p>
+            KeyDown is an overridden method in TCustomTreeView which handles key down events for the control.
+          </p>
+          <p>
+            Key contains the virtual key code examined in the method.
+          </p>
+          <p>
+            Shift is the Shift, Alt, Ctrl modifier for the key code.
+          </p>
+          <p>
+            KeyDown calls the inherited method on entry. KeyDown ensures that the following Key codes are handled in the method:
+          </p>
+          <dl>
+            <dt>VK_DOWN</dt>
+            <dd>
+              Moves to the next node in the tree. Shift+Down includes the next node in the Selections property.
+            </dd>
+            <dt>VK_UP</dt>
+            <dd>
+              Moves to the previous node in the tree. Shift+Up includes the next node in the Selections property.
+            </dd>
+            <dt>VK_HOME</dt>
+            <dd>
+              Moves to the tree node at the top of the visible area. Shift+Home includes an affected range of nodes in the Selections property.
+            </dd>
+            <dt>VK_END</dt>
+            <dd>
+              Moves to the tree node at the bottom of the visible area. Shift+End includes an affected range of nodes in the Selections property.
+            </dd>
+            <dt>VK_PRIOR (PageUp)</dt>
+            <dd>
+              Moves the first node on the previous page for the control. Shift+PageUp includes an affected range of nodes in the Selections property.
+            </dd>
+            <dt>VK_NEXT (PageDn)</dt>
+            <dd>
+              Moves the first node on the next page for the control. Shift+PageDn includes an affected range of nodes in the Selections property.
+            </dd>
+            <dt>VK_LEFT</dt>
+            <dd>
+              Collapses the current node (when expanded) and moves to the parent node.
+            </dd>
+            <dt>VK_RIGHT</dt>
+            <dd>
+              Expands the current node (when needed), or moves to the next expanded node in the tree.
+            </dd>
+            <dt>VK_ADD (Plus)</dt>
+            <dd>Expands the current node.</dd>
+            <dt>VK_SUBTRACT (Minus)</dt>
+            <dd>Collapses the current node.</dd>
+            <dt>VK_F2</dt>
+            <dd>Calls BeginEditing for the Selected node if the control is not ReadOnly.</dd>
+          </dl>
+          <p>
+            If the key event is handled in the method, Key is set to VK_UNKNOWN.
+          </p>
+          <p>
+            Calls MoveSelection if the key event changes the Selected tree node (or Selections) in the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.KeyDown.Key">
-        <short/>
+        <short>Virtual key code examined in the method</short>
       </element>
       <element name="TCustomTreeView.KeyDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, Alt modifier for the key code</short>
       </element>
 
       <element name="TCustomTreeView.Loaded" link="#lcl.controls.TWinControl.Loaded">
@@ -21006,22 +20819,63 @@
         <seealso/>
       </element>
 
-      <element name="TCustomTreeView.MouseDown" link="#lcl.controls.TControl.MouseDown">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.MouseDown">
+        <short>
+          Handles mouse down events for the tree view control
+        </short>
+        <descr>
+          <p>
+            <var>MouseDown</var> is an overridden method in <var>TCustomTreeView</var> used to handle mouse down events in the control.
+          </p>
+          <p>
+            <var>Button</var> identifies the mouse button for the event.
+          </p>
+          <p>
+            <var>Shift</var> contains the Shift, Alt, or Ctrl modifier for the mouse event.
+          </p>
+          <p>
+            <var>X</var> and <var>Y</var> contain the coordinates for the mouse event.
+          </p>
+          <p>
+            MouseDown updates the States property to remove the values tvsEditOnMouseUp and tvsSingleSelectOnMouseUp.
+          </p>
+          <p>
+            The tree node for the mouse event is retrieved using GetNodeAt for the mouse coordinates. The Selected state for the tree node is saved so the selection can be restored prior to exit.
+          </p>
+          <p>
+            MouseDown ensures that both Left and Right mouse button events are handled (when needed). When RightClickSelect is True, the Selection can be changed using the Right mouse button. Otherwise, it is ignored. Multi-selection is handled when the Shift modifier is set for the mouse event.
+          </p>
+          <p>
+            A mouse event on an unused space in the control causes ClearSelection to be called when RowSelect is True. Selected is set to Nil if RowSelect is False.
+          </p>
+          <p>
+            When MultiSelect has not been enabled, the selected tree node is assigned to the Selected property. When it has been enabled, the MultiSelect method in Items is used to include the selected tree node in the Selections property. ClearSelection is called if the tree node was de-selected by the mouse event. Selected is set to Nil if the tree node was de-selected by the mouse event.
+          </p>
+          <p>
+            The control is Focused (when needed and allowed) by calling the SetFocus method.
+          </p>
+          <p>
+            Mouse events in the Expand or Collapse indicator causes the Expanded state for the tree node to be toggled. When RowSelect is enabled, the MouseUp event causes the editor to be activated for the node.
+          </p>
+          <p>
+            MouseDown calls the inherited method to handle drag messages or close the editor for the control.
+          </p>
+        </descr>
+      <seealso>
+        <link id="#lcl.controls.TControl.MouseDown">TControl.MouseDown</link>
+      </seealso>
       </element>
       <element name="TCustomTreeView.MouseDown.Button">
-        <short/>
+        <short>Mouse button for the event</short>
       </element>
       <element name="TCustomTreeView.MouseDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the mouse event</short>
       </element>
       <element name="TCustomTreeView.MouseDown.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse event</short>
       </element>
       <element name="TCustomTreeView.MouseDown.Y">
-        <short/>
+        <short>Vertical coordinate for the mouse event</short>
       </element>
 
       <element name="TCustomTreeView.MouseMove" link="#lcl.controls.TControl.MouseMove">
@@ -21040,7 +20894,7 @@
       </element>
 
       <element name="TCustomTreeView.MouseUp" link="#lcl.controls.TControl.MouseUp">
-        <short/>
+        <short>Handles mouse up events for the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -21058,79 +20912,105 @@
       </element>
 
       <element name="TCustomTreeView.MouseLeave">
-        <short/>
+        <short>Performs actions needed when the mouse cursor leaves the control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.NodeChanged">
-        <short/>
+        <short>
+          Performs actions when a property value in the specified tree node has been changed
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.NodeChanged.Node">
-        <short/>
+        <short>Tree node with the changed property value</short>
       </element>
       <element name="TCustomTreeView.NodeChanged.ChangeReason">
-        <short/>
+        <short>Indicates the value changed in the tree node</short>
       </element>
 
-      <element name="TCustomTreeView.Notification" link="#lcl.controls.TControl.Notification">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.Notification.AComponent">
-        <short/>
-      </element>
-      <element name="TCustomTreeView.Notification.Operation">
-        <short/>
-      </element>
+      <element name="TCustomTreeView.Notification" link="#lcl.controls.TControl.Notification"/>
+      <element name="TCustomTreeView.Notification.AComponent"/>
+      <element name="TCustomTreeView.Notification.Operation"/>
 
       <element name="TCustomTreeView.Paint" link="#lcl.controls.TCustomControl.Paint">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Renders the tree view control</short>
+        <descr>
+          <p>
+            Calls DoPaint to implement the Paint method for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.DoPaint"/>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.ScrollView">
-        <short/>
+        <short>
+          Scrolls the visible area in the control by the specified horizontal and vertical offsets
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.ScrollView.DeltaX">
-        <short/>
+        <short>Horizontal offset applied to the visible area for the control</short>
       </element>
       <element name="TCustomTreeView.ScrollView.DeltaY">
-        <short/>
+        <short>Vertical offset applied to the visible area for the control</short>
       </element>
 
-      <element name="TCustomTreeView.SetDragMode" link="#lcl.controls.TControl.SetDragMode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomTreeView.SetDragMode.Value">
-        <short/>
-      </element>
+      <element name="TCustomTreeView.SetDragMode" link="#lcl.controls.TControl.SetDragMode"/>
+      <element name="TCustomTreeView.SetDragMode.Value" link="#lcl.controls.TControl.SetDragMode.Value"/>
 
       <element name="TCustomTreeView.SetOptions">
-        <short>
-          <var>SetOptions</var> - specifies the options for the TreeView
-        </short>
+        <short>Sets the value for the Options property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.Options"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.SetOptions.NewOptions">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTreeView.UpdateDefaultItemHeight">
         <short>
-          <var>UpdateDefaultItemHeight</var> - brings the value of the default item height up-to-date
+          Calculates and updates the value in the DefaultItemHeight property
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>UpdateDefaultItemHeight</var> is a procedure used to calculate and update the value for the <var>DefaultItemHeight</var> property. No actions are performed in the method for the following conditions:
+          </p>
+          <ul>
+            <li>tvoAutoItemHeight has not been included in the Options for the control.</li>
+            <li>The handle for the control has not been allocated.</li>
+            <li>The handle for the control Canvas has not been allocated.</li>
+          </ul>
+          <p>
+            The height for the Text in the node is calculated using the TCanvas.TextHeight method, and space is reserved for the default spacing for the tree node.
+          </p>
+          <p>
+            GetImageSize is called to get the height needed for Images or StateImages used in the control. Values in ImageSize and StateImageSize are updated with the scaled image heights including default spacing. The calculated value is enlarged for the Image sizes if needed.
+          </p>
+          <p>
+            UpdateDefaultItemHeight updates the States property to include values that indicate the item height for nodes has changed. The Invalidate method is called to force the control to be redrawn.
+          </p>
+          <p>
+            UpdateDefaultItemHeight is called from methods like: InitializeWnd, Loaded, SetOptions, and DoPaint.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.DefaultItemHeight"/>
+          <link id="TCustomTreeView.Images"/>
+          <link id="TCustomTreeView.StateImages"/>
+          <link id="TCustomTreeView.ImageSize"/>
+          <link id="TCustomTreeView.StateImageSize"/>
+          <link id="TCustomTreeView.States"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.UpdateInsertMark">
@@ -21156,69 +21036,67 @@
       </element>
 
       <element name="TCustomTreeView.WMHScroll">
-        <short>
-          <var>WMHScroll</var> - LCL Message for horizontal scroll
-        </short>
+        <short>Handles the WMHScroll message for the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.WMHScroll.Msg">
-        <short/>
+        <short>Control message handled in the method</short>
       </element>
 
       <element name="TCustomTreeView.WMVScroll">
-        <short>
-          <var>WMVScroll</var> - LCL Message for Vertical scroll
-        </short>
+        <short>Handles the WMVScroll message for the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.WMVScroll.Msg">
-        <short/>
+        <short>Control message handled in the method</short>
       </element>
 
       <element name="TCustomTreeView.WMLButtonDown" link="#lcl.controls.TControl.WMLButtonDown">
-        <short/>
+        <short>Handles the WMLButtonDown message for the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.WMLButtonDown.AMessage">
-        <short/>
+        <short>Message examined in the method</short>
       </element>
 
       <element name="TCustomTreeView.WMSetFocus">
-        <short/>
+        <short>Handles the WMSetFocus message for the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.WMSetFocus.Message">
-        <short/>
+        <short>Control message handled in the method</short>
       </element>
 
       <element name="TCustomTreeView.WMKillFocus">
-        <short/>
+        <short>Handles the WMKillFocus message for the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.WMKillFocus.Message">
-        <short/>
+        <short>Control message handled in the method</short>
       </element>
 
       <element name="TCustomTreeView.Resize" link="#lcl.controls.TControl.Resize">
-        <short/>
+        <short>Resizes the control and updates the scrollbars and the States property</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.EditingItem">
-        <short/>
+        <short>Contains the tree node being edited in the control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.States">
-        <short/>
-        <descr/>
+        <short>Contains the state values in effect for the control</short>
+        <descr>
+          States is a read-only TTreeViewStates property which contains the state values in effect for the control. Value from the TTreeViewState enumeration are included in the set type to indicate that the corresponding state is "ON", "TRUE", or "ACTIVE".
+        </descr>
         <seealso/>
       </element>
 
@@ -21255,22 +21133,36 @@
 
       <element name="TCustomTreeView.AutoExpand">
         <short>Unfold a tree-item when user clicks it or an item activated by code.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomTreeView.BorderStyle" link="#lcl.controls.TCustomControl.BorderStyle">
-        <short/>
-        <descr/>
+        <descr>
+          <p>
+            <var>AutoExpand</var> is a <var>Boolean</var> property which indicates if a tree node is automatically expanded when it is <var>Selected</var> using a mouse click or keyboard navigation. The default value for the property is <b>False</b>.
+          </p>
+          <p>
+            The property value is <b>True</b> when the value <var>tvoAutoExpand</var> has been included in the <var>Options</var> property. Changing the value in the property causes the Options property to be updated. When set to <b>True</b>, the value tvoAutoExpand is included in the Options property. Otherwise, the value is excluded from Options.
+          </p>
+          <p>
+            AutoExpand is used when the <var>TTreeNodes</var> container in the <var>Items</var> property adds or moves a tree node. If the new tree node or its owner has AutoExpand set to <b>True</b>, the value is also applied to its <var>Parent</var> node.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.HideSelection">
         <short>
-          If a control looses focus, then don't paint selection for a selected tree-item.
+          Indicates if the current Selection is hidden when the control loses focus
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>HideSelection</var> is a <var>Boolean</var> property which indicates if the current selection is hidden when the control loses focus. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            The value for the property is <b>True</b> if <var>tvoHideSelection</var> has been included in the <var>Options</var> for the control. Changing the value in the property causes tvoHideSelection to be included in or excluded from Options. The control is redrawn if <var>Selected</var> has an assigned tree node when the property is changed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.Options"/>
+          <link id="TCustomTreeView.Selected"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.HotTrack">
@@ -21282,14 +21174,18 @@
       </element>
 
       <element name="TCustomTreeView.HotTrackColor">
-        <short/>
+        <short>Font color used for the text in a tree node when hot tracking is enabled</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.DisabledFontColor">
-        <short/>
-        <descr/>
+        <short>Font color used for tree nodes when the control is not enabled</short>
+        <descr>
+          <p>
+            The default value for the property is <var>clGrayText</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -21312,7 +21208,9 @@
       </element>
 
       <element name="TCustomTreeView.OnAddition">
-        <short/>
+        <short>
+          Event handler signalled when a tree node is added or moved in the Items in the control
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -21374,9 +21272,13 @@
       </element>
 
       <element name="TCustomTreeView.OnCreateNodeClass">
-        <short/>
+        <short>
+          Event handler signalled to get the class reference used to create new tree nodes
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.DoCreateNodeClass"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.OnCustomCreateItem">
@@ -21404,14 +21306,16 @@
       </element>
 
       <element name="TCustomTreeView.OnCustomDrawArrow">
-        <short/>
+        <short>
+          Event handler signalled to custom draw expand or collapse indicators
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.OnDeletion">
         <short>
-          <var>OnDeletion</var> - specialized event handler for deletion of node(s) from the tree
+          Event handler signalled when a node is deleted from the node tree
         </short>
         <descr/>
         <seealso/>
@@ -21434,7 +21338,7 @@
       </element>
 
       <element name="TCustomTreeView.OnEditingEnd">
-        <short/>
+        <short>Event handler signalled when EndEditing is called for the control</short>
         <descr/>
         <seealso/>
       </element>
@@ -21472,22 +21376,44 @@
       </element>
 
       <element name="TCustomTreeView.OnNodeChanged">
-        <short/>
-        <descr/>
+        <short>
+          Event handler signalled when the text for a tree node has been changed
+        </short>
+        <descr>
+          <p>
+            <var>OnNodeChanged</var> is a <var>TTVNodeChangedEvent</var> property with the event handler signalled when the text in a tree node has been changed. OnNodeChanged is signalled from the <var>NodeChanged</var> method, and allows actions to be performed when the Node is updated.
+          </p>
+          <p>
+            NodeChanged and OnNodeChanged are called from the <var>TTreeNode.Changed</var> method, and occurs after the value in the <var>Text</var> property for the TTreeNode instance has been updated.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.OnSelectionChanged">
         <short>
-          <var>OnSelectionChanged</var> - event handler for a change in the selection
+          Event handler signalled when the selection in the tree view control is changed
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>OnSelectionChanged</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the selection for the control has been changed. OnSelectionChanged is signalled (when assigned) from the <var>DoSelectionChanged</var> method, and occurs after the value in <var>Selection</var> has been updated. It also occurs when the value in <var>MultiSelected</var> is changed.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.ReadOnly">
-        <short>Don't allow to change item captions by mouse click with a delay.</short>
-        <descr/>
+        <short>
+          Indicates whether the text (or caption) for tree nodes can be edited in the control
+        </short>
+        <descr>
+          <p>
+            <var>ReadOnly</var> is a <var>Boolean</var> property which indicates whether the text for the <var>TTreeNode</var> instances in Items can be edited in the control. When ReadOnly is set to <b>False</b>, the <var>BeginEditing</var> method is not called when the <b>F2</b> key is pressed, or when the Left mouse button is double clicked. The default value for the property is <b>False</b>.
+          </p>
+          <p>
+            The property value is <b>True</b> when <var>tvoReadOnly</var> has been included in the <var>Options</var> for the control. Setting a new value for the property causes tvoReadOnly to be included in or excluded from the values in Options. Changing the value to <b>False</b> causes the <var>EndEditing</var> method to be called.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -21505,23 +21431,37 @@
 
       <element name="TCustomTreeView.ScrolledLeft">
         <short>
-          <var>ScrolledLeft</var> - the position of the tree when fully scrolled to the left
+          Horizontal coordinate for the origin of the visible display area
         </short>
-        <descr/>
+        <descr>
+          <p>
+            ScrolledLeft is an Integer Property with the horizontal coordinate for the origin of  the visible display area in the tree view control.
+          </p>
+          <p>
+            Use ScrolledTop for the vertical coordinate for the origin of the visible display area.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.ScrolledTop">
         <short>
-          <var>ScrolledTop</var> - the position of the tree when fully scrolled to the top
+          Vertical coordinate for the origin of the visible display area
         </short>
-        <descr/>
+        <descr>
+          <p>
+            ScrolledTop is an Integer Property with the vertical coordinate for the origin of  the visible display area in the tree view control.
+          </p>
+          <p>
+            Use ScrolledLeft for the horizontal coordinate for the origin of the visible display area.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.ShowButtons">
         <short>
-          Show expand/collapse (fold/unfold) icons at left side for nodes with sub-nodes.
+          Enables an expand/collapse (fold/unfold) icon for nodes with child nodes
         </short>
         <descr/>
         <seealso/>
@@ -21529,7 +21469,7 @@
 
       <element name="TCustomTreeView.ShowLines">
         <short>
-          Show vertical lines at left side. They paint the tree structure for nested nodes.
+          Enables the horizontal and vertical  lines which join nodes in the tree hierarchy
         </short>
         <descr/>
         <seealso/>
@@ -21537,13 +21477,16 @@
 
       <element name="TCustomTreeView.ShowRoot">
         <short>
-          Show the root tree-item which is always present in code but may be hidden for user.
+          Enables drawing of the root node indicator for the tree view control
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.ShowSeparators">
+        <short>
+          Indicates if horizontal separators are drawn between nodes in the tree view control
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -21600,43 +21543,110 @@
       </element>
 
       <element name="TCustomTreeView.AlphaSort">
-        <short>If True, sort alphabetically</short>
+        <short>Sorts tree nodes using default sort procedure (alphabetic)</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.AlphaSort.Result">
-        <short/>
+        <short>Always returns False (because CustomSort returns False)</short>
       </element>
 
       <element name="TCustomTreeView.ClearSelection">
-        <short/>
-        <descr/>
+        <short>Clears the selection in the tree view control</short>
+        <descr>
+          <p>
+            <var>ClearSelection</var> is a method used to clear tree nodes selected in the tree view control.  ClearSelection uses the value in <var>MultiSelect</var> to determine the actions needed to clear the selected nodes.
+          </p>
+          <p>
+            If <var>MultiSelect</var> has  been enabled in the <var>Options</var> for the control,  the ClearMultiSelection method is called to clear the selected nodes.
+          </p>
+          <p>
+            <var>KeepPrimary</var> indicates whether the first tree node in a multi-selection is retained. When set to False, all selected nodes are removed from the Selections property. Otherwise, the tree node in Selected is retained.
+          </p>
+          <p>
+            If MultiSelect has not been enabled, the value in the Selected property is set to Nil to clear the single node selection.
+          </p>
+          <p>
+            No actions are performed in the method when MultiSelect is False and KeepPrimary is True.
+          </p>
+          <p>
+            ClearSelections is called from methods that handle mouse or keyboard selection, like <var>KeyDown</var> and <var>MouseDown</var>. It is also called when a new value is assigned to the MultiSelect property.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.ClearSelection.KeepPrimary">
-        <short/>
+        <short>True if the first node in a multi-selection is kept</short>
       </element>
 
       <element name="TCustomTreeView.ConsistencyCheck">
         <short>
-          <var>ConsistencyCheck</var> - check that indexes of treenodes match those of images etc
+          Verifies that values are updated and valid for the tree view control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ConsistencyCheck</var> is a method used to validate and/or update property and member values in the control. It raises an <var>Exception</var> (catchable in the debugger) for invalid property values in the control, including:
+          </p>
+          <dl>
+            <dt>Canvas</dt>
+            <dd>Raises the exception if Canvas is not assigned.</dd>
+            <dt>DefaultItemHeight</dt>
+            <dd>Raises the exception if DefaultItemHeight has a negative value.</dd>
+            <dt>FIndent member</dt>
+            <dd>Raises the exception if FIndent has a negative value.</dd>
+            <dt>FMaxRight member</dt>
+            <dd>Raises the exception if FMaxRight has a negative value.</dd>
+            <dt>IsEditing / Selected</dt>
+            <dd>Raises the exception if IsEditing is True and Selected is unassigned.</dd>
+            <dt>Selected</dt>
+            <dd>Raises the exception if the node in Selected is not visible.</dd>
+            <dt>Items</dt>
+            <dd>Raises the exception if Items has not been assigned.</dd>
+          </dl>
+          <p>
+            The Items property has additional validations performed for its property values. The ConsistencyCheck method in Items is called to verify node counts, update counts, index values, and hierarchy levels in the container. An Exception is raised for error conditions in these items as well.
+          </p>
+          <p>
+            Values in the States property are examined and updated (when needed) to refresh the display coordinates for tree nodes, the maximum width for the expanded nodes in the control, and the levels in the tree hierarchy. These operations may also raise an Exception for invalid states or values.
+          </p>
+          <p>
+            ConsistencyCheck is called from the WriteDebugReport method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.CustomSort">
         <short>
-          <var>CustomSort</var> - if True, an external sorting method specified by <var>SortProc</var> is to be used
+          If True, the external method specified in <var>SortProc</var> is used for sorting
         </short>
-        <descr/>
+        <descr>
+          <p>
+            CustomSort is a Boolean function used to sort the tree nodes in Items using the sort procedure specified in SortProc. If SortProc is not assigned, the DefaultTreeViewSort method is used in the sort procedure.
+          </p>
+          <p>
+            No actions are performed in the method when the number of tree nodes in Items is 0 (zero).
+          </p>
+          <p>
+            The return value is always False.
+          </p>
+          <p>
+            CustomSort calls BeginUpdate to minimize updates during the sorting process. EndUpdates is called when the sorting process is completed.
+          </p>
+          <p>
+            Top level nodes in Items are sorted by calling the SortTopLevelNodes in items. Child nodes are then sorted (when present), starting at the first top-level node in the tree. The ClearCache method in Items is called to invalidate the node cache for the control.
+          </p>
+          <p>
+            The States property is updated to force the node coordinates and scrollbars to be refreshed in the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.CustomSort.Result">
-        <short/>
+        <short>Always returns False</short>
       </element>
       <element name="TCustomTreeView.CustomSort.SortProc">
-        <short/>
+        <short>Routine used to implement the sort procedure in the method</short>
       </element>
 
       <element name="TCustomTreeView.DefaultTreeViewSort">
@@ -21665,7 +21675,7 @@
       </element>
 
       <element name="TCustomTreeView.EraseBackground" link="#lcl.controls.TWinControl.EraseBackground">
-        <short/>
+        <short>Has an empty implementation in the current LCL version</short>
         <descr/>
         <seealso/>
       </element>
@@ -21692,19 +21702,19 @@
 
       <element name="TCustomTreeView.GetNodeAt">
         <short>
-          <var>GetNodeAt</var> - returns the TreeNode at position (X. Y)
+          Searches all expanded nodes for the tree node at the specified position
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeAt.Result">
-        <short/>
+        <short>Visible tree node at the specified position, or Nil when not found</short>
       </element>
       <element name="TCustomTreeView.GetNodeAt.X">
-        <short/>
+        <short>Horizontal coordinate for the the node or row</short>
       </element>
       <element name="TCustomTreeView.GetNodeAt.Y">
-        <short/>
+        <short>Vertical coordinate for the tree node or row</short>
       </element>
 
       <element name="TCustomTreeView.GetInsertMarkAt">
@@ -21755,58 +21765,114 @@
         <short/>
       </element>
 
-      <element name="TCustomTreeView.Invalidate" link="#lcl.controls.TControl.Invalidate">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.Invalidate">
+        <short>
+          Causes the control to be redrawn when a redraw is not already in progress
+        </short>
+        <descr>
+          <p>
+            <var>Invalidate</var> is an overridden method in <var>TCustomTreeView</var>, and causes the control to be redrawn if it is not already re-painting. Invalidate checks the <var>States</var> property for the <var>tvsPainting</var> flag. When present, the <var>Paint</var> method has already been called but not yet completed.
+          </p>
+          <p>
+            No actions are performed in the method when a paint operation is in progress.
+          </p>
+          <p>
+            Invalidate calls the inherited method prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.States"/>
+          <link id="TCustomTreeView.Paint"/>
+          <link id="TTreeViewStates"/>
+          <link id="TTreeViewState"/>
+          <link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.IsEditing">
         <short>
-          <var>IsEditing</var> - returns True if editing is in progress
+          Indicates if the control is currently editing a node in the tree
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>IsEditing</var> is a <var>Boolean</var> function used to determine whether the control is currently editing a node in the tree view. IsEditing checks the values in the <var>State</var> property for the <var>tvsIsEditing</var> flag value. The return value is <b>True</b> when tvsIsEditing is present in the States property.
+          </p>
+          <p>
+            When present, the <var>BeginEditing</var> method has been called and the <var>EndEditing</var> method has not yet been called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.States"/>
+          <link id="TCustomTreeView.BeginEditing"/>
+          <link id="TCustomTreeView.EndEditing"/>
+          <link id="TTreeViewStates"/>
+          <link id="TTreeViewState"/>
+        </seealso>
       </element>
       <element name="TCustomTreeView.IsEditing.Result">
-        <short/>
+        <short>True if the tvsIsEditing flag is present in States</short>
       </element>
 
       <element name="TCustomTreeView.BeginUpdate">
-        <short>
-          <var>BeginUpdate</var> - start the update of the display
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Starts an update process for the tree view control</short>
+        <descr>
+          <p>
+            <var>BeginUpdate</var> is a method used to start an update process for the tree view control. BeginUpdate is used with <var>EndUpdate</var> to maintain update counters used to consolidate updates and event notifications in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.EndUpdate"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.EndUpdate">
-        <short>
-          <var>EndUpdate</var> finishes updating the display
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Finishes an update process for the tree view control</short>
+        <descr>
+          <p>
+            <var>EndUpdate</var> is a method used to finish an update process for the tree view control. EndUpdate is used with <var>BeginUpdate</var> to maintain update counters used to consolidate updates and event notifications in the control.
+          </p>
+          <p>
+            EndUpdates raises an Exception (catchable in the debugger) if the internal update counter is 0 or less when the method is called.
+          </p>
+          <p>
+            EndUpdates calls the EndUpdate method in the <var>Items</var> container. <var>UpdateScrollBars</var> is called to refresh the position in the visible scrollbars when a change actually occurred in the list of tree nodes.
+          </p>
+        </descr>
+        <errors>
+          Raises an Exception if the internal update counter is 0 or less when the method is called.
+        </errors>
+        <seealso>
+          <link id="TCustomTreeView.BeginUpdate"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.FullCollapse">
         <short>
-          <var>FullCollapse</var> - method to collapse the treeview fully and show just the root
+          Collapses all nodes in the tree view and displays only the root for the tree
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Visits all top-level tree nodes in the Items property and calls their Collapse method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.FullExpand">
         <short>
-          <var>FullExpand</var> - method to expand the treeview fully and show all the branches
+          Expands all nodes in the tree view
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Visits all top-level tree nodes in Items and calls their Expand method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.LoadFromFile">
         <short>
-          <var>LoadFromFile</var> - load the data from the specified file
+          Load tree view data from the specified file
         </short>
         <descr/>
         <seealso/>
@@ -21817,7 +21883,7 @@
 
       <element name="TCustomTreeView.LoadFromStream">
         <short>
-          <var>LoadFromStream</var> - load data from the specified stream
+          Loads tree view data from the specified stream
         </short>
         <descr/>
         <seealso/>
@@ -21828,7 +21894,7 @@
 
       <element name="TCustomTreeView.SaveToFile">
         <short>
-          <var>SaveToFile</var> - saves the data to the specified file
+          Saves the tree view data to the specified file
         </short>
         <descr/>
         <seealso/>
@@ -21839,7 +21905,7 @@
 
       <element name="TCustomTreeView.SaveToStream">
         <short>
-          <var>SaveToStream</var> - save the data to the specified stream
+          Saves the tree view data to the specified stream
         </short>
         <descr/>
         <seealso/>
@@ -21890,27 +21956,37 @@
       </element>
 
       <element name="TCustomTreeView.GetLastMultiSelected">
-        <short/>
+        <short>
+          Gets the last tree node added to a multi-selection in the Items for the controls
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetLastMultiSelected.Result">
-        <short/>
+        <short>Last tree node in a multi-selection</short>
       </element>
 
       <element name="TCustomTreeView.Select">
-        <short/>
-        <descr/>
+        <short>
+          Makes the specified node(s) become selected in the control
+        </short>
+        <descr>
+          <p>
+            <var>Select</var> is an overloaded method used to make a node, array of nodes, or list of nodes become selected in the tree view control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.Select.Node">
-        <short/>
+        <short>Tree node assigned to Selected in the method</short>
       </element>
       <element name="TCustomTreeView.Select.ShiftState">
-        <short/>
+        <short>Shift state for the selection; Shift assumes multi-selection is enabled</short>
       </element>
       <element name="TCustomTreeView.Select.Nodes">
-        <short/>
+        <short>
+          Array or TList with TTreeNode instances to add to the Selections in the control; assumes multi-select is enabled
+        </short>
       </element>
 
       <element name="TCustomTreeView.SelectionVisible">
@@ -21933,117 +22009,163 @@
       </element>
 
       <element name="TCustomTreeView.ClearInvisibleSelection">
-        <short/>
-        <descr/>
+        <short>Clears selected tree node(s) in the control if they are not visible</short>
+        <descr>
+          <p>
+            If MultiSelect has been enabled in the Options for the control, the ClearMultiSelection method in Items is called to clear the values in the Selections property. Otherwise the Selected property for the TTreeNode instance in Selected is set to False (which makes the Selected property unassigned).
+          </p>
+          <p>
+            No action are performed if MultiSelect has not been enabled and Selected has not been assigned.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.StoreCurrentSelection">
-        <short/>
+        <short>
+          Creates and fills a TStringList with the text for the selected nodes in the control
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.StoreCurrentSelection.Result">
-        <short/>
+        <short>TStringList instance with the selected nodes in the control</short>
       </element>
 
       <element name="TCustomTreeView.ApplyStoredSelection">
-        <short/>
+        <short>Selects the first node with text matching a value in the specified list</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.ApplyStoredSelection.ASelection">
-        <short/>
+        <short>TStringList with the text for nodes selected in the method</short>
       </element>
       <element name="TCustomTreeView.ApplyStoredSelection.FreeList">
-        <short/>
+        <short>True if the TStringList instance is freed in the method</short>
       </element>
 
       <element name="TCustomTreeView.MoveToNextNode">
-        <short/>
+        <short>
+          Moves the selection to the next tree node following the last selection in the control
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveToNextNode.ASelect">
-        <short/>
+        <short>True if the next node becomes selected in the control</short>
       </element>
 
       <element name="TCustomTreeView.MoveToPrevNode">
-        <short/>
+        <short>
+          Moves the selection to the visible tree node following prior to the last selection in the control
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveToPrevNode.ASelect">
-        <short/>
+        <short>True if the previous node becomes selected in the control</short>
       </element>
 
       <element name="TCustomTreeView.MovePageDown">
-        <short/>
+        <short>
+          Moves the selection to the next display page for the control
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MovePageDown.ASelect">
-        <short/>
+        <short>True if the node becomes selected in the control</short>
       </element>
 
       <element name="TCustomTreeView.MovePageUp">
-        <short/>
+        <short>
+          Moves the selection to the previous display page for the control
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MovePageUp.ASelect">
-        <short/>
+        <short>True if the node becomes selected in the control</short>
       </element>
 
       <element name="TCustomTreeView.MoveHome">
-        <short/>
+        <short>Moves to and optionally selects the first visible node in the control</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveHome.ASelect">
-        <short/>
+        <short>True if the node is selected in the control</short>
       </element>
 
       <element name="TCustomTreeView.MoveEnd">
-        <short/>
+        <short>Moves to and optionally selects the last expanded child node in Items</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.MoveEnd.ASelect">
-        <short/>
+        <short>True if the node is selected in the control</short>
       </element>
 
       <element name="TCustomTreeView.BackgroundColor">
         <short>Color of background area of control.</short>
-        <descr/>
+        <descr>
+          <p>
+            Contains the same value as the <var>Color</var> property.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
-      <element name="TCustomTreeView.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomTreeView.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
 
       <element name="TCustomTreeView.BottomItem">
-        <short>
-          <var>BottomItem</var> - the last item on the list
-        </short>
+        <short>Last visible tree node starting at the TopItem in the control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.Color">
-        <short/>
-        <descr/>
+        <short>Color used for the control display area</short>
+        <descr>
+          <p>
+            The default value for the property is <var>clWindow</var>. Contains the same value as the <var>BackgroundColor</var> property.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.DefaultItemHeight">
         <short>
-          Default height of tree-items. If tvoAutoItemHeight is set in Options, this value is detected from font and icons.
+          Default height for tree nodes in the control
         </short>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DefaultItemHeight</var> is an <var>Integer</var> property with the default height for tree nodes displayed in the control. The default value for the property is defined in the DefaultTreeNodeHeight constant, and assigned in the constructor for the class instance.
+          </p>
+          <p>
+            When tvoAutoItemHeight has been included in the Options for the control, the property value is  determined using the Font and the images for the control. A new value assigned to the property is ignored when automatic item height has been enabled.
+          </p>
+          <p>
+            The value may be changed when a layout adjustment policy is applied in DoAutoAdjustLayout, or when the UpdateDefaultItemHeight method is called. It is also updated (if needed) when values are assigned to the Images or StateImages properties.
+          </p>
+          <p>
+            Setting a new value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            DefaultItemHeight is the value used in the TTreeNode.Height property for tree nodes added to the Items container.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.Options"/>
+          <link id="TCustomTreeView.Font"/>
+          <link id="TCustomTreeView.Images"/>
+          <link id="TCustomTreeView.StateImages"/>
+          <link id="TCustomTreeView.Items"/>
+          <link id="TCustomTreeView.UpdateDefaultItemHeight"/>
+          <link id="TTreeNode.Height"/>
+          <link id="TTreeNodes"/>
+          <link id="DefaultTreeNodeHeight"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.DropTarget">
@@ -22071,21 +22193,37 @@
 
       <element name="TCustomTreeView.ExpandSignType">
         <short>
-          Sets shape of expand/collapse (fold/unfold) symbol: plus/minus, empty arrows, filled arrows etc.
+          Sets the shape for the expand/collapse (fold/unfold) symbols
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.Images">
-        <short>TImageList object which holds icons for tree-items.</short>
+        <short>Image list which holds icons for the tree nodes in Items</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.ImagesWidth">
-        <short/>
-        <descr/>
+        <short>Width for the Images used in the tree view control</short>
+        <descr>
+          <p>
+            ImagesWidth is an Integer property which contains the width for the Images assigned in the control. ImagesWidth provides the value that is scaled to the Pixels Per Inch setting in the Font property when Images have been assigned for the control.
+          </p>
+           <p>
+             The default value for the property is 0 (zero), and indicates that an explicit image width has not been assigned.
+           </p>
+          <p>
+            Setting a new value for the property causes the control to the redrawn.
+          </p>
+          <p>
+            ImagesWidth is used in the DoPaintNode method to retrieve the scaled image resolution for the bitmaps in Images.
+          </p>
+          <p>
+            Use StateImagesWidth to set the width for the bitmaps in the StateImages property.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -22106,11 +22244,37 @@
       </element>
 
       <element name="TCustomTreeView.Items">
-        <short>
-          Collection of tree-items which is the content of control. Has type TTreeNodes.
-        </short>
-        <descr/>
-        <seealso/>
+        <short>The container with the TTreeNode instances used in the control</short>
+        <descr>
+          <p>
+            <var>Items</var> is a <var>TTreeNodes</var> property with the container used to access and maintain the hierarchical list of <var>TTreeNode</var> instances displayed in the tree view control.
+          </p>
+          <p>
+            Items allows indexed access to the TTreeNode instances in the container by their ordinal position. For example:
+          </p>
+<code>// the following are equivalent
+AText := ATreeView.Items[0].Text;  // caption for the first tree node
+AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
+</code>
+          <p>
+            Methods in Items can be used to access and maintain the tree nodes and their hierarchy, including:
+          </p>
+          <ul>
+            <li>Add</li>
+            <li>AddChild</li>
+            <li>AddFirst</li>
+            <li>Clear</li>
+            <li>Delete</li>
+            <li>Insert</li>
+          </ul>
+          <p>
+              See <link id="TTreeNodes">TTreeNodes</link> for more information about the properties and methods in the container class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNodes"/>
+          <link id="TTreeNode"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.KeepCollapsedNodes">
@@ -22122,33 +22286,66 @@
       </element>
 
       <element name="TCustomTreeView.MultiSelectStyle">
-        <short>Additional options for MultiSelect property.</short>
+        <short>Additional options for the MultiSelect property</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.Options">
-        <short>Set of additional option flags for treeview.</short>
-        <descr/>
-        <seealso/>
+        <short>The set of options enabled in the tree view control</short>
+        <descr>
+          <p>
+            <var>Options</var> is a <var>TTreeViewOptions</var> property with the set of options enabled for the tree view control. <var>TTreeViewOption</var> contains the enumeration values allowed in the set type, and cause features and behaviors to be enabled when included in the set type.
+          </p>
+          <p>
+            The default value for the property is defined in the <var>DefaultTreeViewOptions</var> constant. Assigning a new set of values to the property may cause other property values and/or the control state to be changed, and the control may be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeViewOptions"/>
+          <link id="TTreeViewOption"/>
+          <link id="DefaultTreeViewOptions"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.ScrollBars">
-        <short>
-          Kind of scrollbars: horizontal, vertical, or both. Auto* mean that scrollbars hide automatically.
-        </short>
+        <short>Specifies the scrollbars displayed for the tree view control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.Selected">
-        <short>The <var>Selected</var> tree nodes</short>
-        <descr/>
-        <seealso/>
+        <short>The selected tree node in the control</short>
+        <descr>
+          <p>
+            <var>Selected</var> is a <var>TTreeNode</var> property which contains the selected  tree node in the control. A tree node is selected when the Left or Right mouse button is clicked on the code. It can also be selected by assigning a <var>TTreeNode</var> instance to the property.
+          </p>
+          <p>
+            When a tree node is selected or unselected, the Selected property in the TTreeNode instance is updated. Use the <var>OnChanging</var> event handler to determine if a specific tree node can become the  selected node in the control. Use the <var>OnChange</var> event handler to perform actions needed after the tree node is made the Selected node in the control.
+          </p>
+          <p>
+            Selecting a tree node forces it to become fully visible in the control. This includes expanding parent nodes to ensure that the node is visible.  The <var>OnExpanding</var> and <var>OnExpanded</var> event handlers are signalled before and after actions to a given tree node.
+          </p>
+          <p>
+            Use the <var>Selections</var> property to access the list of selected tree nodes when multi-selection has been enabled in the <var>Options</var> for the control. Use the <var>SelectionCount</var> property to get the number of tree nodes in the Selections property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.OnChanging"/>
+          <link id="TCustomTreeView.OnChange"/>
+          <link id="TCustomTreeView.OnExpanding"/>
+          <link id="TCustomTreeView.OnExpanded"/>
+          <link id="TCustomTreeView.Selections"/>
+          <link id="TCustomTreeView.SelectionCount"/>
+          <link id="TCustomTreeView.Options"/>
+          <link id="TTreeNode.Selected"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.SelectionColor">
-        <short>Color used to paint background of item selection.</short>
+        <short>
+          Color used to paint the background for the selected tree node in the control
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -22157,10 +22354,17 @@
         <short>Number of selected nodes in the tree view</short>
         <descr>
           <p>
-            SelectionCount is a read-only Cardinal property with the number of selected Items in the control. SelectionCount contains the value from the SelectionCount property in Items, and indicates the number of TTreeNode instances available in the Selections property.
+            <var>SelectionCount</var> is a read-only <var>Cardinal</var> property with the number of selected Items in the control. SelectionCount contains the value from the SelectionCount property in Items, and indicates the number of <var>TTreeNode</var> instances available in the <var>Selections</var> property.
+          </p>
+          <p>
+            SelectionCount and Selections are used when the value <var>tvoAllowMultiSelect</var> has been included in the <var>Options</var> property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.Selections"/>
+          <link id="TCustomTreeView.Selected"/>
+          <link id="TCustomTreeView.Options"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.SelectionFontColor">
@@ -22180,8 +22384,15 @@
       </element>
 
       <element name="TCustomTreeView.Selections">
-        <short>Provides indexed access to selected tree nodes in the control</short>
-        <descr/>
+        <short>Provides indexed access to the multi-selected tree nodes in the control</short>
+        <descr>
+          <p>
+            <var>Selections</var> is an indexed read-only <var>TTreeNode</var> property which provides indexed access to the selected tree nodes in the control. Selections is relevant when <var>tvoAllowMultiselect</var> has been included in the <var>Options</var> for the control. Use <var>SelectionCount</var> to get the number of nodes included in the Selections property.
+          </p>
+          <p>
+            Use <var>Selected</var> when multi-selection has not been enabled for the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.Selections.AIndex">
@@ -22189,20 +22400,53 @@
       </element>
 
       <element name="TCustomTreeView.SeparatorColor">
-        <short>Color used to paint horizontal lines between tree nodes</short>
-        <descr/>
+        <short>Color used to paint horizontal lines between tree nodes when enabled</short>
+        <descr>
+          <p>
+            <var>SeparatorColor</var> is a <var>TColor</var> property with the color used to paint horizontal lines between nodes in the tree hierarchy. SeparatorColor is used in the <var>DoPaintNode</var> method when <var>tvoShowSeparators</var> has been included in the <var>Options</var> for the control. It is assigned to the <var>Pen</var> and drawn using the <var>LineTo</var> method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.StateImages">
-        <short>Image list which holds state icons for tree nodes</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Image list with the bitmaps used to represent the state for nodes in the tree
+        </short>
+        <descr>
+          <p>
+            StateImages is a TCustomImageList property which contains bitmaps used to represent the state for nodes in the tree hierarchy. Images in the list correspond to the values used in the TTreeNode.StateIndex property.
+          </p>
+          <p>
+            Assigning a new value for the property causes the UnregisterChanges method in the image list to be called. The RegisterChanges method in the image list is called after the new images are assigned. The value in DefaultItemHeight is updated (when needed) to use the height for the images scaled to the current PPI setting in Font. The item height will include the default item spacing needed for the images. The control is redrawn when the new image list has been assigned to the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TCustomTreeView.UpdateDefaultItemHeight"/>
+          <link id="TTreeNode.DisplayIconLeft"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.StateImagesWidth">
-        <short>Width for the state icons in the StateImages property</short>
-        <descr/>
+        <short>Width for the bitmaps in the StateImages property</short>
+        <descr>
+          <p>
+            StateImagesWidth is an Integer property which contains the width for the StateImages assigned in the control. StateImagesWidth provides the value that is scaled to the Pixels Per Inch setting in the Font property when StateImages have been assigned for the control.
+          </p>
+           <p>
+             The default value for the property is 0 (zero), and indicates that an explicit image width has not been assigned.
+           </p>
+          <p>
+            Setting a new value for the property causes the control to the redrawn.
+          </p>
+          <p>
+            StateImagesWidth is used in the DoPaintNode method to retrieve the scaled image resolution for the bitmaps in StateImages.
+          </p>
+          <p>
+            Use ImagesWidth to set the width for the bitmaps in the Images property.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -22212,7 +22456,7 @@
         </short>
         <descr>
           <p>
-            Use <var>TopItem</var> to get the topmost visible node. It is usually needed when tree view contains many nodes and scroll bar is required to display them all. If you need the first node of the tree regardless of visibility use <var>Items</var>[0]
+            Use <var>TopItem</var> to get the top-most visible node. It is usually needed when tree view contains many nodes and scroll bar is required to display them all. If you need the first node of the tree regardless of visibility use <var>Items[0]</var>.
           </p>
         </descr>
         <seealso>
@@ -22222,22 +22466,48 @@
       </element>
 
       <element name="TCustomTreeView.TreeLineColor">
-        <short>Color used to paint vertical lines at left side.</short>
-        <descr/>
+        <short>Color used to draw the lines which connect the nodes in the tree</short>
+        <descr>
+          <p>
+            <var>TreeLineColor</var> is a <var>TColor</var> property with the color used to draw the lines which connect the nodes in the tree. The default value for the property is <var>clWindowFrame</var>. Setting a new value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            TreeLineColor is used in the <var>DoPaintNode</var> method to set the color for canvas pixels when <var>psPattern</var> is used in the <var>TreeLinePenStyle</var> property. This is done because the LCL does not currently support the psPattern pen style.
+          </p>
+          <p>
+            TreeLineColor is also used in the <var>DoPaint</var> method to set the pen color when rendering insert marks for the nodes in the tree hierarchy.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.TreeLinePenStyle">
-        <short>Style of TPen, used to paint vertical lines at left side.</short>
-        <descr/>
+        <short>Style of the TPen used to draw lines used to connect nodes in the control</short>
+        <descr>
+          <p>
+            <var>TreeLinePenStyle</var> is a <var>TPenStyle</var>  property which contains the pen style used to draw lines connecting the nodes in the tree. TreeLinePenStyle can contain one of the following vales:
+          </p>
+          <ul>
+            <li>psSolid</li>
+            <li>psDash</li>
+            <li>psDot</li>
+            <li>psDashDot</li>
+            <li>psDashDotDot</li>
+            <li>psinsideFrame</li>
+            <li>psPattern</li>
+            <li>psClear</li>
+          </ul>
+          <p>
+            The default value for the property is psPattern.
+          </p>
+          <p>
+            TreeLinePenStyle is used in the <var>DoPaintNode</var> method to draw the lines which connect the nodes in the tree hierarchy.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
-      <element name="TCustomTreeView.TabStop" link="#lcl.controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
+      <element name="TCustomTreeView.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 
       <element name="TTreeView">
         <short>
@@ -22379,8 +22649,7 @@
             <var>TTreeNodeExpandedState</var> is a class used to save and restore the expanded state of a TTreeView. The nodes are identified by their Text property.
           </p>
           <p>Usage example:</p>
-<code>
-// save old expanded state
+<code>// save old expanded state
 OldExpanded := TTreeNodeExpandedState.Create(ATreeView);
 //   ... change a lot of nodes ...
 // restore old expanded state
@@ -23408,7 +23677,7 @@ OldExpanded.Free;
             </dd>
             <dt>0</dt>
             <dd>
-              The nodetext valuess from both nodes are equal.
+              The nodetext values from both nodes are equal.
             </dd>
             <dt>1</dt>
             <dd>
@@ -23516,8 +23785,6 @@ OldExpanded.Free;
         <seealso/>
       </element>
 
-    <element name="TListItem.GetStates"><short>Returns all the states for this list item</short>
-      </element>
     </module>
     <!-- ComCtrls -->
   </package>
