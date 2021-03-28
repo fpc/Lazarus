@@ -2711,7 +2711,7 @@ begin
       skCardinal: Result := tmp1;
       skFloat:    Result := tmp1;
     end;
-    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FValue, 'DoGetResultValue'){$ENDIF};
+    Result.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(nil, 'DoGetResultValue'){$ENDIF};
   end
   else begin
     case tmp1.Kind of
