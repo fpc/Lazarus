@@ -3239,50 +3239,15 @@ begin
 end;
 
 function TGtk3WidgetSet.ScreenToClient(Handle: HWND; var P: TPoint): Integer;
-var
-  AWidget: TGtk3Widget;
-  AGtkWidget: PGtkWidget;
-  AWindow: PGdkWindow;
-  X,Y: Integer;
-  Allocation: TGtkAllocation;
 begin
-  Result := -1;
-  X := 0;
-  Y := 0;
+  Result := 0;
   {$ifdef VerboseGtk3WinApi}
   DebugLn('Trace:> [TGtk3WidgetSet.ScreenToClient] ',dbgs(P));
   {$endif}
   if not IsValidHandle(Handle) then
     exit;
 
-  AWidget := TGtk3Widget(Handle);
-  AGtkWidget := TGtk3Widget(Handle).GetContainerWidget;
-  if Assigned(AGtkWidget) and Gtk3IsGdkWindow(AGtkWidget^.window) then
-  begin
-    AWindow := AGtkWidget^.window;
-    PGdkWindow(AWindow)^.get_origin(@X, @Y);
-    AGtkWidget^.get_allocation(@Allocation);
-    if not AGtkWidget^.get_has_window and (AGtkWidget^.get_parent <> nil) then
-    begin
-      AGtkWidget^.get_allocation(@Allocation);
-      P.X := P.X - X - Allocation.x;
-      P.Y := P.Y - Y - Allocation.y;
-      exit;
-    end;
-  end else
-  if Gtk3IsGdkWindow(AWidget.Widget^.window) then
-  begin
-    AWindow := AWidget.Widget^.window;
-    PGdkWindow(AWindow)^.get_origin(@X, @Y);
-  end else
-  begin
-    AWidget.Widget^.get_allocation(@Allocation);
-    P.X := P.X - X - Allocation.x;
-    P.Y := P.Y - Y - Allocation.y;
-    exit;
-  end;
-  dec(P.X, X);
-  dec(P.Y, Y);
+  Result := TGtk3Widget(Handle).ScreenToClient(P);
 end;
 
 function TGtk3WidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll,
@@ -3870,7 +3835,15 @@ begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   DebugLn('WARNING: TGtk3WidgetSet.ShowWindow not implemented ...');
   {$ENDIF}
-  Result := False;
+  Result := IsValidHandle(Hwnd);
+  if not result then exit;
+  if TObject(hWnd) is TGtk3Window then
+    Result:=TGtk3Window(hWnd).ShowState(nCmdShow)
+  else
+  begin
+    TGtk3Widget(hWnd).Show;
+    Result:=true;
+  end;
 end;
 
 function TGtk3WidgetSet.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;

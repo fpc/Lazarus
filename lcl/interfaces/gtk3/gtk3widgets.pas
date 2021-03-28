@@ -127,6 +127,7 @@ type
     procedure OffsetMousePos(APoint: PPoint); virtual;
 
     function ClientToScreen(var P:TPoint):boolean;
+    function ScreenToClient(var P: TPoint): Integer;
 
     function DeliverMessage(var Msg; const AIsInputEvent: Boolean = False): LRESULT; virtual;
     function GtkEventMouseEnterLeave(Sender: PGtkWidget; Event: PGdkEvent): Boolean; virtual; cdecl;
@@ -781,6 +782,8 @@ type
     function getHorizontalScrollbar: PGtkScrollbar; override;
     function getVerticalScrollbar: PGtkScrollbar; override;
     function GetScrolledWindow: PGtkScrolledWindow; override;
+    function ShowState(nstate:integer):boolean; // winapi ShowWindow
+    procedure UpdateWindowState; // LCL WindowState
     class function decoration_flags(Aform: TCustomForm): longint;
   public
     procedure SetBounds(ALeft,ATop,AWidth,AHeight:integer);override;
@@ -1405,6 +1408,7 @@ var
   MoveMsg: TLMMove;
   NewSize: TSize;
   ACtl: TGtk3Widget;
+  AState:integer;
 begin
   //TODO: Move to TGtk3Widget.GtkResizeEvent
   {$IFDEF GTK3DEBUGSIZE}
@@ -1441,16 +1445,21 @@ begin
   FillChar(Msg, SizeOf(Msg), #0);
 
   Msg.Msg := LM_SIZE;
-  (*
-  case getWindowState of
-    GtkWindowMinimized: Msg.SizeType := SIZE_MINIMIZED;
-    GtkWindowMaximized: Msg.SizeType := SIZE_MAXIMIZED;
-    GtkWindowFullScreen: Msg.SizeType := SIZE_FULLSCREEN;
-  else
-    Msg.SizeType := SIZE_RESTORED;
-  end;
-  *)
   Msg.SizeType := SIZE_RESTORED;
+
+  if ACtl is TGtk3Window then
+  begin
+    AState:=TGtk3Window(ACtl).getWindowState;
+    if AState and GDK_WINDOW_STATE_ICONIFIED<>0 then
+      Msg.SizeType := SIZE_MINIMIZED
+    else
+    if AState and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+      Msg.SizeType := SIZE_MAXIMIZED
+    else
+    if AState and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+      Msg.SizeType := SIZE_FULLSCREEN;
+
+  end;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
@@ -1469,6 +1478,10 @@ begin
     Msg.Width := ACtl.LCLObject.Width;//Word(NewSize.cx);
     Msg.Height := ACtl.LCLObject.Height;//Word(NewSize.cy);
   end;
+
+  {if msg.Width=995 then
+    writeln('Trap 995');}
+
   ACtl.DeliverMessage(Msg);
 
  (* if (wtWindow in ACtl.WidgetType) and
@@ -2821,6 +2834,43 @@ begin
 
 end;
 
+function TGtk3Widget.ScreenToClient(var P: TPoint): Integer;
+var
+  AGtkWidget: PGtkWidget;
+  AWindow: PGdkWindow;
+  X,Y: Integer;
+  Allocation: TGtkAllocation;
+begin
+  Result:=-1;
+  AGtkWidget := GetContainerWidget;
+  if Assigned(AGtkWidget) and Gtk3IsGdkWindow(AGtkWidget^.window) then
+  begin
+    AWindow := AGtkWidget^.window;
+    PGdkWindow(AWindow)^.get_origin(@X, @Y);
+    AGtkWidget^.get_allocation(@Allocation);
+    if not AGtkWidget^.get_has_window and (AGtkWidget^.get_parent <> nil) then
+    begin
+      AGtkWidget^.get_allocation(@Allocation);
+      P.X := P.X - X - Allocation.x;
+      P.Y := P.Y - Y - Allocation.y;
+      exit;
+    end;
+  end else
+  if Gtk3IsGdkWindow(fWidget^.window) then
+  begin
+    AWindow := fWidget^.window;
+    PGdkWindow(AWindow)^.get_origin(@X, @Y);
+  end else
+  begin
+    fWidget^.get_allocation(@Allocation);
+    P.X := P.X - X - Allocation.x;
+    P.Y := P.Y - Y - Allocation.y;
+    exit;
+  end;
+  dec(P.X, X);
+  dec(P.Y, Y);
+end;
+
 function TGtk3Widget.DeliverMessage(var Msg; const AIsInputEvent: Boolean
   ): LRESULT;
 begin
@@ -3079,7 +3129,9 @@ end;
 procedure TGtk3Widget.Show;
 begin
   if IsValidHandle then
+  begin
     FWidget^.show;
+  end;
 end;
 
 procedure TGtk3Widget.ShowAll;
@@ -7050,6 +7102,7 @@ var
   AState: TGdkWindowState;
   AScreen: PGdkScreen;
   ActiveWindow: PGdkWindow;
+  msk:integer;
 begin
   Result := False;
   FillChar(Msg, SizeOf(Msg), #0);
@@ -7070,26 +7123,44 @@ begin
   Msg.Msg := LM_SIZE;
   Msg.SizeType := SIZE_RESTORED;
 
-  AState := AEvent^.window_state.new_window_state AND NOT GDK_WINDOW_STATE_FOCUSED;
+  msk:=AEvent^.window_state.changed_mask;
+  AState:=AEvent^.window_state.new_window_state;
 
-  if AState = 0 then
+  if msk and GDK_WINDOW_STATE_ICONIFIED<>0 then
   begin
-    if (AEvent^.window_state.changed_mask = GDK_WINDOW_STATE_ICONIFIED) or
-      (AEvent^.window_state.changed_mask = GDK_WINDOW_STATE_MAXIMIZED) or
-      (AEvent^.window_state.changed_mask = GDK_WINDOW_STATE_FULLSCREEN) then
-      // restore win
+    if AState and GDK_WINDOW_STATE_ICONIFIED<>0 then
+      Msg.SizeType := SIZE_MINIMIZED
+  end else
+  if msk and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+  begin
+    if AState and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+      Msg.SizeType := SIZE_MAXIMIZED
+  end else
+  if msk and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+  begin
+    if AState and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+      Msg.SizeType := SIZE_FULLSCREEN
+  end else
+  if msk and GDK_WINDOW_STATE_FOCUSED<>0 then
+  begin
+    if AState and GDK_WINDOW_STATE_FOCUSED<>0 then
+      writeln('Focused')
     else
-      exit;
+      writeln('Defocused');
+    exit;
+  end else
+  if msk and GDK_WINDOW_STATE_WITHDRAWN<>0 then
+  begin
+    if AState and GDK_WINDOW_STATE_WITHDRAWN<>0 then
+      writeln('Shown')
+    else
+      writeln('Hidden');
+    exit;
+  end else
+  begin
+    writeln(format('other changes state=%.08x mask=%.08x',[AState,msk]));
+    exit;
   end;
-  // PGtkWindow(nil)^.window^.get_state;
-  if AState and GDK_WINDOW_STATE_ICONIFIED <> 0 then
-    Msg.SizeType := SIZE_MINIMIZED
-  else
-  if AState and GDK_WINDOW_STATE_FULLSCREEN <> 0 then
-    Msg.SizeType := SIZE_FULLSCREEN
-  else
-  if AState and GDK_WINDOW_STATE_MAXIMIZED <> 0 then
-    Msg.SizeType := SIZE_MAXIMIZED;
 
   Msg.SizeType := Msg.SizeType or Size_SourceIsInterface;
 
@@ -7131,6 +7202,42 @@ begin
   if result and GDK_DECOR_TITLE <> 0 then
   if biSystemMenu in icns then
      result:=result or GDK_DECOR_MENU;
+end;
+
+function TGtk3Window.ShowState(nstate:integer):boolean; // winapi ShowWindow
+var
+  AState:integer;
+begin
+  case nstate of
+  SW_SHOWNORMAL:
+    begin
+       AState:=fWidget^.window^.get_state;
+       if AState and GDK_WINDOW_STATE_ICONIFIED<>0 then
+       PgtkWindow(fWidget)^.deiconify
+       else
+       if AState and GDK_WINDOW_STATE_MAXIMIZED<>0 then
+       PgtkWindow(fWidget)^.unmaximize
+       else
+       if AState and GDK_WINDOW_STATE_FULLSCREEN<>0 then
+       PgtkWindow(fWidget)^.unfullscreen
+       else
+       PgtkWindow(fWidget)^.show;
+    end;
+  SW_SHOWMAXIMIZED: PgtkWindow(fWidget)^.maximize;
+  SW_MINIMIZE: PgtkWindow(fWidget)^.iconify;
+  SW_SHOWFULLSCREEN: PgtkWindow(fWidget)^.fullscreen;
+  else
+    PgtkWindow(fWidget)^.show;
+  end;
+  Result:=true
+end;
+
+procedure TGtk3Window.UpdateWindowState; // LCL WindowState
+const
+  ShowCommands: array[TWindowState] of Integer =
+      (SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED, SW_SHOWFULLSCREEN);
+begin
+  ShowState(ShowCommands[TCustomForm(LCLObject).WindowState]);
 end;
 
 function TGtk3Window.CreateWidget(const Params: TCreateParams): PGtkWidget;
@@ -7202,11 +7309,7 @@ begin
 
 
   if not (csDesigning in AForm.ComponentState) then
-  case AForm.WindowState of
-  wsMaximized: PgtkWindow(Result)^.maximize;
-  wsMinimized: PgtkWindow(Result)^.iconify;
-  else
-  end;
+    UpdateWindowState;
 
 
   //REMOVE THIS, USED TO TRACK MOUSE MOVE OVER WIDGET TO SEE SIZE OF FIXED !
