@@ -7200,6 +7200,15 @@ begin
   PGtkContainer(Result)^.add(FBox);
   g_signal_connect_data(Result,'window-state-event', TGCallback(@Gtk3WindowState), Self, nil, 0);
 
+
+  if not (csDesigning in AForm.ComponentState) then
+  case AForm.WindowState of
+  wsMaximized: PgtkWindow(Result)^.maximize;
+  wsMinimized: PgtkWindow(Result)^.iconify;
+  else
+  end;
+
+
   //REMOVE THIS, USED TO TRACK MOUSE MOVE OVER WIDGET TO SEE SIZE OF FIXED !
   //g_object_set_data(PGObject(FScrollWin), 'lcldebugscrollwin', Self);
   //g_object_set_data(PGObject(FCentralWidget), 'lcldebugfixed', Self);
