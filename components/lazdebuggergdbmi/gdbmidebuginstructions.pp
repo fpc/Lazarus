@@ -521,6 +521,7 @@ end;
 constructor TGDBInstruction.Create(ACommand: String; AFlags: TGDBInstructionFlags;
   ATimeOut: Integer = 0);
 begin
+  inherited Create;
   InternalCreate(ACommand, -1, -1, AFlags, ATimeOut);
   Init;
 end;
@@ -528,6 +529,7 @@ end;
 constructor TGDBInstruction.Create(ACommand: String; AThread: Integer;
   AOtherFlags: TGDBInstructionFlags; ATimeOut: Integer = 0);
 begin
+  inherited Create;
   InternalCreate(ACommand, AThread, -1,
                  AOtherFlags + [ifRequiresThread], ATimeOut);
   Init;
@@ -536,6 +538,7 @@ end;
 constructor TGDBInstruction.Create(ACommand: String; AThread, AFrame: Integer;
   AOtherFlags: TGDBInstructionFlags; ATimeOut: Integer = 0);
 begin
+  inherited Create;
   InternalCreate(ACommand, AThread, AFrame,
                  AOtherFlags + [ifRequiresThread, ifRequiresStackFrame], ATimeOut);
   Init;

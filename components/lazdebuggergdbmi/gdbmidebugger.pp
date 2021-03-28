@@ -12757,6 +12757,7 @@ end;
 
 constructor TGDBMIDebuggerCommand.Create(AOwner: TGDBMIDebuggerBase);
 begin
+  inherited Create;
   FQueueRunLevel := -1;
   FState := dcsNone;
   FTheDebugger := AOwner;
