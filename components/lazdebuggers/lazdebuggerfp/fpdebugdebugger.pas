@@ -1383,6 +1383,10 @@ end;
 function TFpDbgMemReader.ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
   AContext: TFpDbgLocationContext): Boolean;
 begin
+  // Shortcut, if in debug-thread / do not use Self.F*
+  if ThreadID = FFpDebugDebugger.FWorkerThreadId then
+    exit(inherited ReadRegister(ARegNum, AValue, AContext));
+
   FRegNum := ARegNum;
   FRegContext := AContext;
   FRegValue := 0; // TODO: error detection
@@ -3266,11 +3270,12 @@ function TFpDebugDebugger.ExecuteInDebugThread(AMethod: TFpDbgAsyncMethod
 var
   WorkItem: TFpThreadWorkerAsyncMeth;
 begin
-  Result := True;
-  if ThreadID = FWorkerThreadId then begin
-    AMethod();
-    exit;
-  end;
+  assert(ThreadID <> FWorkerThreadId, 'TFpDebugDebugger.ExecuteInDebugThread: ThreadID <> FWorkerThreadId');
+  //Result := True;
+  //if ThreadID = FWorkerThreadId then begin
+  //  AMethod();
+  //  exit;
+  //end;
 
   Result := False;
 
@@ -3478,6 +3483,11 @@ end;
 function TFpDebugDebugger.AddBreak(const ALocation: TDbgPtr; AnEnabled: Boolean
   ): TFpDbgBreakpoint;
 begin
+  // Shortcut, if in debug-thread / do not use Self.F*
+  if ThreadID = FWorkerThreadId then
+    if ALocation = 0 then exit(FDbgController.CurrentProcess.AddBreak(nil, AnEnabled))
+                     else exit(FDbgController.CurrentProcess.AddBreak(ALocation, AnEnabled));
+
   FCacheLocation:=ALocation;
   FCacheBoolean:=AnEnabled;
   FCacheBreakpoint := nil;
@@ -3488,6 +3498,11 @@ end;
 function TFpDebugDebugger.AddBreak(const AFuncName: String; ALib: TDbgLibrary;
   AnEnabled: Boolean): TFpDbgBreakpoint;
 begin
+  // Shortcut, if in debug-thread / do not use Self.F*
+  if ThreadID = FWorkerThreadId then
+    if ALib <> nil then exit(ALib.AddBreak(AFuncName, AnEnabled))
+                   else exit(TDbgInstance(FDbgController.CurrentProcess).AddBreak(AFuncName, AnEnabled));
+
   FCacheFileName:=AFuncName;
   FCacheLib:=ALib;
   FCacheBoolean:=AnEnabled;
@@ -3498,6 +3513,10 @@ end;
 
 function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean;
 begin
+  // Shortcut, if in debug-thread / do not use Self.F*
+  if ThreadID = FWorkerThreadId then
+    exit(FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData));
+
   FCacheLocation := AAdress;
   FCacheLine:=ASize;
   FCachePointer := @AData;
@@ -3509,6 +3528,10 @@ end;
 function TFpDebugDebugger.ReadData(const AAdress: TDbgPtr;
   const ASize: Cardinal; out AData; out ABytesRead: Cardinal): Boolean;
 begin
+  // Shortcut, if in debug-thread / do not use Self.F*
+  if ThreadID = FWorkerThreadId then
+    exit(FDbgController.CurrentProcess.ReadData(AAdress, ASize, AData, ABytesRead));
+
   FCacheLocation := AAdress;
   FCacheLine:=ASize;
   FCachePointer := @AData;
