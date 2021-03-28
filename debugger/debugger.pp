@@ -2170,6 +2170,7 @@ end;
 
 constructor TDebuggerUnitInfo.Create(const AFileName: String; const AFullFileName: String);
 begin
+  inherited Create;
   FFileName := AFileName;
   FDbgFullName := TrimFilename(AFullFileName);
   FLocationType := dltUnknown;
@@ -2178,6 +2179,7 @@ end;
 constructor TDebuggerUnitInfo.Create(const AUnitName, AClassName,
   AFunctionName, AFunctionArgs: String);
 begin
+  inherited Create;
   include(FFlags, dlfSearchByFunctionName);
   FUnitName := AUnitName;
   FSrcClassName := AClassName;
@@ -2315,6 +2317,7 @@ end;
 
 constructor TSnapshot.Create(ASnapMgr: TSnapshotManager);
 begin
+  inherited Create;
   FTimeStamp := Now;
   FSnapMgr := ASnapMgr;
   AddReference;
