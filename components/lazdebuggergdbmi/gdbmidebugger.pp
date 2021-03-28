@@ -3386,6 +3386,7 @@ var
   esc: TGDBMIDebuggerFilenameEncoding;
 begin
   // no need to process empty filename
+  Result := APath;
   if Result = '' then exit;
 
   case ConvType of
