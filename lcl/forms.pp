@@ -301,6 +301,7 @@ type
     class procedure WSRegisterClass; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
+    procedure SetColor(Value: TColor); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure SetParentBackground(const AParentBackground: Boolean); override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;

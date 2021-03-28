@@ -24,6 +24,12 @@ procedure TCustomGroupBox.SetParentBackground(const AParentBackground: Boolean);
 begin
   inherited SetParentBackground(AParentBackground);
 
+  if AParentBackground then
+    if (ParentColor) and Assigned(Parent) then
+      Color := Parent.Color
+    else
+      Color := clDefault;
+
   UpdateOpaque;
 end;
 
@@ -39,6 +45,13 @@ procedure TCustomGroupBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BS_GROUPBOX;
+end;
+
+procedure TCustomGroupBox.SetColor(Value: TColor);
+begin
+  inherited SetColor(Value);
+  if Color <> clDefault then
+    ParentBackground := False;
 end;
 
 {------------------------------------------------------------------------------

@@ -169,6 +169,7 @@ type
 
     procedure UpdateOpaque;
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure SetColor(Value: TColor); override;
     procedure SetParentBackground(const AParentBackground: Boolean); override;
     procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
   public

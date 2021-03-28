@@ -95,6 +95,13 @@ begin
   end;
 end;
 
+procedure TCustomFrame.SetColor(Value: TColor);
+begin
+  inherited SetColor(Value);
+  if Color <> clDefault then
+    ParentBackground := False;
+end;
+
 procedure TCustomFrame.SetParent(AParent: TWinControl);
 
   procedure UpdateActionLists(Root: TComponent; Operation: TOperation);
@@ -140,6 +147,13 @@ end;
 procedure TCustomFrame.SetParentBackground(const AParentBackground: Boolean);
 begin
   inherited SetParentBackground(AParentBackground);
+
+  if AParentBackground then
+    if (ParentColor) and Assigned(Parent) then
+      Color := Parent.Color
+    else
+      Color := clDefault;
+
   UpdateOpaque;
 end;
 
