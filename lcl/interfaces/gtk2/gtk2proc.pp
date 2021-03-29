@@ -852,6 +852,8 @@ type
   // TLCLHandledKeyEvent is used to remember, if an gdk key event was already
   // handled.
   TLCLHandledKeyEvent = class
+  private
+    fRefCount: integer;
   public
     thetype: TGdkEventType;
     window: PGdkWindow;
@@ -862,6 +864,8 @@ type
     hardware_keycode : guint16;
     constructor Create(Event: PGdkEventKey);
     function IsEqual(Event: PGdkEventKey): boolean;
+    procedure AddRef;
+    procedure Release;
   end;
 
   TWinControlAccess = class(TWinControl)
@@ -871,6 +875,7 @@ type
 
 constructor TLCLHandledKeyEvent.Create(Event: PGdkEventKey);
 begin
+  fRefCount:=1;
   thetype:=gdk_event_get_type(Event);
   window:=Event^.window;
   send_event:=Event^.send_event;
@@ -890,6 +895,18 @@ begin
       and (time=Event^.time)
       and (keyval=Event^.keyval)
       ;
+end;
+
+procedure TLCLHandledKeyEvent.AddRef;
+begin
+  inc(fRefCount);
+end;
+
+procedure TLCLHandledKeyEvent.Release;
+begin
+  dec(fRefCount);
+  if fRefCount=0 then
+    Free;
 end;
 
 var
