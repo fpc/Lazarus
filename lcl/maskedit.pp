@@ -269,6 +269,7 @@ const
     { Required methods }
     constructor Create(TheOwner : TComponent); override;
     procedure Clear;
+    procedure SelectAll; override;
     procedure ValidateEdit; virtual;
     property Modified: Boolean read GetModified write SetModified;
   end;
@@ -1313,7 +1314,12 @@ procedure TCustomMaskEdit.DeleteChars(NextChar : Boolean);
 begin
   if NextChar then
   begin//VK_DELETE
-    if HasSelection then DeleteSelected
+    if HasSelection then
+    begin
+      DeleteSelected;
+      if IsLiteral(FMask[FCursorPos]) then
+        SelectNextChar;
+    end
     else
     begin
       //cannot delete beyond length of string
@@ -1328,7 +1334,12 @@ begin
   else
   begin//VK_BACK
     //if selected text > 1 char then delete selection
-    if HasExtSelection then DeleteSelected
+    if HasExtSelection then
+    begin
+      DeleteSelected;
+      if IsLiteral(FMask[FCursorPos]) then
+        SelectNextChar;
+    end
     else
     begin
       //cannot backspace if we are at beginning of string, or if all chars in front are MaskLiterals
@@ -1748,6 +1759,8 @@ begin
   if IsMasked and (not ReadOnly) then
   begin
     RealSetTextWhileMasked(FTextOnEnter);
+    FCursorPos := FFirstFreePos-1;
+    SetCursorPos;
   end;
 end;
 
@@ -2125,7 +2138,22 @@ begin
   else Inherited Clear;
 end;
 
-
+procedure TCustomMaskEdit.SelectAll;
+var
+  S: String;
+begin
+  if IsMasked then
+  begin
+    S := inherited RealGetText;
+    if (S <> '') then
+    begin
+      SetSelStart(0);
+      SetSelLength(UTF8Length(S));
+    end;
+  end
+  else
+    inherited SelectAll;
+end;
 
 procedure TCustomMaskEdit.ValidateEdit;
 var
