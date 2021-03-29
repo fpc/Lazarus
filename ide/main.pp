@@ -4355,7 +4355,7 @@ begin
       LFMFileName:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,true);
       if FileExistsCached(LFMFileName) and (not AnUnitInfo.DisableI18NForLFM) then
       begin
-        OpenStatus:=LazarusIDE.DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofAddToRecent]);
+        OpenStatus:=LazarusIDE.DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofAddToRecent, ofDoLoadResource]);
         if OpenStatus=mrOk then
         begin
           AnUnitInfo.Modified:=true;
