@@ -39,8 +39,8 @@ var
   lpath: string;
 begin
   Result := True;
-  if not FileExistsUTF8(APath) then begin
-    // Windows OpenDocument handles URLs as well
+  if not FileExistsUTF8(APath) and not DirectoryExistsUTF8(Apath) then begin
+    // OpenDocument handles URLs as well
     Result := OpenURL(Apath);
     Exit;
   end;
