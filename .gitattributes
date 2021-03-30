@@ -7340,7 +7340,6 @@ ide/editormacrolistviewer.lfm svneol=native#text/pascal
 ide/editormacrolistviewer.pas svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
 ide/editoroptions.rc svneol=native#text/plain
-ide/editoroptions.res -text
 ide/editortoolbarstatic.pas svneol=native#text/pascal
 ide/emptymethodsdlg.lfm svneol=native#text/plain
 ide/emptymethodsdlg.pas svneol=native#text/plain

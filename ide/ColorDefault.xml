@@ -41,7 +41,7 @@
           <ahaModifiedLine Foreground="clGreen" FrameColor="59900"/>
           <ahaCodeFoldingTree Background="clWhite" Foreground="clSilver"/>
           <ahaGutterSeparator Background="clWhite" Foreground="clGray"/>
-          <ahaGutter Background="clBtnFace"/>
+          <ahaGutter Background="15790320"/>
           <ahaRightMargin Foreground="clSilver"/>
           <ahaOverviewGutter Foreground="13948116" Background="15263976" FrameColor="12632256"/>
           <ahaIdentComplWindowHighlight Foreground="187"/>
