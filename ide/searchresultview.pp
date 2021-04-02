@@ -365,20 +365,7 @@ end;
 
 procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  // Using a dock manager...
-  if Parent<>nil then
-  begin
-    CloseAction := caNone;
-    //todo: helper function in DockManager or IDEDockMaster for closing forms.
-    // Only close the window if it's floating.
-    // AnchorDocking doesn't seem to initialize 'FloatingDockSiteClass' so we can't just check 'Floating'.
-    // Also, AnchorDocking use nested forms, so the check for HostDockSite.Parent.
-    if Assigned(HostDockSite) and (HostDockSite.DockClientCount <= 1)
-      and (HostDockSite is TCustomForm) and (HostDockSite.Parent = nil) then
-    begin
-      TCustomForm(HostDockSite).Close;
-    end;
-  end;
+
 end;
 
 procedure TSearchResultsView.FormKeyDown(Sender: TObject; var Key: Word;
