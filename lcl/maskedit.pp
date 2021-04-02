@@ -146,6 +146,7 @@ type
   { Exception class }
 type
   EDBEditError = class(Exception);
+  EInvalidEditMask = class(EDBEditError);
   //Utf8 handling errors
   EInvalidUtf8 = class(Exception);
   EInvalidCodePoint = class(EInvalidUtf8);
@@ -690,7 +691,7 @@ begin
         if InSet then
         begin //InSet
           if (Length(CP) <> 1) then
-            raise EDBEditError.Create(SIllegalCharInSet);
+            raise EInvalidEditMask.Create(SIllegalCharInSet);
           case CP[1] of
             cMask_SetNegate:
             begin
@@ -712,7 +713,7 @@ begin
             begin
               //debugln('Set closed:');
               if (CharSet = []) then
-                raise EDBEditError.Create(SEmptySet);
+                raise EInvalidEditMask.Create(SEmptySet);
               //debugln(['IsNegative=',IsNegative]);
               if IsNegative then
               begin
@@ -741,7 +742,7 @@ begin
             cMask_SetRange:
             begin
               if InRange then
-                raise EDBEditError.Create(SIllegalRangeChar);
+                raise EInvalidEditMask.Create(SIllegalRangeChar);
               if (CharSet = []) then
               begin
                 //debugln('Adding - to emty set');
@@ -927,7 +928,7 @@ begin
       end;
     end;
     if InSet then
-      raise EDBEditError.Create(SUnclosedSet);
+      raise EInvalidEditMask.Create(SUnclosedSet);
 
     //debugln('TCustomMaskEdit.SetEditMask: Internal Mask:');
     //debugln(DbgS(FMask));
