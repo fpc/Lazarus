@@ -198,7 +198,6 @@ begin
   DockMaster.OnCreateControl:=@DockMasterCreateControl;
   DockMaster.OnShowOptions:=@ShowAnchorDockOptions;
   DockMaster.ShowMenuItemShowHeader:=true;
-  FHideSimpleLayoutOptions:=true;
   fCmdLineLayoutFile:=TrimAndExpandFilename(Application.GetOptionValue('anchordocklayout'));
   if CmdLineLayoutFile<>'' then
     debugln(['Hint: anchordocking layout file: "',CmdLineLayoutFile,'"']);

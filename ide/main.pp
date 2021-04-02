@@ -12390,6 +12390,7 @@ end;
 
 procedure TMainIDE.HandleApplicationActivate(Sender: TObject);
 begin
+  InvalidateFileStateCache;
   DoCheckFilesOnDisk;
 end;
 
