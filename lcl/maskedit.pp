@@ -647,6 +647,13 @@ Var
       Include(CharSet, C);
   end;
 
+  procedure UndoMask;
+  begin
+    ClearInternalMask(FMask, FMaskLength);
+    MaxLength := 0;
+    Clear;
+  end;
+
 begin
   //Setting Mask while loading has unexpected and unwanted side-effects
   if (csLoading in ComponentState) then
@@ -691,7 +698,10 @@ begin
         if InSet then
         begin //InSet
           if (Length(CP) <> 1) then
+          begin
+            UndoMask;
             raise EInvalidEditMask.Create(SIllegalCharInSet);
+          end;
           case CP[1] of
             cMask_SetNegate:
             begin
@@ -713,7 +723,10 @@ begin
             begin
               //debugln('Set closed:');
               if (CharSet = []) then
+              begin
+                UndoMask;
                 raise EInvalidEditMask.Create(SEmptySet);
+              end;
               //debugln(['IsNegative=',IsNegative]);
               if IsNegative then
               begin
@@ -742,7 +755,10 @@ begin
             cMask_SetRange:
             begin
               if InRange then
+              begin
+                UndoMask;
                 raise EInvalidEditMask.Create(SIllegalRangeChar);
+              end;
               if (CharSet = []) then
               begin
                 //debugln('Adding - to emty set');
@@ -928,7 +944,10 @@ begin
       end;
     end;
     if InSet then
+    begin
+      UndoMask;
       raise EInvalidEditMask.Create(SUnclosedSet);
+    end;
 
     //debugln('TCustomMaskEdit.SetEditMask: Internal Mask:');
     //debugln(DbgS(FMask));
