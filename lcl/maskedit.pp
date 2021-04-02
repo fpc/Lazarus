@@ -79,6 +79,10 @@ const
   cMask_Binary        = 'b'; // a binary character (['0'..'1']) but not necessary (Lazarus extension, not supported by Delphi)
   cMask_BinaryFixed   = 'B'; // a binary character                                (Lazarus extension, not supported by Delphi)
   cMask_NoLeadingBlanks = '!'; //Trim leading blanks, otherwise trim trailing blanks from the data
+  cMask_SetStart      = '[';
+  cMask_SetEnd        = ']';
+  cMask_SetNegate     = '!';
+  cMask_SetRange      = '-';
 
   {Delphi compatibility: user can change these at runtime}
   DefaultBlank: Char = '_';
@@ -120,12 +124,19 @@ type
                  Char_HexFixedUpCase,        //Lazarus extension, not supported by Delphi
                  Char_HexFixedDownCase,      //Lazarus extension, not supported by Delphi
                  Char_Binary,                //Lazarus extension, not supported by Delphi
-                 Char_BinaryFixed);          //Lazarus extension, not supported by Delphi
-
+                 Char_BinaryFixed,           //Lazarus extension, not supported by Delphi
+                 Char_Set,                   //Lazarus extension, not supported by Delphi
+                 //Char_SetUpCase,             //Lazarus extension, not supported by Delphi
+                 //Char_SetDownCase,           //Lazarus extension, not supported by Delphi
+                 Char_SetNegate             //Lazarus extension, not supported by Delphi
+                 //Char_SetNegateUpCase,       //Lazarus extension, not supported by Delphi
+                 //Char_SetNegateDownCase      //Lazarus extension, not supported by Delphi
+                 );
 
   TIntMaskRec = record
     MaskType: TMaskedType;
     Literal: TUtf8Char;
+    CharSet: TSysCharSet;
   end;
 
   TInternalMask = array[1..255] of TIntMaskRec;
@@ -142,8 +153,11 @@ type
 const
   SInvalidCodePoint = 'The (hexadecimal) sequence %s is not a valid UTF8 codepoint.';
   SIndexOutOfRangeForFMask = 'MaskEdit Internal Error'^m'Range check error trying to access FMask[%d]. Index should be between 1 and %d';
-  SFoundChar_Invalid= 'MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d';
-
+  SFoundChar_Invalid = 'MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d';
+  SUnclosedSet = 'Illegal value for EditMask: set is not closed.';
+  SIllegalCharInSet = 'Illegal value in EditMask: sets can only contain ASCII characters.';
+  SEmptySet = 'Illegal value for EditMask: a set can not be empty.';
+  SIllegalRangeChar = 'Illegal value for EditMask: you can not have two consecutive "'+cMask_SetRange+'"''s in a set';
 
 { ***********************************************************************************************
 
@@ -206,13 +220,14 @@ const
     FSavedMaskLength : Integer;
     FTextChangedBySetText: Boolean;
     FInRealSetTextWhileMasked: Boolean;
+    FEnableSets:     Boolean;
 
     FValidationErrorMode: TMaskEditValidationErrorMode;
     FOnValidationError: TNotifyEvent;
 
     procedure ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
     procedure AddToMask(ALiteral: TUtf8Char);
-    procedure AddToMask(AMaskType: TMaskedType);
+    procedure AddToMask(AMaskType: TMaskedType; ACharSet: TSysCharSet = []);
     function GetModified: Boolean;
     function GetMask(Index: Integer): TIntMaskRec; //use this to read FMask values
     procedure SetEditMask(Value : String);
@@ -293,6 +308,8 @@ const
     procedure Clear;
     procedure SelectAll; override;
     procedure ValidateEdit; virtual;
+
+    property EnableSets: Boolean read FEnableSets write FEnableSets; experimental;
     property Modified: Boolean read GetModified write SetModified;
 
     property OnValidationError: TNotifyEvent read FOnValidationError write FOnValidationError; experimental;
@@ -378,6 +395,39 @@ implementation
 function DbgS(AMaskType: TMaskedType): String; overload;
 begin
   WriteStr(Result, AMaskType);
+end;
+
+function DbgS(ASet: TSysCharSet): String; overload;
+var
+  C: Char;
+begin
+  Result := '[';
+  for C in ASet do
+    Result := Result + C + ',';
+  if (Result <> '[') then
+    System.Delete(Result, Length(Result), 1);
+  Result := Result + ']';
+end;
+
+function DbgS(AMask: TInternalMask): String; overload;
+var
+  El: TIntMaskRec;
+  i: Integer;
+begin
+  Result := '';
+  for i :=  1 to 255 do
+  begin
+    El := AMask[i];
+    if (El.MaskType = Char_InValid) then
+      Break;
+    Result := Result + format('%3d: ',[i]);
+    Result := Result + DbgS(El.MaskType);
+    if (El.MaskType = Char_IsLiteral) then
+      Result := Result + ', "' + El.Literal + '"';
+    if (El.CharSet <> []) then
+      Result := Result + ', ' + DbgS(El.CharSet);
+    Result := Result + LineEnding;
+  end;
 end;
 
 const
@@ -517,6 +567,7 @@ begin
   FValidationFailed := False;
   FMaskIsPushed := False;
   FValidationErrorMode := mvemException;
+  FEnableSets := False;
 end;
 
 procedure TCustomMaskEdit.ClearInternalMask(out AMask: TInternalMask; out ALengthIndicator: Integer);
@@ -533,11 +584,12 @@ begin
   FMask[FMaskLength].MaskType := Char_IsLiteral;
 end;
 
-procedure TCustomMaskEdit.AddToMask(AMaskType: TMaskedType);
+procedure TCustomMaskEdit.AddToMask(AMaskType: TMaskedType; ACharSet: TSysCharSet);
 begin
   Inc(FMaskLength);
   FMask[FMaskLength].Literal := EmptyStr;
   FMask[FMaskLength].MaskType := AMaskType;
+  FMask[FMaskLength].CharSet := ACharSet;
 end;
 
 function TCustomMaskEdit.GetModified: Boolean;
@@ -579,7 +631,21 @@ Var
   I            : Integer;
   InUp, InDown : Boolean;
   Special      : Boolean;
+  InSet        : Boolean;
+  InRange      : Boolean;
+  IsNegative   : Boolean;
+  LastChar     : Char;
+  CharSet      : TSysCharSet;
   CP           : TUtf8Char;
+
+  procedure AddToCharSet(AFirst, ALast: Char);
+  var
+    C: Char;
+  begin
+    for C := AFirst to ALast do
+      Include(CharSet, C);
+  end;
+
 begin
   //Setting Mask while loading has unexpected and unwanted side-effects
   if (csLoading in ComponentState) then
@@ -604,6 +670,11 @@ begin
     InUp      := False;
     InDown    := False;
     Special   := False;
+    InSet     := False;
+    InRange   := False;
+    IsNegative:= False;
+    LastChar  := #0;
+    CharSet   := [];
     S         := Value;
     for I := 1 To Utf8Length(S) do
     begin
@@ -616,150 +687,251 @@ begin
       end
       else
       begin
-        // Check the char to insert
-
-        case CP Of
-             cMask_SpecialChar: Special := True;
-             cMask_UpperCase: begin
-               if (I > 1) and (GetCodePoint(S,I-1) = cMask_LowerCase) then
-               begin// encountered <>, so no case checking after this
-                 InUp := False;
-                 InDown := False
-               end else
-               begin
-                 InUp    := True;
-                 InDown := False;
+        if InSet then
+        begin //InSet
+          if (Length(CP) <> 1) then
+            raise EDBEditError.Create(SIllegalCharInSet);
+          case CP[1] of
+            cMask_SetNegate:
+            begin
+              if (LastChar=#0) {(CharSet = [])} then
+              begin
+                //debugln('IsNegative := True');
+                IsNegative := True
+              end
+              else
+              begin
+                if not InRange then
+                  AddToCharSet(CP[1], CP[1])
+                else
+                  AddToCharSet(LastChar, CP[1]);
+                InRange := False;
+              end;
+            end;
+            cMask_SetEnd:
+            begin
+              //debugln('Set closed:');
+              if (CharSet = []) then
+                raise EDBEditError.Create(SEmptySet);
+              //debugln(['IsNegative=',IsNegative]);
+              if IsNegative then
+              begin
+                //if InUp then
+                //  AddToMask(Char_SetNegateUpCase, CharSet)
+                //else
+                //  if InDown then
+                //    AddToMask(Char_SetNegateDownCase, CharSet)
+                //else
+                  AddToMask(Char_SetNegate, CharSet);
+              end
+              else
+              begin
+                //if InUp then
+                //  AddToMask(Char_SetUpCase, CharSet)
+                //else
+                //  if InDown then
+                //    AddToMask(Char_SetDownCase, CharSet)
+                //else
+                  AddToMask(Char_Set, CharSet);
+              end;
+              //debugln(['Added CharSet: ',Dbgs(CharSet),', IsNegative=',IsNegative]);
+              InSet := False;
+              InRange := False;
+            end;
+            cMask_SetRange:
+            begin
+              if InRange then
+                raise EDBEditError.Create(SIllegalRangeChar);
+              if (CharSet = []) then
+              begin
+                //debugln('Adding - to emty set');
+                Include(CharSet, cMask_SetRange);
+              end
+              else
+              begin
+                //debugln('Start range');
+                InRange := True;
+              end;
+            end;
+            otherwise
+            begin
+              if not InRange then
+                AddToCharSet(CP[1], CP[1])
+              else
+                AddToCharSet(LastChar, CP[1]);
+              InRange := False;
+            end; //otherwise
+          end;//case
+          if not InRange then
+            LastChar := CP[1];
+        end//InSet
+        else
+        begin//not InSet
+          // Check the char to insert
+          case CP Of
+               cMask_SpecialChar: Special := True;
+               cMask_UpperCase: begin
+                 if (I > 1) and (GetCodePoint(S,I-1) = cMask_LowerCase) then
+                 begin// encountered <>, so no case checking after this
+                   InUp := False;
+                   InDown := False
+                 end else
+                 begin
+                   InUp    := True;
+                   InDown := False;
+                 end;
                end;
-             end;
 
-             cMask_LowerCase: begin
-                InDown  := True;
-                InUp := False;
-                // <> is catched by next cMask_Uppercase
-             end;
+               cMask_LowerCase: begin
+                  InDown  := True;
+                  InUp := False;
+                  // <> is catched by next cMask_Uppercase
+               end;
 
-             cMask_Letter: begin
-                if InUp
-                then
-                  AddToMask(Char_LetterUpCase)
-                else
-                  if InDown
-                  then
-                    AddToMask(Char_LetterDownCase)
-                  else
-                    AddToMask(Char_Letter)
-             end;
-
-             cMask_LetterFixed: begin
-                if InUp
-                then
-                  AddToMask(Char_LetterFixedUpCase)
-                else
-                  if InDown
-                  then
-                    AddToMask(Char_LetterFixedDownCase)
-                  else
-                    AddToMask(Char_LetterFixed)
-             end;
-
-             cMask_AlphaNum: begin
-                 if InUp
-                 then
-                   AddToMask(Char_AlphaNumUpcase)
+               cMask_SetStart: begin
+                 if FEnableSets then
+                 begin
+                   //debugln('TCustomMaskEdit: start of set');
+                   InSet := True;
+                   CharSet := [];
+                   IsNegative := False;
+                   LastChar := #0;
+                   InRange := False;
+                 end
                  else
-                   if InDown
-                   then
-                     AddToMask(Char_AlphaNumDownCase)
-                   else
-                     AddToMask(Char_AlphaNum)
-             end;
+                   //debugln('Found a literal [');
+                   AddToMask(cMask_SetStart);
 
-             cMask_AlphaNumFixed: begin
-                 if InUp
-                 then
-                   AddToMask(Char_AlphaNumFixedUpcase)
-                 else
-                   if InDown
-                   then
-                     AddToMask(Char_AlphaNumFixedDownCase)
-                   else
-                     AddToMask(Char_AlphaNumFixed)
-             end;
-
-             cMask_AllChars: begin
-                if InUp
-                then
-                  AddToMask(Char_AllUpCase)
-                else
-                  if InDown
+               end;
+               cMask_Letter: begin
+                  if InUp
                   then
-                    AddToMask(Char_AllDownCase)
+                    AddToMask(Char_LetterUpCase)
                   else
-                    AddToMask(Char_All)
-             end;
+                    if InDown
+                    then
+                      AddToMask(Char_LetterDownCase)
+                    else
+                      AddToMask(Char_Letter)
+               end;
 
-             cMask_AllCharsFixed: begin
-                if InUp
-                then
-                  AddToMask(Char_AllFixedUpCase)
-                else
-                  if InDown
+               cMask_LetterFixed: begin
+                  if InUp
                   then
-                    AddToMask(Char_AllFixedDownCase)
+                    AddToMask(Char_LetterFixedUpCase)
                   else
-                    AddToMask(Char_AllFixed)
-             end;
+                    if InDown
+                    then
+                      AddToMask(Char_LetterFixedDownCase)
+                    else
+                      AddToMask(Char_LetterFixed)
+               end;
 
-             cMask_Number: AddToMask(Char_Number);
-
-             cMask_NumberFixed: AddToMask(Char_NumberFixed);
-
-             cMask_NumberPlusMin: AddToMask(Char_NumberPlusMin);
-
-             cMask_HourSeparator: AddToMask(Char_HourSeparator);
-
-             cMask_DateSeparator: AddToMask(Char_DateSeparator);
-
-              cMask_Hex: begin
-                 if InUp
-                 then
-                   AddToMask(Char_HexUpCase)
-                 else
-                   if InDown
+               cMask_AlphaNum: begin
+                   if InUp
                    then
-                     AddToMask(Char_HexDownCase)
+                     AddToMask(Char_AlphaNumUpcase)
                    else
-                     AddToMask(Char_Hex)
-              end;
+                     if InDown
+                     then
+                       AddToMask(Char_AlphaNumDownCase)
+                     else
+                       AddToMask(Char_AlphaNum)
+               end;
 
-              cMask_HexFixed: begin
-                 if InUp
-                 then
-                   AddToMask(Char_HexFixedUpCase)
-                 else
-                   if InDown
+               cMask_AlphaNumFixed: begin
+                   if InUp
                    then
-                     AddToMask(Char_HexFixedDownCase)
+                     AddToMask(Char_AlphaNumFixedUpcase)
                    else
-                     AddToMask(Char_HexFixed)
-              end;
+                     if InDown
+                     then
+                       AddToMask(Char_AlphaNumFixedDownCase)
+                     else
+                       AddToMask(Char_AlphaNumFixed)
+               end;
 
-              cMask_Binary: AddToMask(Char_Binary);
-              cMask_BinaryFixed: AddToMask(Char_BinaryFixed);
+               cMask_AllChars: begin
+                  if InUp
+                  then
+                    AddToMask(Char_AllUpCase)
+                  else
+                    if InDown
+                    then
+                      AddToMask(Char_AllDownCase)
+                    else
+                      AddToMask(Char_All)
+               end;
 
-             cMask_NoLeadingBlanks:
-             begin
-               FTrimType := metTrimLeft;
-             end;
+               cMask_AllCharsFixed: begin
+                  if InUp
+                  then
+                    AddToMask(Char_AllFixedUpCase)
+                  else
+                    if InDown
+                    then
+                      AddToMask(Char_AllFixedDownCase)
+                    else
+                      AddToMask(Char_AllFixed)
+               end;
 
-             else
-             begin
-               //It's a MaskLiteral
-               AddToMask(CP);
-             end;
-        end;
+               cMask_Number: AddToMask(Char_Number);
+
+               cMask_NumberFixed: AddToMask(Char_NumberFixed);
+
+               cMask_NumberPlusMin: AddToMask(Char_NumberPlusMin);
+
+               cMask_HourSeparator: AddToMask(Char_HourSeparator);
+
+               cMask_DateSeparator: AddToMask(Char_DateSeparator);
+
+                cMask_Hex: begin
+                   if InUp
+                   then
+                     AddToMask(Char_HexUpCase)
+                   else
+                     if InDown
+                     then
+                       AddToMask(Char_HexDownCase)
+                     else
+                       AddToMask(Char_Hex)
+                end;
+
+                cMask_HexFixed: begin
+                   if InUp
+                   then
+                     AddToMask(Char_HexFixedUpCase)
+                   else
+                     if InDown
+                     then
+                       AddToMask(Char_HexFixedDownCase)
+                     else
+                       AddToMask(Char_HexFixed)
+                end;
+
+                cMask_Binary: AddToMask(Char_Binary);
+                cMask_BinaryFixed: AddToMask(Char_BinaryFixed);
+
+               cMask_NoLeadingBlanks:
+               begin
+                 FTrimType := metTrimLeft;
+               end;
+
+               otherwise
+               begin
+                 //It's a MaskLiteral
+                 AddToMask(CP);
+               end;
+          end;//case CP of
+        end;//not InSet
       end;
     end;
+    if InSet then
+      raise EDBEditError.Create(SUnclosedSet);
+
+    //debugln('TCustomMaskEdit.SetEditMask: Internal Mask:');
+    //debugln(DbgS(FMask));
+
     FFirstFreePos := 1;
     //Determine first position where text can be entered (needed for DeleteChars()
     while (FFirstFreePos <= FMaskLength) and IsLiteral(FFirstFreePos)  do Inc(FFirstFreePos);
@@ -772,7 +944,7 @@ begin
     SetMaxLength(FMaskLength);
     Clear;
     FTextOnEnter := inherited RealGetText;
-  end;
+  end; //FRealMask<>Value
 end;
 
 
@@ -1029,6 +1201,8 @@ begin
     Char_HexFixedDownCase    : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
     Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',FSpaceChar{#32}]);
     Char_BinaryFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
+    Char_Set                 : Ok := (Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet);
+    Char_SetNegate           : OK := not ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
     Char_IsLiteral           : OK := (Ch = FMask[Position].Literal);  // no need to use GetMask() here, since FMask[FPosition] has already been validated
   end;//case
   //DebugLn('Position = ',DbgS(Position),' Current = ',DbgS(Current),' Ch = "',Ch,'" Ok = ',DbgS(Ok));
@@ -1244,7 +1418,14 @@ begin
     Char_HexFixedUpCase,
     Char_HexFixedDownCase,
     Char_Binary,
-    Char_BinaryFixed          : Result := FSpaceChar;
+    Char_BinaryFixed,
+    Char_Set,
+    //Char_SetUpCase,
+    //Char_SetDownCase,
+    Char_SetNegate
+    //Char_SetNegateUpCase,
+    //Char_SetNegateDownCase
+                              : Result := FSpaceChar;
     {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
     Char_HourSeparator        : Result := DefaultFormatSettings.TimeSeparator;
     Char_DateSeparator        : Result := DefaultFormatSettings.DateSeparator;
@@ -1299,6 +1480,9 @@ Begin
      (Current = Char_AlphaNumFixedUpCase) or
      (Current = Char_HexUpCase          ) or
      (Current = Char_HexFixedUpCase     )
+     //(Current = Char_SetUpCase          ) or
+     //(Current = Char_SetNegateUpCase    )
+
 
      then
        Ch := Utf8UpperCase(Ch);
@@ -1312,6 +1496,8 @@ Begin
      (Current = Char_AlphaNumFixedDownCase ) or
      (Current = Char_HexDownCase           ) or
      (Current = Char_HexFixedDownCase      )
+     //(Current = Char_SetDownCase           ) or
+     //(Current = Char_SetNegateDownCase     )
      then
        Ch := Utf8LowerCase(Ch);
 
@@ -1348,6 +1534,8 @@ Begin
        Char_HexFixedDownCase    : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
        Char_Binary,
        Char_BinaryFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
+       Char_Set                 : Result := (Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet);
+       Char_SetNegate           : Result := not ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
        Char_IsLiteral           : Result := False;
        Char_Invalid:
          Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
