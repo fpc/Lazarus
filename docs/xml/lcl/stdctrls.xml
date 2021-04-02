@@ -826,6 +826,22 @@
         <short>Creation parameters updated in the method</short>
       </element>
 
+      <element name="TCustomGroupBox.SetColor">
+        <short>Sets the value for the Color property</short>
+        <descr>
+          <p>
+            Changes the value in <var>ParentBackground</var> to <b>False</b> when <var>Color</var> is set to a value other than <var>clDefault</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGroupBox.ParentBackground"/>
+          <link id="#lcl.controls.TWinControl.Color">TWinControl.Color</link>
+        </seealso>
+      </element>
+      <element name="TCustomGroupBox.SetColor.Value">
+        <short>New value for the property</short>
+      </element>
+
       <element name="TCustomGroupBox.SetParentBackground">
         <short>Sets the value for the ParentBackground proprety</short>
         <descr/>
@@ -875,7 +891,13 @@
         <short>Indicates if the control uses the background from the parent</short>
         <descr>
           <p>
-            The write access specifier is overridden in TCustomGroupBox, and calls the <var>UpdateOpaque</var> method.
+            The write access specifier is overridden in <var>TCustomGroupBox</var>. It calls the inherited method on enty.
+          </p>
+          <p>
+            If <var>AParentBackground</var> is <b>True</b> and ParentColor is <b>True</b>, the <var>Color</var> from the <var>Parent</var> control is assigned to the <var>Color</var> property. Otherwise, the value <var>clDefault</var> is stored in the Color property.
+          </p>
+          <p>
+            The <var>UpdateOpaque</var> method is called to adjust the control style flags in the control.
           </p>
           <p>
             The default value for the property is <b>True</b>.

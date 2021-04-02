@@ -1491,6 +1491,26 @@
       <element name="TCustomFrame.Notification.Operation">
         <short>Operation for the notification</short>
       </element>
+
+      <element name="TCustomFrame.SetColor">
+        <short>Sets the value for the Color property</short>
+        <descr>
+          <p>
+            <var>SetColor</var> is an overridden method in <var>TCustomFrame</var> used to set the value for the <var>Color</var> property. It calls the inherited method on entry.
+          </p>
+          <p>
+            When the Color property contains a value other than <var>clDefault</var>, the <var>ParentBackground</var> property is set to <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomFrame.ParentBackground"/>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.SetColor.Value">
+        <short>New value for the property</short>
+      </element>
+
       <!-- procedure Visibility: protected -->
       <element name="TCustomFrame.SetParent">
         <short>Sets the value for the Parent property</short>
@@ -1583,14 +1603,20 @@
         <short>Indicates if the control uses the background from the parent</short>
         <descr>
           <p>
-            The write access specifier is overridden in TCustomFrame, and calls the <var>UpdateOpaque</var> method.
+            The write access specifier is overridden in <var>TCustomFrame</var>. It calls the inherited method on entry.
+          </p>
+          <p>
+            If the new property value is <b>True</b> and ParentColor is <b>True</b>,  the color assigned to the <var>Parent</var> control is stored in the <var>Color</var> property. Otherwise, Color is set to the value <var>clDefault</var>. The <var>UpdateOpaque</var> method is called to adjust the control style flags for the control.
           </p>
           <p>
             The default value for the property is <b>True</b>.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomFrame.UpdateOpaque"/>
           <link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
         </seealso>
       </element>
 

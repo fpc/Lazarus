@@ -573,7 +573,7 @@
             However if <var>SimplePanel</var> is false, then there can be multiple panels or sub-sections of the status bar whose properties are described in <var>Panels</var>.
           </p>
           <p>
-            The property <var>SimpleText</var> can be assigned programmatically to display the value of some variable, such as the position of the Splitter in the example.
+            The property <var>SimpleText</var> can be assigned in code to display the value of some variable, such as the position of the Splitter in the example.
           </p>
         </descr>
         <example file="extctrls/statusbar.pas"/>
@@ -1059,7 +1059,7 @@
         <short>Event handler signalled to draw a panel in the status bar</short>
         <descr>
           <p>
-            <var>OnDrawPanel</var> is an event handler used to draw the specified panel on the status bar. OnDrawPanel is signalled (when assigned) from the DrawPanel method. Assign an object procedure using the signature in TDrawPanelEvent to render the  specified panel to the desired rectangle in the status bar.
+            <var>OnDrawPanel</var> is an event handler used to draw the specified panel on the status bar. OnDrawPanel is signalled (when assigned) from the DrawPanel method. Assign an object procedure using the signature in TDrawPanelEvent to render the specified panel to the desired rectangle in the status bar.
           </p>
         </descr>
         <seealso/>
@@ -2655,7 +2655,7 @@
             <var>KeyDown</var> is overridden in TCustomTabControl to handle use of the <b>Tab</b> key (<b>VK_TAB</b>) to change the active page in the tabbed control.
           </p>
           <p>
-            The <var>Options</var> property must contain the value    <var>nboKeyboardTabSwitch</var> to enable the tab switching feature. Pressing <b>Ctrl+Tab</b> switches to the next page by incrementing the      <var>PageIndex</var> value. Pressing <b>Ctrl+Shift+Tab</b>  switches to the previous  page by decrementing the <var>PageIndex</var> value.
+            The <var>Options</var> property must contain the value    <var>nboKeyboardTabSwitch</var> to enable the tab switching feature. Pressing <b>Ctrl+Tab</b> switches to the next page by incrementing the <var>PageIndex</var> value. Pressing <b>Ctrl+Shift+Tab</b>  switches to the previous  page by decrementing the <var>PageIndex</var> value.
           </p>
           <p>
             If <var>Key</var> is not the <b>VK_TAB</b> virtual key code, the inherited method is called to handle the values in <var>Key</var> and <var>Shift</var>.
@@ -3192,7 +3192,7 @@
             <var>ImagesWidth</var> specifies the width used for the <var>Images</var> in the control. ImagesWidth determines the resolution (either selected or resized) for the current display density (PPI).
           </p>
           <p>
-            Changing the value in the property causes the <var>DoImageListChange</var> method to be called to select the image resolution, and to notify the widgetset class of the change. The <var>UpdateTabProperties</var> method is called to propogate the change to all tabs in the control.
+            Changing the value in the property causes the <var>DoImageListChange</var> method to be called to select the image resolution, and to notify the widgetset class of the change. The <var>UpdateTabProperties</var> method is called to propagate the change to all tabs in the control.
           </p>
         </descr>
         <seealso>
@@ -4903,7 +4903,7 @@
         <short>Sets the Height for tabs displayed on the control</short>
         <descr>
           <p>
-            <var>SetTabHeight</var> is used to set the height for the tabs displayed on the control to the value in <var>AValue</var>. SetTabHeight calls <var>GetCapabilities</var> to determine if the value <var>nbcTabsSizeable</var> is included in the capabilties for the control. No actions are performed in the method when nbcTabsSizeable is <b>not</b> present in the controls capabilities list.
+            <var>SetTabHeight</var> is used to set the height for the tabs displayed on the control to the value in <var>AValue</var>. SetTabHeight calls <var>GetCapabilities</var> to determine if the value <var>nbcTabsSizeable</var> is included in the capabilities for the control. No actions are performed in the method when nbcTabsSizeable is <b>not</b> present in the controls capabilities list.
           </p>
           <p>
             SetTabHeight propogates the new tab height to the Notebook which contains the <var>Tabs</var> in the control.
@@ -5306,7 +5306,7 @@
         <short/>
         <descr>
           <p>
-            <var>DisplayRect</var> is a read-only <var>TRect</var> property which contains the display area for the page in the tabbed control. It uses the client rectangle for the control as the  value for the property. Use <var>TabRect</var> to get the display area for the tab in the tabbed control.
+            <var>DisplayRect</var> is a read-only <var>TRect</var> property which contains the display area for the page in the tabbed control. It uses the client rectangle for the control as the value for the property. Use <var>TabRect</var> to get the display area for the tab in the tabbed control.
           </p>
         </descr>
         <seealso/>
@@ -6235,7 +6235,7 @@
         </short>
         <descr>
           <p>
-            <var>Assign</var> is an overridden method used copy property values from the  persistent object in <var>ASource</var> into the current class instance. When <var>ASource</var> is a <var>TListItem</var> descendant, the following property values are copied:
+            <var>Assign</var> is an overridden method used copy property values from the persistent object in <var>ASource</var> into the current class instance. When <var>ASource</var> is a <var>TListItem</var> descendant, the following property values are copied:
           </p>
           <ul>
             <li>Caption</li>
@@ -9270,7 +9270,7 @@
         </short>
         <descr>
           <p>
-            <var>ColClick</var>  - procedure to simulate the <var>OnColumnClick</var>  event. Can be used programmatically to execute the same code as is used to respond to the <var>OnColumnClick </var>event.
+            <var>ColClick</var>  - procedure to simulate the <var>OnColumnClick</var>  event. Can be used in code to execute the same code as is used to respond to the <var>OnColumnClick </var>event.
           </p>
         </descr>
       </element>
@@ -9682,7 +9682,7 @@
         <short/>
         <descr>
           <p>
-            Handles an F2 function key pressed when the control has focus. Ensures that the  editor is displayed when the control is not marked  as ReadOnly. The keystroke is digested (set to zero).
+            Handles an F2 function key pressed when the control has focus. Ensures that the editor is displayed when the control is not marked  as ReadOnly. The keystroke is digested (set to zero).
           </p>
           <p>
             If the control is marked as ReadOnly, or Key is not the unshifted F2 function key, the inherited KeyDown method is called to handle the values in Key and Shift.
@@ -9763,7 +9763,7 @@
 
       <element name="TCustomListView.HoverTime">
         <short>
-          Time (in msec) for which the mouse cursor must hover over an item before its tooltip is shown
+          Time (in milliseconds) for which the mouse cursor must hover over an item before its tooltip is shown
         </short>
         <descr/>
         <seealso/>
@@ -10948,7 +10948,6 @@
           Applies an arbitrary increment value to the Position for the progress bar
         </short>
         <descr>
-          <!-- Hic sunt dracones. -->
         </descr>
         <seealso/>
       </element>
@@ -12659,7 +12658,7 @@
 
       <element name="TToolButton.CheckMenuDropdown">
         <short>
-          <var>CheckMenuDropdown</var> - returns True if there is a  checked dropdown menu
+          <var>CheckMenuDropdown</var> - returns True if there is a checked dropdown menu
         </short>
         <descr/>
         <seealso/>
@@ -13378,7 +13377,7 @@
 
       <element name="TToolBar.CheckMenuDropdown">
         <short>
-          <var>CheckMenuDropdown</var> - returns True if there is a  checked dropdown menu
+          <var>CheckMenuDropdown</var> - returns True if there is a checked dropdown menu
         </short>
         <descr/>
         <seealso/>
@@ -14550,7 +14549,7 @@
       </element>
 
       <element name="TCoolBand.Color">
-        <short>Color for the  band</short>
+        <short>Color for the band</short>
         <descr>
           <p>
             The default value for the property is clDefault. Please note that the default value for ParentColor is True, and causes the color defined for the TCoolBar control to be used.
@@ -15549,7 +15548,7 @@
 
       <element name="TTrackBarOrientation">
         <short>
-          <var>TTrackBarOrientation</var> - enumerated type denoting horizontal or vertical orientation for TrackBar
+          <var>TTrackBarOrientation</var> - enumerated type denoting horizontal or vertical orientation for a track bar
         </short>
         <descr/>
         <seealso/>
@@ -15563,19 +15562,25 @@
 
       <element name="TTickMark">
         <short>
-          <var>TTickMark</var> - enumerated type denoting position of tick marks relative to the TrackBar
+          <var>TTickMark</var> - enumerated type denoting position of tick marks relative to the track bar
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTickMark.tmBottomRight">
-        <short/>
+        <short>
+          Tick marks are displayed on the bottom or right edge for the track bar orientation
+        </short>
       </element>
       <element name="TTickMark.tmTopLeft">
-        <short/>
+        <short>
+          Tick marks are displayed on the top or left edge for the track bar orientation
+        </short>
       </element>
       <element name="TTickMark.tmBoth">
-        <short/>
+        <short>
+          Tick marks are displayed on both edges of the track bar orientation
+        </short>
       </element>
 
       <element name="TTickStyle">
@@ -15586,18 +15591,22 @@
         <seealso/>
       </element>
       <element name="TTickStyle.tsNone">
-        <short/>
+        <short>Tick marks are disabled</short>
       </element>
       <element name="TTickStyle.tsAuto">
-        <short/>
+        <short>
+          The tick mark count is determined using the Min, Max, and Frequency for a track bar control
+        </short>
       </element>
       <element name="TTickStyle.tsManual">
-        <short/>
+        <short>
+          The number of tick marks is manually calculated. Used for the Mac OS Cocoa widgetset.
+        </short>
       </element>
 
       <element name="TTrackBarScalePos">
         <short>
-          <var>TTrackBarScalePos</var> - enumerated type denoting position of the scale for a TrackBar
+          <var>TTrackBarScalePos</var> - enumerated type denoting position of the scale for a track bar
         </short>
         <descr/>
         <seealso/>
@@ -15626,6 +15635,7 @@
         </descr>
       </element>
 
+      <!-- private -->
       <element name="TCustomTrackBar.FOrientation"/>
       <element name="TCustomTrackBar.FReversed"/>
       <element name="TCustomTrackBar.FSelEnd"/>
@@ -15644,148 +15654,152 @@
       <element name="TCustomTrackBar.FOnChange"/>
 
       <element name="TCustomTrackBar.SetFrequency">
-        <short/>
+        <short>Sets the value for the Frequency property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrackBar.Frequency"/>
+        </seealso>
       </element>
       <element name="TCustomTrackBar.SetFrequency.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetLineSize">
-        <short/>
+        <short>Sets the value for the LineSize property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrackBar.LineSize"/>
+        </seealso>
       </element>
       <element name="TCustomTrackBar.SetLineSize.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetMax">
-        <short/>
+        <short>Sets the value for the Max property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetMax.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetMin">
-        <short/>
+        <short>Sets the value for the Min property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetMin.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetOrientation">
-        <short/>
+        <short>Sets the value for the Orientation property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetOrientation.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetPageSize">
-        <short/>
+        <short>Sets the value for the PageSize property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetPageSize.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetParams">
-        <short/>
+        <short>Sets the values in the Position, Min, and Max properties</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetParams.APosition">
-        <short/>
+        <short>New value for the Position property</short>
       </element>
       <element name="TCustomTrackBar.SetParams.AMin">
-        <short/>
+        <short>New value for the Min property</short>
       </element>
       <element name="TCustomTrackBar.SetParams.AMax">
-        <short/>
+        <short>New value for the Max property</short>
       </element>
 
       <element name="TCustomTrackBar.SetPosition">
-        <short/>
+        <short>Sets the value for the Position property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetPosition.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetReversed">
-        <short/>
+        <short>Sets the value for the Reversed property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetReversed.aValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetScalePos">
-        <short/>
+        <short>Sets the value for the ScalePos property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetScalePos.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetSelEnd">
-        <short/>
+        <short>Sets the value for the SelEnd property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetSelEnd.aValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetSelStart">
-        <short/>
+        <short>Sets the value for the SelStart property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetSelStart.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetShowSelRange">
-        <short/>
+        <short>Sets the value for the ShowSelRange property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetShowSelRange.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetTickMarks">
-        <short/>
+        <short>Sets the value for the TabStop property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetTickMarks.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.SetTickStyle">
-        <short/>
+        <short>Sets the value for the TickStyle property</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.SetTickStyle.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="TCustomTrackBar.UpdateSelection">
-        <short/>
+        <short>Not used in the current LCL implementation</short>
         <descr/>
         <seealso/>
       </element>
@@ -15794,21 +15808,23 @@
 
       <element name="TCustomTrackBar.ApplyChanges">
         <short>
-          <var>ApplyChanges</var> - implement any pending changes
+            Sends message to update the visual appearance of the object
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTrackBar.Changed">
-        <short/>
+        <short>
+          Signals the OnChange event handler (when assigned)
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTrackBar.DoChange">
         <short>
-          <var>DoChange</var> - system message to implement changes
+          Performs actions needed to update the position for the track bar and signal the OnChange event
         </short>
         <descr/>
         <seealso/>
@@ -15818,7 +15834,9 @@
       </element>
 
       <element name="TCustomTrackBar.FixParams">
-        <short/>
+        <short>
+          Normalizes values in Min and Max, and ensures that Position is in range
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -15857,114 +15875,129 @@
       </element>
 
       <element name="TCustomTrackBar.ShouldAutoAdjust">
-        <short/>
+        <short>
+          Determines whether the width and height for the control are automatically resized
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTrackBar.ShouldAutoAdjust.AWidth">
-        <short/>
+        <short>True if the value in Width should be resized</short>
       </element>
       <element name="TCustomTrackBar.ShouldAutoAdjust.AHeight">
-        <short/>
+        <short>True if the value in Height should be resized</short>
       </element>
 
       <element name="TCustomTrackBar.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomTrackBar</var>: calls inherited <var>Create</var> then initializes style, position, size and bounds
+          Constructor for the class instance
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for <var>TCustomTrackBar</var>, and calls the inherited method on entry.
+          </p>
+          <p>
+            Create sets the default values for properties and members in the class instance, including the component and control style flags. The initial bounds for the control are set to the values from the <var>GetControlClassDefaultSize</var> method.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.controls.TWinControl.Create">TWinControl.Create</link>
-          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomTrackBar.Create.AOwner">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
 
       <element name="TCustomTrackBar.SetTick">
         <short>
-          <var>SetTick</var> - set the interval for ticks on the taskbar (integer)
+          Sets the position for the tick mark displayed on the track bar control
         </short>
       </element>
       <element name="TCustomTrackBar.SetTick.Value">
-        <short/>
+        <short>Position for the tick mark (between Min and Max)</short>
       </element>
 
       <element name="TCustomTrackBar.Frequency">
         <short>
-          <var>Frequency </var>- how frequently the position of the slider is to be read and updated (currently unsupported)
+          Indicates the frequency of tick marks displayed for the control
         </short>
       </element>
 
       <element name="TCustomTrackBar.LineSize">
         <short>
-          <var>Line-Size </var>- increment for slider position when an arrow key is pressed
+          Increment applied to the slider position when an arrow key is pressed
         </short>
       </element>
 
       <element name="TCustomTrackBar.Max">
         <short>
-          <var>Max </var>- the value corresponding to full movement of the slider. Default = 10
+          Maximum value or position for the track bar slider
         </short>
       </element>
 
       <element name="TCustomTrackBar.Min">
         <short>
-          <var>Min</var>  - the value associated with the minimum slider position. Default = 0
+          Minimum value or position for the track bar slider
         </short>
       </element>
 
       <element name="TCustomTrackBar.OnChange">
         <short>
-          <var>OnChange</var> - action to be taken on change in the slider position
+          Event handler signalled when the Position in the control has been changed
         </short>
       </element>
 
       <element name="TCustomTrackBar.Orientation">
         <short>
-          <var>Orientation</var>  - horizontal or vertical
+          Indicates the horizontal or vertical orientation for the track bar control
         </short>
       </element>
 
       <element name="TCustomTrackBar.PageSize">
         <short>
-          <var>PageSize</var> - increment for slider position when PageUp or PageDown key is pressed
+          The increment for the slider position when PageUp or PageDown key is pressed
         </short>
       </element>
 
       <element name="TCustomTrackBar.Position">
         <short>
-          <var>Position </var>- the location of the slider along the track bar. Represents the Return value from the control
+          Location of the slider on the track bar between the Min and Max values
         </short>
       </element>
 
       <element name="TCustomTrackBar.Reversed">
-        <short/>
+        <short>
+          True if the values are displayed in ascending order from right-to-left
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTrackBar.ScalePos">
         <short>
-          <var>ScalePos </var>- whether scaling label appears at top, bottom, left or right
+          Position where the scale is displayed
         </short>
+        <descr>
+          This is a GTK-specific property.
+        </descr>
       </element>
 
       <element name="TCustomTrackBar.SelEnd">
-        <short/>
+        <short>Ending value for the selection range in the track bar control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTrackBar.SelStart">
-        <short/>
+        <short>Starting value for the selection range in the track bar control</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTrackBar.ShowSelRange">
-        <short/>
+        <short>
+          Displays a selection range and indicators using the values in SelStart and SelEnd
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -15977,17 +16010,49 @@
 
       <element name="TCustomTrackBar.TickMarks">
         <short>
-          <var>Tickmarks </var>- whether the ticks are above/left, below/right, or both
+          Position for the tick marks relative to the slider in the track bar
         </short>
         <descr>
-          <var>Tickmarks </var>- where the ticks appear relative to the bar: above/left, below/right, or both
+          <p>
+            <var>Tickmarks </var> indicates where the ticks appear relative to the slider in the track bar control.
+          </p>
+          <dl>
+            <dt>tmBottomRight</dt>
+            <dd>
+              Tick marks are displayed on the bottom for the horizontal orientation, and on the right for the vertical orientation.
+            </dd>
+            <dt>tmTopLeft</dt>
+            <dd>
+              Tick marks are displayed on the top for the horizontal orientation, and on the left for the vertical orientation.
+            </dd>
+            <dt>tmBoth</dt>
+            <dd>
+              Tick marks are displayed on both sides for the selected orientation.
+            </dd>
+          </dl>
         </descr>
       </element>
 
       <element name="TCustomTrackBar.TickStyle">
         <short>
-          <var>TickStyle </var>- none, produced automatically or calculated manually
+          Indicates the tick mark drawing style for the control
         </short>
+        <descr>
+          <dl>
+            <dt>tsNone</dt>
+            <dd>
+              Disables display of tick marks.
+            </dd>
+            <dt>tsAuto</dt>
+            <dd>
+              Tick mark count is automatically calculated using Min, Max, and Frequency.
+            </dd>
+            <dt>tsManual</dt>
+            <dd>
+              Used for Mac OS Cocoa. For other widgetsets, it displays the Selection Range markers but no other tick marks.
+            </dd>
+          </dl>
+        </descr>
       </element>
 
       <element name="TTrackBar">
@@ -16133,7 +16198,9 @@
       </element>
 
       <element name="TNodeAttachMode">
-        <short/>
+        <short>
+          Location where a new tree node is attached to its Parent, Child, or Sibling nodes
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -16220,7 +16287,7 @@
 
       <element name="TTreeNodeArray">
         <short>
-          <var>TTreeNodeArray</var> - pointer to a <var>TTreeNode</var>
+          Pointer to a TTreeNode type which is the first instance in an allocated block of memory
         </short>
         <descr/>
         <seealso/>
@@ -16299,7 +16366,7 @@
       </element>
 
       <element name="LCLStreamID">
-        <short>A constant for the identifier of a LCL stream</short>
+        <short>A constant with the identifier for a LCL stream</short>
         <descr/>
         <seealso/>
       </element>
@@ -16330,31 +16397,70 @@
 
       <element name="TTVChangedEvent">
         <short>
-          <var>TTVChangedEvent</var> - generic event handling method for a changed Tree Node
+          Specifies an event handler signalled when a tree node has been changed
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TTVChangedEvent</var> is an object procedure type which specifies an event handler signalled when a node has been changed in a <var>TCustomTreeView</var> / <var>TTreeView</var> control.
+          </p>
+          <p>
+            <var>Sender</var> is the <var>TObject</var> instance for the change notification event.
+          </p>
+          <p>
+            <var>Node</var> is the <var>TTreeNode</var> instance that has been modified.
+          </p>
+          <p>
+            TTVChangedEvent is the type used for the <var>TCustomTreeView.OnChange</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.OnChange"/>
+          <link id="TTreeNode"/>
+          <link id="TTVChangingEvent"/>
+        </seealso>
       </element>
       <element name="TTVChangedEvent.Sender">
-        <short/>
+        <short>Object for the event notification</short>
       </element>
       <element name="TTVChangedEvent.Node">
-        <short/>
+        <short>Tree node for the event notification</short>
       </element>
 
       <element name="TTVNodeChangedEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled when values in a tree node have been changed
+        </short>
+        <descr>
+          <p>
+            <var>TTVNodeChangedEvent</var> is an object procedure type which specifies an event handler signalled when values in a tree node have been changed.
+          </p>
+          <p>
+            <var>Sender</var> contains the tree view control for the change notification.
+          </p>
+          <p>
+            <var>Node</var> is the <var>TTreeNode</var> instance with the modified value.
+          </p>
+          <p>
+            <var>ChangeReason</var> is a <var>TTreeNodeChangeReason</var> enumeration value that indicates the property changed in the tree node.
+          </p>
+          <p>
+            TTVNodeChangedEvent is the type used for the <var>TCustomTreeView.OnNodeChanged</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.OnNodeChanged"/>
+          <link id="TTreeNode"/>
+          <link id="TTreeNodeChangeReason"/>
+        </seealso>
       </element>
       <element name="TTVNodeChangedEvent.Sender">
-        <short/>
+        <short>Object (tree view control) for the event notification</short>
       </element>
       <element name="TTVNodeChangedEvent.Node">
-        <short/>
+        <short>Tree node with the modified value</short>
       </element>
       <element name="TTVNodeChangedEvent.ChangeReason">
-        <short/>
+        <short>Indicates the value that was changed in the tree node</short>
       </element>
 
       <element name="TTVEditingEvent">
@@ -16789,11 +16895,11 @@
 
       <element name="TTreeNode">
         <short>
-          <var>TTreeNode</var> is a single item that holds data in <var>TTreeView</var>
+          Contains data for an item displayed in a TTreeView control
         </short>
         <descr>
           <p>
-            A <var>TTreeNode</var> is part of a <var>TTreeView</var> and is used for storing data. This can be done by using the <var>Caption</var> property or for more complex data the <var>Data</var> property can be used. Each node can have sibling or child items associated with it.
+            A <var>TTreeNode</var> is part of a <var>TTreeView</var> and is used to store the data displayed in the control. This can be done by using the <var>Text</var> property or for more complex data the <var>Data</var> property can be used. Each node can have sibling or child items associated with it.
           </p>
         </descr>
         <seealso>
@@ -16801,6 +16907,7 @@
         </seealso>
       </element>
 
+      <!-- private -->
       <element name="TTreeNode.FOwner"/>
       <element name="TTreeNode.FCapacity"/>
       <element name="TTreeNode.FCount"/>
@@ -16823,518 +16930,145 @@
       <element name="TTreeNode.FText"/>
       <element name="TTreeNode.FTop"/>
 
-      <element name="TTreeNode.AreParentsExpandedAndVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.AreParentsExpandedAndVisible.Result">
-        <short/>
-      </element>
+      <element name="TTreeNode.AreParentsExpandedAndVisible"/>
+      <element name="TTreeNode.AreParentsExpandedAndVisible.Result"/>
+      <element name="TTreeNode.BindToMultiSelected"/>
+      <element name="TTreeNode.CompareCount"/>
+      <element name="TTreeNode.CompareCount.Result"/>
+      <element name="TTreeNode.CompareCount.CompareMe"/>
+      <element name="TTreeNode.DoCanExpand"/>
+      <element name="TTreeNode.DoCanExpand.Result"/>
+      <element name="TTreeNode.DoCanExpand.ExpandIt"/>
+      <element name="TTreeNode.DoExpand"/>
+      <element name="TTreeNode.DoExpand.ExpandIt"/>
+      <element name="TTreeNode.ExpandItem"/>
+      <element name="TTreeNode.ExpandItem.ExpandIt"/>
+      <element name="TTreeNode.ExpandItem.Recurse"/>
+      <element name="TTreeNode.GetAbsoluteIndex"/>
+      <element name="TTreeNode.GetAbsoluteIndex.Result"/>
+      <element name="TTreeNode.GetDeleting"/>
+      <element name="TTreeNode.GetDeleting.Result"/>
+      <element name="TTreeNode.GetHasChildren"/>
+      <element name="TTreeNode.GetHasChildren.Result"/>
+      <element name="TTreeNode.GetCount"/>
+      <element name="TTreeNode.GetCount.Result"/>
+      <element name="TTreeNode.GetCut"/>
+      <element name="TTreeNode.GetCut.Result"/>
+      <element name="TTreeNode.GetDropTarget"/>
+      <element name="TTreeNode.GetDropTarget.Result"/>
+      <element name="TTreeNode.GetExpanded"/>
+      <element name="TTreeNode.GetExpanded.Result"/>
+      <element name="TTreeNode.GetFocused"/>
+      <element name="TTreeNode.GetFocused.Result"/>
+      <element name="TTreeNode.GetHeight"/>
+      <element name="TTreeNode.GetHeight.Result"/>
+      <element name="TTreeNode.GetIndex"/>
+      <element name="TTreeNode.GetIndex.Result"/>
+      <element name="TTreeNode.GetItems"/>
+      <element name="TTreeNode.GetItems.Result"/>
+      <element name="TTreeNode.GetItems.AnIndex"/>
+      <element name="TTreeNode.GetLevel"/>
+      <element name="TTreeNode.GetLevel.Result"/>
+      <element name="TTreeNode.GetMultiSelected"/>
+      <element name="TTreeNode.GetMultiSelected.Result"/>
+      <element name="TTreeNode.GetSelected"/>
+      <element name="TTreeNode.GetSelected.Result"/>
+      <element name="TTreeNode.GetState"/>
+      <element name="TTreeNode.GetState.Result"/>
+      <element name="TTreeNode.GetState.NodeState"/>
+      <element name="TTreeNode.GetTreeNodes"/>
+      <element name="TTreeNode.GetTreeNodes.Result"/>
+      <element name="TTreeNode.GetTreeView"/>
+      <element name="TTreeNode.GetTreeView.Result"/>
+      <element name="TTreeNode.GetTop"/>
+      <element name="TTreeNode.GetTop.Result"/>
+      <element name="TTreeNode.GetVisible"/>
+      <element name="TTreeNode.GetVisible.Result"/>
+      <element name="TTreeNode.InternalMove"/>
+      <element name="TTreeNode.InternalMove.ANode"/>
+      <element name="TTreeNode.InternalMove.AddMode"/>
+      <element name="TTreeNode.IsEqual"/>
+      <element name="TTreeNode.IsEqual.Result"/>
+      <element name="TTreeNode.IsEqual.Node"/>
+      <element name="TTreeNode.IsNodeVisible"/>
+      <element name="TTreeNode.IsNodeVisible.Result"/>
+      <element name="TTreeNode.IsNodeHeightFullVisible"/>
+      <element name="TTreeNode.IsNodeHeightFullVisible.Result"/>
+      <element name="TTreeNode.ReadData"/>
+      <element name="TTreeNode.ReadData.Stream"/>
+      <element name="TTreeNode.ReadData.StreamVersion"/>
+      <element name="TTreeNode.ReadData.Info"/>
+      <element name="TTreeNode.ReadDelphiData"/>
+      <element name="TTreeNode.ReadDelphiData.Stream"/>
+      <element name="TTreeNode.ReadDelphiData.Info"/>
 
-      <element name="TTreeNode.BindToMultiSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTreeNode.CompareCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.CompareCount.Result">
-        <short/>
-      </element>
-      <element name="TTreeNode.CompareCount.CompareMe">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.DoCanExpand">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.DoCanExpand.Result">
-        <short/>
-      </element>
-      <element name="TTreeNode.DoCanExpand.ExpandIt">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.DoExpand">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.DoExpand.ExpandIt">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.ExpandItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.ExpandItem.ExpandIt">
-        <short/>
-      </element>
-      <element name="TTreeNode.ExpandItem.Recurse">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetAbsoluteIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetAbsoluteIndex.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetDeleting">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetDeleting.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetHasChildren">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetHasChildren.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetCount.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetCut.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetDropTarget">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetDropTarget.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetExpanded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetExpanded.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetFocused">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetFocused.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetHeight.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetIndex.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetItems.Result">
-        <short/>
-      </element>
-      <element name="TTreeNode.GetItems.AnIndex">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetLevel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetLevel.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetMultiSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetMultiSelected.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetSelected.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetState">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetState.Result">
-        <short/>
-      </element>
-      <element name="TTreeNode.GetState.NodeState">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetTreeNodes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetTreeNodes.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetTreeView">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetTreeView.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetTop">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetTop.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.GetVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.GetVisible.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.InternalMove">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.InternalMove.ANode">
-        <short/>
-      </element>
-      <element name="TTreeNode.InternalMove.AddMode">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.IsEqual">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.IsEqual.Result">
-        <short/>
-      </element>
-      <element name="TTreeNode.IsEqual.Node">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.IsNodeVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.IsNodeVisible.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.IsNodeHeightFullVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.IsNodeHeightFullVisible.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.ReadData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.ReadData.Stream">
-        <short/>
-      </element>
-      <element name="TTreeNode.ReadData.StreamVersion">
-        <short/>
-      </element>
-      <element name="TTreeNode.ReadData.Info">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.ReadDelphiData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.ReadDelphiData.Stream">
-        <short/>
-      </element>
-      <element name="TTreeNode.ReadDelphiData.Info">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetCut">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetCut.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetData.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetDropTarget">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetDropTarget.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetExpanded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetExpanded.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetFocused">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetFocused.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetHasChildren">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetHasChildren.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetHeight">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetHeight.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetImageEffect">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetImageEffect.AValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTreeNode.SetImageIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetImageIndex.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetItems.AnIndex">
-        <short/>
-      </element>
-      <element name="TTreeNode.SetItems.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetMultiSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetMultiSelected.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetOverlayIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetOverlayIndex.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetSelected.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetSelectedIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetSelectedIndex.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetStateIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetStateIndex.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetText.S">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.SetVisible">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.SetVisible.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.Unbind">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTreeNode.UnbindFromMultiSelected">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTreeNode.WriteData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.WriteData.Stream">
-        <short/>
-      </element>
-      <element name="TTreeNode.WriteData.Info">
-        <short/>
-      </element>
-
-      <element name="TTreeNode.WriteDelphiData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNode.WriteDelphiData.Stream">
-        <short/>
-      </element>
-      <element name="TTreeNode.WriteDelphiData.Info">
-        <short/>
-      </element>
+      <element name="TTreeNode.SetCut"/>
+      <element name="TTreeNode.SetCut.AValue"/>
+      <element name="TTreeNode.SetData"/>
+      <element name="TTreeNode.SetData.AValue"/>
+      <element name="TTreeNode.SetDropTarget"/>
+      <element name="TTreeNode.SetDropTarget.AValue"/>
+      <element name="TTreeNode.SetExpanded"/>
+      <element name="TTreeNode.SetExpanded.AValue"/>
+      <element name="TTreeNode.SetFocused"/>
+      <element name="TTreeNode.SetFocused.AValue"/>
+      <element name="TTreeNode.SetHasChildren"/>
+      <element name="TTreeNode.SetHasChildren.AValue"/>
+      <element name="TTreeNode.SetHeight"/>
+      <element name="TTreeNode.SetHeight.AValue"/>
+      <element name="TTreeNode.SetImageEffect"/>
+      <element name="TTreeNode.SetImageEffect.AValue"/>
+      <element name="TTreeNode.SetImageIndex"/>
+      <element name="TTreeNode.SetImageIndex.AValue"/>
+      <element name="TTreeNode.SetItems"/>
+      <element name="TTreeNode.SetItems.AnIndex"/>
+      <element name="TTreeNode.SetItems.AValue"/>
+      <element name="TTreeNode.SetMultiSelected"/>
+      <element name="TTreeNode.SetMultiSelected.AValue"/>
+      <element name="TTreeNode.SetOverlayIndex"/>
+      <element name="TTreeNode.SetOverlayIndex.AValue"/>
+      <element name="TTreeNode.SetSelected"/>
+      <element name="TTreeNode.SetSelected.AValue"/>
+      <element name="TTreeNode.SetSelectedIndex"/>
+      <element name="TTreeNode.SetSelectedIndex.AValue"/>
+      <element name="TTreeNode.SetStateIndex"/>
+      <element name="TTreeNode.SetStateIndex.AValue"/>
+      <element name="TTreeNode.SetText"/>
+      <element name="TTreeNode.SetText.S"/>
+      <element name="TTreeNode.SetVisible"/>
+      <element name="TTreeNode.SetVisible.AValue"/>
+      <element name="TTreeNode.Unbind"/>
+      <element name="TTreeNode.UnbindFromMultiSelected"/>
+      <element name="TTreeNode.WriteData"/>
+      <element name="TTreeNode.WriteData.Stream"/>
+      <element name="TTreeNode.WriteData.Info"/>
+      <element name="TTreeNode.WriteDelphiData"/>
+      <element name="TTreeNode.WriteDelphiData.Stream"/>
+      <element name="TTreeNode.WriteDelphiData.Info"/>
 
       <element name="TTreeNode.Changed">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Performs a change notification for the node with the specified reason</short>
+        <descr>
+          <p>
+            Calls the <var>NodeChanged</var> method in the associated <var>TreeView</var> control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.TreeView"/>
+          <link id="TCustomTreeView.NodeChanged"/>
+        </seealso>
       </element>
       <element name="TTreeNode.Changed.ChangeReason">
-        <short/>
+        <short>Indicates the property value that was changed in the tree node</short>
       </element>
 
       <element name="TTreeNode.GetOwner">
         <short>Gets the owner of the object instance</short>
-        <descr/>
+        <descr>
+          <p>
+            The return value contains the TTreeNodes container which owns the class instance.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.GetOwner.Result">
@@ -17357,10 +17091,24 @@
       </element>
 
       <element name="TTreeNode.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TTreeNode</var>: unbinds all references, frees data and calls inherited Destroy
-        </short>
-        <descr/>
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for <var>TTreeNode</var>.
+          </p>
+          <p>
+            It notifies the owner ( the TTreeNodes container) that the tree node and its accessibility object are being deleted. The Unbind method is called to remove any references to the node in the parent and sibling nodes, or as a selection in TreeNodes.
+          </p>
+          <p>
+            Child nodes are removed by setting HasChildren to False. Child nodes in Items are freed, and its storage is set to Nil.
+          </p>
+          <p>
+            The Pointer in the Data property is set to Nil.
+          </p>
+          <p>
+            Destroy calls the inherited method prior to exit.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
@@ -17368,51 +17116,74 @@
 
       <element name="TTreeNode.AlphaSort">
         <short>
-          <var>AlphaSort</var> - if True, sorted alphabetically
+          Sorts the top-level child nodes in Items
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls the <var>CustomSort</var> method to perform the default sort algorithm (alphabetic).
+          </p>
+          <p>
+            The return value is the result from the CustomSort method, and contains <b>True</b> on success.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.CustomSort"/>
+          <link id="TTreeNode.DefaultTreeViewSort"/>
+        </seealso>
       </element>
       <element name="TTreeNode.AlphaSort.Result">
-        <short/>
+        <short>True on success</short>
       </element>
 
       <element name="TTreeNode.Bottom">
         <short>
-          <var>Bottom</var> - returns the position of the displayed tree structure (whether or not it is expanded)
+          Gets the vertical coordinate for the bottom of the tree node
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Bottom</var> is an <var>Integer</var> function used to get the vertical coordinate for the bottom of the tree node. The return value is calculated as the sum of the <var>Top</var> and <var>Height</var> properties.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.Bottom.Result">
-        <short/>
+        <short>Bottom coordinate for the tree node</short>
       </element>
 
       <element name="TTreeNode.BottomExpanded">
         <short>
-          <var>BottomExpanded</var> - returns the position of the bottom of the fully expanded tree structure
+          Gets the bottom coordinate for the last visible, expanded child node in the subtree
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>BottomExpanded</var> is an <var>Integer</var> function used to get the bottom coordinate for the node subtree when it is expanded.
+          </p>
+          <p>
+            If the tree node has a visible sibling, the value in its Top property is used as the return value. When a sibling node does not exist, the bottom coordinate for the last visible and expanded child node is used. If the current node does not have child nodes, the value in the Bottom property is used as the return value.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.BottomExpanded.Result">
-        <short/>
+        <short>Bottom coordinate for the last node in the subtree</short>
       </element>
 
       <element name="TTreeNode.CustomSort">
         <short><var>CustomSort</var> - Sorts the child nodes using SortProc.</short>
         <descr>
           <p>
-            The child nodes (not the grand children) are sorted. If SortProc is nil the method DefaultTreeViewSort is used. The default implementation always returns true.
+            The child nodes (but not the grand-children) are sorted. If SortProc is Nil the method DefaultTreeViewSort is used. The default implementation always returns True.
          </p>
         </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.CustomSort.Result">
-        <short/>
+        <short>Always returns True</short>
       </element>
       <element name="TTreeNode.CustomSort.SortProc">
-        <short/>
+        <short>
+          Sorting algorithm executed in the method, or Nil to use the default procedure
+        </short>
       </element>
 
       <element name="TTreeNode.DefaultTreeViewSort">
@@ -17452,7 +17223,7 @@
 
       <element name="TTreeNode.DisplayExpandSignLeft">
         <short>
-          <var>DisplayExpandSignLeft</var> - returns the position of the left edge of the expand sign
+          <var>DisplayExpandSignLeft</var> - returns the position of the left edge of the expand / collapse indicator
         </short>
         <descr/>
         <seealso/>
@@ -17469,7 +17240,7 @@
         <seealso/>
       </element>
       <element name="TTreeNode.DisplayExpandSignRect.Result">
-        <short/>
+        <short>Rectangle with the display area for the expand / collapse indicator</short>
       </element>
 
       <element name="TTreeNode.DisplayExpandSignRight">
@@ -17480,7 +17251,7 @@
         <seealso/>
       </element>
       <element name="TTreeNode.DisplayExpandSignRight.Result">
-        <short/>
+        <short>Rectangle with the display area for the expand / collapse indicator</short>
       </element>
 
       <element name="TTreeNode.DisplayIconLeft">
@@ -17542,37 +17313,73 @@
       </element>
 
       <element name="TTreeNode.EditText">
-        <short/>
-        <descr/>
+        <short>
+          Edits the text for the node in the associated TreeView control
+        </short>
+        <descr>
+          <p>
+            <var>EditText</var> is a <var>Boolean</var> function used to start editing the <var>Text</var> for the tree node in the associated <var>TreeView</var> control. The return value is <b>True</b> when TreeView has been assigned and the value <var>tvsIsEditing</var> is present in the <var>States</var> property for the tree view control.
+          </p>
+          <p>
+            EditText calls the <var>BeginEditing</var> method in TreeView to configure, display, and activate the editor for the node.
+          </p>
+          <p>
+            Use <var>EndEdit</var> to close and optionally cancel the editing process in the associated TreeView control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.EditText.Result">
-        <short/>
+        <short>True if editing was enabled for the tree node in the method</short>
       </element>
 
       <element name="TTreeNode.FindNode">
-        <short>
-          <var>FindNode</var> - returns the node containing the specified text string
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Gets the child node in Items with the specified text</short>
+        <descr>
+          <p>
+            <var>FindNode</var> is a <var>TTreeNode</var> function used to get the child node with the text specified in <var>NodeText</var>.
+          </p>
+          <p>
+            FindNode examines the child nodes found in the <var>Items</var> property for the class instance. The <var>GetFirstChild</var> method is called to get the first child node in Items. Each tree node in Items is examined after calling <var>GetNextSibling</var> until a node with the requested value is located. The return value is the TTreeNode instance with a Text property that matches the value in NodeText, or <b>Nil</b> if a tree node is not found.
+          </p>
+          <p>
+            Use methods in the <var>TTreeNodes</var> container to locate tree nodes not in the current subtree; i. e. <var>FindNodeWithText</var> or <var>FindNodeWithTextPath</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.Text"/>
+          <link id="TTreeNode.GetFirstChild"/>
+          <link id="TTreeNode.GetNextSibling"/>
+          <link id="TTreeNodes.FindNodeWithText"/>
+          <link id="TTreeNodes.FindNodeWithPath"/>
+        </seealso>
       </element>
       <element name="TTreeNode.FindNode.Result">
-        <short/>
+        <short>
+          The TTreeNode instance in Items with the specified value, or Nil if not found
+        </short>
       </element>
       <element name="TTreeNode.FindNode.NodeText">
-        <short/>
+        <short>Text for the node to retrieve from Items</short>
       </element>
 
       <element name="TTreeNode.GetFirstChild">
-        <short>
-          <var>GetFirstChild</var> - returns the first child node of this parent
-        </short>
-        <descr/>
+        <short>Gets the first child node in the Items property</short>
+        <descr>
+          <p>
+            <var>GetFirstChild</var> is a <var>TTreeNode</var> function used to get the first child node in the subtree for the current tree node. GetFirstChild returns the first TTreeNode instance stored in the <var>Items</var> property (index position 0). The return value is <b>Nil</b> if Items is empty (<var>Count</var> is 0).
+          </p>
+          <p>
+            Use <var>GetFirstVisibleChild</var> to get the first child node with its <var>Visible</var> property set to <b>True</b>.
+          </p>
+          <p>
+            Use <var>GetFirstSibling</var>, <var>GetNextSibling</var>, <var>GetPrevSibling</var>, or <var>GetLastSibling</var> to retrieve a tree node at the same level in the tree hierarchy.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.GetFirstChild.Result">
-        <short/>
+        <short>First tree node in the Items property, or Nil when Items is empty</short>
       </element>
 
       <element name="TTreeNode.GetFirstSibling">
@@ -17596,8 +17403,23 @@
       </element>
 
       <element name="TTreeNode.GetFirstVisibleChild">
-        <short/>
-        <descr/>
+        <short>
+          Gets the tree node that is the first visible child node in the subtree
+        </short>
+        <descr>
+          <p>
+            <var>GetFirstVisibleChild</var> is a <var>TTreeNode</var> function used to get the tree node that is the first visible child node in the subtree.
+          </p>
+          <p>
+            GetFirstVisibleChild calls <var>GetFirstChild</var> to retrieve the first child node in <var>Items</var>. If the first child node is not visible, each of the TTreeNode instances in Items is examined after calling <var>GetNextVisibleSibling</var>.
+          </p>
+          <p>
+            The return value is the first TTreeNode instance with its Visible property set to <b>True</b>. The return value is <b>Nil</b> if no visible child node was found in Items.
+          </p>
+          <p>
+            Use <var>GetLastVisibleChild</var> to retrieve the last visible child node in Items.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.GetFirstVisibleChild.Result">
@@ -17606,29 +17428,35 @@
 
       <element name="TTreeNode.GetHandle">
         <short>
-          <var>GetHandle</var> - returns the operating system Handle for the current node
+          Gets the value for the Handle property
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            GetHandle is a THandle function used to get the value for the Handle property. It is the Handle allocated for the associated TreeView control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.Handle"/>
+        </seealso>
       </element>
       <element name="TTreeNode.GetHandle.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TTreeNode.GetLastChild">
         <short>
-          <var>GetLastChild</var> - returns the last child node of this parent
+          Gets the last node that is a top-level child node in the subtree
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNode.GetLastChild.Result">
-        <short/>
+        <short>TTreeNode instance that is the list node in Items</short>
       </element>
 
       <element name="TTreeNode.GetLastSibling">
         <short>
-          <var>GetLastSibling</var> - returns the last node at the same level as the current node
+          Gets the last node at the same level as the current node
         </short>
         <descr/>
         <seealso/>
@@ -17649,7 +17477,9 @@
       </element>
 
       <element name="TTreeNode.GetLastVisibleChild">
-        <short/>
+        <short>
+          Gets the last child node in Items with its Visible property set to True
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -17659,7 +17489,7 @@
 
       <element name="TTreeNode.GetNext">
         <short>
-          <var>GetNext</var> - returns the next node in the list
+          Gets the next node in the tree
         </short>
         <descr/>
         <seealso/>
@@ -17726,18 +17556,31 @@
 
       <element name="TTreeNode.GetNextVisible">
         <short>
-          <var>GetNextVisible</var> - returns the next visible (i.e. not hidden) node
+          Gets the next visible node
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>GetNextVisible</var> is a <var>TTreeNode</var> function used to get the next visible node for the current tree node.
+          </p>
+          <p>
+            If the current tree node is <var>Expanded</var> and <var>Visible</var>, the next node is the first visible child node. Otherwise, the next visible sibling node is used as the next node. If a sibling node does not exist, the <var>Parent</var> is searched for a visible sibling (next visible ancestor?).
+          </p>
+          <p>
+            The return value is <b>Nil</b> if a visible node is not found using the preceding logic, or when none of the ancestor nodes are visible and expanded.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.GetNextVisible.Result">
-        <short/>
+        <short>Next node in the tree node navigation order, or Nil</short>
       </element>
 
       <element name="TTreeNode.GetNextVisibleSibling">
-        <short/>
-        <descr/>
+        <short>
+          Gets the next visible node at the same level in the tree
+        </short>
+        <descr>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.GetNextVisibleSibling.Result">
@@ -17760,7 +17603,7 @@
 
       <element name="TTreeNode.GetPrev">
         <short>
-          <var>GetPrev</var> - returns the previous node in the list
+          Gets the previous node in the tree
         </short>
         <descr/>
         <seealso/>
@@ -17771,16 +17614,16 @@
 
       <element name="TTreeNode.GetPrevChild">
         <short>
-          <var>GetPrevChild</var> - returns the previous child node of the parent specified by <var>AValue</var>
+          Gets the previous child node starting at the specified child node
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNode.GetPrevChild.Result">
-        <short/>
+        <short>Node which is the previous child node</short>
       </element>
       <element name="TTreeNode.GetPrevChild.AValue">
-        <short/>
+        <short>Node which is the previous sibling for the specified child, or Nil</short>
       </element>
 
       <element name="TTreeNode.GetPrevExpanded">
@@ -17828,7 +17671,7 @@
       </element>
 
       <element name="TTreeNode.GetPrevVisibleSibling">
-        <short/>
+        <short>Gets the previous visible sibling tree node for the current node</short>
         <descr/>
         <seealso/>
       </element>
@@ -17846,7 +17689,7 @@
 
       <element name="TTreeNode.HasAsParent">
         <short>
-          <var>HasAsParent</var> - returns True if the node specified by <var>AValue </var>has a parent
+          <var>HasAsParent</var> - returns True if the node specified by <var>AValue </var> has a parent node
         </short>
         <descr/>
         <seealso/>
@@ -17860,16 +17703,22 @@
 
       <element name="TTreeNode.IndexOf">
         <short>
-          <var>IndexOf</var> - returns the index of the node specified by <var>AValue</var>
+          Get the index position for the specified child tree node
         </short>
-        <descr/>
+        <descr>
+          <p>
+            The return value is -1 if the tree node in AValue is not a child node (its Parent node is not the current class instance). Calls GetIndex to calculate the position of the child node relative to previous sibling nodes. Roughly equivalent to calling IndexOf in the Items container, but using a TTreeNode search value instead of a String.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.IndexOf.Result">
-        <short/>
+        <short>
+          Ordinal position for the specified child node, or -1 when not a child node
+        </short>
       </element>
       <element name="TTreeNode.IndexOf.AValue">
-        <short/>
+        <short>Child node to locate in Items</short>
       </element>
 
       <element name="TTreeNode.IndexOfText">
@@ -17896,18 +17745,18 @@
         </seealso>
       </element>
       <element name="TTreeNode.Assign.Source">
-        <short/>
+        <short>Persistent object with properties copied in the method</short>
       </element>
 
       <element name="TTreeNode.Collapse">
         <short>
-          <var>Collapse</var> - method for collapsing tree view to show only the main stems. Apply recursively if <var>Recurse</var> is True
+          Collapses the current tree node, and optionally collapses any descendent  nodes
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNode.Collapse.Recurse">
-        <short/>
+        <short>True to collapses all descendent nodes in the subtree</short>
       </element>
 
       <element name="TTreeNode.ConsistencyCheck">
@@ -17920,10 +17769,16 @@
 
       <element name="TTreeNode.Delete">
         <short>
-          <var>Delete</var> the current TreeNode
+          Frees  the current tree node when the Deleting property is not True
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Delete is a method used to remove the tree node from the TTreeNodes container. Delete calls Free to destroy the object instance if the Deleting property is not set to True. No actions are performed when Deleting is True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNodes.Delete"/>
+        </seealso>
       </element>
 
       <element name="TTreeNode.DeleteChildren">
@@ -17936,45 +17791,53 @@
 
       <element name="TTreeNode.EndEdit">
         <short>
-          <var>EndEdit</var> (to be implemented)
+          Ends editing of the tree node in the associated tree view control
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNode.EndEdit.Cancel">
-        <short/>
+        <short>True if the edited value for Text is discarded</short>
       </element>
 
       <element name="TTreeNode.Expand">
         <short>
-          <var>Expand</var> - method for expanding the current node. If Recurse is True, also expand all descendent nodes
+          Expands the current tree node, and optionally all descendent nodes
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Calls the ExpandItem method to implement the expansion and optional recursion.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.Expand.Recurse">
-        <short/>
+        <short>True to expand all descendent nodes</short>
       </element>
 
       <element name="TTreeNode.ExpandParents">
         <short>
-          <var>ExpandParents</var> - apply expansion to the parents of the current node
+          Expands any tree node which is an ancestor of the current node
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNode.FreeAllNodeData">
-        <short/>
+        <short>Frees the Pointer in Data, including any child nodes in Items</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNode.MakeVisible">
         <short>
-          <var>MakeVisible</var> - method for rendering a node visible
+          Forces the node tree node to become visible
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Calls the EnsureNodeIsVisible method in the associated TreeView (when assigned). Otherwise, calls the ExpandParents method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -18023,7 +17886,7 @@
 
       <element name="TTreeNode.Update">
         <short>
-          <var>Update</var> the contents and appearance of the current node
+          Redraws the associated TreeView control if an update is not already in progress
         </short>
         <descr/>
         <seealso/>
@@ -18053,134 +17916,252 @@
 
       <element name="TTreeNode.Count">
         <short>
-          <var>Count</var> - the number of nodes
+          The number of nodes where the current node is the parent node
         </short>
-        <descr/>
+        <descr>
+          Contains the same value as the Count property in Items.
+        </descr>
+        <notes><note>Are you sure?</note></notes>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Cut">
         <short>
-          <var>Cut</var> - whether the node has been Cut
+          Indicates if the tree node has been cut from the tree structure
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Cut is a Boolean property which indicates if the tree node has been cut from the tree structure. The property value is True when nsCut has been included in the States property for the tree node. Changing the value for the property causes the States property to be updated to include or exclude the node state value.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Data">
+        <short>
+          Pointer to the custom data for the node
+        </short>
         <descr>
-          Property of type pointer used to store custom data in a node.
+          <p>
+            Data is a Pointer property with a pointer to the custom data for the node. Data can contain any arbitrary data type, and must be cast to the correct types when used in an application.
+          </p>
+          <p>
+            Setting a new value for the property causes the associated TreeView (when assigned) to sort the parent node or all of the TreeNodes when needed and allowed.  It is needed when the tree view uses SortType stData or stBoth. It is allowed if the node is not being deleted and is bound to other tree nodes (States).
+          </p>
+          <p>
+            The Changed method is called with the ncDataChanged node change reason.
+          </p>
         </descr>
         <example file="comctrls/ttreenode_data.pas"/>
-        <short>
-          <var>Data</var> - pointer to the Node's data
-        </short>
       </element>
 
       <element name="TTreeNode.Deleting">
         <short>
-          <var>Deleting</var> - if True, the node is being deleted
+          True if the node has been marked for deletion in the associated tree view control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Deleting</var> is a read-only <var>Boolean</var> property which indicates is the node is marked for deletion. Its value is <b>True</b> when <var>ndDeleting</var> has been included in the <var>States</var> property for the node. nsDeleting is added to States in the <var>Destroy</var> method, and indicates that the node will be freed. The <var>Delete</var> method in the <var>TreeView</var> control is called to signal an <var>OnDeletion</var> event (when assigned) before references for the node are removed and the <var>TreeNodes</var> are refreshed. It prevents the Delete method from being executed more than once.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.DropTarget">
         <short>
-          <var>DropTarget</var> - if True, the current node is a target for a drop process
+          True if the node is a drop target in a drag and drop operation
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>DropTarget</var> is a <var>Boolean</var> property which indicates if the node is a drop target in a drag and drop operation. The value for the property is <b>True</b> when <var>nsDropHilited</var> has been included in the <var>States</var> property.
+          </p>
+          <p>
+            Setting a new value for the property causes States to be updated to reflect the new value. When set to True, nsDropHilited is included in State and the internal last drop target is updated in the associated <var>TreeView</var> control. When set to False, nsDropHilited is excluded from States and the last drop target is set to <b>Nil</b> in the TreeView control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Expanded">
         <short>
-          <var>Expanded</var> - if True, the node has been expanded
+          True if the node has been expanded, False when collapsed
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Expanded</var> is a <var>Boolean</var> property which indicates if the node has been expanded in the associated <var>TreeView</var> control. The property value is <b>True</b> when <var>nsExpanded</var> has been included in the <var>States</var> property.
+          </p>
+          <p>
+            The <var>Expand</var> method is called when the new value for the property is <b>True</b>. Otherwise, the <var>Collapse</var> method is called. States is updated in the Expand and Collapse methods.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Focused">
         <short>
-          <var>Focused</var> - if True, the node has received focus
+          True if the node has focus in the TreeView control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Focused</var> is a <var>Boolean</var> property which indicates if the node has focus in the associated <var>TreeView</var> control. The value for the property is <b>True</b> when <var>nsFocused</var> has been included in the <var>States</var> property.
+          </p>
+          <p>
+            Setting a new value for the property causes the values in States to be updated. When set to <b>True</b>, nsFocused is included in States. When set to <b>False</b>, nsFocused is excluded from States. The <var>Update</var> method is called to force the TreeView control to be redrawn.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Handle">
         <short>
-          <var>Handle</var> - the operating system handle for this node
+          Handle for the tree view control which owns the TreeNodes container and the tree node
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>THandle</var> is a read-only <var>THandle</var> property with the handle assigned for the associated <var>TreeView</var> control. The property value is <b>0</b> (<b>zero</b>) if a handle has not been assigned for the TreeView control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.HasChildren">
         <short>
-          <var>HasChildren</var> - if true, this node has descendent nodes
+          Indicates whether the tree node has child nodes
         </short>
-        <descr/>
+        <descr>
+          <p>
+            HasChildren is a Boolean property which indicates whether the tree node has child nodes.
+          </p>
+          <p>
+            The property value is True when States includes the value nsHasChildren. Items is not used to determine the property value.
+          </p>
+          <p>
+            Setting a new value for the property causes States to be updated to include or exclude nsHasChildren to reflect the new value. When the value is False, child nodes in the Items property are freed.
+          </p>
+          <p>
+            The Update method is called to refresh the associated TreeView control (when assigned).
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Height">
         <short>
-          The <var>Height</var> of the current node<var/>
+          The height for the node including its text, images, and indicators
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Height</var> is an <var>Integer</var> property with the height for the node including its text, images, and indicators.
+          </p>
+          <p>
+            Height uses a default value if it contains <b>0</b> (<b>zero</b>) or a negative integer value. If an associated <var>TreeView</var> control has been assigned, the value in its <var>DefaultItemHeight</var> property is used as the property value. If TreeView in unassigned, the value in the <var>DefaultTreeNodeHeight</var> constant is used.
+          </p>
+          <p>
+            Setting a new value for the property causes the <var>States</var> property in the associated TreeView control to be updated (when assigned). The values <var>tvsScrollbarChanged</var> and <var>tvsTopsNeedsUpdate</var> are included in the control States. The <var>Update</var> method is called to force the TreeView to be redrawn. The <var>Changed</var> method is called with the <var>ncHeightChanged</var> node change reason.
+          </p>
+          <p>
+            Height is used along with <var>Top</var> to calculate the return value for the <var>Bottom</var> method. It is also used in the implementation of methods like <var>DisplayRect</var> and  <var>DisplayExpandSignRect</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.ImageIndex">
         <short>
-          <var>ImageIndex</var> - the image index of the current node if not selected. Default -1 for no image
+          Ordinal position for the image displayed for the node, or -1 when no image is assigned
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ImageIndex</var> is an <var>Integer</var> property with the ordinal position for the image displayed for the node. It refers to a bitmap stored in the <var>Images</var> property of the associated <var>TreeView</var> control.  The default value for the property is <b>-1</b>, and indicates that an image has not been assigned.
+          </p>
+          <p>
+            Setting a new value for the property causes the <var>Update</var> method to be called to redraw the associated tree view control. The <var>Changed</var> method is called with the <var>ncImageIndex</var> node change reason.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.comctrls.TTreeNode.SelectedIndex">TTreeNode.SelectedIndex</link>
+          <link id="TTreeNode.StateIndex"/>
+          <link id="TTreeNode.OverlayIndex"/>
+          <link id="TTreeNode.SelectedIndex"/>
         </seealso>
       </element>
 
       <element name="TTreeNode.Index">
         <short>
-          The <var>Index</var> value of the current node
+          Ordinal position for the node in its parent node
         </short>
-        <descr/>
+        <descr>
+          Returns the number of previous siblings (nodes on same level in the parent node).
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.IsFullHeightVisible">
         <short>
-          <var>IsFullHeightVisible</var> - if True, the full height of the TreeNode is visible within the display window
+          True if the entire node is visible in the display area for the associated TreeView control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>IsFullHeightVisible</var> is a read-only <var>Boolean</var> property which indicates if the entire tree node is visible in the display area for the associated <var>TreeView</var> control.
+          </p>
+          <p>
+            The <var>IsNodeHeightFullVisible</var> method in TreeView is called to get the value for the property. If the TreeView control has not been assigned, the <var>AreParentsExpandedAndVisible</var> method is used to get the return value.
+          </p>
+          <p>
+            IsFullHeightVisible is used in the SelectionVisible method in TCustomTreeView when MultiSelect has not been enabled for the tree view control.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.IsVisible">
         <short>
-          <var>IsVisible</var> - if True, the current node is visible (not hidden)
+          True if the node is visible
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>IsVisible</var> is a read-only <var>Boolean</var> property which indicates if the tree node is visible in the associated <var>TreeView</var> control. IsVisible is <b>True</b> if the node can be seen in the display area for the control. The property value is <b>False</b> when an ancestor node is collapsed (not <var>Expanded</var>).
+          </p>
+          <p>
+            The <var>IsNodeVisible</var> method in TreeView is called to get the value for the property. If TreeView has not been assigned, the <var>AreParentsExpandedAndVisible</var> method is called to get the property value.
+          </p>
+          <p>
+            IsNodeVisible is used in the <var>Repaint</var> method in <var>TTreeNodes</var>, and in the <var>SelectionVisible</var> method in <var>TCustomTreeView</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Items">
         <short>
-          <var>Items</var> - the index of the current node within the list of items
+          Provides indexed access to the child nodes for the current node
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Items</var> is an indexed <var>TTreeNode</var> property which provides access to the child nodes for the current node by their ordinal position. <var>ItemIndex</var> contains the ordinal position for the tree node instance, and must be in the range <b>0..<var>Items.Count</var>-1</b>. An <var>ETreeNodeError</var> exception is raised if ItemIndex is not in the range needed for the Items property.
+          </p>
+          <p>
+            Items is the default property for the class instance.
+          </p>
+          <p>
+            Storing a new value to the indexed property causes the <var>Assign</var> method in the <var>TTreeNode</var> instance to be called to copy the properties values.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNode.Items.ItemIndex">
-        <short/>
+        <short>Ordinal position for a child node</short>
       </element>
 
       <element name="TTreeNode.Level">
-        <short>The descendency level or indentation for the tree node</short>
-        <descr/>
+        <short>The number of ancestor nodes for the current tree node</short>
+        <descr>
+          <p>
+            Level is a read-only Integer property which contains the level in the tree structure for the node. It indicates the number of ancestor nodes in the structure, and implies the indentation for the node in the tree view control.
+          </p>
+          <p>
+            The root of the tree is level 0. The value for the property is determined by counting the number of Parent nodes for each TTreeNode instance in the tree starting at the current node.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -18193,14 +18174,16 @@
       </element>
 
       <element name="TTreeNode.NodeEffect">
-        <short/>
+        <short>
+          Graphic drawing effect applied to the node in the associated TreeView control
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNode.OverlayIndex">
         <short>
-          <var>OverlayIndex</var> - the index of the overlay
+          Ordinal position for the overlay image used for the node
         </short>
         <descr>
           This icon is drawn above the normal icon. If Images.HasOverlays then it is fetched from Images via Images.Overlay(Node.Overlay) for Delphi compatibility.
@@ -18209,30 +18192,67 @@
       </element>
 
       <element name="TTreeNode.Owner">
-        <short>The <var>Owner</var> control of the current TreeNode</short>
-        <descr/>
+        <short>
+          Owner of the tree node instance
+        </short>
+        <descr>
+          <p>
+            Owner is a read-only TTreeNodes property with the container that owns the current TTreeNode instance.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Parent">
-        <short>The <var>Parent</var> of the current node</short>
-        <descr/>
+        <short>
+          Parent node for the current tree node
+        </short>
+        <descr>
+          <p>
+            Parent is a read-only TTreeNode property which contains the parent node for the current tree node.
+          </p>
+          <p>
+            Use Items to access and maintain the child nodes for the current tree node.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Selected">
         <short>
-          <var>Selected</var> - if True, the current node has been selected
+          True if the current node is selected in the tree view control
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Selected</var> is a <var>Boolean</var> property which indicates the current node is selected in the associated <var>TreeView</var> control. The property value is <b>True</b> when <var>nsSelected</var> or <var>nsMultiSelected</var> has been included in the <var>States</var> property. nsSelected indicates that the node is assigned to the <var>TCustomTreeView.Selected</var> property. nsMultiSelected indicates that the node is stored in the the <var>TCustomTreeView.Selections</var> property when it has <var>MultiSelect</var> enabled.
+          </p>
+          <p>
+            Setting a new value for the property causes the values in States to be updated. Similarly, the TreeView control is updated to used the node in the Selected or Selections property.
+          </p>
+          <p>
+            The <var>Update</var> method is called to force the TreeView control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.Focused"/>
+        </seealso>
       </element>
 
       <element name="TTreeNode.SelectedIndex">
         <short>
-          <var>SelectedIndex</var> - the image index of the current node if selected. Default -1 for no image
+          Ordinal position for the image displayed when the tree node is Selected
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SelectedIndex</var> is an <var>Integer</var> property with the ordinal position for the image displayed when the node is <var>Selected</var>. It refers to a bitmap in the <var>Images</var> property for the <var>TreeView</var> control, and allows an alternate image to be displayed for the node when it is selected. The default value is <b>-1</b> and indicates that an image index has not been assigned.
+          </p>
+          <p>
+            Changing the value in the property causes the <var>Update</var> method to be called to redraw the associated TreeView control. The <var>Changed</var> method is called with the <var>ncSelectedIndex</var> node change reason.
+          </p>
+          <p>
+            Use <var>ImageIndex</var> to set the ordinal position for the image displayed when the tree node is not selected.
+          </p>
+        </descr>
         <seealso>
           <link id="TTreeNode.ImageIndex"/>
         </seealso>
@@ -18255,51 +18275,133 @@
       </element>
 
       <element name="TTreeNode.States">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Contains active state flags for the tree node
+        </short>
+        <descr>
+          <p>
+            <var>States</var> is a read-only <var>TNodeStates</var> properties which contains active state flags for the tree node. <var>TNodeState</var> enumeration values are included in or excluded from the set type as needed in methods for the tree node, the <var>TreeNodes</var> container, and the associated <var>TreeView</var> control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeViewStates"/>
+          <link id="TTreeViewState"/>
+        </seealso>
       </element>
 
       <element name="TTreeNode.SubTreeCount">
         <short>
-          <var>SubTreeCount</var> -  the number of sub-trees
+          The number of subtrees in the ancestor nodes for the class instance
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Text">
-        <short>The <var>Text</var> string of the current node</short>
-        <descr/>
+        <short>
+          Text displayed for the tree node
+        </short>
+        <descr>
+          <p>
+            <var>Text</var> is a <var>String</var> property which contains the text displayed as the caption for the tree node.
+          </p>
+          <p>
+            Changing the value in the property causes the <var>TreeView</var> control to be updated. Its <var>States</var> property is modified to include the value <var>tvsMaxRightNeedsUpdate</var>, which causes the node sizes to be recalculated and the control to be re-displayed.
+          </p>
+          <p>
+            If the <var>SortType</var> for the TreeView is set to <var>stText</var> or <var>stBoth</var>, the Parent node is re-sorted. If the TreeView has not been assigned, the <var>TreeNodes</var> container is re-sorted.
+          </p>
+          <p>
+            The <var>Changed</var> method is called with the <var>ncTextChanged</var> node change reason.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNode.Top">
-        <short>The position of the <var>Top</var> of the current node</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Vertical coordinate for the top of the tree node
+        </short>
+        <descr>
+          <p>
+            <var>Top</var> is a read-only <var>Integer</var> property with the vertical coordinate for the top of the tree node. Top contains an Y-axis offset where the tree node is located in the display area for the associated <var>TreeView</var> control.
+          </p>
+          <p>
+            The property value is calculated by calling the <var>UpdateAllTops</var> method in the TreeView control.  The value contains the accumulated <var>Height</var> for all preceding <var>TreeNodes</var> starting at the first visible node in the control, and reflects their <var>Visible</var> and <var>Expanded</var> settings. The value is calculated in UpdateAllTops when <var>tvsTopsNeedsUpdate</var> has been included in the <var>States</var> property for the TreeView control.
+          </p>
+          <p>
+            Use <var>Height</var> to get height for the text, images, and indicators used in a tree node. Use <var>Bottom</var> to get the vertical coordinate for the bottom of the tree node.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.Height"/>
+          <link id="TTreeNode.Bottom"/>
+        </seealso>
       </element>
 
       <element name="TTreeNode.TreeNodes">
-        <short>the collection of  <var>TreeNodes</var>  to which this node belongs</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The container where the tree node is stored, and the owner of the class instance
+        </short>
+        <descr>
+          <p>
+            <var>TreeNodes</var> is a read-only <var>TTreeNodes</var> property with the container where the tree node is stored, and the owner of the <var>TTreeNode</var> instance. TreeNodes provides properties and methods needed to store, access, and maintain the tree nodes for the <var>TreeView</var> control. TreeNodes is a reference to the <var>Items</var> property found in TreeView.
+          </p>
+          <p>
+            The property value is <b>Nil</b> if <var>Owner</var> has not been assigned or is not derived from TTreeNodes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.TreeView"/>
+          <link id="TTreeNode.Owner"/>
+          <link id="TCustomTreeView.Items"/>
+          <link id="TTreeNodes"/>
+        </seealso>
       </element>
 
       <element name="TTreeNode.TreeView">
-        <short>The <var>TreeView</var> to which this node belongs</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The tree view control where the node is displayed
+        </short>
+        <descr>
+          <p>
+            <var>TreeView</var> is a read-only <var>TCustomTreeView</var> property with the tree view control where the tree node and other nodes in <var>TreeNodes</var> are displayed. It is a reference to the <var>Owner</var> assigned to the TreeNodes property.
+          </p>
+          <p>
+            TreeView provides access to the properties, methods, and events in the control. It is used to get the position for the node in the display area for the control. It is also notified when property values in the node are changed.
+          </p>
+          <p>
+            Use <var>TreeNodes</var> to access the <var>TTreeNode</var> instances stored in TreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.TreeNodes"/>
+          <link id="TCustomTreeView"/>
+          <link id="TTreeNodes"/>
+          <link id="TTreeNode"/>
+        </seealso>
       </element>
 
       <element name="TTreeNode.Visible">
-        <short/>
-        <descr/>
+        <short>
+          True if the tree node is visible in the associated TreeView control
+        </short>
+        <descr>
+          <p>
+            <var>Visible</var> is a  <var>Boolean</var> property which indicates if the tree node is visible in the associated <var>TreeView</var> control. Its value is <b>True</b> when <var>nsVisible</var> has been included in the <var>States</var> property for the tree node. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            Setting a new value for the property causes the States property to be udpated. <var>Selected</var> is set to <b>False</b> when the value in Visible is changed.
+          </p>
+          <p>
+            Values are included in the States property for the associated TreeView control (when assigned) to indicate that the size and layout for the tree nodes in the control have been changed. The <var>Update</var> method is called to force the control to be refreshed. The <var>Changed</var> method is called with the <var>ncVisibility</var> node change reason.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TTreeNodesEnumerator">
-        <short>Implements an enumerator for items in the TTreeNodes collection</short>
+        <short>Implements an enumerator for items in the TTreeNodes container</short>
         <descr/>
         <seealso/>
       </element>
@@ -18308,35 +18410,58 @@
       <element name="TTreeNodesEnumerator.FPosition"/>
 
       <element name="TTreeNodesEnumerator.GetCurrent">
-        <short/>
+        <short>Gets the value for the Current property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TTreeNodesEnumerator.Current"/>
+        </seealso>
       </element>
       <element name="TTreeNodesEnumerator.GetCurrent.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="TTreeNodesEnumerator.Create">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited method on entry. Create stores the value in <var>ANodes</var> in the <var>TTreeNodes</var> member. Creates set the default value for the internal position counter used in the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNodes"/>
+        </seealso>
       </element>
       <element name="TTreeNodesEnumerator.Create.ANodes">
-        <short/>
+        <short>Container with the tree nodes visited in the enumerator</short>
       </element>
 
       <element name="TTreeNodesEnumerator.MoveNext">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Indicates if another tree node is available to the enumerator</short>
+        <descr>
+          <p>
+            <var>MoveNext</var> is a <var>Boolean</var> function which indicates if another tree node is available to the enumerator. MoveNext increments the internal position counter for the enumerator. The return value is <b>True</b> if the position counter is less than the number of entries in the internal <var>TTreeNodes</var> container (in the range <b>0..<var>TTreeNodes.Count</var>-1</b>).
+          </p>
+          <p>
+            Use <var>Current</var> to access the <var>TTreeNode</var> instance when MoveNext returns <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNodesEnumerator.Current"/>
+          <link id="TTreeNodes.Count"/>
+          <link id="TTreeNode"/>
+        </seealso>
       </element>
       <element name="TTreeNodesEnumerator.MoveNext.Result">
-        <short/>
+        <short>True when more tree nodes are available in the internal container</short>
       </element>
 
       <element name="TTreeNodesEnumerator.Current">
-        <short/>
-        <descr/>
+        <short>Gets the current tree node instance for the enumerator</short>
+        <descr>
+          <p>
+            Use <var>MoveNext</var> to navigate to the first or subsequent TTreeNode instance for the enumerator. Raises an exception if Current is accessed before the MoveNext method is called to retrieve the first value for the enumerator.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -18370,10 +18495,27 @@
 
       <element name="TTreeNodes">
         <short>
-          A collection or list of <var>TTreeNode</var> instances
+          Implements a container for TTreeNode instances
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TTreeNodes</var> is a <var>TPersistent</var> descendant which implements a container used to store <var>TTreeNode</var> instances.  TTreeNodes provides properties and methods used to create, store, access, and maintain nodes with a hierarchical tree structure.
+          </p>
+          <p>
+            The indexed <var>Item</var> property provides access to the nodes in the container by their ordinal position. An enumerator can also be used to access tree nodes in the container.
+          </p>
+          <p>
+            TTreeNodes is the type used for the <var>Items</var> property in <var>TCustomTreeView</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNode"/>
+          <link id="TCustomTreeView.Items"/>
+          <link id="TTreeNodesEnumerator"/>
+        </seealso>
+        <notes>
+          <note>Mention internals like node cache and selection list?</note>
+        </notes>
       </element>
 
       <element name="TTreeNodes.FCount"/>
@@ -18390,12 +18532,8 @@
       <element name="TTreeNodes.FUpdateCount"/>
       <element name="TTreeNodes.FNewNodeToBeAdded"/>
 
-      <element name="TTreeNodes.ClearCache">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
+      <!-- private -->
+      <element name="TTreeNodes.ClearCache"/>
       <element name="TTreeNodes.GetHandle">
         <short>Gets the handle for the TreeView component using the collection of nodes</short>
         <descr/>
@@ -18405,137 +18543,37 @@
         <short>The handle for the TreeView, or 0 when TreeView is unassigned</short>
       </element>
 
-      <element name="TTreeNodes.GetNodeFromIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.GetNodeFromIndex.Result">
-        <short/>
-      </element>
-      <element name="TTreeNodes.GetNodeFromIndex.Index">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.GetSelectionCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.GetSelectionCount.Result">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.GetTopLvlItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.GetTopLvlItems.Result">
-        <short/>
-      </element>
-      <element name="TTreeNodes.GetTopLvlItems.Index">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.GrowTopLvlItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTreeNodes.IndexOfTopLvlItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.IndexOfTopLvlItem.Result">
-        <short/>
-      </element>
-      <element name="TTreeNodes.IndexOfTopLvlItem.Node">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.MoveTopLvlNode">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.MoveTopLvlNode.TopLvlFromIndex">
-        <short/>
-      </element>
-      <element name="TTreeNodes.MoveTopLvlNode.TopLvlToIndex">
-        <short/>
-      </element>
-      <element name="TTreeNodes.MoveTopLvlNode.Node">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.ReadData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.ReadData.Stream">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.ReadExpandedState">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.ReadExpandedState.Stream">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.Repaint">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.Repaint.ANode">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.ShrinkTopLvlItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTreeNodes.SetTopLvlItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.SetTopLvlItems.Index">
-        <short/>
-      </element>
-      <element name="TTreeNodes.SetTopLvlItems.AValue">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.WriteData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.WriteData.Stream">
-        <short/>
-      </element>
-      <element name="TTreeNodes.WriteData.WriteDataPointer">
-        <short/>
-      </element>
-
-      <element name="TTreeNodes.WriteExpandedState">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTreeNodes.WriteExpandedState.Stream">
-        <short/>
-      </element>
+      <element name="TTreeNodes.GetNodeFromIndex"/>
+      <element name="TTreeNodes.GetNodeFromIndex.Result"/>
+      <element name="TTreeNodes.GetNodeFromIndex.Index"/>
+      <element name="TTreeNodes.GetSelectionCount"/>
+      <element name="TTreeNodes.GetSelectionCount.Result"/>
+      <element name="TTreeNodes.GetTopLvlItems"/>
+      <element name="TTreeNodes.GetTopLvlItems.Result"/>
+      <element name="TTreeNodes.GetTopLvlItems.Index"/>
+      <element name="TTreeNodes.GrowTopLvlItems"/>
+      <element name="TTreeNodes.IndexOfTopLvlItem"/>
+      <element name="TTreeNodes.IndexOfTopLvlItem.Result"/>
+      <element name="TTreeNodes.IndexOfTopLvlItem.Node"/>
+      <element name="TTreeNodes.MoveTopLvlNode"/>
+      <element name="TTreeNodes.MoveTopLvlNode.TopLvlFromIndex"/>
+      <element name="TTreeNodes.MoveTopLvlNode.TopLvlToIndex"/>
+      <element name="TTreeNodes.MoveTopLvlNode.Node"/>
+      <element name="TTreeNodes.ReadData"/>
+      <element name="TTreeNodes.ReadData.Stream"/>
+      <element name="TTreeNodes.ReadExpandedState"/>
+      <element name="TTreeNodes.ReadExpandedState.Stream"/>
+      <element name="TTreeNodes.Repaint"/>
+      <element name="TTreeNodes.Repaint.ANode"/>
+      <element name="TTreeNodes.ShrinkTopLvlItems"/>
+      <element name="TTreeNodes.SetTopLvlItems"/>
+      <element name="TTreeNodes.SetTopLvlItems.Index"/>
+      <element name="TTreeNodes.SetTopLvlItems.AValue"/>
+      <element name="TTreeNodes.WriteData"/>
+      <element name="TTreeNodes.WriteData.Stream"/>
+      <element name="TTreeNodes.WriteData.WriteDataPointer"/>
+      <element name="TTreeNodes.WriteExpandedState"/>
+      <element name="TTreeNodes.WriteExpandedState.Stream"/>
 
       <element name="TTreeNodes.InternalAddObject">
         <short>
@@ -18570,20 +18608,22 @@
       </element>
 
       <element name="TTreeNodes.GetCount">
-        <short>
-          <var>GetCount</var> - returns the number of nodes in the collection
-        </short>
+        <short>Gets the value for the Count property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TTreeNodes.Count"/>
+        </seealso>
       </element>
       <element name="TTreeNodes.GetCount.Result">
         <short>Value for the Count property</short>
       </element>
 
       <element name="TTreeNodes.GetOwner">
-        <short>Gets the TPersistent instance which owns the collection and its nodes</short>
+        <short>Gets the value for the Owner property</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TTreeNodes.Owner"/>
+        </seealso>
       </element>
       <element name="TTreeNodes.GetOwner.Result">
         <short>Owner of the collection</short>
@@ -18591,24 +18631,27 @@
 
       <element name="TTreeNodes.SetItem">
         <short>
-          <var>SetItem</var> - method for recording details of specified node
+          Assigns values from the specified tree node to a node in the container
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.SetItem.Index">
-        <short/>
+        <short>Ordinal position for the node updated in the container</short>
       </element>
       <element name="TTreeNodes.SetItem.AValue">
-        <short/>
+        <short>Tree node with the values assigned to an existing node in the container</short>
       </element>
 
       <element name="TTreeNodes.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TTreeNodes</var>: calls inherited <var>Create</var>
-        </short>
-        <descr/>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the constructor for the class instance, and calls the inherited method on entry. Create allocates resources for the internal selection list in the class instance. The value in <var>AnOwner</var> is stored in the <var>Owner</var> property.
+          </p>
+        </descr>
         <seealso>
+          <link id="TTreeNodes.Owner"/>
           <link id="#rtl.system.TObject.Create">TObject.Create</link>
         </seealso>
       </element>
@@ -18617,47 +18660,60 @@
       </element>
 
       <element name="TTreeNodes.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TTreeNodes</var>: calls inherited <var>Destroy</var>
-        </short>
-        <descr/>
+        <short>Destructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls <var>Clear</var> to remove <var>TTreeNode</var> instances stored in <var>Item</var> and values in the internal cache. The selection list for the class instance is also cleared, and its allocated resources are freed. Destroy calls the inherited method prior to exit.
+          </p>
+        </descr>
         <seealso>
+          <link id="TTreeNodes.Clear"/>
+          <link id="TTreeNodes.Item"/>
+          <link id="TTreeNodes.BeginUpdate"/>
+          <link id="TTreeNodes.EndUpdate"/>
+          <link id="TTreeNode.Delete"/>
           <link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
         </seealso>
       </element>
 
       <element name="TTreeNodes.Add">
         <short>
-          <var>Add</var> - adds a sibling node with specified text string and returns the new node
+          Adds a new tree node as a sibling of the specified node
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.Add.Result">
-        <short/>
+        <short>Tree node created and added in the method</short>
       </element>
       <element name="TTreeNodes.Add.SiblingNode">
-        <short/>
+        <short>Tree node that is a sibling of the new node</short>
       </element>
       <element name="TTreeNodes.Add.S">
-        <short/>
+        <short>Text for the new tree node</short>
+      </element>
+      <element name="TTreeNodes.Add.Data">
+        <short>Pointer to the data for the new tree node</short>
+      </element>
+      <element name="TTreeNodes.Add.AddMode">
+        <short>Indicates the position for the new node relative to its sibling(s)</short>
       </element>
 
       <element name="TTreeNodes.AddChild">
         <short>
-          <var>AddChild</var> - adds a child node with specified text to the parent node and returns the new node
+          Adds a node tree with the specified text as a child of the specified parent node
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.AddChild.Result">
-        <short/>
+        <short>TTreeNode instance created in the method</short>
       </element>
       <element name="TTreeNodes.AddChild.ParentNode">
-        <short/>
+        <short>Parent node for the new node</short>
       </element>
       <element name="TTreeNodes.AddChild.S">
-        <short/>
+        <short>Text for the new tree node</short>
       </element>
 
       <element name="TTreeNodes.AddChildFirst">
@@ -18814,7 +18870,7 @@
 
       <element name="TTreeNodes.FindNodeWithText">
         <short>
-          <var>FindNodeWithText</var> - returns a node containing the specified text string
+          Finds a node containing the specified text string
         </short>
         <descr/>
         <seealso/>
@@ -18827,38 +18883,49 @@
       </element>
 
       <element name="TTreeNodes.FindNodeWithTextPath">
-        <short/>
-        <descr/>
+        <short>
+          Finds a node with the text ancestry specified in TextPath
+        </short>
+        <descr>
+          <p>
+            Returns the TTreeNode instance found which matches the text ancestry in TextPath, or Nil if a tree node is not found matching the specified values.
+          </p>
+          <p>
+            TextPath contains the delimited text values used to locate a tree node. The '/' (Slash) character is used as the delimiter between text values in TextPath. An initial slash character representing the root node is not needed or allowed. The search always starts at the top-level tree nodes in the container. The FindNode method is used to locate subsequent delimited text values in TextPath.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNodes.FindNodeWithTextPath.Result">
-        <short/>
+        <short>Tree nodes matching the specified text values</short>
       </element>
       <element name="TTreeNodes.FindNodeWithTextPath.TextPath">
-        <short/>
+        <short>Delimited text values used to locate the tree node</short>
       </element>
 
       <element name="TTreeNodes.FindTopLvlNode">
         <short>
-          <var>FindTopLvlNode</var> - returns a top level node containing the specified text string
+          Gets a top-level node containing the specified text
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.FindTopLvlNode.Result">
-        <short/>
+        <short>Tree node with the specified text, or Nil</short>
       </element>
       <element name="TTreeNodes.FindTopLvlNode.NodeText">
-        <short/>
+        <short>Text to locate in the top-level siblings</short>
       </element>
 
       <element name="TTreeNodes.GetEnumerator">
-        <short/>
+        <short>
+          Gets the TTreeNodesEnumerator enumerator for the class instance
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.GetEnumerator.Result">
-        <short/>
+        <short>TTreeNodesEnumerator instance created in the method</short>
       </element>
 
       <element name="TTreeNodes.GetFirstNode">
@@ -18873,7 +18940,9 @@
       </element>
 
       <element name="TTreeNodes.GetFirstVisibleNode">
-        <short/>
+        <short>
+          Gets the first top-level tree node with its Visible property set to True
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -18894,7 +18963,7 @@
 
       <element name="TTreeNodes.GetLastNode">
         <short>
-          <var>GetLastNode</var> - last top level node
+          Gets the last top-level tree node in the container
         </short>
         <descr/>
         <seealso/>
@@ -18905,7 +18974,7 @@
 
       <element name="TTreeNodes.GetLastSubNode">
         <short>
-          <var>GetLastSubNode</var> - absolute last node
+          Gets the last child or descendent node in the last top-level node
         </short>
         <descr/>
         <seealso/>
@@ -18915,7 +18984,9 @@
       </element>
 
       <element name="TTreeNodes.GetLastVisibleNode">
-        <short/>
+        <short>
+          Gets the last top-level tree node with its Visible property set to True
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -18924,20 +18995,26 @@
       </element>
 
       <element name="TTreeNodes.GetSelections">
-        <short/>
-        <descr/>
+        <short>
+          Gets the tree node at the specified position in the list of selected nodes
+        </short>
+        <descr>
+          <p>
+            Raises an <var>ETreeNodeError</var> exception if <var>AIndex</var> is not a valid ordinal position in the internal selection list. AIndex must be in the range <b>0..<var>SelectionCount</var>-1</b>.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TTreeNodes.GetSelections.Result">
-        <short/>
+        <short>Tree node at the specified position in the selection list</short>
       </element>
       <element name="TTreeNodes.GetSelections.AIndex">
-        <short/>
+        <short>Ordinal position in the selection list for the node</short>
       </element>
 
       <element name="TTreeNodes.Insert">
         <short>
-          <var>Insert</var> a node with the specified text just before the specified Next node and returns the new node
+          Inserts a node with the specified text before the specified node
         </short>
         <descr/>
         <seealso/>
@@ -18954,7 +19031,7 @@
 
       <element name="TTreeNodes.InsertBehind">
         <short>
-          <var>InsertBehind</var> - inserts a new node with specified text just behind specified Previous node and returns the new node
+          Inserts a new node with the specified text just after the specified node
         </short>
         <descr/>
         <seealso/>
@@ -19011,13 +19088,15 @@
 
       <element name="TTreeNodes.IsMultiSelection">
         <short>
-          <var>IsMultiSelection</var> - returns True if this node is part if a multi-selection
+          True if the node is part of a multi-selection in the internal selection list
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.IsMultiSelection.Result">
-        <short/>
+        <short>
+          True if the node is part of a multi-selection in the internal selection list
+        </short>
       </element>
 
       <element name="TTreeNodes.Assign">
@@ -19035,7 +19114,7 @@
 
       <element name="TTreeNodes.BeginUpdate">
         <short>
-          <var>BeginUpdate</var> - start the update process
+          Starts an update process for the tree nodes in the container
         </short>
         <descr/>
         <seealso/>
@@ -19043,7 +19122,7 @@
 
       <element name="TTreeNodes.Clear">
         <short>
-          <var>Clear</var> the current node
+          Removes tree nodes in the container and its internal cache
         </short>
         <descr/>
         <seealso/>
@@ -19067,65 +19146,102 @@
 
       <element name="TTreeNodes.Delete">
         <short>
-          <var>Delete</var> this node
+          Removes the specified tree node from the container
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.Delete.Node">
-        <short/>
+        <short>Tree node deleted in the method</short>
       </element>
 
       <element name="TTreeNodes.EndUpdate">
         <short>
-          <var>EndUpdate</var> - finish the update process
+          Finishes an update process for the tree nodes in the container
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNodes.FreeAllNodeData">
-        <short/>
+        <short>
+          Frees the pointer in the Data property for all nodes in the container
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNodes.SelectionsChanged">
-        <short/>
+        <short>
+          Adds or removes the specified tree node to / from the internal selections list when its Selected property is changed
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.SelectionsChanged.ANode">
-        <short/>
+        <short>Tree node added to or removed from the selections list</short>
       </element>
       <element name="TTreeNodes.SelectionsChanged.AIsSelected">
-        <short/>
+        <short>
+          True to add the node, False to remove the node in the selection list
+        </short>
       </element>
 
       <element name="TTreeNodes.SelectOnlyThis">
         <short>
-          <var>SelectOnlyThis</var> - method for selecting only the indicated node
+          Clears any existing multi-selections and selects the specified node
         </short>
+        <descr/>
       </element>
       <element name="TTreeNodes.SelectOnlyThis.Node">
-        <short>Select Only This Node</short>
+        <short>Node selected in the method</short>
       </element>
 
       <element name="TTreeNodes.MultiSelect">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Adds nodes relative the specified node to the multi-selection list
+        </short>
+        <descr>
+          <p>
+            <var>MultiSelect</var> is a method used add nodes to the internal selection list relative to the node specified in <var>Node</var>. MultiSelect uses values in the <var>MultiSelectStyle</var> property for the tree view control in <var>Owner</var> to determine the nodes added. Specifically:
+          </p>
+          <dl>
+            <dt>msSiblingOnly</dt>
+            <dd>
+              When present, only sibling nodes are selected for the specified node. When omitted, child nodes are added to the multi-selection.
+            </dd>
+            <dt>msVisibleOnly</dt>
+            <dd>
+              When present, only visible nodes are included in the multi-selection. When omitted, all nodes are eligible regardless of their visibility.
+            </dd>
+          </dl>
+          <p>
+            <var>ClearWholeSelection</var> indicates whether all existing nodes in the multi-selection are cleared before added new node(s) to the selection list. When set to <b>True</b>, the <var>ClearMultiSelection</var> method is called. Otherwise, the last node in the selection list is removed.
+          </p>
+          <p>
+            Nodes in the internal selection list are visited to set their <var>MultiSelected</var> property to <b>True</b>. Members used to track the first and last nodes in the multi-selection are updated prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TTreeNodes.ClearMultiSelection"/>
+          <link id="TTreeNodes.Owner"/>
+          <link id="`TTreeNode.MultiSelected`"/>
+          <link id="TCustomTreeView.MultiSelectStyle"/>
+          <link id="TMultiSelectStyle"/>
+        </seealso>
       </element>
       <element name="TTreeNodes.MultiSelect.Node">
-        <short/>
+        <short>Tree node with the child or sibling nodes added to the selection list</short>
       </element>
       <element name="TTreeNodes.MultiSelect.ClearWholeSelection">
-        <short/>
+        <short>
+          True to remove all existing nodes in the selection list, False to remove the most recent node
+        </short>
       </element>
 
       <element name="TTreeNodes.SortTopLevelNodes">
         <short>
-          <var>SortTopLevelNodes</var> - sorts the top level nodes using the specified comparison method
+          Sorts the top-level nodes using the specified sorting procedure
         </short>
       </element>
       <element name="TTreeNodes.SortTopLevelNodes.SortProc">
@@ -19148,7 +19264,7 @@
 
       <element name="TTreeNodes.Count">
         <short>
-          <var>Count</var> - the number of nodes in the collection
+          Contains the number of nodes in the container
         </short>
         <descr/>
         <seealso/>
@@ -19156,11 +19272,11 @@
 
       <element name="TTreeNodes.Item">
         <short>
-          <var>Item</var> - finds the node corresponding to the given index
+          Provides indexed access to the TTreeNode instances in the container
         </short>
       </element>
       <element name="TTreeNodes.Item.Index">
-        <short/>
+        <short>Ordinal position for the TTreeNode instance in the property value</short>
       </element>
 
       <element name="TTreeNodes.KeepCollapsedNodes">
@@ -19173,21 +19289,21 @@
 
       <element name="TTreeNodes.Owner">
         <short>
-          <var>Owner</var> - the TTreeView that owns the collection of nodes
+          The TCustomTreeView control that is the owner of the container
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNodes.SelectionCount">
-        <short/>
+        <short>Number of tree nodes included in the internal selection list</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TTreeNodes.TopLvlCount">
         <short>
-          <var>TopLvlCount</var> - the number of nodes at the top level of the tree structure
+          The number of tree nodes at the top level of the tree structure
         </short>
         <descr/>
         <seealso/>
@@ -19195,13 +19311,13 @@
 
       <element name="TTreeNodes.TopLvlItems">
         <short>
-          <var>TopLvlItems</var> - the list of nodes at the top level of the tree structure
+          Provides indexed access to tree nodes at the top level of the tree structure
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TTreeNodes.TopLvlItems.Index">
-        <short/>
+        <short>Ordinal position for the TTreeNode instance in the property value</short>
       </element>
 
       <element name="TTreeViewState">
@@ -19227,7 +19343,7 @@
       </element>
       <element name="TTreeViewState.tvsTopsNeedsUpdate">
         <short>
-          The top coordinate for visible expanded nodes needs to be recalculated
+          The top coordinate for visible, expanded nodes needs to be recalculated
         </short>
       </element>
       <element name="TTreeViewState.tvsMaxLvlNeedsUpdate">
@@ -20342,7 +20458,7 @@
       </element>
       <element name="TCustomTreeView.MoveSelection.ASelect">
         <short>
-          True to include the tree node in Selections (when enabled), False to select only the  specified node
+          True to include the tree node in Selections (when enabled), False to select only the specified node
         </short>
       </element>
 
@@ -20355,7 +20471,7 @@
             Change is a method used to perform actions needed when the selection in the control has been changed. Node contains the tree node  that was used in the control selection. Change signals the OnChange event handler (when assigned).
           </p>
           <p>
-            Change is called from the event handler used for the internal timer activated when a new selection is made and the control synchronizes the tree nodes to the  visual display.
+            Change is called from the event handler used for the internal timer activated when a new selection is made and the control synchronizes the tree nodes to the visual display.
           </p>
           <p>
             Use the OnSelectionChange event handler for the notification that occurs before the node is included in the control selection.
@@ -20544,7 +20660,7 @@
         <short>Implements the Paint method for the control</short>
         <descr>
           <p>
-            <var>DoPaint</var> is a method used render the control to its canvas. It Implements the  overridden <var>Paint</var> method. No actions are performed in the method when <var>tvsPainting</var> has been included in the <var>States</var> property (Paint has already been called).
+            <var>DoPaint</var> is a method used render the control to its canvas. It Implements the overridden <var>Paint</var> method. No actions are performed in the method when <var>tvsPainting</var> has been included in the <var>States</var> property (Paint has already been called).
           </p>
           <p>
             DoPaint includes the value tvsPainting in the States property to indicate that the paint method is active. It includes the value <var>tvoFocusedPainting</var> in States when <var>Focused</var> is <b>True</b>, or excludes the value when Focused is <var>False</var>.
@@ -21634,7 +21750,7 @@
             CustomSort calls BeginUpdate to minimize updates during the sorting process. EndUpdates is called when the sorting process is completed.
           </p>
           <p>
-            Top level nodes in Items are sorted by calling the SortTopLevelNodes in items. Child nodes are then sorted (when present), starting at the first top-level node in the tree. The ClearCache method in Items is called to invalidate the node cache for the control.
+            Top-level nodes in Items are sorted by calling the SortTopLevelNodes in items. Child nodes are then sorted (when present), starting at the first top-level node in the tree. The ClearCache method in Items is called to invalidate the node cache for the control.
           </p>
           <p>
             The States property is updated to force the node coordinates and scrollbars to be refreshed in the control.
@@ -22321,7 +22437,7 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
             <var>Selected</var> is a <var>TTreeNode</var> property which contains the selected  tree node in the control. A tree node is selected when the Left or Right mouse button is clicked on the code. It can also be selected by assigning a <var>TTreeNode</var> instance to the property.
           </p>
           <p>
-            When a tree node is selected or unselected, the Selected property in the TTreeNode instance is updated. Use the <var>OnChanging</var> event handler to determine if a specific tree node can become the  selected node in the control. Use the <var>OnChange</var> event handler to perform actions needed after the tree node is made the Selected node in the control.
+            When a tree node is selected or unselected, the Selected property in the TTreeNode instance is updated. Use the <var>OnChanging</var> event handler to determine if a specific tree node can become the selected node in the control. Use the <var>OnChange</var> event handler to perform actions needed after the tree node is made the Selected node in the control.
           </p>
           <p>
             Selecting a tree node forces it to become fully visible in the control. This includes expanding parent nodes to ensure that the node is visible.  The <var>OnExpanding</var> and <var>OnExpanded</var> event handlers are signalled before and after actions to a given tree node.
@@ -22761,25 +22877,46 @@ OldExpanded.Free;
 
       <element name="THeaderSectionState">
         <short>
-          <var>THeaderSectionState</var> - enumerated type containing possible selection states for THeaderSection
+          Enumerated type which represents selection states for THeaderSection
         </short>
+        <descr>
+          <p>
+            <var>THeaderSectionState</var> is the type used to implement the <var>THeaderSection.State</var> property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THeaderSection.State"/>
+        </seealso>
       </element>
       <element name="THeaderSectionState.hsNormal">
-        <short/>
+        <short>The header section is drawn in its normal state</short>
       </element>
       <element name="THeaderSectionState.hsHot">
-        <short/>
+        <short>The header section is drawn in its "hot-lighted" state</short>
       </element>
       <element name="THeaderSectionState.hsPressed">
-        <short/>
+        <short>The header section is drawn in its "pressed" state</short>
       </element>
 
       <element name="THeaderSection">
         <short>
-          <var>THeaderSection</var> - the individual sections of a THeaderControl, each of which can be used to control its own option, selection etc
+          Implements a section displayed on a TCustomHeaderControl / THeaderControl instance
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>THeaderSection</var> is a <var>TCollectionItem</var> descendant which implements a section displayed on a <var>TCustomHeaderControl</var> / <var>THeaderControl</var> instance. THeaderSection is the type added and maintained in the <var>THeaderSections</var> collection, and used in the <var>TCustomHeaderControl.Sections</var> property.
+          </p>
+          <p>
+            THeaderSection has properties which identify its visual characteristics. This includes the text displayed for the section, its alignment, minimum and maximum widths, and an index for an optional image. Other properties contain run-time information about the section, including its left and right coordinates and its display state.
+          </p>
+          <p>
+            THeaderSection instances are normally created at design-time and edited using the IDE object inspector. They can be created at run-time using methods in the THeaderSections collection, and edited in code.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THeaderSections"/>
+          <link id="TCustomHeaderControl.Sections"/>
+        </seealso>
       </element>
 
       <element name="THeaderSection.FAlignment"/>
@@ -22798,7 +22935,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.GetWidth.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="THeaderSection.GetLeft">
@@ -22807,7 +22944,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.GetLeft.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="THeaderSection.GetRight">
@@ -22816,7 +22953,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.GetRight.Result">
-        <short/>
+        <short>Value for the property</short>
       </element>
 
       <element name="THeaderSection.SetAlignment">
@@ -22825,7 +22962,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetAlignment.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetMaxWidth">
@@ -22834,7 +22971,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetMaxWidth.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetMinWidth">
@@ -22843,7 +22980,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetMinWidth.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetState">
@@ -22852,7 +22989,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetState.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetText">
@@ -22861,7 +22998,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetText.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetVisible">
@@ -22870,7 +23007,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetVisible.AValue">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetWidth">
@@ -22879,7 +23016,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetWidth.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.SetImageIndex">
@@ -22888,7 +23025,7 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.SetImageIndex.Value">
-        <short/>
+        <short>New value for the property</short>
       </element>
 
       <element name="THeaderSection.CheckConstraints">
@@ -22905,19 +23042,23 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSection.Result">
-        <short/>
+        <short>Display name for the collection item</short>
       </element>
 
       <element name="THeaderSection.Create">
-        <short>
-          <var>Create</var> - constructor for THeaderSection: calls inherited <var>Create</var> then initializes state, visibility, alignment, size and Index
-        </short>
+        <short>Constructor for the class instance</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for THeaderSection, and
+            calls the inherited <var>Create</var> method on entry.  The value in ACollection is used as the Owner of the collection item. Create sets the default values for properties in the class instance.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.classes.TCollectionItem.Create">TCollectionItem.Create</link>
         </seealso>
       </element>
       <element name="THeaderSection.Create.ACollection">
-        <short/>
+        <short>Collection which owns the class instance</short>
       </element>
 
       <element name="THeaderSection.Assign">
@@ -22994,14 +23135,27 @@ OldExpanded.Free;
 
       <element name="THeaderSectionClass">
         <short>
-          <var>THeaderSectionClass</var> - class of <var>THeaderSection</var>
+          Class reference used to create new THeaderSection instances
         </short>
       </element>
 
       <element name="THeaderSections">
         <short>
-          <var>THeaderSections</var> - a collection of <var>Items </var> to type <var>THeaderSection</var>, the individual parts of a <var>THeaderControl</var>
+          Implements a collection for section in a TCustomHeaderControl control
         </short>
+        <descr>
+          <p>
+            <var>THeaderSections</var> is a <var>TCollection</var> descendant used to store sections defined for a <var>TCustomHeaderControl</var> instance. THeaderSections is the type used to implement the <var>Sections</var> property in TCustomHeaderControl.
+          </p>
+          <p>
+            THeaderSections re-implements methods from the ancestor class that are used to add, insert, delete, and retrieve <var>THeaderSection</var> instances stored in the collection.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THeaderSection"/>
+          <link id="TCustomHeaderControl.Sections"/>
+          <link id="#rtl.classes.TCollection">TCollection</link>
+        </seealso>
       </element>
 
       <element name="THeaderSections.FHeaderControl"/>
@@ -23038,21 +23192,21 @@ OldExpanded.Free;
 
       <element name="THeaderSections.GetOwner">
         <short>
-          <var>GetOwner</var> returns a HeaderControl, overriding inherited value
+          Gets the Owner of the class instance
         </short>
         <seealso>
           <link id="#rtl.classes.TPersistent.GetOwner">TPersistent.GetOwner</link>
         </seealso>
       </element>
       <element name="THeaderSections.GetOwner.Result">
-        <short/>
+        <short>Owner of the class instance</short>
       </element>
 
       <element name="THeaderSections.Update" link="#rtl.classes.TCollection.Update">
         <short>Performs actions needed when a collection item has been changed</short>
         <descr>
           <p>
-            <var>Update</var> is an overridden method used to notify observers of a change to the specified item in the collection.
+            <var>Update</var> is an overridden method used to update the section in the header control. When Item is assigned, the UpdateSection method in the THeaderControl instance is called. If Item is unassigned (contains Nil), the UpdateSections method in the THeaderControl instance is called update all sections in the collection.
           </p>
           <remark>
             Update does <b>not</b> call the inherited method which notifies observers of the change.
@@ -23060,10 +23214,11 @@ OldExpanded.Free;
         </descr>
         <seealso>
           <link id="#rtl.classes.TCollection.Update">TCollection.Update</link>
+          <link id="#rtl.classes.TPersistent.FPONotifyObservers">TPersistent.FPONotifyObservers</link>
         </seealso>
       </element>
       <element name="THeaderSections.Update.Item">
-        <short>Item updated in the collection</short>
+        <short>Section updated in the collection for the header control</short>
       </element>
 
       <element name="THeaderSections.Create" link="#rtl.classes.TCollection.Create">
@@ -23088,29 +23243,36 @@ OldExpanded.Free;
 
       <element name="THeaderSections.AddItem">
         <short>
-          <var>AddItem</var> - adds a HeaderSection to the Header at the position specified by <var>Index</var>
+          Adds the specified header section at the position specified in Index
         </short>
+        <descr>
+          <p>
+            The <var>THeaderSection</var> instance in <var>Item</var> is created when the argument value is <b>Nil</b> (unassigned). The return value contains the new header section  instance, or the existing value in Item when it is assigned.
+          </p>
+        </descr>
       </element>
       <element name="THeaderSections.AddItem.Result">
-        <short/>
+        <short>Header section created (optional) and stored in the method</short>
       </element>
       <element name="THeaderSections.AddItem.Item">
-        <short/>
+        <short>Header section to add in the method, or Nil to create a new one</short>
       </element>
       <element name="THeaderSections.AddItem.Index">
-        <short/>
+        <short>Ordinal position in the collection where the header section is stored</short>
       </element>
 
       <element name="THeaderSections.Insert" link="#rtl.classes.TCollection.Insert">
-        <short>Insert a new collection item at the specified position in the collection</short>
+        <short>Inserts a new collection item at the specified position in the collection</short>
         <descr/>
         <seealso/>
       </element>
       <element name="THeaderSections.Insert.Result">
-        <short/>
+        <short>Header section created in the method</short>
       </element>
       <element name="THeaderSections.Insert.Index">
-        <short/>
+        <short>
+          Ordinal position in the collection where the new header section is inserted
+        </short>
       </element>
 
       <element name="THeaderSections.Delete" link="#rtl.classes.TCollection.Delete">
@@ -23121,31 +23283,42 @@ OldExpanded.Free;
         <seealso/>
       </element>
       <element name="THeaderSections.Delete.Index">
-        <short/>
+        <short>Ordinal position for the collection item deleted in the method</short>
       </element>
 
       <element name="THeaderSections.Items">
         <short>
           <var>Items</var> - the series of individual HeaderSections in the collection
         </short>
+        <descr>
+          <p>
+            <var>Items</var> is an indexed <var>THeaderSection</var> property which provides access to the header sections in the collection by their ordinal position. It is implemented using TFpList to store the collection items. Items is the default property for the class instance.
+          </p>
+          <p>
+            When reading a value in the property, the item is cast to the THeaderSection type used in the collection. <var>SetItem</var> is called to store a value for the indexed property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THeaderSection"/>
+        </seealso>
       </element>
       <element name="THeaderSections.Items.Index">
-        <short/>
+        <short>Ordinal position in the collection for the property value</short>
       </element>
 
       <element name="TSectionTrackState">
         <short>
-          <var>TSectionTrackState</var> - enumerated type for tracking the state of a header section
+          Enumerated type with tracking states for a header section
         </short>
       </element>
       <element name="TSectionTrackState.tsTrackBegin">
-        <short/>
+        <short>Mouse tracking for a section is enabled</short>
       </element>
       <element name="TSectionTrackState.tsTrackMove">
-        <short/>
+        <short>Mouse tracking for a section drag operation is enabled</short>
       </element>
       <element name="TSectionTrackState.tsTrackEnd">
-        <short/>
+        <short>Mouse tracking for a section is disabled</short>
       </element>
 
       <element name="TCustomSectionTrackEvent">
@@ -23217,7 +23390,7 @@ OldExpanded.Free;
             <var>TCustomHeaderControl</var> - base class for <var>THeaderControl</var>, a header strip of user-designed sections which allow selection of pages or actions.
           </p>
           <p>
-            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customized mechanism for selection. However there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.
+            <var>THeaderControl</var> offers a widget that could be placed along the edge of a <var>Panel</var> or <var>Form</var> allowing a highly customized mechanism for selection. However, there are no intrinsically associated display areas and it is the developer's responsibility to supply an index associated with the selection from the <var>THeaderControl</var> and determining what action is to occur or what is to be displayed in any attached Panel or Form.
           </p>
         </descr>
         <seealso>
@@ -23302,24 +23475,24 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.CreateSection">
         <short>
-          <var>CreateSection</var> - method for creating a header section
+          Creates a new header section for the control
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomHeaderControl.CreateSection.Result">
-        <short/>
+        <short>THeaderSection instance created in the method</short>
       </element>
 
       <element name="TCustomHeaderControl.CreateSections">
         <short>
-          <var>CreateSections</var> - method for creating a collection of header sections
+          Creates the collection used to store header sections defined in the control
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomHeaderControl.CreateSections.Result">
-        <short/>
+        <short>THeaderSections instance created in the method</short>
       </element>
 
       <element name="TCustomHeaderControl.Loaded" link="#lcl.controls.TWinControl.Loaded"/>
@@ -23328,49 +23501,77 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.SectionClick">
         <short>
-          <var>SectionClick</var> - method for emulating the <var>OnSectionClick</var> event
+          Performs actions needed when the mouse is clicked on the specified header section
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signals the <var>OnSectionClick</var> event handler (when assigned). Called from the <var>Click</var> method when the mouse event occurred on the header section in the <var>Section</var> argument.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomHeaderControl.OnSectionClick"/>
+          <link id="TCustomHeaderControl.Click"/>
+          <link id="TCustomHeaderControl.Sections"/>
+        </seealso>
       </element>
       <element name="TCustomHeaderControl.SectionClick.Section">
-        <short/>
+        <short>Header section for the mouse event</short>
       </element>
 
       <element name="TCustomHeaderControl.SectionResize">
         <short>
-          <var>SectionResize</var> - method for emulating the <var>OnSectionResize</var> event
+          Performs actions needed to resize the specified header section
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Signals the <var>OnSectionResize</var> event handler (when assigned). Called from the <var>MouseUp</var> method when mouse tracking has been ended for the specified <var>Section</var>.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomHeaderControl.SectionResize.Section">
-        <short/>
+        <short>Header section for the resize action</short>
       </element>
 
       <element name="TCustomHeaderControl.SectionTrack">
         <short>
-          <var>SectionTrack</var> - method for emulating the <var>OnSectionTrack</var> event
+          Performs actions needed when the mouse tracking state for a header section has changed
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signals the <var>OnSectionTrack</var> event handler (when assigned). Called from the <var>MouseDown</var>, <var>MouseMove</var>, and  <var>MouseUp</var> methods when mouse tracking is active for a section in the header control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomHeaderControl.Tracking"/>
+          <link id="TCustomHeaderControl.MouseDown"/>
+          <link id="TCustomHeaderControl.MouseMove"/>
+          <link id="TCustomHeaderControl.MouseUp"/>
+        </seealso>
       </element>
       <element name="TCustomHeaderControl.SectionTrack.Section">
-        <short/>
+        <short>Header section for the mouse tracking state</short>
       </element>
       <element name="TCustomHeaderControl.SectionTrack.State">
-        <short/>
+        <short>New mouse tracking state for the action</short>
       </element>
 
       <element name="TCustomHeaderControl.SectionSeparatorDblClick">
         <short>
-          <var>SectionSeparatorDblClick</var> - method for emulating the <var>OnSectionSeparatorDblClick</var> event
+          Performs actions to handle a mouse double click event for the specified header section
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signals the <var>OnSectionSeparatorDblClick</var> event handler (when assigned). Called from the <var>DblClick</var> method when the mouse event occurs when mouse tracking has been enabled for the header control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomHeaderControl.OnSectionSeparatorDblClick"/>
+          <link id="TCustomHeaderControl.DblClick"/>
+        </seealso>
       </element>
       <element name="TCustomHeaderControl.SectionSeparatorDblClick.Section">
-        <short/>
+        <short>Header section for the double click mouse event</short>
       </element>
 
       <element name="TCustomHeaderControl.SectionEndDrag">
@@ -23414,7 +23615,7 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.GetControlClassDefaultSize">
         <short>
-          <var>GetControlClassDefaultSize</var> - returns its own defaults, overriding inherited values
+          Gets the default size for new instances of the class
         </short>
         <seealso>
           <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
@@ -23452,12 +23653,21 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomHeaderControl:</var> calls inherited <var>Create</var>, creates the sections and initializes style and bounds
+          Constructor for the class instance
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for <var>TCustomHeaderControl</var>, and calls the inherited <var>Create</var> on entry.
+          </p>
+          <p>
+            Create allocates resources needed for the Sections property by call CreateSections. It also sets the default size for the control using the values returned from GetControlClassDefaultSize.
+          </p>
+          <p>
+            The control style flags are updated in the method to include mouse capture and click events and to remove caption display for the control.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.controls.TCustomControl.Create">TCustomControl.Create</link>
-          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
         </seealso>
       </element>
       <element name="TCustomHeaderControl.Create.AOwner">
@@ -23466,12 +23676,15 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.Destroy">
         <short>
-          <var>Destroy</var> - destructor for <var>TCustomHeaderControl</var>: frees sections then calls inherited <var>Destroy</var>
+          Destructor for the class instance
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for <var>TCustomHeaderControl</var>. It ensures that resources allocated to the Sections property are freed, and calls the inherited method prior to exit.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.controls.TCustomControl.Destroy">TCustomControl.Destroy</link>
-          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
@@ -23480,37 +23693,97 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.GetSectionAt">
         <short>
-          <var>GetSectionAt</var> - find the index for the section located at point P
+          Gets the header section at the position specified in P
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>GetSectionAt</var> is an <var>Integer</var> function used to get the position for the header section found at the coordinates in P.
+          </p>
+          <p>
+            GetSectionAt iterates over the <var>THeaderSection</var> instances in <var>Sections</var> to find a  matching collection item. A match is found when the X- axis coordinate in P is within the Left and Right  values for the header section.
+          </p>
+          <p>
+            The return value contains the ordinal position in Sections where the header section is stored, or -1 if a header section was not found for the coordinates.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomHeaderControl.GetSectionAt.Result">
-        <short/>
+        <short>Ordinal position in Sections for the header section</short>
       </element>
       <element name="TCustomHeaderControl.GetSectionAt.P">
-        <short/>
+        <short>TPoint instance with the coordinates examined in the method</short>
       </element>
 
-      <element name="TCustomHeaderControl.Paint" link="#lcl.controls.TCustomControl.Paint"/>
+      <element name="TCustomHeaderControl.Paint" link="#lcl.controls.TCustomControl.Paint">
+        <short>
+          Draws the control to its Canvas using highlighting, drag images, and theme details
+        </short>
+        <descr>
+          <p>
+            <var>Paint</var> is an overridden method in <var>TCustomHeaderControl</var> used to draw the control to its <var>Canvas</var>.
+          </p>
+          <p>
+            Paint calls the inherited method on entry to signal the OnPaint event handler (when assigned). The display rectangle is updated to reflect the current Width and Height for the control.
+          </p>
+          <p>
+            Paint iterates over the header sections defined in the Sections property, and calls PaintSection to render each one. If all sections fit within the control display area without scrolling, theme services are used to draw the control to the control to its Canvas.
+          </p>
+          <p>
+            Paint handles configuring the Canvas and drawing the preview when a section drag operation is in effect.
+          </p>
+          <p>
+            See PaintSection for more information about the actions performed to draw an individual header section for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
+        </seealso>
+      </element>
 
       <element name="TCustomHeaderControl.PaintSection">
         <short>
-          <var>PaintSection</var> - method for painting the current section (specified by Index) of the Header
+          Paints the specified header section to the Canvas for the control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>PaintSection</var> is a method used to paint the specified header section to the <var>Canvas</var> for the <var>THeaderControl</var> control.
+          </p>
+          <p>
+            <var>Index</var> contains the ordinal position for the <var>THeaderSection</var> instance in the <var>Sections</var> collection. No actions are performed in the method if the header section is not <var>Visible</var>.
+          </p>
+          <p>
+            PaintSection draws the header section using the <var>Left</var> and <var>Right</var> properties in the THeaderSection instance. The value in its <var>State</var> property is used to render the section by calling methods in ThemeServices. When Images have been assigned in the control, and the header section  has an assigned image index, it is drawn to the Canvas.  When Text contains a non-empty value, it is also rendered to the Canvas using the DrawText method in ThemeServices.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomHeaderControl.PaintSection.Index">
-        <short/>
+        <short>Ordinal position for the header section rendered in the method</short>
       </element>
 
-      <element name="TCustomHeaderControl.ChangeScale" link="#lcl.controls.TWinControl.ChangeScale"/>
+      <element name="TCustomHeaderControl.ChangeScale">
+        <short>
+          Scales the width of the header sections in the control using the specified multiplier and divisor
+        </short>
+        <descr>
+          <p>
+            ChangeScale is an overridden method in TCustomHeaderControl, and calls the inherited method on entry to scale the overall size for the control and its child controls. ChangeScale applies the scaling factor represented by M and D to the individual header sections defined in the Sections collection. The Width for each THeaderSection instance is updated using the multiplier and divisor to scale the section width.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomHeaderControl.Sections"/>
+          <link id="TCustomHeaderControl.BeginUpdate"/>
+          <link id="TCustomHeaderControl.EndUpdate"/>
+          <link id="THeaderSection"/>
+          <link id="#lcl.controls.TWinControl.ChangeScale">TWinControl.ChangeScale</link>
+        </seealso>
+      </element>
       <element name="TCustomHeaderControl.ChangeScale.M">
-        <short/>
+        <short>Multiplier for the scaling factor</short>
       </element>
       <element name="TCustomHeaderControl.ChangeScale.D">
-        <short/>
+        <short>Divisor for the scaling factor</short>
       </element>
 
       <element name="TCustomHeaderControl.DragReorder">
@@ -23521,15 +23794,26 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.Images">
         <short>
-          <var>Images</var> is the list of Images available for selection using this tool
+          Contains bitmaps displayed on the header sections for the control
         </short>
-        <descr/>
+        <descr>
+          <p>
+            The control cannot display images on the header section if Images has not been assigned or is empty.
+          </p>
+          <p>
+            Use the ImageIndex property for the THeaderSection instances in Sections to assign the image used for the header section.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCustomHeaderControl.ImagesWidth">
         <short>Specifies the width for Images displayed in the header control</short>
-        <descr/>
+        <descr>
+          <p>
+            If <var>ImagesWidth</var> is unassigned (contains 0), the width of the bitmaps in <var>Images</var> is used.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -23537,6 +23821,15 @@ OldExpanded.Free;
         <short>
           <var>Sections</var> - the short segments of the header separated by vertical bars that function as the elementary selection units of the header
         </short>
+        <descr>
+          <p>
+            <var>Sections</var> is a <var>THeaderSections</var> property with the collection of header sections defined for the control. The <var>THeaderSection</var> instances in the collection contain the size, layout, content, appearance, and state for each header section.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THeaderSections"/>
+          <link id="THeaderSection"/>
+        </seealso>
       </element>
 
       <element name="TCustomHeaderControl.OnSectionDrag">
