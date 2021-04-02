@@ -39,6 +39,7 @@
 unit CodeBrowser;
 
 {$mode objfpc}{$H+}
+{$modeswitch typehelpers}
 
 {off $DEFINE VerboseCodeBrowser}
 
@@ -158,7 +159,29 @@ type
     cbwsUpdateTreeView,
     cbwsFinished
     );
-    
+
+const
+  SCodeBrowserWorkStage: array[TCodeBrowserWorkStage] of String = (
+    'GetScopeOptions',
+    'GatherPackages',
+    'FreeUnusedPackages',
+    'AddNewPackages',
+    'GatherFiles',
+    'GatherOutdatedFiles',
+    'UpdateUnits',
+    'GetViewOptions',
+    'UpdateTreeView',
+    'Finished'
+    );
+
+type
+
+  { TCodeBrowserWorkStageHelper }
+
+  TCodeBrowserWorkStageHelper = type helper for TCodeBrowserWorkStage
+    function ToString: String;
+  end;
+
   TExpandableNodeType = (
     entPackage,
     entUnit,
@@ -457,6 +480,12 @@ begin
   CodeBrowserView.SetFilterToSimpleIdentifier(Identifier);
 end;
 
+{ TCodeBrowserWorkStageHelper }
+
+function TCodeBrowserWorkStageHelper.ToString: String;
+begin
+  Result := SCodeBrowserWorkStage[Self];
+end;
 
 { TCodeBrowserView }
 
@@ -1105,6 +1134,9 @@ var
   OldStage: TCodeBrowserWorkStage;
 begin
   OldStage:=fStage;
+  {$IFDEF VerboseCodeBrowser}
+  debugln('TCodeBrowserView.Work ', fStage.ToString);
+  {$ENDIF}
   case fStage of
   cbwsGetScopeOptions:     WorkGetScopeOptions;
   cbwsGatherPackages:      WorkGatherPackages;
@@ -1121,6 +1153,7 @@ begin
     Done:=true;
     ProgressBar1.Position:=ProgressTotal;
     ProgressBar1.Visible:=false;
+    IdleConnected:=false;
     exit;
   end;
   if ord(OldStage)<ord(cbwsFinished) then begin
