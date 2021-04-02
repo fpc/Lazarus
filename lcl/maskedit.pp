@@ -79,9 +79,9 @@ const
   cMask_Binary        = 'b'; // a binary character (['0'..'1']) but not necessary (Lazarus extension, not supported by Delphi)
   cMask_BinaryFixed   = 'B'; // a binary character                                (Lazarus extension, not supported by Delphi)
   cMask_NoLeadingBlanks = '!'; //Trim leading blanks, otherwise trim trailing blanks from the data
-  cMask_SetStart      = '[';
+  cMask_SetStart      = '[';   // [abc] is ['a','b','c']. [a-z] = ['a'..'z']. Sets are case-sensitive always ATM. Sets can only contain ASCII.
   cMask_SetEnd        = ']';
-  cMask_SetNegate     = '!';
+  cMask_SetNegate     = '!';   //[!abc] means: must not be in ['a','b','c'].
   cMask_SetRange      = '-';
 
   {Delphi compatibility: user can change these at runtime}
