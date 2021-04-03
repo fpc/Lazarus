@@ -42,6 +42,7 @@ type
     FLinkedCharts: TLinkedCharts;
     FMode: TChartExtendLinkMode;
     FAlignSides: TChartSides;
+    FAlignMissingAxes: Boolean;
     procedure SetAlignSides(AValue: TChartSides);
   protected
     procedure DoAlignSides;
@@ -52,6 +53,7 @@ type
     procedure AddChart(AChart: TChart);
     procedure SyncWith(AChart: TChart);
   published
+    property AlignMissingAxes: Boolean read FAlignMissingAxes write FAlignMissingAxes default true;
     property AlignSides: TChartSides read FAlignSides write SetAlignSides default [];
     property Enabled: Boolean read FEnabled write FEnabled default true;
     property LinkedCharts: TLinkedCharts read FLinkedCharts write FLinkedCharts;
@@ -148,6 +150,7 @@ begin
   inherited Create(AOwner);
   FEnabled := true;
   FLinkedCharts := TLinkedCharts.Create(Self);
+  FAlignMissingAxes := true;
 end;
 
 destructor TChartExtentLink.Destroy;
@@ -161,33 +164,48 @@ procedure TChartExtentLink.DoAlignSides;
 var
   c: TCollectionItem;
   ch: TChart;
-  sideUsed: array[TChartAxisAlignment] of boolean = (false, false, false, false);
   maxLabelSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
   maxTitleSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
   titleSize: Integer;
   al: TChartAxisAlignment;
   axis: TChartAxis;
 begin
+  if FAlignMissingAxes then begin
+    for c in LinkedCharts do begin
+      ch := TLinkedChart(c).Chart;
+      for al in TChartAxisAlignment do
+        if (al in FAlignSides) then
+        begin
+          axis := ch.AxisList.GetAxisByAlign(al);
+          if axis = nil then
+          begin
+            axis := ch.AxisList.Add;
+            axis.Alignment := al;
+            axis.Marks.Visible := false;
+            axis.Title.Caption := '  ';
+            axis.Title.Visible := true;
+          end;
+        end;
+    end;
+  end;
+
   for c in LinkedCharts do begin
     ch := TLinkedChart(c).Chart;
-    FillChar(sideUsed, SizeOf(sideUsed), 0);
     for al in TChartAxisAlignment do
-      if (al in FAlignsides) and not sideUsed[al] then begin
+      if (al in FAlignsides) then begin
         axis := ch.AxisList.GetAxisByAlign(al);
         if axis <> nil then
         begin
-          maxTitleSize[al] := axis.MeasureTitleSize(ch.Drawer);
+          maxTitleSize[al] := Max(maxTitleSize[al], axis.MeasureTitleSize(ch.Drawer));
           maxLabelSize[al] := Max(maxLabelSize[al], axis.MeasureLabelSize(ch.Drawer));
         end;
-        sideUsed[al] := true; // Another axis on the same side not supported.
       end;
   end;
 
   for c in LinkedCharts do begin
     ch := TLinkedChart(c).Chart;
-    FillChar(sideUsed, SizeOf(sideUsed), 0);
     for al in TChartAxisAlignment do begin
-      if (al in FAlignSides) and not sideUsed[al] then
+      if (al in FAlignSides) then
       begin
         axis := ch.AxisList.GetAxisByAlign(al);
         if axis <> nil then
@@ -195,9 +213,9 @@ begin
           titleSize := axis.MeasureTitleSize(ch.Drawer);
           axis.LabelSize := maxTitleSize[al] + maxLabelSize[al] - titleSize;
         end;
-        sideUsed[al] := true;
       end;
     end;
+    WriteLn;
   end;
 end;
 
