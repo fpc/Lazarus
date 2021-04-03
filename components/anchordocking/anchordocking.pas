@@ -1407,25 +1407,26 @@ end;
 
 procedure TAnchorDockSettings.Assign(Source: TAnchorDockSettings);
 begin
-  FAllowDragging := Source.FAllowDragging;
   FChangeStamp := Source.FChangeStamp;
+
+  FAllowDragging := Source.FAllowDragging;
   FDockOutsideMargin := Source.FDockOutsideMargin;
   FDockParentMargin := Source.FDockParentMargin;
+  FDockSitesCanBeMinimized:=Source.FDockSitesCanBeMinimized;
   FDragTreshold := Source.FDragTreshold;
   FHeaderAlignLeft := Source.FHeaderAlignLeft;
   FHeaderAlignTop := Source.FHeaderAlignTop;
+  FHeaderFilled := Source.FHeaderFilled;
+  FHeaderFlatten := Source.FHeaderFlatten;
+  FHeaderHighlightFocused:=Source.FHeaderHighlightFocused;
   FHeaderHint := Source.FHeaderHint;
   FHeaderStyle := Source.FHeaderStyle;
-  FHeaderFlatten := Source.FHeaderFlatten;
-  FHeaderFilled := Source.FHeaderFilled;
   FHideHeaderCaptionFloatingControl := Source.FHideHeaderCaptionFloatingControl;
   FPageAreaInPercent := Source.FPageAreaInPercent;
   FScaleOnResize := Source.FScaleOnResize;
   FShowHeader := Source.FShowHeader;
   FShowHeaderCaption := Source.FShowHeaderCaption;
   FSplitterWidth := Source.FSplitterWidth;
-  FHeaderHighlightFocused:=Source.FHeaderHighlightFocused;
-  FDockSitesCanBeMinimized:=Source.FDockSitesCanBeMinimized;
 end;
 
 procedure TAnchorDockSettings.IncreaseChangeStamp;
@@ -1436,114 +1437,114 @@ end;
 procedure TAnchorDockSettings.LoadFromConfig(Config: TConfigStorage);
 begin
   Config.AppendBasePath('Settings/');
-  DragTreshold:=Config.GetValue('DragThreshold',4);
+  AllowDragging:=Config.GetValue('AllowDragging',true);
   DockOutsideMargin:=Config.GetValue('DockOutsideMargin',10);
   DockParentMargin:=Config.GetValue('DockParentMargin',10);
-  PageAreaInPercent:=Config.GetValue('PageAreaInPercent',40);
-  HeaderAlignTop:=Config.GetValue('HeaderAlignTop',80);
+  DockSitesCanBeMinimized:=Config.GetValue('DockSitesCanBeMinimized',False);
+  DragTreshold:=Config.GetValue('DragThreshold',4);
   HeaderAlignLeft:=Config.GetValue('HeaderAlignLeft',120);
-  SplitterWidth:=Config.GetValue('SplitterWidth',4);
+  HeaderAlignTop:=Config.GetValue('HeaderAlignTop',80);
+  HeaderFilled:=Config.GetValue('HeaderFilled',true);
+  HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
+  HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
+  HeaderStyle:=Config.GetValue('HeaderStyle','Frame3D');
+  HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
+  PageAreaInPercent:=Config.GetValue('PageAreaInPercent',40);
   ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
   ShowHeader:=Config.GetValue('ShowHeader',true);
   ShowHeaderCaption:=Config.GetValue('ShowHeaderCaption',true);
-  HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
-  AllowDragging:=Config.GetValue('AllowDragging',true);
-  HeaderStyle:=Config.GetValue('HeaderStyle','Frame3D');
-  HeaderFlatten:=Config.GetValue('HeaderFlatten',true);
-  HeaderFilled:=Config.GetValue('HeaderFilled',true);
-  HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
-  DockSitesCanBeMinimized:=Config.GetValue('DockSitesCanBeMinimized',False);
+  SplitterWidth:=Config.GetValue('SplitterWidth',4);
   Config.UndoAppendBasePath;
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Path: string; Config: TRttiXMLConfig
   );
 begin
-  Config.SetDeleteValue(Path+'DragThreshold',DragTreshold,4);
+  Config.SetDeleteValue(Path+'AllowDragging',AllowDragging,true);
   Config.SetDeleteValue(Path+'DockOutsideMargin',DockOutsideMargin,10);
   Config.SetDeleteValue(Path+'DockParentMargin',DockParentMargin,10);
-  Config.SetDeleteValue(Path+'PageAreaInPercent',PageAreaInPercent,40);
-  Config.SetDeleteValue(Path+'HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue(Path+'DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
+  Config.SetDeleteValue(Path+'DragThreshold',DragTreshold,4);
   Config.SetDeleteValue(Path+'HeaderAlignLeft',HeaderAlignLeft,120);
-  Config.SetDeleteValue(Path+'SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue(Path+'HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
+  Config.SetDeleteValue(Path+'HeaderFlatten',HeaderFlatten,true);
+  Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
+  Config.SetDeleteValue(Path+'HeaderStyle',HeaderStyle,'Frame3D');
+  Config.SetDeleteValue(Path+'HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue(Path+'PageAreaInPercent',PageAreaInPercent,40);
   Config.SetDeleteValue(Path+'ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue(Path+'ShowHeader',ShowHeader,true);
   Config.SetDeleteValue(Path+'ShowHeaderCaption',ShowHeaderCaption,true);
-  Config.SetDeleteValue(Path+'HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
-  Config.SetDeleteValue(Path+'AllowDragging',AllowDragging,true);
-  Config.SetDeleteValue(Path+'HeaderStyle',HeaderStyle,'Frame3D');
-  Config.SetDeleteValue(Path+'HeaderFlatten',HeaderFlatten,true);
-  Config.SetDeleteValue(Path+'HeaderFilled',HeaderFilled,true);
-  Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
-  Config.SetDeleteValue(Path+'DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
+  Config.SetDeleteValue(Path+'SplitterWidth',SplitterWidth,4);
 end;
 
 procedure TAnchorDockSettings.SaveToConfig(Config: TConfigStorage);
 begin
   Config.AppendBasePath('Settings/');
-  Config.SetDeleteValue('DragThreshold',DragTreshold,4);
+  Config.SetDeleteValue('AllowDragging',AllowDragging,true);
   Config.SetDeleteValue('DockOutsideMargin',DockOutsideMargin,10);
   Config.SetDeleteValue('DockParentMargin',DockParentMargin,10);
-  Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
-  Config.SetDeleteValue('HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue('DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
+  Config.SetDeleteValue('DragThreshold',DragTreshold,4);
   Config.SetDeleteValue('HeaderAlignLeft',HeaderAlignLeft,120);
-  Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
+  Config.SetDeleteValue('HeaderAlignTop',HeaderAlignTop,80);
+  Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
+  Config.SetDeleteValue('HeaderFlatten',HeaderFlatten,true);
+  Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
+  Config.SetDeleteValue('HeaderStyle',HeaderStyle,'Frame3D');
+  Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
   Config.SetDeleteValue('ShowHeaderCaption',ShowHeaderCaption,true);
-  Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
-  Config.SetDeleteValue('AllowDragging',AllowDragging,true);
-  Config.SetDeleteValue('HeaderStyle',HeaderStyle,'Frame3D');
-  Config.SetDeleteValue('HeaderFlatten',HeaderFlatten,true);
-  Config.SetDeleteValue('HeaderFilled',HeaderFilled,true);
-  Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
-  Config.SetDeleteValue('DockSitesCanBeMinimized',DockSitesCanBeMinimized,False);
+  Config.SetDeleteValue('SplitterWidth',SplitterWidth,4);
   Config.UndoAppendBasePath;
 end;
 
 function TAnchorDockSettings.IsEqual(Settings: TAnchorDockSettings): boolean;
 begin
-  Result:=(DragTreshold=Settings.DragTreshold)
+  Result:=(AllowDragging=Settings.AllowDragging)
       and (DockOutsideMargin=Settings.DockOutsideMargin)
       and (DockParentMargin=Settings.DockParentMargin)
-      and (PageAreaInPercent=Settings.PageAreaInPercent)
-      and (HeaderAlignTop=Settings.HeaderAlignTop)
+      and (DockSitesCanBeMinimized=Settings.DockSitesCanBeMinimized)
+      and (DragTreshold=Settings.DragTreshold)
       and (HeaderAlignLeft=Settings.HeaderAlignLeft)
+      and (HeaderAlignTop=Settings.HeaderAlignTop)
+      and (HeaderFilled=Settings.HeaderFilled)
+      and (HeaderFlatten=Settings.HeaderFlatten)
+      and (HeaderHighlightFocused=Settings.HeaderHighlightFocused)
       and (HeaderHint=Settings.HeaderHint)
-      and (SplitterWidth=Settings.SplitterWidth)
+      and (HeaderStyle=Settings.HeaderStyle)
+      and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
+      and (PageAreaInPercent=Settings.PageAreaInPercent)
       and (ScaleOnResize=Settings.ScaleOnResize)
       and (ShowHeader=Settings.ShowHeader)
       and (ShowHeaderCaption=Settings.ShowHeaderCaption)
-      and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
-      and (AllowDragging=Settings.AllowDragging)
-      and (HeaderStyle=Settings.HeaderStyle)
-      and (HeaderFlatten=Settings.HeaderFlatten)
-      and (HeaderFilled=Settings.HeaderFilled)
-      and (HeaderHighlightFocused=Settings.HeaderHighlightFocused)
-      and (DockSitesCanBeMinimized=Settings.DockSitesCanBeMinimized)
+      and (SplitterWidth=Settings.SplitterWidth)
       ;
 end;
 
 procedure TAnchorDockSettings.LoadFromConfig(Path: string;
   Config: TRttiXMLConfig);
 begin
-  DragTreshold:=Config.GetValue(Path+'DragThreshold',4);
+  AllowDragging:=Config.GetValue(Path+'AllowDragging',true);
   DockOutsideMargin:=Config.GetValue(Path+'DockOutsideMargin',10);
   DockParentMargin:=Config.GetValue(Path+'DockParentMargin',10);
-  PageAreaInPercent:=Config.GetValue(Path+'PageAreaInPercent',40);
-  HeaderAlignTop:=Config.GetValue(Path+'HeaderAlignTop',80);
+  DockSitesCanBeMinimized:=Config.GetValue(Path+'DockSitesCanBeMinimized',False);
+  DragTreshold:=Config.GetValue(Path+'DragThreshold',4);
   HeaderAlignLeft:=Config.GetValue(Path+'HeaderAlignLeft',120);
-  SplitterWidth:=Config.GetValue(Path+'SplitterWidth',4);
+  HeaderAlignTop:=Config.GetValue(Path+'HeaderAlignTop',80);
+  HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
+  HeaderFlatten:=Config.GetValue(Path+'HeaderFlatten',true);
+  HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
+  HeaderStyle:=Config.GetValue(Path+'HeaderStyle','Frame3D');
+  HideHeaderCaptionFloatingControl:=Config.GetValue(Path+'HideHeaderCaptionFloatingControl',true);
+  PageAreaInPercent:=Config.GetValue(Path+'PageAreaInPercent',40);
   ScaleOnResize:=Config.GetValue(Path+'ScaleOnResize',true);
   ShowHeader:=Config.GetValue(Path+'ShowHeader',true);
   ShowHeaderCaption:=Config.GetValue(Path+'ShowHeaderCaption',true);
-  HideHeaderCaptionFloatingControl:=Config.GetValue(Path+'HideHeaderCaptionFloatingControl',true);
-  AllowDragging:=Config.GetValue(Path+'AllowDragging',true);
-  HeaderStyle:=Config.GetValue(Path+'HeaderStyle','Frame3D');
-  HeaderFlatten:=Config.GetValue(Path+'HeaderFlatten',true);
-  HeaderFilled:=Config.GetValue(Path+'HeaderFilled',true);
-  HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
-  DockSitesCanBeMinimized:=Config.GetValue(Path+'DockSitesCanBeMinimized',False);
+  SplitterWidth:=Config.GetValue(Path+'SplitterWidth',4);
 end;
 
 { TAnchorDockMaster }
