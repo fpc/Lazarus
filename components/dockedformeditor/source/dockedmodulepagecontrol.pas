@@ -15,6 +15,7 @@
 unit DockedModulePageControl;
 
 {$mode objfpc}{$H+}
+{ $define DEBUGDOCKEDFORMEDITOR}
 
 interface
 
@@ -22,12 +23,12 @@ uses
   // RTL
   Classes, SysUtils,
   // LCL
-  Forms, ComCtrls, Controls,
+  Forms, ComCtrls, Controls, LCLProc,
   // IDEIntf
   SrcEditorIntf, FormEditingIntf,
   // DockedFormEditor
   DockedDesignForm, DockedResizer, DockedOptionsIDE, DockedAnchorDesigner,
-  DockedStrConsts;
+  DockedTools, DockedStrConsts;
 
 type
 
@@ -86,6 +87,7 @@ end;
 
 procedure TModulePageControl.AsyncDesignerSetFocus(Data: PtrInt);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.AsyncDesignerSetFocus'); {$ENDIF}
   DesignerSetFocus;
   FDesignerSetFocusAsyncCount := 0;
 end;
@@ -98,6 +100,8 @@ begin
     if (FResizer = nil)
     or ((AValue <> nil) and (FResizer.DesignForm = AValue)) then
       Exit;
+
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.SetDesignForm: ', DbgSName(AValue)); {$ENDIF}
 
   FDesignForm := AValue;
   if AValue = nil then
@@ -115,6 +119,8 @@ end;
 
 constructor TModulePageControl.Create(TheOwner: TComponent);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.Create'); {$ENDIF}
+
   inherited Create(TheOwner);
   FDesignerSetFocusAsyncCount := 0;
   FResizer := nil;
@@ -138,6 +144,7 @@ end;
 procedure TModulePageControl.AdjustPage;
 begin
   if not DesignerPageActive then Exit;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.AdjustPage'); {$ENDIF}
   if Assigned(FResizer) then
     FResizer.AdjustResizer(nil);
 end;
@@ -149,6 +156,7 @@ end;
 
 procedure TModulePageControl.CreateResizer;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.CreateResizer'); {$ENDIF}
   if Assigned(FResizer) then
     raise Exception.Create('TModulePageControl.CreateResizer: Resizer already created');
   FResizer := TResizer.Create(Self);
@@ -161,6 +169,7 @@ procedure TModulePageControl.CreateTabSheetAnchors;
 begin
   if not DockedOptions.AnchorTabVisible then Exit;
   if Assigned(FTabSheetAnchors) then Exit;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.CreateTabSheetAnchors'); {$ENDIF}
   FTabSheetAnchors := TTabSheet.Create(Self);
   FTabSheetAnchors.PageControl := Self;
   FTabSheetAnchors.Caption := SAnchors;
@@ -169,6 +178,7 @@ end;
 procedure TModulePageControl.CreateTabSheetDesigner;
 begin
   if Assigned(FTabSheetDesigner) then Exit;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.CreateTabSheetDesigner'); {$ENDIF}
   FTabSheetDesigner := TTabSheet.Create(Self);
   FTabSheetDesigner.PageControl := Self;
   FTabSheetDesigner.Caption := SDesigner;
@@ -178,6 +188,7 @@ procedure TModulePageControl.DesignerSetFocus;
 begin
   if not Assigned(Resizer) then Exit;
   if not Assigned(DesignForm) then Exit;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.DesignerSetFocus'); {$ENDIF}
   Resizer.DesignerSetFocus;
 end;
 
@@ -201,13 +212,16 @@ end;
 
 procedure TModulePageControl.RemoveDesignPages;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.RemoveDesignPages'); {$ENDIF}
   FreeAndNil(FTabSheetAnchors);
   FreeAndNil(FTabSheetDesigner);
+  ShowTabs := False;
 end;
 
 procedure TModulePageControl.InitPage;
 begin
   ShowTabs := PageCount > 1;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.InitPage: ShowTabs[' + ShowTabs.ToString(TUseBoolStrs.True) + ']'); {$ENDIF}
   if ActivePage = FTabSheetDesigner then
   begin
     Resizer.Parent := FTabSheetDesigner;
@@ -231,18 +245,21 @@ end;
 procedure TModulePageControl.RefreshResizer;
 begin
   if not Assigned(FResizer) then Exit;
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.RefreshResizer'); {$ENDIF}
   FreeAndNil(FResizer);
   CreateResizer;
 end;
 
 procedure TModulePageControl.ShowCode;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.ShowCode'); {$ENDIF}
   PageIndex := 0;
   InitPage;
 end;
 
 procedure TModulePageControl.ShowDesigner(AIndex: Integer);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TModulePageControl.ShowDesigner'); {$ENDIF}
   if (AIndex = 0) or not (Pages[AIndex].TabVisible) then
     AIndex := 1;
   if PageCount <= AIndex then Exit;
