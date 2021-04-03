@@ -1431,7 +1431,7 @@ end;
 
 procedure TProjectInspectorForm.PackageListAvailable(Sender: TObject);
 begin
-  DebugLn(['TProjectInspectorForm.PackageListAvailable: ', LazProject.Title]);
+  //DebugLn(['TProjectInspectorForm.PackageListAvailable: ', LazProject.Title]);
   UpdateRequiredPackages;
 end;
 

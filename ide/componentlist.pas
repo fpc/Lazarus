@@ -502,7 +502,7 @@ end;
 
 procedure TComponentListForm.PageControlChange(Sender: TObject);
 begin
-  DebugLn(['TComponentListForm.PageControlChange: Start']);
+  //DebugLn(['TComponentListForm.PageControlChange: Start']);
   FPageControlChange := True;
   case PageControl.PageIndex of
     0: begin
