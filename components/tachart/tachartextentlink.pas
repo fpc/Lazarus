@@ -63,7 +63,8 @@ procedure Register;
 implementation
 
 uses
-  SysUtils, Math, TAGeometry, TAChartAxis;
+  SysUtils, Math, Types,
+  TAGeometry, TAChartAxis;
 
 procedure Register;
 begin
@@ -155,13 +156,15 @@ begin
   inherited;
 end;
 
-// Note: ignores several axes on the same chart side
+// Note: ignores multiple axes on the same chart side
 procedure TChartExtentLink.DoAlignSides;
 var
   c: TCollectionItem;
   ch: TChart;
-  labelSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
   sideUsed: array[TChartAxisAlignment] of boolean = (false, false, false, false);
+  maxLabelSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
+  maxTitleSize: array[TChartAxisAlignment] of Integer = (0, 0, 0, 0);
+  titleSize: Integer;
   al: TChartAxisAlignment;
   axis: TChartAxis;
 begin
@@ -170,10 +173,13 @@ begin
     FillChar(sideUsed, SizeOf(sideUsed), 0);
     for al in TChartAxisAlignment do
       if (al in FAlignsides) and not sideUsed[al] then begin
-        sideUsed[al] := true;
+        sideUsed[al] := true;  // avoid using another axis on the same side
         axis := ch.AxisList.GetAxisByAlign(al);
         if axis <> nil then
-          labelsize[al] := Max(labelsize[al], axis.MeasureLabelSize(ch.Drawer));
+        begin
+          maxTitleSize[al] := axis.MeasureTitleSize(ch.Drawer);
+          maxLabelSize[al] := Max(maxLabelSize[al], axis.MeasureLabelSize(ch.Drawer));
+        end;
       end;
   end;
 
@@ -186,8 +192,10 @@ begin
         if (al in FAlignSides) and not sideUsed[al] then
           sideUsed[al] := true;
         if sideUsed[al] then
-          axis.labelSize := labelSize[al]
-        else
+        begin
+          titleSize := axis.MeasureTitleSize(ch.Drawer);
+          axis.LabelSize := maxTitleSize[al] + maxLabelSize[al] - titleSize;
+        end else
           axis.LabelSize := 0;
       end;
     end;

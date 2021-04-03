@@ -167,6 +167,7 @@ type
     procedure Measure(const AExtent: TDoubleRect; const AClipRect: TRect;
       var AMeasureData: TChartAxisGroup);
     function MeasureLabelSize(ADrawer: IChartDrawer): Integer;
+    function MeasureTitleSize(ADrawer: IChartDrawer): Integer;
     function PositionToCoord(const ARect: TRect): Integer;
     procedure PrepareHelper(
       ADrawer: IChartDrawer; const ATransf: ICoordTransformer;
@@ -922,6 +923,14 @@ begin
     mv[i] := Value[i];
   sz := Marks.Measure(ADrawer, not IsVertical, TickLength, mv);
   Result := round(sz / ADrawer.Scale(1));
+end;
+
+function TChartAxis.MeasureTitleSize(ADrawer: IChartDrawer): Integer;
+var
+  sz: TSize;
+begin
+  sz := Title.MeasureLabel(ADrawer, GetRealTitle);
+  Result := IfThen(IsVertical, sz.CX, sz.CY);
 end;
 
 function TChartAxis.PositionIsStored: Boolean;
