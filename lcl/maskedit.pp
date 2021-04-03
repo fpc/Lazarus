@@ -791,164 +791,172 @@ begin
       begin //not Special
         // Check the char to insert
         case CP Of
-             cMask_SpecialChar: Special := True;
+          cMask_SpecialChar: Special := True;
 
-             cMask_UpperCase: begin
-               if (i > 1) and (GetCodePoint(S,i-1) = cMask_LowerCase) then
-               begin// encountered <>, so no case checking after this
-                 InUp := False;
-                 InDown := False
-               end else
+          cMask_UpperCase:
+          begin
+           if (i > 1) and (GetCodePoint(S,i-1) = cMask_LowerCase) then
+           begin// encountered <>, so no case checking after this
+             InUp := False;
+             InDown := False
+           end else
+           begin
+             InUp    := True;
+             InDown := False;
+           end;
+          end;
+
+          cMask_LowerCase:
+          begin
+           InDown  := True;
+           InUp := False;
+           // <> is catched by next cMask_Uppercase
+          end;
+
+          cMask_SetStart:
+          begin
+           if FEnableSets then
+           begin
+             //debugln('TCustomMaskEdit: start of set');
+             try
+               ParseSet(S, i, SULen);
+             except
+               on E: EInvalidEditMask do
                begin
-                 InUp    := True;
-                 InDown := False;
+                 UndoMask;
+                 raise
                end;
              end;
+           end
+           else
+             //debugln('Found a literal [');
+             AddToMask(cMask_SetStart);
+          end;
 
-             cMask_LowerCase: begin
-                InDown  := True;
-                InUp := False;
-                // <> is catched by next cMask_Uppercase
-             end;
+          cMask_Letter:
+          begin
+            if InUp
+            then
+              AddToMask(Char_LetterUpCase)
+            else
+              if InDown
+              then
+                AddToMask(Char_LetterDownCase)
+              else
+                AddToMask(Char_Letter)
+          end;
 
-             cMask_SetStart: begin
-               if FEnableSets then
-               begin
-                 //debugln('TCustomMaskEdit: start of set');
-                 try
-                   ParseSet(S, i, SULen);
-                 except
-                   on E: EInvalidEditMask do
-                   begin
-                     UndoMask;
-                     raise
-                   end;
-                 end;
-               end
-               else
-                 //debugln('Found a literal [');
-                 AddToMask(cMask_SetStart);
+          cMask_LetterFixed:
+          begin
+            if InUp
+            then
+              AddToMask(Char_LetterFixedUpCase)
+            else
+              if InDown
+              then
+                AddToMask(Char_LetterFixedDownCase)
+              else
+                AddToMask(Char_LetterFixed)
+          end;
 
-             end;
-             cMask_Letter: begin
-                if InUp
-                then
-                  AddToMask(Char_LetterUpCase)
-                else
-                  if InDown
-                  then
-                    AddToMask(Char_LetterDownCase)
-                  else
-                    AddToMask(Char_Letter)
-             end;
+          cMask_AlphaNum:
+          begin
+            if InUp
+            then
+              AddToMask(Char_AlphaNumUpcase)
+            else
+              if InDown
+              then
+                AddToMask(Char_AlphaNumDownCase)
+              else
+                AddToMask(Char_AlphaNum)
+          end;
 
-             cMask_LetterFixed: begin
-                if InUp
-                then
-                  AddToMask(Char_LetterFixedUpCase)
-                else
-                  if InDown
-                  then
-                    AddToMask(Char_LetterFixedDownCase)
-                  else
-                    AddToMask(Char_LetterFixed)
-             end;
+          cMask_AlphaNumFixed:
+          begin
+            if InUp
+            then
+              AddToMask(Char_AlphaNumFixedUpcase)
+            else
+              if InDown
+              then
+                AddToMask(Char_AlphaNumFixedDownCase)
+              else
+                AddToMask(Char_AlphaNumFixed)
+          end;
 
-             cMask_AlphaNum: begin
-                 if InUp
-                 then
-                   AddToMask(Char_AlphaNumUpcase)
-                 else
-                   if InDown
-                   then
-                     AddToMask(Char_AlphaNumDownCase)
-                   else
-                     AddToMask(Char_AlphaNum)
-             end;
+          cMask_AllChars:
+          begin
+            if InUp
+            then
+              AddToMask(Char_AllUpCase)
+            else
+              if InDown
+              then
+                AddToMask(Char_AllDownCase)
+              else
+                AddToMask(Char_All)
+          end;
 
-             cMask_AlphaNumFixed: begin
-                 if InUp
-                 then
-                   AddToMask(Char_AlphaNumFixedUpcase)
-                 else
-                   if InDown
-                   then
-                     AddToMask(Char_AlphaNumFixedDownCase)
-                   else
-                     AddToMask(Char_AlphaNumFixed)
-             end;
+          cMask_AllCharsFixed:
+          begin
+            if InUp
+            then
+              AddToMask(Char_AllFixedUpCase)
+            else
+              if InDown
+              then
+                AddToMask(Char_AllFixedDownCase)
+              else
+                AddToMask(Char_AllFixed)
+          end;
 
-             cMask_AllChars: begin
-                if InUp
-                then
-                  AddToMask(Char_AllUpCase)
-                else
-                  if InDown
-                  then
-                    AddToMask(Char_AllDownCase)
-                  else
-                    AddToMask(Char_All)
-             end;
+          cMask_Number: AddToMask(Char_Number);
 
-             cMask_AllCharsFixed: begin
-                if InUp
-                then
-                  AddToMask(Char_AllFixedUpCase)
-                else
-                  if InDown
-                  then
-                    AddToMask(Char_AllFixedDownCase)
-                  else
-                    AddToMask(Char_AllFixed)
-             end;
+          cMask_NumberFixed: AddToMask(Char_NumberFixed);
 
-             cMask_Number: AddToMask(Char_Number);
+          cMask_NumberPlusMin: AddToMask(Char_NumberPlusMin);
 
-             cMask_NumberFixed: AddToMask(Char_NumberFixed);
+          cMask_HourSeparator: AddToMask(Char_HourSeparator);
 
-             cMask_NumberPlusMin: AddToMask(Char_NumberPlusMin);
+          cMask_DateSeparator: AddToMask(Char_DateSeparator);
 
-             cMask_HourSeparator: AddToMask(Char_HourSeparator);
+          cMask_Hex:
+          begin
+            if InUp
+            then
+              AddToMask(Char_HexUpCase)
+            else
+              if InDown
+              then
+                AddToMask(Char_HexDownCase)
+              else
+                AddToMask(Char_Hex)
+          end;
 
-             cMask_DateSeparator: AddToMask(Char_DateSeparator);
+          cMask_HexFixed:
+          begin
+            if InUp
+            then
+              AddToMask(Char_HexFixedUpCase)
+            else
+              if InDown
+              then
+                AddToMask(Char_HexFixedDownCase)
+              else
+                AddToMask(Char_HexFixed)
+          end;
 
-              cMask_Hex: begin
-                 if InUp
-                 then
-                   AddToMask(Char_HexUpCase)
-                 else
-                   if InDown
-                   then
-                     AddToMask(Char_HexDownCase)
-                   else
-                     AddToMask(Char_Hex)
-              end;
+          cMask_Binary: AddToMask(Char_Binary);
+          cMask_BinaryFixed: AddToMask(Char_BinaryFixed);
 
-              cMask_HexFixed: begin
-                 if InUp
-                 then
-                   AddToMask(Char_HexFixedUpCase)
-                 else
-                   if InDown
-                   then
-                     AddToMask(Char_HexFixedDownCase)
-                   else
-                     AddToMask(Char_HexFixed)
-              end;
+          cMask_NoLeadingBlanks: FTrimType := metTrimLeft;
 
-              cMask_Binary: AddToMask(Char_Binary);
-              cMask_BinaryFixed: AddToMask(Char_BinaryFixed);
-
-             cMask_NoLeadingBlanks:
-             begin
-               FTrimType := metTrimLeft;
-             end;
-
-             otherwise
-             begin
-               //It's a MaskLiteral
-               AddToMask(CP);
-             end;
+          otherwise
+          begin
+            //It's a MaskLiteral
+            AddToMask(CP);
+          end;
         end;//case CP of
       end; //not Special
       Inc(i);
