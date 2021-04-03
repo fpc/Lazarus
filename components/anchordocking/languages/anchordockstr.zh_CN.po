@@ -200,6 +200,14 @@ msgstr "移动到页面右侧"
 msgid "Move page rightmost"
 msgstr "移动到页面最右边"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr ""

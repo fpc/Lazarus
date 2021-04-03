@@ -202,6 +202,14 @@ msgstr "Sayfayı sağa taşı"
 msgid "Move page rightmost"
 msgstr "Sayfayı en sağa taşı"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr "Kayan siteler için başlık yok"

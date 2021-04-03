@@ -199,6 +199,14 @@ msgstr "Déplacer la page vers la droite"
 msgid "Move page rightmost"
 msgstr "Déplacer la page tout à droite"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr "Pas d'étiquettes pour les zones d'amarrage"

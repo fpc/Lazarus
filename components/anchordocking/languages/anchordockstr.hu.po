@@ -199,6 +199,14 @@ msgstr "Lap mozgatása eggyel jobbra"
 msgid "Move page rightmost"
 msgstr "Lap mozgatása a jobb szélre"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr "Nincs cím a lebegő területek esetén"

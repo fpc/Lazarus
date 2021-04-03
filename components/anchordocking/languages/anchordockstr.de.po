@@ -197,6 +197,14 @@ msgstr "Seite nach rechts"
 msgid "Move page rightmost"
 msgstr "Seite nach ganz rechts"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr ""

@@ -512,6 +512,7 @@ type
     FHeaderFilled: boolean;
     FHeaderHighlightFocused: boolean;
     FHideHeaderCaptionFloatingControl: boolean;
+    FMultiLinePages: boolean;
     FPageAreaInPercent: integer;
     FScaleOnResize: boolean;
     FShowHeader: boolean;
@@ -527,6 +528,7 @@ type
     procedure SetHeaderHint(AValue: string);
     procedure SetHeaderStyle(AValue: THeaderStyleName);
     procedure SetHideHeaderCaptionFloatingControl(AValue: boolean);
+    procedure SetMultiLinePages(AValue: boolean);
     procedure SetPageAreaInPercent(AValue: integer);
     procedure SetScaleOnResize(AValue: boolean);
     procedure SetShowHeader(AValue: boolean);
@@ -555,6 +557,7 @@ type
     property HeaderFilled: boolean read FHeaderFilled write SetHeaderFilled;
     property HeaderHighlightFocused: boolean read FHeaderHighlightFocused write SetHeaderHighlightFocused;
     property DockSitesCanBeMinimized: boolean read FDockSitesCanBeMinimized write SetDockSitesCanBeMinimized;
+    property MultiLinePages: boolean read FMultiLinePages write SetMultiLinePages;
     procedure IncreaseChangeStamp; inline;
     property ChangeStamp: integer read FChangeStamp;
     procedure LoadFromConfig(Config: TConfigStorage); overload;
@@ -596,6 +599,7 @@ type
     FDockSitesCanBeMinimized: boolean;
     FIdleConnected: Boolean;
     FManagerClass: TAnchorDockManagerClass;
+    FMultiLinePages: boolean;
     FOnCreateControl: TADCreateControlEvent;
     FOnOptionsChanged: TNotifyEvent;
     FOnShowOptions: TADShowDockMasterOptionsEvent;
@@ -662,6 +666,7 @@ type
     procedure SetHeaderFilled(AValue: boolean);
     procedure SetHeaderHighlightFocused(AValue: boolean);
     procedure SetDockSitesCanBeMinimized(AValue: boolean);
+    procedure SetMultiLinePages(AValue: boolean);
 
     procedure SetShowMenuItemShowHeader(AValue: boolean);
     procedure SetupSite(Site: TWinControl; ANode: TAnchorDockLayoutTreeNode;
@@ -794,6 +799,7 @@ type
     property SplitterWidth: integer read FSplitterWidth write SetSplitterWidth default 4;
     property ScaleOnResize: boolean read FScaleOnResize write SetScaleOnResize default true; // scale children when resizing a site
     property AllowDragging: boolean read FAllowDragging write SetAllowDragging default true;
+    property MultiLinePages: boolean read FMultiLinePages write SetMultiLinePages default false;
     property OptionsChangeStamp: int64 read FOptionsChangeStamp;
     procedure IncreaseOptionsChangeStamp; inline;
 
@@ -1342,6 +1348,13 @@ begin
   IncreaseChangeStamp;
 end;
 
+procedure TAnchorDockSettings.SetMultiLinePages(AValue: boolean);
+begin
+  if FMultiLinePages = AValue then Exit;
+  FMultiLinePages := AValue;
+  IncreaseChangeStamp;
+end;
+
 procedure TAnchorDockSettings.SetPageAreaInPercent(AValue: integer);
 begin
   if FPageAreaInPercent=AValue then Exit;
@@ -1422,6 +1435,7 @@ begin
   FHeaderHint := Source.FHeaderHint;
   FHeaderStyle := Source.FHeaderStyle;
   FHideHeaderCaptionFloatingControl := Source.FHideHeaderCaptionFloatingControl;
+  FMultiLinePages := Source.FMultiLinePages;
   FPageAreaInPercent := Source.FPageAreaInPercent;
   FScaleOnResize := Source.FScaleOnResize;
   FShowHeader := Source.FShowHeader;
@@ -1449,6 +1463,7 @@ begin
   HeaderHighlightFocused:=Config.GetValue('HeaderHighlightFocused',False);
   HeaderStyle:=Config.GetValue('HeaderStyle','Frame3D');
   HideHeaderCaptionFloatingControl:=Config.GetValue('HideHeaderCaptionFloatingControl',true);
+  MultiLinePages:=Config.GetValue('MultiLinePages',false);
   PageAreaInPercent:=Config.GetValue('PageAreaInPercent',40);
   ScaleOnResize:=Config.GetValue('ScaleOnResize',true);
   ShowHeader:=Config.GetValue('ShowHeader',true);
@@ -1472,6 +1487,7 @@ begin
   Config.SetDeleteValue(Path+'HeaderHighlightFocused',HeaderHighlightFocused,False);
   Config.SetDeleteValue(Path+'HeaderStyle',HeaderStyle,'Frame3D');
   Config.SetDeleteValue(Path+'HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue(Path+'MultiLinePages',MultiLinePages,false);
   Config.SetDeleteValue(Path+'PageAreaInPercent',PageAreaInPercent,40);
   Config.SetDeleteValue(Path+'ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue(Path+'ShowHeader',ShowHeader,true);
@@ -1494,6 +1510,7 @@ begin
   Config.SetDeleteValue('HeaderHighlightFocused',HeaderHighlightFocused,False);
   Config.SetDeleteValue('HeaderStyle',HeaderStyle,'Frame3D');
   Config.SetDeleteValue('HideHeaderCaptionFloatingControl',HideHeaderCaptionFloatingControl,true);
+  Config.SetDeleteValue('MultiLinePages',MultiLinePages,false);
   Config.SetDeleteValue('PageAreaInPercent',PageAreaInPercent,40);
   Config.SetDeleteValue('ScaleOnResize',ScaleOnResize,true);
   Config.SetDeleteValue('ShowHeader',ShowHeader,true);
@@ -1517,6 +1534,7 @@ begin
       and (HeaderHint=Settings.HeaderHint)
       and (HeaderStyle=Settings.HeaderStyle)
       and (HideHeaderCaptionFloatingControl=Settings.HideHeaderCaptionFloatingControl)
+      and (MultiLinePages=Settings.MultiLinePages)
       and (PageAreaInPercent=Settings.PageAreaInPercent)
       and (ScaleOnResize=Settings.ScaleOnResize)
       and (ShowHeader=Settings.ShowHeader)
@@ -1540,6 +1558,7 @@ begin
   HeaderHighlightFocused:=Config.GetValue(Path+'HeaderHighlightFocused',False);
   HeaderStyle:=Config.GetValue(Path+'HeaderStyle','Frame3D');
   HideHeaderCaptionFloatingControl:=Config.GetValue(Path+'HideHeaderCaptionFloatingControl',true);
+  MultiLinePages:=Config.GetValue(Path+'MultiLinePages',false);
   PageAreaInPercent:=Config.GetValue(Path+'PageAreaInPercent',40);
   ScaleOnResize:=Config.GetValue(Path+'ScaleOnResize',true);
   ShowHeader:=Config.GetValue(Path+'ShowHeader',true);
@@ -2614,6 +2633,13 @@ begin
   OptionsChanged;
 end;
 
+procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
+begin
+  if FScaleOnResize=AValue then Exit;
+  FScaleOnResize:=AValue;
+  OptionsChanged;
+end;
+
 procedure TAnchorDockMaster.SetHeaderFlatten(AValue: boolean);
 begin
   if FHeaderFlatten=AValue then Exit;
@@ -2647,10 +2673,25 @@ begin
   EnableAllAutoSizing;
   OptionsChanged;
 end;
-procedure TAnchorDockMaster.SetScaleOnResize(AValue: boolean);
+
+procedure TAnchorDockMaster.SetMultiLinePages(AValue: boolean);
+var
+  Site: TAnchorDockHostSite;
+  i: Integer;
 begin
-  if FScaleOnResize=AValue then Exit;
-  FScaleOnResize:=AValue;
+  if FMultiLinePages=AValue then Exit;
+  FMultiLinePages:=AValue;
+  for i:=0 to ComponentCount-1 do
+  begin
+    Site:=TAnchorDockHostSite(Components[i]);
+    if not (Site is TAnchorDockHostSite) then continue;
+    if Assigned(Site.Pages) then
+    begin
+      DisableControlAutoSizing(Site);
+      Site.Pages.MultiLine:=AValue;
+    end;
+  end;
+  EnableAllAutoSizing;
   OptionsChanged;
 end;
 
@@ -2846,6 +2887,7 @@ begin
   FHeaderAlignTop:=80;
   HeaderAlignLeft:=120;
   FHeaderHint:='';
+  FMultiLinePages:=false;
   FShowHeader:=true;
   FShowHeaderCaption:=true;
   FHideHeaderCaptionFloatingControl:=true;
@@ -3532,44 +3574,46 @@ end;
 
 procedure TAnchorDockMaster.LoadSettings(Settings: TAnchorDockSettings);
 begin
-  DragTreshold                     := Settings.DragTreshold;
+  AllowDragging                    := Settings.AllowDragging;
   DockOutsideMargin                := Settings.DockOutsideMargin;
   DockParentMargin                 := Settings.DockParentMargin;
+  DockSitesCanBeMinimized          := Settings.DockSitesCanBeMinimized;
+  DragTreshold                     := Settings.DragTreshold;
   PageAreaInPercent                := Settings.PageAreaInPercent;
-  HeaderAlignTop                   := Settings.HeaderAlignTop;
   HeaderAlignLeft                  := Settings.HeaderAlignLeft;
-  SplitterWidth                    := Settings.SplitterWidth;
+  HeaderAlignTop                   := Settings.HeaderAlignTop;
+  HeaderFilled                     := Settings.HeaderFilled;
+  HeaderFlatten                    := Settings.HeaderFlatten;
+  HeaderHighlightFocused           := Settings.HeaderHighlightFocused;
+  HeaderStyle                      := Settings.HeaderStyle;
+  HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
+  MultiLinePages                   := Settings.MultiLinePages;
   ScaleOnResize                    := Settings.ScaleOnResize;
   ShowHeader                       := Settings.ShowHeader;
   ShowHeaderCaption                := Settings.ShowHeaderCaption;
-  HideHeaderCaptionFloatingControl := Settings.HideHeaderCaptionFloatingControl;
-  AllowDragging                    := Settings.AllowDragging;
-  HeaderStyle                      := Settings.HeaderStyle;
-  HeaderFlatten                    := Settings.HeaderFlatten;
-  HeaderFilled                     := Settings.HeaderFilled;
-  HeaderHighlightFocused           := Settings.HeaderHighlightFocused;
-  DockSitesCanBeMinimized          := Settings.DockSitesCanBeMinimized;
+  SplitterWidth                    := Settings.SplitterWidth;
 end;
 
 procedure TAnchorDockMaster.SaveSettings(Settings: TAnchorDockSettings);
 begin
-  Settings.DragTreshold:=DragTreshold;
-  Settings.DockOutsideMargin:=DockOutsideMargin;
-  Settings.DockParentMargin:=DockParentMargin;
-  Settings.PageAreaInPercent:=PageAreaInPercent;
-  Settings.HeaderAlignTop:=HeaderAlignTop;
-  Settings.HeaderAlignLeft:=HeaderAlignLeft;
-  Settings.SplitterWidth:=SplitterWidth;
-  Settings.ScaleOnResize:=ScaleOnResize;
-  Settings.ShowHeader:=ShowHeader;
-  Settings.ShowHeaderCaption:=ShowHeaderCaption;
-  Settings.HideHeaderCaptionFloatingControl:=HideHeaderCaptionFloatingControl;
-  Settings.AllowDragging:=AllowDragging;
-  Settings.HeaderStyle:=HeaderStyle;
-  Settings.HeaderFlatten:=HeaderFlatten;
-  Settings.HeaderFilled:=HeaderFilled;
-  Settings.HeaderHighlightFocused:=HeaderHighlightFocused;
-  Settings.DockSitesCanBeMinimized:=DockSitesCanBeMinimized;
+  Settings.AllowDragging                    := AllowDragging;
+  Settings.DockOutsideMargin                := DockOutsideMargin;
+  Settings.DockParentMargin                 := DockParentMargin;
+  Settings.DockSitesCanBeMinimized          := DockSitesCanBeMinimized;
+  Settings.DragTreshold                     := DragTreshold;
+  Settings.PageAreaInPercent                := PageAreaInPercent;
+  Settings.HeaderAlignLeft                  := HeaderAlignLeft;
+  Settings.HeaderAlignTop                   := HeaderAlignTop;
+  Settings.HeaderFilled                     := HeaderFilled;
+  Settings.HeaderFlatten                    := HeaderFlatten;
+  Settings.HeaderHighlightFocused           := HeaderHighlightFocused;
+  Settings.HeaderStyle                      := HeaderStyle;
+  Settings.HideHeaderCaptionFloatingControl := HideHeaderCaptionFloatingControl;
+  Settings.MultiLinePages                   := MultiLinePages;
+  Settings.ScaleOnResize                    := ScaleOnResize;
+  Settings.ShowHeader                       := ShowHeader;
+  Settings.ShowHeaderCaption                := ShowHeaderCaption;
+  Settings.SplitterWidth                    := SplitterWidth;
 end;
 
 function TAnchorDockMaster.SettingsAreEqual(Settings: TAnchorDockSettings
@@ -4428,6 +4472,7 @@ begin
   FPages.FreeNotification(Self);
   FPages.Parent:=Self;
   FPages.Align:=alClient;
+  FPages.MultiLine:=DockMaster.MultiLinePages;
 end;
 
 procedure TAnchorDockHostSite.FreePages;

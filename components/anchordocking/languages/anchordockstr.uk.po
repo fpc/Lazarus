@@ -201,6 +201,14 @@ msgstr "Пересунути сторінку вправо"
 msgid "Move page rightmost"
 msgstr "Пересунути сторінку до правого краю"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr "Не показувати назви плаваючих областей"

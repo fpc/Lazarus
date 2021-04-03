@@ -201,6 +201,14 @@ msgstr "Lapą perkelti dešinėn"
 msgid "Move page rightmost"
 msgstr "Lapą perkelti į dešiniausią"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr "Nerodyti antraščių plaukiojančioms vietoms pritvirtinimui"

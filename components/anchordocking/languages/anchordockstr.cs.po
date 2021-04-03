@@ -202,6 +202,14 @@ msgstr "Posunout vpravo"
 msgid "Move page rightmost"
 msgstr "Posunout nejvíce vpravo"
 
+#: anchordockstr.adrsmultilinepages
+msgid "Multi Line Tabs"
+msgstr ""
+
+#: anchordockstr.adrsmultilinepageshint
+msgid "Tabs of pages can be shown in multiple lines"
+msgstr ""
+
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"
 msgstr "Skrýt popisky samostatných položek"
