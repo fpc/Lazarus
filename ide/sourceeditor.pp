@@ -8706,7 +8706,10 @@ begin
     //select on right click
     TabIndex:=FNotebook.IndexOfPageAt(X, Y);
     if TabIndex>=0 then
+    begin
       FNotebook.ActivePageIndex := TabIndex;
+      Manager.ActiveEditor:=GetActiveSE;
+    end;
   end;
 end;
 
