@@ -158,6 +158,7 @@ var
 begin
   // enable autosizing for docked form editor forms, see issue #32207 - disabled
   // in SourceFileManager per PreventAutoSize
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.EnableAutoSizing: ', DbgSName(AControl)); {$ENDIF}
   if not Assigned(AControl) then Exit;
   AutoSizeControl := nil;
 
@@ -178,6 +179,7 @@ end;
 
 procedure TDockedTabMaster.ToggleFormUnit;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.ToggleFormUnit'); {$ENDIF}
   case TabDisplayState of
     tdsCode:
       ShowDesigner(SourceEditorManagerIntf.ActiveEditor);
@@ -189,6 +191,7 @@ end;
 procedure TDockedTabMaster.JumpToCompilerMessage(
   ASourceEditor: TSourceEditorInterface);
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.JumpToCompilerMessage'); {$ENDIF}
   SourceEditorManagerIntf.ActiveEditor := ASourceEditor;
   ShowCode(ASourceEditor);
 end;
@@ -197,6 +200,7 @@ procedure TDockedTabMaster.ShowCode(ASourceEditor: TSourceEditorInterface);
 var
   LPageCtrl: TModulePageControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.ShowCode'); {$ENDIF}
   if ASourceEditor = nil then Exit;
   LPageCtrl := SourceEditorWindows.FindModulePageControl(ASourceEditor);
   LPageCtrl.ShowCode;
@@ -207,6 +211,7 @@ procedure TDockedTabMaster.ShowDesigner(ASourceEditor: TSourceEditorInterface; A
 var
   LPageCtrl: TModulePageControl;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.ShowDesigner'); {$ENDIF}
   if ASourceEditor = nil then Exit;
   LPageCtrl := SourceEditorWindows.FindModulePageControl(ASourceEditor);
   LPageCtrl.ShowDesigner(AIndex);
@@ -216,6 +221,7 @@ procedure TDockedTabMaster.ShowForm(AForm: TCustomForm);
 var
   LEditor: TSourceEditorInterface;
 begin
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedTabMaster.ShowForm'); {$ENDIF}
   LEditor := FindSourceEditorForDesigner(AForm.Designer);
   SourceEditorManagerIntf.ActiveEditor := LEditor;
   ShowDesigner(LEditor);

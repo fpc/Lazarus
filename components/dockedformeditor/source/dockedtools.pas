@@ -11,6 +11,7 @@
 unit DockedTools;
 
 {$mode objfpc}{$H+}
+{ $define DEBUGDOCKEDFORMEDITORINIDE}
 
 interface
 
@@ -24,12 +25,35 @@ uses
   // DockedFormEditor
   DockedDesignForm;
 
+{$IFDEF DEBUGDOCKEDFORMEDITORINIDE}
+procedure DebugLn(s: String); overload;
+procedure DebugLn(s1, s2: String); overload;
+procedure DebugLn(s1, s2, s3: String); overload;
+{$ENDIF}
+
 function  EnumerationString(Str1, Str2: String): String;
 function  FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 procedure IDEMessage(AString: String);
 function  LinedString(Str1, Str2: String): String;
 
 implementation
+
+{$IFDEF DEBUGDOCKEDFORMEDITORINIDE}
+procedure DebugLn(s: String);
+begin
+  IDEMessage(s);
+end;
+
+procedure DebugLn(s1, s2: String);
+begin
+  IDEMessage(s1 + s2);
+end;
+
+procedure DebugLn(s1, s2, s3: String);
+begin
+  IDEMessage(s1 + s2 + s3);
+end;
+{$ENDIF}
 
 function EnumerationString(Str1, Str2: String): String;
 begin
@@ -51,7 +75,7 @@ end;
 
 procedure IDEMessage(AString: String);
 begin
-  DebugLn(AString);
+  LCLProc.DebugLn(AString);
   if Assigned(IDEMessagesWindow) then
     IDEMessagesWindow.AddCustomMessage(mluNone, AString, '');
 end;

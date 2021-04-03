@@ -33,14 +33,14 @@ type
   end;
 
 const
-  AnchorSideReferenceStr: array[Low(TAnchorSideReference)..High(TAnchorSideReference)] of String =
+  AnchorSideReferenceStr: array[TAnchorSideReference] of String =
     ('Top', 'Bottom', 'Center');
 
 type
   TAttachDetach = (adAttachControl, adDetachControl, adAttachPoint, adDetachPoint, adAttachSide, adDetachSide);
 
 const
-  AttachDetachStr: array[Low(TAttachDetach)..High(TAttachDetach)] of String =
+  AttachDetachStr: array[TAttachDetach] of String =
     (SAttachControl, SDetachControl, SAttachPoint, SDetachPoint, SAttachSide, SDetachSide);
 
 type
