@@ -1415,46 +1415,12 @@ function TCustomMaskEdit.ClearChar(Position : Integer) : TUtf8Char;
 begin
   //For Delphi compatibilty, only literals remain, all others will be blanked
   case GetMask(Position).MaskType Of
-    Char_Number,
-    Char_NumberFixed,
-    Char_NumberPlusMin,
-    Char_Letter,
-    Char_LetterFixed,
-    Char_LetterUpCase,
-    Char_LetterDownCase,
-    Char_LetterFixedUpCase,
-    Char_LetterFixedDownCase,
-    Char_AlphaNum,
-    Char_AlphaNumFixed,
-    Char_AlphaNumUpCase,
-    Char_AlphaNumDownCase,
-    Char_AlphaNumFixedUpcase,
-    Char_AlphaNuMFixedDownCase,
-    Char_All,
-    Char_AllFixed,
-    Char_AllUpCase,
-    Char_AllDownCase,
-    Char_AllFixedUpCase,
-    Char_AllFixedDownCase,
-    Char_Hex,
-    Char_HexFixed,
-    Char_HexUpCase,
-    Char_HexDownCase,
-    Char_HexFixedUpCase,
-    Char_HexFixedDownCase,
-    Char_Binary,
-    Char_BinaryFixed,
-    Char_Set,
-    //Char_SetUpCase,
-    //Char_SetDownCase,
-    Char_SetNegate
-    //Char_SetNegateUpCase,
-    //Char_SetNegateDownCase
-                              : Result := FSpaceChar;
     {Char_Space               : Result := #32; //FSpaceChar?; //not Delphi compatible, see notes above}
     Char_HourSeparator        : Result := DefaultFormatSettings.TimeSeparator;
     Char_DateSeparator        : Result := DefaultFormatSettings.DateSeparator;
     Char_IsLiteral            : Result := FMask[Position].Literal; //No need to use GetMask, FMask[Position] already has been validated
+    otherwise
+      Result := FSpaceChar;
   end;
 end;
 
