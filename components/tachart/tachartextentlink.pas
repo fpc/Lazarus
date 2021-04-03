@@ -173,13 +173,13 @@ begin
     FillChar(sideUsed, SizeOf(sideUsed), 0);
     for al in TChartAxisAlignment do
       if (al in FAlignsides) and not sideUsed[al] then begin
-        sideUsed[al] := true;  // avoid using another axis on the same side
         axis := ch.AxisList.GetAxisByAlign(al);
         if axis <> nil then
         begin
           maxTitleSize[al] := axis.MeasureTitleSize(ch.Drawer);
           maxLabelSize[al] := Max(maxLabelSize[al], axis.MeasureLabelSize(ch.Drawer));
         end;
+        sideUsed[al] := true; // Another axis on the same side not supported.
       end;
   end;
 
@@ -187,16 +187,15 @@ begin
     ch := TLinkedChart(c).Chart;
     FillChar(sideUsed, SizeOf(sideUsed), 0);
     for al in TChartAxisAlignment do begin
-      axis := ch.AxisList.GetAxisByAlign(al);
-      if (axis <> nil) then begin
-        if (al in FAlignSides) and not sideUsed[al] then
-          sideUsed[al] := true;
-        if sideUsed[al] then
+      if (al in FAlignSides) and not sideUsed[al] then
+      begin
+        axis := ch.AxisList.GetAxisByAlign(al);
+        if axis <> nil then
         begin
           titleSize := axis.MeasureTitleSize(ch.Drawer);
           axis.LabelSize := maxTitleSize[al] + maxLabelSize[al] - titleSize;
-        end else
-          axis.LabelSize := 0;
+        end;
+        sideUsed[al] := true;
       end;
     end;
   end;
