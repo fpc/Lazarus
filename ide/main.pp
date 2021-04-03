@@ -12683,6 +12683,8 @@ procedure TMainIDE.GetLayoutHandler(Sender: TObject; aFormName: string;
 var
   SrcEditWnd: TSourceNotebook;
   ScreenR: TRect;
+  i, aTop: Integer;
+  Child: TControl;
 begin
   DockSibling:='';
   DockAlign:=alNone;
@@ -12694,6 +12696,15 @@ begin
        ScreenR.Left+MainIDEBar.Scale96ToForm(230),
        ScreenR.Bottom-MainIDEBar.Scale96ToForm(50));
     // do not dock object inspector, because this would hide the floating designers
+    // If MainIDEBar has docked child controls place OI at same top
+    for i:=0 to  MainIDEBar.ControlCount-1 do begin
+      Child:=MainIDEBar.Controls[i];
+      if Child.IsControlVisible and (Child.HostDockSite<>nil) then begin
+        aTop:=Child.Top;
+        aTop:=MainIDEBar.ClientToScreen(Point(0,Child.Top)).y;
+        aBounds.Top:=Min(aBounds.Top,aTop);
+      end;
+    end;
   end
   else if (aFormName=NonModalIDEWindowNames[nmiwMessagesView]) then begin
     // place messages below source editor
