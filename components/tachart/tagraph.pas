@@ -225,6 +225,7 @@ type
     FActiveToolIndex: Integer;
     FAutoFocus: Boolean;
     FBroadcaster: TBroadcaster;
+    FClipRectBroadcaster: TBroadcaster;
     FBuiltinToolset: TBasicChartToolset;
     FClipRect: TRect;
     FCurrentExtent: TDoubleRect;
@@ -384,6 +385,7 @@ type
     property ChartHeight: Integer read GetChartHeight;
     property ChartWidth: Integer read GetChartWidth;
     property ClipRect: TRect read FClipRect;
+    property ClipRectBroadcaster: TBroadcaster read FClipRectBroadcaster;
     property CurrentExtent: TDoubleRect read FCurrentExtent;
     property ExtentBroadcaster: TBroadcaster read FExtentBroadcaster;
     property FullExtentBroadcaster: TBroadcaster read FFullExtentBroadcaster;
@@ -708,6 +710,7 @@ begin
   inherited Create(AOwner);
 
   FBroadcaster := TBroadcaster.Create;
+  FClipRectBroadcaster := TBroadcaster.Create;
   FExtentBroadcaster := TBroadcaster.Create;
   FFullExtentBroadcaster := TBroadcaster.Create;
   FAllowZoom := true;
@@ -791,6 +794,7 @@ begin
   FreeAndNil(FMarginsExternal);
   FreeAndNil(FBuiltinToolset);
   FreeAndNil(FBroadcaster);
+  FreeAndNil(FClipRectBroadcaster);
   FreeAndNil(FExtentBroadcaster);
   FreeAndNil(FFullExtentBroadcaster);
   FreeAndNil(FDefaultGUIConnector);
@@ -1013,6 +1017,8 @@ begin
       OnExtentChanged(Self);
     FPrevLogicalExtent := FLogicalExtent;
   end;
+
+  FClipRectBroadcaster.Broadcast(Self);
 
   // Undo changes made by the drawer (mainly for printing). The user may print
   // something else after the chart and, for example, would not expect the font

@@ -12,6 +12,8 @@ type
   strict private
     FChart: TChart;
     FListener: TListener;
+    FClipRectListener: TListener;
+    procedure OnClipRectChanged(ASender: TObject);
     procedure OnExtentChanged(ASender: TObject);
     procedure SetChart(AValue: TChart);
   protected
@@ -51,6 +53,7 @@ type
     destructor Destroy; override;
 
     procedure AddChart(AChart: TChart);
+    procedure SyncSides(AChart: TChart); virtual;
     procedure SyncWith(AChart: TChart);
   published
     property AlignMissingAxes: Boolean read FAlignMissingAxes write FAlignMissingAxes default true;
@@ -97,11 +100,13 @@ constructor TLinkedChart.Create(ACollection: TCollection);
 begin
   inherited Create(ACollection);
   FListener := TListener.Create(@FChart, @OnExtentChanged);
+  FClipRectListener := TListener.Create(@FChart, @OnClipRectChanged);
 end;
 
 destructor TLinkedChart.Destroy;
 begin
   FreeAndNil(FListener);
+  FreeAndNil(FClipRectListener);
   inherited;
 end;
 
@@ -110,6 +115,12 @@ begin
   Result := inherited GetDisplayName;
   if Chart <> nil then
     Result += ' -> ' + Chart.Name;
+end;
+
+procedure TLinkedChart.OnClipRectChanged(ASender: TObject);
+begin
+  Unused(ASender);
+  (Collection.Owner as TChartExtentLink).SyncSides(Chart);
 end;
 
 procedure TLinkedChart.OnExtentChanged(ASender: TObject);
@@ -122,10 +133,18 @@ procedure TLinkedChart.SetChart(AValue: TChart);
 begin
   if FChart = AValue then exit;
   if Chart <> nil then
+  begin
     Chart.ExtentBroadcaster.Unsubscribe(FListener);
+    Chart.ClipRectBroadcaster.Unsubscribe(FClipRectListener);
+  end;
+
   FChart := AValue;
+
   if Chart <> nil then
+  begin
     Chart.ExtentBroadcaster.Subscribe(FListener);
+    Chart.ClipRectBroadcaster.Subscribe(FClipRectListener);
+  end;
 end;
 
 { TChartExtentLink }
@@ -215,7 +234,6 @@ begin
         end;
       end;
     end;
-    WriteLn;
   end;
 end;
 
@@ -223,6 +241,12 @@ procedure TChartExtentLink.SetAlignSides(AValue: TChartSides);
 begin
   if AValue = FAlignSides then exit;
   FAlignSides := AValue;
+  DoAlignSides;
+end;
+
+procedure TChartExtentLink.SyncSides(AChart: TChart);
+begin
+  Unused(AChart);
   DoAlignSides;
 end;
 
