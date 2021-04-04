@@ -158,6 +158,7 @@ type
     procedure DoOnPackageDownloadCompleted(Sender: TObject);
     procedure DoOnPackageUpdateProgress(Sender: TObject; AUPackageName, AUPackageURL: String; ACnt, ATotCnt: Integer; AUTyp: Integer; AUErrMsg: String);
     procedure DoOnPackageUpdateCompleted(Sender: TObject; AUSuccess: Boolean);
+    procedure DoOnTerminate(Sender: TObject);
   public
     constructor Create(const ARemoteRepository: String);
     destructor Destroy; override;
@@ -666,6 +667,7 @@ begin
   FDownload := TThreadDownload.Create;
   FDownload.OnJSONProgress := @DoOnJSONProgress;
   FDownload.OnJSONDownloadCompleted := @DoOnJSONDownloadCompleted;
+  FDownload.OnTerminate := @DoOnTerminate;
   FDownload.DownloadJSON(ATimeOut, ASilent);
 end;
 
@@ -675,6 +677,7 @@ begin
   FDownload.OnPackageDownloadProgress := @DoOnPackageDownloadProgress;
   FDownload.OnPackageDownloadError := @DoOnPackageDownloadError;
   FDownload.OnPackageDownloadCompleted := @DoOnPackageDownloadCompleted;
+  FDownload.OnTerminate := @DoOnTerminate;
   FDownload.DownloadPackages(ADownloadTo);
 end;
 
@@ -686,6 +689,7 @@ begin
   FDownload.OnPackageDownloadCompleted := @DoOnPackageDownloadCompleted;
   FDownload.OnPackageUpdateProgress := @DoOnPackageUpdateProgress;
   FDownload.OnPackageUpdateCompleted := @DoOnPackageUpdateCompleted;
+  FDownload.OnTerminate := @DoOnTerminate;
   FDownload.UpdatePackages(ADownloadTo);
 end;
 
@@ -697,6 +701,12 @@ begin
     FDownload.NeedToBreak := True;
   end;
 end;
+
+procedure TPackageDownloader.DoOnTerminate(Sender: TObject);
+begin
+  FDownload := nil;
+end;
+
 
 end.
 
