@@ -255,7 +255,7 @@ var
 begin
   if not Assigned(FDesignForm) then Exit;
   LWidth  := FDesignForm.Width  + 2 * ResizeFrame.SizerGripSize;
-  LHeight := FDesignForm.Height + 2 * ResizeFrame.SizerGripSize + ResizeFrame.PanelFakeMenu.Height;
+  LHeight := FDesignForm.Height + 2 * ResizeFrame.SizerGripSize;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizer.AdjustResizer Resizer Width:', DbgS(LWidth), ' Height:', DbgS(LHeight)); {$ENDIF}
 
   FPostponedAdjustPanelResizer := True;

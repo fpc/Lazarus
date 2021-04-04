@@ -502,7 +502,7 @@ var
 begin
   if FDesignForm = nil then Exit;
   LWidth := FDesignForm.Width + 2 * SizerGripSize;
-  LHeight := FDesignForm.Height + 2 * SizerGripSize + PanelFakeMenu.Height;
+  LHeight := FDesignForm.Height + 2 * SizerGripSize;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeFrame.AdjustPanelResizer: New Resizer Panel Width:', DbgS(Width), ' Height: ', DbgS(Height)); {$ENDIF}
   PanelResizer.SetBounds(-FHorzScrollPos, -FVertScrollPos, LWidth, LHeight);
   AdjustFormContainer;
@@ -516,7 +516,7 @@ begin
   if PanelFormClient.Visible then
   begin
     FNewFormSize.X := PanelFormClient.Width;
-    FNewFormSize.Y := PanelFormClient.Height;
+    FNewFormSize.Y := PanelFormClient.Height + PanelFakeMenu.Height;
   end else if PanelAnchorContainer.Visible then
   begin
     FNewFormSize.X := PanelAnchorContainer.Width;
