@@ -153,6 +153,10 @@ type
   Q_PID = type int64;
 {$ENDIF}
 
+QAccessibleEventH = class(TObject) end;
+QAccessibleInterfaceH = class(TObject) end;
+  QAccessibleWidgetH = class(QAccessibleInterfaceH) end;
+    QLCLAccessibleWidgetH = class(QAccessibleWidgetH) end;
 QAbstractNativeEventFilterH = class(TObject) end;
 QAuthenticatorH = class(TObject) end;
 QBackingStoreH = class(TObject) end;
@@ -14704,6 +14708,297 @@ procedure QAuthenticator_setOption(handle: QAuthenticatorH; opt: PWideString; va
 function QAuthenticator_isNull(handle: QAuthenticatorH): Boolean; cdecl; external Qt5PasLib name 'QAuthenticator_isNull';
 procedure QAuthenticator_detach(handle: QAuthenticatorH); cdecl; external Qt5PasLib name 'QAuthenticator_detach';
 
+type
+  QAccessibleEvent = ( // QAccessible::Event
+    QAccessibleSoundPlayed          = $0001,
+    QAccessibleAlert                = $0002,
+    QAccessibleForegroundChanged    = $0003,
+    QAccessibleMenuStart            = $0004,
+    QAccessibleMenuEnd              = $0005,
+    QAccessiblePopupMenuStart       = $0006,
+    QAccessiblePopupMenuEnd         = $0007,
+    QAccessibleContextHelpStart     = $000C,
+    QAccessibleContextHelpEnd       = $000D,
+    QAccessibleDragDropStart        = $000E,
+    QAccessibleDragDropEnd          = $000F,
+    QAccessibleDialogStart          = $0010,
+    QAccessibleDialogEnd            = $0011,
+    QAccessibleScrollingStart       = $0012,
+    QAccessibleScrollingEnd         = $0013,
+
+    QAccessibleMenuCommand          = $0018,
+
+    // Values from IAccessible2
+    QAccessibleActionChanged                    = $0101,
+    QAccessibleActiveDescendantChanged          = $0102,
+    QAccessibleAttributeChanged                 = $0103,
+    QAccessibleDocumentContentChanged           = $0104,
+    QAccessibleDocumentLoadComplete             = $0105,
+    QAccessibleDocumentLoadStopped              = $0106,
+    QAccessibleDocumentReload                   = $0107,
+    QAccessibleHyperlinkEndIndexChanged         = $0108,
+    QAccessibleHyperlinkNumberOfAnchorsChanged  = $0109,
+    QAccessibleHyperlinkSelectedLinkChanged     = $010A,
+    QAccessibleHypertextLinkActivated           = $010B,
+    QAccessibleHypertextLinkSelected            = $010C,
+    QAccessibleHyperlinkStartIndexChanged       = $010D,
+    QAccessibleHypertextChanged                 = $010E,
+    QAccessibleHypertextNLinksChanged           = $010F,
+    QAccessibleObjectAttributeChanged           = $0110,
+    QAccessiblePageChanged                      = $0111,
+    QAccessibleSectionChanged                   = $0112,
+    QAccessibleTableCaptionChanged              = $0113,
+    QAccessibleTableColumnDescriptionChanged    = $0114,
+    QAccessibleTableColumnHeaderChanged         = $0115,
+    QAccessibleTableModelChanged                = $0116,
+    QAccessibleTableRowDescriptionChanged       = $0117,
+    QAccessibleTableRowHeaderChanged            = $0118,
+    QAccessibleTableSummaryChanged              = $0119,
+    QAccessibleTextAttributeChanged             = $011A,
+    QAccessibleTextCaretMoved                   = $011B,
+    // TextChanged = $011C, is deprecated in IA2, use TextUpdated
+    QAccessibleTextColumnChanged                = $011D,
+    QAccessibleTextInserted                     = $011E,
+    QAccessibleTextRemoved                      = $011F,
+    QAccessibleTextUpdated                      = $0120,
+    QAccessibleTextSelectionChanged             = $0121,
+    QAccessibleVisibleDataChanged               = $0122,
+
+    QAccessibleObjectCreated        = $8000,
+    QAccessibleObjectDestroyed      = $8001,
+    QAccessibleObjectShow           = $8002,
+    QAccessibleObjectHide           = $8003,
+    QAccessibleObjectReorder        = $8004,
+    QAccessibleFocus                = $8005,
+    QAccessibleSelection            = $8006,
+    QAccessibleSelectionAdd         = $8007,
+    QAccessibleSelectionRemove      = $8008,
+    QAccessibleSelectionWithin      = $8009,
+    QAccessibleStateChanged         = $800A,
+    QAccessibleLocationChanged      = $800B,
+    QAccessibleNameChanged          = $800C,
+    QAccessibleDescriptionChanged   = $800D,
+    QAccessibleValueChanged         = $800E,
+    QAccessibleParentChanged        = $800F,
+    QAccessibleHelpChanged          = $80A0,
+    QAccessibleDefaultActionChanged = $80B0,
+    QAccessibleAcceleratorChanged   = $80C0 );
+
+type
+  QAccessibleState = Int64; // QAccessible::State
+const
+  QAccessibledisabled        = $0000000000000001; // used to be Unavailable
+  QAccessibleselected        = $0000000000000002;
+  QAccessiblefocusable       = $0000000000000004;
+  QAccessiblefocused         = $0000000000000008;
+  QAccessiblepressed         = $0000000000000010;
+  QAccessiblecheckable       = $0000000000000020;
+  QAccessiblechecked         = $0000000000000040;
+  QAccessiblecheckStateMixed = $0000000000000080; // used to be Mixed
+  QAccessiblereadOnly        = $0000000000000100;
+  QAccessiblehotTracked      = $0000000000000200;
+  QAccessibledefaultButton   = $0000000000000400;
+  QAccessibleexpanded        = $0000000000000800;
+  QAccessiblecollapsed       = $0000000000001000;
+  QAccessiblebusy            = $0000000000002000;
+  QAccessibleexpandable      = $0000000000004000;
+  QAccessiblemarqueed        = $0000000000008000;
+  QAccessibleanimated        = $0000000000010000;
+  QAccessibleinvisible       = $0000000000020000;
+  QAccessibleoffscreen       = $0000000000040000;
+  QAccessiblesizeable        = $0000000000080000;
+  QAccessiblemovable         = $0000000000100000;
+  QAccessibleselfVoicing     = $0000000000200000;
+  QAccessibleselectable      = $0000000000400000;
+  QAccessiblelinked          = $0000000000800000;
+  QAccessibletraversed       = $0000000001000000;
+  QAccessiblemultiSelectable = $0000000002000000;
+  QAccessibleextSelectable   = $0000000004000000;
+  QAccessiblepasswordEdit    = $0000000008000000; // used to be Protected
+  QAccessiblehasPopup        = $0000000010000000;
+  QAccessiblemodal           = $0000000020000000;
+  QAccessibleactive          = $0000000040000000;
+  QAccessibleinvalid         = $0000000080000000; // = defunct
+  QAccessibleeditable        = $0000000100000000;
+  QAccessiblemultiLine       = $0000000200000000;
+  QAccessibleselectableText  = $0000000400000000;
+  QAccessiblesupportsAutoCompletion = $00000008000000000;
+  QAccessiblesearchEdit      = $0000001000000000;
+
+type
+  QAccessibleRole = ( // QAccessible::Role
+    QAccessibleNoRole         = $00000000,
+    QAccessibleTitleBar       = $00000001,
+    QAccessibleMenuBar        = $00000002,
+    QAccessibleScrollBar      = $00000003,
+    QAccessibleGrip           = $00000004,
+    QAccessibleSound          = $00000005,
+    QAccessibleCursor         = $00000006,
+    QAccessibleCaret          = $00000007,
+    QAccessibleAlertMessage   = $00000008,
+    QAccessibleWindow         = $00000009,
+    QAccessibleClient         = $0000000A,
+    QAccessiblePopupMenu      = $0000000B,
+    QAccessibleMenuItem       = $0000000C,
+    QAccessibleToolTip        = $0000000D,
+    QAccessibleApplication    = $0000000E,
+    QAccessibleDocument       = $0000000F,
+    QAccessiblePane           = $00000010,
+    QAccessibleChart          = $00000011,
+    QAccessibleDialog         = $00000012,
+    QAccessibleBorder         = $00000013,
+    QAccessibleGrouping       = $00000014,
+    QAccessibleSeparator      = $00000015,
+    QAccessibleToolBar        = $00000016,
+    QAccessibleStatusBar      = $00000017,
+    QAccessibleTable          = $00000018,
+    QAccessibleColumnHeader   = $00000019,
+    QAccessibleRowHeader      = $0000001A,
+    QAccessibleColumn         = $0000001B,
+    QAccessibleRow            = $0000001C,
+    QAccessibleCell           = $0000001D,
+    QAccessibleLink           = $0000001E,
+    QAccessibleHelpBalloon    = $0000001F,
+    QAccessibleAssistant      = $00000020,
+    QAccessibleList           = $00000021,
+    QAccessibleListItem       = $00000022,
+    QAccessibleTree           = $00000023,
+    QAccessibleTreeItem       = $00000024,
+    QAccessiblePageTab        = $00000025,
+    QAccessiblePropertyPage   = $00000026,
+    QAccessibleIndicator      = $00000027,
+    QAccessibleGraphic        = $00000028,
+    QAccessibleStaticText     = $00000029,
+    QAccessibleEditableText   = $0000002A,  // Editable, selectable, etc.
+    QAccessibleButton         = $0000002B,
+    QAccessibleCheckBox       = $0000002C,
+    QAccessibleRadioButton    = $0000002D,
+    QAccessibleComboBox       = $0000002E,
+    QAccessibleProgressBar    = $00000030,
+    QAccessibleDial           = $00000031,
+    QAccessibleHotkeyField    = $00000032,
+    QAccessibleSlider         = $00000033,
+    QAccessibleSpinBox        = $00000034,
+    QAccessibleCanvas         = $00000035, // Diagram for MSAA
+    QAccessibleAnimation      = $00000036,
+    QAccessibleEquation       = $00000037,
+    QAccessibleButtonDropDown = $00000038, // The object represents a button that expands a grid.
+    QAccessibleButtonMenu     = $00000039,
+    QAccessibleButtonDropGrid = $0000003A,
+    QAccessibleWhitespace     = $0000003B, // The object represents blank space between other objects.
+    QAccessiblePageTabList    = $0000003C,
+    QAccessibleClock          = $0000003D,
+    QAccessibleSplitter       = $0000003E,
+    QAccessibleLayeredPane    = $00000080,
+    QAccessibleTerminal       = $00000081,
+    QAccessibleDesktop        = $00000082,
+    QAccessibleParagraph      = $00000083,
+    QAccessibleWebDocument    = $00000084,
+    QAccessibleSection        = $00000085,
+    QAccessibleColorChooser   = $00000404,
+    QAccessibleFooter         = $0000040E,
+    QAccessibleForm           = $00000410,
+    QAccessibleHeading        = $00000414,
+    QAccessibleNote           = $0000041B,
+    QAccessibleComplementaryContent = $0000042C,
+    QAccessibleUserRole       = $0000ffff );
+
+  
+  QAccessibleText =  (// QAccessible::Text
+    QAccessibleName         = 0,
+    QAccessibleDescription,
+    QAccessibleValue,
+    QAccessibleHelp,
+    QAccessibleAccelerator,
+    QAccessibleDebugDescription,
+    QAccessibleUserText     = $0000ffff );
+
+type
+  QAccessibleFlag = cardinal; // QAccessible::Flag
+const
+  QAccessibleLabel         = $00000001;
+  QAccessibleLabelled      = $00000002;
+  QAccessibleController    = $00000004;
+  QAccessibleControlled    = $00000008;
+  QAccessibleAllRelations  = $ffffffff;
+
+type
+  QAccessibleInterfaceType = ( // QAccessible::InterfaceType
+    QAccessibleTextInterface,
+    QAccessibleEditableTextInterface,
+    QAccessibleValueInterface,
+    QAccessibleActionInterface,
+    QAccessibleImageInterface,
+    QAccessibleTableInterface,
+    QAccessibleTableCellInterface );
+
+  QAccessibleTextBoundaryType = ( // QAccessible::TextBoundaryType
+    QAccessibleCharBoundary,
+    QAccessibleWordBoundary,
+    QAccessibleSentenceBoundary,
+    QAccessibleParagraphBoundary,
+    QAccessibleLineBoundary,
+    QAccessibleNoBoundary );
+
+QAccessibleId = cardinal;
+TInterfaceFactory = function(key: QStringH; obj: QObjectH): QAccessibleInterfaceH cdecl;
+
+// actionNames_Override returns a single string with comma separated action names
+QLCLAccessibleWidget_actionNames_Override = procedure (names: PWideString) of object cdecl;
+QLCLAccessibleWidget_child_Override = procedure (index: integer; out child: QAccessibleInterfaceH) of object cdecl;
+QLCLAccessibleWidget_childAt_Override = procedure (x: integer; y: integer; out child: QAccessibleInterfaceH) of object cdecl;
+QLCLAccessibleWidget_childCount_Override = procedure (count: PInteger) of object cdecl;
+QLCLAccessibleWidget_doAction_Override = procedure (actionName: PWideString) of object cdecl;
+QLCLAccessibleWidget_indexOfChild_Override = procedure (child: QAccessibleInterfaceH; index: PInteger) of object cdecl;
+QLCLAccessibleWidget_parent_Override = procedure (out parent: QAccessibleInterfaceH) of object cdecl;
+QLCLAccessibleWidget_rect_Override = procedure (left, top, width, height: PInteger) of object cdecl;
+QLCLAccessibleWidget_role_Override = procedure (out role: QAccessibleRole) of object cdecl;
+QLCLAccessibleWidget_state_Override = procedure (out state: QAccessibleState) of object cdecl;
+QLCLAccessibleWidget_text_Override = procedure (text: QAccessibleText; result: PWideString) of object cdecl;
+
+function QAccessible_accessibleInterface(uniqueId: QAccessibleId): QAccessibleInterfaceH; cdecl; external Qt5PasLib name 'QAccessible_accessibleInterface';
+procedure QAccessible_deleteAccessibleInterface(uniqueId: QAccessibleId); cdecl; external Qt5PasLib name 'QAccessible_deleteAccessibleInterface';
+procedure QAccessible_installFactory(factory: TInterfaceFactory); cdecl; external Qt5PasLib name 'QAccessible_installFactory';
+function QAccessible_isActive(): boolean; cdecl; external Qt5PasLib name 'QAccessible_isActive';
+function QAccessible_queryAccessibleInterface(object_: QObjectH): QAccessibleInterfaceH; cdecl; external Qt5PasLib name 'QAccessible_queryAccessibleInterface';
+function QAccessible_registerAccessibleInterface(iface: QAccessibleInterfaceH): QAccessibleId; cdecl; external Qt5PasLib name 'QAccessible_registerAccessibleInterface';
+procedure QAccessible_removeFactory(factory: TInterfaceFactory); cdecl; external Qt5PasLib name 'QAccessible_removeFactory';
+procedure QAccessible_setRootObject(object_: QObjectH); cdecl; external Qt5PasLib name 'QAccessible_setRootObject';
+function QAccessible_uniqueId(iface: QAccessibleInterfaceH): QAccessibleId; cdecl; external Qt5PasLib name 'QAccessible_uniqueId';
+procedure QAccessible_updateAccessibility(event: QAccessibleEvent); cdecl; external Qt5PasLib name 'QAccessible_updateAccessibility';
+
+function QAccessibleWidget_Create(o: QWidgetH; r: QAccessibleRole = QAccessibleClient; name: PWideString = nil): QAccessibleWidgetH; cdecl; external Qt5PasLib name 'QAccessibleWidget_Create';
+procedure QAccessibleWidget_Destroy(handle: QAccessibleWidgetH); cdecl; external Qt5PasLib name 'QAccessibleWidget_Destroy';
+function QAccessibleWidget_isValid(handle: QAccessibleWidgetH): boolean; cdecl; external Qt5PasLib name 'QAccessibleWidget_isValid';
+function QAccessibleWidget_window(handle: QAccessibleWidgetH): QWindowH; cdecl; external Qt5PasLib name 'QAccessibleWidget_window';
+function QAccessibleWidget_childCount(handle: QAccessibleWidgetH): integer; cdecl; external Qt5PasLib name 'QAccessibleWidget_childCount';
+function QAccessibleWidget_indexOfChild(handle: QAccessibleWidgetH; child: QAccessibleInterfaceH): integer; cdecl; external Qt5PasLib name 'QAccessibleWidget_indexOfChild';
+function QAccessibleWidget_focusChild(handle: QAccessibleWidgetH): QAccessibleInterfaceH; cdecl; external Qt5PasLib name 'QAccessibleWidget_focusChild';
+procedure QAccessibleWidget_rect(handle: QAccessibleWidgetH; retval: PRect); cdecl; external Qt5PasLib name 'QAccessibleWidget_rect';
+function QAccessibleWidget_parent(handle: QAccessibleWidgetH): QAccessibleInterfaceH; cdecl; external Qt5PasLib name 'QAccessibleWidget_parent';
+function QAccessibleWidget_child(handle: QAccessibleWidgetH; index: integer): QAccessibleInterfaceH; cdecl; external Qt5PasLib name 'QAccessibleWidget_child';
+procedure QAccessibleWidget_text(handle: QAccessibleWidgetH; retval: PWideString; t: QAccessibleText); cdecl; external Qt5PasLib name 'QAccessibleWidget_text';
+function QAccessibleWidget_role(handle: QAccessibleWidgetH): QAccessibleRole; cdecl; external Qt5PasLib name 'QAccessibleWidget_role';
+function QAccessibleWidget_state(handle: QAccessibleWidgetH): QAccessibleState; cdecl; external Qt5PasLib name 'QAccessibleWidget_state';
+procedure QAccessibleWidget_actionNames(handle: QAccessibleWidgetH; retval: QStringListH); cdecl; external Qt5PasLib name 'QAccessibleWidget_actionNames';
+procedure QAccessibleWidget_doAction(handle: QAccessibleWidgetH; actionName: PWideString); cdecl; external Qt5PasLib name 'QAccessibleWidget_doAction';
+function QAccessibleWidget_widget(handle: QAccessibleWidgetH): QWidgetH; cdecl; external Qt5PasLib name 'QAccessibleWidget_widget';
+function QAccessibleWidget_parentObject(handle: QAccessibleWidgetH): QObjectH; cdecl; external Qt5PasLib name 'QAccessibleWidget_parentObject';
+
+function QLCLAccessibleWidget_Create(o: QWidgetH; r: QAccessibleRole; name: PWideString): QLCLAccessibleWidgetH; cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_Create';
+procedure QLCLAccessibleWidget_Destroy(handle: QLCLAccessibleWidgetH); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_Destroy';
+procedure QLCLAccessibleWidget_override_actionNames(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_actionNames_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_actionNames';
+procedure QLCLAccessibleWidget_override_child(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_child_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_child';
+procedure QLCLAccessibleWidget_override_childAt(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_childAt_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_childAt';
+procedure QLCLAccessibleWidget_override_childCount(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_childCount_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_childCount';
+procedure QLCLAccessibleWidget_override_doAction(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_doAction_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_doAction';
+procedure QLCLAccessibleWidget_override_indexOfChild(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_indexOfChild_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_child';
+procedure QLCLAccessibleWidget_override_parent(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_parent_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_parent';
+procedure QLCLAccessibleWidget_override_rect(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_rect_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_rect';
+procedure QLCLAccessibleWidget_override_role(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_role_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_role';
+procedure QLCLAccessibleWidget_override_state(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_state_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_state';
+procedure QLCLAccessibleWidget_override_text(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_text_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_text';
+   
 
 function QCoreApplication_hook_Create(handle: QObjectH): QCoreApplication_hookH; cdecl; external Qt5PasLib name 'QCoreApplication_hook_Create';
 procedure QCoreApplication_hook_Destroy(handle: QCoreApplication_hookH); cdecl; external Qt5PasLib name 'QCoreApplication_hook_Destroy'; 

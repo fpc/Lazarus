@@ -519,4 +519,9 @@ typedef struct QSplitterHandle__ { PTRINT dummy; } *QSplitterHandleH;
 typedef struct QCalendarWidget__ { PTRINT dummy; } *QCalendarWidgetH;
 typedef struct QFileSystemWatcher_hook__ { PTRINT dummy; } *QFileSystemWatcher_hookH;
 typedef struct QInputMethodQueryEvent__ { PTRINT dummy; } *QInputMethodQueryEventH;
+
+typedef struct QAccessibleEvent__ { PTRINT dummy; } *QAccessibleEventH;
+typedef struct QAccessibleInterface__ { PTRINT dummy; } *QAccessibleInterfaceH;
+typedef struct QAccessibleWidget__ { PTRINT dummy; }  *QAccessibleWidgetH;
+typedef struct QLCLAccessibleWidget__ { PTRINT dummy; }  *QLCLAccessibleWidgetH;
 #endif

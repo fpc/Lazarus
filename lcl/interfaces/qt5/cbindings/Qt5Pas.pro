@@ -13,7 +13,7 @@
 # Binding Release Version 2.6 against Qt5 5.6 LTS release.
 # WebKit widgets are disabled until webenginewidgets are implemented.
 
-VERSION = 1.2.8
+VERSION = 1.2.9
 
 QT += gui network printsupport
 TARGET = Qt5Pas
@@ -228,6 +228,9 @@ HEADERS +=  \
            qabstractscrollarea_c.h \
            qabstractscrollarea_hook.h \
            qlclabstractscrollarea_c.h \
+           qaccessible_c.h \
+           qaccessiblewidget_c.h \
+           qlclaccessiblewidget_c.h \
            qabstractslider_c.h \
            qabstractslider_hook.h \
            qscrollbar_c.h \
@@ -565,6 +568,9 @@ SOURCES +=  \
            qstackedwidget_c.cpp \
            qabstractscrollarea_c.cpp \
            qlclabstractscrollarea_c.cpp \
+           qaccessible_c.cpp \
+           qaccessiblewidget_c.cpp \
+           qlclaccessiblewidget_c.cpp \
            qabstractslider_c.cpp \
            qscrollbar_c.cpp \
            qmenu_c.cpp \

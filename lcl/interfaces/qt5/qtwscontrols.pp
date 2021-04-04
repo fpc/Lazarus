@@ -45,6 +45,15 @@ type
       ALockedWindow: HWND; X, Y: Integer; DoLock: Boolean): Boolean; override;
   end;
 
+  { TQtWSLazAccessibleObject }
+
+  TQtWSLazAccessibleObject = class(TWSLazAccessibleObject)
+  public
+    class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
+    class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
+    class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); override;
+  end;
+
   { TQtWSControl }
 
   TQtWSControl = class(TWSControl)
@@ -152,6 +161,45 @@ begin
   {$ifdef VerboseQt}
     WriteLn('< TQtWSCustomControl.CreateHandle for ',dbgsname(AWinControl),' Result: ', dbgHex(Result));
   {$endif}
+end;
+
+class function TQtWSLazAccessibleObject.CreateHandle(const AObject: TLazAccessibleObject): HWND;
+var
+  widget: QWidgetH;
+  WinControl: TWinControl;
+  H: TQtWidget;
+begin
+  QAccessible_installFactory(@QtAxFactory);
+  Result := 0;
+  if (AObject.OwnerControl <> nil) and (AObject.OwnerControl is TWinControl) and
+     (AObject.OwnerControl.GetAccessibleObject() = AObject) then begin
+    { Need to improve handling here.  Problem is that we hit here before TWinControl
+      has handle allocated but nothing will send us back here once handle is allocated
+      thus code in TQtCustomControl.initializeAccessibility that does
+      TLazAccessibleObject.handle assignment when TWinControl.Handle created}
+    //if TQtWidget(TWinControl(AObject.OwnerControl).HandleAllocated then begin
+    //  widget := QWidgetH(TQtWidget(TWinControl(AObject.OwnerControl).Handle).Widget);
+    //  Result := HWND(TQtAccessibleObject.Create(AObject, widget));
+    // end;
+  end
+  else begin
+    if AObject.AccessibleRole = larTreeItem then
+      Result := HWND(TQtAccessibleTreeRow.Create(AObject, QWidgetH(0)))
+    else
+      Result := HWND(TQtAccessibleObject.Create(AObject, QWidgetH(0)));
+  end;
+end;
+
+class procedure TQtWSLazAccessibleObject.DestroyHandle(const AObject: TLazAccessibleObject);
+begin
+  TQtAccessibleObject(AObject.Handle).Free;
+end;
+
+class procedure TQtWSLazAccessibleObject.SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole);
+begin
+  {Need to improve this to do something similar to Cocoa where handle is recreated
+   if accessibleRole has changed}
+  CreateHandle(AObject);
 end;
 
 {------------------------------------------------------------------------------
