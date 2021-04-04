@@ -876,7 +876,7 @@ const
 var
   QtTreeWidget: TQtTreeWidget;
 begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetCaption') then
+  if not WSCheckHandleAllocated(ALV, 'ColumnSetSortIndicator') then
     Exit;
 
   if IsIconView(ALV) then
