@@ -245,6 +245,7 @@ type
     FScale: TDoublePoint;    // Coordinates transformation
     FScalingValid: Boolean;
     FMultiPassScalingNeeded: Boolean;
+    FOldClipRect: TRect;
     FSavedClipRect: TRect;
     FClipRectLock: Integer;
 
@@ -1018,7 +1019,11 @@ begin
     FPrevLogicalExtent := FLogicalExtent;
   end;
 
-  FClipRectBroadcaster.Broadcast(Self);
+  if FClipRect <> FOldClipRect then
+  begin
+    FClipRectBroadcaster.Broadcast(Self);
+    FOldClipRect := FClipRect;
+  end;
 
   // Undo changes made by the drawer (mainly for printing). The user may print
   // something else after the chart and, for example, would not expect the font
