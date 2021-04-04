@@ -19,7 +19,7 @@ uses
   // RTL, FCL
   Classes, SysUtils,
   // LCL
-  LCLProc, Forms,
+  LCLProc, Forms, Controls,
   // IDEIntf
   IDEMsgIntf, SrcEditorIntf, IDEExternToolIntf,
   // DockedFormEditor
@@ -35,6 +35,8 @@ function  EnumerationString(Str1, Str2: String): String;
 function  FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 procedure IDEMessage(AString: String);
 function  LinedString(Str1, Str2: String): String;
+function  SourceEditorWindow(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
+function  SourceEditorWindowCaption(ASourceEditor: TSourceEditorInterface): String;
 
 implementation
 
@@ -86,6 +88,32 @@ begin
     Result := Str2
   else
     Result := Str1 + LineEnding + Str2;
+end;
+
+function SourceEditorWindow(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
+var
+  LWinControl: TWinControl;
+begin
+  Result := nil;
+  if not Assigned(ASourceEditor) then Exit;
+  LWinControl := ASourceEditor.EditorControl;
+  while Assigned(LWinControl) do
+  begin
+    if LWinControl is TSourceEditorWindowInterface then
+      Exit(TSourceEditorWindowInterface(LWinControl));
+    LWinControl := LWinControl.Parent;
+  end;
+end;
+
+function SourceEditorWindowCaption(ASourceEditor: TSourceEditorInterface): String;
+var
+  LSourceEditorWindowInterface: TSourceEditorWindowInterface;
+begin
+  LSourceEditorWindowInterface := SourceEditorWindow(ASourceEditor);
+  if Assigned(LSourceEditorWindowInterface) then
+    Result := LSourceEditorWindowInterface.Caption
+  else
+    Result := 'nil';
 end;
 
 end.

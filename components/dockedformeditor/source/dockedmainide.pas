@@ -102,8 +102,6 @@ type
   end;
 
 var
-  LastActiveSourceEditorWindow: TSourceEditorWindowInterface = nil;
-  LastActiveSourceEditor: TSourceEditorInterface = nil;
   DockedTabMaster: TDockedTabMaster absolute IDETabMaster;
 
 implementation
@@ -232,12 +230,12 @@ var
   LPageCtrl: TModulePageControl;
   LPageIndex: Integer;
 begin
-  LPageCtrl := SourceEditorWindows.FindModulePageControl(LastActiveSourceEditor);
+  LPageCtrl := SourceEditorWindows.LastActiveModulePageControl;
   LPageIndex := LPageCtrl.PageIndex;
   DesignForms.RemoveAllAnchorDesigner;
   SourceEditorWindows.ShowCodeTabSkipCurrent(nil, nil);
   SourceEditorWindows.RefreshActivePageControls;
-  TDockedMainIDE.EditorActivated(LastActiveSourceEditor);
+  TDockedMainIDE.EditorActivated(SourceEditorWindows.LastActiveSourceEditor);
   if LPageIndex = 0 then Exit;
   LPageCtrl.TabIndex := LPageIndex;
   LPageCtrl.OnChange(LPageCtrl);
@@ -352,8 +350,6 @@ begin
     if LDesignForm.LastActiveSourceWindow = Sender then
       LDesignForm.LastActiveSourceWindow := nil;
   SourceEditorWindows.Remove(Sender as TSourceEditorWindowInterface);
-  if LastActiveSourceEditorWindow = Sender then
-    LastActiveSourceEditorWindow := nil;
 end;
 
 class procedure TDockedMainIDE.WindowHide(Sender: TObject);
@@ -386,35 +382,6 @@ class procedure TDockedMainIDE.EditorActivated(Sender: TObject);
 var
   LDesigner: TIDesigner;
   LSourceEditor: TSourceEditorInterface;
-
-  function LastSourceEditorNotFound: Boolean;
-  var
-    i: Integer;
-    LSourceEditorPageControl: TSourceEditorPageControl;
-    LSourceEditorWindow: TSourceEditorWindow;
-  begin
-    if (LastActiveSourceEditorWindow = nil) or (LastActiveSourceEditor = nil) then
-      Exit(False);
-
-    LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LastActiveSourceEditorWindow];
-    for LSourceEditorPageControl in LSourceEditorWindow.PageControlList do
-    begin
-      Result := True;
-      for i := 0 to LastActiveSourceEditorWindow.Count - 1 do
-        if LSourceEditorPageControl.SourceEditor = LastActiveSourceEditorWindow.Items[i] then
-        begin
-          Result := False;
-          Break;
-        end;
-      if Result then
-      begin
-        LastActiveSourceEditor := LSourceEditorPageControl.SourceEditor; // after moving code editor into other window, sometimes IDE switch to other tab :\ damn... this line prevent this.
-        Exit;
-      end;
-    end;
-    Result := False;
-  end;
-
 var
   LPageCtrl: TModulePageControl;
   LSourceEditorWindowInterface: TSourceEditorWindowInterface;
@@ -422,15 +389,18 @@ var
 begin
   if Sender is TSourceEditorInterface then
   begin
-    {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorActivated');{$ENDIF}
     LSourceEditor := TSourceEditorInterface(Sender);
+    {$IFDEF DEBUGDOCKEDFORMEDITOR}
+      DebugLn('TDockedMainIDE.EditorActivated [' + LSourceEditor.PageCaption +
+              '] SourceEditorWindow[' + SourceEditorWindowCaption(LSourceEditor) + ']');
+    {$ENDIF}
     // if we create directly new project then Activate is called without EditorCreate...
     if not (LSourceEditor.EditorControl.Parent.Parent is TModulePageControl) then
     begin
       // possible is situation when we moved tab into other window
       // then was not called event EditorDestroy - that generates problems with switching tabs
       // or when we moving tab to first window ( then is raising : duplicates not allowed in dictionary).
-      if LastSourceEditorNotFound then
+      if SourceEditorWindows.LastSourceEditorNotFound then
         EditorDestroyed(nil);
       EditorCreate(Sender);
     end;
@@ -451,8 +421,8 @@ begin
     end;
 
     LSourceEditorWindowInterface := TSourceEditorWindowInterface(LPageCtrl.Owner);
-    LastActiveSourceEditorWindow := LSourceEditorWindowInterface;
-    LastActiveSourceEditor := LSourceEditor;
+    SourceEditorWindows.LastActiveSourceEditorWindow := LSourceEditorWindowInterface;
+    SourceEditorWindows.LastActiveSourceEditor := LSourceEditor;
 
     // when we switch tab, design form should be hidden
     if (LDesigner = nil) or (LDesignForm = nil) then
@@ -487,9 +457,9 @@ begin
         LDesignForm.HideWindow;
       LPageCtrl.InitPage;
     end;
-  end
-  else
-    SourceEditorWindows.RefreshActivePageControls;
+  end else begin
+    {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorActivated [' + DbgSName(Sender) + '] - not a Source Editor!');{$ENDIF}
+  end;
 end;
 
 class procedure TDockedMainIDE.EditorCreate(Sender: TObject);
@@ -516,23 +486,20 @@ var
   LSourceEditor: TSourceEditorInterface;
   LPageCtrl: TModulePageControl;
   LSourceEditorWindowInterface: TSourceEditorWindowInterface;
-  LSourceEditorWindow: TSourceEditorWindow;
   LDesignForm: TDesignForm;
 begin
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TDockedMainIDE.EditorDestroyed'); {$ENDIF}
   // sender is here as special parameter, because is possible situation where is moved editor
   // to another window and was not triggered EditorDestroy - for more info goto editoractivate
   if Sender = nil then
-    LSourceEditor := LastActiveSourceEditor
+    LSourceEditor := SourceEditorWindows.LastActiveSourceEditor
   else
     LSourceEditor := TSourceEditorInterface(Sender);
 
   // parent don't exist anymore and we must search in each window...
   if Sender = nil then // but not for Sender = nil :P
-  begin
-    LSourceEditorWindow := SourceEditorWindows.SourceEditorWindow[LastActiveSourceEditorWindow];
-    LPageCtrl := LSourceEditorWindow.PageControlList.PageControl[LastActiveSourceEditor]
-  end else
+    LPageCtrl := SourceEditorWindows.LastActiveModulePageControl
+  else
     LPageCtrl := SourceEditorWindows.FindModulePageControl(LSourceEditor);
 
   if LPageCtrl = nil then Exit;
@@ -541,7 +508,7 @@ begin
 
   // goto first comment (forced destroy)
   if Sender = nil then
-    LSourceEditorWindowInterface := LastActiveSourceEditorWindow
+    LSourceEditorWindowInterface := SourceEditorWindows.LastActiveSourceEditorWindow
   else
     LSourceEditorWindowInterface := TSourceEditorWindowInterface(LPageCtrl.Owner);
 
@@ -553,9 +520,6 @@ begin
 
   SourceEditorWindows.SourceEditorWindow[LSourceEditorWindowInterface].RemovePageCtrl(LSourceEditor);
   LPageCtrl.Free;
-
-  if LastActiveSourceEditor = LSourceEditor then
-    LastActiveSourceEditor := nil;
 end;
 
 class procedure TDockedMainIDE.TabChange(Sender: TObject);
