@@ -95,7 +95,6 @@ type
     PrevChangeStamp: Integer;
     // List for Component inheritence view
     FClassList: TStringListUTF8Fast;
-    FKeepSelected: Boolean;
     FInitialized: Boolean;
     FIgnoreSelection: Boolean;
     FPageControlChange: Boolean;
@@ -535,12 +534,8 @@ end;
 
 procedure TComponentListForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
-  if not FKeepSelected then
-  begin
-    ClearSelection;
-    IDEComponentPalette.Selected := Nil;
-  end;
-  FKeepSelected := False;
+  ClearSelection;
+  IDEComponentPalette.Selected := Nil;
 end;
 
 procedure TComponentListForm.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -564,17 +559,13 @@ begin
   if AComponent=nil then
     Exit;
 
-  if IsDocked or chbKeepOpen.Checked then
-  begin
-    OldFocusedControl := Screen.ActiveControl;
-    AddSelectedComponent;
-    if (OldFocusedControl<>nil) and OldFocusedControl.CanSetFocus then // AddComponent in docked mode steals focus to designer, get it back
-      OldFocusedControl.SetFocus;
-  end else
-  begin
-    FKeepSelected := True;
+  OldFocusedControl := Screen.ActiveControl;
+  AddSelectedComponent;
+  if (OldFocusedControl<>nil) and OldFocusedControl.CanSetFocus then // AddComponent in docked mode steals focus to designer, get it back
+    OldFocusedControl.SetFocus;
+
+  if not IsDocked and not chbKeepOpen.Checked then
     Close;
-  end;
 end;
 
 procedure TComponentListForm.miCollapseAllClick(Sender: TObject);
