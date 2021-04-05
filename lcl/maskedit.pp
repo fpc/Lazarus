@@ -84,6 +84,7 @@ const
   cMask_SetStart      = '[';   // [abc] is ['a','b','c']. [a-z] = ['a'..'z']. Sets are case-sensitive always ATM. Sets can only contain ASCII.
   cMask_SetEnd        = ']';
   cMask_SetNegate     = '!';   //[!abc] means: must not be in ['a','b','c'].
+  cMask_SetOptional   = '|';   //[|abc] means: must be in 'a','b','c' or blank, only interpreted as such if set is not negated with cMask_SetNegate
   cMask_SetRange      = '-';
 
   {Delphi compatibility: user can change these at runtime}
@@ -130,11 +131,8 @@ type
                  Char_Binary,                //Lazarus extension, not supported by Delphi
                  Char_BinaryFixed,           //Lazarus extension, not supported by Delphi
                  Char_Set,                   //Lazarus extension, not supported by Delphi
-                 //Char_SetUpCase,             //Lazarus extension, not supported by Delphi
-                 //Char_SetDownCase,           //Lazarus extension, not supported by Delphi
-                 Char_SetNegate             //Lazarus extension, not supported by Delphi
-                 //Char_SetNegateUpCase,       //Lazarus extension, not supported by Delphi
-                 //Char_SetNegateDownCase      //Lazarus extension, not supported by Delphi
+                 Char_SetFixed ,             //Lazarus extension, not supported by Delphi
+                 Char_SetNegateFixed         //Lazarus extension, not supported by Delphi
                  );
 
   TIntMaskRec = record
@@ -236,7 +234,7 @@ const
     function GetModified: Boolean;
     function GetMask(Index: Integer): TIntMaskRec; //use this to read FMask values
     procedure SetEditMask(const Value : String);
-    procedure ParseSet(const S: String; var i: integer; SUlen: PtrInt; out ACharSet: TSysCharSet; out IsNegative: Boolean);
+    procedure ParseSet(const S: String; var i: integer; SUlen: PtrInt; out ACharSet: TSysCharSet; out IsNegative, IsOptional: Boolean);
     function  GetIsMasked : Boolean;
     procedure SetModified(AValue: Boolean);
     procedure SetSpaceChar(Value : Char);
@@ -736,7 +734,7 @@ procedure TCustomMaskEdit.SetEditMask(const Value : String);
 Var
   S: String;
   i: Integer;
-  InUp, InDown, Special, IsNegative: Boolean;
+  InUp, InDown, Special, IsNegative, IsOptional: Boolean;
   CP: TUtf8Char;
   SULen: PtrInt;
   CharSet: TSysCharSet;
@@ -819,26 +817,18 @@ begin
            begin
              //debugln('TCustomMaskEdit: start of set');
              try
-               ParseSet(S, i, SULen, CharSet, IsNegative);
+               ParseSet(S, i, SULen, CharSet, IsNegative, IsOptional);
                if IsNegative then
                begin
-                 //if InUp then
-                 //  AddToMask(Char_SetNegateUpCase, CharSet)
-                 //else
-                 //  if InDown then
-                 //    AddToMask(Char_SetNegateDownCase, CharSet)
-                 //else
-                   AddToMask(Char_SetNegate, CharSet);
+                 //IsOptional makes no sense for a negative charset
+                 AddToMask(Char_SetNegateFixed, CharSet);
                end
                else
                begin
-                 //if InUp then
-                 //  AddToMask(Char_SetUpCase, CharSet)
-                 //else
-                 //  if InDown then
-                 //    AddToMask(Char_SetDownCase, CharSet)
-                 //else
-                   AddToMask(Char_Set, CharSet);
+                if IsOptional then
+                  AddToMask(Char_Set, CharSet)
+                 else
+                   AddToMask(Char_SetFixed, CharSet);
                end;
                //debugln(['Added CharSet: ',Dbgs(CharSet),', IsNegative=',IsNegative]);
 
@@ -891,7 +881,8 @@ begin
   end; //FRealMask<>Value
 end;
 
-procedure TCustomMaskEdit.ParseSet(const S: String; var i: integer; SUlen: PtrInt; out ACharSet: TSysCharSet; out IsNegative: Boolean);
+procedure TCustomMaskEdit.ParseSet(const S: String; var i: integer; SUlen: PtrInt; out ACharSet: TSysCharSet;
+                                   out IsNegative, IsOptional: Boolean);
 var
   SetClosed, InRange: Boolean;
   LastChar: Char;
@@ -909,6 +900,7 @@ begin
   SetClosed := False;
   ACharSet := [];
   IsNegative := False;
+  IsOptional := False;
   LastChar := #0;
   InRange := False;
 
@@ -921,7 +913,7 @@ begin
     case CP[1] of
       cMask_SetNegate:
       begin
-        if (LastChar=#0) then
+        if not IsNegative and (ACharSet = []) then
         begin
           //debugln('IsNegative := True');
           IsNegative := True
@@ -936,12 +928,30 @@ begin
         end;
       end;
 
+      cMask_SetOptional:
+      begin
+        if not IsOptional and not IsNegative and (ACharSet = []) then
+        begin
+          //debugln('IsNegative := True');
+          IsOptional := True
+        end
+        else
+        begin
+          if not InRange then
+            AddToCharSet(CP[1], CP[1])
+          else
+            AddToCharSet(LastChar, CP[1]);
+          InRange := False;
+        end;
+      end;
+
+
       cMask_SetRange:
       begin
         if InRange then
           raise EInvalidEditMask.Create(SIllegalRangeChar);
         if (ACharSet = []) or ((i < SUlen) and (GetCodePoint(S, i+1) = cMask_SetEnd)) then
-        //be lenient, if it appears as lat token in a set, accept it as a character for CharSet
+        //be lenient, if it appears as last token in a set, accept it as a character for CharSet
         begin
           //debugln('Adding - to set');
           Include(ACharSet, cMask_SetRange);
@@ -1235,8 +1245,9 @@ begin
     Char_HexFixedDownCase    : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
     Char_Binary              : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1',FSpaceChar{#32}]);
     Char_BinaryFixed         : OK := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
-    Char_Set                 : Ok := (Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet);
-    Char_SetNegate           : OK := not ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
+    Char_SetFixed            : Ok := (Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet);
+    Char_Set                 : Ok := (Ch = FSpaceChar) or ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
+    Char_SetNegateFixed      : OK := not ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
     Char_IsLiteral           : OK := (Ch = FMask[Position].Literal);  // no need to use GetMask() here, since FMask[FPosition] has already been validated
   end;//case
   //DebugLn('Position = ',DbgS(Position),' Current = ',DbgS(Current),' Ch = "',Ch,'" Ok = ',DbgS(Ok));
@@ -1534,8 +1545,8 @@ Begin
        Char_HexFixedDownCase    : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'9','a'..'f']);
        Char_Binary,
        Char_BinaryFixed         : Result := (Length(Ch) = 1) and (Ch[1] In ['0'..'1']);
-       Char_Set                 : Result := (Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet);
-       Char_SetNegate           : Result := not ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
+       Char_Set, Char_SetFixed  : Result := (Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet);
+       Char_SetNegateFixed      : Result := not ((Length(Ch) = 1) and (Ch[1] in FMask[Position].CharSet));
        Char_IsLiteral           : Result := False;
        Char_Invalid:
          Raise EDBEditError.CreateFmt('MaskEdit Internal Error.'^m' Found uninitialized MaskType "Char_Invalid" at index %d',[Position]);
