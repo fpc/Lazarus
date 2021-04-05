@@ -200,7 +200,7 @@ msgid "Move page rightmost"
 msgstr "Déplacer la page tout à droite"
 
 #: anchordockstr.adrsmultilinepages
-msgid "Multi Line Tabs"
+msgid "Multiline Tabs"
 msgstr ""
 
 #: anchordockstr.adrsmultilinepageshint

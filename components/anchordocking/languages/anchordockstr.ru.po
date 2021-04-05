@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.2.1\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -200,12 +200,12 @@ msgid "Move page rightmost"
 msgstr "Поместить вкладку справа"
 
 #: anchordockstr.adrsmultilinepages
-msgid "Multi Line Tabs"
-msgstr ""
+msgid "Multiline Tabs"
+msgstr "Многострочный список вкладок"
 
 #: anchordockstr.adrsmultilinepageshint
 msgid "Tabs of pages can be shown in multiple lines"
-msgstr ""
+msgstr "Разрешить показывать заголовки вкладок в нескольких строках"
 
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"

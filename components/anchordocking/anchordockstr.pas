@@ -84,7 +84,7 @@ resourcestring
   adrsHighlightFocused = 'Highlight focused';
   adrsHighlightFocusedHint = 'Highlight header of focused docked control';
   adrsAllowDockSitesToBeMinimized = 'Allow dock sites to be minimized';
-  adrsMultiLinePages = 'Multi Line Tabs';
+  adrsMultiLinePages = 'Multiline Tabs';
   adrsMultiLinePagesHint = 'Tabs of pages can be shown in multiple lines';
 
 implementation
