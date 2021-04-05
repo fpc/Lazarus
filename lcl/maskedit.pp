@@ -59,7 +59,9 @@ uses
   ExtCtrls, StdCtrls, LMessages, Clipbrd, LCLType, LCLProc, LCLStrConsts, LazUtf8;
 
 const
-  { Mask Type }
+  { Mask Type
+    When adding more: make sure to add them to Simple_cMask_Tokens if appropriate
+  }
   cMask_SpecialChar   = '\'; // after this you can set an arbitrary char
   cMask_UpperCase     = '>'; // after this the chars is in upper case
   cMask_LowerCase     = '<'; // after this the chars is in lower case
@@ -90,7 +92,9 @@ const
   MaskNoSave: Char = '0';
 
 type
-  { Type for mask (internal) }
+  { Type for mask (internal)
+   When adding more: make sure to add them in procedure InitcMaskToMaskedTypeArray if appropriate
+  }
   tMaskedType = (Char_Invalid,
                  Char_IsLiteral,
                  Char_Number,
@@ -393,6 +397,107 @@ implementation
 { $DEFINE MASKEDIT_NOVALIDATEONEXIT}
 
 
+const
+  //cMask constants that define a TMaskedType, with the exclusion of Set related cMask constants
+  Simple_cMask_Tokens: TSysCharSet = [
+    cMask_Letter,
+    cMask_LetterFixed,
+    cMask_AlphaNum,
+    cMask_AlphaNumFixed,
+    cMask_AllChars,
+    cMask_AllCharsFixed,
+    cMask_Number,
+    cMask_NumberFixed,
+    cMask_NumberPlusMin,
+    cMask_HourSeparator,
+    cMask_DateSeparator,
+    cMask_Hex,
+    cMask_HexFixed,
+    cMask_Binary,
+    cMask_BinaryFixed
+  ];
+
+type
+  TMaskedTypeCase = (tmcNormal, tmcUp, tmcDown);
+  TcMaskToMaskedType = Array[#33..'z', TMaskedTypeCase] of TMaskedType;
+
+var
+  cMaskToMaskedTypeArray: TcMaskToMaskedType;
+
+function UpDownToMaskedTypeCase(InUp, InDown: Boolean): TMaskedTypeCase;
+begin
+  Result := tmcNormal;
+  if InUp then Result := tmcUp
+  else if InDown then Result := tmcDown;
+end;
+
+procedure InitcMaskToMaskedTypeArray;
+begin
+  cMaskToMaskedTypeArray := Default(TcMaskToMaskedType);
+
+  cMaskToMaskedTypeArray[cMask_Letter, tmcNormal] := Char_Letter;
+  cMaskToMaskedTypeArray[cMask_Letter, tmcUp] := Char_LetterUpCase;
+  cMaskToMaskedTypeArray[cMask_Letter, tmcDown] := Char_LetterDownCase;
+
+  cMaskToMaskedTypeArray[cMask_LetterFixed, tmcNormal] := Char_LetterFixed;
+  cMaskToMaskedTypeArray[cMask_LetterFixed, tmcUp] := Char_LetterFixedUpCase;
+  cMaskToMaskedTypeArray[cMask_LetterFixed, tmcDown] := Char_LetterFixedDownCase;
+
+  cMaskToMaskedTypeArray[cMask_AlphaNum, tmcNormal] := Char_AlphaNum;
+  cMaskToMaskedTypeArray[cMask_AlphaNum, tmcUp] := Char_AlphaNumUpCase;
+  cMaskToMaskedTypeArray[cMask_AlphaNum, tmcDown] := Char_AlphaNumDownCase;
+
+  cMaskToMaskedTypeArray[cMask_AlphaNumFixed, tmcNormal] := Char_AlphaNumFixed;
+  cMaskToMaskedTypeArray[cMask_AlphaNumFixed, tmcUp] := Char_AlphaNumFixedUpCase;
+  cMaskToMaskedTypeArray[cMask_AlphaNumFixed, tmcDown] := Char_AlphaNumFixedDownCase;
+
+  cMaskToMaskedTypeArray[cMask_AllChars, tmcNormal] := Char_All;
+  cMaskToMaskedTypeArray[cMask_AllChars, tmcUp] := Char_AllUpCase;
+  cMaskToMaskedTypeArray[cMask_AllChars, tmcDown] := Char_AllDownCase;
+
+  cMaskToMaskedTypeArray[cMask_AllCharsFixed, tmcNormal] := Char_AllFixed;
+  cMaskToMaskedTypeArray[cMask_AllCharsFixed, tmcUp] := Char_AllFixedUpCase;
+  cMaskToMaskedTypeArray[cMask_AllCharsFixed, tmcDown] := Char_AllFixedDownCase;
+
+  cMaskToMaskedTypeArray[cMask_Number, tmcNormal] := Char_Number;
+  cMaskToMaskedTypeArray[cMask_Number, tmcUp] := Char_Number;
+  cMaskToMaskedTypeArray[cMask_Number, tmcDown] := Char_Number;
+
+  cMaskToMaskedTypeArray[cMask_NumberFixed, tmcNormal] := Char_NumberFixed;
+  cMaskToMaskedTypeArray[cMask_NumberFixed, tmcUp] := Char_NumberFixed;
+  cMaskToMaskedTypeArray[cMask_NumberFixed, tmcDown] := Char_NumberFixed;
+
+  cMaskToMaskedTypeArray[cMask_NumberPlusMin, tmcNormal] := Char_NumberPlusMin;
+  cMaskToMaskedTypeArray[cMask_NumberPlusMin, tmcUp] := Char_NumberPlusMin;
+  cMaskToMaskedTypeArray[cMask_NumberPlusMin, tmcDown] := Char_NumberPlusMin;
+
+  cMaskToMaskedTypeArray[cMask_HourSeparator, tmcNormal] := Char_HourSeparator;
+  cMaskToMaskedTypeArray[cMask_HourSeparator, tmcUp] := Char_HourSeparator;
+  cMaskToMaskedTypeArray[cMask_HourSeparator, tmcDown] := Char_HourSeparator;
+
+  cMaskToMaskedTypeArray[cMask_DateSeparator, tmcNormal] := Char_DateSeparator;
+  cMaskToMaskedTypeArray[cMask_DateSeparator, tmcUp] := Char_DateSeparator;
+  cMaskToMaskedTypeArray[cMask_DateSeparator, tmcDown] := Char_DateSeparator;
+
+  cMaskToMaskedTypeArray[cMask_Hex, tmcNormal] := Char_Hex;
+  cMaskToMaskedTypeArray[cMask_Hex, tmcUp] := Char_HexUpCase;
+  cMaskToMaskedTypeArray[cMask_Hex, tmcDown] := Char_HexDownCase;
+
+  cMaskToMaskedTypeArray[cMask_HexFixed, tmcNormal] := Char_HexFixed;
+  cMaskToMaskedTypeArray[cMask_HexFixed, tmcUp] := Char_HexFixedUpCase;
+  cMaskToMaskedTypeArray[cMask_HexFixed, tmcDown] := Char_HexFixedDownCase;
+
+  cMaskToMaskedTypeArray[cMask_Binary, tmcNormal] := Char_Binary;
+  cMaskToMaskedTypeArray[cMask_Binary, tmcUp] := Char_Binary;
+  cMaskToMaskedTypeArray[cMask_Binary, tmcDown] := Char_Binary;
+
+  cMaskToMaskedTypeArray[cMask_BinaryFixed, tmcNormal] := Char_BinaryFixed;
+  cMaskToMaskedTypeArray[cMask_BinaryFixed, tmcUp] := Char_BinaryFixed;
+  cMaskToMaskedTypeArray[cMask_BinaryFixed, tmcDown] := Char_BinaryFixed;
+
+end;
+
+
 function DbgS(AMaskType: TMaskedType): String; overload;
 begin
   WriteStr(Result, AMaskType);
@@ -633,6 +738,8 @@ Var
   InUp, InDown, Special : Boolean;
   CP: TUtf8Char;
   SULen: PtrInt;
+  AMaskedTypeCase: TMaskedTypeCase;
+  AMaskedType: tMaskedType;
 
   procedure UndoMask;
   begin
@@ -792,6 +899,7 @@ begin
         // Check the char to insert
         case CP Of
           cMask_SpecialChar: Special := True;
+          cMask_NoLeadingBlanks: FTrimType := metTrimLeft;
 
           cMask_UpperCase:
           begin
@@ -833,129 +941,18 @@ begin
              AddToMask(cMask_SetStart);
           end;
 
-          cMask_Letter:
-          begin
-            if InUp
-            then
-              AddToMask(Char_LetterUpCase)
-            else
-              if InDown
-              then
-                AddToMask(Char_LetterDownCase)
-              else
-                AddToMask(Char_Letter)
-          end;
-
-          cMask_LetterFixed:
-          begin
-            if InUp
-            then
-              AddToMask(Char_LetterFixedUpCase)
-            else
-              if InDown
-              then
-                AddToMask(Char_LetterFixedDownCase)
-              else
-                AddToMask(Char_LetterFixed)
-          end;
-
-          cMask_AlphaNum:
-          begin
-            if InUp
-            then
-              AddToMask(Char_AlphaNumUpcase)
-            else
-              if InDown
-              then
-                AddToMask(Char_AlphaNumDownCase)
-              else
-                AddToMask(Char_AlphaNum)
-          end;
-
-          cMask_AlphaNumFixed:
-          begin
-            if InUp
-            then
-              AddToMask(Char_AlphaNumFixedUpcase)
-            else
-              if InDown
-              then
-                AddToMask(Char_AlphaNumFixedDownCase)
-              else
-                AddToMask(Char_AlphaNumFixed)
-          end;
-
-          cMask_AllChars:
-          begin
-            if InUp
-            then
-              AddToMask(Char_AllUpCase)
-            else
-              if InDown
-              then
-                AddToMask(Char_AllDownCase)
-              else
-                AddToMask(Char_All)
-          end;
-
-          cMask_AllCharsFixed:
-          begin
-            if InUp
-            then
-              AddToMask(Char_AllFixedUpCase)
-            else
-              if InDown
-              then
-                AddToMask(Char_AllFixedDownCase)
-              else
-                AddToMask(Char_AllFixed)
-          end;
-
-          cMask_Number: AddToMask(Char_Number);
-
-          cMask_NumberFixed: AddToMask(Char_NumberFixed);
-
-          cMask_NumberPlusMin: AddToMask(Char_NumberPlusMin);
-
-          cMask_HourSeparator: AddToMask(Char_HourSeparator);
-
-          cMask_DateSeparator: AddToMask(Char_DateSeparator);
-
-          cMask_Hex:
-          begin
-            if InUp
-            then
-              AddToMask(Char_HexUpCase)
-            else
-              if InDown
-              then
-                AddToMask(Char_HexDownCase)
-              else
-                AddToMask(Char_Hex)
-          end;
-
-          cMask_HexFixed:
-          begin
-            if InUp
-            then
-              AddToMask(Char_HexFixedUpCase)
-            else
-              if InDown
-              then
-                AddToMask(Char_HexFixedDownCase)
-              else
-                AddToMask(Char_HexFixed)
-          end;
-
-          cMask_Binary: AddToMask(Char_Binary);
-          cMask_BinaryFixed: AddToMask(Char_BinaryFixed);
-
-          cMask_NoLeadingBlanks: FTrimType := metTrimLeft;
-
           otherwise
           begin
-            //It's a MaskLiteral
-            AddToMask(CP);
+            //it must be a "simple cMask token", or a mask literal at this point
+            if (Length(CP) = 1) and (CP[1] in Simple_cMask_Tokens) then
+            begin
+              AMaskedTypeCase := UpDownToMaskedTypeCase(InUp, InDown);
+              AMaskedType := cMaskToMaskedTypeArray[CP[1], AMaskedTypeCase];
+              AddToMask(AMaskedType);
+            end
+            else
+              //It's a MaskLiteral
+              AddToMask(CP);
           end;
         end;//case CP of
       end; //not Special
@@ -2440,5 +2437,8 @@ procedure Register;
 begin
   RegisterComponents('Additional',[TMaskEdit]);
 end;
+
+initialization
+  InitcMaskToMaskedTypeArray;
 
 end.
