@@ -177,11 +177,12 @@ begin
   // is not created, the only workaround I found is, to activate the new created
   // source editor in this window
   if not (Sender is TSourceEditorInterface) then Exit;
+  if SourceEditorManagerIntf.ActiveSourceWindow = nil then Exit;
   LSourceEditor := TSourceEditorInterface(Sender);
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourceEditorWindow.UpdateEditorPageCaption [' + SourceEditorWindowCaption(LSourceEditor) + ']'); {$ENDIF}
   LSourceEditorWindow := SourceEditorWindow(LSourceEditor);
   if not Assigned(LSourceEditorWindow)
-  or (LSourceEditorWindow.ActiveEditor <> nil)
+  or (SourceEditorManagerIntf.ActiveSourceWindow = LSourceEditorWindow)
   or (SourceEditorWindows.LastActiveSourceEditorWindow = LSourceEditorWindow)
   then
     Exit;
