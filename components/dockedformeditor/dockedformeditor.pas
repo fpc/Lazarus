@@ -12,7 +12,8 @@ uses
   DockedResizer, DockedOptionsIDE, DockedOptionsFrame, DockedTools, 
   DockedDesignForm, DockedModulePageControl, DockedSourceEditorWindow, 
   DockedSourceEditorPageControls, DockedAnchorDesigner, 
-  DockedBasicAnchorDesigner, DockedAnchorControl, LazarusPackageIntf;
+  DockedBasicAnchorDesigner, DockedAnchorControl, DockedGrip, 
+  DockedResizeControl, LazarusPackageIntf;
 
 implementation
 

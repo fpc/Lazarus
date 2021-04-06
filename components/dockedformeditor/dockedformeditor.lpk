@@ -22,7 +22,7 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="15">
+    <Files Count="18">
       <Item1>
         <Filename Value="source\dockedregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -85,6 +85,18 @@
         <Filename Value="source\dockedanchorcontrol.pas"/>
         <UnitName Value="DockedAnchorControl"/>
       </Item15>
+      <Item16>
+        <Filename Value="source\dockedgrip.pas"/>
+        <UnitName Value="DockedGrip"/>
+      </Item16>
+      <Item17>
+        <Filename Value="source\dockedoptionsframe.lfm"/>
+        <Type Value="LFM"/>
+      </Item17>
+      <Item18>
+        <Filename Value="source\dockedresizecontrol.pas"/>
+        <UnitName Value="DockedResizeControl"/>
+      </Item18>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
