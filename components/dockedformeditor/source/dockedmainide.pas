@@ -708,7 +708,7 @@ begin
   LPageCtrl := GetCurrentPageControl;
   if not Assigned(LPageCtrl) then Exit;
   if not Assigned(LPageCtrl.Resizer) then Exit;
-  LPageCtrl.Resizer.ResizeFrame.OnModified;
+  LPageCtrl.Resizer.ResizeControl.OnModified;
 end;
 
 class procedure TDockedMainIDE.OnDesignPersistentAdded(APersistent: TPersistent; Select: Boolean);

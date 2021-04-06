@@ -23,7 +23,7 @@ uses
   PropEdits,
   // DockedFormEditor
   DockedDesignForm, DockedBasicAnchorDesigner, DockedAnchorControl,
-  DockedOptionsIDE, DockedAnchorGrip, DockedTools, DockedStrConsts;
+  DockedOptionsIDE, DockedGrip, DockedTools, DockedStrConsts;
 
 type
 

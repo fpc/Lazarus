@@ -7,21 +7,9 @@
  Authors: Maciej Izak
           Michael W. Vogel
 
- Don't change DesignTimePPI of ResizeFrame (dockedresizeframe.lfm)!
- There always has to be the default (none entry = 96 PPI) value!
-
- Size grips:           1
-                0 +----+----+ 2
-                  |         |
-                7 +         + 3
-                  |         |
-                6 +----+----+ 4
-                       5
- Only grips 3, 4, and 5 are used for sizing
-
 }
 
-unit DockedResizeFrame;
+unit DockedResizeControl;
 
 {$mode objfpc}{$H+}
 { $define DEBUGDOCKEDFORMEDITOR}
@@ -35,65 +23,27 @@ uses
   Forms, ExtCtrls, StdCtrls, Controls, LCLType, Menus, Graphics, LCLIntf,
   LMessages, LCLProc,
   // DockedFormEditor
-  DockedOptionsIDE, DockedDesignForm;
+  DockedOptionsIDE, DockedDesignForm, DockedGrip;
 
 type
 
-  { TResizeFrame }
+  { TResizeControl }
 
-  TResizeFrame = class(TFrame)
-    PanelAnchorContainer: TPanel;
-    PanelBarBottomLeft: TPanel;
-    PanelBarLeftTop: TPanel;
-    PanelBarRightBottom: TPanel;
-    PanelBarBottomRight: TPanel;
-    PanelBarLeftBottom: TPanel;
-    PanelBarTopRight: TPanel;
-    PanelBarRightTop: TPanel;
-    PanelGripLeftCenter: TPanel;
-    PanelGripBottomRight: TPanel;
-    PanelGripBottomCenter: TPanel;
-    PanelGripBottomLeft: TPanel;
-    PanelGripTopRight: TPanel;
-    PanelGripRightCenter: TPanel;
-    PanelResizer: TPanel;
-    PanelBarTopLeft: TPanel;
-    PanelGripTopLeft: TPanel;
-    PanelGripTopCenter: TPanel;
-    PanelFormContainer: TPanel;
-    PanelFakeMenu: TPanel;
-    PanelBackground: TPanel;
-    PanelFormClient: TPanel;
-    ShapeGripLeftCenter: TShape;
-    ShapeGripBottomRight: TShape;
-    ShapeGripBottomCenter: TShape;
-    ShapeGripBottomLeft: TShape;
-    ShapeGripTopRight: TShape;
-    ShapeGripRightCenter: TShape;
-    ShapeGripTopLeft: TShape;
-    ShapeGripTopCenter: TShape;
-    procedure PanelBarPaint(Sender: TObject);
-    procedure PanelFakeMenuPaint(Sender: TObject);
-  private const
-    SIZER_GRIP_SIZE = 8;
+  TResizeControl = class(TWinControl)
   private
     FBitmapBarActive: TBitmap;
     FBitmapBarInactive: TBitmap;
     FDesignForm: TDesignForm;
     FDesignerModified: Boolean;
     FFakeFocusControl: TWinControl;
-    FHorzScrollPos: Integer;
     FNewFormSize: TPoint;
+    FOldBounds: TRect;
     FOldFakeMenuNeeded: Boolean;
     FOldMousePos: TPoint;
-    FOldResizerBounds: TRect;
     FOnResized: TNotifyEvent;
+    FResizeContainer: TResizeContainer;
     FResizing: Boolean;
-    FSizerGripSize: Integer;
-    FVertScrollPos: Integer;
 
-    procedure ActivateResizeGrip(APanel: TPanel; ACursor: TCursor);
-    procedure ActivateResizeGrips;
     procedure AdjustFormContainer;
     procedure AppOnIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure BeginFormSizeUpdate(Sender: TObject);
@@ -104,11 +54,16 @@ type
     procedure FakeKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FakeKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     function  FakeMenuNeeded: Boolean;
+    procedure FakeMenuPaint(Sender: TObject);
     procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+    function  GetAnchorContainer: TWinControl;
+    function  GetFakeMenu: TCustomControl;
+    function  GetFormClient: TWinControl;
+    function  GetFormContainer: TWinControl;
     function  GetMenuHeight: Integer;
-    function  IsHorzSizer(Sender: TObject): Boolean;
-    function  IsVertSizer(Sender: TObject): Boolean;
+    function  GetSizerGripSize: Integer;
     procedure RefreshAnchorDesigner;
+    procedure ResizeBarPaint(Sender: TObject);
     procedure SizerMouseDown(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure SizerMouseMove(Sender: TObject; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
     procedure SizerMouseUp(Sender: TObject; {%H-}Button: TMouseButton; {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
@@ -117,90 +72,28 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AdjustPanelResizer;
+    procedure AdjustBounds(ScrollOffset: TPoint);
     procedure ClientChangeBounds(Sender: TObject); overload;
     procedure DesignerSetFocus;
     procedure OnModified;
-    function IsFocused: Boolean;
+    function  IsFocused: Boolean;
   public
+    property AnchorContainer: TWinControl read GetAnchorContainer;
     property DesignForm: TDesignForm read FDesignForm write SetDesignForm;
-    property HorzScrollPos: Integer read FHorzScrollPos write FHorzScrollPos;
-    property VertScrollPos: Integer read FVertScrollPos write FVertScrollPos;
+    property FakeMenu: TCustomControl read GetFakeMenu;
+    property FormClient: TWinControl read GetFormClient;
+    property FormContainer: TWinControl read GetFormContainer;
     property NewFormSize: TPoint read FNewFormSize;
-    property Resizing: Boolean read FResizing;
     property OnResized: TNotifyEvent read FOnResized write FOnResized;
-    property SizerGripSize: Integer read FSizerGripSize;
+    property Resizing: Boolean read FResizing;
+    property SizerGripSize: Integer read GetSizerGripSize;
   end;
 
 implementation
 
-{$R *.lfm}
-
 { TResizerFrame }
 
-procedure TResizeFrame.PanelBarPaint(Sender: TObject);
-var
-  LPanel: TPanel;
-begin
-  if FResizing then Exit;
-  if not (Sender is TPanel) then Exit;
-  LPanel := TPanel(Sender);
-  LPanel.Canvas.Brush.Style := bsImage;
-  if IsFocused then
-    LPanel.Canvas.Brush.Bitmap := FBitmapBarActive
-  else
-    LPanel.Canvas.Brush.Bitmap := FBitmapBarInactive;
-  LPanel.Canvas.FillRect(1, 1, LPanel.ClientWidth - 1, LPanel.ClientHeight - 1);
-end;
-
-procedure TResizeFrame.PanelFakeMenuPaint(Sender: TObject);
-var
-  MenuRect: Types.TRect;
-  Menu: TMainMenu;
-  X, Y, I: Integer;
-  LCanvas: TCanvas;
-begin
-  if not FakeMenuNeeded then Exit;
-
-  MenuRect := PanelFakeMenu.ClientRect;
-  LCanvas := PanelFakeMenu.Canvas;
-  LCanvas.Brush.Color := clMenuBar;
-  LCanvas.FillRect(MenuRect);
-
-  Menu := FDesignForm.Form.Menu;
-  LCanvas.Font.Color := clMenuText;
-
-  X := 5;
-  Y := (MenuRect.Top+MenuRect.Bottom-LCanvas.TextHeight('Hg')) div 2;
-  for I := 0 to Menu.Items.Count-1 do
-    if Menu.Items[I].Visible then
-    begin
-      LCanvas.TextOut(X, Y, Menu.Items[I].Caption);
-      Inc(X, LCanvas.TextWidth(Menu.Items[I].Caption) + 10);
-    end;
-end;
-
-procedure TResizeFrame.ActivateResizeGrip(APanel: TPanel; ACursor: TCursor);
-begin
-  APanel.OnMouseDown := @SizerMouseDown;
-  APanel.OnMouseMove := @SizerMouseMove;
-  APanel.OnMouseUp := @SizerMouseUp;
-  APanel.Cursor := ACursor;
-end;
-
-procedure TResizeFrame.ActivateResizeGrips;
-begin
-  ActivateResizeGrip(PanelBarRightTop, crSizeWE);
-  ActivateResizeGrip(PanelGripRightCenter, crSizeWE);
-  ActivateResizeGrip(PanelBarRightBottom, crSizeWE);
-  // on mac there is no cursor for crNWSE ( https://bugs.freepascal.org/view.php?id=32194#c101876 )
-  ActivateResizeGrip(PanelGripBottomRight, {$IFDEF MACOS}crSizeAll{$ELSE}crSizeNWSE{$ENDIF});
-  ActivateResizeGrip(PanelBarBottomRight, crSizeNS);
-  ActivateResizeGrip(PanelGripBottomCenter, crSizeNS);
-  ActivateResizeGrip(PanelBarBottomLeft, crSizeNS);
-end;
-
-procedure TResizeFrame.AdjustFormContainer;
+procedure TResizeControl.AdjustFormContainer;
 var
   LLeft, LTop, LWidth, LHeight: Integer;
 begin
@@ -214,11 +107,11 @@ begin
   LHeight :=   FDesignForm.Form.Height
              + Abs(FDesignForm.Form.Top)
              + FDesignForm.ClientOffset.Y;
-  PanelFormContainer.SetBounds(LLeft, LTop, LWidth, LHeight);
+  FormContainer.SetBounds(LLeft, LTop, LWidth, LHeight);
   RefreshAnchorDesigner;
 end;
 
-procedure TResizeFrame.AppOnIdle(Sender: TObject; var Done: Boolean);
+procedure TResizeControl.AppOnIdle(Sender: TObject; var Done: Boolean);
 var
   LFakeMenuNeeded: Boolean;
 begin
@@ -234,19 +127,18 @@ begin
       Application.NotifyUserInputHandler(Self, 0); // force repaint invisible components
     end else
     if LFakeMenuNeeded then
-      PanelFakeMenu.Invalidate; // always repaint menu on modification
+      FakeMenu.Invalidate; // always repaint menu on modification
     RefreshAnchorDesigner;
     FDesignerModified := False;
   end;
 end;
 
-procedure TResizeFrame.BeginFormSizeUpdate(Sender: TObject);
+procedure TResizeControl.BeginFormSizeUpdate(Sender: TObject);
 begin
-//  PanelBackground.Visible := False;
   FDesignForm.BeginUpdate;
 end;
 
-procedure TResizeFrame.CreateBarBitmaps;
+procedure TResizeControl.CreateBarBitmaps;
 begin
   FBitmapBarActive := TBitmap.Create;
   FBitmapBarActive.SetSize(2, 2);
@@ -263,7 +155,7 @@ begin
   FBitmapBarInactive.Canvas.Pixels[1, 1] := clGray;
 end;
 
-function TResizeFrame.CurrentSizingOffset(Sender: TObject): TPoint;
+function TResizeControl.CurrentSizingOffset(Sender: TObject): TPoint;
 var
   LNewPos: TPoint;
 begin
@@ -271,22 +163,21 @@ begin
   LNewPos := Result;
   GetCursorPos(LNewPos);
   if LNewPos = FOldMousePos then Exit;
-  if IsHorzSizer(Sender) then Result.X := LNewPos.X - FOldMousePos.X;
-  if IsVertSizer(Sender) then Result.Y := LNewPos.Y - FOldMousePos.Y;
+  if FResizeContainer.IsHorzSizer(Sender) then Result.X := LNewPos.X - FOldMousePos.X;
+  if FResizeContainer.IsVertSizer(Sender) then Result.Y := LNewPos.Y - FOldMousePos.Y;
 end;
 
-procedure TResizeFrame.EndFormSizeUpdate(Sender: TObject);
+procedure TResizeControl.EndFormSizeUpdate(Sender: TObject);
 begin
   FDesignForm.EndUpdate;
-//  PanelBackground.Visible := True;
 end;
 
-procedure TResizeFrame.FakeExitEnter(Sender: TObject);
+procedure TResizeControl.FakeExitEnter(Sender: TObject);
 begin
   Repaint;
 end;
 
-procedure TResizeFrame.FakeKeyDown(Sender: TObject; var Key: Word;
+procedure TResizeControl.FakeKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   LWndProc: TWndMethod;
@@ -294,7 +185,7 @@ var
 begin
   case Key of
     VK_ESCAPE:
-      if Assigned(DesignForm) and Assigned(DesignForm.AnchorDesigner) and PanelAnchorContainer.Visible then
+      if Assigned(DesignForm) and Assigned(DesignForm.AnchorDesigner) and AnchorContainer.Visible then
       begin
         DesignForm.AnchorDesigner.Abort;
         Exit;
@@ -309,7 +200,7 @@ begin
   Key := LMsg.CharCode;
 end;
 
-procedure TResizeFrame.FakeKeyUp(Sender: TObject; var Key: Word;
+procedure TResizeControl.FakeKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 var
   LWndProc: TWndMethod;
@@ -323,7 +214,7 @@ begin
   Key := LMsg.CharCode;
 end;
 
-function TResizeFrame.FakeMenuNeeded: Boolean;
+function TResizeControl.FakeMenuNeeded: Boolean;
 var
   i: Integer;
 begin
@@ -343,12 +234,59 @@ begin
         Exit(True);
 end;
 
-procedure TResizeFrame.FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
+procedure TResizeControl.FakeMenuPaint(Sender: TObject);
+var
+  MenuRect: Types.TRect;
+  Menu: TMainMenu;
+  X, Y, I: Integer;
+  LCanvas: TCanvas;
+begin
+  if not FakeMenuNeeded then Exit;
+
+  MenuRect := FakeMenu.ClientRect;
+  LCanvas := FakeMenu.Canvas;
+  LCanvas.Brush.Color := clMenuBar;
+  LCanvas.FillRect(MenuRect);
+
+  Menu := FDesignForm.Form.Menu;
+  LCanvas.Font.Color := clMenuText;
+
+  X := 5;
+  Y := (MenuRect.Top+MenuRect.Bottom-LCanvas.TextHeight('Hg')) div 2;
+  for I := 0 to Menu.Items.Count-1 do
+    if Menu.Items[I].Visible then
+    begin
+      LCanvas.TextOut(X, Y, Menu.Items[I].Caption);
+      Inc(X, LCanvas.TextWidth(Menu.Items[I].Caption) + 10);
+    end;
+end;
+
+procedure TResizeControl.FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
 begin
   FDesignForm.Form.IntfUTF8KeyPress(UTF8Key, 1, False);
 end;
 
-function TResizeFrame.GetMenuHeight: Integer;
+function TResizeControl.GetAnchorContainer: TWinControl;
+begin
+  Result := FResizeContainer.AnchorContainer;
+end;
+
+function TResizeControl.GetFakeMenu: TCustomControl;
+begin
+  Result := FResizeContainer.FakeMenu;
+end;
+
+function TResizeControl.GetFormClient: TWinControl;
+begin
+  Result := FResizeContainer.FormClient;
+end;
+
+function TResizeControl.GetFormContainer: TWinControl;
+begin
+  Result := FResizeContainer.FormContainer;
+end;
+
+function TResizeControl.GetMenuHeight: Integer;
 begin
   // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
   // no problem, it is used only for the fake main menu
@@ -356,44 +294,40 @@ begin
   {$IFDEF LCLWin32}
   Result := lclintf.GetSystemMetrics(SM_CYMENU);
   {$ELSE}
-  if PanelBackground.HandleAllocated then
-    Result := PanelBackground.Canvas.TextHeight('Hg') * 4 div 3
+  if FakeMenu.HandleAllocated then
+    Result := FakeMenu.Canvas.TextHeight('Hg') * 4 div 3
   else
     Result := 20;
   {$ENDIF}
 end;
 
-function TResizeFrame.IsHorzSizer(Sender: TObject): Boolean;
-var
-  LPanel: TPanel absolute Sender;
+function TResizeControl.GetSizerGripSize: Integer;
 begin
-  Result := False;
-  if not (Sender is TPanel) then Exit;
-  if LPanel = PanelBarRightTop     then Exit(True);
-  if LPanel = PanelBarRightBottom  then Exit(True);
-  if LPanel = PanelGripRightCenter then Exit(True);
-  if LPanel = PanelGripBottomRight then Exit(True);
+  Result := FResizeContainer.ResizeGrips.GripSize;
 end;
 
-function TResizeFrame.IsVertSizer(Sender: TObject): Boolean;
-var
-  LPanel: TPanel absolute Sender;
+procedure TResizeControl.RefreshAnchorDesigner;
 begin
-  Result := False;
-  if not (Sender is TPanel) then Exit;
-  if LPanel = PanelBarBottomLeft    then Exit(True);
-  if LPanel = PanelBarBottomRight   then Exit(True);
-  if LPanel = PanelGripBottomRight  then Exit(True);
-  if LPanel = PanelGripBottomCenter then Exit(True);
-end;
-
-procedure TResizeFrame.RefreshAnchorDesigner;
-begin
-  if Assigned(DesignForm) and Assigned(DesignForm.AnchorDesigner) and PanelAnchorContainer.Visible then
+  if Assigned(DesignForm) and Assigned(DesignForm.AnchorDesigner) and AnchorContainer.Visible then
     DesignForm.AnchorDesigner.Refresh;
 end;
 
-procedure TResizeFrame.SizerMouseDown(Sender: TObject; Button: TMouseButton;
+procedure TResizeControl.ResizeBarPaint(Sender: TObject);
+var
+  LPanel: TPanel;
+begin
+  if FResizing then Exit;
+  if not (Sender is TPanel) then Exit;
+  LPanel := TPanel(Sender);
+  LPanel.Canvas.Brush.Style := bsImage;
+  if IsFocused then
+    LPanel.Canvas.Brush.Bitmap := FBitmapBarActive
+  else
+    LPanel.Canvas.Brush.Bitmap := FBitmapBarInactive;
+  LPanel.Canvas.FillRect(1, 1, LPanel.ClientWidth - 1, LPanel.ClientHeight - 1);
+end;
+
+procedure TResizeControl.SizerMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if not Enabled then Exit;
@@ -406,27 +340,27 @@ begin
   SetCapture(TWinControl(Sender).Handle);
   {$ENDIF}
   GetCursorPos(FOldMousePos);
-  FOldResizerBounds := PanelResizer.BoundsRect;
+  FOldBounds := FResizeContainer.BoundsRect;
 end;
 
-procedure TResizeFrame.SizerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
+procedure TResizeControl.SizerMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 var
   SizeOffset: TPoint;
 begin
   if not FResizing then Exit;
   if not (Sender is TPanel) then Exit;
   SizeOffset := CurrentSizingOffset(Sender);
-  PanelResizer.SetBounds(FOldResizerBounds.Left, FOldResizerBounds.Top, FOldResizerBounds.Width + SizeOffset.X, FOldResizerBounds.Height + SizeOffset.Y);
+  FResizeContainer.SetBounds(FOldBounds.Left, FOldBounds.Top, FOldBounds.Width + SizeOffset.X, FOldBounds.Height + SizeOffset.Y);
 
   if DockedOptions.ForceRefreshing then
   begin
     ClientChangeBounds(nil);
-    if Assigned(OnResized) and PanelFormClient.Visible then
+    if Assigned(OnResized) and FormClient.Visible then
       OnResized(Sender);
   end;
 end;
 
-procedure TResizeFrame.SizerMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TResizeControl.SizerMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if not FResizing then Exit;
@@ -444,7 +378,7 @@ begin
   DesignerSetFocus;
 end;
 
-procedure TResizeFrame.SetDesignForm(const AValue: TDesignForm);
+procedure TResizeControl.SetDesignForm(const AValue: TDesignForm);
 begin
   FDesignForm := AValue;
   if Assigned(AValue) then
@@ -456,20 +390,27 @@ begin
     Application.RemoveOnIdleHandler(@AppOnIdle);
 end;
 
-procedure TResizeFrame.TryBoundDesignForm;
+procedure TResizeControl.TryBoundDesignForm;
 begin
   if DesignForm = nil then Exit;
   if FakeMenuNeeded then
-    PanelFakeMenu.Height := GetMenuHeight
+    FakeMenu.Height := GetMenuHeight
   else
-    PanelFakeMenu.Height := 0;
+    FakeMenu.Height := 0;
 end;
 
-constructor TResizeFrame.Create(TheOwner: TComponent);
+constructor TResizeControl.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
 
-  FSizerGripSize := ScaleX(SIZER_GRIP_SIZE, 96);
+  FResizeContainer := TResizeContainer.Create(Self);
+  FResizeContainer.ResizeGrips.OnMouseDown := @SizerMouseDown;
+  FResizeContainer.ResizeGrips.OnMouseMove := @SizerMouseMove;
+  FResizeContainer.ResizeGrips.OnMouseUp := @SizerMouseUp;
+  FResizeContainer.ResizeBars.OnMouseDown := @SizerMouseDown;
+  FResizeContainer.ResizeBars.OnMouseMove := @SizerMouseMove;
+  FResizeContainer.ResizeBars.OnMouseUp := @SizerMouseUp;
+  FResizeContainer.ResizeBars.OnPaint := @ResizeBarPaint;
 
   FFakeFocusControl := TEdit.Create(Self);
   FFakeFocusControl.Parent := Self;
@@ -480,15 +421,15 @@ begin
   FFakeFocusControl.OnEnter := @FakeExitEnter;
   FFakeFocusControl.OnExit := @FakeExitEnter;
 
-  ActivateResizeGrips;
   CreateBarBitmaps;
 
-  PanelFormClient.OnChangeBounds := @ClientChangeBounds;
-  PanelAnchorContainer.OnChangeBounds := @ClientChangeBounds;
-  AdjustPanelResizer;
+  FakeMenu.OnPaint := @FakeMenuPaint;
+  FormClient.OnChangeBounds := @ClientChangeBounds;
+  AnchorContainer.OnChangeBounds := @ClientChangeBounds;
+  AdjustBounds(Point(0, 0));
 end;
 
-destructor TResizeFrame.Destroy;
+destructor TResizeControl.Destroy;
 begin
   DesignForm := nil;
   FBitmapBarInactive.Free;
@@ -496,47 +437,47 @@ begin
   inherited Destroy;
 end;
 
-procedure TResizeFrame.AdjustPanelResizer;
+procedure TResizeControl.AdjustBounds(ScrollOffset: TPoint);
 var
   LWidth, LHeight: Integer;
 begin
   if FDesignForm = nil then Exit;
   LWidth := FDesignForm.Width + 2 * SizerGripSize;
   LHeight := FDesignForm.Height + 2 * SizerGripSize;
-  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeFrame.AdjustPanelResizer: New Resizer Panel Width:', DbgS(Width), ' Height: ', DbgS(Height)); {$ENDIF}
-  PanelResizer.SetBounds(-FHorzScrollPos, -FVertScrollPos, LWidth, LHeight);
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeControl.AdjustBounds: New ResizeControl Width:', DbgS(Width), ' Height: ', DbgS(Height)); {$ENDIF}
+  FResizeContainer.SetBounds(-ScrollOffset.x, -ScrollOffset.y, LWidth, LHeight);
   AdjustFormContainer;
 end;
 
-procedure TResizeFrame.ClientChangeBounds(Sender: TObject);
+procedure TResizeControl.ClientChangeBounds(Sender: TObject);
 begin
   if (DesignForm = nil) then Exit;
   if not DockedOptions.ForceRefreshing and Resizing then Exit;
-  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeFrame.ClientChangeBounds Form Width:', DbgS(PanelFormClient.Width), ' Height: ', DbgS(PanelFormClient.Height)); {$ENDIF}
-  if PanelFormClient.Visible then
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizeControl.ClientChangeBounds Form Width:', DbgS(FormClient.Width), ' Height: ', DbgS(FormClient.Height)); {$ENDIF}
+  if FormClient.Visible then
   begin
-    FNewFormSize.X := PanelFormClient.Width;
-    FNewFormSize.Y := PanelFormClient.Height + PanelFakeMenu.Height;
-  end else if PanelAnchorContainer.Visible then
+    FNewFormSize.X := FormClient.Width;
+    FNewFormSize.Y := FormClient.Height + FakeMenu.Height;
+  end else if AnchorContainer.Visible then
   begin
-    FNewFormSize.X := PanelAnchorContainer.Width;
-    FNewFormSize.Y := PanelAnchorContainer.Height;
+    FNewFormSize.X := AnchorContainer.Width;
+    FNewFormSize.Y := AnchorContainer.Height + FakeMenu.Height;
   end;
 end;
 
-procedure TResizeFrame.DesignerSetFocus;
+procedure TResizeControl.DesignerSetFocus;
 begin
   if FFakeFocusControl.CanSetFocus then
     FFakeFocusControl.SetFocus;
 end;
 
-procedure TResizeFrame.OnModified;
+procedure TResizeControl.OnModified;
 begin
   FDesignerModified := True;
   Invalidate;
 end;
 
-function TResizeFrame.IsFocused: Boolean;
+function TResizeControl.IsFocused: Boolean;
 begin
   Result := FFakeFocusControl.Focused;
 end;

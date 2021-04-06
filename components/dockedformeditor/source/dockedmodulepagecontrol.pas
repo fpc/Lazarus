@@ -28,7 +28,7 @@ uses
   SrcEditorIntf, FormEditingIntf,
   // DockedFormEditor
   DockedDesignForm, DockedResizer, DockedOptionsIDE, DockedAnchorDesigner,
-  DockedTools, DockedStrConsts;
+  {%H-}DockedTools, DockedStrConsts;
 
 type
 
@@ -225,17 +225,17 @@ begin
   if ActivePage = FTabSheetDesigner then
   begin
     Resizer.Parent := FTabSheetDesigner;
-    Resizer.ResizeFrame.PanelFormClient.Visible := True;
-    Resizer.ResizeFrame.PanelAnchorContainer.Visible := False;
+    Resizer.ResizeControl.FormClient.Visible := True;
+    Resizer.ResizeControl.AnchorContainer.Visible := False;
   end
   else if ActivePage = FTabSheetAnchors then
   begin
     Resizer.Parent := FTabSheetAnchors;
-    Resizer.ResizeFrame.PanelFormClient.Visible := False;
-    Resizer.ResizeFrame.PanelAnchorContainer.Visible := True;
+    Resizer.ResizeControl.FormClient.Visible := False;
+    Resizer.ResizeControl.AnchorContainer.Visible := True;
     if not Assigned(DesignForm.AnchorDesigner) then
     begin
-      DesignForm.AnchorDesigner := TAnchorDesigner.Create(DesignForm, Resizer.ResizeFrame.PanelAnchorContainer);
+      DesignForm.AnchorDesigner := TAnchorDesigner.Create(DesignForm, Resizer.ResizeControl.AnchorContainer);
       DesignForm.AnchorDesigner.OnDesignerSetFocus := @DesignerSetFocus;
     end;
     DesignForm.AnchorDesigner.Refresh;
