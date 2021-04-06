@@ -418,10 +418,10 @@ const
 
 type
   TMaskedTypeCase = (tmcNormal, tmcUp, tmcDown);
-  TcMaskToMaskedType = Array[#33..'z', TMaskedTypeCase] of TMaskedType;
+  TcMaskToMaskedTypeTable = Array[#33..'z', TMaskedTypeCase] of TMaskedType;
 
 var
-  cMaskToMaskedTypeArray: TcMaskToMaskedType;
+  cMaskToMaskedTypeTable: TcMaskToMaskedTypeTable;
 
 function UpDownToMaskedTypeCase(InUp, InDown: Boolean): TMaskedTypeCase;
 begin
@@ -430,69 +430,69 @@ begin
   else if InDown then Result := tmcDown;
 end;
 
-procedure InitcMaskToMaskedTypeArray;
+procedure InitcMaskToMaskedTypeTable;
 begin
-  cMaskToMaskedTypeArray := Default(TcMaskToMaskedType);
+  cMaskToMaskedTypeTable := Default(TcMaskToMaskedTypeTable);
 
-  cMaskToMaskedTypeArray[cMask_Letter, tmcNormal] := Char_Letter;
-  cMaskToMaskedTypeArray[cMask_Letter, tmcUp] := Char_LetterUpCase;
-  cMaskToMaskedTypeArray[cMask_Letter, tmcDown] := Char_LetterDownCase;
+  cMaskToMaskedTypeTable[cMask_Letter, tmcNormal] := Char_Letter;
+  cMaskToMaskedTypeTable[cMask_Letter, tmcUp] := Char_LetterUpCase;
+  cMaskToMaskedTypeTable[cMask_Letter, tmcDown] := Char_LetterDownCase;
 
-  cMaskToMaskedTypeArray[cMask_LetterFixed, tmcNormal] := Char_LetterFixed;
-  cMaskToMaskedTypeArray[cMask_LetterFixed, tmcUp] := Char_LetterFixedUpCase;
-  cMaskToMaskedTypeArray[cMask_LetterFixed, tmcDown] := Char_LetterFixedDownCase;
+  cMaskToMaskedTypeTable[cMask_LetterFixed, tmcNormal] := Char_LetterFixed;
+  cMaskToMaskedTypeTable[cMask_LetterFixed, tmcUp] := Char_LetterFixedUpCase;
+  cMaskToMaskedTypeTable[cMask_LetterFixed, tmcDown] := Char_LetterFixedDownCase;
 
-  cMaskToMaskedTypeArray[cMask_AlphaNum, tmcNormal] := Char_AlphaNum;
-  cMaskToMaskedTypeArray[cMask_AlphaNum, tmcUp] := Char_AlphaNumUpCase;
-  cMaskToMaskedTypeArray[cMask_AlphaNum, tmcDown] := Char_AlphaNumDownCase;
+  cMaskToMaskedTypeTable[cMask_AlphaNum, tmcNormal] := Char_AlphaNum;
+  cMaskToMaskedTypeTable[cMask_AlphaNum, tmcUp] := Char_AlphaNumUpCase;
+  cMaskToMaskedTypeTable[cMask_AlphaNum, tmcDown] := Char_AlphaNumDownCase;
 
-  cMaskToMaskedTypeArray[cMask_AlphaNumFixed, tmcNormal] := Char_AlphaNumFixed;
-  cMaskToMaskedTypeArray[cMask_AlphaNumFixed, tmcUp] := Char_AlphaNumFixedUpCase;
-  cMaskToMaskedTypeArray[cMask_AlphaNumFixed, tmcDown] := Char_AlphaNumFixedDownCase;
+  cMaskToMaskedTypeTable[cMask_AlphaNumFixed, tmcNormal] := Char_AlphaNumFixed;
+  cMaskToMaskedTypeTable[cMask_AlphaNumFixed, tmcUp] := Char_AlphaNumFixedUpCase;
+  cMaskToMaskedTypeTable[cMask_AlphaNumFixed, tmcDown] := Char_AlphaNumFixedDownCase;
 
-  cMaskToMaskedTypeArray[cMask_AllChars, tmcNormal] := Char_All;
-  cMaskToMaskedTypeArray[cMask_AllChars, tmcUp] := Char_AllUpCase;
-  cMaskToMaskedTypeArray[cMask_AllChars, tmcDown] := Char_AllDownCase;
+  cMaskToMaskedTypeTable[cMask_AllChars, tmcNormal] := Char_All;
+  cMaskToMaskedTypeTable[cMask_AllChars, tmcUp] := Char_AllUpCase;
+  cMaskToMaskedTypeTable[cMask_AllChars, tmcDown] := Char_AllDownCase;
 
-  cMaskToMaskedTypeArray[cMask_AllCharsFixed, tmcNormal] := Char_AllFixed;
-  cMaskToMaskedTypeArray[cMask_AllCharsFixed, tmcUp] := Char_AllFixedUpCase;
-  cMaskToMaskedTypeArray[cMask_AllCharsFixed, tmcDown] := Char_AllFixedDownCase;
+  cMaskToMaskedTypeTable[cMask_AllCharsFixed, tmcNormal] := Char_AllFixed;
+  cMaskToMaskedTypeTable[cMask_AllCharsFixed, tmcUp] := Char_AllFixedUpCase;
+  cMaskToMaskedTypeTable[cMask_AllCharsFixed, tmcDown] := Char_AllFixedDownCase;
 
-  cMaskToMaskedTypeArray[cMask_Number, tmcNormal] := Char_Number;
-  cMaskToMaskedTypeArray[cMask_Number, tmcUp] := Char_Number;
-  cMaskToMaskedTypeArray[cMask_Number, tmcDown] := Char_Number;
+  cMaskToMaskedTypeTable[cMask_Number, tmcNormal] := Char_Number;
+  cMaskToMaskedTypeTable[cMask_Number, tmcUp] := Char_Number;
+  cMaskToMaskedTypeTable[cMask_Number, tmcDown] := Char_Number;
 
-  cMaskToMaskedTypeArray[cMask_NumberFixed, tmcNormal] := Char_NumberFixed;
-  cMaskToMaskedTypeArray[cMask_NumberFixed, tmcUp] := Char_NumberFixed;
-  cMaskToMaskedTypeArray[cMask_NumberFixed, tmcDown] := Char_NumberFixed;
+  cMaskToMaskedTypeTable[cMask_NumberFixed, tmcNormal] := Char_NumberFixed;
+  cMaskToMaskedTypeTable[cMask_NumberFixed, tmcUp] := Char_NumberFixed;
+  cMaskToMaskedTypeTable[cMask_NumberFixed, tmcDown] := Char_NumberFixed;
 
-  cMaskToMaskedTypeArray[cMask_NumberPlusMin, tmcNormal] := Char_NumberPlusMin;
-  cMaskToMaskedTypeArray[cMask_NumberPlusMin, tmcUp] := Char_NumberPlusMin;
-  cMaskToMaskedTypeArray[cMask_NumberPlusMin, tmcDown] := Char_NumberPlusMin;
+  cMaskToMaskedTypeTable[cMask_NumberPlusMin, tmcNormal] := Char_NumberPlusMin;
+  cMaskToMaskedTypeTable[cMask_NumberPlusMin, tmcUp] := Char_NumberPlusMin;
+  cMaskToMaskedTypeTable[cMask_NumberPlusMin, tmcDown] := Char_NumberPlusMin;
 
-  cMaskToMaskedTypeArray[cMask_HourSeparator, tmcNormal] := Char_HourSeparator;
-  cMaskToMaskedTypeArray[cMask_HourSeparator, tmcUp] := Char_HourSeparator;
-  cMaskToMaskedTypeArray[cMask_HourSeparator, tmcDown] := Char_HourSeparator;
+  cMaskToMaskedTypeTable[cMask_HourSeparator, tmcNormal] := Char_HourSeparator;
+  cMaskToMaskedTypeTable[cMask_HourSeparator, tmcUp] := Char_HourSeparator;
+  cMaskToMaskedTypeTable[cMask_HourSeparator, tmcDown] := Char_HourSeparator;
 
-  cMaskToMaskedTypeArray[cMask_DateSeparator, tmcNormal] := Char_DateSeparator;
-  cMaskToMaskedTypeArray[cMask_DateSeparator, tmcUp] := Char_DateSeparator;
-  cMaskToMaskedTypeArray[cMask_DateSeparator, tmcDown] := Char_DateSeparator;
+  cMaskToMaskedTypeTable[cMask_DateSeparator, tmcNormal] := Char_DateSeparator;
+  cMaskToMaskedTypeTable[cMask_DateSeparator, tmcUp] := Char_DateSeparator;
+  cMaskToMaskedTypeTable[cMask_DateSeparator, tmcDown] := Char_DateSeparator;
 
-  cMaskToMaskedTypeArray[cMask_Hex, tmcNormal] := Char_Hex;
-  cMaskToMaskedTypeArray[cMask_Hex, tmcUp] := Char_HexUpCase;
-  cMaskToMaskedTypeArray[cMask_Hex, tmcDown] := Char_HexDownCase;
+  cMaskToMaskedTypeTable[cMask_Hex, tmcNormal] := Char_Hex;
+  cMaskToMaskedTypeTable[cMask_Hex, tmcUp] := Char_HexUpCase;
+  cMaskToMaskedTypeTable[cMask_Hex, tmcDown] := Char_HexDownCase;
 
-  cMaskToMaskedTypeArray[cMask_HexFixed, tmcNormal] := Char_HexFixed;
-  cMaskToMaskedTypeArray[cMask_HexFixed, tmcUp] := Char_HexFixedUpCase;
-  cMaskToMaskedTypeArray[cMask_HexFixed, tmcDown] := Char_HexFixedDownCase;
+  cMaskToMaskedTypeTable[cMask_HexFixed, tmcNormal] := Char_HexFixed;
+  cMaskToMaskedTypeTable[cMask_HexFixed, tmcUp] := Char_HexFixedUpCase;
+  cMaskToMaskedTypeTable[cMask_HexFixed, tmcDown] := Char_HexFixedDownCase;
 
-  cMaskToMaskedTypeArray[cMask_Binary, tmcNormal] := Char_Binary;
-  cMaskToMaskedTypeArray[cMask_Binary, tmcUp] := Char_Binary;
-  cMaskToMaskedTypeArray[cMask_Binary, tmcDown] := Char_Binary;
+  cMaskToMaskedTypeTable[cMask_Binary, tmcNormal] := Char_Binary;
+  cMaskToMaskedTypeTable[cMask_Binary, tmcUp] := Char_Binary;
+  cMaskToMaskedTypeTable[cMask_Binary, tmcDown] := Char_Binary;
 
-  cMaskToMaskedTypeArray[cMask_BinaryFixed, tmcNormal] := Char_BinaryFixed;
-  cMaskToMaskedTypeArray[cMask_BinaryFixed, tmcUp] := Char_BinaryFixed;
-  cMaskToMaskedTypeArray[cMask_BinaryFixed, tmcDown] := Char_BinaryFixed;
+  cMaskToMaskedTypeTable[cMask_BinaryFixed, tmcNormal] := Char_BinaryFixed;
+  cMaskToMaskedTypeTable[cMask_BinaryFixed, tmcUp] := Char_BinaryFixed;
+  cMaskToMaskedTypeTable[cMask_BinaryFixed, tmcDown] := Char_BinaryFixed;
 
 end;
 
@@ -851,7 +851,7 @@ begin
             if (Length(CP) = 1) and (CP[1] in Simple_cMask_Tokens) then
             begin
               AMaskedTypeCase := UpDownToMaskedTypeCase(InUp, InDown);
-              AMaskedType := cMaskToMaskedTypeArray[CP[1], AMaskedTypeCase];
+              AMaskedType := cMaskToMaskedTypeTable[CP[1], AMaskedTypeCase];
               AddToMask(AMaskedType);
             end
             else
@@ -2454,6 +2454,6 @@ begin
 end;
 
 initialization
-  InitcMaskToMaskedTypeArray;
+  InitcMaskToMaskedTypeTable;
 
 end.
