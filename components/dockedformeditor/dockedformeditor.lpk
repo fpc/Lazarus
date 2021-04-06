@@ -22,7 +22,7 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="17">
+    <Files Count="15">
       <Item1>
         <Filename Value="source\dockedregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -41,58 +41,50 @@
         <UnitName Value="DockedMainIDE"/>
       </Item4>
       <Item5>
-        <Filename Value="source\dockedresizeframe.pas"/>
-        <UnitName Value="DockedResizeFrame"/>
-      </Item5>
-      <Item6>
         <Filename Value="source\dockedresizer.pas"/>
         <UnitName Value="DockedResizer"/>
-      </Item6>
-      <Item7>
+      </Item5>
+      <Item6>
         <Filename Value="source\dockedoptionside.pas"/>
         <UnitName Value="DockedOptionsIDE"/>
-      </Item7>
-      <Item8>
+      </Item6>
+      <Item7>
         <Filename Value="source\dockedoptionsframe.pas"/>
         <DisableI18NForLFM Value="True"/>
         <UnitName Value="DockedOptionsFrame"/>
-      </Item8>
-      <Item9>
+      </Item7>
+      <Item8>
         <Filename Value="source\dockedtools.pas"/>
         <UnitName Value="DockedTools"/>
-      </Item9>
-      <Item10>
+      </Item8>
+      <Item9>
         <Filename Value="source\dockeddesignform.pas"/>
         <UnitName Value="DockedDesignForm"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="source\dockedmodulepagecontrol.pas"/>
         <UnitName Value="DockedModulePageControl"/>
-      </Item11>
-      <Item12>
+      </Item10>
+      <Item11>
         <Filename Value="source\dockedsourceeditorwindow.pas"/>
         <UnitName Value="DockedSourceEditorWindow"/>
-      </Item12>
-      <Item13>
+      </Item11>
+      <Item12>
         <Filename Value="source\dockedsourceeditorpagecontrols.pas"/>
         <UnitName Value="DockedSourceEditorPageControls"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="source\dockedanchordesigner.pas"/>
         <UnitName Value="DockedAnchorDesigner"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="source\dockedbasicanchordesigner.pas"/>
         <UnitName Value="DockedBasicAnchorDesigner"/>
-      </Item15>
-      <Item16>
+      </Item14>
+      <Item15>
         <Filename Value="source\dockedanchorcontrol.pas"/>
         <UnitName Value="DockedAnchorControl"/>
-      </Item16>
-      <Item17>
-        <Filename Value="source\dockedanchorgrip.pas"/>
-        <UnitName Value="dockedanchorgrip"/>
-      </Item17>
+      </Item15>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
