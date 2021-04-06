@@ -274,7 +274,7 @@ begin
   CodeToolBoss.GetIdentifierAt(DeclCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
   CurUnitname:=ExtractFileNameOnly(DeclCode.Filename);
 
-  //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
+  //debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=',dbgs(DeclarationCaretXY));
 
   Files:=nil;
   OwnerList:=nil;
@@ -943,6 +943,7 @@ var
 begin
   FIdentifierFilename:=NewIdentifierFilename;
   FIdentifierPosition:=NewIdentifierPosition;
+  //debugln(['TFindRenameIdentifierDialog.SetIdentifier ',FIdentifierFilename,' ',dbgs(FIdentifierPosition)]);
   CurrentListBox.Items.Clear;
   s:=IdentifierFilename
      +'('+IntToStr(IdentifierPosition.Y)+','+IntToStr(IdentifierPosition.X)+')';

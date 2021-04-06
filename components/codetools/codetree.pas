@@ -363,6 +363,7 @@ type
 //-----------------------------------------------------------------------------
 // useful functions
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
+function NodePathAsString(Node: TCodeTreeNode): string;
 procedure WriteNodeExtTree(Tree: TAVLTree);
 function FindCodeTreeNodeExt(Tree: TAVLTree; const Txt: string
                              ): TCodeTreeNodeExtension;
@@ -514,6 +515,19 @@ begin
   ctnAttribParam: Result:='Attribute Param';
   else
     Result:='invalid descriptor ('+IntToStr(Desc)+')';
+  end;
+end;
+
+function NodePathAsString(Node: TCodeTreeNode): string;
+begin
+  if Node=nil then
+    exit('nil');
+  Result:='';
+  while Node<>nil do begin
+    if Result<>'' then
+      Result:='.'+Result;
+    Result:=Node.DescAsString+Result;
+    Node:=Node.Parent;
   end;
 end;
 
