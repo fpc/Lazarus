@@ -244,7 +244,7 @@ constructor TBar.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   BevelOuter := bvNone;
-  Color := clNone;
+  Color := clWindow;
   SetInitialBounds(0, 0, 8, 8);
   FActivated := False;
 end;
