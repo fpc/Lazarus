@@ -110,6 +110,7 @@ Var
   E : TFPReportExportCanvas;
   I : Integer;
   First : Boolean;
+  WorkRect : TRect;
 
 begin
   if ShowPrinterDialog then
@@ -124,6 +125,10 @@ begin
     E.Report:=Self.Report;
     E.HDPI:=P.XDPI;
     E.VDPI:=P.YDPI;
+    // Ignore printer specific borders
+    WorkRect := P.PaperSize.PaperRect.WorkRect;
+    E.HorzOffset:=-WorkRect.Left;
+    E.VertOffset:=-WorkRect.Top; 
     First:=true;
     For I:=0 to ARTObjects.Count-1 do
       if MustPrintPage(I+1) and Not P.Aborted then
