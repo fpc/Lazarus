@@ -8708,7 +8708,8 @@ begin
     if TabIndex>=0 then
     begin
       FNotebook.ActivePageIndex := TabIndex;
-      Manager.ActiveEditor:=GetActiveSE;
+      if Assigned(IDEDockMaster) then
+        Manager.ActiveEditor:=GetActiveSE;
     end;
   end;
 end;
