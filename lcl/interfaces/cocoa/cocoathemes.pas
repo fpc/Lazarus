@@ -32,6 +32,7 @@ type
   protected
     callback     : NSObject;
     BtnCell      : NSButtonCell;
+    hdrCell      : NSTableHeaderCell;
     function SetButtonCellType(btn: NSButtonCell; Details: TThemedElementDetails): Boolean;
     procedure SetButtonCellToDetails(btn: NSButtonCell; Details: TThemedElementDetails);
 
@@ -48,8 +49,9 @@ type
     function GetDrawState(Details: TThemedElementDetails): ThemeDrawState;
     function DrawButtonElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 (*    function DrawComboBoxElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawHeaderElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
-    function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;*)
+*)
+    function DrawHeaderElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
+(*    function DrawRebarElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;*)
     function DrawToolBarElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
     function DrawTreeviewElement(DC: TCocoaContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
 (*    function DrawWindowElement(DC: TCarbonDeviceContext; Details: TThemedElementDetails; R: TRect; {%H-}ClipRect: PRect): TRect;
@@ -246,35 +248,39 @@ begin
   end;
 end;
 
-(*{------------------------------------------------------------------------------
-  Method:  TCarbonThemeServices.DrawHeaderElement
+{------------------------------------------------------------------------------
+  Method:  TCocoaThemeServices.DrawHeaderElement
   Params:  DC       - Carbon device context
            Details  - Details for themed element
            R        - Bounding rectangle
            ClipRect - Clipping rectangle
   Returns: ClientRect
 
-  Draws a header (THeaderControl same as ListView header) element with native Carbon look
+  Draws a header (THeaderControl same as ListView header) element with native macOS look
  ------------------------------------------------------------------------------}
-function TCarbonThemeServices.DrawHeaderElement(DC: TCarbonDeviceContext;
+function TCocoaThemeServices.DrawHeaderElement(DC: TCocoaContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
-  ButtonDrawInfo: HIThemeButtonDrawInfo;
-  PaintRect: HIRect;
+  cur : NSGraphicsContext;
+  nsr : NSRect;
 begin
-  ButtonDrawInfo.version := 0;
-  ButtonDrawInfo.State := GetDrawState(Details);
-  ButtonDrawInfo.kind := kThemeBevelButtonSmall;//kThemeListHeaderButton;
-  ButtonDrawInfo.adornment := kThemeAdornmentNone;
+  if (HdrCell=nil) then
+  begin
+    hdrCell := NSTableHeaderCell.alloc.initTextCell(NSSTR(''));
+  end;
+  CellDrawStart(DC, R, cur, nsr);
 
-  PaintRect := RectToCGRect(R);
+  // this draws a header background
+  hdrCell.setDrawsBackground(true);
+  hdrCell.drawInteriorWithFrame_inView(nsr,nil);
+  hdrCell.highlight_withFrame_inView(true, nsr, nil);
 
-  OSError(
-    HIThemeDrawButton(PaintRect, ButtonDrawInfo, DC.CGContext,
-      kHIThemeOrientationNormal, @PaintRect),
-    Self, 'DrawButtonElement', 'HIThemeDrawButton');
+  // this draws a nice cell separator
+  hdrCell.setDrawsBackground(false);
+  CellDrawFrame(hdrCell, nsr);
 
-  Result := CGRectToRect(PaintRect);
+  CellDrawEnd(DC, cur);
+  Result := R;
 end;
 
 {------------------------------------------------------------------------------
@@ -287,6 +293,7 @@ end;
 
   Draws a rebar element (splitter) with native Carbon look
  ------------------------------------------------------------------------------}
+ (*
 function TCarbonThemeServices.DrawRebarElement(DC: TCarbonDeviceContext;
   Details: TThemedElementDetails; R: TRect; ClipRect: PRect): TRect;
 var
@@ -549,6 +556,7 @@ destructor TCocoaThemeServices.Destroy;
 begin
   NSNotificationCenter(NSNotificationCenter.defaultCenter).removeObserver(callback);
   callback.release;
+  if (HdrCell<>nil) then hdrCell.Release;
   inherited Destroy;
 end;
 
@@ -704,8 +712,8 @@ begin
     case Details.Element of
       //teComboBox: DrawComboBoxElement(Context, Details, R, ClipRect);
       teButton: DrawButtonElement(Context, Details, R, ClipRect);
-      {teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
-      teRebar: DrawRebarElement(Context, Details, R, ClipRect);}
+      teHeader: DrawHeaderElement(Context, Details, R, ClipRect);
+      {teRebar: DrawRebarElement(Context, Details, R, ClipRect);}
       teToolBar: DrawToolBarElement(Context, Details, R, ClipRect);
       teTreeview: DrawTreeviewElement(Context, Details, R, ClipRect);
 //      teWindow: DrawWindowElement(Context, Details, R, ClipRect);
