@@ -830,7 +830,7 @@ begin
                  else
                    AddToMask(Char_SetFixed, CharSet);
                end;
-               //debugln(['Added CharSet: ',Dbgs(CharSet),', IsNegative=',IsNegative]);
+               //debugln(['Added CharSet: ',Dbgs(CharSet),', IsNegative=',IsNegative,', IsOptional=',IsOptional]);
 
              except
                on E: EInvalidEditMask do
@@ -884,8 +884,8 @@ end;
 procedure TCustomMaskEdit.ParseSet(const S: String; var i: integer; SUlen: PtrInt; out ACharSet: TSysCharSet;
                                    out IsNegative, IsOptional: Boolean);
 var
-  SetClosed, InRange: Boolean;
-  LastChar: Char;
+  SetClosed, InRange, Special: Boolean;
+  LastChar, Current: Char;
   CP: TUtf8Char;
 
   procedure AddToCharSet(AFirst, ALast: Char);
@@ -901,6 +901,7 @@ begin
   ACharSet := [];
   IsNegative := False;
   IsOptional := False;
+  Special := False;
   LastChar := #0;
   InRange := False;
 
@@ -910,80 +911,97 @@ begin
     CP := GetCodePoint(S, i);
     if (Length(CP) <> 1) then
       raise EInvalidEditMask.Create(SIllegalCharInSet);
-    case CP[1] of
-      cMask_SetNegate:
-      begin
-        if not IsNegative and (ACharSet = []) then
+    Current := CP[1];
+    if Special then
+    begin
+      if not InRange then
+        AddToCharSet(Current, Current)
+      else
+        AddToCharSet(LastChar, Current);
+      InRange := False;
+      Special := False;
+    end
+    else
+    begin//not Special
+      case Current of
+        cMask_SpecialChar:
         begin
-          //debugln('IsNegative := True');
-          IsNegative := True
-        end
-        else
+          Special := True;
+        end;
+
+        cMask_SetNegate:
+        begin
+          if not IsNegative and (ACharSet = []) then
+          begin
+            //debugln('IsNegative := True');
+            IsNegative := True
+          end
+          else
+          begin
+            if not InRange then
+              AddToCharSet(Current, Current)
+            else
+              AddToCharSet(LastChar, Current);
+            InRange := False;
+          end;
+        end;
+
+        cMask_SetOptional:
+        begin
+          if not IsOptional and not IsNegative and (ACharSet = []) then
+          begin
+            //debugln('IsNegative := True');
+            IsOptional := True
+          end
+          else
+          begin
+            if not InRange then
+              AddToCharSet(Current, Current)
+            else
+              AddToCharSet(LastChar, Current);
+            InRange := False;
+          end;
+        end;
+
+        cMask_SetRange:
+        begin
+          if InRange then
+            raise EInvalidEditMask.Create(SIllegalRangeChar);
+          if (ACharSet = []) or ((i < SUlen) and (GetCodePoint(S, i+1) = cMask_SetEnd)) then
+          //be lenient, if it appears as last token in a set, accept it as a character for CharSet
+          begin
+            //debugln('Adding - to set');
+            Include(ACharSet, cMask_SetRange);
+          end
+          else
+          begin
+            //debugln('Start range');
+            InRange := True;
+          end;
+        end;
+
+        cMask_SetEnd:
+        begin
+          //debugln('Set closed:');
+          if (ACharSet = []) then
+            raise EInvalidEditMask.Create(SEmptySet);
+          //debugln(['IsNegative=',IsNegative]);
+          InRange := False;
+          SetClosed := True;
+        end;
+
+        otherwise
         begin
           if not InRange then
-            AddToCharSet(CP[1], CP[1])
+            AddToCharSet(Current, Current)
           else
-            AddToCharSet(LastChar, CP[1]);
+            AddToCharSet(LastChar, Current);
           InRange := False;
-        end;
-      end;
-
-      cMask_SetOptional:
-      begin
-        if not IsOptional and not IsNegative and (ACharSet = []) then
-        begin
-          //debugln('IsNegative := True');
-          IsOptional := True
-        end
-        else
-        begin
-          if not InRange then
-            AddToCharSet(CP[1], CP[1])
-          else
-            AddToCharSet(LastChar, CP[1]);
-          InRange := False;
-        end;
-      end;
-
-
-      cMask_SetRange:
-      begin
-        if InRange then
-          raise EInvalidEditMask.Create(SIllegalRangeChar);
-        if (ACharSet = []) or ((i < SUlen) and (GetCodePoint(S, i+1) = cMask_SetEnd)) then
-        //be lenient, if it appears as last token in a set, accept it as a character for CharSet
-        begin
-          //debugln('Adding - to set');
-          Include(ACharSet, cMask_SetRange);
-        end
-        else
-        begin
-          //debugln('Start range');
-          InRange := True;
-        end;
-      end;
-
-      cMask_SetEnd:
-      begin
-        //debugln('Set closed:');
-        if (ACharSet = []) then
-          raise EInvalidEditMask.Create(SEmptySet);
-        //debugln(['IsNegative=',IsNegative]);
-        InRange := False;
-        SetClosed := True;
-      end;
-
-      otherwise
-      begin
-        if not InRange then
-          AddToCharSet(CP[1], CP[1])
-        else
-          AddToCharSet(LastChar, CP[1]);
-        InRange := False;
-      end; //otherwise
-    end;//case
-    if not InRange then
-      LastChar := CP[1];
+        end; //otherwise
+      end;//case
+    end;//not Special
+    if not InRange and not Special then
+      LastChar := Current;
 
   end;//while
   if not SetClosed then
