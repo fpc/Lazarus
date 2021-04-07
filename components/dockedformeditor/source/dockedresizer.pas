@@ -248,6 +248,14 @@ var
   LScrollPos: Integer;
 begin
   if not Assigned(FDesignForm) then Exit;
+  if ResizeControl.Resizing then
+  begin
+    DesignForm.BeginUpdate;
+    DesignForm.EndUpdate;
+    ResizeControl.AdjustBounds(FScrollPos);
+    Exit;
+  end;
+
   LWidth  := FDesignForm.Width  + 2 * ResizeControl.SizerGripSize;
   LHeight := FDesignForm.Height + 2 * ResizeControl.SizerGripSize;
   {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TResizer.AdjustResizer Resizer Width:', DbgS(LWidth), ' Height:', DbgS(LHeight)); {$ENDIF}
