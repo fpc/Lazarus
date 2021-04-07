@@ -596,7 +596,7 @@ begin
   FFakeMenu.Parent := Parent;
 
   FFormClient := TWinControl.Create(Parent);
-  FFormClient.Color := clBtnFace;
+  FFormClient.ControlStyle:= FFormClient.ControlStyle + [csOpaque];
   FFormClient.Parent := Parent;
 
   FFormContainer := TWinControl.Create(FFormClient);
