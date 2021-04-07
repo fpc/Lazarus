@@ -55,22 +55,9 @@ type
     property Update: Boolean read FUpdate;
   end;
 
-  { TResizeForm }
-
-  TResizeForm = class(TFormAccess)
-  protected
-    function GetHorzScrollPosition: Integer; virtual;
-    function GetVertScrollPosition: Integer; virtual;
-    procedure SetHorzScrollPosition({%H-}AValue: Integer); virtual;
-    procedure SetVertScrollPosition({%H-}AValue: Integer); virtual;
-  public
-    property HorzScrollPosition: Integer read GetHorzScrollPosition write SetHorzScrollPosition;
-    property VertScrollPosition: Integer read GetVertScrollPosition write SetVertScrollPosition;
-  end;
-
   { TDesignFormIDE }
 
-  TDesignFormIDE = class(TResizeForm)
+  TDesignFormIDE = class(TFormAccess)
   private
     FAnchorDesigner: TBasicAnchorDesigner;
     FLastActiveSourceWindow: TSourceEditorWindowInterface;
@@ -97,26 +84,6 @@ implementation
 
 type
   THackForm = class(TForm);
-
-{ TResizeForm }
-
-function TResizeForm.GetHorzScrollPosition: Integer;
-begin
-  Result := -Left;
-end;
-
-function TResizeForm.GetVertScrollPosition: Integer;
-begin
-  Result := -Top;
-end;
-
-procedure TResizeForm.SetHorzScrollPosition(AValue: Integer);
-begin
-end;
-
-procedure TResizeForm.SetVertScrollPosition(AValue: Integer);
-begin
-end;
 
 { TDesignFormIDE }
 

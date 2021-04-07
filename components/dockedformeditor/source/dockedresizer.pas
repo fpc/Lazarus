@@ -147,8 +147,6 @@ begin
 end;
 
 procedure TResizer.ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
-var
-  LScrollPos: Integer;
 begin
   case ScrollCode of
     scLineDown: ScrollPos := ScrollPos + 50;
@@ -172,18 +170,12 @@ begin
     ScrollPos := Min(ScrollPos, FRealMaxV);
     ScrollPos := Max(ScrollPos, 0);
     FScrollPos.y := ScrollPos;
-    // scroll for form
-    LScrollPos := Max(ScrollPos - ResizeControl.SizerGripSize, 0);
-    DesignForm.VertScrollPosition := LScrollPos;
   end;
   if Sender = FScrollBarHorz then
   begin
     ScrollPos := Min(ScrollPos, FRealMaxH);
     ScrollPos := Max(ScrollPos, 0);
     FScrollPos.x := ScrollPos;
-    // scroll for form
-    LScrollPos := Max(ScrollPos - ResizeControl.SizerGripSize, 0);
-    DesignForm.HorzScrollPosition := LScrollPos;
   end;
   DesignForm.EndUpdate;
   if not FPostponedAdjustResizeControl then
