@@ -759,6 +759,12 @@ begin
   LMouseOffset := MouseOffset;
   LMouseOffset.x := LMouseOffset.x div DockedOptions.MouseBorderFactor;
   LMouseOffset.y := LMouseOffset.y div DockedOptions.MouseBorderFactor;
+  // if control is clicked, change BorderSpacing.Around (x = y!)
+  if not State.IsAnchoring then
+  begin
+    LMouseOffset.x := (LMouseOffset.x + LMouseOffset.y) div 2;
+    LMouseOffset.y := LMouseOffset.x;
+  end;
 
   if not DockedOptions.TreatBorder and not State.IsAnchoring then
   begin
