@@ -22,7 +22,7 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
-    <Files Count="18">
+    <Files Count="17">
       <Item1>
         <Filename Value="source\dockedregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -62,41 +62,37 @@
         <UnitName Value="DockedDesignForm"/>
       </Item9>
       <Item10>
-        <Filename Value="source\dockedmodulepagecontrol.pas"/>
-        <UnitName Value="DockedModulePageControl"/>
+        <Filename Value="source\dockedsourcepagecontrol.pas"/>
+        <UnitName Value="DockedSourcePageControl"/>
       </Item10>
       <Item11>
         <Filename Value="source\dockedsourcewindow.pas"/>
         <UnitName Value="DockedSourceWindow"/>
       </Item11>
       <Item12>
-        <Filename Value="source\dockedsourceeditorpagecontrols.pas"/>
-        <UnitName Value="DockedSourceEditorPageControls"/>
-      </Item12>
-      <Item13>
         <Filename Value="source\dockedanchordesigner.pas"/>
         <UnitName Value="DockedAnchorDesigner"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="source\dockedbasicanchordesigner.pas"/>
         <UnitName Value="DockedBasicAnchorDesigner"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="source\dockedanchorcontrol.pas"/>
         <UnitName Value="DockedAnchorControl"/>
-      </Item15>
-      <Item16>
+      </Item14>
+      <Item15>
         <Filename Value="source\dockedgrip.pas"/>
         <UnitName Value="DockedGrip"/>
-      </Item16>
-      <Item17>
+      </Item15>
+      <Item16>
         <Filename Value="source\dockedoptionsframe.lfm"/>
         <Type Value="LFM"/>
-      </Item17>
-      <Item18>
+      </Item16>
+      <Item17>
         <Filename Value="source\dockedresizecontrol.pas"/>
         <UnitName Value="DockedResizeControl"/>
-      </Item18>
+      </Item17>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>

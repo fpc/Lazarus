@@ -32,7 +32,7 @@ uses
   // IDEIntf
   SrcEditorIntf, LazIDEIntf, FormEditingIntf, ExtendedNotebook,
   // DockedFormEditor
-  DockedSourceEditorPageControls, DockedDesignForm, DockedModulePageControl,
+  DockedDesignForm, DockedSourcePageControl,
   DockedOptionsIDE, DockedTools;
 
 type
@@ -42,23 +42,23 @@ type
   TSourceWindow = class
   private
     FActiveDesignForm: TDesignForm;
+    FDefaultNotebookPageChanged: TNotifyEvent;
     FLastActiveSourceEditor: TSourceEditorInterface;
     FLastTopParent: TControl;
-    FNotebookPageChanged: TNotifyEvent;
-    FPageControlList: TSourceEditorPageControls;
-    FSourceEditorNotebook: TExtendedNotebook;
+    FNotebook: TExtendedNotebook;
+    FPageControlList: TSourcePageControls;
     FSourceWindowIntf: TSourceEditorWindowInterface;
     function GetActiveEditor: TSourceEditorInterface;
     procedure HookIntoOnPageChanged;
+    procedure NoteBookPageChanged(Sender: TObject);
     procedure SetActiveDesignForm(const AValue: TDesignForm);
-    procedure SourceEditorPageChanged(Sender: TObject);
     procedure UpdateEditorPageCaption(Sender: TObject);
   public
     constructor Create(ASourceWindowIntf: TSourceEditorWindowInterface);
     destructor Destroy; override;
-    procedure AddPageCtrl(ASourceEditor: TSourceEditorInterface; APageControl: TModulePageControl);
+    procedure AddPageCtrl(APageControl: TSourcePageControl);
     procedure AdjustPageControl;
-    function  FindModulePageControl(ASourceEditor: TSourceEditorInterface): TModulePageControl;
+    function  FindPageControl(ASourceEditor: TSourceEditorInterface): TSourcePageControl;
     procedure RemoveActiveDesignForm;
     procedure RemovePageCtrl(ASourceEditor: TSourceEditorInterface);
   public
@@ -66,7 +66,7 @@ type
     property ActiveEditor: TSourceEditorInterface read GetActiveEditor;
     property LastActiveSourceEditor: TSourceEditorInterface read FLastActiveSourceEditor write FLastActiveSourceEditor;
     property LastTopParent: TControl read FLastTopParent write FLastTopParent;
-    property PageControlList: TSourceEditorPageControls read FPageControlList;
+    property PageControlList: TSourcePageControls read FPageControlList;
     property SourceWindowIntf: TSourceEditorWindowInterface read FSourceWindowIntf;
   end;
 
@@ -75,7 +75,7 @@ type
   TSourceWindows = class(specialize TFPGList<TSourceWindow>)
   private
     FLastActiveSourceWindow: TSourceEditorWindowInterface;
-    function GetLastActiveModulePageControl: TModulePageControl;
+    function GetLastActivePageControl: TSourcePageControl;
     function GetLastActiveSourceEditor: TSourceEditorInterface;
     function GetSourceWindowIntf(ASrcEditor: TSourceWindow): TSourceEditorWindowInterface;
     function GetSourceWindow(ASourceWindowIntf: TSourceEditorWindowInterface): TSourceWindow;
@@ -86,18 +86,18 @@ type
     function  Contains(ASourceWindowIntf: TSourceEditorWindowInterface): Boolean;
     function  Contains(ASrcEditor: TSourceWindow): Boolean;
     procedure DeleteItem(Index: Integer);
-    function  FindDesignForm(AModulePageCtrl: TModulePageControl): TDesignForm;
-    function  FindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl;
+    function  FindDesignForm(APageCtrl: TSourcePageControl): TDesignForm;
+    function  FindPageControl(ASrcEditor: TSourceEditorInterface): TSourcePageControl;
     function  IndexOf(ASourceWindowIntf: TSourceEditorWindowInterface): Integer; overload;
     function  LastSourceEditorNotFound: Boolean;
     procedure RefreshActivePageControls;
     procedure RefreshAllPageControls;
     procedure Remove(ASourceWindowIntf: TSourceEditorWindowInterface); overload;
-    procedure ShowCodeTabSkipCurrent(CurrentPageCtrl: TModulePageControl; ADesignForm: TDesignForm);
+    procedure ShowCodeTabSkipCurrent(CurrentPageCtrl: TSourcePageControl; ADesignForm: TDesignForm);
   public
     property LastActiveSourceWindow: TSourceEditorWindowInterface read FLastActiveSourceWindow write FLastActiveSourceWindow;
     property LastActiveSourceEditor: TSourceEditorInterface read GetLastActiveSourceEditor write SetLastActiveSourceEditor;
-    property LastActiveModulePageControl: TModulePageControl read GetLastActiveModulePageControl;
+    property LastActivePageControl: TSourcePageControl read GetLastActivePageControl;
     property SourceWindowIntf[ASrcEditor: TSourceWindow]: TSourceEditorWindowInterface read GetSourceWindowIntf;
     property SourceWindow[ASourceWindowIntf: TSourceEditorWindowInterface]: TSourceWindow read GetSourceWindow;
   end;
@@ -116,46 +116,21 @@ begin
   for i := 0 to FSourceWindowIntf.ControlCount - 1 do
     if FSourceWindowIntf.Controls[i] is TExtendedNotebook then
     begin
-      FSourceEditorNotebook := TExtendedNotebook(FSourceWindowIntf.Controls[i]);
+      FNotebook := TExtendedNotebook(FSourceWindowIntf.Controls[i]);
       Break;
     end;
-  if not Assigned(FSourceEditorNotebook) then Exit;
-  FNotebookPageChanged := FSourceEditorNotebook.OnChange;
-  FSourceEditorNotebook.OnChange := @SourceEditorPageChanged;
+  if not Assigned(FNotebook) then Exit;
+  FDefaultNotebookPageChanged := FNotebook.OnChange;
+  FNotebook.OnChange := @NoteBookPageChanged;
 end;
 
-function TSourceWindow.GetActiveEditor: TSourceEditorInterface;
-begin
-  Result := FSourceWindowIntf.ActiveEditor;
-end;
-
-procedure TSourceWindow.SetActiveDesignForm(const AValue: TDesignForm);
+procedure TSourceWindow.NoteBookPageChanged(Sender: TObject);
 var
-  LPageCtrl: TModulePageControl;
+  LPageCtrl: TSourcePageControl;
 begin
-  if FActiveDesignForm = AValue then Exit;
-  if FActiveDesignForm <> nil then
-    // don't hide now if soon form will be hidden (for example on the IDE start)
-    if not FActiveDesignForm.Hiding then
-      FActiveDesignForm.HideWindow;
-  FActiveDesignForm := AValue;
-
-  LPageCtrl := FindModulePageControl(ActiveEditor);
-  // important when we want back to tab where was oppened form
-  if (AValue <> nil) then
-    LazarusIDE.DoShowDesignerFormOfSrc(ActiveEditor);
-
-  if LPageCtrl = nil then Exit;
-  LPageCtrl.DesignForm := AValue;
-end;
-
-procedure TSourceWindow.SourceEditorPageChanged(Sender: TObject);
-var
-  LPageCtrl: TModulePageControl;
-begin
-  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourceWindow.SourceEditorPageChanged SourceEditorWindow[' + FSourceWindowIntf.Caption + ']'); {$ENDIF}
-  FNotebookPageChanged(Sender);
-  LPageCtrl := FindModulePageControl(ActiveEditor);
+  {$IFDEF DEBUGDOCKEDFORMEDITOR} DebugLn('TSourceWindow.NoteBookPageChanged SourceWindow[' + FSourceWindowIntf.Caption + ']'); {$ENDIF}
+  FDefaultNotebookPageChanged(Sender);
+  LPageCtrl := FindPageControl(ActiveEditor);
   if not Assigned(LPageCtrl) then Exit;
   if LPageCtrl.DesignerPageActive then
   begin
@@ -168,12 +143,37 @@ begin
   end;
 end;
 
+function TSourceWindow.GetActiveEditor: TSourceEditorInterface;
+begin
+  Result := FSourceWindowIntf.ActiveEditor;
+end;
+
+procedure TSourceWindow.SetActiveDesignForm(const AValue: TDesignForm);
+var
+  LPageCtrl: TSourcePageControl;
+begin
+  if FActiveDesignForm = AValue then Exit;
+  if FActiveDesignForm <> nil then
+    // don't hide now if soon form will be hidden (for example on the IDE start)
+    if not FActiveDesignForm.Hiding then
+      FActiveDesignForm.HideWindow;
+  FActiveDesignForm := AValue;
+
+  LPageCtrl := FindPageControl(ActiveEditor);
+  // important when we want back to tab where was oppened form
+  if (AValue <> nil) then
+    LazarusIDE.DoShowDesignerFormOfSrc(ActiveEditor);
+
+  if LPageCtrl = nil then Exit;
+  LPageCtrl.DesignForm := AValue;
+end;
+
 procedure TSourceWindow.UpdateEditorPageCaption(Sender: TObject);
 var
   LSourceEditor: TSourceEditorInterface;
   LSourceWindowIntf: TSourceEditorWindowInterface;
 begin
-  // if a unit is cloned to undocked empty source editor window, the ModulePageControl
+  // if a unit is cloned to undocked empty source editor window, the SourcePageControl
   // is not created, the only workaround I found is, to activate the new created
   // source editor in this window
   if not (Sender is TSourceEditorInterface) then Exit;
@@ -193,35 +193,35 @@ constructor TSourceWindow.Create(ASourceWindowIntf: TSourceEditorWindowInterface
 begin
   FLastActiveSourceEditor := nil;
   FSourceWindowIntf := ASourceWindowIntf;
-  FPageControlList := TSourceEditorPageControls.Create;
-  FSourceEditorNotebook := nil;
+  FPageControlList := TSourcePageControls.Create;
+  FNotebook := nil;
   HookIntoOnPageChanged;
   FSourceWindowIntf.AddUpdateEditorPageCaptionHandler(@UpdateEditorPageCaption);
 end;
 
 destructor TSourceWindow.Destroy;
 begin
-  if Assigned(FSourceEditorNotebook) then
-    FSourceEditorNotebook.OnChange := FNotebookPageChanged;
+  if Assigned(FNotebook) then
+    FNotebook.OnChange := FDefaultNotebookPageChanged;
   FPageControlList.Free;
   inherited Destroy;
 end;
 
-procedure TSourceWindow.AddPageCtrl(ASourceEditor: TSourceEditorInterface; APageControl: TModulePageControl);
+procedure TSourceWindow.AddPageCtrl(APageControl: TSourcePageControl);
 begin
-  FPageControlList.Add(ASourceEditor, APageControl);
+  FPageControlList.Add(APageControl);
 end;
 
 procedure TSourceWindow.AdjustPageControl;
 var
-  LPageCtrl: TModulePageControl;
+  LPageCtrl: TSourcePageControl;
 begin
-  LPageCtrl := FindModulePageControl(ActiveEditor);
+  LPageCtrl := FindPageControl(ActiveEditor);
   if LPageCtrl <> nil then
     LPageCtrl.AdjustPage;
 end;
 
-function TSourceWindow.FindModulePageControl(ASourceEditor: TSourceEditorInterface): TModulePageControl;
+function TSourceWindow.FindPageControl(ASourceEditor: TSourceEditorInterface): TSourcePageControl;
 var
   LParent: TWinControl;
 begin
@@ -230,8 +230,8 @@ begin
   LParent := ASourceEditor.EditorControl.Parent;
   while LParent <> nil do
   begin
-    if LParent is TModulePageControl then
-      Exit(TModulePageControl(LParent));
+    if LParent is TSourcePageControl then
+      Exit(TSourcePageControl(LParent));
     LParent := LParent.Parent;
   end;
   Result := nil;
@@ -262,9 +262,9 @@ begin
     Result := nil;
 end;
 
-function TSourceWindows.GetLastActiveModulePageControl: TModulePageControl;
+function TSourceWindows.GetLastActivePageControl: TSourcePageControl;
 begin
-  Result := FindModulePageControl(LastActiveSourceEditor);
+  Result := FindPageControl(LastActiveSourceEditor);
 end;
 
 function TSourceWindows.GetLastActiveSourceEditor: TSourceEditorInterface;
@@ -331,16 +331,16 @@ begin
   Delete(Index);
 end;
 
-function TSourceWindows.FindDesignForm(AModulePageCtrl: TModulePageControl): TDesignForm;
+function TSourceWindows.FindDesignForm(APageCtrl: TSourcePageControl): TDesignForm;
 var
   LSourceWindow: TSourceWindow;
   LSourceEditorInterface: TSourceEditorInterface;
 begin
   Result := nil;
-  if AModulePageCtrl = nil then Exit;
+  if APageCtrl = nil then Exit;
   for LSourceWindow in Self do
   begin
-    if AModulePageCtrl.Owner = LSourceWindow.SourceWindowIntf then
+    if APageCtrl.Owner = LSourceWindow.SourceWindowIntf then
     begin
       LSourceEditorInterface := LSourceWindow.ActiveEditor;
       if LSourceEditorInterface = nil then Exit;
@@ -350,7 +350,7 @@ begin
   end;
 end;
 
-function TSourceWindows.FindModulePageControl(ASrcEditor: TSourceEditorInterface): TModulePageControl;
+function TSourceWindows.FindPageControl(ASrcEditor: TSourceEditorInterface): TSourcePageControl;
 var
   LSourceWindow: TSourceWindow;
 begin
@@ -373,18 +373,18 @@ end;
 function TSourceWindows.LastSourceEditorNotFound: Boolean;
 var
   i: Integer;
-  LSourceEditorPageControl: TSourceEditorPageControl;
+  LPageCtrl: TSourcePageControl;
   LSourceWindow: TSourceWindow;
 begin
   if (LastActiveSourceWindow = nil) or (LastActiveSourceEditor = nil) then
     Exit(False);
 
   LSourceWindow := SourceWindow[LastActiveSourceWindow];
-  for LSourceEditorPageControl in LSourceWindow.PageControlList do
+  for LPageCtrl in LSourceWindow.PageControlList do
   begin
     Result := True;
     for i := 0 to LastActiveSourceWindow.Count - 1 do
-      if LSourceEditorPageControl.SourceEditor = LastActiveSourceWindow.Items[i] then
+      if LPageCtrl.SourceEditor = LastActiveSourceWindow.Items[i] then
       begin
         Result := False;
         Break;
@@ -393,7 +393,7 @@ begin
     begin
       // after moving code editor into other window, sometimes IDE switch to other tab
       // this line prevent this.
-      LSourceWindow.LastActiveSourceEditor := LSourceEditorPageControl.SourceEditor;
+      LSourceWindow.LastActiveSourceEditor := LPageCtrl.SourceEditor;
       Exit;
     end;
   end;
@@ -403,12 +403,12 @@ end;
 procedure TSourceWindows.RefreshActivePageControls;
 var
   LSourceWindow: TSourceWindow;
-  LPageCtrl: TModulePageControl;
+  LPageCtrl: TSourcePageControl;
 begin
   for LSourceWindow in Self do
   begin
-    LPageCtrl := LSourceWindow.FindModulePageControl(LSourceWindow.ActiveEditor);
-    // for example LPageCtrl is nil when we clone module to new window
+    LPageCtrl := LSourceWindow.FindPageControl(LSourceWindow.ActiveEditor);
+    // for example LPageCtrl is nil when we clone source to new window
     if (LPageCtrl = nil) or (csDestroying in LSourceWindow.SourceWindowIntf.ComponentState) then
       Continue;
     if (LSourceWindow.ActiveEditor = nil)
@@ -428,13 +428,13 @@ end;
 procedure TSourceWindows.RefreshAllPageControls;
 var
   LSourceWindow: TSourceWindow;
-  LSourceEditorPageControl: TSourceEditorPageControl;
+  LPageCtrl: TSourcePageControl;
 begin
   for LSourceWindow in SourceWindows do
-    for LSourceEditorPageControl in LSourceWindow.PageControlList do
+    for LPageCtrl in LSourceWindow.PageControlList do
     begin
-      LSourceEditorPageControl.PageControl.TabPosition := DockedOptions.TabPosition;
-      LSourceEditorPageControl.PageControl.RefreshResizer;
+      LPageCtrl.TabPosition := DockedOptions.TabPosition;
+      LPageCtrl.RefreshResizer;
     end;
 end;
 
@@ -449,20 +449,20 @@ begin
     LastActiveSourceWindow := nil;
 end;
 
-procedure TSourceWindows.ShowCodeTabSkipCurrent(CurrentPageCtrl: TModulePageControl; ADesignForm: TDesignForm);
+procedure TSourceWindows.ShowCodeTabSkipCurrent(CurrentPageCtrl: TSourcePageControl; ADesignForm: TDesignForm);
 var
   LSourceWindow: TSourceWindow;
-  LSourceEditorPageControl: TSourceEditorPageControl;
+  LPageCtrl: TSourcePageControl;
 begin
   for LSourceWindow in Self do
-    for LSourceEditorPageControl in LSourceWindow.PageControlList do
-      if LSourceEditorPageControl.PageControl = CurrentPageCtrl then
+    for LPageCtrl in LSourceWindow.PageControlList do
+      if LPageCtrl = CurrentPageCtrl then
       begin
-        LSourceEditorPageControl.PageControl.DesignForm := ADesignForm;
-        LSourceEditorPageControl.PageControl.InitPage;
+        LPageCtrl.DesignForm := ADesignForm;
+        LPageCtrl.InitPage;
       end else
-        if LSourceEditorPageControl.PageControl.DesignForm = ADesignForm then
-          LSourceEditorPageControl.PageControl.ShowCode;
+        if LPageCtrl.DesignForm = ADesignForm then
+          LPageCtrl.ShowCode;
 end;
 
 initialization
