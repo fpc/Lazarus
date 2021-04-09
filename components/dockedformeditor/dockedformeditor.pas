@@ -10,7 +10,7 @@ interface
 uses
   DockedRegister, DockedStrConsts, DockedFormAccesses, DockedMainIDE, 
   DockedResizer, DockedOptionsIDE, DockedOptionsFrame, DockedTools, 
-  DockedDesignForm, DockedModulePageControl, DockedSourceEditorWindow, 
+  DockedDesignForm, DockedModulePageControl, DockedSourceWindow, 
   DockedSourceEditorPageControls, DockedAnchorDesigner, 
   DockedBasicAnchorDesigner, DockedAnchorControl, DockedGrip, 
   DockedResizeControl, LazarusPackageIntf;

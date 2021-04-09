@@ -66,8 +66,8 @@
         <UnitName Value="DockedModulePageControl"/>
       </Item10>
       <Item11>
-        <Filename Value="source\dockedsourceeditorwindow.pas"/>
-        <UnitName Value="DockedSourceEditorWindow"/>
+        <Filename Value="source\dockedsourcewindow.pas"/>
+        <UnitName Value="DockedSourceWindow"/>
       </Item11>
       <Item12>
         <Filename Value="source\dockedsourceeditorpagecontrols.pas"/>

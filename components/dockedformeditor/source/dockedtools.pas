@@ -35,8 +35,8 @@ function  EnumerationString(Str1, Str2: String): String;
 function  FindSourceEditorForDesigner(ADesigner: TIDesigner): TSourceEditorInterface;
 procedure IDEMessage(AString: String);
 function  LinedString(Str1, Str2: String): String;
-function  SourceEditorWindow(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
-function  SourceEditorWindowCaption(ASourceEditor: TSourceEditorInterface): String;
+function  SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;
+function  SourceWindowGet(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
 
 implementation
 
@@ -90,7 +90,18 @@ begin
     Result := Str1 + LineEnding + Str2;
 end;
 
-function SourceEditorWindow(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
+function SourceWindowCaption(ASourceEditor: TSourceEditorInterface): String;
+var
+  LSourceWindowIntf: TSourceEditorWindowInterface;
+begin
+  LSourceWindowIntf := SourceWindowGet(ASourceEditor);
+  if Assigned(LSourceWindowIntf) then
+    Result := LSourceWindowIntf.Caption
+  else
+    Result := 'nil';
+end;
+
+function SourceWindowGet(ASourceEditor: TSourceEditorInterface): TSourceEditorWindowInterface;
 var
   LWinControl: TWinControl;
 begin
@@ -103,17 +114,6 @@ begin
       Exit(TSourceEditorWindowInterface(LWinControl));
     LWinControl := LWinControl.Parent;
   end;
-end;
-
-function SourceEditorWindowCaption(ASourceEditor: TSourceEditorInterface): String;
-var
-  LSourceEditorWindowInterface: TSourceEditorWindowInterface;
-begin
-  LSourceEditorWindowInterface := SourceEditorWindow(ASourceEditor);
-  if Assigned(LSourceEditorWindowInterface) then
-    Result := LSourceEditorWindowInterface.Caption
-  else
-    Result := 'nil';
 end;
 
 end.
