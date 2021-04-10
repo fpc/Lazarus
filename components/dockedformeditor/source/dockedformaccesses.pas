@@ -71,8 +71,8 @@ type
     procedure BeginUpdate; override;
     procedure EndUpdate(AModified: Boolean = False); override;
     function  IsAnchorDesign: Boolean;
-    function  MainMenuHeight: Integer;
     function  MainMenuFaked: Boolean;
+    function  MainMenuHeight: Integer;
   public
     property AnchorDesigner: TBasicAnchorDesigner read FAnchorDesigner write FAnchorDesigner;
     property CurrentObjectInspector: TObjectInspectorDlg read GetCurrentObjectInspector;
@@ -219,20 +219,6 @@ begin
   Result := Assigned(DesignWinControl);
 end;
 
-function TDesignFormIDE.MainMenuHeight: Integer;
-begin
-  // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
-  // no problem, it is used only for the fake main menu
-  {$IFDEF LCLWin32}
-  Result := lclintf.GetSystemMetrics(SM_CYMENU);
-  {$ELSE}
-  if Form.HandleAllocated then
-    Result := Form.Canvas.TextHeight('Hg') * 4 div 3
-  else
-    Result := 20;
-  {$ENDIF}
-end;
-
 function TDesignFormIDE.MainMenuFaked: Boolean;
 var
   i: Integer;
@@ -250,6 +236,20 @@ begin
     for i := 0 to Form.Menu.Items.Count - 1 do
       if Form.Menu.Items[i].Visible then
         Exit(True);
+end;
+
+function TDesignFormIDE.MainMenuHeight: Integer;
+begin
+  // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
+  // no problem, it is used only for the fake main menu
+  {$IFDEF LCLWin32}
+  Result := lclintf.GetSystemMetrics(SM_CYMENU);
+  {$ELSE}
+  if Form.HandleAllocated then
+    Result := Form.Canvas.TextHeight('Hg') * 4 div 3
+  else
+    Result := 20;
+  {$ENDIF}
 end;
 
 end.

@@ -53,6 +53,7 @@ type
     procedure FakeExitEnter(Sender: TObject);
     procedure FakeKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
     procedure FakeKeyUp(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
+    procedure FakeMenuEnter(Sender: TObject);
     function  FakeMenuNeeded: Boolean;
     procedure FakeMenuPaint(Sender: TObject);
     procedure FakeUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
@@ -253,6 +254,11 @@ begin
   FDesignForm.Form.IntfUTF8KeyPress(UTF8Key, 1, False);
 end;
 
+procedure TResizeControl.FakeMenuEnter(Sender: TObject);
+begin
+  DesignerSetFocus;
+end;
+
 function TResizeControl.GetAnchorContainer: TWinControl;
 begin
   Result := FResizeContainer.AnchorContainer;
@@ -383,6 +389,7 @@ begin
   FResizeContainer.ResizeBars.OnMouseMove := @SizerMouseMove;
   FResizeContainer.ResizeBars.OnMouseUp := @SizerMouseUp;
   FResizeContainer.ResizeBars.OnPaint := @ResizeBarPaint;
+  FResizeContainer.FakeMenu.OnEnter  := @FakeMenuEnter;
 
   FFakeFocusControl := TEdit.Create(Self);
   FFakeFocusControl.Parent := Self;
