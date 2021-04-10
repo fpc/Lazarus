@@ -1014,7 +1014,7 @@ type
     function GetLeft: Integer;
     function GetListView: TCustomListView;
     function GetPosition: TPoint;
-    function GetState(const ALisOrd: Integer): Boolean;
+    function GetState(AState: TListItemState): Boolean;
     function GetImageIndex: TImageIndex; virtual;
     function GetIndex: Integer; virtual;
     function GetStateIndex: TImageIndex; virtual;
@@ -1029,7 +1029,7 @@ type
     procedure WSUpdateState;
 
     procedure SetChecked(AValue: Boolean);
-    procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
+    procedure SetState(AState: TListItemState; AIsSet: Boolean);
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: TImageIndex); virtual;
     procedure SetLeft(Value: Integer);
@@ -1058,17 +1058,17 @@ type
 
     property Caption : String read GetCaption write SetCaption;
     property Checked : Boolean read GetChecked write SetChecked;
-    property Cut: Boolean index Ord(lisCut) read GetState write SetState;
+    property Cut: Boolean index lisCut read GetState write SetState;
     property Data: Pointer read FData write SetData;
-    property DropTarget: Boolean index Ord(lisDropTarget) read GetState write SetState;
-    property Focused: Boolean index Ord(lisFocused) read GetState write SetState;
+    property DropTarget: Boolean index lisDropTarget read GetState write SetState;
+    property Focused: Boolean index lisFocused read GetState write SetState;
     property Index: Integer read GetIndex;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
     property Left: Integer read GetLeft write SetLeft;
     property ListView: TCustomListView read GetListView;
     property Owner: TListItems read FOwner;
     property Position: TPoint read GetPosition write SetPosition;
-    property Selected: Boolean index Ord(lisSelected) read GetState write SetState;
+    property Selected: Boolean index lisSelected read GetState write SetState;
     property StateIndex: TImageIndex read GetStateIndex write SetStateIndex;
     property SubItems: TStrings read GetSubItems write SetSubItems;
     property SubItemImages[const AIndex: Integer]: Integer read GetSubItemImages write SetSubItemImages;
