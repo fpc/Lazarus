@@ -718,6 +718,7 @@ type
     FRunToSrc: String;
     FRunToLine: Integer;
     FStepBreakPoint: Integer;
+    FForceContinueCheck: Boolean;
     FInitialFP: TDBGPtr;
     FStepOverFixNeeded: (sofNotNeeded, sofStepAgain, sofStepOut);
     FStepStartedInFinSub: (sfsNone, sfsStepStarted, sfsStepExited);
@@ -6846,6 +6847,7 @@ begin
     if Reason = 'function-finished'
     then begin
       CheckSehFinallyExited(List.Values['frame']);
+      Result := Result or FForceContinueCheck;
       if not Result then begin
         SetDebuggerState(dsPause);
         ProcessFrame(List.Values['frame'], False);
@@ -7358,7 +7360,11 @@ var
           DisablePopCatches;
           i := FindStackFrame(Fp, 0, 1); // -2 already stepped out of the desired frame, enter dsPause
           if (i in [0, 1]) or (i = -2) then begin
-            FCurrentExecCmd := ectStepOut; // ecStepOut will not offer a chance to ContinueStepping (there should be no breakpoint that can be hit before)
+            FForceContinueCheck := (FExecType = ectStepOut) and (i=1);
+            if FForceContinueCheck and (FStepBreakPoint > 0) then
+              FCurrentExecCmd := ectContinue
+            else
+              FCurrentExecCmd := ectStepOut; // ecStepOut will not offer a chance to ContinueStepping (there should be no breakpoint that can be hit before)
             Result := True;
             exit;
           end;
@@ -7579,6 +7585,7 @@ begin
   FCanKillNow := False;
   FDidKillNow := False;
   FStepOverFixNeeded := sofNotNeeded;
+  FForceContinueCheck := False;
   FNextExecQueued := False;
   FP := 0;
   FInitialFP := FP;
@@ -7695,6 +7702,7 @@ begin
       ContinueStep := False;
       if StoppedParams <> ''
       then ContinueExecution := ProcessStopped(StoppedParams, FTheDebugger.PauseWaitState in [pwsInternal, pwsInternalCont]);
+      FForceContinueCheck := False;
 
       // FFpcSpecificHandlerCallFin was either hit, or the handler was exited
       FTheDebugger.FFpcSpecificHandlerCallFin.Clear(Self);
