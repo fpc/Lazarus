@@ -2338,7 +2338,7 @@ var
 begin
   if IsWidgetOK then
   begin
-    AColor := TColortoTGdkRGBA(AValue);
+    AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
     if FWidget <> GetContainerWidget then
     begin
       with FWidget^ do
@@ -2427,7 +2427,7 @@ begin
 
   if IsWidgetOK then
   begin
-    AColor := TColortoTGdkRGBA(AValue);
+    AColor := TColortoTGdkRGBA(ColorToRgb(AValue));
     if FWidget <> GetContainerWidget then
     begin
       with FWidget^ do
