@@ -6490,18 +6490,19 @@ begin
   if FReleaseLock > 0
   then exit;
 
+  FReleaseLock := -1;
   Self.Free;
 end;
 
 procedure TDebuggerIntf.LockRelease;
 begin
   inc(FReleaseLock);
-  DebugLnEnter(DBG_VERBOSE, ['> TDebuggerIntf.LockRelease ',FReleaseLock]);
+  DebugLnEnter(DBG_VERBOSE and (FReleaseLock >= 0), ['> TDebuggerIntf.LockRelease ',FReleaseLock]);
 end;
 
 procedure TDebuggerIntf.UnlockRelease;
 begin
-  DebugLnExit(DBG_VERBOSE, ['< TDebuggerIntf.UnlockRelease ',FReleaseLock]);
+  DebugLnExit(DBG_VERBOSE and (FReleaseLock >= 0), ['< TDebuggerIntf.UnlockRelease ',FReleaseLock]);
   dec(FReleaseLock);
   if (FReleaseLock = 0) and (State = dsDestroying)
   then Release;
