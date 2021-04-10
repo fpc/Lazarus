@@ -60,7 +60,6 @@ type
     function  GetFakeMenu: TCustomControl;
     function  GetFormClient: TWinControl;
     function  GetFormContainer: TWinControl;
-    function  GetMenuHeight: Integer;
     function  GetSizerGripSize: Integer;
     procedure RefreshAnchorDesigner;
     procedure ResizeBarPaint(Sender: TObject);
@@ -215,23 +214,11 @@ begin
 end;
 
 function TResizeControl.FakeMenuNeeded: Boolean;
-var
-  i: Integer;
 begin
   // check if MainMenu is there and designer doesn't paint it
   Result := False;
-//  {$IF DEFINED(LCLWin32) OR DEFINED(LCLWin64) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
-  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
-    // Menu is already shown in designer
-    Exit;
-  {$ENDIF}
-  if Assigned(FDesignForm) and Assigned(FDesignForm.Form.Menu)
-  and not (csDestroying in FDesignForm.Form.Menu.ComponentState)
-  and (FDesignForm.Form.Menu.Items.Count > 0)
-  then
-    for i := 0 to FDesignForm.Form.Menu.Items.Count - 1 do
-      if FDesignForm.Form.Menu.Items[i].Visible then
-        Exit(True);
+  if not Assigned(FDesignForm) then Exit;
+  Result := FDesignForm.MainMenuFaked;
 end;
 
 procedure TResizeControl.FakeMenuPaint(Sender: TObject);
@@ -284,21 +271,6 @@ end;
 function TResizeControl.GetFormContainer: TWinControl;
 begin
   Result := FResizeContainer.FormContainer;
-end;
-
-function TResizeControl.GetMenuHeight: Integer;
-begin
-  // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
-  // no problem, it is used only for the fake main menu
-
-  {$IFDEF LCLWin32}
-  Result := lclintf.GetSystemMetrics(SM_CYMENU);
-  {$ELSE}
-  if FakeMenu.HandleAllocated then
-    Result := FakeMenu.Canvas.TextHeight('Hg') * 4 div 3
-  else
-    Result := 20;
-  {$ENDIF}
 end;
 
 function TResizeControl.GetSizerGripSize: Integer;
@@ -394,7 +366,7 @@ procedure TResizeControl.TryBoundDesignForm;
 begin
   if DesignForm = nil then Exit;
   if FakeMenuNeeded then
-    FakeMenu.Height := GetMenuHeight
+    FakeMenu.Height := DesignForm.MainMenuHeight
   else
     FakeMenu.Height := 0;
 end;

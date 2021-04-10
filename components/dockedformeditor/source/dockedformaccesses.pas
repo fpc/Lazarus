@@ -12,7 +12,7 @@
 
 unit DockedFormAccesses;
 
-{$mode delphi}{$H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -35,13 +35,13 @@ type
     FOnChangeHackedBounds: TNotifyEvent;
     FUpdate: Boolean;
   protected
-    function GetPublishedBounds(AIndex: Integer): Integer;
+    function  GetPublishedBounds(AIndex: Integer): Integer;
     procedure SetPublishedBounds(AIndex: Integer; AValue: Integer);
     procedure DoChangeHackedBounds;
   public
     constructor Create(AForm: TCustomForm); virtual;
     procedure BeginUpdate; virtual;
-    function ClientOffset: TPoint;
+    function  ClientOffset: TPoint;
     procedure EndUpdate({%H-}AModified: Boolean = False); virtual;
     procedure HideWindow;
     procedure ShowWindow;
@@ -62,15 +62,17 @@ type
     FAnchorDesigner: TBasicAnchorDesigner;
     FLastActiveSourceWindow: TSourceEditorWindowInterface;
     FSelectedControl: TControl;
-    function GetCurrentObjectInspector: TObjectInspectorDlg;
-    function GetDesigner: TIDesigner;
-    function GetDesignWinControl: TWinControl;
+    function  GetCurrentObjectInspector: TObjectInspectorDlg;
+    function  GetDesigner: TIDesigner;
+    function  GetDesignWinControl: TWinControl;
   public
     constructor Create(AForm: TCustomForm); override;
     destructor Destroy; override;
     procedure BeginUpdate; override;
     procedure EndUpdate(AModified: Boolean = False); override;
-    function IsAnchorDesign: Boolean;
+    function  IsAnchorDesign: Boolean;
+    function  MainMenuHeight: Integer;
+    function  MainMenuFaked: Boolean;
   public
     property AnchorDesigner: TBasicAnchorDesigner read FAnchorDesigner write FAnchorDesigner;
     property CurrentObjectInspector: TObjectInspectorDlg read GetCurrentObjectInspector;
@@ -215,6 +217,39 @@ end;
 function TDesignFormIDE.IsAnchorDesign: Boolean;
 begin
   Result := Assigned(DesignWinControl);
+end;
+
+function TDesignFormIDE.MainMenuHeight: Integer;
+begin
+  // some WS (Gtk2) return too big SM_CYMENU, just set it according to font height
+  // no problem, it is used only for the fake main menu
+  {$IFDEF LCLWin32}
+  Result := lclintf.GetSystemMetrics(SM_CYMENU);
+  {$ELSE}
+  if Form.HandleAllocated then
+    Result := Form.Canvas.TextHeight('Hg') * 4 div 3
+  else
+    Result := 20;
+  {$ENDIF}
+end;
+
+function TDesignFormIDE.MainMenuFaked: Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+//  {$IF DEFINED(LCLWin32) OR DEFINED(LCLWin64) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+  {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+    // Menu is already shown in designer
+    Exit;
+  {$ENDIF}
+  if Assigned(Form.Menu)
+  and not (csDestroying in Form.Menu.ComponentState)
+  and (Form.Menu.Items.Count > 0)
+  then
+    for i := 0 to Form.Menu.Items.Count - 1 do
+      if Form.Menu.Items[i].Visible then
+        Exit(True);
 end;
 
 end.
