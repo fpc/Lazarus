@@ -1145,8 +1145,14 @@ begin
         PCastCnt := j;
       end
       else
-      if (PCastCnt = 0) then
+      if (PCastCnt = 0) then begin
         Result := Result + '^';
+        if ((IdxPart.PTypeReq.Result.Kind = ptprkSimple) and (ptprfPointer in IdxPart.PTypeReq.Result.Flags)) or
+           //=[ptprfPointer, ptprfDynArray, ptprfNoBounds, ptprfDeclarationInBrackets] Kind=ptprkArray Nam
+           ((IdxPart.PTypeReq.Result.Kind = ptprkArray) and (IdxPart.PTypeReq.Result.Flags * [ptprfPointer, ptprfDynArray, ptprfNoBounds] = [ptprfPointer, ptprfDynArray, ptprfNoBounds]))
+        then
+          Result := '('+Result + '+0)';
+      end;
     end;
 
     if toSkipArrayIdx in AOpts
