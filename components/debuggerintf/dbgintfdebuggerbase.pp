@@ -3727,7 +3727,7 @@ end;
 
 procedure TBaseBreakPoint.SetPendingToValid(const AValue: TValidState);
 begin
-  assert(Valid = vsPending, 'Can only change state if pending');
+  assert(Valid in [vsPending, vsUnknown], 'Can only change state if pending');
   SetValid(AValue);
 end;
 

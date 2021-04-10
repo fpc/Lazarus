@@ -1013,9 +1013,9 @@ begin
     assert(FDbgBreakPoint.FInternalBreakpoint = nil, 'TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef: FDbgBreakPoint.FInternalBreakpoint = nil');
     FDbgBreakPoint.FInternalBreakpoint := InternalBreakpoint;
     if not assigned(InternalBreakpoint) then
-      FDbgBreakPoint.FValid:=vsInvalid // pending?
+      FDbgBreakPoint.SetPendingToValid(vsInvalid) // pending?
     else
-      FDbgBreakPoint.FValid:=vsValid;
+      FDbgBreakPoint.SetPendingToValid(vsValid);
   end;
 
   UnQueue_DecRef;
