@@ -666,7 +666,7 @@ begin
   r^.Result := ParseTypeFromGdb('type = array of TFoo');
   ContinueExpr(b, r, v);
   AssertTrue(n + ' Needexp after dyn array(dwarf)', not v);
-  AssertEqualsLc(n + ' text after dyn array(dwarf)', 'TFoo(abc^[123]).x', b.Text);
+  AssertEqualsLc(n + ' text after dyn array(dwarf)', 'TFoo((abc^+0)[123]).x', b.Text);
 
 
   InitExpr(n, b, r, v);
