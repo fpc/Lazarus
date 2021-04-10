@@ -714,6 +714,7 @@ begin
   Src := GetCommonSourceFor(AppDir + 'ExceptTestPrg.pas');
   TestCompile(Src, ExeName);
 
+  FGotExceptCount := 0;
   dbg := StartGDB(AppDir, ExeName);
   try
     dbg.Exceptions.Add('MyExceptionIgnore').Enabled := False;
