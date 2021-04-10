@@ -3268,6 +3268,7 @@ type
     tvsIsEditing,
     tvsStateChanging,
     tvsManualNotify,
+    tvsUpdating,   // NOTE: This state is deprecated and has no functionality after r64855
     tvsPainting,
     tvoFocusedPainting,
     tvsDblClicked,
