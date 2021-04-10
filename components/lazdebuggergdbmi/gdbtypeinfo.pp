@@ -71,7 +71,8 @@ type
      ptprfDynArray,
      ptprfNoBounds,        // no bounds for array found
      ptprfEmpty,
-     ptprfDeclarationInBrackets  // e.g ^(array ...) / "&^()" is/are not included in BaseDeclaration
+     ptprfDeclarationInBrackets,  // e.g ^(array ...) / "&^()" is/are not included in BaseDeclaration
+     ptprfShortString
     );
   TGDBPTypeResultFlags = set of TGDBPTypeResultFlag;
   TGDBPTypeResultKind =
@@ -553,6 +554,35 @@ var
       Result := p - CurPtr + 1;
   end;
 
+  function CheckMaybeShortString: Boolean;
+  const
+    FIELD_L = 'length : BYTE;';
+    FIELD_S = 'st : array [';
+  var
+    p: PChar;
+  begin
+    Result := False;
+    p := DeclPtr;
+
+    while (p <= EndPtr - length(FIELD_L)) and
+          not( (p^ in ['L', 'l']) and
+               (StrLIComp(pchar(FIELD_L), p, length(FIELD_L)) = 0) )
+    do
+      inc(p);
+    if p > EndPtr - length(FIELD_L) then
+      exit;
+
+    while (p <= EndPtr - length(FIELD_S)) and
+          not( (p^ in ['S', 's']) and
+               (StrLIComp(pchar(FIELD_S), p, length(FIELD_S)) = 0) )
+    do
+      inc(p);
+    if p > EndPtr - length(FIELD_S) then
+      exit;
+
+    Result := True;
+  end;
+
   procedure SetPCharLen(var ATarget: TPCharWithLen; AStartPtr, AEndPtr: PChar);
   begin
     ATarget.Ptr := AStartPtr;
@@ -725,8 +755,14 @@ begin
           include(Result.Flags, ptprfNoStructure);
           SetPCharLen(Result.Declaration, DeclPtr, CurPtr + 5);
         end
-        else
+        else begin
           SetPCharLen(Result.Declaration, DeclPtr, LineEndPtr);
+          if (Result.Name.Len = 11) and
+             (strlicomp(Result.Name.Ptr, 'shortstring', 11) = 0) and
+             CheckMaybeShortString
+          then
+            include(Result.Flags, ptprfShortString);
+        end;
       end;
     ptprkSet: begin
         if CurPtr^ <> '<' then begin;
@@ -1006,14 +1042,17 @@ end;
 function TGDBExpressionPartArrayIdx.GetTextFixed(AOpts: TGDBExprTextOptions
   ): String;
 begin
-  if toWithStringFix in AOpts then begin
+  if (toWithStringFix in AOpts) or
+     ( (PTypeReq.Result.Kind = ptprkRecord) and (ptprfShortString in PTypeReq.Result.Flags) and
+       (PTypeReq.Result.BoundLow.Ptr = '0') )
+  then begin
     if FExpressionPart = nil
     then Result := PCLenPartToString(FText, 1, FText.Len-2)
     else Result := FExpressionPart.TextEx[AOpts];
     Result := FText.Ptr^ + Result + '-1' + (FText.Ptr + FText.Len-1)^;
   end
   else
-     Result := inherited GetTextFixed(AOpts);
+   Result := inherited GetTextFixed(AOpts);
 end;
 
 function TGDBExpressionPartArrayIdx.CreateExpressionForSubIndex(AIndex: Integer): TGDBExpressionPartArrayIdx;
@@ -1127,6 +1166,11 @@ begin
 
     NeedTCast := FNeedTypeCast and (i = IndexCount-1);
 
+    if ((IdxPart.PTypeReq.Result.Kind = ptprkRecord) and (ptprfShortString in IdxPart.PTypeReq.Result.Flags))
+    then begin
+      Result := Result + '.st';
+    end
+    else
     if IdxPart.ArrayPTypeIsPointer
     then begin
       //dyn array
@@ -1258,6 +1302,19 @@ begin
        And the for the derefferenced expr "type = array of TFoo"
     *)
     PTDeRefReq := IdxPart.PTypeDeRefReq;
+    if (PTReq.Result.Kind = ptprkRecord) and
+       (PTReq.Result.Flags * [ptprfPointer, ptprfShortString] = [ptprfShortString]) and
+       (PTDeRefReq.Result.Kind = ptprkNotEvaluated)
+    then begin
+      (* ptype ArrayBaseWithoutIndex.st  *)
+      //if IdxPart.VarParam
+      //then IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(GetTextToIdx(i-1, [toSkipArrayIdx])) + '^.st')
+      //else
+      IdxPart.InitDeRefReq(AReqPtr, GdbCmdPType + GDBMIMaybeApplyBracketsToExpr(GetTextToIdx(i-1, [toSkipArrayIdx])) + '.st');
+      Result := True;
+      exit;
+    end
+    else
     if (PTReq.Result.Kind <> ptprkArray) and
        (ptprfPointer in PTReq.Result.Flags) and
        (PTDeRefReq.Result.Kind = ptprkNotEvaluated)
