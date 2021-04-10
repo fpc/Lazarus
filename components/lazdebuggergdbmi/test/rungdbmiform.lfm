@@ -2,23 +2,23 @@ object Form1: TForm1
   Left = 386
   Height = 595
   Top = 197
-  Width = 717
+  Width = 758
   Caption = 'Form1'
   ClientHeight = 595
-  ClientWidth = 717
+  ClientWidth = 758
   OnCreate = FormCreate
   LCLVersion = '2.1.0.0'
   object Panel1: TPanel
     Left = 6
     Height = 110
     Top = 6
-    Width = 705
+    Width = 746
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
     ClientHeight = 110
-    ClientWidth = 705
+    ClientWidth = 746
     TabOrder = 0
     object edBreakFile: TEdit
       AnchorSideLeft.Control = Label1
@@ -52,7 +52,7 @@ object Form1: TForm1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = Panel1
       AnchorSideBottom.Side = asrBottom
-      Left = 597
+      Left = 638
       Height = 25
       Top = 85
       Width = 108
@@ -149,7 +149,7 @@ object Form1: TForm1
       AnchorSideTop.Control = Panel1
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 597
+      Left = 638
       Height = 19
       Top = 0
       Width = 108
@@ -163,7 +163,7 @@ object Form1: TForm1
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = Panel1
       AnchorSideRight.Side = asrBottom
-      Left = 597
+      Left = 638
       Height = 19
       Top = 21
       Width = 108
@@ -242,21 +242,67 @@ object Form1: TForm1
       Caption = 'HitCount'
       ParentColor = False
     end
+    object chkDeDup: TCheckBox
+      AnchorSideLeft.Control = BtnRun
+      AnchorSideTop.Control = chkCSF
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 638
+      Height = 19
+      Top = 42
+      Width = 108
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      Caption = 'De-Dup'
+      TabOrder = 11
+    end
+    object chkWatch: TCheckBox
+      AnchorSideLeft.Control = BtnRun
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = BtnRun
+      AnchorSideBottom.Control = BtnRun
+      AnchorSideBottom.Side = asrBottom
+      Left = 552
+      Height = 19
+      Top = 91
+      Width = 80
+      Anchors = [akRight, akBottom]
+      BorderSpacing.Right = 6
+      Caption = 'Watch-Eval'
+      TabOrder = 12
+    end
+    object chkDebugln: TCheckBox
+      AnchorSideLeft.Control = BtnRun
+      AnchorSideTop.Control = chkDeDup
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 638
+      Height = 19
+      Top = 63
+      Width = 108
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 2
+      Caption = 'Incl. Debugln'
+      TabOrder = 13
+    end
   end
   object Panel2: TPanel
-    Left = 175
+    Left = 5
     Height = 473
     Top = 122
-    Width = 542
+    Width = 753
     Align = alClient
     ClientHeight = 473
-    ClientWidth = 542
+    ClientWidth = 753
     TabOrder = 1
     object Memo1: TMemo
       Left = 1
       Height = 125
       Top = 4
-      Width = 540
+      Width = 751
       Align = alTop
       ScrollBars = ssAutoBoth
       TabOrder = 0
@@ -265,7 +311,7 @@ object Form1: TForm1
       Left = 1
       Height = 343
       Top = 129
-      Width = 540
+      Width = 751
       Align = alClient
       ScrollBars = ssAutoBoth
       TabOrder = 1
@@ -276,64 +322,9 @@ object Form1: TForm1
       Left = 1
       Height = 3
       Top = 1
-      Width = 540
+      Width = 751
       Align = alTop
       ResizeAnchor = akTop
-    end
-  end
-  object Panel3: TPanel
-    Left = 5
-    Height = 473
-    Top = 122
-    Width = 170
-    Align = alLeft
-    ClientHeight = 473
-    ClientWidth = 170
-    TabOrder = 2
-    object CheckListBox1: TCheckListBox
-      Left = 1
-      Height = 176
-      Top = 1
-      Width = 168
-      Align = alTop
-      ItemHeight = 0
-      TabOrder = 0
-    end
-    object Splitter2: TSplitter
-      Cursor = crVSplit
-      Left = 1
-      Height = 5
-      Top = 177
-      Width = 168
-      Align = alTop
-      ResizeAnchor = akTop
-    end
-    object CheckListBox2: TCheckListBox
-      Left = 1
-      Height = 185
-      Top = 182
-      Width = 168
-      Align = alClient
-      ItemHeight = 0
-      TabOrder = 2
-    end
-    object Splitter4: TSplitter
-      Cursor = crVSplit
-      Left = 1
-      Height = 5
-      Top = 367
-      Width = 168
-      Align = alBottom
-      ResizeAnchor = akBottom
-    end
-    object CheckListBox3: TCheckListBox
-      Left = 1
-      Height = 100
-      Top = 372
-      Width = 168
-      Align = alBottom
-      ItemHeight = 0
-      TabOrder = 4
     end
   end
   object Splitter3: TSplitter
@@ -343,7 +334,7 @@ object Form1: TForm1
     Width = 5
   end
   object OpenDialog1: TOpenDialog
-    left = 136
-    top = 72
+    Left = 136
+    Top = 72
   end
 end

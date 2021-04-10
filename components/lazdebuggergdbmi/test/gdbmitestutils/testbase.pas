@@ -333,21 +333,25 @@ end;
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
 begin
   Result := GdbClass.Create(DebuggerInfo.ExeName);
-  Debugger.LazDebugger := Result;
-  Result.OnDbgOutput  := @InternalDbgOutPut;
-  Result.OnFeedback := @InternalFeedBack;
-  Result.OnDbgEvent:=@InternalDbgEvent;
+  try
+    Debugger.LazDebugger := Result;
+    Result.OnDbgOutput  := @InternalDbgOutPut;
+    Result.OnFeedback := @InternalFeedBack;
+    Result.OnDbgEvent:=@InternalDbgEvent;
 
-  Debugger.InitDebuggerMonitors(Result);
+    Debugger.InitDebuggerMonitors(Result);
 
-  Result.Init;
-  if Result.State = dsError then
-    Fail(' Failed Init');
-  Result.WorkingDir := AppDir;
-  Result.FileName   := TestExeName;
-  Result.Arguments := '';
-  Result.ShowConsole := True;
-
+    Result.Init;
+    if Result.State = dsError then
+      Fail(' Failed Init');
+    Result.WorkingDir := AppDir;
+    Result.FileName   := TestExeName;
+    Result.Arguments := '';
+    Result.ShowConsole := True;
+  except
+    on e: Exception do
+      Fail('INIT Exception: '+E.Message);
+  end;
 end;
 
 procedure TGDBTestCase.CleanGdb;

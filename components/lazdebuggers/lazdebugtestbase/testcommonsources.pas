@@ -142,7 +142,11 @@ begin
   if pos(PathDelim, AName) > 0 then
     r := TFileStream.Create(AName, fmOpenRead)
   else
-    r := TResourceStream.Create(HINSTANCE, AName, RT_RCDATA);
+    try
+      r := TResourceStream.Create(HINSTANCE, AName, RT_RCDATA);
+    except
+      r := TFileStream.Create(AName, fmOpenRead)
+    end;
 
   FData := TStringList.Create;
   FData.LoadFromStream(r);
