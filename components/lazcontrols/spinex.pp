@@ -104,6 +104,7 @@ type
     DefMinRepeatValue = 100;
   private
     FArrowKeys: Boolean;
+    FEditorEnabled: Boolean;
     FIncrement: T;
     FMaxValue: T;
     FMinValue: T;
@@ -115,6 +116,7 @@ type
     FUpdatePending: Boolean;
     FSettingValue: Boolean;
     function GetEdit: TGEEdit;
+    procedure SetEditorEnabled(AValue: Boolean);
     procedure SetMinRepeatValue(AValue: Byte);
     procedure SpinUpDown(Up: Boolean);
     function GetNullValue: T;
@@ -153,12 +155,14 @@ type
     procedure EditEditingDone; override;
     procedure EditKeyPress(var Key: Char); override;
     procedure EditUtf8KeyPress(var UTF8Key: TUTF8Char); override;
+    procedure SetReadOnly(AValue: Boolean); override;
 
     property ArrowKeys: Boolean read FArrowKeys write FArrowKeys default True;
     property Edit: TGEEdit read GetEdit;
     property UpDown: TUpDown read GetUpDown;
     property UpDownVisible: Boolean read GetBuddyVisible write SetBuddyVisible default True;
     property MinRepeatValue: Byte read FMinRepeatValue write SetMinRepeatValue default DefMinRepeatValue;
+
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: T): T; virtual;
@@ -167,6 +171,7 @@ type
     function KeyAllowed({%H-}Key: Char): Boolean; virtual;
     function Utf8KeyAllowed({%H-}Key: TUTF8Char): Boolean; virtual;
   public
+    property EditorEnabled: Boolean read FEditorEnabled write SetEditorEnabled default True;
     property Increment: T read FIncrement write SetIncrement stored IncrementStored nodefault;
     property MinValue: T read FMinValue write SetMinValue stored MinValueStored nodefault;
     property MaxValue: T read FMaxValue write SetMaxValue stored MaxValueStored nodefault;
