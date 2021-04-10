@@ -16,6 +16,8 @@ type
   { TDbgTestControlForm }
 
   TDbgTestControlForm = class(TForm)
+    CheckWriteReport: TCheckBox;
+    CheckWriteOverview: TCheckBox;
     chkDbg: TTreeView;
     chkFpc: TTreeView;
     chkSym: TCheckListBox;
@@ -51,11 +53,13 @@ type
     procedure btnTestAllClick(Sender: TObject);
     procedure btnTestNoneClick(Sender: TObject);
     procedure CheckWriteLogsChange(Sender: TObject);
+    procedure CheckWriteOverviewChange(Sender: TObject);
+    procedure CheckWriteReportChange(Sender: TObject);
     procedure chkTestsMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
-    FWriteLogValCache: TWriteLogConfig;
-    FWriteLogIsCached: Boolean;
+    FWriteLogValCache, FWriteReportValCache, FWriteOverViewValCache: TWriteLogConfig;
+    FWriteLogIsCached, FWriteReportIsCached, FWriteOverViewIsCached: Boolean;
   public
     procedure DbgShow(Data: PtrInt);
   end;
@@ -163,6 +167,34 @@ begin
   DbgTestControlForm.FWriteLogIsCached := True;
 end;
 
+function GetWriteReport: TWriteLogConfig;
+begin
+  if DbgTestControlForm.FWriteReportIsCached then begin
+    Result := DbgTestControlForm.FWriteReportValCache;
+    exit;
+  end;
+  Result := wlNever;
+  if DbgTestControlForm.CheckWriteReport.Checked then
+    Result := wlOnError;
+
+  DbgTestControlForm.FWriteReportValCache := Result;
+  DbgTestControlForm.FWriteReportIsCached := True;
+end;
+
+function GetWriteOverview: TWriteLogConfig;
+begin
+  if DbgTestControlForm.FWriteOverViewIsCached then begin
+    Result := DbgTestControlForm.FWriteOverViewValCache;
+    exit;
+  end;
+  Result := wlNever;
+  if DbgTestControlForm.CheckWriteOverview.Checked then
+    Result := wlAlways;
+
+  DbgTestControlForm.FWriteOverViewValCache := Result;
+  DbgTestControlForm.FWriteOverViewIsCached := True;
+end;
+
 procedure RegisterCompiler(name: string);
 begin
   DbgTestControlForm.chkFpc.Items.Add(nil, Name)
@@ -259,6 +291,16 @@ begin
   FWriteLogIsCached := False;
 end;
 
+procedure TDbgTestControlForm.CheckWriteOverviewChange(Sender: TObject);
+begin
+  FWriteOverViewIsCached := False;
+end;
+
+procedure TDbgTestControlForm.CheckWriteReportChange(Sender: TObject);
+begin
+  FWriteReportIsCached := False;
+end;
+
 procedure TDbgTestControlForm.DbgShow(Data: PtrInt);
 var
   s: TSymbolType;
@@ -293,6 +335,8 @@ initialization
   SetLogPathProc := @SetLogPath;
   GetLogPathProc := @GetLogPath;
   GetWriteLogProc := @GetWriteLog;
+  GetWriteReportProc := @GetWriteReport;
+  GetWriteOverviewProc := @GetWriteOverview;
   RegisterCompilerProc := @RegisterCompiler;
   RegisterDebuggerProc := @RegisterDebugger;
   RegisterTestProc := @RegisterTest;

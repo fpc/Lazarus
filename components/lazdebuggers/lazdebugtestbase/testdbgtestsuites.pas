@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, TTestDbgExecuteables, TestDbgControl, TestDbgConfig,
   TestOutputLogger, TestCommonSources, LazFileUtils, LazLogger,
-  DbgIntfDebuggerBase, fpcunit, testregistry, RegExpr;
+  DbgIntfDebuggerBase, StrUtils, fpcunit, testregistry, RegExpr;
 
 const
   EqIgnoreCase = False; // for TestEquals(..., CaseSense, ...);
@@ -17,23 +17,45 @@ type
   TDBGTestsuite = class;
   TDBGStates = set of TDBGState;
 
+  { TDbgBaseTestsuite }
+
+  TDbgBaseTestsuite = class(TTestSuite)
+  private
+    FInRun: Integer;
+    FDirectParent: TDbgBaseTestsuite;
+    FOverviewReport: String;
+    procedure LogOverviewReport;
+  protected
+    procedure Clear; virtual;
+  public
+    procedure Run(AResult: TTestResult); override;
+    procedure RunTest(ATest: TTest; AResult: TTestResult); override;
+    procedure AddTest(ATest: TTest); overload; override;
+
+    procedure AddOverviewLog(Const AText: String);
+  end;
+
   { TDBGTestCase }
 
   TDBGTestCase = class(TTestCase)
   private
     FParent: TDBGTestsuite;
+    FDirectParent: TDbgBaseTestsuite;
     // TestResults
     FTestBaseName: String;
     FTestErrors, FIgnoredErrors, FUnexpectedSuccess: String;
     FTestCnt, FTestErrorCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt: Integer;
+    FInTestBlock: integer;
+    FInTestBlockTxt: String;
+    FInTestBlockRes: (tbOk, tbErr, tbIgnore, tbUnexpected);
     FTotalErrorCnt, FTotalIgnoredErrorCnt, FTotalUnexpectedSuccessCnt: Integer;
     FRegX: TRegExpr;
 
     // Logging
     FLogLock: TRTLCriticalSection;
-    FLogFile: TLazLoggerFileHandle;
-    FLogFileCreated: Boolean;
-    FLogFileName: String;
+    FLogFile, FReportFile: TLazLoggerFileHandle;
+    FLogFileCreated, FReportFileCreated: Boolean;
+    FLogFileName, FReportFileName: String;
     FLogBufferText: TStringList;
     procedure InitLog;
     procedure FinishLog;
@@ -43,6 +65,8 @@ type
   protected
     FIgnoreReason: String;
     // TestResults
+    procedure StartTestBlock;
+    procedure EndTestBlock;
     procedure AddTestError  (s: string; MinDbgVers: Integer = 0; AIgnoreReason: String = '');
     procedure AddTestError  (s: string; MinDbgVers: Integer; MinFpcVers: Integer;AIgnoreReason: String = '');
     procedure AddTestSuccess(s: string; MinDbgVers: Integer = 0; AIgnoreReason: String = '');
@@ -56,6 +80,7 @@ type
     function GetLogFileName: String; virtual;
     function GetFinalLogFileName: String; virtual;
     procedure CreateLog;
+    procedure CreateReport;
     // Debugln
     procedure DoDbgOut(Sender: TObject; S: string; var Handled: Boolean); virtual;
     procedure DoDebugln(Sender: TObject; S: string; var Handled: Boolean); virtual;
@@ -117,7 +142,7 @@ type
 
   { TDBGTestWrapper }
 
-  TDBGTestWrapper = class(TTestSuite)
+  TDBGTestWrapper = class(TDbgBaseTestsuite)
   private
     FParent: TDBGTestsuite;
   public
@@ -127,18 +152,13 @@ type
 
   { TDBGTestsuite }
 
-  TDBGTestsuite = class(TTestSuite)
+  TDBGTestsuite = class(TDbgBaseTestsuite)
   private
     FCompiler: TTestDbgCompiler;
     FDebugger: TTestDbgDebugger;
-    FInRun: Boolean;
-  protected
-    procedure Clear; virtual;
   public
     constructor Create(ACompiler: TTestDbgCompiler; ADebugger: TTestDbgDebugger); overload;
     procedure RegisterDbgTest(ATestClass: TTestCaseClass);
-    procedure Run(AResult: TTestResult); override;
-    procedure RunTest(ATest: TTest; AResult: TTestResult); override;
 
     property Compiler: TTestDbgCompiler read FCompiler;
     property Debugger: TTestDbgDebugger read FDebugger;
@@ -146,12 +166,92 @@ type
 
   TDBGTestsuiteClass = class of TDBGTestsuite;
 
-procedure RegisterDbgTest(ATestClass: TTestCaseClass);
+procedure RegisterDbgTest(ATestClass: TTestCaseClass; ASymTypes: TSymbolTypes = []);
 
 procedure CreateTestSuites(ACompilerList: TTestDbgCompilerList;
   ADebuggerList: TTestDbgDebuggerList; ATestSuiteClass: TDBGTestsuiteClass);
 
 implementation
+
+{ TDbgBaseTestsuite }
+
+procedure TDbgBaseTestsuite.LogOverviewReport;
+var
+  oname: String;
+  FOview: TextFile;
+begin
+  if FOverviewReport = '' then
+    exit;
+  if TestControlGetWriteOverView = wlAlways then begin
+    if DirectoryExistsUTF8(TestControlGetLogPath) then
+      oname := TestControlGetLogPath
+    else
+      oname := GetCurrentDirUTF8;
+
+    oname := oname + 'overview_' +
+      NameToFileName(DateTimeToStr(Now), False) +
+      '.txt';
+    AssignFile(FOView, oname);
+    Rewrite(FOView);
+    writeln(FOView, FOverviewReport);
+    CloseFile(FOView);
+  end;
+  FOverviewReport := '';
+end;
+
+procedure TDbgBaseTestsuite.Clear;
+begin
+  //
+end;
+
+procedure TDbgBaseTestsuite.Run(AResult: TTestResult);
+begin
+  inc(FInRun);
+  try
+    inherited Run(AResult);
+  finally
+    dec(FInRun);
+    if FInRun = 0 then begin
+      LogOverviewReport;
+    end;
+    Clear;
+  end;
+end;
+
+procedure TDbgBaseTestsuite.RunTest(ATest: TTest; AResult: TTestResult);
+begin
+  inc(FInRun);
+  try
+    inherited RunTest(ATest, AResult);
+  finally
+    dec(FInRun);
+    if FInRun = 0 then begin
+      LogOverviewReport;
+      Clear;
+    end;
+  end;
+end;
+
+procedure TDbgBaseTestsuite.AddTest(ATest: TTest);
+begin
+  inherited AddTest(ATest);
+  if ATest is TDbgBaseTestsuite then
+    TDbgBaseTestsuite(ATest).FDirectParent := Self
+  else
+  if ATest is TDBGTestCase then
+    TDBGTestCase(ATest).FDirectParent := Self;
+end;
+
+procedure TDbgBaseTestsuite.AddOverviewLog(const AText: String);
+begin
+  if (FDirectParent <> nil) and (FDirectParent.FInRun > 0) then begin
+    FDirectParent.AddOverviewLog(AText);
+    exit;
+  end;
+  FOverviewReport := FOverviewReport + AText;
+  if (FInRun = 0) then
+    LogOverviewReport;
+end;
 
 { TDBGTestCase }
 
@@ -163,6 +263,39 @@ end;
 function TDBGTestCase.GetDebugger: TTestDbgDebugger;
 begin
   Result := Parent.Debugger;
+end;
+
+procedure TDBGTestCase.StartTestBlock;
+begin
+  if FInTestBlock = 0 then begin
+    inc(FTestCnt);
+    FInTestBlockTxt := '';
+    FInTestBlockRes := tbOk;
+  end;
+  inc(FInTestBlock);
+end;
+
+procedure TDBGTestCase.EndTestBlock;
+begin
+  dec(FInTestBlock);
+  if FInTestBlock = 0 then begin
+    case FInTestBlockRes of
+      tbErr: begin
+          FTestErrors := FTestErrors + FInTestBlockTxt;
+          inc(FTestErrorCnt);
+        end;
+      tbIgnore: begin
+          FIgnoredErrors := FIgnoredErrors + FInTestBlockTxt;
+          inc(FIgnoredErrorCnt);
+        end;
+      tbUnexpected: begin
+          FUnexpectedSuccess:= FUnexpectedSuccess + FInTestBlockTxt;
+          inc(FUnexpectedSuccessCnt);
+        end;
+    end;
+    FInTestBlockTxt := '';
+    FInTestBlockRes := tbOk;
+  end;
 end;
 
 procedure TDBGTestCase.AddTestError(s: string; MinDbgVers: Integer;
@@ -177,7 +310,8 @@ var
   IgnoreReason: String;
   i: Integer;
 begin
-  inc(FTestCnt);
+  if FInTestBlock = 0 then
+    inc(FTestCnt);
   IgnoreReason := '';
   s := FTestBaseName + s;
   if MinDbgVers > 0 then begin
@@ -194,13 +328,26 @@ begin
   if IgnoreReason = '' then
     IgnoreReason := FIgnoreReason;
 
-  if IgnoreReason <> '' then begin
-    FIgnoredErrors := FIgnoredErrors + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
-    inc(FIgnoredErrorCnt);
-  end else begin
-    FTestErrors := FTestErrors + IntToStr(FTestCnt) + ': ' + s + LineEnding;
-    DebugLn(['!!!!! ERROR: ' + IntToStr(FTestCnt) + ': ' + s]);
-    inc(FTestErrorCnt);
+  if FInTestBlock > 0 then begin
+    if IgnoreReason <> '' then begin
+      FInTestBlockTxt := FInTestBlockTxt + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
+      if FInTestBlockRes in [tbOk, tbUnexpected] then
+        FInTestBlockRes := tbIgnore;
+    end else begin
+      FInTestBlockTxt := FInTestBlockTxt + IntToStr(FTestCnt) + ': ' + s + LineEnding;
+      FInTestBlockRes := tbErr;
+      DebugLn(['!!!!! ERROR: ' + IntToStr(FTestCnt) + ': ' + s]);
+    end;
+  end
+  else begin
+    if IgnoreReason <> '' then begin
+      FIgnoredErrors := FIgnoredErrors + IntToStr(FTestCnt) + ': ' + '### '+IgnoreReason +' >>> '+s+LineEnding;
+      inc(FIgnoredErrorCnt);
+    end else begin
+      FTestErrors := FTestErrors + IntToStr(FTestCnt) + ': ' + s + LineEnding;
+      DebugLn(['!!!!! ERROR: ' + IntToStr(FTestCnt) + ': ' + s]);
+      inc(FTestErrorCnt);
+    end;
   end;
 end;
 
@@ -216,7 +363,8 @@ var
   i: Integer;
 begin
   s := FTestBaseName + s;
-  inc(FTestCnt);
+  if FInTestBlock = 0 then
+    inc(FTestCnt);
   if (MinDbgVers > 0) then begin
     i := Debugger.Version;
     if (i > 0) and (i < MinDbgVers) then
@@ -232,8 +380,15 @@ begin
 
   if AIgnoreReason <> '' then begin
     s := '[OK] ' + s;
-    FUnexpectedSuccess:= FUnexpectedSuccess + IntToStr(FTestCnt) + ': ' + '### '+AIgnoreReason +' >>> '+s+LineEnding;
-    inc(FUnexpectedSuccessCnt);
+    if FInTestBlock > 0 then begin
+      FInTestBlockTxt := FInTestBlockTxt + IntToStr(FTestCnt) + ': ' + '### '+AIgnoreReason +' >>> '+s+LineEnding;
+      if FInTestBlockRes in [tbOk] then
+        FInTestBlockRes := tbUnexpected;
+    end
+    else begin
+      FUnexpectedSuccess:= FUnexpectedSuccess + IntToStr(FTestCnt) + ': ' + '### '+AIgnoreReason +' >>> '+s+LineEnding;
+      inc(FUnexpectedSuccessCnt);
+    end;
   end
   else
     inc(FSucessCnt);
@@ -257,12 +412,46 @@ begin
 end;
 
 procedure TDBGTestCase.AssertTestErrors;
+
+  function RemoveHexNumbers(txt: String): String;
+  var
+    i, j, n: Integer;
+    p, p2: SizeInt;
+    s: String;
+  begin
+    Result := txt;
+    i := 1;
+    j := 1;
+    n := 0;
+    p := PosEx('$', Result, i);
+    while p > 0 do begin
+      if p > n then j := 1;
+      n := PosSetEx([#10,#13], Result, p);
+      i := p+2;
+
+      p2 := p + 2;
+      while (p2 <= Length(Result)) and (Result[p2] in ['0'..'9', 'a'..'f', 'A'..'F']) do
+        inc(p2);
+      if p2 - p > 6 then begin
+        s := copy(Result, p, p2-p);
+        Result := StringReplace(Result, s, '$##HEX'+IntToStr(j)+'##', [rfReplaceAll, rfIgnoreCase]);
+        inc(j);
+      end;
+
+      p := PosEx('$', Result, i);
+    end;
+  end;
+
 var
   s, s1: String;
 begin
   s := FTestErrors;
-  s1 := Format('Failed: %d of %d - Ignored: %d Unexpected: %d - Success: %d',
+  s1 := Format('Failed: %4d of %5d - Ignored: %5d Unexpected: %4d - Success: %5d',
                [FTestErrorCnt, FTestCnt, FIgnoredErrorCnt, FUnexpectedSuccessCnt, FSucessCnt ]);
+  FDirectParent.AddOverviewLog(Format('%-30s  %14s %12s %7s  %18s   %s',
+    [TestName, Compiler.Name, SymbolTypeNames[Compiler.SymbolType],
+     CpuBitNames[Compiler.CpuBitType], Debugger.Name,
+     s1 + LineEnding]));
   FTestErrors := '';
   if GetLogActive or (FTestErrorCnt > 0) or (s <> '') then begin
     LogError('***' + s1 + '***' +LineEnding);
@@ -273,12 +462,27 @@ begin
     LogError('================= Unexpected Success'+LineEnding);
     LogError(FUnexpectedSuccess);
     LogError('================='+LineEnding);
-    FIgnoredErrors := '';
-    FUnexpectedSuccess := '';
   end;
-  if s <> '' then begin
+  if (TestControlGetWriteReport = wlAlways) or
+     ( (TestControlGetWriteReport = wlOnError) and (
+       (FTestErrorCnt > 0) or (FIgnoredErrorCnt > 0) or (FUnexpectedSuccessCnt > 0)
+     ))
+  then begin
+    CreateReport;
+    FReportFile.WriteLnToFile('***' + s1 + '***' +LineEnding);
+    FReportFile.WriteLnToFile('================= Failed:'+LineEnding);
+    FReportFile.WriteLnToFile(RemoveHexNumbers(s));
+    FReportFile.WriteLnToFile('================= Ignored'+LineEnding);
+    FReportFile.WriteLnToFile(RemoveHexNumbers(FIgnoredErrors));
+    FReportFile.WriteLnToFile('================= Unexpected Success'+LineEnding);
+    FReportFile.WriteLnToFile(RemoveHexNumbers(FUnexpectedSuccess));
+    FReportFile.WriteLnToFile('================='+LineEnding);
+  end;
+
+  FIgnoredErrors := '';
+  FUnexpectedSuccess := '';
+  if s <> '' then
     Fail(s1+ LineEnding + s);
-  end;
 end;
 
 function TDBGTestCase.TestMatches(Expected, Got: string; ACaseSense: Boolean
@@ -455,11 +659,11 @@ begin
   Result := FLogFileName;
 
   if (FTotalIgnoredErrorCnt + FIgnoredErrorCnt > 0)
-  then Result := Result + '.ignor_'+IntToStr(FTotalIgnoredErrorCnt + FIgnoredErrorCnt);
+  then Result := Result + '___ignor.'+IntToStr(FTotalIgnoredErrorCnt + FIgnoredErrorCnt);
   if (FTotalUnexpectedSuccessCnt + FUnexpectedSuccessCnt > 0)
-  then Result := Result + '.unexp_'+IntToStr(FTotalUnexpectedSuccessCnt + FUnexpectedSuccessCnt);
+  then Result := Result + '___unexp.'+IntToStr(FTotalUnexpectedSuccessCnt + FUnexpectedSuccessCnt);
   if (FTotalErrorCnt  + FTestErrorCnt > 0)
-  then Result := Result + '.fail_'+IntToStr(FTotalErrorCnt  + FTestErrorCnt);
+  then Result := Result + '___fail.'+IntToStr(FTotalErrorCnt  + FTestErrorCnt);
 end;
 
 procedure TDBGTestCase.InitLog;
@@ -509,6 +713,44 @@ begin
   end;
 end;
 
+procedure TDBGTestCase.CreateReport;
+var
+  name: String;
+  i: Integer;
+  dir: String;
+begin
+  if FReportFileCreated then exit;
+  EnterCriticalsection(FLogLock);
+  try
+    if FReportFileCreated then exit;
+
+    name := GetLogFileName;
+    for i := 1 to length(name) do
+      if name[i] in ['/', '\', '*', '?', ':'] then
+        name[i] := '_';
+
+    if DirectoryExistsUTF8(TestControlGetLogPath) then
+      dir := TestControlGetLogPath
+    else
+      dir := GetCurrentDirUTF8;
+
+    FReportFileName := dir + name;
+
+    {$IFDEF Windows}
+    FReportFile := TLazLoggerFileHandleThreadSave.Create;
+    {$ELSE}
+    FReportFile := TLazLoggerFileHandleMainThread.Create;
+    {$ENDIF}
+    FReportFile.LogName := FReportFileName + '___fail.' + IntToStr(FTestErrorCnt) + '.report';
+    //AssignFile(FReportFile, FReportFileName + '.log.running');
+    //Rewrite(FReportFile);
+    FReportFileCreated := True;
+
+  finally
+    LeaveCriticalsection(FLogLock);
+  end;
+end;
+
 procedure TDBGTestCase.FinishLog;
 var
   NewName: String;
@@ -520,6 +762,12 @@ begin
     NewName := GetFinalLogFileName;
     sleep(5);
     RenameFileUTF8(FLogFileName + '.log.running', NewName + '.log');
+  end;
+  if FReportFileCreated then begin
+    CheckSynchronize(1);
+    FreeAndNil(FReportFile);
+    //CloseFile(FReportFile);
+    FReportFileCreated := False;
   end;
   FLogBufferText.Clear;
 end;
@@ -700,15 +948,9 @@ end;
 
 { TDBGTestsuite }
 
-procedure TDBGTestsuite.Clear;
-begin
-  //
-end;
-
 constructor TDBGTestsuite.Create(ACompiler: TTestDbgCompiler;
   ADebugger: TTestDbgDebugger);
 begin
-  FInRun := False;
   FCompiler := ACompiler;
   FDebugger := ADebugger;
   inherited Create(ACompiler.FullName + ', ' + ADebugger.FullName);
@@ -722,48 +964,33 @@ begin
   AddTest(NewSuite);
 end;
 
-procedure TDBGTestsuite.Run(AResult: TTestResult);
-begin
-  FInRun := True;
-  try
-    inherited Run(AResult);
-  finally
-    FInRun := False;
-    Clear;
-  end;
-end;
+var
+  MainTestSuite: TDbgBaseTestsuite;
 
-procedure TDBGTestsuite.RunTest(ATest: TTest; AResult: TTestResult);
-begin
-  try
-    inherited RunTest(ATest, AResult);
-  finally
-    if not FInRun then Clear;
-  end;
-end;
-
-procedure RegisterDbgTest(ATestClass: TTestCaseClass);
+procedure RegisterDbgTest(ATestClass: TTestCaseClass; ASymTypes: TSymbolTypes);
 var
   Suite: TTestSuite;
   i: Integer;
 begin
-  Suite := GetTestRegistry;
+  //Suite := GetTestRegistry;
+  Suite := MainTestSuite;
   for i := 0 to Suite.ChildTestCount - 1 do
     if Suite.Test[i] is TDBGTestsuite then
-      TDBGTestsuite(Suite.Test[i]).RegisterDbgTest(ATestClass);
+      if (ASymTypes = []) or (TDBGTestsuite(Suite.Test[i]).Compiler.SymbolType in ASymTypes) then
+        TDBGTestsuite(Suite.Test[i]).RegisterDbgTest(ATestClass);
 end;
 
 procedure CreateTestSuites(ACompilerList: TTestDbgCompilerList;
   ADebuggerList: TTestDbgDebuggerList; ATestSuiteClass: TDBGTestsuiteClass);
 var
   i, j: Integer;
-  r: TTestSuite;
 begin
-  r := GetTestRegistry;
+  MainTestSuite := TDbgBaseTestsuite.Create;
+  GetTestRegistry.AddTest(MainTestSuite);
   for i := 0 to ACompilerList.Count - 1 do
   for j := 0 to ADebuggerList.Count - 1 do begin
     if ADebuggerList[j].MatchesCompiler(ACompilerList[i]) then begin
-      r.AddTest(ATestSuiteClass.Create(ACompilerList[i], ADebuggerList[j]));
+      MainTestSuite.AddTest(ATestSuiteClass.Create(ACompilerList[i], ADebuggerList[j]));
     end;
   end;
 end;

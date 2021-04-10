@@ -407,125 +407,130 @@ var
   end;
 
 begin
-  if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then exit;
-  if Data.OnBeforeTest <> nil then Data.OnBeforeTest(@Data);
+  StartTestBlock;
+  try
+    if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then exit;
+    if Data.OnBeforeTest <> nil then Data.OnBeforeTest(@Data);
 
-  rx := nil;
-  Stack := Data.StackFrame;
-  DataRes := Data.Result[SymbolType];
-  IgnoreFlags := DataRes.Flgs * WatchExpFlagMask[SymbolType];
-  IgnoreAll     := IgnoreFlags * WatchExpFlagSIgnAll <> [];
-  IgnoreData    := IgnoreFlags * WatchExpFlagSIgnData <> [];
-  IgnoreKind    := IgnoreFlags * WatchExpFlagSIgnKind <> [];
-  IgnoreKindPtr := IgnoreFlags * WatchExpFlagSIgnKindPtr <> [];
-  IgnoreTpName  := IgnoreFlags * WatchExpFlagSIgnTpName <> [];
+    rx := nil;
+    Stack := Data.StackFrame;
+    DataRes := Data.Result[SymbolType];
+    IgnoreFlags := DataRes.Flgs * WatchExpFlagMask[SymbolType];
+    IgnoreAll     := IgnoreFlags * WatchExpFlagSIgnAll <> [];
+    IgnoreData    := IgnoreFlags * WatchExpFlagSIgnData <> [];
+    IgnoreKind    := IgnoreFlags * WatchExpFlagSIgnKind <> [];
+    IgnoreKindPtr := IgnoreFlags * WatchExpFlagSIgnKindPtr <> [];
+    IgnoreTpName  := IgnoreFlags * WatchExpFlagSIgnTpName <> [];
 
-  // Get Value
-  n := Data.TestName;
-  if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ' RepCnt=' + dbgs(Data.RepeatCount) + ')';
-  Name := Name + ' ' + n + ' ::: '+adbg.GetLocation.SrcFile+' '+IntToStr(ADbg.GetLocation.SrcLine);
-  LogToFile('###### ' + Name + '###### '+LineEnding);
-  flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
-  IsValid := True;
-  HasTpInfo := True;
-  if flag then begin;
-    WV := AWatch.Values[1, Stack];// trigger read
-    s := WV.Value;
-    IsValid := WV.Validity = ddsValid;
-    HasTpInfo := IsValid and (WV.TypeInfo <> nil);
-//      flag := flag and IsValid;
-  end
-  else
-    s := WatchValue;
-
-  if not TestTrue('ADbg did NOT enter dsError', ADbg.State <> dsError) then exit;
-
-  // Check Data
-  f2 := True;
-  IgnoreText := '';    if IgnoreData then IgnoreText := 'Ignored by flag';
-  if IsValid = not(fTExpectError in DataRes.Flgs) then begin
-    rx := TRegExpr.Create;
-    rx.ModifierI := true;
-    rx.Expression := DataRes.ExpMatch;
-    if DataRes.ExpMatch <> ''
-    then f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    FreeAndNil(rx);
-  end else begin
-     f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but STATE was <'+dbgs(WV.Validity)+'> Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-     //exit; // failed Data, do not list others as potential unexpected success
-  end;
-
-  if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
-
-  // TypeInfo checks ?
-  if (not flag) or (DataRes.ExpTypeName = '') then exit;
-
-  // Check TypeInfo
-  s:='';
-  if HasTpInfo then WriteStr(s, WV.TypeInfo.Kind);
-  WriteStr(s2, DataRes.ExpKind);
-  IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
-  if IsValid and HasTpInfo then begin
-    if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
-    f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    if ((s2='skClass') and (s = 'skRecord')) or ((s='skClass') and (s2 = 'skRecord')) then begin
-      TotalClassVsRecord := TotalClassVsRecord + 1;
-    end;
-  end else begin
-    f2 := TestTrue(Name + ' Kind is "'+s2+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-  end;
-
-  if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
-
-  // Check TypeName
-  IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
-  if IsValid and HasTpInfo then begin
-    s:='';
-    if HasTpInfo then s := WV.TypeInfo.TypeName;
-    CmpNames(Name+' TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
-    //if fTpMtch  in DataRes.Flgs
-    //then begin
-    //  rx := TRegExpr.Create;
-    //  rx.ModifierI := true;
-    //  rx.Expression := DataRes.ExpTypeName;
-    //  TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+s,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-    //  FreeAndNil(rx);
-    // end
-    // else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-  end else begin
-      TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but STATE was <'+dbgs(WV.Validity)+'> HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"',  False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-  end;
-
-
-  MemberTests := DataRes.FullTypesExpect;
-  if Length(MemberTests) > 0 then begin
-    if HasTpInfo then begin
-      for i := 0 to Length(MemberTests) - 1 do begin
-        j := WV.TypeInfo.Fields.Count - 1;
-        while (j >= 0) and (CompareText(WV.TypeInfo.Fields[j].Name, MemberTests[i].Name) <> 0) do dec(j);
-        TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
-                 (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
-                 DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-        if j >= 0 then begin
-          fld := WV.TypeInfo.Fields[j];
-          WriteStr(s, MemberTests[i].ExpKind);
-          WriteStr(s2, fld.DBGType.Kind);
-          if fld.DBGType <> nil then begin
-            TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type='
-            + s + ' but was ' + s2,
-                MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-            CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
-                     MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);
-          end
-          else
-            TestTrue(Name + ' no dbgtype for members with name' +  MemberTests[i].Name, False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-        end;
-      end;
+    // Get Value
+    n := Data.TestName;
+    if n = '' then n := Data.Expression + ' (' + TWatchDisplayFormatNames[Data.DspFormat] + ', ' + dbgs(Data.EvaluateFlags) + ' RepCnt=' + dbgs(Data.RepeatCount) + ')';
+    Name := Name + ' ' + n + ' ::: '+adbg.GetLocation.SrcFile+' '+IntToStr(ADbg.GetLocation.SrcLine);
+    LogToFile('###### ' + Name + '###### '+LineEnding);
+    flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
+    IsValid := True;
+    HasTpInfo := True;
+    if flag then begin;
+      WV := AWatch.Values[1, Stack];// trigger read
+      s := WV.Value;
+      IsValid := WV.Validity = ddsValid;
+      HasTpInfo := IsValid and (WV.TypeInfo <> nil);
+  //      flag := flag and IsValid;
     end
     else
-      TestTrue(Name + ' no typeinfo for members' , False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
-  end;
+      s := WatchValue;
 
+    if not TestTrue('ADbg did NOT enter dsError', ADbg.State <> dsError) then exit;
+
+    // Check Data
+    f2 := True;
+    IgnoreText := '';    if IgnoreData then IgnoreText := 'Ignored by flag';
+    if IsValid = not(fTExpectError in DataRes.Flgs) then begin
+      rx := TRegExpr.Create;
+      rx.ModifierI := true;
+      rx.Expression := DataRes.ExpMatch;
+      if DataRes.ExpMatch <> ''
+      then f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but was "' + s + '"', rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      FreeAndNil(rx);
+    end else begin
+       f2 := TestTrue(Name + ' Matches "'+DataRes.ExpMatch + '", but STATE was <'+dbgs(WV.Validity)+'> Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+       //exit; // failed Data, do not list others as potential unexpected success
+    end;
+
+    if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
+
+    // TypeInfo checks ?
+    if (not flag) or (DataRes.ExpTypeName = '') then exit;
+
+    // Check TypeInfo
+    s:='';
+    if HasTpInfo then WriteStr(s, WV.TypeInfo.Kind);
+    WriteStr(s2, DataRes.ExpKind);
+    IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
+    if IsValid and HasTpInfo then begin
+      if (not IgnoreKind) and IgnoreKindPtr and (WV.TypeInfo.Kind = skPointer) then IgnoreText := 'Ignored by flag (Kind may be Ptr)';
+      f2 := TestEquals(Name + ' Kind',  s2, s, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      if ((s2='skClass') and (s = 'skRecord')) or ((s='skClass') and (s2 = 'skRecord')) then begin
+        TotalClassVsRecord := TotalClassVsRecord + 1;
+      end;
+    end else begin
+      f2 := TestTrue(Name + ' Kind is "'+s2+'", failed: STATE was <'+dbgs(WV.Validity)+'>, HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"', False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end;
+
+    if (not f2) and IgnoreAll then exit; // failed Data, do not list others as potential unexpected success
+
+    // Check TypeName
+    IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
+    if IsValid and HasTpInfo then begin
+      s:='';
+      if HasTpInfo then s := WV.TypeInfo.TypeName;
+      CmpNames(Name+' TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
+      //if fTpMtch  in DataRes.Flgs
+      //then begin
+      //  rx := TRegExpr.Create;
+      //  rx.ModifierI := true;
+      //  rx.Expression := DataRes.ExpTypeName;
+      //  TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but was '+s,  rx.Exec(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+      //  FreeAndNil(rx);
+      // end
+      // else TestEquals(Name + ' TypeName',  LowerCase(DataRes.ExpTypeName), LowerCase(s), DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end else begin
+        TestTrue(Name + ' TypeName matches '+DataRes.ExpTypeName+' but STATE was <'+dbgs(WV.Validity)+'> HasTypeInfo='+dbgs(HasTpInfo)+' Val="'+s+'"',  False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end;
+
+
+    MemberTests := DataRes.FullTypesExpect;
+    if Length(MemberTests) > 0 then begin
+      if HasTpInfo then begin
+        for i := 0 to Length(MemberTests) - 1 do begin
+          j := WV.TypeInfo.Fields.Count - 1;
+          while (j >= 0) and (CompareText(WV.TypeInfo.Fields[j].Name, MemberTests[i].Name) <> 0) do dec(j);
+          TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
+                   (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
+                   DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+          if j >= 0 then begin
+            fld := WV.TypeInfo.Fields[j];
+            WriteStr(s, MemberTests[i].ExpKind);
+            WriteStr(s2, fld.DBGType.Kind);
+            if fld.DBGType <> nil then begin
+              TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type='
+              + s + ' but was ' + s2,
+                  MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+              CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
+                       MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);
+            end
+            else
+              TestTrue(Name + ' no dbgtype for members with name' +  MemberTests[i].Name, False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+          end;
+        end;
+      end
+      else
+        TestTrue(Name + ' no typeinfo for members' , False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+    end;
+
+  finally
+    EndTestBlock;
+  end;
 end;
 
 procedure TTestWatchesBase.AddWatches(ExpectList: TWatchExpectationArray; AWatches: TWatches;

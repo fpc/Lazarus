@@ -996,8 +996,8 @@ end;
 
 initialization
   RegisterDbgTest(TTestExceptionAddrDirect);
-  RegisterDbgTest(TTestExceptionAddrInDirect);
-  RegisterDbgTest(TTestExceptionForceName);
+  RegisterDbgTest(TTestExceptionAddrInDirect, [stDwarfSet, stStabs]);
+  RegisterDbgTest(TTestExceptionForceName, [stDwarfSet, stStabs]);
 
   ControlTestExceptionOne                  := TestControlRegisterTest('TTestExceptionOne');
   ControlTestExceptionOneException         := TestControlRegisterTest('Exception', ControlTestExceptionOne);

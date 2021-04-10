@@ -36,6 +36,8 @@ var
   SetLogPathProc: TSetLogPath;
   GetLogPathProc: TGetLogPath;
   GetWriteLogProc: TGetWriteLog;
+  GetWriteReportProc: TGetWriteLog;
+  GetWriteOverviewProc: TGetWriteLog;
   RegisterCompilerProc: TRegisterCompiler;
   RegisterDebuggerProc: TRegisterDebugger;
   RegisterTestProc: TRegisterTest;
@@ -54,6 +56,8 @@ function TestControlRegisterTest(Name: String; Parent: Pointer = nil): Pointer;
 procedure TestControlSetLogPath(path: string);
 function TestControlGetLogPath: string;
 function TestControlGetWriteLog: TWriteLogConfig;
+function TestControlGetWriteReport: TWriteLogConfig;
+function TestControlGetWriteOverView: TWriteLogConfig;
 
 procedure TestControlRegisterCompilers(c: TBaseList);
 procedure TestControlRegisterDebuggers(d: TBaseList);
@@ -149,6 +153,22 @@ begin
   else
   if TestControlGetLogPath <> '' then
     Result := wlAlways;
+end;
+
+function TestControlGetWriteReport: TWriteLogConfig;
+begin
+  Result := wlNever;
+  if GetWriteReportProc <> nil then
+    Result := GetWriteReportProc();
+  if (Result = wlOnError) and (TestControlGetWriteLog = wlAlways) then
+    Result := wlAlways;
+end;
+
+function TestControlGetWriteOverView: TWriteLogConfig;
+begin
+  Result := wlNever;
+  if GetWriteOverviewProc <> nil then
+    Result := GetWriteOverviewProc();
 end;
 
 procedure TestControlRegisterCompilers(c: TBaseList);

@@ -321,13 +321,13 @@ begin
     i := high(QWord) - FStartTime + 1 + i;
 
   if FTotalGDBInternalErrorCnt > 0
-  then Result := Result + '.gdb_intern_'+IntToStr(FTotalGDBInternalErrorCnt);
+  then Result := Result + '___gdb_intern.'+IntToStr(FTotalGDBInternalErrorCnt);
   if FTotalDsErrorCrash > 0
-  then Result := Result + '.gdb_crash_'+IntToStr(FTotalDsErrorCrash);
+  then Result := Result + '___gdb_crash.'+IntToStr(FTotalDsErrorCrash);
   if FTotalClassVsRecord > 0
-  then Result := Result + '.class_rec_'+IntToStr(FTotalClassVsRecord);
+  then Result := Result + '___class_re._'+IntToStr(FTotalClassVsRecord);
 
-  Result := Result + '.t_'+ IntToStr(i div 1000);
+//  Result := Result + '___time.'+ IntToStr(i div 1000);
 end;
 
 function TGDBTestCase.StartGDB(AppDir, TestExeName: String): TGDBMIDebugger;
