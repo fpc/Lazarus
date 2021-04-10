@@ -118,7 +118,8 @@ type
     dfForceBreak,        // Debugger supports insertion of not yet known brekpoints
     dfForceBreakDetected,
     dfSetBreakFailed,
-    dfSetBreakPending
+    dfSetBreakPending,
+    dfIgnoreInternalError
   );
 
   TTargetRegisterIdent = (r0, r1, r2, rBreakErrNo);
@@ -2889,8 +2890,11 @@ begin
     if LazStartsText('type = ^EXCEPTION', R.Values)
     then include(TargetInfo^.TargetFlags, tfExceptionIsPointer);
   end;
-  CheckHasType('Shortstring', tfFlagHasTypeShortstring);
-  HadTimeout := HadTimeout and LastExecwasTimeOut;
+  if FTheDebugger.FGDBVersionMajor < 10 then begin
+    // causes internal error in gdb 10  // Maybe use dfIgnoreInternalError
+    CheckHasType('Shortstring', tfFlagHasTypeShortstring);
+    HadTimeout := HadTimeout and LastExecwasTimeOut;
+  end;
   //CheckHasType('PShortstring', tfFlagHasTypePShortString);
   //HadTimeout := HadTimeout and LastExecwasTimeOut;
   CheckHasType('pointer', tfFlagHasTypePointer);
@@ -8917,7 +8921,7 @@ function TGDBMIDebuggerBase.CheckForInternalError(ALine, ACurCommandText: String
 
   function IsErrorLine(const L: String): Boolean;
   begin
-    Result := (PosI('internal-error:', L) > 0) or
+    Result := (PosI('internal-error:', L) > 0)or
               (PosI('internal to gdb has been detected', L) > 0) or
               (PosI('further debugging may prove unreliable', L) > 0) or
               (PosI('command aborted.', L) > 0);
@@ -8937,7 +8941,7 @@ var
   S: String;
   i: Integer;
 begin
-  Result := IsErrorLine(ALine);
+  Result := IsErrorLine(ALine) ;
   if Result then begin
     FNeedReset := True;
 
@@ -8949,6 +8953,9 @@ begin
       dec(i);
       S := ReadLine(True, 50);
     end;
+
+    if (dfIgnoreInternalError in FDebuggerFlags) then
+      exit;
 
     DoDbgEvent(ecDebugger, etDefault, Format(gdbmiEventLogGDBInternalError, [ALine]));
     if (TGDBMIDebuggerProperties(GetProperties).WarnOnInternalError = TGDBMIDebuggerShowWarning.True) or
