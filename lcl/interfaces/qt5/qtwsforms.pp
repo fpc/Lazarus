@@ -996,9 +996,7 @@ begin
   begin
     if (csNoFocus in TCustomForm(AWidget.LCLObject).ControlStyle) then
     begin
-      {$IFDEF HASX11}
-      AWidget.setAttribute(QtWA_X11DoNotAcceptFocus, True);
-      {$ENDIF}
+      Flags := Flags or QtWindowDoesNotAcceptFocus;
       AWidget.setAttribute(QtWA_ShowWithoutActivating, True);
     end;
     AWidget.setWindowFlags(Flags);
