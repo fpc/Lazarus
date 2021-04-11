@@ -168,6 +168,7 @@ type
     procedure SetParentColor(AValue: Boolean);
     procedure SetPasswordChar(AValue: char);
     procedure SetPopupMenu(AValue: TPopupMenu);
+    procedure SetReadOnly(AValue: Boolean);
     procedure SetSelLength(AValue: Integer);
     procedure SetSelStart(AValue: Integer);
     procedure SetSelText(AValue: String);
@@ -200,7 +201,6 @@ type
     procedure SetBuddyHint(AValue: TTranslateString);
     procedure SetBuddyWidth(AValue: Integer);
     procedure SetBuddyVisible(AValue: Boolean);
-    procedure SetReadOnly(AValue: Boolean); virtual;
 
     procedure BuddyClick; virtual;
 

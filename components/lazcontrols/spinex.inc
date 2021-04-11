@@ -134,13 +134,6 @@ begin
     Utf8Key := '';
 end;
 
-procedure TSpinEditExBase.SetReadOnly(AValue: Boolean);
-begin
-  inherited SetReadOnly(AValue);
-  if (not AValue) and (not FEditorEnabled) then
-    Edit.ReadOnly := True;
-end;
-
 procedure TSpinEditExBase.EditChange;
 begin
   {$ifdef debugspinex}
@@ -285,21 +278,6 @@ begin
   Result := BaseEditor;
 end;
 
-procedure TSpinEditExBase.SetEditorEnabled(AValue: Boolean);
-begin
-  if FEditorEnabled = AValue then Exit;
-  FEditorEnabled := AValue;
-  if AValue then
-  begin
-    if not ReadOnly then
-      Edit.ReadOnly := False;
-  end
-  else
-  begin
-    Edit.ReadOnly := True;
-  end;
-end;
-
 procedure TSpinEditExBase.SetMinRepeatValue(AValue: Byte);
 begin
   if FMinRepeatValue = AValue then Exit;
@@ -358,7 +336,6 @@ begin
   FSettingValue := False;
   FNullValueBehaviour := nvbMinValue;
   FMinRepeatValue := DefMinRepeatValue;
-  FEditorEnabled := True;
 
   UpDown.ControlStyle := UpDown.ControlStyle + [csNoDesignVisible];
   Edit.Alignment := taRightJustify;
