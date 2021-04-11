@@ -99,7 +99,7 @@ type
   generic TSpinEditExBase<T> = class(TCustomAbstractGroupedEdit)
   private const
     DefIncrement = 1;
-    DefMaxValue = 100;
+    DefMaxValue = 0;
     DefMinValue = 0;
     DefMinRepeatValue = 100;
   private
