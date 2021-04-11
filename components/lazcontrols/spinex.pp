@@ -297,6 +297,7 @@ type
     property ArrowKeys;
     property DecimalSeparator;
     property DecimalPlaces;
+    property EditorEnabled;
     property Increment;
     property MaxValue;
     property MinValue;
@@ -401,6 +402,7 @@ type
 
     //From TCustomFloatSpinEditEx
     property ArrowKeys;
+    property EditorEnabled;
     property Increment;
     property MaxValue;
     property MinValue;
