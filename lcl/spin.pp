@@ -33,7 +33,7 @@ type
   private const
     DefIncrement = 1;
     DefDecimals = 2;
-    DefMaxValue = 100;
+    DefMaxValue = 0;
   private
     FIncrement: Double;
     FDecimals: Integer;
@@ -151,7 +151,7 @@ type
   public
     property Value: integer read GetValue write SetValue default 0;
     property MinValue: integer read GetMinValue write SetMinValue default 0;
-    property MaxValue: integer read GetMaxValue write SetMaxValue default 100;
+    property MaxValue: integer read GetMaxValue write SetMaxValue default 0;
     property Increment: integer read GetIncrement write SetIncrement default 1;
   end;
   
