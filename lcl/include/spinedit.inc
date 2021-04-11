@@ -190,7 +190,7 @@ end;
 function TCustomFloatSpinEdit.GetLimitedValue(const AValue: Double): Double;
 begin
   Result := AValue;
-  //Delphi does not constrain when MinValue = MaxValue, and does if MaxValue > MinValue,
+  //Delphi does not constrain when MinValue = MaxValue, and does if MaxValue < MinValue,
   //but the latter makes absolutely no sense at all.
   if FMaxValue > FMinValue then
   begin
