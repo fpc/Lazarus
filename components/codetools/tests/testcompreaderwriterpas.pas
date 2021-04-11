@@ -249,8 +249,8 @@ type
     property AQWord: QWord read FAQWord write FAQWord stored AQWordIsStored;
     property AInt64: Int64 read FAInt64 write FAInt64 stored AInt64IsStored;
     property ACurrency: Currency read FACurrency write FACurrency stored ACurrencyIsStored;
-    property ASingle: Single read FASingle write FASingle stored ASingleIsStored;
-    property ADouble: Double read FADouble write FADouble stored ADoubleIsStored;
+    property ASingle: Single read FASingle write FASingle stored ASingleIsStored nodefault;
+    property ADouble: Double read FADouble write FADouble stored ADoubleIsStored nodefault;
     property AExtended: Extended read FAExtended write FAExtended stored AExtendedIsStored;
     property AChar: Char read FAChar write FAChar stored ACharIsStored;
     property AWideChar: WideChar read FAWideChar write FAWideChar stored AWideCharIsStored;
