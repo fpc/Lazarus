@@ -106,6 +106,7 @@ type
     procedure TestFindDeclaration_AnonymProc_ExprDot;
     procedure TestFindDeclaration_ArrayMultiDimDot;
     procedure TestFindDeclaration_VarArgsOfType;
+    procedure TestFindDeclaration_ProcRef;
     procedure TestFindDeclaration_UnitSearch_CurrentDir;
     // test all files in directories:
     procedure TestFindDeclaration_FPCTests;
@@ -1046,6 +1047,34 @@ begin
   FindDeclarations(Code);
 end;
 
+procedure TTestFindDeclaration.TestFindDeclaration_ProcRef;
+begin
+  StartProgram;
+  Add([
+  'type',
+  '  TProc = procedure of object;',
+  '  TFoo = class',
+  '  private',
+  '    FTest: TClassProcedure;',
+  '  public',
+  '    procedure TestProc;',
+  '    property Test: TProc read FTest write FTest;',
+  '  end;',
+  'procedure TFoo.TestProc;',
+  'begin',
+  '  Self.Test{declaration:TFoo.Test} := @TestProc{declaration:TFoo.TestProc};',
+  '  Test{declaration:TFoo.Test} := @Self.TestProc{declaration:TFoo.TestProc};',
+  '  // TestProc{declaration:TFoo.TestProc}',
+  'end;',
+  'var Foo: TFoo;',
+  'begin',
+  '  Foo.Test{declaration:TFoo.Test} := @Foo.TestProc{declaration:TFoo.TestProc};',
+  '  with Foo do',
+  '    Test{declaration:TFoo.Test} := @TestProc{declaration:TFoo.TestProc};',
+  'end.']);
+  FindDeclarations(Code);
+end;
+
 procedure TTestFindDeclaration.TestFindDeclaration_UnitSearch_CurrentDir;
 var
   Unit1A, Unit1B: TCodeBuffer;
@@ -1075,7 +1104,7 @@ begin
     'end.']);
     CodeToolBoss.DefineTree.Add(DefTemp);
 
-    debugln(['AAA1 TTestFindDeclaration.TestFindDeclaration_UnitSearch_CurrentDir ',CodeToolBoss.GetUnitPathForDirectory('')]);
+    //debugln(['TTestFindDeclaration.TestFindDeclaration_UnitSearch_CurrentDir ',CodeToolBoss.GetUnitPathForDirectory('')]);
 
     FindDeclarations(Code);
   finally
