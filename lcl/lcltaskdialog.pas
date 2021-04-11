@@ -260,7 +260,6 @@ type
     // - if left void, the text is taken from the current dialog icon kind
     Inst: string;
     /// the dialog's primary content content text
-    // - any '\n' will be converted into a line feed
     Content: string;
     /// a #13#10 or #10 separated list of custom buttons
     // - they will be identified with an ID number starting at 100
@@ -712,7 +711,7 @@ var
     B: TCommonButton;
     CommandLink: TBitBtn;
     Rad: array of TRadioButton;
-function AddLabel(Text: string; BigFont: boolean): TLabel;
+function AddLabel(Text: string; BigFont: boolean; InterpretLF: boolean): TLabel;
 var R: TRect;
     W: integer;
 begin
@@ -729,7 +728,8 @@ begin
     end;
   end else
     result.Font.Height := FontHeight;
-  Text := CR(Text);
+  if InterpretLF then
+    Text := CR(Text);
   result.AutoSize := false;
   R.Left := 0;
   R.Top := 0;
@@ -815,7 +815,7 @@ begin
     Config.hwndParent := aParent;
     Config.pszWindowTitle := PWideChar(N(Title));
     Config.pszMainInstruction := PWideChar(N(Inst));
-    Config.pszContent := PWideChar(N(Content));
+    Config.pszContent := PWideChar(_WS(Content));
     RUCount := 0;
     AddRU(Buttons,Config.cButtons,100);
     AddRU(Radios,Config.cRadioButtons,200);
@@ -930,11 +930,11 @@ begin
       Y := IconBorder;
     end;
     // add main texts (Instruction, Content, Information)
-    Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst,true);
-    Dialog.Form.Element[tdeContent] := AddLabel(Content, false);
+    Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst, true, true);
+    Dialog.Form.Element[tdeContent] := AddLabel(Content, false, false);
     if Info<>'' then
       // no information collapse/expand yet: it's always expanded
-      Dialog.Form.Element[tdeExpandedInfo] := AddLabel(Info,false);
+      Dialog.Form.Element[tdeExpandedInfo] := AddLabel(Info, false, true);
     // add command links buttons
     if (tdfUseCommandLinks in aFlags) and (Buttons<>'') then
       with TStringList.Create do
@@ -1158,7 +1158,7 @@ begin
       begin
         X := 24;
       end;
-      Dialog.Form.Element[tdeFooter] := AddLabel(Footer,false);
+      Dialog.Form.Element[tdeFooter] := AddLabel(Footer, false, true);
     end;
     // display the form
     Dialog.Form.ClientHeight := Y;
