@@ -4310,7 +4310,8 @@ begin
   try
     // do not loop with LCL but do not apply it to TQtMainWindow !
     if not (csDesigning in LCLObject.ComponentState) and
-      not ((ClassType = TQtMainWindow) or (ClassType = TQtWindowArea)) and InUpdate then
+      not ((ClassType = TQtMainWindow) {$IFDEF QTSCROLLABLEFORMS} or (ClassType = TQtWindowArea){$ENDIF})
+      and InUpdate then
     begin
       AQtClientRect := Rect(0, 0, 0, 0);
       if FOwner <> nil then
@@ -7154,14 +7155,18 @@ end;
 procedure TQtMainWindow.BeginUpdate;
 begin
   inherited BeginUpdate;
+  {$IFDEF QTSCROLLABLEFORMS}
   if Assigned(ScrollArea) then
     ScrollArea.BeginUpdate;
+  {$ENDIF}
 end;
 
 procedure TQtMainWindow.EndUpdate;
 begin
+  {$IFDEF QTSCROLLABLEFORMS}
   if Assigned(ScrollArea) then
     ScrollArea.EndUpdate;
+  {$ENDIF}
   inherited EndUpdate;
 end;
 
