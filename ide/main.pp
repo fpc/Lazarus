@@ -12565,7 +12565,7 @@ begin
     Row := OI.GetActivePropertyRow;
 
   // Get help text for this property
-  if not BeginCodeTools or not OI.ShowInfoBox then
+  if not BeginCodeTools or (not OI.ShowInfoBox and not OI.ShowStatusBar) then
     Exit;
   if (Row <> nil)
   and FindDeclarationOfOIProperty(OI, Row, Code, Caret, i) then
