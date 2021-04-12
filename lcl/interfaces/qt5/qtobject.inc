@@ -1284,7 +1284,7 @@ begin
     lcTextHint: Result := LCL_CAPABILITY_YES;
     lcNativeTaskDialog: Result := {$ifdef MSWINDOWS} LCL_CAPABILITY_NO {$else} LCL_CAPABILITY_YES {$endif};
     lcAllowChildControlsInNativeControls: Result := LCL_CAPABILITY_YES;
-    lcAccessibilitySupport: Result := LCL_CAPABILITY_YES
+    lcAccessibilitySupport: Result := {$IFDEF QTACCESSIBILITY}LCL_CAPABILITY_YES{$ELSE}LCL_CAPABILITY_NO{$ENDIF};
   else
     Result := inherited GetLCLCapability(ACapability);
   end;

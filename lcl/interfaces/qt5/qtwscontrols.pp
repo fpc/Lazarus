@@ -46,13 +46,14 @@ type
   end;
 
   { TQtWSLazAccessibleObject }
-
+  {$IFDEF QTACCESSIBILITY}
   TQtWSLazAccessibleObject = class(TWSLazAccessibleObject)
   public
     class function CreateHandle(const AObject: TLazAccessibleObject): HWND; override;
     class procedure DestroyHandle(const AObject: TLazAccessibleObject); override;
     class procedure SetAccessibleRole(const AObject: TLazAccessibleObject; const ARole: TLazAccessibilityRole); override;
   end;
+  {$ENDIF}
 
   { TQtWSControl }
 
@@ -163,6 +164,7 @@ begin
   {$endif}
 end;
 
+{$IFDEF QTACCESSIBILITY}
 class function TQtWSLazAccessibleObject.CreateHandle(const AObject: TLazAccessibleObject): HWND;
 var
   widget: QWidgetH;
@@ -201,6 +203,7 @@ begin
    if accessibleRole has changed}
   CreateHandle(AObject);
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: TQtWSWinControl.CanFocus

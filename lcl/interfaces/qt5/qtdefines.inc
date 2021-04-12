@@ -9,6 +9,7 @@
   {$DEFINE QTCOCOA}
   {$ENDIF}
   {$DEFINE QTSCROLLABLEFORMS}
+  {.$DEFINE QTACCESSIBILITY}
   {Qt must use native event loop at least under MacOSX cocoa 64}
   {$IFNDEF HASX11}
   {$DEFINE QtUseNativeEventLoop}

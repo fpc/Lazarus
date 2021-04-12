@@ -132,8 +132,12 @@ end;
 
 function RegisterLazAccessibleObject: Boolean; alias : 'WSRegisterLazAccessibleObject';
 begin
+  {$IFDEF QTACCESSIBILITY}
   RegisterWSLazAccessibleObject(TQtWSLazAccessibleObject);
   Result := True;
+  {$ELSE}
+  Result := False;
+  {$ENDIF}
 end;
 
 function RegisterControl: Boolean; alias : 'WSRegisterControl';

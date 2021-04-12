@@ -14943,6 +14943,7 @@ type
 QAccessibleId = cardinal;
 TInterfaceFactory = function(key: QStringH; obj: QObjectH): QAccessibleInterfaceH cdecl;
 
+{$IFDEF QTACCESSIBILITY}
 // actionNames_Override returns a single string with comma separated action names
 QLCLAccessibleWidget_actionNames_Override = procedure (names: PWideString) of object cdecl;
 QLCLAccessibleWidget_child_Override = procedure (index: integer; out child: QAccessibleInterfaceH) of object cdecl;
@@ -14998,7 +14999,7 @@ procedure QLCLAccessibleWidget_override_rect(handle: QLCLAccessibleWidgetH; hook
 procedure QLCLAccessibleWidget_override_role(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_role_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_role';
 procedure QLCLAccessibleWidget_override_state(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_state_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_state';
 procedure QLCLAccessibleWidget_override_text(handle: QLCLAccessibleWidgetH; hook: QLCLAccessibleWidget_text_Override); cdecl; external Qt5PasLib name 'QLCLAccessibleWidget_override_text';
-   
+{$ENDIF}
 
 function QCoreApplication_hook_Create(handle: QObjectH): QCoreApplication_hookH; cdecl; external Qt5PasLib name 'QCoreApplication_hook_Create';
 procedure QCoreApplication_hook_Destroy(handle: QCoreApplication_hookH); cdecl; external Qt5PasLib name 'QCoreApplication_hook_Destroy'; 

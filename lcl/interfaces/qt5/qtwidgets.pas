@@ -1959,6 +1959,7 @@ const
   QtCheckStateRole = Ord(QtUserRole) + 1;
   QtListViewOwnerDataRole = Ord(QtUserRole) + 2;
 
+{$IFDEF QTACCESSIBILITY}
 const
   QtAXObjectName           = 'AxObject';
   axActionNamePress        = 'Press';
@@ -2019,6 +2020,7 @@ type
     procedure textOverride(text: QAccessibleText; retval: PWideString) cdecl; override;
     function isVisible: Boolean; override;
   end;
+{$ENDIF}
 
 implementation
 
@@ -2107,10 +2109,13 @@ begin
 end;
 
 procedure TQtWidget.InitializeAccessibility;
+{$IFDEF QTACCESSIBILITY}
 var
   WStr: WideString;
   LCLAxObject: TLazAccessibleObject;
+{$ENDIF}
 begin
+  {$IFDEF QTACCESSIBILITY}
   if Assigned(LCLObject) then begin
     LCLAxObject := LCLObject.GetAccessibleObject;
     if (LCLAxObject <> nil) then begin
@@ -2124,6 +2129,7 @@ begin
     WStr := GetUtf8String(ClassName);
     QWidget_setAccessibleName(Widget, @WStr);
   end;
+  {$ENDIF}
 end;
 
 procedure TQtWidget.InitializeWidget;
@@ -17560,10 +17566,13 @@ begin
 end;
 
 procedure TQtCustomControl.InitializeAccessibility;
+{$IFDEF QTACCESSIBILITY}
 var
   LCLAxObject: TLazAccessibleObject;
+{$ENDIF}
 begin
   inherited InitializeAccessibility;
+  {$IFDEF QTACCESSIBILITY}
   if (LCLObject <> nil) then begin
     // TWinControl.Handle is still not set so can't do handle creation through LCLAxObject.CreateHandle
     LCLAxObject :=  LCLObject.GetAccessibleObject;
@@ -17574,6 +17583,7 @@ begin
         LCLAxObject.Handle :=
           HWND(TQtAccessibleObject.Create(LCLAxObject, Widget));
   end;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -19976,6 +19986,7 @@ begin
   Result := AControl.ScreenToClient(APoint);
 end;
 
+{$IFDEF QTACCESSIBILITY}
 function QtAxFactory(name: QStringH; obj: QObjectH): QAccessibleInterfaceH; cdecl;
 var
   CreateLCLAccessibleInterface: Boolean;
@@ -20236,7 +20247,7 @@ begin
   TreeNode := TTreeNode(FLazAxObject.DataObject);
   Result := TreeNode.IsVisible;
 end;
-
+{$ENDIF}
 
 
 
