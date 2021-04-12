@@ -511,6 +511,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoEnableChange; override;
     procedure DoChanged; override;
+    property  Validity: TValidState write SetValid;
   public
     destructor Destroy; override;
   end;
@@ -1013,9 +1014,9 @@ begin
     assert(FDbgBreakPoint.FInternalBreakpoint = nil, 'TFpThreadWorkerBreakPointSetUpdate.UpdateBrkPoint_DecRef: FDbgBreakPoint.FInternalBreakpoint = nil');
     FDbgBreakPoint.FInternalBreakpoint := InternalBreakpoint;
     if not assigned(InternalBreakpoint) then
-      FDbgBreakPoint.SetPendingToValid(vsInvalid) // pending?
+      FDbgBreakPoint.Validity := vsInvalid // pending?
     else
-      FDbgBreakPoint.SetPendingToValid(vsValid);
+      FDbgBreakPoint.Validity := vsValid;
   end;
 
   UnQueue_DecRef;
@@ -1594,6 +1595,7 @@ begin
   FThreadWorker := TFpThreadWorkerBreakPointSetUpdate.Create(TFpDebugDebugger(Debugger), Self);
   TFpDebugDebugger(Debugger).FWorkQueue.PushItem(FThreadWorker);
 
+  FValid := vsUnknown;
   FIsSet:=true;
   debuglnExit(DBG_BREAKPOINTS, ['<< TFPBreakpoint.SetBreak ' ]);
 end;
