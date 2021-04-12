@@ -1024,7 +1024,7 @@ begin
       DefAWideChar:=succ(AWideChar);
       Enum:=TEnum(0);
       DefEnum:=succ(Enum);
-      EnumRg:=TEnumRg(0);
+      EnumRg:={%H-}TEnumRg(0);
       DefEnumRg:=succ(EnumRg);
       SetOfEnum:=[];
       DefSetOfEnum:=[red];
@@ -1032,11 +1032,11 @@ begin
       DefSetOfEnumRg:=[red];
       SetOfBool:=[];
       DefSetOfBool:=[true];
-      MyInt:=TMyInt(0);
+      MyInt:={%H-}TMyInt(0);
       DefMyInt:=MyInt+1;
       SetOfMyInt:=[];
       DefSetOfMyInt:=[2];
-      MyChar:=TMyChar(0);
+      MyChar:={%H-}TMyChar(0);
       DefMyChar:=succ(MyChar);
       SetOfMyChar:=[];
       DefSetOfMyChar:=[#4];
@@ -1356,7 +1356,7 @@ begin
       V2:=low(ShortInt);
       V3:=high(Word);
       V4:=low(SmallInt);
-      V5:=high(LongWord);
+      V5:=high(LongWord){%H-};
       V6:=low(LongInt);
       V7:=high(QWord);
       V8:=low(int64);

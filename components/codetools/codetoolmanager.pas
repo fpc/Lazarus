@@ -539,6 +539,10 @@ type
     function FindUsedUnitReferences(Code: TCodeBuffer; X, Y: integer;
           SkipComments: boolean; out UsedUnitFilename: string;
           var ListOfPCodeXYPosition: TFPList): boolean;
+    function FindReferencesInFiles(Files: TStringList;
+          DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+          SearchInComments: boolean;
+          var TreeOfPCodeXYPosition: TAVLTree): boolean;
     function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
           const OldIdentifier, NewIdentifier: string;
           DeclarationCode: TCodeBuffer = nil; DeclarationCaretXY: PPoint = nil): boolean;
@@ -2773,6 +2777,66 @@ begin
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindUnitReferences END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.FindReferencesInFiles(Files: TStringList;
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  SearchInComments: boolean; var TreeOfPCodeXYPosition: TAVLTree): boolean;
+var
+  i, j: Integer;
+  Code: TCodeBuffer;
+  ListOfPCodeXYPosition: TFPList;
+  Cache: TFindIdentifierReferenceCache;
+  Filename: String;
+begin
+  Result:=false;
+  ListOfPCodeXYPosition:=nil;
+  TreeOfPCodeXYPosition:=nil;
+  Cache:=nil;
+  try
+    // search in every file
+    for i:=0 to Files.Count-1 do begin
+      Filename:=Files[i];
+      if ExtractFileNameOnly(Filename)='' then
+        continue; // invalid filename
+      //debugln(['TCodeToolManager.FindReferencesInFiles ',Filename]);
+      j:=i-1;
+      while (j>=0) and (CompareFilenames(Filename,Files[j])<>0) do dec(j);
+      if j>=0 then continue; // skip duplicate
+
+      Code:=LoadFile(Filename,true,false);
+      if Code=nil then begin
+        debugln('TCodeToolManager.FindReferencesInFiles unable to load "',Filename,'"');
+        exit;
+      end;
+
+      // search references
+      FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+      if not FindReferences(
+        DeclarationCode,DeclarationCaretXY.X,DeclarationCaretXY.Y,
+        Code, not SearchInComments, ListOfPCodeXYPosition, Cache) then
+      begin
+        debugln('TCodeToolManager.FindReferencesInFiles unable to FindReferences in "',Code.Filename,'"');
+        exit;
+      end;
+      //debugln('TCodeToolManager.FindReferencesInFiles FindReferences in "',Code.Filename,'" ',dbgs(ListOfPCodeXYPosition<>nil));
+
+      // add to tree
+      if ListOfPCodeXYPosition<>nil then begin
+        if TreeOfPCodeXYPosition=nil then
+          TreeOfPCodeXYPosition:=CreateTreeOfPCodeXYPosition;
+        AddListToTreeOfPCodeXYPosition(ListOfPCodeXYPosition,
+                                              TreeOfPCodeXYPosition,true,false);
+      end;
+    end;
+
+    Result:=true;
+  finally
+    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    if not Result then
+      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+    Cache.Free;
+  end;
 end;
 
 function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
