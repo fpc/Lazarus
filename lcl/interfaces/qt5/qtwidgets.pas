@@ -19907,7 +19907,7 @@ begin
 end;
 
 
-
+{$IFDEF QTACCESSIBILITY}
 function LazRoleToQtRole(ALazRole: TLazAccessibilityRole): QAccessibleRole;
 begin
   case ALazRole of
@@ -19972,6 +19972,7 @@ begin
   end;
   Result := S;
 end;
+{$ENDIF}
 
 function LCLControlRectToQtScreenRect(ARect: TRect; AControl: TControl): TRect;
 var

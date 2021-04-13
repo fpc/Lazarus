@@ -153,10 +153,13 @@ type
   Q_PID = type int64;
 {$ENDIF}
 
+{$IFDEF QTACCESSIBILITY}
 QAccessibleEventH = class(TObject) end;
 QAccessibleInterfaceH = class(TObject) end;
   QAccessibleWidgetH = class(QAccessibleInterfaceH) end;
     QLCLAccessibleWidgetH = class(QAccessibleWidgetH) end;
+{$ENDIF}
+
 QAbstractNativeEventFilterH = class(TObject) end;
 QAuthenticatorH = class(TObject) end;
 QBackingStoreH = class(TObject) end;
@@ -14708,6 +14711,7 @@ procedure QAuthenticator_setOption(handle: QAuthenticatorH; opt: PWideString; va
 function QAuthenticator_isNull(handle: QAuthenticatorH): Boolean; cdecl; external Qt5PasLib name 'QAuthenticator_isNull';
 procedure QAuthenticator_detach(handle: QAuthenticatorH); cdecl; external Qt5PasLib name 'QAuthenticator_detach';
 
+{$IFDEF QTACCESSIBILITY}
 type
   QAccessibleEvent = ( // QAccessible::Event
     QAccessibleSoundPlayed          = $0001,
@@ -14943,7 +14947,7 @@ type
 QAccessibleId = cardinal;
 TInterfaceFactory = function(key: QStringH; obj: QObjectH): QAccessibleInterfaceH cdecl;
 
-{$IFDEF QTACCESSIBILITY}
+
 // actionNames_Override returns a single string with comma separated action names
 QLCLAccessibleWidget_actionNames_Override = procedure (names: PWideString) of object cdecl;
 QLCLAccessibleWidget_child_Override = procedure (index: integer; out child: QAccessibleInterfaceH) of object cdecl;
