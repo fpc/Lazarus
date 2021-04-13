@@ -7941,7 +7941,9 @@ func="_$CODETEMPLATESDLG$_Ld98"
 func="??"
     *)
 
-    j := pos('$', func);
+    j := 0;
+    if (filename = '') and (fullname = '') then
+      j := pos('$', func);
     if j > 1 then begin
       un := '';
       cl := '';
