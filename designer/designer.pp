@@ -82,7 +82,6 @@ type
     dfHasSized,
     dfNeedPainting,
     dfDuringPaintControl,
-    dfDuringDeletePers,
     dfDestroyingForm,
     dfShowEditorHints,
     dfShowComponentCaptions,
@@ -2992,7 +2991,6 @@ var
   Special: Boolean;
 begin
   if APersistent=nil then exit;
-  Include(FFlags, dfDuringDeletePers);
   try
     //debugln(['TDesigner.DoDeletePersistent A ',dbgsName(APersistent),' FreeIt=',FreeIt]);
     // unselect component
@@ -3034,7 +3032,6 @@ begin
   finally
     // unmark component
     DeletingPersistent.Remove(APersistent);
-    Exclude(FFlags, dfDuringDeletePers);
   end;
 end;
 
@@ -3178,10 +3175,8 @@ begin
     {$IFDEF VerboseDesigner}
     DebugLn('[TDesigner.Notification] opRemove ',dbgsName(AComponent));
     {$ENDIF}
-    // Notification is usually triggered by TheFormEditor.DeleteComponent
-    //  in DoDeletePersistent. Don't call it again.
-    if not (dfDuringDeletePers in FFlags) then // Needed eg. for TControlSelection
-      DoDeletePersistent(AComponent,false);    //  with copy/paste.
+    // Notification is usually triggered by TheFormEditor.DeleteComponent in DoDeletePersistent.
+    DoDeletePersistent(AComponent,false);
   end;
 end;
 
