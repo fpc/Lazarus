@@ -39,6 +39,7 @@ type
     procedure TestCompleteProperty_TypeGenericDelphi;
     procedure TestCompleteProperty_GenericObjFPC;
     procedure TestCompleteProperty_GenericDelphi;
+    procedure TestCompleteVariableWithSpecializedType;
   end;
 
 implementation
@@ -815,6 +816,46 @@ begin
     'end;',
     'end.']);
 end;
+
+procedure TTestCodeCompletion.TestCompleteVariableWithSpecializedType;
+begin
+  Test('TestCompleteVariableWithSpecializedType (not fixed so far)',
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'uses',
+    '  Generics.Collections;',
+    'type',
+    '  generic TObjectList2<T> = class(specialize TObjectList<T>)',
+    '  end;',
+    '  TList = specialize TObjectList2<TObject>;',
+    '  TClass = class',
+    '    List: TList;',
+    '  end;',
+    'var',
+    '  Base: TObject;',
+    'begin',
+    '  List := TClass(Base).List;',
+    'end.'],
+    15,3,
+    ['program Project1;',
+    '{$mode objfpc}{$H+}',
+    'uses',
+    '  Generics.Collections;',
+    'type',
+    '  generic TObjectList2<T> = class(specialize TObjectList<T>)',
+    '  end;',
+    '  TList = specialize TObjectList2<TObject>;',
+    '  TClass = class',
+    '    List: TList;',
+    '  end;',
+    'var',
+    '  Base: TObject;',
+    '  List: TList;',
+    'begin',
+    '  List := TClass(Base).List;',
+    'end.']);
+end;
+
 
 initialization
   RegisterTests([TTestCodeCompletion]);
