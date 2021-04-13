@@ -256,10 +256,9 @@ type
     // - if left void, the title of the application main form is used
     Title: string;
     /// the main instruction (first line on top of window)
-    // - any '\n' will be converted into a line feed
     // - if left void, the text is taken from the current dialog icon kind
     Inst: string;
-    /// the dialog's primary content content text
+    /// the dialog's primary content text
     Content: string;
     /// a #13#10 or #10 separated list of custom buttons
     // - they will be identified with an ID number starting at 100
@@ -277,7 +276,6 @@ type
     // native Vista/Seven TaskDialog, or as popup hint within Delphi emulation)
     Radios: string;
     /// the expanded information content text
-    // - any '\n' will be converted into a line feed
     // - the Delphi emulation will always show the Info content (there is no
     // collapse/expand button)
     Info: string;
@@ -288,7 +286,6 @@ type
     // - not used under XP: the Delphi emulation will always show the Info content
     InfoCollapse: string;
     /// the footer content text
-    // - any '\n' will be converted into a line feed
     Footer: string;
     /// the text of the bottom most optional checkbox
     Verify: string;
@@ -663,12 +660,7 @@ begin
     SetLength(result,i-1);
   end;
 end;
-function N(const aText: string): WS;
-begin
-  if aText='' then
-    result := '' else
-    result := _WS(CR(aText));
-end;
+
 {$IFDEF MSWINDOWS}
 var RU: array of Ws;
     RUCount: integer;
@@ -711,7 +703,7 @@ var
     B: TCommonButton;
     CommandLink: TBitBtn;
     Rad: array of TRadioButton;
-function AddLabel(Text: string; BigFont: boolean; InterpretLF: boolean): TLabel;
+function AddLabel(Text: string; BigFont: boolean): TLabel;
 var R: TRect;
     W: integer;
 begin
@@ -728,8 +720,6 @@ begin
     end;
   end else
     result.Font.Height := FontHeight;
-  if InterpretLF then
-    Text := CR(Text);
   result.AutoSize := false;
   R.Left := 0;
   R.Top := 0;
@@ -813,8 +803,8 @@ begin
     FillChar(Config{%H-},sizeof(Config),0);
     Config.cbSize := sizeof(Config);
     Config.hwndParent := aParent;
-    Config.pszWindowTitle := PWideChar(N(Title));
-    Config.pszMainInstruction := PWideChar(N(Inst));
+    Config.pszWindowTitle := PWideChar(_WS(Title));
+    Config.pszMainInstruction := PWideChar(_WS(Inst));
     Config.pszContent := PWideChar(_WS(Content));
     RUCount := 0;
     AddRU(Buttons,Config.cButtons,100);
@@ -823,11 +813,11 @@ begin
       Config.pButtons := @But[0];
     if Config.cRadioButtons>0 then
       Config.pRadioButtons := @But[Config.cButtons];
-    Config.pszVerificationText := PWideChar(N(Verify));
-    Config.pszExpandedInformation := PWideChar(N(Info));
-    Config.pszExpandedControlText := PWideChar(N(InfoExpanded));
-    Config.pszCollapsedControlText := PWideChar(N(InfoCollapse));
-    Config.pszFooter := PWideChar(N(Footer));
+    Config.pszVerificationText := PWideChar(_WS(Verify));
+    Config.pszExpandedInformation := PWideChar(_WS(Info));
+    Config.pszExpandedControlText := PWideChar(_WS(InfoExpanded));
+    Config.pszCollapsedControlText := PWideChar(_WS(InfoCollapse));
+    Config.pszFooter := PWideChar(_WS(Footer));
     Config.dwCommonButtons := byte(aCommonButtons);
     if (Verify<>'') and VerifyChecked then
       include(aFlags,tdfVerificationFlagChecked);
@@ -930,11 +920,11 @@ begin
       Y := IconBorder;
     end;
     // add main texts (Instruction, Content, Information)
-    Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst, true, true);
-    Dialog.Form.Element[tdeContent] := AddLabel(Content, false, false);
+    Dialog.Form.Element[tdeMainInstruction] := AddLabel(Inst, true);
+    Dialog.Form.Element[tdeContent] := AddLabel(Content, false);
     if Info<>'' then
       // no information collapse/expand yet: it's always expanded
-      Dialog.Form.Element[tdeExpandedInfo] := AddLabel(Info, false, true);
+      Dialog.Form.Element[tdeExpandedInfo] := AddLabel(Info, false);
     // add command links buttons
     if (tdfUseCommandLinks in aFlags) and (Buttons<>'') then
       with TStringList.Create do
@@ -1158,7 +1148,7 @@ begin
       begin
         X := 24;
       end;
-      Dialog.Form.Element[tdeFooter] := AddLabel(Footer, false, true);
+      Dialog.Form.Element[tdeFooter] := AddLabel(Footer, false);
     end;
     // display the form
     Dialog.Form.ClientHeight := Y;
@@ -1204,7 +1194,7 @@ begin
   case element of
   tdeContent..tdeMainInstruction:
     if Dialog.Emulated then
-      Dialog.Form.Element[element].Caption := CR(Text)
+      Dialog.Form.Element[element].Caption := Text
     {$IFDEF MSWINDOWS}
     else
     begin
