@@ -234,7 +234,7 @@ begin
   LPageIndex := LPageCtrl.PageIndex;
   DesignForms.RemoveAllAnchorDesigner;
   SourceWindows.ShowCodeTabSkipCurrent(nil, nil);
-  SourceWindows.RefreshActivePageControls;
+  SourceWindows.RefreshAllPageControls;
   TDockedMainIDE.EditorActivated(SourceWindows.LastActiveSourceEditor);
   if LPageIndex = 0 then Exit;
   LPageCtrl.TabIndex := LPageIndex;
