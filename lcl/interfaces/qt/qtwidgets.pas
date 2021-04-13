@@ -19617,7 +19617,9 @@ begin
     AParent := QApplication_activeWindow;
   {$ENDIF}
   Widget := CreateWidget(AParent);
+  {$IFDEF QTDIALOGSUSEHTMLTEXT}
   TextFormat := QtPlainText;
+  {$ENDIF}
   setProperty(Widget, 'lclwidget', Int64(PtrUInt(Self)));
   QtWidgetSet.AddHandle(Self);
 end;

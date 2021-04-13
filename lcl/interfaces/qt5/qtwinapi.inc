@@ -5202,7 +5202,9 @@ var
   //OkStr: WideString;
   AParent: QWidgetH;
   DialogType, DefButton, DefIcon : Cardinal;
+  {$IFNDEF QTDIALOGSUSEHTMLTEXT}
   AQtString: QStringH;
+  {$ENDIF}
 begin
   Result := 0;
   Str := GetUtf8String(lpText);
@@ -5216,10 +5218,12 @@ begin
   DialogType:= (uType and $0000000F);
   DefIcon := (uType and $000000FF) shr 4;
 
+  {$IFNDEF QTDIALOGSUSEHTMLTEXT}
   //issue #37805 - we must show plain text.
   AQtString := QString_Create(PWideString(@Str));
   QString_toHtmlEscaped(AQtString, @Str);
   QString_destroy(AQtString);
+  {$ENDIF}
 
   case IconToMessageType(DefIcon) of
     QMessageBoxInformation: Result := QMessageBox_information(AParent, @TitleStr, @Str, ButtonToQtButtons(DialogType), ButtonToQtDefButton(DialogType, DefButton));

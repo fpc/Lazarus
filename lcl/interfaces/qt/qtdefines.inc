@@ -15,4 +15,5 @@
   {enable this define if you have problems when dialogs are shown behind application}
   {.$DEFINE TQTMESSAGEBOXUSEPARENT}
   {$ENDIF}
+  {.$DEFINE QTDIALOGSUSEHTMLTEXT} {we use plain text for dialogs - if enabled then dialogs can contain html formatted text}
 {$ENDIF}

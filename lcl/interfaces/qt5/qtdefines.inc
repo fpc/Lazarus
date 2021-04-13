@@ -21,4 +21,5 @@
   {enable this define if you have Qt build with "QT_NO_SESSIONMANAGER" for example Somlabs i.MX8 with Wayland }
   {defined on Qt side in file "qtgui-config.h"}
   {.$DEFINE QT_NO_SESSIONMANAGER}
+  {.$DEFINE QTDIALOGSUSEHTMLTEXT} {we use plain text for dialogs - if enabled then dialogs can contain html formatted text}
 {$ENDIF}
