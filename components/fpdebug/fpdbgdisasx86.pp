@@ -2286,8 +2286,8 @@ var
         DoGroup16;
       end;
       $19..$1F: begin
-        Include(Flags, flagModRM);
         Opcode := OPnop;
+        AddEv;
       end;
       //---
       $20: begin
