@@ -50,6 +50,8 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
+    class procedure SetEditorEnabled(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean); override;
+
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
@@ -253,6 +255,22 @@ begin
     ShowWindow(Buddy, SW_SHOW)
   else
     ShowWindow(Buddy, SW_HIDE);
+end;
+
+class procedure TWinCEWSCustomFloatSpinEdit.SetEditorEnabled(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean);
+begin
+  if not AValue then
+  begin
+    //make the Edit readonly, without setting the property ReadOnly to True
+    if not ACustomFloatSpinEdit.ReadOnly then
+      Windows.SendMessage(ACustomFloatSpinEdit.Handle, EM_SETREADONLY, Windows.WPARAM(True), 0);
+  end
+  else
+  begin
+    if not ACustomFloatSpinEdit.ReadOnly then
+      Windows.SendMessage(ACustomFloatSpinEdit.Handle, EM_SETREADONLY, Windows.WPARAM(False), 0);
+  end;
 end;
 
 class procedure TWinCEWSCustomFloatSpinEdit.UpdateControl(

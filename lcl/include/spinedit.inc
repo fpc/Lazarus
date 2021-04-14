@@ -160,6 +160,16 @@ begin
   Result := FValue;
 end;
 
+procedure TCustomFloatSpinEdit.SetEditorEnabled(AValue: Boolean);
+begin
+  if FEditorEnabled <> AValue then
+  begin
+    FEditorEnabled := AValue;
+    if HandleAllocated then
+      TWSCustomFloatSpinEditClass(WidgetSetClass).SetEditorEnabled(Self, AValue);
+  end;
+end;
+
 function TCustomFloatSpinEdit.IncrementStored: Boolean;
 begin
   Result := not SameValue(FIncrement, DefIncrement);
@@ -182,6 +192,7 @@ begin
   FMaxValue := DefMaxValue;
   FUpdatePending := True;
   FValueChanged := True;
+  FEditorEnabled := True;
 
   with GetControlClassDefaultSize do
     SetInitialBounds(0, 0, CX, CY);

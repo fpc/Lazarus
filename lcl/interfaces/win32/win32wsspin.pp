@@ -65,6 +65,8 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
 
+    class procedure SetEditorEnabled(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean); override;
+
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
   end;
 
@@ -427,6 +429,22 @@ begin
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible]);
   Windows.SetWindowPos(GetWin32WindowInfo(AWinControl.Handle)^.UpDown, 0, 0, 0, 0, 0,
     SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_NOACTIVATE or VisibilityToFlag[AWinControl.HandleObjectShouldBeVisible]);
+end;
+
+class procedure TWin32WSCustomFloatSpinEdit.SetEditorEnabled(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean);
+begin
+  if not AValue then
+  begin
+    //make the Edit readonly, without setting the property ReadOnly to True
+    if not ACustomFloatSpinEdit.ReadOnly then
+      Windows.SendMessage(ACustomFloatSpinEdit.Handle, EM_SETREADONLY, Windows.WPARAM(True), 0);
+  end
+  else
+  begin
+    if not ACustomFloatSpinEdit.ReadOnly then
+      Windows.SendMessage(ACustomFloatSpinEdit.Handle, EM_SETREADONLY, Windows.WPARAM(False), 0);
+  end;
 end;
 
 class procedure TWin32WSCustomFloatSpinEdit.UpdateControl(

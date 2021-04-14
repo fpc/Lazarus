@@ -58,6 +58,7 @@ type
 *)
 
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); virtual;
+    class procedure SetEditorEnabled(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean); virtual;
   end;
   TWSCustomFloatSpinEditClass = class of TWSCustomFloatSpinEdit;
 
@@ -75,6 +76,11 @@ begin
 end;
 
 class procedure TWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
+begin
+end;
+
+class procedure TWSCustomFloatSpinEdit.SetEditorEnabled(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean);
 begin
 end;
 
