@@ -44,6 +44,7 @@ type
   { TDebuggerClassOptionsFrame }
 
   TDebuggerClassOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BtnEditClass: TButton;
     cmbDebuggerPath: TComboBox;
     cmbDebuggerType: TComboBox;
     cmdOpenAdditionalPath: TButton;
@@ -52,6 +53,7 @@ type
     gbAdditionalSearchPath: TGroupBox;
     gbDebuggerSpecific: TGroupBox;
     gbDebuggerType: TGroupBox;
+    LblWarnClassChange: TLabel;
     lblName: TLabel;
     Panel1: TPanel;
     tbDropMenu: TPopupMenu;
@@ -63,6 +65,7 @@ type
     tbCopy: TToolButton;
     ToolButton3: TToolButton;
     txtAdditionalPath: TEdit;
+    procedure BtnEditClassClick(Sender: TObject);
     procedure cmbDebuggerPathEditingDone(Sender: TObject);
     procedure cmbDebuggerTypeEditingDone(Sender: TObject);
     procedure cmdOpenAdditionalPathClick(Sender: TObject);
@@ -135,6 +138,13 @@ begin
   end;
 
   FSelectedDbgPropertiesConfig.DebuggerFilename := cmbDebuggerPath.Text;
+end;
+
+procedure TDebuggerClassOptionsFrame.BtnEditClassClick(Sender: TObject);
+begin
+  cmbDebuggerType.Enabled := True;
+  BtnEditClass.Visible := False;
+  LblWarnClassChange.Visible := True;
 end;
 
 procedure TDebuggerClassOptionsFrame.cmdOpenAdditionalPathClick(
@@ -231,6 +241,10 @@ begin
   FillNameDropDown;
   UpdateDebuggerClassDropDown;
   FetchDebuggerSpecificOptions;
+
+  cmbDebuggerType.Enabled := True;
+  BtnEditClass.Visible := False;
+  LblWarnClassChange.Visible := False;
 end;
 
 procedure TDebuggerClassOptionsFrame.tbCopyClick(Sender: TObject);
@@ -257,6 +271,10 @@ begin
   FillNameDropDown;
   UpdateDebuggerClassDropDown;
   FetchDebuggerSpecificOptions;
+
+  cmbDebuggerType.Enabled := True;
+  BtnEditClass.Visible := False;
+  LblWarnClassChange.Visible := False;
 end;
 
 procedure TDebuggerClassOptionsFrame.tbDeleteClick(Sender: TObject);
@@ -321,6 +339,10 @@ procedure TDebuggerClassOptionsFrame.UpdateDebuggerClass;
 var
   c: TDebuggerClass;
 begin
+  cmbDebuggerType.Enabled := False;
+  BtnEditClass.Visible := True;
+  LblWarnClassChange.Visible := False;
+
   if FSelectedDbgPropertiesConfig = nil then
     exit;
   c := GetDebuggerClassFromDropDown;
@@ -622,6 +644,8 @@ begin
   tbCopy.Caption := lisCopy;
   tbDelete.Caption := lisDelete;
   lblName.Caption := lisDebugOptionsFrmName;
+  BtnEditClass.Caption := lisDebugOptionsFrmEditClass;
+  LblWarnClassChange.Caption := lisDebugOptionsFrmEditClassWarn;
   gbDebuggerType.Caption := dlgDebugType;
   gbAdditionalSearchPath.Caption := lisDebugOptionsFrmAdditionalSearchPath;
   gbDebuggerSpecific.Caption := lisDebugOptionsFrmDebuggerSpecific;
