@@ -448,6 +448,7 @@ type
     procedure InitializeLoaders; virtual;
     procedure SetFileName(const AValue: String);
     property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
+    procedure SetMode(AMode: TFPDMode); experimental; // for testcase
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
@@ -1623,6 +1624,11 @@ end;
 procedure TDbgInstance.SetFileName(const AValue: String);
 begin
   FFileName := AValue;
+end;
+
+procedure TDbgInstance.SetMode(AMode: TFPDMode);
+begin
+  FMode := AMode;
 end;
 
 function TDbgInstance.GetPointerSize: Integer;

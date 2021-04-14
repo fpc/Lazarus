@@ -2693,6 +2693,7 @@ components/lazdebuggers/lazdebuggerfp/test/testapps/BreakPointThread2Prg.pas svn
 components/lazdebuggers/lazdebuggerfp/test/testapps/BreakPointThreadPrg.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testapps/ExceptTestPrg.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testapps/StepOverPrg.pas svneol=native#text/pascal
+components/lazdebuggers/lazdebuggerfp/test/testasm.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testbase.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/testbreakpoint.pas svneol=native#text/pascal
 components/lazdebuggers/lazdebuggerfp/test/teststepping.pas svneol=native#text/pascal
