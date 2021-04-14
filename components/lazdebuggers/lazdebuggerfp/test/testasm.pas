@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FpPascalBuilder, FpDbgDisasX86, FpDbgClasses, FpDbgLoader,
   FpDbgUtil, LazLoggerBase, TestOutputLogger, TestDbgTestSuites, fpcunit,
-  testutils, testregistry;
+  testutils, testregistry, RegExpr;
 
 type
 
@@ -36,6 +36,7 @@ var
   var
     p : pointer  ;
     s, codeBytes, asmInstr : string;
+    r: TRegExpr;
   begin
     s := AData + #90#90#90#90#90#90#90#90#90#90#90#90#90#90#90#90;
     p := @s[1];
@@ -50,18 +51,17 @@ codeBytes, '  ', asmInstr,
 
     AssertEquals(AName+' Cnt bytes', Length(AData), p-@s[1]);
 
+    r := TRegExpr.Create('(\$)0+([0-9a-fA-F])');
+
     s := LowerCase(asmInstr);
     s := StringReplace(s, '  ', ' ', [rfReplaceAll]);  // space
     s := StringReplace(s, ',  ', ',', [rfReplaceAll]); // space
-    s := StringReplace(s, '$0000', '$', [rfReplaceAll]); // leading 0
-    s := StringReplace(s, '$00', '$', [rfReplaceAll]); // leading 0
-    s := StringReplace(s, '$0', '$', [rfReplaceAll]); // leading 0
+    s := r.Replace(s, '$1$2', True);
 
     AExp := StringReplace(AExp, '  ', ' ', [rfReplaceAll]);  // space
     AExp := StringReplace(AExp, ',  ', ',', [rfReplaceAll]); // space
-    AExp := StringReplace(AExp, '$0000', '$', [rfReplaceAll]); // leading 0
-    AExp := StringReplace(AExp, '$00', '$', [rfReplaceAll]); // leading 0
-    AExp := StringReplace(AExp, '$0', '$', [rfReplaceAll]); // leading 0
+    AExp := r.Replace(AExp, '$1$2', True);
+    r.Free;
     AssertEquals(AName+' asm ', AExp, s);
 
 
@@ -336,28 +336,26 @@ begin
   TestDis('push r8w', #$66#$41#$50, 'push r8w');
 
 
-
-//  TestDis('nopw', #$66#$2e#$0f#$1f#$84#$00#$00#$00#$00#$00, 'nopw cs:0x0(rax,rax,1)'); // nopw   %cs:0x0(%rax,%rax,1)
-//  TestDis('nopl', #$0f#$1f#$00, 'nopl (rax)'); // nopl   (%rax)
+  TestDis('nopw', #$66#$2e#$0f#$1f#$84#$00#$00#$00#$00#$00, 'nop word ptr (cs:)[rax+rax+$0]'); // nopw   %cs:0x0(%rax,%rax,1)
+  TestDis('nopl', #$0f#$1f#$00, 'nop dword ptr [rax]'); // nopl   (%rax)
 
   Process.NewMode := dm32;
 
-  TestDis('push eax', #$50, 'push eax'); // push eax
-  TestDis('push ecx', #$51, 'push ecx'); // push ecx
-  TestDis('push edx', #$52, 'push edx'); // push edx
-  TestDis('pop eax',  #$58, 'pop eax');  // pop eax
-  TestDis('pop ecx',  #$59, 'pop ecx');  // pop ecx
-  TestDis('pop edx',  #$5A, 'pop edx');  // pop edx
+  TestDis('32: push eax', #$50, 'push eax'); // push eax
+  TestDis('32: push ecx', #$51, 'push ecx'); // push ecx
+  TestDis('32: push edx', #$52, 'push edx'); // push edx
+  TestDis('32: pop eax',  #$58, 'pop eax');  // pop eax
+  TestDis('32: pop ecx',  #$59, 'pop ecx');  // pop ecx
+  TestDis('32: pop edx',  #$5A, 'pop edx');  // pop edx
 
-  TestDis('push ax',  #$66#$50,    'push ax');
-  TestDis('push cx',  #$66#$51,    'push cx');
+  TestDis('32: push ax',  #$66#$50,    'push ax');
+  TestDis('32: push cx',  #$66#$51,    'push cx');
 
-  TestDis('inc eax', #$40, 'inc eax');
-  TestDis('inc ecx', #$41, 'inc ecx');
+  TestDis('32: inc eax', #$40, 'inc eax');
+  TestDis('32: inc ecx', #$41, 'inc ecx');
 
-//  TestDis('nopw', #$66#$2e#$0f#$1f#$84#$00#$00#$00#$00#$00, 'nopw cs:0x0(rax,rax,1)'); // nopw   %cs:0x0(%rax,%rax,1)
-//  TestDis('nopl', #$0f#$1f#$00, 'nopl (rax)'); // nopl   (%rax)
-
+  TestDis('32: nopw', #$66#$2e#$0f#$1f#$84#$00#$00#$00#$00#$00, 'nop word ptr cs:[eax+eax+$0]'); // nopw   %cs:0x0(%rax,%rax,1)
+  TestDis('32: nopl', #$0f#$1f#$00, 'nop dword ptr [eax]'); // nopl   (%rax)
 
 
   finally
