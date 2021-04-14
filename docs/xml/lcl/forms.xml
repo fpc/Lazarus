@@ -2135,8 +2135,6 @@
       <element name="TCustomForm.FDelayedOnResize"/>
       <element name="TCustomForm.FIsFirstOnShow"/>
       <element name="TCustomForm.FIsFirstOnActivate"/>
-      <element name="TCustomForm.FIsFirstRestore"/>
-      <element name="TCustomForm.FWindowStateChanged"/>
       <element name="TCustomForm.GetClientHandle" link="#lcl.forms.TCustomForm.ClientHandle"/>
       <element name="TCustomForm.GetClientHandle.Result">
         <short/>

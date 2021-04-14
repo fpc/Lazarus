@@ -5919,7 +5919,7 @@
       </element>
 
       <element name="TListItem.GetState">
-        <short>Gets the value for the Selected property</short>
+        <short>Gets the value for a state property in the list item</short>
         <descr/>
         <seealso>
           <link id="TListItem.Selected"/>
@@ -5928,8 +5928,10 @@
       <element name="TListItem.GetState.Result">
         <short>Value for the property</short>
       </element>
-      <element name="TListItem.GetState.ALisOrd">
-        <short>Ordinal value for the property in the properties set</short>
+      <element name="TListItem.GetState.AState">
+        <short>
+          TListItemState enumeration value which identifies the property value returned from the method
+        </short>
       </element>
 
       <element name="TListItem.GetImageIndex">
@@ -6051,15 +6053,13 @@
 
       <element name="TListItem.SetState">
         <short>
-          Sets the value for the property identified by the ordinal value in ALisOrd
+          Sets the value for the property identified by the AState argument
         </short>
         <descr/>
         <seealso/>
       </element>
-      <element name="TListItem.SetState.ALisOrd">
-        <short>
-          Ordinal value from the TListViewProperty enumeration which identifies the property
-        </short>
+      <element name="TListItem.SetState.AState">
+        <short>TListItemState value which identifies the property updated</short>
       </element>
       <element name="TListItem.SetState.AIsSet">
         <short>New value for the property</short>
@@ -6370,7 +6370,7 @@
       </element>
 
       <element name="TListItem.GetStates">
-        <short>Returns all the states for this list item</short>
+        <short>Returns all the states for the list item</short>
         <descr>
           <p>
             <var>GetStates</var> is a <var>TListItemStates</var> function used to get the state values for an item in a list view control. The state values are retrieved using methods in the widgetset class for the <var>TCustomListView</var> control which owns the list item. If the widgetset class does not return the values,  the return value contains the existing values in the States member for the <var>TListItem</var> instance.
@@ -6462,8 +6462,18 @@
         <short>
           Whether this Item has been <var>Selected</var> (often denoted by a check-mark)
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Selected is a Boolean property which indicates if the list item has been selected. The property value is determined by examing the internal TListItemStates set for the class instance. When lisSelected has been included in the state values, the property is True. Otherwise, the property is False.
+          </p>
+          <p>
+            Setting a new value for the property causes the value lisSelected to be included in or removed from the internal set. AIsSet indicates whether the state value is set. When True, the state value is included in the set. Otherwise, the state value is excluded.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListItem.GetState"/>
+          <link id="TListItem.SetState"/>
+        </seealso>
       </element>
 
       <element name="TListItem.StateIndex">
@@ -19369,6 +19379,9 @@
       </element>
       <element name="TTreeViewState.tvsManualNotify">
         <short>A tree node has been expanded or collapsed using code</short>
+      </element>
+      <element name="TTreeViewState.tvsUpdating">
+        <short>This tree view state is deprecated, and has no functionality after r64855</short>
       </element>
       <element name="TTreeViewState.tvsPainting">
         <short>The control has called it Paint method</short>

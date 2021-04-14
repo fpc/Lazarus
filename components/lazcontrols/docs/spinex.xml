@@ -81,6 +81,9 @@
       <element name="TSpinEditExBase.DefMaxValue">
         <short>Default value for the MaxValue property</short>
       </element>
+      <element name="TSpinEditExBase.DefMinValue">
+        <short>Default value for the MinValue property</short>
+      </element>
       <element name="TSpinEditExBase.DefMinRepeatValue">
         <short>Default value for the MinRepeatValue property</short>
       </element>
@@ -387,9 +390,13 @@
             <dt>VK_Escape</dt>
             <dd>Calls Reset.</dd>
             <dt>VK_Up</dt>
-            <dd>Calls SpinUpDown when ArrowKeys is set to True.</dd>
+            <dd>
+              Calls SpinUpDown when ArrowKeys is set to True and the control is not ReadOnly.
+            </dd>
             <dt>VK_Down</dt>
-            <dd>Calls SpinUpDown when ArrowKeys is set to True.</dd>
+            <dd>
+              Calls SpinUpDown when ArrowKeys is set to True and the control is not ReadOnly.
+            </dd>
           </dl>
         </descr>
         <seealso/>
@@ -747,7 +754,7 @@
             <var>GetLimitedValue</var> is used in the implementation of <var>UpdateControl</var>, <var>SpinUpDown</var>, and <var>StrToValue</var> methods. It is also called from the <var>ValueToStr</var> method in <var>TCustomFloatSpinEditEx</var>.
           </p>
           <p>
-            GetLimitedValue ensures that the value for the type specified in <var>AValue</var> is constrained to the range specified in the <var>MinValue</var> and <var>MaxValue</var> properties. AValue is the type with the numeric value examined in the method.
+            GetLimitedValue ensures that the value for the type specified in <var>AValue</var> is constrained to the range specified in the <var>MinValue</var> and <var>MaxValue</var> properties.
           </p>
           <p>
             The return value contains the original value after it has been range adjusted. When AValue is smaller than MinValue, MinValue is assigned to the return value. When AValue is larger than MaxValue, MaxValue is assigned to the return value.

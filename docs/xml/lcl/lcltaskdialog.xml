@@ -569,15 +569,21 @@ end;
         <seealso/>
       </element>
 
-      <!-- variable Visibility: default -->
       <element name="TTaskDialog.Inst">
         <short/>
         <descr>
           <p>
-            The main instruction (first line on top of window). Any '\n' will be converted into a line feed. If left void, the text is taken from the current dialog icon kind.
+            The main instruction (first line displayed at the top of dialog). If not assigned (contains ''), the text is taken from resource strings for the message type defined in <file>LCLStrConsts</file>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.lclstrconsts.rsMtWarning"/>
+          <link id="#lcl.lclstrconsts.rsMtError"/>
+          <link id="#lcl.lclstrconsts.rsMtInformation"/>
+          <link id="#lcl.lclstrconsts.rsMtConfirmation"/>
+          <link id="#lcl.lclstrconsts.rsMtAuthentication"/>
+          <link id="#lcl.lclstrconsts.rsMtCustom"/>
+        </seealso>
       </element>
 
       <!-- variable Visibility: default -->
@@ -585,8 +591,11 @@ end;
         <short/>
         <descr>
           <p>
-            The dialog's primary content content text. Any '\n' will be converted into a line feed.
+            The text dispalyed as the primary content for the dialog. The value is used in the Execute method to add a label displayed in the dialog.
           </p>
+          <remark>
+            In previous LCL versions, '\n' characters sequences were converted to LineEnding characters. This action is no longer performed as of revision 64975.
+          </remark>
         </descr>
         <seealso/>
       </element>
@@ -607,7 +616,7 @@ end;
         <short/>
         <descr>
           <p>
-            A #13#10 or #10 separated list of custom radio buttons. Tthey will be identified with an ID number starting at 200. aRadioDef parameter can be set to define the default selected value. '\n' will be converted as note text (shown with smaller text under native Vista/Seven TaskDialog, or as popup hint within Delphi emulation).
+            A <b>#13#10</b> or <b>#10</b> delimited list of custom radio buttons. They will be identified with an ID number starting at 200. aRadioDef parameter can be set to define the default selected value. '\n' will be converted as note text (shown with smaller text under native Vista/Seven TaskDialog, or as popup hint within Delphi emulation).
           </p>
         </descr>
         <seealso/>
@@ -618,7 +627,7 @@ end;
         <short/>
         <descr>
           <p>
-            The expanded information content text. Any '\n' will be converted into a line feed. The Delphi emulation will always show the Info content (there is no collapse/expand button).
+            The expanded information content text. The Delphi emulation will always show the Info content (there is no collapse/expand button).
           </p>
         </descr>
         <seealso/>
@@ -640,7 +649,7 @@ end;
         <short/>
         <descr>
           <p>
-            The button caption to be displayed when the information is collapsed. Not used under XP: the Delphi emulation will always show the Info content.
+            The button caption to be displayed when the information is collapsed. Not used under XP. The Delphi emulation will always show the Info content.
           </p>
         </descr>
         <seealso/>
@@ -651,7 +660,7 @@ end;
         <short/>
         <descr>
           <p>
-            The footer content text. Any '\n' will be converted into a line feed.
+            The footer content text.
           </p>
         </descr>
         <seealso/>
@@ -763,7 +772,7 @@ end;
             If aNonNative is TRUE, the Delphi emulation code will always be used. aEmulateClassicStyle can be set to enforce conformity with the non themed user interface - see @http://synopse.info/forum/viewtopic.php?pid=2867#p2867.
           </p>
           <p>
-            aOnButtonClicked can be set to a callback triggerred when a button is clicked.
+            aOnButtonClicked can be set to a callback executed when a button is clicked.
           </p>
         </descr>
         <seealso/>
