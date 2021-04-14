@@ -2580,10 +2580,13 @@ type
 
   { TIpHtmlCustomPanel }
 
+  TIpHtmlHotURLEvent = procedure (Sender: TObject; const URL: String) of object;
+
   TIpHtmlCustomPanel = class(TCustomPanel)
   private
     FHotChange : TNotifyEvent;
     FHotClick : TNotifyEvent;
+    FHotURLEvent: TIpHtmlHotURLEvent;
     FControlClick : TIpHtmlControlEvent;
     FControlClick2 : TIpHtmlControlEvent2;
     FControlOnEditingDone : TIpHtmlControlEvent;
@@ -2733,6 +2736,7 @@ type
     property OnDocumentOpen: TNotifyEvent read FDocumentOpen write FDocumentOpen;
     property OnHotChange: TNotifyEvent read FHotChange write FHotChange;
     property OnHotClick: TNotifyEvent read FHotClick write FHotClick;
+    property OnHotURL: TIpHtmlHotURLEvent read FHotURLEvent write FHotURLEvent;
     property CurURL: string read GetCurUrl;
     property WantTabs: Boolean read FWantTabs write FWantTabs default True;
   published
@@ -2787,6 +2791,7 @@ type
     property OnExit;
     property OnHotChange;
     property OnHotClick;
+    property OnHotURL;
   end;
 
   TIpHtmlCustomScanner = class(TComponent)
@@ -13401,6 +13406,8 @@ begin
       HintWindow.ActivateWithBounds(Rect(Sc.X + 6, Sc.Y + 16 - 6,
                                          Sc.X + Tw + 18, Sc.Y + Th + 16 + 6),
                                     NewHint);
+      if Assigned(HtmlPanel.OnHotURL) then
+        HtmlPanel.OnHotURL(HtmlPanel, NewHint);
     end else
       HideHint;
     CurHint := NewHint;
