@@ -930,7 +930,7 @@ var
     quad: TQuad absolute AColor;
   begin
     {$IFDEF LCLGTK3}
-    Result := Cardinal or $FF000000;   // $FF -> Opacity
+    Result := AColor or $FF000000;   // $FF -> Opacity
     {$ELSE}
     TQuad(Result)[0] := quad[2];
     TQuad(Result)[1] := quad[1];
