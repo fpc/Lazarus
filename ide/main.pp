@@ -553,7 +553,7 @@ type
     procedure DesignerShowOptions(Sender: TObject);
     procedure DesignerPasteComponents(Sender: TObject; LookupRoot: TComponent;
                             TxtCompStream: TStream; ParentControl: TWinControl;
-                            var NewComponents: TFPList);
+                            NewComponents: TFPList);
     procedure DesignerPastedComponents(Sender: TObject; LookupRoot: TComponent);
     procedure DesignerPropertiesChanged(Sender: TObject);
     procedure DesignerPersistentDeleted(Sender: TObject; APersistent: TPersistent);
@@ -9325,7 +9325,7 @@ end;
 
 procedure TMainIDE.DesignerPasteComponents(Sender: TObject;
   LookupRoot: TComponent; TxtCompStream: TStream; ParentControl: TWinControl;
-  var NewComponents: TFPList);
+  NewComponents: TFPList);
 var
   NewClassName: String;
   ARegComp: TRegisteredComponent;
@@ -9379,10 +9379,8 @@ begin
     // create the component
     FormEditor1.CreateChildComponentsFromStream(BinCompStream,
                 ARegComp.ComponentClass,LookupRoot,ParentControl,NewComponents);
-    if NewComponents.Count=0 then begin
+    if NewComponents.Count=0 then
       DebugLn('Error: (lazarus) TMainIDE.DesignerPasteComponent FAILED FormEditor1.CreateChildComponentFromStream');
-      exit;
-    end;
 
   finally
     BinCompStream.Free;

@@ -205,7 +205,7 @@ type
     // child components
     procedure AddJITChildComponentsFromStream(JITOwnerComponent: TComponent;
                             BinStream: TStream; ComponentClass: TComponentClass;
-                            ParentControl: TWinControl; var NewComponents: TFPList);
+                            ParentControl: TWinControl; NewComponents: TFPList);
     procedure ReadInlineJITChildComponent(Component: TComponent);
   public
     property OnReaderError: TJITReaderErrorEvent
@@ -1335,7 +1335,7 @@ end;
 procedure TJITComponentList.AddJITChildComponentsFromStream(
   JITOwnerComponent: TComponent; BinStream: TStream;
   ComponentClass: TComponentClass; ParentControl: TWinControl;
-  var NewComponents: TFPList);
+  NewComponents: TFPList);
 var
   Reader: TReader;
   DestroyDriver: Boolean;

@@ -63,7 +63,7 @@ type
     Value: boolean) of object;
   TOnPasteComponents = procedure(Sender: TObject; LookupRoot: TComponent;
     TxtCompStream: TStream; Parent: TWinControl;
-    var NewComponents: TFPList) of object;
+    NewComponents: TFPList) of object;
   TOnPastedComponents = procedure(Sender: TObject; LookupRoot: TComponent) of object;
   TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;

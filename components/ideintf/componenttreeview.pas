@@ -861,8 +861,7 @@ end;
 
 procedure TComponentTreeView.DeleteComponentNode(APersistent: TPersistent);
 begin
-  if not FindAndChange(APersistent, zoDelete) then
-    DebugLn(['TComponentTreeView.DeleteComponentNode failed.']);
+  FindAndChange(APersistent, zoDelete);
 end;
 
 procedure TComponentTreeView.UpdateCompNode(ANode: TTreeNode);
