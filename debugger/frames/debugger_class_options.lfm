@@ -200,6 +200,7 @@ object DebuggerClassOptionsFrame: TDebuggerClassOptionsFrame
         ParentColor = False
         ParentFont = False
         Visible = False
+        WordWrap = True
       end
     end
     object gbAdditionalSearchPath: TGroupBox
