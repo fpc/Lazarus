@@ -33,6 +33,7 @@ type
   published
     procedure TestExplodeWith;
     procedure TestRenameReferences;
+    procedure TestRenameProcReferences;
   end;
 
 implementation
@@ -296,6 +297,36 @@ begin
   'begin',
   '  Bird{#Rename}:=3;',
   '  test1.Bird:=4;',
+  'end.',
+  '']);
+end;
+
+procedure TTestRefactoring.TestRenameProcReferences;
+begin
+  StartProgram;
+  Add([
+  'procedure Cow;',
+  'begin',
+  'end;',
+  '',
+  'begin',
+  '  cow{#Rename};',
+  '  test1.cow;',
+  'end.',
+  '']);
+  RenameReferences('Bird');
+  CheckDiff(Code,[
+  'program test1;',
+  '',
+  '{$mode objfpc}{$H+}',
+  '',
+  'procedure Bird;',
+  'begin',
+  'end;',
+  '',
+  'begin',
+  '  Bird{#Rename};',
+  '  test1.Bird;',
   'end.',
   '']);
 end;
