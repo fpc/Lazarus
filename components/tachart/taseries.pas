@@ -917,7 +917,7 @@ var
   rawImage: TRawImage;
   r: TRect;
 
-  { Fix for issue #38759:
+  { Workaround for issue #38759:
     In TColor, the byte layout is - from low to high - "rgba". The rawimage
     data block however must have the byte order "bgra". Therefore, we must
     exchange r and b to avoid false colors.
@@ -929,10 +929,14 @@ var
   var
     quad: TQuad absolute AColor;
   begin
+    {$IFDEF LCLGTK3}
+    Result := Cardinal or $FF000000;   // $FF -> Opacity
+    {$ELSE}
     TQuad(Result)[0] := quad[2];
     TQuad(Result)[1] := quad[1];
     TQuad(Result)[2] := quad[0];
     TQuad(Result)[3] := $FF;     // Opacity
+    {$ENDIF}
   end;
 
   procedure PutPixel(const APoint: TPoint; AColor: TChartColor);
