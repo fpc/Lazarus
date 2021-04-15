@@ -227,9 +227,11 @@ type
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; virtual; abstract;
     function GetActiveEditor: TSourceEditorInterface; virtual; abstract;
+    function GetBaseCaption: String; virtual; abstract;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; virtual; abstract;
     function GetItems(Index: integer): TSourceEditorInterface; virtual; abstract;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); virtual; abstract;
+    procedure SetBaseCaption(AValue: String); virtual; abstract;
     function GetWindowID: Integer; virtual; abstract;
   public
     procedure IncUpdateLock; virtual; abstract;
@@ -245,6 +247,7 @@ type
     // Editor Page Caption update
     procedure AddUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent; const AsLast: Boolean = True); virtual; abstract;
     procedure RemoveUpdateEditorPageCaptionHandler(AEvent: TNotifyEvent); virtual; abstract;
+    property BaseCaption: String read GetBaseCaption write SetBaseCaption;
   end;
 
   TSemChangeReason = (

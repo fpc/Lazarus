@@ -749,6 +749,7 @@ type
     function GetWindowID: Integer; override;
   protected
     function GetActiveCompletionPlugin: TSourceEditorCompletionPlugin; override;
+    function GetBaseCaption: String; override;
     function GetCompletionPlugins(Index: integer): TSourceEditorCompletionPlugin; override;
 
     procedure EditorMouseMove(Sender: TObject; {%H-}Shift: TShiftstate;
@@ -798,6 +799,7 @@ type
 
     function GetActiveEditor: TSourceEditorInterface; override;
     procedure SetActiveEditor(const AValue: TSourceEditorInterface); override;
+    procedure SetBaseCaption(AValue: String); override;
     function GetItems(Index: integer): TSourceEditorInterface; override;
     function GetEditors(Index:integer): TSourceEditor;
 
@@ -6485,10 +6487,10 @@ begin
     Name := NonModalIDEWindowNames[nmiwSourceNoteBook];
 
   if AWindowID > 0 then
-    FBaseCaption := locWndSrcEditor + ' (' + IntToStr(AWindowID+1) + ')'
+    BaseCaption := locWndSrcEditor + ' (' + IntToStr(AWindowID+1) + ')'
   else
-    FBaseCaption := locWndSrcEditor;
-  Caption := FBaseCaption;
+    BaseCaption := locWndSrcEditor;
+  Caption := BaseCaption;
   KeyPreview := true;
   FProcessingCommand := false;
 
@@ -7409,6 +7411,11 @@ begin
   Result := Manager.ActiveCompletionPlugin;
 end;
 
+function TSourceNotebook.GetBaseCaption: String;
+begin
+  Result := FBaseCaption;
+end;
+
 function TSourceNotebook.GetCompletionPlugins(Index: integer
   ): TSourceEditorCompletionPlugin;
 begin
@@ -7549,10 +7556,15 @@ begin
   if EditorOpts.ShowFileNameInCaption then
   begin
     if ActiveEditor<>nil then
-      Caption := FBaseCaption+' - '+ActiveEditor.FileName
+      Caption := BaseCaption+' - '+ActiveEditor.FileName
     else
-      Caption := FBaseCaption;
+      Caption := BaseCaption;
   end;
+end;
+
+procedure TSourceNotebook.SetBaseCaption(AValue: String);
+begin
+  FBaseCaption := AValue;
 end;
 
 procedure TSourceNotebook.CheckCurrentCodeBufferChanged;
@@ -7676,11 +7688,11 @@ begin
   end;
   if (PageCount = 1) and (EditorOpts.HideSingleTabInWindow) then begin
     if not EditorOpts.ShowFileNameInCaption then
-      Caption := FBaseCaption + ': ' + NotebookPages[0];
+      Caption := BaseCaption + ': ' + NotebookPages[0];
     FNotebook.ShowTabs := False;
   end else begin
     if not EditorOpts.ShowFileNameInCaption then
-      Caption := FBaseCaption;
+      Caption := BaseCaption;
     FNotebook.ShowTabs := (Manager=nil) or Manager.ShowTabs;
   end;
 end;
