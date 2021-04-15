@@ -8610,6 +8610,14 @@ msgstr "调试器指定的选项(取决于调试器的类型)"
 msgid "Duplicate Exception name"
 msgstr "复制成员名\"%s\"."
 
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclass
+msgid "Change type"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
+msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
 msgstr "输入异常的名称"

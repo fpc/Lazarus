@@ -8515,6 +8515,14 @@ msgstr "Spezifische Debuggereinstellungen (abhängig vom Typ des Debuggers)"
 msgid "Duplicate Exception name"
 msgstr "Doppelte Ausnahmebezeichnung"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclass
+msgid "Change type"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
+msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
 msgstr "Name der Ausnahme eingeben"

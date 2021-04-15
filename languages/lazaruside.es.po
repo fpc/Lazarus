@@ -8607,6 +8607,14 @@ msgstr "Opciones específicas del depurador (depende del tipo de depurador)"
 msgid "Duplicate Exception name"
 msgstr "Nombre de Excepción duplicado"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclass
+msgid "Change type"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
+msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
 msgstr "Introducir el nombre de la Excepción"

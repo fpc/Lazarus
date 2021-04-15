@@ -8432,6 +8432,14 @@ msgstr "Options spécifiques du débogueur (dépendent du type de débogueur)"
 msgid "Duplicate Exception name"
 msgstr "Dupliquer le nom de l'exception"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclass
+msgid "Change type"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
+msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
 msgstr "Entrer le nom de l'exception"

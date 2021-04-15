@@ -5400,8 +5400,8 @@ resourcestring
   lisAnchorsOfSelectedControls = 'Anchors of selected controls';
   lisAnchorsOf = 'Anchors of %s';
   lisDebugOptionsFrmName = 'Name:';
-  lisDebugOptionsFrmEditClass = 'Change class';
-  lisDebugOptionsFrmEditClassWarn = 'Changing the type for the current backend. Use "Add" or "Copy" to create a new backend with a new type.';
+  lisDebugOptionsFrmEditClass = 'Change type';
+  lisDebugOptionsFrmEditClassWarn = 'Changing the type for the current debugger backend. Use "Add" or "Copy" to create a new backend with a new type.';
   lisDebugOptionsFrmAdditionalSearchPath = 'Additional search path';
   lisDebugOptionsFrmDebuggerGeneralOptions = 'Debugger general options';
   lisDebugOptionsFrmShowMessageOnStop = 'Show message on stop';

@@ -8870,6 +8870,14 @@ msgstr "אפשרות תלויית מנפה (תלויה בסוג מנפה השג�
 msgid "Duplicate Exception name"
 msgstr "שם כפול של חריגה "
 
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclass
+msgid "Change type"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
+msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
 msgstr "הכנס את שם החריגה"

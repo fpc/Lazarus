@@ -8589,6 +8589,14 @@ msgstr "Specyficzne opcje odpluskiwacza (zależne od typu odpluskiwacza)"
 msgid "Duplicate Exception name"
 msgstr "Zdublowana nazwa wyjątku"
 
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclass
+msgid "Change type"
+msgstr ""
+
+#: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
+msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
+msgstr ""
+
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
 msgstr "Wprowadź nazwę wyjątku"
