@@ -917,10 +917,27 @@ var
   rawImage: TRawImage;
   r: TRect;
 
-  procedure PutPixel(const APoint: TPoint; AColor: TChartColor); inline;
+  { Fix for issue #38759:
+    In TColor, the byte layout is - from low to high - "rgba". The rawimage
+    data block however must have the byte order "bgra". Therefore, we must
+    exchange r and b to avoid false colors.
+    Note: It does not work out to init the rawimage by Init_BPP32_R8G8B8A8_BIO_TTB
+    (rather than by Init_BPP32_B8G8R8A8_BIO_TTB) - no idea why... }
+  function FixColor(AColor: TChartColor): Cardinal; inline;
+  type
+    TQuad = packed array[0..3] of byte;
+  var
+    quad: TQuad absolute AColor;
   begin
-    PCardinal(rawImage.Data)[APoint.Y * r.Right + APoint.X] :=
-      Cardinal(ColorDef(AColor, SeriesColor)) or $FF000000; // Opacity.
+    TQuad(Result)[0] := quad[2];
+    TQuad(Result)[1] := quad[1];
+    TQuad(Result)[2] := quad[0];
+    TQuad(Result)[3] := $FF;     // Opacity
+  end;
+
+  procedure PutPixel(const APoint: TPoint; AColor: TChartColor);
+  begin
+    PCardinal(rawImage.Data)[APoint.Y * r.Right + APoint.X] := FixColor(ColorDef(AColor, SeriesColor));
     cnt += 1;
   end;
 
