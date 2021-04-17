@@ -51,6 +51,7 @@ type
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
 
     class procedure SetEditorEnabled(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
 
   (*TODO: seperation into properties instead of bulk update
     class procedure SetIncrement(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; NewIncrement: Double); virtual;
@@ -147,6 +148,23 @@ begin
   LineEdit := SpinWidget.LineEdit;
   QLineEdit_setReadOnly(LineEdit, NewRO);
 end;
+
+class procedure TQtWSCustomFloatSpinEdit.SetReadOnly(
+  const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+var
+  Widget: TQtWidget;
+  QtEdit: IQtEdit;
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
+    Exit;
+  Widget := TQtWidget(ACustomEdit.Handle);
+  if Supports(Widget, IQtEdit, QtEdit) then
+    QtEdit.setReadOnly(NewReadOnly);
+  //if we set ReadOnly to False, the internal LineEdit will become ReadWrite as well, which may be unwanted.
+  if (not NewReadOnly) and (ACustomEdit is TCustomFloatSpinEdit) and (not TCustomFloatSpinEdit(ACustomEdit).EditorEnabled) then
+    SetEditorEnabled(TCustomFloatSpinEdit(ACustomEdit), False);
+end;
+
 
 class procedure TQtWSCustomFloatSpinEdit.UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit);
 var
