@@ -45,6 +45,8 @@ type
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; ReadOnly: boolean); override;
 
+    class procedure SetEditorEnabled(const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean); override;
+
     class procedure UpdateControl(const ACustomFloatSpinEdit: TCustomFloatSpinEdit); override;
     class function CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): TLCLIntfHandle; override;
   end;
@@ -137,12 +139,15 @@ class procedure TGtk2WSCustomFloatSpinEdit.SetReadOnly(const ACustomEdit: TCusto
 var
   Widget: PGtkWidget;
   AnAdjustment: PGtkAdjustment;
+  NewReadOnly: Boolean;
 begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetReadOnly') then
     Exit;
+  //Dont unset the edit's ReadOnly if EditorEnabled = False
+  NewReadOnly := ReadOnly or ((ACustomEdit is TCustomFloatSpinEdit) and (not TCustomFloatSpinEdit(ACustomEdit).EditorEnabled));
   Widget := {%H-}PGtkWidget(ACustomEdit.Handle);
   if GTK_IS_EDITABLE(Widget) then
-    gtk_editable_set_editable(PGtkEditable(Widget), not ReadOnly);
+    gtk_editable_set_editable(PGtkEditable(Widget), not NewReadOnly);
 
   AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(Widget));
   if ReadOnly then
@@ -170,6 +175,16 @@ begin
   finally
     LockOnChange(PgtkObject(Widget), -1);
   end;
+end;
+
+class procedure TGtk2WSCustomFloatSpinEdit.SetEditorEnabled(
+  const ACustomFloatSpinEdit: TCustomFloatSpinEdit; AValue: Boolean);
+var
+  Widget: PGtkWidget;
+begin
+  Widget := {%H-}PGtkWidget(ACustomFloatSpinEdit.Handle);
+  if GTK_IS_EDITABLE(Widget) then
+    gtk_editable_set_editable(PGtkEditable(Widget), AValue);
 end;
 
 class procedure TGtk2WSCustomFloatSpinEdit.UpdateControl(
