@@ -311,7 +311,9 @@ begin
   '',
   'begin',
   '  cow{#Rename};',
+  '  p:=@Cow;',
   '  test1.cow;',
+  '  p:=@test1.Cow;',
   'end.',
   '']);
   RenameReferences('Bird');
@@ -326,7 +328,9 @@ begin
   '',
   'begin',
   '  Bird{#Rename};',
+  '  p:=@Bird;',
   '  test1.Bird;',
+  '  p:=@test1.Bird;',
   'end.',
   '']);
 end;
