@@ -5,15 +5,16 @@ unit ceMain;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls, Types,
-  TAGraph, TATools, TAChartAxis, TATextElements, TASeries, TASources, TALegend,
-  TAChartImageList, ceAxisDlg;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, StdCtrls,
+  ExtCtrls, Types, TAGraph, TATools, TAChartAxis, TATextElements, TASeries,
+  TASources, TALegend, TAChartImageList, ceAxisDlg;
 
 type
 
   { TMainForm }
 
   TMainForm = class(TForm)
+    Bevel1: TBevel;
     Chart1: TChart;
     Chart1AreaSeries1: TAreaSeries;
     Chart1BarSeries1: TBarSeries;

@@ -14,28 +14,31 @@ object AxisEditor: TAxisEditor
   Position = poScreenCenter
   LCLVersion = '2.1.0.0'
   object PageControl: TPageControl
-    Left = 0
+    AnchorSideTop.Side = asrBottom
+    Left = 6
     Height = 408
     Top = 33
-    Width = 548
-    ActivePage = pgLine
+    Width = 536
+    ActivePage = pgTitle
     Align = alClient
-    TabIndex = 3
+    BorderSpacing.Left = 6
+    BorderSpacing.Right = 6
+    TabIndex = 0
     TabOrder = 1
     object pgTitle: TTabSheet
       Caption = 'Title'
       ClientHeight = 380
-      ClientWidth = 540
+      ClientWidth = 528
       object TitleMemoPanel: TPanel
         Left = 6
         Height = 159
         Top = 6
-        Width = 528
+        Width = 516
         Align = alClient
         BorderSpacing.Around = 6
         BevelOuter = bvNone
         ClientHeight = 159
-        ClientWidth = 528
+        ClientWidth = 516
         TabOrder = 0
         object lblTitle: TLabel
           AnchorSideLeft.Control = TitleMemoPanel
@@ -59,7 +62,7 @@ object AxisEditor: TAxisEditor
           Left = 0
           Height = 138
           Top = 21
-          Width = 528
+          Width = 516
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Top = 4
           OnChange = mmoTitleChange
@@ -71,7 +74,7 @@ object AxisEditor: TAxisEditor
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = TitleMemoPanel
           AnchorSideRight.Side = asrBottom
-          Left = 474
+          Left = 462
           Height = 19
           Top = 0
           Width = 54
@@ -88,12 +91,12 @@ object AxisEditor: TAxisEditor
         Left = 6
         Height = 203
         Top = 171
-        Width = 528
+        Width = 516
         Align = alBottom
         BorderSpacing.Around = 6
         BevelOuter = bvNone
         ClientHeight = 203
-        ClientWidth = 528
+        ClientWidth = 516
         TabOrder = 1
         object rgTitleAlignment: TRadioGroup
           AnchorSideLeft.Control = TitleParamsPanel
@@ -103,7 +106,7 @@ object AxisEditor: TAxisEditor
           Left = 0
           Height = 51
           Top = 0
-          Width = 255
+          Width = 249
           Anchors = [akTop, akLeft, akRight]
           AutoFill = True
           BorderSpacing.InnerBorder = 6
@@ -117,7 +120,7 @@ object AxisEditor: TAxisEditor
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
           ClientHeight = 31
-          ClientWidth = 251
+          ClientWidth = 245
           Columns = 3
           ItemIndex = 0
           Items.Strings = (
@@ -136,33 +139,33 @@ object AxisEditor: TAxisEditor
           Left = 0
           Height = 104
           Top = 59
-          Width = 255
+          Width = 249
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           Caption = 'Font'
           ClientHeight = 84
-          ClientWidth = 251
+          ClientWidth = 245
           TabOrder = 1
           inline TitleFontFrame: TFontFrame
             Left = 8
             Height = 76
-            Width = 235
+            Width = 229
             Align = alClient
             Anchors = [akTop, akLeft, akRight]
             BorderSpacing.Left = 8
             BorderSpacing.Right = 8
             BorderSpacing.Bottom = 8
             ClientHeight = 76
-            ClientWidth = 235
+            ClientWidth = 229
             inherited cmbFontName: TComboBox
               AnchorSideLeft.Control = TitleFontFrame
               AnchorSideTop.Control = TitleFontFrame
               AnchorSideRight.Control = TitleFontFrame
-              Width = 235
+              Width = 229
             end
             inherited cbFontColor: TColorButton
               AnchorSideRight.Control = TitleFontFrame
-              Left = 203
+              Left = 197
             end
             inherited cbBold: TCheckBox
               AnchorSideLeft.Control = TitleFontFrame
@@ -177,83 +180,57 @@ object AxisEditor: TAxisEditor
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = TitleParamsPanel
           AnchorSideBottom.Side = asrBottom
-          Left = 273
+          Left = 267
           Height = 203
           Top = 0
-          Width = 255
+          Width = 249
           Anchors = [akTop, akLeft, akRight, akBottom]
           Caption = 'Title background'
           ClientHeight = 183
-          ClientWidth = 251
+          ClientWidth = 245
           TabOrder = 3
           inline TitleShapeBrushPenMarginsFrame: TShapeBrushPenMarginsFrame
             Left = 8
             Height = 175
-            Width = 235
             Align = alClient
             BorderSpacing.Left = 8
             BorderSpacing.Right = 8
             BorderSpacing.Bottom = 8
             ClientHeight = 175
-            ClientWidth = 235
             inherited cmbShape: TComboBox
               AnchorSideLeft.Control = TitleShapeBrushPenMarginsFrame
               AnchorSideTop.Control = TitleShapeBrushPenMarginsFrame
               AnchorSideRight.Control = TitleShapeBrushPenMarginsFrame
-              Width = 235
             end
             inherited gbBackground: TGroupBox
               AnchorSideLeft.Control = TitleShapeBrushPenMarginsFrame
-              Width = 110
-              ClientWidth = 106
-              inherited cbFillColor: TColorButton
-                Left = 66
-              end
             end
             inherited gbBorder: TGroupBox
               AnchorSideRight.Control = TitleShapeBrushPenMarginsFrame
-              Left = 125
-              Width = 110
-              ClientWidth = 106
-              inherited cbBorderColor: TColorButton
-                Left = 68
-              end
             end
             inherited gbMargins: TGroupBox
               AnchorSideBottom.Control = TitleShapeBrushPenMarginsFrame
               Height = 83
-              Width = 235
               ClientHeight = 63
-              ClientWidth = 231
-              inherited seTopMargin: TSpinEdit
-                Left = 90
-              end
               inherited seBottomMargin: TSpinEdit
-                Left = 90
                 Top = 32
               end
               inherited seLeftMargin: TSpinEdit
-                Left = 32
                 Top = 16
               end
               inherited seRightMargin: TSpinEdit
-                Left = 148
                 Top = 16
               end
               inherited Bevel2: TBevel
-                Left = 90
                 Height = 1
               end
-            end
-            inherited Bevel1: TBevel
-              Left = 117
             end
           end
         end
         object Bevel1: TBevel
           AnchorSideLeft.Control = TitleParamsPanel
           AnchorSideLeft.Side = asrCenter
-          Left = 255
+          Left = 249
           Height = 50
           Top = 32
           Width = 18
@@ -338,7 +315,7 @@ object AxisEditor: TAxisEditor
           Left = 32
           Height = 19
           Top = 62
-          Width = 74
+          Width = 75
           Caption = 'Maximum'
           OnChange = cbAutoMaxChange
           TabOrder = 2
@@ -359,11 +336,8 @@ object AxisEditor: TAxisEditor
           BorderSpacing.Left = 24
           BorderSpacing.Top = 8
           BorderSpacing.Right = 24
-          MaxValue = 1E308
-          MinValue = -1E308
           OnChange = seMinimumChange
           TabOrder = 1
-          Value = 0
         end
         object seMaximum: TFloatSpinEdit
           AnchorSideLeft.Control = seMinimum
@@ -378,11 +352,8 @@ object AxisEditor: TAxisEditor
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
-          MaxValue = 1E308
-          MinValue = -1E308
           OnChange = seMaximumChange
           TabOrder = 3
-          Value = 0
         end
         object cbInverted: TCheckBox
           AnchorSideLeft.Control = lblAutomatic
@@ -436,6 +407,9 @@ object AxisEditor: TAxisEditor
           inherited cbBold: TCheckBox
             AnchorSideLeft.Control = LabelFontFrame
             BorderSpacing.Bottom = 6
+          end
+          inherited seOrientation: TSpinEdit
+            Alignment = taRightJustify
           end
         end
       end
@@ -582,6 +556,7 @@ object AxisEditor: TAxisEditor
           Height = 23
           Top = 58
           Width = 66
+          Alignment = taRightJustify
           BorderSpacing.Bottom = 12
           OnChange = seLabelDistanceChange
           TabOrder = 2
@@ -963,6 +938,7 @@ object AxisEditor: TAxisEditor
           Height = 23
           Top = 35
           Width = 66
+          Alignment = taRightJustify
           BorderSpacing.Left = 24
           BorderSpacing.Top = 8
           BorderSpacing.Right = 16
@@ -979,6 +955,7 @@ object AxisEditor: TAxisEditor
           Height = 23
           Top = 66
           Width = 66
+          Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           OnChange = seArrowLengthChange
@@ -994,6 +971,7 @@ object AxisEditor: TAxisEditor
           Height = 23
           Top = 97
           Width = 66
+          Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 16
@@ -1015,6 +993,8 @@ object AxisEditor: TAxisEditor
     ClientWidth = 548
     TabOrder = 0
     object cbShow: TCheckBox
+      AnchorSideLeft.Control = PanelTop
+      AnchorSideTop.Control = PanelTop
       Left = 8
       Height = 19
       Top = 8
@@ -1039,7 +1019,6 @@ object AxisEditor: TAxisEditor
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = 'Apply to &all'
-    HelpButton.DefaultCaption = False
     HelpButton.OnClick = HelpButtonClick
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True

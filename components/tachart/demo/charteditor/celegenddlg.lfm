@@ -24,7 +24,6 @@ object LegendEditor: TLegendEditor
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = 'Apply to &all'
-    HelpButton.DefaultCaption = False
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
@@ -170,9 +169,6 @@ object LegendEditor: TLegendEditor
           AnchorSideRight.Control = FontFrame1
           Width = 196
         end
-        inherited cmbFontSize: TComboBox
-          Width = 118
-        end
         inherited cbFontColor: TColorButton
           AnchorSideRight.Control = FontFrame1
           Left = 164
@@ -188,6 +184,7 @@ object LegendEditor: TLegendEditor
         inherited seOrientation: TSpinEdit
           Left = 147
           Width = 26
+          Alignment = taRightJustify
           Visible = False
         end
       end
@@ -570,7 +567,7 @@ object LegendEditor: TLegendEditor
       Left = 73
       Height = 19
       Top = 8
-      Width = 86
+      Width = 87
       Alignment = taLeftJustify
       BorderSpacing.Left = 16
       Caption = 'Outside axes'
