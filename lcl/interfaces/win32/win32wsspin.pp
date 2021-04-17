@@ -405,6 +405,7 @@ end;
 class procedure TWin32WSCustomFloatSpinEdit.SetReadOnly
   (const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
 begin
+  NewReadOnly := NewReadOnly or ((ACustomEdit is TCustomFloatSpinEdit) and (not TCustomFloatSpinEdit(ACustomEdit).EditorEnabled));
   Windows.SendMessage(ACustomEdit.Handle, EM_SETREADONLY, Windows.WPARAM(NewReadOnly), 0);
 end;
 
