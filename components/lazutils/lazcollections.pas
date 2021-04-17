@@ -200,7 +200,7 @@ var
   i: QWord;
 begin
   c:=Max(FQueueSize + ADelta, Integer(FTotalItemsPushed - FTotalItemsPopped));
-  setlength(NewList, c);
+  setlength(NewList{%H-}, c);
   i:=FTotalItemsPopped;
   while i < FTotalItemsPushed do begin
     NewList[i mod c] := FList[i mod FQueueSize];

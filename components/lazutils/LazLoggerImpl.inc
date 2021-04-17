@@ -608,7 +608,7 @@ begin
   then exit;
   Count:=Min(Count,MemStream.Size);
   if Count<=0 then exit;
-  SetLength(s,Count);
+  SetLength(s{%H-},Count);
   Count:=MemStream.Read(s[1],Count);
   Result:=dbgMemRange(PByte(s),Count);
   {$ELSE}

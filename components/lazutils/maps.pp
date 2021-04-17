@@ -374,7 +374,7 @@ procedure TBaseMap.InternalAdd(const AId, AData);
     S: String;
     p: PByte;
   begin
-    SetLength(S, ID_LENGTH[FIdType] * 2);
+    SetLength(S{%H-}, ID_LENGTH[FIdType] * 2);
     {$IFDEF ENDIAN_BIG}
     p := @AId;
     {$ELSE}

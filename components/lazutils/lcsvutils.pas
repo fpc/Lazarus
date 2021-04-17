@@ -200,7 +200,7 @@ var
         begin
           if CSVEncoding=ceUTF16be then
             ConvertToUTF16;
-          SetLength(W,(tailPtr-leadPtr) div 2);
+          SetLength(W{%H-},(tailPtr-leadPtr) div 2);
           System.Move(leadPtr^,W[1],length(W)*2);
           Buffer := UTF8Encode(W);
           leadPtr := @Buffer[1];

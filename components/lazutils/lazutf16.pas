@@ -1057,7 +1057,7 @@ begin
       inc(DstPos);
     end;
   end;
-  SetLength(Result,DstPos-1);
+  SetLength(Result{%H-},DstPos-1);
   if Result='' then exit;
   // create the new string
   SrcPos:=1;

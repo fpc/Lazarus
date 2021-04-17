@@ -1083,7 +1083,7 @@ begin
         inc(Size);
         inc(p);
       end;
-      SetLength(Line,Size);
+      SetLength(Line{%H-},Size);
       p:=LineStartPos;
       DstPos:=1;
       while p<=length(s) do begin

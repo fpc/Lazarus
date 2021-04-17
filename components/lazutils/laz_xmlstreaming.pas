@@ -278,7 +278,7 @@ begin
     EndPos:=StartPos;
     while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
     if EndPos>StartPos then begin
-      SetLength(NodeName,EndPos-StartPos);
+      SetLength(NodeName{%H-},EndPos-StartPos);
       Move(APath[StartPos],NodeName[1],EndPos-StartPos);
       StartPos:=EndPos+1;
       Child := Node.FindNode(NodeName);
@@ -387,7 +387,7 @@ procedure TXMLObjectWriter.WriteBinary(const Buffer; Count: Longint);
 var
   s: string;
 begin
-  SetLength(s,Count);
+  SetLength(s{%H-},Count);
   if s<>'' then
     System.Move(Buffer,s[1],length(s));
   GetPropertyElement('binary')['value'] := s;
@@ -834,7 +834,7 @@ begin
     EndPos:=StartPos;
     while (EndPos<=PathLen) and (APath[EndPos]<>'/') do inc(EndPos);
     if EndPos>StartPos then begin
-      SetLength(NodeName,EndPos-StartPos);
+      SetLength(NodeName{%H-},EndPos-StartPos);
       Move(APath[StartPos],NodeName[1],EndPos-StartPos);
       StartPos:=EndPos+1;
       Child := Node.FindNode(NodeName);

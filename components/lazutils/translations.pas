@@ -714,7 +714,7 @@ var
 begin
   Size:=AStream.Size-AStream.Position;
   if Size<=0 then exit;
-  SetLength(s,Size);
+  SetLength(s{%H-},Size);
   AStream.Read(s[1],Size);
   ReadPOText(s);
 end;

@@ -3227,7 +3227,7 @@ function TDOMElement.GetAttribute(const name: DOMString): DOMString;
 var
   Attr: TDOMNode;
 begin
-  SetLength(Result, 0);
+  SetLength(Result{%H-}, 0);
   if Assigned(FAttributes) then
   begin
     Attr := FAttributes.GetNamedItem(name);
@@ -3240,7 +3240,7 @@ function TDOMElement.GetAttributeNS(const nsURI, aLocalName: DOMString): DOMStri
 var
   Attr: TDOMNode;
 begin
-  SetLength(Result, 0);
+  SetLength(Result{%H-}, 0);
   if Assigned(FAttributes) then
   begin
     Attr := FAttributes.GetNamedItemNS(nsURI, aLocalName);

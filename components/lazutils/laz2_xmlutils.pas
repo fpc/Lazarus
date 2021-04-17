@@ -558,7 +558,7 @@ var
     NewCharLen: Integer;
     NewCharP: PChar;
   begin
-    SetLength(NewS,length(s));
+    SetLength(NewS{%H-},length(s));
     NewSIndex:=Src-PChar(s)+1;
     if NewSIndex>1 then
       Move(s[1],NewS[1],NewSIndex-1);

@@ -643,7 +643,7 @@ begin
   case Node.NodeType of
     DOCUMENT_NODE, DOCUMENT_FRAGMENT_NODE{, ELEMENT_NODE}:
       begin
-        SetLength(Result, 0);
+        SetLength(Result{%H-}, 0);
         Child := Node.FirstChild;
         while Assigned(Child) do
         begin
@@ -2638,7 +2638,7 @@ var
 begin
   if Args.Count < 2 then
     EvaluationError(lrsEvalInvalidArgCount);
-  SetLength(s, 0);
+  SetLength(s{%H-}, 0);
   for i := 0 to Args.Count - 1 do
     s := s + TXPathVariable(Args[i]).AsText;
   Result := TXPathStringVariable.Create(s);

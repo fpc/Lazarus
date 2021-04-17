@@ -2095,7 +2095,7 @@ begin
   assert(Diff > 0, 'TLazPagedListObjBase.MoveRows: Diff > 0');
 
   if Diff > Cnt then begin
-    SetLength(TempPages, Cnt);
+    SetLength(TempPages{%H-}, Cnt);
     move(PagePointer[ASourceStartIndex]^, TempPages[0], Cnt * SizeOf(TempPages[0]));
     FPages.MoveRows(ASourceStartIndex + Cnt, ASourceStartIndex, Diff);
     move(TempPages[0], PagePointer[ATargetStartIndex]^, Cnt * SizeOf(TempPages[0]));
@@ -2118,7 +2118,7 @@ begin
   assert(Diff > 0, 'TLazPagedListObjBase.MoveRows: Diff > 0');
 
   if Diff > Cnt then begin
-    SetLength(TempPages, Cnt);
+    SetLength(TempPages{%H-}, Cnt);
     move(PagePointer[ASourceStartIndex]^, TempPages[0], Cnt * SizeOf(TempPages[0]));
     FPages.MoveRows(ATargetStartIndex, ATargetStartIndex + Cnt, Diff);
     move(TempPages[0], PagePointer[ATargetStartIndex]^, Cnt * SizeOf(TempPages[0]));
