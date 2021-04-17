@@ -785,6 +785,7 @@ type
     property OnSelectionChanged;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBackground;
     property ParentBidiMode;
     property ParentFont;
     property ParentColor;
@@ -901,6 +902,7 @@ type
     property OnResize;
     property OnStartDrag;
     property OnUTF8KeyPress;
+    property ParentBackground;
     property ParentBiDiMode;
     property ParentFont;
     property ParentColor;
