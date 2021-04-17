@@ -3917,6 +3917,7 @@ function TFindDeclarationTool.FindDeclarationOfIdentAtParam(
 var
   StartPos, EndPos: integer;
   SkipForward: boolean;
+  Node: TCodeTreeNode;
 begin
   {$IFDEF CTDEBUG}
   DebugLn('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Identifier=',
@@ -3954,6 +3955,11 @@ begin
     Params.SetResult(CleanFindContext);
   if SkipForward and (Params.NewNode<>nil) then
     Params.NewCodeTool.FindNonForwardClass(Params);
+  if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure) then begin
+    Node:=Params.NewNode.FirstChild;
+    if (Node<>nil) and (Node.Desc=ctnProcedureHead) then
+      Params.NewNode:=Node;
+  end;
   {$IFDEF ShowExprEval}
   DbgOut('[TFindDeclarationTool.FindDeclarationOfIdentAtParam] Ident=',
     '"',GetIdentifier(Params.Identifier),'" ');
