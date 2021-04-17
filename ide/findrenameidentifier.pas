@@ -293,7 +293,7 @@ begin
     Files:=TStringList.Create;
     Files.Add(DeclCode.Filename);
     if CompareFilenames(DeclCode.Filename,StartSrcCode.Filename)<>0 then
-      Files.Add(DeclCode.Filename);
+      Files.Add(StartSrcCode.Filename);
 
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
 

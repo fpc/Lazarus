@@ -129,6 +129,12 @@ type
     function ItemsAsStrings: TStrings;
   end;
 
+  TSVCloseButtonsState = (
+    svcbNone,
+    svcbEnable,
+    svcbDisable
+    );
+
   { TSearchResultsView }
 
   TSearchResultsView = class(TForm)
@@ -201,6 +207,7 @@ type
     type
       TOnSide = (osLeft, osOthers, osRight); { Handling of multi tab closure }
   private
+    FAsyncUpdateCloseButtons: TSVCloseButtonsState;
     FMaxItems: integer;
     FFocusTreeViewInOnChange: Boolean;
     FFocusTreeViewInEndUpdate: Boolean;
@@ -211,6 +218,7 @@ type
     function BeautifyPageName(const APageName: string): string;
     function GetPageIndex(const APageName: string): integer;
     function GetTreeView(APageIndex: integer): TLazSearchResultTV;
+    procedure SetAsyncUpdateCloseButtons(const AValue: TSVCloseButtonsState);
     procedure SetItems(Index: Integer; Value: TStrings);
     function GetItems(Index: integer): TStrings;
     procedure SetMaxItems(const AValue: integer);
@@ -219,10 +227,12 @@ type
     procedure ClosePageOnSides(aOnSide : TOnSide);
     procedure ClosePageBegin;
     procedure ClosePageEnd;
-    procedure UpdateCloseButtons(aEnable : boolean);
+    procedure DoAsyncUpdateCloseButtons(Data: PtrInt);
   protected
     procedure Loaded; override;
     procedure ActivateControl(aWinControl: TWinControl);
+    procedure UpdateShowing; override;
+    property AsyncUpdateCloseButtons: TSVCloseButtonsState read FAsyncUpdateCloseButtons write SetAsyncUpdateCloseButtons;
   public
     function AddSearch(const ResultsName: string;
                        const SearchText: string;
@@ -360,7 +370,6 @@ begin
   actCloseOthers.ImageIndex := IDEImages.LoadImage('tab_close_LR');
   actCloseRight.ImageIndex  := IDEImages.LoadImage('tab_close_R');
   actCloseAll.ImageIndex    := IDEImages.LoadImage('tab_close_All');
-  UpdateCloseButtons(False);
 end;
 
 procedure TSearchResultsView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -474,7 +483,10 @@ end;
 
 procedure TSearchResultsView.ResultsNoteBookResize(Sender: TObject);
 begin
-  UpdateCloseButtons(ResultsNoteBook.PageCount>0);
+  if ResultsNoteBook.PageCount>0 then
+    AsyncUpdateCloseButtons:=svcbEnable
+  else
+    AsyncUpdateCloseButtons:=svcbDisable;
 end;
 
 { Handling of tabs closure. Only tabs on pages at the level of active page in
@@ -807,7 +819,7 @@ begin
   if ResultsNoteBook.PageCount = 0 then
     Close
   else
-    UpdateCloseButtons(True);
+    AsyncUpdateCloseButtons:=svcbEnable;
 end;
 
 {Sets the Items from the treeview on the currently selected page in the TNoteBook}
@@ -862,7 +874,7 @@ begin
   ClosePageButton.Enabled := state;
   SearchInListEdit.Enabled := state;
   if state then
-    UpdateCloseButtons(state);
+    AsyncUpdateCloseButtons:=svcbEnable;
 end;
 
 { Returns a list of all pages (visible tabs) on the same line of Tabs as the ActivaPage }
@@ -914,15 +926,18 @@ begin
   end;
 end;
 
-procedure TSearchResultsView.UpdateCloseButtons(aEnable: boolean);
+procedure TSearchResultsView.DoAsyncUpdateCloseButtons(Data: PtrInt);
 var
   lPageList: TFPlist = nil;
   lActiveIx: integer = -1;
+  aEnable: Boolean;
 begin
   if FClosingTabs then
     exit;
-  Application.ProcessMessages; { UI must be up to date before searching candidate tabs }
+  if FAsyncUpdateCloseButtons=svcbNone then exit;
+  FAsyncUpdateCloseButtons:=svcbNone;
 
+  aEnable:=FAsyncUpdateCloseButtons=svcbEnable;
   if aEnable and (ResultsNoteBook.PageCount>0) then begin
     lPageList := GetPagesOnActiveLine;
     if Assigned(lPageList) and (lPageList.Count>0) then
@@ -1074,6 +1089,12 @@ begin
     aForm:=GetParentForm(Self);
     if aForm<>nil then aForm.ActiveControl:=aWinControl;
   end;
+end;
+
+procedure TSearchResultsView.UpdateShowing;
+begin
+  inherited UpdateShowing;
+  AsyncUpdateCloseButtons:=svcbDisable;
 end;
 
 procedure TSearchResultsView.TreeViewAdvancedCustomDrawItem(
@@ -1262,6 +1283,17 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TSearchResultsView.SetAsyncUpdateCloseButtons(const AValue: TSVCloseButtonsState);
+var
+  Old: TSVCloseButtonsState;
+begin
+  if FAsyncUpdateCloseButtons=AValue then Exit;
+  Old:=FAsyncUpdateCloseButtons;
+  FAsyncUpdateCloseButtons:=AValue;
+  if Old=svcbNone then
+    Application.QueueAsyncCall(@DoAsyncUpdateCloseButtons,0);
 end;
 
 procedure TLazSearchResultTV.SetSkipped(const AValue: integer);
