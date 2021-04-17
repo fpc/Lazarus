@@ -651,7 +651,7 @@ begin
   begin
     try
       Len:=BufSize;
-      SetLength(Buf,Len+1);
+      SetLength(Buf{%H-},Len+1);
       Len := FileRead(fHandle,Buf[1],Len);
 
       if Len>0 then begin
@@ -1109,7 +1109,7 @@ begin
     {$ENDIF}
   {$ENDIF}
   if not UseQuickCompare then begin
-    SetLength(PathStr,APathLen);
+    SetLength(PathStr{%H-},APathLen);
     System.Move(APath^,PathStr[1],APathLen);
   end;
 

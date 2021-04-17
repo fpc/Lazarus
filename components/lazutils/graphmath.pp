@@ -514,7 +514,7 @@ var
       AddPoint(B[3]);
     end
     else begin
-      SplitBezier(B,left,right);
+      SplitBezier(B,left{%H-},right{%H-});
       SplitRecursive(left);
       SplitRecursive(right);
     end;
@@ -572,7 +572,7 @@ begin
       ReallocMem(Points, 0);
   end;
 
-  Arc2Bezier(X, Y, Width, Height, Angle1, Angle2, Rotation, B);
+  Arc2Bezier(X, Y, Width, Height, Angle1, Angle2, Rotation, B{%H-});
   Bezier2Polyline(B,Points,Count);
 end;
 

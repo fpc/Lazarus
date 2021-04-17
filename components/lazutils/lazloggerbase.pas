@@ -490,7 +490,7 @@ var
   DestPos: Integer;
   i: Integer;
 begin
-  SetLength(Result,length(StringWithSpecialChars));
+  SetLength(Result{%H-},length(StringWithSpecialChars));
   SrcPos:=1;
   DestPos:=1;
   while SrcPos<=length(StringWithSpecialChars) do begin

@@ -707,7 +707,7 @@ var
   Len: Integer;
 begin
   Len:=UTF8Length(s);
-  SetLength(Result,Len*2);
+  SetLength(Result{%H-},Len*2);
   if Len=0 then exit;
   UTF8ToDoubleByte(PChar(s),length(s),PByte(Result));
 end;
@@ -990,7 +990,7 @@ var
   end;
 
 begin
-  SetLength(Result, SourceLen);
+  SetLength(Result{%H-}, SourceLen);
   if SourceLen=0 then exit;
   SourceCopied:=SourceStart;
   Source:=SourceStart;
@@ -1259,7 +1259,7 @@ begin
     if (P<PE) then
     begin
       CharLen := UTF8CodepointSize(P);
-      SetLength(Capital, CharLen);
+      SetLength(Capital{%H-}, CharLen);
       System.Move(P^, Capital[1], CharLen); // Copy one codepoint to Capital,
       Capital := UTF8UpperCase(Capital);    // UpperCase it
       System.Move(Capital[1], P^, CharLen); // and copy it back.
@@ -3110,7 +3110,7 @@ function UTF8ReverseString(p: PChar; const ByteCount: LongInt): string;
 var
   CharLen, rBytePos: LongInt;
 begin
-  SetLength(Result, ByteCount);
+  SetLength(Result{%H-}, ByteCount);
   rBytePos := ByteCount + 1;
   while (rBytePos > 1) do
   begin
