@@ -182,6 +182,8 @@ class procedure TGtk2WSCustomFloatSpinEdit.SetEditorEnabled(
 var
   Widget: PGtkWidget;
 begin
+  if not WSCheckHandleAllocated(ACustomFloatSpinEdit, 'SetEditorEnabled') then
+    Exit;
   Widget := {%H-}PGtkWidget(ACustomFloatSpinEdit.Handle);
   if GTK_IS_EDITABLE(Widget) then
     gtk_editable_set_editable(PGtkEditable(Widget), AValue);
