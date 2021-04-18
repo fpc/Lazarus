@@ -25,6 +25,7 @@ type
     ChartToolset1DataPointClickTool1: TDataPointClickTool;
     ChartToolset1LegendClickTool1: TLegendClickTool;
     ChartToolset1TitleFootClickTool1: TTitleFootClickTool;
+    cbDoubleClick: TCheckBox;
     Label1: TLabel;
     MainMenu1: TMainMenu;
     MenuItem1: TMenuItem;
@@ -47,6 +48,7 @@ type
       ALegend: TChartLegend);
     procedure ChartToolset1TitleFootClickTool1Click(ASender: TChartTool;
       ATitle: TChartTitle);
+    procedure cbDoubleClickChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mnuBottomAxisClick(Sender: TObject);
     procedure mnuChartFooterClick(Sender: TObject);
@@ -82,6 +84,21 @@ procedure TMainForm.ChartToolset1TitleFootClickTool1Click(ASender: TChartTool;
 begin
   Unused(ASender);
   EditTitleFoot(ATitle);
+end;
+
+procedure TMainForm.cbDoubleClickChange(Sender: TObject);
+var
+  shift: TShiftState;
+begin
+  if cbDoubleClick.Checked then
+    shift := [ssLeft, ssDouble]
+  else
+    shift := [ssLeft];
+
+  ChartToolset1DatapointClickTool1.Shift := shift;
+  ChartToolset1TitleFootClickTool1.Shift := shift;
+  ChartToolset1LegendClickTool1.Shift := shift;
+  ChartToolset1AxisClickTool1.Shift := shift;
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);

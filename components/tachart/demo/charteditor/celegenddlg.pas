@@ -95,9 +95,6 @@ implementation
 uses
   ceUtils;
 
-type
-  TChartLegendAccess = class(TChartLegend);
-
 procedure TLegendEditor.cbBorderColorChange(Sender: TObject);
 begin
   FLegend.Frame.Color := cbBorderColor.Selected;
@@ -200,11 +197,12 @@ begin
         exit;
       end;
     end;
+  Result := laTopRight;
 end;
 
 function TLegendEditor.GetChart: TChart;
 begin
-  Result := TChartLegendAccess(FLegend).GetOwner as TChart;
+  Result := FLegend.GetOwner as TChart;
 end;
 
 procedure TLegendEditor.OKButtonClick(Sender: TObject);

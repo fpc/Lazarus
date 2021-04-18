@@ -122,7 +122,7 @@ end;
 
 function TTitleFootEditor.GetChart: TChart;
 begin
-  Result := (FTitle.GetOwner as TChart);
+  Result := FTitle.GetOwner as TChart;
 end;
 
 procedure TTitleFootEditor.OKButtonClick(Sender: TObject);

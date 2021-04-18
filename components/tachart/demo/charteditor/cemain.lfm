@@ -11,7 +11,7 @@ object MainForm: TMainForm
   LCLVersion = '2.1.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 315
+    Height = 290
     Top = 0
     Width = 613
     AxisList = <    
@@ -76,9 +76,10 @@ object MainForm: TMainForm
   object Label1: TLabel
     Left = 6
     Height = 15
-    Top = 325
+    Top = 300
     Width = 601
     Align = alBottom
+    Anchors = [akLeft, akRight]
     BorderSpacing.Around = 6
     Caption = 'Click on a title, axis, label, grid, data point to open the corresponding editor.'
     ParentColor = False
@@ -86,10 +87,23 @@ object MainForm: TMainForm
   object Bevel1: TBevel
     Left = 0
     Height = 4
-    Top = 315
+    Top = 290
     Width = 613
     Align = alBottom
     Shape = bsBottomLine
+  end
+  object cbDoubleClick: TCheckBox
+    Left = 6
+    Height = 19
+    Top = 321
+    Width = 607
+    Align = alBottom
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'Activate tools by double-click'
+    OnChange = cbDoubleClickChange
+    TabOrder = 1
   end
   object ChartToolset1: TChartToolset
     Left = 104
@@ -113,8 +127,8 @@ object MainForm: TMainForm
   end
   object MainMenu1: TMainMenu
     Images = ChartImageList1
-    Left = 344
-    Top = 275
+    Left = 488
+    Top = 272
     object mnuSettings: TMenuItem
       Caption = 'Settings'
       object mnuChartTitle: TMenuItem
