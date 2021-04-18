@@ -36,7 +36,7 @@ object MainForm: TMainForm
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
     Foot.Text.Strings = (
-      'Created by TAChart'
+      'Created by Lazarus and TAChart'
     )
     Foot.Visible = True
     Legend.Visible = True

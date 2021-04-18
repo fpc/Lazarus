@@ -178,7 +178,7 @@ end;
 
 procedure TAxisEditor.cbLabelsVisibleChange(Sender: TObject);
 begin
-  FAxis.Marks.Visible := cbLabelsVisible.Checked;
+  FAxis.Marks{%H-}.Visible := cbLabelsVisible.Checked;
 end;
 
 procedure TAxisEditor.cbAxisLineVisibleChange(Sender: TObject);
@@ -209,7 +209,7 @@ end;
 procedure TAxisEditor.edLabelFormatEditingDone(Sender: TObject);
 begin
   try
-    FAxis.Marks.Format := edLabelFormat.Text;
+    FAxis.Marks{%H-}.Format := edLabelFormat.Text;
   except
   end;
 end;
@@ -288,7 +288,7 @@ end;
 
 procedure TAxisEditor.LabelShapeChangedHandler(AShape: TChartLabelShape);
 begin
-  FAxis.Marks.Shape := AShape;
+  FAxis.Marks{%H-}.Shape := AShape;
 end;
 
 procedure TAxisEditor.mmoTitleChange(Sender: TObject);
@@ -335,7 +335,7 @@ begin
   seTickLength.Value := Axis.TickLength;
   seTickInnerLength.Value := Axis.TickInnerLength;
   cbTickColor.ButtonColor := Axis.TickColor;
-  with Axis.Marks do begin
+  with Axis{%H-}.Marks do begin
     seLabelDistance.Value := Distance;
     cbLabelsVisible.Checked := Visible;
     edLabelFormat.Text := Format;
@@ -379,7 +379,7 @@ end;
 
 procedure TAxisEditor.seLabelDistanceChange(Sender: TObject);
 begin
-  FAxis.Marks.Distance := seLabelDistance.Value;
+  FAxis.Marks{%H-}.Distance := seLabelDistance.Value;
 end;
 
 procedure TAxisEditor.seTitleDistanceChange(Sender: TObject);

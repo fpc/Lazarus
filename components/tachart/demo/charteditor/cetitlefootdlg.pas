@@ -59,9 +59,6 @@ uses
   TATypes,
   ceUtils;
 
-type
-  TChartTitleAccess = class(TChartTitle);
-
 procedure TTitleFootEditor.cbShowChange(Sender: TObject);
 begin
   FTitle.Visible := cbShow.Checked;
