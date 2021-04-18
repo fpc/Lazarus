@@ -86,7 +86,7 @@ type
   end;
 
 var
-  AxisTitleEditor: TLegendEditor;
+  LegendEditor: TLegendEditor;
 
 implementation
 

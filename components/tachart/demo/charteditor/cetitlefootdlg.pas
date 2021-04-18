@@ -49,7 +49,7 @@ type
   end;
 
 var
-  AxisTitleEditor: TTitleFootEditor;
+  TitleFootEditor: TTitleFootEditor;
 
 implementation
 
