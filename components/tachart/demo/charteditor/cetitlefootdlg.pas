@@ -56,6 +56,7 @@ implementation
 {$R *.lfm}
 
 uses
+  TATypes,
   ceUtils;
 
 type
@@ -124,7 +125,7 @@ end;
 
 function TTitleFootEditor.GetChart: TChart;
 begin
-  Result := TChartTitleAccess(FTitle).GetOwner as TChart;
+  Result := (FTitle.GetOwner as TChart);
 end;
 
 procedure TTitleFootEditor.OKButtonClick(Sender: TObject);
@@ -136,7 +137,7 @@ procedure TTitleFootEditor.Prepare(ATitle: TChartTitle; ACaption: String = '');
 begin
   FTitle := ATitle;
   if FSavedTitle = nil then
-    FSavedTitle := TChartTitle.Create(TChart(TChartTitleAccess(FTitle).GetOwner));
+    FSavedTitle := TChartTitle.Create(GetChart);
   FSavedTitle.Assign(FTitle);
 
   if ACaption <> '' then

@@ -83,11 +83,11 @@ type
     procedure SetVisible(AValue: Boolean);
     procedure StyleChanged(Sender: TObject); virtual;
   protected
-    function GetOwner: TPersistent; override;
   public
     constructor Create(AOwner: TCustomChart);
   public
     procedure Assign(ASource: TPersistent); override;
+    function GetOwner: TPersistent; override;
     procedure SetOwner(AOwner: TCustomChart);
     property Visible: Boolean read FVisible write SetVisible;
   end;

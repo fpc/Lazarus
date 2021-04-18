@@ -23,7 +23,6 @@ object TitleFootEditor: TTitleFootEditor
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.Caption = 'Apply to &all'
-    HelpButton.DefaultCaption = False
     CloseButton.Name = 'CloseButton'
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
