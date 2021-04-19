@@ -60,7 +60,7 @@ end;
 procedure TBrushFrame.Prepare(ABrush: TBrush);
 begin
   FBrush := ABrush;
-  cbBrushColor.ButtonColor := ABrush.Color;
+  cbBrushColor.ButtonColor := ColorToRGB(ABrush.Color);
   cbBrushStyle.BrushStyle := ABrush.Style;
 end;
 

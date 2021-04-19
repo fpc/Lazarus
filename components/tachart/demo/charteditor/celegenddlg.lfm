@@ -2,12 +2,12 @@ object LegendEditor: TLegendEditor
   Left = 978
   Height = 396
   Top = 169
-  Width = 553
+  Width = 590
   ActiveControl = cbShow
   BorderStyle = bsDialog
   Caption = 'Legend editor'
   ClientHeight = 396
-  ClientWidth = 553
+  ClientWidth = 590
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -18,7 +18,7 @@ object LegendEditor: TLegendEditor
     Left = 6
     Height = 34
     Top = 356
-    Width = 541
+    Width = 578
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -36,13 +36,13 @@ object LegendEditor: TLegendEditor
     Left = 8
     Height = 309
     Top = 39
-    Width = 537
+    Width = 574
     Align = alClient
     AutoSize = True
     BorderSpacing.Around = 8
     BevelOuter = bvNone
     ClientHeight = 309
-    ClientWidth = 537
+    ClientWidth = 574
     TabOrder = 1
     object gbBackground: TGroupBox
       AnchorSideLeft.Control = gbAlignment
@@ -149,45 +149,8 @@ object LegendEditor: TLegendEditor
       Width = 216
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 20
-      Caption = 'Font'
-      ClientHeight = 92
-      ClientWidth = 212
+      Caption = 'gbFont'
       TabOrder = 1
-      inline FontFrame1: TFontFrame
-        Left = 8
-        Height = 84
-        Width = 196
-        Align = alClient
-        BorderSpacing.Left = 8
-        BorderSpacing.Right = 8
-        BorderSpacing.Bottom = 8
-        ClientHeight = 84
-        ClientWidth = 196
-        inherited cmbFontName: TComboBox
-          AnchorSideLeft.Control = FontFrame1
-          AnchorSideTop.Control = FontFrame1
-          AnchorSideRight.Control = FontFrame1
-          Width = 196
-        end
-        inherited cbFontColor: TColorButton
-          AnchorSideRight.Control = FontFrame1
-          Left = 164
-        end
-        inherited cbBold: TCheckBox
-          AnchorSideLeft.Control = FontFrame1
-        end
-        inherited lblOrientation: TLabel
-          Left = 110
-          Anchors = [akTop]
-          Visible = False
-        end
-        inherited seOrientation: TSpinEdit
-          Left = 147
-          Width = 26
-          Alignment = taRightJustify
-          Visible = False
-        end
-      end
     end
     object gbAlignment: TGroupBox
       AnchorSideLeft.Control = ParamsPanel
@@ -538,12 +501,12 @@ object LegendEditor: TLegendEditor
     Left = 0
     Height = 31
     Top = 0
-    Width = 553
+    Width = 590
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 31
-    ClientWidth = 553
+    ClientWidth = 590
     TabOrder = 0
     object cbShow: TCheckBox
       Left = 8

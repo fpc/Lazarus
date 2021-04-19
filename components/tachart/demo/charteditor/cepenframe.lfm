@@ -83,6 +83,7 @@ object PenFrame: TPenFrame
     BorderWidth = 2
     ButtonColorSize = 16
     ButtonColor = clBlack
+    Margin = 2
     OnColorChanged = cbPenColorColorChanged
   end
   object Bevel1: TBevel

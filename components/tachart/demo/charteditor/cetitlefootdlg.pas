@@ -16,7 +16,6 @@ type
   TTitleFootEditor = class(TForm)
     ButtonPanel: TButtonPanel;
     cbShow: TCheckBox;
-    FontFrame1: TFontFrame;
     gbShapeBrushPenMargins: TGroupBox;
     gbFont: TGroupBox;
     lblText: TLabel;
@@ -25,8 +24,8 @@ type
     PanelTop: TPanel;
     ParamsPanel: TPanel;
     rgAlignment: TRadioGroup;
-    ShapeBrushPenMarginsFrame1: TShapeBrushPenMarginsFrame;
     procedure cbShowChange(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -37,10 +36,13 @@ type
   private
     FTitle: TChartTitle;
     FSavedTitle: TChartTitle;
+    FFontFrame: TFontFrame;
+    FShapeBrushPenMarginsFrame: TShapeBrushPenMarginsFrame;
     FOKClicked: boolean;
     procedure ChangedHandler(Sender: TObject);
     function GetAlignment: TAlignment;
     procedure SetAlignment(AValue: TAlignment);
+    procedure ShapeChangedHandler(AShape: TChartLabelShape);
   protected
     function GetChart: TChart;
   public
@@ -69,6 +71,21 @@ begin
   gbFont.Visible := cbShow.Checked;
 end;
 
+procedure TTitleFootEditor.FormActivate(Sender: TObject);
+begin
+  Constraints.MinHeight :=  PanelTop.Height +
+    MemoPanel.Constraints.MinHeight +
+    ParamsPanel.Height + ParamsPanel.BorderSpacing.Around*2 +
+    ButtonPanel.Height + ButtonPanel.BorderSpacing.Around*2;
+
+  Constraints.MinWidth := gbFont.Width +
+    gbShapeBrushPenMargins.Width + gbShapeBrushPenMargins.BorderSpacing.Left +
+    ParamsPanel.BorderSpacing.Around * 2;
+
+  Width := 1;   // Enforce the constraints.
+  Height := 1;
+end;
+
 procedure TTitleFootEditor.ChangedHandler(Sender: TObject);
 begin
   GetChart.Invalidate;
@@ -88,9 +105,30 @@ end;
 
 procedure TTitleFootEditor.FormCreate(Sender: TObject);
 begin
+  // Insert frames at runtime - this makes life much easier...
+  FFontFrame := TFontFrame.Create(self);
+  FFontFrame.Parent := gbFont;
+  FFontFrame.Align := alClient;
+  FFontFrame.BorderSpacing.Left := 8;
+  FFontFrame.BorderSpacing.Right := 8;
+  FFontFrame.BorderSpacing.Bottom := 0;//8;
+  FFontFrame.OnChange := @ChangedHandler;
+  gbFont.AutoSize := true;
+
+  FShapeBrushPenMarginsFrame := TShapeBrushPenMarginsFrame.Create(self);
+  FShapeBrushPenMarginsFrame.Parent := gbShapeBrushPenMargins;
+  FShapeBrushPenMarginsFrame.Align := alClient;
+  FShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
+  FShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
+  FShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
+  FShapeBrushPenMarginsFrame.Constraints.MinWidth := 230;
+  FShapeBrushPenMarginsFrame.OnChange := @ChangedHandler;
+  FShapeBrushPenMarginsFrame.OnShapeChange := @ShapeChangedHandler;
+  gbShapeBrushPenMargins.AutoSize := true;
+
   BoldHeaders(Self);
-  FontFrame1.OnChange := @ChangedHandler;
-  ShapeBrushPenMarginsFrame1.OnChange := @ChangedHandler;
+
+  ParamsPanel.AutoSize := true;
 end;
 
 procedure TTitleFootEditor.FormDestroy(Sender: TObject);
@@ -100,12 +138,14 @@ end;
 
 procedure TTitleFootEditor.FormShow(Sender: TObject);
 begin
+  (*
   if cbShow.Checked then begin
     AutoSize := true;
     Constraints.MinWidth := Width;
     Constraints.MinHeight := Height;
     AutoSize := false;
   end;
+  *)
 end;
 
 procedure TTitleFootEditor.mmoTextChange(Sender: TObject);
@@ -145,8 +185,9 @@ begin
   SetAlignment(ATitle.Alignment);
 
   mmoText.Font.Assign(ATitle.Font);
-  FontFrame1.Prepare(ATitle.Font, false);
-  ShapeBrushPenMarginsFrame1.Prepare(ATitle.Shape, ATitle.Brush, ATitle.Frame, ATitle.Margins);
+  mmoText.Font.Orientation := 0;
+  FFontFrame.Prepare(ATitle.Font, false);
+  FShapeBrushPenMarginsFrame.Prepare(ATitle.Shape, ATitle.Brush, ATitle.Frame, ATitle.Margins);
 end;
 
 procedure TTitleFootEditor.rgAlignmentClick(Sender: TObject);
@@ -159,6 +200,11 @@ const
   ALIGNMENTS: array[TAlignment] of Integer = (0, 2, 1);
 begin
   rgAlignment.ItemIndex := ALIGNMENTS[AValue];
+end;
+
+procedure TTitleFootEditor.ShapeChangedHandler(AShape: TChartLabelShape);
+begin
+  FTitle.Shape := AShape;
 end;
 
 end.

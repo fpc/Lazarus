@@ -76,7 +76,7 @@ begin
   FPen := APen;
   cbPenStyle.PenStyle := FPen.Style;
   cbPenWidth.PenWidth := FPen.Width;
-  cbPenColor.ButtonColor := FPen.Color;
+  cbPenColor.ButtonColor := ColorToRGB(FPen.Color);
 end;
 
 end.

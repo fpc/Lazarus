@@ -24,7 +24,6 @@ type
     cbInverted: TCheckBox;
     cbUseSideBar: TCheckBox;
     cbItemFillOrder: TComboBox;
-    FontFrame1: TFontFrame;
     gbBackground: TGroupBox;
     gbBorder: TGroupBox;
     gbFont: TGroupBox;
@@ -75,6 +74,7 @@ type
     FLegend: TChartLegend;
     FSavedLegend: TChartLegend;
     FOKClicked: Boolean;
+    FFontFrame: TFontFrame;
     procedure ChangedHandler(Sender: TObject);
     function GetAlignment: TLegendAlignment;
     procedure SetAlignment(AValue: TLegendAlignment);
@@ -163,8 +163,18 @@ end;
 
 procedure TLegendEditor.FormCreate(Sender: TObject);
 begin
+  FFontFrame := TFontFrame.Create(self);
+  FFontFrame.Parent := gbFont;
+  FFontFrame.Name := '';
+  FFontFrame.Align := alClient;
+  FFontFrame.BorderSpacing.Left := 8;
+  FFontFrame.BorderSpacing.Right := 8;
+  FFontFrame.AutoSize := true;
+  FFontFrame.OnChange := @ChangedHandler;
+  gbFont.AutoSize := true;
+  gbFont.Caption := 'Font';
+
   BoldHeaders(Self);
-  FontFrame1.OnChange := @ChangedHandler;
 end;
 
 procedure TLegendEditor.FormDestroy(Sender: TObject);
@@ -270,10 +280,10 @@ begin
   SetAlignment(ALegend.Alignment);
 
   cbFilled.Checked := ALegend.BackgroundBrush.Style <> bsClear;
-  cbFillColor.Selected := ALegend.BackgroundBrush.Color;
+  cbFillColor.Selected := ColorToRGB(ALegend.BackgroundBrush.Color);
 
   cbShowBorder.Checked := (ALegend.Frame.Style <> psClear) and ALegend.Frame.Visible;
-  cbBorderColor.Selected := ALegend.Frame.Color;
+  cbBorderColor.Selected := ColorToRGB(ALegend.Frame.Color);
 
   seMarginX.Value := ALegend.MarginX;
   seMarginY.Value := ALegend.MarginY;
@@ -285,7 +295,7 @@ begin
   seSpacing.Value := ALegend.Spacing;
   cbItemFillOrder.ItemIndex := ord(ALegend.ItemFillOrder);
 
-  FontFrame1.Prepare(ALegend.Font, false);
+  FFontFrame.Prepare(ALegend.Font, false);
 end;
 
 end.

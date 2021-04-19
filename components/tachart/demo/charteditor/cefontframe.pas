@@ -5,7 +5,8 @@ unit ceFontFrame;
 interface
 
 uses
-  Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Spin;
+  Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Spin,
+  ExtCtrls;
 
 type
 
@@ -19,6 +20,8 @@ type
     cmbFontName: TComboBox;
     cmbFontSize: TComboBox;
     lblOrientation: TLabel;
+    Panel1: TPanel;
+    Panel2: TPanel;
     seOrientation: TSpinEdit;
     procedure cbBoldChange(Sender: TObject);
     procedure cbFontColorColorChanged(Sender: TObject);

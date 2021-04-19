@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Spin, ExtCtrls,
-  TATextElements;
+  TATypes, TATextElements;
 
 type
 
@@ -16,7 +16,6 @@ type
 
   TShapeBrushPenMarginsFrame = class(TFrame)
     Bevel1: TBevel;
-    Bevel2: TBevel;
     cbBorderColor: TColorButton;
     cbFillColor: TColorButton;
     cbFilled: TCheckBox;
@@ -42,17 +41,18 @@ type
     FOnChange: TNotifyEvent;
     FOnShapeChange: TShapeChangeEvent;
     FBrush: TBrush;
-    FPen: TPen;
+    FPen: TChartPen;
     FMargins: TChartLabelMargins;
     FShape: TChartLabelShape;
+    FLockEvents: Integer;
     procedure DoChanged;
     procedure DoShapeChanged(AShape: TChartLabelShape);
     procedure UpdateControls;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetData(out AShape: TChartLabelShape; ABrush: TBrush;
-      APen: TPen; AMargins: TChartLabelMargins);
-    procedure Prepare(AShape: TChartLabelShape; ABrush: TBrush; APen: TPen;
+      APen: TChartPen; AMargins: TChartLabelMargins);
+    procedure Prepare(AShape: TChartLabelShape; ABrush: TBrush; APen: TChartPen;
       AMargins: TChartLabelMargins);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnShapeChange: TShapeChangeEvent read FOnShapeChange write FOnShapeChange;
@@ -78,7 +78,7 @@ end;
 procedure TShapeBrushPenMarginsFrame.cbBorderColorColorChanged(Sender: TObject);
 begin
   FPen.Color := cbBorderColor.ButtonColor;
-  if FPen.Style <> psClear then
+//  if FPen.Style <> psClear then
     DoChanged;
 end;
 
@@ -102,25 +102,27 @@ end;
 
 procedure TShapeBrushPenMarginsFrame.cbShowBorderChange(Sender: TObject);
 begin
-  if cbShowBorder.Checked then FPen.Style := psSolid else FPen.Style := psClear;
+  FPen.Visible := cbShowBorder.Checked;
+  if FPen.Visible and (FPen.Style = psClear) then FPen.Style := psSolid;
   UpdateControls;
   DoChanged;
 end;
 
+procedure TShapeBrushPenMarginsFrame.cmbShapeChange(Sender: TObject);
+begin
+  DoShapeChanged(TChartLabelShape(cmbShape.ItemIndex));
+end;
+
 procedure TShapeBrushPenMarginsFrame.DoChanged;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if (FLockEvents = 0) and Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TShapeBrushPenMarginsFrame.DoShapeChanged(AShape: TChartLabelShape);
 begin
-  if Assigned(FOnShapeChange) then FOnShapeChange(AShape);
-end;
-
-procedure TShapeBrushPenMarginsFrame.cmbShapeChange(Sender: TObject);
-begin
-  FShape := TChartLabelShape(cmbShape.ItemIndex);
-  DoShapeChanged(FShape);
+  if (FLockEvents = 0) and Assigned(FOnShapeChange) then
+    FOnShapeChange(AShape);
 end;
 
 procedure TShapeBrushPenMarginsFrame.seBottomMarginChange(Sender: TObject);
@@ -148,13 +150,17 @@ begin
 end;
 
 procedure TShapeBrushPenMarginsFrame.GetData(out AShape: TChartLabelShape;
-  ABrush: TBrush; APen: TPen; AMargins: TChartLabelMargins);
+  ABrush: TBrush; APen: TChartPen; AMargins: TChartLabelMargins);
 begin
   AShape := TChartLabelShape(cmbShape.ItemIndex);
-  if cbFilled.Checked then ABrush.Style := bsSolid else ABrush.Style := bsClear;
-  ABrush.Color := cbFillColor.ButtonColor;
-  if cbShowBorder.Checked then APen.Style := psSolid else APen.Style := psClear;
-  APen.Color := cbBorderColor.ButtonColor;
+  if HandleAllocated then
+  begin
+    if cbFilled.Checked then ABrush.Style := bsSolid else ABrush.Style := bsClear;
+    ABrush.Color := cbFillColor.ButtonColor;
+    APen.Visible := cbShowBorder.Checked;
+    APen.Style := psSolid;
+    APen.Color := cbBorderColor.ButtonColor;
+  end;
   AMargins.Top := seTopMargin.Value;
   AMargins.Left := seLeftMargin.Value;
   AMargins.Right := seRightMargin.Value;
@@ -162,21 +168,26 @@ begin
 end;
 
 procedure TShapeBrushPenMarginsFrame.Prepare(AShape: TChartLabelShape;
-  ABrush: TBrush; APen: TPen; AMargins: TChartLabelMargins);
+  ABrush: TBrush; APen: TChartPen; AMargins: TChartLabelMargins);
 begin
+  inc(FLockEvents);
   FShape := AShape;
   FBrush := ABrush;
   FPen := APen;
   FMargins := AMargins;
   cmbShape.ItemIndex := ord(AShape);
   cbFilled.Checked := ABrush.Style <> bsClear;
-  cbFillColor.ButtonColor := ABrush.Color;
-  cbShowBorder.Checked := APen.Style <> psClear;
-  cbBorderColor.ButtonColor := APen.Color;
+  cbFillColor.ButtonColor := ColorToRGB(ABrush.Color);
+  cbShowBorder.Checked := APen.EffVisible;
+  if APen.Color = clDefault then
+    cbBorderColor.ButtonColor := ColorToRGB(clWindowText)
+  else
+    cbBorderColor.ButtonColor := ColorToRGB(APen.Color);
   seTopMargin.Value := AMargins.Top;
   seLeftMargin.Value := AMargins.Left;
   seRightMargin.Value := AMargins.Right;
   seBottomMargin.Value := AMargins.Bottom;
+  dec(FLockEvents);
 end;
 
 procedure TShapeBrushPenMarginsFrame.UpdateControls;
