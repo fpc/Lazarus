@@ -421,7 +421,7 @@ begin
     SetYList(Result, AY[1..High(AY)]);
 end;
 
-procedure TListChartSource.Clear; inline;
+procedure TListChartSource.Clear;
 var
   i: Integer;
 begin
