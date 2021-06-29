@@ -573,7 +573,7 @@ begin
     if OutSideFrame then begin
       // at start of prologue, before pushing starts, so return PC should be at current SP+1
       // To read SRAM this needs to be masked by $800000
-      if not Process.ReadData(DataOffset or StackPtr + 1, Size, Address) or (Address = 0) then Break;
+      if not Process.ReadData(DataOffset or (StackPtr + Size, Size, Address) or (Address = 0) then Break;
       // Convert return address from BE to LE, shl 1 to get byte address
       Address := BEtoN(word(Address)) shl 1;
       {$PUSH}{$R-}{$Q-}
