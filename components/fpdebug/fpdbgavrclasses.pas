@@ -559,10 +559,10 @@ begin
   begin
     if not Process.Disassembler.GetFunctionFrameInfo(Address, OutSideFrame) then begin
       if Process.Disassembler.LastErrorWasMemReadErr then begin
-      inc(CodeReadErrCnt);
-      if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
+        inc(CodeReadErrCnt);
+        if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
       end;
-        OutSideFrame := False;
+      OutSideFrame := False;
     end;
     LastFrameBase := FrameBase;
 
@@ -573,7 +573,7 @@ begin
     if OutSideFrame then begin
       // at start of prologue, before pushing starts, so return PC should be at current SP+1
       // To read SRAM this needs to be masked by $800000
-      if not Process.ReadData(DataOffset or (StackPtr + Size, Size, Address) or (Address = 0) then Break;
+      if not Process.ReadData(DataOffset or (StackPtr + Size), Size, Address) or (Address = 0) then Break;
       // Convert return address from BE to LE, shl 1 to get byte address
       Address := BEtoN(word(Address)) shl 1;
       {$PUSH}{$R-}{$Q-}
