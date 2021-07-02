@@ -2422,6 +2422,7 @@ components/jcf2/Process/Warnings/WarnAssignToFunctionName.pas svneol=native#text
 components/jcf2/Process/Warnings/WarnCaseNoElse.pas svneol=native#text/pascal
 components/jcf2/Process/Warnings/WarnDestroy.pas svneol=native#text/pascal
 components/jcf2/Process/Warnings/WarnEmptyBlock.pas svneol=native#text/pascal
+components/jcf2/Process/Warnings/WarnImbalancedComment.pas svneol=native#text/pascal
 components/jcf2/Process/Warnings/WarnRealType.pas svneol=native#text/pascal
 components/jcf2/Process/Warnings/WarnUnusedParam.pas svneol=native#text/pascal
 components/jcf2/Process/Warnings/Warning.pas svneol=native#text/pascal
