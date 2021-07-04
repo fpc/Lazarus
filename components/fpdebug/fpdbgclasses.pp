@@ -463,6 +463,8 @@ type
     function AddrOffset: TDBGPtr; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindProcSymbol(const AName: String): TFpSymbol; overload;
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
+    function  FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
+
     procedure LoadInfo; virtual;
 
     property Process: TDbgProcess read FProcess;
@@ -617,6 +619,8 @@ public
     function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
+    function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
+
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
@@ -1623,6 +1627,15 @@ begin
     result := FSymbolTableInfo.FindProcSymbol(AAdress);
 end;
 
+function TDbgInstance.FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+begin
+  {$PUSH}{$R-}{$Q-}
+  AAdress := AAdress + AddrOffset;
+  {$POP}
+  Result := FDbgInfo.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
+end;
+
 procedure TDbgInstance.LoadInfo;
 begin
   InitializeLoaders;
@@ -1869,6 +1882,20 @@ begin
     Result := TFpDbgSymbolScope.Create(Ctx);
 
   Ctx.ReleaseReference;
+end;
+
+function TDbgProcess.FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+var
+  n: Integer;
+  Inst: TDbgInstance;
+begin
+  for n := 0 to FSymInstances.Count - 1 do
+  begin
+    Inst := TDbgInstance(FSymInstances[n]);
+    Result := Inst.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
+    if Result then Exit;
+  end;
 end;
 
 function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer;

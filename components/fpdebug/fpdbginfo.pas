@@ -598,6 +598,9 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; {%H-}AAddress: TDbgPtr = 0): TFpDbgSymbolScope; virtual;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
     function FindProcSymbol(const {%H-}AName: String): TFpSymbol; virtual; overload;
+
+    function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; virtual;
+
     property HasInfo: Boolean read FHasInfo;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
@@ -1744,6 +1747,14 @@ end;
 function TDbgInfo.FindProcSymbol(const AName: String): TFpSymbol;
 begin
   Result := nil;
+end;
+
+function TDbgInfo.FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+begin
+  AStartPC := 0;
+  AEndPC := 0;
+  Result := false;
 end;
 
 function TDbgInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
