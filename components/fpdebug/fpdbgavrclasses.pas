@@ -25,10 +25,18 @@ const
   // RSP commands
   Rsp_Status = '?';     // Request break reason - returns either S or T
   lastCPURegIndex = 31; // After this are SREG, SP and PC
-  SREGindex = 32;
-  SPindex = 33;
-  PCindex = 34;
+  // Use as dwarf register indexes
+  SREGindex = 32;  // 1 byte
+  SPindex = 33;    // 2 bytes
+  PCindex = 34;    // 4 bytes
   RegArrayLength = 35;
+  // Special register names
+  nSREG = 'SREG';
+  nSP = 'SP';
+  nPC = 'PC';
+  // Frame pointer for AVR is [r28:r29], but create an alias for stack frame processing
+  nFP = 'FP';
+  FPindex = 35;
 
   // Byte level register indexes
   SPLindex = 33;
@@ -432,9 +440,9 @@ begin
     for i := 0 to lastCPURegIndex do
       FRegisterValueList.DbgRegisterAutoCreate['r'+IntToStr(i)].SetValue(FRegs[i].Value, IntToStr(FRegs[i].Value),1, i); // confirm dwarf index
 
-    FRegisterValueList.DbgRegisterAutoCreate['sreg'].SetValue(FRegs[SREGindex].Value, IntToStr(FRegs[SREGindex].Value),1,0);
-    FRegisterValueList.DbgRegisterAutoCreate['sp'].SetValue(FRegs[SPindex].Value, IntToStr(FRegs[SPindex].Value),2,0);
-    FRegisterValueList.DbgRegisterAutoCreate['pc'].SetValue(FRegs[PCindex].Value, IntToStr(FRegs[PCindex].Value),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate[nSREG].SetValue(FRegs[SREGindex].Value, IntToStr(FRegs[SREGindex].Value),1,SREGindex);
+    FRegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(FRegs[SPindex].Value, IntToStr(FRegs[SPindex].Value),2,SPindex);
+    FRegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(FRegs[PCindex].Value, IntToStr(FRegs[PCindex].Value),4,PCindex);
     FRegisterValueListValid := true;
   end
   else
@@ -497,13 +505,6 @@ end;
 procedure TDbgAvrThread.PrepareCallStackEntryList(AFrameRequired: Integer);
 const
   MAX_FRAMES = 50000; // safety net
-  // Use fake dwarf indexes, these seem to be for lookup in RegisterValueList only?
-  PC = 0;
-  FP = 1;
-  SP = 2;
-  nPC = 'PC';
-  nFP = 'FP';
-  nSP = 'SP';
   // To read RAM, add data space offset to address
   DataOffset = $800000;
   Size = 2;
@@ -517,6 +518,7 @@ var
   StackPtr: TDBGPtr;
   startPC, endPC: TDBGPtr;
   returnAddrStackOffset: word;
+  b: byte;
 begin
   // TODO: use AFrameRequired // check if already partly done
   if FCallStackEntryList = nil then
@@ -530,13 +532,13 @@ begin
   FCallStackEntryList.FreeObjects:=true;
   if FCallStackEntryList.Count > 0 then begin
     AnEntry := FCallStackEntryList[FCallStackEntryList.Count - 1];
-    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(PC);
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(PCindex);
     if R = nil then exit;
     Address := R.NumValue;
-    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(FP);
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(FPindex);
     if R = nil then exit;
     FrameBase := R.NumValue;
-    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(SP);
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(SPindex);
     if R = nil then exit;
     StackPtr := R.NumValue;
   end
@@ -546,9 +548,18 @@ begin
     StackPtr := GetStackPointerRegisterValue;
     AnEntry := TDbgCallstackEntry.create(Self, 0, FrameBase, Address);
     // Top level could be without entry in registerlist / same as GetRegisterValueList / but some code tries to find it here ....
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PC);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FP);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PCindex);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
+
+    // Y pointer register [r28:r29] is used as frame pointer for AVR
+    // Store these to enable stack based parameters to be read correctly
+    // as they are frame pointer relative and dwarf stores the frame pointer under r28
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FPindex);
+    b := byte(FrameBase);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(b, IntToStr(b),Size, 28);
+    b := (FrameBase and $FF00) shr 8;
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue(b, IntToStr(b),Size, 29);
+
     FCallStackEntryList.Add(AnEntry);
   end;
 
@@ -563,8 +574,10 @@ begin
     // Get start/end PC of proc from debug info
     if not Self.Process.FindProcStartEndPC(Address, startPC, endPC) then
     begin
-      startPC := 0;
-      endPC := 0;
+      // Give up for now, it is complicated to locate prologue/epilogue in general without proc limits
+      // ToDo: Perhaps interpret .debug_frame info if available,
+      //       or scan forward from address until an epilogue is found.
+      break;
     end;
 
     if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(Address, startPC, endPC, returnAddrStackOffset, OutSideFrame) then
@@ -585,15 +598,20 @@ begin
     // Convert return address from BE to LE, shl 1 to get byte address
     Address := BEtoN(word(Address)) shl 1;
     {$PUSH}{$R-}{$Q-}
-    StackPtr := FrameBase + returnAddrStackOffset + Size; // After popping return-addr from "StackPtr"
+    StackPtr := FrameBase + returnAddrStackOffset + Size - 1; // After popping return-addr from "StackPtr"
     FrameBase := StackPtr;  // Estimate of previous FP
     LastFrameBase := LastFrameBase - 1; // Make the loop think that LastFrameBase was smaller
     {$POP}
 
     AnEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PC);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FP);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SP);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PCindex);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FPindex);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
+    b := byte(FrameBase);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(b, IntToStr(b),Size, 28);
+    b := (FrameBase and $FF00) shr 8;
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue(b, IntToStr(b),Size, 29);
+
     FCallStackEntryList.Add(AnEntry);
     Dec(CountNeeded);
     inc(NextIdx);
