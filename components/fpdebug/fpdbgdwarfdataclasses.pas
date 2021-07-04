@@ -4821,11 +4821,11 @@ begin
 
     // iter is at the closest defined address before AAddress
     Info := Iter.DataPtr;
-    if (AAddress >= Info^.StartPC) or (AAddress <= Info^.EndPC) then
+    result := (AAddress >= Info^.StartPC) and (AAddress <= Info^.EndPC);
+    if Result then
     begin
       AStartPC := Info^.StartPC;
       AEndPC := Info^.EndPC;
-      Result := true;
     end;
 
   finally
