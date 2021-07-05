@@ -5416,6 +5416,7 @@ components/tachart/fpdoc/talegend.xml svneol=native#text/plain
 components/tachart/fpdoc/tamath.xml svneol=native#text/xml
 components/tachart/fpdoc/taseries.xml svneol=native#text/plain
 components/tachart/fpdoc/tasources.xml svneol=native#text/plain
+components/tachart/fpdoc/tatools.xml svneol=native#text/xml
 components/tachart/fpdoc/tatypes.xml svneol=native#text/plain
 components/tachart/fpvectorial/tachartfpvectorial.lpk svneol=native#text/plain
 components/tachart/fpvectorial/tachartfpvectorial.pas svneol=native#text/pascal
