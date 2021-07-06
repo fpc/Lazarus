@@ -31,12 +31,9 @@ const
   PCindex = 34;    // 4 bytes
   RegArrayLength = 35;
   // Special register names
-  nSREG = 'SREG';
+  nSREG = 'SReg';
   nSP = 'SP';
   nPC = 'PC';
-  // Frame pointer for AVR is [r28:r29], but create an alias for stack frame processing
-  nFP = 'FP';
-  FPindex = 35;
 
   // Byte level register indexes
   SPLindex = 33;
@@ -535,9 +532,13 @@ begin
     R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(PCindex);
     if R = nil then exit;
     Address := R.NumValue;
-    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(FPindex);
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(28);
     if R = nil then exit;
     FrameBase := R.NumValue;
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(29);
+    if R = nil then exit;
+    FrameBase := FrameBase + (byte(R.NumValue) shl 8);
+
     R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(SPindex);
     if R = nil then exit;
     StackPtr := R.NumValue;
@@ -554,7 +555,7 @@ begin
     // Y pointer register [r28:r29] is used as frame pointer for AVR
     // Store these to enable stack based parameters to be read correctly
     // as they are frame pointer relative and dwarf stores the frame pointer under r28
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FPindex);
+    //AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FPindex);
     b := byte(FrameBase);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(b, IntToStr(b),Size, 28);
     b := (FrameBase and $FF00) shr 8;
@@ -605,12 +606,9 @@ begin
 
     AnEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PCindex);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FPindex);
     AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
-    b := byte(FrameBase);
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(b, IntToStr(b),Size, 28);
-    b := (FrameBase and $FF00) shr 8;
-    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue(b, IntToStr(b),Size, 29);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(byte(FrameBase), IntToStr(b),Size, 28);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue((FrameBase and $FF00) shr 8, IntToStr(b),Size, 29);
 
     FCallStackEntryList.Add(AnEntry);
     Dec(CountNeeded);
