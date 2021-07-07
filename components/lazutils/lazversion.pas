@@ -23,9 +23,9 @@ const
   laz_major = 2;
   laz_minor = 2;
   laz_release = 0;
-  laz_patch = 1;
+  laz_patch = 2;
   laz_fullversion = ((laz_major *  100 + laz_minor) * 100 + laz_release) * 100 + laz_patch;
-  laz_version = '2.2.0.1';
+  laz_version = '2.2.0.2';
 
 implementation
 
