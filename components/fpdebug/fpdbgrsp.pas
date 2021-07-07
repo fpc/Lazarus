@@ -470,8 +470,14 @@ begin
 end;
 
 constructor TRspConnection.Create(AFileName: string; AOwner: TDbgProcess);
+var
+  FSocketHandler: TSocketHandler;
 begin
-  inherited Create(AHost, APort);
+  { Create a socket handler, so that TInetSocket.Create call doesn't automatically connect.
+    This can raise an exception when connection fails.
+    The FSocketHandler instance will be managed by TInetSocket. }
+  FSocketHandler := TSocketHandler.Create;
+  inherited Create(AHost, APort, FSocketHandler);
   InitCriticalSection(fCS);
   FFileName := AFileName;
   FOwner := AOwner;

@@ -667,7 +667,7 @@ class function TDbgAvrProcess.StartInstance(AFileName: string; AParams,
   AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
 var
   AnExecutabeFilename: string;
-  dbg: TDbgAvrProcess;
+  dbg: TDbgAvrProcess = nil;
 begin
   result := nil;
 
@@ -687,13 +687,25 @@ begin
   dbg := TDbgAvrProcess.Create(AFileName, 0, 0, AnOsClasses, AMemManager);
   try
     dbg.FConnection := TRspConnection.Create(AFileName, dbg);
-    dbg.FConnection.RegisterCacheSize := RegArrayLength;
-    result := dbg;
-    dbg.FStatus := dbg.FConnection.Init;
-    dbg := nil;
+    dbg.FConnection.Connect;
+    try
+      dbg.FConnection.RegisterCacheSize := RegArrayLength;
+      result := dbg;
+      dbg.FStatus := dbg.FConnection.Init;
+      dbg := nil;
+    except
+      on E: Exception do
+      begin
+        Result := nil;
+        if Assigned(dbg) then
+          dbg.Free;
+        DebugLn(DBG_WARNINGS, Format('Failed to init remote connection. Errormessage: "%s".', [E.Message]));
+      end;
+    end;
   except
     on E: Exception do
     begin
+      Result := nil;
       if Assigned(dbg) then
         dbg.Free;
       DebugLn(DBG_WARNINGS, Format('Failed to start remote connection. Errormessage: "%s".', [E.Message]));
