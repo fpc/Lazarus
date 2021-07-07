@@ -156,6 +156,9 @@ const
   OpCodeSetSregR16 = $BF0F;    // out 0x3f, r16
   OpCodeRet = $9508;           // ret
   OpCodeReti = $9518;          // reti
+  // Zero register gets zeroed at start of interrupt
+  OpCodeZeroR1 = $2411;        // eor r1, r1
+  OpCodeZeroR16 = $2700;       // eor r16, r16
 
   OpCodePushMask = $920F;      // PUSH 1001 001d dddd 1111
   OpCodePopMask = $900F;       // POP  1001 000d dddd 1111
@@ -288,8 +291,9 @@ begin
   58:	8a 83       	std	Y+2, r24	; 0x02
   5a:	9b 83       	std	Y+3, r25	; 0x03
 }
-
-  ADataLen := Min(MaxPrologueSize, AnAddress - AStartPC);
+  // Also read next instruction, for simple procs/interrupts it may not be easy to spot the end of prologue
+  // so the next instruction could tie break
+  ADataLen := Min(MaxPrologueSize, AnAddress - AStartPC + 2);
   Result := ReadCodeAt(AStartPC, ADataLen);
   if not Result then
     exit;
@@ -317,14 +321,16 @@ begin
       OpCodeSetSPH: stackState := psWriteSPH;
       OpCodeSetSregR0, OpCodeSetSregR16: stackState := psWriteSreg;
       OpCodeSetSPL: stackState := psWriteSPL;
+      OpCodeZeroR1, OpCodeZeroR16: ;
     else
       // Push a register onto stack
       if (opcode and OpCodePushMask) = OpCodePushMask then
       begin
-        if stackState <= psPush then
+        if (stackState <= psPush) or (stackState = psLoadSreg) then
         begin
           inc(returnAddressOffset);
-          stackState := psPush;
+          if stackstate < psPush then
+            stackState := psPush;
         end
         else
           DebugLn(DBG_WARNINGS, ['Invalid stack state for PUSH opcode: ', stackState]);
@@ -423,7 +429,9 @@ begin
   cc:	08 95       	ret
 }
 
-  ADataLen := Min(MaxEpilogueSize, AEndPC - AnAddress);
+  // Also read previous instruction, for simple procs/interrupts it may not be easy to spot the start of epilogue
+  // so the previous instruction could tie break
+  ADataLen := Min(MaxEpilogueSize, AEndPC - AnAddress + 2);
   Result := ReadCodeAt(AEndPC - ADataLen, ADataLen);
   if not Result then
     exit;
@@ -454,10 +462,11 @@ begin
       // Push a register onto stack
       if (opcode and OpCodePopMask) = OpCodePopMask then
       begin
-        if stackState <= esPop then
+        if (stackState <= esPop) or (stackState = esWriteSreg) then
         begin
           inc(returnAddressOffset);
-          stackState := esPop;
+          if stackState < esPop then
+            stackState := esPop;
         end
         else
           DebugLn(DBG_WARNINGS, ['Invalid stack state for POP opcode: ', stackState]);
