@@ -697,7 +697,7 @@
       </element>
 
       <element name="TListControlItems.Update">
-        <short>Performs a notifcation when an item in the collection has been changed.</short>
+        <short>Performs a notification when an item in the collection has been changed.</short>
         <descr>
           <p>
             <var>Update</var> is an overridden method in <var>TListControlItems</var> used to send a notification to observers when the value in <var>AItem</var> has been changed. Update calls the inherited method in <var>TCollection</var>.
@@ -1503,7 +1503,7 @@
       <element name="TComboBoxEx.AutoCompleteText" link="#lcl.stdctrls.TCustomComboBox.AutoCompleteText"/>
       <element name="TComboBoxEx.AutoDropDown" link="#lcl.stdctrls.TCustomComboBox.AutoDropDown"/>
       <element name="TComboBoxEx.AutoSelect" link="#lcl.stdctrls.TCustomComboBox.AutoSelect"/>
-      <element name="TComboBoxEx.AutoSize" link="#lcl.stdctrls.TCustomComboBox.AutoSize"/>
+      <element name="TComboBoxEx.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TComboBoxEx.BidiMode" link="#lcl.controls.TControl.BidiMode"/>
       <element name="TComboBoxEx.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TComboBoxEx.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
@@ -2457,7 +2457,7 @@
       <element name="TCheckComboBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TCheckComboBox.ArrowKeysTraverseList" link="#lcl.stdctrls.TCustomComboBox.ArrowKeysTraverseList"/>
       <element name="TCheckComboBox.AutoDropDown" link="#lcl.stdctrls.TCustomComboBox.AutoDropDown"/>
-      <element name="TCheckComboBox.AutoSize" link="#lcl.stdctrls.TCustomComboBox.AutoSize"/>
+      <element name="TCheckComboBox.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TCheckComboBox.BidiMode" link="#lcl.controls.TControl.BidiMode"/>
       <element name="TCheckComboBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TCheckComboBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
