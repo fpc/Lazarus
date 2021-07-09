@@ -70,11 +70,18 @@ type
     fCS: TRTLCriticalSection;
     FFileName: string;
     FOwner: TDbgProcess;
+    // Catch exceptions and store as socket errors
+    FSockErr: boolean;
     procedure FSetRegisterCacheSize(sz: cardinal);
     procedure FResetStatusEvent;
     // Blocking
     function FWaitForData(): boolean; overload;
     function FWaitForData(timeout_ms: integer): boolean; overload;
+
+    // Wrappers to catch exceptions and set SockErr
+    function SafeReadByte: byte;
+    function SafeWrite(const buffer; count : Longint): Longint;
+    procedure SafeWriteByte(b: Byte);
 
     function FReadReply(out retval: string): boolean;
     function FSendCommand(const cmd: string): boolean;
@@ -122,6 +129,7 @@ type
     property State: integer read FState;
     property RegisterCacheSize: cardinal write FSetRegisterCacheSize;
     property lastStatusEvent: TStatusEvent read FStatusEvent;
+    property SockErr: boolean read FSockErr;
   end;
 
 var
@@ -177,6 +185,7 @@ var
 {$endif}
 begin
   Result:=False;
+  if SockErr then exit;
 {$if defined(unix)}
   FDS := Default(TFDSet);
   fpFD_Zero(FDS);
@@ -203,6 +212,7 @@ var
 {$endif}
 begin
   Result:=False;
+  if SockErr then exit;
 //{$if defined(unix) or defined(windows)}
   TimeV.tv_usec := timeout_ms * 1000;  // 1 msec
   TimeV.tv_sec := 0;
@@ -222,32 +232,55 @@ begin
 {$endif}
 end;
 
+function TRspConnection.SafeReadByte: byte;
+begin
+  try
+    Result := ReadByte;
+  except
+    FSockErr := true;
+    Result := 0;
+  end;
+end;
+
+function TRspConnection.SafeWrite(const buffer; count: Longint): Longint;
+begin
+  try
+    Result := Write(buffer, count);
+  except
+    FSockErr := true;
+    Result := 0;
+  end;
+end;
+
+procedure TRspConnection.SafeWriteByte(b: Byte);
+begin
+  try
+    WriteByte(b);
+  except
+    FSockErr := true;
+  end;
+end;
+
 function TRspConnection.FSendCommand(const cmd: string): boolean;
 var
   checksum: byte;
   i, totalSent: integer;
   s: string;
 begin
+  Result := false;
+  if SockErr then exit;
   checksum := 0;
   for i := 1 to length(cmd) do
     checksum := byte(checksum + ord(cmd[i]));
 
   s := '$'+cmd+'#'+IntToHex(checksum, 2);
-  totalSent := Write(s[1], length(s));
-
-  // Debugging
-  //system.WriteLn(s);
+  totalSent := SafeWrite(s[1], length(s));
 
   result := (totalSent = length(s));
   if not result then
-  begin
-    //WriteLn('* FSendRspCommand error');
     DebugLn(DBG_WARNINGS, ['Warning: TRspConnection.FSendRspCommand error.'])
-  end
   else
-  begin
     DebugLn(DBG_RSP, ['RSP -> ', cmd]);
-  end;
 end;
 
 function TRspConnection.FSendCommandOK(const cmd: string): boolean;
@@ -256,6 +289,7 @@ var
   retryCount: integer;
 begin
   result := false;
+  if SockErr then exit;
   retryCount := 0;
 
   repeat
@@ -263,7 +297,7 @@ begin
     begin
       // now check if target returned error, resend ('-') or ACK ('+')
       // No support for ‘QStartNoAckMode’, i.e. always expect a -/+
-      c := char(ReadByte);
+      c := char(SafeReadByte);
       result := c = '+';
       if not result then
         inc(retryCount);
@@ -271,7 +305,7 @@ begin
     else
       inc(retryCount);
   // Abort this command if no ACK after 5 attempts
-  until result or (retryCount > 5);
+  until result or (retryCount > 5) or SockErr;
 end;
 
 function TRspConnection.FReadReply(out retval: string): boolean;
@@ -282,30 +316,29 @@ var
   i: integer;
   cksum, calcSum: byte;
 begin
+  Result := false;
+  if SockErr then exit;
   i := 0;
   s := '';
-  //IOTimeout := 10;  // sometimes an empty response needs to be swallowed to
   repeat
-    c := chr(ReadByte);
+    c := chr(SafeReadByte);
     inc(i);
     s := s + c;
-  until (c = '$') or (i = failcountmax);  // exit loop after start or count expired
+  until (c = '$') or (i = failcountmax) or SockErr;  // exit loop after start or count expired
 
   if c <> '$' then
   begin
-    //WriteLn('* Timeout waiting for RSP reply');
     DebugLn(DBG_WARNINGS, ['Warning: Timeout waiting for RSP reply']);
     result := false;
     retval := '';
     exit;
   end
   else if i > 1 then
-  begin
-    //WriteLn('* Discarding data before start of message: ', s);
-    DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', s]);
-  end;
+    DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', s])
+  else if SockErr then
+    DebugLn(DBG_WARNINGS, ['Warning: socket error.']);
 
-  c := chr(ReadByte);
+  c := chr(SafeReadByte);
   s := '';
   calcSum := 0;
   while c <> '#' do
@@ -314,12 +347,11 @@ begin
 
     if c=#$7D then // escape marker, unescape data
     begin
-      c := char(ReadByte);
+      c := char(SafeReadByte);
 
       // Something weird happened
       if c = '#' then
       begin
-        //WriteLn('* Received end of packet marker in escaped sequence: ', c);
         DebugLn(DBG_WARNINGS, ['Warning: Received end of packet marker in escaped sequence: ', c]);
         break;
       end;
@@ -330,22 +362,20 @@ begin
     end;
 
     s := s + c;
-    c := char(ReadByte);
+    c := char(SafeReadByte);
   end;
 
-  cksum := StrToInt('$' + char(ReadByte) + char(ReadByte));
+  cksum := StrToInt('$' + char(SafeReadByte) + char(SafeReadByte));
 
   // Ignore checksum for now
-  WriteByte(byte('+'));
-  result := true;
+  SafeWriteByte(byte('+'));
+  result := not SockErr;
   retval := s;
   if not (calcSum = cksum) then
   begin
-    //WriteLn('* Reply packet with invalid checksum: ', s);
     DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', s]);
   end;
 
-  //WriteLn('RSP <- ', retval);
   DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
 
@@ -355,6 +385,7 @@ var
   retryCount: integer;
 begin
   reply := '';
+  if SockErr then exit;
   retryCount := 0;
 
   if FSendCommandOK(cmd) then
@@ -365,9 +396,9 @@ begin
       if not result then
       begin
         inc(retryCount);
-        WriteByte(ord('-'));
+        SafeWriteByte(ord('-'));
       end;
-    until result or (retryCount > 5);
+    until result or (retryCount > 5) or SockErr;
   end;
 
   if retryCount > 5 then
@@ -430,7 +461,7 @@ procedure TRspConnection.Break();
 begin
   EnterCriticalSection(fCS);
   try
-    WriteByte(3);  // Ctrl-C
+     SafeWriteByte(3);  // Ctrl-C
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -444,14 +475,14 @@ begin
   try
     result := FSendCommand('k');
     // Swallow the last ack if send
-    result := FWaitForData(1000);
+    result := not(SockErr) and FWaitForData(1000);
   finally
     LeaveCriticalSection(fCS);
   end;
 
   if result then
   begin
-    c := char(ReadByte);
+    c := char(SafeReadByte);
     Result := c = '+';
   end;
 end;
@@ -466,7 +497,7 @@ begin
   finally
     LeaveCriticalSection(fCS);
   end;
-  result := pos('OK', reply) = 1;
+  result := not(SockErr) and (pos('OK', reply) = 1);
 end;
 
 constructor TRspConnection.Create(AFileName: string; AOwner: TDbgProcess);
@@ -481,6 +512,7 @@ begin
   InitCriticalSection(fCS);
   FFileName := AFileName;
   FOwner := AOwner;
+  FSockErr := false;
 end;
 
 destructor TRspConnection.Destroy;
@@ -609,7 +641,7 @@ begin
   finally
     LeaveCriticalSection(fCS);
   end;
-  result := reply = '';
+  result := not(SockErr) and (reply = '');
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
 end;
@@ -630,7 +662,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply);
+    result := FSendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -654,7 +686,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply);
+    result := FSendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -667,7 +699,7 @@ begin
   DebugLn(DBG_VERBOSE, ['TRspConnection.Continue() called']);
   EnterCriticalSection(fCS);
   try
-    result := FSendCommandOK('c');
+    result := FSendCommandOK('c') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -679,7 +711,7 @@ function TRspConnection.SingleStep(): boolean;
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCommandOK('s');
+    result := FSendCommandOK('s') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -695,7 +727,7 @@ begin
   cmd := 'p'+IntToHex(ind, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply);
+    result := FSendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -740,9 +772,9 @@ begin
   finally
     LeaveCriticalSection(fCS);
   end;
+  Result := Result and not(SockErr);
   if Result then
   begin
-    //WriteLn('Read registers reply: ', reply);
     for i := 0 to sz-1 do
       b[i] := StrToInt('$'+reply[2*i+1]+reply[2*i+2]);
     result := true;
@@ -778,7 +810,7 @@ begin
   // Normal receive error, or an error number of the form Exx
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -798,7 +830,7 @@ begin
   cmd := 'm'+IntToHex(AAddress, 2)+',' + IntToHex(ASize, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2);
+    result := FSendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -839,7 +871,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -852,7 +884,7 @@ var
   cmdstr, reply: string;
 begin
   cmdstr := 'qRcmd,' + FHexEncodeStr(s);
-  result := FSendCmdWaitForReply(cmdstr, reply);
+  result := FSendCmdWaitForReply(cmdstr, reply) and not(SockErr);
 
   // Check if reply is not hex encoded, else decode reply
   if Result and not((reply = '') or (reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
@@ -877,7 +909,7 @@ begin
   reply := '';
   EnterCriticalSection(fCS);
   try
-    if not FSendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') then
+    if not FSendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') or SockErr then
     begin
       DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
       exit;
