@@ -73,9 +73,9 @@ type
 
   TAvrAsmDecoder = class(TDbgAsmDecoder)
   private const
-    MAX_CODEBIN_LEN = 20*2; // About 20 instructions
     MaxPrologueSize = 64;  // Bytes, so ~32 instructions
     MaxEpilogueSize = MaxPrologueSize; // Perhaps a bit smaller, since the locals/parameters do not have to be initialized
+    MAX_CODEBIN_LEN = MaxPrologueSize; // About 32 instructions
   private
     FProcess: TDbgProcess;
     FLastErrWasMem: Boolean;
