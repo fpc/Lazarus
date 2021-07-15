@@ -589,6 +589,7 @@ type
     function DoUndockClientMsg(NewTarget, Client: TControl):boolean; override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
   public
+    procedure Clear;
     function FindNextPage(CurPage: TTabSheet;
                           GoForward, CheckTabVisible: Boolean): TTabSheet;
     procedure SelectNextPage(GoForward: Boolean);
@@ -2844,7 +2845,8 @@ type
     nsHasChildren,   // = Node.HasChildren
     nsDeleting,      // = Node.Deleting, set on Destroy
     nsVisible,       // = Node.Visible
-    nsBound          // bound to a tree, e.g. has Parent or is top lvl node
+    nsBound,          // bound to a tree, e.g. has Parent or is top lvl node
+    nsValidHasChildren// Node.HasChildren has been assigned
     );
   TNodeStates = set of TNodeState;
 
@@ -2918,6 +2920,8 @@ type
                                        var ATreeNode: TTreenode) of object;
   TTVCreateNodeClassEvent = procedure(Sender: TCustomTreeView;
                                       var NodeClass: TTreeNodeClass) of object;
+  TTVHasChildrenEvent = function(Sender: TCustomTreeView;
+                                 ANode: TTreeNode): Boolean of object;
 
   TTreeNodeCompare = function(Node1, Node2: TTreeNode): integer of object;
 
@@ -2991,12 +2995,12 @@ type
     procedure ExpandItem(ExpandIt, Recurse: Boolean);
     function GetAbsoluteIndex: Integer;
     function GetDeleting: Boolean;
-    function GetHasChildren: Boolean;
     function GetCount: Integer;
     function GetCut: boolean;
     function GetDropTarget: Boolean;
     function GetExpanded: Boolean;
     function GetFocused: Boolean;
+    function GetHasChildren: Boolean;
     function GetHeight: integer;
     function GetIndex: Integer;
     function GetItems(AnIndex: Integer): TTreeNode;
@@ -3378,6 +3382,7 @@ type
     FOnExpanding: TTVExpandingEvent;
     FOnGetImageIndex: TTVExpandedEvent;
     FOnGetSelectedIndex: TTVExpandedEvent;
+    FOnHasChildren: TTVHasChildrenEvent;
     FOnNodeChanged: TTVNodeChangedEvent;
     FOnSelectionChanged: TNotifyEvent;
     FOptions: TTreeViewOptions;
@@ -3564,6 +3569,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseLeave; override;
     procedure NodeChanged(Node: TTreeNode; ChangeReason: TTreeNodeChangeReason); virtual;
+    function NodeHasChildren(Node: TTreeNode): Boolean; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure ScrollView(DeltaX, DeltaY: Integer);
@@ -3623,6 +3629,8 @@ type
       read FOnGetImageIndex write FOnGetImageIndex;
     property OnGetSelectedIndex: TTVExpandedEvent
       read FOnGetSelectedIndex write FOnGetSelectedIndex;
+    property OnHasChildren: TTVHasChildrenEvent
+      read FOnHasChildren write FOnHasChildren;
     property OnNodeChanged: TTVNodeChangedEvent read FOnNodeChanged write FOnNodeChanged;
     property OnSelectionChanged: TNotifyEvent
       read FOnSelectionChanged write FOnSelectionChanged;
@@ -3806,6 +3814,7 @@ type
     property OnExpanding;
     property OnGetImageIndex;
     property OnGetSelectedIndex;
+    property OnHasChildren;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
