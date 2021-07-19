@@ -65,6 +65,7 @@ type
     // if not, request registers from target
     procedure FUpdateStatusFromEvent(event: TStatusEvent);
     procedure InvalidateRegisters;
+    procedure refreshRegisterCache;
   protected
     function ReadThreadState: boolean;
 
@@ -236,24 +237,17 @@ end;
 
 function TDbgAvrThread.ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
 begin
+  Result := false;
   if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
-  begin
-    DebugLn(DBG_WARNINGS, 'TDbgRspThread.GetDebugReg called while FIsTerminating is set.');
-    Result := false;
-  end
+    DebugLn(DBG_WARNINGS, 'TDbgRspThread.GetDebugReg called while FIsTerminating is set.')
   else
   begin
     DebugLn(DBG_VERBOSE, ['TDbgRspThread.GetDebugReg requesting register: ',ind]);
-    if FRegs[ind].Initialized then
+    refreshRegisterCache;
+    if ind < length(FRegs) then
     begin
       AVal := FRegs[ind].Value;
-      result := true;
-    end
-    else
-    begin
-      result := TDbgAvrProcess(Process).FConnection.ReadDebugReg(ind, AVal);
-      FRegs[ind].Value := AVal;
-      FRegs[ind].Initialized := true;
+      Result := true;
     end;
   end;
 end;
@@ -285,8 +279,25 @@ procedure TDbgAvrThread.InvalidateRegisters;
 var
   i: integer;
 begin
+  FRegsUpdated := false;
   for i := 0 to high(FRegs) do
     FRegs[i].Initialized := false;
+end;
+
+procedure TDbgAvrThread.refreshRegisterCache;
+var
+  regs: TBytes;
+begin
+  if not FRegsUpdated then
+  begin
+    SetLength(regs, RegArrayByteLength);
+    FRegsUpdated := TDbgAvrProcess(Process).FConnection.ReadRegisters(regs[0], length(regs));
+    // repack according to target endianness
+    FRegs[SPindex].Value := regs[SPLindex] + (regs[SPHindex] shl 8);
+    FRegs[SPHindex].Initialized := true;
+    FRegs[PCindex].Value := regs[PC0] + (regs[PC1] shl 8) + (regs[PC2] shl 16) + (regs[PC3] shl 24);
+    FRegs[PCindex].Initialized := true;
+  end;
 end;
 
 function TDbgAvrThread.ReadThreadState: boolean;
@@ -410,7 +421,6 @@ end;
 procedure TDbgAvrThread.LoadRegisterValues;
 var
   i: integer;
-  regs: TBytes;
 begin
   if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
@@ -421,16 +431,7 @@ begin
   if not ReadThreadState then
     exit;
 
-  if not FRegsUpdated then
-  begin
-    SetLength(regs, RegArrayByteLength);
-    FRegsUpdated := TDbgAvrProcess(Process).FConnection.ReadRegisters(regs[0], length(regs));
-    // repack according to target endianness
-    FRegs[SPindex].Value := regs[SPLindex] + (regs[SPHindex] shl 8);
-    FRegs[SPHindex].Initialized := true;
-    FRegs[PCindex].Value := regs[PC0] + (regs[PC1] shl 8) + (regs[PC2] shl 16) + (regs[PC3] shl 24);
-    FRegs[PCindex].Initialized := true;
-  end;
+  refreshRegisterCache;
 
   if FRegsUpdated then
   begin
