@@ -33,8 +33,8 @@ interface
 
 uses
   Classes, SysUtils, fgl, math, process,
-  Forms, Dialogs,
-  Maps, LazLogger, LazUTF8,
+  Forms, Dialogs, syncobjs,
+  Maps, LazLogger, LazUTF8, lazCollections,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads,
   // FpDebug
@@ -287,6 +287,8 @@ type
   { TFpDebugDebugger }
 
   TFpDebugDebugger = class(TFpDebugDebuggerBase)
+  private type
+    TFpDebugStringQueue = class(specialize TLazThreadedQueue<string>);
   private
     FIsIdle: Boolean;
     FPrettyPrinter: TFpPascalPrettyPrinter;
@@ -311,7 +313,12 @@ type
     FCachePointer: pointer;
     FCacheThreadId, FCacheStackFrame: Integer;
     FCacheContext: TFpDbgSymbolScope;
+    FFpDebugOutputQueue: TFpDebugStringQueue;
+    FFpDebugOutputAsync: integer;
     //
+    procedure DoDebugOutput(Data: PtrInt);
+    procedure DoThreadDebugOutput(Sender: TObject; ProcessId,
+      ThreadId: Integer; AMessage: String);
     function GetClassInstanceName(AnAddr: TDBGPtr): string;
     function ReadAnsiString(AnAddr: TDbgPtr): string;
     procedure HandleSoftwareException(out AnExceptionLocation: TDBGLocationRec; var continue: boolean);
@@ -2823,6 +2830,23 @@ begin
       (AnAddr, FDbgController.DefaultContext, DBGPTRSIZE[FDbgController.CurrentProcess.Mode], Result, AnErr);
 end;
 
+procedure TFpDebugDebugger.DoThreadDebugOutput(Sender: TObject; ProcessId,
+  ThreadId: Integer; AMessage: String);
+begin
+  FFpDebugOutputQueue.PushItem(Format('%d: %s', [ThreadId, AMessage]));
+  if InterlockedExchange(FFpDebugOutputAsync, 1) <> 1 then
+    Application.QueueAsyncCall(@DoDebugOutput, 0);
+end;
+
+procedure TFpDebugDebugger.DoDebugOutput(Data: PtrInt);
+var
+  s: string;
+begin
+  InterlockedExchange(FFpDebugOutputAsync, 0);
+  while FFpDebugOutputQueue.PopItemTimeout(s, 50) = wrSignaled do
+    EventLogHandler.LogCustomEvent(ecOutput, etOutputDebugString, s);
+end;
+
 function TFpDebugDebugger.ReadAnsiString(AnAddr: TDbgPtr): string;
 var
   StrAddr: TDBGPtr;
@@ -3687,6 +3711,7 @@ begin
   FLockList := TFpDbgLockList.Create;
   FWorkQueue := TFpThreadPriorityWorkerQueue.Create(100);
   FWorkQueue.OnQueueIdle := @CheckAndRunIdle;
+  FFpDebugOutputQueue := TFpDebugStringQueue.create(100);
   FExceptionStepper := TFpDebugExceptionStepping.Create(Self);
   FPrettyPrinter := TFpPascalPrettyPrinter.Create(sizeof(pointer));
   FMemReader := TFpDbgMemReader.Create(self);
@@ -3704,6 +3729,7 @@ begin
   FDbgController.OnDebugInfoLoaded := @FDbgControllerDebugInfoLoaded;
   FDbgController.OnLibraryLoadedEvent := @FDbgControllerLibraryLoaded;
   FDbgController.OnLibraryUnloadedEvent := @FDbgControllerLibraryUnloaded;
+  FDbgController.OnThreadDebugOutputEvent  := @DoThreadDebugOutput;
   FDbgController.NextOnlyStopOnStartLine := TFpDebugDebuggerProperties(GetProperties).NextOnlyStopOnStartLine;
 
   FDbgController.OnThreadProcessLoopCycleEvent:=@FExceptionStepper.ThreadProcessLoopCycle;
@@ -3727,6 +3753,7 @@ begin
   {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
 
   Application.RemoveAsyncCalls(Self);
+  FreeAndNil(FFpDebugOutputQueue);
   FreeAndNil(FDbgController);
   FreeAndNil(FPrettyPrinter);
   FreeAndNil(FMemManager);

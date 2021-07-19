@@ -259,6 +259,7 @@ type
     FOnLibraryLoadedEvent: TOnLibraryLoadedEvent;
     FOnLibraryUnloadedEvent: TOnLibraryUnloadedEvent;
     FOnThreadBeforeProcessLoop: TNotifyEvent;
+    FOnThreadDebugOutputEvent: TDebugOutputEvent;
     FOnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent;
     FOsDbgClasses: TOSDbgClasses;
     FRunning, FPauseRequest: cardinal;
@@ -285,6 +286,7 @@ type
     procedure SetEnvironment(AValue: TStrings);
     procedure SetExecutableFilename(const AValue: string);
     procedure DoOnDebugInfoLoaded(Sender: TObject);
+    procedure SetOnThreadDebugOutputEvent(AValue: TDebugOutputEvent);
     procedure SetParams(AValue: TStringList);
 
     procedure CheckExecutableAndLoadClasses;
@@ -402,6 +404,7 @@ type
 
     property OnThreadBeforeProcessLoop: TNotifyEvent read FOnThreadBeforeProcessLoop write FOnThreadBeforeProcessLoop;
     property OnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent read FOnThreadProcessLoopCycleEvent write FOnThreadProcessLoopCycleEvent;
+    property OnThreadDebugOutputEvent: TDebugOutputEvent read FOnThreadDebugOutputEvent write SetOnThreadDebugOutputEvent;
   end;
 
 implementation
@@ -1303,6 +1306,14 @@ begin
     FOnDebugInfoLoaded(Self);
 end;
 
+procedure TDbgController.SetOnThreadDebugOutputEvent(AValue: TDebugOutputEvent);
+begin
+  if FOnThreadDebugOutputEvent = AValue then Exit;
+  FOnThreadDebugOutputEvent := AValue;
+  if FMainProcess <> nil then
+    FMainProcess.OnDebugOutputEvent := AValue;
+end;
+
 procedure TDbgController.SetParams(AValue: TStringList);
 begin
   if FParams=AValue then Exit;
@@ -1577,6 +1588,8 @@ begin
       // IF there is a pause-request, we will hit a deCreateProcess.
       // No need to indicate FRunning
       FMainProcess:=FCurrentProcess;
+      if FMainProcess <> nil then
+        FMainProcess.OnDebugOutputEvent := FOnThreadDebugOutputEvent;
     end
     else
     begin

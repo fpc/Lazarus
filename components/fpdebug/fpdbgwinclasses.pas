@@ -1191,6 +1191,8 @@ function TDbgWinProcess.AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent;
       then Exit;
     end;
     DebugLn(DBG_VERBOSE, '[%d:%d]: %s', [AEvent.dwProcessId, AEvent.dwThreadId, S]);
+    if OnDebugOutputEvent <> nil then
+      OnDebugOutputEvent(Self, AEvent.dwProcessId, AEvent.dwThreadId, S);
   end;
 
 var
