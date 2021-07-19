@@ -55,6 +55,7 @@ type
   TStatusEvent = record
     signal: integer;
     coreID: integer;
+    processID: integer;
     threadID: integer;
     stopReason: TStopReason;
     watchPointAddress: qword;  // contains address which triggered watch point
@@ -166,6 +167,7 @@ begin
   begin
     signal := 0;
     coreID := 0;
+    processID := 0;
     threadID := 0;
     stopReason := srNone;
     watchPointAddress := 0;
@@ -525,9 +527,9 @@ function TRspConnection.WaitForSignal(out msg: string; out
   registers: TInitializedRegisters): integer;
 var
   res: boolean;
-  startIndex, colonIndex, semicolonIndex: integer;
+  startIndex, colonIndex, semicolonIndex, i, ID: integer;
   tmp, tmp2: qword;
-  part1, part2: string;
+  part1, part2, s: string;
 begin
   result := 0;
   res := false;
@@ -601,7 +603,53 @@ begin
               begin
                 FStatusEvent.stopReason := srHWBreakPoint;
               end;
-              else // catch valid hex numbers - will be register info
+              'thread':
+              begin
+                if length(part2) > 0 then
+                begin
+                  // ... optionally include both process and thread ID fields, as ‘ppid.tid’.
+                  if (part2[1] = 'p') then
+                  begin
+                    i := pos('.', part2);
+                    if i > 2 then
+                    begin
+                      s := copy(part2, 2, i-1);
+                      if convertHexWithLittleEndianSwap(s, tmp) then
+                        FStatusEvent.processID := tmp
+                      else
+                      begin
+                        FStatusEvent.processID := 0;
+                        DebugLn(DBG_WARNINGS, format('Invalid process ID prefix: [%s]', [s]));
+                      end;
+
+                      s := copy(part2, i+1, 255);
+                      if convertHexWithLittleEndianSwap(s, tmp) then
+                        FStatusEvent.threadID := tmp
+                      else
+                      begin
+                        FStatusEvent.threadID := 0;
+                        DebugLn(DBG_WARNINGS, format('Invalid thread ID postfix: [%s]', [s]));
+                      end;
+                    end
+                    else
+                      DebugLn(DBG_WARNINGS, format('Not enough text for a process ID: [%s]', [part2]));
+                  end
+                  else
+                  // Expect only thread ID
+                  begin
+                    if convertHexWithLittleEndianSwap(part2, tmp) then
+                      FStatusEvent.threadID := tmp
+                    else
+                    begin
+                      FStatusEvent.threadID := 0;
+                      DebugLn(DBG_WARNINGS, format('Invalid thread ID postfix: [%s]', [part2]));
+                    end;
+                  end;
+                end
+                else
+                  DebugLn(DBG_WARNINGS, 'Stop reason "thread" with no thread data');
+              end;
+            else // catch valid hex numbers - will be register info
               begin
                 // check if part1 is a number, this should then be a register index
                 if convertHexWithLittleEndianSwap(part1, tmp) and convertHexWithLittleEndianSwap(part2, tmp2) then
@@ -612,11 +660,11 @@ begin
                     FStatusEvent.registers[tmp].Initialized := true;
                   end
                   else
-                    DebugLn(DBG_WARNINGS, format('Register index exceeds total number of registers (%d > %d] ',
+                    DebugLn(DBG_WARNINGS, format('Register index exceeds total number of registers (%d > %d)',
                             [tmp, length(FStatusEvent.registers)]));
                 end
                 else
-                  DebugLn(DBG_WARNINGS, format('Ignoring stop reply  pair [%s:%s] ', [part1, part2]));
+                  DebugLn(DBG_WARNINGS, format('Ignoring stop reply pair [%s:%s] ', [part1, part2]));
               end;
             end;
             startIndex := semicolonIndex + 1;
