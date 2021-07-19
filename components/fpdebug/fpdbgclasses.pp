@@ -529,6 +529,8 @@ type
   end;
   TDbgDisassemblerClass = class of TDbgAsmDecoder;
 
+  TDebugOutputEvent = procedure(Sender: TObject; ProcessId, ThreadId: Integer; AMessage: String) of object;
+
   { TDbgProcess }
 
   TDbgProcess = class(TDbgInstance)
@@ -541,6 +543,7 @@ type
     FExitCode: DWord;
     FGotExitProcess: Boolean;
     FLastLibraryUnloaded: TDbgLibrary;
+    FOnDebugOutputEvent: TDebugOutputEvent;
     FOSDbgClasses: TOSDbgClasses;
     FProcessID: Integer;
     FThreadID: Integer;
@@ -676,6 +679,7 @@ public
     // Properties valid when last event was an deException
     property ExceptionMessage: string read FExceptionMessage write FExceptionMessage;
     property ExceptionClass: string read FExceptionClass write FExceptionClass;
+    property OnDebugOutputEvent: TDebugOutputEvent read FOnDebugOutputEvent write FOnDebugOutputEvent;
 
     property LastEventProcessIdentifier: THandle read GetLastEventProcessIdentifier;
     property MainThread: TDbgThread read FMainThread;
