@@ -1288,6 +1288,24 @@
       <element name="TPickListCellEditor.CloseUp" link="#lcl.stdctrls.TCustomComboBox.CloseUp"/>
       <element name="TPickListCellEditor.Select" link="#lcl.stdctrls.TCustomComboBox.Select"/>
 
+      <element name="TPickListCellEditor.Change">
+        <short>
+          Notifies the Grid control when the value for the cell editor has been changed.
+        </short>
+        <descr>
+          <p>
+            <var>Change</var> is an overridden method used to perform actions needed when the value for the control has been changed. In <var>TPickListCellEditor</var>, it ensures that the grid control is notified when the value in the cell editor has been changed.
+          </p>
+          <p>
+            Changed calls the inherited method to signal the <var>OnChange</var> event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPickListCellEditor.OnEditingDone"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.Change">TCustomComboBox.Change</link>
+        </seealso>
+      </element>
+
       <element name="TPickListCellEditor.msg_GetValue">
         <short>Issues a message to find the value for the editor.</short>
         <descr/>
@@ -1319,6 +1337,13 @@
         <short>Issues a message to specify the position for the editor.</short>
       </element>
       <element name="TPickListCellEditor.msg_SetPos.Msg">
+        <short>LCL message for the grid control.</short>
+      </element>
+
+      <element name="TPickListCellEditor.msg_GetGrid">
+        <short>Issues a message to get the grid control for the editor.</short>
+      </element>
+      <element name="TPickListCellEditor.msg_GetGrid.Msg">
         <short>LCL message for the grid control.</short>
       </element>
 
@@ -2169,26 +2194,26 @@
       </element>
 
       <element name="TVirtualGrid.IsColumnIndexValid">
-        <short/>
+        <short>Indicates if the specified ordinal column number is valid for the grid.</short>
         <descr/>
       </element>
       <element name="TVirtualGrid.IsColumnIndexValid.Result">
-        <short/>
+        <short>True if the index is valid for the grid.</short>
       </element>
       <element name="TVirtualGrid.IsColumnIndexValid.AIndex">
-        <short/>
+        <short>Ordinal column number examined in the method.</short>
       </element>
 
       <element name="TVirtualGrid.IsRowIndexValid">
-        <short/>
+        <short>Indicates if the specified ordinal row number is valid for the grid.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TVirtualGrid.IsRowIndexValid.Result">
-        <short/>
+        <short>True if the index is valid for the grid.</short>
       </element>
       <element name="TVirtualGrid.IsRowIndexValid.AIndex">
-        <short/>
+        <short>Ordinal row number examined in the method.</short>
       </element>
 
       <element name="TVirtualGrid.Create">
@@ -2572,11 +2597,6 @@
         </seealso>
       </element>
 
-      <element name="TGridColumnTitle.Assign" link="#rtl.Classes.TPersistent.Assign"/>
-      <element name="TGridColumnTitle.Assign.Source">
-        <short/>
-      </element>
-
       <element name="TGridColumnTitle.GetDefaultCaption">
         <short>Returns the default caption for the column title.</short>
         <descr/>
@@ -2635,6 +2655,21 @@
         <short>New value for the property.</short>
       </element>
 
+      <element name="TGridColumnTitle.DefineProperties">
+        <short>
+          Specifies which properties in the persistent object are used during LCL component streaming.
+        </short>
+        <descr>
+          <p>
+            <var>DefineProperties</var> is an overridden method used to define the properties which are included during LCL component streaming.  The TFiler instance in Filer is used to set the read and write procedures for specific properties. In TGridColumnTitle, the Caption is written when it has an explicit non-default value. This implements the storage specifier declared for the property.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TGridColumnTitle.DefineProperties.Filer">
+        <short>TFiler instance used to read and write the class during LCL streaming.</short>
+      </element>
+
       <element name="TGridColumnTitle.Create">
         <short>Constructor for the class instance.</short>
         <descr>
@@ -2671,11 +2706,39 @@
         </seealso>
       </element>
 
+      <element name="TGridColumnTitle.Assign">
+        <short>
+          Copies property value from the specified persistent object into the current class instance.
+        </short>
+        <descr>
+          <p>
+            <var>Assign</var> is an overridden method used to implement object persistence for the class. When <var>Source</var> is a <var>TGridColumnTitle</var> instance, the values from the following properties are copied:
+          </p>
+          <ul>
+            <li>Alignment</li>
+            <li>Layout</li>
+            <li>Caption</li>
+            <li>Color</li>
+            <li>Font</li>
+            <li>ImageIndex</li>
+          </ul>
+          <p>
+            If Source is not derived from TGridColumnTitle, the inherited method is called using Source as an argument.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.Classes.TPersistent">TPersistent</link>
+        </seealso>
+      </element>
+      <element name="TGridColumnTitle.Assign.Source">
+        <short>Persistent object with property values copied in the method.</short>
+      </element>
+
       <element name="TGridColumnTitle.FillTitleDefaultFont">
         <short>Stores the default font used for the column title.</short>
         <descr>
           <p>
-            When Grid has been assigned, the TitleFont property from the Grid is used in the Font property. Otherwise, the Font from the Column is used. IsDefaultFont is set to True in the method.
+            When <var>Grid</var> has been assigned, the <var>TitleFont</var> property from the Grid is used in the <var>Font</var> property. Otherwise, the Font from the <var>Column</var> is used. <var>IsDefaultFont</var> is set to True in the method.
           </p>
         </descr>
         <seealso>
@@ -2708,20 +2771,30 @@
       </element>
 
       <element name="TGridColumnTitle.ScaleFontsPPI">
-        <short/>
+        <short>
+          Scales font sizes in the class instance to the specified display density.
+        </short>
         <descr>
           <p>
-            <var>ScaleFontsPPI</var> is an overridden procedure used to...
+            <var>ScaleFontsPPI</var> is an overridden procedure used to scale the size for the fonts in the Grid and Title properties to the specified display density (PPI) (Pixels Per Inch).
+          </p>
+          <p>
+            AToPPI contains the value assigned to the fonts used when a non-zero value is specified.
+          </p>
+          <p>
+            If AToPPI is omitted, the scaling factor in AProportion is used to adjust the existing PPI setting in the fonts by the indicated factor.
+          </p>
+          <p>
+            ScaleFontsPPI is called when the AutoAdjustLayout method is used to apply a layout policy to a control.
           </p>
         </descr>
         <seealso/>
-        <notes><note>TODO</note></notes>
       </element>
       <element name="TGridColumnTitle.ScaleFontsPPI.AToPPI">
-        <short/>
+        <short>Explicit Pixels per Inch setting for the fonts.</short>
       </element>
       <element name="TGridColumnTitle.ScaleFontsPPI.AProportion">
-        <short/>
+        <short>Scaling factor applied to the existing PPI setting for the fonts.</short>
       </element>
 
       <element name="TGridColumnTitle.IsDefault">
@@ -3641,9 +3714,11 @@
       </element>
 
       <element name="TGridColumn.DefaultWidth">
-        <short/>
+        <short>Default width for the column, or -1 when not assigned.</short>
         <descr>
-          DefaultWidth is a read-only Integer value with the default width used for the column. The property value is read from the DefaultColWidth property in the Grid control (when assigned). If it is not assigned, the property value is -1.
+          <p>
+            <var>DefaultWidth</var> is a read-only <var>Integer</var> property with the default width used for the column. The property value is read from the <var>DefaultColWidth</var> property in the Grid control (when assigned). If it is not assigned, the property value is -1.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -13908,13 +13983,13 @@
       <element name="TDrawGrid.OnMouseLeave" link="#lcl.controls.TControl.OnMouseLeave"/>
       <element name="TDrawGrid.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
       <element name="TDrawGrid.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
-      <element name="TDrawGrid.OnMouseWheel" link="#lcl.grids.TCustomDrawGrid.OnMouseWheel"/>
-      <element name="TDrawGrid.OnMouseWheelDown" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelDown"/>
-      <element name="TDrawGrid.OnMouseWheelUp" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelUp"/>
-      <element name="TDrawGrid.OnMouseWheelHorz" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelHorz"/>
-      <element name="TDrawGrid.OnMouseWheelLeft" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelLeft"/>
-      <element name="TDrawGrid.OnMouseWheelRight" link="#lcl.grids.TCustomDrawGrid.OnMouseWheelRight"/>
-      <element name="TDrawGrid.OnPickListSelect" link="#lcl.grids.TCustomDrawGrid.OnPickListSelect"/>
+      <element name="TDrawGrid.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
+      <element name="TDrawGrid.OnMouseWheelDown"  link="#lcl.controls.TControl.OnMouseWheelDown"/>
+      <element name="TDrawGrid.OnMouseWheelUp"  link="#lcl.controls.TControl.OnMouseWheelUp"/>
+      <element name="TDrawGrid.OnMouseWheelHorz"  link="#lcl.controls.TControl.OnMouseWheelHorz"/>
+      <element name="TDrawGrid.OnMouseWheelLeft"  link="#lcl.controls.TControl.OnMouseWheelLeft"/>
+      <element name="TDrawGrid.OnMouseWheelRight"  link="#lcl.controls.TControl.OnMouseWheelRight"/>
+      <element name="TDrawGrid.OnPickListSelect" link="#lcl.grids.TCustomGrid.OnPickListSelect"/>
       <element name="TDrawGrid.OnPrepareCanvas" link="#lcl.grids.TCustomGrid.OnPrepareCanvas"/>
       <element name="TDrawGrid.OnSelectEditor" link="#lcl.grids.TCustomGrid.OnSelectEditor"/>
       <element name="TDrawGrid.OnSelection" link="#lcl.grids.TCustomGrid.OnSelection"/>
@@ -15092,7 +15167,7 @@
       <element name="TStringGrid.DefaultColWidth" link="#lcl.grids.TCustomGrid.DefaultColWidth"/>
       <element name="TStringGrid.DefaultDrawing" link="#lcl.grids.TCustomGrid.DefaultDrawing"/>
       <element name="TStringGrid.DefaultRowHeight" link="#lcl.grids.TCustomGrid.DefaultRowHeight"/>
-      <element name="TStringGrid.DoubleBuffered" link="#lcl.controls.TControl.DoubleBuffered"/>
+      <element name="TStringGrid.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
       <element name="TStringGrid.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TStringGrid.DragKind" link="#lcl.controls.TControl.DragKind"/>
       <element name="TStringGrid.DragMode" link="#lcl.controls.TControl.DragMode"/>
@@ -15102,7 +15177,7 @@
       <element name="TStringGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
       <element name="TStringGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
       <element name="TStringGrid.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
-      <element name="TStringGrid.Font" link="LCL.Controls.TControl.Font"/>
+      <element name="TStringGrid.Font" link="#lcl.controls.TControl.Font"/>
       <element name="TStringGrid.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth"/>
       <element name="TStringGrid.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones"/>
       <element name="TStringGrid.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
@@ -15113,7 +15188,7 @@
       <element name="TStringGrid.Options2" link="#lcl.grids.TCustomGrid.Options2"/>
       <element name="TStringGrid.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
       <element name="TStringGrid.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
-      <element name="TStringGrid.ParentDoubleBuffered" link="#lcl.controls.TControl.ParentDoubleBuffered"/>
+      <element name="TStringGrid.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TStringGrid.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TStringGrid.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TStringGrid.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -15134,7 +15209,7 @@
       <element name="TStringGrid.VisibleRowCount" link="#lcl.grids.TCustomGrid.VisibleRowCount"/>
       <element name="TStringGrid.OnAfterSelection" link="#lcl.grids.TCustomGrid.OnAfterSelection"/>
       <element name="TStringGrid.OnBeforeSelection" link="#lcl.grids.TCustomGrid.OnBeforeSelection"/>
-      <element name="TStringGrid.OnCellProcess" link="#lcl.grids.TCustomGrid.OnCellProcess"/>
+      <element name="TStringGrid.OnCellProcess" link="#lcl.grids.TCustomStringGrid.OnCellProcess"/>
       <element name="TStringGrid.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
       <element name="TStringGrid.OnCheckboxToggled" link="#lcl.grids.TCustomGrid.OnCheckboxToggled"/>
       <element name="TStringGrid.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -15163,12 +15238,12 @@
       <element name="TStringGrid.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
       <element name="TStringGrid.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
       <element name="TStringGrid.OnGetCellHint" link="#lcl.grids.TCustomGrid.OnGetCellHint"/>
-      <element name="TStringGrid.OnGetCheckboxState" link="#lcl.grids.TCustomGrid.OnGetCheckboxState"/>
+      <element name="TStringGrid.OnGetCheckboxState" link="#lcl.grids.TCustomDrawGrid.OnGetCheckboxState"/>
       <element name="TStringGrid.OnGetEditMask" link="#lcl.grids.TCustomDrawGrid.OnGetEditMask"/>
       <element name="TStringGrid.OnGetEditText" link="#lcl.grids.TCustomDrawGrid.OnGetEditText"/>
       <element name="TStringGrid.OnHeaderClick" link="#lcl.grids.TCustomDrawGrid.OnHeaderClick"/>
       <element name="TStringGrid.OnHeaderSized" link="#lcl.grids.TCustomDrawGrid.OnHeaderSized"/>
-      <element name="TStringGrid.OnHeaderSizing" link="#lcl.grids.TCustomGrid.OnHeaderSizing"/>
+      <element name="TStringGrid.OnHeaderSizing" link="#lcl.grids.TCustomDrawGrid.OnHeaderSizing"/>
       <element name="TStringGrid.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
       <element name="TStringGrid.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
       <element name="TStringGrid.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
@@ -15589,7 +15664,7 @@
                   The values that are used to recognize the checked or unchecked states are set in a column's properties ValueChecked and ValueUnchecked.
                 </li>
                 <li>
-                  At any moment, the field value can be in one to three states: Unchecked, Checked or Grayed.
+                  At any moment, the field value can be in one of three states: Unchecked, Checked or Grayed.
                 </li>
               </ul>
             </li>
@@ -15598,9 +15673,8 @@
         <notes>
           <note>
             ToDo:
-            OnDrawCell examples
-            Discuss OnEditingDone.
-            Editing a pick list example
+            OnDrawCell example.
+            Editing a pick list example.
           </note>
         </notes>
       </topic>

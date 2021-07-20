@@ -2321,7 +2321,17 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TCustomImage.WSRegisterClass" link="#lcl.controls.TControl.WSRegisterClass"/>
+      <element name="TCustomImage.WSRegisterClass">
+        <short>Registers the class with the widgetset.</short>
+        <descr>
+          <p>
+            Calls the RegisterCustomImage method in the widgetset class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TGraphicControl.WSRegisterClass"/>
+        </seealso>
+      </element>
 
       <element name="TCustomImage.PictureChanged">
         <short>Performs actions needed when the Picture property has been changed.</short>

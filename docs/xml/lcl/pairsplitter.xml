@@ -160,6 +160,7 @@
       <element name="TPairSplitterSide.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
       <element name="TPairSplitterSide.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
       <element name="TPairSplitterSide.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
+      <element name="TPairSplitterSide.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TPairSplitterSide.Cursor" link="#lcl.controls.TControl.Cursor"/>
       <element name="TPairSplitterSide.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TPairSplitterSide.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
