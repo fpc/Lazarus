@@ -1293,6 +1293,23 @@ begin
     Result := False;
 end;
 
+function TApplication.HelpShowTableOfContents: Boolean;
+// A Delphi compatible method.
+var
+  ErrMsg: string;
+  HelpRes: TShowHelpResult;
+begin
+  if Assigned(HelpManager) then begin
+    // ShowTableOfContents must be implemented to actually get help. By default it
+    HelpRes := HelpManager.ShowTableOfContents(ErrMsg); // returns shrHelpNotFound.
+    Result := HelpRes = shrSuccess;
+  end
+  else begin
+    //HelpRes := THelpManager.DoHelpNotFound(ErrMsg);  // Class function.
+    Result := False;
+  end;
+end;
+
 procedure TApplication.ShowHelpForObject(Sender: TObject);
 begin
   if Sender is TControl then

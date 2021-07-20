@@ -198,7 +198,7 @@ type
 
   THelpManager = class(TObject)
   public
-    function DoHelpNotFound(var ErrMsg: string): TShowHelpResult;
+    class function DoHelpNotFound(var ErrMsg: string): TShowHelpResult;
     function ShowTableOfContents(var ErrMsg: string): TShowHelpResult; virtual;
     procedure ShowError(ShowResult: TShowHelpResult; const ErrMsg: string); virtual; abstract;
     // show help for ...
@@ -545,7 +545,7 @@ end;
 
 { THelpManager }
 
-function THelpManager.DoHelpNotFound(var ErrMsg: string): TShowHelpResult;
+class function THelpManager.DoHelpNotFound(var ErrMsg: string): TShowHelpResult;
 begin
   Result:=shrHelpNotFound;
   ErrMsg:='Help not found';

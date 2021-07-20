@@ -1513,6 +1513,7 @@ type
     function HelpCommand(Command: Word; Data: PtrInt): Boolean;
     function HelpContext(Context: THelpContext): Boolean;
     function HelpKeyword(const Keyword: String): Boolean;
+    function HelpShowTableOfContents: Boolean;
     procedure ShowHelpForObject(Sender: TObject);
     procedure RemoveStayOnTop(const ASystemTopAlso: Boolean = False);
     procedure RestoreStayOnTop(const ASystemTopAlso: Boolean = False);
