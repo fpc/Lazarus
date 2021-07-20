@@ -3179,7 +3179,7 @@ var
     i := 1;
     if (Line[1] = '&') and (Line[2] = '"') then
       i := 3;
-    if LazStartsText(LogWarning, Line) then
+    if LowerCase(Copy(Line, i, Length(LogWarning))) = LogWarning then
       AInLogWarning := True;
       //Delete(Line, 1, Length(LogWarning));
 
