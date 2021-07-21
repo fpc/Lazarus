@@ -9989,7 +9989,7 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.ScrollBars"/>
-          <link id="TScrollStyle"/>
+          <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link>
         </seealso>
       </element>
       <element name="TCustomGrid.ScrollBarAutomatic.Result">
@@ -11557,7 +11557,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TScrollStyle"/>
+          <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link>
         </seealso>
       </element>
 
@@ -12612,12 +12612,16 @@
         </seealso>
       </element>
 
-      <element name="TCustomGrid.TabStop" link="#lcl.controls.TWinControl.TabStop">
-        <short/>
+      <element name="TCustomGrid.TabStop">
+        <short>Allows the user to navigate to this control, by pressing the Tab key.</short>
         <descr>
-          The default value for TabStop is True in TCustomGrid.
+          <p>
+            The default value for TabStop is True in TCustomGrid.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.IMEStartComposition">
@@ -13926,7 +13930,30 @@
       <element name="TDrawGrid.MouseWheelOption" link="#lcl.grids.TCustomGrid.MouseWheelOption"/>
       <element name="TDrawGrid.Options" link="#lcl.grids.TCustomGrid.Options"/>
       <element name="TDrawGrid.Options2" link="#lcl.grids.TCustomGrid.Options2"/>
-      <element name="TDrawGrid.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TDrawGrid.ParentColor">
+        <short>
+          Uses the Color from the Parent control, when enabled.
+        </short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TDrawGrid.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+         <p>
+           Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+         </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
+        </seealso>
+      </element>
+
       <element name="TDrawGrid.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TDrawGrid.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TDrawGrid.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
@@ -15187,7 +15214,30 @@
       <element name="TStringGrid.Options" link="#lcl.grids.TCustomGrid.Options"/>
       <element name="TStringGrid.Options2" link="#lcl.grids.TCustomGrid.Options2"/>
       <element name="TStringGrid.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TStringGrid.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TStringGrid.ParentColor">
+        <short>
+          Uses the Color from the Parent control, when enabled.
+        </short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TStringGrid.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+         <p>
+           Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+         </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
+        </seealso>
+      </element>
+
       <element name="TStringGrid.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TStringGrid.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TStringGrid.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>

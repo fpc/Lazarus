@@ -1932,14 +1932,16 @@
         <short>Current position for the splitter.</short>
       </element>
 
-      <element name="TCustomSplitter.Align" link="#lcl.controls.TControl.Align">
-        <short/>
+      <element name="TCustomSplitter.Align">
+        <short>Specifies the placement of the control inside its Parent.</short>
         <descr>
           <p>
-            The default value for the property is <var>alLeft</var>.
+            Align is a TAlign property which specifies how the control is aligned to its parent control. The default value for the property is <var>alLeft</var> in TCustomSplitter.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Align">TControl.Align</link>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.AutoSnap">
@@ -1959,14 +1961,18 @@
         <seealso/>
       </element>
 
-      <element name="TCustomSplitter.Cursor" link="#lcl.controls.TControl.Cursor">
-        <short/>
+      <element name="TCustomSplitter.Cursor">
+        <short>
+          The shape for the mouse pointer when the control is dragged.
+        </short>
         <descr>
           <p>
-            The default value for the property is <var>crHSplit</var>.
+            The default value for the property is <var>crHSplit</var> in TCustomSplitter.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.MinSize">
@@ -2033,7 +2039,7 @@
       <element name="TSplitter.Beveled" link="#lcl.extctrls.TCustomSplitter.Beveled"/>
       <element name="TSplitter.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TSplitter.Constraints" link="#lcl.controls.TControl.Constraints"/>
-      <element name="TSplitter.Cursor" link="#lcl.controls.TControl.Cursor"/>
+      <element name="TSplitter.Cursor" link="#lcl.extctrls.TCustomSplitter.Cursor"/>
       <element name="TSplitter.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
       <element name="TSplitter.Height" link="#lcl.controls.TControl.Height"/>
       <element name="TSplitter.MinSize" link="#lcl.extctrls.TCustomSplitter.MinSize"/>
@@ -2709,21 +2715,13 @@
 
       <element name="TImage.KeepOriginXWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginXWhenClipped">
         <short/>
-        <descr>
-          <p>
-            The default value for the property is <b>False</b>.
-          </p>
-        </descr>
+        <descr/>
         <seealso/>
       </element>
 
       <element name="TImage.KeepOriginYWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginYWhenClipped">
         <short/>
-        <descr>
-          <p>
-            The default value for the property is <b>False</b>.
-          </p>
-        </descr>
+        <descr/>
         <seealso/>
       </element>
 
@@ -5264,7 +5262,17 @@
         </seealso>
       </element>
 
-      <element name="TCustomPanel.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TCustomPanel.TabStop">
+        <short>Enables or disables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            The default value for the property is False in TCustomPanel.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
 
       <element name="TPanel">
         <short>
@@ -5280,7 +5288,7 @@
         </seealso>
       </element>
 
-      <element name="TPanel.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TPanel.Align" link="#lcl.extctrls.TCustomPanel.Align"/>
       <element name="TPanel.Alignment" link="#lcl.extctrls.TCustomPanel.Alignment"/>
       <element name="TPanel.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TPanel.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
@@ -5296,7 +5304,7 @@
       <element name="TPanel.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
       <element name="TPanel.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
       <element name="TPanel.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
-      <element name="TPanel.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TPanel.Color" link="#lcl.extctrls.TCustomPanel.Color"/>
       <element name="TPanel.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TPanel.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
       <element name="TPanel.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
@@ -5308,15 +5316,30 @@
       <element name="TPanel.FullRepaint" link="#lcl.extctrls.TCustomPanel.FullRepaint"/>
       <element name="TPanel.ParentBackground" link="#lcl.extctrls.TCustomPanel.ParentBackground"/>
       <element name="TPanel.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TPanel.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TPanel.ParentColor" link="#lcl.extctrls.TCustomPanel.ParentColor"/>
       <element name="TPanel.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TPanel.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TPanel.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TPanel.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TPanel.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TPanel.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TPanel.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
-      <element name="TPanel.UseDockManager" link="#lcl.controls.TWinControl.UseDockManager"/>
+      <element name="TPanel.TabStop" link="#lcl.extctrls.TCustomPanel.TabStop"/>
+
+      <element name="TPanel.UseDockManager">
+        <short>Determines whether a DockManager is used for this DockSite.</short>
+        <descr>
+          <p>
+            The default value for the property is True in TPanel.
+          </p>
+          <p>
+            When UseDockManager is set to True, and DockSite is also set to True, a DockManager is created automatically. When set to False, an existing DockManager is ignored. If you want to use a special DockManager, install it before setting UseDockManager to True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.UseDockManager">TWinControl.UseDockManager</link>
+        </seealso>
+      </element>
+
       <element name="TPanel.Visible" link="#lcl.controls.TControl.Visible"/>
       <element name="TPanel.WordWrap" link="#lcl.extctrls.TCustomPanel.WordWrap"/>
       <element name="TPanel.OnClick" link="#lcl.controls.TControl.OnClick"/>
@@ -5879,6 +5902,11 @@
 
       <element name="TCustomFlowPanel.AutoWrap">
         <short>Determines if controls in TCustomFlowPanel are wrapped.</short>
+        <descr>
+          <p>
+            The default value for the property is True in TFlowPanel.
+          </p>
+        </descr>
       </element>
 
       <element name="TCustomFlowPanel.ControlList">
@@ -5913,7 +5941,21 @@
       <element name="TFlowPanel.Alignment" link="#lcl.extctrls.TCustomPanel.Alignment"/>
       <element name="TFlowPanel.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TFlowPanel.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
-      <element name="TFlowPanel.AutoWrap" link="#lcl.extctrls.TCustomFlowPanel.AutoWrap"/>
+
+      <element name="TFlowPanel.AutoWrap">
+        <short>
+          Determines if child controls are automatically wrapped when needed.
+        </short>
+        <descr>
+          <p>
+            The default value for the property is True in TFlowPanel.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.extctrls.TCustomFlowPanel.AutoWrap"/>
+        </seealso>
+      </element>
+
       <element name="TFlowPanel.BevelInner" link="#lcl.extctrls.TCustomPanel.BevelInner"/>
       <element name="TFlowPanel.BevelOuter" link="#lcl.extctrls.TCustomPanel.BevelOuter"/>
       <element name="TFlowPanel.BevelWidth" link="#lcl.extctrls.TCustomPanel.BevelWidth"/>
@@ -5925,7 +5967,22 @@
       <element name="TFlowPanel.Color" link="#lcl.extctrls.TCustomPanel.Color"/>
       <element name="TFlowPanel.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TFlowPanel.ControlList" link="#lcl.extctrls.TCustomFlowPanel.ControlList"/>
-      <element name="TFlowPanel.UseDockManager" link="#lcl.controls.TWinControl.UseDockManager"/>
+
+      <element name="TFlowPanel.UseDockManager">
+        <short>Determines whether a DockManager is used for this DockSite.</short>
+        <descr>
+          <p>
+            The default value for the property is True in TFlowPanel.
+          </p>
+          <p>
+            When UseDockManager is set to True, and DockSite is also set to True, a DockManager is created automatically. When set to False, an existing DockManager is ignored. If you want to use a special DockManager, install it before setting UseDockManager to True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.UseDockManager">TWinControl.UseDockManager</link>
+        </seealso>
+      </element>
+
       <element name="TFlowPanel.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
       <element name="TFlowPanel.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
       <element name="TFlowPanel.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
@@ -7857,7 +7914,19 @@
         <seealso/>
       </element>
 
-      <element name="TCustomControlBar.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
+      <element name="TCustomControlBar.DockSite">
+        <short>
+          Allows drag-docking of controls onto this control.
+        </short>
+        <descr>
+          <p>
+            A DockSite reacts on controls dragged over this control, signals acceptance and where a dragged control would be dropped. The default value for the property is True in TCustomControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.DockSite">TWinControl.DockSite</link>
+        </seealso>
+      </element>
 
       <element name="TCustomControlBar.DrawingStyle">
         <short>Fill style used for bands on the control bar.</short>
@@ -8019,19 +8088,42 @@
       </element>
 
       <element name="TControlBar.Canvas" link="#lcl.controls.TCustomControl.Canvas"/>
-      <element name="TControlBar.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TControlBar.Align" link="#lcl.extctrls.TCustomPanel.Align"/>
       <element name="TControlBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TControlBar.AutoDock" link="#lcl.extctrls.TCustomControlBar.AutoDock"/>
       <element name="TControlBar.AutoDrag" link="#lcl.extctrls.TCustomControlBar.AutoDrag"/>
       <element name="TControlBar.AutoSize" link="#lcl.extctrls.TCustomControlBar.AutoSize"/>
-      <element name="TControlBar.BevelInner" link="#lcl.extctrls.TCustomPanel.BevelInner"/>
-      <element name="TControlBar.BevelOuter" link="#lcl.extctrls.TCustomPanel.BevelOuter"/>
+
+      <element name="TControlBar.BevelInner">
+        <short>Drawing style for the inner bevel on the control.</short>
+        <descr>
+          <p>
+            The default value for the property is bvRaised in TControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.extctrls.TCustomPanel.BevelInner">TCustomPanel.BevelInner</link>
+        </seealso>
+      </element>
+
+      <element name="TControlBar.BevelOuter">
+        <short>Drawing style for the outer bevel on the control.</short>
+        <descr>
+          <p>
+            The default value for the property is bvLowered in TControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.extctrls.TCustomPanel.BevelOuter">TCustomPanel.BevelOuter</link>
+        </seealso>
+      </element>
+
       <element name="TControlBar.BevelWidth" link="#lcl.extctrls.TCustomPanel.BevelWidth"/>
       <element name="TControlBar.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TControlBar.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
       <element name="TControlBar.Color" link="#lcl.extctrls.TCustomPanel.Color"/>
       <element name="TControlBar.Constraints" link="#lcl.controls.TControl.Constraints"/>
-      <element name="TControlBar.DockSite" link="#lcl.controls.TWinControl.DockSite"/>
+      <element name="TControlBar.DockSite" link="#lcl.extctrls.TCustomControlBar.DockSite"/>
       <element name="TControlBar.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
       <element name="TControlBar.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TControlBar.DragKind" link="#lcl.controls.TControl.DragKind"/>

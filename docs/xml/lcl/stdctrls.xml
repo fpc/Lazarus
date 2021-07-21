@@ -646,7 +646,18 @@
         </descr>
       </element>
 
-      <element name="TCustomScrollBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TCustomScrollBar.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TCustomScrollBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
 
       <element name="TCustomScrollBar.OnChange">
         <short>Event handler signalled when the value in Position, Min, Max, or PageSize is changed.</short>
@@ -768,7 +779,7 @@
       <element name="TScrollBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TScrollBar.SmallChange" link="#lcl.stdctrls.TCustomScrollBar.SmallChange"/>
       <element name="TScrollBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TScrollBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TScrollBar.TabStop" link="#lcl.stdctrls.TCustomScrollBar.TabStop"/>
       <element name="TScrollBar.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TCustomGroupBox">
@@ -2553,7 +2564,20 @@
         </seealso>
       </element>
 
-      <element name="TCustomComboBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TCustomComboBox.ParentColor">
+        <short>Uses the Color from the Parent control, when enabled.</short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TCustomComboBox.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+        </seealso>
+      </element>
 
       <element name="TCustomComboBox.Sorted">
         <short>Determines whether the list entries are sorted in alphanumeric order.</short>
@@ -3145,7 +3169,17 @@
         </descr>
       </element>
 
-      <element name="TCustomComboBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TCustomComboBox.TabStop">
+        <short>Enables or disables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key. The default value for the property is True in TCustomComboBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
 
       <element name="TCustomComboBox.Text">
         <short>The value in the edit box for the control.</short>
@@ -3263,7 +3297,7 @@
       <element name="TComboBox.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
       <element name="TComboBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TComboBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TComboBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TComboBox.ParentColor" link="#lcl.stdctrls.TCustomComboBox.ParentColor"/>
       <element name="TComboBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
@@ -3273,7 +3307,7 @@
       <element name="TComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
       <element name="TComboBox.Style" link="#lcl.stdctrls.TCustomComboBox.Style"/>
       <element name="TComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TComboBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TComboBox.TabStop" link="#lcl.stdctrls.TCustomComboBox.TabStop"/>
       <element name="TComboBox.Text" link="#lcl.stdctrls.TCustomComboBox.Text"/>
       <element name="TComboBox.TextHint" link="#lcl.stdctrls.TCustomComboBox.TextHint"/>
       <element name="TComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
@@ -4368,7 +4402,18 @@
 
       <element name="TCustomListBox.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TCustomListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
-      <element name="TCustomListBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+
+      <element name="TCustomListBox.BorderStyle">
+        <short>Line style used for the border on the control.</short>
+        <descr>
+          <p>
+            Indicates the line style drawn as a border around the control. The default value for the property is bsSingle in TCustomListBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.BorderStyle">TWinControl.BorderStyle</link>
+        </seealso>
+      </element>
 
       <element name="TCustomListBox.Canvas">
         <short>Drawing surface where the control is drawn.</short>
@@ -4611,7 +4656,21 @@
         </seealso>
       </element>
 
-      <element name="TCustomListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TCustomListBox.ParentColor">
+        <short>Use the Color from the Parent control, when enabled.</short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TCustomListBox.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+        </seealso>
+      </element>
+
       <element name="TCustomListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TCustomListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TCustomListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -4738,7 +4797,19 @@
       </element>
 
       <element name="TCustomListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TCustomListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TCustomListBox.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TCustomListBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop"/>
+        </seealso>
+      </element>
 
       <element name="TCustomListBox.TopIndex">
         <short>Index of the first visible (or top-most) item.</short>
@@ -4797,7 +4868,7 @@
       <element name="TListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TListBox.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TListBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TListBox.BorderStyle" link="#lcl.stdctrls.TCustomListBox.BorderStyle"/>
       <element name="TListBox.ClickOnSelChange" link="#lcl.stdctrls.TCustomListBox.ClickOnSelChange"/>
       <element name="TListBox.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TListBox.Columns" link="#lcl.stdctrls.TCustomListBox.Columns"/>
@@ -4857,7 +4928,6 @@
       <element name="TListBox.OnMouseWheel" link="#lcl.controls.TControl.OnMouseWheel"/>
       <element name="TListBox.OnMouseWheelDown" link="#lcl.controls.TControl.OnMouseWheelDown"/>
       <element name="TListBox.OnMouseWheelUp" link="#lcl.controls.TControl.OnMouseWheelUp"/>
-
       <element name="TListBox.OnMouseWheelHorz" link="#lcl.controls.TControl.OnMouseWheelHorz"/>
       <element name="TListBox.OnMouseWheelLeft" link="#lcl.controls.TControl.OnMouseWheelLeft"/>
       <element name="TListBox.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
@@ -4868,7 +4938,7 @@
       <element name="TListBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
       <element name="TListBox.Options" link="#lcl.stdctrls.TCustomListBox.Options"/>
       <element name="TListBox.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TListBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TListBox.ParentColor" link="#lcl.stdctrls.TCustomListBox.ParentColor"/>
       <element name="TListBox.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
@@ -4878,7 +4948,7 @@
       <element name="TListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
       <element name="TListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
       <element name="TListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TListBox.TabStop" link="#lcl.stdctrls.TCustomListBox.TabStop"/>
       <element name="TListBox.TopIndex" link="#lcl.stdctrls.TCustomListBox.TopIndex"/>
       <element name="TListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
@@ -5950,8 +6020,31 @@
         <seealso/>
       </element>
 
-      <element name="TCustomEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
-      <element name="TCustomEdit.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TCustomEdit.AutoSize">
+        <short>
+          Allows automatic adjustment of the size for the control, according to its content.
+        </short>
+        <descr>
+          <p>
+            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption. The default value for the property is True in TCustomEdit. and enables auto-sizing the control instance to its content.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomEdit.BorderStyle">
+        <short>Indicates the line style drawn as a border around the control.</short>
+        <descr>
+          <p>
+            The default value for the property is bsSingle in TCustomEdit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.BorderStyle">TWinControl.BorderStyle</link>
+        </seealso>
+      </element>
 
       <element name="TCustomEdit.CanUndo">
         <short>Indicates whether the last change can be reverted in the control.</short>
@@ -6258,7 +6351,19 @@
       </element>
 
       <element name="TCustomEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TCustomEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TCustomEdit.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TCustomEdit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
 
       <element name="TCustomEdit.Text">
         <short>The text displayed and edited for the control.</short>
@@ -6979,10 +7084,10 @@ end;
       <element name="TEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TEdit.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
       <element name="TEdit.AutoSelected" link="#lcl.stdctrls.TCustomEdit.AutoSelected"/>
-      <element name="TEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TEdit.AutoSize" link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
       <element name="TEdit.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TEdit.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TEdit.BorderStyle" link="#lcl.stdctrls.TCustomEdit.BorderStyle"/>
       <element name="TEdit.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TEdit.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
@@ -7030,7 +7135,7 @@ end;
       <element name="TEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
       <element name="TEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
       <element name="TEdit.Text" link="#lcl.stdctrls.TCustomEdit.Text"/>
       <element name="TEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
       <element name="TEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
@@ -7122,7 +7227,7 @@ end;
       <element name="TMemo.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TMemo.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TMemo.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TMemo.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TMemo.BorderStyle" link="#lcl.stdctrls.TCustomEdit.BorderStyle"/>
       <element name="TMemo.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
       <element name="TMemo.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TMemo.Constraints" link="#lcl.controls.TControl.Constraints"/>
@@ -7172,7 +7277,7 @@ end;
       <element name="TMemo.ScrollBars" link="#lcl.stdctrls.TCustomMemo.ScrollBars"/>
       <element name="TMemo.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TMemo.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TMemo.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TMemo.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
       <element name="TMemo.Visible" link="#lcl.controls.TControl.Visible"/>
       <element name="TMemo.WantReturns" link="#lcl.stdctrls.TCustomMemo.WantReturns"/>
       <element name="TMemo.WantTabs" link="#lcl.stdctrls.TCustomMemo.WantTabs"/>
@@ -8316,7 +8421,18 @@ end;
         <seealso/>
       </element>
 
-      <element name="TCustomButton.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TCustomButton.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TCustomButton.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop"/>
+        </seealso>
+      </element>
 
       <element name="TButton">
         <short>Implements a push button control.</short>
@@ -8360,7 +8476,7 @@ end;
       <element name="TButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TButton.Cancel" link="#lcl.stdctrls.TCustomButton.Cancel"/>
       <element name="TButton.Caption" link="#lcl.controls.TControl.Caption"/>
-      <element name="TButton.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TButton.Color" link="#lcl.stdctrls.TCustomButton.Color"/>
       <element name="TButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TButton.Default" link="#lcl.stdctrls.TCustomButton.Default"/>
       <element name="TButton.DoubleBuffered" link="#lcl.controls.TWinControl.DoubleBuffered"/>
@@ -8399,7 +8515,7 @@ end;
       <element name="TButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TButton.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TButton.TabStop" link="#lcl.stdctrls.TCustomButton.TabStop"/>
       <element name="TButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TCheckBoxState">
@@ -8805,7 +8921,21 @@ end;
       <element name="TCheckBox.Alignment" link="#lcl.stdctrls.TCustomCheckBox.Alignment"/>
       <element name="TCheckBox.AllowGrayed" link="#lcl.stdctrls.TCustomCheckBox.AllowGrayed"/>
       <element name="TCheckBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
-      <element name="TCheckBox.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+
+      <element name="TCheckBox.AutoSize">
+        <short>
+          Allows automatic adjustment of the size for the control, according to its content.
+        </short>
+        <descr>
+          <p>
+            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption. The default value for the property is True in TCheckBox, and enables auto-sizing for the control instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+        </seealso>
+      </element>
+
       <element name="TCheckBox.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TCheckBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TCheckBox.Caption" link="#lcl.controls.TControl.Caption"/>
@@ -8852,7 +8982,20 @@ end;
       <element name="TCheckBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TCheckBox.State" link="#lcl.stdctrls.TCustomCheckBox.State"/>
       <element name="TCheckBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TCheckBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TCheckBox.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TCheckBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
+
       <element name="TCheckBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TToggleBox">
@@ -8943,7 +9086,20 @@ end;
       <element name="TToggleBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TToggleBox.State" link="#lcl.stdctrls.TCustomCheckBox.State"/>
       <element name="TToggleBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TToggleBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TToggleBox.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TToggleBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
+
       <element name="TToggleBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TRadioButton">
@@ -9088,8 +9244,8 @@ end;
       <element name="TRadioButton.Alignment" link="#lcl.stdctrls.TCustomCheckBox.Alignment"/>
       <element name="TRadioButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
 
-      <element name="TRadioButton.AutoSize" link="#lcl.controls.TControl.AutoSize">
-        <short/>
+      <element name="TRadioButton.AutoSize">
+        <short>Enables or disables auto-sizing the control to its content.</short>
         <descr>
           <p>
             The default value for the property is <b>True</b> in <var>TRadioButton</var>.
@@ -9143,7 +9299,20 @@ end;
       <element name="TRadioButton.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TRadioButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TRadioButton.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TRadioButton.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TRadioButton.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            Allows the user to navigate to this control, by pressing the Tab key.
+            The default value for the property is True in TRadioButton.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
+
       <element name="TRadioButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TCustomLabel">
@@ -9774,8 +9943,11 @@ end;
       </element>
 
       <element name="TCustomLabel.AutoSize">
-        <short>Enables or disables auto-sizing for the control.</short>
+        <short>Enables or disables auto-sizing for the control to its content.</short>
         <descr>
+         <p>
+            The action performed depends on the control type. For example, a label or button can become bigger or smaller to accommodate a longer or shorter caption.
+          </p>
           <p>
             The default value for the property is <b>True</b> in <var>TCustomLabel</var>.
           </p>
@@ -9922,7 +10094,20 @@ end;
         </seealso>
       </element>
 
-      <element name="TCustomLabel.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TCustomLabel.ParentColor">
+        <short>Uses the color from the parent control, when enabled.</short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value is False in TCustomLabel.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+        </seealso>
+      </element>
 
       <element name="TLabel">
         <short>Control used to display static text, possibly in multiple lines.</short>
@@ -9943,11 +10128,11 @@ end;
       <element name="TLabel.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TLabel.Alignment" link="#lcl.stdctrls.TCustomLabel.Alignment"/>
       <element name="TLabel.Anchors" link="#lcl.controls.TControl.Anchors"/>
-      <element name="TLabel.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TLabel.AutoSize" link="#lcl.stdctrls.TCustomLabel.AutoSize"/>
       <element name="TLabel.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TLabel.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TLabel.Caption" link="#lcl.controls.TControl.Caption"/>
-      <element name="TLabel.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TLabel.Color"  link="#lcl.stdctrls.TCustomLabel.Color"/>
       <element name="TLabel.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TLabel.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TLabel.DragKind" link="#lcl.controls.TControl.DragKind"/>
@@ -9978,7 +10163,7 @@ end;
       <element name="TLabel.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
       <element name="TLabel.OptimalFill" link="#lcl.stdctrls.TCustomLabel.OptimalFill"/>
       <element name="TLabel.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TLabel.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TLabel.ParentColor" link="#lcl.stdctrls.TCustomLabel.ParentColor"/>
       <element name="TLabel.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TLabel.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TLabel.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>

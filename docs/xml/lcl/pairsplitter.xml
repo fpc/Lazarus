@@ -419,9 +419,13 @@
         <short>True if the class has a specific ancestor.</short>
       </element>
 
-      <element name="TCustomPairSplitter.Cursor" link="#lcl.controls.TControl.Cursor">
+      <element name="TCustomPairSplitter.Cursor">
         <short>Cursor displayed when the control is resized.</short>
-        <descr/>
+        <descr>
+          <p>
+            The default value for the property is crHSplit in TCustomPairSplitter.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
         </seealso>

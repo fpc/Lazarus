@@ -5887,12 +5887,50 @@
       <element name="TDBGrid.Options2" link="#lcl.grids.TCustomGrid.Options2"/>
       <element name="TDBGrid.OptionsExtra" link="#lcl.dbgrids.TCustomDBGrid.OptionsExtra"/>
       <element name="TDBGrid.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TDBGrid.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TDBGrid.ParentColor">
+        <short>
+          Uses the Color from the Parent control, when enabled.
+        </short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TDBGrid.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+          <p>
+            Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBCGetRGBColorResolvingParentParent</link>
+        </seealso>
+      </element>
+
       <element name="TDBGrid.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
       <element name="TDBGrid.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TDBGrid.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TDBGrid.ReadOnly" link="#lcl.dbgrids.TCustomDBGrid.ReadOnly"/>
-      <element name="TDBGrid.Scrollbars" link="#lcl.grids.TCustomGrid.ScrollBars"/>
+
+      <element name="TDBGrid.Scrollbars">
+        <short>Scrollbars displayed for the grid control.</short>
+        <descr>
+          <p>
+            ScrollBars is a TScrollStyle property which indicates the scrollbars displayed for the grid control. The default value for the property is ssBoth in TDBGrid, and causes vertical and horizontal scrollbars to be displayed.
+          </p>
+         <p>
+           See TScrollStyle for more information about values in the enumeration and their meanings.
+         </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.ScrollBars">TCustomGrid.ScrollBars</link>
+          <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link>
+        </seealso>
+      </element>
 
       <element name="TDBGrid.ShowHint">
         <short>Controls whether the <var>Hint</var> is displayed for the control.</short>

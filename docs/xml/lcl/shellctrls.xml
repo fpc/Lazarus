@@ -814,7 +814,24 @@
       <element name="TShellTreeView.Images" link="#lcl.comctrls.TCustomTreeView.Images"/>
       <element name="TShellTreeView.Indent" link="#lcl.comctrls.TCustomTreeView.Indent"/>
       <element name="TShellTreeView.MultiSelectStyle" link="#lcl.comctrls.TCustomTreeView.MultiSelectStyle"/>
-      <element name="TShellTreeView.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TShellTreeView.ParentColor">
+        <short>
+          Uses the Color from the Parent control, when enabled.
+        </short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TShellTreeView.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor"/>
+        </seealso>
+      </element>
+
       <element name="TShellTreeView.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TShellTreeView.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TShellTreeView.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -829,10 +846,21 @@
       <element name="TShellTreeView.ShowLines" link="#lcl.comctrls.TCustomTreeView.ShowLines"/>
       <element name="TShellTreeView.ShowRoot" link="#lcl.comctrls.TCustomTreeView.ShowRoot"/>
       <element name="TShellTreeView.StateImages" link="#lcl.comctrls.TCustomTreeView.StateImages"/>
-      <element name="TShellTreeView.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TShellTreeView.TabStop">
+        <short>Enables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            The default value for the properly is True in TShellTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
+
       <element name="TShellTreeView.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 
-      <!-- Link attribute to TComponent.Tag does not find the topic using fpdoc in 3.2.2. So I am duplicating the content here temporarily. TODO: Remove this and restore link. -->
       <element name="TShellTreeView.Tag">
         <short>Tag value for the component.</short>
         <descr>
@@ -1418,9 +1446,24 @@
       <element name="TShellListView.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TShellListView.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TShellListView.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TShellListView.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TShellListView.BorderStyle" link="#lcl.comctrls.TCustomListView.BorderStyle"/>
       <element name="TShellListView.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
-      <element name="TShellListView.Color" link="#lcl.controls.TControl.Color"/>
+
+      <element name="TShellListView.Color">
+        <short>The background color for the control.</short>
+        <descr>
+          <p>
+            The default value for the properly is clWindow in TShellListView.
+          </p>
+          <p>
+             If Color is set to clDefault, it needs to be passed through GetDefaultColor to resolve clDefault to a TColor value. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
+           </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+        </seealso>
+      </element>
+
       <element name="TShellListView.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TShellListView.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TShellListView.DragMode" link="#lcl.controls.TControl.DragMode"/>
@@ -1432,7 +1475,25 @@
       <element name="TShellListView.Mask" link="#lcl.shellctrls.TCustomShellListView.Mask"/>
       <element name="TShellListView.MaskCaseSensitivity" link="#lcl.shellctrls.TCustomShellListView.MaskCaseSensitivity"/>
       <element name="TShellListView.MultiSelect" link="#lcl.comctrls.TCustomListView.MultiSelect"/>
-      <element name="TShellListView.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TShellListView.ParentColor">
+        <short>Uses the Color from the Parent control, when enabled.</short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TShellListView.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+          <p>
+            Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+        </seealso>
+      </element>
+
       <element name="TShellListView.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TShellListView.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TShellListView.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -1446,7 +1507,7 @@
       <element name="TShellListView.SortColumn" link="#lcl.comctrls.TCustomListView.SortColumn"/>
       <element name="TShellListView.SortType" link="#lcl.comctrls.TCustomListView.SortType"/>
       <element name="TShellListView.StateImages" link="#lcl.comctrls.TCustomListView.StateImages"/>
-      <element name="TShellListView.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TShellListView.TabStop" link="#lcl.comctrls.TCustomListVIew.TabStop"/>
       <element name="TShellListView.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
       <element name="TShellListView.ToolTips" link="#lcl.comctrls.TCustomListView.ToolTips"/>
       <element name="TShellListView.Visible" link="#lcl.controls.TControl.Visible"/>

@@ -286,21 +286,24 @@
             <dt>Message</dt>
             <dd>The message text without other parsed items.</dd>
           </dl>
-          <pre>
-  Example:
-
-    Message written by FPC:
-      unit1.pas(21,3) Warning: unit buttons not used
-
-    Results in:
-      Stage=FPC
-      Type=Warning
-      Line=21
-      Column=3
-      Message=unit buttons not used
-            </pre>
+          <p>
+            <b>Example:</b>
+          </p>
+          <p>
+            Message written by FPC:
+          </p>
+          <code>unit1.pas(21,3) Warning: unit buttons not used</code>
+          <p>
+            Results in:
+          </p>
+<code>
+Stage=FPC
+Type=Warning
+Line=21
+Column=3
+Message=unit buttons not used
+</code>
         </descr>
-        <errors/>
         <seealso/>
       </element>
 
@@ -388,34 +391,44 @@
       </element>
 
       <element name="THelpManager.DoHelpNotFound">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Performs actions when help is not available in the help manager.</short>
+        <descr>
+          <p>
+            <var>DoHelpNotFound</var> is a <var>TShowHelpResult</var> class function used to perform actions when help cannot be displayed using the help manager instance. It sets the help result and error message when the help file, query, or context is not available (or implemented) in the help manager. The default implementation sets the return value to <var>shrHelpNotFound</var>, and sets ErrMsg to 'Help not found'.
+          </p>
+          <p>
+            DoHelpNotFound is called from help manager methods which display a given help type.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="THelpManager.DoHelpNotFound.Result">
         <short/>
       </element>
       <element name="THelpManager.DoHelpNotFound.ErrMsg">
-        <short/>
+        <short>Error message displayed when help is not available in the help manager.</short>
       </element>
 
       <element name="THelpManager.ShowTableOfContents">
-        <short/>
+        <short>Displays the Help Table of Contents for the help manager.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
       <element name="THelpManager.ShowTableOfContents.Result">
-        <short/>
+        <short>Help display result code.</short>
       </element>
       <element name="THelpManager.ShowTableOfContents.ErrMsg">
-        <short/>
+        <short>Error message displayed when the return value is not shrSuccess.</short>
       </element>
 
       <element name="THelpManager.ShowError">
-        <short/>
-        <descr/>
+        <short>Not implemented in THelpManager.</short>
+        <descr>
+          <p>
+            Abstract virtual method which must be implemented in a descendent class.
+          </p>
+        </descr>
         <errors/>
         <seealso/>
       </element>

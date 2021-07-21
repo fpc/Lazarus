@@ -644,7 +644,7 @@
       <element name="TFileListBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TFileListBox.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TFileListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-      <element name="TFileListBox.Sorted" link="#lcl.stdctrls.TCustomListBox.Sorted"/>
+      <element name="TFileListBox.Sorted" link="#lcl.TCustomFileListBox.Sorted"/>
       <element name="TFileListBox.Style" link="#lcl.stdctrls.TCustomListBox.Style"/>
       <element name="TFileListBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
       <element name="TFileListBox.TabStop" link="#lcl.controls.TWinControl.TabStop"/>

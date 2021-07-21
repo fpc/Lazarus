@@ -937,23 +937,65 @@
       </element>
 
       <element name="TStatusBar.Action" link="#lcl.controls.TControl.Action"/>
-      <element name="TStatusBar.Align" link="#lcl.controls.TControl.Align"/>
+
+      <element name="TStatusBar.Align">
+        <short>Specifies the placement of the control inside its Parent.</short>
+        <descr>
+          <p>
+            Align is a TAlign property which specifies how the control is aligned to its parent control. The default value for the property is alBottom in TStatusBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Align">TControl.Align</link>
+        </seealso>
+      </element>
+
       <element name="TStatusBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
 
       <element name="TStatusBar.AutoHint">
         <short>
-          <var>AutoHint</var> - if True, a hint is automatically shown when mouse hovers over status bar. Default is False.
+          Indicates if a hint is automatically shown when the mouse hovers over the status bar.
         </short>
+        <descr>
+          <p>
+            The default value for the property is False.
+          </p>
+        </descr>
       </element>
 
       <element name="TStatusBar.AutoSize">
-        <short>TStatusBar default is True.</short>
+        <short>
+          Indicates if the control is automatically resized to fill the area on its aligned edge.
+        </short>
+        <descr>
+          <p>
+            The default value for the property is True in TStatusBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.AutoSize">TControl.AutoSize</link>
+        </seealso>
       </element>
 
       <element name="TStatusBar.BidiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TStatusBar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TStatusBar.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
-      <element name="TStatusBar.Color" link="#lcl.controls.TControl.Color"/>
+
+      <element name="TStatusBar.Color">
+        <short>The background color of the control.</short>
+        <descr>
+          <p>
+            The default value for the property is clDefault or clBtnFace (depending on the UseCLDefault compiler define).If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to an actual TColor value.
+          </p>
+          <p>
+            Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+        </seealso>
+      </element>
+
       <element name="TStatusBar.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TStatusBar.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TStatusBar.DragKind" link="#lcl.controls.TControl.DragKind"/>
@@ -1040,7 +1082,21 @@
         <seealso/>
       </element>
 
-      <element name="TStatusBar.Visible" link="#lcl.controls.TControl.Visible"/>
+      <element name="TStatusBar.Visible">
+        <short>Indicates if the control is visible.</short>
+        <descr>
+          <p>
+            Allows the control, and all of its children, to be displayed or hidden. Visible is set to True by Show , or to False by Hide. Calling these methods is equivalent to setting the Visible property.
+          </p>
+          <p>
+            The default value for the property is True in TStatusBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+        </seealso>
+      </element>
+
       <element name="TStatusBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TStatusBar.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
 
@@ -3412,13 +3468,16 @@
         <seealso/>
       </element>
 
-      <element name="TCustomTabControl.TabStop" link="#lcl.controls.TWinControl.TabStop">
+      <element name="TCustomTabControl.TabStop">
+        <short>Enables or disables navigation using the Tab key.</short>
         <descr>
           <p>
             The default value for the property is <b>True</b> in <var>TCustomTabControl</var>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
       </element>
 
       <element name="TTabSheet">
@@ -3545,7 +3604,28 @@
       <element name="TTabSheet.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TTabSheet.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TTabSheet.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-      <element name="TTabSheet.TabVisible" link="#lcl.comctrls.TCustomPage.TabVisible"/>
+
+      <element name="TTabSheet.TabVisible">
+        <short>Indicates if the tab is visible in the Parent control.</short>
+        <descr>
+          <p>
+            TabVisible indicates if the Tab is visible in the Parent control. The default value for the proprty is True in TTabSheet.
+          </p>
+          <p>
+            Changing the value in the property cause the Parent control to be updated to reflect the new value. No actions are performed in the method at design-time, or when the property value is not different than the stored value.
+          </p>
+          <p>
+            When the Parent control has been assigned and has a handle allocated, the TCustomTabControl in Parent is updated to reflect the new value for the property. When True, the active page in the Parent control is changed to the current page instance if one has not already been assigned in the Parent. The page and its handle are removed from the Tab control when the property value is False.
+          </p>
+          <p>
+            Use IsControlVisible to determine if the page is currently the active page displayed in the Parent tab control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.comctrls.TCustomPage.TabVisible">TCustomPage.TabVisible</link>
+        </seealso>
+      </element>
+
       <element name="TTabSheet.Top" link="#lcl.controls.TControl.Top"/>
       <element name="TTabSheet.Width" link="#lcl.controls.TControl.Width"/>
 
@@ -5519,7 +5599,7 @@
       <element name="TTabControl.TabHeight" link="#lcl.comctrls.TCustomTabControl.TabHeight"/>
       <element name="TTabControl.TabIndex" link="#lcl.comctrls.TCustomTabControl.TabIndex"/>
       <element name="TTabControl.Tabs" link="#lcl.comctrls.TCustomTabControl.Tabs"/>
-      <element name="TTabControl.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TTabControl.TabStop" link="#lcl.comctrls.TCustomTabControl.TabStop"/>
       <element name="TTabControl.TabWidth" link="#lcl.comctrls.TCustomTabControl.TabWidth"/>
       <element name="TTabControl.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TTabControl.Anchors" link="#lcl.controls.TControl.Anchors"/>
@@ -10599,7 +10679,17 @@
         <seealso/>
       </element>
 
-      <element name="TCustomListView.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TCustomListView.BorderStyle">
+        <short>Line style drawn as a border around the control.</short>
+        <descr>
+          <p>
+            The default value for the property is bsSingle in TCustomListView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.BorderStyle">TWinControl.BorderStyle</link>
+        </seealso>
+      </element>
 
       <element name="TCustomListView.Canvas">
         <short>TCanvas instance used to draw the control.</short>
@@ -10865,10 +10955,18 @@
         <seealso/>
       </element>
 
-      <element name="TCustomListView.TabStop" link="#lcl.controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomListView.TabStop">
+        <short>
+          Allows the user to navigate to this control, by pressing the Tab key.
+        </short>
+        <descr>
+          <p>
+            The default value for the property is True in TCustomListView,
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
       </element>
 
       <element name="TCustomListView.TopItem">
@@ -10926,7 +11024,7 @@
       <element name="TListView.AutoSortIndicator" link="#lcl.comctrls.TCustomListView.AutoSortIndicator"/>
       <element name="TListView.AutoWidthLastColumn" link="#lcl.comctrls.TCustomListView.AutoWidthLastColumn"/>
       <element name="TListView.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TListView.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TListView.BorderStyle" link="#lcl.comctrls.TCustomListView.BorderStyle"/>
       <element name="TListView.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
       <element name="TListView.Checkboxes" link="#lcl.comctrls.TCustomListView.Checkboxes"/>
       <element name="TListView.Color" link="#lcl.controls.TControl.Color"/>
@@ -10947,7 +11045,28 @@
       <element name="TListView.MultiSelect" link="#lcl.comctrls.TCustomListView.MultiSelect"/>
       <element name="TListView.OwnerData" link="#lcl.comctrls.TCustomListView.OwnerData"/>
       <element name="TListView.OwnerDraw" link="#lcl.comctrls.TCustomListView.OwnerDraw"/>
-      <element name="TListView.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TListView.ParentColor">
+        <short>Uses the Color from the Parent control, when enabled.</short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TListView.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+         <p>
+           Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+         </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
+        </seealso>
+      </element>
+
       <element name="TListView.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TListView.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TListView.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -14533,7 +14652,18 @@ AToolbar.ButtonHeight := 30;
         </seealso>
       </element>
 
-      <element name="TToolBar.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TToolBar.Align">
+        <short>Specifies the placement of the control inside its Parent.</short>
+        <descr>
+          <p>
+            Align is a TAlign property which specifies how the control is aligned to its parent control. The default value for the property is alTop in TToolBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Align">TControl.Align</link>
+        </seealso>
+      </element>
+
       <element name="TToolBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TToolBar.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TToolBar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
@@ -17150,10 +17280,16 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
 
-      <element name="TCustomTrackBar.TabStop" link="#lcl.controls.TWinControl.TabStop">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTrackBar.TabStop">
+        <short>Enables or disables navigatiopn using the Tab key.</short>
+        <descr>
+          <p>
+            The default value for the property is True in TCustomTrackBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
       </element>
 
       <element name="TCustomTrackBar.TickMarks">
@@ -17281,7 +17417,7 @@ AToolbar.ButtonHeight := 30;
       <element name="TTrackBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TTrackBar.ShowSelRange" link="#lcl.comctrls.TCustomTrackBar.ShowSelRange"/>
       <element name="TTrackBar.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TTrackBar.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TTrackBar.TabStop" link="#lcl.comctrls.TCustomTrackBar.TabStop"/>
       <element name="TTrackBar.TickMarks" link="#lcl.comctrls.TCustomTrackBar.TickMarks"/>
       <element name="TTrackBar.TickStyle" link="#lcl.comctrls.TCustomTrackBar.TickStyle"/>
       <element name="TTrackBar.Visible" link="#lcl.controls.TControl.Visible"/>
@@ -22605,7 +22741,17 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
 
-      <element name="TCustomTreeView.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TCustomTreeView.BorderStyle">
+        <short>Line style used to draw the border for the control.</short>
+        <descr>
+          <p>
+            The default value for the property is bsSingle in TCustomTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.BorderStyle">TWinControl.BorderStyle</link>
+        </seealso>
+      </element>
 
       <element name="TCustomTreeView.HideSelection">
         <short>
@@ -23640,7 +23786,17 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
 
-      <element name="TCustomTreeView.BorderWidth" link="#lcl.controls.TWinControl.BorderWidth"/>
+      <element name="TCustomTreeView.BorderWidth">
+        <short>Width of the line drawn as a border around the control.</short>
+        <descr>
+          <p>
+            The default value for the property is 0 in TCustomTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.BorderWidth">TWinControl.BorderWidth</link>
+        </seealso>
+      </element>
 
       <element name="TCustomTreeView.BottomItem">
         <short>Last visible tree node starting at the TopItem in the control.</short>
@@ -23649,13 +23805,15 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.Color">
-        <short>Color used for the control display area.</short>
+        <short>Color used for the background in the control display area.</short>
         <descr>
           <p>
             The default value for the property is <var>clWindow</var>. Contains the same value as the <var>BackgroundColor</var> property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.DefaultItemHeight">
@@ -24031,7 +24189,17 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
         <seealso/>
       </element>
 
-      <element name="TCustomTreeView.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TCustomTreeView.TabStop">
+        <short>Enables or diables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            The default value for the property is True in TCustomTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
 
       <element name="TTreeView">
         <short>
@@ -24075,7 +24243,19 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
       <element name="TTreeView.Indent" link="#lcl.comctrls.TCustomTreeView.Indent"/>
       <element name="TTreeView.MultiSelect" link="#lcl.comctrls.TCustomTreeView.MultiSelect"/>
       <element name="TTreeView.MultiSelectStyle" link="#lcl.comctrls.TCustomTreeView.MultiSelectStyle"/>
-      <element name="TTreeView.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TTreeView.ParentColor">
+        <short/>
+        <descr>
+          <p>
+            The default value for the property is False in TTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+        </seealso>
+      </element>
+
       <element name="TTreeView.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TTreeView.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TTreeView.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
@@ -24095,7 +24275,19 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
       <element name="TTreeView.StateImages" link="#lcl.comctrls.TCustomTreeView.StateImages"/>
       <element name="TTreeView.StateImagesWidth" link="#lcl.comctrls.TCustomTreeView.StateImagesWidth"/>
       <element name="TTreeView.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TTreeView.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+
+      <element name="TTreeView.TabStop">
+        <short>Enables or disables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            The default value for the property is True in TTreeView.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
+        </seealso>
+      </element>
+
       <element name="TTreeView.Tag" link="#rtl.classes.TComponent.Tag"/>
       <element name="TTreeView.ToolTips" link="#lcl.comctrls.TCustomTreeView.ToolTips"/>
       <element name="TTreeView.Visible" link="#lcl.controls.TControl.Visible"/>

@@ -581,10 +581,14 @@
 
       <element name="TCustomEditButton.Spacing">
         <short>
-          Specifies the amount of space reserved between the Edit and Button controls when Button is visible.
+          Specifies the number of pixels reserved between the Edit and Button controls when Button is visible.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            The default value for the property is 4 in TCustomEditButton.
+          </p>
+        </descr>
+        <seealso/>
       </element>
 
       <element name="TCustomEditButton.OnButtonClick">
@@ -645,7 +649,21 @@
       <element name="TEditButton.NumbersOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.NumbersOnly"/>
       <element name="TEditButton.Action" link="#lcl.controls.TControl.Action"/>
       <element name="TEditButton.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
-      <element name="TEditButton.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+
+      <element name="TEditButton.AutoSize">
+        <short>
+          Enables automatic adjustment of the size for the control, according to its content.
+        </short>
+        <descr>
+          <p>
+            AutoSize is a Boolean property which allows the control to automatically adjustment its size to the content in the control. The default value for the property is True in TEditButton.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSize">TCustomAbstractGroupedEdit.AutoSize</link>
+        </seealso>
+      </element>
+
       <element name="TEditButton.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TEditButton.Alignment" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Alignment"/>
       <element name="TEditButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
@@ -669,7 +687,7 @@
       <element name="TEditButton.ButtonHint" link="#lcl.editbtn.TCustomEditButton.ButtonHint"/>
       <element name="TEditButton.ButtonOnlyWhenFocused" link="#lcl.editbtn.TCustomEditButton.ButtonOnlyWhenFocused"/>
       <element name="TEditButton.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth"/>
-      <element name="TEditButton.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
+      <element name="TEditButton.CharCase" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CharCase"/>
       <element name="TEditButton.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TEditButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TEditButton.Cursor" link="#lcl.controls.TControl.Cursor"/>
@@ -1300,7 +1318,23 @@
         </short>
       </element>
 
-      <element name="TCustomControlFilterEdit.CharCase" link="#lcl.groupededit.TCustomAbstractGroupedEdit.CharCase"/>
+      <element name="TCustomControlFilterEdit.CharCase">
+        <short>
+          Controls case conversion performed for a value entered in the control.
+        </short>
+        <descr>
+          <p>
+          CharCase is a TEditCharCase property that controls the case conversion used (if any) for a value entered in the control. The default value for the property is ecLowerCase in TCustomControlFilterEdit, and indicates that charcters are converted to lower case.
+        </p>
+          <p>
+            See TEditCharCase for more information about the enumeration values supported for the type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.CharCase">TCustomAbstractGroupedEdit.CharCase</link>
+          <link id="#lcl.stdctrls.TEditCharCase">TEditCharCase</link>
+        </seealso>
+      </element>
 
       <element name="TCustomControlFilterEdit.FilterOptions">
         <short>
