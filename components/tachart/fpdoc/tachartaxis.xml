@@ -30,6 +30,8 @@ for vertical axises.</descr>
         <descr>Grid lines are drawn across the chart from each axis mark</descr>
       </element>
       <element name="TChartAxis.Inverted"><short>Inverts the axis scale from increasing to decreasing.</short>
+      <descr>Note that <var>Inverted</var> operates on the <b>graph coordinates</b> of the chart and thus affects the entire chart, depending on the<var>Inverte</var>d value of the first x and y axis. In order to flip individual axes of a paned chart with multiple y axes, for example, <b>linear axis transforms</b> must be used.
+</descr>
       </element>
       <element name="TChartAxis.Visible">
         <short>If true, the axis is drawn on the chart</short>
