@@ -2506,7 +2506,29 @@
       <element name="TValueListEditor.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
       <element name="TValueListEditor.MouseWheelOption" link="#lcl.grids.TCustomGrid.MouseWheelOption"/>
       <element name="TValueListEditor.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TValueListEditor.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+
+      <element name="TValueListEditor.ParentColor">
+        <short>
+          Uses the Color from the Parent control, when enabled.
+        </short>
+        <descr>
+          <p>
+            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value for the property is False in TValueListEditor.
+          </p>
+          <p>
+            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
+          </p>
+          <p>
+            Using ParentColor when the Color value is clDefault can cause problems in resolving the actual color value. To obtain the Color property of a control while taking into account clDefault and ParentColor, use the GetColorResolvingParent method. This method might return a non-RGB color, but will never return clDefault. To obtain a purely RGB result use the GetRGBColorResolvingParent method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
+        </seealso>
+      </element>
+
       <element name="TValueListEditor.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TValueListEditor.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TValueListEditor.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>

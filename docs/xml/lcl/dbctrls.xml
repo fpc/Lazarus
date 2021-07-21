@@ -4873,7 +4873,24 @@
       <element link="#lcl.stdctrls.TCustomComboBox.ItemHeight" name="TDBComboBox.ItemHeight"/>
       <element link="#lcl.stdctrls.TCustomComboBox.Items" name="TDBComboBox.Items"/>
       <element link="#lcl.stdctrls.TCustomComboBox.ItemWidth" name="TDBComboBox.ItemWidth"/>
-      <element link="#lcl.stdctrls.TCustomComboBox.MaxLength" name="TDBComboBox.MaxLength"/>
+
+      <element name="TDBComboBox.MaxLength">
+        <short>
+          The maximum length for text entered in the edit box for the control.
+        </short>
+        <descr>
+          <p>
+            MaxLength is an Integer property which contains the maximum length for a value entered in the Text for the control. It controls the number of characters allowed in the edit box, but does not limit the length of the value that can be directly assigned to Text. MaxLength is passed to and read from the widgetset class when a handle has been assigned for the control.
+          </p>
+          <p>
+            The default value for the property is -1 in TDBComboBox, and forces the widgetset class to update its value for the property. Setting the value for the property does not alter the existing value in Text.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomComboBox.MaxLength">TCustomComboBox.MaxLength</link>
+        </seealso>
+      </element>
+
       <element link="#lcl.stdctrls.TCustomComboBox.OnChange" name="TDBComboBox.OnChange"/>
       <element link="#lcl.controls.TControl.OnChangeBounds" name="TDBComboBox.OnChangeBounds"/>
       <element link="#lcl.controls.TControl.OnClick" name="TDBComboBox.OnClick">
@@ -8100,7 +8117,7 @@
           <link id="TDBCustomNavigator"/>
         </seealso>
       </element>
-      <element link="#lcl.controls.TControl.Align" name="TDBNavigator.Align"/>
+      <element link="#lcl.extctrls.TCustomPanel.Align" name="TDBNavigator.Align"/>
       <element link="#lcl.extctrls.TCustomPanel.Alignment" name="TDBNavigator.Alignment"/>
       <element link="#lcl.controls.TControl.Anchors" name="TDBNavigator.Anchors"/>
       <element link="#lcl.controls.TControl.AutoSize" name="TDBNavigator.AutoSize"/>
@@ -8116,7 +8133,27 @@
       <element link="#lcl.controls.TWinControl.ChildSizing" name="TDBNavigator.ChildSizing"/>
       <element link="#lcl.controls.TControl.ClientHeight" name="TDBNavigator.ClientHeight"/>
       <element link="#lcl.controls.TControl.ClientWidth" name="TDBNavigator.ClientWidth"/>
-      <element link="#lcl.controls.TControl.Color" name="TDBNavigator.Color"/>
+
+      <element name="TDBNavigator.Color">
+        <short>Contains the background color for the control.</short>
+        <descr>
+          <p>
+            Color is a TColor property with the background color for the control.
+            The default value for the property is clBackground in TDBNavigator.
+          </p>
+          <p>
+           If the color is clDefault, the value will need to be resolved using the GetDefaultColor method. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided in TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
+         </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.extctrls.TCustomPanel.Color">TCustomPanel.Color</link>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.GetDefaultColor">TControl.GetDefaultColor</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
+        </seealso>
+      </element>
+
       <element link="#lcl.controls.TControl.Constraints" name="TDBNavigator.Constraints"/>
       <element link="#lcl.dbctrls.TDBCustomNavigator.ConfirmDelete" name="TDBNavigator.ConfirmDelete"/>
       <element link="#lcl.dbctrls.TDBCustomNavigator.DataSource" name="TDBNavigator.DataSource"/>
@@ -8157,7 +8194,19 @@
       <element link="#lcl.controls.TControl.PopupMenu" name="TDBNavigator.PopupMenu"/>
       <element link="#lcl.controls.TControl.ShowHint" name="TDBNavigator.ShowHint"/>
       <element link="#lcl.controls.TWinControl.TabOrder" name="TDBNavigator.TabOrder"/>
-      <element link="#lcl.controls.TWinControl.TabStop" name="TDBNavigator.TabStop"/>
+
+      <element name="TDBNavigator.TabStop">
+        <short>Enables or disables navigation using the Tab key.</short>
+        <descr>
+          <p>
+            The default value for the property is False in TDBNavigator.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.extctrls.TCustomPanel.TabStop">TCustomPanel.TabStop</link>
+        </seealso>
+      </element>
+
       <element link="#lcl.controls.TControl.Visible" name="TDBNavigator.Visible"/>
       <element link="#lcl.dbctrls.TDBCustomNavigator.VisibleButtons" name="TDBNavigator.VisibleButtons"/>
       <element link="#lcl.dbctrls.TDBCustomNavigator.Images" name="TDBNavigator.Images"/>

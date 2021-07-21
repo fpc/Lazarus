@@ -2505,7 +2505,26 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomSpeedButton.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TCustomSpeedButton.Color">
+        <short>
+          The background color for the control.
+        </short>
+        <descr>
+          <p>
+            The default value for the property is clBtnFace in TCustomSpeedButton.
+          </p>
+          <p>
+            If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to a TColor value. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.GetDefaultColor">TControl.GetDefaultColor</link>
+          <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGColGetRGBColorResolvingParentarent</link>
+        </seealso>
+      </element>
 
       <element name="TCustomSpeedButton.Down">
         <short>Indicates if the button has been set to the Down state.</short>
@@ -2690,39 +2709,14 @@
         </descr>
       </element>
 
-      <element name="TSpeedButton.Color" link="#lcl.controls.TControl.Color">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Reads the value for color, or stores the value, and sets a flag if the color is stored.</p>
-          <p>The default color is the same as the window in which the control is located.</p>
-        </descr>
-      </element>
-
+      <element name="TSpeedButton.Color" link="#lcl.buttons.TCustomSpeedButton.Color"/>
       <element name="TSpeedButton.Down" link="#lcl.buttons.TCustomSpeedButton.Down"/>
-
       <element name="TSpeedButton.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TSpeedButton.DragKind" link="#lcl.controls.TControl.DragKind"/>
       <element name="TSpeedButton.DragMode" link="#lcl.controls.TControl.DragMode"/>
-
-      <element name="TSpeedButton.Enabled" link="#lcl.controls.TControl.Enabled">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'.</p>
-          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
-        </descr>
-      </element>
-
+      <element name="TSpeedButton.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TSpeedButton.Flat" link="#lcl.buttons.TCustomSpeedButton.Flat"/>
-
-      <element name="TSpeedButton.Font" link="#lcl.controls.TControl.Font">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so.</p>
-          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>.
-          </p>
-        </descr>
-      </element>
-
+      <element name="TSpeedButton.Font" link="#lcl.controls.TControl.Font"/>
       <element name="TSpeedButton.Glyph" link="#lcl.buttons.TCustomSpeedButton.Glyph"/>
       <element name="TSpeedButton.GroupIndex" link="#lcl.buttons.TCustomSpeedButton.GroupIndex"/>
       <element name="TSpeedButton.Images" link="#lcl.buttons.TCustomSpeedButton.Images"/>

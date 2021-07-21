@@ -26,7 +26,7 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="UINT">
-        <short>A 32 bit unsigned integer.</short>
+        <short>A 32-bit unsigned integer.</short>
         <descr/>
         <seealso/>
       </element>
@@ -270,66 +270,60 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="MaxByte">
-        <short>Maximal value of the WinAPI BYTE type ($FF).
+        <short>Maximum value for the WinAPI BYTE type ($FF).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MAXWORD">
-        <short>Maximal value of the WinAPI WORD type ($FFFF).
+        <short>Maximum value for the WinAPI WORD type ($FFFF).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MAXDWORD">
-        <short>Maximal value of the WinAPI DWORD type ($FFFF FFFF).
+        <short>Maximum value for the WinAPI DWORD type ($FFFF FFFF).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MINCHAR">
-        <short>Minimal value of the WinAPI CHAR type ($80).
+        <short>Minimum value for the WinAPI CHAR type ($80).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MAXCHAR">
-        <short>Maximal value of the WinAPI CHAR type ($7F).
+        <short>Maximum value for the WinAPI CHAR type ($7F).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MINSHORT">
-        <short>Minimal value of the WinAPI SHORT type ($8000).
+        <short>Minimum value for the WinAPI SHORT type ($8000).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MAXSHORT">
-        <short>Maximal value of the WinAPI SHORT type ($7FFF).
+        <short>Maximum value for the WinAPI SHORT type ($7FFF).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MINLONG">
-        <short>Minimal value of the WinAPI LONG type ($8000 0000).
+        <short>Minimum value for the WinAPI LONG type ($8000 0000).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="MAXLONG">
-        <short>Maximal value of the WinAPI LONG type ($7FFF FFFF).
+        <short>Maximum value for the WinAPI LONG type ($7FFF FFFF).
         </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_BLACK">
-        <short>Binary raster operation (Dst op Pen):
-          all black.
-        </short>
+        <short>Binary raster operation (Dst op Pen): all black.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_NOTMERGEPEN">
-        <short>Binary raster operation (Dst op Pen):
-          not (Dst or Pen).
-        </short>
+        <short>Binary raster operation (Dst op Pen): not (Dst or Pen).</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_MASKNOTPEN">
-        <short>Binary raster operation (Dst op Pen):
-          Dst and not Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Dst and not Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_NOTCOPYPEN">
@@ -339,80 +333,55 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_MASKPENNOT">
-        <short>Binary raster operation (Dst op Pen):
-          (not Dst) and Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): (not Dst) and Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_NOT">
-        <short>Binary raster operation (Dst op Pen):
-          not Dst.
-        </short>
+        <short>Binary raster operation (Dst op Pen): not Dst.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_XORPEN">
-        <short>Binary raster operation (Dst op Pen):
-          Dst xor Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Dst xor Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_NOTMASKPEN">
-        <short>Binary raster operation (Dst op Pen):
-          not (Dst and Pen).
-        </short>
+        <short>Binary raster operation (Dst op Pen): not (Dst and Pen).</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_MASKPEN">
-        <short>Binary raster operation (Dst op Pen):
-          Dst and Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Dst and Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_NOTXORPEN">
-        <short>Binary raster operation (Dst op Pen):
-          not (Dst xor Pen).
-        </short>
+        <short>Binary raster operation (Dst op Pen): not (Dst xor Pen).</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_NOP">
-        <short>Binary raster operation (Dst op Pen):
-          Dst.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Dst.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_MERGENOTPEN">
-        <short>Binary raster operation (Dst op Pen):
-          Dst or not Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Dst or not Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_COPYPEN">
-        <short>Binary raster operation (Dst op Pen):
-          Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_MERGEPENNOT">
-        <short>Binary raster operation (Dst op Pen):
-          (not Dst) or Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): (not Dst) or Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_MERGEPEN">
-        <short>Binary raster operation (Dst op Pen):
-          Dst or Pen.
-        </short>
+        <short>Binary raster operation (Dst op Pen): Dst or Pen.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="R2_WHITE">
-        <short>Binary raster operation (Dst op Pen):
-          all white.
-        </short>
+        <short>Binary raster operation (Dst op Pen): all white.</short>
       </element>
       <!-- constant Visibility: default -->
       <element link="R2_WHITE" name="R2_LAST">
-        <short>Highest binary raster operation code.
-        </short>
+        <short>Highest binary raster operation code.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="SRCCOPY">
@@ -11668,311 +11637,343 @@
       </element>
       <!-- class Visibility: default -->
       <element name="TListWithEvent">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Implements a list with an event signalled when values are added or removed.
+        </short>
+        <descr>
+          <p>
+            <var>TListWithEvent</var> is a <var>TList</var> descendant which implements a list with an event handler signalled when values are added to or removed from the container. It provides an overridden <var>Notify</var> method which signals the event handler (when assigned) for add or delete operations. Assign an object procedure using the signature in TListChangeEvent to the OnChange event handler to respond to the notification.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListWithEvent.OnChange"/>
+          <link id="TListWithEvent.Notify"/>
+          <link id="TListChangeEvent"/>
+          <link id="#rtl.classes.TList">TList</link>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TListWithEvent.FOnChange">
-        <short/>
+        <short>Member used for the OnChange event handler.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TListWithEvent.Notify">
-        <short/>
-        <descr/>
-        <errors/>
-        <seealso/>
+        <short>
+          Handles the notification when a value is added to or removed from the list.
+        </short>
+        <descr>
+          <p>
+            <var>Notify</var> is an overridden method in <var>TListWithEvent</var>. It calls the inherited method to notify registered observers of the change to the list. It signals the <var>OnChange</var> event handler (when assigned) using the values in <var>Ptr</var> and <var>AnAction</var> as arguments.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TList.Add">TList.Add</link>
+          <link id="#rtl.classes.TList.Delete">TList.Delete</link>
+          <link id="#rtl.classes.TList.Extract">TList.Extract</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListWithEvent.Notify.Ptr">
-        <short/>
+        <short>Untyped pointer to the value for the notification.</short>
       </element>
       <!-- argument Visibility: default -->
       <element name="TListWithEvent.Notify.AnAction">
-        <short/>
+        <short>Operation performed for the specified value.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TListWithEvent.OnChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when a value is added to or removed from the list.
+        </short>
+        <descr>
+          <p>
+            Signalled from the Notify method (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListWithEvent.Notify"/>
+          <link id="#rtl.classes.TList.Add">TList.Add</link>
+          <link id="#rtl.classes.TList.Delete">TList.Delete</link>
+          <link id="#rtl.classes.TList.Extract">TList.Extract</link>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="csNone">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csButton">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csComboBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csCheckbox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csEdit">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csForm">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csStaticText">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csScrollBar">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csListView">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csMemo">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csMainMenu">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csMenuBar">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csMenuItem">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csNotebook">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csFileDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csRadioButton">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csScrolledWindow">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csSpinedit">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csStatusBar">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csToggleBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csGroupBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPage">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csColorDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csListBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csFontDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csProgressBar">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csTrackBar">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csWinControl">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csFixed">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csBitBtn">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csCListBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPopupMenu">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csHintWindow">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csCalendar">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csArrow">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPanel">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csScrollBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csCheckListBox">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPairSplitter">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPairSplitterSide">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csOpenFileDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csSaveFileDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csSelectDirectoryDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPreviewFileControl">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csPreviewFileDialog">
-        <short/>
+        <short>Component style identifier.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="csNonLCL">
-        <short/>
+        <short>
+          Component style identifier. Used for non-LCL controls that create their own handles.
+        </short>
         <descr/>
         <seealso/>
       </element>

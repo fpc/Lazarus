@@ -1418,10 +1418,42 @@
       <element name="TScrollBox.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TScrollBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TScrollBox.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
-      <element name="TScrollBox.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
+
+      <element name="TScrollBox.AutoScroll">
+        <short>
+          Indicates whether scroll bars are automatically displayed or hidden when needed.
+        </short>
+        <descr>
+          <p>
+            AutoScroll is a Boolean property which indicates if scroll bars are automatically displayed or hidden on the control as needed. The default value for the property is True in TScrollBox.
+          </p>
+          <p>
+            Changing the value for the property causes the Visible property in both HorzScrollBar and VertScrollBar to be updated (if needed). When set to True, the UpdateScrollBars method is called to calculate the page, range, and visibiity for the scroll bars. When set to False , the HideScrollbars method is called to reset and hide the scroll bars (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TScrollingWinControl.AutoScroll">TScrollingWinControl.AutoScroll</link>
+          <link id="#lcl.forms.TScrollingWinControl.UpdateScrollbars">TScrollingWinControl.UpdateScrollbars</link>
+          <link id="#lcl.forms.TScrollingWinControl.HorzScrollBar">TScrollingWinControl.HorzScrollBar</link>
+          <link id="#lcl.forms.TScrollingWinControl.VertScrollBar">TScrollingWinControl.VertScrollBar</link>
+        </seealso>
+      </element>
+
       <element name="TScrollBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TScrollBox.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
-      <element name="TScrollBox.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+
+      <element name="TScrollBox.BorderStyle">
+        <short>Line style used to draw the border around the control.</short>
+        <descr>
+          <p>
+            The default value for the property is bsSingle in TScrollBox.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.BorderStyle">TWinControl.BorderStyle</link>
+        </seealso>
+      </element>
+
       <element name="TScrollBox.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
       <element name="TScrollBox.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
       <element name="TScrollBox.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
@@ -1433,7 +1465,28 @@
       <element name="TScrollBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TScrollBox.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TScrollBox.Font" link="#lcl.controls.TControl.Font"/>
-      <element name="TScrollBox.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground"/>
+
+      <element name="TScrollBox.ParentBackground">
+        <short>
+          Indicates if the control uses the background from its Parent control.
+        </short>
+        <descr>
+          <p>
+            ParentBackground is a Boolean property which indicates if the background for the Parent control is drawn as the background for the current control instance. The default value in TScrollBox is False.
+          </p>
+          <p>
+            ParentBackground is True when csParentBackground is included in the ControlStyle property. Setting the value in ParentBackground causes ControlStyle to be updated to include or exclude the csParentBackground enumeration value; it is included when True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.ParentBackground">TWinControl.ParentBackground</link>
+          <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+          <link id="#lcl.controls.TControlStyle">TControlStyle</link>
+          <link id="#lcl.controls.TControlStyleType">TControlStyleType</link>
+        </seealso>
+      </element>
+
       <element name="TScrollBox.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
       <element name="TScrollBox.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
       <element name="TScrollBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
@@ -1907,7 +1960,7 @@
         <short/>
       </element>
 
-      <element name="TCustomFrame.ParentBackground" link="#lcl.controls.TWinControl.ParentBackground">
+      <element name="TCustomFrame.ParentBackground">
         <short>Indicates if the control uses the background from the parent.</short>
         <descr>
           <p>
@@ -4963,7 +5016,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.Color" link="#lcl.controls.TControl.Color">
+      <element name="TCustomForm.Color">
         <short>The background color for the form.</short>
         <descr>
           <var>Color</var> is a <var>TColor</var> property with the background color used for the form. Color is re-declared in <var>TCustomForm</var> to use either <var>clDefault</var> or <var>clBtnFace</var> as the default value for the property. clDefault is used when the <var>UseCLDefault</var> compiler define exists, and indicates that the color is resolved to the value in a <var>Parent</var> control (when assigned).
@@ -5529,12 +5582,18 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.ParentFont" link="#lcl.controls.TControl.ParentFont">
-        <short/>
+      <element name="TCustomForm.ParentFont">
+        <short>
+          Uses the font from the Parent when enabled.
+        </short>
         <descr>
           <p>
+            If true, the Font will be the same as the one from the Parent.
             The default value for the property is <b>False</b> in <var>TCustomForm</var>.
           </p>
+         <p>
+           While ParentFont is True, all changes to the font of the parent will also be applied to the font for the control. This synchronizes them, keeping them set to the same value. If the Font for the control is changed by the application, then ParentFont will automatically be set to False.
+         </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.ParentFont">TControl.ParentFont</link>
@@ -5832,7 +5891,7 @@
       <element name="TForm.ChildSizing" link="#lcl.controls.TWinControl.ChildSizing"/>
       <element name="TForm.ClientHeight" link="#lcl.controls.TControl.ClientHeight"/>
       <element name="TForm.ClientWidth" link="#lcl.controls.TControl.ClientWidth"/>
-      <element name="TForm.Color" link="#lcl.controls.TControl.Color"/>
+      <element name="TForm.Color" link="#lcl.forms.TCustomForm.Color"/>
       <element name="TForm.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TForm.DefaultMonitor" link="#lcl.forms.TCustomForm.DefaultMonitor"/>
       <element name="TForm.DesignTimePPI" link="#lcl.forms.TCustomDesignControl.DesignTimePPI"/>
@@ -5892,7 +5951,7 @@
       <element name="TForm.OnWindowStateChange" link="#lcl.forms.TCustomForm.OnWindowStateChange"/>
       <element name="TForm.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
       <element name="TForm.ParentDoubleBuffered" link="#lcl.controls.TWinControl.ParentDoubleBuffered"/>
-      <element name="TForm.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+      <element name="TForm.ParentFont" link="#lcl.forms.TCustomForm.ParentFont"/>
       <element name="TForm.PixelsPerInch" link="#lcl.forms.TCustomDesignControl.PixelsPerInch"/>
       <element name="TForm.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TForm.PopupMode" link="#lcl.forms.TCustomForm.PopupMode"/>
@@ -6006,9 +6065,57 @@
         <short>Owner for the class instance.</short>
       </element>
 
-      <element name="TCustomDockForm.AutoScroll" link="#lcl.forms.TCustomForm.AutoScroll"/>
-      <element name="TCustomDockForm.BorderStyle" link="#lcl.forms.TCustomForm.BorderStyle"/>
-      <element name="TCustomDockForm.FormStyle" link="#lcl.forms.TCustomForm.FormStyle"/>
+      <element name="TCustomDockForm.AutoScroll">
+        <short>
+          Indicates if the form can automatically show or hide scroll bars.
+        </short>
+        <descr>
+          <p>
+            AutoScroll is a Boolean property which indicates if the form can automatically show or hide its scroll bars. The default valule for the property is False in TCustomDockForm.
+          </p>
+          <p>
+            AutoScroll can only be True when the BorderStyle for the form is bsSizeable or bsSizeToolWin , and may be changed to False at run-time when BorderStyle is changed to another value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TCustomDockForm.BorderStyle">TCustomDockForm.BorderStyle</link>
+          <link id="#lcl.forms.TCustomForm.AutoScroll">TCustomForm.AutoScroll</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomDockForm.BorderStyle">
+        <short>
+          The border style affects the title bar, border and resize behavior of the form.
+        </short>
+        <descr>
+         <p>
+           Use BorderStyle to get or set the appearance of the form's border.  The default value in TCustomDockForm is bsSizeToolWin.
+         </p>
+         <p>
+           This property is slightly different (has a different base type) from the TCustomControl.BorderStyle property. When the form is put into another control the window borders depend on the widgetset. There are no borders under GTK.
+         </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TCustomForm.BorderStyle">TCustomForm.BorderStyle</link>
+          <link id="#lcl.controls.TFormBorderStyle">TFormBorderStyle</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomDockForm.FormStyle">
+        <short>
+          Indicates the style for the form.
+        </short>
+        <descr>
+          <p>
+            The default value in TCustomDockForm is fsStayOnTop.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TCustomForm.FormStyle">TCustomForm.FormStyle</link>
+          <link id="#lcl.controls.TFormStyle">TFormStyle</link>
+        </seealso>
+      </element>
+
       <element name="TCustomDockForm.PixelsPerInch" link="#lcl.forms.TCustomDesignControl.PixelsPerInch"/>
 
       <element name="THintWindow">
@@ -10410,6 +10517,33 @@
       </element>
       <element name="TApplication.HelpKeyword.Keyword">
         <short/>
+      </element>
+
+      <element name="TApplication.HelpShowTableOfContents">
+        <short>
+          Displays the Help Table of Contents using the Help Manager for the application.
+        </short>
+        <descr>
+          <p>
+            <var>HelpShowTableOfContents</var> is a method used to display the Help Table of Contents for the application. It uses the global <var>HelpManager</var> variable (when assigned) to call its <var>ShowTableOfContents</var> method. This method must be re-implemented in a descendent class; the default implementation simply returns the <var>shrHelpNotFound</var> result.
+          </p>
+          <p>
+            The return value is <b>True</b> when the HelpManager successfully displays the Table of Contents, and returns the <var>shrSuccess</var> result code. If HelpManager has not been assigned, the return value is always <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.helpintfs.HelpManager">HelpManager</link>
+          <link id="#lcl.helpintfs.THelpManager.ShowTableOfContents">THelpManager.ShowTableOfContents</link>
+          <link id="#lcl.helpintfs.TShowHelpResult">TShowHelpResult</link>
+        </seealso>
+        <version>
+          Added in LCL version 2.2.0. This method is Delphi compatible.
+        </version>
+      </element>
+      <element name="TApplication.HelpShowTableOfContents.Result">
+        <short>
+          True if the Help Table of Contents was successfully displayed by the application.
+        </short>
       </element>
 
       <element name="TApplication.ShowHelpForObject">
