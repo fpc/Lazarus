@@ -332,22 +332,20 @@ begin
             DoItemChecked(Item);
 
           // focus
-          if (nm^.uOldState and LVIS_FOCUSED) <>
-            (nm^.uNewState and LVIS_FOCUSED) then
+          if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED) then
           begin
             // focus state changed
             if (nm^.uNewState and LVIS_FOCUSED) = 0 then
             begin
               if FFocused = Item then
                 FFocused := nil;
-            end else
-            begin
+            end
+            else
               FFocused := Item;
-            end;
           end;
           // select
-          if (nm^.uOldState and LVIS_SELECTED) <>
-            (nm^.uNewState and LVIS_SELECTED) then
+          if (((nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)))
+          or (not (lffSelectedValid in FFlags) and (nm^.uNewState and LVIS_SELECTED <> 0)) then
           begin
             // select state changed
             if (nm^.uNewState and LVIS_SELECTED) = 0 then
@@ -364,9 +362,7 @@ begin
               FSelected := Item;
               Include(FFlags,lffSelectedValid);
               if OwnerData then
-              begin
                 FSelectedIdx:=nm^.iItem;
-              end;
               //DebugLn('TCustomListView.CNNotify FSelected=',dbgs(FSelected));
             end;
             Change(Item, nm^.uChanged);
@@ -1408,11 +1404,17 @@ function TCustomListView.GetSelection: TListItem;
 var
   i: Integer;
 begin
-  if not OwnerData then
+  if OwnerData and not MultiSelect then
   begin
-    {according to Delphi docs
-     we always must return first selected item, not the last selected one
-     see issue #16773}
+    if FSelectedIdx>=0 then begin
+      FOwnerDataItem.SetDataIndex(FSelectedIdx);
+      Result:=FOwnerDataItem;
+    end else
+      Result:=nil;
+  end
+  else begin
+    { according to Delphi docs we always must return first selected item,
+      not the last selected one see issue #16773 }
     if not (lffSelectedValid in FFlags) or MultiSelect then
     begin
       FSelected := nil;
@@ -1427,12 +1429,6 @@ begin
       Include(FFlags, lffSelectedValid);
     end;
     Result := FSelected;
-  end else begin
-    if FSelectedIdx>=0 then begin
-      FOwnerDataItem.SetDataIndex(FSelectedIdx);
-      Result:=FOwnerDataItem;
-    end else
-      Result:=nil;
   end;
 end;
 
