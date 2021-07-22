@@ -20,8 +20,11 @@ interface
 
 uses
   Classes, SysUtils, fpimage, Laz_AVL_Tree,
-  // LazUtils                     // Note: Types must be after TTTypes for PByte.
-  LazUTF8, LazFreeType, TTRASTER, TTTypes, TTObjs, Types;
+  // LazUtils
+  LazUTF8,
+  // FreeType
+  LazFreeType, TTRASTER, TTTypes, TTObjs,
+  Types;  // Note: Types must be after TTTypes for PByte.
 
 type
   TGlyphRenderQuality = (grqMonochrome, grqLowQuality, grqHighQuality);

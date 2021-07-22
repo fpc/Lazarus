@@ -5,14 +5,14 @@ unit mainform;
 interface
 
 uses
-  Classes, SysUtils, Math, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ComCtrls, ExtCtrls, Spin, fpimage, LCLType,
-
-  IntfGraphics, GraphType,      //Intf basic routines
-
-  EasyLazFreeType,  LazFreeTypeIntfDrawer,  //EasyFreeType with Intf
-  LazFreeTypeFontCollection
-  ;
+  Classes, SysUtils, Math, fpimage,
+  // LazUtils
+  FileUtil,
+  // FreeType
+  EasyLazFreeType, LazFreeTypeFontCollection,
+  // LCL
+  Forms, Controls, Graphics, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Spin, LCLType,
+  IntfGraphics, GraphType, LazFreeTypeIntfDrawer;
 
 type
 

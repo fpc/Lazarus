@@ -1,12 +1,12 @@
 object Form1: TForm1
   Left = 362
-  Height = 336
+  Height = 367
   Top = 172
-  Width = 624
+  Width = 676
   Align = alBottom
   Caption = 'Test LazFreeType'
-  ClientHeight = 336
-  ClientWidth = 624
+  ClientHeight = 367
+  ClientWidth = 676
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -14,54 +14,67 @@ object Form1: TForm1
   OnPaint = FormPaint
   OnShow = FormShow
   Position = poDefault
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Panel_Option: TPanel
     Left = 0
-    Height = 40
-    Top = 296
-    Width = 624
+    Height = 56
+    Top = 311
+    Width = 676
     Align = alBottom
-    ClientHeight = 40
-    ClientWidth = 624
+    ClientHeight = 56
+    ClientWidth = 676
     ParentColor = False
     TabOrder = 0
     object TrackBar_Size: TTrackBar
-      Left = 96
-      Height = 25
-      Top = 8
-      Width = 280
+      AnchorSideLeft.Control = SpinEdit_Zoom
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = LFontSize
+      Left = 100
+      Height = 46
+      Top = 5
+      Width = 292
       Frequency = 0
       Max = 300
       Min = 1
       OnChange = TrackBar_SizeChange
       Position = 30
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 4
+      BorderSpacing.Right = 4
       TabOrder = 0
     end
     object LFontSize: TLabel
-      Left = 376
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = LAngle
+      Left = 396
       Height = 16
-      Top = 11
+      Top = 20
       Width = 51
       Alignment = taCenter
       Anchors = [akTop, akRight]
       AutoSize = False
+      BorderSpacing.Right = 4
       Caption = 'LFontSize'
-      ParentColor = False
     end
     object Label1: TLabel
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
       Left = 6
-      Height = 15
-      Top = 12
-      Width = 32
+      Height = 17
+      Top = 20
+      Width = 39
       Caption = 'Zoom'
-      ParentColor = False
     end
     object SpinEdit_Zoom: TSpinEdit
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
       Left = 48
-      Height = 23
-      Top = 8
-      Width = 40
+      Height = 26
+      Top = 15
+      Width = 48
       MaxValue = 9
       MinValue = 1
       OnChange = SpinEdit_ZoomChange
@@ -69,40 +82,56 @@ object Form1: TForm1
       Value = 1
     end
     object LAngle: TLabel
-      Left = 440
-      Height = 15
-      Top = 11
-      Width = 11
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = CheckBox_SingleLine
+      Left = 451
+      Height = 17
+      Top = 20
+      Width = 15
       Anchors = [akTop, akRight]
+      BorderSpacing.Right = 4
       Caption = '0º'
-      ParentColor = False
     end
     object CheckBox_SingleLine: TRadioButton
-      Left = 472
-      Height = 19
-      Top = 12
-      Width = 51
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = CheckBox_Para
+      Left = 470
+      Height = 24
+      Top = 16
+      Width = 65
       Anchors = [akTop, akRight]
+      BorderSpacing.Right = 4
       Caption = '1 Line'
       OnChange = CheckBox_SingleLineChange
       TabOrder = 2
     end
     object CheckBox_Rot: TRadioButton
-      Left = 576
-      Height = 19
-      Top = 12
-      Width = 38
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = Panel_Option
+      AnchorSideRight.Side = asrBottom
+      Left = 599
+      Height = 24
+      Top = 16
+      Width = 72
       Anchors = [akTop, akRight]
-      Caption = 'Rot'
+      BorderSpacing.Right = 4
+      Caption = 'Rotate'
       OnChange = CheckBox_SingleLineChange
       TabOrder = 3
     end
     object CheckBox_Para: TRadioButton
-      Left = 528
-      Height = 19
-      Top = 12
-      Width = 43
+      AnchorSideTop.Control = Panel_Option
+      AnchorSideTop.Side = asrCenter
+      AnchorSideRight.Control = CheckBox_Rot
+      Left = 539
+      Height = 24
+      Top = 16
+      Width = 56
       Anchors = [akTop, akRight]
+      BorderSpacing.Right = 4
       Caption = 'Rect'
       Checked = True
       OnChange = CheckBox_SingleLineChange

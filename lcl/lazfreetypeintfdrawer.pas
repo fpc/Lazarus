@@ -7,7 +7,9 @@ interface
 uses
   Classes, SysUtils, FPimage,
   // LazUtils
-  GraphType, EasyLazFreeType,
+  GraphType,
+  // FreeType
+  EasyLazFreeType,
   // LCL
   Graphics, IntfGraphics;
 
