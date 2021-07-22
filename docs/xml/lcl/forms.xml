@@ -5592,7 +5592,7 @@
             The default value for the property is <b>False</b> in <var>TCustomForm</var>.
           </p>
          <p>
-           While ParentFont is True, all changes to the font of the parent will also be applied to the font for the control. This synchronizes them, keeping them set to the same value. If the Font for the control is changed by the application, then ParentFont will automatically be set to False.
+           While ParentFont is True, all changes to the font in the parent will also be applied to the font for the control. This synchronizes them, keeping them set to the same values. If changes are made directly to the Font property in the control, then ParentFont is automatically be set to False.
          </p>
         </descr>
         <seealso>

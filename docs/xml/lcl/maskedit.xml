@@ -2106,10 +2106,10 @@
       <element name="TMaskEdit.Alignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
       <element name="TMaskEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TMaskEdit.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
-      <element name="TMaskEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TMaskEdit.AutoSize" link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
       <element name="TMaskEdit.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TMaskEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
-      <element name="TMaskEdit.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
+      <element name="TMaskEdit.BorderStyle" link="#lcl.stdctrls.TCustomEdit.BorderStyle"/>
 
       <element name="TMaskEdit.CharCase">
         <short>Determines the case for the text in the masked edit control.</short>
@@ -2136,9 +2136,9 @@
       <element name="TMaskEdit.DragMode" link="#lcl.controls.TControl.DragMode"/>
       <element name="TMaskEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TMaskEdit.Font" link="#lcl.controls.TControl.Font"/>
-      <element name="TMaskEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+      <element name="TMaskEdit.MaxLength" link="#lcl.maskedit.TCustomMaskEdit.MaxLength"/>
       <element name="TMaskEdit.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TMaskEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TMaskEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
       <element name="TMaskEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TMaskEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 
@@ -2198,6 +2198,7 @@
           </p>
         </descr>
         <seealso>
+          <link id="#lcl.stdctrls.TCustomEdit.TabStop">TCustomEdit.TabStop</link>
           <link id="#lcl.controls.TWinControl.TabStop">TWinControl.TabStop</link>
         </seealso>
       </element>
