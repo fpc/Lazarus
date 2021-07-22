@@ -2790,6 +2790,7 @@ function DbgS(p: TControlAutoSizePhase): string; overload;
 function DbgS(Phases: TControlAutoSizePhases): string; overload;
 function DbgS(cst: TControlStyleType): string; overload;
 function DbgS(cs: TControlStyle): string; overload;
+function DbgS(fs: TFormStyle): string; overload;
 
 operator := (AVariant: Variant): TCaption;
 
@@ -3037,6 +3038,11 @@ begin
       Result:=Result+dbgs(cst);
     end;
   Result:='['+Result+']';
+end;
+
+function DbgS(fs: TFormStyle): string;
+begin
+  WriteStr(Result, fs);
 end;
 
 function GetModalResultStr(ModalResult: TModalResult): ShortString;
