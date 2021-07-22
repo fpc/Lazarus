@@ -1117,7 +1117,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       end;
 
       s2 := LineEnding;
-      if AFlags <> [] then s2 := ' ';;
+      if AOptions * [ppoStackParam] <> [] then s2 := ' ';
       fl := [ppvSkipClassBody];
       //if ppvSkipClassBody in AFlags then
       //  fl := [ppvSkipClassBody, ppvSkipRecordBody];
@@ -1154,7 +1154,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         if not Result then begin
           if APrintedValue = ''
           then APrintedValue := s
-          else APrintedValue := APrintedValue + ';' + LineEnding + s2 + s;
+          else APrintedValue := APrintedValue + ';' + s2 + s;
         end;
         if (ppvCreateDbgType in AFlags) then begin
           s := '';
