@@ -287,11 +287,17 @@ end;
 procedure TDbgAvrThread.refreshRegisterCache;
 var
   regs: TBytes;
+  i: integer;
 begin
   if not FRegsUpdated then
   begin
     SetLength(regs, RegArrayByteLength);
     FRegsUpdated := TDbgAvrProcess(Process).FConnection.ReadRegisters(regs[0], length(regs));
+    for i := 0 to lastCPURegIndex do
+    begin
+      FRegs[i].Initialized := true;
+      FRegs[i].Value := regs[i];
+    end;
     // repack according to target endianness
     FRegs[SPindex].Value := regs[SPLindex] + (regs[SPHindex] shl 8);
     FRegs[SPHindex].Initialized := true;
