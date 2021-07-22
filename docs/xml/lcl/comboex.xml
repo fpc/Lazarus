@@ -1487,9 +1487,16 @@
         <seealso/>
       </element>
 
-      <element name="TComboBoxEx" link="#lcl.comboex.TCustomComboBoxEx">
+      <element name="TComboBoxEx">
         <short>Implements an extended combo-box component.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TComboBoxEx</var> is a <var>TCustomComboBoxEx</var> descendant which implements an extended combo-box component.
+          </p>
+          <p>
+            TComboBoxEx provides an extended combo-box with added features and capabilities like auto completion, additional display styles, more editing options, and a list with Images used in the control. Another key feature in the class is an extended Items property which provides normal, selected, and overlay image indexes and allows indentation between the image and caption for items in the combo-box. A pointer to arbitrary data for Items used in sort operations is also provided.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomComboBoxEx"/>
         </seealso>

@@ -17123,19 +17123,28 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
         <short>The string representing the given parameter(s).</short>
       </element>
       <element name="DbgS.a">
-        <short/>
+        <short>TAlign value converted in the routine.</short>
       </element>
       <element name="DbgS.Anchors">
-        <short/>
+        <short>Set of TAnchorKind values converted in the routine.</short>
       </element>
       <element name="DbgS.Side">
-        <short/>
+        <short>Anchor side enumeration value converted in the routine.</short>
       </element>
       <element name="DbgS.p">
-        <short/>
+        <short>Auto-size phase converted in the routine.</short>
       </element>
       <element name="DbgS.Phases">
         <short>All elements in this set will be shown as a comma-separated list.</short>
+      </element>
+      <element name="DbgS.cst">
+        <short>Control style flag converted in the routine.</short>
+      </element>
+      <element name="DbgS.cs">
+        <short>Set of control style flags converted in the routine.</short>
+      </element>
+      <element name="DbgS.fs">
+        <short>Form style value converted in the routine.</short>
       </element>
 
       <element name="OperatorAssign">

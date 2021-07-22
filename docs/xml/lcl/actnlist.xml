@@ -146,7 +146,7 @@
       <element name="TContainedAction.SetParentComponent.AParent">
         <short>Value assigned to the parent component for the class.</short>
       </element>
-      <element name="TContainedAction.Destroy" link="#rtl.classes.TBasicAction.Destroy">
+      <element name="TContainedAction.Destroy">
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
@@ -1171,7 +1171,13 @@
       <!-- property Visibility: public -->
       <element name="TCustomAction.DisableIfNoHandler">
         <short>
-          <var>DisableIfNoHandler </var>- don't use this action if no Handler has been provided.</short>
+          Prevents the action from executing if an OnExecute handler is not assigned in the action.
+        </short>
+        <descr>
+          <p>
+            Used in the Application message processing loop. Whn enabled, the action must hande have an OnExecute event handler, even if an associated action list OnExecute handler has been provided.
+          </p>
+        </descr>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.Enabled">
@@ -1271,7 +1277,12 @@
         <seealso/>
       </element>
 
-      <element name="TAction.DisableIfNoHandler" link="#LCL.ActnList.TCustomAction.DisableIfNoHandler"/>
+      <element name="TAction.DisableIfNoHandler" link="#lcl.actnlist.TCustomAction.DisableIfNoHandler"/>
+      <element name="">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
 
       <!-- property Visibility: published -->
       <element name="TAction.Enabled" link="#LCL.ActnList.TCustomAction.Enabled">
@@ -1309,7 +1320,7 @@
         <seealso/>
       </element>
       <!-- property Visibility: published -->
-      <element name="TAction.OnExecute" link="#rtl.classes.TBasicAction.OnExecute">
+      <element name="TAction.OnExecute">
         <short>Event called when action is executed.</short>
         <descr>
           <p>
@@ -1322,7 +1333,9 @@
             Since version 1.1 setting OnExecute no longer sets the owner's OnClick. You can now specify an event for the action and a more specific OnClick for control and both are called. OnClick is called before OnExecute.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TBasicAction.OnExecute">TBasicAction.OnExecute</link>
+        </seealso>
       </element>
       <!-- property Visibility: published -->
       <element name="TAction.OnHint" link="#LCL.ActnList.TCustomAction.OnHint">

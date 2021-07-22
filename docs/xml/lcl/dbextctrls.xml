@@ -16,19 +16,7 @@
           <b>Data Controls</b> Tab
         </p>
         <ul>
-          <li>TDBNavigator</li>
-          <li>TDBText</li>
-          <li>TDBEdit</li>
-          <li>TDBMemo</li>
-          <li>TDBImage</li>
-          <li>TDBListBox</li>
-          <li>TDBLookupListBox</li>
-          <li>TDBComboBox</li>
-          <li>TDBLookupComboBox</li>
-          <li>TDBCheckBox</li>
-          <li>TDBRadioGroup</li>
-          <li>TDBCalendar</li>
-          <li>TDBGroupBox</li>
+          <li>TDBDateEdit</li>
         </ul>
         <p>
           It also registers TFieldClass instances (defined in DefaultFieldClasses) associated with FCL database field types, and includes TIntegerField as an alias for TLongintField.
@@ -575,23 +563,8 @@
             <b>Data Controls</b> Tab
           </p>
           <ul>
-            <li>TDBNavigator</li>
-            <li>TDBText</li>
-            <li>TDBEdit</li>
-            <li>TDBMemo</li>
-            <li>TDBImage</li>
-            <li>TDBListBox</li>
-            <li>TDBLookupListBox</li>
-            <li>TDBComboBox</li>
-            <li>TDBLookupComboBox</li>
-            <li>TDBCheckBox</li>
-            <li>TDBRadioGroup</li>
-            <li>TDBCalendar</li>
-            <li>TDBGroupBox</li>
+            <li>TDBDateEdit</li>
           </ul>
-          <p>
-            It also registers TFieldClass instances (defined in DefaultFieldClasses) associated with FCL database field types, and includes TIntegerField as an alias for TLongintField.
-          </p>
         </descr>
       </element>
 

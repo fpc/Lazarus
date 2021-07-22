@@ -548,14 +548,14 @@
       <element name="TFloatSpinEdit.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
       <element name="TFloatSpinEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <element name="TFloatSpinEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TFloatSpinEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TFloatSpinEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
       <element name="TFloatSpinEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TFloatSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TFloatSpinEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TFloatSpinEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
       <element name="TFloatSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TFloatSpinEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
-      <element name="TFloatSpinEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
+      <element name="TFloatSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
       <element name="TFloatSpinEdit.Value" link="#lcl.spin.TCustomFloatSpinEdit.Value"/>
       <element name="TFloatSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
@@ -778,7 +778,7 @@
       <element name="TSpinEdit.Alignment" link="#lcl.stdctrls.TCustomEdit.Alignment"/>
       <element name="TSpinEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TSpinEdit.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
-      <element name="TSpinEdit.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
+      <element name="TSpinEdit.AutoSize" link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
       <element name="TSpinEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TSpinEdit.Color" link="#lcl.controls.TControl.Color"/>
       <element name="TSpinEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
@@ -823,14 +823,14 @@
       <element name="TSpinEdit.OnMouseWheelRight" link="#lcl.controls.TControl.OnMouseWheelRight"/>
       <element name="TSpinEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
       <element name="TSpinEdit.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
-      <element name="TSpinEdit.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
+      <element name="TSpinEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
       <element name="TSpinEdit.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TSpinEdit.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
       <element name="TSpinEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
       <element name="TSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
-      <element name="TSpinEdit.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
       <element name="TSpinEdit.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+      <element name="TSpinEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
       <element name="TSpinEdit.Value" link="#lcl.spin.TCustomSpinEdit.Value"/>
       <element name="TSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
