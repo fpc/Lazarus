@@ -26,7 +26,7 @@ unit TAChartLiveView;
 interface
 
 uses
-  Classes, SysUtils, TAGraph, TAChartUtils;
+  Classes, SysUtils, TAGraph, TAChartUtils, TAChartAxis;
 
 type
   TChartLiveViewExtentY = (lveAuto, lveFull, lveLogical);
@@ -57,7 +57,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure RestoreAxisRange(Axis: TChartAxis);
     procedure RestoreAxisRanges;
+    procedure StoreAxisRange(Axis: TChartAxis);
     procedure StoreAxisRanges;
   published
     property Active: Boolean read FActive write SetActive default false;
@@ -72,7 +74,7 @@ procedure Register;
 implementation
 
 uses
-  Math, TAChartAxis, TAChartAxisUtils, TACustomSeries;
+  Math, TAChartAxisUtils, TACustomSeries;
 
 constructor TChartLiveView.Create(AOwner: TComponent);
 begin
@@ -96,6 +98,17 @@ begin
   UpdateViewport;
 end;
 
+procedure TChartLiveView.RestoreAxisRange(Axis: TChartAxis);
+begin
+  if Assigned(Axis) then
+    with FAxisRanges[Axis.Index] do begin
+      Axis.Range.Max := Max;
+      Axis.Range.Min := Min;
+      Axis.Range.UseMax := UseMax;
+      Axis.Range.UseMin := UseMin;
+    end;
+end;
+
 { The ChartLiveView may change the Range properties of an axis. The original
   values, before applying the live view, are restored here from internal
   variables.
@@ -104,19 +117,12 @@ end;
 procedure TChartLiveView.RestoreAxisRanges;
 var
   i: Integer;
-  ax: TChartAxis;
 begin
   if FChart = nil then
     exit;
 
   for i := 0 to FChart.AxisList.Count-1 do
-  begin
-    ax := FChart.AxisList[i];
-    ax.Range.Max := FAxisRanges[i].Max;
-    ax.Range.Min := FAxisRanges[i].Min;
-    ax.Range.UseMax := FAxisRanges[i].UseMax;
-    ax.Range.UseMin := FAxisRanges[i].UseMin;
-  end;
+    RestoreAxisRange(FChart.AxisList[i]);
 end;
 
 { Activates the live view mode. Because the Range of the y axes can be changed
@@ -170,6 +176,17 @@ begin
   FullExtentChanged(nil);
 end;
 
+procedure TChartLiveView.StoreAxisRange(Axis: TChartAxis);
+begin
+  if Assigned(Axis) then
+    with FAxisRanges[Axis.Index] do begin
+      Max := Axis.Range.Max;
+      Min := Axis.Range.Min;
+      UseMax := Axis.Range.UseMax;
+      UseMin := Axis.Range.UseMin;
+    end;
+end;
+
 { The ChartLiveView may change the Range properties of an axis. The original
   values, before applying the live view, are stored here in internal variables.
   Be careful when calling this procedure in user code, it may disrupt the
@@ -177,17 +194,10 @@ end;
 procedure TChartLiveView.StoreAxisRanges;
 var
   i: Integer;
-  ax: TChartAxis;
 begin
   SetLength(FAxisRanges, FChart.AxisList.Count);
   for i := 0 to FChart.AxisList.Count-1 do
-  begin
-    ax := FChart.AxisList[i];
-    FAxisRanges[i].Max := ax.Range.Max;
-    FAxisRanges[i].Min := ax.Range.Min;
-    FAxisRanges[i].UseMax := ax.Range.UseMax;
-    FAxisRanges[i].UseMin := ax.Range.UseMin;
-  end;
+    StoreAxisRange(FChart.AxisList[i]);
 end;
 
 { "Workhorse" method of the component. It calculates the logical extent and
