@@ -101,6 +101,7 @@ unit AnchorDocking;
 { $DEFINE VerboseADCustomSite}
 { $DEFINE VerboseAnchorDockPages}
 { $DEFINE VerboseAnchorDocking}
+{ $DEFINE VerboseADFloatingWindowsOnTop}
 
 interface
 
@@ -1678,6 +1679,7 @@ var
   IsMainDockForm: Boolean;
 begin
   if not (Sender is TCustomForm) then Exit;
+  if fsModal in AForm.FormState then Exit;
   if AForm.FormStyle in fsAllStayOnTop then Exit;
   if not FloatingWindowsOnTop then Exit;
   IsMainDockForm := (AForm = MainDockForm)
@@ -1687,6 +1689,9 @@ begin
     AForm.FormStyle := fsNormal
   else
     AForm.FormStyle := fsStayOnTop;
+  {$IFDEF VerboseADFloatingWindowsOnTop}
+  DebugLn('TAnchorDockMaster.FormFirstShow ', DbgSName(AForm), ': ', DbgS(AForm.FormStyle));
+  {$ENDIF}
 end;
 
 function TAnchorDockMaster.GetLocalizedHeaderHint: string;
@@ -2765,9 +2770,19 @@ begin
         AFormStyle := fsNormal;
     end;
     if ParentForm is TAnchorDockHostSite then
-      ParentForm.FormStyle := AFormStyle
-    else
+    begin
+      ParentForm.FormStyle := AFormStyle;
+      {$IFDEF VerboseADFloatingWindowsOnTop}
+      DebugLn('TAnchorDockMaster.RefreshFloatingWindowsOnTop ',
+        DbgSName(ParentForm), '(', DbgSName(AForm), '): ', DbgS(AFormStyle));
+      {$ENDIF}
+    end else begin
       AForm.FormStyle := AFormStyle;
+      {$IFDEF VerboseADFloatingWindowsOnTop}
+      DebugLn('TAnchorDockMaster.RefreshFloatingWindowsOnTop ',
+        DbgSName(AForm), ': ', DbgS(AFormStyle));
+      {$ENDIF}
+    end;
   end;
 end;
 
