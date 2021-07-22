@@ -265,6 +265,8 @@ begin
     if StringStart>0 then
       Delete(Result, 1, StringStart-1);
   end;
+
+  Result := StringReplace(Result, LineEnding, ' ', [rfReplaceAll]);
 end;
 
 { TLocalsDlg }
