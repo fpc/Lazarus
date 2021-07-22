@@ -124,6 +124,13 @@ type
     property Visible default false;
   end;
 
+  TChartTitleBrush = class(TBrush)
+  public
+    constructor Create; override;
+  published
+    property Color default clDefault;
+  end;
+
   { TChartTitle }
 
   TChartTitle = class(TChartTextElement)
@@ -344,6 +351,7 @@ var
   labelPoly: TPointArray;
   ptText, P: TPoint;
   i, w: Integer;
+  clr: TColor;
 begin
   ApplyLabelFont(ADrawer);
   ptText := ADrawer.TextExtent(AText, FTextFormat);
@@ -365,8 +373,10 @@ begin
     ADrawer.ClippingStop;
 
   DrawLink(ADrawer, ADataPoint, ALabelCenter);
-  with GetLabelBrush do
-    ADrawer.SetBrushParams(Style, ColorToRGB(Color));
+  with GetLabelBrush do begin
+    clr := TColor(IfThen(Color = clDefault, FOwner.Color, Color));
+    ADrawer.SetBrushParams(Style, ColorToRGB(clr));
+  end;
   if IsMarginRequired then begin
     if GetFrame.Visible then
       ADrawer.Pen := GetFrame
@@ -578,6 +588,14 @@ begin
 end;
 
 
+{ TChartTitleBrush }
+
+constructor TChartTitleBrush.Create;
+begin
+  inherited Create;
+  inherited Color := clDefault;
+end;
+
 { TChartTitle }
 
 procedure TChartTitle.Assign(ASource: TPersistent);
@@ -598,8 +616,7 @@ begin
   inherited Create(AOwner);
 
   FAlignment := taCenter;
-  InitHelper(FBrush, TBrush);
-  FBrush.Color := FOwner.Color;
+  InitHelper(FBrush, TChartTitleBrush);
   InitHelper(FFont, TFont);
   FFont.Color := clDefault;
   InitHelper(FFrame, TChartTitleFramePen);
