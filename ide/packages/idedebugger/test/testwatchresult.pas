@@ -262,6 +262,7 @@ type
     procedure TestWatchStuctNested;
     procedure TestWatchArrayStuct;
     procedure TestWatchArrayStuctArrayStuct;
+    procedure TestWatchArrayVariant;
 
   end;
 
@@ -1296,6 +1297,30 @@ begin
   ResIntfPtr2.CreateNumValue(121, True, 1);
   ResIntfPtr2.SetTypeName('TMyNum');
   AssertPtrPointerToSignedNumData('', t.IdeRes, 110, 120, 121, 1, 'TMyPtr', 'TMyNestPtr', 'TMyNum');
+  t.Done;
+
+
+  t.Init;
+  t.ResIntf.CreatePointerValue(110);
+  t.ResIntf.SetTypeName('TMyPtr');
+  ResIntfPtr := t.ResIntf.SetDerefData;
+  ResIntfPtr.CreateNumValue(121, True, 1);
+  ResIntfPtr.SetTypeName('TMyNum');
+  t.ResIntf.CreateError('ouch');
+  AssertErrData('', t.IdeRes, 'ouch');
+  t.Done;
+
+  t.Init;
+  t.ResIntf.CreatePointerValue(110);
+  t.ResIntf.SetTypeName('TMyPtr');
+  ResIntfPtr := t.ResIntf.SetDerefData;
+  ResIntfPtr.CreatePointerValue(120);
+  ResIntfPtr.SetTypeName('TMyNestPtr');
+  ResIntfPtr2 := ResIntfPtr.SetDerefData;
+  ResIntfPtr2.CreateNumValue(121, True, 1);
+  ResIntfPtr2.SetTypeName('TMyNum');
+  t.ResIntf.CreateError('ouch');
+  AssertErrData('', t.IdeRes, 'ouch');
   t.Done;
 end;
 
@@ -2444,6 +2469,105 @@ begin
     else
       t.Done;
   end;
+end;
+
+procedure TTestIdeDebuggerWatchResult.TestWatchArrayVariant;
+var
+  t: TTestWatchResWrapper;
+  x, aVarErr: Integer;
+  EntryIntf, VarIntf: TLzDbgWatchDataIntf;
+  Res: TWatchResultData;
+  aEntryType1, aEntryType2: TTestCreateDataKind;
+  aErr1, aErr2: Boolean;
+begin
+  for x :=  0 to 2 do
+  for aEntryType1 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
+  for aEntryType2 := low(TTestCreateDataKind) to high(TTestCreateDataKind) do
+  for aErr1 := low(Boolean) to high(Boolean) do
+  for aErr2 := low(Boolean) to high(Boolean) do
+  for aVarErr := -1 to 2 do
+  begin
+    t.Init;
+    t.ResIntf.CreateArrayValue(datUnknown, 5);
+
+    EntryIntf := t.ResIntf.SetNextArrayData;
+    VarIntf := EntryIntf.CreateVariantValue;
+    CreateData(VarIntf, aEntryType1, aErr1, 'T1');
+    if aVarErr = 0 then
+      EntryIntf.CreateError('err-v');
+
+    EntryIntf := t.ResIntf.SetNextArrayData;
+    VarIntf := EntryIntf.CreateVariantValue;
+    CreateData(VarIntf, aEntryType2, aErr2, 'T2');
+    if aVarErr = 1 then
+      EntryIntf.CreateError('err-v');
+
+    EntryIntf := t.ResIntf.SetNextArrayData;
+    VarIntf := EntryIntf.CreateVariantValue;
+    CreateData(VarIntf, cdErrNum, False, 'T3');
+    if aVarErr = 2 then
+      EntryIntf.CreateError('err-v');
+
+
+    Res := t.GetIdeRes;
+    case x of
+      1: Res := SaveLoad(Res);
+      2: Res := Res.CreateCopy;
+    end;
+    if x > 0 then
+      t.Done;
+
+
+    AssertValKind('', Res, rdkArray);
+    AssertArrayData('', Res, datUnknown, 3, 0);
+
+    Res.SetSelectedIndex(0);
+    if aVarErr = 0 then begin
+      AssertErrData('0e', res.SelectedEntry, 'err-v');
+    end
+    else begin
+      AssertValKind('0', Res.SelectedEntry, rdkVariant);
+      AssertData('0', Res.SelectedEntry.DerefData, aEntryType1, aErr1, 'T1');
+    end;
+
+    Res.SetSelectedIndex(1);
+    if aVarErr = 1 then begin
+      AssertErrData('1e', res.SelectedEntry, 'err-v');
+    end
+    else begin
+      AssertValKind('1', Res.SelectedEntry, rdkVariant);
+      AssertData('1', Res.SelectedEntry.DerefData, aEntryType2, aErr2, 'T2');
+    end;
+
+    Res.SetSelectedIndex(2);
+    if aVarErr = 2 then begin
+      AssertErrData('2e', res.SelectedEntry, 'err-v');
+    end
+    else begin
+      AssertValKind('2', Res.SelectedEntry, rdkVariant);
+      AssertData('2', Res.SelectedEntry.DerefData, cdErrNum, False, 'T3');
+    end;
+
+    Res.SetSelectedIndex(0);
+    if aVarErr = 0 then begin
+      AssertErrData('0e', res.SelectedEntry, 'err-v');
+    end
+    else begin
+      AssertValKind('0', Res.SelectedEntry, rdkVariant);
+      AssertData('0', Res.SelectedEntry.DerefData, aEntryType1, aErr1, 'T1');
+    end;
+
+
+
+
+
+
+    if x > 0 then
+      Res.Free
+    else
+      t.Done;
+  end;
+
 end;
 
 

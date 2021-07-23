@@ -7,7 +7,7 @@ interface
 
 uses
   Classes, SysUtils, Types, IdeDebuggerUtils, LazDebuggerIntf,
-  LazDebuggerIntfBaseTypes, LazUTF8, Laz2_XMLCfg, LazLoggerBase, StrUtils;
+  LazDebuggerIntfBaseTypes, LazUTF8, Laz2_XMLCfg, LazLoggerBase;
 
 type
 
@@ -17,6 +17,7 @@ type
     rdkString, rdkWideString, rdkChar,
     rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal,
     rdkBool, rdkEnum, rdkEnumVal, rdkSet,
+    rdkVariant,
     rdkPCharOrString,
     rdkArray,
     rdkStruct,
@@ -289,6 +290,25 @@ type
   TWatchResultValueError = object(TWatchResultValueTextBase)
   protected const
     VKind = rdkError;
+  end;
+
+  TWatchResultValueVariant = object(TWatchResultValue)
+  protected const
+    VKind = rdkVariant;
+  private
+    FVariantData: TWatchResultData; // This may contain "Value"-Data. Will be stored in NestedStorage
+    FVisibility: TLzDbgFieldVisibility;
+    FName: String;
+  protected
+    property GetDerefData: TWatchResultData read FVariantData;
+    property GetAsString: String read FName;
+    procedure AfterAssign(ATypeOnly: Boolean = False);
+    procedure DoFree;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
+                                    const AnEntryTemplate: TWatchResultData;
+                                    var AnOverrideTemplate: TOverrideTemplateData;
+                                    AnAsProto: Boolean);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string; AnAsProto: Boolean);
   end;
 
   { TWatchResultValueArrayBase }
@@ -587,6 +607,7 @@ type
     wdEnum,      // TWatchResultDataEnum
     wdEnumVal,   // TWatchResultDataEnumVal
     wdSet,       // TWatchResultDataSet
+    wdVar,       // TWatchResultDataVariant
     wdPChrStr,   // TWatchResultDataPCharOrString
     wdArray,     // TWatchResultDataArray
     wdDynA,      // TWatchResultDataDynArray
@@ -609,6 +630,18 @@ type
     FieldFlags: TLzDbgFieldFlags;
     Field: TWatchResultData;
     Owner: TWatchResultData; // defined in class
+  end;
+
+  { TWatchResultDataEnumerator }
+
+  TWatchResultDataEnumerator = class
+  private
+    FSource: TWatchResultData;
+    function GetCurrent: TWatchResultDataFieldInfo; virtual;
+  public
+    constructor Create(ARes: TWatchResultData);
+    function MoveNext: Boolean; virtual;
+    property Current: TWatchResultDataFieldInfo read GetCurrent;
   end;
 
   { TWatchResultData }
@@ -670,6 +703,8 @@ type
     function GetFieldCount: Integer; virtual; abstract;
     function GetFields(AnIndex: Integer): TWatchResultDataFieldInfo; virtual; abstract;
 
+    function GetFieldVisibility: TLzDbgFieldVisibility; virtual; abstract;
+
   public
     constructor CreateEmpty;
     class function CreateFromXMLConfig(const AConfig: TXMLConfig; const APath: string): TWatchResultData; overload;
@@ -685,6 +720,7 @@ type
     procedure Assign(ASource: TWatchResultData; ATypeOnly: Boolean = False); virtual;
     function  CreateCopy(ATypeOnly: Boolean = False): TWatchResultData;
 
+    function GetEnumerator: TWatchResultDataEnumerator; virtual;
   public
     property ValueKind: TWatchResultDataKind read GetValueKind;
     property TypeName: String read FTypeName;
@@ -725,6 +761,8 @@ type
     property DirectFieldCount: Integer read GetDirectFieldCount; // without inherited fields
     property Fields[AnIndex: Integer]: TWatchResultDataFieldInfo read GetFields;
 
+    // variant
+    property FieldVisibility: TLzDbgFieldVisibility read GetFieldVisibility;
   end;
   TWatchResultDataClass = class of TWatchResultData;
 
@@ -898,6 +936,7 @@ type
     function GetFieldCount: Integer; override;
     function GetFields(AnIndex: Integer): TWatchResultDataFieldInfo; override;
 
+    function GetFieldVisibility: TLzDbgFieldVisibility; override;
   public
     destructor Destroy; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string;
@@ -1076,6 +1115,18 @@ type
     constructor Create(const ANames: TStringDynArray);
   end;
 
+  { TWatchResultDataVariant }
+
+  TWatchResultDataVariant = class(specialize TGenericWatchResultData<TWatchResultValueVariant>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  protected
+    function GetFieldVisibility: TLzDbgFieldVisibility; override;
+  public
+    constructor Create(AName: String; AVisibility: TLzDbgFieldVisibility);
+    procedure SetDerefData(ADerefData: TWatchResultData); override;
+  end;
+
   { TWatchResultDataArrayBase }
 
   generic TWatchResultDataArrayBase<_DATA, _TYPE> = class(specialize TGenericWatchResultDataWithType<_DATA, _TYPE>)
@@ -1163,6 +1214,32 @@ type
 
   generic TGenericWatchResultDataStruct<_DATA, _TYPE> = class(specialize TGenericWatchResultDataWithType<_DATA, _TYPE>)
   private type
+    { TWatchResultDataStructVariantEnumerator }
+
+    TWatchResultDataStructVariantEnumerator = class(TWatchResultDataEnumerator)
+    private
+      FIndex: Integer;
+    protected
+      function GetCurrent: TWatchResultDataFieldInfo; override;
+    public
+      constructor Create(ARes: TWatchResultData);
+      function MoveNext: Boolean; override;
+    end;
+
+
+    { TWatchResultDataStructEnumerator }
+
+    TWatchResultDataStructEnumerator = class(TWatchResultDataEnumerator)
+    private
+      FIndex: Integer;
+      FSubEnumerator: TWatchResultDataStructVariantEnumerator;
+      FSubOwner: TWatchResultData;
+    protected
+      function GetCurrent: TWatchResultDataFieldInfo; override;
+    public
+      constructor Create(ARes: TWatchResultData);
+      function MoveNext: Boolean; override;
+    end;
 
     { TNestedFieldsWatchResultStorage }
 
@@ -1219,6 +1296,8 @@ type
                               //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
                               //ARecurseFieldCount: Integer = 0 // Fields including anchestors
                              );
+    function GetEnumerator: TWatchResultDataEnumerator; override;
+
     procedure SetAnchestor(AnAnchestor: TWatchResultData); override;
     procedure SetFieldCount(ACount: integer); override;
     procedure SetField(AnIndex: Integer;
@@ -1346,6 +1425,7 @@ const
     TWatchResultDataEnum,          // wdEnum
     TWatchResultDataEnumVal,       // wdEnumVal
     TWatchResultDataSet,           // wdSet
+    TWatchResultDataVariant,       // wdVar
     TWatchResultDataPCharOrString, // wdPChrStr
     TWatchResultDataArray,         // wdArray,
     TWatchResultDataDynArray,      // wdDynA,
@@ -1745,6 +1825,43 @@ procedure TWatchResultValueSet.SaveDataToXMLConfig(const AConfig: TXMLConfig;
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, AnAsProto);
   AConfig.SetDeleteValue(APath + 'Value', ''.Join(',', FNames), '');
+end;
+
+{ TWatchResultValueVariant }
+
+procedure TWatchResultValueVariant.AfterAssign(ATypeOnly: Boolean);
+begin
+  FVariantData := FVariantData.CreateCopy();
+end;
+
+procedure TWatchResultValueVariant.DoFree;
+begin
+  FVariantData.Free;
+end;
+
+procedure TWatchResultValueVariant.LoadDataFromXMLConfig(
+  const AConfig: TXMLConfig; const APath: string;
+  const AnEntryTemplate: TWatchResultData;
+  var AnOverrideTemplate: TOverrideTemplateData; AnAsProto: Boolean);
+var
+  p: String;
+  d: TOverrideTemplateData;
+begin
+  if AnAsProto then
+    exit;
+  p := APath + 'var/';
+  d := nil;
+  if AConfig.HasPath(p, True) then
+    FVariantData := TWatchResultData.CreateFromXMLConfig(AConfig, p, nil,
+      d);
+  assert(d=nil, 'TWatchResultValueVariant.LoadDataFromXMLConfig: d=nil');
+end;
+
+procedure TWatchResultValueVariant.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string; AnAsProto: Boolean);
+begin
+  if FVariantData <> nil then
+    FVariantData.SaveDataToXMLConfig(AConfig, APath + 'var/', AnAsProto);
 end;
 
 { TWatchResultValueArrayBase }
@@ -2226,6 +2343,23 @@ begin
   Result.Assign(Self);
 end;
 
+{ TWatchResultDataEnumerator }
+
+function TWatchResultDataEnumerator.GetCurrent: TWatchResultDataFieldInfo;
+begin
+  Result := Default(TWatchResultDataFieldInfo);
+end;
+
+constructor TWatchResultDataEnumerator.Create(ARes: TWatchResultData);
+begin
+  FSource := ARes;
+end;
+
+function TWatchResultDataEnumerator.MoveNext: Boolean;
+begin
+  Result := False;
+end;
+
 { TWatchResultData }
 
 function TWatchResultData.GetValueKind: TWatchResultDataKind;
@@ -2311,6 +2445,11 @@ begin
     exit(nil);
   Result := TWatchResultData(ClassType.Create);
   Result.Assign(Self, ATypeOnly);
+end;
+
+function TWatchResultData.GetEnumerator: TWatchResultDataEnumerator;
+begin
+  Result := TWatchResultDataEnumerator.Create(Self);
 end;
 
 procedure TWatchResultData.SetSelectedIndex(AnIndex: Integer);
@@ -2937,6 +3076,11 @@ begin
   Result := Default(TWatchResultDataFieldInfo);
 end;
 
+function TGenericWatchResultData.GetFieldVisibility: TLzDbgFieldVisibility;
+begin
+  Result := dfvUnknown;
+end;
+
 destructor TGenericWatchResultData.Destroy;
 begin
   FData.DoFree;
@@ -3406,6 +3550,31 @@ begin
   FData.FNames := ANames;
 end;
 
+{ TWatchResultDataVariant }
+
+function TWatchResultDataVariant.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdVar;
+end;
+
+function TWatchResultDataVariant.GetFieldVisibility: TLzDbgFieldVisibility;
+begin
+  Result := FData.FVisibility;
+end;
+
+constructor TWatchResultDataVariant.Create(AName: String;
+  AVisibility: TLzDbgFieldVisibility);
+begin
+  inherited Create;
+  FData.FName := AName;
+  FData.FVisibility := AVisibility;
+end;
+
+procedure TWatchResultDataVariant.SetDerefData(ADerefData: TWatchResultData);
+begin
+  FData.FVariantData := ADerefData;
+end;
+
 { TWatchResultDataArrayBase }
 
 procedure TWatchResultDataArrayBase.SetEntryPrototype(AnEntry: TWatchResultData);
@@ -3664,6 +3833,71 @@ begin
   inherited Create;
   FType.FLength := ALength;
   FType.FLowBound := ALowBound;
+end;
+
+{ TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator }
+
+function TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator.GetCurrent: TWatchResultDataFieldInfo;
+begin
+  FSource.SetSelectedIndex(FIndex);
+  Result := Default(TWatchResultDataFieldInfo);
+  Result.Field           := FSource.SelectedEntry.DerefData;
+  Result.FieldName       := FSource.SelectedEntry.AsString;
+  Result.FieldVisibility := FSource.SelectedEntry.FieldVisibility;
+end;
+
+constructor TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator.Create
+  (ARes: TWatchResultData);
+begin
+  inherited Create(ARes);
+  FIndex := -1;
+end;
+
+function TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator.MoveNext: Boolean;
+begin
+  inc(FIndex);
+  Result := FIndex < FSource.Count;
+end;
+
+{ TGenericWatchResultDataStruct.TWatchResultDataStructEnumerator }
+
+function TGenericWatchResultDataStruct.TWatchResultDataStructEnumerator.GetCurrent: TWatchResultDataFieldInfo;
+begin
+  if FSubEnumerator <> nil then begin
+    Result := FSubEnumerator.Current;
+    Result.Owner := FSubOwner;
+  end
+  else
+    Result := FSource.Fields[FIndex];
+end;
+
+constructor TGenericWatchResultDataStruct.TWatchResultDataStructEnumerator.Create
+  (ARes: TWatchResultData);
+begin
+  inherited Create(ARes);
+  FIndex := -1;
+end;
+
+function TGenericWatchResultDataStruct.TWatchResultDataStructEnumerator.MoveNext: Boolean;
+begin
+  if FSubEnumerator <> nil then begin
+    if FSubEnumerator.MoveNext then
+      exit
+    else
+      FreeAndNil(FSubEnumerator);
+  end;
+
+  inc(FIndex);
+  Result := FIndex < FSource.FieldCount;
+
+  if Result and (dffVariant in FSource.Fields[FIndex].FieldFlags) then begin
+    FSubOwner := FSource.Fields[FIndex].Owner;
+    FSubEnumerator := TGenericWatchResultDataStruct.TWatchResultDataStructVariantEnumerator.Create(
+      FSource.Fields[FIndex].Field
+    );
+    if not FSubEnumerator.MoveNext then
+      FreeAndNil(FSubEnumerator);
+  end;
 end;
 
 { TGenericWatchResultDataStruct.TNestedFieldsWatchResultStorage }
@@ -4029,6 +4263,11 @@ begin
   FType.FStructType := AStructType;
 end;
 
+function TGenericWatchResultDataStruct.GetEnumerator: TWatchResultDataEnumerator;
+begin
+  Result := TWatchResultDataStructEnumerator.Create(Self);
+end;
+
 procedure TGenericWatchResultDataStruct.SetAnchestor(AnAnchestor: TWatchResultData);
 begin
   FType.FAnchestor := AnAnchestor;
@@ -4150,13 +4389,8 @@ end;
 
 procedure TWatchResultDataError.TErrorDataStorage.SaveDataToXMLConfig(
   const AConfig: TXMLConfig; const APath: string; ANestLvl: Integer);
-var
-  N: String;
 begin
   inherited SaveDataToXMLConfig(AConfig, APath, ANestLvl);
-  N := '';
-  if ANestLvl > 0 then N := 'N'+IntToStr(ANestLvl);
-
   AConfig.SetDeleteValue(APath+TAG_ALL_ERR, ANestLvl, -1);
 end;
 

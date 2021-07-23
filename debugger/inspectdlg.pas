@@ -407,7 +407,7 @@ const
     ('', 'Private', 'Protected', 'Public', 'Published');
 var
   Res, Fld, Fld2: TWatchResultData;
-  i, FldCnt, MethCnt, f, m: Integer;
+  FldCnt, MethCnt, f, m: Integer;
   FldInfo: TWatchResultDataFieldInfo;
   AnchType: String;
 begin
@@ -431,8 +431,7 @@ begin
   MethCnt := 0;
 
   if Res.StructType in [dstClass, dstObject] then begin
-    for i := 1 to Res.FieldCount do begin
-      FldInfo := Res.Fields[i-1];
+    for FldInfo in res do begin
       if (FldInfo.Field <> nil) and
          ( (FldInfo.Field.ValueKind in [rdkFunction, rdkProcedure, rdkFunctionRef, rdkProcedureRef]) or
            (ExtractProcResFromMethod(FldInfo.Field) <> nil)
@@ -444,7 +443,8 @@ begin
     end;
   end
   else
-    FldCnt := Res.FieldCount;
+  for FldInfo in res do
+    inc(FldCnt);
 
   DataPage.TabVisible := FldCnt > 0;
   PropertiesPage.TabVisible :=false;
@@ -456,9 +456,7 @@ begin
   FGridMethods.RowCount := max(MethCnt+1, 2);
   f := 1;
   m := 1;
-  for i := 1 to Res.FieldCount do begin
-    FldInfo := Res.Fields[i-1];
-
+  for FldInfo in res do begin
     Fld := FldInfo.Field;
     Fld2 := ExtractProcResFromMethod(Fld);
     if (MethCnt > 0) and

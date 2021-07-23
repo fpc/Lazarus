@@ -774,6 +774,13 @@ StartIdx := t.Count; // tlConst => Only eval the watch. No tests
     t.Add(AName, p+'UnicodeString2'+e+'[2]',    weWideChar('a'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
     t.Add(AName, p+'UnicodeString5'+e+'[1]',    weWideChar(AChr1))       .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
     t.Add(AName, p+'UnicodeString5'+e+'[2]',    weWideChar('Y'))         .CharFromIndex(stDwarf2).IgnTypeName(stDwarf3Up);
+
+    t.Add(AName, p+'Variant_1'+e,      weMatch('71237',skVariant))
+      .SkipIf(ALoc in [tlPointerAny])
+      .IgnKind();
+    t.Add(AName, p+'Variant_2'+e,      weMatch('True',skVariant))
+      .SkipIf(ALoc in [tlPointerAny])
+      .IgnKind();
 for i := StartIdx to t.Count-1 do
   t.Tests[i].SkipIf(ALoc in [tlConst, tlClassConst]);
 

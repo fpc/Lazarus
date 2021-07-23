@@ -393,23 +393,46 @@ type
     destructor Destroy; override;
   end;
 
-  { TFpValueDwarfStruct }
-
   { TFpValueDwarfStructBase }
 
   TFpValueDwarfStructBase = class(TFpValueDwarf)
   end;
 
+  { TFpValueDwarfStruct }
+
   TFpValueDwarfStruct = class(TFpValueDwarfStructBase)
-  private
-    FDataAddressDone: Boolean;
   protected
-    procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsCardinal: QWord; override;
     procedure SetAsCardinal(AValue: QWord); override;
     function GetDataSize: TFpDbgValueSize; override;
     function IsValidTypeCast: Boolean; override;
+
+    function GetMemberByName(const AIndex: String): TFpValue; override;
+  end;
+
+  { TFpValueDwarfVariantPart }
+
+  { TFpValueDwarfVariantBase }
+
+  TFpValueDwarfVariantBase = class(TFpValueDwarf)
+  protected
+    function GetKind: TDbgSymbolKind; override;
+    function GetMemberCount: Integer; override;
+    function GetMember(AIndex: Int64): TFpValue; override;
+    function GetMemberByName(const AIndex: String): TFpValue; override;
+    //function GetMemberEx(const AIndex: array of Int64): TFpValue; override;
+    function GetParentTypeInfo: TFpSymbol; override;
+  end;
+
+  TFpValueDwarfVariantPart = class(TFpValueDwarfVariantBase)
+  protected
+    function GetKind: TDbgSymbolKind; override;
+    (* GetMemberByName:
+       Direct access to the members of the nested variants
+       Only those accessible by Discr.
+    *)
+    function GetMemberByName(const AIndex: String): TFpValue; override;
   end;
 
   { TFpValueDwarfConstAddress }
@@ -876,6 +899,77 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function HasAddress: Boolean; override;
   end;
 
+  (* Variants....
+     - A Variant can be:
+       -  single conditional value
+       -  list of conditional values (record case...)
+     - Establish the value/type pairing
+     - DW_TAG_variant_part should be invisible / the PrettyPrinter can embedd content to the parent
+       - but users may wish to see "raw mode" all fields
+
+     Neither DW_TAG_variant_part nor DW_TAG_variant are actually data or type.
+     TODO: Maybe create some
+           TFpSymbolDwarf"Control"... ?
+
+
+     TFpSymbolDwarfTypeStructure (TYPE)
+     has many:
+     -> TFpSymbolDwarfDataMember ....        (DATA)                 DW_TAG_member
+
+
+     -> TFpSymbolDwarfDataMemberVariantPart  (DATA)                 DW_TAG_variant_part  (
+        has discr OR type
+        - DW_AT_discr = ref to DW_TAG_member
+        .TypeInfo = ???
+
+         has many:
+         -> TFpSymbolDwarfDataMemberVariant        (DATA)           DW_TAG_variant  (DW_AT_discr_value or list)
+            - DW_AT_discr_value  LEB128 (signed or unsigned - depends on member ref by dw_at_discr)
+
+            has many
+            -> TFpSymbolDwarfDataMember ....       (DATA)          DW_TAG_member
+
+  *)
+
+  { TFpSymbolDwarfDataMemberVariantPart }
+
+  TFpSymbolDwarfDataMemberVariantPart = class(TFpSymbolDwarfDataMember)
+  private
+    FMembers: TRefCntObjList;
+    FHasOrdinal: (hoUnknown, hoYes, hoNo);
+    FOrdinalSym: TFpSymbolDwarf;
+  protected
+    function GetValueObject: TFpValue; override;
+
+    procedure CreateMembers; //override;
+    procedure KindNeeded; override;
+
+    //function GetNestedSymbol(AIndex: Int64): TFpSymbol; override;
+    function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolCount: Integer; override;
+  public
+    destructor Destroy; override;
+  end;
+
+  { TFpSymbolDwarfTypeVariant }
+
+  TFpSymbolDwarfTypeVariant = class(TFpSymbolDwarfDataMember)
+  private
+    FMembers: TRefCntObjList;
+    FLastChildByName: TFpSymbolDwarf;
+
+    procedure CreateMembers;
+    function GetNestedSymbolEx(AIndex: Int64; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolExByName(const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol; override;
+    function GetNestedSymbolCount: Integer; override;
+
+    function GetValueObject: TFpValue; override;
+  public
+    destructor Destroy; override;
+    function MatchesDiscr(ADiscr: QWord): Boolean;
+    function IsDefaultDiscr: Boolean;
+  end;
+
   { TFpSymbolDwarfTypeStructure }
 
   TFpSymbolDwarfTypeStructure = class(TFpSymbolDwarfType)
@@ -884,7 +978,7 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     FMembers: TRefCntObjList;
     FLastChildByName: TFpSymbolDwarf;
     FInheritanceInfo: TDwarfInformationEntry;
-    procedure CreateMembers;
+    procedure CreateMembers; virtual;
     procedure InitInheritanceInfo; inline;
   protected
     function DoGetNestedTypeInfo: TFpSymbolDwarfType; override;
@@ -1136,12 +1230,14 @@ begin
     DW_TAG_structure_type,
     DW_TAG_interface_type,
     DW_TAG_class_type:       Result := TFpSymbolDwarfTypeStructure;
+    DW_TAG_variant:          Result := TFpSymbolDwarfTypeVariant;
     DW_TAG_array_type:       Result := TFpSymbolDwarfTypeArray;
     DW_TAG_subroutine_type:  Result := TFpSymbolDwarfTypeSubroutine;
     // Value types
     DW_TAG_variable:         Result := TFpSymbolDwarfDataVariable;
     DW_TAG_formal_parameter: Result := TFpSymbolDwarfDataParameter;
     DW_TAG_member:           Result := TFpSymbolDwarfDataMember;
+    DW_TAG_variant_part:     Result := TFpSymbolDwarfDataMemberVariantPart;
     DW_TAG_subprogram:       Result := TFpSymbolDwarfDataProc;
     //DW_TAG_inlined_subroutine, DW_TAG_entry_poin
     //
@@ -3057,12 +3153,6 @@ end;
 
 { TFpValueDwarfStruct }
 
-procedure TFpValueDwarfStruct.Reset;
-begin
-  inherited Reset;
-  FDataAddressDone := False;
-end;
-
 function TFpValueDwarfStruct.GetFieldFlags: TFpValueFieldFlags;
 begin
   Result := inherited GetFieldFlags;
@@ -3180,6 +3270,141 @@ begin
       else
         Result := False;
     end;
+  end;
+end;
+
+function TFpValueDwarfStruct.GetMemberByName(const AIndex: String): TFpValue;
+var
+  c, i: Integer;
+  n: String;
+  r: TFpValue;
+begin
+  c := MemberCount;
+  if c > 0 then begin
+    n := UpperCase(AIndex);
+    for i := c - 1 downto 0 do begin
+      Result := Member[i];
+      if (Result <> nil) then begin
+        if (Result.DbgSymbol <> nil) and
+           (UpperCase(Result.DbgSymbol.Name) = n)
+        then
+          exit;
+        if Result is TFpValueDwarfVariantPart then begin
+          r := Result;
+          Result := Result.MemberByName[AIndex];
+          r.ReleaseReference;
+          if Result <> nil then
+            exit;
+        end;
+        Result.ReleaseReference;
+      end;
+    end;
+    Result := nil;
+    exit;
+  end;
+
+  Result := inherited GetMemberByName(AIndex);
+end;
+
+{ TFpValueDwarfVariantBase }
+
+function TFpValueDwarfVariantBase.GetKind: TDbgSymbolKind;
+begin
+  Result := skNone;
+end;
+
+function TFpValueDwarfVariantBase.GetMemberCount: Integer;
+begin
+  Result := FDataSymbol.NestedSymbolCount;
+end;
+
+function TFpValueDwarfVariantBase.GetMember(AIndex: Int64): TFpValue;
+begin
+  Result := FDataSymbol.GetNestedValue(AIndex);
+  if Result = nil then
+    exit;
+
+  TFpValueDwarf(Result).FParentTypeSymbol := FParentTypeSymbol;
+  TFpValueDwarf(Result).SetStructureValue(StructureValue);
+  TFpValueDwarf(Result).Context := Context;
+end;
+
+function TFpValueDwarfVariantBase.GetMemberByName(const AIndex: String
+  ): TFpValue;
+begin
+  Result := FDataSymbol.GetNestedValueByName(AIndex);
+  if Result = nil then
+    exit;
+
+  TFpValueDwarf(Result).FParentTypeSymbol := FParentTypeSymbol;
+  TFpValueDwarf(Result).SetStructureValue(StructureValue);
+  TFpValueDwarf(Result).Context := Context;
+end;
+
+function TFpValueDwarfVariantBase.GetParentTypeInfo: TFpSymbol;
+begin
+  Result := StructureValue.GetParentTypeInfo;
+end;
+
+{ TFpValueDwarfVariantPart }
+
+function TFpValueDwarfVariantPart.GetKind: TDbgSymbolKind;
+begin
+  Result := skVariantPart;
+end;
+
+function TFpValueDwarfVariantPart.GetMemberByName(const AIndex: String
+  ): TFpValue;
+var
+  i: Integer;
+  DiscrMember, MemberGroup: TFpValue;
+  hasDiscr, UseDefault: Boolean;
+  discr: QWord;
+  n: String;
+begin
+  Result := nil;
+  n := UpperCase(AIndex);
+  DiscrMember := Member[-1];
+  if (DiscrMember <> nil) and
+     (DiscrMember.DbgSymbol<> nil) and
+     (UpperCase(DiscrMember.DbgSymbol.Name) = n)
+  then begin
+    Result := DiscrMember;
+    exit;
+  end;
+  hasDiscr := DiscrMember.FieldFlags * [svfInteger, svfCardinal, svfOrdinal] <> [];
+  if hasDiscr then
+    discr := DiscrMember.AsCardinal;
+
+  for UseDefault := False to True do begin
+    for i := 0 to MemberCount - 1 do begin
+      MemberGroup := Member[i];
+      if MemberGroup is TFpValueDwarfVariantBase then begin
+        if not (
+            ( (not UseDefault) and hasDiscr and
+              TFpSymbolDwarfTypeVariant(MemberGroup.DbgSymbol).MatchesDiscr(discr)
+            ) or
+            ( UseDefault and
+              TFpSymbolDwarfTypeVariant(MemberGroup.DbgSymbol).IsDefaultDiscr
+            )
+        )
+        then
+          continue;
+        Result := MemberGroup.MemberByName[AIndex];
+        if Result <> nil then begin
+          MemberGroup.ReleaseReference;
+          exit;
+        end;
+      end
+      else
+      if (MemberGroup.DbgSymbol<> nil) and
+         (UpperCase(MemberGroup.DbgSymbol.Name) = n)
+      then begin
+        Result := MemberGroup;
+        exit;
+      end;
+      MemberGroup.ReleaseReference;
+    end
   end;
 end;
 
@@ -5312,6 +5537,213 @@ begin
             //(InformationEntry.HasAttrib(DW_AT_data_member_location));
 end;
 
+{ TFpSymbolDwarfDataMemberVariantPart }
+
+function TFpSymbolDwarfDataMemberVariantPart.GetValueObject: TFpValue;
+begin
+  Result := TFpValueDwarfVariantPart.Create(nil);
+  TFpValueDwarf(Result).SetDataSymbol(self);
+end;
+
+procedure TFpSymbolDwarfDataMemberVariantPart.CreateMembers;
+var
+  Info: TDwarfInformationEntry;
+  Info2: TDwarfInformationEntry;
+  sym: TFpSymbolDwarf;
+begin
+  if FMembers <> nil then
+    exit;
+  FMembers := TRefCntObjList.Create;
+  Info := InformationEntry.Clone;
+  Info.GoChild;
+
+  while Info.HasValidScope do begin
+    if (Info.AbbrevTag = DW_TAG_variant) then begin
+      Info2 := Info.Clone;
+      sym := TFpSymbolDwarf.CreateSubClass('', Info2);
+      FMembers.Add(sym);
+      sym.ReleaseReference;
+      Info2.ReleaseReference;
+    end;
+    Info.GoNext;
+  end;
+
+  Info.ReleaseReference;
+end;
+
+procedure TFpSymbolDwarfDataMemberVariantPart.KindNeeded;
+begin
+  SetKind(skVariantPart);
+end;
+
+function TFpSymbolDwarfDataMemberVariantPart.GetNestedSymbolEx(AIndex: Int64;
+  out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+var
+  FwdInfoPtr: Pointer;
+  FwdCompUint: TDwarfCompilationUnit;
+  InfoEntry: TDwarfInformationEntry;
+begin
+  AnParentTypeSymbol := nil;
+
+  if AIndex = -1 then begin
+    Result := FOrdinalSym;
+    if FHasOrdinal <> hoUnknown then
+      exit;
+
+    FHasOrdinal := hoNo;
+    if InformationEntry.ReadReference(DW_AT_discr, FwdInfoPtr, FwdCompUint) then begin
+      InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
+      FOrdinalSym := TFpSymbolDwarf.CreateSubClass('', InfoEntry);
+      Result := FOrdinalSym;
+      ReleaseRefAndNil(InfoEntry);
+      FHasOrdinal := hoYes;
+    end;
+    if (FHasOrdinal = hoNo) and (TypeInfo <> nil) then
+      Result := Self;
+    exit;
+  end;
+
+  CreateMembers;
+
+  Result := TFpSymbol(FMembers[AIndex]);
+end;
+
+function TFpSymbolDwarfDataMemberVariantPart.GetNestedSymbolCount: Integer;
+begin
+  CreateMembers;
+  Result := FMembers.Count;
+end;
+
+destructor TFpSymbolDwarfDataMemberVariantPart.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FMembers);
+  FOrdinalSym.ReleaseReference;
+end;
+
+{ TFpSymbolDwarfTypeVariant }
+
+procedure TFpSymbolDwarfTypeVariant.CreateMembers;
+var
+  Info: TDwarfInformationEntry;
+  Info2: TDwarfInformationEntry;
+  sym: TFpSymbolDwarf;
+begin
+  // same as TFpSymbolDwarfTypeStructure.CreateMembers;
+  if FMembers <> nil then
+    exit;
+  FMembers := TRefCntObjList.Create;
+  Info := InformationEntry.Clone;
+  Info.GoChild;
+
+  while Info.HasValidScope do begin
+    if (Info.AbbrevTag = DW_TAG_member) or (Info.AbbrevTag = DW_TAG_subprogram) or
+       (Info.AbbrevTag = DW_TAG_variant_part)
+    then begin
+      Info2 := Info.Clone;
+      sym := TFpSymbolDwarf.CreateSubClass('', Info2);
+      FMembers.Add(sym);
+      sym.ReleaseReference;
+      Info2.ReleaseReference;
+    end;
+    Info.GoNext;
+  end;
+
+  Info.ReleaseReference;
+end;
+
+function TFpSymbolDwarfTypeVariant.GetNestedSymbolEx(AIndex: Int64; out
+  AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+var
+  i: Int64;
+  ti: TFpSymbolDwarfType;
+begin
+  CreateMembers;
+
+  AnParentTypeSymbol := nil;
+  Result := TFpSymbol(FMembers[AIndex]);
+end;
+
+function TFpSymbolDwarfTypeVariant.GetNestedSymbolExByName(
+  const AIndex: String; out AnParentTypeSymbol: TFpSymbolDwarfType): TFpSymbol;
+var
+  i: Integer;
+  Ident: TDwarfInformationEntry;
+  n: String;
+begin
+  AnParentTypeSymbol := nil;
+  // Todo, maybe create all children?
+  if FLastChildByName <> nil then begin
+    FLastChildByName.ReleaseReference;
+    FLastChildByName := nil;
+  end;
+  Result := nil;
+
+  if FMembers <> nil then begin
+    n := UpperCase(AIndex);
+    i := FMembers.Count - 1;
+    while i >= 0 do begin
+      if UpperCase(TFpSymbol(FMembers[i]).Name) = n then begin
+        Result := TFpSymbol(FMembers[i]);
+        exit;
+      end;
+      dec(i);
+    end;
+  end;
+
+  Ident := InformationEntry.FindNamedChild(AIndex);
+  if Ident <> nil then begin
+    FLastChildByName := TFpSymbolDwarf.CreateSubClass('', Ident);
+    //assert is member ?
+    ReleaseRefAndNil(Ident);
+    Result := FLastChildByName;
+  end;
+end;
+
+function TFpSymbolDwarfTypeVariant.GetNestedSymbolCount: Integer;
+begin
+  CreateMembers;
+  Result := FMembers.Count;
+end;
+
+function TFpSymbolDwarfTypeVariant.GetValueObject: TFpValue;
+begin
+  Result := TFpValueDwarfVariantBase.Create(nil);
+  TFpValueDwarf(Result).SetDataSymbol(self);
+end;
+
+destructor TFpSymbolDwarfTypeVariant.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FMembers);
+  FLastChildByName.ReleaseReference;
+end;
+
+function TFpSymbolDwarfTypeVariant.MatchesDiscr(ADiscr: QWord): Boolean;
+var
+  d: QWord;
+begin
+  // TODO: DW_AT_discr_list;
+  Result := InformationEntry.HasAttrib(DW_AT_discr_value);
+  if not Result then
+    exit;
+
+  Result := InformationEntry.ReadValue(DW_AT_discr_value, d) and
+    (ADiscr = d);
+end;
+
+function TFpSymbolDwarfTypeVariant.IsDefaultDiscr: Boolean;
+var
+  d: array of byte;
+begin
+  Result := (not InformationEntry.HasAttrib(DW_AT_discr_value)) and
+            ( (not InformationEntry.HasAttrib(DW_AT_discr_list)) or
+              (not (InformationEntry.ReadValue(DW_AT_discr_list, d))) or
+              (Length(d)=0)
+            )
+            ;
+end;
+
 { TFpSymbolDwarfTypeStructure }
 
 function TFpSymbolDwarfTypeStructure.GetNestedSymbolExByName(
@@ -5433,7 +5865,9 @@ begin
   Info.GoChild;
 
   while Info.HasValidScope do begin
-    if (Info.AbbrevTag = DW_TAG_member) or (Info.AbbrevTag = DW_TAG_subprogram) then begin
+    if (Info.AbbrevTag = DW_TAG_member) or (Info.AbbrevTag = DW_TAG_subprogram) or
+       (Info.AbbrevTag = DW_TAG_variant_part)
+    then begin
       Info2 := Info.Clone;
       sym := TFpSymbolDwarf.CreateSubClass('', Info2);
       FMembers.Add(sym);

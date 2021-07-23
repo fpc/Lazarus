@@ -135,10 +135,11 @@ const
     '', 'private', 'protected', 'public', 'published'
   );
 var
-  i: Integer;
+  j: Integer;
   FldInfo: TWatchResultDataFieldInfo;
-  FldOwner: TWatchResultData;
+  FldOwner, VarField: TWatchResultData;
   vis, indent, sep, tn: String;
+  InclVisSect: Boolean;
 begin
   Result := '';
 
@@ -199,11 +200,10 @@ begin
   else
     sep := ' ';
 
+  InclVisSect := (ADispFormat = wdfStructure) and (AResValue.StructType in [dstClass, dstObject]);
   FldOwner := nil;
   vis := '';
-  for i := 0 to AResValue.FieldCount - 1 do begin
-    FldInfo := AResValue.Fields[i];
-
+  for FldInfo in AResValue do begin
     if FldOwner <> FldInfo.Owner then begin
       FldOwner := FldInfo.Owner;
       vis := '';
@@ -217,19 +217,19 @@ begin
       end;
     end;
 
-    if (ADispFormat = wdfStructure) and (AResValue.StructType in [dstClass, dstObject]) then begin
-      if vis <> VisibilityNames[FldInfo.FieldVisibility] then begin
-        vis := VisibilityNames[FldInfo.FieldVisibility];
-        if (Length(Result) > 0) then
-          Result := Result + sep;
-        Result := Result + indent + vis;
-      end;
+    if InclVisSect and (vis <> VisibilityNames[FldInfo.FieldVisibility]) then begin
+      vis := VisibilityNames[FldInfo.FieldVisibility];
+      if (Length(Result) > 0) then
+        Result := Result + sep;
+      Result := Result + indent + vis;
     end;
 
     if (Length(Result) > 0) then
       Result := Result + sep;
+
     Result := Result + indent + FldInfo.FieldName + ': ' +
       PrintWatchValueEx(FldInfo.Field, wdfDefault, ANestLvl) + ';';
+
     if Length(Result) > 1000*1000 div Max(1, ANestLvl*4) then begin
       Result := Result + sep +'...';
       break;

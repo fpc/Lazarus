@@ -408,6 +408,95 @@ end;
 
 function TFpWatchResultConvertor.StructToResData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
+
+  procedure AddVariantMembers(VariantPart: TFpValue; ResAnch: TLzDbgWatchDataIntf);
+  var
+    VariantContainer, VMember: TFpValue;
+    i, j: Integer;
+    ResField, ResList: TLzDbgWatchDataIntf;
+    discr: QWord;
+    hasDiscr, FoundDiscr, UseDefault: Boolean;
+    MBVis: TLzDbgFieldVisibility;
+    n: String;
+  begin
+    VariantContainer := VariantPart.Member[-1];
+    if VariantContainer = nil then
+      exit;
+
+    ResList := ResAnch.AddField('', dfvUnknown, [dffVariant]);
+    ResList.CreateArrayValue(datUnknown);
+
+    hasDiscr := (VariantContainer <> nil) and
+      (VariantContainer.FieldFlags * [svfInteger, svfCardinal, svfOrdinal] <> []);
+    if hasDiscr then begin
+      discr := VariantContainer.AsCardinal;
+
+      n := '';
+      MBVis := dfvUnknown;
+      if (VariantContainer.DbgSymbol <> nil) then begin
+        n := VariantContainer.DbgSymbol.Name;
+        case VariantContainer.DbgSymbol.MemberVisibility of
+          svPrivate:   MBVis := dfvPrivate;
+          svProtected: MBVis := dfvProtected;
+          svPublic:    MBVis := dfvPublic;
+          else         MBVis := dfvUnknown;
+        end;
+      end;
+
+      if n <> '' then begin
+        ResField := ResList.SetNextArrayData;
+        ResField := ResField.CreateVariantValue(n, MBVis);
+        if not DoWritePointerWatchResultData(VariantContainer, ResField, 0) then // addr
+          ResField.CreateError('Unknown');
+      end;
+    end;
+    VariantContainer.ReleaseReference;
+
+    FoundDiscr := False;
+    For UseDefault := (not hasDiscr) to True do begin
+      for i := 0 to VariantPart.MemberCount - 1 do begin
+        VariantContainer := VariantPart.Member[i];
+        if (VariantContainer.DbgSymbol <> nil) and
+           (VariantContainer.DbgSymbol is TFpSymbolDwarfTypeVariant) and
+           ( ( (not UseDefault) and
+               (TFpSymbolDwarfTypeVariant(VariantContainer.DbgSymbol).MatchesDiscr(discr))
+             ) or
+             ( (UseDefault) and
+               (TFpSymbolDwarfTypeVariant(VariantContainer.DbgSymbol).IsDefaultDiscr)
+             )
+           )
+        then begin
+          FoundDiscr := True;
+          for j := 0 to VariantContainer.MemberCount - 1 do begin
+            VMember := VariantContainer.Member[j];
+            n := '';
+            MBVis := dfvUnknown;
+            if (VMember.DbgSymbol <> nil) then begin
+              n := VMember.DbgSymbol.Name;
+              case VariantContainer.DbgSymbol.MemberVisibility of
+                svPrivate:   MBVis := dfvPrivate;
+                svProtected: MBVis := dfvProtected;
+                svPublic:    MBVis := dfvPublic;
+                else         MBVis := dfvUnknown;
+              end;
+            end;
+
+// TODO visibility
+            ResField := ResList.SetNextArrayData;
+            ResField := ResField.CreateVariantValue(n, MBVis);
+            if not DoWritePointerWatchResultData(VMember, ResField, 0) then // addr
+              ResField.CreateError('Unknown');
+            VMember.ReleaseReference;
+          end;
+        end;
+
+        VariantContainer.ReleaseReference;
+      end;
+      if FoundDiscr then
+        break;
+    end;
+  end;
+
 type
   TAnchestorMap = specialize TFPGMap<PtrUInt, TLzDbgWatchDataIntf>;
 var
@@ -515,6 +604,12 @@ begin
       else begin
         UnkAnch := TopAnch.SetAnchestor('');
         ResAnch := UnkAnch;
+      end;
+
+      if MemberValue.Kind = skVariantPart then begin
+        AddVariantMembers(MemberValue, ResAnch);
+        MemberValue.ReleaseReference;
+        continue;
       end;
 
       sym := MemberValue.DbgSymbol;

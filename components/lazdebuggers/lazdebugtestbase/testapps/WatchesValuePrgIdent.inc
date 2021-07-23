@@ -129,6 +129,17 @@
   pre__UnicodeString4{e}   _OP_ TUStrA      (CHR1+'B'#0'X'#9'b'#10#13);         //@@ _pre3_UnicodeString4{e3};
   pre__UnicodeString5{e}   _OP_ TUStrTA     (CHR1+'YcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghijAbcdefghij');          //@@ _pre3_UnicodeString5{e3};
 
+  {$IFnDEF TestType}
+    {$IFnDEF TestConst}
+    pre__Variant_1{e}       _O2_ variant         _EQ_      (71237);       //@@ _pre3_Variant_1{e3};
+    pre__Variant_2{e}       _O2_ variant         _EQ_      (True);        //@@ _pre3_Variant_2{e3};
+    {$ELSE}
+    // not supported
+    pre__Variant_1{e}      =   (71237); // }}}}
+    pre__Variant_2{e}      =   (True); // }}}}
+    {$ENDIF}
+  {$ENDIF}
+
 // wide string char...
 
   // types that may get confused with strings

@@ -1418,20 +1418,18 @@ begin
      (AWatchValue.ResultData.StructType <> dstInternal)
   then begin
     ResData := AWatchValue.ResultData;
-    ChildCount := ResData.FieldCount;
     AWatch := AWatchValue.Watch;
     ExistingNode := tvWatches.GetFirstChildNoInit(VNode);
     if ExistingNode <> nil then
       tvWatches.NodeControl[ExistingNode].Free;
 
     AnchClass := ResData.TypeName;
-    for i := 0 to ResData.FieldCount-1 do begin
-      ChildInfo := ResData.Fields[i];
+    for ChildInfo in ResData do begin
       NewWatch := AWatch.ChildrenByNameAsField[ChildInfo.FieldName, AnchClass];
       if NewWatch = nil then begin
-        dec(ChildCount);
         continue;
       end;
+      inc(ChildCount);
 
       if AWatch is TCurrentWatch then begin
         NewWatch.DisplayFormat := wdfDefault;

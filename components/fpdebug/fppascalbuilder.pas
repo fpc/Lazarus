@@ -1200,7 +1200,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
         APrintedValue := '';
       for i := 0 to AValue.MemberCount-1 do begin
         MemberValue := AValue.Member[i];
-        if (MemberValue = nil) or (MemberValue.Kind in [skProcedure, skFunction]) then begin
+        if (MemberValue = nil) or (MemberValue.Kind in [skProcedure, skFunction, skVariantPart]) then begin
           MemberValue.ReleaseReference;
           continue;
         end;

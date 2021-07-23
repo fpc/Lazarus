@@ -710,6 +710,7 @@ type
 //    //procedure CreateEnumValue(ANumValue: QWord; const ANames: TStringDynArray; const AOrdValues: TIntegerDynArray);
     procedure CreateSetValue(const ANames: TStringDynArray);
     //procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
+    function CreateVariantValue(AName: String = ''; AVisibility: TLzDbgFieldVisibility = dfvUnknown): TLzDbgWatchDataIntf;
     procedure CreateStructure(AStructType: TLzDbgStructType;
                               ADataAddress: TDBGPtr = 0
                               //AOwnFieldCount: Integer = 0;    // Fields declared in this structure (no anchestors)
@@ -3482,6 +3483,13 @@ begin
         FNewResultData.SetEntryCount(FCurrentIdx + 1);
     end
     else
+    if (FNewResultData.ValueKind = rdkVariant) then begin
+      FSubCurrentData.Done;
+      FNewResultData.SetDerefData(FSubCurrentData.FNewResultData);
+      FSubCurrentData.FNewResultData := nil;
+      FreeAndNil(FSubCurrentData);
+    end
+    else
     if (FNewResultData.ValueKind in [rdkStruct]) then begin
         WriteFieldsToRes(0, FNewResultData);
     end;
@@ -3693,6 +3701,25 @@ begin
     FNewResultData := TWatchResultDataSet.Create(ANames)
   else
     TWatchResultDataSet(FNewResultData).Create(ANames);
+  AfterDataCreated;
+end;
+
+function TCurrentResData.CreateVariantValue(AName: String;
+  AVisibility: TLzDbgFieldVisibility): TLzDbgWatchDataIntf;
+begin
+  BeforeCreateValue;
+  assert((FNewResultData=nil) or (FNewResultData.ValueKind=rdkVariant), 'TCurrentResData.CreateVariantValue: (FNewResultData=nil) or (FNewResultData.ValueKind=rdkVariant)');
+  if FNewResultData = nil then
+    FNewResultData := TWatchResultDataVariant.Create(AName, AVisibility)
+  else
+    TWatchResultDataVariant(FNewResultData).Create(AName, AVisibility);
+
+  if FSubCurrentData <> nil then
+    FSubCurrentData.FreeResultAndSubDataAndDestroy;
+  // Don't set the FOwnerCurrentData
+  FSubCurrentData := TCurrentResData.Create;
+  FSubCurrentData.FFLags := FSubCurrentData.FFLags + [crfFreeResData, crfFreeErrResData];
+  Result := FSubCurrentData;
   AfterDataCreated;
 end;
 

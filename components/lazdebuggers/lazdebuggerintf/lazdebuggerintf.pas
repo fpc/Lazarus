@@ -111,7 +111,7 @@ type
   TLzDbgStructType      = (dstUnknown, dstRecord, dstObject, dstClass, dstInterface, dstInternal);
   TLzDbgArrayType       = (datUnknown, datDynArray, datStatArray);
   TLzDbgFieldVisibility = (dfvUnknown, dfvPrivate, dfvProtected, dfvPublic, dfvPublished);
-  TLzDbgFieldFlag  = (dffClass, dffAbstract, dffVirtual, dffOverwritten, dffConstructor, dffDestructor);
+  TLzDbgFieldFlag  = (dffClass, dffAbstract, dffVirtual, dffOverwritten, dffConstructor, dffDestructor, dffVariant);
   TLzDbgFieldFlags = set of TLzDbgFieldFlag;
 
   { TLzDbgWatchDataIntf:
@@ -150,6 +150,7 @@ type
     procedure CreateSetValue(const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
 //    // CreateSetValue: "ASetVal" only has "length(ANames)" entries. Any higher value will be ignored / should be zero
 //    procedure CreateSetValue(const ASetVal: TLzDbgSetData; const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
+    function CreateVariantValue(AName: String = ''; AVisibility: TLzDbgFieldVisibility = dfvUnknown): TLzDbgWatchDataIntf;
 
     //temporary
     function CreateProcedure(AVal: TDBGPtr; AnIsFunction: Boolean; ALoc, ADesc: String): TLzDbgWatchDataIntf;

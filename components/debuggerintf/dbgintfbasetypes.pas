@@ -47,6 +47,7 @@ type
     skAnsiString,
     skCurrency,
     skVariant,
+    skVariantPart, // FpDebug only: a DW_TAG_variant_part
     skWideString,
     //--------------------------------------------------------------------------
     skEnum,       // Variable holding an enum / enum type
