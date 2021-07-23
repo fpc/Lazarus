@@ -2730,10 +2730,18 @@
           <p>
             <var>Clear</var> is a procedure used to remove all values stored in the <var>Items</var> property for the control. Clear calls the Clear method in Items to removed the strings and any associated objects stored in the <var>TStrings</var> property. Clear sets the value in <var>Text</var> to an empty string (<b>''</b>)  which forces the value in ItemIndex to be changed to <b>-1</b>.
           </p>
+          <p>
+            Use the Clear method in Items to remove all of the the values stored in Items but  keep the current value in Text.
+          </p>
+          <p>
+            Use ClearSelection to reset the value in ItemIndex and de-select the selected value in Items.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomComboBox.Items"/>
+          <link id="TCustomComboBox.Items"/>
           <link id="TCustomComboBox.ItemIndex"/>
+          <link id="TCustomComboBox.ClearSelection"/>
           <link id="#rtl.classes.TStrings.Clear">TStrings.Clear</link>
         </seealso>
       </element>
@@ -2742,7 +2750,10 @@
         <short>Removes the item selection in the list  box for the control.</short>
         <descr>
           <p>
-            <var>ClearSelection</var> is a procedure used to remove the current item selection in the list box for the control. This causes the value in <var>ItemIndex</var> to be changed to <b>-1</b>. The text selection in the edit box is not affected in the method. Set <var>SelLength</var> to zero (<b>0</b>) to remove the text selection in  the edit box.
+            <var>ClearSelection</var> is a procedure used to remove the current item selection in the list box for the control. This causes the value in <var>ItemIndex</var> to be changed to <b>-1</b>, and the value in Text is set to an empty string ('').
+          </p>
+          <p>
+            Use SelStart, SelLength, and SelText to access or modify the text selection in the edit control.  Set <var>SelLength</var> to zero (<b>0</b>) to remove the text selection in  the edit box.
           </p>
         </descr>
         <seealso>
