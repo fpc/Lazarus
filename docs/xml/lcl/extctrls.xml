@@ -3656,7 +3656,7 @@
 
       <element name="TRadioGroup.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TRadioGroup.Anchors" link="#lcl.controls.TControl.Anchors"/>
-      <element name="TRadioGroup.AutoFill" link="ExtCtrls.TCustomRadioGroup.AutoFill"/>
+      <element name="TRadioGroup.AutoFill" link="#lcl.extctrls.TCustomRadioGroup.AutoFill"/>
       <element name="TRadioGroup.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TRadioGroup.BiDiMode" link="#lcl.controls.TControl.BiDiMode"/>
       <element name="TRadioGroup.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
