@@ -410,7 +410,7 @@ begin
   if not Result then
   begin
     GitDir:= AppendPathDelim(SourceDirectory)+'.git';
-    if DirectoryExistsUTF8(GitDir) and GitInPath then
+    if (DirectoryExistsUTF8(GitDir) or FileExistsUTF8(GitDir)) and GitInPath then
     begin
       Result := GetRevisionFromGitVersion;
       if not Result then begin
