@@ -4,10 +4,10 @@ Quick Start for translators
 For example Finnish translation:
 
 1. Make sure that you have up-to-date Lazarus from Git (main branch).
-2. Search for all *.pot files (PoChecker tool [lazarus/components/pochecker/] can help you with this).
+2. Search for all *.pot files (PoChecker tool in `<lazarusdir>/components/pochecker` directory can help you with this).
 3. If POT file belongs to some package, make sure that this package is installed in IDE.
 4. Rebuild Lazarus clean. This will update translations for most packages.
-5. Run 'sh localize.sh' (Linux) or 'localize.bat' (Windows) to update all remaining translations.
+5. Run `sh localize.sh` (Linux) or `localize.bat` (Windows) to update all remaining translations.
 6. Edit PO files (*.fi.po) with programs like poEdit (www.poedit.net) or Lokalize. Do not edit them manually.
    If .fi.po file is missing for particular component, use template (POT file) to create it.
 7. Check your translated PO files with PoChecker tool and fix all
