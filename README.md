@@ -54,7 +54,7 @@ Documentation:
 
 The official site is www.lazarus-ide.org.
 Documents about specific topics can be found at 
-wiki.freepascal.org/Lazarus_Documentation.
+https://wiki.freepascal.org/Lazarus_Documentation.
 Examples on how to use the LCL can be found in the 'examples' directory.
 Help, documents and files about Free Pascal are at www.freepascal.org.
 
