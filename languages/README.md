@@ -1,4 +1,5 @@
-Quick Start for translators:
+Quick Start for translators
+===========================
 
 For example Finnish translation:
 
@@ -12,12 +13,12 @@ For example Finnish translation:
 7. Check your translated PO files with PoChecker tool and fix all
    reported errors (you need to run all tests, there should be no errors shown in
    General Info tab of Results window).
-8. Post updated xxx.fi.po files to the Lazarus bug tracker.
+8. Post updated xxx.fi.po files to the Lazarus issue tracker.
    Do NOT post diffs for PO files.
 
 Some notes:
 
-The <lazarusdir>/languages directory contains stuff for internationalization of the Lazarus IDE.
+The `<lazarusdir>/languages` directory contains stuff for internationalization of the Lazarus IDE.
 There are also other directories for CodeTools, LCL and various packages.
 
 You can scan Lazarus directory with PoChecker tool in order to find all translations (including
@@ -30,12 +31,14 @@ Template is used as a base for updating actual translation files and starting tr
 
 Example for the IDE translation family:
 
-Template:    lazaruside.pot
-German:      lazaruside.de.po
-Russian:     lazaruside.ru.po
-Spanish:     lazaruside.es.po
-French:      lazaruside.fr.po
-Italian:     lazaruside.it.po
+| Language     | File             |
+| ---          | ---              |
+| _Template_   | _lazaruside.pot_ |
+| German       | lazaruside.de.po |
+| Russian      | lazaruside.ru.po |
+| Spanish      | lazaruside.es.po |
+| French       | lazaruside.fr.po |
+| Italian      | lazaruside.it.po |
 
 If you KNOW what you are DOING, you can use PoChecker tool to refresh translation families (i.e. synchronize
 actual translations with template files). In order to get an access to this function, you should
