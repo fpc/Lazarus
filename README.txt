@@ -11,12 +11,12 @@ Free Pascal at www.freepascal.org is a fast Object Pascal compiler (and more),
 that runs on more than 20 platforms (Linux, Windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
-The LCL currently supports Linux (gtk2 and qt4), all flavors of Windows
-(even wince), Mac OS X (carbon, gtk2, qt4), FreeBSD (gtk2).
-There is experimental support for:
-* gtk3
+The LCL currently supports Linux/FreeBSD (GTK2, Qt4 and Qt5), all flavors of
+Windows (even WinCE), Mac OS X (Cocoa, Carbon, GTK2, Qt4, Qt5).
+There is an experimental support for:
+* GTK3
 * Solaris 
-The LCL still contains code for gtk1 although that is obsolete.
+The LCL still contains code for GTK1 although that is obsolete.
 
 --------------------------------------------------------------------------------
 Compilation:
@@ -49,8 +49,7 @@ Start the IDE with:
 --------------------------------------------------------------------------------
 Documentation:
 
-The official site is www.lazarus.freepascal.org. There you can find the FAQ -
-the frequently asked questions.
+The official site is www.lazarus-ide.org.
 Documents about specific topics can be found at 
 wiki.freepascal.org/Lazarus_Documentation.
 Examples on how to use the LCL can be found in the 'examples' directory.
@@ -69,9 +68,8 @@ http://lists.lazarus.freepascal.org/mailman/listinfo/lazarus
 --------------------------------------------------------------------------------
 How to help Lazarus:
 
-If you find bugs, don't hesitate to use the bug tracking tool at the website,
+If you find bugs, don't hesitate to use issue tracker,
 or send an email to the list.
-Patches can be sent as .zip or .tgz attachments directly to the mailing list if
-small, or (preferably) to the bug tracker at
-http://bugs.freepascal.org/my_view_page.php
+Lazarus source code and issue tracker are located at GitLab:
+https://gitlab.com/freepascal.org/lazarus/lazarus
 
