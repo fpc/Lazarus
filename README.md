@@ -7,7 +7,7 @@ independent visual components like buttons, windows, checkbox, treeview and
 many, many more. The LCL is platform independent, so you can write an
 application once and then compile for various platforms without changing code.
 
-[Free Pascal](www.freepascal.org) is a fast Object Pascal compiler (and more),
+[Free Pascal](https://www.freepascal.org) is a fast Object Pascal compiler (and more),
 that runs on more than 20 platforms (Linux, Windows, BSD, OS/2, DOS, PowerPC,
 and many more).
 
