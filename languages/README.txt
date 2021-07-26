@@ -2,17 +2,17 @@ Quick Start for translators:
 
 For example Finnish translation:
 
-1. Make sure that you have up-to-date Lazarus from SVN trunk.
-2. Search for all *.fi.po files.
-3. If PO file belongs to some package, make sure that this package is installed in IDE.
-4. Rebuild Lazarus clean. This will update most packages translations.
+1. Make sure that you have up-to-date Lazarus from Git (main branch).
+2. Search for all *.pot files (PoChecker tool [lazarus/components/pochecker/] can help you with this).
+3. If POT file belongs to some package, make sure that this package is installed in IDE.
+4. Rebuild Lazarus clean. This will update translations for most packages.
 5. Run 'sh localize.sh' (Linux) or 'localize.bat' (Windows) to update all remaining translations.
-6. PO files are simple text files with an easy format.
-   Edit them with programs like poEdit (www.poedit.net) or Lokalize. Do not edit them manually.
-7. Check your translated PO files with PoChecker tool (lazarus/components/pochecker/) and fix all
+6. Edit PO files (*.fi.po) with programs like poEdit (www.poedit.net) or Lokalize. Do not edit them manually.
+   If .fi.po file is missing for particular component, use template (POT file) to create it.
+7. Check your translated PO files with PoChecker tool and fix all
    reported errors (you need to run all tests, there should be no errors shown in
    General Info tab of Results window).
-8. Post updated xxx.fi.po files to bug tracker (http://bugs.freepascal.org).
+8. Post updated xxx.fi.po files to the Lazarus bug tracker.
    Do NOT post diffs for PO files.
 
 Some notes:
