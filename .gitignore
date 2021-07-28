@@ -1,552 +1,76 @@
-/*.bak
-/*.exe
-components/*.bak
-components/anchordocking/*.bak
-components/anchordocking/units
-components/cairocanvas/lib
-components/chmhelp/*.bak
-components/chmhelp/democontrol/*.bak
-components/chmhelp/democontrol/units
-components/chmhelp/lhelp/*.bak
-components/chmhelp/lhelp/units
-components/chmhelp/packages/*.bak
-components/chmhelp/packages/help/*.bak
-components/chmhelp/packages/help/units
-components/chmhelp/packages/idehelp/*.bak
-components/chmhelp/packages/idehelp/units
-components/chmhelp/packages/units
-components/chmhelp/units
-components/codetools/*.bak
-components/codetools/examples/*.bak
-components/codetools/examples/scanexamples/*.bak
-components/codetools/examples/scanexamples/include/*.bak
-components/codetools/examples/scanexamples/include/units
-components/codetools/examples/scanexamples/units
-components/codetools/examples/units
-components/codetools/languages/*.bak
-components/codetools/languages/units
-components/codetools/units
-components/customform/*.bak
-components/customform/demo/*.bak
-components/customform/demo/units
-components/customform/lib/*.bak
-components/customform/lib/units
-components/customform/units
-components/debuggerintf/lib
-components/fpcunit/*.bak
-components/fpcunit/console/*.bak
-components/fpcunit/console/units
-components/fpcunit/ide/*.bak
-components/fpcunit/ide/lib/*.bak
-components/fpcunit/ide/lib/units
-components/fpcunit/ide/units
-components/fpcunit/lib/*.bak
-components/fpcunit/lib/units
-components/fpcunit/units
-components/fpdebug/app/fpd/*.bak
-components/fpdebug/app/fpd/units
-components/fpdebug/app/fpdd/*.bak
-components/fpdebug/app/fpdd/units
-components/fpdebug/test/*.bak
-components/fpdebug/test/units
-components/fpweb/lib
-components/h2pas/*.bak
-components/h2pas/languages/*.bak
-components/h2pas/languages/units
-components/h2pas/units
-components/ideintf/*.bak
-components/ideintf/languages/*.bak
-components/ideintf/languages/units
-components/ideintf/units
-components/images/*.bak
-components/images/examples/*.bak
-components/images/examples/units
-components/images/units
-components/lazcontrols/design/lib
-components/lazcontrols/lib
-components/lazdebuggergdbmi/lib
-components/lazreport/samples/ChildBand_Example/lib
-components/lazreport/source/addons/DialogControls/lib
-components/lazreport/source/addons/SqlDB/lib
-components/lazreport/source/addons/TDbfDB/lib
-components/lazreport/source/addons/lrcodereport/lib
-components/lazreport/source/addons/lrspreadsheetexport/lib
-components/lazreport/source/addons/pdfexport/lib
-components/lazreport/source/lib
-components/lazutils/lib
-components/macfiles/*.bak
-components/macfiles/examples/*.bak
-components/macfiles/examples/units
-components/macfiles/units
-components/memds/*.bak
-components/memds/languages/*.bak
-components/memds/languages/units
-components/memds/lib/*.bak
-components/memds/lib/units
-components/memds/units
-components/mpaslex/*.bak
-components/mpaslex/units
-components/opengl/*.bak
-components/opengl/example/*.bak
-components/opengl/example/units
-components/opengl/units
-components/printers/*.bak
-components/printers/design/*.bak
-components/printers/design/languages/*.bak
-components/printers/design/languages/units
-components/printers/design/printers4lazidetest/*.bak
-components/printers/design/printers4lazidetest/units
-components/printers/design/units
-components/printers/lib
-components/printers/samples/*.bak
-components/printers/samples/dialogs/*.bak
-components/printers/samples/dialogs/units
-components/printers/samples/rawmode/*.bak
-components/printers/samples/rawmode/units
-components/printers/samples/units
-components/printers/units
-components/printers/unix/*.bak
-components/printers/unix/units
-components/printers/win32/*.bak
-components/printers/win32/units
-components/projecttemplates/*.bak
-components/projecttemplates/languages/*.bak
-components/projecttemplates/languages/units
-components/projecttemplates/lib/*.bak
-components/projecttemplates/lib/units
-components/projecttemplates/units
-components/rtticontrols/*.bak
-components/rtticontrols/examples/*.bak
-components/rtticontrols/examples/units
-components/rtticontrols/lib
-components/rtticontrols/units
-components/rx/*.bak
-components/rx/lib
-components/rx/units
-components/sdf/*.bak
-components/sdf/units
-components/simpleideintf/*.bak
-components/simpleideintf/examples/*.bak
-components/simpleideintf/examples/files/*.bak
-components/simpleideintf/examples/files/units
-components/simpleideintf/examples/units
-components/simpleideintf/units
-components/sqldb/*.bak
-components/sqldb/lib
-components/sqldb/units
-components/sqlite/*.bak
-components/sqlite/lib
-components/sqlite/lib/*.bak
-components/sqlite/lib/units
-components/sqlite/units
-components/synedit/*.bak
-components/synedit/design/*.bak
-components/synedit/design/units
-components/synedit/languages/*.bak
-components/synedit/languages/units
-components/synedit/test/*.bak
-components/synedit/test/units
-components/synedit/units
-components/synunihighlighter/*.bak
-components/synunihighlighter/languages/*.bak
-components/synunihighlighter/languages/units
-components/synunihighlighter/lib/*.bak
-components/synunihighlighter/lib/units
-components/synunihighlighter/units
-components/tachart/aggpas/lib
-components/tachart/demo/3d/*.exe
-components/tachart/demo/3d/*.lps
-components/tachart/demo/3d/lib
-components/tachart/demo/aggpas/*.exe
-components/tachart/demo/aggpas/*.lps
-components/tachart/demo/aggpas/lib
-components/tachart/demo/animate/*.exe
-components/tachart/demo/animate/*.lps
-components/tachart/demo/animate/lib
-components/tachart/demo/axis/*.exe
-components/tachart/demo/axis/*.lps
-components/tachart/demo/axis/lib
-components/tachart/demo/axistransf/*.exe
-components/tachart/demo/axistransf/*.lps
-components/tachart/demo/axistransf/lib
-components/tachart/demo/basic/*.exe
-components/tachart/demo/basic/*.lps
-components/tachart/demo/basic/lib
-components/tachart/demo/bgra/*.exe
-components/tachart/demo/bgra/*.lps
-components/tachart/demo/bgra/lib
-components/tachart/demo/chartsource/*.exe
-components/tachart/demo/chartsource/*.lps
-components/tachart/demo/chartsource/lib
-components/tachart/demo/clone/*.exe
-components/tachart/demo/clone/*.lps
-components/tachart/demo/clone/lib
-components/tachart/demo/db/*.exe
-components/tachart/demo/db/*.lps
-components/tachart/demo/db/lib
-components/tachart/demo/distance/*.exe
-components/tachart/demo/distance/*.lps
-components/tachart/demo/distance/lib
-components/tachart/demo/dragdrop/*.exe
-components/tachart/demo/dragdrop/*.lps
-components/tachart/demo/dragdrop/lib
-components/tachart/demo/events/*.exe
-components/tachart/demo/events/*.lps
-components/tachart/demo/events/lib
-components/tachart/demo/extent/*.exe
-components/tachart/demo/extent/*.lps
-components/tachart/demo/extent/lib
-components/tachart/demo/fit/*.exe
-components/tachart/demo/fit/*.lps
-components/tachart/demo/fit/*.res
-components/tachart/demo/fit/lib
-components/tachart/demo/fpvectorial/*.exe
-components/tachart/demo/fpvectorial/*.lps
-components/tachart/demo/fpvectorial/lib
-components/tachart/demo/func/*.exe
-components/tachart/demo/func/*.lps
-components/tachart/demo/func/lib
-components/tachart/demo/imagelist/*.exe
-components/tachart/demo/imagelist/*.lps
-components/tachart/demo/imagelist/*.res
-components/tachart/demo/imagelist/lib
-components/tachart/demo/labels/*.exe
-components/tachart/demo/labels/*.lps
-components/tachart/demo/labels/lib
-components/tachart/demo/lazreport/*.exe
-components/tachart/demo/lazreport/*.lps
-components/tachart/demo/lazreport/lib
-components/tachart/demo/legend/*.exe
-components/tachart/demo/legend/*.lps
-components/tachart/demo/legend/lib
-components/tachart/demo/line/*.exe
-components/tachart/demo/line/*.lps
-components/tachart/demo/line/lib
-components/tachart/demo/listbox/*.exe
-components/tachart/demo/listbox/*.lps
-components/tachart/demo/listbox/lib
-components/tachart/demo/manhattan/*.exe
-components/tachart/demo/manhattan/*.lps
-components/tachart/demo/manhattan/*.res
-components/tachart/demo/manhattan/lib
-components/tachart/demo/multi/*.exe
-components/tachart/demo/multi/*.lps
-components/tachart/demo/multi/lib
-components/tachart/demo/nan/*.dbg
-components/tachart/demo/nan/*.exe
-components/tachart/demo/nan/*.lps
-components/tachart/demo/nan/*.res
-components/tachart/demo/nan/lib
-components/tachart/demo/navigate/*.exe
-components/tachart/demo/navigate/*.lps
-components/tachart/demo/navigate/lib
-components/tachart/demo/nogui/*.exe
-components/tachart/demo/nogui/*.lps
-components/tachart/demo/nogui/lib
-components/tachart/demo/opengl/*.exe
-components/tachart/demo/opengl/*.lps
-components/tachart/demo/opengl/lib
-components/tachart/demo/panes/*.exe
-components/tachart/demo/panes/*.lps
-components/tachart/demo/panes/*.res
-components/tachart/demo/panes/lib
-components/tachart/demo/print/*.exe
-components/tachart/demo/print/*.lps
-components/tachart/demo/print/lib
-components/tachart/demo/radial/*.exe
-components/tachart/demo/radial/*.lps
-components/tachart/demo/radial/lib
-components/tachart/demo/rotate/*.exe
-components/tachart/demo/rotate/*.lps
-components/tachart/demo/rotate/lib
-components/tachart/demo/save/*.exe
-components/tachart/demo/save/*.lps
-components/tachart/demo/save/*.svg
-components/tachart/demo/save/lib
-components/tachart/demo/tools/*.exe
-components/tachart/demo/tools/*.lps
-components/tachart/demo/tools/lib
-components/tachart/demo/wmf/*.exe
-components/tachart/demo/wmf/*.lps
-components/tachart/demo/wmf/*.res
-components/tachart/demo/wmf/*.wmf
-components/tachart/demo/wmf/lib
-components/tachart/fpdoc/html/*
-components/tachart/languages/tachartutils.de.po
-components/tachart/languages/tachartutils.po
-components/tachart/languages/tadatapointseditor.de.po
-components/tachart/languages/tadatapointseditor.po
-components/tachart/languages/taserieseditor.de.po
-components/tachart/languages/taserieseditor.po
-components/tachart/languages/tasubcomponentseditor.de.po
-components/tachart/languages/tasubcomponentseditor.po
-components/tachart/languages/tatooleditors.de.po
-components/tachart/languages/tatooleditors.po
-components/tachart/languages/tatransformations.de.po
-components/tachart/languages/tatransformations.po
-components/tachart/lib
-components/tachart/test/*.exe
-components/tachart/test/*.lps
-components/tachart/test/*.res
-components/tachart/test/lib
-components/tachart/tutorials/*.exe
-components/tachart/tutorials/*.lps
-components/tachart/tutorials/*.res
-components/tachart/tutorials/func_series/*.lps
-components/tachart/tutorials/func_series/*.res
-components/tachart/tutorials/func_series/backup
-components/tachart/tutorials/func_series/lib
-components/tachart/tutorials/getting_started/*.exe
-components/tachart/tutorials/getting_started/*.lps
-components/tachart/tutorials/getting_started/*.res
-components/tachart/tutorials/getting_started/lib
-components/tachart/tutorials/lib
-components/tachart/tutorials/mandelbrot/*.exe
-components/tachart/tutorials/mandelbrot/*.lps
-components/tachart/tutorials/mandelbrot/*.res
-components/tachart/tutorials/mandelbrot/lib
-components/tdbf/*.bak
-components/tdbf/languages/*.bak
-components/tdbf/languages/units
-components/tdbf/lib
-components/tdbf/units
-components/turbopower_ipro/*.bak
-components/turbopower_ipro/languages/*.bak
-components/turbopower_ipro/languages/units
-components/turbopower_ipro/units
-components/units
-converter/*.bak
-converter/units
-debugger/*.bak
-debugger/test/*.bak
-debugger/test/units
-debugger/units
-designer/*.bak
-designer/units
-doceditor/*.bak
-doceditor/fpdocupdater/*.bak
-doceditor/fpdocupdater/units
-doceditor/fpdocupdater/units/*.bak
-doceditor/fpdocupdater/units/units
-doceditor/images/*.bak
-doceditor/images/units
-doceditor/units
-doceditor/units/*.bak
-doceditor/units/units
-docs/*.bak
-docs/html/*.bak
-docs/html/units
-docs/images/*.bak
-docs/images/units
-docs/units
-docs/xml/*.bak
-docs/xml/lcl/*.bak
-docs/xml/lcl/comctrls/*.bak
-docs/xml/lcl/comctrls/units
-docs/xml/lcl/dynamicarray/*.bak
-docs/xml/lcl/dynamicarray/units
-docs/xml/lcl/forms/*.bak
-docs/xml/lcl/forms/units
-docs/xml/lcl/interfaces/*.bak
-docs/xml/lcl/interfaces/gtk/*.bak
-docs/xml/lcl/interfaces/gtk/units
-docs/xml/lcl/interfaces/units
-docs/xml/lcl/stdctrls/*.bak
-docs/xml/lcl/stdctrls/units
-docs/xml/lcl/units
-docs/xml/units
-examples/*.bak
-examples/address_book/*.bak
-examples/address_book/units
-examples/autosize/*.bak
-examples/autosize/childsizinglayout/*.bak
-examples/autosize/childsizinglayout/units
-examples/autosize/units
-examples/barchart/*.bak
-examples/barchart/units
-examples/codepageconverter/*.bak
-examples/codepageconverter/filefind/*.bak
-examples/codepageconverter/filefind/units
-examples/codepageconverter/languages/*.bak
-examples/codepageconverter/languages/units
-examples/codepageconverter/units
-examples/codetools/*.bak
-examples/codetools/jumptoimplementation/*.bak
-examples/codetools/jumptoimplementation/lib/*.bak
-examples/codetools/jumptoimplementation/lib/units
-examples/codetools/jumptoimplementation/units
-examples/codetools/units
-examples/componentstreaming/*.bak
-examples/componentstreaming/units
-examples/dbeditmask/*.db
-examples/dbeditmask/*.exe
-examples/dbeditmask/*.lps
-examples/dbeditmask/lib
-examples/designerbaseclass/*.bak
-examples/designerbaseclass/example/*.bak
-examples/designerbaseclass/example/units
-examples/designerbaseclass/lib/*.bak
-examples/designerbaseclass/lib/units
-examples/designerbaseclass/units
-examples/dockmanager/Copy[!!-~]of[!!-~]easyedit
-examples/dropfiles/units[!!-~]*.bak
-examples/easter/*.bak
-examples/easter/units
-examples/exploremenu/*.bak
-examples/exploremenu/units
-examples/fontenum/*.bak
-examples/fontenum/units
-examples/gridexamples/grid_semaphor/*.bak
-examples/gridexamples/grid_semaphor/example/*.bak
-examples/gridexamples/grid_semaphor/example/units
-examples/gridexamples/grid_semaphor/units
-examples/gridexamples/gridcelleditor/*.bak
-examples/gridexamples/gridcelleditor/units
-examples/helphtml/*.bak
-examples/helphtml/html/*.bak
-examples/helphtml/html/units
-examples/helphtml/units
-examples/htmlhelp_ipro/*.bak
-examples/htmlhelp_ipro/units
-examples/idequickfix/*.bak
-examples/idequickfix/units
-examples/imgviewer/*.bak
-examples/imgviewer/units
-examples/lazintfimage/*.bak
-examples/lazintfimage/units
-examples/listview/*.bak
-examples/listview/units
-examples/multithreading/*.bak
-examples/multithreading/units
-examples/objectinspector/*.bak
-examples/objectinspector/units
-examples/openglcontrol/*.bak
-examples/openglcontrol/data/*.bak
-examples/openglcontrol/data/units
-examples/openglcontrol/units
-examples/postscript/*.bak
-examples/postscript/units
-examples/scanline/*.bak
-examples/scanline/units
-examples/sprites/*.bak
-examples/sprites/units
-examples/treeview/*.bak
-examples/treeview/units
-examples/turbopower_ipro/*.bak
-examples/turbopower_ipro/units
-examples/units
-examples/widestringstreaming/*.bak
-examples/widestringstreaming/units
-examples/xmlstreaming/*.bak
-examples/xmlstreaming/units
-ide/*.bak
-ide/include/*.bak
-ide/include/darwin/*.bak
-ide/include/darwin/units
-ide/include/freebsd/*.bak
-ide/include/freebsd/units
-ide/include/linux/*.bak
-ide/include/linux/units
-ide/include/netbsd/*.bak
-ide/include/netbsd/units
-ide/include/solaris/*.bak
-ide/include/solaris/units
-ide/include/units
-ide/include/unix/*.bak
-ide/include/unix/units
-ide/include/win32/*.bak
-ide/include/win32/units
-ide/include/win64/*.bak
-ide/include/win64/units
-ide/units
-images/*.bak
-images/codeexplorer/*.bak
-images/codeexplorer/units
-images/codetoolsdefines/*.bak
-images/codetoolsdefines/units
-images/components/*.bak
-images/components/units
-images/debugger/*.bak
-images/debugger/units
-images/designer/*.bak
-images/designer/units
-images/menu/*.bak
-images/menu/units
-images/sourceeditor/*.bak
-images/sourceeditor/units
-images/units
-install/*.bak
-install/units
-languages/*.bak
-languages/units
-lcl/*.bak
-lcl/forms/*.bak
-lcl/forms/units
-lcl/images/*.bak
-lcl/images/cursors/*.bak
-lcl/images/cursors/units
-lcl/images/units
-lcl/include/*.bak
-lcl/include/units
-lcl/interfaces/*.bak
-lcl/interfaces/carbon/*.bak
-lcl/interfaces/carbon/units
-lcl/interfaces/fpgui/*.bak
-lcl/interfaces/fpgui/units
-lcl/interfaces/gtk/*.bak
-lcl/interfaces/gtk/tests/*.bak
-lcl/interfaces/gtk/tests/units
-lcl/interfaces/gtk/units
-lcl/interfaces/gtk2/*.bak
-lcl/interfaces/gtk2/units
-lcl/interfaces/qt/*.bak
-lcl/interfaces/qt/units
-lcl/interfaces/units
-lcl/interfaces/win32/*.bak
-lcl/interfaces/win32/units
-lcl/interfaces/wince/*.bak
-lcl/interfaces/wince/units
-lcl/languages/*.bak
-lcl/languages/units
-lcl/nonwin32/*.bak
-lcl/nonwin32/units
-lcl/templates/*.bak
-lcl/templates/units
-lcl/tests/*.bak
-lcl/tests/units
-lcl/units
-lcl/widgetset/*.bak
-lcl/widgetset/units
-packager/*.bak
-packager/globallinks/*.bak
-packager/globallinks/units
-packager/registration/*.bak
-packager/registration/units
-packager/units
-test/*.bak
-test/units
-tools/*.bak
-tools/apiwizz/*.bak
-tools/apiwizz/units
-tools/install/*.bak
-tools/install/cross_unix/*.bak
-tools/install/cross_unix/debian_crosswin32/*.bak
-tools/install/cross_unix/debian_crosswin32/units
-tools/install/cross_unix/units
-tools/install/debian_fpc-laz/*.bak
-tools/install/debian_fpc-laz/units
-tools/install/debian_fpc-src/*.bak
-tools/install/debian_fpc-src/units
-tools/install/debian_lazarus/*.bak
-tools/install/debian_lazarus/units
-tools/install/macosx/*.bak
-tools/install/macosx/units
-tools/install/rpm/*.bak
-tools/install/rpm/units
-tools/install/slacktgz/*.bak
-tools/install/slacktgz/units
-tools/install/units
-tools/install/win/*.bak
-tools/install/win/units
-tools/units
-/units
+* text=auto !eol
+**/*.pp text
+**/*.pas text
+**/*.inc text
+**/*.lfm text
+**/*.lrs text
+**/*.lps text
+**/*.lpr text
+**/*.lpi text
+**/*.lpk text
+**/*.lpl text
+**/*.lrj text
+**/*.dpr text
+**/*.dfm text
+**/*.pot text
+**/*.po text
+**/*.rc text
+**/*.txt text
+**/*.txt.sample text
+**/*.ini text
+**/*.cfg text
+**/*.iss text
+**/*.isl text
+**/*.xml text
+**/*.xsl text
+**/*.html text
+**/*.css text
+**/*.php text
+**/*.js text
+**/.htaccess text
+**/*.patch text
+**/*.md text
+**/*.bat text
+**/*.sh text
+**/*.compiled text
+**/*.bdsproj text
+**/*.plist text
+**/*.h text
+**/*.c text
+**/*.cpp text
+**/*.in text
+**/*.xpm text
+**/*.svg text
+**/Makefile text
+**/Makefile.compiled text
+**/Makefile.fpc text
+**/*.exe -text
+**/*.dll -text
+**/*.so -text
+**/*.gif -text
+**/*.jpg -text
+**/*.ico -text
+**/*.bmp -text
+**/*.res -text
+**/*.ttf -text
+**/*.cur -text
+**/*.db3 -text
+**/*.dbf -text
+**/*.mbf -text
+**/*.mdx -text
+**/*.fbk -text
+**/*.odt -text
+**/*.ods -text
+**/*.odg -text
+**/*.odp -text
+**/*.xls -text
+**/*.pdf -text
+**/*.zip -text
+**/*.rar -text
+**/*.tar -text
+**/*.tgz -text
+**/*.gz -text
+**/*.icns -text
+**/*.dcr -text
+components/aggpas/**/*.ppm -text
+**/*.app/Contents/MacOS/* -text
