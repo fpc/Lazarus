@@ -6799,7 +6799,9 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "创建定义对于Free Pascal编译器"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-msgid "Create Defines for Free Pascal SVN Sources"
+#, fuzzy
+#| msgid "Create Defines for Free Pascal SVN Sources"
+msgid "Create Defines for Free Pascal Git Sources"
 msgstr "创建定义对于Free Pascal SVN源代码"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
@@ -6856,7 +6858,9 @@ msgid "Exit without Save"
 msgstr "不保存退出"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
+#, fuzzy
+#| msgid "FPC SVN source directory"
+msgid "FPC Git source directory"
 msgstr "FPC SVN源代码目录"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
@@ -6921,7 +6925,9 @@ msgid "Insert Free Pascal Project Template"
 msgstr "插入 Free Pascal工程模板"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-msgid "Insert Free Pascal SVN Source Template"
+#, fuzzy
+#| msgid "Insert Free Pascal SVN Source Template"
+msgid "Insert Free Pascal Git Source Template"
 msgstr "插入Free Pascal SVN源代码模板"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
@@ -7037,7 +7043,7 @@ msgid "Selected Node:"
 msgstr "选择节点:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -7045,7 +7051,9 @@ msgid "The Free Pascal project directory."
 msgstr "Free Pascal工程目录."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory."
+msgid "The Free Pascal Git source directory."
 msgstr "Free Pascal SVN源代码目录."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
@@ -7054,7 +7062,7 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
@@ -12364,11 +12372,6 @@ msgstr "Lazarus语言名称 (例如 english, deutsch)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus[选项]<工程-文件名>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format
-msgid "r%s"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17924,6 +17927,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "重新打开失败"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr ""
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18827,10 +18834,6 @@ msgstr "工程包含路径"
 #, fuzzy
 msgid "Suspicious unit path"
 msgstr "添加的单元查找路径?"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "SVN修订版本: "
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"

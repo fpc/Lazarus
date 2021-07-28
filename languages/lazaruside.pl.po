@@ -6781,7 +6781,8 @@ msgstr "Utwórz Symbole dla Free Pascal Compiler"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
 #, fuzzy
-msgid "Create Defines for Free Pascal SVN Sources"
+#| msgid "Create Defines for Free Pascal SVN Sources"
+msgid "Create Defines for Free Pascal Git Sources"
 msgstr "Utwórz Symbole dla Free Pascal Compiler"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
@@ -6837,7 +6838,9 @@ msgid "Exit without Save"
 msgstr "Wyjdź bez zapisywania"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
+#, fuzzy
+#| msgid "FPC SVN source directory"
+msgid "FPC Git source directory"
 msgstr "Katalog źródeł FPC SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
@@ -6903,7 +6906,8 @@ msgstr "Projekt Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
 #, fuzzy
-msgid "Insert Free Pascal SVN Source Template"
+#| msgid "Insert Free Pascal SVN Source Template"
+msgid "Insert Free Pascal Git Source Template"
 msgstr "Free Pascal Compiler"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
@@ -7016,7 +7020,7 @@ msgid "Selected Node:"
 msgstr "Wybrany element:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -7024,7 +7028,9 @@ msgid "The Free Pascal project directory."
 msgstr "Katalog projektu Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory."
+msgid "The Free Pascal Git source directory."
 msgstr "Katalog SVN źródeł Free Pascala."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
@@ -7033,7 +7039,7 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
 msgstr ""
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
@@ -12325,11 +12331,6 @@ msgstr "Nazwa języka Lazarusa (np. english, polski)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [options] <project-filename>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format, fuzzy, badformat
-msgid "r%s"
-msgstr "%s nie istnieje: %s"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17902,6 +17903,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "Przywrócenie nie udało się"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr ""
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18800,10 +18805,6 @@ msgstr "Podejrzana ścieżka dołączanych plików"
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
 msgstr "Podejrzana ścieżka do folderu modułów"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "Rewizja SVN: "
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"
