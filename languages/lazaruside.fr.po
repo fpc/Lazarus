@@ -6641,7 +6641,9 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Créer les définitions pour le compilateur Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-msgid "Create Defines for Free Pascal SVN Sources"
+#, fuzzy
+#| msgid "Create Defines for Free Pascal SVN Sources"
+msgid "Create Defines for Free Pascal Git Sources"
 msgstr "Créer les définitions pour les sources SVN de Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
@@ -6697,7 +6699,9 @@ msgid "Exit without Save"
 msgstr "Quitter sans enregistrer"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
+#, fuzzy
+#| msgid "FPC SVN source directory"
+msgid "FPC Git source directory"
 msgstr "Répertoire des codes sources SVN de FPC"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
@@ -6762,7 +6766,9 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Insérer un modèle de projet Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-msgid "Insert Free Pascal SVN Source Template"
+#, fuzzy
+#| msgid "Insert Free Pascal SVN Source Template"
+msgid "Insert Free Pascal Git Source Template"
 msgstr "Insérer le modèle de code source SVN de Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
@@ -6875,7 +6881,9 @@ msgid "Selected Node:"
 msgstr "Nœud sélectionné :"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
 msgstr "Le répertoire des codes sources de Free Pascal SVN. Non requis. Ceci améliorera la recherche des déclarations et le débogage."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -6883,7 +6891,9 @@ msgid "The Free Pascal project directory."
 msgstr "Le répertoire du projet Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory."
+msgid "The Free Pascal Git source directory."
 msgstr "Le répertoire des codes sources de SVN Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
@@ -6892,7 +6902,9 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Le chemin du compilateur Free Pascal.%s Par exemple %s/usr/bin/%s -n%s ou %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
 msgstr "Le chemin du compilateur de Free Pascal pour ce projet. Seulement requis si vous placez les codes sources de FPC SVN ci-dessous. Utilisé pour la création automatique des macros."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
@@ -12149,11 +12161,6 @@ msgstr "Nom de langue de Lazarus (par exemple : anglais, allemand)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [options] <ficher-projet>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format
-msgid "r%s"
-msgstr "r%s"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17694,6 +17701,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "La restauration a échoué"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr ""
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18578,10 +18589,6 @@ msgstr "Chemin d'inclusion suspect"
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
 msgstr "Chemin d'unité suspect"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "Révision SVN : "
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"

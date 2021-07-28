@@ -6639,7 +6639,9 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Створити визначення для компілятора Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-msgid "Create Defines for Free Pascal SVN Sources"
+#, fuzzy
+#| msgid "Create Defines for Free Pascal SVN Sources"
+msgid "Create Defines for Free Pascal Git Sources"
 msgstr "Створити визначення для текстів програми Free Pascal SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
@@ -6695,7 +6697,9 @@ msgid "Exit without Save"
 msgstr "Вихід без збереження"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
+#, fuzzy
+#| msgid "FPC SVN source directory"
+msgid "FPC Git source directory"
 msgstr "Тека програм FPC SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
@@ -6760,7 +6764,9 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Вставити шаблон проєкту Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-msgid "Insert Free Pascal SVN Source Template"
+#, fuzzy
+#| msgid "Insert Free Pascal SVN Source Template"
+msgid "Insert Free Pascal Git Source Template"
 msgstr "Вставте шаблон Free Pascal SVN"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
@@ -6873,7 +6879,9 @@ msgid "Selected Node:"
 msgstr "Вибраний вузол:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
 msgstr "Тека сирців Free Pascal SVN. Не обов'язково. Це покращить пошук оголошень при зневаджуванні."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -6881,7 +6889,9 @@ msgid "The Free Pascal project directory."
 msgstr "Тека проєкту Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory."
+msgid "The Free Pascal Git source directory."
 msgstr "Тека текстів Free Pascal SVN."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
@@ -6890,7 +6900,9 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Шлях до компілятора Free Pascal.%s Наприклад, %s/usr/bin%s -n%s або %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
 msgstr "Шлях до компілятора проєкту Free Pascal. Потрібно лише, якщо Ви встановлюєте нижче програму FPC SVN. Використовується для автостворювання макросів."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
@@ -12145,11 +12157,6 @@ msgstr "Назва мови для Lazarus (напр. english, deutsch, ukrainai
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметри] <назва файлу проєкту>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format
-msgid "r%s"
-msgstr "r%s"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17684,6 +17691,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "Обертання не вдалося"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr ""
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18568,10 +18579,6 @@ msgstr "Підозрілий шлях включення"
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
 msgstr "Підозрілий шлях модуля"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "Версія SVN"
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"

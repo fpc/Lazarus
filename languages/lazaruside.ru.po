@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-05-30 23:47+0300\n"
+"PO-Revision-Date: 2021-07-29 01:13+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6634,8 +6634,8 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Создать определения для компилятора Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-msgid "Create Defines for Free Pascal SVN Sources"
-msgstr "Создать определения для исходного кода Free Pascal из SVN"
+msgid "Create Defines for Free Pascal Git Sources"
+msgstr "Создать определения для исходного кода Free Pascal из Git"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 #, object-pascal-format
@@ -6690,8 +6690,8 @@ msgid "Exit without Save"
 msgstr "Выход без сохранения"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
-msgstr "Каталог исходного кода FreePascal из SVN"
+msgid "FPC Git source directory"
+msgstr "Каталог исходного кода FPC из Git"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
 msgid "If"
@@ -6755,8 +6755,8 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Вставить шаблон проекта Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-msgid "Insert Free Pascal SVN Source Template"
-msgstr "Вставить шаблон SVN-кода Free Pascal "
+msgid "Insert Free Pascal Git Source Template"
+msgstr "Вставить шаблон исходного кода Free Pascal из Git"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
@@ -6868,16 +6868,16 @@ msgid "Selected Node:"
 msgstr "Выбранный элемент:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
-msgstr "Каталог исходного кода Free Pascal из SVN. Не обязателен. Улучшит поиск объявлений и отладку."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
+msgstr "Каталог исходного кода Free Pascal из Git. Не обязателен. Улучшит поиск объявлений и отладку."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
 msgstr "Каталог проекта Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
-msgstr "Каталог исходного кода Free Pascal из SVN."
+msgid "The Free Pascal Git source directory."
+msgstr "Каталог исходного кода Free Pascal из Git."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 #, object-pascal-format
@@ -6885,8 +6885,8 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Путь к компилятору Free Pascal.%s Например, %s/usr/bin%s -n%s или %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
-msgstr "Путь к компилятору Free Pascal для данного проекта. Требуется только при заполненном поле \"Каталог исходного кода Free Pascal из SVN\" ниже. Используется для автоматического создания макросов."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
+msgstr "Путь к компилятору Free Pascal для данного проекта. Требуется только при указанном ниже каталоге исходного кода FPC из Git. Используется для автоматического создания макросов."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
 #, object-pascal-format
@@ -12141,11 +12141,6 @@ msgstr "Название языка Lazarus (пример: английский,
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [параметры] <имя файла проекта>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format
-msgid "r%s"
-msgstr "r%s"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17680,6 +17675,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "Возвращение не удалось"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr "Ревизия: "
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18564,10 +18563,6 @@ msgstr "Подозрительный путь поиска включаемых 
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
 msgstr "Подозрительный путь поиска модулей"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "Ревизия SVN: "
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"
