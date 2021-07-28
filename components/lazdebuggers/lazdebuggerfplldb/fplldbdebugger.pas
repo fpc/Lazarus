@@ -644,6 +644,19 @@ begin
     Exit;
 
 
+  if FDebugger.FDwarfInfo.TargetInfo.machineType in [mtARM, mtARM64] then begin
+    case ARegNum of
+       0..28:  rname := 'X' + inttostr(ARegNum);
+       29:  rname := 'FP';
+       30:  rname := 'LR';
+       31:  rname := 'SP';
+       32:  rname := 'PC';
+      else
+        exit;
+    end;
+  end
+
+  else
   // WINDOWS gdb dwarf names
   if FDebugger.FDwarfInfo.TargetInfo.bitness = b64 then begin
     case ARegNum of
