@@ -226,10 +226,10 @@ end;
 procedure TIDEFPCInfoDialog.GatherIDEVersion(sl: TStrings);
 begin
   sl.Add('Lazarus version: '+GetLazarusVersionString);
-  sl.Add('Lazarus svn revision: '+LazarusRevisionStr);
+  sl.Add('Lazarus revision: '+LazarusRevisionStr);
   sl.Add('Lazarus build date: '+{$I %date%});
   sl.Add('Lazarus was compiled for '+GetCompiledTargetCPU+'-'+GetCompiledTargetOS);
-  sl.Add('Lazarus was compiled with fpc '+{$I %FPCVERSION%});
+  sl.Add('Lazarus was compiled with FPC '+{$I %FPCVERSION%});
   sl.Add('');
 end;
 
