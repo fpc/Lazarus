@@ -1141,7 +1141,7 @@ resourcestring
   lisVerToClipboard = 'Copy version information to clipboard';
   lisDate = 'Date';
   lisFPCVersion = 'FPC Version: ';
-  lisSVNRevision = 'SVN Revision: ';
+  lisRevision = 'Revision: ';
   lisPrior = 'prior %s';
   lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe = 'Welcome to Lazarus %s'
     +'%sThere is already a configuration from version %s in'
