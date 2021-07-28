@@ -933,7 +933,6 @@ resourcestring
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
-  lisLazarusSVNRev = 'r%s';
   lisnewProject = '(new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
