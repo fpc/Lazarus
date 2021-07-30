@@ -175,8 +175,8 @@ const
 begin
   Notebook.PageIndex:=0;
   Caption:=lisAboutLazarus;
-  VersionLabel.Caption := lisVersion+' #: '+ GetLazarusVersionString;
-  RevisionLabel.Caption := lisSVNRevision+LazarusRevisionStr;
+  VersionLabel.Caption := lisVersion+': '+ GetLazarusVersionString;
+  RevisionLabel.Caption := lisRevision+LazarusRevisionStr;
   BuildDateLabel.Caption := lisDate+': '+GetLocalizedBuildDate;
   FPCVersionLabel.Caption:= lisFPCVersion+{$I %FPCVERSION%};
   PlatformLabel.Caption:=GetCompiledTargetCPU+'-'+GetCompiledTargetOS

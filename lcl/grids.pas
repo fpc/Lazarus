@@ -1314,6 +1314,7 @@ type
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; virtual;
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
+    procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
     procedure EditorTextChanged(const aCol,aRow: Integer; const aText:string); virtual;
 
@@ -5698,6 +5699,7 @@ begin
     end;
     if FEditorOptions and EO_HOOKKEYPRESS = EO_HOOKKEYPRESS then begin
       FEditor.OnKeyPress := @EditorKeyPress;
+      FEditor.OnUTF8KeyPress := @EditorUTF8KeyPress;
     end;
     if FEditorOptions and EO_HOOKKEYUP = EO_HOOKKEYUP then begin
       FEditor.OnKeyUp := @EditorKeyUp;
@@ -7594,15 +7596,19 @@ begin
         MoveSel(True, 0, R.Bottom-R.Top);
       end;
     VK_HOME:
-      if ssCtrl in Shift then MoveSel(False, FCol, FFixedRows)
-      else
-        if Relaxed then MoveSel(False, FFixedCols, FRow)
-        else            MoveSel(False, FCol, FFixedRows);
+      if not FEditorKey then begin
+        if ssCtrl in Shift then MoveSel(False, FCol, FFixedRows)
+        else
+          if Relaxed then MoveSel(False, FFixedCols, FRow)
+          else            MoveSel(False, FCol, FFixedRows);
+      end;
     VK_END:
-      if ssCtrl in Shift then MoveSel(False, FCol, RowCount-1)
-      else
-        if Relaxed then MoveSel(False, ColCount-1, FRow)
-        else            MoveSel(False, FCol, RowCount-1);
+      if not FEditorKey then begin
+        if ssCtrl in Shift then MoveSel(False, FCol, RowCount-1)
+        else
+          if Relaxed then MoveSel(False, ColCount-1, FRow)
+          else            MoveSel(False, FCol, RowCount-1);
+      end;
     VK_APPS:
       if not FEditorKey and EditingAllowed(FCol) then
         EditorShow(False);               // Will show popup menu in the editor.
@@ -8756,6 +8762,14 @@ begin
   end;
   FEditorKey := False;
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: END Key=',PrintKey);{$Endif}
+end;
+
+procedure TCustomGrid.EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
+  );
+begin
+  FEditorKey := True;
+  UTF8KeyPress(UTF8Key);
+  FEditorKey := false;
 end;
 
 procedure TCustomGrid.EditorKeyUp(Sender: TObject; var key: Word;
@@ -10407,25 +10421,37 @@ begin
   inherited KeyDown(Key,Shift);
   case Key of
     VK_F2:
-      if AllSelected then begin
-        SelLength := 0;
-        SelStart := Length(Text);
+      begin
+        doEditorKeyDown;
+        if (key<>0) then begin
+          if AllSelected then begin
+            SelLength := 0;
+            SelStart := Length(Text);
+          end else if GetFastEntry then
+            SelectAll;
+        end;
       end;
     VK_DELETE, VK_BACK:
-      CheckEditingKey;
+      begin
+        CheckEditingKey;
+        if key<>0 then
+          doEditorKeyDown;
+      end;
     VK_UP, VK_DOWN:
       doGridKeyDown;
     VK_LEFT, VK_RIGHT:
-      if GetFastEntry then begin
-        IntSel:=
-          ((Key=VK_LEFT) and not AtStart) or
-          ((Key=VK_RIGHT) and not AtEnd);
-      if not IntSel then begin
-          doGridKeyDown;
+      begin
+        if GetFastEntry then begin
+          IntSel:=
+            ((Key=VK_LEFT) and not AtStart) or
+            ((Key=VK_RIGHT) and not AtEnd);
+          if not IntSel then
+            doGridKeyDown
+          else
+            doEditorKeyDown;
+        end else
+          doEditorKeyDown;
       end;
-    end;
-    VK_END, VK_HOME:
-      ;
     VK_ESCAPE:
       begin
         doGridKeyDown;

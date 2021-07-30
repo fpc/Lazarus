@@ -1148,7 +1148,7 @@ begin
   end;
   if IsVersionRequested then
   begin
-    WriteHelp(GetLazarusVersionString+' '+lisSVNRevision+LazarusRevisionStr);
+    WriteHelp(GetLazarusVersionString+' '+lisRevision+LazarusRevisionStr);
     exit;
   end;
 
@@ -8620,7 +8620,7 @@ begin
   if ToolStatus = itExiting then Exit;
   rev := GetLazarusRevision;
   if IsNumber(rev) then
-    NewCaption := Format(lisLazarusEditorV + ' ' + lisLazarusSVNRev,
+    NewCaption := Format(lisLazarusEditorV + ' r%s',
                          [GetLazarusVersionString, rev])
   else
     NewCaption := Format(lisLazarusEditorV, [GetLazarusVersionString]);

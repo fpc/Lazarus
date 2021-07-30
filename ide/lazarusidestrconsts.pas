@@ -933,7 +933,6 @@ resourcestring
   lisAmbiguousFileFoundThisFileCanBeMistakenWithDelete = 'Ambiguous file '
     +'found: "%s"%sThis file can be mistaken with "%s"%sDelete the ambiguous file?';
   lisLazarusEditorV = 'Lazarus IDE v%s';
-  lisLazarusSVNRev = 'r%s';
   lisnewProject = '(new project)';
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
@@ -1142,7 +1141,7 @@ resourcestring
   lisVerToClipboard = 'Copy version information to clipboard';
   lisDate = 'Date';
   lisFPCVersion = 'FPC Version: ';
-  lisSVNRevision = 'SVN Revision: ';
+  lisRevision = 'Revision: ';
   lisPrior = 'prior %s';
   lisWelcomeToLazarusThereIsAlreadyAConfigurationFromVe = 'Welcome to Lazarus %s'
     +'%sThere is already a configuration from version %s in'
@@ -3719,9 +3718,9 @@ resourcestring
   lisCodeToolsDefscompilerPath = 'Compiler path';
   lisCodeToolsDefsThePathToTheFreePascalCompilerForThisProject = 'The path to '
     +'the Free Pascal compiler for this project. Only required if you set the '
-    +'FPC SVN source below. Used to autocreate macros.';
-  lisCodeToolsDefsFPCSVNSourceDirectory = 'FPC SVN source directory';
-  lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal SVN source '
+    +'FPC Git source below. Used to autocreate macros.';
+  lisCodeToolsDefsFPCSVNSourceDirectory = 'FPC Git source directory';
+  lisCodeToolsDefsTheFreePascalCVSSourceDirectory = 'The Free Pascal Git source '
     +'directory. Not required. This will improve find declaration and debugging.';
   lisCodeToolsDefsCreateDefinesForFreePascalCompiler = 'Create Defines for '
     +'Free Pascal Compiler';
@@ -3732,8 +3731,8 @@ resourcestring
     +'path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s '
     +'or %s/usr/local/bin/fpc @/etc/fpc.cfg%s.';
   lisCodeToolsDefsCreateDefinesForFreePascalSVNSources = 'Create Defines for '
-    +'Free Pascal SVN Sources';
-  lisCodeToolsDefsTheFreePascalSVNSourceDir = 'The Free Pascal SVN source directory.';
+    +'Free Pascal Git Sources';
+  lisCodeToolsDefsTheFreePascalSVNSourceDir = 'The Free Pascal Git source directory.';
   lisCodeToolsDefsCreateDefinesForDirectory = 'Create Defines for %s Directory';
   lisCodeToolsDefsdirectory = '%s directory';
   lisCodeToolsDefsDelphiMainDirectoryDesc = 'The %s main directory,%swhere '
@@ -3779,7 +3778,7 @@ resourcestring
   lisCodeToolsDefsInsertTemplate = 'Insert Template';
   lisCodeToolsDefsInsertFreePascalProjectTe = 'Insert Free Pascal Project Template';
   lisCodeToolsDefsInsertFreePascalCompilerT = 'Insert Free Pascal Compiler Template';
-  lisCodeToolsDefsInsertFreePascalSVNSource = 'Insert Free Pascal SVN Source Template';
+  lisCodeToolsDefsInsertFreePascalSVNSource = 'Insert Free Pascal Git Source Template';
   lisCodeToolsDefsInsertDelphi5CompilerTemp = 'Insert Delphi 5 Compiler Template';
   lisCodeToolsDefsInsertDelphi5DirectoryTem = 'Insert Delphi 5 Directory Template';
   lisCodeToolsDefsInsertDelphi5ProjectTempl = 'Insert Delphi 5 Project Template';

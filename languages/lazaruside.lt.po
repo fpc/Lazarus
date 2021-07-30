@@ -6765,7 +6765,9 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Sukurti apibrėžtis Free Pascal kompiliatoriui"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-msgid "Create Defines for Free Pascal SVN Sources"
+#, fuzzy
+#| msgid "Create Defines for Free Pascal SVN Sources"
+msgid "Create Defines for Free Pascal Git Sources"
 msgstr "Sukurti apibrėžtis Free Pascal SVN pirminiam kodui"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
@@ -6821,7 +6823,9 @@ msgid "Exit without Save"
 msgstr "Išeiti neišsaugojus"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
+#, fuzzy
+#| msgid "FPC SVN source directory"
+msgid "FPC Git source directory"
 msgstr "FPC SVN pirminio kodo aplankas"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
@@ -6886,7 +6890,9 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Įterpti Free Pascal projekto šabloną"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-msgid "Insert Free Pascal SVN Source Template"
+#, fuzzy
+#| msgid "Insert Free Pascal SVN Source Template"
+msgid "Insert Free Pascal Git Source Template"
 msgstr "Įterpti Free Pascal SVN pirminio kodo šabloną"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
@@ -6999,7 +7005,9 @@ msgid "Selected Node:"
 msgstr "Pažymėtas mazgas:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
 msgstr "Free Pascal SVN pirminio kodo aplankas. Nebūtina, tačiau nurodžius tai pagerins aprašų paiešką bei programos derinimą."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -7007,7 +7015,9 @@ msgid "The Free Pascal project directory."
 msgstr "Free Pascal projekto aplankas."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory."
+msgid "The Free Pascal Git source directory."
 msgstr "Free Pascal SVN pirminio kodo aplankas."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
@@ -7016,7 +7026,9 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Free Pascal kompiliatoriaus adresas (kelias iki jo ir failas).%sPavyzdžiui: %s/usr/bin/%s -n%s arba %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
 msgstr "Šio projekto Free Pascal kompiliatoriaus adresas (kelias iki jo ir failas). Būtina įrašyti jei žemiau nurodysit FPC SVN pirminio kodo aplanką. Šis įrašas naudojamas automatiškai kuriant makrokomandas."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
@@ -12306,11 +12318,6 @@ msgstr "Lazarus kalbos pavadinimas (t.y. anglų, vokiečių, lietuvių, …)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [parinktys] <projekto_failo_pavadinimas>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format
-msgid "r%s"
-msgstr ""
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17943,6 +17950,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "Atstatyti nepavyko"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr ""
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18837,10 +18848,6 @@ msgstr "Įtartinas įterpiamųjų kelias"
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
 msgstr "Įtartinas modulio kelias"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "SVN poversijis:"
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"

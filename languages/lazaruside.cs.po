@@ -6681,7 +6681,9 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Vytvořit definice pro překladač Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-msgid "Create Defines for Free Pascal SVN Sources"
+#, fuzzy
+#| msgid "Create Defines for Free Pascal SVN Sources"
+msgid "Create Defines for Free Pascal Git Sources"
 msgstr "Vytvořit definice pro SVN zdroje Free Pascalu"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
@@ -6737,7 +6739,9 @@ msgid "Exit without Save"
 msgstr "Ukončit bez uložení"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-msgid "FPC SVN source directory"
+#, fuzzy
+#| msgid "FPC SVN source directory"
+msgid "FPC Git source directory"
 msgstr "SVN zdrojový adresář FPC"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
@@ -6802,7 +6806,9 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Vložit šablonu projektu Free Pascalu"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-msgid "Insert Free Pascal SVN Source Template"
+#, fuzzy
+#| msgid "Insert Free Pascal SVN Source Template"
+msgid "Insert Free Pascal Git Source Template"
 msgstr "Vložit šablonu zdrojového kódu SVN Free Pascalu"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
@@ -6915,7 +6921,9 @@ msgid "Selected Node:"
 msgstr "Vybrat uzel:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
+msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
 msgstr "Zdrojový adresář Free Pascal SVN. Nevyžadované, ale zlepšuje hledání deklarací a ladění."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
@@ -6923,7 +6931,9 @@ msgid "The Free Pascal project directory."
 msgstr "Adresář projektu Free Pascalu."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-msgid "The Free Pascal SVN source directory."
+#, fuzzy
+#| msgid "The Free Pascal SVN source directory."
+msgid "The Free Pascal Git source directory."
 msgstr "Zdrojový adresář SVN Free Pascalu."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
@@ -6932,7 +6942,9 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "Cesta k překladači Free Pascal.%s Například %s/usr/bin/%s -n%s nebo %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+#, fuzzy
+#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
+msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
 msgstr "Cesta překladače Free Pascal pro tento projekt. Vyžadováno jen pokud je nastaven FPC SVN zdroj níže. Použito pro automatické vytvoření maker."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
@@ -12182,11 +12194,6 @@ msgstr "Jméno jazyka Lazarusu (např. angličtina, čeština)"
 #: lazarusidestrconsts.lislazarusoptionsprojectfilename
 msgid "lazarus [options] <project-filename>"
 msgstr "lazarus [volby] <jméno-projektu>"
-
-#: lazarusidestrconsts.lislazarussvnrev
-#, object-pascal-format
-msgid "r%s"
-msgstr "r%s"
 
 #: lazarusidestrconsts.lislazbuildaboaction
 msgctxt "lazarusidestrconsts.lislazbuildaboaction"
@@ -17763,6 +17770,10 @@ msgstr ""
 msgid "Revert failed"
 msgstr "Vrácení selhalo"
 
+#: lazarusidestrconsts.lisrevision
+msgid "Revision: "
+msgstr ""
+
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
 msgid "Right"
@@ -18647,10 +18658,6 @@ msgstr "Podezřelá cesta zahrnovaných"
 #: lazarusidestrconsts.lissuspiciousunitpath
 msgid "Suspicious unit path"
 msgstr "Podezřelá cesta jednotek"
-
-#: lazarusidestrconsts.lissvnrevision
-msgid "SVN Revision: "
-msgstr "Revize SVN: "
 
 #: lazarusidestrconsts.lissvuoinvalidvariablename
 msgid "Invalid variable name"
