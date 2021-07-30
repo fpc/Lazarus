@@ -1314,6 +1314,7 @@ type
     function  EditorByStyle(Style: TColumnButtonStyle): TWinControl; virtual;
     procedure EditorKeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
     procedure EditorKeyPress(Sender: TObject; var Key: Char);
+    procedure EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char);
     procedure EditorKeyUp(Sender: TObject; var key:Word; shift:TShiftState);
     procedure EditorTextChanged(const aCol,aRow: Integer; const aText:string); virtual;
 
@@ -5698,6 +5699,7 @@ begin
     end;
     if FEditorOptions and EO_HOOKKEYPRESS = EO_HOOKKEYPRESS then begin
       FEditor.OnKeyPress := @EditorKeyPress;
+      FEditor.OnUTF8KeyPress := @EditorUTF8KeyPress;
     end;
     if FEditorOptions and EO_HOOKKEYUP = EO_HOOKKEYUP then begin
       FEditor.OnKeyUp := @EditorKeyUp;
@@ -8756,6 +8758,14 @@ begin
   end;
   FEditorKey := False;
   {$ifdef dbgGrid}DebugLn('Grid.EditorKeyPress: END Key=',PrintKey);{$Endif}
+end;
+
+procedure TCustomGrid.EditorUTF8KeyPress(Sender: TObject; var UTF8Key: TUTF8Char
+  );
+begin
+  FEditorKey := True;
+  UTF8KeyPress(UTF8Key);
+  FEditorKey := false;
 end;
 
 procedure TCustomGrid.EditorKeyUp(Sender: TObject; var key: Word;
