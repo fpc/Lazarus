@@ -91,11 +91,15 @@ object MainForm: TMainForm
     ParentColor = False
   end
   object Bevel1: TBevel
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Label1
     Left = 0
     Height = 4
     Top = 290
     Width = 613
+    Anchors = [akTop, akLeft, akRight]
     Shape = bsBottomLine
   end
   object cbDoubleClick: TCheckBox
