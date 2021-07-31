@@ -31,6 +31,19 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       State = cbChecked
       TabOrder = 0
     end
+    object cbWordwrap: TCheckBox
+      AnchorSideLeft.Control = cbShow
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PanelTop
+      Left = 81
+      Height = 19
+      Top = 0
+      Width = 75
+      BorderSpacing.Left = 32
+      Caption = 'Wordwrap'
+      OnClick = cbWordwrapClick
+      TabOrder = 1
+    end
   end
   object ParamsPanel: TPanel
     Left = 0
@@ -43,7 +56,7 @@ object ChartTitleFootFrame: TChartTitleFootFrame
     BevelOuter = bvNone
     ClientHeight = 187
     ClientWidth = 423
-    TabOrder = 1
+    TabOrder = 2
     object rgAlignment: TRadioGroup
       AnchorSideLeft.Control = ParamsPanel
       AnchorSideTop.Control = ParamsPanel
@@ -118,7 +131,7 @@ object ChartTitleFootFrame: TChartTitleFootFrame
     ClientHeight = 196
     ClientWidth = 423
     Constraints.MinHeight = 80
-    TabOrder = 2
+    TabOrder = 1
     object lblText: TLabel
       AnchorSideLeft.Control = MemoPanel
       AnchorSideTop.Control = MemoPanel
@@ -127,7 +140,6 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       Top = 0
       Width = 21
       Caption = 'Text'
-      ParentColor = False
     end
     object mmoText: TMemo
       AnchorSideLeft.Control = lblText

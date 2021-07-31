@@ -16,6 +16,7 @@ type
 
   TChartTitleFootFrame = class(TFrame)
     cbShow: TCheckBox;
+    cbWordwrap: TCheckBox;
     gbFont: TGroupBox;
     gbShapeBrushPenMargins: TGroupBox;
     lblText: TLabel;
@@ -25,6 +26,7 @@ type
     ParamsPanel: TPanel;
     rgAlignment: TRadioGroup;
     procedure cbShowChange(Sender: TObject);
+    procedure cbWordwrapClick(Sender: TObject);
     procedure mmoTextChange(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
   private
@@ -101,6 +103,12 @@ begin
   rgAlignment.Visible := cbShow.Checked;
   gbShapeBrushPenMargins.Visible := cbShow.Checked;
   gbFont.Visible := cbShow.Checked;
+  cbWordwrap.Visible := cbShow.Checked;
+end;
+
+procedure TChartTitleFootFrame.cbWordwrapClick(Sender: TObject);
+begin
+  FTitle.Wordwrap := cbWordwrap.Checked;
 end;
 
 procedure TChartTitleFootFrame.ChangedHandler(Sender: TObject);
@@ -139,6 +147,7 @@ begin
   FTitle := ATitle;
 
   cbShow.Checked := ATitle.Visible;
+  cbWordwrap.Checked := ATitle.Wordwrap;
   mmoText.Lines.Assign(ATitle.Text);
   {$IFDEF WYSIWYG_TITLE}
   mmoText.Font.Assign(ATitle.Font);
