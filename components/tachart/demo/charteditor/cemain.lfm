@@ -8,7 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 613
   Menu = MainMenu
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -88,7 +88,6 @@ object MainForm: TMainForm
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Click on a title, axis, label, grid, data point to open the corresponding editor.'
-    ParentColor = False
   end
   object Bevel1: TBevel
     AnchorSideBottom.Control = Label1

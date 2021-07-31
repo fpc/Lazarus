@@ -190,13 +190,13 @@ object ChartLegendFrame: TChartLegendFrame
       ClientHeight = 92
       ClientWidth = 292
       TabOrder = 0
-      OnClick = gbAlignmentClick
       object rbTopLeft: TRadioButton
         Left = 6
         Height = 17
         Top = 6
         Width = 86
         Caption = 'top/left'
+        OnClick = gbAlignmentClick
         TabOrder = 0
       end
       object rbTopCenter: TRadioButton
@@ -206,6 +206,7 @@ object ChartLegendFrame: TChartLegendFrame
         Top = 6
         Width = 102
         Caption = 'top/center'
+        OnClick = gbAlignmentClick
         TabOrder = 1
       end
       object rbTopRight: TRadioButton
@@ -216,6 +217,7 @@ object ChartLegendFrame: TChartLegendFrame
         Width = 92
         Caption = 'top/right'
         Checked = True
+        OnClick = gbAlignmentClick
         TabOrder = 2
         TabStop = True
       end
@@ -226,6 +228,7 @@ object ChartLegendFrame: TChartLegendFrame
         Top = 23
         Width = 86
         Caption = 'center/left'
+        OnClick = gbAlignmentClick
         TabOrder = 3
       end
       object Bevel1: TBevel
@@ -243,6 +246,7 @@ object ChartLegendFrame: TChartLegendFrame
         Top = 23
         Width = 92
         Caption = 'center/right'
+        OnClick = gbAlignmentClick
         TabOrder = 4
       end
       object rbBottomLeft: TRadioButton
@@ -252,6 +256,7 @@ object ChartLegendFrame: TChartLegendFrame
         Top = 69
         Width = 86
         Caption = 'bottom/left'
+        OnClick = gbAlignmentClick
         TabOrder = 5
       end
       object rbBottomCenter: TRadioButton
@@ -261,6 +266,7 @@ object ChartLegendFrame: TChartLegendFrame
         Top = 69
         Width = 102
         Caption = 'bottom/center'
+        OnClick = gbAlignmentClick
         TabOrder = 6
       end
       object rbBottomRight: TRadioButton
@@ -270,6 +276,7 @@ object ChartLegendFrame: TChartLegendFrame
         Top = 69
         Width = 92
         Caption = 'bottom/right'
+        OnClick = gbAlignmentClick
         TabOrder = 7
       end
     end
@@ -301,7 +308,6 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Right = 8
         Caption = 'X'
         FocusControl = seMarginX
-        ParentColor = False
       end
       object seMarginX: TSpinEdit
         AnchorSideTop.Control = gbMargins
@@ -330,7 +336,6 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Right = 8
         Caption = 'Y'
         FocusControl = seMarginY
-        ParentColor = False
       end
       object seMarginY: TSpinEdit
         AnchorSideTop.Control = seMarginX
@@ -402,7 +407,6 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Right = 8
         Caption = 'Columns'
         FocusControl = seColumns
-        ParentColor = False
       end
       object lblItemFillOrder: TLabel
         AnchorSideLeft.Control = cbInverted
@@ -416,7 +420,6 @@ object ChartLegendFrame: TChartLegendFrame
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Item fill order'
-        ParentColor = False
       end
       object cbItemFillOrder: TComboBox
         AnchorSideTop.Control = seColumns
@@ -470,7 +473,6 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Right = 8
         Caption = 'Spacing'
         FocusControl = seSpacing
-        ParentColor = False
       end
       object seSymbolWidth: TSpinEdit
         AnchorSideTop.Control = seSpacing
@@ -502,7 +504,6 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Right = 8
         Caption = 'Symbol width'
         FocusControl = seSymbolWidth
-        ParentColor = False
       end
     end
   end
