@@ -25,13 +25,13 @@
     </PublishOptions>
     <RunParams>
       <local>
-        <CommandLineParams Value="--format=chm --css=chm/wiki.css  wikixml/Lazarus_Documentation.g400.xml wikixml/*.xml"/>
+        <CommandLineParams Value="--format=chm --css=chm/wiki.css  wikixml/*.xml"/>
       </local>
       <FormatVersion Value="2"/>
       <Modes Count="1">
         <Mode0 Name="default">
           <local>
-            <CommandLineParams Value="--format=chm --css=chm/wiki.css  wikixml/Lazarus_Documentation.g400.xml wikixml/*.xml"/>
+            <CommandLineParams Value="--format=chm --css=chm/wiki.css  wikixml/*.xml"/>
           </local>
         </Mode0>
       </Modes>
@@ -68,9 +68,6 @@
       <IncludeFiles Value="$(ProjOutDir)"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
-    <Other>
-      <CompilerPath Value="fpc"/>
-    </Other>
   </CompilerOptions>
   <Debugging>
     <Exceptions Count="3">
