@@ -946,8 +946,6 @@ var
   reply: string;
   intRegs: TInitializedRegisters;
   res: boolean;
-  source: TDbgFileLoader;
-  imgReader: TDbgImageReader;
   pSection: PDbgImageSection;
   dataStart: int64;
   reloadData: boolean = false;
