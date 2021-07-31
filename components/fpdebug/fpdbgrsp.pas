@@ -76,8 +76,8 @@ type
     procedure FSetRegisterCacheSize(sz: cardinal);
     procedure FResetStatusEvent;
     // Blocking
-    function FWaitForData(): boolean; overload;
-    function FWaitForData(timeout_ms: integer): boolean; overload;
+    //function FWaitForData(): boolean; overload;
+    function FWaitForData(timeout_ms: integer): integer; overload;
 
     // Wrappers to catch exceptions and set SockErr
     function SafeReadByte: byte;
@@ -179,57 +179,57 @@ begin
   end;
 end;
 
-function TRspConnection.FWaitForData({timeout: integer}): boolean;
-{$if defined(unix) or defined(windows)}
-var
-  FDS: TFDSet;
-  r: integer;
-{$endif}
-begin
-  Result:=False;
-  if SockErr then exit;
-{$if defined(unix)}
-  FDS := Default(TFDSet);
-  fpFD_Zero(FDS);
-  fpFD_Set(self.Handle, FDS);
-  fpSelect(self.Handle + 1, @FDS, nil, nil, nil);
-  // FDS is set even if the socket has been closed.
-  // Read available data and if 0 data is available then socket must be closed/ or error
-  r := 0;
-  FpIOCtl(self.Handle, FIONREAD, @r);
-  Result := r > 0;
-{$elseif defined(windows)}
-  FDS := Default(TFDSet);
-  FD_Zero(FDS);
-  FD_Set(self.Handle, FDS);
-  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
-{$endif}
-end;
+//function TRspConnection.FWaitForData(): boolean;
+//{$if defined(unix) or defined(windows)}
+//var
+//  FDS: TFDSet;
+//  r: integer;
+//{$endif}
+//begin
+//  Result:=False;
+//  if SockErr then exit;
+//{$if defined(unix)}
+//  FDS := Default(TFDSet);
+//  fpFD_Zero(FDS);
+//  fpFD_Set(self.Handle, FDS);
+//  fpSelect(self.Handle + 1, @FDS, nil, nil, nil);
+//  // FDS is set even if the socket has been closed.
+//  // Read available data and if 0 data is available then socket must be closed/ or error
+//  r := 0;
+//  FpIOCtl(self.Handle, FIONREAD, @r);
+//  Result := r > 0;
+//{$elseif defined(windows)}
+//  FDS := Default(TFDSet);
+//  FD_Zero(FDS);
+//  FD_Set(self.Handle, FDS);
+//  Result := Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
+//{$endif}
+//end;
 
-function TRspConnection.FWaitForData(timeout_ms: integer): boolean;
+function TRspConnection.FWaitForData(timeout_ms: integer): integer;
 {$if defined(unix) or defined(windows)}
 var
   FDS: TFDSet;
   TimeV: TTimeVal;
 {$endif}
 begin
-  Result:=False;
-  if SockErr then exit;
-//{$if defined(unix) or defined(windows)}
+  if SockErr then
+  begin
+    Result := -1;
+    exit;
+  end;
   TimeV.tv_usec := timeout_ms * 1000;  // 1 msec
   TimeV.tv_sec := 0;
-//{$endif}
-{$ifdef unix}
   FDS := Default(TFDSet);
+{$ifdef unix}
   fpFD_Zero(FDS);
   fpFD_Set(self.Handle, FDS);
-  Result := fpSelect(self.Handle + 1, @FDS, nil, nil, @TimeV) > 0;
+  Result := fpSelect(self.Handle + 1, @FDS, nil, nil, @TimeV);
 {$else}
 {$ifdef windows}
-  FDS := Default(TFDSet);
   FD_Zero(FDS);
   FD_Set(self.Handle, FDS);
-  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, @TimeV) > 0;
+  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, @TimeV);
 {$endif}
 {$endif}
 end;
@@ -463,7 +463,8 @@ procedure TRspConnection.Break();
 begin
   EnterCriticalSection(fCS);
   try
-     SafeWriteByte(3);  // Ctrl-C
+    SafeWriteByte(3);  // Ctrl-C
+    DebugLn(DBG_RSP, ['RSP -> <Ctrl+C>']);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -477,7 +478,8 @@ begin
   try
     result := FSendCommand('k');
     // Swallow the last ack if send
-    result := not(SockErr) and FWaitForData(1000);
+    if Result and not SockErr then
+      result := FWaitForData(1000) > 0;
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -537,11 +539,14 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    // False if no data available, e.g. socket is closed
-    if not FWaitForData() then
+    // -1 if no data could be read, e.g. socket is closed
+    // 0 if timeout.  Use timeout so that asynchronous evens such as break can also be processed
+    i := FWaitForData(500);
+    if i <= 0 then
     begin
       msg := '';
-      result := SIGHUP;
+      if i < 0 then
+        result := SIGHUP;
       exit;
     end;
 
