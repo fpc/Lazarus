@@ -40,9 +40,9 @@ object ChartAxisFrame: TChartAxisFrame
     Height = 446
     Top = 25
     Width = 646
-    ActivePage = pgLine
+    ActivePage = pgTitle
     Align = alClient
-    TabIndex = 3
+    TabIndex = 0
     TabOrder = 1
     OnChanging = PageControlChanging
     object pgTitle: TTabSheet
@@ -212,6 +212,7 @@ object ChartAxisFrame: TChartAxisFrame
           Alignment = taRightJustify
           BorderSpacing.Left = 8
           BorderSpacing.Top = 16
+          MaxValue = 1000
           OnChange = seTitleDistanceChange
           TabOrder = 2
         end
