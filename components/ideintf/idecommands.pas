@@ -376,6 +376,7 @@ const
   ecDesignerForwardOne      = ecFirstLazarus + 1006;
   ecDesignerBackOne         = ecFirstLazarus + 1007;
   ecDesignerToggleNonVisComps= ecFirstLazarus + 1008;
+  ecSetSearchText            = ecFirstLazarus + 1009;
 
 
   (* SynEdit Plugins
@@ -1935,7 +1936,7 @@ begin
 end;
 
 const
-  IDEEditorCommandStrs: array[0..323] of TIdentMapEntry = (
+  IDEEditorCommandStrs: array[0..324] of TIdentMapEntry = (
   // search
     (Value: ecFind;                                   Name: 'ecFind'),
     (Value: ecFindAgain;                              Name: 'ecFindAgain'),
@@ -1943,6 +1944,7 @@ const
     (Value: ecFindPrevious;                           Name: 'ecFindPrevious'),
     (Value: ecReplace;                                Name: 'ecReplace'),
     (Value: ecIncrementalFind;                        Name: 'ecIncrementalFind'),
+    (Value: ecSetSearchText;                          Name: 'ecSetSearchText'),
     (Value: ecFindProcedureDefinition;                Name: 'ecFindProcedureDefinition'),
     (Value: ecFindProcedureMethod;                    Name: 'ecFindProcedureMethod'),
     (Value: ecGotoLineNumber;                         Name: 'ecGotoLineNumber'),

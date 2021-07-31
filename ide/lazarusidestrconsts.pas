@@ -385,6 +385,7 @@ resourcestring
   lisMenuFindPrevious = 'Find &Previous';
   lisMenuFindInFiles = 'Find &in Files ...';
   lisMenuIncrementalFind = 'Incremental Find';
+  lisMenuSetSearchText = 'Set Search Text';
   lisMenuGotoLine = 'Goto Line ...';
   lisMenuJumpBack = 'Jump Back';
   lisMenuJumpForward = 'Jump Forward';
@@ -3292,6 +3293,7 @@ resourcestring
   srkmecFindInFiles               = 'Find in Files';
   srkmecReplace                   = 'Replace Text';
   lisKMFindIncremental            = 'Find Incremental';
+  lisKMSetSearchText              = 'Set Search Text';
   srkmecFindProcedureDefinition   = 'Find Procedure Definiton';
   srkmecFindProcedureMethod       = 'Find Procedure Method';
   srkmecGotoLineNumber            = 'Go to Line Number';
