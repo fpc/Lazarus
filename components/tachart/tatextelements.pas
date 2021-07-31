@@ -606,6 +606,7 @@ begin
       Self.FFont.Assign(Font);
       Self.FFrame.Assign(Frame);
       Self.FText.Assign(Text);
+      Self.FWordWrap := WordWrap;
    end;
 
   inherited Assign(ASource);
