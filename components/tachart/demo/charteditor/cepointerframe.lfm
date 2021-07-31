@@ -1,4 +1,4 @@
-object PointerFrame: TChartPointerFrame
+object ChartPointerFrame: TChartPointerFrame
   Left = 0
   Height = 194
   Top = 0
@@ -20,7 +20,6 @@ object PointerFrame: TChartPointerFrame
     Caption = 'Pointer style'
     Color = clForm
     Font.Style = [fsBold]
-    ParentColor = False
     ParentFont = False
     Transparent = False
   end
@@ -70,7 +69,6 @@ object PointerFrame: TChartPointerFrame
       BorderSpacing.Left = 8
       Caption = 'Size'
       FocusControl = sePointerSize
-      ParentColor = False
     end
     object sePointerSize: TSpinEdit
       AnchorSideLeft.Side = asrBottom
@@ -86,6 +84,7 @@ object PointerFrame: TChartPointerFrame
       BorderSpacing.Left = 8
       BorderSpacing.Top = 6
       BorderSpacing.Right = 8
+      MaxValue = 1000
       OnChange = sePointerSizeChange
       TabOrder = 1
     end
