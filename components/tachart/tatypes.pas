@@ -685,7 +685,7 @@ end;
 procedure TChartMargins.Assign(Source: TPersistent);
 begin
   if Source is TChartMargins then
-    TChartMargins(Source).FData.FRect := Data;
+    Self.FData.FRect := TChartMargins(Source).FData.FRect;
   inherited Assign(Source);
 end;
 
