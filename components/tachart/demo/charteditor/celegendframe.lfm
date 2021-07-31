@@ -320,6 +320,7 @@ object ChartLegendFrame: TChartLegendFrame
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 4
         BorderSpacing.Right = 10
+        MaxValue = 1000
         OnChange = seMarginXChange
         TabOrder = 0
         Value = 1
@@ -328,7 +329,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideTop.Control = seMarginY
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = seMarginY
-        Left = 31
+        Left = 33
         Height = 15
         Top = 37
         Width = 7
@@ -341,7 +342,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideTop.Control = seMarginX
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 46
+        Left = 48
         Height = 23
         Top = 33
         Width = 74
@@ -349,6 +350,8 @@ object ChartLegendFrame: TChartLegendFrame
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Right = 10
+        MaxValue = 1000
+        OnChange = seMarginYChange
         TabOrder = 1
         Value = 1
       end
@@ -390,6 +393,8 @@ object ChartLegendFrame: TChartLegendFrame
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 8
         BorderSpacing.Right = 8
+        MaxValue = 1000
+        MinValue = 1
         OnChange = seColumnsChange
         TabOrder = 1
         Value = 1
@@ -456,6 +461,7 @@ object ChartLegendFrame: TChartLegendFrame
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 8
         BorderSpacing.Right = 8
+        MaxValue = 1000
         OnChange = seSpacingChange
         TabOrder = 3
         Value = 20
@@ -487,6 +493,7 @@ object ChartLegendFrame: TChartLegendFrame
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 8
         BorderSpacing.Right = 8
+        MaxValue = 1000
         OnChange = seSymbolWidthChange
         TabOrder = 4
         Value = 20

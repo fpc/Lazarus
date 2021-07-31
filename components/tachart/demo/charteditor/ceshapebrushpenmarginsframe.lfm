@@ -172,6 +172,7 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       Top = 0
       Width = 50
       Alignment = taRightJustify
+      MaxValue = 1000
       OnChange = seTopMarginChange
       TabOrder = 0
     end
@@ -187,6 +188,7 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       Anchors = [akTop, akRight]
       BorderSpacing.Left = 28
       BorderSpacing.Right = 8
+      MaxValue = 1000
       OnChange = seLeftMarginChange
       TabOrder = 1
     end
@@ -202,6 +204,7 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       Alignment = taRightJustify
       BorderSpacing.Left = 8
       BorderSpacing.Right = 28
+      MaxValue = 1000
       OnChange = seRightMarginChange
       TabOrder = 2
     end
@@ -218,6 +221,7 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       Width = 50
       Alignment = taRightJustify
       BorderSpacing.Bottom = 8
+      MaxValue = 1000
       OnChange = seBottomMarginChange
       TabOrder = 3
     end

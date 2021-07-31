@@ -40,9 +40,9 @@ object ChartAxisFrame: TChartAxisFrame
     Height = 446
     Top = 25
     Width = 646
-    ActivePage = pgGrid
+    ActivePage = pgLine
     Align = alClient
-    TabIndex = 2
+    TabIndex = 3
     TabOrder = 1
     OnChanging = PageControlChanging
     object pgTitle: TTabSheet
@@ -437,6 +437,7 @@ object ChartAxisFrame: TChartAxisFrame
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Bottom = 12
+          MaxValue = 1000
           OnChange = seLabelDistanceChange
           TabOrder = 2
         end
@@ -492,6 +493,7 @@ object ChartAxisFrame: TChartAxisFrame
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Left = 16
           BorderSpacing.Top = 2
+          MaxValue = 1000
           OnChange = seTickLengthChange
           TabOrder = 0
         end
@@ -507,6 +509,7 @@ object ChartAxisFrame: TChartAxisFrame
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 12
+          MaxValue = 1000
           OnChange = seTickInnerLengthChange
           TabOrder = 1
         end
@@ -722,6 +725,7 @@ object ChartAxisFrame: TChartAxisFrame
           BorderSpacing.Left = 24
           BorderSpacing.Top = 8
           BorderSpacing.Right = 16
+          MaxValue = 1000
           OnChange = seArrowBaseLengthChange
           TabOrder = 1
         end
@@ -738,6 +742,7 @@ object ChartAxisFrame: TChartAxisFrame
           Alignment = taRightJustify
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
+          MaxValue = 1000
           OnChange = seArrowLengthChange
           TabOrder = 2
         end
@@ -755,6 +760,7 @@ object ChartAxisFrame: TChartAxisFrame
           Anchors = [akTop, akLeft, akRight]
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 16
+          MaxValue = 1000
           OnChange = seArrowWidthChange
           TabOrder = 3
         end
