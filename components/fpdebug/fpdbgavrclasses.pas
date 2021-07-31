@@ -284,7 +284,7 @@ end;
 
 function TDbgAvrThread.ReadThreadState: boolean;
 begin
-  assert(FIsPaused, 'TDbgRspThread.ReadThreadState: FIsPaused');
+//  assert(FIsPaused, 'TDbgRspThread.ReadThreadState: FIsPaused');
   result := true;
   if FHasThreadState then
     exit;
@@ -776,10 +776,11 @@ begin
     repeat
       try
         FStatus := FConnection.WaitForSignal(s, initRegs); // TODO: Update registers cache
+        sleep(1);
       except
         FStatus := 0;
       end;
-    until FStatus <> 0;   // should probably wait at lower level...
+    until FStatus <> 0;
 
   if FStatus <> 0 then
   begin
@@ -789,7 +790,7 @@ begin
     end;
   end;
 
-  result := true;
+  result := FStatus <> 0;
 end;
 
 function TDbgAvrProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr;
