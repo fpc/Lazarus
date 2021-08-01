@@ -584,6 +584,7 @@ begin
     ecFindInFiles             : Result:= srkmecFindInFiles;
     ecReplace                 : Result:= srkmecReplace;
     ecIncrementalFind         : Result:= lisMenuIncrementalFind;
+    ecSetSearchText           : Result:= lisMenuSetSearchText;
     ecFindProcedureDefinition : Result:= srkmecFindProcedureDefinition;
     ecFindProcedureMethod     : Result:= srkmecFindProcedureMethod;
     ecGotoLineNumber          : Result:= srkmecGotoLineNumber;
@@ -1152,6 +1153,7 @@ begin
   ecFindInFiles:         SetSingle(VK_F,[XCtrl,ssShift]);
   ecReplace:             SetCombo(VK_R,[XCtrl],VK_UNKNOWN,[], VK_Q,[XCtrl],VK_A,[]);
   ecIncrementalFind:     SetSingle(VK_E,[XCtrl]);
+  ecSetSearchText:       SetCombo(VK_K,[XCtrl],VK_F,[]);
   ecGotoLineNumber:      SetCombo(VK_G,[XCtrl],VK_UNKNOWN,[], VK_Q,[XCtrl],VK_G,[]);
   ecFindNextWordOccurrence:SetSingle(VK_UNKNOWN,[]);
   ecFindPrevWordOccurrence:SetSingle(VK_UNKNOWN,[]);
@@ -1613,6 +1615,7 @@ begin
   ecFindInFiles:         SetSingle(VK_UNKNOWN,[]);
   ecReplace:             SetCombo(VK_Q,[SSCtrl],VK_A,[]);
   ecIncrementalFind:     SetSingle(VK_UNKNOWN,[]);
+  ecSetSearchText:       SetCombo(VK_K,[ssCtrl], VK_F,[]);
   ecGotoLineNumber:      SetCombo(VK_Q,[ssCtrl],VK_G,[]);
   ecFindNextWordOccurrence:SetSingle(VK_UNKNOWN,[]);
   ecFindPrevWordOccurrence:SetSingle(VK_UNKNOWN,[]);
@@ -2242,6 +2245,7 @@ begin
   ecFindInFiles:         SetSingle(VK_F,[ssMeta,ssShift]);
   ecReplace:             SetSingle(VK_UNKNOWN,[]);
   ecIncrementalFind:     SetSingle(VK_E,[ssMeta]);
+  ecSetSearchText:       SetCombo(VK_K,[SSCtrl],VK_F,[]);
   ecGotoLineNumber:      SetSingle(VK_L,[ssMeta]);
   ecFindNextWordOccurrence:SetSingle(VK_UNKNOWN,[]);
   ecFindPrevWordOccurrence:SetSingle(VK_UNKNOWN,[]);
@@ -2851,6 +2855,7 @@ begin
   AddDefault(C, 'Find in files', srkmecFindInFiles, ecFindInFiles);
   AddDefault(C, 'Replace text', srkmecReplace, ecReplace);
   AddDefault(C, 'Find incremental', lisKMFindIncremental, ecIncrementalFind);
+  AddDefault(C, 'Set Search Text', lisKMSetSearchText, ecSetSearchText);
   AddDefault(C, 'Go to line number', srkmecGotoLineNumber, ecGotoLineNumber);
   AddDefault(C, 'Find next word occurrence', srkmecFindNextWordOccurrence, ecFindNextWordOccurrence);
   AddDefault(C, 'Find previous word occurrence', srkmecFindPrevWordOccurrence, ecFindPrevWordOccurrence);
