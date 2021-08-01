@@ -48,10 +48,8 @@ begin
   if IsUnbound then begin
     if FDetectedEvents and DBCBEVENT_CHANGE <> 0 then
       DoOnChange;
-    if DetectedEvents and DBCBEVENT_SELECT <>0 then begin
-      UpdateData(self);
+    if DetectedEvents and DBCBEVENT_SELECT <>0 then
       DoOnSelect;
-    end;
     if DetectedEvents and DBCBEVENT_CLOSEUP <>0 then
       DoOnCloseUp;
   end
