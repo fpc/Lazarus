@@ -8956,6 +8956,10 @@ msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Assembler"
 
+#: lazarusidestrconsts.lisdisassgotoaddredittexthint
+msgid "($address)"
+msgstr ""
+
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
 msgid "Goto Address"
