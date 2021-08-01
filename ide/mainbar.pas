@@ -140,7 +140,6 @@ type
         itmSearchFindInFiles: TIDEMenuCommand;
         itmSearchReplace: TIDEMenuCommand;
         itmIncrementalFind: TIDEMenuCommand;
-        //itmSetSearchText: TIDEMenuCommand;
       //itmJumpings: TIDEMenuSection;
         itmGotoLine: TIDEMenuCommand;
         itmJumpBack: TIDEMenuCommand;
