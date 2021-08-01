@@ -395,7 +395,6 @@ type
     function  DoFindAndReplace(aFindText, aReplaceText: String; anOptions: TSynSearchOptions): Integer;
     procedure FindNextUTF8;
     procedure FindPrevious;
-    procedure SetSearchText;
     procedure FindNextWordOccurrence(DirectionForward: boolean);
     procedure ShowGotoLineDialog;
 
@@ -3692,23 +3691,6 @@ begin
   end;
 end;
 
-procedure TSourceEditor.SetSearchText;
-var
-  S: string;
-begin
-  if EditorComponent.SelAvail then
-    S := EditorComponent.SelText
-  else
-  begin
-    S := EditorComponent.GetWordAtRowCol(EditorComponent.LogicalCaretXY);
-    //EditorComponent.Flags:=[ssoWholeWord];
-  end;
-  if S <> '' then begin
-    FSourceNoteBook.BeginIncrementalFind;
-    FSourceNoteBook.IncrementalSearchStr := S;
-  end;
-end;
-
 procedure TSourceEditor.FindNextWordOccurrence(DirectionForward: boolean);
 var
   StartX, EndX: Integer;
@@ -4149,7 +4131,6 @@ Begin
   ecFindNext:                  FindNextUTF8;
   ecFindPrevious:              FindPrevious;
   ecIncrementalFind: if FSourceNoteBook<>nil then FSourceNoteBook.BeginIncrementalFind;
-  ecSetSearchText:   if FSourceNoteBook<>nil then SetSearchText;
   ecReplace:                   StartFindAndReplace(true);
   ecGotoLineNumber:            ShowGotoLineDialog;
   ecFindNextWordOccurrence:    FindNextWordOccurrence(true);
