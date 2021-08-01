@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-07-29 01:13+0300\n"
+"PO-Revision-Date: 2021-08-01 23:48+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8848,6 +8848,10 @@ msgstr "Отключить параметр -Xg"
 msgctxt "lazarusidestrconsts.lisdisassassembler"
 msgid "Assembler"
 msgstr "Ассемблер"
+
+#: lazarusidestrconsts.lisdisassgotoaddredittexthint
+msgid "($address)"
+msgstr "($адрес)"
 
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
