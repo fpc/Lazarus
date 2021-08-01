@@ -10,7 +10,7 @@ object AssemblerDlg: TAssemblerDlg
   KeyPreview = True
   OnKeyDown = FormKeyDown
   OnResize = FormResize
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object pbAsm: TPaintBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ToolBar1
@@ -114,7 +114,7 @@ object AssemblerDlg: TAssemblerDlg
     end
     object pnlToolAddr: TPanel
       Left = 109
-      Height = 29
+      Height = 23
       Top = 2
       Width = 80
       AutoSize = True
@@ -124,12 +124,12 @@ object AssemblerDlg: TAssemblerDlg
       ChildSizing.ShrinkHorizontal = crsHomogenousChildResize
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 29
+      ClientHeight = 23
       ClientWidth = 80
       TabOrder = 0
       object EditGotoAddr: TEdit
         Left = 0
-        Height = 29
+        Height = 23
         Top = 0
         Width = 80
         OnChange = EditGotoAddrChange

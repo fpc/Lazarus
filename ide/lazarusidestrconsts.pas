@@ -509,6 +509,7 @@ resourcestring
   lisDisAssGotoCurrentAddressHint = 'Goto Current Address';
   lisDisAssGotoAddress = 'Goto Address';
   lisDisAssGotoAddressHint = 'Goto Address';
+  lisDisAssGotoAddrEditTextHint = '($address)';
 
   lisBFRunCommand = 'Run Command';
   lisMenuShowExecutionPoint = 'S&how Execution Point';

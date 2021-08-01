@@ -291,6 +291,7 @@ begin
   actGotoAddr.Caption := lisDisAssGotoAddress;
   actGotoAddr.Hint := lisDisAssGotoAddressHint;
   actGotoAddr.ImageIndex := IDEImages.LoadImage('callstack_show');
+  EditGotoAddr.TextHint := lisDisAssGotoAddrEditTextHint;
 
   actCopy.Caption := lisCopy;
   actCopy.Hint := lisCopy;
