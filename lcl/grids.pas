@@ -11250,7 +11250,7 @@ var
   function QuoteText(s: string): string;
   begin
     DoCellProcess(aCol, aRow, cpCopy, s);
-    if (pos(#9, s)>0) or //Excel and Calc convert tab symbol # 9 in cell to whitespace.
+    if (pos(#9, s)>0) or
        (pos(#10, s)>0) or
        (pos(#13, s)>0)
     then
@@ -11282,10 +11282,15 @@ var
 
 begin
   SelStr := '';
-  SelHTMLStr := '<table>';
+
+  SelHTMLStr := '<head><style><!--table br {mso-data-placement:same-cell;} --></style></head>' + #13#10 +
+                '<table>' + #13#10;
+
+  //<head>...</head> MS Excel crutch, otherwise Excel split merged cell if it found <br> tag
+
   for aRow := R.Top to R.Bottom do begin
 
-    SelHTMLStr := SelHTMLStr + '<tr>';
+    SelHTMLStr := SelHTMLStr + '<tr>' + #13#10;
 
     for aCol := R.Left to R.Right do begin
 
@@ -11298,18 +11303,18 @@ begin
         if (aRow = 0) and (FixedRows > 0) then
         begin
           SelStr := SelStr + QuoteText(Columns[k].Title.Caption);
-          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Columns[k].Title.Caption) + '</td>';
+          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Columns[k].Title.Caption) + '</td>' + #13#10;
         end
         else
         begin
           SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
-          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Cells[aCol,aRow]) + '</td>';
+          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Cells[aCol,aRow]) + '</td>' + #13#10;
         end;
 
       end else
         begin
           SelStr := SelStr + QuoteText(Cells[aCol,aRow]);
-          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Cells[aCol,aRow]) + '</td>';
+          SelHTMLStr := SelHTMLStr + '<td>' + PrepareToHTML(Cells[aCol,aRow]) + '</td>' + #13#10;
         end;
 
       if aCol <> R.Right then
@@ -11317,9 +11322,9 @@ begin
     end;
 
     SelStr := SelStr + sLineBreak;
-    SelHTMLStr := SelHTMLStr + '</tr>';
+    SelHTMLStr := SelHTMLStr + '</tr>' + #13#10;
   end;
-  SelHTMLStr := SelHTMLStr + '</table>';
+  SelHTMLStr := SelHTMLStr + #13#10 + '</table>';
   Clipboard.SetAsHtml(SelHTMLStr, SelStr);
 end;
 
@@ -11645,42 +11650,28 @@ var
   bCellData, bTagEnd: Boolean;
   bStr, bEndStr: PChar;
 
-  function ReplaceEntities(const cSt: string): string;
+  function ReplaceEntities(cSt: string): string;
   var
+    o,a,b: pchar;
     dName: widestring;
     dEntity: WideChar;
-    pAmp, pSemi, pStart: Integer;
   begin
-    //debugln(['ReplaceEntities: cSt=',cSt]);
-    Result := '';
-    if (cSt = '') then
-      Exit;
-    pStart := 1;
     while true do begin
-      //debugln(['  pStart=',pStart]);
-      pAmp := PosEx('&', cSt, pStart);
-      if (pAmp > 0) then
-        pSemi := PosEx(';', cSt, pAmp);
-      if ((pAmp and pSemi) = 0) then  begin
-        //debugln('  pAmp or pSemi = 0');
-        Result := Result + Copy(cSt, pStart, MaxInt);
-        Exit;
-      end;
-      //debugln(['  pAmp=',pAmp,', pSemi=',pSemi]);
-      dName := Utf8Decode(Copy(cSt, pAmp + 1, pSemi - pAmp - 1));
-      //debugln(['  dName=',Utf8Encode(dName)]);
-      Result := Result + Copy(cSt, pStart, pAmp - pStart);
-      pStart := pSemi + 1;
-
+      result := cSt;
+      if cSt = '' then
+        break;
+      o := @cSt[1];
+      a := strscan(o, '&');
+      if a = nil then
+        break;
+      b := strscan(a + 1, ';');
+      if b = nil then
+        break;
+      dName := UTF8Decode(copy(cSt, a - o + 2, b - a - 1));
       dEntity := ' ';
       if ResolveHTMLEntityReference(dName, dEntity) then begin
-        //debugln(['dEntity=',Utf8Encode(dEntity)]);
-        result := result + Utf8Encode(dEntity);
-      end
-      else begin
-        //illegal html entity
-        //debugln('  illegal html entity: replace with "?"');
-        Result := Result + '?';
+        system.delete(cSt, a - o + 1, b - a + 1);
+        system.insert(UTF8Encode(dEntity), cSt, a - o + 1);
       end;
     end;
   end;
@@ -11700,6 +11691,14 @@ begin
 
     while bStr < bEndStr do
     begin
+      if bStr^ = #13 then // delete #13#10#20...#20  Excel place this after <br> tag.
+      begin
+        while bStr < (bEndStr - 1) do
+        begin
+          Inc(bStr);
+          if (bStr^ <> #10) and (bStr^ <> ' ') then Break;
+        end;
+      end;
       if bStr^ = '<' then // tag start sign '<'
       begin
         bTagEnd := False;
