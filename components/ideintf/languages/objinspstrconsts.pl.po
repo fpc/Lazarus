@@ -172,7 +172,7 @@ msgid "Cancel"
 msgstr "Anuluj"
 
 #: objinspstrconsts.fescheckdset
-msgid "Check dataset settings"
+msgid "Check dataset settings."
 msgstr ""
 
 #: objinspstrconsts.fesdata
@@ -182,6 +182,13 @@ msgstr "&Dane"
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr "Zestaw &danych:"
+
+#: objinspstrconsts.feserrormessage
+#, object-pascal-format
+msgid ""
+"Error message:\n"
+"%s"
+msgstr ""
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -230,11 +237,11 @@ msgid "&Name:"
 msgstr "&Nazwa:"
 
 #: objinspstrconsts.fesnofields
-msgid "It was not possible to get the dataset field's list"
+msgid "It was not possible to get the dataset fields list."
 msgstr ""
 
 #: objinspstrconsts.fesnofieldsnote
-msgid "Field's list is not available, can't check for duplicates"
+msgid "Fields list is not available, can't check for duplicates."
 msgstr ""
 
 #: objinspstrconsts.fesokbtn

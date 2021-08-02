@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-06-13 01:07+0300\n"
+"PO-Revision-Date: 2021-08-03 01:35+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -171,7 +171,7 @@ msgid "Cancel"
 msgstr "Отмена"
 
 #: objinspstrconsts.fescheckdset
-msgid "Check dataset settings"
+msgid "Check dataset settings."
 msgstr "Проверьте параметры набора данных."
 
 #: objinspstrconsts.fesdata
@@ -181,6 +181,15 @@ msgstr "Поле &данных"
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr "&Набор данных:"
+
+#: objinspstrconsts.feserrormessage
+#, object-pascal-format
+msgid ""
+"Error message:\n"
+"%s"
+msgstr ""
+"Сообщение об ошибке:\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -229,11 +238,11 @@ msgid "&Name:"
 msgstr "&Имя:"
 
 #: objinspstrconsts.fesnofields
-msgid "It was not possible to get the dataset field's list"
+msgid "It was not possible to get the dataset fields list."
 msgstr "Не удалось получить список полей набора данных."
 
 #: objinspstrconsts.fesnofieldsnote
-msgid "Field's list is not available, can't check for duplicates"
+msgid "Fields list is not available, can't check for duplicates."
 msgstr "Список полей недоступен, невозможно проверить наличие дубликатов."
 
 #: objinspstrconsts.fesokbtn
