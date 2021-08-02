@@ -189,7 +189,7 @@ begin
     FieldsList :=  TFieldsListFrm.Create(Self, LinkDataset, Designer);
   except
     on E:Exception do begin
-      ShowMessage(fesNoFields+^M+fesCheckDSet+^M^M+E.Message);
+      MessageDlg(fesNoFields+^M+fesCheckDSet+^M^M+Format(fesErrorMessage, [E.Message]), mtError, [mbOK], 0);
       exit;
     end;
   end;
