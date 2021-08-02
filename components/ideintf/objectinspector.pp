@@ -1593,7 +1593,7 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     except
       on E: Exception do begin
-        MessageDlg(oisError, E.Message + ' with value "'+NewValue+'"', mtError, [mbOk], 0);
+        MessageDlg(oisError, E.Message, mtError, [mbOk], 0);
         isExcept := true;
       end;
     end;
