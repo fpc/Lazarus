@@ -401,10 +401,11 @@ resourcestring
   fesFeTitle = 'Edit Fields ...';
   oisAddFields = '&Add fields';
   oisAddFieldsFromFieldDefs = 'Add fields from FieldDefs';
-  fesNoFields = 'It was not possible to get the dataset field''s list';
-  fesCheckDset = 'Check dataset settings';
+  fesNoFields = 'It was not possible to get the dataset fields list.';
+  fesCheckDset = 'Check dataset settings.';
+  fesErrorMessage = 'Error message:' + LineEnding + '%s';
   fesFlTitle = 'FieldDefs';
-  fesNoFieldsNote = 'Field''s list is not available, can''t check for duplicates';
+  fesNoFieldsNote = 'Fields list is not available, can''t check for duplicates.';
   oisIncompatibleIdentifier = 'Incompatible Identifier';
   oisIsNotAValidMethodName = '"%s" is not a valid method name.';
   oisTheIdentifierIsNotAMethodPressCancelToUndoPressIgn = 'The identifier "%s" is not a method.'
