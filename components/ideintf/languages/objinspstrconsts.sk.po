@@ -172,7 +172,9 @@ msgid "Cancel"
 msgstr "Zrušiť"
 
 #: objinspstrconsts.fescheckdset
-msgid "Check dataset settings"
+#, fuzzy
+#| msgid "Check dataset settings"
+msgid "Check dataset settings."
 msgstr "Skontrolovať nastavenia dataset"
 
 #: objinspstrconsts.fesdata
@@ -181,6 +183,13 @@ msgstr ""
 
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
+msgstr ""
+
+#: objinspstrconsts.feserrormessage
+#, object-pascal-format
+msgid ""
+"Error message:\n"
+"%s"
 msgstr ""
 
 #: objinspstrconsts.fesfetitle
@@ -230,11 +239,15 @@ msgid "&Name:"
 msgstr ""
 
 #: objinspstrconsts.fesnofields
-msgid "It was not possible to get the dataset field's list"
+#, fuzzy
+#| msgid "It was not possible to get the dataset field's list"
+msgid "It was not possible to get the dataset fields list."
 msgstr "Nebolo možné získať zoznam poľa dataset"
 
 #: objinspstrconsts.fesnofieldsnote
-msgid "Field's list is not available, can't check for duplicates"
+#, fuzzy
+#| msgid "Field's list is not available, can't check for duplicates"
+msgid "Fields list is not available, can't check for duplicates."
 msgstr "Zoznam polí nie je dostupný, nie je možné skontrolovať duplicity"
 
 #: objinspstrconsts.fesokbtn

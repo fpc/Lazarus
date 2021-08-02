@@ -174,7 +174,9 @@ msgid "Cancel"
 msgstr "Скасувати"
 
 #: objinspstrconsts.fescheckdset
-msgid "Check dataset settings"
+#, fuzzy
+#| msgid "Check dataset settings"
+msgid "Check dataset settings."
 msgstr "Перевірити параметри набору даних"
 
 #: objinspstrconsts.fesdata
@@ -184,6 +186,13 @@ msgstr "&Дані"
 #: objinspstrconsts.fesdataset
 msgid "&Dataset:"
 msgstr "На&бір даних:"
+
+#: objinspstrconsts.feserrormessage
+#, object-pascal-format
+msgid ""
+"Error message:\n"
+"%s"
+msgstr ""
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -232,11 +241,15 @@ msgid "&Name:"
 msgstr "&Назва:"
 
 #: objinspstrconsts.fesnofields
-msgid "It was not possible to get the dataset field's list"
+#, fuzzy
+#| msgid "It was not possible to get the dataset field's list"
+msgid "It was not possible to get the dataset fields list."
 msgstr "Неможливо отримати список полів набору даних"
 
 #: objinspstrconsts.fesnofieldsnote
-msgid "Field's list is not available, can't check for duplicates"
+#, fuzzy
+#| msgid "Field's list is not available, can't check for duplicates"
+msgid "Fields list is not available, can't check for duplicates."
 msgstr "Список полів недоступний, неможливо перевірити наявність дублікатів"
 
 #: objinspstrconsts.fesokbtn
