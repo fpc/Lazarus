@@ -1737,6 +1737,11 @@ end;
 
 {$ENDIF}
 
+function IsMainThread: boolean;
+begin
+  result := GetCurrentThreadId=MainThreadId;
+end;
+
 function IsCustomProp(const aPropName: string; out aIndex: Integer): boolean;
 var
   i: Integer;
@@ -8552,7 +8557,7 @@ var
 
           while not b.DataSet.Eof do
           begin
-            Application.ProcessMessages;
+            if IsMainThread then Application.ProcessMessages;
             if MasterReport.Terminated then
               break;
             AddToStack(b);
@@ -10053,7 +10058,7 @@ begin
   if Assigned(FOnProgress) then
     FOnProgress(Percent)
   else
-    if fShowProgress then
+    if fShowProgress and IsMainThread then
     begin
       with frProgressForm do
       begin
@@ -11121,7 +11126,7 @@ begin
 
     DisableDrawing := True;
     FinalPass := False;
-    if not Assigned(FOnProgress) and FShowProgress then
+    if not Assigned(FOnProgress) and FShowProgress and IsMainThread then
     begin
       with frProgressForm do
       begin
@@ -11146,7 +11151,7 @@ begin
     Exit;
   end;
   
-  if not Assigned(FOnProgress) and FShowProgress then
+  if not Assigned(FOnProgress) and FShowProgress and IsMainThread then
   begin
     {$IFDEF DebugLR}
     DebugLnEnter('DoPrepareReport SecondPass INIT');
@@ -11212,13 +11217,13 @@ procedure TfrReport.ExportBeforeModal(Sender: TObject);
 var
   i: Integer;
 begin
-  Application.ProcessMessages;
+  if IsMainThread then Application.ProcessMessages;
   for i := 0 to EMFPages.Count - 1 do
   begin
     FCurrentFilter.OnBeginPage;
     EMFPages.ExportData(i);
     InternalOnProgress(i + 1);
-    Application.ProcessMessages;
+    if IsMainThread then Application.ProcessMessages;
     FCurrentFilter.OnEndPage;
   end;
   FCurrentFilter.OnEndDoc;
@@ -11554,7 +11559,7 @@ begin
   FPageNumbers:=PageNumbers;
   FCopies:=Copies;
   
-  if not Assigned(FOnProgress) and FShowProgress then
+  if not Assigned(FOnProgress) and FShowProgress and IsMainThread then
   begin
     with frProgressForm do
     begin
@@ -11662,7 +11667,7 @@ var
       EMFPages.Draw(n, Printer.Canvas, Rect(0, 0, 0, 0));
     end;
     InternalOnProgress(n + 1);
-    Application.ProcessMessages;
+    if IsMainThread then Application.ProcessMessages;
     isFirstPage := False;
     {$ifdef DebugLR}
     DebugLnExit('PrintPage: DONE',[]);
