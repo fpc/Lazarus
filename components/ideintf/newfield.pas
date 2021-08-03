@@ -352,12 +352,10 @@ begin
       0..1: begin //data,calculated field
         GroupBox2.Visible := False;
         GroupBox1.Visible := True;
-        ClientHeight := RadioGroup1.Height + NoteLbl.Height + GroupBox1.Height + ButtonPanel1.Height;
       end;
       2: begin //lookup field
         GroupBox2.Visible := True;
         GroupBox1.Visible := False;
-        ClientHeight := RadioGroup1.Height + NoteLbl.Height + GroupBox2.Height + ButtonPanel1.Height;
       end;
     end;
     SetButtons;
