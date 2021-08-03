@@ -10750,8 +10750,12 @@ begin
       Canvas.Pen.Mode := pmXOR;
     end;
     DrawBits := BF_RECT;
-    if (goRowSelect in Options) and ((fTopLeft.x<>FixedCols) or (FGCache.TLColOff<>0)) then
-      DrawBits := DrawBits and not BF_LEFT;
+    if (goRowSelect in Options) then begin
+      if ((fTopLeft.x>FixedCols) or (FGCache.TLColOff<>0)) then
+        DrawBits := DrawBits and not BF_LEFT;
+      if (FGCache.VisibleGrid.Right<ColCount-1) then
+        DrawBits := DrawBits and not BF_RIGHT;
+    end;
     DrawRubberRect(Canvas, aRect, FFocusColor, DrawBits);
     if FUseXORFeatures then begin
       Canvas.Pen.Mode := OldPenMode;

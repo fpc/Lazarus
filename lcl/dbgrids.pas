@@ -3225,13 +3225,22 @@ begin
 end;
 
 procedure TCustomDBGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
+var
+  DrawBits: Byte;
 begin
   // Draw focused cell if we have the focus
   if Self.Focused and (dgAlwaysShowSelection in Options) and
     FDatalink.Active and DefaultDrawing then
   begin
+    DrawBits := BF_RECT;
+    if (dgRowSelect in Options) then begin
+      if (LeftCol>FixedCols) or (GCache.TLColOff<>0) then
+        DrawBits := DrawBits and not BF_LEFT;
+      if (GCache.VisibleGrid.Right<ColCount-1) then
+        DrawBits := DrawBits and not BF_RIGHT;
+    end;
     CalcFocusRect(aRect);
-    DrawRubberRect(Canvas, aRect, FocusColor);
+    DrawRubberRect(Canvas, aRect, FocusColor, DrawBits);
   end;
 end;
 
