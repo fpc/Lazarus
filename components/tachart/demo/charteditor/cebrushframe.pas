@@ -21,12 +21,10 @@ type
     FBrush: TBrush;
     FOnChange: TNotifyEvent;
     procedure DoChanged;
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure Prepare(ABrush: TBrush);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-
   end;
 
 implementation

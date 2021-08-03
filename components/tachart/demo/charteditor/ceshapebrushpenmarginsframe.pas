@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Graphics, Forms, Controls, StdCtrls, Dialogs, Spin, ExtCtrls,
-  TATypes, TATextElements;
+  TATypes, TATextElements,
+  ceSimplePenFrame, ceSimpleBrushFrame;
 
 type
 
@@ -15,11 +16,6 @@ type
   { TChartShapeBrushPenMarginsFrame }
 
   TChartShapeBrushPenMarginsFrame = class(TFrame)
-    Spacer: TBevel;
-    cbBorderColor: TColorButton;
-    cbFillColor: TColorButton;
-    cbFilled: TCheckBox;
-    cbShowBorder: TCheckBox;
     cmbShape: TComboBox;
     gbBackground: TGroupBox;
     gbBorder: TGroupBox;
@@ -28,10 +24,6 @@ type
     seLeftMargin: TSpinEdit;
     seRightMargin: TSpinEdit;
     seTopMargin: TSpinEdit;
-    procedure cbBorderColorColorChanged(Sender: TObject);
-    procedure cbFillColorColorChanged(Sender: TObject);
-    procedure cbFilledChange(Sender: TObject);
-    procedure cbShowBorderChange(Sender: TObject);
     procedure cmbShapeChange(Sender: TObject);
     procedure seBottomMarginChange(Sender: TObject);
     procedure seLeftMarginChange(Sender: TObject);
@@ -45,9 +37,11 @@ type
     FMargins: TChartLabelMargins;
     FShape: TChartLabelShape;
     FLockEvents: Integer;
-    procedure DoChanged;
+    FBrushFrame: TSimpleChartBrushFrame;
+    FPenFrame: TSimpleChartPenFrame;
+    procedure ChangeHandler(Sender: TObject);
+    procedure DoChange;
     procedure DoShapeChanged(AShape: TChartLabelShape);
-    procedure UpdateControls;
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
       {%H-}WithThemeSpace: Boolean); override;
@@ -74,9 +68,30 @@ uses
 constructor TChartShapeBrushPenMarginsFrame.Create(AOwner: TComponent);
 begin
   inherited;
-  cbFillColor.Width := cbFillColor.Height;
-  cbBorderColor.Width := cbBorderColor.Height;
+
   cmbShape.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+
+  FBrushFrame := TSimpleChartBrushFrame.Create(self);
+  FBrushFrame.Name := '';
+  FBrushFrame.BorderSpacing.Left := 8;
+  FBrushFrame.BorderSpacing.Right := 8;
+  FBrushFrame.BorderSpacing.Bottom := 8;
+  FBrushFrame.Align := alClient;
+  FBrushFrame.OnChange := @ChangeHandler;
+  FBrushFrame.AutoSize := true;
+  gbBackground.AutoSize := true;
+  FBrushFrame.Parent := gbBackground;
+
+  FPenFrame := TSimpleChartPenFrame.Create(self);
+  FPenFrame.Name := '';
+  FPenFrame.BorderSpacing.Left := 8;
+  FPenFrame.BorderSpacing.Right := 8;
+  FPenFrame.BorderSpacing.Bottom := 8;
+  FPenFrame.Align := alClient;
+  FPenFrame.OnChange := @ChangeHandler;
+  FPenFrame.AutoSize := true;
+  gbBorder.AutoSize := true;
+  FPenFrame.Parent := gbBorder;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.CalculatePreferredSize(
@@ -84,46 +99,26 @@ procedure TChartShapeBrushPenMarginsFrame.CalculatePreferredSize(
   WithThemeSpace: Boolean);
 begin
   PreferredHeight := cmbShape.Height +
-    gbBackground.BorderSpacing.Top + gbBackground.Height +
+    gbBorder.BorderSpacing.Top + gbBorder.Height +
     gbMargins.BorderSpacing.Top + gbMargins.Height;
 
-  PreferredWidth := Max(
-    Max(gbBackground.Width, gbBorder.Width) * 2 + Spacer.Width,
-    gbMargins.Width
-  );;
+  PreferredWidth :=
+    gbBackground.Width + gbBorder.Width +
+    Max(gbBackground.BorderSpacing.Right, gbBorder.BorderSpacing.Left);
 end;
 
-procedure TChartShapeBrushPenMarginsFrame.cbBorderColorColorChanged(Sender: TObject);
+procedure TChartShapeBrushPenMarginsFrame.ChangeHandler(Sender: TObject);
 begin
-  FPen.Color := cbBorderColor.ButtonColor;
-//  if FPen.Style <> psClear then
-    DoChanged;
-end;
-
-procedure TChartShapeBrushPenMarginsFrame.cbFillColorColorChanged(Sender: TObject);
-var
-  bs: TBrushStyle;
-begin
-  bs := FBrush.Style;
-  FBrush.Color := cbFillColor.ButtonColor;
-  FBrush.Style := bs;
-//  if FBrush.Style <> bsClear then
-    DoChanged;
-end;
-
-procedure TChartShapeBrushPenMarginsFrame.cbFilledChange(Sender: TObject);
-begin
-  if cbFilled.Checked then FBrush.Style := bsSolid else FBrush.Style := bsClear;
-  UpdateControls;
-  DoChanged;
-end;
-
-procedure TChartShapeBrushPenMarginsFrame.cbShowBorderChange(Sender: TObject);
-begin
-  FPen.Visible := cbShowBorder.Checked;
-  if FPen.Visible and (FPen.Style = psClear) then FPen.Style := psSolid;
-  UpdateControls;
-  DoChanged;
+  if FLockEvents = 0 then
+  begin
+    if (Sender is TChartPen) then
+      FPen := TChartPen(Sender)
+    else if (Sender is TBrush) then
+      FBrush := TBrush(Sender);
+    cmbShape.Enabled := FPen.EffVisible or (FBrush.Style <> bsClear);
+    gbMargins.Enabled := cmbShape.Enabled;
+    DoChange;
+  end;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.cmbShapeChange(Sender: TObject);
@@ -131,7 +126,7 @@ begin
   DoShapeChanged(TChartLabelShape(cmbShape.ItemIndex));
 end;
 
-procedure TChartShapeBrushPenMarginsFrame.DoChanged;
+procedure TChartShapeBrushPenMarginsFrame.DoChange;
 begin
   if (FLockEvents = 0) and Assigned(FOnChange) then
     FOnChange(Self);
@@ -146,25 +141,25 @@ end;
 procedure TChartShapeBrushPenMarginsFrame.seBottomMarginChange(Sender: TObject);
 begin
   FMargins.Bottom := seBottomMargin.Value;
-  DoChanged;
+  DoChange;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.seLeftMarginChange(Sender: TObject);
 begin
   FMargins.Left := seLeftMargin.Value;
-  DoChanged;
+  DoChange;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.seRightMarginChange(Sender: TObject);
 begin
   FMargins.Right := seRightMargin.Value;
-  DoChanged;
+  DoChange;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.seTopMarginChange(Sender: TObject);
 begin
   FMargins.Top := seTopMargin.Value;
-  DoChanged;
+  DoChange;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.GetData(out AShape: TChartLabelShape;
@@ -173,11 +168,9 @@ begin
   AShape := TChartLabelShape(cmbShape.ItemIndex);
   if HandleAllocated then
   begin
-    if cbFilled.Checked then ABrush.Style := bsSolid else ABrush.Style := bsClear;
-    ABrush.Color := cbFillColor.ButtonColor;
-    APen.Visible := cbShowBorder.Checked;
+    FBrushFrame.GetData(ABrush);
+    FPenFrame.GetData(APen);
     APen.Style := psSolid;
-    APen.Color := cbBorderColor.ButtonColor;
   end;
   AMargins.Top := seTopMargin.Value;
   AMargins.Left := seLeftMargin.Value;
@@ -189,30 +182,24 @@ procedure TChartShapeBrushPenMarginsFrame.Prepare(AShape: TChartLabelShape;
   ABrush: TBrush; APen: TChartPen; AMargins: TChartLabelMargins);
 begin
   inc(FLockEvents);
+
   FShape := AShape;
   FBrush := ABrush;
   FPen := APen;
   FMargins := AMargins;
+
   cmbShape.ItemIndex := ord(AShape);
-  cbFilled.Checked := ABrush.Style <> bsClear;
-  cbFillColor.ButtonColor := ColorToRGB(ABrush.Color);
-  cbShowBorder.Checked := APen.EffVisible;
-  if APen.Color = clDefault then
-    cbBorderColor.ButtonColor := ColorToRGB(clWindowText)
-  else
-    cbBorderColor.ButtonColor := ColorToRGB(APen.Color);
+  cmbShape.Enabled := APen.EffVisible or (ABrush.Style <> bsClear);
+  gbMargins.Enabled := cmbShape.Enabled;
+  FBrushFrame.Prepare(ABrush);
+  FPenFrame.Prepare(APen);
   seTopMargin.Value := AMargins.Top;
   seLeftMargin.Value := AMargins.Left;
   seRightMargin.Value := AMargins.Right;
   seBottomMargin.Value := AMargins.Bottom;
-  dec(FLockEvents);
-end;
 
-procedure TChartShapeBrushPenMarginsFrame.UpdateControls;
-begin
-  cbBorderColor.Visible := cbShowBorder.Checked;
-  cmbShape.Enabled := cbShowBorder.Checked or cbFilled.Checked;
-  cbFillColor.Visible := cbFilled.Checked;
+  dec(FLockEvents);
+
 end;
 
 end.

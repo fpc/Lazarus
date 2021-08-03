@@ -32,7 +32,6 @@ type
     procedure DoChange;
   protected
     function GetChart: TChart;
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure Prepare(APointer: TSeriesPointer);

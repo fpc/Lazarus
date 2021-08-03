@@ -6,8 +6,8 @@ object ChartLegendFrame: TChartLegendFrame
   ClientHeight = 400
   ClientWidth = 671
   TabOrder = 0
-  DesignLeft = 380
-  DesignTop = 303
+  DesignLeft = 1101
+  DesignTop = 368
   object PanelTop: TPanel
     Left = 0
     Height = 23
@@ -37,17 +37,29 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbShow
       AnchorSideRight.Side = asrBottom
-      Left = 65
+      Left = 81
       Height = 19
       Top = 0
       Width = 87
-      Alignment = taLeftJustify
-      BorderSpacing.Left = 16
+      BorderSpacing.Left = 32
       Caption = 'Outside axes'
       Checked = True
       OnChange = cbUseSideBarChange
       State = cbChecked
       TabOrder = 1
+    end
+    object cbHTML: TCheckBox
+      AnchorSideLeft.Control = cbUseSideBar
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PanelTop
+      Left = 200
+      Height = 19
+      Top = 0
+      Width = 181
+      BorderSpacing.Left = 32
+      Caption = 'Support HTML in legend items'
+      OnChange = cbHTMLChange
+      TabOrder = 2
     end
   end
   object ParamsPanel: TPanel
@@ -56,7 +68,6 @@ object ChartLegendFrame: TChartLegendFrame
     Top = 31
     Width = 671
     Align = alClient
-    AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 369
     ClientWidth = 671
@@ -65,94 +76,33 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideLeft.Control = gbAlignment
       AnchorSideTop.Control = gbAlignment
       AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Background_Border_Spacer
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 83
+      Height = 72
       Top = 128
-      Width = 140
+      Width = 127
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 16
-      Caption = 'Background'
-      ClientHeight = 63
-      ClientWidth = 136
+      BorderSpacing.Right = 16
+      Caption = 'gbBackground'
       TabOrder = 2
-      object cbFilled: TCheckBox
-        AnchorSideLeft.Control = gbBackground
-        AnchorSideTop.Control = gbBackground
-        Left = 8
-        Height = 19
-        Top = 6
-        Width = 48
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 6
-        Caption = 'Filled'
-        OnChange = cbFilledChange
-        TabOrder = 0
-      end
-      object cbFillColor: TColorBox
-        AnchorSideLeft.Control = cbFilled
-        AnchorSideTop.Control = cbFilled
-        AnchorSideTop.Side = asrBottom
-        Left = 8
-        Height = 22
-        Top = 33
-        Width = 120
-        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames, cbCustomColors]
-        BorderSpacing.Top = 8
-        BorderSpacing.Right = 8
-        BorderSpacing.Bottom = 8
-        ItemHeight = 16
-        OnChange = cbFillColorChange
-        TabOrder = 1
-      end
     end
     object gbBorder: TGroupBox
-      AnchorSideLeft.Control = gbBackground
-      AnchorSideLeft.Side = asrBottom
+      AnchorSideLeft.Control = Background_Border_Spacer
       AnchorSideTop.Control = gbAlignment
       AnchorSideTop.Side = asrBottom
-      AnchorSideBottom.Control = gbBackground
+      AnchorSideRight.Control = gbAlignment
+      AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 156
-      Height = 83
+      Left = 143
+      Height = 88
       Top = 128
-      Width = 140
-      Anchors = [akTop, akLeft, akBottom]
-      BorderSpacing.Left = 16
+      Width = 153
+      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 16
-      Caption = 'Border'
-      ClientHeight = 63
-      ClientWidth = 136
+      Caption = 'gbBorder'
       TabOrder = 3
-      object cbShowBorder: TCheckBox
-        AnchorSideLeft.Control = gbBorder
-        AnchorSideTop.Control = gbBorder
-        Left = 8
-        Height = 19
-        Top = 6
-        Width = 54
-        BorderSpacing.Left = 8
-        BorderSpacing.Top = 6
-        Caption = 'Visible'
-        OnChange = cbShowBorderChange
-        TabOrder = 0
-      end
-      object cbBorderColor: TColorBox
-        AnchorSideLeft.Control = cbShowBorder
-        AnchorSideTop.Control = cbShowBorder
-        AnchorSideTop.Side = asrBottom
-        Left = 8
-        Height = 22
-        Top = 33
-        Width = 120
-        Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbPrettyNames]
-        BorderSpacing.Top = 8
-        BorderSpacing.Right = 8
-        BorderSpacing.Bottom = 6
-        ItemHeight = 16
-        OnChange = cbBorderColorChange
-        TabOrder = 1
-        Visible = False
-      end
     end
     object gbFont: TGroupBox
       AnchorSideLeft.Control = gbAlignment
@@ -288,36 +238,39 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 83
-      Top = 224
-      Width = 140
-      Anchors = [akTop, akRight]
-      BorderSpacing.Top = 13
+      Top = 216
+      Width = 127
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Top = 16
       Caption = 'Margins'
       ClientHeight = 63
-      ClientWidth = 136
+      ClientWidth = 123
       TabOrder = 4
       object lblMarginX: TLabel
+        AnchorSideLeft.Control = gbMargins
         AnchorSideTop.Control = seMarginX
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = seMarginX
-        Left = 31
+        Left = 16
         Height = 15
         Top = 8
         Width = 7
-        Anchors = [akTop, akRight]
+        BorderSpacing.Left = 16
         BorderSpacing.Right = 8
         Caption = 'X'
         FocusControl = seMarginX
       end
       object seMarginX: TSpinEdit
+        AnchorSideLeft.Control = lblMarginX
+        AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = gbMargins
         AnchorSideRight.Side = asrBottom
-        Left = 46
+        Left = 31
         Height = 23
         Top = 4
-        Width = 74
+        Width = 76
         Alignment = taRightJustify
-        Anchors = [akTop, akRight]
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 4
         BorderSpacing.Right = 10
         MaxValue = 1000
@@ -326,30 +279,33 @@ object ChartLegendFrame: TChartLegendFrame
         Value = 1
       end
       object lblMarginY: TLabel
+        AnchorSideLeft.Control = lblMarginX
         AnchorSideTop.Control = seMarginY
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = seMarginY
-        Left = 33
+        Left = 16
         Height = 15
         Top = 37
         Width = 7
-        Anchors = [akTop, akRight]
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Y'
         FocusControl = seMarginY
       end
       object seMarginY: TSpinEdit
+        AnchorSideLeft.Control = seMarginX
         AnchorSideTop.Control = seMarginX
         AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = seMarginX
         AnchorSideRight.Side = asrBottom
-        Left = 48
+        Left = 31
         Height = 23
         Top = 33
-        Width = 74
+        Width = 76
         Alignment = taRightJustify
-        Anchors = [akTop, akRight]
+        Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
-        BorderSpacing.Right = 10
+        BorderSpacing.Bottom = 8
         MaxValue = 1000
         OnChange = seMarginYChange
         TabOrder = 1
@@ -358,14 +314,20 @@ object ChartLegendFrame: TChartLegendFrame
     end
     object gbItems: TGroupBox
       AnchorSideLeft.Control = gbFont
-      AnchorSideTop.Control = gbBackground
+      AnchorSideTop.Control = gbFont
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbFont
+      AnchorSideRight.Side = asrBottom
       Left = 316
-      Height = 179
+      Height = 165
       Top = 128
-      Width = 222
+      Width = 216
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 16
       Caption = 'Items'
-      ClientHeight = 159
-      ClientWidth = 218
+      ClientHeight = 145
+      ClientWidth = 212
       TabOrder = 5
       object cbInverted: TCheckBox
         AnchorSideLeft.Control = gbItems
@@ -385,7 +347,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = gbItems
         AnchorSideRight.Side = asrBottom
-        Left = 114
+        Left = 108
         Height = 23
         Top = 33
         Width = 96
@@ -407,7 +369,7 @@ object ChartLegendFrame: TChartLegendFrame
         Left = 8
         Height = 15
         Top = 37
-        Width = 98
+        Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Columns'
@@ -420,8 +382,8 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Control = cbItemFillOrder
         Left = 8
         Height = 15
-        Top = 68
-        Width = 98
+        Top = 64
+        Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Item fill order'
@@ -431,12 +393,12 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = gbItems
         AnchorSideRight.Side = asrBottom
-        Left = 114
+        Left = 108
         Height = 23
-        Top = 64
+        Top = 60
         Width = 96
         Anchors = [akTop, akRight]
-        BorderSpacing.Top = 8
+        BorderSpacing.Top = 4
         BorderSpacing.Right = 8
         ItemHeight = 15
         ItemIndex = 0
@@ -453,13 +415,13 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = gbItems
         AnchorSideRight.Side = asrBottom
-        Left = 114
+        Left = 108
         Height = 23
-        Top = 95
+        Top = 87
         Width = 96
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
-        BorderSpacing.Top = 8
+        BorderSpacing.Top = 4
         BorderSpacing.Right = 8
         MaxValue = 1000
         OnChange = seSpacingChange
@@ -473,8 +435,8 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Control = seSpacing
         Left = 8
         Height = 15
-        Top = 99
-        Width = 98
+        Top = 91
+        Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Spacing'
@@ -485,14 +447,15 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = gbItems
         AnchorSideRight.Side = asrBottom
-        Left = 114
+        Left = 108
         Height = 23
-        Top = 126
+        Top = 114
         Width = 96
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
-        BorderSpacing.Top = 8
+        BorderSpacing.Top = 4
         BorderSpacing.Right = 8
+        BorderSpacing.Bottom = 8
         MaxValue = 1000
         OnChange = seSymbolWidthChange
         TabOrder = 4
@@ -505,13 +468,23 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Control = seSymbolWidth
         Left = 8
         Height = 15
-        Top = 130
-        Width = 98
+        Top = 118
+        Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Symbol width'
         FocusControl = seSymbolWidth
       end
+    end
+    object Background_Border_Spacer: TBevel
+      AnchorSideLeft.Control = gbAlignment
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = gbBorder
+      Left = 143
+      Height = 42
+      Top = 128
+      Width = 10
+      Shape = bsSpacer
     end
   end
 end

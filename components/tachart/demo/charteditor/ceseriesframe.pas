@@ -18,10 +18,11 @@ type
     Bevel2: TBevel;
     Bevel3: TBevel;
     Bevel4: TBevel;
+    btnMore: TButton;
     cbAreaShowContourLines: TCheckBox;
     cbAreaShowDropLines: TCheckBox;
     cbBarShape: TComboBox;
-    cbLegendMultiplicity: TComboBox;
+    cmbLegendMultiplicity: TComboBox;
     cbLineSeriesShowLines: TCheckBox;
     cbLineSeriesShowPoints: TCheckBox;
     cbMarksStyle: TComboBox;
@@ -40,7 +41,7 @@ type
     gbLineSeriesLineStyle: TGroupBox;
     gbLineSeriesPointer: TGroupBox;
     gbMarks: TGroupBox;
-    Label1: TLabel;
+    lblLegendItems: TLabel;
     Label2: TLabel;
     lblSeriesMarksStyle: TLabel;
     nbSeriesTypes: TNotebook;
@@ -48,10 +49,11 @@ type
     pgAreaSeries: TPage;
     pgBarSeries: TPage;
     pgLineSeries: TPage;
+    procedure btnMoreClick(Sender: TObject);
     procedure cbAreaShowContourLinesChange(Sender: TObject);
     procedure cbAreaShowDropLinesChange(Sender: TObject);
     procedure cbBarShapeChange(Sender: TObject);
-    procedure cbLegendMultiplicityChange(Sender: TObject);
+    procedure cmbLegendMultiplicityChange(Sender: TObject);
     procedure cbLineSeriesShowLinesChange(Sender: TObject);
     procedure cbLineSeriesShowPointsChange(Sender: TObject);
     procedure cbMarksStyleChange(Sender: TObject);
@@ -85,8 +87,8 @@ implementation
 {$R *.lfm}
 
 uses
-  ceUtils,
-  TAChartUtils, TALegend;
+  TAChartUtils, TALegend,
+  ceUtils, ceMarksForm;
 
 constructor TChartSeriesFrame.Create(AOwner: TComponent);
 begin
@@ -176,7 +178,7 @@ begin
   { for all }
   BoldHeaders(self);
 
-  cbLegendMultiplicity.DropdownCount := DEFAULT_DROPDOWN_COUNT;
+  cmbLegendMultiplicity.DropdownCount := DEFAULT_DROPDOWN_COUNT;
   cbMarksStyle.DropdownCount := DEFAULT_DROPDOWN_COUNT;
 end;
 
@@ -187,6 +189,30 @@ begin
       TAreaSeries(FSeries).AreaContourPen.Style := FAreaSeriesContourPenFrame.cbPenStyle.PenStyle
     else
       TAreaSeries(FSeries).AreaContourPen.Style := psClear;
+    FAreaSeriesContourPenFrame.Enabled := cbAreaShowContourLines.Checked;
+  end;
+end;
+
+procedure TChartSeriesFrame.btnMoreClick(Sender: TObject);
+var
+  F: TMarksForm;
+  ser: TBasicChartSeries;
+begin
+  if not (FSeries is TChartSeries) then
+    exit;
+
+  F := TMarksForm.Create(GetParentForm(self));
+  try
+    ser := TSeriesClass(FSeries.ClassType).Create(nil);
+    ser.Assign(FSeries);
+
+    F.Prepare(TChartSeries(FSeries));
+    F.Position := poOwnerFormCenter;
+    if F.ShowModal <> mrOK then
+      FSeries.Assign(ser);
+  finally
+    ser.Free;
+    F.Free;
   end;
 end;
 
@@ -197,6 +223,7 @@ begin
       TAreaSeries(FSeries).AreaLinesPen.Style := FAreaSeriesDropLinesPenFrame.cbPenStyle.PenStyle
     else
       TAreaSeries(FSeries).AreaLinesPen.Style := psClear;
+    FAreaSeriesDropLinesPenFrame.Enabled := cbAreaShowDropLines.Checked;
   end;
 end;
 
@@ -206,21 +233,25 @@ begin
     TBarSeries(FSeries).BarShape := TBarShape(cbBarShape.ItemIndex);
 end;
 
-procedure TChartSeriesFrame.cbLegendMultiplicityChange(Sender: TObject);
+procedure TChartSeriesFrame.cmbLegendMultiplicityChange(Sender: TObject);
 begin
-  (FSeries as TCustomChartSeries).Legend.Multiplicity := TLegendMultiplicity(cbLegendMultiplicity.ItemIndex);
+  (FSeries as TCustomChartSeries).Legend.Multiplicity := TLegendMultiplicity(cmbLegendMultiplicity.ItemIndex);
 end;
 
 procedure TChartSeriesFrame.cbLineSeriesShowLinesChange(Sender: TObject);
 begin
   if FSeries is TLineSeries then
+  begin
     TLineSeries(FSeries).ShowLines := cbLineSeriesShowLines.Checked;
+    FLineSeriesPenFrame.Enabled := cbLineSeriesShowLines.Checked;
+  end;
 end;
 
 procedure TChartSeriesFrame.cbLineSeriesShowPointsChange(Sender: TObject);
 begin
   if FSeries is TLineSeries then
     TLineSeries(FSeries).ShowPoints := cbLineSeriesShowPoints.Checked;
+  FLineSeriesPointerFrame.Enabled := cbLineSeriesShowPoints.Checked;
 end;
 
 procedure TChartSeriesFrame.cbMarksStyleChange(Sender: TObject);
@@ -231,23 +262,32 @@ begin
     series := TChartSeries(FSeries);
     series.Marks.Style := TSeriesMarksStyle(cbMarksStyle.ItemIndex);
     edMarksFormat.Text := series.Marks.Format;
+    btnMore.Enabled := (series.Marks.Style <> smsNone) and cbShowMarks.Checked;
   end;
 end;
 
 procedure TChartSeriesFrame.cbShowInLegendChange(Sender: TObject);
 begin
   (FSeries as TCustomChartSeries).Legend.Visible := cbShowInLegend.Checked;
+  lblLegendItems.Enabled := cbShowInLegend.Checked;
+  cmbLegendMultiplicity.Enabled := cbShowInLegend.Checked;
 end;
 
 procedure TChartSeriesFrame.cbShowMarksChange(Sender: TObject);
 begin
   if (FSeries is TChartSeries) then
+  begin
     TChartSeries(FSeries).Marks.Visible := cbShowMarks.Checked;
+    btnMore.Enabled := (TChartSeries(FSeries).Marks.Style <> smsNone) and cbShowMarks.Checked;
+  end;
 end;
 
 procedure TChartSeriesFrame.cbShowSeriesChange(Sender: TObject);
 begin
   FSeries.Active := cbShowSeries.Checked;
+  gbLegendText.Visible := cbShowSeries.Checked;
+  gbMarks.Visible := cbShowSeries.Checked;
+  nbSeriesTypes.Visible := cbShowSeries.Checked;
 end;
 
 procedure TChartSeriesFrame.ChangedHandler(Sender: TObject);
@@ -285,7 +325,7 @@ begin
   cbShowSeries.Checked := series.Active;
   cbShowInLegend.Checked := series.Legend.Visible;
   edSeriesTitle.Text := series.Title;
-  cbLegendMultiplicity.ItemIndex := ord(series.Legend.Multiplicity);
+  cmbLegendMultiplicity.ItemIndex := ord(series.Legend.Multiplicity);
 
   gbMarks.Visible := (FSeries is TChartSeries);
   if (FSeries is TChartSeries) then begin
@@ -317,6 +357,7 @@ begin
     FAreaSeriesContourPenFrame.Prepare(TAreaSeries(ASeries).AreaContourPen);
     FAreaSeriesDropLinesPenFrame.Prepare(TAreaSeries(ASeries).AreaLinesPen);
   end;
+
 end;
 
 end.

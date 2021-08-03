@@ -170,6 +170,38 @@
         <ResourceBaseClass Value="DataModule"/>
         <UnitName Value="ceImages"/>
       </Unit>
+      <Unit>
+        <Filename Value="cesimplepenframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SimpleChartPenFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="ceSimplePenFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cesimplebrushframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="SimpleChartBrushFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="ceSimpleBrushFrame"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cemarksform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="MarksForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ceMarksForm"/>
+      </Unit>
+      <Unit>
+        <Filename Value="cearrowframe.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="ChartArrowFrame"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Frame"/>
+        <UnitName Value="ceArrowFrame"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

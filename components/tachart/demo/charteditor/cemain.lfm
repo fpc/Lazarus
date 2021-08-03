@@ -98,7 +98,7 @@ object MainForm: TMainForm
     Height = 4
     Top = 290
     Width = 613
-    Anchors = [akTop, akLeft, akRight]
+    Anchors = [akLeft, akRight, akBottom]
     Shape = bsBottomLine
   end
   object cbDoubleClick: TCheckBox

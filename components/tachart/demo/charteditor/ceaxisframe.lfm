@@ -40,9 +40,9 @@ object ChartAxisFrame: TChartAxisFrame
     Height = 446
     Top = 25
     Width = 646
-    ActivePage = pgTitle
+    ActivePage = pgLine
     Align = alClient
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 1
     OnChanging = PageControlChanging
     object pgTitle: TTabSheet
@@ -62,12 +62,13 @@ object ChartAxisFrame: TChartAxisFrame
         TabOrder = 0
         object lblTitle: TLabel
           AnchorSideLeft.Control = TitleMemoPanel
-          AnchorSideTop.Control = TitleMemoPanel
+          AnchorSideTop.Control = cbTitleVisible
+          AnchorSideTop.Side = asrBottom
           Left = 0
           Height = 15
-          Top = 2
+          Top = 27
           Width = 21
-          BorderSpacing.Top = 2
+          BorderSpacing.Top = 8
           Caption = 'Text'
         end
         object mmoTitle: TMemo
@@ -79,31 +80,55 @@ object ChartAxisFrame: TChartAxisFrame
           AnchorSideBottom.Control = TitleMemoPanel
           AnchorSideBottom.Side = asrBottom
           Left = 0
-          Height = 170
-          Top = 21
+          Height = 145
+          Top = 46
           Width = 622
           Anchors = [akTop, akLeft, akRight, akBottom]
           BorderSpacing.Top = 4
           OnChange = mmoTitleChange
           ScrollBars = ssAutoBoth
           TabOrder = 0
+          WordWrap = False
         end
         object cbTitleVisible: TCheckBox
-          AnchorSideTop.Control = lblTitle
-          AnchorSideTop.Side = asrCenter
-          AnchorSideRight.Control = TitleMemoPanel
+          AnchorSideLeft.Control = TitleMemoPanel
+          AnchorSideTop.Control = TitleMemoPanel
           AnchorSideRight.Side = asrBottom
-          Left = 568
+          Left = 0
           Height = 19
           Top = 0
           Width = 54
-          Alignment = taLeftJustify
-          Anchors = [akTop, akRight]
           Caption = 'Visible'
           Checked = True
           OnChange = cbTitleVisibleChange
           State = cbChecked
           TabOrder = 1
+        end
+        object cbTitleHTML: TCheckBox
+          AnchorSideLeft.Control = cbTitleWordwrap
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = cbTitleVisible
+          Left = 193
+          Height = 19
+          Top = 0
+          Width = 156
+          BorderSpacing.Left = 32
+          Caption = 'Support HTML in title text'
+          OnChange = cbTitleHTMLChange
+          TabOrder = 2
+        end
+        object cbTitleWordwrap: TCheckBox
+          AnchorSideLeft.Control = cbTitleVisible
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = cbTitleVisible
+          Left = 86
+          Height = 19
+          Top = 0
+          Width = 75
+          BorderSpacing.Left = 32
+          Caption = 'Wordwrap'
+          OnChange = cbTitleWordwrapChange
+          TabOrder = 3
         end
       end
       object TitleParamsPanel: TPanel
@@ -598,19 +623,19 @@ object ChartAxisFrame: TChartAxisFrame
         Left = 8
         Height = 119
         Top = 8
-        Width = 400
+        Width = 446
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
         BorderSpacing.Top = 8
         Caption = 'gbFrame'
         ClientHeight = 99
-        ClientWidth = 396
+        ClientWidth = 442
         TabOrder = 0
         object cbFrameVisible: TCheckBox
           Left = 16
           Height = 19
           Top = 8
-          Width = 364
+          Width = 410
           Align = alTop
           BorderSpacing.Left = 16
           BorderSpacing.Top = 8
@@ -630,18 +655,18 @@ object ChartAxisFrame: TChartAxisFrame
         Left = 8
         Height = 137
         Top = 143
-        Width = 400
+        Width = 446
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 16
         Caption = 'gbAxisLine'
         ClientHeight = 117
-        ClientWidth = 396
+        ClientWidth = 442
         TabOrder = 1
         object cbAxisLineVisible: TCheckBox
           Left = 16
           Height = 19
           Top = 8
-          Width = 364
+          Width = 410
           Align = alTop
           BorderSpacing.Left = 16
           BorderSpacing.Top = 8
@@ -658,113 +683,15 @@ object ChartAxisFrame: TChartAxisFrame
         AnchorSideTop.Control = gbFrame
         AnchorSideRight.Control = pgLine
         AnchorSideRight.Side = asrBottom
-        Left = 432
-        Height = 156
+        Left = 478
+        Height = 131
         Top = 8
-        Width = 200
+        Width = 152
         Anchors = [akTop, akRight]
-        AutoSize = True
         BorderSpacing.Left = 24
-        BorderSpacing.Right = 6
-        Caption = 'Arrow'
-        ClientHeight = 136
-        ClientWidth = 196
+        BorderSpacing.Right = 8
+        Caption = 'gbArrow'
         TabOrder = 2
-        object cbArrowVisible: TCheckBox
-          AnchorSideLeft.Control = gbArrow
-          AnchorSideTop.Control = gbArrow
-          Left = 16
-          Height = 19
-          Top = 8
-          Width = 54
-          BorderSpacing.Left = 16
-          BorderSpacing.Top = 8
-          Caption = 'Visible'
-          OnChange = cbArrowVisibleChange
-          TabOrder = 0
-        end
-        object lblArrowBaseLength: TLabel
-          AnchorSideLeft.Control = cbArrowVisible
-          AnchorSideTop.Control = seArrowBaseLength
-          AnchorSideTop.Side = asrCenter
-          Left = 16
-          Height = 15
-          Top = 39
-          Width = 61
-          Caption = 'Base length'
-        end
-        object lblArrowLength: TLabel
-          AnchorSideLeft.Control = cbArrowVisible
-          AnchorSideTop.Control = seArrowLength
-          AnchorSideTop.Side = asrCenter
-          Left = 16
-          Height = 15
-          Top = 70
-          Width = 37
-          Caption = 'Length'
-        end
-        object lblArrowWidth: TLabel
-          AnchorSideLeft.Control = cbArrowVisible
-          AnchorSideTop.Control = seArrowWidth
-          AnchorSideTop.Side = asrCenter
-          Left = 16
-          Height = 15
-          Top = 101
-          Width = 32
-          Caption = 'Width'
-        end
-        object seArrowBaseLength: TSpinEdit
-          AnchorSideLeft.Control = lblArrowBaseLength
-          AnchorSideLeft.Side = asrBottom
-          AnchorSideTop.Control = cbArrowVisible
-          AnchorSideTop.Side = asrBottom
-          Left = 101
-          Height = 23
-          Top = 35
-          Width = 79
-          Alignment = taRightJustify
-          BorderSpacing.Left = 24
-          BorderSpacing.Top = 8
-          BorderSpacing.Right = 16
-          MaxValue = 1000
-          OnChange = seArrowBaseLengthChange
-          TabOrder = 1
-        end
-        object seArrowLength: TSpinEdit
-          AnchorSideLeft.Control = seArrowBaseLength
-          AnchorSideTop.Control = seArrowBaseLength
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = seArrowBaseLength
-          AnchorSideRight.Side = asrBottom
-          Left = 101
-          Height = 23
-          Top = 66
-          Width = 79
-          Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Top = 8
-          MaxValue = 1000
-          OnChange = seArrowLengthChange
-          TabOrder = 2
-        end
-        object seArrowWidth: TSpinEdit
-          AnchorSideLeft.Control = seArrowBaseLength
-          AnchorSideTop.Control = seArrowLength
-          AnchorSideTop.Side = asrBottom
-          AnchorSideRight.Control = seArrowBaseLength
-          AnchorSideRight.Side = asrBottom
-          Left = 101
-          Height = 23
-          Top = 97
-          Width = 79
-          Alignment = taRightJustify
-          Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Top = 8
-          BorderSpacing.Bottom = 16
-          MaxValue = 1000
-          OnChange = seArrowWidthChange
-          TabOrder = 3
-        end
       end
     end
   end

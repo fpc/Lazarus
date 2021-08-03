@@ -1,12 +1,11 @@
 unit ceTitleFootFrame;
 
 {$mode ObjFPC}{$H+}
-{.$DEFINE WYSIWYG_TITLE}
 
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls,
+  Classes, SysUtils, Forms, Controls, ExtCtrls, StdCtrls, Spin,
   TATextElements, TAGraph,
   ceFontFrame, ceShapeBrushPenMarginsFrame;
 
@@ -15,20 +14,27 @@ type
   { TChartTitleFootFrame }
 
   TChartTitleFootFrame = class(TFrame)
+    Bevel1: TBevel;
     cbShow: TCheckBox;
     cbWordwrap: TCheckBox;
+    cbHTML: TCheckBox;
     gbFont: TGroupBox;
     gbShapeBrushPenMargins: TGroupBox;
+    gbMargin: TGroupBox;
+    lblMargin: TLabel;
     lblText: TLabel;
     MemoPanel: TPanel;
     mmoText: TMemo;
     PanelTop: TPanel;
     ParamsPanel: TPanel;
     rgAlignment: TRadioGroup;
+    seMargin: TSpinEdit;
+    procedure cbHTMLChange(Sender: TObject);
     procedure cbShowChange(Sender: TObject);
     procedure cbWordwrapClick(Sender: TObject);
     procedure mmoTextChange(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
+    procedure seMarginChange(Sender: TObject);
   private
     FTitle: TChartTitle;
     FFontFrame: TChartFontFrame;
@@ -51,6 +57,7 @@ implementation
 {$R *.lfm}
 
 uses
+  Math, TAChartUtils,
   ceUtils;
 
 constructor TChartTitleFootFrame.Create(AOwner: TComponent);
@@ -58,24 +65,27 @@ begin
   inherited;
 
   FFontFrame := TChartFontFrame.Create(self);
-  FFontFrame.Parent := gbFont;
+  FFontFrame.Name := '';
   FFontFrame.Align := alClient;
   FFontFrame.BorderSpacing.Left := 8;
   FFontFrame.BorderSpacing.Right := 8;
   FFontFrame.OnChange := @ChangedHandler;
+  FFontFrame.Parent := gbFont;
   gbFont.AutoSize := true;
+  gbFont.Caption := 'Font';
 
   FShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
-  FShapeBrushPenMarginsFrame.Parent := gbShapeBrushPenMargins;
+  FShapeBrushPenMarginsFrame.Name := '';
   FShapeBrushPenMarginsFrame.Align := alClient;
   FShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
   FShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
   FShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
-  FShapeBrushPenMarginsFrame.Constraints.MinWidth := 230;
   FShapeBrushPenMarginsFrame.OnChange := @ChangedHandler;
   FShapeBrushPenMarginsFrame.OnShapeChange := @ShapeChangedHandler;
   FShapeBrushPenMarginsFrame.AutoSize := true;
+  FShapeBrushPenMarginsFrame.Parent := gbShapeBrushPenMargins;
   gbShapeBrushPenMargins.AutoSize := true;
+  // Caption of this groupbox depends on title/footer. Will be set by Prepare.
 
   BoldHeaders(Self);
 
@@ -90,10 +100,9 @@ begin
     MemoPanel.Constraints.MinHeight +
     ParamsPanel.Height + ParamsPanel.BorderSpacing.Top + ParamsPanel.BorderSpacing.Bottom;
 
-  PreferredWidth := gbFont.Width +
+  PreferredWidth := Max(gbFont.Width, rgAlignment.Width) +
     gbShapeBrushPenMargins.Width + gbShapeBrushPenMargins.BorderSpacing.Left;
 end;
-
 
 procedure TChartTitleFootFrame.cbShowChange(Sender: TObject);
 begin
@@ -104,6 +113,13 @@ begin
   gbShapeBrushPenMargins.Visible := cbShow.Checked;
   gbFont.Visible := cbShow.Checked;
   cbWordwrap.Visible := cbShow.Checked;
+  cbHTML.Visible := cbShow.Checked;
+  gbMargin.Visible := cbShow.Checked;
+end;
+
+procedure TChartTitleFootFrame.cbHTMLChange(Sender: TObject);
+begin
+  FTitle.TextFormat := TEXT_FORMAT[cbHTML.Checked];
 end;
 
 procedure TChartTitleFootFrame.cbWordwrapClick(Sender: TObject);
@@ -114,10 +130,6 @@ end;
 procedure TChartTitleFootFrame.ChangedHandler(Sender: TObject);
 begin
   GetChart.Invalidate;
-  {$IFDEF WYSIWYG_TITLE}
-  mmoText.Font.Assign(FTitle.Font);
-  mmoText.Color := FTitle.Brush.Color;
-  {$ENDIF}
 end;
 
 function TChartTitleFootFrame.GetAlignment: TAlignment;
@@ -137,27 +149,34 @@ begin
   FTitle.Text.Assign(mmoText.Lines);
 end;
 
-procedure TChartTitleFootFrame.rgAlignmentClick(Sender: TObject);
-begin
-  FTitle.Alignment := GetAlignment;
-end;
-
 procedure TChartTitleFootFrame.Prepare(ATitle: TChartTitle);
 begin
   FTitle := ATitle;
 
   cbShow.Checked := ATitle.Visible;
   cbWordwrap.Checked := ATitle.Wordwrap;
+  cbHTML.Checked := (ATitle.TextFormat = tfHTML);
+  seMargin.Value := ATitle.Margin;
   mmoText.Lines.Assign(ATitle.Text);
-  {$IFDEF WYSIWYG_TITLE}
-  mmoText.Font.Assign(ATitle.Font);
-  mmoText.Font.Orientation := 0;
-  {$ENDIF}
 
   SetAlignment(ATitle.Alignment);
 
   FFontFrame.Prepare(ATitle.Font, false);
   FShapeBrushPenMarginsFrame.Prepare(ATitle.Shape, ATitle.Brush, ATitle.Frame, ATitle.Margins);
+  if ATitle = GetChart.Title then
+    gbShapeBrushPenMargins.Caption := 'Title background'
+  else
+    gbShapeBrushPenMargins.Caption := 'Footer background';
+end;
+
+procedure TChartTitleFootFrame.rgAlignmentClick(Sender: TObject);
+begin
+  FTitle.Alignment := GetAlignment;
+end;
+
+procedure TChartTitleFootFrame.seMarginChange(Sender: TObject);
+begin
+  FTitle.Margin := seMargin.Value;
 end;
 
 procedure TChartTitleFootFrame.SetAlignment(AValue: TAlignment);

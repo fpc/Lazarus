@@ -1,7 +1,6 @@
 unit ceAxisFrame;
 
 {$MODE ObjFPC}{$H+}
-{.$DEFINE WYSIWYG_AXISTITLE}
 
 interface
 
@@ -9,7 +8,7 @@ uses
   Classes, SysUtils, Graphics, Forms,
   Controls, ExtCtrls, ComCtrls, StdCtrls, Dialogs, Spin,
   TATextElements, TAChartAxis, TAGraph,
-  ceFontFrame, cePenFrame, ceShapeBrushPenMarginsFrame;
+  ceFontFrame, cePenFrame, ceShapeBrushPenMarginsFrame, ceArrowFrame;
 
 type
   TChartAxisEditorPage = (aepTitle, aepLabels, aepGrid, aepLine);
@@ -18,7 +17,6 @@ type
   TChartAxisFrame = class(TFrame)
     Bevel1: TBevel;
     Bevel2: TBevel;
-    cbArrowVisible: TCheckBox;
     cbAutoMax: TCheckBox;
     cbAutoMin: TCheckBox;
     cbAxisLineVisible: TCheckBox;
@@ -29,6 +27,8 @@ type
     cbShow: TCheckBox;
     cbTickColor: TColorButton;
     cbTitleVisible: TCheckBox;
+    cbTitleHTML: TCheckBox;
+    cbTitleWordwrap: TCheckBox;
     edLabelFormat: TEdit;
     gbArrow: TGroupBox;
     gbAxisLine: TGroupBox;
@@ -41,9 +41,6 @@ type
     gbTicks: TGroupBox;
     gbTitleFont: TGroupBox;
     gbTitleShapeBrushPenMargins: TGroupBox;
-    lblArrowBaseLength: TLabel;
-    lblArrowLength: TLabel;
-    lblArrowWidth: TLabel;
     lblAutomatic: TLabel;
     lblLabelDistance: TLabel;
     lblLabelFormat: TLabel;
@@ -59,9 +56,6 @@ type
     pgLine: TTabSheet;
     pgTitle: TTabSheet;
     rgTitleAlignment: TRadioGroup;
-    seArrowBaseLength: TSpinEdit;
-    seArrowLength: TSpinEdit;
-    seArrowWidth: TSpinEdit;
     seLabelDistance: TSpinEdit;
     seMaximum: TFloatSpinEdit;
     seMinimum: TFloatSpinEdit;
@@ -71,7 +65,6 @@ type
     Spacer: TBevel;
     TitleMemoPanel: TPanel;
     TitleParamsPanel: TPanel;
-    procedure cbArrowVisibleChange(Sender: TObject);
     procedure cbAutoMaxChange(Sender: TObject);
     procedure cbAutoMinChange(Sender: TObject);
     procedure cbAxisLineVisibleChange(Sender: TObject);
@@ -81,14 +74,13 @@ type
     procedure cbLabelsVisibleChange(Sender: TObject);
     procedure cbShowChange(Sender: TObject);
     procedure cbTickColorColorChanged(Sender: TObject);
+    procedure cbTitleHTMLChange(Sender: TObject);
     procedure cbTitleVisibleChange(Sender: TObject);
+    procedure cbTitleWordwrapChange(Sender: TObject);
     procedure edLabelFormatEditingDone(Sender: TObject);
     procedure mmoTitleChange(Sender: TObject);
     procedure PageControlChanging(Sender: TObject; var AllowChange: Boolean);
     procedure rgTitleAlignmentClick(Sender: TObject);
-    procedure seArrowBaseLengthChange(Sender: TObject);
-    procedure seArrowLengthChange(Sender: TObject);
-    procedure seArrowWidthChange(Sender: TObject);
     procedure seLabelDistanceChange(Sender: TObject);
     procedure seMaximumChange(Sender: TObject);
     procedure seMinimumChange(Sender: TObject);
@@ -105,6 +97,7 @@ type
     FFramePenFrame: TChartPenFrame;
     FAxisLinePenFrame: TChartPenFrame;
     FLabelShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame;
+    FArrowFrame: TChartArrowFrame;
 
     function GetAlignment(AItemIndex: Integer): TAlignment;
     function GetAlignmentIndex(AValue: TAlignment): Integer;
@@ -115,8 +108,6 @@ type
     procedure LabelChangedHandler(Sender: TObject);
     procedure LabelFontChangedHandler(Sender: TObject);
     procedure LabelShapeChangedHandler(AShape: TChartLabelShape);
-    procedure TitleChangedHandler(Sender: TObject);
-    procedure TitleFontChangedHandler(Sender: TObject);
     procedure TitleShapeChangedHandler(AShape: TChartLabelShape);
   protected
     procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
@@ -124,6 +115,7 @@ type
     function GetChart: TChart;
     function GetRealAxisMax: Double;
     function GetRealAxisMin: Double;
+    procedure UpdateControlState;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Prepare(Axis: TChartAxis);
@@ -136,7 +128,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math,
+  Math, TAChartUtils,
   ceUtils;
 
 constructor TChartAxisFrame.Create(AOwner: TComponent);
@@ -144,86 +136,95 @@ begin
   inherited;
 
   FTitleFontFrame := TChartFontFrame.Create(self);
-  FTitleFontFrame.Parent := gbTitleFont;
   FTitleFontFrame.Name := '';
   FTitleFontFrame.Align := alClient;
   FTitleFontFrame.BorderSpacing.Left := 8;
   FTitleFontFrame.BorderSpacing.Right := 8;
-  FTitleFontFrame.OnChange := @TitleFontChangedHandler;
+  FTitleFontFrame.Parent := gbTitleFont;
   gbTitleFont.AutoSize := true;
   gbTitleFont.Caption := 'Font';
 
   FTitleShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
-  FTitleShapeBrushPenMarginsFrame.Parent := gbTitleShapeBrushPenMargins;
   FTitleShapeBrushPenMarginsFrame.Name := '';
   FTitleShapeBrushPenMarginsFrame.Align := alClient;
   FTitleShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
   FTitleShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
   FTitleShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
-  FTitleShapeBrushPenMarginsFrame.OnChange := @TitleChangedHandler;
   FTitleShapeBrushPenMarginsFrame.OnShapeChange := @TitleShapeChangedHandler;
   FTitleShapeBrushPenMarginsFrame.AutoSize := true;
+  FTitleShapeBrushPenMarginsFrame.Parent := gbTitleShapeBrushPenMargins;
   gbTitleShapeBrushPenMargins.AutoSize := true;
   gbTitleShapeBrushPenMargins.Caption := 'Title background';
 
   FLabelFontFrame := TChartFontFrame.Create(self);
-  FLabelFontFrame.Parent := gbLabelFont;
   FLabelFontFrame.Name := '';
   FLabelFontFrame.Align := alClient;
   FLabelFontFrame.BorderSpacing.Left := 8;
   FLabelFontFrame.BorderSpacing.Right := 8;
+  FLabelFontFrame.Parent := gbLabelFont;
   FLabelFontFrame.OnChange := @LabelFontChangedHandler;
   gbLabelFont.AutoSize := true;
   gbLabelFont.Caption := 'Label font';
 
   FLabelShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
-  FLabelShapeBrushPenMarginsFrame.Parent := gbShapeFillBorder;
   FLabelShapeBrushPenMarginsFrame.Name := '';
   FLabelShapeBrushPenMarginsFrame.Align := alClient;
   FLabelShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
   FLabelShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
   FLabelShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
-  FLabelShapeBrushPenMarginsFrame.OnChange := @LabelChangedHandler;
   FLabelShapeBrushPenMarginsFrame.OnShapeChange := @LabelShapeChangedHandler;
   FLabelShapeBrushPenMarginsFrame.AutoSize := true;
+  FLabelShapeBrushPenMarginsFrame.Parent := gbShapeFillBorder;
   gbShapeFillBorder.AutoSize := true;
   gbShapeFillBorder.Caption := 'Label background';
 
   FGridPenFrame := TChartPenFrame.Create(Self);
-  FGridPenFrame.Parent := gbGrid;
   FGridPenFrame.Name := '';
   FGridPenFrame.Align := alTop;
   FGridPenFrame.Top := 1000;
   FGridPenFrame.BorderSpacing.Left := 16;
   FGridPenFrame.BorderSpacing.Right := 16;
   FGridPenFrame.BorderSpacing.Bottom := 16;
+  FGridPenFrame.Parent := gbGrid;
   FGridPenFrame.OnChange := @ChangedHandler;
   gbGrid.AutoSize := true;
   gbGrid.Caption := 'Grid lines';
 
   FFramePenFrame := TChartPenFrame.Create(Self);
-  FFramePenFrame.Parent := gbFrame;
   FFramePenFrame.Name := '';
   FFramePenFrame.Align := alTop;
   FFramePenFrame.Top := 1000;
   FFramePenFrame.BorderSpacing.Left := 16;
   FFramePenFrame.BorderSpacing.Right := 16;
   FFramePenFrame.BorderSpacing.Bottom := 16;
-  FFramePenFrame.OnChange := @ChangedHandler;
+  FFramePenFrame.Parent := gbFrame;
+//  FFramePenFrame.OnChange := @ChangedHandler;
   gbFrame.AutoSize := true;
   gbFrame.Caption := 'Frame';
 
   FAxisLinePenFrame := TChartPenFrame.Create(Self);
-  FAxisLinePenFrame.Parent := gbAxisLine;
   FAxisLinePenFrame.Name := '';
   FAxisLinePenFrame.Align := alTop;
   FAxisLinePenFrame.Top := 1000;
   FAxisLinePenFrame.BorderSpacing.Left := 16;
   FAxisLinePenFrame.BorderSpacing.Right := 16;
   FAxisLinePenFrame.BorderSpacing.Bottom := 16;
-  FAxisLinePenFrame.OnChange := @ChangedHandler;
+  FAxisLinePenFrame.Parent := gbAxisLine;
+//  FAxisLinePenFrame.OnChange := @ChangedHandler;
   gbAxisLine.AutoSize := true;
   gbAxisLine.Caption := 'Axis line';
+
+  FArrowFrame := TChartArrowFrame.Create(self);
+  FArrowFrame.Name := '';
+  FArrowFrame.Align := alClient;
+  FArrowFrame.BorderSpacing.Top := 8;
+  FArrowFrame.BorderSpacing.Left := 16;
+  FArrowFrame.BorderSpacing.Right := 16;
+  FArrowFrame.BorderSpacing.Bottom := 16;
+  FArrowFrame.AutoSize := true;
+  FArrowFrame.Parent := gbArrow;
+  gbArrow.AutoSize := true;
+  gbArrow.Caption := 'Arrow';
 
   BoldHeaders(self);
 
@@ -253,11 +254,6 @@ begin
     PanelTop.Height;
 end;
 
-procedure TChartAxisFrame.cbArrowVisibleChange(Sender: TObject);
-begin
-  FAxis.Arrow.Visible := cbArrowVisible.Checked;
-end;
-
 procedure TChartAxisFrame.cbAutoMaxChange(Sender: TObject);
 begin
   FAxis.Range.UseMax := not cbAutoMax.Checked;
@@ -273,16 +269,19 @@ end;
 procedure TChartAxisFrame.cbAxisLineVisibleChange(Sender: TObject);
 begin
   FAxis.AxisPen.Visible := cbAxisLineVisible.Checked;
+  UpdateControlState;
 end;
 
 procedure TChartAxisFrame.cbFrameVisibleChange(Sender: TObject);
 begin
   GetChart.Frame.Visible := cbFrameVisible.Checked;
+  UpdateControlState;
 end;
 
 procedure TChartAxisFrame.cbGridVisibleChange(Sender: TObject);
 begin
   FAxis.Grid.Visible := cbGridVisible.Checked;
+  UpdateControlState;
 end;
 
 procedure TChartAxisFrame.cbInvertedChange(Sender: TObject);
@@ -293,11 +292,13 @@ end;
 procedure TChartAxisFrame.cbLabelsVisibleChange(Sender: TObject);
 begin
   FAxis.Marks{%H-}.Visible := cbLabelsVisible.Checked;
+  UpdateControlState;
 end;
 
 procedure TChartAxisFrame.cbShowChange(Sender: TObject);
 begin
   FAxis.Visible := cbShow.Checked;
+  PageControl.Visible := cbShow.checked;
 end;
 
 procedure TChartAxisFrame.cbTickColorColorChanged(Sender: TObject);
@@ -305,9 +306,20 @@ begin
   FAxis.TickColor := cbTickColor.ButtonColor;
 end;
 
+procedure TChartAxisFrame.cbTitleHTMLChange(Sender: TObject);
+begin
+  FAxis.Title.TextFormat := TEXT_FORMAT[cbTitleHTML.Checked];
+end;
+
 procedure TChartAxisFrame.cbTitleVisibleChange(Sender: TObject);
 begin
   FAxis.Title.Visible := cbTitleVisible.Checked;
+  UpdateControlState;
+end;
+
+procedure TChartAxisFrame.cbTitleWordwrapChange(Sender: TObject);
+begin
+  FAxis.Title.Wordwrap := cbTitleWordwrap.Checked;
 end;
 
 procedure TChartAxisFrame.ChangedHandler(Sender: TObject);
@@ -403,15 +415,9 @@ begin
 
   // Page "Title"
   cbTitleVisible.Checked := Axis.Title.Visible;
+  cbTitleWordwrap.Checked := Axis.Title.Wordwrap;
+  cbTitleHTML.Checked := (Axis.Title.TextFormat = tfHTML);
   mmoTitle.Lines.Text := Axis.Title.Caption;
-  {$IFDEF WYSIWYG_AXISTITLE}
-  mmoTitle.Font := Axis.Title.LabelFont;
-  mmoTitle.Font.Orientation := 0;  // Memo has horizontal text only
-  if Axis.Title.LabelBrush.Style <> bsClear then
-    mmoTitle.Color := Axis.Title.LabelBrush.Color
-  else
-    mmoTitle.Color := GetChart.Color;
-  {$ENDIF}
   with Axis.Title do begin
     rgTitleAlignment.ItemIndex := GetAlignmentIndex(Alignment);
     seTitleDistance.Value := Distance;
@@ -438,49 +444,38 @@ begin
   end;
 
   // Page "Grid"
-  cbGridVisible.Checked := FAxis.Grid.EffVisible;
-  FGridPenFrame.Prepare(FAxis.Grid);
+  cbGridVisible.Checked := Axis.Grid.EffVisible;
+  FGridPenFrame.Prepare(Axis.Grid);
 
   // Page "Line"
   cbFrameVisible.Checked := GetChart.Frame.EffVisible;
   FFramePenFrame.Prepare(GetChart.Frame);
-  cbAxisLineVisible.Checked := FAxis.AxisPen.EffVisible;
-  FAxisLinePenFrame.Prepare(FAxis.AxisPen);
-  cbArrowVisible.Checked := FAxis.Arrow.Visible;
-  seArrowBaseLength.Value := FAxis.Arrow.BaseLength;
-  seArrowLength.Value := FAxis.Arrow.Length;
-  seArrowWidth.Value := FAxis.Arrow.Width;
+  cbAxisLineVisible.Checked := Axis.AxisPen.EffVisible;
+  FAxisLinePenFrame.Prepare(Axis.AxisPen);
+  FArrowFrame.Prepare(Axis.Arrow);
+
+  UpdateControlState;
 end;
 
 procedure TChartAxisFrame.rgTitleAlignmentClick(Sender: TObject);
 begin
-  FAxis.Title.Alignment := GetAlignment(rgTitleAlignment.ItemIndex);
-end;
-
-procedure TChartAxisFrame.seArrowBaseLengthChange(Sender: TObject);
-begin
-  FAxis.Arrow.BaseLength := seArrowBaseLength.value;
-end;
-
-procedure TChartAxisFrame.seArrowLengthChange(Sender: TObject);
-begin
-  FAxis.Arrow.Length := seArrowLength.Value;
-end;
-
-procedure TChartAxisFrame.seArrowWidthChange(Sender: TObject);
-begin
-  FAxis.Arrow.Width := seArrowWidth.Value;
+  if Assigned(FAxis) then
+    FAxis.Title.Alignment := GetAlignment(rgTitleAlignment.ItemIndex);
 end;
 
 procedure TChartAxisFrame.seLabelDistanceChange(Sender: TObject);
 begin
-  FAxis.Marks{%H-}.Distance := seLabelDistance.Value;
+  if Assigned(FAxis) then
+    FAxis.Marks{%H-}.Distance := seLabelDistance.Value;
 end;
 
 procedure TChartAxisFrame.seMaximumChange(Sender: TObject);
 begin
-  FAxis.Range.Max := seMaximum.Value;
-  cbAutoMax.Checked := false;
+  if Assigned(FAxis) then
+  begin
+    FAxis.Range.Max := seMaximum.Value;
+    cbAutoMax.Checked := false;
+  end;
 end;
 
 procedure TChartAxisFrame.seMinimumChange(Sender: TObject);
@@ -496,41 +491,48 @@ end;
 
 procedure TChartAxisFrame.seTickLengthChange(Sender: TObject);
 begin
-  FAxis.TickLength := seTickLength.Value;
+  if Assigned(FAxis) then
+    FAxis.TickLength := seTickLength.Value;
 end;
 
 procedure TChartAxisFrame.seTickInnerLengthChange(Sender: TObject);
 begin
-  FAxis.TickInnerLength := seTickInnerLength.Value;
+  if Assigned(FAxis) then
+    FAxis.TickInnerLength := seTickInnerLength.Value;
 end;
 
 procedure TChartAxisFrame.seTitleDistanceChange(Sender: TObject);
 begin
-  FAxis.Title.Distance := seTitleDistance.Value;
-end;
-
-procedure TChartAxisFrame.TitleChangedHandler(Sender: TObject);
-begin
-{$IFDEF WYSIWYG_AXISTITLE}
-  if FAxis.Title.LabelBrush.Style <> bsClear then
-    mmoTitle.Color := FAxis.Title.LabelBrush.Color
-  else
-    mmoTitle.Color := GetChart.Color;
-{$ENDIF}
-  GetChart.Invalidate;
-end;
-
-procedure TChartAxisFrame.TitleFontChangedHandler(Sender: TObject);
-begin
-{$IFDEF WYSIWYG_AXISTITLE}
-  mmoTitle.Font.Assign(FAxis.Title.LabelFont);
-  mmoTitle.Font.Orientation := 0;
-{$ENDIF}
+  if Assigned(FAxis) then
+    FAxis.Title.Distance := seTitleDistance.Value;
 end;
 
 procedure TChartAxisFrame.TitleShapeChangedHandler(AShape: TChartLabelShape);
 begin
   FAxis.Title.Shape := AShape;
+end;
+
+procedure TChartAxisFrame.UpdateControlstate;
+begin
+  // title
+  cbTitleWordwrap.Enabled := cbTitleVisible.Checked;
+  cbTitleHTML.Enabled := cbTitleVisible.Checked;
+  lblTitle.Enabled := cbTitleVisible.Checked;
+  mmoTitle.Enabled := cbTitleVisible.Checked;
+  TitleParamsPanel.Enabled := cbTitleVisible.Checked;
+
+  // labels
+  lblLabelFormat.Enabled := cbLabelsVisible.Checked;
+  edlabelFormat.Enabled := cbLabelsVisible.Checked;
+  lblLabelDistance.Enabled := cbLabelsVisible.Checked;
+  seLabelDistance.Enabled := cbLabelsVisible.Checked;
+
+  // grid
+  FGridPenFrame.Enabled := cbGridVisible.Checked;
+
+  // Line
+  FAxisLinePenFrame.Enabled := cbAxisLineVisible.Checked;
+  FFramePenFrame.Enabled := cbFrameVisible.Checked;
 end;
 
 function TChartAxisFrame.Validate(out AMsg: String; out AControl: TWinControl): Boolean;

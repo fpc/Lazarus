@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, Graphics,
   Forms, Controls, ExtCtrls, ColorBox, StdCtrls, Spin,
   TALegend, TAGraph,
-  ceFontFrame;
+  ceFontFrame, ceSimpleBrushFrame, ceSimplePenFrame;
 
 type
 
@@ -16,14 +16,12 @@ type
 
   TChartLegendFrame = class(TFrame)
     Bevel1: TBevel;
-    cbBorderColor: TColorBox;
-    cbFillColor: TColorBox;
-    cbFilled: TCheckBox;
+    Background_Border_Spacer: TBevel;
     cbInverted: TCheckBox;
     cbItemFillOrder: TComboBox;
     cbShow: TCheckBox;
-    cbShowBorder: TCheckBox;
     cbUseSideBar: TCheckBox;
+    cbHTML: TCheckBox;
     gbAlignment: TGroupBox;
     gbBackground: TGroupBox;
     gbBorder: TGroupBox;
@@ -51,12 +49,9 @@ type
     seMarginY: TSpinEdit;
     seSpacing: TSpinEdit;
     seSymbolWidth: TSpinEdit;
-    procedure cbBorderColorChange(Sender: TObject);
-    procedure cbFillColorChange(Sender: TObject);
-    procedure cbFilledChange(Sender: TObject);
+    procedure cbHTMLChange(Sender: TObject);
     procedure cbInvertedChange(Sender: TObject);
     procedure cbItemFillOrderChange(Sender: TObject);
-    procedure cbShowBorderChange(Sender: TObject);
     procedure cbShowChange(Sender: TObject);
     procedure cbUseSideBarChange(Sender: TObject);
     procedure gbAlignmentClick(Sender: TObject);
@@ -68,10 +63,13 @@ type
   private
     FLegend: TChartLegend;
     FFontFrame: TChartFontFrame;
-    procedure ChangedHandler(Sender: TObject);
+    FBackgroundFrame: TSimpleChartBrushFrame;
+    FBorderFrame: TSimpleChartPenFrame;
     function GetAlignment: TLegendAlignment;
     procedure SetAlignment(AValue: TLegendAlignment);
   protected
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer;
+      {%H-}WithThemeSpace: Boolean); override;
     function GetChart: TChart;
   public
     constructor Create(AOwner: TComponent); override;
@@ -84,6 +82,8 @@ implementation
 {$R *.lfm}
 
 uses
+  Math,
+  TATypes, TAChartUtils,
   ceUtils;
 
 constructor TChartLegendFrame.Create(AOwner: TComponent);
@@ -97,30 +97,51 @@ begin
   FFontFrame.BorderSpacing.Left := 8;
   FFontFrame.BorderSpacing.Right := 8;
   FFontFrame.AutoSize := true;
-  FFontFrame.OnChange := @ChangedHandler;
   gbFont.AutoSize := true;
   gbFont.Caption := 'Font';
+
+  FBackgroundFrame := TSimpleChartBrushFrame.Create(self);
+  FBackgroundFrame.Name := '';
+  FBackgroundFrame.Align := alClient;
+  FBackgroundFrame.BorderSpacing.Left := 8;
+  FBackgroundFrame.BorderSpacing.Right := 8;
+  FBackgroundFrame.BorderSpacing.Bottom := 8;
+  FBackgroundFrame.Parent := gbBackground;
+  FBackgroundFrame.AutoSize := true;
+  gbBackground.AutoSize := true;
+  gbBackground.Caption := 'Background';
+
+  FBorderFrame := TSimpleChartPenFrame.Create(self);
+  FBorderFrame.Name := '';
+  FBorderFrame.Align := alClient;
+  FBorderFrame.BorderSpacing.Left := 8;
+  FBorderFrame.BorderSpacing.Right := 8;
+  FBorderFrame.BorderSpacing.Bottom := 8;
+  FBorderFrame.AutoSize := true;
+  FBorderFrame.Parent := gbBorder;
+  gbBorder.AutoSize := true;
+  gbBorder.Caption := 'Border';
 
   BoldHeaders(Self);
 end;
 
-procedure TChartLegendFrame.cbBorderColorChange(Sender: TObject);
+procedure TChartLegendFrame.CalculatePreferredSize(
+  var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
 begin
-  FLegend.Frame.Color := cbBorderColor.Selected;
+  PreferredHeight := PanelTop.Height + PanelTop.BorderSpacing.Bottom +
+    Max(
+      gbAlignment.Height + gbBackground.Height + gbBackground.BorderSpacing.Top +
+        gbMargins.Height + gbMargins.Borderspacing.Top,
+      gbFont.Height + gbItems.Height + gbItems.BorderSpacing.Top
+    );
+
+  PreferredWidth := gbAlignment.Width + gbFont.Width + gbFont.BorderSpacing.Left;
 end;
 
-procedure TChartLegendFrame.cbFilledChange(Sender: TObject);
+procedure TChartLegendFrame.cbHTMLChange(Sender: TObject);
 begin
-  cbFillColor.Visible := cbFilled.Checked;
-  if cbFilled.Checked then
-    FLegend.BackgroundBrush.Style := bsSolid
-  else
-    FLegend.BackgroundBrush.Style := bsClear;
-end;
-
-procedure TChartLegendFrame.cbFillColorChange(Sender: TObject);
-begin
-  FLegend.BackgroundBrush.Color := cbFillColor.Selected;
+  FLegend.TextFormat := TEXT_FORMAT[cbHTML.Checked];
 end;
 
 procedure TChartLegendFrame.cbInvertedChange(Sender: TObject);
@@ -137,6 +158,7 @@ procedure TChartLegendFrame.cbShowChange(Sender: TObject);
 begin
   FLegend.Visible := cbShow.Checked;
   cbUseSideBar.Visible := cbShow.Checked;
+  cbHTML.Visible := cbShow.Checked;
   gbAlignment.Visible := cbShow.Checked;
   gbFont.Visible := cbShow.Checked;
   gbBackground.Visible := cbShow.Checked;
@@ -145,51 +167,14 @@ begin
   gbMargins.Visible := cbShow.Checked;
 end;
 
-procedure TChartLegendFrame.cbShowBorderChange(Sender: TObject);
-begin
-  FLegend.Frame.Visible := cbShowBorder.Checked;
-  cbBorderColor.Visible := cbShowBorder.Checked;
-end;
-
 procedure TChartLegendFrame.cbUseSideBarChange(Sender: TObject);
 begin
   FLegend.UseSideBar := cbUseSideBar.Checked;
 end;
 
-procedure TChartLegendFrame.ChangedHandler(Sender: TObject);
-begin
-  GetChart.Invalidate;
-end;
-
 function TChartLegendFrame.GetChart: TChart;
 begin
   Result := FLegend.GetOwner as TChart;
-end;
-
-procedure TChartLegendFrame.Prepare(ALegend: TChartLegend);
-begin
-  FLegend := ALegend;
-
-  cbShow.Checked := ALegend.Visible;
-  SetAlignment(ALegend.Alignment);
-
-  cbFilled.Checked := ALegend.BackgroundBrush.Style <> bsClear;
-  cbFillColor.Selected := ColorToRGB(ALegend.BackgroundBrush.Color);
-
-  cbShowBorder.Checked := (ALegend.Frame.Style <> psClear) and ALegend.Frame.Visible;
-  cbBorderColor.Selected := ColorToRGB(ALegend.Frame.Color);
-
-  seMarginX.Value := ALegend.MarginX;
-  seMarginY.Value := ALegend.MarginY;
-
-  cbUseSideBar.Checked := ALegend.UseSidebar;
-  cbInverted.Checked := ALegend.Inverted;
-  seColumns.Value := ALegend.ColumnCount;
-  seSymbolWidth.Value := ALegend.SymbolWidth;
-  seSpacing.Value := ALegend.Spacing;
-  cbItemFillOrder.ItemIndex := ord(ALegend.ItemFillOrder);
-
-  FFontFrame.Prepare(ALegend.Font, false);
 end;
 
 function TChartLegendFrame.GetAlignment: TLegendAlignment;
@@ -211,6 +196,29 @@ end;
 procedure TChartLegendFrame.gbAlignmentClick(Sender: TObject);
 begin
   FLegend.Alignment := GetAlignment;
+end;
+
+procedure TChartLegendFrame.Prepare(ALegend: TChartLegend);
+begin
+  FLegend := ALegend;
+
+  cbShow.Checked := ALegend.Visible;
+  cbHTML.Checked := (ALegend.TextFormat = tfHTML);
+  SetAlignment(ALegend.Alignment);
+
+  seMarginX.Value := ALegend.MarginX;
+  seMarginY.Value := ALegend.MarginY;
+
+  cbUseSideBar.Checked := ALegend.UseSidebar;
+  cbInverted.Checked := ALegend.Inverted;
+  seColumns.Value := ALegend.ColumnCount;
+  seSymbolWidth.Value := ALegend.SymbolWidth;
+  seSpacing.Value := ALegend.Spacing;
+  cbItemFillOrder.ItemIndex := ord(ALegend.ItemFillOrder);
+
+  FFontFrame.Prepare(ALegend.Font, false);
+  FBackgroundFrame.Prepare(ALegend.BackgroundBrush);
+  FBorderFrame.Prepare(ALegend.Frame);
 end;
 
 procedure TChartLegendFrame.seColumnsChange(Sender: TObject);

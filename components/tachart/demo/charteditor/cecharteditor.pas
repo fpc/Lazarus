@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel, ComCtrls,
-  ExtCtrls, StdCtrls,
+  ExtCtrls, StdCtrls, Buttons,
   TAGraph, TAChartAxis, TACustomSeries, TASeries, TAChartImageList,
   ceAxisFrame;
 
@@ -15,7 +15,7 @@ type
   { TChartEditorForm }
 
   TChartEditorForm = class(TForm)
-    ApplyButton: TPanelBitBtn;
+    CloseButton: TPanelBitBtn;
     ButtonPanel: TButtonPanel;
     Image1: TImage;
     Label1: TLabel;
@@ -23,7 +23,6 @@ type
     TitlePanel: TPanel;
     Splitter1: TSplitter;
     Tree: TTreeView;
-    procedure ApplyButtonClick(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
@@ -43,8 +42,10 @@ type
     FAxesNode: TTreeNode;
     FSeriesNode: TTreeNode;
     FOKClicked: Boolean;
+    FApplyButton: TBitBtn;
     function AddFrame(AParentNode: TTreeNode; ACaption: String; AFrame: TFrame;
       AImageIndex: Integer): TTreeNode;
+    procedure ApplyButtonClick(Sender: TObject);
     procedure FindComponentClass({%H-}AReader: TReader; const AClassName: String;
       var AClass: TComponentClass);
     function GetPageIndexOfNode(ANode: TTreeNode): Integer;
@@ -223,9 +224,23 @@ begin
     MessageDlg(msg, mtError, [mbOK], 0);
     ModalResult := mrNone;
   end else
+    SaveChartToStream;
+end;
+                                  (*
+procedure TChartEditorForm.CloseButtonClick(Sender: TObject);
+var
+  msg: String;
+  C: TWinControl;
+begin
+  if not Validate(Tree.Selected, msg, C) then
+  begin
+    C.SetFocus;
+    MessageDlg(msg, mtError, [mbOK], 0);
+    ModalResult := mrNone;
+  end else
     RestoreChartFromStream;
 end;
-
+                   *)
 procedure TChartEditorForm.FormActivate(Sender: TObject);
 var
   w: Integer = 0;
@@ -317,6 +332,15 @@ begin
   finally
     Tree.Items.EndUpdate;
   end;
+
+  FApplyButton := TBitBtn.Create(ButtonPanel);
+  FApplyButton.Caption := 'Apply';
+  FApplyButton.Images := ChartImagesDM.ChartImages;
+  FApplyButton.ImageIndex := 7;
+  FApplyButton.AutoSize := true;
+  FApplyButton.OnClick := @ApplyButtonClick;
+  FApplyButton.AnchorSideTop.Control := ButtonPanel.OKButton;
+  FApplyButton.Parent := ButtonPanel;
 
   AutoSize := true;
 end;
@@ -444,6 +468,7 @@ procedure TChartEditorForm.SaveChartToStream;
 var
   i: Integer;
 begin
+  FSavedChartStream.Position := 0;
   WriteComponentAsTextToStream(FSavedChartStream, FChart);
   for i := 0 to FChart.SeriesCount-1 do
     WriteComponentAsTextToStream(FSavedSeriesStreams[i], FChart.Series[i]);

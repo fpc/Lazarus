@@ -374,7 +374,11 @@ begin
 
   DrawLink(ADrawer, ADataPoint, ALabelCenter);
   with GetLabelBrush do begin
-    clr := TColor(IfThen(Color = clDefault, FOwner.Color, Color));
+    if Color = clDefault then
+    begin
+      if FOwner <> nil then clr := FOwner.Color else clr := clBtnFace;
+    end else
+      clr := Color;
     ADrawer.SetBrushParams(Style, ColorToRGB(clr));
   end;
   if IsMarginRequired then begin

@@ -1,4 +1,4 @@
-object FontFrame: TChartFontFrame
+object ChartFontFrame: TChartFontFrame
   Left = 0
   Height = 84
   Top = 0
@@ -37,7 +37,7 @@ object FontFrame: TChartFontFrame
     Font.Style = [fsBold]
     OnChange = cbBoldChange
     ParentFont = False
-    TabOrder = 1
+    TabOrder = 2
   end
   object cbItalic: TCheckBox
     AnchorSideLeft.Control = cbBold
@@ -52,7 +52,7 @@ object FontFrame: TChartFontFrame
     Font.Style = [fsItalic]
     OnChange = cbItalicChange
     ParentFont = False
-    TabOrder = 2
+    TabOrder = 3
   end
   object cbUnderline: TCheckBox
     AnchorSideLeft.Control = cbItalic
@@ -69,7 +69,7 @@ object FontFrame: TChartFontFrame
     Font.Style = [fsUnderline]
     OnChange = cbUnderlineChange
     ParentFont = False
-    TabOrder = 3
+    TabOrder = 4
   end
   object Panel2: TPanel
     AnchorSideLeft.Control = Owner
@@ -88,7 +88,7 @@ object FontFrame: TChartFontFrame
     ChildSizing.ControlsPerLine = 3
     ClientHeight = 31
     ClientWidth = 301
-    TabOrder = 4
+    TabOrder = 1
     object cmbFontSize: TComboBox
       AnchorSideLeft.Control = Panel2
       AnchorSideTop.Side = asrCenter
@@ -127,7 +127,6 @@ object FontFrame: TChartFontFrame
         Width = 31
         Caption = 'Angle'
         FocusControl = seOrientation
-        ParentColor = False
       end
       object seOrientation: TSpinEdit
         AnchorSideLeft.Control = lblOrientation
