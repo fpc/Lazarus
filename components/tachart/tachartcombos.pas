@@ -291,11 +291,13 @@ var
   bs: TBrushStyle;
   symwidth, symheight: Integer;
   R: TRect;
-  penClr: TColor;
+  penClr, brushClr: TColor;
+  isDisabled: Boolean;
 begin
   if Assigned(OnDrawItem) then
     OnDrawItem(Self, AIndex, ARect, AState)
   else begin
+    isDisabled := ([odDisabled, odGrayed] * AState <> []);
     if [odFocused, odSelected] * AState = [odFocused] then
       Canvas.Brush.Color := clHighlight;
     {$IFNDEF MSWINDOWS}
@@ -323,7 +325,10 @@ begin
     x2 := x1 + symwidth;
     inc(x1, MARGIN*2);
 
-    if [odSelected, odFocused] * AState <> [] then
+    if isDisabled then
+      Canvas.Pen.Color := clGrayText
+    else
+    if isDisabled then
       Canvas.Pen.Color := Canvas.Font.Color
     else
       Canvas.Pen.Color := FPenColor;
@@ -343,7 +348,10 @@ begin
             Canvas.Line(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
             Canvas.Line(x1, ARect.Bottom - MARGIN, x2, ARect.Top + MARGIN);
           end;
-          Canvas.Brush.Color := FBrushColor;
+          if isDisabled then
+            Canvas.Brush.Color := clGrayText
+          else
+            Canvas.Brush.Color := FBrushColor;
           Canvas.Brush.Style := bs;
           if (bs = bsImage) or (bs = bsPattern) then
             Canvas.Brush.Bitmap := FBrushBitmap; // AFTER assigning Brush.Style!
@@ -378,7 +386,8 @@ begin
             taRightJustify: x1 := x2 - symheight;
           end;
           R := Rect(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
-          DrawPointer(Canvas, R, GetPointerStyle(AIndex), FPenColor, FBrushColor);
+          if isDisabled then brushClr := clGrayText else brushClr := FBrushColor;
+          DrawPointer(Canvas, R, GetPointerStyle(AIndex), Canvas.Pen.Color, brushClr);
           Canvas.Brush.Style := bsClear;
         end;
     end;
@@ -388,6 +397,8 @@ begin
         taLeftJustify  : ARect.Left := x2 + DIST;
         taRightJustify : ARect.Left := x1 - DIST - Canvas.TextWidth(Items[AIndex]) - 1;
       end;
+      if [odDisabled, odGrayed] * AState <> [] then
+        Canvas.Font.Color := clGrayText;
       inherited DrawItem(AIndex, ARect, AState);
     end;
   end;
