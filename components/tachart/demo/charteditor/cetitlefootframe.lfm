@@ -1,10 +1,10 @@
 object ChartTitleFootFrame: TChartTitleFootFrame
   Left = 0
-  Height = 432
+  Height = 394
   Top = 0
-  Width = 423
-  ClientHeight = 432
-  ClientWidth = 423
+  Width = 429
+  ClientHeight = 394
+  ClientWidth = 429
   TabOrder = 0
   DesignLeft = 500
   DesignTop = 237
@@ -12,12 +12,12 @@ object ChartTitleFootFrame: TChartTitleFootFrame
     Left = 0
     Height = 25
     Top = 0
-    Width = 423
+    Width = 429
     Align = alTop
     AutoSize = True
     BevelOuter = bvNone
     ClientHeight = 25
-    ClientWidth = 423
+    ClientWidth = 429
     TabOrder = 0
     object cbShow: TCheckBox
       Left = 0
@@ -44,27 +44,42 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       OnClick = cbWordwrapClick
       TabOrder = 1
     end
+    object cbHTML: TCheckBox
+      AnchorSideLeft.Control = cbWordwrap
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = PanelTop
+      Left = 188
+      Height = 19
+      Top = 0
+      Width = 133
+      BorderSpacing.Left = 32
+      Caption = 'Support HTML in text'
+      OnChange = cbHTMLChange
+      TabOrder = 2
+    end
   end
   object ParamsPanel: TPanel
     Left = 0
     Height = 187
-    Top = 237
-    Width = 423
+    Top = 199
+    Width = 429
     Align = alBottom
     BorderSpacing.Top = 16
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
     ClientHeight = 187
-    ClientWidth = 423
+    ClientWidth = 429
     TabOrder = 2
     object rgAlignment: TRadioGroup
       AnchorSideLeft.Control = ParamsPanel
       AnchorSideTop.Control = ParamsPanel
+      AnchorSideRight.Control = Bevel1
       AnchorSideBottom.Side = asrBottom
       Left = 0
       Height = 51
       Top = 0
-      Width = 211
+      Width = 202
+      Anchors = [akTop, akLeft, akRight]
       AutoFill = True
       AutoSize = True
       Caption = 'Alignment'
@@ -78,7 +93,7 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
       ClientHeight = 31
-      ClientWidth = 207
+      ClientWidth = 198
       Columns = 3
       ItemIndex = 0
       Items.Strings = (
@@ -90,19 +105,18 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       TabOrder = 0
     end
     object gbShapeBrushPenMargins: TGroupBox
-      AnchorSideLeft.Control = rgAlignment
+      AnchorSideLeft.Control = Bevel1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = rgAlignment
       AnchorSideRight.Control = ParamsPanel
       AnchorSideRight.Side = asrBottom
-      Left = 235
+      Left = 226
       Height = 168
       Top = 0
-      Width = 188
+      Width = 203
       Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 24
-      Caption = 'Title/footer background'
-      TabOrder = 2
+      Caption = 'gbShapeBrushPenMargins'
+      TabOrder = 3
     end
     object gbFont: TGroupBox
       AnchorSideLeft.Control = rgAlignment
@@ -113,23 +127,78 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       Left = 0
       Height = 61
       Top = 67
-      Width = 211
+      Width = 202
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 16
-      Caption = 'Font'
+      Caption = 'gbFont'
       TabOrder = 1
+    end
+    object Bevel1: TBevel
+      AnchorSideLeft.Control = ParamsPanel
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = rgAlignment
+      Left = 202
+      Height = 50
+      Top = 0
+      Width = 24
+      Shape = bsSpacer
+    end
+    object gbMargin: TGroupBox
+      AnchorSideLeft.Control = ParamsPanel
+      AnchorSideTop.Control = gbFont
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = gbFont
+      AnchorSideRight.Side = asrBottom
+      Left = 0
+      Height = 51
+      Top = 144
+      Width = 202
+      Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
+      BorderSpacing.Top = 16
+      Caption = 'Distance to chart'
+      ClientHeight = 31
+      ClientWidth = 198
+      TabOrder = 2
+      object lblMargin: TLabel
+        AnchorSideLeft.Control = gbMargin
+        Left = 16
+        Height = 15
+        Top = 5
+        Width = 38
+        BorderSpacing.Left = 16
+        Caption = 'Margin'
+      end
+      object seMargin: TSpinEdit
+        AnchorSideLeft.Control = lblMargin
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = gbMargin
+        AnchorSideRight.Control = gbMargin
+        AnchorSideRight.Side = asrBottom
+        Left = 70
+        Height = 23
+        Top = 0
+        Width = 72
+        Alignment = taRightJustify
+        BorderSpacing.Left = 16
+        BorderSpacing.Right = 8
+        BorderSpacing.Bottom = 8
+        MaxValue = 1000
+        OnChange = seMarginChange
+        TabOrder = 0
+      end
     end
   end
   object MemoPanel: TPanel
     AnchorSideTop.Side = asrBottom
     Left = 0
-    Height = 196
+    Height = 158
     Top = 25
-    Width = 423
+    Width = 429
     Align = alClient
     BevelOuter = bvNone
-    ClientHeight = 196
-    ClientWidth = 423
+    ClientHeight = 158
+    ClientWidth = 429
     Constraints.MinHeight = 80
     TabOrder = 1
     object lblText: TLabel
@@ -150,14 +219,15 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       AnchorSideBottom.Control = MemoPanel
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 177
+      Height = 139
       Top = 19
-      Width = 423
+      Width = 429
       Anchors = [akTop, akLeft, akRight, akBottom]
       BorderSpacing.Top = 4
       OnChange = mmoTextChange
       ScrollBars = ssAutoBoth
       TabOrder = 0
+      WordWrap = False
     end
   end
 end

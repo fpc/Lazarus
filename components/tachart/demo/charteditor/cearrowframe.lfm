@@ -1,0 +1,105 @@
+object ChartArrowFrame: TChartArrowFrame
+  Left = 0
+  Height = 125
+  Top = 0
+  Width = 171
+  ClientHeight = 125
+  ClientWidth = 171
+  TabOrder = 0
+  DesignLeft = 390
+  DesignTop = 154
+  object cbArrowVisible: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 0
+    Height = 19
+    Top = 0
+    Width = 54
+    Caption = 'Visible'
+    OnChange = cbArrowVisibleChange
+    TabOrder = 0
+  end
+  object lblArrowBaseLength: TLabel
+    AnchorSideLeft.Control = cbArrowVisible
+    AnchorSideTop.Control = seArrowBaseLength
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 15
+    Top = 31
+    Width = 61
+    Caption = 'Base length'
+  end
+  object lblArrowLength: TLabel
+    AnchorSideLeft.Control = cbArrowVisible
+    AnchorSideTop.Control = seArrowLength
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 15
+    Top = 62
+    Width = 37
+    Caption = 'Length'
+  end
+  object lblArrowWidth: TLabel
+    AnchorSideLeft.Control = cbArrowVisible
+    AnchorSideTop.Control = seArrowWidth
+    AnchorSideTop.Side = asrCenter
+    Left = 0
+    Height = 15
+    Top = 93
+    Width = 32
+    Caption = 'Width'
+  end
+  object seArrowBaseLength: TSpinEdit
+    AnchorSideLeft.Control = lblArrowBaseLength
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cbArrowVisible
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 85
+    Height = 23
+    Top = 27
+    Width = 86
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 24
+    BorderSpacing.Top = 8
+    MaxValue = 1000
+    OnChange = seArrowBaseLengthChange
+    TabOrder = 1
+  end
+  object seArrowLength: TSpinEdit
+    AnchorSideLeft.Control = seArrowBaseLength
+    AnchorSideTop.Control = seArrowBaseLength
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = seArrowBaseLength
+    AnchorSideRight.Side = asrBottom
+    Left = 85
+    Height = 23
+    Top = 58
+    Width = 86
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    MaxValue = 1000
+    OnChange = seArrowLengthChange
+    TabOrder = 2
+  end
+  object seArrowWidth: TSpinEdit
+    AnchorSideLeft.Control = seArrowBaseLength
+    AnchorSideTop.Control = seArrowLength
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = seArrowBaseLength
+    AnchorSideRight.Side = asrBottom
+    Left = 85
+    Height = 23
+    Top = 89
+    Width = 86
+    Alignment = taRightJustify
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    MaxValue = 1000
+    OnChange = seArrowWidthChange
+    TabOrder = 3
+  end
+end

@@ -34,13 +34,11 @@ type
     FFont: TFont;
     FOnChange: TNotifyEvent;
     procedure DoChanged;
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetData(AFont: TFont);
     procedure Prepare(AFont: TFont; WithOrientation: boolean);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-
   end;
 
 implementation

@@ -21,13 +21,11 @@ object ChartEditorForm: TChartEditorForm
     OKButton.OnClick = OKButtonClick
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
-    CloseButton.Name = 'ApplyButton'
-    CloseButton.Caption = 'Apply'
-    CloseButton.OnClick = ApplyButtonClick
+    CloseButton.Name = 'CloseButton'
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 0
-    ShowButtons = [pbOK, pbCancel, pbClose]
+    ShowButtons = [pbOK, pbCancel]
   end
   object Tree: TTreeView
     Left = 6

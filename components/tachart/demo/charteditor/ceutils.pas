@@ -5,10 +5,12 @@ unit ceUtils;
 interface
 
 uses
-  Graphics, Classes, SysUtils, Controls;
+  Graphics, Classes, SysUtils, Controls,
+  TAChartUtils;
 
 const
   DEFAULT_DROPDOWN_COUNT = 32;
+  TEXT_FORMAT: array[boolean] of TChartTextFormat = (tfNormal, tfHTML);
 
 procedure BoldHeaders(AControl: TControl);
 

@@ -26,12 +26,10 @@ type
     FPen: TPen;
     FOnChange: TNotifyEvent;
     procedure DoChanged;
-
   public
     constructor Create(AOwner: TComponent); override;
     procedure Prepare(APen: TPen);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-
   end;
 
 implementation
