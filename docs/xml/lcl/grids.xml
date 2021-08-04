@@ -13011,7 +13011,7 @@
             When <var>UseXORFeatures</var> is <b>True</b>, the Pen mode in the <var>Canvas</var> is updated to used the XOR drawing operator and the color needed for the control.  The Canvas state is restored prior to exiting from the method.
           </p>
           <p>
-            <var>DrawRubberRect</var> is called to draw the rubber band rectangle which represents the focused cell(s) using the <var>FocusColor</var> in the control.
+            <var>DrawRubberRect</var> is called to draw the rubber band rectangle with the appropriate borders using the <var>FocusColor</var> in the control.
           </p>
           <p>
             DrawFocusRect is called from the <var>DrawRow</var> method.
