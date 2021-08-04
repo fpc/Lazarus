@@ -13,19 +13,18 @@ object ChartBrushFrame: TChartBrushFrame
     AnchorSideLeft.Control = lblBrushStyle
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = Owner
-    AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = cbBrushColor
     Left = 49
     Height = 22
-    Top = 1
+    Top = 0
     Width = 142
     Mode = ccmBrushStyle
+    Options = [ccoNames, ccoPatternPen]
     PenPattern = '1|1'
     PointerStyle = psNone
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 24
     ItemHeight = 16
-    ItemIndex = 0
     TabOrder = 0
     OnChange = cbBrushStyleChange
   end
@@ -35,7 +34,7 @@ object ChartBrushFrame: TChartBrushFrame
     AnchorSideTop.Side = asrCenter
     Left = 0
     Height = 15
-    Top = 5
+    Top = 4
     Width = 25
     Caption = 'Style'
   end
@@ -47,7 +46,7 @@ object ChartBrushFrame: TChartBrushFrame
     AnchorSideRight.Side = asrBottom
     Left = 197
     Height = 25
-    Top = 0
+    Top = -1
     Width = 31
     Anchors = [akTop, akRight]
     BorderSpacing.Left = 6

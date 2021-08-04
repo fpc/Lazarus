@@ -17,6 +17,8 @@ type
   TChartAxisFrame = class(TFrame)
     Bevel1: TBevel;
     Bevel2: TBevel;
+    Bevel3: TBevel;
+    Bevel4: TBevel;
     cbAutoMax: TCheckBox;
     cbAutoMin: TCheckBox;
     cbAxisLineVisible: TCheckBox;
@@ -138,8 +140,8 @@ begin
   FTitleFontFrame := TChartFontFrame.Create(self);
   FTitleFontFrame.Name := '';
   FTitleFontFrame.Align := alClient;
-  FTitleFontFrame.BorderSpacing.Left := 8;
-  FTitleFontFrame.BorderSpacing.Right := 8;
+  FTitleFontFrame.BorderSpacing.Around := 8;
+  FTitleFontFrame.AutoSize := true;
   FTitleFontFrame.Parent := gbTitleFont;
   gbTitleFont.AutoSize := true;
   gbTitleFont.Caption := 'Font';
@@ -147,9 +149,7 @@ begin
   FTitleShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
   FTitleShapeBrushPenMarginsFrame.Name := '';
   FTitleShapeBrushPenMarginsFrame.Align := alClient;
-  FTitleShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
-  FTitleShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
-  FTitleShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
+  FTitleShapeBrushPenMarginsFrame.BorderSpacing.Around := 8;
   FTitleShapeBrushPenMarginsFrame.OnShapeChange := @TitleShapeChangedHandler;
   FTitleShapeBrushPenMarginsFrame.AutoSize := true;
   FTitleShapeBrushPenMarginsFrame.Parent := gbTitleShapeBrushPenMargins;
@@ -159,8 +159,7 @@ begin
   FLabelFontFrame := TChartFontFrame.Create(self);
   FLabelFontFrame.Name := '';
   FLabelFontFrame.Align := alClient;
-  FLabelFontFrame.BorderSpacing.Left := 8;
-  FLabelFontFrame.BorderSpacing.Right := 8;
+  FLabelFontFrame.BorderSpacing.Around := 8;
   FLabelFontFrame.Parent := gbLabelFont;
   FLabelFontFrame.OnChange := @LabelFontChangedHandler;
   gbLabelFont.AutoSize := true;
@@ -169,9 +168,7 @@ begin
   FLabelShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
   FLabelShapeBrushPenMarginsFrame.Name := '';
   FLabelShapeBrushPenMarginsFrame.Align := alClient;
-  FLabelShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
-  FLabelShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
-  FLabelShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
+  FLabelShapeBrushPenMarginsFrame.BorderSpacing.Around := 8;
   FLabelShapeBrushPenMarginsFrame.OnShapeChange := @LabelShapeChangedHandler;
   FLabelShapeBrushPenMarginsFrame.AutoSize := true;
   FLabelShapeBrushPenMarginsFrame.Parent := gbShapeFillBorder;
@@ -182,9 +179,7 @@ begin
   FGridPenFrame.Name := '';
   FGridPenFrame.Align := alTop;
   FGridPenFrame.Top := 1000;
-  FGridPenFrame.BorderSpacing.Left := 16;
-  FGridPenFrame.BorderSpacing.Right := 16;
-  FGridPenFrame.BorderSpacing.Bottom := 16;
+  FGridPenFrame.BorderSpacing.Around := 8;
   FGridPenFrame.Parent := gbGrid;
   FGridPenFrame.OnChange := @ChangedHandler;
   gbGrid.AutoSize := true;
@@ -194,9 +189,7 @@ begin
   FFramePenFrame.Name := '';
   FFramePenFrame.Align := alTop;
   FFramePenFrame.Top := 1000;
-  FFramePenFrame.BorderSpacing.Left := 16;
-  FFramePenFrame.BorderSpacing.Right := 16;
-  FFramePenFrame.BorderSpacing.Bottom := 16;
+  FFramePenFrame.BorderSpacing.Around := 8;
   FFramePenFrame.Parent := gbFrame;
 //  FFramePenFrame.OnChange := @ChangedHandler;
   gbFrame.AutoSize := true;
@@ -206,9 +199,7 @@ begin
   FAxisLinePenFrame.Name := '';
   FAxisLinePenFrame.Align := alTop;
   FAxisLinePenFrame.Top := 1000;
-  FAxisLinePenFrame.BorderSpacing.Left := 16;
-  FAxisLinePenFrame.BorderSpacing.Right := 16;
-  FAxisLinePenFrame.BorderSpacing.Bottom := 16;
+  FAxisLinePenFrame.BorderSpacing.Around := 8;
   FAxisLinePenFrame.Parent := gbAxisLine;
 //  FAxisLinePenFrame.OnChange := @ChangedHandler;
   gbAxisLine.AutoSize := true;
@@ -217,10 +208,7 @@ begin
   FArrowFrame := TChartArrowFrame.Create(self);
   FArrowFrame.Name := '';
   FArrowFrame.Align := alClient;
-  FArrowFrame.BorderSpacing.Top := 8;
-  FArrowFrame.BorderSpacing.Left := 16;
-  FArrowFrame.BorderSpacing.Right := 16;
-  FArrowFrame.BorderSpacing.Bottom := 16;
+  FArrowFrame.BorderSpacing.Around := 8;
   FArrowFrame.AutoSize := true;
   FArrowFrame.Parent := gbArrow;
   gbArrow.AutoSize := true;
@@ -239,9 +227,9 @@ var
   h: Integer = 0;
 begin
   gbTitleShapeBrushPenMargins.GetPreferredsize(w, h);
-  inc(w, FTitleShapeBrushPenMarginsFrame.BorderSpacing.Left);
-  PreferredWidth :=
-    Max(w, gbTitleFont.Width) * 2 +
+//  inc(w, FTitleShapeBrushPenMarginsFrame.BorderSpacing.Around);
+  PreferredWidth :=       w*2 +
+//    Max(w, gbTitleFont.Width) * 2 +
     Bevel1.Width +
     TitleMemoPanel.BorderSpacing.Around * 2;
 

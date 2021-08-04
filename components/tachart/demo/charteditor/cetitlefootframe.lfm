@@ -1,9 +1,9 @@
 object ChartTitleFootFrame: TChartTitleFootFrame
   Left = 0
-  Height = 394
+  Height = 410
   Top = 0
   Width = 429
-  ClientHeight = 394
+  ClientHeight = 410
   ClientWidth = 429
   TabOrder = 0
   DesignLeft = 500
@@ -60,14 +60,15 @@ object ChartTitleFootFrame: TChartTitleFootFrame
   end
   object ParamsPanel: TPanel
     Left = 0
-    Height = 187
+    Height = 203
     Top = 199
     Width = 429
     Align = alBottom
+    AutoSize = True
     BorderSpacing.Top = 16
     BorderSpacing.Bottom = 8
     BevelOuter = bvNone
-    ClientHeight = 187
+    ClientHeight = 203
     ClientWidth = 429
     TabOrder = 2
     object rgAlignment: TRadioGroup
@@ -150,21 +151,21 @@ object ChartTitleFootFrame: TChartTitleFootFrame
       AnchorSideRight.Control = gbFont
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 51
+      Height = 59
       Top = 144
       Width = 202
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 16
       Caption = 'Distance to chart'
-      ClientHeight = 31
+      ClientHeight = 39
       ClientWidth = 198
       TabOrder = 2
       object lblMargin: TLabel
         AnchorSideLeft.Control = gbMargin
         Left = 16
         Height = 15
-        Top = 5
+        Top = 13
         Width = 38
         BorderSpacing.Left = 16
         Caption = 'Margin'
@@ -177,10 +178,11 @@ object ChartTitleFootFrame: TChartTitleFootFrame
         AnchorSideRight.Side = asrBottom
         Left = 70
         Height = 23
-        Top = 0
+        Top = 8
         Width = 72
         Alignment = taRightJustify
         BorderSpacing.Left = 16
+        BorderSpacing.Top = 8
         BorderSpacing.Right = 8
         BorderSpacing.Bottom = 8
         MaxValue = 1000

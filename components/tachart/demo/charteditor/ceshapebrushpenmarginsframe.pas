@@ -20,6 +20,7 @@ type
     gbBackground: TGroupBox;
     gbBorder: TGroupBox;
     gbMargins: TGroupBox;
+    Panel1: TPanel;
     seBottomMargin: TSpinEdit;
     seLeftMargin: TSpinEdit;
     seRightMargin: TSpinEdit;
@@ -73,37 +74,41 @@ begin
 
   FBrushFrame := TSimpleChartBrushFrame.Create(self);
   FBrushFrame.Name := '';
-  FBrushFrame.BorderSpacing.Left := 8;
-  FBrushFrame.BorderSpacing.Right := 8;
-  FBrushFrame.BorderSpacing.Bottom := 8;
+  FBrushFrame.BorderSpacing.Around := 8;
   FBrushFrame.Align := alClient;
   FBrushFrame.OnChange := @ChangeHandler;
   FBrushFrame.AutoSize := true;
-  gbBackground.AutoSize := true;
   FBrushFrame.Parent := gbBackground;
+  gbBackground.AutoSize := true;
+  gbBackground.Caption := 'Background';
 
   FPenFrame := TSimpleChartPenFrame.Create(self);
   FPenFrame.Name := '';
-  FPenFrame.BorderSpacing.Left := 8;
-  FPenFrame.BorderSpacing.Right := 8;
-  FPenFrame.BorderSpacing.Bottom := 8;
+  FPenFrame.BorderSpacing.Around := 8;
   FPenFrame.Align := alClient;
   FPenFrame.OnChange := @ChangeHandler;
   FPenFrame.AutoSize := true;
-  gbBorder.AutoSize := true;
   FPenFrame.Parent := gbBorder;
+  gbBorder.AutoSize := true;
+  gbBorder.Caption := 'Border';
+
+  Panel1.AutoSize := true;
 end;
 
 procedure TChartShapeBrushPenMarginsFrame.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
+var
+  w: Integer;
+  h: Integer;
 begin
   PreferredHeight := cmbShape.Height +
     gbBorder.BorderSpacing.Top + gbBorder.Height +
     gbMargins.BorderSpacing.Top + gbMargins.Height;
 
+  gbBorder.GetPreferredSize(w, h);
   PreferredWidth :=
-    gbBackground.Width + gbBorder.Width +
+    gbBackground.Width + w + FPenFrame.BorderSpacing.Around*2 +
     Max(gbBackground.BorderSpacing.Right, gbBorder.BorderSpacing.Left);
 end;
 

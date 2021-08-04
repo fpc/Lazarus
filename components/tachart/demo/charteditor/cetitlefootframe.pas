@@ -67,9 +67,9 @@ begin
   FFontFrame := TChartFontFrame.Create(self);
   FFontFrame.Name := '';
   FFontFrame.Align := alClient;
-  FFontFrame.BorderSpacing.Left := 8;
-  FFontFrame.BorderSpacing.Right := 8;
+  FFontFrame.BorderSpacing.Around := 8;
   FFontFrame.OnChange := @ChangedHandler;
+  FFontFrame.AutoSize := true;
   FFontFrame.Parent := gbFont;
   gbFont.AutoSize := true;
   gbFont.Caption := 'Font';
@@ -77,9 +77,7 @@ begin
   FShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
   FShapeBrushPenMarginsFrame.Name := '';
   FShapeBrushPenMarginsFrame.Align := alClient;
-  FShapeBrushPenMarginsFrame.BorderSpacing.Left := 8;
-  FShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
-  FShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
+  FShapeBrushPenMarginsFrame.BorderSpacing.Around := 8;
   FShapeBrushPenMarginsFrame.OnChange := @ChangedHandler;
   FShapeBrushPenMarginsFrame.OnShapeChange := @ShapeChangedHandler;
   FShapeBrushPenMarginsFrame.AutoSize := true;
@@ -95,13 +93,19 @@ end;
 procedure TChartTitleFootFrame.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
+var
+  w: Integer = 0;
+  h: Integer = 0;
 begin
   PreferredHeight := PanelTop.Height +
     MemoPanel.Constraints.MinHeight +
     ParamsPanel.Height + ParamsPanel.BorderSpacing.Top + ParamsPanel.BorderSpacing.Bottom;
 
-  PreferredWidth := Max(gbFont.Width, rgAlignment.Width) +
-    gbShapeBrushPenMargins.Width + gbShapeBrushPenMargins.BorderSpacing.Left;
+//  w := 100;
+  gbShapeBrushPenMargins.GetPreferredSize(w, h);
+  PreferredWidth :=
+    Max(w, Max(gbFont.Width, rgAlignment.Width)) * 2 +
+    Bevel1.Width;
 end;
 
 procedure TChartTitleFootFrame.cbShowChange(Sender: TObject);

@@ -6,8 +6,8 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
   ClientHeight = 237
   ClientWidth = 276
   TabOrder = 0
-  DesignLeft = 1498
-  DesignTop = 388
+  DesignLeft = 1026
+  DesignTop = 386
   object cmbShape: TComboBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -33,70 +33,35 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
     TabOrder = 0
     Text = 'Rectangle'
   end
-  object gbBackground: TGroupBox
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = cmbShape
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = gbBorder
-    AnchorSideBottom.Side = asrBottom
-    Left = 0
-    Height = 73
-    Top = 31
-    Width = 83
-    Anchors = [akTop, akLeft, akBottom]
-    AutoSize = True
-    BorderSpacing.Top = 8
-    BorderSpacing.Right = 8
-    Caption = 'Background'
-    TabOrder = 1
-  end
-  object gbBorder: TGroupBox
-    AnchorSideLeft.Control = gbBackground
-    AnchorSideLeft.Side = asrBottom
-    AnchorSideTop.Control = cmbShape
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = gbBackground
-    AnchorSideBottom.Side = asrBottom
-    Left = 91
-    Height = 73
-    Top = 31
-    Width = 185
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 8
-    BorderSpacing.Top = 8
-    Caption = 'Border'
-    TabOrder = 2
-  end
   object gbMargins: TGroupBox
     AnchorSideLeft.Control = gbBackground
-    AnchorSideTop.Control = gbBackground
+    AnchorSideTop.Control = gbBorder
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 97
-    Top = 112
+    Height = 105
+    Top = 114
     Width = 276
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 8
     Caption = 'Margins'
-    ClientHeight = 77
+    ClientHeight = 85
     ClientWidth = 272
-    TabOrder = 3
+    TabOrder = 1
     object seTopMargin: TSpinEdit
       AnchorSideLeft.Control = gbMargins
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = gbMargins
       Left = 111
       Height = 23
-      Top = 0
+      Top = 8
       Width = 50
       Alignment = taRightJustify
+      BorderSpacing.Top = 8
       MaxValue = 1000
       OnChange = seTopMarginChange
       TabOrder = 0
@@ -107,11 +72,11 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       AnchorSideRight.Control = seTopMargin
       Left = 53
       Height = 23
-      Top = 23
+      Top = 31
       Width = 50
       Alignment = taRightJustify
       Anchors = [akTop, akRight]
-      BorderSpacing.Left = 28
+      BorderSpacing.Left = 32
       BorderSpacing.Right = 8
       MaxValue = 1000
       OnChange = seLeftMarginChange
@@ -124,11 +89,11 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       AnchorSideTop.Side = asrBottom
       Left = 169
       Height = 23
-      Top = 23
+      Top = 31
       Width = 50
       Alignment = taRightJustify
       BorderSpacing.Left = 8
-      BorderSpacing.Right = 28
+      BorderSpacing.Right = 32
       MaxValue = 1000
       OnChange = seRightMarginChange
       TabOrder = 2
@@ -142,7 +107,7 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       AnchorSideBottom.Side = asrBottom
       Left = 111
       Height = 23
-      Top = 46
+      Top = 54
       Width = 50
       Alignment = taRightJustify
       BorderSpacing.Bottom = 8
@@ -150,5 +115,52 @@ object ChartShapeBrushPenMarginsFrame: TChartShapeBrushPenMarginsFrame
       OnChange = seBottomMarginChange
       TabOrder = 3
     end
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbShape
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 59
+    Top = 31
+    Width = 276
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Top = 8
+    BevelOuter = bvNone
+    TabOrder = 2
+  end
+  object gbBackground: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = cmbShape
+    AnchorSideTop.Side = asrBottom
+    AnchorSideBottom.Control = gbBorder
+    AnchorSideBottom.Side = asrBottom
+    Left = 0
+    Height = 75
+    Top = 31
+    Width = 97
+    Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.Top = 8
+    Caption = 'gbBackground'
+    TabOrder = 3
+  end
+  object gbBorder: TGroupBox
+    AnchorSideLeft.Control = gbBackground
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = cmbShape
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 113
+    Height = 75
+    Top = 31
+    Width = 163
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 8
+    Caption = 'gbBorder'
+    TabOrder = 4
   end
 end

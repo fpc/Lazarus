@@ -10,14 +10,14 @@ object ChartSeriesFrame: TChartSeriesFrame
   DesignTop = 344
   object PanelTop: TPanel
     Left = 0
-    Height = 142
+    Height = 146
     Top = 0
     Width = 589
     Align = alTop
     AutoSize = True
     BorderSpacing.Bottom = 12
     BevelOuter = bvNone
-    ClientHeight = 142
+    ClientHeight = 146
     ClientWidth = 589
     TabOrder = 0
     object cbShowSeries: TCheckBox
@@ -40,13 +40,13 @@ object ChartSeriesFrame: TChartSeriesFrame
       AnchorSideBottom.Control = gbMarks
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 117
+      Height = 121
       Top = 25
       Width = 286
       Anchors = [akTop, akLeft, akRight, akBottom]
       AutoSize = True
       Caption = 'Legend text (Series title)'
-      ClientHeight = 97
+      ClientHeight = 101
       ClientWidth = 282
       TabOrder = 1
       object edSeriesTitle: TEdit
@@ -56,11 +56,11 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideRight.Side = asrBottom
         Left = 8
         Height = 23
-        Top = 4
+        Top = 8
         Width = 266
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
-        BorderSpacing.Top = 4
+        BorderSpacing.Top = 8
         BorderSpacing.Right = 8
         OnChange = edSeriesTitleChange
         TabOrder = 0
@@ -72,7 +72,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideTop.Side = asrBottom
         Left = 8
         Height = 19
-        Top = 33
+        Top = 37
         Width = 133
         BorderSpacing.Top = 6
         Caption = 'Show series in legend'
@@ -88,7 +88,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideRight.Side = asrBottom
         Left = 87
         Height = 23
-        Top = 58
+        Top = 62
         Width = 187
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
@@ -111,7 +111,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideTop.Side = asrCenter
         Left = 8
         Height = 15
-        Top = 62
+        Top = 66
         Width = 71
         Caption = 'Legend items'
       end
@@ -126,13 +126,13 @@ object ChartSeriesFrame: TChartSeriesFrame
       AnchorSideBottom.Control = gbLegendText
       AnchorSideBottom.Side = asrBottom
       Left = 302
-      Height = 117
+      Height = 121
       Top = 25
       Width = 287
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       Caption = 'Marks'
-      ClientHeight = 97
+      ClientHeight = 101
       ClientWidth = 283
       TabOrder = 2
       object lblSeriesMarksStyle: TLabel
@@ -141,7 +141,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideTop.Side = asrCenter
         Left = 8
         Height = 15
-        Top = 8
+        Top = 12
         Width = 25
         BorderSpacing.Left = 8
         Caption = 'Style'
@@ -153,10 +153,10 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideRight.Side = asrBottom
         Left = 54
         Height = 23
-        Top = 4
+        Top = 8
         Width = 221
         Anchors = [akTop, akLeft, akRight]
-        BorderSpacing.Top = 4
+        BorderSpacing.Top = 8
         BorderSpacing.Right = 8
         ItemHeight = 15
         ItemIndex = 1
@@ -184,7 +184,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideTop.Side = asrCenter
         Left = 8
         Height = 15
-        Top = 37
+        Top = 41
         Width = 38
         Caption = 'Format'
       end
@@ -197,7 +197,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideRight.Side = asrBottom
         Left = 54
         Height = 23
-        Top = 33
+        Top = 37
         Width = 221
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 8
@@ -213,7 +213,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideTop.Side = asrCenter
         Left = 8
         Height = 19
-        Top = 67
+        Top = 71
         Width = 156
         BorderSpacing.Top = 6
         Caption = 'Show at series data points'
@@ -227,7 +227,7 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideRight.Side = asrBottom
         Left = 212
         Height = 25
-        Top = 64
+        Top = 68
         Width = 63
         Anchors = [akTop, akRight]
         AutoSize = True
@@ -250,10 +250,10 @@ object ChartSeriesFrame: TChartSeriesFrame
   end
   object nbSeriesTypes: TNotebook
     Left = 0
-    Height = 305
-    Top = 154
+    Height = 301
+    Top = 158
     Width = 589
-    PageIndex = 0
+    PageIndex = 2
     Align = alClient
     TabOrder = 1
     object pgLineSeries: TPage
@@ -273,11 +273,11 @@ object ChartSeriesFrame: TChartSeriesFrame
         object cbLineSeriesShowLines: TCheckBox
           Left = 8
           Height = 19
-          Top = 6
+          Top = 8
           Width = 274
           Align = alTop
           BorderSpacing.Left = 8
-          BorderSpacing.Top = 6
+          BorderSpacing.Top = 8
           Caption = 'Visible'
           OnChange = cbLineSeriesShowLinesChange
           TabOrder = 0
@@ -301,11 +301,11 @@ object ChartSeriesFrame: TChartSeriesFrame
         object cbLineSeriesShowPoints: TCheckBox
           Left = 8
           Height = 19
-          Top = 6
+          Top = 8
           Width = 275
           Align = alTop
           BorderSpacing.Left = 8
-          BorderSpacing.Top = 6
+          BorderSpacing.Top = 8
           Caption = 'Visible'
           OnChange = cbLineSeriesShowPointsChange
           TabOrder = 0
@@ -357,13 +357,13 @@ object ChartSeriesFrame: TChartSeriesFrame
         AnchorSideBottom.Control = gbBarSeriesBrush
         AnchorSideBottom.Side = asrBottom
         Left = 302
-        Height = 52
+        Height = 59
         Top = 0
         Width = 287
-        Anchors = [akTop, akLeft, akRight, akBottom]
+        Anchors = [akTop, akLeft, akRight]
         AutoSize = True
         Caption = 'Bar shape'
-        ClientHeight = 32
+        ClientHeight = 39
         ClientWidth = 283
         TabOrder = 1
         object cbBarShape: TComboBox
@@ -373,12 +373,10 @@ object ChartSeriesFrame: TChartSeriesFrame
           AnchorSideRight.Side = asrBottom
           Left = 8
           Height = 23
-          Top = 0
+          Top = 8
           Width = 267
           Anchors = [akTop, akLeft, akRight]
-          BorderSpacing.Left = 8
-          BorderSpacing.Right = 8
-          BorderSpacing.Bottom = 8
+          BorderSpacing.Around = 8
           ItemHeight = 15
           ItemIndex = 0
           Items.Strings = (
@@ -436,11 +434,9 @@ object ChartSeriesFrame: TChartSeriesFrame
           Left = 8
           Height = 19
           Top = 8
-          Width = 274
+          Width = 266
           Align = alTop
-          BorderSpacing.Left = 8
-          BorderSpacing.Top = 8
-          BorderSpacing.Bottom = 8
+          BorderSpacing.Around = 8
           Caption = 'Visible'
           OnChange = cbAreaShowContourLinesChange
           TabOrder = 0
@@ -476,11 +472,9 @@ object ChartSeriesFrame: TChartSeriesFrame
           Left = 8
           Height = 19
           Top = 8
-          Width = 275
+          Width = 267
           Align = alTop
-          BorderSpacing.Left = 8
-          BorderSpacing.Top = 8
-          BorderSpacing.Bottom = 8
+          BorderSpacing.Around = 8
           Caption = 'Visible'
           OnChange = cbAreaShowDropLinesChange
           TabOrder = 0

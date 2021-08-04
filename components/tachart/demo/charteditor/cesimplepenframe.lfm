@@ -2,9 +2,9 @@ object SimpleChartPenFrame: TSimpleChartPenFrame
   Left = 0
   Height = 62
   Top = 0
-  Width = 120
+  Width = 124
   ClientHeight = 62
-  ClientWidth = 120
+  ClientWidth = 124
   OnResize = FrameResize
   TabOrder = 0
   DesignLeft = 620
@@ -28,11 +28,11 @@ object SimpleChartPenFrame: TSimpleChartPenFrame
     AnchorSideTop.Control = Owner
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 70
+    Left = 62
     Height = 25
     Top = 0
     Width = 30
-    BorderSpacing.Left = 16
+    BorderSpacing.Left = 8
     BorderSpacing.Bottom = 6
     BorderWidth = 2
     ButtonColorSize = 16
@@ -51,7 +51,7 @@ object SimpleChartPenFrame: TSimpleChartPenFrame
     Left = 40
     Height = 22
     Top = 33
-    Width = 80
+    Width = 84
     Mode = ccmPenWidth
     Options = [ccoPatternBrush, ccoPatternPen]
     PenPattern = '1|1'
@@ -59,9 +59,9 @@ object SimpleChartPenFrame: TSimpleChartPenFrame
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 8
     BorderSpacing.Top = 8
+    Constraints.MinWidth = 80
     Enabled = False
     ItemHeight = 16
-    ItemIndex = 0
     TabOrder = 1
     OnChange = cbPenWidthChange
   end
