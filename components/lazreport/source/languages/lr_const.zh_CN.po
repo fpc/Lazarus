@@ -1664,6 +1664,10 @@ msgstr "插入表达式"
 msgid "Insert DB fields"
 msgstr "插入DB字段"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr ""

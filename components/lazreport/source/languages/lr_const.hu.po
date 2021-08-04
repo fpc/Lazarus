@@ -1663,6 +1663,10 @@ msgstr "Kifejezés beszúrása"
 msgid "Insert DB fields"
 msgstr "Adatbázismezők beszúrása"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "Elérhető adatkészletek"

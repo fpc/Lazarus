@@ -1663,6 +1663,10 @@ msgstr "Вставить выражение"
 msgid "Insert DB fields"
 msgstr "Вставить поля БД"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "&Доступные наборы данных"

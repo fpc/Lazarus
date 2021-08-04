@@ -339,6 +339,7 @@ resourcestring
   sInsertFieldsFormVert = '&Vertical';
   sInsertFieldsFormHeader = '&Include headers';
   sInsertFieldsFormBand = 'Include &bands';
+  sInsertFieldsDbNoFields = 'Database without fields';
 
 //--- AboutForm resources -----------------------------------------------------
   sAboutFormCapt = 'About FastReport';
