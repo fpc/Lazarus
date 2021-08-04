@@ -1236,7 +1236,7 @@
         <short>Number of records for the event notification.</short>
       </element>
 
-      <element name="TComponentDataLink.FocusControl" link="#fcl.db.TDataLink.FocusControl">
+      <element name="TComponentDataLink.FocusControl">
         <short>
           Signals the OnFocusControl event handler when assigned.
         </short>
@@ -1245,7 +1245,9 @@
             <var>FocusControl</var> is a procedure used to signal the OnFocusControl event handler when assigned in the class instance.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+           <link id="#fcl.db.TDataLink">TDataLink</link>
+        </seealso>
       </element>
       <element name="TComponentDataLink.FocusControl.Field">
         <short>Field receiving focus in the event notification.</short>
@@ -1291,7 +1293,7 @@
         </seealso>
       </element>
 
-      <element name="TComponentDataLink.MoveBy" link="#fcl.db.TDataLink.MoveBy">
+      <element name="TComponentDataLink.MoveBy">
         <short>
           Moves the position in the dataset by the specified number of rows.
         </short>
@@ -1300,7 +1302,9 @@
             <var>MoveBy</var> is an Integer function used to move the current position in the dataset by the specified number of rows. MoveBy calls the inherited method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#fcl.db.TDataLink">TDataLink</link>
+        </seealso>
       </element>
       <element name="TComponentDataLink.MoveBy.Result">
         <short>Actual number of rows moved in the method.</short>
@@ -1790,7 +1794,7 @@
         <short>'FALSE' or '0'</short>
       </element>
 
-      <element name="TColumn.GetDefaultVisible" link="#lcl.grids.TGridColumn.GetDefaultVisible">
+      <element name="TColumn.GetDefaultVisible">
         <short>
           Indicates if the Field for the column is Visible.
         </short>
@@ -1799,7 +1803,9 @@
             <var>GetDefaultVisible</var> is an overridden Boolean function that indicates if the Field for the column is Visible. GetDefaultVisible uses Field to get its Visible property for use as the return value in the method. If Field has not been assigned in the column, the return value is True.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TGridColumn.GetDefaultVisible">TGridColumn.GetDefaultVisible</link>
+        </seealso>
       </element>
       <element name="TColumn.GetDefaultVisible.Result">
         <short>True when the Field for the column is visible.</short>
@@ -1993,7 +1999,7 @@
         <short>Persistent class with values stored in the method.</short>
       </element>
 
-      <element name="TColumn.IsDefault" link="#lcl.grids.TGridColumn.IsDefault">
+      <element name="TColumn.IsDefault">
         <short>
           Indicates if the column uses its default display format.
         </short>
@@ -2002,7 +2008,9 @@
             <var>IsDefault</var>  is an overridden Boolean function that indicates if the column uses its default display format. The return value is True when the value in the DisplayFormat property has not been changed. IsDefault calls the inherited method to get the return value for the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TGridColumn.IsDefault">TGridColumn.IsDefault</link>
+        </seealso>
       </element>
       <element name="TColumn.IsDefault.Result">
         <short>True when DisplayFormat has been changed.</short>
@@ -3372,7 +3380,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomDBGrid.ColRowMoved" link="#lcl.grids.TCustomGrid.ColRowMoved">
+      <element name="TCustomDBGrid.ColRowMoved">
         <short>
           Signals event handlers when a row or a column is moved in the grid control.
         </short>
@@ -3381,7 +3389,9 @@
             <var>ColRowMoved</var> is an overridden procedure used to signal event handlers when a row or a column is moved in the grid control.  When IsColumn contains False, the OnRowMoved event handler is signalled (when assigned). When IsColumn contains True, the OnColumnMoved event handler is signalled (when assigned) if Columns have not been Enabled in the grid control. If Columns have been Enabled, the inherited ColRowMoved method is called.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.ColRowMoved">TCustomGrid.ColRowMoved</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.ColRowMoved.IsColumn">
         <short/>
@@ -3691,7 +3701,7 @@
         <short/>
       </element>
 
-      <element name="TCustomDBGrid.DrawAllRows" link="#lcl.grids.TCustomGrid.DrawAllRows">
+      <element name="TCustomDBGrid.DrawAllRows">
         <short>
           Draws all data rows in grid control.
         </short>
@@ -3700,10 +3710,12 @@
             DrawAllRows is an overridden procedure used to draw all data rows for the control. DrawAllRows checks the DataLink property to determine if a DataSet is available for the operation. When DataLink is marked as Active, its ActiveRecord is used to reposition the DataSet after the drawing operation is completed. DrawAllRows calls the inherited method, and restores the position of the DataSet prior to exiting from the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.DrawAllRows">TCustomGrid.DrawAllRows</link>
+        </seealso>
       </element>
 
-      <element name="TCustomDBGrid.DrawFocusRect" link="#lcl.grids.TCustomGrid.DrawFocusRect">
+      <element name="TCustomDBGrid.DrawFocusRect">
         <short>
           Draws the current selection  in the grid in a focused state.
         </short>
@@ -3714,16 +3726,23 @@
           <p>
             The grid control must have focus before the current selection can be drawn. In
             addition the DataLink for the control must refer to  an active dataset.
-            DrawFocusRect uses the Options property to ensure that  dgAlwaysShowSelection
+            DrawFocusRect checks the Options property to ensure that  dgAlwaysShowSelection
             has been included for the control. Finally DefaultDrawing must be enabled  to
-            allow drawing of the focus rectangle using the rubberband style on the Canvas
+            allow drawing of the focus rectangle using the rubber band style on the Canvas
             for the control.
           </p>
           <p>
             If any of the previous conditions are not met, no actions are performed in the method.
           </p>
+          <p>
+            DrawFocusRect calls CalcFocusRect to get the bounds for the focus rectangle adjusted for optional grid lines. The DrawRubberRect method is called to render the focus rectangle with the needed borders using the FocusColor for the control.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.DrawFocusRect">TCustomGrid.DrawFocusRect</link>
+          <link id="#lcl.grids.TCustomGrid.CalcFocusRect">TCustomGrid.CalcFocusRect</link>
+          <link id="#lcl.grids.TCustomGrid.FocusColor">TCustomGrid.FocusColor</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.DrawFocusRect.aCol">
         <short/>
@@ -3735,9 +3754,8 @@
         <short/>
       </element>
 
-      <element name="TCustomDBGrid.DrawRow" link="#lcl.grids.TCustomGrid.DrawRow">
-        <short>
-        </short>
+      <element name="TCustomDBGrid.DrawRow">
+        <short>Draws the specified row in the grid control.</short>
         <descr>
           <p>
              DrawRow is an overridden procedure used to draw the specified row number in the grid control.
@@ -3752,6 +3770,9 @@
             DrawRow calls the inherited method to perform any actions implemented in the ancestor class.
           </p>
         </descr>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.DrawRow">TCustomGrid.DrawRow</link>
+        </seealso>
       </element>
 
       <element name="TCustomDBGrid.DrawCell">
@@ -4004,7 +4025,7 @@
         <short>True when the character can be applied to the field.</short>
       </element>
 
-      <element name="TCustomDBGrid.EditorIsReadOnly" link="#lcl.grids.TCustomGrid.EditorIsReadOnly">
+      <element name="TCustomDBGrid.EditorIsReadOnly">
         <short>
           <var>EditorIsReadOnly</var> determines if the editor can be enabled for the selected cell in the control.
         </short>
@@ -4026,7 +4047,9 @@
             EditorIsReadOnly calls the EditingColumn method to synchronize the cell editor state to the value returned by the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.EditorIsReadOnly">TCustomGrid.EditorIsReadOnly</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.EditorIsReadOnly.Result">
         <short>True when an editor cannot modify the select cell.</short>
@@ -4369,7 +4392,7 @@
         <short>Bitmap for the checkbox.</short>
       </element>
 
-      <element name="TCustomDBGrid.GetIsCellSelected" link="#lcl.grids.TCustomGrid.GetIsCellSelected">
+      <element name="TCustomDBGrid.GetIsCellSelected">
         <short>
           Determines if the cell at the specified location is currently selected.
         </short>
@@ -4378,7 +4401,9 @@
               <var>GetIsCellSelected</var> is an overridden Boolean function  used to determine if the cell at the specified location is currently selected. GetIsCellSelected calls the inherited method to get the return value, and also examines the value in DrawingMultiSelRecord. The return value is True when the cell is either selected or multi-selected (when enabled).
             </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.GetIsCellSelected">TCustomGrid.GetIsCellSelected</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.GetIsCellSelected.Result">
         <short>True when the specified cell is selected or multi-selected.</short>
@@ -4531,7 +4556,7 @@
         <short/>
       </element>
 
-      <element name="TCustomDBGrid.HeaderSized" link="#lcl.grids.TCustomGrid.HeaderSized">
+      <element name="TCustomDBGrid.HeaderSized">
         <short>
           Updates Columns in the control when a a header cell is resized.
         </short>
@@ -4546,7 +4571,9 @@
             HeaderSized signals theOnColumnSized event handler when assigned for the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.HeaderSized">TCustomGrid.HeaderSized</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.HeaderSized.IsColumn">
         <short>Sizing applies to a column and not a row.</short>
@@ -4724,7 +4751,7 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomDBGrid.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomDBGrid.Loaded">
         <short>
           Performs layout operations after the control is loaded at run-time.
         </short>
@@ -4733,7 +4760,9 @@
             <var>Loaded</var> performs the notification that signals component streaming has been completed at run-time. Loaded calls the LayoutChanged method to update the visual appearance of the control. Loaded calls the inherited Loaded method
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
       </element>
 
       <element name="TCustomDBGrid.LoadGridOptions">
@@ -4816,7 +4845,7 @@
         <short>Vertical coordinate for the mouse button click.</short>
       </element>
 
-      <element name="TCustomDBGrid.MouseMove" link="#lcl.controls.TControl.MouseMove">
+      <element name="TCustomDBGrid.MouseMove">
         <short>
           Signals the OnMouseMove event handler for the grid control.
         </short>
@@ -4825,19 +4854,23 @@
             MouseMove is an overridden procedure used to signal the OnMouseMove event handler for the grid control. MouseMove signals the OnMouseMove event handler when GridState contains the value gsSelecting, and the Dragging flag has not been set.  Otherwise, the inherited MouseMove method is called in the method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
+        </seealso>
       </element>
 
-      <element name="TCustomDBGrid.PrepareCanvas" link="#lcl.grids.TCustomGrid.PrepareCanvas">
+      <element name="TCustomDBGrid.PrepareCanvas">
         <short>
           Prepares the Canvas to render the specified cell with the drawing state in aState.
         </short>
         <descr>
           <p>
-            PrepareCanvas configures the Canvas used to render the cell at the specified position with the drawing state in aState. PrepareCanvas calls the inherited PrepareCanvas method and sets the brush color in the Canvas to the value need for fixed or focused/selected columns.
+            <var>PrepareCanvas</var> configures the <var>Canvas</var> used to render the cell at the specified position with the drawing state in <var>aState</var>. PrepareCanvas calls the inherited PrepareCanvas method and sets the brush color in the Canvas to the value need for fixed or focused/selected columns.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.PrepareCanvas">TCustomGrid.PrepareCanvas</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.PrepareCanvas.aCol">
         <short/>
@@ -4899,7 +4932,7 @@
         <short>XML configuration file where the values are stored.</short>
       </element>
 
-      <element name="TCustomDBGrid.SelectEditor" link="#lcl.grids.TCustomGrid.SelectEditor">
+      <element name="TCustomDBGrid.SelectEditor">
         <short>
           Gets the editor used for the SelectedField in the control.
         </short>
@@ -4911,7 +4944,9 @@
             SelectEditor calls the Inherited SelectEditor method to initialize the class used in the Editor property. SelectEditor signals the OnSelectEditor event handler (when assigned) to get a custom value for the Editor property. Please note that Editor is set to <var><b>Nil</b></var> if the OnSelectEditor event handler is not assigned for the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.SelectEditor">TCustomGrid.SelectEditor</link>
+        </seealso>
       </element>
 
       <element name="TCustomDBGrid.SetEditText" link="#lcl.grids.TCustomGrid.SetEditText">
