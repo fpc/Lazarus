@@ -80,8 +80,8 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideBottom.Side = asrBottom
       Left = 0
       Height = 72
-      Top = 128
-      Width = 127
+      Top = 136
+      Width = 130
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 16
       BorderSpacing.Right = 16
@@ -95,10 +95,10 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideRight.Control = gbAlignment
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 143
+      Left = 146
       Height = 88
-      Top = 128
-      Width = 153
+      Top = 136
+      Width = 156
       Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 16
       Caption = 'gbBorder'
@@ -110,8 +110,8 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideTop.Control = gbAlignment
       AnchorSideBottom.Control = gbAlignment
       AnchorSideBottom.Side = asrBottom
-      Left = 316
-      Height = 112
+      Left = 322
+      Height = 120
       Top = 0
       Width = 216
       Anchors = [akTop, akLeft, akBottom]
@@ -125,46 +125,48 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideBottom.Control = gbFont
       AnchorSideBottom.Side = asrBottom
       Left = 0
-      Height = 112
+      Height = 120
       Top = 0
-      Width = 296
+      Width = 302
+      AutoSize = True
       Caption = 'Position'
       ChildSizing.LeftRightSpacing = 6
       ChildSizing.TopBottomSpacing = 6
+      ChildSizing.HorizontalSpacing = 8
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
       ChildSizing.EnlargeVertical = crsHomogenousChildResize
       ChildSizing.ShrinkHorizontal = crsScaleChilds
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 3
-      ClientHeight = 92
-      ClientWidth = 292
+      ClientHeight = 100
+      ClientWidth = 298
       TabOrder = 0
       object rbTopLeft: TRadioButton
         Left = 6
-        Height = 17
+        Height = 19
         Top = 6
-        Width = 86
+        Width = 82
         Caption = 'top/left'
         OnClick = gbAlignmentClick
         TabOrder = 0
       end
       object rbTopCenter: TRadioButton
         Tag = 3
-        Left = 92
-        Height = 17
+        Left = 96
+        Height = 19
         Top = 6
-        Width = 102
+        Width = 98
         Caption = 'top/center'
         OnClick = gbAlignmentClick
         TabOrder = 1
       end
       object rbTopRight: TRadioButton
         Tag = 5
-        Left = 194
-        Height = 17
+        Left = 202
+        Height = 19
         Top = 6
-        Width = 92
+        Width = 90
         Caption = 'top/right'
         Checked = True
         OnClick = gbAlignmentClick
@@ -174,27 +176,27 @@ object ChartLegendFrame: TChartLegendFrame
       object rbCenterLeft: TRadioButton
         Tag = 1
         Left = 6
-        Height = 46
-        Top = 23
-        Width = 86
+        Height = 50
+        Top = 25
+        Width = 82
         Caption = 'center/left'
         OnClick = gbAlignmentClick
         TabOrder = 3
       end
       object Bevel1: TBevel
         Tag = 999
-        Left = 92
-        Height = 46
-        Top = 23
-        Width = 102
+        Left = 96
+        Height = 50
+        Top = 25
+        Width = 98
         Shape = bsSpacer
       end
       object rbCenterRight: TRadioButton
         Tag = 6
-        Left = 194
-        Height = 46
-        Top = 23
-        Width = 92
+        Left = 202
+        Height = 50
+        Top = 25
+        Width = 90
         Caption = 'center/right'
         OnClick = gbAlignmentClick
         TabOrder = 4
@@ -202,29 +204,29 @@ object ChartLegendFrame: TChartLegendFrame
       object rbBottomLeft: TRadioButton
         Tag = 2
         Left = 6
-        Height = 17
-        Top = 69
-        Width = 86
+        Height = 19
+        Top = 75
+        Width = 82
         Caption = 'bottom/left'
         OnClick = gbAlignmentClick
         TabOrder = 5
       end
       object rbBottomCenter: TRadioButton
         Tag = 4
-        Left = 92
-        Height = 17
-        Top = 69
-        Width = 102
+        Left = 96
+        Height = 19
+        Top = 75
+        Width = 98
         Caption = 'bottom/center'
         OnClick = gbAlignmentClick
         TabOrder = 6
       end
       object rbBottomRight: TRadioButton
         Tag = 7
-        Left = 194
-        Height = 17
-        Top = 69
-        Width = 92
+        Left = 202
+        Height = 19
+        Top = 75
+        Width = 90
         Caption = 'bottom/right'
         OnClick = gbAlignmentClick
         TabOrder = 7
@@ -237,14 +239,15 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideRight.Control = gbBackground
       AnchorSideRight.Side = asrBottom
       Left = 0
-      Height = 83
-      Top = 216
-      Width = 127
+      Height = 84
+      Top = 224
+      Width = 130
       Anchors = [akTop, akLeft, akRight]
+      AutoSize = True
       BorderSpacing.Top = 16
       Caption = 'Margins'
-      ClientHeight = 63
-      ClientWidth = 123
+      ClientHeight = 64
+      ClientWidth = 126
       TabOrder = 4
       object lblMarginX: TLabel
         AnchorSideLeft.Control = gbMargins
@@ -268,7 +271,7 @@ object ChartLegendFrame: TChartLegendFrame
         Left = 31
         Height = 23
         Top = 4
-        Width = 76
+        Width = 79
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 4
@@ -301,7 +304,7 @@ object ChartLegendFrame: TChartLegendFrame
         Left = 31
         Height = 23
         Top = 33
-        Width = 76
+        Width = 79
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
@@ -318,9 +321,9 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Control = gbFont
       AnchorSideRight.Side = asrBottom
-      Left = 316
+      Left = 322
       Height = 165
-      Top = 128
+      Top = 136
       Width = 216
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -480,9 +483,9 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideLeft.Control = gbAlignment
       AnchorSideLeft.Side = asrCenter
       AnchorSideTop.Control = gbBorder
-      Left = 143
+      Left = 146
       Height = 42
-      Top = 128
+      Top = 136
       Width = 10
       Shape = bsSpacer
     end

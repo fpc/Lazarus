@@ -28,6 +28,10 @@ type
     procedure DoChange;
     function GetWidthLeft: Integer;
     procedure SetWidthLeft(const AValue: Integer);
+  protected
+    procedure CalculatePreferredSize(
+      var PreferredWidth, PreferredHeight: integer;
+      WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetData(APen: TChartPen);
@@ -41,7 +45,7 @@ implementation
 {$R *.lfm}
 
 uses
-  LCLIntf, LCLType;
+  LCLIntf, LCLType, Math;
 
 { TSimpleChartPenFrame }
 
@@ -50,6 +54,17 @@ begin
   inherited Create(AOwner);
   cbPenWidth.DropdownCount := DEFAULT_DROPDOWN_COUNT;
   cbPenColor.Width := cbPenColor.Height;
+end;
+
+procedure TSimpleChartPenFrame.CalculatePreferredSize(
+  var PreferredWidth, PreferredHeight: integer;
+  WithThemeSpace: Boolean);
+begin
+  PreferredWidth := Max(
+    cbPenColor.Left + cbPenColor.Width,
+    cbPenWidth.Left + cbPenWidth.Constraints.MinWidth
+  );
+  PreferredHeight := cbPenWidth.Top + cbPenWidth.Height;
 end;
 
 procedure TSimpleChartPenFrame.cbPenColorColorChanged(Sender: TObject);

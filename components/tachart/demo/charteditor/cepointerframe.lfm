@@ -7,22 +7,8 @@ object ChartPointerFrame: TChartPointerFrame
   ClientHeight = 194
   ClientWidth = 320
   TabOrder = 0
-  DesignLeft = 658
-  DesignTop = 295
-  object Label1: TLabel
-    AnchorSideLeft.Control = Owner
-    AnchorSideTop.Control = Owner
-    Left = 12
-    Height = 15
-    Top = 0
-    Width = 70
-    BorderSpacing.Left = 12
-    Caption = 'Pointer style'
-    Color = clForm
-    Font.Style = [fsBold]
-    ParentFont = False
-    Transparent = False
-  end
+  DesignLeft = 822
+  DesignTop = 312
   object GroupBox1: TGroupBox
     Left = 0
     Height = 56

@@ -36,17 +36,14 @@ object MainForm: TMainForm
         Title.Caption = 'x axis'
         Title.LabelBrush.Style = bsClear
       end>
-    BackColor = clWhite
     Foot.Alignment = taLeftJustify
-    Foot.Brush.Color = clBtnFace
-    Foot.Font.Color = clBlue
+    Foot.Brush.Color = clForm
     Foot.Text.Strings = (
       'Created by Lazarus and TAChart'
     )
     Foot.Visible = True
     Legend.Visible = True
-    Title.Brush.Color = clBtnFace
-    Title.Font.Color = clBlue
+    Title.Brush.Color = clForm
     Title.Text.Strings = (
       'TAChart'
     )

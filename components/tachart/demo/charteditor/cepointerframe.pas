@@ -18,7 +18,6 @@ type
     GroupBox1: TGroupBox;
     gbPointerBrush: TGroupBox;
     gbPointerPen: TGroupBox;
-    Label1: TLabel;
     lblPointerSize: TLabel;
     sePointerSize: TSpinEdit;
     procedure cbPointerStyleChange(Sender: TObject);
@@ -51,24 +50,22 @@ begin
   cbPointerStyle.DropdownCount := DEFAULT_DROPDOWN_COUNT;
 
   FPointerBrushFrame := TChartBrushFrame.Create(Self);
-  FPointerBrushFrame.Parent := gbPointerBrush;
   FPointerBrushFrame.Name := '';
   FPointerBrushFrame.Align := alClient;
-  FPointerBrushFrame.BorderSpacing.Left := 8;
-  FPointerBrushFrame.BorderSpacing.Right := 8;
-  FPointerBrushFrame.BorderSpacing.Bottom := 8;
+  FPointerBrushFrame.AutoSize := true;
+  FPointerBrushFrame.BorderSpacing.Around := 8;
   FPointerBrushFrame.OnChange := @ChangedHandler;
+  FPointerBrushFrame.Parent := gbPointerBrush;
   gbPointerBrush.Caption := 'Fill';
   gbPointerBrush.AutoSize := true;
 
   FPointerPenFrame := TChartPenFrame.Create(self);
-  FPointerPenFrame.Parent := gbPointerPen;
   FPointerPenFrame.Name := '';
   FPointerPenFrame.Align := alClient;
-  FPointerPenFrame.borderspacing.Left := 8;
-  FPointerPenFrame.BorderSpacing.Right := 8;
-  FPointerPenFrame.BorderSpacing.Bottom := 8;
+  FPointerPenFrame.AutoSize := true;
+  FPointerPenFrame.borderspacing.Around := 8;
   FPointerPenFrame.OnChange := @ChangedHandler;
+  FPointerPenFrame.Parent := gbPointerPen;
   gbPointerPen.caption := 'Border';
   gbPointerPen.AutoSize := true;
 
