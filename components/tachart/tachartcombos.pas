@@ -81,18 +81,17 @@ type
     published
       property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
       property BrushBitmap: TBitmap read FBrushBitmap write SetBrushBitmap;
-      property BrushColor: TColor read FBrushColor write SetBrushColor default clBlack;
+      property BrushColor: TColor read FBrushColor write SetBrushColor default clWindowText;
       property BrushStyle: TBrushStyle read FBrushStyle write SetSelectedBrushStyle default bsSolid;
       property Cosmetic: Boolean read FCosmetic write SetCosmetic default true;
       property MaxPenWidth: Integer read FMaxPenWidth write SetMaxPenWidth default 5;
       property Mode: TChartComboMode read FMode write SetMode default ccmPenStyle;
       property Options: TChartComboOptions read FOptions write SetOptions default DEFAULT_OPTIONS;
       property PenPattern: string read GetPenPattern write SetPenPattern;
-      property PenColor: TColor read FPenColor write SetPenColor default clBlack;
+      property PenColor: TColor read FPenColor write SetPenColor default clWindowText;
       property PenStyle: TPenStyle read FPenStyle write SetSelectedPenStyle default psSolid;
       property PenWidth: Integer read FPenWidth write SetSelectedPenWidth default 1;
       property PointerStyle: TSeriesPointerStyle read FPointerStyle write SetSelectedPointerStyle default DEFAULT_POINTER_STYLE;
-//      property ShowNames: Boolean read FShowNames write SetShowNames default true;
       property SymbolWidth: Integer read GetSymbolWidth write SetSymbolWidth stored SymbolWidthStored;
 
       property Align;
@@ -238,11 +237,11 @@ begin
   SetLength(FPenPattern, 2);
   FPenPattern[0] := 1;
   FPenPattern[1] := 1;
-  FPenColor := clBlack;
+  FPenColor := clWindowText;
   FCosmetic := true;
   FMode := ccmPenStyle;
   FBrushBitmap := TBitmap.Create;
-  FBrushColor := clBlack;
+  FBrushColor := clWindowText;
   FBrushStyle := bsSolid;
   FPenStyle := psSolid;
   FPenWidth := 1;
@@ -287,7 +286,7 @@ const
   MARGIN = 2;
 var
   alignmnt: TAlignment;
-  x1, x2, y: Integer;
+  x1, x2, y1, y2, y: Integer;
   bs: TBrushStyle;
   symwidth, symheight: Integer;
   R: TRect;
@@ -325,10 +324,13 @@ begin
     x2 := x1 + symwidth;
     inc(x1, MARGIN*2);
 
+    y1 := ARect.Top + MARGIN;
+    y2 := ARect.Bottom - MARGIN;
+
     if isDisabled then
       Canvas.Pen.Color := clGrayText
     else
-    if isDisabled then
+    if [odFocused, odSelected] * AState <> [] then
       Canvas.Pen.Color := Canvas.Font.Color
     else
       Canvas.Pen.Color := FPenColor;
@@ -340,13 +342,9 @@ begin
         begin
           bs := GetBrushStyle(AIndex);
           if bs <> bsClear then begin
-            Canvas.Brush.Color := clWhite;
+            Canvas.Brush.Color := clWindow;
             Canvas.Brush.Style := bsSolid;
-            Canvas.FillRect(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
-          end else begin
-            Canvas.Pen.Color := penClr;
-            Canvas.Line(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
-            Canvas.Line(x1, ARect.Bottom - MARGIN, x2, ARect.Top + MARGIN);
+            Canvas.FillRect(x1, y1, x2, y2-1);
           end;
           if isDisabled then
             Canvas.Brush.Color := clGrayText
@@ -355,9 +353,21 @@ begin
           Canvas.Brush.Style := bs;
           if (bs = bsImage) or (bs = bsPattern) then
             Canvas.Brush.Bitmap := FBrushBitmap; // AFTER assigning Brush.Style!
-          Canvas.Pen.Color := penClr;
           Canvas.Pen.Style := psSolid;
-          Canvas.Rectangle(x1, ARect.Top + MARGIN, x2, ARect.Bottom - MARGIN);
+          if bs = bsClear then begin
+            if [odFocused, odSelected] * AState <> [] then
+              Canvas.Pen.Color := clHighlightText
+            else
+              Canvas.Pen.Color := clWindowText;
+            Canvas.Rectangle(x1,y1, x2, y2);
+            Canvas.Line(x1, y1, x2, y2-1);
+            Canvas.Line(x1, y2-1, x2, y1);
+          end else
+//          if not ((bs = bsSolid) and ([odFocused, odSelected] * AState <> [])) then
+          begin
+            Canvas.Pen.Color := clWindowText;
+            Canvas.Rectangle(x1, y1, x2, y2);
+          end;
           Canvas.Brush.Style := bsClear;
         end;
       ccmPenStyle:
