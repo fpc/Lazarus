@@ -1673,6 +1673,10 @@ msgstr "Ausdruck einfügen"
 msgid "Insert DB fields"
 msgstr "Datenbankfelder einfügen"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "&Verfügbare Datasets"

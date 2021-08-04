@@ -1667,6 +1667,10 @@ msgstr "Inserisci Espressione"
 msgid "Insert DB fields"
 msgstr "Inserisci campi DB"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "D&ataset disponibili"

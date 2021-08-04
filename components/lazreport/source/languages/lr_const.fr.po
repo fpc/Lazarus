@@ -1664,6 +1664,10 @@ msgstr "Insérer un expression"
 msgid "Insert DB fields"
 msgstr "Insérer des champs BDD"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "&Ensembles de données disponibles"

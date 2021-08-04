@@ -32,6 +32,7 @@ type
     Label1: TLabel;
     GroupBox1: TGroupBox;
     HorzRB: TRadioButton;
+    lblError: TLabel;
     VertRB: TRadioButton;
     GroupBox2: TGroupBox;
     HeaderCB: TCheckBox;
@@ -75,12 +76,19 @@ end;
 
 procedure TfrInsertFieldsForm.GetFields;
 begin
+  lblError.Visible := false;
   FieldsL.Items.Clear;
   if DatasetCB.ItemIndex<>-1 then
   begin
     DataSet := frGetDataSet(DatasetCB.Items[DatasetCB.ItemIndex]);
     if DataSet <> nil then
-      frGetFieldNames(DataSet, FieldsL.Items);
+    begin
+      try
+        frGetFieldNames(DataSet, FieldsL.Items);
+      except
+        lblError.Visible := true;
+      end;
+    end;
   end;
 end;
 
@@ -93,6 +101,7 @@ begin
   VertRB.Caption := sInsertFieldsFormVert;
   HeaderCB.Caption := sInsertFieldsFormHeader;
   BandCB.Caption := sInsertFieldsFormBand;
+  lblError.Hint := sInsertFieldsDbNoFields;
 end;
 
 end.

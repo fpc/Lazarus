@@ -11,18 +11,17 @@ object frInsertFieldsForm: TfrInsertFieldsForm
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Label1: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
     Left = 6
-    Height = 17
+    Height = 15
     Top = 6
-    Width = 114
+    Width = 94
     BorderSpacing.Around = 6
     Caption = '&Available datasets'
     FocusControl = DatasetCB
-    ParentColor = False
   end
   object FieldsL: TListBox
     AnchorSideLeft.Control = Owner
@@ -31,8 +30,8 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     AnchorSideRight.Control = GroupBox1
     AnchorSideBottom.Control = ButtonPanel1
     Left = 6
-    Height = 231
-    Top = 70
+    Height = 245
+    Top = 56
     Width = 247
     HelpContext = 106
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -42,7 +41,6 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     MultiSelect = True
     ScrollWidth = 245
     TabOrder = 0
-    TopIndex = -1
   end
   object DatasetCB: TComboBox
     AnchorSideLeft.Control = Owner
@@ -50,13 +48,13 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = GroupBox1
     Left = 6
-    Height = 35
-    Top = 29
+    Height = 23
+    Top = 27
     Width = 247
     HelpContext = 97
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 0
+    ItemHeight = 15
     OnChange = DatasetCBChange
     Sorted = True
     Style = csDropDownList
@@ -74,13 +72,13 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     BorderSpacing.Around = 6
     Caption = 'Placement'
     ClientHeight = 54
-    ClientWidth = 171
+    ClientWidth = 169
     TabOrder = 2
     object HorzRB: TRadioButton
       Left = 8
-      Height = 21
+      Height = 19
       Top = 5
-      Width = 89
+      Width = 75
       HelpContext = 115
       Caption = '&Horizontal'
       Checked = True
@@ -89,9 +87,9 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     end
     object VertRB: TRadioButton
       Left = 8
-      Height = 21
+      Height = 19
       Top = 25
-      Width = 71
+      Width = 59
       HelpContext = 122
       Caption = '&Vertical'
       TabOrder = 1
@@ -104,22 +102,22 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 259
-    Height = 62
+    Height = 76
     Top = 86
     Width = 179
     Anchors = [akTop, akLeft, akRight]
     AutoSize = True
     BorderSpacing.Top = 6
-    ClientHeight = 60
-    ClientWidth = 177
+    ClientHeight = 56
+    ClientWidth = 175
     TabOrder = 3
     object HeaderCB: TCheckBox
       AnchorSideLeft.Control = GroupBox2
       AnchorSideTop.Control = GroupBox2
       Left = 6
-      Height = 21
+      Height = 19
       Top = 6
-      Width = 125
+      Width = 103
       HelpContext = 132
       BorderSpacing.Around = 6
       Caption = '&Include headers'
@@ -130,9 +128,9 @@ object frInsertFieldsForm: TfrInsertFieldsForm
       AnchorSideTop.Control = HeaderCB
       AnchorSideTop.Side = asrBottom
       Left = 6
-      Height = 21
-      Top = 33
-      Width = 111
+      Height = 19
+      Top = 31
+      Width = 94
       BorderSpacing.Around = 6
       Caption = 'Include &bands'
       TabOrder = 1
@@ -154,5 +152,18 @@ object frInsertFieldsForm: TfrInsertFieldsForm
     CancelButton.DefaultCaption = True
     TabOrder = 4
     ShowButtons = [pbOK, pbCancel, pbHelp]
+  end
+  object lblError: TLabel
+    Left = 265
+    Height = 15
+    Top = 280
+    Width = 20
+    Caption = '<!>'
+    Font.Color = clRed
+    Font.Style = [fsBold]
+    ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
+    Visible = False
   end
 end

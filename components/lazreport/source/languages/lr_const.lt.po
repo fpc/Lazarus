@@ -1666,6 +1666,10 @@ msgstr "Įterpti išraišką"
 msgid "Insert DB fields"
 msgstr "Įterpti DB laukus"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "Esamos duomenų &aibės"

@@ -1724,6 +1724,10 @@ msgstr ""
 msgid "Insert DB fields"
 msgstr "Sisipkan field DB"
 
+#: lr_const.sinsertfieldsdbnofields
+msgid "Database without fields"
+msgstr ""
+
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
 msgstr "D&ataset tersedia"
