@@ -141,7 +141,8 @@ type
 
   TChartLegendBrush = class(TBrush)
   published
-    property Color default clWhite;
+    constructor Create; override;
+    property Color default clDefault;
   end;
 
   TLegendAlignment = (
@@ -370,6 +371,15 @@ procedure TChartLegendItems.SetItem(AIndex: Integer; AValue: TLegendItem);
 begin
   inherited SetItem(AIndex, AValue);
 end;
+
+{ TChartLegendBrush }
+
+constructor TChartLegendBrush.Create;
+begin
+  inherited;
+  Color := clDefault;
+end;
+
 
 { TLegendItem }
 
