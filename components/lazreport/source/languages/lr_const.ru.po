@@ -5,11 +5,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-09-30 02:25+0300\n"
+"PO-Revision-Date: 2021-08-05 00:13+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lr_const.saboutformcapt
 msgid "About FastReport"
@@ -1665,7 +1665,7 @@ msgstr "Вставить поля БД"
 
 #: lr_const.sinsertfieldsdbnofields
 msgid "Database without fields"
-msgstr ""
+msgstr "База данных без полей"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
