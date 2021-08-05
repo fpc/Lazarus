@@ -1233,7 +1233,7 @@ type
     property GridFlags: TGridFlags read FGridFlags write FGridFlags;
     property GridHeight: Integer read FGCache.GridHeight;
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor default clSilver;
-    property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
+    property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle default psSolid;
     property GridLineWidth: Integer read FGridLineWidth write SetGridLineWidth default 1;
     property GridWidth: Integer read FGCache.GridWidth;
     property HeaderHotZones: TGridZoneSet read FHeaderHotZones write FHeaderHotZones default [gzFixedCols];
@@ -1447,8 +1447,6 @@ type
     property FocusColor;
     property FocusRectVisible;
     property GridHeight;
-    property GridLineColor;
-    property GridLineStyle;
     property GridWidth;
     property IsCellSelected;
     property LeftCol;
@@ -1487,6 +1485,8 @@ type
     property FixedRows;
     property Flat;
     property Font;
+    property GridLineColor;
+    property GridLineStyle;
     property GridLineWidth;
     property Options;
     property Options2;
@@ -1593,6 +1593,8 @@ type
     property FixedRows;
     property Flat;
     property Font;
+    property GridLineColor;
+    property GridLineStyle;
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
@@ -1835,6 +1837,8 @@ type
     property FixedRows;
     property Flat;
     property Font;
+    property GridLineColor;
+    property GridLineStyle;
     property GridLineWidth;
     property HeaderHotZones;
     property HeaderPushZones;
