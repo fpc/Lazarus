@@ -12,31 +12,29 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = frmMainCreate
   ShowHint = True
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object lblIndex: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideBottom.Control = grid
     Left = 6
-    Height = 18
+    Height = 15
     Top = 98
-    Width = 36
+    Width = 29
     Anchors = [akLeft, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Index'
-    ParentColor = False
   end
   object lblExpr: TLabel
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = grid
-    Left = 744
-    Height = 18
+    Left = 760
+    Height = 15
     Top = 98
-    Width = 78
+    Width = 62
     Anchors = [akRight, akBottom]
     BorderSpacing.Around = 6
     Caption = 'Expression'
-    ParentColor = False
   end
   object sbar: TStatusBar
     Left = 0
@@ -56,13 +54,13 @@ object frmMain: TfrmMain
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = lblExpr
     AnchorSideBottom.Control = grid
-    Left = 48
-    Height = 26
+    Left = 41
+    Height = 23
     Top = 90
-    Width = 690
+    Width = 713
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Around = 6
-    ItemHeight = 18
+    ItemHeight = 15
     OnSelect = comboIndexSelect
     TabOrder = 2
   end
@@ -73,8 +71,8 @@ object frmMain: TfrmMain
     AnchorSideRight.Control = grid
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 380
-    Top = 122
+    Height = 383
+    Top = 119
     Width = 204
     Anchors = [akTop, akLeft, akBottom]
     Color = clMoneyGreen
@@ -92,18 +90,16 @@ object frmMain: TfrmMain
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = sbar
     Left = 0
-    Height = 380
-    Top = 122
+    Height = 383
+    Top = 119
     Width = 828
     Anchors = [akTop, akLeft, akRight, akBottom]
-    Color = clWhite
+    Color = clAqua
     Columns = <>
     DataSource = srcDetail
     Font.Name = 'Sans'
-    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit]
     ParentFont = False
     TabOrder = 0
-    TitleFont.Name = 'Sans'
     OnTitleClick = gridTitleClick
   end
   object Panel1: TPanel
@@ -124,47 +120,47 @@ object frmMain: TfrmMain
       Left = 6
       Height = 33
       Top = 6
-      Width = 116
+      Width = 119
       Action = accNewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 0
     end
     object btnOpenReport: TButton
-      Left = 128
+      Left = 131
       Height = 33
       Top = 6
-      Width = 123
+      Width = 124
       Action = accOpenReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 2
     end
     object btnEditReport: TButton
-      Left = 257
+      Left = 261
       Height = 33
       Top = 6
-      Width = 113
+      Width = 120
       Action = accEditReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 3
     end
     object btnPreviewReport: TButton
-      Left = 376
+      Left = 387
       Height = 33
       Top = 6
-      Width = 156
+      Width = 148
       Action = accPreviewReport
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 4
     end
     object btnPrintReport: TButton
-      Left = 538
+      Left = 541
       Height = 33
       Top = 6
-      Width = 134
+      Width = 131
       Action = accPrintReport
       AutoSize = True
       BorderSpacing.Around = 6
@@ -185,7 +181,7 @@ object frmMain: TfrmMain
       Left = 6
       Height = 33
       Top = 45
-      Width = 116
+      Width = 119
       Action = accPrintGrid
       AutoSize = True
       BorderSpacing.Around = 6
@@ -193,10 +189,10 @@ object frmMain: TfrmMain
     end
     object btnComposite: TButton
       AnchorSideTop.Side = asrBottom
-      Left = 128
+      Left = 131
       Height = 33
       Top = 45
-      Width = 123
+      Width = 124
       Action = accComposite
       AutoSize = True
       BorderSpacing.Around = 6
@@ -205,20 +201,20 @@ object frmMain: TfrmMain
     object btnImageList: TButton
       AnchorSideTop.Side = asrBottom
       AnchorSideRight.Side = asrBottom
-      Left = 257
+      Left = 261
       Height = 33
       Top = 45
-      Width = 113
+      Width = 120
       Action = accThumbnails
       AutoSize = True
       BorderSpacing.Around = 6
       TabOrder = 7
     end
     object btnMasterDetail: TToggleBox
-      Left = 376
+      Left = 387
       Height = 33
       Top = 45
-      Width = 156
+      Width = 148
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Master-Detail Test'
@@ -226,10 +222,10 @@ object frmMain: TfrmMain
       TabOrder = 9
     end
     object btnExportLast: TButton
-      Left = 538
+      Left = 541
       Height = 33
       Top = 45
-      Width = 134
+      Width = 131
       Caption = 'Repeat Export'
       OnClick = btnExportLastClick
       TabOrder = 10
@@ -247,16 +243,16 @@ object frmMain: TfrmMain
     OnEnterRect = TheReportEnterRect
     OnUserFunction = TheReportUserFunction
     OnExportFilterSetup = TheReportExportFilterSetup
-    left = 40
-    top = 192
+    Left = 40
+    Top = 192
   end
   object Detail: TDbf
     IndexDefs = <>
     TableName = 'disco.dbf'
     TableLevel = 3
     FilterOptions = []
-    left = 184
-    top = 192
+    Left = 184
+    Top = 192
     object DetailAUTHOR: TStringField
       DisplayWidth = 20
       FieldKind = fkData
@@ -329,8 +325,6 @@ object frmMain: TfrmMain
       ProviderFlags = [pfInUpdate, pfInWhere]
       ReadOnly = False
       Required = False
-      MaxValue = 0
-      MinValue = 0
       Precision = 2
     end
     object DetailNOTE: TStringField
@@ -400,13 +394,13 @@ object frmMain: TfrmMain
   end
   object srcDetail: TDataSource
     DataSet = Detail
-    left = 184
-    top = 248
+    Left = 184
+    Top = 248
   end
   object frDbDetail: TfrDBDataSet
     DataSet = Detail
-    left = 112
-    top = 192
+    Left = 112
+    Top = 192
   end
   object PrintGrid: TFrPrintGrid
     DBGrid = grid
@@ -416,12 +410,12 @@ object frmMain: TfrmMain
     Caption = 'Grid'
     PrinterIndex = -1
     ShowCaption = True
-    left = 352
-    top = 248
+    Left = 352
+    Top = 248
   end
   object MainMenu1: TMainMenu
-    left = 112
-    top = 96
+    Left = 112
+    Top = 96
     object MenuItem1: TMenuItem
       Caption = 'Files'
       object MenuItem2: TMenuItem
@@ -483,12 +477,12 @@ object frmMain: TfrmMain
   object ApplicationProperties1: TApplicationProperties
     HintPause = 10
     OnShowHint = ApplicationProperties1ShowHint
-    left = 500
-    top = 160
+    Left = 500
+    Top = 160
   end
   object ActionList1: TActionList
-    left = 48
-    top = 96
+    Left = 48
+    Top = 96
     object accNewReport: TAction
       Category = 'Tests'
       Caption = 'New Report'
@@ -563,33 +557,33 @@ object frmMain: TfrmMain
   object OpenDialog1: TOpenDialog
     Filter = 'LazReport Files|*.lrf|FreeReport Files|*.frf|All Files|*.*'
     FilterIndex = 0
-    left = 572
-    top = 160
+    Left = 572
+    Top = 160
   end
   object frCSVExport1: TfrCSVExport
-    left = 352
-    top = 192
+    Left = 352
+    Top = 192
   end
   object frUserDataset1: TfrUserDataset
     RangeEnd = reCount
-    left = 112
-    top = 248
+    Left = 112
+    Top = 248
   end
   object frBarCodeObject1: TfrBarCodeObject
-    left = 272
-    top = 192
+    Left = 272
+    Top = 192
   end
   object frRoundRectObject1: TfrRoundRectObject
-    left = 272
-    top = 248
+    Left = 272
+    Top = 248
   end
   object frShapeObject1: TfrShapeObject
-    left = 272
-    top = 304
+    Left = 272
+    Top = 304
   end
   object frCheckBoxObject1: TfrCheckBoxObject
-    left = 272
-    top = 360
+    Left = 272
+    Top = 360
   end
   object Composite: TfrCompositeReport
     DefaultCopies = 0
@@ -597,48 +591,48 @@ object frmMain: TfrmMain
     Options = []
     PreviewButtons = [pbZoom, pbLoad, pbSave, pbPrint, pbFind, pbHelp, pbExit]
     DataType = dtDataSet
-    left = 40
-    top = 248
+    Left = 40
+    Top = 248
   end
   object LookCountries: TDbf
     IndexDefs = <>
     TableName = 'countries.dbf'
     TableLevel = 3
     FilterOptions = []
-    left = 184
-    top = 72
+    Left = 184
+    Top = 72
   end
   object LookCompanies: TDbf
     IndexDefs = <>
     TableName = 'companies.dbf'
     TableLevel = 3
     FilterOptions = []
-    left = 184
-    top = 128
+    Left = 184
+    Top = 128
   end
   object master: TDbf
     IndexDefs = <>
     TableLevel = 4
     FilterOptions = []
-    left = 184
-    top = 312
+    Left = 184
+    Top = 312
   end
   object srcMaster: TDataSource
     DataSet = master
-    left = 184
-    top = 368
+    Left = 184
+    Top = 368
   end
   object frDbMaster: TfrDBDataSet
     DataSet = master
-    left = 112
-    top = 312
+    Left = 112
+    Top = 312
   end
   object frHtmlDivExport1: TfrHtmlDivExport
-    left = 500
-    top = 228
+    Left = 500
+    Top = 228
   end
   object lrAddFunctionLibrary1: TlrAddFunctionLibrary
-    left = 500
-    top = 301
+    Left = 500
+    Top = 301
   end
 end

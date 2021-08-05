@@ -328,7 +328,9 @@ procedure TfrmMain.accEditReportExecute(Sender: TObject);
 begin
   if TheReport.FileName='' then
     raise Exception.Create(cerOpenReportFirst);
+  ApplicationProperties1.OnShowHint := nil;
   TheReport.DesignReport;
+  ApplicationProperties1.OnShowHint := @ApplicationProperties1ShowHint;
 end;
 
 procedure TfrmMain.accNewReportExecute(Sender: TObject);
@@ -459,15 +461,15 @@ begin
   FCountryIndex := ComboIndex.Items.IndexOf('BYCOUNTRY');
   SetIndex('');
 
-  if FileExistsUTF8(fCurReport) then
-    OpenReport(fCurReport);
-
   for i:=Low(rptArr) to High(rptArr) do begin
     r := TfrReport.Create(self);
     r.LoadFromFile(rptArr[i]);
     Composite.Reports.Add(r);
   end;
   Composite.DoublePass:=true;
+
+  if FileExistsUTF8(fCurReport) then
+    OpenReport(fCurReport);
 
   frSelectHyphenDictionary(dataPath + 'hyph_es_ANY.dic');
 end;
