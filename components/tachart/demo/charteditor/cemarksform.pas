@@ -30,6 +30,7 @@ type
     procedure cbMarksCenteredChange(Sender: TObject);
     procedure cmbMarkPositionsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure seDistanceChange(Sender: TObject);
   private
     FSeries: TChartSeries;
@@ -39,10 +40,8 @@ type
     FArrowFrame: TChartArrowFrame;
     function GetChart: TChart;
     procedure ShapeChangedHandler(AShape: TChartLabelShape);
-
   public
     procedure Prepare(ASeries: TChartSeries);
-
   end;
 
 var
@@ -53,7 +52,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TASeries,
+  Math, TASeries,
   ceUtils;
 
 
@@ -82,9 +81,7 @@ begin
   FFontFrame := TChartFontFrame.Create(self);
   FFontFrame.Name := '';
   FFontFrame.Align := alClient;
-  FFontFrame.BorderSpacing.Left := 16;
-  FFontFrame.BorderSpacing.Right := 8;
-  FFontFrame.BorderSpacing.Bottom := 8;
+  FFontFrame.BorderSpacing.Around := 8;
   FFontFrame.AutoSize := true;
   FFontFrame.Parent := gbLabelFont;
   gbLabelFont.AutoSize := true;
@@ -93,10 +90,7 @@ begin
   FShapeBrushPenMarginsFrame := TChartShapeBrushPenMarginsFrame.Create(self);
   FShapeBrushPenMarginsFrame.Name := '';
   FShapeBrushPenMarginsFrame.Align := alClient;
-  FShapeBrushPenMarginsFrame.BorderSpacing.Left := 16;
-  FShapeBrushPenMarginsFrame.BorderSpacing.Right := 8;
-  FShapeBrushPenMarginsFrame.BorderSpacing.Bottom := 8;
-//  FShapeBrushPenMarginsFrame.OnChange := @ChangedHandler;
+  FShapeBrushPenMarginsFrame.BorderSpacing.Around := 8;
   FShapeBrushPenMarginsFrame.OnShapeChange := @ShapeChangedHandler;
   FShapeBrushPenMarginsFrame.AutoSize := true;
   FShapeBrushPenMarginsFrame.Parent := gbShapeBrushPenMargins;
@@ -106,9 +100,7 @@ begin
   FLinkPenFrame := TSimpleChartPenFrame.Create(self);
   FLinkPenFrame.Name := '';
   FLinkPenFrame.Align := alClient;
-  FLinkPenFrame.BorderSpacing.Left := 16;
-  FLinkPenFrame.BorderSpacing.Right := 8;
-  FLinkPenFrame.BorderSpacing.Bottom := 8;
+  FLinkPenFrame.BorderSpacing.Around := 8;
   FLinkPenFrame.AutoSize := true;
   FLinkPenFrame.Parent := gbLinkPen;
   gbLinkPen.AutoSize := true;
@@ -117,9 +109,7 @@ begin
   FArrowFrame := TChartArrowFrame.Create(self);
   FArrowFrame.Name := '';
   FArrowFrame.Align := alClient;
-  FArrowFrame.BorderSpacing.Left := 16;
-  FArrowFrame.BorderSpacing.Right := 8;
-  FArrowFrame.BorderSpacing.Bottom := 8;
+  FArrowFrame.BorderSpacing.Around := 8;
   FArrowFrame.AutoSize := true;
   FArrowFrame.Parent := gbArrow;
   gbArrow.AutoSize := true;
@@ -128,6 +118,37 @@ begin
   AutoSize := true;
 
   BoldHeaders(self);
+end;
+
+procedure TMarksForm.FormShow(Sender: TObject);
+var
+  wf: Integer = 0;
+  hf: Integer = 0;
+  ws: Integer = 0;
+  hs: Integer = 0;
+begin
+  FFontFrame.GetPreferredsize(wf, hf);
+  inc(wf, 2 * FLinkPenFrame.BorderSpacing.Around);
+  inc(hf, 2 * FLinkPenFrame.BorderSpacing.Around);
+//  inc(wf, FLinkPenFrame.BorderSpacing.Left + FLinkPenFrame.BorderSpacing.Right);
+//  inc(hf, FLinkPenFrame.BorderSpacing.Top + FLinkPenFrame.BorderSpacing.Bottom);
+
+  FShapeBrushPenMarginsFrame.GetPreferredSize(ws, hs);
+  inc(ws, 2 * FShapeBrushPenMarginsFrame.BorderSpacing.Around);
+  inc(hs, 2 * FShapeBrushPenMarginsFrame.BorderSpacing.Around);
+//  inc(ws, FShapeBrushPenMarginsFrame.BorderSpacing.Left + FShapeBrushPenMarginsFrame.BorderSpacing.Right);
+//  inc(hs, FShapeBrushPenMarginsFrame.BorderSpacing.Top + FShapeBrushPenMarginsFrame.BorderSpacing.Bottom);
+
+  if wf > ws then begin
+    gbShapeBrushPenMargins.AnchorSideRight.Control := gbLabelFont;
+    gbShapeBrushPenMargins.AnchorSideRight.Side := asrRight;
+    gbShapeBrushPenMargins.Anchors := gbShapeBrushPenMargins.Anchors + [akRight];
+  end else
+  begin
+    gbLabelFont.AnchorSideRight.Control := gbShapeBrushPenMargins;
+    gbLabelFont.AnchorSideRight.Side := asrRight;
+    gbLabelFont.Anchors := gbLabelFont.Anchors + [akRight];
+  end;
 end;
 
 function TMarksForm.GetChart: TChart;
