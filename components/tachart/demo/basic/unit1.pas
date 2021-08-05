@@ -73,6 +73,7 @@ type
     procedure InitPie;
     procedure InitArea;
     procedure BringToFront(ASeries: TBasicChartSeries);
+    procedure UpdateAffectedSeries;
   end;
 
 var
@@ -164,26 +165,31 @@ begin
   FBar := nil;
   FLine := nil;
   FPie := nil;
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.btnClearAreaClick(Sender: TObject);
 begin
   FreeAndNil(FArea);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.btnClearBarClick(Sender: TObject);
 begin
   FreeAndNil(FBar);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.btnClearLineClick(Sender: TObject);
 begin
   FreeAndNil(FLine);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.btnClearPieClick(Sender: TObject);
 begin
   FreeAndNil(FPie);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.cbCrosshairToolChange(Sender: TObject);
@@ -203,6 +209,7 @@ begin
        end;
   end;
   DataPointCrosshairTool.Enabled := CbCrosshairTool.ItemIndex > 0;
+  Chart1.Invalidate;  // Remove residues of previous crosshair shape
 end;
 
 procedure TForm1.cbBottomAxisChange(Sender: TObject);
@@ -257,6 +264,7 @@ begin
   FArea.Title := 'area';
   FArea.Marks.LabelBrush.Color := GetHighlightColor(FArea.SeriesColor, 100);
   Chart1.AddSeries(FArea);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.InitBar;
@@ -266,6 +274,7 @@ begin
   FBar.BarBrush.Color := clGreen;
   FBar.Marks.LabelBrush.Color := GetHighlightColor(FBar.BarBrush.Color, 100);
   Chart1.AddSeries(FBar);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.InitLine;
@@ -279,6 +288,7 @@ begin
   FLine.SeriesColor := clRed;
   FLine.Marks.LabelBrush.Color := GetHighlightColor(FLine.SeriesColor, 100);
   Chart1.AddSeries(FLine);
+  UpdateAffectedSeries;
 end;
 
 procedure TForm1.InitPie;
@@ -289,6 +299,22 @@ begin
   FPie.Marks.LinkPen.Width := 2;
   FPie.Marks.OverlapPolicy := opHideNeighbour;
   Chart1.AddSeries(FPie);
+  UpdateAffectedSeries;
+end;
+
+// The chart contains two constant lines which should not interact with the
+// DatapointCrosshairTool - we use the Affectedseries property to exclude them.
+procedure TForm1.UpdateAffectedSeries;
+var
+  s: String;
+  i: Integer;
+begin
+  if Chart1.SeriesCount < 2 then
+    exit;
+  s := '2';
+  for i := 3 to Chart1.SeriesCount - 1 do
+    s := s + ',' + IntToStr(i);
+  DatapointCrossHairTool.AffectedSeries := s;
 end;
 
 end.
