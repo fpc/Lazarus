@@ -31,11 +31,11 @@ type
     procedure cbSeriesTypeChange(Sender: TObject);
     procedure cbColorChange(Sender: TObject);
     procedure DataPointHintTool_AllHint(ATool: TDataPointHintTool;
-      const APoint: TPoint; var AHint: String);
+      const {%H-}APoint: TPoint; var AHint: String);
     procedure DataPointHintToolHintLocation(ATool: TDataPointHintTool;
       AHintSize: TSize; var APoint: TPoint);
     procedure DataPointHintTool_DetailsHint(ATool: TDataPointHintTool;
-      const APoint: TPoint; var AHint: String);
+      const {%H-}APoint: TPoint; var AHint: String);
     procedure FormCreate(Sender: TObject);
   private
     { private declarations }
@@ -143,7 +143,6 @@ procedure TMainForm.DataPointHintTool_DetailsHint(ATool: TDataPointHintTool;
   const APoint: TPoint; var AHint: String);
 var
   ser: TOpenHighLowCloseSeries;
-  x, y: Integer;
   idx: Integer;
   yidx: Integer;
   ohlcName: String;

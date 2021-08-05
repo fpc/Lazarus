@@ -37,7 +37,7 @@ var
 
 function ScriptOnExportCheck(
   ASender: TPSPascalCompiler; AProc: TPSInternalProcedure;
-  const AProcDecl: string): Boolean;
+  const {%H-}AProcDecl: string): Boolean;
 begin
   if AProc.Name = 'FN' then
     if not ExportCheck(ASender, AProc, [btDouble, btDouble], [pmIn]) then begin
@@ -47,14 +47,14 @@ begin
   Result := true;
 end;
 
-function ScriptOnUses(ASender: TPSPascalCompiler; const AName: string): Boolean;
+function ScriptOnUses({%H-}ASender: TPSPascalCompiler; const AName: string): Boolean;
 begin
   Result := AName = 'SYSTEM';
 end;
 
 procedure CompileScript(const AScript: string);
 var
-  data: string;
+  data: string = '';
 begin
   FreeAndNil(exec);
 

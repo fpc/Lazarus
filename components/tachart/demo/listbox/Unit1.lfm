@@ -1,16 +1,16 @@
 object Form1: TForm1
   Left = 265
-  Height = 412
+  Height = 414
   Top = 182
   Width = 892
   Caption = 'TChartListbox demo'
-  ClientHeight = 412
+  ClientHeight = 414
   ClientWidth = 892
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart: TChart
     Left = 292
-    Height = 412
+    Height = 414
     Top = 0
     Width = 457
     AxisList = <    
@@ -82,18 +82,18 @@ object Form1: TForm1
   end
   object ListboxPanel: TPanel
     Left = 754
-    Height = 412
+    Height = 414
     Top = 0
     Width = 138
     Align = alRight
     BevelOuter = bvNone
-    ClientHeight = 412
+    ClientHeight = 414
     ClientWidth = 138
     TabOrder = 1
     object ChartListbox: TChartListbox
       AnchorSideBottom.Control = Panel2
       Left = 6
-      Height = 372
+      Height = 374
       Hint = 'Move up'
       Top = 6
       Width = 126
@@ -111,7 +111,7 @@ object Form1: TForm1
     object Panel2: TPanel
       Left = 0
       Height = 22
-      Top = 384
+      Top = 386
       Width = 138
       Align = alBottom
       AutoSize = True
@@ -165,7 +165,7 @@ object Form1: TForm1
   end
   object Splitter: TSplitter
     Left = 749
-    Height = 412
+    Height = 414
     Top = 0
     Width = 5
     Align = alRight
@@ -173,14 +173,14 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 412
+    Height = 414
     Top = 0
     Width = 292
     Align = alLeft
     AutoSize = True
     BevelInner = bvRaised
     BevelOuter = bvLowered
-    ClientHeight = 412
+    ClientHeight = 414
     ClientWidth = 292
     TabOrder = 3
     object BtnAddSeries: TButton
@@ -224,7 +224,7 @@ object Form1: TForm1
       AnchorSideBottom.Control = CbShowCheckboxes
       Left = 8
       Height = 25
-      Top = 263
+      Top = 265
       Width = 164
       Anchors = [akLeft, akBottom]
       AutoSize = True
@@ -252,7 +252,7 @@ object Form1: TForm1
       AnchorSideBottom.Control = CbCheckStyle
       Left = 8
       Height = 19
-      Top = 304
+      Top = 306
       Width = 114
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
@@ -269,7 +269,7 @@ object Form1: TForm1
       AnchorSideTop.Control = CbShowCheckboxes
       Left = 146
       Height = 19
-      Top = 304
+      Top = 306
       Width = 112
       BorderSpacing.Left = 24
       BorderSpacing.Right = 6
@@ -284,7 +284,7 @@ object Form1: TForm1
       AnchorSideBottom.Control = CbInverted
       Left = 8
       Height = 19
-      Top = 331
+      Top = 333
       Width = 91
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
@@ -301,7 +301,7 @@ object Form1: TForm1
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Control = BtnToggleChart
       Left = 8
-      Height = 154
+      Height = 156
       Top = 103
       Width = 276
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -322,7 +322,6 @@ object Form1: TForm1
       Width = 63
       BorderSpacing.Top = 6
       Caption = 'Click viewer'
-      ParentColor = False
     end
     object EdColumns: TSpinEdit
       AnchorSideLeft.Control = Label2
@@ -331,7 +330,7 @@ object Form1: TForm1
       AnchorSideTop.Side = asrCenter
       Left = 201
       Height = 23
-      Top = 329
+      Top = 331
       Width = 60
       Alignment = taRightJustify
       BorderSpacing.Left = 4
@@ -347,10 +346,9 @@ object Form1: TForm1
       AnchorSideTop.Side = asrCenter
       Left = 146
       Height = 15
-      Top = 333
+      Top = 335
       Width = 51
       Caption = 'Columns:'
-      ParentColor = False
     end
     object BtnDeleteSeries: TButton
       AnchorSideLeft.Control = Panel1
@@ -373,7 +371,7 @@ object Form1: TForm1
       AnchorSideBottom.Side = asrBottom
       Left = 8
       Height = 19
-      Top = 385
+      Top = 387
       Width = 245
       Anchors = [akLeft, akBottom]
       BorderSpacing.Left = 6
@@ -419,7 +417,7 @@ object Form1: TForm1
       AnchorSideBottom.Control = CbKeepSeriesOut
       Left = 8
       Height = 19
-      Top = 358
+      Top = 360
       Width = 63
       Anchors = [akLeft, akBottom]
       BorderSpacing.Bottom = 8

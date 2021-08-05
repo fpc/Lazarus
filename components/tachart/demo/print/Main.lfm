@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 310
   ClientWidth = 398
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 274
@@ -104,11 +104,11 @@ object Form1: TForm1
     XMin = -5
     YMax = 5
     YMin = -5
-    left = 171
-    top = 140
+    Left = 171
+    Top = 140
   end
   object PrintDialog1: TPrintDialog
-    left = 244
-    top = 56
+    Left = 244
+    Top = 56
   end
 end

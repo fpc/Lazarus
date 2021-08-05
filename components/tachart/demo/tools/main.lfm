@@ -9,10 +9,10 @@ object Form1: TForm1
   ClientWidth = 599
   Constraints.MinHeight = 520
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 346
+    Height = 327
     Top = 0
     Width = 599
     AutoFocus = True
@@ -72,23 +72,25 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 156
-    Top = 346
+    Height = 160
+    Top = 327
     Width = 599
     Align = alBottom
     AutoSize = True
-    ClientHeight = 156
+    ClientHeight = 160
     ClientWidth = 599
     TabOrder = 1
     object rgZoom: TRadioGroup
       AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
       Left = 9
       Height = 146
-      Top = 1
+      Top = 5
       Width = 252
       AutoFill = True
       AutoSize = True
       BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
       BorderSpacing.Bottom = 8
       Caption = ' Zooming '
       ChildSizing.LeftRightSpacing = 6
@@ -134,13 +136,14 @@ object Form1: TForm1
     object rgPan: TRadioGroup
       AnchorSideLeft.Control = rgZoom
       AnchorSideLeft.Side = asrBottom
-      Left = 271
+      AnchorSideTop.Control = rgZoom
+      Left = 277
       Height = 146
-      Top = 1
+      Top = 5
       Width = 287
       AutoFill = True
       AutoSize = True
-      BorderSpacing.Left = 10
+      BorderSpacing.Left = 16
       BorderSpacing.Right = 8
       BorderSpacing.Bottom = 8
       Caption = 'Panning'
@@ -169,16 +172,30 @@ object Form1: TForm1
   end
   object Panel2: TPanel
     Left = 0
-    Height = 18
-    Top = 502
+    Height = 33
+    Top = 487
     Width = 599
     Align = alBottom
-    Caption = 'Press Ctrl to display crosshairs, Alt-drag to move vertical lines'
+    AutoSize = True
+    ClientHeight = 33
+    ClientWidth = 599
     TabOrder = 2
+    object Label1: TLabel
+      AnchorSideLeft.Control = Panel2
+      AnchorSideLeft.Side = asrCenter
+      AnchorSideTop.Control = Panel2
+      AnchorSideTop.Side = asrCenter
+      Left = 138
+      Height = 15
+      Top = 9
+      Width = 323
+      BorderSpacing.Around = 8
+      Caption = 'Press Ctrl to display crosshairs, Alt-drag to move vertical lines'
+    end
   end
   object ChartToolset1: TChartToolset
-    left = 124
-    top = 75
+    Left = 124
+    Top = 75
     object ChartToolset1ZoomOut: TZoomClickTool
       Shift = [ssShift, ssLeft]
       AnimationInterval = 100
@@ -244,10 +261,8 @@ object Form1: TForm1
     PointsNumber = 10
     RandSeed = 251061796
     XMax = 9
-    XMin = 0
     YMax = 10
-    YMin = 0
-    left = 124
-    top = 152
+    Left = 124
+    Top = 152
   end
 end

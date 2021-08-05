@@ -7,20 +7,24 @@ object Form1: TForm1
   ClientHeight = 330
   ClientWidth = 403
   Position = poScreenCenter
-  LCLVersion = '1.3'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 292
+    Height = 287
     Top = 0
     Width = 403
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Depth = 30
     Foot.Brush.Color = clBtnFace
@@ -31,7 +35,6 @@ object Form1: TForm1
       'TAChart'
     )
     Align = alClient
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clRed
       Depth = 10
@@ -46,27 +49,41 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 38
-    Top = 292
+    Height = 43
+    Top = 287
     Width = 403
     Align = alBottom
-    ClientHeight = 38
+    AutoSize = True
+    ClientHeight = 43
     ClientWidth = 403
     TabOrder = 1
     object btnSaveToMetafile: TButton
-      Left = 8
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 9
       Height = 25
-      Top = 8
-      Width = 104
+      Top = 9
+      Width = 97
+      AutoSize = True
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
       Caption = 'Save To WMF'
       OnClick = btnSaveToMetafileClick
       TabOrder = 0
     end
     object btnCopyToClipboard: TButton
-      Left = 120
+      AnchorSideLeft.Control = btnSaveToMetafile
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      AnchorSideTop.Side = asrCenter
+      Left = 114
       Height = 25
-      Top = 8
-      Width = 139
+      Top = 9
+      Width = 121
+      AutoSize = True
+      BorderSpacing.Left = 8
       Caption = 'Copy to clipboard'
       OnClick = btnCopyToClipboardClick
       TabOrder = 1
@@ -76,10 +93,9 @@ object Form1: TForm1
     PointsNumber = 20
     RandSeed = 1527537926
     XMax = 12
-    XMin = 0
     YMax = 3
     YMin = -3
-    left = 140
-    top = 148
+    Left = 140
+    Top = 148
   end
 end

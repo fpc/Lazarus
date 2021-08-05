@@ -53,7 +53,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TAGeometry;
+  Math;
 
 { TForm1 }
 

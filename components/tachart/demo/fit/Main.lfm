@@ -8,7 +8,7 @@ object frmMain: TfrmMain
   ClientWidth = 1026
   OnCreate = FormCreate
   ShowHint = True
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object pnlParams: TPanel
     Left = 8
     Height = 527
@@ -126,7 +126,6 @@ object frmMain: TfrmMain
             Width = 68
             BorderSpacing.Left = 16
             Caption = 'Test function'
-            ParentColor = False
             ParentFont = False
           end
           object lblOfRange: TLabel
@@ -140,7 +139,6 @@ object frmMain: TfrmMain
             Width = 64
             BorderSpacing.Left = 8
             Caption = '% of y value'
-            ParentColor = False
             ParentFont = False
           end
           object lblNoiseY: TLabel
@@ -152,7 +150,6 @@ object frmMain: TfrmMain
             Top = 35
             Width = 75
             Caption = 'Standard error'
-            ParentColor = False
             ParentFont = False
           end
           object edNoiseY: TFloatSpinEdit
@@ -163,8 +160,10 @@ object frmMain: TfrmMain
             Height = 23
             Top = 31
             Width = 66
+            Alignment = taRightJustify
             BorderSpacing.Top = 4
             DecimalPlaces = 0
+            MaxValue = 100
             OnChange = edNoiseYChange
             ParentFont = False
             TabOrder = 1
@@ -178,6 +177,7 @@ object frmMain: TfrmMain
             Height = 23
             Top = 58
             Width = 66
+            Alignment = taRightJustify
             BorderSpacing.Top = 4
             BorderSpacing.Bottom = 8
             MaxValue = 65535
@@ -196,7 +196,6 @@ object frmMain: TfrmMain
             Top = 62
             Width = 67
             Caption = 'Points count'
-            ParentColor = False
             ParentFont = False
           end
           object Bevel1: TBevel
@@ -245,7 +244,6 @@ object frmMain: TfrmMain
             BorderSpacing.Left = 16
             BorderSpacing.Bottom = 4
             Caption = 'x, y : two columns, separated by comma, semicolon or tab'#13#10'dy: in optional third column'
-            ParentColor = False
             ParentFont = False
           end
         end
@@ -320,6 +318,7 @@ object frmMain: TfrmMain
               Height = 23
               Top = 2
               Width = 90
+              Alignment = taRightJustify
               BorderSpacing.Left = 32
               BorderSpacing.Top = 4
               MaxValue = 1E308
@@ -338,6 +337,7 @@ object frmMain: TfrmMain
               Height = 23
               Top = 29
               Width = 90
+              Alignment = taRightJustify
               BorderSpacing.Top = 4
               MaxValue = 1E308
               MinValue = -1E308
@@ -375,8 +375,10 @@ object frmMain: TfrmMain
             Height = 23
             Top = 35
             Width = 53
+            Alignment = taRightJustify
             BorderSpacing.Left = 16
             BorderSpacing.Top = 8
+            MaxValue = 100
             OnChange = edFitOrderChange
             ParentFont = False
             TabOrder = 1
@@ -391,7 +393,6 @@ object frmMain: TfrmMain
             Top = 39
             Width = 114
             Caption = 'Degree of polynomial'
-            ParentColor = False
             ParentFont = False
           end
           object cbFitEquation: TComboBox
@@ -432,7 +433,6 @@ object frmMain: TfrmMain
             Width = 63
             BorderSpacing.Left = 14
             Caption = 'Fit equation'
-            ParentColor = False
             ParentFont = False
           end
           object gbFixedParams: TGroupBox
@@ -474,6 +474,7 @@ object frmMain: TfrmMain
               Height = 23
               Top = 4
               Width = 80
+              Alignment = taRightJustify
               BorderSpacing.Left = 4
               BorderSpacing.Top = 4
               BorderSpacing.Bottom = 14
@@ -505,6 +506,7 @@ object frmMain: TfrmMain
               Height = 23
               Top = 4
               Width = 80
+              Alignment = taRightJustify
               Anchors = [akTop, akRight]
               BorderSpacing.Right = 12
               Enabled = False
@@ -520,10 +522,11 @@ object frmMain: TfrmMain
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = cbFitEquation
             AnchorSideRight.Side = asrBottom
-            Left = 352
+            Left = 344
             Height = 23
             Top = 272
-            Width = 54
+            Width = 62
+            Alignment = taRightJustify
             Anchors = [akTop, akRight]
             BorderSpacing.Top = 12
             BorderSpacing.Bottom = 8
@@ -540,15 +543,14 @@ object frmMain: TfrmMain
             AnchorSideTop.Control = edConfLevel
             AnchorSideTop.Side = asrCenter
             AnchorSideRight.Control = edConfLevel
-            Left = 260
+            Left = 248
             Height = 15
             Top = 276
             Width = 88
             Anchors = [akTop, akRight]
             BorderSpacing.Left = 8
-            BorderSpacing.Right = 4
+            BorderSpacing.Right = 8
             Caption = 'Confidence level'
-            ParentColor = False
             ParentFont = False
           end
         end
@@ -556,12 +558,12 @@ object frmMain: TfrmMain
       object TabSheet2: TTabSheet
         Caption = 'Results'
         ClientHeight = 499
-        ClientWidth = 392
+        ClientWidth = 432
         object lbResults: TListBox
           Left = 0
           Height = 499
           Top = 0
-          Width = 392
+          Width = 432
           Align = alClient
           BorderStyle = bsNone
           Font.Height = -11

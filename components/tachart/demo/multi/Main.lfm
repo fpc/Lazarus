@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 529
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 459
@@ -29,6 +29,7 @@ object Form1: TForm1
         Width = 521
         AxisList = <        
           item
+            AxisPen.Visible = True
             Marks.LabelBrush.Style = bsClear
             Minors = <>
             Title.LabelFont.Orientation = 900
@@ -43,8 +44,10 @@ object Form1: TForm1
             Minors = <>
             Title.LabelBrush.Style = bsClear
           end>
+        BackColor = clForm
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
+        Frame.Visible = False
         Proportional = True
         Title.Brush.Color = clBtnFace
         Title.Font.Color = clBlue
@@ -107,19 +110,21 @@ object Form1: TForm1
           ZPosition = 5
           BarBrush.Color = clRed
           Depth = 10
+          DepthBrightnessDelta = -40
           MarkPositions = lmpInside
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
           Marks.YIndex = -1
           Source = ccsStacked
-          Styles = ChartStyles1
+          Styles = ChartStyles
         end
         object chStackedLineSeries1: TLineSeries
           Legend.GroupIndex = 0
           Legend.Multiplicity = lmStyle
           Active = False
           Depth = 10
+          DepthBrightnessDelta = -40
           MarkPositions = lmpInside
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
@@ -127,7 +132,7 @@ object Form1: TForm1
           Marks.YIndex = -1
           Stacked = True
           Source = ccsStacked
-          Styles = ChartStyles1
+          Styles = ChartStyles
         end
         object chStackedAreaSeries1: TAreaSeries
           Legend.GroupIndex = 0
@@ -137,13 +142,14 @@ object Form1: TForm1
           AreaContourPen.EndCap = pecSquare
           AreaContourPen.Width = 2
           Depth = 10
+          DepthBrightnessDelta = -40
           MarkPositions = lmpInside
           Marks.Format = '%0:.2g'
           Marks.LinkPen.Visible = False
           Marks.Style = smsCustom
           Marks.YIndex = -1
           Source = ccsStacked
-          Styles = ChartStyles1
+          Styles = ChartStyles
           UseZeroLevel = True
           ZeroLevel = 1
         end
@@ -384,10 +390,14 @@ object Form1: TForm1
         ClientWidth = 521
         TabOrder = 1
         object rbRadial: TRadioButton
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
           Left = 8
           Height = 19
           Top = 8
           Width = 49
+          BorderSpacing.Left = 8
           Caption = 'radial'
           Checked = True
           OnChange = FieldTypeChange
@@ -395,28 +405,42 @@ object Form1: TForm1
           TabStop = True
         end
         object rbTangential: TRadioButton
-          Left = 77
+          AnchorSideLeft.Control = rbRadial
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 73
           Height = 19
           Top = 8
           Width = 73
+          BorderSpacing.Left = 16
           Caption = 'tangential'
           OnChange = FieldTypeChange
           TabOrder = 0
         end
         object Label1: TLabel
-          Left = 208
+          AnchorSideLeft.Control = rbTangential
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 196
           Height = 15
           Top = 10
-          Width = 95
+          Width = 96
+          BorderSpacing.Left = 50
           Caption = 'Max vector length'
-          ParentColor = False
         end
         object edMaxVectorLength: TFloatSpinEdit
-          Left = 320
+          AnchorSideLeft.Control = Label1
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = Panel1
+          AnchorSideTop.Side = asrCenter
+          Left = 300
           Height = 23
           Top = 6
           Width = 74
           Alignment = taRightJustify
+          BorderSpacing.Left = 8
           Increment = 0.1
           MaxValue = 10
           MinValue = 0.1
@@ -437,8 +461,8 @@ object Form1: TForm1
       '80|60|2|?|'
     )
     YCount = 2
-    left = 130
-    top = 65
+    Left = 130
+    Top = 65
   end
   object rcsStacked: TRandomChartSource
     PointsNumber = 9
@@ -448,19 +472,20 @@ object Form1: TForm1
     YCount = 3
     YMax = 20
     YMin = 3
-    left = 244
-    top = 65
+    Left = 244
+    Top = 65
   end
   object ccsStacked: TCalculatedChartSource
     Origin = rcsStacked
-    left = 244
-    top = 136
+    Left = 244
+    Top = 136
   end
-  object ChartStyles1: TChartStyles
+  object ChartStyles: TChartStyles
     Styles = <    
       item
         Brush.Color = clRed
-        Pen.Style = psDot
+        Pen.Color = clMaroon
+        Pen.Width = 2
         Text = 'red'
       end    
       item
@@ -471,9 +496,11 @@ object Form1: TForm1
       end    
       item
         Brush.Color = clBlue
+        Pen.Color = clNavy
+        Pen.Width = 2
         Text = 'blue'
       end>
-    left = 244
-    top = 208
+    Left = 244
+    Top = 208
   end
 end

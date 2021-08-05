@@ -1,27 +1,31 @@
 object Form1: TForm1
-  Left = 1346
+  Left = 566
   Height = 351
-  Top = 187
+  Top = 225
   Width = 479
   Caption = 'Form1'
   ClientHeight = 351
   ClientWidth = 479
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.1'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 249
-    Top = 66
+    Height = 244
+    Top = 68
     Width = 463
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -39,7 +43,6 @@ object Form1: TForm1
     Toolset = ChartToolset1
     OnExtentChanged = Chart1ExtentChanged
     Align = alClient
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clSkyBlue
     end
@@ -49,8 +52,8 @@ object Form1: TForm1
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 331
+    Height = 23
+    Top = 328
     Width = 479
     Panels = <    
       item
@@ -60,8 +63,8 @@ object Form1: TForm1
   end
   object sbChartVert: TChartNavScrollBar
     Left = 463
-    Height = 249
-    Top = 66
+    Height = 244
+    Top = 68
     Width = 16
     Chart = Chart1
     Align = alRight
@@ -73,7 +76,7 @@ object Form1: TForm1
   object sbChartHor: TChartNavScrollBar
     Left = 0
     Height = 16
-    Top = 315
+    Top = 312
     Width = 463
     AutoPageSize = True
     Chart = Chart1
@@ -84,27 +87,22 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 66
+    Height = 68
     Top = 0
     Width = 479
     Align = alTop
     Anchors = [akTop, akRight]
-    ClientHeight = 66
+    AutoSize = True
+    ClientHeight = 68
     ClientWidth = 479
     TabOrder = 4
-    object StaticText1: TStaticText
-      AnchorSideRight.Control = ChartNavPanel1
-      Left = 8
-      Height = 31
-      Top = 4
-      Width = 245
-      Caption = 'Left-drag to zoom,'#13#10'right-drag on both chart and navpanel to pan'
-      TabOrder = 0
-    end
     object ChartNavPanel1: TChartNavPanel
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
       Cursor = crCross
       Left = 340
-      Height = 64
+      Height = 66
       Top = 1
       Width = 138
       Chart = Chart1
@@ -113,16 +111,33 @@ object Form1: TForm1
       LogicalExtentPen.Color = clBlue
       Proportional = True
       Shift = [ssRight]
-      Align = alRight
     end
     object cbMiniMap: TCheckBox
-      Left = 8
-      Height = 17
-      Top = 44
-      Width = 62
+      AnchorSideTop.Control = StaticText1
+      AnchorSideTop.Side = asrBottom
+      Left = 9
+      Height = 19
+      Top = 43
+      Width = 73
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
       Caption = 'Mini-map'
       OnChange = cbMiniMapChange
-      TabOrder = 2
+      TabOrder = 1
+    end
+    object StaticText1: TLabel
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      AnchorSideRight.Control = ChartNavPanel1
+      Left = 9
+      Height = 30
+      Top = 5
+      Width = 331
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      Caption = 'Left-drag to zoom,'#13#10'right-drag on both chart and navpanel to pan'
+      WordWrap = True
     end
   end
   object RandomChartSource1: TRandomChartSource
@@ -132,14 +147,15 @@ object Form1: TForm1
     XMin = 1
     YMax = 80
     YMin = 10
-    left = 95
-    top = 76
+    Left = 95
+    Top = 76
   end
   object ChartToolset1: TChartToolset
-    left = 95
-    top = 140
+    Left = 95
+    Top = 140
     object ChartToolset1ZoomDragTool1: TZoomDragTool
       Shift = [ssLeft]
+      Brush.Style = bsClear
     end
     object ChartToolset1PanDragTool1: TPanDragTool
       Shift = [ssRight]

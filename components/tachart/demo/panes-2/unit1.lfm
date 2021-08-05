@@ -7,21 +7,25 @@ object Form1: TForm1
   ClientHeight = 492
   ClientWidth = 881
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object Panel1: TPanel
     Left = 0
     Height = 492
     Top = 0
-    Width = 160
+    Width = 141
     Align = alLeft
+    AutoSize = True
     ClientHeight = 492
-    ClientWidth = 160
+    ClientWidth = 141
     TabOrder = 0
     object CbLineAtDataOnly: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 9
       Height = 19
-      Top = 10
+      Top = 9
       Width = 107
+      BorderSpacing.Around = 8
       Caption = 'Line at data only'
       Checked = True
       OnChange = CbLineAtDataOnlyChange
@@ -29,46 +33,66 @@ object Form1: TForm1
       TabOrder = 0
     end
     object CbShowHorGrid: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbBiDiMode
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 184
+      Top = 198
       Width = 62
+      BorderSpacing.Around = 8
       Caption = 'hor grid'
       OnChange = CbShowGridChange
       TabOrder = 1
     end
     object CbShowArrow: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbShowFrame
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 112
+      Top = 117
       Width = 52
+      BorderSpacing.Around = 8
       Caption = 'Arrow'
       OnChange = CbShowArrowChange
       TabOrder = 2
     end
     object CbInverted: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbShowArrow
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 136
+      Top = 144
       Width = 63
+      BorderSpacing.Around = 8
       Caption = 'Inverted'
       OnChange = CbInvertedChange
       TabOrder = 3
     end
     object CbBiDiMode: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbInverted
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 160
+      Top = 171
       Width = 83
+      BorderSpacing.Around = 8
       Caption = 'right-to-left'
       OnChange = CbBiDiModeChange
       TabOrder = 4
     end
     object CbMarksAtDataOnly: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbLineAtDataOnly
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 37
+      Top = 36
       Width = 117
+      BorderSpacing.Around = 8
       Caption = 'Marks at data only'
       Checked = True
       OnChange = CbMarksAtDataOnlyChange
@@ -76,45 +100,67 @@ object Form1: TForm1
       TabOrder = 5
     end
     object Label1: TLabel
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbShowVertGrid
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 15
-      Top = 256
+      Top = 268
       Width = 36
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 24
       Caption = 'Range:'
-      ParentColor = False
     end
     object CbUseMax: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Label1
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 272
-      Width = 61
+      Top = 287
+      Width = 62
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
       Caption = 'UseMax'
       OnChange = CbUseMaxChange
       TabOrder = 6
     end
     object CbUseMin: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbUseMax
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 296
+      Top = 310
       Width = 60
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
       Caption = 'UseMin'
       OnChange = CbUseMinChange
       TabOrder = 7
     end
     object CbGrouped: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbMarksAtDataOnly
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 64
+      Top = 63
       Width = 66
+      BorderSpacing.Around = 8
       Caption = 'Grouped'
       OnChange = CbGroupedChange
       TabOrder = 8
     end
     object CbShowFrame: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbGrouped
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 88
+      Top = 90
       Width = 53
+      BorderSpacing.Around = 8
       Caption = 'Frame'
       Checked = True
       OnChange = CbShowFrameChange
@@ -122,65 +168,85 @@ object Form1: TForm1
       TabOrder = 9
     end
     object CbShowVertGrid: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbShowHorGrid
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 208
+      Top = 225
       Width = 64
+      BorderSpacing.Around = 8
       Caption = 'vert grid'
       OnChange = CbShowGridChange
       TabOrder = 10
     end
     object Label2: TLabel
-      Left = 12
-      Height = 51
-      Top = 424
-      Width = 135
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = LblXExtentIgnored
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 9
+      Height = 15
+      Top = 426
+      Width = 131
       Anchors = [akTop, akLeft, akRight]
-      AutoSize = False
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 24
       Caption = 'Drag the dashed lines...'
-      ParentColor = False
       WordWrap = True
     end
     object CheckBox1: TCheckBox
-      Left = 12
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CbUseMin
+      AnchorSideTop.Side = asrBottom
+      Left = 9
       Height = 19
-      Top = 336
-      Width = 132
+      Top = 353
+      Width = 131
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 24
       Caption = 'TFuncSeries in center'
       OnChange = CheckBox1Change
       TabOrder = 11
     end
     object LblXExtentIgnored: TLabel
-      Left = 12
-      Height = 52
-      Top = 356
-      Width = 140
-      AutoSize = False
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = CheckBox1
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = Panel1
+      AnchorSideRight.Side = asrBottom
+      Left = 9
+      Height = 30
+      Top = 372
+      Width = 123
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 8
+      BorderSpacing.Right = 8
       Caption = '(x extent ignored - see docs)'
-      ParentColor = False
       WordWrap = True
     end
   end
   object PageControl1: TPageControl
-    Left = 160
+    Left = 141
     Height = 492
     Top = 0
-    Width = 721
-    ActivePage = TabSheet2
+    Width = 740
+    ActivePage = TabSheet1
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     OnChange = PageControl1Change
     OnChanging = PageControl1Changing
     object TabSheet1: TTabSheet
       Caption = 'Horizontal panes'
       ClientHeight = 464
-      ClientWidth = 713
+      ClientWidth = 732
       object Chart1: TChart
         Left = 0
         Height = 464
         Top = 0
-        Width = 713
+        Width = 732
         AxisList = <        
           item
             Grid.Color = clGray
@@ -332,12 +398,12 @@ object Form1: TForm1
     object TabSheet2: TTabSheet
       Caption = 'Vertical panes'
       ClientHeight = 464
-      ClientWidth = 713
+      ClientWidth = 732
       object Chart2: TChart
         Left = 0
         Height = 464
         Top = 0
-        Width = 713
+        Width = 732
         AxisList = <        
           item
             Grid.Color = clGray
@@ -495,50 +561,44 @@ object Form1: TForm1
     PointsNumber = 10
     RandSeed = 2088531169
     XMax = 1
-    XMin = 0
     YMax = 1
-    YMin = 0
-    left = 200
-    top = 48
+    Left = 200
+    Top = 48
   end
   object RandomChartSource12: TRandomChartSource
     PointsNumber = 10
     RandSeed = 2088635735
     XMax = 1
-    XMin = 0
     YMax = 10
-    YMin = 0
-    left = 200
-    top = 115
+    Left = 200
+    Top = 115
   end
   object RandomChartSource13: TRandomChartSource
     PointsNumber = 10
     RandSeed = 2088693796
     XMax = 1
-    XMin = 0
     YMax = 10
-    YMin = 0
-    left = 200
-    top = 188
+    Left = 200
+    Top = 188
   end
   object ChartAxisTransformations1: TChartAxisTransformations
-    left = 776
-    top = 48
+    Left = 776
+    Top = 48
     object ChartAxisTransformations1AutoScaleAxisTransform1: TAutoScaleAxisTransform
       MaxValue = 2
     end
   end
   object ChartAxisTransformations2: TChartAxisTransformations
-    left = 776
-    top = 115
+    Left = 776
+    Top = 115
     object ChartAxisTransformations2AutoScaleAxisTransform1: TAutoScaleAxisTransform
       MaxValue = 5
       MinValue = 3
     end
   end
   object ChartAxisTransformations3: TChartAxisTransformations
-    left = 776
-    top = 188
+    Left = 776
+    Top = 188
     object ChartAxisTransformations3AutoScaleAxisTransform1: TAutoScaleAxisTransform
       MaxValue = 10
       MinValue = 6
@@ -548,55 +608,45 @@ object Form1: TForm1
     PointsNumber = 5
     RandSeed = 999856828
     XMax = 1
-    XMin = 0
     YMax = 100
-    YMin = 0
-    left = 200
-    top = 256
+    Left = 200
+    Top = 256
   end
   object RandomChartSource21: TRandomChartSource
     PointsNumber = 10
     RandSeed = 2088531169
     XMax = 1
-    XMin = 0
     YMax = 1
-    YMin = 0
-    left = 336
-    top = 48
+    Left = 336
+    Top = 48
   end
   object RandomChartSource22: TRandomChartSource
     PointsNumber = 10
     RandSeed = 2088635735
     XMax = 10
-    XMin = 0
     YMax = 1
-    YMin = 0
-    left = 336
-    top = 115
+    Left = 336
+    Top = 115
   end
   object RandomChartSource23: TRandomChartSource
     PointsNumber = 10
     RandSeed = 2088693796
     XMax = 10
-    XMin = 0
     YMax = 1
-    YMin = 0
-    left = 336
-    top = 188
+    Left = 336
+    Top = 188
   end
   object RandomChartSource24: TRandomChartSource
     PointsNumber = 5
     RandSeed = 999856828
     XMax = 100
-    XMin = 0
     YMax = 1
-    YMin = 0
-    left = 336
-    top = 256
+    Left = 336
+    Top = 256
   end
   object ChartToolset1: TChartToolset
-    left = 200
-    top = 392
+    Left = 200
+    Top = 392
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssLeft]
       OnAfterMouseMove = DataPointDragTool_AfterMouseMove
@@ -605,8 +655,8 @@ object Form1: TForm1
     end
   end
   object ChartToolset2: TChartToolset
-    left = 336
-    top = 392
+    Left = 336
+    Top = 392
     object ChartToolset2DataPointDragTool1: TDataPointDragTool
       Shift = [ssLeft]
       OnAfterMouseMove = DataPointDragTool_AfterMouseMove

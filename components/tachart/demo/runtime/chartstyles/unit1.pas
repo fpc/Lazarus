@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs,
   ExtCtrls, StdCtrls,
-  TAGraph, TASeries, TAStyles, TASources, TAChartListbox;
+  TAGraph, TASeries, TAStyles, TASources;
 
 type
 
@@ -43,9 +43,6 @@ implementation
 {$R *.lfm}
 
 { TForm1 }
-
-const
-  N = 5;
 
 procedure TForm1.BtnAddBarClick(Sender: TObject);
 var

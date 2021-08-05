@@ -2,17 +2,17 @@ object Form1: TForm1
   Left = 342
   Height = 438
   Top = 199
-  Width = 637
+  Width = 640
   Caption = 'Form1'
   ClientHeight = 438
-  ClientWidth = 637
+  ClientWidth = 640
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 438
     Top = 0
-    Width = 637
+    Width = 640
     ActivePage = tsBasic
     Align = alClient
     TabIndex = 0
@@ -20,12 +20,12 @@ object Form1: TForm1
     object tsBasic: TTabSheet
       Caption = 'Basic'
       ClientHeight = 410
-      ClientWidth = 629
+      ClientWidth = 632
       object Memo1: TMemo
         Left = 0
         Height = 34
         Top = 0
-        Width = 629
+        Width = 632
         Align = alTop
         Lines.Strings = (
           'Modify sources at design-time.'
@@ -37,7 +37,7 @@ object Form1: TForm1
         Left = 0
         Height = 376
         Top = 34
-        Width = 333
+        Width = 336
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -74,7 +74,7 @@ object Form1: TForm1
         end
       end
       object Chart1: TChart
-        Left = 338
+        Left = 341
         Height = 376
         Top = 34
         Width = 291
@@ -114,7 +114,7 @@ object Form1: TForm1
         end
       end
       object Splitter1: TSplitter
-        Left = 333
+        Left = 336
         Height = 376
         Top = 34
         Width = 5
@@ -125,12 +125,12 @@ object Form1: TForm1
     object tsStatistics: TTabSheet
       Caption = 'Statistics'
       ClientHeight = 410
-      ClientWidth = 629
+      ClientWidth = 632
       object chCalc: TChart
         Left = 0
-        Height = 369
+        Height = 370
         Top = 0
-        Width = 629
+        Width = 632
         AxisList = <        
           item
             Marks.LabelBrush.Style = bsClear
@@ -181,19 +181,20 @@ object Form1: TForm1
       end
       object Panel2: TPanel
         Left = 0
-        Height = 41
-        Top = 369
-        Width = 629
+        Height = 40
+        Top = 370
+        Width = 632
         Align = alBottom
         AutoSize = True
-        ClientHeight = 41
-        ClientWidth = 629
+        BevelOuter = bvNone
+        ClientHeight = 40
+        ClientWidth = 632
         TabOrder = 1
         object cbCumulative: TCheckBox
           AnchorSideLeft.Control = Panel2
           AnchorSideTop.Control = Panel2
           AnchorSideTop.Side = asrCenter
-          Left = 9
+          Left = 8
           Height = 19
           Top = 11
           Width = 81
@@ -209,7 +210,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel2
           AnchorSideTop.Side = asrCenter
-          Left = 114
+          Left = 113
           Height = 23
           Top = 9
           Width = 100
@@ -233,12 +234,12 @@ object Form1: TForm1
     object tsDerivative: TTabSheet
       Caption = 'Derivative'
       ClientHeight = 410
-      ClientWidth = 629
+      ClientWidth = 632
       object chDerivative: TChart
         Left = 0
-        Height = 317
+        Height = 320
         Top = 0
-        Width = 629
+        Width = 632
         AxisList = <        
           item
             Grid.Color = clSilver
@@ -284,24 +285,26 @@ object Form1: TForm1
       end
       object rgDataShape: TRadioGroup
         Left = 6
-        Height = 54
-        Top = 317
-        Width = 617
+        Height = 51
+        Top = 320
+        Width = 620
         Align = alBottom
         AutoFill = True
+        AutoSize = True
         BorderSpacing.Left = 6
         BorderSpacing.Right = 6
         Caption = 'Functions'
         ChildSizing.LeftRightSpacing = 6
         ChildSizing.TopBottomSpacing = 6
+        ChildSizing.HorizontalSpacing = 12
         ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
         ChildSizing.EnlargeVertical = crsHomogenousChildResize
         ChildSizing.ShrinkHorizontal = crsScaleChilds
         ChildSizing.ShrinkVertical = crsScaleChilds
         ChildSizing.Layout = cclLeftToRightThenTopToBottom
         ChildSizing.ControlsPerLine = 7
-        ClientHeight = 34
-        ClientWidth = 613
+        ClientHeight = 31
+        ClientWidth = 616
         Columns = 7
         ItemIndex = 0
         Items.Strings = (
@@ -321,12 +324,12 @@ object Form1: TForm1
         Left = 0
         Height = 39
         Top = 371
-        Width = 629
+        Width = 632
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 39
-        ClientWidth = 629
+        ClientWidth = 632
         TabOrder = 2
         object lblAccumulationRange: TLabel
           AnchorSideLeft.Control = Panel1
@@ -338,7 +341,6 @@ object Form1: TForm1
           Width = 108
           BorderSpacing.Left = 8
           Caption = 'AccumulationRange'
-          ParentColor = False
         end
         object seAccumulationRange: TSpinEdit
           AnchorSideLeft.Control = lblAccumulationRange
@@ -349,7 +351,9 @@ object Form1: TForm1
           Height = 23
           Top = 8
           Width = 74
+          Alignment = taRightJustify
           BorderSpacing.Left = 8
+          MaxValue = 10000
           OnChange = seAccumulationRangeChange
           TabOrder = 0
           Value = 2
@@ -397,7 +401,7 @@ object Form1: TForm1
     object tsSorted: TTabSheet
       Caption = 'Sorted'
       ClientHeight = 410
-      ClientWidth = 629
+      ClientWidth = 632
       object btnSort: TButton
         AnchorSideLeft.Control = tsSorted
         AnchorSideTop.Control = tsSorted
@@ -423,7 +427,7 @@ object Form1: TForm1
         Left = 8
         Height = 361
         Top = 41
-        Width = 613
+        Width = 616
         AxisList = <        
           item
             Visible = False
@@ -482,7 +486,6 @@ object Form1: TForm1
         Width = 55
         BorderSpacing.Left = 8
         Caption = 'lblSortInfo'
-        ParentColor = False
       end
     end
   end
@@ -492,9 +495,8 @@ object Form1: TForm1
     XMax = 5
     XMin = -5
     YMax = 10
-    YMin = 0
-    left = 88
-    top = 112
+    Left = 88
+    Top = 112
   end
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
@@ -504,22 +506,22 @@ object Form1: TForm1
       '0|1|?|'
       '3|2|?|'
     )
-    left = 88
-    top = 168
+    Left = 88
+    Top = 168
   end
   object ccsSum: TCalculatedChartSource
     AccumulationMethod = camSum
     AccumulationRange = 0
     Origin = RandomChartSource2
-    left = 240
-    top = 168
+    Left = 240
+    Top = 168
   end
   object ccsAvg: TCalculatedChartSource
     AccumulationMethod = camAverage
     AccumulationRange = 5
     Origin = RandomChartSource2
-    left = 240
-    top = 224
+    Left = 240
+    Top = 224
   end
   object RandomChartSource2: TRandomChartSource
     PointsNumber = 25
@@ -528,31 +530,31 @@ object Form1: TForm1
     XMin = -10
     YMax = 8
     YMin = 1
-    left = 240
-    top = 112
+    Left = 240
+    Top = 112
   end
   object lcsDerivative: TListChartSource
-    left = 376
-    top = 112
+    Left = 376
+    Top = 112
   end
   object ccsDerivative: TCalculatedChartSource
     AccumulationMethod = camDerivative
     Origin = lcsDerivative
-    left = 376
-    top = 168
+    Left = 376
+    Top = 168
   end
   object UserDefinedChartSource: TUserDefinedChartSource
     OnGetChartDataItem = UserDefinedChartSourceGetChartDataItem
     YCount = 2
-    left = 528
-    top = 112
+    Left = 528
+    Top = 112
   end
   object SortedChartSource: TSortedChartSource
     Origin = UserDefinedChartSource
     SortBy = sbY
     SortDir = sdDescending
     SortIndex = 1
-    left = 528
-    top = 168
+    Left = 528
+    Top = 168
   end
 end

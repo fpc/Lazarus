@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 601
   ClientWidth = 1136
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 208
     Height = 601
@@ -142,7 +142,7 @@ object MainForm: TMainForm
       AnchorSideRight.Side = asrBottom
       Left = 8
       Height = 153
-      Top = 109
+      Top = 117
       Width = 192
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -211,7 +211,6 @@ object MainForm: TMainForm
         DecimalPlaces = 1
         Increment = 0.1
         MaxValue = 2
-        MinValue = 0
         OnChange = EdXErrConstChange
         TabOrder = 2
         Value = 1
@@ -232,7 +231,7 @@ object MainForm: TMainForm
         BorderSpacing.Left = 24
         DecimalPlaces = 1
         Increment = 2
-        MinValue = 0
+        MaxValue = 100
         OnChange = EdXErrPercentChange
         TabOrder = 3
         Value = 10
@@ -276,7 +275,7 @@ object MainForm: TMainForm
       AnchorSideRight.Side = asrBottom
       Left = 8
       Height = 153
-      Top = 278
+      Top = 286
       Width = 192
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -345,7 +344,6 @@ object MainForm: TMainForm
         DecimalPlaces = 1
         Increment = 0.1
         MaxValue = 2
-        MinValue = 0
         OnChange = EdYErrConstChange
         TabOrder = 2
         Value = 1
@@ -366,7 +364,7 @@ object MainForm: TMainForm
         BorderSpacing.Left = 24
         DecimalPlaces = 1
         Increment = 2
-        MinValue = 0
+        MaxValue = 100
         OnChange = EdYErrPercentChange
         TabOrder = 3
         Value = 10
@@ -406,7 +404,7 @@ object MainForm: TMainForm
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
       Left = 8
-      Height = 85
+      Height = 93
       Top = 8
       Width = 185
       AutoFill = True
@@ -414,6 +412,7 @@ object MainForm: TMainForm
       BorderSpacing.Around = 8
       Caption = 'Chart source'
       ChildSizing.LeftRightSpacing = 16
+      ChildSizing.TopBottomSpacing = 4
       ChildSizing.VerticalSpacing = 4
       ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
       ChildSizing.EnlargeVertical = crsHomogenousChildResize
@@ -421,7 +420,7 @@ object MainForm: TMainForm
       ChildSizing.ShrinkVertical = crsScaleChilds
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 1
-      ClientHeight = 65
+      ClientHeight = 73
       ClientWidth = 181
       ItemIndex = 0
       Items.Strings = (
@@ -440,7 +439,7 @@ object MainForm: TMainForm
       AnchorSideRight.Side = asrBottom
       Left = 16
       Height = 78
-      Top = 447
+      Top = 455
       Width = 176
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
@@ -482,7 +481,6 @@ object MainForm: TMainForm
         BorderSpacing.Left = 16
         BorderSpacing.Top = 12
         Caption = 'Pen width:'
-        ParentColor = False
       end
       object Label1: TLabel
         AnchorSideLeft.Control = LblErrLineWidth
@@ -493,7 +491,6 @@ object MainForm: TMainForm
         Top = 32
         Width = 50
         Caption = 'Pen style:'
-        ParentColor = False
       end
       object CbErrPenStyle: TChartComboBox
         AnchorSideLeft.Control = EdErrPenWidth
@@ -563,23 +560,21 @@ object MainForm: TMainForm
     PointsNumber = 10
     RandSeed = 56490104
     XMax = 10
-    XMin = 0
     YMax = 10
-    YMin = 0
     XErrorBarData.Kind = ebkConst
     XErrorBarData.ValuePlus = 1
     YErrorBarData.Kind = ebkConst
     YErrorBarData.ValuePlus = 1
-    left = 353
-    top = 136
+    Left = 353
+    Top = 136
   end
   object ListChartSource1: TListChartSource
-    left = 353
-    top = 204
+    Left = 353
+    Top = 204
   end
   object UserDefinedChartSource1: TUserDefinedChartSource
     OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
-    left = 353
-    top = 280
+    Left = 353
+    Top = 280
   end
 end

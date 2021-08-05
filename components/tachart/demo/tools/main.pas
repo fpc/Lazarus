@@ -33,6 +33,7 @@ type
     ChartToolset1ZoomIn: TZoomClickTool;
     cbFixedPoint: TCheckBox;
     cbAnimate: TCheckBox;
+    Label1: TLabel;
     Panel1: TPanel;
     Panel2: TPanel;
     rgZoom: TRadioGroup;
@@ -99,7 +100,7 @@ const
   R = 20;
 begin
   with Chart1.GraphToImage(ASender.Position) do
-    Chart1.Drawer.Ellipse(X - R, Y - R, X + R, Y + R);
+    ADrawer.Ellipse(X - R, Y - R, X + R, Y + R);
 end;
 
 procedure TForm1.ChartToolset1DataPointDragTool1BeforeMouseMove(

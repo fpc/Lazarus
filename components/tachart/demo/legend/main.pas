@@ -53,8 +53,8 @@ type
     procedure Chart1FuncSeries1LegendCreate(
       AItem: TLegendItem; AIndex: Integer);
     procedure Chart2DrawLegend(ASender: TChart; ADrawer: IChartDrawer;
-      ALegendItems: TChartLegendItems; ALegendItemSize: TPoint;
-      const ALegendRect: TRect; AColCount, ARowCount: Integer);
+      {%H-}ALegendItems: TChartLegendItems; {%H-}ALegendItemSize: TPoint;
+      const ALegendRect: TRect; {%H-}AColCount, {%H-}ARowCount: Integer);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure rgAlignmentClick(Sender: TObject);
@@ -184,7 +184,6 @@ var
   s: String;
   yval: Double;
   i: Integer;
-  P: array[0..3] of TPoint;
   ts: TPoint;
 begin
   xg1 := ALegendRect.Left + 4;              // left edge of gradient

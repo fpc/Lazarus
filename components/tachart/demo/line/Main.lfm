@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 705
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 494
@@ -61,7 +61,6 @@ object Form1: TForm1
           LineStyle = lsVertical
           Pen.Color = clAqua
           Pen.Width = 2
-          Position = 0
           ZPosition = 1
         end
       end
@@ -197,7 +196,6 @@ object Form1: TForm1
           Width = 79
           BorderSpacing.Left = 6
           Caption = 'lblPointsCount'
-          ParentColor = False
         end
       end
     end
@@ -249,6 +247,7 @@ object Form1: TForm1
           Height = 23
           Top = 6
           Width = 50
+          MaxValue = 1000
           OnChange = sePointerSizeChange
           TabOrder = 0
           Value = 4
@@ -259,7 +258,6 @@ object Form1: TForm1
           Top = 10
           Width = 20
           Caption = 'Size'
-          ParentColor = False
         end
       end
     end
@@ -572,12 +570,12 @@ object Form1: TForm1
     XMin = -10
     YMax = 8
     YMin = 1
-    left = 464
-    top = 208
+    Left = 464
+    Top = 208
   end
   object ChartToolset1: TChartToolset
-    left = 464
-    top = 264
+    Left = 464
+    Top = 264
     object ChartToolset1DataPointDragTool1: TDataPointDragTool
       Shift = [ssLeft]
       AffectedSeries = '-'
@@ -595,19 +593,19 @@ object Form1: TForm1
     DataPoints.Strings = (
       '0|0|?|'
     )
-    left = 464
-    top = 316
+    Left = 464
+    Top = 316
   end
   object timOscilloscope: TTimer
     Enabled = False
     Interval = 150
     OnTimer = timOscilloscopeTimer
-    left = 376
-    top = 376
+    Left = 376
+    Top = 376
   end
   object catOscillator: TChartAxisTransformations
-    left = 464
-    top = 376
+    Left = 464
+    Top = 376
     object catOscillatorLinearAxisTransform1: TLinearAxisTransform
     end
   end

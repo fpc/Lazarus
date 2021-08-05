@@ -6,12 +6,12 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 354
   ClientWidth = 752
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 354
     Top = 0
-    Width = 640
+    Width = 634
     AxisList = <    
       item
         Marks.LabelBrush.Style = bsClear
@@ -50,62 +50,69 @@ object Form1: TForm1
     end
   end
   object pnlControls: TPanel
-    Left = 640
+    Left = 634
     Height = 354
     Top = 0
-    Width = 112
+    Width = 118
     Align = alRight
+    AutoSize = True
     ClientHeight = 354
-    ClientWidth = 112
+    ClientWidth = 118
     TabOrder = 1
     object btnGenerate: TButton
-      AnchorSideLeft.Control = seCount
+      AnchorSideLeft.Control = pnlControls
       AnchorSideTop.Control = seCount
       AnchorSideTop.Side = asrBottom
-      Left = 10
+      AnchorSideRight.Control = pnlControls
+      AnchorSideRight.Side = asrBottom
+      Left = 9
       Height = 25
       Top = 40
-      Width = 73
+      Width = 100
+      Anchors = [akTop, akLeft, akRight]
       AutoSize = True
+      BorderSpacing.Left = 8
       BorderSpacing.Top = 8
+      BorderSpacing.Right = 8
       Caption = 'Generate'
       OnClick = btnGenerateClick
       TabOrder = 0
-    end
-    object seCount: TSpinEdit
-      AnchorSideLeft.Control = pnlControls
-      AnchorSideTop.Control = pnlControls
-      AnchorSideRight.Control = pnlControls
-      AnchorSideRight.Side = asrBottom
-      Left = 10
-      Height = 23
-      Top = 9
-      Width = 92
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 9
-      BorderSpacing.Top = 8
-      BorderSpacing.Right = 9
-      Increment = 100000
-      MaxValue = 100000000
-      TabOrder = 1
-      Value = 1000000
     end
     object lblTime: TLabel
       AnchorSideLeft.Control = btnGenerate
       AnchorSideTop.Control = btnGenerate
       AnchorSideTop.Side = asrBottom
-      Left = 10
+      Left = 9
       Height = 15
       Top = 89
-      Width = 30
+      Width = 29
       BorderSpacing.Top = 24
       Caption = 'Time:'
-      ParentColor = False
+      WordWrap = True
+    end
+    object seCount: TFloatSpinEdit
+      AnchorSideLeft.Control = pnlControls
+      AnchorSideTop.Control = pnlControls
+      AnchorSideRight.Control = pnlControls
+      AnchorSideRight.Side = asrBottom
+      Left = 9
+      Height = 23
+      Top = 9
+      Width = 100
+      Alignment = taRightJustify
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Around = 8
+      Constraints.MinWidth = 100
+      DecimalPlaces = 0
+      Increment = 100000
+      MaxValue = 100000000
+      TabOrder = 1
+      Value = 1000000
     end
   end
   object UserDefinedChartSource1: TUserDefinedChartSource
     OnGetChartDataItem = UserDefinedChartSource1GetChartDataItem
-    left = 284
-    top = 80
+    Left = 284
+    Top = 80
   end
 end

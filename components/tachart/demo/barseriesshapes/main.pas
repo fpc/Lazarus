@@ -41,9 +41,6 @@ implementation
 
 {$R *.lfm}
 
-uses
-  Math;
-
 { TForm1 }
 
 procedure TForm1.cb3DChange(Sender: TObject);

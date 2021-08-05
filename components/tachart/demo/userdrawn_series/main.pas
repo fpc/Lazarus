@@ -20,7 +20,7 @@ type
     DataPointDragTool: TDataPointDragTool;
     cbShowDataPoints: TCheckBox;
     Panel: TPanel;
-    procedure SeriesDraw(ACanvas: TCanvas; const ARect: TRect);
+    procedure SeriesDraw({%H-}ACanvas: TCanvas; const {%H-}ARect: TRect);
     procedure SeriesGetBounds(var ABounds: TDoubleRect);
     procedure cbShowDataPointsChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -86,9 +86,10 @@ var
   gp: TDoublePoint;
   p1, p2, p3: TPoint;
   yref: Integer;
-  x: Integer;
   showDataPoints: Boolean;
 begin
+  p2 := Default(TPoint);
+
   showDataPoints := cbShowDataPoints.Checked;
   Chart.Drawer.Pen := Pen;
   yref := Chart.YGraphToImage(ReferenceLine.Position);
@@ -137,7 +138,6 @@ const
   XMAX = +10;
 var
   i: Integer;
-  x, y: Double;
 begin
   Chart.DoubleBuffered := true;
 

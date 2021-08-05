@@ -69,7 +69,8 @@ end;
 
 procedure TMainForm.BtnAddClick(Sender: TObject);
 var
-  x, y: TDoubleDynArray;
+  x: TDoubleDynArray = nil;
+  y: TDoubleDynArray = nil;
   colorIndex: Integer;
   symbolIndex: Integer;
   linestyleIndex: Integer;

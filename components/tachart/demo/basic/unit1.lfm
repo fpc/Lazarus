@@ -7,10 +7,10 @@ object Form1: TForm1
   ClientHeight = 494
   ClientWidth = 610
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
-    Height = 372
+    Height = 366
     Top = 0
     Width = 610
     AntialiasingMode = amOn
@@ -41,7 +41,6 @@ object Form1: TForm1
     Legend.Font.Height = -11
     Legend.Font.Name = 'MS Sans Serif'
     Title.Brush.Color = clBtnFace
-    Title.Font.Color = clBlue
     Title.Margin = 8
     Title.Text.Strings = (
       'Centered Chart Title'
@@ -61,12 +60,13 @@ object Form1: TForm1
   end
   object Panel1: TPanel
     Left = 0
-    Height = 122
-    Top = 372
+    Height = 120
+    Top = 374
     Width = 610
     Align = alBottom
     AutoSize = True
-    ClientHeight = 122
+    BevelOuter = bvNone
+    ClientHeight = 120
     ClientWidth = 610
     TabOrder = 0
     object lblAdd: TLabel
@@ -74,55 +74,51 @@ object Form1: TForm1
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = lblClear
       AnchorSideRight.Side = asrBottom
-      Left = 14
+      Left = 13
       Height = 15
-      Top = 14
+      Top = 13
       Width = 25
       Anchors = [akTop, akRight]
       Caption = 'Add:'
-      ParentColor = False
     end
     object lblClear: TLabel
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = btnClearPie
       AnchorSideTop.Side = asrCenter
-      Left = 9
+      Left = 8
       Height = 15
-      Top = 43
+      Top = 42
       Width = 30
       BorderSpacing.Left = 8
       Caption = 'Clear:'
-      ParentColor = False
     end
     object lblAddCount: TLabel
       AnchorSideLeft.Control = btnClearAll
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnAddPie
-      Left = 318
+      Left = 317
       Height = 15
-      Top = 9
+      Top = 8
       Width = 67
       BorderSpacing.Left = 16
       Caption = 'Multiple add'
-      ParentColor = False
     end
     object lblMarkStyle: TLabel
       AnchorSideLeft.Control = btnAddPie
       AnchorSideTop.Control = cbMarkStyle
       AnchorSideTop.Side = asrCenter
-      Left = 47
+      Left = 46
       Height = 15
-      Top = 94
+      Top = 93
       Width = 86
       Caption = 'Add with marks:'
-      ParentColor = False
     end
     object btnAddPie: TButton
       AnchorSideLeft.Control = btnClearPie
       AnchorSideTop.Control = Panel1
-      Left = 47
+      Left = 46
       Height = 25
-      Top = 9
+      Top = 8
       Width = 42
       AutoSize = True
       BorderSpacing.Top = 8
@@ -133,9 +129,9 @@ object Form1: TForm1
     object btnAddLine: TButton
       AnchorSideLeft.Control = btnClearLine
       AnchorSideTop.Control = btnAddPie
-      Left = 206
+      Left = 205
       Height = 25
-      Top = 9
+      Top = 8
       Width = 48
       AutoSize = True
       Caption = 'Line'
@@ -145,9 +141,9 @@ object Form1: TForm1
     object btnAddArea: TButton
       AnchorSideLeft.Control = btnClearArea
       AnchorSideTop.Control = btnAddPie
-      Left = 97
+      Left = 96
       Height = 25
-      Top = 9
+      Top = 8
       Width = 50
       AutoSize = True
       Caption = 'Area'
@@ -157,9 +153,9 @@ object Form1: TForm1
     object btnAddBar: TButton
       AnchorSideLeft.Control = btnClearBar
       AnchorSideTop.Control = btnAddPie
-      Left = 155
+      Left = 154
       Height = 25
-      Top = 9
+      Top = 8
       Width = 43
       AutoSize = True
       Caption = 'Bar'
@@ -170,9 +166,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = edAddCount
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = Panel1
-      Left = 424
+      Left = 423
       Height = 19
-      Top = 8
+      Top = 7
       Width = 59
       BorderSpacing.Left = 16
       BorderSpacing.Top = 7
@@ -184,9 +180,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbLegend
       AnchorSideTop.Control = cbLegend
       AnchorSideTop.Side = asrBottom
-      Left = 424
+      Left = 423
       Height = 19
-      Top = 27
+      Top = 26
       Width = 85
       Caption = 'Bottom Axis'
       Checked = True
@@ -198,9 +194,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbLegend
       AnchorSideTop.Control = cbBottomAxis
       AnchorSideTop.Side = asrBottom
-      Left = 424
+      Left = 423
       Height = 19
-      Top = 46
+      Top = 45
       Width = 65
       Caption = 'Left Axis'
       Checked = True
@@ -211,9 +207,9 @@ object Form1: TForm1
     object cbTitle: TCheckBox
       AnchorSideLeft.Control = cbFooter
       AnchorSideTop.Control = cbLegend
-      Left = 517
+      Left = 516
       Height = 19
-      Top = 8
+      Top = 7
       Width = 42
       BorderSpacing.Right = 8
       Caption = 'Title'
@@ -227,9 +223,9 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbLegend
       AnchorSideTop.Side = asrBottom
-      Left = 517
+      Left = 516
       Height = 19
-      Top = 27
+      Top = 26
       Width = 54
       BorderSpacing.Left = 8
       BorderSpacing.Right = 8
@@ -241,9 +237,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbFooter
       AnchorSideTop.Control = cbFooter
       AnchorSideTop.Side = asrBottom
-      Left = 517
+      Left = 516
       Height = 19
-      Top = 46
+      Top = 45
       Width = 63
       BorderSpacing.Right = 8
       Caption = 'Inverted'
@@ -254,9 +250,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = btnClearArea
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnClearPie
-      Left = 155
+      Left = 154
       Height = 25
-      Top = 38
+      Top = 37
       Width = 43
       AutoSize = True
       BorderSpacing.Left = 8
@@ -268,9 +264,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = btnClearPie
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnClearPie
-      Left = 97
+      Left = 96
       Height = 25
-      Top = 38
+      Top = 37
       Width = 50
       AutoSize = True
       BorderSpacing.Left = 8
@@ -282,9 +278,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = btnClearBar
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnClearPie
-      Left = 206
+      Left = 205
       Height = 25
-      Top = 38
+      Top = 37
       Width = 48
       AutoSize = True
       BorderSpacing.Left = 8
@@ -297,9 +293,9 @@ object Form1: TForm1
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnAddPie
       AnchorSideTop.Side = asrBottom
-      Left = 47
+      Left = 46
       Height = 25
-      Top = 38
+      Top = 37
       Width = 42
       AutoSize = True
       BorderSpacing.Left = 8
@@ -312,9 +308,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = lblAddCount
       AnchorSideTop.Control = lblAddCount
       AnchorSideTop.Side = asrBottom
-      Left = 318
+      Left = 317
       Height = 23
-      Top = 26
+      Top = 25
       Width = 90
       BorderSpacing.Top = 2
       MaxValue = 1000000
@@ -326,9 +322,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbLegend
       AnchorSideTop.Control = cbLeftAxis
       AnchorSideTop.Side = asrBottom
-      Left = 424
+      Left = 423
       Height = 19
-      Top = 65
+      Top = 64
       Width = 76
       Caption = 'Show grid '
       Checked = True
@@ -340,9 +336,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = cbFooter
       AnchorSideTop.Control = cbInverted
       AnchorSideTop.Side = asrBottom
-      Left = 517
+      Left = 516
       Height = 19
-      Top = 65
+      Top = 64
       Width = 70
       BorderSpacing.Right = 8
       Caption = 'Axis titles'
@@ -353,9 +349,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = lblMarkStyle
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = cbCrosshairTool
-      Left = 141
+      Left = 140
       Height = 23
-      Top = 90
+      Top = 89
       Width = 136
       BorderSpacing.Left = 8
       BorderSpacing.Bottom = 8
@@ -382,9 +378,9 @@ object Form1: TForm1
       AnchorSideLeft.Control = btnClearLine
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = btnClearPie
-      Left = 262
+      Left = 261
       Height = 25
-      Top = 38
+      Top = 37
       Width = 40
       AutoSize = True
       BorderSpacing.Left = 8
@@ -396,22 +392,21 @@ object Form1: TForm1
       AnchorSideTop.Control = cbCrosshairTool
       AnchorSideTop.Side = asrCenter
       AnchorSideRight.Control = cbCrosshairTool
-      Left = 340
+      Left = 339
       Height = 15
-      Top = 94
+      Top = 93
       Width = 76
       Anchors = [akTop, akRight]
       BorderSpacing.Right = 8
       Caption = 'Crosshair tool:'
-      ParentColor = False
     end
     object cbCrosshairTool: TComboBox
       AnchorSideLeft.Control = cbShowGridCheckBox
       AnchorSideTop.Control = cbShowGridCheckBox
       AnchorSideTop.Side = asrBottom
-      Left = 424
+      Left = 423
       Height = 23
-      Top = 90
+      Top = 89
       Width = 155
       BorderSpacing.Top = 6
       ItemHeight = 15
@@ -428,10 +423,20 @@ object Form1: TForm1
       Text = 'none'
     end
   end
+  object Bevel1: TBevel
+    Left = 0
+    Height = 8
+    Top = 366
+    Width = 610
+    Align = alBottom
+    Shape = bsBottomLine
+  end
   object ChartToolset1: TChartToolset
     Left = 240
     Top = 115
     object DataPointCrosshairTool: TDataPointCrosshairTool
+      Enabled = False
+      GrabRadius = 40
     end
   end
 end

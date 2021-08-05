@@ -20,12 +20,12 @@ type
     ChartAxisTransformations1AutoScaleAxisTransform1: TAutoScaleAxisTransform;
     ChartAxisTransformations2: TChartAxisTransformations;
     ChartAxisTransformations2AutoScaleAxisTransform1: TAutoScaleAxisTransform;
-    CheckBox1: TCheckBox;
-    CheckBox2: TCheckBox;
+    cbAtDataOnly: TCheckBox;
+    cbGrouped: TCheckBox;
     RandomChartSource1: TRandomChartSource;
     RandomChartSource2: TRandomChartSource;
-    procedure CheckBox1Change(Sender: TObject);
-    procedure CheckBox2Change(Sender: TObject);
+    procedure cbAtDataOnlyChange(Sender: TObject);
+    procedure cbGroupedChange(Sender: TObject);
   private
 
   public
@@ -44,30 +44,30 @@ uses
 
 { TForm1 }
 
-procedure TForm1.CheckBox1Change(Sender: TObject);
+procedure TForm1.cbAtDataOnlyChange(Sender: TObject);
 var
   leftAxis1, leftAxis2: TChartAxis;
 begin
   leftAxis1 := Chart1.AxisList[0];
   leftAxis2 := Chart1.AxisList[2];
 
-  leftAxis1.AtDataOnly := Checkbox1.Checked;
-  leftAxis1.Marks.AtDataOnly := Checkbox1.Checked;
-  leftAxis1.Title.PositionOnMarks := Checkbox1.Checked;
+  leftAxis1.AtDataOnly := cbAtDataOnly.Checked;
+  leftAxis1.Marks.AtDataOnly := cbAtDataOnly.Checked;
+  leftAxis1.Title.PositionOnMarks := cbAtDataOnly.Checked;
 
-  leftAxis2.AtDataOnly := Checkbox1.Checked;
-  leftAxis2.Marks.AtDataOnly := Checkbox1.Checked;
-  leftAxis2.Title.PositionOnMarks := Checkbox1.Checked;
+  leftAxis2.AtDataOnly := cbAtDataOnly.Checked;
+  leftAxis2.Marks.AtDataOnly := cbAtDataOnly.Checked;
+  leftAxis2.Title.PositionOnMarks := cbAtDataOnly.Checked;
 end;
 
-procedure TForm1.CheckBox2Change(Sender: TObject);
+procedure TForm1.cbGroupedChange(Sender: TObject);
 var
   leftAxis1, leftAxis2: TChartAxis;
 begin
   leftAxis1 := Chart1.AxisList[0];
   leftAxis2 := Chart1.AxisList[2];
 
-  if Checkbox2.Checked then begin
+  if cbGrouped.Checked then begin
     leftAxis1.Group := 1;
     leftAxis2.Group := 1;
   end else begin

@@ -20,7 +20,7 @@ type
     Chart1PieSeries1: TPieSeries;
     OpenGLControl1: TOpenGLControl;
     RandomChartSource1: TRandomChartSource;
-    procedure Chart1AfterPaint(ASender: TChart);
+    procedure Chart1AfterPaint({%H-}ASender: TChart);
     procedure FormCreate(Sender: TObject);
     procedure OpenGLControl1Paint(Sender: TObject);
   end;
