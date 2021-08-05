@@ -1,6 +1,7 @@
 unit TAChartCombos;
 
 {$mode ObjFPC}{$H+}
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
 interface
 
@@ -290,7 +291,7 @@ var
   bs: TBrushStyle;
   symwidth, symheight: Integer;
   R: TRect;
-  penClr, brushClr: TColor;
+  brushClr: TColor;
   isDisabled: Boolean;
 begin
   if Assigned(OnDrawItem) then
@@ -334,7 +335,6 @@ begin
       Canvas.Pen.Color := Canvas.Font.Color
     else
       Canvas.Pen.Color := FPenColor;
-    penClr := Canvas.Pen.Color;
     Canvas.Pen.Width := 1;
     Canvas.Pen.Cosmetic := FCosmetic;
     case FMode of
@@ -363,7 +363,6 @@ begin
             Canvas.Line(x1, y1, x2, y2-1);
             Canvas.Line(x1, y2-1, x2, y1);
           end else
-//          if not ((bs = bsSolid) and ([odFocused, odSelected] * AState <> [])) then
           begin
             Canvas.Pen.Color := clWindowText;
             Canvas.Rectangle(x1, y1, x2, y2);

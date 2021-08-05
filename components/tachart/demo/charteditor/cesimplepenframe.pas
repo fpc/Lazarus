@@ -24,14 +24,13 @@ type
   private
     FPen: TChartPen;
     FOnChange: TNotifyEvent;
-    FOnVisibleChange: TNotifyEvent;
     procedure DoChange;
     function GetWidthLeft: Integer;
     procedure SetWidthLeft(const AValue: Integer);
   protected
     procedure CalculatePreferredSize(
       var PreferredWidth, PreferredHeight: integer;
-      WithThemeSpace: Boolean); override;
+      {%H-}WithThemeSpace: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure GetData(APen: TChartPen);

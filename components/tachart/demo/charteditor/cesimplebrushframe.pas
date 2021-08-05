@@ -19,7 +19,6 @@ type
   private
     FBrush: TBrush;
     FOnChange: TNotifyEvent;
-    FOnVisibleChange: TNotifyEvent;
     procedure DoChange;
   public
     constructor Create(AOwner: TComponent); override;

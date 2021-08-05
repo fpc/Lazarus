@@ -22,6 +22,7 @@ object ChartEditorForm: TChartEditorForm
     HelpButton.Name = 'HelpButton'
     HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
     TabOrder = 0

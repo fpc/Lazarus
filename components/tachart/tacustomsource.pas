@@ -13,6 +13,7 @@ unit TACustomSource;
 
 {$mode objfpc}{$H+}
 {$modeswitch advancedrecords}
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 
 interface
 
@@ -307,7 +308,7 @@ type
     procedure SetSortBy(AValue: TChartSortBy); override;
     procedure SetSortDir(AValue: TChartSortDir); override;
     procedure SetSortIndex(AValue: Cardinal); override;
-    procedure SortNoNotify; inline;
+    procedure SortNoNotify;
     property ItemInternal[AIndex: Integer]: PChartDataItem read GetItemInternal;
     property OnCompare: TChartSortCompare read FOnCompare write SetOnCompare;
     property Sorted: Boolean read FSorted write SetSorted default false;

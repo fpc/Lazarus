@@ -1,7 +1,7 @@
 unit TAChartExtentLink;
 
 {$H+}
-
+{$WARN 6058 off : Call to subroutine "$1" marked as inline is not inlined}
 interface
 
 uses
@@ -68,7 +68,7 @@ procedure Register;
 implementation
 
 uses
-  SysUtils, Math, Types,
+  SysUtils, Math,
   TAGeometry, TAChartAxis;
 
 procedure Register;
