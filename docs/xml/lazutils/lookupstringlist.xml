@@ -20,7 +20,7 @@
       </descr>
 
       <!-- class Visibility: default -->
-      <element name="TLookupStringList" link="#rtl.Classes.TStringList">
+      <element name="TLookupStringList">
         <short>
           Implements an unsorted StringList with a fast lookup feature.
         </short>
@@ -38,14 +38,16 @@
             Authors: Juha Manninen / Antônio Galvão
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+           <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->
       <element name="TLookupStringList.FMap"/>
 
       <!-- procedure Visibility: protected -->
-      <element name="TLookupStringList.InsertItem" link="#rtl.Classes.TStringList.InsertItem">
+      <element name="TLookupStringList.InsertItem">
         <short>
           Adds a new value to the items and the string map with duplicate enforcement.
         </short>
@@ -76,7 +78,9 @@
             Raises an <var>Exception</var> when adding a duplicated value and Duplicates contains <var>dupError</var>. Raised with the message 'TLookupStringList.InsertItem: Duplicates are not allowed.'
           </p>
         </errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLookupStringList.InsertItem.Index">
@@ -88,7 +92,7 @@
       </element>
 
       <!-- constructor Visibility: public -->
-      <element name="TLookupStringList.Create" link="#rtl.Classes.TStringList.Create">
+      <element name="TLookupStringList.Create">
         <short>
           Constructor for the class instance.
         </short>
@@ -97,11 +101,13 @@
             <var>Create</var> is the constructor for the class instance, and calls the inherited constructor. Create allocates the internal <var>TStringMap</var> instance used in the class.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Create">TStrings.Create</link>
+        </seealso>
       </element>
 
       <!-- destructor Visibility: public -->
-      <element name="TLookupStringList.Destroy" link="#rtl.Classes.TStringList.Destroy">
+      <element name="TLookupStringList.Destroy">
         <short>
           Destructor for the class instance.
         </short>
@@ -110,11 +116,13 @@
             <var>Destroy</var> is the destructor for the class instance. Destroy frees the internal  <var>TStringMap</var> instance allocated in the constructor, and calls the inherited Destroy method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Destroy">TStringList.Destroy</link>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TLookupStringList.Assign" link="#rtl.Classes.TStrings.Assign">
+      <element name="TLookupStringList.Assign">
         <short>
           Implements object persistence in the class.
         </short>
@@ -123,7 +131,9 @@
             <var>Assign</var> is an overridden method which implements the object persistence mechanism in the class. Assign ensures that property values in <var>Source</var> are stored in the current class instance. Assign calls the inherited method. When Source is a <var>TLookupStringList</var> class instance, the values in its internal string map are also stored in the current class instance.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Assign">TStrings.Assign</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLookupStringList.Assign.Source">
@@ -131,7 +141,7 @@
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TLookupStringList.Clear" link="#rtl.Classes.TStringList.Clear">
+      <element name="TLookupStringList.Clear">
         <short>
           Clears the content stored in the class instance.
         </short>
@@ -140,11 +150,13 @@
             <var>Clear</var> is an overridden method used to clear the content stored in <var>Strings</var>, <var>Objects</var>, and the internal string map. Clear calls the inherited method, and calls the <var>TStringMap.Clear</var> method in the internal string map.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Clear">TStringList.Clear</link>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TLookupStringList.Delete" link="#rtl.Classes.TStringList.Delete">
+      <element name="TLookupStringList.Delete">
         <short>
           Deletes the value at the specified position.
         </short>
@@ -153,7 +165,9 @@
             <var>Delete</var> is an overridden method which ensures that the internal string map is maintained when deleting the value stored at the specified position. The corresponding value in <var>Strings</var> is used to check for duplicates using <var>IndexOf</var>. When a duplicate exists, and <var>Duplicates</var> are not allowed, the value is also removed from the internal string map. Delete calls the inherited method to delete the values in Strings and Objects at the position in <var>Index</var>.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Delete">TStringList.Delete</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLookupStringList.Delete.Index">
@@ -161,7 +175,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TLookupStringList.Add" link="#rtl.Classes.TStringList.Add">
+      <element name="TLookupStringList.Add">
         <short>
           Adds the specified value to the Strings in the list.
         </short>
@@ -173,7 +187,9 @@
             The return value is <b>-1</b> if the value in <var>S</var> already exists in the string map, and no actions are performed in the method. Otherwise, the inherited Add method is called to store the value in S. The return value is the position in Strings where the new value was stored.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Add">TStringList.Add</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.Add.Result">
@@ -187,7 +203,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TLookupStringList.AddObject" link="#rtl.Classes.TStrings.AddObject">
+      <element name="TLookupStringList.AddObject">
         <short>
           Adds the specified values to the Strings and Objects in the list.
         </short>
@@ -199,7 +215,9 @@
             The return value contains the ordinal position in Strings where the value was stored, or <b>-1</b> when duplicate values are not allowed. If the return value is not <b>-1</b>, the Objects property is updated to include the value in <var>AObject</var> at the specified position.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStrings.AddObject">TStrings.AddObject</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.AddObject.Result">
@@ -241,7 +259,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TLookupStringList.Find" link="#rtl.Classes.TStringList.Find">
+      <element name="TLookupStringList.Find">
         <short>
           Locates the specified value in the Strings property.
         </short>
@@ -253,7 +271,9 @@
             Please note: Find does <b>NOT</b> call the inherited method.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.Find">TStringList.Find</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.Find.Result">
@@ -269,7 +289,7 @@
       </element>
 
       <!-- function Visibility: public -->
-      <element name="TLookupStringList.IndexOf" link="#rtl.Classes.TStringList.IndexOf">
+      <element name="TLookupStringList.IndexOf">
         <short>
           Gets the position in Strings where the specified value is stored.
         </short>
@@ -281,7 +301,9 @@
             The return value contains the ordinal position for the specified value, or <b>-1</b> when S does not exist in the string map.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList.IndexOf">TStringList.IndexOf</link>
+        </seealso>
       </element>
       <!-- function result Visibility: default -->
       <element name="TLookupStringList.IndexOf.Result">

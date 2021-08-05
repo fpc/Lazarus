@@ -624,7 +624,7 @@
         <descr/>
       </element>
 
-      <element name="TBaseMapIterator" link="#rtl.Classes.TObject">
+      <element name="TBaseMapIterator">
         <short>Specifies the interface used for map item iterators.</short>
         <descr/>
       </element>
@@ -842,7 +842,7 @@
         </descr>
       </element>
 
-      <element name="TMap.Add" link="#lazutils.maps.TBaseMap.InternalAdd">
+      <element name="TMap.Add">
         <short>
           Adds a map item with the specified ID and Data values.
         </short>
@@ -872,7 +872,7 @@
         <short>Map item to locate in the AVL Tree.</short>
       </element>
 
-      <element name="TMap.GetData" link="#lazutils.maps.TBaseMap.InternalGetData">
+      <element name="TMap.GetData">
         <short>
           Gets the Data for the map item with the specified ID.
         </short>
@@ -888,7 +888,7 @@
         <short/>
       </element>
 
-      <element name="TMap.GetDataPtr" link="#lazutils.maps.TBaseMap.InternalGetDataPtr">
+      <element name="TMap.GetDataPtr">
         <short>Gets a Pointer to the data for the specified map item.</short>
         <descr/>
       </element>
@@ -899,7 +899,7 @@
         <short/>
       </element>
 
-      <element name="TMap.SetData" link="#lazutils.maps.TBaseMap.InternalSetData">
+      <element name="TMap.SetData">
         <short>Stores the data for the specified map item.</short>
         <descr/>
       </element>
@@ -913,50 +913,68 @@
         <short/>
       </element>
 
-      <element name="TMapIterator" link="#lazutils.maps.TBaseMapIterator">
+      <element name="TMapIterator">
         <short>Implements an iterator for items in a map.</short>
         <descr>
           <p>
             <var>TMapIterator</var> is a <var>TBaseMapIterator</var> descendant that implements an iterator for items in a map. TMapIterator provides methods to initialize the iterator for a map. It also provides methods to read the IDs for map items, and to read and write the Data in map items. TMapIterator also provides an implementation of the Locate method.
           </p>
         </descr>
+        <seealso>
+          <link id="TBaseMapIterator"/>
+        </seealso>
       </element>
 
-      <element name="TMapIterator.Create" link="#lazutils.maps.TBaseMapIterator.InternalCreate">
+      <element name="TMapIterator.Create">
         <short>Constructor for the class instance.</short>
+        <seealso>
+          <link id="TBaseMapIterator.InternalCreate"/>
+        </seealso>
         <descr/>
       </element>
       <element name="TMapIterator.Create.AMap">
         <short>Map with IDs and Data for the iterator.</short>
       </element>
 
-      <element name="TMapIterator.DataPtr" link="#lazutils.maps.TBaseMap.InternalGetDataPtr">
+      <element name="TMapIterator.DataPtr">
         <short>Gets the Pointer to the Data in a map item.</short>
         <descr/>
+        <seealso>
+          <link id="TBaseMap.InternalGetDataPtr"/>
+        </seealso>
       </element>
       <element name="TMapIterator.DataPtr.Result" link="#lazutils.maps.TBaseMap.InternalGetDataPtr.Result">
         <short/>
       </element>
 
-      <element name="TMapIterator.GetData" link="#lazutils.maps.TBaseMap.InternalGetData">
+      <element name="TMapIterator.GetData">
         <short>Gets the Data for a map item.</short>
+        <seealso>
+          <link id="TBaseMap.InternalGetData"/>
+        </seealso>
         <descr/>
       </element>
       <element name="TMapIterator.GetData.AData" link="#lazutils.maps.TBaseMap.InternalGetData,AData">
         <short>Data for the map item.</short>
       </element>
 
-      <element name="TMapIterator.GetID" link="#lazutils.maps.TBaseMap.InternalGetID">
+      <element name="TMapIterator.GetID">
         <short>Gets the ID for a map item.</short>
         <descr/>
+        <seealso>
+          <link id="TBaseMap.InternalGetID"/>
+        </seealso>
       </element>
       <element name="TMapIterator.GetID.AID" link="#lazutils.maps.TBaseMap.InternalGetID.AID">
         <short/>
       </element>
 
-      <element name="TMapIterator.Locate" link="#lazutils.maps.TBaseMapIterator.InternalLocate">
+      <element name="TMapIterator.Locate">
         <short>Locates a map item with the specified ID.</short>
         <descr/>
+        <seealso>
+          <link id="TBaseMapIterator.InternalLocate"/>
+        </seealso>
       </element>
       <element name="TMapIterator.Locate.Result" link="#lazutils.maps.TBaseMapIterator.InternalLocate.Result">
         <short/>
@@ -965,9 +983,12 @@
         <short/>
       </element>
 
-      <element name="TMapIterator.SetData" link="#lazutils.maps.TBaseMap.InternalSetData">
+      <element name="TMapIterator.SetData">
         <short>Sets the Data for a map item.</short>
         <descr/>
+        <seealso>
+          <link id="TBaseMap.InternalSetData"/>
+        </seealso>
       </element>
       <element name="TMapIterator.SetData.AData" link="#lazutils.maps.TBaseMap.InternalSetData.AData">
         <short/>
@@ -995,7 +1016,7 @@
         <seealso/>
       </element>
 
-      <element name="TTypedMap" link="#lazutils.maps.TMap">
+      <element name="TTypedMap">
         <short>
           Implements a map with support for reference counted Type Information in the Data.
         </short>
@@ -1004,6 +1025,9 @@
             TTypedMap is a TBaseMap map descendant that implements a map with support for reference counted Type Information in the Data for map items.
           </p>
         </descr>
+        <seealso>
+          <link id="TBaseMap"/>
+        </seealso>
       </element>
 
       <element name="TTypedMap.FTypeInfo"/>
@@ -1107,13 +1131,16 @@
         <short/>
       </element>
 
-      <element name="TTypedMapIterator" link="#lazutils.maps.TMapIterator">
+      <element name="TTypedMapIterator">
         <short>Implements an iterator for items in a map.</short>
         <descr>
           <p>
             <var>TTypedMapIterator</var> is a <var>TMapIterator</var> descendant that implements an iterator for map items with reference counted Type Information in their Data. TTypedMapIterator provides methods to initialize the iterator for a map. It also provides methods to read the IDs for map items, and to read and write the Data in map items. TTypedMapIterator also provides an implementation of the Locate method.
           </p>
         </descr>
+        <seealso>
+          <link id="TMapIterator"/>
+        </seealso>
       </element>
 
       <element name="TTypedMapIterator.Create">

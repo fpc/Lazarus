@@ -27,12 +27,14 @@
         <short>Date/Time value in UTC.</short>
       </element>
 
-      <element name="GetTickCount64" link="#rtl.SysUtils.GetTickCount64">
+      <element name="GetTickCount64">
         <short>
           Gets the number of Milliseconds elapsed since the computer was started.
         </short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.SysUtils.GetTickCount64"/>
+        </seealso>
       </element>
 
       <element name="GetTickCount64.Result">

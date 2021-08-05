@@ -83,8 +83,11 @@
       <element name="TMethodList.FCount"/>
 
       <!-- function Visibility: private -->
-      <element name="TMethodList.GetItems" link="#lazutils.lazmethodlist.TMethodList.Items">
+      <element name="TMethodList.GetItems">
         <short>Gets the value for the Items property.</short>
+        <seealso>
+          <link id="TMethodList.Items"/>
+        </seealso>
       </element>
       <element name="TMethodList.GetItems.Result">
         <short>Value for the Items property.</short>
@@ -94,16 +97,22 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetAllowDuplicates" link="#lazutils.lazmethodlist.TMethodList.AllowDuplicates">
+      <element name="TMethodList.SetAllowDuplicates">
         <short>Sets the value in the AllowDuplicates property.</short>
+        <seealso>
+          <link id="TMethodList.AllowDuplicates"/>
+        </seealso>
       </element>
       <element name="TMethodList.SetAllowDuplicates.AValue">
         <short>New value for the AllowDuplicates property.</short>
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TMethodList.SetItems" link="#lazutils.lazmethodlist.TMethodList.Items">
+      <element name="TMethodList.SetItems">
         <short>Sets the value for the Items property.</short>
+        <seealso>
+          <link id="TMethodList.Items"/>
+        </seealso>
       </element>
       <element name="TMethodList.SetItems.Index">
         <short>Ordinal position for the item.</short>
@@ -112,8 +121,11 @@
         <short>New value for the item at the specified position.</short>
       </element>
 
-      <element name="TMethodList.InternalInsert" link="#lazutils.lazmethodlist.TMethodList.Insert">
+      <element name="TMethodList.InternalInsert">
         <short>Performs actions needed to insert a method at the specified position.</short>
+        <seealso>
+          <link id="TMethodList.Insert"/>
+        </seealso>
       </element>
       <element name="TMethodList.InternalInsert.Index">
         <short>Ordinal position for the item.</short>
