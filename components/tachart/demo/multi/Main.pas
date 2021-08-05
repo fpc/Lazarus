@@ -20,7 +20,7 @@ type
     chField: TChart;
     chFieldFieldSeries1: TFieldSeries;
     chOHLC: TChart;
-    ChartStyles1: TChartStyles;
+    ChartStyles: TChartStyles;
     chOHLCOpenHighLowCloseSeries1: TOpenHighLowCloseSeries;
     chStackedAreaSeries1: TAreaSeries;
     chStackedLineSeries1: TLineSeries;
@@ -82,7 +82,7 @@ begin
   for i := 0 to cgShowStackLevels.Items.Count - 1 do begin
     if cgShowStackLevels.Checked[i] then
       s += Format('%d,', [i]);
-    ChartStyles1.Styles[i].RepeatCount := Ord(cgShowStackLevels.Checked[i]);
+    ChartStyles.Styles[i].RepeatCount := Ord(cgShowStackLevels.Checked[i]);
   end;
   ccsStacked.ReorderYList := s[1..Length(s) - 1];
 end;

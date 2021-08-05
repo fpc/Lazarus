@@ -28,6 +28,7 @@ type
     Chart1YAxis: TConstantLine;
     catSpline: TChartAxisTransformations;
     catSplineLogarithmAxisTransform: TLogarithmAxisTransform;
+    cbNiceLegend: TCheckBox;
     cmbPalette: TComboBox;
     ExpressionChart: TChart;
     ExpressionSeries: TExpressionSeries;
@@ -50,6 +51,7 @@ type
     EdExprDomain: TEdit;
     EdExprParamA: TEdit;
     EdExprParamB: TEdit;
+    lblStep: TLabel;
     lblPalette: TLabel;
     LblExpression: TLabel;
     LblExprDomain: TLabel;
@@ -75,6 +77,7 @@ type
     cbCubic: TTICheckBox;
     seJ: TSpinEdit;
     seK: TSpinEdit;
+    seStep: TSpinEdit;
     stEq: TStaticText;
     tsExpression: TTabSheet;
     tbA: TTrackBar;
@@ -93,6 +96,7 @@ type
     procedure cbDomainChange(Sender: TObject);
     procedure cbInterpolateChange(Sender: TObject);
     procedure cbMultLegendChange(Sender: TObject);
+    procedure cbNiceLegendChange(Sender: TObject);
     procedure cbRotateChange(Sender: TObject);
     procedure Chart1FuncSeries1Calculate(const AX: Double; out AY: Double);
     procedure Chart1UserDrawnSeries1Draw(ACanvas: TCanvas; const ARect: TRect);
@@ -111,6 +115,7 @@ type
     procedure iseSplineDegreeChange(Sender: TObject);
     procedure PageControl1Change(Sender: TObject);
     procedure ParamChange(Sender: TObject);
+    procedure seStepChange(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure UserDefinedChartSource1GetChartDataItem(
       ASource: TUserDefinedChartSource; AIndex: Integer;
@@ -159,7 +164,18 @@ begin
     if cbMultLegend.Checked then
       Multiplicity := lmPoint
     else
+    begin
       Multiplicity := lmSingle;
+      Format := '';
+    end;
+end;
+
+procedure TForm1.cbNiceLegendChange(Sender: TObject);
+begin
+  if cbMultLegend.Checked and cbNiceLegend.Checked then
+    ChartColorMapColormapSeries1.Legend.Format := 'z ≤ %1:.3f|%.3f < z ≤ %.3f|%.3f < z'
+  else
+    ChartColorMapColorMapSeries1.Legend.Format := '';
 end;
 
 procedure TForm1.cbRotateChange(Sender: TObject);
@@ -257,6 +273,8 @@ begin
   EdExprDomain.Text := ExpressionSeries.Domain;
   EdExprParamA.Text := FloatToStr(ExpressionSeries.Params.ValueByName['a']);
   EdExprParamB.Text := FloatToStr(ExpressionSeries.Params.ValueByName['b']);
+
+  seStep.Value := ChartColorMapColorMapSeries1.StepX;
 end;
 
 procedure TForm1.iseSplineDegreeChange(Sender: TObject);
@@ -272,6 +290,12 @@ end;
 procedure TForm1.ParamChange(Sender: TObject);
 begin
   chParametric.Invalidate;
+end;
+
+procedure TForm1.seStepChange(Sender: TObject);
+begin
+  ChartColorMapColorMapSeries1.StepX := seStep.Value;
+  ChartColorMapColorMapSeries1.StepY := seStep.Value;
 end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);

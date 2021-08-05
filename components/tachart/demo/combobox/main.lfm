@@ -8,12 +8,12 @@ object Form1: TForm1
   ClientWidth = 803
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 4
     Height = 436
     Top = 4
-    Width = 463
+    Width = 455
     AxisList = <    
       item
         Grid.Color = clSilver
@@ -84,6 +84,7 @@ object Form1: TForm1
     BevelOuter = bvNone
     ClientHeight = 444
     ClientWidth = 219
+    Constraints.MinWidth = 150
     TabOrder = 1
     object LblSeries: TLabel
       Left = 4
@@ -96,7 +97,6 @@ object Form1: TForm1
       Caption = 'LblSeries'
       Font.Height = -16
       Font.Style = [fsBold]
-      ParentColor = False
       ParentFont = False
     end
     object CbShow: TCheckBox
@@ -114,37 +114,37 @@ object Form1: TForm1
       TabOrder = 0
     end
     object Notebook1: TNotebook
-      Left = 0
+      Left = 4
       Height = 366
       Top = 78
-      Width = 219
+      Width = 215
       PageIndex = 0
       Align = alClient
+      BorderSpacing.Left = 4
       BorderSpacing.Top = 4
       TabOrder = 1
       object Page1: TPage
         object GbLineSerLines: TGroupBox
           Left = 0
-          Height = 117
+          Height = 116
           Top = 159
-          Width = 211
+          Width = 207
           Align = alTop
           AutoSize = True
           BorderSpacing.Top = 8
           BorderSpacing.Right = 8
           Caption = 'Lines'
-          ClientHeight = 97
-          ClientWidth = 207
+          ClientHeight = 96
+          ClientWidth = 203
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 1
           object CbLineSerLinePenStyle: TChartComboBox
-            AnchorSideTop.Control = CbShowLines
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 22
-            Top = 5
+            Top = 4
             Width = 118
             PenPattern = '1|1'
             PointerStyle = psNone
@@ -153,7 +153,7 @@ object Form1: TForm1
             ItemHeight = 16
             ItemIndex = 0
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 0
             OnChange = LinePenChange
           end
           object CbLineSerLinePenWidth: TChartComboBox
@@ -162,9 +162,9 @@ object Form1: TForm1
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = CbLineSerLinePenStyle
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 22
-            Top = 35
+            Top = 34
             Width = 118
             Mode = ccmPenWidth
             PenPattern = '1|1'
@@ -174,7 +174,7 @@ object Form1: TForm1
             ItemHeight = 16
             ItemIndex = 0
             ParentFont = False
-            TabOrder = 2
+            TabOrder = 1
             OnChange = LinePenChange
           end
           object Label1: TLabel
@@ -183,11 +183,10 @@ object Form1: TForm1
             AnchorSideTop.Side = asrCenter
             Left = 8
             Height = 15
-            Top = 9
+            Top = 8
             Width = 47
             BorderSpacing.Left = 8
             Caption = 'Pen style'
-            ParentColor = False
             ParentFont = False
           end
           object Label2: TLabel
@@ -196,10 +195,9 @@ object Form1: TForm1
             AnchorSideTop.Side = asrCenter
             Left = 8
             Height = 15
-            Top = 39
+            Top = 38
             Width = 53
             Caption = 'Pen width'
-            ParentColor = False
             ParentFont = False
           end
           object CbLineSerLinePenColor: TColorBox
@@ -208,9 +206,9 @@ object Form1: TForm1
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = CbLineSerLinePenWidth
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 22
-            Top = 65
+            Top = 64
             Width = 118
             Style = [cbStandardColors, cbExtendedColors, cbCustomColor, cbPrettyNames]
             Anchors = [akTop, akRight]
@@ -219,7 +217,7 @@ object Form1: TForm1
             ItemHeight = 16
             OnChange = LinePenChange
             ParentFont = False
-            TabOrder = 3
+            TabOrder = 2
           end
           object Label4: TLabel
             AnchorSideLeft.Control = Label1
@@ -227,48 +225,31 @@ object Form1: TForm1
             AnchorSideTop.Side = asrCenter
             Left = 8
             Height = 15
-            Top = 69
+            Top = 68
             Width = 50
             Caption = 'Pen color'
-            ParentColor = False
             ParentFont = False
-          end
-          object CbShowLines: TCheckBox
-            AnchorSideTop.Control = GbLineSerLines
-            Left = 149
-            Height = 19
-            Top = -18
-            Width = 49
-            Alignment = taLeftJustify
-            Anchors = []
-            Caption = 'Show'
-            Checked = True
-            OnChange = LinePenChange
-            ParentFont = False
-            State = cbChecked
-            TabOrder = 0
           end
         end
         object GbLineSerPointer: TGroupBox
           Left = 0
           Height = 147
           Top = 4
-          Width = 211
+          Width = 207
           Align = alTop
           AutoSize = True
           BorderSpacing.Top = 4
           BorderSpacing.Right = 8
           Caption = 'Pointer symbol'
           ClientHeight = 127
-          ClientWidth = 207
+          ClientWidth = 203
           Font.Style = [fsBold]
           ParentFont = False
           TabOrder = 0
           object CbLineSerPointerStyle: TChartComboBox
-            AnchorSideTop.Control = CbShowPoints
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 22
             Top = 4
             Width = 118
@@ -280,7 +261,7 @@ object Form1: TForm1
             ItemHeight = 16
             ItemIndex = 0
             ParentFont = False
-            TabOrder = 1
+            TabOrder = 0
             OnChange = LinePointerChange
           end
           object Label5: TLabel
@@ -293,7 +274,6 @@ object Form1: TForm1
             Width = 40
             BorderSpacing.Left = 8
             Caption = 'Symbol'
-            ParentColor = False
             ParentFont = False
           end
           object Label3: TLabel
@@ -305,7 +285,6 @@ object Form1: TForm1
             Top = 38
             Width = 45
             Caption = 'Fill color'
-            ParentColor = False
             ParentFont = False
           end
           object Label6: TLabel
@@ -317,7 +296,6 @@ object Form1: TForm1
             Top = 68
             Width = 65
             Caption = 'Border color'
-            ParentColor = False
             ParentFont = False
           end
           object CbLineSerPointerBorderColor: TColorBox
@@ -326,7 +304,7 @@ object Form1: TForm1
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = CbLineSerPointerBrushColor
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 22
             Top = 64
             Width = 118
@@ -336,7 +314,7 @@ object Form1: TForm1
             ItemHeight = 16
             OnChange = LinePointerChange
             ParentFont = False
-            TabOrder = 3
+            TabOrder = 2
           end
           object CbLineSerPointerBrushColor: TColorBox
             AnchorSideLeft.Control = CbLineSerPointerStyle
@@ -344,7 +322,7 @@ object Form1: TForm1
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Control = CbLineSerPointerStyle
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 22
             Top = 34
             Width = 118
@@ -354,23 +332,24 @@ object Form1: TForm1
             ItemHeight = 16
             OnChange = LinePointerChange
             ParentFont = False
-            TabOrder = 2
+            TabOrder = 1
           end
           object EdLineSerPointerSize: TSpinEdit
             AnchorSideLeft.Control = CbLineSerPointerBorderColor
             AnchorSideTop.Control = CbLineSerPointerBorderColor
             AnchorSideTop.Side = asrBottom
             AnchorSideRight.Side = asrBottom
-            Left = 80
+            Left = 76
             Height = 23
             Top = 94
             Width = 62
             Alignment = taRightJustify
             BorderSpacing.Top = 8
             BorderSpacing.Bottom = 10
+            MaxValue = 20
             OnChange = LinePointerChange
             ParentFont = False
-            TabOrder = 4
+            TabOrder = 3
             Value = 4
           end
           object Label7: TLabel
@@ -382,24 +361,44 @@ object Form1: TForm1
             Top = 98
             Width = 20
             Caption = 'Size'
-            ParentColor = False
             ParentFont = False
           end
-          object CbShowPoints: TCheckBox
-            AnchorSideTop.Control = GbLineSerPointer
-            Left = 148
-            Height = 19
-            Top = -19
-            Width = 49
-            Alignment = taLeftJustify
-            Anchors = []
-            Caption = 'Show'
-            Checked = True
-            OnChange = LinePointerChange
-            ParentFont = False
-            State = cbChecked
-            TabOrder = 0
-          end
+        end
+        object CbShowLines: TCheckBox
+          AnchorSideTop.Control = GbLineSerLines
+          AnchorSideRight.Control = GbLineSerLines
+          AnchorSideRight.Side = asrBottom
+          Left = 146
+          Height = 19
+          Top = 159
+          Width = 49
+          Alignment = taLeftJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 12
+          Caption = 'Show'
+          Checked = True
+          OnChange = LinePenChange
+          ParentFont = False
+          State = cbChecked
+          TabOrder = 2
+        end
+        object CbShowPoints: TCheckBox
+          AnchorSideTop.Control = GbLineSerPointer
+          AnchorSideRight.Control = GbLineSerPointer
+          AnchorSideRight.Side = asrBottom
+          Left = 150
+          Height = 19
+          Top = 4
+          Width = 49
+          Alignment = taLeftJustify
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Show'
+          Checked = True
+          OnChange = LinePointerChange
+          ParentFont = False
+          State = cbChecked
+          TabOrder = 3
         end
       end
       object Page2: TPage
@@ -463,7 +462,6 @@ object Form1: TForm1
             Width = 47
             BorderSpacing.Left = 8
             Caption = 'Pen style'
-            ParentColor = False
             ParentFont = False
           end
           object Label9: TLabel
@@ -475,7 +473,6 @@ object Form1: TForm1
             Top = 34
             Width = 53
             Caption = 'Pen width'
-            ParentColor = False
             ParentFont = False
           end
           object CbBarSerPenColor: TColorBox
@@ -505,7 +502,6 @@ object Form1: TForm1
             Top = 64
             Width = 50
             Caption = 'Pen color'
-            ParentColor = False
             ParentFont = False
           end
         end
@@ -534,7 +530,6 @@ object Form1: TForm1
             Width = 45
             BorderSpacing.Left = 8
             Caption = 'Fill color'
-            ParentColor = False
             ParentFont = False
           end
           object CbBarSerBrushColor: TColorBox
@@ -564,7 +559,6 @@ object Form1: TForm1
             Top = 4
             Width = 56
             Caption = 'Fill pattern'
-            ParentColor = False
             ParentFont = False
           end
           object CbBarSerBrushStyle: TChartComboBox
@@ -612,7 +606,6 @@ object Form1: TForm1
             Width = 45
             BorderSpacing.Left = 8
             Caption = 'Fill color'
-            ParentColor = False
             ParentFont = False
           end
           object CbAreaSerBrushColor: TColorBox
@@ -641,7 +634,6 @@ object Form1: TForm1
             Top = 4
             Width = 56
             Caption = 'Fill pattern'
-            ParentColor = False
             ParentFont = False
           end
           object CbAreaSerBrushStyle: TChartComboBox
@@ -722,7 +714,6 @@ object Form1: TForm1
             Width = 47
             BorderSpacing.Left = 8
             Caption = 'Pen style'
-            ParentColor = False
             ParentFont = False
           end
           object Label16: TLabel
@@ -734,7 +725,6 @@ object Form1: TForm1
             Top = 34
             Width = 53
             Caption = 'Pen width'
-            ParentColor = False
             ParentFont = False
           end
           object CbAreaSerContourColor: TColorBox
@@ -763,7 +753,6 @@ object Form1: TForm1
             Top = 64
             Width = 50
             Caption = 'Pen color'
-            ParentColor = False
             ParentFont = False
           end
         end
@@ -827,7 +816,6 @@ object Form1: TForm1
             Width = 47
             BorderSpacing.Left = 8
             Caption = 'Pen style'
-            ParentColor = False
             ParentFont = False
           end
           object Label19: TLabel
@@ -839,7 +827,6 @@ object Form1: TForm1
             Top = 34
             Width = 53
             Caption = 'Pen width'
-            ParentColor = False
             ParentFont = False
           end
           object CbAreaSerLinesColor: TColorBox
@@ -868,7 +855,6 @@ object Form1: TForm1
             Top = 64
             Width = 50
             Caption = 'Pen color'
-            ParentColor = False
             ParentFont = False
           end
         end
@@ -882,7 +868,6 @@ object Form1: TForm1
       Align = alTop
       BorderSpacing.Around = 4
       Caption = 'Select the series to be modified'
-      ParentColor = False
     end
     object Bevel2: TBevel
       Left = 4
@@ -896,14 +881,13 @@ object Form1: TForm1
     end
   end
   object ChartListbox1: TChartListbox
-    Left = 467
+    Left = 463
     Height = 436
     Top = 4
     Width = 112
     Chart = Chart1
     Align = alRight
-    BorderSpacing.Top = 4
-    BorderSpacing.Bottom = 4
+    BorderSpacing.Around = 4
     BorderStyle = bsNone
     ItemHeight = 0
     OnClick = ChartListbox1Click
@@ -916,40 +900,37 @@ object Form1: TForm1
     Width = 5
     Align = alRight
     ResizeAnchor = akRight
+    ResizeStyle = rsPattern
   end
   object RandomChartSource1: TRandomChartSource
     PointsNumber = 10
     RandSeed = 1021051994
     XMax = 10
-    XMin = 0
     YMax = 12
     YMin = 8
-    left = 108
-    top = 37
+    Left = 108
+    Top = 37
   end
   object RandomChartSource2: TRandomChartSource
     PointsNumber = 6
     RandSeed = 1021110653
     XMax = 10
-    XMin = 0
     YMax = 8
     YMin = 5
-    left = 108
-    top = 96
+    Left = 108
+    Top = 96
   end
   object RandomChartSource3: TRandomChartSource
     PointsNumber = 8
     RandSeed = 1021188201
     XMax = 10
-    XMin = 0
     YMax = 4
-    YMin = 0
-    left = 108
-    top = 152
+    Left = 108
+    Top = 152
   end
   object ChartToolset1: TChartToolset
-    left = 329
-    top = 98
+    Left = 329
+    Top = 98
     object ChartToolset1DataPointClickTool1: TDataPointClickTool
       Shift = [ssLeft]
       GrabRadius = 16

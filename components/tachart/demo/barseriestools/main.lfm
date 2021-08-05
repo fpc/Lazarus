@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 506
   ClientWidth = 1035
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object LogSplitter: TSplitter
     Left = 717
     Height = 506
@@ -70,19 +70,19 @@ object MainForm: TMainForm
         Left = 183
         Height = 24
         Top = 0
-        Width = 203
+        Width = 202
         Anchors = [akTop, akLeft, akBottom]
         AutoSize = True
         BorderSpacing.Left = 40
         BevelOuter = bvNone
         ClientHeight = 24
-        ClientWidth = 203
+        ClientWidth = 202
         TabOrder = 2
         object RbToolTargetDataPoint: TRadioButton
           AnchorSideLeft.Control = LblToolTargets
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = TargetPanel
-          Left = 75
+          Left = 74
           Height = 19
           Top = 0
           Width = 75
@@ -95,7 +95,7 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = RbToolTargetDataPoint
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = TargetPanel
-          Left = 166
+          Left = 165
           Height = 19
           Top = 0
           Width = 37
@@ -113,9 +113,8 @@ object MainForm: TMainForm
           Left = 0
           Height = 15
           Top = 2
-          Width = 65
+          Width = 64
           Caption = 'Tool targets:'
-          ParentColor = False
         end
       end
       object LblInfo: TLabel
@@ -125,10 +124,9 @@ object MainForm: TMainForm
         Left = 8
         Height = 135
         Top = 29
-        Width = 359
+        Width = 358
         BorderSpacing.Top = 10
         Caption = 'if ToolTarget = Bar:'#13#10'  Left-Click inside bar  --> DataPointClickTool --> Log message'#13#10'  CTRL inside bar --> DataPointHintTool --> Hint window'#13#10#13#10'if ToolTarget = DataPoint:'#13#10'  Left-Click at bar end  --> DataPointClickTool --> Log message'#13#10'  CTRL inside at bar end --> DataPointHintTool --> Hint window'#13#10#13#10'Right-Drag of bar end --> DataPointDragTool --> change bar height'
-        ParentColor = False
       end
     end
     object Chart: TChart
@@ -173,6 +171,10 @@ object MainForm: TMainForm
       Align = alClient
       object BarSeriesREDYELLOW: TBarSeries
         Legend.Multiplicity = lmStyle
+        Title = 'Red'
+        BarBrush.Color = clRed
+        BarOffsetPercent = -20
+        BarWidthPercent = 40
         Marks.Distance = 4
         Marks.Format = '%.1f'
         Marks.Frame.Visible = False
@@ -181,14 +183,14 @@ object MainForm: TMainForm
         Marks.LinkPen.Visible = False
         Marks.Style = smsCustom
         Marks.YIndex = -1
-        Title = 'Red'
-        BarBrush.Color = clRed
-        BarOffsetPercent = -20
-        BarWidthPercent = 40
         Source = ListChartSourceREDYELLOW
         Styles = ChartStyles
       end
       object BarSeriesBLUE: TBarSeries
+        Title = 'Blue'
+        BarBrush.Color = clBlue
+        BarOffsetPercent = 20
+        BarWidthPercent = 40
         Marks.Attachment = maEdge
         Marks.Distance = 4
         Marks.Format = '%.1f'
@@ -197,10 +199,6 @@ object MainForm: TMainForm
         Marks.LabelBrush.Style = bsClear
         Marks.LinkPen.Visible = False
         Marks.Style = smsCustom
-        Title = 'Blue'
-        BarBrush.Color = clBlue
-        BarOffsetPercent = 20
-        BarWidthPercent = 40
         Source = ListChartSourceBLUE
       end
     end
@@ -216,8 +214,8 @@ object MainForm: TMainForm
     TabOrder = 2
   end
   object ChartToolset: TChartToolset
-    left = 512
-    top = 80
+    Left = 512
+    Top = 80
     object DataPointClickTool: TDataPointClickTool
       Shift = [ssLeft]
       OnPointClick = DataPointClickToolPointClick
@@ -243,26 +241,26 @@ object MainForm: TMainForm
         Brush.Color = clYellow
         Text = 'Yellow'
       end>
-    left = 416
-    top = 80
+    Left = 416
+    Top = 80
   end
   object CalculatedChartSource: TCalculatedChartSource
     Origin = ListChartSourceREDYELLOW
     Percentage = True
-    left = 280
-    top = 80
+    Left = 280
+    Top = 80
   end
   object ListChartSourceREDYELLOW: TListChartSource
     YCount = 2
-    left = 120
-    top = 80
+    Left = 120
+    Top = 80
   end
   object ListChartSourceBLUE: TListChartSource
-    left = 120
-    top = 144
+    Left = 120
+    Top = 144
   end
   object ListChartSourceLABELS: TListChartSource
-    left = 120
-    top = 216
+    Left = 120
+    Top = 216
   end
 end

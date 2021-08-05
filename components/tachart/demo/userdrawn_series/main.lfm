@@ -8,7 +8,7 @@ object MainForm: TMainForm
   ClientWidth = 595
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart: TChart
     Left = 0
     Height = 386
@@ -68,18 +68,24 @@ object MainForm: TMainForm
     ClientWidth = 595
     TabOrder = 1
     object cbShowDataPoints: TCheckBox
-      Left = 11
+      AnchorSideLeft.Control = Panel
+      AnchorSideTop.Control = Panel
+      AnchorSideTop.Side = asrCenter
+      Left = 8
       Height = 19
       Top = 8
       Width = 111
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 8
+      BorderSpacing.Bottom = 8
       Caption = 'Show data points'
       OnChange = cbShowDataPointsChange
       TabOrder = 0
     end
   end
   object ChartToolset: TChartToolset
-    left = 173
-    top = 119
+    Left = 173
+    Top = 119
     object DataPointDragTool: TDataPointDragTool
       Shift = [ssLeft]
       AffectedSeries = '0'

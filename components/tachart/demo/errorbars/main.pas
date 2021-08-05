@@ -58,7 +58,7 @@ type
     procedure CbXErrDifferentChange(Sender: TObject);
     procedure CbYErrDifferentChange(Sender: TObject);
 
-    procedure Chart1AfterPaint(ASender: TChart);
+    procedure Chart1AfterPaint({%H-}ASender: TChart);
 
     procedure EdErrPenWidthChange(Sender: TObject);
 
@@ -81,8 +81,8 @@ type
 
     procedure RgChartSourceClick(Sender: TObject);
 
-    procedure StringGrid1PrepareCanvas(sender: TObject; aCol, aRow: Integer;
-      aState: TGridDrawState);
+    procedure StringGrid1PrepareCanvas(Sender: TObject; {%H-}aCol, {%H-}aRow: Integer;
+      {%H-}aState: TGridDrawState);
 
     procedure UserDefinedChartSource1GetChartDataItem(
       ASource: TUserDefinedChartSource; AIndex: Integer; var AItem: TChartDataItem);
@@ -114,13 +114,6 @@ type
 
 var
   Data: array of TDataRec;
-
-type
-  TMySource = class(TCustomChartSource)
-  public
-    property XErrorBarData;
-    property YErrorBarData;
-  end;
 
 { TMainForm }
 
@@ -177,13 +170,9 @@ var
   i: Integer;
   src: TCustomChartSource;
   x, y, dxp, dxn, dyp, dyn: Double;
-  fx, fy: Double;
-  sp, sn: String;
 begin
   src := Chart1LineSeries1.Source;
   StringGrid1.RowCount := src.Count + 1;
-  fx := EdXErrPercent.Value * 0.01;
-  fy := EdYErrPercent.Value * 0.01;
   for i:=1 to StringGrid1.RowCount-1 do begin
     x := src.Item[i-1]^.X;
     y := src.Item[i-1]^.Y;
@@ -237,14 +226,16 @@ begin
   Chart1FitSeries1.YErrorBars.Pen.Width := EdErrPenWidth.Value;
 end;
 
-procedure TMainForm.StringGrid1PrepareCanvas(sender: TObject; aCol, aRow: Integer;
+procedure TMainForm.StringGrid1PrepareCanvas(Sender: TObject; aCol, aRow: Integer;
   aState: TGridDrawState);
 var
   ts: TTextStyle;
+  grid: TStringGrid;
 begin
-  ts := StringGrid1.Canvas.TextStyle;
+  grid := (Sender as TStringGrid);
+  ts := grid.Canvas.TextStyle;
   ts.Alignment := taCenter;
-  StringGrid1.Canvas.TextStyle := ts;
+  grid.Canvas.TextStyle := ts;
 end;
 
 procedure TMainForm.UserDefinedChartSource1GetChartDataItem(
@@ -350,8 +341,6 @@ begin
 end;
 
 procedure TMainForm.RgChartSourceClick(Sender: TObject);
-var
-  src: TCustomChartSource;
 begin
   case RgChartSource.ItemIndex of
     0: begin

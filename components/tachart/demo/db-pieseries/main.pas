@@ -26,9 +26,9 @@ type
     procedure DbChartSource1GetItem(ASender: TDbChartSource;
       var AItem: TChartDataItem);
     procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
-      DataCol: Integer; Column: TColumn; State: TGridDrawState);
+      {%H-}DataCol: Integer; Column: TColumn; {%H-}State: TGridDrawState);
     procedure FormCreate(Sender: TObject);
-    procedure MemDataset1AfterPost(DataSet: TDataSet);
+    procedure MemDataset1AfterPost({%H-}DataSet: TDataSet);
   end;
 
 var
@@ -67,7 +67,7 @@ var
   s: String;
   i: integer;
 begin
-  DbChartSource1.DefaultGetItem(AItem);
+  ASender.DefaultGetItem(AItem);
   s := '';
   i := Length(AItem.Text);
   while (i > 0) and (AItem.Text[i] in ['0'..'9']) do begin

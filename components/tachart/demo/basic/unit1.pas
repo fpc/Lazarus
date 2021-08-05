@@ -12,6 +12,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    Bevel1: TBevel;
     btnClearArea: TButton;
     btnClearBar: TButton;
     btnClearLine: TButton;
@@ -82,7 +83,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, GraphUtil, TAChartUtils, TATextElements, TATypes;
+  GraphUtil, TAChartUtils, TATextElements, TATypes;
 
 { TForm1 }
 
@@ -187,7 +188,6 @@ end;
 
 procedure TForm1.cbCrosshairToolChange(Sender: TObject);
 begin
-  DataPointCrosshairTool.Enabled := CbCrosshairTool.ItemIndex > 0;
   case cbCrosshairTool.ItemIndex of
     1: begin
          DatapointCrosshairTool.Shape := ccsVertical;
@@ -202,6 +202,7 @@ begin
          DatapointCrosshairTool.DistanceMode := cdmXY;
        end;
   end;
+  DataPointCrosshairTool.Enabled := CbCrosshairTool.ItemIndex > 0;
 end;
 
 procedure TForm1.cbBottomAxisChange(Sender: TObject);

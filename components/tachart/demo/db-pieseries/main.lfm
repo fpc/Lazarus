@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 578
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 268
@@ -45,12 +45,11 @@ object Form1: TForm1
       'TAChart'
     )
     Align = alClient
-    Color = clForm
     object Chart1PieSeries1: TPieSeries
       Legend.Multiplicity = lmPoint
+      Exploded = True
       Marks.Format = '%2:s'
       Marks.Style = smsLabel
-      Exploded = True
       Source = DbChartSource1
     end
   end
@@ -90,7 +89,6 @@ object Form1: TForm1
       Width = 77
       BorderSpacing.Left = 8
       Caption = 'Get color from'
-      ParentColor = False
     end
     object ComboBox1: TComboBox
       AnchorSideLeft.Control = Label1
@@ -138,13 +136,13 @@ object Form1: TForm1
         DataType = ftInteger
       end>
     AfterPost = MemDataset1AfterPost
-    left = 144
-    top = 64
+    Left = 144
+    Top = 64
   end
   object Datasource1: TDataSource
     DataSet = MemDataset1
-    left = 144
-    top = 128
+    Left = 144
+    Top = 128
   end
   object DbChartSource1: TDbChartSource
     DataSource = Datasource1
@@ -152,7 +150,7 @@ object Form1: TForm1
     FieldText = 'Txt'
     FieldX = 'X'
     FieldY = 'Y'
-    left = 144
-    top = 192
+    Left = 144
+    Top = 192
   end
 end

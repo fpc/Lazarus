@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 369
   ClientWidth = 629
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 369
@@ -99,7 +99,6 @@ object Form1: TForm1
       Height = 1
       Top = 340
       Width = 1
-      ParentColor = False
     end
     object seTime: TSpinEdit
       AnchorSideLeft.Control = rgMethod
@@ -110,6 +109,7 @@ object Form1: TForm1
       Height = 23
       Top = 103
       Width = 82
+      Alignment = taRightJustify
       BorderSpacing.Left = 6
       BorderSpacing.Top = 8
       Increment = 100
@@ -130,7 +130,7 @@ object Form1: TForm1
       '6|7|?|'
       '7|8|?|'
     )
-    left = 552
-    top = 288
+    Left = 552
+    Top = 288
   end
 end

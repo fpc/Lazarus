@@ -38,13 +38,12 @@ type
     RbToolTargetBar: TRadioButton;
     LogSplitter: TSplitter;
     procedure DataPointClickToolPointClick(ATool: TChartTool;
-      APoint: TPoint);
-    procedure DataPointDragToolBeforeMouseDown(ATool: TChartTool; APoint: TPoint
-      );
+      {%H-}APoint: TPoint);
+    procedure DataPointDragToolBeforeMouseDown(ATool: TChartTool; {%H-}APoint: TPoint);
     procedure DataPointDragToolDrag(ASender: TDataPointDragTool;
       var AGraphPoint: TDoublePoint);
     procedure DataPointHintToolHint(ATool: TDataPointHintTool;
-      const APoint: TPoint; var AHint: String);
+      const {%H-}APoint: TPoint; var AHint: String);
     procedure CbHorizontalChange(Sender: TObject);
     procedure Cb100PercentChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -190,8 +189,6 @@ begin
 end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
-const
-  N = 6;
 var
   i: Integer;
 begin

@@ -64,7 +64,7 @@ type
     tsBasic: TTabSheet;
     UserDefinedChartSource: TUserDefinedChartSource;
     procedure btnSortClick(Sender: TObject);
-    procedure BubbleChartAfterPaint(ASender: TChart);
+    procedure BubbleChartAfterPaint({%H-}ASender: TChart);
     procedure cbAccDirDerivativeChange(Sender: TObject);
     procedure cbAccDirStatisticsChange(Sender: TObject);
     procedure cbCumulativeChange(Sender: TObject);
@@ -75,7 +75,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure rgDataShapeClick(Sender: TObject);
     procedure UserDefinedChartSourceGetChartDataItem(
-      ASource: TUserDefinedChartSource; AIndex: Integer;
+      {%H-}ASource: TUserDefinedChartSource; AIndex: Integer;
       var AItem: TChartDataItem);
   private
     FDataForSorting: array of TDataForSorting;

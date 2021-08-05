@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 299
   ClientWidth = 538
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 275
@@ -104,7 +104,7 @@ object Form1: TForm1
     end
   end
   object SaveDialog1: TSaveDialog
-    left = 120
-    top = 56
+    Left = 120
+    Top = 56
   end
 end

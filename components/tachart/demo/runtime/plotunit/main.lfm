@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 387
   ClientWidth = 781
   OnCreate = FormCreate
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object BtnAdd: TButton
     AnchorSideLeft.Control = CbPlotTypes
     AnchorSideLeft.Side = asrBottom
@@ -37,12 +37,16 @@ object MainForm: TMainForm
     Width = 773
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue

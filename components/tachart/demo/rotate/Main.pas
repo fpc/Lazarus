@@ -13,6 +13,7 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    Bevel1: TBevel;
     cbRotateBar: TCheckBox;
     cbNegative: TCheckBox;
     cbRotateArea: TCheckBox;

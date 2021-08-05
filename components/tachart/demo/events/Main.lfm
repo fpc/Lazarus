@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 240
   ClientWidth = 320
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 240
@@ -14,10 +14,16 @@ object Form1: TForm1
     Width = 320
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Depth = 15
     Foot.Brush.Color = clBtnFace
@@ -30,7 +36,6 @@ object Form1: TForm1
     OnBeforeDrawBackground = Chart1BeforeDrawBackground
     OnBeforeDrawBackWall = Chart1BeforeDrawBackWall
     Align = alClient
-    ParentColor = False
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clRed
       Source = RandomChartSource1
@@ -44,7 +49,7 @@ object Form1: TForm1
     XMin = 3
     YMax = 20
     YMin = 2
-    left = 248
-    top = 28
+    Left = 248
+    Top = 28
   end
 end

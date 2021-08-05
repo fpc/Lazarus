@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 452
   ClientWidth = 656
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object BottomPanel: TPanel
     Left = 8
     Height = 105
@@ -26,7 +26,7 @@ object MainForm: TMainForm
       Left = 0
       Height = 78
       Top = 8
-      Width = 333
+      Width = 338
       AutoFill = True
       AutoSize = True
       BorderSpacing.InnerBorder = 4
@@ -40,7 +40,7 @@ object MainForm: TMainForm
       ChildSizing.Layout = cclLeftToRightThenTopToBottom
       ChildSizing.ControlsPerLine = 4
       ClientHeight = 58
-      ClientWidth = 329
+      ClientWidth = 334
       Columns = 4
       Items.Strings = (
         'title'
@@ -112,7 +112,7 @@ object MainForm: TMainForm
       AnchorSideLeft.Control = CbRotateXLabels
       AnchorSideTop.Control = CbRotateXLabels
       AnchorSideTop.Side = asrBottom
-      Left = 349
+      Left = 354
       Height = 19
       Top = 38
       Width = 86
@@ -127,10 +127,10 @@ object MainForm: TMainForm
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = BtnCopyToClipboard
       AnchorSideTop.Side = asrCenter
-      Left = 349
+      Left = 354
       Height = 19
       Top = 11
-      Width = 131
+      Width = 132
       BorderSpacing.Left = 16
       Caption = 'Rotate x labels by 45°'
       OnChange = CbRotateXLabelsChange
@@ -146,7 +146,6 @@ object MainForm: TMainForm
       Width = 305
       BorderSpacing.Top = 4
       Caption = 'Measure distance: drag with left mouse button held down'
-      ParentColor = False
     end
   end
   object Chart: TChart
@@ -158,11 +157,13 @@ object MainForm: TMainForm
       item
         Grid.Color = clSilver
         Grid.Style = psSolid
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Height = -16
         Title.LabelFont.Orientation = 900
         Title.Visible = True
         Title.Caption = 'Area A, cm<sup>2</sup>'
+        Title.LabelBrush.Style = bsClear
         Title.TextFormat = tfHTML
       end    
       item
@@ -170,11 +171,13 @@ object MainForm: TMainForm
         Grid.Style = psSolid
         Grid.Visible = False
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Marks.TextFormat = tfHTML
         Minors = <>
         Title.LabelFont.Height = -16
         Title.Visible = True
         Title.Caption = 'Angle &alpha;, &deg;'
+        Title.LabelBrush.Style = bsClear
         Title.TextFormat = tfHTML
         OnMarkToText = ChartAxisList1MarkToText
       end>
@@ -208,39 +211,39 @@ object MainForm: TMainForm
     BorderSpacing.Around = 8
     Color = clWhite
     object DataSeries: TLineSeries
+      Title = '<font color="red">Measured data points</font>'
+      LinePen.Color = clRed
+      LineType = ltNone
       Marks.Alignment = taCenter
       Marks.Format = '%2:s'
       Marks.Frame.Color = clGray
       Marks.LinkPen.Color = clGray
       Marks.Style = smsLabel
       Marks.TextFormat = tfHTML
-      Title = '<font color="red">Measured data points</font>'
-      LinePen.Color = clRed
-      LineType = ltNone
       Pointer.Brush.Color = clRed
       Pointer.Style = psCircle
+      Pointer.Visible = True
       ShowPoints = True
     end
     object FitSeries: TFitSeries
-      Marks.TextFormat = tfHTML
       Title = 'Fit curve (<font color="blue">blue</font>)'
+      Marks.TextFormat = tfHTML
       Pen.Color = clBlue
-      Pointer.Visible = False
       Source = ListChartSource
       OnFitComplete = FitSeriesFitComplete
     end
   end
   object ListChartSource: TListChartSource
-    left = 224
-    top = 88
+    Left = 224
+    Top = 88
   end
   object ListChartSource_Fit: TListChartSource
-    left = 224
-    top = 153
+    Left = 224
+    Top = 153
   end
   object ChartTools: TChartToolset
-    left = 368
-    top = 88
+    Left = 368
+    Top = 88
     object DistanceTool: TDataPointDistanceTool
       Shift = [ssLeft]
       DistanceMode = cdmOnlyX

@@ -16,12 +16,12 @@ type
     Chart1: TChart;
     Chart1BarSeries1: TBarSeries;
     RandomChartSource1: TRandomChartSource;
-    procedure Chart1BarSeries1BeforeDrawBar(ASender: TBarSeries;
-      ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
+    procedure Chart1BarSeries1BeforeDrawBar({%H-}ASender: TBarSeries;
+      ACanvas: TCanvas; const {%H-}ARect: TRect; APointIndex, {%H-}AStackIndex: Integer;
       var ADoDefaultDrawing: Boolean);
-    procedure Chart1BeforeDrawBackground(ASender: TChart; ACanvas: TCanvas;
+    procedure Chart1BeforeDrawBackground({%H-}ASender: TChart; ACanvas: TCanvas;
       const ARect: TRect; var ADoDefaultDrawing: Boolean);
-    procedure Chart1BeforeDrawBackWall(ASender: TChart; ACanvas: TCanvas;
+    procedure Chart1BeforeDrawBackWall({%H-}ASender: TChart; ACanvas: TCanvas;
       const ARect: TRect; var ADoDefaultDrawing: Boolean);
   end;
 

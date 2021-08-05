@@ -34,7 +34,7 @@ type
     procedure BtnSaveSVGClick(Sender: TObject);
     procedure CbRotateXLabelsChange(Sender: TObject);
     procedure CgHTMLItemClick(Sender: TObject; Index: integer);
-    procedure ChartAxisList1MarkToText(var AText: String; AMark: Double);
+    procedure ChartAxisList1MarkToText(var AText: String; {%H-}AMark: Double);
     procedure CbRTLChange(Sender: TObject);
     procedure DistanceToolGetDistanceText(ASender: TDataPointDistanceTool;
       var AText: String);
@@ -154,7 +154,7 @@ end;
 
 procedure TMainForm.FitSeriesFitComplete(Sender: TObject);
 var
-  p: Array of Double;
+  p: Array of Double = nil;
   i: Integer;
   s: String;
 begin

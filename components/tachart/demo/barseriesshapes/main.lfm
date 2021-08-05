@@ -6,7 +6,7 @@ object Form1: TForm1
   Caption = 'Form1'
   ClientHeight = 370
   ClientWidth = 495
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 335
@@ -71,7 +71,6 @@ object Form1: TForm1
       BorderSpacing.Left = 12
       BorderSpacing.Right = 6
       Caption = 'Shape'
-      ParentColor = False
     end
     object cmbShape: TComboBox
       AnchorSideLeft.Control = lblShape
@@ -124,7 +123,6 @@ object Form1: TForm1
       Width = 32
       BorderSpacing.Left = 12
       Caption = 'Levels'
-      ParentColor = False
     end
     object seLevels: TSpinEdit
       AnchorSideLeft.Control = lblLevels
@@ -162,12 +160,10 @@ object Form1: TForm1
     PointsNumber = 6
     RandSeed = 1050736283
     XMax = 5
-    XMin = 0
     YCount = 3
     YMax = 100
-    YMin = 0
-    left = 136
-    top = 81
+    Left = 136
+    Top = 81
   end
   object ChartStyles1: TChartStyles
     Styles = <    
@@ -186,7 +182,7 @@ object Form1: TForm1
       item
         Brush.Color = clFuchsia
       end>
-    left = 232
-    top = 79
+    Left = 232
+    Top = 79
   end
 end

@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 515
   ClientWidth = 795
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object SettingsPanel: TPanel
     Left = 6
     Height = 23
@@ -51,7 +51,6 @@ object MainForm: TMainForm
       Top = 4
       Width = 37
       Caption = 'Sort by'
-      ParentColor = False
     end
     object cbXCount0: TCheckBox
       AnchorSideLeft.Control = cbSortBy
@@ -160,12 +159,12 @@ object MainForm: TMainForm
     end
   end
   object ListChartSource: TListChartSource
-    left = 192
-    top = 112
+    Left = 192
+    Top = 112
   end
   object ChartToolset: TChartToolset
-    left = 192
-    top = 184
+    Left = 192
+    Top = 184
     object ZoomDragTool: TZoomDragTool
       Shift = [ssLeft]
       Brush.Style = bsClear

@@ -8,15 +8,15 @@ object Form1: TForm1
   ClientWidth = 533
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 434
     Top = 0
     Width = 533
-    ActivePage = tsLinear
+    ActivePage = tsCumulNormDistr
     Align = alClient
-    TabIndex = 0
+    TabIndex = 3
     TabOrder = 0
     object tsLinear: TTabSheet
       Caption = 'Linear'
@@ -81,6 +81,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         object ChartTSummer: TLineSeries
           AxisIndexY = 0
           LinePen.Color = clRed
@@ -170,7 +171,6 @@ object Form1: TForm1
             Title.LabelBrush.Style = bsClear
             Transformations = catIndependent2
           end>
-        BackColor = clWhite
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
         Title.Brush.Color = clBtnFace
@@ -249,7 +249,6 @@ object Form1: TForm1
           Caption = 'Scale 1'
           Font.Color = clNavy
           Font.Style = [fsBold]
-          ParentColor = False
           ParentFont = False
         end
         object lblIndependentScale2: TLabel
@@ -265,7 +264,6 @@ object Form1: TForm1
           Caption = 'Scale 2'
           Font.Color = clGreen
           Font.Style = [fsBold]
-          ParentColor = False
           ParentFont = False
         end
         object rgSyncAxisMarks: TRadioGroup
@@ -370,6 +368,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         object clsLogPoints: TLineSeries
           AxisIndexY = 0
           LineType = ltNone
@@ -421,6 +420,7 @@ object Form1: TForm1
           Top = 0
           Width = 50
           BorderSpacing.Left = 8
+          MaxValue = 10000
           OnChange = seToleranceChange
           TabOrder = 1
         end
@@ -435,7 +435,6 @@ object Form1: TForm1
           Width = 50
           BorderSpacing.Left = 16
           Caption = 'Tolerance'
-          ParentColor = False
         end
       end
     end
@@ -476,7 +475,6 @@ object Form1: TForm1
             Title.Caption = 'Random number'
             Title.LabelBrush.Style = bsClear
           end>
-        BackColor = clWhite
         Extent.XMax = 3
         Extent.XMin = -3
         Extent.YMax = 3
@@ -492,6 +490,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clWindow
         object ChartCumulNormDistrLineSeries1: TLineSeries
           AxisIndexX = 1
           AxisIndexY = 0
@@ -599,7 +598,6 @@ object Form1: TForm1
           Width = 61
           BorderSpacing.Left = 16
           Caption = 'Data count:'
-          ParentColor = False
         end
       end
     end
@@ -633,14 +631,13 @@ object Form1: TForm1
           end>
         Foot.Brush.Color = clBtnFace
         Foot.Font.Color = clBlue
-        Title.Brush.Color = clBtnFace
-        Title.Font.Color = clBlue
         Title.Text.Strings = (
           'Drag purple line to locally zoom in various axis segments'
         )
         Title.Visible = True
         Toolset = ChartToolset1
         Align = alClient
+        Color = clWindow
         object ChartUserLineSeries1: TLineSeries
           AxisIndexX = 1
           Source = rcsUser

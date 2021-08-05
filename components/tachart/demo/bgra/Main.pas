@@ -71,8 +71,7 @@ implementation
 
 uses
   Math, BGRABitmap, BGRABitmapTypes, BGRAGradients,
-  TABGRAUtils, TAChartUtils, TADrawerBGRA, TADrawerCanvas,
-  TAGeometry;
+  TABGRAUtils, TAChartUtils, TADrawerBGRA, TADrawerCanvas;
 
 { TForm1 }
 
@@ -117,7 +116,6 @@ procedure TForm1.chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
 var
   temp, stretched: TBGRABitmap;
   sz: TPoint;
-  lightPos: TPoint;
 begin
   Unused(ASender);
   Unused(APointIndex, AStackIndex);

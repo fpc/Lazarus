@@ -2,30 +2,30 @@ object Form1: TForm1
   Left = 461
   Height = 430
   Top = 151
-  Width = 592
+  Width = 624
   Caption = 'Form1'
   ClientHeight = 430
-  ClientWidth = 592
+  ClientWidth = 624
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object pcMain: TPageControl
     Left = 0
-    Height = 364
+    Height = 355
     Top = 0
-    Width = 592
+    Width = 624
     ActivePage = tsBar
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tsBar: TTabSheet
       Caption = 'Bar'
-      ClientHeight = 336
-      ClientWidth = 584
+      ClientHeight = 327
+      ClientWidth = 616
       object Chart1: TChart
         Left = 0
-        Height = 336
+        Height = 327
         Top = 0
-        Width = 584
+        Width = 616
         AxisList = <        
           item
             TickLength = 0
@@ -35,6 +35,7 @@ object Form1: TForm1
             Title.LabelFont.Orientation = 900
             Title.Visible = True
             Title.Caption = 'Left axis title'
+            Title.LabelBrush.Style = bsClear
           end        
           item
             Alignment = calBottom
@@ -57,6 +58,7 @@ object Form1: TForm1
         )
         Align = alClient
         object Chart1BarSeries1: TBarSeries
+          BarBrush.Color = 1410280
           Marks.Margins.Left = 8
           Marks.Margins.Top = 5
           Marks.Margins.Right = 8
@@ -69,20 +71,19 @@ object Form1: TForm1
           Marks.Frame.Color = 31097
           Marks.Frame.Width = 2
           Marks.Style = smsPercent
-          BarBrush.Color = 1410280
           Source = RandomChartSource1
         end
       end
     end
     object Multiline: TTabSheet
       Caption = 'Multiline'
-      ClientHeight = 336
-      ClientWidth = 584
+      ClientHeight = 327
+      ClientWidth = 616
       object ChartMulti: TChart
         Left = 0
-        Height = 336
+        Height = 327
         Top = 0
-        Width = 584
+        Width = 616
         AxisList = <        
           item
             Marks.Alignment = taCenter
@@ -126,20 +127,20 @@ object Form1: TForm1
   end
   object pnlControls: TPanel
     Left = 0
-    Height = 66
-    Top = 364
-    Width = 592
+    Height = 75
+    Top = 355
+    Width = 624
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 66
-    ClientWidth = 592
+    ClientHeight = 75
+    ClientWidth = 624
     TabOrder = 1
     object cbHideOverlapping: TCheckBox
       AnchorSideLeft.Control = gbAngles
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = pnlControls
-      Left = 420
+      Left = 436
       Height = 19
       Top = 8
       Width = 144
@@ -150,21 +151,22 @@ object Form1: TForm1
       TabOrder = 0
     end
     object gbAngles: TGroupBox
-      Left = 0
-      Height = 66
-      Top = 0
-      Width = 404
+      Left = 8
+      Height = 59
+      Top = 8
+      Width = 412
       Align = alLeft
       AutoSize = True
+      BorderSpacing.Around = 8
       Caption = ' Angles '
-      ClientHeight = 46
-      ClientWidth = 400
+      ClientHeight = 39
+      ClientWidth = 408
       TabOrder = 1
       object seAxisAngle: TSpinEdit
         AnchorSideLeft.Control = lblAxisAngle
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = gbAngles
-        Left = 37
+        Left = 38
         Height = 23
         Top = 8
         Width = 50
@@ -184,29 +186,27 @@ object Form1: TForm1
         Left = 8
         Height = 15
         Top = 12
-        Width = 21
+        Width = 22
         BorderSpacing.Left = 8
         Caption = 'Axis'
-        ParentColor = False
       end
       object lblSeriesAngle: TLabel
         AnchorSideLeft.Control = seAxisAngle
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = seSeriesAngle
         AnchorSideTop.Side = asrCenter
-        Left = 103
+        Left = 104
         Height = 15
         Top = 12
         Width = 30
         BorderSpacing.Left = 16
         Caption = 'Series'
-        ParentColor = False
       end
       object seSeriesAngle: TSpinEdit
         AnchorSideLeft.Control = lblSeriesAngle
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = gbAngles
-        Left = 141
+        Left = 142
         Height = 23
         Top = 8
         Width = 50
@@ -224,13 +224,12 @@ object Form1: TForm1
         AnchorSideLeft.Side = asrBottom
         AnchorSideTop.Control = seTitleAngle
         AnchorSideTop.Side = asrCenter
-        Left = 207
+        Left = 208
         Height = 15
         Top = 12
-        Width = 23
+        Width = 22
         BorderSpacing.Left = 16
         Caption = 'Title'
-        ParentColor = False
       end
       object seTitleAngle: TSpinEdit
         AnchorSideLeft.Control = lblTitleAngle
@@ -259,6 +258,7 @@ object Form1: TForm1
         Width = 50
         BorderSpacing.Left = 8
         BorderSpacing.Top = 8
+        BorderSpacing.Right = 8
         BorderSpacing.Bottom = 8
         Increment = 5
         MaxValue = 120
@@ -276,14 +276,13 @@ object Form1: TForm1
         Width = 38
         BorderSpacing.Left = 16
         Caption = 'Callout'
-        ParentColor = False
       end
     end
     object cbShape: TComboBox
       AnchorSideLeft.Control = cbHideOverlapping
       AnchorSideTop.Control = cbHideOverlapping
       AnchorSideTop.Side = asrBottom
-      Left = 420
+      Left = 436
       Height = 23
       Top = 35
       Width = 160
@@ -308,10 +307,9 @@ object Form1: TForm1
     PointsNumber = 15
     RandSeed = 567673250
     XMax = 15
-    XMin = 0
     YMax = 15
     YMin = 10
-    left = 342
-    top = 94
+    Left = 342
+    Top = 94
   end
 end

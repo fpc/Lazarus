@@ -7,7 +7,7 @@ object MainForm: TMainForm
   ClientHeight = 466
   ClientWidth = 891
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object FinancialChart: TChart
     Left = 0
     Height = 385
@@ -76,9 +76,8 @@ object MainForm: TMainForm
       Width = 891
       Align = alClient
       Alignment = taCenter
-      Caption = 'Hold down the left mouse button to see a hint window with the open/high/low/close stock prices above each data point.'#13#10'Hold down the left mouse button - together with CTRL - to see a hint window with the clicked stock price above each data point.'
+      Caption = 'Hold down the left mouse button to see a hint window with the open/high/low/close stock prices for each data point.'#13#10'Hold down the left mouse button - together with CTRL - to see a hint window with the clicked stock price for each data point.'
       Layout = tlCenter
-      ParentColor = False
     end
   end
   object TopPanel: TPanel
@@ -174,7 +173,6 @@ object MainForm: TMainForm
       BorderSpacing.Left = 24
       Caption = 'Up'
       FocusControl = cbUpColor
-      ParentColor = False
     end
     object LblDown: TLabel
       AnchorSideLeft.Control = cbUpColor
@@ -188,12 +186,11 @@ object MainForm: TMainForm
       BorderSpacing.Left = 24
       Caption = 'Down'
       FocusControl = cbDownColor
-      ParentColor = False
     end
   end
   object ChartToolset1: TChartToolset
-    left = 160
-    top = 111
+    Left = 160
+    Top = 111
     object DataPointHintTool_All: TDataPointHintTool
       Shift = [ssLeft]
       GrabRadius = 8

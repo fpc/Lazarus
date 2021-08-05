@@ -64,8 +64,8 @@ type
     procedure cbMarkPositionsChange(Sender: TObject);
     procedure cbRotateChange(Sender: TObject);
     procedure cbShowLabelsChange(Sender: TObject);
-    procedure ChartPieMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure ChartPieMouseDown(Sender: TObject; {%H-}Button: TMouseButton;
+      {%H-}Shift: TShiftState; X, Y: Integer);
     procedure cbShowPointsChange(Sender: TObject);
     procedure Cb3DChange(Sender: TObject);
     procedure cmbOrientationChange(Sender: TObject);
@@ -241,6 +241,7 @@ var
   var
     i: Integer;
   begin
+    Result := '';
     SetLength(Result, r.GetInRange(1, 5));
     for i := 1 to Length(Result) do
       Result[i] := Chr(r.GetInRange(Ord('a'), Ord('z')));

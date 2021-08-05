@@ -41,7 +41,7 @@ implementation
 {$R *.lfm}
 
 uses
-  TADrawerSVG, TADrawUtils, TADrawerCanvas;
+  TADrawerSVG, TADrawerCanvas;
 
 { TForm1 }
 

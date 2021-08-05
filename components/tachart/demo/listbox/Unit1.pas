@@ -5,7 +5,7 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, TASources, TASeries, TAGraph, CheckLst, Spin,
+  Classes, SysUtils, TASources, TASeries, TAGraph, Spin,
   ExtCtrls, StdCtrls, FileUtil, Forms, Controls, Graphics, Dialogs, Buttons,
   TAChartListbox, TACustomSeries, TALegend;
 
@@ -47,7 +47,7 @@ type
     BtnDown: TSpeedButton;
     BtnSort: TSpeedButton;
     Splitter: TSplitter;
-    procedure ApplicationPropertiesIdle(Sender: TObject; var Done: Boolean);
+    procedure ApplicationPropertiesIdle(Sender: TObject; var {%H-}Done: Boolean);
     procedure BtnAddSeriesClick(Sender: TObject);
     procedure BtnDeleteSeriesClick(Sender: TObject);
     procedure BtnDownClick(Sender: TObject);
@@ -62,8 +62,8 @@ type
     procedure CbShowSeriesIconChange(Sender: TObject);
     procedure CbCheckStyleChange(Sender: TObject);
     procedure CbKeepSeriesOutChange(Sender: TObject);
-    procedure ChartListboxAddSeries(ASender: TChartListbox;
-      ASeries: TCustomChartSeries; AItems: TChartLegendItems;
+    procedure ChartListboxAddSeries({%H-}ASender: TChartListbox;
+      ASeries: TCustomChartSeries; {%H-}AItems: TChartLegendItems;
       var ASkip: Boolean);
     procedure ChartListboxPopulate(Sender: TObject);
     procedure EdColumnsChange(Sender: TObject);

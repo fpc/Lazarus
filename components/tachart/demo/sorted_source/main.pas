@@ -30,8 +30,8 @@ type
     procedure cbXCount0Change(Sender: TObject);
     procedure DataPointClickToolPointClick(ATool: TChartTool; APoint: TPoint);
     procedure FormCreate(Sender: TObject);
-    procedure GridPrepareCanvas(sender: TObject; aCol, aRow: Integer;
-      aState: TGridDrawState);
+    procedure GridPrepareCanvas({%H-}sender: TObject; aCol, {%H-}aRow: Integer;
+      {%H-}aState: TGridDrawState);
     procedure TabControlChange(Sender: TObject);
   private
     PieSeries: TPieSeries;
@@ -223,6 +223,7 @@ var
   tool: TDataPointClickTool;
   ser: TChartSeries;
 begin
+  Unused(APoint);
   tool := ATool as TDataPointClickTool;
   ser := tool.Series as TChartSeries;
   ShowMessage(Format('Series "%s" clicked at data point #%d, x=%f, y=%f ("%s")', [

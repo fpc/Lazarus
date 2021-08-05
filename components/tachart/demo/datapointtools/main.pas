@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, ComCtrls,
   ExtCtrls, StdCtrls, Types,
   TAGraph, TASeries, TATools, TAStyles, TASources,  TAChartUtils, TAMultiSeries,
-  TARadialSeries, TAFuncSeries, TACustomSeries, TADrawUtils;
+  TARadialSeries, TAFuncSeries, TACustomSeries;
 
 type
 
@@ -49,9 +49,9 @@ type
     TabControl: TTabControl;
     procedure CbCandleStickChange(Sender: TObject);
     procedure CbDragXYChange(Sender: TObject);
-    procedure ClickToolPointClick(ATool: TChartTool; APoint: TPoint);
-    procedure CrosshairToolAfterKeyUp(ATool: TChartTool; APoint: TPoint);
-    procedure CrosshairToolAfterMouseUp(ATool: TChartTool; APoint: TPoint);
+    procedure ClickToolPointClick(ATool: TChartTool; {%H-}APoint: TPoint);
+    procedure CrosshairToolAfterKeyUp(ATool: TChartTool; {%H-}APoint: TPoint);
+    procedure CrosshairToolAfterMouseUp(ATool: TChartTool; {%H-}APoint: TPoint);
     procedure CrosshairToolDraw(ASender: TDataPointDrawTool);
     procedure FormCreate(Sender: TObject);
     procedure DataPointDragToolDragXY(ASender: TDataPointDragTool;
@@ -59,7 +59,7 @@ type
     procedure DataPointDragToolDragY(ASender: TDataPointDragTool;
       var AGraphPoint: TDoublePoint);
     procedure FuncSeriesCalculate(const AX: Double; out AY: Double);
-    procedure HintToolHint(ATool: TDataPointHintTool; const APoint: TPoint;
+    procedure HintToolHint(ATool: TDataPointHintTool; const {%H-}APoint: TPoint;
       var AHint: String);
     procedure TabControlChange(Sender: TObject);
 
@@ -114,8 +114,7 @@ begin
   TDatapointCrosshairTool(ATool).Hide;
 end;
 
-procedure TMainForm.CrosshairToolAfterMouseUp(ATool: TChartTool; APoint: TPoint
-  );
+procedure TMainForm.CrosshairToolAfterMouseUp(ATool: TChartTool; APoint: TPoint);
 begin
   TDatapointCrosshairTool(ATool).Hide;
 end;

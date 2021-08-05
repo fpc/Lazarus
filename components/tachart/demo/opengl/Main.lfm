@@ -7,7 +7,7 @@ object Form1: TForm1
   ClientHeight = 319
   ClientWidth = 688
   OnCreate = FormCreate
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object OpenGLControl1: TOpenGLControl
     AnchorSideLeft.Control = Bevel1
     AnchorSideTop.Control = Owner
@@ -92,10 +92,8 @@ object Form1: TForm1
     PointsNumber = 10
     RandSeed = 1792875960
     XMax = 10
-    XMin = 0
     YMax = 10
-    YMin = 0
-    left = 210
-    top = 161
+    Left = 210
+    Top = 161
   end
 end

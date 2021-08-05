@@ -60,15 +60,15 @@ type
     procedure CbRotatedChange(Sender: TObject);
     procedure Cb3DChange(Sender: TObject);
     procedure CbUseZeroLevelChange(Sender: TObject);
-    procedure ChartSourceArea1GetChartDataItem(ASource: TUserDefinedChartSource;
+    procedure ChartSourceArea1GetChartDataItem({%H-}ASource: TUserDefinedChartSource;
       AIndex: Integer; var AItem: TChartDataItem);
     procedure ChartSourceArea2GetChartDataItem(
-      ASource: TUserDefinedChartSource; AIndex: Integer;
+      {%H-}ASource: TUserDefinedChartSource; AIndex: Integer;
       var AItem: TChartDataItem);
-    procedure ChartSourceLine1GetChartDataItem(ASource: TUserDefinedChartSource;
+    procedure ChartSourceLine1GetChartDataItem({%H-}ASource: TUserDefinedChartSource;
       AIndex: Integer; var AItem: TChartDataItem);
     procedure ChartSourceLine2GetChartDataItem(
-      ASource: TUserDefinedChartSource; AIndex: Integer;
+      {%H-}ASource: TUserDefinedChartSource; AIndex: Integer;
       var AItem: TChartDataItem);
     procedure CbShowDropLinesChange(Sender: TObject);
     procedure EdDepthBrightnessDeltaChange(Sender: TObject);
@@ -251,7 +251,6 @@ const
   XMAX = +10;
 var
   i: Integer;
-  x, y, dy: Double;
 begin
   PopulateSeries(EdCount.Value, EdYCount.Value);
 

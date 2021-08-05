@@ -25,7 +25,7 @@ type
     RandomChartSource1: TRandomChartSource;
     sbChartHor: TChartNavScrollBar;
     sbChartVert: TChartNavScrollBar;
-    StaticText1: TStaticText;
+    StaticText1: TLabel;
     StatusBar1: TStatusBar;
     procedure cbMiniMapChange(Sender: TObject);
     procedure Chart1ExtentChanged(ASender: TChart);

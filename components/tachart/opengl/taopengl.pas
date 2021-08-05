@@ -94,7 +94,7 @@ end;
 procedure TGLFreeTypeHelper.CreateTexture(AText: String; out ATextWidth, ATextHeight,
   ATextureWidth, ATextureHeight: Integer; out ATextureID: GLuint);
 var
-  expanded_data: packed array of byte;
+  expanded_data: packed array of byte = nil;
   i, j: Integer;
   c: TFPColor;
 begin

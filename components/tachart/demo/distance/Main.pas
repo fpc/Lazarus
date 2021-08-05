@@ -77,7 +77,7 @@ type
     procedure ctFitDataPointDistanceTool1GetDistanceText(
       ASender: TDataPointDistanceTool; var AText: String);
     procedure ctFitDataPointDistanceTool1Measure(
-      ASender: TDataPointDistanceTool);
+      {%H-}ASender: TDataPointDistanceTool);
     procedure edEndbarLengthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure mDistanceTextChange(Sender: TObject);
@@ -241,7 +241,7 @@ begin
           if Param[2] = 0 then
             AText := ''
           else
-            AText := Format('Peak at x=%f y=%f', [
+            AText := Format('Min/max at x=%f y=%f', [
               -Param[1] / (2 * Param[2]),
               Param[0] - Sqr(Param[1])/(4 * Param[2])
           ]);

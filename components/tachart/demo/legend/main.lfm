@@ -2,37 +2,38 @@ object Form1: TForm1
   Left = 529
   Height = 511
   Top = 174
-  Width = 590
+  Width = 632
   Caption = 'Form1'
   ClientHeight = 511
-  ClientWidth = 590
+  ClientWidth = 632
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PageControl1: TPageControl
     Left = 0
     Height = 511
     Top = 0
-    Width = 590
+    Width = 632
     ActivePage = TabSheet1
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
+      AutoSize = True
       Caption = 'Basic'
       ClientHeight = 483
-      ClientWidth = 582
+      ClientWidth = 624
       object pnControls: TPanel
         Left = 0
         Height = 135
         Top = 348
-        Width = 582
+        Width = 624
         Align = alBottom
         AutoSize = True
         BevelOuter = bvNone
         ClientHeight = 135
-        ClientWidth = 582
+        ClientWidth = 624
         TabOrder = 0
         object lblMarginY: TLabel
           AnchorSideLeft.Control = lblMarginX
@@ -43,7 +44,6 @@ object Form1: TForm1
           Top = 35
           Width = 48
           Caption = 'Y margin'
-          ParentColor = False
         end
         object seMarginY: TSpinEdit
           AnchorSideLeft.Control = seMarginX
@@ -63,7 +63,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = lblSymbolWidth
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = seMarginX
-          Left = 215
+          Left = 223
           Height = 23
           Top = 4
           Width = 54
@@ -78,30 +78,30 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = seSymbolWidth
           AnchorSideTop.Side = asrCenter
-          Left = 134
+          Left = 142
           Height = 15
           Top = 8
           Width = 73
-          BorderSpacing.Left = 16
+          BorderSpacing.Left = 24
           Caption = 'Symbol width'
-          ParentColor = False
         end
         object rgAlignment: TRadioGroup
           AnchorSideLeft.Control = seSymbolWidth
           AnchorSideLeft.Side = asrBottom
           AnchorSideBottom.Side = asrBottom
-          Left = 285
+          Left = 293
           Height = 135
           Top = 0
-          Width = 289
-          Align = alRight
-          Anchors = [akTop, akLeft, akRight, akBottom]
+          Width = 323
+          Anchors = [akTop, akLeft, akBottom]
           AutoFill = True
+          AutoSize = True
           BorderSpacing.Left = 16
           BorderSpacing.Right = 8
           Caption = ' Alignment '
-          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.LeftRightSpacing = 12
           ChildSizing.TopBottomSpacing = 6
+          ChildSizing.HorizontalSpacing = 16
           ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
           ChildSizing.EnlargeVertical = crsHomogenousChildResize
           ChildSizing.ShrinkHorizontal = crsScaleChilds
@@ -109,7 +109,7 @@ object Form1: TForm1
           ChildSizing.Layout = cclTopToBottomThenLeftToRight
           ChildSizing.ControlsPerLine = 3
           ClientHeight = 115
-          ClientWidth = 285
+          ClientWidth = 319
           Columns = 3
           ItemIndex = 6
           Items.Strings = (
@@ -146,18 +146,17 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = lblSymbolWidth
           AnchorSideRight.Side = asrBottom
-          Left = 165
+          Left = 173
           Height = 15
           Top = 35
           Width = 42
           Anchors = [akTop, akRight]
           Caption = 'Spacing'
-          ParentColor = False
         end
         object seSpacing: TSpinEdit
           AnchorSideLeft.Control = seSymbolWidth
           AnchorSideTop.Control = seMarginY
-          Left = 215
+          Left = 223
           Height = 23
           Top = 31
           Width = 54
@@ -176,7 +175,6 @@ object Form1: TForm1
           Width = 48
           BorderSpacing.Left = 8
           Caption = 'X margin'
-          ParentColor = False
         end
         object seMarginX: TSpinEdit
           AnchorSideLeft.Control = lblMarginX
@@ -194,15 +192,16 @@ object Form1: TForm1
           Value = 4
         end
         object cbSeries: TComboBox
+          AnchorSideLeft.Control = lblSymbolWidth
           AnchorSideRight.Control = seSymbolWidth
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = cbGrid
           AnchorSideBottom.Side = asrBottom
-          Left = 105
+          Left = 142
           Height = 22
           Top = 105
-          Width = 164
-          Anchors = [akRight, akBottom]
+          Width = 135
+          Anchors = [akLeft, akRight, akBottom]
           ItemHeight = 16
           OnDrawItem = cbSeriesDrawItem
           Style = csOwnerDrawFixed
@@ -213,23 +212,23 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = lblSymbolWidth
           AnchorSideRight.Side = asrBottom
-          Left = 159
+          Left = 167
           Height = 15
           Top = 62
           Width = 48
           Anchors = [akTop, akRight]
           Caption = 'Columns'
-          ParentColor = False
         end
         object seColumnCount: TSpinEdit
           AnchorSideLeft.Control = seSymbolWidth
           AnchorSideTop.Control = seSpacing
           AnchorSideTop.Side = asrBottom
-          Left = 215
+          Left = 223
           Height = 23
           Top = 58
           Width = 54
           BorderSpacing.Top = 4
+          MaxValue = 10
           MinValue = 1
           OnChange = seColumnCountChange
           TabOrder = 7
@@ -267,7 +266,7 @@ object Form1: TForm1
         Left = 8
         Height = 332
         Top = 8
-        Width = 566
+        Width = 608
         AxisList = <        
           item
             Visible = False
@@ -319,10 +318,10 @@ object Form1: TForm1
           Legend.Format = '%2:s %1:.2f%%'
           Legend.GroupIndex = 0
           Legend.Multiplicity = lmPoint
-          Marks.Format = '%2:s'
-          Marks.Style = smsLabel
           Title = 'Pie'
           Exploded = True
+          Marks.Format = '%2:s'
+          Marks.Style = smsLabel
           Source = ListChartSource2
         end
         object Chart1FuncSeries1: TFuncSeries
@@ -342,12 +341,12 @@ object Form1: TForm1
     object TabSheet2: TTabSheet
       Caption = 'OwnerDraw'
       ClientHeight = 483
-      ClientWidth = 582
+      ClientWidth = 624
       object Chart2: TChart
         Left = 8
         Height = 467
         Top = 8
-        Width = 566
+        Width = 608
         AxisList = <        
           item
             Grid.Color = clSilver
@@ -400,8 +399,8 @@ object Form1: TForm1
     XMin = 1
     YMax = 10
     YMin = 1
-    left = 380
-    top = 112
+    Left = 380
+    Top = 112
   end
   object ListChartSource1: TListChartSource
     DataPoints.Strings = (
@@ -411,18 +410,18 @@ object Form1: TForm1
       '3|1|?|'
       '4|6|?|'
     )
-    left = 380
-    top = 168
+    Left = 380
+    Top = 168
   end
   object ListChartSource2: TListChartSource
     DataPoints.Strings = (
       '0|5|?|abcc'
       '0|6|?|def'
-      '0.20000000000000001|4|?|пример'
+      '0.2|4|?|пример'
       '0|7|?|ещё'
       '0|2|?|два слова'
     )
-    left = 380
-    top = 228
+    Left = 380
+    Top = 228
   end
 end

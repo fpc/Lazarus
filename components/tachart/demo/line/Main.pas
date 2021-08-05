@@ -72,7 +72,7 @@ type
     procedure cbSortedChange(Sender: TObject);
     procedure edEveryNthChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure lsGetPointerStyleGetPointerStyle(ASender: TChartSeries;
+    procedure lsGetPointerStyleGetPointerStyle({%H-}ASender: TChartSeries;
       AValueIndex: Integer; var AStyle: TSeriesPointerStyle);
     procedure lsCustomDrawPointerCustomDrawPointer(ASender: TChartSeries;
       ADrawer: IChartDrawer; AIndex: Integer; ACenter: TPoint);
