@@ -235,6 +235,7 @@ begin
   p1 := FChart.GraphToImage(PointStart.GraphPos);
   p2 := FChart.GraphToImage(PointEnd.GraphPos);
   case MeasureMode of
+    cdmXY: ;
     cdmOnlyX: p2.Y := p1.Y;
     cdmOnlyY: p2.X := p1.X;
   end;
