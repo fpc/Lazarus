@@ -52,7 +52,7 @@ implementation
 {$R *.lfm}
 
 uses
-  Math, TASeries,
+  TASeries,
   ceUtils;
 
 
