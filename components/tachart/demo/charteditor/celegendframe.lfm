@@ -322,37 +322,37 @@ object ChartLegendFrame: TChartLegendFrame
       AnchorSideRight.Control = gbFont
       AnchorSideRight.Side = asrBottom
       Left = 322
-      Height = 165
+      Height = 167
       Top = 136
       Width = 216
       Anchors = [akTop, akLeft, akRight]
       AutoSize = True
       BorderSpacing.Top = 16
       Caption = 'Items'
-      ClientHeight = 145
+      ClientHeight = 147
       ClientWidth = 212
       TabOrder = 5
       object cbInverted: TCheckBox
         AnchorSideLeft.Control = gbItems
-        AnchorSideTop.Control = gbItems
+        AnchorSideTop.Control = seSymbolWidth
+        AnchorSideTop.Side = asrBottom
         Left = 8
         Height = 19
-        Top = 6
+        Top = 120
         Width = 63
         BorderSpacing.Left = 8
-        BorderSpacing.Top = 6
+        BorderSpacing.Bottom = 8
         Caption = 'Inverted'
         OnChange = cbInvertedChange
-        TabOrder = 0
+        TabOrder = 4
       end
       object seColumns: TSpinEdit
-        AnchorSideTop.Control = cbInverted
-        AnchorSideTop.Side = asrBottom
+        AnchorSideTop.Control = gbItems
         AnchorSideRight.Control = gbItems
         AnchorSideRight.Side = asrBottom
         Left = 108
         Height = 23
-        Top = 33
+        Top = 8
         Width = 96
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
@@ -361,19 +361,20 @@ object ChartLegendFrame: TChartLegendFrame
         MaxValue = 1000
         MinValue = 1
         OnChange = seColumnsChange
-        TabOrder = 1
+        TabOrder = 0
         Value = 1
       end
       object lblColumns: TLabel
-        AnchorSideLeft.Control = cbInverted
+        AnchorSideLeft.Control = gbItems
         AnchorSideTop.Control = seColumns
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = seColumns
         Left = 8
         Height = 15
-        Top = 37
+        Top = 12
         Width = 92
         Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 8
         BorderSpacing.Right = 8
         Caption = 'Columns'
         FocusControl = seColumns
@@ -385,7 +386,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Control = cbItemFillOrder
         Left = 8
         Height = 15
-        Top = 64
+        Top = 39
         Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
@@ -398,7 +399,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Side = asrBottom
         Left = 108
         Height = 23
-        Top = 60
+        Top = 35
         Width = 96
         Anchors = [akTop, akRight]
         BorderSpacing.Top = 4
@@ -410,7 +411,7 @@ object ChartLegendFrame: TChartLegendFrame
           'by rows'
         )
         OnChange = cbItemFillOrderChange
-        TabOrder = 2
+        TabOrder = 1
         Text = 'by columns'
       end
       object seSpacing: TSpinEdit
@@ -420,7 +421,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Side = asrBottom
         Left = 108
         Height = 23
-        Top = 87
+        Top = 62
         Width = 96
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
@@ -428,7 +429,7 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Right = 8
         MaxValue = 1000
         OnChange = seSpacingChange
-        TabOrder = 3
+        TabOrder = 2
         Value = 20
       end
       object lblSpacing: TLabel
@@ -438,7 +439,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Control = seSpacing
         Left = 8
         Height = 15
-        Top = 91
+        Top = 66
         Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
@@ -452,7 +453,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Side = asrBottom
         Left = 108
         Height = 23
-        Top = 114
+        Top = 89
         Width = 96
         Alignment = taRightJustify
         Anchors = [akTop, akRight]
@@ -461,7 +462,7 @@ object ChartLegendFrame: TChartLegendFrame
         BorderSpacing.Bottom = 8
         MaxValue = 1000
         OnChange = seSymbolWidthChange
-        TabOrder = 4
+        TabOrder = 3
         Value = 20
       end
       object lblSymbolWidth: TLabel
@@ -471,7 +472,7 @@ object ChartLegendFrame: TChartLegendFrame
         AnchorSideRight.Control = seSymbolWidth
         Left = 8
         Height = 15
-        Top = 118
+        Top = 93
         Width = 92
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8

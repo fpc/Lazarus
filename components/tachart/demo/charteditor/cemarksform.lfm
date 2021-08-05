@@ -9,6 +9,7 @@ object MarksForm: TMarksForm
   ClientHeight = 511
   ClientWidth = 535
   OnCreate = FormCreate
+  OnShow = FormShow
   LCLVersion = '2.3.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
@@ -42,13 +43,11 @@ object MarksForm: TMarksForm
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = gbLabelFont
       AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = gbLabelFont
       AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 193
       Top = 178
       Width = 272
-      Anchors = [akTop, akLeft, akRight]
       BorderSpacing.Top = 16
       Caption = 'gbShapeBrushPenMargins'
       TabOrder = 1
@@ -88,6 +87,7 @@ object MarksForm: TMarksForm
     object gbLabelFont: TGroupBox
       AnchorSideLeft.Control = Panel1
       AnchorSideTop.Control = Panel1
+      AnchorSideRight.Side = asrBottom
       Left = 0
       Height = 162
       Top = 0
@@ -103,7 +103,7 @@ object MarksForm: TMarksForm
       AnchorSideRight.Control = gbArrow
       AnchorSideRight.Side = asrBottom
       Left = 296
-      Height = 113
+      Height = 117
       Top = 275
       Width = 207
       Anchors = [akTop, akLeft, akRight]
@@ -111,18 +111,18 @@ object MarksForm: TMarksForm
       BorderSpacing.Left = 24
       BorderSpacing.Top = 16
       Caption = 'Position'
-      ClientHeight = 93
+      ClientHeight = 97
       ClientWidth = 203
       TabOrder = 4
       object lblDistance: TLabel
         AnchorSideLeft.Control = gbPosition
         AnchorSideTop.Control = seDistance
         AnchorSideTop.Side = asrCenter
-        Left = 16
+        Left = 8
         Height = 15
-        Top = 8
+        Top = 12
         Width = 45
-        BorderSpacing.Left = 16
+        BorderSpacing.Left = 8
         Caption = 'Distance'
       end
       object seDistance: TSpinEdit
@@ -131,14 +131,14 @@ object MarksForm: TMarksForm
         AnchorSideTop.Control = gbPosition
         AnchorSideRight.Control = gbPosition
         AnchorSideRight.Side = asrBottom
-        Left = 85
+        Left = 77
         Height = 23
-        Top = 4
-        Width = 110
+        Top = 8
+        Width = 118
         Alignment = taRightJustify
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Left = 24
-        BorderSpacing.Top = 4
+        BorderSpacing.Top = 8
         BorderSpacing.Right = 8
         BorderSpacing.Bottom = 8
         MaxValue = 1000
@@ -149,9 +149,9 @@ object MarksForm: TMarksForm
         AnchorSideLeft.Control = lblDistance
         AnchorSideTop.Control = cmbMarkPositions
         AnchorSideTop.Side = asrCenter
-        Left = 16
+        Left = 8
         Height = 15
-        Top = 39
+        Top = 43
         Width = 43
         Caption = 'Position'
       end
@@ -161,10 +161,10 @@ object MarksForm: TMarksForm
         AnchorSideTop.Side = asrBottom
         AnchorSideRight.Control = seDistance
         AnchorSideRight.Side = asrBottom
-        Left = 85
+        Left = 77
         Height = 23
-        Top = 35
-        Width = 110
+        Top = 39
+        Width = 118
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 8
@@ -183,9 +183,9 @@ object MarksForm: TMarksForm
         AnchorSideLeft.Control = lblPosition
         AnchorSideTop.Control = cmbMarkPositions
         AnchorSideTop.Side = asrBottom
-        Left = 16
+        Left = 8
         Height = 19
-        Top = 66
+        Top = 70
         Width = 112
         BorderSpacing.Top = 6
         BorderSpacing.Bottom = 8
