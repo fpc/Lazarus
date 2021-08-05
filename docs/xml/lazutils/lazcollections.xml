@@ -142,8 +142,11 @@
       <element name="TLazMonitor.FDefaultSpinCount" link="#lazutils.lazcollections.TLazMonitor.DefaultSpinCount"/>
 
       <!-- class function Visibility: private -->
-      <element name="TLazMonitor.GetDefaultSpinCount" link="#lazutils.lazcollections.TLazMonitor.DefaultSpinCount">
+      <element name="TLazMonitor.GetDefaultSpinCount">
         <short>Gets the value for the DefaultSpinCount class property.</short>
+        <seealso>
+          <link id="TLazMonitor.DefaultSpinCount"/>
+        </seealso>
       </element>
       <!-- function result Visibility: private -->
       <element name="TLazMonitor.GetDefaultSpinCount.Result">
@@ -151,8 +154,11 @@
       </element>
 
       <!-- class procedure Visibility: private -->
-      <element name="TLazMonitor.SetDefaultSpinCount" link="#lazutils.lazcollections.TLazMonitor.DefaultSpinCount">
+      <element name="TLazMonitor.SetDefaultSpinCount">
         <short>Sets the value for the DefaultSpinCount property.</short>
+        <seealso>
+          <link id="TLazMonitor.DefaultSpinCount"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLazMonitor.SetDefaultSpinCount.AValue">
@@ -160,8 +166,11 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TLazMonitor.GetSpinCount" link="#lazutils.lazcollections.TLazMonitor.SpinCount">
+      <element name="TLazMonitor.GetSpinCount">
         <short>Gets the value for the SpinCount property.</short>
+        <seealso>
+          <link id="TLazMonitor.SpinCount"/>
+        </seealso>
       </element>
       <!-- function result Visibility: private -->
       <element name="TLazMonitor.GetSpinCount.Result">
@@ -169,8 +178,11 @@
       </element>
 
       <!-- procedure Visibility: private -->
-      <element name="TLazMonitor.SetSpinCount" link="#lazutils.lazcollections.TLazMonitor.SpinCount">
+      <element name="TLazMonitor.SetSpinCount">
         <short>Sets the value for the SpinCount property.</short>
+        <seealso>
+          <link id="TLazMonitor.SpinCount"/>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TLazMonitor.SetSpinCount.AValue">

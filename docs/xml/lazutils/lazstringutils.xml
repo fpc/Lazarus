@@ -1057,7 +1057,7 @@
         <short>Maximum number of characters examined in the routine.</short>
       </element>
 
-      <element name="LazIsValidIdent" link="#rtl.sysutils.IsValidIdent">
+      <element name="LazIsValidIdent">
         <short>This is a copy of IsValidIdent from FPC 3.1.</short>
         <descr>
           <remark>

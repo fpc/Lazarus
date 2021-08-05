@@ -249,11 +249,10 @@
         </seealso>
       </element>
 
-      <element name="TTextStrings.Get" link="#rtl.classes.TStrings.Get">
+      <element name="TTextStrings.Get">
         <short>Gets the value for the indexed Strings property.</short>
         <descr/>
         <seealso>
-          <link id="#rtl.classes.TStrings.Get">TStrings.Get</link>
           <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
         </seealso>
       </element>
@@ -285,12 +284,11 @@
         </seealso>
       </element>
 
-      <element name="TTextStrings.GetObject" link="#rtl.classes.TStrings.GetObject">
+      <element name="TTextStrings.GetObject">
         <short>Gets the value for the indexed Objects property.</short>
         <descr/>
         <seealso>
           <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
-          <link id="#rtl.classes.TStrings.GetObject">TStrings.GetObject</link>
         </seealso>
       </element>
       <element name="TTextStrings.GetObject.Result">
@@ -300,12 +298,11 @@
         <short>Ordinal position in Objects with the property value.</short>
       </element>
 
-      <element name="TTextStrings.Put" link="#rtl.classes.TStrings.Put">
+      <element name="TTextStrings.Put">
         <short>Sets the value for the indexed Strings property.</short>
         <descr/>
         <seealso>
           <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
-          <link id="#rtl.classes.TStrings.Put">TStrings.Put</link>
         </seealso>
       </element>
       <element name="TTextStrings.Put.Index">
@@ -315,7 +312,7 @@
         <short>New value in the indexed property.</short>
       </element>
 
-      <element name="TTextStrings.PutObject" link="#rtl.classes.TStrings.PutObject">
+      <element name="TTextStrings.PutObject">
         <short>Sets a value in the indexed Objects property.</short>
         <descr/>
         <seealso/>
@@ -391,7 +388,7 @@
         <seealso/>
       </element>
 
-      <element name="TTextStrings.Destroy" link="#rtl.classes.TStrings.Destroy">
+      <element name="TTextStrings.Destroy">
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
@@ -407,7 +404,7 @@
         </seealso>
       </element>
 
-      <element name="TTextStrings.Clear" link="#rtl.classes.TStrings.Clear">
+      <element name="TTextStrings.Clear">
         <short>Clears the text and internal line ranges for the component.</short>
         <descr>
           <p>
@@ -430,7 +427,7 @@
         </seealso>
       </element>
 
-      <element name="TTextStrings.SetText" link="#rtl.classes.TStrings.SetText">
+      <element name="TTextStrings.SetText">
         <short>Sets the value for the Text property from a PChar type.</short>
         <descr>
           <p>
@@ -443,13 +440,15 @@
             SetText re-implements the method from the ancestor, and does <b>not</b> call the inherited method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TStrings.SetText">TStrings.SetText</link>
+        </seealso>
       </element>
       <element name="TTextStrings.SetText.TheText">
         <short>New value for the property.</short>
       </element>
 
-      <element name="TTextStrings.Insert" link="#rtl.classes.TStrings.Insert">
+      <element name="TTextStrings.Insert">
         <short>Inserts the line of text in S at the specified position.</short>
         <descr>
           <p>
@@ -477,7 +476,9 @@
         <errors>
           Raises an EListError exception if Index contains an invalild position in the list of string values.
         </errors>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Insert">TStrings.Insert</link>
+        </seealso>
       </element>
       <element name="TTextStrings.Insert.Index">
         <short>Ordinal position where the line of text is inserted.</short>
@@ -486,7 +487,7 @@
         <short>Value for the line of text inserted in the method.</short>
       </element>
 
-      <element name="TTextStrings.Delete" link="#rtl.classes.TStrings.Delete">
+      <element name="TTextStrings.Delete">
         <short>Deletes the line of text at the specified position.</short>
         <descr>
           <p>
@@ -507,15 +508,16 @@
           <link id="TTextStrings.Text"/>
           <link id="TTextLineRange"/>
           <link id="EStringListError"/>
-          <link id="#rtl.systems.classes.TStrings.Count">TStrings.Count</link>
-          <link id="#rtl.systems.classes.TStrings.Strings">TStrings.Strings</link>
+          <link id="#rtl.classes.TStrings.Count">TStrings.Count</link>
+          <link id="#rtl.classes.TStrings.Delete">TStrings.Delete</link>
+          <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
         </seealso>
       </element>
       <element name="TTextStrings.Delete.Index">
         <short>Ordinal position for the value removed from the Strings property.</short>
       </element>
 
-      <element name="TTextStrings.Exchange" link="#rtl.classes.TStrings.Exchange">
+      <element name="TTextStrings.Exchange">
         <short>Swaps the line values at the specified positions.</short>
         <descr>
           <p>
@@ -540,7 +542,9 @@
             Exchange re-implements the method defined in the ancestor, and does <b>not</b> call the inherited method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Exchange">TStrings.Exchange</link>
+        </seealso>
       </element>
       <element name="TTextStrings.Exchange.Index1">
         <short>First position for the value exchange.</short>
@@ -549,10 +553,12 @@
         <short>Second position for the value exchange.</short>
       </element>
 
-      <element name="TTextStrings.Move" link="#rtl.classes.TStrings.Move">
+      <element name="TTextStrings.Move">
         <short>Moves a String value from the current position to the new position.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Move">TStrings.Move</link>
+        </seealso>
       </element>
       <element name="TTextStrings.Move.CurIndex">
         <short>Current ordinal position for the string.</short>
@@ -593,7 +599,7 @@
         </seealso>
       </element>
 
-      <element name="TTextStrings.EndUpdate" link="#rtl.classes.TStrings.EndUpdate">
+      <element name="TTextStrings.EndUpdate">
         <short>Finishes an update process for the component.</short>
         <descr>
           <p>
@@ -617,10 +623,11 @@
         </errors>
         <seealso>
           <link id="TTextStrings.BeginUpdate"/>
+           <link id="#rtl.classes.TStrings.EndUpdate">TStrings.EndUpdate</link>
         </seealso>
       </element>
 
-      <element name="TTextStrings.GetText" link="#rtl.classes.TStrings.GetText">
+      <element name="TTextStrings.GetText">
         <short>Gets the value for the Text property as a PChar type.</short>
         <descr/>
         <seealso>
@@ -632,11 +639,11 @@
         <short>Value for the property as a PChar type.</short>
       </element>
 
-      <element name="TTextStrings.IndexOf" link="#rtl.classes.TStrings.IndexOf">
+      <element name="TTextStrings.IndexOf">
         <short>Gets the ordinal position for the specified String value.</short>
         <descr/>
-        <link id="#rtl.classes.TStrings.IndexOf">TStrings.IndexOf</link>
         <seealso>
+          <link id="#rtl.classes.TStrings.IndexOf">TStrings.IndexOf</link>
         </seealso>
       </element>
       <element name="TTextStrings.IndexOf.Result">
@@ -646,7 +653,7 @@
         <short>Value to locate in the method.</short>
       </element>
 
-      <element name="TTextStrings.Add" link="#rtl.classes.TStrings.Add">
+      <element name="TTextStrings.Add">
         <short>Appends the specified text to the values in Strings.</short>
         <descr>
           <p>
@@ -695,7 +702,7 @@
         <short>TObject instance (or Nil) added to the component.</short>
       </element>
 
-      <element name="TTextStrings.AddStrings" link="#rtl.classes.TStrings.AddStrings">
+      <element name="TTextStrings.AddStrings">
         <short/>
         <descr>
           <p>
@@ -742,7 +749,7 @@
         <short>File name where the content is stored.</short>
       </element>
 
-      <element name="TTextStrings.Text" link="#rtl.classes.TStrings.Text">
+      <element name="TTextStrings.Text">
         <short>Contains the textual representation for the values in Strings.</short>
         <descr>
           <p>
@@ -750,7 +757,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TTextStrings.SetTextStr"/>
           <link id="#rtl.classes.TStrings.Text">TStrings.Text</link>
         </seealso>
       </element>

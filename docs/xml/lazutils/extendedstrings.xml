@@ -64,7 +64,7 @@
       </element>
 
       <!-- object Visibility: default -->
-      <element name="TExtendedStringList" link="#rtl.Classes.TStringList">
+      <element name="TExtendedStringList">
         <short>
           Implements a string list that allows Records in its Objects property.
         </short>
@@ -73,7 +73,9 @@
             <var>TExtendedStringList</var> is a <var>TStringList</var> descendant that provides support for using records in the class. The <var>Records</var> property allows access to records stored in the class. TExtendedStringList provides overridden methods to maintain values in the <var>Objects</var> property. New properties and methods are included to control actions needed when adding or freeing Records stored in the Objects property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->

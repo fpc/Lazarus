@@ -2164,8 +2164,11 @@
       <element name="TXPathEnvironment.FVariables"/>
 
       <!-- function Visibility: private -->
-      <element name="TXPathEnvironment.GetFunctionCount" link="#lazutils.laz2_xpath.TXPathEnvironment.FunctionCount">
+      <element name="TXPathEnvironment.GetFunctionCount">
         <short>Gets the value for the FunctionCount property.</short>
+        <seealso>
+          <link id="#lazutils.laz2_xpath.TXPathEnvironment.FunctionCount">TXPathEnvironment.FunctionCount</link>
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->
@@ -2174,8 +2177,11 @@
       </element>
 
       <!-- function Visibility: private -->
-      <element name="TXPathEnvironment.GetVariableCount" link="#lazutils.laz2_xpath.TXPathEnvironment.VariableCount">
+      <element name="TXPathEnvironment.GetVariableCount">
         <short>Gets the value for the VariableCount property.</short>
+        <seealso>
+          <link id="#lazutils.laz2_xpath.TXPathEnvironment.VariableCount">TXPathEnvironment.VariableCount</link>          
+        </seealso>
       </element>
 
       <!-- function result Visibility: default -->

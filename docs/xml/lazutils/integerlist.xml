@@ -16,7 +16,7 @@
         </p>
       </descr>
 
-      <element name="TByteList" link="#RTL.fgl.TFPGList">
+      <element name="TByteList">
         <short>Implements a specialization of TFPGList for Byte data types.</short>
         <descr>
           <p>
@@ -28,7 +28,7 @@
         </seealso>
       </element>
 
-      <element name="TByteList.Sort" link="#rtl.fgl.TFPGList.Sort">
+      <element name="TByteList.Sort">
         <short>Sorts the Byte values stored in the list.</short>
         <descr>
           <p>
@@ -40,7 +40,7 @@
         </seealso>
       </element>
 
-      <element name="TWordList" link="#rtl.fgl.TFPGList">
+      <element name="TWordList">
         <short>Implements a specialization of TFPGList for Word data types.</short>
         <descr>
           <p>
@@ -52,7 +52,7 @@
         </seealso>
       </element>
 
-      <element name="TWordList.Sort" link="#rtl.fgl.TFPGList.Sort">
+      <element name="TWordList.Sort">
         <short>Sorts the Word values stored in the list.</short>
         <descr>
           <p>
@@ -64,7 +64,7 @@
         </seealso>
       </element>
 
-      <element name="TCardinalList" link="#rtl.fgl.TFPGList">
+      <element name="TCardinalList">
         <short>Implements a specialization of TFPGList for Cardinal data types.</short>
         <descr>
           <p>
@@ -78,7 +78,7 @@
         </seealso>
       </element>
 
-      <element name="TCardinalList.Sort" link="#rtl.fgl.TFPGList.Sort">
+      <element name="TCardinalList.Sort">
         <short>Sorts the Word values stored in the list.</short>
         <descr>
           <p>
@@ -90,7 +90,7 @@
         </seealso>
       </element>
 
-      <element name="TIntegerList" link="#rtl.fgl.TFPGList">
+      <element name="TIntegerList">
         <short>Implements a specialization of TFPGList for Integer data types.</short>
         <descr>
           <p>
@@ -104,7 +104,7 @@
         </seealso>
       </element>
 
-      <element name="TIntegerList.Sort" link="#rtl.fgl.TFPGList.Sort">
+      <element name="TIntegerList.Sort">
         <short>Sorts the Integer values stored in the list.</short>
         <descr>
           <p>
@@ -116,7 +116,7 @@
         </seealso>
       </element>
 
-      <element name="TInt64List" link="#rtl.fgl.TFPGList">
+      <element name="TInt64List">
         <short>Implements a specialization of TFPGList for Int64 data types.</short>
         <descr>
           <p>
@@ -129,7 +129,7 @@
         </seealso>
       </element>
 
-      <element name="TInt64List.Sort" link="#rtl.fgl.TFPGList.Sort">
+      <element name="TInt64List.Sort">
         <short>Sorts the Int64 values stored in the list.</short>
         <descr>
           <p>

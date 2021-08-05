@@ -17,7 +17,7 @@
       </descr>
 
       <!-- class Visibility: default -->
-      <element name="TFileStreamUTF8" link="#rtl.Classes.TFileStream">
+      <element name="TFileStreamUTF8">
         <short>
           Implements a file stream with support for UTF-8-encoded file names.
         </short>
@@ -26,14 +26,16 @@
             TFileStreamUTF8 is a TFileStream descendant which implements a file stream with support for UTF-8-encoded content file names. TFileStreamUTF8 provides constructors which create or open the file for the stream using UTF-8 encoding.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TFileStream">TFileStream</link>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->
       <element name="TFileStreamUTF8.FFileName"/>
 
       <!-- constructor Visibility: public -->
-      <element name="TFileStreamUTF8.Create" link="#rtl.Classes.TFileStream.Create">
+      <element name="TFileStreamUTF8.Create">
         <short>
           Constructor for the class instance.
         </short>
@@ -97,7 +99,9 @@
             </dd>
           </dl>
         </errors>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TFileStream.Create">TFileStream.Create</link>
+        </seealso>
       </element>
 
       <!-- argument Visibility: default -->
@@ -116,19 +120,22 @@
       </element>
 
       <!-- property Visibility: public -->
-      <element name="TFileStreamUTF8.FileName" link="#rtl.Classes.TFileStream.FileName">
+      <element name="TFileStreamUTF8.FileName">
         <short>
           Name of the file where stream content is read or written.
         </short>
         <descr>
-          FileName is a read-only String property that contains the name of the file where stream content is read or
-written. FileName can contain UTF-8-encoded characters.
+          <p>
+            <var>FileName</var> is a read-only <var>String</var> property that contains the name of the file where stream content is read or written. FileName can contain UTF-8-encoded characters.
+          </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TFileStream.FileName">TFileStream.FileName</link>
+        </seealso>
       </element>
 
       <!-- class Visibility: default -->
-      <element name="TStringListUTF8" link="#rtl.Classes.TStringList">
+      <element name="TStringListUTF8">
         <short>
           Implements a UTF-8-enabled string list.
         </short>
@@ -140,7 +147,9 @@ written. FileName can contain UTF-8-encoded characters.
         <remark>
           TStringListUTF8 has been marked as deprecated. Use TStringList instead.
         </remark>
-        <seealso></seealso>
+        <seealso>
+           <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
 
       <!-- function Visibility: protected -->
@@ -172,16 +181,18 @@ written. FileName can contain UTF-8-encoded characters.
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TStringListUTF8.LoadFromFile" link="#rtl.Classes.TStringList.LoadFromFile">
+      <element name="TStringListUTF8.LoadFromFile">
         <short>
           Loads the content in the string list from the specified file.
         </short>
         <descr>
           <p>
-            LoadFromFile is a procedure used to load the content in the string list from the specified file name. FileName can contain UTF-8-encoded characters. LoadFromFile uses a TFileStreamUTF8 instance to open and read the contents of FileName, and calls LoadFromStream to store the values in the string list.
+            <var>LoadFromFile</var> is a procedure used to load the content in the string list from the specified file name. FileName can contain UTF-8-encoded characters. LoadFromFile uses a TFileStreamUTF8 instance to open and read the contents of FileName, and calls LoadFromStream to store the values in the string list.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStrings.LoadFromFile">TStrings.LoadFromFile</link>
+        </seealso>
       </element>
 
       <!-- argument Visibility: default -->
@@ -190,17 +201,18 @@ written. FileName can contain UTF-8-encoded characters.
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TStringListUTF8.SaveToFile" link="#rtl.Classes.TStringList.SaveToFile">
+      <element name="TStringListUTF8.SaveToFile">
         <short>
           Saves the content in the string to the specified file name.
         </short>
         <descr>
           <p>
-            SaveToFile is a procedure used to save the content in the string list to the specified file name. FileName can
-contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FileName, and calls the SaveToStream method to store values from the string list.
+            <var>SaveToFile</var> is a procedure used to save the content in the string list to the specified file name. FileName can contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to create the file specified in FileName, and calls the SaveToStream method to store values from the string list.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TStrings.SaveToFile">TStrings.SaveToFile</link>
+        </seealso>
       </element>
 
       <!-- argument Visibility: default -->
@@ -209,23 +221,25 @@ contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to 
       </element>
 
       <!-- class Visibility: default -->
-      <element name="TMemoryStreamUTF8" link="#rtl.Classes.TMemoryStream">
+      <element name="TMemoryStreamUTF8">
         <short>
           Implements a memory stream which supports file names with UTF-8 encoding.
         </short>
         <descr>
           <p>
-            TMemoryStreamUTF8 is a TMemoryStream descendant that stores its data in memory. TMemoryStreamUTF8 extends the ancestor to include methods used to load and save its memory content using files names that may contain UTF-8-encoded characters.
+            <var>TMemoryStreamUTF8</var> is a <var>TMemoryStream</var> descendant that stores its data in memory. TMemoryStreamUTF8 extends the ancestor to include methods used to load and save its memory content using files names that may contain UTF-8-encoded characters.
           </p>
         </descr>
         <remark>
           TMemoryStreamUTF8 has been marked as deprecated. Use TMemoryStream instead.
         </remark>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TMemoryStream">TMemoryStream</link>
+        </seealso>
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TMemoryStreamUTF8.LoadFromFile" link="#rtl.Classes.TMemoryStream.LoadFromFile">
+      <element name="TMemoryStreamUTF8.LoadFromFile">
         <short>
           Loads the content in the stream from the specified file.
         </short>
@@ -234,7 +248,9 @@ contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to 
             LoadFromFile is a procedure used to load the content for the stream from the specified file name. LoadFromFile uses a TFileStreamUTF8 instance to open the file specified in FileName, and calls LoadFromStream to store the contents in the memory stream.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TMemoryStream.LoadFromFile">TMemoryStream.LoadFromFile</link>
+        </seealso>
       </element>
 
       <!-- argument Visibility: default -->
@@ -243,16 +259,18 @@ contain UTF-8-encoded characters. SaveToFile uses a TFileStreamUTF8 instance to 
       </element>
 
       <!-- procedure Visibility: public -->
-      <element name="TMemoryStreamUTF8.SaveToFile" link="#rtl.Classes.TMemoryStream.SaveToFile">
+      <element name="TMemoryStreamUTF8.SaveToFile">
         <short>
           Stores the content in the stream to the specified file.
         </short>
         <descr>
           <p>
-            SaveToFile is a procedure used to store the content in the memory stream to the specified file name. SaveToFile uses a TFileStreamUTF8 instance to create the file in FileName, and calls SaveToStream to write the content in the memory stream.
+            <var>SaveToFile</var> is a procedure used to store the content in the memory stream to the specified file name. SaveToFile uses a TFileStreamUTF8 instance to create the file in FileName, and calls SaveToStream to write the content in the memory stream.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.classes.TCustomMemoryStream.SaveToFile">TCustomMemoryStream.SaveToFile</link>
+        </seealso>
       </element>
 
       <!-- argument Visibility: default -->

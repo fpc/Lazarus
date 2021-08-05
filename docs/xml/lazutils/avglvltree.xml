@@ -939,14 +939,16 @@
         <seealso></seealso>
       </element>
 
-      <element name="TStringToStringTree" link="#lazutils.avglvltree.TCustomStringMap">
+      <element name="TStringToStringTree">
         <short>An associative array of StringToString Items, or a tree of trees.</short>
         <descr>
           <p>
             <var>TStringToStringTree</var> implements an associative array of StringToString Items, or a tree of trees. This class uses strings to identify strings within the array, unlike the <var>TPointerToPointerTree</var>, which uses pointers to identify pointers.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomStringMap"/>
+        </seealso>
       </element>
 
       <element name="TStringToStringTree.GetValues">
