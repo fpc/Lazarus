@@ -11,7 +11,7 @@ uses
 {$R calleditorwithpkg.res}
 
 begin
-  Application.Title:='LazReport Designer';
+  Application.Title := 'LazReport Tester';
   Application.Initialize;
   Application.CreateForm(TfrmMain, frmMain);
   Application.Run;
