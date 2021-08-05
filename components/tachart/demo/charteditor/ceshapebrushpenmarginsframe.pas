@@ -99,8 +99,8 @@ procedure TChartShapeBrushPenMarginsFrame.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer;
   WithThemeSpace: Boolean);
 var
-  w: Integer;
-  h: Integer;
+  w: Integer = 0;
+  h: Integer = 0;
 begin
   PreferredHeight := cmbShape.Height +
     gbBorder.BorderSpacing.Top + gbBorder.Height +

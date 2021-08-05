@@ -393,7 +393,7 @@ var
   msg: String;
   C: TWinControl;
 begin
-  if not Validate(Tree.Selected, msg, C) then
+  if not Validate(Node, msg, C) then
   begin
     C.SetFocus;
     MessageDlg(msg, mtError, [mbOk], 0);

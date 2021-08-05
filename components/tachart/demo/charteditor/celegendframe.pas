@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Graphics,
-  Forms, Controls, ExtCtrls, ColorBox, StdCtrls, Spin,
+  Forms, Controls, ExtCtrls, StdCtrls, Spin,
   TALegend, TAGraph,
   ceFontFrame, ceSimpleBrushFrame, ceSimplePenFrame;
 

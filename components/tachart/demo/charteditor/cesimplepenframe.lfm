@@ -62,6 +62,7 @@ object SimpleChartPenFrame: TSimpleChartPenFrame
     Constraints.MinWidth = 80
     Enabled = False
     ItemHeight = 16
+    ItemIndex = 0
     TabOrder = 1
     OnChange = cbPenWidthChange
   end

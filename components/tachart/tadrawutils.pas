@@ -809,7 +809,7 @@ function WordWrap(const AText: String; ADrawer: IChartDrawer;
 var
   L: TStrings;
   words: TStrings;
-  line, testline: String;
+  line: String;
   s: String;
   w, ws, wspace: Integer;
   i: Integer;
