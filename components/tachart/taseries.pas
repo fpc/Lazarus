@@ -620,7 +620,7 @@ var
     ADrawer.SetBrushParams(bsClear, clTAColor);
     ADrawer.Pen := LinePen;
     if Styles <> nil then
-      Styles.Apply(ADrawer, AIndex, true);
+      Styles.Apply(ADrawer, AIndex, Depth = 0);
       // "true" avoids painting of spaces in non-solid lines in brush color
     if Depth = 0 then
       for i := 0 to High(breaks) - 1 do
