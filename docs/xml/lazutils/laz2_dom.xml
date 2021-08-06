@@ -2727,6 +2727,28 @@
         <short>True if FirstChild has been assigned for the node.</short>
       </element>
 
+
+      <element name="TDOMNode_WithChildren.GetChildCount">
+        <short>
+          Gets the number of child nodes for the DOM node instance.
+        </short>
+        <descr>
+          <p>
+            <var>GetChildCount</var> is an overridden <var>SizeInt</var> function in <var>TDOMNode_WithChildren</var>. It is used to get the number of child nodes for the class instance. No actions are performed in the method if <var>FirstChild</var> has not been assigned, and the return value is set to 0.
+          </p>
+          <p>
+            If a <var>DOMNodeList</var> has been assigned to ChildNodes, its <var>Count</var> property is used as the return value. If ChildNodes has not been assigned, the child nodes are visited (starting at FirstChild and proceeding to its NextSibling) to count the number of child nodes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDomNode.ChildNodes"/>
+          <link id="TDomNode.FirstChild"/>
+        </seealso>
+      </element>
+      <element name="TDOMNode_WithChildren.GetChildCount.Result">
+        <short>Number of child nodes in the DOM node.</short>
+      </element>
+
       <!-- function Visibility: public -->
       <element name="TDOMNode_WithChildren.FindNode">
         <short>Finds a DOM node with the specified value in its NodeName property.</short>
