@@ -1025,16 +1025,13 @@ begin
         else if TDbgAvrThread(AThread).FInternalPauseRequested then
         begin
           DebugLn(DBG_VERBOSE, ['???Received late SigTrap for thread ', AThread.ID]);
-          result := deBreakpoint;//deInternalContinue; // left over signal
+          result := deBreakpoint;
         end
         else
         begin
           DebugLn(DBG_VERBOSE, ['Received SigTrap for thread ', AThread.ID,
              ' PauseRequest=', PauseRequested]);
-          if PauseRequested then   // Hack to work around Pause problem
-            result := deFinishedStep
-          else
-            result := deBreakpoint;
+          result := deBreakpoint;
 
           if not TDbgAvrThread(AThread).FIsSteppingBreakPoint then
             AThread.CheckAndResetInstructionPointerAfterBreakpoint;
@@ -1042,9 +1039,14 @@ begin
       end;
       SIGINT:
         begin
-          ExceptionClass:='SIGINT';
-          TDbgAvrThread(AThread).FExceptionSignal:=SIGINT;
-          result := deException;
+          if PauseRequested then
+            result := deBreakpoint
+          else
+          begin
+            ExceptionClass:='SIGINT';
+            TDbgAvrThread(AThread).FExceptionSignal:=SIGINT;
+            result := deException;
+          end;
         end;
       SIGKILL:
         begin
