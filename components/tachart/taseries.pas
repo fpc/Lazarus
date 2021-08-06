@@ -25,7 +25,8 @@ interface
 
 uses
   Classes, Graphics, Types,
-  TAChartUtils, TADrawUtils, TACustomSeries, TALegend, TARadialSeries, TATypes;
+  TAChartUtils, TADrawUtils, TACustomSeries, TALegend, TARadialSeries, TATypes,
+  TAChartAxis;
 
 const
   DEF_BAR_WIDTH_PERCENT = 70;
@@ -351,6 +352,7 @@ type
     destructor Destroy; override;
 
     procedure Draw(ADrawer: IChartDrawer); override;
+    function GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): Boolean; override;
     function GetNearestPoint(
       const AParams: TNearestPointParams;
       out AResults: TNearestPointResults): Boolean; override;
@@ -1070,6 +1072,11 @@ begin
           Arrow.Draw(ADrawer, Point(p, ClipRect.Top), -Pi / 2, Pen);
       end;
     end;
+end;
+
+function TConstantLine.GetAxisBounds(AAxis: TChartAxis; out AMin, AMax: Double): Boolean;
+begin
+  Result := false;
 end;
 
 function TConstantLine.GetAxisIndex: TChartAxisIndex;
