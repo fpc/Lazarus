@@ -74,7 +74,6 @@ type
     // Catch exceptions and store as socket errors
     FSockErr: boolean;
     procedure FSetRegisterCacheSize(sz: cardinal);
-    procedure FResetStatusEvent;
     // Blocking
     //function FWaitForData(): boolean; overload;
     function FWaitForData(timeout_ms: integer): integer; overload;
@@ -102,6 +101,7 @@ type
     destructor Destroy; override;
     // Wait for async signal - blocking
     function WaitForSignal(out msg: string; out registers: TInitializedRegisters): integer;
+    procedure ResetStatusEvent;
 
     procedure Break();
     function Kill(): boolean;
@@ -159,7 +159,7 @@ begin
   SetLength(FStatusEvent.registers, sz);
 end;
 
-procedure TRspConnection.FResetStatusEvent;
+procedure TRspConnection.ResetStatusEvent;
 var
   i: integer;
 begin
@@ -565,7 +565,7 @@ begin
     if (length(msg) > 2) and (msg[1] in ['S', 'T']) then
     begin
       try
-        FResetStatusEvent;
+        ResetStatusEvent;
         result := StrToInt('$' + copy(msg, 2, 2));
         FState := result;
         FStatusEvent.signal := result;
@@ -595,7 +595,8 @@ begin
                   'rwatch': FStatusEvent.stopReason := srReadWatchPoint;
                   'awatch': FStatusEvent.stopReason := srAnyWatchPoint;
                 end;
-                if convertHexWithLittleEndianSwap(part2, tmp) then
+                Val('$'+part2, tmp, i);
+                if i = 0 then
                   FStatusEvent.watchPointAddress := tmp
                 else
                   DebugLn(DBG_WARNINGS, format('Invalid value received for %s: %s ', [part1, part2]));

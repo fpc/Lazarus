@@ -149,6 +149,7 @@ type
   TRspBreakWatchPoint = record
     Owner: Pointer;
     Address: TDBGPtr;
+    Size: Cardinal;
     Kind: TDBGWatchPointKind;
   end;
 
@@ -157,6 +158,7 @@ type
     FData: array of TRspBreakWatchPoint;
     function FBreakWatchPoint(AnIndex: Integer): TRspBreakWatchPoint;
     function FCount: integer;
+    function FFindOwner(AnAddr: TDBGPtr): Pointer;
   public
     function AddOwnedWatchpoint(AnOwner: Pointer; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; override;
     function RemoveOwnedWatchpoint(AnOwner: Pointer): boolean; override;
@@ -192,6 +194,21 @@ begin
   result := length(FData);
 end;
 
+function TFpRspWatchPointData.FFindOwner(AnAddr: TDBGPtr): Pointer;
+var
+  i: integer;
+begin
+  i := 0;
+  while (i < Count) and not ((AnAddr >= Data[i].Address) and (AnAddr < Data[i].Address + Data[i].Size)) do
+  begin
+    inc(i);
+  end;
+  if i < Count then
+    Result := Data[i].Owner
+  else
+    Result := nil;
+end;
+
 function TFpRspWatchPointData.AddOwnedWatchpoint(AnOwner: Pointer;
   AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean;
 var
@@ -201,6 +218,7 @@ begin
   idx := length(FData);
   SetLength(FData, idx+1);
   FData[idx].Address := AnAddr;
+  FData[idx].Size := ASize;
   FData[idx].Kind := AReadWrite;
   FData[idx].Owner := AnOwner;
   Changed := true;
@@ -381,25 +399,34 @@ end;
 procedure TDbgAvrThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
 var
   i: integer;
-  r: boolean;
   addr: PtrUInt;
+  watchData: TRspBreakWatchPoint;
+  tmpData: TBytes;
 begin
-  // Skip this for now...
-  exit;
-
-  // TODO: Derive a custom class from TFpWatchPointData to manage
-  //       break/watchpoints and communicate over rsp
-  r := True;
-  for i := 0 to TFpRspWatchPointData(AWatchPointData).Count-1 do begin   // TODO: make size dynamic
-    addr := PtrUInt(TFpRspWatchPointData(AWatchPointData).Data[i].Address);
-
-    r := r and WriteDebugReg(i, addr);
+  for i := 0 to TFpRspWatchPointData(AWatchPointData).Count-1 do
+  begin
+    watchData := TFpRspWatchPointData(AWatchPointData).Data[i];
+    addr := watchData.Address;
+    SetLength(tmpData, watchData.Size);
+    if Process.ReadData(addr, watchData.Size, tmpData[0]) then
+    begin
+      if not TDbgAvrProcess(Process).FConnection.SetBreakWatchPoint(addr, watchData.Kind) then
+        DebugLn(DBG_WARNINGS, 'Failed to set watch point.', []);
+    end
+    else
+      DebugLn(DBG_WARNINGS, 'Failed to read memory.', []);
   end;
 end;
 
 function TDbgAvrThread.DetectHardwareWatchpoint: Pointer;
 begin
-  result := nil;
+  if TDbgAvrProcess(Process).FConnection.LastStatusEvent.stopReason in [srAnyWatchPoint, srReadWatchPoint, srWriteWatchPoint] then
+  begin
+    Result := TFpRspWatchPointData(TDbgAvrProcess(Process).WatchPointData).FFindOwner(TDbgAvrProcess(Process).FConnection.LastStatusEvent.watchPointAddress);
+    TDbgAvrProcess(Process).FConnection.ResetStatusEvent;
+  end
+  else
+    result := nil;
 end;
 
 procedure TDbgAvrThread.BeforeContinue;
