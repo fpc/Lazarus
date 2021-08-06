@@ -417,10 +417,10 @@ begin
   begin
     result := true;
     case length(hextext) of
-      2: ; // no conversion required
-      4:  value := SwapEndian(word(value));
-      8:  value := SwapEndian(dword(value));
-      16: value := SwapEndian(value);
+      1,2: ; // no conversion required
+      3,4:  value := SwapEndian(word(value));
+      5..8:  value := SwapEndian(dword(value));
+      9..16: value := SwapEndian(value);
       else
       begin
         result := false;
