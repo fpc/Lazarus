@@ -85,7 +85,7 @@
 
       <element name="TCustomRubberBand.WSRegisterClass" link="#LCL.LCLClasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TCustomRubberBand.Create" link="#rtl.Classes.TComponent.Create">
+      <element name="TCustomRubberBand.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
@@ -94,7 +94,7 @@
         </descr>
         <seealso>
           <link id="TCustomRubberBand.Shape"/>
-          <link id="TRubberBandShape.rsLine"/>
+          <link id="TRubberBandShape"/>
         </seealso>
       </element>
       <element name="TCustomRubberBand.Create.AOwner">
@@ -118,7 +118,7 @@
         </seealso>
       </element>
 
-      <element name="TRubberBand" link="#lcl.rubberband.TCustomRubberBand">
+      <element name="TRubberBand">
         <short>
           Implements a rubber-band selection.
         </short>

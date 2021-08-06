@@ -296,8 +296,10 @@
         </seealso>
       </element>
 
-      <element name="TCustomColorBox.InitializeWnd" link="#lcl.stdctrls.TCustomComboBox.InitializeWnd">
-        <short/>
+      <element name="TCustomColorBox.InitializeWnd">
+        <short>
+          Performs actions need to initial the window Handle for the control.
+        </short>
         <descr>
           <p>
             Updates the combo-box control when its handled is (re-)allocated. Ensures that ItemIndex is updated to reflect the value in Selected.
@@ -308,11 +310,19 @@
         </seealso>
       </element>
 
-      <element name="TCustomColorBox.DoAutoAdjustLayout" link="#lcl.controls.TControl.DoAutoAdjustLayout">
-        <short/>
+      <element name="TCustomColorBox.DoAutoAdjustLayout">
+        <short>
+          Performs actions needed to auto-adjust the control using the specified layout policy.
+        </short>
         <descr>
           <p>
-            Called when an auto adjust policy is applied for the control. Ensures that ColorRectWidth is scaled when needed.
+            Called when an auto adjust policy is applied for the control. DoAutoAdjustLayout ensures that the item height for the control is scaled using the factor in AYProportion when AMode contains the lapAutoAdjustWithoutHorizontalScrolling or lapAutoAdjustForDPI layout adjustment policy values.
+          </p>
+          <p>
+            In TCustomColorBox, it ensures that ColorRectWidth is scaled when needed.
+          </p>
+          <p>
+            DoAutoAdjustLayout is called from the AutoAdjustLayout method.
           </p>
         </descr>
         <seealso>

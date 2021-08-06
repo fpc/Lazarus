@@ -722,10 +722,12 @@
         </seealso>
       </element>
 
-      <element name="TCustomFilterComboBox.Notification" link="#lcl.controls.TControl.Notification">
+      <element name="TCustomFilterComboBox.Notification">
         <short>Handles notification messages for sub-components in the control.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
+        </seealso>
       </element>
       <element name="TCustomFilterComboBox.Notification.AComponent">
         <short>Component for the notification message.</short>

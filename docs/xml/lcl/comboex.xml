@@ -214,7 +214,7 @@
         <short>Ordinal position for the second item in the comparison.</short>
       </element>
 
-      <element name="TListItemsSortType" link="#lcl.comctrls.TSortType">
+      <element name="TListItemsSortType">
         <short>Alias to the TSortType in <file>ComCtrls.pp</file></short>
         <descr/>
         <seealso>
@@ -754,7 +754,7 @@
         <seealso/>
       </element>
 
-      <element name="TListControlItems.Items" link="#rtl.classes.TCollection.Items">
+      <element name="TListControlItems.Items">
         <short>Provides indexed access to the list of items maintained in the collection.</short>
         <descr>
           <p>
@@ -769,7 +769,8 @@
         </descr>
         <seealso>
           <link id="TListControlItem"/>
-          <link id="TListControlItems.Count"/>
+          <link id="#rtl.classes.TCollection.Items">TCollection.Items</link>
+          <link id="#rtl.classes.TCollection.Count">TCollection.Count</link>
           <link id="#rtl.classes.TCollection.Add">TCollection.Add</link>
           <link id="#rtl.classes.TCollection.Insert">TCollection.Insert</link>
           <link id="#rtl.classes.TCollection.Clear">TCollection.Clear</link>
@@ -893,7 +894,7 @@
         <short>Collection item examined in the method.</short>
       </element>
 
-      <element name="TComboExItems.Add" link="#lcl.comboex.TListControlItems.Add">
+      <element name="TComboExItems.Add">
         <short>Adds a new item to the collection.</short>
         <descr>
           <p>
@@ -960,7 +961,7 @@
         <short>Pointer to the arbitrary data associated with the item.</short>
       </element>
 
-      <element name="TComboExItems.Insert" link="#rtl.classes.TCollection.Insert">
+      <element name="TComboExItems.Insert">
         <short>Inserts a collection item at the specified position in the collection.</short>
         <descr>
           <p>
@@ -1177,7 +1178,7 @@
         <short>Object for the event notification.</short>
       </element>
 
-      <element name="TCustomComboBoxEx.InitializeWnd" link="#lcl.stdctrls.TCustomComboBox.InitializeWnd">
+      <element name="TCustomComboBoxEx.InitializeWnd">
         <short>Initializes the window handle for the control.</short>
         <descr>
           <p>
@@ -1949,7 +1950,7 @@
         <short>Owner draw state for the check box.</short>
       </element>
 
-      <element name="TCustomCheckCombo.DropDown" link="#lcl.stdctrls.TCustomComboBox.DropDown">
+      <element name="TCustomCheckCombo.DropDown">
         <short>Displays the drop down for the combo-box.</short>
         <descr>
           <p>
@@ -1957,10 +1958,11 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.stdctrls.TCustomComboBox.OnDropDown">TCustomComboBox.OnDropDown</link>
-          <link id="TCustomCheckCombo.ItemIndex"/>
           <link id="TCustomCheckCombo.ItemEnabled"/>
           <link id="TCustomCheckCombo.Toggle"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.ItemIndex">TCustomComboBox.ItemIndex</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.DropDown">TCustomComboBox.DropDown</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.OnDropDown">TCustomComboBox.OnDropDown</link>
         </seealso>
       </element>
 
@@ -2090,15 +2092,17 @@
         </seealso>
       </element>
 
-      <element name="TCustomCheckCombo.MouseLeave" link="#lcl.controls.TControl.MouseLeave">
+      <element name="TCustomCheckCombo.MouseLeave">
         <short>
           Deactivates tracking the highlighted check box when the mouse leaves the control.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.MouseLeave">TControl.MouseLeave</link>
+        </seealso>
       </element>
 
-      <element name="TCustomCheckCombo.MouseMove" link="#lcl.controls.TControl.MouseMove">
+      <element name="TCustomCheckCombo.MouseMove">
         <short>
           Tracks changes to the mouse position for the highlighted check box in the control.
         </short>
@@ -2441,7 +2445,7 @@
         </seealso>
       </element>
 
-      <element name="TCheckComboBox" link="#lcl.comboex.TCustomCheckCombo">
+      <element name="TCheckComboBox">
         <short>Combo-box control which displays check boxes for the items in the control.</short>
         <descr>
           <p>

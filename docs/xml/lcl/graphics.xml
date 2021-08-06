@@ -8381,7 +8381,7 @@
       <element name="TRasterImage.GetMaskHandle.Result">
         <short>Value for the property.</short>
       </element>
-      <element link="#lcl.graphics.TGraphic.GetMimeType" name="TRasterImage.GetMimeType">
+      <element name="TRasterImage.GetMimeType">
         <short>Gets the value for the MimeType property.</short>
         <descr/>
         <seealso>
@@ -8423,13 +8423,14 @@
       <element name="TRasterImage.GetRawImageDescriptionPtr.Result">
         <short/>
       </element>
-      <element link="#lcl.graphics.TGraphic.GetTransparent" name="TRasterImage.GetTransparent">
+      <element name="TRasterImage.GetTransparent">
         <short>Gets the value for the Transparent property.</short>
         <descr/>
         <seealso>
           <link id="TGraphic.Transparent"/>
-          <link id="TRaasterImage.TransparentMode"/>
-          <link id="TRaasterImage.TransparentColor"/>
+          <link id="TGraphic.GetTransparent"/>
+          <link id="TRasterImage.TransparentMode"/>
+          <link id="TRasterImage.TransparentColor"/>
         </seealso>
       </element>
       <element name="TRasterImage.GetTransparent.Result">
@@ -8462,7 +8463,7 @@
       <element name="TRasterImage.GetHeight.Result">
         <short>Value for the property.</short>
       </element>
-      <element link="#lcl.graphics.TGraphic.GetWidth" name="TRasterImage.GetWidth">
+      <element name="TRasterImage.GetWidth">
         <short>Gets the value for the Width property.</short>
         <descr/>
         <seealso>
@@ -9998,7 +9999,7 @@
           <link id="TRasterImage.HandleNeeded"/>
         </seealso>
       </element>
-      <element link="#lcl.graphics.TRasterImage.InternalReleaseBitmapHandle" name="TCustomBitmap.InternalReleaseBitmapHandle">
+      <element name="TCustomBitmap.InternalReleaseBitmapHandle">
         <short/>
         <descr/>
         <seealso>
@@ -10008,12 +10009,10 @@
       <element name="TCustomBitmap.InternalReleaseBitmapHandle.Result">
         <short/>
       </element>
-      <element link="#lcl.graphics.TRasterImage.InternalReleaseMaskHandle" name="TCustomBitmap.InternalReleaseMaskHandle">
+      <element name="TCustomBitmap.InternalReleaseMaskHandle">
         <short/>
         <descr/>
-        <seealso>
-          <link id="TCustomBitmap.MaskHandle"/>
-        </seealso>
+        <seealso></seealso>
       </element>
       <element name="TCustomBitmap.InternalReleaseMaskHandle.Result">
         <short/>
@@ -10277,7 +10276,7 @@
       <element name="TCustomBitmap.BitmapHandleAllocated.Result">
         <short/>
       </element>
-      <element link="#lcl.graphics.TRasterImage.MaskHandleAllocated" name="TCustomBitmap.MaskHandleAllocated">
+      <element name="TCustomBitmap.MaskHandleAllocated">
         <short>Determines if the mask handle has been allocated for the image.</short>
         <descr>
           <p>
@@ -10620,13 +10619,15 @@
       <element name="TFPImageBitmap.WriteStream.Stream">
         <short>Stream where the image data is stored.</short>
       </element>
-      <element link="#lcl.graphics.TGraphic.GetFileExtensions" name="TFPImageBitmap.GetFileExtensions">
+      <element name="TFPImageBitmap.GetFileExtensions">
         <short>Returns a list of the file extensions available for the image type.</short>
         <descr>
           <p>Always returns an empty string ('') in TFPImageBitmap.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TGraphic.GetFileExtensions"/>
+        </seealso>
       </element>
       <element name="TFPImageBitmap.GetFileExtensions.Result">
         <short>List of file extensions supported for the image type.</short>
@@ -11193,10 +11194,12 @@
       <element name="TSharedIcon.UpdateFromHandle.NewHandle">
         <short/>
       </element>
-      <element link="#lcl.graphics.TSharedRasterImage.IsEmpty" name="TSharedIcon.IsEmpty">
+      <element name="TSharedIcon.IsEmpty">
         <short>Indicates if the shared icon is empty (contains no icon images).</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TSharedRasterImage.IsEmpty"/>
+        </seealso>
       </element>
       <element name="TSharedIcon.IsEmpty.Result">
         <short/>
@@ -12953,17 +12956,21 @@
         <descr/>
         <seealso/>
       </element>
-      <element link="#lcl.graphics.TSharedImage.FreeHandle" name="TSharedCursorImage.FreeHandle">
+      <element name="TSharedCursorImage.FreeHandle">
         <short>Frees the handle for the cursor image.</short>
         <descr/>
         <seealso>
           <link id="TSharedImage.FreeHandle"/>
         </seealso>
       </element>
-      <element link="#lcl.graphics.TSharedIcon.GetImagesClass" name="TSharedCursorImage.GetImagesClass">
-        <short>Gets the class reference used to create a new cursor image in the Images property.</short>
+      <element name="TSharedCursorImage.GetImagesClass">
+        <short>
+          Gets the class reference used to create a new cursor image in the Images property.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TSharedIcon.GetImagesClass"/>
+        </seealso>
       </element>
       <element name="TSharedCursorImage.GetImagesClass.Result">
         <short>Class reference used to create images in the shared cursor image list.</short>

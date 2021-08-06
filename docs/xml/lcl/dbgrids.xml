@@ -1710,7 +1710,7 @@
         <short>New value for the FieldName property.</short>
       </element>
 
-      <element name="TColumn.CreateTitle" link="#lcl.grids.TGridColumn.CreateTitle">
+      <element name="TColumn.CreateTitle">
         <short>
           Creates the title used for the grid column.
         </short>
@@ -1719,7 +1719,9 @@
             <var>CreateTitle</var> is an overridden TGridColumnTitle function used to create the title used as a fixed caption for the column.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TGridColumn.CreateTitle">TGridColumn.CreateTitle</link>
+        </seealso>
       </element>
       <element name="TColumn.CreateTitle.Result">
         <short>Title for the column.</short>
@@ -4949,7 +4951,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomDBGrid.SetEditText" link="#lcl.grids.TCustomGrid.SetEditText">
+      <element name="TCustomDBGrid.SetEditText">
         <short>
           Sets the textual value for the editor in the specified cell.
         </short>
@@ -4958,16 +4960,18 @@
             SetEditText sets the textual value for the editor in the specified cell.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.grids.TCustomGrid.SetEditText">TCustomGrid.SetEditText</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.SetEditText.ACol">
-        <short/>
+        <short>Column number for the cell updated in the method.</short>
       </element>
       <element name="TCustomDBGrid.SetEditText.ARow">
-        <short/>
+        <short>Row number for the cell updated in the method.</short>
       </element>
       <element name="TCustomDBGrid.SetEditText.Value">
-        <short/>
+        <short>New value for the cell.</short>
       </element>
 
       <element name="TCustomDBGrid.SetFixedCols">

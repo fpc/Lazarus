@@ -100,7 +100,7 @@
         <seealso/>
       </element>
       <!-- constructor Visibility: public -->
-      <element name="TArrow.Create" link="#rtl.classes.TComponent.Create">
+      <element name="TArrow.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
@@ -115,7 +115,9 @@
             <li>ArrowColor</li>
           </ul>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TArrow.Create.AOwner">

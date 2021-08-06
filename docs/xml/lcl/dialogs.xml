@@ -1177,14 +1177,16 @@
         <short>Default title for the dialog.</short>
       </element>
 
-      <element name="TSaveDialog.Create" link="#lcl.dialogs.TOpenDialog.Create">
+      <element name="TSaveDialog.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create update the component style flags to the value used for the dialog type.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create update the component style flags to the value used for the dialog type.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TOpenDialog.Create"/>
+        </seealso>
       </element>
       <element name="TSaveDialog.Create.AOwner">
         <short>Owner of the class instance.</short>
@@ -1765,7 +1767,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         </seealso>
       </element>
 
-      <element name="TFontDialog.Create" link="#rtl.classes.TComponent.Create">
+      <element name="TFontDialog.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
@@ -1781,7 +1783,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TFontDialog.Destroy" link="#rtl.classes.TComponent.Destroy">
+      <element name="TFontDialog.Destroy">
         <short>Destructor for the class instance.</short>
         <descr/>
         <seealso/>

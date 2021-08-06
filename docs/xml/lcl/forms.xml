@@ -1006,8 +1006,8 @@
 
       <element name="TScrollingWinControl.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TScrollingWinControl.AlignControls" link="#lcl.controls.TWinControl.AlignControls">
-        <short/>
+      <element name="TScrollingWinControl.AlignControls">
+        <short>Aligns the controls which have the class instance as their parent.</short>
         <descr>
           <p>
             Calls the inherited method to align the specified control and its children to the parent control. Ensures that the page, range, and position in the scroll bars are recalculated when <var>AutoScroll</var> is enabled and both <var>HorzScrollBar</var> and <var>VertScrollBar</var> are in use.
@@ -1056,8 +1056,8 @@
         </seealso>
       </element>
 
-      <element name="TScrollingWinControl.CreateWnd" link="#lcl.controls.TWinControl.CreateWnd">
-        <short/>
+      <element name="TScrollingWinControl.CreateWnd">
+        <short>Creates the window handle for the control.</short>
         <descr>
           <p>
             Ensures that the scroll bar page, range, and visibiity are established when the handles for the windowed control are created. Temporarily disables auto-sizing in the method, and re-enables auto-sizing prior to exit. Calls the inherited method to create the window and its handles.
@@ -1065,6 +1065,7 @@
         </descr>
         <seealso>
           <link id="TScrollingWinControl.UpdateScrollBars"/>
+           <link id="#lcl.controls.TWinControl.CreateWnd">TWinControl.CreateWnd</link>
         </seealso>
       </element>
 
@@ -1170,7 +1171,7 @@
         <short>True when something has been changed in the scroll bar settings.</short>
       </element>
 
-      <element name="TScrollingWinControl.SetAutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll">
+      <element name="TScrollingWinControl.SetAutoScroll">
         <short>Sets the value for the AutoScroll property.</short>
         <descr>
           <p>
@@ -2203,7 +2204,7 @@
         <seealso/>
       </element>
 
-      <element name="TModalResult" link="#lcl.uitypes.TModalResult">
+      <element name="TModalResult">
         <short>Dummy type for the values that can be returned as a modal result.</short>
         <descr>
           <p>
@@ -2528,8 +2529,11 @@
       <element name="TCustomForm.GetEffectiveShowInTaskBar.Result">
         <short>Effect visibility for the form icon in the task bar.</short>
       </element>
-      <element name="TCustomForm.GetMonitor" link="#lcl.forms.TCustomForm.Monitor">
+      <element name="TCustomForm.GetMonitor">
         <short>Gets the value for the Monitor property.</short>
+        <seealso>
+          <link id="TCustomForm.Monitor"/>
+        </seealso>
       </element>
       <element name="TCustomForm.GetMonitor.Result">
         <short>Value for the property.</short>
@@ -3230,7 +3234,7 @@
         <short>True when Color has value other than clDefault or clBtnFace.</short>
       </element>
 
-      <element name="TCustomForm.CreateParams" link="#lcl.controls.TWinControl.CreateParams">
+      <element name="TCustomForm.CreateParams">
         <short>Initializes parameters used to create the handle for the form instance.</short>
         <descr>
           <p>
@@ -3507,7 +3511,7 @@
         <short>Operation performed for the component.</short>
       </element>
 
-      <element name="TCustomForm.PaintWindow" link="#lcl.controls.TCustomControl.PaintWindow">
+      <element name="TCustomForm.PaintWindow">
         <short>
           Calls the Paint method using the specified device context in the control Canvas.
         </short>
@@ -3519,18 +3523,22 @@
             PaintWindow assigns the device context in <var>dc</var> to the <var>Canvas</var> handle. The <var>Paint</var> method is called to signal the <var>OnPaint</var> event handler (when assigned). If a design surface is active for the form instance, its <var>PaintGrid</var> method is called. The Canvas handle is reset to 0 prior to exiting from the method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TCustomControl.PaintWindow">TCustomControl.PaintWindow</link>
+        </seealso>
       </element>
       <element name="TCustomForm.PaintWindow.dc">
         <short>Device context (Handle) assigned to the Canvas for the form.</short>
       </element>
 
-      <element name="TCustomForm.RequestAlign" link="#lcl.controls.TControl.RequestAlign">
+      <element name="TCustomForm.RequestAlign">
         <short>
           Calls the user Alignment handler (AlignControls). Here: NOP for a top-level form.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.RequestAlign">TControl.RequestAlign</link>
+        </seealso>
       </element>
 
       <element name="TCustomForm.Resizing">
@@ -3598,7 +3606,7 @@
         <short>True for BringToFront.</short>
       </element>
 
-      <element name="TCustomForm.SetParent" link="#lcl.controls.TControl.Parent">
+      <element name="TCustomForm.SetParent">
         <short>Sets the value for the Parent property.</short>
         <descr>
           <p>
@@ -3623,7 +3631,7 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TCustomForm.MoveToDefaultPosition" link="#lcl.forms.TCustomForm.Position">
+      <element name="TCustomForm.MoveToDefaultPosition">
         <short>Moves the form to the location specified in the Position property.</short>
         <descr>
           <p>
@@ -3640,7 +3648,9 @@
             MoveToDefaultPosition is called from the <var>AllAutoSized</var>, <var>SetRestoredBounds</var>, and <var>UpdateShowing</var> methods. It is also called when a new value is assigned to the Position property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.Position"/>
+        </seealso>
       </element>
 
       <element name="TCustomForm.UpdateShowing">
@@ -3669,7 +3679,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.SetVisible" link="#lcl.controls.TControl.SetVisible">
+      <element name="TCustomForm.SetVisible">
         <short>Sets the value for the Visible property.</short>
         <descr>
           <p>
@@ -3679,13 +3689,15 @@
             SetVisible calls the inherited method to store the new property value, and to perform resizing and control messages as needed. The <var>UpdateVisible</var> method in <var>Application</var> is called to ensure that the application is visible in the task bar when one of its forms is visible.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.SetVisible">TControl.SetVisible</link>
+        </seealso>
       </element>
       <element name="TCustomForm.SetVisible.Value">
         <short>New value for the property.</short>
       </element>
 
-      <element name="TCustomForm.AllAutoSized" link="#lcl.controls.TWinControl.AllAutoSized">
+      <element name="TCustomForm.AllAutoSized">
         <short>If the the form is about to show, calculate its metrics.</short>
         <descr>
           <p>
@@ -3703,7 +3715,7 @@
           <link id="TCustomForm.MoveToDefaultPosition"/>
           <link id="TCustomForm.Position"/>
           <link id="#lcl.controls.TWinControl.Showing">TWinControl.Showing</link>
-          <link id="#lcl.controls.TWinControl.AllAutoSize">TWinControl.AllAutoSize</link>
+          <link id="#lcl.controls.TWinControl.AllAutoSized">TWinControl.AllAutoSized</link>
           <link id="#lcl.controls.TWinControl.DoAllAutoSize">TWinControl.DoAllAutoSize</link>
         </seealso>
       </element>
@@ -3942,7 +3954,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.DoDock" link="#lcl.controls.TControl.DoDock">
+      <element name="TCustomForm.DoDock">
         <short>Docks or undocks the form in the specified dock site.</short>
         <descr>
           <p>
@@ -3966,9 +3978,9 @@
         </descr>
         <seealso>
           <link id="TCustomForm.BorderStyle"/>
+          <link id="#lcl.controls.TControl.Dock">TControl.Dock</link>
           <link id="#lcl.controls.TControl.DoDock">TControl.DoDock</link>
           <link id="#lcl.controls.TControl.HostDockSite">TControl.HostDockSite</link>
-          <link id="#lcl.controls.TWinControl.Dock">TWinControl.Dock</link>
         </seealso>
       </element>
       <element name="TCustomForm.DoDock.NewDockSite">
@@ -3980,7 +3992,7 @@
         </short>
       </element>
 
-      <element name="TCustomForm.GetFloating" link="#lcl.controls.TControl.GetFloating">
+      <element name="TCustomForm.GetFloating">
         <short>Gets the value for the Floating properties.</short>
         <descr/>
         <seealso>
@@ -4283,7 +4295,7 @@
         <short>The control receiving the focus.</short>
       </element>
 
-      <element name="TCustomForm.FormIsUpdating" link="#lcl.controls.TControl.FormIsUpdating">
+      <element name="TCustomForm.FormIsUpdating">
         <short>
           Indicates if the BeginFormUpdate method has been called without a corresponding EndFormUpdate method call.
         </short>
@@ -4295,6 +4307,7 @@
         <seealso>
           <link id="TCustomForm.BeginFormUpdate"/>
           <link id="TCustomForm.EndFormUpdate"/>
+           <link id="#lcl.controls.TControl.FormIsUpdating">TControl.FormIsUpdating</link>
         </seealso>
       </element>
       <element name="TCustomForm.FormIsUpdating.Result">
@@ -4550,7 +4563,7 @@
         </short>
       </element>
 
-      <element name="TCustomForm.Show" link="#lcl.controls.TControl.Show">
+      <element name="TCustomForm.Show">
         <short>Displays the form instance with support for High DPI scaling.</short>
         <descr>
           <p>
@@ -4563,7 +4576,9 @@
             Show sets the value in the <var>Visible</var> property to <b>True</b>, and calls the <var>ShowWindow</var> routine in the LCL interface at run-time using the <var>Handle</var> and <var>WindowState</var> for the form. The <var>BringToFront</var> method is called to apply the Z-Order for the form instance and its siblings.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Show">TControl.Show</link>
+        </seealso>
       </element>
 
       <element name="TCustomForm.ShowModal">
@@ -4768,14 +4783,18 @@
         <seealso/>
       </element>
 
-      <element name="TCustomForm.Dock" link="#lcl.controls.TControl.Dock">
-        <short/>
+      <element name="TCustomForm.Dock">
+        <short>
+          Docks the form to the specified dock site.
+        </short>
         <descr>
           <p>
             Calls the inherited method using the values in <var>NewDockSite</var> and <var>ARect</var> as arguments.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Dock">TControl.Dock</link>
+        </seealso>
       </element>
       <element name="TCustomForm.Dock.NewDockSite">
         <short/>
@@ -5003,7 +5022,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.Caption" link="#lcl.controls.TControl.Caption">
+      <element name="TCustomForm.Caption">
         <short>The text displayed in the title bar for the form.</short>
         <descr>
           <p>
@@ -5493,7 +5512,7 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.OnResize" link="#lcl.controls.TControl.OnResize">
+      <element name="TCustomForm.OnResize">
         <short>Event handler signalled when the size for the form is changed.</short>
         <descr>
           <p>
@@ -5700,14 +5719,18 @@
         </seealso>
       </element>
 
-      <element name="TCustomForm.Visible" link="#lcl.controls.TControl.Visible">
-        <short/>
+      <element name="TCustomForm.Visible">
+        <short>
+          Indicates if the control is visible on its parent.
+        </short>
         <descr>
           <p>
             Re-declared in TCustomForm to use a different storage specifier than the ancestor class.  In TCustomForm, visibility is not tied to an Action or an ActionLink; it uses the value in the Visible property.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+        </seealso>
       </element>
 
       <element name="TCustomForm.WindowState">
@@ -5742,7 +5765,7 @@
         </seealso>
       </element>
 
-      <element name="TForm" link="#lcl.forms.TCustomForm">
+      <element name="TForm">
         <short>Implements a form used in an LCL application.</short>
         <descr>
           <p>
@@ -5762,12 +5785,16 @@
       <element name="TForm.LCLVersionIsStored" link="#lcl.forms.TForm.LCLVersion"/>
       <element name="TForm.LCLVersionIsStored.Result" link="#lcl.forms.TForm.LCLVersion.Result"/>
 
-      <element name="TForm.WSRegisterClass" link="#lcl.forms.TCustomForm.WSRegisterClass">
-        <short/>
+      <element name="TForm.WSRegisterClass">
+        <short>
+          Creates an assocation between the class type and its widgetset class.
+        </short>
         <descr>
           WSRegisterClass is an overridden class procedure used to register the widgetset class used to create new instances of the form.
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.forms.TCustomForm.WSRegisterClass">TCustomForm.WSRegisterClass</link>
+        </seealso>
       </element>
 
       <element name="TForm.CreateWnd">
@@ -5989,7 +6016,7 @@
         <seealso/>
       </element>
 
-      <element name="TCustomDockForm.DoAddDockClient" link="#lcl.controls.TWinControl.DoAddDockClient">
+      <element name="TCustomDockForm.DoAddDockClient">
         <short>
           Adds Client as a child control which fills the entire area for the docked form.
         </short>
@@ -5998,7 +6025,9 @@
             DoAddDockClient is an overridden method used to add the control in Client to the docked form. It calls the inherited method on entry to set the Parent in Client to the current class instance. It sets the Align property in Client to alAlign to align the control to the bounds for the docked form. Values in the BorderSpacing property in Client are reset to 0; the current class instance provides the BorderSpacing values for the docked control. At run-time, the Visible property is set to True to display the docked form after the Client has been added.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.DoAddDockClient">TWinControl.DoAddDockClient</link>
+        </seealso>
       </element>
       <element name="TCustomDockForm.DoAddDockClient.Client">
         <short>Control added to the docked form instance.</short>
@@ -6007,10 +6036,12 @@
         <short>Not used in the current implementation.</short>
       </element>
 
-      <element name="TCustomDockForm.DoRemoveDockClient" link="#lcl.controls.TWinControl.DoRemoveDockClient">
+      <element name="TCustomDockForm.DoRemoveDockClient">
         <short>Closes (releases) the form after the last client has been undocked.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.DoRemoveDockClient">TWinControl.DoRemoveDockClient</link>
+        </seealso>
       </element>
       <element name="TCustomDockForm.DoRemoveDockClient.Client">
         <short/>
@@ -6034,13 +6065,15 @@
         <short/>
       </element>
 
-      <element name="TCustomDockForm.Loaded" link="#lcl.forms.TCustomForm.Loaded">
+      <element name="TCustomDockForm.Loaded">
         <short>
           Tries to make all child controls dockclients. This is of little use in practice,
           a floating hostdocksite should have no child controls.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.Loaded"/>
+        </seealso>
       </element>
 
       <element name="TCustomDockForm.Create">
@@ -6366,7 +6399,7 @@
         </seealso>
       </element>
 
-      <element name="THintWindow.Create" link="#rtl.classes.TComponent.Create">
+      <element name="THintWindow.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
@@ -6652,10 +6685,12 @@
         </seealso>
       </element>
 
-      <element name="THintWindowClass" link="#lcl.forms.THintWindow">
+      <element name="THintWindowClass">
         <short>Class of <var>THintWindow</var>.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THintWindow"/>
+        </seealso>
       </element>
 
       <element name="THintWindowRendered">
@@ -7095,7 +7130,7 @@
         <short>Ordinal position for the property value.</short>
       </element>
 
-      <element name="TScreen.GetCustomFormsZOrdered" link="#lcl.forms.TScreen.CustomFormsZOrdered">
+      <element name="TScreen.GetCustomFormsZOrdered">
         <short>Gets the value for the indexed CustomFormsZOrdered property.</short>
         <descr/>
         <seealso>
@@ -7213,7 +7248,7 @@
         <short>Value for the property.</short>
       </element>
 
-      <element name="TScreen.GetForms" link="#lcl.forms.TScreen.Forms">
+      <element name="TScreen.GetForms">
         <short>Gets the value for the indexed Forms property.</short>
         <descr/>
         <seealso>
@@ -7227,7 +7262,7 @@
         <short>Ordinal position for the form instance in the property value.</short>
       </element>
 
-      <element name="TScreen.GetHeight" link="#lcl.forms.TScreen.Height">
+      <element name="TScreen.GetHeight">
         <short>Gets the value for the Height property.</short>
         <descr>
           <p>
@@ -7366,19 +7401,23 @@
         <short>The notification handler.</short>
       </element>
 
-      <element name="TScreen.DoAddDataModule" link="#lcl.forms.TScreen.DataModules">
+      <element name="TScreen.DoAddDataModule">
         <short>Adds the specified data module to the list.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.DataModules"/>
+        </seealso>
       </element>
       <element name="TScreen.DoAddDataModule.DataModule">
         <short>Data module instance added in the method.</short>
       </element>
 
-      <element name="TScreen.DoRemoveDataModule" link="#lcl.forms.TScreen.DataModules">
+      <element name="TScreen.DoRemoveDataModule">
         <short>Removes the specified data module from the list.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.DataModules"/>
+        </seealso>
       </element>
       <element name="TScreen.DoRemoveDataModule.DataModule">
         <short>Data module removed in the method.</short>
@@ -7473,7 +7512,7 @@
         <short>Value for the property.</short>
       </element>
 
-      <element name="TScreen.Create" link="#rtl.classes.TComponent.Create">
+      <element name="TScreen.Create">
         <short>Constructor for the class instance.</short>
         <descr>
         <p>
@@ -7510,7 +7549,7 @@
         </seealso>
       </element>
 
-      <element name="TScreen.CustomFormIndex" link="#lcl.forms.TScreen.CustomForms">
+      <element name="TScreen.CustomFormIndex">
         <short>Gets the ordinal position in CustomForms for the requested form.</short>
         <descr>
           <p>
@@ -8585,7 +8624,7 @@
         </seealso>
       </element>
 
-      <element name="TScreen.MonitorCount" link="#lcl.forms.TScreen.Monitors">
+      <element name="TScreen.MonitorCount">
         <short>The number of available Monitors.</short>
         <descr>
           <p>
@@ -8595,7 +8634,9 @@
             Use <var>Monitors</var> to access a <var>TMonitor</var> instance by its ordinal position in the list.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.Monitors"/>
+        </seealso>
       </element>
 
       <element name="TScreen.Monitors">
@@ -9185,10 +9226,12 @@
         <short>Handler provides the Handle for the main form.</short>
       </element>
 
-      <element name="PAsyncCallQueueItem" link="#lcl.forms.TAsyncCallQueueItem">
+      <element name="PAsyncCallQueueItem">
         <short>A queued asynchronous callback request node.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TAsyncCallQueueItem"/>
+        </seealso>
       </element>
 
       <element name="TAsyncCallQueueItem">
@@ -10814,21 +10857,23 @@
         <short>Indicates if the method waits for the next message.</short>
       </element>
 
-      <element name="TApplication.Run" link="#fcl.CustApp.TCustomApplication.Run">
+      <element name="TApplication.Run">
         <short>
           Loads the MainForm and passes control to the event loop for the application.
         </short>
         <descr>
         </descr>
         <seealso>
-          <link id="TApplication.RunLoop"/>
+          <link id="#fcl.CustApp.TCustomApplication.Run">TCustomApplication.Run</link>
         </seealso>
       </element>
 
-      <element name="TApplication.ShowException" link="#fcl.CustApp.TCustomApplication.ShowException">
+      <element name="TApplication.ShowException">
         <short>Shows the exception message and asks the user to abort or continue.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.CustApp.TCustomApplication.ShowException">TCustomApplication.ShowException</link>
+        </seealso>
       </element>
       <element name="TApplication.ShowException.E">
         <short>The exception to display for the application.</short>
@@ -10837,10 +10882,12 @@
         </seealso>
       </element>
 
-      <element name="TApplication.Terminate" link="#fcl.CustApp.TCustomApplication.Terminate">
+      <element name="TApplication.Terminate">
         <short>The application is terminated and the component engine is shutdown.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#fcl.CustApp.TCustomApplication.Terminate">TCustomApplication.Terminate</link>
+        </seealso>
       </element>
 
       <element name="TApplication.DisableIdleHandler">
@@ -12449,7 +12496,7 @@
         <seealso/>
       </element>
 
-      <element name="TApplication.Title" link="#fcl.CustApp.TCustomApplication.Title">
+      <element name="TApplication.Title">
         <short>Contains the title for the application.</short>
         <descr>
           <p>
@@ -12457,7 +12504,6 @@
           </p>
         </descr>
         <seealso>
-          <link id="TApplication.GetExeName"/>
           <link id="#fcl.CustApp.TCustomApplication.Title">TCustomApplication.Title</link>
         </seealso>
       </element>

@@ -1398,19 +1398,40 @@
 
       <element name="TCustomBitBtn.Destroy">
         <short>Destructor for the class instance.</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that resource allocated for the internal button glyph and image change link are freed. It calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
-      <element name="TCustomBitBtn.Click" link="#lcl.controls.TControl.Click">
+      <element name="TCustomBitBtn.Click">
+        <short>
+          Performs actions needed when the button is clicked.
+        </short>
         <descr>
           <p>
-            <var>Click </var> - the procedure which allows programmatic simulation of a mouse click, and thus activation of the <var>Action</var> associated with the <var>OnClick</var> event.
+            <var>Click </var> is an overridden method in TCustomBitBtn. It ensures that the correct actions are performed based on the value in the Kind property. When Kind is set to bkClose, the non-nested parent form is closed for the following conditions:
+          </p>
+          <ul>
+            <li>ModalResult is set to mrNone, or</li>
+            <li>ModalResult is mrCancel and the parent form is displayed as a modal dialog.</li>
+          </ul>
+          <p>
+            If Kind has any other value, the inherited Click method is called to determine the ModalResult and signal the OnChange event handler (when assigned).
+          </p>
+          <p>
+            Click is called when the DialogChar method handles an accelerator key for the control, when the Action for the control is executed, and when a mouse click event  is handled for the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomButton.Click">TCustomButton.Click</link>
+          <link id="#lcl.stdctrls.TButtonControl.Click">TButtonControl.Click</link>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+        </seealso>
       </element>
 
       <element name="TCustomBitBtn.LoadGlyphFromResourceName">
@@ -1603,25 +1624,8 @@
       <element name="TBitBtn.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TBitBtn.DragKind" link="#lcl.controls.TControl.DragKind"/>
       <element name="TBitBtn.DragMode" link="#lcl.controls.TControl.DragMode"/>
-
-      <element name="TBitBtn.Enabled" link="#lcl.controls.TControl.Enabled">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Whether the control is <var>Enabled</var>. If not, it usually appears 'greyed-out'.</p>
-          <p>Reads a flag to see whether the control is enabled, or stores a new value. If stored, sets a flag to say so.</p>
-        </descr>
-      </element>
-
-      <element name="TBitBtn.Font" link="#lcl.controls.TControl.Font">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Reads a flag to see what font should be used, or sets a flag to store it. If stored, sets a flag to say so.</p>
-          <p>The properties of <var>Font</var> are defined in the parent class <link id="#lcl.Graphics.TFont">TFont</link>
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
+      <element name="TBitBtn.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TBitBtn.Font" link="#lcl.controls.TControl.Font"/>
       <element name="TBitBtn.Glyph" link="#lcl.buttons.TCustomBitBtn.Glyph"/>
       <element name="TBitBtn.GlyphShowMode" link="#lcl.buttons.TCustomBitBtn.GlyphShowMode"/>
       <element name="TBitBtn.Kind" link="#lcl.buttons.TCustomBitBtn.Kind"/>
@@ -1634,16 +1638,7 @@
       <element name="TBitBtn.ImageWidth" link="#lcl.buttons.TCustomBitBtn.ImageWidth"/>
       <element name="TBitBtn.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 
-      <element name="TBitBtn.OnClick" link="#lcl.controls.TControl.OnClick">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>.
-          </p>
-          <p>Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.</p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
+      <element name="TBitBtn.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TBitBtn.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TBitBtn.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
       <element name="TBitBtn.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
@@ -1651,40 +1646,46 @@
       <element name="TBitBtn.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
       <element name="TBitBtn.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 
-      <element name="TBitBtn.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown">
+      <element name="TBitBtn.OnKeyDown">
+        <short>
+          Event handler signalled when a key is down while the control has focus.
+        </short>
         <descr>
           <p>
-            <var>OnKeyDown</var> - event handler for instance when key is down while control has focus
-          </p>
-          <p>
-            Differs from <link id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
+            <var>OnKeyDown</var> differs from <link id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+        </seealso>
       </element>
 
-      <element name="TBitBtn.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress">
+      <element name="TBitBtn.OnKeyPress">
+        <short>
+          Event handler signalled when a key is pressed while the control has focus.
+        </short>
         <descr>
           <p>
-            <var>OnKeyPress</var> - event controller for a key being pressed while the control has focus
-          </p>
-          <p>
-            Differs from <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.
+            <var>OnKeyPress</var> differs from <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.OnKeyPress">TWinControl.OnKeyPress</link>
+        </seealso>
       </element>
 
-      <element name="TBitBtn.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp">
+      <element name="TBitBtn.OnKeyUp">
+        <short>
+          Event handler signalled when a key is released while the control has focus.
+        </short>
         <descr>
           <p>
-            <var>OnKeyUp</var> - event handler for instance when a key is up (not pressed) while the control has focus.
-          </p>
-          <p>
-            The key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.
+            In <var>OnKeyUp</var>, the key may already have been up when the control received focus, or a pressed key may become released during the time the control has focus.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.OnKeyUp">TWinControl.OnKeyUp</link>
+        </seealso>
       </element>
 
       <element name="TBitBtn.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
@@ -1701,30 +1702,14 @@
       <element name="TBitBtn.ParentBidiMode" link="#lcl.controls.TControl.ParentBidiMode"/>
       <element name="TBitBtn.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TBitBtn.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
-
-      <element name="TBitBtn.PopupMenu" link="#lcl.controls.TControl.PopupMenu">
-        <descr>
-          <p>
-            Standard properties, which should be supported by all descendants. Reads the details of the pop-up menu, or stores them. Properties are defined in the parent class <link id="#lcl.Menus.TPopupMenu">TPopupMenu</link>
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TBitBtn.ShowHint" link="#lcl.controls.TControl.ShowHint">
-        <descr>
-          <p>
-            Standard properties, which should be supported by all descendants. Reads flag or writes one to determine if a hint is to be shown when mouse hovers over this control. If value is stored, a storage flag is set. Display of the actual hint is controlled by OnShowHint.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
+      <element name="TBitBtn.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TBitBtn.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TBitBtn.Spacing" link="#lcl.buttons.TCustomBitBtn.Spacing"/>
       <element name="TBitBtn.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
       <element name="TBitBtn.TabStop" link="#lcl.controls.TWinControl.TabStop"/>
 
-      <element name="TBitBtn.Visible" link="#lcl.controls.TControl.Visible">
+      <element name="TBitBtn.Visible">
+        <short>Indicates if the control is visible on its parent.</short>
         <descr>
           <p>
             The <var>Visible</var> property indicates the ability to see a visual control. If <var>Visible</var> is <b>True</b>, the control is shown, otherwise it is hidden. Calling <var>Show</var> sets <var>Visible</var> to <b>True</b>. Setting <var>Visible</var> to <b>False</b> is equivalent to calling the <var>Hide</var> method.
@@ -1734,9 +1719,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="TBitBtn.Show"/>
-          <link id="TBitBtn.Hide"/>
-          <link id="TBitBtn.IsVisible"/>
+           <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
         </seealso>
       </element>
 
@@ -2354,7 +2337,10 @@
 
       <element name="TCustomSpeedButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
 
-      <element name="TCustomSpeedButton.Loaded" link="#rtl.Classes.TComponent.Loaded">
+      <element name="TCustomSpeedButton.Loaded">
+        <short>
+          Performs actions needed when LCL component streaming is completed for the control.
+        </short>
         <descr>
           <p>
             <var>Loaded</var> is called by the LCL streaming system when a root component was completely read from a stream and all properties and references to other objects have been resolved. Descendents of <var>TComponent</var> should override this method to perform additional processing when all published properties have been set from values obtained from the LCL component stream.
@@ -2364,7 +2350,9 @@
             is done automatically by the LCL streaming system.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#rtl.Classes.TComponent">TComponent</link>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.GetGlyphSize">
@@ -2629,36 +2617,10 @@
         </seealso>
       </element>
 
-      <element name="TSpeedButton.Action" link="#lcl.controls.TControl.Action">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>The (default) action to be associated with this control.</p>
-          <p>Can either read the action already associated with the control (GetAction), or write an action to be associated (SetAction).</p>
-        </descr>
-      </element>
-
-      <element name="TSpeedButton.Align" link="#lcl.controls.TControl.Align">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Either reads a flag containing alignment instructions (<var>FAlign</var>) or writes alignment instructions (<var>SetAlign</var>).</p>
-          <p>May have no alignment, may have custom or client alignment, or can be aligned to top, bottom, left or right.</p>
-        </descr>
-      </element>
-
-      <element name="TSpeedButton.AllowAllUp" link="#lcl.buttons.TCustomSpeedButton.AllowAllUp">
-        <descr></descr>
-      </element>
-
-      <element name="TSpeedButton.Anchors" link="#lcl.controls.TControl.Anchors">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Determines how the control is to be anchored to its client or parent control.</p>
-          <p>Either reads a flag containing the set of anchors to be used, or writes a set of anchors. If they have been written, this is indicated in <var>IsAnchorsStored</var>.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
+      <element name="TSpeedButton.Action" link="#lcl.controls.TControl.Action"/>
+      <element name="TSpeedButton.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TSpeedButton.AllowAllUp" link="#lcl.buttons.TCustomSpeedButton.AllowAllUp"/>
+      <element name="TSpeedButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TSpeedButton.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 
       <element name="TSpeedButton.BidiMode">
@@ -2667,26 +2629,13 @@
         <seealso></seealso>
       </element>
 
-      <element name="TSpeedButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Determines the border spacing for this control.</p>
-          <p>Reads flag to find stored spacing values required for the border of the control, or writes the flag to set the spacing.</p>
-          <p>The properties are defined in the parent class <link id="#lcl.controls.TControlBorderSpacing">TControlBorderSpacing</link>.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
+      <element name="TSpeedButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+      <element name="TSpeedButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
 
-      <element name="TSpeedButton.Constraints" link="#lcl.controls.TControl.Constraints">
-        <descr>
-          <p>Standard properties, which should be supported by all descendants.</p>
-          <p>Determine <var>Constraints</var> (max and min height and width) for this control; reads the size constraints or stores new ones.</p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TSpeedButton.Caption" link="#lcl.controls.TControl.Caption">
+      <element name="TSpeedButton.Caption">
+        <short>
+          String with the caption displayed for the control.
+        </short>
         <descr>
           <p>
             Gets caption as a text-string (<var>GetText</var>), or stores the new caption (<var>SetText</var>). Shows flag if caption is stored (<var>IsCaptionStored</var>).
@@ -2707,6 +2656,9 @@
             To keep things optimal, LCL implementations should always override RealGet/SetText. Get/SetTextBuf is only kept for compatibility.
           </p>
         </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+        </seealso>
       </element>
 
       <element name="TSpeedButton.Color" link="#lcl.buttons.TCustomSpeedButton.Color"/>
@@ -2728,7 +2680,10 @@
        <element name="TSpeedButton.Spacing" link="#lcl.buttons.TCustomSpeedButton.Spacing"/>
       <element name="TSpeedButton.Transparent" link="#lcl.buttons.TCustomSpeedButton.Transparent"/>
 
-      <element name="TSpeedButton.Visible" link="#lcl.controls.TControl.Visible">
+      <element name="TSpeedButton.Visible">
+        <short>
+          Indicates if the control is visible on its parent.
+        </short>
         <descr>
           <p>
             The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets, among others, Visible to True. Setting Visible to False is equivalent to calling Hide method.
@@ -2737,37 +2692,14 @@
             The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.
           </remark>
         </descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TSpeedButton.OnClick" link="#lcl.controls.TControl.OnClick">
-        <descr>
-          <p>
-            Standard properties, which should be supported by all descendants.
-          </p>
-          <p>
-            This is often the default action for many controls, and is often the ONLY action specified by the programmer. The action can be specified by the user, either by typing explicit code into the implementation section for this control, or by selecting an action from a pre-supplied <var>ActionList</var>.
-          </p>
-          <p>
-            Reads or writes a flag if  a mouse click is detected, and sets a flag if a value is stored.
-          </p>
-        </descr>
-        <seealso></seealso>
-      </element>
-
-      <element name="TSpeedButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
-
-      <element name="TSpeedButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick">
-        <descr>
-          <p>
-            Double-clicking is much more common in a Windows environment than in Unix or Linux, where single-clicking is the default method for selecting an object. However, in all environments there could be valid use for a double-click, and a method should be supplied if appropriate.
-          </p>
-        </descr>
         <seealso>
-          <link id="#lcl.controls.TControl.OnDblClick">TControl.OnDblClick</link>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
         </seealso>
       </element>
 
+      <element name="TSpeedButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
+      <element name="TSpeedButton.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
+      <element name="TSpeedButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
       <element name="TSpeedButton.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
       <element name="TSpeedButton.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
       <element name="TSpeedButton.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>

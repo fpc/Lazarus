@@ -234,17 +234,16 @@
       </element>
 
       <!-- object Visibility: default -->
-      <element name="TCustomCalendar" link="#lcl.controls.TWinControl">
-        <short>
-          <var>TCustomCalendar</var> - base class for <var>TCalendar</var>.
-        </short>
+      <element name="TCustomCalendar">
+        <short>Base class for <var>TCalendar</var>.</short>
         <descr>
           <p>
             <var>TCustomCalendar</var> is the base class for <var>TCalendar</var>, a graphic control for selecting a date.
           </p>
         </descr>
-        <errors/>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TWinControl">TWinControl</link>
+        </seealso>
       </element>
 
       <!-- variable Visibility: private -->
@@ -382,19 +381,19 @@
         <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMChanged">
         <short>
-          <var>LMChanged</var> - LCL Message method to deal with changes in the control.
+          Handles the LCL message received when the control is changed.
         </short>
         <descr></descr>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCalendar.LMChanged.Message">
-        <short></short>
+        <short>Message examined in the method.</short>
       </element>
 
       <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMMonthChanged">
         <short>
-          <var>LMMonthChanged</var> - LCL Message method for change in Month.
+          Handles the LCL message received when the month has been changed.
         </short>
         <descr></descr>
         <errors/>
@@ -402,26 +401,25 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCalendar.LMMonthChanged.Message">
-        <short></short>
+        <short>Message examined in the method.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMYearChanged">
         <short>
-          <var>LMYearChanged</var> - LCL Message method for change in Year.
+          Handles the LCL message received when the year has been changed.
         </short>
         <descr></descr>
-        <errors/>
         <seealso></seealso>
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCalendar.LMYearChanged.Message">
-        <short></short>
+        <short>Message examined in the method.</short>
       </element>
 
       <!-- procedure Visibility: protected -->
       <element name="TCustomCalendar.LMDayChanged">
         <short>
-          <var>LMDayChanged</var> - LCL Message method for change in Day.
+          Handles the LCL message received when the day has been changed.
         </short>
         <descr></descr>
         <errors/>
@@ -429,7 +427,7 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomCalendar.LMDayChanged.Message">
-        <short></short>
+        <short>Message examined in the method.</short>
       </element>
 
       <!-- class function Visibility: protected -->
@@ -443,11 +441,11 @@
       <!-- constructor Visibility: public -->
       <element name="TCustomCalendar.Create">
         <short>
-          <var>Create</var> - constructor for <var>TCustomCalendar</var>.
+          Constructor for the class instance.
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TCustomCalendar</var>. Create  calls the inherited <var>Create</var> method, and sets the style, initial bounds, and display settings for the calendar. Create sets the default date and time value to Now.
+            <var>Create</var> is the constructor for <var>TCustomCalendar</var>. Create  calls the inherited <var>Create</var> method, and sets the style, initial bounds, and display settings for the calendar. Create sets the default date / time value to Now.
           </p>
         </descr>
         <seealso>
@@ -488,7 +486,7 @@
       <!-- property Visibility: public -->
       <element name="TCustomCalendar.Date">
         <short>
-          <var>Date</var> is a string representation of the DateTime value.
+          String representation for the DateTime property.
         </short>
         <descr>
           <p>

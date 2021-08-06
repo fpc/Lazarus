@@ -93,10 +93,12 @@
         <seealso/>
       </element>
       <!-- variable Visibility: private -->
-      <element link="#lcl.lresources.TLResourceList.Items" name="TLResourceList.FList">
+      <element name="TLResourceList.FList">
         <short>Member with the list for resource descriptions.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLResourceList.Items"/>
+        </seealso>
       </element>
       <!-- variable Visibility: private -->
       <element name="TLResourceList.FMergeList">
@@ -2564,10 +2566,12 @@
         <seealso/>
       </element>
       <!-- variable Visibility: default -->
-      <element name="LazarusResources" link="#lcl.lresources.TLResourceList">
+      <element name="LazarusResources">
         <short>The list with all of the loaded standard resources.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TLResourceList"/>
+        </seealso>
       </element>
       <!-- variable Visibility: default -->
       <element name="PropertiesToSkip">

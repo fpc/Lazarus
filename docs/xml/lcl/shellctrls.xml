@@ -52,7 +52,7 @@
       </element>
       <element name="TObjectType.otFolders">
         <short>
-          Indicates that folders (directories) should be visible. This include folders which represent virtual objects such as disks devices. Hidden folders are shown only if otHidden is also present.
+          Indicates that folders (directories) should be visible. This includes folders which represent virtual objects such as disk devices. Hidden folders are shown only if otHidden is also present.
         </short>
       </element>
       <element name="TObjectType.otNonFolders">
@@ -1039,8 +1039,10 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TCustomShellListView.WSRegisterClass" link="#lcl.controls.TWinControl.WSRegisterClass">
-        <short/>
+      <element name="TCustomShellListView.WSRegisterClass">
+        <short>
+          Registers an association between the class type and its widgetset class.
+        </short>
         <descr>
           <p>
             <var>WSRegisterClass</var> is an overridden class method in <var>TCustomShellListView</var>. It registers properties that are ignored in the class instance during LCL component streaming, including:
@@ -1054,7 +1056,9 @@
             It calls the inherited method, and registers the companion widgetset class instance.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.WSRegisterClass">TWinControl.WSRegisterClass</link>
+        </seealso>
       </element>
 
       <element name="TCustomShellListView.PopulateWithRoot">

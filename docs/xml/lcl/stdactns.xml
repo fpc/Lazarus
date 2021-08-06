@@ -78,13 +78,15 @@
       <element name="StdCtrls"/>
       <element name="Clipbrd"/>
 
-      <element name="THintAction" link="#lcl.forms.TCustomHintAction">
+      <element name="THintAction">
         <short>
           <var>THintAction </var>- standard action for dealing with requests
           for a <var>Hint</var>.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.forms.TCustomHintAction">TCustomHintAction</link>
+        </seealso>
       </element>
 
       <element name="TEditAction">
@@ -942,7 +944,7 @@
         <short>Value for the property.</short>
       </element>
 
-      <element name="TFileOpen.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
+      <element name="TFileOpen.GetDialogClass">
         <short>
           Gets the class reference used to create the Dialog for the action.
         </short>
@@ -950,6 +952,7 @@
         <seealso>
           <link id="TFileOpen.Dialog"/>
           <link id="TCommonDialogClass"/>
+          <link id="TCommonDialogAction.GetDialogClass"/>
         </seealso>
       </element>
       <element name="TFileOpen.GetDialogClass.Result">
@@ -1297,14 +1300,18 @@
       <element name="TSearchFind.GetFindDialog"/>
       <element name="TSearchFind.GetFindDialog.Result"/>
 
-      <element name="TSearchFind.GetDialogClass" link="#lcl.stdactns.TCommonDialogAction.GetDialogClass">
-        <short/>
+      <element name="TSearchFind.GetDialogClass">
+        <short>
+          Gets the dialog class type.
+        </short>
         <descr>
           <p>
             Returns the <var>TFindDialog</var> class type in <var>TSearchFind</var>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCommonDialogAction.GetDialogClass"/>
+        </seealso>
       </element>
       <element name="TSearchFind.GetDialogClass.Result">
         <short>Returns TFindDialog for the action.</short>

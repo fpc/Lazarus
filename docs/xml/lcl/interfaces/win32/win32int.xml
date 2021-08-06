@@ -267,10 +267,12 @@
       <element name="TWin32WidgetSet.GetAppHandle.Result">
         <short>Returns FAppHandle.</short>
       </element>
-      <element name="TWin32WidgetSet.SetAppHandle" link="#lcl.win32int.TWidgetSet.AppHandle">
+      <element name="TWin32WidgetSet.SetAppHandle">
         <short>Sets the application window handle, if not done before.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TWidgetSet.AppHandle"/>
+        </seealso>
       </element>
       <element name="TWin32WidgetSet.SetAppHandle.AValue">
         <short/>
@@ -313,20 +315,29 @@
       <element name="TWin32WidgetSet.GetLCLCapability.ACapability">
         <short/>
       </element>
-      <element name="TWin32WidgetSet.AppInit" link="#lcl.InterfaceBase.TWidgetSet.AppInit">
+      <element name="TWin32WidgetSet.AppInit">
         <short>Initializes the application on the platform, returns Screen information.</short>
       </element>
       <element name="TWin32WidgetSet.AppInit.ScreenInfo">
         <short/>
       </element>
-      <element name="TWin32WidgetSet.AppMinimize" link="#lcl.InterfaceBase.TWidgetSet.AppMinimize">
+      <element name="TWin32WidgetSet.AppMinimize">
         <short>Minimizes the whole application to the taskbar.</short>
+        <seealso>
+          <link id="#lcl.InterfaceBase.TWidgetSet.AppMinimize">TWidgetSet.AppMinimize</link>
+        </seealso>
       </element>
-      <element name="TWin32WidgetSet.AppRestore" link="#lcl.InterfaceBase.TWidgetSet.AppRestore">
+      <element name="TWin32WidgetSet.AppRestore">
         <short>Restore application previously minimized to the taskbar.</short>
+        <seealso>
+          <link id="#lcl.InterfaceBase.TWidgetSet.AppRestore">TWidgetSet.AppRestore</link>
+        </seealso>
       </element>
-      <element name="TWin32WidgetSet.AppBringToFront" link="#lcl.InterfaceBase.TWidgetSet.AppBringToFront">
+      <element name="TWin32WidgetSet.AppBringToFront">
         <short>Brings the entire application on top of all other non-topmost programs.</short>
+        <seealso>
+          <link id="#lcl.InterfaceBase.TWidgetSet.AppBringToFront">TWidgetSet.AppBringToFront</link>
+        </seealso>
       </element>
       <element name="TWin32WidgetSet.AppProcessMessages" link="#lcl.InterfaceBase.TWidgetSet.AppProcessMessages">
         <short>Handles all pending messages.</short>
