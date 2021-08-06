@@ -1056,7 +1056,7 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomAction.AssignTo.Dest">
-        <short/>
+        <short>Persistent object where property values are stored.</short>
       </element>
       <!-- procedure Visibility: protected -->
       <element name="TCustomAction.SetName">
@@ -1077,7 +1077,7 @@
       <!-- function Visibility: protected -->
       <element name="TCustomAction.HandleShortCut">
         <short>
-          <var>HandleShortCut</var> - returns True if there is a short cut associated with the handle.
+          Returns True if there if the action is enabled and executed successfully.
         </short>
         <descr/>
         <seealso/>
@@ -1106,7 +1106,7 @@
       </element>
       <!-- argument Visibility: default -->
       <element name="TCustomAction.Create.AOwner">
-        <short/>
+        <short>Owner of the class instance.</short>
       </element>
       <!-- destructor Visibility: public -->
       <element name="TCustomAction.Destroy">
@@ -1133,7 +1133,7 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TCustomAction.Execute">
-        <short>Executes the action using a available OnExecute event handler.</short>
+        <short>Executes the action using an available OnExecute event handler.</short>
         <descr>
           <p>
             <var>Execute</var> is an overridden method in TCustomAction.  It checks the State for the ActionList to ensure that it is not suspended. No actions are performed in the method when ActionList.State contains a value other than asNormal.
@@ -1238,13 +1238,10 @@
       <!-- object Visibility: default -->
       <element name="TAction">
         <short>
-          <var>TAction</var> is the basic action object used on the LCL.</short>
+          <var>TAction</var> is the basic action object used in the LCL.</short>
         <descr>
           <p>
-            <var>TAction</var> is the basic action object used on the LCL.
-          </p>
-          <p>
-            It redeclares many properties inherited from TCustomAction on the public section, but does not add any new features. For more details look at the See Also section for TCustomAction.
+            <var>TAction</var> is the basic action object used in the LCL. It redeclares many properties inherited from TCustomAction on the public section, but does not add any new features. For more details look at the See Also section for TCustomAction.
           </p>
           <p>
             The properties of each Action can be modified at design time in the Object Inspector.

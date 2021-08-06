@@ -2303,14 +2303,16 @@
       <element name="TCustomAbstractGroupedEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
       <element name="TCustomAbstractGroupedEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
-      <element name="TCustomAbstractGroupedEdit.OnUtf8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress">
+      <element name="TCustomAbstractGroupedEdit.OnUtf8KeyPress">
+        <short>
+          Event handler signalled for UTF-8 key press events.
+        </short>
         <descr>
           <p>
             <var>OnUTF8KeyPress</var> uses the <var>InternalOnEditUtf8KeyPress</var> method as the default event handler for the control, as assigned in the <var>Create</var> constructor.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomAbstractGroupedEdit.InternalOnEditUtf8KeyPress"/>
           <link id="#lcl.controls.TWinControl.OnUTF8KeyPress">TWinControl.OnUTF8KeyPress</link>
         </seealso>
       </element>

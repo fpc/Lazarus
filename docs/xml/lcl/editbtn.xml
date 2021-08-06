@@ -621,10 +621,12 @@
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TCustomEditButton.Destroy" link="#lcl.controls.TWinControl.Destroy">
+      <element name="TCustomEditButton.Destroy">
         <short>Destructor for the class instance.</short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.Destroy">TWinControl.Destroy</link>
+        </seealso>
       </element>
 
       <element name="TEditButton">
@@ -1529,7 +1531,7 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TFileNameEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName">
+      <element name="TFileNameEdit.GetDefaultGlyphName">
         <short>Gets the default glyph name used for the Button on the control.</short>
         <descr>
           <p>
@@ -1539,6 +1541,7 @@
         <seealso>
           <link id="ResBtnFileOpen"/>
           <link id="TCustomEditButton.LoadDefaultGlyph"/>
+          <link id="TCustomEditButton.GetDefaultGlyphName"/>
         </seealso>
       </element>
 
@@ -1647,7 +1650,7 @@
         <short></short>
       </element>
 
-      <element name="TFileNameEdit.Create" link="#lcl.editbtn.TCustomEditButton.Create">
+      <element name="TFileNameEdit.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
@@ -1658,16 +1661,19 @@
           <link id="TFileNameEdit.DialogFiles"/>
           <link id="TFileNameEdit.DialogKind"/>
           <link id="TFileNameEdit.DialogOptions"/>
+           <link id="TCustomEditButton.Create"/>
         </seealso>
       </element>
       <element name="TFileNameEdit.Create.AOwner">
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TFileNameEdit.Destroy" link="#lcl.editbtn.TCustomEditButton.Destroy">
+      <element name="TFileNameEdit.Destroy">
         <short>Destructor for the class instance.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEditButton.Destroy"/>
+        </seealso>
       </element>
 
       <element name="TFileNameEdit.RunDialog">
@@ -1832,16 +1838,20 @@
         <seealso></seealso>
       </element>
 
-      <element name="TFileNameEdit.ButtonOnlyWhenFocused" link="#lcl.editbtn.TCustomEditButton.ButtonOnlyWhenFocused">
+      <element name="TFileNameEdit.ButtonOnlyWhenFocused">
         <short>Controls visibility of the Button when the control loses focus.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEditButton.ButtonOnlyWhenFocused"/>
+        </seealso>
       </element>
 
-      <element name="TFileNameEdit.ButtonWidth" link="#lcl.editbtn.TCustomEditButton.ButtonWidth">
+      <element name="TFileNameEdit.ButtonWidth" >
         <short>Width of the Button displayed in the control.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEditButton.ButtonWidth"/>
+        </seealso>
       </element>
 
       <element name="TFileNameEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
@@ -2508,7 +2518,7 @@
         <seealso/>
       </element>
 
-      <element name="TDateEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName">
+      <element name="TDateEdit.GetDefaultGlyphName">
         <short>Gets the default glyph name displayed on the Button for the control.</short>
         <descr>
           <p>
@@ -2524,12 +2534,14 @@
         <short>Resource name for the default glyph.</short>
       </element>
 
-      <element name="TDateEdit.ButtonClick" link="#lcl.editbtn.TCustomEditButton.ButtonClick">
+      <element name="TDateEdit.ButtonClick">
         <short>
           Implements the handler executed when the Button for the control is clicked.
         </short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomEditButton.ButtonClick"/>
+        </seealso>
       </element>
 
       <element name="TDateEdit.EditDblClick">
@@ -3240,17 +3252,19 @@
       <element name="TCalcEdit.GetDefaultGlyphName" link="#lcl.editbtn.TCustomEditButton.GetDefaultGlyphName"/>
       <element name="TCalcEdit.GetDefaultGlyphName.Result"/>
 
-      <element name="TCalcEdit.ButtonClick" link="#lcl.editbtn.TCustomEditButton.ButtonClick">
+      <element name="TCalcEdit.ButtonClick">
         <short>Performs actions needed when the button for the control is clicked.</short>
         <descr>
           <p>
             <var>ButtonClick</var> is an overridden method used to perform actions needed when the <var>Button</var> for the control is clicked. For <var>TCalcEdit</var>, the <var>RunDialog</var> method is called to execute the dialog for the control and to capture it results. When <var>FocusOnButtonClick</var> is set, the <var>FocusAndMaybeSelectAll</var> method is called to give focus to the <var>Edit</var> control in the class.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomEditButton.ButtonClick"/>
+        </seealso>
       </element>
 
-      <element name="TCalcEdit.Create" link="#lcl.editbtn.TCustomEditButton.Create">
+      <element name="TCalcEdit.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
@@ -3263,7 +3277,9 @@
             <dd>Set to poScreenCenter</dd>
           </dl>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomEditButton.Create"/>
+        </seealso>
       </element>
       <element name="TCalcEdit.Create.AOwner">
         <short>Owner of the class instance.</short>

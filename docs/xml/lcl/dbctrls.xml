@@ -1893,7 +1893,11 @@
       <element link="#lcl.controls.TControl.ParentFont" name="TDBText.ParentFont"/>
       <element link="#lcl.controls.TControl.ParentShowHint" name="TDBText.ParentShowHint"/>
       <element link="#lcl.controls.TControl.PopupMenu" name="TDBText.PopupMenu"/>
-      <element link="#lcl.stdctrls.TCustomLabel.ShowAccelChar" name="TDBText.ShowAccelChar">
+
+      <element name="TDBText.ShowAccelChar">
+        <short>
+          Enables or disables drawing of accelerator or shortcut keys for the label.
+        </short>
         <descr>
           <p>
             <var>ShowAccelChar</var> controls if an underlined character in the label is drawn for the accelerator or shortcut key. Changing the value for the property causes the WidgetSetClass to be notified of the potential change to the Caption and size for the control.
@@ -1901,11 +1905,14 @@
           <p>The default value for the property is <b>True</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomLabel.ShowAccelChar">TCustomLabel.ShowAccelChar</link>
+        </seealso>
       </element>
+
       <element link="#lcl.controls.TControl.ShowHint" name="TDBText.ShowHint"/>
       <element link="#lcl.stdctrls.TCustomLabel.Transparent" name="TDBText.Transparent"/>
-      <element link="#lcl.controls.TControl.Visible" name="TDBText.Visible">
+      <element name="TDBText.Visible">
         <short>Indicates if the control is displayed.</short>
         <descr>
           <p>The <var>Visible</var> property represents the ability to see a visual control. If Visible is set to  <b>True</b> the control is shown, otherwise it is hidden. Calling Show sets Visible to  <b>True</b>. Setting Visible to <b>False</b> is equivalent to calling the <var>Hide</var> method.
@@ -1913,7 +1920,9 @@
           <remark>The Visible property does not depend on control's parent visibility. Use <var>IsVisible</var> method to consider this and get the real visibility.
           </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
+        </seealso>
       </element>
       <element name="TDBText.WordWrap">
         <short>Indicates if text is wrapped at the right edge of the control.</short>
@@ -5298,10 +5307,12 @@
       <element name="TDBMemo.GetField.Result">
         <short>Value for the property.</short>
       </element>
-      <element link="#lcl.stdctrls.TCustomEdit.GetReadOnly" name="TDBMemo.GetReadOnly">
+      <element name="TDBMemo.GetReadOnly">
         <short>Gets the value for the ReadOnly property.</short>
         <descr/>
-        <seealso/>
+      <seealso>
+        <link id="#lcl.stdctrls.TCustomEdit.GetReadOnly">TCustomEdit.GetReadOnly</link>
+      </seealso>
       </element>
       <element name="TDBMemo.GetReadOnly.Result">
         <short>Value for the property.</short>
@@ -5346,10 +5357,12 @@
       <element name="TDBMemo.GetReadOnly.Result">
         <short>Value for the property.</short>
       </element>
-      <element link="#lcl.stdctrls.TCustomEdit.SetReadOnly" name="TDBMemo.SetReadOnly">
+      <element name="TDBMemo.SetReadOnly">
         <short>Sets the value for the ReadOnly property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomEdit.SetReadOnly">TCustomEdit.SetReadOnly</link>
+        </seealso>
       </element>
       <element name="TDBMemo.SetReadOnly.AValue">
         <short>New value for the property.</short>
@@ -5714,7 +5727,7 @@
       <element link="#lcl.controls.TControl.ParentFont" name="TDBMemo.ParentFont"/>
       <element link="#lcl.controls.TControl.ParentShowHint" name="TDBMemo.ParentShowHint"/>
       <element link="#lcl.controls.TControl.PopupMenu" name="TDBMemo.PopupMenu"/>
-      <element link="#lcl.stdctrls.TCustomEdit.ReadOnly" name="TDBMemo.ReadOnly">
+      <element name="TDBMemo.ReadOnly">
         <short>Indicates that the text in the control cannot be modified.
         </short>
         <descr>
@@ -5724,10 +5737,11 @@
           </p>
           <p>Read and write access specifiers in TDBMemo are overridden, and to the property value is redirected to the ReadOnly property in the TFieldDataLink instance used in the class. Write access calls the inherited method prior to updating the value in the field data link.
           </p>
-          <remark>Please note: A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
+          <remark>A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
           </remark>
         </descr>
         <seealso>
+          <link id="#lcl.stdctrls.TCustomEdit.ReadOnly">TCustomEdit.ReadOnly</link>
           <link id="#fcl.db.TDataLink.ReadOnly">TDataLink.ReadOnly</link>
         </seealso>
       </element>
@@ -6074,15 +6088,18 @@
       <element link="#lcl.controls.TControl.OnEndDrag" name="TDBGroupBox.OnEndDrag"/>
       <element link="#lcl.controls.TWinControl.OnEnter" name="TDBGroupBox.OnEnter"/>
       <element link="#lcl.controls.TWinControl.OnExit" name="TDBGroupBox.OnExit"/>
-      <element link="#lcl.controls.TWinControl.OnKeyDown" name="TDBGroupBox.OnKeyDown">
+      <element name="TDBGroupBox.OnKeyDown">
+        <short>
+          Event handler signalled when a key is down while the control has focus.
+        </short>
         <descr>
           <p>
-            <var>OnKeyDown</var> is an event handler signalled when a key is down while control has focus.
-          </p>
-          <p>Differs from <link id="#lcl.controls.TWinControl.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
+            <var>OnKeyDown</var> differs from <link id="TDBGroupBox.OnKeyPress">OnKeyPress</link> in that the key may have already been down when the control received focus; with <var>OnKeyPress</var> the key needs to become pressed while the control has focus.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.OnKeyDown">TWinControl.OnKeyDown</link>
+        </seealso>
       </element>
       <element name="TDBGroupBox.OnKeyPress">
         <short>
@@ -6093,7 +6110,7 @@
             <var>OnKeyPress</var> is an event controller signalled when a key is being pressed while the control has focus.
           </p>
           <p>
-            Differs from <link id="#lcl.controls.TWinControl.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.
+            Differs from <link id="TDBGroupBox.OnKeyDown">OnKeyDown</link> in that the key needs to become pressed while the control has focus; with <var>OnKeyDown</var>  the key may have already been down when the control received focus.
           </p>
         </descr>
         <seealso>

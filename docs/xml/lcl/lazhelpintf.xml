@@ -751,8 +751,11 @@
       <element name="THelpDBISourceFile.FBasePathObject" link="#lcl.lazhtmlintf.THelpDBISourceFile.BasePathObject"/>
       <element name="THelpDBISourceFile.FFilename" link="#lcl.lazhtmlintf.THelpDBISourceFile.Filename"/>
 
-      <element name="THelpDBISourceFile.SetFilename" link="#lcl.lazhtmlintf.THelpDBISourceFile.Filename">
+      <element name="THelpDBISourceFile.SetFilename">
         <short>Sets the value for the Filename property.</short>
+        <seealso>
+          <link id="THelpDBISourceFile.Filename"/>
+        </seealso>
       </element>
       <element name="THelpDBISourceFile.SetFilename.AValue">
         <short>New value for the property.</short>
@@ -1480,16 +1483,18 @@
         <short>List with class references for each registered help database.</short>
       </element>
 
-      <element name="THelpDatabases.GetItems" link="#lcl.lazhelpintf.THelpDatabases.Items">
+      <element name="THelpDatabases.GetItems">
         <short>Gets a value in the Items property by its ordinal position.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THelpDatabases.Items"/>
+        </seealso>
       </element>
       <element name="THelpDatabases.GetItems.Result">
-        <short/>
+        <short>Value for the indexed property.</short>
       </element>
       <element name="THelpDatabases.GetItems.Index">
-        <short/>
+        <short>Ordinal position for the indexed property value.</short>
       </element>
 
       <element name="THelpDatabases.DoRegisterDatabase">
@@ -2147,19 +2152,23 @@
       <element name="THelpViewer.FStorageName" link="#lcl.lazhelpintf.THelpViewer.StorageName"/>
       <element name="THelpViewer.FSupportedMimeTypes" link="#lcl.lazhelpintf.THelpViewer.SupportedMimeTypes"/>
 
-      <element name="THelpViewer.SetAutoRegister" link="#lcl.lazhelpintf.THelpViewer.AutoRegister">
+      <element name="THelpViewer.SetAutoRegister">
         <short>Sets the value in the AutoRegister property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THelpViewer.AutoRegister"/>
+        </seealso>
       </element>
       <element name="THelpViewer.SetAutoRegister.AValue">
         <short>New value for the property.</short>
       </element>
 
-      <element name="THelpViewer.SetSupportedMimeTypes" link="#lcl.lazhelpintf.THelpViewer.SupportedMimeTypes">
+      <element name="THelpViewer.SetSupportedMimeTypes">
         <short>Sets the value in the SupportedMimeTypes property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THelpViewer.SupportedMimeTypes"/>
+        </seealso>
       </element>
       <element name="THelpViewer.SetSupportedMimeTypes.List">
         <short>List with value used in the property.</short>
@@ -2507,10 +2516,12 @@
 
       <element name="THelpBasePathObject.FBasePath" link="#lcl.lazhelpintf.THelpBasePathObject.BasePath"/>
 
-      <element name="THelpBasePathObject.SetBasePath" link="#lcl.lazhelpintf.THelpBasePathObject.BasePath">
+      <element name="THelpBasePathObject.SetBasePath">
         <short>Sets the value for the BasePath property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THelpBasePathObject.BasePath"/>
+        </seealso>
       </element>
       <element name="THelpBasePathObject.SetBasePath.AValue">
         <short>New value for the property.</short>
@@ -2541,10 +2552,12 @@
 
       <element name="THelpBaseURLObject.FBaseURL" link="#lcl.lazhelpintf.THelpBaseURLObject.BaseURL"/>
 
-      <element name="THelpBaseURLObject.SetBaseURL" link="#lcl.lazhelpintf.THelpBaseURLObject.BaseURL">
+      <element name="THelpBaseURLObject.SetBaseURL">
         <short>Sets the value in the BaseURL property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="THelpBaseURLObject.BaseURL"/>
+        </seealso>
       </element>
       <element name="THelpBaseURLObject.SetBaseURL.AValue">
         <short>New value for the property.</short>

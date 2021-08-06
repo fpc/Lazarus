@@ -61,12 +61,14 @@
 
       <element name="TUpdateTranslator.FStackPath"/>
 
-      <element name="TUpdateTranslator.IntUpdateTranslation" link="#lcl.lcltranslator.TUpdateTranslator.UpdateTranslation">
+      <element name="TUpdateTranslator.IntUpdateTranslation">
         <short>
           Performs action required to update string translations for persistent objects using RTTI.
         </short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TUpdateTranslator.UpdateTranslation"/>
+        </seealso>
       </element>
       <element name="TUpdateTranslator.IntUpdateTranslation.AnInstance">
         <short>Persistent object updated in the method.</short>

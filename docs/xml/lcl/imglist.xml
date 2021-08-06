@@ -285,8 +285,11 @@
         <short>Number of images that require data storage.</short>
       </element>
 
-      <element name="TCustomImageListResolution.GetReference" link="#lcl.imglist.TCustomImageListResolution.Reference">
+      <element name="TCustomImageListResolution.GetReference">
         <short>Gets the value for the Reference property.</short>
+        <seealso>
+          <link id="TCustomImageListResolution.Reference"/>
+        </seealso>
       </element>
       <element name="TCustomImageListResolution.GetReference.Result">
         <short>Value for the Reference property.</short>
@@ -1204,22 +1207,31 @@
 
       <element name="TScaledImageListResolution.FHeight" link="#lcl.imglist.TScaledImageListResolution.Height"/>
 
-      <element name="TScaledImageListResolution.GetCount" link="#lcl.imglist.TScaledImageListResolution.Count">
+      <element name="TScaledImageListResolution.GetCount">
         <short>Gets the value for the Count property.</short>
+        <descr>
+          <link id="TScaledImageListResolution.Count"/>
+        </descr>
       </element>
       <element name="TScaledImageListResolution.GetCount.Result">
         <short>Value for the Count property.</short>
       </element>
 
-      <element name="TScaledImageListResolution.GetSize" link="#lcl.imglist.TScaledImageListResolution.Size">
+      <element name="TScaledImageListResolution.GetSize">
         <short>Gets the value for the Size property.</short>
+        <seealso>
+          <link id="TScaledImageListResolution.Size"/>
+        </seealso>
       </element>
       <element name="TScaledImageListResolution.GetSize.Result">
         <short>Value for the Size property.</short>
       </element>
 
-      <element name="TScaledImageListResolution.GetValid" link="#lcl.imglist.TScaledImageListResolution.Valid">
+      <element name="TScaledImageListResolution.GetValid">
         <short>Gets the value for the Valid property.</short>
+        <seealso>
+          <link id="TScaledImageListResolution.Valid"/>
+        </seealso>
       </element>
       <element name="TScaledImageListResolution.GetValid.Result">
         <short>Value for the the Valid property.</short>
@@ -1254,8 +1266,11 @@
         <short>Scale factor applied to the scaled images.</short>
       </element>
 
-      <element name="TScaledImageListResolution.GetBitmap" link="#lcl.imglist.TCustomImageListResolution.GetBitmap">
+      <element name="TScaledImageListResolution.GetBitmap">
         <short>Gets the scaled bitmap for the specified image.</short>
+        <seealso>
+          <link id="TCustomImageListResolution.GetBitmap"/>
+        </seealso>
       </element>
       <element name="TScaledImageListResolution.GetBitmap.Index">
         <short>Ordinal position for the bitmap requested in the method.</short>
@@ -1267,8 +1282,11 @@
         <short>Drawing effect applied to the image.</short>
       </element>
 
-      <element name="TScaledImageListResolution.Draw" link="#lcl.imglist.TCustomImageListResolution.Draw">
+      <element name="TScaledImageListResolution.Draw">
         <short>Draws the scaled image to the specified canvas.</short>
+        <seealso>
+          <link id="TCustomImageListResolution.Draw"/>
+        </seealso>
       </element>
       <element name="TScaledImageListResolution.Draw.ACanvas">
         <short>Canvas used to render the image.</short>
@@ -1295,8 +1313,11 @@
         <short>Image type for the rendered image.</short>
       </element>
 
-      <element name="TScaledImageListResolution.StretchDraw" link="#lcl.imglist.TCustomImageListResolution.StretchDraw">
+      <element name="TScaledImageListResolution.StretchDraw">
         <short>Draws the scaled image sized to the target rectangle.</short>
+        <seealso>
+          <link id="TCustomImageListResolution.StretchDraw"/>
+        </seealso>
       </element>
       <element name="TScaledImageListResolution.StretchDraw.ACanvas">
         <short/>
@@ -1311,7 +1332,7 @@
         <short/>
       </element>
 
-      <element name="TScaledImageListResolution.DrawOverlay" link="#lcl.imglist.TCustomImageListResolution.DrawOverlay">
+      <element name="TScaledImageListResolution.DrawOverlay">
         <short>Draws an image with an overlay at the specified canvas position.</short>
         <descr>
           <p>
@@ -1338,6 +1359,7 @@
           <link id="TScaledImageListResolution.StretchDraw"/>
           <link id="TCustomImageListResolution.Draw"/>
           <link id="TCustomImageListResolution.StretchDraw"/>
+          <link id="TCustomImageListResolution.DrawOverlay"/>
         </seealso>
       </element>
       <element name="TScaledImageListResolution.DrawOverlay.ACanvas">
@@ -1498,8 +1520,11 @@
         </short>
       </element>
 
-      <element name="TCustomImageListResolutions.GetItems" link="#lcl.imglist.TCustomImageListResolutions.Items">
+      <element name="TCustomImageListResolutions.GetItems">
         <short>Gets the value for the indexed Items property.</short>
+        <seealso>
+          <link id="TCustomImageListResolutions.Items"/>
+        </seealso>
       </element>
       <element name="TCustomImageListResolutions.GetItems.Result">
         <short>Value for the Items property.</short>
@@ -1508,8 +1533,11 @@
         <short>Ordinal position for the requested item.</short>
       </element>
 
-      <element name="TCustomImageListResolutions.GetCount" link="#lcl.imglist.TCustomImageListResolutions.Count">
+      <element name="TCustomImageListResolutions.GetCount">
         <short>Gets the value for the Count property.</short>
+        <seealso>
+          <link id="TCustomImageListResolutions.Count"/>
+        </seealso>
       </element>
       <element name="TCustomImageListResolutions.GetCount.Result">
         <short>Value for the Count property.</short>
@@ -1747,8 +1775,11 @@
 
       <element name="TCustomImageListResolutionEnumerator.FDesc"/>
 
-      <element name="TCustomImageListResolutionEnumerator.GetCurrent" link="#lcl.imglist.TCustomImageListResolutionEnumerator.Current">
+      <element name="TCustomImageListResolutionEnumerator.GetCurrent">
         <short>Gets the value for the Current property.</short>
+        <seealso>
+          <link id="TCustomImageListResolutionEnumerator.Current"/>
+        </seealso>
       </element>
       <element name="TCustomImageListResolutionEnumerator.GetCurrent.Result">
         <short>Value for the Current property.</short>
@@ -2028,50 +2059,71 @@
         </seealso>
       </element>
 
-      <element name="TCustomImageList.SetBkColor" link="#lcl.imglist.TCustomImageList.BkColor">
+      <element name="TCustomImageList.SetBkColor">
         <short>Sets the value for the BkColor property.</short>
+        <seealso>
+          <link id="TCustomImageList.BkColor"/>
+        </seealso>
       </element>
       <element name="TCustomImageList.SetBkColor.Value">
         <short>New value for the BkColor property.</short>
       </element>
 
-      <element name="TCustomImageList.SetDrawingStyle" link="#lcl.imglist.TCustomImageList.DrawingStyle">
+      <element name="TCustomImageList.SetDrawingStyle">
         <short>Sets the value for the DrawingStyle property.</short>
+        <seealso>
+          <link id="TCustomImageList.DrawingStyle"/>
+        </seealso>
       </element>
       <element name="TCustomImageList.SetDrawingStyle.AValue">
         <short>New value for the DrawingStyle property.</short>
       </element>
 
-       <element name="TCustomImageList.SetHeight" link="#lcl.imglist.TCustomImageList.Height">
+       <element name="TCustomImageList.SetHeight">
          <short>Sets the value for the Height property.</short>
+         <seealso>
+           <link id="TCustomImageList.Height"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.SetHeight.Value">
          <short>New value for the Height property.</short>
        </element>
 
-       <element name="TCustomImageList.SetMasked" link="#lcl.imglist.TCustomImageList.Masked">
+       <element name="TCustomImageList.SetMasked">
          <short>Sets the value for the Masked property.</short>
+         <seealso>
+           <link id="TCustomImageList.Masked"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.SetMasked.AValue">
          <short>New value for the Masked property.</short>
        </element>
 
-       <element name="TCustomImageList.SetShareImages" link="#lcl.imglist.TCustomImageList.ShareImages">
+       <element name="TCustomImageList.SetShareImages">
          <short>Sets the value for the ShareImages property.</short>
+         <seealso>
+           <link id="TCustomImageList.ShareImages"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.SetShareImages.AValue">
          <short>New value for the ShareImages property.</short>
        </element>
 
-       <element name="TCustomImageList.SetWidth" link="#lcl.imglist.TCustomImageList.Width">
+       <element name="TCustomImageList.SetWidth">
          <short>Sets the value for the Width property.</short>
+         <seealso>
+           <link id="TCustomImageList.Width"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.SetWidth.Value">
          <short>New value for the Width property.</short>
        </element>
 
-       <element name="TCustomImageList.GetReference" link="#lcl.imglist.TCustomImageList.Reference">
+       <element name="TCustomImageList.GetReference">
          <short>Gets the value for the Reference property.</short>
+         <seealso>
+           <link id="TCustomImageList.Reference"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.GetReference.Result">
          <short>Value for the Reference property.</short>
@@ -2123,8 +2175,11 @@
          <short>Scaling factor used for the target canvas.</short>
        </element>
 
-       <element name="TCustomImageList.GetWidthForPPI" link="#lcl.imglist.TCustomImageList.WidthForPPI">
+       <element name="TCustomImageList.GetWidthForPPI">
          <short>Gets the value for the WidthForPPI property.</short>
+         <seealso>
+           <link id="TCustomImageList.WidthForPPI"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.GetWidthForPPI.Result">
          <short>Image width derived for the specified display density.</short>
@@ -2136,8 +2191,11 @@
          <short>Display density (PPI) for the calculation.</short>
        </element>
 
-       <element name="TCustomImageList.GetHeightForPPI" link="#lcl.imglist.TCustomImageList.HeightForPPI">
+       <element name="TCustomImageList.GetHeightForPPI">
          <short>Gets the value for the HeightForPPI property.</short>
+         <seealso>
+           <link id="TCustomImageList.HeightForPPI"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.GetHeightForPPI.Result">
          <short>Image height derived for the specified display density.</short>
@@ -2177,8 +2235,11 @@
        </element>
 
 
-       <element name="TCustomImageList.GetCount" link="#lcl.imglist.TCustomImageList.Count">
+       <element name="TCustomImageList.GetCount">
          <short>Gets the value for the Count property.</short>
+         <seealso>
+           <link id="TCustomImageList.Count"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.GetCount.Result">
          <short>Value for the Count property.</short>
@@ -2257,8 +2318,11 @@
          <short>Icon width requested in the method.</short>
        </element>
 
-       <element name="TCustomImageList.GetResolutionByIndex" link="#lcl.imglist.TCustomImageList.ResolutionByIndex">
+       <element name="TCustomImageList.GetResolutionByIndex">
          <short>Gets the value for the ResolutionByIndex property.</short>
+         <seealso>
+           <link id="TCustomImageList.ResolutionByIndex"/>
+         </seealso>
        </element>
        <element name="TCustomImageList.GetResolutionByIndex.Result">
          <short>Value for the ResolutionByIndex property.</short>
@@ -2267,8 +2331,11 @@
          <short>Index position for the requested image resolution.</short>
        </element>
 
-      <element name="TCustomImageList.GetResolutionCount" link="#lcl.imglist.TCustomImageList.ResolutionCount">
+      <element name="TCustomImageList.GetResolutionCount">
         <short>Gets the value for the ResolutionCount property.</short>
+        <seealso>
+          <link id="TCustomImageList.ResolutionCount"/>          
+        </seealso>
         <seealso>
           <link id="TCustomImageList.ResolutionCount"/>
           <link id="TCustomImageList.Resolutions"/>

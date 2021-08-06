@@ -1261,7 +1261,7 @@
 
       <element name="TShape.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TShape.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
+      <element name="TShape.GetControlClassDefaultSize">
         <short>Gets the default size for instances of the control.</short>
         <descr>
           <p>
@@ -1271,8 +1271,9 @@
             GetControlClassDefaultSize is called from the <var>Create</var> method, and used to set the initial value in the <var>Bounds</var> for the control.
           </p>
         </descr>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <element name="TShape.GetControlClassDefaultSize.Result">
         <short>TSize instance with the dimensions for instances of the control class.</short>
@@ -4516,7 +4517,7 @@
 
       <element name="TCustomLabeledEdit.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TCustomLabeledEdit.SetParent" link="#lcl.controls.TControl.SetParent">
+      <element name="TCustomLabeledEdit.SetParent">
         <short>Sets the value for the Parent property.</short>
         <descr>
           <p>
@@ -4528,6 +4529,7 @@
           <link id="TCustomLabeledEdit.LabelPosition"/>
           <link id="TCustomLabeledEdit.LabelSpacing"/>
           <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+           <link id="#lcl.controls.TControl.SetParent">TControl.SetParent</link>
         </seealso>
       </element>
       <element name="TCustomLabeledEdit.SetParent.AParent">

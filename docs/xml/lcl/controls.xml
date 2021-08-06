@@ -810,8 +810,11 @@
         <descr/>
       </element>
 
-      <element name="TAlignSet" link="#lcl.controls.TAlign">
+      <element name="TAlignSet">
         <short>Set of alignment options.</short>
+        <seealso>
+          <link id="#lcl.controls.TAlign">TAlign</link>
+        </seealso>
       </element>
 
       <element name="TAnchorKind">
@@ -1009,17 +1012,21 @@
         <short>Small caption, form can be resized.</short>
       </element>
 
-      <element name="TBorderStyle" link="#lcl.controls.TFormBorderStyle">
+      <element name="TBorderStyle">
         <short>Possible types of borders (with or without border).</short>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TFormBorderStyle">TFormBorderStyle</link>
+        </seealso>
       </element>
 
-      <element name="TControlBorderStyle" link="#lcl.controls.TFormBorderStyle">
+      <element name="TControlBorderStyle">
         <short>Possible types of control borders (with or without border).</short>
         <descr>
           A subset of TFormBorderStyle, listing only the styles available to a control that is not a form.
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TFormBorderStyle">TFormBorderStyle</link>
+        </seealso>
       </element>
 
       <element name="TControlRoleForForm">
@@ -1401,8 +1408,11 @@
         </short>
       </element>
 
-      <element name="TControlState" link="#lcl.controls.TControlStateType">
+      <element name="TControlState">
         <short>Set of Control States allowed in a control.</short>
+        <seealso>
+          <link id="TControlStateType"/>
+        </seealso>
       </element>
 
       <element name="TControlCanvas">
@@ -2453,7 +2463,7 @@
       <element name="TDragDropEvent.Sender">
         <short>The target control of the drop.</short>
       </element>
-      <element name="TDragDropEvent.Source" link="#lcl.controls.TDragOverEvent.Source">
+      <element name="TDragDropEvent.Source">
         <short>The dragged control.</short>
       </element>
       <element name="TDragDropEvent.X">
@@ -2693,8 +2703,11 @@
       <element name="TDragObjectClass">
         <short>A <link id="TDragObject"/> class type.</short>
       </element>
-      <element name="TDragObjectEx" link="#lcl.controls.TDragObject">
+      <element name="TDragObjectEx">
         <short>A drag object that is automatically destroyed after use.</short>
+        <seealso>
+          <link id="TDragObject"/>
+        </seealso>
       </element>
 
       <element name="TDragObjectEx">
@@ -3396,14 +3409,16 @@
         <seealso/>
       </element>
 
-      <element name="DragManager" link="#lcl.controls.TDragManager">
+      <element name="DragManager">
         <short>The current DragManager (always TDragManagerDefault).</short>
         <descr>
           <remark>
             A <var>DragManager</var> must be implemented in the <file>Controls</file> unit; it requires access to private members in the classes declared in the unit.
           </remark>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TDragManager"/>
+        </seealso>
       </element>
 
       <element name="TDockManager">
@@ -4029,7 +4044,7 @@
 
       <element name="TControlCellAligns" link="#lcl.controls.TControlCellAlign"/>
 
-      <element name="TControlBorderSpacingDefault" link="#lcl.controls.TControlBorderSpacing">
+      <element name="TControlBorderSpacingDefault">
         <short>Defines the default values for TControlBorderSpacing.</short>
         <descr>
           <p>
@@ -4897,8 +4912,11 @@
         <descr>It can be assumed that FClient is not Nil.</descr>
       </element>
 
-      <element link="#rtl.classes.TBasicActionLink.AssignClient" name="TControlActionLink.AssignClient">
+      <element name="TControlActionLink.AssignClient">
         <short>Called during construction, sets FClient to the given control.</short>
+        <seealso>
+          <link id="#rtl.classes.TBasicActionLink">TBasicActionLink</link>
+        </seealso>
       </element>
       <element name="TControlActionLink.AssignClient.AClient">
         <short>The control linked to the action.</short>
@@ -5011,9 +5029,12 @@
         <short/>
       </element>
 
-      <element link="#lcl.actnlist.TActionLink.IsHelpLinked" name="TControlActionLink.IsHelpLinked">
+      <element name="TControlActionLink.IsHelpLinked">
         <short>Help properties are assumed linked only when all these properties match.</short>
         <descr>Compares the HelpContext, HelpKeyword and HelpType properties.</descr>
+        <seealso>
+          <link id="#lcl.actnlist.TActionLink.IsHelpLinked">TActionLink.IsHelpLinked</link>
+        </seealso>
       </element>
       <element name="TControlActionLink.IsHelpLinked.Result">
         <short>True only if all three Control properties match the Action properties.</short>
@@ -5029,10 +5050,12 @@
         <short/>
       </element>
 
-      <element link="#lcl.controls.TControlActionLink" name="TControlActionLinkClass">
+      <element name="TControlActionLinkClass">
         <short>Class of <link id="TControlActionLink"/></short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TControlActionLink"/>
+        </seealso>
       </element>
 
       <element name="ELayoutException">
@@ -5519,13 +5542,13 @@
         <short>Available for Widgetsets to use.</short>
       </element>
 
-      <element link="#rtl.System.TObject.Create" name="TLazAccessibleObject.Create">
+      <element name="TLazAccessibleObject.Create">
          <short>Constructor for the class instance.</short>
         <descr/>
         <seealso/>
       </element>
 
-      <element link="#rtl.System.TObject.Destroy" name="TLazAccessibleObject.Destroy">
+      <element name="TLazAccessibleObject.Destroy">
          <short>Destructor for the class instance.</short>
         <descr/>
         <seealso/>
@@ -6080,7 +6103,7 @@
        <short>New value for the AnchorSize property.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.BorderSpacing" name="TControl.SetBorderSpacing">
+      <element name="TControl.SetBorderSpacing">
         <short>Sets the value for the BorderSpacing property.</short>
         <descr/>
         <seealso>
@@ -6699,11 +6722,16 @@
         </short>
       </element>
 
-      <element link="#lcl.controls.TControl.ControlOrigin" name="TControl.GetControlOrigin">
-        <short>Returns the origin (top left pixel) of the control, in screen coordinates.</short>
+      <element name="TControl.GetControlOrigin">
+        <short>
+          Returns the origin (top left pixel) of the control, in screen coordinates.
+        </short>
+        <seealso>
+          <link id="TControl.ControlOrigin"/>
+        </seealso>
       </element>
       <element name="TControl.GetControlOrigin.Result">
-        <short/>
+        <short>Value for the property.</short>
       </element>
 
       <element link="#lcl.controls.TControl.ClientHeight" name="TControl.IsClientHeightStored"/>
@@ -12674,12 +12702,14 @@
         <short/>
       </element>
 
-      <element link="#lcl.controls.TControl.ChangeScale" name="TWinControl.ChangeScale">
+      <element name="TWinControl.ChangeScale">
         <short>
           Scales (resizes) the control and all of its child controls.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TControl.ChangeScale"/>
+        </seealso>
       </element>
       <element name="TWinControl.ChangeScale.Multiplier">
         <short/>
@@ -13374,12 +13404,14 @@
         <short/>
       </element>
 
-      <element link="#lcl.controls.TControl.DoFloatMsg" name="TWinControl.DoFloatMsg">
+      <element name="TWinControl.DoFloatMsg">
         <short>Handler called when the control starts floating.</short>
         <descr>
           TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TControl.DoFloatMsg"/>
+        </seealso>
       </element>
       <element name="TWinControl.DoFloatMsg.ADockSource">
         <short/>
@@ -14723,8 +14755,11 @@
         <short>True if update needed.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.SetBounds" name="TWinControl.SetBounds">
+      <element name="TWinControl.SetBounds">
         <short>Sets the control bounds and adjusts child and docked controls.</short>
+        <seealso>
+          <link id="TControl.SetBounds"/>
+        </seealso>
       </element>
       <element name="TWinControl.SetBounds.aLeft">
         <short/>
@@ -15574,7 +15609,7 @@ if MyControl.CanSetFocus then
 
       <element link="#lcl.controls.TWinControl.DestroyWnd" name="TCustomControl.DestroyWnd"/>
 
-      <element link="#lcl.controls.TWinControl.PaintWindow" name="TCustomControl.PaintWindow">
+      <element name="TCustomControl.PaintWindow">
         <short>The Paint handler plug-in, intercepting paint requests.</short>
         <descr>
           <p>

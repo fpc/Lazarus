@@ -484,7 +484,7 @@
         </seealso>
       </element>
 
-      <element name="TPrinterCanvas.Changing" link="#lcl.graphics.TCanvas.Changing">
+      <element name="TPrinterCanvas.Changing">
         <short>
           Signals the OnChanging event when the printer status is changed.
         </short>
@@ -499,6 +499,7 @@
         <seealso>
           <link id="TPrinter.Printing"/>
           <link id="EPrinter"/>
+          <link id="#lcl.graphics.TCanvas.Changing">TCanvas.Changing</link>
           <link id="#lcl.graphics.TCanvas.OnChanging">TCanvas.OnChanging</link>
         </seealso>
       </element>

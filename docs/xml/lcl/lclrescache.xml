@@ -402,21 +402,35 @@
         <short/>
       </element>
 
-      <element name="TResourceCache.Create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
+      <element name="TResourceCache.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            Allocates resources for the internal TAVLTree instances used for items and descriptors in the class instance, and sets the default values for properties.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TResourceCache.Clear">
-        <short><var>Clear</var> the current Resource Cache.</short>
-        <descr/>
+        <short>Clears the current entries in the Resource Cache.</short>
+        <descr>
+          <p>
+            Frees entries in the internal items and descriptors for the resource cache.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
-      <element name="TResourceCache.Destroy" link="#rtl.System.TObject.Destroy">
-        <short/>
-        <descr/>
+      <element name="TResourceCache.Destroy">
+        <short>
+          Destructor for the class instance.
+        </short>
+        <descr>
+          <p>
+            Frees resources allocates in the Create constructor, and calls the inherited method prior to exit.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -529,8 +543,8 @@
         <seealso/>
       </element>
 
-      <element name="TBlockResourceCacheDescriptor.Destroy" link="#rtl.System.TObject.Destroy">
-        <short/>
+      <element name="TBlockResourceCacheDescriptor.Destroy">
+        <short>Destructor for the class instance.</short>
         <descr/>
         <seealso/>
       </element>
@@ -552,9 +566,13 @@
         <descr/>
       </element>
 
-      <element name="TBlockResourceCache.Create" link="#rtl.System.TObject.Create">
-        <short/>
-        <descr/>
+      <element name="TBlockResourceCache.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            Allocates resources needed for the cache descriptor. Sets the initial DataSize for the cache. Assign the default compare routine used for the block resources.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TBlockResourceCache.Create.TheDataSize">

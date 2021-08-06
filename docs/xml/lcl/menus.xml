@@ -1033,8 +1033,10 @@
         <seealso/>
       </element>
 
-      <element name="TMenuItem.Loaded" link="#rtl.classes.TComponent.Loaded">
-        <short>Performs actions needed after the component is loaded using LCL streaming.</short>
+      <element name="TMenuItem.Loaded">
+        <short>
+          Performs actions needed after the component is loaded using LCL streaming.
+        </short>
         <descr>
           <p>
             Loaded is overridden in TMenuItem, and calls the inherited method on entry. It calls the <var>ActionChange</var> method if <var>Action</var> has been assigned for the class instance.
@@ -1043,17 +1045,20 @@
         <seealso>
           <link id="TMenuItem.Action"/>
           <link id="TMenuItem.ActionChange"/>
+           <link id="#rtl.classes.TComponent">TComponent</link>
         </seealso>
       </element>
 
-      <element name="TMenuItem.Notification" link="#rtl.classes.TComponent.Notification">
+      <element name="TMenuItem.Notification">
         <short>Performs a notification when the menu item is added or removed.</short>
         <descr>
           <p>
             <var>Notification</var> is an overridden method in <var>TMenuItem</var>, and calls the inherited method on entry. Notification ensures that the class instances in <var>Action</var> and <var>SubMenuImages</var> are set to <b>Nil</b> when the remove <var>Operation</var> is received for either member.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Notification">TComponent.Notification</link>
+        </seealso>
       </element>
       <element name="TMenuItem.Notification.AComponent">
         <short>Component for the notification.</short>
@@ -1062,7 +1067,7 @@
         <short>Operation for the notification.</short>
       </element>
 
-      <element name="TMenuItem.GetChildren" link="#rtl.classes.TComponent.GetChildren">
+      <element name="TMenuItem.GetChildren">
         <short>Performs an operation for a component instance and its Items.</short>
         <descr>
           <p>
@@ -1075,7 +1080,9 @@
             No actions are performed in the method when Items has not been assigned (contains Nil).
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
       </element>
       <element name="TMenuItem.GetChildren.Proc">
         <short>Object procedure called for the component.</short>
@@ -1133,14 +1140,16 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TMenuItem.SetChildOrder" link="#rtl.classes.TComponent.SetChildOrder">
+      <element name="TMenuItem.SetChildOrder">
         <short>Moves a menu item to the specified position in a menu.</short>
         <descr>
           <p>
             Stores the value in the Order parameter to the MenuIndex property in the Child menu item.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
       </element>
       <element name="TMenuItem.SetChildOrder.Child">
         <short>Menu item affected in the method.</short>
@@ -1178,7 +1187,7 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TMenuItem.SetParentComponent" link="#rtl.classes.TComponent.SetParentComponent">
+      <element name="TMenuItem.SetParentComponent">
         <short>
           Ensures that the menu item is parented by the specified menu or menu item.
         </short>
@@ -1196,7 +1205,9 @@
             An <var>Exception</var> is raised if AValue is derived from any class type other than TMenu or TMenuItem. The current class instance is not re-parented when AValue contains <b>Nil</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
       </element>
       <element name="TMenuItem.SetParentComponent.AValue">
         <short>Menu or menu item used as the parent for the current class instance.</short>

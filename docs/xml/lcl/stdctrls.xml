@@ -3487,10 +3487,16 @@
         <short>Message handled in the method.</short>
       </element>
 
-      <element name="TCustomListBox.WMLButtonUp" link="#lcl.controls.TControl.WMLButtonUp">
+      <element name="TCustomListBox.WMLButtonUp">
         <short>
-          Prevents Click from being called twice when using ClickOnSelChange to trigger a click event.
+          Handles Left mouse button Up events for the control.
         </short>
+        <descr>
+          Prevents Click from being called twice when using ClickOnSelChange to trigger a click event.
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.WMLButtonUp">TControl.WMLButtonUp</link>
+        </seealso>
       </element>
       <element name="TCustomListBox.WMLButtonUp.Message">
         <short>Message handled in the method.</short>
@@ -3565,19 +3571,40 @@
       </element>
 
       <element name="TCustomListBox.BeforeDragStart">
-        <short>Calls BeginDrag.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Notifies the widgetset class that a Drag operation is starting.
+        </short>
+        <descr>
+          <p>
+            <var>BeforeDragStart</var> is an overridden method in <var>TCustomListBox</var> used to perform actions needed to start a drag operation for the control. In TCustomListBox, this means that the DragStart method in the widgetset class is called. No actions are performed in the method if the Handle has not been allocated for the control.
+          </p>
+          <p>
+            BeforeDragStart is called when mouse up, down, and move messages are handled by the DragManager for an application.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.BeforeDragStart"/>
+        </seealso>
       </element>
 
-      <element name="TCustomListBox.BeginAutoDrag" link="#lcl.controls.TControl.BeginAutoDrag">
-        <short>Calls BeginDrag.</short>
-        <descr/>
-        <seealso/>
+      <element name="TCustomListBox.BeginAutoDrag">
+        <short>
+          Starts a non-immediate drag / dock operation for the control.
+        </short>
+        <descr>
+          <p>
+            Calls the inherited <var>BeginDrag</var> method with the <var>Immediate</var> argument set to <b>False</b>. The drag operation is detected and handled by the DragManager for the application.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.BeginAutoDrag">TControl.BeginAutoDrag</link>
+        </seealso>
       </element>
 
       <element name="TCustomListBox.CalculateStandardItemHeight">
-        <short>Determine the standard Height of the items, when no widget has yet been created.</short>
+        <short>
+          Determines the standard Height of the items, when no widget has yet been created.
+        </short>
       </element>
       <element name="TCustomListBox.CalculateStandardItemHeight.Result">
         <short>Height for the items in the control.</short>
@@ -3587,8 +3614,8 @@
         <short>Sends the design-time value for ItemIndex to the widgetset class.</short>
         <descr/>
         <seealso>
+          <link id="#lcl.controls.TWinControl.Loaded"/>
           <link id="#rtl.classes.TComponent.Loaded">TComponent.Loaded</link>
-          <link id="#LCL.Controls.TWinControl.Loaded"/>
         </seealso>
       </element>
 
@@ -3799,10 +3826,12 @@
         <short>New value for the property.</short>
       </element>
 
-      <element name="TCustomListBox.SetItems" link="#lcl.stdctrls.TCustomListBox.Items">
+      <element name="TCustomListBox.SetItems">
         <short>Sets the value for the Items property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListBox.Items"/>
+        </seealso>
       </element>
       <element name="TCustomListBox.SetItems.Value">
         <short>New value for the property.</short>
@@ -9163,7 +9192,7 @@ end;
 
       <element name="TRadioButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
-      <element name="TRadioButton.ApplyChanges" link="#lcl.stdctrls.TCustomCheckBox.ApplyChanges">
+      <element name="TRadioButton.ApplyChanges">
         <short>Updates the state for sibling radio buttons in the parent.</short>
         <descr>
           <p>
