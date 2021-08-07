@@ -613,6 +613,8 @@ var
           pPrev := p;
           pPrevNan := pNan;
         end;
+      else
+        raise EChartError.Create('[TLineSeries.DrawSingleLineInStack] Unhandled LineType');
     end;
     breaks[breakCount] := pointCount;
     breakCount += 1;
@@ -716,6 +718,8 @@ var
               end;
             ltFromOrigin:
               ADrawer.Line(origin, imgPt2);
+            else
+              raise EChartError.Create('[TLineSeries.DrawSingleLineInStack] Unhandled LineType');
           end;
         end;
         imgPt1 := imgPt2;
@@ -1220,7 +1224,7 @@ begin
     bwPercent: r := GetXRange(AX, AIndex) * PERCENT;
     bwPercentMin: r := FMinXRange * PERCENT;
     else
-      raise EBarError.Create('BarWidthStyle not implemented');
+      raise EBarError.Create('BarWidthStyle not implemented'){%H-};
   end;
   AOffset := r * BarOffsetPercent;
   AWidth := r * BarWidthPercent / 2;
@@ -1804,7 +1808,7 @@ begin
     bsHexPrism:
       FDrawBarProc := @DrawHexPrism;
     else
-      raise EBarError.Create('[TBarSeries.SetBarShape] No drawing procedure for bar shape.');
+      raise EBarError.Create('[TBarSeries.SetBarShape] No drawing procedure for bar shape.'){%H-};
   end;
   UpdateParentChart;
 end;

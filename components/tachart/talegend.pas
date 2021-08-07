@@ -994,6 +994,7 @@ begin
     laTopRight    : Alignment := laTopLeft;
     laCenterRight : Alignment := laCenterLeft;
     laBottomRight : Alignment := laBottomLeft;
+    else ;
   end;
 end;
 
