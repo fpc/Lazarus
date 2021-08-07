@@ -1825,7 +1825,7 @@ begin
     fitOverflow             : Result := rsErrNumericalOverflow;
   else
     raise EChartError.CreateFmt('[%s.ErrorMsg] No message text assigned to error code #%d.',
-      [NameOrClassName(self), ord(ErrCode)]);
+      [NameOrClassName(self), ord(ErrCode)]){%H-};
   end;
 end;
 
@@ -2475,7 +2475,7 @@ begin
             Add(255, 0, '', clWhite);
           end;
       else
-        raise EChartError.CreateFmt('[%s.BuildPalette] Palette not supported', [NameOrClassName(Self)]);
+        raise EChartError.CreateFmt('[%s.BuildPalette] Palette not supported', [NameOrClassName(Self)]){%H-};
       end;
 
       if FPaletteMin < FPaletteMax then begin
@@ -2749,6 +2749,8 @@ begin
     lmPoint:
       if (ColorSource <> nil) and (ColorSource.Count > 0) then
         MakePointItems;
+    lmStyle:
+      raise EChartError.Create('[TCustomColorMapSeries.GetLegendItems] Unhandled Legend.Multiplicity');
   end;
 end;
 

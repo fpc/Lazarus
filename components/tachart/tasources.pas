@@ -1541,6 +1541,7 @@ begin
     end;
     camDerivative, camSmoothDerivative:
       CalcDerivative(AIndex);
+    else ;
   end;
   FIndex := AIndex;
 end;

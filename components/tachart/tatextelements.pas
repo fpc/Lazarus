@@ -743,6 +743,7 @@ begin
   case Alignment of
     taLeftJustify  : Alignment := taRightJustify;
     taRightJustify : Alignment := taLeftJustify;
+    taCenter: ;
   end;
 end;
 

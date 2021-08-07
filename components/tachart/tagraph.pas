@@ -1184,6 +1184,7 @@ begin
     case AAlign of
       calLeft: AAlign := calRight;
       calRight: AAlign := calLeft;
+      else ;
     end;
   Result := FAxisList.GetAxisByAlign(AAlign);
 end;

@@ -747,6 +747,8 @@ begin
         ps.Color := SliceColor(i);
         AItems.Add(ps);
       end;
+    lmStyle:
+      raise Exception.Create('[TCustomPieSeries.GetLegendItems] lmStyle cannot be used here.');
   end;
 end;
 

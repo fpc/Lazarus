@@ -470,6 +470,7 @@ procedure TSeriesPointer.DrawSize(ADrawer: IChartDrawer;
     case AStyle of
       psHexagon  : begin dPhi := pi / 3; SetLength(p, 7); end;
       psFullStar : begin dPhi := pi / 6; SetLength(p, 13); end;
+      else ;
     end;
     phi := 0;
     for i := 0 to High(p) do 

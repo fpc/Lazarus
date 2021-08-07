@@ -240,6 +240,7 @@ begin
       if FBestStepCoeff <= 10 then
         Result := StartOfTheYear(AValue);
     dtsMonth: Result := StartOfTheMonth(AValue);
+    else ;
   end;
 end;
 

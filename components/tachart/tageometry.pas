@@ -304,21 +304,25 @@ begin
     cotFirst: AdjustX(AA, ARect.a.X);
     cotSecond: AdjustX(AB, ARect.a.X);
     cotBoth: exit(false);
+    cotNone: ;
   end;
   case CASE_OF_TWO[AA.X > ARect.b.X, AB.X > ARect.b.X] of
     cotFirst: AdjustX(AA, ARect.b.X);
     cotSecond: AdjustX(AB, ARect.b.X);
     cotBoth: exit(false);
+    cotNone: ;
   end;
   case CASE_OF_TWO[AA.Y < ARect.a.Y, AB.Y < ARect.a.Y] of
     cotFirst: AdjustY(AA, ARect.a.Y);
     cotSecond: AdjustY(AB, ARect.a.Y);
     cotBoth: exit(false);
+    cotNone: ;
   end;
   case CASE_OF_TWO[AA.Y > ARect.b.Y, AB.Y > ARect.b.Y] of
     cotFirst: AdjustY(AA, ARect.b.Y);
     cotSecond: AdjustY(AB, ARect.b.Y);
     cotBoth: exit(false);
+    cotNone: ;
   end;
   Result := true;
 end;

@@ -550,6 +550,7 @@ begin
     case FAlignment of
       taCenter: p += RotatePointX((FWidth - lineExtent.X) div 2, a);
       taRightJustify: p += RotatePointX(FWidth - lineExtent.X, a);
+      taLeftJustify: ;
     end;
     case FTextFormat of
       tfNormal: FSimpleTextOut.SimpleTextOut(p.X, p.Y, FText2[i]);
