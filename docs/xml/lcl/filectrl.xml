@@ -786,8 +786,8 @@
           <p>
             When AAddDescription = <b>True</b> and AAddFilter = <b>False</b>, the following values would be stored in AStrings:
           </p>
-<pre>Text files (*.txt *.pas)
-Binaries (*.exe)</pre>
+<code>Text files (*.txt *.pas)
+Binaries (*.exe)</code>
           <p>
             Adapted from the converter initially created for QtWSDialogs.pas.
           </p>

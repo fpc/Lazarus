@@ -4615,12 +4615,12 @@
           <p>
             Class holding the reference sides of the anchors of a TControl. Every TControl has four AnchorSides: AnchorSide[akLeft], AnchorSide[akRight], AnchorSide[akTop] and AnchorSide[akBottom]. Normally if Anchors contain akLeft, and the Parent is resized, the LCL tries to keep the distance between the left side of the control and the right side of its parent client area. With AnchorSide[akLeft] you can define a different reference side. The kept distance is defined by the BorderSpacing. For example:
           </p>
-          <pre>
-       +-----+  +-----+
-       |  B  |  |  C  |
-       |     |  +-----+
-       +-----+
-          </pre>
+<code>
++-----+  +-----+
+|  B  |  |  C  |
+|     |  +-----+
++-----+
+</code>
           <p>
             If you want to have the top of B the same as the top of C use
           </p>
@@ -4642,13 +4642,13 @@
           <p>
             Another example:
           </p>
-          <pre>
-                  +-------+
-            +---+ |       |
-            | A | |   B   |
-            +---+ |       |
-                  +-------+
-          </pre>
+<code>
+      +-------+
++---+ |       |
+| A | |   B   |
++---+ |       |
+      +-------+
+</code>
           <p>
             Centering A relative to B:
           </p>
@@ -16129,78 +16129,106 @@ if MyControl.CanSetFocus then
           <p>
             Docking means here: Combining several windows to one. A window can here be a TCustomForm or a floating control (undocked) or a TDockForm. A window can be docked to another to the left, right, top, bottom or "into". The docking source window will be resized, to fit to the docking target window.
           </p>
-          <pre>
-    Example1: Docking "A" (source window) left to "B" (target window)
+          <p>
+            Example1: Docking "A" (source window) left to "B" (target window)
+          </p>
+<code>
++---+    +----+
+| A | -&gt; | B  |
++---+    |    |
+         +----+
+</code>
+          <p>
+            Result: A new docktree will be created. Height of "A" will be resized to the height of "B". A splitter will be inserted between "A" and "B". And all three are children of the newly created TLazDockForm of the newly created TDockTree.
+          </p>
+<code>
++------------+
+|+---+|+----+|
+|| A ||| B  ||
+||   |||    ||
+|+---+|+----+|
++------------+
+</code>
+          <ul>
+            <li>If "A" or "B" were floating controls, the floating dock sites are freed.</li>
+            <li>
+              If "A" or "B" were forms, their decorations (title bars and borders) are replaced by docked decorations.
+            </li>
+            <li>
+              If "A" had a TDockTree, it is freed and its child dockzones are merged to the docktree of "B".
+            </li>
+          </ul>
+          <p>
+            Analog for docking "C" left to "A":
+          </p>
+<code>
++------------------+
+|+---+|+---+|+----+|
+|| C ||| A ||| B  ||
+||   |||   |||    ||
+|+---+|+---+|+----+|
++------------------+
+</code>
+          <p>
+            Example2: Docking A into B
+          </p>
+<code>
+         +-----+
++---+    |     |
+| A | ---+-&gt; B |
++---+    |     |
+         +-----+
+</code>
+          <p>
+            Result: A new docktree will be created. "A" will be resized to the size of "B". Both will be put into a TLazDockPages control which is the child of the newly created TDockTree.
+          </p>
+<code>
++-------+
+|[B][A] |
+|+-----+|
+||     ||
+|| A   ||
+||     ||
+|+-----+|
++-------+
+</code>
+          <p>
+            Every DockZone has siblings and children. Siblings can either be:
+          </p>
+          <ul>
+            <li>horizontally (left to right, splitter),</li>
+            <li>vertically (top to bottom, splitter), </li>
+            <li>or upon each other (as notebook pages).</li>
+          </ul>
+          <p>
+            <b>InsertControl</b> - undock a control and dock it into the dock site.
+            For example, to dock Form1 left to a Form2:
+          </p>
+          <code>InsertControl(Form1,alLeft,Form2);</code>
+          <p>
+            To dock into a TDockPage, use:
+          </p>
+          <code>Align=alCustom;</code>
+          <p>
+            <b>PositionDockRect</b> - calculates where a control would be placed, if it would
+            be docked via InsertControl.
+          </p>
+          <p>
+            <b>RemoveControl</b> - removes a control from the dock site.
+          </p>
 
-       +---+    +----+
-       | A | -&gt; | B  |
-       +---+    |    |
-                +----+
-      Result: A new docktree will be created. Height of "A" will be resized to
-              the height of "B".
-              A splitter will be inserted between "A" and "B".
-              And all three are children of the newly created TLazDockForm of the
-              newly created TDockTree.
-
-       +------------+
-       |+---+|+----+|
-       || A ||| B  ||
-       ||   |||    ||
-       |+---+|+----+|
-       +------------+
-
-      If "A" or "B" were floating controls, the floating dock sites are freed.
-      If "A" or "B" were forms, their decorations (title bars and borders) are
-      replaced by docked decorations.
-      If "A" had a TDockTree, it is freed and its child dockzones are merged to
-      the docktree of "B". Analog for docking "C" left to "A":
-
-       +------------------+
-       |+---+|+---+|+----+|
-       || C ||| A ||| B  ||
-       ||   |||   |||    ||
-       |+---+|+---+|+----+|
-       +------------------+
-
-
-    Example2: Docking A into B
-                +-----+
-       +---+    |     |
-       | A | ---+-&gt; B |
-       +---+    |     |
-                +-----+
-
-      Result: A new docktree will be created. "A" will be resized to the size
-              of "B". Both will be put into a TLazDockPages control which is the
-              child of the newly created TDockTree.
-
-       +-------+
-       |[B][A] |
-       |+-----+|
-       ||     ||
-       || A   ||
-       ||     ||
-       |+-----+|
-       +-------+
-
-    Every DockZone has siblings and children. Siblings can either be
-    - horizontally (left to right, splitter),
-    - vertically (top to bottom, splitter)
-    - or upon each other (as notebook pages).
-
-    InsertControl - undock control and dock it into the dock site. For example
-                    dock Form1 left to a Form2:
-                    InsertControl(Form1,alLeft,Form2);
-                    To dock "into", into a TDockPage, use Align=alCustom.
-    PositionDockRect - calculates where a control would be placed, if it would
-                       be docked via InsertControl.
-    RemoveControl - removes a control from the dock site.
-
-    GetControlBounds - TODO for Delphi compatibility
-    ResetBounds - TODO for Delphi compatibility
-    SetReplacingControl - TODO for Delphi compatibility
-    PaintSite - TODO for Delphi compatibility
-        </pre>
+          <p>
+            <b>GetControlBounds</b> - TODO: for Delphi compatibility.
+          </p>
+          <p>
+            <b>ResetBounds</b> - TODO: for Delphi compatibility.
+          </p>
+          <p>
+            <b>SetReplacingControl</b> - TODO: for Delphi compatibility.
+          </p>
+          <p>
+            <b>PaintSite</b> - TODO: for Delphi compatibility.
+          </p>
         </descr>
         <seealso>
           <link id="TDockManager"/>
@@ -16236,7 +16264,7 @@ if MyControl.CanSetFocus then
 
       <element name="TDockTree.HitTest">
         <short>
-          Returns the control and the part of the dockzone at the given coordinates
+          Returns the control and the part of the dockzone at the given coordinates.
         </short>
         <descr/>
         <seealso/>
@@ -16659,7 +16687,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="FindControlAtPosition">
         <short>
-          Gets the control at the specified screen position
+          Gets the control at the specified screen position.
         </short>
         <descr>
           <p>
@@ -16831,7 +16859,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             <var>CancelDrag</var> is a procedure used to cancel an active drag operation. <var>CancelDrag</var> calls the <var>DragStop</var> method in the currently active <var>DragManager</var>.
           </p>
           <remark>
-            Please note: No actions are performed in the routine when DragManager has been assigned (contains Nil), or when DrageManager returns False from the IsDragging method.
+            No actions are performed in the routine when DragManager has been assigned (contains Nil), or when DragManager returns False from its IsDragging method.
           </remark>
         </descr>
         <seealso>
@@ -16843,7 +16871,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="SetCaptureControl">
         <short>
-          Set the mouse capture to AWinControl or its child at the given coordinates
+          Set the mouse capture to AWinControl or its child at the given coordinates.
         </short>
         <descr/>
         <seealso/>
@@ -16860,7 +16888,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="GetCaptureControl">
         <short>
-          Returns the current capturing TControl instance
+          Returns the current capturing TControl instance.
         </short>
         <descr>
           <p>
@@ -16889,7 +16917,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="CursorToString">
         <short>
-          Returns a string for the name of the cursor as identified by an integer constant
+          Returns a string for the name of the cursor as identified by an integer constant.
         </short>
         <descr>
           Calls CursorToIdent to find correct entry in look-up table.
@@ -16907,7 +16935,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="StringToCursor">
         <short>
-          <var>StringToCursor</var> - returns the cursor value corresponding to the name supplied
+          <var>StringToCursor</var> - returns the cursor value corresponding to the name supplied.
         </short>
         <descr>
           <p>
@@ -16936,7 +16964,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="CursorToIdent">
         <short>
-          Uses look-up table to find cursor identifier corresponding to integer cursor constant
+          Uses look-up table to find cursor identifier corresponding to integer cursor constant.
         </short>
         <descr/>
         <seealso/>
@@ -16953,7 +16981,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="IdentToCursor">
         <short>
-          Searches the Cursor name table for the given cursor name; returns True if found
+          Searches the Cursor name table for the given cursor name; returns True if found.
         </short>
         <descr>
           If found, the cursor value (handle) is returned in <var>Cursor</var>.
@@ -16971,7 +16999,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="CheckTransparentWindow">
         <short>
-          Checks whether the handle for a windowed control (or a parent control) is transparent
+          Checks whether the handle for a windowed control (or a parent control) is transparent.
         </short>
         <descr>
           <p>
@@ -17228,7 +17256,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <element name="Register">
         <short>
-          Register the components provided by this unit or package, so that they can be instantiated
+          Register the components provided by this unit or package, so that they can be instantiated.
         </short>
         <descr>
           <p>
@@ -17245,7 +17273,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
 
       <topic name="AutoSize">
         <short>
-          <var>AutoSize</var> - boolean property that permits the size of a control to be adjusted automatically
+          <var>AutoSize</var> - boolean property that permits the size of a control to be adjusted automatically.
         </short>
         <descr>
           <p>
@@ -17519,10 +17547,10 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
   <code>Example1
 If you want to have the top of B the same as the top of C:
 
-   +-----+  +-----+
-   |  B  |  |  C  |
-   |     |  +-----+
-   +-----+
++-----+  +-----+
+|  B  |  |  C  |
+|     |  +-----+
++-----+
 
   use
     B.AnchorSide[akTop].Control:=C;

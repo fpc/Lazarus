@@ -499,7 +499,7 @@
           <p>
             <var>BeautifyLineXY</var> is a <var>String</var> function used to combine the values in the <var>Filename</var>, <var>Line</var>, <var>X</var> and <var>Y</var> arguments into a formatted message. The message is in the form:
           </p>
-<pre>examplefile.pas (123, 1) The error message goes here.</pre>
+<code>examplefile.pas (123, 1) The error message goes here.</code>
           <p>
             <var>Filename</var> contains a file name used at the start of the formatted message.
           </p>
