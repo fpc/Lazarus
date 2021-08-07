@@ -250,7 +250,7 @@ type
     function FormatItem(
       const AFormat: String; AIndex, AYIndex: Integer): String; inline;
     function FormatItemXYText(
-      const AFormat: String; const AX, AY: Double; const AText: String): String;
+      const AFormat: String; const AX, AY: Double; AText: String): String;
     function GetEnumerator: TCustomChartSourceEnumerator;
     function GetXErrorBarLimits(APointIndex: Integer;
       out AUpperLimit, ALowerLimit: Double): Boolean;
@@ -1197,7 +1197,7 @@ begin
 end;
 
 function TCustomChartSource.FormatItemXYText(
-  const AFormat: String; const AX, AY: Double; const AText: String): String;
+  const AFormat: String; const AX, AY: Double; AText: String): String;
 const
   TO_PERCENT = 100;
 var
