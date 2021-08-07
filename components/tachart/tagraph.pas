@@ -241,6 +241,7 @@ type
     FOnExtentChanging: TChartEvent;
     FOnExtentValidate: TChartExtentValidateEvent;
     FOnFullExtentChanged: TChartEvent;
+    FBufferedFullExtent: TDoubleRect;
     FPrevFullExtent: TDoubleRect;
     FPrevLogicalExtent: TDoubleRect;
     FScale: TDoublePoint;    // Coordinates transformation
@@ -254,6 +255,7 @@ type
       const AMinDataSpace: Integer);
     procedure FindComponentClass(
       AReader: TReader; const AClassName: String; var AClass: TComponentClass);
+    function FullExtentBroadcastActive: Boolean;
     function GetChartHeight: Integer;
     function GetChartWidth: Integer;
     function GetHorAxis: TChartAxis;
@@ -969,6 +971,12 @@ begin
       FCurrentExtent := FLogicalExtent;
     end;
 
+    // Avoid calculation of the full extent when not needed
+    // This extent calculation must be inside the series.BeforeDraw (--> Prepare)
+    // and series.AfterDraw block (DBChartSource issue #39313)
+    if FullExtentBroadcastActive then
+      FBufferedFullExtent := GetFullExtent;
+
     if Legend.Visible and not Legend.UseSidebar then
       Legend.Prepare(ldd, FClipRect);
 
@@ -1006,12 +1014,12 @@ begin
     OnAfterDraw(Self, ADrawer);
   ADrawer.DrawingEnd;
 
-  tmpExtent := GetFullExtent;
-  if FPrevFullExtent <> tmpExtent then begin
+  if FullExtentBroadcastActive and (FPrevFullExtent <> FBufferedFullExtent) then
+  begin
     FFullExtentBroadcaster.Broadcast(Self);
     if Assigned(OnFullExtentChanged) then
       OnFullExtentChanged(Self);
-    FPrevFullExtent := tmpExtent;
+    FPrevFullExtent := FBufferedFullExtent;
   end;
 
   if FPrevLogicalExtent <> FLogicalExtent then begin
@@ -1140,6 +1148,11 @@ begin
     if AClass.ClassNameIs(AClassName) then exit;
   end;
   AClass := nil;
+end;
+
+function TChart.FullExtentBroadcastActive: Boolean;
+begin
+  Result := (FFullExtentBroadcaster.Count > 0) or Assigned(FOnFullExtentChanged);
 end;
 
 procedure TChart.GetAllSeriesAxisLimits(AAxis: TChartAxis; out AMin, AMax: Double);
