@@ -206,14 +206,15 @@ Based on the specification defined by the Unicode consortium, at:
 http://unicode.org/faq/utf_bom.html#utf16-7
 </url>
 </p>
-<pre>
+<p>
 Q: Are there any 16-bit values that are invalid?
-
+</p>
+<p>
 A: Unpaired surrogates are invalid in UTFs. These include any value in the
 range D800 to DBFF not followed by a value in the range DC00 to DFFF, or
 any value in the range DC00 to DFFF not preceded by a value in the range
 D800 to DBFF. [AF]
-</pre>
+</p>
 <p>
 Use ANextChar = #0 to indicate that there is no next char.
 </p>

@@ -587,9 +587,9 @@
           <p>
             <var>PublicID</var> is a <var>String</var> property that represent the Public Identifier for content in the XML input source. PublicID contains a value in the following format:
           </p>
-<pre>
+<code>
   [Prefix]//[OwnerID]//[TextClass] [TextDescription]//[Language]//[DisplayVersion]
-</pre>
+</code>
           <p>
             Where the components have the following values and meanings:
           </p>
@@ -634,9 +634,9 @@
           <p>
             For example, the PublicID for DocBook version 5 is:
           </p>
-          <pre>
-  -//OASIS//DTD DocBook V5.0//EN
-          </pre>
+<code>
+-//OASIS//DTD DocBook V5.0//EN
+</code>
           <p>
             Use SystemID to get the URI (or URL) for the resource.
           </p>

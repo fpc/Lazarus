@@ -1275,7 +1275,7 @@
           <p>
             <var>Mask</var> is a <var>String</var> property used to supply a mask which determines the file system objects displayed in the shell control. Mask can contain one or more mask values delimited by the Semicolon (<b>';'</b>) character. For example:
           </p>
-          <pre>*.exe; br*.com; c??.*</pre>
+          <code>*.exe; br*.com; c??.*</code>
           <p>
             Changing the value in Mask causes the <var>Clear</var> method to be called for the shell control. In addition, the <var>Items</var> property calls its <var>Clear</var> method to remove entries stored in the property. The <var>PopulateWithRoot</var> method is called to re-populate the shell control using the new mask value.
           </p>
@@ -1693,15 +1693,15 @@
           <p>
             For <var>TObjectTypes</var>, a string is built to represents the set type using the format:
           </p>
-          <pre>[otFolders,otNonFolders,otHidden]</pre>
+          <code>[otFolders,otNonFolders,otHidden]</code>
           <p>
             For <var>TMaskCaseSensitivity</var>, a string version of the enumeration value is used as the return value. For example:
           </p>
-          <code>
+    <code>
     'mcsPlatformDefault'
     'mcsCaseInsensitive'
     'mcsCaseSensitive'
-        </code>
+    </code>
         </descr>
         <seealso>
           <link id="TObjectTypes"/>

@@ -149,11 +149,11 @@
           <p>
             IsValidXmlEncoding is a Boolean function used to determine if the value specified in Value is a valid XML encoding name. The encoding name is used in the XML declaration for a document. For instance:
           </p>
-          <pre>&lt;?xml encoding='UTF-8'?&gt;</pre>
+          <code>&lt;?xml encoding='UTF-8'?&gt;</code>
           <p>
             or:
           </p>
-          <pre>&lt;?xml encoding='EUC-JP'?&gt;</pre>
+          <code>&lt;?xml encoding='EUC-JP'?&gt;</code>
         </descr>
         <seealso/>
       </element>
