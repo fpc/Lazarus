@@ -41,7 +41,7 @@ interface
 uses
   Classes, {$ifdef windows}windows,{$endif} SysUtils, math,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8,
-  DbgIntfBaseTypes, LazFileUtils, crc,
+  DbgIntfBaseTypes, LazFileUtils,
   FpImgReaderBase, FpImgReaderWinPETypes, fpDbgSymTable;
   
 type
@@ -103,11 +103,8 @@ end;
 
 constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 var
-  p: PDbgImageSectionEx;
-  crc, c: cardinal;
+  crc: cardinal;
   DbgFileName, SourceFileName: String;
-  i, j: Integer;
-  mem: Pointer;
   NewFileLoader: TDbgFileLoader;
 begin
   FSections := TStringListUTF8Fast.Create;
@@ -119,54 +116,23 @@ begin
   FOwnLoader:=OwnSource;
   LoadSections;
   // check external debug file
-  p := PDbgImageSectionEx(Section['.gnu_debuglink']);
-  if p <> nil then
+  if ReadGnuDebugLinkSection(DbgFileName, crc) then
   begin
-    if IndexByte(p^.Sect.RawData^, p^.Sect.Size-4, 0) < p^.Sect.Size then
-    begin
-      DbgFileName := StrPas(PChar(PDbgImageSectionEx(p)^.Sect.RawData));
-      i := align(length(DbgFileName)+1, 4);
-      if (i+4) <= p^.Sect.Size then begin
-        move((p^.Sect.RawData+i)^, crc, 4);
+    SourceFileName := ASource.FileName;
+    if SourceFileName<>'' then
+      SourceFileName := ExtractFilePath(SourceFileName);
+    NewFileLoader := LoadGnuDebugLink(SourceFileName, DbgFileName, crc);
+    if NewFileLoader <> nil then begin
+      if FOwnLoader then
+        FFileLoader.Free;
 
-        SourceFileName := ASource.FileName;
-        if SourceFileName<>'' then
-          DbgFileName := ExtractFilePath(SourceFileName)+DbgFileName;
-        if FileExists(DbgFileName) then
-        begin
-          NewFileLoader := TDbgFileLoader.Create(DbgFileName);
-
-          i := FileSizeUtf8(DbgFileName) - 4096;
-          j := 0;
-
-          c:=0;
-          while j < i do begin
-            NewFileLoader.LoadMemory(j, 4096, mem);
-            c:=Crc32(c, mem, 4096);
-            NewFileLoader.UnloadMemory(mem);
-            inc(j, 4096)
-          end;
-          i := i - j + 4096;
-          NewFileLoader.LoadMemory(j, i, mem);
-          c:=Crc32(c, mem, i);
-          NewFileLoader.UnloadMemory(mem);
-
-          debugln(crc <> c, ['Invalid CRC for ext debug info']);
-          if crc = c then begin
-            if FOwnLoader then
-              FFileLoader.Free;
-
-            FFileLoader := NewFileLoader;
-            FOwnLoader := True;
-            ClearSections;
-            LoadSections;
-          end
-          else
-            NewFileLoader.Free;
-        end;
-      end;
+      FFileLoader := NewFileLoader;
+      FOwnLoader := True;
+      ClearSections;
+      LoadSections;
     end;
   end;
+
   inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
