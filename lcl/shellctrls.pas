@@ -210,7 +210,6 @@ type
 
   TCustomShellListView = class(TCustomListView)
   private
-    FAutoSizeColumns: Boolean;
     FMask: string;
     FMaskCaseSensitivity: TMaskCaseSensitivity;
     FObjectTypes: TObjectTypes;
@@ -229,7 +228,6 @@ type
     class procedure WSRegisterClass; override;
     procedure PopulateWithRoot();
     procedure Resize; override;
-    procedure SetAutoSizeColumns(const Value: Boolean); virtual;
     procedure DoAddItem(const ABasePath: String; const AFileInfo: TSearchRec; var CanAdd: Boolean);
     function GetBuiltinImageIndex(const AFileName: String; ALargeImage: Boolean): Integer;
     property OnFileAdded: TCSLVFileAddedEvent read FOnFileAdded write FOnFileAdded;
@@ -240,7 +238,6 @@ type
     { Methods specific to Lazarus }
     function GetPathFromItem(ANode: TListItem): string;
     { Properties }
-    property AutoSizeColumns: Boolean read FAutoSizeColumns write SetAutoSizeColumns default true;
     property Mask: string read FMask write SetMask; // Can be used to conect to other controls
     property MaskCaseSensitivity: TMaskCaseSensitivity read FMaskCaseSensitivity write SetMaskCaseSensitivity default mcsPlatformDefault;
     property ObjectTypes: TObjectTypes read FObjectTypes write FObjectTypes;
@@ -261,7 +258,6 @@ type
     { TCustomListView properties
       The same as TListView excluding data properties }
     property Align;
-    property AutoSizeColumns;
     property Anchors;
     property BorderSpacing;
     property BorderStyle;
@@ -1492,7 +1488,6 @@ begin
   ViewStyle := vsReport;
   ObjectTypes := [otNonFolders];
   FMaskCaseSensitivity := mcsPlatformDefault;
-  FAutoSizeColumns := true;
 
   Self.Columns.Add;
   Self.Columns.Add;
@@ -1592,9 +1587,6 @@ begin
   // will raise an exception
   if Self.Columns.Count < 3 then Exit;
 
-  if (Column[0].Width <> 0) and (not AutoSizeColumns) then
-    Exit;
-
   // If the space available is small,
   // alloc a larger percentage to the secondary
   // fields
@@ -1616,15 +1608,6 @@ begin
      Column[0].Width, ' C1.Width=', Column[1].Width,
      ' C2.Width=', Column[2].Width]);
   {$endif}
-end;
-
-procedure TCustomShellListView.SetAutoSizeColumns(const Value: Boolean);
-begin
-  if Value = FAutoSizeColumns then
-    Exit;
-  FAutoSizeColumns := Value;
-  if Value then
-    Resize();
 end;
 
 procedure TCustomShellListView.DoAddItem(const ABasePath: String;
