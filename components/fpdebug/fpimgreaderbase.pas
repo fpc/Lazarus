@@ -11,10 +11,10 @@ uses
   {$ifdef windows}
   Windows, // After LCLType
   {$endif}
-  fgl, LazFglHash,
+  fgl, LazFglHash, LazFileUtils, LazLoggerBase,
   fpDbgSymTable,
   Classes, SysUtils, DbgIntfBaseTypes, contnrs,
-  FpDbgCommon;
+  FpDbgCommon, crc;
 
 type
   TDbgImageSection = record
@@ -105,6 +105,8 @@ type
     procedure SetImageBase(ABase: QWord);
     procedure SetImageSize(ASize: QWord);
     procedure AddReaderError(AnError: String);
+    function  ReadGnuDebugLinkSection(out AFileName: String; out ACrc: Cardinal): Boolean;
+    function  LoadGnuDebugLink(ASearchPath, AFileName: String; ACrc: Cardinal): TDbgFileLoader;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
@@ -132,6 +134,10 @@ function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: 
 procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
+
+const
+  // Symbol-map section name
+  _gnu_dbg_link        = '.gnu_debuglink';
 
 var
   RegisteredImageReaderClasses  : TFPList;
@@ -402,6 +408,73 @@ begin
   if FReaderErrors <> '' then
     FReaderErrors := FReaderErrors + LineEnding;
   FReaderErrors := FReaderErrors + AnError;
+end;
+
+function TDbgImageReader.ReadGnuDebugLinkSection(out AFileName: String; out
+  ACrc: Cardinal): Boolean;
+var
+  p: PDbgImageSectionEx;
+  i: Integer;
+begin
+  p := PDbgImageSectionEx(Section[_gnu_dbg_link]);
+  Result := p <> nil;
+  if Result then
+  begin
+    i := IndexByte(p^.Sect.RawData^, p^.Sect.Size-4, 0);
+    Result := i > 0;
+    if Result then
+    begin
+      SetLength(AFileName, i);
+      move(PDbgImageSectionEx(p)^.Sect.RawData^, AFileName[1], i);
+
+      i := align(i+1, 4);
+      Result := (i+4) <= p^.Sect.Size;
+      if Result then
+        move((p^.Sect.RawData+i)^, ACrc, 4);
+    end;
+  end;
+end;
+
+function TDbgImageReader.LoadGnuDebugLink(ASearchPath, AFileName: String;
+  ACrc: Cardinal): TDbgFileLoader;
+
+  function LoadFile(AFullName: String): TDbgFileLoader;
+  var
+    i, j: Int64;
+    c: Cardinal;
+    mem: Pointer;
+  begin
+    Result := TDbgFileLoader.Create(AFullName);
+
+    i := FileSizeUtf8(AFullName) - 4096;
+    j := 0;
+    c:=0;
+    while j < i do begin
+      Result.LoadMemory(j, 4096, mem);
+      c:=Crc32(c, mem, 4096);
+      Result.UnloadMemory(mem);
+      inc(j, 4096)
+    end;
+    i := i - j + 4096;
+    Result.LoadMemory(j, i, mem);
+    c:=Crc32(c, mem, i);
+    Result.UnloadMemory(mem);
+
+    DebugLn(c <> ACrc, ['Invalid CRC for ext debug info: ', AFullName]);
+    if c <> ACrc then
+      FreeAndNil(Result);
+  end;
+
+begin
+  Result := nil;
+
+  if FileExists(AppendPathDelim(ASearchPath) + AFileName) then
+    Result := LoadFile(AppendPathDelim(ASearchPath) + AFileName);
+
+  if (Result = nil) and
+     FileExists(AppendPathDelim(ASearchPath) + AppendPathDelim('.debug') + AFileName)
+  then
+    Result := LoadFile(AppendPathDelim(ASearchPath) + AppendPathDelim('.debug') + AFileName);
 end;
 
 procedure TDbgImageReader.ParseSymbolTable(AFpSymbolInfo: TfpSymbolList);

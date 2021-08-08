@@ -73,6 +73,8 @@ type
     fElfFile    : TElfFile;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
+    procedure LoadSections;
+    procedure ClearSections;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
@@ -317,6 +319,34 @@ begin
   FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
 end;
 
+procedure TElfDbgSource.LoadSections;
+var
+  p: PDbgImageSectionEx;
+  idx: integer;
+  i: Integer;
+  fs: TElfSection;
+begin
+  for i := 0 to fElfFile.seccount - 1 do begin
+    fs := fElfFile.sections[i];
+    idx := FSections.AddObject(fs.name, nil);
+    New(p);
+    P^.Offs := fs.FileOfs;
+    p^.Sect.Size := fs.Size;
+    p^.Sect.VirtualAddress := 0; // Todo? fs.Address - ImageBase
+    p^.Loaded := False;
+    FSections.Objects[idx] := TObject(p);
+  end;
+end;
+
+procedure TElfDbgSource.ClearSections;
+var
+  i: Integer;
+begin
+  for i := 0 to FSections.Count-1 do
+    Freemem(FSections.Objects[i]);
+  FSections.Clear;
+end;
+
 class function TElfDbgSource.isValid(ASource: TDbgFileLoader): Boolean;
 var
   buf : array [0..3+sizeof(Elf32_EHdr)] of byte;
@@ -341,10 +371,9 @@ end;
 
 constructor TElfDbgSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
 var
-  p: PDbgImageSectionEx;
-  idx: integer;
-  i: Integer;
-  fs: TElfSection;
+  DbgFileName, SourceFileName: String;
+  crc: Cardinal;
+  NewFileLoader: TDbgFileLoader;
 begin
   FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := True;
@@ -354,17 +383,30 @@ begin
   FFileLoader := ASource;
   fOwnSource := OwnSource;
   fElfFile := TElfFile.Create;
-  fElfFile.LoadFromFile(ASource);
+  fElfFile.LoadFromFile(FFileLoader);
 
-  for i := 0 to fElfFile.seccount - 1 do begin
-    fs := fElfFile.sections[i];
-    idx := FSections.AddObject(fs.name, nil);
-    New(p);
-    P^.Offs := fs.FileOfs;
-    p^.Sect.Size := fs.Size;
-    p^.Sect.VirtualAddress := 0; // Todo? fs.Address - ImageBase
-    p^.Loaded := False;
-    FSections.Objects[idx] := TObject(p);
+  LoadSections;
+  // check external debug file
+  if ReadGnuDebugLinkSection(DbgFileName, crc) then
+  begin
+    SourceFileName := ASource.FileName;
+    if SourceFileName<>'' then
+      SourceFileName := ExtractFilePath(SourceFileName);
+    NewFileLoader := LoadGnuDebugLink(SourceFileName, DbgFileName, crc);
+    if NewFileLoader <> nil then begin
+      if fOwnSource then
+        FFileLoader.Free;
+
+      FFileLoader := NewFileLoader;
+      fOwnSource := True;
+
+      fElfFile.Free;
+      fElfFile := TElfFile.Create;
+      fElfFile.LoadFromFile(FFileLoader);
+
+      ClearSections;
+      LoadSections;
+    end;
   end;
 
   FTargetInfo := fElfFile.FTargetInfo;
@@ -376,10 +418,7 @@ destructor TElfDbgSource.Destroy;
 begin
   if fOwnSource then FFileLoader.Free;
   fElfFile.Free;
-  while FSections.Count > 0 do begin
-    Freemem(FSections.Objects[0]);
-    FSections.Delete(0);
-  end;
+  ClearSections;
   FreeAndNil(FSections);
   inherited Destroy;
 end;

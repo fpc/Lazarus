@@ -3831,7 +3831,7 @@ begin
   else
     Result:=[dcrExternalDbgInfoOnly, dcrDwarfOnly]; // cocoa
   {$ELSE}
-  Result:=[dcrNoExternalDbgInfo, dcrDwarfOnly];
+  Result:=[dcrDwarfOnly];
   {$ENDIF}
 end;
 
