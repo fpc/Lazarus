@@ -1665,7 +1665,7 @@ msgstr "Inserir campos BD"
 
 #: lr_const.sinsertfieldsdbnofields
 msgid "Database without fields"
-msgstr ""
+msgstr "Banco de dados sem campos"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"

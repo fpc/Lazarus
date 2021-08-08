@@ -6666,10 +6666,8 @@ msgid "Create Defines for Free Pascal Compiler"
 msgstr "Criar definições para o compilador Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforfreepascalsvnsources
-#, fuzzy
-#| msgid "Create Defines for Free Pascal SVN Sources"
 msgid "Create Defines for Free Pascal Git Sources"
-msgstr "Criar definições para os fontes SVN do Free Pascal"
+msgstr "Criar definições para os fontes GIT do Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefscreatedefinesforproject
 #, object-pascal-format
@@ -6724,10 +6722,8 @@ msgid "Exit without Save"
 msgstr "Sair sem Salvar"
 
 #: lazarusidestrconsts.liscodetoolsdefsfpcsvnsourcedirectory
-#, fuzzy
-#| msgid "FPC SVN source directory"
 msgid "FPC Git source directory"
-msgstr "Diretório SVN do fonte FPC"
+msgstr "Diretório GIT do fonte FPC"
 
 #: lazarusidestrconsts.liscodetoolsdefsif
 msgid "If"
@@ -6791,10 +6787,8 @@ msgid "Insert Free Pascal Project Template"
 msgstr "Inserir modelo de projeto Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertfreepascalsvnsource
-#, fuzzy
-#| msgid "Insert Free Pascal SVN Source Template"
 msgid "Insert Free Pascal Git Source Template"
-msgstr "Inserir modelo de Fonte SVN Free Pascal"
+msgstr "Inserir modelo de Fonte GIT Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsinsertkylix3compilertemp
 msgid "Insert Kylix 3 Compiler Template"
@@ -6906,20 +6900,16 @@ msgid "Selected Node:"
 msgstr "Nó selecionado:"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalcvssourcedirectory
-#, fuzzy
-#| msgid "The Free Pascal SVN source directory. Not required. This will improve find declaration and debugging."
 msgid "The Free Pascal Git source directory. Not required. This will improve find declaration and debugging."
-msgstr "O diretório SVN do fonte Free Pascal. Não requerido. Isto irá aprimorar a procura de declaração e depuração."
+msgstr "O diretório GIT do fonte Free Pascal. Não requerido. Isto irá aprimorar a procura de declaração e depuração."
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalprojectdirectory
 msgid "The Free Pascal project directory."
 msgstr "O diretório de projeto Free Pascal"
 
 #: lazarusidestrconsts.liscodetoolsdefsthefreepascalsvnsourcedir
-#, fuzzy
-#| msgid "The Free Pascal SVN source directory."
 msgid "The Free Pascal Git source directory."
-msgstr "O diretório SVN do fonte Free Pascal."
+msgstr "O diretório GIT do fonte Free Pascal."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 #, object-pascal-format
@@ -6927,10 +6917,8 @@ msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or
 msgstr "O caminho para compilador Free Pascal.%s Por exemplo %s/usr/bin/%s -n%s ou %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
-#, fuzzy
-#| msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC SVN source below. Used to autocreate macros."
 msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
-msgstr "O caminho para o compilador Free Pascal deste projeto. Requerido apenas se você definir o fonte SVN do FPC abaixo. Usado para auto-criar macros."
+msgstr "O caminho para o compilador Free Pascal deste projeto. Requerido apenas se você definir o fonte GIT do FPC abaixo. Usado para auto-criar macros."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthissourceusedtoa
 #, object-pascal-format
@@ -8895,7 +8883,7 @@ msgstr "Assembler"
 
 #: lazarusidestrconsts.lisdisassgotoaddredittexthint
 msgid "($address)"
-msgstr ""
+msgstr "($address)"
 
 #: lazarusidestrconsts.lisdisassgotoaddress
 msgctxt "lazarusidestrconsts.lisdisassgotoaddress"
@@ -17730,7 +17718,7 @@ msgstr "Falha na reversão"
 
 #: lazarusidestrconsts.lisrevision
 msgid "Revision: "
-msgstr ""
+msgstr "Revisão:"
 
 #: lazarusidestrconsts.lisright
 msgctxt "lazarusidestrconsts.lisright"
