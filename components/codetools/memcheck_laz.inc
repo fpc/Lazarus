@@ -151,4 +151,3 @@ end;
 // Addition for CodeTools
 
 {$ENDIF MC_ImplementationEnd}
-
