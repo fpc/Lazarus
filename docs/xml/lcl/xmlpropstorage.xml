@@ -347,13 +347,210 @@
         <seealso />
       </element> <!-- property TXMLPropStorage.OnRestoreProperties -->
 
-      <!-- object Visibility: default -->
       <element name="TXMLConfigStorage">
-        <short>This class is present on the source but seems not be used.</short>
-        <descr />
+        <short>
+          Implements a configation storage mechanism using XML-tagged content.
+        </short>
+        <descr>
+          <p>
+            <var>TXMLConfigStorage</var> is a <var>TConfigStorage</var> descendant which implements an XML-storage mechanism for configuration or other values.
+          </p>
+          <p>
+            TXMLConfigStorage allows names (paths) and values to be accessed using an XPATH-like syntax.
+          </p>
+          <p>
+            It provides implementations of the abstract virtual methods defined in the ancestor class. It provides overridden constructors that allow the class instance to be created for a qualified file name, a TXMLConfig instance, a subset of values in a TXMLConfig instance, or a stream. Internally, it use TXMLConfig as the storage for values in the class instance.
+          </p>
+          <p>
+            Use the XMLConfig property to access the internal storage for class instance. Use the overridden methods to read, write, or delete the names and values in the class instance. For example:
+          </p>
+          <ul>
+            <li>DeleteFullPathValue</li>
+            <li>GetFullPathValue</li>
+            <li>SetDeleteFullPathValue</li>
+            <li>SetFullPathValue</li>
+          </ul>
+        </descr>
         <errors />
-        <seealso />
-      </element> <!-- object TXMLConfigStorage -->
+        <seealso>
+          <link id="#lazutils.lazconfigstorage.TConfigStorage"/>
+        </seealso>
+      </element>
+
+      <!-- private -->
+      <element name="TXMLConfigStorage.FFilename"/>
+      <element name="TXMLConfigStorage.FFreeXMLConfig"/>
+      <element name="TXMLConfigStorage.FXMLConfig"/>
+
+      <!-- protected -->
+      <element name="TXMLConfigStorage.GetFullPathValue">
+        <short>Gets the String value stored at the specified path in the XML storage.</short>
+        <descr>
+          <p>
+            Calls the GetValue method for the internal TXMLConfig instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.GetFullPathValue.Result">
+        <short>
+          Value retrieved from the internal storage, or ADefault when the path is not found.
+        </short>
+      </element>
+      <element name="TXMLConfigStorage.GetFullPathValue.APath">
+        <short>Path to the XML node with the requested value.</short>
+      </element>
+      <element name="TXMLConfigStorage.GetFullPathValue.ADefault">
+        <short>Default value returned if APath is not found in the internal storage.</short>
+      </element>
+
+      <element name="TXMLConfigStorage.SetFullPathValue">
+        <short>Sets the value for the specified path.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.SetFullPathValue.APath">
+        <short>Path to the XML node where the value is stored.</short>
+      </element>
+      <element name="TXMLConfigStorage.SetFullPathValue.AValue">
+        <short>Value stored in the XML node for the specified path.</short>
+      </element>
+
+      <element name="TXMLConfigStorage.SetDeleteFullPathValue">
+        <short>Sets the value for or deletes the XML node at the specified path.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.SetDeleteFullPathValue.APath">
+        <short>Path to the XML node with the value updated or removed in the method.</short>
+      </element>
+      <element name="TXMLConfigStorage.SetDeleteFullPathValue.AValue">
+        <short>
+          Value for the specified path. An empty value causes the path to be removed.
+        </short>
+      </element>
+
+      <element name="TXMLConfigStorage.DeleteFullPath">
+        <short>Deletes the XML node and its content and the specified path.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.DeleteFullPath.APath">
+        <short>Path to the XML node removed in the method.</short>
+      </element>
+
+      <element name="TXMLConfigStorage.DeleteFullPathValue">
+        <short>Deletes the value stored in the XML node at the specified path.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.DeleteFullPathValue.APath">
+        <short>Path to the XML node with the value removed in the method.</short>
+      </element>
+
+      <!-- public -->
+      <element name="TXMLConfigStorage.Clear">
+        <short>Removes all XML nodes stored in the XMLConfig storage.</short>
+        <descr>
+          <p>
+            Calls the Clear method in XMLConfig.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfigStorage.XMLConfig"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfigStorage.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden, overloaded constructor for the class instance. The overloaded variants allow the XML content to read from various sources like a file name, a TXMLConfig instance, a scoped TXMLConfig instance, or a TStream instance.
+          </p>
+          <p>
+            Use WriteToDisk or SaveToStream to speciy where the XML content is stored .
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.Create.Filename">
+        <short>Qualified file name where the XML content is stored.</short>
+      </element>
+      <element name="TXMLConfigStorage.Create.LoadFromDisk">
+        <short>
+          True to load existing XML content from the file, or False to create an empty storage.
+        </short>
+      </element>
+      <element name="TXMLConfigStorage.Create.TheXMLConfig">
+        <short>TXMLConfig instance where the XML paths and values are stored.</short>
+      </element>
+      <element name="TXMLConfigStorage.Create.StartPath">
+        <short>Intial path for values read and written in the class instance.</short>
+      </element>
+      <element name="TXMLConfigStorage.Create.s">
+        <short>Stream with the XML content loaded in the XMLConfig storage.</short>
+      </element>
+
+      <element name="TXMLConfigStorage.Destroy">
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. It uses the value in FreeXMLConfig to determine whether the TXMLConfig instance in XMLConfig is freed in the method. When set to True, XMLConfig is freed and set to Nil.
+          </p>
+          <p>
+            Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TXMLConfigStorage.Create"/>
+          <link id="TXMLConfigStorage.FreeXMLConfig"/>
+          <link id="TXMLConfigStorage.XMLConfig"/>
+        </seealso>
+      </element>
+
+      <element name="TXMLConfigStorage.XMLConfig">
+        <short>TXMLConfig with the values accessed and maintained in the class instance.</short>
+        <descr>
+          Read-only TXMLConfig property.
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TXMLConfigStorage.FreeXMLConfig">
+        <short>
+          Indicates whether the TXMLConfig instance is freed when the class is destroyed.
+        </short>
+        <descr>
+          <p>
+            <var>FreeXMLConfig</var> is a <var>Boolean</var> property which indicates if the TXMLConfig instance in XMLConfig is freed when the class instance is destroyed.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="TXMLConfigStorage.WriteToDisk">
+        <short>Stores the values in XMLConfig to the specified file name.</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TXMLConfigStorage.GetFilename">
+        <short>Gets the file name passed as an argument to the constructor.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.GetFilename.Result">
+        <short>File passed as an argument to the overloaded constructor.</short>
+      </element>
+
+      <element name="TXMLConfigStorage.SaveToStream">
+        <short>Saves the content in XMLConfig to the specified TStream instance.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfigStorage.SaveToStream.s">
+        <short>TStream instance where the XML content is stored.</short>
+      </element>
 
       <!-- procedure Visibility: default -->
       <element name="Register">
