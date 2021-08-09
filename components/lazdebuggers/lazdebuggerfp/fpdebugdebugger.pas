@@ -1811,7 +1811,7 @@ begin
      // TODO: Check if AnAddr is at lower address than length(CodeBin)
      //       and ensure ReadData size doesn't exceed available target memory.
      //       Fill out of bounds memory in buffer with "safe" value e.g. 0
-     if sz + ADisassembler.MaxInstructionSize > AnAddr then
+     if sz > AnAddr then
      begin
        FillByte(CodeBin[0], sz, 0);
        // offset into buffer where active memory should start
