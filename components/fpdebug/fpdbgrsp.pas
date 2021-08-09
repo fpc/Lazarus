@@ -314,18 +314,17 @@ function TRspConnection.FReadReply(out retval: string): boolean;
 const failcountmax = 1000;
 var
   c: char;
-  s: string;
   i: integer;
   cksum, calcSum: byte;
 begin
   Result := false;
   if SockErr then exit;
   i := 0;
-  s := '';
+  retval := '';
   repeat
     c := chr(SafeReadByte);
     inc(i);
-    s := s + c;
+    retval := retval + c;
   until (c = '$') or (i = failcountmax) or SockErr;  // exit loop after start or count expired
 
   if c <> '$' then
@@ -336,12 +335,12 @@ begin
     exit;
   end
   else if i > 1 then
-    DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', s])
+    DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', retval])
   else if SockErr then
     DebugLn(DBG_WARNINGS, ['Warning: socket error.']);
 
   c := chr(SafeReadByte);
-  s := '';
+  retval := '';
   calcSum := 0;
   while c <> '#' do
   begin
@@ -363,22 +362,37 @@ begin
       c := char(byte(c) xor $20);
     end;
 
-    s := s + c;
+    retval := retval + c;
     c := char(SafeReadByte);
   end;
 
   cksum := StrToInt('$' + char(SafeReadByte) + char(SafeReadByte));
-
-  // Ignore checksum for now
-  SafeWriteByte(byte('+'));
-  result := not SockErr;
-  retval := s;
   if not (calcSum = cksum) then
-  begin
-    DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', s]);
-  end;
+    DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', retval]);
 
-  DebugLn(DBG_RSP, ['RSP <- ', retval]);
+  // Check if this packet is a console output packet, which isn't acknowledged
+  // Return empty retval
+  // Todo: display output somewhere
+  if (length(retval) > 2) and (retval[1] = 'O') then
+  begin
+    // Output should be hex encoded, length should be odd
+    if Odd(length(retval)) then
+    begin
+      delete(retval, 1, 1);
+      DebugLn(DBG_RSP, ['RSP <- <Console output> ', FHexDecodeStr(retval)]);
+    end
+    else
+      DebugLn(DBG_WARNINGS, ['RSP <- <Possible unencoded output>: ', retval]);
+
+    result := false;
+    retval := '';
+  end
+  else
+  begin
+    SafeWriteByte(byte('+'));
+    result := not SockErr;
+    DebugLn(DBG_RSP, ['RSP <- ', retval]);
+  end;
 end;
 
 function TRspConnection.FSendCmdWaitForReply(const cmd: string; out reply: string
@@ -940,11 +954,17 @@ begin
   cmdstr := 'qRcmd,' + FHexEncodeStr(s);
   result := FSendCmdWaitForReply(cmdstr, reply) and not(SockErr);
 
-  // Check if reply is not hex encoded, else decode reply
-  if Result and not((reply = '') or (reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
-     reply := FHexDecodeStr(reply);
+  if reply = '' then
+    DebugLn(DBG_RSP, ['[Monitor '+s+'] : "qRcmd" not recognized by gdbserver.'])
+  else
+  begin
+    // Check if reply is not hex encoded, else decode reply
+    if Result and not((reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
+      reply := FHexDecodeStr(reply);
 
-  DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
+    if reply <> 'OK' then
+      DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
+  end;
 end;
 
 function TRspConnection.Init: integer;
