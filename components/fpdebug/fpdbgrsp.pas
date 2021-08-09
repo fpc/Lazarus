@@ -73,27 +73,27 @@ type
     FOwner: TDbgProcess;
     // Catch exceptions and store as socket errors
     FSockErr: boolean;
-    procedure FSetRegisterCacheSize(sz: cardinal);
-    function FWaitForData(timeout_ms: integer): integer; overload;
+    procedure SetRegisterCacheSize(sz: cardinal);
+    function WaitForData(timeout_ms: integer): integer; overload;
 
     // Wrappers to catch exceptions and set SockErr
     function SafeReadByte: byte;
     function SafeWrite(const buffer; count : Longint): Longint;
     procedure SafeWriteByte(b: Byte);
 
-    function FReadReply(out retval: string): boolean;
-    function FSendCommand(const cmd: string): boolean;
+    function ReadReply(out retval: string): boolean;
+    function SendCommand(const cmd: string): boolean;
     // Send command and wait for acknowledge
-    function FSendCommandOK(const cmd: string): boolean;
+    function SendCommandAck(const cmd: string): boolean;
     // Return reply to cmd
-    function FSendCmdWaitForReply(const cmd: string; out reply: string): boolean;
+    function SendCmdWaitForReply(const cmd: string; out reply: string): boolean;
 
     // Note that numbers are transmitted as hex characters in target endian sequence
     // For little endian targets this creates an endian swap if the string is parsed by Val
     // because a hex representation of a number is interpreted as big endian
-    function convertHexWithLittleEndianSwap(constref hextext: string; out value: qword): boolean;
-    function FHexEncodeStr(s: string): string;
-    function FHexDecodeStr(hexcode: string): string;
+    function ConvertHexWithLittleEndianSwap(constref hextext: string; out value: qword): boolean;
+    function HexEncodeStr(s: string): string;
+    function HexDecodeStr(hexcode: string): string;
   public
     constructor Create(AFileName: string; AOwner: TDbgProcess); Overload;
     destructor Destroy; override;
@@ -126,7 +126,7 @@ type
     function Init: integer;
 
     property State: integer read FState;
-    property RegisterCacheSize: cardinal write FSetRegisterCacheSize;
+    property RegisterCacheSize: cardinal write SetRegisterCacheSize;
     property lastStatusEvent: TStatusEvent read FStatusEvent;
     property SockErr: boolean read FSockErr;
   end;
@@ -152,7 +152,7 @@ uses
 var
   DBG_VERBOSE, DBG_WARNINGS, DBG_RSP: PLazLoggerLogGroup;
 
-procedure TRspConnection.FSetRegisterCacheSize(sz: cardinal);
+procedure TRspConnection.SetRegisterCacheSize(sz: cardinal);
 begin
   SetLength(FStatusEvent.registers, sz);
 end;
@@ -177,8 +177,7 @@ begin
   end;
 end;
 
-
-function TRspConnection.FWaitForData(timeout_ms: integer): integer;
+function TRspConnection.WaitForData(timeout_ms: integer): integer;
 {$if defined(unix) or defined(windows)}
 var
   FDS: TFDSet;
@@ -235,7 +234,7 @@ begin
   end;
 end;
 
-function TRspConnection.FSendCommand(const cmd: string): boolean;
+function TRspConnection.SendCommand(const cmd: string): boolean;
 var
   checksum: byte;
   i, totalSent: integer;
@@ -257,7 +256,7 @@ begin
     DebugLn(DBG_RSP, ['RSP -> ', cmd]);
 end;
 
-function TRspConnection.FSendCommandOK(const cmd: string): boolean;
+function TRspConnection.SendCommandAck(const cmd: string): boolean;
 var
   c: char;
   retryCount: integer;
@@ -267,7 +266,7 @@ begin
   retryCount := 0;
 
   repeat
-    if FSendCommand(cmd) then
+    if SendCommand(cmd) then
     begin
       // now check if target returned error, resend ('-') or ACK ('+')
       // No support for ‘QStartNoAckMode’, i.e. always expect a -/+
@@ -282,7 +281,7 @@ begin
   until result or (retryCount > 5) or SockErr;
 end;
 
-function TRspConnection.FReadReply(out retval: string): boolean;
+function TRspConnection.ReadReply(out retval: string): boolean;
 const failcountmax = 1000;
 var
   c: char;
@@ -351,7 +350,7 @@ begin
     if Odd(length(retval)) then
     begin
       delete(retval, 1, 1);
-      DebugLn(DBG_RSP, ['RSP <- <Console output> ', FHexDecodeStr(retval)]);
+      DebugLn(DBG_RSP, ['RSP <- <Console output> ', HexDecodeStr(retval)]);
     end
     else
       DebugLn(DBG_WARNINGS, ['RSP <- <Possible unencoded output>: ', retval]);
@@ -367,7 +366,7 @@ begin
   end;
 end;
 
-function TRspConnection.FSendCmdWaitForReply(const cmd: string; out reply: string
+function TRspConnection.SendCmdWaitForReply(const cmd: string; out reply: string
   ): boolean;
 var
   retryCount: integer;
@@ -376,11 +375,11 @@ begin
   if SockErr then exit;
   retryCount := 0;
 
-  if FSendCommandOK(cmd) then
+  if SendCommandAck(cmd) then
   begin
     // Read reply, with retry if no success
     repeat
-      result := FReadReply(reply);
+      result := ReadReply(reply);
       if not result then
       begin
         inc(retryCount);
@@ -393,7 +392,7 @@ begin
     DebugLn(DBG_WARNINGS, ['Warning: Retries exceeded in TRspConnection.FSendCmdWaitForReply for cmd: ', cmd]);
 end;
 
-function TRspConnection.convertHexWithLittleEndianSwap(constref
+function TRspConnection.ConvertHexWithLittleEndianSwap(constref
   hextext: string; out value: qword): boolean;
 var
   err: integer;
@@ -418,7 +417,7 @@ begin
     result := false;
 end;
 
-function TRspConnection.FHexEncodeStr(s: string): string;
+function TRspConnection.HexEncodeStr(s: string): string;
 var
   i: integer;
   tmp: string;
@@ -432,7 +431,7 @@ begin
   end;
 end;
 
-function TRspConnection.FHexDecodeStr(hexcode: string): string;
+function TRspConnection.HexDecodeStr(hexcode: string): string;
 var
   i: integer;
   s: string;
@@ -462,10 +461,10 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCommand('k');
+    result := SendCommand('k');
     // Swallow the last ack if send
     if Result and not SockErr then
-      result := FWaitForData(1000) > 0;
+      result := WaitForData(1000) > 0;
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -483,7 +482,7 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply('D', reply);
+    result := SendCmdWaitForReply('D', reply);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -527,7 +526,7 @@ begin
   try
     // -1 if no data could be read, e.g. socket is closed
     // 0 if timeout.  Use timeout so that asynchronous evens such as break can also be processed
-    i := FWaitForData(500);
+    i := WaitForData(500);
     if i <= 0 then
     begin
       msg := '';
@@ -537,7 +536,7 @@ begin
     end;
 
     try
-      res := FReadReply(msg);
+      res := ReadReply(msg);
     except
       on E: Exception do
         DebugLn(DBG_WARNINGS, ['Warning: WaitForSignal exception: ', E.Message]);
@@ -606,7 +605,7 @@ begin
                     if i > 2 then
                     begin
                       s := copy(part2, 2, i-1);
-                      if convertHexWithLittleEndianSwap(s, tmp) then
+                      if ConvertHexWithLittleEndianSwap(s, tmp) then
                         FStatusEvent.processID := tmp
                       else
                       begin
@@ -615,7 +614,7 @@ begin
                       end;
 
                       s := copy(part2, i+1, 255);
-                      if convertHexWithLittleEndianSwap(s, tmp) then
+                      if ConvertHexWithLittleEndianSwap(s, tmp) then
                         FStatusEvent.threadID := tmp
                       else
                       begin
@@ -629,7 +628,7 @@ begin
                   else
                   // Expect only thread ID
                   begin
-                    if convertHexWithLittleEndianSwap(part2, tmp) then
+                    if ConvertHexWithLittleEndianSwap(part2, tmp) then
                       FStatusEvent.threadID := tmp
                     else
                     begin
@@ -644,7 +643,7 @@ begin
             else // catch valid hex numbers - will be register info
               begin
                 // check if part1 is a number, this should then be a register index
-                if convertHexWithLittleEndianSwap(part1, tmp) and convertHexWithLittleEndianSwap(part2, tmp2) then
+                if ConvertHexWithLittleEndianSwap(part1, tmp) and ConvertHexWithLittleEndianSwap(part2, tmp2) then
                 begin
                   if tmp < length(FStatusEvent.registers) then
                   begin
@@ -677,7 +676,7 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    FSendCmdWaitForReply('vMustReplyEmpty', reply);
+    SendCmdWaitForReply('vMustReplyEmpty', reply);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -702,7 +701,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and not(SockErr);
+    result := SendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -726,7 +725,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and not(SockErr);
+    result := SendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -739,7 +738,7 @@ begin
   DebugLn(DBG_VERBOSE, ['TRspConnection.Continue() called']);
   EnterCriticalSection(fCS);
   try
-    result := FSendCommandOK('c') and not(SockErr);
+    result := SendCommandAck('c') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -751,7 +750,7 @@ function TRspConnection.SingleStep(): boolean;
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCommandOK('s') and not(SockErr);
+    result := SendCommandAck('s') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -767,13 +766,13 @@ begin
   cmd := 'p'+IntToHex(ind, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and not(SockErr);
+    result := SendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
   if result then
   begin
-    result := convertHexWithLittleEndianSwap(reply, tmp);
+    result := ConvertHexWithLittleEndianSwap(reply, tmp);
     AVal := PtrUInt(tmp);
   end;
 
@@ -788,7 +787,7 @@ begin
   cmd := 'P'+IntToHex(ind, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+    result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK');
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -807,7 +806,7 @@ begin
   // Normal receive error, or an error response of the form Exx
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
+    result := SendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
       and (length(reply) = 2*sz);
   finally
     LeaveCriticalSection(fCS);
@@ -850,7 +849,7 @@ begin
   // Normal receive error, or an error number of the form Exx
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
+    result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -870,7 +869,7 @@ begin
   cmd := 'm'+IntToHex(AAddress, 2)+',' + IntToHex(ASize, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2) and not(SockErr);
+    result := SendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -911,7 +910,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
+    result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -923,8 +922,8 @@ function TRspConnection.SendMonitorCmd(const s: string): boolean;
 var
   cmdstr, reply: string;
 begin
-  cmdstr := 'qRcmd,' + FHexEncodeStr(s);
-  result := FSendCmdWaitForReply(cmdstr, reply) and not(SockErr);
+  cmdstr := 'qRcmd,' + HexEncodeStr(s);
+  result := SendCmdWaitForReply(cmdstr, reply) and not(SockErr);
 
   if reply = '' then
     DebugLn(DBG_RSP, ['[Monitor '+s+'] : "qRcmd" not recognized by gdbserver.'])
@@ -932,7 +931,7 @@ begin
   begin
     // Check if reply is not hex encoded, else decode reply
     if Result and not((reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
-      reply := FHexDecodeStr(reply);
+      reply := HexDecodeStr(reply);
 
     if reply <> 'OK' then
       DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
@@ -953,7 +952,7 @@ begin
   reply := '';
   EnterCriticalSection(fCS);
   try
-    if not FSendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') or SockErr then
+    if not SendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') or SockErr then
     begin
       DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
       exit;
@@ -1023,7 +1022,7 @@ begin
       SendMonitorCmd('reset');
 
     // Must be last init command, after init the debug loop waits for the response in WaitForSignal
-    res := FSendCommand('?');  // Todo: should rather call FSendCommandOK, but qemu doesn't send ACK for '?'
+    res := SendCommand('?');  // Todo: should rather call SendCommandAck, but qemu doesn't send ACK for '?'
   finally
     LeaveCriticalSection(fCS);
   end;

@@ -63,9 +63,9 @@ type
     // Cache registers if reported in event
     // Only cache if all reqisters are reported
     // if not, request registers from target
-    procedure FUpdateStatusFromEvent(event: TStatusEvent);
+    procedure UpdateStatusFromEvent(event: TStatusEvent);
     procedure InvalidateRegisters;
-    procedure refreshRegisterCache;
+    procedure RefreshRegisterCache;
   protected
     function ReadThreadState: boolean;
 
@@ -156,14 +156,14 @@ type
   TFpRspWatchPointData = class(TFpWatchPointData)
   private
     FData: array of TRspBreakWatchPoint;
-    function FBreakWatchPoint(AnIndex: Integer): TRspBreakWatchPoint;
-    function FCount: integer;
-    function FFindOwner(AnAddr: TDBGPtr): Pointer;
+    function BreakWatchPoint(AnIndex: Integer): TRspBreakWatchPoint;
+    function DataCount: integer;
+    function FindOwner(AnAddr: TDBGPtr): Pointer;
   public
     function AddOwnedWatchpoint(AnOwner: Pointer; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; override;
     function RemoveOwnedWatchpoint(AnOwner: Pointer): boolean; override;
-    property Data[AnIndex: Integer]: TRspBreakWatchPoint read FBreakWatchPoint;
-    property Count: integer read FCount;
+    property Data[AnIndex: Integer]: TRspBreakWatchPoint read BreakWatchPoint;
+    property Count: integer read DataCount;
   end;
 
 var
@@ -182,19 +182,19 @@ var
 
 { TFpRspWatchPointData }
 
-function TFpRspWatchPointData.FBreakWatchPoint(AnIndex: Integer
+function TFpRspWatchPointData.BreakWatchPoint(AnIndex: Integer
   ): TRspBreakWatchPoint;
 begin
   if AnIndex < length(FData) then
     result := FData[AnIndex];
 end;
 
-function TFpRspWatchPointData.FCount: integer;
+function TFpRspWatchPointData.DataCount: integer;
 begin
   result := length(FData);
 end;
 
-function TFpRspWatchPointData.FFindOwner(AnAddr: TDBGPtr): Pointer;
+function TFpRspWatchPointData.FindOwner(AnAddr: TDBGPtr): Pointer;
 var
   i: integer;
 begin
@@ -261,7 +261,7 @@ begin
   else
   begin
     DebugLn(DBG_VERBOSE, ['TDbgRspThread.GetDebugReg requesting register: ',ind]);
-    refreshRegisterCache;
+    RefreshRegisterCache;
     if ind < length(FRegs) then
     begin
       AVal := FRegs[ind].Value;
@@ -281,7 +281,7 @@ begin
     result := TDbgAvrProcess(Process).FConnection.WriteDebugReg(ind, AVal);
 end;
 
-procedure TDbgAvrThread.FUpdateStatusFromEvent(event: TStatusEvent);
+procedure TDbgAvrThread.UpdateStatusFromEvent(event: TStatusEvent);
 var
   i: integer;
 begin
@@ -302,7 +302,7 @@ begin
     FRegs[i].Initialized := false;
 end;
 
-procedure TDbgAvrThread.refreshRegisterCache;
+procedure TDbgAvrThread.RefreshRegisterCache;
 var
   regs: TBytes;
   i: integer;
@@ -422,7 +422,7 @@ function TDbgAvrThread.DetectHardwareWatchpoint: Pointer;
 begin
   if TDbgAvrProcess(Process).FConnection.LastStatusEvent.stopReason in [srAnyWatchPoint, srReadWatchPoint, srWriteWatchPoint] then
   begin
-    Result := TFpRspWatchPointData(TDbgAvrProcess(Process).WatchPointData).FFindOwner(TDbgAvrProcess(Process).FConnection.LastStatusEvent.watchPointAddress);
+    Result := TFpRspWatchPointData(TDbgAvrProcess(Process).WatchPointData).FindOwner(TDbgAvrProcess(Process).FConnection.LastStatusEvent.watchPointAddress);
     TDbgAvrProcess(Process).FConnection.ResetStatusEvent;
   end
   else
@@ -464,7 +464,7 @@ begin
   if not ReadThreadState then
     exit;
 
-  refreshRegisterCache;
+  RefreshRegisterCache;
 
   if FRegsUpdated then
   begin
@@ -1011,7 +1011,7 @@ begin
 
   TDbgAvrThread(AThread).FExceptionSignal:=0;
   TDbgAvrThread(AThread).FIsPaused := True;
-  TDbgAvrThread(AThread).FUpdateStatusFromEvent(FConnection.lastStatusEvent);
+  TDbgAvrThread(AThread).UpdateStatusFromEvent(FConnection.lastStatusEvent);
 
   if FStatus in [SIGHUP, SIGKILL] then  // not sure which signals is relevant here
   begin
