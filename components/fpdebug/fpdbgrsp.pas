@@ -74,8 +74,6 @@ type
     // Catch exceptions and store as socket errors
     FSockErr: boolean;
     procedure FSetRegisterCacheSize(sz: cardinal);
-    // Blocking
-    //function FWaitForData(): boolean; overload;
     function FWaitForData(timeout_ms: integer): integer; overload;
 
     // Wrappers to catch exceptions and set SockErr
@@ -109,7 +107,7 @@ type
     function MustReplyEmpty: boolean;
     function SetBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
     function DeleteBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
-    // TODO: no support thread ID or different address
+    // TODO: no support for thread ID or different address
     function Continue(): boolean;
     function SingleStep(): boolean;
 
@@ -179,32 +177,6 @@ begin
   end;
 end;
 
-//function TRspConnection.FWaitForData(): boolean;
-//{$if defined(unix) or defined(windows)}
-//var
-//  FDS: TFDSet;
-//  r: integer;
-//{$endif}
-//begin
-//  Result:=False;
-//  if SockErr then exit;
-//{$if defined(unix)}
-//  FDS := Default(TFDSet);
-//  fpFD_Zero(FDS);
-//  fpFD_Set(self.Handle, FDS);
-//  fpSelect(self.Handle + 1, @FDS, nil, nil, nil);
-//  // FDS is set even if the socket has been closed.
-//  // Read available data and if 0 data is available then socket must be closed/ or error
-//  r := 0;
-//  FpIOCtl(self.Handle, FIONREAD, @r);
-//  Result := r > 0;
-//{$elseif defined(windows)}
-//  FDS := Default(TFDSet);
-//  FD_Zero(FDS);
-//  FD_Set(self.Handle, FDS);
-//  Result := Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
-//{$endif}
-//end;
 
 function TRspConnection.FWaitForData(timeout_ms: integer): integer;
 {$if defined(unix) or defined(windows)}
