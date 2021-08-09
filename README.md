@@ -38,7 +38,7 @@ If the above gives an error, you can try to build a minimal IDE with
 --------------------------------------------------------------------------------
 Installation and Requirements:
 
-See the file docs/INSTALL.
+See [docs/INSTALL.txt](docs/INSTALL.txt) file.
 
 --------------------------------------------------------------------------------
 Usage:
