@@ -4003,7 +4003,7 @@
       </element>
 
       <element name="TSpacingSize">
-        <short>Alias to an Integer type.</short>
+        <short>Alias to the Integer type.</short>
         <descr>
           <p>
             <var>TSpacingSize</var> is an alias to the <var>Integer</var> type. TSpacingSize is used for values that represent spacing around or between controls. TSpacingSize is the type used to implement properties in <var>TControlBorderSpacingDefault</var> and <var>TControlBorderSpacing</var>.
@@ -4643,11 +4643,11 @@
             Another example:
           </p>
 <code>
-      +-------+
-+---+ |       |
-| A | |   B   |
-+---+ |       |
-      +-------+
++-------+
+|       | +---+
+|   B   | | A |
+|       | +---+
++-------+
 </code>
           <p>
             Centering A relative to B:
@@ -10590,12 +10590,34 @@
       </element>
 
       <element name="TControl.Action">
-        <short>The Action associated with this control.</short>
+        <short>The Action associated with the control.</short>
         <descr>
-          The Action property is a shortcut to ActionLink.Action.
+          <p>
+            <var>Action</var> is a <var>TBasicAction</var> property with the action assigned to the control. The value for the property is read from the Action property in ActionLink (when assigned). If ActionLink has not been assigned, the property value is <b>Nil</b>.
+          </p>
+          <p>
+            Assigning an action to the property causes ActionLink to be updated. If the new property value is <b>Nil</b>, the TControlActionLink instance in ActionLink is freed and control style flags are updated to remove the value csActionClient.
+          </p>
+          <p>
+            Conversely, a TControlActionLink instance is created for a non-empty action assignment. Its OnChange event handler is set to the private DoActionChange method in the class instance. Control style flags are updated to include the value csActionClient.
+          </p>
+          <p>
+            Action is used in the Click method to signal its OnExecute event handler when assigned and enabled. Preference is given to the OnClick in the control (when  assigned).
+          </p>
+          <p>
+            Values in the Caption, Enabled, HelpType, and Hint properties can be linked to the Action through the property values in the ActionLink.
+          </p>
+          <p>
+            Use AssignTo to copy property values in the control to a TCustomAction instance.
+          </p>
         </descr>
         <seealso>
           <link id="TControl.ActionLink"/>
+          <link id="TControl.Enabled"/>
+          <link id="TControl.Hint"/>
+          <link id="TControl.Click"/>
+          <link id="TControl.OnClick"/>
+          <link id="TControlActionLink"/>
           <link id="#rtl.classes.TBasicAction">TBasicAction</link>
         </seealso>
       </element>
@@ -11032,12 +11054,19 @@
         <short>
           How the control is currently docked. (horizontally, vertically, in a notebook, or not at all).
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            The property value is assigned when the control is inserted into a docking tree during a drag and dock operation. Its value is used when CalculateDockSizes is called to adjust the height or width for the host dock site.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.CalculateDockSizes"/>
+          <link id="#lcl.ldocktree.TLazDockTree.InsertControl"/>
+        </seealso>
       </element>
 
       <element name="TControl.Floating">
-        <short>Tries to find out whether the control is floating (not part of a form).</short>
+        <short>Determines whether the control is floating (not part of a form).</short>
         <descr/>
         <seealso>
           <link id="TControl.FloatingDockSiteClass"/>
@@ -11053,7 +11082,9 @@
       </element>
 
       <element name="TControl.HostDockSite">
-        <short>The host site (TWinControl) into which this control is docked. <b>Nil</b> if not docked.</short>
+        <short>
+          The host site (TWinControl) into which this control is docked. <b>Nil</b> if not docked.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11337,7 +11368,7 @@
         <short>How child controls are sized relative to their parent.</short>
         <descr>
           <p>
-            TControlChildSizing is a TPersistent descendant which provides properties and methods used to layout, align, and resize child controls relative to their parent. Properties are provide which define the horizontal and vertical spacing between controls, the preferred direction controls are aligned, and whether controls are scaled to fit in the parent control.
+            <var>TControlChildSizing</var> is a <var>TPersistent</var> descendant which provides properties and methods used to layout, align, and resize child controls relative to their parent. Properties are provide which define the horizontal and vertical spacing between controls, the preferred direction controls are aligned, and whether controls are scaled to fit in the parent control.
           </p>
           <p>
             See <link id="TChildControlResizeStyle"/> and <link id="TControlChildrenLayout"/> for details about the enumeration values used in the properties.
@@ -16133,10 +16164,10 @@ if MyControl.CanSetFocus then
             Example1: Docking "A" (source window) left to "B" (target window)
           </p>
 <code>
-+---+    +----+
-| A | -&gt; | B  |
-+---+    |    |
-         +----+
++---+    +-----+
+| A | -&gt; |  B  |
+|   |    |     |
++---+    +-----+
 </code>
           <p>
             Result: A new docktree will be created. Height of "A" will be resized to the height of "B". A splitter will be inserted between "A" and "B". And all three are children of the newly created TLazDockForm of the newly created TDockTree.
@@ -16173,11 +16204,11 @@ if MyControl.CanSetFocus then
             Example2: Docking A into B
           </p>
 <code>
-         +-----+
-+---+    |     |
-| A | ---+-&gt; B |
-+---+    |     |
-         +-----+
++-----+
+|     |  +---+
+|  B &lt;+--| A |
+|     |  +---+
++-----+
 </code>
           <p>
             Result: A new docktree will be created. "A" will be resized to the size of "B". Both will be put into a TLazDockPages control which is the child of the newly created TDockTree.
@@ -16187,7 +16218,7 @@ if MyControl.CanSetFocus then
 |[B][A] |
 |+-----+|
 ||     ||
-|| A   ||
+||  A  ||
 ||     ||
 |+-----+|
 +-------+
@@ -17106,9 +17137,11 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="IsColorDefault">
-        <short/>
+        <short>Determines if the color for the control is the system default (GTK).</short>
         <descr>
-          Used by GTK-based widget set classes to determine if the color in a control needs to be compares to the SYS_COLOR_BASE value used in the widget set.
+          <p>
+            Used by GTK-based widget set classes to determine if the color in a control needs to be compares to the SYS_COLOR_BASE value used in the widget set.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -17120,22 +17153,28 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="BidiFlipAlignment">
-        <short/>
-        <descr/>
+        <short>Gets the inverse alignment value when BiDiMode is enabled.</short>
+        <descr>
+          <p>
+            Applies to TAlignment value taLeftJustify and taRightJustify. taCenter is always taCenter regardless of BidiMode.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="BidiFlipAlignment.Result">
         <short/>
       </element>
       <element name="BidiFlipAlignment.Alignment">
-        <short/>
+        <short>TAlignment value converted in the method.</short>
       </element>
       <element name="BidiFlipAlignment.Flip">
-        <short/>
+        <short>True to flip the alignment value when BiDiMode is enabled.</short>
       </element>
 
       <element name="BidiFlipAnchors">
-        <short/>
+        <short>
+          Swaps left and right anchor side settings for the specified control when BiDiMode is enabled.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -17544,18 +17583,25 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
           <p>
             Anchor docking allows one to anchor every side of a control to an arbitrary side of another control, i.e. the left side of an Edit control can be anchored to the right side of its associated Label.
           </p>
-  <code>Example1
-If you want to have the top of B the same as the top of C:
-
+          <p>
+            <b>Example1</b>
+          </p>
+          <p>
+            If you want to have the top of B the same as the top of C:
+          </p>
+<pre>
 +-----+  +-----+
 |  B  |  |  C  |
 |     |  +-----+
 +-----+
-
-  use
-    B.AnchorSide[akTop].Control:=C;
-    B.AnchorSide[akTop].Side:=asrTop;
-  </code>
+</pre>
+          <p>
+            use:
+          </p>
+<code>
+B.AnchorSide[akTop].Control:=C;
+B.AnchorSide[akTop].Side:=asrTop;
+</code>
           <p>
             When you want to have a gap between both controls, set e.g. B.Borderspacing.Right to the desired amount. Setting C.Borderspacing.Left will have the same effect, and both can be used together; the resulting gap then reflects the maximum value of both properties.
           </p>
@@ -17565,21 +17611,33 @@ If you want to have the top of B the same as the top of C:
           <p>
             Anchor docking also allows one to center a control relative to another control.
           </p>
-<code>Example2
-For centering A relative to B:
+          <p>
+            <b>Example2</b>
+          </p>
+          <p>
+            For centering A relative to B:
+          </p>
+<pre>
++-------+
+|       | +---+
+|   B   | | A |
+|       | +---+
++-------+
+</pre>
 
-      +-------+
-+---+ |       |
-| A | |   B   |
-+---+ |       |
-      +-------+
-
-use
-  A.AnchorSide[akTop].Side:=asrCenter;
-  A.AnchorSide[akTop].Control:=B;
-Or use this, it's equivalent:
-  A.AnchorSide[akBottom].Side:=asrCenter;
-  A.AnchorSide[akBottom].Control:=B;
+          <p>
+            use:
+          </p>
+<code>
+A.AnchorSide[akTop].Side:=asrCenter;
+A.AnchorSide[akTop].Control:=B;
+</code>
+          <p>
+            Or use this, it's equivalent:
+          </p>
+<code>
+A.AnchorSide[akBottom].Side:=asrCenter;
+A.AnchorSide[akBottom].Control:=B;
 </code>
           <p>
             TControlChildSizing and TControlChildrenLayout offers additional means for aligning and separating controls.
