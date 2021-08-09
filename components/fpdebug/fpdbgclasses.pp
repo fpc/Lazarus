@@ -1869,7 +1869,7 @@ begin
 
         if Result = nil then begin
           Addr := Frame.AnAddress;
-          if Addr <> 0 then
+          if (Addr <> 0) or (FDbgInfo.TargetInfo.machineType = mtAVR8) then
             Result := FDbgInfo.FindSymbolScope(Ctx, Addr);
         end;
       end;
