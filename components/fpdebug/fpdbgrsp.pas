@@ -1026,11 +1026,12 @@ begin
     if AAfterUploadBreakZero then
       SetBreakWatchPoint(0, wkpExec);  // Todo: check if different address is required
 
+    // Todo: Rather use a user configurable list of monitor commands, similar to AAfterConnectMonitorCmds
     if AAfterUploadMonitorReset then
       SendMonitorCmd('reset');
 
     // Must be last init command, after init the debug loop waits for the response in WaitForSignal
-    res := FSendCommand('?');
+    res := FSendCommand('?');  // Todo: should rather call FSendCommandOK, but qemu doesn't send ACK for '?'
   finally
     LeaveCriticalSection(fCS);
   end;
