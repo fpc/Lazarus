@@ -1,0 +1,257 @@
+object Form1: TForm1
+  Left = 609
+  Height = 693
+  Top = 149
+  Width = 496
+  Caption = 'MainForm'
+  ClientHeight = 693
+  ClientWidth = 496
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object Chart1: TChart
+    Left = 0
+    Height = 624
+    Top = 0
+    Width = 496
+    AxisList = <    
+      item
+        Grid.Color = clMenu
+        Grid.Style = psSolid
+        Alignment = calBottom
+        AxisPen.Visible = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Range.UseMin = True
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Time, s'
+        Title.LabelBrush.Style = bsClear
+      end    
+      item
+        Grid.Color = clMenu
+        Grid.Style = psSolid
+        AtDataOnly = True
+        AxisPen.Visible = True
+        Group = 1
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Range.Max = 1
+        Range.Min = -1
+        Range.UseMax = True
+        Range.UseMin = True
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Position, cm'
+        Title.LabelBrush.Style = bsClear
+        Title.PositionOnMarks = True
+        Transformations = PositionTransformations
+      end    
+      item
+        Grid.Color = clMenu
+        Grid.Style = psSolid
+        AtDataOnly = True
+        AxisPen.Visible = True
+        Group = 1
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Range.Max = 1
+        Range.Min = -1
+        Range.UseMax = True
+        Range.UseMin = True
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Velocity, cm/s'
+        Title.LabelBrush.Style = bsClear
+        Title.PositionOnMarks = True
+        Transformations = VelocityTransformations
+      end    
+      item
+        Grid.Color = clMenu
+        Grid.Style = psSolid
+        AtDataOnly = True
+        AxisPen.Visible = True
+        Group = 1
+        Marks.AtDataOnly = True
+        Marks.LabelBrush.Style = bsClear
+        Minors = <>
+        Range.Max = 1
+        Range.Min = -1
+        Range.UseMax = True
+        Range.UseMin = True
+        Title.LabelFont.Orientation = 900
+        Title.LabelFont.Style = [fsBold]
+        Title.Visible = True
+        Title.Caption = 'Acceleration, cm/s<sup>2</sup> '
+        Title.LabelBrush.Style = bsClear
+        Title.PositionOnMarks = True
+        Title.TextFormat = tfHTML
+        Transformations = AccelerationTransformations
+      end>
+    Frame.Visible = False
+    Title.Font.Height = -16
+    Title.Font.Style = [fsBold]
+    Title.Text.Strings = (
+      'Damped pendulum'
+    )
+    Title.Visible = True
+    Align = alClient
+    object PositionSeries: TLineSeries
+      AxisIndexX = 0
+      AxisIndexY = 1
+    end
+    object VelocitySeries: TLineSeries
+      AxisIndexX = 0
+      AxisIndexY = 2
+    end
+    object AccelerationSeries: TLineSeries
+      AxisIndexX = 0
+      AxisIndexY = 3
+    end
+  end
+  object Panel1: TPanel
+    Left = 8
+    Height = 49
+    Top = 636
+    Width = 480
+    Align = alBottom
+    AutoSize = True
+    BorderSpacing.Around = 8
+    BevelOuter = bvNone
+    ClientHeight = 49
+    ClientWidth = 480
+    TabOrder = 1
+    object cbLiveView: TCheckBox
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = btnReset
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 19
+      Top = 3
+      Width = 114
+      Caption = 'Scrolling live view'
+      Checked = True
+      OnChange = cbLiveViewChange
+      State = cbChecked
+      TabOrder = 0
+    end
+    object cbFrozenAxes: TCheckBox
+      AnchorSideLeft.Control = cbLiveView
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = btnReset
+      AnchorSideTop.Side = asrCenter
+      Left = 146
+      Height = 19
+      Top = 3
+      Width = 122
+      BorderSpacing.Left = 32
+      Caption = 'Frozen vertical axes'
+      Checked = True
+      OnChange = cbFrozenAxesChange
+      State = cbChecked
+      TabOrder = 1
+    end
+    object btnReset: TButton
+      AnchorSideLeft.Control = btnStopResume
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 387
+      Height = 25
+      Top = 0
+      Width = 75
+      BorderSpacing.Left = 4
+      BorderSpacing.Right = 8
+      Caption = 'Reset'
+      OnClick = btnResetClick
+      TabOrder = 2
+    end
+    object btnStopResume: TButton
+      AnchorSideLeft.Control = cbFrozenAxes
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = Panel1
+      Left = 308
+      Height = 25
+      Top = 0
+      Width = 75
+      BorderSpacing.Left = 40
+      Caption = 'Stop'
+      OnClick = btnStopResumeClick
+      TabOrder = 3
+    end
+    object Label1: TLabel
+      AnchorSideLeft.Control = cbLiveView
+      AnchorSideTop.Control = seViewportSize
+      AnchorSideTop.Side = asrCenter
+      Left = 0
+      Height = 15
+      Top = 30
+      Width = 88
+      Caption = 'Viewport size (s):'
+    end
+    object seViewportSize: TFloatSpinEdit
+      AnchorSideLeft.Control = Label1
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = cbLiveView
+      AnchorSideTop.Side = asrBottom
+      Left = 96
+      Height = 23
+      Top = 26
+      Width = 58
+      Alignment = taRightJustify
+      BorderSpacing.Left = 8
+      BorderSpacing.Top = 4
+      DecimalPlaces = 0
+      MaxValue = 60
+      MinValue = 1
+      OnChange = seViewportSizeChange
+      TabOrder = 4
+      Value = 10
+    end
+  end
+  object Bevel1: TBevel
+    Left = 0
+    Height = 4
+    Top = 624
+    Width = 496
+    Align = alBottom
+    Shape = bsBottomLine
+  end
+  object PositionTransformations: TChartAxisTransformations
+    Left = 213
+    Top = 34
+    object PositionAutoScaleTransform: TAutoScaleAxisTransform
+      MaxValue = 3.4
+      MinValue = 2.4
+    end
+  end
+  object VelocityTransformations: TChartAxisTransformations
+    Left = 213
+    Top = 102
+    object VelocityScaleTransform: TAutoScaleAxisTransform
+      MaxValue = 2.2
+      MinValue = 1.2
+    end
+  end
+  object AccelerationTransformations: TChartAxisTransformations
+    Left = 213
+    Top = 176
+    object AccelerationAutoScaleTransform: TAutoScaleAxisTransform
+    end
+  end
+  object Timer: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = TimerTimer
+    Left = 216
+    Top = 287
+  end
+  object ChartLiveView1: TChartLiveView
+    Chart = Chart1
+    ViewportSize = 10
+    Left = 216
+    Top = 367
+  end
+end
