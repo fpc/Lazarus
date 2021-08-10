@@ -287,83 +287,85 @@ var
   c: char;
   i: integer;
   cksum, calcSum: byte;
+  outputPacket: boolean;
 begin
   Result := false;
   if SockErr then exit;
-  i := 0;
-  retval := '';
-  repeat
-    c := chr(SafeReadByte);
-    inc(i);
-    retval := retval + c;
-  until (c = '$') or (i = failcountmax) or SockErr;  // exit loop after start or count expired
 
-  if c <> '$' then
-  begin
-    DebugLn(DBG_WARNINGS, ['Warning: Timeout waiting for RSP reply']);
-    result := false;
+  repeat  // Outer loop runs until no more "O" packets received
+    i := 0;
     retval := '';
-    exit;
-  end
-  else if i > 1 then
-    DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', retval])
-  else if SockErr then
-    DebugLn(DBG_WARNINGS, ['Warning: socket error.']);
+    repeat
+      c := chr(SafeReadByte);
+      inc(i);
+      retval := retval + c;
+    until (c = '$') or (i = failcountmax) or SockErr;  // exit loop after start or count expired
 
-  c := chr(SafeReadByte);
-  retval := '';
-  calcSum := 0;
-  while c <> '#' do
-  begin
-    calcSum := byte(calcSum+byte(c));
-
-    if c=#$7D then // escape marker, unescape data
+    if c <> '$' then
     begin
-      c := char(SafeReadByte);
+      DebugLn(DBG_WARNINGS, ['Warning: Timeout waiting for RSP reply']);
+      result := false;
+      retval := '';
+      exit;
+    end
+    else if i > 1 then
+      DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', retval])
+    else if SockErr then
+      DebugLn(DBG_WARNINGS, ['Warning: socket error.']);
 
-      // Something weird happened
-      if c = '#' then
+    c := chr(SafeReadByte);
+    retval := '';
+    calcSum := 0;
+    while c <> '#' do
+    begin
+      calcSum := byte(calcSum+byte(c));
+
+      if c=#$7D then // escape marker, unescape data
       begin
-        DebugLn(DBG_WARNINGS, ['Warning: Received end of packet marker in escaped sequence: ', c]);
-        break;
+        c := char(SafeReadByte);
+
+        // Something weird happened
+        if c = '#' then
+        begin
+          DebugLn(DBG_WARNINGS, ['Warning: Received end of packet marker in escaped sequence: ', c]);
+          break;
+        end;
+
+        calcSum := byte(calcSum + byte(c));
+
+        c := char(byte(c) xor $20);
       end;
 
-      calcSum := byte(calcSum + byte(c));
-
-      c := char(byte(c) xor $20);
+      retval := retval + c;
+      c := char(SafeReadByte);
     end;
 
-    retval := retval + c;
-    c := char(SafeReadByte);
-  end;
+    cksum := StrToInt('$' + char(SafeReadByte) + char(SafeReadByte));
+    if not (calcSum = cksum) then
+      DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', retval]);
 
-  cksum := StrToInt('$' + char(SafeReadByte) + char(SafeReadByte));
-  if not (calcSum = cksum) then
-    DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', retval]);
-
-  // Check if this packet is a console output packet, which isn't acknowledged
-  // Return empty retval
-  // Todo: display output somewhere
-  if (length(retval) > 2) and (retval[1] = 'O') then
-  begin
-    // Output should be hex encoded, length should be odd
-    if Odd(length(retval)) then
+    // Check if this packet is a console output packet, which isn't acknowledged
+    // Todo: display output somewhere
+    if (length(retval) > 2) and (retval[1] = 'O') and (retval[2] <> 'K') then
     begin
-      delete(retval, 1, 1);
-      DebugLn(DBG_RSP, ['RSP <- <Console output> ', HexDecodeStr(retval)]);
+      outputPacket := True;
+      // Output should be hex encoded, length should be odd
+      if Odd(length(retval)) then
+      begin
+        delete(retval, 1, 1);
+        DebugLn(DBG_RSP, ['RSP <- <Console output> ', HexDecodeStr(retval)]);
+      end
+      else
+        DebugLn(DBG_WARNINGS, ['RSP <- <Possible unencoded output>: ', retval]);
     end
     else
-      DebugLn(DBG_WARNINGS, ['RSP <- <Possible unencoded output>: ', retval]);
-
-    result := false;
-    retval := '';
-  end
-  else
-  begin
-    SafeWriteByte(byte('+'));
-    result := not SockErr;
-    DebugLn(DBG_RSP, ['RSP <- ', retval]);
-  end;
+    begin
+      outputPacket := False;
+    end;
+  until not outputPacket;
+  SafeWriteByte(byte('+'));
+  result := not SockErr;
+  DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
 
 function TRspConnection.SendCmdWaitForReply(const cmd: string; out reply: string
@@ -933,8 +935,7 @@ begin
     if Result and not((reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
       reply := HexDecodeStr(reply);
 
-    if reply <> 'OK' then
-      DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
+    DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
   end;
 end;
 
@@ -1022,7 +1023,7 @@ begin
       SendMonitorCmd('reset');
 
     // Must be last init command, after init the debug loop waits for the response in WaitForSignal
-    res := SendCommand('?');  // Todo: should rather call SendCommandAck, but qemu doesn't send ACK for '?'
+    res := SendCommandAck('?');
   finally
     LeaveCriticalSection(fCS);
   end;
