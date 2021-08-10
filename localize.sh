@@ -6,7 +6,7 @@
 # udating the translated .po files.
 #
 # This script
-# - converts all compiled .rst files to .pot files,
+# - converts all compiled .rsj files to .pot files,
 # - updates all translated xx.po files
 #
 
@@ -20,43 +20,11 @@ if [ ! -x tools/updatepofiles ]; then
   cd -
 fi
 
-if [ "@"$FPCTARGET == "@" ]; then
-  FPCTARGET=`fpc -iTP`-`fpc -iTO`
-  if [ $FPCTARGET == "-" ]; then
-    FPCTARGET=""
-  fi
-fi
-
-RSEXT="rst"
-FPCVER=`fpc -iV`
-if [ "$FPCVER" \> "2.7.0" ]; then
-  RSEXT="rsj"
-fi
-
-RSTFILES=(
-  ". lazarusidestrconsts lazaruside"
-  ". debuggerstrconst"
-)
+RSEXT="rsj"
 
 set -x
 
-for idx in ${!RSTFILES[@]}; do
-  LINE=(${RSTFILES[idx]})
-  RSTDIR=${LINE[0]}
-  RSTFILE=${LINE[1]}
-  POFILE=${LINE[2]:-$RSTFILE}
-   
-  RST=$(find $RSTDIR -name $RSTFILE.$RSEXT)
-  if [ -n "$RST" ]; then
-    RST=`find $RSTDIR -name $RSTFILE.$RSEXT | xargs ls -1t | head -1`;
-  
-    if [ -n "$RST" ]; then
-      POFileFull=$RSTDIR/languages/$POFILE.pot
-      
-      ./tools/updatepofiles $RST $POFileFull
-      
-    fi
-  fi
-done
+./tools/updatepofiles --searchdir=./units lazarusidestrconsts.$RSEXT ./languages/lazaruside.pot
+./tools/updatepofiles --searchdir=./units debuggerstrconst.$RSEXT ./languages/debuggerstrconst.pot
 
 exit 0
