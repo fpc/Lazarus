@@ -112,7 +112,7 @@ begin
       FL.Free;
     end;
   end;
-  //writeln('Found resource string table file: ', Result);
+  writeln('Found resource string table file: ', Result);
 end;
 
 function ParamsValid: boolean;
@@ -161,7 +161,7 @@ begin
 
         if (Filename='') or (not IsResFile) then
         begin
-          writeln('ERROR: file not found: ', FileName);
+          writeln('ERROR: file not found: ', CurParam);
           exit;
         end;
       end;
