@@ -1,20 +1,14 @@
 @echo off
 REM
-REM Make sure you have your setings correctly
-REM
 REM Usage: localize
 REM
 REM This script should be executed after adding new resource strings and after
 REM udating the translated .po files.
 REM
 REM This script
-REM - converts all compiled .rsj (.rst if .rsj is not found) files to .pot files,
+REM - converts all compiled .rsj files to .pot files,
 REM - updates all translated xx.po files
 REM
-
-REM set LazInstall=C:\lazarus\
-set ArchOS=i386-win32
-set ArchOsWS=%ArchOS%\win32
 
 echo.
 
@@ -36,27 +30,11 @@ echo.
 echo on
 
 @echo Updating IDE
-@set IDE_RSJ=units\%ArchOsWS%\LazarusIDEStrConsts.rsj
-@if exist %IDE_RSJ% goto IDE_update
-@echo RSJ file NOT found. Searching for RST.
-@set IDE_RSJ=units\%ArchOsWS%\LazarusIDEStrConsts.rst
-@if not exist %IDE_RSJ% goto SkipIDE
-:IDE_update
-@tools\updatepofiles %IDE_RSJ% languages\lazaruside.pot
-@echo Translation file %IDE_RSJ% found.
-:SkipIDE
+@tools\updatepofiles --searchdir=units lazarusidestrconsts.rsj languages\lazaruside.pot
 @echo.
 
 @echo Updating Debugger dialogs
-@set DBGD_RSJ=units\%ArchOsWS%\DebuggerStrConst.rsj
-@if exist %DBGD_RSJ% goto DBGD_update
-@echo RSJ file NOT found. Searching for RST.
-@set DBGD_RSJ=units\%ArchOsWS%\DebuggerStrConst.rst
-@if not exist %DBGD_RSJ% goto SkipDBGD
-:DBGD_update
-@tools\updatepofiles %DBGD_RSJ% languages\debuggerstrconst.pot
-@echo Translation file %DBGD_RSJ% found.
-:SkipDBGD
+@tools\updatepofiles --searchdir=units debuggerstrconst.rsj languages\debuggerstrconst.pot
 @echo.
 
 @goto Exit
