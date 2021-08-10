@@ -6853,28 +6853,33 @@
       </element>
 
       <element name="TMonitorList">
-        <short>A list of all available monitors.</short>
+        <short>A list of monitors available on the system.</short>
+        <descr>
+          <p>
+            <var>TMonitorList</var> is a <var>TList</var> descendant used to store <var>TMonitor</var> class instances representing the physical monitors attached to the system. It provides an indexed <var>Items</var> property that can be used to access monitor information by an ordinal position in the list. It also provides an overridden Notify method to free a TMonitor instance when the <var>lnDeleted</var> list notification is received.
+          </p>
+          <p>
+            TMonitorList is the type used to implement the <var>Monitors</var> property in <var>TScreen</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMonitor"/>
+          <link id="TScreen.Monitors"/>
+          <link id="#rtl.classes.TList">TList</link>
+        </seealso>
       </element>
 
       <element name="TMonitorList.GetItem" link="#lcl.forms.TMonitorList.Items"/>
-      <element name="TMonitorList.GetItem.Result">
-        <short/>
-      </element>
-      <element name="TMonitorList.GetItem.AIndex">
-        <short/>
-      </element>
+      <element name="TMonitorList.GetItem.Result"/>
+      <element name="TMonitorList.GetItem.AIndex"/>
 
       <element name="TMonitorList.SetItem" link="#lcl.forms.TMonitorList.Items"/>
-      <element name="TMonitorList.SetItem.AIndex">
-        <short/>
-      </element>
-      <element name="TMonitorList.SetItem.AValue">
-        <short/>
-      </element>
+      <element name="TMonitorList.SetItem.AIndex"/>
+      <element name="TMonitorList.SetItem.AValue"/>
 
       <element name="TMonitorList.Notify">
         <short>
-          List notification handler, destroys the Monitor object on removal from the list.
+          List notification handler which destroys the Monitor object on removal from the list.
         </short>
         <descr/>
         <seealso/>
@@ -6889,9 +6894,18 @@
       <element name="TMonitorList.Items">
         <short>The indexed list of all Monitors.</short>
         <descr>
-          Items is the default property for the monitor list.
+          <p>
+            <var>Items</var> is a <var>TMonitor</var> property which provides indexed access to a monitor in the list by its ordinal position. Items is the default property for the list, and the target for a list enumerator for the class instance.
+          </p>
+          <p>
+            TMonitor instances in Items are create and added at run-time when the <var>UpdateMonitors</var> method in <var>TScreen</var> is called. This occurs in response to a <var>WM_DISPLAYCHANGE</var> message in the processing loop for an application.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TMonitor"/>
+          <link id="TScreen.UpdateMonitors"/>
+          <link id="TApplication.HandleMessage"/>
+        </seealso>
       </element>
       <element name="TMonitorList.Items.AIndex">
         <short>Ordinal position for a monitor in the list.</short>
@@ -6900,25 +6914,29 @@
       <element name="PCursorRec" link="#lcl.forms.TCursorRec"/>
 
       <element name="TCursorRec">
-        <short>An element of the Cursor list.</short>
-        <descr/>
+        <short>Contains information about a cursor shape.</short>
+        <descr>
+          <p>
+            <var>TCursorRec</var> is a record type which contains information about a cursor shape used in an application. It contains members with the index position for the cursor, the Handle for the cursor resource, and a pointer to the next cursor record in the list.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TCursorRec.Next">
-        <short>The next list element.</short>
+        <short>Pointer to the next cursor record in the list.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCursorRec.Index">
-        <short>The list index.</short>
+        <short>Position of the cursor record in the list..</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCursorRec.Handle">
-        <short>The OS identifier for this cursor.</short>
+        <short>The handle for the cursor resource.</short>
         <descr/>
         <seealso/>
       </element>
@@ -8960,7 +8978,7 @@
       </element>
 
       <element name="TCMHintShowPause">
-        <short/>
+        <short>Not used in the current LCL implementation.</short>
         <descr>
           <p>
             TCMHintShowPause is not used in the current LCL implementation.
@@ -9633,7 +9651,7 @@
         </seealso>
       </element>
       <element name="TApplication.GetMainFormHandle.Result">
-        <short/>
+        <short>Handle value for the main form.</short>
       </element>
 
       <element name="TApplication.GetTitle">
@@ -10773,7 +10791,7 @@
       </element>
 
       <element name="TApplication.ModalStarted">
-        <short>Called when a form is shown modally.</short>
+        <short>Called when a modal form display is started.</short>
         <descr>
           Invokes all OnModalBegin handlers when entering Modal state.
         </descr>
@@ -10794,7 +10812,11 @@
 
       <element name="TApplication.Restore">
         <short>Restores a previously minimized application.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls the <var>AppRestore</var> method in the widgetset class, which generally restores the main form for the application and re-focuses its active control. It will also restore an active modal dialog.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.Minimize"/>
         </seealso>
@@ -11655,7 +11677,7 @@
         <short>The virtual key; becomes VK_UNKNOWN when handled.</short>
       </element>
       <element name="TApplication.DoTabKey.Shift">
-        <short/>
+        <short>Shift, Ctrl or Alt modifier for the virtual key.</short>
       </element>
 
       <element name="TApplication.DoEscapeKey">
@@ -11689,9 +11711,20 @@
       </element>
 
       <element name="TApplication.Active">
-        <short>True if the application has the focus.</short>
-        <descr/>
-        <seealso/>
+        <short>True if the application is focused.</short>
+        <descr>
+          <p>
+            <var>Active</var> is a read-only <var>Boolean</var> property which indicates if the application is focused. Returns <b>True</b> if the <var>AppActive</var> flag has been included in the <var>Flags</var> for the application.
+          </p>
+          <p>
+            The value in Active (and Flags) is updated when the private <var>Activate</var> or <var>Deactivate</var> methods are called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TApplication.Flags"/>
+          <link id="TApplicationFlags"/>
+          <link id="TApplicationFlag"/>
+        </seealso>
       </element>
 
       <element name="TApplication.ApplicationType">
@@ -11762,9 +11795,31 @@
       </element>
 
       <element name="TApplication.Flags">
-        <short>Contains state flags for the Application.</short>
-        <descr/>
-        <seealso/>
+        <short>Contains state flags for the application.</short>
+        <descr>
+          <p>
+            <var>Flags</var> is a <var>TApplicationFlags</var> property which contains flag values currently enabled for the application. It is a set type, and may contain zero or more values from the <var>TApplicationFlag</var> enumeration.
+          </p>
+          <p>
+            Values in Flags are updated when methods are executed in the class instance. A value may be transient in nature, and exist only while a particular method is running. They may also be more permanent, and indicate actions which have been performed and/or completed.
+          </p>
+          <p>
+            Values are added to and removed from Flags in methods like:
+          </p>
+          <ul>
+            <li>Create</li>
+            <li>Destroy</li>
+            <li>Initialize</li>
+            <li>Activate</li>
+            <li>Deactivate</li>
+            <li>Idle</li>
+            <li>ShowException</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TApplicationFlags"/>
+          <link id="TApplicationFlag"/>
+        </seealso>
       </element>
 
       <element name="TApplication.Handle">
@@ -11800,15 +11855,18 @@
       </element>
 
       <element name="TApplication.HintColor">
-        <short>The color of Hint windows.</short>
+        <short>The background color for a Hint window.</short>
         <descr/>
         <seealso>
           <link id="TApplication.Hint"/>
+          <link id="TApplication.ShowHint"/>
+          <link id="TApplication.ShowHintWindow"/>
+          <link id="THintWindow"/>
         </seealso>
       </element>
 
       <element name="TApplication.HintHidePause">
-        <short>How long a Hint stays visible, after an mouse move.</short>
+        <short>How long a Hint stays visible after the mouse pointer is moved.</short>
         <descr/>
         <seealso>
           <link id="TApplication.Hint"/>
@@ -11890,13 +11948,27 @@
       </element>
 
       <element name="TApplication.MainForm">
-        <short>The application terminates when this form is closed.</short>
-        <seealso/>
-      <descr>
-        <p>
-          This property is set when the first form is created using the CreateForm method when FormStyle contains a value other than <var>fsSplash</var>.
-        </p>
-      </descr>
+        <short>Contains the main form for the application.</short>
+        <descr>
+          <p>
+            <var>MainForm</var> is a read-only <var>TForm</var> property which contains the form that is the main or primary form for the application.
+          </p>
+          <p>
+            The value in MainForm is assigned when the first form is created using the <var>CreateForm</var> method and the <var>FormStyle</var> for the form contains a value other than <var>fsSplash</var>.
+          </p>
+          <p>
+            The form instance in MainForm is displayed when the <var>Run</var> method is called to start the message processing loop for the application.
+          </p>
+          <p>
+            The application is terminated when this form is closed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TApplication.CreateForm"/>
+          <link id="TApplication.Run"/>
+          <link id="TCustomForm.FormStyle"/>
+          <link id="TForm"/>
+        </seealso>
       </element>
 
       <element name="TApplication.MainFormHandle">
