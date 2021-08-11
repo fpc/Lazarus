@@ -107,12 +107,12 @@ begin
             Result:=FL[i];
           inc(i);
         end;
+        writeln('Found resource string table file: "', Result, '"');
       end;
     finally
       FL.Free;
     end;
   end;
-  writeln('Found resource string table file: ', Result);
 end;
 
 function ParamsValid: boolean;
@@ -138,7 +138,7 @@ begin
     if UTF8StartsText(ResSearchDirParamName, CurParam) then
     begin
       ResSearchDir:=RightStr(CurParam, Length(CurParam)-Length(ResSearchDirParamName));
-      writeln('Current resource string table file search directory: ', ResSearchDir);
+      writeln('Current resource string table file search directory: "', ResSearchDir, '"');
     end
     else
     begin
@@ -148,7 +148,7 @@ begin
 
       if (Ext<>'.pot') and (Ext<>'.rst') and (Ext<>'.lrj') and (Ext<>'.rsj') then
       begin
-        writeln('ERROR: invalid extension: ', Filename);
+        writeln('ERROR: invalid file extension: "', Filename, '"');
         exit;
       end;
 
@@ -161,7 +161,7 @@ begin
 
         if (Filename='') or (not IsResFile) then
         begin
-          writeln('ERROR: file not found: ', CurParam);
+          writeln('ERROR: file not found: "', CurParam, '"');
           exit;
         end;
       end;
