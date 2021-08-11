@@ -354,6 +354,7 @@ type
     FSavedRecord: Integer;
     FOnGetCellHint: TDbGridCellHintEvent;
     FOnRowMoved: TMovedEvent;
+    FFixedRowsExtra: Integer;
     procedure EmptyGrid;
     function GetColumns: TDBGridColumns;
     function GetCurrentColumn: TColumn;
@@ -382,6 +383,7 @@ type
     procedure SetCurrentField(const AValue: TField);
     procedure SetDataSource(const AValue: TDataSource);
     procedure SetExtraOptions(const AValue: TDBGridExtraOptions);
+    procedure SetFixedRowsExtra(AValue: Integer);
     procedure SetOptions(const AValue: TDBGridOptions);
     procedure SetRowMoved(AValue: TMovedEvent);
     procedure SetSelectedIndex(const AValue: Integer);
@@ -512,6 +514,7 @@ type
     procedure WndProc(var TheMessage : TLMessage); override;
 
     property Columns: TDBGridColumns read GetColumns write SetColumns;
+    property FixedRowsExtra: Integer read FFixedRowsExtra write SetFixedRowsExtra;
     property GridStatus: TDBGridStatus read FGridStatus write FGridStatus;
     property Datalink: TComponentDataLink read FDatalink;
     property Options: TDBGridOptions read FOptions write SetOptions default
@@ -1191,6 +1194,13 @@ begin
 
 end;
 
+procedure TCustomDBGrid.SetFixedRowsExtra(AValue: Integer);
+begin
+  if FFixedRowsExtra = AValue then Exit;
+  FFixedRowsExtra := AValue;
+  LayoutChanged;
+end;
+
 procedure TCustomDBGrid.SetOptions(const AValue: TDBGridOptions);
 var
   OldOptions: TGridOptions;
@@ -1743,7 +1753,7 @@ begin
   {$endif}
   Result := ClientHeight div DefaultRowHeight;
   if dgTitles in Options then
-    Dec(Result, 1);
+    Dec(Result, FixedRows);
 end;
 
 procedure TCustomDBGrid.UpdateGridColumnSizes;
@@ -3383,6 +3393,10 @@ var
 begin
   if GetIsCellTitle(aCol, aRow) then
     inherited DrawColumnText(aCol, aRow, aRect, aState)
+  else if aRow<FixedRows then
+    // this case is for drawing fixed rows extra, the standard dbgrid
+    // have nothing to draw here but it must avoid duplicate titles or
+    // draw some field.
   else begin
     F := GetFieldFromGridColumn(aCol);
     if F<>nil then begin
@@ -3631,7 +3645,8 @@ begin
   try
     Result := GetColumnCount;
     if Result > 0 then begin
-      if dgTitles in Options then FRCount := 1 else FRCount := 0;
+      FRCount := FixedRowsExtra;
+      if dgTitles in Options then Inc(FRCount);
       if dgIndicator in Options then FCCount := 1 else FCCount := 0;
       InternalSetColCount(Result + FCCount);
       if FDataLink.Active then begin
