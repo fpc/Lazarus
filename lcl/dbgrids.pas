@@ -3891,7 +3891,9 @@ begin
 
       FDatalink.ActiveRecord := ARow - FixedRows;
 
-      if Field.dataType<>ftBlob then
+      if CheckDisplayMemo(Field) then
+        s := Field.AsString
+      else if Field.dataType<>ftBlob then
         s := trim(Field.DisplayText)
       else
         s := '(blob)';
