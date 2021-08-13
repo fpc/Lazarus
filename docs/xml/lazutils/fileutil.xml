@@ -258,21 +258,33 @@
         <short>The name of the file examined in the routine.</short>
       </element>
 
-      <element name="FilenameIsPascalUnit">
+      <element name="FilenameHasPascalExt">
         <short>
-          <var>FilenameIsPascalUnit</var> - checks that the supplied name is a correct Pascal unit name.
+          Indicates whether the specified file name uses a recognized Pascal file extension.
         </short>
         <descr>
           <p>
-            <var>FilenameIsPascalUnit</var> - checks that the supplied name is a correct Pascal unit name. It examines the file extension to see if it matches one of the standard Pascal extensions (currently .p, .pp, .pas).
+            <var>FilenameHasPascalExt</var> is a <var>Boolean</var> function used to determine if the file name in the <var>Filename</var> argument uses a file extension recognized as a Pascal source code file. The <var>CompareText</var> routine is called to perform a case-insensitive comparision between the value in Filename and the recognized file extensions.
+          </p>
+           <p>
+             The return value is <b>True</b> when Filename has one of the following file extensions:
+           </p>
+           <ul>
+             <li>.pas</li>
+             <li>.pp</li>
+             <li>.p</li>
+           </ul>
+          <p>
+            The return value is <b>False</b> if Filename does not have a file extension, or the extension does not match the preceding values.
           </p>
         </descr>
+        <seealso/>
       </element>
-      <element name="FilenameIsPascalUnit.Result">
-        <short>Returns True if the supplied name is a correct Pascal Unit filename.</short>
+      <element name="FilenameHasPascalExt.Result">
+        <short>True when the file name uses a recognized Pascal file extension.</short>
       </element>
-      <element name="FilenameIsPascalUnit.Filename">
-        <short>The name of the file to examine.</short>
+      <element name="FilenameHasPascalExt.Filename">
+        <short>File name examined in the routine.</short>
       </element>
 
       <element name="FileIsInPath">
@@ -969,7 +981,7 @@
             Search is a method used to search for files or directories matching a specified mask found in the specified search paths. <var>ASearchPath</var> contains the locations examined in the method, and can contain multiple path names separated by the value in <var>PathSeparator</var>. Each delimited path value in <var>ASearchPath</var> is resolved by calling the <var>ResolveDots</var> function, and processed in the method.
           </p>
           <p>
-            The value in the <var>CaseSensitive</var> argument is used to add or remove mask options for the search mask in ASearchMask. Set CaseSensitive to <b>True</b> before calling Search to perform file name comparisions with case sensitivity.
+            The value in the <var>CaseSensitive</var> argument is used to add or remove mask options for the search mask in ASearchMask. Set CaseSensitive to <b>True</b> before calling Search to perform file name comparisons with case sensitivity.
           </p>
           <p>
             <var>ASearchSubDirs</var> includes subdirectories found in ASearchMask in the search process when set to <b>True</b>.

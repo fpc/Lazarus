@@ -349,6 +349,18 @@
         <short>File path and name to examine in the function.</short>
       </element>
 
+      <element name="ExtractFileNameWithoutExt">
+        <short/>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ExtractFileNameWithoutExt.Result">
+        <short/>
+      </element>
+      <element name="ExtractFileNameWithoutExt.AFilename">
+        <short/>
+      </element>
+
       <element name="FilenameIsAbsolute">
         <short>
           Determines if the specified value is an absolute file path (not a relative one).
@@ -514,13 +526,55 @@ D:\db\employee.fdb
         <short>File name to examine.</short>
       </element>
 
+      <element name="CheckIfFileIsSymlink">
+        <short>
+          Checks whether the specified file name is a symbolc link on the local file system.
+        </short>
+        <descr>
+          <p>
+            <var>CheckIfFileIsSymlink</var> is a routine used to ensure that the file name specified in <var>AFilename</var> is a valid symbolic link on the local file system. It acts as an assert for the pre-condition.
+          </p>
+          <p>
+            The implementation for the routine is platform- or OS-specific. In general, all of the platforms raise an exception if the file name does not exist on the local file system of when the filename is not a symbolic link. The mechanism used to check for a symbolic link is platform-dependent.
+          </p>
+          <p>
+            For the Windows platform, the file name must be a link create using mklink on the local file system.
+          </p>
+          <p>
+            For UNIX-like platforms, the FpReadLink routine is called to examine the file name. The value from fpGetErrNo is used to get specific error information that can be used in the exception. For example:
+          </p>
+          <dl>
+            <dt>ESysEAcces</dt>
+            <dd>Read access is denied for the symbolic link.</dd>
+            <dt>ESysENoEnt</dt>
+            <dd>A directory does not exist or is a dangling symbolic link.</dd>
+            <dt>ESysENotDir</dt>
+            <dd>A value in the file name is not a directory.</dd>
+            <dt>ESysENoMem</dt>
+            <dd>Insufficient memory to a access the symbolic link.</dd>
+            <dt>ESysELoopy</dt>
+            <dd>A circular reference was detected in the symbolic link.</dd>
+          </dl>
+          <p>
+            Calling CheckIfFileIsSymlink on the Amiga platform will always result in an exception. Symbolic links are not supported on the Amiga platform.
+          </p>
+        </descr>
+        <errors>
+          Raises an exception if the specified file does not exist on the local file system, or the file is a regular file and not a symbolic link.
+        </errors>
+        <seealso/>
+      </element>
+      <element name="CheckIfFileIsSymlink.AFilename">
+        <short>File name examined in the routine.</short>
+      </element>
+
       <element name="FileIsExecutable">
         <short>
           Determines if the specified file name is executable.
         </short>
         <descr>
           <p>
-            FileIsExecutable is a Boolean function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows environment, the value from FileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
+            <var>FileIsExecutable</var> is a <var>Boolean</var> function used to determine if the specified file name is executable. For UNIX-like environments,  a combination of FpStat, FPS_ISREG, and FpAccess are used to get the return value. For the Windows environment, the value from FileExistsUTF8 is used as the return value. In short, the function is not really useful in a Windows environment.
           </p>
         </descr>
         <seealso/>
@@ -656,7 +710,9 @@ D:\db\employee.fdb
       </element>
 
       <element name="FilenameIsTrimmed">
-        <short/>
+        <short>
+          True if the specified file name contains characters to remove or resolve before use.
+        </short>
         <descr>
           <p>
             <var>FilenameIsTrimmed</var> is an overloaded <var>Boolean</var> function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
@@ -813,6 +869,80 @@ D:\db\employee.fdb
         <short>Base directory used to resolve a relative path.</short>
       </element>
 
+      <element name="CreateAbsolutePath">
+        <short>
+          Returns an absolute path relative to the specified base directory (when needed).
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="CreateAbsolutePath.Result">
+        <short/>
+      </element>
+      <element name="CreateAbsolutePath.Filename">
+        <short/>
+      </element>
+      <element name="CreateAbsolutePath.BaseDirectory">
+        <short/>
+      </element>
+
+      <element name="TryCreateRelativePath">
+        <short>Attempts to create a path in Dest relative the path in Source.</short>
+        <descr>
+          <p>
+            Returns True if it is possible to create a relative path from Source to Dest Function must be thread safe, so no expanding of filenames is done, since this is not threadsafe (at least on Windows platform).
+          </p>
+          <ul>
+            <li>Dest and Source must either be both absolute filenames, or relative</li>
+            <li>Dest and Source cannot contain '..' since no expanding is done by design</li>
+            <li>Dest and Source must be on same drive or UNC path (Windows)</li>
+            <li>If both Dest and Source are relative they must at least share their base directory</li>
+            <li>Double PathDelims are ignored (unless they are part of the UNC convention)</li>
+            <li>If UsePointDirectory is True and Result is True then if RelPath is Empty string, RelPath becomes '.'</li>
+            <li>If AlwaysRequireSharedBaseFolder is False then Absolute filenames need not share a basefolder</li>
+            <li>if the function succeeds RelPath contains the relative path from Source to Dest,
+              no PathDelimiter is appended to the end of RelPath</li>
+          </ul>
+          <p>
+            Examples:
+          </p>
+
+  <code>
+- Dest = /foo/bar Source = /foo Result = True RelPath = bar
+- Dest = /foo///bar Source = /foo// Result = True RelPath = bar
+- Dest = /foo Source = /foo/bar Result = True RelPath = ../
+- Dest = /foo/bar Source = /bar Result = True RelPath = ../foo/bar
+- Dest = foo/bar Source = foo/foo Result = True RelPath = ../bar
+- Dest = foo/bar Source = bar/foo Result = False (no shared base directory)
+- Dest = /foo Source = bar Result = False (mixed absolute and relative)
+- Dest = c:foo Source = c:bar Result = False (no expanding)
+- Dest = c:\foo Source = d:\bar Result is False (different drives)
+- Dest = \foo Source = foo (Windows) Result is False (too ambiguous to guess what this should mean)
+- Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = True Result = False
+- Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = False Result = True RelPath = ../foo
+  </code>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TryCreateRelativePath.Result">
+        <short/>
+      </element>
+      <element name="TryCreateRelativePath.Dest">
+        <short/>
+      </element>
+      <element name="TryCreateRelativePath.Source">
+        <short/>
+      </element>
+      <element name="TryCreateRelativePath.UsePointDirectory">
+        <short/>
+      </element>
+      <element name="TryCreateRelativePath.AlwaysRequireSharedBaseFolder">
+        <short/>
+      </element>
+      <element name="TryCreateRelativePath.RelPath">
+        <short/>
+      </element>
+
       <element name="CreateRelativePath">
         <short>
           Creates a relative path from BaseDirectory to Filename.
@@ -931,7 +1061,9 @@ D:\db\employee.fdb
       </element>
 
       <element name="TPathDelimSwitch">
-        <short/>
+        <short>
+          Represents the platform- or OS-specific path delimiters available in the Lazarus LCL.
+        </short>
         <descr>
           <var>TPathDelimSwitch</var> is an enumerated type with values that indicate how path delimiters in file names are handled in routines like SwitchPathDelims, CheckPathDelim, and IsCurrentPathDelim. Values in the enumeration represent the various platform- or OS-specific path delimiters available in the Lazarus LCL at run-time.
         </descr>
@@ -1116,7 +1248,7 @@ D:\db\employee.fdb
         <short>Value to compare to the current path delimiter for the system.</short>
       </element>
       <element name="CheckPathDelim.Changed">
-        <short/>
+        <short>True if path delimiters were changed to match the platform.</short>
       </element>
 
       <element name="IsCurrentPathDelim">
@@ -2184,7 +2316,7 @@ asperwd
       </element>
 
       <element name="GetAppConfigDirUTF8">
-        <short/>
+        <short>Gets the directory for application configuration and data files.</short>
         <descr>
           <p>
             <var>GetAppConfigDirUTF8</var> is a <var>String</var> function used to get the directory on the local file system where application configuration and data files are stored.
