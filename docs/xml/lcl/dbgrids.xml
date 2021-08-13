@@ -3356,18 +3356,32 @@
         </short>
         <descr>
           <p>
-            <var>CheckDisplayMemo</var> is a Boolean function used to determine if the specified field is a Memo field that needs to be displayed in the grid control. The return value is True when the specified field has the value ftMemo in its DataType property, and the Options property has enabled the  dgDisplayMemoText feature.
+            <var>CheckDisplayMemo</var> is a Boolean function used to determine if the specified field is a Memo field that needs to be displayed in the grid control. The return value is True when the specified field has the value ftMemo in its DataType property, and the Options property includes the value dgDisplayMemoText.
           </p>
           <p>
+            CheckDisplayMemo is called from various methods which measure or render the content for the grid, including:
           </p>
+          <ul>
+            <li>DefaultDrawCell</li>
+            <li>DefaultDrawColumnCell</li>
+            <li>DrawColumnText</li>
+            <li>GetEditText</li>
+            <li>GetTruncCellHintText</li>
+            <li>EditorCanAcceptKey</li>
+          </ul>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomDBGrid.Options"/>
+          <link id="#fcl.db.TField.DataType">TField.DataType</link>
+        </seealso>
       </element>
       <element name="TCustomDBGrid.CheckDisplayMemo.aField">
-        <short/>
+        <short>Field examined in the method.</short>
       </element>
       <element name="TCustomDBGrid.CheckDisplayMemo.Result">
-        <short/>
+        <short>
+          True if the field is a memo field type and the display memo text option is enabled.
+        </short>
       </element>
 
       <element name="TCustomDBGrid.InvalidateSizes">
@@ -5113,7 +5127,7 @@
         </short>
         <descr>
           <p>
-            Options is a TDBGridOptions property that specifies features or behaviors that can be enabled or disabled by values stored in the property. Please note that these options are different than the TGridOption values used in the ancestor class. Options can contain zero (0) or more values from the TDBGridOption enumeration.
+            <var>Options</var> is a <var>TDBGridOptions</var> property that specifies features or behaviors that can be enabled or disabled by values stored in the property. Please note that these options are different than the TGridOption values used in the ancestor class. Options can contain zero (0) or more values from the TDBGridOption enumeration.
           </p>
           <p>
             Options contains the following default values when the control is created:
@@ -5138,10 +5152,17 @@
             Changing value(s) in Options causes other aspects of the grid control to be updated to reflect change(s) to the property. ChangedOptions is updated to reflect the enumeration values added or removed in the request. Some enumeration values force other features or behaviors to be disabled. For instance: row selection. Enabling row selection forces the options for editing, always displaying the editor, and row highlighting to be removed from the Options property. Finally, removing multi-selection from the Options property forces the SelectedRows property to be cleared.
           </p>
           <p>
-            The TDBGridOption values stored in Options are different than the TGridOption values used in the ancestor class. As a result, SetOptions (the write access specifier) must translate any TDBGridOption values to their TGridOption equivalents and store them in the inherited Options property.  Welcome to the dark world of inheritance in visual controls. It's tedious... just look at the code.
+            The TDBGridOption values stored in Options are different than the TGridOption values used in the ancestor class. As a result, SetOptions (the write access specifier) must translate any TDBGridOption values to their TGridOption equivalents and store them in the inherited Options property.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TDBGridOptions"/>
+          <link id="TDBGridOption"/>
+          <link id="#lcl.grids.TGridOptions"/>
+          <link id="#lcl.grids.TGridOption"/>
+          <link id="#lcl.grids.TGridOptions2"/>
+          <link id="#lcl.grids.TGridOption2"/>
+        </seealso>
       </element>
 
       <element name="TCustomDBGrid.OptionsExtra">
