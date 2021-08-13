@@ -15748,7 +15748,9 @@ if MyControl.CanSetFocus then
       <element link="#lcl.imglist.TCustomImageList.OnGetWidthForPPI" name="TImageList.OnGetWidthForPPI"/>
 
       <element name="TControlPropertyStorage">
-        <short/>
+        <short>
+          Implements the abstract ancestor class used to get the property list for a control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -16985,12 +16987,12 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="GetCursorValues">
-        <short/>
+        <short>Calls the specified procedure for each of the cursor identifiers.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="GetCursorValues.Proc">
-        <short/>
+        <short>String procedure called in the routine. </short>
       </element>
 
       <element name="CursorToIdent">
@@ -17050,7 +17052,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="CheckMouseButtonDownUp">
-        <short/>
+        <short>Checks for multiple mouse click events for the specified control.</short>
         <descr/>
         <seealso/>
       </element>
@@ -17189,7 +17191,9 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="BidiFlipRect">
-        <short/>
+        <short>
+          Flips the left and right coordinates relative to the ParentRect when Flip is True.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -17207,12 +17211,12 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="ChangeBiDiModeAlignment">
-        <short/>
+        <short>Flips the value Alignment to reflect the value needed for BiDi mode.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="ChangeBiDiModeAlignment.Alignment">
-        <short/>
+        <short>TAligment value updated in the method.</short>
       </element>
 
       <element name="DbgS">
@@ -17249,22 +17253,35 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
         <short>Form style value converted in the routine.</short>
       </element>
 
-      <element name="OperatorAssign">
-        <short/>
+      <element name="assign(variant):TCaption">
+        <short>
+          Declares an assignment operator used to convert a Variant type to a TCaption type.
+        </short>
         <descr>
-          Assignment operator used to cast a TVariant value to a TCaption value.
+          <p>
+            Declares an assignment operator used to convert a TVariant value to a TCaption value during assignment. Casts the value in AVariant to a String type and assigns it as the return value for the operator. For example:
+          </p>
+<code>
+var
+  AVariant: Variant;
+  AControl: TControl;
+  // ...
+  AControl.Caption := AVariant;
+</code>
         </descr>
         <seealso/>
       </element>
-      <element name="OperatorAssign.Result">
-        <short/>
+      <element name="Assign.Result">
+        <short>TCaption value for the assignment operator.</short>
       </element>
-      <element name="OperatorAssign.AVariant">
-        <short/>
+      <element name="Assign.Variant">
+        <short>Variant value converted to a TCaption value prior to assignment.</short>
       </element>
 
       <element name="CompareLazAccessibleObjectsByDataObject">
-        <short/>
+        <short>
+          Compares the specified pointers containing a Lazarus accessibility object and a accessibility object data.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -17279,7 +17296,9 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="CompareDataObjectWithLazAccessibleObject">
-        <short/>
+        <short>
+          Compares the specified pointers containing Lazarus accessibility object data and a accessibility object.
+        </short>
         <descr/>
         <seealso/>
       </element>
