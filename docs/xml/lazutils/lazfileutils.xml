@@ -350,15 +350,21 @@
       </element>
 
       <element name="ExtractFileNameWithoutExt">
-        <short/>
-        <descr/>
+        <short>
+          Gets the value from AFilename prior to the '.' character that starts the file extension.
+        </short>
+        <descr>
+          <p>
+            Processes characters in AFilename in reverse order to locate the '.' that starts the file extension. If a '.' character is not found, the process continues until a path or directory delimiter is found. The return value defaults to AFilename if a path or directory delimiter occurs before a '.' character.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="ExtractFileNameWithoutExt.Result">
-        <short/>
+        <short>File name (including path) after the file extension has been removed.</short>
       </element>
       <element name="ExtractFileNameWithoutExt.AFilename">
-        <short/>
+        <short>Qualified path and file name examined in the method.</short>
       </element>
 
       <element name="FilenameIsAbsolute">
@@ -473,7 +479,7 @@ D:\db\employee.fdb
         </short>
         <descr>
           <p>
-            CheckIfFileIsExecutable is a procedure used to examine the specified file name to see if it is executable. CheckIfFileIsExecutable is implemented for UNIX-like environments, and allows  a process to better determine if the file can be executed on the platform or OS, and to get better error messages when it cannot.
+            <var>CheckIfFileIsExecutable</var> is a procedure used to examine the specified file name to see if it is executable. CheckIfFileIsExecutable is implemented for UNIX-like environments, and allows  a process to better determine if the file can be executed on the platform or OS, and to get better error messages when it cannot.
           </p>
           <p>
             CheckIfFileIsExecutable raises an exception with a specific message when the platform or OS facilities indicate it is necessary.

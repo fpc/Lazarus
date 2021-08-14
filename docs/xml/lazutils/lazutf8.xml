@@ -1881,15 +1881,21 @@ end;
       </element>
 
       <element name="TStringListUTF8Fast">
-        <short/>
+        <short>Implements a string list using UTF8CompareLatinTextFast for comparisons.</short>
         <descr>
-          Uses UTF8CompareLatinTextFast for comparison.
+          <p>
+            <var>TStringListUTF8Fast</var> is a <var>TStringList</var> descendant which uses UTF8CompareLatinTextFast for fast comparison of values in the class instance.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#rtl.classes.TStringList">TStringList</link>
+        </seealso>
       </element>
 
       <element name="TStringListUTF8Fast.DoCompareText">
-        <short/>
+        <short>
+          Compares UTF-8-encoded values in the class using UTF8CompareLatinTextFast.
+        </short>
         <descr/>
         <seealso/>
       </element>
