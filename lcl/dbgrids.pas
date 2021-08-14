@@ -2820,10 +2820,10 @@ begin
           if ssCtrl in Shift then
             ToggleSelectedRow
           else begin
-            if Button=mbLeft then
-              ClearSelection(true)
+            if (Button=mbLeft) or (dgAnyButtonCanSelect in Options) then
+              ClearSelection(true);
             // Select row before popupmenu
-            else if (Button=mbRight) and Assigned(PopupMenu) and not FSelectedRows.CurrentRowSelected then
+            if (Button=mbRight) and Assigned(PopupMenu) and not FSelectedRows.CurrentRowSelected then
               ToggleSelectedRow;
             doMoveToColumn;
           end;
