@@ -159,11 +159,35 @@
         <short>Indicates if Changed was called after calling BeginUpdate.</short>
       </element>
 
-      <element name="TTextStrings.GetTextStr" link="#rtl.classes.TStrings.GetTextStr"/>
-      <element name="TTextStrings.GetTextStr.Result" link="#rtl.classes.TStrings.GetTextStr.Result"/>
+      <element name="TTextStrings.GetTextStr">
+        <short>Gets the value for the Text property.</short>
+        <descr>
+          <p>
+            Overridden to re-implement the method from the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Text">TStrings.Text</link>
+        </seealso>
+      </element>
+      <element name="TTextStrings.GetTextStr.Result">
+        <short>Value for the Text property.</short>
+      </element>
 
-      <element name="TTextStrings.SetTextStr" link="#rtl.classes.TStrings.SetTextStr"/>
-      <element name="TTextStrings.SetTextStr.AValue" link="#rtl.classes.TStrings.SetTextStr.AValue"/>
+      <element name="TTextStrings.SetTextStr">
+        <short>Sets the value for the Text property.</short>
+        <descr>
+          <p>
+            Overridden to re-implement the method from the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TStrings.Text">TStrings.Text</link>
+        </seealso>
+      </element>
+      <element name="TTextStrings.SetTextStr.AValue">
+        <short>New value for the Text property.</short>
+      </element>
 
       <element name="TTextStrings.BuildArrays">
         <short>Clears and builds the array with the line ranges for the values in Text.</short>
@@ -703,13 +727,18 @@
       </element>
 
       <element name="TTextStrings.AddStrings">
-        <short/>
+        <short>Adds the lines of text in TheStrings to the current class instance.</short>
         <descr>
           <p>
-            No actions are performed in the method when <var>TheString</var> does not have any lines of text.
+            <var>AddStrings</var> is an overridden method in <var>TTextStrings</var> used to add the lines of text in <var>TheStrings</var> to the current class instance. No actions are performed in the method when <var>TheStrings</var> does not contain any lines of text.
+          </p>
+          <p>
+            Builds (or re-builds) the internal array of line ranges for the class instance. Values from the Objects property in TheStrings are also copied in the method.
           </p>
         </descr>
         <seealso>
+          <link id="TTextStrings.AddObject"/>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
           <link id="#rtl.classes.TStrings.AddStrings">TStrings.AddStrings</link>
         </seealso>
       </element>

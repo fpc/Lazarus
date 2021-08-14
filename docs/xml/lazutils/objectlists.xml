@@ -206,8 +206,19 @@
         </seealso>
       </element>
 
+      <element name="TObjectArray.Destroy">
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <var>Destroy</var> is the overridden destructor for the class instance. It calls <var>ReallocMem</var> to reset the storage size in <var>List</var> to <b>0</b> (<b>zero</b>). It calls the inherited method prior to exit.
+        </descr>
+        <seealso>
+          <link id="TObjectArray.List"/>
+          <link id="#rtl.system.ReallocMem">ReallocMem</link>
+        </seealso>
+      </element>
+
       <element name="TObjectArray.Add">
-        <short>Adds the specified item.</short>
+        <short>Adds the specified item to the storage for the class instance.</short>
         <descr>
           <p>
             <var>Add</var> is an <var>Integer</var> function used to add the item specified in <var>Item</var> to the storage for the class instance. Add calls the <var>AddObject</var> method to store the value in Item. The associated object is unassigned (<b>Nil)</b> in the method. Use <var>AddObject</var> to store an Item and its associated object.
