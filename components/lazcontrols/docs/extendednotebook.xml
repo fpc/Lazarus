@@ -3,8 +3,17 @@
   <package name="LazControls">
 
     <module name="ExtendedNotebook">
-      <short/>
-      <descr/>
+      <short>
+        Contains an extended notebook  with support for dragging and dropping tabs on the control.
+      </short>
+      <descr>
+        <p>
+          <file>ExtendedNotebook.pas</file> contains classes and types used to implement an extended notebook control. It provides support for dragging and dropping tabs on the control.
+        </p>
+        <p>
+          This file is part of the <file>LazControls</file> package,
+        </p>
+      </descr>
 
       <!-- unresolved external references -->
       <element name="Classes"/>
@@ -18,7 +27,9 @@
       <element name="LCLProc"/>
 
       <element name="TNotebookTabDragDropEvent">
-        <short/>
+        <short>
+          Specifies an event handler signalled for a drag/drop event on a notebook tab.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -42,7 +53,9 @@
       </element>
 
       <element name="TNotebookTabDragOverEvent">
-        <short/>
+        <short>
+          Specifies an event handler signalled for a drag event over a notebook tab.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -66,7 +79,9 @@
       </element>
 
       <element name="TExtendedNotebook">
-        <short/>
+        <short>
+          Implements an notebook or page control which supports drag and drop events for its tabs.
+        </short>
         <descr>
           <p>
             TExtendedNotebook is a TPageControl descendant.
@@ -179,120 +194,121 @@
         <short/>
       </element>
 
-      <!-- protected methods -->
       <element name="TExtendedNotebook.MouseDown">
-        <short/>
+        <short>Handles mouse down events for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.MouseDown.Button">
-        <short/>
+        <short>Mouse button for the event.</short>
       </element>
       <element name="TExtendedNotebook.MouseDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the mouse button event.</short>
       </element>
       <element name="TExtendedNotebook.MouseDown.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TExtendedNotebook.MouseDown.Y">
-        <short/>
+        <short>Vertical  coordinate for the mouse pointer.</short>
       </element>
 
       <element name="TExtendedNotebook.MouseUp">
-        <short/>
+        <short>Handles mouse up events for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.MouseUp.Button">
-        <short/>
+        <short>Mouse button for the event.</short>
       </element>
       <element name="TExtendedNotebook.MouseUp.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the mouse button event.</short>
       </element>
       <element name="TExtendedNotebook.MouseUp.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TExtendedNotebook.MouseUp.Y">
-        <short/>
+        <short>Vertical  coordinate for the mouse pointer.</short>
       </element>
 
       <element name="TExtendedNotebook.MouseMove">
-        <short/>
+        <short>Handles mouse move messages for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.MouseMove.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the mouse button event.</short>
       </element>
       <element name="TExtendedNotebook.MouseMove.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TExtendedNotebook.MouseMove.Y">
-        <short/>
+        <short>Vertical  coordinate for the mouse pointer.</short>
       </element>
 
       <element name="TExtendedNotebook.CNNotify">
-        <short/>
+        <short>Handles control notification messages for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.CNNotify.Message">
-        <short/>
+        <short>Message examined in the method.</short>
       </element>
 
       <element name="TExtendedNotebook.RemovePage">
-        <short/>
+        <short>Removes the page at the specified ordinal position.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.RemovePage.Index">
-        <short/>
+        <short>Ordinal position for the page removed in the method.</short>
       </element>
 
       <element name="TExtendedNotebook.InsertPage">
-        <short/>
+        <short>Inserts the specified page at the ordinal position in Index.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.InsertPage.APage">
-        <short/>
+        <short>Page instance inserted in the method.</short>
       </element>
       <element name="TExtendedNotebook.InsertPage.Index">
-        <short/>
+        <short>Ordinal position where the page instance is inserted.</short>
       </element>
 
       <element name="TExtendedNotebook.CaptureChanged">
-        <short/>
+        <short>Performs actions when the mouse capture has changed for the control.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.DoStartDrag">
-        <short/>
+        <short>Performs actions needed when a drag operation is started for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.DoStartDrag.DragObject">
-        <short/>
+        <short>Object which is dragged in the operation.</short>
       </element>
 
       <element name="TExtendedNotebook.DoEndDrag">
-        <short/>
+        <short>Performs actions needed when a drag operation is ended for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.DoEndDrag.Target">
-        <short/>
+        <short>Target for the drag operation.</short>
       </element>
       <element name="TExtendedNotebook.DoEndDrag.X">
-        <short/>
+        <short>Horizontal coordinate where the drag operation was ended.</short>
       </element>
       <element name="TExtendedNotebook.DoEndDrag.Y">
-        <short/>
+        <short>Vertical coordinate where the drag operation was ended.</short>
       </element>
 
       <element name="TExtendedNotebook.DragOver">
-        <short/>
+        <short>
+          Performs actions needed when a drag operation is over a page or tab on the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -313,66 +329,88 @@
       </element>
 
       <element name="TExtendedNotebook.DragCanceled">
-        <short/>
+        <short>Performs actions needed to cancel a drag operation for the control.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.PaintWindow">
-        <short/>
+        <short>Paints the window for the control to the specified device context.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.PaintWindow.DC">
-        <short/>
+        <short>Device context where the window is drawn.</short>
       </element>
 
-      <!-- public methods and properties -->
       <element name="TExtendedNotebook.Create">
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            Create is the overridden constructor for the class instance.
+            <var>Create</var> is the overridden constructor for the class instance. It ensures that internal members used in drag and drop operations are initialized for the class instance.
           </p>
         </descr>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.Create.TheOwner">
-        <short/>
+        <short>Owner of the class instance.</short>
       </element>
 
       <element name="TExtendedNotebook.DragDrop">
-        <short/>
-        <descr/>
+        <short>
+          Performs actions needed when a dragged object is dropped onto the control.
+        </short>
+        <descr>
+          <p>
+            <var>DragDrop</var> is an overridden method in <var>TExtendedNotebook</var> used to perform actions needed when the object in <var>Source</var> is dropped on the control.
+          </p>
+          <p>
+            If Source is not derived from TExtendedNotebook, or not the tab being dragged in the control, the inherited method is called to signal the OnDragDrop event handler (when assigned). No additional actions are performed in the method when this situation occurs.
+          </p>
+          <p>
+            The OnTabDragDrop event handler is signalled (when assigned) for the TExtendedNotebook instance in Source. The OnTabDragDropEx event handler is signalled (when assigned) to allow Ctrl + Drag mouse messages to be handled for the control.
+          </p>
+          <p>
+            If the tab order was changed by the drag operation, the tabs (pages) are re-ordered to reflect the new position.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.DragDrop.Source">
-        <short/>
+        <short>Object dragged / dropped on to the control.</short>
       </element>
       <element name="TExtendedNotebook.DragDrop.X">
-        <short/>
+        <short>Horizontal coordinate where the drop occurred.</short>
       </element>
       <element name="TExtendedNotebook.DragDrop.Y">
-        <short/>
+        <short>Vertical coordinate where the drop occurred.</short>
       </element>
 
       <element name="TExtendedNotebook.BeginDragTab">
-        <short/>
-        <descr/>
+        <short>Starts a drag operation for a tab on the control.</short>
+        <descr>
+          <p>
+            Called from the MouseMove method when a mouse down event has occurred on a tab in the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TExtendedNotebook.BeginDragTab.ATabIndex">
-        <short/>
+        <short>Ordinal position for the tab affected in the drag operation.</short>
       </element>
       <element name="TExtendedNotebook.BeginDragTab.Immediate">
-        <short/>
+        <short>
+          True if the drag operation starts immediately and the drag threshold is ignored.
+        </short>
       </element>
       <element name="TExtendedNotebook.BeginDragTab.Threshold">
-        <short/>
+        <short>
+          Distance that the mouse must move before the drag operation starts, or -1 to use the default value from the drag manager.
+        </short>
       </element>
 
       <element name="TExtendedNotebook.DraggingTabIndex">
-        <short/>
+        <short>Ordinal position for the tab affected by a drag operation.</short>
         <descr>
           <p>
             DraggingTabIndex is a read-only Integer property.
@@ -381,45 +419,58 @@
         <seealso/>
       </element>
 
-      <!-- published properties -->
       <element name="TExtendedNotebook.OnTabDragOver">
-        <short/>
+        <short>
+          Event handler signalled when the mouse hovers over a tab on the control during a drag operation.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.OnTabDragOverEx">
-        <short/>
+        <short>
+          Event handler signalled when the Ctrl key is held while dragging a tab on the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.OnTabDragDrop">
-        <short/>
+        <short>
+          Event handler signalled when an object is dropped onto a tab on the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.OnTabDragDropEx">
-        <short/>
+        <short>
+          Event handler signalled when and object is dropped onto a tab on the control while the Ctrl key is held.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.OnTabEndDrag">
-        <short/>
+        <short>
+          Event handler signalled when a drag operation is ended for the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.OnTabStartDrag">
-        <short/>
+        <short>
+          Event handler signalled when a drag operation is started for the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TExtendedNotebook.TabDragMode">
-        <short/>
+        <short>
+          Drag mode for a tab on the control.
+        </short>
         <descr>
           <p>
             The default value for the property is <var>dmManual</var>.
@@ -429,7 +480,9 @@
       </element>
 
       <element name="TExtendedNotebook.TabDragAcceptMode">
-        <short/>
+        <short>
+          Default accept mode for drag operation for a tab.
+        </short>
         <descr>
           <p>
             The default value for the property is <var>dmManual</var>.
