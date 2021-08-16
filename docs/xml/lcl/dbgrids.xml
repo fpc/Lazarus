@@ -2424,6 +2424,7 @@
       <element name="TCustomDBGrid.FSavedRecord"/>
       <element name="TCustomDBGrid.FOnGetCellHint"/>
       <element name="TCustomDBGrid.FOnRowMoved"/>
+      <element name="TCustomDBGrid.FFixedRowsExtra"/>
 
       <element name="TCustomDBGrid.EmptyGrid">
         <short>
@@ -2813,6 +2814,17 @@
       </element>
       <element name="TCustomDBGrid.SetExtraOptions.AValue">
         <short>New value for the ExtraOptions property.</short>
+      </element>
+
+      <element name="TCustomDBGrid.SetFixedRowsExtra">
+        <short>Sets the value for the FixedRowsExtra property.</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomDBGrid.FixedRowsExtra"/>
+        </seealso>
+      </element>
+      <element name="TCustomDBGrid.SetFixedRowsExtra.AValue">
+        <short>New value for the FixedRowsExtra property.</short>
       </element>
 
       <element name="TCustomDBGrid.SetOptions">
@@ -3269,6 +3281,9 @@
           <p>
             AutoAdjustColumn uses the column definition, or the field from the linked dataset, to determine the column or field size needed for the data displayed on the control canvas. A temporary TCanvas instance is created and used to measure the text width for the column. The calculated width is stored in the inherited ColWidths property.
           </p>
+          <remark>
+            Columns which use the ftMemo field type do not display the content for the memo field <b>unless</b> <var>dgDisplayMemoText</var> has been included in the <var>Options</var> for the grid control.
+          </remark>
           <p>
             AutoAdjustColumn is called from the DblClick method when the values goColSizing and goDblClickAutoSize have been included in the Options property.
           </p>
@@ -4838,7 +4853,9 @@
             If the control is not already focused, SetFocus is called. MouseDown signals the OnMouseDown event handler when assigned in the class instance.
           </p>
           <dl>
-            <dt>Left Mouse Button</dt>
+            <dt>
+              Left Mouse Button (or any mouse button when dgAnyButtonCanSelect is in Options)
+            </dt>
             <dd>Clears the row Selection if already selected in the grid. </dd>
             <dt>Right  Mouse Button</dt>
             <dd>Toggles the selected row in the control, or opens the PopupMenu when assigned.</dd>
@@ -4867,7 +4884,7 @@
         </short>
         <descr>
           <p>
-            MouseMove is an overridden procedure used to signal the OnMouseMove event handler for the grid control. MouseMove signals the OnMouseMove event handler when GridState contains the value gsSelecting, and the Dragging flag has not been set.  Otherwise, the inherited MouseMove method is called in the method.
+            <var>MouseMove</var> is an overridden procedure used to signal the <var>OnMouseMove</var> event handler for the grid control. It signals the OnMouseMove event handler when <var>GridState</var> contains the value <var>gsSelecting</var>, and the Dragging flag has not been set.  Otherwise, the inherited <var>MouseMove</var> method is called in the method.
           </p>
         </descr>
         <seealso>
@@ -5090,6 +5107,25 @@
           <link id="TDBGridColumns">TDBGridColumns</link>
           <link id="TColumn">TColumn</link>
           <link id="TDBGrid.OptionsExtra">TDBGrid.OptionsExtra</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomDBGrid.FixedRowsExtra">
+        <short>Reserves additional rows in the fixed header area for the control.</short>
+        <descr>
+          <p>
+            <var>FixedRowsExtra</var> is an <var>Integer</var> property which indicates the number of additional rows reserved at the bottom of the fixed header rows in the database grid control. The default value for the property is <b>0</b>, and reserves <b>NO</b> additional rows.
+          </p>
+          <p>
+            Changing the value for the property causes the LayoutChanged method to be called. This may affect the linked data fields for the control and / or the automatic columns displayed on the grid control.
+          </p>
+          <p>
+            FixedRowsExtra is used in the UpdateGridCounts method when dgTitles has been included in the Options for the control, and causes the specified number of rows to be added after the column headers row and before the data cells in the grid.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomDbGrid.LayoutChanged"/>
+          <link id="TCustomDbGrid.UpdateGridCounts"/>
         </seealso>
       </element>
 

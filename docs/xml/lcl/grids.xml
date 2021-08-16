@@ -11219,32 +11219,109 @@
 
       <element name="TCustomGrid.GridFlags">
         <short>Contains grid-specific state flags active for the control.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GridFlags</var> is a <var>TGridFlags</var> property which contains values that indicate the state or status for the grid control or its editor. It is a set type and may contain zero (0) or more values from the <var>TGridFlagsOption</var> enumeration.
+          </p>
+          <p>
+            Values are included in or excluded from the set as needed during execution of methods in the grid control. See TGridFlagsOption for more information about the values in the enumeration and their meanings.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TGridFlags"/>
+          <link id="TGridFlagsOption"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.GridHeight">
-        <short>Total height for all rows in the grid control.</short>
-        <descr/>
-        <seealso/>
+        <short>Total height for all of the rows in the grid control.</short>
+        <descr>
+          <p>
+            <var>GridHeight</var> is a read-only <var>Integer</var> property which contains the calculated height for all of the rows in the grid control. Its value is provided using the cached values stored in GCache when row or column sizes are calculated for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.GridWidth"/>
+          <link id="TCustomGrid.GCache"/>
+          <link id="TCustomGrid.VisualChange"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.GridLineColor">
-        <short>Color used for grid lines.</short>
+        <short>Color used for the grid lines on the control.</short>
+        <descr>
+          <p>
+            <var>GridLineColor</var> is a <var>TColor</var> property with the color used to draw the grid lines between rows and columns on the control. The default value for the property is <var>clSilver</var>. Changing the value for the property causes the grid control to be redrawn.
+          </p>
+          <p>
+            GridLineColor is used in the <var>DrawCellGrid</var> method to draw the lines around non-fixed cells when <var>GridLineWidth</var> has a non-zero value.
+          </p>
+          <p>
+            Use <var>FixedGridLineColor</var> to set the color used to draw grid lines around  fixed rows and columns on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.DrawCellGrid"/>
+          <link id="TCustomGrid.GridLineWidth"/>
+          <link id="TCustomGrid.GridLineStyle"/>
+          <link id="TCustomGrid.FixedGridLineColor"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.GridLineStyle">
-        <short>Style used to draw grid lines.</short>
+        <short>Style used to draw the grid lines on the control.</short>
+        <descr>
+          <p>
+            <var>GridLineStyle</var> is a <var>TPenStyle</var> property with the pen drawing style used to draw grid lines on the control. The default value for the property is psSolid. Changing the value for the property causes the grid control to be redrawn.
+          </p>
+          <p>
+            GridLineStyle, GridLineWidth, GridLineColor, and FixedGridLineColor are used in the DrawCellGrid method when GridLineWidth is set to a positive non-zero value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.DrawCellGrid"/>
+          <link id="TCustomGrid.FixedGridLineColor"/>
+          <link id="TCustomGrid.GridLineColor"/>
+          <link id="TCustomGrid.GridLineWidth"/>
+          <link id="#lcl.graphics.TCanvas.Pen">TCanvas.Pen</link>
+          <link id="#lcl.graphics.TPen.Style">TPen.Style</link>
+          <link id="#lcl.graphics.TPenStyle">TPenStyle</link>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.GridLineWidth">
-        <short>Width (thickness) for grid lines.</short>
+        <short>Width (thickness) for grid lines drawn on the control.</short>
+        <descr>
+          <p>
+            <var>GridLineWidth</var> is an <var>Integer</var> property which contains the thickness for the grid lines drawn on the control.
+          </p>
+          <p>
+            The default value for the property is 1, and causes a single  pixel to be used when drawing grid lines. Changing the value for the property causes the grid control to be redrawn.
+          </p>
+          <p>
+            GridLineWidth is used in the <var>DrawCellGrid</var> method when grid lines are drawn for both fixed and non-fixed cells. Set GridLineWidth to <b>0</b> to suppress drawing of grid lines on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.DrawCellGrid"/>
+          <link id="TCustomGrid.GridLineStyle"/>
+          <link id="TCustomGrid.GridLineColor"/>
+          <link id="TCustomGrid.FixedGridLineColor"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.GridWidth">
         <short>Total width for all columns in the Grid including non-visible columns.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GridWidth</var> is a read-only Integer property which contains the calculated width for all of the columns in the grid control, including columns with the visible property set to False. Its value is provided using the cached values stored in GCache when row or column sizes are calculated for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.GridWidth"/>
+          <link id="TCustomGrid.GCache"/>
+          <link id="TCustomGrid.VisualChange"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.HeaderHotZones">
@@ -13746,8 +13823,6 @@
       <element name="TCustomDrawGrid.FocusColor" link="#lcl.grids.TCustomGrid.FocusColor"/>
       <element name="TCustomDrawGrid.FocusRectVisible" link="#lcl.grids.TCustomGrid.FocusRectVisible"/>
       <element name="TCustomDrawGrid.GridHeight" link="#lcl.grids.TCustomGrid.GridHeight"/>
-      <element name="TCustomDrawGrid.GridLineColor" link="#lcl.grids.TCustomGrid.GridLineColor"/>
-      <element name="TCustomDrawGrid.GridLineStyle" link="#lcl.grids.TCustomGrid.GridLineStyle"/>
       <element name="TCustomDrawGrid.GridWidth" link="#lcl.grids.TCustomGrid.GridWidth"/>
       <element name="TCustomDrawGrid.IsCellSelected" link="#lcl.grids.TCustomGrid.IsCellSelected"/>
       <element name="TCustomDrawGrid.LeftCol" link="#lcl.grids.TCustomGrid.LeftCol"/>
@@ -13780,6 +13855,8 @@
       <element name="TCustomDrawGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
       <element name="TCustomDrawGrid.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
       <element name="TCustomDrawGrid.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TCustomDrawGrid.GridLineColor" link="#lcl.grids.TCustomGrid.GridLineColor"/>
+      <element name="TCustomDrawGrid.GridLineStyle" link="#lcl.grids.TCustomGrid.GridLineStyle"/>
       <element name="TCustomDrawGrid.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth" />
       <element name="TCustomDrawGrid.Options" link="#lcl.grids.TCustomGrid.Options"/>
       <element name="TCustomDrawGrid.Options2" link="#lcl.grids.TCustomGrid.Options2"/>
@@ -13977,6 +14054,8 @@
       <element name="TDrawGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
       <element name="TDrawGrid.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
       <element name="TDrawGrid.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TDrawGrid.GridLineColor" link="#lcl.grids.TCustomGrid.GridLineColor"/>
+      <element name="TDrawGrid.GridLineStyle" link="#lcl.grids.TCustomGrid.GridLineStyle"/>
       <element name="TDrawGrid.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth"/>
       <element name="TDrawGrid.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones"/>
       <element name="TDrawGrid.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
@@ -15260,6 +15339,8 @@
       <element name="TStringGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
       <element name="TStringGrid.Flat" link="#lcl.grids.TCustomGrid.Flat"/>
       <element name="TStringGrid.Font" link="#lcl.controls.TControl.Font"/>
+      <element name="TStringGrid.GridLineColor" link="#lcl.grids.TCustomGrid.GridLineColor"/>
+      <element name="TStringGrid.GridLineStyle" link="#lcl.grids.TCustomGrid.GridLineStyle"/>
       <element name="TStringGrid.GridLineWidth" link="#lcl.grids.TCustomGrid.GridLineWidth"/>
       <element name="TStringGrid.HeaderHotZones" link="#lcl.grids.TCustomGrid.HeaderHotZones"/>
       <element name="TStringGrid.HeaderPushZones" link="#lcl.grids.TCustomGrid.HeaderPushZones"/>
