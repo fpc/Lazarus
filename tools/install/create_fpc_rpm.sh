@@ -58,7 +58,7 @@ if [ "$WithTempDir" = "yes" ]; then
   mkdir -p $TmpDir
 
   echo "extracting FPC from local svn ..."
-  svn export $FPCSrcDir $TmpDir/fpc
+  cp -a $FPCSrcDir $TmpDir/fpc #copies all to tmp folder for patching.
 else
   TmpDir=$FPCSrcDir
 fi
