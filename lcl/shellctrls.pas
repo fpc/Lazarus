@@ -1581,6 +1581,8 @@ begin
 end;
 
 procedure TCustomShellListView.Resize;
+var
+  iWidth: Integer;
 begin
   inherited Resize;
   {$ifdef DEBUG_SHELLCTRLS}
@@ -1588,27 +1590,29 @@ begin
   {$endif}
 
   // The correct check is with count,
-  // if Column[0] <> nil then
-  // will raise an exception
+  // if Column[0] <> nil then will raise an exception
   if Self.Columns.Count < 3 then Exit;
-
   if (Column[0].Width <> 0) and (not AutoSizeColumns) then
     Exit;
 
-  // If the space available is small,
-  // alloc a larger percentage to the secondary
-  // fields
-  if Width < 400 then
-  begin
-    Column[0].Width := (50 * Width) div 100;
-    Column[1].Width := (25 * Width) div 100;
-    Column[2].Width := (25 * Width) div 100;
-  end
-  else
-  begin
-    Column[0].Width := (70 * Width) div 100;
-    Column[1].Width := (15 * Width) div 100;
-    Column[2].Width := (15 * Width) div 100;
+  iWidth := ClientWidth;
+  BeginUpdate;
+  try
+    // If the space available is small, alloc a larger percentage to the secondary
+    // fields
+    if Width < 400 then
+    begin
+      Column[0].Width := (50 * iWidth) div 100;
+      Column[1].Width := (25 * iWidth) div 100;
+    end
+    else
+    begin
+      Column[0].Width := (70 * iWidth) div 100;
+      Column[1].Width := (15 * iWidth) div 100;
+    end;
+    Column[2].Width := iWidth - Column[0].Width - Column[1].Width;
+  finally
+    EndUpdate;
   end;
 
   {$ifdef DEBUG_SHELLCTRLS}
