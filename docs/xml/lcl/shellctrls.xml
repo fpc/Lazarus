@@ -1302,11 +1302,11 @@
             Changing the value for the property to <b>True</b> causes the <var>Resize</var> method to be called.
           </p>
           <remark>
-            The Resize method will be called at least once, even when AutoSizeColumns is <b>False</b>, if an explicit width has not been set for the first column in the control.
+            The Resize method will be called at least once, even when AutoSizeColumns is set to <b>False</b>, if an explicit width has not been set for the first column in the control.
           </remark>
         </descr>
         <seealso>
-          <link id="TCustomListView.Resize"/>
+          <link id="TCustomShellListView.Resize"/>
           <link id="#lcl.comctrls.TCustomListView.Columns">TCustomListView.Columns</link>
           <link id="#lcl.comctrls.TListColumn">TListColumn</link>
         </seealso>
