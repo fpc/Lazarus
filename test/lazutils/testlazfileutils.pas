@@ -127,6 +127,7 @@ procedure TTestLazFileUtils.TestTrimFileName;
 begin
 {$ifdef windows}
   DoTest('c:\LazarusDir\..\dir\','c:\dir\');
+  DoTest('c:\..','c:\'); //yes Windows actually treats it as that.
 {$endif}
   DoTest('$(LazarusDir)\..\dir\','$(LazarusDir)\..\dir\');
   DoTest(' a ','a');
