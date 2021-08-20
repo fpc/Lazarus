@@ -24,6 +24,7 @@ function ResolveDots(const AFilename: string): string;
 var SrcPos, DestPos, Len, DirStart: integer;
   c: char;
   MacroPos: LongInt;
+  ResultMustEndWithPathDelim: Boolean;
 begin
   Len:=length(AFilename);
   if Len=0 then exit('');
@@ -36,6 +37,13 @@ begin
   and (AFilename[3]='?') and (AFilename[4]='\') then
     exit;
   {$endif}
+
+  //To add some consistency to the outcomes
+  //Depending on the path the algorithm takes it may remove the trailing PathDelim, so we restore it later if needed
+  //Issue #37188
+  //It's a workaround, fee free to implement a better fix
+  ResultMustEndWithPathDelim := ((Len>2) and (AFilename[Len]='.') and (AFilename[Len-1]='.') and (AFilename[Len-2] in AllowDirectorySeparators)) or
+                                ((Len>1) and (AFilename[Len]='.') and (AFilename[Len-1] in AllowDirectorySeparators));
 
   SrcPos:=1;
   DestPos:=1;
@@ -169,7 +177,7 @@ begin
           // foo/. -> foo
           // C:foo\. -> C:foo
           // C:\. -> C:\
-          dec(DestPos);
+          {dec(DestPos); } //Part of issue #37188
         end;
         break;
       end;
@@ -194,6 +202,8 @@ begin
       Result:='.'
     else
       SetLength(Result,DestPos-1);
+  if ResultMustEndWithPathDelim and (Result<>'.') and (Result[Length(Result)]<>PathDelim) then
+    Result := Result + PathDelim;
 end;
 
 function FilenameIsWinAbsolute(const TheFilename: string): boolean;
