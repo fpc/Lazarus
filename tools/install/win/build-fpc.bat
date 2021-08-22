@@ -1,10 +1,11 @@
 SET OLDCURDIR=%CD%
 SET OLDCURDRIVE=%CD:~,2%
 
-SET FPCSRC_DIR=%FPCSVNDIR%\fpcsrc
+SET FPCSRC_DIR=%FPCGITDIR%\fpcsrc
 
 SET SOURCE_DIR=%BUILDDIR%\fpc-source
-%SVN% export -q %FPCSRC_DIR% %SOURCE_DIR%
+mkdir %SOURCE_DIR%
+%GIT% -C %FPCSRC_DIR% --work-tree=%SOURCE_DIR% restore .
 
 :: to switch drive
 %SOURCE_DIR:~,2%
