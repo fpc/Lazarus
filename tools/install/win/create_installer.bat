@@ -10,12 +10,12 @@ if [%2]==[""] goto USAGE
 if [%3]==[""] goto USAGE
 if [%4]==[""] goto USAGE
 
-:: Path to the fpc sources checked out of fpcbuild svn repository
-SET FPCSVNDIR=%1
+:: Path to the fpc sources checked out of fpcbuild git repository
+SET FPCGITDIR=%1
 :: Path to the lazarus sources checked out of subversion
-SET LAZSVNDIR=%2
+SET LAZGITDIR=%2
 :: Path to the lazarus third party binaries checked out of subversion
-SET LAZSVNBINDIR=%3
+SET LAZGITBINDIR=%3
 :: Path to latest release compiler
 SET RELEASE_PPC=%4
 
@@ -55,34 +55,18 @@ if not exist %ISCC% SET SET ISCC="%ProgramFiles%\Inno Setup 5\iscc.exe"
 :ISCC_DONE
 
 ::---------------------------------------------------------------------
-:: Path to the svn executable; make sure it has quotes
-SET SVN="%SVN%"
-SET SVN=%SVN:"=%
-SET SVN="%SVN%"
-if not [%SVN%]==[""] GOTO SVN_DONE
-:: set Subversion; if it doesn't exist try TortoiseSVN 32bits and 64bits else error info
-SET SVN="%ProgramFiles%\subversion\bin\svn.exe"
-if not exist %SVN% SET SVN="%ProgramFiles%\TortoiseSVN\bin\svn.exe"
-if not exist %SVN% SET SVN="%ProgramFiles32bits%\subversion\bin\svn.exe"
-if not exist %SVN% SET SVN="%ProgramFiles32bits%\TortoiseSVN\bin\svn.exe"
-:: Use SVN in Path
-if not exist %SVN% SET SVN=svn.exe
-:SVN_DONE
-
-::---------------------------------------------------------------------
-:: Path to the svnversion executable; make sure it has quotes
-SET SVNVER="%SVNVER%"
-SET SVNVER=%SVNVER:"=%
-SET SVNVER="%SVNVER%"
-if not [%SVNVER%]==[""] GOTO SVNVER_DONE
-:: set Subversion if it doesn't exist try TortoiseSVN 32bits and 64bits else error info
-SET SVNVER="%ProgramFiles%\subversion\bin\svnversion.exe"
-if not exist %SVNVER% SET SVNVER="%ProgramFiles%\TortoiseSVN\bin\svnversion.exe"
-if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\subversion\bin\svnversion.exe"
-if not exist %SVNVER% SET SVNVER="%ProgramFiles32bits%\TortoiseSVN\bin\svnversion.exe"
-:: Use SVN in Path
-if not exist %SVNVER% SET SVNVER=svnversion.exe
-:SVNVER_DONE
+:: Path to the git executable; make sure it has quotes
+SET GIT="%GIT%"
+SET GIT=%GIT:"=%
+SET GIT="%GIT%"
+if not [%GIT%]==[""] GOTO GIT_DONE
+:: set Subversion; if it doesn't exist try TortoiseGIT 32bits and 64bits else error info
+SET GIT="%ProgramFiles%\Git\bin\git.exe"
+if not exist %GIT% SET GIT="%ProgramFiles%\Git\mingw64\bin\git.exe"
+if not exist %GIT% SET GIT="%ProgramFiles32bits%\Git\bin\git.exe"
+:: Use GIT in Path
+if not exist %GIT% SET GIT=git.exe
+:GIT_DONE
 
 ::---------------------------------------------------------------------
 :: Path to build directory.
@@ -99,27 +83,27 @@ FOR /F %%L IN ('%RELEASE_PPC% -iTO') DO SET FPCTARGETOS=%%L
 FOR /F %%L IN ('%RELEASE_PPC% -iTP') DO SET FPCTARGETCPU=%%L
 SET FPCFULLTARGET=%FPCTARGETCPU%-%FPCTARGETOS%
 
-SET FPCBINDIR=%FPCSVNDIR%\install\binw%FPCTARGETOS:~-2%
+SET FPCBINDIR=%FPCGITDIR%\install\binw%FPCTARGETOS:~-2%
 SET MAKEEXE=%FPCBINDIR%\make.exe
-SET PATCHEXE=%FPCSVNDIR%\install\binw32\patch.exe
+SET PATCHEXE=%FPCGITDIR%\install\binw32\patch.exe
 SET LOGFILE=%CD%\installer.log
 SET PATCHDIR=%CD%\..\patches
 
 :: Path to the directory containing the mingw gdb debugger installation
 :: it should have the debugger with the name gdb.exe in its bin subdirectory
-SET GDBDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\gdb
+SET GDBDIR=%LAZGITBINDIR%\%FPCFULLTARGET%\gdb
 
 :: OPENSSL
-SET OPENSSLDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\openssl
+SET OPENSSLDIR=%LAZGITBINDIR%\%FPCFULLTARGET%\openssl
 for /F %%i in ('dir /b "%OPENSSLDIR%\*.*"') do (
    SET HASOPENSSL=1
 )
 
 :: Path to the directory containing the qtinf dll matching the qt4.pas from 
 :: http://users.pandora.be/Jan.Van.hijfte/qtforfpc/fpcqt4.html
-SET QTINFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt
+SET QTINFDIR=%LAZGITBINDIR%\%FPCFULLTARGET%\qt
 
-SET QT5INFDIR=%LAZSVNBINDIR%\%FPCFULLTARGET%\qt5
+SET QT5INFDIR=%LAZGITBINDIR%\%FPCFULLTARGET%\qt5
 for /F %%i in ('dir /b "%QT5INFDIR%\*.*"') do (
    SET HASQT5=1
 )
@@ -128,8 +112,8 @@ for /F %%i in ('dir /b "%QT5INFDIR%\*.*"') do (
 FOR /F %%L IN ('%FPCBINDIR%\gdate.exe +%%Y%%m%%d') DO SET DATESTAMP=%%L
 SET BUILDDRIVE=%BUILDDIR:~,2%
 SET CP=%FPCBINDIR%\cp.exe
-FOR /F %%F IN ('%LAZSVNDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
-FOR /F %%F IN ('%SVNVER% %LAZSVNDIR%') DO set LAZREVISION=%%F
+FOR /F %%F IN ('%LAZGITDIR%\tools\install\get_lazarus_version.bat') DO set LAZVERSION=%%F
+FOR /F %%F IN ('"%GIT% -C %LAZGITDIR% log -1 --pretty=format:%%h" ') DO set LAZREVISION=%%F
 IF [%LAZREVISION%] == [] GOTO SVNVERERR
 :: Remove : from revision if present
 SET LAZREVISION=%LAZREVISION::=_%
@@ -144,21 +128,24 @@ SET PATH=%FPCBINDIR%
 ::---------------------------------------------------------------------
 :: copy lazarus dir
 rmdir /s /q %BUILDDIR%
-%SVN% export -q %LAZSVNDIR% %BUILDDIR% >> %LOGFILE%
-IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
-call svn2revisioninc.bat %LAZSVNDIR% %BUILDDIR%\ide\revision.inc
+mkdir %BUILDDIR%
+%GIT% -C %LAZGITDIR% --work-tree=%BUILDDIR% restore . >> %LOGFILE%
+
+rem cp -pr %LAZGITDIR%\* %BUILDDIR% >> %LOGFILE%
+IF %ERRORLEVEL% NEQ 0 GOTO GITERR
+call svn2revisioninc.bat %LAZGITDIR% %BUILDDIR%\ide\revision.inc
 
 ::---------------------------------------------------------------------
 call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
-%SVN% export -q %FPCBINDIR% %BUILDDIR%\fpcbins >> %LOGFILE%
-IF %ERRORLEVEL% NEQ 0 GOTO SVNERR
-mv -f %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
+mkdir %BUILDDIR%\fpcbins
+%GIT% -C %FPCBINDIR% --work-tree=%BUILDDIR%\fpcbins restore . >> %LOGFILE%
+IF %ERRORLEVEL% NEQ 0 GOTO GITERR
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
 :: copy from 32 bit, missing in 64bit
-for %%T in ( cpp.exe gcc.exe windres.exe windres.h ) DO if not exist %INSTALL_BINDIR%\%%T copy %FPCSVNDIR%\install\binw32\%%T %INSTALL_BINDIR%\
+for %%T in ( cpp.exe gcc.exe windres.exe windres.h ) DO if not exist %INSTALL_BINDIR%\%%T copy %FPCGITDIR%\install\binw32\%%T %INSTALL_BINDIR%\
 
 :: exit if no compiler has been made
 if not exist %INSTALL_BINDIR%\fpc.exe goto WARNING_NO_COMPILER_MADE
@@ -179,8 +166,8 @@ if not exist %BUILDDIR%\startlazarus.exe goto WARNING_NO_LAZARUS
 ::---------------------------------------------------------------------
 :: copy gdb into build dir
 if NOT exist %GDBDIR% goto NOGDB
-gmkdir -p %BUILDDIR%\mingw
-%SVN% export -q %GDBDIR% %BUILDDIR%\mingw\%FPCFULLTARGET%
+gmkdir -p %BUILDDIR%\mingw\%FPCFULLTARGET%
+cp -pr %GDBDIR%\* %BUILDDIR%\mingw\%FPCFULLTARGET%
 :NOGDB
 
 ::---------------------------------------------------------------------
@@ -214,16 +201,16 @@ rd /s /q %BUILDDIR% > NUL
 GOTO END
 
 :SVNVERERR
-echo SVNVersion failed
+echo GITVersion failed
 echo
-echo This script requires SVN.
+echo This script requires GIT.
 echo If not installed, then please download at:
 echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
 GOTO END
-:SVNERR
-echo SVN failed
+:GITERR
+echo GIT failed
 echo
-echo This script requires SVN.
+echo This script requires GIT.
 echo If not installed, then please download at:
 echo http://subversion.apache.org/packages.html or http://tortoisesvn.net/downloads.html
 :END
@@ -254,10 +241,10 @@ GOTO END
 :USAGE
 @echo off
 echo Usage:
-echo create_installer.bat FPCSVNDIR LAZSVNDIR LAZSVNBINDIR RELEASECOMPILER  [IDEWIDGETSET] [PATCHFILE] [CHMHELPFILES]
-echo FPCSVNDIR: directory that contains a svn version of the fpcbuild repository
-echo LAZSVNDIR: directory that contains a svn version of the lazarus repository
-echo LAZSVNBINDIR: directory that contains a svn version of the lazarus binaries repository
+echo create_installer.bat FPCGITDIR LAZGITDIR LAZGITBINDIR RELEASECOMPILER  [IDEWIDGETSET] [PATCHFILE] [CHMHELPFILES]
+echo FPCGITDIR: directory that contains a git version of the fpcbuild repository
+echo LAZGITDIR: directory that contains a git version of the lazarus repository
+echo LAZGITBINDIR: directory that contains a git version of the lazarus binaries repository
 echo RELEASECOMPILER: bootstrapping compiler for building fpc
 echo IDEWIDGETSET: optional, LCL platform used for compiling the IDE
 echo PATCHFILE: optional patch file for the fpc sources
