@@ -2341,7 +2341,7 @@ begin
             if length(widths)>0 then
               avgSize := availableSize div length(widths);
             done := false;
-            break:
+            break;
           end;
         end;
     until done;
