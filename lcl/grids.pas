@@ -75,6 +75,9 @@ const
   DEFCOLWIDTH         = 64;
   DEFBUTTONWIDTH      = 25;
   DEFIMAGEPADDING     = 2;
+  DEFMINSIZE          = 0;
+  DEFMAXSIZE          = 0;
+  DEFSIZEPRIORITY     = 1;
 
 type
   EGridException = class(Exception);
@@ -2271,12 +2274,11 @@ procedure TCustomGrid.InternalAutoFillColumns;
   end;
 
 var
-  I, ForcedIndex: Integer;
-  Count: Integer;
-  aPriority, aMin, aMax: Integer;
-  AvailableSize: Integer;
-  TotalWidth: Integer;     // total grid's width
-  FixedSizeWidth: Integer; // total width of Fixed Sized Columns
+  i, availableSize, avgSize, rest: Integer;
+  widths: array of record
+    aIndex, aMin, aMax, aPriority, aWidth: Integer;
+  end;
+  done, isMax, isMin: boolean;
 begin
   if not AutoFillColumns then
     exit;
@@ -2290,66 +2292,73 @@ begin
     // when InternalAutoFillColumns is called from DoChangeBounds
     // for example.
 
-    // Insert the algorithm that modify ColWidths accordingly
-    //
-    // For testing purposes, a simple algortihm is implemented:
+    // A simple algorithm is implemented:
     // if SizePriority=0, column size should be unmodified
-    // if SizePriority<>0 means variable size column, its size
-    // is the average avalilable size.
+    // if SizePriority<>0 means variable size column whose width
+    // is the average available size respecting each column
+    // MinSize and MaxSize constraints, such constraints
+    // are valid only if they are bigger than 0.
 
-    Count := 0;
-    FixedSizeWidth := 0;
-    TotalWidth := 0;
-    for i:=0 to ColCount-1 do begin
-      GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
-      AvailableSize := GetColWidths(i);
-      if aPriority>0 then
-        Inc(Count)
-      else
-        Inc(FixedSizeWidth, AvailableSize);
-      Inc(TotalWidth, AvailableSize);
+    widths := nil;
+    SetLength(widths, ColCount);
+
+    availableSize := ClientWidth - GetBorderWidth;
+    for i:=0 to ColCount-1 do
+      with widths[i] do begin
+        aIndex := i;
+        GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
+        aWidth := GetColWidths(i);
+        if aPriority=0 then begin
+          Dec(availableSize, aWidth);
+          delete(widths, i, 1);
+        end
+      end;
+
+    if Length(widths)=0 then begin
+      // it's an autofillcolumns grid either WITHOUT custom colums and
+      // fixedCols=ColCount or WITH custom columns where all columns
+      // have PrioritySize=0, resize the last column (inherited behavior)
+      i := ColCount-1;
+      if (i>=FixedCols) then  // aMax of last column ...
+        SetColumnWidth(i, AvailableSize + GetColWidths(i));
+      exit;
     end;
 
-    if Count=0 then begin
-      //it's an autofillcolumns grid, so at least one
-      // of the columns must fill completely the grid's
-      // available width, let it be that column the last
-      ForcedIndex := ColCount-1;
-      if ForcedIndex>=FixedCols then
-        Dec(FixedSizeWidth, GetColWidths(ForcedIndex));
-      Count := 1;
-    end else
-      ForcedIndex := -1;
+    avgSize := availableSize div Length(widths);
 
-    AvailableSize := ClientWidth - FixedSizeWidth - GetBorderWidth;
-    if AvailableSize<0 then begin
-      // There is no space available to fill with
-      // Variable Size Columns, what to do?
-
-      // Simply set all Variable Size Columns
-      // to 0, decreasing the size beyond this
-      // shouldn't be allowed.
-      for i:=0 to ColCount-1 do begin
-        GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
-        if aPriority>0 then
-          SetColumnWidth(i, 0);
-      end;
-    end else begin
-      // Simpler case: There is actually available space to
-      //     to be shared for variable size columns.
-      FixedSizeWidth := AvailableSize mod Count; // space left after filling columns
-      AvailableSize := AvailableSize div Count;
-      for i:=0 to ColCount-1 do begin
-        GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
-        if (APriority>0) or (i=ForcedIndex) then begin
-          if i=ColCount-1 then
-            // the last column gets all space left
-            SetColumnWidth(i, AvailableSize + FixedSizeWidth)
-          else
-            SetColumnWidth(i, AvailableSize);
+    repeat
+      done := true;
+      for i:=Length(widths)-1 downto 0 do
+        with widths[i] do begin
+          isMax := ((aMax>0) and (avgSize>aMax));
+          isMin := ((aMin>0) and (avgSize<aMin));
+          if isMax or isMin then begin
+            if isMax then aWidth := aMax;
+            if isMin then aWidth := aMin;
+            SetColumnWidth(aIndex, aWidth);
+            availableSize := Max(availableSize-aWidth, 0);
+            Delete(widths, i, 1);
+            if length(widths)>0 then
+              avgSize := availableSize div length(widths);
+            done := false;
+            break:
+          end;
         end;
-      end;
+    until done;
+
+    if length(widths)>0 then begin
+      rest := availableSize mod length(widths);
+      for i:=0 to length(widths)-1 do
+        with widths[i] do begin
+          aWidth := Max(avgSize, 0);
+          if rest>0 then begin
+            inc(aWidth);
+            dec(rest);
+          end;
+          SetColumnWidth(aIndex, aWidth);
+        end;
     end;
+
   finally
     FUpdatingAutoFillCols:=False;
   end;
@@ -8686,6 +8695,8 @@ procedure TCustomGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,
 var
   C: TGridColumn;
 begin
+  aMin := DEFMINSIZE;
+  aMax := DEFMAXSIZE;
   if Index<FixedCols then
     APriority := 0
   else if Columns.Enabled then begin
@@ -9406,6 +9417,8 @@ begin
     cfg.setValue(cPath + '/index/value', c.Index);
     if c.IsWidthStored then
       cfg.setValue(cPath + '/width/value', c.Width);
+    if c.IsMinSizeStored then cfg.SetValue(cPath + '/minsize/value', c.MinSize);
+    if c.IsMaxSizeStored then cfg.SetValue(cPath + '/maxsize/value', c.MaxSize);
     if c.IsAlignmentStored then
       cfg.setValue(cPath + '/alignment/value', ord(c.Alignment));
     if c.IsLayoutStored then
@@ -9548,8 +9561,9 @@ begin
     cPath := Path + 'column' + IntToStr(i);
     c.index := cfg.getValue(cPath + '/index/value', i);
     s := cfg.GetValue(cPath + '/width/value', '');
-    if s<>'' then
-      c.Width := StrToIntDef(s, 64);
+    if s<>'' then c.Width := StrToIntDef(s, DEFCOLWIDTH);
+    c.MinSize := cfg.GetValue(cPath + '/minsize/value', DEFMINSIZE);
+    c.MaxSize := cfg.GetValue(cPath + '/maxsize/value', DEFMAXSIZE);
     s := cfg.getValue(cPath + '/alignment/value', '');
     if s<>'' then
       c.Alignment := TAlignment(StrToIntDef(s, 0));
@@ -12845,14 +12859,12 @@ end;
 
 function TGridColumn.GetDefaultMaxSize: Integer;
 begin
-  // get a better default
-  Result := 200;
+  Result := DEFMAXSIZE;
 end;
 
 function TGridColumn.GetDefaultMinSize: Integer;
 begin
-  // get a better default
-  result := 10;
+  result := DEFMINSIZE;
 end;
 
 function TGridColumn.GetDefaultColor: TColor;
@@ -12868,7 +12880,7 @@ end;
 
 function TGridColumn.GetDefaultSizePriority: Integer;
 begin
-  Result := 1;
+  Result := DEFSIZEPRIORITY;
 end;
 
 procedure TGridColumn.Assign(Source: TPersistent);
