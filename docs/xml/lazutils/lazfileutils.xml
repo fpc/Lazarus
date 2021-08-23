@@ -768,19 +768,48 @@ D:\db\employee.fdb
 
       <element name="ResolveDots">
         <short>
-          Removes duplicate path delimiters and resolves relative path symbols.
+          Resolves relative path references and removes duplicate path delimiters.
         </short>
         <descr>
           <p>
-            This function shortens duplicate path delimiters to single path delimiters. It resolves 'A/../B' to 'B', which might be wrong under Unix if A is a symlink. The function does not check the local file system. The single dot './A' is resolved to 'A', but a single '.' is retained.
-        </p>
+            <var>ResolveDots</var> is a <var>String</var> function used to convert relative path information in <var>AFilename</var> to an absolute path reference. A relative path includes characters like '.' (for current directory - not a file name extension) and '..' (parent directory). Duplicate path limiters ('\\' for Windows) ('//' for UNIX-like environments) are converted to a single instance of the <var>PathDelimiter</var> defined for the platform.
+          </p>
+          <p>
+            For Windows platforms, drive letter designations and delimiters like 'C:' are recognized. A path starting with the UNC naming convention ('\\?\') is not resolved in the method.
+          </p>
+          <p>
+            Windows-specific file system quirks handled in the routine include:
+          </p>
+          <dl>
+            <dt>C:..</dt>
+            <dd>Not resolved, it is copied.</dd>
+            <dt>C:\..</dt>
+            <dd>Resolved to C:\</dd>
+            <dt>\\..</dt>
+            <dd>Resolved to \\</dd>
+          </dl>
+          <p>
+            For UNIX-like environments, the resolved path may be invalid if it references the parent directory and the initial directory in the path is a symbolic link.
+          </p>
+          <p>
+            When AFilename ends with a relative path ('/.' or '/..'), an additional path delimiter is added to the return value.
+          </p>
+          <p>
+            If a relative path reference cannot be resolved for the local file system, the original path information is retained.
+          </p>
+          <p>
+            Macros found in the AFilename are retained if the relative path references a parent directory. For example:
+          </p>
+<code>
+'($LazarusDir)/../path/that/may/be/invalid/for/macro/filename.ext'
+</code>
         </descr>
       </element>
       <element name="ResolveDots.Result">
-        <short>File name with duplicate delimiters and relative paths resolved.</short>
+        <short>File name with relative paths expanded and duplicate delimiters removed.</short>
       </element>
       <element name="ResolveDots.AFilename">
-        <short>File name examined in the routine.</short>
+        <short>Qualified file name examined in the routine.</short>
       </element>
 
       <element name="CleanAndExpandFilename">

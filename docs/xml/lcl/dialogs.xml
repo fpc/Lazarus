@@ -4253,7 +4253,7 @@ end;
         </short>
       </element>
       <element name="InputBox.ACaption">
-        <short>The caption for the dialogbox.</short>
+        <short>The caption for the dialog box.</short>
       </element>
       <element name="InputBox.APrompt">
         <short>The text asking the user for his input.</short>
@@ -4453,22 +4453,24 @@ end;
         </descr>
       </element>
       <element name="InputQuery.ACaption">
-        <short>The caption for the dialogbox.</short>
+        <short>The caption for the dialog box.</short>
       </element>
       <element name="InputQuery.APrompt">
-        <short>The text asking the user for his input.</short>
+        <short>The text label displayed for the edit control on the dialog box.</short>
       </element>
       <element name="InputQuery.MaskInput">
-        <short>Determines if the dialog shows *s or the actual input.</short>
+        <short>Determines if the dialog shows * characters instead of the actual input.</short>
         <descr>
           Set MaskInput to true if you want to hide the input and display asterisks.
         </descr>
       </element>
       <element name="InputQuery.Value">
-        <short>The value the user entered.</short>
+        <short>
+          The initial value(s) displayed, and the modified value(s) returned from the dialog box.
+        </short>
         <descr>
           <p>
-            When the DialogBox is shown the text in the edit control will be Value. This string can be altered or amended by the user. When ENTER is pressed or OK clicked, Value will contain the edited text from the dialog.
+            <var>Value</var> is a variable parameter used to pass the initial value(s)  displayed in the dialog box. The overloaded variants allow Value to be specified using either a <var>String</var> or an <var>Array of String</var> type. Value is where the modified content from the dialog box is returned when the <b>ENTER</b> key is pressed or the <b>OK</b> button is clicked.
           </p>
         </descr>
       </element>
