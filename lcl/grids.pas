@@ -2303,7 +2303,7 @@ begin
     SetLength(widths, ColCount);
 
     availableSize := ClientWidth - GetBorderWidth;
-    for i:=0 to ColCount-1 do
+    for i:=ColCount-1 downto 0 do
       with widths[i] do begin
         aIndex := i;
         GetAutoFillColumnInfo(i, aMin, aMax, aPriority);
