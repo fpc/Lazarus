@@ -9898,8 +9898,11 @@ begin
   Version:=ACfg.GetValue('grid/version',-1);
   if Version=-1 then raise Exception.Create(rsNotAValidGridFile);
   BeginUpdate;
-  LoadContent(ACfg, Version);
-  EndUpdate;
+  try
+    LoadContent(ACfg, Version);
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TCustomGrid.LoadFromFile(FileName: string);
