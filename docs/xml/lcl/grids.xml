@@ -180,8 +180,32 @@
         </seealso>
       </element>
 
+      <element name="DEFMINSIZE">
+        <short>Default value used as the minimum grid column size.</short>
+        <descr/>
+        <seealso>
+          <link id="TGridColumn.GetDefaultMinSize"/>
+        </seealso>
+      </element>
+
+      <element name="DEFMAXSIZE">
+        <short>Default value used as the maximum grid column size.</short>
+        <descr/>
+        <seealso>
+          <link id="TGridColumn.GetDefaultMaxSize"/>
+        </seealso>
+      </element>
+
+      <element name="DEFSIZEPRIORITY">
+        <short>Default value for SizePriority property in a grid column.</short>
+        <descr/>
+        <seealso>
+          <link id="TGridColumn.GetDefaultSizePriority"/>
+        </seealso>
+      </element>
+
       <element name="EGridException">
-        <short>Exception raised for an error occurring in a Grid class.</short>
+        <short>Exception raised when an error has occurred in a Grid class.</short>
         <descr>
           <p>
             Used mainly when a row or a column position is invalid for a grid control.
@@ -5630,10 +5654,12 @@
       </element>
 
       <element name="TCustomGrid.InternalAutoFillColumns">
-        <short>Performs actions needed to resize columns to fill the client area for the grid control.</short>
+        <short>
+          Performs actions needed to resize columns to fill the client area for the grid control.
+        </short>
         <descr>
           <p>
-            <var>InternalAutoFillColumns</var> is a procedure used to resize one or more columns to fill the client area for the grid control. No actions are performed in the method if <var>AutoFillColumns</var> contains <b>False</b>, or when the method has already been called but has not yet completed.
+            <var>InternalAutoFillColumns</var> is a procedure used to resize one or more columns to fill the client area for the grid control. No actions are performed in the method if <var>AutoFillColumns</var> is set to <b>False</b>, or when the method has already been called but has not yet been completed.
           </p>
           <p>
             InternalAutoFillColumns calls <var>GetAutoFillColumnInfo</var> to accumulate the fixed cell width,  data width, and sizing priority for each of the <var>Columns</var> defined in the grid. At least one of the cells in the grid must have sizing priority; the last non-fixed column is expanded to fill the client area in the grid when no other column has sizing priority.
@@ -5859,7 +5885,9 @@
       </element>
 
       <element name="TCustomGrid.SaveColumns">
-        <short>Saves column configuration, layout, and appearance values to an XML configuration file.</short>
+        <short>
+          Saves column configuration, layout, and appearance values to an XML configuration file.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -8312,10 +8340,14 @@
             <var>GetAutoFillColumnInfo</var> is a method used to get sizing information for an auto-fill column specified in <var>Index</var>. <var>AMin</var>, <var>AMax</var>, and <var>APriority</var> are variable arguments updated with the values for the requested column.
           </p>
           <p>
-            GetAutoFillColumnInfo calls <var>ColumnFromGridColumn</var> to get the <var>TGridColumn</var> instance in <var>Columns</var> with the requested values. If a column exists with the requested Index, its properties are stored in the variable parameters. When Index is a fixed column in the grid, the value in APriority is set to <b>0</b> (<b>zero</b>). If Columns has not been Enabled for the control, or the column index is not valid, APriority is set to <b>1</b>.
+            GetAutoFillColumnInfo calls <var>ColumnFromGridColumn</var> to get the <var>TGridColumn</var> instance in <var>Columns</var> with the requested values. If a column exists with the requested Index, its properties are stored in the variable parameters. When Index is a fixed column in the grid, the value in APriority is set to <b>0</b> (<b>zero</b>) which disables auto-sizing for the column. If Columns has not been Enabled for the control, or the column index is not valid, APriority is set to <b>1</b>.
+          </p>
+          <p>
+            GetAutoFillColumnInfo is called when AutoFillColumns is set to True, and the column sizes are recalculated for the the grid control.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomGrid.AutoFillColumns"/>
           <link id="TCustomGrid.ColumnFromGridColumn"/>
           <link id="TCustomGrid.Columns"/>
           <link id="TGridColumn.MinSize"/>
@@ -10638,22 +10670,49 @@
       </element>
 
       <element name="TCustomGrid.AutoFillColumns">
-        <short>Automatically resizes columns so they fill all of the visible area in the grid.</short>
+        <short>
+          Indicates whether columns are automatically resized to fill the visible area in the grid.
+        </short>
         <descr>
           <p>
-            When this option is turned on, the grid will resize all columns to fill the grid's client width. The resized columns are determined using the following conditions:
+            <var>AutoFillColumns</var> is a <var>Boolean</var> property which enables or disables automatic sizing for columns on the grid control. The default value for the property is <b>False</b>, and indicates that automatic column sizing is not enabled.
           </p>
-          <ol>
-            <li><var>Fixed Columns</var> are not resized.</li>
-            <li>
-              If the grid has <var>Custom Columns</var>, all columns with <var>SizePriority</var> set to 0 are not resized.
-            </li>
-          </ol>
           <p>
-            Note that Custom Columns are initially created with SizePriority set to 1. For TDbGrid, which automatically adds <var>Custom Columns</var>, this means the user will not be able to resize these columns using the mouse.
+            Changing AutoFillColumns to <b>True</b> causes the column sizes to be recalculated (and cached) based on default values , or using properties assigned to the <var>TGridColumn</var> instances when the <var>Columns</var> collection has been Enabled. The resizing algorithm works as follows:
+          </p>
+          <ul>
+            <li>Fixed Columns are not resized.</li>
+            <li>
+              When Columns has not been Enabled,  or the column position is not found in Columns, a default sizing priority  of 1 is used along with the minimum and maximum sizes defined in the DEFMINSIZE and DEFMAXSIZE constants.
+            </li>
+            <li>
+              When Columns is Enabled, and a column exists at a given position, values from the TGridColumn instance are used including: SizePriority, MinSize, and MaxSize.
+            </li>
+            <li>
+              A column with a SizePriority of 0 is not resized.
+            </li>
+            <li>
+              A column with a non-zero value in SizePriority is adjusted using the average available width with respect to the MinSize and MaxSize for all of the defined columns.
+            </li>
+            <li>
+              If Columns is not Enabled or populated, or all columns have a SizePriority of 0, the last column in the grid is resized to the available width.
+            </li>
+          </ul>
+          <p>
+            Note that TGridColumn instances in Columns are initially created with SizePriority set to 1. For TDbGrid, which automatically populates Columns, this means the user will not be able to resize these columns using the mouse (since they are auto-sized).
+          </p>
+          <p>
+            Use ColWidths to set the width for a specified column when the Columns collection has not been enabled or populated.
           </p>
         </descr>
-        <notes><note>Need to check whether column resizing is also restricted HERE.</note></notes>
+        <seealso>
+          <link id="TCustomGrid.ColWidths"/>
+          <link id="TCustomGrid.Columns"/>
+          <link id="TGridColumns"/>
+          <link id="TGridColumn.MaxSize"/>
+          <link id="TGridColumn.MinSize"/>
+          <link id="TGridColumn.SizePriority"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.BorderStyle">
