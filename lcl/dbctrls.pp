@@ -860,12 +860,14 @@ Type
 
   TDBLookupComboBox = class(TCustomDBComboBox)
   protected
+    procedure DefineProperties(Filer: TFiler); override;
     function DoEdit: boolean; override;
     function IsUnbound: boolean;
   private
     FLookup: TDBLookup;
     procedure ActiveChange(Sender: TObject);
     function GetDisplayEmpty: String;
+    function GetDropDownRows: Integer;
     function GetEmptyValue: String;
     function GetKeyField: string;
     function GetKeyValue: variant;
@@ -875,7 +877,9 @@ Type
     function GetLookupCache: boolean;
     function GetNullValueKey: TShortCut;
     function GetScrollListDataset: Boolean;
+    procedure ReadDropDownCount(Reader: TReader);
     procedure SetDisplayEmpty(AValue: String);
+    procedure SetDropDownRows(AValue: Integer);
     procedure SetEmptyValue(AValue: String);
     procedure SetKeyField(const Value: string);
     procedure SetKeyValue(const AValue: variant);
@@ -899,6 +903,7 @@ Type
   public
     constructor Create(AOwner: TComponent); override;
     property KeyValue: variant read GetKeyValue write SetKeyValue;
+    property DropDownCount; deprecated 'Use DropDownRows';
   published
     property Align;
     property Anchors;
@@ -920,7 +925,7 @@ Type
     property DragCursor;
     property DragKind;
     property DragMode;
-    property DropDownCount;
+    property DropDownRows: Integer read GetDropDownRows write SetDropDownRows default 7;
     property Enabled;
     property Font;
 //    property ItemHeight;

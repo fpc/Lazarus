@@ -24,6 +24,7 @@ begin
   EmptyValue := '';
   DisplayEmpty := '';
   FDataLink.OnActiveChange := @ActiveChange;
+  inherited DropDownCount := 7;
 end;
 
 procedure TDBLookupComboBox.UpdateData(Sender: TObject);
@@ -41,6 +42,12 @@ begin
     FDatalink.Dataset.Cancel
   else
     UpdateLookup;
+end;
+
+procedure TDBLookupComboBox.DefineProperties(Filer: TFiler);
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineProperty('DropDownCount', @ReadDropDownCount, nil, false);
 end;
 
 function TDBLookupComboBox.DoEdit: boolean;
@@ -73,7 +80,12 @@ begin
   Result := FLookup.DisplayEmpty;
 end;
 
-function TDBLookupComboBox.GetEmptyValue: string;
+function TDBLookupComboBox.GetDropDownRows: Integer;
+begin
+  result := inherited DropDownCount;
+end;
+
+function TDBLookupComboBox.GetEmptyValue: String;
 begin
  Result := FLookup.EmptyValue;
 end;
@@ -169,7 +181,12 @@ begin
   UpdateLookup;
 end;
 
-procedure TDBLookupComboBox.SetEmptyValue(AValue: string);
+procedure TDBLookupComboBox.SetDropDownRows(AValue: Integer);
+begin
+  inherited DropDownCount := AValue;
+end;
+
+procedure TDBLookupComboBox.SetEmptyValue(AValue: String);
 begin
   FLookup.EmptyValue:=AValue;
   UpdateLookup;
@@ -178,6 +195,11 @@ end;
 function TDBLookupComboBox.GetScrollListDataset: Boolean;
 begin
   Result := FLookup.ScrollListDataset;
+end;
+
+procedure TDBLookupComboBox.ReadDropDownCount(Reader: TReader);
+begin
+  inherited DropDownCount := Reader.ReadInteger;
 end;
 
 procedure TDBLookupComboBox.SetKeyField(const Value: string);
