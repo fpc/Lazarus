@@ -2264,6 +2264,12 @@ begin
 end;
 
 procedure TCustomGrid.InternalAutoFillColumns;
+var
+  i, availableSize, avgSize, rest: Integer;
+  widths: array of record
+    aIndex, aMin, aMax, aPriority, aWidth: Integer;
+  end;
+  done, isMax, isMin: boolean;
 
   procedure SetColumnWidth(aCol,aWidth: Integer);
   begin
@@ -2273,12 +2279,13 @@ procedure TCustomGrid.InternalAutoFillColumns;
       SetColWidths(aCol, aWidth);
   end;
 
-var
-  i, availableSize, avgSize, rest: Integer;
-  widths: array of record
-    aIndex, aMin, aMax, aPriority, aWidth: Integer;
+  procedure DeleteWidth(aIndex: Integer);
+  begin
+    if aIndex < Length(widths) - 1 then
+      move(widths[aIndex+1], widths[aIndex], (Length(widths)-1) * SizeOf(widths[0]));
+    SetLength(widths, Length(widths) - 1);
   end;
-  done, isMax, isMin: boolean;
+
 begin
   if not AutoFillColumns then
     exit;
@@ -2310,7 +2317,7 @@ begin
         aWidth := GetColWidths(i);
         if aPriority=0 then begin
           Dec(availableSize, aWidth);
-          delete(widths, i, 1);
+          DeleteWidth(i);
         end
       end;
 
@@ -2337,7 +2344,7 @@ begin
             if isMin then aWidth := aMin;
             SetColumnWidth(aIndex, aWidth);
             availableSize := Max(availableSize-aWidth, 0);
-            Delete(widths, i, 1);
+            DeleteWidth(i);
             if length(widths)>0 then
               avgSize := availableSize div length(widths);
             done := false;
