@@ -2282,7 +2282,7 @@ var
   procedure DeleteWidth(aIndex: Integer);
   begin
     if aIndex < Length(widths) - 1 then
-      move(widths[aIndex+1], widths[aIndex], (Length(widths)-1) * SizeOf(widths[0]));
+      move(widths[aIndex+1], widths[aIndex], (Length(widths)-aIndex-1) * SizeOf(widths[0]));
     SetLength(widths, Length(widths) - 1);
   end;
 
