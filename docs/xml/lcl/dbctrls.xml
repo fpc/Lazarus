@@ -2887,10 +2887,10 @@
         <short>Field name with the descriptive value displayed in the listbox.</short>
         <descr>
           <p>
-            <var>ListField</var> is a
-            <var>String</var> property which contains the name of the field in the lookup dataset displayed in the listbox for the control. ListField normally contains a more descriptive textual value associated the KeyField.
+            <var>ListField</var> is a <var>String</var> property which contains the name of the field in the lookup dataset displayed in the listbox for the control. ListField normally contains a more descriptive textual value associated the KeyField.
           </p>
-          <p>Use <var>ListFieldIndex</var> to specify the list field by its ordinal position in the lookup dataset. Use <var>KeyField</var> to specify the name of the field with the value stored in the <var>DataField</var> for the linked dataset. Use <var>ListSource</var> to specify the datasource component with the lookup dataset for the control.
+          <p>
+            Use <var>ListFieldIndex</var> to specify the list field by its ordinal position in the lookup dataset. Use <var>KeyField</var> to specify the name of the field with the value stored in the <var>DataField</var> for the linked dataset. Use <var>ListSource</var> to specify the datasource component with the lookup dataset for the control.
           </p>
         </descr>
         <seealso>
@@ -2927,12 +2927,13 @@
         <short>Datasource with the lookup dataset for the control.</short>
         <descr>
           <p>
-            <var>ListSource</var> is a
-            <var>TDataSource</var> property which contains the datasource component used to access the lookup dataset for the control.
+            <var>ListSource</var> is a <var>TDataSource</var> property which contains the datasource component used to access the lookup dataset for the control.
           </p>
-          <p>Read and write access to the property value is redirected to the    <var>DataSource</var> property in the internal <var>TDBLookup</var> instance used in the control. Assigning a new value to the property causes the <var>UpdateLookup</var> method to be called to re-initialize the TDBLookup instance and the value in the <var>ItemIndex</var> property.
+          <p>
+            Read and write access to the property value is redirected to the    <var>DataSource</var> property in the internal <var>TDBLookup</var> instance used in the control. Assigning a new value to the property causes the <var>UpdateLookup</var> method to be called to re-initialize the TDBLookup instance and the value in the <var>ItemIndex</var> property.
           </p>
-          <p>Use <var>ListField</var> or <var>ListFieldIndex</var> to specify the field with the descriptive value displayed in the control. Use <var>KeyField</var> to specify the field with the value stored in the <var>DataField</var> for the control.
+          <p>
+            Use <var>ListField</var> or <var>ListFieldIndex</var> to specify the field with the descriptive value displayed in the control. Use <var>KeyField</var> to specify the field with the value stored in the <var>DataField</var> for the control.
           </p>
         </descr>
         <seealso>
@@ -2999,7 +3000,8 @@
           Indicates if the look-up data set is scrolled for a new value in the control.
         </short>
         <descr>
-          <p>Indicates if the look-up data set is searched and scrolled when a new value is selected in the control. The default value for the property is False.
+          <p>
+            Indicates if the look-up data set is searched and scrolled when a new value is selected in the control. The default value for the property is False.
           </p>
         </descr>
         <seealso/>
@@ -4826,16 +4828,10 @@
         </short>
         <descr>
           <p>
-            <var>TDBLookupComboBox</var> is a
-            <var>TCustomDBComboBox</var> descendant which implements a data-aware combo-box control that adds lookup capabilities using values from a separate dataset. Like the ancestor class, the
-            <var>DataField</var> and
-            <var>DataSource</var> properties are used to identify the dataset and field where the selected value for the control is stored. The
-            <var>ListSource</var>,
-            <var>KeyField</var>, and
-            <var>ListField</var> properties are added to define the dataset with the values displayed and captured using the drop down for the combo-box control. Internally, a
-            <var>TDBLookUp</var> instance is used to perform lookup operations for the control.
+            <var>TDBLookupComboBox</var> is a <var>TCustomDBComboBox</var> descendant which implements a data-aware combo-box control that adds lookup capabilities using values from a separate dataset. Like the ancestor class, the <var>DataField</var> and <var>DataSource</var> properties are used to identify the dataset and field where the selected value for the control is stored. The <var>ListSource</var>, <var>KeyField</var>, and <var>ListField</var> properties are added to define the dataset with the values displayed and captured using the drop down for the combo-box control. Internally, a <var>TDBLookUp</var> instance is used to perform lookup operations for the control.
           </p>
-          <p>Other important properties used to manage the behavior and appearance of the control include:
+          <p>
+            Other important properties used to manage the behavior and appearance of the control include:
           </p>
           <ul>
             <li>AutoComplete</li>
@@ -4853,6 +4849,20 @@
           <link id="TDBLookup"/>
         </seealso>
       </element>
+
+      <element name="TDBLookupComboBox.DefineProperties">
+        <short>
+          Defines read and write routines for properties values in the class instance.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TDBLookupComboBox.DefineProperties.Filer">
+        <short>
+          TFiler instance used to read and write properties during component streaming.
+        </short>
+      </element>
+
       <element name="TDBLookupComboBox.DoEdit">
         <short>Implements support for the "unbound" editing mode in the data-aware control.</short>
         <descr/>
@@ -4877,6 +4887,8 @@
       <element name="TDBLookupComboBox.ActiveChange.Sender"/>
       <element name="TDBLookupComboBox.GetDisplayEmpty"/>
       <element name="TDBLookupComboBox.GetDisplayEmpty.Result"/>
+      <element name="TDBLookupComboBox.GetDropDownRows"/>
+      <element name="TDBLookupComboBox.GetDropDownRows.Result"/>
       <element name="TDBLookupComboBox.GetEmptyValue"/>
       <element name="TDBLookupComboBox.GetEmptyValue.Result"/>
       <element name="TDBLookupComboBox.GetKeyField"/>
@@ -4895,6 +4907,10 @@
       <element name="TDBLookupComboBox.GetNullValueKey.Result"/>
       <element name="TDBLookupComboBox.GetScrollListDataset"/>
       <element name="TDBLookupComboBox.GetScrollListDataset.Result"/>
+      <element name="TDBLookupComboBox.ReadDropDownCount"/>
+      <element name="TDBLookupComboBox.ReadDropDownCount.Reader"/>
+      <element name="TDBLookupComboBox.SetDropDownRows"/>
+      <element name="TDBLookupComboBox.SetDropDownRows.AValue"/>
       <element name="TDBLookupComboBox.SetDisplayEmpty"/>
       <element name="TDBLookupComboBox.SetDisplayEmpty.AValue"/>
       <element name="TDBLookupComboBox.SetEmptyValue"/>
@@ -5028,6 +5044,16 @@
         </descr>
         <seealso/>
       </element>
+
+      <element name="TDBLookupComboBox.DropDownCount">
+        <short>Deprecated. Use DropDownRows instead.</short>
+        <descr/>
+        <seealso>
+          <link id="TDBLookUpComboBox.DropDownRows"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.DropDownCount">TCustomComboBox.DropDownCount</link>
+        </seealso>
+      </element>
+
       <element link="#lcl.controls.TControl.Align" name="TDBLookupComboBox.Align"/>
       <element link="#lcl.controls.TControl.Anchors" name="TDBLookupComboBox.Anchors"/>
       <element link="#lcl.stdctrls.TCustomComboBox.ArrowKeysTraverseList" name="TDBLookupComboBox.ArrowKeysTraverseList"/>
@@ -5047,7 +5073,23 @@
       <element link="#lcl.controls.TControl.DragCursor" name="TDBLookupComboBox.DragCursor"/>
       <element link="#lcl.controls.TControl.DragKind" name="TDBLookupComboBox.DragKind"/>
       <element link="#lcl.controls.TControl.DragMode" name="TDBLookupComboBox.DragMode"/>
-      <element link="#lcl.stdctrls.TCustomComboBox.DropDownCount" name="TDBLookupComboBox.DropDownCount"/>
+
+      <element name="TDBLookupComboBox.DropDownRows">
+        <short>Number of rows displayed in the drop-down list for the control.</short>
+        <descr>
+          <p>
+            <var>DropDownRows</var> is the replacement for the deprecated <var>DropDownCount</var> property. It is compatible with the name used in the Delphi VCL. Read and write access to the property value are redirected to the DropDownCount property in the ancestor class.
+          </p>
+          <p>
+            The default value for the property is <b>7</b> in <var>TDBLookUpComboBox</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDBLookupComboBox.DropDownCount"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.DropDownCount">TCustomComboBox.DropDownCount</link>
+        </seealso>
+      </element>
+
       <element link="#lcl.controls.TControl.Enabled" name="TDBLookupComboBox.Enabled"/>
       <element link="#lcl.controls.TControl.Font" name="TDBLookupComboBox.Font"/>
       <element name="TDBLookupComboBox.KeyField">
@@ -5055,19 +5097,12 @@
           <var>KeyField</var> the name of the field containing the key data.</short>
         <descr>
           <p>
-            <var>KeyField</var> is a
-
-            <var>String</var> property which contains the name of the field in the lookup dataset which corresponds to the
-
-            <var>DataField</var> in the linked dataset. Read and write access to the property value are redirected to the
-
-            <var>KeyField</var> property in the internal
-
-            <var>TDBLookup</var> instance used in the class. Setting a new value for the property causes the internal field data link to be refreshed, and potentially changes the value and the item index in the control.
+            <var>KeyField</var> is a <var>String</var> property which contains the name of the field in the lookup dataset which corresponds to the <var>DataField</var> in the linked dataset. Read and write access to the property value are redirected to the <var>KeyField</var> property in the internal <var>TDBLookup</var> instance used in the class. Setting a new value for the property causes the internal field data link to be refreshed, and potentially changes the value and the item index in the control.
           </p>
-          <p>Use <var>ListSource</var> to specify the component which provides access to the lookup dataset.
+          <p>
+            Use <var>ListSource</var> to specify the component which provides access to the lookup dataset.
           </p>
-          <p>Use <var>ListField</var> to specify the field with values displayed in the drop-down for the combobox control.
+          <p>Use <var>ListField</var> to specify the field with values displayed in the drop-down for the combo-box control.
           </p>
         </descr>
         <seealso>
@@ -5085,7 +5120,7 @@
         </short>
         <descr>
           <p>
-            <var>ListField</var> is a <var>String</var> property which contains the name of the field in the lookup dataset with the values displayed in the drop-down for the combobox control. Read and write access for the property value are redirected to the <var>ListField</var> in the internal <var>TDBLookup</var> instance used in the class. Setting a new value for the property causes the internal <var>TFieldDataLink</var> in the class to be refreshed, and results in a change to the <var>ItemIndex</var> and the current value for the control.
+            <var>ListField</var> is a <var>String</var> property which contains the name of the field in the lookup dataset with the values displayed in the drop-down for the combo-box control. Read and write access for the property value are redirected to the <var>ListField</var> in the internal <var>TDBLookup</var> instance used in the class. Setting a new value for the property causes the internal <var>TFieldDataLink</var> in the class to be refreshed, and results in a change to the <var>ItemIndex</var> and the current value for the control.
           </p>
           <p>
             Use <var>ListSource</var> to assign the component which provides access to the lookup dataset for the control.
