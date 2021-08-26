@@ -25,10 +25,5 @@
 /lazarus.old*
 /lazbuild
 /startlazarus
-/tools/lazres
-/tools/lrstolfm
-/tools/svn2revisioninc
-/tools/updatepofiles
 ide/revision.inc
-/lazbuild
 /config
