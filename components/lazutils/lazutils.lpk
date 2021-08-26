@@ -176,7 +176,7 @@
       </Item>
       <Item>
         <Filename Value="lazfglhash.pas"/>
-        <UnitName Value="lazfglhash"/>
+        <UnitName Value="LazFglHash"/>
       </Item>
       <Item>
         <Filename Value="lazfilecache.pas"/>
@@ -359,8 +359,17 @@
     <PublishOptions>
       <Version Value="2"/>
     </PublishOptions>
-    <CustomOptions Items="ExternHelp" Version="2">
+    <CustomOptions Items="ExternHelp/Fppkg" Version="2">
       <_ExternHelp Items="Count"/>
+      <_Fppkg Items="CustomCodeCount/CustomCodeItem1/CustomCodeItem2">
+        <_CustomCodeCount Value="2"/>
+        <_CustomCodeItem1 Items="Value">
+          <_Value Value="    D := P.Dependencies.Add(&apos;winunits-base&apos;);"/>
+        </_CustomCodeItem1>
+        <_CustomCodeItem2 Items="Value">
+          <_Value Value="    D.OSes := AllWindowsOSes;"/>
+        </_CustomCodeItem2>
+      </_Fppkg>
     </CustomOptions>
   </Package>
 </CONFIG>
