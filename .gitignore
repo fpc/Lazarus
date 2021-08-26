@@ -16,10 +16,11 @@
 /docs/chm/**/*.xct
 /docs/chm/**/*.kwd
 /docs/chm/**/*.txt
+!**/patches/*.patch
+!**/patches/*.diff
 /libeay32.dll
 /ssleay32.dll
 /lazarus.cfg
 ide/revision.inc
-
-!**/patches/*.patch
-!**/patches/*.diff
+/lazbuild
+/config
