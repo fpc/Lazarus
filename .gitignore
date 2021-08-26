@@ -21,6 +21,14 @@
 /libeay32.dll
 /ssleay32.dll
 /lazarus.cfg
+/lazarus
+/lazarus.old*
+/lazbuild
+/startlazarus
+/tools/lazres
+/tools/lrstolfm
+/tools/svn2revisioninc
+/tools/updatepofiles
 ide/revision.inc
 /lazbuild
 /config
