@@ -904,6 +904,11 @@
       <Item219>
         <Filename Value="nonwin32/messages.pp"/>
         <UnitName Value="Messages"/>
+        <CustomOptions Items="FPMake" Version="2">
+          <_FPMake Items="TargetOSes">
+            <_TargetOSes Value="win32,win64,wince"/>
+          </_FPMake>
+        </CustomOptions>
       </Item219>
       <Item220>
         <Filename Value="widgetset/wsbuttons.pp"/>

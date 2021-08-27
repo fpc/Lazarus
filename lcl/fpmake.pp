@@ -2,9 +2,9 @@
    File generated automatically by Lazarus Package Manager
    Created with the Fppkgpackagemanager package installed
 
-   fpmake.pp for LCLBase 2.1
+   fpmake.pp for LCLBase 2.3
 
-   This file was generated on 17-08-20
+   This file was generated on 28-08-21
 }
 
 {$ifndef ALLPACKAGES} 
@@ -25,7 +25,7 @@ begin
   with Installer do
     begin
     P:=AddPackage('lclbase');
-    P.Version:='2.1.0-0';
+    P.Version:='2.3.0-0';
 
     P.Directory:=ADirectory;
 
@@ -273,6 +273,7 @@ begin
     D := T.Dependencies.AddInclude('include/winapih.inc');
     D := T.Dependencies.AddInclude('include/wincontrol.inc');
     D := T.Dependencies.AddUnit('Messages');
+    D.OSes := AllOSes - [win32,win64,wince];
     D := T.Dependencies.AddUnit('WSButtons');
     D := T.Dependencies.AddUnit('WSCalendar');
     D := T.Dependencies.AddUnit('WSCheckLst');
@@ -338,6 +339,7 @@ begin
     D := T.Dependencies.AddUnit('JSONPropStorage');
     D := T.Dependencies.AddInclude('include/comboex.inc');
     D := T.Dependencies.AddUnit('LCLExceptionStackTrace');
+    D := T.Dependencies.AddUnit('WSShellCtrls');
     T := P.Targets.AddImplicitUnit('checklst.pas');
     T := P.Targets.AddImplicitUnit('clipbrd.pp');
     T := P.Targets.AddImplicitUnit('colorbox.pas');
@@ -402,6 +404,7 @@ begin
     T := P.Targets.AddImplicitUnit('forms/timepopup.pas');
     T.ResourceFiles.Add('timepopup.lfm');
     T := P.Targets.AddImplicitUnit('nonwin32/messages.pp');
+    T.OSes := AllOSes - [win32,win64,wince];
     T := P.Targets.AddImplicitUnit('widgetset/wsbuttons.pp');
     T := P.Targets.AddImplicitUnit('widgetset/wscalendar.pp');
     T := P.Targets.AddImplicitUnit('widgetset/wschecklst.pp');
@@ -455,6 +458,7 @@ begin
     T := P.Targets.AddImplicitUnit('industrialbase.pp');
     T := P.Targets.AddImplicitUnit('jsonpropstorage.pas');
     T := P.Targets.AddImplicitUnit('lclexceptionstacktrace.pas');
+    T := P.Targets.AddImplicitUnit('widgetset/wsshellctrls.pp');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('LCLBase.compiled');
