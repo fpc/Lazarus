@@ -93,11 +93,9 @@ begin
     Dlg.InitialDir:=GetProjectDir;
     Dlg.Title:=lrsProvideDataFileName;
     Dlg.Filter:=lrsBufDSFilters;
-    Dlg.Options:=Dlg.Options+[ofPathMustExist];
     if Dlg.Execute then
       begin
-      aBufDS.LoadFromFile(Dlg.FileName);
-      Modified;
+      aBufDS.SaveToFile(Dlg.FileName);
       end;
   finally
     Dlg.Free;
