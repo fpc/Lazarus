@@ -457,6 +457,8 @@ begin
   else
     QtListWidget.setFrameShape(QFrameNoFrame);
 
+  QtListWidget.setUniformItemSizes(TCustomListBox(AWinControl).Style in [lbStandard, lbOwnerDrawFixed]);
+
   QtListWidget.AttachEvents;
   
   // create our FList helper
@@ -695,6 +697,7 @@ class procedure TQtWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox
 begin
   if not WSCheckHandleAllocated(ACustomListBox, 'SetStyle') then
     Exit;
+  TQtListWidget(ACustomListBox.Handle).setUniformItemSizes(ACustomListBox.Style in [lbStandard, lbOwnerDrawFixed]);
   TQtListWidget(ACustomListBox.Handle).OwnerDrawn :=
     ACustomListBox.Style in [lbOwnerDrawFixed, lbOwnerDrawVariable];
 end;
