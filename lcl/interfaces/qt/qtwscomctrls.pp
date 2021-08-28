@@ -163,6 +163,8 @@ type
     class function GetViewOrigin(const ALV: TCustomListView): TPoint; override;
     class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
 
+    class function RestoreItemCheckedAfterSort(const ALV: TCustomListView): Boolean; override;
+
     class procedure SelectAll(const ALV: TCustomListView; const AIsSet: Boolean); override;
 
     class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
@@ -2034,10 +2036,17 @@ begin
       QtTreeWidget.setItemData(Item, 0, AItem);
       if AList.Checkboxes then
       begin
-        if AItem.Checked then
-          QTreeWidgetItem_setCheckState(Item, 0, QtChecked)
+        if RestoreItemCheckedAfterSort(AList) then
+          // when true checkboxes are fixed by LCL, so we uncheck each item first
+          // look at TCustomListView.SortWithParams. issue #38137
+          QtTreeWidget.ItemChecked[i] := False
         else
-          QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked);
+        begin
+          if AItem.Checked then
+            QTreeWidgetItem_setCheckState(Item, 0, QtChecked)
+          else
+            QTreeWidgetItem_setCheckState(Item, 0, QtUnChecked);
+        end;
       end;
 
       if ImgListRes.Valid and (ImgListRes.Count > 0) and
@@ -2187,6 +2196,12 @@ begin
   if not WSCheckHandleAllocated(ALV, 'GetVisibleRowCount') then
     Exit;
   Result := TQtAbstractItemView(ALV.Handle).getVisibleRowCount;
+end;
+
+class function TQtWSCustomListView.RestoreItemCheckedAfterSort(
+  const ALV: TCustomListView): Boolean;
+begin
+  Result := True;
 end;
 
 class procedure TQtWSCustomListView.SelectAll(const ALV: TCustomListView;
