@@ -371,10 +371,10 @@
             PickCustomColor is used when cbCustomColor is included in the Style for the control and ItemIndex is set to 0. This position was reserved for a custom color when the list of colors was loaded for the Style settings in the control.
           </p>
           <p>
-            PickCustomColor uses an existing value in ColorDialog when assigned, or creates the ColorDialog when needed. It  executes the ColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to True and the control is redrawn.
+            PickCustomColor uses an existing value in ColorDialog when assigned, or creates the ColorDialog when needed. It  executes the ColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to <b>True</b> and the control is redrawn.
           </p>
           <p>
-            The color selection dialog is not displayed at design-time, and the return value is always set to False.
+            The color selection dialog is not displayed at design-time, and the return value is always set to <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -770,15 +770,29 @@ if iPos &lt;&gt; -1 then
       <element name="TColorBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
       <element name="TLBGetColorsEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled to get the available colors for a TColorListBox control.
+        </short>
+        <descr>
+          <p>
+            <var>TLBGetColorsEvent</var> is the type used to implement the <var>OnGetColors</var> property in <var>TCustomColorListBox</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorListBox.OnGetColors"/>
+          <link id="TCustomColorListBox.SetColorList"/>
+          <link id="TCustomColorListBox.PickCustomColor"/>
+          <link id="TColorBoxStyles"/>
+          <link id="#lcl.graphics.GetColorValues">GetColorValues</link>
+        </seealso>
       </element>
       <element name="TLBGetColorsEvent.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
       <element name="TLBGetColorsEvent.Items">
-        <short/>
+        <short>
+          TStrings instance where the available color captions and values captions are stored.
+        </short>
       </element>
 
       <element name="TCustomColorListBox">
@@ -978,13 +992,13 @@ if iPos &lt;&gt; -1 then
             DoSelectionChange is an overridden method used to perform actions needed when the value in the ItemIndex property is changed.
           </p>
           <p>
-            The User parameter indicates the origin of the change. When User is True, the change occurred due to user interaction with the control. When User is False, the change occurred when the ItemIndex property was updated by another method in the control.
+            The User parameter indicates the origin of the change. When User is <b>True</b>, the change occurred due to user interaction with the control. When User is <b>False</b>, the change occurred when the ItemIndex property was updated by another method in the control.
           </p>
           <p>
-            When User is True, the Style property is examined to see if a custom color can be   used in the Colors for the control. When Style includes the value cbCustomColor, and ItemIndex is set to 0, the PickCustomColor method is called to select a custom color using a color dialog. If a custom color was successfully selected, the TColor value in Colors for the ItemIndex  is stored in the Selected property.
+            When User is <b>True</b>, the Style property is examined to see if a custom color can be   used in the Colors for the control. When Style includes the value cbCustomColor, and ItemIndex is set to 0, the PickCustomColor method is called to select a custom color using a color dialog. If a custom color was successfully selected, the TColor value in Colors for the ItemIndex  is stored in the Selected property.
           </p>
           <p>
-            The color dialog is not displayed, and Selected is not updated when User is set to False.
+            The color dialog is not displayed, and Selected is not updated when User is set to <b>False</b>.
           </p>
           <p>
             DoSelectionChange calls the inherited method prior to exit.
@@ -1007,10 +1021,10 @@ if iPos &lt;&gt; -1 then
             PickCustomColor is used when cbCustomColor is included in the Style for the control and ItemIndex is set to 0. This position was reserved for a custom color when the list of colors was loaded for the Style settings in the control.
           </p>
           <p>
-            PickCustomColor uses an existing value in ColorDialog when available, or creates and executes a TColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to True and the control is redrawn.
+            PickCustomColor uses an existing value in ColorDialog when available, or creates and executes a TColorDialog to get the color selection for the control. The custom color selection is stored as the first TColor value in the Items for the control. When a color is successfully selected using the dialog, the return value is set to <b>True</b> and the control is redrawn.
           </p>
           <p>
-            The color selection dialog is not displayed at design-time, and the return value is always set to False.
+            The color selection dialog is not displayed at design-time, and the return value is always set to <b>False</b>.
           </p>
         </descr>
         <seealso/>
