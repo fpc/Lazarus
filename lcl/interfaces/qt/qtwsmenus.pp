@@ -398,13 +398,10 @@ end;
 class procedure TQtWSMenuItem.UpdateMenuIcon(const AMenuItem: TMenuItem;
   const HasIcon: Boolean; const AIcon: TBitmap);
 begin
+  if not WSCheckMenuItem(AMenuItem, 'UpdateMenuIcon') then
+    Exit;
   if AMenuItem.HasParent then
-  begin
-    if HasIcon then
-      TQtMenu(AMenuItem.Handle).setImage(TQtImage(AIcon.Handle))
-    else
-      TQtMenu(AMenuItem.Handle).setImage(nil);
-  end;
+    AMenuItem.RecreateHandle;
 end;
 
 { TQtWSMenu }
