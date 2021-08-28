@@ -2729,7 +2729,7 @@
       </element>
 
       <element name="GetDefaultBitBtnGlyph">
-        <short></short>
+        <short>Address of the routine used to get default glyphs for TBitBtn instances.</short>
         <descr>
           <p>
             <var>GetDefaultBitBtnGlyph</var> is a <var>TGetDefaultBitBtnGlyph</var> variable with the address for the routine used to get the default glyphs for <var>TBitBtn</var> instances in the application.
@@ -2765,15 +2765,21 @@ end;
 Buttons.GetDefaultBitBtnGlyph := @GetCustomBitBtnGlyph;
 </code>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TGetDefaultBitBtnGlyph"/>
+        </seealso>
       </element>
 
       <element name="GetLCLDefaultBtnGlyph">
         <short>
           <var>GetLCLDefaultBtnGlyph</var> gets the LCL default button glyph for the specified button Kind.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+        </descr>
+        <seealso>
+          <link id="GetDefaultBitBtnGlyph"/>
+          <link id="TGetDefaultBitBtnGlyph"/>
+        </seealso>
       </element>
 
       <element name="LoadGlyphFromResourceName">

@@ -118,6 +118,34 @@
         </seealso>
       </element>
 
+      <element name="DefShowButtons">
+        <short>Defines the default buttons displayed on a TButtonPanel instance.</short>
+        <descr>
+          <p>
+            <var>DefShowButtons</var> is a set constant which contains the default buttons displayed on a button panel instance. DefShowButtons provides the default value for the <var>ShowButtons</var> property in <var>TCustomButtonPanel</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.ShowButtons"/>
+          <link id="TCustomButtonPanel.ShowGlyphs"/>
+        </seealso>
+      </element>
+
+      <element name="DefShowGlyphs">
+        <short>
+          Defines the default glyphs displayed for the buttons on a button panel instance.
+        </short>
+        <descr>
+          <p>
+            <var>DefShowGlyphs</var> is a set constant which contains the default glyphs displayed for the buttons on a button panel. DefShowGlyphs provides the default value for the <var>ShowGlyphs</var> property in <var>TCustomButtonPanel</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomButtonPanel.ShowGlyphs"/>
+          <link id="TCustomButtonPanel.ShowButtons"/>
+        </seealso>
+      </element>
+
       <element name="TPanelBitBtn">
         <short>Implements the buttons displayed for TButtonPanel.</short>
         <descr>
