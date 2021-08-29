@@ -861,6 +861,7 @@ Type
   TDBLookupComboBox = class(TCustomDBComboBox)
   protected
     function DoEdit: boolean; override;
+    procedure DoAutoCompleteSelect; override;
     function IsUnbound: boolean;
   private
     FLookup: TDBLookup;

@@ -144,6 +144,12 @@ begin
   inherited DoExit;
 end;
 
+// this is a select triggered by autocomplete
+procedure TCustomComboBox.DoAutoCompleteSelect;
+begin
+  Select;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomComboBox.SetSorted
   Params: val - true means "sort" the combo
@@ -636,7 +642,7 @@ begin
         Text := sResultText;
         SelStart := iSelStart;
         SelLength := UTF8Length(Text);
-        Select;
+        DoAutoCompleteSelect;
       end;
     end;
   end;
