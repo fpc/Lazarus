@@ -4221,6 +4221,7 @@
       <element name="TCustomDBComboBox.CMGetDataLink.Message">
         <short>Control message updated in the the method.</short>
       </element>
+
       <element name="TCustomDBComboBox.DoEdit">
         <short>Performs LCL deferred edit messages for events detected in the control.</short>
         <descr/>
@@ -4229,6 +4230,7 @@
       <element name="TCustomDBComboBox.DoEdit.Result">
         <short>True if the field was edited in the linked data set.</short>
       </element>
+
       <element name="TCustomDBComboBox.DoOnCloseUp">
         <short>Performs actions to close the drop down for the combo-box.</short>
         <descr/>
@@ -4864,15 +4866,45 @@
       </element>
 
       <element name="TDBLookupComboBox.DoEdit">
-        <short>Implements support for the "unbound" editing mode in the data-aware control.</short>
+        <short>
+          Implements support for the "unbound" editing mode in the data-aware control.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomDBComboBox.DoEdit"/>
+        </seealso>
       </element>
       <element name="TDBLookupComboBox.DoEdit.Result">
         <short>True if the field was edited in the linked data set.</short>
       </element>
+
+      <element name="TDBLookupComboBox.DoAutoCompleteSelect">
+        <short>
+          Ensures the internal TDBLookup instance is updated when the control is used in  "unbound" mode.
+        </short>
+        <descr>
+          <p>
+            <var>DoAutoCompleteSelect</var> is an overridden method in <var>TDBLookComboBox</var> which re-implements the virtual method from the ancestor class. It does not call the inherited method.
+          </p>
+           <p>
+             DoAutoCompleteSelect ensures that the dataset for the <var>ListSource</var> is re-positioned when the value in <var>ItemIndex</var> has been changed. This includes calling the <var>UpdateData</var> method for the internal <var>TDBLookup</var> instance when the control is used in "unbound" mode (without a <var>DataSource</var> or <var>DataField</var>).
+           </p>
+           <p>
+             DoAutoCompleteSelect is called when the <var>KeyUp</var> method handles an alphanumeric key entered while the auto-complete feature has been enabled in <var>AutoCompleteText</var>.
+           </p>
+        </descr>
+        <seealso>
+          <link id="TDBLookupComboBox.UpdateData"/>
+          <link id="TDBLookup.UpdateData"/>
+          <link id="#lcl.stdctrls.TCustomComboBox.DoAutoCompleteSelect">TCustomComboBox.DoAutoCompleteSelect</link>
+          <link id="#lcl.stdctrls.TCustomComboBox.AutoCompleteText">TCustomComboBox.AutoCompleteText</link>
+        </seealso>
+      </element>
+
       <element name="TDBLookupComboBox.IsUnbound">
-        <short>Indicates if the control lacks a datasource or field name ("unbound" mode).</short>
+        <short>
+          Indicates if the control lacks a datasource or field name ("unbound" mode).
+        </short>
         <descr/>
         <seealso/>
       </element>

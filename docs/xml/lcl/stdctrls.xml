@@ -1668,6 +1668,23 @@
         </seealso>
       </element>
 
+      <element name="TCustomComboBox.DoAutoCompleteSelect">
+        <short>
+          Selects an item in the control when auto-complete is enabled and activated by a key event.
+        </short>
+        <descr>
+          <p>
+            Calls the <var>Select</var> method to signal the <var>OnSelect</var> event handler (when assigned). DoAutoCompleteSelect is called from the <var>KeyUp</var> method when auto-completion has enabled in the <var>AutoCompleteText</var> property, and an alphanumeric key is handled in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.AutoCompleteText"/>
+          <link id="TCustomComboBox.KeyUp"/>
+          <link id="TCustomComboBox.OnSelect"/>
+          <link id="TCustomComboBox.Select"/>
+        </seealso>
+      </element>
+
       <element name="TCustomComboBox.DoEnter">
         <short>Updates the control when the Enter key is applied.</short>
         <descr>
