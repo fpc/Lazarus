@@ -345,6 +345,7 @@ type
     procedure CreateParams(var Params: TCreateParams); override;
     procedure InitializeWnd; override;
     procedure DestroyWnd; override;
+    procedure DoAutoCompleteSelect; virtual;
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure DrawItem(Index: Integer; ARect: TRect;

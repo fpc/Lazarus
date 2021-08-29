@@ -55,13 +55,23 @@ begin
   if IsUnbound then begin
     if FDetectedEvents and DBCBEVENT_CHANGE <> 0 then
       DoOnChange;
-    if DetectedEvents and DBCBEVENT_SELECT <>0 then
+    if DetectedEvents and DBCBEVENT_SELECT <>0 then begin
+      FLookup.UpdateData(ItemIndex);
       DoOnSelect;
+    end;
     if DetectedEvents and DBCBEVENT_CLOSEUP <>0 then
       DoOnCloseUp;
   end
   else
     Result := inherited DoEdit;
+end;
+
+procedure TDBLookupComboBox.DoAutoCompleteSelect;
+begin
+  if IsUnbound then
+    FLookup.UpdateData(ItemIndex)
+  else
+    UpdateData(Self);
 end;
 
 function TDBLookupComboBox.IsUnbound: boolean;
