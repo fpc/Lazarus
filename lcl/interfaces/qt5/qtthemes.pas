@@ -448,6 +448,7 @@ begin
             QStylePE_PanelButtonTool:
             begin
               opt := QStyleOption_create(Ord(QStyleOptionVersion), Ord(QStyleOptionSO_Default));
+
               //issue #38356 - when button is in hot state bg color should be same as parent color.
               if Assigned(Context.Parent) and
                 (StyleState and QStyleState_MouseOver <> 0) and (StyleState and QStyleState_AutoRaise = 0) then
@@ -456,6 +457,17 @@ begin
                 Alpha := ABgColor.Alpha;
                 APalette := QPalette_Create(QWidget_palette(Context.Parent));
                 ColorRefToTQColor(ColorToRGB(Context.GetBkColor), ABgColor);
+
+                //issue #38356 additional fix for non initialized brush color in QPainter
+                if (ABGColor.r = MAXWORD) and (ABGColor.g = MAXWORD) and (ABGColor.b = MAXWORD) and
+                  (ABGColor.Alpha = MAXWORD) and (QPainter_backgroundMode(Context.Widget) = QtTransparentMode) then
+                begin
+                  QPalette_destroy(APalette);
+                  APalette := QPalette_Create();
+                  QStyleOption_palette(opt, APalette);
+                  ABgColor := QBrush_color(QPalette_button(APalette))^;
+                end;
+
                 ABgColor.Alpha := Alpha;
                 ABrush := QBrush_create(PQColor(@ABgColor));
                 QPalette_setBrush(APalette, QPaletteAll, QPaletteButton, ABrush);
