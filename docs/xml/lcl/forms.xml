@@ -6163,9 +6163,9 @@
             Usage:
           </p>
 <code>
- HintWindow := THintWindow.Create(nil);
- Rect := HintWindow.CalcHintRect(0, 'This is the hint',nil);
- HintWindow.ActivateHint(Rect, 'This is the hint');
+HintWindow := THintWindow.Create(nil);
+Rect := HintWindow.CalcHintRect(0, 'This is the hint',nil);
+HintWindow.ActivateHint(Rect, 'This is the hint');
 </code>
         </descr>
         <seealso/>
@@ -13389,6 +13389,31 @@
         <short/>
       </element>
 
+      <element name="KeyboardStateToShiftState">
+        <short>
+          Converts virtual key state codes to TShiftState values.
+        </short>
+        <descr>
+          <p>
+            Calls GetKeyState to get the virtual key codes for the following:
+          </p>
+          <ul>
+            <li>VK_SHIFT</li>
+            <li>VK_CONTROL</li>
+            <li>VK_MENU</li>
+            <li>VK_LWIN</li>
+            <li>VK_RWIN</li>
+          </ul>
+          <p>
+            The return value is a set  type with the TShiftState values corresponding to the virtual key codes. It may be an empty set when none of the virtual keys are detected.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="KeyboardStateToShiftState.Result">
+        <short/>
+      </element>
+
       <element name="ShiftStateToKeys">
         <short>
           Converts a shift state into a key state value compatible with the key state of a Windows API LParam.
@@ -13522,9 +13547,21 @@
       </element>
 
       <element name="TGetDesignerFormEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled to get the form with the designer for a persistent object.
+        </short>
+        <descr>
+          <p>
+            <var>TGetDesignerFormEvent</var> is an object function type which specifies an event handler signalled to get the form instance with the designer object for <var>APersistent</var>. The return value contains the <var>TCustomForm</var> instance which contains the designer object for the persistent object, and may be unassigned (<b>Nil</b>) if a form hosting APersistent cannot be located.
+          </p>
+          <p>
+            TGetDesignerFormEvent is the type used for the <var>OnGetDesignerForm</var> variable in the <file>forms</file> unit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="OnGetDesignerForm"/>
+          <link id="GetDesignerForm"/>
+        </seealso>
       </element>
       <element name="TGetDesignerFormEvent.Result">
         <short/>
@@ -13532,8 +13569,11 @@
       <element name="TGetDesignerFormEvent.APersistent">
         <short/>
       </element>
+
       <element name="TIsFormDesignFunction">
-        <short/>
+        <short>
+          Specifies a Boolean function type used to implement the routine assigned to the  IsFormDesign variable.
+        </short>
         <descr>
           TIsFormDesignFunction is a Boolean function type used in the IsFormDesign variable.
         </descr>
@@ -13549,10 +13589,22 @@
       </element>
 
       <element name="OnGetDesignerForm">
-        <short/>
+        <short>
+          Event handler signalled to get the designer form for the specified form or control.
+        </short>
         <descr>
-          OnGetDesignerForm is a TGetDesignerFormEvent variable that contains the event handler signalled to get a form with a design surface for the specified form or control.
+          <p>
+            OnGetDesignerForm is a TGetDesignerFormEvent variable that contains the event handler signalled to get a form with a design surface for the specified form or control.
+          </p>
         </descr>
+        <seealso/>
+      </element>
+
+      <element name="IsFormDesign">
+        <short>
+          Address of the function used to determine if specified control is a form designer.
+        </short>
+        <descr/>
         <seealso/>
       </element>
 
@@ -13585,18 +13637,27 @@
       </element>
 
       <element name="GetDesignerForm">
-        <short/>
-        <descr/>
+        <short>
+          Gets the Form with the designer object for the specified control or persistent object.
+        </short>
+        <descr>
+          <p>
+            GetDesignerForm is a TCustomForm function used to get the form instance with the designer object for the specified control or persistent object instance. The function is overloaded to allow use of a TControl or a TPersistent instance to locate the form.
+          </p>
+          <p>
+            The return value contains the top-most TCustomForm instance with a TIDesigner instance for the value in Control or APersistent. The return value is Nil when a form is not found which hosts the specified argument.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="GetDesignerForm.Result">
-        <short/>
+        <short>Form instance with the designer for the specified argument.</short>
       </element>
       <element name="GetDesignerForm.Control">
-        <short/>
+        <short>TControl instance used to locate the owner form.</short>
       </element>
       <element name="GetDesignerForm.APersistent">
-        <short/>
+        <short>TPersistent instance used to locate the owner form.</short>
       </element>
 
       <element name="GetFirstParentForm">
@@ -13621,7 +13682,9 @@
       </element>
 
       <element name="GetTopFormSkipNonDocked">
-        <short/>
+        <short>
+          Gets the top-most form which hosts the specified control docksite form instances.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -13631,6 +13694,7 @@
       <element name="GetTopFormSkipNonDocked.Control">
         <short/>
       </element>
+
       <element name="ValidParentForm">
         <short>Gets a valid parent form for the specified control.</short>
         <descr>
@@ -13657,18 +13721,29 @@
       </element>
 
       <element name="FindRootDesigner">
-        <short/>
-        <descr/>
+        <short>
+          Gets the designer object for the specified persistent object (or its parent).
+        </short>
+        <descr>
+          <p>
+            <var>FindRootDesigner</var> is a <var>TIDesigner</var> function used to get the root designer object for the specified persistent object instance. The TIDesigner instance is found on the Form where the object (or its parent) is hosted in the Lazarus IDE. The return value is <b>Nil</b> when a parent form for <var>APersistent</var> is not found.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="FindRootDesigner.Result">
-        <short/>
+        <short>
+          TIDesigner instance for the object, or Nil when a parent form is not found.
+        </short>
       </element>
       <element name="FindRootDesigner.APersistent">
-        <short/>
+        <short>Persistent object examined for a designer instance in the routine.</short>
       </element>
+
       <element name="GetParentDesignControl">
-        <short/>
+        <short>
+          Gets the control which is the top-most TCustomDesignControl instance for the specified control, or Nil when not a TCustomDesignControl instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -13678,9 +13753,19 @@
       <element name="GetParentDesignControl.Control">
         <short/>
       </element>
+
       <element name="NeedParentDesignControl">
-        <short/>
-        <descr/>
+        <short>
+          Ensures that a TCustomDesignControl instance is found for the specified control.
+        </short>
+        <descr>
+          <p>
+            Calls <var>GetParentDesignControl</var> to get the return value for the function. Raises an <var>EInvalidOperation</var> exception if a <var>TCustomDesignControl</var> instance is not found for the specififed control.
+          </p>
+          <p>
+            Used in methods which perform scaling operations for <var>TCustomForm</var> or <var>TControl</var> instances.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="NeedParentDesignControl.Result">
@@ -13765,7 +13850,7 @@
       </element>
 
       <element name="Screen">
-        <short>The TScreen singleton.</short>
+        <short>The TScreen singleton for the application.</short>
         <descr/>
         <seealso>
           <link id="TScreen"/>
