@@ -132,11 +132,10 @@
         <short>Font uses fixed pitch (or mono-spacing).</short>
       </element>
       <element name="TFontName">
-        <short/>
+        <short>Alias for the String type.</short>
         <descr>
           <p>
-            <var>TFontName</var> is an alias for the
-            <var>String</var> type. Not used in the current LCL implementation.
+            <var>TFontName</var> is an alias for the <var>String</var> type. Not used in the current LCL implementation.
           </p>
         </descr>
         <seealso/>
@@ -770,12 +769,13 @@
         <version>Added in LCL version 2.6.3.</version>
       </element>
       <element name="TFillStyle">
-        <short/>
+        <short>Alias for the TGraphicsFillStyle enumeration type in LazUtils.</short>
         <descr>
-          <p>Alias for the TGraphicsFillStyle enumeration type in the FCL.
-          </p>
+          <p>Alias for the TGraphicsFillStyle enumeration type in LazUtils.</p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lazutils.graphtype.TGraphicsFillStyle">TGraphicsFillStyle</link>
+        </seealso>
       </element>
       <element name="TFillMode">
         <short>Represents Fill Mode values.</short>
@@ -902,9 +902,10 @@
         <short/>
       </element>
       <element name="TProgressStage">
-        <short/>
-        <descr>Alias for the TFPImgProgressStage type in the FCL.
-        </descr>
+        <short>
+          Alias for the TFPImgProgressStage type in the FCL.
+        </short>
+        <descr/>
         <seealso/>
       </element>
       <element name="TProgressEvent">
@@ -1050,6 +1051,11 @@
       <element name="clMedGray">
         <short>One of the extended colors.</short>
       </element>
+      <element name="ExtendedColorCount">
+        <short>The number of defined extended color constants.</short>
+        <descr/>
+        <seealso/>
+      </element>
       <element name="clNone">
         <short>One of the special colors.</short>
         <descr/>
@@ -1176,6 +1182,12 @@
       <element name="clGradientInactiveCaption">
         <short>One of the System colors.</short>
       </element>
+      <element name="clMenuHighlight">
+        <short>One of the System colors used for highlights on a menu.</short>
+      </element>
+      <element name="clMenuBar">
+        <short>One of the System colors used for the menu bar.</short>
+      </element>
       <element name="clForm">
         <short>Represents the color of the background for a form.</short>
         <descr/>
@@ -1196,18 +1208,16 @@
         <short>A synonym not displayed in color lists.</short>
       </element>
       <element name="clFirstSpecialColor">
-        <short/>
+        <short>Alias for the clBtnHiLight constant.</short>
         <descr/>
       </element>
       <element name="clMask">
-        <short/>
-        <descr>Alias for the clWhite constant.
-        </descr>
+        <short>Alias for the clWhite constant.</short>
+        <descr/>
       </element>
       <element name="clDontMask">
-        <short/>
-        <descr>Alias for the clBlack constant.
-        </descr>
+        <short>Alias for the clBlack constant.</short>
+        <descr/>
       </element>
       <element name="clForeground">
         <short>Deprecated CLX color. Do not use.</short>
@@ -1511,7 +1521,6 @@
       </element>
       <element name="TColorGroup">
         <short>Deprecated CLX color enumeration. Do not use.</short>
-        <short/>
         <descr/>
         <seealso/>
       </element>
@@ -1611,16 +1620,11 @@
           </p>
         </descr>
       </element>
+      <!-- private -->
       <element name="TGraphicsObject.FOnChanging"/>
       <element name="TGraphicsObject.FOnChange"/>
-      <element name="TGraphicsObject.DoChange">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TGraphicsObject.DoChange.Msg">
-        <short/>
-      </element>
+      <element name="TGraphicsObject.DoChange"/>
+      <element name="TGraphicsObject.DoChange.Msg"/>
       <element name="TGraphicsObject.Changing">
         <short>
           <var>Changing</var> - software emulation of
@@ -1700,7 +1704,7 @@
         </seealso>
       </element>
       <element name="TFontHandleCache.RemoveItem.Item">
-        <short/>
+        <short>Item removed from the resource cache.</short>
       </element>
       <element name="TFontHandleCache.Create">
         <short>Constructor for the class instance.</short>
@@ -3572,7 +3576,7 @@
       <element name="TRegionCombineMode.rgnXOR">
         <short>Create a region with the areas from the original regions that do not overlap.</short>
       </element>
-      <element name="TRegionOperationType ">
+      <element name="TRegionOperationType">
         <short>Represents Region operators used in TRegionOperation.</short>
         <descr/>
         <seealso/>
@@ -3657,7 +3661,10 @@
       </element>
       <element name="TRegion.AddSubRegion">
         <short>Adds a sub-region with the specified handle to the region .</short>
-        <descr>AddSubRegion is an empty implementation in the current LCL version.
+        <descr>
+          <p>
+            <var>AddSubRegion</var> is an empty implementation in the current LCL version.
+          </p>
         </descr>
         <seealso/>
         <seealso/>
@@ -12837,7 +12844,7 @@
       <element name="TIcnsList.Items.Index">
         <short>Ordinal position in the list for the property value.</short>
       </element>
-      <element name="TSharedIcnsIcon ">
+      <element name="TSharedIcnsIcon">
         <short>Declares the shared icon for the TIcnsIcon type.</short>
         <descr/>
         <seealso>
@@ -13447,7 +13454,7 @@
         </seealso>
       </element>
       <element name="TTiffUnit">
-        <short/>
+        <short>Represents units of measure used in TIFF image data.</short>
         <descr/>
         <seealso/>
       </element>
@@ -14001,7 +14008,9 @@
        </short>
       </element>
       <element name="StringToColorDef">
-        <short/>
+        <short>
+          Converts a color name, like "clBlue", to a TColor value with an optional default value when the color name does not exist.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14015,7 +14024,9 @@
         <short/>
       </element>
       <element name="GetColorValues">
-        <short/>
+        <short>
+          Executes the specified procedure for each of the non-deprecated Color names defined for the platform.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14054,10 +14065,32 @@
           <var>AQuantity</var> - the amount by which the color is to be changed.
        </short>
       </element>
+
+      <element name="IsSysColor">
+        <short>
+          Indicates whether the specified color reference is one of the system colors.
+        </short>
+        <descr>
+          <p>
+            Returns <b>True</b> when <var>AColor</var> has value greater than or equal to the value in the <var>SYS_COLOR_BASE</var> constant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lcltype.SYS_COLOR_BASE">SYS_COLOR_BASE</link>
+        </seealso>
+      </element>
+      <element name="IsSysColor.Result">
+        <short>True when AColor is a system color.</short>
+      </element>
+      <element name="IsSysColor.AColor">
+        <short>TColorRef value examined in the routine.</short>
+      </element>
+
       <element name="Blue">
         <short>Finds the <var>Blue</var> component of the supplied color.</short>
         <descr>
-          <p>Does <b>not</b> work with system color values.
+          <p>
+            Does <b>not</b> work with system color values.
           </p>
         </descr>
         <seealso/>
@@ -14071,7 +14104,8 @@
       <element name="Green">
         <short>Finds the <var>Green</var> component of the supplied color.</short>
         <descr>
-          <p>Does <b>not</b> work with system color values.
+          <p>
+            Does <b>not</b> work with system color values.
           </p>
         </descr>
         <seealso/>
@@ -14085,7 +14119,8 @@
       <element name="Red">
         <short>Finds the <var>Red</var> component of the supplied color.</short>
         <descr>
-          <p>Does <b>not</b> work with system color values.
+          <p>
+            Does <b>not</b> work with system color values.
           </p>
         </descr>
         <seealso/>
@@ -14190,23 +14225,25 @@
        </short>
       </element>
       <element name="GetCharsetValues">
-        <short/>
-        <descr/>
+        <short>
+          Calls the specified procedure for each of the character set names in FontCharsets.
+        </short>
+        <descr>
+          <p>
+            Not used in the current LCL implementation.
+          </p>
+        </descr>
         <seealso/>
-        <notes>
-          <note>?</note>
-        </notes>
       </element>
       <element name="GetCharsetValues.Proc">
         <short/>
       </element>
       <element name="CharsetToIdent">
-        <short/>
+        <short>
+          Converts the specified numeric font identifier to its representation as a string.
+        </short>
         <descr/>
         <seealso/>
-        <notes>
-          <note>?</note>
-        </notes>
       </element>
       <element name="CharsetToIdent.Result">
         <short/>
@@ -14218,12 +14255,11 @@
         <short/>
       </element>
       <element name="IdentToCharset">
-        <short/>
+        <short>
+          Converts the specified string value to the numeric font identifier for the value.
+        </short>
         <descr/>
         <seealso/>
-        <notes>
-          <note>?</note>
-        </notes>
       </element>
       <element name="IdentToCharset.Result">
         <short/>
@@ -14258,9 +14294,17 @@
         <short>Font handle with the logical font data read in the routine.</short>
       </element>
       <element name="GetDefFontCharSet">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Gets the default TFontCharSet value for the platform.
+        </short>
+        <descr>
+          <p>
+            Returns the value for the <var>DEFAULT_CHARSET</var> constant.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lcltype.DEFAULT_CHARSET">DEFAULT_CHARSET</link>
+        </seealso>
       </element>
       <element name="GetDefFontCharSet.Result">
         <short/>
@@ -14268,7 +14312,10 @@
       <element name="IsFontNameXLogicalFontDesc">
         <short>Determines if the specified font name is a valid X Logical Font Description.
        </short>
-        <descr>IsFontNameXLogicalFontDesc is a Boolean function used to determine whether the specified font name is a valid X Logical Font Description (XLFD).
+        <descr>
+          <p>
+            <var>IsFontNameXLogicalFontDesc</var> is a <var>Boolean</var> function used to determine whether the specified font name is a valid X Logical Font Description (<b>XLFD</b>).
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -14418,8 +14465,12 @@
         <short/>
       </element>
       <element name="FontNameToPangoFontDescStr">
-        <short/>
-        <descr/>
+        <short>Parses the specified font name into X Logical Font Descriptor attributes.</short>
+        <descr>
+          <p>
+            Used in the implementation of the GTK2 widgetset to create font handles for logical fonts.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="FontNameToPangoFontDescStr.LongFontName">
@@ -14438,7 +14489,9 @@
         <short/>
       </element>
       <element name="TOnLoadGraphicFromClipboardFormat">
-        <short/>
+        <short>
+          Specifies a procedure type used to load a graphic image from a clipboard format.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14452,7 +14505,9 @@
         <short/>
       </element>
       <element name="TOnSaveGraphicToClipboardFormat">
-        <short/>
+        <short>
+          Specifies a procedure type used to save a graphic image to a clipboard format.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -14466,30 +14521,39 @@
         <short/>
       </element>
       <element name="TOnGetSystemFont">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Specifies a function type which returns a HFONT handle for a system font.</short>
+        <descr>
+          <p>
+            <var>TOnGetSystemFont</var> is the type used to implement the <var>OnGetSystemFont</var> variable in the <file>graphics</file> unit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="OnGetSystemFont"/>
+          <link id="#lcl.forms.TScreen">TScreen</link>
+        </seealso>
       </element>
       <element name="TOnGetSystemFont.Result">
-        <short/>
+        <short>HFONT handle for the system font.</short>
       </element>
       <element name="OnLoadSaveClipBrdGraphicValid">
-        <short/>
+        <short>
+          Indicates whether clipboard formats for graphic types have been registered for the application.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="OnLoadGraphicFromClipboardFormat">
-        <short/>
+        <short>Address of the routine used to load a graphic from a clipboard format.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="OnSaveGraphicToClipboardFormat">
-        <short/>
+        <short>Address of the routine used to save a graphic to a clipboard format.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="OnGetSystemFont">
-        <short/>
+        <short>Address of the routine used to get the handle for the system font.</short>
         <descr/>
         <seealso/>
       </element>
@@ -14545,11 +14609,15 @@
         <short>TStream instance examined in the routine.</short>
       </element>
       <element name="XPMToPPChar">
-        <short/>
+        <short>
+          Converts an XPM image file into an array of PChar values.
+        </short>
         <descr>
-          <p>Converts an XPM image file into an array of PChar values. The memory is allocated as one block, so freeing can simply be done using FreeMem. The data is just behind the array.
+          <p>
+            Converts an XPM image file into an array of PChar values. The memory is allocated as one block, so freeing can simply be done using FreeMem. The data is just behind the array.
           </p>
-          <p>An XPM file can be included in a C source file, because it has a C syntax. In the compiled program it is simply an array of PChar. This function converts an XPM source file to the same array, by removing the comments and the string constant symbols.
+          <p>
+            An XPM file can be included in a C source file, because it has a C syntax. In the compiled program it is simply an array of PChar. This function converts an XPM source file to the same array, by removing the comments and the string constant symbols.
           </p>
         </descr>
         <seealso/>
@@ -14574,9 +14642,13 @@
         <short/>
       </element>
       <element name="ReadXPMFromStream">
-        <short/>
-        <descr>Converts an XPM image stored in the specified stream into an array of PChar values.
-          See <link id="XPMToPPChar">XPMToPPChar</link> for more info.
+        <short>
+          Converts an XPM image stored in the specified stream into an array of PChar values.
+        </short>
+        <descr>
+          <p>
+            See <link id="XPMToPPChar">XPMToPPChar</link> for more info.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -14590,9 +14662,10 @@
         <short/>
       </element>
       <element name="ReadXPMSize">
-        <short/>
-        <descr>Reads the first line from an XPM PChar array which contains the width, height and number of colors for the XPM data.
-        </descr>
+        <short>
+          Reads the first line from an XPM PChar array which contains the width, height and number of colors for the XPM data.
+        </short>
+        <descr/>
         <seealso/>
       </element>
       <element name="ReadXPMSize.Result">
@@ -14659,18 +14732,24 @@
         <short/>
       </element>
       <element name="CreateBitmapFromResourceName">
-        <short/>
-        <descr/>
+        <short>
+          Creates a TCustomBitmap instance with the content for the named Lazarus resource.
+        </short>
+        <descr>
+          <p>
+            Used in the implementation of components, and the LCL, to get a bitmap image stored in a Lazarus resource. Typically used to load button glyphs and icons displayed on the component palette in the Lazarus IDE.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CreateBitmapFromResourceName.Result">
-        <short/>
+        <short>Bitmap instance created and loaded in the routine.</short>
       </element>
       <element name="CreateBitmapFromResourceName.Instance">
-        <short/>
+        <short>Handle for the Lazarus resource with the content for the bitmap.</short>
       </element>
       <element name="CreateBitmapFromResourceName.ResName">
-        <short/>
+        <short>Name for the RT_BITMAP resource loaded in the routine.</short>
       </element>
       <element name="CreateBitmapFromLazarusResource">
         <short>Creates and loads a Bitmap from a Lazarus Resource (.lrs) file.
@@ -14691,15 +14770,16 @@
         <short/>
       </element>
       <element name="CreateCompatibleBitmaps">
-        <short/>
+        <short>
+          Creates a TLazIntfImage instance for the specified raw image data, and returns the handles to the image and optional mask information.
+        </short>
         <descr/>
         <seealso/>
-        <notes>
-          <note>?</note>
-        </notes>
       </element>
       <element name="CreateCompatibleBitmaps.Result">
-        <short/>
+        <short>
+          True if the widgetset class was able to create handles using the raw image data.
+        </short>
       </element>
       <element name="CreateCompatibleBitmaps.ARawImage">
         <short/>
