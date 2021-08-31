@@ -619,9 +619,13 @@
       </element>
 
       <element name="TItemType">
-        <short/>
+        <short>
+          Not used in the current LCL implementation.
+        </short>
         <descr>
-          Not used in the current implementation.
+          <p>
+            Not used in the current LCL implementation.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -1750,8 +1754,39 @@
         <short>Grid drawing state for the cell in the event notification.</short>
       </element>
 
+      <element name="TUserCheckBoxBitmapEvent">
+        <short>
+          Specifies an event handler signalled to get the user-supplied bitmap for a check box cell.
+        </short>
+        <descr>
+          <p>
+            <var>TUserCheckBoxBitmapEvent</var> is the type used for the <var>OnUserCheckboxBitmap</var> property in <var>TCustomGrid</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.OnUserCheckboxBitmap"/>
+        </seealso>
+      </element>
+      <element name="TUserCheckBoxBitmapEvent.Sender">
+        <short>Object (TCustomGrid) for the event notification.</short>
+      </element>
+      <element name="TUserCheckBoxBitmapEvent.aCol">
+        <short>Column number for the cell with the check box.</short>
+      </element>
+      <element name="TUserCheckBoxBitmapEvent.aRow">
+        <short>Row number for the cell with the check box.</short>
+      </element>
+      <element name="TUserCheckBoxBitmapEvent.CheckedState">
+        <short>Checked state for the check box.</short>
+      </element>
+      <element name="TUserCheckBoxBitmapEvent.ABitmap">
+        <short>Bitmap image with the state needed for the check box cell.</short>
+      </element>
+
       <element name="TUserCheckBoxImageEvent">
-        <short>Specifies the event handler used to get the image drawn for a Checkbox column.</short>
+        <short>
+          Specifies the event handler used to get the image drawn for a Checkbox column.
+        </short>
         <descr>
           <p>
             <var>TUserCheckBoxImageEvent</var> specifies an event handler signalled to get the image drawn for a grid cell which displays a Checkbox.
@@ -1790,13 +1825,13 @@
         <short>Row number for the cell.</short>
       </element>
       <element name="TUserCheckBoxImageEvent.CheckedState">
-        <short>State for the Checkbox.</short>
+        <short>State for the check box.</short>
       </element>
       <element name="TUserCheckBoxImageEvent.ImageList">
         <short>Image list with unchecked and checked images.</short>
       </element>
       <element name="TUserCheckBoxImageEvent.ImageIndex">
-        <short>Position of the image to use in ImageList.</short>
+        <short>Position of the image in ImageList to use for the check box cell.</short>
       </element>
 
       <element name="TValidateEntryEvent">
