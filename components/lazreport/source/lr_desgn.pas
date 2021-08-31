@@ -4688,6 +4688,7 @@ var
 begin
   AddUndoAction(acDelete);
   PageView.NPEraseSelection;
+  ObjInsp.Select(nil);
   for i := Objects.Count - 1 downto 0 do
   begin
     t := TfrView(Objects[i]);
@@ -4695,7 +4696,6 @@ begin
       Page.Delete(i);
   end;
   SetPageTitles;
-  ObjInsp.Select(nil);
   ResetSelection;
   FirstSelected := nil;
   PageView.Invalidate;
