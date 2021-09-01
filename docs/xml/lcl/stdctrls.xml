@@ -1213,7 +1213,19 @@
         <short>True when the option is included for variable height list items.</short>
       </element>
 
-      <element name="TOwnerDrawState" link="#lcl.lcltype.TOwnerDrawState"/>
+      <element name="TOwnerDrawState">
+        <short>Alias for the TOwnerDrawState type in <file>lcltype.pp</file>.</short>
+        <descr>
+          <p>
+            <var>TOwnerDrawState</var> instances are passed as an argument to methods which draw list items in controls, like <var>TCustomComboBox.DrawItem</var> and <var>TCustomListBox.DrawItem</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomComboBox.DrawItem"/>
+          <link id="TCustomListBox.DrawItem"/>
+          <link id="#lcl.lcltype.TOwnerDrawState">TOwnerDrawState</link>
+        </seealso>
+      </element>
 
       <element name="TDrawItemEvent">
         <short>
@@ -3382,6 +3394,30 @@
       </element>
       <element name="TSelectionChangeEvent.User">
         <short>True if the user changed the selection, False if changed by code.</short>
+      </element>
+
+      <element name="TListBoxOption">
+        <short>Represents options available in a list box control.</short>
+        <descr/>
+        <seealso>
+          <link id="TListBoxOptions"/>
+        </seealso>
+      </element>
+      <element name="TListBoxOption.lboDrawFocusRect">
+        <short>Draws a focus rectangle  when owner draw is enabled.</short>
+      </element>
+
+      <element name="TListBoxOptions">
+        <short>Set type used to store values from the TListBoxOption enumeration.</short>
+        <descr>
+          <p>
+            Set type used to store zero or more values for the <var>TListBoxOption</var> enumeration. <var>TListBoxOptions</var> is the type used for the <var>Options</var> property in <var>TCustomListBox</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListBoxOption"/>
+          <link id="TCustomListBox.Options"/>
+        </seealso>
       </element>
 
       <element name="TCustomListBox">
