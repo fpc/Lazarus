@@ -122,6 +122,7 @@ type
     fLastHeight   : Word;
     fDown         : Boolean;
     fPt           : TPoint;
+    fDownCursor   : TCursor;
 
     procedure BtnClick(Sender : TObject);
     procedure HeaderMDown(Sender: TOBject; Button: TMouseButton;
@@ -130,11 +131,16 @@ type
                   {%H-}Y: Integer);
     procedure HeaderMUp(Sender: TOBject; {%H-}Button: TMouseButton;
                    {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
+    function  GetMouseCursor(x, y: Integer): TCursor;
     {$ENDIF}
   protected
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     {$IFDEF EXTOI}
     procedure DoHide; override;
+    {$ELSE}
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     {$ENDIF}
   public
     constructor Create(aOwner : TComponent); override;
@@ -775,6 +781,10 @@ var
   ColorLocked        : Boolean;     // true to avoid unwished color change
 
   frDesignerComp     : TfrDesigner;
+
+const
+  OI_BORDER_SIZE     = 3;
+  OI_CORNER_SIZE     = 10;
 
 
 {----------------------------------------------------------------------------}
@@ -6982,6 +6992,7 @@ begin
   else
     Ini.WriteInteger('Position', 'Height', Height);}
   Ini.WriteInteger('ObjInsp', 'Width', ObjInsp.Width);
+  Ini.WriteInteger('ObjInsp', 'Height', ObjInsp.Height);
   Ini.WriteBool('ObjInsp', 'Visible', ObjInsp.Visible);
 
   Ini.Free;
@@ -7029,6 +7040,7 @@ begin
     else
       Ini.WriteInteger('Position', 'Height', Height);}
     ObjInsp.Width:=Ini.ReadInteger('ObjInsp', 'Width', ObjInsp.Width);
+    ObjInsp.Height:=Ini.ReadInteger('ObjInsp', 'Height', ObjInsp.Height);
     ObjInsp.Visible:=Ini.ReadBool('ObjInsp', 'Visible', ObjInsp.Visible);
 
     Ini.Free;
@@ -8060,6 +8072,111 @@ begin
   fPanelHeader.Cursor:=crDefault;
 end;
 
+function TfrObjectInspector.GetMouseCursor(x, y: Integer): TCursor;
+begin
+  if x<OI_BORDER_SIZE then begin
+    if y<OI_CORNER_SIZE             then  result := crSizeNW
+    else if y>Height-OI_CORNER_SIZE then  result := crSizeSW
+    else                                  result := crSizeW
+  end else
+  if x>width-OI_BORDER_SIZE then begin
+    if y<OI_CORNER_SIZE then              result := crSizeNE
+    else if y>Height-OI_CORNER_SIZE then  result := crSizeSE
+    else                                  result := crSizeE
+  end else
+  if y<OI_BORDER_SIZE then begin
+    if x<OI_CORNER_SIZE then              result := crSizeNW
+    else if x>Width-OI_CORNER_SIZE  then  result := crSizeNE
+    else                                  result := crSizeN
+  end else
+  if y>Height-OI_BORDER_SIZE then begin
+    if x<OI_CORNER_SIZE then              result := crSizeSW
+    else if x>Width-OI_CORNER_SIZE  then  result := crSizeSE
+    else                                  result := crSizeS
+  end
+  else                                    result := crDefault;
+end;
+
+procedure TfrObjectInspector.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  NewPt: TPoint;
+  r: TRect;
+  mc: TCursor;
+  deltaX, deltaY: Integer;
+begin
+  inherited MouseMove(Shift, X, Y);
+
+  if not fDown then begin
+
+    mc := GetMouseCursor(x, y);
+    case mc of
+      crSizeW, crSizeE:   cursor := crSizeWE;
+      crSizeN, crSizeS:   cursor := crSizeNS;
+      crSizeNW, crSizeSE: cursor := crSizeNWSE;
+      crSizeNE, crSIzeSW: cursor := crSizeNESW;
+      else                cursor := crDefault;
+    end;
+
+  end else begin
+
+    NewPt:=Mouse.CursorPos;
+    r := Bounds(left, top, width, height);
+    deltaX := newPt.X-fPt.X;
+    deltaY := newPt.Y-fPt.Y;
+
+    case cursor of
+      crSizeWE:
+        if      fDownCursor=crSizeW then inc(r.left, deltaX)
+        else if fDownCursor=crSizeE then inc(r.right, deltaX);
+      crSizeNS:
+        if      fDownCursor=crSizeN then inc(r.top, deltaY)
+        else if fDownCursor=crSizeS then inc(r.bottom, deltaY);
+      crSizeNWSE:
+        if fDownCursor=crSizeNW then begin
+          inc(r.left, deltaX);
+          inc(r.top, deltaY);
+        end else
+        if fDownCursor=crSizeSE then begin
+          inc(r.right, deltaX);
+          inc(r.bottom, deltaY);
+        end;
+      crSizeNESW:
+        if fDownCursor=crSizeNE then begin
+          inc(r.right, deltaX);
+          inc(r.top, deltaY);
+        end else
+        if fDownCursor=crSizeSW then begin
+          inc(r.left, deltaX);
+          inc(r.bottom, deltaY);
+        end;
+    end;
+
+    SetBounds(r.Left, r.Top, r.Width, r.Height);
+
+    fPt := newPt;
+  end;
+end;
+
+procedure TfrObjectInspector.MouseDown(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  inherited MouseDown(Button, Shift, X, Y);
+  if (Button=mbLeft) and (cursor<>crDefault) then
+  begin
+    fDown:=True;
+    fPt:=Mouse.CursorPos;
+    fDownCursor := GetMouseCursor(x, y);
+  end;
+end;
+
+procedure TfrObjectInspector.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  inherited MouseUp(Button, Shift, X, Y);
+  fDown:=False;
+  cursor := crDefault;
+end;
+
 {$ENDIF}
 
 procedure TfrObjectInspector.CMVisibleChanged(var TheMessage: TLMessage);
@@ -8116,7 +8233,7 @@ begin
   Borderstyle :=bsNone;
   BevelInner  :=bvLowered;
   BevelOuter  :=bvRaised;
-  BorderWidth :=1;
+  BorderWidth :=OI_BORDER_SIZE;
   Visible     :=False;
 
   fDown       :=False;
