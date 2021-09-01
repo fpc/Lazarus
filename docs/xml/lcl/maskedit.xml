@@ -6,7 +6,6 @@
       MaskEdit
     ====================================================================
     -->
-    <!-- TODO: Modified in 2.1. Needs review. -->
     <module name="MaskEdit">
       <short>
         Defines classes, types, and constants used to implement a masked edit control.
@@ -467,6 +466,18 @@
         <seealso/>
       </element>
 
+      <element name="EInvalidEditMask">
+        <short>Exception type raised for an invalid mask value in an edit mask.</short>
+        <descr>
+          <p>
+            Indicates that the content in <var>EditMask</var> is not a valid edit mask expression. Raised when a value is assigned to the EditMask property. Generally indicates that an invalid set declaration has been used in the edit mask.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomMaskEdit.EditMask"/>
+        </seealso>
+      </element>
+
       <element name="EInvalidUtf8">
         <short>Ancestor for UTF-8 exceptions.</short>
         <descr>
@@ -510,6 +521,50 @@
         </descr>
         <seealso>
           <link id="ERangeError"/>
+        </seealso>
+      </element>
+
+      <element name="SFoundChar_Invalid">
+        <short>Exception message used when an invalid mask character is found.</short>
+        <descr/>
+        <seealso>
+          <link id="EDBEditError"/>
+        </seealso>
+      </element>
+
+      <element name="SUnclosedSet">
+        <short>Exception message used when an unclosed set is found in an edit mask.</short>
+        <descr/>
+        <seealso>
+          <link id="EInvalidEditMask"/>
+        </seealso>
+      </element>
+
+      <element name="SIllegalCharInSet">
+        <short>
+          Exception message used when a mask character not in the ASCII character set is used.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="EInvalidEditMask"/>
+        </seealso>
+      </element>
+
+      <element name="SEmptySet">
+        <short>Exception message used when an empty set is specified in an edit mask.</short>
+        <descr/>
+        <seealso>
+          <link id="EInvalidEditMask"/>
+        </seealso>
+      </element>
+
+      <element name="SIllegalRangeChar">
+        <short>
+          Exception message used when more than one set range is used in an edit mask.
+        </short>
+        <descr/>
+        <seealso>
+          <link id="EInvalidEditMask"/>
         </seealso>
       </element>
 

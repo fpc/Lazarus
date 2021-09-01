@@ -18,7 +18,9 @@
       <element name="LCLProc"/>
 
       <element name="LazLongRec">
-        <short></short>
+        <short>
+          Represents a Long value as low- and high-order signed SmallInt values.
+        </short>
         <descr>
           <p>
             <file>SysUtils</file> has a <var>LongRec</var> structure which uses an unsigned <var>Word</var> type for <var>Lo</var> and <var>Hi</var>. <var>LazLongRec</var>  provides a similar record with signed <var>SmallInt</var> members.

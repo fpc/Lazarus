@@ -1851,18 +1851,27 @@ Mike Lischke (public@soft-gems.net, www.soft-gems.net).
 </element>
 
 <element name="TThemeOption">
-<short/>
+<short>
+  Represents glyph / image options that can be enabled or disabled for a theme.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+  <link id="TThemeServices.GetOption"/>
+</seealso>
 </element>
 <element name="TThemeOption.toShowButtonImages">
 <short>Show images on buttons.</short>
 </element>
 <element name="TThemeOption.toShowMenuImages">
-<short>show images on menus.</short>
+<short>Show images on menus.</short>
 </element>
 <element name="TThemeOption.toUseGlyphEffects">
 <short>Use hot / down effects on (button) glyphs.</short>
+<descr>
+  <p>
+    The option is platform- or OS-dependent. Not supported for Windows or Mac. Requires WindowManager or Desktop Environment support on Linux platforms.
+  </p>
+</descr>
 </element>
 
 <element name="TThemeServices">
