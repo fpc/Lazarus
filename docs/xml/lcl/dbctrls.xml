@@ -6233,6 +6233,61 @@
           <link id="#lcl.controls.TControl.Visible">TControl.Visible</link>
         </seealso>
       </element>
+
+      <element name="TOnDBImageRead">
+        <short>
+          Specifies an event handler signalled to identify the graphic type for a database image.
+        </short>
+        <descr>
+          <p>
+            <var>TOnDBImageRead</var> is the type used for the <var>OnDBImageRead</var> property in <var>TDBImage</var>. It provides a mechanism for identifying the graphic class needed to load image content in the specified stream. In general, it is used when image data in S contains an additional header that must be processed / handled prior to reading the raw image data.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDbImage.OnDbImageRead"/>
+          <link id="TDbImage.LoadPicture"/>
+        </seealso>
+      </element>
+      <element name="TOnDBImageRead.Sender">
+        <short>
+          Object (TDBImage) instance for the event notification.
+        </short>
+      </element>
+      <element name="TOnDBImageRead.S">
+        <short>
+          Stream instance with the image data examined in the event handler.
+        </short>
+      </element>
+      <element name="TOnDBImageRead.GraphExt">
+        <short>
+          Returns the file extension used for the graphic type, or an empty string when not determined.
+        </short>
+      </element>
+
+      <element name="TOnDBImageWrite">
+        <short>
+          Event handler signalled when an image is written to the specified stream.
+        </short>
+        <descr>
+          <p>
+            <var>TOnDBImageWrite</var> is the type used for the <var>OnDbImageWrite</var> property in <var>TDBImage</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TDbImage.OnDbImageWrite"/>
+          <link id="TDbImage.UpdateData"/>
+        </seealso>
+      </element>
+      <element name="TOnDBImageWrite.Sender">
+        <short>Object (TDBImage) for the event notification.</short>
+      </element>
+      <element name="TOnDBImageWrite.S">
+        <short>Stream instance where the image is stored.</short>
+      </element>
+      <element name="TOnDBImageWrite.GraphExt">
+        <short>File extension associated with the image data.</short>
+      </element>
+
       <element name="TDBImage">
         <short>
           <var>TDBImage </var>- a data-aware Image box to display a single image from a dataset.
