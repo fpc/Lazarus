@@ -122,7 +122,6 @@ type
     fLastHeight   : Word;
     fDown         : Boolean;
     fPt           : TPoint;
-    fDownCursor   : TCursor;
 
     procedure BtnClick(Sender : TObject);
     procedure HeaderMDown(Sender: TOBject; Button: TMouseButton;
@@ -131,7 +130,6 @@ type
                   {%H-}Y: Integer);
     procedure HeaderMUp(Sender: TOBject; {%H-}Button: TMouseButton;
                    {%H-}Shift: TShiftState; {%H-}X, {%H-}Y: Integer);
-    function  GetMouseCursor(x, y: Integer): TCursor;
     {$ENDIF}
   protected
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
@@ -8072,31 +8070,6 @@ begin
   fPanelHeader.Cursor:=crDefault;
 end;
 
-function TfrObjectInspector.GetMouseCursor(x, y: Integer): TCursor;
-begin
-  if x<OI_BORDER_SIZE then begin
-    if y<OI_CORNER_SIZE             then  result := crSizeNW
-    else if y>Height-OI_CORNER_SIZE then  result := crSizeSW
-    else                                  result := crSizeW
-  end else
-  if x>width-OI_BORDER_SIZE then begin
-    if y<OI_CORNER_SIZE then              result := crSizeNE
-    else if y>Height-OI_CORNER_SIZE then  result := crSizeSE
-    else                                  result := crSizeE
-  end else
-  if y<OI_BORDER_SIZE then begin
-    if x<OI_CORNER_SIZE then              result := crSizeNW
-    else if x>Width-OI_CORNER_SIZE  then  result := crSizeNE
-    else                                  result := crSizeN
-  end else
-  if y>Height-OI_BORDER_SIZE then begin
-    if x<OI_CORNER_SIZE then              result := crSizeSW
-    else if x>Width-OI_CORNER_SIZE  then  result := crSizeSE
-    else                                  result := crSizeS
-  end
-  else                                    result := crDefault;
-end;
-
 procedure TfrObjectInspector.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   NewPt: TPoint;
@@ -8108,14 +8081,27 @@ begin
 
   if not fDown then begin
 
-    mc := GetMouseCursor(x, y);
-    case mc of
-      crSizeW, crSizeE:   cursor := crSizeWE;
-      crSizeN, crSizeS:   cursor := crSizeNS;
-      crSizeNW, crSizeSE: cursor := crSizeNWSE;
-      crSizeNE, crSIzeSW: cursor := crSizeNESW;
-      else                cursor := crDefault;
-    end;
+    if x<OI_BORDER_SIZE then begin
+      if y<OI_CORNER_SIZE             then  cursor := crSizeNW
+      else if y>Height-OI_CORNER_SIZE then  cursor := crSizeSW
+      else                                  cursor := crSizeW
+    end else
+    if x>width-OI_BORDER_SIZE then begin
+      if y<OI_CORNER_SIZE then              cursor := crSizeNE
+      else if y>Height-OI_CORNER_SIZE then  cursor := crSizeSE
+      else                                  cursor := crSizeE
+    end else
+    if y<OI_BORDER_SIZE then begin
+      if x<OI_CORNER_SIZE then              cursor := crSizeNW
+      else if x>Width-OI_CORNER_SIZE  then  cursor := crSizeNE
+      else                                  cursor := crSizeN
+    end else
+    if y>Height-OI_BORDER_SIZE then begin
+      if x<OI_CORNER_SIZE then              cursor := crSizeSW
+      else if x>Width-OI_CORNER_SIZE  then  cursor := crSizeSE
+      else                                  cursor := crSizeS
+    end
+    else                                    cursor := crDefault;
 
   end else begin
 
@@ -8123,29 +8109,28 @@ begin
     r := Bounds(left, top, width, height);
     deltaX := newPt.X-fPt.X;
     deltaY := newPt.Y-fPt.Y;
-
     case cursor of
-      crSizeWE:
-        if      fDownCursor=crSizeW then inc(r.left, deltaX)
-        else if fDownCursor=crSizeE then inc(r.right, deltaX);
-      crSizeNS:
-        if      fDownCursor=crSizeN then inc(r.top, deltaY)
-        else if fDownCursor=crSizeS then inc(r.bottom, deltaY);
-      crSizeNWSE:
-        if fDownCursor=crSizeNW then begin
+      crSizeW: inc(r.left, deltaX);
+      crSizeE: inc(r.right, deltaX);
+      crSizeN: inc(r.top, deltaY);
+      crSizeS: inc(r.bottom, deltaY);
+      crSizeNW:
+        begin
           inc(r.left, deltaX);
           inc(r.top, deltaY);
-        end else
-        if fDownCursor=crSizeSE then begin
+        end;
+      crSizeSE:
+        begin
           inc(r.right, deltaX);
           inc(r.bottom, deltaY);
         end;
-      crSizeNESW:
-        if fDownCursor=crSizeNE then begin
+      crSizeNE:
+        begin
           inc(r.right, deltaX);
           inc(r.top, deltaY);
-        end else
-        if fDownCursor=crSizeSW then begin
+        end;
+      crSizeSW:
+        begin
           inc(r.left, deltaX);
           inc(r.bottom, deltaY);
         end;
@@ -8165,7 +8150,6 @@ begin
   begin
     fDown:=True;
     fPt:=Mouse.CursorPos;
-    fDownCursor := GetMouseCursor(x, y);
   end;
 end;
 
