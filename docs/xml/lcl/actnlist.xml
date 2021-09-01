@@ -833,18 +833,27 @@
       </element>
       <!-- procedure type Visibility: default -->
       <element name="THintEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled to get the hint text for an action.
+        </short>
+        <descr>
+          <p>
+            <var>THintEvent</var> is an object procedure type which specifies an event handler signalled to get the hint text for a <var>TCustomAction</var> instance. THintEvent is the type used for the <var>OnHint</var> property in <var>TCustomAction</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomAction.OnHint"/>
+          <link id="#lcl.controls.TControl.OnShowHint">TControl.OnShowHint</link>
+          <link id="#lcl.forms.TApplication.OnShowHint">TApplication.OnShowHint</link>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THintEvent.HintStr">
-        <short/>
+        <short>Returns the hint text for the action instance.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="THintEvent.CanShow">
-        <short/>
+        <short>Indicates whether the hint text can be displayed for the action.</short>
       </element>
+
       <!-- object Visibility: default -->
       <element name="TCustomAction">
         <short>
@@ -1730,7 +1739,9 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="RegisterActionsProc">
-        <short/>
+        <short>
+          Address of the routine used to register actions used in the action list editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1744,7 +1755,9 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="UnRegisterActionsProc">
-        <short/>
+        <short>
+          Address of the routine used to unregister actions used in the action list editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1754,7 +1767,9 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="EnumRegisteredActionsProc">
-        <short/>
+        <short>
+          Address of the routine used to enumerate actions in the action list editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1768,7 +1783,9 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="CreateActionProc">
-        <short/>
+        <short>
+          Address of the routine used to create a new action in the action list editor.
+        </short>
         <descr/>
         <seealso/>
       </element>
