@@ -176,7 +176,7 @@ begin
   FDS := Default(TFDSet);
   FD_Zero(FDS);
   FD_Set(self.Handle, FDS);
-  Result := Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
+  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
 {$endif}
 end;
 
@@ -202,7 +202,7 @@ begin
   FDS := Default(TFDSet);
   FD_Zero(FDS);
   FD_Set(self.Handle, FDS);
-  Result := Select(self.Handle + 1, @FDS, nil, nil, @TimeV) > 0;
+  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, @TimeV) > 0;
 {$endif}
 {$endif}
 end;
