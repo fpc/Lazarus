@@ -11664,7 +11664,6 @@ var
       end;
       
       Visible := False;
-      EMFPages.Draw(n, Printer.Canvas, Rect(0, 0, 0, 0));
     end;
     InternalOnProgress(n + 1);
     if IsMainThread then Application.ProcessMessages;
