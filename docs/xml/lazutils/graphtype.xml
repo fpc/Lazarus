@@ -28,9 +28,11 @@
       <element name="LazLoggerBase"/>
 
       <element name="TGraphicsColor">
-        <short/>
+        <short>Defines the Integer range type with values that can be used for colors.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.graphics.TColor">TColor</link>
+        </seealso>
       </element>
 
       <element name="TGraphicsFillStyle">
@@ -46,25 +48,27 @@
       </element>
 
       <element name="TGraphicsBevelCut">
-        <short/>
+        <short>Represents bevel drawing styles.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TGraphicsBevelCut.bvNone">
-        <short/>
+        <short>The bevel is not drawn.</short>
       </element>
       <element name="TGraphicsBevelCut.bvLowered">
-        <short/>
+        <short>The bevel is drawn with a lowered or inset appearance.</short>
       </element>
       <element name="TGraphicsBevelCut.bvRaised">
-        <short/>
+        <short>The bevel is drawn with a raised or outset appearance.</short>
       </element>
       <element name="TGraphicsBevelCut.bvSpace">
-        <short/>
+        <short>
+          The bevel is drawn as a space using the required width, netiher inset nor outset.
+        </short>
       </element>
 
       <element name="TGraphicsDrawEffect">
-        <short/>
+        <short>Represents drawing effects which can be applied to graphic elements.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1144,7 +1148,9 @@
       </element>
 
       <element name="MissingBits">
-        <short/>
+        <short>
+          Used to pad bit data in a raw image to specific precisions and byte boundaries.
+        </short>
         <descr>
           Used to pad bit data in a raw image to specific precisions and byte boundaries.
         </descr>
