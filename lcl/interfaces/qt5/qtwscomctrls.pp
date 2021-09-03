@@ -843,6 +843,13 @@ begin
     exit(0);
 
   QtTreeWidget := TQtTreeWidget(ALV.Handle);
+
+  {Issue #39353.Such scenario happens only when SetStyle() calls RecreateWnd
+   while designing control.Default width for TListColumn is 50,
+   unfortunatelly it''s hardcoded in listcolumn.inc.}
+  if (csDesigning in ALV.ComponentState) and (QtTreeWidget.ColCount <> ALV.ColumnCount) then
+    exit(50);
+
   Result := QtTreeWidget.ColWidth[AIndex];
 end;
 
