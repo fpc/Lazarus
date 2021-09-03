@@ -217,7 +217,7 @@
       </element>
 
       <element name="TCDWSEventCapability">
-        <short/>
+        <short>Represents events handled in a custom-drawn widgetset.</short>
         <descr/>
         <seealso/>
       </element>
@@ -235,7 +235,7 @@
       </element>
 
       <element name="TCDWSEventCapabilities">
-        <short/>
+        <short>Set type used to store values from the TCDWSEventCapability enumeration.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4009,24 +4009,26 @@ end;
       </element>
 
       <element name="CreateMessageDialog">
-        <short/>
+        <short>
+          Creates a dialog form type with the specified caption, message, and buttons.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="CreateMessageDialog.Result">
-        <short/>
+        <short>TForm instance with the content representing the specified parameters.</short>
       </element>
       <element name="CreateMessageDialog.AMsg">
-        <short/>
+        <short>Message text for the dialog.</short>
       </element>
       <element name="CreateMessageDialog.ACaption">
-        <short/>
+        <short>Caption displayed as the title for the dialog.</short>
       </element>
       <element name="CreateMessageDialog.DlgType">
-        <short/>
+        <short>Identifies the dialog type and the image for the dialog.</short>
       </element>
       <element name="CreateMessageDialog.Buttons">
-        <short/>
+        <short>Set of TMsgDlgBtn buttons displayed on the dialog.</short>
       </element>
 
       <element name="DefaultPromptDialog">
@@ -4152,6 +4154,57 @@ end;
         <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
       </element>
       <element name="QuestionDlg.HelpKeyword">
+        <short/>
+      </element>
+
+      <element name="DefaultQuestionDialog">
+        <short>Implements a widgetset-independent dialog.</short>
+        <descr>
+          <p>
+            Shows a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
+              HelpCtx as Help context and Buttons to define the shown buttons and their
+              TModalResult.
+          </p>
+          <p>
+            Buttons is a list of TModalResult and strings. For each number a button is
+              created. To set a custom caption, add a string after a button.
+          </p>
+          <p>
+            The default TModalResults defined in controls.pp (mrNone..mrLast) does not need
+              a caption. The default captions will be used.
+          </p>
+          <p>
+            Examples for Buttons:
+          </p>
+          <code>[mrOk,mrCancel,'Cancel now',mrIgnore,300,'Do it','IsDefault']</code>
+          <p>
+            This will result in 4 buttons:
+          </p>
+          <ul>
+            <li>'Ok' returning mrOk</li>
+            <li>'Cancel now' returning mrCancel</li>
+            <li>'Ignore' returning mrIgnore</li>
+            <li>'Do it' returning 300. This will be the default button (focused)</li>
+          </ul>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="DefaultQuestionDialog.Result">
+        <short/>
+      </element>
+      <element name="DefaultQuestionDialog.ACaption">
+        <short/>
+      </element>
+      <element name="DefaultQuestionDialog.AMsg">
+        <short/>
+      </element>
+      <element name="DefaultQuestionDialog.DlgType">
+        <short/>
+      </element>
+      <element name="DefaultQuestionDialog.Buttons">
+        <short/>
+      </element>
+      <element name="DefaultQuestionDialog.HelpCtx">
         <short/>
       </element>
 
@@ -4310,7 +4363,9 @@ end;
       </element>
 
       <element name="RegisterDialogForCopyToClipboard">
-        <short/>
+        <short>
+          Registers the method and data used for TCustomCopyToClipboardDialog instances.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -4319,21 +4374,25 @@ end;
       </element>
 
       <element name="DialogCopyToClipboard">
-        <short/>
-        <descr/>
+        <short>Copies the content from the specified dialog to the clipboard.</short>
+        <descr>
+          <p>
+            Content from the dialog is stored as text in the clipboard. No actions are performed in the routine if Key and Shift contain values for keys other than Ctrl+C or Ctrl+Ins. The clipboard will contain lines with the Caption and Message text for the dialog, as well as the captions (sans accelerator keys) for  controls displayed on the dialog.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="DialogCopyToClipboard.Self">
-        <short/>
+        <short>Dialog form instance examined in the routine.</short>
       </element>
       <element name="DialogCopyToClipboard.Sender">
-        <short/>
+        <short>Not used in the routine.</short>
       </element>
       <element name="DialogCopyToClipboard.Key">
-        <short/>
+        <short>Virtual key code which initiated the operation.</short>
       </element>
       <element name="DialogCopyToClipboard.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key code.</short>
       </element>
 
       <element name="cInputQueryEditSizePixels">
@@ -4368,6 +4427,23 @@ end;
       </element>
       <element name="TSelectDirOpts">
         <short>Set type for directory selection options.</short>
+      </element>
+
+      <element name="TInputCloseQueryEvent">
+        <short>
+          Specifies an event handler signalled when an InputQuery dialog is about to close.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TInputCloseQueryEvent.Sender">
+        <short/>
+      </element>
+      <element name="TInputCloseQueryEvent.AValues">
+        <short/>
+      </element>
+      <element name="TInputCloseQueryEvent.ACanClose">
+        <short/>
       </element>
 
       <element name="SelectDirectory">
@@ -4625,7 +4701,9 @@ end;
       </element>
 
       <element name="dbgs">
-        <short/>
+        <short>
+          Creates a formatted debugger message for one or more TOpenOption values.
+        </short>
         <descr/>
         <seealso/>
       </element>

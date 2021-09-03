@@ -15722,7 +15722,7 @@ if MyControl.CanSetFocus then
         </seealso>
       </element>
 
-      <element link="#lcl.controls.TWinControl.BorderStyle" name="TCustomControl.BorderStyle"/>
+      <element name="TCustomControl.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
 
       <element name="TCustomControl.OnPaint">
         <short>
@@ -16073,7 +16073,7 @@ if MyControl.CanSetFocus then
       </element>
 
       <element name="TDockZone.Top">
-        <short>The top coordinate of this zone.</short>
+        <short>The top coordinate for the dock zone.</short>
         <descr/>
         <seealso/>
       </element>
@@ -16123,26 +16123,33 @@ if MyControl.CanSetFocus then
       </element>
 
       <element name="TForEachZoneProc">
-        <short>The type of an ForEachZone callback procedure, currently unused.
+        <short>The type for a ForEachZone callback procedure, currently unused.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TForEachZoneProc.Zone">
-        <short>The iterated zone.
-        </short>
+        <short>The iterated zone.</short>
       </element>
 
       <element name="TDockTreeFlag">
-        <short/>
+        <short>Represents flag values used in TDockTree.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TDockTree"/>
+        </seealso>
       </element>
       <element name="TDockTreeFlag.dtfUpdateAllNeeded">
         <short/>
       </element>
 
-      <element link="#lcl.controls.TDockTreeFlag" name="TDockTreeFlags"/>
+      <element name="TDockTreeFlags">
+        <short>Set type used to store values from the TDockTreeFlag enumeration.</short>
+        <descr/>
+        <seealso>
+          <link id="TDockTreeFlag"/>
+        </seealso>
+      </element>
 
       <element name="TDockTree">
         <short>A docking manager for tree-style layouts.</short>
@@ -16552,9 +16559,15 @@ if MyControl.CanSetFocus then
       <element name="TDockTree.MouseMessage" link="#lcl.controls.TDockManager.MouseMessage"/>
 
       <element name="DockSplitterClass">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Class type used to create new splitter class instances.</short>
+        <descr>
+          <p>
+            Normally contains a reference to the <var>TSplitter</var> class, as assigned in the initialization section for the <file>extctrls.pp</file> unit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.extctrls.TSplitter">TSplitter</link>
+        </seealso>
       </element>
 
       <element name="TMouse">
