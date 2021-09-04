@@ -644,6 +644,12 @@ begin
   page := GetCocoaTabPageFromHandle(AWinControl.Handle);
   if not Assigned(page) then Exit;
   page.setLabel(ControlTitleToNSStr(AText));
+
+  if (AWinControl.Parent <> nil)
+    and (AWinControl.Parent is TCustomTabControl)
+    and (AWinControl.HandleAllocated)
+  then
+    UpdateTabAndArrowVisibility( TCocoaTabControl(AWinControl.Parent.Handle) );
 end;
 
 class function TCocoaWSCustomPage.GetText(const AWinControl: TWinControl;
