@@ -124,6 +124,8 @@ function IndexOfTab(ahost: TCocoaTabControl; atab: NSTabViewItem): Integer;
 // everytime
 function GetTabsRect(tabs: TCocoaTabControl; var r: TRect): Boolean;
 
+procedure UpdateTabAndArrowVisibility(aview: TCocoaTabControl);
+
 implementation
 
 function GetTabsRect(tabs: TCocoaTabControl; var r: TRect): Boolean;
