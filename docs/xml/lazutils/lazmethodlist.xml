@@ -231,6 +231,27 @@
         <short>Method to locate in the items for the list.</short>
       </element>
 
+      <element name="TMethodList.Assign">
+        <short>Copies property values from Source into the current class instance.</short>
+        <descr>
+          <p>
+            <var>Assign</var> is an overridden method in <var>TMethodList</var> used to implement object persistence  for the TMethodList class type. Assign calls <var>Clear</var> ro reallocate memory for the <var>Items</var> in the class instance. Values from the Items property in <var>Source</var> are added to the current class instance.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TMethodList.Assign.Source">
+        <short>TMethodList instance with values copied in the method.</short>
+      </element>
+
+      <element name="TMethodList.Clear">
+        <short>
+          Clears the values in Items by Reallocating memory for the property with a length of 0 bytes.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <!-- procedure Visibility: public -->
       <element name="TMethodList.Delete">
         <short>Deletes the method stored at the specified position.</short>
