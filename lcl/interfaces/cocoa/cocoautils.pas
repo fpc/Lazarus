@@ -785,11 +785,21 @@ end;
 
 function NSStringUtf8(const s: String): NSString;
 var
-  cf: CFStringRef;
+  w : WideString;
 begin
-  {NSString and CFStringRef are interchangable}
-  cf := CFStringCreateWithCString(nil, Pointer(PChar(S)), kCFStringEncodingUTF8);
-  Result := NSString(cf);
+  // we cannot use (CFString or NSString) UTF8 related functions, because
+  // all of them are removing BOM.
+  //   CFStringCreateWithBytes   - removes BOM (not matter what "external representation" parameter is)
+  //   CFStringCreateWithCString - removes BOM
+  // This is inconsistent with other WS, where BOM is actually kept, even if it's present
+  // Thus the LCL/FPC conversion to Unicode takes place first
+  if length(s) = 0 then
+    Result := NSString.alloc.init
+  else
+  begin
+    w:=UTF8Decode(s);
+    Result := NSString.alloc.initWithCharacters_length(@w[1], length(w));
+  end;
 end;
 
 function NSStringToString(ns: NSString): String;
