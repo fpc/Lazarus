@@ -766,7 +766,9 @@ end;
       </element>
 
       <element name="UTF8CharStart">
-        <short/>
+        <short>
+          Deprecated. Use UTF8CodepointStart instead.
+        </short>
         <descr>
           <remark>
             Deprecated. Use UTF8CodepointStart instead.
@@ -812,7 +814,9 @@ end;
       </element>
 
       <element name="UTF8CharToByteIndex">
-        <short/>
+        <short>
+          Deprecated. Use UTF8CodepointToByteIndex instead.
+        </short>
         <descr>
           <remark>
             Deprecated. Use UTF8CodepointToByteIndex instead.
@@ -944,6 +948,29 @@ end;
       </element>
       <element name="UTF8Pos.SearchInText">
         <short>String to search for the specified value.</short>
+      </element>
+
+      <element name="UTF8PosP">
+        <short>
+          Returns the position where SearchInText starts in SearchForText, or Nil when not found.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="UTF8PosP.Result">
+        <short/>
+      </element>
+      <element name="UTF8PosP.SearchForText">
+        <short/>
+      </element>
+      <element name="UTF8PosP.SearchForTextLen">
+        <short/>
+      </element>
+      <element name="UTF8PosP.SearchInText">
+        <short/>
+      </element>
+      <element name="UTF8PosP.SearchInTextLen">
+        <short/>
       </element>
 
       <element name="UTF8Copy">
@@ -1088,6 +1115,24 @@ end;
       </element>
       <element name="UTF8LowerCase.ALanguage">
         <short>Language code for the operation.</short>
+      </element>
+
+      <element name="UTF8LowerString">
+        <short>
+          Converts the specified string to lowercase using Unicode case mapping rules.
+        </short>
+        <descr>
+          <p>
+            Calls UTF8LowerCase to get the return value for the function.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="UTF8LowerString.Result">
+        <short>Lowercase values for the specified string.</short>
+      </element>
+      <element name="UTF8LowerString.S">
+        <short>String value to convert in the function.</short>
       </element>
 
       <element name="UTF8UpperCase">
@@ -1391,7 +1436,7 @@ end;
         <short>UTF-8 codepoint used as a padding character.</short>
       </element>
 
-      <element namer="UTF8LeftStr">
+      <element name="UTF8LeftStr">
         <short>
           Gets the specified number of characters (codepoints) at the start of the string.
         </short>
@@ -1764,6 +1809,25 @@ end;
         <short>Length of the second value.</short>
       </element>
 
+      <element name="UTF8CompareStrP">
+        <short>Compares the specified PChar values.</short>
+        <descr>
+          <p>
+            Calls UTF8CompareStr to get the return value for the function.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="UTF8CompareStrP.Result">
+        <short>Relative order for the compared values.</short>
+      </element>
+      <element name="UTF8CompareStrP.S1">
+        <short>First PChar value for the comparison.</short>
+      </element>
+      <element name="UTF8CompareStrP.S2">
+        <short>Second PChar value for the comparison.</short>
+      </element>
+
       <element name="UTF8CompareText">
         <short>
           Case-insensitive comparison of two UTF-8-encoded values.
@@ -1797,8 +1861,14 @@ end;
       </element>
 
       <element name="UTF8CompareTextP">
-        <short/>
-        <descr/>
+        <short>
+          Performs a case-insensitive comparision for the specified UTF-8-encoded PChar values.
+        </short>
+        <descr>
+          <p>
+            Converts values in S1 and S2 to UnicodeString and calls WideCompareText to get the return value for the function.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8CompareTextP.Result">
@@ -1812,7 +1882,9 @@ end;
       </element>
 
       <element name="UTF8CompareLatinTextFast">
-        <short/>
+        <short>
+          Like UTF8CompareText but does not return strict alphabetical order.
+        </short>
         <descr>
           <p>
             Like UTF8CompareText but does not return strict alphabetical order. The order is deterministic and good for binary search and similar uses. Optimizes comparison of single-byte encoding and also multi-byte portions when they are equal. Otherwise falls back to WideCompareText.
@@ -2294,6 +2366,17 @@ end;
         </descr>
         <seealso/>
       </element>
+
+      <element name="ReplaceSubstring">
+        <short>Deprecated. Use the version in LazStringUtils instead.</short>
+        <descr>
+          <p>
+            Deprecated in version 2.1 To be removed in versions after 2.2.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
 
       <element name="UTF8GetStandardCodePage">
         <short>Gets the default system code page for the wide string manager.</short>

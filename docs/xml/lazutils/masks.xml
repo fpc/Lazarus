@@ -71,6 +71,16 @@
         <seealso/>
       </element>
 
+      <element name="TUtf8Char">
+        <short>Alias for the String type used for a UTF-8-encoded character.</short>
+        <descr>
+          <p>
+            TUtf8Char is an alias for a String type with a length of 7 bytes. A UTF-8-encoded character value may need as many as 7 bytes to represent a given codepoint in the encoding.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="EMaskError">
         <short>Exception raised for an invalid character in TMask.</short>
         <descr>
