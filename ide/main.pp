@@ -4432,6 +4432,7 @@ begin
     IncreaseBuildMacroChangeStamp;
     MainBuildBoss.SetBuildTargetProject1(false);
     MainIDE.UpdateCaption;
+    MainIDE.UpdateDefineTemplates;
   end;
 end;
 

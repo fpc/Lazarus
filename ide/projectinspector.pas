@@ -1871,6 +1871,7 @@ begin
   IncreaseCompilerParseStamp;
   MainBuildBoss.SetBuildTargetProject1(false);
   MainIDE.UpdateCaption;
+  MainIDE.UpdateDefineTemplates;
   if Assigned(ProjInspector) then
     ProjInspector.UpdateTitle;
 end;
