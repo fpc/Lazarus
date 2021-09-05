@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
 <package name="lazutils">
-
 <!--
-  ====================================================================
-    Laz_XMLStreaming
-  ====================================================================
+====================================================================
+Laz_XMLStreaming
+====================================================================
 -->
-
 <module name="Laz_XMLStreaming">
 <short>
   Contains classes, types, and routines used to implement an XML serialization driver.
@@ -21,1093 +19,841 @@
   </p>
   <ul>
     <li>Reading/Writing children, all kinds of properties,</li>
-    <li>custom properties (via DefineProperties).</li>
+    <li>Custom properties (via DefineProperties).</li>
   </ul>
   <p>
     This file is part of the <file>LazUtils</file> package.
   </p>
 </descr>
 
+<!-- unresolved external references -->
+<element name="SysUtils"/>
+<element name="Classes"/>
+<element name="TypInfo"/>
+<element name="Laz2_DOM"/>
+<element name="Laz2_XMLWrite"/>
+
 <!-- enumeration type Visibility: default -->
 <element name="TXMLObjectWriterStackElType">
-<short></short>
-<descr>
-</descr>
+<short>Represents element types used in stack elements for an XML object writer.</short>
+<descr/>
 <seealso>
+  <link id="TXMLObjectWriterStackEl.ElemType"/>
 </seealso>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TXMLObjectWriterStackElType.elUnknown">
-<short></short>
+<short>Element is an unknown type.</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TXMLObjectWriterStackElType.elPropertyList">
-<short></short>
+<short>Element represents a property in a list of properties.</short>
 </element>
-
-<!-- enumeration value Visibility: default -->
 <element name="TXMLObjectWriterStackElType.elChildrenList">
-<short></short>
+<short>Element represents a child component in a list of child components.</short>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TXMLObjectWriterStackEl">
-<short></short>
+<short>Represents a stack element for an XML object writer.</short>
 <descr>
+  <p>
+    <var>TXMLObjectWriterStackEl</var> is a class used to represent an element pushed onto the stack for an XML object writer. Members in the class instance contain the <var>TDOMElement</var> instances for the stack element and its <var>Parent</var>, the stack element type, an inner list of stack elements which it contains, and the name of the property represented in the class instance.
+  </p>
+  <p>
+    TXMLObjectWriterStackEl is used in the implementation of the <var>TXMLObjectWriter</var> class to represent the current element being processed in the XML object writer.
+  </p>
 </descr>
-<errors>
-</errors>
 <seealso>
+  <link id="TXMLObjectWriter"/>
 </seealso>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TXMLObjectWriterStackEl.Element">
-<short></short>
+<short>
+  DOM Element which represents the component or property in the stack element.
+</short>
 <descr>
+  <p>
+    <var>Element</var> is a <var>TDOMElement</var> member used to store the values from the property or component represented in the stack element. Element is created and populated when <var>TXMLObjectWriter</var> processes properties, components, collections, and lists in the class instance.
+  </p>
+  <p>
+    Use <var>PropertyName</var> to get the name of the property represented in the stack element.
+  </p>
+  <p>
+    Use <var>ElemType</var> to determine whether the stack element represents a property list, child component list, or other type.
+  </p>
+  <p>
+    Use <var>Parent</var> to access the TDOMElement which is the parent for the current stack element.
+  </p>
 </descr>
 <seealso>
+  <link id="TXMLObjectWriterStackEl.PropertyName"/>
+  <link id="TXMLObjectWriterStackEl.ElemType"/>
+  <link id="TXMLObjectWriterStackEl.Parent"/>
+  <link id="TXMLObjectWriter"/>
+  <link id="#lazutils.laz2_dom.TDOMElement">TDOMElement</link>
 </seealso>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TXMLObjectWriterStackEl.Parent">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Contains the TDOMElement that is the parent node for the stack element.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TXMLObjectWriterStackEl.ElemType">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Indicates the element type for the stack element.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- variable Visibility: public -->
 <element name="TXMLObjectWriterStackEl.PropertyName">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Name of the property represented in the stack element.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TXMLObjectWriter">
-<short></short>
+<short>Serializes an object instance using an XML storage format.</short>
 <descr>
+  <p>
+    <var>TXMLObjectWriter</var> is a <var>TAbstractObjectWriter</var> descendant which implements an object serialization writer using XML as the storage format. TXMLObjectWriter implements abstract methods defined in the ancestor class, and provides access to the DOM document and the DOM Node tree used to store values generated in the class instance. It maintains an internal stack used to capture and process the hierarchical node tree needed to represent a class instance.
+  </p>
 </descr>
-<errors>
-</errors>
 <seealso>
+  <link id="TXMLObjectReader"/>
+  <link id="#rtl.classes.TAbstractObjectWriter">TAbstractObjectWriter</link>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TXMLObjectWriter.FDoc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
+<!-- Visibility: private -->
+<element name="TXMLObjectWriter.FDoc"/>
+<element name="TXMLObjectWriter.FRootEl"/>
+<element name="TXMLObjectWriter.FStack"/>
+<element name="TXMLObjectWriter.StackEl"/>
+<element name="TXMLObjectWriter.StackPush"/>
+<element name="TXMLObjectWriter.StackPush.Element"/>
+<element name="TXMLObjectWriter.StackPush.ElementType"/>
+<element name="TXMLObjectWriter.StackPop"/>
 
-<!-- variable Visibility: private -->
-<element name="TXMLObjectWriter.FRootEl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLObjectWriter.FStack">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLObjectWriter.StackEl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TXMLObjectWriter.StackPush">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLObjectWriter.StackPush.Element">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLObjectWriter.StackPush.ElementType">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TXMLObjectWriter.StackPop">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
 <element name="TXMLObjectWriter.GetPropertyElement">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Gets a TDOMElement used to serialize the specified type name.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectWriter.GetPropertyElement.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.GetPropertyElement.TypeName">
-<short></short>
+<short>Name for the type represented in the property element.</short>
 </element>
 
 <!-- constructor Visibility: public -->
 <element name="TXMLObjectWriter.Create">
-<short></short>
+<short>Constructor for the class instance.</short>
 <descr>
+  <p>
+    <var>Create</var> is the constructor for the class instance. It provides arguments which identify the XML document where the XML content is stored, an optional path to a node in the document where the content is stored, and a flag to indicate the content is appended to or replaces the content for the root node in the document.
+  </p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.Create.ADoc">
-<short></short>
+<short>TDomDocument instance where the XML content is stored.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.Create.APath">
-<short></short>
+<short>Path expression to the node where the XML content is stored.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.Create.Append">
-<short></short>
+<short>
+  True to append the content to the root node in the document, False to replace it.
+</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginCollection">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Starts serialization of a Collection using the XML format for the writer.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Starts serialization of a Component using the XML format for object writer.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.BeginComponent.Component">
-<short></short>
+<short>The component instance written in the method.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.BeginComponent.Flags">
-<short></short>
+<short>Not used in the current LCL implementation.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.BeginComponent.ChildPos">
-<short></short>
+<short>Not used in the current LCL implementation.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Starts serialization of a list using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.EndList">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Finishes serialization of a list using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.BeginProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Starts serialization for a property using the XML format for the object writer.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.BeginProperty.PropName">
-<short></short>
+<short>Name for the property used as the value for the name attribute in the element.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.EndProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Ends serialization for a property using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteBinary">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a binary value from the specified buffer. </short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteBinary.Buffer">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteBinary.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteBoolean">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a Boolean value using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteBoolean.Value">
-<short></short>
+<short>Boolean value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteFloat">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a floating point value using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteFloat.Value">
-<short></short>
+<short>Floating point value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteSingle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a Single value using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteSingle.Value">
-<short></short>
+<short>Single value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteCurrency">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a Currency value using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteCurrency.Value">
-<short></short>
+<short>Currency value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteDate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a TDateTime value using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteDate.Value">
-<short></short>
+<short>TDateTime value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteIdent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes an Identifier using the XML format for the writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteIdent.Ident">
-<short></short>
+<short>String with the identifier written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteInteger">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes an Integer value using the XML format for the object writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteInteger.Value">
-<short></short>
+<short>Integer value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteMethodName">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes the specified method name using the XML format for the object writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteMethodName.Name">
-<short></short>
+<short>Method name written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteSet">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Serializes a set values from the specified type using the XML format for the object writer.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteSet.Value">
-<short></short>
+<short>LongInt with the bit values for the set type.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteSet.SetType">
-<short></short>
+<short>Pointer to the type for the set.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a string value using the XML format for the object writer.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.WriteString.Value">
-<short></short>
+<short>String value written in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.WriteWideString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Serializes a wide string value using the XML format for the object writer.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TXMLObjectWriter.WriteWideString.Value">
+<short>WideString value written in  the method.</short>
 </element>
 
-<!-- argument Visibility: default -->
-<element name="TXMLObjectWriter.WriteWideString.Value">
-<short></short>
+<element name="TXMLObjectWriter.WriteSignature">
+<short>Not needed for the XML format used in TXMLObjectWriter.</short>
+<descr>
+  <p>
+    Contains an empty implementation in <var>TXMLObjectWriter</var>.
+  </p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TXMLObjectWriter.WriteUInt64">
+<short>Serializes an Int64 value using the XML format for the object writer.</short>
+<descr>
+  <p>
+    Included when USE_NEW_READER_WRITER has been defined in the LCL.
+  </p>
+</descr>
+<seealso/>
+</element>
+<element name="TXMLObjectWriter.WriteUInt64.Value">
+<short/>
+</element>
+
+<element name="TXMLObjectWriter.WriteUnicodeString">
+<short>
+  Serializes an UnicodeString value using the XML format for the object writer.
+</short>
+<descr>
+  <p>
+    Included when USE_NEW_READER_WRITER has been defined in the LCL.
+  </p>
+</descr>
+<seealso/>
+</element>
+<element name="TXMLObjectWriter.WriteUnicodeString.Value">
+<short/>
+</element>
+
+<element name="TXMLObjectWriter.WriteVariant">
+<short>
+  Serializes a Variant value using the XML format for the object writer.
+</short>
+<descr>
+  <p>
+    Included when USE_NEW_READER_WRITER has been defined in the LCL.
+  </p>
+</descr>
+<seealso/>
+</element>
+<element name="TXMLObjectWriter.WriteVariant.VarValue">
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectWriter.Write">
-<short></short>
+<short>Raises an exception in the current LCL version.</short>
 <descr>
+  <p>
+    Raises an Exception when <var>HasReadWriteBuf</var> has been defined in the LCL.
+  </p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.Write.Buffer">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectWriter.Write.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectWriter.Doc">
-<short></short>
+<short>TDOMDocument  used to create and store elements in the XML object writer.</short>
 <descr>
+  <p>
+    <var>Doc</var> is a read-only <var>TDOMDocument</var> property which contains the DOM document used to create and store the DOM elements written in XML object writer.  The value in Doc is assigned in the <var>Create</var> constructor, and uses the TDOMDocument instance passed as an argument to the constructor.
+  </p>
 </descr>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
 <!-- "class of" type Visibility: default -->
 <element name="TXMLObjectWriterClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Class type used to create new instances of the XML object writer.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TXMLObjectReader">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
+<short>De-serializes an object instance from its XML storage format.</short>
+<descr/>
 <seealso>
+  <link id="TXMLObjectWriter"/>
+  <link id="#rtl.classes.TAbstractObjectReader">TAbstractObjectReader</link>
 </seealso>
 </element>
 
-<!-- variable Visibility: private -->
-<element name="TXMLObjectReader.FDoc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLObjectReader.FElement">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLObjectReader.FElementPosition">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TXMLObjectReader.FRootEl">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TXMLObjectReader.ReadNextValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: default -->
-<element name="TXMLObjectReader.ReadNextValue.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="TXMLObjectReader.ReadNextValue.Stay">
-<short></short>
-</element>
+<!-- Visibility: private -->
+<element name="TXMLObjectReader.FDoc"/>
+<element name="TXMLObjectReader.FElement"/>
+<element name="TXMLObjectReader.FElementPosition"/>
+<element name="TXMLObjectReader.FRootEl"/>
+<element name="TXMLObjectReader.ReadNextValue"/>
+<element name="TXMLObjectReader.ReadNextValue.Result"/>
+<element name="TXMLObjectReader.ReadNextValue.Stay"/>
 
 <!-- constructor Visibility: public -->
 <element name="TXMLObjectReader.Create">
-<short></short>
+<short>Constructor for the class instance.</short>
 <descr>
+  <p>
+    <var>Create</var> is the constructor for the object instance. It uses values passed in the <var>ADoc</var> and <var>APath</var> arguments to access the DOM document and node(s) where the XML content for the object reader is stored.
+  </p>
+  <p>
+    ADoc is assigned to the <var>Doc</var> property in the class instance, and its <var>DocumentElement</var> is used to access nodes in the DOM tree.
+  </p>
+  <p>
+    <var>APath</var> contains an expression used to locate the DOM node with the content for the object reader. It provides the hierarchy of DOM nodes used to access the XML content for the class instance.
+  </p>
+  <remark>
+    Create raises an Exception in the constructor if a node cannot be located using the path in APath, or when the node is not a valid <var>TDOMElement</var> instance. Use exception handling when calling the method.
+  </remark>
 </descr>
-<errors>
-</errors>
 <seealso>
+  <link id="TXMLObjectReader.Doc"/>
+  <link id="TXMLObjectReader.Element"/>
+  <link id="#lazutils.laz2_dom.TDOMNode">TDOMNode</link>
+  <link id="#lazutils.laz2_dom.TDOMElement">TDOMElement</link>
+  <link id="#lazutils.laz2_dom.TDOMDocument">TDOMDocument</link>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.Create.ADoc">
-<short></short>
+<short>TDOMDocument instance with the values read in the object reader.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.Create.APath">
-<short></short>
+<short>Path to the node in ADoc where the object instance is stored.</short>
 </element>
 
 <!-- destructor Visibility: public -->
 <element name="TXMLObjectReader.Destroy">
-<short></short>
+<short>Destructor for the class instance.</short>
 <descr>
+  <p>
+    Calls the inherited destructor on entry.
+  </p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.GetRootClassName">
-<short></short>
+<short>
+  Gets the class name from the node which is the root element for the object instance.
+</short>
 <descr>
+  <p>
+    GetRootClassName raises an Exception if a component node cannot be located in the root element, or the node is not a valid TDOMElement instance.
+  </p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.GetRootClassName.Result">
-<short></short>
+<short>Value from the class attribute in the element.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.GetRootClassName.IsInherited">
-<short></short>
+<short>Not used in the current LCL implementation.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.NextValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
+<short>Reads the value type for the next element in the XML DOM tree.</short>
+<descr/>
 <seealso>
+  <link id="#rtl.classes.TValueType">TValueType</link>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.NextValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Reads the value for the next element in the XML DOM tree after the value type has been read.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadValue.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.BeginRootComponent">
-<short></short>
+<short>Locates the DOM node for the component in the document element.</short>
 <descr>
+  <p>
+    Raises an Exception if Element has not been assigned, or a node using a "component" tag is not found in the Element.
+  </p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.BeginComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Gets the DOM element for the component, gets the class type and component name, and sets Element to the properties node.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.BeginComponent.Flags">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.BeginComponent.AChildPos">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.BeginComponent.CompClassName">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.BeginComponent.CompName">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.BeginProperty">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads the property name from Element and prepares for the property value(s).</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.BeginProperty.Result">
-<short></short>
+<short>Name for the property read from the XML content in the Element.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.ReadBinary">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a binary value from Element and stores it in the specified stream.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.ReadBinary.DestData">
-<short></short>
+<short>TMemoryStream instance where the binary value is stored.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadFloat">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a string value from Element and converts it to a floating point value.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadFloat.Result">
-<short></short>
+<short>Floating point value converted in the method, or 0 as the default.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadSingle">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Converts a string value in Element to a Single data type.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadSingle.Result">
-<short></short>
+<short>Single value converted in the method, or 0 as the default.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadCurrency">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Converts a string value in Element to a Currency data type.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadCurrency.Result">
-<short></short>
+<short>Currency value converted in the method, or 0 as the default.</short>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadDate">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a TDateTime value from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadDate.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadIdent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads an Identifier from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadIdent.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.ReadIdent.ValueType">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadInt8">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a ShortInt value from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadInt8.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadInt16">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a SmallInt value from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadInt16.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadInt32">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a LongInt value from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadInt32.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadInt64">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads an Int64 type from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadInt64.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadSet">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads values for a set type from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadSet.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.ReadSet.SetType">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadStr">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a String value from Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadStr.Result">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadString">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads a string value from Element.</short>
+<descr/>
+<notes>
+  <note>Why the exception when the string has more than 255 characters?</note>
+</notes>
+<seealso/>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="TXMLObjectReader.ReadString.Result">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.ReadString.StringType">
-<short></short>
+<short/>
 </element>
 
 <!-- function Visibility: public -->
 <element name="TXMLObjectReader.ReadWideString">
-<short></short>
+<short>Reads a WideString value from Element.</short>
 <descr>
+  <p>
+    Converts the UTF-8-encoded content in Element to the WideString type used in the return value.
+  </p>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
+</element>
+<element name="TXMLObjectReader.ReadWideString.Result">
+<short/>
 </element>
 
-<!-- function result Visibility: default -->
-<element name="TXMLObjectReader.ReadWideString.Result">
-<short></short>
+<element name="TXMLObjectReader.ReadSignature">
+  <short>Not implemented and not needed in TXMLObjectReader.</short>
+  <descr/>
+  <seealso/>
+</element>
+
+<element name="TXMLObjectReader.ReadUnicodeString">
+  <short>Reads a UnicodeString value from Element.</short>
+  <descr>
+    <p>
+      Converts the UTF-8-encoded value in Element to the UnicodeString type used in the return value.
+    </p>
+  </descr>
+  <seealso/>
+</element>
+<element name="TXMLObjectReader.ReadUnicodeString.Result">
+  <short>UnicodeString value read in the method.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.SkipComponent">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Positions the reader to the next sibling DOM node in Element.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.SkipComponent.SkipComponentInfos">
-<short></short>
+<short/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.SkipValue">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Reads and discards the value in Element.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TXMLObjectReader.Read">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Raises an exception in the current LCL implementation.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.Read.Buf">
-<short></short>
+<short/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TXMLObjectReader.Read.Count">
-<short></short>
+<short/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectReader.Doc">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>TDomDocument instance with the XML content read in the object reader.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectReader.Element">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+  Contains the DOM element currently being processed in the XML object reader.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TXMLObjectReader.ElementPosition">
-<short></short>
+<short>
+  Indicates whether the object reader is processing an element name or its value.
+</short>
 <descr>
+  <p>
+    0 indicates that the element name is being processed. 1 indicates that the name processing has been completed, and the value(s) in the element are being processed.
+  </p>
 </descr>
-<seealso>
-</seealso>
+<seealso/>
 </element>
 
 <!-- "class of" type Visibility: default -->
 <element name="TXMLObjectReaderClass">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Class type used to create new instances of the XML object reader.</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="WriteComponentToXMLStream">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Serializes the specified component to a stream using an XML object writer.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="WriteComponentToXMLStream.AComponent">
-<short></short>
+<short>Component with values written to the stream.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="WriteComponentToXMLStream.AStream">
-<short></short>
+<short>TStream instance where the XML content is stored.</short>
 </element>
 
-</module> <!-- Laz_XMLStreaming -->
-
+</module>
+<!-- Laz_XMLStreaming -->
 </package>
 </fpdoc-descriptions>
