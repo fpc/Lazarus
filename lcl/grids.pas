@@ -302,7 +302,7 @@ type
     ActiveControl: boolean;
   end;
 
-  TCompositeCellEditor = class(TWinControl)
+  TCompositeCellEditor = class(TCustomControl)
   private
     FGrid: TCustomGrid;
     FCol,FRow: Integer;
@@ -324,6 +324,7 @@ type
     function GetActiveControl: TWinControl;
     procedure VisibleChanging; override;
     function  SendChar(AChar: TUTF8Char): Integer;
+    procedure SetColor(Value: TColor); override;
     procedure WndProc(var TheMessage : TLMessage); override;
     procedure CustomAlignPosition(AControl: TControl; var ANewLeft, ANewTop, ANewWidth,
       ANewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
@@ -13714,6 +13715,16 @@ begin
     TWSCustomGridClass(FGrid.WidgetSetClass).SendCharToEditor(ActCtrl, AChar);
     Result:=1;
   end;
+end;
+
+procedure TCompositeCellEditor.SetColor(Value: TColor);
+var
+  activeCtrl: TWinControl;
+begin
+  inherited SetColor(Value);
+  activeCtrl := ActiveControl;
+  if activeCtrl<>nil then
+    activeCtrl.Color := Value;
 end;
 
 destructor TCompositeCellEditor.Destroy;
