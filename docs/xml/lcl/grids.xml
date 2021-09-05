@@ -1453,6 +1453,21 @@
         <descr>0 - failure, 1 - success</descr>
       </element>
 
+      <element name="TCompositeCellEditor.SetColor">
+        <short>Sets the value for the Color property.</short>
+        <descr>
+          <p>
+            Overridden in TCompositeCellEditor to ensure that the new color value is also applied to the ActiveControl property (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+        </seealso>
+      </element>
+      <element name="TCompositeCellEditor.SetColor.Value">
+        <short>New value for the Color property.</short>
+      </element>
+
       <element name="TCompositeCellEditor.WndProc" link="#lcl.controls.TControl.WndProc"/>
 
       <element name="TCompositeCellEditor.Destroy">
@@ -1468,8 +1483,46 @@
         </seealso>
       </element>
 
+      <element name="TCompositeCellEditor.CustomAlignPosition">
+        <short>Sets the  position for the single editor in the composite control.</short>
+        <descr>
+          <p>
+            Overridden in TCompositeCellEditor to apply control alignment for the single control used in the composite editor. No provisions are made for calling CustomAlignInsertBefore() or sharing space with other editors in the control.
+          </p>
+          <p>
+            CustomAlignPosition does <b>not</b> call the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CustomAlignPosition">TWinControl.CustomAlignPosition</link>
+        </seealso>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.AControl">
+        <short/>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.ANewLeft">
+        <short/>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.ANewTop">
+        <short/>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.ANewWidth">
+        <short/>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.ANewHeight">
+        <short/>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.AlignRect">
+        <short/>
+      </element>
+      <element name="TCompositeCellEditor.CustomAlignPosition.AlignInfo">
+        <short/>
+      </element>
+
       <element name="TCompositeCellEditor.AddEditor">
-        <short>Adds the specified Editor with the given alignment and specified ActiveControl.</short>
+        <short>
+          Adds the specified Editor with the given alignment and specified ActiveControl.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11047,7 +11100,17 @@
 
       <element name="TCustomGrid.EditorBorderStyle">
         <short>The border style for the Editor control.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>EditorBorderStyle</var> is a <var>name</var> property which contains the border style used for the Editor in the grid control. The value for the property depends on the editor style used for the cell in the grid.
+          </p>
+          <p>
+            When TStringCellEditor, TCompositeCellEditor, or TPickListCellEditor are used for the cell, the property value is read from the BorderStyle in the editor control. For all other editors (TButtonCellEditor), the value bsSingle is returned as the property value.
+          </p>
+          <p>
+            Setting a new value for the property causes the BorderStyle for the Editor to be updated, and the EditorPos method is called to recalculate the editor bounds and position.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
