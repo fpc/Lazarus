@@ -217,7 +217,7 @@
 
       <!-- class Visibility: default -->
       <element name="TUnicodeEnumeratorBase">
-        <short></short>
+        <short>Base class for a Unicode character enumerator.</short>
         <descr>
           Base class for a Unicode character enumerator.
         </descr>
@@ -364,19 +364,15 @@
       </element>
 
       <!-- operator Visibility: default -->
-      <element name="Enumerator">
+      <element name="operator enumerator(string): tunicodecharacterenumerator">
         <short>
           Enumerator which combines diacritical marks.
         </short>
         <descr>
-          Operator enables For ... In loops. This enumerator combines diacritical marks. It is used by default although there are more rules for combining codepoints. Diacritical marks cover rules for most western languages.
+          <p>
+            The enumerator operator enables For ... In loops. This enumerator combines diacritical marks in the String argument for the operator. It is used by default although there are more rules for combining codepoints. Diacritical marks cover rules for most western languages.
+          </p>
         </descr>
-      </element>
-      <element name="Enumerator.Result">
-        <short>Enumerator for the operator.</short>
-      </element>
-      <element name="Enumerator.A">
-        <short>Values to traverse in the enumerator.</short>
       </element>
 
     </module>

@@ -283,8 +283,14 @@
 
       <element name="TLazFifoQueue.FList"/>
       <element name="TLazFifoQueue.FQueueSize"/>
-      <element name="TLazFifoQueue.FTotalItemsPopped"/>
-      <element name="TLazFifoQueue.FTotalItemsPushed"/>
+
+      <element name="TLazFifoQueue.FTotalItemsPopped">
+        <short>Member with the total number of items removed from the FIFO queue.</short>
+      </element>
+
+      <element name="TLazFifoQueue.FTotalItemsPushed">
+        <short>Member with the total number of items stored on the FIFO queue.</short>
+      </element>
 
       <element name="TLazFifoQueue.GetIsEmpty">
         <short>Gets the value for the IsEmpty property.</short>
@@ -601,8 +607,12 @@ TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
       </element>
 
       <element name="TLazThreadedQueue.TryPushItemUnprotected">
-        <short/>
-        <descr/>
+        <short>Tries to push an item onto the queue without resource protection.</short>
+        <descr>
+          <p>
+            Sets and resets internal RTL events when the item was successfully pushed, and when queue space is available.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TLazThreadedQueue.TryPushItemUnprotected.Result">
@@ -613,8 +623,12 @@ TLazThreadedQueueRect = specialize TLazThreadedQueue&lt;TRectangle&gt;;
       </element>
 
       <element name="TLazThreadedQueue.TryPopItemUnprotected">
-        <short/>
-        <descr/>
+        <short>Tries to pop an item off of the queue without resource protection.</short>
+        <descr>
+          <p>
+            Sets and resets internal RTL events when the item was successfully popped, and when queue space is available.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TLazThreadedQueue.TryPopItemUnprotected.Result">

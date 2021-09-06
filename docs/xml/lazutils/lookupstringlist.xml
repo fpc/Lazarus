@@ -318,20 +318,22 @@
 
       <element name="Deduplicate">
         <short>
-          Removes duplicate strings in AStrings.
+          Removes duplicate strings in the AStrings argument.
         </short>
         <descr>
           <p>
-            Removes duplicate strings (with case sensitivity) from <var>AStrings</var>. Deduplicate creates a <var>TLookupStringList</var> instance that is used to remove the duplicate values in AStrings. When AStrings owns and contains objects, the function will return <b>False</b>.
+            Removes duplicate strings (with case sensitivity) from <var>AStrings</var>. Deduplicate creates a <var>TLookupStringList</var> instance that is used to remove the duplicate values in AStrings.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TLookupStringList"/>
+        </seealso>
       </element>
       <element name="Deduplicate.AStrings">
-        <short>TStrings to examine in the function.</short>
+        <short>TStrings instance examined in the function.</short>
       </element>
       <element name="Deduplicate.Result">
-        <short>False if AStrings owns and contains objects.</short>
+        <short>The number of duplicates removed from AStrings.</short>
       </element>
 
     </module>

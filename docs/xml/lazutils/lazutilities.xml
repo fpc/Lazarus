@@ -184,7 +184,9 @@
       </element>
 
       <element name="MergeSortWithLen">
-        <short></short>
+        <short>
+          Implements a merge sort algorithm for a list of pointers with the given length.
+        </short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -199,7 +201,7 @@
       </element>
 
       <element name="ConsoleVerbosity">
-        <short></short>
+        <short>Level of detail displayed in IDE console output windows.</short>
         <descr>
           <p>
             <var>ConsoleVerbosity</var> is an Integer variable which indicates the level of detail output from tools like pas2js and CodeTools. ConsoleVerbosity enables debugger output for specific levels of detail.
