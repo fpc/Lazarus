@@ -7,7 +7,9 @@
       ====================================================================
     -->
     <module name="LazClasses">
-      <short>Contains classes and routines used to implement free notifications.</short>
+      <short>
+        Contains classes and routines used to implement free notifications and reference counting.
+      </short>
       <descr></descr>
 
       <!-- unresolved external references -->
@@ -59,108 +61,98 @@
         <seealso/>
       </element>
 
-      <element name="TRefCountedObject.FRefCount">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.FIncDecRefCount">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.FDebugNext">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.FDebugPrev">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.FDebugList">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.FCritSect">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.FInDestroy">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.DbgAddName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TRefCountedObject.DbgAddName.DebugIdAdr">
-        <short/>
-      </element>
-      <element name="TRefCountedObject.DbgAddName.DebugIdTxt">
-        <short/>
-      </element>
-
-      <element name="TRefCountedObject.DbgRemoveName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TRefCountedObject.DbgRemoveName.DebugIdAdr">
-        <short/>
-      </element>
-      <element name="TRefCountedObject.DbgRemoveName.DebugIdTxt">
-        <short/>
-      </element>
+      <!-- private -->
+      <element name="TRefCountedObject.FRefCount"/>
+      <element name="TRefCountedObject.FIncDecRefCount"/>
+      <element name="TRefCountedObject.FDebugNext"/>
+      <element name="TRefCountedObject.FDebugPrev"/>
+      <element name="TRefCountedObject.FDebugList"/>
+      <element name="TRefCountedObject.FCritSect"/>
+      <element name="TRefCountedObject.FInDestroy"/>
+      <element name="TRefCountedObject.DbgAddName"/>
+      <element name="TRefCountedObject.DbgAddName.DebugIdAdr"/>
+      <element name="TRefCountedObject.DbgAddName.DebugIdTxt"/>
+      <element name="TRefCountedObject.DbgRemoveName"/>
+      <element name="TRefCountedObject.DbgRemoveName.DebugIdAdr"/>
+      <element name="TRefCountedObject.DbgRemoveName.DebugIdTxt"/>
 
       <element name="TRefCountedObject.DoFree">
-        <short></short>
-        <descr></descr>
-        <errors></errors>
-        <seealso></seealso>
+        <short>Performs actions needed to free the reference counted object instance.</short>
+        <descr>
+          <p>
+            Calls the inherited Free method.
+          </p>
+        </descr>
+        <seealso/>
       </element>
 
       <element name="TRefCountedObject.DoReferenceAdded">
-        <short/>
+        <short>Has an empty implementation in TRefCountedObject.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TRefCountedObject.DoReferenceReleased">
-        <short/>
+        <short>Has an empty implementation in TRefCountedObject.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TRefCountedObject.RefCount">
-        <short></short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Number of times the object instance has been referenced in the application.
+        </short>
+        <descr>
+          <p>
+            <var>RefCount</var> is a read-only <var>Integer</var> property which contains the number of times the object instance has been referenced. Its value is maintained when methods like <var>AddReference</var> and <var>ReleaseReference</var> are called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRefCountedObject.AddReference"/>
+          <link id="TRefCountedObject.ReleaseReference"/>
+        </seealso>
       </element>
 
       <element name="TRefCountedObject.Create">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            Create is the constructor for the class instance. It sets the default values for members used in the class instance.When WITH_REFCOUNT_DEBUG has been defined in the LCL, a critcal section used during debugging is initialized. Create calls the inherited constructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRefCountedObject.RefCount"/>
+        </seealso>
       </element>
 
       <element name="TRefCountedObject.Destroy">
-        <short/>
-        <descr/>
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <p>
+            <var>Destroy</var> is the overridden destructor for the class instance. It ensures that resource allocated in the constructor are freed before freeing the class instance. Destroy calls the inherited destructor prior to exit.
+          </p>
+        </descr>
+        <errors>
+          Destroy raises an EAssertionFailed exception if RefCount has a non-zero value when the method was called.
+        </errors>
         <seealso/>
       </element>
 
       <element name="TRefCountedObject.AddReference">
-        <short/>
+        <short>Increments the value in RefCount and calls DoReferenceAdded.</short>
         <descr>
           <p>
-            AddReference and ReleaseReference can be used in threads. However a thread can only call the
-            methods, if either:
+            AddReference and ReleaseReference can be used in threads. However a thread can only call the methods, if either:
           </p>
           <ul>
-            <li>The thread already holds a refernce (and no other thread will release that reference).</li>
-            <li>The thread created the reference, and no other thread has access to the object (yet).</li>
             <li>
-              The thread is in a critical section, preventing other threads from decreasing the reference
-              count.
+              The thread already holds a refernce (and no other thread will release that reference).
+            </li>
+            <li>
+              The thread created the reference, and no other thread has access to the object (yet).
+            </li>
+            <li>
+              The thread is in a critical section, preventing other threads from decreasing the reference count.
             </li>
           </ul>
         </descr>
@@ -174,18 +166,20 @@
       </element>
 
       <element name="TRefCountedObject.ReleaseReference">
-        <short/>
+        <short>Decrements the value in RefCount and calls DoReferenceReleased.</short>
         <descr>
           <p>
-            AddReference and ReleaseReference can be used in threads. However a thread can only call the
-            methods, if either:
+            AddReference and ReleaseReference can be used in threads. However a thread can only call the methods, if either:
           </p>
           <ul>
-            <li>The thread already holds a refernce (and no other thread will release that reference).</li>
-            <li>The thread created the reference, and no other thread has access to the object (yet).</li>
             <li>
-              The thread is in a critical section, preventing other threads from decreasing the reference
-              count.
+              The thread already holds a refernce (and no other thread will release that reference).
+            </li>
+            <li>
+              The thread created the reference, and no other thread has access to the object (yet).
+            </li>
+            <li>
+              The thread is in a critical section, preventing other threads from decreasing the reference count.
             </li>
           </ul>
         </descr>
@@ -199,7 +193,9 @@
       </element>
 
       <element name="TRefCountedObject.DbgRenameReference">
-        <short/>
+        <short>
+          implemented when WITH_REFCOUNT_DEBUG is defined in the LCL.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -220,15 +216,21 @@
         <short>Implements a list used to store TRefCountedObject instances.</short>
         <descr>
           <p>
-            Provides a <var>Notify</var> method which executes the notification methods for each reference-counted object in the list.
+            Provides a <var>Notify</var> method which increases or decreases the reference count for an object when it is added to or removed from the list.ist.
           </p>
         </descr>
         <seealso/>
       </element>
 
       <element name="TRefCntObjList.Notify">
-        <short/>
-        <descr/>
+        <short>
+          Performs a notification when an object is added to or removed from the list.
+        </short>
+        <descr>
+          <p>
+            For TRefCntObjList, the notification causes the reference count for the object in Ptr to be increased or decreased as needed for the value in Action.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TRefCntObjList.Notify.Ptr">
@@ -239,8 +241,15 @@
       </element>
 
       <element name="ReleaseRefAndNil">
-        <short/>
-        <descr/>
+        <short>Releases the specified reference counted object and sets it to Nil.</short>
+        <descr>
+          <p>
+            No actions are performed in the method when ARefCountedObject has not been assigned, or has already been released. ReleaseRefAndNil calls the ReleaseReference method for the object instance, and sets the pointer in ARefCountedObject to Nil.
+          </p>
+        </descr>
+        <errors>
+          Raises an EAssertionFailed exception if the object instance in ARefCountedObject is derived from a class other than TRefCountedObject.
+        </errors>
         <seealso/>
       </element>
       <element name="ReleaseRefAndNil.ARefCountedObject">
@@ -254,8 +263,17 @@
       </element>
 
       <element name="NilThenReleaseRef">
-        <short/>
-        <descr/>
+        <short>
+          Copies and releases the specified reference counted object, and sets the copy to Nil.
+        </short>
+        <descr>
+          <p>
+            No actions are performed in the method when ARefCountedObject has not been assigned, or has already been released. ReleaseRefAndNil calls the ReleaseReference method for the object instance, and sets the pointer in ARefCountedObject to Nil.
+          </p>
+        </descr>
+        <errors>
+          Raises an EAssertionFailed exception if the object instance in ARefCountedObject is derived from a class other than TRefCountedObject.
+        </errors>
         <seealso/>
       </element>
       <element name="NilThenReleaseRef.ARefCountedObject">
