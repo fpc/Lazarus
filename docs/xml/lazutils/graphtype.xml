@@ -36,15 +36,25 @@
       </element>
 
       <element name="TGraphicsFillStyle">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Indicates how a surface area is filled with a given color.</short>
+        <descr>
+          <p>
+            Used in widgetset classes to implement the FloodFill routine and method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.graphics.TFillStyle">TFillStyle</link>
+        </seealso>
       </element>
       <element name="TGraphicsFillStyle.fsSurface">
-        <short>Fill till the color (it fills all except this color).</short>
+        <short>
+          Fills an area where the pixels have the specified color. Fill color is applied in all directions to pixels with the specified color. Used to fill an area with multiple colors at its boundaries.
+        </short>
       </element>
       <element name="TGraphicsFillStyle.fsBorder">
-        <short>Fill this color (it fills only connected pixels of this color).</short>
+        <short>
+          Fills an area bounded by the specified color. Like the Windows FloodFill routine.
+        </short>
       </element>
 
       <element name="TGraphicsBevelCut">
@@ -209,9 +219,15 @@
       </element>
 
       <element name="TRawImageQueryFlags">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Set type used to store values from the TRawImageQueryFlag enumeration.</short>
+        <descr>
+          <p>
+            Passed as an argument to routines in the LCL interface an widgetset classes. Used to determine when the image descriptor for raw image data needs to be read from its device context or handle.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRawImageQueryFlag"/>
+        </seealso>
       </element>
 
       <element name="TRawImageDescription">
@@ -266,13 +282,13 @@
       </element>
 
       <element name="TRawImageDescription.BitOrder">
-        <short/>
+        <short>Indicates the bit order for scanlines in the raw image data.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TRawImageDescription.ByteOrder">
-        <short>The LSB/MSB-first byte order of color data.</short>
+        <short>The LSB/MSB-first byte order for color data.</short>
         <descr/>
         <seealso/>
       </element>
@@ -406,8 +422,14 @@
       </element>
 
       <element name="TRawImageDescription.PaletteLineEnd">
-        <short/>
-        <descr/>
+        <short>
+          Indicates the alignment or padding used at the end of a scanline in the raw image data.
+        </short>
+        <descr>
+          <p>
+            Valid when PaletteColorCount has a positive non-zero value.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -458,7 +480,7 @@
       </element>
 
       <element name="TRawImageDescription.Init_BPP24_R8G8B8_BIO_TTB">
-        <short/>
+        <short>24-bit format with bits in RGB order from top to bottom.</short>
         <descr/>
         <seealso/>
       </element>
@@ -470,7 +492,7 @@
       </element>
 
       <element name="TRawImageDescription.Init_BPP24_R8G8B8_BIO_TTB_UpsideDown">
-        <short/>
+        <short>24-bit format with bits in RGB order from bottom to top.</short>
         <descr/>
         <seealso/>
       </element>
@@ -482,7 +504,9 @@
       </element>
 
       <element name="TRawImageDescription.Init_BPP32_A8R8G8B8_BIO_TTB">
-        <short/>
+        <short>
+          32-bit format with an Alpha channel, bits in RGB order from top to bottom.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -494,7 +518,9 @@
       </element>
 
       <element name="TRawImageDescription.Init_BPP32_R8G8B8A8_BIO_TTB">
-        <short/>
+        <short>
+          32-bit format with bits in RGB order plus an Alpha channel, ordered from top to bottom.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -813,8 +839,14 @@
       </element>
 
       <element name="TRawImage.GetLineStart">
-        <short/>
-        <descr/>
+        <short>
+          Gets a pointer to the byte position at the beginning of the specified scanline.
+        </short>
+        <descr>
+          <p>
+            The return value is Nil if Data has not been assigned in the class instance, and when the ALine argument contains 0 (zero). The pointer position is calculated as the product of ALine and the BytesPerLine setting in the image Description.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TRawImage.GetLineStart.Result">
@@ -937,7 +969,9 @@
       </element>
 
       <element name="TRawImage.WriteMask">
-        <short/>
+        <short>
+          Writes the mask for the raw image when assigned and given a valid bit depth in the image description.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1136,7 +1170,7 @@
       </element>
 
       <element name="RawImageQueryFlagsToString">
-        <short/>
+        <short>Converts the specified set of raw image query flags to a String value.</short>
         <descr/>
         <seealso/>
       </element>
