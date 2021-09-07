@@ -7755,8 +7755,16 @@ MaxInt div SizeOf(Pointer)-1
         <short>Values to convert in the routine.</short>
       </element>
 
+      <element name="TFPList">
+        <short>Alias for the TList type.</short>
+        <descr>
+          <p>
+            Implemented when the symbol <b>fpc</b> has not been defined.
+          </p>
+        </descr>
+      </element>
+
     </module>
     <!-- laz2_DOM -->
-
   </package>
 </fpdoc-descriptions>
