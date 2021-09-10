@@ -4178,6 +4178,7 @@ procedure TControl.AutoAdjustLayout(AMode: TLayoutAdjustmentPolicy;
 var
   lXProportion, lYProportion: Double;
   lMode: TLayoutAdjustmentPolicy;
+  savedParentFont: Boolean;
 begin
   // First resolve ladDefault
   lMode := AMode;
@@ -4199,12 +4200,14 @@ begin
   else lYProportion := 1.0;
 
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.AutoAdjustLayout'){$ENDIF};
+  savedParentFont := ParentFont;
   try
     if AMode in [lapAutoAdjustWithoutHorizontalScrolling, lapAutoAdjustForDPI] then
       ScaleFontsPPI(AToPPI, lYProportion);
 
     DoAutoAdjustLayout(lMode, lXProportion, lYProportion);
   finally
+    ParentFont := savedParentFont;
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TControl.AutoAdjustLayout'){$ENDIF};
   end;
 end;
