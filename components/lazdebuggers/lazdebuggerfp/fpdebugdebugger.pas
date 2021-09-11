@@ -1849,6 +1849,7 @@ begin
          AnEntry.SrcFileName:=ASrcFileName;
          AnEntry.FuncName := AFuncName;
          AnEntry.SrcStatementIndex:=StatIndex;  // should be inverted for reverse parsing
+         AnEntry.Offset := int32(int64(tmpAddr) - int64(Sym.Address.Address));
          AReversedRange.Append(@AnEntry);
          inc(StatIndex);
        end;
@@ -1924,6 +1925,7 @@ begin
       AnEntry.SrcFileName:=ASrcFileName;
       AnEntry.FuncName := AFuncName;
       AnEntry.SrcStatementIndex:=StatIndex;
+      AnEntry.Offset := int32(int64(AnAddr) - int64(Sym.Address.Address));
       ARange.Append(@AnEntry);
       ALastAddr:=AnAddr;
       inc(StatIndex);
