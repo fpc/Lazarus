@@ -12,32 +12,31 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object DependPkgNameLabel: TLabel
     AnchorSideTop.Control = DependPkgNameFilter
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = DependPkgNameFilter
-    Left = 38
-    Height = 18
-    Top = 14
-    Width = 141
+    Left = 35
+    Height = 15
+    Top = 11
+    Width = 121
     Anchors = [akTop, akRight]
     BorderSpacing.Top = 3
     BorderSpacing.Right = 6
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
     BorderSpacing.CellAlignVertical = ccaCenter
     Caption = 'DependPkgNameLabel'
-    ParentColor = False
   end
   object DependPkgNameFilter: TListFilterEdit
     AnchorSideLeft.Control = DependPkgNameListBox
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 185
-    Height = 32
+    Left = 162
+    Height = 23
     Top = 7
-    Width = 256
+    Width = 279
     ButtonWidth = 23
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 3
@@ -54,19 +53,20 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideRight.Control = DependPkgNameFilter
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DependMinVersionEdit
-    Left = 185
-    Height = 205
-    Top = 74
-    Width = 256
+    Left = 162
+    Height = 239
+    Top = 62
+    Width = 279
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
-    ItemHeight = 16
+    ItemHeight = 0
     MultiSelect = True
     OnDrawItem = DependPkgNameListBoxDrawItem
+    OnMeasureItem = DependPkgNameListBoxMeasureItem
     OnSelectionChange = DependPkgNameListBoxSelectionChange
     Options = []
-    Style = lbOwnerDrawVariable
+    Style = lbOwnerDrawFixed
     TabOrder = 3
   end
   object DependMinVersionEdit: TEdit
@@ -74,10 +74,10 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideRight.Control = DependPkgNameListBox
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = DependMaxVersionEdit
-    Left = 185
-    Height = 32
-    Top = 285
-    Width = 256
+    Left = 162
+    Height = 23
+    Top = 307
+    Width = 279
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 6
     TabOrder = 4
@@ -90,10 +90,10 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideRight.Control = DependPkgNameListBox
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = BP
-    Left = 185
-    Height = 32
-    Top = 320
-    Width = 256
+    Left = 162
+    Height = 23
+    Top = 333
+    Width = 279
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Top = 3
     TabOrder = 5
@@ -104,35 +104,33 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideTop.Control = DependMinVersionEdit
     AnchorSideTop.Side = asrCenter
     Left = 24
-    Height = 18
-    Top = 292
-    Width = 150
+    Height = 15
+    Top = 311
+    Width = 128
     BorderSpacing.Left = 24
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
     BorderSpacing.CellAlignVertical = ccaCenter
     Caption = 'DependMinVersionLabel'
-    ParentColor = False
   end
   object DependMaxVersionLabel: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = DependMaxVersionEdit
     AnchorSideTop.Side = asrCenter
     Left = 24
-    Height = 18
-    Top = 327
-    Width = 153
+    Height = 15
+    Top = 337
+    Width = 130
     Alignment = taRightJustify
     BorderSpacing.Left = 24
     BorderSpacing.Right = 8
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
     BorderSpacing.CellAlignVertical = ccaCenter
     Caption = 'DependMaxVersionLabel'
-    ParentColor = False
   end
   object BP: TButtonPanel
     Left = 6
-    Height = 37
-    Top = 358
+    Height = 33
+    Top = 362
     Width = 437
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -151,22 +149,22 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideLeft.Control = DependPkgNameListBox
     AnchorSideTop.Control = DependPkgNameFilter
     AnchorSideTop.Side = asrBottom
-    Left = 185
-    Height = 22
-    Top = 46
-    Width = 60
+    Left = 162
+    Height = 19
+    Top = 37
+    Width = 48
     AutoSize = True
     BorderSpacing.Top = 7
     BevelOuter = bvNone
-    ClientHeight = 22
-    ClientWidth = 60
+    ClientHeight = 19
+    ClientWidth = 48
     ParentColor = False
     TabOrder = 1
     object cbLocalPkg: TCheckBox
       Left = 0
-      Height = 22
+      Height = 19
       Top = 0
-      Width = 60
+      Width = 48
       Caption = 'Local'
       Checked = True
       Color = clDefault
@@ -181,23 +179,23 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = DependPkgNameFilter
     AnchorSideTop.Side = asrBottom
-    Left = 252
-    Height = 22
-    Top = 46
-    Width = 69
+    Left = 217
+    Height = 19
+    Top = 37
+    Width = 55
     AutoSize = True
     BorderSpacing.Left = 7
     BorderSpacing.Top = 7
     BevelOuter = bvNone
-    ClientHeight = 22
-    ClientWidth = 69
+    ClientHeight = 19
+    ClientWidth = 55
     ParentColor = False
     TabOrder = 2
     object cbOnlinePkg: TCheckBox
       Left = 0
-      Height = 22
+      Height = 19
       Top = 0
-      Width = 69
+      Width = 55
       Caption = 'Online'
       TabOrder = 0
     end
@@ -206,15 +204,14 @@ object AddPkgDependencyDialog: TAddPkgDependencyDialog
     AnchorSideTop.Control = pnLocalPkg
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = DependPkgNameFilter
-    Left = 46
-    Height = 18
-    Top = 48
-    Width = 133
+    Left = 43
+    Height = 15
+    Top = 39
+    Width = 113
     Anchors = [akTop, akRight]
     BorderSpacing.Right = 6
     BorderSpacing.CellAlignHorizontal = ccaLeftTop
     BorderSpacing.CellAlignVertical = ccaCenter
     Caption = 'DependPkgTypeLabel'
-    ParentColor = False
   end
 end
