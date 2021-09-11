@@ -1745,7 +1745,8 @@ var
   p: pointer;
   ADump,
   AStatement,
-  ASrcFileName: string;
+  ASrcFileName,
+  AFuncName: string;
   ASrcFileLine: integer;
   i,j, sz, bytesDisassembled, bufOffset: Integer;
   Sym: TFpSymbol;
@@ -1832,11 +1833,13 @@ begin
          begin
            ASrcFileName:=sym.FileName;
            ASrcFileLine:=sym.Line;
+           AFuncName := sym.Name;
            sym.ReleaseReference;
          end
          else
          begin
            ASrcFileName:='';
+           AFuncName := '';
            ASrcFileLine:=0;
          end;
          AnEntry.Addr := tmpAddr;
@@ -1844,6 +1847,7 @@ begin
          AnEntry.Statement := AStatement;
          AnEntry.SrcFileLine:=ASrcFileLine;
          AnEntry.SrcFileName:=ASrcFileName;
+         AnEntry.FuncName := AFuncName;
          AnEntry.SrcStatementIndex:=StatIndex;  // should be inverted for reverse parsing
          AReversedRange.Append(@AnEntry);
          inc(StatIndex);
@@ -1904,11 +1908,13 @@ begin
         begin
         ASrcFileName:=sym.FileName;
         ASrcFileLine:=sym.Line;
+        AFuncName := sym.Name;
         sym.ReleaseReference;
         end
       else
         begin
         ASrcFileName:='';
+        AFuncName := '';
         ASrcFileLine:=0;
         end;
       AnEntry.Addr := AnAddr;
@@ -1916,6 +1922,7 @@ begin
       AnEntry.Statement := AStatement;
       AnEntry.SrcFileLine:=ASrcFileLine;
       AnEntry.SrcFileName:=ASrcFileName;
+      AnEntry.FuncName := AFuncName;
       AnEntry.SrcStatementIndex:=StatIndex;
       ARange.Append(@AnEntry);
       ALastAddr:=AnAddr;
