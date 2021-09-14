@@ -704,7 +704,10 @@ begin
                              [Format('%s:%u %s', [ALine.FileName, ALine.SourceLine, ALine.Statement]),
                               ALine.PasCode]);
     end;
-    lmsFuncName: Result:= ALine.FileName + ' ' + ALine.Statement;
+    lmsFuncName: if ALine.SourceLine > 0 then
+      Result:= Format('%s+%u %s', [ALine.FileName, ALine.SourceLine, ALine.Statement])
+    else
+      Result:= ALine.FileName + ' ' + ALine.Statement;
   end;
 end;
 
@@ -1026,7 +1029,8 @@ procedure TAssemblerDlg.UpdateLineDataEx(ALineMap: TAsmDlgLineEntries; AFirstLin
       Result :=  (AItm^.FuncName <> '');
       if Result
       then Result := (AItm^.Offset = 0)
-                  or ( (APrvItm <> nil) and (AItm^.FuncName <> APrvItm^.FuncName) );
+                  or ( (APrvItm <> nil) and (AItm^.FuncName <> APrvItm^.FuncName) )
+                  or (APrvItm = nil);
     end;
   end;
 
