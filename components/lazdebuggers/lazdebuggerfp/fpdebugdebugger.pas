@@ -1745,7 +1745,8 @@ var
   p: pointer;
   ADump,
   AStatement,
-  ASrcFileName: string;
+  ASrcFileName,
+  AFuncName: string;
   ASrcFileLine: integer;
   i,j, sz, bytesDisassembled, bufOffset: Integer;
   Sym: TFpSymbol;
@@ -1753,7 +1754,7 @@ var
   FirstIndex: integer;
   ALastAddr, tmpAddr, tmpPointer, prevInstructionSize: TDBGPtr;
   ADisassembler: TDbgAsmDecoder;
-
+  AOffset: longint;
 begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State = dsPause) then
@@ -1832,19 +1833,25 @@ begin
          begin
            ASrcFileName:=sym.FileName;
            ASrcFileLine:=sym.Line;
+           AFuncName := sym.Name;
+           AOffset := int32(int64(tmpAddr) - int64(Sym.Address.Address));
            sym.ReleaseReference;
          end
          else
          begin
            ASrcFileName:='';
+           AFuncName := '';
            ASrcFileLine:=0;
+           AOffset := -1;
          end;
          AnEntry.Addr := tmpAddr;
          AnEntry.Dump := ADump;
          AnEntry.Statement := AStatement;
          AnEntry.SrcFileLine:=ASrcFileLine;
          AnEntry.SrcFileName:=ASrcFileName;
+         AnEntry.FuncName := AFuncName;
          AnEntry.SrcStatementIndex:=StatIndex;  // should be inverted for reverse parsing
+         AnEntry.Offset := AOffset;
          AReversedRange.Append(@AnEntry);
          inc(StatIndex);
        end;
@@ -1904,19 +1911,25 @@ begin
         begin
         ASrcFileName:=sym.FileName;
         ASrcFileLine:=sym.Line;
+        AFuncName := sym.Name;
+        AOffset := int32(int64(AnAddr) - int64(Sym.Address.Address));
         sym.ReleaseReference;
         end
       else
         begin
         ASrcFileName:='';
+        AFuncName := '';
         ASrcFileLine:=0;
+        AOffset := -1;
         end;
       AnEntry.Addr := AnAddr;
       AnEntry.Dump := ADump;
       AnEntry.Statement := AStatement;
       AnEntry.SrcFileLine:=ASrcFileLine;
       AnEntry.SrcFileName:=ASrcFileName;
+      AnEntry.FuncName := AFuncName;
       AnEntry.SrcStatementIndex:=StatIndex;
+      AnEntry.Offset := AOffset;
       ARange.Append(@AnEntry);
       ALastAddr:=AnAddr;
       inc(StatIndex);
