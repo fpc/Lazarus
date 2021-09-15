@@ -173,6 +173,7 @@ type
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class function GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure SetAlignment(const ACustomEdit: TCustomEdit; const AAlignment: TAlignment); override;
+    class procedure SetCaretPos(const ACustomEdit: TCustomEdit; const NewPos: TPoint); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetWantReturns(const ACustomMemo: TCustomMemo; const NewWantReturns: boolean); override;
     class procedure SetWantTabs(const ACustomMemo: TCustomMemo; const NewWantTabs: boolean); override;
@@ -782,6 +783,14 @@ begin
   if not WSCheckHandleAllocated(ACustomEdit, 'SetAlignment') then
     Exit;
   TQtTextEdit(ACustomEdit.Handle).setAlignment(AlignmentMap[AAlignment]);
+end;
+
+class procedure TQtWSCustomMemo.SetCaretPos(const ACustomEdit: TCustomEdit;
+  const NewPos: TPoint);
+begin
+  if not WSCheckHandleAllocated(ACustomEdit, 'SetCaretPos') then
+    Exit;
+  TQtTextEdit(ACustomEdit.Handle).setCursorPosition(NewPos);
 end;
 
 class procedure TQtWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo;
