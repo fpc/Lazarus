@@ -36,6 +36,7 @@ type
     // in horizontal horientation. FMeasureFont is always horizontal.
     {$ENDIF}
     procedure EnsureFont;
+    function GetDefaultFontName: String;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -152,14 +153,16 @@ begin
   {$IFDEF USE_FTFONT}
   if FFont = nil then begin
     FFont := TFreeTypeFont.Create;
-    FFont.Resolution := 72;
+    FFont.Size := DEFAULT_FONT_SIZE;
+    FFont.Resolution := 96;
     FFont.AntiAliased := true; //false;
     FCanvas.Font := FFont;
   end;
 
   if FMeasureFont = nil then begin
     FMeasureFont := TFreeTypeFont.Create;
-    FMeasureFont.Resolution := 72;
+    FMeasureFont.Size := DEFAULT_FONT_SIZE;
+    FMeasureFont.Resolution := 96;
     FMeasureFont.AntiAliased := false;
   end;
   {$ENDIF}
@@ -174,6 +177,11 @@ end;
 function TFPCanvasDrawer.GetBrushColor: TChartColor;
 begin
   Result := FPColorToChartColor(FCanvas.Brush.FPColor);
+end;
+
+function TFPCanvasDrawer.GetDefaultFontName: String;
+begin
+  Result := 'arial';
 end;
 
 function TFPCanvasDrawer.GetFontAngle: Double;
@@ -318,9 +326,17 @@ begin
   AssignFPCanvasHelper(FFont, AFont);
   AssignFPCanvasHelper(FMeasureFont, AFont);
   // DoCopyProps performs direct variable assignment, so call SetName by hand.
-  FFont.Name := AFont.Name;
+  if AFont.Name = 'default' then
+    FFont.Name := GetDefaultFontName
+  else
+    FFont.Name := AFont.Name;
+  if AFont.Size = 0 then
+    FFont.Size := DEFAULT_FONT_SIZE
+  else
+    FFont.Size := AFont.Size;
   FFont.Angle := OrientToRad(FGetFontOrientationFunc(AFont));
-  FMeasureFont.Name := AFont.Name;
+  FMeasureFont.Name := FFont.Name;
+  FMeasureFont.Size := FFont.Size;
   FMeasureFont.Angle := 0;
   {$ELSE}
   Unused(AFont);

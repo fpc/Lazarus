@@ -23,6 +23,12 @@ var
   d: IChartDrawer;
 begin
   chart := TChart.Create(nil);
+  chart.Width := 600;
+  chart.Height := 400;
+  chart.Title.Text.Text := 'TAChart nogui demo';
+  chart.Title.Font.Size := 16;
+  chart.Title.Font.Name := FONT_NAME;
+  chart.Title.Visible := true;
   chart.LeftAxis.Marks.LabelFont.Name := FONT_NAME;
   chart.LeftAxis.Marks.LabelFont.Size := 10;
   chart.LeftAxis.Marks.LabelFont.Orientation := 450;
