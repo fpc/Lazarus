@@ -7,13 +7,9 @@ uses
   Interfaces, Classes, tachartlazaruspkg { you can add units after this },
   FPCanvas, FPImage, FPImgCanv,
   TAGraph, TASeries, TADrawerFPCanvas in '../../TADrawerFPCanvas.pas', TADrawerCanvas, TADrawUtils;
+
 const
-  {$IFDEF MSWINDOWS}
-  FONT_NAME = 'Arial';
-  {$ENDIF}
-  {$IFDEF UNIX}
-  FONT_NAME = '/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf';
-  {$ENDIF}
+  FONT_NAME = 'LiberationSans-Regular.ttf';
 
 var
   chart: TChart;
@@ -22,6 +18,7 @@ var
   c: TFPImageCanvas;
   d: IChartDrawer;
 begin
+  InitFonts;
   chart := TChart.Create(nil);
   chart.Width := 600;
   chart.Height := 400;

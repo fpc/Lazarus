@@ -36,7 +36,6 @@ type
     // in horizontal horientation. FMeasureFont is always horizontal.
     {$ENDIF}
     procedure EnsureFont;
-    function GetDefaultFontName: String;
     procedure SetBrush(ABrush: TFPCustomBrush);
     procedure SetFont(AFont: TFPCustomFont);
     procedure SetPen(APen: TFPCustomPen);
@@ -82,6 +81,9 @@ type
     procedure SetPenParams(AStyle: TFPPenStyle; AColor: TChartColor; AWidth: Integer = 1);
     procedure SetPenWidth(AWidth: Integer);
   end;
+
+procedure InitFonts;
+
 
 implementation
 
@@ -177,11 +179,6 @@ end;
 function TFPCanvasDrawer.GetBrushColor: TChartColor;
 begin
   Result := FPColorToChartColor(FCanvas.Brush.FPColor);
-end;
-
-function TFPCanvasDrawer.GetDefaultFontName: String;
-begin
-  Result := 'arial';
 end;
 
 function TFPCanvasDrawer.GetFontAngle: Double;
@@ -326,10 +323,7 @@ begin
   AssignFPCanvasHelper(FFont, AFont);
   AssignFPCanvasHelper(FMeasureFont, AFont);
   // DoCopyProps performs direct variable assignment, so call SetName by hand.
-  if AFont.Name = 'default' then
-    FFont.Name := GetDefaultFontName
-  else
-    FFont.Name := AFont.Name;
+  FFont.Name := AFont.Name;
   if AFont.Size = 0 then
     FFont.Size := DEFAULT_FONT_SIZE
   else
@@ -367,9 +361,8 @@ begin
 end;
 
 function TFPCanvasDrawer.SimpleTextExtent(const AText: String): TPoint;
-var
-  fnt: TFreeTypeFont;
 begin
+  Result := Point(0, 0);
   EnsureFont;
   {$IFDEF USE_FTFONT}
   FCanvas.Font := FMeasureFont;
@@ -405,6 +398,40 @@ begin
   Unused(AX, AY);
   Unused(AText);    // wp: why not call FCanvas.TextOut ???
   {$ENDIF}
+end;
+
+procedure InitFonts;
+begin
+{$IFDEF USE_FTFONT}
+  InitEngine;
+
+  // Windows: Search path is set automatically
+
+  {$IFDEF LINUX}
+  FontMgr.SearchPath :=
+    '/usr/share/cups/fonts/;' +
+    '/usr/share/fonts/truetype/;' +
+    '/usr/share/fonts/truetype/liberation/;' +
+    '/usr/local/lib/X11/fonts/;' +
+    GetUserDir + '.fonts/';
+  {$ENDIF}
+
+  {$IFDEF LCLCarbon}
+  FontMgr.SearchPath :=
+    '/Library/Fonts/;' +
+    '/System/Library/Fonts/;' +
+    '/Network/Library/Fonts/;' +
+    '~/Library/Fonts/';
+  {$ENDIF}
+
+  {$IFDEF LCLCocoa}
+  FontMgr.SearchPath :=
+    '/Library/Fonts/;' +
+    '/System/Library/Fonts/;' +
+    '/Network/Library/Fonts/;' +
+    '~/Library/Fonts/';
+  {$ENDIF}
+{$ENDIF}
 end;
 
 end.
