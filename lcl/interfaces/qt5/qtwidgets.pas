@@ -924,6 +924,7 @@ type
     procedure setAlignment(const AAlignment: QtAlignment);
     procedure setBorder(const ABorder: Boolean);
     procedure setCursorPosition(const ACursorPosition: Integer);
+    procedure setCursorPosition(const APoint: TPoint);
     procedure setDefaultColorRoles; override;
     procedure setEchoMode(const AMode: QLineEditEchoMode);
     procedure setLineWrapMode(const AMode: QTextEditLineWrapMode);
@@ -10077,6 +10078,34 @@ begin
   if not QTextCursor_isNull(TextCursor) then
     QTextCursor_setPosition(TextCursor, ACursorPosition);
   QTextCursor_destroy(TextCursor);
+end;
+
+procedure TQtTextEdit.setCursorPosition(const APoint: TPoint);
+var
+  TextCursor: QTextCursorH;
+  WrapMode: QTextEditLineWrapMode;
+begin
+  {we must remove wrapping to get correct line !}
+  WrapMode := QTextEdit_lineWrapMode(QTextEditH(Widget));
+  setLineWrapMode(QTextEditNoWrap);
+
+  TextCursor := QTextCursor_create();
+  try
+    QTextEdit_textCursor(QTextEditH(Widget), TextCursor);
+    if not QTextCursor_isNull(TextCursor) then
+    begin
+      QTextCursor_movePosition(TextCursor, QTextCursorStart,
+        QTextCursorMoveAnchor);
+      QTextCursor_movePosition(TextCursor, QTextCursorDown,
+        QTextCursorMoveAnchor, APoint.Y);
+      QTextCursor_movePosition(TextCursor, QTextCursorRight,
+        QTextCursorMoveAnchor, APoint.X);
+    end;
+    QTextEdit_setTextCursor(QTextEditH(Widget), TextCursor);
+  finally
+    QTextCursor_destroy(TextCursor);
+    setLineWrapMode(WrapMode);
+  end;
 end;
 
 procedure TQtTextEdit.setDefaultColorRoles;
