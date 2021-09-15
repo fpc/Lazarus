@@ -805,9 +805,13 @@ begin
     QEventApplicationFontChange: SetDefaultAppFontName;
     QEventStyleChange:
       begin
-        if (Sender = QCoreApplication_instance()) then
+        if (Sender = QApplication_activeWindow()) or
+          (Assigned(Application.MainForm) and Application.MainForm.HandleAllocated and
+          (Sender = TQtWidget(Application.MainForm.Handle).Widget)) or
+         (Sender = QCoreApplication_instance()) then
         begin
-          FCachedMenuBarHeight := -1;
+          if QEvent_type(Event) = QEventStyleChange then
+            FCachedMenuBarHeight := -1;
           ThemeServices.IntfDoOnThemeChange;
         end;
       end;
