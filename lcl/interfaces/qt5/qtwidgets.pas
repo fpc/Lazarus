@@ -28,7 +28,7 @@ uses
   // Free Pascal
   Classes, SysUtils, Types,
   // LCL
-  LCLType, LCLProc, LazUTF8, LCLIntf, LMessages, Graphics, Forms, Controls,
+  LCLType, LCLProc, LazUTF8, LazStringUtils, LCLIntf, LMessages, Graphics, Forms, Controls,
   ComCtrls, ExtCtrls, StdCtrls, Menus, Dialogs, ImgList;
 
 type
@@ -19293,16 +19293,34 @@ end;
 procedure TQtFileDialog.FilterSelectedEvent(filter: PWideString); cdecl;
 var
   List: TQtStringList;
-  index: Integer;
+  i, index: Integer;
+  s: String;
 begin
   if filter <> nil then
   begin
     List := TQtStringList.Create;
-    getFilters(List.Handle);
-    index := List.IndexOf(UTF16ToUTF8(filter^));
-    if index <> -1 then
-      TFileDialog(FDialog).IntfFileTypeChanged(index + 1);
-    List.Free;
+    try
+      getFilters(List.Handle);
+      s := UTF16ToUTF8(filter^);
+      index := -1;
+      if s <> '' then
+        if s[Length(s)] = ')' then // if QFileDialogDontUseNativeDialog = True
+          index := List.IndexOf(s)
+        else
+        begin
+          s := '(' + s + ')';
+          for i := 0 to List.Count - 1 do
+            if LazEndsStr(s, List[i]) then
+            begin
+              index := i;
+              break;
+            end;
+        end;
+      if index <> -1 then
+        TFileDialog(FDialog).IntfFileTypeChanged(index + 1);
+    finally
+      List.Free;
+    end;
   end;
 end;
 
