@@ -18,7 +18,9 @@
 
 <!-- class Visibility: default -->
 <element name="TLazLoggerBlockTimer">
-<short></short>
+<short>
+  Provides profiler instrumentation for execution times in a logger class.
+</short>
 <descr>
 </descr>
 <errors>
@@ -28,194 +30,103 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TLazLoggerBlockTimer.FMaxDepth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazLoggerBlockTimer.FTimes">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazLoggerBlockTimer.FNested">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TLazLoggerBlockTimer.GetNested">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TLazLoggerBlockTimer.GetNested.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TLazLoggerBlockTimer.GetNested.ALevel">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TLazLoggerBlockTimer.GetTimeDiff">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TLazLoggerBlockTimer.GetTimeDiff.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TLazLoggerBlockTimer.GetTimeDiff.ALevel">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TLazLoggerBlockTimer.SetMaxDepth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TLazLoggerBlockTimer.SetMaxDepth.AValue">
-<short></short>
-</element>
+<element name="TLazLoggerBlockTimer.FMaxDepth"/>
+<element name="TLazLoggerBlockTimer.FTimes"/>
+<element name="TLazLoggerBlockTimer.FNested"/>
+<element name="TLazLoggerBlockTimer.GetNested"/>
+<element name="TLazLoggerBlockTimer.GetNested.Result"/>
+<element name="TLazLoggerBlockTimer.GetNested.ALevel"/>
+<element name="TLazLoggerBlockTimer.GetTimeDiff"/>
+<element name="TLazLoggerBlockTimer.GetTimeDiff.Result"/>
+<element name="TLazLoggerBlockTimer.GetTimeDiff.ALevel"/>
+<element name="TLazLoggerBlockTimer.SetMaxDepth"/>
+<element name="TLazLoggerBlockTimer.SetMaxDepth.AValue"/>
 
 <!-- constructor Visibility: public -->
 <element name="TLazLoggerBlockTimer.Create">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+  <short>Constructor for the class instance.</short>
+  <descr>
+    <p>
+      Create sets the default value for the MaxDepth property (100), and initializes the first time value in the execution time profiler. The initial nesting level is also set (0).
+    </p>
+  </descr>
+  <seealso/>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLoggerBlockTimer.EnterBlock">
-<short></short>
+<short>
+  Captures the execution start time and nesting level when a new block is entered.
+</short>
 <descr>
 </descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<seealso/>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockTimer.EnterBlock.Sender">
-<short></short>
+<short>Logger class instance for the block handler.</short>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockTimer.EnterBlock.Level">
-<short></short>
+<short>Current nesting level for the block handler.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLoggerBlockTimer.ExitBlock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>
+  Updates the cumulative execution time when a block is exited.
+</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockTimer.ExitBlock.Sender">
-<short></short>
+<short>Logger class instance for the block handler.</short>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockTimer.ExitBlock.Level">
-<short></short>
+  <short>Nesting level before the block handler is exited.</short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerBlockTimer.MaxDepth">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>
+  Maximum depth for execution time data in the nested levels for the block handler.
+</short>
+<descr/>
+<seealso/>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerBlockTimer.TimeDiff">
-<short></short>
+<short>
+  Calculates the cumulative execution time for the block at the specified nesting level.
+</short>
 <descr>
+  <p>
+    TimeDiff is a read-only QWord property which provides indexed access to the cumulative execution time for the block at the specified nesting level. The value represents a number of "ticks" or milliseconds as returned from the GetTickCount64 routine in the RTL.
+  </p>
+  <p>
+    The property value is calculated as the difference between the current "tick" value and the execution start time from the parent block. A timer overflow condition is handled in the calculation. The property value is 0 (zero) when ALevel is not in the range 0..MaxDepth.
+  </p>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockTimer.TimeDiff.ALevel">
-<short></short>
+<short>Nesting level for the block execution time calculated in the method.</short>
 </element>
 
-<!-- property Visibility: public -->
 <element name="TLazLoggerBlockTimer.Nested">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
+<short>Execution time data for the block at the specified nesting level.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockTimer.Nested.ALevel">
-<short></short>
+  <short>Nesting level for the calculated execution time.</short>
 </element>
 
 <!-- class Visibility: default -->
 <element name="TLazLoggerBlockMemWatch">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.FMaxDepth">
-<short></short>
+<short>
+  Provides profiler instrumentation for memory allocation (heap) in a logger class.
+</short>
 <descr>
 </descr>
 <seealso>
@@ -223,116 +134,47 @@
 </element>
 
 <!-- variable Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.FMem">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- variable Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.FNested">
-<short></short>
-<descr>
-</descr>
-<seealso>
-</seealso>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.GetMemDiff">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.GetMemDiff.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.GetMemDiff.ALevel">
-<short></short>
-</element>
-
-<!-- function Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.GetNested">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- function result Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.GetNested.Result">
-<short></short>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.GetNested.ALevel">
-<short></short>
-</element>
-
-<!-- procedure Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.SetMaxDepth">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
-</element>
-
-<!-- argument Visibility: private -->
-<element name="TLazLoggerBlockMemWatch.SetMaxDepth.AValue">
-<short></short>
-</element>
+<element name="TLazLoggerBlockMemWatch.FMaxDepth"/>
+<element name="TLazLoggerBlockMemWatch.FMem"/>
+<element name="TLazLoggerBlockMemWatch.FNested"/>
+<element name="TLazLoggerBlockMemWatch.GetMemDiff"/>
+<element name="TLazLoggerBlockMemWatch.GetMemDiff.Result"/>
+<element name="TLazLoggerBlockMemWatch.GetMemDiff.ALevel"/>
+<element name="TLazLoggerBlockMemWatch.GetNested"/>
+<element name="TLazLoggerBlockMemWatch.GetNested.Result"/>
+<element name="TLazLoggerBlockMemWatch.GetNested.ALevel"/>
+<element name="TLazLoggerBlockMemWatch.SetMaxDepth"/>
+<element name="TLazLoggerBlockMemWatch.SetMaxDepth.AValue"/>
 
 <!-- constructor Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.Create">
-<short></short>
+<short>Constructor for the class instance.</short>
 <descr>
-</descr>
-<errors>
-</errors>
+  <p>
+    Create sets the default value for the MaxDepth property (100), and initializes the first values for the memory allocation profiler. The initial nesting level is also set (0).
+  </p></descr>
 <seealso>
 </seealso>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.EnterBlock">
-<short></short>
-<descr>
-</descr>
-<errors>
-</errors>
-<seealso>
-</seealso>
+<short>Captures memory allocation and nesting level when a block is entered.</short>
+<descr/>
+<seealso/>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.EnterBlock.Sender">
-<short></short>
+<short>Logger class instrumented in the profiler tool.</short>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.EnterBlock.Level">
-<short></short>
+<short>Current nesting level for the block.</short>
 </element>
 
 <!-- procedure Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.ExitBlock">
-<short></short>
+<short>
+  Updates the cumulative memory allocation for the parent block when a block is exited.
+</short>
 <descr>
 </descr>
 <errors>
@@ -340,20 +182,18 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.ExitBlock.Sender">
-<short></short>
+<short>Logger class for the block handler.</short>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.ExitBlock.Level">
 <short></short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.MaxDepth">
-<short></short>
+  <short>
+    Maximum depth the nested levels in the block handler.
+  </short>
 <descr>
 </descr>
 <seealso>
@@ -362,35 +202,39 @@
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.MemDiff">
-<short></short>
+<short>Indicates heap memory allocation for the block at the specified nesting level.</short>
 <descr>
+  <p>
+    MemDiff is a read-only Int64 property which provides indexed access to the cumulative memory usage for a block at a specified nesting level. The value is calculated as the difference between the current memory allocation in the block and the initial memory allocation in the parent block. The property value reflects heap memory allocation.
+  </p>
+  <p>
+    The property value is 0 (zero) if ALevel is not in the range 0..MaxDepth.
+  </p>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.MemDiff.ALevel">
-<short></short>
+  <short>Nesting level for the block reflected in the property value.</short>
 </element>
 
 <!-- property Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.Nested">
-<short></short>
+  <short>Memory allocation data for the block at the specified nesting level.</short>
 <descr>
 </descr>
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: public -->
 <element name="TLazLoggerBlockMemWatch.Nested.ALevel">
-<short></short>
+  <short>Nesting level for the block reflected in the property value.</short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DbgsMemUsed">
-<short></short>
+<short>
+  Generates a formatted message with memory usage for the parent, current, or child block(s).
+</short>
 <descr>
 </descr>
 <errors>
@@ -398,20 +242,21 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="DbgsMemUsed.Result">
 <short></short>
 </element>
-
-<!-- argument Visibility: default -->
+<element name="DbgsMemUsed.AName">
+<short></short>
+</element>
 <element name="DbgsMemUsed.AFormat">
 <short></short>
 </element>
 
 <!-- function Visibility: default -->
 <element name="DbgsTimeUsed">
-<short></short>
+  <short>
+    Generates a formatted message with execution times for the parent, current, or child blocks.
+  </short>
 <descr>
 </descr>
 <errors>
@@ -419,20 +264,21 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- function result Visibility: default -->
 <element name="DbgsTimeUsed.Result">
 <short></short>
 </element>
-
-<!-- argument Visibility: default -->
+<element name="DbgsTimeUsed.AName">
+<short></short>
+</element>
 <element name="DbgsTimeUsed.AFormat">
 <short></short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="DbgStartTimer">
-<short></short>
+<short>
+  Gets or creates timing data for the specified name, and updates its last execution time.
+</short>
 <descr>
 </descr>
 <errors>
@@ -440,15 +286,15 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DbgStartTimer.AName">
-<short></short>
+<short>Name for the timing data retrieved or created in the routine.</short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="DbgStopTimer">
-<short></short>
+<short>
+  Updates timing data using the specified name when it is stopped, and calculates its cumulative execution time.
+</short>
 <descr>
 </descr>
 <errors>
@@ -456,15 +302,15 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DbgStopTimer.AName">
-<short></short>
+<short>Name for the timing data updated in the routine.</short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="DbgStartMemWatch">
-<short></short>
+  <short>
+    Gets or creates memory allocation data for the specified name, and initializes its data.
+  </short>
 <descr>
 </descr>
 <errors>
@@ -472,15 +318,15 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DbgStartMemWatch.AName">
-<short></short>
+  <short>Name for the memory allocation data updated in the routine.</short>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="DbgStopMemWatch">
-<short></short>
+  <short>
+    Updates memory allocation data using the specified name when it is stopped, and calculates its cumulative usage.
+  </short>
 <descr>
 </descr>
 <errors>
@@ -488,20 +334,8 @@
 <seealso>
 </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="DbgStopMemWatch.AName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="DbgsMemUsed.AName">
-<short></short>
-</element>
-
-<!-- argument Visibility: default -->
-<element name="DbgsTimeUsed.AName">
-<short></short>
+<short>Name for the associated memory allocation data updated in the routine.</short>
 </element>
 
 </module> <!-- LazLoggerProfiling -->
