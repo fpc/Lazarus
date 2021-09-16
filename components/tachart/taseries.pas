@@ -677,7 +677,7 @@ var
     // First line for line type ltFromOrigin
     if LineType = ltFromOrigin then begin
       origin := ParentChart.GraphToImage(AxisToGraph(ZeroDoublePoint));
-      ADrawer.SetPenParams(FLinePen.Style, col1);
+      ADrawer.SetPenParams(FLinePen.Style, col1, FLinePen.Width);
       ADrawer.Line(origin, imgPt1);
     end;
 
@@ -700,7 +700,7 @@ var
             ceLineAfter, cePointAndLineAfter: col := col1;
             else raise Exception.Create('TLineSeries: ColorEach error');
           end;
-          ADrawer.SetPenParams(FLinePen.Style, col);
+          ADrawer.SetPenParams(FLinePen.Style, col, FLinePen.Width);
           case LineType of
             ltFromPrevious:
               ADrawer.Line(imgPt1, imgPt2);
