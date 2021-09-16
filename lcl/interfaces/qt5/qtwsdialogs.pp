@@ -382,9 +382,8 @@ begin
   QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
 
-  {$note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
-    QFileDialogDontUseNativeDialog, True);
+    QFileDialogDontUseNativeDialog, False);
 
   FileDialog.AttachEvents;
   
@@ -655,10 +654,9 @@ begin
     {$ifdef darwin}
     QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
     {$endif}
-    {. $note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
+    {$ifndef QT_NATIVE_DIALOGS}
     QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
       QFileDialogDontUseNativeDialog, True);
-    {$ifndef QT_NATIVE_DIALOGS}
     FileDialog.initializePreview(TPreviewFileDialog(ACommonDialog).PreviewFileControl);
     {$endif}
     FileDialog.AttachEvents;
@@ -729,9 +727,8 @@ begin
     QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
 
-  {$note qt-4.5.0,qt-4.5.1 currently supports macosx only.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
-    QFileDialogDontUseNativeDialog, True);
+    QFileDialogDontUseNativeDialog, False);
 
   FileDialog.setFileMode(QFileDialogDirectoryOnly);
 
