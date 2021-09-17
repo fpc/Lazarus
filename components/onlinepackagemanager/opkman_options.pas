@@ -27,7 +27,7 @@ unit opkman_options;
 interface
 
 uses
-  Classes, SysUtils, Graphics,
+  Classes, SysUtils, Graphics, GraphUtil,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils,
   // IdeIntf
@@ -89,6 +89,7 @@ type
     FExcludedFolders: String;
     FOpenSSLDownloadType: Integer;
     procedure CheckColors;
+    function IsDarkTheme: Boolean;
     function GetLocalRepositoryArchiveExpanded:string;
     function GetLocalRepositoryPackagesExpanded:string;
     function GetLocalRepositoryUpdateExpanded:string;
@@ -99,6 +100,7 @@ type
     procedure Save;
     procedure LoadDefault;
     procedure CreateMissingPaths;
+    procedure GetDefaultColors(AColorList: TStringList);
     property LocalRepositoryPackagesExpanded:string read GetLocalRepositoryPackagesExpanded;
     property LocalRepositoryArchiveExpanded:string read GetLocalRepositoryArchiveExpanded;
     property LocalRepositoryUpdateExpanded:string read GetLocalRepositoryUpdateExpanded;
@@ -331,15 +333,24 @@ begin
     CreateDir(LocalRepositoryUpdateExpanded);
 end;
 
+procedure TOptions.GetDefaultColors(AColorList: TStringList);
+begin
+  AColorList.Clear;
+  if IsDarkTheme then
+     AColorList.AddStrings(['$00004646', '$002e4c35', '$00584327'])
+  else
+     AColorList.AddStrings(['$00D9FFFF', '$00E6FFE6', '$00FEEBD3']);
+end;
+
 procedure TOptions.CheckColors;
 begin
   if FHintFormOptionColors.Count <> HintColCnt then
-  begin
-    FHintFormOptionColors.Clear;
-    FHintFormOptionColors.Add(ColorToString($00D9FFFF));
-    FHintFormOptionColors.Add(ColorToString($00E6FFE6));
-    FHintFormOptionColors.Add(ColorToString($00FEEBD3));
-  end
+     GetDefaultColors(FHintFormOptionColors);
+end;
+
+function TOptions.IsDarkTheme: Boolean;
+begin
+  Result := ColorToGray(clWindowText) > ColorToGray(clWindow);
 end;
 
 function TOptions.GetLocalRepositoryArchiveExpanded:string;

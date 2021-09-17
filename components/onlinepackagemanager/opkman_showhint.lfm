@@ -22,20 +22,15 @@ object ShowHintFrm: TShowHintFrm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 10
-    Height = 305
-    Top = 10
-    Width = 543
+    Left = 0
+    Height = 325
+    Top = 0
+    Width = 563
     Align = alClient
     Anchors = [akLeft, akRight, akBottom]
-    BorderSpacing.Left = 10
-    BorderSpacing.Top = 10
-    BorderSpacing.Right = 10
-    BorderSpacing.Bottom = 10
     BevelInner = bvLowered
-    ClientHeight = 305
-    ClientWidth = 543
-    Color = 15460842
+    ClientHeight = 325
+    ClientWidth = 563
     ParentColor = False
     TabOrder = 0
     object pnPackageName: TPanel
@@ -45,25 +40,23 @@ object ShowHintFrm: TShowHintFrm
       Left = 12
       Height = 22
       Top = 2
-      Width = 519
+      Width = 539
       Align = alTop
       BorderSpacing.Left = 10
       BorderSpacing.Right = 10
       BevelOuter = bvNone
       Caption = 'Package Name'
-      Font.Style = [fsBold]
-      ParentFont = False
       TabOrder = 0
     end
     object pnDescription: TPanel
       Left = 2
       Height = 57
       Top = 24
-      Width = 539
+      Width = 559
       Align = alTop
       BevelOuter = bvNone
       ClientHeight = 57
-      ClientWidth = 539
+      ClientWidth = 559
       ParentFont = False
       TabOrder = 1
       object mDescription: TMemo
@@ -76,25 +69,17 @@ object ShowHintFrm: TShowHintFrm
         Left = 10
         Height = 53
         Top = 2
-        Width = 519
+        Width = 539
         Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Left = 10
         BorderSpacing.Top = 2
         BorderSpacing.Right = 10
         BorderSpacing.Bottom = 2
         BorderStyle = bsNone
-        Color = 15460842
-        Font.CharSet = ANSI_CHARSET
-        Font.Color = clBlack
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Pitch = fpVariable
-        Font.Quality = fqDraft
         Lines.Strings = (
           'aaaaaaaaaa'
           'bbbbbbbb'
         )
-        ParentFont = False
         ReadOnly = True
         TabOrder = 0
       end
@@ -108,9 +93,9 @@ object ShowHintFrm: TShowHintFrm
       AnchorSideBottom.Control = pnMain
       AnchorSideBottom.Side = asrBottom
       Left = 12
-      Height = 218
+      Height = 238
       Top = 83
-      Width = 519
+      Width = 539
       HorzScrollBar.Page = 1
       VertScrollBar.Page = 1
       Anchors = [akTop, akLeft, akRight, akBottom]
@@ -126,7 +111,7 @@ object ShowHintFrm: TShowHintFrm
   object tmWait: TTimer
     Enabled = False
     OnTimer = tmWaitTimer
-    left = 40
-    top = 160
+    Left = 40
+    Top = 160
   end
 end
