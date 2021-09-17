@@ -672,7 +672,7 @@ var
 
     ADrawer.Pen := LinePen;
     imgPt1 := ParentChart.GraphToImage(gp);
-    col1 := GetPtColor(i);
+    col1 := GetPtColor(i + FLoBound);
 
     // First line for line type ltFromOrigin
     if LineType = ltFromOrigin then begin
@@ -693,7 +693,7 @@ var
           hasBreak := false;
         end;
         imgPt2 := ParentChart.GraphToImage(gp);
-        col2 := GetPtColor(i);
+        col2 := GetPtColor(i + FLoBound);
         if imgPt1 <> imgPt2 then begin
           case FColorEach of
             ceLineBefore, cePointAndLineBefore: col := col2;
