@@ -57,10 +57,15 @@ begin
 end;
 
 procedure TColorsFrm.HelpButtonClick(Sender: TObject);
+var
+  CL: TStringList;
 begin
-  shName.Brush.Color := $00D9FFFF;
-  shDescription.Brush.Color := $00E6FFE6;
-  shLicense.Brush.Color := $00FEEBD3;
+  CL := TStringList.Create;
+  Options.GetDefaultColors(CL);
+  shName.Brush.Color := StringToColor(CL.Strings[0]);
+  shDescription.Brush.Color := StringToColor(CL.Strings[1]);
+  shLicense.Brush.Color := StringToColor(CL.Strings[2]);
+  CL.Free;
 end;
 
 procedure TColorsFrm.shNameMouseUp(Sender: TObject; Button: TMouseButton;
@@ -72,18 +77,11 @@ end;
 
 procedure TColorsFrm.LoadColors(AColList: TStringList);
 begin
-  if AColList.Count = HintColCnt then
-  begin
-    shName.Brush.Color := StringToColor(AColList.Strings[0]);
-    shDescription.Brush.Color := StringToColor(AColList.Strings[1]);
-    shLicense.Brush.Color := StringToColor(AColList.Strings[2]);
-  end
-  else
-  begin
-    shName.Brush.Color := clDefault;
-    shDescription.Brush.Color := clDefault;
-    shLicense.Brush.Color := clDefault;
-  end;
+  if AColList.Count <> HintColCnt then
+    Options.GetDefaultColors(AColList);
+  shName.Brush.Color := StringToColor(AColList.Strings[0]);
+  shDescription.Brush.Color := StringToColor(AColList.Strings[1]);
+  shLicense.Brush.Color := StringToColor(AColList.Strings[2]);
 end;
 
 end.
