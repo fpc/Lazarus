@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-21 07:53+0100\n"
+"PO-Revision-Date: 2021-09-19 10:32+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "MIME-Version: 1.0\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "Language: de_DE\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: lazarusidestrconsts.dbgbreakgroupdlgcaption
 msgctxt "lazarusidestrconsts.dbgbreakgroupdlgcaption"
@@ -730,11 +730,11 @@ msgstr "Code für Assertions einfügen"
 #: lazarusidestrconsts.dlgassociateddebugdesktop
 #, object-pascal-format
 msgid "Associated debug desktop for \"%s\""
-msgstr ""
+msgstr "Dem Desktop \"%s\" zugeordneter Debug-Desktop"
 
 #: lazarusidestrconsts.dlgassociateddebugdesktophint
 msgid "If you select the desktop, the associated debug desktop will be selected as well."
-msgstr ""
+msgstr "Wenn Sie den Desktop auswählen wird der zugeordnete Debug-Desktop ebenfalls gewählt."
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
@@ -793,6 +793,8 @@ msgid ""
 "Save active desktop on IDE close\n"
 "Save debug desktop on IDE close and debug end"
 msgstr ""
+"Aktiven Desktop beim Schließen der IDE speichern\n"
+"Debug-Desktop beim Schließen der IDE und Ende des Debuggens speichern."
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -879,7 +881,7 @@ msgstr "Korrespondierende Klammernpaare"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
-msgstr ""
+msgstr "Sie können keinen gedockten Desktop in ungedockter Umgebung oder umgekehrt verwenden."
 
 #: lazarusidestrconsts.dlgcaretbackcolor
 msgid "Multi/2nd (NotXor)"
@@ -1414,7 +1416,7 @@ msgstr "Löschen"
 
 #: lazarusidestrconsts.dlgdeleteselecteddesktopbtnhint
 msgid "Delete selected desktop"
-msgstr ""
+msgstr "Ausgewählten Desktop löschen"
 
 #: lazarusidestrconsts.dlgdeltemplate
 msgid "Delete template "
@@ -2167,11 +2169,11 @@ msgstr "Grabberfarbe"
 
 #: lazarusidestrconsts.dlggrayeddesktopsdocked
 msgid "Grayed desktops are for docked environment."
-msgstr ""
+msgstr "Ausgegraute Desktops sind für gedockte IDE"
 
 #: lazarusidestrconsts.dlggrayeddesktopsundocked
 msgid "Grayed desktops are for undocked environment."
-msgstr ""
+msgstr "Ausgegraute Desktops sind für ungedockte IDE"
 
 #: lazarusidestrconsts.dlggridcolor
 msgid "Grid color"
@@ -2359,16 +2361,12 @@ msgid "Included mixed state $IFDEF node"
 msgstr ""
 
 #: lazarusidestrconsts.dlgimportdesktopexists
-#, fuzzy
-#| msgid ""
-#| "A desktop with the same name already exists.\n"
-#| "Please confirm the desktop name:\n"
 msgid ""
 "A desktop with the same name already exists.\n"
 "Please confirm the desktop name:"
 msgstr ""
 "Ein Desktop mit dem gleichen Namen existiert bereits.\n"
-"Bitte bestätigen Sie den Desktopnamen:\n"
+"Bitte bestätigen Sie den Desktopnamen:"
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
@@ -2510,10 +2508,8 @@ msgid "Guide lines Left,Top"
 msgstr "Farbe für links, oben"
 
 #: lazarusidestrconsts.dlglevel1opt
-#, fuzzy
-#| msgid "1 (quick, debugger friendly)"
 msgid "1 (quick, debugger friendly with small limitations)"
-msgstr "Stufe 1 (schnell, debuggerfreundlich)"
+msgstr "Stufe 1 (schnell, noch weitgehend debuggerfreundlich)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2528,10 +2524,8 @@ msgid "4 (-O3 + aggressive optimizations, beware)"
 msgstr "Stufe 4 (-O3 + aggressive Opt. , Vorsicht!)"
 
 #: lazarusidestrconsts.dlglevelnoneopt
-#, fuzzy
-#| msgid "0 (no optimization)"
 msgid "0 (no optimization, for debugging)"
-msgstr "Stufe 0 (keine weiteren Optimierungen)"
+msgstr "Stufe 0 (keine Optimierungen, zum Debuggen)"
 
 #: lazarusidestrconsts.dlglinesplitting
 msgid "Line Splitting"
@@ -3275,16 +3269,13 @@ msgid "Overwrite block"
 msgstr "Block überschreiben"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Desktop with the name \"%s\" was found.\n"
-#| "Should the old desktop be overwritten?\n"
+#, object-pascal-format
 msgid ""
 "Desktop with the name \"%s\" was found.\n"
 "Should the old desktop be overwritten?"
 msgstr ""
 "Desktop mit dem Namen \"%s\" wurde gefunden.\n"
-"Soll der alte Desktop überschrieben werden?\n"
+"Soll der alte Desktop überschrieben werden?"
 
 #: lazarusidestrconsts.dlgpalhints
 msgid "Hints for component palette"
@@ -3566,7 +3557,7 @@ msgstr "Umbenennen"
 
 #: lazarusidestrconsts.dlgrenameselecteddesktopbtnhint
 msgid "Rename selected desktop"
-msgstr ""
+msgstr "Ausgewählten Desktop umbenennen"
 
 #: lazarusidestrconsts.dlgreplaceall
 msgid "Replace &All"
@@ -3671,7 +3662,7 @@ msgstr "Start-Parameter"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktop
 msgid "Save current desktop"
-msgstr ""
+msgstr "Aktiven Desktop speichern"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopas
 msgid "Save current desktop as"
@@ -3679,11 +3670,11 @@ msgstr "Aktuellen Desktop speichern unter"
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtncaption
 msgid "Save active desktop as ..."
-msgstr ""
+msgstr "Aktiven Desktop speichert unter ..."
 
 #: lazarusidestrconsts.dlgsavecurrentdesktopasbtnhint
 msgid "Save active desktop as"
-msgstr ""
+msgstr "Aktiven Desktop speichert unter"
 
 #: lazarusidestrconsts.dlgsavedlinecolor
 msgid "Saved line"
@@ -4050,12 +4041,12 @@ msgstr ""
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
-msgstr ""
+msgstr "Debug-Desktop Eigenschaft umschalten"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
-msgstr ""
+msgstr "Debug-Desktop Eigenschaft umschalten"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -7173,7 +7164,7 @@ msgstr "Compiler"
 #: lazarusidestrconsts.liscompilercfgismissing
 #, object-pascal-format
 msgid "%s is missing."
-msgstr ""
+msgstr "%s fehlt."
 
 #: lazarusidestrconsts.liscompilerdoesnotsupporttarget
 #, object-pascal-format
@@ -7376,7 +7367,7 @@ msgstr "Konsolenanwendung"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr ""
+msgstr "Ein Free-Pascal-Kommandozeilenprogramm auf Basis von TCustomApplication um unkompliziert Kommandozeilenoptionen zu verwenden, Ausnahmen zu behandeln, etc."
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -8249,7 +8240,7 @@ msgstr "Benutzerdefiniertes Programm"
 
 #: lazarusidestrconsts.liscustomprogramprogramdescriptor
 msgid "A Custom Free Pascal program."
-msgstr ""
+msgstr "Ein benutzerdefiniertes Free-Pascal-Programm."
 
 #: lazarusidestrconsts.liscut
 msgctxt "lazarusidestrconsts.liscut"
@@ -8818,10 +8809,8 @@ msgid "Delphi compatible resources. Recommended."
 msgstr "Delphi-kompatible Ressourcen. Empfohlen."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
-#, fuzzy
-#| msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects, but are not compiled into the project. The compiler will not find units of this package when compiling the project."
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
-msgstr "\"Entwicklungszeit\"-Packages fügen Komponenten und Menüeinträge zur IDE hinzu. Sie können von Projekten benutzt werden, aber nicht in das Projekt kompiliert werden. Der Compiler wird keine Units dieses Packages finden, während das Projekt kompiliert wird."
+msgstr "\"Entwicklungszeit\"-Packages fügen Komponenten und Menüeinträge zur IDE hinzu. Sie können von Projekten benutzt werden, aber nicht in das Projekt kompiliert werden. Der Compiler wird Units dieses Packages nicht finden, während das Projekt kompiliert wird."
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
@@ -10157,7 +10146,7 @@ msgstr "Keine Textdatei"
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
 msgid "%d files were converted to text format."
-msgstr ""
+msgstr "%d Dateien wurden ins Textformat konvertiert."
 
 #: lazarusidestrconsts.lisfilesettings
 msgid "File Settings"
@@ -10520,7 +10509,7 @@ msgstr ""
 #: lazarusidestrconsts.lisfppkgwriteconfexception
 #, object-pascal-format
 msgid "A problem occurred while trying to create a new Fppkg configuration: %s"
-msgstr ""
+msgstr "Beim Versuch eine neue Fppkg-Konfiguration zu erstellen trat ein Problem auf: %s"
 
 #: lazarusidestrconsts.lisfppkgwriteconffailed
 #, object-pascal-format
@@ -11164,7 +11153,7 @@ msgstr "Inklusive Unterverzeichnisse"
 #: lazarusidestrconsts.lisincompatibleppu
 #, object-pascal-format
 msgid ", incompatible ppu=%s"
-msgstr ""
+msgstr ", inkompatible ppu=%s"
 
 #: lazarusidestrconsts.lisincorrectconfigurationdirectoryfound
 msgid "Incorrect configuration directory found"
@@ -11340,10 +11329,9 @@ msgid "Add watch"
 msgstr "Überwachung hinzufügen"
 
 #: lazarusidestrconsts.lisinspectclassinherit
-#, object-pascal-format, fuzzy
-#| msgid "%s : Class %s inherits from %s"
+#, object-pascal-format
 msgid "%s: class %s inherits from %s"
-msgstr "%s : Klasse %s erbt von %s"
+msgstr "%s: Klasse %s erbt von %s"
 
 #: lazarusidestrconsts.lisinspectdata
 msgid "Data"
@@ -11382,7 +11370,7 @@ msgstr ""
 #: lazarusidestrconsts.lisinspectunavailableerror
 #, object-pascal-format
 msgid "%s: unavailable (error: %s)"
-msgstr ""
+msgstr "%s: nicht verfügbar (Fehler: %s)"
 
 #: lazarusidestrconsts.lisinspectuseinstance
 msgid "Instance"
@@ -12531,7 +12519,7 @@ msgstr "Bibliothekspfad"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
 msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
-msgstr ""
+msgstr "Eine mit Free Pascal erstellte dynamische Bibliothek (.dll unter Windows, .so unter Linux, .dylib unter MacOS X)."
 
 #: lazarusidestrconsts.lisline
 msgid "Line:"
@@ -12975,7 +12963,7 @@ msgstr "Installierte Packages einrichten ..."
 #: lazarusidestrconsts.lismenueditoracceleratorkeysneedschanging
 #, object-pascal-format
 msgid "Accelerator(&&) key \"%s\" needs changing"
-msgstr ""
+msgstr "Schnellzugriffstaste (&&) \"%s\" muss geändert werden"
 
 #: lazarusidestrconsts.lismenueditoraddanewitemaboveselecteditem
 msgid "Add a new item above selected item"
@@ -13480,6 +13468,8 @@ msgid ""
 "\"%s\" is already in use in %s as a shortcut.\n"
 "Try a different shortcut."
 msgstr ""
+"\"%s\" wird bereits als Tastenkürzel für %s verwendet.\n"
+"Versuchen Sie ein anderes Tastenkürzel."
 
 #: lazarusidestrconsts.lismenueditorsisnotasufficientdescriptionpleaseexpand
 #, object-pascal-format
@@ -13498,7 +13488,7 @@ msgstr "%s: Tastaturbefehle"
 #: lazarusidestrconsts.lismenueditorsshortcutsandacceleratorkeys
 #, object-pascal-format
 msgid "%s: Shortcuts and accelerator keys"
-msgstr ""
+msgstr "%s: Tastenkürzel und Schnellzugriffstasten"
 
 #: lazarusidestrconsts.lismenueditorsssonclicks
 #, object-pascal-format
@@ -14631,7 +14621,7 @@ msgstr "Verschieben"
 
 #: lazarusidestrconsts.lismovedown
 msgid "Move Down"
-msgstr ""
+msgstr "Nach unten bewegen"
 
 #: lazarusidestrconsts.lismovefiles
 msgid "Move Files"
@@ -14683,7 +14673,7 @@ msgstr "Verschieben zu: "
 
 #: lazarusidestrconsts.lismoveup
 msgid "Move Up"
-msgstr ""
+msgstr "Nach oben bewegen"
 
 #: lazarusidestrconsts.lismovingtheseunitswillbreaktheirusessectionsseemessa
 msgid "Moving these units will break their uses sections. See Messages window for details."
@@ -14867,7 +14857,7 @@ msgstr "Nein"
 
 #: lazarusidestrconsts.lisnoautosaveactivedesktop
 msgid "'Auto save active desktop' option is turned off, you will need to save current desktop manually."
-msgstr ""
+msgstr "'Aktiven Desktop automatisch speichern' ist deaktiviert, Sie müssen den aktiven Desktop manuell speichern."
 
 #: lazarusidestrconsts.lisnobackupfiles
 msgid "No backup files"
@@ -15164,8 +15154,7 @@ msgid "State"
 msgstr "Status"
 
 #: lazarusidestrconsts.lisoipthispackageisinstalledbutthelpkfilewasnotfound
-#, object-pascal-format, fuzzy
-#| msgid "%sThis package is installed, but the lpk file was not found"
+#, object-pascal-format
 msgid "%sThis package is installed but the lpk file was not found"
 msgstr "%sDas Package ist installiert, aber die .lpk-Datei wurde nicht gefunden"
 
@@ -16983,7 +16972,7 @@ msgstr "Sitzungsinformationen speichern in"
 
 #: lazarusidestrconsts.lisposavesessioninformationinhint
 msgid ".lpi is the project main info file, .lps is a separate file for session data only."
-msgstr ""
+msgstr ".lpi ist die Hauptprojektdatei, .lps ist eine separate Datei, ausschließlich für Sitzungsdaten."
 
 #: lazarusidestrconsts.lisposition
 msgid "Position"
@@ -17894,8 +17883,6 @@ msgid "\"Run time only\" packages are only for projects. They cannot be installe
 msgstr "\"Nur-Laufzeit\"-Packages können nur von Projekten verwendet werden. Sie können nicht in die IDE installiert werden, nicht einmal indirekt."
 
 #: lazarusidestrconsts.lisruntimepackagescanbeusedbyprojectstheycannotbeinst
-#, fuzzy
-#| msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE, unless some design time package requires them."
 msgid "\"Run time\" packages can be used by projects. They cannot be installed in the IDE unless some design time package requires them."
 msgstr "\"Laufzeit\"-Packages können von Projekten verwendet werden. Sie können nicht in die IDE installiert werden, es sei denn, ein Entwicklungszeit-Package benötigt sie."
 
