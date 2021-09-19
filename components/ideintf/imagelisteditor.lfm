@@ -14,7 +14,7 @@ object ImageListEditorDlg: TImageListEditorDlg
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object GroupBoxR: TGroupBox
     AnchorSideLeft.Control = GroupBoxL
     AnchorSideLeft.Side = asrBottom
@@ -39,11 +39,10 @@ object ImageListEditorDlg: TImageListEditorDlg
       Left = 93
       Height = 24
       Top = 304
-      Width = 97
+      Width = 96
       Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
       Caption = 'Transparent Color:'
-      ParentColor = False
     end
     object Preview: TScrollBox
       AnchorSideLeft.Control = GroupBoxR
@@ -407,19 +406,19 @@ object ImageListEditorDlg: TImageListEditorDlg
     ShowBevel = False
   end
   object ImageList: TImageList
-    left = 84
-    top = 211
+    Left = 84
+    Top = 211
   end
   object OpenDialog: TOpenPictureDialog
     FilterIndex = 0
     Options = [ofAllowMultiSelect, ofFileMustExist, ofEnableSizing, ofViewDetail, ofAutoPreview]
-    left = 84
-    top = 103
+    Left = 84
+    Top = 103
   end
   object SaveDialog: TSavePictureDialog
     FilterIndex = 0
     Options = [ofEnableSizing, ofViewDetail, ofAutoPreview]
-    left = 84
-    top = 159
+    Left = 84
+    Top = 159
   end
 end
