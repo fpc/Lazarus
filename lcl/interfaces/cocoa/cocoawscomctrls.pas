@@ -1461,8 +1461,14 @@ end;
 
 class procedure TCocoaWSCustomListView.ItemShow(const ALV: TCustomListView;
   const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
+var
+  lCocoaLV: TCocoaListView;
+  lTableLV: TCocoaTableListView;
 begin
-  inherited ItemShow(ALV, AIndex, AItem, PartialOK);
+  //inherited ItemShow(ALV, AIndex, AItem, PartialOK);
+  if not CheckParams(lCocoaLV, lTableLV, ALV) then
+    Exit;
+  lTableLV.scrollRowToVisible(AItem.Index);
 end;
 
 class function TCocoaWSCustomListView.GetFocused(const ALV: TCustomListView): Integer;
