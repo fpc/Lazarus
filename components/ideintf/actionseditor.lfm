@@ -16,7 +16,7 @@ object ActionListEditor: TActionListEditor
   OnKeyPress = ActionListEditorKeyPress
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object PanelDescr: TPanel
     Left = 0
     Height = 26
@@ -35,7 +35,6 @@ object ActionListEditor: TActionListEditor
       Top = 6
       Width = 59
       Caption = 'Categories:'
-      ParentColor = False
     end
     object lblName: TLabel
       Left = 162
@@ -43,7 +42,6 @@ object ActionListEditor: TActionListEditor
       Top = 6
       Width = 43
       Caption = 'Actions:'
-      ParentColor = False
     end
   end
   object Splitter: TSplitter

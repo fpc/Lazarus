@@ -909,7 +909,7 @@ begin
   begin
     FreeNotification(FActionList);
     if FActionList.Images<>nil then
-      lstActionName.ItemHeight := FActionList.Images.Height;
+      lstActionName.ItemHeight := FActionList.Images.Height + Scale96ToFont(4);
   end;
   FillCategories;
   //FillActionByCategory(-1);
