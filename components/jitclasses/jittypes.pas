@@ -163,6 +163,7 @@ type
   protected
     FClassUnit: String;
     function GetTypeInfo: PTypeInfo; virtual; abstract;
+    function GetJitClass: TClass; virtual; abstract;
   public
     property TypeInfo: PTypeInfo read GetTypeInfo;
     property ClassUnit: String read FClassUnit; // write SetClassUnit;
@@ -304,21 +305,29 @@ type
 
   end;
 
+  TJitTypeClassBase = class abstract (TJitType)
+  protected
+    function GetJitClass: TClass; virtual; abstract;
+  public
+    property JitClass: TClass read GetJitClass;
+  end;
+
   { TJitTypeClass }
 
-  TJitTypeClass = class(TJitType)
+  TJitTypeClass = class(TJitTypeClassBase)
   private
     FClass: TClass;
 
   protected
     function GetTypeInfo: PTypeInfo; override;
+    function GetJitClass: TClass; override;
   public
     constructor Create(ATypeName: String; AClass: TClass; ATypeLibrary: TJitTypeLibrary = nil);
   end;
 
   { TJitTypeJitClass }
 
-  TJitTypeJitClass = class(TJitType)
+  TJitTypeJitClass = class(TJitTypeClassBase)
   private
     FJitClassCreator: TJitClassCreatorBase;
     FOwnJitCreator: Boolean;
@@ -326,6 +335,7 @@ type
 
   protected
     function GetTypeInfo: PTypeInfo; override;
+    function GetJitClass: TClass; override;
     function GetLockReferenceInc: TRefCountedJitReference; override;
     function IsConstTypeInfo: Boolean; override;
   public
@@ -333,6 +343,7 @@ type
       ATypeLibrary: TJitTypeLibrary = nil; ATakeOwnerShip: Boolean = False);
     destructor Destroy; override;
 
+    property JitClassCreator: TJitClassCreatorBase read FJitClassCreator;
     property OwnJitCreator: Boolean read FOwnJitCreator write FOwnJitCreator;
   end;
 
@@ -457,6 +468,7 @@ end;
 constructor JitTypeParserException.Create(APos: Integer; const AToken,
   msg: string);
 begin
+  inherited Create(msg);
   FErrorPos := APos;
   FErrorToken := AToken;
 end;
@@ -2182,6 +2194,11 @@ begin
   Result := FClass.ClassInfo;
 end;
 
+function TJitTypeClass.GetJitClass: TClass;
+begin
+  Result := FClass;
+end;
+
 constructor TJitTypeClass.Create(ATypeName: String; AClass: TClass;
   ATypeLibrary: TJitTypeLibrary);
 begin
@@ -2200,6 +2217,14 @@ function TJitTypeJitClass.GetTypeInfo: PTypeInfo;
 begin
   if FJitClassCreator <> nil then
     Result := FJitClassCreator.TypeInfo
+  else
+    Result := nil;
+end;
+
+function TJitTypeJitClass.GetJitClass: TClass;
+begin
+  if FJitClassCreator <> nil then
+    Result := FJitClassCreator.GetJitClass
   else
     Result := nil;
 end;

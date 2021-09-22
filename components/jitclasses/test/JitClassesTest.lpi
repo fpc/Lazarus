@@ -8,7 +8,6 @@
       <Title Value="JitClassesTest"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
-      <Icon Value="0"/>
     </General>
     <BuildModes>
       <Item Name="Default (no checks, O-)" Default="True"/>

@@ -221,7 +221,9 @@ type
     FJitPVmt: PVmt;
     FRefCountedJitPVmt: TRefCountedJitClassReference;
     FAncestorClass: TClass;
+    FAncestorClassName: String;
     FAncestorJitClass: TJitClassCreator;
+    FAncestorJitType: TJitTypeClassBase;
     FClassName: String;
     FTypeLibrary: TJitTypeLibrary;
 
@@ -234,7 +236,6 @@ type
     procedure DoTypeLibFreed(Sender: TObject);
     procedure DoAnchesterJitClassFreed(Sender: TObject);
 
-    function GetJitClass: TClass;
     procedure SetClassName(AValue: String);
     procedure SetClassUnit(AValue: String);
     procedure SetTypeLibrary(AValue: TJitTypeLibrary);
@@ -244,6 +245,7 @@ type
     class procedure FreeJitClass(AJitPVmt: PVmt);
     function GetLockReferenceObj: TRefCountedJitReference; override;
     function  GetTypeInfo: PTypeInfo; override;
+    function GetJitClass: TClass; override;
 
     procedure CreateJitClass;
     procedure CreateJitClassPreCheck;
@@ -257,8 +259,10 @@ type
     procedure CreateJitPropsPrepare;
     procedure CreateJitPropsFinish;
   public
-    constructor Create(AnAncestorClass: TClass; AClassName: String; AClassUnit: String);
-    constructor Create(AnAncestorJitClass: TJitClassCreator; AClassName: String; AClassUnit: String);
+    constructor Create(AnAncestorClass: TClass; AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
+    constructor Create(AnAncestorClassName, AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
+    constructor Create(AnAncestorJitClass: TJitClassCreator; AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
+    constructor Create(AnAncestorJitType: TJitType; AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
     destructor Destroy; override;
 
     (* UpdateJitClass
@@ -862,7 +866,7 @@ begin
           NewDefault:= '';
           NewNoDefault := False;
           NewIsStored := True;
-          tk := Parser.CurrentKind;
+          tk := Parser.Next;
           if tk = ptIdent then begin // stopped at read or write
             while tk in [ptIdent, ptDot] do begin
               if (tk = ptIdent) then begin
@@ -1125,7 +1129,23 @@ end;
 procedure TJitClassCreator.CreateJitClass;
 var
   HasJitAnchestor: Boolean;
+  at: TJitType;
 begin
+  if (FAncestorClass = nil) and (FAncestorJitClass = nil) then begin
+    if (FAncestorJitType = nil) and (FAncestorClassName <> '') and (FTypeLibrary <> nil) then begin
+      at := FTypeLibrary.FindType(FAncestorClassName, FClassUnit);
+      if not (at is TJitTypeClassBase) then
+        raise Exception.Create('Incorrect type for anchestor');
+      FAncestorJitType := TJitTypeJitClass(at);
+    end;
+
+    if FAncestorJitType <> nil then begin;
+      if (FAncestorJitType is TJitTypeJitClass) then
+        FAncestorJitClass := TJitClassCreator(TJitTypeJitClass(FAncestorJitType).JitClassCreator)
+      else
+        FAncestorClass := FAncestorJitType.JitClass;
+    end;
+  end;
   CreateJitClassPreCheck;
   FFlags := FFlags - [ccfModifiedMethods, ccfModifiedProps, ccfModifiedClassName];
 
@@ -1460,7 +1480,7 @@ begin
 end;
 
 constructor TJitClassCreator.Create(AnAncestorClass: TClass;
-  AClassName: String; AClassUnit: String);
+  AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary);
 begin
   FJitPVmt := nil;
   FJitMethods := TJitMethodList.Create(Self);
@@ -1471,15 +1491,32 @@ begin
   FAncestorClass := AnAncestorClass;
   FClassName := AClassName;
   FClassUnit := AClassUnit;
+  TypeLibrary := ATypeLibrary;
+end;
+
+constructor TJitClassCreator.Create(AnAncestorClassName, AClassName: String;
+  AClassUnit: String; ATypeLibrary: TJitTypeLibrary);
+begin
+  Create(TClass(nil), AClassName, AClassUnit, ATypeLibrary);
+  FAncestorClassName := AnAncestorClassName;
 end;
 
 constructor TJitClassCreator.Create(AnAncestorJitClass: TJitClassCreator;
-  AClassName: String; AClassUnit: String);
+  AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary);
 begin
-  Create(TClass(nil), AClassName, AClassUnit);
+  Create(TClass(nil), AClassName, AClassUnit, ATypeLibrary);
   FAncestorJitClass := AnAncestorJitClass;
   if FAncestorJitClass <> nil then
     FAncestorJitClass.AddFreeNotification(@DoAnchesterJitClassFreed);
+end;
+
+constructor TJitClassCreator.Create(AnAncestorJitType: TJitType;
+  AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary);
+begin
+  if not (AnAncestorJitType is TJitTypeClassBase) then
+    raise Exception.Create('Incorrect type for anchestor');
+  Create(TClass(nil), AClassName, AClassUnit, ATypeLibrary);
+  FAncestorJitType := TJitTypeClassBase(AnAncestorJitType);
 end;
 
 destructor TJitClassCreator.Destroy;

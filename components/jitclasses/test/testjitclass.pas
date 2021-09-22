@@ -709,6 +709,7 @@ end;
 procedure TJitClassTest.TestJitParseClass;
 var
   JitCreator: TJitClassCreator;
+  JitTypeLib: TJitTypeLibrary;
 begin
   JitCreator := TJitClassCreator.Create(TMyClass, 'TJitTestClass', 'foo');
   JitCreator.JitProperties.ParseFromClassDeclaration(
@@ -728,6 +729,38 @@ begin
   AssertTrue(JitCreator.JitProperties.IndexOf('TestFoo') < 0);
 
   JitCreator.Free;
+
+
+
+  JitCreator := TJitClassCreator.Create(TMyClass, 'TJitTestClass', 'foo');
+  JitCreator.JitProperties.ParseFromClassDeclaration(
+    '  property TestProp1: int64 read foo write foo;' +
+    '  property TestProp2: int64 read foo;' +
+    'a: word;' +
+    'function foo: boolean;' +
+    '  property TestProp3: int64 read foo;'
+  );
+
+  AssertTrue(JitCreator.JitProperties.IndexOf('TestProp1') >= 0);
+  AssertTrue(JitCreator.JitProperties.IndexOf('TestProp2') >= 0);
+  AssertTrue(JitCreator.JitProperties.IndexOf('TestProp3') >= 0);
+
+  JitCreator.Free;
+
+
+  JitTypeLib := TJitTypeLibrary.Create;
+  JitTypeLib.AddAlias('string', 'ansistring');
+  JitCreator := TJitClassCreator.Create(TMyClass, 'TJitTestClass', 'foo', JitTypeLib);
+  JitCreator.JitProperties.ParseFromClassDeclaration(
+    '  property TestProp1: string read foo write foo;' +
+    '  property TestProp2: ansistring read foo;'
+  );
+
+  AssertTrue(JitCreator.JitProperties.IndexOf('TestProp1') >= 0);
+  AssertTrue(JitCreator.JitProperties.IndexOf('TestProp2') >= 0);
+
+  JitCreator.Free;
+  JitTypeLib.Free;
 end;
 
 procedure TJitClassTest.TestJitPropCircularClassDef;
