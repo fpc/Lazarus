@@ -3,8 +3,8 @@ object Form1: TForm1
   Height = 573
   Top = 215
   Width = 471
-  HorzScrollBar.Page = 471
-  VertScrollBar.Page = 573
+  HorzScrollBar.Page = 329
+  VertScrollBar.Page = 506
   AutoScroll = True
   AutoSize = True
   Caption = 'Pen and Brush'
@@ -13,7 +13,7 @@ object Form1: TForm1
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.3.0.0'
   object PaintBox: TPaintBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = Owner
@@ -34,48 +34,44 @@ object Form1: TForm1
     AnchorSideTop.Control = WidthCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
+    Height = 15
     Top = 269
-    Width = 36
+    Width = 35
     BorderSpacing.Left = 7
     Caption = 'Width:'
-    ParentColor = False
   end
   object Label4: TLabel
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = CapsCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
+    Height = 15
     Top = 328
-    Width = 53
+    Width = 52
     BorderSpacing.Left = 7
     Caption = 'End Caps:'
-    ParentColor = False
   end
   object Label5: TLabel
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = JoinCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
+    Height = 15
     Top = 358
-    Width = 53
+    Width = 52
     BorderSpacing.Left = 7
     Caption = 'Join Style:'
-    ParentColor = False
   end
   object Label6: TLabel
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = PenColorBox
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
+    Height = 15
     Top = 299
-    Width = 33
+    Width = 32
     BorderSpacing.Left = 7
     Caption = 'Color:'
-    ParentColor = False
   end
   object Bevel1: TBevel
     AnchorSideLeft.Control = Label1
@@ -84,10 +80,10 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 88
+    Left = 87
     Height = 3
-    Top = 220
-    Width = 372
+    Top = 219
+    Width = 373
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 10
     BorderSpacing.Right = 11
@@ -97,26 +93,24 @@ object Form1: TForm1
     AnchorSideTop.Control = FigureCombo
     AnchorSideTop.Side = asrBottom
     Left = 11
-    Height = 16
+    Height = 15
     Top = 213
-    Width = 67
+    Width = 66
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
     Caption = 'Pen options:'
-    ParentColor = False
   end
   object Label2: TLabel
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = JoinCombo
     AnchorSideTop.Side = asrBottom
     Left = 11
-    Height = 16
-    Top = 385
-    Width = 77
+    Height = 15
+    Top = 384
+    Width = 76
     BorderSpacing.Left = 11
     BorderSpacing.Top = 7
     Caption = 'Brush options:'
-    ParentColor = False
   end
   object Bevel2: TBevel
     AnchorSideLeft.Control = Bevel1
@@ -124,10 +118,10 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 88
+    Left = 87
     Height = 3
-    Top = 392
-    Width = 372
+    Top = 390
+    Width = 373
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Right = 11
   end
@@ -136,48 +130,44 @@ object Form1: TForm1
     AnchorSideTop.Control = PenStyleCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
+    Height = 15
     Top = 239
-    Width = 29
+    Width = 28
     BorderSpacing.Left = 7
     Caption = 'Style:'
-    ParentColor = False
   end
   object Label8: TLabel
     AnchorSideLeft.Control = Label2
     AnchorSideTop.Control = BrushStyleCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
-    Top = 411
-    Width = 29
+    Height = 15
+    Top = 410
+    Width = 28
     BorderSpacing.Left = 7
     Caption = 'Style:'
-    ParentColor = False
   end
   object Label9: TLabel
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = BrushColorBox
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
-    Top = 441
-    Width = 33
+    Height = 15
+    Top = 440
+    Width = 32
     BorderSpacing.Left = 7
     Caption = 'Color:'
-    ParentColor = False
   end
   object Label10: TLabel
     AnchorSideLeft.Control = Label1
     AnchorSideTop.Control = FigureCombo
     AnchorSideTop.Side = asrCenter
     Left = 18
-    Height = 16
-    Top = 186
-    Width = 37
+    Height = 15
+    Top = 187
+    Width = 36
     BorderSpacing.Left = 7
     Caption = 'Figure:'
-    ParentColor = False
   end
   object Button1: TBitBtn
     AnchorSideTop.Control = BrushColorBox
@@ -186,16 +176,15 @@ object Form1: TForm1
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 386
+    Left = 385
     Height = 26
-    Top = 471
-    Width = 74
+    Top = 469
+    Width = 75
     Anchors = [akTop, akRight]
     AutoSize = True
     BorderSpacing.Around = 11
     Caption = 'Close'
     Kind = bkClose
-    NumGlyphs = 0
     TabOrder = 0
   end
   object WidthCombo: TComboBox
@@ -204,7 +193,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 23
-    Top = 266
+    Top = 265
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
@@ -231,7 +220,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 23
-    Top = 325
+    Top = 324
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
@@ -254,7 +243,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 23
-    Top = 355
+    Top = 354
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
@@ -277,7 +266,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 22
-    Top = 296
+    Top = 295
     Width = 140
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
     AutoSelect = False
@@ -293,7 +282,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 23
-    Top = 236
+    Top = 235
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
@@ -309,7 +298,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 23
-    Top = 408
+    Top = 406
     Width = 140
     AutoSelect = False
     BorderSpacing.Left = 100
@@ -325,7 +314,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrBottom
     Left = 100
     Height = 22
-    Top = 438
+    Top = 436
     Width = 140
     Selected = clBtnFace
     Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbCustomColor, cbPrettyNames]
@@ -368,7 +357,7 @@ object Form1: TForm1
     AnchorSideTop.Side = asrCenter
     Left = 247
     Height = 19
-    Top = 268
+    Top = 267
     Width = 70
     BorderSpacing.Left = 7
     Caption = 'Cosmetic'

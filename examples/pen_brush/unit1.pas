@@ -192,7 +192,7 @@ end;
 
 procedure TForm1.PenChange(Sender: TObject);
 var
-  Dashes: array[0..3] of DWord = (3, 7, 8, 6);
+  Dashes: Graphics.TPenPattern = (3, 7, 8, 6);
 begin
   if PenStyleCombo.ItemIndex <> -1 then
     PaintBox.Canvas.Pen.Style := TPenStyle(PenStyleCombo.ItemIndex);
