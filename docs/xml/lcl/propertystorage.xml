@@ -746,12 +746,24 @@
         </short>
       </element>
 
-      <!-- TODO: This needs a description -->
       <element name="TCustomPropertyStorage.SaveProperties">
         <short>
-          Saves values for properties in the container collection to the storage mechanism.
+          Saves property values to the storage mechanism for the container.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SaveProperties</var> is a method used to save property values from components and persistent objects to the storage mechanism for the container.
+          </p>
+          <p>
+            Existing values in the container are loaded on entry using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> methods. A temporary <var>TPropsStorage</var> instance is created and configured to use the <var>RootSection</var>, <var>Root</var>, and <var>Owner</var> for the component instance. Its <var>OnWriteString</var> and <var>OnEraseSection</var> event handlers are set to the <var>DoWriteString</var> and <var>DoEraseSections</var> methods (respectively).
+          </p>
+          <p>
+            SaveProperties calls the <var>StoreObjectsProps</var> method in <var>TPropsStorage</var> to store the component and property names and values using the storage format for the container.
+          </p>
+          <remark>
+            Some of the methods called in SaveProperties are declared as abstract virtual methods in TCustomPropertyStorage, like: GetPropertyList, FinishPropertyList, DoWriteString, and DoEraseSections. They must be implemented in a descendent class to use a specific storage format in its container.
+          </remark>
+        </descr>
         <seealso>
           <link id="TCustomPropertyStorage.GetPropertyList"/>
           <link id="TCustomPropertyStorage.FinishPropertyList"/>
@@ -762,12 +774,21 @@
         </seealso>
       </element>
 
-      <!-- TODO: This needs a description -->
       <element name="TCustomPropertyStorage.RestoreProperties">
         <short>
-          Restores property values from the storage mechanism to the container collection items.
+          Restores property values from the storage mechanism for the container.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>RestoreProperties</var> is a method used to load  property values stored in the container, and apply the values to the origin components / persistent object instances. Properties names and the corresponding object instances are loaded using the <var>GetPropertyList</var> and <var>FinishPropertyList</var> methods.
+          </p>
+          <p>
+            A temporary <var>TPropsStorage</var> instance is created and configured to use <var>RootSection</var> and <var>DoReadString</var> from the class instance. The <var>LoadObjectsProps</var> method is called to get the property values and apply them to the object instances for the property list.
+          </p>
+          <remark>
+            Some of the methods called in RestoreProperties are declared as abstract virtual methods in TCustomPropertyStorage, like: GetPropertyList, FinishPropertyList, and DoReadString. They must be implemented in a descendent class to use the specific storage format for its container.
+          </remark>
+        </descr>
         <seealso>
           <link id="TCustomPropertyStorage.GetPropertyList"/>
           <link id="TCustomPropertyStorage.FinishPropertyList"/>
@@ -778,29 +799,64 @@
         </seealso>
       </element>
 
-      <!-- TODO: This needs a description -->
       <element name="TCustomPropertyStorage.GetPropertyList">
         <short>
-          Builds a list with the properties defined in the container collection.
+          Builds a list with the object(s) and properties stored in the container.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GetPropertyList</var> is an abstract virtual method in <var>TCustomPropertyStorage</var>. It specifies the method used to populate the <var>TStringList</var> instance in <var>List</var> with the component / object properties stored in the container. The <var>Names</var> in the List argument contain the component and property names for the value. The <var>Objects</var> in the List argument contain a reference to the component instance that is the origin for the property value.
+          </p>
+          <p>
+            GetPropertyList must be implemented in a descendent class to ensure that the component and property names or values are valid for the storage format in the container.
+          </p>
+          <p>
+            GetPropertyList is used in the implementation of the SaveProperties and RestoreProperties methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomPropertyStorage.SaveProperties"/>
+          <link id="TCustomPropertyStorage.RestoreProperties"/>
+          <link id="#lcl.controls.TControlPropertyStorage">TControlPropertyStorage</link>
+        </seealso>
       </element>
       <element name="TCustomPropertyStorage.GetPropertyList.List">
-        <short/>
+        <short>
+          TStringList instance where names and the components / objects instance for the property values are stored.
+        </short>
       </element>
 
-      <!-- TODO: This needs a description -->
       <element name="TCustomPropertyStorage.FinishPropertyList">
-        <short>set Objects (i.e. the component of each property).</short>
+        <short>
+          Updates the specified list to include a reference to the object instance for each of the properties in the storage container.
+        </short>
         <descr>
-          Reads the Strings[] in the list,
-          retrieves and stores the associated Root or Component object in Objects[].
+          <p>
+            <var>FinishPropertyList</var> ensures that a valid object reference exists for each of the property names loaded into the <var>List</var> argument using the <var>GetPropertyList</var> method. It ensures that the Objects property in List contains a valid reference to a <var>TComponent</var> instance for each of the component and property names in List.
+          </p>
+          <p>
+            Root identifies the initial component / object instance examined in the method. property named and values in List are relative to the component hierarchy starting at Root.
+          </p>
+          <p>
+            The <var>ParseStoredItem</var> routine from the RTL <file>rttiutils</file> unit is called to parse each of the values in the Names property in List into separate component and property names. If the value cannot be parsed into valid component and property names, the entry in List is deleted. If the component name is not the same as the value for Root, or one of its children, the value is also deleted from List.
+          </p>
+          <p>
+            The FindComponent method is called to get the object instance with the property value for a given component name. The references is stored in the Objects property for the corresponding component / property name.
+          </p>
+          <p>
+            FinishPropertyList is used in the implementation of the <var>SaveProperties</var> and <var>RestoreProperties</var> methods.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomPropertyStorage.SaveProperties"/>
+          <link id="TCustomPropertyStorage.RestoreProperties"/>
+          <link id="TCustomPropertyStorage.GetPropertyList"/>
+        </seealso>
       </element>
       <element name="TCustomPropertyStorage.FinishPropertyList.List">
-        <short/>
+        <short>
+          TStringList instance with the component and property names examined in the method.
+        </short>
       </element>
 
       <element name="TCustomPropertyStorage.DoReadInteger">
