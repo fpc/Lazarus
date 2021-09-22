@@ -37,10 +37,9 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideLeft.Side = asrBottom
       AnchorSideTop.Control = RadioGroup
       Left = 93
-      Height = 24
+      Height = 15
       Top = 304
       Width = 96
-      Anchors = [akTop, akLeft, akBottom]
       BorderSpacing.Left = 6
       Caption = 'Transparent Color:'
     end
@@ -109,7 +108,7 @@ object ImageListEditorDlg: TImageListEditorDlg
       AnchorSideTop.Side = asrBottom
       Left = 93
       Height = 22
-      Top = 332
+      Top = 323
       Width = 96
       Selected = clFuchsia
       Style = [cbStandardColors, cbExtendedColors, cbIncludeDefault, cbCustomColor, cbPrettyNames]
