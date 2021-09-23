@@ -224,6 +224,7 @@ type
       function IsFewPoints: Boolean; inline;
       function PrepareCoeffs(ASource: TCustomChartSource;
         var ASourceIndex, ACacheIndex: Integer): Boolean;
+      procedure PrepareIntervals;
     end;
 
   var
@@ -1332,6 +1333,20 @@ begin
   Result := (ok = 1);
 end;
 
+procedure TCubicSplineSeries.TSpline.PrepareIntervals;
+begin
+  FIntervals := TIntervalList.Create;
+  try
+    if not (csoExtrapolateLeft in FOwner.Options) then
+      FIntervals.AddRange(NegInfinity, FOwner.FX[0], [ioOpenStart, ioOpenEnd]);
+    if not (csoExtrapolateRight in FOwner.Options) then
+      FIntervals.AddRange(FOwner.FX[High(FOwner.FX)], SafeInfinity, [ioOpenStart, ioOpenEnd]);
+  except
+    FreeAndNil(FIntervals);
+    raise;
+  end;
+end;
+
 
 { TCubicSplineSeries }
 
@@ -1359,6 +1374,8 @@ begin
   for s in FSplines do begin
     hint := 0;
     x := AX;
+    if s.FIntervals = nil then
+      s.PrepareIntervals;
     if not s.FIntervals.Intersect(x, x, hint) then
       exit(s.Calculate(AX));
   end;
