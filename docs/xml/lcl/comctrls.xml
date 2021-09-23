@@ -9883,13 +9883,29 @@
         <short>Deletes the specified list item.</short>
         <descr>
           <p>
-            Delete is a method used to delete the list item specified in AItem.
+            <var>Delete</var> is a method used to delete the list item specified in AItem.
           </p>
           <p>
-            In Delphi, Delete is called in reaction to Items.Delete. But if you call it directly,  it will also do the actual deletion and then call the OnDeletion handler.  We simply call Items.Delete and this will then call Delete again and in the second run we call the OnDeletion handler. Not 100% Delphi compatible, but more compatible then it was before. (BB)
+            In Delphi, Delete is called when Items.Delete is executed.  The OnDeletion event handler is signalled each time the method is called, even when list items are freed from the Items container.
+          </p>
+          <p>
+            The Lazarus implementation differs. It uses a flag value in AItem to determine if themethod has been called when the list item is freed, or when the Delete method in the list item has been called explicitly.
+          </p>
+          <p>
+            Delete is called from the DoDeletion method if an overridden Delete method has  been implemented. The OnDeletion event handler is signalled when Delete has been explicitly called, and when the Delete method has not been overridden.
+          </p>
+          <p>
+            While not 100% Delphi compatible, it is more compatible than previous LCL versions.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.DoDeletion"/>
+          <link id="TCustomListView.OnDeletion"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TCustomListView.ItemDeleted"/>
+          <link id="TListItem.Delete"/>
+          <link id="TListItems.Delete"/>
+        </seealso>
       </element>
       <element name="TCustomListView.Delete.AItem">
         <short>List item deleted in the method.</short>
@@ -9897,8 +9913,22 @@
 
       <element name="TCustomListView.DoDeletion">
         <short>Performs actions needed to delete the specified list item.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoDeletion</var> ensures an overridden <var>Delete</var> method in a descendent class is always executed for the list item in AItem. If the method has been overridden, the <var>OnDeletion</var> event handler is signalled (when assigned).
+          </p>
+          <p>
+            DoDeletion is called from <var>ItemDeleted</var>, and occurs after the value in <var>LastSelected</var> has been updated.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Delete"/>
+          <link id="TCustomListView.ItemDeleted"/>
+          <link id="TCustomListView.OnDeletion"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TListItem.Delete"/>
+          <link id="TListItems.Delete"/>
+        </seealso>
       </element>
       <element name="TCustomListView.DoDeletion.AItem">
         <short>List view item deleted in the method.</short>
@@ -9906,8 +9936,21 @@
 
       <element name="TCustomListView.DoInsert">
         <short>Performs actions needed to insert the specified list item.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoInsert</var> ensures an overridden <var>Insert</var> method in a descendent class is always executed for the list item in AItem. If the method has been overridden, the <var>OnInsert</var> event handler is signalled (when assigned).
+          </p>
+          <p>
+            DoInsert is called from the ItemInserted method which occurs when the list item is stored in the Items property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.ItemInserted"/>
+          <link id="TCustomListView.OnInsert"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TListItems.Insert"/>
+          <link id="TListItems.InsertItem"/>
+        </seealso>
       </element>
       <element name="TCustomListView.DoInsert.AItem">
         <short>List view item inserted in the method.</short>
