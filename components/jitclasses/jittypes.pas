@@ -190,6 +190,7 @@ type
     property TypeLibrary: TJitTypeLibrary read FTypeLibrary write SetTypeLibrary;
   public
     constructor Create(ATypeName: String; ATypeLibrary: TJitTypeLibrary = nil);
+    constructor Create(ATypeName, AUnitName: String; ATypeLibrary: TJitTypeLibrary = nil);
     destructor Destroy; override;
     property TypeName: String read FTypeName;
     property ResolvedTypeName: String read GetResolvedTypeName; // un-aliased
@@ -322,7 +323,9 @@ type
     function GetTypeInfo: PTypeInfo; override;
     function GetJitClass: TClass; override;
   public
+    // UnitName defaults to AClass.UnitName
     constructor Create(ATypeName: String; AClass: TClass; ATypeLibrary: TJitTypeLibrary = nil);
+    constructor Create(ATypeName, AUnitName: String; AClass: TClass; ATypeLibrary: TJitTypeLibrary = nil);
   end;
 
   { TJitTypeJitClass }
@@ -339,7 +342,10 @@ type
     function GetLockReferenceInc: TRefCountedJitReference; override;
     function IsConstTypeInfo: Boolean; override;
   public
+    // UnitName defaults to AJitClassCreator.ClassUnit
     constructor Create(ATypeName: String; AJitClassCreator: TJitClassCreatorBase;
+      ATypeLibrary: TJitTypeLibrary = nil; ATakeOwnerShip: Boolean = False);
+    constructor Create(ATypeName, AUnitName: String; AJitClassCreator: TJitClassCreatorBase;
       ATypeLibrary: TJitTypeLibrary = nil; ATakeOwnerShip: Boolean = False);
     destructor Destroy; override;
 
@@ -398,7 +404,12 @@ type
     *)
     function  AddType(ATypeName, ADeclaration: String; AForceNewJitTypeInfo: Boolean = False): TJitType; overload;
     function  AddType(ATypeName, ADeclaration, AUnitName: String; AForceNewJitTypeInfo: Boolean = False): TJitType; overload;
+    (* AddClass:
+       AUnitName defaults to AClass.UnitName.
+       It can be overriden, this should be done with an empty name to make the type match any unit in IndexOf
+    *)
     function  AddClass(ATypeName: String; AClass: TClass): TJitType; overload;
+    function  AddClass(ATypeName, AUnitName: String; AClass: TClass): TJitType; overload;
     function  AddJitClass(ATypeName: String; AJitClassCreator: TJitClassCreatorBase; ATakeCreatorOwnerShip: Boolean = False): TJitType; overload;
     function  AddAlias(ATypeName, ARealTypeName: String): TJitType; overload;
     procedure Remove(ATypeName: String; AnUnitName: String = '');
@@ -817,6 +828,13 @@ begin
   if FTypeLibrary <> nil then
     FTypeLibrary.AddFreeNotification(@DoTypeLibFreed);
   inherited Create;
+end;
+
+constructor TJitType.Create(ATypeName, AUnitName: String;
+  ATypeLibrary: TJitTypeLibrary);
+begin
+  Create(ATypeName, ATypeLibrary);
+  FUnitName := AUnitName;
 end;
 
 destructor TJitType.Destroy;
@@ -2158,16 +2176,15 @@ end;
 constructor TJitTypeInfo.Create(ATypeName, ADeclaration, AUnitName: String;
   ATypeLibrary: TJitTypeLibrary; AParseFlags: TJitTypeInfoParseFlags);
 begin
-  Create(ATypeName, ADeclaration, ATypeLibrary, AParseFlags);
-  UnitName := AUnitName;
+  inherited Create(ATypeName, AUnitName, ATypeLibrary);
+  FDeclaration := ADeclaration;
+  FParseFlags := AParseFlags;
 end;
 
 constructor TJitTypeInfo.Create(ATypeName, ADeclaration: String;
   ATypeLibrary: TJitTypeLibrary; AParseFlags: TJitTypeInfoParseFlags);
 begin
-  FDeclaration := ADeclaration;
-  FParseFlags := AParseFlags;
-  inherited Create(ATypeName, ATypeLibrary);
+  Create(ATypeName, ADeclaration, '', ATypeLibrary, AParseFlags);
 end;
 
 constructor TJitTypeInfo.Create(ATypeName: String; ATypeInfo: PTypeInfo;
@@ -2202,7 +2219,13 @@ end;
 constructor TJitTypeClass.Create(ATypeName: String; AClass: TClass;
   ATypeLibrary: TJitTypeLibrary);
 begin
-  inherited Create(ATypeName, ATypeLibrary);
+  Create(ATypeName, AClass.UnitName, AClass, ATypeLibrary);
+end;
+
+constructor TJitTypeClass.Create(ATypeName, AUnitName: String; AClass: TClass;
+  ATypeLibrary: TJitTypeLibrary);
+begin
+  inherited Create(ATypeName, AUnitName, ATypeLibrary);
   FClass := AClass;
 end;
 
@@ -2246,7 +2269,14 @@ constructor TJitTypeJitClass.Create(ATypeName: String;
   AJitClassCreator: TJitClassCreatorBase; ATypeLibrary: TJitTypeLibrary;
   ATakeOwnerShip: Boolean);
 begin
-  inherited Create(ATypeName, ATypeLibrary);
+  Create(ATypeName, AJitClassCreator.ClassUnit, AJitClassCreator, ATypeLibrary, ATakeOwnerShip);
+end;
+
+constructor TJitTypeJitClass.Create(ATypeName, AUnitName: String;
+  AJitClassCreator: TJitClassCreatorBase; ATypeLibrary: TJitTypeLibrary;
+  ATakeOwnerShip: Boolean);
+begin
+  inherited Create(ATypeName, AUnitName, ATypeLibrary);
   FJitClassCreator := AJitClassCreator;
   if FJitClassCreator <> nil then
     FJitClassCreator.AddFreeNotification(@DoCreatorFreed);
@@ -2391,17 +2421,28 @@ begin
 end;
 
 function TJitTypeLibrary.IndexOf(ATypeName, AnUnitName: String): Integer;
+var
+  NoUnit: Integer;
+  n: String;
 begin
   if AnUnitName = '' then begin
     Result := FTypeMap.IndexOf(ATypeName);
     exit;
   end;
   Result := FTypeMap.Count - 1;
-  while (Result >= 0) and
-        ( (FTypeMap.Data[Result].TypeName <> ATypeName) or
-          (FTypeMap.Data[Result].UnitName <> AnUnitName) )
-  do
+  NoUnit := -1;
+  while Result >= 0 do begin
+    if (FTypeMap.Data[Result].TypeName = ATypeName) then begin
+      n := FTypeMap.Data[Result].UnitName;
+      if n = AnUnitName then
+        exit
+      else
+      if (NoUnit < 0) and (n = '') then
+        NoUnit := Result;
+    end;
     dec(Result);
+  end;
+  Result := NoUnit;
 end;
 
 constructor TJitTypeLibrary.Create;
@@ -2463,10 +2504,16 @@ end;
 
 function TJitTypeLibrary.AddClass(ATypeName: String; AClass: TClass): TJitType;
 begin
-  if (IndexOf(ATypeName, AClass.UnitName) >= 0) then
+  AddClass(ATypeName, AClass.UnitName, AClass);
+end;
+
+function TJitTypeLibrary.AddClass(ATypeName, AUnitName: String; AClass: TClass
+  ): TJitType;
+begin
+  if (IndexOf(ATypeName, AUnitName) >= 0) then
     raise Exception.Create('Duplicate Type');
 
-  Result := TJitTypeClass.Create(ATypeName, AClass);
+  Result := TJitTypeClass.Create(ATypeName, AUnitName, AClass);
   Result.AddFreeNotification(@DoTypeFreed);
   FTypeMap.Add(LowerCase(ATypeName), Result);
   Result.TypeLibrary := Self;
