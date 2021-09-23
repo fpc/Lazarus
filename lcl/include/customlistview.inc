@@ -588,7 +588,7 @@ begin
     Delete(AItem)
   else
   //if you change the code below, make sure to change it in TCustomListView.Delete as well
-  if not (csDestroying in ComponentState) and Assigned(FOnDeletion) then
+  if {not (csDestroying in ComponentState) and} Assigned(FOnDeletion) then
     FOnDeletion(Self, AItem);
 end;
 
@@ -610,7 +610,7 @@ begin
     AItem.Delete;
     Exit;
   end;
-  if not (csDestroying in ComponentState) and Assigned(FOnDeletion) then
+  if {not (csDestroying in ComponentState) and} Assigned(FOnDeletion) then
     FOnDeletion(Self, AItem);
 end;
 
