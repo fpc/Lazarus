@@ -617,7 +617,7 @@ type
                 SpecializeNode: TCodeTreeNode);
     procedure UpdateGenericParamMapping(SpecializeParamsTool: TFindDeclarationTool;
                 SpecializeParamsNode: TCodeTreeNode; GenericParamsNode: TCodeTreeNode);
-    procedure UpdateContexWithGenParamValue(var SpecializeParamContext: TFindContext);
+    function UpdateContexWithGenParamValue(var SpecializeParamContext: TFindContext): Boolean;
     function FindGenericParamType: Boolean;
     procedure AddOperandPart(aPart: string);
     property ExtractedOperand: string read FExtractedOperand;
@@ -9793,7 +9793,8 @@ var
         break;
       end else if ExprType.Context.Node.Desc = ctnGenericParameter then begin
         // ok, allowed
-        Params.UpdateContexWithGenParamValue(ExprType.Context);
+        if not Params.UpdateContexWithGenParamValue(ExprType.Context) then
+          RaiseIllegalQualifierFound(20210924170159);
       end else begin
         // not allowed
         //debugln(['ResolvePoint ',ExprTypeToString(ExprType)]);
@@ -14118,14 +14119,16 @@ begin
   GenParamValueMappings.SpecializeParamsNode := SpecializeParamsNode;
 end;
 
-procedure TFindDeclarationParams.UpdateContexWithGenParamValue(var SpecializeParamContext: TFindContext);
+function TFindDeclarationParams.UpdateContexWithGenParamValue(
+  var SpecializeParamContext: TFindContext): Boolean;
 var
   lMapping: TGenericParamValueMapping;
   lPNode, lVNode: TCodeTreeNode;
   lPTool, lVTool: TFindDeclarationTool;
 begin
+  Result := False;
   if Assigned(Parent) then begin
-    Parent.UpdateContexWithGenParamValue(SpecializeParamContext);
+    Result := Parent.UpdateContexWithGenParamValue(SpecializeParamContext);
     exit;
   end;
   lMapping := GenParamValueMappings.FirstParamValueMapping;
@@ -14135,6 +14138,7 @@ begin
     lVNode := lMapping.SpecializeValueNode;
     lVTool := GenParamValueMappings.SpecializeValuesTool;
     if SpecializeParamContext.Tool.CompareSrcIdentifiers(SpecializeParamContext.Node.StartPos, @lPTool.Src[lPNode.StartPos]) then begin
+      Result := True;
       SpecializeParamContext.Node := lVNode;
       SpecializeParamContext.Tool := lVTool;
       exit;
