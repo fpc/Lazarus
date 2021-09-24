@@ -995,7 +995,7 @@ var
   lOldWorkingDir, lInitialDir: string;
   Dialog: IFileOpenDialog;
 begin
-  if ACommonDialog.Handle <> INVALID_HANDLE_VALUE then
+  if ACommonDialog.HandleAllocated and (ACommonDialog.Handle <> INVALID_HANDLE_VALUE) then
   begin
     State := SaveApplicationState;
     lOldWorkingDir := GetCurrentDirUTF8;
