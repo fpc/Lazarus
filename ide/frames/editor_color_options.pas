@@ -1213,7 +1213,9 @@ begin
   DefaultSchemeGrp := ColorSchemeFactory.ColorSchemeGroup[ColorSchemeButton.Caption];
   if DefaultSchemeGrp = nil then
     exit;
-  if FIsEditingDefaults or FCurHighlightElement.IsUsingSchemeGlobals then
+  if FIsEditingDefaults or
+     (OnlySelected and FCurHighlightElement.IsUsingSchemeGlobals)
+  then
     DefaultColorScheme := DefaultSchemeGrp.DefaultColors
   else
     DefaultColorScheme := DefaultSchemeGrp.ColorScheme[FCurrentColorScheme.Language];

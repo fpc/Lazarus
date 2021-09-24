@@ -6431,22 +6431,36 @@ end;
 
 procedure TColorSchemeLanguage.Assign(Src: TColorSchemeLanguage);
 var
-  i: Integer;
+  i, j: Integer;
   Attr, SrcAttr: TColorSchemeAttribute;
+  NewList: TQuickStringlist;
 begin
-  Clear;
-  FAttributes.Sorted := false;
+  // Do not clear old list => external references to Attributes may exist
   FLanguage := Src.FLanguage;
   FLanguageName := Src.FLanguageName;
+  //FDefaultAttribute.Assign(Src.FDefaultAttribute);
   FDefaultAttribute := nil;
+  NewList := TQuickStringlist.Create;
   for i := 0 to Src.AttributeCount - 1 do begin
     SrcAttr := Src.AttributeAtPos[i];
-    Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
+    // Reuse existing Attribute if possible.
+    j := FAttributes.IndexOf(UpperCase(SrcAttr.StoredName));
+    if j >= 0 then begin
+      Attr := TColorSchemeAttribute(FAttributes.Objects[j]);
+      DebugLn(['      Use existing attr ', Attr.StoredName]);
+      FAttributes.Delete(j);
+    end
+    else begin
+      Attr := TColorSchemeAttribute.Create(Self, SrcAttr.Caption, SrcAttr.StoredName);
+    end;
     Attr.Assign(SrcAttr);
-    FAttributes.AddObject(Attr.StoredName, Attr);
+    NewList.AddObject(UpperCase(Attr.StoredName), Attr);
     if SrcAttr = Src.DefaultAttribute then
       FDefaultAttribute := Attr;
   end;
+  Clear;
+  FreeAndNil(FAttributes);
+  FAttributes := NewList;
   FAttributes.Sorted := true;
 end;
 
