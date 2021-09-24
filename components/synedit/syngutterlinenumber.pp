@@ -142,7 +142,7 @@ procedure TSynGutterLineNumber.SetShowOnlyLineNumbersMultiplesOf(const AValue : 
 begin
   If FShowOnlyLineNumbersMultiplesOf <> AValue then
   begin
-    FShowOnlyLineNumbersMultiplesOf := AValue;
+    FShowOnlyLineNumbersMultiplesOf := Max(AValue, 1);
     DoChange(self);
   end;
 end;
@@ -236,7 +236,7 @@ var
   s: string;
   dc: HDC;
   LineInfo: TSynEditGutterLineInfo;
-  LineHeight: Integer;
+  LineHeight, EveryNLine: Integer;
   t: TLinePos;
 
 begin
@@ -269,6 +269,7 @@ begin
     // prepare the rect initially
     rcLine := AClip;
     rcLine.Bottom := AClip.Top;
+    EveryNLine := Max(ShowOnlyLineNumbersMultiplesOf, 1);
     for i := t + FirstLine to t + LastLine do
     begin
       iLine := ToPos(ViewedTextBuffer.DisplayView.ViewToTextIndexEx(i, LineInfo.LineRange));
@@ -278,7 +279,7 @@ begin
       // Must show a dot instead of line number if
       // line number is not the first, the last, the current line
       // or a multiple of ShowOnlyLineNumbersMultiplesOf
-      LineInfo.ShowDot := ((iLine mod ShowOnlyLineNumbersMultiplesOf) <> 0)
+      LineInfo.ShowDot := ((iLine mod EveryNLine) <> 0)
           and (iLine <> SynEdit.CaretY) and (iLine <> 1)
           and (iLine <> SynEdit.Lines.Count);
       // Get the formatted line number or dot
