@@ -9889,7 +9889,7 @@
             In Delphi, Delete is called when Items.Delete is executed.  The OnDeletion event handler is signalled each time the method is called, even when list items are freed from the Items container.
           </p>
           <p>
-            The Lazarus implementation differs. It uses a flag value in AItem to determine if themethod has been called when the list item is freed, or when the Delete method in the list item has been called explicitly.
+            The Lazarus implementation differs. It uses a flag value in AItem to determine if the method has been called when the list item is freed, or when the Delete method in the list item has been called explicitly.
           </p>
           <p>
             Delete is called from the DoDeletion method if an overridden Delete method has  been implemented. The OnDeletion event handler is signalled when Delete has been explicitly called, and when the Delete method has not been overridden.
