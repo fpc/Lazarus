@@ -107,6 +107,7 @@ const
   Win32ClassesToInit: array[0..5] of DWord = (ICC_DATE_CLASSES,
     ICC_UPDOWN_CLASS, ICC_TAB_CLASSES, ICC_PROGRESS_CLASS, ICC_BAR_CLASSES,
     ICC_PAGESCROLLER_CLASS);
+  Done: boolean = False;
 var
   ICC: TINITCOMMONCONTROLSEX;
   Handle: HWND;
@@ -114,6 +115,9 @@ var
   AIcon: HICON;
   i: integer;
 begin
+  if Done then
+    exit;
+  Done := True;
   if not WinRegister then
   begin
     DebugLn('Trace:Win32Object.Init - Register Failed');
