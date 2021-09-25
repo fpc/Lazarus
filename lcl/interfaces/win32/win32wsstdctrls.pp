@@ -1988,17 +1988,33 @@ end;
 class procedure TWin32WSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 var
+  dx: Integer;  // pixel spacing between checkbox and text
   iconHeight: integer;
+  iconWidth: Integer;
+  details: TThemedElementDetails;
 begin
   if MeasureText(AWinControl, AWinControl.Caption, PreferredWidth, PreferredHeight) then
   begin
-    Inc(PreferredWidth, GetSystemMetrics(SM_CXMENUCHECK));
-    // pixels spacing between checkbox and text
     if ThemeServices.ThemesEnabled then
-      Inc(PreferredWidth, 4)
-    else
-      Inc(PreferredWidth, 6);
-    iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
+    begin
+      dx := 4;
+      if AWinControl is TRadioButton then
+        details := ThemeServices.GetElementDetails(tbRadioButtonCheckedNormal)
+      else
+        // ToDo: Handle TToggleBox separately from TCheckbox
+        details := ThemeServices.GetElementDetails(tbCheckBoxCheckedNormal);
+      with ThemeServices.GetDetailSize(details) do
+      begin
+        iconWidth := CX;
+        iconHeight := CY;
+      end;
+    end else
+    begin
+      dx := 6;
+      iconWidth := GetSystemMetrics(SM_CXMENUCHECK);
+      iconHeight := GetSystemMetrics(SM_CYMENUCHECK);
+    end;
+    Inc(PreferredWidth, iconWidth + dx);
     if iconHeight > PreferredHeight then
       PreferredHeight := iconHeight;
     if WithThemeSpace then
