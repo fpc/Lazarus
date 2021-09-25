@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, fgl, math, process,
   Forms, Dialogs, syncobjs,
-  Maps, LazLogger, LazUTF8, lazCollections,
+  Maps, LazLoggerBase, LazUTF8, lazCollections,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads,
   // FpDebug
@@ -633,11 +633,18 @@ var
   c: LongInt;
 begin
   FpDebugger.FWorkQueue.Lock;
+  Application.ProcessMessages;
   FpDebugger.CheckAndRunIdle;
-  c := FpDebugger.FWorkQueue.Count;
+  (* IdleThreadCount could (race condition) be to high.
+     Then DebugHistory may loose ONE item. (only one working thread.
+     Practically this is unlikely, since the thread had time to set
+     the count, since the Lock started.
+  *)
+  c := FpDebugger.FWorkQueue.Count + FpDebugger.FWorkQueue.ThreadCount - FpDebugger.FWorkQueue.IdleThreadCount;
   FpDebugger.FWorkQueue.Unlock;
 
   if c = 0 then begin
+    Application.ProcessMessages;
     FpDebugger.StartDebugLoop;
   end
   else begin
@@ -3400,8 +3407,15 @@ begin
       if State in [dsPause, dsInternalPause] then begin
         FWorkQueue.Lock;
         CheckAndRunIdle;
-        c := FWorkQueue.Count;
+        (* IdleThreadCount could (race condition) be to high.
+           Then DebugHistory may loose ONE item. (only one working thread.
+           Practically this is unlikely, since the thread had time to set
+           the count, since the Lock started.
+        *)
+        c := FWorkQueue.Count + FWorkQueue.ThreadCount - FWorkQueue.IdleThreadCount;
         FWorkQueue.Unlock;
+        if c = 0 then
+          Application.ProcessMessages;
       end
       else
         c := 0;
@@ -3451,7 +3465,7 @@ end;
 
 procedure TFpDebugDebugger.CheckAndRunIdle;
 begin
-  if (State <> dsPause) or
+  if (not (State in [dsPause, dsInternalPause])) or
      (not Assigned(OnIdle)) or
      (FWorkQueue.Count <> 0)
   then
