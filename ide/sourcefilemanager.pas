@@ -6858,14 +6858,14 @@ begin
     {$ENDIF}
 
     if (UsedUnitFilenames<>nil) then begin
-      // search for every used unit the .lfm file
-      for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+      // search every used unit for .lfm file. The list is backwards, last unit first.
+      for i:=0 to UsedUnitFilenames.Count-1 do begin
         if TryLFM(UsedUnitFilenames[i],AComponentClassName,Result) then exit;
       end;
       // search class via codetools
       if TryFindDeclaration(Result) then exit;
       // search the class in every used unit
-      for i:=UsedUnitFilenames.Count-1 downto 0 do begin
+      for i:=0 to UsedUnitFilenames.Count-1 do begin
         if TryUsedUnitInterface(UsedUnitFilenames[i],Result) then exit;
       end;
     end;
