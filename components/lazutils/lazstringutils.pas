@@ -16,7 +16,7 @@ unit LazStringUtils;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, PascodeGen,
   // LazUtils
   LazUTF8, LazLoggerBase, LazTracer;
 
@@ -1415,27 +1415,30 @@ end;
 function LazIsValidIdent(const Ident: string; AllowDots: Boolean = False;
                          StrictDots: Boolean = False): Boolean;
 // This is a copy of IsValidIdent from FPC 3.1.
-// ToDo: Switch to using IsValidIdent from FPC 3.2 when it is the minimum requirement.
+// Later modified to check for Pascal keywords. They must be prepended with '&'.
 const
   Alpha = ['A'..'Z', 'a'..'z', '_'];
   AlphaNum = Alpha + ['0'..'9'];
-  Dot = '.';
 var
   First: Boolean;
-  I, Len: Integer;
+  I, Len, Poz: Integer;
 begin
   Len := Length(Ident);
-  if Len < 1 then
+  if (Len < 1) or (TPascalCodeGenerator(nil).IsKeyWord(Ident)) then
     Exit(False);
   First := True;
-  for I := 1 to Len do
+  if Ident[1] = '&' then
+    Poz := 2
+  else
+    Poz := 1;
+  for I := Poz to Len do
   begin
     if First then
     begin
       Result := Ident[I] in Alpha;
       First := False;
     end
-    else if AllowDots and (Ident[I] = Dot) then
+    else if AllowDots and (Ident[I] = '.') then
     begin
       if StrictDots then
       begin
