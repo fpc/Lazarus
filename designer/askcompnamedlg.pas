@@ -28,7 +28,9 @@ interface
 uses
   Classes, SysUtils, TypInfo,
   // LCL
-  LCLType, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel, ExtCtrls,
+  LCLType, Forms, Controls, Dialogs, StdCtrls, ButtonPanel, ExtCtrls,
+  // LazUtils
+  LazStringUtils,
   // IdeIntf
   PropEdits,
   // IDE
@@ -171,6 +173,7 @@ begin
     NewComponent:=ANewComponent;
     OldName := NewName;
     OldText := NewText;
+    NameEditChange(NameEdit);
     if ShowModal=mrOk then
     begin
       if OldName<>NewName then
@@ -279,7 +282,7 @@ begin
     ErrorMsg:=lisEmpty;
     exit;
   end;
-  if not IsValidIdent(AName) then begin
+  if not LazIsValidIdent(AName) then begin
     ErrorMsg:=lisNotAValidPascalIdentifier;
     exit;
   end;
