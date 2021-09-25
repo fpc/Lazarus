@@ -1522,7 +1522,7 @@ type
 
   { TSnapshotManager }
   TSnapshotManagerRequestedFlags = set of
-    (smrThreads, smrCallStackCnt, smrCallStack, smrLocals, smrWatches);
+    (smrThreads, smrCallStack, smrLocals, smrWatches);
 
   TSnapshotManager = class
   private
@@ -2839,13 +2839,14 @@ begin
     if not(smrCallStack in FRequestsDone) then begin
       i := FThreads.CurrentThreads.CurrentThreadId;
       k := FCallStack.CurrentCallStackList.EntriesForThreads[i].CountLimited(5);
+      if (not(FCurrentState in [dsPause, dsInternalPause])) or
+         (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
+      then exit;
       if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
-      if (k > 0) or (smrCallStackCnt in FRequestsDone) then begin
-        // Since DoDebuggerIdle was re-entered
-        // and smrCallStackCnt is set, the count should be valid
+
+      if (k > 0) then begin
         include(FRequestsDone, smrCallStack);
-        if k > 0
-        then FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
+        FCallStack.CurrentCallStackList.EntriesForThreads[i].PrepareRange(0, Min(5, k));
         if (not(FCurrentState in [dsPause, dsInternalPause])) or
            (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
         then exit;
@@ -2854,16 +2855,6 @@ begin
       else
       if AForce then // request re-entry, even if not idle
         FForcedIdle := True;
-    end;
-
-    if not(smrCallStackCnt in FRequestsDone) then begin
-      include(FRequestsDone, smrCallStackCnt);
-      i := FThreads.CurrentThreads.CurrentThreadId;
-      FCallStack.CurrentCallStackList.EntriesForThreads[i].CountLimited(5);
-      if (not(FCurrentState in [dsPause, dsInternalPause])) or
-         (Debugger = nil) or ( (not Debugger.IsIdle) and (not AForce) )
-      then exit;
-      if CurSnap <> FCurrentSnapshot then exit; // Debugger did "run" in between
     end;
 
     if not(smrLocals in FRequestsDone) then begin
