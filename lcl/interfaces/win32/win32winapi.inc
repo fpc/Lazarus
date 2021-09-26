@@ -3193,7 +3193,7 @@ begin
    To complicate matters, if Handle is correct and MinItemsWidth = 0, then upon success
    the result will also be 0.
    This means that inside this function, a result value of 0 can be valid or invalid, and when
-   MinItemsWidht = 0, there is no way of telling (only end-user will see the result on screen).
+   MinItemsWidth = 0, there is no way of telling (only end-user will see the result on screen).
    For now we assume that a zero result is valid if MinItemsWidth = 0.
   }
   Result := Result and ((LR <> CB_ERR) and ((LR <> 0)) xor (MinItemsWidth = 0));

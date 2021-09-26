@@ -3569,7 +3569,7 @@ begin
     Result:=Rect(0,0,0,0);
 end;
 
-// The visible grid Depends on  TopLeft and ClientWidht,ClientHeight,
+// The visible grid Depends on  TopLeft and ClientWidth,ClientHeight,
 // Col/Row Count, So it Should be called inmediately after changing
 // those properties.
 function TCustomGrid.GetVisibleGrid: TRect;

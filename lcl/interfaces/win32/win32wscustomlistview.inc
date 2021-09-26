@@ -312,7 +312,7 @@ var
   lvc: TLvColumn;
 begin
   Result := -1;
-  // this implementation uses columnwidht = 0 for invisible
+  // this implementation uses columnwidth = 0 for invisible
   // so fallback to default (= AColumn.FWidth)
   // Don't return AColumn.Width, this will cause a loop
   if not AColumn.Visible then Exit;

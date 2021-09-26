@@ -161,7 +161,7 @@ begin
   MaybeEnableButtons;
   OnResize := @FormResize;
   //Using QueueAsyncCall delays the layout until the form is shown,
-  //before that ClientWidht may have wrong value (depending on widgetset and windowmanager)
+  //before that ClientWidth may have wrong value (depending on widgetset and windowmanager)
   Application.QueueAsyncCall(@ResizeControls,0);
 end;
 

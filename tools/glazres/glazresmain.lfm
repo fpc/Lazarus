@@ -184,14 +184,13 @@ object GLazResForm: TGLazResForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object LrsLabel: TLabel
     Left = 16
     Height = 17
     Top = 14
     Width = 154
     Caption = 'Lazarus Resource Filename'
-    ParentColor = False
   end
   object AddAnyBtn: TBitBtn
     Left = 16
@@ -267,7 +266,6 @@ object GLazResForm: TGLazResForm
     Top = 64
     Width = 86
     Caption = 'Files to include'
-    ParentColor = False
   end
   object DeleteBtn: TBitBtn
     Left = 216
@@ -392,7 +390,6 @@ object GLazResForm: TGLazResForm
     Top = 304
     Width = 56
     Caption = 'Messages'
-    ParentColor = False
   end
   object AddImgBtn: TBitBtn
     Left = 112
@@ -443,12 +440,12 @@ object GLazResForm: TGLazResForm
   end
   object OpenDialog: TOpenDialog
     Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
-    left = 64
-    top = 400
+    Left = 64
+    Top = 400
   end
   object OpenPictureDialog: TOpenPictureDialog
     Options = [ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
-    left = 232
-    top = 400
+    Left = 232
+    Top = 400
   end
 end

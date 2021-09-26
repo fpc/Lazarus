@@ -475,22 +475,22 @@ begin
     // May change in future. overwrite only one char
     InsertFlag := True;
     CaretPEol := False;
-    DoTest('normal line - 3 byte full witdh - BOL',      1, 1,     'あ', 4, 1, [1,'あabc'],    '吾', 7,1, [1,'あ吾abc']);
-    DoTest('normal line - 3 byte full witdh - mid',      2, 1,     'あ', 5, 1, [1,'aあbc'],    '吾', 8,1, [1,'aあ吾bc']);
-    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    DoTest('normal line - 3 byte full width - BOL',      1, 1,     'あ', 4, 1, [1,'あabc'],    '吾', 7,1, [1,'あ吾abc']);
+    DoTest('normal line - 3 byte full width - mid',      2, 1,     'あ', 5, 1, [1,'aあbc'],    '吾', 8,1, [1,'aあ吾bc']);
+    DoTest('normal line - 3 byte full width - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
     CaretPEol := True;
-    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
-    DoTest('normal line - 3 byte full witdh - Past',     6, 1,     'あ', 9, 1, [1,'abc  あ'],  '吾',12,1, [1,'abc  あ吾']);
+    DoTest('normal line - 3 byte full width - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    DoTest('normal line - 3 byte full width - Past',     6, 1,     'あ', 9, 1, [1,'abc  あ'],  '吾',12,1, [1,'abc  あ吾']);
 
     InsertFlag := False;
     CaretPEol := False;
-    DoTest('normal line - 3 byte full witdh - BOL',      1, 1,     'あ', 4, 1, [1,'あbc'],     '吾', 7,1, [1,'あ吾c']);
-    DoTest('normal line - 3 byte full witdh - mid',      2, 1,     'あ', 5, 1, [1,'aあc'],     '吾', 8,1, [1,'aあ吾']);
-    DoTest('normal line - 3 byte full witdh - mid',      3, 1,     'あ', 6, 1, [1,'abあ'],     '吾', 9,1, [1,'abあ吾']);
-    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    DoTest('normal line - 3 byte full width - BOL',      1, 1,     'あ', 4, 1, [1,'あbc'],     '吾', 7,1, [1,'あ吾c']);
+    DoTest('normal line - 3 byte full width - mid',      2, 1,     'あ', 5, 1, [1,'aあc'],     '吾', 8,1, [1,'aあ吾']);
+    DoTest('normal line - 3 byte full width - mid',      3, 1,     'あ', 6, 1, [1,'abあ'],     '吾', 9,1, [1,'abあ吾']);
+    DoTest('normal line - 3 byte full width - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
     CaretPEol := True;
-    DoTest('normal line - 3 byte full witdh - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
-    DoTest('normal line - 3 byte full witdh - Past',     6, 1,     'あ', 9, 1, [1,'abc  あ'],  '吾',12,1, [1,'abc  あ吾']);
+    DoTest('normal line - 3 byte full width - EOL',      4, 1,     'あ', 7, 1, [1,'abcあ'],    '吾',10,1, [1,'abcあ吾']);
+    DoTest('normal line - 3 byte full width - Past',     6, 1,     'あ', 9, 1, [1,'abc  あ'],  '吾',12,1, [1,'abc  あ吾']);
     {%endregion}
   {%endregion}
 

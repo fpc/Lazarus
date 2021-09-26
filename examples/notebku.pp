@@ -263,7 +263,7 @@ begin
       OnClick := @Button6Click;
       Width := 150;
       Height := 23;
-      left := (250 {Parent.Widht} - Width) div 2;
+      left := (250 {Parent.Width} - Width) div 2;
       top := 190;
       Caption := 'Set Tab Position';
       Show;

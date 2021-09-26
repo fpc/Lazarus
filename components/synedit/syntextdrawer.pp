@@ -672,7 +672,7 @@ begin
   // TextMetric may fail, because:
   // tmMaxCharWidth may be the width of a single Width (Latin) char, like "M"
   //                or a double Width (Chinese) char
-  // tmAveCharWidth is to small for proprtional fonts, as we need he witdh of the
+  // tmAveCharWidth is to small for proprtional fonts, as we need he width of the
   //                widest Latin char ("M").
   //                Even Monospace fonts, may have a smaller tmAveCharWidth (seen with Japanese)
 

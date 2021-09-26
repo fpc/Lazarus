@@ -170,7 +170,7 @@ begin
 
 end;
 
-{ WIDHT_ }
+{ WIDTH_ }
 procedure conv_stroke.width_;
 begin
  vcgen_stroke_ptr(generator ).width_(w );
@@ -307,7 +307,7 @@ begin
 
 end;
 
-{ WIDHT_ }
+{ WIDTH_ }
 procedure conv_stroke_math.width_;
 begin
  vcgen_stroke_math_ptr(generator ).width_(w );
