@@ -1817,10 +1817,10 @@ begin
   ValueCheckBox.Caption:=NewValue;
   if (NewValue='') or (NewValue=oisMixed) then
     ValueCheckBox.State:=cbGrayed
-  else if Pos('True', NewValue) > 0 then
+  else if NewValue='(True)' then
     ValueCheckBox.State:=cbChecked
   // Note: this condition can be removed when the right propedit is used always.
-  else if Pos('False', NewValue) > 0 then
+  else if NewValue='(False)' then
     ValueCheckBox.State:=cbUnchecked;
 end;
 
