@@ -49,15 +49,18 @@ type
     FRoot2CollapasedMap: TPointerToPointerTree;
     FCollapsedComps: TAVLTree;       // The current list of collapsed components.
     FDrawWholeTree: Boolean;
+    FZOrderDelCommand: TZOrderDelete;
     // Events
     FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
     function AddOrGetPersNode(AParentNode: TTreeNode; APers: TPersistent;
       ACapt: String): TTreeNode;
     procedure AddChildren(AComponent: TComponent; ARootNode: TTreeNode);
-    function FindAndChange(APers: TPersistent; ZOrderDel: TZOrderDelete): Boolean;
+    procedure ChangeNode(ANode: TTreeNode);
+    function FindAndChange(APers: TPersistent; AZOrderDel: TZOrderDelete): Boolean;
     function GetRootObject: TPersistent;
     function GetSelection: TPersistentSelectionList;
+    function IterateTree(ANode: TTreeNode; APers: TPersistent): TTreeNode;
     procedure NodeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure NodeExpanded(Sender: TObject; Node: TTreeNode);
     procedure RebuildCollection(ANode: TTreeNode);
@@ -783,73 +786,70 @@ begin
   end;
 end;
 
-function TComponentTreeView.FindAndChange(APers: TPersistent;
-  ZOrderDel: TZOrderDelete): Boolean;
-// APers is Component to be moved or deleted based on ZOrderDel value.
+procedure TComponentTreeView.ChangeNode(ANode: TTreeNode);
+// Change ZOrder of the given node or delete it.
 var
-  DoneChange: Boolean;
-
-  procedure ChangeNode(ANode: TTreeNode);
-  // Change ZOrder of the given node or delete it.
-  var
-    Neighbor: TTreeNode;
-  begin
-    case ZOrderDel of
-      zoToFront: begin              // Front means the last sibling.
-        Neighbor := ANode.GetLastSibling;
-        if Assigned(Neighbor) then
-          ANode.MoveTo(Neighbor, naInsertBehind);
-      end;
-      zoToBack: begin               // Back means the first sibling.
-        Neighbor := ANode.GetFirstSibling;
-        if Assigned(Neighbor) then
-          ANode.MoveTo(Neighbor, naInsert);
-      end;
-      zoForward: begin              // Towards the end.
-        Neighbor := ANode.GetNextSibling;
-        if Assigned(Neighbor) then
-          ANode.MoveTo(Neighbor, naInsertBehind);
-      end;
-      zoBackward: begin             // Towards the beginning.
-        Neighbor := ANode.GetPrevSibling;
-        if Assigned(Neighbor) then
-          ANode.MoveTo(Neighbor, naInsert);
-      end;
-      zoDelete: ANode.Delete;       // Delete the node
+  Neighbor: TTreeNode;
+begin
+  case FZOrderDelCommand of
+    zoToFront: begin              // Front means the last sibling.
+      Neighbor := ANode.GetLastSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsertBehind);
     end;
+    zoToBack: begin               // Back means the first sibling.
+      Neighbor := ANode.GetFirstSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsert);
+    end;
+    zoForward: begin              // Towards the end.
+      Neighbor := ANode.GetNextSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsertBehind);
+    end;
+    zoBackward: begin             // Towards the beginning.
+      Neighbor := ANode.GetPrevSibling;
+      if Assigned(Neighbor) then
+        ANode.MoveTo(Neighbor, naInsert);
+    end;
+    zoDelete: ANode.Delete;       // Delete the node
   end;
+end;
 
-  procedure IterateTree(ANode: TTreeNode);
+function TComponentTreeView.IterateTree(ANode: TTreeNode; APers: TPersistent): TTreeNode;
+// Returns the node that was changed.
+begin
+  Result := Nil;
+  if TObject(ANode.Data)=APers then
   begin
-    if TObject(ANode.Data)=APers then
-    begin
-      ChangeNode(ANode);
-      DoneChange := True;
-      Exit;                         // Found and changed.
-    end;
-    // Iterate subnodes.
-    ANode := ANode.GetFirstChild;
-    while Assigned(ANode) and not DoneChange do
-    begin
-      IterateTree(ANode);           // Recursive call.
-      if DoneChange then
-      begin
-        // Search a Collection from siblings of the changed node and rebuild if found.
-        RebuildCollection(ANode);   // Needed for FlowPanel.ControlList at least.
-        Exit;                       // Found, don't search more.
-      end;
-      ANode := ANode.GetNextSibling;
-    end;
+    ChangeNode(ANode);
+    Exit(ANode);                         // Found and changed.
   end;
+  // Iterate subnodes.
+  ANode := ANode.GetFirstChild;
+  while Assigned(ANode) and (Result=Nil) do
+  begin
+    Result := IterateTree(ANode, APers); // Recursive call.
+    ANode := ANode.GetNextSibling;
+  end;
+end;
 
+function TComponentTreeView.FindAndChange(APers: TPersistent;
+  AZOrderDel: TZOrderDelete): Boolean;
+// APers is Component to be moved or deleted based on AZOrderDel value.
+var
+  ChangedNode: TTreeNode;
 begin
   // Search for a node to change.
   Assert(Assigned(APers), 'TComponentTreeView.FindAndChangeItem: APers=Nil.');
   Assert(Items.GetFirstNode.GetNextSibling=Nil,
          'TComponentTreeView.FindAndChange: Top node has siblings.');
-  DoneChange := False;
-  IterateTree(Items.GetFirstNode);
-  Result := DoneChange;
+  FZOrderDelCommand := AZOrderDel;
+  ChangedNode := IterateTree(Items.GetFirstNode, APers);
+  Result := Assigned(ChangedNode);
+  if Result then
+    // Search a Collection from siblings of the changed node and rebuild if found.
+    RebuildCollection(ChangedNode); // Needed for FlowPanel.ControlList at least.
 end;
 
 procedure TComponentTreeView.ChangeCompZOrder(APersistent: TPersistent;
