@@ -42,12 +42,17 @@ unit DateTimePicker;
 interface
 
 uses
-  {$ifdef unix}
+  {$if defined(UNIX) and not defined(OPENBSD)}
   clocale, // needed to initialize default locale settings on Linux.
   {$endif}
-  Classes, SysUtils, Controls, LCLType, Graphics, Math, Buttons,
-  ExtCtrls, Forms, ComCtrls, Types, LMessages, LazUTF8, LCLIntf,
-  LCLProc, Themes, CalControlWrapper;
+  Types, Classes, SysUtils, Math,
+  // LCL
+  LCLType, LCLIntf, LMessages, Controls, Graphics, Buttons, ExtCtrls, Forms, ComCtrls,
+  Themes,
+  // LazUtils
+  LazUTF8, LazMethodList,
+  // DateTimeCtrls
+  CalControlWrapper;
 
 const
   { We will deal with the NullDate value the special way. It will be especially

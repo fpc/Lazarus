@@ -50,7 +50,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  {$IF defined(Unix)}
+  {$IF defined(Unix) and not defined(OPENBSD)}
   clocale,
   {$IFEND}
   SysUtils,

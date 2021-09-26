@@ -15,12 +15,15 @@ interface
 {$I LR_Vers.inc}
 
 uses
-  SysUtils, Math, strutils, DateUtils, {$IFDEF UNIX}CLocale,{$ENDIF}
-  Classes, TypInfo, MaskUtils, Variants, DB, DOM, XMLWrite, XMLRead, XMLConf,
-  Controls, Forms, Dialogs, Menus, Graphics, LCLProc, LCLType, LCLIntf,
-  Printers, osPrinters,
+  {$if defined(UNIX) and not defined(OPENBSD)}
+  CLocale,
+  {$endif}
+  Classes, TypInfo, SysUtils, Math, StrUtils, DateUtils,
+  MaskUtils, Variants, DB, DOM, XMLWrite, XMLRead, XMLConf,
+  // LCL
+  LCLType, LCLIntf, Controls, Forms, Dialogs, Menus, Graphics, Printers,
   // LazUtils
-  LazFileUtils, LazUTF8,
+  LazFileUtils, LazUTF8, LazLoggerBase,
   // IDEIntf
   PropEdits,
   // LazReport
