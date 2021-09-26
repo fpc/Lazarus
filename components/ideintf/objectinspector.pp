@@ -1385,6 +1385,7 @@ procedure TOICustomPropertyGrid.SetPropertyEditorHook(
 begin
   if FPropertyEditorHook=NewPropertyEditorHook then exit;
   FPropertyEditorHook:=NewPropertyEditorHook;
+  FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(@HookGetCheckboxForBoolean);
   IncreaseChangeStep;
   SetSelection(FSelection);
 end;
@@ -4512,12 +4513,7 @@ begin
     Selection := nil;
     for Page:=Low(TObjectInspectorPage) to High(TObjectInspectorPage) do
       if GridControl[Page]<>nil then
-      begin
-        if Page=oipgpProperties then  // Add HookGetCheckboxForBoolean only once.
-          FPropertyEditorHook.AddHandlerGetCheckboxForBoolean(
-                                   @GridControl[Page].HookGetCheckboxForBoolean);
         GridControl[Page].PropertyEditorHook:=FPropertyEditorHook;
-      end;
     OldSelection:=TPersistentSelectionList.Create;
     try
       FPropertyEditorHook.GetSelection(OldSelection);
