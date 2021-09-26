@@ -269,6 +269,8 @@ implementation
 function LCLCoordToRow(tbl: NSTableView; X,Y: Integer): Integer;
 var
   pt : NSPoint;
+  sc : NSScrollView;
+  vr : NSRect;
 begin
   if not Assigned(tbl) then
   begin
@@ -276,10 +278,15 @@ begin
     Exit;
   end;
 
+  sc := tbl.enclosingScrollView;
+  if Assigned(sc) then
+    vr := sc.documentVisibleRect
+  else
+    vr := tbl.visibleRect;
   pt.x := X;
   if tbl.isFlipped
-    then pt.y := Y + tbl.visibleRect.origin.y
-    else pt.y := tbl.frame.size.height - Y - tbl.visibleRect.origin.y;
+    then pt.y := Y + vr.origin.y
+    else pt.y := tbl.frame.size.height - Y - vr.origin.y;
 
   Result := tbl.rowAtPoint(pt);
 end;
