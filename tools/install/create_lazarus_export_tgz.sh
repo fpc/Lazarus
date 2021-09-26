@@ -77,9 +77,9 @@ if [ "x$Download" = "xyes" ]; then
 else
   echo "extracting lazarus from local svn ..."
   LazSrcDir=$(pwd | sed -e 's#/tools/install.*$##')
-  Revision=$(svnversion $LazSrcDir)
+  #Revision=$(svnversion $LazSrcDir) - comment this out as svn no longer works
   cd $TmpDir
-  svn export $LazSrcDir $TmpLazDir
+  cp -a $LazSrcDir $TmpLazDir #can't use svn export anymore
   cd -
   if [ "$UseCHMHelp" = "1" ]; then
     echo
