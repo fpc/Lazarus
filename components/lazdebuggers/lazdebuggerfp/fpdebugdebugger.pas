@@ -872,12 +872,12 @@ begin
       end
       else begin
         if t = nil then begin
-          n := Threads.CurrentThreads.CreateEntry(FpThr.GetInstructionPointerRegisterValue, nil, '', '', '', 0, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
+          n := Threads.CurrentThreads.CreateEntry(0, nil, '', '', '', 0, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
           Threads.CurrentThreads.Add(n);
           n.Free;
         end
         else
-          t.Init(FpThr.GetInstructionPointerRegisterValue, nil, '', '', '', 0, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
+          t.Init(0, nil, '', '', '', 0, FpThr.ID, 'Thread ' + IntToStr(FpThr.ID), 'paused');
       end;
     end;
 
