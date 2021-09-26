@@ -284,6 +284,7 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
   if ID<0 then
     begin
     // The ID is set to -1 when the debugger does not have sufficient rights.

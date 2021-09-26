@@ -462,6 +462,7 @@ function TDbgLinuxThread.ReadThreadState: boolean;
 var
   io: iovec;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
   assert(FIsPaused, 'TDbgLinuxThread.ReadThreadState: FIsPaused');
   result := true;
   if FHasThreadState then
