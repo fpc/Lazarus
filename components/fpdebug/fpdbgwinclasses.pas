@@ -812,6 +812,7 @@ if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
     result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
   DebugLn(not Result, 'ContinueDebugEvent failed: %d', [Windows.GetLastError]);
   result := true;
+  MDebugEvent.dwProcessId := 0; // Flag as running // for assert in ReadThreadState
 end;
 
 function TDbgWinProcess.Detach(AProcess: TDbgProcess; AThread: TDbgThread
@@ -1730,6 +1731,8 @@ end;
 
 function TDbgWinThread.ReadThreadState: boolean;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.ReadThreadState: MDebugEvent.dwProcessId <> 0');
   if Process.ProcessID <> MDebugEvent.dwProcessId then begin
     DebugLn(DBG_WARNINGS, 'ERROR: attempt to read threadstate, for wrong process. Thread: %u Thread-Process: %u Event-Process %u', [Id, Process.ProcessID, MDebugEvent.dwProcessId]);
     exit(False);
