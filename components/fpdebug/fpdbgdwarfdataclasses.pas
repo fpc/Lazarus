@@ -3646,6 +3646,7 @@ var
   n: Integer;
   CU: TDwarfCompilationUnit;
   MinMaxSet: boolean;
+  InfoEntry: TDwarfInformationEntry;
 begin
   Result := nil;
   for n := 0 to FCompilationUnits.Count - 1 do
@@ -3660,7 +3661,9 @@ begin
     if not CU.Valid then // implies FCompUnitScope is ok
       break;
 
-    Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, TDwarfInformationEntry.Create(CU, CU.FCompUnitScope), Self);
+    InfoEntry := TDwarfInformationEntry.Create(CU, CU.FCompUnitScope);
+    Result := Cu.DwarfSymbolClassMap.CreateUnitSymbol(CU, InfoEntry, Self);
+    InfoEntry.ReleaseReference;
     break;
   end;
 end;
