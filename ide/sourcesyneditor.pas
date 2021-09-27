@@ -1201,7 +1201,8 @@ procedure TSourceLazSynTopInfoView.SetLineMapCount(AValue: integer);
 begin
   if FLineMapCount = AValue then Exit;
   FLineMapCount := AValue;
-  SetLength(FLineMap, AValue);
+  if (length(FLineMap) < AValue) or (length(FLineMap) > (AValue+1) * 2) then
+    SetLength(FLineMap, AValue);
 end;
 
 procedure TSourceLazSynTopInfoView.SetHighlighterTokensLine(ALine: TLineIdx;
@@ -1239,7 +1240,7 @@ end;
 
 constructor TSourceLazSynTopInfoView.Create;
 begin
-  LineMapCount := 0;
+  ClearLineMap;
 end;
 
 procedure TSourceLazSynTopInfoView.ClearLineMap;
