@@ -91,7 +91,6 @@ begin
   CodeBuffer:=CodeToolBoss.LoadFile(AFilename,true,false);
   if CodeBuffer<>nil then
     Unit_Name:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-  Assert(Unit_Name<>'', 'TProjPackFileCheck.UnitNameOk: Unit_Name is empty.');
   if CompareText(Unit_Name, AUnitFilename)<>0 then
     if IDEMessageDialog(lisA2PInvalidUnitName,
       Format(lisA2PTheUnitNameAndFilenameDiffer,[Unit_Name,LineEnding,AUnitFilename]),
