@@ -974,12 +974,9 @@ begin
     or ((ilcfStartInStatement in IdentList.ContextFlags) and (Dsc=ctnProcedure))
     then begin
       Result+=';';
-      if (CursorToLeft=0) and (Dsc=ctnProcedure) and (not IdentItem.IsFunction) then
-      begin
-        // a procedure call without parameters => put cursor behind semicolon
-      end else begin
+      if (CursorToLeft>0) or (Dsc<>ctnProcedure) or IdentItem.IsFunction then
         inc(CursorToLeft);  // keep cursor in front of semicolon
-      end;
+      // otherwise a procedure call without parameters, cursor stays behind semicolon
     end;
   end;
 
