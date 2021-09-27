@@ -1474,7 +1474,7 @@ begin
   while (s<=length(PropPath)) do begin
     e:=s;
     while (e<=length(PropPath)) and (PropPath[e]<>'.') do inc(e);
-    CurName:=copy(PropPath,s,e-s);
+    CurName:=uppercase(copy(PropPath,s,e-s));
     s:=e+1;
     // search name in children
     if CurParentRow=nil then
@@ -2209,6 +2209,7 @@ end;
 function TOICustomPropertyGrid.CanExpandRow(Row: TOIPropertyGridRow): boolean;
 var
   AnObject: TPersistent;
+  AnInterface: IInterface;
   ParentRow: TOIPropertyGridRow;
 begin
   Result:=false;
@@ -2216,17 +2217,28 @@ begin
   if (not (paSubProperties in Row.Editor.GetAttributes)) then exit;
   // check if circling
   if (Row.Editor is TPersistentPropertyEditor) then begin
-    if (Row.Editor is TInterfacePropertyEditor) then
-      AnObject:={%H-}TPersistent(Row.Editor.GetIntfValue)
-    else
+    if (Row.Editor is TInterfacePropertyEditor) then begin
+      AnInterface:=Row.Editor.GetIntfValue;
+
+      ParentRow:=Row.Parent;
+      while ParentRow<>nil do begin
+        if (ParentRow.Editor is TInterfacePropertyEditor)
+        and (ParentRow.Editor.GetIntfValue=AnInterface) then
+          exit;
+        ParentRow:=ParentRow.Parent;
+      end;
+    end
+    else begin
       AnObject:=TPersistent(Row.Editor.GetObjectValue);
-    if FSelection.IndexOf(AnObject)>=0 then exit;
-    ParentRow:=Row.Parent;
-    while ParentRow<>nil do begin
-      if (ParentRow.Editor is TPersistentPropertyEditor)
-      and (ParentRow.Editor.GetObjectValue=AnObject) then
-        exit;
-      ParentRow:=ParentRow.Parent;
+      if FSelection.IndexOf(AnObject)>=0 then exit;
+
+      ParentRow:=Row.Parent;
+      while ParentRow<>nil do begin
+        if (ParentRow.Editor is TPersistentPropertyEditor)
+        and (ParentRow.Editor.GetObjectValue=AnObject) then
+          exit;
+        ParentRow:=ParentRow.Parent;
+      end;
     end;
   end;
   Result:=true;
