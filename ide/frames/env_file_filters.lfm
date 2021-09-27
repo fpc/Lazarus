@@ -13,7 +13,6 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     Height = 281
     Top = 32
     Width = 440
-    AlternateColor = 15592941
     Anchors = [akTop, akLeft, akRight, akBottom]
     ColCount = 3
     Columns = <    
@@ -37,7 +36,6 @@ object FileFiltersOptionsFrame: TFileFiltersOptionsFrame
     Top = 9
     Width = 46
     Caption = 'lblTitle'
-    ParentColor = False
   end
   object pmGrid: TPopupMenu
     left = 205
