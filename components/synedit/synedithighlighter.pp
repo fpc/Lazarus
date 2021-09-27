@@ -1673,8 +1673,9 @@ var
   StartIndex, EndIndex: Integer;
 begin
   StartIndex := CurrentRanges.NeedsReScanStartIndex;
-  if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then
+  if (StartIndex < 0) then
     exit;
+
   EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
   //debugln(['=== scan ',StartIndex,' - ',EndIndex]);
   FIsScanning := True;
@@ -1683,10 +1684,14 @@ begin
   finally
     FIsScanning := False;
   end;
+  assert(CurrentRanges.NeedsReScanRealStartIndex <= StartIndex, 'TSynCustomHighlighter.ScanRanges: CurrentRanges.NeedsReScanRealStartIndex <= StartIndex');
   StartIndex := CurrentRanges.NeedsReScanRealStartIndex; // include idle scanned
   CurrentRanges.ClearReScanNeeded;
   // Invalidate one line above, since folds can change depending on next line
   // TODO: only classes with end-fold-last-line
+  if (StartIndex >= CurrentRanges.Count)
+  then CurrentLines.SendHighlightChanged(CurrentRanges.Count, 0)  // No lines scanned, validate because lines are gone / Do not need the extra line
+  else
   if StartIndex > 0
   then CurrentLines.SendHighlightChanged(StartIndex - 1, EndIndex - StartIndex + 1)
   else CurrentLines.SendHighlightChanged(StartIndex,     EndIndex - StartIndex    );
@@ -1699,7 +1704,7 @@ begin
   Result := False;
   StartIndex := CurrentRanges.NeedsReScanStartIndex;
   if (StartIndex < 0) or (StartIndex >= CurrentRanges.Count) then
-    exit;
+    exit; // If StartIndex > 0 then ScanRanges will send the notification
   EndIndex := CurrentRanges.NeedsReScanEndIndex + 1;
 
   RealEndIndex := EndIndex;
