@@ -787,10 +787,10 @@ var
   CanAddComma: Boolean;
   ClassNode: TCodeTreeNode;
   IsReadOnly: Boolean;
-  Line: string;
+  Line, s: string;
   Indent: LongInt;
   StartContextPos: TCodeXYPosition;
-  s: String;
+  Dsc: TCodeTreeNodeDesc;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -966,18 +966,19 @@ begin
   if CanAddSemicolon
   and (not (ilcfNoEndSemicolon in IdentList.ContextFlags))
   then begin
+    Dsc:=IdentItem.GetDesc;
+    if Dsc=ctnLabel then
+      Result+=':'
+    else
     if (ilcfNeedsEndSemicolon in IdentList.ContextFlags)
-    or ((ilcfStartInStatement in IdentList.ContextFlags)
-        and (IdentItem.GetDesc=ctnProcedure))
+    or ((ilcfStartInStatement in IdentList.ContextFlags) and (Dsc=ctnProcedure))
     then begin
       Result+=';';
-      if (CursorToLeft=0) and (IdentItem.GetDesc=ctnProcedure)
-      and (not IdentItem.IsFunction) then begin
-        // a procedure call without parameters
-        // => put cursor behind semicolon
+      if (CursorToLeft=0) and (Dsc=ctnProcedure) and (not IdentItem.IsFunction) then
+      begin
+        // a procedure call without parameters => put cursor behind semicolon
       end else begin
-        // keep cursor in front of semicolon
-        inc(CursorToLeft);
+        inc(CursorToLeft);  // keep cursor in front of semicolon
       end;
     end;
   end;
