@@ -96,9 +96,9 @@ type
   TPSOnProcessDirective = procedure (
                             Sender: TPSPreProcessor;
                             Parser: TPSPascalPreProcessorParser;
-                            const Active: Boolean;
+                            const AActive: Boolean;
                             const DirectiveName, DirectiveParam: tbtstring;
-                            Var Continue: Boolean) of Object;  // jgv
+                            Var AContinue: Boolean) of Object;  // jgv
 
   TPSScript = class(TComponent)
   private
