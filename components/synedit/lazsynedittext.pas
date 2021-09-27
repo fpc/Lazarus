@@ -52,6 +52,7 @@ type
                            senrLineChange,       // Lines modified (also triggered by senrEditAction)
                            senrLinesModified, //TStringListLinesModifiedEvent: Send once in "EndUpdate". Modified, inserted or deleted
                            senrHighlightChanged, // used by Highlighter (invalidate and fold checks needed)
+                                                 // SynEdit.SetHighlighter sends the special (-1,-1) notification
                            senrLineMappingChanged, // folds added/removed - virtual X/Y changed. (ACount is not used)
                            // TStringListLineEditEvent
                            senrEditAction,       // EditInsert, EditDelete, EditLineBreak, ...
