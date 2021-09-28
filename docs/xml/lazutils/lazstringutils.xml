@@ -22,7 +22,6 @@
       <!-- unresolved externals -->
       <element name="Classes"/>
       <element name="SysUtils"/>
-      <element name="PasCodeGen"/>
       <element name="LazUTF8"/>
       <element name="LazLoggerBase"/>
       <element name="LazTracer"/>
@@ -1059,23 +1058,29 @@
       </element>
 
       <element name="LazIsValidIdent">
-        <short>This is a modified version of IsValidIdent from the FPC 3.1 FCL library.</short>
+        <short>This is a copy of IsValidIdent from the FPC 3.1 FCL library.</short>
         <descr>
           <p>
-            <var>LazIsValidIdent</var> is a <var>Boolean</var> function used to determine if the name specified in <var>Ident</var> contains a valid identifier name value.
+            <var>LazIsValidIdent</var> is a <var>Boolean</var> function used to determine if the name specified in <var>Ident</var> contains a valid identifier name. The identifier name can represent a Namespace, Package, Unit, Component, or a Member.
           </p>
           <p>
-            The return value is <b>True</b> when Ident contains a valid identifier name using the Pascal naming convention, and does not contain an unquoted reserved keyword. The <var>IsKeyword</var> method in <var>TPascalCodeGenerator</var> is used to check the value in Ident, and the return value is set to <b>False</b> if it contains one of the reserved keywords.
+            The return value is <b>True</b> when Ident contains a valid identifier name using the Pascal naming convention. The return value is <b>False</b> if Ident contains an empty string ('').
           </p>
-           <p>
-             If the value is a keyword prefixed with an Ampersand (&amp;) character, it is "quoted' and considered a valid identifier name if the Pascal naming convention is satisfied. That naming convention requires the identifier to start with an alphabetic character in the range 'a-z', 'A-Z' or the '_' character. The other characters can be any of the alphanumeric characters. Case is not significant in the identifier name.
-           </p>
-           <p>
-             AllowDots indicates whether Period ('.') characters are allowed in the identifier name. The default value for the argument is <b>False</b> (not allowed).
-           </p>
-           <p>
-             StrictDots indicates whether the position of a given Period character is validated. In other words, the Period character cannot be first or last character in the identifier name. The default value for the argument is <b>False</b>, and is significant only when AllowDots is set to <b>True</b>.
-           </p>
+          <p>
+            <var>AllowDots</var> indicates whether Period ('.') characters are allowed in the identifier name. The default value for the argument is <b>False</b> (not allowed).
+          </p>
+          <p>
+            <var>StrictDots</var> indicates whether a Period character in the identifier name causes name validation to restart at the next character in the identifier name. When set to <b>False</b>, a Period character is ignored during identifier name validation. The default value for the argument is <b>False</b>, and is significant only when AllowDots is set to <b>True</b>.
+          </p>
+          <p>
+            LazIsValidIdent examines each of the characters in Ident to ensure that the value uses the Pascal identifier naming convention. This requires the value to contain only alphanumeric characters or the Underscore ('_') character. It must start with an alphabetic character or the Underscore character; numeric characters cannot be used at the start of the identifier name. The remaining characters in the identifier name can be any alphanumeric character.
+          </p>
+          <p>
+            Case is not significant when determining the validity of an identifier name.
+          </p>
+          <p>
+            LazIsValidIdent is used in the implementation of various tools in the Lazarus IDE. (IDEIntf, CodeTools, BuildIntf)
+          </p>
           <remark>
             Use the IsValidIdent routine from FPC 3.2.X when version 3.2 is the minimum requirement.
           </remark>
