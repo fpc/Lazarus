@@ -89,13 +89,15 @@ begin
   // valid unitname
   Unit_Name:='';
   CodeBuffer:=CodeToolBoss.LoadFile(AFilename,true,false);
-  if CodeBuffer<>nil then
+  if CodeBuffer<>nil then begin
     Unit_Name:=CodeToolBoss.GetSourceName(CodeBuffer,false);
-  if CompareText(Unit_Name, AUnitFilename)<>0 then
-    if IDEMessageDialog(lisA2PInvalidUnitName,
-      Format(lisA2PTheUnitNameAndFilenameDiffer,[Unit_Name,LineEnding,AUnitFilename]),
-      mtError,[mbIgnore,mbCancel]) <> mrIgnore
-    then exit;
+    // Unit_Name can be empty if Codetools had problems parsing the source.
+    if (Unit_Name<>'') and (CompareText(Unit_Name, AUnitFilename)<>0)
+    and (IDEMessageDialog(lisA2PInvalidUnitName,
+                          Format(lisA2PTheUnitNameAndFilenameDiffer,
+                                 [Unit_Name,LineEnding,AUnitFilename]),
+                          mtError,[mbIgnore,mbCancel]) <> mrIgnore) then exit;
+  end;
 
   if not IsValidUnitName(AUnitFilename) then
   begin
