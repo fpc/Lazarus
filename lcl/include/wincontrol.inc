@@ -7535,7 +7535,7 @@ begin
         if (WndParent = 0) and (Style and WS_CHILD <> 0) then
         begin
           DebugLn(['TWinControl.CreateWnd ',DbgSName(Self),' Parent=',DbgSName(Parent),' ERROR WndParent=0']);
-          raise EInvalidOperation.CreateFmt(rsControlHasNoParentWindow, [Name]);
+          raise EInvalidOperation.CreateFmt(sParentRequired, [Name]);
         end;
       end;
 

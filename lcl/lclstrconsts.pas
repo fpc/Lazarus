@@ -251,7 +251,6 @@ resourceString
   rsGridHasNoRows = 'Cannot insert columns into a grid when it has no rows';
   rsGridHasNoCols = 'Cannot insert rows into a grid when it has no columns';
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as a parent';
-  rsControlHasNoParentWindow = 'Control ''%s'' has no parent window';
   rsControlHasNoParentFormOrFrame = 'Control ''%s'' has no parent form or frame';
   rsControlIsNotAParent = '''%s'' is not a parent of ''%s''';
   rsControlClassCantContainChildClass = 'Control of class ''%s'' can''t have control of class ''%s'' as a child';

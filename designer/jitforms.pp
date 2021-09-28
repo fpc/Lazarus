@@ -967,7 +967,7 @@ begin
     end;
   except
     on E: Exception do begin
-      HandleException(E,'[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+      HandleException(E,'[TJITComponentList.AddJITComponentFromStream] ERROR reading form stream'
          +' of Class "'+NewClassName+'"',Action);
       if Result>=0 then begin
         // try freeing the unfinished thing
@@ -1383,7 +1383,8 @@ begin
     end;
   except
     on E: Exception do begin
-      HandleException(E,'[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream of Class "'+ComponentClass.ClassName+'"',Action);
+      HandleException(E,'[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+          +' of Class "'+ComponentClass.ClassName+'"',Action);
     end;
   end;
   FCurReadStreamClass:=nil;
