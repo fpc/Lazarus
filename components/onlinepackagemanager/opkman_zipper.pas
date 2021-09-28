@@ -158,9 +158,8 @@ begin
       FCurPos := 0;
       FZipFile := MPkg.RepositoryFileName;
       DelDir := FDstDir + MPkg.PackageBaseDir;
-      if FIsUpdate then
-        if DirectoryExists(DelDir) then
-          DeleteDirectory(DelDir, False);
+      if DirectoryExists(DelDir) then
+        CleanDirectory(DelDir);
       try
         FUnZipper.Clear;
         FUnZipper.FileName := FSrcDir + MPkg.RepositoryFileName;
@@ -176,7 +175,7 @@ begin
         and (CompareText(MPkg.PackageBaseDir, MPkg.ZippedBaseDir) <> 0) then
         begin
           CopyDirTree(FUnZipper.OutputPath + MPkg.ZippedBaseDir, DelDir, [cffOverwriteFile]);
-          DeleteDirectory(FUnZipper.OutputPath + MPkg.ZippedBaseDir, False);
+          CleanDirectory(FUnZipper.OutputPath + MPkg.ZippedBaseDir);
         end;
         Synchronize(@DoOnZipProgress);
         FTotPos := FTotPos + FCurSize;
@@ -186,7 +185,7 @@ begin
           FErrMsg := E.Message;
           MPkg.ChangePackageStates(ctRemove, psExtracted);
           MPkg.ChangePackageStates(ctAdd, psError);
-          DeleteDirectory(DelDir, False);
+          CleanDirectory(DelDir);
           Synchronize(@DoOnZipError);
         end;
       end;
@@ -195,7 +194,7 @@ begin
   if (FNeedToBreak) then
   begin
     if DirectoryExists(DelDir) then
-      DeleteDirectory(DelDir, False)
+      CleanDirectory(DelDir);
   end
   else
   begin

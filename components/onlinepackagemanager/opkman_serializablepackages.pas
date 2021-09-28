@@ -1554,7 +1554,7 @@ begin
       begin
         if DirectoryExists(Options.LocalRepositoryPackagesExpanded + Items[I].PackageBaseDir) then
         begin
-          DeleteDirectory(Options.LocalRepositoryPackagesExpanded + Items[I].PackageBaseDir, False);
+          CleanDirectory(Options.LocalRepositoryPackagesExpanded + Items[I].PackageBaseDir);
           if not AlreadyCounted then
             Inc(Result);
         end;

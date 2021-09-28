@@ -424,7 +424,7 @@ begin
               end;
             end;
           end;
-          DeleteDirectory(DestDir, False);
+          CleanDirectory(DestDir);
         end;
         if not CanGo then
           MessageDlgEx(rsCreateRepositoryFrm_Error4, mtError, [mbOk], Self)
@@ -629,7 +629,7 @@ begin
       Options.Changed := True;
       DestDir := AppendPathDelim(AppendPathDelim(ExtractFilePath(AFileName)) + 'Temp');
       if DirectoryExists(DestDir) then
-        DeleteDirectory(DestDir, False);
+        CleanDirectory(DestDir);
       Result := True;
     except
       on E: Exception do

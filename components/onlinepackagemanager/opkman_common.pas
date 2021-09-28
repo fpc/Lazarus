@@ -31,7 +31,7 @@ interface
 uses
   Classes, SysUtils, contnrs,
   // LCL
-  Dialogs, Forms, Controls,
+  Dialogs, Forms, Controls, FileUtil,
   // LazUtils
   LazFileUtils, LazLoggerBase,
   // IdeIntf
@@ -150,6 +150,7 @@ procedure FindPackages(const ADirName: String; APackageList: TStrings);
 procedure FindAllFilesEx(const ADirName: String; AFileList: TStrings);
 function FixProtocol(const AURL: String): String;
 function IsDirectoryEmpty(const ADirectory: String): Boolean;
+function CleanDirectory(const ADirectory: String): Boolean;
 
 implementation
 
@@ -501,6 +502,50 @@ begin
   finally
     SysUtils.FindClose(SearchRec);
   end;
+end;
+
+function CleanDirectory(const ADirectory: String): Boolean;
+var
+  SR: TSearchRec;
+  DirName: String;
+  Name: String;
+begin
+  DirName := AppendPathDelim(ADirectory);
+  if IsDirectoryEmpty(DirName) then
+    RemoveDirUTF8(DirName);
+  if FindFirst(DirName + '*', faAnyFile - faDirectory, SR) = 0 then
+  begin
+    try
+      repeat
+        if (SR.Name = '.') or (SR.Name = '..') or (SR.Name = '') then
+          Continue;
+        Name := DirName + SR.Name;
+        if not DeleteFileUTF8(Name) then
+        begin
+          FileSetAttrUTF8(Name, faNormal);
+          DeleteFileUTF8(Name);
+        end;
+      until FindNext(SR) <> 0;
+    finally
+      FindClose(SR);
+    end;
+  end;
+  if FindFirst(DirName + '*', faAnyFile, SR) = 0 then
+  begin
+    try
+      repeat
+        if ((SR.Attr and faDirectory) <> 0)  and (SR.Name <> '.') and (SR.Name <> '..') {$ifdef unix} and ((SR.Attr and faSymLink{%H-}) = 0) {$endif unix} then
+         begin
+           Name := DirName + SR.Name;
+           FileSetAttrUTF8(Name, faNormal);
+           CleanDirectory(DirName + SR.Name);
+         end;
+      until FindNext(SR) <> 0;
+    finally
+      FindClose(SR);
+    end;
+  end;
+  Result := DeleteDirectory(ADirectory, False);
 end;
 
 end.
