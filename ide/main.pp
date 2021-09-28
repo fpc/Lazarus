@@ -11771,15 +11771,7 @@ var
   OldOpenEditorsOnCodeToolChange: Boolean;
 begin
   DebugLn('Hint: (lazarus) TMainIDE.DesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName,' Owner=',dbgsName(AComponent.Owner));
-  if not IsValidIdent(NewName) then
-    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, [Newname]));
-  if WordIsKeyWord.DoItCaseInsensitive(PChar(NewName))
-  or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(NewName))
-  or WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(PChar(NewName))
-  or WordIsPredefinedDelphiIdentifier.DoItCaseInsensitive(PChar(NewName))
-  then begin
-    raise Exception.Create(Format(lisComponentNameIsAPascalKeyword, [NewName]));
-  end;
+  CheckCompNameValidity(NewName);  // Will throw an exception on error.
   if AComponent.Name='' then
     exit; // this component was never added to the source. It is a new component.
 

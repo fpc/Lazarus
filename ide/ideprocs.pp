@@ -38,11 +38,11 @@ uses
   // LCL
   StdCtrls, ExtCtrls,
   // CodeTools
-  BasicCodeTools, FileProcs, CodeToolManager, CodeToolsConfig, CodeCache,
+  BasicCodeTools, CodeToolManager, CodeToolsConfig, CodeCache, KeywordFuncLists,
+  // BuildIntf
   PackageIntf,
   // IDE
-  TransferMacros,
-  LazConf;
+  TransferMacros, LazConf, LazarusIDEStrConsts;
 
 const
   SBuildMethod: array[TBuildMethod] of string = (
@@ -174,8 +174,8 @@ procedure ReverseList(List: TFPList);
 procedure FreeListObjects(List: TList; FreeList: boolean);
 procedure FreeListObjects(List: TFPList; FreeList: boolean);
 function CompareMemStreamText(s1, s2: TMemoryStream): Boolean;
-
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
+procedure CheckCompNameValidity(const AName: string);
 
 
 implementation
@@ -1408,6 +1408,18 @@ end;
 function CheckGroupItemChecked(CheckGroup: TCheckGroup; const Caption: string): Boolean;
 begin
   Result := CheckGroup.Checked[CheckGroup.Items.IndexOf(Caption)];
+end;
+
+procedure CheckCompNameValidity(const AName: string);
+// Raises an exception if not valid.
+begin
+  if not IsValidIdent(AName) then
+    raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, [Aname]));
+  if WordIsKeyWord.DoItCaseInsensitive(PChar(AName))
+  or WordIsDelphiKeyWord.DoItCaseInsensitive(PChar(AName))
+  or WordIsPredefinedFPCIdentifier.DoItCaseInsensitive(PChar(AName))
+  or WordIsPredefinedDelphiIdentifier.DoItCaseInsensitive(PChar(AName)) then
+    raise Exception.Create(Format(lisComponentNameIsAPascalKeyword, [AName]));
 end;
 
 end.

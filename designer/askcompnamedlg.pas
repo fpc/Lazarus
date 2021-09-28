@@ -34,7 +34,7 @@ uses
   // IdeIntf
   PropEdits,
   // IDE
-  LazarusIDEStrConsts;
+  IDEProcs, LazarusIDEStrConsts;
 
 type
 
@@ -282,35 +282,37 @@ begin
     ErrorMsg:=lisEmpty;
     exit;
   end;
-  if not LazIsValidIdent(AName) then begin
-    ErrorMsg:=lisNotAValidPascalIdentifier;
-    exit;
-  end;
-  if (FLookupRoot<>nil) then begin
-    ConflictComponent:=FLookupRoot.FindComponent(AName);
-    if (ConflictComponent<>nil)
-    and (ConflictComponent<>NewComponent) then begin
-      ErrorMsg:=lisThereIsAlreadyAComponentWithThisName;
-      exit;
-    end;
-    if FLookupRoot<>FNewComponent then
-    begin
-      if SysUtils.CompareText(AName,FLookupRoot.Name)=0 then begin
-        ErrorMsg:=lisTheOwnerHasThisName;
+  try
+    CheckCompNameValidity(AName);  // Will throw an exception on error.
+    if (FLookupRoot<>nil) then begin
+      ConflictComponent:=FLookupRoot.FindComponent(AName);
+      if (ConflictComponent<>nil)
+      and (ConflictComponent<>NewComponent) then begin
+        ErrorMsg:=lisThereIsAlreadyAComponentWithThisName;
         exit;
       end;
-      if SysUtils.CompareText(AName,FLookupRoot.ClassName)=0 then begin
-        ErrorMsg:=lisTheOwnerClassHasThisName;
+      if FLookupRoot<>FNewComponent then
+      begin
+        if SysUtils.CompareText(AName,FLookupRoot.Name)=0 then begin
+          ErrorMsg:=lisTheOwnerHasThisName;
+          exit;
+        end;
+        if SysUtils.CompareText(AName,FLookupRoot.ClassName)=0 then begin
+          ErrorMsg:=lisTheOwnerClassHasThisName;
+          exit;
+        end;
+      end;
+      if SysUtils.CompareText(AName,GetClassUnitName(FLookupRoot.ClassType))=0 then begin
+        ErrorMsg:=lisTheUnitHasThisName;
         exit;
       end;
     end;
-    if SysUtils.CompareText(AName,GetClassUnitName(FLookupRoot.ClassType))=0 then begin
-      ErrorMsg:=lisTheUnitHasThisName;
-      exit;
-    end;
+    ErrorMsg:='';
+    Result:=true;
+  except
+    on E: Exception do
+      ErrorMsg:=E.Message;
   end;
-  ErrorMsg:='';
-  Result:=true;
 end;
 
 end.
