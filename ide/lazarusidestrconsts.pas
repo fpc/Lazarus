@@ -6006,7 +6006,6 @@ resourcestring
   lisFindMissingUnit = 'Find missing unit';
   lisSearchUnit = 'Search Unit "%s"';
   lisEmpty = 'Empty';
-  lisNotAValidPascalIdentifier = 'Not a valid Pascal identifier';
   lisThereIsAlreadyAComponentWithThisName = 'There is already a component '
     +'with this name';
   lisTheOwnerHasThisName = 'The owner has this name';
