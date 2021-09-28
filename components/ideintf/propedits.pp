@@ -360,7 +360,7 @@ type
     function GetValue: ansistring; virtual;
     function GetHint({%H-}HintType: TPropEditHint; {%H-}x, {%H-}y: integer): string; virtual;
     function HasDefaultValue: Boolean;
-    function HasStoredFunction: Boolean;
+    function HasStoredFunction: Boolean; deprecated; // a stored function is always present, so returns true
     function GetDefaultValue: ansistring; virtual;
     function CallStoredFunction: Boolean; virtual;
     function GetVisualValue: ansistring; virtual;
@@ -2767,42 +2767,9 @@ begin
   Result:=True;
 end;
 
-type
-  TBoolFunc = function: Boolean of object;
-  TBoolIndexFunc = function(const Index: Integer): Boolean of object;
 function TPropertyEditor.CallStoredFunction: Boolean;
-var
-  Met: TMethod;
-  Func: TBoolFunc;
-  IndexFunc: TBoolIndexFunc;
-  APropInfo: PPropInfo;
-  StoredProcType: Byte;
 begin
-  APropInfo:=FPropList^[0].PropInfo;
-  StoredProcType := ((APropInfo^.PropProcs shr 4) and 3);
-  if StoredProcType in [ptStatic, ptVirtual] then
-  begin
-    case StoredProcType of
-      ptStatic: Met.Code := APropInfo^.StoredProc;
-      ptVirtual: Met.Code := PPointer(Pointer(FPropList^[0].Instance.ClassType))[{%H-}PtrInt(APropInfo^.StoredProc) div SizeOf(Pointer)];
-    end;
-    if Met.Code = nil then
-      raise EPropertyError.Create('No property stored method available');
-    Met.Data := FPropList^[0].Instance;
-    if ((APropInfo^.PropProcs shr 6) and 1) <> 0 then // has index property
-    begin
-      IndexFunc := TBoolIndexFunc(Met);
-      Result := IndexFunc(APropInfo^.Index);
-    end else
-    begin
-      Func := TBoolFunc(Met);
-      Result := Func();
-    end;
-  end else
-  if StoredProcType = ptConst then
-    Result := APropInfo^.StoredProc<>nil
-  else
-    raise EPropertyError.Create('No property stored method/const available');
+  Result := IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
 end;
 
 function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
@@ -3157,13 +3124,8 @@ begin
 end;
 
 function TPropertyEditor.HasStoredFunction: Boolean;
-var
-  APropInfo: PPropInfo;
-  StoredProcType: Byte;
 begin
-  APropInfo:=FPropList^[0].PropInfo;
-  StoredProcType := ((APropInfo^.PropProcs shr 4) and 3);
-  Result := StoredProcType in [ptConst, ptStatic, ptVirtual];
+  Result := True;
 end;
 
 function TPropertyEditor.GetUnicodeStrValue: UnicodeString;
@@ -3614,10 +3576,8 @@ end;
 
 function TPropertyEditor.ValueIsStreamed: boolean;
 begin
-  if HasStoredFunction then
-    Result := CallStoredFunction
-  else
-    Result := True;
+  Result := CallStoredFunction;
+
   if Result and HasDefaultValue then
     Result := GetDefaultValue<>GetVisualValue;
 end;
@@ -4245,10 +4205,8 @@ function TSetElementPropertyEditor.ValueIsStreamed: boolean;
 var
   S1, S2: TIntegerSet;
 begin
-  if HasStoredFunction then
-    Result := CallStoredFunction
-  else
-    Result := True;
+  Result := CallStoredFunction;
+
   if Result and HasDefaultValue then
   begin
     Integer(S1) := GetOrdValue;
