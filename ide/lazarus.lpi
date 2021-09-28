@@ -352,6 +352,7 @@
         <ComponentName Value="AboutForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="AboutFrm"/>
       </Unit>
       <Unit>
         <Filename Value="idehelpmanager.pas"/>
@@ -909,10 +910,6 @@
         <HasResources Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="filereferencelist.pas"/>
-        <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
         <Filename Value="compatibilityrestrictions.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
@@ -1025,11 +1022,6 @@
         <Filename Value="transfermacros.pp"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="TransferMacros"/>
-      </Unit>
-      <Unit>
-        <Filename Value="publishmodule.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="PublishModule"/>
       </Unit>
       <Unit>
         <Filename Value="checkcompileropts.pas"/>
