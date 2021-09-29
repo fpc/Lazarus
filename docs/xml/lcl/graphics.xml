@@ -1035,9 +1035,8 @@
       <element name="clWhite">
         <short>One of the standard colors. Delphi compatible.</short>
       </element>
-      <element name=" StandardColorsCount">
-        <short>Number of standard color definitions.</short>
-        <descr/>
+      <element name="StandardColorsCount">
+        <short>Number of defined standard color constants.</short>
       </element>
       <element name="clMoneyGreen">
         <short>One of the extended colors.</short>
@@ -14629,17 +14628,21 @@
         <short/>
       </element>
       <element name="LazResourceXPMToPPChar">
-        <short/>
-        <descr>Loads an XPM image from the specified resource name into an array of PChar values.
-          See <link id="XPMToPPChar">XPMToPPChar</link> for more info.
+        <short>Loads an XPM image resource into an array.</short>
+        <descr>
+          <p>
+            Loads an XPM image from the specified resource name into an array of PChar values. See <link id="XPMToPPChar">XPMToPPChar</link> for more information.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="XPMToPPChar"/>
+        </seealso>
       </element>
       <element name="LazResourceXPMToPPChar.Result">
-        <short/>
+        <short>Pointer to the memory allocated for the XPM image resource.</short>
       </element>
       <element name="LazResourceXPMToPPChar.ResourceName">
-        <short/>
+        <short>Name of the XPM image resource loaded in the routine.</short>
       </element>
       <element name="ReadXPMFromStream">
         <short>
