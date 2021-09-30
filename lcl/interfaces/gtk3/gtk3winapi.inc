@@ -2705,8 +2705,8 @@ end;
 function TGtk3WidgetSet.GetWindowOrgEx(dc: hdc; P: PPoint): Integer;
 var
   Matrix: cairo_matrix_t;
-  dx: Double;
-  dy: Double;
+  dx, dy: Double;
+  OrigX, OrigY: LongInt;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
   // DebugLn('WARNING: TGtk3WidgetSet.GetWindowOrgEx not implemented ...');
@@ -2723,11 +2723,14 @@ begin
   dx := 0;
   dy := 0;
   cairo_matrix_transform_point(@Matrix, @dx, @dy);
-  // DebugLn('GetWindowOrgEx POINT ',Format('dx %d dy %d',[-Trunc(Dx), -Trunc(Dy)]));
   if P <> nil then
   begin
-    P^.X := -Trunc(DX)+TGtk3DeviceContext(DC).fncOrigin.X;
-    P^.Y := -Trunc(DY)+TGtk3DeviceContext(DC).fncOrigin.Y;
+    OrigX := TGtk3DeviceContext(DC).fncOrigin.X;
+    OrigY := TGtk3DeviceContext(DC).fncOrigin.Y;
+    DebugLn('GetWindowOrgEx POINT ',Format('OrigX=%d, OrigY=%d, dx=%d, dy=%d',
+                                           [OrigX, OrigY, Trunc(dx), Trunc(dy)]));
+    P^.X := OrigX-Trunc(dx);
+    P^.Y := OrigY-Trunc(dy);
   end;
   Result := 1;
 end;
