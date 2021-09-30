@@ -7,6 +7,8 @@ unit TestBasicSynEdit;
 
 {$mode objfpc}{$H+}
 
+{off $DEFINE TestCaretObject_FULL}
+
 interface
 
 uses
@@ -1531,7 +1533,7 @@ var
 
 begin
   FPersistSel := False;
-  //(*
+  (*
   TestOrder := 6;
   UseLock := True;
   UseAdjustToNextChar := False;
@@ -1560,6 +1562,16 @@ begin
                   for UseMaxLeft := low(Boolean) to high(Boolean) do
 // OldPos, MoveHoriz
 // IsAtPos /
+{$IFnDEF TestCaretObject_FULL}
+  if not(
+    (TestOrder > 5) or
+    (UseLock and (TestOrder > 1)) or
+    (UseAdjustToNextChar xor UseAllowPastEOL) or
+    (UseKeepCaretX xor UseSkipTabs) or
+    (UseKeepCaretX xor UseMaxLeft) or
+    (UseSkipTabs xor UseMaxLeft)
+  ) then
+{$ENDIF}
     DoTests;
 
 end;

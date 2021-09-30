@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, math, LCLProc, testregistry, TestBase, Forms, SynEditHighlighter,
   SynHighlighterMulti, SynHighlighterLFM, SynHighlighterXML, SynHighlighterPas, SynEditKeyCmds,
-  LazSynEditText, SynEditTextBuffer, LazLogger;
+  LazSynEditText, SynEditTextBuffer, LazLoggerBase;
 
 type
 
