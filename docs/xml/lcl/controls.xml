@@ -10784,16 +10784,29 @@
 
       <element name="TControl.ClientOrigin">
         <short>
-          Screen coordinates of the TopLeft pixel (of the client area) of the control.
+          Screen coordinates of the Top, Left pixel (in the client area) of the control.
         </short>
         <descr>
           <p>
-            Only TWinControls have a client area, for other controls ClientOrigin is the same as Origin.
+            Only <var>TWinControl</var> has a client area. For other controls, ClientOrigin is the same as <var>ControlOrigin</var>. Uses the corresponding property in the <var>Parent</var> control to get the property value, and includes the values in <var>Left</var> and <var>Top</var> to get the effective  origin for the control.
+          </p>
+          <p>
+            An <var>EInvalidOperation</var> exception is raised if Parent has not been assigned when reading the value for the property.
           </p>
           <p>
             Note that this value is the position as stored in the object, not always in sync with the widget.
           </p>
         </descr>
+        <errors>
+          Raises an EInvalidOperation exception with the message in sParentRequired if Parent has not been assigned when reading the value for the property.
+        </errors>
+        <seealso>
+          <link id="TControl.Parent"/>
+          <link id="TControl.Left"/>
+          <link id="TControl.Top"/>
+          <link id="TControl.ControlOrigin"/>
+          <link id="TControl.GetClientOrigin"/>
+        </seealso>
       </element>
 
       <element name="TControl.ClientRect">
@@ -13922,13 +13935,42 @@
       </element>
 
       <element name="TWinControl.CreateWnd">
-        <short>Creates the interface object (widget) and assigns it to Handle.</short>
-        <descr/>
-        <seealso/>
+        <short>Creates the interface object (widget) and assigns the value in Handle.</short>
+        <descr>
+          <p>
+            Raises a catchable debugger exception for various conditions, including:
+          </p>
+          <ul>
+            <li>
+              The control, or its <var>Parent</var>, has the value <var>csDestroying</var> in the <var>ComponentState</var> property.
+            </li>
+            <li>
+              The method has been called recursively, as indicated by values in the window control flags.
+            </li>
+            <li>
+              The method has been called at run-time before LCL component streaming has been completed.
+            </li>
+            <li>
+              The <var>Handle</var> was not successfully created in the widgetset class.
+            </li>
+          </ul>
+          <p>
+            Ensures that the realized bounds for the control is reset prior to creating the Handle for the control and any child <var>Controls</var>. An <var>EInvalidOperation</var> exception is raised if the handle for the Parent control is not valid when the method is called.
+          </p>
+          <p>
+            Calls the <var>InvalidatePreferredSize</var> method for the control, and any child controls, and calls <var>AdjustSize</var>. If an error occurred while creating the Handle, auto-sizing is not enabled for the control.
+          </p>
+          <p>
+            CreateWnd is called from the <var>CreateHandle</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.CreateHandle"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.DestroyHandle">
-        <short>Destroys this and all child widgets.</short>
+        <short>Destroys the handle for the control and all child controls.</short>
         <descr/>
         <seealso/>
       </element>
@@ -13958,7 +14000,7 @@
       </element>
 
       <element name="TWinControl.FixupTabList">
-        <short>Assigns strictly sequential TabOrder values to all child windows.</short>
+        <short>Assigns sequential TabOrder values to all child controls.</short>
         <descr/>
         <seealso/>
       </element>
@@ -14582,7 +14624,7 @@
       </element>
 
       <element name="TWinControl.ParentWindow">
-        <short>The Handle of the parent widget.</short>
+        <short>The Handle for the parent widget.</short>
         <descr/>
         <seealso/>
       </element>
