@@ -182,7 +182,6 @@
       <element name="rsGridHasNoRows"/>
       <element name="rsGridHasNoCols"/>
       <element name="rsAControlCanNotHaveItselfAsParent"/>
-      <element name="rsControlHasNoParentWindow"/>
       <element name="rsControlHasNoParentFormOrFrame"/>
       <element name="rsControlIsNotAParent"/>
       <element name="rsControlClassCantContainChildClass"/>
