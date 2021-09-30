@@ -2719,8 +2719,8 @@ begin
   g_signal_connect_data(GetContainerWidget,'draw', TGCallback(@Gtk3DrawWidget), Self, nil, 0);
   g_signal_connect_data(GetContainerWidget,'scroll-event', TGCallback(@Gtk3ScrollEvent), Self, nil, 0);
 
-  // must hide all by default
-  FWidget^.hide;
+  // must hide all by default ???
+  //FWidget^.hide;
 
   g_signal_connect_data(FWidget,'hide', TGCallback(@Gtk3WidgetHide), Self, nil, 0);
   g_signal_connect_data(FWidget,'show', TGCallback(@Gtk3WidgetShow), Self, nil, 0);
