@@ -195,11 +195,6 @@ msgstr "Luokan '%s' kontrollin lapsi ei voi olla luokan '%s' kontrolli"
 msgid "Control '%s' has no parent form or frame"
 msgstr "Kontrolli '%s':lla ei ole emolomaketta tai -kehystä."
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Kontrolli '%s':lla ei ole emoikkunaa"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

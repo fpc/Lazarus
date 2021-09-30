@@ -15723,12 +15723,6 @@ msgstr "לא חבילה להתקנה"
 msgid "Free Pascal compiler not found at the given prefix."
 msgstr ""
 
-#: lazarusidestrconsts.lisnotavalidpascalidentifier
-#, fuzzy
-#| msgid "Not a valid pascal identifier"
-msgid "Not a valid Pascal identifier"
-msgstr "זה אינו מזהה פסקל חוקי"
-
 #: lazarusidestrconsts.lisnote
 msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"

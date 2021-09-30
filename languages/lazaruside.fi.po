@@ -14772,10 +14772,6 @@ msgstr "Ei ole asennettava paketti"
 msgid "Free Pascal compiler not found at the given prefix."
 msgstr ""
 
-#: lazarusidestrconsts.lisnotavalidpascalidentifier
-msgid "Not a valid Pascal identifier"
-msgstr "Ei ole kelvollinen Pascal-tunniste"
-
 #: lazarusidestrconsts.lisnote
 msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"

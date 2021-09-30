@@ -199,11 +199,6 @@ msgstr "Prvek třídy '%s' nemůže mít prvek třídy '%s' jako dítě"
 msgid "Control '%s' has no parent form or frame"
 msgstr "Prvek '%s' nemá rodičovský formulář nebo rámec"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Prvek '%s' nemá rodičovské okno"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

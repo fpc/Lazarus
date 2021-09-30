@@ -202,11 +202,6 @@ msgstr "Control van klasse '%s' kan control van klasse '%s' niet als kind hebben
 msgid "Control '%s' has no parent form or frame"
 msgstr "Control '%s' heeft geen ouder-form of frame"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Control '%s' heeft geen venster als ouder"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

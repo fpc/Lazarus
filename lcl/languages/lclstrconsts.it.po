@@ -199,11 +199,6 @@ msgstr "Un controllo di classe '%s' non può avere figli di classe '%s'"
 msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Il controllo '%s' non ha finestra padre"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

@@ -197,11 +197,6 @@ msgstr "'%s' osztályú vezérlőnek nem lehet gyermeke egy '%s' osztályú vez�
 msgid "Control '%s' has no parent form or frame"
 msgstr "A(z) '%s' vezérlőnek nincs szülő kerete vagy form-ja"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "A(z) '%s' vezérlőnek nincs szülő ablaka"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
