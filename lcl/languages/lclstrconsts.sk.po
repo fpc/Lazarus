@@ -199,11 +199,6 @@ msgstr "Prvok triedy '%s' nemôže mať prvok triedy '%s' ako dieťa"
 msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Prvok '%s' nemá rodičovské okno"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

@@ -199,11 +199,6 @@ msgstr "פקד של המחלקה  '%s' לא יכול לקבל פקד של מחל
 msgid "Control '%s' has no parent form or frame"
 msgstr ""
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format, fuzzy, badformat
-msgid "Control '%s' has no parent window"
-msgstr "לפקד s% אין חלון הורה"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

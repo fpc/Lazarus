@@ -197,11 +197,6 @@ msgstr "'%s' sınıfının kontrolünü çocuk olarak '%s' sınıfının kontrol
 msgid "Control '%s' has no parent form or frame"
 msgstr "'%s' kontrolü bir üst pencereye ya da çerçeveye sahip değil"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "'%s' kontrolü bir üst pencereye sahip değil"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

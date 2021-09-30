@@ -15153,10 +15153,6 @@ msgstr "Non è un pacchetto installato"
 msgid "Free Pascal compiler not found at the given prefix."
 msgstr ""
 
-#: lazarusidestrconsts.lisnotavalidpascalidentifier
-msgid "Not a valid Pascal identifier"
-msgstr "Non è in identificatore Pascal valido"
-
 #: lazarusidestrconsts.lisnote
 msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"

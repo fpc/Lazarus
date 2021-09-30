@@ -199,11 +199,6 @@ msgstr "„%s“ klasės valdiklis negali būti „%s“ klasės valdiklio tėva
 msgid "Control '%s' has no parent form or frame"
 msgstr "Valdiklis „%s“ neturi tėvinės formos ar kadro"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "„%s“ valdiklis neturi tėvinio lango"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

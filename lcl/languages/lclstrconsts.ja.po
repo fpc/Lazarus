@@ -197,11 +197,6 @@ msgstr "コントロールクラス '%s' はコントロールクラス '%s' を
 msgid "Control '%s' has no parent form or frame"
 msgstr "コントロール'%s'は親フォームもしくは親フレームを持ちません"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "コントロール '%s' には親ウィンドウがありません"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

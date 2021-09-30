@@ -14865,10 +14865,6 @@ msgstr "Nem telepítő csomag"
 msgid "Free Pascal compiler not found at the given prefix."
 msgstr "a Free Pascal fordító nem található a megadott útvonalon."
 
-#: lazarusidestrconsts.lisnotavalidpascalidentifier
-msgid "Not a valid Pascal identifier"
-msgstr "Nem érvényes pascal azonosító"
-
 #: lazarusidestrconsts.lisnote
 msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"

@@ -198,11 +198,6 @@ msgstr "Kontrola klasy '%s' nie może mieć kontroli nad klasą '%s' jako potome
 msgid "Control '%s' has no parent form or frame"
 msgstr "Kontrolka '%s' nie ma formatki nadrzędnej lub ramki"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Kontrolka '%s' nie ma okna nadrzędnego"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

@@ -200,11 +200,6 @@ msgstr "Елемент управління класу '%s' не може мат
 msgid "Control '%s' has no parent form or frame"
 msgstr "Елемент керування '%s' не має предком форми або фрейма"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Елемент управління '%s' не має батьківського вінка"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"

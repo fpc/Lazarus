@@ -14863,10 +14863,6 @@ msgstr "Не встановлювальний пакунок"
 msgid "Free Pascal compiler not found at the given prefix."
 msgstr "Компілятор Free Pascal не виявлено за даним префіксом."
 
-#: lazarusidestrconsts.lisnotavalidpascalidentifier
-msgid "Not a valid Pascal identifier"
-msgstr "Не є допустимим ідентифікатором Pascal"
-
 #: lazarusidestrconsts.lisnote
 msgctxt "lazarusidestrconsts.lisnote"
 msgid "Note"

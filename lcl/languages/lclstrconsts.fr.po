@@ -197,11 +197,6 @@ msgstr "Le contrôle de la classe \"%s\" ne peut pas contenir un contrôle de la
 msgid "Control '%s' has no parent form or frame"
 msgstr "Le contrôle \"%s\" n'a pas de fenêtre  ou de cadre parent"
 
-#: lclstrconsts.rscontrolhasnoparentwindow
-#, object-pascal-format
-msgid "Control '%s' has no parent window"
-msgstr "Le contrôle \"%s\" n'a pas de fenêtre parent"
-
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
 msgid "'%s' is not a parent of '%s'"
