@@ -956,19 +956,18 @@ Binaries (*.exe)</code>
       <element name="TFilterComboBox.OnUTF8KeyPress" link="#lcl.controls.TWinControl.OnUTF8KeyPress"/>
 
       <element name="MinimizeName">
-        <short>Returns a shortened version of a file name, so that it fits within the given MaxWidth.</short>
+        <short>
+          Returns a shortened version of the specified file name that fits within the number of pixels in MaxWidth.
+        </short>
         <descr>
           <p>
-            This function will return a shortened version of <var>FileName</var>, so that it fits within the width given in <var>MaxWidth</var>. It uses the Font currently assigned to the <var>Canvas</var> argument.
-        </p>
-          <p>
-            For example: 'C:\Documents and Settings\User\Application Data\Microsoft\Word\custom.dic'  would be shortened to a value like: 'C:\...\Word\custom.dic'.
+            This function will return a shortened version of <var>FileName</var> which fits within the number of pixels given in <var>MaxWidth</var>. For example: 'C:\Documents and Settings\User\Application Data\Microsoft\Word\custom.dic'  would be shortened to a value like: 'C:\...\Word\custom.dic'.
           </p>
           <p>
-            No actions are performed in the routine when path information is not included in FileName. Normalizes all path delimiters in the file name to the first path delimiter found in the argument.
+            No actions are performed in the routine when path information is not included in FileName. The function normalizes all path delimiters in the file name to the first path delimiter found in the FileName argument.
           </p>
           <p>
-            When FileName is longer than the value in MaxWidth, directory names are dropped and replaced with a single <b>'...'</b> string value until the shortened file name fits within the specified width. Please note that this is a string with three (3) period ('.') characters, and <b>NOT</b> an Ellipsis (…)(#$2026) character.
+            MinimizeName uses the <var>Font</var> currently assigned to the <var>Canvas</var> argument to calculate the width (in pixels) for the file name.  When the width of the FileName argument is larger than the value in MaxWidth, directory names are dropped and replaced with a single <b>'...'</b> string value until the shortened file name fits within the specified width. Please note that the replacement characters are a string with three (3) Period ('.') characters, and <b>NOT</b> an Ellipsis (…)(#$2026) character.
           </p>
         </descr>
       </element>
