@@ -1809,7 +1809,7 @@ begin
     inc(SrcPos);
   DirLen:=SrcPos-DirStart;
   if DirLen>255 then DirLen:=255;
-  FDirectiveName:=copy(Src,DirStart,DirLen);
+  FDirectiveName:=UpperCase(Copy(Src,DirStart,DirLen));
   DoDirective(DirStart,DirLen);
   SrcPos:=CommentEndPos;
 end;
@@ -3594,7 +3594,7 @@ begin
       inc(SrcPos);
     DirLen:=SrcPos-DirStart;
     if DirLen>255 then DirLen:=255;
-    FDirectiveName:=copy(Src,DirStart,DirLen);
+    FDirectiveName:=UpperCase(Copy(Src,DirStart,DirLen));
     Result:=DoDirective(DirStart,DirLen);
   end else
     Result:=true;
