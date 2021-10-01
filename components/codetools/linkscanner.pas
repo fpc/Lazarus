@@ -3979,15 +3979,14 @@ end;
 
 function TLinkScanner.IncludePathDirective: boolean;
 // {$includepath path_addition}
-var AddPath, PathDivider: string;
+var AddPath: string;
 begin
   if StoreDirectives then
     FDirectives[FDirectivesCount-1].Kind:=lsdkIncludePath;
   inc(SrcPos);
   AddPath:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-  PathDivider:=':';
   Values.Variables[ExternalMacroStart+'INCPATH']:=
-    Values.Variables[ExternalMacroStart+'INCPATH']+PathDivider+AddPath;
+    Values.Variables[ExternalMacroStart+'INCPATH']+':'+AddPath;
   Result:=true;
 end;
 
