@@ -4342,35 +4342,49 @@ end;
       </element>
 
       <element name="TCustomCopyToClipboardDialog">
-        <short/>
+        <short>Base class for a dialog form used for copy to clipboard operations.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomCopyToClipboardDialog.DoCreate">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Performs actions needed when a new instance of the form is created.</short>
+        <descr>
+          <p>
+            <var>DoCreate</var> is an overridden method in <var>TCustomCopyToClipboardDialog</var>. It calls the inherited method on entry to signal <var>OnCreate</var> or other create handler(s) (when assigned). DoCreate calls the <var>RegisterDialogForCopyToClipboard</var> routine to enable key preview and set the <var>OnKeyDown</var> handler for the form instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="RegisterDialogForCopyToClipboard"/>
+          <link id="#lcl.forms.TCustomForm.OnCreate">TCustomForm.OnCreate</link>
+          <link id="#lcl.forms.TCustomForm.DoCreate">TCustomForm.DoCreate</link>
+        </seealso>
       </element>
 
       <element name="TCustomCopyToClipboardDialog.GetMessageText">
-        <short/>
-        <descr/>
+        <short>
+          Specifies the method used to get the text for the message displayed on the dialog form.
+        </short>
+        <descr>
+          <p>
+            <var>GetMessageText</var> is an abstract virtual method in TCustomCopyToClipboardDialog. It must be implemented in a descendent class to return the correct value for the dialog form implementation.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomCopyToClipboardDialog.GetMessageText.Result">
-        <short/>
+        <short>Text for the message displayed on the dialog form.</short>
       </element>
 
       <element name="RegisterDialogForCopyToClipboard">
         <short>
-          Registers the method and data used for TCustomCopyToClipboardDialog instances.
+          Enables key preview and adds the OnKeyDown handler for the specified dialog.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="RegisterDialogForCopyToClipboard.ADlg">
-        <short/>
+        <short>Dialog form instance updated in the routine.</short>
       </element>
 
       <element name="DialogCopyToClipboard">
@@ -4437,13 +4451,13 @@ end;
         <seealso/>
       </element>
       <element name="TInputCloseQueryEvent.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
       <element name="TInputCloseQueryEvent.AValues">
-        <short/>
+        <short>Array of values which can be displayed in the event handler.</short>
       </element>
       <element name="TInputCloseQueryEvent.ACanClose">
-        <short/>
+        <short>True if the InputQuery can be closed, False to continue execution of the dialog.</short>
       </element>
 
       <element name="SelectDirectory">
@@ -4467,7 +4481,6 @@ end;
       </element>
       <element name="SelectDirectory.Caption">
         <short>A constant which sets the caption of the shown dialog.</short>
-        <descr>A constant which sets the caption of the shown dialog.</descr>
       </element>
       <element name="SelectDirectory.InitialDirectory">
         <short>The directory the dialog should start in.</short>
@@ -4479,17 +4492,15 @@ end;
       </element>
       <element name="SelectDirectory.Directory">
         <short>A variable which on exit contains the selected directory.</short>
-        <descr>A variable which on exit contains the selected directory.</descr>
       </element>
       <element name="SelectDirectory.ShowHidden">
         <short>A boolean constant indicating whether hidden folders should be shown too.</short>
-        <descr>A boolean constant indicating whether hidden folders should be shown too.</descr>
       </element>
       <element name="SelectDirectory.HelpCtx">
-        <short/>
+        <short>Help context for the dialog.</short>
       </element>
       <element name="SelectDirectory.Options">
-        <short/>
+        <short>Set of options enabled for the dialog.</short>
       </element>
 
       <element name="InputQuery">
@@ -4558,33 +4569,51 @@ end;
       </element>
 
       <element name="DefaultInputDialog">
-        <short>Widgetset-independent implementation.</short>
+        <short>Widgetset-independent implementation of an input dialog.</short>
         <descr/>
         <seealso>
           <link id="#lcl.interfacebase.InputDialogFunction">InputDialogFunction</link>
         </seealso>
       </element>
       <element name="DefaultInputDialog.Result">
-        <short/>
+        <short>True if the Ok button was clicked during execution of the dialog.</short>
       </element>
       <element name="DefaultInputDialog.InputCaption">
-        <short/>
+        <short>Caption displayed as the title for the dialog.</short>
       </element>
       <element name="DefaultInputDialog.InputPrompt">
-        <short/>
+        <short>Label displayed on the dialog form.</short>
       </element>
       <element name="DefaultInputDialog.MaskInput">
-        <short/>
+        <short>True if the edit control displays '*' characters to mask the input value.</short>
       </element>
       <element name="DefaultInputDialog.Value">
-        <short/>
+        <short>
+          Default value for the edit control on the dialog, and the value entered at run-time.
+        </short>
       </element>
 
       <element name="InputCombo">
         <short>
           Creates and executes a combo-box dialog with the specified Caption, Prompt, and list of selectable values.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>InputCombo</var> is an Integer function used to create and display an input dialog with the values specified in the arguments to the routine.
+          </p>
+          <p>
+            The dialog form is constructed at run-time, and includes the controls needed to display the prompt (<var>TLabel</var>) and list of selectable items (<var>TComboBox</var>). It also includes a button panel (<var>TButtonPanel</var>) with <b>Ok</b> and <b>Cancel</b> buttons. The <var>Caption</var> for the dialog form is set to the <var>ACaption</var> argument.
+          </p>
+          <p>
+            The dimensions for the dialog form are determined by the maximum length of the string values passed in the function parameters. The form uses auto-scaling when enabled for the <var>Application</var>. Scaled size values are applied to the font for the form and its controls, as well the margins and separators used for control alignment. <var>Anchors</var> and <var>BorderSpacing</var> are used for control alignment to preserve their layout during auto-sizing and scaling operations. The display <var>Position</var> for the form is set to <var>poScreenCenter</var>.
+          </p>
+          <p>
+            InputCombo calls the <var>ShowModal</var> method for the <var>TForm</var> instance to display the dialog and capture the modal result value. When the modal result is <var>mrOk</var> (the OK button was pressed), the return value contains the ordinal position for the item in AList that was selected in the combo-box control. The return value is <b>-1</b> when the Cancel button or the Close border decoration is clicked.
+          </p>
+          <p>
+            Use <var>InputComboEx</var> to display a dialog form that allows custom text to be entered in its combo-box control. Use <var>InputQuery</var> to display a dialog form which allows entry of a text value using an edit mask.
+          </p>
+        </descr>
         <seealso>
           <link id="InputComboEx"/>
           <link id="InputQuery"/>
@@ -4607,13 +4636,40 @@ end;
 
       <element name="InputComboEx">
         <short>
-          Displays an extended input combo-box dialog that allows entry of custom text values.
+          Displays an extended input combo-box dialog that allows entry of custom text values in its Items.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>InputComboEx</var> is an overloaded <var>String</var> function used to create and display a dialog form that can select a value specified in the <var>AList</var> argument. The overloaded variants allow the AList argument to be specified as a <var>TStrings</var> instance or an array of <var>String</var> values.
+          </p>
+          <p>
+            <var>ACaption</var> contains the caption displayed as the title for the dialog form.
+          </p>
+          <p>
+            <var>APrompt</var> contains a string displayed as the label for the combo-box control.
+          </p>
+          <p>
+            <var>AllowCustomText</var> is a <var>Boolean</var> argument which indicates if text values can be added to the combo-box control at run-time. When set to <b>True</b>, text can be added to the TComboBox control. This is enabled by setting its <var>Style</var> property to <var>csDropDown</var> instead of <var>csDropDownList</var> (the default). The default value for the argument is <b>False</b> and prevents adding custom text to the combo-box control.
+          </p>
+          <p>
+            The dialog form is constructed at run-time, and includes the controls needed to display the prompt (<var>TLabel</var>) and list of selectable items (<var>TComboBox</var>). It also includes a button panel (<var>TButtonPanel</var>) with <b>Ok</b> and <b>Cancel</b> buttons. The <var>Caption</var> for the dialog form is set to the <var>ACaption</var> argument.
+          </p>
+          <p>
+            The dimensions for the dialog form are determined by the maximum length of the string values passed in the function parameters. The form uses auto-scaling when enabled for the <var>Application</var>. Scaled size values are applied to the font for the form and its controls, as well the margins and separators used for control alignment. <var>Anchors</var> and <var>BorderSpacing</var> are used for control alignment to preserve their layout during auto-sizing and scaling operations. The display <var>Position</var> for the form is set to <var>poScreenCenter</var>.
+          </p>
+          <p>
+            InputComboEx calls the <var>ShowModal</var> method for the <var>TForm</var> instance to display the dialog and capture the modal result value. When the modal result is <var>mrOk</var> (the OK button was pressed), the return value contains the value for the selected item in the combo-box control. The return value is an empty string ('') when the Cancel button or the Close border decoration is clicked.
+          </p>
+        </descr>
+        <seealso>
+          <link id="InputCombo"/>
+          <link id="InputQuery"/>
+        </seealso>
       </element>
       <element name="InputComboEx.Result">
-        <short/>
+        <short>
+          String with the item selected in the combo-box, or and empty string if the dialog is  cancelled.
+        </short>
       </element>
       <element name="InputComboEx.ACaption">
         <short>Caption for the dialog.</short>
