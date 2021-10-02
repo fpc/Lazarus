@@ -110,50 +110,76 @@ var
   CBSelect : TComboBox;
   LPrompt: TLabel;
   BP: TButtonPanel;
+  P: TPanel;
 begin
-  Margin:=24;
-  Sep:=8;
   Result:='';
   ASelected:=-1;
-  Frm:=TForm.Create(Application);
+  frm := TForm.Create(Application);
   try
+    Margin:= frm.Scale96ToForm(16);
+    Sep := frm.Scale96ToForm(8);
+
+    frm.BorderStyle:=bsDialog;
+    frm.Caption:=ACaption;
+    frm.Position:=poScreenCenter;
+
     // Determine needed width
     W:=frm.Canvas.TextWidth(APrompt);
     W:=Max(W,frm.Canvas.TextWidth(ACaption));
     for I:=0 to AList.Count-1 do
       W:=Max(W,frm.Canvas.TextWidth(AList[i]+'WWW')); // WWW is just some extra.
-    frm.BorderStyle:=bsDialog;
-    frm.Caption:=ACaption;
-    frm.ClientWidth:=W+2*Margin;
-    frm.Position:=poScreenCenter;
+
+    // Panel for controls
+    P := TPanel.Create(frm);
+    P.Parent := frm;
+    P.Align := alClient;
+    P.Borderspacing.Around := Margin;
+    P.Caption := '';
+    P.BevelOuter := bvNone;
+    P.AutoSize := true;
+
     // Prompt
     LPrompt:=TLabel.Create(frm);
-    LPrompt.Parent:=frm;
+    LPrompt.Parent:=P; //frm;
     LPrompt.Caption:=APrompt;
-    LPrompt.SetBounds(Margin,Margin,Frm.ClientWidth-2*Margin,frm.Canvas.TextHeight(APrompt));
+    LPrompt.AnchorSideTop.Control := P;
+    LPrompt.AnchorSideLeft.Control := P;
+    LPrompt.AnchorSideRight.Control := P;
+    LPrompt.AnchorSideRight.Side := asrBottom;
+    LPrompt.BorderSpacing.Bottom := Sep;
+    LPrompt.Anchors := [akLeft, akRight, akTop];
     LPrompt.WordWrap:=True;
-    LPrompt.AutoSize:=False;
+    LPrompt.AutoSize:=true;
+
     // Selection combobox
     CBSelect:=TComboBox.Create(Frm);
-    CBSelect.Parent:=Frm;
+    CBSelect.Parent:=P;
     CBSelect.Style:=CBStyles[AllowInput];
     CBSelect.Items.Assign(AList);
     CBSelect.ItemIndex:=-1;
-    CBSelect.Left:=Margin;
-    CBSelect.Top:=LPrompt.Top + LPrompt.Height + Sep;
-    CBSelect.Width:=Frm.ClientWidth-2*Margin;
+    CBSelect.AnchorSideTop.Control := LPrompt;
+    CBSelect.AnchorSideTop.Side := asrBottom;
+    CBSelect.AnchorSideLeft.Control := P;
+    CBSelect.AnchorSideRight.Control := P;
+    CBSelect.AnchorSideRight.Side := asrBottom;
+    CBSelect.Anchors := [akLeft, akRight, akTop];
+
     // Buttons
     BP:=TButtonPanel.Create(Frm);
     BP.Parent:=Frm;
     BP.ShowButtons:=[pbOK,pbCancel];
-    Frm.ClientHeight:=LPrompt.Height+CBSelect.Height+BP.Height+2*Sep+Margin;
-    if (Frm.ShowModal=mrOk) then
+
+    // Autosize the form
+    frm.AutoSize := true;
+    frm.Constraints.MinWidth := W + 2*Margin;
+
+    if (frm.ShowModal=mrOk) then
     begin
       Result:=CBSelect.Text;
       ASelected:=CBSelect.ItemIndex;
     end;
   finally
-    FreeAndNil(Frm);
+    FreeAndNil(frm);
   end;
 end;
 
