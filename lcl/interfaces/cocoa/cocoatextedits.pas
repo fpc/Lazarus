@@ -1643,8 +1643,23 @@ var
   r   : NSRect;
   rr  : NSRect;
   dr  : TRect;
+  t   : NSString;
 begin
+  if isOwnerDrawn then
+  begin
+    t := title;
+    if Assigned(t) then t.retain;
+    setTitle(NSString.string_);
+  end else
+    t := nil;
+
   inherited drawRect(dirtyRect);
+
+  if Assigned(t) then
+  begin
+    setTitle(t);
+    t.release;
+  end;
 
   // if ownerDrawn style, then need to call "DrawItem" event
   if isOwnerDrawn and Assigned(callback)
