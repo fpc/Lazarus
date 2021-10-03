@@ -139,6 +139,14 @@ begin
   {$ifdef debugspinex}
   debugln('TSpinEditExBase.EditChange');
   {$endif}
+  if FMustSetModifiedToTrueInOnChange then
+  begin
+    Modified := True;
+    FMustSetModifiedToTrueInOnChange := False;
+    {$ifdef debugspinex}
+    debugln('FMustSetModifiedToTrue=True, Setting Modifed to True');
+    {$endif}
+  end;
   inherited EditChange;
 end;
 
@@ -304,7 +312,9 @@ begin
         NewValue := GetLimitedValue(SafeDec(OldValue));
     end;
   end;
+  FMustSetModifiedToTrueInOnChange := True;
   SetValue(NewValue);
+  //RealSetText of the Edit will set it to False
   Modified := True;
 end;
 
@@ -328,7 +338,7 @@ end;
 constructor TSpinEditExBase.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-
+  FMustSetModifiedToTrueInOnChange := False;
   FArrowKeys := True;
   FIncrement := DefIncrement;
   FMaxValue := DefMaxValue;
