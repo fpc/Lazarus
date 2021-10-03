@@ -450,14 +450,13 @@ var
   I: integer;
 begin
   // when items have same text, FItems.IndexOf(AValue) gives wrong index. Issue #28683.
+  // Items can contain an empty string, set ItemIndex in that case too. Issue #39366
+  I := ItemIndex;
+  if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
+    if not (csLoading in ComponentState) then
+      ItemIndex := FItems.IndexOf(AValue);
   if AValue<>'' then
-  begin
-    I := ItemIndex;
-    if (I < 0) or (I >= FItems.Count) or (FItems[I] <> AValue) then
-      if not (csLoading in ComponentState) then
-        ItemIndex := FItems.IndexOf(AValue);
     HideEmulatedTextHint;
-  end;
   inherited;
 end;
 
