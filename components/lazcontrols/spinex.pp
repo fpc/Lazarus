@@ -109,6 +109,7 @@ type
     FMinValue: T;
     FInitialValue: T;
     FMinRepeatValue: Byte;
+    FMustSetModifiedToTrueInOnChange: Boolean;
     FNullValue: T;
     FNullValueBehaviour: TNullValueBehaviour;
     FValue: T;
