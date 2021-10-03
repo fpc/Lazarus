@@ -305,6 +305,7 @@ begin
     end;
   end;
   SetValue(NewValue);
+  Modified := True;
 end;
 
 function TSpinEditExBase.GetNullValue: T;
