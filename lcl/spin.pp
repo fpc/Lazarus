@@ -40,6 +40,7 @@ type
     FEditorEnabled: Boolean;
     FMaxValue: Double;
     FMinValue: Double;
+    FForceModifiedIsFalseInOnChange: Boolean;
     FValue: Double;
     FValueEmpty: Boolean;
     FUpdatePending: Boolean;
@@ -51,6 +52,7 @@ type
     function IncrementStored: Boolean;
   protected
     class procedure WSRegisterClass; override;
+    procedure Change; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const AValue: TCaption); override;
     procedure TextChanged; override;
