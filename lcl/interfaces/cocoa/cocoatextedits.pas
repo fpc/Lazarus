@@ -29,6 +29,7 @@ interface
 uses
   // rtl+ftl
   Types, Classes, SysUtils,
+  Math, // needed for MinDouble, MaxDouble
   CGGeometry,
   // Libs
   MacOSAll, CocoaAll, CocoaUtils, CocoaGDIObjects,
@@ -408,7 +409,7 @@ type
     //Spin: TCustomFloatSpinEdit;
     procedure dealloc; override;
     function updateStepper: boolean; message 'updateStepper';
-    procedure UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer); message 'UpdateControl:::::';
+    procedure UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer; checkMinMax: Boolean); message 'UpdateControl::::::';
     procedure lclCreateSubcontrols(const AParams: TCreateParams); message 'lclCreateSubControls:';
     procedure lclReleaseSubcontrols; message 'lclReleaseSubcontrols';
     procedure PositionSubcontrols(const ALeft, ATop, AWidth, AHeight: Integer); message 'PositionSubcontrols:ATop:AWidth:AHeight:';
@@ -1951,7 +1952,18 @@ begin
     Result := false;
 end;
 
-procedure TCocoaSpinEdit.UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer);
+
+// * value       - the current value to be selected. Note: it will be adjusted
+//                 to "min" and "max", if "checkMinMax" is set to true
+// * min, max    - minimum maximum values allowed. for NSStepper, there's no "unlimited"
+//                 check. "Something" should be set as minimum and maximum
+// * checkMinMax - indicates if the min and max values should be verified.
+//                 in LCL is Min = Max then there's not boundries check applied
+//                 Since "min" and "max" are doubles, it's safer to use a booleanFlag
+//                 so the comparison is done by the caller, rather than using approximation
+// * inc         - incremeantal value to be used when "up" or "down" are pressed
+// * DecimalPlaces - the number of decimals to used when showing the value
+procedure TCocoaSpinEdit.UpdateControl(min, max, inc, avalue: double; ADecimalPlaces: Integer; checkMinMax: Boolean);
 var
   notifyChange : Boolean;
   v : double;
@@ -1959,16 +1971,28 @@ begin
   Stepper.setIncrement(inc);
 
   v := avalue;
-  if v < min then v := min
-  else if v > max then v := max;
+  if checkMinMax then
+  begin
+    if v < min then v := min
+    else if v > max then v := max;
+  end;
 
   notifyChange := (v <> Stepper.doubleValue) or (decimalPlaces <> ADecimalPlaces);
 
   // set min/max after checking for notify change
   // .doubleValue would be adjusted by setting min/max
   decimalPlaces := ADecimalPlaces;
-  Stepper.setMinValue(min);
-  Stepper.setMaxValue(max);
+  if checkMinMax then begin
+    Stepper.setMinValue(min);
+    Stepper.setMaxValue(max);
+  end else begin
+    // "Math" unit declared MaxDouble and MinDouble constants
+    // however, using setMinValue to MinDouble, seems to be ignored
+    // and Cocoa falls back to the default "0". not sure why.
+    // Instead using -MaxDouble.
+    Stepper.setMinValue(-MaxDouble);
+    Stepper.setMaxValue(+MaxDouble);
+  end;
 
   if notifychange then
   begin
