@@ -142,6 +142,8 @@ begin
   FUpdatePending := True;
   UpdateControl;
 
+  Modified := False;
+
   if not HandleAllocated
   and ([csLoading, csDestroying] * ComponentState = [])
   and not SameValue(OldValue, FValue) then
