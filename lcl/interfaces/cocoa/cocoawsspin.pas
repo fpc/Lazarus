@@ -45,7 +45,7 @@ implementation
 
 procedure UpdateControlLCLToCocoa(src: TCustomFloatSpinEdit; dst: TCocoaSpinEdit);
 begin
-  dst.UpdateControl(src.MinValue, src.MaxValue, src.Increment, src.Value, src.DecimalPlaces);
+  dst.UpdateControl(src.MinValue, src.MaxValue, src.Increment, src.Value, src.DecimalPlaces, src.MinValue <> src.MaxValue);
 end;
 
 { TCocoaWSCustomFloatSpinEdit }
