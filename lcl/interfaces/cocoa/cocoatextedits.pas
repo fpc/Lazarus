@@ -1678,10 +1678,10 @@ begin
 
       // magic offsets are based on the macOS 10.13.6 visual style
       // but hard-coding is never reliable
-      inc(dr.Left, 11);
-      inc(dr.Top, 5);
-      dec(dr.Right,18);
-      dec(dr.Bottom, 2);
+      //inc(dr.Left, 11);
+      //inc(dr.Top, 5);
+      //dec(dr.Right,18);
+      //dec(dr.Bottom, 2);
 
       callback.ComboBoxDrawItem(lastSelectedItemIndex, ctx, dr, false);
     finally
