@@ -1513,7 +1513,7 @@ procedure TJitTypeInfo.ParseFromDeclaration(AParser: PJitDeclarationParser);
             TokenParser^.GetQualifiedIdent(CurParams^.TypeUnit, CurParams^.TypeName);
             tk := TokenParser^.Next;
             if tk = ptEqual then // default value
-              while not (tk in [ptSemicolon, ptRoundClose]) do
+              while not (tk in [ptSemicolon, ptRoundClose, ptEOT]) do
                 tk := TokenParser^.Next;
           end
           else begin
