@@ -1486,7 +1486,7 @@ begin
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
-  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, AttachToPid, 0, OsDbgClasses, MemManager, ProcessConfig);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, OsDbgClasses, MemManager, ProcessConfig);
   if not Assigned(FCurrentProcess) then
     begin
     Result := false;
@@ -1495,9 +1495,9 @@ begin
     end;
 
   if AttachToPid <> 0 then
-    Result := FCurrentProcess.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses, MemManager, FLastError)
+    Result := FCurrentProcess.AttachToInstance(AttachToPid, FLastError)
   else
-    Result := FCurrentProcess.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses, MemManager, FLastError);
+    Result := FCurrentProcess.StartInstance(Params, Environment, WorkingDirectory, FConsoleTty, Flags, FLastError);
 
   if Result then
     begin

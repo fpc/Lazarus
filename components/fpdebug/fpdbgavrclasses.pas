@@ -107,11 +107,12 @@ type
     function CreateWatchPointData: TFpWatchPointData; override;
   public
     class function isSupported(target: TTargetDescriptor): boolean; override;
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig); override;
     destructor Destroy; override;
-    function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
+    function StartInstance(AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean; override;
+      out AnError: TFpError): boolean; override;
 
     // FOR AVR target AAddress could be program or data (SRAM) memory (or EEPROM)
     // Gnu tools masks data memory with $800000
@@ -668,8 +669,7 @@ begin
   Result := TFpRspWatchPointData.Create;
 end;
 
-constructor TDbgAvrProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses;
+constructor TDbgAvrProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
   AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 begin
   if Assigned(AProcessConfig) and (AProcessConfig is TRemoteConfig) then
@@ -690,22 +690,21 @@ begin
   inherited Destroy;
 end;
 
-function TDbgAvrProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean;
+function TDbgAvrProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
   AnExecutabeFilename: string;
 begin
   Result := false;
-  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not debug %s, because it''s a directory',[AnExecutabeFilename]);
     Exit;
   end;
 
-  if not FileExists(AFileName) then
+  if not FileExists(Name) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not find  %s.',[AnExecutabeFilename]);
     Exit;
@@ -718,7 +717,7 @@ begin
   end;
 
   try
-    FConnection := TRspConnection.Create(AFileName, self, self.FRemoteConfig);
+    FConnection := TRspConnection.Create(Name, self, self.FRemoteConfig);
     FConnection.Connect;
     try
       FConnection.RegisterCacheSize := RegArrayLength;

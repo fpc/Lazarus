@@ -184,7 +184,9 @@ type
     procedure InitializeLoaders; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
+  override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -488,8 +490,7 @@ begin
   Result := TFpIntelWatchPointData.Create;
 end;
 
-constructor TDbgWinProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses;
+constructor TDbgWinProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
   AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 begin
   {$ifdef cpui386}
@@ -497,7 +498,7 @@ begin
   {$else}
   FBitness := b64;
   {$endif}
-  inherited Create(AName, AProcessID, AThreadID, AnOsClasses, AMemManager, AProcessConfig);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgWinProcess.Destroy;

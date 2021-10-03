@@ -147,11 +147,11 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
+    function StartInstance(AParams, AnEnvironment: TStrings;
       AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean; override;
+      out AnError: TFpError): boolean; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -624,13 +624,13 @@ begin
   Result := TFpIntelWatchPointData.Create;
 end;
 
-constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
+constructor TDbgDarwinProcess.Create(const AFileName: string;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AProcessConfig: TDbgProcessConfig);
 var
   aKernResult: kern_return_t;
 begin
-  inherited Create(AName, AProcessID, AThreadID, AnOsClasses, AMemManager, AProcessConfig);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 
   GetDebugAccessRights;
   aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
@@ -646,10 +646,9 @@ begin
   inherited Destroy;
 end;
 
-function TDbgDarwinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean;
+function TDbgDarwinProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
   AProcess: TProcessUTF8;
   AnExecutabeFilename: string;
@@ -657,7 +656,7 @@ var
 begin
   result := false;
 
-  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
     begin
     if not (ExtractFileExt(AnExecutabeFilename)='.app') then
@@ -702,7 +701,7 @@ begin
     GConsoleTty := AConsoleTty;
 
     AProcess.Execute;
-    FProcessID:=AProcess.ProcessID;
+    Init(AProcess.ProcessID, 0);
     FExecutableFilename:=AnExecutabeFilename;
     FMasterPtyFd := AMasterPtyFd;
     FProcProcess := AProcess;
