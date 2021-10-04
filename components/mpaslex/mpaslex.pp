@@ -106,7 +106,8 @@ type
     tkShl, tkShr, tkSlash, tkSlashesComment, tkSquareClose, tkSquareOpen,
     tkSpace, tkStar, tkStdcall, tkStored, tkString, tkStringresource, tkSymbol,
     tkThen, tkThreadvar, tkTo, tkTry, tkType, tkUnit, tkUnknown, tkUntil, tkUses,
-    tkVar, tkVectorcall, tkVirtual, tkWhile, tkWith, tkWrite, tkWriteonly, tkXor);
+    tkVar, tkVectorcall, tkVirtual, tkWhile, tkWith, tkWrite, tkWriteonly, tkXor,
+    tkMsAbiDefault,tkMsAbiCdecl,tkSysvAbiDefault,tkSysvAbiCdecl);
 
   TCommentState=(csAnsi, csBor, csNo);
 
@@ -460,7 +461,9 @@ function TmwPasLex.Func32: TTokenKind;
 begin
   if KeyComp('File')then Result:=tkFile else
     if KeyComp('Label')then Result:=tkLabel else
-      if KeyComp('Mod')then Result:=tkMod else Result:=tkIdentifier;
+      if KeyComp('Mod')then Result:=tkMod else
+       if KeyComp('Ms_abi_default')then Result:=tkMsAbiDefault else
+        if KeyComp('Ms_abi_cdecl')then Result:=tkMsAbiCdecl else Result:=tkIdentifier;
 end;
 
 function TmwPasLex.Func33: TTokenKind;
@@ -669,7 +672,9 @@ end;
 function TmwPasLex.Func85: TTokenKind;
 begin
   if KeyComp('Library')then Result:=tkLibrary else
-    if KeyComp('Forward')then Result:=tkForward else Result:=tkIdentifier;
+    if KeyComp('Forward')then Result:=tkForward else
+     if KeyComp('Sysv_abi_default')then Result:=tkSysvAbiDefault else
+      if KeyComp('Sysv_abi_cdecl')then Result:=tkSysvAbiCdecl else Result:=tkIdentifier;
 end;
 
 function TmwPasLex.Func87: TTokenKind;

@@ -338,7 +338,7 @@ type
     Run: LongInt;// current parser postion in fLine
     fStringLen: Integer;// current length of hash
     fToIdent: integer;// start of current identifier in fLine
-    fIdentFuncTable: array[0..191] of TIdentFuncTableFunc;
+    fIdentFuncTable: array[0..220] of TIdentFuncTableFunc;
     fTokenPos: Integer;// start of current token in fLine
     FTokenID: TtkTokenKind;
     FTokenIsCaseLabel: Boolean;
@@ -456,8 +456,10 @@ type
     function Func167: TtkTokenKind;
     function Func168: TtkTokenKind;
     function Func170: TtkTokenKind;
+    function Func178: TtkTokenKind;
     function Func181: TtkTokenKind;
     function Func191: TtkTokenKind;
+    function Func220: TtkTokenKind;
     function AltFunc: TtkTokenKind;
     procedure InitIdent;
     function IdentKind(p: integer): TtkTokenKind;
@@ -824,8 +826,10 @@ begin
   fIdentFuncTable[167] := @Func167;
   fIdentFuncTable[168] := @Func168;
   fIdentFuncTable[170] := @Func170;
+  fIdentFuncTable[178] := @Func178;
   fIdentFuncTable[181] := @Func181;
   fIdentFuncTable[191] := @Func191;
+  fIdentFuncTable[220] := @Func220;
 end;
 
 function TSynPasSyn.KeyHash: Integer;
@@ -2076,6 +2080,9 @@ begin
   if KeyComp('NoReturn') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
     Result := tkKey
   else
+  if KeyComp('Ms_abi_cdecl') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
     Result := tkIdentifier;
 end;
 
@@ -2315,6 +2322,9 @@ begin
   if (FStringKeywordMode in [spsmDefault]) and KeyComp('Shortstring') then
     Result := tkKey
   else
+  if KeyComp('Ms_abi_default') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
     Result := tkIdentifier;
 end;
 
@@ -2364,6 +2374,22 @@ end;
 function TSynPasSyn.Func111: TtkTokenKind;
 begin
   if KeyComp('vectorcall') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func178: TtkTokenKind;
+begin
+  if KeyComp('Sysv_abi_cdecl') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
+    Result := tkKey
+  else
+    Result := tkIdentifier;
+end;
+
+function TSynPasSyn.Func220: TtkTokenKind;
+begin
+  if KeyComp('Sysv_abi_default') and (TopPascalCodeFoldBlockType in ProcModifierAllowed) then
     Result := tkKey
   else
     Result := tkIdentifier;
