@@ -1771,7 +1771,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create allocates resources needed for the Font property, and sets the default values in the Options property.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. Create allocates resources needed for the <var>Font</var> property, and sets the default values in the <var>Options</var> property.
           </p>
         </descr>
         <seealso>
@@ -1813,12 +1813,13 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Minimum font size allowed in the font selection dialog.</short>
         <descr>
           <p>
-            <var>MinFontSize</var> is an Integer property which contains the minimum font size allowed in the font selection dialog. Limiting font size selection to the range in <var>MinFontSize</var> and <var>MaxFontSize</var> must be enabled using the <var>Options</var> property.
+            <var>MinFontSize</var> is an Integer property which contains the minimum font size allowed in the font selection dialog. Limiting font size selection to the range in <var>MinFontSize</var> and <var>MaxFontSize</var> must be enabled by including <var>fdLimitSize</var> in the <var>Options</var> property.
           </p>
         </descr>
         <seealso>
           <link id="TFontDialog.MaxFontSize"/>
           <link id="TFontDialog.Options"/>
+          <link id="TFontDialogOption"/>
         </seealso>
       </element>
 
@@ -1826,17 +1827,18 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Maximum font size allowed in the font selection dialog.</short>
         <descr>
           <p>
-            <var>MaxFontSize</var> is an Integer property which contains the maximum font size allowed in the font selection dialog. Limiting font size selection to the range in <var>MinFontSize</var> and <var>MaxFontSize</var> must be enabled using the <var>Options</var> property.
+            <var>MaxFontSize</var> is an Integer property which contains the maximum font size allowed in the font selection dialog. Limiting font size selection to the range in <var>MinFontSize</var> and <var>MaxFontSize</var> must be enabled by including <var>fdLimitSize</var> in the <var>Options</var> property.
           </p>
         </descr>
         <seealso>
           <link id="TFontDialog.MinFontSize"/>
           <link id="TFontDialog.Options"/>
+          <link id="TFontDialogOption"/>
         </seealso>
       </element>
 
       <element name="TFontDialog.Options">
-        <short>A set of options available from TFontDialogOptions.</short>
+        <short>A set of TFontDialogOption options enabled for the dialog.</short>
         <descr>
           <p>
             <var>Options</var> is a <var>TFontDialogOptions</var> property which controls the options enabled for the font selection dialog. Options contains zero or more values from the <var>TFontDialogOption</var> enumeration. The default value for the property is <var>[fdEffects]</var>, and enables the font effects check boxes in the dialog.
@@ -1845,7 +1847,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             See <link id="TFontDialogOption">TFontDialogOption</link> for more information about the values in the enumeration and their usage.
           </p>
           <p>
-            Set (or Include and Exclude) values in the property prior to calling the Execute method.
+            Include or Exclude values for the property prior to calling the <var>Execute</var> method.
           </p>
         </descr>
         <seealso>
@@ -4342,7 +4344,7 @@ end;
       </element>
 
       <element name="TCustomCopyToClipboardDialog">
-        <short>Base class for a dialog form used for copy to clipboard operations.</short>
+        <short>Base class for a dialog form used during copy to clipboard operations.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4381,7 +4383,9 @@ end;
           Enables key preview and adds the OnKeyDown handler for the specified dialog.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomCopyToClipboardDialog.DoCreate"/>
+        </seealso>
       </element>
       <element name="RegisterDialogForCopyToClipboard.ADlg">
         <short>Dialog form instance updated in the routine.</short>
@@ -4416,7 +4420,7 @@ end;
       </element>
 
       <element name="cInputQueryEditSizePercents">
-        <short>Input Query Edit size in % of monitor width.</short>
+        <short>Input Query Edit size as a percentage of the monitor width.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4431,16 +4435,30 @@ end;
         <short>List of options available when selecting a directory.</short>
       </element>
       <element name="TSelectDirOpt.sdAllowCreate">
-        <short/>
+        <short>Allows a new directory to be created in a select directory dialog.</short>
       </element>
       <element name="TSelectDirOpt.sdPerformCreate">
-        <short/>
+        <short>
+          Indicates a directory that does not already exist should be created following execution of the dialog.
+        </short>
       </element>
       <element name="TSelectDirOpt.sdPrompt">
-        <short/>
+        <short>
+          Indicates the dialog should prompt the user for confirmation of the selected action.
+        </short>
       </element>
+
       <element name="TSelectDirOpts">
-        <short>Set type for directory selection options.</short>
+        <short>Set type used to store directory selection options.</short>
+        <descr>
+          <p>
+            <var>TSelectDirOpts</var> is a set type used to store zero or more values from the TSelectDirOpt enumeration. Values added to the set indicate the options enabled for a directory selection dialog. A TSelectDirOpts argument is passed to the <var>SelectDirectory</var> routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSelectDirOpt"/>
+          <link id="SelectDirectory"/>
+        </seealso>
       </element>
 
       <element name="TInputCloseQueryEvent">
@@ -4668,7 +4686,7 @@ end;
       </element>
       <element name="InputComboEx.Result">
         <short>
-          String with the item selected in the combo-box, or and empty string if the dialog is  cancelled.
+          String with the item selected in the combo-box, or an empty string if the dialog is cancelled.
         </short>
       </element>
       <element name="InputComboEx.ACaption">
