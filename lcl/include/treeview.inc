@@ -3277,6 +3277,7 @@ begin
   FDefItemSpace := ScaleY(2, 96);
   FExpandSignType := tvestTheme;
   FExpandSignSize := -1;
+  FExpandSignWidth := 2;
   Details := ThemeServices.GetElementDetails(ttGlyphOpened);
   FThemeExpandSignSize := ThemeServices.GetDetailSize(Details).cx;
   FTreeNodes := CreateNodes;
@@ -4697,6 +4698,13 @@ begin
   Invalidate;
 end;
 
+procedure TCustomTreeView.SetExpandSignWidth(const AValue: integer);
+begin
+  if FExpandSignWidth = AValue then Exit;
+  FExpandSignWidth := AValue;
+  Invalidate;
+end;
+
 function TCustomTreeView.IsEditing: Boolean;
 begin
   Result:=tvsIsEditing in FStates;
@@ -5173,6 +5181,43 @@ var
           if ExpandSignType = tvestArrowFill then
           begin
             Brush.Color := PrevColor;
+          end;
+        end;
+      tvestAngleBracket:
+        begin
+          // draw an arrow. down for collapse and right for expand
+          R := Rect(ALeft, ATop, ARight+1, ABottom+1); //+1 for simmetry of arrow
+          if CollapseSign then
+          begin
+            // draw an arrow down
+            Points[0] := Point(R.Left, MidY - cShiftHorzArrow);
+            Points[1] := Point(R.Right - 1, MidY - cShiftHorzArrow);
+            Points[2] := Point(MidX, R.Bottom - 1 - cShiftHorzArrow);
+          end else
+          begin
+            // draw an arrow right
+            Points[0] := Point(MidX - 2, ATop);
+            Points[1] := Point(MidX - 2, R.Bottom - 1);
+            Points[2] := Point(R.Right - 3, MidY);
+          end;
+
+          for SmallIndent := 1 to FExpandSignWidth do
+          begin
+            Line(Points[2], Points[0]);
+            Line(Points[2], Points[1]);
+
+            if CollapseSign then
+            begin
+              Dec(Points[0].Y);
+              Dec(Points[1].Y);
+              Dec(Points[2].Y);
+            end
+            else
+            begin
+              Dec(Points[0].X);
+              Dec(Points[1].X);
+              Dec(Points[2].X);
+            end;
           end;
         end;
       end;

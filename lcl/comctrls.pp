@@ -3318,10 +3318,11 @@ const
 
 type
   TTreeViewExpandSignType = (
-    tvestTheme,      // use themed sign
-    tvestPlusMinus,  // use +/- sign
-    tvestArrow,      // use blank arrow
-    tvestArrowFill   // use filled arrow
+    tvestTheme,       // use themed sign
+    tvestPlusMinus,   // use +/- sign
+    tvestArrow,       // use blank arrow
+    tvestArrowFill,   // use filled arrow
+    tvestAngleBracket // use > symbol
   );
 
   TTreeViewInsertMarkType = (
@@ -3340,6 +3341,7 @@ type
     FEditingItem: TTreeNode;
     FExpandSignType: TTreeViewExpandSignType;
     FExpandSignSize: integer;
+    FExpandSignWidth: integer;
     FThemeExpandSignSize: integer;
     FDefItemHeight: integer;
     FDefItemSpace: Integer;
@@ -3494,6 +3496,7 @@ type
     function AllowMultiSelectWithCtrl(AState: TShiftState): Boolean;
     function AllowMultiSelectWithShift(AState: TShiftState): Boolean;
     procedure SetExpandSignSize(const AExpandSignSize: integer);
+    procedure SetExpandSignWidth(const AValue: integer);
   protected
     FChangeTimer: TTimer;
     FEditor: TEdit;
@@ -3701,6 +3704,7 @@ type
     property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
     property ExpandSignSize: integer read GetExpandSignSize write SetExpandSignSize stored ExpandSignSizeIsStored;
+    property ExpandSignWidth: integer read FExpandSignWidth write SetExpandSignWidth default 2;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType default tvestTheme;
     property Images: TCustomImageList read FImages write SetImages;
