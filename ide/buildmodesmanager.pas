@@ -39,9 +39,9 @@ uses
   // IdeIntf
   IDEDialogs, CompOptsIntf, IDEOptionsIntf, LazIDEIntf, IDEImagesIntf,
   // IDE
-  MainBase, BasePkgManager, PackageDefs, Project, CompilerOptions, EnvironmentOpts,
-  TransferMacros, BaseBuildManager, Compiler_ModeMatrix, BuildModeDiffDlg,
-  GenericCheckList, IDEProcs, LazarusIDEStrConsts;
+  MainBase, MainBar, BasePkgManager, PackageDefs, Project, CompilerOptions,
+  EnvironmentOpts, TransferMacros, BaseBuildManager, Compiler_ModeMatrix,
+  BuildModeDiffDlg, GenericCheckList, IDEProcs, LazarusIDEStrConsts;
 
 type
 
@@ -358,6 +358,7 @@ begin
           ModeList.Add(md);
     end;
     try
+      MainIDEBar.itmProjectOptions.Enabled:=False;
       // Build first the active mode so we don't have to switch many times.
       if BuildActiveMode then
       begin
@@ -386,6 +387,7 @@ begin
       DebugLn('BuildManyModes: Switch back to ActiveMode');
       Project1.ActiveBuildMode := ActiveMode;
       PrepareForBuild;
+      MainIDEBar.itmProjectOptions.Enabled:=True;
       LazarusIDE.DoSaveProject([]);
       if Result then
         IDEMessageDialog(lisSuccess, Format(lisSelectedModesWereCompiled, [ModeCnt]),
