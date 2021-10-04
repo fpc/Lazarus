@@ -46,7 +46,7 @@
       </element>
       <element name="TNullValueBehaviour.nvbMinValue">
         <short>
-          Value becomes MinValue, and Text becomes Value.  Please note: This is the default behavior, as used  in Delphi.
+          Value becomes MinValue, and Text becomes Value.  Please note that this is the default behavior, as used in Delphi.
         </short>
       </element>
       <element name="TNullValueBehaviour.nvbMaxValue">
@@ -70,8 +70,8 @@
         <seealso>
           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit"/>
           <link id="TCustomFloatSpinEditEx"/>
-          <link id="TFloatSpinEditEx"/>
           <link id="TCustomSpinEditEx"/>
+          <link id="TFloatSpinEditEx"/>
           <link id="TSpinEditEx"/>
           <link id="IntroToSpinEx"/>
         </seealso>
@@ -129,10 +129,23 @@
 
       <element name="TSpinEditExBase.SpinUpDown">
         <short>Called when one of the buttons in the TUpDown control has been clicked.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SpinUpDown</var> ensures that the value in <var>Text</var> is a valid representation for the numeric type used in the control. It calls <var>GetLimitedValue</var> to ensure that <var>Value</var> is in the range specified in <var>MinValue</var> and <var>MaxValue</var>. MinValue is used if <var>TextIsNumber</var> returns False.
+          </p>
+          <p>
+            SpinUpDown sets the value in <var>Modified</var> to <b>True</b> when Value has been updated in the method.
+          </p>
+          <p>
+            Called when key or mouse events are handled in <var>EditKeyDown</var>, <var>EditMouseWheelDown</var>, and <var>EditMouseWheelUp</var>. It is also assigned as the handler routine for the <var>OnChangingEx</var> event in the <var>UpDown</var> property in the constructor for the class instance.
+          </p>
+        </descr>
         <seealso>
           <link id="TSpinEditExBase.UpDown"/>
-          <link id="TSpinEditExBase.Increment"/>
+          <link id="TSpinEditExBase.MinValue"/>
+          <link id="TSpinEditExBase.MaxValue"/>
+          <link id="TSpinEditExBase.GetLimitedValue"/>
+          <link id="TSpinEditExBase.TextIsNumber"/>
         </seealso>
       </element>
       <element name="TSpinEditExBase.SpinUpDown.Up">
@@ -369,14 +382,19 @@
       </element>
 
       <element name="TSpinEditExBase.EditChange">
-        <short>Signals the OnEditChange event handler for the Edit in the grouped edit control.</short>
+        <short>
+          Signals the OnChange event handler for the Edit in the grouped edit control.
+        </short>
         <descr>
           <p>
-            Calls the inherited method and performs no additional actions.
+            <var>EditChange</var> is an overridden method in <var>TSpinEditExBase</var>. It ensures that <var>Modified</var> is set to <b>True</b> when <var>Value</var> has been changed using the <var>UpDown</var> buttons, Up or Down cursor keys, or by scrolling the mouse wheel. EditChange calls the inherited method prior to exit to signal the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
         <seealso>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.UpDown"/>
           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditChange"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnChange"/>
         </seealso>
       </element>
 
@@ -384,7 +402,7 @@
         <short>Implements the KeyDown handler for the grouped edit control.</short>
         <descr>
           <p>
-            <var>EditKeyDown</var> is an overridden method in <var>TSpinEditExBase</var> which implements the <var>KeyDown</var> event handler for the <var>Edit</var> control. It calls the inherited method which signals the <var>OnEditKeyDown</var> event handler (when assigned). It also ensures that any keys explicitly handled in the grouped edit control are discarded by setting <var>Key</var> to <b>0</b> (<b>zero</b>). This includes the following virtual key codes and their associated actions:
+            <var>EditKeyDown</var> is an overridden method in <var>TSpinEditExBase</var> which implements the <var>KeyDown</var> event handler for the <var>Edit</var> control. It calls the inherited method which signals the <var>OnKeyDown</var> event handler (when assigned). It also ensures that any keys explicitly handled in the grouped edit control are discarded by setting <var>Key</var> to <b>0</b> (<b>zero</b>). This includes the following virtual key codes and their associated actions:
           </p>
           <dl>
             <dt>VK_Escape</dt>
@@ -1139,7 +1157,7 @@
             </dd>
           </dl>
           <p>
-            EditKeyPress calls the inherited method to signal the OnEditKeyPress event handler (when assigned).
+            EditKeyPress calls the inherited method to signal the OnKeyPress event handler (when assigned).
           </p>
           <p>
             Any character which is not allowed in the floating point value is set to #0 to discard the character value.
@@ -1150,7 +1168,7 @@
           <link id="TCustomFloatSpinEditEx.DecimalPlaces"/>
           <link id="TCustomFloatSpinEditEx.DecimalSeparator"/>
           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyPress"/>
-          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditKeyPress"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyPress"/>
         </seealso>
       </element>
       <element name="TCustomFloatSpinEditEx.EditKeyPress.Key">
@@ -1630,7 +1648,7 @@
         <short>Implements the handler for KeyPress events in the Edit for the control.</short>
         <descr>
           <p>
-            <var>EditKeyPress</var> is an overridden method in <var>TCustomSpinEditEx</var>, and calls the inherited method on entry. The <var>OnEditKeyPress</var> event handler is signalled (when assigned) by the inherited method.
+            <var>EditKeyPress</var> is an overridden method in <var>TCustomSpinEditEx</var>, and calls the inherited method on entry. The <var>OnKeyPress</var> event handler is signalled (when assigned) by the inherited method.
           </p>
           <p>
             EditKeyPress ensures that the value in <var>Key</var> is valid for the control. An invalid value is discarded by setting Key to the <b>#0</b> character (Decimal 0). Valid characters include numeric digits (<b>'0'..'9'</b>), the value in <var>ThousandSeparator</var>, and the negative sign indicator (<b>'-'</b>).
@@ -1644,7 +1662,7 @@
         </descr>
         <seealso>
           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyPress"/>
-          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnEditKeyPress"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.OnKeyPress"/>
           <link id="TCustomSpinEditEx.ThousandSeparator"/>
           <link id="TCustomSpinEditEx.MinValue"/>
         </seealso>
