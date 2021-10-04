@@ -2203,18 +2203,25 @@
       </element>
 
       <element name="TCustomComboBox.RealSetText">
-        <short>Adjusts ItemIndex for the new value in the edit box.</short>
+        <short>Updates ItemIndex when the new value for the control is updated.</short>
         <descr>
           <p>
-            If the text <var>AValue</var> occurs in the list of strings, then the value in <var>Itemindex</var> is updated. Otherwise,  the default action which is to store text as a string rather than performing read-write to a <var>PChar</var> buffer.
+            <var>RealSetText</var> is an overridden method in <var>TCustomComboBox</var>. It ensures that <var>ItemIndex</var> is updated with the ordinal position in <var>Items</var> where the <var>AValue</var> argument is found. If there are no values stored in Items, ItemIndex is set to <b>-1</b>. A visible emulated <var>TextHint</var> is hidden when AValue is not an empty string ('').
+          </p>
+          <p>
+            The inherited method is called prior to exit. This causes the widgetset class to be updated when its <var>Handle</var> is valid. The value in <var>Caption</var> is also updated, and a <b>CM_TEXTCHANGED</b> control message is performed for the control.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.controls.TControl.RealSetText">TControl.RealSetText</link>
+          <link id="TCustomComboBox.ItemIndex"/>
+          <link id="TCustomComboBox.Items"/>
+          <link id="TCustomComboBox.RealGetText"/>
+          <link id="#lcl.controls.TWinControl.RealSetText">TWinControl.RealSetText</link>
+          <link id="#lcl.controls.TWinControl.RealGetText">TWinControl.RealGetText</link>
         </seealso>
       </element>
       <element name="TCustomComboBox.RealSetText.AValue">
-        <short>The new value in the edit box.</short>
+        <short>The new value for the control.</short>
       </element>
 
       <element name="TCustomComboBox.KeyDown">
@@ -3152,7 +3159,7 @@
         </short>
         <descr>
           <p>
-            If text is selected in the edit box for the control, this is the starting position. When no text is selected, SelStart is the cursor position, and SelLength is 0 (zero).
+            If text is selected in the edit box for the control, this is the starting position. When no text is selected, SelStart is the cursor position and SelLength is 0 (zero).
           </p>
           <p>
             Writing a new value to the property moves the cursor, and removes the current text selection. Set SelLength after changing SelStart, to establish a new text selection.
@@ -3189,7 +3196,7 @@
           </p>
           <dl>
             <dt>csSimple</dt>
-            <dd>Displays an edit box with a static list (not a drop-down list).</dd>
+            <dd>Displays an edit box with an attached list (not a drop-down list).</dd>
             <dt>csDropDown</dt>
             <dd>Displays an edit box with a drop-down list.</dd>
             <dt>csDropDownList</dt>
@@ -3225,21 +3232,41 @@
         <short>The value in the edit box for the control.</short>
         <descr>
           <p>
-            Setting the value in Text selects a possibly matching item in the list. If an item is selected from the list, it replaces the contents of <var>Text</var>.
+            <var>Text</var> is a public property in <var>TCustomComboBox</var> and contains the <var>TCaption</var> value for the control. It is the value displayed in the edit box for the control.
           </p>
           <p>
-            Use the Style property to control the display and editing features enabled for the control.
+            Setting a new value for Text in program code causes the <var>RealSetText</var> method to be called. The new property value is located in the <var>Items</var> property, and the value in <var>ItemIndex</var> is updated with the ordinal position for the found value. A case-insensitive comparison is used to locate the value in Items. The value applied to Text retains the original case used in the new property value. ItemIndex is set to <b>-1</b> if a value is not located in Items that is a case-insensitive match the new property value.
           </p>
           <p>
-            Text completion can be enabled or disabled using the AutoComplete property.
+            At run-time, the value in Text can be updated using the edit box for the control when it is enabled for the selected <var>Style</var> (such as <var>csDropDown</var> and <var>csSimple</var>). When Style contains <var>csDropDownList</var>, the edit box is not displayed. But the button for the drop-down list handles the first character key pressed, and locates a value in Items when the button has focus.
+          </p>
+          <p>
+            <var>AutoComplete</var> enables or disables auto-completion for the value in Text. When set to <b>True</b>, the first item that matches the entered character(s) is located in Items and the value is highlighted in the drop-down list for the control. By default, a case-insensitive comparison is used to find the entered value. Case sensitivity can be enabled using <var>cbactSearchCaseSensitive</var> in the <var>AutoCompleteText</var> options, and requires the value in Items to be an exact case-sensitive match for the character(s) entered in the edit box. Text is updated to contain the complete value for the entry in Items. By default, the case for the value in Items is retained and applied to Text. Include <var>cbactRetainPrefixCase</var> in AutoCompleteText options to use the value as entered in the edit box in the Text property.
+          </p>
+          <p>
+            When the edit box loses input focus, ItemIndex is updated with the ordinal position in Items where the partial value was found. It is set to <b>-1</b> when a matching value could not be located in Items.
+          </p>
+          <p>
+            When AutoComplete is disabled (set to <b>False</b>), the entered value is still located located and highlighted in the drop-down list for Items. However, the value in Text is not expanded and the the value in ItemIndex is not updated. The item must be selected using the drop-down list to apply the value to Text and update the value in ItemIndex.
+          </p>
+          <p>
+            Use ItemIndex to select one of the Items by its ordinal position, and apply the value to the Text property.
           </p>
         </descr>
+        <notes>
+          <note>
+            A test application was used to verify the described functionality on the Windows platform. It has been attached to Issue #39413 to allow testing for other platforms / widgetsets.
+          </note>
+        </notes>
         <seealso>
-          <link id="TCustomComboBox.ReadOnly"/>
           <link id="TCustomComboBox.Style"/>
           <link id="TCustomComboBox.AutoComplete"/>
           <link id="TCustomComboBox.AutoCompleteText"/>
-          <link id="TCustomComboBox.Text"/>
+          <link id="TCustomComboBox.Items"/>
+          <link id="TCustomComboBox.ItemIndex"/>
+          <link id="TCustomComboBox.ReadOnly"/>
+          <link id="TComboBoxAutoCompleteText"/>
+          <link id="TComboBoxAutoCompleteTextOption"/>
         </seealso>
       </element>
 
