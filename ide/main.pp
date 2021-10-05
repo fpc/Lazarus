@@ -3506,7 +3506,7 @@ var
   IDECmd: TIDECommand;
   s: String;
 begin
-  //debugln('TMainIDE.OnProcessIDECommand ',dbgs(Command));
+  //DebugLn('TMainIDE.OnProcessIDECommand START ',dbgs(Command));
   Handled:=true;
 
   case Command of
@@ -3548,7 +3548,6 @@ begin
     if ToolStatus = itNone then begin
       if DebugBoss.InitDebugger([difInitForAttach]) then begin
         s := GetPidForAttach;
-
         if s <> '' then begin
           ToolStatus := itDebugger;
           DebugBoss.Attach(s);
@@ -3635,7 +3634,7 @@ begin
     // custom commands
     IDECmd:=IDECommandList.FindIDECommand(Command);
     //DebugLn('TMainIDE.OnProcessIDECommand Command=',dbgs(Command),' ',dbgs(IDECmd));
-    if IDECmd<>nil then
+    if Assigned(IDECmd) and IDECmd.Enabled then
       Handled:=IDECmd.Execute(IDECmd);
   end;
   //DebugLn('TMainIDE.OnProcessIDECommand Handled=',dbgs(Handled),' Command=',dbgs(Command));
