@@ -570,6 +570,7 @@ type
     FOnUpdateProc: TNotifyProcedure;
     FUsers: TIDESpecialCommands;
 
+    function GetEnabled: Boolean;
     function GetUser(Index: Integer): TIDESpecialCommand;
     function GetUserCount: Integer;
     procedure SetOnExecute(const aOnExecute: TNotifyEvent);
@@ -609,7 +610,7 @@ type
     procedure DoOnUpdate; overload;
     procedure DoOnUpdate(Sender: TObject); overload;
   public
-    property Enabled: Boolean write SetEnabled; // set Enabled of all "Users" TIDESpecialCommand, use Users to read
+    property Enabled: Boolean read GetEnabled write SetEnabled;
     property Caption: string write SetCaption; // set Caption of all "Users" TIDESpecialCommand, use Users to read
     property Hint: string write SetHint; // set Hint of all "Users" TIDESpecialCommand, use Users to read
     // don't add Visible property here - it is not generic. Tool buttons should never be hidden programmatically
@@ -1296,6 +1297,14 @@ end;
 function TIDECommand.GetUser(Index: Integer): TIDESpecialCommand;
 begin
   Result := FUsers[Index];
+end;
+
+function TIDECommand.GetEnabled: Boolean;
+begin
+  if FUsers.Count > 0 then
+    Result := FUsers[0].Enabled
+  else
+    Result := True;   // A command without SpecialCommands is enabled.
 end;
 
 function TIDECommand.GetUserCount: Integer;
