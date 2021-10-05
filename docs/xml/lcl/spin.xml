@@ -79,6 +79,11 @@
       <element name="TCustomFloatSpinEdit.FMinValue">
         <short>Stores the value for the MinValue property.</short>
       </element>
+      <element name="TCustomFloatSpinEdit.FForceModifiedIsFalseInOnChange">
+        <short>
+          Internal flag which controls the value for Modified in the OnChange event handler.
+        </short>
+      </element>
       <element name="TCustomFloatSpinEdit.FValue">
         <short>Stores the value for the Value property.</short>
       </element>
@@ -129,6 +134,24 @@
       </element>
 
       <element name="TCustomFloatSpinEdit.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
+
+      <element name="TCustomFloatSpinEdit.Change">
+        <short>
+          Updates Modified prior to sending control messages and signalling OnChange handler(s).
+        </short>
+        <descr>
+          <p>
+            <var>Change</var> is an overridden method in <var>TCustomFloatSpinEdit</var>. It ensures that the value in <var>Modified</var> is updated when the widgetset class applies a new value for the control. An internal flag is used to determine if Modified is set to <b>False</b> prior to calling the inherited Change method. The flag is set when a new value is applied to the Value property in program code (instead of using the UI elements for the control). This is performed here because the widgetset class calls Changed and not TextChanged.
+          </p>
+          <p>
+            Change calls the inherited method where the CM_CHANGED control message is posted,  and assigned OnChange handlers are signalled for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.stdctrls.TCustomEdit.Modified">TCustomEdit.Modified</link>
+          <link id="#lcl.stdctrls.TCustomEdit.Change">TCustomEdit.Change</link>
+        </seealso>
+      </element>
 
       <element name="TCustomFloatSpinEdit.RealGetText">
         <short>Gets the value for the text in the control.</short>
@@ -248,7 +271,7 @@
         <short>Performs actions when LCL component streaming is completed.</short>
         <descr>
           <p>
-            <var>Loaded</var> calls the inherited method on entry to determine the size for the control (and its children) and to apply property values inherited from the parent control (when assigned). Loaded calls <var>UpdateControl</var> when the internal update flag has been set for the control.
+            <var>Loaded</var> calls the inherited method on entry to determine the size for the control (and its children) and to apply property values inherited from the parent control (when assigned). Loaded calls the private <var>UpdateControl</var> method when the internal update flag has been set for the control.
           </p>
         </descr>
         <seealso>
@@ -438,19 +461,24 @@
         <short>The value for the spin edit control.</short>
         <descr>
           <p>
-            <var>Value</var> is a <var>Double</var> property which contains the value for the spin edit control. Value is synchronized to the value in the widgetset class when its <var>Handle</var> has been assigned. Otherwise, the value in the member variable is used for the property value.
+            <var>Value</var> is a <var>Double</var> property which contains the value for the spin edit control.  Its content can be modified using the UI elements for the control (up and down buttons, up and down cursor keys, edit box for the control). It can also be directly assigned in program code.
           </p>
           <p>
-            Changing the value for the property causes the <var>UpdateControl</var> method to be called. If the Handle for the widgetset class has been assigned, the new value is posted to the widgetset class by calling the <var>Change</var> method.
+            Changing the value for the property causes the <var>Text</var> for the control to be checked for a valid numeric representation in the property. If the new property value is the same as the existing value, no actions are performed.
           </p>
           <p>
-            Value is affected by the range limits defined in the <var>MinValue</var> and <var>MaxValue</var> properties.
+            When the property value has been stored, internal flags are set to ensure that <var>Modified</var> is updated accordingly and the private <var>UpdateControl</var> method is called. If the handle for the control has been allocated, the <var>Change</var> method is called to post a <b>CM_CHANGED</b> control message and signal <var>OnChange</var> handler(s) assigned for the control.
+          </p>
+          <p>
+            Value is constrained to the range defined in the <var>MinValue</var> and <var>MaxValue</var> properties.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomFloatSpinEdit.Change"/>
           <link id="TCustomFloatSpinEdit.MinValue"/>
           <link id="TCustomFloatSpinEdit.MaxValue"/>
           <link id="TCustomFloatSpinEdit.Increment"/>
+          <link id="#lcl.stdctrls.TCustomEdit.Modified">TCustomEdit.Modified</link>
         </seealso>
       </element>
 
