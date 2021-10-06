@@ -5399,7 +5399,7 @@ begin
   Result := IsValidDC(DC);
   if Result then
   begin
-    if (0 = 0) then // QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
+    if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
     begin
       GetMem(QtPointsF, NumPts * SizeOf(TQtPointF));
       for i := 0 to NumPts - 1 do
