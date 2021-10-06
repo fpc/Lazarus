@@ -637,6 +637,12 @@ begin
       end;
       {$ENDIF}
     end;
+
+    // issue #39158
+    if AWinControl.HandleObjectShouldBeVisible and
+      (TCustomForm(AWinControl).BorderStyle = bsNone) and
+      not Widget.IsMdiChild then
+        ConstraintsChange(AWinControl);
   end;
 
   Widget.setVisible(AWinControl.HandleObjectShouldBeVisible);
