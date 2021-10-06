@@ -5106,7 +5106,10 @@ begin
   LastPos := Point(X, Y);
   if TQtDeviceContext(DC).pen.getCosmetic then
     LastPos := TQtDeviceContext(DC).GetLineLastPixelPos(PenPos, LastPos);
-  TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
+  if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
+    TQtDeviceContext(DC).drawLineF(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y)
+  else
+    TQtDeviceContext(DC).drawLine(PenPos.X, PenPos.Y, LastPos.X, LastPos.Y);
   MoveToEx(DC, X, Y, nil);
 
   Result := True;
@@ -5515,7 +5518,10 @@ begin
     (QPaintEngine_type(TQtDeviceContext(DC).PaintEngine) = QPaintEngineRaster) and
     QPen_isCosmetic(QPainter_pen(TQtDeviceContext(DC).Widget));
 
-  TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1, B);
+  if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
+    TQtDeviceContext(DC).drawRectF(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1)
+  else
+    TQtDeviceContext(DC).drawRect(R.Left, R.Top, R.Right - R.Left - 1, R.Bottom - R.Top - 1, B);
   Result := True;
 end;
 

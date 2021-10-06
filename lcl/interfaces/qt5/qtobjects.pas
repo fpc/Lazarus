@@ -425,10 +425,12 @@ type
     
     procedure drawPoint(x1: Integer; y1: Integer);
     procedure drawRect(x1: Integer; y1: Integer; w: Integer; h: Integer);
+    procedure drawRectF(x1: double; y1: double; w: double; h: double);
     procedure drawRoundRect(x, y, w, h, rx, ry: Integer);
     procedure drawText(x: Integer; y: Integer; s: PWideString); overload;
     procedure drawText(x,y,w,h,flags: Integer; s:PWideString); overload;
     procedure drawLine(x1: Integer; y1: Integer; x2: Integer; y2: Integer);
+    procedure drawLineF(x1: double; y1: double; x2: double; y2: double);
     procedure drawEllipse(x: Integer; y: Integer; w: Integer; h: Integer);
     procedure drawPixmap(p: PQtPoint; pm: QPixmapH; sr: PRect);
     procedure drawPolyLine(P: PPoint; NumPts: Integer);
@@ -2786,6 +2788,16 @@ begin
   QPainter_drawRect(Widget, x1, y1, w, h);
 end;
 
+procedure TQtDeviceContext.drawRectF(x1: double; y1: double; w: double;
+  h: double);
+var
+  R: QRectFH;
+begin
+  R := QRectF_Create(x1 + 0.5, y1 + 0.5, w, h);
+  QPainter_drawRect(Widget, R);
+  QRectF_Destroy(R);
+end;
+
 procedure TQtDeviceContext.drawRoundRect(x, y, w, h, rx, ry: Integer);
 begin
   QPainter_drawRoundedRect(Widget, x, y, w, h, rx, ry);
@@ -2898,6 +2910,18 @@ begin
   Write('TQtDeviceContext.drawLine x1: ', X1, ' Y1: ', Y1,' x2: ',x2,' y2: ',y2);
   {$endif}
   QPainter_drawLine(Widget, x1, y1, x2, y2);
+end;
+
+procedure TQtDeviceContext.drawLineF(x1: double; y1: double; x2: double;
+  y2: double);
+var
+  APt1, APt2: TQtPointF;
+begin
+  APt1.x := x1 + 0.5;
+  APt1.y := y1 + 0.5;
+  APt2.x := x2 + 0.5;
+  APt2.y := y2 + 0.5;
+  QPainter_drawLine(Widget, PQtPointF(@APt1), PQtPointF(@APt2));
 end;
 
 {------------------------------------------------------------------------------
