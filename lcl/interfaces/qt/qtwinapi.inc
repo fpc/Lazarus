@@ -1508,11 +1508,18 @@ end;
 function TQtWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
 var
   R: TRect;
+  APenWidthF: QReal;
+  ARectF: QRectFH;
 begin
   if not IsValidDC(DC) then Exit(False);
   R := NormalizeRect(Rect(X1, Y1, X2, Y2));
   if IsRectEmpty(R) then Exit(True);
-  TQtDeviceContext(DC).drawEllipse(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+  APenWidthF := QPen_widthF(QPainter_pen(TQtDeviceContext(DC).Widget));
+  if APenWidthF = 0 then
+    APenWidthF := 1;
+  ARectF := QRectF_Create(R.Left + (APenWidthF / 2), R.Top + (APenWidthF / 2), R.Right - R.Left - (APenWidthF / 2), R.Bottom - R.Top - (APenWidthF / 2));
+  QPainter_drawEllipse(TQtDeviceContext(DC).Widget, ARectF);
+  QRectF_destroy(ARectF);
   Result := True;
 end;
 
@@ -5440,14 +5447,27 @@ begin
   Result := IsValidDC(DC);
   if Result then
   begin
-    GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
-    for i := 0 to NumPts - 1 do
-      QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
-    if Winding then
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
-    else
-      QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
-    FreeMem(QtPoints);
+    if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
+    begin
+      GetMem(QtPointsF, NumPts * SizeOf(TQtPointF));
+      for i := 0 to NumPts - 1 do
+        QtPointsF[i] := QtPointF(QReal(Points[i].x) + 0.5, QReal(Points[i].y) + 0.5);
+      if Winding then
+        QPainter_drawPolygon(TQtDeviceContext(DC).Widget, PQtPointF(QtPointsF), NumPts, QtWindingFill)
+      else
+        QPainter_drawPolygon(TQtDeviceContext(DC).Widget, PQtPointF(QtPointsF), NumPts, QtOddEvenFill);
+      FreeMem(QtPointsF);
+    end else
+    begin
+      GetMem(QtPoints, NumPts * SizeOf(TQtPoint));
+      for i := 0 to NumPts - 1 do
+        QtPoints[i] := QtPoint(Points[i].x, Points[i].y);
+      if Winding then
+        QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtWindingFill)
+      else
+        QPainter_drawPolygon(TQtDeviceContext(DC).Widget, QtPoints, NumPts, QtOddEvenFill);
+      FreeMem(QtPoints);
+    end;
   end;
 end;
 
