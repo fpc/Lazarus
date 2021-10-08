@@ -22,7 +22,7 @@ interface
 
 uses
   // RTL
-  Classes, Types, glib2, gdk2, gtk2,
+  Classes, Types, glib2, gdk2, gtk2, math,
   // LazUtils
   LazTracer,
   // LCL
@@ -572,21 +572,20 @@ procedure GtkWS_Popup(menu: PGtkMenu; X, Y: pgint; {%H-}push_in: pgboolean;
 var
   Requisition: TGtkRequisition;
   Alignment: TPopupAlignment;
-  ScreenHeight: gint;
+  MonitorNum: gint;
+  MonitorRect: TGdkRectangle;
 begin
   X^ := PPoint(WidgetInfo^.UserData)^.X;
   Y^ := PPoint(WidgetInfo^.UserData)^.Y;
 
   if WidgetInfo^.LCLObject is TPopupMenu then
   begin
-    // make menu to fit the screen vertically
     gtk_widget_size_request(PGtkWidget(menu), @Requisition);
-    ScreenHeight := gdk_screen_height();
-    if Y^ + Requisition.height > ScreenHeight then
-    begin
-      Y^ := ScreenHeight - Requisition.height;
-      if Y^ < 0 then Y^ := 0;
-    end;
+
+    // make menu to fit the monitor vertically
+    MonitorNum := gdk_screen_get_monitor_at_point(gdk_screen_get_default, X^, Y^);
+    gdk_screen_get_monitor_geometry(gdk_screen_get_default, MonitorNum, @MonitorRect);
+    Y^ := Max(MonitorRect.y, Min(Y^, MonitorRect.y + MonitorRect.height - Requisition.height));
 
     // get actual alignment
     Alignment := TPopupMenu(WidgetInfo^.LCLObject).Alignment;
