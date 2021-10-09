@@ -5,8 +5,15 @@ unit MouseActionDialog;
 interface
 
 uses
-  Classes, Forms, Controls, ExtCtrls, StdCtrls, ButtonPanel, Spin, CheckLst,
-  SynEditMouseCmds, LazarusIDEStrConsts, KeyMapping, IDECommands, types, EnvironmentOpts;
+  Classes, Types,
+  // LCL
+  Controls, Forms, ExtCtrls, StdCtrls, ButtonPanel, Spin, CheckLst,
+  // SynEdit
+  SynEditMouseCmds,
+  // IdeIntf
+  IDECommands,
+  // IDE
+  LazarusIDEStrConsts, KeyMapping, EnvironmentOpts;
 
 var
   ButtonName: Array [TSynMouseButton] of String;

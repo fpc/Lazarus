@@ -35,10 +35,14 @@ uses
   // LCL
   LCLProc, Controls, Forms,
   RegisterLCL,  // register LCLBase
+  // LazControls
+  LazControls,
+  // IdeIntf
+  ObjectInspector, FormEditingIntf, IDECommands,
   // IDE
-  ObjectInspector, Designer, IDECommands, FormEditingIntf, CustomFormEditor,
+  Designer, CustomFormEditor,
   // register IDE base packages
-  LazarusPackageIntf, PkgRegisterBase, allsynedit, LazControls;
+  LazarusPackageIntf, PkgRegisterBase, allsynedit;
 
 type
 

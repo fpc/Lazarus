@@ -31,11 +31,13 @@ uses
   Clipbrd, EditBtn, ExtCtrls,
   // LazControls
   TreeFilterEdit,
+  // BuildIntf
+  IDEOptionsIntf,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf, IDEImagesIntf, SrcEditorIntf,
+  IDEOptEditorIntf, IDEImagesIntf, SrcEditorIntf, IDECommands,
   // IDE
   EditorOptions, LazarusIDEStrConsts, editor_general_options,
-  KeymapSchemeDlg, KeyMapping, IDECommands, KeyMapShortCutDlg;
+  KeymapSchemeDlg, KeyMapping, KeyMapShortCutDlg;
 
 type
 

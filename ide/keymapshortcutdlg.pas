@@ -31,10 +31,15 @@ unit KeyMapShortCutDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs,
-  ExtCtrls, StdCtrls, LCLType,
+  Classes, SysUtils,
+  // LCL
+  LCLType, Forms, Controls, Graphics, Dialogs, ExtCtrls, StdCtrls, Buttons, ButtonPanel,
+  // LazUtils
+  LazLoggerBase,
+  // IdeIntf
   PropEdits, IDECommands, IDEWindowIntf, IDEDialogs,
-  KeyMapping, LazarusIDEStrConsts, Buttons, ButtonPanel;
+  // IDE
+  KeyMapping, LazarusIDEStrConsts;
 
 type
 
