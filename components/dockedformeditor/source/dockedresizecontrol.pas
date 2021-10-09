@@ -314,7 +314,7 @@ begin
   FResizing := True;
   BeginFormSizeUpdate(Sender);
 
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   SetCapture(TWinControl(Sender).Handle);
   {$ENDIF}
   GetCursorPos(FOldMousePos);
@@ -346,7 +346,7 @@ begin
   ClientChangeBounds(nil);
 
   Screen.Cursor := crDefault;
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   ReleaseCapture;
   {$ENDIF}
 

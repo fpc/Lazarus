@@ -149,7 +149,7 @@ begin
   if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
   GetCursorPos(FMousePos);
   Include(FState, asMouseDown);
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   SetCapture(TWinControl(Sender).Handle);
   {$ENDIF}
 end;
@@ -227,7 +227,7 @@ begin
   UndoAdd;
 
   Screen.Cursor := crDefault;
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   ReleaseCapture;
   {$ENDIF}
 
@@ -257,7 +257,7 @@ begin
   if not (Shift = [ssLeft]) and not (Shift = [ssCtrl, ssLeft]) then Exit;
   GetCursorPos(FMousePos);
   Include(FState, asMouseDown);
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   SetCapture(TWinControl(Sender).Handle);
   {$ENDIF}
 end;
@@ -371,7 +371,7 @@ begin
   UndoAdd;
 
   Screen.Cursor := crDefault;
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   ReleaseCapture;
   {$ENDIF}
 
@@ -1011,7 +1011,7 @@ begin
     FreeAndNil(FPreviousControl);
   end;
   Screen.Cursor := crDefault;
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   if asMouseDown in State then
     ReleaseCapture;
   {$ENDIF}
