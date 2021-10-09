@@ -9834,7 +9834,7 @@ end;
 {$IFDEF Delphi6UP}
   {$if defined(cpu86)}
     {$include x86.inc}
-  {$elseif defined(cpupowerpc)}
+  {$elseif defined(cpupowerpc) and defined(cpu32) and defined(darwin)}
     {$include powerpc.inc}
   {$elseif defined(cpuarm)}
     {$include arm.inc}
