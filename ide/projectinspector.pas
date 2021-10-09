@@ -70,7 +70,7 @@ uses
   // IDEIntf
   IDEHelpIntf, IDECommands, IDEDialogs, IDEImagesIntf, LazIDEIntf, ToolBarIntf,
   // IDE
-  LazarusIDEStrConsts, MainBase, IDEProcs, DialogProcs, IDEOptionDefs, Project,
+  LazarusIDEStrConsts, MainBase, MainBar, IDEProcs, DialogProcs, IDEOptionDefs, Project,
   InputHistory, TransferMacros, EnvironmentOpts, BuildManager, BasePkgManager,
   ProjPackChecks, ProjPackEditing, ProjPackFilePropGui, PackageDefs,
   AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, LResources;
@@ -158,7 +158,6 @@ type
     FOnReAddDependency: TAddProjInspDepEvent;
     FOnRemoveDependency: TRemoveProjInspDepEvent;
     FOnRemoveFile: TRemoveProjInspFileEvent;
-    FOnShowOptions: TNotifyEvent;
     FShowDirectoryHierarchy: boolean;
     FSortAlphabetically: boolean;
     FUpdateLock: integer;
@@ -236,7 +235,6 @@ type
     function TVNodeRequiredPackages: TTreeNode;
   public
     property LazProject: TProject read FLazProject write SetLazProject;
-    property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnAddUnitToProject: TOnAddUnitToProject read FOnAddUnitToProject
                                                      write FOnAddUnitToProject;
     property OnAddDependency: TAddProjInspDepEvent
@@ -976,7 +974,7 @@ end;
 
 procedure TProjectInspectorForm.OptionsBitBtnClick(Sender: TObject);
 begin
-  if Assigned(OnShowOptions) then OnShowOptions(Self);
+  MainIDEBar.itmProjectOptions.DoOnClick;
 end;
 
 procedure TProjectInspectorForm.HelpBitBtnClick(Sender: TObject);

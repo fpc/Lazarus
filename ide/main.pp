@@ -4415,7 +4415,9 @@ procedure TMainIDE.ProjectOptionsHelper(const AFilter: array of TAbstractIDEOpti
 var
   Capt: String;
 begin
-  if Project1=nil then exit;
+  // This is not called only through ecProjectOptions command. Test for Enabled.
+  if (Project1=nil) or not MainIDEBar.itmProjectOptions.Enabled then exit;
+
   // This is kind of a hack. Copy OtherDefines from project to current
   //  buildmode's compiler options and then back after they are modified.
   // Only needed for projects, because packages don't have buildmodes.
@@ -6541,7 +6543,6 @@ begin
   if ProjInspector=nil then begin
     IDEWindowCreators.CreateForm(ProjInspector,TProjectInspectorForm,
        State=iwgfDisabled,LazarusIDE.OwningComponent);
-    ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
     ProjInspector.OnAddDependency:=@PkgBoss.ProjectInspectorAddDependency;
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
