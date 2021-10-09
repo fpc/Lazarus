@@ -78,6 +78,7 @@ else
   echo "extracting lazarus from local svn ..."
   LazSrcDir=$(pwd | sed -e 's#/tools/install.*$##')
   #Revision=$(svnversion $LazSrcDir) - comment this out as svn no longer works
+  Revision=$(git -C $LazSrcDir describe --always --first-parent)
   cd $TmpDir
   cp -a $LazSrcDir $TmpLazDir #can't use svn export anymore
   cd -

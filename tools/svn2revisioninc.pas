@@ -734,7 +734,7 @@ function TSvn2RevisionApplication.GitDescribeCommit(KeepRevStr: Boolean
 var
   s: string;
 begin
-  Result := RunCommand('git', ['describe', '--always'], s);
+  Result := RunCommand('git', ['describe', '--always', '--first-parent'], s);
   if not Result then
     exit;
 

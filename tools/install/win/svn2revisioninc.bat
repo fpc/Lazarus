@@ -1,4 +1,4 @@
-%GIT% -C %1 describe --always  > gitinfo.txt
+%GIT% -C %1 describe --always --first-parent  > gitinfo.txt
 
 set /P SVNINFO=<gitinfo.txt
 
