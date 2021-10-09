@@ -870,7 +870,7 @@ begin
       and (ShowConsole=Source.ShowConsole)
       and (HideWindow=Source.HideWindow)
       and (ResolveMacros=Source.ResolveMacros)
-      and CompareMethods(TMethod(CustomMacroFunction),TMethod(Source.CustomMacroFunction))
+      and SameMethod(TMethod(CustomMacroFunction),TMethod(Source.CustomMacroFunction))
       and (Quiet=Source.Quiet);
   end else
     Result:=inherited Equals(Obj);

@@ -64,18 +64,25 @@ type
     property AllowDuplicates: boolean read FAllowDuplicates write SetAllowDuplicates; // default false, changed in Lazarus 1.3
   end;
 
+function SameMethod(const m1, m2: TMethod): boolean; inline;
 function CompareMethods(const m1, m2: TMethod): boolean; inline;
+    deprecated 'Use SameMethod instead.'; // In 2.3 October 2021. Remove in 2.5.
 
 
 implementation
 
-function CompareMethods(const m1, m2: TMethod): boolean;
+function SameMethod(const m1, m2: TMethod): boolean;
 begin
 {$PUSH}  {$BOOLEVAL ON}
 // With a full evaluation of the boolean expression the generated code will not
 // contain conditional statements, which is more efficient on modern processors
   Result:=(m1.Code=m2.Code) and (m1.Data=m2.Data);
 {$POP}
+end;
+
+function CompareMethods(const m1, m2: TMethod): boolean;
+begin
+  Result := SameMethod(m1, m2);
 end;
 
 { TMethodList.TItemsEnumerator }
@@ -140,7 +147,7 @@ begin
       j:=i+1;
       while j<FCount do
       begin
-        if CompareMethods(FItems[i], FItems[j]) then
+        if SameMethod(FItems[i], FItems[j]) then
           Delete(j)
         else
           inc(j);
@@ -212,7 +219,7 @@ begin
   if Self<>nil then begin
     Result:=FCount-1;
     while Result>=0 do begin
-      if CompareMethods(FItems[Result], AMethod) then
+      if SameMethod(FItems[Result], AMethod) then
         Exit;
       dec(Result);
     end;

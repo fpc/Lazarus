@@ -136,15 +136,6 @@ function CompareRect(R1, R2: PRect): Boolean;
 function ComparePoints(const p1, p2: TPoint): integer;
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 
-// Deprecated in 2.1 / 12.12.2020 / Remove in 2.3
-function CompareMethods(m1, m2: TMethod): boolean; deprecated 'Use LazMethodList.CompareMethods';
-function ComparePointers(p1, p2: Pointer): integer; deprecated 'Use LazUtilities.ComparePointers';
-function RoundToInt(e: Extended): integer; deprecated 'Use LazUtilities.RoundToInt';
-function RoundToCardinal(e: Extended): cardinal; deprecated 'Use LazUtilities.RoundToCardinal';
-function TruncToInt(e: Extended): integer; deprecated 'Use LazUtilities.TruncToInt';
-function TruncToCardinal(e: Extended): cardinal; deprecated 'Use LazUtilities.TruncToCardinal';
-function StrToDouble(const s: string): double; deprecated 'Use LazUtilities.StrToDouble';
-
 // Call debugging procedure in LazLoggerBase.
 procedure RaiseGDBException(const Msg: string); inline;
 
@@ -1083,41 +1074,6 @@ begin
     Result:=-1
   else
     Result:=0;
-end;
-
-function CompareMethods(m1, m2: TMethod): boolean;
-begin
-  Result:=LazMethodList.CompareMethods(m1, m2);
-end;
-
-function ComparePointers(p1, p2: Pointer): integer;
-begin
-  Result:=LazUtilities.ComparePointers(p1, p2);
-end;
-
-function RoundToInt(e: Extended): integer;
-begin
-  Result:=LazUtilities.RoundToInt(e);
-end;
-
-function RoundToCardinal(e: Extended): cardinal;
-begin
-  Result:=LazUtilities.RoundToCardinal(e);
-end;
-
-function TruncToInt(e: Extended): integer;
-begin
-  Result:=LazUtilities.TruncToInt(e);
-end;
-
-function TruncToCardinal(e: Extended): cardinal;
-begin
-  Result:=LazUtilities.TruncToCardinal(e);
-end;
-
-function StrToDouble(const s: string): double;
-begin
-  Result:=LazUtilities.StrToDouble(s);
 end;
 
 procedure MergeSort(List: TFPList; const OnCompare: TListSortCompare);

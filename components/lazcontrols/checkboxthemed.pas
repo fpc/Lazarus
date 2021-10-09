@@ -471,7 +471,7 @@ begin
     if not CheckFromAction then begin
       if Assigned(OnClick) then
         if not (Assigned(Action) and
-          CompareMethods(TMethod(Action.OnExecute), TMethod(OnClick)))
+          SameMethod(TMethod(Action.OnExecute), TMethod(OnClick)))
           then OnClick(self);
       if (Action is TCustomAction) and
         (TCustomAction(Action).Checked <> (AValue = cbChecked))

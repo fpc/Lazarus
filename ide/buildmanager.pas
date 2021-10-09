@@ -372,7 +372,8 @@ begin
   FreeAndNil(InputHistories);
   FreeAndNil(DefaultCfgVars);
 
-  if CompareMethods(TMethod(CodeToolBoss.OnRescanFPCDirectoryCache), TMethod(@DoOnRescanFPCDirectoryCache)) then
+  if SameMethod(TMethod(CodeToolBoss.OnRescanFPCDirectoryCache),
+                TMethod(@DoOnRescanFPCDirectoryCache)) then
     CodeToolBoss.OnRescanFPCDirectoryCache:=nil;
 
   inherited Destroy;

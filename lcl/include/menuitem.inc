@@ -57,7 +57,7 @@ procedure TMenuItem.Click;
     if Action=nil then exit;
     if not Assigned(Action.OnExecute) then exit;
     if not Assigned(FOnClick) then exit;
-    Result:=CompareMethods(TMethod(FOnClick),TMethod(Action.OnExecute));
+    Result:=SameMethod(TMethod(FOnClick),TMethod(Action.OnExecute));
   end;
 
 var

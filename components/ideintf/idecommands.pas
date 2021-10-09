@@ -1324,7 +1324,7 @@ procedure TIDECommand.SetOnExecute(const aOnExecute: TNotifyEvent);
 var
   xUser: TIDESpecialCommand;
 begin
-  if CompareMethods(TMethod(FOnExecute), TMethod(aOnExecute)) then Exit;
+  if SameMethod(TMethod(FOnExecute), TMethod(aOnExecute)) then Exit;
   FOnExecute := aOnExecute;
   for xUser in FUsers do
     if xUser.SyncProperties then
@@ -1822,7 +1822,7 @@ end;
 
 procedure TIDESpecialCommand.SetOnClickMethod(const aOnClick: TNotifyEvent);
 begin
-  if CompareMethods(TMethod(FOnClickMethod), TMethod(aOnClick)) then Exit;
+  if SameMethod(TMethod(FOnClickMethod), TMethod(aOnClick)) then Exit;
   FOnClickMethod := aOnClick;
   if (FCommand<>nil) and SyncAvailable then
     FCommand.OnExecute:=aOnClick;

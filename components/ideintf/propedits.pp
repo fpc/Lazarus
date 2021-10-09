@@ -3428,7 +3428,7 @@ begin
         begin
           OldMethod:=GetMethodProp(InstProp.Instance,InstProp.PropInfo);
           NewMethod:=GetMethodProp(AncestorInstProp.Instance,AncestorInstProp.PropInfo);
-          if CompareMethods(OldMethod,NewMethod) then continue;
+          if SameMethod(OldMethod,NewMethod) then continue;
           Changed:=true;
           SetMethodProp(InstProp.Instance,InstProp.PropInfo,NewMethod);
         end;

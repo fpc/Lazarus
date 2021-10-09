@@ -4432,8 +4432,8 @@ begin
     Project1.DefineTemplates.AllChanged(false);
     IncreaseBuildMacroChangeStamp;
     MainBuildBoss.SetBuildTargetProject1(false);
-    MainIDE.UpdateCaption;
-    MainIDE.UpdateDefineTemplates;
+    UpdateCaption;
+    UpdateDefineTemplates;
   end;
 end;
 
@@ -4640,7 +4640,7 @@ end;
 
 procedure TMainIDE.mnuStopProjectClicked(Sender: TObject);
 begin
-  if (MainIDE.ToolStatus = itBuilder) then
+  if (ToolStatus = itBuilder) then
     mnuAbortBuildProjectClicked(Sender)
   else
     DebugBoss.DoStopProject;
