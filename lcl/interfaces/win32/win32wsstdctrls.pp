@@ -1290,6 +1290,7 @@ begin
   // SendMessage(ACustomComboBox.Handle, CB_SETITEMHEIGHT, AItemHeight, 0);
   RecreateWnd(ACustomComboBox);
 end;
+
 { TWin32WSCustomEdit helper functions }
 
 function EditGetSelStart(WinHandle: HWND): integer;

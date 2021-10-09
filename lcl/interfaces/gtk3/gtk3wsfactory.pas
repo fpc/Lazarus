@@ -112,6 +112,9 @@ function RegisterCustomRubberBand: Boolean;
 // ShellCtrls
 function RegisterCustomShellTreeView: Boolean;
 function RegisterCustomShellListView: Boolean;
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean;
+function RegisterCustomCheckCombo: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -633,6 +636,18 @@ begin
   Result := False;
 end;
 
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean; alias : 'WSRegisterCustomComboBoxEx';
+begin
+  Result := False;
+end;
+
+function RegisterCustomCheckCombo: Boolean; alias : 'WSRegisterCustomCheckCombo';
+begin
+  Result := False;
+end;
+
+// LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
 begin
   //RegisterWSLazDeviceAPIs(TCDWSLazDeviceAPIs);

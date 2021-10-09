@@ -95,6 +95,9 @@ type
     
     class function GetItemHeight(const ACustomComboBox: TCustomComboBox): Integer; virtual;
     class procedure SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer); virtual;
+
+    class function GetFocusedEditableMainItemNoDD(const ACustomCombobox: TCustomCombobox;
+       AMainItem, ADroppedDown: Boolean): boolean; virtual;
   end;
   TWSCustomComboBoxClass = class of TWSCustomComboBox;
 
@@ -525,6 +528,12 @@ end;
 
 class procedure TWSCustomComboBox.SetItemHeight(const ACustomComboBox: TCustomComboBox; const AItemHeight: Integer);
 begin
+end;
+
+class function TWSCustomComboBox.GetFocusedEditableMainItemNoDD(
+  const ACustomCombobox: TCustomCombobox; AMainItem, ADroppedDown: Boolean): boolean;
+begin
+  Result := false;
 end;
 
 { TWSCustomEdit }

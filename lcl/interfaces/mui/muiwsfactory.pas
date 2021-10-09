@@ -100,7 +100,11 @@ function RegisterCustomPairSplitter: Boolean;
 function RegisterCustomFloatSpinEdit: Boolean;
 function RegisterCustomRubberBand: Boolean;
 // ShellCtrls
+function RegisterCustomShellListView: Boolean;
 function RegisterCustomShellTreeView: Boolean;
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean;
+function RegisterCustomCheckCombo: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -535,7 +539,24 @@ begin
   Result := False;
 end;
 
+// ShellCtrls
+function RegisterCustomShellListView: Boolean; alias : 'WSRegisterCustomShellListView';
+begin
+  Result := False;
+end;
+
 function RegisterCustomShellTreeView: Boolean; alias : 'WSRegisterCustomShellTreeView';
+begin
+  Result := False;
+end;
+
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean; alias : 'WSRegisterCustomComboBoxEx';
+begin
+  Result := False;
+end;
+
+function RegisterCustomCheckCombo: Boolean; alias : 'WSRegisterCustomCheckCombo';
 begin
   Result := False;
 end;

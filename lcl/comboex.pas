@@ -157,6 +157,7 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; override;
     procedure SetItemHeight(const AValue: Integer); override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -310,6 +311,7 @@ type
     procedure SetItemHeight(const AValue: Integer); override;
     procedure SetItems(const Value: TStrings); override;
     procedure Select; override;
+    class procedure WSRegisterClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -400,6 +402,9 @@ type
 procedure Register;
 
 implementation
+
+uses
+  WSControls, WSComboEx;
 
 {$include comboex.inc}
 

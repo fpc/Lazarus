@@ -192,6 +192,7 @@ begin
     t.Dependencies.AddUnit('win32wsbuttons');
     t.Dependencies.AddUnit('win32wscalendar');
     t.Dependencies.AddUnit('win32wschecklst');
+    t.Dependencies.AddUnit('win32wscomboex');
     t.Dependencies.AddUnit('win32wscomctrls');
     t.Dependencies.AddUnit('win32wscontrols');
     t.Dependencies.AddUnit('win32wsdialogs');
@@ -216,6 +217,7 @@ begin
     t.Dependencies.AddUnit('wincewsbuttons');
     t.Dependencies.AddUnit('wincewscalendar');
     t.Dependencies.AddUnit('wincewschecklst');
+    t.Dependencies.AddUnit('wincewscomboex');
     t.Dependencies.AddUnit('wincewscomctrls');
     t.Dependencies.AddUnit('wincewscontrols');
     t.Dependencies.AddUnit('wincewsdialogs');
@@ -524,6 +526,7 @@ begin
     P.Targets.AddImplicitUnit('win32/win32wsbuttons.pp');
     P.Targets.AddImplicitUnit('win32/win32wscalendar.pp');
     P.Targets.AddImplicitUnit('win32/win32wschecklst.pp');
+    P.Targets.AddImplicitUnit('win32/win32wscomboex.pp');
     P.Targets.AddImplicitUnit('win32/win32wscomctrls.pp');
     P.Targets.AddImplicitUnit('win32/win32wscontrols.pp');
     P.Targets.AddImplicitUnit('win32/win32wsdialogs.pp');
@@ -548,6 +551,7 @@ begin
     P.Targets.AddImplicitUnit('wince/wincewsbuttons.pp');
     P.Targets.AddImplicitUnit('wince/wincewscalendar.pp');
     P.Targets.AddImplicitUnit('wince/wincewschecklst.pp');
+    P.Targets.AddImplicitUnit('wince/wincewscomboex.pp');
     P.Targets.AddImplicitUnit('wince/wincewscomctrls.pp');
     P.Targets.AddImplicitUnit('wince/wincewscontrols.pp');
     P.Targets.AddImplicitUnit('wince/wincewsdialogs.pp');

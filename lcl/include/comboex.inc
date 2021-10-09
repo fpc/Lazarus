@@ -359,11 +359,8 @@ begin  { do not call inherited ! }
   aDropped:=DroppedDown;
   aEnabled:=IsEnabled;
   aMainItem:= (ARect.Left>0);
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
-  aFocusedEditableMainItemNoDD := (Focused and aMainItem and not aDropped);
-  {$ELSE}
-  aFocusedEditableMainItemNoDD := False;
-  {$ENDIF}
+  aFocusedEditableMainItemNoDD := TWSCustomComboBoxExClass(WidgetSetClass).GetFocusedEditableMainItemNoDD(
+    Self, aMainItem, aDropped);
   if aDropped and not aMainItem or aFocusedEditableMainItemNoDD then
     begin
       if not (odSelected in State) then Canvas.Brush.Color:=clWindow;
@@ -456,6 +453,13 @@ begin
   inherited SetItemHeight(AValue);
   FNeedMeasure:=True;
 end;
+
+class procedure TCustomComboBoxEx.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomComboBoxEx;
+end;
+
 
 { TCustomComboBoxEx.Setters }
 
@@ -608,11 +612,8 @@ begin  { do not call inherited ! }
   aEnabled:=IsEnabled;
   if not (csDesigning in ComponentState) then
     aEnabled:= (aEnabled and ItemState.Enabled);
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
-  aFocusedEditableMainItemNoDD := (Focused and (ARect.Left>0) and not aDropped);
-  {$ELSE}
-  aFocusedEditableMainItemNoDD := False;
-  {$ENDIF}
+  aFocusedEditableMainItemNoDD := TWSCustomCheckComboClass(WidgetSetClass).GetFocusedEditableMainItemNoDD(
+    Self, aDropped, ARect.Left);
   if (ARect.Left=0) or aFocusedEditableMainItemNoDD then
     begin
       if odSelected in State then
@@ -686,19 +687,9 @@ begin  { do not call inherited ! }
 end;
 
 procedure TCustomCheckCombo.DropDown;
-{$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
-{$ELSE}
-var aCursorPos: TPoint;
-    aRect: TRect;
-{$ENDIF}
 begin
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
-  FRejectDropDown:=False;
-  {$ELSE}
-  aCursorPos:=ScreenToControl(Mouse.CursorPos);
-  aRect:=Rect(FHiLiteLeft, 0, FHiLiteRight, Height);
-  FRejectDropDown:=PtInRect(aRect, aCursorPos);
-  {$ENDIF}
+  FRejectDropDown := TWSCustomCheckComboClass(WidgetSetClass).GetRejectDropDown(
+    Self, FHiliteLeft, FHiliteRight);
   FDropped:=True;
   if not FRejectDropDown then
     begin
@@ -800,9 +791,7 @@ end;
 procedure TCustomCheckCombo.Select;
 begin
   inherited Select;
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
-  if DroppedDown then FRejectToggleOnSelect:=True;
-  {$ENDIF}
+  TWSCustomCheckComboClass(WidgetSetClass).GetRejectToggleOnSelect(Self, FRejectToggleOnSelect);
   if not FRejectToggleOnSelect then
     begin
       if (ItemIndex >= 0) and ItemEnabled[ItemIndex] then Toggle(ItemIndex);
@@ -899,6 +888,12 @@ begin
     FOnItemChange(self, AIndex);
   if AIndex=ItemIndex then
     Invalidate;
+end;
+
+class procedure TCustomCheckCombo.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterCustomCheckCombo;
 end;
 
 

@@ -125,6 +125,9 @@ function WSRegisterCustomRubberBand: Boolean;   external name 'WSRegisterCustomR
 // ShellCtrls
 function WSRegisterCustomShellTreeView: Boolean; external name 'WSRegisterCustomShellTreeView';
 function WSRegisterCustomShellListView: Boolean; external name 'WSRegisterCustomShellListView';
+// ComboEx
+function WSRegisterCustomComboBoxEx: Boolean;    external name 'WSRegisterCustomComboBoxEx';
+function WSRegisterCustomCheckCombo: Boolean;    external name 'WSRegisterCustomCheckCombo';
 // LazDeviceAPIs
 function WSRegisterLazDeviceAPIs: Boolean;   external name 'WSRegisterLazDeviceAPIs';
 

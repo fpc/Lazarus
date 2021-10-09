@@ -5,7 +5,7 @@ unit WinCEWSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
-  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Grids,
+  Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Grids, ComboEx,
   WSLCLClasses;
 
 // imglist
@@ -97,6 +97,9 @@ function RegisterCustomRubberBand: Boolean;
 // ShellCtrls
 function RegisterCustomShellTreeView: Boolean;
 function RegisterCustomShellListView: Boolean;
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean;
+function RegisterCustomCheckCombo: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -557,6 +560,20 @@ begin
   Result := False;
 end;
 
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean; alias : 'WSRegisterCustomComboBoxEx';
+begin
+  RegisterWSComponent(TCustomComboBoxEx, TWin32WSCustomComboBoxEx);
+  Result := True;
+end;
+
+function RegisterCustomCheckCombo: Boolean; alias : 'WSRegisterCustomCheckCombo';
+begin
+  RegisterWSComponent(TCustomCheckCombo, TWin32WSCustomCheckCombo);
+  Result := True;
+end;
+
+// LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
 begin
   //RegisterWSLazDeviceAPIs(TCDWSLazDeviceAPIs);

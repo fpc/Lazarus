@@ -5,8 +5,8 @@ unit Win32WSFactory;
 interface
 uses
   Classes, Controls, ComCtrls, ImgList, Calendar, StdCtrls, Spin,
-  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus, ShellCtrls,
-  WSLCLClasses;
+  Dialogs, ExtCtrls, ExtDlgs, Buttons, CheckLst, Forms, Grids, Menus,
+  ShellCtrls, ComboEx, WSLCLClasses;
 
 // imglist
 function RegisterCustomImageListResolution: Boolean;
@@ -97,6 +97,9 @@ function RegisterCustomRubberBand: Boolean;
 // ShellCtrls
 function RegisterCustomShellTreeView: Boolean;
 function RegisterCustomShellListView: Boolean;
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean;
+function RegisterCustomCheckCombo: Boolean;
 // LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean;
 
@@ -105,6 +108,7 @@ uses
   Win32WSButtons,
   Win32WSCalendar,
   Win32WSCheckLst,
+  Win32WSComboEx,
   Win32WSComCtrls,
   Win32WSControls,
   Win32WSDialogs,
@@ -573,6 +577,20 @@ begin
   Result := True;
 end;
 
+// ComboEx
+function RegisterCustomComboBoxEx: Boolean; alias : 'WSRegisterCustomComboBoxEx';
+begin
+  RegisterWSComponent(TCustomComboBoxEx, TWin32WSCustomComboBoxEx);
+  Result := True;
+end;
+
+function RegisterCustomCheckCombo: Boolean; alias : 'WSRegisterCustomCheckCombo';
+begin
+  RegisterWSComponent(TCustomCheckCombo, TWin32WSCustomCheckCombo);
+  Result := True;
+end;
+
+// LazDeviceAPIs
 function RegisterLazDeviceAPIs: Boolean; alias : 'WSRegisterLazDeviceAPIs';
 begin
   //RegisterWSLazDeviceAPIs(TCDWSLazDeviceAPIs);
