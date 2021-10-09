@@ -3150,6 +3150,11 @@ var
   AControl: TControl;
   i, j: Integer;
 begin
+  if Assigned(FFormStyles) and not Application.Terminated then
+    for i:=FFormStyles.Count-1 downto 0 do
+    begin
+      FFormStyles[i].Form.RemoveAllHandlersOfObject(Self);
+    end;
   Screen.RemoveHandlerFormAdded(@ScreenFormAdded);
   Screen.RemoveHandlerRemoveForm(@ScreenRemoveForm);
   QueueSimplify:=false;
