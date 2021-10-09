@@ -135,7 +135,7 @@ end;
 function TFormAccess.ClientOffset: TPoint;
 begin
   Result := Point(0, 0);
-  {$IF Defined(LCLWin32) or Defined(LCLWin64)}
+  {$IFDEF LCLWin32}
   Result.X := GetSystemMetrics(SM_CXSIZEFRAME);
   Result.Y := GetSystemMetrics(SM_CYSIZEFRAME) + GetSystemMetrics(SM_CYCAPTION);
   {$ENDIF}
@@ -224,7 +224,7 @@ var
   i: Integer;
 begin
   Result := False;
-//  {$IF DEFINED(LCLWin32) OR DEFINED(LCLWin64) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
+//  {$IF DEFINED(LCLWin32) OR DEFINED(LCLGtk2) OR DEFINED(LCLQt) OR DEFINED(LCLQt5)}
   {$IF DEFINED(LCLQt) OR DEFINED(LCLQt5)}
     // Menu is already shown in designer
     Exit;
