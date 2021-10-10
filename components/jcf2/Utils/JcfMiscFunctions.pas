@@ -68,12 +68,6 @@ function SetFileNameExtension(const psFileName, psExt: string): string;
 procedure AdvanceTextPos(const AText: String; var ARow, ACol: integer);
 function LastLineLength(const AString: string): integer;
 
-{ split into lines at CrLf or Lf}
-function SplitIntoLines(s: string): TStrings;
-
-procedure SplitIntoChangeSections(const s1, s2, SameStart, SameEnd: TStrings);
-
-
 implementation
 
 function GetApplicationFolder: string;
@@ -319,80 +313,6 @@ begin
     Result := Length(AString)
   else
     Result := Length(AString) - (Pos1 + Length(NativeLineBreak));
-end;
-
-function SplitIntoLines(s: string): TStrings;
-var
-  liIndex, liPos, liPosLf: integer;
-  liLineEndPos, liCopyLen: integer;
-  sPart: string;
-begin
-  Result := TStringList.Create();
-
-  if (s = '') then
-    exit;
-
-  liIndex := 1;
-  while True do
-  begin
-    liPos := StrSearch(NativeCrLf, s, liIndex);
-
-    liPosLf := StrSearch(NativeLineFeed, s, liIndex);
-
-    if ((liPosLf > 0) and
-      ((liPos = 0) or (liPosLf < (liPos + 1)))) then
-    begin
-      liLineEndPos := liPosLf;
-      liCopyLen := liLineEndPos - liIndex + 1;
-      sPart := Copy(s, liIndex, liCopyLen);
-      Result.Add(sPart);
-      liIndex := liLineEndPos + 1;
-    end
-    else if liPos > 0 then
-    begin
-      liLineEndPos := liPos + 1;
-      liCopyLen := liLineEndPos - liIndex + 1;
-      sPart := Copy(s, liIndex, liCopyLen);
-      Result.Add(sPart);
-      liIndex := liLineEndPos + 1;
-    end
-    else
-    begin
-      // pick up the last bit
-      if liIndex < Length(s) then
-      begin
-         sPart := Copy(s, liIndex, Length(s));
-         Result.Add(sPart);
-      end;
-      
-      break;
-    end;
-
-  end;
-end;
-
-procedure SplitIntoChangeSections(const s1, s2, SameStart, SameEnd: TStrings);
-begin
-  SameStart.Clear;
-  SameEnd.Clear;
-
-  // get the identical portion at the start
-  while (s1.Count > 0) and (s2.Count > 0) and (s1[0] = s2[0]) do
-  begin
-    SameStart.Add(s1[0]);
-    s1.Delete(0);
-    s2.Delete(0);
-  end;
-
-  // get the identical portion at the start
-  while (s1.Count > 0) and (s2.Count > 0) and
-    (s1[s1.Count - 1] = s2[s2.Count - 1]) do
-  begin
-    SameEnd.Insert(0, s1[s1.Count - 1]);
-    s1.Delete(s1.Count - 1);
-    s2.Delete(s2.Count - 1);
-  end;
-
 end;
 
 end.
