@@ -78,7 +78,11 @@ begin
     exit;
 
   if pt.HasParentNode(nAsm) then
-    exit;
+  begin
+    //end registers list   end ['eax', 'ebx']
+    if not pt.HasParentNode(nArrayConstant) then
+      exit;
+  end;
 
   if pt.HasParentNode(nGeneric, 2) then
   begin
