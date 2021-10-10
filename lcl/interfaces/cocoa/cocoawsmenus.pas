@@ -91,6 +91,7 @@ type
     // of the menu. While LCL allows to modify the menu contents when the submenu
     // is about to be activated.
     procedure menuNeedsUpdate(AMenu: NSMenu); message 'menuNeedsUpdate:';
+    procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
     //procedure menuDidClose(AMenu: NSMenu); message 'menuDidClose:';
     function worksWhenModal: LCLObjCBoolean; message 'worksWhenModal';
   end;
@@ -171,10 +172,68 @@ function AllocCocoaMenu(const atitle: string = ''): TCocoaMenu;
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; VKKey: Word = 0; State: TShiftState = []): id;
 
+procedure MenuTrackStarted(mn: NSMenu);
+procedure MenuTrackEnded(mn: NSMenu);
+procedure MenuTrackCancelAll;
+
 implementation
 
 uses
   CocoaInt;
+
+var
+  isMenuEnabled : Boolean = true;
+  // menuTrack is needed due to the LCL architecture vs Cocoa menu handling.
+  //
+  // (below "Modal" refers to LCL "modal" state. Not verified with Cocoa modal)
+  //
+  // All Menu hangling in Cocoa is done within a "tracking" loop. (similar to Modal even loop)
+  // The major issue, is that WS code never knows that a menu was clicked,
+  // outside of the tracking loop. (The delegate is being notified already within the loop)
+  //
+  // If LCL handler is calling for any modal window at the time,
+  // the menu tracking should stop, and the model window is the only be processed
+  //
+  // In order to track "opened" menus, menuTrack list is used.
+  // If modal window is called MenuTrackCancelAll() will terminate all openned sub-menus
+  //
+  // The issue of the conflict between "Menu tracking" and "Modal tracking"
+  // is only affecting Node-Menus (menu items with submenus)
+  // because we call LM_ACTIVATE within tracking loop.
+  // The Leaf-menuitems (menu items w/o submenuis) are calling "itemSElected" (LM_ACTIVATE)
+  // when the tracking loop is over
+  //
+  // See topic: https://forum.lazarus.freepascal.org/index.php/topic,56419.0.html
+  menuTrack : TList = nil;
+
+procedure MenuTrackStarted(mn: NSMenu);
+begin
+  if not Assigned(menuTrack) then menuTrack:=TList.Create;
+  menuTrack.Add(mn);
+end;
+
+procedure MenuTrackEnded(mn: NSMenu);
+var
+  i : integer;
+begin
+  i := menuTrack.IndexOf(mn);
+  if i>=0 then
+    menuTrack.Delete(i);
+end;
+
+procedure MenuTrackCancelAll;
+var
+  i  : integer;
+  mn : NSMenu;
+begin
+  if not Assigned(menuTrack) then Exit;
+  for i:=menuTrack.Count-1 downto 0 do begin
+    mn := NSMenu(menuTrack[i]);
+    if Assigned(mn) then
+      mn.cancelTracking;
+  end;
+  menuTrack.Clear;
+end;
 
 function LCLMenuItemInit(item: NSMenuItem; const atitle: string; ashortCut: TShortCut): id;
 var
@@ -182,7 +241,6 @@ var
   mask  : NSUInteger;
 begin
   ShortcutToKeyEquivalent(ashortCut, key, mask);
-
   Result := item.initWithTitle_action_keyEquivalent(
     ControlTitleToNSStr(Atitle),
     objcselector('lclItemSelected:'), // Selector is Hard-coded, that's why it's LCLMenuItemInit
@@ -406,6 +464,10 @@ end;
 procedure TCocoaMenuItem.menuNeedsUpdate(AMenu: NSMenu);
 begin
   if not Assigned(menuItemCallback) then Exit;
+  if not isMenuEnabled then Exit;
+
+  MenuTrackStarted(AMenu);
+
   if (menu.isKindOfClass(TCocoaMenu)) then
   begin
     // Issue #37789
@@ -417,6 +479,11 @@ begin
 
   //todo: call "measureItem"
   menuItemCallback.ItemSelected;
+end;
+
+procedure TCocoaMenuItem.menuDidClose(AMenu: NSMenu);
+begin
+  MenuTrackEnded(AMenu);
 end;
 
 function TCocoaMenuItem.worksWhenModal: LCLObjCBoolean;
@@ -968,14 +1035,17 @@ begin
   end;
 end;
 
-var
-  isMenuEnabled : Boolean = true;
-
 function ToggleAppMenu(ALogicalEnabled: Boolean): Boolean;
 begin
   Result := isMenuEnabled;
   ToggleAppNSMenu( NSApplication(NSApp).mainMenu, ALogicalEnabled );
   isMenuEnabled := ALogicalEnabled;
 end;
+
+initialization
+
+finalization
+  MenuTrackCancelAll;
+  if Assigned(menuTrack) then menuTrack.Free;
 
 end.
