@@ -98,9 +98,9 @@ const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterCustomComboBoxEx;
-//  if not WSRegisterCustomComboBoxEs then
-//    RegisterWSComponent(TCustomComboBoxEx, TWSCustomComboBoxEx);
+  //WSRegisterCustomComboBoxEx;
+  if not WSRegisterCustomComboBoxEx then
+    RegisterWSComponent(TCustomComboBoxEx, TWSCustomComboBoxEx);
   Done := True;
 end;
 
@@ -109,9 +109,9 @@ const
   Done: Boolean = False;
 begin
   if Done then exit;
-  WSRegisterCustomCheckCombo;
-//  if not WSRegisterCustomCheckCombo then
-//    RegisterWSComponent(TCustomCheckCombo, TWSCustomCheckCombo);
+//  WSRegisterCustomCheckCombo;
+  if not WSRegisterCustomCheckCombo then
+    RegisterWSComponent(TCustomCheckCombo, TWSCustomCheckCombo);
   Done := True;
 end;
 
