@@ -58,360 +58,360 @@
 
       <!-- included from controlconsts.inc -->
       <element name="CM_BASE">
-        <short/>
+        <short>Starting value for control message constants defined in the LCL.</short>
       </element>
       <element name="CM_LCLOFFSET">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ACTIVATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DEACTIVATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_GOTFOCUS">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_LOSTFOCUS">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CANCELMODE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DIALOGKEY">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DIALOGCHAR">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_FOCUSCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTFONTCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTCOLORCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_HITTEST">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_VISIBLECHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ENABLEDCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_COLORCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_FONTCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CURSORCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CTL3DCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTCTL3DCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_TEXTCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_MOUSEENTER">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_MOUSELEAVE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_MENUCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_APPKEYDOWN">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_APPSYSCOMMAND">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_BUTTONPRESSED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_SHOWINGCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ENTER">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_EXIT">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DESIGNHITTEST">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ICONCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_WANTSPECIALKEY">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_INVOKEHELP">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_WINDOWHOOK">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_RELEASE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_SHOWHINTCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTSHOWHINTCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_SYSCOLORCHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_WININICHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_FONTCHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_TIMECHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_TABSTOPCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_UIACTIVATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_UIDEACTIVATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DOCWINDOWACTIVATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CONTROLLISTCHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_GETDATALINK">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CHILDKEY">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DRAG">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_HINTSHOW">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DIALOGHANDLE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ISTOOLCONTROL">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_RECREATEWND">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_INVALIDATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_SYSFONTCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CONTROLCHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DOCKCLIENT">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_UNDOCKCLIENT">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_FLOAT">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_BORDERCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_BIDIMODECHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTBIDIMODECHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ALLCHILDRENFLIPPED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ACTIONUPDATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ACTIONEXECUTE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_HINTSHOWPAUSE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DOCKNOTIFICATION">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_MOUSEWHEEL">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_ISSHORTCUT">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_UPDATEACTIONS">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_INVALIDATEDOCKHOST">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_SETACTIVECONTROL">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_POPUPHWNDDESTROY">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CREATEPOPUP">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DESTROYHANDLE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_MOUSEACTIVATE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CONTROLLISTCHANGING">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_BUFFEREDPRINTCLIENT">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_UNTHEMECONTROL">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_DOUBLEBUFFEREDCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTDOUBLEBUFFEREDCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_THEMECHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_GESTURE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_CUSTOMGESTURESCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_GESTUREMANAGERCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_STANDARDGESTURESCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_INPUTLANGCHANGE">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_TABLETOPTIONSCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_PARENTTABLETOPTIONSCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_APPSHOWBTNGLYPHCHANGED">
-        <short/>
+        <short>Control message constant.</short>
       </element>
       <element name="CM_APPSHOWMENUGLYPHCHANGED">
-        <short/>
-        </element>
+        <short>Control message constant.</short>
+      </element>
 
       <!-- included from controlconsts.inc -->
       <element name="CN_BASE">
-        <short/>
+        <short>Starting value for control notification messages in the LCL.</short>
       </element>
       <element name="CN_CHARTOITEM">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_COMMAND">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_COMPAREITEM">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLORBTN">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLORDLG">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLOREDIT">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLORLISTBOX">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLORMSGBOX">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLORSCROLLBAR">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CTLCOLORSTATIC">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_DELETEITEM">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_DRAWITEM">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_HSCROLL">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_MEASUREITEM">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_PARENTNOTIFY">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_VKEYTOITEM">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_VSCROLL">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_KEYDOWN">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_KEYUP">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_CHAR">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_SYSKEYUP">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_SYSKEYDOWN">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_SYSCHAR">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
       <element name="CN_NOTIFY">
-        <short/>
+        <short>Control notification message constant.</short>
       </element>
 
       <element name="mrNone">
@@ -628,8 +628,21 @@
         </short>
       </element>
 
-      <element  name="TCMHitTest" link="#lcl.lmessages.TLMNCHitTest"/>
-      <element  name="TCMDesignHitTest" link="#lcl.lmessages.TLMMouse"/>
+      <element  name="TCMHitTest">
+        <short>Alias for the TLMNCHitTest type.</short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.lmessages.TLMNCHitTest"/>
+        </seealso>
+      </element>
+
+      <element  name="TCMDesignHitTest">
+        <short>Alias for the TLMMouse type.</short>
+        <descr/>
+        <seealso>
+          <link id="#lcl.lmessages.TLMMouse"/>
+        </seealso>
+      </element>
 
       <element name="TCMControlChange">
         <short>Contains values representing a Control Change Message.</short>
@@ -656,74 +669,70 @@
       </element>
 
       <element name="TCMChanged">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Not used in the current LCL implementation.</short>
       </element>
       <element name="TCMChanged.Msg">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <element name="TCMChanged.Unused">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <element name="TCMChanged.Child">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <element name="TCMChanged.Result">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
 
       <element name="TCMControlListChange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Not used in the current LCL implementation.</short>
       </element>
       <element name="TCMControlListChange.Msg">
         <short/>
       </element>
       <element name="TCMControlListChange.Control">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <element name="TCMControlListChange.Inserting">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
       <element name="TCMControlListChange.Result">
         <short/>
-        <descr/>
-        <seealso/>
       </element>
 
-      <element name="TCMDialogChar" link="#lcl.lmessages.TLMKey">
-        <short/>
-        <notes><note>Used in LazReport controls</note></notes>
+      <element name="TCMDialogChar">
+        <short>Alias for the TLMKey type.</short>
+        <seealso>
+          <link id="#lcl.lmessages.TLMKey"/>
+        </seealso>
+        <notes><note>Used in LazReport controls.</note></notes>
       </element>
 
-      <element name="TCMDialogKey" link="#lcl.lmessages.TLMKey">
-        <short/>
+      <element name="TCMDialogKey">
+        <short>Alias for the TLMKey type.</short>
+        <seealso>
+          <link id="#lcl.lmessages.TLMKey"/>
+        </seealso>
+        <notes><note>Used in the jvcllaz package.</note></notes>
       </element>
 
-      <element name="TCMEnter" link="#lcl.lmessages.TLMEnter">
-        <short/>
+      <element name="TCMEnter">
+        <short>Alias for the TLMEnter type.</short>
+        <seealso>
+          <link id="#lcl.lmessages.TLMEnter">TLMEnter</link>
+        </seealso>
       </element>
 
-      <element name="TCMExit" link="#lcl.lmessages.TLMExit">
-        <short/>
+      <element name="TCMExit">
+        <short>Alias for the TLMExit type.</short>
+        <seealso>
+          <link id="#lcl.lmessages.TLMExit"/>
+        </seealso>
       </element>
 
       <element name="TCMCancelMode">
-        <short/>
+        <short>Contains information representing a CM_CANCELMODE control message.</short>
+        <notes><note>Used in the jvcllaz package.</note></notes>
       </element>
       <element name="TCMCancelMode.Msg">
         <short/>
@@ -739,7 +748,7 @@
       </element>
 
       <element name="TCMChildKey">
-        <short/>
+        <short>Not used in the current LCL implementation.</short>
         <descr/>
         <seealso/>
       </element>
