@@ -836,6 +836,8 @@ begin
 
   if not Assigned(Modals) then Modals := TList.Create;
 
+  MenuTrackCancelAll();
+
   // If a modal menu has it's menu, then SetMainMenu has already been called
   // (Show is called for modal windows prior to ShowModal. Show triggers Activate and Active is doing MainMenu)
   if not hasMenu then begin
