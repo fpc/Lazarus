@@ -520,13 +520,53 @@
         </seealso>
       </element>
 
+      <element name="SameMethod">
+        <short>
+          Determines whether the specified method instances contain the same code and data.
+        </short>
+        <descr>
+          <p>
+            <var>SameMethod</var> is a <var>Boolean</var> function which returns <b>True</b> when <b>m1</b> and <var>m2</var> contain the same code and data in the TMethod instances. The comparison examines the Code and Data members in the <var>TMethod</var> records. The return value is <b>True</b> when the Code and Data members are identical in both records.
+          </p>
+          <p>
+            SameMethod replaces the deprecated CompareMethods routine in LCL version 2.3.
+          </p>
+          <p>
+            Used in the implementation of the <var>IndexOf</var> method in <var>TMethodList</var>, and when reading the value for the <var>Current</var> property in <var>TItemsEnumerator</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazmethodlist.TMethodList.IndexOf">TMethodList.IndexOf</link>
+          <link id="#rtl.system.TMethod">TMethod</link>
+        </seealso>
+      </element>
+      <element name="SameMethod.m1">
+        <short>First method instance examined in the routine.</short>
+      </element>
+      <element name="SameMethod.m2">
+        <short>Second method instance examined in the routine.</short>
+      </element>
+
       <element name="CompareMethods">
-        <short>Performs a comparison between the specified methods.</short>
+        <short>
+          Determines whether the specified method instances contain the same code and data.
+        </short>
         <descr>
           <p>
             CompareMethods is a Boolean function used to compare the specified methods. m1 and m2 are TMethod parameters with the values compared in the function. The comparison examines the Code and Data members in the TMethod records. The return value is True when the Code and Data members are identical in both records.
           </p>
+          <remark>
+            CompareMethods has been deprecated in LCL version 2.3, and will be removed in version 2.5. Use the SameMethod routine instead.
+          </remark>
         </descr>
+        <version>
+          Deprecated in LCL version 2.3. Use the SameMethod routine instead.
+        </version>
+        <seealso>
+          <link id="SameMethod"/>
+          <link id="#rtl.system.TMethod">TMethod</link>
+          <link id="#lazutils.lazmethodlist.TMethodList.IndexOf">TMethodList.IndexOf</link>
+        </seealso>
       </element>
       <element name="CompareMethods.Result">
         <short>True when the compared methods share the same code and data.</short>
