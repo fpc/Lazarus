@@ -25,9 +25,10 @@ uses
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   Graphics, Controls, StdCtrls,
+  Types, ComboEx,
 ////////////////////////////////////////////////////
-  Types, ComboEx, WSStdCtrls, WSFactory;
-  
+  WSControls, WSFactory, WSLCLClasses, WSStdCtrls;
+
 type
   { TWSCustomComboBoxEx }
   
@@ -100,30 +101,6 @@ begin
   WSRegisterCustomComboBoxEx;
 //  if not WSRegisterCustomComboBoxEs then
 //    RegisterWSComponent(TCustomComboBoxEx, TWSCustomComboBoxEx);
-  Done := True;
-end;
-
-{ WidgetSetRegistration }
-
-procedure RegisterCustomScrollBar;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterCustomScrollBar;
-//  if not WSRegisterCustomScrollBar then
-//    RegisterWSComponent(TCustomScrollBar, TWSCustomScrollBar);
-  Done := True;
-end;
-
-procedure RegisterCustomGroupBox;
-const
-  Done: Boolean = False;
-begin
-  if Done then exit;
-  WSRegisterCustomGroupBox;
-//  if not WSRegisterCustomGroupBox then
-//    RegisterWSComponent(TCustomGroupBox, TWSCustomGroupBox);
   Done := True;
 end;
 
