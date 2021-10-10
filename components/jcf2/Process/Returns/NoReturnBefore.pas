@@ -67,7 +67,12 @@ begin
     exit;
 
   if pt.HasParentNode(nAsm) then
+  begin
+    //end registers list   end ['eax', 'ebx']
+    if pt.HasParentNode(nArrayConstant) then
+      exit(true);
     exit;
+  end;
 
   { a semicolon should have a return before it if it is the only token in the statement
     e.g.

@@ -119,7 +119,12 @@ begin
 
   { not in Asm block }
   if pt.HasParentNode(nAsm) then
+  begin
+    //end registers list   end ['eax', 'ebx']
+    if (pt.TokenType=ttOpenSquareBracket) and pt.HasParentNode(nArrayConstant) then
+      exit(true);
     exit;
+  end;
 
   if (pt.TokenType in AssignmentDirectives) then
   begin

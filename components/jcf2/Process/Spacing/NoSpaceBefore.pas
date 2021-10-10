@@ -86,7 +86,11 @@ begin
 
   // '@@' in asm, e.g. "JE @@initTls" needs the space
   if pt.HasParentNode(nAsm) then
-    exit;
+  begin
+    //end registers list   end ['eax', 'ebx']
+    if not pt.HasParentNode(nArrayConstant) then
+      exit;
+  end;
 
   if pt.TokenType in NoSpaceAnywhere then
   begin

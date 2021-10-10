@@ -5377,9 +5377,26 @@ begin
   Recognise(ttAsm);
   while fcTokenList.FirstSolidTokenType <> ttEnd do
     RecogniseAsmStatement;
-
   Recognise(ttEnd);
-
+  // list of used registers
+  // end ['EAX','EBX','ECX']
+  if fcTokenList.FirstSolidTokenType = ttOpenSquareBracket then
+  begin
+    PushNode(nArrayConstant);
+    Recognise(ttOpenSquareBracket);
+    // register list can be empty
+    if fcTokenList.FirstSolidTokenType = ttQuotedLiteralString then
+    begin
+      Recognise(ttQuotedLiteralString);
+      while (fcTokenList.FirstSolidTokenType = ttComma) do
+      begin
+        Recognise(ttComma);
+        Recognise(ttQuotedLiteralString);
+      end;
+    end;
+    Recognise(ttCloseSquareBracket);
+    PopNode;
+  end;
   PopNode;
 end;
 
