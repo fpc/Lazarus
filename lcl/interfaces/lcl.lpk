@@ -130,7 +130,7 @@ end;"/>
     <License Value="modified LGPL-2
 "/>
     <Version Major="2" Minor="3"/>
-    <Files Count="488">
+    <Files Count="490">
       <Item1>
         <Filename Value="carbon/agl.pp"/>
         <AddToUsesPkgSection Value="False"/>
@@ -2418,6 +2418,16 @@ end;"/>
         <AddToUsesPkgSection Value="False"/>
         <UnitName Value="win32wsshellctrls"/>
       </Item488>
+      <Item489>
+        <Filename Value="win32/win32wscomboex.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="Win32WSComboEx"/>
+      </Item489>
+      <Item490>
+        <Filename Value="wince/wincewscomboex.pp"/>
+        <AddToUsesPkgSection Value="False"/>
+        <UnitName Value="WinCEWSComboEx"/>
+      </Item490>
     </Files>
     <CompatibilityMode Value="True"/>
     <LazDoc Paths="../../docs/xml/lcl"/>
