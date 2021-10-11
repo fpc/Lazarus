@@ -3112,7 +3112,7 @@
       <!-- protected -->
       <element name="TMainMenu.ItemChanged">
         <short>
-          <var>ItemChanged</var> - method to deal with a changed Item.
+          Performs actions needed when a menu item has been changed.
         </short>
         <descr>
           <p>
@@ -3341,8 +3341,28 @@
         <short>
           Displays the pop-up menu.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>PopUp</var> is an overloaded method used to display the pop-up menu. An overloaded variant is provided which includes <var>X</var> and <var>Y</var> coordinates where the pop-up menu is displayed. The parameterless version calls the overloaded variant using the current position for the mouse pointer in the X and Y arguments.
+          </p>
+          <p>
+            No actions are performed in the method if a value has already been assigned to the <var>ActivePopupMenu</var> variable. <var>DoPopUp</var> is called to signal the <var>OnPopup</var> event handler (when assigned). No additional actions are performed in the method if menu items have not been defined in the Items property.
+          </p>
+          <p>
+            PopUp sets the value in ActivePopupMenu to the current class instance. The <var>InitiateActions</var> method is called for the menu <var>Items</var> to  ensure that the <var>ActionLink</var> for the component is updated. The handles for the menu and its sub-items are recreated, and the <var>OnMenuPopupHandler</var> event handler is signalled (when assigned).
+          </p>
+          <p>
+            PopUpMenu calls the corresponding method in the widgetset class prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPopUpMenu.DoPopUp"/>
+          <link id="TPopUpMenu.OnPopup"/>
+          <link id="TMenu.Items"/>
+          <link id="TMenuItem.InitiateActions"/>
+          <link id="TMenuItem.ActionLink"/>
+          <link id="OnMenuPopupHandler"/>
+        </seealso>
       </element>
       <element name="TPopupMenu.PopUp.X">
         <short>Horizontal coordinate where the pop-up menu is displayed.</short>
@@ -3352,8 +3372,12 @@
       </element>
 
       <element name="TPopupMenu.PopupComponent">
-        <short>Component to which the pop-up menu is attached </short>
-        <descr/>
+        <short>Component to which the pop-up menu is attached.</short>
+        <descr>
+          <p>
+            <var>PopupComponent</var> is a <var>TComponent</var> property which contains a reference to the component which implements the pop-up menu. It allows properties and methods in the implementor to be accessed from the menu items for the pop-up menu. Its value is must be assigned in code where the pop-up menu is created and configured.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -3361,7 +3385,11 @@
         <short>
           TPoint instance with the coordinates where the pop-up menu is displayed.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>PopupPoint</var> is a read-only <var>TPoint</var> property which contains the coordinates where the pop-up menu is displayed. The value in PopupPoint is  updated when the PopUp method is called.
+          </p>
+        </descr>
         <seealso>
           <link id="TPopupMenu.PopUp"/>
         </seealso>
@@ -3369,26 +3397,53 @@
 
       <element name="TPopupMenu.Close">
         <short>
-          Closes the display window for the pop-up menu.
+          Closes the pop-up menu when it is active.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Close</var> is a method used to close the pop-up menu when it is active. When <var>ActivePopupMenu</var> contains the current class instance, the <var>DoClose</var> method is called to signal the <var>OnClose</var> event handler (when assigned). ActivePopupMenu is set to <b>Nil</b> to indicate that the pop-up menu is no longer active.
+          </p>
+          <p>
+            No actions are performed in the method if ActivePopupMenu does not refer to the current class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPopUpMenu.DoClose"/>
+          <link id="TPopUpMenu.OnClose"/>
+          <link id="ActivePopupMenu"/>
+        </seealso>
       </element>
 
       <element name="TPopupMenu.Alignment">
         <short>
           Determines the position of pop-up menu relative to the pop-up coordinate.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Alignment</var> is a <var>TPopupAlignment</var> property which indicates the alignment of the pop-up menu relative to the mouse coordinates in <var>PopupPoint</var>. The default value for the property is <var>paLeft</var> and causes the menu to be displayed to the left of the mouse coordinates passed to the <var>PopUp</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPopUpMenu.PopUp"/>
+          <link id="TPopUpMenu.PopupPoint"/>
+          <link id="TPopupAlignment"/>
+        </seealso>
       </element>
 
       <element name="TPopupMenu.AutoPopup">
         <short>
           Indicates if the pop-up is displayed when the mouse hovers over the component for the pop-up menu.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>AutoPopUp</var> determines whether the pop-menu is automatically displayed when the mouse is hovered over the <var>PopupComponent</var> for the menu. Its value can be used in the implementing component to determine whether the <var>PopUp</var> method should be called. The default value for the property is <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPopUpMenu.PopupComponent"/>
+          <link id="TPopUpMenu.PopUp"/>
+          <link id="ActivePopupMenu"/>
+        </seealso>
       </element>
 
       <element name="TPopupMenu.HelpContext">
@@ -3401,7 +3456,14 @@
         <short>
           Identifies the mouse button which activated the pop-up menu.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            TrackButton is a TTrackButton property which contains the mouse button which can be used to activate the pop-up menu. The default value for the property is tbRightButton.
+          </p>
+          <p>
+            TrackButton is used in widgetset classes when they are notified of the mouse event for the menu and perform the actions needed for the platform.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -3409,7 +3471,11 @@
         <short>
           Event handler signalled to display the pop-up menu.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>OnPopUp</var> is signalled from <var>DoPopUp</var> when the <var>PopUp</var> method is executed. The <var>Sender</var> argument contains the <var>TPopUpMenu</var> instance for the notification, and occurs before the handles for menu items are recreated and the widgetset class is used to display the pop-up menu. It can be used to alter the menu items for the pop-up menu based on context.
+          </p>
+        </descr>
         <seealso>
           <link id="TPopUpMenu.PopUp"/>
           <link id="TPopUpMenu.DoPopUp"/>
@@ -3418,7 +3484,7 @@
 
       <element name="TPopupMenu.OnClose">
         <short>
-          <var>OnClose</var> - event handler for closing down the pop-up.
+          Event handler signalled when the pop-up menu is closed.
         </short>
         <descr>
           <p>
@@ -3474,7 +3540,11 @@
 
       <element name="ActivePopupMenu">
         <short>Unit global variable which represents the active pop-up menu.</short>
-        <descr/>
+        <descr>
+          <p>
+            The value for the variable is updated when the <var>PopUp</var> or <var>Close</var> methods are called for a <var>TPopUpMenu</var> instance. It is set to the TPopUpMenu instance in the Popup method if an existing pop-up menu is not already active. It is set to <b>Nil</b> when the Close method is called for the pop-up menu.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -3482,109 +3552,157 @@
         <short>
           Unit global variable with the event handler signalled when a pop-up menu is displayed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnMenuPopupHandler</var> is a <var>TNotifyEvent</var> variable which contains the global routine executed when when a pop-up menu is displayed. It is signalled (when assigned) from the <var>Popup</var> method in a <var>TPopUpMenu</var> instance, or from the <var>Click</var> method in a <var>TMenuItem</var> instance. The <var>MenuPopupHandler</var> method in <var>Application</var> is assigned to the variable (by default) during application start up. It is set to <b>Nil</b> when an application is shut down.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.forms.TApplication.MenuPopupHandler">TApplication.MenuPopupHandler</link>
+        </seealso>
       </element>
 
       <element name="NewMenu">
         <short>Creates and configures a new menu instance with the specified menu items.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>NewMenu</var> is a <var>TMainMenu</var> function used to create and configure a new menu instance using the values passed in the arguments to the routine. The return value is a TMainMenu instance created using the component in <var>Owner</var> as the owner for the class instance. The value in <var>AName</var> is used in the <var>Name</var> property for the new menu instance.
+          </p>
+          <p>
+            NewMenu calls an implementation routine to add the menu Items to the new menu  instance. It ensures that the Owner for the menu items are updated to reflect the Owner for the new menu instance, and that they are inserted into the Owner component.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="NewMenu.Result">
-        <short/>
+        <short>TMainMenu instance created in the routine.</short>
       </element>
       <element name="NewMenu.Owner">
-        <short/>
+        <short>Component which owns the new menu instance.</short>
       </element>
       <element name="NewMenu.AName">
-        <short/>
+        <short>Name for the new menu instance.</short>
       </element>
       <element name="NewMenu.Items">
-        <short/>
+        <short>Array with the menu items for the new menu instance.</short>
       </element>
 
       <element name="NewPopupMenu">
         <short>Creates and configures a new pop-up menu with the specified menu items.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>NewPopupMenu</var> is a <var>TPopUpMenu</var> function used to create and configure a new pop-menu with the values specified in the arguments to the routine. The return value is created using the component in Owner as the owner of the class instance. The value in <var>AName</var> is used in the <var>Name</var> property for the new menu instance. <var>AutoPopUp</var> and <var>Alignment</var> are assigned to the corresponding properties in the new pop-up menu instance.
+          </p>
+          <p>
+            NewPopupMenu calls an implementation routine to add the menu Items to the new menu  instance. It ensures that the Owner for the menu items are updated to reflect the Owner for the new menu instance, and that they are inserted into the Owner component.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="NewPopupMenu.Result">
-        <short/>
+        <short>TPopUpMenu instance created in the routine.</short>
       </element>
       <element name="NewPopupMenu.Owner">
-        <short/>
+        <short>Component which owns the new pop-up menu instance.</short>
       </element>
       <element name="NewPopupMenu.AName">
-        <short/>
+        <short>Name for the new pop-up menu instance.</short>
       </element>
       <element name="NewPopupMenu.Alignment">
-        <short/>
+        <short>Alignment relative to the mouse pointer for the pop-up menu instance.</short>
       </element>
       <element name="NewPopupMenu.AutoPopup">
-        <short/>
+        <short>
+          True if the pop-up menu is automatically displayed when the mouse is hovered over the component.
+        </short>
       </element>
       <element name="NewPopupMenu.Items">
-        <short/>
+        <short>Array with the menu items for the new pop-up menu instance.</short>
       </element>
 
       <element name="NewSubMenu">
-        <short>Creates and configures a new sub-menu with the specified child menu items.</short>
-        <descr/>
+        <short>
+          Creates and configures a new sub-menu with the specified child menu items.
+        </short>
+        <descr>
+          <p>
+            <var>NewSubMenu</var> is a <var>TMenuItem</var> function used to create a sub-menu using the values specified in the arguments to the routine. The return value contains the TMenuItem instance created to represent the sub-menu. It uses the value in <var>aCaption</var> as the caption text for the menu item, and <var>AName</var> contains the name for the sub-menu.
+          </p>
+          <p>
+            The menu item is created using <b>Nil</b> as the owner of the class instance; it must be added or inserted into the Items for the desired menu instance. Each of the menu Items is added to the class instance, and the remaining arguments are assigned to the corresponding properties for the sub-menu (menu item).
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="NewSubMenu.Result">
-        <short/>
+        <short>TMenuItem with the sub-menu created in the routine.</short>
       </element>
       <element name="NewSubMenu.ACaption">
-        <short/>
+        <short>Caption text displayed for the sub-menu.</short>
       </element>
       <element name="NewSubMenu.hCtx">
-        <short/>
+        <short>Help context for the sub-menu.</short>
       </element>
       <element name="NewSubMenu.AName">
-        <short/>
+        <short>Name for the menu item representing the sub-menu.</short>
       </element>
       <element name="NewSubMenu.Items">
-        <short/>
+        <short>Array of menu items for the new sub-menu.</short>
       </element>
       <element name="NewSubMenu.TheEnabled">
-        <short/>
+        <short>True if the menu item for the sub-menu is enabled.</short>
       </element>
 
       <element name="NewItem">
         <short>Creates and configures a new menu item instance.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>NewItem</var> is a <var>TMenuItem</var> function used to create and configure a new menu item instance using the values passed in the arguments to the routine. The TMenuItem instance is created with its <var>Owner</var> property set to <b>Nil</b>. Values passed in the parameters are assigned to the corresponding properties in the TMenuItem instance in the return value.
+          </p>
+          <p>
+            Other property values for the menu item can be assigned in the calling routine. Use the <var>Add</var> or <var>Insert</var> method in the desired menu or sub menu to store the new menu item instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TMenu.Items"/>
+          <link id="TMenuItem"/>
+          <link id="TMenuItem.Items"/>
+          <link id="TMenuItem.Add"/>
+          <link id="TMenuItem.Insert"/>
+        </seealso>
       </element>
       <element name="NewItem.Result">
-        <short/>
+        <short>Menu item instance created in the routine.</short>
       </element>
       <element name="NewItem.ACaption">
-        <short/>
+        <short>Caption text for the new menu item.</short>
       </element>
       <element name="NewItem.AShortCut">
-        <short/>
+        <short>Short cut for the new menu item.</short>
       </element>
       <element name="NewItem.AChecked">
-        <short/>
+        <short>True if the new menu item is checked.</short>
       </element>
       <element name="NewItem.TheEnabled">
-        <short/>
+        <short>True if the new menu item is enabled.</short>
       </element>
       <element name="NewItem.TheOnClick">
-        <short/>
+        <short>OnClick handler for the new menu item.</short>
       </element>
       <element name="NewItem.hCtx">
-        <short/>
+        <short>Help context for the new menu item.</short>
       </element>
       <element name="NewItem.AName">
-        <short/>
+        <short>Name assigned for the new menu item.</short>
       </element>
 
       <element name="NewLine">
         <short>Creates and configures a menu item displayed as a separator line.</short>
-        <descr/>
+        <descr>
+          <p>
+            Uses the value in cLineCaption as the caption text for the menu item.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="NewLine.Result">
