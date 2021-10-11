@@ -759,7 +759,7 @@ begin
   Result := HRGN(QtRegion);
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
-     ' QRegionH: ', dbghex(PtrInt(QtRegion.Widget)));
+     ' QRegionH: ', dbghex(PtrInt(QtRegion.FHandle)));
   {$endif}
 end;
 
@@ -2760,7 +2760,7 @@ begin
      ' DC: ', dbghex(DC),
      ' RGN: ', dbghex(Rgn));
     if RGN<>0 then
-      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).Widget))
+      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).FHandle))
     else
       WriteLn(' Rgn=0');
   {$endif}
@@ -5439,6 +5439,7 @@ function TQtWidgetSet.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
   Winding: boolean): boolean;
 var
   QtPoints: PQtPoint;
+  QtPointsF: PQtPointF;
   i: integer;
 begin
   {$ifdef VerboseQtWinAPI}
