@@ -469,13 +469,11 @@ begin
     if Assigned(OnChange) then OnChange(self);
     { Execute only when Action.Checked is changed }
     if not CheckFromAction then begin
-      if Assigned(OnClick) then
-        if not (Assigned(Action) and
-          SameMethod(TMethod(Action.OnExecute), TMethod(OnClick)))
-          then OnClick(self);
+      if Assigned(OnClick) and not Assigned(Action) then
+        OnClick(self);
       if (Action is TCustomAction) and
         (TCustomAction(Action).Checked <> (AValue = cbChecked))
-        then ActionLink.Execute(self);
+      then ActionLink.Execute(self);
     end;
   end;
   Invalidate;
