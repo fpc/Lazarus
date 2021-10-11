@@ -430,12 +430,20 @@ end;  {TQtWidgetSet.PromptUser}
 function TQtWidgetSet.RadialPie(DC: HDC; x1, y1, x2, y2, Angle1, Angle2: Integer): Boolean;
 var
   theWidth,theHeight: Integer;
+  ARect: QRectFH;
 begin
   Result := IsValidDC(DC) and (x2 > x1) and (y2 > y1);
-  if Result then begin
+  if Result then
+  begin
     theWidth  := x2 - x1;
     theHeight := y2 - y1;
-    QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, theWidth, theHeight, Angle1, Angle2);
+    if QPainter_testRenderHint(TQtDeviceContext(DC).Widget, QPainterAntialiasing) then
+    begin
+      ARect := QRectF_Create(x1 + 0.5, y1 + 0.5, theWidth - 0.5, theHeight - 0.5);
+      QPainter_drawPie(TQtDeviceContext(DC).Widget, ARect, Angle1, Angle2);
+      QRectF_destroy(ARect);
+    end else
+      QPainter_drawPie(TQtDeviceContext(DC).Widget, x1, y1, theWidth, theHeight, Angle1, Angle2);
   end;
 end;
 

@@ -751,7 +751,7 @@ begin
   Result := HRGN(TQtRegion.Create(True, X1, Y1, X2, Y2));
   {$ifdef VerboseQtWinAPI}
     WriteLn('Trace: [WinAPI CreateRectRgn] Result: ', dbghex(Result),
-     ' QRegionH: ', dbghex(PtrUInt(TQtRegion(Result).Widget)));
+     ' QRegionH: ', dbghex(PtrUInt(TQtRegion(Result).FHandle)));
   {$endif}
 end;
 
@@ -2703,7 +2703,7 @@ begin
      ' DC: ', dbghex(DC),
      ' RGN: ', dbghex(Rgn));
     if RGN<>0 then
-      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).Widget))
+      WriteLn(' QRegionH=', PtrInt(TQtRegion(Rgn).FHandle))
     else
       WriteLn(' Rgn=0');
   {$endif}
