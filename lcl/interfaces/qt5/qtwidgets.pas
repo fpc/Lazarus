@@ -2792,6 +2792,14 @@ begin
           begin
             if (FPalette <> nil) and not InUpdate and not Palette.InReload then
             begin
+              // issue #38589
+              if (QEvent_type(Event) = QEventPaletteChange) then
+              begin
+                FPalette.Free;
+                FPalette := nil;
+                GetPalette;
+              end;
+
               OldColor := Palette.CurrentColor;
               // now set our fpalette ColorRef from LCL
               if LCLObject.Color <> clDefault then

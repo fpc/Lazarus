@@ -900,24 +900,12 @@ begin
         QtRemoveStayOnTop;
         Result := True;
       end;
-
     QEventApplicationPaletteChange:
       begin
         if Sender = App then
         begin
           ClearCachedColors;
           FreeSysColorBrushes(True);
-        end else
-        begin
-          if QObject_isWidgetType(Sender) then
-          begin
-            W := QtObjectFromWidgetH(QWidgetH(Sender));
-            if (W <> nil) and Assigned(W.LCLObject) and W.IsWindow then
-            begin
-              RecreateWnd(W.LCLObject);
-              Result := True;
-            end;
-          end;
         end;
       end;
     QEventShow,
