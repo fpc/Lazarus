@@ -503,4 +503,8 @@ begin
   Result := @TSharedCustomBitmap(FSharedImage).FImage.Description;
 end;
 
+class function TCustomBitmap.GetSharedImageClass: TSharedRasterImageClass;
+begin
+  Result := TSharedCustomBitmap;
+end;
 

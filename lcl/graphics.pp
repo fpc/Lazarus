@@ -1368,6 +1368,7 @@ type
     function GetPixelFormat: TPixelFormat; override;
     function GetRawImagePtr: PRawImage; override;
     function GetRawImageDescriptionPtr: PRawImageDescription; override;
+    class function GetSharedImageClass: TSharedRasterImageClass; override;
     procedure HandleNeeded; override;
     function InternalReleaseBitmapHandle: HBITMAP; override;
     function InternalReleaseMaskHandle: HBITMAP; override;
