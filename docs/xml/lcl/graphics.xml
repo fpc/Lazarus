@@ -9994,6 +9994,27 @@
       <element name="TCustomBitmap.GetRawImageDescriptionPtr.Result">
         <short>Pointer to the TRawImageDescription instance for the shared bitmap image.</short>
       </element>
+
+      <element name="TCustomBitmap.GetSharedImageClass">
+        <short>
+          Gets the class reference used to create new shared image instances in the class.
+        </short>
+        <descr>
+          <p>
+            <var>GetSharedImageClass</var> is an overridden method in <var>TCustomBitmap</var>. The return value is a <var>TSharedRasterImageClass</var> class reference used to create a shared image in the class instance. The return value is actually <var>TSharedCustomBitmap</var> in the method implementation.
+          </p>
+          <p>
+            GetSharedImageClass is called from the Assign method when a reference to an existing image is stored in the class instance. It is also used in CanShareImage to determine is the request image type is the one used in the current class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TRasterImage.GetSharedImageClass"/>
+        </seealso>
+      </element>
+      <element name="TCustomBitmap.GetSharedImageClass.Result">
+        <short>TSharedCustomBitmap class type for the shared image.</short>
+      </element>
+
       <element name="TCustomBitmap.HandleNeeded">
         <short>Ensures that the handle for the bitmap has been assigned.</short>
         <descr>
