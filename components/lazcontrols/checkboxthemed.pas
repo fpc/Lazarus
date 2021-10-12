@@ -467,12 +467,14 @@ begin
   if [csLoading, csDestroying, csDesigning]*ComponentState = [] then begin
     if Assigned(OnEditingDone) then OnEditingDone(self);
     if Assigned(OnChange) then OnChange(self);
-    { Execute only when Action.Checked is changed }
+    // Execute only when Action.Checked is changed
     if not CheckFromAction then begin
-      if Assigned(OnClick) and not Assigned(Action) then
-        OnClick(self);
-      if (Action is TCustomAction) and
-        (TCustomAction(Action).Checked <> (AValue = cbChecked))
+      // Call OnClick only if its handler differs from the Action's handler.
+      if Assigned(OnClick) and
+        not (Assigned(Action) and SameMethod(TMethod(Action.OnExecute),TMethod(OnClick)))
+      then OnClick(self);
+      // Then the action
+      if (Action is TCustomAction) and (TCustomAction(Action).Checked<>(AValue=cbChecked))
       then ActionLink.Execute(self);
     end;
   end;
