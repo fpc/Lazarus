@@ -42,13 +42,13 @@ resourceString
   lrsCreatingGdbCatchableError = 'Creating gdb catchable error:';
 
   // Masks
-  rsInvalidCharMaskAt = 'Invalid char mask "%s" at %d';
-  rsInvalidCharMask = 'Invalid char mask "%s"';
-  rsMissingCloseCharMaskAt = 'Missing close char mask "%s" at %d';
-  rsMissingCloseCharMask = 'Missing close char mask "%s"';
+  rsInvalidCharMaskAt = 'Invalid character "%s" in mask (offset %d).';
+  rsInvalidCharMask = 'Invalid character "%s" in mask.';
+  rsMissingCloseCharMaskAt = 'Missing closing character "%s" in mask (offset %d).';
+  rsMissingCloseCharMask = 'Missing closing character "%s" in mask.';
   rsIncompleteMask = 'Reached end of mask, but missing close/escape sequence.';
-  rsInvalidEscapeChar = 'Escape character must be ASCII <= 127';
-  rsInternalError = 'Internal %s error.';
+  rsInvalidEscapeChar = 'Escape character must be ASCII <= 127.';
+  rsInternalError = 'Internal error in %s.';
 
   // XPath
   lrsNodeSet = 'node set';
