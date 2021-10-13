@@ -928,7 +928,7 @@ begin
     CurResult := true;
 
     MatchCount := 0;
-    ModeMask := TMask.Create(BuildModeOverride,[]);
+    ModeMask := TMask.Create(BuildModeOverride);
     for i := 0 to Project1.BuildModes.Count-1 do
     begin
       if ModeMask.Matches(Project1.BuildModes[i].Identifier) then
