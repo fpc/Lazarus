@@ -560,6 +560,7 @@ type
     FRegContext: TFpDbgLocationContext;
     FRegResult: Boolean;
     procedure DoReadRegister;
+    procedure DoRegisterSize;
   protected
     function GetDbgProcess: TDbgProcess; override;
     function GetDbgThread(AContext: TFpDbgLocationContext): TDbgThread; override;
@@ -571,6 +572,7 @@ type
     function ReadMemoryEx(AnAddress, AnAddressSpace: TDbgPtr; ASize: Cardinal; ADest: Pointer): Boolean; override;
     function ReadRegister(ARegNum: Cardinal; out AValue: TDbgPtr;
       AContext: TFpDbgLocationContext): Boolean; override;
+    function RegisterSize(ARegNum: Cardinal): Integer; override;
     //WriteMemory is not overwritten. It must ONLY be called in the debug-thread
   end;
 
@@ -1402,6 +1404,11 @@ begin
   FRegResult := inherited ReadRegister(FRegNum, FRegValue, FRegContext);
 end;
 
+procedure TFpDbgMemReader.DoRegisterSize;
+begin
+  FRegValue := inherited RegisterSize(FRegNum);
+end;
+
 constructor TFpDbgMemReader.create(AFpDebugDebuger: TFpDebugDebugger);
 begin
   FFpDebugDebugger := AFpDebugDebuger;
@@ -1437,6 +1444,17 @@ begin
   FFpDebugDebugger.ExecuteInDebugThread(@DoReadRegister);
   AValue := FRegValue;
   result := FRegResult;
+end;
+
+function TFpDbgMemReader.RegisterSize(ARegNum: Cardinal): Integer;
+begin
+  // Shortcut, if in debug-thread / do not use Self.F*
+  if ThreadID = FFpDebugDebugger.FWorkerThreadId then
+    exit(inherited RegisterSize(ARegNum));
+
+  FRegNum := ARegNum;
+  FFpDebugDebugger.ExecuteInDebugThread(@DoRegisterSize);
+  result := FRegValue;
 end;
 
 { TFPCallStackSupplier }
