@@ -86,12 +86,6 @@ msgstr "%s має циклічне символьне посилання"
 msgid "insufficient memory"
 msgstr "нестача пам'яті"
 
-#: lazutilsstrconsts.lrsinvalidcharset
-#, object-pascal-format
-msgctxt "lazutilsstrconsts.lrsinvalidcharset"
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Невірний набір символів по масці \"%s\"!"
-
 #: lazutilsstrconsts.lrsisnotasymboliclink
 #, object-pascal-format
 msgid "%s is not a symbolic link"
@@ -202,4 +196,37 @@ msgstr "Не вдалось створити теку конфігурації \
 #, object-pascal-format
 msgid "Conversion from %s to %s not possible"
 msgstr "Перетворення з %s до %s неможливе"
+
+#: lazutilsstrconsts.rsincompletemask
+msgid "Reached end of mask, but missing close/escape sequence."
+msgstr ""
+
+#: lazutilsstrconsts.rsinternalerror
+#, object-pascal-format
+msgid "Internal error in %s."
+msgstr ""
+
+#: lazutilsstrconsts.rsinvalidcharmask
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask."
+msgstr ""
+
+#: lazutilsstrconsts.rsinvalidcharmaskat
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask (offset %d)."
+msgstr ""
+
+#: lazutilsstrconsts.rsinvalidescapechar
+msgid "Escape character must be ASCII <= 127."
+msgstr ""
+
+#: lazutilsstrconsts.rsmissingclosecharmask
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask."
+msgstr ""
+
+#: lazutilsstrconsts.rsmissingclosecharmaskat
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask (offset %d)."
+msgstr ""
 

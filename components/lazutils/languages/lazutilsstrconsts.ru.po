@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 1.7.7\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: lazutilsstrconsts.lrsadirectorycomponentindoesnotexistorisadanglingsyml
 #, object-pascal-format
@@ -84,12 +84,6 @@ msgstr "%s имеет циклическую символическую ссыл
 #: lazutilsstrconsts.lrsinsufficientmemory
 msgid "insufficient memory"
 msgstr "недостаточно памяти"
-
-#: lazutilsstrconsts.lrsinvalidcharset
-#, object-pascal-format
-msgctxt "lazutilsstrconsts.lrsinvalidcharset"
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr "Набор символов в маске \"%s\" некорректен!"
 
 #: lazutilsstrconsts.lrsisnotasymboliclink
 #, object-pascal-format
@@ -201,4 +195,37 @@ msgstr "Невозможно создать каталог настройки \"
 #, object-pascal-format
 msgid "Conversion from %s to %s not possible"
 msgstr "Невозможно преобразовать %s в %s"
+
+#: lazutilsstrconsts.rsincompletemask
+msgid "Reached end of mask, but missing close/escape sequence."
+msgstr "Достигнут конец маски, но не найдена закрывающая/экранирующая последовательность."
+
+#: lazutilsstrconsts.rsinternalerror
+#, object-pascal-format
+msgid "Internal error in %s."
+msgstr "Внутренняя ошибка в %s."
+
+#: lazutilsstrconsts.rsinvalidcharmask
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask."
+msgstr "Некорректный символ \"%s\" в маске."
+
+#: lazutilsstrconsts.rsinvalidcharmaskat
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask (offset %d)."
+msgstr "Некорректный символ \"%s\" в маске (смещение %d)."
+
+#: lazutilsstrconsts.rsinvalidescapechar
+msgid "Escape character must be ASCII <= 127."
+msgstr "Экранирующий символ должен иметь код ASCII <= 127."
+
+#: lazutilsstrconsts.rsmissingclosecharmask
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask."
+msgstr "Отсутствует закрывающий символ \"%s\" в маске."
+
+#: lazutilsstrconsts.rsmissingclosecharmaskat
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask (offset %d)."
+msgstr "Отсутствует закрывающий символ \"%s\" в маске (смещение %d)."
 

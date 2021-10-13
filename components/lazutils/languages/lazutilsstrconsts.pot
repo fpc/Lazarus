@@ -75,12 +75,6 @@ msgstr ""
 msgid "insufficient memory"
 msgstr ""
 
-#: lazutilsstrconsts.lrsinvalidcharset
-#, object-pascal-format
-msgctxt "lazutilsstrconsts.lrsinvalidcharset"
-msgid "The char set in mask \"%s\" is not valid!"
-msgstr ""
-
 #: lazutilsstrconsts.lrsisnotasymboliclink
 #, object-pascal-format
 msgid "%s is not a symbolic link"
@@ -190,5 +184,38 @@ msgstr ""
 #: lazutilsstrconsts.lrsvarnoconversion
 #, object-pascal-format
 msgid "Conversion from %s to %s not possible"
+msgstr ""
+
+#: lazutilsstrconsts.rsincompletemask
+msgid "Reached end of mask, but missing close/escape sequence."
+msgstr ""
+
+#: lazutilsstrconsts.rsinternalerror
+#, object-pascal-format
+msgid "Internal error in %s."
+msgstr ""
+
+#: lazutilsstrconsts.rsinvalidcharmask
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask."
+msgstr ""
+
+#: lazutilsstrconsts.rsinvalidcharmaskat
+#, object-pascal-format
+msgid "Invalid character \"%s\" in mask (offset %d)."
+msgstr ""
+
+#: lazutilsstrconsts.rsinvalidescapechar
+msgid "Escape character must be ASCII <= 127."
+msgstr ""
+
+#: lazutilsstrconsts.rsmissingclosecharmask
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask."
+msgstr ""
+
+#: lazutilsstrconsts.rsmissingclosecharmaskat
+#, object-pascal-format
+msgid "Missing closing character \"%s\" in mask (offset %d)."
 msgstr ""
 
