@@ -284,7 +284,7 @@ var
   aKernResult: kern_return_t;
   old_StateCnt: mach_msg_Type_number_t;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgDarwinThread.ReadThreadState');{$ENDIF}
   if ID<0 then
     begin
     // The ID is set to -1 when the debugger does not have sufficient rights.
@@ -733,6 +733,7 @@ var
   cnt: mach_msg_Type_number_t;
   b: pointer;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgDarwinProcess.ReadData');{$ENDIF}
   result := false;
 
   aKernResult := mach_vm_read(FTaskPort, AAdress, ASize, PtrUInt(b), cnt);
@@ -751,6 +752,7 @@ function TDbgDarwinProcess.WriteData(const AAdress: TDbgPtr;
 var
   aKernResult: kern_return_t;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgDarwinProcess.WriteData');{$ENDIF}
   result := false;
   aKernResult:=mach_vm_protect(FTaskPort, AAdress, ASize, boolean_t(false), 7 {VM_PROT_READ + VM_PROT_WRITE + VM_PROT_COPY});
   if aKernResult <> KERN_SUCCESS then

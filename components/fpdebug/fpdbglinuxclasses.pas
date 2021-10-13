@@ -462,8 +462,9 @@ function TDbgLinuxThread.ReadThreadState: boolean;
 var
   io: iovec;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.ReadThreadState');{$ENDIF}
   assert(FIsPaused, 'TDbgLinuxThread.ReadThreadState: FIsPaused');
+
   result := true;
   if FHasThreadState then
     exit;
@@ -559,6 +560,9 @@ end;
 
 function TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint: boolean;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint');{$ENDIF}
+  assert(FIsPaused, 'TDbgLinuxThread.ResetInstructionPointerAfterBreakpoint: FIsPaused');
+
   if not ReadThreadState then
     exit(False);
   result := true;
@@ -638,6 +642,9 @@ end;
 
 procedure TDbgLinuxThread.LoadRegisterValues;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.LoadRegisterValues');{$ENDIF}
+  assert(FIsPaused, 'TDbgLinuxThread.LoadRegisterValues: FIsPaused');
+
   if not ReadThreadState then
     exit;
   if Process.Mode=dm32 then
@@ -692,6 +699,9 @@ end;
 
 function TDbgLinuxThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetInstructionPointerRegisterValue');{$ENDIF}
+  assert(FIsPaused, 'TDbgLinuxThread.GetInstructionPointerRegisterValue: FIsPaused');
+
   Result := 0;
   if not ReadThreadState then
     exit;
@@ -703,6 +713,9 @@ end;
 
 function TDbgLinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackBasePointerRegisterValue');{$ENDIF}
+  assert(FIsPaused, 'TDbgLinuxThread.GetStackBasePointerRegisterValue: FIsPaused');
+
   Result := 0;
   if not ReadThreadState then
     exit;
@@ -714,6 +727,9 @@ end;
 
 function TDbgLinuxThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackPointerRegisterValue');{$ENDIF}
+  assert(FIsPaused, 'TDbgLinuxThread.GetStackPointerRegisterValue: FIsPaused');
+
   Result := 0;
   if not ReadThreadState then
     exit;
@@ -955,6 +971,7 @@ var
   buf: pbyte;
   AAdressAlign: TDBGPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxProcess.ReadData');{$ENDIF}
   result := false;
   fpseterrno(0);
   BytesDone := 0;
@@ -1009,6 +1026,7 @@ var
   buf: PByte;
   AAdressAlign: TDBGPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxProcess.WriteData');{$ENDIF}
   result := false;
   fpseterrno(0);
   BytesDone := 0;
