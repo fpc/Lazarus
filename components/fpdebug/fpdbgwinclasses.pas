@@ -512,6 +512,8 @@ function TDbgWinProcess.ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; 
 var
   BytesRead: PtrUInt;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinProcess.ReadData');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinProcess.ReadData: MDebugEvent.dwProcessId <> 0');
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesRead) and (BytesRead = ASize);
 
   if not Result then LogLastError;
@@ -522,6 +524,8 @@ function TDbgWinProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal;
 var
   BytesWritten: PtrUInt;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinProcess.WriteData');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinProcess.WriteData: MDebugEvent.dwProcessId <> 0');
   Result := WriteProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesWritten) and (BytesWritten = ASize);
 
   if not Result then LogLastError;
@@ -532,6 +536,8 @@ var
   BytesRead: PtrUInt;
   buf: array of Char;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinProcess.ReadString');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinProcess.ReadString: MDebugEvent.dwProcessId <> 0');
   AData := '';
   SetLength(buf, AMaxSize + 1);
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], AMaxSize, BytesRead);
@@ -547,6 +553,8 @@ var
   BytesRead: PtrUInt;
   buf: array of WChar;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinProcess.ReadWString');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinProcess.ReadWString: MDebugEvent.dwProcessId <> 0');
   AData := '';
   SetLength(buf, AMaxSize + 1);
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @Buf[0], SizeOf(WChar) * AMaxSize, BytesRead);
@@ -1404,6 +1412,9 @@ end;
 
 procedure TDbgWinThread.LoadRegisterValues;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.LoadRegisterValues');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.LoadRegisterValues: MDebugEvent.dwProcessId <> 0');
+
   if FCurrentContext = nil then
     if not ReadThreadState then
       exit;
@@ -1708,8 +1719,11 @@ end;
 
 function TDbgWinThread.ResetInstructionPointerAfterBreakpoint: boolean;
 begin
-  Result := False;
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.ResetInstructionPointerAfterBreakpoint');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.ResetInstructionPointerAfterBreakpoint: MDebugEvent.dwProcessId <> 0');
   assert(MDebugEvent.Exception.ExceptionRecord.ExceptionCode <> EXCEPTION_SINGLE_STEP, 'dec(IP) EXCEPTION_SINGLE_STEP');
+
+  Result := False;
 
   if not ReadThreadState then
     exit;
@@ -1731,8 +1745,9 @@ end;
 
 function TDbgWinThread.ReadThreadState: boolean;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TFpInternalBreakpoint.ResetBreak');{$ENDIF}
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.ReadThreadState');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.ReadThreadState: MDebugEvent.dwProcessId <> 0');
+
   if Process.ProcessID <> MDebugEvent.dwProcessId then begin
     DebugLn(DBG_WARNINGS, 'ERROR: attempt to read threadstate, for wrong process. Thread: %u Thread-Process: %u Event-Process %u', [Id, Process.ProcessID, MDebugEvent.dwProcessId]);
     exit(False);
@@ -1750,6 +1765,9 @@ end;
 
 procedure TDbgWinThread.SetRegisterValue(AName: string; AValue: QWord);
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.SetRegisterValue');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.SetRegisterValue: MDebugEvent.dwProcessId <> 0');
+
   if not ReadThreadState then
     exit;
 
@@ -1803,6 +1821,9 @@ end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetInstructionPointerRegisterValue');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetInstructionPointerRegisterValue: MDebugEvent.dwProcessId <> 0');
+
   Result := 0;
   if FCurrentContext = nil then
     if not ReadThreadState then
@@ -1819,6 +1840,9 @@ end;
 
 function TDbgWinThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackBasePointerRegisterValue');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetStackBasePointerRegisterValue: MDebugEvent.dwProcessId <> 0');
+
   Result := 0;
   if FCurrentContext = nil then
     if not ReadThreadState then
@@ -1835,6 +1859,9 @@ end;
 
 function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackPointerRegisterValue');{$ENDIF}
+  assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetStackPointerRegisterValue: MDebugEvent.dwProcessId <> 0');
+
   Result := 0;
   if FCurrentContext = nil then
     if not ReadThreadState then
