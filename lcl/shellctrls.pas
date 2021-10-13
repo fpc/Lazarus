@@ -687,12 +687,11 @@ procedure GetFilesInDir(const ABaseDir: string; AMask: string;
 var
   DirInfo: TSearchRec;
   FindResult, i: Integer;
-  IsDirectory, IsValidDirectory, IsHidden, AddFile, UseMaskList: Boolean;
+  IsDirectory, IsValidDirectory, IsHidden, AddFile, UseMaskList, CaseSens: Boolean;
   SearchStr, ShortFilename: string;
   MaskList: TMaskList = nil;
   Files: TList;
   FileItem: TFileItem;
-  MaskOptions: TMaskOptions;
   {$if defined(windows) and not defined(wince)}
   ErrMode : LongWord;
   {$endif}
@@ -718,19 +717,16 @@ begin
                    ;
     if UseMaskList then
     begin
-      //Disable the use of sets in the masklist.
-      //this behaviour would be incompatible with the situation if no MaskList was used
-      //and it would break backwards compatibilty and could raise unexpected EConvertError where it did not in the past.
-      //If you need sets in the MaskList, use the OnAddItem event for that. (BB)
-      MaskOptions := [moDisableSets];
+      // Disable ranges in the MaskList. [...] is interpreted as literal chars.
+      // Otherwise this would be incompatible with the situation if no MaskList was used
+      // and would break backwards compatibilty and could raise unexpected EConvertError.
+      // If you need ranges in the MaskList, use the OnAddItem event for that. (BB)
       {$ifdef NotLiteralFilenames}
-      if (ACaseSensitivity = mcsCaseSensitive) then
-        MaskOptions := [moDisableSets, moCaseSensitive];
+      CaseSens := ACaseSensitivity = mcsCaseSensitive;
       {$else}
-      if (ACaseSensitivity <> mcsCaseInsensitive) then
-        MaskOptions := [moDisableSets, moCaseSensitive];
+      CaseSens := ACaseSensitivity <> mcsCaseInsensitive;
       {$endif}
-      MaskList := TMaskList.Create(AMask, ';', MaskOptions);  //False by default
+      MaskList := TMaskList.Create(AMask, ';', CaseSens, MaskOpCodesDisableRange);
     end;
 
     try

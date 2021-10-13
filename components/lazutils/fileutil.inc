@@ -795,12 +795,8 @@ var
         // Deal with both files and directories
         if (PathInfo.Attr and faDirectory) = 0 then
         begin             // File
-          {$IFDEF Windows}
-          if (MaskList = nil) or MaskList.MatchesWindowsMask(PathInfo.Name)
-          {$ELSE}
-          if (MaskList = nil) or MaskList.Matches(PathInfo.Name)
-          {$ENDIF}
-          then begin
+          if (MaskList = nil) or MaskList.Matches(PathInfo.Name) then
+          begin
             FPath := APath;
             FLevel := ALevel;
             FFileInfo := PathInfo;
@@ -848,14 +844,9 @@ var
   i: Integer;
   Dir: String;
   OtherDir: String;
-  MaskOptions: TMaskOptions;
 begin
   if FSearching then RaiseSearchingError;
-  if CaseSensitive then
-    MaskOptions := [moCaseSensitive]
-  else
-    MaskOptions := [];
-  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, MaskOptions);
+  MaskList := TMaskList.CreateSysNative(ASearchMask, FMaskSeparator, CaseSensitive);
   // empty mask = all files mask
   if MaskList.Count = 0 then
     FreeAndNil(MaskList);
