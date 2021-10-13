@@ -34,6 +34,7 @@ type
     FS, FMask: String;
     procedure Test;
     procedure TestMask(const S, Mask: String; Result: Boolean);
+    procedure TestMaskDisableRange(const S, Mask: String; Result: Boolean);
     procedure TestMaskException(const S, Mask: String; AFail: Boolean);
     procedure TestWindowsMask(const S, Mask: String; Result: Boolean);
   published
@@ -42,6 +43,7 @@ type
     procedure TestAnyText;
     procedure TestAnyChar;
     procedure TestCharSet;
+    procedure TestDisableRange;
     procedure TestCase;
     procedure TestSpecial;
     procedure TestWindows;
@@ -97,6 +99,12 @@ end;
 procedure TTestMask.TestMask(const S, Mask: String; Result: Boolean);
 begin
   AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesMask(S, Mask));
+end;
+
+procedure TTestMask.TestMaskDisableRange(const S, Mask: String; Result: Boolean);
+begin
+  AssertEquals(S + ' match ' + Mask + ': ', Result,
+               MatchesMask(S, Mask, False, MaskOpCodesDisableRange));
 end;
 
 procedure TTestMask.TestNil;
@@ -227,6 +235,13 @@ begin
   TestMask('ö', '[!ö]', False);
   TestMask('ö', '[ՠ-կ]', False);
   TestMask('ö', '[äũæ]', False);
+end;
+
+procedure TTestMask.TestDisableRange;
+begin
+  TestMaskDisableRange('a[b]c', '?[b]?', True);
+  TestMaskDisableRange('abc', '?[b]?', False);
+  TestMaskDisableRange('c', '[c]', False);
 end;
 
 procedure TTestMask.TestCase;
