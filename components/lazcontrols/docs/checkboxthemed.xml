@@ -619,20 +619,20 @@
 
       <element name="TCustomCheckBoxThemed.State">
         <short>
-          Contains the checked, unchecked, or grayed state for the check box control.
+          Indicates the checked, unchecked, or grayed state for the check box control.
         </short>
         <descr>
           <p>
-            <var>State</var> is a <var>TCheckBoxState</var> property which contains the checked, unchecked, or grayed state for the check box control. The default value for the property is <var>cbUnchecked</var>.
+            <var>State</var> is a <var>TCheckBoxState</var> property which indicates the checked, unchecked, or grayed state for the check box control. The default value for the property is <var>cbUnchecked</var>.
           </p>
           <p>
-            At run-time, setting a new value in State causes several processes to be performed:
+            At run-time, setting a new value for State causes additional actions to be performed:
           </p>
           <ul>
             <li>Signals the OnEditingDone event handler (when assigned).</li>
             <li>Signals the OnChange event handler (when assigned).</li>
             <li>
-              Signals the OnClick event handler (when assigned) if an Action is not used for the control.
+              Signals the OnClick event handler (when assigned) if an Action has not been assigned for the control, or the Check value in Action has not been changed.
             </li>
             <li>
               Executes the Action (via the ActionLink) when the new property value is different than the Checked state for the Action.
@@ -640,7 +640,7 @@
             <li>Calls Invalidate to force the control to be redrawn.</li>
           </ul>
           <p>
-            None of these actions are performed at design-time, during LCL streaming, or when the control  is freed.
+            No actions are performed at design-time, during LCL streaming, when the control is freed, or when the new value for State is the same as the existing property value.
           </p>
           <p>
             State is related to the <var>Checked</var> property. Checked is <b>True</b> when State contains cbChecked, or <b>False</b> for any other value in State. Setting the value in Checked causes the value in State to be toggled between <var>cbChecked</var> and <var>cbUnchecked</var>.
