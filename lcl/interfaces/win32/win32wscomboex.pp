@@ -1,6 +1,7 @@
 unit Win32WSComboEx;
 
 {$mode objfpc}{$H+}
+{$WARN 5024 off : Parameter "$1" not used}
 {$I win32defines.inc}
 
 interface
@@ -32,8 +33,8 @@ type
   published
     class function GetFocusedEditableMainItemNoDD(const ACombo: TCustomCheckCombo;
       ADroppedDown: Boolean; ALeft: Integer): boolean; override;
-    class function GetRejectDropdown(const ACombo: TCustomCheckCombo;
-      ALeft, ARight: Integer): Boolean; override;
+    class function GetRejectDropdown(const {%H-}ACombo: TCustomCheckCombo;
+      ALeft, {%H-}ARight: Integer): Boolean; override;
     class procedure GetRejectToggleOnSelect(const ACombo: TCustomCheckCombo;
       var AResult: Boolean); override;
   end;
