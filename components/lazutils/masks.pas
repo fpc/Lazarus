@@ -5,6 +5,13 @@
   See the file COPYING.modifiedLGPL.txt, included in this distribution,
   for details about the license.
  *****************************************************************************
+
+ Implement TMask and related classes.
+ It is fast and optimized, and fully supports Unicode. Also supports
+  DOS/Windows compatible mask which behaves differently from standard mask.
+
+ Author: José Mejuto
+ Changes and improvements by Juha Manninen
 }
 unit Masks;
 
@@ -180,8 +187,8 @@ type
     procedure Exception_InternalError();
     //function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; virtual; abstract;
   public
-    constructor Create(aCaseSensitive: Boolean=False);
-    constructor CreateAdvanced(aCaseSensitive: Boolean=False; aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesAllAllowed);
+    constructor Create(aCaseSensitive: Boolean=False;
+      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
   public
     property CaseSensitive: Boolean read cCaseSensitive;
     property EscapeChar: Char read cMaskEscapeChar write SetMaskEscapeChar;
@@ -205,9 +212,8 @@ type
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
   public
-    constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False);
-    constructor CreateAdvanced(const aMask: RawByteString; aCaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesAllAllowed);
+    constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False;
+      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
     procedure Compile; override;
     function Matches(const aStringToMatch: RawByteString): Boolean; virtual;
   public
@@ -227,13 +233,13 @@ type
     class procedure SplitFileNameExtension(const aSourceFileName: RawByteString;
       out aFileName: RawByteString; out aExtension: RawByteString; aIsMask: Boolean=False); static;
   public
-    constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False);
-    constructor CreateAdvanced(const aMask: RawByteString; aCaseSensitive: Boolean=False;
-      aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksAllAllowed);
+    constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False;
+      aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksDefaultAllowed);
     procedure Compile; override;
     function Matches(const aFileName: RawByteString): Boolean; override;
+  public
     property Mask: RawByteString read cWindowsMask write cWindowsMask;
-    property Quirks: TWindowsQuirkSet read cMaskWindowsQuirkAllowed write cMaskWindowsQuirkAllowed;
+    property Quirks: TWindowsQuirkSet read cMaskWindowsQuirkAllowed;// write cMaskWindowsQuirkAllowed;
   end;
 
   TMaskWindows = class(TMaskUTF8Windows);
@@ -250,6 +256,8 @@ type
   TMaskList = class
   private
     FMasks: TObjectList;
+    // Creating also Windows masks is a hack needed for deprecated MatchesWindowsMask.
+    FWindowsMasks: TObjectList;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
@@ -260,8 +268,9 @@ type
     destructor Destroy; override;
 
     function Matches(const AFileName: String): Boolean;
-    // Don't call this. Create with TMaskList.CreateWindows, then call Matches.
+    // Deprecated in Lazarus 2.3, October 2021. Remove in 2.5.
     function MatchesWindowsMask(const AFileName: String): Boolean;
+      deprecated 'Create with TMaskList.CreateWindows, then call Matches.';
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
@@ -285,7 +294,7 @@ function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean;
 var
   AMask: TMask;
 begin
-  AMask := TMask.CreateAdvanced(Mask, CaseSensitive, aOpcodesAllowed);
+  AMask := TMask.Create(Mask, CaseSensitive, aOpcodesAllowed);
   try
     Result := AMask.Matches(FileName);
   finally
@@ -435,17 +444,11 @@ begin
   raise EMaskError.CreateFmt(rsInternalError, [self.ClassName], eMaskException_InternalError);
 end;
 
-constructor TMaskBase.CreateAdvanced(aCaseSensitive: Boolean;
-  aOpcodesAllowed: TMaskOpcodesSet);
+constructor TMaskBase.Create(aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
 begin
   cMaskOpcodesAllowed:=aOpcodesAllowed;
   cCaseSensitive:=aCaseSensitive;
   cMaskEscapeChar:='\';
-end;
-
-constructor TMaskBase.Create(aCaseSensitive: Boolean);
-begin
-  CreateAdvanced(aCaseSensitive,MaskOpCodesDefaultAllowed);
 end;
 
 { TMask }
@@ -810,16 +813,10 @@ begin
     Result:=TMaskFailCause.MatchStringExhausted;
 end;
 
-constructor TMaskUTF8.Create(const aMask: RawByteString; aCaseSensitive: Boolean);
-begin
-  inherited Create(aCaseSensitive);
-  cOriginalMask:=aMask;
-end;
-
-constructor TMaskUTF8.CreateAdvanced(const aMask: RawByteString;
+constructor TMaskUTF8.Create(const aMask: RawByteString;
   aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
 begin
-  inherited CreateAdvanced(aCaseSensitive,aOpcodesAllowed);
+  inherited Create(aCaseSensitive,aOpcodesAllowed);
   cOriginalMask:=aMask;
 end;
 
@@ -868,18 +865,13 @@ begin
   end;
 end;
 
-constructor TMaskUTF8Windows.Create(const aMask: RawByteString; aCaseSensitive: Boolean);
-begin
-  CreateAdvanced(aMask,aCaseSensitive,WindowsQuirksDefaultAllowed);
-  Compile;
-end;
-
-constructor TMaskUTF8Windows.CreateAdvanced(const aMask: RawByteString;
+constructor TMaskUTF8Windows.Create(const aMask: RawByteString;
   aCaseSensitive: Boolean; aWindowsQuirksAllowed: TWindowsQuirkSet);
 begin
   cMaskWindowsQuirkAllowed:=aWindowsQuirksAllowed;
   cWindowsMask:=aMask;
-  inherited CreateAdvanced(aMask,aCaseSensitive,MaskOpCodesAllAllowed);
+  inherited Create(aMask,aCaseSensitive,MaskOpCodesDefaultAllowed);
+  Compile;
 end;
 
 procedure TMaskUTF8Windows.Compile;
@@ -1021,10 +1013,14 @@ var
   I: Integer;
 begin
   FMasks := TObjectList.Create(True);
+  FWindowsMasks := TObjectList.Create(True);
   S := TParseStringList.Create(AValue, ASeparator);
   try
-    for I := 0 to S.Count - 1 do
-      FMasks.Add(TMask.CreateAdvanced(S[I], CaseSensitive, aOpcodesAllowed));
+    for I := 0 to S.Count-1 do begin
+      FMasks.Add(TMask.Create(S[I], CaseSensitive, aOpcodesAllowed));
+      // A hack, add also to FWindowsMasks.
+      FWindowsMasks.Add(TMaskWindows.Create(S[I], CaseSensitive));
+    end;
   finally
     S.Free;
   end;
@@ -1038,7 +1034,7 @@ begin
   FMasks := TObjectList.Create(True);
   S := TParseStringList.Create(AValue, ASeparator);
   try
-    for I := 0 to S.Count - 1 do
+    for I := 0 to S.Count-1 do
       FMasks.Add(TMaskWindows.Create(S[I], CaseSensitive));
   finally
     S.Free;
@@ -1056,6 +1052,7 @@ end;
 
 destructor TMaskList.Destroy;
 begin
+  FWindowsMasks.Free;
   FMasks.Free;
   inherited Destroy;
 end;
@@ -1075,27 +1072,21 @@ var
   I: Integer;
 begin
   Result := False;
-  for I := 0 to FMasks.Count - 1 do
-  begin
+  for I := 0 to FMasks.Count-1 do
     if TMask(FMasks.Items[I]).Matches(AFileName) then
-    begin
-      Result := True;
-      Exit;
-    end;
-  end;
+      Exit(True);
 end;
 
 function TMaskList.MatchesWindowsMask(const AFileName: String): Boolean;
-//var
-//  mlw: TMaskList;
+// Uses a hack FWindowsMasks which can be removed when this method is removed.
+var
+  I: Integer;
 begin
-{  Result := False;                      Original code
-  for I := 0 to FMasks.Count - 1 do
-    if TMask(FMasks.Items[I]).MatchesWindowsMask(AFileName) then
+  Result := False;
+  for I := 0 to FWindowsMasks.Count-1 do
+    if TMaskWindows(FWindowsMasks.Items[I]).Matches(AFileName) then
       Exit(True);
-}
-  //mlw := TMaskList.CreateWindows(AFileName);
-  raise Exception.Create('Create with TMaskList.CreateWindows, then call Matches.');
+  //raise Exception.Create('Create with TMaskList.CreateWindows, then call Matches.');
 end;
 
 end.
