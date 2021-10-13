@@ -2424,6 +2424,7 @@ begin
       exit;
     end;
   end;
+  FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
 
   if CurrentThread = nil then
     exit;
@@ -3823,7 +3824,8 @@ begin
     result.SrcLine:=0;
 
     if AnAddress=0 then
-      result.Address := FDbgController.CurrentThread.GetInstructionPointerRegisterValue
+      result.Address := FDbgController.DefaultContext.Address // DefaultContext has the InstrPtr cached
+      //result.Address := FDbgController.CurrentThread.GetInstructionPointerRegisterValue
     else
       result.Address := AnAddress;
 
