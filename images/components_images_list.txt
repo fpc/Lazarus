@@ -43,9 +43,6 @@ components/tcalendardialog_200.png
 components/tcheckbox.png
 components/tcheckbox_150.png
 components/tcheckbox_200.png
-components/tcheckcombobox.png
-components/tcheckcombobox_150.png
-components/tcheckcombobox_200.png
 components/tcheckgroup.png
 components/tcheckgroup_150.png
 components/tcheckgroup_200.png

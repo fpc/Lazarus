@@ -1,6 +1,9 @@
 tcheckboxthemed.png
 tcheckboxthemed_150.png
 tcheckboxthemed_200.png
+tcheckcombobox.png
+tcheckcombobox_150.png
+tcheckcombobox_200.png
 tdividerbevel.png
 tdividerbevel_150.png
 tdividerbevel_200.png

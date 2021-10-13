@@ -49,7 +49,6 @@ type
   TListItemsCompare = function (AList: TListControlItems; AItem1, AItem2: Integer): Integer;
   TListItemsSortType = TSortType;
   { Events }
-  TCheckItemChange = procedure(Sender: TObject; AIndex: Integer) of object;
   TListControlItem = class;  { forward }
   TListCompareEvent = function(AList: TListControlItems; AItem1, AItem2: TListControlItem): Integer of object;
 
@@ -258,145 +257,6 @@ type
     property Visible;
   end;
 
-  { TCheckComboItemState }
-  TCheckComboItemState = class
-  public
-    State: TCheckBoxState;
-    Enabled: Boolean;
-    Data: TObject;
-  end;
-
-  { TCustomCheckCombo }
-  TCustomCheckCombo = class(TCustomComboBox)
-  private
-    FAllowGrayed: Boolean;
-    FOnItemChange: TCheckItemChange;
-    procedure AsyncCheckItemStates(Data: PtrInt);
-    function GetChecked(AIndex: Integer): Boolean;
-    function GetCount: Integer;
-    function GetItemEnabled(AIndex: Integer): Boolean;
-    function GetObject(AIndex: Integer): TObject;
-    function GetState(AIndex: Integer): TCheckBoxState;
-    procedure SetChecked(AIndex: Integer; AValue: Boolean);
-    procedure SetItemEnabled(AIndex: Integer; AValue: Boolean);
-    procedure SetObject(AIndex: Integer; AValue: TObject);
-    procedure SetState(AIndex: Integer; AValue: TCheckBoxState);
-  protected
-    FCheckHighlight: Boolean;
-    FCheckSize: TSize;
-    FDropped: Boolean;
-    FHilightedIndex: Integer;
-    FHiLiteLeft: Integer;
-    FHiLiteRight: Integer;
-    FNeedMeasure: Boolean;
-    FRejectDropDown: Boolean;
-    FRejectToggleOnSelect: Boolean;
-    FRightToLeft: Boolean;
-    FTextHeight: SmallInt;
-    procedure CMBiDiModeChanged(var Message: TLMessage); message CM_BIDIMODECHANGED;
-    procedure ClearItemStates;
-    procedure CloseUp; override;
-    procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); override;
-    procedure DropDown; override;
-    procedure FontChanged(Sender: TObject); override;
-    procedure InitializeWnd; override;
-    procedure InitItemStates;
-    procedure CheckItemStates;
-    procedure QueueCheckItemStates;
-    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure Loaded; override;
-    procedure MouseLeave; override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure SetItemHeight(const AValue: Integer); override;
-    procedure SetItems(const Value: TStrings); override;
-    procedure Select; override;
-  public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    procedure AddItem(const AItem: string; AState: TCheckBoxState; AEnabled: Boolean = True); reintroduce;
-    procedure AssignItems(AItems: TStrings);
-    procedure Clear; override;
-    procedure DeleteItem(AIndex: Integer);
-    procedure CheckAll(AState: TCheckBoxState; AAllowGrayed: Boolean = True; AAllowDisabled: Boolean = True);
-    procedure Toggle(AIndex: Integer);
-    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed default False;
-    property Count: Integer read GetCount;
-    property Checked[AIndex: Integer]: Boolean read GetChecked write SetChecked;
-    property ItemEnabled[AIndex: Integer]: Boolean read GetItemEnabled write SetItemEnabled;
-    property Objects[AIndex: Integer]: TObject read GetObject write SetObject;
-    property State[AIndex: Integer]: TCheckBoxState read GetState write SetState;
-    property OnItemChange: TCheckItemChange read FOnItemChange write FOnItemChange;
-  end;
-
-  { TCheckComboBox }
-  TCheckComboBox = class(TCustomCheckCombo)
-  published
-    property Align;
-    property AllowGrayed;
-    property Anchors;
-    property ArrowKeysTraverseList;
-    property AutoDropDown;
-    property AutoSize;
-    property BidiMode;
-    property BorderSpacing;
-    property BorderStyle;
-    property Color;
-    property Constraints;
-    property Count;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property DropDownCount;
-    property Enabled;
-    property Font;
-    property ItemHeight;
-    property ItemIndex;
-    property Items;
-    property ItemWidth;
-    property MaxLength;
-    property OnChange;
-    property OnChangeBounds;
-    property OnClick;
-    property OnCloseUp;
-    property OnContextPopup;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnDropDown;
-    property OnEditingDone;
-    property OnEnter;
-    property OnExit;
-    property OnGetItems;
-    property OnItemChange;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnMouseWheel;
-    property OnMouseWheelDown;
-    property OnMouseWheelUp;
-    property OnStartDrag;
-    property OnSelect;
-    property OnUTF8KeyPress;
-    property ParentBidiMode;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property Sorted;
-    property TabOrder;
-    property TabStop;
-    property Text;
-    property TextHint;
-    property Visible;
-  end;
-
 procedure Register;
 
 implementation
@@ -405,7 +265,7 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Misc', [TComboBoxEx, TCheckComboBox]);
+  RegisterComponents('Misc', [TComboBoxEx]);
 end;
 
 end.
