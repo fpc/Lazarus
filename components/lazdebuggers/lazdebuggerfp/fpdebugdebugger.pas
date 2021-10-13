@@ -484,6 +484,10 @@ type
   { TFPRegisters }
 
   TFPRegisters = class(TRegisterSupplier)
+  private
+    FThr: TDbgThread;
+    FRegisterList: TDbgRegisterValueList;
+    procedure GetRegisterValueList();
   public
     procedure RequestData(ARegisters: TRegisters); override;
   end;
@@ -1980,6 +1984,11 @@ end;
 
 { TFPRegisters }
 
+procedure TFPRegisters.GetRegisterValueList();
+begin
+  FRegisterList :=  FThr.RegisterValueList;
+end;
+
 procedure TFPRegisters.RequestData(ARegisters: TRegisters);
 var
   ARegisterList: TDbgRegisterValueList;
@@ -2000,7 +2009,9 @@ begin
 
   ARegisterList := nil;
   if ARegisters.StackFrame = 0 then begin
-    ARegisterList :=  thr.RegisterValueList;
+    FThr := thr;
+    TFpDebugDebugger(Debugger).ExecuteInDebugThread(@GetRegisterValueList);
+    ARegisterList :=  FRegisterList;
   end
   else begin
     frm := thr.CallStackEntryList[ARegisters.StackFrame];
