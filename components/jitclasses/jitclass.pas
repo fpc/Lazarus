@@ -295,6 +295,7 @@ type
     property JitProperties: TJitPropertyList read FJitProperties;
 
     property JitClass: TClass read GetJitClass;
+    property AncestorJitClass: TJitClassCreator read FAncestorJitClass; experimental;
   end;
 
 implementation
@@ -1139,7 +1140,7 @@ begin
       FAncestorJitType := TJitTypeJitClass(at);
     end;
 
-    if FAncestorJitType <> nil then begin;
+    if FAncestorJitType <> nil then begin
       if (FAncestorJitType is TJitTypeJitClass) then
         FAncestorJitClass := TJitClassCreator(TJitTypeJitClass(FAncestorJitType).JitClassCreator)
       else
