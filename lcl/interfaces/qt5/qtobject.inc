@@ -646,13 +646,6 @@ var
   R: TRect;
   AQtPoint: TQtPoint;
 
-  function IsAnyWindowActive: Boolean;
-  begin
-    Result := (QApplication_activeWindow() <> nil) or
-      (QApplication_activeModalWidget() <> nil) or
-      (QApplication_activePopupWidget() <> nil);
-  end;
-
   function IsSystemTrayWidget: boolean;
   var
     AName: WideString;
@@ -803,6 +796,7 @@ begin
     end;
 
     QEventApplicationFontChange: SetDefaultAppFontName;
+
     QEventStyleChange:
       begin
         if (Sender = QApplication_activeWindow()) or
@@ -815,95 +809,33 @@ begin
           ThemeServices.IntfDoOnThemeChange;
         end;
       end;
+
     QEventApplicationActivate:
     begin
-      LCLEvent := QLCLMessageEvent_create(LCLQt_ApplicationActivate);
-       // activate it imediatelly (high priority)
-      QCoreApplication_postEvent(Sender, LCLEvent, 1 {high priority});
-    end;
-    LCLQt_ApplicationActivate:
       if Assigned(Application) and not FAppActive then
       begin
         FAppActive := True;
         {$IF DEFINED(QTDEBUGAPPACTIVATE) OR DEFINED(VerboseQtEvents)}
-        DebugLn('TQtWidgetSet.EventFilter: Application is activated - time ',dbgs(GetTickCount));
+        DebugLn('TQtWidgetSet.EventFilter: Application is activated: ',dbgs(GetTickCount));
         {$ENDIF}
-        // check if activated form is StayOnTop, if it's so, we must
-        // eat next appdeactivate & appactivate since we are changing form
-        // flags !
-        if (StayOnTopList <> nil) then
-          W := TQtWidget(GetActiveWindow)
-        else
-          W := nil;
         Application.IntfAppActivate;
-        QtRestoreStayOnTop;
-        if (W <> nil) and Assigned(StayOnTopList) and StayOnTopList.HasId(W) then
-          W.Activate;
         Result := True;
       end;
+    end;
 
     QEventApplicationDeactivate:
     begin
-      // we must check if we are ready for deactivation (low priority)
-      // this is 2way check. LCLQt_ApplicationDeActivate sends
-      // LCLQt_ApplicationDeActivate_Check to be 100% sure if needed.
-      LCLEvent := QLCLMessageEvent_create(LCLQt_ApplicationDeActivate);
-      QCoreApplication_postEvent(Sender, LCLEvent, -$FF);
-    end;
-
-    LCLQt_ApplicationDeactivate:
-      begin
-        if Assigned(Application) and FAppActive then
-        begin
-          if not IsAnyWindowActive then
-          begin
-            QCoreApplication_sendPostedEvents(nil, QEventWindowActivate);
-            QCoreApplication_processEvents(QEventLoopAllEvents, 10 {msec});
-          end;
-
-          // if there's active window after posting from queue, just exit ...
-          // app is not deactivated.
-          if IsAnyWindowActive then
-            exit(True);
-
-          // to be 100% sure that we are really deactivated, send check
-          // event with pretty low priority. We need
-          // LCLQt_ApplicationDeActivate_Check to avoid infinite loop inside
-          // this event with same code.
-          LCLEvent := QLCLMessageEvent_create(LCLQt_ApplicationDeActivate_Check);
-          QCoreApplication_postEvent(Sender, LCLEvent, -$FFFF);
-          Result := True;
-        end;
-      end;
-
-    LCLQt_ApplicationDeactivate_Check:
       if Assigned(Application) and FAppActive then
       begin
-        // 1st send posted events, and process few events from queue
-        if not IsAnyWindowActive then
-        begin
-          QCoreApplication_sendPostedEvents(nil, QEventWindowActivate);
-          QCoreApplication_processEvents(QEventLoopAllEvents, 10 {msec});
-        end;
-
-        // if there's active window after posting from queue, just exit ...
-        // app is not deactivated.
-        if IsAnyWindowActive then
-        begin
-          {$IF DEFINED(QTDEBUGAPPACTIVATE) OR DEFINED(VerboseQtEvents)}
-          DebugLn('NOTICE: TQtWidgetSet.EventFilter: App deactivation called with active windows ... ignoring.');
-          {$ENDIF}
-          QEvent_ignore(Event);
-          exit(True);
-        end;
-        {$IF DEFINED(QTDEBUGAPPACTIVATE) OR DEFINED(VerboseQtEvents)}
-        DebugLn('TQtWidgetSet.EventFilter: Application is deactivated - time ',dbgs(GetTickCount));
-        {$ENDIF}
         FAppActive := False;
+        {$IF DEFINED(QTDEBUGAPPACTIVATE) OR DEFINED(VerboseQtEvents)}
+        DebugLn('TQtWidgetSet.EventFilter: Application is deactivated: ',dbgs(GetTickCount));
+        {$ENDIF}
         Application.IntfAppDeactivate;
-        QtRemoveStayOnTop;
         Result := True;
       end;
+    end;
+
     QEventApplicationPaletteChange:
       begin
         if Sender = App then
