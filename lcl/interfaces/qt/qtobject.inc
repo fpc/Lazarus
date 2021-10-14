@@ -850,6 +850,7 @@ begin
         DebugLn('TQtWidgetSet.EventFilter: Application is deactivated: ',dbgs(GetTickCount));
         {$ENDIF}
         FAppActive := False;
+        ReleaseCapture;
         Application.IntfAppDeactivate;
         Result := True;
       end;
