@@ -827,6 +827,7 @@ begin
         {$IF DEFINED(QTDEBUGAPPACTIVATE) OR DEFINED(VerboseQtEvents)}
         DebugLn('TQtWidgetSet.EventFilter: Application is deactivated: ',dbgs(GetTickCount));
         {$ENDIF}
+        ReleaseCapture;
         Application.IntfAppDeactivate;
         Result := True;
       end;
