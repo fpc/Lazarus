@@ -374,6 +374,7 @@ begin
     t.Dependencies.AddUnit('cocoascrollers');
     t.Dependencies.AddUnit('cocoawsclipboard');
     t.Dependencies.AddUnit('cocoawschecklst');
+    t.Dependencies.AddUnit('cocoawscomboex');
     t.Dependencies.AddUnit('cocoadatepicker');
 
     P.Targets.AddImplicitUnit('carbon/agl.pp');
@@ -708,6 +709,7 @@ begin
     P.Targets.AddImplicitUnit('cocoa/cocoascrollers.pas');
     P.Targets.AddImplicitUnit('cocoa/cocoawsclipboard.pas');
     P.Targets.AddImplicitUnit('cocoa/cocoawschecklst.pas');
+    P.Targets.AddImplicitUnit('cocoa/cocoawscomboex.pas');
     P.Targets.AddImplicitUnit('cocoa/cocoadatepicker.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled

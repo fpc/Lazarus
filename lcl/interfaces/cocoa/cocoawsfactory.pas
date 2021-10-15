@@ -5,9 +5,10 @@ unit CocoaWSFactory;
 interface
 
 uses
-  Classes, Controls, ComCtrls, StdCtrls, Spin, PairSplitter,
+  Classes, Controls, ComboEx, ComCtrls, StdCtrls, Spin, PairSplitter,
   Dialogs, ExtCtrls, Buttons, CheckLst, Forms, Menus, Calendar,
   WSLCLClasses,
+  CocoaWSComboEx,
   CocoaWSCommon,
   CocoaWSButtons,
   CocoaWSExtCtrls,
@@ -568,12 +569,14 @@ end;
 // ComboEx
 function RegisterCustomComboBoxEx: Boolean; alias : 'WSRegisterCustomComboBoxEx';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomComboBoxEx, TCocoaWSCustomComboBoxEx);
+  Result := True;
 end;
 
 function RegisterCustomCheckCombo: Boolean; alias : 'WSRegisterCustomCheckCombo';
 begin
-  Result := False;
+  RegisterWSComponent(TCustomCheckCombo, TCocoaWSCustomCheckCombo);
+  Result := True;
 end;
 
 // LazDeviceAPIs
