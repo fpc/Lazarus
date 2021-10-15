@@ -239,7 +239,12 @@ end;
 
 procedure TTestMask.TestDisableRange;
 begin
+  TestMaskDisableRange('a[b]c', 'a[b]c', True); // [] is now literal.
+  // Wildcard syntax should still work.
   TestMaskDisableRange('a[b]c', '?[b]?', True);
+  TestMaskDisableRange('abc', 'a*', True);
+  TestMaskDisableRange('abc', '?b?', True);
+
   TestMaskDisableRange('abc', '?[b]?', False);
   TestMaskDisableRange('c', '[c]', False);
 end;

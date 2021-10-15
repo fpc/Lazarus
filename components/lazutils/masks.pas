@@ -154,6 +154,10 @@ const
 
 type
 
+  // Backwards compatible options.
+  TMaskOption = (moCaseSensitive, moDisableSets);
+  TMaskOptions = set of TMaskOption;
+
   { TMaskBase }
 
   TMaskBase = class
@@ -189,6 +193,7 @@ type
   public
     constructor Create(aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+    constructor Create(aOptions: TMaskOptions);
   public
     property CaseSensitive: Boolean read cCaseSensitive;
     property EscapeChar: Char read cMaskEscapeChar write SetMaskEscapeChar;
@@ -214,6 +219,8 @@ type
   public
     constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+    constructor Create(const aMask: RawByteString; aOptions: TMaskOptions);
+
     procedure Compile; override;
     function Matches(const aStringToMatch: RawByteString): Boolean; virtual;
   public
@@ -234,7 +241,9 @@ type
       out aFileName: RawByteString; out aExtension: RawByteString; aIsMask: Boolean=False); static;
   public
     constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False;
+      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
       aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksDefaultAllowed);
+
     procedure Compile; override;
     function Matches(const aFileName: RawByteString): Boolean; override;
   public
@@ -261,10 +270,13 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: String; ASeparator: Char=';'; CaseSensitive: Boolean=False;
+    constructor Create(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
-    constructor CreateWindows(const AValue: String; ASeparator: Char; CaseSensitive: Boolean);
-    constructor CreateSysNative(const AValue: String; ASeparator: Char; CaseSensitive: Boolean);
+    constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
+    constructor CreateWindows(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
+      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+    constructor CreateWindows(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
+    constructor CreateSysNative(const aValue: String; aSeparator: Char; CaseSensitive: Boolean);
     destructor Destroy; override;
 
     function Matches(const AFileName: String): Boolean;
@@ -278,16 +290,35 @@ type
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
-function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False): Boolean;
+function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
+
+function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
+  aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
+  aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksDefaultAllowed): Boolean;
+function MatchesWindowsMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
 
 function MatchesMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
+function MatchesMaskList(const FileName, Mask: String; Separator: Char;
+  Options: TMaskOptions): Boolean;
+
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
-  CaseSensitive: Boolean=False): Boolean;
+  CaseSensitive: Boolean=False;
+  aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
+  Options: TMaskOptions): Boolean;
 
 
 implementation
+
+function EncodeDisableRange(Options: TMaskOptions): TMaskOpcodesSet;
+begin
+  if moDisableSets in Options then
+    Result:=MaskOpCodesDisableRange
+  else
+    Result:=MaskOpCodesDefaultAllowed;
+end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean;
   aOpcodesAllowed: TMaskOpcodesSet): Boolean;
@@ -302,16 +333,27 @@ begin
   end;
 end;
 
-function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean): Boolean;
+function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
+begin
+  MatchesMask(FileName, Mask, moCaseSensitive in Options, EncodeDisableRange(Options));
+end;
+
+function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean;
+  aOpcodesAllowed: TMaskOpcodesSet; aWindowsQuirksAllowed: TWindowsQuirkSet): Boolean;
 var
   AMask: TMaskWindows;
 begin
-  AMask := TMaskWindows.Create(Mask, CaseSensitive);
+  AMask := TMaskWindows.Create(Mask, CaseSensitive, aOpcodesAllowed, aWindowsQuirksAllowed);
   try
     Result := AMask.Matches(FileName);
   finally
     AMask.Free;
   end;
+end;
+
+function MatchesWindowsMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
+begin
+  MatchesWindowsMask(FileName, Mask, moCaseSensitive in Options, EncodeDisableRange(Options));
 end;
 
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
@@ -327,17 +369,31 @@ begin
   end;
 end;
 
+function MatchesMaskList(const FileName, Mask: String; Separator: Char;
+  Options: TMaskOptions): Boolean;
+begin
+  MatchesMaskList(FileName, Mask, Separator, moCaseSensitive in Options,
+                  EncodeDisableRange(Options));
+end;
+
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
-  CaseSensitive: Boolean): Boolean;
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet): Boolean;
 var
   AMaskList: TMaskList;
 begin
-  AMaskList := TMaskList.CreateWindows(Mask, Separator, CaseSensitive);
+  AMaskList := TMaskList.CreateWindows(Mask, Separator, CaseSensitive, aOpcodesAllowed);
   try
     Result := AMaskList.Matches(FileName);
   finally
     AMaskList.Free;
   end;
+end;
+
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
+  Options: TMaskOptions): Boolean;
+begin
+  MatchesWindowsMaskList(FileName, Mask, Separator, moCaseSensitive in Options,
+                         EncodeDisableRange(Options));
 end;
 
 { EMaskError }
@@ -446,9 +502,14 @@ end;
 
 constructor TMaskBase.Create(aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
 begin
-  cMaskOpcodesAllowed:=aOpcodesAllowed;
   cCaseSensitive:=aCaseSensitive;
+  cMaskOpcodesAllowed:=aOpcodesAllowed;
   cMaskEscapeChar:='\';
+end;
+
+constructor TMaskBase.Create(aOptions: TMaskOptions);
+begin
+  Create(moCaseSensitive in aOptions, EncodeDisableRange(aOptions));
 end;
 
 { TMask }
@@ -820,6 +881,12 @@ begin
   cOriginalMask:=aMask;
 end;
 
+constructor TMaskUTF8.Create(const aMask: RawByteString; aOptions: TMaskOptions);
+begin
+  inherited Create(aOptions);
+  cOriginalMask:=aMask;
+end;
+
 function TMaskUTF8.Matches(const aStringToMatch: RawByteString): Boolean;
 begin
   if not cMaskIsCompiled then Compile;
@@ -865,12 +932,12 @@ begin
   end;
 end;
 
-constructor TMaskUTF8Windows.Create(const aMask: RawByteString;
-  aCaseSensitive: Boolean; aWindowsQuirksAllowed: TWindowsQuirkSet);
+constructor TMaskUTF8Windows.Create(const aMask: RawByteString; aCaseSensitive: Boolean;
+  aOpcodesAllowed: TMaskOpcodesSet; aWindowsQuirksAllowed: TWindowsQuirkSet);
 begin
   cMaskWindowsQuirkAllowed:=aWindowsQuirksAllowed;
   cWindowsMask:=aMask;
-  inherited Create(aMask,aCaseSensitive,MaskOpCodesDefaultAllowed);
+  inherited Create(aMask,aCaseSensitive,aOpcodesAllowed);
   Compile;
 end;
 
@@ -1006,7 +1073,7 @@ end;
 
 { TMaskList }
 
-constructor TMaskList.Create(const AValue: String; ASeparator: Char;
+constructor TMaskList.Create(const aValue: String; aSeparator: Char;
   CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
 var
   S: TParseStringList;
@@ -1014,7 +1081,7 @@ var
 begin
   FMasks := TObjectList.Create(True);
   FWindowsMasks := TObjectList.Create(True);
-  S := TParseStringList.Create(AValue, ASeparator);
+  S := TParseStringList.Create(aValue, aSeparator);
   try
     for I := 0 to S.Count-1 do begin
       FMasks.Add(TMask.Create(S[I], CaseSensitive, aOpcodesAllowed));
@@ -1026,7 +1093,21 @@ begin
   end;
 end;
 
-constructor TMaskList.CreateWindows(const AValue: String; ASeparator: Char; CaseSensitive: Boolean);
+constructor TMaskList.Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
+var
+  CaseSens: Boolean;
+  Opcodes: TMaskOpcodesSet;
+begin
+  CaseSens:=moCaseSensitive in aOptions;
+  if moDisableSets in aOptions then
+    Opcodes:=MaskOpCodesDisableRange
+  else
+    Opcodes:=MaskOpCodesDefaultAllowed;
+  Create(aValue, aSeparator, CaseSens, Opcodes);
+end;
+
+constructor TMaskList.CreateWindows(const aValue: String; aSeparator: Char;
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
 var
   S: TParseStringList;
   I: Integer;
@@ -1035,13 +1116,20 @@ begin
   S := TParseStringList.Create(AValue, ASeparator);
   try
     for I := 0 to S.Count-1 do
-      FMasks.Add(TMaskWindows.Create(S[I], CaseSensitive));
+      FMasks.Add(TMaskWindows.Create(S[I], CaseSensitive, aOpcodesAllowed));
   finally
     S.Free;
   end;
 end;
 
-constructor TMaskList.CreateSysNative(const AValue: String; ASeparator: Char; CaseSensitive: Boolean);
+constructor TMaskList.CreateWindows(const aValue: String; aSeparator: Char;
+  aOptions: TMaskOptions);
+begin
+  CreateWindows(aValue, aSeparator, moCaseSensitive in aOptions, EncodeDisableRange(aOptions));
+end;
+
+constructor TMaskList.CreateSysNative(const aValue: String; aSeparator: Char;
+  CaseSensitive: Boolean);
 begin
   {$IFDEF Windows}
   CreateWindows(AValue, ASeparator, CaseSensitive);
