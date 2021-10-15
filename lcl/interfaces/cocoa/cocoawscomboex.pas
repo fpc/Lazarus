@@ -18,9 +18,9 @@ uses
   ComboEx, WSComboEx;
 
 type
-  { TCocoaCustomComboBoxEx }
+  { TCocoaWSCustomComboBoxEx }
 
-  TCocoaCustomComboBoxEx = class(TWSCustomComboBoxEx)
+  TCocoaWSCustomComboBoxEx = class(TWSCustomComboBoxEx)
   published
     class function GetFocusedEditableMainItemNoDD(const ACombo: TCustomComboboxEx;
       ADroppedDown, AMainItem: Boolean): boolean; override;
@@ -55,11 +55,10 @@ begin
   Result := ACombo.Focused and (ALeft > 0) and not ADroppedDown;
 end;
 
-class procedure TWin32WSCustomCheckCombo.GetRejectToggleOnSelect(
-  const ACombo: TCustomCheckCombo; var AResult: Boolean);
- begin
-   if ACombo.DroppedDown then AResult := true;
-//   AResult := false;
- end;
+class function TCocoaWSCustomCheckCombo.GetRejectDropdown(
+  const ACombo: TCustomCheckCombo; ALeft, ARight: Integer): Boolean;
+begin
+  Result := false;
+end;
 
 end.
