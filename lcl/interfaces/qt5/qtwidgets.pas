@@ -61,7 +61,8 @@ type
   TQtWidgetState = (qtwsColorUpdating, qtwsFontUpdating, qtwsSizeUpdating,
     qtwsPositionUpdating, qtwsInsideRightMouseButtonPressEvent,
     qtwsHiddenInsideRightMouseButtonPressEvent,
-    qtwsForceSendMove {mantis #34589 , LM_MOVE from ScrollWindowEx(SW_SCROLLCHILDREN)});
+    qtwsForceSendMove {mantis #34589 , LM_MOVE from ScrollWindowEx(SW_SCROLLCHILDREN)},
+    qtwsInsideMouseDoubleClickEvent {issue #27384 - do not lock system with capture});
 
   TQtWidgetStates = set of TQtWidgetState;
 
@@ -3710,26 +3711,41 @@ begin
       if (QEvent_type(Event) = QEventMouseButtonPress) and
           (MButton = QtRightButton) then
         Include(FWidgetState, qtwsInsideRightMouseButtonPressEvent);
-      try
       {$ENDIF}
+      if (QEvent_type(Event) = QEventMouseButtonDblClick) and
+        (MButton = QtLeftButton) then
+      begin
+        if FChildOfComplexWidget in
+          [ccwAbstractScrollArea, ccwCustomControl, ccwScrollingWinControl, ccwScrollingWindow] then
+            Include(FOwner.FWidgetState, qtwsInsideMouseDoubleClickEvent);
+        Include(FWidgetState, qtwsInsideMouseDoubleClickEvent);
+      end;
+      try
 
-      NotifyApplicationUserInput(LCLObject, Msg.Msg);
+        NotifyApplicationUserInput(LCLObject, Msg.Msg);
 
-      if not CanSendLCLMessage or (Sender = nil) then
-        exit(True);
+        if not CanSendLCLMessage or (Sender = nil) then
+          exit(True);
 
-      DeliverMessage(Msg, True);
+        DeliverMessage(Msg, True);
 
-      {$IFDEF MSWINDOWS}
       finally
+        if qtwsInsideMouseDoubleClickEvent in FWidgetState then
+        begin
+          if FChildOfComplexWidget in
+            [ccwAbstractScrollArea, ccwCustomControl, ccwScrollingWinControl, ccwScrollingWindow] then
+              Exclude(FOwner.FWidgetState, qtwsInsideMouseDoubleClickEvent);
+          Exclude(FWidgetState, qtwsInsideMouseDoubleClickEvent);
+        end;
+        {$IFDEF MSWINDOWS}
         if (QEvent_type(Event) = QEventMouseButtonPress) and
           (MButton = QtRightButton) then
         begin
           Exclude(FWidgetState, qtwsInsideRightMouseButtonPressEvent);
           Exclude(FWidgetState, qtwsHiddenInsideRightMouseButtonPressEvent);
         end;
+        {$ENDIF}
       end;
-      {$ENDIF}
 
       // Check if our objects exists since LCL can destroy object during
       // mouse events...

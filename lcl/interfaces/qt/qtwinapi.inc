@@ -6059,7 +6059,13 @@ begin
       end else
         Windows.SetCapture(QWidget_winID(TQtWidget(AHandle).Widget));
       {$ELSE}
-      TQtWidget(AHandle).grabMouse();
+      if qtwsInsideMouseDoubleClickEvent in TQtWidget(AHandle).WidgetState then
+        // issue #27384
+        {$IFDEF DebugQtFocus}
+        DebugLn('TQtWidgetSet.SetCapture: Avoid system lock, setting capture inside mouse dbl click.',dbgsName(TQtWidget(AHandle)))
+        {$ENDIF}
+      else
+        TQtWidget(AHandle).grabMouse();
       {$ENDIF}
     end;
     {$ifdef VerboseQtWinAPI}
