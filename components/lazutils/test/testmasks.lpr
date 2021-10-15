@@ -147,6 +147,7 @@ begin
   TestMask('abcde', 'a*d*e', True);
   TestMask('abcde', 'a*c*e', True);
   TestMask('abcde', 'a*b*e', True);
+  TestMask('abc.pas.bak', '*.bak', True);
 
   TestMask('äöæ獵豹☺', '*', True);         // Unicode
   TestMask('äöæ獵豹☺', 'ä*☺', True);
@@ -173,6 +174,7 @@ begin
   TestMask('abc.txt', '.*', False);
   TestMask('abc.txt', '*.', False);
   TestMask('abc', '*.', False);
+  TestMask('abc.pas.bak', '*.pas', False);
 
   TestMask('äöæ獵豹☺', 'ä*獵豹', False);   // Unicode
   TestMask('äöæ獵豹☺', 'ä*æ*獵豹', False);
@@ -285,6 +287,7 @@ begin
   TestWindowsMask('abcd.txt', 'abc???.*', True);
   TestWindowsMask('abcd.txt', 'abc???.txt?', True);
   TestWindowsMask('abcd.txt', 'abc*', True);
+  TestWindowsMask('abc.pas.bak', '*.bak', True);
   TestWindowsMask('C:\x', 'C:\x', True);
   TestWindowsMask('C:\ab[c]d', 'C:*[*]*', True);
   TestWindowsMask('', '*', True);
@@ -293,6 +296,7 @@ begin
   TestWindowsMask('abcd.txt', '*.txtx', False);
   TestWindowsMask('abc.txt', '*.', False);
   TestWindowsMask('abc.txt', '.*', False);
+  TestWindowsMask('abc.pas.bak', '*.pas', False);
   TestWindowsMask('abc', '.*', False);
   TestWindowsMask('x \ y', '? \\ ?', False);
   TestWindowsMask('', 'a', False);

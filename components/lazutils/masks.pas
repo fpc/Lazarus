@@ -203,28 +203,28 @@ type
 
   TMaskUTF8 = class (TMaskBase)
   private
-    cMatchString: RawByteString;
+    cMatchString: String;
     // Used by Compile.
     FMaskInd: Integer;
     FCPLength: integer;
     FLastOC: TMaskOpCode;
-    FMask: RawByteString;
+    FMask: String;
     procedure AddAnyChar;
     procedure AddLiteral;
     procedure CompileRange;
   protected
-    cOriginalMask: RawByteString;
+    cOriginalMask: String;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
   public
-    constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False;
+    constructor Create(const aMask: String; aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
-    constructor Create(const aMask: RawByteString; aOptions: TMaskOptions);
+    constructor Create(const aMask: String; aOptions: TMaskOptions);
 
     procedure Compile; override;
-    function Matches(const aStringToMatch: RawByteString): Boolean; virtual;
+    function Matches(const aStringToMatch: String): Boolean; virtual;
   public
-    property Mask: RawByteString read cOriginalMask write cOriginalMask;
+    property Mask: String read cOriginalMask write cOriginalMask;
     property OPCodesAllowed: TMaskOpcodesSet read cMaskOpcodesAllowed;// write cMaskOpcodesAllowed;
   end;
 
@@ -236,18 +236,18 @@ type
   protected
     cMaskWindowsQuirkAllowed: TWindowsQuirkSet;
     cMaskWindowsQuirkInUse: TWindowsQuirkSet;
-    cWindowsMask: RawByteString;
-    class procedure SplitFileNameExtension(const aSourceFileName: RawByteString;
-      out aFileName: RawByteString; out aExtension: RawByteString; aIsMask: Boolean=False); static;
+    cWindowsMask: String;
+    class procedure SplitFileNameExtension(const aSourceFileName: String;
+      out aFileName: String; out aExtension: String; aIsMask: Boolean=False); static;
   public
-    constructor Create(const aMask: RawByteString; aCaseSensitive: Boolean=False;
+    constructor Create(const aMask: String; aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
       aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksDefaultAllowed);
 
     procedure Compile; override;
-    function Matches(const aFileName: RawByteString): Boolean; override;
+    function Matches(const aFileName: String): Boolean; override;
   public
-    property Mask: RawByteString read cWindowsMask write cWindowsMask;
+    property Mask: String read cWindowsMask write cWindowsMask;
     property Quirks: TWindowsQuirkSet read cMaskWindowsQuirkAllowed;// write cMaskWindowsQuirkAllowed;
   end;
 
@@ -874,20 +874,20 @@ begin
     Result:=TMaskFailCause.MatchStringExhausted;
 end;
 
-constructor TMaskUTF8.Create(const aMask: RawByteString;
+constructor TMaskUTF8.Create(const aMask: String;
   aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
 begin
   inherited Create(aCaseSensitive,aOpcodesAllowed);
   cOriginalMask:=aMask;
 end;
 
-constructor TMaskUTF8.Create(const aMask: RawByteString; aOptions: TMaskOptions);
+constructor TMaskUTF8.Create(const aMask: String; aOptions: TMaskOptions);
 begin
   inherited Create(aOptions);
   cOriginalMask:=aMask;
 end;
 
-function TMaskUTF8.Matches(const aStringToMatch: RawByteString): Boolean;
+function TMaskUTF8.Matches(const aStringToMatch: String): Boolean;
 begin
   if not cMaskIsCompiled then Compile;
   if cCaseSensitive then
@@ -905,8 +905,8 @@ end;
 { TMaskWindows }
 
 class procedure TMaskUTF8Windows.SplitFileNameExtension(
-  const aSourceFileName: RawByteString; out aFileName: RawByteString;
-  out aExtension: RawByteString; aIsMask: Boolean);
+  const aSourceFileName: String; out aFileName: String;
+  out aExtension: String; aIsMask: Boolean);
 var
   j: Integer;
   lLowLimit: integer;
@@ -932,7 +932,7 @@ begin
   end;
 end;
 
-constructor TMaskUTF8Windows.Create(const aMask: RawByteString; aCaseSensitive: Boolean;
+constructor TMaskUTF8Windows.Create(const aMask: String; aCaseSensitive: Boolean;
   aOpcodesAllowed: TMaskOpcodesSet; aWindowsQuirksAllowed: TWindowsQuirkSet);
 begin
   cMaskWindowsQuirkAllowed:=aWindowsQuirksAllowed;
@@ -943,7 +943,7 @@ end;
 
 procedure TMaskUTF8Windows.Compile;
 
-  function OptionalQMarksAtEnd(aMask: RawByteString): RawByteString;
+  function OptionalQMarksAtEnd(aMask: String): String;
   var
     lCounter: integer;
     k: integer;
@@ -960,7 +960,7 @@ procedure TMaskUTF8Windows.Compile;
     Result:=aMask;
   end;
 
-  function EscapeSpecialChars(const aString: RawByteString): RawByteString;
+  function EscapeSpecialChars(const aString: String): String;
   var
     j: integer;
   begin
@@ -974,9 +974,9 @@ procedure TMaskUTF8Windows.Compile;
   end;
 
 var
-  lFileNameMask: RawByteString;
-  lExtensionMask: RawByteString;
-  lModifiedMask: RawByteString;
+  lFileNameMask: String;
+  lExtensionMask: String;
+  lModifiedMask: String;
 
 begin
   lModifiedMask:=cWindowsMask;
@@ -1037,9 +1037,9 @@ begin
   inherited Compile;
 end;
 
-function TMaskUTF8Windows.Matches(const aFileName: RawByteString): Boolean;
+function TMaskUTF8Windows.Matches(const aFileName: String): Boolean;
 var
-  lFileName, lExtension: RawByteString;
+  lFileName, lExtension: String;
 begin
   if eWindowsQuirk_NoExtension in cMaskWindowsQuirkInUse then begin
     SplitFileNameExtension(aFileName,lFileName,lExtension,false);
