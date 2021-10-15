@@ -311,6 +311,12 @@ const
    LCLQt_PopupMenuTriggered = QEventType(Ord(QEventUser) + $1003);
    // QEventType(Ord(QEventUser) + $1004 is reserved by
    // LCLQt_ClipboardPrimarySelection (qtobjects) to reduce includes !
+   LCLQt_ApplicationActivate = QEventType(Ord(QEventUser) + $1005);
+   // deactivate sent from qt
+   LCLQt_ApplicationDeactivate = QEventType(Ord(QEventUser) + $1006);
+   // deactivate sent from LCLQt_ApplicationDeactivate to check it twice
+   // instead of using timer.
+   LCLQt_ApplicationDeactivate_Check = QEventType(Ord(QEventUser) + $1007);
 
    // needed by itemviews (TQtListWidget, TQtTreeWidget)
    LCLQt_ItemViewAfterMouseRelease = QEventType(Ord(QEventUser) + $1008);
