@@ -9,6 +9,21 @@
       <SearchPaths>
         <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Conditionals Value="if(GetProjValue(&apos;FPC_FULLVERSION&apos;) > 30200) and
+  (GetProjValue(&apos;FPC_FULLVERSION&apos;) &lt; 30204)
+then begin
+CustomOptions := &apos;-OoNOPEEPHOLE&apos; ;
+end;
+
+// example for adding linker options on Mac OS X
+//if TargetOS=&apos;darwin&apos; then
+//  LinkerOptions := &apos; -framework OpenGL&apos;;
+
+// example for adding a unit and include path on Windows
+//if SrcOS=&apos;win&apos; then begin
+//  UnitPath += &apos;;win&apos;;
+//  IncPath += &apos;;win&apos;;
+//end;"/>
       <Other>
         <CompilerMessages>
           <IgnoredMessages idx6058="True" idx3123="True"/>
