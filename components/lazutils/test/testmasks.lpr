@@ -35,8 +35,9 @@ type
     procedure Test;
     procedure TestMask(const S, Mask: String; Result: Boolean);
     procedure TestMaskDisableRange(const S, Mask: String; Result: Boolean);
+    procedure TestMaskLegacy(const S, Mask: String; Result: Boolean);
+    procedure TestMaskWindows(const S, Mask: String; Result: Boolean);
     procedure TestMaskException(const S, Mask: String; AFail: Boolean);
-    procedure TestWindowsMask(const S, Mask: String; Result: Boolean);
   published
     procedure TestMaskSyntax;
     procedure TestNil;
@@ -45,6 +46,7 @@ type
     procedure TestCharSet;
     procedure TestDisableRange;
     procedure TestCase;
+    procedure TestLegacy;
     procedure TestSpecial;
     procedure TestWindows;
   end;
@@ -52,6 +54,27 @@ type
 procedure TTestMask.Test;
 begin
   MatchesMask(FS, FMask);
+end;
+
+procedure TTestMask.TestMask(const S, Mask: String; Result: Boolean);
+begin
+  AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesMask(S, Mask));
+end;
+
+procedure TTestMask.TestMaskDisableRange(const S, Mask: String; Result: Boolean);
+begin
+  AssertEquals(S + ' match ' + Mask + ': ', Result,
+               MatchesMask(S, Mask, False, MaskOpCodesDisableRange));
+end;
+
+procedure TTestMask.TestMaskLegacy(const S, Mask: String; Result: Boolean);
+begin
+  AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesMaskLegacy(S, Mask));
+end;
+
+procedure TTestMask.TestMaskWindows(const S, Mask: String; Result: Boolean);
+begin
+  AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesWindowsMask(S, Mask));
 end;
 
 procedure TTestMask.TestMaskException(const S, Mask: String; AFail: Boolean);
@@ -94,17 +117,6 @@ begin
   TestMaskException('', '[a-]', True);
   //TestMaskException('', '[-a]', True);
   //TestMaskException('', '[--a]', True);
-end;
-
-procedure TTestMask.TestMask(const S, Mask: String; Result: Boolean);
-begin
-  AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesMask(S, Mask));
-end;
-
-procedure TTestMask.TestMaskDisableRange(const S, Mask: String; Result: Boolean);
-begin
-  AssertEquals(S + ' match ' + Mask + ': ', Result,
-               MatchesMask(S, Mask, False, MaskOpCodesDisableRange));
 end;
 
 procedure TTestMask.TestNil;
@@ -218,6 +230,7 @@ begin
   TestMask('c', '[!b]', True);
   TestMask('c', '[a-c]', True);
   TestMask('c', '[a-d]', True);
+  TestMask('c', '[d-a]', True);  // Reverse range
   TestMask('c', '[!a-b]', True);
   TestMask('c', '[abc]', True);
 
@@ -231,6 +244,7 @@ begin
   TestMask('c', '[a]', False);             // ASCII
   TestMask('c', '[!c]', False);
   TestMask('c', '[a-b]', False);
+  TestMask('c', '[z-d]', False);  // Reverse range
   TestMask('c', '[abd]', False);
 
   TestMask('ö', '[ä]', False);             // Unicode
@@ -258,6 +272,18 @@ begin
   TestMask('abcÖ', '*[äũö]', True);
 end;
 
+procedure TTestMask.TestLegacy;
+begin
+  TestMaskLegacy('a?c', '?[?]?', True);
+  TestMaskLegacy('C:\x', 'C:\x', True);
+
+  TestMaskLegacy('a?c', '?\??', False);
+  TestMaskLegacy('ab*.x', '??\*.x', False);
+  TestMaskLegacy('x \ y', '? \\ ?', False);
+  TestMaskLegacy('abc', '?[?]?', False);
+  TestMaskLegacy('a??d', '?[?]?', False);
+end;
+
 procedure TTestMask.TestSpecial;
 begin
   TestMask('a?c', '?[?]?', True);
@@ -267,40 +293,38 @@ begin
   TestMask('ab*.x', '??\*.x', True);
   TestMask('a[c]d', '?\[*', True);
   TestMask('x \ y', '? \\ ?', True);
+  TestMask('abcd', 'a[??]d', True);
+  TestMask('abd', 'a[??]d', True);
+  TestMask('ad', 'a[??]d', True);
 
   TestMask('C:\x', 'C:\x', False);
   TestMask('abcd', '?[?]?', False);
 end;
 
-procedure TTestMask.TestWindowsMask(const S, Mask: String; Result: Boolean);
-begin
-  AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesWindowsMask(S, Mask));
-end;
-
 procedure TTestMask.TestWindows;
 begin
-  TestWindowsMask('abc.txt', '*.*', True);
-  TestWindowsMask('abc', '*.*', True);
-  TestWindowsMask('abc.txt', '*', True);
-  TestWindowsMask('abc', '*', True);
-  TestWindowsMask('abc', '*.', True);
-  TestWindowsMask('abcd.txt', 'abc???.*', True);
-  TestWindowsMask('abcd.txt', 'abc???.txt?', True);
-  TestWindowsMask('abcd.txt', 'abc*', True);
-  TestWindowsMask('abc.pas.bak', '*.bak', True);
-  TestWindowsMask('C:\x', 'C:\x', True);
-  TestWindowsMask('C:\ab[c]d', 'C:*[*]*', True);
-  TestWindowsMask('', '*', True);
-  TestWindowsMask('', '?', True);
+  TestMaskWindows('abc.txt', '*.*', True);
+  TestMaskWindows('abc', '*.*', True);
+  TestMaskWindows('abc.txt', '*', True);
+  TestMaskWindows('abc', '*', True);
+  TestMaskWindows('abc', '*.', True);
+  TestMaskWindows('abcd.txt', 'abc???.*', True);
+  TestMaskWindows('abcd.txt', 'abc???.txt?', True);
+  TestMaskWindows('abcd.txt', 'abc*', True);
+  TestMaskWindows('abc.pas.bak', '*.bak', True);
+  TestMaskWindows('C:\x', 'C:\x', True);
+  TestMaskWindows('C:\ab[c]d', 'C:*[*]*', True);
+  TestMaskWindows('', '*', True);
+  TestMaskWindows('', '?', True);
 
-  TestWindowsMask('abcd.txt', '*.txtx', False);
-  TestWindowsMask('abc.txt', '*.', False);
-  TestWindowsMask('abc.txt', '.*', False);
-  TestWindowsMask('abc.pas.bak', '*.pas', False);
-  TestWindowsMask('abc', '.*', False);
-  TestWindowsMask('x \ y', '? \\ ?', False);
-  TestWindowsMask('', 'a', False);
-  TestWindowsMask('', '[a]', False);
+  TestMaskWindows('abcd.txt', '*.txtx', False);
+  TestMaskWindows('abc.txt', '*.', False);
+  TestMaskWindows('abc.txt', '.*', False);
+  TestMaskWindows('abc.pas.bak', '*.pas', False);
+  TestMaskWindows('abc', '.*', False);
+  TestMaskWindows('x \ y', '? \\ ?', False);
+  TestMaskWindows('', 'a', False);
+  TestMaskWindows('', '[a]', False);
 end;
 
 begin

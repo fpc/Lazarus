@@ -17,10 +17,6 @@ unit Masks;
 
 {$mode objfpc}{$H+}
 
-// RANGES_AUTOREVERSE
-// If reverse ranges if needed, so range "[z-a]" is interpreted as "[a-z]"
-{$DEFINE RANGES_AUTOREVERSE}
-
 interface
 
 uses
@@ -148,11 +144,21 @@ const
 
   MaskOpCodesDefaultAllowed=MaskOpCodesAllAllowed;
 
+  // Match [x] literally, not as a range.
   // Leave out eMaskOpcodeAnyCharOrNone, eMaskOpcodeRange and eMaskOpcodeOptionalChar.
   MaskOpCodesDisableRange=[eMaskOpcodeAnyChar,
                            eMaskOpcodeAnyText,
                            eMaskOpcodeNegateGroup,
                            eMaskOpcodeEscapeChar];
+
+  // Interpret [?] as literal question mark instead of 0..1 chars wildcard.
+  // Disable backslash escaping characters like "\?".
+  // Leave out eMaskOpcodeAnyCharOrNone and eMaskOpcodeEscapeChar
+  MaskOpCodesNoEscape=[eMaskOpcodeAnyChar,
+                       eMaskOpcodeAnyText,
+                       eMaskOpcodeRange,
+                       eMaskOpcodeOptionalChar,
+                       eMaskOpcodeNegateGroup];
 
 type
 
@@ -173,6 +179,7 @@ type
     procedure IncrementLastCounterBy(const aOpcode: TMaskOpCode; const aValue: integer);
   protected
     cCaseSensitive: Boolean;
+    cRangeAutoReverse: Boolean; // If enabled, range [z-a] is interpreted as [a-z]
     cMaskIsCompiled: Boolean;
     cMaskCompiled: TBytes;
     cMaskCompiledIndex: integer;
@@ -195,9 +202,11 @@ type
   public
     constructor Create(aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+    constructor CreateLegacy(aCaseSensitive: Boolean=False);
     constructor Create(aOptions: TMaskOptions);
   public
     property CaseSensitive: Boolean read cCaseSensitive;
+    property RangeAutoReverse: Boolean read cRangeAutoReverse write cRangeAutoReverse;
     property EscapeChar: Char read cMaskEscapeChar write SetMaskEscapeChar;
   end;
 
@@ -208,12 +217,14 @@ type
     cMatchString: String;
     // Used by Compile.
     FMaskInd: Integer;
-    FCPLength: integer;
-    FLastOC: TMaskOpCode;
+    FCPLength: integer;    // Size of codepoint.
+    FLastOC: TMaskOpCode;  // Last OpCode.
     FMask: String;
     procedure AddAnyChar;
     procedure AddLiteral;
+    procedure AddRange;
     procedure CompileRange;
+    procedure ReverseRange;
   protected
     cOriginalMask: String;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
@@ -221,7 +232,9 @@ type
   public
     constructor Create(const aMask: String; aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+    constructor CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aOptions: TMaskOptions);
+        deprecated 'Use CreateLegacy or Create with other params.'; // in Lazarus 2.3.
 
     procedure Compile; override;
     function Matches(const aStringToMatch: String): Boolean; virtual;
@@ -292,7 +305,9 @@ type
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
+function MatchesMaskLegacy(const FileName, Mask: String; CaseSensitive: Boolean=False): Boolean;
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
+    deprecated 'Use MatchesMaskLegacy or MatchesMask with other params.'; // in Lazarus 2.3.
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
@@ -304,22 +319,25 @@ function MatchesMaskList(const FileName, Mask: String; Separator: Char=';';
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
+    deprecated 'Use MatchesMaskList with other params.'; // in Lazarus 2.3.
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
+    deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3.
 
 
 implementation
 
 function EncodeDisableRange(Options: TMaskOptions): TMaskOpcodesSet;
+// Encode the Disable Range option from legacy TMaskOptions.
 begin
   if moDisableSets in Options then
     Result:=MaskOpCodesDisableRange
-  else
-    Result:=MaskOpCodesDefaultAllowed;
+  else  // Disable '\' escaping for legacy code.
+    Result:=MaskOpCodesNoEscape; //MaskOpCodesDefaultAllowed;
 end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean;
@@ -335,9 +353,16 @@ begin
   end;
 end;
 
+function MatchesMaskLegacy(const FileName, Mask: String; CaseSensitive: Boolean): Boolean;
+// Use [?] syntax for literal '?', no escaping chars with '\'.
+begin
+  Result := MatchesMask(FileName, Mask, CaseSensitive, MaskOpCodesNoEscape);
+end;
+
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
 begin
-  MatchesMask(FileName, Mask, moCaseSensitive in Options, EncodeDisableRange(Options));
+  Result := MatchesMask(FileName, Mask, moCaseSensitive in Options,
+                        EncodeDisableRange(Options));
 end;
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean;
@@ -355,7 +380,8 @@ end;
 
 function MatchesWindowsMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
 begin
-  MatchesWindowsMask(FileName, Mask, moCaseSensitive in Options, EncodeDisableRange(Options));
+  Result := MatchesWindowsMask(FileName, Mask, moCaseSensitive in Options,
+                               EncodeDisableRange(Options));
 end;
 
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
@@ -374,8 +400,8 @@ end;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
 begin
-  MatchesMaskList(FileName, Mask, Separator, moCaseSensitive in Options,
-                  EncodeDisableRange(Options));
+  Result := MatchesMaskList(FileName, Mask, Separator, moCaseSensitive in Options,
+                            EncodeDisableRange(Options));
 end;
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
@@ -394,8 +420,8 @@ end;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
 begin
-  MatchesWindowsMaskList(FileName, Mask, Separator, moCaseSensitive in Options,
-                         EncodeDisableRange(Options));
+  Result := MatchesWindowsMaskList(FileName, Mask, Separator, moCaseSensitive in Options,
+                                   EncodeDisableRange(Options));
 end;
 
 { EMaskError }
@@ -506,7 +532,14 @@ constructor TMaskBase.Create(aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpco
 begin
   cCaseSensitive:=aCaseSensitive;
   cMaskOpcodesAllowed:=aOpcodesAllowed;
+  cRangeAutoReverse:=True;
   cMaskEscapeChar:='\';
+end;
+
+constructor TMaskBase.CreateLegacy(aCaseSensitive: Boolean);
+// Use [?] syntax for literal '?', no escaping chars with '\'.
+begin
+  Create(aCaseSensitive, MaskOpCodesNoEscape);
 end;
 
 constructor TMaskBase.Create(aOptions: TMaskOptions);
@@ -533,6 +566,22 @@ begin
   if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
     inc(cMatchMaximumLiteralBytes,FCPLength);
   FLastOC:=TMaskOpCode.Literal;
+end;
+
+procedure TMaskUTF8.AddRange;
+begin
+  Add(FCPLength,@FMask[FMaskInd]);
+  inc(FMaskInd,FCPLength+1);  // Add 1 for "-"
+  FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
+  Add(FCPLength,@FMask[FMaskInd]);
+end;
+
+procedure TMaskUTF8.ReverseRange;
+begin
+  Add(UTF8CodepointSizeFast(@FMask[FMaskInd+FCPLength+1]),@FMask[FMaskInd+FCPLength+1]);
+  Add(FCPLength,@FMask[FMaskInd]);
+  inc(FMaskInd,FCPLength+1);
+  FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
 end;
 
 procedure TMaskUTF8.CompileRange;
@@ -596,26 +645,11 @@ begin
       // Check if it is a range
       Add(TMaskOpCode.Range);
       // Check if reverse range is needed
-      {$IFDEF RANGES_AUTOREVERSE}
-      if CompareUTF8Sequences(@FMask[FMaskInd],@FMask[FMaskInd+FCPLength+1])<0 then begin
-        Add(FCPLength,@FMask[FMaskInd]);
-        inc(FMaskInd,FCPLength);
-        inc(FMaskInd,1); // The "-"
-        FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
-        Add(FCPLength,@FMask[FMaskInd]);
-      end else begin
-        Add(UTF8CodepointSizeFast(@FMask[FMaskInd+FCPLength+1]),@FMask[FMaskInd+FCPLength+1]);
-        Add(FCPLength,@FMask[FMaskInd]);
-        inc(FMaskInd,FCPLength+1);
-        FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
-      end;
-      {$ELSE}
-        Add(lCPLength,@lMask[j]);
-        inc(j,lCPLength);
-        inc(j,1); // The "-"
-        lCPLength:=UTF8CodepointSizeFast(@lMask[j]);
-        Add(lCPLength,@lMask[j]);
-      {$ENDIF}
+      if (not cRangeAutoReverse)
+      or (CompareUTF8Sequences(@FMask[FMaskInd],@FMask[FMaskInd+FCPLength+1])<0) then
+        AddRange
+      else
+        ReverseRange;
       FLastOC:=TMaskOpCode.Range;
 
     end else if FMask[FMaskInd]=']' then begin
@@ -881,6 +915,12 @@ constructor TMaskUTF8.Create(const aMask: String;
 begin
   inherited Create(aCaseSensitive,aOpcodesAllowed);
   cOriginalMask:=aMask;
+end;
+
+constructor TMaskUTF8.CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
+// Use [?] syntax for literal '?', no escaping chars with '\'.
+begin
+  Create(aMask, aCaseSensitive, MaskOpCodesNoEscape);
 end;
 
 constructor TMaskUTF8.Create(const aMask: String; aOptions: TMaskOptions);
