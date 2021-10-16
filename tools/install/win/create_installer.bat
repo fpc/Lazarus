@@ -84,6 +84,7 @@ FOR /F %%L IN ('%RELEASE_PPC% -iTP') DO SET FPCTARGETCPU=%%L
 SET FPCFULLTARGET=%FPCTARGETCPU%-%FPCTARGETOS%
 
 SET FPCBINDIR=%FPCGITDIR%\install\binw%FPCTARGETOS:~-2%
+SET FPCBINTREE=install/binw%FPCTARGETOS:~-2%
 SET MAKEEXE=%FPCBINDIR%\make.exe
 SET PATCHEXE=%FPCGITDIR%\install\binw32\patch.exe
 SET LOGFILE=%CD%\installer.log
@@ -140,8 +141,9 @@ call build-fpc.bat
 
 :: INSTALL_BINDIR is set by build-fpc.bat
 mkdir %BUILDDIR%\fpcbins
-%GIT% -C %FPCBINDIR% --work-tree=%BUILDDIR%\fpcbins restore . >> %LOGFILE%
+%GIT% -C %FPCGITDIR% --work-tree=%BUILDDIR%\fpcbins restore --source=HEAD:%FPCBINTREE% . >> %LOGFILE%
 IF %ERRORLEVEL% NEQ 0 GOTO GITERR
+mv -f %BUILDDIR%\fpcbins\*.* %INSTALL_BINDIR%
 %FPCBINDIR%\rm -rf %BUILDDIR%\fpcbins
 del %INSTALL_BINDIR%\gdb.exe
 :: copy from 32 bit, missing in 64bit
