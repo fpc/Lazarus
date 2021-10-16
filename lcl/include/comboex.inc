@@ -359,7 +359,8 @@ begin  { do not call inherited ! }
   aDropped:=DroppedDown;
   aEnabled:=IsEnabled;
   aMainItem:= (ARect.Left>0);
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+//  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+  {$IF DEFINED(MSWindows) or DEFINED(Darwin)}
   aFocusedEditableMainItemNoDD := (Focused and aMainItem and not aDropped);
   {$ELSE}
   aFocusedEditableMainItemNoDD := False;
@@ -608,7 +609,8 @@ begin  { do not call inherited ! }
   aEnabled:=IsEnabled;
   if not (csDesigning in ComponentState) then
     aEnabled:= (aEnabled and ItemState.Enabled);
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+//  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+  {$IF DEFINED(MSWindows) or DEFINED(Darwin))}
   aFocusedEditableMainItemNoDD := (Focused and (ARect.Left>0) and not aDropped);
   {$ELSE}
   aFocusedEditableMainItemNoDD := False;
@@ -686,13 +688,15 @@ begin  { do not call inherited ! }
 end;
 
 procedure TCustomCheckCombo.DropDown;
-{$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+//{$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+{$IF DEFINED(MSWindows) or DEFINED(Darwin)}
 {$ELSE}
 var aCursorPos: TPoint;
     aRect: TRect;
 {$ENDIF}
 begin
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+//  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+  {$IF DEFINED(MSWindows) or DEFINED(Darwin)}
   FRejectDropDown:=False;
   {$ELSE}
   aCursorPos:=ScreenToControl(Mouse.CursorPos);
@@ -800,7 +804,8 @@ end;
 procedure TCustomCheckCombo.Select;
 begin
   inherited Select;
-  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+//  {$IF DEFINED(LCLWin32) or DEFINED(LCLWin64)}
+  {$IF DEFINED(MSWindows)}  // no DEFINED(Darwin) here!
   if DroppedDown then FRejectToggleOnSelect:=True;
   {$ENDIF}
   if not FRejectToggleOnSelect then
