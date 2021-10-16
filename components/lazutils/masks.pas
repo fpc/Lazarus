@@ -108,6 +108,7 @@ type
     --eWindowsQuirk_Extension3More
       Anything.abc    = Matches "Anything.abc" but also "Anything.abc*" (3 char extension)
       Anything.ab     = Matches "Anything.ab" and never "anything.abcd"
+      *.pas           = Matches "Unit1.pas.bak". Not good.
 
     --eWindowsQuirk_EmptyIsAny
       ""              = Empty string matches anything "*"
@@ -125,24 +126,25 @@ type
 
 const
   WindowsQuirksAllAllowed=[eWindowsQuirk_AnyExtension,
-                            eWindowsQuirk_FilenameEnd,
-                            eWindowsQuirk_Extension3More,
-                            eWindowsQuirk_EmptyIsAny,
-                            eWindowsQuirk_AllByExtension,
-                            eWindowsQuirk_NoExtension];
+                           eWindowsQuirk_FilenameEnd,
+                           eWindowsQuirk_Extension3More,
+                           eWindowsQuirk_EmptyIsAny,
+                           eWindowsQuirk_AllByExtension,
+                           eWindowsQuirk_NoExtension];
+
+  // Leave out eWindowsQuirk_Extension3More and eWindowsQuirk_AllByExtension
   WindowsQuirksDefaultAllowed=[eWindowsQuirk_AnyExtension,
-                                eWindowsQuirk_FilenameEnd,
-                                eWindowsQuirk_Extension3More,
-                                eWindowsQuirk_EmptyIsAny,
-                                {eWindowsQuirk_AllByExtension,} // Not in use anymore
-                                eWindowsQuirk_NoExtension];
+                               eWindowsQuirk_FilenameEnd,
+                               eWindowsQuirk_EmptyIsAny,
+                               eWindowsQuirk_NoExtension];
+
   MaskOpCodesAllAllowed=[eMaskOpcodeAnyChar,
-                          eMaskOpcodeAnyCharOrNone,
-                          eMaskOpcodeAnyText,
-                          eMaskOpcodeRange,
-                          eMaskOpcodeOptionalChar,
-                          eMaskOpcodeNegateGroup,
-                          eMaskOpcodeEscapeChar];
+                         eMaskOpcodeAnyCharOrNone,
+                         eMaskOpcodeAnyText,
+                         eMaskOpcodeRange,
+                         eMaskOpcodeOptionalChar,
+                         eMaskOpcodeNegateGroup,
+                         eMaskOpcodeEscapeChar];
 
   MaskOpCodesDefaultAllowed=MaskOpCodesAllAllowed;
 
