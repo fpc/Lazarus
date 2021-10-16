@@ -73,6 +73,8 @@ if [ "x$Download" = "xyes" ]; then
   Revision=Exported
   cd $TmpDir
   svn export http://svn.freepascal.org/svn/lazarus/trunk $TmpLazDir
+#  git clone --depth=1 https://gitlab.com/freepascal.org/lazarus/lazarus.git  $TmpLazDir
+#  rm -rf $TmpLazDir/.git
   cd -
 else
   echo "extracting lazarus from local svn ..."
@@ -80,7 +82,8 @@ else
   #Revision=$(svnversion $LazSrcDir) - comment this out as svn no longer works
   Revision=$(git -C $LazSrcDir describe --always --first-parent)
   cd $TmpDir
-  cp -a $LazSrcDir $TmpLazDir #can't use svn export anymore
+#  cp -a $LazSrcDir $TmpLazDir #can't use svn export anymore
+  git -C $LazSrcDir --work-tree=$TmpLazDir restore .
   cd -
   if [ "$UseCHMHelp" = "1" ]; then
     echo
