@@ -793,7 +793,7 @@
       </element>
 
       <element name="CompareCaret">
-        <short>See ComparePoints</short>
+        <short>See ComparePoints.</short>
         <descr>
           <p>
             See ComparePoints.
@@ -810,131 +810,6 @@
         <short/>
       </element>
       <element name="CompareCaret.SecondCaret">
-        <short/>
-      </element>
-
-      <element name="CompareMethods">
-        <short>Returns true when both method references are equal.</short>
-        <descr>
-          Deprecated. Use LazMethodList.CompareMethods instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="CompareMethods.Result">
-        <short/>
-      </element>
-      <element name="CompareMethods.m1">
-        <short/>
-      </element>
-      <element name="CompareMethods.m2">
-      <short/>
-      </element>
-
-      <element name="ComparePointers">
-        <short/>
-        <descr>
-          Deprecated. Use LazUtilities.ComparePointers instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="ComparePointers.Result">
-        <short/>
-      </element>
-      <element name="ComparePointers.p1">
-        <short/>
-      </element>
-      <element name="ComparePointers.p2">
-        <short/>
-      </element>
-
-      <element name="RoundToInt">
-        <short>Returns the rounded value as an Integer.</short>
-        <descr>
-          Deprecated. Use LazUtilities.RoundToInt instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="RoundToInt.Result">
-        <short/>
-      </element>
-      <element name="RoundToInt.e">
-        <short/>
-      </element>
-
-      <element name="RoundToCardinal">
-        <short>Returns the rounded value as an Cardinal.</short>
-        <descr>
-          Deprecated. Use LazUtilities.RoundToCardinal instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="RoundToCardinal.Result">
-        <short/>
-      </element>
-      <element name="RoundToCardinal.e">
-        <short/>
-      </element>
-
-      <element name="TruncToInt">
-        <short>Returns the truncated value as an Integer.</short>
-        <descr>
-          Deprecated. Use LazUtilities.TruncToInt instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="TruncToInt.Result">
-        <short/>
-      </element>
-      <element name="TruncToInt.e">
-        <short/>
-      </element>
-
-      <element name="TruncToCardinal">
-        <short>Returns the rounded value as an Cardinal.</short>
-        <descr>
-          Deprecated. Use LazUtilities.TruncToCardinal instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="TruncToCardinal.Result">
-        <short/>
-      </element>
-      <element name="TruncToCardinal.e">
-        <short/>
-      </element>
-
-      <element name="StrToDouble">
-        <short>Converts an numeric string into an Double value.</short>
-        <descr>
-          Deprecated. Use LazUtilities.StrToDouble instead.
-        </descr>
-        <seealso/>
-        <version>
-          Deprecated in LCL version 2.1. Will be removed in version 2.3.
-        </version>
-      </element>
-      <element name="StrToDouble.Result">
-        <short/>
-      </element>
-      <element name="StrToDouble.s">
         <short/>
       </element>
 
