@@ -234,10 +234,12 @@ type
       aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
     constructor CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aOptions: TMaskOptions);
-        deprecated 'Use CreateLegacy or Create with other params.'; // in Lazarus 2.3.
+        deprecated 'Use CreateLegacy or Create with other params.'; // in Lazarus 2.3, remove in 2.5.
 
     procedure Compile; override;
     function Matches(const aStringToMatch: String): Boolean; virtual;
+    function MatchesWindowsMask(const AFileName: String): Boolean;
+        deprecated 'Create with TMaskWindows.Create, then call Matches.'; // in Lazarus 2.3, remove in 2.5.
   public
     property Mask: String read cOriginalMask write cOriginalMask;
     property OPCodesAllowed: TMaskOpcodesSet read cMaskOpcodesAllowed;// write cMaskOpcodesAllowed;
@@ -307,7 +309,7 @@ function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesMaskLegacy(const FileName, Mask: String; CaseSensitive: Boolean=False): Boolean;
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesMaskLegacy or MatchesMask with other params.'; // in Lazarus 2.3.
+    deprecated 'Use MatchesMaskLegacy or MatchesMask with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
@@ -319,14 +321,14 @@ function MatchesMaskList(const FileName, Mask: String; Separator: Char=';';
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesMaskList with other params.'; // in Lazarus 2.3.
+    deprecated 'Use MatchesMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3.
+    deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 
 implementation
@@ -942,6 +944,18 @@ begin
     Result:=intfMatches(1,0)=TMaskFailCause.Success
   else
     Result:=false; // There are too many or not enough bytes to match the string
+end;
+
+function TMaskUTF8.MatchesWindowsMask(const AFileName: String): Boolean;
+var
+  WinMask: TMaskUTF8Windows;
+begin
+  WinMask:=TMaskUTF8Windows.Create(cOriginalMask, CaseSensitive, OPCodesAllowed);
+  try
+    Result:=WinMask.Matches(AFileName);
+  finally
+    WinMask.Free;
+  end;
 end;
 
 { TMaskWindows }
