@@ -38,6 +38,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="LazDebuggerFp"/>
+      </Item>
+      <Item>
         <PackageName Value="SynEditDsgn"/>
       </Item>
       <Item>
