@@ -2,7 +2,6 @@
 <fpdoc-descriptions>
   <package name="LazControls">
     <module name="ListViewFilterEdit">
-      <short/>
       <short>Implements an edit control used to filter an associated TListView control.</short>
       <descr>
         <p>
