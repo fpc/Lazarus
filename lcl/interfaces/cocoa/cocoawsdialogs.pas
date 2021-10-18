@@ -130,7 +130,7 @@ type
     NSFilters: NSMutableArray;
     lastSelectedItemIndex: Integer; // -1 means invalid or none selected
     procedure updateFilterList(); message 'updateFilterList';
-    procedure setDialogFilter(ASelectedFilterIndex: Integer); message 'setDialogFilter:';
+    function setDialogFilter(ASelectedFilterIndex: Integer): Integer; message 'setDialogFilter:';
     procedure comboboxAction(sender: id); message 'comboboxAction:';
     // NSOpenSavePanelDelegateProtocol
     function panel_shouldEnableURL(sender: id; url: NSURL): LCLObjCBoolean; message 'panel:shouldEnableURL:';
@@ -351,7 +351,7 @@ var
       lFilter.lastSelectedItemIndex := 0
     else
       lFilter.lastSelectedItemIndex := FileDialog.FilterIndex-1;
-    lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
+    lFilter.lastSelectedItemIndex := lFilter.setDialogFilter(lFilter.lastSelectedItemIndex);
     lFilter.sizeToFit;
     lFilter.setAutoresizingMask(NSViewWidthSizable);
     if FileDialog.FilterIndex>0 then
@@ -868,7 +868,7 @@ begin
 end;
 
 // Generates NSFilters from Filters, for the currently selected combobox index
-procedure TCocoaFilterComboBox.setDialogFilter(ASelectedFilterIndex: Integer);
+function TCocoaFilterComboBox.setDialogFilter(ASelectedFilterIndex: Integer): Integer;
 var
   lCurFilter: TStringList;
   ns: NSString;
@@ -878,9 +878,16 @@ var
   ext : string;
   j   : integer;
 begin
-  if Filters = nil then Exit;
+  if (Filters = nil) or (Filters.Count=0) then
+  begin
+    Result := -1;
+    Exit;
+  end;
   if CocoaUseUTIFilter then
   begin
+    if (ASelectedFilterIndex < 0) or (ASelectedFilterIndex >= Filters.Count) then
+      ASelectedFilterIndex := 0;
+    Result := ASelectedFilterIndex;
     lCurFilter := TStringList(Filters.Objects[ASelectedFilterIndex]);
     NSFilters := NSMutableArray.alloc.init;
     for i:=0 to lCurFilter.Count-1 do
@@ -938,7 +945,9 @@ begin
       NSFilters.addObject(ns);
       ns.release;
     end;
-  end;
+    Result := ASelectedFilterIndex;
+  end else
+    Result := -1;
 
   DialogHandle.validateVisibleColumns();
   // work around for bug in validateVisibleColumns() in Mavericks till 10.10.2
