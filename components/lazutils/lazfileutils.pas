@@ -1541,20 +1541,11 @@ var
 begin
   Result:=Option;
   if (Result='') or (Result[1] in ['"','''']) then exit;
-  for i:=1 to length(Result) do begin
+  for i:=1 to length(Result) do
     case Result[i] of
-    ' ','''':
-      begin
-        Result:=AnsiQuotedStr(Result,'"');
-        exit;
-      end;
-    '"':
-      begin
-        Result:=AnsiQuotedStr(Result,'''');
-        exit;
-      end;
+      ' ','''': exit(AnsiQuotedStr(Result,'"'));
+      '"':      exit(AnsiQuotedStr(Result,''''));
     end;
-  end;
 end;
 {
 function AddCmdLineParameter(const CmdLine, AddParameter: string): string;

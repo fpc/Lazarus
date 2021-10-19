@@ -2807,9 +2807,8 @@ procedure TBuildManager.SetBuildTarget(const TargetOS, TargetCPU,
   begin
     if OverrideLCLWidgetType<>'' then
       Result:=OverrideLCLWidgetType
-    else if FBuildTarget<>nil then begin
+    else if FBuildTarget<>nil then
       Result:=FBuildTarget.CompilerOptions.GetEffectiveLCLWidgetType
-    end
     else
       Result:='';
     if (Result='') or (SysUtils.CompareText(Result,'default')=0) then
