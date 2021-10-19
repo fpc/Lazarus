@@ -21,7 +21,7 @@ interface
 
 uses
   Classes, types, Controls, ExtCtrls, Graphics, Forms, LCLType, LCLProc, LazUTF8,
-  qtobjects, qt4, qtproc, qtint;
+  qtobjects, qt4, qtint;
 
 type
   TSysTrayIconPaintData = record
@@ -36,11 +36,13 @@ type
   TQtSystemTrayIcon = class(TQtObject)
   private
     FSysTrayHook: QObject_hookH;
+    FDestroyedMenuHook: QObject_hookH;
     FHook: QSystemTrayIcon_hookH;
     FSysTrayWidget: QWidgetH;
     FCanvas: TCanvas;
     function BeginPaintInternal(var APaintData: TSysTrayIconPaintData): hdc;
     procedure EndPaintInternal(var APaintData: TSysTrayIconPaintData);
+    procedure DestroyedMenu; cdecl;
   public
     FTrayIcon: TCustomTrayIcon;
   public
@@ -110,6 +112,11 @@ begin
     QSystemTrayIcon_hook_destroy(FHook);
     FHook := nil;
   end;
+  if Assigned(FDestroyedMenuHook) then
+  begin
+    QObject_hook_Destroy(FDestroyedMenuHook);
+    FDestroyedMenuHook := nil;
+  end;
   inherited DetachEvents;
 end;
 
@@ -167,6 +174,13 @@ begin
   if APaintData.Context <> nil then
     APaintData.Context.Free;
   APaintData.Context := nil;
+end;
+
+procedure TQtSystemTrayIcon.DestroyedMenu; cdecl;
+begin
+  setContextMenu(nil);
+  if not (csDestroying in FTrayIcon.ComponentState) then
+    FTrayIcon.InternalUpdate;
 end;
 
 function TQtSystemTrayIcon.EventFilter(Sender: QObjectH; Event: QEventH): Boolean; cdecl;
@@ -244,6 +258,16 @@ end;
 
 procedure TQtSystemTrayIcon.setContextMenu(menu: QMenuH);
 begin
+  if menu <> nil then
+  begin
+    if Assigned(FDestroyedMenuHook) then
+    begin
+      QObject_hook_destroy(FDestroyedMenuHook);
+      FDestroyedMenuHook := nil;
+    end;
+    FDestroyedMenuHook := QObject_hook_create(menu);
+    QObject_hook_hook_destroyed(FDestroyedMenuHook, @DestroyedMenu);
+  end;
   QSystemTrayIcon_setContextMenu(QSystemTrayIconH(TheObject), menu);
 end;
 
