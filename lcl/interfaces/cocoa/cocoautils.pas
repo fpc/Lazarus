@@ -230,7 +230,7 @@ begin
     kVK_ANSI_RightBracket : Result := VK_OEM_6;
     kVK_ANSI_O            : Result := VK_O;
     kVK_ANSI_U            : Result := VK_U;
-    kVK_ANSI_LeftBracket  : Result := VK_LCL_OPEN_BRAKET;
+    kVK_ANSI_LeftBracket  : Result := VK_LCL_OPEN_BRACKET;
     kVK_ANSI_I            : Result := VK_I;
     kVK_ANSI_P            : Result := VK_P;
 
@@ -358,8 +358,8 @@ begin
     'a'..'z': Result := VK_A+ord(ch)-ord('a');
     'A'..'Z': Result := ord(ch);
     '`','~':  Result := VK_LCL_TILDE;
-    '[','{':  Result := VK_LCL_OPEN_BRAKET;
-    ']','}':  Result := VK_LCL_CLOSE_BRAKET;
+    '[','{':  Result := VK_LCL_OPEN_BRACKET;
+    ']','}':  Result := VK_LCL_CLOSE_BRACKET;
     '\','|':  Result := VK_LCL_BACKSLASH;
     ';',':':  Result := VK_LCL_SEMI_COMMA;
     '''','"': Result := VK_LCL_QUOTE;
