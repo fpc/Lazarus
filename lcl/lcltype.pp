@@ -635,8 +635,8 @@ const
   VK_LCL_SEMI_COMMA  = VK_OEM_1;     // The ";:" Key
   VK_LCL_MINUS       = VK_OEM_MINUS; // The "-_" Key
 
-  VK_LCL_OPEN_BRAKET = VK_OEM_4; // deprecated 'Use VK_LCL_OPEN_BRACKET instead';
-  VK_LCL_CLOSE_BRAKET= VK_OEM_6; // deprecated 'Use VK_LCL_CLOSE_BRACKET instead';
+  VK_LCL_OPEN_BRAKET = VK_OEM_4 deprecated 'Use VK_LCL_OPEN_BRACKET instead';
+  VK_LCL_CLOSE_BRAKET= VK_OEM_6 deprecated 'Use VK_LCL_CLOSE_BRACKET instead';
   VK_LCL_OPEN_BRACKET = VK_OEM_4;     // The "[{" Key
   VK_LCL_CLOSE_BRACKET= VK_OEM_6;     // The "]}" Key
 
