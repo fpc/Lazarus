@@ -77,9 +77,6 @@ function UnityAppIndicatorInit: Boolean;
 
 implementation
 
-// X is needed to test for traditional SysTray being available
-{$IFDEF HASX}uses gtk2extra, x, xlib;{$ENDIF}
-
 const
   libappindicator_3 = 'libappindicator3.so.1';              // Canonical's Unity Appindicator3 library
   LibAyatanaAppIndicator = 'libayatana-appindicator3.so.1'; // Ayatana - typically called libayatana-appindicator3-1
@@ -281,22 +278,6 @@ var
   Module: HModule;
   UseAppInd : string;
 
-  function NeedAppIndicator: boolean;
-  {$IFDEF HASX}
-  // Here we assume if no X, its pure eg wayland so no traditional SysTray either.
-  var
-    A : TAtom;
-    XDisplay: PDisplay;
-  {$endif}
-  begin
-    Result := True;
-    {$IFDEF HASX}
-    XDisplay := gdk_display;
-    A := XInternAtom(XDisplay, '_NET_SYSTEM_TRAY_S0', False);
-    result := (XGetSelectionOwner(XDisplay, A) = 0);
-    {$endif}
-  end;
-
   function TryLoad(const ProcName: string; var Proc: Pointer): Boolean;
   begin
     Proc := GetProcAddress(Module, ProcName);
@@ -314,30 +295,20 @@ begin
   if UseAppInd = 'NO' then
   begin
     Initialized := False;
-    writeln('APPIND Debug : Choosing to use Traditional SysTray');
+    writeln('APPIND Debug : User choosing to use Traditional SysTray');
     Exit;
   end;
-  if (UseAppInd <> 'YES') and (not NeedAppIndicator()) then    // ie its NO or blank or INFO
-  begin
-    Initialized := False;
-    if UseAppInd <> '' then
-      writeln('APPIND Debug : Will use Traditional SysTray');
-    Exit;
-  end;
-  if UseAppInd = 'YES' then                                    // either a YES or OS needs it
-    writeln('APPIND Debug : Will try to force AppIndicator3')
-  else
-    if UseAppInd <> '' then
-      writeln('APPIND Debug : OS and Desktop request AppIndicator');
+  if UseAppInd <> '' then
+      writeln('APPIND Debug : Default is to try an AppIndicator');
 
   Module := LoadLibrary(libappindicator_3);        // might have several package names, see wiki
   if Module = 0 then begin
     if UseAppInd <> '' then                                    // either a YES or OS needs it
-      writeln('APPIND Debug : Failed to load Unity AppIndicator, will try Ayatana');
+      writeln('APPIND Debug : Failed to load Unity AppIndicator, will try Ayatana AppIndicator');
     Module := LoadLibrary(LibAyatanaAppIndicator);
     if Module = 0 then begin
       if UseAppInd <> '' then
-        writeln('APPIND Debug : Failed to load Ayatana AppIndicator, its likely no SysTray available.');
+        writeln('APPIND Debug : Failed to load Ayatana, install an AppIndicator or maybe Tradional SysTray will work ?');
       exit(False);
     end;
   end;
