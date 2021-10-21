@@ -3134,7 +3134,7 @@ begin
   if i < 0 then
     exit;
   FLocation[i] := FLocation[l];
-  SetLength(FLocation, l-1);
+  SetLength(FLocation, l);
   FProcess.FBreakMap.RemoveLocotion(ALocation, Self);
 end;
 
