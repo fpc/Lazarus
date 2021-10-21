@@ -10,7 +10,7 @@
       <short>Provides compatibility with the Delphi Windows unit.</short>
       <descr>
         <p>
-          <file>lcltype.pas</file> is being created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is only done for compatibility.
+          <file>lcltype.pp</file> was created specifically for compatibility with Delphi. It should only be used for constants and type definitions that are included in the Delphi Windows unit. This is done only for compatibility.
         </p>
       </descr>
 
@@ -38,19 +38,30 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="TTranslateString">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Alias for the String type.</short>
+        <descr>
+          <p>
+            <var>TTranslateString</var> is the type used to represent string values that can be translated using the localization facilities found in the LCL and the Lazarus IDE. Properties, constants, variables, and parameter values defined using this type can be localized using translation classes found in the <file>lcltranslator</file> unit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lcltranslator.TUpdateTranslator">TUpdateTranslator</link>
+          <link id="#lcl.lcltranslator.TDefaultTranslator">TDefaultTranslator</link>
+        </seealso>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TCriticalSection">
-        <short/>
-        <descr/>
+        <short>Alias for the  PtrUInt type.</short>
+        <descr>
+          <p>
+            <var>TCriticalSection</var> is the type used to protect access to resources in a multi-threaded application. Please note that the type is different than the <var>TRTLCriticalSection</var> type and the class by the same name implemented in the <file>syncobjs</file> unit in the FPC RTL (Run-Time Library).
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- pointer type Visibility: default -->
+
       <element link="#lcl.lcltype.TCriticalSection" name="PCriticalSection"/>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TDockImageOperation">
         <short>Actions occurring while dragging an image.</short>
         <descr/>
@@ -214,13 +225,13 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="Bool">
-        <short>A LongBool, distinct from the Boolean type.</short>
+        <short>A LongBool type, distinct from the Boolean type.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- alias type Visibility: default -->
       <element name="Short">
-        <short/>
+        <short>A SmallInt type.</short>
         <descr/>
         <seealso/>
       </element>
@@ -250,21 +261,25 @@
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="ULONG_PTR">
-        <short/>
+        <short>Alias for the PtrUInt type.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- "type" alias type Visibility: default -->
       <element name="TLCLIntfHandle">
-        <short/>
-        <descr/>
+        <short>Alias for the THandle type.</short>
+        <descr>
+          <p>
+            TLCLIntfHandle is the type returned from the CreateHandle method in widgetset classes.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- pointer type Visibility: default -->
       <element link="HKEY" name="PHKEY"/>
       <!-- constant Visibility: default -->
       <element name="INVALID_HANDLE_VALUE">
-        <short>Value representing an invalid (unassigned...) Handle.</short>
+        <short>Value representing an invalid (unassigned) Handle.</short>
         <descr/>
         <seealso/>
       </element>
@@ -577,16 +592,21 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="CS_VREDRAW">
-        <short/>
+        <short>
+          Class style constant used to redraw the entire window when the height for the client area has been changed.
+          </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="CS_HREDRAW">
-        <short/>
+        <short>
+          Class style constant used to redraw the entire window when the width for the client area has been changed.
+          </short>
         <descr/>
         <seealso/>
       </element>
+
       <!-- constant Visibility: default -->
       <element name="RGN_AND">
         <short>
@@ -950,7 +970,7 @@
       <element name="DFCS_MENUARROW">
         <short>
           <var>DrawFrameControl</var> menubar control style:
-          submenu arrow.
+          sub-menu arrow.
         </short>
         <descr/>
         <seealso/>
@@ -1099,12 +1119,13 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="HTERROR">
-        <short/>
+        <short>Hit test error (like HTNOWHERE) which produces a system beep.</short>
         <descr/>
         <seealso/>
       </element>
+
       <!-- constant Visibility: default -->
       <element name="HTTRANSPARENT">
         <short>Hit test: transparent area.</short>
@@ -1129,48 +1150,63 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="MSGF_DIALOGBOX">
-        <short/>
+        <short>
+          Indicates an input event occurred in a dialog.
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="MSGF_MESSAGEBOX">
-        <short/>
+        <short>
+          Indicates an input event occurred in a message box.
+        </short>
         <descr/>
         <seealso/>
       </element>
+
       <!-- constant Visibility: default -->
       <element name="MSGF_MENU">
-        <short/>
+        <short>
+          Indicates an input event occurred in a menu.
+        </short>
         <descr/>
         <seealso/>
       </element>
+
       <!-- constant Visibility: default -->
       <element name="MSGF_MOVE">
         <short/>
         <descr/>
         <seealso/>
+        <notes><note>???</note></notes>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="MSGF_SIZE">
         <short/>
         <descr/>
         <seealso/>
+        <notes><note>???</note></notes>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="MSGF_SCROLLBAR">
-        <short/>
+        <short>
+          Indicates an input event occurred in a scroll bar.
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="MSGF_NEXTWINDOW">
-        <short/>
+        <short>
+          Indicates an ALT+TAB input event occurred to activate the next window.
+        </short>
         <descr/>
         <seealso/>
       </element>
+
       <!-- constant Visibility: default -->
       <element name="PM_Noremove">
         <short>
@@ -1209,103 +1245,133 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_SEPARATOR">
-        <short/>
+        <short>Menu flag to draw a horizontal separator.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_ENABLED">
-        <short/>
+        <short>
+          Menu flag to enable a menu item for selection.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_GRAYED">
-        <short/>
+        <short>
+          Menu flag to disable a menu item and prevent its selection.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_DISABLED">
-        <short/>
+        <short>
+          Menu flag to disable a menu item and prevent its selection, but it does not gray the menu item.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_UNCHECKED">
-        <short/>
+        <short>
+          Menu to flag to draw the item without a check mark, even when a bitmap is supplied for the menu item.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_CHECKED">
-        <short/>
+        <short>
+          Menu flag to draw a check mark for the menu item.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_USECHECKBITMAPS">
-        <short/>
+        <short>
+          Menu flag to enable check mark bitmaps for menu items.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_STRING">
-        <short/>
+        <short>
+          Menu flag which specifies a menu item as a text value.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_BITMAP">
-        <short/>
+        <short>
+          Menu flag which specifies a menu item as a bitmap image.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_OWNERDRAW">
-        <short/>
+        <short>
+          Menu flag which specified the menu item is owner-drawn. Indicates that WM_MEASUREITEM and WM_DRAWITEM messages are used when the menu item is updated.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_POPUP">
-        <short/>
+        <short>
+          Menu flag which specifies the menu item is a a pop-up, drop-down, or sub-menu.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_MENUBARBREAK">
-        <short/>
+        <short>
+          Menu flag, like MF_MENUBREAK, but used for a menu bar. Causes a menu, sub-menu, or short cut to be displayed in a new column with a vertical separator.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_MENUBREAK">
-        <short/>
+        <short>
+          Menu flag, like MF_MENUBARBREAK, but used for a menu item. Causes the new menu item to appear on a separate line (menu bar) or column (menu, sub-menu, or short cut) without a separator line.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_UNHILITE">
-        <short/>
+        <short>Menu flag used to remove highlighting from a menu item.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_HILITE">
-        <short/>
+        <short>
+          Menu flag used to add highlighting to a menu item. When omitted, the MF_UNHILITE menu flag is assumed.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_DEFAULT">
-        <short/>
+        <short>
+          Menu flag used to indicate that an item is the default selection for a menu.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_SYSMENU">
-        <short/>
+        <short>
+          Menu flag which indicates if the menu item appears on the Window menu.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1314,112 +1380,123 @@
         <short/>
         <descr/>
         <seealso/>
+        <notes><note>???</note></notes>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_RIGHTJUSTIFY">
-        <short/>
+        <short>Menu flag which indicates the menu item caption is right aligned.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_MOUSESELECT">
-        <short/>
+        <short>Menu flag which indicates the item has been selected using the mouse.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MF_UNSUPPORTED">
-        <short/>
+        <short>Mask used to filter menu flag values.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="KF_EXTENDED">
-        <short/>
+        <short>Focus and activation key flag used to test for extended key values.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="KF_DLGMODE">
-        <short/>
+        <short>Focus and activation key flag which indicates if a dialog is active.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="KF_MENUMODE">
-        <short/>
+        <short>Focus and activation key flag which indicates if a menu is active.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="KF_ALTDOWN">
-        <short/>
+        <short>Focus and activation key flag which indicates if the Alt key is pressed.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="KF_REPEAT">
-        <short/>
+        <short>
+          Focus and activation key flag used to manipulate the previous key state flag.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="KF_UP">
-        <short/>
+        <short>
+          Focus and activation key flag used to manipulate a key state transition flag.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="scMeta">
-        <short/>
+        <short>Represents the Meta key in a short cut value.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_UNKNOWN">
-        <short/>
+        <short>Virtual key code for an unknown key (defined by the LCL).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_LBUTTON">
-        <short/>
+        <short>Virtual key code (Windows API compatible).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_RBUTTON">
-        <short/>
+        <short>Virtual key code (Windows API compatible).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_CANCEL">
-        <short/>
+        <short>Virtual key code (Windows API compatible).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_MBUTTON">
-        <short/>
+        <short>Virtual key code for the middle mouse button (Windows API compatible).</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_XBUTTON1">
-        <short/>
+        <short>
+          Virtual key code for the first extra mouse button (Windows API compatible).
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_XBUTTON2">
-        <short/>
+        <short>
+          Virtual key code for the second extra mouse button (Windows API compatible).
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="VK_BACK">
-        <short/>
+        <short>
+          Virtual key code for the Backspace key. Not to be confused with the Android BACK navigation key which is mapped to VK_ESCAPE.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2419,141 +2496,228 @@
         <descr/>
         <seealso/>
       </element>
+
+      <element name="VK_LCL_EQUAL">
+        <short/>
+      </element>
+      <element name="VK_LCL_COMMA">
+        <short/>
+      </element>
+      <element name="VK_LCL_POINT">
+        <short/>
+      </element>
+      <element name="VK_LCL_SLASH">
+        <short/>
+      </element>
+      <element name="VK_LCL_SEMI_COMMA">
+        <short/>
+      </element>
+      <element name="VK_LCL_MINUS">
+        <short/>
+      </element>
+      <element name="VK_LCL_OPEN_BRAKET">
+        <short/>
+      </element>
+      <element name="VK_LCL_CLOSE_BRAKET">
+        <short/>
+      </element>
+      <element name="VK_LCL_OPEN_BRACKET">
+        <short/>
+      </element>
+      <element name="VK_LCL_CLOSE_BRACKET">
+        <short/>
+      </element>
+      <element name="VK_LCL_BACKSLASH">
+        <short/>
+      </element>
+      <element name="VK_LCL_TILDE">
+        <short/>
+      </element>
+      <element name="VK_LCL_QUOTE">
+        <short/>
+      </element>
+      <element name="VK_LCL_ALT">
+        <short/>
+      </element>
+      <element name="VK_LCL_LALT">
+        <short/>
+      </element>
+      <element name="VK_LCL_RALT">
+        <short/>
+      </element>
+      <element name="VK_LCL_CAPSLOCK">
+        <short/>
+      </element>
+
+      <element name="VK_LCL_POWER">
+        <short/>
+      </element>
+      <element name="VK_LCL_CALL">
+        <short/>
+      </element>
+      <element name="VK_LCL_ENDCALL">
+        <short/>
+      </element>
+      <element name="VK_LCL_AT">
+        <short/>
+        <descr>
+          <p>
+            Not equivalent to anything less than $FF. Will only be sent by a primary "@" key but not for a @ key as secondary action of a "2" key, for example.
+          </p>
+        </descr>
+      </element>
+
       <!-- constant Visibility: default -->
       <element name="BDR_RAISEDOUTER">
-        <short/>
+        <short>Represents a 3-D border style with a raised outer border.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_SUNKENOUTER">
-        <short/>
+        <short>Represents a 3-D border style with a sunken outer border.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_RAISEDINNER">
-        <short/>
+        <short>Represents a 3-D border style with a raised inner border.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_SUNKENINNER">
-        <short/>
+        <short>Represents a 3-D border style with a sunken inner border.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_OUTER">
-        <short/>
+        <short>
+          Indicates whether an outer border (raised or sunken) is in use for a control.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_INNER">
-        <short/>
+        <short>
+          Indicates whether an inner border (raised or sunken) is in use for a control.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_RAISED">
-        <short/>
+        <short>
+          Indicates whether a raised border (inner or outer) is in use for a control.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BDR_SUNKEN">
-        <short/>
+        <short>
+          Indicates whether a sunken  border (inner or outer) is in use for a control.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="EDGE_BUMP">
-        <short/>
+        <short>Combination of BDR_RAISEDOUTER and BDR_SUNKENINNER.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="EDGE_ETCHED">
-        <short/>
+        <short>Combination of BDR_SUNKENOUTER and BDR_RAISEDINNER.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="EDGE_RAISED">
-        <short/>
+        <short>Combination of BDR_RAISEDOUTER and BDR_RAISEDINNER.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="EDGE_SUNKEN">
-        <short/>
+        <short>Combination of BDR_SUNKENOUTER and BDR_SUNKENINNER.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_LEFT">
-        <short/>
+        <short>Border flag representing the left side of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_TOP">
-        <short/>
+        <short>Border flag representing the top edge of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_RIGHT">
-        <short/>
+        <short>Border flag representing the right side of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_BOTTOM">
-        <short/>
+        <short>Border flag representing the bottom edge of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_TOPLEFT">
-        <short/>
+        <short>Border flag representing the top and left sides of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_TOPRIGHT">
-        <short/>
+        <short>Border flag representing the top and right sides of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_BOTTOMLEFT">
-        <short/>
+        <short>Border flag representing the bottom and left sides of a border rectangle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_BOTTOMRIGHT">
-        <short/>
+        <short>
+          Border flag representing the bottom and right sides of a border rectangle.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_RECT">
-        <short/>
+        <short>
+          Border flag representing all sides of a border rectangle.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_DIAGONAL">
-        <short/>
+        <short>
+          Border flag representing a diagonal border.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BF_DIAGONAL_ENDTOPRIGHT">
-        <short/>
+        <short>
+          Border flag representing a diagonal border where the origin is the bottom-left corner and the terminus is the top-right corner of the rectangle.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2829,55 +2993,78 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_OK">
-        <short/>
+        <short>Indicates a message box includes an Ok button.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_OKCANCEL">
-        <short/>
+        <short>Indicates a message box includes Ok and Cancel buttons.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_ABORTRETRYIGNORE">
-        <short/>
+        <short>Indicates a message box includes Abort, Retry, and Ignore buttons.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_YESNOCANCEL">
-        <short/>
+        <short>Indicates a message box includes Yes, No, and Cancel buttons.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_YESNO">
-        <short/>
+        <short>Indicates a message box includes Yes and No buttons.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_RETRYCANCEL">
-        <short/>
+        <short>Indicates a message box includes Retry and Cancel buttons.</short>
         <descr/>
         <seealso/>
       </element>
+
+      <element name="MB_CANCELTRYCONTINUE">
+        <short>Indicates a message box includes Cancel, Retry, and Continue buttons.</short>
+        <descr>
+          <p>
+            Not yet supported by MessageDlg.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
+      <element name="MB_HELP">
+        <short>Indicates a message box includes a Help button.</short>
+        <descr>
+          <p>
+            Not yet supported by MessageDlg.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <!-- constant Visibility: default -->
       <element name="MB_ICONHAND">
-        <short/>
+        <short>
+          Indicates that a message box displays a Stop Sign icon.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_ICONQUESTION">
-        <short/>
+        <short>Indicates that a message box displays a Question Mark icon.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="MB_ICONEXCLAMATION">
-        <short/>
+        <short>Indicates that a message box displays an Exclamation Point icon.</short>
         <descr/>
         <seealso/>
       </element>
@@ -4134,7 +4321,11 @@
       <!-- constant Visibility: default -->
       <element name="SW_SHOWFULLSCREEN">
         <short/>
-        <descr/>
+        <descr>
+          <p>
+            Defined for the LCL.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
@@ -4574,6 +4765,7 @@
         <short/>
         <descr/>
         <seealso/>
+        <notes><note>TODO: Move this to StdCtrls.</note></notes>
       </element>
       <!-- enumeration value Visibility: default -->
       <element name="TOwnerDrawStateType.odSelected">
@@ -6748,79 +6940,79 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="CLR_NONE">
-        <short/>
+        <short>Cardinal color value used for no color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="CLR_DEFAULT">
-        <short/>
+        <short>Mask used to check for the default color value.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="CLR_INVALID">
-        <short/>
+        <short>Same as CLR_NONE</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_SCROLLBAR">
-        <short/>
+        <short>Offset into the system color map for the scroll bar color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_BACKGROUND">
-        <short/>
+        <short>Offset into the system color map for the background color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_ACTIVECAPTION">
-        <short/>
+        <short>Offset into the system color map for the active caption color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_INACTIVECAPTION">
-        <short/>
+        <short>Offset into the system color map for the inactive caption color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_MENU">
-        <short/>
+        <short>Offset into the system color map for the menu color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_WINDOW">
-        <short/>
+        <short>Offset into the system color map for the window color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_WINDOWFRAME">
-        <short/>
+        <short>Offset into the system color map for the window frame or border color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_MENUTEXT">
-        <short/>
+        <short>Offset into the system color map for the menu text color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_WINDOWTEXT">
-        <short/>
+        <short>Offset into the system color map for the window text color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_CAPTIONTEXT">
-        <short/>
+        <short>Offset into the system color map for the caption text color.</short>
         <descr/>
         <seealso/>
       </element>
@@ -6832,49 +7024,49 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_INACTIVEBORDER">
-        <short/>
+        <short>Offset into the system color map for the inactive border color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_APPWORKSPACE">
-        <short/>
+        <short>Offset into the system color map for the workspace color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_HIGHLIGHT">
-        <short/>
+        <short>Offset into the system color map for the highlight color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_HIGHLIGHTTEXT">
-        <short/>
+        <short>Offset into the system color map for the highlighted text color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_BTNFACE">
-        <short/>
+        <short>Offset into the system color map for the button face color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_BTNSHADOW">
-        <short/>
+        <short>Offset into the system color map for the button shadow color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_GRAYTEXT">
-        <short/>
+        <short>Offset into the system color map for the grayed or inactive text color.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="COLOR_BTNTEXT">
-        <short/>
+        <short>Offset into the system color map for the button text color.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7318,8 +7510,12 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="MAX_SYS_COLORS">
-        <short/>
-        <descr/>
+        <short>Maximum number of system colors.</short>
+        <descr>
+          <p>
+            Same as COLOR_ENDCOLORS.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
@@ -7330,133 +7526,133 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="WHITE_BRUSH">
-        <short/>
+        <short>Represents the stock object for a white brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="LTGRAY_BRUSH">
-        <short/>
+        <short>Represents the stock object for a light gray brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="GRAY_BRUSH">
-        <short/>
+        <short>Represents the stock object for a gray brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DKGRAY_BRUSH">
-        <short/>
+        <short>Represents the stock object for a dark gray brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BLACK_BRUSH">
-        <short/>
+        <short>Represents the stock object for a black brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="NULL_BRUSH">
-        <short/>
+        <short>Represents the stock object for an undefined brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="HOLLOW_BRUSH">
-        <short/>
+        <short>Same as NULL_BRUSH.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="WHITE_PEN">
-        <short/>
+        <short>Represents the stock object for a white pen.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="BLACK_PEN">
-        <short/>
+        <short>Represents the stock object for a black pen.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="NULL_PEN">
-        <short/>
+        <short>Represents an undefined pen.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OEM_FIXED_FONT">
-        <short/>
+        <short>Represents the stock object for an OEM fixed-pitch font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="ANSI_FIXED_FONT">
-        <short/>
+        <short>Represents the stock object for an ANSI fixed-pitch font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="ANSI_VAR_FONT">
-        <short/>
+        <short>Represents the stock object for an ANSI variable-pitch font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SYSTEM_FONT">
-        <short/>
+        <short>Represents the stock object for the system font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DEVICE_DEFAULT_FONT">
-        <short/>
+        <short>Represents the stock object for a default device font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DEFAULT_PALETTE">
-        <short/>
+        <short>Represents the stock object for the default system color palette.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SYSTEM_FIXED_FONT">
-        <short/>
+        <short>Represents the stock object for the fixed-pitch system font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DEFAULT_GUI_FONT">
-        <short/>
+        <short>Represents the stock object for the default GUI font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DC_BRUSH">
-        <short/>
+        <short>Represents the stock object with a device context for a brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="DC_PEN">
-        <short/>
+        <short>Represents the stock object with a device context for a pen.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="STOCK_LAST">
-        <short/>
+        <short>Upper limit for stock object index definitions.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="idButtonBase">
-        <short/>
+        <short>Lower limit for the stock pixmap type indexes.</short>
         <descr/>
         <seealso/>
       </element>
@@ -7582,61 +7778,61 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="idDialogShield">
-        <short/>
+        <short>Represents the pixmap containing the shield image used on dialogs.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_PEN">
-        <short/>
+        <short>Device context object type for a pen.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_BRUSH">
-        <short/>
+        <short>Device context object type for a brush.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_DC">
-        <short/>
+        <short>Device context object type for a device handle.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_METADC">
-        <short/>
+        <short>Device context object type for a device handle with metadata.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_PAL">
-        <short/>
+        <short>Device context object type for a palette.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_FONT">
-        <short/>
+        <short>Device context object type for a font.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_BITMAP">
-        <short/>
+        <short>Device context object type for a bitmap image.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_REGION">
-        <short/>
+        <short>Device context object type for a region.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="OBJ_METAFILE">
-        <short/>
+        <short>Device context object type for a metafile (.wmf).</short>
         <descr/>
         <seealso/>
       </element>
@@ -7672,55 +7868,69 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CXSCREEN">
-        <short/>
+        <short>
+          System metric index used to get the width in pixels of the screen for the primary display monitor.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CYSCREEN">
-        <short/>
+        <short>
+          System metric index used to get the height in pixels of the screen for the primary display monitor.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CXVSCROLL">
-        <short/>
+        <short>
+          System metric index used to get the width of a vertical scroll bar in pixels.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CYHSCROLL">
-        <short/>
+        <short>
+          System metric index used to get the height of a horizontal scroll bar in pixels.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CYCAPTION">
-        <short/>
+        <short>
+          System metric index used to get the height of the caption area in pixels.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CXBORDER">
-        <short/>
+        <short>
+          System metric index used to get the width of the window border in pixels. Same as SM_CXEDGE when the windows uses 3-D borders.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CYBORDER">
-        <short/>
+        <short>
+          System metric index used to get the height of the window border in pixels. Same as SM_CYEDGE when the windows uses 3-D borders.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CXDLGFRAME">
-        <short/>
+        <short>Same as SM_CXFIXEDFRAME.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SM_CYDLGFRAME">
-        <short/>
+        <short>Same as SM_CYFIXEDFRAME.</short>
         <descr/>
         <seealso/>
       </element>
@@ -8180,21 +8390,47 @@
         <descr/>
         <seealso/>
       </element>
+
+      <element name="SM_LCLMAXIMIZEDWIDTH">
+        <short>Defined to get accurate maximized window width under X11.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="SM_LCLMAXIMIZEDHEIGHT">
+        <short>Defined to get accurate maximized height under X11.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="SM_LCLHasFormAlphaBlend">
+        <short>Indicates if a form uses Alpha channel transparency.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="SM_REMOTESESSION">
+        <short>
+          System metric index used to determine if the calling process is a terminal services client session (non-zero return value) or a console session (zero return value). A console session does not have to be the physical console.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
       <!-- constant Visibility: default -->
       <element name="SPI_GETBEEP">
-        <short/>
+        <short>Gets the state for warning beeps from system parameter information.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SPI_SETBEEP">
-        <short/>
+        <short>Sets warning beeps on or off using system parameter information.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SPI_GETMOUSE">
-        <short/>
+        <short>
+          Gets mouse threshold and acceleration values from system parameter information.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -9196,13 +9432,17 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="SPI_GETFONTSMOOTHINGORIENTATION">
-        <short/>
+        <short>
+          Gets the color orientation for font smoothing from system parameter information.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="SPI_SETFONTSMOOTHINGORIENTATION">
-        <short/>
+        <short>
+          Sets the color orientation for font smoothing using system parameter information.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -9242,11 +9482,11 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="HORZRES">
-        <short>Horizontal width in pixels.</short>
+        <short>Horizontal width in pixels for a device context.</short>
       </element>
       <!-- constant Visibility: default -->
       <element name="VERTRES">
-        <short>Vertical height in pixels.</short>
+        <short>Vertical height in pixels for a device context.</short>
         <descr/>
         <seealso/>
       </element>
@@ -11487,155 +11727,151 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- alias type Visibility: default -->
+
       <element name="TClipboardFormat">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Alias for the PtrUInt type.</short>
+        <descr>
+          <p>
+            <var>TClipboardFormat</var> is the type passed as an argument to <var>TClipboardRequestEvent</var> event handlers, and to routines in the <file>graphics</file> and <file>clipbrd</file> units.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPredefinedClipboardFormat"/>
+          <link id="PredefinedClipboardMimeTypes"/>
+          <link id="#lcl.lclintf.PredefinedClipboardFormat">PredefinedClipboardFormat</link>
+        </seealso>
       </element>
-      <!-- pointer type Visibility: default -->
+
       <element name="PClipboardFormat">
-        <short/>
+        <short>Pointer to a TClipboardFormat type.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- procedure type Visibility: default -->
+
       <element name="TClipboardRequestEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled to get a stream instance with the data for a given clipboard format.
+        </short>
+        <descr>
+          <p>
+            <var>TClipboardRequestEvent</var> is the type used to represent an event handler procedure for clipboard requests in widgetset classes. It is the type used to implement the <var>OnRequest</var> event handler in <var>TClipboard</var>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.clipbrd.TClipboard.OnRequest">TClipboard.OnRequest</link>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TClipboardRequestEvent.RequestedFormatID">
         <short/>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TClipboardRequestEvent.Data">
         <short/>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TClipboardType">
-        <short/>
-        <descr/>
+        <short>Represents the sources or dispositions for clipboard data.</short>
+        <descr>
+          <p>
+            Used for platforms / window  managers / desktop environments that support more than on clipboard. It appears to be inherently tied to the ICCCM protocol developed by  freedesktop.org. Values in the enumeration are used in widgetset classes as an index to access the different clipboard storages.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TClipboardType.ctPrimarySelection">
-        <short/>
+        <short>
+          The clipboard is the one designated as PRIMARY for the desktop. Implies that it is used for commands that accept a single argument. Historically, it is used for mouse selections, pasting using the middle mouse button, and explicit cut/copy/paste operations initiated from a menu item.
+        </short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TClipboardType.ctSecondarySelection">
-        <short/>
+        <short>
+          The clipboard is the one designated as SECONDARY for the desktop. Implies that it is used to exchange values for primary and secondary selections.
+        </short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TClipboardType.ctClipboard">
-        <short/>
+        <short>
+          This is the clipboard type when the desktop does not support multiple clipboards, or when copy/cut and paste operations are performed between different clients.
+        </short>
       </element>
-      <!-- constant Visibility: default -->
+
       <element name="ClipboardTypeName">
-        <short/>
+        <short>
+          Contains the names associated with the clipboard types accessed using the enumeration values.
+        </short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TPredefinedClipboardFormat">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Represents predefined clipboard formats used in the LCL.</short>
+        <descr>
+          <p>
+            Values in the enumeration indicates the type of content stored on the clipboard. Values from the enumeration are passed as an argument to routines in the LCL interface, and used in the implementation of widgetset classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="PredefinedClipboardMimeTypes"/>
+        </seealso>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfText">
-        <short/>
+        <short>Clipboard contains plain text.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfBitmap">
-        <short/>
+        <short>Clipboard contains an image using the .BMP or Bitmap format.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfPixmap">
-        <short/>
+        <short>Clipboard contains an image using the PixMap format.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfIcon">
-        <short/>
+        <short>Clipboard contains an image using the .ico or Icon format.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfPicture">
-        <short/>
+        <short>Clipboard contains an image using the TPicture format.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfObject">
-        <short/>
+        <short>Clipboard contains an object (TObject) instance.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfComponent">
-        <short/>
+        <short>Clipboard contains a component (TComponent) instance.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TPredefinedClipboardFormat.pcfCustomData">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfDelphiText">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfDelphiBitmap">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfDelphiPicture">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfDelphiMetaFilePict">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfDelphiObject">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfDelphiComponent">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfKylixPicture">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfKylixBitmap">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfKylixDrawing">
-        <short/>
-      </element>
-      <!-- enumeration value Visibility: default -->
-      <element name="TPredefinedClipboardFormat.pcfKylixComponent">
-        <short/>
+        <short>
+          Clipboard contains data stored using an application-specific custom format.
+        </short>
       </element>
       <!-- constant Visibility: default -->
       <element name="PredefinedClipboardMimeTypes">
-        <short/>
+        <short>
+          Contains MIME types for the values in the TPredefinedClipboardFormat enumeration.
+        </short>
         <descr/>
         <seealso/>
       </element>
+
       <!-- procedure type Visibility: default -->
       <element name="TListChangeEvent">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an event handler signalled when a value in a TListWithEvent instance is modified.
+        </short>
+        <descr>
+          <p>
+            TListChangeEvent is the type used for the OnChange event handler property in TListWithEvent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListWithEvent.OnChange"/>
+          <link id="TListWithEvent.Notify"/>
+          <link id="#rtl.classes.TListNotification">TListNotification</link>
+        </seealso>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TListChangeEvent.Ptr">
-        <short/>
+        <short>An untyped Pointer to the modified list item for the event.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="TListChangeEvent.AnAction">
-        <short/>
+        <short>
+          Indicates the action performed for the list item that caused the notification event.
+        </short>
       </element>
-      <!-- class Visibility: default -->
+
       <element name="TListWithEvent">
         <short>
           Implements a list with an event signalled when values are added or removed.
@@ -12095,7 +12331,8 @@
           <link id="#lcl.forms.ShiftStateToKeys">ShiftStateToKeys</link>
         </seealso>
       </element>
-      <!-- constant Visibility: default -->
+
+      <!-- notification messages for all controls -->
       <element name="NM_FIRST">
         <short/>
         <descr/>
@@ -12337,13 +12574,13 @@
       </element>
       <!-- constant Visibility: default -->
       <element name="LVN_ITEMCHANGING">
-        <short/>
+        <short>List View notification message code for a pending change to an item.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- constant Visibility: default -->
       <element name="LVN_ITEMCHANGED">
-        <short/>
+        <short>List View notification message code for a completed change to an item.</short>
         <descr/>
         <seealso/>
       </element>
@@ -12463,13 +12700,13 @@
       </element>
       <!-- pointer type Visibility: default -->
       <element name="PNMListView">
-        <short/>
+        <short>Pointer to the TNMListView type.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- record type Visibility: default -->
       <element name="TNMListView">
-        <short/>
+        <short>Record type used for List View change notification messages.</short>
         <descr/>
         <seealso/>
       </element>
@@ -12523,190 +12760,231 @@
       </element>
       <!-- alias type Visibility: default -->
       <element name="_NM_LISTVIEW">
-        <short/>
+        <short>Alias for the TNMListView type.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- alias type Visibility: default -->
       <element name="NM_LISTVIEW">
-        <short/>
+        <short>Alias for the TNMListView type.</short>
         <descr/>
         <seealso/>
       </element>
       <!-- alias type Visibility: default -->
       <element name="tagNMLISTVIEW">
-        <short/>
+        <short>Alias for the TNMListView type.</short>
         <descr/>
         <seealso/>
       </element>
-      <!-- enumeration type Visibility: default -->
+
       <element name="TStockFont">
-        <short/>
-        <descr/>
+        <short>Represents stock font types used in InitStockFont.</short>
+        <descr>
+          <p>
+            Values in the enumeration are passed as an argument to the InitStockFont routine in the LCL interface, and used when a widgetset class calls its InitStockFont method.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TStockFont.sfSystem">
-        <short/>
+        <short>Represents the stock system font.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TStockFont.sfHint">
-        <short/>
+        <short>Represents the stock hint font.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TStockFont.sfIcon">
-        <short/>
+        <short>Represents the stock icon font.</short>
       </element>
-      <!-- enumeration value Visibility: default -->
       <element name="TStockFont.sfMenu">
-        <short/>
+        <short>Represents the stock menu font.</short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="CS_To_String">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Converts a component style identifier to a component style name.
+        </short>
+        <descr>
+          <p>
+            The following values are not supported in the CompStyle argument, and cause 'Unknown component style' to be returned from the routine:
+          </p>
+          <ul>
+            <li>csAlignment</li>
+            <li>csBox</li>
+            <li>csGTKTable</li>
+            <li>csMainForm</li>
+            <li>csTable</li>
+            <li>csVScrollBar</li>
+            <li>csFrame</li>
+            <li>csButtonBox</li>
+            <li>csCanvas</li>
+            <li>csFont</li>
+            <li>csPen</li>
+            <li>csBrush</li>
+            <li>csTimer</li>
+            <li>csImage</li>
+            <li>csToolbar</li>
+            <li>csToolButton</li>
+            <li>csSpeedButton</li>
+          </ul>
+          <p>
+            Not used in the current LCL implementation.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CS_To_String.Result">
-        <short/>
+        <short>
+          String representing the component style, or 'Unknown component style' for unsupported values.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CS_To_String.CompStyle">
-        <short/>
+        <short>
+          Integer component style identifier converted to its representation as a String.
+        </short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="HiWord">
-        <short/>
+        <short>Gets the largest value for the specified Integer as a Word type.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="LoWord"/>
+          <link id="#rtl.system.Hi">Hi</link>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="HiWord.Result">
-        <short/>
+        <short>Largest Word value for the specified Integer.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="HiWord.i">
-        <short/>
+        <short>Integer value examined in the routine.</short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="LoWord">
-        <short/>
+        <short>Gets the smallest value for the specified Integer as a Word type.</short>
         <descr/>
-        <errors/>
-        <seealso/>
+        <seealso>
+          <link id="HiWord"/>
+          <link id="#rtl.system.Hi">Lo</link>
+        </seealso>
       </element>
-      <!-- function result Visibility: default -->
       <element name="LoWord.Result">
-        <short/>
+        <short>Smallest Word value for the specified Integer.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="LoWord.i">
-        <short/>
+        <short>Integer value examined in the routine.</short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="Char2VK">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Gets the virtual key code for the specified character value.</short>
+        <descr>
+          <p>
+            The return value is 0 (zero) if the character in C is not an alphanumeric character in the ranges '0'..'9', 'a'..'z', or 'A'..'Z'.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="Char2VK.Result">
-        <short/>
+        <short>Virtual key code for the specified value.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="Char2VK.C">
-        <short/>
+        <short>Character value examined in the routine.</short>
       </element>
-      <!-- function Visibility: default -->
-      <element name="MulDiv">
-        <short/>
+
+      <element name="VK2Char">
+        <short>Gets the character value for the specified virtual key code.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
-      <element name="MulDiv.Result">
-        <short/>
+      <element name="VK2Char.Result">
+        <short>Character value for the specified virtual key code.</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="MulDiv.nNumber">
-        <short/>
+      <element name="VK2Char.AVK">
+        <short>Virtual key code converted to a character in the routine.</short>
       </element>
-      <!-- argument Visibility: default -->
-      <element name="MulDiv.nNumerator">
-        <short/>
-      </element>
-      <!-- argument Visibility: default -->
-      <element name="MulDiv.nDenominator">
-        <short/>
-      </element>
-      <!-- function Visibility: default -->
+
       <element name="MathRound">
-        <short/>
+        <short>Rounds the specified Real value to an Int64 value.</short>
         <descr/>
-        <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="MathRound.Result">
-        <short/>
+        <short>Int64 type with the rounded value.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="MathRound.AValue">
-        <short/>
+        <short>Real type with the value rounded in the routine.</short>
       </element>
-      <!-- function Visibility: default -->
+
+      <element name="MulDiv">
+        <short>
+          Multiples the numerator by the specified Integer value, and divides the result by the denominator value.
+        </short>
+        <descr>
+          <p>
+            Values passed in the arguments to the routine are Integer types. Values in nNumber and nNumerator are cast to Int64 values for the multiplication operation.  MathRound is called to ensure that the result for the division operation is rounded for the Int64 type, and is cast to the Integer type used in the return value.
+          </p>
+          <p>
+            When nNumerator and nDenominator have the same value, the return value is set to nNumber. The return value is -1 if the value in nDenominator is 0 (zero).
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="MulDiv.Result">
+        <short>Integer result for the multiply and divide operations.</short>
+      </element>
+      <element name="MulDiv.nNumber">
+        <short>Multiplicand for the operation.</short>
+      </element>
+      <element name="MulDiv.nNumerator">
+        <short>Numerator multiplied by the specified value.</short>
+      </element>
+      <element name="MulDiv.nDenominator">
+        <short>Denominator used for the division operation.</short>
+      </element>
+
       <element name="KeyToShortCut">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>Gets the short cut value for the specified key code and shift modifiers.</short>
+        <descr>
+          <p>
+            The return value is determined by combining the value in Key with the Shift, Ctrl, Alt, or Meta modifiers in Shift. The return value is 0 if any of the high-order bits in Key are already set.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="KeyToShortCut.Result">
-        <short/>
+        <short>TShortCut value for the specified key code and shift modifier.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="KeyToShortCut.Key">
-        <short/>
+        <short>Key code for the short cut value.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="KeyToShortCut.Shift">
-        <short/>
+        <short>Shift, Ctrl, Alt, or Meta modifier for the short cut value.</short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="CharSetToString">
-        <short/>
+        <short>Gets a String with the name for the specified character set identifier.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="CharSetToString.Result">
-        <short/>
+        <short>Character set name for the specified identifier.</short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="CharSetToString.Charset">
-        <short/>
+        <short>Character set identifier converted to a name in the routine.</short>
       </element>
-      <!-- function Visibility: default -->
+
       <element name="StringToCharset">
-        <short/>
+        <short>Gets the character set identifier for the specified character set name.</short>
         <descr/>
         <errors/>
         <seealso/>
       </element>
-      <!-- function result Visibility: default -->
       <element name="StringToCharset.Result">
-        <short/>
+        <short>
+          Constant with the character set identifier for the specified character set name.
+        </short>
       </element>
-      <!-- argument Visibility: default -->
       <element name="StringToCharset.Charset">
-        <short/>
+        <short>Character set name converted to its identifier constant.</short>
       </element>
     </module>
     <!-- LCLType -->
