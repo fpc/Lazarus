@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, Types, Math,
-  StdCtrls, Graphics, LCLIntf, LCLType, Themes,
+  StdCtrls, Graphics, LCLIntf, LCLType, LMessages, Themes,
   IntegerList, LazUTF8,
   TAChartUtils, TACustomSeries, TALegend, TAGraph,
   TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;
@@ -150,7 +150,7 @@ type
     property Font;
     property IntegralHeight;
 //    property Items;
-    property ItemHeight;
+    property ItemHeight default 0;
     property MultiSelect;
     property OnChangeBounds;
     property OnClick;
@@ -264,7 +264,7 @@ procedure TChartListbox.CalcRects(
 const
   MARGIN = 4;
 var
-  x: Integer;
+  x, y, h: Integer;
 begin
   ACheckBoxRect := ZeroRect;
   ASeriesIconRect := ZeroRect;
@@ -281,8 +281,11 @@ begin
       x += AItemRect.Left;
   end;
   if cloShowIcons in Options then
-    ASeriesIconRect := Rect(
-      x, AItemRect.Top + 2, x + FChart.Legend.SymbolWidth, AItemRect.Bottom - 2);
+  begin
+    h := CalculateStandardItemHeight;
+    y := (AItemRect.Top + AItemRect.Bottom - h) div 2;
+    ASeriesIconRect := Rect(x, y, x + FChart.Legend.SymbolWidth, y + h);
+  end;
 end;
 
 procedure TChartListbox.ClickedCheckbox(AIndex: Integer);
@@ -347,9 +350,9 @@ begin
     Result := 2;
 end;
 
+{ Draws the listbox item }
 procedure TChartListbox.DrawItem(
   AIndex: Integer; ARect: TRect; AState: TOwnerDrawState);
-{ draws the listbox item }
 const
   THEMED_BASE: array [TCheckboxesStyle, Boolean] of TThemedButton = (
     (tbCheckBoxUncheckedNormal, tbCheckBoxCheckedNormal),
@@ -358,7 +361,7 @@ const
 var
   id: IChartDrawer;
   rcb, ricon: TRect;
-  x: Integer;
+  x, y: Integer;
   tb: TThemedButton;
   tbBase, tbOffs: Integer;
   {$IFDEF USE_BITMAPS}
@@ -408,8 +411,10 @@ begin
     id.Pen := Chart.Legend.SymbolFrame;
     FLegendItems[AIndex].Draw(id, ricon);
   end
-  else
-    Canvas.TextOut(x + 2, ARect.Top, FLegendItems.Items[AIndex].Text);
+  else begin
+    y := (ARect.Top + ARect.Bottom - Canvas.TextHeight('Tg')) div 2;
+    Canvas.TextOut(x + 2, y, FLegendItems.Items[AIndex].Text);
+  end;
 end;
 
 procedure TChartListbox.EnsureSingleChecked(AIndex: Integer);
@@ -507,9 +512,14 @@ end;
 // Item height is determined as maximum of:
 // checkbox height, text height, ItemHeight property value.
 procedure TChartListbox.MeasureItem(AIndex: Integer; var AHeight: Integer);
+var
+  hText: Integer;
 begin
   inherited MeasureItem(AIndex, AHeight);
-  AHeight := Max(CalculateStandardItemHeight, AHeight);
+  hText := CalculateStandardItemHeight;
+  if Options * [cloShowIcons, cloShowCheckboxes] <> [] then
+    inc(hText, 4);
+  AHeight := Max(AHeight, hText);
   if cloShowCheckboxes in Options then
     AHeight := Max(AHeight, GetSystemMetrics(SM_CYMENUCHECK) + 2);
 end;
@@ -706,6 +716,7 @@ begin
   if FOptions = AValue then exit;
   FOptions := AValue;
   EnsureSingleChecked;
+  RecreateWnd(Self);
   Invalidate;
 end;
 
