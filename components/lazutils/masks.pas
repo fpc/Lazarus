@@ -78,8 +78,8 @@ type
                mocAnyCharOrNone,    //treat [?] to match any char the absence of a char
                mocAnyText,          //treat * as a wildcard
                mocRange,            //treat [a-d] to match either 'a', 'b', 'c', or 'd'
-               mocOptionalChar,     //treat [ab] to match either 'a' or 'b
-               mocNegateGroup,      //treat [!a-d] to not match 'a', 'b', 'c', or 'd', but match any other char. Requires mocRange and/or mocOptionalChar
+               mocSet,              //treat [ab] to match either 'a' or 'b
+               mocNegateGroup,      //treat [!a-d] to not match 'a', 'b', 'c', or 'd', but match any other char. Requires mocRange and/or mocSet
                mocEscapeChar);      //treat EscapeChar (defaults to '\') in [a\-b] to match either 'a', 'b', or '-'. Requires mocOptionalChar enebaled and mocRange disabled
   TMaskOpCodes=set of TMaskOpCode;
 
@@ -138,14 +138,14 @@ const
                          mocAnyCharOrNone,
                          mocAnyText,
                          mocRange,
-                         mocOptionalChar,
+                         mocSet,
                          mocNegateGroup,
                          mocEscapeChar];
 
   MaskOpCodesDefaultAllowed=MaskOpCodesAllAllowed;
 
   // Match [x] literally, not as a range.
-  // Leave out mocAnyCharOrNone, mocRange and mocOptionalChar.
+  // Leave out mocAnyCharOrNone, mocRange and mocSet.
   MaskOpCodesDisableRange=[mocAnyChar,
                            mocAnyText,
                            mocNegateGroup,
@@ -157,7 +157,7 @@ const
   MaskOpCodesNoEscape=[mocAnyChar,
                        mocAnyText,
                        mocRange,
-                       mocOptionalChar,
+                       mocSet,
                        mocNegateGroup];
 
 type
@@ -723,7 +723,7 @@ begin
             end;
           '[':
             begin
-              if [mocOptionalChar,mocRange,
+              if [mocSet,mocRange,
                   mocAnyCharOrNone] * fMaskOpcodesAllowed <> []
               then
                 CompileRange
