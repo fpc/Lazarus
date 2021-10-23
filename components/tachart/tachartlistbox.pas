@@ -257,10 +257,10 @@ begin
   inherited;
 end;
 
+{ Based on the rect of a listbox item, calculates the locations of the
+  checkbox and of the series icon }
 procedure TChartListbox.CalcRects(
   const AItemRect: TRect; out ACheckboxRect, ASeriesIconRect: TRect);
-{ based on the rect of a listbox item, calculates the locations of the
-  checkbox and of the series icon }
 const
   MARGIN = 4;
 var
@@ -274,11 +274,7 @@ begin
     ACheckBoxRect := Rect(0, 0, FCheckboxSize.CX, FCheckboxSize.CY);
     OffsetRect(ACheckboxRect, x, (AItemRect.Top + AItemRect.Bottom - FCheckboxSize.CY) div 2);
     if cloShowIcons in Options then
-      x += ACheckboxRect.Right;
-  end
-  else begin
-    if cloShowIcons in Options then
-      x += AItemRect.Left;
+      x := ACheckboxRect.Right + MARGIN;
   end;
   if cloShowIcons in Options then
   begin
