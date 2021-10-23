@@ -74,13 +74,13 @@ type
     CharsGroupBegin=10,
     CharsGroupEnd=11
   );
-  TMaskOpCode=(mocAnyChar,
-               mocAnyCharOrNone,
-               mocAnyText,
-               mocRange,
-               mocOptionalChar,
-               mocNegateGroup,
-               mocEscapeChar);
+  TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard
+               mocAnyCharOrNone,    //treat [?] to match any char the absence of a char
+               mocAnyText,          //treat * as a wildcard
+               mocRange,            //treat [a-d] to match either 'a', 'b', 'c', or 'd'
+               mocOptionalChar,     //treat [ab] to match either 'a' or 'b
+               mocNegateGroup,      //treat [!a-d] to not match 'a', 'b', 'c', or 'd', but match any other char. Requires mocRange and/or mocOptionalChar
+               mocEscapeChar);      //treat EscapeChar (defaults to '\') in [a\-b] to match either 'a', 'b', or '-'. Requires mocOptionalChar enebaled and mocRange disabled
   TMaskOpCodes=set of TMaskOpCode;
 
   (*
