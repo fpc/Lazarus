@@ -101,6 +101,7 @@ type
     procedure ClickedSeriesIcon(AIndex: Integer); virtual;
     function CreateLegendItems: TChartLegendItems;
     procedure Notification(AComponent: TComponent; AOperation: TOperation); override;
+    procedure SetBiDiMode(AValue: TBiDiMode); override;
 
   public
     constructor Create(AOwner: TComponent); override;
@@ -265,22 +266,30 @@ const
   MARGIN = 4;
 var
   x, y, h: Integer;
+  isRTL: Boolean;
 begin
   ACheckBoxRect := ZeroRect;
   ASeriesIconRect := ZeroRect;
+  isRTL := IsRightToLeft;
 
-  x := AItemRect.Left + MARGIN;
+  x := IfThen(isRTL, AItemRect.Right - MARGIN, AItemRect.Left + MARGIN);
+  
   if cloShowCheckboxes in Options then begin
     ACheckBoxRect := Rect(0, 0, FCheckboxSize.CX, FCheckboxSize.CY);
+    if isRTL then dec(x, FCheckboxSize.CX);
     OffsetRect(ACheckboxRect, x, (AItemRect.Top + AItemRect.Bottom - FCheckboxSize.CY) div 2);
-    if cloShowIcons in Options then
-      x := ACheckboxRect.Right + MARGIN;
+    if cloShowIcons in Options then 
+      x := IfThen(isRTL, ACheckboxRect.Left - MARGIN, ACheckboxRect.Right + MARGIN);
   end;
+  
   if cloShowIcons in Options then
   begin
     h := CalculateStandardItemHeight;
     y := (AItemRect.Top + AItemRect.Bottom - h) div 2;
-    ASeriesIconRect := Rect(x, y, x + FChart.Legend.SymbolWidth, y + h);
+    if isRTL then
+      ASeriesIconRect := Rect(x - FChart.Legend.SymbolWidth, y, x, y + h)
+    else
+      ASeriesIconRect := Rect(x, y, x + FChart.Legend.SymbolWidth, y + h);
   end;
 end;
 
@@ -357,9 +366,10 @@ const
 var
   id: IChartDrawer;
   rcb, ricon: TRect;
-  x, y: Integer;
+  x, y, w: Integer;
   tb: TThemedButton;
   tbBase, tbOffs: Integer;
+  isRTL: Boolean;
   {$IFDEF USE_BITMAPS}
   bmp: TBitmap;
   {$ELSE}
@@ -374,6 +384,8 @@ begin
   if (FChart = nil) or not InRange(AIndex, 0, Count - 1) then
     exit;
 
+  isRTL := IsRightToLeft;
+  
   Canvas.FillRect(ARect);
   if cloShowCheckboxes in Options then begin
     tbBase := ord(THEMED_BASE[FCheckStyle, Checked[AIndex]]);
@@ -396,20 +408,25 @@ begin
     {$ELSE}
     ThemeServices.DrawElement(Canvas.Handle, ted, rcb);
     {$ENDIF}
-    x := rcb.Right;
+    x := IfThen(isRTL, rcb.Left, rcb.Right);
   end
   else
-    x := ARect.Left;
+    x := IfThen(isRTL, ARect.Right, ARect.Left);
 
   Canvas.Brush.Style := bsClear;
   if cloShowIcons in Options then begin
     id := TCanvasDrawer.Create(Canvas);
     id.Pen := Chart.Legend.SymbolFrame;
+    id.SetRightToLeft(isRTL);
     FLegendItems[AIndex].Draw(id, ricon);
   end
   else begin
     y := (ARect.Top + ARect.Bottom - Canvas.TextHeight('Tg')) div 2;
-    Canvas.TextOut(x + 2, y, FLegendItems.Items[AIndex].Text);
+    if IsRightToLeft then begin
+      w := Canvas.TextWidth(FLegendItems.Items[AIndex].Text);
+      Canvas.TextOut(x - 2 - w, y, FLegendItems.Items[AIndex].Text);
+    end else
+      Canvas.TextOut(x + 2, y, FLegendItems.Items[AIndex].Text);
   end;
 end;
 
@@ -648,6 +665,12 @@ begin
     EnsureSingleChecked(FindSeriesIndex(TCustomChartSeries(ASender)))
   else
     EnsureSingleChecked;
+end;
+
+procedure TChartListbox.SetBiDiMode(AValue: TBiDiMode);
+begin
+  inherited SetBiDiMode(AValue);
+  Invalidate;
 end;
 
 procedure TChartListbox.SetChart(AValue: TChart);
