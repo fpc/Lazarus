@@ -80,7 +80,7 @@ type
                mocRange,            //treat [a-d] to match either 'a', 'b', 'c', or 'd'
                mocSet,              //treat [ab] to match either 'a' or 'b
                mocNegateGroup,      //treat [!a-d] to not match 'a', 'b', 'c', or 'd', but match any other char. Requires mocRange and/or mocSet
-               mocEscapeChar);      //treat EscapeChar (defaults to '\') in [a\-b] to match either 'a', 'b', or '-'. Requires mocOptionalChar enebaled and mocRange disabled
+               mocEscapeChar);      //treat EscapeChar (defaults to '\') in [a\-b] to match either 'a', 'b', or '-'. Requires mocOptionalChar enabled and mocRange disabled
   TMaskOpCodes=set of TMaskOpCode;
 
   (*
