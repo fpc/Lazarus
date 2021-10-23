@@ -173,6 +173,7 @@ type
   strict private
     FAlignment: TLegendAlignment;
     FBackgroundBrush: TChartLegendBrush;
+    FColCount: Integer;
     FColumnCount: TLegendColumnCount;
     FFixedItemWidth: Cardinal;
     FFixedItemHeight: Cardinal;
@@ -184,9 +185,11 @@ type
     FGroupTitles: TStrings;
     FInverted: Boolean;
     FItemFillOrder: TLegendItemFillOrder;
+    FItemSize: TPoint;
     FLegendRect: TRect;
     FMarginX: TChartDistance;
     FMarginY: TChartDistance;
+    FRowCount: Integer;
     FSpacing: TChartDistance;
     FSymbolFrame: TChartPen;
     FSymbolWidth: TChartDistance;
@@ -227,6 +230,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(var AData: TChartLegendDrawingData);
     function IsPointInBounds(APoint: TPoint): Boolean;
+    function ItemClicked(ADrawer: IChartDrawer; APoint: TPoint; AItems: TChartLegendItems): Integer;
     procedure Prepare(var AData: TChartLegendDrawingData; var AClipRect: TRect);
     procedure SortItemsByOrder(AItems: TChartLegendItems);
     procedure UpdateBidiMode;
@@ -731,6 +735,62 @@ begin
   end;
 end;
 
+function TChartLegend.IsPointInBounds(APoint: TPoint): Boolean;
+begin
+  Result := IsPointInRect(APoint, FLegendRect);
+end;
+
+function TChartLegend.ItemClicked(ADrawer: IChartDrawer; APoint: TPoint; 
+  AItems: TChartLegendItems): Integer;
+var
+  i, x, y: Integer;
+  prevFont: TFont = nil;
+  r: TRect;
+  isRTL: Boolean;
+  space, symwid: Integer;
+  data: TChartLegendDrawingData;
+begin
+  with data do begin
+    FDrawer := ADrawer;
+    FBounds := Self.FLegendRect;
+    FColCount := Self.FColCount;
+    FItems := AItems;
+    FItemSize := Self.FItemSize;
+    FRowCount := Self.FRowCount;
+    isRTL := FDrawer.GetRightToLeft;
+    space := FDrawer.Scale(Spacing);
+    symwid := FDrawer.Scale(SymbolWidth);   
+    for i := 0 to FItems.Count - 1 do begin
+      FItems[i].UpdateFont(FDrawer, prevFont);
+      x := 0;
+      y := 0;
+      case ItemFillOrder of
+        lfoColRow: DivMod(i, FRowCount, x, y);
+        lfoRowCol: DivMod(i, FColCount, y, x);
+      end;
+      if isRTL then
+        r := Bounds(
+          FBounds.Right - space - (x+1) * (FItemSize.X + space), 
+          FBounds.Top + space + y * (FItemSize.Y + space),
+          symwid + Space + FItemSize.X,
+          FItemSize.Y)
+      else
+        r := Bounds(
+          FBounds.Left + space + x * (FItemSize.X + space) - symwid,
+          FBounds.Top + space + y * (FItemSize.Y + space),
+          symwid + space + FItemSize.X ,
+          FItemSize.Y);
+      if PtInRect(r, APoint) then
+      begin
+        Result := i;
+        exit;
+      end;
+      OffsetRect(r, 0, FItemSize.Y + space);
+    end;
+  end;
+  Result := -1;
+end;
+
 function TChartLegend.MeasureItem(
   ADrawer: IChartDrawer; AItems: TChartLegendItems): TPoint;
 var
@@ -756,11 +816,6 @@ begin
     Result.Y := ADrawer.Scale(FixedItemHeight);
 end;
 
-function TChartLegend.IsPointInBounds(APoint: TPoint): Boolean;
-begin
-  Result := IsPointInRect(APoint, FLegendRect);
-end;
-
 procedure TChartLegend.Prepare(
   var AData: TChartLegendDrawingData; var AClipRect: TRect);
 var
@@ -775,6 +830,9 @@ begin
     FColCount := Max(Min(ColumnCount, FItems.Count), 1);
     FRowCount := (FItems.Count - 1) div FColCount + 1;
     FItemSize := MeasureItem(FDrawer, FItems);
+    Self.FItemSize := FItemSize;
+    Self.FColCount := FColCount;
+    Self.FRowCount := FRowCount;
     legendSize.X := (FItemSize.X + space) * FColCount + space;
     legendSize.Y := (FItemSize.Y + space) * FRowCount + space;
   end;

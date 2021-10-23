@@ -649,10 +649,13 @@ type
 
   TLegendClickEvent = procedure  (ASender: TChartTool;
     ALegend: TChartLegend) of object;
+  TLegendSeriesClickEvent = procedure (ASender: TChartTool;
+    ALegend: TChartLegend; ASeries: TBasicChartSeries) of object;
 
   TLegendClickTool = class(TChartTool)
   private
     FOnClick: TLegendClickEvent;
+    FOnSeriesClick: TLegendSeriesClickEvent;
     FLegend: TChartLegend;
   public
     constructor Create(AOwner: TComponent); override;
@@ -660,6 +663,7 @@ type
     procedure MouseUp(APoint: TPoint); override;
   published
     property OnClick: TLegendClickEvent read FOnClick write FOnClick;
+    property OnSeriesClick: TLegendSeriesClickEvent read FOnSeriesClick write FOnSeriesClick;
   end;
 
 
@@ -2339,19 +2343,45 @@ end;
 
 procedure TLegendClickTool.MouseDown(APoint: TPoint);
 begin
-  if FChart.Legend.IsPointInBounds(APoint) then begin
+  if Assigned(FChart.Legend) and FChart.Legend.IsPointInBounds(APoint) then begin
     Activate;
     Handled;
   end;
 end;
 
 procedure TLegendClickTool.MouseUp(APoint: TPoint);
+var
+  li: TLegendItem;
+  idx: Integer;
+  ser: TBasicChartSeries;
+  items: TChartLegendItems;
 begin
-  if IsActive and FChart.Legend.IsPointInBounds(APoint) then begin
-    FLegend := FChart.Legend;
-    if Assigned(FOnClick) and (FLegend <> nil) then FOnClick(Self, FLegend);
-  end else
+  if not (IsActive and Assigned(FChart.Legend)) then
+  begin
     FLegend := nil;
+    exit;
+  end;
+  
+  FLegend := FChart.Legend;
+
+  if Assigned(FOnClick) and FLegend.IsPointInBounds(APoint) then 
+    FOnClick(Self, FLegend);
+  
+  if Assigned(FOnSeriesClick) then
+  begin
+    try
+      items := FChart.GetLegendItems;
+      idx := FLegend.ItemClicked(FChart.Drawer, APoint, items);
+      if idx <> -1 then
+      begin
+        ser := TBasicChartSeries(items[idx].Owner);
+        if Assigned(ser) then
+          FOnSeriesClick(Self, FLegend, ser);
+      end;
+    finally
+      items.Free;
+    end;
+  end;
 end;
 
 { -------- }
