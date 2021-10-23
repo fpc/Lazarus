@@ -717,10 +717,10 @@ begin
                    ;
     if UseMaskList then
     begin
-      // Disable ranges in the MaskList. [...] is interpreted as literal chars.
+      // Disable sets and ranges in the MaskList. [...] is interpreted as literal chars.
       // Otherwise this would be incompatible with the situation if no MaskList was used
       // and would break backwards compatibilty and could raise unexpected EConvertError.
-      // If you need ranges in the MaskList, use the OnAddItem event for that. (BB)
+      // If you need sets/ranges in the MaskList, use the OnAddItem event for that. (BB)
       {$ifdef NotLiteralFilenames}
       CaseSens := ACaseSensitivity = mcsCaseSensitive;
       {$else}

@@ -30,12 +30,12 @@ type
   EMaskError=class(EConvertError)
   public
     type
-      TMaskExceptionCode=(eMaskException_InternalError,
-                          eMaskException_InvalidCharMask,
-                          eMaskException_MissingClose,
-                          eMaskException_IncompleteMask,
-                          eMaskException_InvalidEscapeChar,
-                          eMaskException_InvalidUTF8Sequence
+      TMaskExceptionCode=(mecInternalError,
+                          mecInvalidCharMask,
+                          mecMissingClose,
+                          mecIncompleteMask,
+                          mecInvalidEscapeChar,
+                          mecInvalidUTF8Sequence
                           );
   protected
     cCode: TMaskExceptionCode;
@@ -44,6 +44,14 @@ type
     constructor CreateFmt(const msg: string; args: array of const; aCode: TMaskExceptionCode);
     property Code: TMaskExceptionCode read cCode;
   end;
+
+  TMaskFailCause = (
+    Success=0,
+    MatchStringExhausted=1,
+    MaskExhausted=2,
+    MaskNotMatch=3,
+    UnexpectedEnd=4
+  );
 
   // Literal = It must match
   // Range = Match any char in the range
@@ -55,7 +63,7 @@ type
   // OptionalChar = Optional char
   // CharsGroupBegin = Begin optional chars or ranges "["
   // CharsGroupEnd = End optional chars or ranges "]"
-  TMaskOpCode = (
+  TMaskParsedCode = (
     Literal=0,
     Range=1,
     Negate=2,
@@ -66,22 +74,15 @@ type
     CharsGroupBegin=10,
     CharsGroupEnd=11
   );
-  TMaskOpcodesEnum=(eMaskOpcodeAnyChar,
-                    eMaskOpcodeAnyCharOrNone,
-                    eMaskOpcodeAnyText,
-                    eMaskOpcodeRange,
-                    eMaskOpcodeOptionalChar,
-                    eMaskOpcodeNegateGroup,
-                    eMaskOpcodeEscapeChar);
-  TMaskOpcodesSet=set of TMaskOpcodesEnum;
+  TMaskOpCode=(mocAnyChar,
+               mocAnyCharOrNone,
+               mocAnyText,
+               mocRange,
+               mocOptionalChar,
+               mocNegateGroup,
+               mocEscapeChar);
+  TMaskOpCodes=set of TMaskOpCode;
 
-  TMaskFailCause = (
-    Success = 0,
-    MatchStringExhausted = 1,
-    MaskExhausted = 2,
-    MaskNotMatch = 3,
-    UnexpectedEnd = 4
-  );
   (*
     Windows mask works in a different mode than regular mask, it has too many
     quirks and corner cases inherited from CP/M, then adapted to DOS (8.3) file
@@ -92,73 +93,72 @@ type
 
     ------- Quirks -------
 
-    --eWindowsQuirk_AnyExtension
+    --wqAnyExtension
       Anything*.*     = ".*" is removed.
 
-    --eWindowsQuirk_FilenameEnd
+    --wqFilenameEnd
       Anything??.abc  = "?" matches 1 or 0 chars (except '.')
                         (Not the same as "Anything*.abc", but the same
                         as regex "Anything.{0,2}\.abc")
                         Internally converted to "Anything[??].abc"
 
-    --eWindowsQuirk_Extension3More
+    --wqExtension3More
       Anything.abc    = Matches "Anything.abc" but also "Anything.abc*" (3 char extension)
       Anything.ab     = Matches "Anything.ab" and never "anything.abcd"
       *.pas           = Matches "Unit1.pas.bak". Not good.
 
-    --eWindowsQuirk_EmptyIsAny
+    --wqEmptyIsAny
       ""              = Empty string matches anything "*"
 
-    --eWindowsQuirk_AllByExtension (Not in use anymore)
+    --wqAllByExtension (Not in use anymore)
       .abc            = Runs as "*.abc"
 
-    --eWindowsQuirk_NoExtension
+    --wqNoExtension
       Anything*.      = Matches "Anything*" without extension
   *)
-  TWindowsQuirks=(eWindowsQuirk_AnyExtension, eWindowsQuirk_FilenameEnd,
-                  eWindowsQuirk_Extension3More, eWindowsQuirk_EmptyIsAny,
-                  eWindowsQuirk_AllByExtension, eWindowsQuirk_NoExtension);
-  TWindowsQuirkSet=set of TWindowsQuirks;
+  TWindowsQuirk=(wqAnyExtension, wqFilenameEnd, wqExtension3More,
+                 wqEmptyIsAny, wqAllByExtension, wqNoExtension);
+  TWindowsQuirks=set of TWindowsQuirk;
 
 const
-  WindowsQuirksAllAllowed=[eWindowsQuirk_AnyExtension,
-                           eWindowsQuirk_FilenameEnd,
-                           eWindowsQuirk_Extension3More,
-                           eWindowsQuirk_EmptyIsAny,
-                           eWindowsQuirk_AllByExtension,
-                           eWindowsQuirk_NoExtension];
+  WindowsQuirksAllAllowed=[wqAnyExtension,
+                           wqFilenameEnd,
+                           wqExtension3More,
+                           wqEmptyIsAny,
+                           wqAllByExtension,
+                           wqNoExtension];
 
-  // Leave out eWindowsQuirk_Extension3More and eWindowsQuirk_AllByExtension
-  WindowsQuirksDefaultAllowed=[eWindowsQuirk_AnyExtension,
-                               eWindowsQuirk_FilenameEnd,
-                               eWindowsQuirk_EmptyIsAny,
-                               eWindowsQuirk_NoExtension];
+  // Leave out wqExtension3More and wqAllByExtension
+  WindowsQuirksDefaultAllowed=[wqAnyExtension,
+                               wqFilenameEnd,
+                               wqEmptyIsAny,
+                               wqNoExtension];
 
-  MaskOpCodesAllAllowed=[eMaskOpcodeAnyChar,
-                         eMaskOpcodeAnyCharOrNone,
-                         eMaskOpcodeAnyText,
-                         eMaskOpcodeRange,
-                         eMaskOpcodeOptionalChar,
-                         eMaskOpcodeNegateGroup,
-                         eMaskOpcodeEscapeChar];
+  MaskOpCodesAllAllowed=[mocAnyChar,
+                         mocAnyCharOrNone,
+                         mocAnyText,
+                         mocRange,
+                         mocOptionalChar,
+                         mocNegateGroup,
+                         mocEscapeChar];
 
   MaskOpCodesDefaultAllowed=MaskOpCodesAllAllowed;
 
   // Match [x] literally, not as a range.
-  // Leave out eMaskOpcodeAnyCharOrNone, eMaskOpcodeRange and eMaskOpcodeOptionalChar.
-  MaskOpCodesDisableRange=[eMaskOpcodeAnyChar,
-                           eMaskOpcodeAnyText,
-                           eMaskOpcodeNegateGroup,
-                           eMaskOpcodeEscapeChar];
+  // Leave out mocAnyCharOrNone, mocRange and mocOptionalChar.
+  MaskOpCodesDisableRange=[mocAnyChar,
+                           mocAnyText,
+                           mocNegateGroup,
+                           mocEscapeChar];
 
   // Interpret [?] as literal question mark instead of 0..1 chars wildcard.
   // Disable backslash escaping characters like "\?".
-  // Leave out eMaskOpcodeAnyCharOrNone and eMaskOpcodeEscapeChar
-  MaskOpCodesNoEscape=[eMaskOpcodeAnyChar,
-                       eMaskOpcodeAnyText,
-                       eMaskOpcodeRange,
-                       eMaskOpcodeOptionalChar,
-                       eMaskOpcodeNegateGroup];
+  // Leave out mocAnyCharOrNone and mocEscapeChar
+  MaskOpCodesNoEscape=[mocAnyChar,
+                       mocAnyText,
+                       mocRange,
+                       mocOptionalChar,
+                       mocNegateGroup];
 
 type
 
@@ -173,65 +173,65 @@ type
     procedure SetMaskEscapeChar(AValue: Char);
   protected
     const GROW_BY=100;
-    procedure Add(const aLength: integer; const aData: PBYTE);
-    procedure Add(const aValue: integer);
-    procedure Add(const aValue: TMaskOpCode);
-    procedure IncrementLastCounterBy(const aOpcode: TMaskOpCode; const aValue: integer);
+    procedure Add(aLength: integer; aData: PBYTE);
+    procedure Add(aValue: integer);
+    procedure Add(aValue: TMaskParsedCode);
+    procedure IncrementLastCounterBy(aOpcode: TMaskParsedCode; aValue: integer);
   protected
-    cCaseSensitive: Boolean;
-    cRangeAutoReverse: Boolean; // If enabled, range [z-a] is interpreted as [a-z]
-    cMaskIsCompiled: Boolean;
-    cMaskCompiled: TBytes;
-    cMaskCompiledIndex: integer;
-    cMaskCompiledAllocated: integer;
-    cMaskCompiledLimit: integer;
-    cMaskLimit: integer;
-    cMatchStringLimit: integer;
-    cMatchMinimumLiteralBytes: SizeInt;
-    cMatchMaximumLiteralBytes: SizeInt;
-    cMaskOpcodesAllowed: TMaskOpcodesSet;
+    fCaseSensitive: Boolean;
+    fRangeAutoReverse: Boolean; // If enabled, range [z-a] is interpreted as [a-z]
+    fMaskIsCompiled: Boolean;
+    fMaskCompiled: TBytes;
+    fMaskCompiledIndex: integer;
+    fMaskCompiledAllocated: integer;
+    fMaskCompiledLimit: integer;
+    fMaskLimit: integer;
+    fMatchStringLimit: integer;
+    fMatchMinimumLiteralBytes: SizeInt;
+    fMatchMaximumLiteralBytes: SizeInt;
+    fMaskOpcodesAllowed: TMaskOpCodes;
     // EscapeChar forces next char to be a literal one, not a wildcard.
-    cMaskEscapeChar: Char;
+    fMaskEscapeChar: Char;
     procedure Compile; virtual;
-    class procedure Exception_InvalidCharMask(const aMaskChar: string; const aOffset: integer=-1); static;
-    class procedure Exception_MissingCloseChar(const aMaskChar: string; const aOffset: integer=-1); static;
+    class procedure Exception_InvalidCharMask(const aMaskChar: string; aOffset: integer=-1); static;
+    class procedure Exception_MissingCloseChar(const aMaskChar: string; aOffset: integer=-1); static;
     class procedure Exception_IncompleteMask(); static;
     class procedure Exception_InvalidEscapeChar(); static;
     procedure Exception_InternalError();
     //function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; virtual; abstract;
   public
     constructor Create(aCaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
     constructor CreateLegacy(aCaseSensitive: Boolean=False);
     constructor Create(aOptions: TMaskOptions);
   public
-    property CaseSensitive: Boolean read cCaseSensitive;
-    property RangeAutoReverse: Boolean read cRangeAutoReverse write cRangeAutoReverse;
-    property EscapeChar: Char read cMaskEscapeChar write SetMaskEscapeChar;
+    property CaseSensitive: Boolean read fCaseSensitive;
+    property RangeAutoReverse: Boolean read fRangeAutoReverse write fRangeAutoReverse;
+    property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;
   end;
 
   { TMaskUTF8 }
 
   TMaskUTF8 = class (TMaskBase)
   private
-    cMatchString: String;
+    fMatchString: String;
     // Used by Compile.
-    FMaskInd: Integer;
-    FCPLength: integer;    // Size of codepoint.
-    FLastOC: TMaskOpCode;  // Last OpCode.
-    FMask: String;
+    fMaskInd: Integer;
+    fCPLength: integer;    // Size of codepoint.
+    fLastOC: TMaskParsedCode;  // Last OpCode.
+    fMask: String;
     procedure AddAnyChar;
     procedure AddLiteral;
     procedure AddRange;
     procedure CompileRange;
     procedure ReverseRange;
   protected
-    cOriginalMask: String;
+    fOriginalMask: String;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
   public
     constructor Create(const aMask: String; aCaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
     constructor CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aOptions: TMaskOptions);
         deprecated 'Use CreateLegacy or Create with other params.'; // in Lazarus 2.3, remove in 2.5.
@@ -241,8 +241,8 @@ type
     function MatchesWindowsMask(const AFileName: String): Boolean;
         deprecated 'Create with TMaskWindows.Create, then call Matches.'; // in Lazarus 2.3, remove in 2.5.
   public
-    property Mask: String read cOriginalMask write cOriginalMask;
-    property OPCodesAllowed: TMaskOpcodesSet read cMaskOpcodesAllowed;// write cMaskOpcodesAllowed;
+    property Mask: String read fOriginalMask write fOriginalMask;
+    property OPCodesAllowed: TMaskOpCodes read fMaskOpcodesAllowed;// write fMaskOpcodesAllowed;
   end;
 
   TMask = class(TMaskUTF8);
@@ -251,21 +251,21 @@ type
 
   TMaskUTF8Windows=class(TMask)
   protected
-    cMaskWindowsQuirkAllowed: TWindowsQuirkSet;
-    cMaskWindowsQuirkInUse: TWindowsQuirkSet;
-    cWindowsMask: String;
+    fWindowsQuirkAllowed: TWindowsQuirks;
+    fWindowsQuirkInUse: TWindowsQuirks;
+    fWindowsMask: String;
     class procedure SplitFileNameExtension(const aSourceFileName: String;
       out aFileName: String; out aExtension: String; aIsMask: Boolean=False); static;
   public
     constructor Create(const aMask: String; aCaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
-      aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed;
+      aWindowsQuirksAllowed: TWindowsQuirks=WindowsQuirksDefaultAllowed);
 
     procedure Compile; override;
     function Matches(const aFileName: String): Boolean; override;
   public
-    property Mask: String read cWindowsMask write cWindowsMask;
-    property Quirks: TWindowsQuirkSet read cMaskWindowsQuirkAllowed;// write cMaskWindowsQuirkAllowed;
+    property Mask: String read fWindowsMask write fWindowsMask;
+    property Quirks: TWindowsQuirks read fWindowsQuirkAllowed;// write fWindowsQuirkAllowed;
   end;
 
   TMaskWindows = class(TMaskUTF8Windows);
@@ -281,17 +281,17 @@ type
 
   TMaskList = class
   private
-    FMasks: TObjectList;
+    fMasks: TObjectList;
     // Creating also Windows masks is a hack needed for deprecated MatchesWindowsMask.
-    FWindowsMasks: TObjectList;
+    fWindowsMasks: TObjectList;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
     constructor Create(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
     constructor CreateWindows(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
     constructor CreateWindows(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
     constructor CreateSysNative(const aValue: String; aSeparator: Char; CaseSensitive: Boolean);
     destructor Destroy; override;
@@ -306,26 +306,26 @@ type
   end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesMaskLegacy(const FileName, Mask: String; CaseSensitive: Boolean=False): Boolean;
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesMaskLegacy or MatchesMask with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed;
-  aWindowsQuirksAllowed: TWindowsQuirkSet=WindowsQuirksDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed;
+  aWindowsQuirksAllowed: TWindowsQuirks=WindowsQuirksDefaultAllowed): Boolean;
 function MatchesWindowsMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
 
 function MatchesMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpcodesSet=MaskOpCodesDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
@@ -333,7 +333,7 @@ function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
 
 implementation
 
-function EncodeDisableRange(Options: TMaskOptions): TMaskOpcodesSet;
+function EncodeDisableRange(Options: TMaskOptions): TMaskOpCodes;
 // Encode the Disable Range option from legacy TMaskOptions.
 begin
   if moDisableSets in Options then
@@ -343,7 +343,7 @@ begin
 end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean;
-  aOpcodesAllowed: TMaskOpcodesSet): Boolean;
+  aOpcodesAllowed: TMaskOpCodes): Boolean;
 var
   AMask: TMask;
 begin
@@ -368,7 +368,7 @@ begin
 end;
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean;
-  aOpcodesAllowed: TMaskOpcodesSet; aWindowsQuirksAllowed: TWindowsQuirkSet): Boolean;
+  aOpcodesAllowed: TMaskOpCodes; aWindowsQuirksAllowed: TWindowsQuirks): Boolean;
 var
   AMask: TMaskWindows;
 begin
@@ -387,7 +387,7 @@ begin
 end;
 
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet): Boolean;
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes): Boolean;
 var
   AMaskList: TMaskList;
 begin
@@ -407,7 +407,7 @@ begin
 end;
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet): Boolean;
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes): Boolean;
 var
   AMaskList: TMaskList;
 begin
@@ -444,32 +444,32 @@ end;
 
 procedure TMaskBase.SetMaskEscapeChar(AValue: Char);
 begin
-  if cMaskEscapeChar=AValue then Exit;
-  if cMaskEscapeChar>#127 then
+  if fMaskEscapeChar=AValue then Exit;
+  if fMaskEscapeChar>#127 then
     Exception_InvalidEscapeChar();
-  cMaskEscapeChar:=AValue;
+  fMaskEscapeChar:=AValue;
 end;
 
-procedure TMaskBase.Add(const aLength: integer; const aData: PBYTE);
+procedure TMaskBase.Add(aLength: integer; aData: PBYTE);
 var
   lCounter: integer;
 begin
-  if cMaskCompiledIndex+aLength>=cMaskCompiledAllocated then begin
-    cMaskCompiledAllocated:=cMaskCompiledAllocated+aLength+GROW_BY;
-    SetLength(cMaskCompiled,cMaskCompiledAllocated);
+  if fMaskCompiledIndex+aLength>=fMaskCompiledAllocated then begin
+    fMaskCompiledAllocated:=fMaskCompiledAllocated+aLength+GROW_BY;
+    SetLength(fMaskCompiled,fMaskCompiledAllocated);
   end;
   for lCounter := 0 to Pred(aLength) do begin
-    cMaskCompiled[cMaskCompiledIndex]:=(aData+lCounter)^;
-    inc(cMaskCompiledIndex);
+    fMaskCompiled[fMaskCompiledIndex]:=(aData+lCounter)^;
+    inc(fMaskCompiledIndex);
   end;
 end;
 
-procedure TMaskBase.Add(const aValue: integer);
+procedure TMaskBase.Add(aValue: integer);
 begin
   Add(sizeof(aValue),@aValue);
 end;
 
-procedure TMaskBase.Add(const aValue: TMaskOpCode);
+procedure TMaskBase.Add(aValue: TMaskParsedCode);
 var
   v: BYTE;
 begin
@@ -477,65 +477,61 @@ begin
   Add(1,@v);
 end;
 
-procedure TMaskBase.IncrementLastCounterBy(const aOpcode: TMaskOpCode;
-  const aValue: integer);
+procedure TMaskBase.IncrementLastCounterBy(aOpcode: TMaskParsedCode; aValue: integer);
 var
   p: PInteger;
 begin
-  cMaskCompiledIndex:=cMaskCompiledIndex-sizeof(aValue);
-  if TMaskOpCode(cMaskCompiled[cMaskCompiledIndex-1])<>aOpcode then begin
+  fMaskCompiledIndex:=fMaskCompiledIndex-sizeof(aValue);
+  if TMaskParsedCode(fMaskCompiled[fMaskCompiledIndex-1])<>aOpcode then
     Exception_InternalError();
-  end;
-  P:=@cMaskCompiled[cMaskCompiledIndex];
+  P:=@fMaskCompiled[fMaskCompiledIndex];
   Add(P^+aValue);
 end;
 
 procedure TMaskBase.Compile;
 begin
-  cMaskIsCompiled:=true;
+  fMaskIsCompiled:=true;
 end;
 
 class procedure TMaskBase.Exception_InvalidCharMask(const aMaskChar: string;
-  const aOffset: integer);
+  aOffset: integer);
 begin
-  if aOffset>=0 then begin
-    raise EMaskError.CreateFmt(rsInvalidCharMaskAt, [aMaskChar, aOffset], eMaskException_InvalidCharMask);
-  end else begin
-    raise EMaskError.CreateFmt(rsInvalidCharMask, [aMaskChar], eMaskException_InvalidCharMask);
-  end;
+  if aOffset>=0 then
+    raise EMaskError.CreateFmt(rsInvalidCharMaskAt, [aMaskChar, aOffset], mecInvalidCharMask)
+  else
+    raise EMaskError.CreateFmt(rsInvalidCharMask, [aMaskChar], mecInvalidCharMask);
 end;
 
 class procedure TMaskBase.Exception_MissingCloseChar(const aMaskChar: string;
-  const aOffset: integer);
+  aOffset: integer);
 begin
-  if aOffset>=0 then begin
-    raise EMaskError.CreateFmt(rsMissingCloseCharMaskAt, [aMaskChar, aOffset], eMaskException_MissingClose);
-  end else begin
-    raise EMaskError.CreateFmt(rsMissingCloseCharMask, [aMaskChar], eMaskException_MissingClose);
-  end;
+  if aOffset>=0 then
+    raise EMaskError.CreateFmt(rsMissingCloseCharMaskAt, [aMaskChar, aOffset], mecMissingClose)
+  else
+    raise EMaskError.CreateFmt(rsMissingCloseCharMask, [aMaskChar], mecMissingClose);
 end;
 
 class procedure TMaskBase.Exception_IncompleteMask();
 begin
-  raise EMaskError.CreateFmt(rsIncompleteMask, [], eMaskException_IncompleteMask);
+  raise EMaskError.CreateFmt(rsIncompleteMask, [], mecIncompleteMask);
 end;
 
 class procedure TMaskBase.Exception_InvalidEscapeChar();
 begin
-  raise EMaskError.Create(rsInvalidEscapeChar, eMaskException_InvalidEscapeChar);
+  raise EMaskError.Create(rsInvalidEscapeChar, mecInvalidEscapeChar);
 end;
 
 procedure TMaskBase.Exception_InternalError();
 begin
-  raise EMaskError.CreateFmt(rsInternalError, [self.ClassName], eMaskException_InternalError);
+  raise EMaskError.CreateFmt(rsInternalError, [self.ClassName], mecInternalError);
 end;
 
-constructor TMaskBase.Create(aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
+constructor TMaskBase.Create(aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 begin
-  cCaseSensitive:=aCaseSensitive;
-  cMaskOpcodesAllowed:=aOpcodesAllowed;
-  cRangeAutoReverse:=True;
-  cMaskEscapeChar:='\';
+  fCaseSensitive:=aCaseSensitive;
+  fMaskOpcodesAllowed:=aOpcodesAllowed;
+  fRangeAutoReverse:=True;
+  fMaskEscapeChar:='\';
 end;
 
 constructor TMaskBase.CreateLegacy(aCaseSensitive: Boolean);
@@ -553,166 +549,166 @@ end;
 
 procedure TMaskUTF8.AddAnyChar;
 begin
-  Add(TMaskOpCode.AnyChar);
-  inc(cMatchMinimumLiteralBytes,1);
-  if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
-    inc(cMatchMaximumLiteralBytes,4);
-  FLastOC:=TMaskOpCode.AnyChar;
+  Add(TMaskParsedCode.AnyChar);
+  inc(fMatchMinimumLiteralBytes,1);
+  if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+    inc(fMatchMaximumLiteralBytes,4);
+  fLastOC:=TMaskParsedCode.AnyChar;
 end;
 
 procedure TMaskUTF8.AddLiteral;
 begin
-  Add(TMaskOpCode.Literal);
-  Add(FCPLength,@FMask[FMaskInd]);
-  inc(cMatchMinimumLiteralBytes,FCPLength);
-  if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
-    inc(cMatchMaximumLiteralBytes,FCPLength);
-  FLastOC:=TMaskOpCode.Literal;
+  Add(TMaskParsedCode.Literal);
+  Add(fCPLength,@fMask[fMaskInd]);
+  inc(fMatchMinimumLiteralBytes,fCPLength);
+  if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+    inc(fMatchMaximumLiteralBytes,fCPLength);
+  fLastOC:=TMaskParsedCode.Literal;
 end;
 
 procedure TMaskUTF8.AddRange;
 begin
-  Add(FCPLength,@FMask[FMaskInd]);
-  inc(FMaskInd,FCPLength+1);  // Add 1 for "-"
-  FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
-  Add(FCPLength,@FMask[FMaskInd]);
+  Add(fCPLength,@fMask[fMaskInd]);
+  inc(fMaskInd,fCPLength+1);  // Add 1 for "-"
+  fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+  Add(fCPLength,@fMask[fMaskInd]);
 end;
 
 procedure TMaskUTF8.ReverseRange;
 begin
-  Add(UTF8CodepointSizeFast(@FMask[FMaskInd+FCPLength+1]),@FMask[FMaskInd+FCPLength+1]);
-  Add(FCPLength,@FMask[FMaskInd]);
-  inc(FMaskInd,FCPLength+1);
-  FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
+  Add(UTF8CodepointSizeFast(@fMask[fMaskInd+fCPLength+1]),@fMask[fMaskInd+fCPLength+1]);
+  Add(fCPLength,@fMask[fMaskInd]);
+  inc(fMaskInd,fCPLength+1);
+  fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
 end;
 
 procedure TMaskUTF8.CompileRange;
 var
   lCharsGroupInsertSize: integer;
 begin
-  FLastOC:=TMaskOpCode.CharsGroupBegin;
-  Add(TMaskOpCode.CharsGroupBegin);
-  inc(cMatchMinimumLiteralBytes,1);
-  if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
-    inc(cMatchMaximumLiteralBytes,4);
-  lCharsGroupInsertSize:=cMaskCompiledIndex;
+  fLastOC:=TMaskParsedCode.CharsGroupBegin;
+  Add(TMaskParsedCode.CharsGroupBegin);
+  inc(fMatchMinimumLiteralBytes,1);
+  if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+    inc(fMatchMaximumLiteralBytes,4);
+  lCharsGroupInsertSize:=fMaskCompiledIndex;
   Add(0);
-  inc(FMaskInd); // CP length is 1 because it is "["
-  if FMaskInd<cMaskLimit then begin
-    if (FMask[FMaskInd]='!') and (eMaskOpcodeNegateGroup in cMaskOpcodesAllowed) then begin
-      Add(TMaskOpCode.Negate);
-      inc(FMaskInd); // CP length is 1 because it is "!"
-      FLastOC:=TMaskOpCode.Negate;
+  inc(fMaskInd); // CP length is 1 because it is "["
+  if fMaskInd<fMaskLimit then begin
+    if (fMask[fMaskInd]='!') and (mocNegateGroup in fMaskOpcodesAllowed) then begin
+      Add(TMaskParsedCode.Negate);
+      inc(fMaskInd); // CP length is 1 because it is "!"
+      fLastOC:=TMaskParsedCode.Negate;
     end;
   end;
 
-  while FMaskInd<=cMaskLimit do begin
-    FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
-    if (FMask[FMaskInd]='?') and (eMaskOpcodeAnyCharOrNone in cMaskOpcodesAllowed) then begin
+  while fMaskInd<=fMaskLimit do begin
+    fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+    if (fMask[fMaskInd]='?') and (mocAnyCharOrNone in fMaskOpcodesAllowed) then begin
       // This syntax is permitted [??] but not this one [?a] or [a?]
-      if (FLastOC=TMaskOpCode.CharsGroupBegin) or (FLastOC=TMaskOpCode.AnyCharOrNone) then begin
-        if FLastOC=TMaskOpCode.AnyCharOrNone then begin
+      if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.AnyCharOrNone) then begin
+        if fLastOC=TMaskParsedCode.AnyCharOrNone then begin
           // Increment counter
-          IncrementLastCounterBy(TMaskOpCode.AnyCharOrNone,1);
+          IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,1);
         end else begin
-          Add(TMaskOpCode.AnyCharOrNone);
+          Add(TMaskParsedCode.AnyCharOrNone);
           Add(1); // Counter
           // Discount minimun bytes added at the "CharGroupBegin"
           // because [?] could be 1 or 0 chars, so minimum is zero
           // but the CharsGroupBegin assumes 1 char as all other
           // masks replace the group by 1 char position.
           // This code will run 1 time per group at maximun.
-          dec(cMatchMinimumLiteralBytes,1);
-          if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
-            dec(cMatchMaximumLiteralBytes,4);
+          dec(fMatchMinimumLiteralBytes,1);
+          if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+            dec(fMatchMaximumLiteralBytes,4);
         end;
-        if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
-          inc(cMatchMaximumLiteralBytes,4);
-        FLastOC:=TMaskOpCode.AnyCharOrNone;
+        if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+          inc(fMatchMaximumLiteralBytes,4);
+        fLastOC:=TMaskParsedCode.AnyCharOrNone;
       end
       else
-        Exception_InvalidCharMask(FMask[FMaskInd],FMaskInd);
+        Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
     end
-    else if (FLastOC=TMaskOpCode.AnyCharOrNone) and (FMask[FMaskInd]<>']') then begin
-      //FMask[FMaskInd] is not '?', but previous mask was '?' and it is an invalid sequence.
+    else if (fLastOC=TMaskParsedCode.AnyCharOrNone) and (fMask[fMaskInd]<>']') then begin
+      //fMask[fMaskInd] is not '?', but previous mask was '?' and it is an invalid sequence.
       // "[??] = Valid" // "[a?] or [?a] = Invalid"
-      Exception_InvalidCharMask(FMask[FMaskInd],FMaskInd);
+      Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
     end
-    else if ((FMaskInd+FCPLength+1)<=cMaskLimit) and (FMask[FMaskInd+FCPLength]='-')
-    and (eMaskOpcodeRange in cMaskOpcodesAllowed) then begin
-      // FMaskInd+FCPLength+1 --explained--
+    else if ((fMaskInd+fCPLength+1)<=fMaskLimit) and (fMask[fMaskInd+fCPLength]='-')
+    and (mocRange in fMaskOpcodesAllowed) then begin
+      // fMaskInd+fCPLength+1 --explained--
       //------------------------------
-      // FMaskInd+FCPLength is next UTF8 after current UTF8 CP
+      // fMaskInd+fCPLength is next UTF8 after current UTF8 CP
       // +1 is at least one byte in UTF8 sequence after "-"
       // Check if it is a range
-      Add(TMaskOpCode.Range);
+      Add(TMaskParsedCode.Range);
       // Check if reverse range is needed
-      if (not cRangeAutoReverse)
-      or (CompareUTF8Sequences(@FMask[FMaskInd],@FMask[FMaskInd+FCPLength+1])<0) then
+      if (not fRangeAutoReverse)
+      or (CompareUTF8Sequences(@fMask[fMaskInd],@fMask[fMaskInd+fCPLength+1])<0) then
         AddRange
       else
         ReverseRange;
-      FLastOC:=TMaskOpCode.Range;
+      fLastOC:=TMaskParsedCode.Range;
 
-    end else if FMask[FMaskInd]=']' then begin
-      if FLastOC=TMaskOpCode.CharsGroupBegin then
-        Exception_InvalidCharMask(FMask[FMaskInd],FMaskInd); //Error empty match
+    end else if fMask[fMaskInd]=']' then begin
+      if fLastOC=TMaskParsedCode.CharsGroupBegin then
+        Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd); //Error empty match
       // Insert the new offset in case of a positive match in CharsGroup
-      PInteger(@cMaskCompiled[lCharsGroupInsertSize])^:=cMaskCompiledIndex;
-      Add(TMaskOpCode.CharsGroupEnd);
-      FLastOC:=TMaskOpCode.CharsGroupEnd;
+      PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+      Add(TMaskParsedCode.CharsGroupEnd);
+      fLastOC:=TMaskParsedCode.CharsGroupEnd;
       break;
     end else begin
-      Add(TMaskOpCode.OptionalChar);
-      Add(FCPLength,@FMask[FMaskInd]);
-      FLastOC:=TMaskOpCode.OptionalChar;
+      Add(TMaskParsedCode.OptionalChar);
+      Add(fCPLength,@fMask[fMaskInd]);
+      fLastOC:=TMaskParsedCode.OptionalChar;
     end;
-    inc(FMaskInd,FCPLength);
+    inc(fMaskInd,fCPLength);
   end;
-  if FMaskInd>cMaskLimit then
-    Exception_MissingCloseChar(']',cMaskLimit);
+  if fMaskInd>fMaskLimit then
+    Exception_MissingCloseChar(']',fMaskLimit);
 end;
 
 procedure TMaskUTF8.Compile;
 begin
   inherited Compile;
-  if cCaseSensitive then
-    FMask:=cOriginalMask
+  if fCaseSensitive then
+    fMask:=fOriginalMask
   else
-    FMask:=UTF8LowerCase(cOriginalMask);
-  cMaskLimit:=Length(FMask);
-  FLastOC:=TMaskOpCode.Literal;
-  SetLength(cMaskCompiled,0);
-  FMaskInd:=1;
-  while FMaskInd<=cMaskLimit do begin
-    FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
-    if (eMaskOpcodeEscapeChar in cMaskOpcodesAllowed)
-    and (FMask[FMaskInd]=cMaskEscapeChar) then begin
+    fMask:=UTF8LowerCase(fOriginalMask);
+  fMaskLimit:=Length(fMask);
+  fLastOC:=TMaskParsedCode.Literal;
+  SetLength(fMaskCompiled,0);
+  fMaskInd:=1;
+  while fMaskInd<=fMaskLimit do begin
+    fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+    if (mocEscapeChar in fMaskOpcodesAllowed)
+    and (fMask[fMaskInd]=fMaskEscapeChar) then begin
       // next is Literal
-      inc(FMaskInd,FCPLength);
-      if FMaskInd<=cMaskLimit then begin
-        FCPLength:=UTF8CodepointSizeFast(@FMask[FMaskInd]);
-        Add(TMaskOpCode.Literal);
-        Add(FCPLength,@FMask[FMaskInd]);
-        inc(cMatchMinimumLiteralBytes,FCPLength);
-        if cMatchMaximumLiteralBytes<High(cMatchMaximumLiteralBytes) then
-          inc(cMatchMaximumLiteralBytes,FCPLength);
-        FLastOC:=TMaskOpCode.Literal;
-        inc(FMaskInd,FCPLength);
+      inc(fMaskInd,fCPLength);
+      if fMaskInd<=fMaskLimit then begin
+        fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+        Add(TMaskParsedCode.Literal);
+        Add(fCPLength,@fMask[fMaskInd]);
+        inc(fMatchMinimumLiteralBytes,fCPLength);
+        if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+          inc(fMatchMaximumLiteralBytes,fCPLength);
+        fLastOC:=TMaskParsedCode.Literal;
+        inc(fMaskInd,fCPLength);
       end
       else
         Exception_IncompleteMask();
     end else begin
-      if FMask[FMaskInd] in ['*','?','['] then begin
-        case FMask[FMaskInd] of
+      if fMask[fMaskInd] in ['*','?','['] then begin
+        case fMask[fMaskInd] of
           '*':
             begin
-              if eMaskOpcodeAnyText in cMaskOpcodesAllowed then begin
-                if FLastOC<>TMaskOpCode.AnyCharToNext then begin
-                  Add(TMaskOpCode.AnyCharToNext);
-                  FLastOC:=TMaskOpCode.AnyCharToNext;
+              if mocAnyText in fMaskOpcodesAllowed then begin
+                if fLastOC<>TMaskParsedCode.AnyCharToNext then begin
+                  Add(TMaskParsedCode.AnyCharToNext);
+                  fLastOC:=TMaskParsedCode.AnyCharToNext;
                   // * = No limit
-                  cMatchMaximumLiteralBytes:=High(cMatchMaximumLiteralBytes);
+                  fMatchMaximumLiteralBytes:=High(fMatchMaximumLiteralBytes);
                 end;
               end
               else
@@ -720,15 +716,15 @@ begin
             end;
           '?':
             begin
-              if eMaskOpcodeAnyChar in cMaskOpcodesAllowed then
+              if mocAnyChar in fMaskOpcodesAllowed then
                 AddAnyChar
               else
                 AddLiteral;
             end;
           '[':
             begin
-              if [eMaskOpcodeOptionalChar,eMaskOpcodeRange,
-                  eMaskOpcodeAnyCharOrNone] * cMaskOpcodesAllowed <> []
+              if [mocOptionalChar,mocRange,
+                  mocAnyCharOrNone] * fMaskOpcodesAllowed <> []
               then
                 CompileRange
               else
@@ -738,11 +734,11 @@ begin
       end
       else
         AddLiteral;
-      inc(FMaskInd,FCPLength);
+      inc(fMaskInd,fCPLength);
     end;
   end;
-  SetLength(cMaskCompiled,cMaskCompiledIndex);
-  cMaskCompiledLimit:=cMaskCompiledIndex-1;
+  SetLength(fMaskCompiled,fMaskCompiledIndex);
+  fMaskCompiledLimit:=fMaskCompiledIndex-1;
 end;
 
 class function TMaskUTF8.CompareUTF8Sequences(const P1, P2: PChar): integer;
@@ -775,117 +771,117 @@ begin
   lSkipOnSuccessGroup:=0;
   Result:=UnexpectedEnd;
   lNegateCharGroup:=false;
-  while aMaskIndex<=cMaskCompiledLimit do begin
-    case TMaskOpCode(cMaskCompiled[aMaskIndex]) of
-      TMaskOpCode.Literal:
+  while aMaskIndex<=fMaskCompiledLimit do begin
+    case TMaskParsedCode(fMaskCompiled[aMaskIndex]) of
+      TMaskParsedCode.Literal:
         begin
-          if aMatchOffset>cMatchStringLimit then
+          if aMatchOffset>fMatchStringLimit then
             exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
           inc(aMaskIndex);
-          if CompareUTF8Sequences(@cMaskCompiled[aMaskIndex],@cMatchString[aMatchOffset])<>0 then
+          if CompareUTF8Sequences(@fMaskCompiled[aMaskIndex],@fMatchString[aMatchOffset])<>0 then
             exit(TMaskFailCause.MaskNotMatch);
-          inc(aMaskIndex,UTF8CodepointSizeFast(@cMaskCompiled[aMaskIndex]));
-          inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+          inc(aMaskIndex,UTF8CodepointSizeFast(@fMaskCompiled[aMaskIndex]));
+          inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
         end;
-      TMaskOpCode.AnyChar:
+      TMaskParsedCode.AnyChar:
         begin
           inc(aMaskIndex);
-          if aMatchOffset>cMatchStringLimit then
+          if aMatchOffset>fMatchStringLimit then
             exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
-          inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+          inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
         end;
-      TMaskOpCode.Negate:
+      TMaskParsedCode.Negate:
         begin
           lNegateCharGroup:=true;
           inc(aMaskIndex);
         end;
-      TMaskOpCode.CharsGroupBegin:
+      TMaskParsedCode.CharsGroupBegin:
         begin
           lNegateCharGroup:=false;
           inc(aMaskIndex);
-          lSkipOnSuccessGroup:=PInteger(@cMaskCompiled[aMaskIndex])^;
+          lSkipOnSuccessGroup:=PInteger(@fMaskCompiled[aMaskIndex])^;
           inc(aMaskIndex,sizeof(integer));
         end;
-      TMaskOpCode.CharsGroupEnd:
+      TMaskParsedCode.CharsGroupEnd:
         begin
           if lNegateCharGroup then begin
             aMaskIndex:=lSkipOnSuccessGroup+1;
-            inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+            inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end
           else
             exit(TMaskFailCause.MaskNotMatch);
         end;
-      TMaskOpCode.OptionalChar:
+      TMaskParsedCode.OptionalChar:
         begin
           inc(aMaskIndex);
-          if aMatchOffset>cMatchStringLimit then
+          if aMatchOffset>fMatchStringLimit then
             exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
-          if CompareUTF8Sequences(@cMaskCompiled[aMaskIndex],@cMatchString[aMatchOffset])=0 then begin
+          if CompareUTF8Sequences(@fMaskCompiled[aMaskIndex],@fMatchString[aMatchOffset])=0 then begin
             if lNegateCharGroup then
               exit(TMaskFailCause.MaskNotMatch);
             aMaskIndex:=lSkipOnSuccessGroup+1;
-            inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+            inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end
           else
-            inc(aMaskIndex,UTF8CodepointSizeFast(@cMaskCompiled[aMaskIndex]));
+            inc(aMaskIndex,UTF8CodepointSizeFast(@fMaskCompiled[aMaskIndex]));
         end;
-      TMaskOpCode.Range:
+      TMaskParsedCode.Range:
         begin
-          if aMatchOffset>cMatchStringLimit then
+          if aMatchOffset>fMatchStringLimit then
             exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
           inc(aMaskIndex);
-          c1:=@cMaskCompiled[aMaskIndex];
+          c1:=@fMaskCompiled[aMaskIndex];
           inc(aMaskIndex,UTF8CodepointSizeFast(C1));
-          c2:=@cMaskCompiled[aMaskIndex];
+          c2:=@fMaskCompiled[aMaskIndex];
           inc(aMaskIndex,UTF8CodepointSizeFast(C2));
-          t1:=(CompareUTF8Sequences(@cMatchString[aMatchOffset],c1)>=0) and
-              (CompareUTF8Sequences(@cMatchString[aMatchOffset],c2)<=0);
+          t1:=(CompareUTF8Sequences(@fMatchString[aMatchOffset],c1)>=0) and
+              (CompareUTF8Sequences(@fMatchString[aMatchOffset],c2)<=0);
           if t1 then begin
             if not lNegateCharGroup then begin
               //Jump to CharsGroupEnd+1 because if CharsGroupEnd is reached
               //it means that all optional chars and ranges have not matched the string.
               aMaskIndex:=lSkipOnSuccessGroup+1;
-              inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+              inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
             end
             else
               exit(TMaskFailCause.MaskNotMatch);
           end
         end;
-      TMaskOpCode.AnyCharToNext:
+      TMaskParsedCode.AnyCharToNext:
         begin
           // if last is "*", everything in remain data matches
-          if aMaskIndex=cMaskCompiledLimit then
+          if aMaskIndex=fMaskCompiledLimit then
             exit(TMaskFailCause.Success);
-          if aMatchOffset>cMatchStringLimit then begin
-            if aMaskIndex=cMaskCompiledLimit then
+          if aMatchOffset>fMatchStringLimit then begin
+            if aMaskIndex=fMaskCompiledLimit then
               exit(TMaskFailCause.Success);
             exit(TMaskFailCause.MatchStringExhausted);
           end;
           inc(aMaskIndex);
-          while aMatchOffset<=cMatchStringLimit do begin
+          while aMatchOffset<=fMatchStringLimit do begin
             lFailCause:=intfMatches(aMatchOffset,aMaskIndex);
             if lFailCause=TMaskFailCause.Success then
               exit(TMaskFailCause.Success)
             else if lFailCause=TMaskFailCause.MatchStringExhausted then
               exit(TMaskFailCause.MatchStringExhausted);
-            inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+            inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end;
           exit(TMaskFailCause.MatchStringExhausted);
         end;
-      TMaskOpCode.AnyCharOrNone:
+      TMaskParsedCode.AnyCharOrNone:
         begin
           inc(aMaskIndex);
-          lTryCounter:=PInteger(@cMaskCompiled[aMaskIndex])^;
+          lTryCounter:=PInteger(@fMaskCompiled[aMaskIndex])^;
           inc(aMaskIndex,sizeof(integer));
-          if TMaskOpCode(cMaskCompiled[aMaskIndex])<>TMaskOpCode.CharsGroupEnd then
+          if TMaskParsedCode(fMaskCompiled[aMaskIndex])<>TMaskParsedCode.CharsGroupEnd then
             Exception_InternalError()
           else
             aMaskIndex:=lSkipOnSuccessGroup+1;
 
           // Try to match remain mask eating, 0,1,2,...,lTryCounter chars.
           for j := 0 to lTryCounter do begin
-            if aMatchOffset>cMatchStringLimit then begin
-              if aMaskIndex=cMaskCompiledLimit+1 then
+            if aMatchOffset>fMatchStringLimit then begin
+              if aMaskIndex=fMaskCompiledLimit+1 then
                 exit(TMaskFailCause.Success);
               exit(TMaskFailCause.MatchStringExhausted);
             end;
@@ -894,7 +890,7 @@ begin
               exit(TMaskFailCause.Success)
             else if lFailCause=TMaskFailCause.MatchStringExhausted then
               exit(TMaskFailCause.MatchStringExhausted);
-            inc(aMatchOffset,UTF8CodepointSizeFast(@cMatchString[aMatchOffset]));
+            inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end;
           exit(TMaskFailCause.MatchStringExhausted);
         end;
@@ -904,19 +900,19 @@ begin
         end;
     end;
   end;
-  if (aMaskIndex>cMaskCompiledLimit) and (aMatchOffset>cMatchStringLimit) then
+  if (aMaskIndex>fMaskCompiledLimit) and (aMatchOffset>fMatchStringLimit) then
     Result:=TMaskFailCause.Success
-  else if aMaskIndex>cMaskCompiledLimit then
+  else if aMaskIndex>fMaskCompiledLimit then
     Result:=TMaskFailCause.MaskExhausted
   else
     Result:=TMaskFailCause.MatchStringExhausted;
 end;
 
 constructor TMaskUTF8.Create(const aMask: String;
-  aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
+  aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 begin
   inherited Create(aCaseSensitive,aOpcodesAllowed);
-  cOriginalMask:=aMask;
+  fOriginalMask:=aMask;
 end;
 
 constructor TMaskUTF8.CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
@@ -928,19 +924,19 @@ end;
 constructor TMaskUTF8.Create(const aMask: String; aOptions: TMaskOptions);
 begin
   inherited Create(aOptions);
-  cOriginalMask:=aMask;
+  fOriginalMask:=aMask;
 end;
 
 function TMaskUTF8.Matches(const aStringToMatch: String): Boolean;
 begin
-  if not cMaskIsCompiled then Compile;
-  if cCaseSensitive then
-    cMatchString:=aStringToMatch
+  if not fMaskIsCompiled then Compile;
+  if fCaseSensitive then
+    fMatchString:=aStringToMatch
   else
-    cMatchString:=UTF8LowerCase(aStringToMatch);
-  cMatchStringLimit:=length(cMatchString);
-  if (cMatchStringLimit>=cMatchMinimumLiteralBytes)
-  and (cMatchStringLimit<=cMatchMaximumLiteralBytes) then
+    fMatchString:=UTF8LowerCase(aStringToMatch);
+  fMatchStringLimit:=length(fMatchString);
+  if (fMatchStringLimit>=fMatchMinimumLiteralBytes)
+  and (fMatchStringLimit<=fMatchMaximumLiteralBytes) then
     Result:=intfMatches(1,0)=TMaskFailCause.Success
   else
     Result:=false; // There are too many or not enough bytes to match the string
@@ -950,7 +946,7 @@ function TMaskUTF8.MatchesWindowsMask(const AFileName: String): Boolean;
 var
   WinMask: TMaskUTF8Windows;
 begin
-  WinMask:=TMaskUTF8Windows.Create(cOriginalMask, CaseSensitive, OPCodesAllowed);
+  WinMask:=TMaskUTF8Windows.Create(fOriginalMask, CaseSensitive, OPCodesAllowed);
   try
     Result:=WinMask.Matches(AFileName);
   finally
@@ -989,10 +985,10 @@ begin
 end;
 
 constructor TMaskUTF8Windows.Create(const aMask: String; aCaseSensitive: Boolean;
-  aOpcodesAllowed: TMaskOpcodesSet; aWindowsQuirksAllowed: TWindowsQuirkSet);
+  aOpcodesAllowed: TMaskOpCodes; aWindowsQuirksAllowed: TWindowsQuirks);
 begin
-  cMaskWindowsQuirkAllowed:=aWindowsQuirksAllowed;
-  cWindowsMask:=aMask;
+  fWindowsQuirkAllowed:=aWindowsQuirksAllowed;
+  fWindowsMask:=aMask;
   inherited Create(aMask,aCaseSensitive,aOpcodesAllowed);
   Compile;
 end;
@@ -1022,9 +1018,9 @@ procedure TMaskUTF8Windows.Compile;
   begin
     Result:=aString;
     for j := Length(Result) downto 1 do begin
-      if Result[j] in ['[',']',cMaskEscapeChar] then begin
+      if Result[j] in ['[',']',fMaskEscapeChar] then begin
         // Escape the []\ chars as in Windows mask mode they are plain chars.
-        insert(cMaskEscapeChar,Result,j);
+        insert(fMaskEscapeChar,Result,j);
       end;
     end;
   end;
@@ -1035,39 +1031,39 @@ var
   lModifiedMask: String;
 
 begin
-  lModifiedMask:=cWindowsMask;
+  lModifiedMask:=fWindowsMask;
 
   // Quirk "blah.*" = "blah*"
-  if eWindowsQuirk_AnyExtension in cMaskWindowsQuirkAllowed then begin
+  if wqAnyExtension in fWindowsQuirkAllowed then begin
     if RightStr(lModifiedMask,3)='*.*' then begin
       lModifiedMask:=copy(lModifiedMask,1,Length(lModifiedMask)-2);
-      cMaskWindowsQuirkInUse:=cMaskWindowsQuirkInUse+[eWindowsQuirk_AnyExtension];
+      fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqAnyExtension];
     end;
   end;
 
   SplitFileNameExtension(lModifiedMask,lFileNameMask,lExtensionMask,true);
 
   // Quirk "blah.abc" = "blah.abc*"
-  if eWindowsQuirk_Extension3More in cMaskWindowsQuirkAllowed then begin
+  if wqExtension3More in fWindowsQuirkAllowed then begin
     if (Length(lExtensionMask)=4) and (Length(lFileNameMask)>0) then begin
       lExtensionMask:=lExtensionMask+'*';
-      cMaskWindowsQuirkInUse:=cMaskWindowsQuirkInUse+[eWindowsQuirk_Extension3More];
+      fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqExtension3More];
     end;
   end;
 
   // Quirk "" = "*"
   if (Length(lFileNameMask)=0) and (Length(lExtensionMask)=0) then begin
-    if eWindowsQuirk_EmptyIsAny in cMaskWindowsQuirkAllowed then begin
+    if wqEmptyIsAny in fWindowsQuirkAllowed then begin
       lFileNameMask:='*';
-      cMaskWindowsQuirkInUse:=cMaskWindowsQuirkInUse+[eWindowsQuirk_EmptyIsAny];
+      fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqEmptyIsAny];
     end;
   end else begin
   // Quirk ".abc"
-    if eWindowsQuirk_AllByExtension in cMaskWindowsQuirkAllowed then begin
+    if wqAllByExtension in fWindowsQuirkAllowed then begin
       if (Length(lFileNameMask)=0) and (length(lExtensionMask)>0) then begin
         if lExtensionMask[1]='.' then begin
           lFileNameMask:='*';
-          cMaskWindowsQuirkInUse:=cMaskWindowsQuirkInUse+[eWindowsQuirk_AllByExtension];
+          fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqAllByExtension];
         end;
       end;
     end;
@@ -1077,14 +1073,14 @@ begin
   lExtensionMask:=EscapeSpecialChars(lExtensionMask);
 
   // Quirk "file???.ab?" matches "file1.ab1" and "file123.ab"
-  if eWindowsQuirk_FilenameEnd in cMaskWindowsQuirkAllowed then begin
+  if wqFilenameEnd in fWindowsQuirkAllowed then begin
     lFileNameMask:=OptionalQMarksAtEnd(lFileNameMask);
     lExtensionMask:=OptionalQMarksAtEnd(lExtensionMask);
   end;
 
-  if eWindowsQuirk_NoExtension in cMaskWindowsQuirkAllowed then begin
+  if wqNoExtension in fWindowsQuirkAllowed then begin
     if Length(lExtensionMask)=1 then begin
-      cMaskWindowsQuirkInUse:=[eWindowsQuirk_NoExtension];
+      fWindowsQuirkInUse:=[wqNoExtension];
       lExtensionMask:='';
     end;
   end;
@@ -1097,9 +1093,9 @@ function TMaskUTF8Windows.Matches(const aFileName: String): Boolean;
 var
   lFileName, lExtension: String;
 begin
-  if eWindowsQuirk_NoExtension in cMaskWindowsQuirkInUse then begin
+  if wqNoExtension in fWindowsQuirkInUse then begin
     SplitFileNameExtension(aFileName,lFileName,lExtension,false);
-    // eWindowsQuirk_NoExtension = Empty extension
+    // wqNoExtension = Empty extension
     if lExtension<>'' then exit(false);
   end;
   Result:=Inherited Matches(aFileName);
@@ -1130,19 +1126,19 @@ end;
 { TMaskList }
 
 constructor TMaskList.Create(const aValue: String; aSeparator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 var
   S: TParseStringList;
   I: Integer;
 begin
-  FMasks := TObjectList.Create(True);
-  FWindowsMasks := TObjectList.Create(True);
+  fMasks := TObjectList.Create(True);
+  fWindowsMasks := TObjectList.Create(True);
   S := TParseStringList.Create(aValue, aSeparator);
   try
     for I := 0 to S.Count-1 do begin
-      FMasks.Add(TMask.Create(S[I], CaseSensitive, aOpcodesAllowed));
-      // A hack, add also to FWindowsMasks.
-      FWindowsMasks.Add(TMaskWindows.Create(S[I], CaseSensitive));
+      fMasks.Add(TMask.Create(S[I], CaseSensitive, aOpcodesAllowed));
+      // A hack, add also to fWindowsMasks.
+      fWindowsMasks.Add(TMaskWindows.Create(S[I], CaseSensitive));
     end;
   finally
     S.Free;
@@ -1152,7 +1148,7 @@ end;
 constructor TMaskList.Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
 var
   CaseSens: Boolean;
-  Opcodes: TMaskOpcodesSet;
+  Opcodes: TMaskOpCodes;
 begin
   CaseSens:=moCaseSensitive in aOptions;
   if moDisableSets in aOptions then
@@ -1163,16 +1159,16 @@ begin
 end;
 
 constructor TMaskList.CreateWindows(const aValue: String; aSeparator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpcodesSet);
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 var
   S: TParseStringList;
   I: Integer;
 begin
-  FMasks := TObjectList.Create(True);
+  fMasks := TObjectList.Create(True);
   S := TParseStringList.Create(AValue, ASeparator);
   try
     for I := 0 to S.Count-1 do
-      FMasks.Add(TMaskWindows.Create(S[I], CaseSensitive, aOpcodesAllowed));
+      fMasks.Add(TMaskWindows.Create(S[I], CaseSensitive, aOpcodesAllowed));
   finally
     S.Free;
   end;
@@ -1196,19 +1192,19 @@ end;
 
 destructor TMaskList.Destroy;
 begin
-  FWindowsMasks.Free;
-  FMasks.Free;
+  fWindowsMasks.Free;
+  fMasks.Free;
   inherited Destroy;
 end;
 
 function TMaskList.GetItem(Index: Integer): TMask;
 begin
-  Result := TMask(FMasks.Items[Index]);
+  Result := TMask(fMasks.Items[Index]);
 end;
 
 function TMaskList.GetCount: Integer;
 begin
-  Result := FMasks.Count;
+  Result := fMasks.Count;
 end;
 
 function TMaskList.Matches(const AFileName: String): Boolean;
@@ -1216,8 +1212,8 @@ var
   I: Integer;
 begin
   Result := False;
-  for I := 0 to FMasks.Count-1 do
-    if TMask(FMasks.Items[I]).Matches(AFileName) then
+  for I := 0 to fMasks.Count-1 do
+    if TMask(fMasks.Items[I]).Matches(AFileName) then
       Exit(True);
 end;
 
@@ -1227,8 +1223,8 @@ var
   I: Integer;
 begin
   Result := False;
-  for I := 0 to FWindowsMasks.Count-1 do
-    if TMaskWindows(FWindowsMasks.Items[I]).Matches(AFileName) then
+  for I := 0 to fWindowsMasks.Count-1 do
+    if TMaskWindows(fWindowsMasks.Items[I]).Matches(AFileName) then
       Exit(True);
   //raise Exception.Create('Create with TMaskList.CreateWindows, then call Matches.');
 end;
