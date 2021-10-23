@@ -2382,6 +2382,9 @@ begin
       items.Free;
     end;
   end;
+  
+  Deactivate;
+  Handled;
 end;
 
 { -------- }
