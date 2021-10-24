@@ -46,8 +46,8 @@ type
       Axis: TChartAxis; AHit: TChartAxisHitTests);
     procedure ChartToolset1DataPointClickTool1PointClick(ATool: TChartTool;
       APoint: TPoint);
-    procedure ChartToolset1LegendClickTool1Click(ASender: TChartTool;
-      ALegend: TChartLegend);
+    procedure ChartToolset1LegendClickTool1SeriesClick(ASender: TChartTool; 
+      ALegend: TChartLegend; ASeries: TBasicChartSeries);
     procedure ChartToolset1TitleFootClickTool1Click(ASender: TChartTool;
       ATitle: TChartTitle);
     procedure cbDoubleClickChange(Sender: TObject);
@@ -172,11 +172,14 @@ begin
   EditSeries(TDataPointClickTool(ATool).Series);
 end;
 
-procedure TMainForm.ChartToolset1LegendClickTool1Click(ASender: TChartTool;
-  ALegend: TChartLegend);
+procedure TMainForm.ChartToolset1LegendClickTool1SeriesClick(
+  ASender: TChartTool; ALegend: TChartLegend; ASeries: TBasicChartSeries);
 begin
   Unused(ASender);
-  EditLegend(ALegend);
+  if ASeries = nil then
+    EditLegend(ALegend)
+  else
+    EditSeries(ASeries);
 end;
 
 procedure TMainForm.EditAxis(AAxis: TChartAxis; APage: TChartAxisEditorPage);

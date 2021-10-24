@@ -105,7 +105,7 @@ object MainForm: TMainForm
     Left = 6
     Height = 19
     Top = 321
-    Width = 177
+    Width = 175
     Anchors = [akLeft, akBottom]
     BorderSpacing.Left = 6
     BorderSpacing.Bottom = 6
@@ -117,10 +117,10 @@ object MainForm: TMainForm
     AnchorSideLeft.Control = cbDoubleClick
     AnchorSideLeft.Side = asrBottom
     AnchorSideTop.Control = cbDoubleClick
-    Left = 207
+    Left = 205
     Height = 19
     Top = 321
-    Width = 140
+    Width = 138
     BorderSpacing.Left = 24
     Caption = 'Use "all-in-one" dialog'
     TabOrder = 2
@@ -138,7 +138,7 @@ object MainForm: TMainForm
     end
     object ChartToolset1LegendClickTool1: TLegendClickTool
       Shift = [ssLeft]
-      OnClick = ChartToolset1LegendClickTool1Click
+      OnSeriesClick = ChartToolset1LegendClickTool1SeriesClick
     end
     object ChartToolset1AxisClickTool1: TAxisClickTool
       Shift = [ssLeft]
