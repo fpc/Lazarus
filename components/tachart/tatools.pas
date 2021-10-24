@@ -2351,10 +2351,9 @@ end;
 
 procedure TLegendClickTool.MouseUp(APoint: TPoint);
 var
-  li: TLegendItem;
   idx: Integer;
-  ser: TBasicChartSeries;
-  items: TChartLegendItems;
+  ser: TBasicChartSeries = nil;
+  items: TChartLegendItems = nil;
 begin
   if not (IsActive and Assigned(FChart.Legend)) then
   begin
@@ -2364,24 +2363,20 @@ begin
   
   FLegend := FChart.Legend;
 
-  if Assigned(FOnClick) and FLegend.IsPointInBounds(APoint) then 
-    FOnClick(Self, FLegend);
-  
   if Assigned(FOnSeriesClick) then
   begin
     try
       items := FChart.GetLegendItems;
       idx := FLegend.ItemClicked(FChart.Drawer, APoint, items);
       if idx <> -1 then
-      begin
         ser := TBasicChartSeries(items[idx].Owner);
-        if Assigned(ser) then
-          FOnSeriesClick(Self, FLegend, ser);
-      end;
+      FOnSeriesClick(Self, FLegend, ser);
     finally
       items.Free;
     end;
-  end;
+  end else
+  if Assigned(FOnClick) and FLegend.IsPointInBounds(APoint) then 
+    FOnClick(Self, FLegend);
   
   Deactivate;
   Handled;

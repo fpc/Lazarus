@@ -743,7 +743,7 @@ end;
 function TChartLegend.ItemClicked(ADrawer: IChartDrawer; APoint: TPoint; 
   AItems: TChartLegendItems): Integer;
 var
-  i, x, y: Integer;
+  i, x, y, w: Integer;
   prevFont: TFont = nil;
   r: TRect;
   isRTL: Boolean;
@@ -768,24 +768,24 @@ begin
         lfoColRow: DivMod(i, FRowCount, x, y);
         lfoRowCol: DivMod(i, FColCount, y, x);
       end;
+      w := FDrawer.TextExtent(FItems[i].Text, FItems[i].TextFormat).X;
       if isRTL then
         r := Bounds(
-          FBounds.Right - space - (x+1) * (FItemSize.X + space), 
+          FBounds.Right - space - x * (FItemSize.X + space) - (symwid + space + w),
           FBounds.Top + space + y * (FItemSize.Y + space),
-          symwid + Space + FItemSize.X,
+          symwid + space + w,
           FItemSize.Y)
       else
         r := Bounds(
-          FBounds.Left + space + x * (FItemSize.X + space) - symwid,
+          FBounds.Left + space + x * (FItemSize.X + space),
           FBounds.Top + space + y * (FItemSize.Y + space),
-          symwid + space + FItemSize.X ,
+          symwid + space + w,
           FItemSize.Y);
       if PtInRect(r, APoint) then
       begin
         Result := i;
         exit;
       end;
-      OffsetRect(r, 0, FItemSize.Y + space);
     end;
   end;
   Result := -1;
