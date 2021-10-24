@@ -74,13 +74,15 @@ type
     CharsGroupBegin=10,
     CharsGroupEnd=11
   );
-  TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard
-               mocAnyCharOrNone,    //treat [?] to match any char the absence of a char
-               mocAnyText,          //treat * as a wildcard
-               mocRange,            //treat [a-d] to match either 'a', 'b', 'c', or 'd'
-               mocSet,              //treat [ab] to match either 'a' or 'b
-               mocNegateGroup,      //treat [!a-d] to not match 'a', 'b', 'c', or 'd', but match any other char. Requires mocRange and/or mocSet
-               mocEscapeChar);      //treat EscapeChar (defaults to '\') in [a\-b] to match either 'a', 'b', or '-'. Requires mocOptionalChar enabled and mocRange disabled
+  TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard to match exactly one char
+               mocAnyCharOrNone,    //treat [?] to match any char or the absence of a char
+               mocAnyText,          //treat * as a wildcard to mach zero or any mumber of chars
+               mocRange,            //treat [a-c] to match either 'a', 'b' or 'c'. '-' is treated as a range indicator.
+                                    //to have a literal '-' in a range, it must be the first character in the range: [-a-c] matches '-', 'a', 'b', or 'c'.
+               mocSet,              //treat [a-c] to match either 'a', '-' or 'c'
+               mocNegateGroup,      //treat [!a-c] to not match 'a', 'b', or 'c', but match any other char. Requires mocRange and/or mocSet
+               mocEscapeChar        //treat EscapeChar (defaults to '\') to take the next char as a literal, so '\*' is treated as a literal '*'.
+               );
   TMaskOpCodes=set of TMaskOpCode;
 
   (*
