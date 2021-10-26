@@ -2,13 +2,12 @@
 <fpdoc-descriptions>
   <package name="TAChartLazarusPkg">
     <module name="TAMath"><element name="EnsureOrder"><short>If <var>A</var> is greater than <var>B</var> then both numbers are exchanged to make sure that <var>A</var> is never greater than <var>B</var>.</short>
-      </element><element name="ExpandRange"><short>Expands the interval between <var>ALo</var> and <var>AHi</var> by subtracting <var>ACoeff</var> from <var>ALo</var> and adding it to <var>AHi</var>
+      </element><element name="ExpandRange"><short>Expands the interval between <var>ALo</var> and <var>AHi</var> by subtracting the fraction <var>ACoeff</var> of the distance <var>AHi-ALo</var> from <var>ALo</var> and adding it to <var>AHi</var>
         </short>
       </element><element name="SafeEqual"><short>Checks whether <var>A</var> is equal to <var>B</var> in a way which does not crash when one of the arguments is <var>NaN</var> ("not a number").</short>
       </element>
     <element name="SafeMin"><short>Returns the minimum of the numbers <var>A</var> and <var>B</var>. Does not crash when one of the values is <var>NaN</var> (Not a Number).</short>
-      </element><element name="SafeInRange"><short>Returns <var>true</var> when <var>AValue</var> is within or at the bounds of the interval between <var>ABound1</var> and <var>ABound2</var>
-        </short>
+      </element><element name="SafeInRange"><short>Returns <var>true</var> when <var>AValue</var> is within or at the bounds of the interval between <var>ABound1</var> and <var>ABound2</var>. The result is correct even if the bounds are in reverse order.</short>
       </element><element name="SafeInRangeWithBounds"><short>Returns <var>true</var> when <var>AValue</var> is within or at the bounds of the interval between <var>ABound1</var> and <var>ABound2</var>
         </short><descr>Whether <var>AValue</var> is at the bounds of the interval is allowed within the specified tolerance <var>AEpsilon</var> where the default <var>AEpsilon=0</var> is interpreted as a <var>1E-12</var> fraction of the interval length.
 </descr>
