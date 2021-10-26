@@ -196,7 +196,6 @@ begin
        AddLn('  Application:=TMyApplication.Create(Nil)');
        AddLn('  Application.Initialize');
        AddLn('  Application.Run');
-       AddLn('  Application.Free');
        end;
     Add('end.');
     Result:=Src.Text;
