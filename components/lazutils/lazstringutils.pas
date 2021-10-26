@@ -61,8 +61,6 @@ function CommentText(const s: string; CommentType: TCommentType): string;
 function SimpleSyntaxToRegExpr(const Src: string): string;
 function BinaryStrToText(const s: string): string;
 function SpecialCharsToSpaces(const s: string; FixUTF8: boolean): string;
-// Deprecated in 2.1 / 04.11.2020 / Remove in 2.3
-function SpecialCharsToHex(const s: string): string; inline; deprecated 'Use LazUtf8.Utf8EscapeControlChars';
 function ShortDotsLine(const Line: string): string;
 function BeautifyLineXY(const Filename, Line: string; X, Y: integer): string;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
@@ -92,16 +90,17 @@ function MergeWithDelimiter(const a, b: string; Delimiter: char): string;
 // String manipulation
 function StripLN(const ALine: String): String;
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String;
-  const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String; overload;
+  AnIgnoreCase: Boolean = False; AnUpdateSource: Boolean = True): String; overload;
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
-  const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String; overload;
+  AnIgnoreCase: Boolean = False; AnUpdateSource: Boolean = True): String; overload;
 function TextToSingleLine(const AText: string): string;
 function SwapCase(Const S: String): String;
 procedure ReplaceSubstring(var s: string; StartPos, Count: SizeInt;
                            const Insertion: string);
 // case..of utility
-function StringCase(const AString: String; const ACase: array of String {; const AIgnoreCase = False, APartial = false: Boolean}): Integer; overload;
-function StringCase(const AString: String; const ACase: array of String; const AIgnoreCase, APartial: Boolean): Integer; overload;
+function StringCase(const AString: String; const ACase: array of String): Integer; overload;
+function StringCase(const AString: String; const ACase: array of String;
+                    const AIgnoreCase, APartial: Boolean): Integer; overload;
 
 // PChar
 function SamePChar(P1, P2: PChar): boolean;
@@ -811,11 +810,6 @@ begin
   Result:=UTF8Trim(Result);
 end;
 
-function SpecialCharsToHex(const s: string): string;
-begin
-  Result:=Utf8EscapeControlChars(s, emHexPascal);
-end;
-
 function ShortDotsLine(const Line: string): string;
 begin
   Result:=Utf8EscapeControlChars(Line, emHexPascal);
@@ -1178,13 +1172,13 @@ begin
 end;
 
 function GetPart(const ASkipTo, AnEnd: String; var ASource: String;
-  const AnIgnoreCase, AnUpdateSource: Boolean): String;
+  AnIgnoreCase: Boolean; AnUpdateSource: Boolean): String;
 begin
   Result := GetPart([ASkipTo], [AnEnd], ASource, AnIgnoreCase, AnUpdateSource);
 end;
 
 function GetPart(const ASkipTo, AnEnd: array of String; var ASource: String;
-  const AnIgnoreCase: Boolean = False; const AnUpdateSource: Boolean = True): String;
+  AnIgnoreCase: Boolean; AnUpdateSource: Boolean): String;
 var
   n, i, idx: Integer;
   Source, Match: String;
@@ -1282,7 +1276,7 @@ begin
   Result := str;
 end;
 
-function SwapCase(Const S: String): String;
+function SwapCase(const S: String): String;
 // Inverts the character case. Like LowerCase and UpperCase combined.
 var
   i : Integer;
