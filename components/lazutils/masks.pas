@@ -371,7 +371,43 @@ function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
     deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 
+function DbgS(O: TMaskOpCodes): String ; overload;
+function DbgS(Q: TWindowsQuirks): String ; overload;
+
 implementation
+
+function DbgS(O: TMaskOpCodes): String ;
+var
+  S: String;
+  Op: TMaskOpcode;
+begin
+  Result := '[';
+  for Op in O do
+  begin
+    WriteStr(S, Op);
+    Result := Result + S + ',';
+  end;
+  if (Result[Length(Result)] = ',') then
+    System.Delete(Result, Length(Result), 1);
+  Result := Result + ']';
+end;
+
+function DbgS(Q: TWindowsQuirks): String ;
+var
+  S: String;
+  Quirk: TWindowsQuirk;
+begin
+  Result := '[';
+  for Quirk in Q do
+  begin
+    WriteStr(S, Quirk);
+    Result := Result + S + ',';
+  end;
+  if (Result[Length(Result)] = ',') then
+    System.Delete(Result, Length(Result), 1);
+  Result := Result + ']';
+end;
+
 
 function EncodeDisableRange(Options: TMaskOptions): TMaskOpCodes;
 // Encode the Disable Range option from legacy TMaskOptions.
