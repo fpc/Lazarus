@@ -846,7 +846,12 @@ var
   OtherDir: String;
 begin
   if FSearching then RaiseSearchingError;
-  MaskList := TMaskList.CreateSysNative(ASearchMask, FMaskSeparator, CaseSensitive);
+  {$ifdef windows}
+  MaskList := TMaskListWindows.Create(ASearchMask, FMaskSeparator, CaseSensitive);
+  {$else}
+  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
+  {$endif}
+  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
   // empty mask = all files mask
   if MaskList.Count = 0 then
     FreeAndNil(MaskList);
