@@ -80,7 +80,7 @@ var
   filename: WideString;
   ico: TIcon;
 begin
-  fileName := ATreeView.GetPathFromNode(ANode);
+  fileName := WideString(ATreeView.GetPathFromNode(ANode));
   ico := GetShellIcon(fileName);
   try
     ATreeView.Canvas.Draw(ARect.Left, (ARect.Top + ARect.Bottom - ico.Height) div 2, ico);

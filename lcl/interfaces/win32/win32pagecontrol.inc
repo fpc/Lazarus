@@ -564,7 +564,7 @@ begin
 
   WinHandle := ATabControl.Handle;
   // Adjust page size to fit in tabcontrol, need bounds of tab control in client of parent
-  TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R);
+  TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R{%H-});
   for I := 0 to ATabControl.PageCount - 1 do
   begin
     lPage := ATabControl.Page[I];
@@ -599,9 +599,9 @@ var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
 begin
-  FillChar(Mess,SizeOf(Mess),0);
+  FillChar(Mess{%H-},SizeOf(Mess),0);
   Mess.Msg := LM_NOTIFY;
-  FillChar(NMHdr,SizeOf(NMHdr),0);
+  FillChar(NMHdr{%H-},SizeOf(NMHdr),0);
   NMHdr.code := TCN_SELCHANGE;
   NMHdr.hwndfrom := AHandle;
   NMHdr.idfrom := APageIndex;  //use this to set pageindex to the correct page.

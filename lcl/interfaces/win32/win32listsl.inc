@@ -153,7 +153,7 @@ begin
     raise Exception.Create('Out of bounds.')
   else
   begin
-    SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
+    SetLength(w{%H-}, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
     Windows.SendMessageW(FWin32List, FFlagGetText, Index, LPARAM(PWideChar(w)));
     Result := UTF16ToUTF8(w);
   end;
@@ -327,7 +327,7 @@ begin
   if Source is TStrings then
   begin
     // save text in edit box, assigning strings clears the text
-    TWin32WSCustomComboBox.GetText(FSender, EditText);
+    TWin32WSCustomComboBox.GetText(FSender, EditText{%H-});
 
     inherited Assign(Source);
     

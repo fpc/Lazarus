@@ -30,10 +30,9 @@ uses
 // rtl
   Windows, CommCtrl, SysUtils, Classes,
 // lcl
-  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, LazUTF8, Themes, LCLMessageGlue, ComCtrls, WSComCtrls,
+  ExtCtrls, Controls, ImgList, LCLType, LCLIntf, LazUTF8, Themes, ComCtrls,
 // ws
-  WSControls, WSExtCtrls, WSLCLClasses, WSProc, Win32Extra, Win32Int, Win32Proc,
-  InterfaceBase, Win32WSControls;
+  WSExtCtrls, WSLCLClasses, Win32Extra, Win32Int, Win32Proc;
 
 type
   { TWin32WSPage }

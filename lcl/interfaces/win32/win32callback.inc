@@ -318,8 +318,6 @@ end;
 // The original function was about 2400 lines.
 
 type
-  TAccessCustomEdit = class(TCustomEdit);
-
   { TWindowProcHelper }
 
   TWindowProcHelper = record
@@ -695,7 +693,7 @@ begin
     end;
 
     if ParentPaintWindow <> 0 then
-      GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
+      GetWin32ControlPos(Window, ParentPaintWindow, parLeft{%H-}, parTop{%H-});
     //Is not necessary to check the result of GetLCLClientBoundsOffset since
     //the false condition (lWincontrol = nil or lWincontrol <> TWinControl) is never met
     //The rect is always initialized with 0
@@ -1133,11 +1131,11 @@ begin
     C := DragQueryFile(Drop, $FFFFFFFF, nil, 0); // get dropped files count
     if C <= 0 then Exit;
 
-    SetLength(Files, C);
+    SetLength(Files{%H-}, C);
     for I := 0 to C - 1 do
     begin
       L := DragQueryFileW(Drop, I, nil, 0); // get I. file name length
-      SetLength(WideBuffer, L);
+      SetLength(WideBuffer{%H-}, L);
       L := DragQueryFileW(Drop, I, @WideBuffer[1], L + 1);
       SetLength(WideBuffer, L);
       Files[I] := UTF16ToUTF8(WideBuffer);
@@ -1907,7 +1905,7 @@ begin
       LMMove.Msg := LM_NULL;
   end else
   begin
-    if GetWindowRelativePosition(Window, NewLeft, NewTop) then
+    if GetWindowRelativePosition(Window, NewLeft{%H-}, NewTop{%H-}) then
       UpdateLMMovePos(NewLeft, NewTop)
     else
       LMMove.Msg := LM_NULL;
@@ -1956,7 +1954,7 @@ begin
         SizeType := SIZE_RESTORED or Size_SourceIsInterface;
     end;
 
-    GetWindowSize(Window, NewWidth, NewHeight);
+    GetWindowSize(Window, NewWidth{%H-}, NewHeight{%H-});
     Width := NewWidth;
     Height := NewHeight;
     if Assigned(lWinControl) then
@@ -2038,7 +2036,7 @@ begin
     if (LastMouseTracking<>lWinControl) then
     begin
       // register for WM_MOUSELEAVE
-      FillChar(LMouseEvent, SizeOf(TTRACKMOUSEEVENT), 0);
+      FillChar(LMouseEvent{%H-}, SizeOf(TTRACKMOUSEEVENT), 0);
       LMouseEvent.cbSize := SizeOf(TTRACKMOUSEEVENT);
       LMouseEvent.dwFlags := TME_LEAVE;
       LMouseEvent.hwndTrack := Window;
@@ -2762,7 +2760,7 @@ function
 var
   Helper: TWindowProcHelper;
 begin
-  FillChar(Helper, SizeOf(TWindowProcHelper), 0);
+  FillChar(Helper{%H-}, SizeOf(TWindowProcHelper), 0);
   Helper.Window := Window;
   Helper.Msg := Msg;
   Helper.WParam := WParam;
@@ -2856,7 +2854,7 @@ begin
       if (Int16(LoWord(LParam)) <> 0) or (Int16(HiWord(LParam)) <> 0) then
       begin
         Parent := Windows.GetParent(Window);
-        Windows.GetClientRect(Parent, LRect);
+        Windows.GetClientRect(Parent, LRect{%H-});
         Windows.SetWindowPos(Window, HWND_TOP, 0, 0, LRect.Right, LRect.Bottom, 0);
       end;
     end;

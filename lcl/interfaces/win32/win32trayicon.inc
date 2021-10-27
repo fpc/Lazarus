@@ -159,7 +159,7 @@ var
   WideBuffer: widestring;
 begin
   // Fill TNotifyIconDataW
-  FillChar(tnidw, SizeOf(tnidw), 0);
+  FillChar(tnidw{%H-}, SizeOf(tnidw), 0);
   tnidw.cbSize := SizeOf(tnidw);
   tnidw.hWnd := ATrayIcon.Handle;
   tnidw.uID := uIDTrayIcon;
@@ -197,7 +197,7 @@ var
   tnid: TNotifyIconData;
 begin
   // Fill TNotifyIconData
-  FillChar(tnid, SizeOf(tnid), 0);
+  FillChar(tnid{%H-}, SizeOf(tnid), 0);
   tnid.cbSize := SizeOf(TNotifyIconData);
   tnid.hWnd := ATrayIcon.Handle;
   tnid.uID := uIDTrayIcon;
@@ -270,7 +270,7 @@ var
   WideBuffer: widestring;
 begin
   // Fill TNotifyIconDataW
-  FillChar(tnidw, SizeOf(tnidw), 0);
+  FillChar(tnidw{%H-}, SizeOf(tnidw), 0);
   tnidw.cbSize := SizeOf(tnidw);
   tnidw.hWnd := ATrayIcon.Handle;
   tnidw.uID := uIDTrayIcon;

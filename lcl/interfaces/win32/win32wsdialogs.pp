@@ -351,7 +351,7 @@ var
 begin
   if (H <> 0) and (Msg = WM_InitDialog) then
   begin
-    ws := TColorDialog(PChooseColor(L)^.lCustData).Title;
+    ws := WideString(TColorDialog(PChooseColor(L)^.lCustData).Title);
     SetWindowTextW(H, PWideChar(ws));
   end;
   Result := 0;
@@ -881,7 +881,7 @@ begin
     I := 0;
     while I < Count do
     begin
-      if Succeeded(ShellItems.GetItemAt(I, ShellItem)) then
+      if Succeeded(ShellItems.GetItemAt(I, ShellItem{%H-})) then
         AOpenDialog.Files.Add(GetFileName(ShellItem));
       inc(I);
     end;
@@ -1128,7 +1128,7 @@ begin
     begin
       //debugln(['FontDialogCallBack: WM_INITDIALOG']);
       //debugln(['  PChooseFontW(LParam)^.lCustData=',IntToHex(PChooseFontW(LParam)^.lCustData,8)]);
-      PtrInt(Dlg) := PChooseFontW(LParam)^.lCustData;
+      Dlg := Pointer(PChooseFontW(LParam)^.lCustData);
     end;
     WM_COMMAND:
     begin

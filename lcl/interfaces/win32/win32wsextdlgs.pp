@@ -116,10 +116,10 @@ begin
       // attach our child to the template window
       AControl.ParentWindow := hWnd;
 
-      GetWindowRect(stc32Handle, ARect);
+      GetWindowRect(stc32Handle, ARect{%H-});
       ScreenToClient(hWnd, ARect.TopLeft);
       ScreenToClient(hWnd, ARect.BottomRight);
-      GetClientRect(hWnd, ADialogRect);
+      GetClientRect(hWnd, ADialogRect{%H-});
 
       with ARect do
       begin

@@ -120,7 +120,7 @@ function SpinUpDownWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     Result := (lWindowInfo<>nil) and (lWindowInfo^.AWinControl<>nil);
     if Result then
     begin
-      FillChar(LMessage, SizeOf(LMessage), 0);
+      FillChar(LMessage{%H-}, SizeOf(LMessage), 0);
       LMessage.msg := Msg;
       LMessage.wParam := WParam;
       LMessage.lParam := LParam;

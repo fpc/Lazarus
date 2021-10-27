@@ -151,7 +151,7 @@ var
   lProcessEvent: PProcessEvent absolute AData;
   exitcode: dword;
 begin
-  if not Windows.GetExitCodeProcess(lProcessEvent^.Handle, exitcode) then
+  if not Windows.GetExitCodeProcess(lProcessEvent^.Handle, exitcode{%H-}) then
     exitcode := 0;
   lProcessEvent^.OnEvent(lProcessEvent^.UserData, cerExit, exitcode);
 end;
@@ -259,7 +259,7 @@ var
 begin
   WndClassName := 'LazRubberBand' + IntToStr(ABrush);
 
-  if not Windows.GetClassInfo(System.HInstance, PChar(WndClassName), WindowClass) then
+  if not Windows.GetClassInfo(System.HInstance, PChar(WndClassName), WindowClass{%H-}) then
   begin
     with WindowClass do
     begin
@@ -701,7 +701,7 @@ begin
   //Issue #0027664
   if (WindowsVersion >= wvVista) and (GetFileVersion(comctl32) >= ComCtlVersionIE6) then
   begin
-    FillChar(TaskConfig, SizeOf(TaskConfig), 0);
+    FillChar(TaskConfig{%H-}, SizeOf(TaskConfig), 0);
     TaskConfig.cbSize := SizeOf(TaskConfig);
     // if we skip hwndParent our form will be a root window - with the taskbar item and icon
     // this is unwanted
@@ -815,7 +815,7 @@ var
     then DstBpp := 24
     else DstBpp := ADesc.BitsPerPixel;
 
-    FillChar(Info, SizeOf(Info), 0);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := ADesc.Width;
     if ADesc.LineOrder = riloTopToBottom
@@ -832,7 +832,7 @@ var
     // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
     // when they are created with createDIBitmap
     //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
-    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstLinePtr, 0, 0);
+    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstLinePtr{%H-}, 0, 0);
     Windows.ReleaseDC(0, DC);
 
     if ABitmap = 0
@@ -1010,7 +1010,7 @@ var
   R: TRect;
 begin
   ARawImage.Init;
-  FillChar(WinDIB, SizeOf(WinDIB), 0);
+  FillChar(WinDIB{%H-}, SizeOf(WinDIB), 0);
   ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
   if ASize = 0
   then Exit(False);
@@ -1100,7 +1100,7 @@ begin
     if h = 0
     then h := Windows.GetDeviceCaps(ADC, VERTRES);
 
-    FillChar(Info, SizeOf(Info), 0);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := w;
     Info.Header.biHeight := -h;
@@ -1108,7 +1108,7 @@ begin
     Info.Header.biBitCount := Windows.GetDeviceCaps(ADC, BITSPIXEL);
     Info.Header.biCompression := BI_RGB;
 
-    copyBmp := Windows.CreateDIBSection(copyDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
+    copyBmp := Windows.CreateDIBSection(copyDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr{%H-}, 0, 0);
     copyOld := Windows.SelectObject(copyDC, copyBmp);
 
     // prefill bitmap, to create an alpha channel in case of 32bpp bitmap

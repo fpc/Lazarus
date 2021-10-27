@@ -645,7 +645,7 @@ var
   IntfWidth, IntfHeight: integer;
 begin
   Result := False;
-  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth, IntfHeight);
+  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth{%H-}, IntfHeight{%H-});
   if (Sender.Width = IntfWidth) and (Sender.Height = IntfHeight) and (not Sender.ClientRectNeedsInterfaceUpdate) then
     Exit;
   Result := True;
@@ -689,7 +689,7 @@ begin
   if not (Sender is TWinControl) then exit;
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  FillChar(ORect, SizeOf(ORect), 0);
+  FillChar(ORect{%H-}, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
   begin
     {$ifdef RedirectDestroyMessages}
@@ -723,7 +723,7 @@ begin
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
     SelectObject(DC, TheWinControl.Font.Reference.Handle);
-    Windows.GetTextMetrics(DC, TM);
+    Windows.GetTextMetrics(DC, TM{%H-});
     ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
     // add the left, right and bottom frame borders
@@ -778,8 +778,8 @@ procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
   parRect, winRect: Windows.TRect;
 begin
-  Windows.GetWindowRect(Window, winRect);
-  Windows.GetWindowRect(Parent, parRect);
+  Windows.GetWindowRect(Window, winRect{%H-});
+  Windows.GetWindowRect(Parent, parRect{%H-});
   Left := winRect.Left - parRect.Left;
   Top := winRect.Top - parRect.Top;
 end;
@@ -1048,7 +1048,7 @@ begin
   oldFontHandle := SelectObject(canvasHandle, newFontHandle);
   DeleteAmpersands(Text);
 
-  Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
+  Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize{%H-});
 
   if Result then
   begin
@@ -1070,7 +1070,7 @@ var
   WideBuffer: WideString;
 begin
   TextLen := Windows.GetWindowTextLengthW(AHandle);
-  SetLength(WideBuffer, TextLen);
+  SetLength(WideBuffer{%H-}, TextLen);
   if TextLen > 0 // Never give Windows the chance to write to System.emptychar
   then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
   SetLength(WideBuffer, TextLen);
@@ -1193,7 +1193,7 @@ begin
   then ScanLine := GetMem(AWinBmp.bmWidthBytes)
   else ScanLine := nil;
 
-  FillChar(Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
+  FillChar({%H-}Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   DC := Windows.GetDC(0);
   if Windows.GetDIBits(DC, ABitmap, 0, 1, nil, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
@@ -1326,7 +1326,7 @@ function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 var
   Info: Windows.BITMAP;
 begin
-  FillChar(Info, SizeOf(Info), 0);
+  FillChar(Info{%H-}, SizeOf(Info), 0);
   Result := (GetObject(ABitmap, SizeOf(Info), @Info) <> 0)
         and (Info.bmBitsPixel = 32);
 end;

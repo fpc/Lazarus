@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  Win32Int, InterfaceBase;
+  Win32Int;
 
 { TWin32WSCustomCalendar }
 
@@ -149,7 +149,7 @@ begin
   Result := cpNoWhere;
   if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.HitTest') then
     Exit;
-  FillChar(HitTestInfo, SizeOf(HitTestInfo), 0);
+  FillChar(HitTestInfo{%H-}, SizeOf(HitTestInfo), 0);
   //the MCHITTESTINFO structure not only depends on Windows version but also on wether or not
   //the application has a Manifest (Issue #0029975)
   if (WindowsVersion >= wvVista) and HasManifest then
@@ -160,7 +160,7 @@ begin
   {$ifdef debug_win32calendar}
   if IsConsole then writeln('  HitTestInfo.cbSize = ',HitTestInfo.cbSize);
   {$endif}
-  HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
+  HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, {%H-}LPARAM(@HitTestInfo));
   {$ifdef debug_win32calendar}
   //if IsConsole then writeln('TWin32WSCustomCalendar.HitTest: Handle = ',IntToHex(ACalendar.Handle,8));
   if IsConsole then writeln('  APoint = (',APoint.x,',',APoint.y,'), pt = (',HitTestInfo.pt.x,',',HitTestInfo.pt.y,')');
@@ -232,7 +232,7 @@ begin
     Exit;
   if ADayOfWeek = dowDefault then begin
     GetLocaleInfoW(LOCALE_USER_DEFAULT, LOCALE_IFIRSTDAYOFWEEK, PWideChar(tmp), SizeOf(tmp));
-    dow := StrToInt(tmp[0]);
+    dow := StrToInt(char(ord(tmp[0])));
   end else
     dow := ord(ADayOfWeek);
   MonthCal_SetFirstDayOfWeek(ACalendar.Handle, dow);

@@ -212,7 +212,7 @@ begin
     idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogShield:
       begin
-        FillChar(SHIconInfo, SizeOf(SHIconInfo), 0);
+        FillChar(SHIconInfo{%H-}, SizeOf(SHIconInfo), 0);
         SHIconInfo.cbSize := SizeOf(SHIconInfo);
         if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_LARGEICON, @SHIconInfo) = S_OK) then
           IconHandle := SHIconInfo.hIcon
@@ -291,7 +291,7 @@ begin
     begin
       w := UTF8ToUTF16(S);
       GetThemeTextExtent(Theme[Element], DC, Part, State, PWideChar(W), Length(W),
-        Flags, BoundingRect, Result);
+        Flags, BoundingRect, Result{%H-});
     end
   else
     Result := inherited GetTextExtent(DC, Details, S, Flags, BoundingRect);
@@ -432,7 +432,7 @@ begin
     ExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
     if (ExStyle and WS_EX_CLIENTEDGE) <> 0 then
     begin
-      GetWindowRect(Handle, DrawRect);
+      GetWindowRect(Handle, DrawRect{%H-});
       OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
       DC := GetWindowDC(Handle);
       try

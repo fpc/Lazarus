@@ -54,7 +54,7 @@ begin
   if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
   else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
 
-  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
+  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX{%H-}, SY{%H-}, EX{%H-}, EY{%H-});
   Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
   // Revert the arc direction to the previous value
   Windows.SetArcDirection(DC, OldArcDirection);
@@ -77,7 +77,7 @@ function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
 var
   SX, SY, EX, EY : Longint;
 begin
-  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX, SY, EX, EY);
+  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX{%H-}, SY{%H-}, EX{%H-}, EY{%H-});
   Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, SX, SY, EX, EY));
 end;
 
@@ -181,7 +181,7 @@ var
     SystemWParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
 
     // send scroll message
-    FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
+    FillChar(ScrollInfo{%H-}, sizeof(ScrollInfo), #0);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
     // if mouse is over horizontal scrollbar, scroll horizontally
@@ -437,7 +437,7 @@ begin
               BufferStream.Position := 0;
               if FormatID=Windows.CF_UNICODETEXT then
               begin;
-                SetLength(BufferWideString, Size div 2);
+                SetLength(BufferWideString{%H-}, Size div 2);
                 BufferStream.Read(BufferWideString[1], Size);
                 //BufferString may have pending #0 's (or garbage after a #0)
                 Size := Pos(#0, BufferWideString);
@@ -605,7 +605,7 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
         // we need to convert it from UTF8 to UTF16 or Ansi
         begin
           if DataStream.Size>0 then begin
-            SetLength(BufferString, DataStream.Size);
+            SetLength(BufferString{%H-}, DataStream.Size);
             DataStream.Read(BufferString[1], DataStream.Size);
             if FormatID=Windows.CF_UNICODETEXT then
             begin
@@ -1340,6 +1340,7 @@ var
   Rec: PProcRedirRec absolute Data;
   ALogFont: TEnumLogFontExA;
 begin
+  FillChar(ALogFont{%H-}, SizeOf(ALogFont), 0);
   Move(ELogFont.elfLogFont, ALogFont.elfLogFont, SizeOf(ALogFont.elfLogFont) - SizeOf(ALogFont.elfLogFont.lfFaceName));
   ALogFont.elfLogFont.lfFaceName := UTF16ToUTF8(ELogFont.elfLogFont.lfFaceName);
   ALogFont.elfFullName := UTF16ToUTF8(ELogFont.elfFullName);
@@ -1532,7 +1533,7 @@ begin
     nIndex := SFindFirstCharSurrogate(W);
     if nIndex > 0 then
     begin
-      SConvertDxArrayFromUTF8ToWide(W, Dx, Count, DxWide, nIndex);
+      SConvertDxArrayFromUTF8ToWide(W, Dx, Count, DxWide{%H-}, nIndex);
       Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), @DxWide[0]);
       Exit;
     end;
@@ -1856,7 +1857,7 @@ begin
   // there is no way to get offset for memory or metafile DC => assume it 0
   Result := GetObjectType(PaintDC) = OBJ_DC;
   if not Result then Exit;
-  Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
+  Result := Windows.GetDCOrgEx(PaintDC, DCOrg{%H-});
   if not Result then Exit;
   winOrg.X := 0;
   winOrg.Y := 0;
@@ -1898,7 +1899,7 @@ begin
         hWindow := WindowFromDC(DC);
         if hWindow <> HWND(nil) then
         begin
-          Result := GetClientRect(hWindow, ClientRect);
+          Result := GetClientRect(hWindow, ClientRect{%H-});
           P.x := ClientRect.Right;
           P.y := ClientRect.Bottom;
         end;
@@ -2432,7 +2433,7 @@ begin
   // maximized or aero snap windows will have problems
   if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD = 0) then
   begin
-    FillChar(Info, SizeOf(Info), 0);
+    FillChar(Info{%H-}, SizeOf(Info), 0);
     Info.cbSize := SizeOf(Info);
     Result := GetWindowInfo(Handle, @Info);
     if Result then
@@ -3679,7 +3680,7 @@ function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Intege
     Result := HasAlphaN or (HasAlpha0 and HasAlpha255);
     if Result
     then begin
-      FillChar(Header, SizeOf(Header), 0);
+      FillChar(Header{%H-}, SizeOf(Header), 0);
       Header.biSize := SizeOf(Header);
       Header.biWidth := AWinBmp.bmWidth;
       Header.biHeight := -AWinBmp.bmHeight;

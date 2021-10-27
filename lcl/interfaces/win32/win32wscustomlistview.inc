@@ -272,7 +272,7 @@ begin
     if GetTextExtentPoint32W(ALV.Canvas.Handle,
                              PWideChar(UTF8ToUTF16(ALV.Column[AIndex].Caption)),
                              UTF8Length(ALV.Column[AIndex].Caption),
-                             CaptionSize) then
+                             CaptionSize{%H-}) then
     begin
       // to retrieve the column width that can contain the string without
       // truncating it, you must add padding to the returned string width
@@ -500,7 +500,7 @@ begin
   then Exit;
 
   Hdr := ListView_GetHeader(ALV.Handle);
-  FillChar(itm, sizeof(itm),0);
+  FillChar(itm{%H-}, sizeof(itm),0);
   itm.mask := HDI_FORMAT;
   Header_GetItem(Hdr, AIndex, Itm);
   case AAndicator of
@@ -1132,8 +1132,8 @@ begin
   hwndHeader := GetHeader(AHandle);
   if hwndHeader = 0 then Exit; // nothing to do
 
-  Windows.GetClientRect(AHandle, rc);
-  FillChar(hdLayout, SizeOf(hdLayout), 0);
+  Windows.GetClientRect(AHandle, rc{%H-});
+  FillChar(hdLayout{%H-}, SizeOf(hdLayout), 0);
   hdLayout.prc := @rc;
   hdLayout.pwpos := @wpos;
   Header_Layout(hwndHeader, hdLayout);
@@ -1397,7 +1397,7 @@ begin
   if not WSCheckHandleAllocated(ALV, 'SetViewOrigin')
   then Exit;
 
-  ListView_GetOrigin(ALV.Handle, Origin);
+  ListView_GetOrigin(ALV.Handle, Origin{%H-});
 
   dx := AValue.X - Origin.X;
   dy := AValue.Y - Origin.Y;

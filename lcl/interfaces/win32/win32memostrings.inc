@@ -72,7 +72,7 @@ begin
     Result := '';
     exit;
   end;
-  Setlength(WideBuffer, len);
+  Setlength(WideBuffer{%H-}, len);
   PWord(@WideBuffer[1])^ := len+1;
   len := SendMessageW(FHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
   Result := UTF16ToUTF8(WideBuffer);
@@ -168,7 +168,7 @@ begin
   if (AdjustedValue <> Text) then
   begin
     Windows.SetWindowTextW(FHandle, PWideChar(UTF8ToUTF16(AdjustedValue)));
-    FillChar(Msg, SizeOf(Msg), 0);
+    FillChar(Msg{%H-}, SizeOf(Msg), 0);
     Msg.Msg := CM_TEXTCHANGED;
     DeliverMessage(Owner, Msg);
   end;

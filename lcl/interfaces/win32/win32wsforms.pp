@@ -646,7 +646,7 @@ begin
   // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
   begin
-    if GetWindowRect(AForm.Handle, CurRect) then
+    if GetWindowRect(AForm.Handle, CurRect{%H-}) then
     begin
       if AForm.Position in [poDefault, poDefaultPosOnly] then
       begin

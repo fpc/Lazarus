@@ -26,7 +26,7 @@ unit Win32Extra;
 interface
 
 uses 
-  InterfaceBase, Classes, LCLType, Windows, GraphType, SysUtils, ActiveX, ShlObj;
+  Classes, LCLType, Windows, GraphType, SysUtils, ActiveX, ShlObj;
 
 { Win32 API constants not included in windows.pp }
 const
@@ -515,7 +515,7 @@ begin
   SrcLineOrder := GetBitmapOrder(SrcSection.dsBm, SrcBmp);
 
   // setup info shared by alpha, source and destination bytes
-  FillChar(Info, sizeof(Info), 0);
+  FillChar(Info{%H-}, sizeof(Info), 0);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   Info.Header.biWidth := nWidthDest;
   if SrcLineOrder = riloBottomToTop
@@ -551,7 +551,7 @@ begin
       Info.Header.biSizeImage := nWidthSrc * nHeightSrc * 4;
 
       // create temp bitmap to store orginal grayscale alpha
-      TmpBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, TmpBytesPtr, 0, 0);
+      TmpBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, TmpBytesPtr{%H-}, 0, 0);
       if TmpBmp = 0 then Exit(False);
       if TmpBytesPtr = nil
       then begin
@@ -582,7 +582,7 @@ begin
       Info.Header.biSizeImage := nWidthDest * nHeightDest * 4;
 
       // create bitmap to store stretched grayscale alpha
-      AlphaBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, AlphaBytesPtr, 0, 0);
+      AlphaBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, AlphaBytesPtr{%H-}, 0, 0);
       if (AlphaBmp = 0) or (AlphaBytesPtr = nil)
       then begin
         FreeMem(SrcBytesPtr);
@@ -668,7 +668,7 @@ begin
   or (DstSection.dsBmih.biCompression <> BI_RGB)
   then begin
     // create temp dib
-    DstBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstBytesPtr, 0, 0);
+    DstBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstBytesPtr{%H-}, 0, 0);
     // copy destination
     DC := CreateCompatibleDC(hdcDest);
     OldBmp := SelectObject(DC, DstBmp);

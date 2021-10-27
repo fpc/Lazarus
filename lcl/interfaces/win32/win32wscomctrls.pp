@@ -315,7 +315,7 @@ begin
     DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
     raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
   end;
-  GetWindowRect(PreferredSizeStatusBar, R);
+  GetWindowRect(PreferredSizeStatusBar, R{%H-});
   PreferredStatusBarHeight := R.Bottom - R.Top;
   DestroyWindow(PreferredSizeStatusBar);
 end;

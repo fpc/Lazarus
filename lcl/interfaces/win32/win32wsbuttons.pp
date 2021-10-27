@@ -71,7 +71,10 @@ uses
   Win32Int, Win32Proc;
 
 type
-  TBitBtnAceess = class(TCustomBitBtn)
+  TBitBtnAccess = class(TBitBtn)
+  end;
+
+  TCustomBitBtnAccess = class(TCustomBitBtn)
   end;
 
 { TWin32WSBitBtn }
@@ -97,7 +100,7 @@ function Create32BitHBitmap(ADC: HDC; AWidth, AHeight: Integer; out BitsPtr: Poi
 var
   Info: Windows.TBitmapInfo;
 begin
-  FillChar(Info, SizeOf(Info), 0);
+  FillChar(Info{%H-}, SizeOf(Info), 0);
   Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
   Info.bmiHeader.biWidth := AWidth;
   Info.bmiHeader.biHeight := -AHeight; // top down
@@ -173,9 +176,10 @@ var
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
     if UseThemes and AlphaDraw then
     begin
-      FillChar(PaintParams, SizeOf(PaintParams), 0);
+      FillChar(PaintParams{%H-}, SizeOf(PaintParams), 0);
       PaintParams.cbSize := SizeOf(PaintParams);
       PaintParams.dwFlags := BPPF_ERASE;
+      TmpDC := 0;
       PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, @PaintParams, TmpDC);
     end
     else
@@ -202,7 +206,7 @@ var
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
+        TCustomBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
           AImageRes, AIndex, AEffect);
         TWin32WSCustomImageListResolution.DrawToDC(
           AImageRes.Resolution,
@@ -220,7 +224,7 @@ var
 
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
+        TCustomBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
           AImageRes, AIndex, AEffect);
         if UseThemes and not AlphaDraw then
         begin
@@ -261,7 +265,7 @@ var
     else
     begin
       Details := ThemeServices.GetElementDetails(StateToDetail[AState]);
-      FillChar(Options, SizeOf(Options), 0);
+      FillChar(Options{%H-}, SizeOf(Options), 0);
       Options.dwSize := SizeOf(Options);
       Options.dwFlags := DTT_COMPOSITED;
       TextFlags := DT_SINGLELINE;
@@ -300,7 +304,7 @@ begin
 
   if BitBtn.CanShowGlyph(True) then
   begin
-    TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+    TCustomBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
       AImageRes, AIndex, AEffect);
     srcWidth := AImageRes.Width;
     srcHeight := AImageRes.Height;
@@ -317,7 +321,7 @@ begin
   BitBtnLayout := BidiAdjustButtonLayout(BitBtn.UseRightToLeftReading, BitBtn.Layout);
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
-  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
+  MeasureText(BitBtn, ButtonCaption, {%H-}TextSize.cx, {%H-}TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:
@@ -590,7 +594,7 @@ begin
   begin
     if BitBtn.CanShowGlyph(True) then
     begin
-      TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+      TBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
         AImageRes, AIndex, AEffect);
       srcWidth := AImageRes.Width;
       if BitBtn.Spacing = -1 then
