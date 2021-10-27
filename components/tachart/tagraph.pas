@@ -524,7 +524,7 @@ implementation
 {$R tagraph.res}
 
 uses
-  Clipbrd, Dialogs, GraphMath, LCLProc, LResources, Math, Types,
+  Clipbrd, Dialogs, {GraphMath,} LCLProc, LResources, Math, Types,
   TADrawerCanvas, TAGeometry, TAMath, TAStyles;
 
 const

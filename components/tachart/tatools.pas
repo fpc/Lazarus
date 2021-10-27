@@ -19,7 +19,7 @@ interface
 uses
   Classes, SysUtils, Types, Math, FPCanvas,
   // LCL
-  Controls, CustomTimer, GraphMath, Forms, LCLPlatformDef, InterfaceBase,
+  Controls, CustomTimer, {GraphMath,} Forms, LCLPlatformDef, InterfaceBase,
   LCLType, LCLIntf,
   // TAChart
   TAChartUtils, TADrawUtils, TAChartAxis, TALegend, TAGraph,

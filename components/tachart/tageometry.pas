@@ -115,7 +115,7 @@ operator :=(const ASize: TSize): TPoint; inline;
 implementation
 
 uses
-  GraphMath, Math, TAMath;
+  {GraphMath,} Math, TAMath;
 
 function PointLineSide(AP, A1, A2: TPoint): TValueSign; forward;
 

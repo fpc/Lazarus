@@ -859,7 +859,7 @@ begin
       ADrawer.LineTo(p);
       pp := p;
       t += ts;
-      ts := MinValue([ts * 2, ms, ParamMax - t]);
+      ts := {%H-}MinValue([ts * 2, ms, ParamMax - t]);
     end;
   end;
 end;
@@ -1204,7 +1204,7 @@ begin
 
   if (not Result) and (nptCustom in ToolTargets) and (nptCustom in AParams.FTargets)
   then begin
-    x := GraphToAxisX(ParentChart.XImageToGraph(AParams.FPoint.X));
+    x := GraphToAxisX(ParentChart.XImageToGraph(AParams.FPoint.X){%H-});
     y := Calculate(x);
     AResults.FValue := DoublePoint(x, y);
     AResults.FImg := AParams.FPoint;
@@ -1258,7 +1258,7 @@ function TCubicSplineSeries.TSpline.Calculate(AX: Double): Double;
 var
   ok: Integer = 0;
 begin
-  if IsFewPoints then exit(SafeNaN);
+  if {%H-}IsFewPoints then exit(SafeNaN);
   case FOwner.SplineType of
     cstNatural:
       Result := ipfspn(High(FCoeff), FOwner.FX[FFirstCacheIndex], FOwner.FY[FFirstCacheIndex], FCoeff[0], AX, ok);
@@ -1413,7 +1413,7 @@ procedure TCubicSplineSeries.Draw(ADrawer: IChartDrawer);
       exit;
     ADrawer.SetBrushParams(bsClear, clTAColor);
     if ASpline.FIsUnorderedX then begin
-      if not IsUnorderedVisible then exit;
+      if not {%H-}IsUnorderedVisible then exit;
       ADrawer.Pen := BadDataPen;
     end
     else begin
@@ -1527,7 +1527,7 @@ begin
     if not RequestValidChartScaling then exit;
 
     for s in FSplines do begin
-      if s.IsFewPoints or (s.FIsUnorderedX and not IsUnorderedVisible) then
+      if s.IsFewPoints or (s.FIsUnorderedX and not {%H-}IsUnorderedVisible) then
         continue;
 
       if not GetSplineXRange(s, xmin, xmax) then
@@ -1888,12 +1888,12 @@ var
       with Source.Item[i]^ do
         if IsValidPoint(X, Y) then begin
           if Source.XCount > 0 then
-            xv[j] := TransformX(X)
+            xv[j] := {%H-}TransformX(X)
           else
-            xv[j] := TransformX(i);
-          yv[j] := TransformY(Y);
+            xv[j] := {%H-}TransformX(i);
+          yv[j] := {%H-}TransformY(Y);
           if hasErrorBars and Source.GetYErrorBarLimits(i, yp, yn) then
-            dy[j] := abs(TransformY(yp) - TransformY(yn)) / 2;
+            dy[j] := abs({%H-}TransformY(yp) - {%H-}TransformY(yn)) / 2;
           j += 1;
         end;
 
@@ -2018,11 +2018,11 @@ begin
 
   offs := Math.IfThen(IsPrediction, 1, 0);
   with FitStatistics do begin
-    x := TransformX(AX);
+    x := {%H-}TransformX(AX);
     if IsNaN(x) then exit;
     y := Calculate(AX);
     if IsNaN(y) then exit;
-    y := TransformY(y);
+    y := {%H-}TransformY(y);
     dy := tValue * ResidualStdError * sqrt(offs + 1/N + sqr(x - xBar) / SSx);
     if IsUpper then
       AY := y + dy

@@ -32,16 +32,18 @@ object Form1: TForm1
         BevelOuter = bvNone
         ClientHeight = 87
         ClientWidth = 678
+        Color = clNone
+        ParentColor = False
         TabOrder = 0
         object CbRotated: TCheckBox
           AnchorSideLeft.Control = CbBanded
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbStacked
           AnchorSideTop.Side = asrCenter
-          Left = 84
+          Left = 82
           Height = 19
           Top = 8
-          Width = 61
+          Width = 59
           BorderSpacing.Left = 16
           Caption = 'Rotated'
           OnChange = CbRotatedChange
@@ -50,10 +52,10 @@ object Form1: TForm1
         object Cb3D: TCheckBox
           AnchorSideLeft.Control = CbRotated
           AnchorSideTop.Control = CbBanded
-          Left = 84
+          Left = 82
           Height = 19
           Top = 35
-          Width = 34
+          Width = 32
           Caption = '3D'
           OnChange = Cb3DChange
           TabOrder = 1
@@ -63,10 +65,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbStacked
           AnchorSideTop.Side = asrCenter
-          Left = 161
+          Left = 157
           Height = 19
           Top = 8
-          Width = 91
+          Width = 89
           BorderSpacing.Left = 16
           Caption = 'Use zero level'
           OnChange = CbUseZeroLevelChange
@@ -78,7 +80,7 @@ object Form1: TForm1
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = CbLabelsAt
           AnchorSideRight.Side = asrBottom
-          Left = 273
+          Left = 267
           Height = 23
           Top = 6
           Width = 76
@@ -95,7 +97,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbUseZeroLevel
           AnchorSideTop.Side = asrCenter
-          Left = 433
+          Left = 425
           Height = 25
           Top = 5
           Width = 76
@@ -110,7 +112,7 @@ object Form1: TForm1
           AnchorSideTop.Control = CbStacked
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = EdYCount
-          Left = 533
+          Left = 525
           Height = 15
           Top = 10
           Width = 33
@@ -123,7 +125,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = EdYCount
           AnchorSideTop.Control = CbStacked
           AnchorSideTop.Side = asrCenter
-          Left = 574
+          Left = 566
           Height = 23
           Top = 6
           Width = 50
@@ -141,7 +143,7 @@ object Form1: TForm1
           Left = 8
           Height = 19
           Top = 8
-          Width = 61
+          Width = 59
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           Caption = 'Stacked'
@@ -157,7 +159,7 @@ object Form1: TForm1
           Left = 8
           Height = 19
           Top = 35
-          Width = 60
+          Width = 58
           Caption = 'Banded'
           OnChange = CbBandedChange
           TabOrder = 7
@@ -167,7 +169,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = EdYCount
           AnchorSideTop.Side = asrCenter
-          Left = 525
+          Left = 517
           Height = 15
           Top = 37
           Width = 41
@@ -180,7 +182,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = EdCount
           AnchorSideTop.Side = asrBottom
-          Left = 574
+          Left = 566
           Height = 23
           Top = 33
           Width = 50
@@ -196,10 +198,10 @@ object Form1: TForm1
         object CbShowDropLines: TCheckBox
           AnchorSideLeft.Control = CbUseZeroLevel
           AnchorSideTop.Control = CbShowLegend
-          Left = 161
+          Left = 157
           Height = 19
           Top = 62
-          Width = 104
+          Width = 102
           Caption = 'Show drop lines'
           Checked = True
           OnChange = CbShowDropLinesChange
@@ -209,10 +211,10 @@ object Form1: TForm1
         object CbShowDataLabels: TCheckBox
           AnchorSideLeft.Control = CbShowDropLines
           AnchorSideTop.Control = CbBanded
-          Left = 161
+          Left = 157
           Height = 19
           Top = 35
-          Width = 108
+          Width = 106
           Caption = 'Show data labels'
           OnChange = CbShowDataLabelsChange
           TabOrder = 10
@@ -222,7 +224,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbShowDataLabels
           AnchorSideTop.Side = asrCenter
-          Left = 273
+          Left = 267
           Height = 23
           Top = 33
           Width = 76
@@ -240,7 +242,7 @@ object Form1: TForm1
           Left = 8
           Height = 19
           Top = 62
-          Width = 88
+          Width = 86
           BorderSpacing.Top = 8
           Caption = 'Show legend'
           OnChange = CbShowLegendChange
@@ -251,10 +253,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = CbShowDataLabels
           AnchorSideTop.Side = asrCenter
-          Left = 357
+          Left = 351
           Height = 19
           Top = 35
-          Width = 68
+          Width = 66
           BorderSpacing.Left = 8
           Caption = 'Centered'
           Enabled = False
@@ -266,7 +268,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = EdYCount
           AnchorSideTop.Side = asrBottom
-          Left = 574
+          Left = 566
           Height = 23
           Top = 60
           Width = 50
@@ -284,7 +286,7 @@ object Form1: TForm1
           AnchorSideTop.Control = EdDepthBrightnessDelta
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = EdYCount
-          Left = 447
+          Left = 439
           Height = 15
           Top = 64
           Width = 119
@@ -319,7 +321,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        Color = clWindow
+        Color = clDefault
         object Chart1AreaSeries1: TAreaSeries
           Legend.Multiplicity = lmStyle
           AxisIndexX = 1
@@ -367,7 +369,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        Color = clWindow
+        Color = clDefault
         object Chart2AreaSeries1: TAreaSeries
           Legend.Visible = False
           Transparency = 180

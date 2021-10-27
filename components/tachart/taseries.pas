@@ -407,7 +407,7 @@ type
 implementation
 
 uses
-  GraphMath, GraphType, IntfGraphics, LResources, Math, PropEdits, SysUtils,
+  {GraphMath,} GraphType, IntfGraphics, LResources, Math, PropEdits, SysUtils,
   TAChartStrConsts, TADrawerCanvas, TAGeometry, TACustomSource, TAGraph,
   TAMath, TAStyles;
 

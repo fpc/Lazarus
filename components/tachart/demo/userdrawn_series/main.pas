@@ -80,6 +80,11 @@ procedure TMainForm.SeriesDraw(ACanvas: TCanvas;
   begin
     if y > yref then Result := COLOR_BELOW else Result := COLOR_ABOVE;
   end;
+  
+  function GetLineWidth(y, yref: integer): Integer;
+  begin
+    if y > yref then Result := 3 else Result := 1;
+  end;
 
 var
   i: Integer;
@@ -107,12 +112,12 @@ begin
     p2 := Chart.GraphToImage(gp);
     if (p2.y - yref) * (p1.y - yref) < 0 then begin
       p3 := Point(Intersect(p1, p2, yref), yref);
-      Chart.Drawer.SetPenParams(psSolid, GetColor(p1.y, yref));
+      Chart.Drawer.SetPenParams(psSolid, GetColor(p1.y, yref), GetLinewidth(p1.y, yref));
       Chart.Drawer.Line(p1, p3);
-      Chart.Drawer.SetPenParams(psSolid, GetColor(p2.y, yref));
+      Chart.Drawer.SetPenParams(psSolid, GetColor(p2.y, yref), GetLineWidth(p2.y, yref));
       Chart.Drawer.Line(p3, p2);
     end else begin
-      Chart.Drawer.SetPenParams(psSolid, GetColor(p2.y, yref));
+      Chart.Drawer.SetPenParams(psSolid, GetColor(p2.y, yref), GetlineWidth(p2.y, yref));
       Chart.Drawer.Line(p1, p2);
     end;
     if showDataPoints then

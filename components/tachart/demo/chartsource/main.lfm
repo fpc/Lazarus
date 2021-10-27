@@ -21,22 +21,10 @@ object Form1: TForm1
       Caption = 'Basic'
       ClientHeight = 410
       ClientWidth = 632
-      object Memo1: TMemo
-        Left = 0
-        Height = 34
-        Top = 0
-        Width = 632
-        Align = alTop
-        Lines.Strings = (
-          'Modify sources at design-time.'
-          'Same-colored series from each chart have common sources.'
-        )
-        TabOrder = 0
-      end
       object Chart2: TChart
         Left = 0
-        Height = 376
-        Top = 34
+        Height = 372
+        Top = 38
         Width = 336
         AxisList = <        
           item
@@ -59,7 +47,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        Color = clWindow
+        Color = clDefault
         object Chart2LineSeries1: TLineSeries
           LinePen.Color = clRed
           Pointer.Brush.Color = clRed
@@ -75,8 +63,8 @@ object Form1: TForm1
       end
       object Chart1: TChart
         Left = 341
-        Height = 376
-        Top = 34
+        Height = 372
+        Top = 38
         Width = 291
         AxisList = <        
           item
@@ -99,7 +87,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alRight
-        Color = clWindow
+        Color = clDefault
         object Chart1BarSeries1: TBarSeries
           BarBrush.Color = clRed
           Source = RandomChartSource1
@@ -115,11 +103,22 @@ object Form1: TForm1
       end
       object Splitter1: TSplitter
         Left = 336
-        Height = 376
-        Top = 34
+        Height = 372
+        Top = 38
         Width = 5
         Align = alRight
         ResizeAnchor = akRight
+      end
+      object Label1: TLabel
+        Left = 2
+        Height = 30
+        Top = 2
+        Width = 628
+        Align = alTop
+        BorderSpacing.Bottom = 4
+        BorderSpacing.Around = 2
+        Caption = 'Modify sources at design-time.'#13#10'Same-colored series from each chart have common sources.'
+        WordWrap = True
       end
     end
     object tsStatistics: TTabSheet
@@ -197,7 +196,7 @@ object Form1: TForm1
           Left = 8
           Height = 19
           Top = 11
-          Width = 81
+          Width = 79
           BorderSpacing.Left = 8
           Caption = 'Cumulative'
           Checked = True
@@ -210,7 +209,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel2
           AnchorSideTop.Side = asrCenter
-          Left = 113
+          Left = 111
           Height = 23
           Top = 9
           Width = 100
@@ -390,7 +389,7 @@ object Form1: TForm1
           Left = 330
           Height = 19
           Top = 10
-          Width = 62
+          Width = 60
           BorderSpacing.Left = 16
           Caption = 'Smooth'
           OnChange = cbSmoothChange

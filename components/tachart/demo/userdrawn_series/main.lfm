@@ -74,7 +74,7 @@ object MainForm: TMainForm
       Left = 8
       Height = 19
       Top = 8
-      Width = 111
+      Width = 109
       BorderSpacing.Left = 8
       BorderSpacing.Top = 8
       BorderSpacing.Bottom = 8

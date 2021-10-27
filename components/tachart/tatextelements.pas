@@ -19,7 +19,7 @@ uses
   TAChartUtils, TADrawUtils, TATypes,
 
   // Workaround for issue #22850.
-  GraphMath, Math, SysUtils,
+  {GraphMath,} Math, SysUtils,
   TACustomSource, TAGeometry;
 
 const
