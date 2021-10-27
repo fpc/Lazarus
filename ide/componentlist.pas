@@ -230,7 +230,7 @@ begin
   begin                              // ComponentList is undocked
     PageControl.AnchorSideBottom.Side := asrTop;
     UpdateButtonState;
-    if TreeFilterEd.CanFocus then    // Focus filter if window is undocked
+    if TreeFilterEd.CanSetFocus then // Focus filter if window is undocked and top parent can focus
       TreeFilterEd.SetFocus;
     TreeFilterEd.SelectAll;
   end
