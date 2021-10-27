@@ -777,9 +777,13 @@ begin
       fLastOC:=TMaskParsedCode.CharsGroupEnd;
       break;
     end else begin
-      Add(TMaskParsedCode.OptionalChar);
-      Add(fCPLength,@fMask[fMaskInd]);
-      fLastOC:=TMaskParsedCode.OptionalChar;
+      if (mocSet in fMaskOpcodesAllowed) then begin
+        Add(TMaskParsedCode.OptionalChar);
+        Add(fCPLength,@fMask[fMaskInd]);
+        fLastOC:=TMaskParsedCode.OptionalChar;
+      end else begin
+         Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
+      end;
     end;
     inc(fMaskInd,fCPLength);
   end;
