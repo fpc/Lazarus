@@ -25,7 +25,7 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
-// To get as little as posible circles,
+// To get as little as possible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   LCLType, Graphics, GraphType, ImgList, Menus, Forms,
@@ -908,24 +908,22 @@ function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
 var
   CC: TControlCanvas;
 begin
+  Result.cx := 0;
+  Result.cy := 0;
+
   CC := TControlCanvas.Create;
   try
     CC.Handle := AHDC;
-    Result.cx := 0;
-    Result.cy := 0;
-
-    if not AMenuItem.MeasureItem(CC, Result.cx, Result.cy) then
+    if IsVistaMenu then
     begin
-      if IsVistaMenu then
-      begin
-        if AMenuItem.IsInMenuBar then
-          Result := VistaBarMenuItemSize(AMenuItem, AHDC)
-        else
-          Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
-      end
+      if AMenuItem.IsInMenuBar then
+        Result := VistaBarMenuItemSize(AMenuItem, AHDC)
       else
-        Result := ClassicMenuItemSize(AMenuItem, AHDC);
-    end;
+        Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
+    end
+    else
+      Result := ClassicMenuItemSize(AMenuItem, AHDC);
+    AMenuItem.MeasureItem(CC, Result.cx, Result.cy);
   finally
     CC.Free;
   end;
