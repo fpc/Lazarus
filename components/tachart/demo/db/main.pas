@@ -37,7 +37,7 @@ implementation
 { Add dummy data to start with }
 procedure TForm1.FormCreate(Sender: TObject);
 const
-  N = 3;
+  N = 5;
 var
   i: Integer;
   Fx, Fy: TField;

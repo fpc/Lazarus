@@ -13,7 +13,7 @@ uses
 {$R *.res}
 
 begin
-  Application.Title := 'Chart db-aware demo';
+  Application.Title:='Chart db-aware demo';
   Application.Initialize;
   Application.CreateForm(TForm1, Form1);
   Application.Run;
