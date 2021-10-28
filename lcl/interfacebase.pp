@@ -176,6 +176,8 @@ type
   function GetDefaultLCLWidgetType: TLCLPlatform;
   function GetLCLWidgetTypeName: string;
 
+  function MemSizeLessThan(AMemSize, AThen: PtrUInt): Boolean; inline;
+
 const
   { Constants for the routine TWidgetSet.GetLCLCapability }
   LCL_CAPABILITY_NO = 0;
@@ -231,6 +233,11 @@ end;
 function GetLCLWidgetTypeName: string;
 begin
   Result:=LCLPlatformDirNames[GetDefaultLCLWidgetType];
+end;
+
+function MemSizeLessThan(AMemSize, AThen: PtrUInt): Boolean; inline;
+begin
+  Result:=(AMemSize<>0) and (AMemSize<AThen);
 end;
 
 { TDialogButtons }

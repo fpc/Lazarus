@@ -1553,11 +1553,11 @@ begin
     Result := False;
 
     //Sanity Checks For Vertices Size vs. Count
-    if MemSize(Vertices) < PtrUInt(SizeOf(TTriVertex) * NumVertices) then
+    if MemSizeLessThan(MemSize(Vertices), PtrUInt(SizeOf(TTriVertex) * NumVertices)) then
       Exit;
 
     //Sanity Checks For Meshes Size vs. Count
-    if MemSize(Meshes) < (MeshSize[DoFillTriangle] * Cardinal(NumMeshes)) then
+    if MemSizeLessThan(MemSize(Meshes), (MeshSize[DoFillTriangle] * Cardinal(NumMeshes))) then
       Exit;
 
     for I := 0 to NumMeshes - 1 do
