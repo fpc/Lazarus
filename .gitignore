@@ -16,9 +16,6 @@
 /docs/chm/**/*.xct
 /docs/chm/**/*.kwd
 /docs/chm/**/*.txt
-/docs/html/*.log
-/docs/html/*.inc
-/docs/html/*.xml
 !**/patches/*.patch
 !**/patches/*.diff
 /libeay32.dll
