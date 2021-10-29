@@ -204,7 +204,6 @@ type
   public
     constructor Create(aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
-    constructor CreateLegacy(aCaseSensitive: Boolean=False);
     constructor Create(aOptions: TMaskOptions);
   public
     property CaseSensitive: Boolean read fCaseSensitive;
@@ -235,9 +234,8 @@ type
     constructor Create(const aMask: String);
     constructor Create(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes); virtual; overload;
-    constructor CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aOptions: TMaskOptions);
-        deprecated 'Use CreateLegacy or Create with other params.'; // in Lazarus 2.3, remove in 2.5.
+        deprecated 'Use Create with other params.'; // in Lazarus 2.3, remove in 2.5.
 
     procedure Compile; override;
     function Matches(const aStringToMatch: String): Boolean; virtual;
@@ -347,9 +345,8 @@ type
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
-function MatchesMaskLegacy(const FileName, Mask: String; CaseSensitive: Boolean=False): Boolean;
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesMaskLegacy or MatchesMask with other params.'; // in Lazarus 2.3, remove in 2.5.
+    deprecated 'Use MatchesMask with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed;
@@ -431,11 +428,6 @@ begin
   end;
 end;
 
-function MatchesMaskLegacy(const FileName, Mask: String; CaseSensitive: Boolean): Boolean;
-// Use [?] syntax for literal '?', no escaping chars with '\'.
-begin
-  Result := MatchesMask(FileName, Mask, CaseSensitive, MaskOpCodesNoEscape);
-end;
 
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
 begin
@@ -652,11 +644,6 @@ begin
   fMaskEscapeChar:='\';
 end;
 
-constructor TMaskBase.CreateLegacy(aCaseSensitive: Boolean);
-// Use [?] syntax for literal '?', no escaping chars with '\'.
-begin
-  Create(aCaseSensitive, MaskOpCodesNoEscape);
-end;
 
 constructor TMaskBase.Create(aOptions: TMaskOptions);
 begin
@@ -1047,11 +1034,6 @@ begin
   fOriginalMask:=aMask;
 end;
 
-constructor TMaskUTF8.CreateLegacy(const aMask: String; aCaseSensitive: Boolean);
-// Use [?] syntax for literal '?', no escaping chars with '\'.
-begin
-  Create(aMask, aCaseSensitive, MaskOpCodesNoEscape);
-end;
 
 constructor TMaskUTF8.Create(const aMask: String; aOptions: TMaskOptions);
 begin
