@@ -123,26 +123,26 @@ type
   TWindowsQuirks=set of TWindowsQuirk;
 
 const
-  WindowsQuirksAllAllowed=[wqAnyExtension,
-                           wqFilenameEnd,
-                           wqExtension3More,
-                           wqEmptyIsAny,
-                           wqAllByExtension,
-                           wqNoExtension];
+  AllWindowsQuirks=[wqAnyExtension,
+                    wqFilenameEnd,
+                    wqExtension3More,
+                    wqEmptyIsAny,
+                    wqAllByExtension,
+                    wqNoExtension];
 
   // Leave out wqExtension3More and wqAllByExtension
-  WindowsQuirksDefaultAllowed=[wqAnyExtension,
-                               wqFilenameEnd,
-                               wqEmptyIsAny,
-                               wqNoExtension];
+  DefaultWindowsQuirks=[wqAnyExtension,
+                        wqFilenameEnd,
+                        wqEmptyIsAny,
+                        wqNoExtension];
 
-  MaskOpCodesAllAllowed=[mocAnyChar,
-                         mocAnyCharOrNone,
-                         mocAnyText,
-                         mocRange,
-                         mocSet,
-                         mocNegateGroup,
-                         mocEscapeChar];
+  AllMaskOpCodes=[mocAnyChar,
+                  mocAnyCharOrNone,
+                  mocAnyText,
+                  mocRange,
+                  mocSet,
+                  mocNegateGroup,
+                  mocEscapeChar];
 
 
   // Match [x] literally, not as a range.
@@ -161,7 +161,7 @@ const
                        mocSet,
                        mocNegateGroup];
 
-  MaskOpCodesDefaultAllowed=MaskOpCodesNoEscape;
+  DefaultMaskOpCodes=MaskOpCodesNoEscape;
 
 type
 
@@ -204,7 +204,7 @@ type
     //function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; virtual; abstract;
   public
     constructor Create(aCaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes);
     constructor Create(aOptions: TMaskOptions);
   public
     property CaseSensitive: Boolean read fCaseSensitive;
@@ -296,13 +296,13 @@ type
       aOpcodesAllowed: TMaskOpCodes); virtual;
   public
     constructor Create(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
+      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes);
 
     //Remove in 2.5
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); virtual;
       deprecated 'Use Create with TMaskOpcodes paramater';
     //constructor CreateWindows(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-    //  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed);
+    //  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes);
     //constructor CreateWindows(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
     //constructor CreateSysNative(const aValue: String; aSeparator: Char; CaseSensitive: Boolean);
     destructor Destroy; override;
@@ -329,8 +329,8 @@ type
       aOpcodesAllowed: TMaskOpCodes); override;
   public
     constructor Create(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-      aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed;
-      aWindowsQuirksAllowed: TWindowsQuirks=WindowsQuirksDefaultAllowed); reintroduce;
+      aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes;
+      aWindowsQuirksAllowed: TWindowsQuirks=DefaultWindowsQuirks); reintroduce;
 
     //Remove in 2.5
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); override;
@@ -345,25 +345,25 @@ type
   end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesMask with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed;
-  aWindowsQuirksAllowed: TWindowsQuirks=WindowsQuirksDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes;
+  aWindowsQuirksAllowed: TWindowsQuirks=DefaultWindowsQuirks): Boolean;
 function MatchesWindowsMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
 
 function MatchesMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpCodes=MaskOpCodesDefaultAllowed): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
@@ -413,7 +413,7 @@ begin
   if moDisableSets in Options then
     Result:=MaskOpCodesDisableRange
   else  // Disable '\' escaping for legacy code.
-    Result:=MaskOpCodesNoEscape; //MaskOpCodesDefaultAllowed;
+    Result:=MaskOpCodesNoEscape; //DefaultMaskOpCodes;
 end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean;
@@ -480,7 +480,7 @@ function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
 var
   AMaskList: TMaskListWindows;
 begin
-  AMaskList := TMaskListWindows.Create(Mask, Separator, CaseSensitive, aOpcodesAllowed, WindowsQuirksDefaultAllowed);
+  AMaskList := TMaskListWindows.Create(Mask, Separator, CaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
   try
     Result := AMaskList.Matches(FileName);
   finally
@@ -508,7 +508,7 @@ var
   i: Integer;
 begin
   inherited AddMasksToList(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
-  if (FWindowsQuirks <> WindowsQuirksDefaultAllowed) then  //inherited did not pass Quirks to the constructor
+  if (FWindowsQuirks <> DefaultWindowsQuirks) then  //inherited did not pass Quirks to the constructor
     begin
     for i := 0 to fMasks.Count - 1 do
     begin
@@ -529,7 +529,7 @@ end;
 constructor TMaskListWindows.Create(const aValue: String; aSeparator: Char;
   aOptions: TMaskOptions);
 begin
-  Create(aValue, aSeparator, (moCaseSensitive in aOptions), MaskOpcodesDefaultAllowed, WindowsQuirksDefaultAllowed);
+  Create(aValue, aSeparator, (moCaseSensitive in aOptions), DefaultMaskOpCodes, DefaultWindowsQuirks);
 end;
 
 function TMaskListWindows.MatchesWindowsMask(const AFileName: String): Boolean;
@@ -1020,12 +1020,12 @@ end;
 
 constructor TMaskUTF8.Create(const aMask: String);
 begin
-  Create(aMask, False, MaskOpCodesDefaultAllowed);
+  Create(aMask, False, DefaultMaskOpCodes);
 end;
 
 constructor TMaskUTF8.Create(const aMask: String; aCaseSensitive: Boolean);
 begin
-  Create(aMask, aCaseSensitive, MaskOpCodesDefaultAllowed);
+  Create(aMask, aCaseSensitive, DefaultMaskOpCodes);
 end;
 
 constructor TMaskUTF8.Create(const aMask: String;
@@ -1102,7 +1102,7 @@ end;
 constructor TMaskUTF8Windows.Create(const aMask: String;
   aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 begin
-  Create(aMask, aCaseSensitive, aOpcodesAllowed, WindowsQuirksDefaultAllowed);
+  Create(aMask, aCaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
 end;
 
 constructor TMaskUTF8Windows.Create(const aMask: String; aCaseSensitive: Boolean;
@@ -1264,7 +1264,7 @@ begin
   if moDisableSets in aOptions then
     Opcodes:=MaskOpCodesDisableRange
   else
-    Opcodes:=MaskOpCodesDefaultAllowed;
+    Opcodes:=DefaultMaskOpCodes;
   Create(aValue, aSeparator, CaseSens, Opcodes);
 end;
 
