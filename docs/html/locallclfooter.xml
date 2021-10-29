@@ -1,8 +1,5 @@
-<hr class='footer-sep'/> 
-<table class='footer'> 
-<tr> 
-<td class='footer-doc'>Lazarus Component Library (LCL)</td> 
-<td class='footer-ver'>Version 2.3.0-7530dcb21a</td> 
-<td class='footer-date'>Generated 2021-10-27</td> 
-</tr> 
-</table> 
+<table cellspacing="0" cellpadding="0" class="bar" width="100%">
+<tr>
+<td valign="top" align="center"><span class="footer">The latest version of this document can be found at </span><a href="http://lazarus-ccr.sourceforge.net/docs/lcl">lazarus-ccr.sourceforge.net</a><span class="footer">.</span></td>
+</tr>
+</table>
