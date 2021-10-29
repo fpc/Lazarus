@@ -300,9 +300,9 @@ begin
     exit;
   end;
   {$IFDEF NotLiteralFilenames}
-  SetLength(File1,Len1);
+  SetLength(File1{%H-},Len1);
   System.Move(Filename1^,File1[1],Len1);
-  SetLength(File2,Len2);
+  SetLength(File2{%H-},Len2);
   System.Move(Filename2^,File2[1],Len2);
   Result:=CompareFilenames(File1,File2);
   {$ELSE}
