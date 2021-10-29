@@ -50,7 +50,7 @@ type
     procedure InitMaskString(const AValue: String);
     procedure ClearMaskString;
   public
-    constructor Create(const AValue: String; const CaseSensitive: Boolean); deprecated 'use overload with Options parameter';
+    constructor Create(const AValue: String; const CaseSensitive: Boolean);
     constructor Create(const AValue: String; const AOptions: TMaskOptions = []);
     destructor Destroy; override;
 
@@ -73,7 +73,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   public
-    constructor Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean); deprecated 'use overload with Options parameter';
+    constructor Create(const AValue: String; ASeparator: Char; const CaseSensitive: Boolean);
     constructor Create(const AValue: String; ASeparator: Char = ';'; const AOptions: TMaskOptions = []);
     destructor Destroy; override;
 
@@ -84,18 +84,18 @@ type
     property Items[Index: Integer]: TMask read GetItem;
   end;
 
-function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
 function MatchesMask(const FileName, Mask: String; const Options: TMaskOptions = []): Boolean;
-function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesWindowsMask(const FileName, Mask: String; const CaseSensitive: Boolean): Boolean;
 function MatchesWindowsMask(const FileName, Mask: String; const Options: TMaskOptions = []): Boolean;
 
 function MatchesMaskList(const FileName, Mask: String): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char): Boolean;
-function MatchesMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char; const Options: TMaskOptions): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char): Boolean;
-function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean; deprecated 'use overload with Options parameter';
+function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const CaseSensitive: Boolean): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char; const Options: TMaskOptions): Boolean;
 
 implementation
