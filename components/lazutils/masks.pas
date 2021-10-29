@@ -361,7 +361,8 @@ function MatchesMaskList(const FileName, Mask: String; Separator: Char;
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
-  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
+  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes;
+  aWindowsQuirksAllowed: TWindowsQuirks=DefaultWindowsQuirks): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
     deprecated 'Use MatchesWindowsMaskList with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
@@ -474,11 +475,11 @@ begin
 end;
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes): Boolean;
+  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes; aWindowsQuirksAllowed: TWindowsQuirks): Boolean;
 var
   AMaskList: TWindowsMaskList;
 begin
-  AMaskList := TWindowsMaskList.Create(Mask, Separator, CaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
+  AMaskList := TWindowsMaskList.Create(Mask, Separator, CaseSensitive, aOpcodesAllowed, aWindowsQuirksAllowed);
   try
     Result := AMaskList.Matches(FileName);
   finally
