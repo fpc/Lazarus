@@ -183,7 +183,7 @@ type
     procedure IncrementLastCounterBy(aOpcode: TMaskParsedCode; aValue: integer);
   protected
     fCaseSensitive: Boolean;
-    fRangeAutoReverse: Boolean; // If enabled, range [z-a] is interpreted as [a-z]
+    fAutoReverseRange: Boolean; // If enabled, range [z-a] is interpreted as [a-z]
     fMaskIsCompiled: Boolean;
     fMaskCompiled: TBytes;
     fMaskCompiledIndex: integer;
@@ -209,7 +209,7 @@ type
     constructor Create(aOptions: TMaskOptions);
   public
     property CaseSensitive: Boolean read fCaseSensitive;
-    property RangeAutoReverse: Boolean read fRangeAutoReverse write fRangeAutoReverse;
+    property AutoReverseRange: Boolean read fAutoReverseRange write fAutoReverseRange;
     property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;
   end;
 
@@ -642,7 +642,7 @@ constructor TMaskBase.Create(aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCo
 begin
   fCaseSensitive:=aCaseSensitive;
   fMaskOpcodesAllowed:=aOpcodesAllowed;
-  fRangeAutoReverse:=True;
+  fAutoReverseRange:=True;
   fMaskEscapeChar:='\';
 end;
 
@@ -750,7 +750,7 @@ begin
       // Check if it is a range
       Add(TMaskParsedCode.Range);
       // Check if reverse range is needed
-      if (not fRangeAutoReverse)
+      if (not fAutoReverseRange)
       or (CompareUTF8Sequences(@fMask[fMaskInd],@fMask[fMaskInd+fCPLength+1])<0) then
         AddRange
       else
