@@ -46,11 +46,11 @@ type
   end;
 
   TMaskFailCause = (
-    Success=0,
-    MatchStringExhausted=1,
-    MaskExhausted=2,
-    MaskNotMatch=3,
-    UnexpectedEnd=4
+    mfcSuccess=0,
+    mfcMatchStringExhausted=1,
+    mfcMaskExhausted=2,
+    mfcMaskNotMatch=3,
+    mfcUnexpectedEnd=4
   );
 
   TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard to match exactly one char
@@ -880,17 +880,17 @@ var
   lTryCounter: integer;
 begin
   lSkipOnSuccessGroup:=0;
-  Result:=UnexpectedEnd;
+  Result:=mfcUnexpectedEnd;
   lNegateCharGroup:=false;
   while aMaskIndex<=fMaskCompiledLimit do begin
     case TMaskParsedCode(fMaskCompiled[aMaskIndex]) of
       TMaskParsedCode.Literal:
         begin
           if aMatchOffset>fMatchStringLimit then
-            exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
+            exit(TMaskFailCause.mfcMatchStringExhausted); // Error, no char to match.
           inc(aMaskIndex);
           if CompareUTF8Sequences(@fMaskCompiled[aMaskIndex],@fMatchString[aMatchOffset])<>0 then
-            exit(TMaskFailCause.MaskNotMatch);
+            exit(TMaskFailCause.mfcMaskNotMatch);
           inc(aMaskIndex,UTF8CodepointSizeFast(@fMaskCompiled[aMaskIndex]));
           inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
         end;
@@ -898,7 +898,7 @@ begin
         begin
           inc(aMaskIndex);
           if aMatchOffset>fMatchStringLimit then
-            exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
+            exit(TMaskFailCause.mfcMatchStringExhausted); // Error, no char to match.
           inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
         end;
       TMaskParsedCode.Negate:
@@ -920,16 +920,16 @@ begin
             inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end
           else
-            exit(TMaskFailCause.MaskNotMatch);
+            exit(TMaskFailCause.mfcMaskNotMatch);
         end;
       TMaskParsedCode.OptionalChar:
         begin
           inc(aMaskIndex);
           if aMatchOffset>fMatchStringLimit then
-            exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
+            exit(TMaskFailCause.mfcMatchStringExhausted); // Error, no char to match.
           if CompareUTF8Sequences(@fMaskCompiled[aMaskIndex],@fMatchString[aMatchOffset])=0 then begin
             if lNegateCharGroup then
-              exit(TMaskFailCause.MaskNotMatch);
+              exit(TMaskFailCause.mfcMaskNotMatch);
             aMaskIndex:=lSkipOnSuccessGroup+1;
             inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end
@@ -939,7 +939,7 @@ begin
       TMaskParsedCode.Range:
         begin
           if aMatchOffset>fMatchStringLimit then
-            exit(TMaskFailCause.MatchStringExhausted); // Error, no char to match.
+            exit(TMaskFailCause.mfcMatchStringExhausted); // Error, no char to match.
           inc(aMaskIndex);
           c1:=@fMaskCompiled[aMaskIndex];
           inc(aMaskIndex,UTF8CodepointSizeFast(C1));
@@ -955,29 +955,29 @@ begin
               inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
             end
             else
-              exit(TMaskFailCause.MaskNotMatch);
+              exit(TMaskFailCause.mfcMaskNotMatch);
           end
         end;
       TMaskParsedCode.AnyCharToNext:
         begin
           // if last is "*", everything in remain data matches
           if aMaskIndex=fMaskCompiledLimit then
-            exit(TMaskFailCause.Success);
+            exit(TMaskFailCause.mfcSuccess);
           if aMatchOffset>fMatchStringLimit then begin
             if aMaskIndex=fMaskCompiledLimit then
-              exit(TMaskFailCause.Success);
-            exit(TMaskFailCause.MatchStringExhausted);
+              exit(TMaskFailCause.mfcSuccess);
+            exit(TMaskFailCause.mfcMatchStringExhausted);
           end;
           inc(aMaskIndex);
           while aMatchOffset<=fMatchStringLimit do begin
             lFailCause:=intfMatches(aMatchOffset,aMaskIndex);
-            if lFailCause=TMaskFailCause.Success then
-              exit(TMaskFailCause.Success)
-            else if lFailCause=TMaskFailCause.MatchStringExhausted then
-              exit(TMaskFailCause.MatchStringExhausted);
+            if lFailCause=TMaskFailCause.mfcSuccess then
+              exit(TMaskFailCause.mfcSuccess)
+            else if lFailCause=TMaskFailCause.mfcMatchStringExhausted then
+              exit(TMaskFailCause.mfcMatchStringExhausted);
             inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end;
-          exit(TMaskFailCause.MatchStringExhausted);
+          exit(TMaskFailCause.mfcMatchStringExhausted);
         end;
       TMaskParsedCode.AnyCharOrNone:
         begin
@@ -993,17 +993,17 @@ begin
           for j := 0 to lTryCounter do begin
             if aMatchOffset>fMatchStringLimit then begin
               if aMaskIndex=fMaskCompiledLimit+1 then
-                exit(TMaskFailCause.Success);
-              exit(TMaskFailCause.MatchStringExhausted);
+                exit(TMaskFailCause.mfcSuccess);
+              exit(TMaskFailCause.mfcMatchStringExhausted);
             end;
             lFailCause:=intfMatches(aMatchOffset,aMaskIndex);
-            if lFailCause=TMaskFailCause.Success then
-              exit(TMaskFailCause.Success)
-            else if lFailCause=TMaskFailCause.MatchStringExhausted then
-              exit(TMaskFailCause.MatchStringExhausted);
+            if lFailCause=TMaskFailCause.mfcSuccess then
+              exit(TMaskFailCause.mfcSuccess)
+            else if lFailCause=TMaskFailCause.mfcMatchStringExhausted then
+              exit(TMaskFailCause.mfcMatchStringExhausted);
             inc(aMatchOffset,UTF8CodepointSizeFast(@fMatchString[aMatchOffset]));
           end;
-          exit(TMaskFailCause.MatchStringExhausted);
+          exit(TMaskFailCause.mfcMatchStringExhausted);
         end;
       else  // case
         begin
@@ -1012,11 +1012,11 @@ begin
     end;
   end;
   if (aMaskIndex>fMaskCompiledLimit) and (aMatchOffset>fMatchStringLimit) then
-    Result:=TMaskFailCause.Success
+    Result:=TMaskFailCause.mfcSuccess
   else if aMaskIndex>fMaskCompiledLimit then
-    Result:=TMaskFailCause.MaskExhausted
+    Result:=TMaskFailCause.mfcMaskExhausted
   else
-    Result:=TMaskFailCause.MatchStringExhausted;
+    Result:=TMaskFailCause.mfcMatchStringExhausted;
 end;
 
 constructor TMaskUTF8.Create(const aMask: String);
@@ -1053,7 +1053,7 @@ begin
   fMatchStringLimit:=length(fMatchString);
   if (fMatchStringLimit>=fMatchMinimumLiteralBytes)
   and (fMatchStringLimit<=fMatchMaximumLiteralBytes) then
-    Result:=intfMatches(1,0)=TMaskFailCause.Success
+    Result:=intfMatches(1,0)=TMaskFailCause.mfcSuccess
   else
     Result:=false; // There are too many or not enough bytes to match the string
 end;
