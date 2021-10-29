@@ -144,7 +144,6 @@ const
                          mocNegateGroup,
                          mocEscapeChar];
 
-  MaskOpCodesDefaultAllowed=MaskOpCodesAllAllowed;
 
   // Match [x] literally, not as a range.
   // Leave out mocAnyCharOrNone, mocRange and mocSet.
@@ -161,6 +160,8 @@ const
                        mocRange,
                        mocSet,
                        mocNegateGroup];
+
+  MaskOpCodesDefaultAllowed=MaskOpCodesNoEscape;
 
 type
 
