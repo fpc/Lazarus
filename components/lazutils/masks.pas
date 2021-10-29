@@ -38,11 +38,11 @@ type
                           mecInvalidUTF8Sequence
                           );
   protected
-    cCode: TMaskExceptionCode;
+    FCode: TMaskExceptionCode;
   public
     constructor Create(const msg: string; aCode: TMaskExceptionCode);
     constructor CreateFmt(const msg: string; args: array of const; aCode: TMaskExceptionCode);
-    property Code: TMaskExceptionCode read cCode;
+    property Code: TMaskExceptionCode read FCode;
   end;
 
   TMaskFailCause = (
@@ -547,7 +547,7 @@ end;
 constructor EMaskError.CreateFmt(const msg: string; args: array of const;
   aCode: TMaskExceptionCode);
 begin
-  cCode:=aCode;
+  FCode:=aCode;
   Inherited CreateFmt(msg,args);
 end;
 
