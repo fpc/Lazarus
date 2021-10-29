@@ -53,27 +53,6 @@ type
     UnexpectedEnd=4
   );
 
-  // Literal = It must match
-  // Range = Match any char in the range
-  // Negate = Negate match in a group
-  // AnyChar = It matches any char, but one must match
-  // AnyCharOrNone = Matches one or none char (only in a group)
-  // AnyCharToNext = Matches any chars amount, if fail, restart in the
-  //                 next position up to finish the mask or the matched string
-  // OptionalChar = Optional char
-  // CharsGroupBegin = Begin optional chars or ranges "["
-  // CharsGroupEnd = End optional chars or ranges "]"
-  TMaskParsedCode = (
-    Literal=0,
-    Range=1,
-    Negate=2,
-    AnyChar=3,
-    AnyCharOrNone=4,
-    AnyCharToNext=5,
-    OptionalChar=6,
-    CharsGroupBegin=10,
-    CharsGroupEnd=11
-  );
   TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard to match exactly one char
                mocAnyCharOrNone,    //treat [?] to match any char or the absence of a char
                mocAnyText,          //treat * as a wildcard to mach zero or any mumber of chars
@@ -175,6 +154,28 @@ type
   private
     procedure SetMaskEscapeChar(AValue: Char);
   protected
+    // Literal = It must match
+    // Range = Match any char in the range
+    // Negate = Negate match in a group
+    // AnyChar = It matches any char, but one must match
+    // AnyCharOrNone = Matches one or none char (only in a group)
+    // AnyCharToNext = Matches any chars amount, if fail, restart in the
+    //                 next position up to finish the mask or the matched string
+    // OptionalChar = Optional char
+    // CharsGroupBegin = Begin optional chars or ranges "["
+    // CharsGroupEnd = End optional chars or ranges "]"
+    type
+    TMaskParsedCode = (
+      Literal=0,
+      Range=1,
+      Negate=2,
+      AnyChar=3,
+      AnyCharOrNone=4,
+      AnyCharToNext=5,
+      OptionalChar=6,
+      CharsGroupBegin=10,
+      CharsGroupEnd=11
+    );
     const GROW_BY=100;
     procedure Add(aLength: integer; aData: PBYTE);
     procedure Add(aValue: integer);
