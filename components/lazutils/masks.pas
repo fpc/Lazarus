@@ -512,7 +512,7 @@ begin
     for i := 0 to fMasks.Count - 1 do
     begin
       TWindowsMask(fMasks.Items[i]).fWindowsQuirkAllowed := FWindowsQuirks;
-        TWindowsMask(fMasks.Items[i]).Compile; //to apply Quirks
+      TWindowsMask(fMasks.Items[i]).Compile; //to apply Quirks
     end;
   end;
 end;
