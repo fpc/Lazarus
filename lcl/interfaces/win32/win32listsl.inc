@@ -147,13 +147,13 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.Get(Index: Integer): String;
 Var
-  w: widestring;
+  w: widestring = '';
 begin
   if (Index < 0) Or (Index >= Count) then
     raise Exception.Create('Out of bounds.')
   else
   begin
-    SetLength(w{%H-}, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
+    SetLength(w, Windows.SendMessageW(FWin32List, FFlagGetTextLen, Index, 0));
     Windows.SendMessageW(FWin32List, FFlagGetText, Index, LPARAM(PWideChar(w)));
     Result := UTF16ToUTF8(w);
   end;
@@ -321,13 +321,13 @@ end;
 
 procedure TWin32ComboBoxStringList.Assign(Source: TPersistent);
 var
-  EditText: string;
+  EditText: string = '';
   lItemIndex: integer;
 begin
   if Source is TStrings then
   begin
     // save text in edit box, assigning strings clears the text
-    TWin32WSCustomComboBox.GetText(FSender, EditText{%H-});
+    TWin32WSCustomComboBox.GetText(FSender, EditText);
 
     inherited Assign(Source);
     

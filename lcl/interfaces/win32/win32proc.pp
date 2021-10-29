@@ -723,7 +723,8 @@ begin
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
     SelectObject(DC, TheWinControl.Font.Reference.Handle);
-    Windows.GetTextMetrics(DC, TM{%H-});
+    FillChar(TM{%H-}, SizeOf(TM), 0);
+    Windows.GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
     // add the left, right and bottom frame borders
@@ -776,10 +777,11 @@ end;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
-  parRect, winRect: Windows.TRect;
+  parRect: Windows.TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  winRect: Windows.TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
-  Windows.GetWindowRect(Window, winRect{%H-});
-  Windows.GetWindowRect(Parent, parRect{%H-});
+  Windows.GetWindowRect(Window, winRect);
+  Windows.GetWindowRect(Parent, parRect);
   Left := winRect.Left - parRect.Left;
   Top := winRect.Top - parRect.Top;
 end;
@@ -1039,7 +1041,7 @@ end;
 function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width,
   Height: integer): boolean;
 var
-  textSize: Windows.SIZE;
+  textSize: Windows.SIZE = (cx: 0; cy: 0);
   canvasHandle: HDC;
   oldFontHandle, newFontHandle: HFONT;
 begin
@@ -1048,7 +1050,7 @@ begin
   oldFontHandle := SelectObject(canvasHandle, newFontHandle);
   DeleteAmpersands(Text);
 
-  Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize{%H-});
+  Result := LCLIntf.GetTextExtentPoint32(canvasHandle, PChar(Text), Length(Text), textSize);
 
   if Result then
   begin
@@ -1067,10 +1069,10 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: longint;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   TextLen := Windows.GetWindowTextLengthW(AHandle);
-  SetLength(WideBuffer{%H-}, TextLen);
+  SetLength(WideBuffer, TextLen);
   if TextLen > 0 // Never give Windows the chance to write to System.emptychar
   then TextLen := Windows.GetWindowTextW(AHandle, PWideChar(WideBuffer), TextLen + 1);
   SetLength(WideBuffer, TextLen);

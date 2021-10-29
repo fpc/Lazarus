@@ -64,7 +64,7 @@ end;
 function TWin32MemoStrings.Get(Index: Integer): string;
 var
   len: Integer;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   len := GetLineLength(Index);
   if len=0 then
@@ -72,7 +72,7 @@ begin
     Result := '';
     exit;
   end;
-  Setlength(WideBuffer{%H-}, len);
+  Setlength(WideBuffer, len);
   PWord(@WideBuffer[1])^ := len+1;
   len := SendMessageW(FHandle, EM_GETLINE, Index, lparam(PWideChar(WideBuffer)));
   Result := UTF16ToUTF8(WideBuffer);

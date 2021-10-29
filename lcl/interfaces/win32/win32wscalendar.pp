@@ -160,7 +160,8 @@ begin
   {$ifdef debug_win32calendar}
   if IsConsole then writeln('  HitTestInfo.cbSize = ',HitTestInfo.cbSize);
   {$endif}
-  HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, {%H-}LPARAM(@HitTestInfo));
+  FillChar(HitTestInfo{%H-}, SizeOf(HitTestInfo), 0);
+  HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
   {$ifdef debug_win32calendar}
   //if IsConsole then writeln('TWin32WSCustomCalendar.HitTest: Handle = ',IntToHex(ACalendar.Handle,8));
   if IsConsole then writeln('  APoint = (',APoint.x,',',APoint.y,'), pt = (',HitTestInfo.pt.x,',',HitTestInfo.pt.y,')');

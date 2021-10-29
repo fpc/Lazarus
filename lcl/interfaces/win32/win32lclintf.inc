@@ -149,9 +149,9 @@ end;
 procedure TWin32WidgetSet.HandleProcessEvent(AData: PtrInt; AFlags: dword);
 var
   lProcessEvent: PProcessEvent absolute AData;
-  exitcode: dword;
+  exitcode: DWORD = 0;
 begin
-  if not Windows.GetExitCodeProcess(lProcessEvent^.Handle, exitcode{%H-}) then
+  if not Windows.GetExitCodeProcess(lProcessEvent^.Handle, exitcode) then
     exitcode := 0;
   lProcessEvent^.OnEvent(lProcessEvent^.UserData, cerExit, exitcode);
 end;
@@ -259,7 +259,8 @@ var
 begin
   WndClassName := 'LazRubberBand' + IntToStr(ABrush);
 
-  if not Windows.GetClassInfo(System.HInstance, PChar(WndClassName), WindowClass{%H-}) then
+  FillChar(WindowClass{%H-}, SizeOf(WindowClass), 0);
+  if not Windows.GetClassInfo(System.HInstance, PChar(WndClassName), WindowClass) then
   begin
     with WindowClass do
     begin
@@ -795,7 +796,8 @@ var
       Header: Windows.TBitmapInfoHeader;
       Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
     end;
-    DstLinePtr, SrcLinePtr: PByte;
+    SrcLinePtr: PByte = nil;
+    DstLinePtr: PByte = nil;
     SrcPixelPtr, DstPixelPtr: PByte;
     DstLineSize, SrcLineSize: PtrUInt;
     x, y: Integer;
@@ -832,7 +834,7 @@ var
     // Use createDIBSection, since only devicedepth bitmaps can be selected into a DC
     // when they are created with createDIBitmap
     //  ABitmap := Windows.CreateDIBitmap(DC, Info.Header, CBM_INIT, ARawImage.Data, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS);
-    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstLinePtr{%H-}, 0, 0);
+    ABitmap := Windows.CreateDIBSection(DC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstLinePtr, 0, 0);
     Windows.ReleaseDC(0, DC);
 
     if ABitmap = 0
@@ -1075,7 +1077,7 @@ var
     Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
   end;
 
-  BitsPtr: Pointer;
+  BitsPtr: Pointer = nil;
 
   copyDC, fillDC: HDC;
   bmp, copyOld, fillOld, copyBmp, fillBmp: HBITMAP;
@@ -1108,7 +1110,7 @@ begin
     Info.Header.biBitCount := Windows.GetDeviceCaps(ADC, BITSPIXEL);
     Info.Header.biCompression := BI_RGB;
 
-    copyBmp := Windows.CreateDIBSection(copyDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr{%H-}, 0, 0);
+    copyBmp := Windows.CreateDIBSection(copyDC, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS, BitsPtr, 0, 0);
     copyOld := Windows.SelectObject(copyDC, copyBmp);
 
     // prefill bitmap, to create an alpha channel in case of 32bpp bitmap

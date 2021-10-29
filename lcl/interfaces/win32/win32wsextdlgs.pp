@@ -99,7 +99,8 @@ var
   DialogRec: POpenFileDialogRec;
   AControl: TPreviewFileControl;
   stc32Handle: Handle;
-  ARect, ADialogRect: TRect;
+  ARect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  ADialogRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
   Result := OpenFileDialogCallBack(hWnd, uMsg, wParam, lparam);
   if uMsg = WM_INITDIALOG then
@@ -116,10 +117,10 @@ begin
       // attach our child to the template window
       AControl.ParentWindow := hWnd;
 
-      GetWindowRect(stc32Handle, ARect{%H-});
+      GetWindowRect(stc32Handle, ARect);
       ScreenToClient(hWnd, ARect.TopLeft);
       ScreenToClient(hWnd, ARect.BottomRight);
-      GetClientRect(hWnd, ADialogRect{%H-});
+      GetClientRect(hWnd, ADialogRect);
 
       with ARect do
       begin

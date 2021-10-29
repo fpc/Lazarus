@@ -596,7 +596,8 @@ var
 {$endif}
   ParentPaintWindow: HWND;
   DCIndex: integer;
-  parLeft, parTop: integer;
+  parLeft: integer = 0;
+  parTop: integer = 0;
   BufferWasSaved: Boolean;
   useDoubleBuffer: Boolean;
   isNativeControl: Boolean;
@@ -693,7 +694,7 @@ begin
     end;
 
     if ParentPaintWindow <> 0 then
-      GetWin32ControlPos(Window, ParentPaintWindow, parLeft{%H-}, parTop{%H-});
+      GetWin32ControlPos(Window, ParentPaintWindow, parLeft, parTop);
     //Is not necessary to check the result of GetLCLClientBoundsOffset since
     //the false condition (lWincontrol = nil or lWincontrol <> TWinControl) is never met
     //The rect is always initialized with 0
@@ -1119,23 +1120,23 @@ end;
 
 procedure TWindowProcHelper.HandleDropFiles;
 var
-  Files: Array of String;
+  Files: Array of String = nil;
   Drop: HDROP;
   L: LongWord;
   I, C: Integer;
   DropForm: TWinControl;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   Drop := HDROP(WParam);
   try
     C := DragQueryFile(Drop, $FFFFFFFF, nil, 0); // get dropped files count
     if C <= 0 then Exit;
 
-    SetLength(Files{%H-}, C);
+    SetLength(Files, C);
     for I := 0 to C - 1 do
     begin
       L := DragQueryFileW(Drop, I, nil, 0); // get I. file name length
-      SetLength(WideBuffer{%H-}, L);
+      SetLength(WideBuffer, L);
       L := DragQueryFileW(Drop, I, @WideBuffer[1], L + 1);
       SetLength(WideBuffer, L);
       Files[I] := UTF16ToUTF8(WideBuffer);
@@ -1885,7 +1886,8 @@ end;
 
 function TWindowProcHelper.DoMsgMove: Boolean;
 var
-  NewLeft, NewTop: integer;
+  NewLeft: integer = 0;
+  NewTop: integer = 0;
   WindowPlacement: TWINDOWPLACEMENT;
   R: TRect;
 begin
@@ -1905,7 +1907,7 @@ begin
       LMMove.Msg := LM_NULL;
   end else
   begin
-    if GetWindowRelativePosition(Window, NewLeft{%H-}, NewTop{%H-}) then
+    if GetWindowRelativePosition(Window, NewLeft, NewTop) then
       UpdateLMMovePos(NewLeft, NewTop)
     else
       LMMove.Msg := LM_NULL;
@@ -1926,7 +1928,8 @@ end;
 
 procedure TWindowProcHelper.DoMsgSize;
 var
-  NewWidth, NewHeight: integer;
+  NewWidth: integer = 0;
+  NewHeight: integer = 0;
   OverlayWindow: HWND;
 {$IFDEF VerboseSizeMsg}
   R: TRect;
@@ -1954,7 +1957,7 @@ begin
         SizeType := SIZE_RESTORED or Size_SourceIsInterface;
     end;
 
-    GetWindowSize(Window, NewWidth{%H-}, NewHeight{%H-});
+    GetWindowSize(Window, NewWidth, NewHeight);
     Width := NewWidth;
     Height := NewHeight;
     if Assigned(lWinControl) then
@@ -2803,7 +2806,7 @@ var
   Owner: TWinControl;
   Control: TControl;
   P: TPoint;
-  LRect: Windows.RECT;
+  LRect: Windows.RECT = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
   case Msg of
     WM_ERASEBKGND:
@@ -2854,7 +2857,7 @@ begin
       if (Int16(LoWord(LParam)) <> 0) or (Int16(HiWord(LParam)) <> 0) then
       begin
         Parent := Windows.GetParent(Window);
-        Windows.GetClientRect(Parent, LRect{%H-});
+        Windows.GetClientRect(Parent, LRect);
         Windows.SetWindowPos(Window, HWND_TOP, 0, 0, LRect.Right, LRect.Bottom, 0);
       end;
     end;

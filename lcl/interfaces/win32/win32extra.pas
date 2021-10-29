@@ -433,7 +433,10 @@ var
     Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
   end;
 
-  SrcBytesPtr, DstBytesPtr, TmpBytesPtr, AlphaBytesPtr: Pointer;
+  SrcBytesPtr: Pointer = nil;
+  DstBytesPtr: Pointer = nil;
+  AlphaBytesPtr: Pointer = nil;
+  TmpBytesPtr: Pointer = nil;
   SrcLinePtr, DstLinePtr: PByte;
   CleanupSrc, CleanupSrcPtr, CleanupDst, CleanupAlpha: Boolean;
   SrcSize: PtrUInt;
@@ -551,7 +554,7 @@ begin
       Info.Header.biSizeImage := nWidthSrc * nHeightSrc * 4;
 
       // create temp bitmap to store orginal grayscale alpha
-      TmpBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, TmpBytesPtr{%H-}, 0, 0);
+      TmpBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, TmpBytesPtr, 0, 0);
       if TmpBmp = 0 then Exit(False);
       if TmpBytesPtr = nil
       then begin
@@ -582,7 +585,7 @@ begin
       Info.Header.biSizeImage := nWidthDest * nHeightDest * 4;
 
       // create bitmap to store stretched grayscale alpha
-      AlphaBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, AlphaBytesPtr{%H-}, 0, 0);
+      AlphaBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, AlphaBytesPtr, 0, 0);
       if (AlphaBmp = 0) or (AlphaBytesPtr = nil)
       then begin
         FreeMem(SrcBytesPtr);
@@ -668,7 +671,7 @@ begin
   or (DstSection.dsBmih.biCompression <> BI_RGB)
   then begin
     // create temp dib
-    DstBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstBytesPtr{%H-}, 0, 0);
+    DstBmp := CreateDIBSection(hdcSrc, PBitmapInfo(@Info)^, DIB_RGB_COLORS, DstBytesPtr, 0, 0);
     // copy destination
     DC := CreateCompatibleDC(hdcDest);
     OldBmp := SelectObject(DC, DstBmp);

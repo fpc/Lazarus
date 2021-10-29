@@ -400,7 +400,8 @@ begin
     end else
     if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
     begin
-      while PeekMessage(AMessage{%H-}, HWnd(nil), 0, 0, PM_REMOVE) do
+      FillChar(AMessage{%H-}, SizeOf(AMessage), 0);
+      while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
         if AMessage.message = WM_QUIT then
         begin
@@ -654,7 +655,8 @@ procedure TWin32WidgetSet.UpdateMDIClientBounds;
   var
     I: Integer;
   begin
-    Windows.GetClientRect(Application.MainFormHandle, Result{%H-});
+    Result := Rect(0, 0, 0, 0);
+    Windows.GetClientRect(Application.MainFormHandle, Result);
     for I := 0 to Application.MainForm.ControlCount - 1 do
       if Application.MainForm.Controls[I].Visible then
         case Application.MainForm.Controls[I].Align of

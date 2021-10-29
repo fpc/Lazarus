@@ -261,7 +261,7 @@ end;
 
 class procedure TWin32WSCustomListView.ColumnDoAutosize(const ALV: TCustomListView; const AIndex: Integer);
 var
-  CaptionSize: TSize;
+  CaptionSize: TSize = (cx: 0; cy: 0);
 begin
   if (ALV.Items.Count > 0) then
     ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
@@ -272,7 +272,7 @@ begin
     if GetTextExtentPoint32W(ALV.Canvas.Handle,
                              PWideChar(UTF8ToUTF16(ALV.Column[AIndex].Caption)),
                              UTF8Length(ALV.Column[AIndex].Caption),
-                             CaptionSize{%H-}) then
+                             CaptionSize) then
     begin
       // to retrieve the column width that can contain the string without
       // truncating it, you must add padding to the returned string width
@@ -1120,7 +1120,7 @@ class procedure TWin32WSCustomListView.PositionHeader(const AHandle: THandle);
 var
   hwndHeader: HWND;
   dwStyle: PtrInt;
-  rc: TRect;
+  rc: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   hdLayout: THDLAYOUT;
   wpos: Windows.TWINDOWPOS;
 begin
@@ -1132,7 +1132,7 @@ begin
   hwndHeader := GetHeader(AHandle);
   if hwndHeader = 0 then Exit; // nothing to do
 
-  Windows.GetClientRect(AHandle, rc{%H-});
+  Windows.GetClientRect(AHandle, rc);
   FillChar(hdLayout{%H-}, SizeOf(hdLayout), 0);
   hdLayout.prc := @rc;
   hdLayout.pwpos := @wpos;
@@ -1392,12 +1392,12 @@ end;
 class procedure TWin32WSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
 var
   dx, dy: Integer;
-  Origin: TPoint;
+  Origin: TPoint = (X: 0; Y: 0);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetViewOrigin')
   then Exit;
 
-  ListView_GetOrigin(ALV.Handle, Origin{%H-});
+  ListView_GetOrigin(ALV.Handle, Origin);
 
   dx := AValue.X - Origin.X;
   dy := AValue.Y - Origin.Y;

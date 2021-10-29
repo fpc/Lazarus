@@ -126,7 +126,7 @@ var
   BitBtnDC: HDC; // Handle to DC of bitbtn window
   OldFontHandle: HFONT; // Handle of previous font in hdcNewBitmap
   hdcNewBitmap: HDC; // Device context of the new Bitmap
-  TextSize: Windows.SIZE; // For computing the length of button caption in pixels
+  TextSize: Windows.SIZE = (cx: 0; cy: 0); // For computing the length of button caption in pixels
   OldBitmap: HBITMAP; // Handle to the old selected bitmap
   NewBitmap: HBITMAP; // Handle of the new bitmap
   XDestBitmap, YDestBitmap: integer; // X,Y coordinate of destination rectangle for bitmap
@@ -157,7 +157,7 @@ var
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     OldTextAlign: Integer;
-    TmpDC: HDC;
+    TmpDC: HDC = 0;
     PaintBuffer: HPAINTBUFFER;
     Options: DTTOpts;
     Details: TThemedElementDetails;
@@ -179,7 +179,6 @@ var
       FillChar(PaintParams{%H-}, SizeOf(PaintParams), 0);
       PaintParams.cbSize := SizeOf(PaintParams);
       PaintParams.dwFlags := BPPF_ERASE;
-      TmpDC := 0;
       PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, @PaintParams, TmpDC);
     end
     else
@@ -321,7 +320,7 @@ begin
   BitBtnLayout := BidiAdjustButtonLayout(BitBtn.UseRightToLeftReading, BitBtn.Layout);
   BitBtnDC := GetDC(BitBtnHandle);
   hdcNewBitmap := CreateCompatibleDC(BitBtnDC);
-  MeasureText(BitBtn, ButtonCaption, {%H-}TextSize.cx, {%H-}TextSize.cy);
+  MeasureText(BitBtn, ButtonCaption, TextSize.cx, TextSize.cy);
   // calculate size of new bitmap
   case BitBtnLayout of
     blGlyphLeft, blGlyphRight:

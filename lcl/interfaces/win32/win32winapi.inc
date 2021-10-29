@@ -49,12 +49,16 @@
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 var
-  SX, SY, EX, EY, OldArcDirection: Longint;
+  SX: LongInt = 0;
+  SY: LongInt = 0;
+  EX: LongInt = 0;
+  EY: LongInt = 0;
+  OldArcDirection: Longint;
 begin
   if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
   else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
 
-  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX{%H-}, SY{%H-}, EX{%H-}, EY{%H-});
+  Angles2Coords(Left, Top, Right - Left, Bottom - Top, Angle16Deg, Angle16DegLength, SX, SY, EX, EY);
   Result := Boolean(Windows.Arc(DC, Left, Top, Right, Bottom, SX, SY, EX, EY));
   // Revert the arc direction to the previous value
   Windows.SetArcDirection(DC, OldArcDirection);
@@ -372,8 +376,8 @@ var
   {$ENDIF}
   Bitmap: TBitmap;
   BufferStream: TMemoryStream;
-  BufferWideString: widestring;
-  BufferString: ansistring;
+  BufferWideString: widestring = '';
+  BufferString: ansistring = '';
 
   function ReadClipboardToStream(DestStream: TStream): Boolean;
   begin
@@ -437,7 +441,7 @@ begin
               BufferStream.Position := 0;
               if FormatID=Windows.CF_UNICODETEXT then
               begin;
-                SetLength(BufferWideString{%H-}, Size div 2);
+                SetLength(BufferWideString, Size div 2);
                 BufferStream.Read(BufferWideString[1], Size);
                 //BufferString may have pending #0 's (or garbage after a #0)
                 Size := Pos(#0, BufferWideString);
@@ -560,8 +564,8 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   var
     DataStream, BufferStream: TStream;
     Bitmap: TBitmap;
-    BufferWideString: widestring;
-    BufferString: ansistring;
+    BufferWideString: widestring = '';
+    BufferString: ansistring = '';
     ScreenDC, MemDC: HDC;
     OldBitmap, NewBitmap, Mask: HBitmap;
   begin
@@ -605,7 +609,7 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
         // we need to convert it from UTF8 to UTF16 or Ansi
         begin
           if DataStream.Size>0 then begin
-            SetLength(BufferString{%H-}, DataStream.Size);
+            SetLength(BufferString, DataStream.Size);
             DataStream.Read(BufferString[1], DataStream.Size);
             if FormatID=Windows.CF_UNICODETEXT then
             begin
@@ -1513,7 +1517,7 @@ function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt;
 var
   s: AnsiString;
   w: WideString;
-  DxWide: _TIntArray;
+  DxWide: _TIntArray = nil;
   nIndex: Integer;
 begin
   // use temp buffer, if count is set, there might be no null terminator
@@ -1533,7 +1537,7 @@ begin
     nIndex := SFindFirstCharSurrogate(W);
     if nIndex > 0 then
     begin
-      SConvertDxArrayFromUTF8ToWide(W, Dx, Count, DxWide{%H-}, nIndex);
+      SConvertDxArrayFromUTF8ToWide(W, Dx, Count, DxWide, nIndex);
       Result := Windows.ExtTextOutW(DC, X, Y, Options, LPRECT(Rect), PWideChar(W), Length(W), @DxWide[0]);
       Exit;
     end;
@@ -1857,7 +1861,9 @@ begin
   // there is no way to get offset for memory or metafile DC => assume it 0
   Result := GetObjectType(PaintDC) = OBJ_DC;
   if not Result then Exit;
-  Result := Windows.GetDCOrgEx(PaintDC, DCOrg{%H-});
+  DCOrg.X := 0;
+  DCOrg.Y := 0;
+  Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
   if not Result then Exit;
   winOrg.X := 0;
   winOrg.Y := 0;
@@ -1899,7 +1905,8 @@ begin
         hWindow := WindowFromDC(DC);
         if hWindow <> HWND(nil) then
         begin
-          Result := GetClientRect(hWindow, ClientRect{%H-});
+          ClientRect := Rect(0, 0, 0, 0);
+          Result := GetClientRect(hWindow, ClientRect);
           P.x := ClientRect.Right;
           P.y := ClientRect.Bottom;
         end;

@@ -299,7 +299,7 @@ var
   Flags: LongWord;
   Parent: HWND;
   PreferredSizeStatusBar: HWND;
-  R: TRect;
+  R: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   AErrorCode: Cardinal;
 begin
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
@@ -315,7 +315,7 @@ begin
     DebugLn(['Failed to create win32 control, error: ', AErrorCode, ' : ', GetLastErrorText(AErrorCode)]);
     raise Exception.Create('Failed to create win32 control, error: ' + IntToStr(AErrorCode) + ' : ' + GetLastErrorText(AErrorCode));
   end;
-  GetWindowRect(PreferredSizeStatusBar, R{%H-});
+  GetWindowRect(PreferredSizeStatusBar, R);
   PreferredStatusBarHeight := R.Bottom - R.Top;
   DestroyWindow(PreferredSizeStatusBar);
 end;

@@ -221,7 +221,7 @@ begin
       end;
     idButtonShield:
       begin
-        FillChar(SHIconInfo, SizeOf(SHIconInfo), 0);
+        FillChar(SHIconInfo{%H-}, SizeOf(SHIconInfo), 0);
         SHIconInfo.cbSize := SizeOf(SHIconInfo);
         if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
           IconHandle := SHIconInfo.hIcon
@@ -290,8 +290,9 @@ begin
     with Details do
     begin
       w := UTF8ToUTF16(S);
+      Result := Rect(0, 0, 0, 0);
       GetThemeTextExtent(Theme[Element], DC, Part, State, PWideChar(W), Length(W),
-        Flags, BoundingRect, Result{%H-});
+        Flags, BoundingRect, Result);
     end
   else
     Result := inherited GetTextExtent(DC, Details, S, Flags, BoundingRect);
@@ -432,7 +433,8 @@ begin
     ExStyle := GetWindowLong(Handle, GWL_EXSTYLE);
     if (ExStyle and WS_EX_CLIENTEDGE) <> 0 then
     begin
-      GetWindowRect(Handle, DrawRect{%H-});
+      DrawRect := Rect(0, 0, 0, 0);
+      GetWindowRect(Handle, DrawRect);
       OffsetRect(DrawRect, -DrawRect.Left, -DrawRect.Top);
       DC := GetWindowDC(Handle);
       try

@@ -626,7 +626,8 @@ class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
   AForm: TCustomForm absolute AWinControl;
-  CurRect, SizeRect: Windows.RECT;
+  CurRect: Windows.RECT = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  SizeRect: Windows.RECT;
   L, T, W, H: Integer;
 begin
   // the LCL defines the size of a form without border, win32 with.
@@ -646,7 +647,7 @@ begin
   // if position is default it will be changed to designed. We do not want this.
   if wcfInitializing in TWinControlAccess(AWinControl).FWinControlFlags then
   begin
-    if GetWindowRect(AForm.Handle, CurRect{%H-}) then
+    if GetWindowRect(AForm.Handle, CurRect) then
     begin
       if AForm.Position in [poDefault, poDefaultPosOnly] then
       begin

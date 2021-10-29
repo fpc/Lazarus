@@ -555,7 +555,7 @@ end;
 class procedure TWin32WSCustomTabControl.AdjustSizeTabControlPages(const ATabControl: TCustomTabControl);
 var
   I: Integer;
-  R: TRect;
+  R: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   WinHandle: HWND;
   lPage: TCustomPage;
 begin
@@ -564,7 +564,7 @@ begin
 
   WinHandle := ATabControl.Handle;
   // Adjust page size to fit in tabcontrol, need bounds of tab control in client of parent
-  TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R{%H-});
+  TWin32WidgetSet(WidgetSet).GetClientRect(WinHandle, R);
   for I := 0 to ATabControl.PageCount - 1 do
   begin
     lPage := ATabControl.Page[I];
