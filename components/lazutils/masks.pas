@@ -237,7 +237,7 @@ type
     constructor Create(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes); virtual; overload;
     constructor Create(const aMask: String; aOptions: TMaskOptions);
-        deprecated 'Use Create with other params.'; // in Lazarus 2.3, remove in 2.5.
+        deprecated 'Use Create with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
 
     procedure Compile; override;
     function Matches(const aStringToMatch: String): Boolean; virtual;
@@ -345,7 +345,7 @@ type
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
 function MatchesMask(const FileName, Mask: String; Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesMask with other params.'; // in Lazarus 2.3, remove in 2.5.
+    deprecated 'Use MatchesMask with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes;
@@ -357,14 +357,14 @@ function MatchesMaskList(const FileName, Mask: String; Separator: Char=';';
   aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
 function MatchesMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
+    deprecated 'Use MatchesMaskList with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
 
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char=';';
   CaseSensitive: Boolean=False;
   aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes): Boolean;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   Options: TMaskOptions): Boolean;
-    deprecated 'Use MatchesWindowsMaskList with other params.'; // in Lazarus 2.3, remove in 2.5.
+    deprecated 'Use MatchesWindowsMaskList with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
 
 
 function DbgS(O: TMaskOpCodes): String ; overload;
