@@ -250,9 +250,9 @@ type
 
   TMask = class(TMaskUTF8);
 
-  { TMaskUTF8Windows }
+  { TWindowsMaskUTF8 }
 
-  TMaskUTF8Windows=class(TMask)
+  TWindowsMaskUTF8=class(TMask)
   protected
     fWindowsQuirkAllowed: TWindowsQuirks;
     fWindowsQuirkInUse: TWindowsQuirks;
@@ -270,7 +270,7 @@ type
     property Quirks: TWindowsQuirks read fWindowsQuirkAllowed;// write fWindowsQuirkAllowed;
   end;
 
-  TMaskWindows = class(TMaskUTF8Windows);
+  TWindowsMask = class(TWindowsMaskUTF8);
 
   TMaskClass = class of TMaskUtf8;
 
@@ -309,16 +309,16 @@ type
 
     // Deprecated in Lazarus 2.3, October 2021. Remove in 2.5.
     function MatchesWindowsMask(const AFileName: String): Boolean;
-      deprecated 'Use a TMaskListWindows instead.';
+      deprecated 'Use a TWindowsMaskList instead.';
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
   end;
 
 
-  { TMaskListWindows }
+  { TWindowsMaskList }
 
-  TMaskListWindows = class(TMaskList)
+  TWindowsMaskList = class(TMaskList)
   private
     fWindowsQuirks: TWindowsQuirks;
   protected
@@ -336,7 +336,7 @@ type
 
     //Remove in 2.5
     function MatchesWindowsMask(const AFileName: String): Boolean; reintroduce;
-      deprecated 'Use a TMaskListWindows instead.';
+      deprecated 'Use a TWindowsMaskList instead.';
 
 
     property Quirks: TWindowsQuirks read fWindowsQuirks;
@@ -437,9 +437,9 @@ end;
 function MatchesWindowsMask(const FileName, Mask: String; CaseSensitive: Boolean;
   aOpcodesAllowed: TMaskOpCodes; aWindowsQuirksAllowed: TWindowsQuirks): Boolean;
 var
-  AMask: TMaskWindows;
+  AMask: TWindowsMask;
 begin
-  AMask := TMaskWindows.Create(Mask, CaseSensitive, aOpcodesAllowed, aWindowsQuirksAllowed);
+  AMask := TWindowsMask.Create(Mask, CaseSensitive, aOpcodesAllowed, aWindowsQuirksAllowed);
   try
     Result := AMask.Matches(FileName);
   finally
@@ -476,9 +476,9 @@ end;
 function MatchesWindowsMaskList(const FileName, Mask: String; Separator: Char;
   CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes): Boolean;
 var
-  AMaskList: TMaskListWindows;
+  AMaskList: TWindowsMaskList;
 begin
-  AMaskList := TMaskListWindows.Create(Mask, Separator, CaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
+  AMaskList := TWindowsMaskList.Create(Mask, Separator, CaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
   try
     Result := AMaskList.Matches(FileName);
   finally
@@ -493,14 +493,14 @@ begin
                                    EncodeDisableRange(Options));
 end;
 
-{ TMaskListWindows }
+{ TWindowsMaskList }
 
-function TMaskListWindows.GetMaskClass: TMaskClass;
+function TWindowsMaskList.GetMaskClass: TMaskClass;
 begin
-  Result := TMaskWindows;
+  Result := TWindowsMask;
 end;
 
-procedure TMaskListWindows.AddMasksToList(const aValue: String;
+procedure TWindowsMaskList.AddMasksToList(const aValue: String;
   aSeparator: Char; CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 var
   i: Integer;
@@ -510,13 +510,13 @@ begin
     begin
     for i := 0 to fMasks.Count - 1 do
     begin
-      TMaskWindows(fMasks.Items[i]).fWindowsQuirkAllowed := FWindowsQuirks;
-        TMaskWindows(fMasks.Items[i]).Compile; //to apply Quirks
+      TWindowsMask(fMasks.Items[i]).fWindowsQuirkAllowed := FWindowsQuirks;
+        TWindowsMask(fMasks.Items[i]).Compile; //to apply Quirks
     end;
   end;
 end;
 
-constructor TMaskListWindows.Create(const aValue: String; aSeparator: Char;
+constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
   CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes;
   aWindowsQuirksAllowed: TWindowsQuirks);
 begin
@@ -524,13 +524,13 @@ begin
   inherited Create(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
 end;
 
-constructor TMaskListWindows.Create(const aValue: String; aSeparator: Char;
+constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
   aOptions: TMaskOptions);
 begin
   Create(aValue, aSeparator, (moCaseSensitive in aOptions), DefaultMaskOpCodes, DefaultWindowsQuirks);
 end;
 
-function TMaskListWindows.MatchesWindowsMask(const AFileName: String): Boolean;
+function TWindowsMaskList.MatchesWindowsMask(const AFileName: String): Boolean;
 begin
   Result := Matches(AFilename);
 end;
@@ -1057,9 +1057,9 @@ end;
 
 function TMaskUTF8.MatchesWindowsMask(const AFileName: String): Boolean;
 var
-  WinMask: TMaskUTF8Windows;
+  WinMask: TWindowsMaskUTF8;
 begin
-  WinMask:=TMaskUTF8Windows.Create(fOriginalMask, CaseSensitive, OPCodesAllowed);
+  WinMask:=TWindowsMaskUTF8.Create(fOriginalMask, CaseSensitive, OPCodesAllowed);
   try
     Result:=WinMask.Matches(AFileName);
   finally
@@ -1067,9 +1067,9 @@ begin
   end;
 end;
 
-{ TMaskWindows }
+{ TWindowsMask }
 
-class procedure TMaskUTF8Windows.SplitFileNameExtension(
+class procedure TWindowsMaskUTF8.SplitFileNameExtension(
   const aSourceFileName: String; out aFileName: String;
   out aExtension: String; aIsMask: Boolean);
 var
@@ -1097,13 +1097,13 @@ begin
   end;
 end;
 
-constructor TMaskUTF8Windows.Create(const aMask: String;
+constructor TWindowsMaskUTF8.Create(const aMask: String;
   aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 begin
   Create(aMask, aCaseSensitive, aOpcodesAllowed, DefaultWindowsQuirks);
 end;
 
-constructor TMaskUTF8Windows.Create(const aMask: String; aCaseSensitive: Boolean;
+constructor TWindowsMaskUTF8.Create(const aMask: String; aCaseSensitive: Boolean;
   aOpcodesAllowed: TMaskOpCodes; aWindowsQuirksAllowed: TWindowsQuirks);
 begin
   fWindowsQuirkAllowed:=aWindowsQuirksAllowed;
@@ -1112,7 +1112,7 @@ begin
   Compile;
 end;
 
-procedure TMaskUTF8Windows.Compile;
+procedure TWindowsMaskUTF8.Compile;
 
   function OptionalQMarksAtEnd(aMask: String): String;
   var
@@ -1208,7 +1208,7 @@ begin
   inherited Compile;
 end;
 
-function TMaskUTF8Windows.Matches(const aFileName: String): Boolean;
+function TWindowsMaskUTF8.Matches(const aFileName: String): Boolean;
 var
   lFileName, lExtension: String;
 begin
@@ -1294,7 +1294,7 @@ begin
     for i := 0 to S.Count-1 do begin
       fMasks.Add(FMaskClass.Create(S[i], CaseSensitive, aOpcodesAllowed));
       // A hack, add also to fWindowsMasks.
-      fWindowsMasks.Add(TMaskWindows.Create(S[i], CaseSensitive, aOpcodesAllowed));
+      fWindowsMasks.Add(TWindowsMask.Create(S[i], CaseSensitive, aOpcodesAllowed));
     end;
   finally
     S.Free;
@@ -1324,7 +1324,7 @@ begin
   Result := False;
   for I := 0 to fWindowsMasks.Count-1 do
   begin
-    if TMaskWindows(fWindowsMasks.Items[I]).Matches(AFileName) then
+    if TWindowsMask(fWindowsMasks.Items[I]).Matches(AFileName) then
       Exit(True);
   end;
   //raise Exception.Create('Create with TMaskList.CreateWindows, then call Matches.');

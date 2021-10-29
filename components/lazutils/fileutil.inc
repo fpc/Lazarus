@@ -847,7 +847,7 @@ var
 begin
   if FSearching then RaiseSearchingError;
   {$ifdef windows}
-  MaskList := TMaskListWindows.Create(ASearchMask, FMaskSeparator, CaseSensitive);
+  MaskList := TWindowsMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
   {$else}
   MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
   {$endif}
