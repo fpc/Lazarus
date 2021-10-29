@@ -302,10 +302,7 @@ type
     //Remove in 2.5
     constructor Create(const aValue: String; aSeparator: Char; aOptions: TMaskOptions); virtual;
       deprecated 'Use Create with TMaskOpcodes paramater';
-    //constructor CreateWindows(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
-    //  aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes);
-    //constructor CreateWindows(const aValue: String; aSeparator: Char; aOptions: TMaskOptions);
-    //constructor CreateSysNative(const aValue: String; aSeparator: Char; CaseSensitive: Boolean);
+
     destructor Destroy; override;
 
     function Matches(const AFileName: String): Boolean;
@@ -1269,40 +1266,6 @@ begin
   Create(aValue, aSeparator, CaseSens, Opcodes);
 end;
 
-{
-constructor TMaskList.CreateWindows(const aValue: String; aSeparator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
-var
-  S: TParseStringList;
-  I: Integer;
-begin
-  FMaskClass := GetMaskClass;
-  fMasks := TObjectList.Create(True);
-  S := TParseStringList.Create(AValue, ASeparator);
-  try
-    for I := 0 to S.Count-1 do
-      fMasks.Add(TMaskWindows.Create(S[I], CaseSensitive, aOpcodesAllowed));
-  finally
-    S.Free;
-  end;
-end;
-
-constructor TMaskList.CreateWindows(const aValue: String; aSeparator: Char;
-  aOptions: TMaskOptions);
-begin
-  CreateWindows(aValue, aSeparator, moCaseSensitive in aOptions, EncodeDisableRange(aOptions));
-end;
-
-constructor TMaskList.CreateSysNative(const aValue: String; aSeparator: Char;
-  CaseSensitive: Boolean);
-begin
-  {$IFDEF Windows}
-  CreateWindows(AValue, ASeparator, CaseSensitive);
-  {$ELSE}
-  Create(AValue, ASeparator, CaseSensitive);
-  {$ENDIF}
-end;
-}
 destructor TMaskList.Destroy;
 begin
   fWindowsMasks.Free;
