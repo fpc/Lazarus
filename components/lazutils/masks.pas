@@ -46,11 +46,11 @@ type
   end;
 
   TMaskFailCause = (
-    mfcSuccess=0,
-    mfcMatchStringExhausted=1,
-    mfcMaskExhausted=2,
-    mfcMaskNotMatch=3,
-    mfcUnexpectedEnd=4
+    mfcSuccess,
+    mfcMatchStringExhausted,
+    mfcMaskExhausted,
+    mfcMaskNotMatch,
+    mfcUnexpectedEnd
   );
 
   TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard to match exactly one char
