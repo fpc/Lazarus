@@ -85,7 +85,7 @@ else
   #  old-svn: cp -a $LazSrcDir $TmpLazDir
   mkdir $TmpLazDir
   cp -a $LazSrcDir/.git $TmpLazDir/
-  git -C $TmpLazDir restore .
+  git -C $TmpLazDir checkout .
   rm -rf $TmpLazDir/.git
   #git -C $LazSrcDir --work-tree=$TmpLazDir restore .
   cd -
