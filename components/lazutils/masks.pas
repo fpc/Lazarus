@@ -225,9 +225,9 @@ type
     fMask: String;
     procedure AddAnyChar;
     procedure AddLiteral;
-    procedure AddRange;
+    procedure AddRange(lFirstRange, lSecondRange: Integer);
     procedure CompileRange;
-    procedure ReverseRange;
+    procedure ReverseRange(lFirstRange, lSecondRange: Integer);
   protected
     fOriginalMask: String;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
@@ -671,25 +671,75 @@ begin
   fLastOC:=TMaskParsedCode.Literal;
 end;
 
-procedure TMaskUTF8.AddRange;
+procedure TMaskUTF8.AddRange(lFirstRange, lSecondRange: Integer);
 begin
+  //writeln('AddRange: ',fMask[lFirstRange],'-',fMask[lSecondRange]);
+  fCPLength:=UTF8CodepointSizeFast(@fMask[lFirstRange]);
+  Add(fCPLength,@fMask[lFirstRange]);
+  fCPLength:=UTF8CodepointSizeFast(@fMask[lSecondRange]);
+  Add(fCPLength,@fMask[lSecondRange]);
+  fMaskInd:=lSecondRange;
+  {
   Add(fCPLength,@fMask[fMaskInd]);
   inc(fMaskInd,fCPLength+1);  // Add 1 for "-"
   fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
   Add(fCPLength,@fMask[fMaskInd]);
+  }
 end;
 
-procedure TMaskUTF8.ReverseRange;
+procedure TMaskUTF8.ReverseRange(lFirstRange, lSecondRange: Integer);
 begin
+  //writeln('ReverseRange: ',fMask[lSecondRange],'-',fMask[lFirstRange]);
+  fCPLength:=UTF8CodepointSizeFast(@fMask[lSecondRange]);
+  Add(fCPLength,@fMask[lSecondRange]);
+  Add(UTF8CodepointSizeFast(@fMask[lFirstRange]),@fMask[lFirstRange]);
+  fMaskInd:=lSecondRange;
+  {
   Add(UTF8CodepointSizeFast(@fMask[fMaskInd+fCPLength+1]),@fMask[fMaskInd+fCPLength+1]);
   Add(fCPLength,@fMask[fMaskInd]);
   inc(fMaskInd,fCPLength+1);
   fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+  }
 end;
 
 procedure TMaskUTF8.CompileRange;
+  function IsARange(aPosition: integer; out aFirstSequence: integer; out aSecondSequence: integer): Boolean;// {$IFDEF USE_INLINE}inline;{$ENDIF}
+    var
+      llCPL: integer;
+    begin
+      Result:=false;
+      aFirstSequence:=0;
+      aSecondSequence:=0;
+      if (mocEscapeChar in FMaskOpcodesAllowed) and (fMask[aPosition]=FMaskEscapeChar) then begin
+        llCPL:=UTF8CodepointSizeFast(@fMask[aPosition]);
+        if aPosition+llCPL>fMaskLimit then exit; // ==>
+        inc(aPosition,llCPL);
+        aFirstSequence:=aPosition;
+      end else begin
+        aFirstSequence:=aPosition;
+      end;
+      llCPL:=UTF8CodepointSizeFast(@fMask[aPosition]);
+      inc(aPosition,llCPL);
+      if aPosition+llCPL>fMaskLimit then exit; // ==>
+      // It is not a range, return false
+      if fMask[aPosition]<>'-' then exit;
+
+      llCPL:=UTF8CodepointSizeFast(@fMask[aPosition]);
+      inc(aPosition,llCPL);
+      if (mocEscapeChar in FMaskOpcodesAllowed) and (fMask[aPosition]=FMaskEscapeChar) then begin
+        llCPL:=UTF8CodepointSizeFast(@fMask[aPosition]);
+        if aPosition+llCPL>fMaskLimit then exit; // ==>
+        inc(aPosition,llCPL);
+        aSecondSequence:=aPosition;
+      end else begin
+        aSecondSequence:=aPosition;
+      end;
+      Result:=true;
+      //writeln('IsArange=True, aFirst=',fMask[aFirstSequence],', aSecond=',fMask[aSecondSequence]);
+    end;
+
 var
-  lCharsGroupInsertSize: integer;
+  lCharsGroupInsertSize, lFirstRange, lSecondRange: integer;
 begin
   fLastOC:=TMaskParsedCode.CharsGroupBegin;
   Add(TMaskParsedCode.CharsGroupBegin);
@@ -739,8 +789,12 @@ begin
       // "[??] = Valid" // "[a?] or [?a] = Invalid"
       Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
     end
-    else if ((fMaskInd+fCPLength+1)<=fMaskLimit) and (fMask[fMaskInd+fCPLength]='-')
-    and (mocRange in fMaskOpcodesAllowed) then begin
+
+    //else if ((fMaskInd+fCPLength+1)<=fMaskLimit) and (fMask[fMaskInd+fCPLength]='-') *********************************************
+    //and (mocRange in fMaskOpcodesAllowed) then begin
+
+    else if (mocRange in fMaskOpcodesAllowed) and IsARange(fMaskInd,lFirstRange,lSecondRange) then begin
+
       // fMaskInd+fCPLength+1 --explained--
       //------------------------------
       // fMaskInd+fCPLength is next UTF8 after current UTF8 CP
@@ -749,10 +803,10 @@ begin
       Add(TMaskParsedCode.Range);
       // Check if reverse range is needed
       if (not fAutoReverseRange)
-      or (CompareUTF8Sequences(@fMask[fMaskInd],@fMask[fMaskInd+fCPLength+1])<0) then
-        AddRange
+      or (CompareUTF8Sequences(@fMask[lFirstRange],@fMask[lSecondRange])<0) then
+        AddRange(lFirstRange, lSecondRange)
       else
-        ReverseRange;
+        ReverseRange(lFirstRange, lSecondRange);
       fLastOC:=TMaskParsedCode.Range;
 
     end else if fMask[fMaskInd]=']' then begin
