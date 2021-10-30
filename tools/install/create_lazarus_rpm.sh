@@ -82,7 +82,7 @@ Pas2jsVer=
 
 Arch=$(rpm --eval "%{_target_cpu}")
 
-# download lazarus svn if needed
+# download lazarus git if needed
 echo "creating lazarus tgz ..."
 #if [ ! -f $SrcTGZ ]; then
   if [ "$UseCHMHelp" = "1" ]; then SrcTGZOpts="chmhelp"; fi
