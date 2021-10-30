@@ -1500,6 +1500,8 @@ begin
       and (Src[CurPos.StartPos] = CloseBracket)
       then begin             // empty brackets: extract also the closing bracket.
         ExtractNextAtom(not (phpWithoutBrackets in Attr),Attr);
+        if (not (phpWithoutBrackets in Attr)) and (CloseBracket=')') then // delete empty '()'
+          ExtractMemStream.Position:=ExtractMemStream.Position-2;
         exit(true);
       end;
     end;
