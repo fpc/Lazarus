@@ -126,8 +126,8 @@ type
   end;
 
 var
-  LazProjectFileDescriptors: TLazProjectFileDescriptors;
-  LazProjectDescriptors: TLazProjectDescriptors;
+  LazProjectFileDescriptors: TLazProjectFileDescriptors = nil;
+  LazProjectDescriptors: TLazProjectDescriptors = nil;
 
 type
   //---------------------------------------------------------------------------
@@ -1121,8 +1121,5 @@ begin
   Descriptor.Release;
 end;
 
-initialization
-  LazProjectFileDescriptors:=nil;
-  
 end.
 
