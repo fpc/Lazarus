@@ -866,6 +866,9 @@ end;
 procedure TMaskUTF8.Compile;
 begin
   inherited Compile;
+  //if Compile fails and a new call to Matches is made and Mask is unchaged
+  //then Matches simply returns False, when rasing the exception again would be more appropriate IMO (BB)
+  fMaskIsCompiled:=False;
   if fCaseSensitive then
     fMask:=fOriginalMask
   else
@@ -945,6 +948,7 @@ begin
   end;
   SetLength(fMaskCompiled,fMaskCompiledIndex);
   fMaskCompiledLimit:=fMaskCompiledIndex-1;
+  fMaskIsCompiled:=True;
 end;
 
 class function TMaskUTF8.CompareUTF8Sequences(const P1, P2: PChar): integer;
