@@ -23,11 +23,6 @@
       <element name="EditBtn"/>
       <element name="LazUTF8"/>
 
-      <element name="TStringArray">
-        <short>Declares an array type with String values in its elements.</short>
-        <descr/>
-        <seealso/>
-      </element>
 
       <element name="TListViewDataItem">
         <short>
