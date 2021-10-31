@@ -230,6 +230,7 @@ type
     procedure AddRange(lFirstRange, lSecondRange: Integer);
     procedure CompileRange;
     procedure ReverseRange(lFirstRange, lSecondRange: Integer);
+    procedure SetOriginalMask(AValue: String);
   protected
     fOriginalMask: String;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
@@ -246,7 +247,7 @@ type
     function MatchesWindowsMask(const AFileName: String): Boolean;
         deprecated 'Create with TMaskWindows.Create, then call Matches.'; // in Lazarus 2.3, remove in 2.5.
   public
-    property Mask: String read fOriginalMask write fOriginalMask;
+    property Mask: String read fOriginalMask write SetOriginalMask;
   end;
 
   TMask = class(TMaskUTF8);
@@ -254,6 +255,8 @@ type
   { TWindowsMaskUTF8 }
 
   TWindowsMaskUTF8=class(TMask)
+  private
+    procedure SetWindowsMask(AValue: String);
   protected
     fWindowsQuirkAllowed: TWindowsQuirks;
     fWindowsQuirkInUse: TWindowsQuirks;
@@ -267,7 +270,7 @@ type
     procedure Compile; override;
     function Matches(const aFileName: String): Boolean; override;
   public
-    property Mask: String read fWindowsMask write fWindowsMask;
+    property Mask: String read fWindowsMask write SetWindowsMask;
     property Quirks: TWindowsQuirks read fWindowsQuirkAllowed;// write fWindowsQuirkAllowed;
   end;
 
@@ -703,6 +706,13 @@ begin
   fMaskInd:=lSecondRange;
 end;
 
+procedure TMaskUTF8.SetOriginalMask(AValue: String);
+begin
+  if fOriginalMask = AValue then Exit;
+  fOriginalMask := AValue;
+  fMaskIsCompiled := False;
+end;
+
 procedure TMaskUTF8.CompileRange;
   function IsARange(aPosition: integer; out aFirstSequence: integer; out aSecondSequence: integer): Boolean;// {$IFDEF USE_INLINE}inline;{$ENDIF}
     var
@@ -1136,6 +1146,13 @@ begin
 end;
 
 { TWindowsMask }
+
+procedure TWindowsMaskUTF8.SetWindowsMask(AValue: String);
+begin
+  if fWindowsMask = AValue then Exit;
+  fWindowsMask := AValue;
+  fMaskIsCompiled := False;
+end;
 
 class procedure TWindowsMaskUTF8.SplitFileNameExtension(
   const aSourceFileName: String; out aFileName: String;
