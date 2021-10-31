@@ -257,6 +257,7 @@ type
   TWindowsMaskUTF8=class(TMask)
   private
     procedure SetWindowsMask(AValue: String);
+    procedure SetWindowsQuirkAllowed(AValue: TWindowsQuirks);
   protected
     fWindowsQuirkAllowed: TWindowsQuirks;
     fWindowsQuirkInUse: TWindowsQuirks;
@@ -271,7 +272,7 @@ type
     function Matches(const aFileName: String): Boolean; override;
   public
     property Mask: String read fWindowsMask write SetWindowsMask;
-    property Quirks: TWindowsQuirks read fWindowsQuirkAllowed;// write fWindowsQuirkAllowed;
+    property Quirks: TWindowsQuirks read fWindowsQuirkAllowed write SetWindowsQuirkAllowed;
   end;
 
   TWindowsMask = class(TWindowsMaskUTF8);
@@ -1151,6 +1152,13 @@ procedure TWindowsMaskUTF8.SetWindowsMask(AValue: String);
 begin
   if fWindowsMask = AValue then Exit;
   fWindowsMask := AValue;
+  fMaskIsCompiled := False;
+end;
+
+procedure TWindowsMaskUTF8.SetWindowsQuirkAllowed(AValue: TWindowsQuirks);
+begin
+  if fWindowsQuirkAllowed = AValue then Exit;
+  fWindowsQuirkAllowed := AValue;
   fMaskIsCompiled := False;
 end;
 
