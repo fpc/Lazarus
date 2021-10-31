@@ -287,8 +287,12 @@ type
   private
     fMasks: TObjectList;
     FMaskClass: TMaskClass;
+    fMask: String;
+    fSeparator: Char;
+    fCaseSensitive: Boolean;
+    fMaskOpcodes: TMaskOpcodes;
     // Creating also Windows masks is a hack needed for deprecated MatchesWindowsMask.
-    fWindowsMasks: TObjectList;  // remove in 2.5
+    //fWindowsMasks: TObjectList;  // remove in 2.5
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
   protected
@@ -1306,9 +1310,14 @@ end;
 constructor TMaskList.Create(const aValue: String; aSeparator: Char;
   CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 begin
+  fMask := aValue;
+  fSeparator := aSeparator;
+  fCaseSensitive := CaseSensitive;
+  fMaskOpcodes := aOpcodesAllowed;
+
   fMasks := TObjectList.Create(True);
   FMaskClass := GetMaskClass;
-  fWindowsMasks := TObjectList.Create(True);
+  //fWindowsMasks := TObjectList.Create(True);
   AddMasksToList(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
 end;
 
@@ -1327,7 +1336,7 @@ end;
 
 destructor TMaskList.Destroy;
 begin
-  fWindowsMasks.Free;
+  //fWindowsMasks.Free;
   fMasks.Free;
   inherited Destroy;
 end;
@@ -1353,7 +1362,7 @@ begin
     for i := 0 to S.Count-1 do begin
       fMasks.Add(FMaskClass.Create(S[i], CaseSensitive, aOpcodesAllowed));
       // A hack, add also to fWindowsMasks.
-      fWindowsMasks.Add(TWindowsMask.Create(S[i], CaseSensitive, aOpcodesAllowed));
+      //fWindowsMasks.Add(TWindowsMask.Create(S[i], CaseSensitive, aOpcodesAllowed));
     end;
   finally
     S.Free;
@@ -1376,17 +1385,16 @@ begin
 end;
 
 function TMaskList.MatchesWindowsMask(const AFileName: String): Boolean;
-// Uses a hack FWindowsMasks which can be removed when this method is removed.
+//use the same hack as in TMask.MatchesWindowsMask
 var
-  I: Integer;
+  WML: TWindowsMaskList;
 begin
-  Result := False;
-  for I := 0 to fWindowsMasks.Count-1 do
-  begin
-    if TWindowsMask(fWindowsMasks.Items[I]).Matches(AFileName) then
-      Exit(True);
+  WML := TWindowsMaskList.Create(fMask, fSeparator, fCaseSensitive, fMaskOpcodes, DefaultWindowsQuirks);
+  try
+    Result := WML.Matches(AFileName);
+  finally
+    WML.Free;
   end;
-  //raise Exception.Create('Create with TMaskList.CreateWindows, then call Matches.');
 end;
 
 end.
