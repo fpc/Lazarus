@@ -153,6 +153,7 @@ type
   TMaskBase = class
   private
     procedure SetMaskEscapeChar(AValue: Char);
+    procedure SetMaskOpCodesAllowed(AValue: TMaskOpCodes);
   protected
     // Literal = It must match
     // Range = Match any char in the range
@@ -211,6 +212,7 @@ type
     property CaseSensitive: Boolean read fCaseSensitive;
     property AutoReverseRange: Boolean read fAutoReverseRange write fAutoReverseRange;
     property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;
+    property MaskOpCodes: TMaskOpCodes read fMaskOpcodesAllowed write SetMaskOpCodesAllowed;
   end;
 
   { TMaskUTF8 }
@@ -562,6 +564,13 @@ begin
   if fMaskEscapeChar>#127 then
     Exception_InvalidEscapeChar();
   fMaskEscapeChar:=AValue;
+end;
+
+procedure TMaskBase.SetMaskOpCodesAllowed(AValue: TMaskOpCodes);
+begin
+  if fMaskOpcodesAllowed = AValue then Exit;
+  fMaskOpcodesAllowed := AValue;
+  fMaskIsCompiled := False;
 end;
 
 procedure TMaskBase.Add(aLength: integer; aData: PBYTE);
