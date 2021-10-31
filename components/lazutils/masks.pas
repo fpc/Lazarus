@@ -335,6 +335,7 @@ type
   TWindowsMaskList = class(TMaskList)
   private
     fWindowsQuirks: TWindowsQuirks;
+    procedure SetQuirks(AValue: TWindowsQuirks);
   protected
     function GetMaskClass: TMaskClass; override;
     procedure AddMasksToList(const aValue: String; aSeparator: Char; CaseSensitive: Boolean;
@@ -353,7 +354,7 @@ type
       deprecated 'Use a TWindowsMaskList instead.';
 
 
-    property Quirks: TWindowsQuirks read fWindowsQuirks;
+    property Quirks: TWindowsQuirks read fWindowsQuirks write SetQuirks;
   end;
 
 function MatchesMask(const FileName, Mask: String; CaseSensitive: Boolean=False;
@@ -510,6 +511,14 @@ end;
 
 { TWindowsMaskList }
 
+procedure TWindowsMaskList.SetQuirks(AValue: TWindowsQuirks);
+begin
+  if fWindowsQuirks = AValue then Exit;
+  fWindowsQuirks := AValue;
+  fMasks.Clear;
+  AddMasksToList(fMask, fSeparator, fCaseSensitive, fMaskOpCodes);
+end;
+
 function TWindowsMaskList.GetMaskClass: TMaskClass;
 begin
   Result := TWindowsMask;
@@ -535,7 +544,7 @@ constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
   CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes;
   aWindowsQuirksAllowed: TWindowsQuirks);
 begin
-  FWindowsQuirks := aWindowsQuirksAllowed;
+  fWindowsQuirks := aWindowsQuirksAllowed;
   inherited Create(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
 end;
 
