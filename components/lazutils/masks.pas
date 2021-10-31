@@ -1162,7 +1162,10 @@ begin
   fWindowsQuirkAllowed:=aWindowsQuirksAllowed;
   fWindowsMask:=aMask;
   inherited Create(aMask,aCaseSensitive,aOpcodesAllowed);
+  //don't compile on create: we do NOT want a crash in the constructor
+  {
   Compile;
+  }
 end;
 
 procedure TWindowsMaskUTF8.Compile;
@@ -1184,6 +1187,7 @@ procedure TWindowsMaskUTF8.Compile;
     Result:=aMask;
   end;
 
+  {
   function EscapeSpecialChars(const aString: String): String;
   var
     j: integer;
@@ -1196,7 +1200,7 @@ procedure TWindowsMaskUTF8.Compile;
       end;
     end;
   end;
-
+  }
 var
   lFileNameMask: String;
   lExtensionMask: String;
@@ -1241,9 +1245,11 @@ begin
     end;
   end;
 
+  //Don't disable ranges for Windows
+  {
   lFileNameMask:=EscapeSpecialChars(lFileNameMask);
   lExtensionMask:=EscapeSpecialChars(lExtensionMask);
-
+  }
   // Quirk "file???.ab?" matches "file1.ab1" and "file123.ab"
   if wqFilenameEnd in fWindowsQuirkAllowed then begin
     lFileNameMask:=OptionalQMarksAtEnd(lFileNameMask);
