@@ -23,6 +23,7 @@
       <element name="EditBtn"/>
       <element name="LazUTF8"/>
 
+
       <element name="TListViewDataItem">
         <short>
           Record type with data and lines of text for an item in a list view control.
