@@ -302,6 +302,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
     procedure SetMask(AValue: String); virtual;
+    procedure SetMaskOpCodes(AValue: TMaskOpCodes);
   protected
     function GetMaskClass: TMaskClass; virtual;
     procedure AddMasksToList(const aValue: String; aSeparator: Char; CaseSensitive: Boolean;
@@ -325,6 +326,7 @@ type
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
     property Mask: String read fMask write SetMask;
+    property MaskOpCodes: TMaskOpCodes read fMaskOpCodes write SetMaskOpCodes;
   end;
 
 
@@ -1403,6 +1405,16 @@ begin
   fMask := AValue;
   for i := 0 to fMasks.Count - 1 do
     TMask(fMasks.Items[i]).Mask := fMask;
+end;
+
+procedure TMaskList.SetMaskOpCodes(AValue: TMaskOpCodes);
+var
+  i: Integer;
+begin
+  if FMaskOpCodes = AValue then Exit;
+  fMaskOpCodes := AValue;
+  for i := 0 to fMasks.Count - 1 do
+    TMask(fMasks.Items[i]).MaskOpCodes := fMaskOpCodes;
 end;
 
 function TMaskList.GetMaskClass: TMaskClass;
