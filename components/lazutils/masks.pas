@@ -247,7 +247,6 @@ type
         deprecated 'Create with TMaskWindows.Create, then call Matches.'; // in Lazarus 2.3, remove in 2.5.
   public
     property Mask: String read fOriginalMask write fOriginalMask;
-    property OPCodesAllowed: TMaskOpCodes read fMaskOpcodesAllowed;// write fMaskOpcodesAllowed;
   end;
 
   TMask = class(TMaskUTF8);
@@ -613,6 +612,9 @@ end;
 
 procedure TMaskBase.Compile;
 begin
+  fMaskCompiled := nil;
+  fMaskCompiledAllocated := 0;
+  fMaskCompiledIndex := 0;
   fMaskIsCompiled:=true;
 end;
 
@@ -1125,7 +1127,7 @@ function TMaskUTF8.MatchesWindowsMask(const AFileName: String): Boolean;
 var
   WinMask: TWindowsMaskUTF8;
 begin
-  WinMask:=TWindowsMaskUTF8.Create(fOriginalMask, CaseSensitive, OPCodesAllowed);
+  WinMask:=TWindowsMaskUTF8.Create(fOriginalMask, CaseSensitive, fMaskOpCodesAllowed);
   try
     Result:=WinMask.Matches(AFileName);
   finally
