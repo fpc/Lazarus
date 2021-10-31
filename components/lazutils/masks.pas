@@ -229,8 +229,9 @@ type
     procedure AddLiteral;
     procedure AddRange(lFirstRange, lSecondRange: Integer);
     procedure CompileRange;
+    function GetMask: String; virtual;
     procedure ReverseRange(lFirstRange, lSecondRange: Integer);
-    procedure SetOriginalMask(AValue: String);
+    procedure SetMask(AValue: String); virtual;
   protected
     fOriginalMask: String;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
@@ -247,7 +248,7 @@ type
     function MatchesWindowsMask(const AFileName: String): Boolean;
         deprecated 'Create with TMaskWindows.Create, then call Matches.'; // in Lazarus 2.3, remove in 2.5.
   public
-    property Mask: String read fOriginalMask write SetOriginalMask;
+    property Mask: String read GetMask write SetMask;
   end;
 
   TMask = class(TMaskUTF8);
@@ -256,7 +257,8 @@ type
 
   TWindowsMaskUTF8=class(TMask)
   private
-    procedure SetWindowsMask(AValue: String);
+    procedure SetMask(AValue: String); override;
+    function GetMask: String; override;
     procedure SetWindowsQuirkAllowed(AValue: TWindowsQuirks);
   protected
     fWindowsQuirkAllowed: TWindowsQuirks;
@@ -271,7 +273,6 @@ type
     procedure Compile; override;
     function Matches(const aFileName: String): Boolean; override;
   public
-    property Mask: String read fWindowsMask write SetWindowsMask;
     property Quirks: TWindowsQuirks read fWindowsQuirkAllowed write SetWindowsQuirkAllowed;
   end;
 
@@ -300,6 +301,7 @@ type
     //fWindowsMasks: TObjectList;  // remove in 2.5
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
+    procedure SetMask(AValue: String); virtual;
   protected
     function GetMaskClass: TMaskClass; virtual;
     procedure AddMasksToList(const aValue: String; aSeparator: Char; CaseSensitive: Boolean;
@@ -322,6 +324,7 @@ type
 
     property Count: Integer read GetCount;
     property Items[Index: Integer]: TMask read GetItem;
+    property Mask: String read fMask write SetMask;
   end;
 
 
@@ -707,7 +710,7 @@ begin
   fMaskInd:=lSecondRange;
 end;
 
-procedure TMaskUTF8.SetOriginalMask(AValue: String);
+procedure TMaskUTF8.SetMask(AValue: String);
 begin
   if fOriginalMask = AValue then Exit;
   fOriginalMask := AValue;
@@ -842,6 +845,11 @@ begin
   end;
   if fMaskInd>fMaskLimit then
     Exception_MissingCloseChar(']',fMaskLimit);
+end;
+
+function TMaskUTF8.GetMask: String;
+begin
+  Result := fOriginalMask;
 end;
 
 procedure TMaskUTF8.Compile;
@@ -1148,11 +1156,16 @@ end;
 
 { TWindowsMask }
 
-procedure TWindowsMaskUTF8.SetWindowsMask(AValue: String);
+procedure TWindowsMaskUTF8.SetMask(AValue: String);
 begin
-  if fWindowsMask = AValue then Exit;
+  if (AValue = fWindowsMask) then Exit;
+  inherited SetMask(AValue);
   fWindowsMask := AValue;
-  fMaskIsCompiled := False;
+end;
+
+function TWindowsMaskUTF8.GetMask: String;
+begin
+  Result := fWindowsMask;
 end;
 
 procedure TWindowsMaskUTF8.SetWindowsQuirkAllowed(AValue: TWindowsQuirks);
@@ -1380,6 +1393,16 @@ end;
 function TMaskList.GetItem(Index: Integer): TMask;
 begin
   Result := TMask(fMasks.Items[Index]);
+end;
+
+procedure TMaskList.SetMask(AValue: String);
+var
+  i: Integer;
+begin
+  if fMask = AValue then Exit;
+  fMask := AValue;
+  for i := 0 to fMasks.Count - 1 do
+    TMask(fMasks.Items[i]).Mask := fMask;
 end;
 
 function TMaskList.GetMaskClass: TMaskClass;
