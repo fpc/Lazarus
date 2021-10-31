@@ -785,7 +785,7 @@ begin
       fLastOC:=TMaskParsedCode.Range;
 
     end else if fMask[fMaskInd]=']' then begin
-      if fLastOC=TMaskParsedCode.CharsGroupBegin then
+      if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.Negate) then
         Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd); //Error empty match
       // Insert the new offset in case of a positive match in CharsGroup
       PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
