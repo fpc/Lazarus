@@ -63,6 +63,8 @@ uses
   BaseIDEIntf, PropEdits, MacroIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  // CmdLineDebuggerBase
+  DebuggerPropertiesBase,
 {$IFDEF DBG_ENABLE_TERMINAL}
   DbgIntfPseudoTerminal,
 {$ENDIF}
@@ -165,23 +167,6 @@ type
   {$scopedenums off}
 
   TInternBrkSetMethod = (ibmAddrIndirect, ibmAddrDirect, ibmName);
-
-  { TXmlConfStringList }
-
-  TXmlConfStringList = class(TStringList)
-  private
-    function TextStored: boolean;
-  published
-    property Text stored TextStored;
-  end;
-
-  { TXmlConfStringsPropertyEditor }
-
-  TXmlConfStringsPropertyEditor = class(TStringsPropertyEditor)
-  public
-    function GetValue: ansistring; override;
-  end;
-
 
   { TGDBMIDebuggerGdbEventPropertiesBase }
 
@@ -1839,28 +1824,6 @@ begin
   then Result := 8;
   if (lcCpu='avr')
   then Result := 2;
-end;
-
-{ TXmlConfStringsPropertyEditor }
-
-function TXmlConfStringsPropertyEditor.GetValue: ansistring;
-var
-  s: TStrings;
-  i: Integer;
-begin
-  Result := '';
-  s := TStrings(GetObjectValue);
-  for i := 0 to s.Count - 1 do begin
-    if i > 0 then Result := Result + ' / ';
-    Result := Result + s[i];
-  end;
-end;
-
-{ TXmlConfStringList }
-
-function TXmlConfStringList.TextStored: boolean;
-begin
-  Result := Text <> '';
 end;
 
 { TGDBMIDebuggerGdbEventPropertiesBase }
@@ -14800,7 +14763,5 @@ initialization
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_DISASSEMBLER := DebugLogger.FindOrRegisterLogGroup('DBG_DISASSEMBLER' {$IFDEF DBG_DISASSEMBLER} , True {$ENDIF} );
   DBG_THREAD_AND_FRAME := DebugLogger.FindOrRegisterLogGroup('DBG_THREAD_AND_FRAME' {$IFDEF DBG_THREAD_AND_FRAME} , True {$ENDIF} );
-
-  RegisterPropertyEditor(TypeInfo(TXmlConfStringList), nil, '', TXmlConfStringsPropertyEditor);
 
 end.

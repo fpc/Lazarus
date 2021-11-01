@@ -8,7 +8,7 @@ unit CmdLineDebuggerBase;
 interface
 
 uses
-  DebugProcess, DebugInstructions, LazarusPackageIntf;
+  DebugProcess, DebugInstructions, DebuggerPropertiesBase, LazarusPackageIntf;
 
 implementation
 

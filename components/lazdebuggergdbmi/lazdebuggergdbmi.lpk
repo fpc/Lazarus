@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
-  <Package Version="4">
+  <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="LazDebuggerGdbmi"/>
     <Type Value="RunAndDesignTime"/>
@@ -17,7 +17,7 @@
     </CompilerOptions>
     <Description Value="Debugger for Lazarus IDE.
 
-This debugger uses gdb and is based on gdb's mi interface."/>
+This debugger uses gdb and is based on gdb&apos;s mi interface."/>
     <License Value="GPL"/>
     <Version Minor="1"/>
     <Files Count="9">
@@ -61,13 +61,14 @@ This debugger uses gdb and is based on gdb's mi interface."/>
         <UnitName Value="GdbmiStringConstants"/>
       </Item9>
     </Files>
+    <CompatibilityMode Value="True"/>
     <i18n>
       <EnableI18N Value="True"/>
       <OutDir Value="languages"/>
     </i18n>
     <RequiredPkgs Count="2">
       <Item1>
-        <PackageName Value="IDEIntf"/>
+        <PackageName Value="CmdLineDebuggerBase"/>
       </Item1>
       <Item2>
         <PackageName Value="DebuggerIntf"/>
