@@ -475,15 +475,15 @@
             <var>ShortDotsLine</var> is a <var>String</var> function used to generate a shortened and  "ellipsified" string for the value in Line.
           </p>
           <p>
-            ShortDotsLine calls <var>SpecialCharsToHex</var> to convert any control characters in Line to their representation as a hexadecimal character value.
+            ShortDotsLine calls <var>Utf8EscapeControlChars</var> to convert any control characters in Line to their representation as a hexadecimal character value.
           </p>
           <p>
             The value in the <var>MaxTextLen</var> constant is used as the maximum length for the "ellipsified" string value. If the number of UTF-8 codepoints in the line is larger than the value in MaxTextLen, the string is shortened to the maximum length and 3 (three) Period ('.') characters are appended to the return value.
           </p>
         </descr>
         <seealso>
-          <link id="SpecialCharsToHex"/>
           <link id="MaxTextLen"/>
+          <link id="#lazutils.lazutf8.Utf8EscapeControlChars">Utf8EscapeControlChars</link>
         </seealso>
       </element>
       <element name="ShortDotsLine.Result">
