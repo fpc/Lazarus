@@ -138,7 +138,7 @@ var
   AAfterConnectMonitorCmds: TStringList;
   ASkipSectionsList: TStringList;
   AAfterUploadBreakZero: boolean;
-  AAfterUploadMonitorReset: boolean;
+  AAfterUploadMonitorCmds: TStringList;
 
 implementation
 
@@ -961,10 +961,10 @@ begin
 
     // Fancy stuff - load exe & sections, run monitor cmds etc
     if assigned(AAfterConnectMonitorCmds) and (AAfterConnectMonitorCmds.Count > 0) then
-     begin
-       for i := 0 to AAfterConnectMonitorCmds.Count-1 do
-         SendMonitorCmd(AAfterConnectMonitorCmds[i]);
-     end;
+    begin
+      for i := 0 to AAfterConnectMonitorCmds.Count-1 do
+        SendMonitorCmd(AAfterConnectMonitorCmds[i]);
+    end;
 
     // Start with AVR logic
     // If more targets are supported, move this to target specific debugger class
@@ -1018,9 +1018,11 @@ begin
     if AAfterUploadBreakZero then
       SetBreakWatchPoint(0, wkpExec);  // Todo: check if different address is required
 
-    // Todo: Rather use a user configurable list of monitor commands, similar to AAfterConnectMonitorCmds
-    if AAfterUploadMonitorReset then
-      SendMonitorCmd('reset');
+    if assigned(AAfterUploadMonitorCmds) and (AAfterUploadMonitorCmds.Count > 0) then
+    begin
+      for i := 0 to AAfterUploadMonitorCmds.Count-1 do
+        SendMonitorCmd(AAfterUploadMonitorCmds[i]);
+    end;
 
     // Must be last init command, after init the debug loop waits for the response in WaitForSignal
     res := SendCommandAck('?');
@@ -1043,5 +1045,9 @@ initialization
 finalization
   if Assigned(AAfterConnectMonitorCmds) then
     FreeAndNil(AAfterConnectMonitorCmds);
+  if Assigned(ASkipSectionsList) then
+    FreeAndNil(ASkipSectionsList);
+  if Assigned(AAfterUploadMonitorCmds) then
+    FreeAndNil(AAfterUploadMonitorCmds);
 end.
 
