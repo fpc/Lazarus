@@ -496,7 +496,8 @@ end;
 
 procedure TDbgAvrProcess.InitializeLoaders;
 begin
-  TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
+  if LoaderList.Count = 0 then
+    TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
 end;
 
 function TDbgAvrProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
@@ -556,7 +557,7 @@ begin
 
   dbg := TDbgAvrProcess.Create(AFileName, 0, 0, AnOsClasses, AMemManager);
   try
-    dbg.FConnection := TRspConnection.Create(AFileName);
+    dbg.FConnection := TRspConnection.Create(AFileName, dbg);
     dbg.FConnection.RegisterCacheSize := RegArrayLength;
     result := dbg;
     dbg.FStatus := dbg.FConnection.Init;
