@@ -152,6 +152,7 @@ type
 
   TMaskBase = class
   private
+    procedure SetAutoReverseRange(AValue: Boolean);
     procedure SetMaskEscapeChar(AValue: Char);
     procedure SetMaskOpCodesAllowed(AValue: TMaskOpCodes);
   protected
@@ -210,7 +211,7 @@ type
     constructor Create(aOptions: TMaskOptions);
   public
     property CaseSensitive: Boolean read fCaseSensitive;
-    property AutoReverseRange: Boolean read fAutoReverseRange write fAutoReverseRange;
+    property AutoReverseRange: Boolean read fAutoReverseRange write SetAutoReverseRange;
     property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;
     property MaskOpCodes: TMaskOpCodes read fMaskOpcodesAllowed write SetMaskOpCodesAllowed;
   end;
@@ -574,6 +575,13 @@ begin
 end;
 
 { TMaskBase }
+
+procedure TMaskBase.SetAutoReverseRange(AValue: Boolean);
+begin
+  if fAutoReverseRange = AValue then Exit;
+  fAutoReverseRange := AValue;
+  fMaskIsCompiled := False;
+end;
 
 procedure TMaskBase.SetMaskEscapeChar(AValue: Char);
 begin
