@@ -589,6 +589,7 @@ begin
   if fMaskEscapeChar>#127 then
     Exception_InvalidEscapeChar();
   fMaskEscapeChar:=AValue;
+  fMaskIsCompiled:=False;
 end;
 
 procedure TMaskBase.SetMaskOpCodesAllowed(AValue: TMaskOpCodes);
