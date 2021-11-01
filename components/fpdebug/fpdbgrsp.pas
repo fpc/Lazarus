@@ -132,7 +132,7 @@ implementation
 
 uses
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, StrUtils,
-  FpDbgClasses, FpImgReaderBase,
+  FpImgReaderBase,
   {$IFNDEF WINDOWS}BaseUnix, termio;
   {$ELSE}winsock2, windows;
   {$ENDIF}
