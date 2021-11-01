@@ -130,6 +130,8 @@ var
   AUploadBinary: boolean = False;
   AAfterConnectMonitorCmds: TStringList;
   ASkipSectionsList: TStringList;
+  AAfterUploadBreakZero: boolean;
+  AAfterUploadMonitorReset: boolean;
 
 implementation
 
@@ -928,6 +930,13 @@ begin
         WriteData(dataStart, pSection^.Size, pSection^.RawData^);
       end;
     end;
+
+    // Hack to finish initializing atbackend agent
+    if AAfterUploadBreakZero then
+      SetBreakWatchPoint(0, wkpExec);  // Todo: check if different address is required
+
+    if AAfterUploadMonitorReset then
+      SendMonitorCmd('reset');
 
     // Must be last init command, after init the debug loop waits for the response in WaitForSignal
     res := FSendCommand('?');
