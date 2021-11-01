@@ -210,7 +210,7 @@ type
       aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes);
     constructor Create(aOptions: TMaskOptions);
   public
-    property CaseSensitive: Boolean read fCaseSensitive;
+    property CaseSensitive: Boolean read fCaseSensitive;   //ToDo: have a setter
     property AutoReverseRange: Boolean read fAutoReverseRange write SetAutoReverseRange;
     property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;
     property MaskOpCodes: TMaskOpCodes read fMaskOpcodesAllowed write SetMaskOpCodesAllowed;
@@ -328,6 +328,7 @@ type
     property Items[Index: Integer]: TMask read GetItem;
     property Mask: String read fMask write SetMask;
     property MaskOpCodes: TMaskOpCodes read fMaskOpCodes write SetMaskOpCodes;
+    //ToDo: properties AutoReverseRange and CaseSensitive
   end;
 
 
