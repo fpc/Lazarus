@@ -453,7 +453,6 @@ type
     FDbgInfo: TDbgInfo;
     procedure InitializeLoaders; virtual;
     procedure SetFileName(const AValue: String);
-    property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
