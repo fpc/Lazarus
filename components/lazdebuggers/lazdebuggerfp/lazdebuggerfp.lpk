@@ -39,6 +39,9 @@
     </Files>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="CmdLineDebuggerBase"/>
+      </Item>
+      <Item>
         <PackageName Value="fpdebug"/>
       </Item>
       <Item>
