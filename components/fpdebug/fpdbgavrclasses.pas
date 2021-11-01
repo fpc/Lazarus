@@ -678,7 +678,7 @@ begin
     FRemoteConfig.Assign(AProcessConfig);
   end;
 
-  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgAvrProcess.Destroy;
