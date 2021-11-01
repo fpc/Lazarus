@@ -3,7 +3,7 @@
 
    fpmake.pp for LazDebuggerGdbmi 0.1
 
-   This file was generated on 21.03.2020
+   This file was generated on 01/11/2021
 }
 
 {$ifndef ALLPACKAGES} 
@@ -24,13 +24,17 @@ begin
   with Installer do
     begin
     P:=AddPackage('lazdebuggergdbmi');
-    P.Version:='0.1';
+    P.Version:='0.1.0-0';
 
     P.Directory:=ADirectory;
 
+    P.Author:='Lazarus Team / Marc Weustink  / Martin Friebe';
+    P.License:='GPL';
+    P.Description:='Debugger for Lazarus IDE.'#13#10''#13#10'This debugger uses gdb and is based on gdb''s mi interface.';
+
     P.Flags.Add('LazarusDsgnPkg');
 
-    D := P.Dependencies.Add('ideintf');
+    D := P.Dependencies.Add('cmdlinedebuggerbase');
     D := P.Dependencies.Add('debuggerintf');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
@@ -64,6 +68,7 @@ begin
     T:=P.Targets.AddUnit('gdbmistringconstants.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
+    P.Sources.AddSrc('LazDebuggerGdbmi.compiled');
     P.InstallFiles.Add('LazDebuggerGdbmi.compiled',AllOSes,'$(unitinstalldir)');
 
     end;
