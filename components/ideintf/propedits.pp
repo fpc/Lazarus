@@ -2769,7 +2769,7 @@ end;
 
 function TPropertyEditor.CallStoredFunction: Boolean;
 begin
-  Result := IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
+  Result := (FPropList^[0].Instance <> nil) and IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
 end;
 
 function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
