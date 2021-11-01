@@ -21,6 +21,10 @@ type
     RawData: Pointer;
     Size: QWord;
     VirtualAddress: QWord;
+    // Use this flag to identify sections that should be uploaded via RSP
+    // This is probably only relevant for uploads to low level targets (embedded, FreeRTOS...)
+    IsLoadable: Boolean;
+    Name: String;
   end;
   PDbgImageSection = ^TDbgImageSection;
 
@@ -101,6 +105,7 @@ type
     function GetSubFiles: TStrings; virtual;
     function GetAddressMapList: TDbgAddressMapList; virtual;
     function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
+    function GetSection(const ID: integer): PDbgImageSection; virtual; abstract;
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
     procedure SetImageSize(ASize: QWord);
@@ -122,6 +127,7 @@ type
 
     property UUID: TGuid read FUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
+    property SectionByID[const ID: integer]: PDbgImageSection read GetSection;
     property SubFiles: TStrings read GetSubFiles;
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
     property ReaderErrors: String read FReaderErrors;

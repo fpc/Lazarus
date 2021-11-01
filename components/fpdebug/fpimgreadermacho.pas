@@ -38,6 +38,7 @@ type
     function GetSectionIndex(const SectionName: AnsiString): Integer;
 
     function GetSection(const AName: String): PDbgImageSection; override;
+    function GetSection(const ID: integer): PDbgImageSection; override;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
@@ -341,6 +342,25 @@ begin
   fSource.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
 end;
 
+function TDbgMachoDataSource.GetSection(const ID: integer): PDbgImageSection;
+var
+  ex: PDbgImageSectionEx;
+begin
+  if (ID >= 0) and (ID < FSections.Count) then
+  begin
+    ex := PDbgImageSectionEx(FSections.Objects[ID]);
+    Result := @ex^.Sect;
+    Result^.Name := FSections[ID];
+    if not ex^.Loaded then
+    begin
+      ex^.Loaded  := True;
+      fSource.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+    end;
+  end
+  else
+    Result := nil;
+end;
+
 procedure TDbgMachoDataSource.AddSubFilesToLoaderList(ALoaderList: TObject;
   PrimaryLoader: TObject);
 var
@@ -428,6 +448,7 @@ begin
     end;
 
     p^.Sect.VirtualAddress := 0; // Todo?
+    p^.Sect.IsLoadable := False; // Todo - needed for remote uploads via RSP only
     p^.Loaded := False;
     FSections.AddObject(Name, TObject(p));
   end;
