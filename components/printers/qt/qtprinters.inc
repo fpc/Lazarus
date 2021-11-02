@@ -186,6 +186,7 @@ var
     if (pgSize > 30) then
     {$ENDIF}
       QtDefaultPrinter.PageSize := PgSize;
+    FPapers[i].PageSize := PgSize;
     FPapers[i].PageRect := QtDefaultPrinter.PageRect;
     FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
     if PaperName=DEFAULT_PAPER_NAME then
@@ -502,13 +503,21 @@ begin
   Result := inherited DoGetPaperRect(aName,aPaperRc);
   i := IndexOfPaper(aName);
   if i >= 0 then
-  begin
-    {When we set QPrinter into FullPage, rect is not same
-     on all platforms, this is fixed with qt-4.4}
-    APaperRC.WorkRect := FPapers[i].PageRect;
-    APaperRC.PhysicalRect := FPapers[i].PaperRect;
-    Result := 1;
-  end;
+    with FPapers[i] do
+    begin
+      {When we set QPrinter into FullPage, rect is not same
+       on all platforms, this is fixed with qt-4.4}
+      if Orientation in [poPortrait, poReversePortrait] then begin
+        APaperRC.WorkRect := PageRect;
+        APaperRC.PhysicalRect := PaperRect;
+      end else begin
+        APaperRC.WorkRect :=
+          Rect(PageRect.Top, PageRect.Left, PageRect.Bottom, PageRect.Right);
+        APaperRC.PhysicalRect :=
+          Rect(PaperRect.Top, PaperRect.Left, PaperRect.Bottom, PaperRect.Right);
+      end;
+      Result := 1;
+    end;
 end;
 
 function TQtPrinters.DoSetPrinter(aName: string): Integer;
