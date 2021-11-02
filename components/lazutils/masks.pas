@@ -293,6 +293,7 @@ type
 
   TMaskList = class
   private
+    fAutoReverseRange: Boolean;
     fMasks: TObjectList;
     FMaskClass: TMaskClass;
     fMask: String;
@@ -303,6 +304,7 @@ type
     //fWindowsMasks: TObjectList;  // remove in 2.5
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
+    procedure SetAutoReverseRange(AValue: Boolean);
     procedure SetMask(AValue: String); virtual;
     procedure SetMaskOpCodes(AValue: TMaskOpCodes);
   protected
@@ -329,6 +331,7 @@ type
     property Items[Index: Integer]: TMask read GetItem;
     property Mask: String read fMask write SetMask;
     property MaskOpCodes: TMaskOpCodes read fMaskOpCodes write SetMaskOpCodes;
+    property AutoReverseRange: Boolean read fAutoReverseRange write SetAutoReverseRange;
     //ToDo: properties AutoReverseRange and CaseSensitive
   end;
 
@@ -1396,6 +1399,7 @@ begin
   fSeparator := aSeparator;
   fCaseSensitive := CaseSensitive;
   fMaskOpcodes := aOpcodesAllowed;
+  fAutoReverseRange := True;
 
   fMasks := TObjectList.Create(True);
   FMaskClass := GetMaskClass;
@@ -1426,6 +1430,16 @@ end;
 function TMaskList.GetItem(Index: Integer): TMask;
 begin
   Result := TMask(fMasks.Items[Index]);
+end;
+
+procedure TMaskList.SetAutoReverseRange(AValue: Boolean);
+var
+  i: Integer;
+begin
+  if fAutoReverseRange = AValue then Exit;
+  fAutoReverseRange := AValue;
+  for i := 0 to fMasks.Count - 1 do
+    TMask(fMasks.Items[i]).AutoReverseRange := fAutoReverseRange;
 end;
 
 procedure TMaskList.SetMask(AValue: String);
