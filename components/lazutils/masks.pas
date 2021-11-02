@@ -45,13 +45,6 @@ type
     property Code: TMaskExceptionCode read FCode;
   end;
 
-  TMaskFailCause = (
-    mfcSuccess,
-    mfcMatchStringExhausted,
-    mfcMaskExhausted,
-    mfcMaskNotMatch,
-    mfcUnexpectedEnd
-  );
 
   TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard to match exactly one char
                mocAnyCharOrNone,    //treat [?] to match any char or the absence of a char
@@ -177,6 +170,13 @@ type
       OptionalChar=6,
       CharsGroupBegin=10,
       CharsGroupEnd=11
+    );
+    TMaskFailCause = (
+      mfcSuccess,
+      mfcMatchStringExhausted,
+      mfcMaskExhausted,
+      mfcMaskNotMatch,
+      mfcUnexpectedEnd
     );
     const GROW_BY=100;
     procedure Add(aLength: integer; aData: PBYTE);
