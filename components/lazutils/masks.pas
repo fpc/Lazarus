@@ -66,32 +66,19 @@ type
     Anyth*ng.abc    = "*" matches 0 or more of chars
 
     ------- Quirks -------
+   *)
+  TWindowsQuirk=(wqAnyExtension,      // Anything*.*     : ".*" is removed.
+                 wqFilenameEnd,       // Anything??.abc  : "?" matches 1 or 0 chars (except '.')
+                                      // (Not the same as "Anything*.abc", but the same
+                                      // as regex "Anything.{0,2}\.abc")
+                                      // Internally converted to "Anything[??].abc"
 
-    --wqAnyExtension
-      Anything*.*     = ".*" is removed.
-
-    --wqFilenameEnd
-      Anything??.abc  = "?" matches 1 or 0 chars (except '.')
-                        (Not the same as "Anything*.abc", but the same
-                        as regex "Anything.{0,2}\.abc")
-                        Internally converted to "Anything[??].abc"
-
-    --wqExtension3More
-      Anything.abc    = Matches "Anything.abc" but also "Anything.abc*" (3 char extension)
-      Anything.ab     = Matches "Anything.ab" and never "anything.abcd"
-      *.pas           = Matches "Unit1.pas.bak". Not good.
-
-    --wqEmptyIsAny
-      ""              = Empty string matches anything "*"
-
-    --wqAllByExtension (Not in use anymore)
-      .abc            = Runs as "*.abc"
-
-    --wqNoExtension
-      Anything*.      = Matches "Anything*" without extension
-  *)
-  TWindowsQuirk=(wqAnyExtension, wqFilenameEnd, wqExtension3More,
-                 wqEmptyIsAny, wqAllByExtension, wqNoExtension);
+                 wqExtension3More,    // Anything.abc    : Matches "Anything.abc" but also "Anything.abc*" (3 char extension)
+                                      // Anything.ab     : Matches "Anything.ab" and never "anything.abcd"
+                                      // *.pas           : Matches "Unit1.pas.bak". Not good.
+                 wqEmptyIsAny,        // ""              : Empty string matches anything "*"
+                 wqAllByExtension,    // .abc            : Runs as "*.abc" (Not in use anymore)
+                 wqNoExtension);      // Anything*.      : Matches "Anything*" without extension
   TWindowsQuirks=set of TWindowsQuirk;
 
 const
