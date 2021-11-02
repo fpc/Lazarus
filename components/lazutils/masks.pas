@@ -305,6 +305,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
     procedure SetAutoReverseRange(AValue: Boolean);
+    procedure SetCaseSensitive(AValue: Boolean);
     procedure SetMask(AValue: String); virtual;
     procedure SetMaskOpCodes(AValue: TMaskOpCodes);
   protected
@@ -332,7 +333,7 @@ type
     property Mask: String read fMask write SetMask;
     property MaskOpCodes: TMaskOpCodes read fMaskOpCodes write SetMaskOpCodes;
     property AutoReverseRange: Boolean read fAutoReverseRange write SetAutoReverseRange;
-    //ToDo: properties AutoReverseRange and CaseSensitive
+    property CaseSensitive: Boolean read fCaseSensitive write SetCaseSensitive;
   end;
 
 
@@ -344,10 +345,10 @@ type
     procedure SetQuirks(AValue: TWindowsQuirks);
   protected
     function GetMaskClass: TMaskClass; override;
-    procedure AddMasksToList(const aValue: String; aSeparator: Char; CaseSensitive: Boolean;
+    procedure AddMasksToList(const aValue: String; aSeparator: Char; aCaseSensitive: Boolean;
       aOpcodesAllowed: TMaskOpCodes); override;
   public
-    constructor Create(const aValue: String; aSeparator: Char=';'; CaseSensitive: Boolean=False;
+    constructor Create(const aValue: String; aSeparator: Char=';'; aCaseSensitive: Boolean=False;
       aOpcodesAllowed: TMaskOpCodes=DefaultMaskOpCodes;
       aWindowsQuirksAllowed: TWindowsQuirks=DefaultWindowsQuirks); reintroduce;
 
@@ -531,11 +532,11 @@ begin
 end;
 
 procedure TWindowsMaskList.AddMasksToList(const aValue: String;
-  aSeparator: Char; CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
+  aSeparator: Char; aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes);
 var
   i: Integer;
 begin
-  inherited AddMasksToList(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
+  inherited AddMasksToList(aValue, aSeparator, aCaseSensitive, aOpcodesAllowed);
   if (FWindowsQuirks <> DefaultWindowsQuirks) then  //inherited did not pass Quirks to the constructor
     begin
     for i := 0 to fMasks.Count - 1 do
@@ -547,11 +548,11 @@ begin
 end;
 
 constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
-  CaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes;
+  aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes;
   aWindowsQuirksAllowed: TWindowsQuirks);
 begin
   fWindowsQuirks := aWindowsQuirksAllowed;
-  inherited Create(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
+  inherited Create(aValue, aSeparator, aCaseSensitive, aOpcodesAllowed);
 end;
 
 constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
@@ -1440,6 +1441,16 @@ begin
   fAutoReverseRange := AValue;
   for i := 0 to fMasks.Count - 1 do
     TMask(fMasks.Items[i]).AutoReverseRange := fAutoReverseRange;
+end;
+
+procedure TMaskList.SetCaseSensitive(AValue: Boolean);
+var
+  i: Integer;
+begin
+  if fCaseSensitive = AValue then Exit;
+  fCaseSensitive := AValue;
+  for i := 0 to fMasks.Count - 1 do
+    TMask(fMasks.Items[i]).CaseSensitive := fCaseSensitive;
 end;
 
 procedure TMaskList.SetMask(AValue: String);
