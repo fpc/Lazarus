@@ -1437,11 +1437,13 @@ begin
 end;
 
 procedure TMaskList.SetMaskOpCodes(AValue: TMaskOpCodes);
+var
+  i: Integer;
 begin
   if FMaskOpCodes = AValue then Exit;
   fMaskOpCodes := AValue;
-  fMasks.Clear;
-  AddMasksToList(fMask, fSeparator, fCaseSensitive, fMaskOpCodes);
+  for i := 0 to fMasks.Count - 1 do
+    TMask(fMasks.Items[i]).MaskOpCodes := fMaskOpcodes;
 end;
 
 function TMaskList.GetMaskClass: TMaskClass;
