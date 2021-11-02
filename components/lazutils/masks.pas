@@ -932,7 +932,6 @@ begin
               then
                 CompileRange
               else begin
-
                 if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in FMaskOpcodesAllowed) then begin
                   // next is Literal
                   inc(fMaskInd,fCPLength);
@@ -941,15 +940,16 @@ begin
                   end else begin
                     Exception_IncompleteMask();
                   end;
-
-                AddLiteral;
                 end;
+                AddLiteral;
               end;
             end;
         end;
       end
       else
+      begin
         AddLiteral;
+      end;
       inc(fMaskInd,fCPLength);
     end;
   end;
