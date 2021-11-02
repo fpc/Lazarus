@@ -287,8 +287,6 @@ type
     fSeparator: Char;
     fCaseSensitive: Boolean;
     fMaskOpcodes: TMaskOpcodes;
-    // Creating also Windows masks is a hack needed for deprecated MatchesWindowsMask.
-    //fWindowsMasks: TObjectList;  // remove in 2.5
     function GetCount: Integer;
     function GetItem(Index: Integer): TMask;
     procedure SetAutoReverseRange(AValue: Boolean);
@@ -1391,7 +1389,6 @@ begin
 
   fMasks := TObjectList.Create(True);
   FMaskClass := GetMaskClass;
-  //fWindowsMasks := TObjectList.Create(True);
   AddMasksToList(aValue, aSeparator, CaseSensitive, aOpcodesAllowed);
 end;
 
@@ -1410,7 +1407,6 @@ end;
 
 destructor TMaskList.Destroy;
 begin
-  //fWindowsMasks.Free;
   fMasks.Free;
   inherited Destroy;
 end;
@@ -1473,8 +1469,6 @@ begin
   try
     for i := 0 to S.Count-1 do begin
       fMasks.Add(FMaskClass.Create(S[i], CaseSensitive, aOpcodesAllowed));
-      // A hack, add also to fWindowsMasks.
-      //fWindowsMasks.Add(TWindowsMask.Create(S[i], CaseSensitive, aOpcodesAllowed));
     end;
   finally
     S.Free;
