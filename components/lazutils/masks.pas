@@ -11,7 +11,7 @@
   DOS/Windows compatible mask which behaves differently from standard mask.
 
  Author: José Mejuto
- Changes and improvements by Juha Manninen
+ Changes and improvements by Juha Manninen and Bart Broersma
 }
 unit Masks;
 
