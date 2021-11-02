@@ -200,7 +200,7 @@ type
   public
     property CaseSensitive: Boolean read fCaseSensitive write SetCaseSensitive;
     property AutoReverseRange: Boolean read fAutoReverseRange write SetAutoReverseRange;
-    property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;
+    property EscapeChar: Char read fMaskEscapeChar write SetMaskEscapeChar;  //Must be lower ASCII (#0-#127)
     property MaskOpCodes: TMaskOpCodes read fMaskOpcodesAllowed write SetMaskOpCodesAllowed;
   end;
 
