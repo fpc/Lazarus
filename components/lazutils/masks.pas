@@ -49,8 +49,8 @@ type
   TMaskOpCode=(mocAnyChar,          //treat ? as a wildcard to match exactly one char
                mocAnyCharOrNone,    //treat [?] to match any char or the absence of a char
                mocAnyText,          //treat * as a wildcard to mach zero or any mumber of chars
-               mocRange,            //treat [a-c] to match either 'a', 'b' or 'c'. '-' is treated as a range indicator.
-                                    //to have a literal '-' in a range, it must be the first character in the range: [-a-c] matches '-', 'a', 'b', or 'c'.
+               mocRange,            //treat [a-c] to match either 'a', 'b' or 'c'. '-' is always treated as a range indicator.
+                                    //to have a literal '-' in a range, you must escape it with EscapeChar (defaults to '\'): [+-\-] matches '+', ',', or '-'.
                mocSet,              //treat [a-c] to match either 'a', '-' or 'c'
                mocNegateGroup,      //treat [!a-c] to not match 'a', 'b', or 'c', but match any other char. Requires mocRange and/or mocSet
                mocEscapeChar        //treat EscapeChar (defaults to '\') to take the next char as a literal, so '\*' is treated as a literal '*'.
