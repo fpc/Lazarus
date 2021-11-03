@@ -343,7 +343,7 @@ type
 
     //Remove in 2.5
     function MatchesWindowsMask(const AFileName: String): Boolean; reintroduce;
-      deprecated 'Use a TWindowsMaskList instead.';
+      deprecated 'Use a Matches instead.';
 
 
     property Quirks: TWindowsQuirks read fWindowsQuirks write SetQuirks;
