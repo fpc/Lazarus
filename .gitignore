@@ -6,13 +6,13 @@
 **/*.patch
 **/units/
 **/lib/
+**/backup/
 **/*;[1-9]
 **/*.~*
 **/*.*~
 **/*.fpcunit.ini
 **/*.lps
 **/*.compiled
-**/backup/*
 /docs/chm/**/*.chm
 /docs/chm/**/*.xct
 /docs/chm/**/*.kwd
