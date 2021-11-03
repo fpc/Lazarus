@@ -83,7 +83,7 @@ type
 
 implementation
 
-uses strutils;
+//uses strutils;
 
 type
   TMenuItemHelper = class helper for TMenuItem

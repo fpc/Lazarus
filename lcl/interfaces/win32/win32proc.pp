@@ -645,7 +645,7 @@ var
   IntfWidth, IntfHeight: integer;
 begin
   Result := False;
-  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth, IntfHeight);
+  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth{%H-}, IntfHeight{%H-});
   if (Sender.Width = IntfWidth) and (Sender.Height = IntfHeight) and (not Sender.ClientRectNeedsInterfaceUpdate) then
     Exit;
   Result := True;
@@ -689,7 +689,7 @@ begin
   if not (Sender is TWinControl) then exit;
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  FillChar(ORect, SizeOf(ORect), 0);
+  FillChar(ORect{%H-}, SizeOf(ORect), 0);
   if TheWinControl is TScrollingWinControl then
   begin
     {$ifdef RedirectDestroyMessages}
@@ -723,6 +723,7 @@ begin
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
     SelectObject(DC, TheWinControl.Font.Reference.Handle);
+    FillChar(TM{%H-}, SizeOf(TM), 0);
     Windows.GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
@@ -776,7 +777,8 @@ end;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
-  parRect, winRect: Windows.TRect;
+  parRect: Windows.TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  winRect: Windows.TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
   Windows.GetWindowRect(Window, winRect);
   Windows.GetWindowRect(Parent, parRect);
@@ -1039,7 +1041,7 @@ end;
 function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width,
   Height: integer): boolean;
 var
-  textSize: Windows.SIZE;
+  textSize: Windows.SIZE = (cx: 0; cy: 0);
   canvasHandle: HDC;
   oldFontHandle, newFontHandle: HFONT;
 begin
@@ -1067,7 +1069,7 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: longint;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   TextLen := Windows.GetWindowTextLengthW(AHandle);
   SetLength(WideBuffer, TextLen);
@@ -1193,7 +1195,7 @@ begin
   then ScanLine := GetMem(AWinBmp.bmWidthBytes)
   else ScanLine := nil;
 
-  FillChar(Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
+  FillChar({%H-}Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   DC := Windows.GetDC(0);
   if Windows.GetDIBits(DC, ABitmap, 0, 1, nil, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
@@ -1326,7 +1328,7 @@ function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 var
   Info: Windows.BITMAP;
 begin
-  FillChar(Info, SizeOf(Info), 0);
+  FillChar(Info{%H-}, SizeOf(Info), 0);
   Result := (GetObject(ABitmap, SizeOf(Info), @Info) <> 0)
         and (Info.bmBitsPixel = 32);
 end;

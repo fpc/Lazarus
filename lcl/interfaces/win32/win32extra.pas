@@ -26,7 +26,7 @@ unit Win32Extra;
 interface
 
 uses 
-  InterfaceBase, Classes, LCLType, Windows, GraphType, SysUtils, ActiveX, ShlObj;
+  Classes, LCLType, Windows, GraphType, SysUtils, ActiveX, ShlObj;
 
 { Win32 API constants not included in windows.pp }
 const
@@ -433,7 +433,10 @@ var
     Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
   end;
 
-  SrcBytesPtr, DstBytesPtr, TmpBytesPtr, AlphaBytesPtr: Pointer;
+  SrcBytesPtr: Pointer = nil;
+  DstBytesPtr: Pointer = nil;
+  AlphaBytesPtr: Pointer = nil;
+  TmpBytesPtr: Pointer = nil;
   SrcLinePtr, DstLinePtr: PByte;
   CleanupSrc, CleanupSrcPtr, CleanupDst, CleanupAlpha: Boolean;
   SrcSize: PtrUInt;
@@ -515,7 +518,7 @@ begin
   SrcLineOrder := GetBitmapOrder(SrcSection.dsBm, SrcBmp);
 
   // setup info shared by alpha, source and destination bytes
-  FillChar(Info, sizeof(Info), 0);
+  FillChar(Info{%H-}, sizeof(Info), 0);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   Info.Header.biWidth := nWidthDest;
   if SrcLineOrder = riloBottomToTop

@@ -99,7 +99,8 @@ var
   DialogRec: POpenFileDialogRec;
   AControl: TPreviewFileControl;
   stc32Handle: Handle;
-  ARect, ADialogRect: TRect;
+  ARect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  ADialogRect: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
   Result := OpenFileDialogCallBack(hWnd, uMsg, wParam, lparam);
   if uMsg = WM_INITDIALOG then

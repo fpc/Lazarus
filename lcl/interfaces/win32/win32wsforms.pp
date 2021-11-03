@@ -626,7 +626,8 @@ class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
   AForm: TCustomForm absolute AWinControl;
-  CurRect, SizeRect: Windows.RECT;
+  CurRect: Windows.RECT = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  SizeRect: Windows.RECT;
   L, T, W, H: Integer;
 begin
   // the LCL defines the size of a form without border, win32 with.

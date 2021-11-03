@@ -351,7 +351,7 @@ var
 begin
   if (H <> 0) and (Msg = WM_InitDialog) then
   begin
-    ws := TColorDialog(PChooseColor(L)^.lCustData).Title;
+    ws := WideString(TColorDialog(PChooseColor(L)^.lCustData).Title);
     SetWindowTextW(H, PWideChar(ws));
   end;
   Result := 0;
@@ -866,16 +866,17 @@ end;
 
 class function TWin32WSOpenDialog.ProcessVistaDialogResult(ADialog: IFileDialog; const AOpenDialog: TOpenDialog): HResult;
 var
-  ShellItems: IShellItemArray;
-  ShellItem: IShellItem;
-  I, Count: DWord;
+  ShellItems: IShellItemArray = nil;
+  ShellItem: IShellItem = nil;
+  I: DWORD;
+  Count: DWORD = 0;
 begin
   // TODO: ofExtensionDifferent, ofReadOnly
   if not Supports(ADialog, IFileOpenDialog) then
     Result := E_FAIL
   else
-    Result := (ADialog as IFileOpenDialog).GetResults(ShellItems{%H-});
-  if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count{%H-})) then
+    Result := (ADialog as IFileOpenDialog).GetResults(ShellItems);
+  if Succeeded(Result) and Succeeded(ShellItems.GetCount(Count)) then
   begin
     AOpenDialog.Files.Clear;
     I := 0;
@@ -1128,7 +1129,7 @@ begin
     begin
       //debugln(['FontDialogCallBack: WM_INITDIALOG']);
       //debugln(['  PChooseFontW(LParam)^.lCustData=',IntToHex(PChooseFontW(LParam)^.lCustData,8)]);
-      PtrInt(Dlg) := PChooseFontW(LParam)^.lCustData;
+      Dlg := Pointer(PChooseFontW(LParam)^.lCustData);
     end;
     WM_COMMAND:
     begin

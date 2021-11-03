@@ -318,8 +318,6 @@ end;
 // The original function was about 2400 lines.
 
 type
-  TAccessCustomEdit = class(TCustomEdit);
-
   { TWindowProcHelper }
 
   TWindowProcHelper = record
@@ -598,7 +596,8 @@ var
 {$endif}
   ParentPaintWindow: HWND;
   DCIndex: integer;
-  parLeft, parTop: integer;
+  parLeft: integer = 0;
+  parTop: integer = 0;
   BufferWasSaved: Boolean;
   useDoubleBuffer: Boolean;
   isNativeControl: Boolean;
@@ -1121,12 +1120,12 @@ end;
 
 procedure TWindowProcHelper.HandleDropFiles;
 var
-  Files: Array of String;
+  Files: Array of String = nil;
   Drop: HDROP;
   L: LongWord;
   I, C: Integer;
   DropForm: TWinControl;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   Drop := HDROP(WParam);
   try
@@ -1887,7 +1886,8 @@ end;
 
 function TWindowProcHelper.DoMsgMove: Boolean;
 var
-  NewLeft, NewTop: integer;
+  NewLeft: integer = 0;
+  NewTop: integer = 0;
   WindowPlacement: TWINDOWPLACEMENT;
   R: TRect;
 begin
@@ -1928,7 +1928,8 @@ end;
 
 procedure TWindowProcHelper.DoMsgSize;
 var
-  NewWidth, NewHeight: integer;
+  NewWidth: integer = 0;
+  NewHeight: integer = 0;
   OverlayWindow: HWND;
 {$IFDEF VerboseSizeMsg}
   R: TRect;
@@ -2038,7 +2039,7 @@ begin
     if (LastMouseTracking<>lWinControl) then
     begin
       // register for WM_MOUSELEAVE
-      FillChar(LMouseEvent, SizeOf(TTRACKMOUSEEVENT), 0);
+      FillChar(LMouseEvent{%H-}, SizeOf(TTRACKMOUSEEVENT), 0);
       LMouseEvent.cbSize := SizeOf(TTRACKMOUSEEVENT);
       LMouseEvent.dwFlags := TME_LEAVE;
       LMouseEvent.hwndTrack := Window;
@@ -2762,7 +2763,7 @@ function
 var
   Helper: TWindowProcHelper;
 begin
-  FillChar(Helper, SizeOf(TWindowProcHelper), 0);
+  FillChar(Helper{%H-}, SizeOf(TWindowProcHelper), 0);
   Helper.Window := Window;
   Helper.Msg := Msg;
   Helper.WParam := WParam;
@@ -2805,7 +2806,7 @@ var
   Owner: TWinControl;
   Control: TControl;
   P: TPoint;
-  LRect: Windows.RECT;
+  LRect: Windows.RECT = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
   case Msg of
     WM_ERASEBKGND:

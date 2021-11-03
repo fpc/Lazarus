@@ -32,7 +32,7 @@ uses
   StdCtrls, Controls, Graphics, Forms, Themes,
 ////////////////////////////////////////////////////
   WSControls, WSStdCtrls, WSLCLClasses, WSProc, Windows, LCLIntf, LCLType,
-  LazUTF8, InterfaceBase, LMessages, LCLMessageGlue, TextStrings,
+  LazUTF8, LMessages, LCLMessageGlue, TextStrings,
   Win32Int, Win32Proc, Win32WSControls, Win32Extra, Win32Themes;
 
 type
@@ -784,7 +784,7 @@ begin
   begin
     // Listbox has a border and Width argument is a window rect =>
     // Decrease it by border width
-    Windows.GetClientRect(AWinControl.Handle, ARect);
+    Windows.GetClientRect(AWinControl.Handle, ARect{%H-});
     DW := ARect.Right - ARect.Left;
     Windows.GetWindowRect(AWinControl.Handle, ARect);
     DW := ARect.Right - ARect.Left - DW;
@@ -818,7 +818,7 @@ begin
   begin
     // if drag is called by mouse down then we need to complete it with mouse up
     // since in other case we will not get the change event called
-    GetCursorPos(P);
+    GetCursorPos(P{%H-});
     P := ACustomListBox.ScreenToClient(P);
     CallDefaultWindowProc(ACustomListBox.Handle, WM_LBUTTONUP, 0, MAKELPARAM(P.X, P.Y));
   end;
@@ -1591,7 +1591,7 @@ var
 begin
   if Length(AText) > 0 then
   begin
-    GetText(ACustomMemo, S);
+    GetText(ACustomMemo, S{%H-});
     S := S + AText;
     SetText(ACustomMemo, S);
   end;
