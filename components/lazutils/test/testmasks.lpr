@@ -328,6 +328,8 @@ begin
   TestMaskWindows('', '[a]', False);
 end;
 
+{$R *.res}
+
 begin
   RegisterTest(TTestMask);
   
