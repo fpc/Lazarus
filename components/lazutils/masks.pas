@@ -951,8 +951,14 @@ begin
             end;
           '[':
             begin
-              if [mocSet,mocRange,
-                  mocAnyCharOrNone] * fMaskOpcodesAllowed <> []
+              if ([mocSet,mocRange,
+                  mocAnyCharOrNone] * fMaskOpcodesAllowed <> [])
+                  and not
+                  (
+                    ([mocSet,mocRange]*fMaskOpCodesAllowed = []) //only mocAnyCharOrNone enabled
+                     and
+                    (fMaskInd<=fMaskLimit) and (fMask[fMaskInd+1]<>'?')// next char is not '?', so basically then the '[' is a literal (or an escapechar)
+                  )
               then
                 CompileRange
               else begin
