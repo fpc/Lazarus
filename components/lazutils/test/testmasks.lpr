@@ -281,7 +281,7 @@ begin
   TestMask('a?c', '?\??', False);
   TestMask('ab*.x', '??\*.x', False);
   TestMask('x \ y', '? \\ ?', False);
-  TestMask('abc', '?[?]?', False);
+  TestMask('abc', '?[?]?', True); //mocAnyCharOrNone is enabled in DefaultMaskOpCodes
   TestMask('a??d', '?[?]?', False);
 end;
 
@@ -314,7 +314,7 @@ begin
   TestMaskWindows('abcd.txt', 'abc*', True);
   TestMaskWindows('abc.pas.bak', '*.bak', True);
   TestMaskWindows('C:\x', 'C:\x', True);
-  TestMaskWindows('C:\ab[c]d', 'C:*[*]*', True);
+  TestMaskWindows('C:\ab[c]d', 'C:*[*]*', False);  //sets and ranges are enabled by default on TWindowsMaks as well
   TestMaskWindows('', '*', True);
   TestMaskWindows('', '?', True);
 
