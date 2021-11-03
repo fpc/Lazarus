@@ -50,6 +50,7 @@ type
     FCollapsedComps: TAVLTree;       // The current list of collapsed components.
     FDrawWholeTree: Boolean;
     FZOrderDelCommand: TZOrderDelete;
+    FPreviousDeleted: TPersistent;   // Delete command can be called twice. Keep track.
     // Events
     FOnComponentGetImageIndex: TCTVGetImageIndexEvent;
     FOnModified: TNotifyEvent;
@@ -63,7 +64,6 @@ type
     function IterateTree(ANode: TTreeNode; APers: TPersistent): TTreeNode;
     procedure NodeCollapsed(Sender: TObject; Node: TTreeNode);
     procedure NodeExpanded(Sender: TObject; Node: TTreeNode);
-    procedure RebuildCollection(ANode: TTreeNode);
     procedure RestoreExpand(ANode: TTreeNode);
     procedure SetPropertyEditorHook(AValue: TPropertyEditorHook);
     procedure SetSelection(NewSelection: TPersistentSelectionList);
@@ -768,24 +768,6 @@ begin
   end;
 end;
 
-procedure TComponentTreeView.RebuildCollection(ANode: TTreeNode);
-// Find TOwnedCollection under a given node and if found rebuild it.
-begin
-  ANode := ANode.GetFirstChild;
-  while Assigned(ANode) do
-  begin
-    if TObject(ANode.Data) is TOwnedCollection then
-    begin
-      DebugLn(['TComponentTreeView.RebuildCollection: Node ', TOwnedCollection(ANode.Data)]);
-      ANode.DeleteChildren;
-      BuildComponentNodes(False);
-      ANode.Expand(False);
-      Exit;
-    end;
-    ANode := ANode.GetNextSibling;
-  end;
-end;
-
 procedure TComponentTreeView.ChangeNode(ANode: TTreeNode);
 // Change ZOrder of the given node or delete it.
 var
@@ -847,9 +829,6 @@ begin
   FZOrderDelCommand := AZOrderDel;
   ChangedNode := IterateTree(Items.GetFirstNode, APers);
   Result := Assigned(ChangedNode);
-  if Result then
-    // Search a Collection from siblings of the changed node and rebuild if found.
-    RebuildCollection(ChangedNode); // Needed for FlowPanel.ControlList at least.
 end;
 
 procedure TComponentTreeView.ChangeCompZOrder(APersistent: TPersistent;
@@ -861,7 +840,14 @@ end;
 
 procedure TComponentTreeView.DeleteComponentNode(APersistent: TPersistent);
 begin
-  FindAndChange(APersistent, zoDelete);
+  if FPreviousDeleted = APersistent then
+    FPreviousDeleted := Nil     // Don't try to delete the same component twice.
+  else begin
+    FPreviousDeleted := APersistent;
+    //FindAndChange(APersistent, zoDelete); // Does not work with CollectionItems.
+    // Now rebuild the tree. ToDo: use TCollectionObserver, IFPObserver interface.
+    BuildComponentNodes(True);
+  end;
 end;
 
 procedure TComponentTreeView.UpdateCompNode(ANode: TTreeNode);
