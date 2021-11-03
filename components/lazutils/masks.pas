@@ -1367,7 +1367,7 @@ begin
 
   if wqNoExtension in fWindowsQuirkAllowed then begin
     if Length(lExtensionMask)=1 then begin
-      fWindowsQuirkInUse:=[wqNoExtension];
+      fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqNoExtension];
       lExtensionMask:='';
     end;
   end;
@@ -1380,6 +1380,8 @@ function TWindowsMaskUTF8.Matches(const aFileName: String): Boolean;
 var
   lFileName, lExtension: String;
 begin
+  if not fMaskIsCompiled then
+    Compile;
   if wqNoExtension in fWindowsQuirkInUse then begin
     SplitFileNameExtension(aFileName,lFileName,lExtension,false);
     // wqNoExtension = Empty extension
