@@ -100,7 +100,7 @@ function Create32BitHBitmap(ADC: HDC; AWidth, AHeight: Integer; out BitsPtr: Poi
 var
   Info: Windows.TBitmapInfo;
 begin
-  FillChar(Info{%H-}, SizeOf(Info), 0);
+  Info := Default(Windows.TBitmapInfo);
   Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
   Info.bmiHeader.biWidth := AWidth;
   Info.bmiHeader.biHeight := -AHeight; // top down
@@ -176,7 +176,7 @@ var
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
     if UseThemes and AlphaDraw then
     begin
-      FillChar(PaintParams{%H-}, SizeOf(PaintParams), 0);
+      PaintParams := Default(TBP_PaintParams);
       PaintParams.cbSize := SizeOf(PaintParams);
       PaintParams.dwFlags := BPPF_ERASE;
       PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, @PaintParams, TmpDC);
@@ -264,7 +264,7 @@ var
     else
     begin
       Details := ThemeServices.GetElementDetails(StateToDetail[AState]);
-      FillChar(Options{%H-}, SizeOf(Options), 0);
+      Options := Default(DTTOpts);
       Options.dwSize := SizeOf(Options);
       Options.dwFlags := DTT_COMPOSITED;
       TextFlags := DT_SINGLELINE;
