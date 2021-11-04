@@ -163,6 +163,7 @@ type
     FTickColor: TColor;
     FTickInnerLength: Integer;
     FTickLength: Integer;
+    FTickWidth: Integer;
     FVisible: Boolean;
     function GetIntervals: TChartAxisIntervalParams;
     procedure SetArrow(AValue: TChartArrow);
@@ -171,6 +172,7 @@ type
     procedure SetTickColor(AValue: TColor);
     procedure SetTickInnerLength(AValue: Integer);
     procedure SetTickLength(AValue: Integer);
+    procedure SetTickWidth(AValue: Integer);
     procedure SetVisible(AValue: Boolean);
   strict protected
     FMarks: TCustomChartAxisMarks;
@@ -199,6 +201,7 @@ type
     property TickInnerLength: Integer
       read FTickInnerLength write SetTickInnerLength default 0;
     property TickLength: Integer read FTickLength write SetTickLength;
+    property TickWidth: Integer read FTickWidth write SetTickWidth;
     property Visible: Boolean read FVisible write SetVisible default true;
   end;
 
@@ -344,6 +347,7 @@ procedure TAxisDrawHelper.DrawMark(
   AFixedCoord: Integer; AMark: Double; const AText: String);
 var
   coord: Integer;
+  clr: TColor;
 begin
   coord := GraphToImage(AMark);
   if
@@ -364,9 +368,10 @@ begin
 
   if FAxis.Marks.Visible then begin
     if (FAxis.TickColor = clDefault) then
-      FDrawer.PrepareSimplePen(GetDefaultPenColor)
+      clr := GetDefaultPenColor
     else
-      FDrawer.PrepareSimplePen(FAxis.TickColor);
+      clr := FAxis.TickColor;
+    FDrawer.SetPenParams(psSolid, clr, FAxis.TickWidth);
     DrawLabelAndTick(coord, AFixedCoord, AText);
   end;
 end;
@@ -804,6 +809,13 @@ procedure TChartBasicAxis.SetTickLength(AValue: Integer);
 begin
   if FTickLength = AValue then exit;
   FTickLength := AValue;
+  StyleChanged(Self);
+end;
+
+procedure TChartBasicAxis.SetTickWidth(AValue: Integer);
+begin
+  if FTickWidth = AValue then exit;
+  FTickWidth := AValue;
   StyleChanged(Self);
 end;
 
