@@ -2322,12 +2322,35 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomSpeedButton.ActionChange" link="#lcl.controls.TControl.ActionChange"/>
+      <element name="TCustomSpeedButton.ActionChange">
+        <short>
+          Performs action when a new value is assigned to the Action property for the control.
+        </short>
+        <descr>
+          <p>
+            ActionChange is overridden in TCustomSpeedButton to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
+          </p>
+          <p>
+            Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
+          </p>
+          <p>
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to False, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
+          </p>
+          <p>
+            ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in GroupIndex, ImageIndex, and Images are also updated with the values from the action.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ActionChange">TControl.ActionChange</link>
+        </seealso>
+      </element>
       <element name="TCustomSpeedButton.ActionChange.Sender">
-        <short></short>
+        <short>New action instance for the event.</short>
       </element>
       <element name="TCustomSpeedButton.ActionChange.CheckDefaults">
-        <short></short>
+        <short>
+          True to use existing action properties as default values, False to use properties from the new action.
+        </short>
       </element>
 
       <element name="TCustomSpeedButton.GetActionLinkClass" link="#lcl.controls.TControl.GetActionLinkClass"/>
