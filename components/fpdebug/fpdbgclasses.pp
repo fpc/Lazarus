@@ -474,7 +474,7 @@ type
     property Mode: TFPDMode read FMode;
     property PointerSize: Integer read GetPointerSize;
     property MemManager: TFpDbgMemManager read FMemManager;
-    property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
+    property LoaderList: TDbgImageLoaderList read FLoaderList;
   end;
 
   { TDbgLibrary }
