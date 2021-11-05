@@ -897,8 +897,8 @@ end;
 procedure TMaskUTF8.Compile;
 begin
   inherited Compile;
-  //if Compile fails and a new call to Matches is made and Mask is unchaged
-  //then Matches simply returns False, when rasing the exception again would be more appropriate IMO (BB)
+  //if Compile fails and a new call to Matches is made and Mask is unchanged
+  //then Matches simply returns False, when raising the exception again would be more appropriate IMO (BB)
   fMaskIsCompiled:=False;
   if fCaseSensitive then
     fMask:=fOriginalMask
