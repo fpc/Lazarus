@@ -428,11 +428,13 @@ var
   OldBmp, OldTmpBmp, SrcBmp, DstBmp, TmpBmp, AlphaBmp: HBITMAP;
   StretchSrc: Boolean;
   SrcSection, DstSection: TDIBSection;
-  Info: record
+type
+  TLocalInfo = record
     Header: TBitmapInfoHeader;
     Colors: array[0..3] of Cardinal; // reserve extra color for colormasks
   end;
-
+var
+  Info: TLocalInfo;
   SrcBytesPtr: Pointer = nil;
   DstBytesPtr: Pointer = nil;
   AlphaBytesPtr: Pointer = nil;
@@ -518,7 +520,7 @@ begin
   SrcLineOrder := GetBitmapOrder(SrcSection.dsBm, SrcBmp);
 
   // setup info shared by alpha, source and destination bytes
-  FillChar(Info{%H-}, sizeof(Info), 0);
+  Info := Default(TLocalInfo);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   Info.Header.biWidth := nWidthDest;
   if SrcLineOrder = riloBottomToTop

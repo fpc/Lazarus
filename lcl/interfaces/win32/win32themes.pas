@@ -151,7 +151,7 @@ end;
 function TWin32ThemeServices.InitThemes: Boolean;
 begin
   Result := InitThemeLibrary;
-  FillChar(FThemeData, SizeOf(FThemeData), 0);
+  FThemeData := Default(TThemeData);
 end;
 
 destructor TWin32ThemeServices.Destroy;
@@ -212,7 +212,7 @@ begin
     idDialogConfirm: IconHandle := LoadImage(0, IDI_QUESTION, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_SHARED);
     idDialogShield:
       begin
-        FillChar(SHIconInfo{%H-}, SizeOf(SHIconInfo), 0);
+        SHIconInfo := Default(TSHSTOCKICONINFO);
         SHIconInfo.cbSize := SizeOf(SHIconInfo);
         if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_LARGEICON, @SHIconInfo) = S_OK) then
           IconHandle := SHIconInfo.hIcon
@@ -221,7 +221,7 @@ begin
       end;
     idButtonShield:
       begin
-        FillChar(SHIconInfo{%H-}, SizeOf(SHIconInfo), 0);
+        SHIconInfo := Default(TSHSTOCKICONINFO);
         SHIconInfo.cbSize := SizeOf(SHIconInfo);
         if (SHGetStockIconInfo(SIID_SHIELD, SHGFI_ICON or SHGFI_SMALLICON, @SHIconInfo) = S_OK) then
           IconHandle := SHIconInfo.hIcon

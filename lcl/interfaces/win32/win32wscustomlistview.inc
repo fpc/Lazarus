@@ -500,7 +500,7 @@ begin
   then Exit;
 
   Hdr := ListView_GetHeader(ALV.Handle);
-  FillChar(itm{%H-}, sizeof(itm),0);
+  itm := Default(THDITEM);
   itm.mask := HDI_FORMAT;
   Header_GetItem(Hdr, AIndex, Itm);
   case AAndicator of
@@ -1133,7 +1133,7 @@ begin
   if hwndHeader = 0 then Exit; // nothing to do
 
   Windows.GetClientRect(AHandle, rc);
-  FillChar(hdLayout{%H-}, SizeOf(hdLayout), 0);
+  hdLayout := Default(THDLAYOUT);
   hdLayout.prc := @rc;
   hdLayout.pwpos := @wpos;
   Header_Layout(hwndHeader, hdLayout);

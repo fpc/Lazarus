@@ -127,7 +127,7 @@ var
   Rec: TFontIsMonoSpaceRec;
 begin
   Result := False;
-  FillChar(LF{%H-}, SizeOf(LogFontA), #0);
+  LF := Default(LogFontA);
   Res := GetObject(Font, SizeOf(LogFontA),@LF);
   //writeln('TWin32WidgetSet.FontIsMonoSpace: Res = ',Res,' SizeOf(LogFont) = ',SizeOf(LogFontA));
   //TWin32WidgetSet.GetObject uses LogFontW and converts back to LogFontA, so Res should be SizeOf(LogFontW)
@@ -259,7 +259,7 @@ var
 begin
   WndClassName := 'LazRubberBand' + IntToStr(ABrush);
 
-  FillChar(WindowClass{%H-}, SizeOf(WindowClass), 0);
+  WindowClass := Default(Windows.WNDCLASS);
   if not Windows.GetClassInfo(System.HInstance, PChar(WndClassName), WindowClass) then
   begin
     with WindowClass do
@@ -307,7 +307,7 @@ var
   Msg: TLMessage;
   PMethod: ^TLCLWndMethod;
 begin
-  FillChar(Msg{%H-}, SizeOf(Msg), #0);
+  Msg := Default(TLMessage);
   
   Msg.msg := uMsg;
   Msg.wParam := wParam;
@@ -372,7 +372,7 @@ begin
   //Issue #0027664
   if (WindowsVersion >= wvVista) and (GetFileVersion(comctl32) >= ComCtlVersionIE6) then
   begin
-    FillChar(TaskConfig{%H-}, SizeOf(TaskConfig), 0);
+    TaskConfig := Default(TTASKDIALOGCONFIG);
     TaskConfig.cbSize := SizeOf(TaskConfig);
     // if we skip hwndParent our form will be a root window - with the taskbar item and icon
     // this is unwanted
@@ -702,7 +702,7 @@ begin
   //Issue #0027664
   if (WindowsVersion >= wvVista) and (GetFileVersion(comctl32) >= ComCtlVersionIE6) then
   begin
-    FillChar(TaskConfig{%H-}, SizeOf(TaskConfig), 0);
+    TaskConfig := Default(TTASKDIALOGCONFIG);
     TaskConfig.cbSize := SizeOf(TaskConfig);
     // if we skip hwndParent our form will be a root window - with the taskbar item and icon
     // this is unwanted
@@ -790,12 +790,14 @@ var
   ADesc: TRawImageDescription absolute ARawImage.Description;
 
   function DoBitmap: Boolean;
-  var
-    DC: HDC;
-    Info: record
+  type
+    TLocalInfo = record
       Header: Windows.TBitmapInfoHeader;
       Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
     end;
+  var
+    Info: TLocalInfo;
+    DC: HDC;
     SrcLinePtr: PByte = nil;
     DstLinePtr: PByte = nil;
     SrcPixelPtr, DstPixelPtr: PByte;
@@ -817,7 +819,7 @@ var
     then DstBpp := 24
     else DstBpp := ADesc.BitsPerPixel;
 
-    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info := Default(TLocalInfo);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := ADesc.Width;
     if ADesc.LineOrder = riloTopToBottom
@@ -1012,7 +1014,7 @@ var
   R: TRect;
 begin
   ARawImage.Init;
-  FillChar(WinDIB{%H-}, SizeOf(WinDIB), 0);
+  WinDIB := Default(Windows.TDIBSection);
   ASize := Windows.GetObject(ABitmap, SizeOf(WinDIB), @WinDIB);
   if ASize = 0
   then Exit(False);
@@ -1071,12 +1073,13 @@ end;
 function TWin32WidgetSet.RawImage_FromDevice(out ARawImage: TRawImage; ADC: HDC; const ARect: TRect): Boolean;
 const
   FILL_PIXEL: array[0..3] of Byte = ($00, $00, $00, $FF);
-var
-  Info: record
+type
+  TLocalInfo = record
     Header: Windows.TBitmapInfoHeader;
     Colors: array[0..1] of Cardinal; // reserve extra color for mono bitmaps
   end;
-
+var
+  Info: TLocalInfo;
   BitsPtr: Pointer = nil;
 
   copyDC, fillDC: HDC;
@@ -1102,7 +1105,7 @@ begin
     if h = 0
     then h := Windows.GetDeviceCaps(ADC, VERTRES);
 
-    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info := Default(TLocalInfo);
     Info.Header.biSize := SizeOf(Info.Header);
     Info.Header.biWidth := w;
     Info.Header.biHeight := -h;

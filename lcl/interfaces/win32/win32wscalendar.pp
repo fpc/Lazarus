@@ -149,7 +149,7 @@ begin
   Result := cpNoWhere;
   if not WSCheckHandleAllocated(ACalendar, 'TWin32WSCustomCalendar.HitTest') then
     Exit;
-  FillChar(HitTestInfo{%H-}, SizeOf(HitTestInfo), 0);
+  HitTestInfo := Default(MCHITTESTINFO);
   //the MCHITTESTINFO structure not only depends on Windows version but also on wether or not
   //the application has a Manifest (Issue #0029975)
   if (WindowsVersion >= wvVista) and HasManifest then
@@ -160,7 +160,7 @@ begin
   {$ifdef debug_win32calendar}
   if IsConsole then writeln('  HitTestInfo.cbSize = ',HitTestInfo.cbSize);
   {$endif}
-  FillChar(HitTestInfo{%H-}, SizeOf(HitTestInfo), 0);
+  HitTestInfo := Default(MCHITTESTINFO);
   HitPart := SendMessage(ACalendar.Handle, MCM_HITTEST, 0, LPARAM(@HitTestInfo));
   {$ifdef debug_win32calendar}
   //if IsConsole then writeln('TWin32WSCustomCalendar.HitTest: Handle = ',IntToHex(ACalendar.Handle,8));

@@ -185,7 +185,7 @@ var
     SystemWParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
 
     // send scroll message
-    FillChar(ScrollInfo{%H-}, sizeof(ScrollInfo), #0);
+    ScrollInfo := Default(Windows.tagScrollInfo);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
     // if mouse is over horizontal scrollbar, scroll horizontally
@@ -1344,7 +1344,7 @@ var
   Rec: PProcRedirRec absolute Data;
   ALogFont: TEnumLogFontExA;
 begin
-  FillChar(ALogFont{%H-}, SizeOf(ALogFont), 0);
+  ALogFont := Default(TEnumLogFontExA);
   Move(ELogFont.elfLogFont, ALogFont.elfLogFont, SizeOf(ALogFont.elfLogFont) - SizeOf(ALogFont.elfLogFont.lfFaceName));
   ALogFont.elfLogFont.lfFaceName := UTF16ToUTF8(ELogFont.elfLogFont.lfFaceName);
   ALogFont.elfFullName := UTF16ToUTF8(ELogFont.elfFullName);
@@ -2440,7 +2440,7 @@ begin
   // maximized or aero snap windows will have problems
   if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD = 0) then
   begin
-    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info := Default(tagWINDOWINFO);
     Info.cbSize := SizeOf(Info);
     Result := GetWindowInfo(Handle, @Info);
     if Result then
@@ -3687,7 +3687,7 @@ function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Intege
     Result := HasAlphaN or (HasAlpha0 and HasAlpha255);
     if Result
     then begin
-      FillChar(Header{%H-}, SizeOf(Header), 0);
+      Header := Default(Windows.TBitmapInfoHeader);
       Header.biSize := SizeOf(Header);
       Header.biWidth := AWinBmp.bmWidth;
       Header.biHeight := -AWinBmp.bmHeight;

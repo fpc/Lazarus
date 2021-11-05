@@ -689,7 +689,7 @@ begin
   if not (Sender is TWinControl) then exit;
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  FillChar(ORect{%H-}, SizeOf(ORect), 0);
+  ORect := Default(TRect);
   if TheWinControl is TScrollingWinControl then
   begin
     {$ifdef RedirectDestroyMessages}
@@ -723,7 +723,7 @@ begin
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
     SelectObject(DC, TheWinControl.Font.Reference.Handle);
-    FillChar(TM{%H-}, SizeOf(TM), 0);
+    TM := Default(Windows.TextMetric);
     Windows.GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
@@ -817,7 +817,7 @@ var
   WindowInfo: PWin32WindowInfo;
 begin
   New(WindowInfo);
-  FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
+  WindowInfo^ := Default(TWin32WindowInfo);
   WindowInfo^.DrawItemIndex := -1;
   Windows.SetProp(Window, PTChar(PtrUInt(WindowInfoAtom)), PtrUInt(WindowInfo));
   Result := WindowInfo;
@@ -1168,11 +1168,13 @@ var
   OrgPixel, TstPixel: Cardinal;
   Scanline: Pointer;
   DC: HDC;
-  Info: record
+type
+  TLocalInfo = record
     Header: Windows.TBitmapInfoHeader;
     Colors: array[Byte] of Cardinal; // reserve extra color for colormasks
   end;
-  
+var
+  Info: TLocalInfo;
   FullScanLine: Boolean; // win9x requires a full scanline to be retrieved
                          // others won't fail when one pixel is requested
 begin
@@ -1195,7 +1197,7 @@ begin
   then ScanLine := GetMem(AWinBmp.bmWidthBytes)
   else ScanLine := nil;
 
-  FillChar({%H-}Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
+  Info := Default(TLocalInfo);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   DC := Windows.GetDC(0);
   if Windows.GetDIBits(DC, ABitmap, 0, 1, nil, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
@@ -1328,7 +1330,7 @@ function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 var
   Info: Windows.BITMAP;
 begin
-  FillChar(Info{%H-}, SizeOf(Info), 0);
+  Info := Default(Windows.BITMAP);
   Result := (GetObject(ABitmap, SizeOf(Info), @Info) <> 0)
         and (Info.bmBitsPixel = 32);
 end;
@@ -1673,7 +1675,7 @@ end;
 
 procedure DoInitialization;
 begin
-  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  DefaultWindowInfo := Default(TWin32WindowInfo);
   DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TFPList.Create;

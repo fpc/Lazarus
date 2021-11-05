@@ -400,7 +400,7 @@ begin
     end else
     if retVal = WAIT_OBJECT_0 + FWaitHandleCount then
     begin
-      FillChar(AMessage{%H-}, SizeOf(AMessage), 0);
+      AMessage := Default(TMsg);
       while PeekMessage(AMessage, HWnd(nil), 0, 0, PM_REMOVE) do
       begin
         if AMessage.message = WM_QUIT then

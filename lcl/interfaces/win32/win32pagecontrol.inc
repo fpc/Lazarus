@@ -599,9 +599,9 @@ var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
 begin
-  FillChar(Mess{%H-},SizeOf(Mess),0);
+  Mess := Default(TLMNotify);
   Mess.Msg := LM_NOTIFY;
-  FillChar(NMHdr{%H-},SizeOf(NMHdr),0);
+  NMHdr := Default(tagNMHDR);
   NMHdr.code := TCN_SELCHANGE;
   NMHdr.hwndfrom := AHandle;
   NMHdr.idfrom := APageIndex;  //use this to set pageindex to the correct page.

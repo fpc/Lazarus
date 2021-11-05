@@ -496,7 +496,7 @@ begin
     // we've been called from another paint handler. To prevent killing of
     // not own DC and HBITMAP lets save then and restore on exit
     BackupBuffer := CurDoubleBuffer;
-    FillChar(CurDoubleBuffer, SizeOf(CurDoubleBuffer), 0);
+    CurDoubleBuffer := Default(TDoubleBuffer);
   end;
   CurDoubleBuffer.DC := Windows.CreateCompatibleDC(0);
 
@@ -686,7 +686,7 @@ begin
         Windows.DeleteObject(PaintRegion);
       end;
     end else begin
-      FillChar(PS, SizeOf(PS), 0);
+      PS := Default(TPaintStruct);
       PS.hdc := ControlDC;
       Windows.GetUpdateRect(Window, @PS.rcPaint, False);
       DC := ControlDC;
@@ -961,7 +961,7 @@ begin
             // a disabled window from the same parent chain was clicked on.
             // This code flashes the dialog if whatever disabled form was clicked on.
             Beep;
-            FillChar(FlashInfo{%H-}, SizeOf(FlashInfo), 0);
+            FlashInfo := Default(FLASHWINFO);
             FlashInfo.cbSize := SizeOf(FlashInfo);
             FlashInfo.hwnd := lWindow;
             FlashInfo.dwFlags := 1; // FLASHW_CAPTION
@@ -2008,7 +2008,7 @@ const
 {$ENDIF}
 begin
   try
-  FillChar(LMessage, SizeOf(LMessage), 0);
+  LMessage := Default(TLMessage);
   PLMsg := @LMessage;
   WinProcess := True;
   NotifyUserInput := False;
@@ -2039,7 +2039,7 @@ begin
     if (LastMouseTracking<>lWinControl) then
     begin
       // register for WM_MOUSELEAVE
-      FillChar(LMouseEvent{%H-}, SizeOf(TTRACKMOUSEEVENT), 0);
+      LMouseEvent := Default(TTRACKMOUSEEVENT);
       LMouseEvent.cbSize := SizeOf(TTRACKMOUSEEVENT);
       LMouseEvent.dwFlags := TME_LEAVE;
       LMouseEvent.hwndTrack := Window;
@@ -2763,7 +2763,7 @@ function
 var
   Helper: TWindowProcHelper;
 begin
-  FillChar(Helper{%H-}, SizeOf(TWindowProcHelper), 0);
+  Helper := Default(TWindowProcHelper);
   Helper.Window := Window;
   Helper.Msg := Msg;
   Helper.WParam := WParam;
@@ -2902,7 +2902,7 @@ begin
         Windows.DestroyWindow(WindowInfo^.Overlay);
       if lWinControl <> nil then
       begin
-        FillChar(LMessage, SizeOf(LMessage), 0);
+        LMessage := Default(TLMessage);
         LMessage.Msg := LM_DESTROY;
         DeliverMessage(lWinControl, LMessage);
       end;
