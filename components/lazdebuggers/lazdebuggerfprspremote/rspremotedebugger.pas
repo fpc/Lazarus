@@ -1,4 +1,4 @@
-unit RemoteDebugger;
+unit RspRemoteDebugger;
 
 {$mode objfpc}{$H+}
 
@@ -20,16 +20,15 @@ uses
 
 type
 
-  { TFpDebugDebuggerPropertiesRemoteServer }
+  { TFpDebugRspProperties }
 
-  TFpDebugDebuggerPropertiesRemoteServer = class(TFpDebugDebuggerProperties)
+  TFpDebugRspProperties = class(TFpDebugDebuggerProperties)
   private
   const
     DEF_host = 'localhost';
     DEF_port = 1234;         // Default port for qemu
     DEF_uploadBinary = false;
   private
-    //FRemoteConfig: TRemoteConfig;
     FHost: string;
     FPort: integer;
     FUploadBinary: boolean;
@@ -61,10 +60,11 @@ type
     property AfterUploadBreakZero: boolean read FAfterUploadBreakZero write FAfterUploadBreakZero default false;
   end;
 
-  { TFpRemoteDebugger }
+  { TFpRspRemoteDebugger }
 
-  TFpRemoteDebugger = class(TFpDebugDebugger)
+  TFpRspRemoteDebugger = class(TFpDebugDebugger)
   private
+    FProcessConfig: TRemoteConfig;
     procedure UpdateProcessConfig;
   public
     constructor Create(const AExternalDebugger: String); override;
@@ -80,13 +80,13 @@ procedure Register;
 
 implementation
 
-{ TFpRemoteDebugger }
+{ TFpRspRemoteDebugger }
 
-procedure TFpRemoteDebugger.UpdateProcessConfig;
+procedure TFpRspRemoteDebugger.UpdateProcessConfig;
 var
-  AProperties: TFpDebugDebuggerPropertiesRemoteServer;
+  AProperties: TFpDebugRspProperties;
 begin
-  AProperties := TFpDebugDebuggerPropertiesRemoteServer(GetProperties);
+  AProperties := TFpDebugRspProperties(GetProperties);
   TRemoteConfig(FProcessConFig).Host := AProperties.Host;
   TRemoteConfig(FProcessConFig).Port := AProperties.Port;
   TRemoteConfig(FProcessConFig).UploadBinary := AProperties.UploadBinary;
@@ -96,7 +96,7 @@ begin
   TRemoteConfig(FProcessConFig).SkipSectionsList.Assign(AProperties.SkipUploadOfSectionList);
 end;
 
-constructor TFpRemoteDebugger.Create(const AExternalDebugger: String);
+constructor TFpRspRemoteDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create(AExternalDebugger);
   if Assigned(FProcessConFig) then
@@ -104,23 +104,23 @@ begin
   FProcessConFig := TRemoteConfig.Create;
 end;
 
-destructor TFpRemoteDebugger.Destroy;
+destructor TFpRspRemoteDebugger.Destroy;
 begin
   TRemoteConfig(FProcessConFig).Free;
   inherited Destroy;
 end;
 
-class function TFpRemoteDebugger.CreateProperties: TDebuggerProperties;
+class function TFpRspRemoteDebugger.CreateProperties: TDebuggerProperties;
 begin
-  Result := TFpDebugDebuggerPropertiesRemoteServer.Create;
+  Result := TFpDebugRspProperties.Create;
 end;
 
-class function TFpRemoteDebugger.Caption: String;
+class function TFpRspRemoteDebugger.Caption: String;
 begin
-  Result:='FpDebug Dwarf debugger - remote';
+  Result:='FpDebug Dwarf remote debugger - RSP';
 end;
 
-function TFpRemoteDebugger.RequestCommand(const ACommand: TDBGCommand;
+function TFpRspRemoteDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const; const ACallback: TMethod): Boolean;
 begin
   if (ACommand in [dcRun, dcStepOver, dcStepInto, dcStepOut, dcStepTo, dcRunTo, dcJumpto,
@@ -135,42 +135,42 @@ begin
   Result := inherited RequestCommand(ACommand, AParams, ACallback);
 end;
 
-{ TFpDebugDebuggerPropertiesRemoteServer }
+{ TFpDebugRspProperties }
 
-function TFpDebugDebuggerPropertiesRemoteServer.portIsStored: Boolean;
+function TFpDebugRspProperties.portIsStored: Boolean;
 begin
   Result := DEF_port <> FPort;
 end;
 
-function TFpDebugDebuggerPropertiesRemoteServer.hostIsStored: Boolean;
+function TFpDebugRspProperties.hostIsStored: Boolean;
 begin
   Result := FHost <> DEF_host;
 end;
 
-function TFpDebugDebuggerPropertiesRemoteServer.uploadBinaryIsStored: Boolean;
+function TFpDebugRspProperties.uploadBinaryIsStored: Boolean;
 begin
   Result := FUploadBinary <> DEF_uploadBinary;
 end;
 
-procedure TFpDebugDebuggerPropertiesRemoteServer.SetAfterConnectMonitorCmds(
+procedure TFpDebugRspProperties.SetAfterConnectMonitorCmds(
   AValue: TXmlConfStringList);
 begin
   FAfterConnectMonitorCmds.Assign(AValue);
 end;
 
-procedure TFpDebugDebuggerPropertiesRemoteServer.SetAfterUploadMonitorCmds(
+procedure TFpDebugRspProperties.SetAfterUploadMonitorCmds(
   AValue: TXmlConfStringList);
 begin
   FAfterUploadMonitorCmds.Assign(AValue);
 end;
 
-procedure TFpDebugDebuggerPropertiesRemoteServer.SetSkipUploadOfSectionList(
+procedure TFpDebugRspProperties.SetSkipUploadOfSectionList(
   AValue: TXmlConfStringList);
 begin
   FSkipUploadOfSectionList.Assign(AValue);
 end;
 
-constructor TFpDebugDebuggerPropertiesRemoteServer.Create;
+constructor TFpDebugRspProperties.Create;
 begin
   inherited Create;
   FHost := DEF_host;
@@ -182,7 +182,7 @@ begin
   FSkipUploadOfSectionList := TXmlConfStringList.Create;
 end;
 
-destructor TFpDebugDebuggerPropertiesRemoteServer.Destroy;
+destructor TFpDebugRspProperties.Destroy;
 begin
   FAfterConnectMonitorCmds.Free;
   FAfterUploadMonitorCmds.Free;
@@ -190,13 +190,13 @@ begin
   inherited Destroy;
 end;
 
-procedure TFpDebugDebuggerPropertiesRemoteServer.Assign(Source: TPersistent);
+procedure TFpDebugRspProperties.Assign(Source: TPersistent);
 var
-  asource: TFpDebugDebuggerPropertiesRemoteServer;
+  asource: TFpDebugRspProperties;
 begin
-  if Source is TFpDebugDebuggerPropertiesRemoteServer then
+  if Source is TFpDebugRspProperties then
   begin
-    aSource := TFpDebugDebuggerPropertiesRemoteServer(Source);
+    aSource := TFpDebugRspProperties(Source);
     FHost := asource.FHost;
     FPort := asource.FPort;
     FUploadBinary := asource.FUploadBinary;
@@ -210,16 +210,15 @@ begin
     if Assigned(asource.FSkipUploadOfSectionList) then
       FSkipUploadOfSectionList.Assign(aSource.FSkipUploadOfSectionList);
 
-    FAfterUploadBreakZero := TFpDebugDebuggerPropertiesRemoteServer(Source).FAfterUploadBreakZero;
+    FAfterUploadBreakZero := TFpDebugRspProperties(Source).FAfterUploadBreakZero;
   end;
   inherited Assign(Source);
 end;
 
 procedure Register;
 begin
-  RegisterDebugger(TFpRemoteDebugger);
+  RegisterDebugger(TFpRspRemoteDebugger);
 end;
-
 
 end.
 

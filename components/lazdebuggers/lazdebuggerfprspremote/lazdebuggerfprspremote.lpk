@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <Package Version="5">
-    <Name Value="lazdebuggerfpremote"/>
+    <Name Value="LazDebuggerFpRspRemote"/>
     <Type Value="RunAndDesignTime"/>
     <Author Value="Joost van der Sluis / Martin Friebe / Christo Crause"/>
     <CompilerOptions>
@@ -17,9 +17,9 @@
     <License Value="GPLv2"/>
     <Files>
       <Item>
-        <Filename Value="remotedebugger.pas"/>
+        <Filename Value="rspremotedebugger.pas"/>
         <HasRegisterProc Value="True"/>
-        <UnitName Value="remotedebugger"/>
+        <UnitName Value="rspremotedebugger"/>
       </Item>
     </Files>
     <RequiredPkgs>
