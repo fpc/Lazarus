@@ -198,10 +198,9 @@ type
     procedure Interrupt; // required by app/fpd
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean; override;
-    function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean; override;
+    function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+                      AFlags: TStartInstanceFlags; out AnError: TFpError): boolean; override;
+    function AttachToInstance(APid: Integer; out AnError: TFpError): boolean; override;
 
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
 
@@ -658,10 +657,9 @@ begin
   end;
 end;
 
-function TDbgWinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): boolean;
+function TDbgWinProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
   AProcess: TProcessUTF8;
   LastErr: Integer;
@@ -673,50 +671,49 @@ begin
     AProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
     if siForceNewConsole in AFlags then
       AProcess.Options:=AProcess.Options+[poNewConsole];
-    AProcess.Executable:=AFilename;
+    AProcess.Executable:=Name;
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
     AProcess.Execute;
 
-    FProcessID:=AProcess.ProcessID;
+    Init(AProcess.ProcessID, 0);
     Result:=true;
   except
     on E: Exception do
     begin
       LastErr := Integer(GetLastError);
-      DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s %d".',[AFileName, E.Message, LastErr]);
+      DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s %d".',[Name, E.Message, LastErr]);
       {$ifdef cpui386}
       if (E is EProcess) and (GetLastError=50) then
       begin
-        AnError := CreateError(fpErrCreateProcess, [AFileName, LastErr, E.Message, 'Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'])
+        AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, 'Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'])
       end
       else
       {$endif i386}
-      AnError := CreateError(fpErrCreateProcess, [AFileName, LastErr, E.Message, '']);
+      AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, '']);
       AProcess.Free;
     end;
   end;
 end;
 
-function TDbgWinProcess.AttachToInstance(AFileName: string; APid: Integer;
-  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
-  AnError: TFpError): boolean;
+function TDbgWinProcess.AttachToInstance(APid: Integer; out AnError: TFpError
+  ): boolean;
 var
   LastErr: Integer;
 begin
   Result := false;
   if _DebugActiveProcess = nil then begin
-    AnError := CreateError(fpErrAttachProcess, [AFileName, 0, 'API unavailable', '']);
+    AnError := CreateError(fpErrAttachProcess, [Name, 0, 'API unavailable', '']);
     exit;
   end;
   if not _DebugActiveProcess(APid) then begin
     LastErr := Integer(GetLastError);
-    AnError := CreateError(fpErrAttachProcess, [AFileName, LastErr, GetLastErrorText(LastErr), '']);
+    AnError := CreateError(fpErrAttachProcess, [Name, LastErr, GetLastErrorText(LastErr), '']);
     exit;
   end;
 
-  FProcessID := APid;
+  Init(APid, 0);
   Result := true;
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
