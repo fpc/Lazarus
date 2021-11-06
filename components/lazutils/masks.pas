@@ -895,6 +895,69 @@ begin
 end;
 
 procedure TMaskUTF8.Compile;
+  procedure HandleEscapeCharPlusLiteral;
+  begin
+    inc(fMaskInd,fCPLength);
+    if fMaskInd<=fMaskLimit then begin
+      fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+      AddLiteral;
+      inc(fMaskInd,fCPLength);
+    end
+    else
+      Exception_IncompleteMask();
+  end;
+
+  procedure HandleSpecialChar;
+  begin
+    case fMask[fMaskInd] of
+      '*':
+        begin
+          if mocAnyText in fMaskOpcodesAllowed then begin
+            if fLastOC<>TMaskParsedCode.AnyCharToNext then begin
+              Add(TMaskParsedCode.AnyCharToNext);
+              fLastOC:=TMaskParsedCode.AnyCharToNext;
+              // * = No limit
+              fMatchMaximumLiteralBytes:=High(fMatchMaximumLiteralBytes);
+            end;
+          end
+          else
+            AddLiteral;
+        end;
+      '?':
+        begin
+          if mocAnyChar in fMaskOpcodesAllowed then
+            AddAnyChar
+          else
+            AddLiteral;
+        end;
+      '[':
+        begin
+          if ([mocSet,mocRange,
+              mocAnyCharOrNone] * fMaskOpcodesAllowed <> [])
+              and not
+              (
+                ([mocSet,mocRange]*fMaskOpCodesAllowed = []) //only mocAnyCharOrNone enabled
+                 and
+                (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?')// next char is not '?', so basically then the '[' is a literal (or an escapechar)
+              )
+          then
+            CompileRange
+          else begin
+            if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in FMaskOpcodesAllowed) then begin  //DEAD CODE?
+              // next is Literal
+              inc(fMaskInd,fCPLength);
+              if fMaskInd<=fMaskLimit then begin
+                fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+              end else begin
+                Exception_IncompleteMask();
+              end;
+            end; //DEAD CODE??
+            AddLiteral;
+          end;
+        end;
+    end;
+  end;
+
 begin
   inherited Compile;
   //if Compile fails and a new call to Matches is made and Mask is unchanged
@@ -908,76 +971,23 @@ begin
   fLastOC:=TMaskParsedCode.Literal;
   SetLength(fMaskCompiled,0);
   fMaskInd:=1;
-  while fMaskInd<=fMaskLimit do begin
+
+  while fMaskInd<=fMaskLimit do begin //while
     fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-    if (mocEscapeChar in fMaskOpcodesAllowed)
-    and (fMask[fMaskInd]=fMaskEscapeChar) then begin
-      // next is Literal
-      inc(fMaskInd,fCPLength);
-      if fMaskInd<=fMaskLimit then begin
-        fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-        AddLiteral;
-        inc(fMaskInd,fCPLength);
-      end
-      else
-        Exception_IncompleteMask();
-    end else begin
-      if fMask[fMaskInd] in ['*','?','['] then begin
-        case fMask[fMaskInd] of
-          '*':
-            begin
-              if mocAnyText in fMaskOpcodesAllowed then begin
-                if fLastOC<>TMaskParsedCode.AnyCharToNext then begin
-                  Add(TMaskParsedCode.AnyCharToNext);
-                  fLastOC:=TMaskParsedCode.AnyCharToNext;
-                  // * = No limit
-                  fMatchMaximumLiteralBytes:=High(fMatchMaximumLiteralBytes);
-                end;
-              end
-              else
-                AddLiteral;
-            end;
-          '?':
-            begin
-              if mocAnyChar in fMaskOpcodesAllowed then
-                AddAnyChar
-              else
-                AddLiteral;
-            end;
-          '[':
-            begin
-              if ([mocSet,mocRange,
-                  mocAnyCharOrNone] * fMaskOpcodesAllowed <> [])
-                  and not
-                  (
-                    ([mocSet,mocRange]*fMaskOpCodesAllowed = []) //only mocAnyCharOrNone enabled
-                     and
-                    (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?')// next char is not '?', so basically then the '[' is a literal (or an escapechar)
-                  )
-              then
-                CompileRange
-              else begin
-                if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in FMaskOpcodesAllowed) then begin
-                  // next is Literal
-                  inc(fMaskInd,fCPLength);
-                  if fMaskInd<=fMaskLimit then begin
-                    fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-                  end else begin
-                    Exception_IncompleteMask();
-                  end;
-                end;
-                AddLiteral;
-              end;
-            end;
-        end;
-      end
+    if (mocEscapeChar in fMaskOpcodesAllowed) and (fMask[fMaskInd]=fMaskEscapeChar) then
+      HandleEscapeCharPlusLiteral
+    else begin // not an escaped literal
+      if fMask[fMaskInd] in ['*','?','['] then begin // handle special chars
+        HandleSpecialChar;
+      end  //handle special chars
       else
       begin
         AddLiteral;
       end;
       inc(fMaskInd,fCPLength);
-    end;
-  end;
+    end; //not an escaped literal
+  end;  //while
+
   SetLength(fMaskCompiled,fMaskCompiledIndex);
   fMaskCompiledLimit:=fMaskCompiledIndex-1;
   fMaskIsCompiled:=True;
