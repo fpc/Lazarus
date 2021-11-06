@@ -127,8 +127,8 @@ type
   private
     FHasReadAllAvailableFrames: boolean;
   protected
-    procedure SetHasReadAllAvailableFrames;
   public
+    procedure SetHasReadAllAvailableFrames;
     procedure Clear;
     property HasReadAllAvailableFrames: boolean read FHasReadAllAvailableFrames;
   end;
@@ -453,7 +453,6 @@ type
     FDbgInfo: TDbgInfo;
     procedure InitializeLoaders; virtual;
     procedure SetFileName(const AValue: String);
-    property LoaderList: TDbgImageLoaderList read FLoaderList write FLoaderList;
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
   public
     constructor Create(const AProcess: TDbgProcess); virtual;
@@ -464,6 +463,8 @@ type
     function AddrOffset: TDBGPtr; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindProcSymbol(const AName: String): TFpSymbol; overload;
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
+    function  FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
+
     procedure LoadInfo; virtual;
 
     property Process: TDbgProcess read FProcess;
@@ -473,6 +474,7 @@ type
     property Mode: TFPDMode read FMode;
     property PointerSize: Integer read GetPointerSize;
     property MemManager: TFpDbgMemManager read FMemManager;
+    property LoaderList: TDbgImageLoaderList read FLoaderList;
   end;
 
   { TDbgLibrary }
@@ -617,6 +619,8 @@ public
     function  FindProcSymbol(const AName, ALibraryName: String; IsFullLibName: Boolean = True): TFpSymbol;  overload;
     function  FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;  overload;
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
+    function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
+
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
@@ -656,6 +660,7 @@ public
     procedure ThreadsBeforeContinue;
     procedure ThreadsClearCallStack;
     procedure LoadInfo; override;
+    procedure InitializeLoaders; override;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
     // Modify the debugee's code.
@@ -1622,6 +1627,15 @@ begin
     result := FSymbolTableInfo.FindProcSymbol(AAdress);
 end;
 
+function TDbgInstance.FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+begin
+  {$PUSH}{$R-}{$Q-}
+  AAdress := AAdress + AddrOffset;
+  {$POP}
+  Result := FDbgInfo.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
+end;
+
 procedure TDbgInstance.LoadInfo;
 begin
   InitializeLoaders;
@@ -1855,7 +1869,7 @@ begin
 
         if Result = nil then begin
           Addr := Frame.AnAddress;
-          if Addr <> 0 then
+          if (Addr <> 0) or (FDbgInfo.TargetInfo.machineType = mtAVR8) then
             Result := FDbgInfo.FindSymbolScope(Ctx, Addr);
         end;
       end;
@@ -1868,6 +1882,20 @@ begin
     Result := TFpDbgSymbolScope.Create(Ctx);
 
   Ctx.ReleaseReference;
+end;
+
+function TDbgProcess.FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+var
+  n: Integer;
+  Inst: TDbgInstance;
+begin
+  for n := 0 to FSymInstances.Count - 1 do
+  begin
+    Inst := TDbgInstance(FSymInstances[n]);
+    Result := Inst.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
+    if Result then Exit;
+  end;
 end;
 
 function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer;
@@ -2222,6 +2250,11 @@ begin
 
   if DbgInfo.HasInfo then
     FSymInstances.Add(Self);
+end;
+
+procedure TDbgProcess.InitializeLoaders;
+begin
+  inherited InitializeLoaders;
 end;
 
 function TDbgProcess.GetLastEventProcessIdentifier: THandle;

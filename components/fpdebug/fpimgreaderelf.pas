@@ -39,10 +39,12 @@ uses
 
 type
   TElfSection = packed record
-    name      : AnsiString;
-    FileOfs   : QWord;
-    Address   : QWord;
-    Size      : QWord;
+    name        : AnsiString;
+    FileOfs     : QWord;
+    Address     : QWord;
+    Size        : QWord;
+    SectionType : QWord;
+    Flags       : QWord;
   end;
   PElfSection = ^TElfSection;
 
@@ -55,7 +57,7 @@ type
   protected
     function Load32BitFile(ALoader: TDbgFileLoader): Boolean;
     function Load64BitFile(ALoader: TDbgFileLoader): Boolean;
-    procedure AddSection(const name: AnsiString; FileOffset, Address, Size: Qword);
+    procedure AddSection(const name: AnsiString; FileOffset, Address, Size, SectionType, Flags: Qword);
   public
     sections  : array of TElfSection;
     seccount  : Integer;
@@ -73,6 +75,7 @@ type
     fElfFile    : TElfFile;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
+    function GetSection(const ID: integer): PDbgImageSection; override;
     procedure LoadSections;
     procedure ClearSections;
   public
@@ -185,7 +188,7 @@ begin
   for i := 0 to hdr.e_shnum - 1 do
     with sect[i] do begin
       nm := PChar( @strs[sh_name] );
-      AddSection(nm, sh_offset, sh_addr, sh_size );
+      AddSection(nm, sh_offset, sh_addr, sh_size, sh_type, sh_flags);
     end;
 end;
 
@@ -224,12 +227,12 @@ begin
   for i := 0 to hdr.e_shnum - 1 do
     with sect[i] do begin
       nm := PChar( @strs[sh_name] );
-      AddSection(nm, sh_offset, sh_address, sh_size );
+      AddSection(nm, sh_offset, sh_address, sh_size, sh_type, sh_flags);
     end;
 end;
 
 procedure TElfFile.AddSection(const name: AnsiString; FileOffset, Address,
-  Size: Qword);
+  Size, SectionType, Flags: Qword);
 begin
   if seccount=Length(sections) then begin
     if seccount = 0 then SetLength(sections, 4)
@@ -239,6 +242,8 @@ begin
   sections[seccount].name:=name;
   sections[seccount].FileOfs:=FileOffset;
   sections[seccount].Size:=Size;
+  sections[seccount].SectionType:=SectionType;
+  sections[seccount].Flags:=Flags;
   inc(seccount);
 end;
 
@@ -319,6 +324,25 @@ begin
   FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
 end;
 
+function TElfDbgSource.GetSection(const ID: integer): PDbgImageSection;
+var
+  ex: PDbgImageSectionEx;
+begin
+  if (ID >= 0) and (ID < FSections.Count) then
+  begin
+    ex := PDbgImageSectionEx(FSections.Objects[ID]);
+    Result := @ex^.Sect;
+    Result^.Name := FSections[ID];
+    if not ex^.Loaded then
+    begin
+      FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+      ex^.Loaded  := True;
+    end;
+  end
+  else
+    Result := nil;
+end;
+
 procedure TElfDbgSource.LoadSections;
 var
   p: PDbgImageSectionEx;
@@ -333,6 +357,8 @@ begin
     P^.Offs := fs.FileOfs;
     p^.Sect.Size := fs.Size;
     p^.Sect.VirtualAddress := fs.Address; //0; // Todo? fs.Address - ImageBase
+    p^.Sect.IsLoadable := ((fs.SectionType and SHT_PROGBITS) > 0) and ((fs.Flags and SHF_ALLOC) > 0) and
+                          ((fs.SectionType and SHT_NOBITS) = 0);
     p^.Loaded := False;
     FSections.Objects[idx] := TObject(p);
   end;

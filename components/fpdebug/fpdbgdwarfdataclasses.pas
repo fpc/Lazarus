@@ -683,6 +683,8 @@ type
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
     function MapAddressToNewValue(AValue: QWord): QWord;
+    // Get start/end addresses of proc
+    function GetProcStartEnd(const AAddress: TDBGPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
     property Valid: Boolean read FValid;
     property FileName: String read FFileName;
@@ -736,6 +738,8 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
+    function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
+
     //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
     function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
@@ -3640,6 +3644,29 @@ begin
   end;
 end;
 
+function TFpDwarfInfo.FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+  Iter: TLockedMapIterator;
+  Info: PDwarfAddressInfo;
+  MinMaxSet: boolean;
+begin
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    CU.WaitForScopeScan;
+    if not CU.Valid then Continue;
+    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
+    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
+    then Continue;
+
+    Result := CU.GetProcStartEnd(AAddress, AStartPC, AEndPC);
+    if Result then exit;
+  end;
+end;
+
 function TFpDwarfInfo.FindDwarfUnitSymbol(AAddress: TDbgPtr
   ): TDbgDwarfSymbolBase;
 var
@@ -4769,6 +4796,41 @@ begin
         break;
       end;
     end;
+end;
+
+function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out
+  AStartPC, AEndPC: TDBGPtr): boolean;
+var
+  Iter: TLockedMapIterator;
+  Info: PDwarfAddressInfo;
+begin
+  if not FAddressMapBuild then
+    BuildAddressMap;
+
+  Result := false;
+  Iter := TLockedMapIterator.Create(FAddressMap);
+  try
+    if not Iter.Locate(AAddress) then
+    begin
+      if not Iter.BOM then
+        Iter.Previous;
+
+      if Iter.BOM then
+        Exit;
+    end;
+
+    // iter is at the closest defined address before AAddress
+    Info := Iter.DataPtr;
+    result := (AAddress >= Info^.StartPC) and (AAddress <= Info^.EndPC);
+    if Result then
+    begin
+      AStartPC := Info^.StartPC;
+      AEndPC := Info^.EndPC;
+    end;
+
+  finally
+    Iter.Free;
+  end;
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;

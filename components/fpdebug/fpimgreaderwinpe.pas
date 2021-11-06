@@ -56,6 +56,7 @@ type
     FCodeBase   : DWord;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
+    function GetSection(const ID: integer): PDbgImageSection; override;
     function GetSection(const AVirtAddr: QWord): PDbgImageSection;
     function MapVirtAddressToSection(AVirtAddr: Pointer): Pointer;
 
@@ -310,6 +311,25 @@ begin
   FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
 end;
 
+function TPEFileSource.GetSection(const ID: integer): PDbgImageSection;
+var
+  ex: PDbgImageSectionEx;
+begin
+  if (ID >= 0) and (ID < FSections.Count) then
+  begin
+    ex := PDbgImageSectionEx(FSections.Objects[ID]);
+    Result := @ex^.Sect;
+    Result^.Name := FSections[ID];
+    if not ex^.Loaded then
+    begin
+      ex^.Loaded  := True;
+      FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+    end;
+  end
+  else
+    Result := nil;
+end;
+
 function TPEFileSource.GetSection(const AVirtAddr: QWord): PDbgImageSection;
 var
   i: Integer;
@@ -347,7 +367,8 @@ end;
 
 procedure TPEFileSource.LoadSections;
 
-  procedure Add(const AName: String; ARawData: QWord; ASize: QWord; AVirtualAdress: QWord);
+  procedure Add(const AName: String; ARawData: QWord; ASize: QWord; AVirtualAdress: QWord;
+    AIsLoadable: boolean);
   var
     p: PDbgImageSectionEx;
     idx: integer;
@@ -357,6 +378,7 @@ procedure TPEFileSource.LoadSections;
     P^.Offs := ARawData;
     p^.Sect.Size := ASize;
     p^.Sect.VirtualAddress := AVirtualAdress;
+    p^.Sect.IsLoadable := AIsLoadable;   // Could also default to false since it isn't currently used
     p^.Loaded := False;
     FSections.Objects[idx] := TObject(p);
   end;
@@ -461,21 +483,23 @@ begin
         NTHeaders.Sys.FileHeader.NumberOfSymbols * IMAGE_SIZEOF_SYMBOL +
         StrToIntDef(PChar(@SectionName[1]), 0), 255, @s[1]);
       s[Min(i, 255)] := #0;
-      Add(pchar(@s[1]), SectionHeader[n].PointerToRawData, SectionHeader[n].Misc.VirtualSize,  SectionHeader[n].VirtualAddress);
+      Add(pchar(@s[1]), SectionHeader[n].PointerToRawData, SectionHeader[n].Misc.VirtualSize,  SectionHeader[n].VirtualAddress,
+          not((SectionHeader[n].Characteristics and (IMAGE_SCN_CNT_CODE or IMAGE_SCN_CNT_INITIALIZED_DATA)) = 0));
     end
     else begin
       // short name
-      Add(SectionName, SectionHeader[n].PointerToRawData, SectionHeader[n].Misc.VirtualSize,  SectionHeader[n].VirtualAddress);
+      Add(SectionName, SectionHeader[n].PointerToRawData, SectionHeader[n].Misc.VirtualSize,  SectionHeader[n].VirtualAddress,
+          not((SectionHeader[n].Characteristics and (IMAGE_SCN_CNT_CODE or IMAGE_SCN_CNT_INITIALIZED_DATA)) = 0));
     end
   end;
 
   // Create a fake-sections for the symbol-table:
   if NtHeaders.Sys.FileHeader.PointerToSymbolTable<>0 then
     begin
-    Add(_symbol,NtHeaders.Sys.FileHeader.PointerToSymbolTable, NtHeaders.Sys.FileHeader.NumberOfSymbols*IMAGE_SIZEOF_SYMBOL,0);
+    Add(_symbol,NtHeaders.Sys.FileHeader.PointerToSymbolTable, NtHeaders.Sys.FileHeader.NumberOfSymbols*IMAGE_SIZEOF_SYMBOL,0,false);
     StringTableStart:=NtHeaders.Sys.FileHeader.PointerToSymbolTable+NtHeaders.Sys.FileHeader.NumberOfSymbols*IMAGE_SIZEOF_SYMBOL;
     FFileLoader.Read(StringTableStart, sizeof(DWord), @StringTableLen);
-    Add(_symbolstrings,StringTableStart, StringTableLen, 0);
+    Add(_symbolstrings,StringTableStart, StringTableLen, 0,false);
     end;
 
   FFileLoader.UnloadMemory(SectionHeader);
