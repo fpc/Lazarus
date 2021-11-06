@@ -916,12 +916,7 @@ begin
       inc(fMaskInd,fCPLength);
       if fMaskInd<=fMaskLimit then begin
         fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-        Add(TMaskParsedCode.Literal);
-        Add(fCPLength,@fMask[fMaskInd]);
-        inc(fMatchMinimumLiteralBytes,fCPLength);
-        if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
-          inc(fMatchMaximumLiteralBytes,fCPLength);
-        fLastOC:=TMaskParsedCode.Literal;
+        AddLiteral;
         inc(fMaskInd,fCPLength);
       end
       else
