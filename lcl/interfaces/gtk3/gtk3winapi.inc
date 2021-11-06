@@ -2727,8 +2727,8 @@ begin
   begin
     OrigX := TGtk3DeviceContext(DC).fncOrigin.X;
     OrigY := TGtk3DeviceContext(DC).fncOrigin.Y;
-    DebugLn('GetWindowOrgEx POINT ',Format('OrigX=%d, OrigY=%d, dx=%d, dy=%d',
-                                           [OrigX, OrigY, Trunc(dx), Trunc(dy)]));
+    //DebugLn('GetWindowOrgEx POINT ',Format('OrigX=%d, OrigY=%d, dx=%d, dy=%d',
+    //                                       [OrigX, OrigY, Trunc(dx), Trunc(dy)]));
     P^.X := OrigX-Trunc(dx);
     P^.Y := OrigY-Trunc(dy);
   end;
