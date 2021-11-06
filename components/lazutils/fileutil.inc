@@ -851,7 +851,6 @@ begin
   {$else}
   MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
   {$endif}
-  MaskList := TMaskList.Create(ASearchMask, FMaskSeparator, CaseSensitive);
   // empty mask = all files mask
   if MaskList.Count = 0 then
     FreeAndNil(MaskList);
