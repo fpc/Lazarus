@@ -603,7 +603,6 @@ type
 
   TDbgInstance = class(TObject)
   private
-    FMemManager: TFpDbgMemManager;
     FMode: TFPDMode;
     FFileName: String;
     FProcess: TDbgProcess;
@@ -618,6 +617,7 @@ type
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
   protected
     FDbgInfo: TDbgInfo;
+    FMemManager: TFpDbgMemManager;
     procedure InitializeLoaders; virtual;
     procedure SetFileName(const AValue: String);
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
