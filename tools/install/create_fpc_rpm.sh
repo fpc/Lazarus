@@ -55,10 +55,9 @@ if [ "$WithTempDir" = "yes" ]; then
   if [ -d $TmpDir ]; then
     rm -rf $TmpDir
   fi
-  mkdir -p $TmpDir
+  mkdir -p $TmpDir/fpc
 
-  echo "extracting FPC from local svn ..."
-#  cp -a $FPCSrcDir $TmpDir/fpc #copies all to tmp folder for patching.
+  echo "extracting FPC from local git ..."
   git -C $FPCSrcDir --work-tree=$TmpDir/fpc restore .
 else
   TmpDir=$FPCSrcDir
