@@ -60,11 +60,11 @@ type
   TGtk3WSOpenDialog = class(TWSOpenDialog)
   protected
     class function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      Chooser: PGtkFileChooser): string; virtual;
+      Chooser: PGtkFileChooser): string;
     class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget); virtual;
+      SelWidget: PGtkWidget);
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
-      Chooser: PGtkFileChooser); virtual;
+      Chooser: PGtkFileChooser);
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
