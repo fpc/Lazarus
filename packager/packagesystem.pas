@@ -2385,11 +2385,11 @@ procedure TLazPackageGraph.FreeAutoInstallDependencies;
 var
   Dependency: TPkgDependency;
 begin
-  while Assigned(PackageGraph.FirstAutoInstallDependency) do
+  while Assigned(FirstAutoInstallDependency) do
   begin
-    Dependency:=PackageGraph.FirstAutoInstallDependency;
+    Dependency:=FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pddRequires);
+    Dependency.RemoveFromList(FirstAutoInstallDependency,pddRequires);
     Dependency.Free;
   end;
 end;
@@ -2464,8 +2464,7 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
             RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
             FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
             if PathList<>nil then begin
-              // broken dependency found
-              // -> add current package to list
+              // broken dependency found -> add current package to list
               PathList.Insert(0,RequiredPackage);
               exit;
             end;
