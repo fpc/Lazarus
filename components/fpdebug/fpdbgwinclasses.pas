@@ -185,8 +185,7 @@ type
     function CreateWatchPointData: TFpWatchPointData; override;
   public
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
-      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
-  override;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
