@@ -917,7 +917,7 @@ function TDbgLinuxProcess.AttachToInstance(APid: Integer; out AnError: TFpError
   ): boolean;
 begin
   Result := fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE)) = 0;
-
+  Init(APid, 0);
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
 
