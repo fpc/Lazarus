@@ -436,6 +436,10 @@ type
   end;
   TFpInternalWatchpointClass = class of TFpInternalWatchpoint;
 
+  // Container to hold target specific process info
+  TDbgProcessConfig = class(TPersistent)
+  end;
+
   { TDbgInstance }
 
   TDbgInstance = class(TObject)
@@ -550,7 +554,7 @@ type
     FProcessID: Integer;
     FThreadID: Integer;
     FWatchPointData: TFpWatchPointData;
-
+    FProcessConfig: TDbgProcessConfig;
     function GetDisassembler: TDbgAsmDecoder;
     function GetLastLibraryLoaded: TDbgLibrary;
     function GetPauseRequested: boolean;
@@ -595,14 +599,17 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; virtual; abstract;
 
     function CreateWatchPointData: TFpWatchPointData; virtual;
+    procedure Init(const AProcessID, AThreadID: Integer);
 public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; virtual;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; virtual;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); virtual;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+                      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); virtual;
     destructor Destroy; override;
+
+    function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+                      AFlags: TStartInstanceFlags; out AnError: TFpError): boolean; virtual;
+    function AttachToInstance(APid: Integer; out AnError: TFpError): boolean; virtual;
+
     function  AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint; overload;
     function  AddInternalBreak(const ALocation: TDBGPtrArray): TFpInternalBreakpoint; overload;
     function  AddBreak(const ALocation: TDBGPtr; AnEnabled: Boolean = True): TFpInternalBreakpoint; overload;
@@ -1735,9 +1742,8 @@ begin
   Result := lib.FindProcSymbol(AName);
 end;
 
-constructor TDbgProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
-  );
+constructor TDbgProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 const
   {.$IFDEF CPU64}
   MAP_ID_SIZE = itu8;
@@ -1746,9 +1752,10 @@ const
   {.$ENDIF}
 begin
   FMemManager := AMemManager;
-  FProcessID := AProcessID;
-  FThreadID := AThreadID;
+  FProcessID := 0;
+  FThreadID := 0;
   FOSDbgClasses := AnOsClasses;
+  FProcessConfig := AProcessConfig;
 
   FBreakpointList := TFpInternalBreakpointList.Create(False);
   FWatchPointList := TFpInternalBreakpointList.Create(False);
@@ -1817,6 +1824,20 @@ begin
   FreeAndNil(FSymInstances);
   FreeAndNil(FDisassembler);
   inherited;
+end;
+
+function TDbgProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
+begin
+  DebugLn(DBG_VERBOSE, 'Debug support is not available for this platform.');
+  result := false;
+end;
+
+function TDbgProcess.AttachToInstance(APid: Integer; out AnError: TFpError): boolean;
+begin
+  DebugLn(DBG_VERBOSE, 'Attach not supported');
+  Result := false;
 end;
 
 function TDbgProcess.AddInternalBreak(const ALocation: TDBGPtr): TFpInternalBreakpoint;
@@ -2184,23 +2205,6 @@ begin
   FExitCode:=AValue;
 end;
 
-class function TDbgProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
-begin
-  DebugLn(DBG_VERBOSE, 'Debug support is not available for this platform.');
-  result := nil;
-end;
-
-class function TDbgProcess.AttachToInstance(AFileName: string; APid: Integer;
-  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
-  AnError: TFpError): TDbgProcess;
-begin
-  DebugLn(DBG_VERBOSE, 'Attach not supported');
-  Result := nil;
-end;
-
 class function TDbgProcess.isSupported(ATargetInfo: TTargetDescriptor): boolean;
 begin
   result := false;
@@ -2451,6 +2455,12 @@ end;
 function TDbgProcess.CreateWatchPointData: TFpWatchPointData;
 begin
   Result := TFpWatchPointData.Create;
+end;
+
+procedure TDbgProcess.Init(const AProcessID, AThreadID: Integer);
+begin
+  FProcessID := AProcessID;
+  FThreadID := AThreadID;
 end;
 
 function TDbgProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;

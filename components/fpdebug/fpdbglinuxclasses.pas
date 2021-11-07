@@ -302,13 +302,15 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError
-      ): TDbgProcess; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
+
+    function StartInstance(AParams, AnEnvironment: TStrings;
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
+      out AnError: TFpError): boolean; override;
+
+    function AttachToInstance(APid: Integer; out AnError: TFpError): boolean; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; override;
@@ -829,12 +831,13 @@ begin
   Result := TFpIntelWatchPointData.Create;
 end;
 
-constructor TDbgLinuxProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager);
+constructor TDbgLinuxProcess.Create(const AFileName: string;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AProcessConfig: TDbgProcessConfig);
 begin
   FMasterPtyFd:=-1;
   FPostponedSignals := TFpDbgLinuxSignalQueue.Create;
-  inherited Create(AName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgLinuxProcess.Destroy;
@@ -844,26 +847,24 @@ begin
   inherited Destroy;
 end;
 
-class function TDbgLinuxProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
-  out AnError: TFpError): TDbgProcess;
+function TDbgLinuxProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
-  PID: TPid;
   AProcess: TProcessUTF8;
   AMasterPtyFd: cint;
   AnExecutabeFilename: string;
 begin
-  result := nil;
+  Result := false;
 
-  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not debug %s, because it''s a directory',[AnExecutabeFilename]);
     Exit;
   end;
 
-  if not FileExists(AFileName) then
+  if not FileExists(Name) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not find  %s.',[AnExecutabeFilename]);
     Exit;
@@ -893,16 +894,15 @@ begin
     AProcess.CurrentDirectory:=AWorkingDirectory;
 
     AProcess.Execute;
-    PID:=AProcess.ProcessID;
-
+    Init(AProcess.ProcessID, 0);
+    FMasterPtyFd := AMasterPtyFd;
+    FProcProcess := AProcess;
     sleep(100);
-    result := TDbgLinuxProcess.Create(AFileName, Pid, -1, AnOsClasses, AMemManager);
-    TDbgLinuxProcess(result).FMasterPtyFd := AMasterPtyFd;
-    TDbgLinuxProcess(result).FProcProcess := AProcess;
+    Result := ProcessID > 0;
   except
     on E: Exception do
     begin
-      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]));
+      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[Name, E.Message]));
       AProcess.Free;
 
     if GSlavePTyFd>-1 then
@@ -913,15 +913,11 @@ begin
   end;
 end;
 
-class function TDbgLinuxProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
-  out AnError: TFpError): TDbgProcess;
+function TDbgLinuxProcess.AttachToInstance(APid: Integer; out AnError: TFpError
+  ): boolean;
 begin
-  Result := nil;
-  fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE));
-
-  result := TDbgLinuxProcess.Create(AFileName, APid, 0, AnOsClasses, AMemManager);
-
+  Result := fpPTrace(PTRACE_ATTACH, APid, nil, Pointer(PTRACE_O_TRACECLONE)) = 0;
+  Init(APid, 0);
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
 

@@ -45,6 +45,7 @@ const
   RegArrayByteLength = 39;
 
 type
+
   { TDbgAvrThread }
 
   TDbgAvrThread = class(TDbgThread)
@@ -96,6 +97,7 @@ type
     FIsTerminating: boolean;
     // RSP communication
     FConnection: TRspConnection;
+    FRemoteConfig: TRemoteConfig;
 
     procedure OnForkEvent(Sender : TObject);
   protected
@@ -104,23 +106,13 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    // TODO: Optional download to target as parameter DownloadExecutable=true
-    //class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-    //  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
-
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-
-    // Not supported, returns false
-    //class function AttachToInstance(AFileName: string; APid: Integer
-    //  ): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-
     class function isSupported(target: TTargetDescriptor): boolean; override;
-
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig); override;
     destructor Destroy; override;
+    function StartInstance(AParams, AnEnvironment: TStrings;
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
+      out AnError: TFpError): boolean; override;
 
     // FOR AVR target AAddress could be program or data (SRAM) memory (or EEPROM)
     // Gnu tools masks data memory with $800000
@@ -140,6 +132,8 @@ type
     // then debugger needs to manage insertion/deletion of break points in target memory
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; override;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; override;
+
+    property RspConfig: TRemoteConfig read FRemoteConfig;
   end;
 
   // Lets stick with points 4 for now
@@ -165,12 +159,6 @@ type
     property Data[AnIndex: Integer]: TRspBreakWatchPoint read BreakWatchPoint;
     property Count: integer read DataCount;
   end;
-
-var
-  // Difficult to see how this can be encapsulated except if
-  // added methods are introduced that needs to be called after .Create
-  HostName: string = 'localhost';
-  Port: integer = 12345;
 
 implementation
 
@@ -667,10 +655,10 @@ function TDbgAvrProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThrea
 begin
   IsMainThread:=False;
   if AthreadIdentifier<>feInvalidHandle then
-    begin
+  begin
     IsMainThread := AthreadIdentifier=ProcessID;
     result := TDbgAvrThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
-    end
+  end
   else
     result := nil;
 end;
@@ -681,77 +669,72 @@ begin
   Result := TFpRspWatchPointData.Create;
 end;
 
-constructor TDbgAvrProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
-  );
+constructor TDbgAvrProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 begin
-  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  if Assigned(AProcessConfig) and (AProcessConfig is TRemoteConfig) then
+  begin
+    FRemoteConfig := TRemoteConfig.Create;
+    FRemoteConfig.Assign(AProcessConfig);
+  end;
+
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgAvrProcess.Destroy;
 begin
   if Assigned(FConnection) then
     FreeAndNil(FConnection);
+  if Assigned(FRemoteConfig) then
+    FreeAndNil(FRemoteConfig);
   inherited Destroy;
 end;
 
-class function TDbgAvrProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
+function TDbgAvrProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
   AnExecutabeFilename: string;
-  dbg: TDbgAvrProcess = nil;
 begin
-  result := nil;
-
-  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  Result := false;
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not debug %s, because it''s a directory',[AnExecutabeFilename]);
     Exit;
   end;
 
-  if not FileExists(AFileName) then
+  if not FileExists(Name) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not find  %s.',[AnExecutabeFilename]);
     Exit;
   end;
 
-  dbg := TDbgAvrProcess.Create(AFileName, 0, 0, AnOsClasses, AMemManager);
+  if not Assigned(FRemoteConfig) then
+  begin
+    DebugLn(DBG_WARNINGS, 'TDbgAvrProcess only supports remote debugging and requires a valid TRemoteConfig class');
+    Exit;
+  end;
+
   try
-    dbg.FConnection := TRspConnection.Create(AFileName, dbg);
-    dbg.FConnection.Connect;
+    FConnection := TRspConnection.Create(Name, self, self.FRemoteConfig);
+    FConnection.Connect;
     try
-      dbg.FConnection.RegisterCacheSize := RegArrayLength;
-      result := dbg;
-      dbg.FStatus := dbg.FConnection.Init;
-      dbg := nil;
+      FConnection.RegisterCacheSize := RegArrayLength;
+      FStatus := FConnection.Init;
+      Result := true;
     except
       on E: Exception do
       begin
-        Result := nil;
-        if Assigned(dbg) then
-          dbg.Free;
         DebugLn(DBG_WARNINGS, Format('Failed to init remote connection. Errormessage: "%s".', [E.Message]));
       end;
     end;
   except
     on E: Exception do
     begin
-      Result := nil;
-      if Assigned(dbg) then
-        dbg.Free;
       DebugLn(DBG_WARNINGS, Format('Failed to start remote connection. Errormessage: "%s".', [E.Message]));
     end;
   end;
-end;
-
-class function TDbgAvrProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
-  AnError: TFpError): TDbgProcess;
-begin
-  result := nil;
 end;
 
 class function TDbgAvrProcess.isSupported(target: TTargetDescriptor): boolean;

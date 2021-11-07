@@ -280,6 +280,8 @@ type
     FConsoleTty: string;
     FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
+    // This only holds a reference to the LazDebugger instance
+    FProcessConfig: TDbgProcessConfig;
     function GetCurrentThreadId: Integer;
     function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
@@ -405,6 +407,9 @@ type
     property OnThreadBeforeProcessLoop: TNotifyEvent read FOnThreadBeforeProcessLoop write FOnThreadBeforeProcessLoop;
     property OnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent read FOnThreadProcessLoopCycleEvent write FOnThreadProcessLoopCycleEvent;
     property OnThreadDebugOutputEvent: TDebugOutputEvent read FOnThreadDebugOutputEvent write SetOnThreadDebugOutputEvent;
+
+    // Intermediate between FpDebugger and TDbgProcess.  Created by FPDebugger, so not owned by controller
+    property ProcessConfig: TDbgProcessConfig read FProcessConfig write FProcessConfig;
   end;
 
 implementation
@@ -1472,24 +1477,37 @@ begin
   // Get exe info, load classes
   CheckExecutableAndLoadClasses;
   if not Assigned(OsDbgClasses) then
-  begin
+    begin
     result := false;
     DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
-    exit;
-  end;
+    Exit;
+    end;
 
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, OsDbgClasses, MemManager, ProcessConfig);
+  if not Assigned(FCurrentProcess) then
+    begin
+    Result := false;
+    DebugLn(DBG_WARNINGS, 'Error - could not create TDbgProcess');
+    Exit;
+    end;
+
   if AttachToPid <> 0 then
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses, MemManager, FLastError)
+    Result := FCurrentProcess.AttachToInstance(AttachToPid, FLastError)
   else
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses, MemManager, FLastError);
-  if assigned(FCurrentProcess) then
+    Result := FCurrentProcess.StartInstance(Params, Environment, WorkingDirectory, FConsoleTty, Flags, FLastError);
+
+  if Result then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
     DebugLn(DBG_VERBOSE, 'Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
-    result := true;
+    end
+  else
+    begin
+    Result := false;
+    FreeAndNil(FCurrentProcess);
     end;
 end;
 

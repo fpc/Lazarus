@@ -184,7 +184,8 @@ type
     procedure InitializeLoaders; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -196,11 +197,9 @@ type
     procedure Interrupt; // required by app/fpd
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-      AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
+    function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+                      AFlags: TStartInstanceFlags; out AnError: TFpError): boolean; override;
+    function AttachToInstance(APid: Integer; out AnError: TFpError): boolean; override;
 
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
 
@@ -489,16 +488,15 @@ begin
   Result := TFpIntelWatchPointData.Create;
 end;
 
-constructor TDbgWinProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
-  );
+constructor TDbgWinProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 begin
   {$ifdef cpui386}
   FBitness := b32;
   {$else}
   FBitness := b64;
   {$endif}
-  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgWinProcess.Destroy;
@@ -658,65 +656,64 @@ begin
   end;
 end;
 
-class function TDbgWinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
+function TDbgWinProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
   AProcess: TProcessUTF8;
   LastErr: Integer;
 begin
-  result := nil;
+  result := false;
   AProcess := TProcessUTF8.Create(nil);
   try
     // To debug sub-processes, this needs to be poDebugProcess
     AProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
     if siForceNewConsole in AFlags then
       AProcess.Options:=AProcess.Options+[poNewConsole];
-    AProcess.Executable:=AFilename;
+    AProcess.Executable:=Name;
     AProcess.Parameters:=AParams;
     AProcess.Environment:=AnEnvironment;
     AProcess.CurrentDirectory:=AWorkingDirectory;
     AProcess.Execute;
 
-    result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID, AnOsClasses, AMemManager);
-    TDbgWinProcess(result).FProcProcess := AProcess;
+    Init(AProcess.ProcessID, 0);
+    Result:=true;
   except
     on E: Exception do
     begin
       LastErr := Integer(GetLastError);
-      DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s %d".',[AFileName, E.Message, LastErr]);
+      DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s %d".',[Name, E.Message, LastErr]);
       {$ifdef cpui386}
       if (E is EProcess) and (GetLastError=50) then
       begin
-        AnError := CreateError(fpErrCreateProcess, [AFileName, LastErr, E.Message, 'Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'])
+        AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, 'Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'])
       end
       else
       {$endif i386}
-      AnError := CreateError(fpErrCreateProcess, [AFileName, LastErr, E.Message, '']);
+      AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, '']);
       AProcess.Free;
     end;
   end;
 end;
 
-class function TDbgWinProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
-  AnError: TFpError): TDbgProcess;
+function TDbgWinProcess.AttachToInstance(APid: Integer; out AnError: TFpError
+  ): boolean;
 var
   LastErr: Integer;
 begin
-  Result := nil;
+  Result := false;
   if _DebugActiveProcess = nil then begin
-    AnError := CreateError(fpErrAttachProcess, [AFileName, 0, 'API unavailable', '']);
+    AnError := CreateError(fpErrAttachProcess, [Name, 0, 'API unavailable', '']);
     exit;
   end;
   if not _DebugActiveProcess(APid) then begin
     LastErr := Integer(GetLastError);
-    AnError := CreateError(fpErrAttachProcess, [AFileName, LastErr, GetLastErrorText(LastErr), '']);
+    AnError := CreateError(fpErrAttachProcess, [Name, LastErr, GetLastErrorText(LastErr), '']);
     exit;
   end;
 
-  result := TDbgWinProcess.Create(AFileName, APid, 0, AnOsClasses, AMemManager);
+  Init(APid, 0);
+  Result := true;
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
 

@@ -44,6 +44,31 @@ const
   SIGUNUSED  = 31;
 
 type
+  { TRemoteConfig }
+
+  TRemoteConfig = class(TDbgProcessConfig)
+  private
+    FHost: string;
+    FPort: integer;
+    FUploadBinary: boolean;
+    FAfterConnectMonitorCmds: TStringList;
+    FSkipSectionsList: TStringList;
+    FAfterUploadBreakZero: boolean;
+    FAfterUploadMonitorCmds: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+
+    property Host: string read FHost write FHost;
+    property Port: integer read FPort write FPort;
+    property UploadBinary: boolean read FUploadBinary write FUploadBinary;
+    property AfterConnectMonitorCmds: TStringList read FAfterConnectMonitorCmds write FAfterConnectMonitorCmds;
+    property SkipSectionsList: TStringList read FSkipSectionsList write FSkipSectionsList;
+    property AfterUploadBreakZero: boolean read FAfterUploadBreakZero write FAfterUploadBreakZero;
+    property AfterUploadMonitorCmds: TStringList read FAfterUploadMonitorCmds write FAfterUploadMonitorCmds;
+  end;
+
   TInitializedRegister = record
     Initialized: boolean;
     Value: qword; // sized to handle largest register, should truncate as required to smaller registers
@@ -73,6 +98,7 @@ type
     FOwner: TDbgProcess;
     // Catch exceptions and store as socket errors
     FSockErr: boolean;
+    FConfig: TRemoteConfig;
     procedure SetRegisterCacheSize(sz: cardinal);
     function WaitForData(timeout_ms: integer): integer; overload;
 
@@ -95,7 +121,7 @@ type
     function HexEncodeStr(s: string): string;
     function HexDecodeStr(hexcode: string): string;
   public
-    constructor Create(AFileName: string; AOwner: TDbgProcess); Overload;
+    constructor Create(AFileName: string; AOwner: TDbgProcess; AConfig: TRemoteConfig); Overload;
     destructor Destroy; override;
     // Wait for async signal - blocking
     function WaitForSignal(out msg: string; out registers: TInitializedRegisters): integer;
@@ -131,15 +157,6 @@ type
     property SockErr: boolean read FSockErr;
   end;
 
-var
-  AHost: string = 'localhost';
-  APort: integer = 2345;
-  AUploadBinary: boolean = False;
-  AAfterConnectMonitorCmds: TStringList;
-  ASkipSectionsList: TStringList;
-  AAfterUploadBreakZero: boolean;
-  AAfterUploadMonitorCmds: TStringList;
-
 implementation
 
 uses
@@ -151,6 +168,43 @@ uses
 
 var
   DBG_VERBOSE, DBG_WARNINGS, DBG_RSP: PLazLoggerLogGroup;
+
+{ TRemoteConfig }
+
+constructor TRemoteConfig.Create;
+begin
+  FHost := 'localhost';
+  FPort := 1234;        // default port for qemu
+  FUploadBinary := false;
+  FAfterConnectMonitorCmds := TStringList.Create;
+  FSkipSectionsList := TStringList.Create;
+  FAfterUploadBreakZero := false;
+  FAfterUploadMonitorCmds := TStringList.Create;
+end;
+
+destructor TRemoteConfig.Destroy;
+begin
+  FreeAndNil(FAfterConnectMonitorCmds);
+  FreeAndNil(FSkipSectionsList);
+  FreeAndNil(FAfterUploadMonitorCmds);
+end;
+
+procedure TRemoteConfig.Assign(Source: TPersistent);
+var
+  ASource: TRemoteConfig;
+begin
+  if Assigned(Source) and (Source is TRemoteConfig) then
+  begin
+    ASource := TRemoteConfig(Source);
+    FHost := ASource.Host;
+    FPort := ASource.Port;
+    FUploadBinary := ASource.UploadBinary;
+    FAfterUploadBreakZero := ASource.AfterUploadBreakZero;
+    FAfterConnectMonitorCmds.Assign(ASource.AfterConnectMonitorCmds);
+    FSkipSectionsList.Assign(ASource.SkipSectionsList);
+    FAfterUploadMonitorCmds.Assign(ASource.AfterUploadMonitorCmds);
+  end;
+end;
 
 procedure TRspConnection.SetRegisterCacheSize(sz: cardinal);
 begin
@@ -491,15 +545,18 @@ begin
   result := not(SockErr) and (pos('OK', reply) = 1);
 end;
 
-constructor TRspConnection.Create(AFileName: string; AOwner: TDbgProcess);
+constructor TRspConnection.Create(AFileName: string; AOwner: TDbgProcess;
+  AConfig: TRemoteConfig);
 var
   FSocketHandler: TSocketHandler;
 begin
+  // Just copy reference to AConfig
+  FConfig := AConfig;
   { Create a socket handler, so that TInetSocket.Create call doesn't automatically connect.
     This can raise an exception when connection fails.
     The FSocketHandler instance will be managed by TInetSocket. }
   FSocketHandler := TSocketHandler.Create;
-  inherited Create(AHost, APort, FSocketHandler);
+  inherited Create(FConfig.Host, FConfig.Port, FSocketHandler);
   InitCriticalSection(fCS);
   FFileName := AFileName;
   FOwner := AOwner;
@@ -960,27 +1017,29 @@ begin
     end;
 
     // Fancy stuff - load exe & sections, run monitor cmds etc
-    if assigned(AAfterConnectMonitorCmds) and (AAfterConnectMonitorCmds.Count > 0) then
+    if assigned(FConfig.AfterConnectMonitorCmds) and (FConfig.AfterConnectMonitorCmds.Count > 0) then
     begin
-      for i := 0 to AAfterConnectMonitorCmds.Count-1 do
-        SendMonitorCmd(AAfterConnectMonitorCmds[i]);
+      for i := 0 to FConfig.AfterConnectMonitorCmds.Count-1 do
+        SendMonitorCmd(FConfig.AfterConnectMonitorCmds[i]);
     end;
 
     // Start with AVR logic
     // If more targets are supported, move this to target specific debugger class
-    if AUploadBinary and (FFileName <> '') then
+    if FConfig.UploadBinary and (FFileName <> '') then
     begin
       // Ensure loader is initialized
-      FOwner.InitializeLoaders;
+      if not Assigned(FOwner.DbgInfo) then
+        FOwner.LoadInfo;
       datastart := -1;
       i := -1;
       repeat
         inc(i);
         pSection := FOwner.LoaderList[0].SectionByID[i];
+
         if (pSection <> nil) and (pSection^.Size > 0) and (pSection^.IsLoadable) then
         begin
-          if Assigned(ASkipSectionsList) and
-             (ASkipSectionsList.IndexOf(pSection^.Name) < 0) then
+          if Assigned(FConfig.SkipSectionsList) and
+             (FConfig.SkipSectionsList.IndexOf(pSection^.Name) < 0) then
           begin
             // .data section should be programmed straight after .text for AVR
             // Require tracking because sections are sorted alphabetically,
@@ -1015,13 +1074,13 @@ begin
     end;
 
     // Hack to finish initializing atbackend agent
-    if AAfterUploadBreakZero then
+    if FConfig.AfterUploadBreakZero then
       SetBreakWatchPoint(0, wkpExec);  // Todo: check if different address is required
 
-    if assigned(AAfterUploadMonitorCmds) and (AAfterUploadMonitorCmds.Count > 0) then
+    if assigned(FConfig.AfterUploadMonitorCmds) and (FConfig.AfterUploadMonitorCmds.Count > 0) then
     begin
-      for i := 0 to AAfterUploadMonitorCmds.Count-1 do
-        SendMonitorCmd(AAfterUploadMonitorCmds[i]);
+      for i := 0 to FConfig.AfterUploadMonitorCmds.Count-1 do
+        SendMonitorCmd(FConfig.AfterUploadMonitorCmds[i]);
     end;
 
     // Must be last init command, after init the debug loop waits for the response in WaitForSignal
@@ -1042,12 +1101,5 @@ initialization
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_RSP := DebugLogger.FindOrRegisterLogGroup('DBG_RSP' {$IFDEF DBG_RSP} , True {$ENDIF} );
 
-finalization
-  if Assigned(AAfterConnectMonitorCmds) then
-    FreeAndNil(AAfterConnectMonitorCmds);
-  if Assigned(ASkipSectionsList) then
-    FreeAndNil(ASkipSectionsList);
-  if Assigned(AAfterUploadMonitorCmds) then
-    FreeAndNil(AAfterUploadMonitorCmds);
 end.
 
