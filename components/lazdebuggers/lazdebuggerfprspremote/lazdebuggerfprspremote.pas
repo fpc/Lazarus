@@ -2,21 +2,21 @@
   This source is only used to compile and install the package.
  }
 
-unit lazdebuggerfpremote;
+unit LazDebuggerFpRspRemote;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  RemoteDebugger, LazarusPackageIntf;
+  RspRemoteDebugger, LazarusPackageIntf;
 
 implementation
 
 procedure Register;
 begin
-  RegisterUnit('RemoteDebugger', @RemoteDebugger.Register);
+  RegisterUnit('RspRemoteDebugger', @RspRemoteDebugger.Register);
 end;
 
 initialization
-  RegisterPackage('lazdebuggerfpremote', @Register);
+  RegisterPackage('LazDebuggerFpRspRemote', @Register);
 end.
