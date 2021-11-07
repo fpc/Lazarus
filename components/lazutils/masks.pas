@@ -166,7 +166,9 @@ type
       mfcMaskNotMatch,
       mfcUnexpectedEnd
     );
-    const GROW_BY=100;
+    const
+      GROW_BY=100;
+      DefaultSpecialChars=['*', '?', '['];
     procedure Add(aLength: integer; aData: PBYTE);
     procedure Add(aValue: integer);
     procedure Add(aValue: TMaskParsedCode);
@@ -223,6 +225,8 @@ type
     procedure SetMask(AValue: String); virtual;
   protected
     fOriginalMask: String;
+    function IsSpecialChar(AChar: Char): Boolean; virtual;
+    procedure CompileOtherSpecialChars; virtual;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
   public
@@ -747,6 +751,16 @@ begin
   fMaskIsCompiled := False;
 end;
 
+function TMaskUTF8.IsSpecialChar(AChar: Char): Boolean;
+begin
+  Result := False;
+end;
+
+procedure TMaskUTF8.CompileOtherSpecialChars;
+begin
+  // nothing to do in this class
+end;
+
 procedure TMaskUTF8.CompileRange;
   function IsARange(aPosition: integer; out aFirstSequence: integer; out aSecondSequence: integer): Boolean;// {$IFDEF USE_INLINE}inline;{$ENDIF}
     var
@@ -895,7 +909,7 @@ begin
 end;
 
 procedure TMaskUTF8.Compile;
-  procedure HandleEscapeCharPlusLiteral;
+  procedure CompileEscapeCharPlusLiteral;
   begin
     inc(fMaskInd,fCPLength);
     if fMaskInd<=fMaskLimit then begin
@@ -907,7 +921,7 @@ procedure TMaskUTF8.Compile;
       Exception_IncompleteMask();
   end;
 
-  procedure HandleSpecialChar;
+  procedure CompileSpecialChar;
   begin
     case fMask[fMaskInd] of
       '*':
@@ -955,6 +969,10 @@ procedure TMaskUTF8.Compile;
             AddLiteral;
           end;
         end;
+      otherwise
+      begin
+        CompileOtherSpecialChars;
+      end;
     end;
   end;
 
@@ -975,10 +993,10 @@ begin
   while fMaskInd<=fMaskLimit do begin //while
     fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
     if (mocEscapeChar in fMaskOpcodesAllowed) and (fMask[fMaskInd]=fMaskEscapeChar) then
-      HandleEscapeCharPlusLiteral
+      CompileEscapeCharPlusLiteral
     else begin // not an escaped literal
-      if fMask[fMaskInd] in ['*','?','['] then begin // handle special chars
-        HandleSpecialChar;
+      if (fMask[fMaskInd] in DefaultSpecialChars) or IsSpecialChar(fMask[fMaskInd]) then begin // handle special chars
+        CompileSpecialChar;
       end  //handle special chars
       else
       begin
