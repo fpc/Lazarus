@@ -326,7 +326,8 @@ const
    LCLQt_DelayResizeEvent = QEventType(Ord(QEventUser) + $1010);
    // systemtrayicon event, used to find and register private QWidget of QSystemTrayIcon
    LCLQt_RegisterSystemTrayIcon = QEventType(Ord(QEventUser) + $1011);
-
+   // combobox OnCloseUp should be in order OnChange->OnSelect->OnCloseUp
+   LCLQt_ComboBoxCloseUp = QEventType(Ord(QEventUser) + $1012);
 
    QtTextSingleLine            = $0100;
    QtTextDontClip              = $0200;
