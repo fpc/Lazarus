@@ -628,16 +628,10 @@ constructor TDbgDarwinProcess.Create(const AFileName: string;
   AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
   AProcessConfig: TDbgProcessConfig);
 var
-  aKernResult: kern_return_t;
 begin
   inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 
   GetDebugAccessRights;
-  aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
-  if aKernResult <> KERN_SUCCESS then
-    begin
-    debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(AProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
-    end;
 end;
 
 destructor TDbgDarwinProcess.Destroy;
@@ -653,6 +647,7 @@ var
   AProcess: TProcessUTF8;
   AnExecutabeFilename: string;
   AMasterPtyFd: cint;
+  aKernResult: kern_return_t;
 begin
   result := false;
 
@@ -666,7 +661,7 @@ begin
       end;
 
     AnExecutabeFilename := AnExecutabeFilename + '/Contents/MacOS/' + ChangeFileExt(ExtractFileName(AnExecutabeFilename),'');
-    if not FileExists(AFileName) then
+    if not FileExists(AnExecutabeFilename) then
       begin
       DebugLn(DBG_WARNINGS, format('Can not find  %s.',[AnExecutabeFilename]));
       Exit;
@@ -706,11 +701,21 @@ begin
     FMasterPtyFd := AMasterPtyFd;
     FProcProcess := AProcess;
     sleep(100);
-    Result:=FProcessID > 0;
+    Result:=ProcessID > 0;
+
+    if Result then begin
+      aKernResult:=task_for_pid(mach_task_self, ProcessID, FTaskPort);
+      if aKernResult <> KERN_SUCCESS then
+        begin
+        Result := False
+        debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(ProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
+        end;
+    end;
+
   except
     on E: Exception do
     begin
-      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]));
+      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[AnExecutabeFilename, E.Message]));
       AProcess.Free;
 
       if AMasterPtyFd>-1 then
