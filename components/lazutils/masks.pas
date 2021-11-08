@@ -1280,8 +1280,8 @@ procedure TWindowsMaskUTF8.SetWindowsQuirkAllowed(AValue: TWindowsQuirks);
 begin
   if fWindowsQuirkAllowed = AValue then Exit;
   fWindowsQuirkAllowed := AValue;
-  if (wqFilenameEnd in fWindowsQuirkAllowed) then
-    Include(fMaskOpcodesAllowed, mocAnyCharOrNone);
+  //if (wqFilenameEnd in fWindowsQuirkAllowed) then
+  //  Include(fMaskOpcodesAllowed, mocAnyCharOrNone);
   fMaskIsCompiled := False;
 end;
 
@@ -1490,8 +1490,8 @@ constructor TWindowsMaskUTF8.Create(const aMask: String; aCaseSensitive: Boolean
 begin
   fWindowsQuirkAllowed:=aWindowsQuirksAllowed;
   fWindowsMask:=aMask;
-  if (wqFilenameEnd in fWindowsQuirkAllowed) then
-    Include(aOpcodesAllowed, mocAnyCharOrNone);
+  //if (wqFilenameEnd in fWindowsQuirkAllowed) then
+  //  Include(aOpcodesAllowed, mocAnyCharOrNone);
   inherited Create(aMask,aCaseSensitive,aOpcodesAllowed);
   //don't compile on create: we do NOT want a crash in the constructor
   {
@@ -1503,12 +1503,21 @@ procedure TWindowsMaskUTF8.Compile;
 
   function OptionalQMarksAtEnd(aMask: String): String;
   var
-    lCounter: integer;
-    k: integer;
+    //lCounter: integer;
+    i: integer;
   begin
+    //Change ending ? in #0
+    Result := aMask;
+    for i := Length(aMask) downto 1 do begin
+      if Result[i]='?' then
+        Result[i]:=#0
+      else
+        Exit;
+    end;
+    {
     lCounter:=0;
-    for k := Length(aMask) downto 1 do begin
-      if aMask[k]='?' then
+    for i := Length(aMask) downto 1 do begin
+      if aMask[i]='?' then
         inc(lCounter)
       else
         break;
@@ -1516,6 +1525,7 @@ procedure TWindowsMaskUTF8.Compile;
     if lCounter>0 then
       aMask:=copy(aMask,1,Length(aMask)-lCounter)+'['+StringOfChar('?',lCounter)+']';
     Result:=aMask;
+    }
   end;
 
   {
