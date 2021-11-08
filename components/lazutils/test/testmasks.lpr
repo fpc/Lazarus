@@ -281,7 +281,7 @@ begin
   TestMask('a?c', '?\??', False);
   TestMask('ab*.x', '??\*.x', False);
   TestMask('x \ y', '? \\ ?', False);
-  TestMask('abc', '?[?]?', True); //mocAnyCharOrNone is enabled in DefaultMaskOpCodes
+  TestMask('abc', '?[?]?', False);
   TestMask('a??d', '?[?]?', False);
 end;
 
