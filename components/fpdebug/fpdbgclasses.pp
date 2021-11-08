@@ -600,7 +600,8 @@ type
 
     function CreateWatchPointData: TFpWatchPointData; virtual;
     procedure Init(const AProcessID, AThreadID: Integer);
-public
+    procedure InitializeLoaders; override;
+  public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; virtual;
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
                       AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); virtual;
@@ -667,7 +668,6 @@ public
     procedure ThreadsBeforeContinue;
     procedure ThreadsClearCallStack;
     procedure LoadInfo; override;
-    procedure InitializeLoaders; override;
 
     function WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean; virtual;
     // Modify the debugee's code.
