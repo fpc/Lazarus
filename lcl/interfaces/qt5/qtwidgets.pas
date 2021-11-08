@@ -12624,7 +12624,7 @@ end;
 function TQtListWidget.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
   cdecl;
 var
-  ev: QEventH;
+  ALCLEvent: QLCLMessageEventH;
 begin
   Result := False;
   QEvent_accept(Event);
@@ -12638,10 +12638,10 @@ begin
       begin
         {we must delay SlotDropDownVisiblity according to #9574
          so order is OnChange(if editable)->OnSelect->OnCloseUp }
-        ev := QEvent_create(QEventHideToParent);
-        QCoreApplication_postEvent(Sender, ev);
+        ALCLEvent := QLCLMessageEvent_Create(LCLQt_ComboBoxCloseUp);
+        QCoreApplication_postEvent(Sender, ALCLEvent, Ord(QtHighEventPriority));
       end;
-      QEventHideToParent: TQtComboBox(FOwner).SlotDropListVisibility(False);
+      LCLQt_ComboBoxCloseUp: TQtComboBox(FOwner).SlotDropListVisibility(False);
     end;
   end else
   begin
