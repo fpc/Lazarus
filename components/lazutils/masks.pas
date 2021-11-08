@@ -120,7 +120,7 @@ const
                        mocSet,
                        mocNegateGroup];
 
-  DefaultMaskOpCodes=AllMaskOpCodes-[mocEscapeChar];//MaskOpCodesNoEscape;
+  DefaultMaskOpCodes=MaskOpCodesNoEscape;
 
 type
 
@@ -520,8 +520,8 @@ var
 begin
   if fWindowsQuirks = AValue then Exit;
   fWindowsQuirks := AValue;
-  if (wqFilenameEnd in fWindowsQuirks) then
-    Include(fMaskOpcodes, mocAnyCharOrNone);
+  //if (wqFilenameEnd in fWindowsQuirks) then
+  //  Include(fMaskOpcodes, mocAnyCharOrNone);
   for i := 0 to fMasks.Count - 1 do
   begin
     TWindowsMask(fMasks.Items[i]).Quirks := FWindowsQuirks;
@@ -558,8 +558,8 @@ constructor TWindowsMaskList.Create(const aValue: String; aSeparator: Char;
   aWindowsQuirksAllowed: TWindowsQuirks);
 begin
   fWindowsQuirks := aWindowsQuirksAllowed;
-  if (wqFilenameEnd in aWindowsQuirksAllowed) then
-    Include(aOpcodesAllowed, mocAnyCharOrNone);
+  //if (wqFilenameEnd in aWindowsQuirksAllowed) then
+  //  Include(aOpcodesAllowed, mocAnyCharOrNone);
   inherited Create(aValue, aSeparator, aCaseSensitive, aOpcodesAllowed);
 end;
 
