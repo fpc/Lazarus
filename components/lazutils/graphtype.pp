@@ -22,8 +22,15 @@ unit GraphType;
 
 interface
 
+{$if FPC_FULLVERSION>=30203}
+{$define UseSystemUITypes}
+{$endif}
+
 uses
   Classes, SysUtils, Types, Math,
+  {$ifdef UseSystemUITypes}
+  System.UITypes,
+  {$endif}
   // LazUtils
   FPCAdds, LazLoggerBase;
 
@@ -32,7 +39,7 @@ uses
 {$endif}
 
 type
-  TGraphicsColor = -$7FFFFFFF-1..$7FFFFFFF;
+  TGraphicsColor = {$ifdef UseSystemUITypes}System.UITypes.TColor{$else}-$7FFFFFFF-1..$7FFFFFFF{$endif};
   TGraphicsFillStyle =
   (
     fsSurface, // fill till the color (it fills all except this color)

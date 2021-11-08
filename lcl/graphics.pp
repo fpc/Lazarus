@@ -37,6 +37,10 @@ interface
 {$DEFINE HasFPJoinStyle}
 {$ENDIF}
 
+{$IF FPC_FULLVERSION>=30203}
+{$DEFINE UseSystemUITypes}
+{$ENDIF}
+
 uses
   // RTL + FCL
   SysUtils, Math, Types, Classes, Contnrs, Laz_AVL_Tree,
@@ -55,6 +59,9 @@ uses
   {$IFNDEF DisableLCLGIF}
   FPReadGif,
   {$ENDIF}
+  {$IFDEF UseSystemUITypes}
+  System.UITypes,
+  {$ENDIF}
   // LCL
   LCLVersion, LCLStrConsts, LCLType, LCLProc, LMessages, LResources, LCLResCache,
   IntfGraphics, IcnsTypes, WSReferences,
@@ -62,7 +69,7 @@ uses
   GraphType, GraphMath, FPCAdds, LazLoggerBase, LazTracer, LazUtilities;
 
 type
-  PColor = ^TColor;
+  PColor = {$IFDEF UseSystemUITypes}System.UITypes.PColor{$ELSE}^TColor{$ENDIF};
   TColor = TGraphicsColor;
 
   TFontPitch = (fpDefault, fpVariable, fpFixed);
