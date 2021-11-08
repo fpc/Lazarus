@@ -230,6 +230,9 @@ type
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
   public
+
+    procedure DumpMaskCompiled;
+
     constructor Create(const aMask: String);
     constructor Create(const aMask: String; aCaseSensitive: Boolean);
     constructor Create(const aMask: String; aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes); virtual; overload;
@@ -258,6 +261,7 @@ type
     fWindowsQuirkInUse: TWindowsQuirks;
     fWindowsMask: String;
     procedure CompileOtherSpecialChars; override;
+    function IsSpecialChar(AChar: Char): Boolean; override;
     class procedure SplitFileNameExtension(const aSourceFileName: String;
       out aFileName: String; out aExtension: String; aIsMask: Boolean=False); static;
   public
@@ -637,7 +641,7 @@ procedure TMaskBase.Add(aValue: TMaskParsedCode);
 var
   v: BYTE;
 begin
-  //writeln('Add: ',aValue);
+  writeln('Add: ',aValue);
   v:=BYTE(aValue);
   Add(1,@v);
 end;
@@ -646,7 +650,7 @@ procedure TMaskBase.IncrementLastCounterBy(aOpcode: TMaskParsedCode; aValue: int
 var
   p: PInteger;
 begin
-  writeln('TMaskBase.IncrementLastCounterBy: aOPcode=',aOpcode,', aValue',aValue);
+  writeln('TMaskBase.IncrementLastCounterBy: aOPcode=',aOpcode,', aValue=',aValue);
   fMaskCompiledIndex:=fMaskCompiledIndex-sizeof(aValue);
   if TMaskParsedCode(fMaskCompiled[fMaskCompiledIndex-1])<>aOpcode then
     Exception_InternalError();
@@ -756,10 +760,7 @@ end;
 
 function TMaskUTF8.IsSpecialChar(AChar: Char): Boolean;
 begin
-  //Result := False
-  //********************************
-  Result := AChar = #0;
-  //********************************
+  Result := False
 end;
 
 procedure TMaskUTF8.CompileOtherSpecialChars;
@@ -900,14 +901,10 @@ begin
          Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
       end;
     end;
-    writeln('inc(fMaskInd,fCPLength);');
     inc(fMaskInd,fCPLength);
-    writeln('while loop end');
   end;
-  writeln('After while loop');
   if fMaskInd>fMaskLimit then
     Exception_MissingCloseChar(']',fMaskLimit);
-  writeln('CompileRange end.');
 end;
 
 function TMaskUTF8.GetMask: String;
@@ -1031,12 +1028,7 @@ begin
   writeln('fMaskCompiled:');
   writeln('fMaskCompiledLimit=',fMaskCompiledLimit);
   writeln('fMaskCompiledIndex=',fMaskCompiledIndex);
-  for junk := low(fMaskCompiled) to High(fMaskCompiled) do
-  begin
-    junkbyte := fMaskCompiled[junk];
-    writeln(junk:2,': ',junkbyte:3);
-  end;
-
+  DumpMaskCompiled;
 end;
 
 class function TMaskUTF8.CompareUTF8Sequences(const P1, P2: PChar): integer;
@@ -1207,6 +1199,20 @@ begin
     Result:=TMaskFailCause.mfcMatchStringExhausted;
 end;
 
+procedure TMaskUTF8.DumpMaskCompiled;
+var
+  junk,H: Integer;
+  junkbyte: Byte;
+begin
+  H := High(fMaskCompiled);
+  if H > 12 then H := 12;
+  for junk := low(fMaskCompiled) to fMaskCompiledIndex-1 do
+  begin
+    junkbyte := fMaskCompiled[junk];
+    writeln(junk:2,': ',junkbyte:3);
+  end;
+end;
+
 constructor TMaskUTF8.Create(const aMask: String);
 begin
   Create(aMask, False, DefaultMaskOpCodes);
@@ -1285,11 +1291,56 @@ procedure TWindowsMaskUTF8.CompileOtherSpecialChars;
 var
   lCharsGroupInsertSize: integer;
 //**************************
+  OldMin, OldMax, ZeroCount: Integer;
 begin
   inherited CompileOtherSpecialChars;
   writeln('CompileOtherSpecialChars');
+  //writeln('fMaskCompiled');
+  //DumpMaskCompiled;
+
+
+  //fMatchMaximumLiteralBytes is incremetend by amount of #0 * 4 (4 bytes since it allows for UTF8)
+{
+  Add: CharsGroupBegin
+  lCharsGroupInsertSize:=fMaskCompiledIndex;
+  Add(0)
+  Add: AnyCharOrNone
+  Add(1)
+  TMaskBase.IncrementLastCounterBy: aOPcode=AnyCharOrNone, aValue=1  number of zero's -1
+  lCharsGroupInsertSize=1
+  PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+  Add: CharsGroupEnd
+  Inc(fMatchMaximumLiteralBytes,number of zero's *4);
+  Set fMaskInd to last zero (+Count-1)
+}
+  ZeroCount:=1;
+  while (fMaskInd+ZeroCount<=fMaskLimit) and (fMask[fMaskInd+ZeroCount]=#0) do Inc(ZeroCount);
+  //writeln('Nr of Zero''s: ',ZeroCount);
+
+  Add(TMaskParsedCode.CharsGroupBegin);
+  lCharsGroupInsertSize:=fMaskCompiledIndex;
+  Add(0);
+  Add(TMaskParsedCode.AnyCharOrNone);
+  Add(1);
+  if ZeroCount>1 then
+    IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,ZeroCount-1);
+  PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+  Add(TMaskParsedCode.CharsGroupEnd);
+  fLastOC:=TMaskParsedCode.CharsGroupEnd;
+  Inc(fMatchMaximumLiteralBytes,ZeroCount*4);
+  Inc(fMaskInd,ZeroCount-1);
+  write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
+  writeln('CompileOtherSpecialChars end.');
+  {
+
+  EXIT;
+
   fLastOC:=TMaskParsedCode.CharsGroupBegin;
   Add(TMaskParsedCode.CharsGroupBegin);
+
+  //writeln('fMaskCompiled');
+  //DumpMaskCompiled;
+
   inc(fMatchMinimumLiteralBytes,1);
   if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
     begin //writeln('inc(fMatchMaximumLiteralBytes,4)');
@@ -1297,7 +1348,10 @@ begin
   //writeln('lCharsGroupInsertSize:=fMaskCompiledIndex;');
   lCharsGroupInsertSize:=fMaskCompiledIndex;
 
+  writeln('Add(0)');
   Add(0);
+  //writeln('fMaskCompiled after Add(0)');
+  //DumpMaskCompiled;
 
   while fMaskInd<=fMaskLimit do begin
     fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
@@ -1306,9 +1360,23 @@ begin
         if fLastOC=TMaskParsedCode.AnyCharOrNone then begin
           // Increment counter
           IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,1);
+
+          //writeln('fMaskCompiled');
+          //DumpMaskCompiled;
+
         end else begin
           Add(TMaskParsedCode.AnyCharOrNone);
+
+          //writeln('fMaskCompiled');
+          //DumpMaskCompiled;
+
+          writeln('Add(1)');
           Add(1); // Counter
+
+          //writeln('fMaskCompiled after Add(1)');
+          //DumpMaskCompiled;
+
+
           // Discount minimun bytes added at the "CharGroupBegin"
           // because [?] could be 1 or 0 chars, so minimum is zero
           // but the CharsGroupBegin assumes 1 char as all other
@@ -1342,6 +1410,7 @@ begin
 
 
       // Insert the new offset in case of a positive match in CharsGroup
+      writeln('lCharsGroupInsertSize=',lCharsGroupInsertSize);
       PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
       Add(TMaskParsedCode.CharsGroupEnd);
       fLastOC:=TMaskParsedCode.CharsGroupEnd;
@@ -1352,17 +1421,36 @@ begin
   end;
   //fMask ended with #0
   if fLastOC<>TMaskParsedCode.CharsGroupEnd then begin
+    writeln('lCharsGroupInsertSize=',lCharsGroupInsertSize);
     PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+
+    //writeln('fMaskCompiled');
+    //DumpMaskCompiled;
+
     Add(TMaskParsedCode.CharsGroupEnd);
+
+    //writeln('fMaskCompiled');
+    //DumpMaskCompiled;
+
     fLastOC:=TMaskParsedCode.CharsGroupEnd;
   end;
 
   Dec(fMaskInd);
-  //write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
+  write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
+
+
+  //writeln('OldMin: ',OldMin,', fMatchMinimumLiteralBytes:',fMatchMinimumLiteralBytes,', Diff: ',fMatchMinimumLiteralBytes-OldMin);
+  //writeln('OldMax: ',OldMax,', fMatchMaximumLiteralBytes:',fMatchMaximumLiteralBytes,', Diff: ',fMatchMaximumLiteralBytes-OldMax);
 
   if fMaskInd>fMaskLimit then
     Exception_MissingCloseChar(']',fMaskLimit);
-  //writeln('CompileOtherSpecialChars end.');
+  writeln('CompileOtherSpecialChars end.');
+  }
+end;
+
+function TWindowsMaskUTF8.IsSpecialChar(AChar: Char): Boolean;
+begin
+  Result := (AChar = #0);
 end;
 
 class procedure TWindowsMaskUTF8.SplitFileNameExtension(
