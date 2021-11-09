@@ -813,105 +813,115 @@ var
   lCharsGroupInsertSize, lFirstRange, lSecondRange: integer;
 begin
   writeln('CompileRange: fMask[fMaskInd]=',fMask[fMaskInd]);
-  fLastOC:=TMaskParsedCode.CharsGroupBegin;
-  Add(TMaskParsedCode.CharsGroupBegin);
-  inc(fMatchMinimumLiteralBytes,1);
-  if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
-    begin inc(fMatchMaximumLiteralBytes,4); end;
-  lCharsGroupInsertSize:=fMaskCompiledIndex;
-  Add(0);
-  inc(fMaskInd); // CP length is 1 because it is "["
-  if fMaskInd<fMaskLimit then begin
-    if (fMask[fMaskInd]='!') and (mocNegateGroup in fMaskOpcodesAllowed) then begin
-      Add(TMaskParsedCode.Negate);
-      inc(fMaskInd); // CP length is 1 because it is "!"
-      fLastOC:=TMaskParsedCode.Negate;
+  if (mocAnyCharOrNone in fMaskOpcodesAllowed) and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]='?') then begin
+    CompileAnyCharOrNone;
+  end else begin//not AnyCharOrNone
+    fLastOC:=TMaskParsedCode.CharsGroupBegin;
+    Add(TMaskParsedCode.CharsGroupBegin);
+    inc(fMatchMinimumLiteralBytes,1);
+    if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+      begin inc(fMatchMaximumLiteralBytes,4); end;
+    lCharsGroupInsertSize:=fMaskCompiledIndex;
+    Add(0);
+    inc(fMaskInd); // CP length is 1 because it is "["
+    if fMaskInd<fMaskLimit then begin
+      if (fMask[fMaskInd]='!') and (mocNegateGroup in fMaskOpcodesAllowed) then begin
+        Add(TMaskParsedCode.Negate);
+        inc(fMaskInd); // CP length is 1 because it is "!"
+        fLastOC:=TMaskParsedCode.Negate;
+      end;
     end;
-  end;
-  while fMaskInd<=fMaskLimit do begin
-    fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-    if (fMask[fMaskInd]='?') and (mocAnyCharOrNone in fMaskOpcodesAllowed) then begin //mocAnyCharOrNone and '?' found
-      // This syntax is permitted [??] but not this one [?a] or [a?]
-      if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.AnyCharOrNone) then begin
-        if fLastOC=TMaskParsedCode.AnyCharOrNone then begin
-          // Increment counter
-          IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,1);
-        end else begin
-          Add(TMaskParsedCode.AnyCharOrNone);
-          Add(1); // Counter
-          // Discount minimun bytes added at the "CharGroupBegin"
-          // because [?] could be 1 or 0 chars, so minimum is zero
-          // but the CharsGroupBegin assumes 1 char as all other
-          // masks replace the group by 1 char position.
-          // This code will run 1 time per group at maximun.
-          dec(fMatchMinimumLiteralBytes,1);
+    while fMaskInd<=fMaskLimit do begin //while
+      fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+
+      {
+      if (fMask[fMaskInd]='?') and (mocAnyCharOrNone in fMaskOpcodesAllowed) then begin //mocAnyCharOrNone and '?' found
+        // This syntax is permitted [??] but not this one [?a] or [a?]
+        if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.AnyCharOrNone) then begin
+          if fLastOC=TMaskParsedCode.AnyCharOrNone then begin
+            // Increment counter
+            IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,1);
+          end else begin
+            Add(TMaskParsedCode.AnyCharOrNone);
+            Add(1); // Counter
+            // Discount minimun bytes added at the "CharGroupBegin"
+            // because [?] could be 1 or 0 chars, so minimum is zero
+            // but the CharsGroupBegin assumes 1 char as all other
+            // masks replace the group by 1 char position.
+            // This code will run 1 time per group at maximun.
+            dec(fMatchMinimumLiteralBytes,1);
+            if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
+              begin writeln('dec(fMatchMaximumLiteralBytes,4)'); dec(fMatchMaximumLiteralBytes,4); end;
+          end;
           if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
-            begin writeln('dec(fMatchMaximumLiteralBytes,4)'); dec(fMatchMaximumLiteralBytes,4); end;
-        end;
-        if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
-          begin inc(fMatchMaximumLiteralBytes,4); end;
-        fLastOC:=TMaskParsedCode.AnyCharOrNone;
+            begin inc(fMatchMaximumLiteralBytes,4); end;
+          fLastOC:=TMaskParsedCode.AnyCharOrNone;
+        end
+        else
+          begin
+            Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
+          end;
+      end //mocAnyCharOrNone and '?' found
+      else if (fLastOC=TMaskParsedCode.AnyCharOrNone) and (fMask[fMaskInd]<>']') then begin //mocAnyCharOrNone and inside [?
+        //writeln('Compile found not ? after [?: ',fMask[fMaskInd]);
+        //fMask[fMaskInd] is not '?', but previous mask was '?' and it is an invalid sequence.
+        // "[??] = Valid" // "[a?] or [?a] = Invalid"
+        Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
       end
-      else
-        begin
-          Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
-        end;
-    end //mocAnyCharOrNone and '?' found
-    else if (fLastOC=TMaskParsedCode.AnyCharOrNone) and (fMask[fMaskInd]<>']') then begin //mocAnyCharOrNone and inside [?
-      //writeln('Compile found not ? after [?: ',fMask[fMaskInd]);
-      //fMask[fMaskInd] is not '?', but previous mask was '?' and it is an invalid sequence.
-      // "[??] = Valid" // "[a?] or [?a] = Invalid"
-      Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
-    end
-    else if (mocRange in fMaskOpcodesAllowed) and IsARange(fMaskInd,lFirstRange,lSecondRange) then begin //is a range
-      Add(TMaskParsedCode.Range);
-      // Check if reverse range is needed
-      if (not fAutoReverseRange)
-      or (CompareUTF8Sequences(@fMask[lFirstRange],@fMask[lSecondRange])<0) then
-        AddRange(lFirstRange, lSecondRange)
-      else
-        AddRangeReverse(lFirstRange, lSecondRange);
-      fLastOC:=TMaskParsedCode.Range;
 
-    end //is a range
-    else if fMask[fMaskInd]=']' then begin  //found ]
-      if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.Negate) then
-        begin //empty set or range
-          //writeln('CompileRange: empty match');
-          Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd); //Error empty match
-        end; //empty set or range
-      // Insert the new offset in case of a positive match in CharsGroup
-      PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
-      Add(TMaskParsedCode.CharsGroupEnd);
-      fLastOC:=TMaskParsedCode.CharsGroupEnd;
-      break;
-    end // end of range or set
-    else begin  //not a range, not AnyCharOrNone, must be a set
-      // handle escaping if mocSet is enabled, but mocRange not
-      if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in fMaskOpcodesAllowed) then begin
-        // next is optional char in set or literal
-        inc(fMaskInd,fCPLength);
-        if fMaskInd<=fMaskLimit then begin
-          fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-        end else begin
-          //writeln('CompileRange: incomplete mask');
-          Exception_IncompleteMask();
-        end;
-      end;
 
-      if (mocSet in fMaskOpcodesAllowed) then begin
-        Add(TMaskParsedCode.OptionalChar);
-        Add(fCPLength,@fMask[fMaskInd]);
-        fLastOC:=TMaskParsedCode.OptionalChar;
-      end else begin
-         //writeln('CompileRange: exception but why??');
-         Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
-      end;
-    end;
-    inc(fMaskInd,fCPLength);
-  end;
-  if fMaskInd>fMaskLimit then
-    Exception_MissingCloseChar(']',fMaskLimit);
+      else}
+
+      if (mocRange in fMaskOpcodesAllowed) and IsARange(fMaskInd,lFirstRange,lSecondRange) then begin //is a range
+        Add(TMaskParsedCode.Range);
+        // Check if reverse range is needed
+        if (not fAutoReverseRange)
+        or (CompareUTF8Sequences(@fMask[lFirstRange],@fMask[lSecondRange])<0) then
+          AddRange(lFirstRange, lSecondRange)
+        else
+          AddRangeReverse(lFirstRange, lSecondRange);
+        fLastOC:=TMaskParsedCode.Range;
+
+      end //is a range
+      else if fMask[fMaskInd]=']' then begin  //end of range or set
+        if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.Negate) then
+          begin //empty set or range
+            //writeln('CompileRange: empty match');
+            Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd); //Error empty match
+          end; //empty set or range
+        // Insert the new offset in case of a positive match in CharsGroup
+        PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+        Add(TMaskParsedCode.CharsGroupEnd);
+        fLastOC:=TMaskParsedCode.CharsGroupEnd;
+        break;
+      end // end of range or set
+      else begin  //not a range, not AnyCharOrNone, must be a set
+        // handle escaping if mocSet is enabled, but mocRange not
+        if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in fMaskOpcodesAllowed) then begin //escaped literal in set
+          // next is optional char in set or literal, consume the EscapeChar
+          inc(fMaskInd,fCPLength);
+          if fMaskInd<=fMaskLimit then begin
+            fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
+          end else begin
+            //writeln('CompileRange: incomplete mask');
+            Exception_IncompleteMask();
+          end;
+        end;//escaped literal in set
+
+        if (mocSet in fMaskOpcodesAllowed) then begin //add to set
+          Add(TMaskParsedCode.OptionalChar);
+          Add(fCPLength,@fMask[fMaskInd]);
+          fLastOC:=TMaskParsedCode.OptionalChar;
+        end //add to set
+        else begin // mocRange enabled but IsRange=False, mocSet disabled
+           Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
+        end;
+      end; //not a range, not AnyCharOrNone, must be a set
+      inc(fMaskInd,fCPLength);
+    end;//while
+    if fMaskInd>fMaskLimit then
+      Exception_MissingCloseChar(']',fMaskLimit);
+  end;//not AnyCharOrNone
   writeln('CompileRange end: fMask[fMaskInd]=',fMask[fMaskInd]);
 end;
 
@@ -1006,20 +1016,33 @@ begin
     Set fMaskInd to last zero (+Count-1)
   }
     //if any of the 2 conditions is true, this procedure should not have been called.
+
+
+    if fMask[fMaskInd]<>'[' then writeln('CompileAnyCharOrNone: expected [, found: ',fMask[fMaskInd]);
+
     if fMask[fMaskInd]<>'[' then
       Exception_InternalError();
+
     Inc(fMaskInd); //consume the '['
+
+    if fMask[fMaskInd]<>'?' then writeln('CompileAnyCharOrNone: expected [, found: ',fMask[fMaskInd]);
+
     if fMask[fMaskInd]<>'?' then
       Exception_InternalError();
 
     QCount:=1;
     while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]='?') do Inc(QCount);
-    //writeln('Nr of AnyCharOrNone-tokens: ',QCount);
+    writeln('CompileAnyCharOrNone: Nr of AnyCharOrNone-tokens: ',QCount);
+    if (fMaskInd+QCount>fMaskLimit) then writeln('(fMaskInd+QCount>=fMaskLimit): ',fMaskInd+QCount,'>',fMaskLimit);
 
-    if (fMaskInd+QCount>=fMaskLimit) then
+    if (fMaskInd+QCount>fMaskLimit) then
       Exception_MissingCloseChar(']',fMaskInd+QCount+1);
-    if not (fMask[fMaskInd+QCount+1]=']') then
-      self.Exception_InvalidCharMask(fMask[fMaskInd+QCount+1],fMaskInd+QCount+1);
+
+    if not (fMask[fMaskInd+QCount]=']') then writeln('fMask[fMaskInd+QCount+1]: expected ], found: ',fMask[fMaskInd+QCount+1]);
+
+    if not (fMask[fMaskInd+QCount]=']') then
+      Exception_InvalidCharMask(fMask[fMaskInd+QCount+1],fMaskInd+QCount+1);
+
     if QCount=0 then
       Exception_IncompleteMask;
 
@@ -1034,11 +1057,10 @@ begin
     Add(TMaskParsedCode.CharsGroupEnd);
     fLastOC:=TMaskParsedCode.CharsGroupEnd;
     Inc(fMatchMaximumLiteralBytes,QCount*4);
-    Inc(fMaskInd,QCount);
-    //write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
-    //writeln('CompileOtherSpecialChars end.');
-    if fMask[fMaskInd]<>']' then
-      Exception_InternalError;
+    Inc(fMaskInd,QCount); //go to ending ']'
+
+    write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
+    writeln('CompileAnyCharOrNone end.');
 end;
 
 procedure TMaskUTF8.Compile;
