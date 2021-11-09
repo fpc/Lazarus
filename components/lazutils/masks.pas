@@ -219,11 +219,11 @@ type
     procedure AddAnyChar;
     procedure AddLiteral;
     procedure AddRange(lFirstRange, lSecondRange: Integer);
+    procedure AddRangeReverse(lFirstRange, lSecondRange: Integer);
     procedure CompileRange;
     procedure CompileEscapeCharPlusLiteral;
     procedure CompileSpecialChar;
     function GetMask: String; virtual;
-    procedure ReverseRange(lFirstRange, lSecondRange: Integer);
     procedure SetMask(AValue: String); virtual;
   protected
     fOriginalMask: String;
@@ -745,7 +745,7 @@ begin
   fMaskInd:=lSecondRange;
 end;
 
-procedure TMaskUTF8.ReverseRange(lFirstRange, lSecondRange: Integer);
+procedure TMaskUTF8.AddRangeReverse(lFirstRange, lSecondRange: Integer);
 begin
   fCPLength:=UTF8CodepointSizeFast(@fMask[lSecondRange]);
   Add(fCPLength,@fMask[lSecondRange]);
@@ -865,7 +865,7 @@ begin
       or (CompareUTF8Sequences(@fMask[lFirstRange],@fMask[lSecondRange])<0) then
         AddRange(lFirstRange, lSecondRange)
       else
-        ReverseRange(lFirstRange, lSecondRange);
+        AddRangeReverse(lFirstRange, lSecondRange);
       fLastOC:=TMaskParsedCode.Range;
 
     end //is a range
