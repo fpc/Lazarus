@@ -627,7 +627,6 @@ end;
 constructor TDbgDarwinProcess.Create(const AFileName: string;
   AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
   AProcessConfig: TDbgProcessConfig);
-var
 begin
   inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 
@@ -707,7 +706,7 @@ begin
       aKernResult:=task_for_pid(mach_task_self, ProcessID, FTaskPort);
       if aKernResult <> KERN_SUCCESS then
         begin
-        Result := False
+        Result := False;
         debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(ProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
         end;
     end;
