@@ -5976,9 +5976,19 @@
         <short/>
       </element>
 
-      <element link="#lcl.controls.TControl.Hint" name="TControl.IsHintStored"/>
+      <element name="TControl.IsHintStored">
+        <short>Implements the storage specifier for the Hint property.</short>
+        <descr>
+          <p>
+            The return value is True when the property value is not supplied by an Action linked to the control. This occurs when an ActionLink has not been assigned for the control, or when the IsHintLinked property in the ActionLink is set to False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Hint"/>
+        </seealso>
+      </element>
       <element name="TControl.IsHintStored.Result">
-        <short/>
+        <short>True when the property value is stored using LCL component streaming.</short>
       </element>
 
       <element link="#lcl.controls.TControl.HelpContext" name="TControl.IsHelpContextStored"/>
@@ -10972,12 +10982,28 @@
       </element>
 
       <element name="TControl.OnShowHint">
-        <short>Event Handler when a hint shall be shown.</short>
-        <descr/>
+        <short>Event handler signalled when a hint window is displayed for the control.</short>
+        <descr>
+          <p>
+            OnShowHint is a TControlShowHintEvent property with the event handler signalled when a hint window is displayed for the control. Arguments to the event handler include the control instance for the event notification, and a pointer to the structure with the Hint details for the control.
+          </p>
+          <p>
+            OnShowHint has public visibility in TControl, but may be redeclared in descendent classes to make it visible in the object inspector. An application must implement and assign a handler routine to respond to the event notification.
+          </p>
+          <p>
+            OnShowHint is signalled from the DoOnShowHint method (when assigned), and occurs when the CM_HINTSHOW control message is handled for the control.
+          </p>
+          <p>
+            Set ShowHint to True to enable hint window display using the value(s) in the Hint property.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.Hint"/>
-          <link id="THintInfo"/>
+          <link id="TControl.ShowHint"/>
+          <link id="TControl.DoOnShowHint"/>
           <link id="TControlShowHintEvent"/>
+          <link id="THintInfo"/>
+          <link id="PHintInfo"/>
         </seealso>
       </element>
 
@@ -11295,11 +11321,34 @@
       </element>
 
       <element name="TControl.Hint">
-        <short>The text to show in the Hint window for this control.</short>
-        <descr/>
+        <short>The text to show in the Hint window for the control.</short>
+        <descr>
+          <p>
+            Hint is a TTranslateString property with hint text displayed in a pop-up window when the mouse is hovered over the control. The pop-up window is displayed when the  ShowHint property is set to <b>True</b>.
+          </p>
+          <p>
+            Assign a value to Hint to describe the usage or formatting conventions used for the value entered in the control. For example:
+          </p>
+          <code>Edit1.Hint := 'Start Date in MM/DD/YYYY format';</code>
+          <p>
+            Hint can be given a value that includes both short and long variants of the hint text. The values are separated by a '|' (Vertical Bar) character in the property. For example:
+          </p>
+          <code>Edit1.Hint := 'Start Date | Start Date in MM/DD/YYYY format';</code>
+          <p>
+            The short variant is used in the pop-up hint window for the control. The long variant is assigned to the Application.Hint property, or displayed on a form status bar when its AutoHint property is set to <b>True</b>.
+          </p>
+          <p>
+            As a TTranslateString type, Hint can be localized using the translation facilities built into the LCL and the Lazarus IDE. The property value is written using LCL component streaming when the hint text for the control is not linked to an assigned Action.
+          </p>
+          <remark>
+            Hint is not the same value as the placeholder introduced as the TextHint property in descendent controls.
+          </remark>
+        </descr>
         <seealso>
           <link id="TControl.ShowHint"/>
           <link id="TControl.ParentShowHint"/>
+          <link id="TControl.ActionLink"/>
+          <link id="TControlActionLink.IsHintLinked"/>
         </seealso>
       </element>
 
