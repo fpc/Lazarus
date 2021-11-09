@@ -922,17 +922,17 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure WMNCHitTest(var Message: TLMessage); message LM_NCHITTEST;
-    procedure ActivateSub;
+    procedure ActivateSub; virtual;
     procedure DoShowWindow; override;
-    procedure UpdateRegion;
+    procedure UpdateRegion; virtual;
     procedure SetColor(Value: TColor); override;
-    function UseBGThemes: Boolean;
-    function UseFGThemes: Boolean;
+    function UseBGThemes: Boolean; virtual;
+    function UseFGThemes: Boolean; virtual;
     procedure Paint; override;
   private class var
     FSysHintFont: TFont;
   protected
-    class function SysHintFont: TFont;
+    class function SysHintFont: TFont; virtual;
   public
     class destructor Destroy;
   public
