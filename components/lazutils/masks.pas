@@ -227,7 +227,7 @@ type
     procedure SetMask(AValue: String); virtual;
   protected
     fOriginalMask: String;
-    function IsSpecialChar(AChar: Char): Boolean; virtual;
+    function IsSpecialChar({%H-}AChar: Char): Boolean; virtual;
     procedure CompileOtherSpecialChars; virtual;
     class function CompareUTF8Sequences(const P1,P2: PChar): integer; static;
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
@@ -1328,7 +1328,7 @@ end;
 
 function TWindowsMaskUTF8.IsSpecialChar(AChar: Char): Boolean;
 begin
-  Result := (AChar = #0);
+  Result := (AChar = #0) and (wqFileNameEnd in Quirks);
 end;
 
 class procedure TWindowsMaskUTF8.SplitFileNameExtension(
