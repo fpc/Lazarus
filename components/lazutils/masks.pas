@@ -224,6 +224,7 @@ type
     procedure CompileRange;
     procedure CompileEscapeCharPlusLiteral;
     procedure CompileSpecialChar;
+    procedure CompileAnyCharOrNone;
     function GetMask: String; virtual;
     procedure SetMask(AValue: String); virtual;
   protected
@@ -811,6 +812,7 @@ procedure TMaskUTF8.CompileRange;
 var
   lCharsGroupInsertSize, lFirstRange, lSecondRange: integer;
 begin
+  writeln('CompileRange: fMask[fMaskInd]=',fMask[fMaskInd]);
   fLastOC:=TMaskParsedCode.CharsGroupBegin;
   Add(TMaskParsedCode.CharsGroupBegin);
   inc(fMatchMinimumLiteralBytes,1);
@@ -910,6 +912,7 @@ begin
   end;
   if fMaskInd>fMaskLimit then
     Exception_MissingCloseChar(']',fMaskLimit);
+  writeln('CompileRange end: fMask[fMaskInd]=',fMask[fMaskInd]);
 end;
 
 function TMaskUTF8.GetMask: String;
@@ -983,6 +986,59 @@ begin
       CompileOtherSpecialChars;
     end;
   end;
+end;
+
+procedure TMaskUTF8.CompileAnyCharOrNone;
+var
+  QCount, lCharsGroupInsertSize: Integer;
+begin
+  {
+    Add: CharsGroupBegin
+    lCharsGroupInsertSize:=fMaskCompiledIndex;
+    Add(0)
+    Add: AnyCharOrNone
+    Add(1)
+    TMaskBase.IncrementLastCounterBy: aOPcode=AnyCharOrNone, aValue=1  number of zero's -1
+    lCharsGroupInsertSize=1
+    PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+    Add: CharsGroupEnd
+    Inc(fMatchMaximumLiteralBytes,number of zero's *4);
+    Set fMaskInd to last zero (+Count-1)
+  }
+    //if any of the 2 conditions is true, this procedure should not have been called.
+    if fMask[fMaskInd]<>'[' then
+      Exception_InternalError();
+    Inc(fMaskInd); //consume the '['
+    if fMask[fMaskInd]<>'?' then
+      Exception_InternalError();
+
+    QCount:=1;
+    while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]='?') do Inc(QCount);
+    //writeln('Nr of AnyCharOrNone-tokens: ',QCount);
+
+    if (fMaskInd+QCount>=fMaskLimit) then
+      Exception_MissingCloseChar(']',fMaskInd+QCount+1);
+    if not (fMask[fMaskInd+QCount+1]=']') then
+      self.Exception_InvalidCharMask(fMask[fMaskInd+QCount+1],fMaskInd+QCount+1);
+    if QCount=0 then
+      Exception_IncompleteMask;
+
+    Add(TMaskParsedCode.CharsGroupBegin);
+    lCharsGroupInsertSize:=fMaskCompiledIndex;
+    Add(0);
+    Add(TMaskParsedCode.AnyCharOrNone);
+    Add(1);
+    if QCount>1 then
+      IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,QCount-1);
+    PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
+    Add(TMaskParsedCode.CharsGroupEnd);
+    fLastOC:=TMaskParsedCode.CharsGroupEnd;
+    Inc(fMatchMaximumLiteralBytes,QCount*4);
+    Inc(fMaskInd,QCount);
+    //write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
+    //writeln('CompileOtherSpecialChars end.');
+    if fMask[fMaskInd]<>']' then
+      Exception_InternalError;
 end;
 
 procedure TMaskUTF8.Compile;
