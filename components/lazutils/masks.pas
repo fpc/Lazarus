@@ -1408,9 +1408,15 @@ var
   lFileNameMask: String;
   lExtensionMask: String;
   lModifiedMask: String;
+  ZeroPos: SizeInt;
 
 begin
   lModifiedMask:=fWindowsMask;
+
+  //We cannot have #0 in the mask,since we use it internally
+  ZeroPos:=Pos(#0, fWindowsMask);
+  if ZeroPos>0 then
+    Exception_InvalidCharMask('NullCharacter', ZeroPos);
 
   // Quirk "blah.*" = "blah*"
   if wqAnyExtension in fWindowsQuirkAllowed then begin
@@ -1448,7 +1454,7 @@ begin
     end;
   end;
 
-  }
+
   // Quirk "file???.ab?" matches "file1.ab1" and "file123.ab"
   if wqFilenameEnd in fWindowsQuirkAllowed then begin
     lFileNameMask:=OptionalQMarksAtEnd(lFileNameMask);
