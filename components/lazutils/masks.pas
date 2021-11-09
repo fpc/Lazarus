@@ -16,6 +16,7 @@
 unit Masks;
 
 {$mode objfpc}{$H+}
+{$define debug_maskcompiled}
 
 interface
 
@@ -233,7 +234,9 @@ type
     function intfMatches(aMatchOffset: integer; aMaskIndex: integer): TMaskFailCause; //override;
   public
 
+    {$IFDEF debug_maskcompiled}
     procedure DumpMaskCompiled;
+    {$ENDIF}
 
     constructor Create(const aMask: String);
     constructor Create(const aMask: String; aCaseSensitive: Boolean);
@@ -1026,7 +1029,9 @@ begin
   writeln('fMaskCompiled:');
   writeln('fMaskCompiledLimit=',fMaskCompiledLimit);
   writeln('fMaskCompiledIndex=',fMaskCompiledIndex);
+  {$IFDEF debug_maskcompiled}
   DumpMaskCompiled;
+  {$ENDIF}
 end;
 
 class function TMaskUTF8.CompareUTF8Sequences(const P1, P2: PChar): integer;
@@ -1197,19 +1202,19 @@ begin
     Result:=TMaskFailCause.mfcMatchStringExhausted;
 end;
 
+{$IFDEF debug_maskcompiled}
 procedure TMaskUTF8.DumpMaskCompiled;
 var
-  junk,H: Integer;
-  junkbyte: Byte;
+  i: Integer;
+  b: Byte;
 begin
-  H := High(fMaskCompiled);
-  if H > 12 then H := 12;
-  for junk := low(fMaskCompiled) to fMaskCompiledIndex-1 do
+  for i := low(fMaskCompiled) to fMaskCompiledIndex-1 do
   begin
-    junkbyte := fMaskCompiled[junk];
-    writeln(junk:2,': ',junkbyte:3);
+    b := fMaskCompiled[i];
+    writeln(i:2,': ',b:3);
   end;
 end;
+{$ENDIF}
 
 constructor TMaskUTF8.Create(const aMask: String);
 begin
