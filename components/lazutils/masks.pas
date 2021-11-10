@@ -223,7 +223,7 @@ type
     procedure AddRangeReverse(lFirstRange, lSecondRange: Integer);
     procedure CompileRange;
     procedure CompileEscapeCharPlusLiteral;
-    procedure CompileSpecialChar;
+    procedure CompileSpecialChars;
     procedure CompileAnyCharOrNone;
     function GetMask: String; virtual;
     procedure SetMask(AValue: String); virtual;
@@ -945,7 +945,7 @@ begin
     Exception_IncompleteMask();
 end;
 
-procedure TMaskUtf8.CompileSpecialChar;
+procedure TMaskUtf8.CompileSpecialChars;
 begin
   case fMask[fMaskInd] of
     '*':
@@ -1087,7 +1087,7 @@ begin
     else begin // not an escaped literal
       //writeln('Compile while: fMask[',fMaskInd,']=',fMask[fMaskInd]);
       if (fMask[fMaskInd] in DefaultSpecialChars) or IsSpecialChar(fMask[fMaskInd]) then begin // handle special chars
-        CompileSpecialChar;
+        CompileSpecialChars;
         //writeln('After CompileSpecialChar');
         //write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
       end  //handle special chars
