@@ -11528,10 +11528,6 @@ msgstr "Залишити конвертовані файли відкритим�
 msgid "All project files will be open in editor after conversion"
 msgstr "Всі файли проєкту буде відкрито в редакторі після перетворення"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Залишити в списку встановлення"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Залишати назву"
@@ -17465,10 +17461,6 @@ msgstr "Вилучено властивість \"%s\"."
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "Вилучити %s файлів з пакунка \"%s\"?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Видалити з списку встановлення"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"

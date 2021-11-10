@@ -11492,10 +11492,6 @@ msgstr "Dönüştürülen dosyaları düzenleyicide açık tut"
 msgid "All project files will be open in editor after conversion"
 msgstr "Tüm proje dosyaları dönüştürmeden sonra editörde açılacaktır"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Kurulum listesinde sakla"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Adı sakla"
@@ -17385,10 +17381,6 @@ msgstr "\"%s\" özelliği kaldırıldı."
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "%s dosyalarını \"%s\" paketinden kaldır?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Kurulum listesinden kaldır"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"

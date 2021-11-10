@@ -11594,10 +11594,6 @@ msgstr "Konvertierte Dateien im Editor geöffnet halten"
 msgid "All project files will be open in editor after conversion"
 msgstr "Alle Projektdateien werden nach der Konvertierung im Editor geöffnet."
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "In Installationsliste behalten"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Name behalten"
@@ -17577,10 +17573,6 @@ msgstr "Eigenschaft \"%s\" entfernt."
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "%s Dateien aus dem Package \"%s\" entfernen?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Aus Installationsliste entfernen"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
