@@ -16,7 +16,7 @@
 unit Masks;
 
 {$mode objfpc}{$H+}
-{$define debug_maskcompiled}
+{.$define debug_maskcompiled}
 {.$define debug_anycharornone}
 
 interface
@@ -1065,12 +1065,12 @@ begin
   fMaskCompiledLimit:=fMaskCompiledIndex-1;
   fMaskIsCompiled:=True;
 
-  writeln('Compile end.');
+  //writeln('Compile end.');
+  {$IFDEF debug_maskcompiled}
   writeln('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit);
   writeln('fMaskCompiled:');
   writeln('fMaskCompiledLimit=',fMaskCompiledLimit);
   writeln('fMaskCompiledIndex=',fMaskCompiledIndex);
-  {$IFDEF debug_maskcompiled}
   DumpMaskCompiled;
   {$ENDIF}
 end;
