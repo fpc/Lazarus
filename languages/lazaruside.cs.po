@@ -11565,10 +11565,6 @@ msgstr "Uchovat převedené soubory otevřené v editoru"
 msgid "All project files will be open in editor after conversion"
 msgstr "Všechny soubory projektu budou po převodu otevřeny v editoru"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Uchovat v seznamu instalovaných"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Zachovat jméno"
@@ -17549,10 +17545,6 @@ msgstr "Odstraněna vlastnost \"%s\"."
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "Odstranit %s souborů z balíčku \"%s\"?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Odstranit ze seznamu instalovaných"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"

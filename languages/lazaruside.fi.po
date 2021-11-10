@@ -11475,10 +11475,6 @@ msgstr "Pidä muunnetut tiedostot auki editorissa"
 msgid "All project files will be open in editor after conversion"
 msgstr "Kaikki projektin tiedostot ovat auki editorissa konversion jälkeen"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Pidetään asennuksessa"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Hyväksy nimi tällaisenaan"
@@ -17364,10 +17360,6 @@ msgstr "Poistettiin ominaisuus \"%s\"."
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "Poista %s tiedostoa paketista \"%s\"?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Poistetaan asennuksesta"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"

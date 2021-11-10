@@ -11529,10 +11529,6 @@ msgstr "Az átalakított fájlok maradjanak megnyitva a szerkesztőben"
 msgid "All project files will be open in editor after conversion"
 msgstr "A projekt minden fájlja meg lesz nyitva a szerkesztőben az átalakítás után"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Megtartás a telepítési listában"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Név megtartása"
@@ -17467,10 +17463,6 @@ msgstr "Tulajdonság eltávolítása: \"%s\""
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "%s fájl eltávolítása a(z) \"%s\" csomagból?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Eltávolítás a telepítési listáról"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"

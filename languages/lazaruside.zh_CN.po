@@ -11738,10 +11738,6 @@ msgstr "保持转换的文件打开 在编辑器中"
 msgid "All project files will be open in editor after conversion"
 msgstr "所有工程文件将被打开在编辑器中 在转换后"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "保持在安装列表"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "保持名称"
@@ -17714,10 +17710,6 @@ msgstr "移除属性\"%s\"."
 #, object-pascal-format
 msgid "Remove %s files from package \"%s\"?"
 msgstr "移除%s文件从包\"%s\"?"
-
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "从安装列表移除"
 
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
