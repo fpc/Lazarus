@@ -1383,24 +1383,7 @@ begin
   inherited CompileOtherSpecialChars;
   if (fMask[fMaskInd]=#0) and not (wqFileNameEnd in self.fWindowsQuirkInUse) then
     Exception_InternalError;
-  ZeroCount:=1;
-  while (fMaskInd+ZeroCount<=fMaskLimit) and (fMask[fMaskInd+ZeroCount]=#0) do Inc(ZeroCount);
-  //writeln('Nr of Zero''s: ',ZeroCount);
-
-  Add(TMaskParsedCode.CharsGroupBegin);
-  lCharsGroupInsertSize:=fMaskCompiledIndex;
-  Add(0);
-  Add(TMaskParsedCode.AnyCharOrNone);
-  Add(1);
-  if ZeroCount>1 then
-    IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,ZeroCount-1);
-  PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
-  Add(TMaskParsedCode.CharsGroupEnd);
-  fLastOC:=TMaskParsedCode.CharsGroupEnd;
-  Inc(fMatchMaximumLiteralBytes,ZeroCount*4);
-  Inc(fMaskInd,ZeroCount-1);
-  //write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
-  //writeln('CompileOtherSpecialChars end.');
+  CompileAnyCharOrNone(#0, False);
 end;
 
 function TWindowsMaskUTF8.IsSpecialChar(AChar: Char): Boolean;
@@ -1536,6 +1519,8 @@ begin
   if wqFilenameEnd in fWindowsQuirkAllowed then begin
     lFileNameMask:=OptionalQMarksAtEnd(lFileNameMask);
     lExtensionMask:=OptionalQMarksAtEnd(lExtensionMask);
+    if (Pos(#0, lFileNameMask)>0) or (Pos(#0, lExtensionMask)>0) then
+      fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqFilenameEnd];
   end;
 
   if wqNoExtension in fWindowsQuirkAllowed then begin
