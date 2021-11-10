@@ -938,12 +938,19 @@ begin
             (
               ([mocSet,mocRange]*fMaskOpCodesAllowed = []) //only mocAnyCharOrNone enabled
                and
-              (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?')// next char is not '?', so basically then the '[' is a literal (or an escapechar)
+              (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?')// next char is not '?', so basically then the '[' is a literal
             )
         then
           CompileRange
-        else begin
+        else begin //either mocSet,MocRange and mocAnyCharOrNone are all disabled, or only mocAnyCharOrNone is enabled and the '[' is not followed by a '?'
+          {
           if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in FMaskOpcodesAllowed) then begin  //DEAD CODE?
+            //This codepath could only be chosen if, at this point '[' is the escapechar
+            //but, if that is the case, it should already have been handled in Compile
+            //and CompileRange should not have been called.
+            //Maybe I'm wrong, so I just comment this section out instead of
+            //completely removing it
+
             // next is Literal
             inc(fMaskInd,fCPLength);
             if fMaskInd<=fMaskLimit then begin
@@ -952,6 +959,7 @@ begin
               Exception_IncompleteMask();
             end;
           end; //DEAD CODE??
+          }
           AddLiteral;
         end;
       end;
