@@ -17,7 +17,7 @@ unit Masks;
 
 {$mode objfpc}{$H+}
 {$define debug_maskcompiled}
-{$define debug_anycharornone}
+{.$define debug_anycharornone}
 
 interface
 
@@ -1005,30 +1005,13 @@ procedure TMaskUTF8.CompileAnyCharOrNone(QChar: Char; BracketsRequired: Boolean)
 var
   QCount, lCharsGroupInsertSize: Integer;
 begin
-  {
-    Add: CharsGroupBegin
-    lCharsGroupInsertSize:=fMaskCompiledIndex;
-    Add(0)
-    Add: AnyCharOrNone
-    Add(1)
-    TMaskBase.IncrementLastCounterBy: aOPcode=AnyCharOrNone, aValue=1  number of zero's -1
-    lCharsGroupInsertSize=1
-    PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
-    Add: CharsGroupEnd
-    Inc(fMatchMaximumLiteralBytes,number of zero's *4);
-    Set fMaskInd to last zero (+Count-1)
-  }
     //if any of the 2 conditions is true, this procedure should not have been called.
-
-
     {$IFDEF debug_anycharornone}
     if BracketsRequired and (fMask[fMaskInd]<>'[') then
       Exception_InternalError();
     {$ENDIF}
     if BracketsRequired then
       Inc(fMaskInd); //consume the '['
-
-
     {$IFDEF debug_anycharornone}
     if fMask[fMaskInd]<>QChar then
       Exception_InternalError();
@@ -1036,14 +1019,18 @@ begin
 
     QCount:=1;
     while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]=QChar) do Inc(QCount);
+    {$IFDEF debug_anycharornone}
     writeln('CompileAnyCharOrNone: Nr of AnyCharOrNone-tokens: ',QCount);
-
     if (fMaskInd+QCount>fMaskLimit) then writeln('(fMaskInd+QCount>fMaskLimit): ',fMaskInd+QCount,'>',fMaskLimit);
+    {$ENDIF}
+
     //is Last found QChar also last character of the mask, while we expect a closing ']'?
     if BracketsRequired and (fMaskInd+QCount>fMaskLimit) then
       Exception_MissingCloseChar(']',fMaskInd+QCount-1);
 
+    {$IFDEF debug_anycharornone}
     if not (fMask[fMaskInd+QCount]=']') then writeln('fMask[fMaskInd+QCount]: expected ], found: ',fMask[fMaskInd+QCount]);
+    {$ENDIF}
 
     if BracketsRequired and not (fMask[fMaskInd+QCount]=']') then
       Exception_InvalidCharMask(fMask[fMaskInd+QCount],fMaskInd+QCount);
@@ -1066,8 +1053,8 @@ begin
 
     {$IFDEF debug_anycharornone}
     write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
-    {$ENDIF}
     writeln('CompileAnyCharOrNone end.');
+    {$ENDIF}
 end;
 
 procedure TMaskUTF8.Compile;
