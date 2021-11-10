@@ -93,7 +93,6 @@ const
 
   // Leave out wqExtension3More and wqAllByExtension
   DefaultWindowsQuirks=[wqAnyExtension,
-                        wqFilenameEnd,
                         wqEmptyIsAny,
                         wqNoExtension];
 
