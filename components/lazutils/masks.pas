@@ -225,7 +225,7 @@ type
     procedure CompileRange;
     procedure CompileEscapeCharPlusLiteral;
     procedure CompileSpecialChars;
-    procedure CompileAnyCharOrNone;
+    procedure CompileAnyCharOrNone(QChar: Char; BracketsRequired: Boolean);
     function GetMask: String; virtual;
     procedure SetMask(AValue: String); virtual;
   protected
@@ -815,7 +815,7 @@ var
 begin
   writeln('CompileRange: fMask[fMaskInd]=',fMask[fMaskInd]);
   if (mocAnyCharOrNone in fMaskOpcodesAllowed) and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]='?') then begin
-    CompileAnyCharOrNone;
+    CompileAnyCharOrNone('?', True);
   end else begin//not AnyCharOrNone
     fLastOC:=TMaskParsedCode.CharsGroupBegin;
     Add(TMaskParsedCode.CharsGroupBegin);
@@ -1001,7 +1001,7 @@ begin
   end;
 end;
 
-procedure TMaskUTF8.CompileAnyCharOrNone;
+procedure TMaskUTF8.CompileAnyCharOrNone(QChar: Char; BracketsRequired: Boolean);
 var
   QCount, lCharsGroupInsertSize: Integer;
 begin
@@ -1022,33 +1022,31 @@ begin
 
 
     {$IFDEF debug_anycharornone}
-    if fMask[fMaskInd]<>'[' then
+    if BracketsRequired and (fMask[fMaskInd]<>'[') then
       Exception_InternalError();
     {$ENDIF}
-
-    Inc(fMaskInd); //consume the '['
+    if BracketsRequired then
+      Inc(fMaskInd); //consume the '['
 
 
     {$IFDEF debug_anycharornone}
-    if fMask[fMaskInd]<>'?' then
+    if fMask[fMaskInd]<>QChar then
       Exception_InternalError();
     {$ENDIF}
 
     QCount:=1;
-    while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]='?') do Inc(QCount);
+    while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]=QChar) do Inc(QCount);
     writeln('CompileAnyCharOrNone: Nr of AnyCharOrNone-tokens: ',QCount);
-    if (fMaskInd+QCount>fMaskLimit) then writeln('(fMaskInd+QCount>=fMaskLimit): ',fMaskInd+QCount,'>',fMaskLimit);
 
-    if (fMaskInd+QCount>fMaskLimit) then
-      Exception_MissingCloseChar(']',fMaskInd+QCount+1);
+    if (fMaskInd+QCount>fMaskLimit) then writeln('(fMaskInd+QCount>fMaskLimit): ',fMaskInd+QCount,'>',fMaskLimit);
+    //is Last found QChar also last character of the mask, while we expect a closing ']'?
+    if BracketsRequired and (fMaskInd+QCount>fMaskLimit) then
+      Exception_MissingCloseChar(']',fMaskInd+QCount-1);
 
-    if not (fMask[fMaskInd+QCount]=']') then writeln('fMask[fMaskInd+QCount+1]: expected ], found: ',fMask[fMaskInd+QCount+1]);
+    if not (fMask[fMaskInd+QCount]=']') then writeln('fMask[fMaskInd+QCount]: expected ], found: ',fMask[fMaskInd+QCount]);
 
-    if not (fMask[fMaskInd+QCount]=']') then
-      Exception_InvalidCharMask(fMask[fMaskInd+QCount+1],fMaskInd+QCount+1);
-
-    if QCount=0 then
-      Exception_IncompleteMask;
+    if BracketsRequired and not (fMask[fMaskInd+QCount]=']') then
+      Exception_InvalidCharMask(fMask[fMaskInd+QCount],fMaskInd+QCount);
 
     Add(TMaskParsedCode.CharsGroupBegin);
     lCharsGroupInsertSize:=fMaskCompiledIndex;
@@ -1061,7 +1059,10 @@ begin
     Add(TMaskParsedCode.CharsGroupEnd);
     fLastOC:=TMaskParsedCode.CharsGroupEnd;
     Inc(fMatchMaximumLiteralBytes,QCount*4);
-    Inc(fMaskInd,QCount); //go to ending ']'
+    if BracketsRequired then
+      Inc(fMaskInd,QCount) //go to ending ']'
+    else
+      Inc(fMaskInd,QCount-1); //go to last found QChar
 
     {$IFDEF debug_anycharornone}
     write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
@@ -1380,7 +1381,7 @@ var
   ZeroCount: Integer;
 begin
   inherited CompileOtherSpecialChars;
-  if (fMask[fMaskInd]=#0) and not (wqFileNamEnd in self.fWindowsQuirkInUse) then
+  if (fMask[fMaskInd]=#0) and not (wqFileNameEnd in self.fWindowsQuirkInUse) then
     Exception_InternalError;
   ZeroCount:=1;
   while (fMaskInd+ZeroCount<=fMaskLimit) and (fMask[fMaskInd+ZeroCount]=#0) do Inc(ZeroCount);
