@@ -17,6 +17,7 @@ unit Masks;
 
 {$mode objfpc}{$H+}
 {$define debug_maskcompiled}
+{$define debug_anycharornone}
 
 interface
 
@@ -1020,17 +1021,18 @@ begin
     //if any of the 2 conditions is true, this procedure should not have been called.
 
 
-    if fMask[fMaskInd]<>'[' then writeln('CompileAnyCharOrNone: expected [, found: ',fMask[fMaskInd]);
-
+    {$IFDEF debug_anycharornone}
     if fMask[fMaskInd]<>'[' then
       Exception_InternalError();
+    {$ENDIF}
 
     Inc(fMaskInd); //consume the '['
 
-    if fMask[fMaskInd]<>'?' then writeln('CompileAnyCharOrNone: expected [, found: ',fMask[fMaskInd]);
 
+    {$IFDEF debug_anycharornone}
     if fMask[fMaskInd]<>'?' then
       Exception_InternalError();
+    {$ENDIF}
 
     QCount:=1;
     while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]='?') do Inc(QCount);
@@ -1061,7 +1063,9 @@ begin
     Inc(fMatchMaximumLiteralBytes,QCount*4);
     Inc(fMaskInd,QCount); //go to ending ']'
 
+    {$IFDEF debug_anycharornone}
     write('fMaskInd=',fMaskInd,', fMaskLimit=',fMaskLimit,' fMask[fMaskInd]=');if fMaskInd<=fMaskLimit then writeln('#',Ord(fMask[fMaskInd]),': ',fMask[fMaskInd])else writeln('>>');
+    {$ENDIF}
     writeln('CompileAnyCharOrNone end.');
 end;
 
