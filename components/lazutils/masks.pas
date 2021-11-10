@@ -896,6 +896,8 @@ begin
         break;
       end // end of range or set
       else begin  //not a range, not AnyCharOrNone, must be a set
+        //Note: why not raise an exception right here if mocSet is NOT enabled?
+
         // handle escaping if mocSet is enabled, but mocRange not
         if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in fMaskOpcodesAllowed) then begin //escaped literal in set
           // next is optional char in set or literal, consume the EscapeChar
