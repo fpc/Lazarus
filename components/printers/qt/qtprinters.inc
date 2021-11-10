@@ -13,6 +13,13 @@
 Uses InterfaceBase, LCLIntf;
 
 {.$DEFINE UsePrinterSupportedPapers}
+{$IFDEF MSWINDOWS}
+{$DEFINE QTPAPERSONDEMAND}
+{$ENDIF}
+
+{$IF DEFINED(QTPAPERSONDEMAND) AND DEFINED(UsePrinterSupportedPapers)}
+{$UNDEF UsePrinterSupportedPapers}
+{$ENDIF}
 
 const
   DEFAULT_PAPER_NAME = 'A4';
@@ -182,18 +189,32 @@ var
 
     //CustomPageSize should be automatically set by setting different paper size
     //than known paper size. Qt4 asserts when CustomPageSize is directly setted up.
+    {$IFNDEF QTPAPERSONDEMAND}
     {$IFDEF LCLQt}
-    if (pgSize > 30) then
+    if pgSize < 30 then
     {$ENDIF}
-      QtDefaultPrinter.PageSize := PgSize;
+    QtDefaultPrinter.PageSize := PgSize;
+    {$ENDIF}
     FPapers[i].PageSize := PgSize;
-    FPapers[i].PageRect := QtDefaultPrinter.PageRect;
-    FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
+
+    {$IFDEF QTPAPERSONDEMAND}
+    FPapers[i].PageRect := Rect(0, 0, 0, 0);
+    FPapers[i].PaperRect := Rect(0, 0, 0, 0);
+    // imediatelly fill current papersize
+    if QtDefaultPrinter.PageSize = FPapers[i].PageSize then
+    begin
+    {$ENDIF}
+      FPapers[i].PageRect := QtDefaultPrinter.PageRect;
+      FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
+    {$IFDEF QTPAPERSONDEMAND}
+    end;
+    {$ENDIF}
+
     if PaperName=DEFAULT_PAPER_NAME then
       FDefaultPaperIndex := i;
     if pgSize=30 then
       customPaperAdded := true;
-    //DebugLn('Cached: %20s PaperRect=%s PageRect=%s',[PaperName, dbgs(FPapers[i].PaperRect), dbgs(FPapers[i].PageRect)]);
+    // DebugLn('Cached: %20s PaperRect=%s PageRect=%s pgSize %d',[PaperName, dbgs(FPapers[i].PaperRect), dbgs(FPapers[i].PageRect), pgSize]);
   end;
 
   procedure AddAll;
@@ -207,7 +228,8 @@ var
     oldPageSize := QtDefaultPrinter.PageSize;
     for i:=QPagedPaintDeviceA4 to QPagedPaintDeviceCustom do
       Add(ArrPapers[i], i);
-    QtDefaultPrinter.PageSize := oldPageSize;
+    if oldPageSize <> QtDefaultPrinter.PageSize then
+      QtDefaultPrinter.PageSize := oldPageSize;
     {$ELSE}
     for i:=QPrinterA4 to QPrinterCustom do
       Add(ArrPapers[i], i);
@@ -486,6 +508,13 @@ begin
   if i >= 0 then
   begin
     QtDefaultPrinter.PageSize := FPapers[i].PageSize;
+    {$IFDEF QTPAPERSONDEMAND}
+    if FPapers[i].PaperRect = Rect(0, 0, 0, 0) then
+    begin
+      FPapers[i].PageRect := QtDefaultPrinter.PageRect;
+      FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
+    end;
+    {$ENDIF}
     DoSetOrientation(O);
   end else
     raise Exception.Create('TQtPrinters: Paper '+AName+' not supported.');
@@ -495,6 +524,9 @@ function TQtPrinters.DoGetPaperRect(aName: string; var aPaperRc: TPaperRect
   ): Integer;
 var
   i: Integer;
+  {$IFDEF QTPAPERSONDEMAND}
+  APageSize: {$IFDEF LCLQt}QPrinterPageSize{$ELSE}QPagedPaintDevicePageSize{$ENDIF};
+  {$ENDIF}
 begin
   DoInitializeCachePapers;
   {$IFDEF VERBOSE_QT_PRINTING}
@@ -507,7 +539,17 @@ begin
     begin
       {When we set QPrinter into FullPage, rect is not same
        on all platforms, this is fixed with qt-4.4}
-      if Orientation in [poPortrait, poReversePortrait] then begin
+      {$IFDEF QTPAPERSONDEMAND}
+      APageSize := QtDefaultPrinter.PageSize;
+      if (PaperRect = Rect(0, 0, 0, 0)) then
+      begin
+        QtDefaultPrinter.PageSize := PageSize;
+        PageRect := QtDefaultPrinter.PageRect;
+        PaperRect := QtDefaultPrinter.PaperRect;
+      end;
+      {$ENDIF}
+      if Orientation in [poPortrait, poReversePortrait] then
+      begin
         APaperRC.WorkRect := PageRect;
         APaperRC.PhysicalRect := PaperRect;
       end else begin
@@ -516,6 +558,10 @@ begin
         APaperRC.PhysicalRect :=
           Rect(PaperRect.Top, PaperRect.Left, PaperRect.Bottom, PaperRect.Right);
       end;
+      {$IFDEF QTPAPERSONDEMAND}
+      if APageSize <> QtDefaultPrinter.PageSize then
+        QtDefaultPrinter.PageSize := APageSize;
+      {$ENDIF}
       Result := 1;
     end;
 end;
@@ -523,6 +569,7 @@ end;
 function TQtPrinters.DoSetPrinter(aName: string): Integer;
 var
   StrList: TStringList;
+  i: integer;
 begin
   DoInitializeCachePapers;
   {$IFDEF VERBOSE_QT_PRINTING}
@@ -540,6 +587,22 @@ begin
       if not QtDefaultPrinter.PrinterActive then
       begin
         QtDefaultPrinter.PrinterName := UTF8Decode(aName);
+
+        {$IFDEF QTPAPERSONDEMAND}
+        for i := 0 to High(FPapers) do
+        begin
+          if FPapers[i].PageSize = QtDefaultPrinter.PageSize then
+          begin
+            if FPapers[i].PaperRect = Rect(0, 0, 0, 0) then
+            begin
+              FPapers[i].PageRect := QtDefaultPrinter.PageRect;
+              FPapers[i].PaperRect := QtDefaultPrinter.PaperRect;
+            end;
+            break;
+          end;
+        end;
+        {$ENDIF}
+
         {$ifdef UsePrinterSupportedPapers}
         CachePapers(true);
         {$endif}
