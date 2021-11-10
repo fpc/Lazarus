@@ -1380,21 +1380,8 @@ var
   ZeroCount: Integer;
 begin
   inherited CompileOtherSpecialChars;
-  //writeln('CompileOtherSpecialChars');
-
-{
-  Add: CharsGroupBegin
-  lCharsGroupInsertSize:=fMaskCompiledIndex;
-  Add(0)
-  Add: AnyCharOrNone
-  Add(1)
-  TMaskBase.IncrementLastCounterBy: aOPcode=AnyCharOrNone, aValue=1  number of zero's -1
-  lCharsGroupInsertSize=1
-  PInteger(@fMaskCompiled[lCharsGroupInsertSize])^:=fMaskCompiledIndex;
-  Add: CharsGroupEnd
-  Inc(fMatchMaximumLiteralBytes,number of zero's *4);
-  Set fMaskInd to last zero (+Count-1)
-}
+  if (fMask[fMaskInd]=#0) and not (wqFileNamEnd in self.fWindowsQuirkInUse) then
+    Exception_InternalError;
   ZeroCount:=1;
   while (fMaskInd+ZeroCount<=fMaskLimit) and (fMask[fMaskInd+ZeroCount]=#0) do Inc(ZeroCount);
   //writeln('Nr of Zero''s: ',ZeroCount);
@@ -1417,7 +1404,7 @@ end;
 
 function TWindowsMaskUTF8.IsSpecialChar(AChar: Char): Boolean;
 begin
-  Result := (AChar = #0) and (wqFileNameEnd in Quirks);
+  Result := (AChar = #0);
 end;
 
 class procedure TWindowsMaskUTF8.SplitFileNameExtension(
