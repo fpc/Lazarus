@@ -648,7 +648,7 @@ procedure TMaskBase.Add(aValue: TMaskParsedCode);
 var
   v: BYTE;
 begin
-  writeln('Add: ',aValue);
+  //writeln('Add: ',aValue);
   v:=BYTE(aValue);
   Add(1,@v);
 end;
@@ -657,7 +657,7 @@ procedure TMaskBase.IncrementLastCounterBy(aOpcode: TMaskParsedCode; aValue: int
 var
   p: PInteger;
 begin
-  writeln('TMaskBase.IncrementLastCounterBy: aOPcode=',aOpcode,', aValue=',aValue);
+  //writeln('TMaskBase.IncrementLastCounterBy: aOPcode=',aOpcode,', aValue=',aValue);
   fMaskCompiledIndex:=fMaskCompiledIndex-sizeof(aValue);
   if TMaskParsedCode(fMaskCompiled[fMaskCompiledIndex-1])<>aOpcode then
     Exception_InternalError();
@@ -1208,7 +1208,8 @@ begin
           lTryCounter:=PInteger(@fMaskCompiled[aMaskIndex])^;
           inc(aMaskIndex,sizeof(integer));
           if TMaskParsedCode(fMaskCompiled[aMaskIndex])<>TMaskParsedCode.CharsGroupEnd then
-            begin writeln('TMaskUtf8.infMatches: error parsing AnyCharOrNone, missing CharsGroupEnd, fMaskCompiled[',aMaskIndex,']=',fMaskCompiled[aMaskIndex]);Exception_InternalError() end
+            begin //writeln('TMaskUtf8.infMatches: error parsing AnyCharOrNone, missing CharsGroupEnd, fMaskCompiled[',aMaskIndex,']=',fMaskCompiled[aMaskIndex]);
+            Exception_InternalError() end
           else
             aMaskIndex:=lSkipOnSuccessGroup+1;
 
