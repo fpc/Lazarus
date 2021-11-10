@@ -13198,6 +13198,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
 
+      <element name="TIDesigner.FLookupRoot">
+        <short>Member with the value for the LookupRoot property.</short>
+      </element>
+
+      <element name="TIDesigner.FDefaultFormBoundsValid">
+        <short>Member with the value for the DefaultFormBoundsValid property.</short>
+      </element>
+
       <element name="TIDesigner.IsDesignMsg">
         <short>
           <var>IsDesignMsg</var> - receives a message from Sender, and returns True if it is a design message.</short>
@@ -13214,9 +13222,19 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short/>
       </element>
 
-      <element name="TIDesigner.Modified">
-        <short>Method when design is <var>Modified</var>.
+      <element name="TIDesigner.UTF8KeyPress">
+        <short>
+          Defines the method used to handle a key press event for a UTF-8-encoded character.
         </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TIDesigner.UTF8KeyPress.UTF8Key">
+        <short>UTF-8-encoded character for the key press event.</short>
+      </element>
+
+      <element name="TIDesigner.Modified">
+        <short>Method when design is <var>Modified</var>.</short>
         <descr/>
         <seealso/>
       </element>
@@ -13288,12 +13306,34 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <descr/>
         <seealso/>
       </element>
-
       <element name="TIDesigner.UniqueName.Result">
         <short/>
       </element>
       <element name="TIDesigner.UniqueName.BaseName">
         <short/>
+      </element>
+
+      <element name="TIDesigner.PrepareFreeDesigner">
+        <short>Prepares the design surface and frees the root control.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TIDesigner.PrepareFreeDesigner.AFreeComponent">
+        <short/>
+      </element>
+
+      <element name="TIDesigner.LookupRoot">
+        <short>Component that is the root control in the form design surface.</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TIDesigner.DefaultFormBoundsValid">
+        <short>
+          Indicates whether the bounds are valid after moving or sizing the form on the design surface.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFormPropertyStorage">
@@ -13309,34 +13349,69 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TFormPropertyStorage.FormCreate">
-        <short/>
+        <short>
+          Handler routine used as an OnCreate handler in the Owner of the class instance.
+        </short>
         <descr>
           Calls the Restore method.
         </descr>
         <seealso/>
       </element>
       <element name="TFormPropertyStorage.FormCreate.Sender">
-        <short/>
+        <short>Form which owns the class instance.</short>
       </element>
 
       <element name="TFormPropertyStorage.FormClose">
-        <short/>
+        <short>
+          Handler routine used as an OnClose handler in the Owner of the class instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TFormPropertyStorage.FormClose.Sender">
-        <short/>
+        <short>Form which owns the class instance.</short>
       </element>
       <element name="TFormPropertyStorage.FormClose.CloseAction">
-        <short/>
+        <short>Close action performed in the method.</short>
       </element>
 
-      <element name="TFormPropertyStorage.Create" link="#rtl.classes.TComponent.Create"/>
+      <element name="TFormPropertyStorage.FormDestroy">
+        <short>
+          Handler routine used as an OnDestroy handler in the Owner of the class instance.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFormPropertyStorage.FormDestroy.Sender">
+        <short>Form which owns the class instance.</short>
+      </element>
+
+      <element name="TFormPropertyStorage.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance. It calls the inherited method on entry, using the value in TheOwner as the Owner for the class instance. Create ensures that private methods in the class instance are assigned as event handler routines for the TCustomForm instance in TheOwner.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
+      </element>
       <element name="TFormPropertyStorage.Create.TheOwner">
-        <short/>
+        <short>TCustomForm instance which owns th class instance.</short>
       </element>
 
-      <element name="TFormPropertyStorage.Destroy" link="#rtl.classes.TComponent.Destroy"/>
+      <element name="TFormPropertyStorage.Destroy">
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance. It ensures that event handler routines, assigned in the constructor to the form which owns the class instance, are removed before the class instance is freed. It calls the inherited destructor prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
+        </seealso>
+      </element>
 
       <element name="KeysToShiftState">
         <short>
