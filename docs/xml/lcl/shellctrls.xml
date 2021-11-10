@@ -505,6 +505,34 @@
         <short>TSize instance with the dimensions for the shell icon.</short>
       </element>
 
+       <element name="TCustomShellTreeView.NodeHasChildren">
+         <short>Determines whether the specified tree view Node has child nodes.</short>
+         <descr>
+           <p>
+             NodeHasChildren is an overridden Boolean function used to determine whether the specified tree view Node has child nodes. It re-implements the method from the TCustomTreeView ancestor class to examine the local file system for the path the tree node. It does not call the inherited method.
+           </p>
+           <p>
+             NodeHasChildren signals the OnHasChildren event handler (when assigned) to get the return value for the method. The shell tree view class instance and the value in Node are passed as arguments to the event handler.
+           </p>
+           <p>
+             When an event handler has not been assigned, the return value is set to True when the specified Node is a Directory on the local file system.
+           </p>
+           <p>
+             The return value is also True when the path to the node is a accessible sub-directory in Node when ObjectTypes does not include otNonFolders objects. Include otHidden in ObjectTypes to include hidden directories in the comparison.
+           </p>
+         </descr>
+         <seealso>
+           <link id="TCustomShellTreeView.ObjectTypes"/>
+           <link id="#lcl.comctrls.TCustomTreeView.NodeHasChildren">TCustomTreeView.NodeHasChildren</link>
+           <link id="#lcl.comctrls.TCustomTreeView.OnHasChildren">TCustomTreeView.OnHasChildren</link>
+         </seealso>
+       </element>
+       <element name="TCustomShellTreeView.NodeHasChildren.Result">
+         <short>
+           True when the node is a directory or contains non-folder objects at the given path.
+         </short>
+       </element>
+
       <element name="TCustomShellTreeView.Create">
         <short>Constructor for the class instance.</short>
         <descr>
@@ -894,6 +922,7 @@
       <element name="TShellTreeView.OnExpanding" link="#lcl.comctrls.TCustomTreeView.OnExpanding"/>
       <element name="TShellTreeView.OnGetImageIndex" link="#lcl.comctrls.TCustomTreeView.OnGetImageIndex"/>
       <element name="TShellTreeView.OnGetSelectedIndex" link="#lcl.comctrls.TCustomTreeView.OnGetSelectedIndex"/>
+      <element name="TShellTreeView.OnHasChildren" link="#lcl.comctrls.TCustomTreeView.OnHasChildren"/>
       <element name="TShellTreeView.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
       <element name="TShellTreeView.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
       <element name="TShellTreeView.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
@@ -1061,6 +1090,50 @@
         </seealso>
       </element>
 
+      <element name="TCustomShellListView.AdjustColWidths">
+        <short>
+          Adjusts the width of columns in the list view according to the overall width for the control.
+        </short>
+        <descr>
+          <p>
+            AdjustColWidths is a method used to adjust the width of columns according to the overall width for the control. It ensures that the columns are proportionately sized in the control layout.
+          </p>
+
+          <p>
+            No actions are performed in the method when the control has fewer than three (3) columns, or when AutoSizeColumns is <b>False</b> and an explicit value has been assigned to the first column in the control.
+          </p>
+          <p>
+            An arbitrary width of 400 pixels is used to determine the adjusted width for each of the columns.
+          </p>
+          <dl>
+            <dt>Width &lt; 400 pixels</dt>
+            <dd>
+              The initial column is give 50% of the overall client width, and the second column is given 25% of the overall client width.The third column is given the remaining client area for the control.
+            </dd>
+            <dt>Width &gt;= 400 pixels</dt>
+            <dd>
+              The initial column is give 70% of the overall width, and the second column is given 15% of the overall width. The third column is given the remaining client area for the control.
+            </dd>
+          </dl>
+          <p>
+            If the control has more than three columns, the widths for the remaining columns are not altered.
+          </p>
+          <p>
+            AdjustColWidths calls BeginUpdate prior to updating the column widths, and calls EndUpdate when column layout has been updated.
+          </p>
+          <p>
+            AdjustColWidths is called from the Create constructor, from the DoOnResize method, and when a new value is assigned to AutoSizeColumns property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomShellListView.AutoSizeColumns"/>
+          <link id="TCustomShellListView.Create"/>
+          <link id="TCustomShellListView.DoOnResize"/>
+          <link id="#lcl.controls.TControl.ClientWidth">TControl.ClientWidth</link>
+          <link id="#lcl.comctrls.TCustomListVIew.Columns">TCustomListView.Columns</link>
+        </seealso>
+      </element>
+
       <element name="TCustomShellListView.PopulateWithRoot">
         <short>Fills the list view with file system information for the root directory.</short>
         <descr>
@@ -1101,7 +1174,21 @@
         </seealso>
       </element>
 
-      <element name="TCustomShellListView.Resize">
+      <element name="TCustomShellListView.DoOnResize">
+        <short>Adjusts column widths when the control is resized.</short>
+        <descr>
+          <p>
+            Calls the inherited method, and calls AdjustColWidths to update the layout for  Columns.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomShellListView.AdjustColWidths"/>
+          <link id="#lcl.controls.TControl.DoOnResize">TControl.DoOnResize</link>
+        </seealso>
+      </element>
+
+      <!-- TODO: Removed in 06701d05a7
+       <element name="TCustomShellListView.Resize">
         <short>Updates the size for Columns in the list view.</short>
         <descr>
           <p>
@@ -1132,7 +1219,7 @@
           <link id="#lcl.comctrls.TViewStyle">TViewStyle</link>
           <link id="#lcl.controls.TControl.Width">TControl.Width</link>
         </seealso>
-      </element>
+      </element> -->
 
       <element name="TCustomShellListView.SetAutoSizeColumns">
         <short>Sets the value for the AutoSizeColumns property.</short>
@@ -1487,8 +1574,8 @@
       </element>
 
       <element name="TShellListView.Columns" link="#lcl.comctrls.TCustomListView.Columns"/>
-
       <element name="TShellListView.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TShellListView.AutoSizeColumns" link="#lcl.shellctrls.TCustomShellListView.AutoSizeColumns"/>
       <element name="TShellListView.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TShellListView.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TShellListView.BorderStyle" link="#lcl.comctrls.TCustomListView.BorderStyle"/>
