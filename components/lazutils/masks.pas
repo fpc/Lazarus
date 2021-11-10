@@ -813,7 +813,7 @@ procedure TMaskUTF8.CompileRange;
 var
   lCharsGroupInsertSize, lFirstRange, lSecondRange: integer;
 begin
-  writeln('CompileRange: fMask[fMaskInd]=',fMask[fMaskInd]);
+  //writeln('CompileRange: fMask[fMaskInd]=',fMask[fMaskInd]);
   if (mocAnyCharOrNone in fMaskOpcodesAllowed) and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]='?') then begin
     CompileAnyCharOrNone('?', True);
   end else begin//not AnyCharOrNone
@@ -834,45 +834,6 @@ begin
     end;
     while fMaskInd<=fMaskLimit do begin //while
       fCPLength:=UTF8CodepointSizeFast(@fMask[fMaskInd]);
-
-      {
-      if (fMask[fMaskInd]='?') and (mocAnyCharOrNone in fMaskOpcodesAllowed) then begin //mocAnyCharOrNone and '?' found
-        // This syntax is permitted [??] but not this one [?a] or [a?]
-        if (fLastOC=TMaskParsedCode.CharsGroupBegin) or (fLastOC=TMaskParsedCode.AnyCharOrNone) then begin
-          if fLastOC=TMaskParsedCode.AnyCharOrNone then begin
-            // Increment counter
-            IncrementLastCounterBy(TMaskParsedCode.AnyCharOrNone,1);
-          end else begin
-            Add(TMaskParsedCode.AnyCharOrNone);
-            Add(1); // Counter
-            // Discount minimun bytes added at the "CharGroupBegin"
-            // because [?] could be 1 or 0 chars, so minimum is zero
-            // but the CharsGroupBegin assumes 1 char as all other
-            // masks replace the group by 1 char position.
-            // This code will run 1 time per group at maximun.
-            dec(fMatchMinimumLiteralBytes,1);
-            if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
-              begin writeln('dec(fMatchMaximumLiteralBytes,4)'); dec(fMatchMaximumLiteralBytes,4); end;
-          end;
-          if fMatchMaximumLiteralBytes<High(fMatchMaximumLiteralBytes) then
-            begin inc(fMatchMaximumLiteralBytes,4); end;
-          fLastOC:=TMaskParsedCode.AnyCharOrNone;
-        end
-        else
-          begin
-            Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
-          end;
-      end //mocAnyCharOrNone and '?' found
-      else if (fLastOC=TMaskParsedCode.AnyCharOrNone) and (fMask[fMaskInd]<>']') then begin //mocAnyCharOrNone and inside [?
-        //writeln('Compile found not ? after [?: ',fMask[fMaskInd]);
-        //fMask[fMaskInd] is not '?', but previous mask was '?' and it is an invalid sequence.
-        // "[??] = Valid" // "[a?] or [?a] = Invalid"
-        Exception_InvalidCharMask(fMask[fMaskInd],fMaskInd);
-      end
-
-
-      else}
-
       if (mocRange in fMaskOpcodesAllowed) and IsARange(fMaskInd,lFirstRange,lSecondRange) then begin //is a range
         Add(TMaskParsedCode.Range);
         // Check if reverse range is needed
@@ -925,7 +886,7 @@ begin
     if fMaskInd>fMaskLimit then
       Exception_MissingCloseChar(']',fMaskLimit);
   end;//not AnyCharOrNone
-  writeln('CompileRange end: fMask[fMaskInd]=',fMask[fMaskInd]);
+  //writeln('CompileRange end: fMask[fMaskInd]=',fMask[fMaskInd]);
 end;
 
 function TMaskUTF8.GetMask: String;
