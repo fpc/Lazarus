@@ -37,6 +37,7 @@ type
     procedure TestMaskDisableRange(const S, Mask: String; Result: Boolean);
     procedure TestMaskAdvanced(const S, Mask: String; Result: Boolean);
     procedure TestMaskWindows(const S, Mask: String; Result: Boolean);
+    procedure TestMaskWindowsNonDefaultQuirks(const S, Mask: String; Result: Boolean);
     procedure TestMaskException(const S, Mask: String; AFail: Boolean);
   published
     procedure TestMaskSyntax;
@@ -76,6 +77,12 @@ end;
 procedure TTestMask.TestMaskWindows(const S, Mask: String; Result: Boolean);
 begin
   AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesWindowsMask(S, Mask));
+end;
+
+procedure TTestMask.TestMaskWindowsNonDefaultQuirks(const S, Mask: String;
+  Result: Boolean);
+begin
+  AssertEquals(S + ' match ' + Mask + ': ', Result, MatchesWindowsMask(S, Mask, False, DefaultMaskOpCodes, [wqFilenameEnd,wqExtension3More,wqAllByExtension]));
 end;
 
 procedure TTestMask.TestMaskException(const S, Mask: String; AFail: Boolean);
@@ -281,7 +288,7 @@ begin
   TestMask('a?c', '?\??', False);
   TestMask('ab*.x', '??\*.x', False);
   TestMask('x \ y', '? \\ ?', False);
-  TestMask('abc', '?[?]?', True); //mocAnyCharOrNone is enabled in DefaultMaskOpCodes
+  TestMask('abc', '?[?]?', False);
   TestMask('a??d', '?[?]?', False);
 end;
 
@@ -309,15 +316,17 @@ begin
   TestMaskWindows('abc.txt', '*', True);
   TestMaskWindows('abc', '*', True);
   TestMaskWindows('abc', '*.', True);
-  TestMaskWindows('abcd.txt', 'abc???.*', True);
-  TestMaskWindows('abcd.txt', 'abc???.txt?', True);
+  TestMaskWindows('abcd.txt', 'abc???.*', False);
+  TestMaskWindows('abcd.txt', 'abc???.txt?', False);
+  TestMaskWindowsNonDefaultQuirks('abcd.txt', 'abc???.*', True);
+  TestMaskWindowsNonDefaultQuirks('abcd.txt', 'abc???.txt?', True);
   TestMaskWindows('abcd.txt', 'abc*', True);
   TestMaskWindows('abc.pas.bak', '*.bak', True);
   TestMaskWindows('C:\x', 'C:\x', True);
-  TestMaskWindows('C:\ab[c]d', 'C:*[*]*', False);  //sets and ranges are enabled by default on TWindowsMaks as well
+  TestMaskWindows('C:\ab[c]d', 'C:*[*]*', False);  //sets and ranges are enabled by default on TWindowsMask as well
   TestMaskWindows('', '*', True);
-  TestMaskWindows('', '?', True);
-
+  TestMaskWindows('', '?', False);
+  TestMaskWindowsNonDefaultQuirks('', '?', True); //requires wqFileNameEnd
   TestMaskWindows('abcd.txt', '*.txtx', False);
   TestMaskWindows('abc.txt', '*.', False);
   TestMaskWindows('abc.txt', '.*', False);
