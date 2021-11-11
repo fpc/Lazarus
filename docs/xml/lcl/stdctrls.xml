@@ -6221,16 +6221,36 @@
       </element>
 
       <element name="TCustomEdit.CharCase">
-        <short>Allows to force the text into all upper or lower case.</short>
+        <short>Controls the character case applied to values entered in the control.</short>
         <descr>
-          <p>The following conversions can be specified:</p>
-          <ul>
-            <li>Unchanged</li>
-            <li>All upper case letters</li>
-            <li>All lower case letters</li>
-          </ul>
-          <remark>Conversions apply to the entire text, and <b>cannot</b> be reverted.</remark>
+          <p>
+            CharCase is a TEditCharCase property which indicates how values in Text are converted and displayed in the control.
+          </p>
+          <dl>
+            <dt>ecNormal</dt>
+            <dd>
+              Normal letter case is applied; no conversion is applied. Use the Shift key to change the case for a character entered in the control.
+            </dd>
+            <dt>ecUpperCase</dt>
+            <dd>
+              Values in Text are converted to uppercase letters. Shift key state is ignored.
+            </dd>
+            <dt>ecLowerCase</dt>
+            <dd>
+              Values in Text are converted to lowercase letters. Shift key state is ignored.
+            </dd>
+          </dl>
+          <p>
+            The default value for the property is ecNormal. Changing the value for the property causes the existing values in Text to be converted to the case indicated in the new property value.
+          </p>
+          <remark>
+            Conversions apply to the entire value in Text, and <b>cannot</b> be reverted.
+          </remark>
         </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.Text">TControl.Text</link>
+          <link id="#lcl.stdctrls.TEditCharCase"/>
+        </seealso>
       </element>
 
       <element name="TCustomEdit.EchoMode">
