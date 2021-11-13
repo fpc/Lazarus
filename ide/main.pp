@@ -3843,7 +3843,7 @@ procedure TMainIDE.DoViewAnchorEditor(State: TIWGetFormState);
 begin
   if AnchorDesigner=nil then
     IDEWindowCreators.CreateForm(AnchorDesigner,TAnchorDesigner,
-       State=iwgfDisabled,LazarusIDE.OwningComponent)
+       State=iwgfDisabled,OwningComponent)
   else if State=iwgfDisabled then
     AnchorDesigner.DisableAlign;
   if State>=iwgfShow then
@@ -3854,7 +3854,7 @@ procedure TMainIDE.DoViewTabOrderEditor(State: TIWGetFormState);
 begin
   if TabOrderDialog=nil then
     IDEWindowCreators.CreateForm(TabOrderDialog,TTabOrderDialog,
-       State=iwgfDisabled,LazarusIDE.OwningComponent)
+       State=iwgfDisabled,OwningComponent)
   else if State=iwgfDisabled then
     TabOrderDialog.DisableAlign;
   if State>=iwgfShow then
@@ -4353,11 +4353,11 @@ begin
       LFMFileName:=AnUnitInfo.UnitResourceFileformat.GetUnitResourceFilename(AnUnitInfo.Filename,true);
       if FileExistsCached(LFMFileName) and (not AnUnitInfo.DisableI18NForLFM) then
       begin
-        OpenStatus:=LazarusIDE.DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofAddToRecent, ofDoLoadResource]);
+        OpenStatus:=DoOpenEditorFile(AnUnitInfo.Filename,-1,-1,[ofAddToRecent, ofDoLoadResource]);
         if OpenStatus=mrOk then
         begin
           AnUnitInfo.Modified:=true;
-          WriteStatus:=LazarusIDE.DoSaveEditorFile(AnUnitInfo.Filename,[]);
+          WriteStatus:=DoSaveEditorFile(AnUnitInfo.Filename,[]);
           //DebugLn(['TMainIDE.mnuProjectResaveFormsWithI18n Resaving form "',AnUnitInfo.Filename,'"']);
           if WriteStatus<>mrOk then
           begin
@@ -6543,7 +6543,7 @@ procedure TMainIDE.DoShowProjectInspector(State: TIWGetFormState);
 begin
   if ProjInspector=nil then begin
     IDEWindowCreators.CreateForm(ProjInspector,TProjectInspectorForm,
-       State=iwgfDisabled,LazarusIDE.OwningComponent);
+       State=iwgfDisabled,OwningComponent);
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
     ProjInspector.OnAddDependency:=@PkgBoss.ProjectInspectorAddDependency;
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
@@ -7645,9 +7645,8 @@ begin
         // if minimized then restore, bring IDE to front
         Application.MainForm.ShowOnTop;
       end;
-      if Files.Count>0 then begin
+      if Files.Count>0 then
         OpenFiles(Files);
-      end;
     finally
       List.Free;
       Files.Free;
@@ -8434,8 +8433,7 @@ var
 begin
   AProjectFile := Project1.UnitWithEditorComponent(AEditor);
   if AProjectFile <> nil then
-    Result:=LazarusIDE.GetDesignerWithProjectFile(
-      Project1.UnitWithEditorComponent(AEditor), LoadForm)
+    Result := GetDesignerWithProjectFile(Project1.UnitWithEditorComponent(AEditor),LoadForm)
   else
     Result := nil;
 end;
@@ -9242,7 +9240,7 @@ procedure TMainIDE.DoShowSearchResultsView(State: TIWGetFormState);
 begin
   if SearchresultsView=Nil then begin
     IDEWindowCreators.CreateForm(SearchresultsView,TSearchResultsView,
-       State=iwgfDisabled,LazarusIDE.OwningComponent);
+       State=iwgfDisabled,OwningComponent);
     SearchresultsView.OnSelectionChanged := OnSearchResultsViewSelectionChanged;
   end else if State=iwgfDisabled then
     SearchResultsView.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TMainIDE.DoShowSearchResultsView'){$ENDIF};
@@ -10342,7 +10340,7 @@ begin
       exit;
     end;
 
-    LazarusIDE.DoShowSearchResultsView(iwgfShow);
+    DoShowSearchResultsView(iwgfShow);
     // create a search result page
     //debugln(['ShowIdentifierReferences ',DbgSName(SearchResultsView)]);
     SearchPageIndex:=SearchResultsView.AddSearch(
