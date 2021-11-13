@@ -1757,7 +1757,7 @@ LazLoggerBase
     </p>
   </descr>
   <seealso>
-    <link id="DebugLogger"/>
+    <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
     <link id="TLazLogger.DebugLn"/>
     <link id="TLazLogger.DumpExceptionBackTrace"/>
   </seealso>
@@ -1833,7 +1833,7 @@ LazLoggerBase
   <short>Gets the value for the DebugLoggerGroups property.</short>
   <descr/>
   <seealso>
-    <link id="DebugLoggerGroups"/>
+    <!-- link id="#lazutils.lazloggerbas.DebugLoggerGroups"/ -->
   </seealso>
 </element>
 <element name="GetDebugLoggerGroups.Result">
@@ -1845,7 +1845,7 @@ LazLoggerBase
   <short>Sets the value for the DebugLoggerGroups property.</short>
   <descr/>
   <seealso>
-    <link id="DebugLoggerGroups"/>
+    <!-- link id="#lazutils.lazloggerbas.DebugLoggerGroups"/ -->
   </seealso>
 </element>
 <element name="SetDebugLoggerGroups.ALogGroups">
@@ -1857,7 +1857,7 @@ LazLoggerBase
   <short>Gets the value for the DebugLogger property.</short>
   <descr/>
   <seealso>
-    <link id="DebugLogger"/>
+    <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
   </seealso>
 </element>
 <element name="GetDebugLogger.Result">
@@ -1881,7 +1881,7 @@ LazLoggerBase
   <short>Sets the value for the DebugLogger property.</short>
   <descr/>
   <seealso>
-    <link id="DebugLogger"/>
+    <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
   </seealso>
 </element>
 <element name="SetDebugLogger.ALogger">
