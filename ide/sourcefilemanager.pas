@@ -192,6 +192,8 @@ function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
     IgnoreSharedEdits: Boolean): Boolean;
 procedure ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 // files/units/projects
+function MaybeOpenProject(AFiles: TStrings): Boolean;
+function MaybeOpenEditorFiles(AFiles: TStrings; WindowIndex: integer): Boolean;
 function SomethingOfProjectIsModified(Verbose: boolean = false): boolean;
 function NewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
@@ -1926,6 +1928,64 @@ begin
     end;
   end;
   MainIDE.DoShowMessagesView(PutOnTop);
+end;
+
+function MaybeOpenProject(AFiles: TStrings): Boolean;
+// Open a project if there is .lpi or .lpr file in AFiles[0].
+var
+  AProjectFN: String;
+begin
+  Result:=False;
+  if (AFiles=nil) or (AFiles.Count=0) then Exit;
+  //DebugLn(['MaybeOpenProject: AFiles=', AFiles.Count]);
+  AProjectFN:=AFiles[0];
+  if FilenameExtIs(AProjectFN,'lpr',true) then
+    AProjectFN:=ChangeFileExt(AProjectFN,'.lpi');
+  // only try to load .lpi files here, other files are loaded later
+  if FilenameExtIs(AProjectFN,'lpi',true) then begin
+    AProjectFN:=CleanAndExpandFilename(AProjectFN);
+    if FileExistsUTF8(AProjectFN) then begin
+      AFiles.Delete(0);
+      Result:=LazarusIDE.DoOpenProjectFile(AProjectFN,[ofAddToRecent])=mrOk;
+    end;
+  end;
+end;
+
+function MaybeOpenEditorFiles(AFiles: TStrings; WindowIndex: integer): Boolean;
+// Open editor files or packages listed in AFiles.
+// Returns True if something was loaded.
+var
+  AFilename: String;
+  OpenFlags: TOpenFlags;
+  ModRes: TModalResult;
+  i: Integer;
+begin
+  Result:=False;
+  if AFiles=nil then Exit;
+  for i:=0 to AFiles.Count-1 do
+  begin
+    AFilename:=CleanAndExpandFilename(AFiles.Strings[i]);
+    if not FileExistsCached(AFilename) then begin
+      debugln(['Warning: (lazarus) command line file not found: "',AFilename,'"']);
+      continue;
+    end;
+    if Project1=nil then begin
+      // to open a file a project is needed => create a project
+      LazarusIDE.DoNewProject(ProjectDescriptorEmptyProject);
+    end;
+    if FilenameExtIs(AFilename,'lpk',true) then begin
+      ModRes:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true);
+      if ModRes=mrOK then Result:=True
+      else if ModRes=mrAbort then break;
+    end else begin
+      OpenFlags:=[ofAddToRecent,ofRegularFile];
+      if i<AFiles.Count then
+        Include(OpenFlags,ofMultiOpen);
+      ModRes:=OpenEditorFile(AFilename,-1,WindowIndex,Nil,OpenFlags);
+      if ModRes=mrOK then Result:=True
+      else if ModRes=mrAbort then break;
+    end;
+  end;
 end;
 
 function SomethingOfProjectIsModified(Verbose: boolean): boolean;
