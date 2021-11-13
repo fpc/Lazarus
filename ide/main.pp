@@ -2282,26 +2282,23 @@ begin
   InitUnitDependenciesQuickFixItems;
 end;
 
+function AskIfLoadLastFailingProject: boolean;
+begin
+  debugln(['Hint: (lazarus) AskIfLoadLastFailingProject START']);
+  Result:=IDEQuestionDialog(lisOpenProject2,
+      Format(lisAnErrorOccurredAtLastStartupWhileLoadingLoadThisPro,
+             [EnvironmentOptions.LastSavedProjectFile, LineEnding+LineEnding]),
+      mtWarning, [mrYes, lisOpenProjectAgain,
+                  mrNoToAll, lisStartWithANewProject]) = mrYes;
+  debugln(['Hint: (lazarus) AskIfLoadLastFailingProject END ',dbgs(Result)]);
+end;
+
 procedure TMainIDE.SetupStartProject;
-
-  function AskIfLoadLastFailingProject: boolean;
-  begin
-    debugln(['Hint: (lazarus) AskIfLoadLastFailingProject START']);
-    Result:=IDEQuestionDialog(lisOpenProject2,
-        Format(lisAnErrorOccurredAtLastStartupWhileLoadingLoadThisPro,
-               [EnvironmentOptions.LastSavedProjectFile, LineEnding+LineEnding]),
-        mtWarning, [mrYes, lisOpenProjectAgain,
-                    mrNoToAll, lisStartWithANewProject]) = mrYes;
-    debugln(['Hint: (lazarus) AskIfLoadLastFailingProject END ',dbgs(Result)]);
-  end;
-
 var
   ProjectLoaded: Boolean;
-  AProjectFilename: String;
   PrjDesc: TProjectDescriptor;
   CmdLineFiles: TStrings;
   i: Integer;
-  OpenFlags: TOpenFlags;
   AFilename, LastProj: String;
   PkgOpenFlags: TPkgOpenFlags;
 begin
@@ -2311,26 +2308,11 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject A');{$ENDIF}
   // load command line project or last project or create a new project
   CmdLineFiles:=LazIDEInstances.FilesToOpen;
-  ProjectLoaded:=false;
-
-  // try command line project
-  if (CmdLineFiles<>nil) and (CmdLineFiles.Count>0) then begin
-    AProjectFilename:=CmdLineFiles[0];
-    if FilenameExtIs(AProjectFilename,'lpr',true) then
-      AProjectFilename:=ChangeFileExt(AProjectFilename,'.lpi');
-    // only try to load .lpi files, other files are loaded later
-    if FilenameExtIs(AProjectFilename,'lpi',true) then begin
-      AProjectFilename:=CleanAndExpandFilename(AProjectFilename);
-      if FileExistsUTF8(AProjectFilename) then begin
-        CmdLineFiles.Delete(0);
-        ProjectLoaded:=(DoOpenProjectFile(AProjectFilename,[ofAddToRecent])=mrOk);
-      end;
-    end;
-  end;
+  ProjectLoaded:=MaybeOpenProject(CmdLineFiles); // try command line project
 
   LastProj:=EnvironmentOptions.LastSavedProjectFile;
   // try loading last project if lazarus didn't fail last time
-  {debugln(['TMainIDE.SetupStartProject ProjectLoaded=',ProjectLoaded,
+  {DebugLn(['TMainIDE.SetupStartProject ProjectLoaded=',ProjectLoaded,
     ' SkipAutoLoadingLastProject=',SkipAutoLoadingLastProject,
     ' EnvironmentOptions.OpenLastProjectAtStart=',EnvironmentOptions.OpenLastProjectAtStart,
     ' LastProj="',LastProj,'"',
@@ -2394,40 +2376,14 @@ begin
     end;
   end;
 
-  // load the cmd line files
-  if CmdLineFiles<>nil then begin
-    for i:=0 to CmdLineFiles.Count-1 do
-    Begin
-      AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
-      if not FileExistsCached(AFilename) then begin
-        debugln(['Warning: (lazarus) command line file not found: "',AFilename,'"']);
-        continue;
-      end;
-      if Project1=nil then begin
-        // to open a file a project is needed
-        // => create a project
-        DoNewProject(ProjectDescriptorEmptyProject);
-      end;
-      if FilenameExtIs(AFilename,'lpk',true) then begin
-        if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true)=mrAbort
-        then
-          break;
-      end else begin
-        OpenFlags:=[ofAddToRecent,ofRegularFile];
-        if i<CmdLineFiles.Count then
-          Include(OpenFlags,ofMultiOpen);
-        if DoOpenEditorFile(AFilename,-1,-1,OpenFlags)=mrAbort then begin
-          break;
-        end;
-      end;
-    end;
-  end;
+  // load the possible cmd line files
+  MaybeOpenEditorFiles(CmdLineFiles, -1);
 
   if Project1=nil then
     DoNoProjectWizard(nil);
 
   {$IFDEF IDE_DEBUG}
-  debugln('TMainIDE.Create B');
+  DebugLn('TMainIDE.SetupStartProject B');
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.SetupStartProject C');{$ENDIF}
 end;
@@ -5794,25 +5750,17 @@ end;
 procedure TMainIDE.DoDropFiles(Sender: TObject;
   const FileNames: array of String; WindowIndex: integer);
 var
-  OpenFlags: TOpenFlags;
-  I: Integer;
-  AFilename: String;
+  FileList: TStrings;
 begin
-  //debugln(['TMainIDE.DoDropFiles ',length(Filenames)]);
+  //DebugLn(['TMainIDE.DoDropFiles: ',length(Filenames), ' files, WindowIndex=', WindowIndex]);
   if Length(FileNames) = 0 then exit;
-  OpenFlags := [ofAddToRecent];
-  if Length(FileNames) > 1 then
-    OpenFlags := OpenFlags + [ofRegularFile,ofMultiOpen];
-  SourceEditorManager.IncUpdateLock;
+  FileList := TStringList.Create;
+  FileList.AddStrings(FileNames);
   try
-    for I := 0 to High(FileNames) do
-    begin
-      AFilename := CleanAndExpandFilename(FileNames[I]);
-      if LazarusIDE.DoOpenEditorFile(AFilename, -1, WindowIndex, OpenFlags) = mrAbort then
-        Break;
-    end;
+    MaybeOpenProject(FileList);
+    MaybeOpenEditorFiles(FileList, WindowIndex);
   finally
-    SourceEditorManager.DecUpdateLock;
+    FileList.Free;
   end;
   UpdateRecentFilesEnv;
 end;
