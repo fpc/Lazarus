@@ -523,6 +523,9 @@ type
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
     function ComputeDataMemberAddress(const AnInformationEntry: TDwarfInformationEntry;
                               AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation): Boolean; inline;
+    (* ConstRefOrExprFromAttrData:
+       See DWARF spec "2.19 Static and Dynamic Properties of Types"
+    *)
     function ConstRefOrExprFromAttrData(const AnAttribData: TDwarfAttribData;
                               AValueObj: TFpValueDwarf; out AValue: Int64;
                               AReadState: PFpDwarfAtEntryDataReadState = nil;
@@ -3796,6 +3799,8 @@ function TFpSymbolDwarf.ConstRefOrExprFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf; out
   AValue: Int64; AReadState: PFpDwarfAtEntryDataReadState;
   ADataSymbol: PFpSymbolDwarfData): Boolean;
+(* See DWARF spec "2.19 Static and Dynamic Properties of Types"
+*)
 var
   Form: Cardinal;
   FwdInfoPtr: Pointer;
@@ -3874,6 +3879,16 @@ begin
   else
   if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4]
   then begin
+    (* Dwarf Spec:
+       "For a block / For an exprloc, the value is interpreted as a DWARF
+        expression; evaluation of the expression yields the value of the
+        attribute"
+       - The examples given in the spec, show that the "location" returned, is
+         not used as address. It is treated as the integer result.
+       - Thus this not be a register-location.
+       - It may be a constant (DW_OP_lit/DW_OP_const), but those should probably
+         be DW_FORM_data.
+    *)
     // TODO: until there always will be an AValueObj
     if AValueObj = nil then begin
       if AReadState <> nil then
@@ -3893,6 +3908,7 @@ begin
     InitLocParserData.ObjectDataAddrPush := False;
     Result := LocationFromAttrData(AnAttribData, AValueObj, t, @InitLocParserData);
     if Result then begin
+      assert(t.MType in [mlfTargetMem, mlfConstant], 'TFpSymbolDwarf.ConstRefOrExprFromAttrData: t.MType in [mlfTargetMem, mlfConstant]');
       AValue := Int64(t.Address);
     end
     else begin
@@ -5903,10 +5919,13 @@ begin
 
     FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
       ASender.Context);
+    FFrameBaseParser.IsDwAtFrameBase := True;
     FFrameBaseParser.Evaluate;
   end;
 
   rd := FFrameBaseParser.ResultData;
+  // TODO: should mlfConstant be allowed?
+  assert(rd.MType in [mlfTargetMem, mlfConstant], 'TFpSymbolDwarfDataProc.GetFrameBase: rd.MType in [mlfTargetMem, mlfConstant]');
   if IsValidLoc(rd) then
     Result := rd.Address;
 

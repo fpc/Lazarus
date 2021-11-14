@@ -787,6 +787,7 @@ type
     FContext: TFpDbgLocationContext;
     FCurrentObjectAddress: TFpDbgMemLocation;
     FFrameBase: TDbgPtr;
+    FIsDwAtFrameBase: Boolean;
     FLastError: TFpError;
     FOnFrameBaseNeeded: TNotifyEvent;
     FStack: TDwarfLocationStack;
@@ -807,6 +808,7 @@ type
     property Context: TFpDbgLocationContext read FContext write FContext;
     // for DW_OP_push_object_address
     property CurrentObjectAddress: TFpDbgMemLocation read FCurrentObjectAddress write FCurrentObjectAddress;
+    property IsDwAtFrameBase: Boolean read FIsDwAtFrameBase write FIsDwAtFrameBase;
     end;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
@@ -2247,15 +2249,37 @@ begin
       DW_OP_consts:  FStack.PushConst(ReadSignedFromExpression(CurData, 0));
       DW_OP_lit0..DW_OP_lit31: FStack.PushConst(CurInstr^-DW_OP_lit0);
 
+      (* DW_OP_reg0..31 and DW_OP_regx
+         The DWARF spec does *not* specify that those should push the result on
+         the stack.
+         However it does not matter, since there can be no other instruction
+         after it to access the stack.
+         From the spec:
+           "A register location description must stand alone as the entire
+            description of an object or a piece of an object"
+
+         For DW_AT_frame_base the spec (dwarf 5) says:
+           "The use of one of the DW_OP_reg<n> operations in this context is
+            equivalent to using DW_OP_breg<n>(0) but more compact"
+         However, it does not say if this removes the "stand alone" restriction.
+      *)
       DW_OP_reg0..DW_OP_reg31: begin
-          if not FContext.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
-            SetError;
-            exit;
+          FStack.PushTargetRegister(CurInstr^-DW_OP_reg0);
+          // Dwarf-5
+          if FIsDwAtFrameBase then begin
+            EntryP := FStack.PeekForDeref;
+            if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
+            EntryP^ := NewLoc; // mlfTargetMem;
           end;
-          FStack.PushConst(NewValue);
         end;
       DW_OP_regx: begin
           FStack.PushTargetRegister(ULEB128toOrdinal(CurData));
+          // Dwarf-5
+          if FIsDwAtFrameBase then begin
+            EntryP := FStack.PeekForDeref;
+            if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
+            EntryP^ := NewLoc; // mlfTargetMem;
+          end;
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
