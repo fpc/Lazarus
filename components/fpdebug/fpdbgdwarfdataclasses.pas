@@ -2118,6 +2118,13 @@ var
       SetError(fpErrLocationParserNoAddressOnStack);
   end;
 
+  function AssertAddressOrRegOnStack: Boolean; inline;
+  begin
+    Result := (FStack.PeekKind in [mlfTargetMem, mlfSelfMem, mlfConstantDeref, mlfTargetRegister]);
+    if not Result then
+      SetError(fpErrLocationParserNoAddressOnStack);
+  end;
+
   function AssertMinCount(ACnt: Integer): Boolean; inline;
   begin
     Result := FStack.Count >= ACnt;
@@ -2194,7 +2201,7 @@ begin
           FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True)); // always mlfTargetMem;
         end;
       DW_OP_deref: begin
-          if not AssertAddressOnStack then exit;
+          if not AssertAddressOrRegOnStack then exit;
           EntryP := FStack.PeekForDeref;
           if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
           EntryP^ := NewLoc; // mlfTargetMem;
@@ -2209,7 +2216,7 @@ begin
           EntryP^ := NewLoc; // mlfTargetMem;
         end;
       DW_OP_deref_size: begin
-          if not AssertAddressOnStack then exit;
+          if not AssertAddressOrRegOnStack then exit;
           EntryP := FStack.PeekForDeref;
           if not ReadAddressFromMemory(EntryP^, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
           EntryP^ := NewLoc; // mlfTargetMem;
