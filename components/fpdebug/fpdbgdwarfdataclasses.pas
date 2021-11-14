@@ -485,7 +485,7 @@ type
   public
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry);
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry;
-                       AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
+                       AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
 
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
@@ -801,7 +801,7 @@ type
     procedure SetLastError(ALastError: TFpError);
     procedure Evaluate;
     function ResultData: TFpDbgMemLocation;
-    procedure Push(AValue: TFpDbgMemLocation);
+    procedure Push(const AValue: TFpDbgMemLocation);
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
     property LastError: TFpError read FLastError;
@@ -2138,7 +2138,7 @@ var
       SetError(fpErrLocationParserMinStack);
   end;
 
-  function ReadAddressFromMemory(AnAddress: TFpDbgMemLocation; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
+  function ReadAddressFromMemory(const AnAddress: TFpDbgMemLocation; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
@@ -2147,7 +2147,7 @@ var
       SetError;
   end;
 
-  function ReadAddressFromMemoryEx(AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
+  function ReadAddressFromMemoryEx(const AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
@@ -2599,7 +2599,7 @@ begin
     Result := InvalidLoc;
 end;
 
-procedure TDwarfLocationExpression.Push(AValue: TFpDbgMemLocation);
+procedure TDwarfLocationExpression.Push(const AValue: TFpDbgMemLocation);
 begin
   FStack.Push(AValue);
 end;
@@ -3856,7 +3856,7 @@ end;
 
 constructor TDbgDwarfSymbolBase.Create(const AName: String;
   AnInformationEntry: TDwarfInformationEntry; AKind: TDbgSymbolKind;
-  AAddress: TFpDbgMemLocation);
+  const AAddress: TFpDbgMemLocation);
 begin
   FCU := AnInformationEntry.CompUnit;
   FInformationEntry := AnInformationEntry;

@@ -199,7 +199,7 @@ type
     procedure StoreRegisters;
     procedure RestoreRegisters;
   public
-    constructor Create(AController: TDbgController; ARoutineAddress: TFpDbgMemLocation; ACallContext:TFpDbgInfoCallContext);
+    constructor Create(AController: TDbgController; const ARoutineAddress: TFpDbgMemLocation; ACallContext:TFpDbgInfoCallContext);
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
@@ -422,7 +422,9 @@ var
 
 { TDbgControllerCallRoutineCmd }
 
-constructor TDbgControllerCallRoutineCmd.Create(AController: TDbgController; ARoutineAddress: TFpDbgMemLocation; ACallContext: TFpDbgInfoCallContext);
+constructor TDbgControllerCallRoutineCmd.Create(AController: TDbgController;
+  const ARoutineAddress: TFpDbgMemLocation; ACallContext: TFpDbgInfoCallContext
+  );
 begin
   inherited Create(AController);
 

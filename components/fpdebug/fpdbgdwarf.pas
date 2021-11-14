@@ -416,7 +416,7 @@ type
 
   TFpValueDwarfConstAddress = class(TFpValueConstAddress)
   protected
-    procedure Update(AnAddress: TFpDbgMemLocation);
+    procedure Update(const AnAddress: TFpDbgMemLocation);
   end;
 
   { TFpValueDwarfArray }
@@ -3188,7 +3188,7 @@ end;
 
 { TFpValueDwarfConstAddress }
 
-procedure TFpValueDwarfConstAddress.Update(AnAddress: TFpDbgMemLocation);
+procedure TFpValueDwarfConstAddress.Update(const AnAddress: TFpDbgMemLocation);
 begin
   Address := AnAddress;
 end;
