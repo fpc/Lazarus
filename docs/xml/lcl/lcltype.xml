@@ -17,6 +17,7 @@
       <!-- unresolved external references -->
       <element name="UTF8Bidi"/>
       <element name="Windows"/>
+      <element name="System.UITypes"/>
       <element name="Classes"/>
       <element name="SysUtils"/>
 
@@ -6916,16 +6917,35 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- alias type Visibility: default -->
+
       <element name="COLORREF">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Represents color constants in the LCL.</short>
+        <descr>
+          <p>
+            COLORREF is the type used for color constants defined in the LCL. It is interchangeable with the TColorRef type; TColorRef is an alias for COLORREF.
+          </p>
+          <p>
+            The base type used for the definition is dependent on the compiler version used to build the LCL. Starting in FPC version 3.2.3, the base type is the TColorRef type defined in the System.UITypes namespace in the FPC run-time library (RTL). For previous compiler versions, the base type is Cardinal.
+          </p>
+          <p>
+            This is done to prevent type conflicts when both System.UITypes and LCL units are used.
+          </p>
+          <p>
+            Values in COLORREF (and TColorRef) are normally OR'd with the value $80000000 to prevent interference with other MS color enumeration values.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorRef"/>
+          <!-- link id="#rtl.system.uitypes.TColorRef"/ -->
+        </seealso>
       </element>
       <!-- alias type Visibility: default -->
       <element name="TColorRef">
-        <short>TColor, TColorRef.</short>
+        <short>Represents color constants in the LCL.</short>
         <descr>
+          <p>
+            TColorRef is an alias for the COLORREF type, and is used for color constants defined in the LCL.
+          </p>
           <p>
             Values from 0..$FFFFFF are BGR colors. The lowest 8 bit are the blue component, the middle 8 bit the green component and the highest 8 bit the red component. Use the functions Red, Green, Blue to extract the components, RedGreenBlue to extract all three components and RGBToColor to convert the three colors to a TColor.
           </p>
@@ -6936,7 +6956,9 @@
             A system color can change during run-time, so do not store them. Use system colors only on LCL control Canvas. They probably are not defined for printer canvas and some are not defined on bitmap canvas.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="COLORREF"/>
+        </seealso>
       </element>
       <!-- constant Visibility: default -->
       <element name="CLR_NONE">
