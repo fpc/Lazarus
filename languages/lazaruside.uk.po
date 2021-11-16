@@ -21033,6 +21033,10 @@ msgstr "Каталонська"
 msgid "Chinese"
 msgstr "Китайська"
 
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
 msgstr "Чеська"

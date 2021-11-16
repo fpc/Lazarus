@@ -22191,6 +22191,10 @@ msgstr "קטלנית"
 msgid "Chinese"
 msgstr "סינית"
 
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
 msgstr "צ'כית"
