@@ -49,6 +49,7 @@
       <element name="FPReadTiff"/>
       <element name="FPTiffCmn"/>
       <element name="FPReadGif"/>
+      <element name="System.UITypes"/>
       <element name="LCLVersion"/>
       <element name="LCLStrConsts"/>
       <element name="LCLType"/>
@@ -68,7 +69,14 @@
 
       <element name="PColor">
         <short>Pointer to the TColor type.</short>
-        <descr/>
+        <descr>
+          <p>
+            The base type used for the definition is dependent on the FPC compiler version used to build the LCL. Starting in FPC version 3.2.3, the base type is the type defined in the System.UITypes namespace in the FPC run-time library (RTL). For previous compiler versions, the base type is a pointer to TColor.
+          </p>
+          <p>
+            This is done to prevent type conflicts when both System.UITypes and LCL units are used.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TColor">
@@ -104,6 +112,7 @@
           </p>
         </descr>
         <seealso>
+          <link id="#lazutils.graphtype.TGraphicsColor">TGraphicsColor</link>
           <link id="ColorToRGB"/>
           <link id="RGBToColor"/>
           <link id="clBlack"/>

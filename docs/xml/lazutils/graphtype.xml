@@ -24,14 +24,26 @@
       <element name="SysUtils"/>
       <element name="Types"/>
       <element name="Math"/>
+      <element name="System.UITypes"/>
       <element name="FPCAdds"/>
       <element name="LazLoggerBase"/>
 
       <element name="TGraphicsColor">
         <short>Defines the Integer range type with values that can be used for colors.</short>
-        <descr/>
+        <descr>
+          <p>
+            TGraphicsColor is an alias to the range type used for color constants. The base type for the definition is dependent on the FPC compiler version used to build the LazUtils package.
+          </p>
+          <p>
+            Starting in FPC version 3.2.3, the base type is the TColor type defined in the System.UITypes namespace in the FPC run-time library (RTL). For previous compiler versions, the base type is the numeric range -$7FFFFFFF-1..$7FFFFFFF.
+          </p>
+          <p>
+            This is done to prevent type conflicts when both System.UITypes and LCL/LazUtils units are used.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.graphics.TColor">TColor</link>
+          <!-- link id="#rtl.system.uitypes.TColor"/ -->
         </seealso>
       </element>
 
