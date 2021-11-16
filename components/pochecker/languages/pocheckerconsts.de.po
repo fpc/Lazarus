@@ -31,6 +31,10 @@ msgstr "Arabisch"
 msgid "Catalan"
 msgstr "Katalanisch"
 
+#: pocheckerconsts.rs_lang_co
+msgid "Corsican"
+msgstr ""
+
 #: pocheckerconsts.rs_lang_cs
 msgid "Czech"
 msgstr "Tschechisch"
