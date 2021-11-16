@@ -21698,6 +21698,10 @@ msgstr "Catalaans"
 msgid "Chinese"
 msgstr "Chinees"
 
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
 msgstr ""

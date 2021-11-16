@@ -20935,6 +20935,10 @@ msgstr "Katalan"
 msgid "Chinese"
 msgstr "Çince"
 
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
+
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"
 msgstr "Çek"
