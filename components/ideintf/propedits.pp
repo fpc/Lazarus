@@ -5994,7 +5994,7 @@ begin
     begin
       Designer:=FindRootDesigner(MI);
       if Designer<>nil then
-        MI.Name:=Designer.UniqueName('N');
+        MI.Name:=Designer.UniqueName('Separator');
     end;
   end;
   SetStrValue(NewValue);
