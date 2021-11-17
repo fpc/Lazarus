@@ -1507,6 +1507,9 @@
       <element link="#lcl.controls.TControl.ShowHint" name="TDBEdit.ShowHint"/>
       <element link="#lcl.controls.TWinControl.TabOrder" name="TDBEdit.TabOrder"/>
       <element link="#lcl.controls.TWinControl.TabStop" name="TDBEdit.TabStop"/>
+
+      <element name="TDBEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+
       <element link="#lcl.controls.TControl.Visible" name="TDBEdit.Visible"/>
       <element link="#lcl.stdctrls.TCustomEdit.OnChange" name="TDBEdit.OnChange"/>
       <element name="TDBEdit.OnClick"  link="#lcl.controls.TControl.OnClick"/>
