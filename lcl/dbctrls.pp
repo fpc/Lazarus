@@ -245,6 +245,7 @@ Type
     property ShowHint;
     property TabOrder;
     property TabStop;
+    property TextHint;
     property Visible;
     property OnChange;
     property OnClick;
