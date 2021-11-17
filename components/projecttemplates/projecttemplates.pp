@@ -254,7 +254,7 @@ begin
   inherited Create(ACollection);
   FVariables:=TStringList.Create;
   FFiles:=TStringList.Create;
-  FProjectFile:='project' // Do not localize
+  FProjectFile:='';
 end;
 
 
