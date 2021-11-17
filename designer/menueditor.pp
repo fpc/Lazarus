@@ -724,7 +724,7 @@ begin
   begin
     FEditedMenuItem.Caption:=s;
     if (s = cLineCaption) and AnsiStartsStr('MenuItem', FEditedMenuItem.Name) then
-      FEditedMenuItem.Name:=FEditorDesigner.CreateUniqueComponentName('N');
+      FEditedMenuItem.Name:=FEditorDesigner.CreateUniqueComponentName('Separator');
     GlobalDesignHook.RefreshPropertyValues;
     GlobalDesignHook.Modified(FEditedMenuItem);
     EditedShadow.Invalidate;
@@ -1971,17 +1971,22 @@ procedure TShadowBox.AddItemAndShadow(existingSI: TShadowItem;
 var
   idx: integer;
   newMI: TMenuItem;
+  nm: string;
 begin
   FShadowMenu.HideFakes;
   idx:=existingSI.RealItem.MenuIndex;
   if not addBefore then
     Inc(idx);
   newMI:=TMenuItem.Create(FShadowMenu.LookupRoot);
-  newMI.Name:=FShadowMenu.FEditorDesigner.CreateUniqueComponentName(newMI.ClassName);
-  if isSeparator then
-    newMI.Caption:=cLineCaption
-  else
+  if isSeparator then begin
+    nm:='Separator';
+    newMI.Caption:=cLineCaption;
+  end
+  else begin
+    nm:=newMI.ClassName;
     newMI.Caption:=newMI.Name;
+  end;
+  newMI.Name:=FShadowMenu.FEditorDesigner.CreateUniqueComponentName(nm);
   existingSI.RealItem.Parent.Insert(idx, newMI);
   TShadowItem.CreateWithBoxAndItem(FShadowMenu, existingSI.ParentBox, newMI);
   FShadowMenu.UpdateBoxLocationsAndSizes;
