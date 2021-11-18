@@ -7670,6 +7670,7 @@ begin
         end;
       end;
     VK_ESCAPE:
+      if (FEditor<>nil) and FEditor.Visible then
       begin
         EditordoResetValue;
         EditorHide;
