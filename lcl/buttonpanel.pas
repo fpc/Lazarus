@@ -21,7 +21,8 @@ uses
 
 type
   TButtonOrder  = (boDefault, boCloseCancelOK, boCloseOKCancel);
-  TPanelButton  = (pbOK, pbCancel, pbClose, pbHelp);
+  TPanelButtonEx  = (pbOK, pbCancel, pbClose, pbHelp, pbNone);
+  TPanelButton  = pbOK..pbHelp;
   TPanelButtons = set of TPanelButton;
 
 const
@@ -65,14 +66,14 @@ type
     FButtonsWidth: Integer;
     FButtonsHeight: Integer;
     FButtonOrder: TButtonOrder;
-    FDefaultButton: TPanelButton;
+    FDefaultButton: TPanelButtonEx;
     FSpacing: TSpacingSize;
     procedure CreateButton(AButton: TPanelButton);
     procedure DoDefaultButton;
     procedure DoShowButtons;
     procedure DoShowGlyphs;
     procedure SetButtonOrder(Value: TButtonOrder);
-    procedure SetDefaultButton(Value: TPanelButton);
+    procedure SetDefaultButton(Value: TPanelButtonEx);
     procedure SetShowBevel(AValue: Boolean);
     procedure SetShowButtons(Value: TPanelButtons);
     procedure SetShowGlyphs(Value: TPanelButtons);
@@ -109,7 +110,7 @@ type
     property CancelButton: TPanelBitBtn read FButtons[pbCancel] default nil;
     property ButtonOrder: TButtonOrder read FButtonOrder write SetButtonOrder default boDefault;
 
-    property DefaultButton: TPanelButton read FDefaultButton write SetDefaultButton default pbOK;
+    property DefaultButton: TPanelButtonEx read FDefaultButton write SetDefaultButton default pbOK;
     property ShowButtons: TPanelButtons read FShowButtons write SetShowButtons default DefShowButtons;
     property ShowGlyphs: TPanelButtons read FShowGlyphs write SetShowGlyphs default DefShowGlyphs;
     property ShowBevel: Boolean read FShowBevel write SetShowBevel default True;
@@ -452,7 +453,7 @@ begin
   end;
 end;
 
-procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButton);
+procedure TCustomButtonPanel.SetDefaultButton(Value: TPanelButtonEx);
 begin
   if FDefaultButton = Value then
     Exit;
