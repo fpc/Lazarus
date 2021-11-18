@@ -3968,8 +3968,8 @@ begin
   IDECommandList.FindIDECommand(ecSelectionSort).Enabled := SelEditable;
   IDECommandList.FindIDECommand(ecSelectionTabs2Spaces).Enabled := SelEditable;
   IDECommandList.FindIDECommand(ecSelectionBreakLines).Enabled := SelEditable;
-  IDECommandList.FindIDECommand(ecSelectionComment).Enabled := SelEditable;
-  IDECommandList.FindIDECommand(ecSelectionUnComment).Enabled := SelEditable;
+  IDECommandList.FindIDECommand(ecSelectionComment).Enabled := Editable;
+  IDECommandList.FindIDECommand(ecSelectionUnComment).Enabled := Editable;
   IDECommandList.FindIDECommand(ecSelectionEnclose).Enabled := SelEditable;
   IDECommandList.FindIDECommand(ecSelectionEncloseIFDEF).Enabled := SelEditable;
 
