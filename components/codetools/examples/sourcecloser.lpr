@@ -535,7 +535,11 @@ begin
     if Node.Desc=ctnImplementation then begin
       // delete implementation section excluding the 'implementation' keyword
       StartPos:=Node.StartPos+length('implementation');
-      if Node.NextBrother.Desc=ctnEndPoint then
+      if Node.NextBrother=nil then begin
+        writeln('Warning: [20211118223740] TSourceCloser.ConvertUnit "'+Code.Filename+'"');
+        EndPos:=Tool.SrcLen+1;
+      end
+      else if Node.NextBrother.Desc=ctnEndPoint then
         EndPos:=Node.EndPos
       else
         EndPos:=Node.NextBrother.StartPos;
