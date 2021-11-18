@@ -252,7 +252,7 @@ type
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
     procedure ReadAnsiStringParams(Extract: boolean = false;
       Copying: boolean = false; const Attr: TProcHeadAttributes = []);
-    function ReadClosure(ExceptionOnError, CreateNodes: boolean): boolean;
+    function ReadClosure(ExceptionOnError: boolean): boolean;
     function SkipTypeReference(ExceptionOnError: boolean): boolean;
     function SkipSpecializeParams(ExceptionOnError: boolean): boolean;
     function WordIsPropertyEnd: boolean;
@@ -1095,7 +1095,7 @@ begin
       end else if UpAtomIs('WITH') then
         ReadWithStatement(true,true)
       else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION')) and AllowClosures then
-        ReadClosure(true,true);
+        ReadClosure(true);
     until false;
   except
     {$IFDEF ShowIgnoreErrorAfter}
@@ -3040,7 +3040,7 @@ begin
       ReadOnStatement(true,CreateNodes);
     end else if (UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION'))
     and AllowClosures then begin
-      ReadClosure(true,CreateNodes);
+      ReadClosure(true);
     end else begin
       // check for unexpected keywords
       case BlockType of
@@ -6111,8 +6111,7 @@ begin
   until false;
 end;
 
-function TPascalParserTool.ReadClosure(ExceptionOnError, CreateNodes: boolean
-  ): boolean;
+function TPascalParserTool.ReadClosure(ExceptionOnError: boolean): boolean;
 { parse parameter list, result type, calling convention, begin..end
 
  examples:
@@ -6126,6 +6125,7 @@ var
   Attr: TProcHeadAttributes;
   IsFunction: boolean;
   Last: TAtomPosition;
+  ProcNode: TCodeTreeNode;
 begin
   Result:=false;
   {$IFDEF VerboseReadClosure}
@@ -6139,29 +6139,25 @@ begin
     else
       exit;
   end;
+
   // create node for procedure
-  if CreateNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnProcedure;
-  end;
+  CreateChildNode;
+  CurNode.Desc:=ctnProcedure;
+  ProcNode:=CurNode;
   IsFunction:=UpAtomIs('FUNCTION');
   ReadNextAtom;// read first atom of head
   {$IFDEF VerboseReadClosure}
   writeln('TPascalParserTool.ReadClosure head start ',GetAtom);
   {$ENDIF}
-  if CreateNodes then begin
-    CreateChildNode;
-    CurNode.Desc:=ctnProcedureHead;
-  end;
+  CreateChildNode;
+  CurNode.Desc:=ctnProcedureHead;
   // read parameter list
   if CurPos.Flag=cafRoundBracketOpen then begin
-    Attr:=[];
-    if CreateNodes then
-      Include(Attr,phpCreateNodes);
+    Attr:=[phpCreateNodes];
     ReadParamList(true,false,Attr);
   end;
   {$IFDEF VerboseReadClosure}
-  writeln('TPascalParserTool.ReadClosure head end ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+  writeln('TPascalParserTool.ReadClosure head end "',GetAtom,'" CurNode=',NodeDescToStr(CurNode.Desc));
   {$ENDIF}
   // read function result
   if IsFunction then begin
@@ -6172,7 +6168,7 @@ begin
         exit;
     end;
     ReadNextAtom;
-    ReadTypeReference(CreateNodes);
+    ReadTypeReference(true);
   end;
   {$IFDEF VerboseReadClosure}
   writeln('TPascalParserTool.ReadClosure modifiers ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
@@ -6181,22 +6177,17 @@ begin
   while (CurPos.StartPos<=SrcLen)
   and IsKeyWordProcedureAnonymousSpecifier.DoIdentifier(@Src[CurPos.StartPos]) do
     ReadNextAtom;
-  // close head
-  if CreateNodes then begin
-    // close ctnProcedureHead
-    CurNode.EndPos:=CurPos.StartPos;
-    EndChildNode;
-  end;
+  // close ctnProcedureHead
+  CurNode.EndPos:=CurPos.StartPos;
+  EndChildNode;
   repeat
     {$IFDEF VerboseReadClosure}
-    writeln('TPascalParserTool.ReadClosure body ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
+    writeln('TPascalParserTool.ReadClosure body ',GetAtom,' CurNode=',NodePathAsString(CurNode));
     {$ENDIF}
     if CurPos.Flag=cafSemicolon then begin
-      ReadNextAtom;
-    end else if UpAtomIs('BEGIN') then begin
-      break;
-    end else if UpAtomIs('ASM') then begin
-      break;
+    end else if UpAtomIs('BEGIN') or UpAtomIs('ASM') then begin
+      if not KeyWordFuncBeginEnd then exit;
+      if CurNode=ProcNode.Parent then break;
     end else if UpAtomIs('TYPE') then begin
       if not KeyWordFuncType then exit;
     end else if UpAtomIs('VAR') then begin
@@ -6217,20 +6208,8 @@ begin
   until false;
   // read begin block
   {$IFDEF VerboseReadClosure}
-  writeln('TPascalParserTool.ReadClosure begin/asm ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc));
-  {$ENDIF}
-  // search "end"
-  ReadTilBlockEnd(false,CreateNodes);
-  {$IFDEF VerboseReadClosure}
   writeln('TPascalParserTool.ReadClosure END ',GetAtom,' CurNode=',NodeDescToStr(CurNode.Desc),' ',CurPos.EndPos);
   {$ENDIF}
-  if CreateNodes then begin
-    // close procedure node
-    if CurNode.Desc<>ctnProcedure then
-      RaiseUnexpectedKeyWord(20181218125659);
-    CurNode.EndPos:=CurPos.EndPos;
-    EndChildNode;
-  end;
 end;
 
 function TPascalParserTool.SkipTypeReference(ExceptionOnError: boolean): boolean;
