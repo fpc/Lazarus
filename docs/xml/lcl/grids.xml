@@ -9503,7 +9503,7 @@
             </dd>
             <dt>VK_ESCAPE</dt>
             <dd>
-              Resets the value in the cell Editor, and hides the Editor control.
+              Resets the value in the cell Editor, and hides the Editor control when it is both assigned and visible.  
             </dd>
           </dl>
           <p>
