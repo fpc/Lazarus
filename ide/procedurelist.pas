@@ -38,7 +38,7 @@ unit ProcedureList;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
   Graphics, Grids,
@@ -665,23 +665,36 @@ begin
   begin
     if SG.Row < (SG.RowCount - 1) then
       SG.Row := SG.Row + 1;
+    Key := 0;
   end
   else if Key = VK_Up then
   begin
     if SG.Row > SG.FixedRows then
       SG.Row := SG.Row - 1;
+    Key := 0;
   end
   else if Key = VK_Home then
   begin
     if SG.RowCount > SG.FixedRows then
       SG.Row := SG.FixedRows;
+    Key := 0;
   end
   else if Key = VK_End then
   begin
     if SG.RowCount > SG.FixedRows then
       SG.Row := SG.RowCount - 1;
+    Key := 0;
+  end
+  else if Key = VK_PRIOR then
+  begin
+    SG.Row := Max(SG.FixedRows, SG.Row - (SG.VisibleRowCount - 1));
+    Key := 0;
+  end
+  else if Key = VK_NEXT then
+  begin
+    SG.Row := Min(SG.RowCount - 1, SG.Row + (SG.VisibleRowCount - 1));
+    Key := 0;
   end;
-
 end;
 
 procedure TProcedureListForm.SomethingChange(Sender: TObject);
