@@ -40,7 +40,12 @@ uses
   ClipBrd, HelpIntfs, Controls, ImgList, Themes,
   // LazUtils
   LazFileUtils, LazUTF8, Maps, IntegerList, LazMethodList, LazLoggerBase,
-  LazUtilities, GraphType, UITypes
+  LazUtilities, GraphType,
+  {$IF FPC_FULLVERSION >= 30200}
+  System.UITypes
+  {$ELSE}
+  UITypes
+  {$ENDIF}
   {$ifndef wince},gettext{$endif}// remove ifdefs when gettext is fixed and a new fpc is released
   ;
 
@@ -421,8 +426,13 @@ type
     );
   TFormState = set of TFormStateType;
 
+  {$IF FPC_FULLVERSION >= 30200}
+  TModalResult = System.UITypes.TModalResult;
+  PModalResult = ^System.UITypes.TModalResult;
+  {$ELSE}
   TModalResult = UITypes.TModalResult;
   PModalResult = ^UITypes.TModalResult;
+  {$ENDIF}
 
   TFormHandlerType = (
     fhtFirstShow,
