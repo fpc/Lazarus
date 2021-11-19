@@ -811,12 +811,13 @@ const
     bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
     bkIgnore, bkAll, bkYesToAll, bkNoToAll);
 
-  DialogResName: array[idDialogWarning..idDialogConfirm] of String =
+  DialogResName: array[idDialogWarning..idDialogShield] of String =
   (
 {idDialogWarning} 'dialog_warning',
 {idDialogError  } 'dialog_error',
 {idDialogInfo   } 'dialog_information',
-{idDialogConfirm} 'dialog_confirmation'
+{idDialogConfirm} 'dialog_confirmation',
+{idDialogShield } 'dialog_shield'
   );
 
 type

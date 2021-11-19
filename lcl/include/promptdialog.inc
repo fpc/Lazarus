@@ -145,7 +145,8 @@ begin
     idDialogConfirm,
     idDialogInfo,
     idDialogWarning,
-    idDialogError :
+    idDialogError,
+    idDialogShield:
       begin
         FBitmap := GetDialogIcon(DialogType);
 
@@ -856,7 +857,7 @@ begin
   FBitmap := nil;
   NewCaption := ACaption;
   case DlgType of
-    idDialogConfirm, idDialogInfo, idDialogWarning, idDialogError:
+    idDialogConfirm, idDialogInfo, idDialogWarning, idDialogError, idDialogShield:
       begin
         FBitmap := GetDialogIcon(DlgType);
         if NewCaption = '' then
