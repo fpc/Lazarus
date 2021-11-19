@@ -2575,7 +2575,7 @@ begin
   end;
 end;
 
-procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor; UseWorkarea: Boolean = False);
+procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor; UseWorkarea: Boolean);
 var
   newLeft, newTop, WindowWidth, WindowHeight: Integer;
   ABounds: TRect;
