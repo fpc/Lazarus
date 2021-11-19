@@ -1496,6 +1496,8 @@ begin
   if AValue then
   begin
     FVisible := AValue;
+    if MergedParent<>nil then
+      MergedParent.InvalidateMergedItems;
     if (not (csLoading in ComponentState)) and (Parent<>nil)
     and Parent.HandleAllocated then
       HandleNeeded;
@@ -1509,9 +1511,9 @@ begin
       DestroyHandle;
     end;
     FVisible := AValue;
+    if MergedParent<>nil then
+      MergedParent.InvalidateMergedItems;
   end;
-  if MergedParent<>nil then
-    MergedParent.InvalidateMergedItems;
 end;
 
 procedure TMenuItem.UpdateImage(forced: Boolean);

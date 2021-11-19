@@ -1472,10 +1472,7 @@ begin
 
   ItemIndex := AMenuItem.MergedParent.VisibleIndexOf(AMenuItem);
   if ItemIndex<0 then
-  begin
-    DebugLn(['Invisible menu item: ', AMenuItem.Name, ' (', AMenuItem.Caption, ')']);
-    Exit;
-  end;
+    RaiseGDBException('Invisible menu item: '+AMenuItem.Name+' ('+AMenuItem.Caption+')');
   // MDI forms with a maximized MDI child insert a menu at the first index for
   // the MDI child's window menu, so we need to take that into account
   if Assigned(Application.MainForm) and
