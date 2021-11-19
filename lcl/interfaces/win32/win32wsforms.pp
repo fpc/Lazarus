@@ -355,6 +355,19 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
     end;
   end;
 
+  procedure CallWindowPosChanging;
+  var
+    WP: PWindowPos;
+  begin
+    if not LockWindowPosChanging then
+      Exit;
+    WP := PWindowPos(LParam);
+    if (WP^.flags and SWP_NOMOVE)<>0 then
+      Exit;
+    WP^.x := LockWindowPosChangingXY.X;
+    WP^.y := LockWindowPosChangingXY.Y;
+  end;
+
 var
   Info: PWin32WindowInfo;
   WinControl: TWinControl;
@@ -362,6 +375,8 @@ begin
   Info := GetWin32WindowInfo(Window);
   WinControl := Info^.WinControl;
   case Msg of
+    WM_WINDOWPOSCHANGING:
+      CallWindowPosChanging;
     WM_GETMINMAXINFO:
       begin
         SetMinMaxInfo(WinControl, PMINMAXINFO(LParam)^);
