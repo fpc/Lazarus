@@ -459,9 +459,20 @@ begin
   begin
     Handle := AWinControl.Handle;
     WindowPlacement.length := SizeOf(WindowPlacement);
-    if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+    // Windows (at least Win 10) has the feature that SetWindowPos() forces dialogs with parent windows on the same screen
+    //   with the parent window - the position set with Windows.SetWindowPos() is ignored and instead the dialog
+    //   is centered with its parent window.
+    // To prevent Windows from changing the position defined by the LCL, SetWindowPos() must not be used and
+    //   SetWindowPlacement() must be used instead.
+    // It looks like GetWindowPlacement/SetWindowPlacement has no negative impact on non-form controls, so it is used directly
+    // In case of problems with "normal" wincontrols, the GetWindowPlacement/SetWindowPlacement code can be executed only
+    //   for TCustomForm descendands
+    // See issue #39479 for more description and demo application.
+    if GetWindowPlacement(Handle, @WindowPlacement) then
     begin
       WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
+      if not IsIconic(Handle) and not Windows.IsWindowVisible(Handle) then // do not show hidden windows prematurely
+        WindowPlacement.showCmd := SW_HIDE;
       SetWindowPlacement(Handle, @WindowPlacement);
     end
     else
