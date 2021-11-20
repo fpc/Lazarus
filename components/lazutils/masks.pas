@@ -100,7 +100,7 @@ const
     ------- Quirks -------
    *)
 type
-  TWindowsQuirk=(wqAnyExtension,      // Anything*.*     : ".*" is removed.
+  TWindowsQuirk=(wqAnyExtension,      // Anything*.*     : ".*" is removed. Also makes "foo.*" match "foo"
                  wqFilenameEnd,       // Anything??.abc  : "?" matches 1 or 0 chars (except '.')
                                       // (Not the same as "Anything*.abc", but the same
                                       // as regex "Anything.{0,2}\.abc")
