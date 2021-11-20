@@ -1481,14 +1481,14 @@ begin
   case TargetType of
   ttProject:
     begin
-      ToolTitle := Format(lisCompileProject, [ExtractFileNameOnly(Filename)]);
+      ToolTitle := Format(lisCompileProject, [Filename]);
       if aBuildMode<>'' then
         ToolTitle += Format(lisBuildMode, [aBuildMode]);
       ToolKind := lisOtherProject;
     end;
   ttPackage:
     begin
-      ToolTitle := Format(lisCompilePackage, [ExtractFileNameOnly(Filename)]);
+      ToolTitle := Format(lisCompilePackage, [Filename]);
       ToolKind := lisPackage;
     end;
   else exit;
