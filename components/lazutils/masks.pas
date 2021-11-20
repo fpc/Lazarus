@@ -1436,7 +1436,8 @@ begin
 
   // Quirk "blah.*" = "blah*"
   if wqAnyExtension in fWindowsQuirkAllowed then begin
-    if RightStr(lModifiedMask,3)='*.*' then begin
+    if (RightStr(lModifiedMask,2)='.*') and (Length(lModifiedMask)>2) then begin
+    //if RightStr(lModifiedMask,3)='*.*' then begin
       lModifiedMask:=copy(lModifiedMask,1,Length(lModifiedMask)-2);
       fWindowsQuirkInUse:=fWindowsQuirkInUse+[wqAnyExtension];
     end;
@@ -1499,7 +1500,15 @@ begin
   if wqNoExtension in fWindowsQuirkInUse then begin
     SplitFileNameExtension(aFileName,lFileName,lExtension,false);
     // wqNoExtension = Empty extension
-    if lExtension<>'' then exit(false);
+    //if lExtension<>'' then exit(false);
+    // Its not clear if a file "file." should match an "*." mask because
+    // there is no way in Windows that a file ends with a dot.
+    if (lExtension<>'') and (lExtension<>'.') then
+      exit(false)
+    end else if wqAnyExtension in fWindowsQuirkInUse then begin
+      SplitFileNameExtension(aFileName,lFileName,lExtension,false);
+      Result:=inherited Matches(lFileName);
+      exit;
   end;
   Result:=Inherited Matches(aFileName);
 end;
