@@ -41,10 +41,11 @@ uses
   Controls, Forms, Dialogs,
   // CodeTools
   FileProcs, CodeToolManager, CodeCache,
+  // BuildIntf
+  PackageIntf, PackageDependencyIntf, PackageLinkIntf, ProjectIntf, CompOptsIntf,
+  BaseIDEIntf, IDEExternToolIntf, MacroIntf, MacroDefIntf,
   // IdeIntf
-  PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf,
-  BaseIDEIntf, IDECommands, IDEExternToolIntf, MacroIntf, IDEMsgIntf,
-  ToolBarIntf, MacroDefIntf, PackageDependencyIntf, PackageLinkIntf,
+  MenuIntf, LazIDEIntf, IDEDialogs, IDECommands, IDEMsgIntf, ToolBarIntf,
   // ProjectGroups
   ProjectGroupIntf, ProjectGroupStrConst;
 
@@ -105,7 +106,6 @@ type
   public
     constructor Create(aOwner: TProjectGroup);
     Destructor Destroy; override;
-
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
@@ -1462,7 +1462,8 @@ end;
 function TIDECompileTarget.PerformBuildModeAction(AAction: TPGTargetAction;
   aModeIdentifier: string): TPGActionResult;
 begin
-  if TargetType<>ttProject then exit(arNotAllowed);
+  if TargetType<>ttProject then
+    exit(arNotAllowed);
   Result:=ProjectAction(AAction,aModeIdentifier);
 end;
 
@@ -1818,7 +1819,7 @@ var
 begin
   Result:=arFailed;
 
-  debugln(['TIDECompileTarget.ProjectAction ',Filename]);
+  debugln(['TIDECompileTarget.ProjectAction: Action=', AAction, ', Filename=', Filename]);
   aProject:=LazarusIDE.ActiveProject;
   if (aProject<>nil)
   and (CompareFilenames(aProject.ProjectInfoFile,Filename)=0)
@@ -1847,7 +1848,6 @@ begin
          if not CheckIDEIsReadyForBuild then exit;
          // save project
          if LazarusIDE.DoSaveProject([])<>mrOk then exit;
-
          R:= crCompile;
          if (AAction=taCompileClean) then
            R:= crBuild;
@@ -1909,10 +1909,8 @@ begin
     taCompileFromHere:
       begin
         if not CheckIDEIsReadyForBuild then exit;
-
         // save files
         if LazarusIDE.DoSaveProject([])<>mrOk then exit;
-
         LazarusIDE.ToolStatus:=itBuilder;
         try
           if BuildModeCount>1 then begin
@@ -2102,10 +2100,7 @@ begin
   while (aTarget<>nil) do
   begin
     if AAction in aTarget.AllowedActions then
-    begin
-      Result:=aTarget.PerformAction(AAction);
-      exit;
-    end;
+      exit(aTarget.PerformAction(AAction));
     aTarget:=TIDECompileTarget(aTarget.GetNext(false));
   end;
   Result:=arOK;

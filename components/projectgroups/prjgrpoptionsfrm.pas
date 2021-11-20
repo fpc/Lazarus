@@ -98,8 +98,7 @@ begin
   ShowTargetPathsCheckBox.Checked:=FLastShowTargetPaths;
 end;
 
-class function TProjGrpOptionsFrame.
-  SupportedOptionsClass: TAbstractIDEOptionsClass;
+class function TProjGrpOptionsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
 begin
   Result:=IDEEditorGroups.GetByIndex(GroupEnvironment)^.GroupClass;
 end;

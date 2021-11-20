@@ -17,12 +17,14 @@ uses
   Classes, SysUtils,
   // LCL
   Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
-  ActnList, LCLProc, Clipbrd, ImgList, LCLType,
+  ActnList, Clipbrd, ImgList, LCLType,
   // LazUtils
   LazFileUtils, LazLoggerBase, LazFileCache,
+  // BuildIntf
+  PackageIntf, ProjectIntf,
   // IdeIntf
-  LazIDEIntf, PackageIntf, ProjectIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf,
-  IDEDialogs, IDECommands, IDEImagesIntf,
+  LazIDEIntf, ProjectGroupIntf, MenuIntf, IDEWindowIntf, IDEDialogs, IDECommands,
+  IDEImagesIntf,
   // ProjectGroups
   ProjectGroupStrConst, ProjectGroup, PrjGrpOptionsFrm, PrjGrpInfoFrm;
 
@@ -247,7 +249,7 @@ type
     function SelectedTarget: TPGCompileTarget;
     function GetTVNodeFilename(TVNode: TTreeNode): string;
     function GetBuildMode(TVNode: TTreeNode): TPGBuildMode;
-    function GetNearestTargget(TVNode: TTreeNode): TPGCompileTarget;
+    function GetNearestTarget(TVNode: TTreeNode): TPGCompileTarget;
     function SelectedNodeType: TPGCompileTarget;
     procedure UpdateIDEMenuCommandFromAction(Sender: TObject; Item: TIDEMenuCommand);
     procedure UpdateStatusBarTargetCount;
@@ -390,13 +392,10 @@ begin
   //debugln(['TProjectGroupEditorForm.SetProjectGroup START ',FProjectGroup=AValue,' new=',DbgSName(AValue)]);
   if FProjectGroup=AValue then Exit;
   if ProjectGroup<>nil then
-  begin
     ClearEventCallBacks(ProjectGroup);
-  end;
   FProjectGroup:=AValue;
-  if ProjectGroup<>nil then begin
+  if ProjectGroup<>nil then
     SetEventCallBacks(ProjectGroup);
-  end;
   FActiveTarget:=Nil;
   ShowProjectGroup;
 end;
@@ -831,7 +830,6 @@ begin
       end;
     end;
   end;
-
   SBPG.Panels[piActiveTarget].Text:=s;
 end;
 
@@ -1003,7 +1001,8 @@ begin
   UpdateIDEMenuCommandFromAction(Sender,MnuCmdTargetCompileClean);
 end;
 
-function TProjectGroupEditorForm.AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction = Nil): Boolean;
+function TProjectGroupEditorForm.AllowPerform(ATargetAction: TPGTargetAction;
+  AAction: TAction): Boolean;
 Var
   ND: TNodeData;
   aTarget: TPGCompileTarget;
@@ -1014,7 +1013,7 @@ begin
     if ND.Target<>nil then begin
       Result:=(not ND.Target.Missing) and (ATargetAction in ND.Target.AllowedActions);
     end else begin
-      aTarget:=GetNearestTargget(TVPG.Selected);
+      aTarget:=GetNearestTarget(TVPG.Selected);
       case ND.NodeType of
       ntBuildMode:
         Result:=(not aTarget.Missing)
@@ -1026,15 +1025,13 @@ begin
     AAction.Enabled:=Result;
 end;
 
-procedure TProjectGroupEditorForm.AProjectGroupAddCurrentExecute(
-  Sender: TObject);
+procedure TProjectGroupEditorForm.AProjectGroupAddCurrentExecute(Sender: TObject);
 begin
   if LazarusIDE.ActiveProject.ProjectInfoFile<>'' then
     AddTarget(LazarusIDE.ActiveProject.ProjectInfoFile);
 end;
 
-procedure TProjectGroupEditorForm.AProjectGroupAddCurrentUpdate(
-  Sender: TObject);
+procedure TProjectGroupEditorForm.AProjectGroupAddCurrentUpdate(Sender: TObject);
 begin
   (Sender as TAction).Enabled := (FProjectGroup<>nil) and (LazarusIDE.ActiveProject<>nil)
     and (LazarusIDE.ActiveProject.ProjectInfoFile<>'');
@@ -1071,7 +1068,7 @@ begin
   if aTarget<>nil then
     aTarget.GetOwnerProjectGroup.Perform(aTarget,ATargetAction)
   else begin
-    aTarget:=GetNearestTargget(TVPG.Selected);
+    aTarget:=GetNearestTarget(TVPG.Selected);
     case ND.NodeType of
     ntBuildMode:
       aTarget.PerformBuildModeAction(ATargetAction,ND.Value);
@@ -1084,8 +1081,7 @@ begin
   Perform(taCompile);
 end;
 
-procedure TProjectGroupEditorForm.ATargetCompileFromHereExecute(Sender: TObject
-  );
+procedure TProjectGroupEditorForm.ATargetCompileFromHereExecute(Sender: TObject);
 begin
   Perform(taCompileFromHere);
 end;
@@ -1312,7 +1308,7 @@ begin
   end;
 end;
 
-function TProjectGroupEditorForm.GetNearestTargget(TVNode: TTreeNode
+function TProjectGroupEditorForm.GetNearestTarget(TVNode: TTreeNode
   ): TPGCompileTarget;
 begin
   Result:=nil;
@@ -1634,7 +1630,7 @@ begin
   // find project node
   Result:=FindTVNodeOfTarget(aMode.Target);
   if Result=nil then exit;
-  // find build mdoe node
+  // find build mode node
   Result:=FindBuildModeNodeRecursively(Result,aMode.Identifier);
 end;
 

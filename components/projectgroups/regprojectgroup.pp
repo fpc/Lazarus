@@ -158,8 +158,6 @@ begin
   // add IDE options frame
   PGOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,
                                   TProjGrpOptionsFrame,PGOptionsFrameID)^.Index;
-
-
 end;
 
 finalization

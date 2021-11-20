@@ -312,10 +312,8 @@ begin
   if Assigned(FOnCmdLineCreate) then begin
     Abort:=false;
     FOnCmdLineCreate(CmdLine,Abort);
-    if Abort then begin
-      Result:=mrAbort;
-      exit;
-    end;
+    if Abort then
+      exit(mrAbort);
   end;
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
