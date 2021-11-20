@@ -59,6 +59,36 @@ type
                );
   TMaskOpCodes=set of TMaskOpCode;
 
+
+const
+  AllMaskOpCodes=[mocAnyChar,
+                  mocAnyCharOrNone,
+                  mocAnyText,
+                  mocRange,
+                  mocSet,
+                  mocNegateGroup,
+                  mocEscapeChar];
+
+
+  // Match [x] literally, not as a range.
+  // Leave out mocAnyCharOrNone, mocRange and mocSet.
+  MaskOpCodesDisableRange=[mocAnyChar,
+                           mocAnyText,
+                           mocNegateGroup,
+                           mocEscapeChar];
+
+  // Interpret [?] as literal question mark instead of 0..1 chars wildcard.
+  // Disable backslash escaping characters like "\?".
+  // Leave out mocAnyCharOrNone and mocEscapeChar
+  MaskOpCodesNoEscape=[mocAnyChar,
+                       mocAnyText,
+                       mocRange,
+                       mocSet,
+                       mocNegateGroup];
+
+  DefaultMaskOpCodes=MaskOpCodesNoEscape;
+
+
   (*
     Windows mask works in a different mode than regular mask, it has too many
     quirks and corner cases inherited from CP/M, then adapted to DOS (8.3) file
@@ -69,6 +99,7 @@ type
 
     ------- Quirks -------
    *)
+type
   TWindowsQuirk=(wqAnyExtension,      // Anything*.*     : ".*" is removed.
                  wqFilenameEnd,       // Anything??.abc  : "?" matches 1 or 0 chars (except '.')
                                       // (Not the same as "Anything*.abc", but the same
@@ -96,32 +127,6 @@ const
                         wqEmptyIsAny,
                         wqNoExtension];
 
-  AllMaskOpCodes=[mocAnyChar,
-                  mocAnyCharOrNone,
-                  mocAnyText,
-                  mocRange,
-                  mocSet,
-                  mocNegateGroup,
-                  mocEscapeChar];
-
-
-  // Match [x] literally, not as a range.
-  // Leave out mocAnyCharOrNone, mocRange and mocSet.
-  MaskOpCodesDisableRange=[mocAnyChar,
-                           mocAnyText,
-                           mocNegateGroup,
-                           mocEscapeChar];
-
-  // Interpret [?] as literal question mark instead of 0..1 chars wildcard.
-  // Disable backslash escaping characters like "\?".
-  // Leave out mocAnyCharOrNone and mocEscapeChar
-  MaskOpCodesNoEscape=[mocAnyChar,
-                       mocAnyText,
-                       mocRange,
-                       mocSet,
-                       mocNegateGroup];
-
-  DefaultMaskOpCodes=MaskOpCodesNoEscape;
 
 type
 
