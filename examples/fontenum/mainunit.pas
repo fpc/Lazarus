@@ -372,7 +372,7 @@ var
   L: TStringList;
 begin
   L := TStringList.Create;
-  L.Add('abcdefhijklmnopqrstuvwxyz');
+  L.Add('abcdefghijklmnopqrstuvwxyz');
   L.Add('ABCDEFGHIJKLMNOPQRSTUVWXYZ');
   L.Add('01234567891   ўЈ¤Ґ§');
   L.Add('абвгдежзийклмнопрстуфхцшщъыь');
