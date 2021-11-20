@@ -1537,32 +1537,25 @@ begin
   StaticPackages:=LazarusPackageIntf.RegisteredPackages;
   if StaticPackages=nil then exit;
   Quiet:=false;
-
-  // register IDE's FCL components
-
+  PackageGraph.AbortRegistration:=false;
   // register components in Lazarus packages
   for i:=0 to StaticPackages.Count-1 do begin
     StaticPackage:=PRegisteredPackage(StaticPackages[i]);
     //debugln(['TPkgManager.LoadStaticCustomPackages ',StaticPackage^.Name]);
-
     // check package name
-    if not IsValidPkgName(StaticPackage^.Name)
-    then begin
+    if not IsValidPkgName(StaticPackage^.Name) then begin
       DebugLn('Warning: (lazarus) [TPkgManager.LoadStaticCustomPackages] Invalid Package Name: "',
         BinaryStrToText(StaticPackage^.Name),'"');
       continue;
     end;
-    
     // check RegisterFCLBaseComponents procedure
     if (StaticPackage^.RegisterProc=nil) then begin
       DebugLn('Warning: (lazarus) [TPkgManager.LoadStaticCustomPackages]',
         ' Package "',StaticPackage^.Name,'" has no register procedure.');
       continue;
     end;
-    
     // load package
     APackage:=LoadInstalledPackage(StaticPackage^.Name,KeepInstalledPackages,Quiet);
-
     PackageGraph.RegisterStaticPackage(APackage,StaticPackage^.RegisterProc);
   end;
   PackageGraph.SortAutoInstallDependencies;

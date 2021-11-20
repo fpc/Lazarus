@@ -494,7 +494,7 @@ type
     property OnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
     property OnTranslatePackage: TPkgTranslate read FOnTranslatePackage
-                                                   write FOnTranslatePackage;
+                                               write FOnTranslatePackage;
     property OnUninstallPackage: TPkgUninstall read FOnUninstallPackage
                                                write FOnUninstallPackage;
     property OnBeforeCompilePackages: TOnBeforeCompilePackages read
@@ -912,7 +912,6 @@ procedure TLazPackageGraph.SetRegistrationPackage(const AValue: TLazPackage);
 begin
   if FRegistrationPackage=AValue then exit;
   FRegistrationPackage:=AValue;
-  AbortRegistration:=false;
   LazarusPackageIntf.RegisterUnitProc:=@RegisterUnitHandler;
   RegisterComponentsProc:=@RegisterComponentsGlobalHandler;
   RegisterNoIconProc:=@RegisterNoIconGlobalHandler;
