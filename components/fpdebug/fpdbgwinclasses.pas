@@ -660,23 +660,22 @@ function TDbgWinProcess.StartInstance(AParams, AnEnvironment: TStrings;
   AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
   AnError: TFpError): boolean;
 var
-  AProcess: TProcessUTF8;
   LastErr: Integer;
 begin
   result := false;
-  AProcess := TProcessUTF8.Create(nil);
+  FProcProcess := TProcessUTF8.Create(nil);
   try
     // To debug sub-processes, this needs to be poDebugProcess
-    AProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
+    FProcProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
     if siForceNewConsole in AFlags then
-      AProcess.Options:=AProcess.Options+[poNewConsole];
-    AProcess.Executable:=Name;
-    AProcess.Parameters:=AParams;
-    AProcess.Environment:=AnEnvironment;
-    AProcess.CurrentDirectory:=AWorkingDirectory;
-    AProcess.Execute;
+      FProcProcess.Options:=FProcProcess.Options+[poNewConsole];
+    FProcProcess.Executable:=Name;
+    FProcProcess.Parameters:=AParams;
+    FProcProcess.Environment:=AnEnvironment;
+    FProcProcess.CurrentDirectory:=AWorkingDirectory;
+    FProcProcess.Execute;
 
-    Init(AProcess.ProcessID, 0);
+    Init(FProcProcess.ProcessID, 0);
     Result:=true;
   except
     on E: Exception do
@@ -691,7 +690,7 @@ begin
       else
       {$endif i386}
       AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, '']);
-      AProcess.Free;
+      FreeAndNil(FProcProcess);
     end;
   end;
 end;
