@@ -85,12 +85,6 @@ begin
   WriteLn('Copyright (c) 2006-2009 by Marc Weustink');
   WriteLN('starting....');
   
-  if ParamCount > 0
-  then begin
-    GController.ExecutableFilename := ParamStr(1);
-    WriteLN('Using file: ', GController.ExecutableFilename);
-  end;
-
 {$ifdef windows}
   SetConsoleCtrlHandler(@CtrlCHandler, True);
 {$endif}
@@ -100,4 +94,3 @@ begin
   SetConsoleCtrlHandler(@CtrlCHandler, False);
 {$endif}
 end.
-

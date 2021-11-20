@@ -50,8 +50,4 @@ var
 
 implementation
 
-initialization
-  GController := TDbgController.Create;
-finalization
-  GController.Free;
 end.
