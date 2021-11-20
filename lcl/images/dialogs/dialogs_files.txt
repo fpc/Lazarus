@@ -8,6 +8,8 @@ dialog_information.png
 dialog_information_150.png
 dialog_information_200.png
 dialog_shield.png
+dialog_shield_150.png
+dialog_shield_200.png
 dialog_warning.png
 dialog_warning_150.png
 dialog_warning_200.png
