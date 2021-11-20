@@ -335,6 +335,7 @@ begin
   TestMaskWindows('x \ y', '? \\ ?', False);
   TestMaskWindows('', 'a', False);
   TestMaskWindows('', '[a]', False);
+  TestMaskWindows('foo','foo.*',True);
 end;
 
 {$R *.res}
