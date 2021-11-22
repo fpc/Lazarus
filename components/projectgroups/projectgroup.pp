@@ -1211,13 +1211,13 @@ end;
 procedure TIDEProjectGroup.ActiveTargetChanged(T: TPGCompileTarget);
 var
   Root: TIDEProjectGroup;
-begin
-  if T.Active then begin
-    FActiveTarget:=T;
-  end else begin
+begin        // T=Nil means the compilation ended and the GUI should be restored.
+  if Assigned(T) then
+    if T.Active then
+      FActiveTarget:=T
+    else
     if FActiveTarget=T then
       FActiveTarget:=nil;
-  end;
   Root:=TIDEProjectGroup(GetRootGroup);
   if Assigned(Root.OnTargetActiveChanged) then
     Root.OnTargetActiveChanged(Self,T);
@@ -2002,14 +2002,18 @@ begin
   taSettings: ;
   taCompile,
   taCompileClean:
-    begin
+    try
       for i:=0 to ProjectGroup.TargetCount-1 do begin
         aTarget:=TIDECompileTarget(ProjectGroup.Targets[i]);
-        if AAction in aTarget.AllowedActions then
+        if AAction in aTarget.AllowedActions then begin
+          ActiveChanged(aTarget);
           if aTarget.PerformAction(AAction)<>arOk then
             exit;
+        end;
       end;
       Result:=arOk;
+    finally
+      ActiveChanged(Nil);
     end;
   taCompileFromHere:
     begin
@@ -2017,6 +2021,7 @@ begin
         exit;
       Result:=arOK;
       aTarget:=TIDECompileTarget(GetNext(true));
+      ActiveChanged(aTarget);
       if aTarget=nil then exit;
       Result:=aTarget.PerformAction(taCompileFromHere);
     end;
