@@ -11271,8 +11271,7 @@ end;
 procedure TGDBMIWatches.Changed;
 begin
   SetLength(FParentFPList, 0);
-  if CurrentWatches <> nil
-  then CurrentWatches.ClearValues;
+  TriggerInvalidateWatchValues;
 end;
 
 procedure TGDBMIWatches.Clear;

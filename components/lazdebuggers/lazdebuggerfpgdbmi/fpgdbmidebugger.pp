@@ -222,7 +222,7 @@ procedure IDEMenuClicked(Sender: TObject);
 begin
   UseGDB := MenuCmd.Checked;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Watches <> nil) then
-    CurrentDebugger.Watches.CurrentWatches.ClearValues;
+    CurrentDebugger.Watches.TriggerInvalidateWatchValues;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Locals <> nil) then
     CurrentDebugger.Locals.CurrentLocalsList.Clear;
 end;

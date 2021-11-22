@@ -651,7 +651,7 @@ procedure TFpThreadWorkerModifyUpdate.DoCallback_DecRef(Data: PtrInt);
 begin
   //
   FDebugger.Locals.CurrentLocalsList.Clear;
-  FDebugger.Watches.CurrentWatches.ClearValues;
+  FDebugger.Watches.TriggerInvalidateWatchValues;
   FDebugger.CallStack.CurrentCallStackList.Clear;
 
   UnQueue_DecRef;

@@ -118,10 +118,16 @@ type
   { TTestWatchesMonitor }
 
   TTestWatchesMonitor = class(TWatchesMonitor)
+  private
+    FWatches: TWatches;
   protected
     procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); override;
     procedure RequestData(AWatchValue: TWatchValue);
-    function CreateWatches: TWatches; override;
+    function CreateWatches: TWatches;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Watches: TWatches read FWatches;
   end;
 
   TTestRegistersMonitor = class;
@@ -335,6 +341,18 @@ function TTestWatchesMonitor.CreateWatches: TWatches;
 begin
   Result := TTestWatches.Create;
   TTestWatches(Result).FMonitor := Self;
+end;
+
+constructor TTestWatchesMonitor.Create;
+begin
+  inherited Create;
+  FWatches := CreateWatches;
+end;
+
+destructor TTestWatchesMonitor.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FWatches);
 end;
 
 { TTestWatchValue }

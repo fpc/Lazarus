@@ -256,11 +256,11 @@ type
     FDebugger: TDebuggerIntf;
     FMonitor: TDebuggerDataMonitor;
     procedure SetMonitor(const AValue: TDebuggerDataMonitor);
+    property  Monitor: TDebuggerDataMonitor read FMonitor write SetMonitor;
   protected
     procedure DoNewMonitor; virtual;
     property  Debugger: TDebuggerIntf read FDebugger write FDebugger;
   protected
-    property  Monitor: TDebuggerDataMonitor read FMonitor write SetMonitor;
 
     procedure DoStateLeavePauseClean; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
@@ -768,32 +768,27 @@ type
 
   TWatchesSupplier = class(TDebuggerDataSupplier)
   private
-    function GetCurrentWatches: TWatches;
     function GetMonitor: TWatchesMonitor;
     procedure SetMonitor(AValue: TWatchesMonitor);
+    property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
   protected
     procedure DoStateChange(const AOldState: TDBGState); override; // workaround for state changes during TWatchValue.GetValue
     procedure InternalRequestData(AWatchValue: TWatchValue); virtual;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
+    procedure TriggerInvalidateWatchValues;
     procedure RequestData(AWatchValue: TWatchValue);
-    property CurrentWatches: TWatches read GetCurrentWatches;
-    property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
   end;
 
   { TWatchesMonitor }
 
   TWatchesMonitor = class(TDebuggerDataMonitor)
   private
-    FWatches: TWatches;
     function GetSupplier: TWatchesSupplier;
     procedure SetSupplier(AValue: TWatchesSupplier);
   protected
-    function CreateWatches: TWatches; virtual;
+    procedure InvalidateWatchValues; virtual;
   public
-    constructor Create;
-    destructor Destroy; override;
-    property Watches: TWatches read FWatches;
     property Supplier: TWatchesSupplier read GetSupplier write SetSupplier;
   end;
 
@@ -4415,13 +4410,6 @@ begin
   else AWatchValue.SetValidity(ddsInvalid);
 end;
 
-function TWatchesSupplier.GetCurrentWatches: TWatches;
-begin
-  Result := Nil;
-  if Monitor <> nil then
-    Result := Monitor.Watches;
-end;
-
 function TWatchesSupplier.GetMonitor: TWatchesMonitor;
 begin
   Result := TWatchesMonitor(inherited Monitor);
@@ -4445,6 +4433,12 @@ begin
   AWatchValue.SetValidity(ddsInvalid);
 end;
 
+procedure TWatchesSupplier.TriggerInvalidateWatchValues;
+begin
+  if Monitor <> nil then
+    Monitor.InvalidateWatchValues;
+end;
+
 constructor TWatchesSupplier.Create(const ADebugger: TDebuggerIntf);
 begin
   inherited Create(ADebugger);
@@ -4463,21 +4457,9 @@ begin
   inherited Supplier := AValue;
 end;
 
-function TWatchesMonitor.CreateWatches: TWatches;
+procedure TWatchesMonitor.InvalidateWatchValues;
 begin
-  Result := TWatches.Create;
-end;
-
-constructor TWatchesMonitor.Create;
-begin
-  FWatches := CreateWatches;
-  inherited Create;
-end;
-
-destructor TWatchesMonitor.Destroy;
-begin
-  inherited Destroy;
-  FreeAndNil(FWatches);
+  //
 end;
 
 { TLocalsSupplier }
