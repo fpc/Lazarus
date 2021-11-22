@@ -888,8 +888,10 @@ begin
       NewActiveTVNode.StateIndex:=NSIActive;
     FActiveTarget:=Target;
   end;
-  //N:=DisplayFileName(Target);
-  //SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[N]);
+  if Assigned(Target) then
+    SBPG.Panels[piActiveTarget].Text:=Format(lisActiveTarget,[DisplayFileName(Target)])
+  else
+    TVPGSelectionChanged(Nil);  // Restore the original status text.
 end;
 
 procedure TProjectGroupEditorForm.OnTargetExchanged(Sender: TObject; Target1,
