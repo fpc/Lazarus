@@ -199,24 +199,24 @@ type
     FLastShowTargetPaths: boolean;
     FOldBuildExecute, FOldBuildUpdate: TNotifyEvent;
     FOldCompileExecute, FOldCompileUpdate: TNotifyEvent;
-    // Project group callbacks
+    // Event handlers
     procedure IDEProjectGroupManagerEditorOptionsChanged(Sender: TObject);
-    procedure InitTVNode(Node: TTreeNode; Const ACaption: String;
-      ANodeData: TNodeData);
-    procedure OnApplicationActivate(Sender: TObject);
-    procedure OnBuildExecute(Sender: TObject);
-    procedure OnBuildUpdate(Sender: TObject);
-    procedure OnCompileExecute(Sender: TObject);
-    procedure OnCompileUpdate(Sender: TObject);
-    procedure OnIDEClose(Sender: TObject);
-    procedure OnProjectGroupDestroy(Sender: TObject);
-    procedure OnProjectGroupFileNameChanged(Sender: TObject);
-    procedure OnTargetInserted(Sender: TObject; Target: TPGCompileTarget);
-    procedure OnTargetDeleted(Sender: TObject; Target: TPGCompileTarget);
-    procedure OnTargetActiveChanged(Sender: TObject; Target: TPGCompileTarget);
-    procedure OnTargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
+    procedure ApplicationActivate(Sender: TObject);
+    procedure BuildExecute(Sender: TObject);
+    procedure BuildUpdate(Sender: TObject);
+    procedure CompileExecute(Sender: TObject);
+    procedure CompileUpdate(Sender: TObject);
+    procedure IDEClose(Sender: TObject);
+    procedure ProjectGroupDestroy(Sender: TObject);
+    procedure ProjectGroupFileNameChanged(Sender: TObject);
+    procedure TargetInserted(Sender: TObject; Target: TPGCompileTarget);
+    procedure TargetDeleted(Sender: TObject; Target: TPGCompileTarget);
+    procedure TargetActiveChanged(Sender: TObject; Target: TPGCompileTarget);
+    procedure TargetExchanged(Sender: TObject; Target1, Target2: TPGCompileTarget);
+
     function AllowPerform(ATargetAction: TPGTargetAction; AAction: TAction= Nil): Boolean;
     procedure ClearEventCallBacks(AProjectGroup: TProjectGroup);
+    procedure InitTVNode(Node: TTreeNode; Const ACaption: String; ANodeData: TNodeData);
     procedure SetBuildCommandRedirected(const AValue: boolean);
     procedure SetEventCallBacks(AProjectGroup: TProjectGroup);
     // Some helpers
@@ -357,13 +357,13 @@ begin
     // ecBuild
     FOldBuildExecute:=BuildCmd.OnExecute;
     FOldBuildUpdate:=BuildCmd.OnUpdate;
-    BuildCmd.OnExecute:=@OnBuildExecute;
-    BuildCmd.OnUpdate:=@OnBuildUpdate;
+    BuildCmd.OnExecute:=@BuildExecute;
+    BuildCmd.OnUpdate:=@BuildUpdate;
     // ecCompile
     FOldCompileExecute:=CompileCmd.OnExecute;
     FOldCompileUpdate:=CompileCmd.OnUpdate;
-    CompileCmd.OnExecute:=@OnCompileExecute;
-    CompileCmd.OnUpdate:=@OnCompileUpdate;
+    CompileCmd.OnExecute:=@CompileExecute;
+    CompileCmd.OnUpdate:=@CompileUpdate;
   end else begin
     // build
     BuildCmd.OnExecute:=FOldBuildExecute;
@@ -379,12 +379,12 @@ Var
   PG: TIDEProjectGroup;
 begin
   PG:=AProjectGroup as TIDEProjectGroup;
-  PG.AddHandlerOnDestroy(@OnProjectGroupDestroy);
-  PG.OnFileNameChange:=@OnProjectGroupFileNameChanged;
-  PG.OnTargetInserted:=@OnTargetInserted;
-  PG.OnTargetDeleted:=@OnTargetDeleted;
-  PG.OnTargetActiveChanged:=@OnTargetActiveChanged;
-  PG.OnTargetsExchanged:=@OnTargetExchanged;
+  PG.AddHandlerOnDestroy(@ProjectGroupDestroy);
+  PG.OnFileNameChange:=@ProjectGroupFileNameChanged;
+  PG.OnTargetInserted:=@TargetInserted;
+  PG.OnTargetDeleted:=@TargetDeleted;
+  PG.OnTargetActiveChanged:=@TargetActiveChanged;
+  PG.OnTargetsExchanged:=@TargetExchanged;
 end;
 
 procedure TProjectGroupEditorForm.SetProjectGroup(AValue: TProjectGroup);
@@ -618,8 +618,8 @@ begin
   SetItem(MnuCmdProjGrpRedo,@AProjectGroupRedoExecute);
   SetItem(MnuCmdProjGrpOptions,@AProjectGroupOptionsExecute);
 
-  LazarusIDE.AddHandlerOnIDEClose(@OnIDEClose);
-  Application.AddOnActivateHandler(@OnApplicationActivate);
+  LazarusIDE.AddHandlerOnIDEClose(@IDEClose);
+  Application.AddOnActivateHandler(@ApplicationActivate);
 
   if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then
     BuildCommandRedirected:=true;
@@ -833,7 +833,7 @@ begin
   SBPG.Panels[piActiveTarget].Text:=s;
 end;
 
-procedure TProjectGroupEditorForm.OnTargetInserted(Sender: TObject;
+procedure TProjectGroupEditorForm.TargetInserted(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   N: TTreeNode;
@@ -852,7 +852,7 @@ begin
   UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.OnTargetDeleted(Sender: TObject;
+procedure TProjectGroupEditorForm.TargetDeleted(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   N: TTreeNode;
@@ -871,7 +871,7 @@ begin
   UpdateStatusBarTargetCount;
 end;
 
-procedure TProjectGroupEditorForm.OnTargetActiveChanged(Sender: TObject;
+procedure TProjectGroupEditorForm.TargetActiveChanged(Sender: TObject;
   Target: TPGCompileTarget);
 Var
   OldActiveTVNode,NewActiveTVNode: TTreeNode;
@@ -892,7 +892,7 @@ begin
     TVPGSelectionChanged(Nil);  // Restore the original status text.
 end;
 
-procedure TProjectGroupEditorForm.OnTargetExchanged(Sender: TObject; Target1,
+procedure TProjectGroupEditorForm.TargetExchanged(Sender: TObject; Target1,
   Target2: TPGCompileTarget);
 var
   N1, N2: TTreeNode;
@@ -1382,13 +1382,13 @@ begin
     UpdateNodeTexts;
 end;
 
-procedure TProjectGroupEditorForm.OnApplicationActivate(Sender: TObject);
+procedure TProjectGroupEditorForm.ApplicationActivate(Sender: TObject);
 begin
   if ProjectGroup<>nil then
     ProjectGroup.UpdateMissing;
 end;
 
-procedure TProjectGroupEditorForm.OnBuildExecute(Sender: TObject);
+procedure TProjectGroupEditorForm.BuildExecute(Sender: TObject);
 var
   ND: TNodeData;
 begin
@@ -1403,14 +1403,14 @@ begin
     FOldBuildExecute(Sender);
 end;
 
-procedure TProjectGroupEditorForm.OnBuildUpdate(Sender: TObject);
+procedure TProjectGroupEditorForm.BuildUpdate(Sender: TObject);
 begin
   if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then ;
   if Assigned(FOldBuildUpdate) then
     FOldBuildUpdate(Sender);
 end;
 
-procedure TProjectGroupEditorForm.OnCompileExecute(Sender: TObject);
+procedure TProjectGroupEditorForm.CompileExecute(Sender: TObject);
 var
   ND: TNodeData;
 begin
@@ -1426,7 +1426,7 @@ begin
     FOldCompileExecute(Sender);
 end;
 
-procedure TProjectGroupEditorForm.OnCompileUpdate(Sender: TObject);
+procedure TProjectGroupEditorForm.CompileUpdate(Sender: TObject);
 begin
   //debugln(['TProjectGroupEditorForm.OnCompileUpdate ',DbgSName(Sender)]);
   if IDEProjectGroupManager.Options.BuildCommandToCompileTarget then ;
@@ -1434,7 +1434,7 @@ begin
     FOldCompileUpdate(Sender);
 end;
 
-procedure TProjectGroupEditorForm.OnIDEClose(Sender: TObject);
+procedure TProjectGroupEditorForm.IDEClose(Sender: TObject);
 var
   Opts: TIDEProjectGroupOptions;
 begin
@@ -1453,14 +1453,14 @@ begin
   end;
 end;
 
-procedure TProjectGroupEditorForm.OnProjectGroupDestroy(Sender: TObject);
+procedure TProjectGroupEditorForm.ProjectGroupDestroy(Sender: TObject);
 begin
   if Sender=FProjectGroup then begin
     ProjectGroup:=nil;
   end;
 end;
 
-procedure TProjectGroupEditorForm.OnProjectGroupFileNameChanged(Sender: TObject);
+procedure TProjectGroupEditorForm.ProjectGroupFileNameChanged(Sender: TObject);
 begin
   if Sender<>ProjectGroup then exit; // ToDo: sub groups
   ShowFileName;
