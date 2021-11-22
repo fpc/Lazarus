@@ -885,6 +885,7 @@ type
 
   TIdeLocalsMonitor = class(TLocalsMonitor)
   private
+    FLocalsList: TLocalsList;
     FSnapshots: TDebuggerDataSnapShotList;
     FNotificationList: TDebuggerChangeNotificationList;
     function GetCurrentLocalsList: TCurrentLocalsList;
@@ -893,11 +894,12 @@ type
     procedure DoStateEnterPause; override;
     procedure DoStateLeavePause; override;
     procedure DoStateLeavePauseClean; override;
+    procedure InvalidateLocals; override;
     procedure NotifyChange(ALocals: TCurrentLocals);
     procedure DoNewSupplier; override;
     procedure RequestData(ALocals: TCurrentLocals);
     function CreateSnapshot(CreateEmpty: Boolean = False): TObject;
-    function CreateLocalsList: TLocalsList; override;
+    function CreateLocalsList: TLocalsList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -906,6 +908,7 @@ type
     procedure RemoveNotification(const ANotification: TLocalsNotification);
     procedure NewSnapshot(AnID: Pointer; CreateEmpty: Boolean = False);
     procedure RemoveSnapshot(AnID: Pointer);
+    property  LocalsList: TLocalsList read FLocalsList;
     property  CurrentLocalsList: TCurrentLocalsList read GetCurrentLocalsList;
     property  Snapshots[AnID: Pointer]: TIDELocalsList read GetSnapshot;
   end;
@@ -3137,9 +3140,17 @@ begin
   Clear;
 end;
 
+procedure TIdeLocalsMonitor.InvalidateLocals;
+begin
+  inherited InvalidateLocals;
+  if FLocalsList <> nil then
+    FLocalsList.Clear;
+end;
+
 procedure TIdeLocalsMonitor.NotifyChange(ALocals: TCurrentLocals);
 begin
-  FNotificationList.NotifyChange(ALocals);
+  if FNotificationList <> nil then
+    FNotificationList.NotifyChange(ALocals);
 end;
 
 procedure TIdeLocalsMonitor.DoNewSupplier;
@@ -3169,6 +3180,8 @@ end;
 
 constructor TIdeLocalsMonitor.Create;
 begin
+  FLocalsList := CreateLocalsList;
+  FLocalsList.AddReference;
   FSnapshots := TDebuggerDataSnapShotList.Create;
   inherited;
   FNotificationList := TDebuggerChangeNotificationList.Create;
@@ -3179,6 +3192,7 @@ begin
   FSnapshots.Clear;
   FNotificationList.Clear;
   inherited Destroy;
+  ReleaseRefAndNil(FLocalsList);
   FreeAndNil(FNotificationList);
   FreeAndNil(FSnapshots);
 end;

@@ -11172,8 +11172,7 @@ end;
 
 procedure TGDBMILocals.Changed;
 begin
-  if CurrentLocalsList <> nil
-  then CurrentLocalsList.Clear;
+  TriggerInvalidateLocals;
 end;
 
 constructor TGDBMILocals.Create(const ADebugger: TDebuggerIntf);

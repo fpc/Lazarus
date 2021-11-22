@@ -224,7 +224,7 @@ begin
   if (CurrentDebugger <> nil) and (CurrentDebugger.Watches <> nil) then
     CurrentDebugger.Watches.TriggerInvalidateWatchValues;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Locals <> nil) then
-    CurrentDebugger.Locals.CurrentLocalsList.Clear;
+    CurrentDebugger.Locals.TriggerInvalidateLocals;
 end;
 
 // This Accessor hack is temporarilly needed / the final version will not show gdb data

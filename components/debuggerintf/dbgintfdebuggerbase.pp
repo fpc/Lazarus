@@ -854,29 +854,23 @@ type
 
   TLocalsSupplier = class(TDebuggerDataSupplier)
   private
-    function GetCurrentLocalsList: TLocalsList;
     function GetMonitor: TLocalsMonitor;
     procedure SetMonitor(AValue: TLocalsMonitor);
-  protected
-  public
-    procedure RequestData(ALocals: TLocals); virtual;
-    property  CurrentLocalsList: TLocalsList read GetCurrentLocalsList;
     property  Monitor: TLocalsMonitor read GetMonitor write SetMonitor;
+  public
+    procedure TriggerInvalidateLocals;
+    procedure RequestData(ALocals: TLocals); virtual;
   end;
 
   { TLocalsMonitor }
 
   TLocalsMonitor = class(TDebuggerDataMonitor)
   private
-    FLocalsList: TLocalsList;
     function GetSupplier: TLocalsSupplier;
     procedure SetSupplier(AValue: TLocalsSupplier);
   protected
-    function CreateLocalsList: TLocalsList; virtual;
+    procedure InvalidateLocals; virtual;
   public
-    constructor Create;
-    destructor Destroy; override;
-    property LocalsList: TLocalsList read FLocalsList;
     property Supplier: TLocalsSupplier read GetSupplier write SetSupplier;
   end;
 
@@ -4464,13 +4458,6 @@ end;
 
 { TLocalsSupplier }
 
-function TLocalsSupplier.GetCurrentLocalsList: TLocalsList;
-begin
-  Result := nil;
-  if Monitor <> nil then
-    Result := Monitor.LocalsList;
-end;
-
 function TLocalsSupplier.GetMonitor: TLocalsMonitor;
 begin
   Result := TLocalsMonitor(inherited Monitor);
@@ -4479,6 +4466,12 @@ end;
 procedure TLocalsSupplier.SetMonitor(AValue: TLocalsMonitor);
 begin
   inherited Monitor := AValue;
+end;
+
+procedure TLocalsSupplier.TriggerInvalidateLocals;
+begin
+  if Monitor <> nil then
+    Monitor.InvalidateLocals;
 end;
 
 procedure TLocalsSupplier.RequestData(ALocals: TLocals);
@@ -4498,22 +4491,9 @@ begin
   inherited Supplier := AValue;
 end;
 
-function TLocalsMonitor.CreateLocalsList: TLocalsList;
+procedure TLocalsMonitor.InvalidateLocals;
 begin
-  Result := TLocalsList.Create;
-end;
-
-constructor TLocalsMonitor.Create;
-begin
-  FLocalsList := CreateLocalsList;
-  FLocalsList.AddReference;
-  inherited Create;
-end;
-
-destructor TLocalsMonitor.Destroy;
-begin
-  inherited Destroy;
-  ReleaseRefAndNil(FLocalsList);
+  //
 end;
 
 { TBaseLineInfo }
