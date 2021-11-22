@@ -9503,7 +9503,7 @@
             </dd>
             <dt>VK_ESCAPE</dt>
             <dd>
-              Resets the value in the cell Editor, and hides the Editor control when it is both assigned and visible.  
+              Resets the value in the cell Editor, and hides the Editor control when it is both assigned and visible.
             </dd>
           </dl>
           <p>
@@ -11747,15 +11747,51 @@
       </element>
 
       <element name="TCustomGrid.SaveOptions">
-        <short>Options which control the information saved for the grid.</short>
+        <short>
+          Options which control the information saved and loaded for the grid control.
+        </short>
         <descr>
           <p>
-            These options are used when saving grid information, and includes  design information, column attributes, cell content and positions. SaveOptions determines the data available when  loading grid information.
+            SaveOptions is a TSaveOptions property with the set of options enabled when saving values in the grid to a file or stream. The options indicate whether design information, column attributes, cell content and positions are included in the values save for the grid control.  The TSaveOption values included in or excluded from the property affect the following:
+          </p>
+          <dl>
+            <dt>
+              soDesign
+            </dt>
+            <dd>
+              Design-time information for the control, including: column count, row count, number of fixed columns and rows, default column width, default row width and height, color, column definitions (when enabled in the control), and row heights with non-default values. Also includes the settings in the Options and Options2 properties for the control.
+            </dd>
+            <dt>
+              soPosition
+            </dt>
+            <dd>
+              Run-time values for the top and left coordinates for the grid, and the current column and row number.
+            </dd>
+            <dt>
+              soRangeSelect
+            </dt>
+            <dd>
+              Requires the soPosition option. Stores the left, top, bottom, and right coordinates for the range in the Selection property.
+            </dd>
+            <dt>
+              soContent
+            </dt>
+            <dd>
+              Stores the UTF-8-encoded text for each of the cells in the grid control.
+            </dd>
+          </dl>
+          <p>
+            The default values in SaveOptions are not assigned in TCustomGrid, and must be provided in a descendent class  like TCustomStringGrid.
+          </p>
+          <p>
+            SaveOptions also determines the data available and processed when loading grid information in the LoadFromFile or LoadFromStream methods.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.LoadFromFile"/>
           <link id="TCustomGrid.SaveToFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
+          <link id="TCustomGrid.LoadFromFile"/>
+          <link id="TCustomGrid.LoadFromStream"/>
         </seealso>
       </element>
 
@@ -12438,8 +12474,12 @@
       </element>
 
       <element name="TCustomGrid.EraseBackground">
-        <short>Clear the background for the grid control.</short>
-        <descr/>
+        <short>Clears the background for the grid control.</short>
+        <descr>
+          <p>
+            EraseBackground is overridden in TCustomGrid, and has an empty implementation.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomGrid.EraseBackground.DC">
@@ -12473,8 +12513,16 @@
 
       <element name="TCustomGrid.Focused">
         <short>Indicates if the grid is focused or has an active focused cell Editor.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <var>Focused</var> in an overridden method in <var>TCustomGrid</var>. It re-implements the method from the ancestor class, and return <b>True</b> if the control or an assigned cell editor for the control has input focus. It does not call the inherited method.
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.Editor"/>
+          <link id="TWinControl.CanTab"/>
+          <link id="TWinControl.HandleAllocated"/>
+          <link id="TWinControl.Focused"/>
+          <link id="TControl.Visible"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.Focused.Result">
         <short>True when the grid or the cell Editor has focus.</short>
@@ -12524,18 +12572,13 @@
         <short>Column number for the cells invalidated in the method.</short>
       </element>
 
-      <element name="TCustomGrid.InvalidateFromCol">
-        <short>Invalidate all subsequent cells starting at the specified column number.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomGrid.InvalidateFromCol.ACol">
-        <short>Initial column number updated in the method.</short>
-      </element>
-
       <element name="TCustomGrid.InvalidateCell">
         <short>Renders a cell invalid, and redraws the cell if required.</short>
-        <descr/>
+        <descr>
+          <p>
+            InvalidateCell is an overloaded method in TCustomGrid used to invalidate the cell at the column and row numbers in ACol and ARow. The Redraw argument is optional, and forces the cell to be re-drawn as soon as it is invalidated. The default value for Redraw is False, and defers the draw operation until the next time the control is updated.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomGrid.InvalidateCell.ACol">
@@ -12545,7 +12588,22 @@
         <short>Row number for the cell.</short>
       </element>
       <element name="TCustomGrid.InvalidateCell.Redraw">
-        <short/>
+        <short>True to redraw the cell immediately, False to defer until the next update for the control.</short>
+      </element>
+
+      <element name="TCustomGrid.InvalidateFromCol">
+        <short>
+          Invalidates cells starting at the specified column number; all rows from the start position are affected.
+        </short>
+        <descr>
+          <p>
+            Calls the InvalidateRect routine to force the cells to be re-drawn. No actions are performed in the method if a Handle has not been allocated for the control.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="TCustomGrid.InvalidateFromCol.ACol">
+        <short>Initial column number updated in the method.</short>
       </element>
 
       <element name="TCustomGrid.InvalidateGrid">
@@ -12642,23 +12700,54 @@
       </element>
 
       <element name="TCustomGrid.LoadFromFile">
-        <short>Loads the grid data from a file with the specified name.</short>
+        <short>Loads grid data from a file with the specified file name.</short>
         <descr>
-          Please note that the SaveOptions determine the information available to be loaded.
+          <p>
+            FileName contains name of the file with the content loaded in the method, and may included a fully qualified path for the given file name. An Exception is raised with the message in rsGridFileDoesNotExist if a file with the specified path and name is not found.
+          </p>
+          <p>
+            LoadFromFile creates a temporary TXMLConfig instance that is used load the content from the specified file.  The private LoadSub method is called using the configuration file instance to read the content in the file, and may raise an exception if the XML content does not have a valid version element.
+          </p>
+          <p>
+            LoadFromFile reverses the actions performed in the SaveToFile method. Please note that the SaveOptions property determines the information available to be loaded from the file.
+          </p>
+          <p>
+            Use LoadFromStream to read the content in the grid from a TStream instance.
+          </p>
         </descr>
         <seealso>
+          <link id="TCustomGrid.LoadFromStream"/>
           <link id="TCustomGrid.SaveToFile"/>
           <link id="TCustomGrid.SaveOptions"/>
+          <link id="#lazutils.laz2_xmlcfg.TXMLConfig">TXMLConfig</link>
         </seealso>
       </element>
       <element name="TCustomGrid.LoadFromFile.FileName">
-        <short>File name with the content loaded in the method.</short>
+        <short>Name of the file with the content loaded in the method.</short>
       </element>
 
       <element name="TCustomGrid.LoadFromStream">
-        <short>Loads the content for the grid from the specified stream.</short>
-        <descr/>
-        <seealso/>
+        <short>Loads grid data from the specified stream.</short>
+        <descr>
+          <p>
+            AStream is the TStream instance with the content loaded in the method. The stream must be positioned at the location where the information for the grid begins. The stream position is not changed after its content has been loaded.
+          </p>
+          <p>
+            LoadFromStream creates a temporary TXMLConfig instance that is used load the content from the specified stream.  The private LoadSub method is called using the configuration file instance to read the content in the file, and may raise an exception if the XML content does not have a valid version element.
+          </p>
+          <p>
+            LoadFromStream reverses the actions performed in the SaveToStream method. Please note that the SaveOptions property determines the information available to be loaded from the stream.
+          </p>
+            <p>
+              Use LoadFromFile to read the content in the grid from a file on the local file system.
+            </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.LoadFromFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
+          <link id="TCustomGrid.SaveOptions"/>
+          <link id="#lazutils.laz2_xmlcfg.TXMLConfig">TXMLConfig</link>
+        </seealso>
       </element>
       <element name="TCustomGrid.LoadFromStream.AStream">
         <short>TStream instance with values loaded in the method.</short>
@@ -12706,15 +12795,15 @@
         <short>Row number for the mouse position.</short>
       </element>
 
-      <element name="TCustomGrid.MouseToLogcell">
-        <short>Converts mouse coordinates to the position of a logical cell in the grid.</short>
+      <element name="TCustomGrid.MouseToLogCell">
+        <short>Converts mouse coordinates to the position for a logical cell in the grid.</short>
         <descr/>
         <seealso/>
       </element>
-      <element name="TCustomGrid.MouseToLogcell.Result">
+      <element name="TCustomGrid.MouseToLogCell.Result">
         <short/>
       </element>
-      <element name="TCustomGrid.MouseToLogcell.Mouse">
+      <element name="TCustomGrid.MouseToLogCell.Mouse">
         <short/>
       </element>
 
@@ -12737,15 +12826,28 @@
       </element>
 
       <element name="TCustomGrid.SaveToFile">
-        <short>Saves the data in the grid to a file with the specified name.</short>
+        <short>Saves grid information to a file with the specified name.</short>
         <descr>
           <p>
+            SaveToFile is a method used to store information from a grid control the file name specified in the FileName argument. FileName can include a fully-qualified path to the file. If the file aready exists on the local file system, it is deleted and re-created before writing values.
+          </p>
+          <p>
+            SaveToFile creates a temporary TXMLConfig instance that is used to write XML values to the specified file, and may include information about the text, layout, cell display settings, grid options, and range selections for the control.
+          </p>
+          <p>
+            SaveToFile calls the SaveContent method to write the needed values to the XML configuration file.
             Please note that the SaveOptions property determines the information stored in the method.
+          </p>
+          <p>
+            Use LoadFromFile to load settings and content from the XML file into the grid control.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomGrid.LoadFromFile"/>
+          <link id="TCustomGrid.SaveToStream"/>
+          <link id="TCustomGrid.SaveContent"/>
           <link id="TCustomGrid.SaveOptions"/>
+          <link id="TCustomGrid.LoadFromFile"/>
+          <link id="#lazutils.laz2_xmlcfg.TXmlConfig">TXmlConfig</link>
         </seealso>
       </element>
       <element name="TCustomGrid.SaveToFile.FileName">
@@ -12756,7 +12858,7 @@
         <short>Saves grid information to the specified stream.</short>
         <descr>
           <p>
-            <var>SaveToStream</var> is a virtual procedure used to store information for the grid control in the <var>TStream</var> instance specified in <var>AStream</var>. SaveToStream creates a <var>TXMLConfig</var> class instance that is used to capture the layout, cell display settings, grid options, and range selections for the control.
+            <var>SaveToStream</var> is a method used to store information from the grid control to the <var>TStream</var> instance specified in <var>AStream</var>. SaveToStream creates a <var>TXMLConfig</var> class instance that is used to capture the layout, cell display settings, grid options, and range selections for the control.
           </p>
           <p>
             SaveToStream calls the <var>SaveContent</var> method to generate the XML content for the grid control. The XML content is written to <var>AStream</var> using the <var>WriteToStream</var> method in <var>TXMLConfig</var>.
@@ -12767,8 +12869,6 @@
         </descr>
         <seealso>
           <link id="TCustomGrid.SaveContent"/>
-          <link id="TCustomGrid.doSaveColumn"/>
-          <link id="TCustomGrid.OnSaveColumn"/>
           <link id="TCustomGrid.SaveGridOptions"/>
           <link id="TCustomGrid.LoadFromStream"/>
           <link id="#lazutils.laz2_xmlcfg.TXMLConfig.WriteToStream">TXMLConfig.WriteToStream</link>
