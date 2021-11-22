@@ -3740,9 +3740,8 @@ var
   Cmd: TGDBMIDebuggerCommandThreads;
   i: Integer;
 begin
-  if Monitor = nil then exit;
-  Cmd := TGDBMIDebuggerCommandThreads(Sender);
   if CurrentThreads = nil then exit;
+  Cmd := TGDBMIDebuggerCommandThreads(Sender);
 
   if not Cmd.Success then begin
     CurrentThreads.SetValidity(ddsInvalid);
@@ -3828,7 +3827,7 @@ end;
 
 procedure TGDBMIThreads.DoCleanAfterPause;
 begin
-  if (Debugger.State <> dsRun) or (Monitor = nil) then begin
+  if (Debugger.State <> dsRun) or (CurrentThreads = nil) then begin
     inherited DoCleanAfterPause;
     exit;
   end;

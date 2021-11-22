@@ -1199,6 +1199,7 @@ type
     function GetCurrentCallStackList: TCallStackList;
     function GetMonitor: TCallStackMonitor;
     procedure SetMonitor(AValue: TCallStackMonitor);
+    property Monitor: TCallStackMonitor read GetMonitor write SetMonitor;
   protected
     //procedure CurrentChanged;
     procedure Changed;
@@ -1209,7 +1210,6 @@ type
     procedure RequestEntries(ACallstack: TCallStackBase); virtual;
     procedure UpdateCurrentIndex; virtual;
     property CurrentCallStackList: TCallStackList read GetCurrentCallStackList;
-    property Monitor: TCallStackMonitor read GetMonitor write SetMonitor;
   end;
 
   { TCallStackMonitor }
@@ -1537,6 +1537,7 @@ type
     function GetCurrentThreads: TThreads;
     function GetMonitor: TThreadsMonitor;
     procedure SetMonitor(AValue: TThreadsMonitor);
+    property  Monitor: TThreadsMonitor read GetMonitor write SetMonitor;
   protected
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure DoStateLeavePauseClean; override;
@@ -1546,7 +1547,6 @@ type
     procedure ChangeCurrentThread({%H-}ANewId: Integer); virtual;
     procedure Changed; // TODO: needed because entries can not notify the monitor
     property  CurrentThreads: TThreads read GetCurrentThreads;
-    property  Monitor: TThreadsMonitor read GetMonitor write SetMonitor;
   end;
 
   { TThreadsMonitor }

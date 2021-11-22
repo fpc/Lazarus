@@ -1417,7 +1417,6 @@ var
   i: Integer;
   ThreadEntry: TThreadEntry;
 begin
-  if Monitor = nil then exit;
   if CurrentThreads = nil then exit;
   if Debugger = nil then Exit;
   if not TFpDebugDebugger(Debugger).IsPausedAndValid then exit;
@@ -1452,7 +1451,6 @@ procedure TFPThreads.RequestMasterData;
 var
   WorkItem: TFpThreadWorkerThreadsUpdate;
 begin
-  if Monitor = nil then exit;
   if CurrentThreads = nil then exit;
   if Debugger = nil then Exit;
 
