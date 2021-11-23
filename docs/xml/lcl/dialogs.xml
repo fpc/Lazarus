@@ -4034,44 +4034,126 @@ end;
       </element>
 
       <element name="DefaultPromptDialog">
-        <short>Widgetset-independent implementation.</short>
-        <descr/>
+        <short>Widgetset-independent implementation of a prompt dialog.</short>
+        <descr>
+          <p>
+            DefaultPromptDialog is a LongInt function which implements a widgetset-independent prompt dialog. It is uses a  LCL TForm instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified using the arguments passed to the routine, including:
+          </p>
+          <dl>
+            <dt>
+              DialogCaption
+            </dt>
+            <dd>
+              The caption for the dialog, displayed in the title bar for the dialog form. If Caption is an empty string (''), GetDialogCaption is called to get the default caption for the value in DialogType. The caption can be set to the Application title if DialogType is not one of the idDialogBase values.
+            </dd>
+            <dt>
+              DialogMessage
+            </dt>
+            <dd>
+              The text displayed inside the dialog as a prompt or message.
+            </dd>
+            <dt>
+              DialogType
+            </dt>
+            <dd>
+              A LongInt value which indicates the icon and default caption displayed for the dialog. It contains one of the constant values defined in the LCLType unit like:  idDialogWarning, idDialogError, idDialogInfo, idDialogConfirm, or idDialogShield.
+            </dd>
+            <dt>
+              Buttons
+            </dt>
+            <dd>
+              Contains a pointer to an array of LongInt values which define the buttons displayed for the dialog. The values correspond to idButtonBase values defined in the LCLType unit like: idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore, idButtonAll, idButtonYesToAll, or idButtonNoToAll. Buttons using the identifiers idButtonOpen, idButtonSave, and  idButtonShield are not implemented in the current LCL version for Windows. The values for each of the buttons indicates the default icon and text for the button, as well as its modal result value.
+            </dd>
+            <dt>
+              ButtonCount
+            </dt>
+            <dd>
+              Contains the number of elements for the Buttons array.
+            </dd>
+            <dt>
+              DefaultIndex
+            </dt>
+            <dd>
+              Contains the ordinal position for the default button on the dialog. This is the button clicked when the Enter or the Space key is pressed during modal display of the dialog.
+            </dd>
+            <dt>
+              EscapeIndex
+            </dt>
+            <dd>
+              Contains the ordinal position for the button clicked when the Escape is pressed during modal display of the dialog.
+            </dd>
+            <dt>
+              UseDefaultPos
+            </dt>
+            <dd>
+              Indicates if the dialog is displayed using the default position for the dialog form. When set to True, the value poDesigned is used in the Position property for the dialog form. When set to False, the values in the X and Y parameters are used in the Left and Top properties for the dialog form.
+            </dd>
+          </dl>
+          <p>
+            The return value contains the LongInt value returned for the button clicked on the dialog. It corresponds to the values passed in the Buttons argument, but may be changed to the value in EscapeIndex if the Escape key was pressed during dialog display.
+          </p>
+          <p>
+            The size and layout for elements on the dialog are calculated when the dialog form is created. The maximum width and height for the dialog is the largest space needed for the icon, message text and buttons on the dialog. For small-format devices (width is 300 pixel or less), a width of 200 pixels is used on the dialog form.
+          </p>
+          <p>
+            <b>Example</b>:
+          </p>
+<code>
+uses
+  LCLType;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+    btns: array[0..2] of LongInt = (idButtonOK, idButtonCancel, idButtonHelp);
+    res: LongInt;
+begin
+    res := DefaultPromptDialog('This is the caption', 'This is the message of this dialog', idDialogInfo, @btns, 3, 0, 1, true, 0, 0);
+    Caption := 'Dialog result is ' + IntToStr(res);
+end;
+</code>
+        </descr>
         <seealso>
+          <link id="#lcl.forms.TCustomForm.ShowModal"/>
+          <link id="#lcl.forms.TCustomForm.ModalResult"/>
           <link id="#lcl.interfacebase.PromptDialogFunction">PromptDialogFunction</link>
         </seealso>
       </element>
       <element name="DefaultPromptDialog.Result">
-        <short/>
+        <short>
+          LongInt value for the button clicked on the prompt dialog.
+        </short>
       </element>
       <element name="DefaultPromptDialog.DialogCaption">
-        <short/>
+        <short>Caption displayed on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.DialogMessage">
-        <short/>
+        <short>Text displayed as a prompt or message on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.DialogType">
-        <short/>
+        <short>Identifies the icon and default caption for the dialog.</short>
       </element>
       <element name="DefaultPromptDialog.Buttons">
-        <short/>
+        <short>Contains the button identifiers displayed on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.ButtonCount">
-        <short/>
+        <short>Number of values in the Buttons argument.</short>
       </element>
       <element name="DefaultPromptDialog.DefaultIndex">
-        <short/>
+        <short>Position for the default button on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.EscapeResult">
-        <short/>
+        <short>Value returned when the Escape key is pressed for the dialog.</short>
       </element>
       <element name="DefaultPromptDialog.UseDefaultPos">
-        <short/>
+        <short>
+          True to use the default position for the dialog form, False to use the values in X and Y as the Top and Left coordinates.
+        </short>
       </element>
       <element name="DefaultPromptDialog.X">
-        <short/>
+        <short>Horizontal coordinate where the dialog form is displayed.</short>
       </element>
       <element name="DefaultPromptDialog.Y">
-        <short/>
+        <short>Vertical coordinate where the dialog form is displayed.</short>
       </element>
 
       <element name="QuestionDlg">
