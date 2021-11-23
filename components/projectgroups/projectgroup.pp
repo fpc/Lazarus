@@ -1515,8 +1515,8 @@ begin
   Tool:=ExternalToolList.Add(ToolTitle);
   Tool.Reference(Self, ClassName);
   try
-    Tool.Data:=TIDEExternalToolData.Create(ToolKind, ExtractFileNameOnly(
-      Filename), Filename);
+    Tool.Data:=TIDEExternalToolData.Create(ToolKind,
+                                        ExtractFileNameOnly(Filename), Filename);
     Tool.FreeData:=true;
     Tool.Hint:=CompileHint;
     Tool.Process.Executable:=LazBuildFilename;
@@ -1529,6 +1529,9 @@ begin
     //and (AProject.MainFilename<>'') then
     //  FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
     Tool.AddParsers(SubToolMake);
+    DebugLn(['CompileUsingLazBuild: Calling "', LazBuildFilename, '" with parameters']);
+    Params.Delimiter:=' ';
+    DebugLn(['    ', Params.DelimitedText]);
     Tool.Execute;
     Tool.WaitForExit;
     if Tool.ErrorMessage='' then
@@ -1818,8 +1821,6 @@ var
   aProject: TLazProject;
 begin
   Result:=arFailed;
-
-  debugln(['TIDECompileTarget.ProjectAction: Action=', AAction, ', Filename=', Filename]);
   aProject:=LazarusIDE.ActiveProject;
   if (aProject<>nil)
   and (CompareFilenames(aProject.ProjectInfoFile,Filename)=0)
