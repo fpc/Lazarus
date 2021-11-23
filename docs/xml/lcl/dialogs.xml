@@ -4060,7 +4060,7 @@ end;
               Buttons
             </dt>
             <dd>
-              Contains a pointer to an array of LongInt values which define the buttons displayed for the dialog. The values correspond to idButtonBase values defined in the LCLType unit like: idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore, idButtonAll, idButtonYesToAll, or idButtonNoToAll. Buttons using the identifiers idButtonOpen, idButtonSave, and  idButtonShield are not implemented in the current LCL version for Windows. The values for each of the buttons indicates the default icon and text for the button, as well as its modal result value.
+              Contains a pointer to an array of LongInt values which define the buttons displayed for the dialog. The values correspond to idButtonBase values defined in the LCLType unit like: idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore, idButtonAll, idButtonYesToAll, or idButtonNoToAll. Buttons using the identifiers idButtonOpen, idButtonSave, and  idButtonShield are not implemented in the current LCL version. The values for each of the buttons indicates the default icon and text for the button, as well as its modal result value.
             </dd>
             <dt>
               ButtonCount
@@ -4078,7 +4078,7 @@ end;
               EscapeIndex
             </dt>
             <dd>
-              Contains the ordinal position for the button clicked when the Escape is pressed during modal display of the dialog.
+              Contains the ordinal position for the button clicked when the Escape key is pressed during modal display of the dialog.
             </dd>
             <dt>
               UseDefaultPos
