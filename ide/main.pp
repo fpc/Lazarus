@@ -3715,8 +3715,7 @@ begin
     OnActivated:=@DesignerActivated;
     OnCloseQuery:=@DesignerCloseQuery;
     OnPersistentDeleted:=@DesignerPersistentDeleted;
-    OnGetNonVisualCompIcon:=
-                 @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIcon;
+    OnGetNonVisualCompIcon:=@TComponentPalette(IDEComponentPalette).GetNonVisualCompIcon;
     OnGetSelectedComponentClass:=@DesignerGetSelectedComponentClass;
     OnModified:=@DesignerModified;
     OnPasteComponents:=@DesignerPasteComponents;
