@@ -418,13 +418,13 @@ begin
   inherited Create;
   Name:='ComponentPalette';
   fVisible:=TStringToStringTree.Create(false);
-  IDEComponentPalette.AddHandlerUpdateVisible(@VoteForVisible);
+  IDEComponentPalette.AddHandlerVoteVisibility(@VoteForVisible);
 end;
 
 destructor TEduComponentPaletteOptions.Destroy;
 begin
   if IDEComponentPalette<>nil then
-    IDEComponentPalette.RemoveHandlerUpdateVisible(@VoteForVisible);
+    IDEComponentPalette.RemoveHandlerVoteVisibility(@VoteForVisible);
   FreeAndNil(fVisible);
   inherited Destroy;
 end;
