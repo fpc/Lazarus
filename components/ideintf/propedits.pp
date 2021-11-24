@@ -2764,7 +2764,7 @@ end;
 
 function TPropertyEditor.AutoFill:Boolean;
 begin
-  Result:=True;
+  Result:=paValueList in GetAttributes;
 end;
 
 function TPropertyEditor.CallStoredFunction: Boolean;
