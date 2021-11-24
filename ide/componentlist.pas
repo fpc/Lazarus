@@ -74,7 +74,6 @@ type
     TreeFilterEd: TTreeFilterEdit;
     SelectionToolButton: TSpeedButton;
     procedure chbKeepOpenChange(Sender: TObject);
-    procedure FormActivate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ListTreeSelectionChanged(Sender: TObject);
     procedure miCollapseAllClick(Sender: TObject);
@@ -102,9 +101,9 @@ type
     FAddCompNewLeft, FAddCompNewTop: Integer;
     FAddCompNewParent: TComponent;
     procedure ClearSelection;
-    procedure SelectionWasChanged;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
+    procedure SelectionWasChanged;
     procedure DoComponentInheritence(Comp: TRegisteredComponent);
     procedure UpdateComponents;
     procedure UpdateButtonState;
@@ -158,12 +157,24 @@ begin
   begin
     UpdateComponents;
     TreeFilterEd.InvalidateFilter;
-    IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
     IDEComponentPalette.AddHandlerComponentAdded(@ComponentWasAdded);
+    IDEComponentPalette.AddHandlerSelectionChanged(@SelectionWasChanged);
+    IDEComponentPalette.AddHandlerUpdated(@UpdateComponents);
   end;
   chbKeepOpen.Checked := EnvironmentOptions.ComponentListKeepOpen;
   PageControl.PageIndex := EnvironmentOptions.ComponentListPageIndex;
   PageControlChange(Nil);
+end;
+
+destructor TComponentListForm.Destroy;
+begin
+  if Assigned(IDEComponentPalette) then begin
+    IDEComponentPalette.RemoveHandlerUpdated(@UpdateComponents);
+    IDEComponentPalette.RemoveHandlerSelectionChanged(@SelectionWasChanged);
+    IDEComponentPalette.RemoveHandlerComponentAdded(@ComponentWasAdded);
+  end;
+  ComponentListForm := nil;
+  inherited Destroy;
 end;
 
 procedure TComponentListForm.AddSelectedComponent;
@@ -214,14 +225,6 @@ begin
   EnvironmentOptions.ComponentListKeepOpen := chbKeepOpen.Checked;
 end;
 
-destructor TComponentListForm.Destroy;
-begin
-  if Assigned(IDEComponentPalette) then
-    IDEComponentPalette.RemoveHandlerComponentAdded(@ComponentWasAdded);
-  ComponentListForm := nil;
-  inherited Destroy;
-end;
-
 procedure TComponentListForm.FormShow(Sender: TObject);
 begin
   //DebugLn(['*** TComponentListForm.FormShow, Parent=', Parent, ', Parent.Parent=', ParentParent]);
@@ -236,12 +239,6 @@ begin
   end
   else                               // ComponentList is docked
     PageControl.AnchorSideBottom.Side := asrBottom;
-end;
-
-procedure TComponentListForm.FormActivate(Sender: TObject);
-begin
-  if Assigned(IDEComponentPalette) and (IDEComponentPalette.ChangeStamp<>PrevChangeStamp) then
-    UpdateComponents;
 end;
 
 procedure TComponentListForm.ClearSelection;
@@ -263,22 +260,6 @@ begin
   aTree.Selected := Node;
   if aTree.Selected <> nil then
     aTree.Selected.MakeVisible;
-end;
-
-procedure TComponentListForm.SelectionWasChanged;
-begin
-  SelectionToolButton.Down := (IDEComponentPalette.Selected = nil);
-
-  // ToDo: Select the component in active treeview.
-  if FIgnoreSelection then
-    Exit;
-
-  if ListTree.IsVisible then
-    SelectTreeComp(ListTree)
-  else if PalletteTree.IsVisible then
-    SelectTreeComp(PalletteTree)
-  else if InheritanceTree.IsVisible then
-    SelectTreeComp(InheritanceTree)
 end;
 
 function GetSelectedTreeComp(aTree: TTreeView): TRegisteredComponent;
@@ -310,6 +291,20 @@ procedure TComponentListForm.ComponentWasAdded(ALookupRoot, AComponent: TCompone
 begin
   ClearSelection;
   UpdateButtonState;
+end;
+
+procedure TComponentListForm.SelectionWasChanged;
+begin
+  SelectionToolButton.Down := (IDEComponentPalette.Selected = nil);
+  // ToDo: Select the component in active treeview.
+  if FIgnoreSelection then
+    Exit;
+  if ListTree.IsVisible then
+    SelectTreeComp(ListTree)
+  else if PalletteTree.IsVisible then
+    SelectTreeComp(PalletteTree)
+  else if InheritanceTree.IsVisible then
+    SelectTreeComp(InheritanceTree)
 end;
 
 procedure TComponentListForm.UpdateButtonState;
@@ -410,12 +405,14 @@ begin
     for i := 0 to IDEComponentPalette.Pages.Count-1 do
     begin
       Pg := IDEComponentPalette.Pages[i];
+      if not Pg.Visible then Continue;
       Comps := IDEComponentPalette.RefUserCompsForPage(Pg.PageName);
       // Palette layout Page header
       ParentNode := PalletteTree.Items.AddChild(nil, Pg.PageName);
       // Iterate components of one page
       for j := 0 to Comps.Count-1 do begin
         Comp := Comps[j];
+        if not Comp.Visible then Continue;
         // Flat list item
         AListNode := ListTree.Items.AddChildObject(Nil, Comp.ComponentClass.ClassName, Comp);
         // Palette layout item
