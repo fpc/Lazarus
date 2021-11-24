@@ -4865,7 +4865,8 @@ begin
     fBuilder:=TLazarusBuilder.Create;    // Will be freed in the very end.
   MainBuildBoss.SetBuildTargetIDE;
   try
-    DlgResult:=fBuilder.ShowConfigureBuildLazarusDlg(MiscellaneousOptions.BuildLazProfiles);
+    DlgResult:=fBuilder.ShowConfigBuildLazDlg(MiscellaneousOptions.BuildLazProfiles,
+                                              ToolStatus in [itDebugger,itBuilder]);
   finally
     MainBuildBoss.SetBuildTargetProject1(true);
   end;

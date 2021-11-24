@@ -154,6 +154,7 @@ type
     destructor Destroy; override;
     procedure CopyProfileToUI(AProfile: TBuildLazarusProfile);
     procedure CopyUIToProfile(AProfile: TBuildLazarusProfile);
+    procedure DisableCompilation;
     procedure UpdateProfileNamesUI;
   end;
 
@@ -196,7 +197,8 @@ type
     function PrepareTargetDir(Flags: TBuildLazarusFlags): TModalResult;
   public
     constructor Create;
-    function ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
+    function ShowConfigBuildLazDlg(AProfiles: TBuildLazarusProfiles;
+      ADisableCompilation: Boolean): TModalResult;
     function MakeLazarus(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
     function IsWriteProtected(Profile: TBuildLazarusProfile): Boolean;
     function SaveIDEMakeOptions(Profile: TBuildLazarusProfile; Flags: TBuildLazarusFlags): TModalResult;
@@ -235,7 +237,8 @@ begin
   fMacros:=GlobalMacroList;
 end;
 
-function TLazarusBuilder.ShowConfigureBuildLazarusDlg(AProfiles: TBuildLazarusProfiles): TModalResult;
+function TLazarusBuilder.ShowConfigBuildLazDlg(AProfiles: TBuildLazarusProfiles;
+  ADisableCompilation: Boolean): TModalResult;
 // mrOk=save
 // mrYes=save and compile
 // mrAll=save and compile all selected profiles
@@ -247,6 +250,8 @@ begin
   try
     ConfigBuildLazDlg.fBuilder := Self;
     ConfigBuildLazDlg.fProfiles.Assign(AProfiles); // Copy profiles to dialog.
+    if ADisableCompilation then
+      ConfigBuildLazDlg.DisableCompilation;
     Result := ConfigBuildLazDlg.ShowModal;
     if Result in [mrOk,mrYes,mrAll] then
       AProfiles.Assign(ConfigBuildLazDlg.fProfiles); // Copy profiles back from dialog.
@@ -1226,6 +1231,12 @@ begin
   for i:=0 to DefinesListBox.Items.Count-1 do
     if DefinesListBox.Checked[i] then
       AProfile.Defines.Add(DefinesListBox.Items[i]);
+end;
+
+procedure TConfigureBuildLazarusDlg.DisableCompilation;
+begin
+  CompileButton.Enabled:=False;
+  CompileAdvancedButton.Enabled:=False;
 end;
 
 procedure TConfigureBuildLazarusDlg.UpdateProfileNamesUI;
