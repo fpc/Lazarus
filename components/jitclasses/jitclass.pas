@@ -23,6 +23,7 @@ unit JitClass;
 
 {$mode objfpc}{$H+}
 {$ModeSwitch typehelpers}
+{$ModeSwitch advancedrecords}
 {$PointerMath on}
 {.$Inline off}
 
@@ -189,20 +190,38 @@ type
   TJitClassCreator = class(TJitClassCreatorBase)
   private type
 
+    { TVmtMem }
+
+    TVmtMem = record
+    strict private
+      FExtraHeadSize: Integer; // Bytes allocated before the the actual typeinfo
+    private
+      FMemVmtPtr: PVmt;
+      function GetHeadPtr: Pointer;
+    public
+      function  Allocate(ASize: Integer; AExtraHeadSize: Integer = 0): Pointer;
+      procedure DeAllocate;
+      procedure ClearMemPointer; // does not free
+      property  HeadPtr: Pointer read GetHeadPtr;
+      property  VmtPtr: PVmt read FMemVmtPtr;
+      property  ExtraHeadSize: Integer read FExtraHeadSize;
+    end;
+
     { TRefCountedJitClassReference }
 
     TRefCountedJitClassReference = class(TRefCountedJitNestedReference)
     private
-      FJitPVmt: PVmt;
+      FJitPVmtMem: TVmtMem;
       FAnchorClassRef: TRefCountedJitReference;
-      procedure SetJitPVmt(AJitPVmt: PVmt);
+      procedure SetJitPVmt(const AJitPVmtMem: TVmtMem);
       procedure FreePVmt;
+      property FJitPVmt: PVmt read FJitPVmtMem.FMemVmtPtr;
     protected
       procedure DoRefCountZero; override;
       function NestedCount: integer; override;
       function GetNested(AnIndex: integer): TRefCountedJitReference; override;
     public
-      constructor Create(AJitPVmt: PVmt);
+      constructor Create(const AJitPVmtMem: TVmtMem);
       procedure AddToList(AJitProp: TJitProperty);
       procedure ClearList; override;
     end;
@@ -213,12 +232,15 @@ type
       ccfJitPropsPrepareDone
     );
     TJitClassCreatorFlags = set of TJitClassCreatorFlag;
+  strict private
+    FJitPVmtMem: TVmtMem;
   private
     FJitMethods: TJitMethodList;
     FJitProperties: TJitPropertyList;
     FFlags: TJitClassCreatorFlags;
 
-    FJitPVmt: PVmt;
+    property FJitPVmt: PVmt read FJitPVmtMem.FMemVmtPtr;
+  private
     FRefCountedJitPVmt: TRefCountedJitClassReference;
     FAncestorClass: TClass;
     FAncestorClassName: String;
@@ -229,10 +251,12 @@ type
 
     // Set by CreateJitPropsPrepare for CreateJitPropsFinish
     FTypeInfoMemSize, FRedirectPtrMemSize, FVmtParentMemSize: Integer;
+    FUserInfoMemSize: Integer;
     FRttiWriterClass: TJitRttiWriterTkClass;
 
     function RefCountedJitPvmt: TRefCountedJitClassReference;
-    procedure SetJitPVmt(AJitPVmt: PVmt);
+    procedure AllocateJitPVmt(ASize: Integer);
+    procedure DeAllocateJitPVmt;
     procedure DoTypeLibFreed(Sender: TObject);
     procedure DoAnchesterJitClassFreed(Sender: TObject);
 
@@ -242,7 +266,7 @@ type
     procedure RaiseUnless(ACond: Boolean; const AMsg: string);
     function dbgsFlag(AFlags: TJitClassCreatorFlags): String;
   protected
-    class procedure FreeJitClass(AJitPVmt: PVmt);
+    class procedure FreeJitClass(const AJitPVmtMem: TVmtMem);
     function GetLockReferenceObj: TRefCountedJitReference; override;
     function  GetTypeInfo: PTypeInfo; override;
     function GetJitClass: TClass; override;
@@ -258,6 +282,7 @@ type
     procedure CreateJitProps;
     procedure CreateJitPropsPrepare;
     procedure CreateJitPropsFinish;
+    procedure Init; virtual;
   public
     constructor Create(AnAncestorClass: TClass; AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
     constructor Create(AnAncestorClassName, AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
@@ -296,6 +321,8 @@ type
 
     property JitClass: TClass read GetJitClass;
     property AncestorJitClass: TJitClassCreator read FAncestorJitClass; experimental;
+
+    property UserInfoMemSize: Integer read FUserInfoMemSize write FUserInfoMemSize; // User must call procedure UpdateJitClass for it to take effect
   end;
 
 implementation
@@ -442,10 +469,39 @@ begin
   inherited Destroy;
 end;
 
+{ TJitClassCreator.TVmtMem }
+
+function TJitClassCreator.TVmtMem.GetHeadPtr: Pointer;
+begin
+  Result := Pointer(FMemVmtPtr) - FExtraHeadSize;
+end;
+
+function TJitClassCreator.TVmtMem.Allocate(ASize: Integer;
+  AExtraHeadSize: Integer): Pointer;
+begin
+  assert(FMemVmtPtr=nil, 'TJitClassCreator.TVmtMem.Allocate: FMemVmtPtr=nil');
+  AExtraHeadSize := align(AExtraHeadSize, sizeof(Pointer));
+  FExtraHeadSize := AExtraHeadSize;
+  FMemVmtPtr := AllocMem(ASize + AExtraHeadSize) + AExtraHeadSize;
+end;
+
+procedure TJitClassCreator.TVmtMem.DeAllocate;
+begin
+  Freemem(HeadPtr);
+  FMemVmtPtr := nil;
+  FExtraHeadSize := 0;
+end;
+
+procedure TJitClassCreator.TVmtMem.ClearMemPointer;
+begin
+  FMemVmtPtr := nil;
+  FExtraHeadSize := 0;
+end;
+
 { TJitClassCreator.TRefCountedJitClassReference }
 
 procedure TJitClassCreator.TRefCountedJitClassReference.SetJitPVmt(
-  AJitPVmt: PVmt);
+  const AJitPVmtMem: TVmtMem);
 begin
   if (RefCount > 1) and (FJitPVmt <> nil) then
     raise Exception.Create('set TypeInfo while referrenced');
@@ -455,12 +511,12 @@ begin
     FreePVmt;
   end;
 
-  FJitPVmt := AJitPVmt;
+  FJitPVmtMem := AJitPVmtMem;
 end;
 
 procedure TJitClassCreator.TRefCountedJitClassReference.FreePVmt;
 begin
-  TJitClassCreator.FreeJitClass(FJitPVmt);
+  TJitClassCreator.FreeJitClass(FJitPVmtMem);
 end;
 
 procedure TJitClassCreator.TRefCountedJitClassReference.DoRefCountZero;
@@ -493,11 +549,11 @@ begin
     Result := inherited GetNested(AnIndex);
 end;
 
-constructor TJitClassCreator.TRefCountedJitClassReference.Create(AJitPVmt: PVmt
-  );
+constructor TJitClassCreator.TRefCountedJitClassReference.Create(
+  const AJitPVmtMem: TVmtMem);
 begin
   inherited Create;
-  FJitPVmt := AJitPVmt;
+  FJitPVmtMem := AJitPVmtMem;
 end;
 
 procedure TJitClassCreator.TRefCountedJitClassReference.AddToList(
@@ -943,22 +999,39 @@ function TJitClassCreator.RefCountedJitPvmt: TRefCountedJitClassReference;
 begin
   if FRefCountedJitPVmt = nil then begin
     (* FTypeInfo may be nil, but a refernce can be got anyway *)
-    FRefCountedJitPVmt := TRefCountedJitClassReference.Create(FJitPVmt);
+    FRefCountedJitPVmt := TRefCountedJitClassReference.Create(FJitPVmtMem);
   end;
   Result := FRefCountedJitPVmt;
 end;
 
-procedure TJitClassCreator.SetJitPVmt(AJitPVmt: PVmt);
+procedure TJitClassCreator.AllocateJitPVmt(ASize: Integer);
 begin
-  if FJitPVmt = AJitPVmt then Exit;
-  FJitPVmt := AJitPVmt;
+  DeAllocateJitPVmt;
+  FJitPVmtMem.Allocate(ASize, FUserInfoMemSize);
+
   if FRefCountedJitPVmt <> nil then begin
     if (FRefCountedJitPVmt.RefCount = 1) or (FRefCountedJitPVmt.FJitPVmt = nil) then
-      FRefCountedJitPVmt.SetJitPVmt(AJitPVmt)
+      FRefCountedJitPVmt.SetJitPVmt(FJitPVmtMem)
     else begin
       FRefCountedJitPVmt.ReleaseLock;
-      FRefCountedJitPVmt := TRefCountedJitClassReference.Create(AJitPVmt);
+      FRefCountedJitPVmt := TRefCountedJitClassReference.Create(FJitPVmtMem);
     end;
+  end;
+end;
+
+procedure TJitClassCreator.DeAllocateJitPVmt;
+begin
+  if FJitPVmt = nil then
+    exit;
+
+  if (FRefCountedJitPVmt <> nil) and (FRefCountedJitPVmt.RefCount > 1) then begin
+    FRefCountedJitPVmt.ReleaseLock;
+    FJitPVmtMem.ClearMemPointer; // memory is kept bi ref
+  end
+  else begin
+    FJitPVmtMem.DeAllocate;
+    if (FRefCountedJitPVmt <> nil) then
+      FRefCountedJitPVmt.SetJitPVmt(FJitPVmtMem);
   end;
 end;
 
@@ -1064,7 +1137,7 @@ begin
   // create vmt
   VmtFullSize:=GetVMTSize(FAncestorClass);
   VmtMethodsSize:=VmtFullSize-vmtMethodStart;
-  SetJitPVmt(AllocMem(VmtFullSize));
+  AllocateJitPVmt(VmtFullSize);
 
   (* The following entries are searched recursively in the base classes,
      and do not need to be copied.
@@ -1205,25 +1278,25 @@ begin
     CreateJitClassContinueAfteVMT;
 end;
 
-class procedure TJitClassCreator.FreeJitClass(AJitPVmt: PVmt);
+class procedure TJitClassCreator.FreeJitClass(const AJitPVmtMem: TVmtMem);
 begin
-  if AJitPVmt = nil then
+  if AJitPVmtMem.VmtPtr = nil then
     exit;
 
-  if AJitPVmt^.vTypeInfo <> nil then
-    Freemem(AJitPVmt^.vTypeInfo);
-  if AJitPVmt^.vInitTable <> nil then
-    Freemem(AJitPVmt^.vInitTable);
-  if AJitPVmt^.vMethodTable <> nil then
-    Freemem(AJitPVmt^.vMethodTable);
-  if AJitPVmt^.vClassName <> nil then
-    Freemem(AJitPVmt^.vClassName);
+  if AJitPVmtMem.VmtPtr^.vTypeInfo <> nil then
+    Freemem(AJitPVmtMem.VmtPtr^.vTypeInfo);
+  if AJitPVmtMem.VmtPtr^.vInitTable <> nil then
+    Freemem(AJitPVmtMem.VmtPtr^.vInitTable);
+  if AJitPVmtMem.VmtPtr^.vMethodTable <> nil then
+    Freemem(AJitPVmtMem.VmtPtr^.vMethodTable);
+  if AJitPVmtMem.VmtPtr^.vClassName <> nil then
+    Freemem(AJitPVmtMem.VmtPtr^.vClassName);
   {$IFnDEF HasVMTParent}
-  if AJitPVmt^.vParentRef<> nil then
-    Freemem(AJitPVmt^.vParentRef);
+  if AJitPVmtMem.VmtPtr^.vParentRef<> nil then
+    Freemem(AJitPVmtMem.VmtPtr^.vParentRef);
   {$ENDIF}
 
-  Freemem(AJitPVmt);
+  AJitPVmtMem.DeAllocate;
 end;
 
 procedure TJitClassCreator.UpdateClassName;
@@ -1474,6 +1547,11 @@ begin
   end;
 end;
 
+procedure TJitClassCreator.Init;
+begin
+  //
+end;
+
 function TJitClassCreator.GetTypeInfo: PTypeInfo;
 begin
   GetJitClass;
@@ -1483,7 +1561,7 @@ end;
 constructor TJitClassCreator.Create(AnAncestorClass: TClass;
   AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary);
 begin
-  FJitPVmt := nil;
+  FJitPVmtMem.ClearMemPointer;
   FJitMethods := TJitMethodList.Create(Self);
   FJitProperties := TJitPropertyList.Create(Self);
 
@@ -1493,6 +1571,7 @@ begin
   FClassName := AClassName;
   FClassUnit := AClassUnit;
   TypeLibrary := ATypeLibrary;
+  Init;
 end;
 
 constructor TJitClassCreator.Create(AnAncestorClassName, AClassName: String;
@@ -1500,6 +1579,7 @@ constructor TJitClassCreator.Create(AnAncestorClassName, AClassName: String;
 begin
   Create(TClass(nil), AClassName, AClassUnit, ATypeLibrary);
   FAncestorClassName := AnAncestorClassName;
+  Init;
 end;
 
 constructor TJitClassCreator.Create(AnAncestorJitClass: TJitClassCreator;
@@ -1509,6 +1589,7 @@ begin
   FAncestorJitClass := AnAncestorJitClass;
   if FAncestorJitClass <> nil then
     FAncestorJitClass.AddFreeNotification(@DoAnchesterJitClassFreed);
+  Init;
 end;
 
 constructor TJitClassCreator.Create(AnAncestorJitType: TJitType;
@@ -1518,6 +1599,7 @@ begin
     raise Exception.Create('Incorrect type for anchestor');
   Create(TClass(nil), AClassName, AClassUnit, ATypeLibrary);
   FAncestorJitType := TJitTypeClassBase(AnAncestorJitType);
+  Init;
 end;
 
 destructor TJitClassCreator.Destroy;
@@ -1526,7 +1608,7 @@ begin
   if FRefCountedJitPVmt <> nil then
     FRefCountedJitPVmt.ReleaseLock
   else
-    FreeJitClass(FJitPVmt);
+    FreeJitClass(FJitPVmtMem);
 
   if FTypeLibrary <> nil then
     FTypeLibrary.RemoveFreeNotification(@DoTypeLibFreed);
@@ -1553,7 +1635,7 @@ end;
 procedure TJitClassCreator.RecreateJitClass;
 begin
   FFlags := [];
-  SetJitPVmt(nil);
+  DeAllocateJitPVmt;
 end;
 
 end.
