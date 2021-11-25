@@ -80,7 +80,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, LazUtilities,
+  LazFileUtils, LazStringUtils, LazUtilities,
   // Codetools
   CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
@@ -14185,9 +14185,9 @@ end;
 
 procedure TFindDeclarationParams.AddOperandPart(aPart: string);
 begin
-  if aPart=FExtractedOperand then  // Hunting for issue #37384
-    raise Exception.Create('TFindDeclarationParams.AddOperandPart: Adding duplicate "'+aPart+'"');
-  FExtractedOperand := FExtractedOperand + aPart;
+  // Prevent identifier being added many times. See issue #37384.
+  if not LazEndsStr(aPart, FExtractedOperand) then
+    FExtractedOperand:=FExtractedOperand+aPart;
 end;
 
 procedure TFindDeclarationParams.ChangeFoundProc(
