@@ -3,7 +3,6 @@
   <Package Version="5">
     <PathDelim Value="\"/>
     <Name Value="fpdebug"/>
-    <Type Value="RunAndDesignTime"/>
     <Author Value="Lazarus Team"/>
     <CompilerOptions>
       <Version Value="11"/>

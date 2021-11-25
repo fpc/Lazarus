@@ -3,7 +3,7 @@
   <Package Version="4">
     <PathDelim Value="\"/>
     <Name Value="CmdLineDebuggerBase"/>
-    <Type Value="RunAndDesignTime"/>
+    <Author Value="M Friebe"/>
     <CompilerOptions>
       <Version Value="11"/>
       <PathDelim Value="\"/>
@@ -14,6 +14,7 @@
         <CustomOptions Value="$(IDEBuildOptions)"/>
       </Other>
     </CompilerOptions>
+    <Description Value="Provides some classes for Debugger Backends"/>
     <Files Count="2">
       <Item1>
         <Filename Value="debugprocess.pas"/>
