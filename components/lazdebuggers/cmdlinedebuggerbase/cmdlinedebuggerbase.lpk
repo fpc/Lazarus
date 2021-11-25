@@ -15,6 +15,7 @@
       </Other>
     </CompilerOptions>
     <Description Value="Provides some classes for Debugger Backends"/>
+    <License Value="modified LGPL-2  (with linking-exception, same as the LCL)"/>
     <Files Count="3">
       <Item1>
         <Filename Value="debugprocess.pas"/>
