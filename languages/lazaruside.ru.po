@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-11-17 00:26+0300\n"
+"PO-Revision-Date: 2021-11-26 00:38+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -12826,8 +12826,8 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Преобразовать модуль Delphi в Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
-msgstr "Преобразовать двоичный файл DFM в текстовый LFM и проверить синтаксис ..."
+msgid "Convert Binary DFM to LFM ..."
+msgstr "Преобразовать двоичный файл DFM в LFM ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert Encoding of Projects/Packages ..."

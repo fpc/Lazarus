@@ -13060,7 +13060,9 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "转换Delphi单元为Lazarus单元..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+#, fuzzy
+#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "转换二进制的DFM到文本LFM+检查语法..."
 
 #: lazarusidestrconsts.lismenuconvertencoding

@@ -12847,7 +12847,9 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Convertir une unité Delphi en unité Lazarus..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+#, fuzzy
+#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "Convertir un fichier binaire DFM en texte LFM et vérifier la syntaxe..."
 
 #: lazarusidestrconsts.lismenuconvertencoding

@@ -13524,7 +13524,7 @@ msgstr "המר יחידת דלפי ליחידת לזארוס"
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
 #| msgid "Convert binary DFM to text LFM + check syntax ..."
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "המר קובץ בינארי  DFM לקובץ בינארי LFM ובדוק תחביר ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding

@@ -12812,7 +12812,7 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuconvertencoding
