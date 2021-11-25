@@ -583,7 +583,7 @@ resourcestring
   lisMenuMakeResourceString = 'Make Resource String ...';
   lisCaptionCompareFiles = 'Compare files (not for creating patches)';
   lisMenuCompareFiles = 'Compare files ...';
-  lisMenuConvertDFMtoLFM = 'Convert Binary DFM to Text LFM + Check Syntax ...';
+  lisMenuConvertDFMtoLFM = 'Convert Binary DFM to LFM ...';
   lisMenuCheckLFM = 'Check LFM File in Editor';
   lisMenuDelphiConversion = 'Delphi Conversion';
   lisMenuConvertDelphiUnit = 'Convert Delphi Unit to Lazarus Unit ...';
