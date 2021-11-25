@@ -14190,6 +14190,8 @@ end;
 
 procedure TFindDeclarationParams.AddOperandPart(aPart: string);
 begin
+  if aPart=FExtractedOperand then  // Hunting for issue #37384
+    raise Exception.Create('TFindDeclarationParams.AddOperandPart: Adding duplicate "'+aPart+'"');
   FExtractedOperand := FExtractedOperand + aPart;
 end;
 
