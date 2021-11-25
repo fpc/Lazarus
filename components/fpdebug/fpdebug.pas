@@ -8,20 +8,15 @@ unit fpdebug;
 interface
 
 uses
-  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, FpDbgPETypes, FpDbgSymbols, 
-  FpDbgUtil, FpImgReaderWinPE, FpImgReaderElf, FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, 
-  macho, FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, FpdMemoryTools, 
-  FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, FpDbgDwarfDataClasses, 
-  FpDbgDwarfFreePascal, fpDbgSymTableContext, fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, 
-  FpDbgRsp, FpDbgCommon, FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, FpDbgCallContextInfo, 
-  LazarusPackageIntf;
+  FpDbgClasses, FpDbgDisasX86, FpDbgDwarf, FpDbgDwarfConst, FpDbgLoader, 
+  FpDbgPETypes, FpDbgSymbols, FpDbgUtil, FpImgReaderWinPE, FpImgReaderElf, 
+  FpImgReaderElfTypes, FpImgReaderBase, FpPascalParser, macho, 
+  FpImgReaderMachoFile, FpImgReaderMacho, FpPascalBuilder, FpDbgInfo, 
+  FpdMemoryTools, FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, 
+  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, fpDbgSymTableContext, 
+  fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, FpDbgRsp, FpDbgCommon, 
+  FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, FpDbgCallContextInfo;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('fpdebug', @Register);
 end.

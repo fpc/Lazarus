@@ -8,14 +8,8 @@ unit CmdLineDebuggerBase;
 interface
 
 uses
-  DebugProcess, DebugInstructions, DebuggerPropertiesBase, LazarusPackageIntf;
+  DebugProcess, DebugInstructions, DebuggerPropertiesBase;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('CmdLineDebuggerBase', @Register);
 end.
