@@ -1167,13 +1167,6 @@ begin
        Rect.Right := Rect.Right + Abs(aABC.abcC);
 
     end;
-  
-    // Sometimes the underline does not appear for some sizes. 
-    // A workaround is to move the bottom edge of the rect down by one pixel.
-    // https://forum.lazarus.freepascal.org/index.php/topic,57021.msg424606.html#msg424606
-    if lf.lfUnderline <> 0 then
-      inc(Rect.Bottom);
-   
   end;
 end;
 
