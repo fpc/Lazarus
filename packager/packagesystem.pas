@@ -2141,9 +2141,13 @@ begin
   UpdateBrokenDependenciesToPackage(APackage);
   
   // activate define templates
-  APackage.DefineTemplates.Active:=true;
-
-  if Assigned(OnAddPackage) then OnAddPackage(APackage);
+  if Assigned(APackage.DefineTemplates) then
+    APackage.DefineTemplates.Active:=true
+  else   // By Juha:
+    // Happened when an old package with the same name was replaced. Cannot reproduce.
+    DebugLn(['TLazPackageGraph.AddPackage: APackage.DefineTemplates=Nil']);
+  if Assigned(OnAddPackage) then
+    OnAddPackage(APackage);
   EndUpdate;
 end;
 
@@ -2185,9 +2189,8 @@ begin
   OldInstalled:=OldPackage.Installed;
   OldAutoInstall:=OldPackage.AutoInstall;
   OldEditor:=OldPackage.Editor;
-  if OldEditor<>nil then begin
+  if OldEditor<>nil then
     OldEditor.LazPackage:=nil;
-  end;
   // migrate components
   for i:=0 to OldPackage.FileCount-1 do
     MoveInstalledComponents(OldPackage.Files[i]);
@@ -2201,9 +2204,8 @@ begin
   NewPackage.AutoInstall:=OldAutoInstall;
   // add package to graph
   AddPackage(NewPackage);
-  if OldEditor<>nil then begin
+  if OldEditor<>nil then
     OldEditor.LazPackage:=NewPackage;
-  end;
   EndUpdate;
 end;
 
@@ -2214,8 +2216,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency: TPkgDependency;
     Quiet: Boolean;
   begin
-    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,
-      PkgName)<>nil
+    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,PkgName)<>nil
     then
       exit;
     Dependency:=TPkgDependency.Create;
