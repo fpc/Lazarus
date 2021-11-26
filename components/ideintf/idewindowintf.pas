@@ -1647,32 +1647,44 @@ begin
     ALayout.CloseForm;
 end;
 
+function IsFormStatic(AForm: TCustomForm): Boolean;
+const  // These were parameters with default values. Now they are constants.
+  BorderX: Integer=100;
+  BorderTop: Integer=0;
+  BorderBottom: Integer=50;
+var
+  I: Integer;
+  xFormRect, xWA, xRectLT, xRectRT, xRectCT: TRect;
+begin
+  xFormRect := AForm.BoundsRect;
+  for I := 0 to Screen.MonitorCount-1 do
+  begin
+    xWA := Screen.Monitors[I].WorkareaRect;
+    //the user must be able to move the window
+    // - that means we check the topleft, topcenter and topright coordinates of the form
+    //   if they are movable
+    xRectLT := Rect(xWA.Left-BorderX, xWA.Top-BorderTop, xWA.Right-BorderX, xWA.Bottom-BorderBottom);
+    xRectCT := Rect(xWA.Left, xWA.Top-BorderTop, xWA.Right, xWA.Bottom-BorderBottom);
+    xRectRT := Rect(xWA.Left+BorderX, xWA.Top-BorderTop, BorderX, xWA.Bottom-BorderBottom);
+    if PtInRect(xRectLT, xFormRect.TopLeft)
+    or PtInRect(xRectCT, Point((xFormRect.Left+xFormRect.Right) div 2, AForm.Top))
+    or PtInRect(xRectRT, Point(xFormRect.Right, AForm.Top))
+    then
+      Exit(False);
+  end;
+  Result := True;
+end;
+
 procedure TSimpleWindowLayoutList.ApplyAndShow(Sender: TObject; AForm: TCustomForm;
   BringToFront: boolean; AMoveToVisbleMode: TLayoutMoveToVisbleMode);
 
-  function IsFormMovable(AForm: TCustomForm; BorderX: Integer = 100;
-    BorderTop: Integer = 0; BorderBottom: Integer = 50): Boolean;
-  var
-    I: Integer;
-    xFormRect, xWA, xRectLT, xRectRT, xRectCT: TRect;
+  procedure AdjustShowing;
   begin
-    xFormRect := AForm.BoundsRect;
-    Result := False;
-    for I := 0 to Screen.MonitorCount-1 do
-    begin
-      xWA := Screen.Monitors[I].WorkareaRect;
-      //the user must be able to move the window
-      // - that means we check the topleft, topcenter and topright coordinates of the form
-      //   if they are movable
-      xRectLT := Rect(xWA.Left-BorderX, xWA.Top-BorderTop, xWA.Right-BorderX, xWA.Bottom-BorderBottom);
-      xRectCT := Rect(xWA.Left, xWA.Top-BorderTop, xWA.Right, xWA.Bottom-BorderBottom);
-      xRectRT := Rect(xWA.Left+BorderX, xWA.Top-BorderTop, BorderX, xWA.Bottom-BorderBottom);
-      if PtInRect(xRectLT, xFormRect.TopLeft)
-      or PtInRect(xRectCT, Point((xFormRect.Left+xFormRect.Right) div 2, AForm.Top))
-      or PtInRect(xRectRT, Point(xFormRect.Right, AForm.Top))
-      then
-        Exit(True);
-    end;
+    if (AMoveToVisbleMode = vmAlwaysMoveToVisible)
+    or ((AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and IsFormStatic(AForm))
+    then
+      AForm.MakeFullyVisible(nil, True);
+    AForm.ShowOnTop;
   end;
 
 var
@@ -1684,7 +1696,7 @@ var
   DockSibling: TCustomForm;
   DockSiblingBounds: TRect;
   Offset: TPoint;
-  ARestoreVisible: Boolean;
+  Designing, OldVisible: Boolean;
 begin
   {$IFDEF VerboseIDEDocking}
   debugln(['TSimpleWindowLayoutList.ApplyAndShow Form=',DbgSName(AForm),' ',BringToFront,
@@ -1770,49 +1782,28 @@ begin
       AMoveToVisbleMode := vmOnlyMoveOffScreenToVisible;
     end;
   finally
+    // do not change Visible property while designing form. issue #20602
+    // we save it into ARestoreVisible before any changes from here.
+    Designing := IsFormDesign(AForm);
+    if Designing then
+      OldVisible := AForm.Visible;
+
     if (AForm.WindowState in [wsNormal,wsMaximized]) and BringToFront then
-    begin
-      // do not change Visible property while designing form. issue #20602
-      // we save it into ARestoreVisible before any changes from here.
-      if IsFormDesign(AForm) then
-        ARestoreVisible := AForm.Visible;
-
-      if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
-         ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
-           (not IsFormMovable(AForm)) )
-      then
-        AForm.EnsureVisible(true)
-      else
-        AForm.ShowOnTop;
-
-      if IsFormDesign(AForm) then
-        AForm.Visible := ARestoreVisible;
-    end else
-    begin
-      if IsFormDesign(AForm) then
-        ARestoreVisible := AForm.Visible;
-
+      AdjustShowing
+    else begin
       AForm.Visible := True;
-      if (AForm.WindowState in [wsMinimized]) then
+      if (AForm.WindowState in [wsMinimized]) and BringToFront then
       begin
-        if BringToFront then
-        begin
-          // issue #19769
-          if AForm.Visible and not (fsModal in AForm.FormState) then
-            AForm.Visible := False;
-          if (AMoveToVisbleMode = vmAlwaysMoveToVisible) or
-             ( (AMoveToVisbleMode = vmOnlyMoveOffScreenToVisible) and
-               (not IsFormMovable(AForm)) )
-          then
-            AForm.EnsureVisible(true)
-          else
-            AForm.ShowOnTop;
-        end;
+        // issue #19769
+        Assert(AForm.Visible, 'TSimpleWindowLayoutList.ApplyAndShow: not Visible');
+        if not (fsModal in AForm.FormState) then
+          AForm.Visible := False;
+        AdjustShowing;
       end;
-
-      if IsFormDesign(AForm) then
-        AForm.Visible := ARestoreVisible;
     end;
+
+    if Designing then
+      AForm.Visible := OldVisible;
   end;
 end;
 
