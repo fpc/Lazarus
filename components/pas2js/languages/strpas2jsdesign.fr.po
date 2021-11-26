@@ -3,17 +3,17 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-01-06 15:55+0100\n"
+"PO-Revision-Date: 2021-11-25 15:46+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 3.0\n"
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
-msgstr ""
+msgstr "Répertoire des modèles de paquets Atom"
 
 #: strpas2jsdesign.pjsdbrowse
 msgid "Browse"
@@ -49,11 +49,11 @@ msgstr "fichier \"%s\" non trouvé"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelcaption
 msgid "HTTP Server extra command-line options (one per line)"
-msgstr ""
+msgstr "Options de ligne de commande supplémentaires du serveur HTTP (une par ligne)"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelhint
 msgid "Add extra command-line options for the command which starts the webserver."
-msgstr ""
+msgstr "Ajouter des options de ligne de commande supplémentaires pour la commande qui démarre le serveur Web."
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
@@ -65,25 +65,23 @@ msgstr "chemin manquant vers pas2js"
 
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
-msgstr ""
+msgstr "Paquet Atom"
 
 #: strpas2jsdesign.pjsdnewatompackagedescr
 msgid "A pas2js program running as Atom package."
-msgstr ""
+msgstr "Un programme pas2js exécuté en tant que paquet Atom."
 
 #: strpas2jsdesign.pjsdnewvscodeextension
 msgid "Visual Studio Code extension"
-msgstr ""
+msgstr "Extension de code Visual Studio"
 
 #: strpas2jsdesign.pjsdnewvscodeextensiondescr
 msgid "A pas2js program running as Visual Studio Code extension."
-msgstr ""
+msgstr "Un programme pas2js s'exécutant en tant qu'extension Visual Studio Code."
 
 #: strpas2jsdesign.pjsdnodejsappdescription
-#, fuzzy
-#| msgid "A pas2js program running in node.js"
 msgid "A pas2js program running in node.js."
-msgstr "Un programme pas2js en cours d'exécution dans node.js"
+msgstr "Un programme pas2js en cours d'exécution dans node.js."
 
 #: strpas2jsdesign.pjsdnodejsapplication
 msgid "Node.js Application"
@@ -167,7 +165,7 @@ msgstr "Exécuter la RTL quand toutes les pages de ressources sont totalement ch
 
 #: strpas2jsdesign.pjsdselectatomtemplatedir
 msgid "Select Atom package template directory"
-msgstr ""
+msgstr "Sélectionner le répertoire du modèle de paquet Atom"
 
 #: strpas2jsdesign.pjsdselectbrowserexecutable
 msgid "Select browser executable"
@@ -183,7 +181,7 @@ msgstr "Sélectionner l'exécutable de pas2js"
 
 #: strpas2jsdesign.pjsdselectvscodetemplatedir
 msgid "Select Visual Studio Code extension template directory"
-msgstr ""
+msgstr "Sélectionner le répertoire du modèle d'extension Visual Studio Code"
 
 #: strpas2jsdesign.pjsdselectxexecutable
 #, object-pascal-format
@@ -221,13 +219,11 @@ msgstr "Utiliser cette URL pour démarrer l'application"
 
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
-msgstr ""
+msgstr "Répertoire des modèles d'extension de code Visual Studio"
 
 #: strpas2jsdesign.pjsdwebappdescription
-#, fuzzy
-#| msgid "A pas2js program running in the browser"
 msgid "A pas2js program running in the browser."
-msgstr "Un programme pas2js en cours d'exécution dans le navigateur"
+msgstr "Un programme pas2js en cours d'exécution dans le navigateur."
 
 #: strpas2jsdesign.pjsdwebapplication
 msgid "Web Browser Application"

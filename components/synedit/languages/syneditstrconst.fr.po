@@ -9,7 +9,7 @@ msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: syneditstrconst.scannotpause
 msgid "Can only pause when recording"
@@ -469,10 +469,8 @@ msgid "Fold Code"
 msgstr "Plier le code"
 
 #: syneditstrconst.syns_emccodefoldcollaps_opt
-#, fuzzy
-#| msgid "Nodes,One,All,\"At Caret\",\"Current Node\""
 msgid "Nodes,One,\"All on line\",\"At Caret\",\"Current Node\""
-msgstr "Nœuds, Un, Tous,\"Au curseur\",\"Nœud en cours\""
+msgstr "Nœuds, Un, Tous sur la ligne\",\"Au curseur\",\"Nœud en cours\""
 
 #: syneditstrconst.syns_emccodefoldcontextmenu
 msgid "Fold Menu"
@@ -483,10 +481,8 @@ msgid "Unfold Code"
 msgstr "Déplier le code"
 
 #: syneditstrconst.syns_emccodefoldexpand_opt
-#, fuzzy
-#| msgid "Nodes,One,All"
 msgid "Nodes,One,\"All on line\""
-msgstr "Nœuds, Un, Tous"
+msgstr "Nœuds, Un, \"Tous sur la ligne\""
 
 #: syneditstrconst.syns_emccontextmenu
 msgid "Popup Menu"
@@ -578,7 +574,7 @@ msgstr "Sélection (lignes)"
 
 #: syneditstrconst.syns_emcstartselecttokens
 msgid "Selection (tokens) "
-msgstr "Sélection (unités lexicales)"
+msgstr "Sélection (unités lexicales) "
 
 #: syneditstrconst.syns_emcstartselectwords
 msgid "Selection (words)"

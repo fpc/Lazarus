@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Philippe BOUCAULT <philbouc@users.sourceforge.net>\n"
-"PO-Revision-Date: 2017-02-06 10:04+0100\n"
+"PO-Revision-Date: 2021-11-25 15:52+0100\n"
 "Language-Team: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -9,32 +9,32 @@ msgstr ""
 "POT-Creation-Date: \n"
 "MIME-Version: 1.0\n"
 "Language: fr\n"
-"X-Generator: Poedit 1.8.11\n"
+"X-Generator: Poedit 3.0\n"
 
 #: sqldbstrconst.lrsgeneratesqlstatements
 msgid "Edit/Generate SQL statements"
-msgstr ""
+msgstr "Modifier/Générer des instructions SQL"
 
 #: sqldbstrconst.lrssqldatasetopen
 #, object-pascal-format
 msgid "Dataset not open: %s"
-msgstr ""
+msgstr "Ensemble de données non ouvert : %s"
 
 #: sqldbstrconst.lrssqlgenselect
 msgid "You must select fields to be updated and key fields."
-msgstr ""
+msgstr "Vous devez sélectionner les champs à mettre à jour et les champs clés."
 
 #: sqldbstrconst.seditsql
 msgid "Edit SQL ..."
-msgstr ""
+msgstr "Modifier le SQL..."
 
 #: sqldbstrconst.seditupdatesql
 msgid "Edit all SQL statements"
-msgstr ""
+msgstr "Modifier toutes les instructions SQL"
 
 #: sqldbstrconst.serrconnectionnotassigned
 msgid "Database not assigned. Assign Database first."
-msgstr ""
+msgstr "Base de données non attribuée. Attribuez d'abord la base de données."
 
 #: sqldbstrconst.sfirebirddatabases
 msgid "Firebird databases"
@@ -42,7 +42,7 @@ msgstr "Bases de données Firebird"
 
 #: sqldbstrconst.sgenerateupdatesql
 msgid "Generate update SQL"
-msgstr ""
+msgstr "Générer le SQL de mise à jour"
 
 #: sqldbstrconst.sinterbasedatabases
 msgid "Interbase databases"

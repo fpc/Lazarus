@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2019-02-07 09:11+0100\n"
+"PO-Revision-Date: 2021-11-25 13:59+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: anchordockstr.adrsafreesideofasplittermustnotbeanchorednodetypeancho
 #, object-pascal-format
@@ -121,11 +121,11 @@ msgstr "Aplatir les en-têtes des contrôles amarrés"
 
 #: anchordockstr.adrsfloatingwindowsontop
 msgid "Floating windows on top"
-msgstr ""
+msgstr "Fenêtres flottantes sur le dessus"
 
 #: anchordockstr.adrsfloatingwindowsontophint
 msgid "Show floating windows on top of main form"
-msgstr ""
+msgstr "Afficher les fenêtres flottantes au-dessus de la fenêtre principale"
 
 #: anchordockstr.adrsgeneraldockingoptions
 msgid "General docking options"
@@ -209,11 +209,11 @@ msgstr "Déplacer la page tout à droite"
 
 #: anchordockstr.adrsmultilinepages
 msgid "Multiline Tabs"
-msgstr ""
+msgstr "Onglets multilignes"
 
 #: anchordockstr.adrsmultilinepageshint
 msgid "Tabs of pages can be shown in multiple lines"
-msgstr ""
+msgstr "Les onglets des pages peuvent être affichés sur plusieurs lignes"
 
 #: anchordockstr.adrsnocaptionsforfloatingsites
 msgid "No captions for floating sites"

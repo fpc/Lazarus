@@ -4,13 +4,13 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-29 15:02+0100\n"
-"PO-Revision-Date: 2020-01-04 15:51+0100\n"
+"PO-Revision-Date: 2021-11-25 16:14+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr_FR\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 3.0\n"
 
 #: msgjsonviewer.sarray
 #, object-pascal-format
@@ -150,7 +150,7 @@ msgstr "Suffixe de type propriété"
 
 #: tcreatecodeform.letoplevelclassname.caption
 msgid "Toplevel class name"
-msgstr ""
+msgstr "Nom de la classe de niveau supérieur"
 
 #: tcreatecodeform.leunitname.caption
 msgid "Unit name"
@@ -411,7 +411,7 @@ msgstr "Sauvegarder JSON formaté"
 
 #: tmainform.mishowrest.caption
 msgid "Show REST panel"
-msgstr ""
+msgstr "Afficher le panneau REST"
 
 #: tmainform.misortmembers.caption
 msgid "Sort object members"
