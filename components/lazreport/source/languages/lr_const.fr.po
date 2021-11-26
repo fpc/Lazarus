@@ -2,11 +2,11 @@ msgid ""
 msgstr ""
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
-"PO-Revision-Date: 2018-05-02 08:38+0200\n"
+"PO-Revision-Date: 2021-11-25 15:16+0100\n"
 "Project-Id-Version: lazreport\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Poedit 3.0\n"
 "MIME-Version: 1.0\n"
 "Project-Id-Version: lazreport\n"
 "POT-Creation-Date: \n"
@@ -1666,7 +1666,7 @@ msgstr "Insérer des champs BDD"
 
 #: lr_const.sinsertfieldsdbnofields
 msgid "Database without fields"
-msgstr ""
+msgstr "Base de données sans champs"
 
 #: lr_const.sinsertfieldsformaviabledset
 msgid "&Available datasets"
@@ -2320,7 +2320,7 @@ msgstr "&Hauteur, mm"
 
 #: lr_const.spgoptforminvalidcustompapersize
 msgid "Invalid custom paper size."
-msgstr ""
+msgstr "Format de papier personnalisé non valide."
 
 #: lr_const.spgoptformland
 msgid "&Landscape"

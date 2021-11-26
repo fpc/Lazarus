@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr_FR\n"
+
+#: buildstrconsts.lirsunit
+msgid "Pascal unit"
+msgstr "Unité Pascal"
+
+#: buildstrconsts.liscreateanewpascalunit
+msgid "Create a new pascal unit."
+msgstr "Créer une nouvelle unité Pascal."
+
+#: buildstrconsts.lisshowalloutputlines
+msgid "Show all output lines"
+msgstr "Afficher toutes les lignes de sortie"
+
+#: buildstrconsts.lisunabletofindparserfortool
+#, object-pascal-format
+msgid "Unable to find parser for tool \"%s\""
+msgstr "Impossible de trouver l'analyseur pour l'outil \"%s\""
+
+#: buildstrconsts.lisunabletofindparserwithname
+#, object-pascal-format
+msgid "Unable to find parser with name \"%s\""
+msgstr "Impossible de trouver l'analyseur avec le nom \"%s\""
+

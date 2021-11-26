@@ -9,117 +9,95 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.0\n"
 
 #: fpwebstrconsts.rsapachemodule
 msgid "Apache Module"
 msgstr "Module Apache"
 
 #: fpwebstrconsts.rsapachemodule2
-#, fuzzy, badformat
-#| msgid "Apache module%sAn Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
 msgid "An Apache loadable module in Free Pascal using webmodules. The main library file is automatically maintained by Lazarus."
-msgstr "Module Apache%sUn module Apache en Free Pascal utilisant les modules Web. Le fichier principal de la bibliothèque est automatiquement géré par Lazarus."
+msgstr "Un module Apache en Free Pascal utilisant les modules Web. Le fichier principal de la bibliothèque est automatiquement géré par Lazarus."
 
 #: fpwebstrconsts.rscgiapplicati
 msgid "CGI Application"
 msgstr "Application CGI"
 
 #: fpwebstrconsts.rscgiapplicati2
-#, fuzzy, badformat
-#| msgid "CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "Application CGI%sUne application CGI (Common Gateway Interface) en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
+msgstr "Un programme CGI (Common Gateway Interface) en Free Pascal utilisant des modules Web."
 
 #: fpwebstrconsts.rscustomcgiapp
 msgid "Custom CGI Application"
 msgstr "Application CGI personnalisée"
 
 #: fpwebstrconsts.rscustomcgiapp2
-#, fuzzy, badformat
-#| msgid "Custom CGI Application%sA CGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A CGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Application CGI%sUne application CGI (Common Gateway Interface) en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
+msgstr "Un programme CGI (Common Gateway Interface) en Free Pascal."
 
 #: fpwebstrconsts.rscustomfastcg
 msgid "Custom FastCGI Application"
 msgstr "Application FastCGI personnalisée"
 
 #: fpwebstrconsts.rscustomfastcg2
-#, fuzzy, badformat
-#| msgid "Custom FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal."
-msgstr "Application FastCGI personnalisée%sUn programme FastCGI (Common Gateway Interface) en Free Pascal. Le code source du programme est automatiquement géré par Lazarus."
+msgstr "Un programme FastCGI (Common Gateway Interface) en Free Pascal."
 
 #: fpwebstrconsts.rsfastcgiappli
 msgid "FastCGI Application"
 msgstr "Application FastCGI"
 
 #: fpwebstrconsts.rsfastcgiappli2
-#, fuzzy, badformat
-#| msgid "FastCGI Application%sA FastCGI (Common Gateway Interface) program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
-msgstr "Application FastCGI%sUne application FastCGI (Common Gateway Interface) en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
+msgstr "Un programme FastCGI (Common Gateway Interface) en Free Pascal utilisant des modules Web."
 
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "Module Web HTML"
 
 #: fpwebstrconsts.rshtmlwebmodul2
-#, fuzzy, badformat
-#| msgid "HTML WEB Module%sA Web datamodule for producing strict HTML."
 msgid "A Web datamodule for producing strict HTML."
-msgstr "Module Web HTML%sUn module de données Web pour produire du HTML pur."
+msgstr "Un module de données Web pour produire du HTML pur."
 
 #: fpwebstrconsts.rshttpappli
 msgid "HTTP server Application"
 msgstr "Serveur HTTP"
 
 #: fpwebstrconsts.rshttpappli2
-#, fuzzy
-#| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
-msgstr "Serveur HTTP. Un Serveur HTTP complet en Free Pascal utilisant les modules Web. Le programme source est automatiquement géré par Lazarus."
+msgstr "Un Serveur HTTP complet en Free Pascal utilisant les modules Web."
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
 msgstr "Module Web DataProvider"
 
 #: fpwebstrconsts.rswebdataprovi2
-#, fuzzy, badformat
-#| msgid "WEB DataProvider Module%sA datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
 msgid "A datamodule to handle data requests for WEB (HTTP) applications using WebDataProvider components."
-msgstr "Module WEB DataProvider%sUn module de données pour manipuler les requêtes des applications WEB (HTTP) qui utilisent les composants WebDataProvider."
+msgstr "Un module de données pour manipuler les requêtes des applications WEB (HTTP) qui utilisent les composants WebDataProvider."
 
 #: fpwebstrconsts.rswebextdirect
 msgid "Web Ext.Direct Module"
 msgstr "Module Web Ext.Direct"
 
 #: fpwebstrconsts.rswebextdirect2
-#, fuzzy, badformat
-#| msgid "WEB Ext.Direct Module%sA datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch Ext.Direct requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "Module Web Ext.Direct%sUn module de données pour répartir les requêtes Ext.Direct des applications WEB (HTTP) applications qui utilisent les composants TJSONRPCHandler."
+msgstr "Un module de données pour répartir les requêtes Ext.Direct des applications WEB (HTTP) applications qui utilisent les composants TJSONRPCHandler."
 
 #: fpwebstrconsts.rswebjsonrpcmo
 msgid "Web JSON-RPC Module"
 msgstr "Module Web JSON-RPC"
 
 #: fpwebstrconsts.rswebjsonrpcmo2
-#, fuzzy, badformat
-#| msgid "WEB JSON-RPC Module%sA datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
 msgid "A datamodule to dispatch JSON-RPC requests in WEB (HTTP) applications using TJSONRPCHandler components."
-msgstr "Module WEB JSON-RPC %sUn module de données pour répartir les requêtes JSON-RPC des applications WEB (HTTP) qui utilisent les composants TJSONRPCHandler."
+msgstr "Un module de données pour répartir les requêtes JSON-RPC des applications WEB (HTTP) qui utilisent les composants TJSONRPCHandler."
 
 #: fpwebstrconsts.rswebmodule
 msgid "Web Module"
 msgstr "Module Web"
 
 #: fpwebstrconsts.rswebmoduleada
-#, fuzzy, badformat
-#| msgid "WEB Module%sA datamodule for WEB (HTTP) applications."
 msgid "A datamodule for WEB (HTTP) applications."
-msgstr "Module Web%sUn module de données pour applications WEB (HTTP)."
+msgstr "Un module de données pour applications WEB (HTTP)."
 
 #: fpwebstrconsts.scaption
 msgid "Create a new JSON-RPC module"
@@ -396,11 +374,11 @@ msgstr "Insérer une balise INPUT"
 
 #: fpwebstrconsts.smihtmlinsertinputreset
 msgid "Insert \"Reset\" button"
-msgstr "Insérer un bouton \"Réinitialisation\"..."
+msgstr "Insérer un bouton \"Réinitialisation\""
 
 #: fpwebstrconsts.smihtmlinsertinputsubmit
 msgid "Insert \"Submit\" button "
-msgstr "Insérer un bouton \"Soumettre\"..."
+msgstr "Insérer un bouton \"Soumettre\""
 
 #: fpwebstrconsts.smihtmlinsertlink
 msgid "Insert link (HREF)"
