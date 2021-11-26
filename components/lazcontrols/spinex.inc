@@ -237,6 +237,13 @@ begin
     SpinUpDown(False);
 end;
 
+{ This is added as a virtual method because the 64-bit compiler on Windows cannot
+  determine which overloaded function to call when T is Currency. }
+function TSpinEditExBase.SameValue(AValue1, AValue2: T): Boolean;
+begin
+  Result := Math.SameValue(AValue1, AValue2);
+end;
+
 procedure TSpinEditExBase.SetValue(const AValue: T);
 var
   ValueFromText: T;
