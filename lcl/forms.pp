@@ -1055,6 +1055,8 @@ type
   { TScreen }
 
   TScreen = class(TLCLComponent)
+  private const
+    crScreen = Low(TCursor); // use with Screen.BeginTempCursor/EndTempCursor to add Screen.Cursor into the temp list
   private
     FActiveControl: TWinControl;
     FActiveCustomForm: TCustomForm;
@@ -1186,6 +1188,8 @@ type
     procedure EndTempCursor(const aCursor: TCursor);
     procedure BeginWaitCursor;
     procedure EndWaitCursor;
+    procedure BeginScreenCursor;
+    procedure EndScreenCursor;
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;

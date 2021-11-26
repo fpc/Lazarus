@@ -295,6 +295,11 @@ begin
   AddHandler(snRemoveForm,TMethod(OnRemoveForm),AsFirst);
 end;
 
+procedure TScreen.BeginScreenCursor;
+begin
+  BeginTempCursor(crScreen);
+end;
+
 procedure TScreen.BeginTempCursor(const aCursor: TCursor);
 var
   OldCursor: TCursor;
@@ -423,6 +428,11 @@ begin
       EnableWindow(AWindow, True);
   end;
   FreeAndNil(AFormList);
+end;
+
+procedure TScreen.EndScreenCursor;
+begin
+  EndTempCursor(crScreen);
 end;
 
 procedure TScreen.EndTempCursor(const aCursor: TCursor);
@@ -857,12 +867,12 @@ end;
 
 function TScreen.GetRealCursor: TCursor;
 begin
-  if (Length(FTempCursors)>0) and (FTempCursors[High(FTempCursors)]<>crScreenCursor) then
+  if (Length(FTempCursors)>0) and (FTempCursors[High(FTempCursors)]<>crScreen) then
     Result := FTempCursors[High(FTempCursors)]
   else
-  if Cursor<>crScreenCursor then
+  if Cursor<>crScreen then
     Result := Cursor
-  else // Screen.Cursor=crScreenCursor - we have to use crDefault because crScreenCursor is otherwise invalid
+  else // Screen.Cursor=crScreen - we have to use crDefault because crScreen is otherwise invalid
     Result := crDefault;
 end;
 

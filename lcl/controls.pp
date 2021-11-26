@@ -235,7 +235,6 @@ const
   crSizeAll     = TCursor(-22);
 
   crLow         = TCursor(-30);
-  crScreenCursor= Low(TCursor); // use only with Screen.BeginTempCursor/EndTempCursor to force Screen.Cursor
 
 type
   TCaptureMouseButtons = set of TMouseButton;

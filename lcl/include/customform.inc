@@ -2948,7 +2948,7 @@ begin
     Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
     Screen.FFocusedForm := Self;
     Screen.MoveFormToFocusFront(Self);
-    Screen.BeginTempCursor(crScreenCursor);
+    Screen.BeginScreenCursor;
     ModalResult := 0;
 
     try
@@ -3006,7 +3006,7 @@ begin
       end;
     finally
       RestoreFocusState(SavedFocusState);
-      Screen.EndTempCursor(crScreenCursor);
+      Screen.EndScreenCursor;
       if LCLIntf.IsWindow(ActiveWindow) then
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);
