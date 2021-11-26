@@ -857,10 +857,13 @@ end;
 
 function TScreen.GetRealCursor: TCursor;
 begin
-  if Length(FTempCursors)>0 then
+  if (Length(FTempCursors)>0) and (FTempCursors[High(FTempCursors)]<>crScreenCursor) then
     Result := FTempCursors[High(FTempCursors)]
   else
-    Result := Cursor;
+  if Cursor<>crScreenCursor then
+    Result := Cursor
+  else // Screen.Cursor=crScreenCursor - we have to use crDefault because crScreenCursor is otherwise invalid
+    Result := crDefault;
 end;
 
 function TScreen.GetSystemFont: TFont;
