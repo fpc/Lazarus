@@ -748,8 +748,8 @@ begin
         FCollapsedComps := TAVLTree.Create;
         FRoot2CollapasedMap[RootObject] := FCollapsedComps;
       end;
-      RestoreExpand(RootNode);     // then restore the Expanded/Collapsed state.
     end;
+    RestoreExpand(RootNode);     // then restore the Expanded/Collapsed state.
     MakeSelectionVisible;
   end;
   EndUpdate;

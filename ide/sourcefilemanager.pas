@@ -6602,7 +6602,8 @@ var
     if FoundComponentClass=nil then
     begin
       RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
-      if RegComp<>nil then
+      if (RegComp<>nil) and
+      not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
         FoundComponentClass:=RegComp.ComponentClass;
     end;
     if FoundComponentClass=nil then
@@ -6820,7 +6821,8 @@ var
 
       // search ancestor in registered classes
       if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
-        exit(true);
+        raise Exception.Create('TryFindDeclaration: TryRegisteredClasses returned True!');
+        //exit(true);
 
       {$IFDEF VerboseLFMSearch}
       debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' Ancestor="',AncestorClassName,'", but no lfm and no registered class found']);
@@ -6868,7 +6870,8 @@ var
     end;
     StoreComponentClassDeclaration(UnitFilename);
     if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
-      exit(true);
+      raise Exception.Create('TryUsedUnitInterface: TryRegisteredClasses returned True!');
+      //exit(true);
   end;
 
 var
