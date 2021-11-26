@@ -141,6 +141,7 @@ type
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     function SafeInc(AValue: T): T; virtual; abstract;
     function SafeDec(AValue: T): T; virtual abstract;
+    function SameValue(AValue1, AValue2: T): boolean; virtual;
     procedure SetValue(const AValue: T); virtual;
     procedure SetNullValue(AValue: T); virtual;
     procedure SetMaxValue(const AValue: T); virtual;
