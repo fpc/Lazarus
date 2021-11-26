@@ -2220,12 +2220,13 @@ begin
   or (IndexOfDesignerBaseClass(TComponentClass(AClass))>=0) then begin
     exit;
   end;
-  //DebugLn(['TCustomFormEditor.JITListFindAncestors Class=',DbgSName(AClass)]);
-  AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AClass));
+  DebugLn(['TCustomFormEditor.JITListFindAncestors Class=',DbgSName(AClass)]);
+  AnUnitInfo:=Project1.UnitWithComponentClassName(AClass.ClassName);
+  //AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AClass));
   while AnUnitInfo<>nil do begin
-    {$IFDEF VerboseFormEditor}
+    {.$IFDEF VerboseFormEditor}
     DebugLn(['TCustomFormEditor.JITListFindAncestors FOUND ancestor ',DbgSName(AnUnitInfo.Component),', streaming ...']);
-    {$ENDIF}
+    {.$ENDIF}
     Ancestor:=AnUnitInfo.Component;
     BinStream:=nil;
     if SaveUnitComponentToBinStream(AnUnitInfo,BinStream)<>mrOk then begin
@@ -2254,7 +2255,9 @@ var
 begin
   //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName]);
   RegComp:=IDEComponentPalette.FindRegComponent(ComponentClassName);
-  if RegComp<>nil then begin
+  if (RegComp<>nil) and
+  not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
+  begin
     //DebugLn(['TCustomFormEditor.JITListFindClass ',ComponentClassName,' is registered as ',DbgSName(RegComp.ComponentClass)]);
     ComponentClass:=RegComp.ComponentClass;
   end else begin
@@ -2264,7 +2267,7 @@ begin
       AnUnitInfo:=TUnitInfo(JITList.ContextObject);
       if AnUnitInfo.ComponentFallbackClasses<>nil then
         for i:=0 to AnUnitInfo.ComponentFallbackClasses.Count-1 do begin
-          if SysUtils.CompareText(AnUnitInfo.ComponentFallbackClasses[i],ComponentClassName)=0
+          if CompareText(AnUnitInfo.ComponentFallbackClasses[i],ComponentClassName)=0
           then begin
             {$IFDEF EnableNestedComponentsWithoutLFM}
             ComponentClass:=TComponentClass(Pointer(AnUnitInfo.ComponentFallbackClasses.Objects[i]));
@@ -2281,7 +2284,7 @@ begin
     AnUnitInfo:=Project1.FirstUnitWithComponent;
     while AnUnitInfo<>nil do begin
       Component:=AnUnitInfo.Component;
-      if SysUtils.CompareText(Component.ClassName,ComponentClassName)=0 then
+      if CompareText(Component.ClassName,ComponentClassName)=0 then
       begin
         DebugLn(['TCustomFormEditor.JITListFindClass found nested class '+DbgSName(Component)+' in unit '+AnUnitInfo.Filename]);
         ComponentClass:=TComponentClass(Component.ClassType);
@@ -2293,8 +2296,7 @@ begin
   //DebugLn(['TCustomFormEditor.JITListFindClass Searched=',ComponentClassName,' Found=',DbgSName(ComponentClass)]);
 end;
 
-function TCustomFormEditor.GetDesignerBaseClasses(Index: integer
-  ): TComponentClass;
+function TCustomFormEditor.GetDesignerBaseClasses(Index: integer): TComponentClass;
 begin
   Result:=TComponentClass(FDesignerBaseClasses[Index]);
 end;
