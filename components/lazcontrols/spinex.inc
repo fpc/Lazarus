@@ -524,10 +524,13 @@ begin
     Result := AValue - FIncrement;
 end;
 
+// Workaround for https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/39490
+{$IF FPC_FullVersion=30202}{$IFDEF Win64}
 function TCustomFloatSpinEditEx.SameValue(AValue1, AValue2: Double): Boolean;
 begin
   Result := Math.SameValue(AValue1, AValue2);
 end;
+{$ENDIF}{$IFEND}
 
 procedure TCustomFloatSpinEditEx.SetDecimals(ADecimals: Integer);
 begin
@@ -662,10 +665,13 @@ begin
     Result := AValue - FIncrement;
 end;
 
+// Workaround for https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/39490
+{$IF FPC_FullVersion=30202}{$IFDEF Win64}
 function TCustomSpinEditEx.SameValue(AValue1, AValue2: Int64): Boolean;
 begin
   Result := (AValue1 = AValue2);
 end;
+{$ENDIF}{$IFEND}
 
 function TCustomSpinEditEx.TextIsNumber(const S: String; out ANumber: Int64
   ): Boolean;
