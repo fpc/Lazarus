@@ -101,12 +101,11 @@ begin
     then FWatch.DisplayFormat := StyleToDispFormat[rgStyle.ItemIndex]
     else FWatch.DisplayFormat := wdfDefault;
 
+    FWatch.EvaluateFlags := [];
     if chkUseInstanceClass.Checked
-    then FWatch.EvaluateFlags := [defClassAutoCast]
-    else FWatch.EvaluateFlags := [];
+    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defClassAutoCast];
     if chkAllowFunc.Checked
-    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defAllowFunctionCall]
-    else FWatch.EvaluateFlags := [];
+    then FWatch.EvaluateFlags := FWatch.EvaluateFlags + [defAllowFunctionCall];
     FWatch.RepeatCount := StrToIntDef(txtRepCount.Text, 0);
 
     FWatch.Enabled := chkEnabled.Checked;
