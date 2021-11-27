@@ -525,6 +525,33 @@
         <short>The decremented (and possibly range limited) value.</short>
       </element>
 
+      <element name="TSpinEditExBase.SameValue">
+        <short>Determines whether the specified arguments have the same value.</short>
+        <descr>
+          <p>
+            <var>SameValue</var> is a <var>Boolean</var> function used to compare the values in <var>AValue1</var> and <var>AValue2</var> to determine if they have the same value.  SameValue calls the overloaded SameValue routine in the <file>math.pp</file> unit to get the return value for the method. The return value is <b>True</b> when both AValue1 and AValue2 have the same value.
+          </p>
+          <p>
+            This method was introduced to ensure that the type specialization for the class instance is used when value comparisons are performed. Specifically, it allows the 64-bit compiler on Windows to determine which of the overloads in Math.SameValue is called for the <var>Currency</var> type.
+          </p>
+        </descr>
+        <version>
+          Introduced in version 2.2.0.
+        </version>
+        <seealso>
+          <link id="#rtl.math.SameValue">Math.SameValue</link>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SameValue.Result">
+        <short>True if both arguments have the same value.</short>
+      </element>
+      <element name="TSpinEditExBase.SameValue.AValue1">
+        <short>First value for the comparison.</short>
+      </element>
+      <element name="TSpinEditExBase.SameValue.AValue2">
+        <short>Second value for the comparison.</short>
+      </element>
+
       <element name="TSpinEditExBase.SetValue">
         <short>Sets the value for the Value property.</short>
         <descr/>
