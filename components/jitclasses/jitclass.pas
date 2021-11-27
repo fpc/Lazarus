@@ -199,7 +199,7 @@ type
       FMemVmtPtr: PVmt;
       function GetHeadPtr: Pointer;
     public
-      function  Allocate(ASize: Integer; AExtraHeadSize: Integer = 0): Pointer;
+      procedure Allocate(ASize: Integer; AExtraHeadSize: Integer = 0);
       procedure DeAllocate;
       procedure ClearMemPointer; // does not free
       property  HeadPtr: Pointer read GetHeadPtr;
@@ -476,8 +476,8 @@ begin
   Result := Pointer(FMemVmtPtr) - FExtraHeadSize;
 end;
 
-function TJitClassCreator.TVmtMem.Allocate(ASize: Integer;
-  AExtraHeadSize: Integer): Pointer;
+procedure TJitClassCreator.TVmtMem.Allocate(ASize: Integer;
+  AExtraHeadSize: Integer);
 begin
   assert(FMemVmtPtr=nil, 'TJitClassCreator.TVmtMem.Allocate: FMemVmtPtr=nil');
   AExtraHeadSize := align(AExtraHeadSize, sizeof(Pointer));
