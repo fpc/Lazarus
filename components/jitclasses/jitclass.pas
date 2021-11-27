@@ -336,6 +336,8 @@ type
 
 implementation
 
+const EmptyIntf : array [0..3] of PtrUInt = (0,0,0,0); // Count ond Entries
+
 function GetVMTSize(AClass: TClass): integer;
 const
   MAX_VMT_SIZE = 100000;
@@ -1190,6 +1192,8 @@ begin
      vmtIntfTable
      vmtMsgStrPtr
   *)
+  FJitPVmt^.vIntfTable:=@EmptyIntf; // A nil pointer stops the recursion
+
   // set vmtParent
   {$IFDEF HasVMTParent}
   FJitPVmt^.vParent:=AncestorVMT;
