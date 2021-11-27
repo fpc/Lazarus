@@ -141,7 +141,7 @@ type
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     function SafeInc(AValue: T): T; virtual; abstract;
     function SafeDec(AValue: T): T; virtual abstract;
-    function SameValue(AValue1, AValue2: T): boolean; virtual;
+    function SameValue(AValue1, AValue2: T): boolean; virtual; abstract;
     procedure SetValue(const AValue: T); virtual;
     procedure SetNullValue(AValue: T); virtual;
     procedure SetMaxValue(const AValue: T); virtual;
@@ -209,6 +209,7 @@ type
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
     function SafeInc(AValue: Double): Double; override;
     function SafeDec(AValue: Double): Double; override;
+    function SameValue(AValue1, AValue2: Double): Boolean; override;
     procedure SetDecimals(ADecimals: Integer); virtual;
   public
     function ValueToStr(const AValue: Double): String; override;
@@ -320,6 +321,7 @@ type
   protected
     function SafeInc(AValue: Int64): Int64; override;
     function SafeDec(AValue: Int64): Int64; override;
+    function SameValue(AValue1, AValue2: Int64): Boolean; override;
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
   public
     function ValueToStr(const AValue: Int64): String; override;

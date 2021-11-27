@@ -237,13 +237,6 @@ begin
     SpinUpDown(False);
 end;
 
-{ This is added as a virtual method because the 64-bit compiler on Windows cannot
-  determine which overloaded function to call when T is Currency. }
-function TSpinEditExBase.SameValue(AValue1, AValue2: T): Boolean;
-begin
-  Result := Math.SameValue(AValue1, AValue2);
-end;
-
 procedure TSpinEditExBase.SetValue(const AValue: T);
 var
   ValueFromText: T;
@@ -531,6 +524,11 @@ begin
     Result := AValue - FIncrement;
 end;
 
+function TCustomFloatSpinEditEx.SameValue(AValue1, AValue2: Double): Boolean;
+begin
+  Result := Math.SameValue(AValue1, AValue2);
+end;
+
 procedure TCustomFloatSpinEditEx.SetDecimals(ADecimals: Integer);
 begin
   if (FDecimals = ADecimals) or (ADecimals < 0) then Exit;
@@ -662,6 +660,11 @@ begin
     Result := Low(Int64)
   else
     Result := AValue - FIncrement;
+end;
+
+function TCustomSpinEditEx.SameValue(AValue1, AValue2: Int64): Boolean;
+begin
+  Result := (AValue1 = AValue2);
 end;
 
 function TCustomSpinEditEx.TextIsNumber(const S: String; out ANumber: Int64
