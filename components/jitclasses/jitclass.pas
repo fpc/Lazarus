@@ -151,6 +151,8 @@ type
     property InstanceDataPointer[AnInstance: TObject]: Pointer read GetInstanceDataPointer;
   end;
 
+  TJitPropertyClass = class of TJitProperty;
+
   { TJitPropertyList }
 
   TJitPropertyList = class(TCollection)
@@ -175,7 +177,8 @@ type
     procedure Update(Item: TCollectionItem); override;
     property  TypeLibrary: TJitTypeLibrary read FTypeLibrary;
   public
-    constructor Create(AOwner: TJitClassCreator); reintroduce;
+    constructor Create(AOwner: TJitClassCreator); reintroduce; overload;
+    constructor Create(AItemClass: TJitPropertyClass; AOwner: TJitClassCreator); reintroduce; overload;
     function  Add(AName, ADeclaration: String;
       AWriteAble: Boolean = True; ADefault: LongInt = 0; ANoDefault: Boolean = False; AStored: Boolean = True): TJitProperty; reintroduce;
     procedure Remove(AName: String);
@@ -254,6 +257,7 @@ type
     FUserInfoMemSize: Integer;
     FRttiWriterClass: TJitRttiWriterTkClass;
 
+    function GetAncestorJitClass: TJitClassCreator;
     function RefCountedJitPvmt: TRefCountedJitClassReference;
     procedure AllocateJitPVmt(ASize: Integer);
     procedure DeAllocateJitPVmt;
@@ -263,6 +267,7 @@ type
     procedure SetClassName(AValue: String);
     procedure SetClassUnit(AValue: String);
     procedure SetTypeLibrary(AValue: TJitTypeLibrary);
+    procedure ResolveAnchestor;
     procedure RaiseUnless(ACond: Boolean; const AMsg: string);
     function dbgsFlag(AFlags: TJitClassCreatorFlags): String;
   protected
@@ -282,7 +287,9 @@ type
     procedure CreateJitProps;
     procedure CreateJitPropsPrepare;
     procedure CreateJitPropsFinish;
+
     procedure Init; virtual;
+    function  CreateJitPropertyList: TJitPropertyList; virtual;
   public
     constructor Create(AnAncestorClass: TClass; AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
     constructor Create(AnAncestorClassName, AClassName: String; AClassUnit: String; ATypeLibrary: TJitTypeLibrary = nil);
@@ -319,8 +326,10 @@ type
     property JitMethods: TJitMethodList read FJitMethods;
     property JitProperties: TJitPropertyList read FJitProperties;
 
+    function FindPropertyRecursive(AName: String): TJitProperty;
+
     property JitClass: TClass read GetJitClass;
-    property AncestorJitClass: TJitClassCreator read FAncestorJitClass; experimental;
+    property AncestorJitClass: TJitClassCreator read GetAncestorJitClass; experimental;
 
     property UserInfoMemSize: Integer read FUserInfoMemSize write FUserInfoMemSize; // User must call procedure UpdateJitClass for it to take effect
   end;
@@ -816,14 +825,20 @@ end;
 
 constructor TJitPropertyList.Create(AOwner: TJitClassCreator);
 begin
+  Create(TJitProperty, AOwner);
+end;
+
+constructor TJitPropertyList.Create(AItemClass: TJitPropertyClass;
+  AOwner: TJitClassCreator);
+begin
   FOwner := AOwner;
-  inherited Create(TJitProperty);
+  inherited Create(AItemClass);
 end;
 
 function TJitPropertyList.Add(AName, ADeclaration: String; AWriteAble: Boolean;
   ADefault: LongInt; ANoDefault: Boolean; AStored: Boolean): TJitProperty;
 begin
-  Result := TJitProperty.Create(Self, AName, ADeclaration, AWriteAble,
+  Result := TJitPropertyClass(ItemClass).Create(Self, AName, ADeclaration, AWriteAble,
     ADefault, ANoDefault, AStored);
 end;
 
@@ -960,7 +975,7 @@ begin
           // todo: skip deprecated and the lot
 
           if InPublished then begin
-            TheProp := TJitProperty.Create(Self, NewName, NewPropJitType, NewWritable, 0, NewNoDefault);
+            TheProp := TJitPropertyClass(ItemClass).Create(Self, NewName, NewPropJitType, NewWritable, 0, NewNoDefault);
             TheProp.SetDefaultFromIdent(NewDefault);
             TheProp.SetIsStored(NewIsStored);
           end
@@ -1002,6 +1017,13 @@ begin
     FRefCountedJitPVmt := TRefCountedJitClassReference.Create(FJitPVmtMem);
   end;
   Result := FRefCountedJitPVmt;
+end;
+
+function TJitClassCreator.GetAncestorJitClass: TJitClassCreator;
+begin
+  if FAncestorJitClass = nil then
+    ResolveAnchestor;
+  Result := FAncestorJitClass;
 end;
 
 procedure TJitClassCreator.AllocateJitPVmt(ASize: Integer);
@@ -1072,6 +1094,27 @@ begin
 
   if FTypeLibrary <> nil then
     FTypeLibrary.AddFreeNotification(@DoTypeLibFreed);
+end;
+
+procedure TJitClassCreator.ResolveAnchestor;
+var
+  at: TJitType;
+begin
+  if (FAncestorClass = nil) and (FAncestorJitClass = nil) then begin
+    if (FAncestorJitType = nil) and (FAncestorClassName <> '') and (FTypeLibrary <> nil) then begin
+      at := FTypeLibrary.FindType(FAncestorClassName, FClassUnit);
+      if not (at is TJitTypeClassBase) then
+        raise Exception.Create('Incorrect type for anchestor');
+      FAncestorJitType := TJitTypeJitClass(at);
+    end;
+
+    if FAncestorJitType <> nil then begin
+      if (FAncestorJitType is TJitTypeJitClass) then
+        FAncestorJitClass := TJitClassCreator(TJitTypeJitClass(FAncestorJitType).JitClassCreator)
+      else
+        FAncestorClass := FAncestorJitType.JitClass;
+    end;
+  end;
 end;
 
 procedure TJitClassCreator.RaiseUnless(ACond: Boolean; const AMsg: string);
@@ -1203,23 +1246,8 @@ end;
 procedure TJitClassCreator.CreateJitClass;
 var
   HasJitAnchestor: Boolean;
-  at: TJitType;
 begin
-  if (FAncestorClass = nil) and (FAncestorJitClass = nil) then begin
-    if (FAncestorJitType = nil) and (FAncestorClassName <> '') and (FTypeLibrary <> nil) then begin
-      at := FTypeLibrary.FindType(FAncestorClassName, FClassUnit);
-      if not (at is TJitTypeClassBase) then
-        raise Exception.Create('Incorrect type for anchestor');
-      FAncestorJitType := TJitTypeJitClass(at);
-    end;
-
-    if FAncestorJitType <> nil then begin
-      if (FAncestorJitType is TJitTypeJitClass) then
-        FAncestorJitClass := TJitClassCreator(TJitTypeJitClass(FAncestorJitType).JitClassCreator)
-      else
-        FAncestorClass := FAncestorJitType.JitClass;
-    end;
-  end;
+  ResolveAnchestor;
   CreateJitClassPreCheck;
   FFlags := FFlags - [ccfModifiedMethods, ccfModifiedProps, ccfModifiedClassName];
 
@@ -1552,6 +1580,11 @@ begin
   //
 end;
 
+function TJitClassCreator.CreateJitPropertyList: TJitPropertyList;
+begin
+  Result := TJitPropertyList.Create(Self);
+end;
+
 function TJitClassCreator.GetTypeInfo: PTypeInfo;
 begin
   GetJitClass;
@@ -1563,7 +1596,7 @@ constructor TJitClassCreator.Create(AnAncestorClass: TClass;
 begin
   FJitPVmtMem.ClearMemPointer;
   FJitMethods := TJitMethodList.Create(Self);
-  FJitProperties := TJitPropertyList.Create(Self);
+  FJitProperties := CreateJitPropertyList;
 
   inherited Create;
 
@@ -1636,6 +1669,19 @@ procedure TJitClassCreator.RecreateJitClass;
 begin
   FFlags := [];
   DeAllocateJitPVmt;
+end;
+
+function TJitClassCreator.FindPropertyRecursive(AName: String): TJitProperty;
+var
+  Creator: TJitClassCreator;
+begin
+  Creator := Self;
+  while Creator <> nil do begin
+    Result := Creator.JitProperties.Prop[AName];
+    if Result <> nil then
+      exit;
+    Creator := Creator.AncestorJitClass;
+  end;
 end;
 
 end.
