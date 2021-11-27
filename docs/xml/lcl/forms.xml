@@ -642,7 +642,7 @@
             Create is the constructor for the class instance, and calls the inherited constructor on entry.
           </p>
           <p>
-            Create sets the assocaited control for the class instance and the Kind property to the values specified in the AControl and AKind arguments. Create sets the default values for properties, including:
+            Create sets the associated control for the class instance and the Kind property to the values specified in the AControl and AKind arguments. Create sets the default values for properties, including:
           </p>
           <dl>
             <dt>Page</dt>
@@ -696,7 +696,7 @@
         </short>
         <descr>
           <p>
-            <var>IsScrollBarVisible</var> is a <var>Boolean</var> function used to determine if the scroll bar for the associatied control is visible. The return value defaults to the value in the <var>Visible</var> property. If the handle has been allocated for the control, the <var>GetScrollbarVisible</var> routine from the LCL interface is used to get the visiblity for the scroll bar <var>Kind</var>.
+            <var>IsScrollBarVisible</var> is a <var>Boolean</var> function used to determine if the scroll bar for the associated control is visible. The return value defaults to the value in the <var>Visible</var> property. If the handle has been allocated for the control, the <var>GetScrollbarVisible</var> routine from the LCL interface is used to get the visibility for the scroll bar <var>Kind</var>.
           </p>
           <p>
             IsScrollBarVisible is used in the implementation of the <var>ClientSizeWithBar</var> and <var>ClientSizeWithoutBar</var> methods.
@@ -5787,7 +5787,7 @@
 
       <element name="TForm.WSRegisterClass">
         <short>
-          Creates an assocation between the class type and its widgetset class.
+          Creates an association between the class type and its widgetset class.
         </short>
         <descr>
           WSRegisterClass is an overridden class procedure used to register the widgetset class used to create new instances of the form.
@@ -7039,6 +7039,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
 
+      <element name="TScreen.crScreen"/>
       <element name="TScreen.FActiveControl" link="#lcl.forms.TScreen.ActiveControl"/>
       <element name="TScreen.FActiveCustomForm" link="#lcl.forms.TScreen.ActiveCustomForm"/>
       <element name="TScreen.FActiveForm" link="#lcl.forms.TScreen.ActiveForm"/>
@@ -8108,27 +8109,31 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            <var>BeginTempCursor</var> is a method used to change the cursor shape to the temporary cursor in the <var>ACursor</var> argument. It adds the value in ACursor to an internal list of temporary cursors. The cursor shape is removed when the <var>EndTempCursor</var> method is called.
+            <var>BeginTempCursor</var> is a method used to change the mouse cursor shape to the temporary cursor in the <var>ACursor</var> argument. It adds the value in ACursor to an internal list of temporary cursors. The cursor shape is removed when the <var>EndTempCursor</var> method is called.
           </p>
           <p>
-            BeginTempCursor calls <var>SetCursor</var> in the widgetset class to change the cursor shape to the value in <var>Cursors</var> stored at the index in ACursor.
+            BeginTempCursor calls <var>SetCursor</var> in the widgetset class to change the mouse cursor shape to the value in <var>Cursors</var> stored at the index in ACursor.
           </p>
           <p>
-            Use EndTempCursor to remove a given cursor shape, and restore the cursor to a previous value.
+            Use EndTempCursor to remove a given cursor shape, and restore the mouse cursor to a previous value.
           </p>
         </descr>
         <seealso>
           <link id="TScreen.EndTempCursor"/>
+          <link id="TScreen.BeginScreenCursor"/>
+          <link id="TScreen.EndScreenCursor"/>
+          <link id="TScreen.BeginWaitCursor"/>
+          <link id="TScreen.EndWaitCursor"/>
           <link id="TScreen.Cursors"/>
           <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
       <element name="TScreen.BeginTempCursor.aCursor">
-        <short>Identifies the temporary cursor shape to apply to the screen.</short>
+        <short>Identifies the temporary mouse cursor shape to apply to the screen.</short>
       </element>
 
       <element name="TScreen.EndTempCursor">
-        <short>Releases a temporary cursor set with BeginTempCursor.</short>
+        <short>Releases a temporary mouse cursor set with BeginTempCursor.</short>
         <descr>
           <p>
             <var>EndTempCursor</var> is a method used to release the temporary cursor shape in <var>ACursor</var>. It removes the value from the internal list of temporary cursors updated in the <var>BeginTempCursor</var> method. Only the cursor shape in ACursor is removed from the list; other values are left intact.
@@ -8140,7 +8145,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             An <var>Exception</var> is raised with the message 'Unbalanced BeginTempCursor/EndTempCursor calls for cursor' if ACursor is not found in the list of temporary cursors.
           </p>
           <p>
-            Use BeginTempCursor to display and store a temporary cursor shape.
+            Use BeginTempCursor to display and store a temporary mouse cursor shape.
           </p>
         </descr>
         <errors>
@@ -8150,7 +8155,11 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           <link id="TScreen.RealCursor"/>
           <link id="TScreen.Cursors"/>
           <link id="TScreen.BeginTempCursor"/>
-          <link id="TCursor"/>
+          <link id="TScreen.BeginScreenCursor"/>
+          <link id="TScreen.EndScreenCursor"/>
+          <link id="TScreen.BeginWaitCursor"/>
+          <link id="TScreen.EndWaitCursor"/>
+          <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
       <element name="TScreen.EndTempCursor.aCursor">
@@ -8166,20 +8175,59 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </descr>
         <seealso>
           <link id="TScreen.BeginTempCursor"/>
+          <link id="TScreen.BeginScreenCursor"/>
           <link id="#lcl.controls.crHourGlass">crHourGlass</link>
+          <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
 
       <element name="TScreen.EndWaitCursor">
-        <short>Removes the crHourGlass cursor shape.</short>
+        <short>Removes the crHourGlass mouse cursor shape.</short>
         <descr>
           <p>
-            Calls <var>EndTempCursor</var> to remove the <var>crHourGlass</var> cursor shape.
+            Calls <var>EndTempCursor</var> to remove the <var>crHourGlass</var> mouse cursor shape.
           </p>
         </descr>
         <seealso>
           <link id="TScreen.EndTempCursor"/>
           <link id="#lcl.controls.crHourGlass">crHourGlass</link>
+          <link id="#lcl.controls.TCursor">TCursor</link>
+        </seealso>
+      </element>
+
+      <element name="TScreen.BeginScreenCursor">
+        <short>Changes the active cursor to the most recent shape in the internal list of cursors.</short>
+        <descr>
+          <p>
+            Calls the BeginTempCursor method using the mouse cursor shape currently assigned to the internal member for the screen.
+          </p>
+          <p>
+            Use EndScreenCursor to revert the mouse cursor shape to the value on entry to the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.EndScreenCursor"/>
+          <link id="TScreen.BeginTempCursor"/>
+          <link id="TScreen.EndTempCursor"/>
+        </seealso>
+      </element>
+
+      <element name="TScreen.EndScreenCursor">
+        <short>
+          Removes the current mouse cursor shape from the internal list, and restores the previous cursor shape.
+        </short>
+        <descr>
+          <p>
+            Calls the EndTempCursor method to remove the current mouse cursor shape from the internal list of cursors. The most recent cursor shape in the internal list is restored when it differs from the value assigned to Cursor.
+          </p>
+          <p>
+            Use BeginScreenCursor to make the value in Cursor the current cursor shape for the screen.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.BeginScreenCursor"/>
+          <link id="TScreen.BeginTempCursor"/>
+          <link id="TScreen.EndTempCursor"/>
         </seealso>
       </element>
 
@@ -8239,7 +8287,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Indicates the current mouse cursor shape.</short>
         <descr>
           <p>
-            <var>Cursor</var> is a <var>TCursor</var> property which identifies the current cursor shape drawn on the screen. The numeric value is the <var>HCURSOR</var> handle for the image drawn as the cursor shape. Cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
+            <var>Cursor</var> is a <var>TCursor</var> property which identifies the current mouse cursor shape drawn on the screen. The numeric value is the <var>HCURSOR</var> handle for the image drawn as the cursor shape. Cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
           </p>
           <p>
             Cursor is used as an index into the values in the <var>Cursors</var> property where the handle for the <var>TCursorImage</var> resources are stored. Changing the value for the property causes the <var>SetCursor</var> method in the widgetset class to be called to apply the handle in Cursors at the position in Cursor.
@@ -8270,10 +8318,10 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.Cursors">
-        <short>Provides indexed access to the available cursor shapes for the screen.</short>
+        <short>Provides indexed access to the available mouse cursor shapes for the screen.</short>
         <descr>
           <p>
-            <var>Cursors</var> is an indexed <var>HCURSOR</var> property which provides access to the handle for a cursor shape by its numeric value. The cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
+            <var>Cursors</var> is an indexed <var>HCURSOR</var> property which provides access to the handle for a mouse cursor shape by its numeric value. The cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
           </p>
           <p>
             Cursors uses an internal <var>TMap</var> instance to store the handle values and provides access using the index values. When the value for the property is read, <var>CreateStandardCursor</var> in the widgetset class is called to retrieve the handle. If it has not been assigned, a temporary <var>TCursorImage</var> is created for the cursor resource and its handle is added to the internal map.
