@@ -5551,9 +5551,11 @@ end;
 function TProject.UnitWithComponentClassName(const AClassName: string): TUnitInfo;
 begin
   Result := fFirst[uilWithComponent];
-  while (Result<>nil)
-  and (SysUtils.CompareText(Result.Component.ClassName, AClassName) <> 0) do
+  while (Result<>nil) and (CompareText(Result.Component.ClassName, AClassName)<>0) do
+  begin
+    DebugLn('TProject.UnitWithComponentClassName: ', Result.Component.ClassName);
     Result := Result.fNext[uilWithComponent];
+  end;
 end;
 
 function TProject.UnitWithComponentName(AComponentName: String;
