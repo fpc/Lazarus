@@ -70,7 +70,8 @@ implementation
 uses
   FPDCommand,
   FpDbgUtil,
-  FPDGlobal;
+  FPDGlobal,
+  FPDbgController;
 
 type
 
@@ -119,7 +120,7 @@ end;
 
 procedure TFPDLoop.GControllerDebugInfoLoaded(Sender: TObject);
 begin
-  TFpDwarfInfo(GController.CurrentProcess.DbgInfo).MemManager := FMemManager;
+
 end;
 
 procedure TFPDLoop.ShowDisas;
@@ -264,6 +265,14 @@ begin
   FMemReader := TPDDbgMemReader.Create;
   FMemConvertor := TFpDbgMemConvertorLittleEndian.Create;
   FMemManager := TFpDbgMemManager.Create(FMemReader, FMemConvertor);
+  GController := TDbgController.Create(FMemManager);
+
+  if ParamCount > 0
+  then begin
+    GController.ExecutableFilename := ParamStr(1);
+    WriteLN('Using file: ', GController.ExecutableFilename);
+  end;
+
   //TODO: Maybe DebugLogger.OnLog ....
   //GController.OnLog:=@OnLog;
   GController.OnHitBreakpointEvent:=@GControllerHitBreakpointEvent;
@@ -278,6 +287,7 @@ begin
   FMemManager.Free;
   FMemReader.Free;
   FMemConvertor.Free;
+  GController.Free;
   inherited Destroy;
 end;
 
