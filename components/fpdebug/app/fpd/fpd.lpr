@@ -42,6 +42,7 @@ uses
 {$endif}
   SysUtils,
   CustApp,
+  FpDbgDwarfFreePascal,
 {$ifdef windows}
   Windows,
   FpDbgWinClasses,
