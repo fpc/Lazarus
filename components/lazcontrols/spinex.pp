@@ -69,6 +69,11 @@ unit SpinEx;
 
 {$mode objfpc}{$H+}
 
+// Activates a workaround for issue #39490
+{$if FPC_FullVersion=30202}{$ifdef Win64}
+  {$define fpc_math_samevalue_bug}
+{$endif}{$endif}
+
 interface
 
 uses
@@ -141,9 +146,9 @@ type
     procedure EditMouseWheelDown(Shift: TShiftState; MousePos: TPoint; var Handled: Boolean); override;
     function SafeInc(AValue: T): T; virtual; abstract;
     function SafeDec(AValue: T): T; virtual abstract;
-    {$IF FPC_FullVersion=30202}{$IFDEF Win64}
+    {$ifdef fpc_math_samevalue_bug}
     function SameValue(AValue1, AValue2: T): boolean; virtual; abstract;
-    {$ENDIF}{$IFEND}
+    {$endif}
     procedure SetValue(const AValue: T); virtual;
     procedure SetNullValue(AValue: T); virtual;
     procedure SetMaxValue(const AValue: T); virtual;
@@ -211,9 +216,9 @@ type
     function TextIsNumber(const S: String; out ANumber: Double): Boolean; override;
     function SafeInc(AValue: Double): Double; override;
     function SafeDec(AValue: Double): Double; override;
-    {$IF FPC_FullVersion=30202}{$IFDEF Win64}
+    {$ifdef fpc_math_samevalue_bug}
     function SameValue(AValue1, AValue2: Double): Boolean; override;
-    {$ENDIF}{$IFEND}
+    {$endif}
     procedure SetDecimals(ADecimals: Integer); virtual;
   public
     function ValueToStr(const AValue: Double): String; override;
@@ -325,9 +330,9 @@ type
   protected
     function SafeInc(AValue: Int64): Int64; override;
     function SafeDec(AValue: Int64): Int64; override;
-    {$IF FPC_FullVersion=30202}{$IFDEF Win64}
+    {$ifdef fpc_math_samevalue_bug}
     function SameValue(AValue1, AValue2: Int64): Boolean; override;
-    {$ENDIF}{$IFEND}
+    {$endif}
     function TextIsNumber(const S: String; out ANumber: Int64): Boolean; override;
   public
     function ValueToStr(const AValue: Int64): String; override;
