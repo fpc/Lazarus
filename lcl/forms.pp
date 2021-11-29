@@ -314,7 +314,6 @@ type
     procedure DefineProperties(Filer: TFiler); override;
     procedure CalculatePreferredSize(var PreferredWidth,
            PreferredHeight: integer; WithThemeSpace: Boolean); override;
-    procedure CreateParams(var Params: TCreateParams); override;
     procedure UpdateOpaque;
   public
     constructor Create(AOwner: TComponent); override;
