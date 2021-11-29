@@ -1174,6 +1174,7 @@ begin
     Boss.CursorBeyondEOL:=CursorBeyondEOL;
     Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
     Boss.CompleteProperties:=CompleteProperties;
+    Boss.IdentComplAutoInvokeOnType:=IdentComplAutoInvokeOnType;
 
     // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     AssignTo(Boss.SourceChangeCache.BeautifyCodeOptions);
