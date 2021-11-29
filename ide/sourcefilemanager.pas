@@ -6817,8 +6817,7 @@ var
 
       // search ancestor in registered classes
       if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
-        raise Exception.Create('TryFindDeclaration: TryRegisteredClasses returned True!');
-        //exit(true);
+        exit(true);
 
       {$IFDEF VerboseLFMSearch}
       debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' Ancestor="',AncestorClassName,'", but no lfm and no registered class found']);
@@ -6866,8 +6865,7 @@ var
     end;
     StoreComponentClassDeclaration(UnitFilename);
     if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
-      raise Exception.Create('TryUsedUnitInterface: TryRegisteredClasses returned True!');
-      //exit(true);
+      exit(true);
   end;
 
 var
