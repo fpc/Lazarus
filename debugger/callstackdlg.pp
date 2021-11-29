@@ -356,11 +356,17 @@ begin
     begin
       Item := lvCallStack.Items[n];
       Entry := CStack.Entries[First + n];
-      if Entry = nil
+      if (Entry = nil) or (Entry.Validity <> ddsValid)
       then begin
         Item.Caption := '';
-        Item.ImageIndex := imgNoSourceLine;
-        Item.SubItems[0] := '????';
+        if Entry = nil then begin
+          Item.ImageIndex := imgNoSourceLine;
+          Item.SubItems[0] := '????';
+        end
+        else begin
+          Item.ImageIndex := -1;
+          Item.SubItems[0] := '';
+        end;
         Item.SubItems[1] := '';
         Item.SubItems[2] := '';
         Item.SubItems[3] := '';
