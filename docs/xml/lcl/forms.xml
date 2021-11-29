@@ -1905,10 +1905,49 @@
         <short>TFiler instance where property definitions are added.</short>
       </element>
 
-      <element name="TCustomFrame.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize"/>
-      <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth"/>
-      <element name="TCustomFrame.CalculatePreferredSize.PreferredHeight"/>
-      <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace"/>
+      <element name="TCustomFrame.CalculatePreferredSize">
+        <short>Gets the preferred height and width for the control used during auto-sizing.</short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomFrame</var>. It ensures that the inherited method is <b>not</b> called when the frame is an un-parented component and visible on the form designer. This allows the dimensions to be freely resized on the design surface. Values in the PreferredWidth, PreferredHeight, and WithThemeSpace arguments are not modified at design-time.
+          </p>
+          <p>
+            If the frame has an Owner (parent form) at run-time, the inherited method is called to get the values used in the LCL auto-sizing algorithms.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth">
+        <short>Preferred width for the control.</short>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.PreferredHeight">
+        <short>Preferred height for the control.</short>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace">
+        <short>True if additional space is reserved in the width or height for theme details.</short>
+      </element>
+
+      <element name="TCustomFrame.CreateParams">
+        <short>
+          Updates the style flags in the window creation parameters for the control.
+        </short>
+        <descr>
+          <p>
+            <var>CreateParams</var> is an overridden method in <var>TCustomFrame</var>, and calls the inherited method on entry. It extends the inherited method by updating style flags in the Params argument when both Parent and ParentWindow are unassigned (or deferred). It ensures that WS_GROUP, WS_TABSTOP, and WS_CHILD flags are removed from the style flags when the frame instance is not parented.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.2.0.
+        </version>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CreateParams"/>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.CreateParams.Params">
+        <short>Creation parameters updated in the method.</short>
+      </element>
 
       <element name="TCustomFrame.UpdateOpaque">
         <short>Updates control style flags to reflect the transparency for the frame.</short>
