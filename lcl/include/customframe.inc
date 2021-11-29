@@ -197,6 +197,13 @@ begin
     WithThemeSpace);
 end;
 
+procedure TCustomFrame.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+  if (Parent = nil) and (ParentWindow = 0) then
+    Params.Style := Params.Style and not Cardinal(WS_GROUP or WS_TABSTOP or WS_CHILD);
+end;
+
 procedure TCustomFrame.UpdateOpaque;
 begin
   if ParentBackground then
