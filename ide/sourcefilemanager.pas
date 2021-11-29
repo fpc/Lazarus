@@ -6581,36 +6581,6 @@ var
     Result:=true;
   end;
 
-  function TryRegisteredClasses(aClassName: string;
-    out FoundComponentClass: TComponentClass;
-    out TheModalResult: TModalResult): boolean;
-  var
-    RegComp: TRegisteredComponent;
-  begin
-    {$IFDEF VerboseLFMSearch}
-    debugln(['  TryRegisteredClasses aClassName="',aClassName,'"']);
-    {$ENDIF}
-    Result:=false;
-    TheModalResult:=mrCancel;
-    FoundComponentClass:=nil;
-    if AnUnitInfo.UnitResourceFileformat<>nil then
-      FoundComponentClass:=AnUnitInfo.UnitResourceFileformat.FindComponentClass(aClassName);
-    if FoundComponentClass=nil then
-    begin
-      RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
-      if (RegComp<>nil) and
-      not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
-        FoundComponentClass:=RegComp.ComponentClass;
-    end;
-    if FoundComponentClass=nil then
-      FoundComponentClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
-    if FoundComponentClass<>nil then begin
-      DebugLn(['SearchComponentClass.TryRegisteredClasses found: ',FoundComponentClass.ClassName]);
-      TheModalResult:=mrOk;
-      Result:=true;
-    end;
-  end;
-
   function TryLFM(const UnitFilename, AClassName: string;
     out TheModalResult: TModalResult): boolean;
   var
@@ -6811,13 +6781,11 @@ var
       if TryUnitComponent(NewTool.MainFilename,TheModalResult) then
         exit(true);
 
-      // try lfm
-      if TryLFM(NewTool.MainFilename,AComponentClassName,TheModalResult) then
+      // try lfm (dead, can be removed)
+      if TryLFM(NewTool.MainFilename,AComponentClassName,TheModalResult) then begin
+        Assert(False, 'TryFindDeclaration: TryLFM returned True!');
         exit(true);
-
-      // search ancestor in registered classes
-      if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
-        exit(true);
+      end;
 
       {$IFDEF VerboseLFMSearch}
       debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' Ancestor="',AncestorClassName,'", but no lfm and no registered class found']);
@@ -6864,8 +6832,6 @@ var
       exit;
     end;
     StoreComponentClassDeclaration(UnitFilename);
-    if TryRegisteredClasses(AncestorClassName,AncestorClass,TheModalResult) then
-      exit(true);
   end;
 
 var
@@ -6897,9 +6863,6 @@ begin
     if TryUnitComponent(AnUnitInfo.Filename,Result) then exit;
   end;
 
-  // then try registered global classes
-  if TryRegisteredClasses(AComponentClassName,AComponentClass,Result) then exit;
-
   // search in used units
   UsedUnitFilenames:=nil;
   try
@@ -6917,7 +6880,8 @@ begin
     if (UsedUnitFilenames<>nil) then begin
       // search every used unit for .lfm file. The list is backwards, last unit first.
       for i:=0 to UsedUnitFilenames.Count-1 do begin
-        if TryLFM(UsedUnitFilenames[i],AComponentClassName,Result) then exit;
+        if TryLFM(UsedUnitFilenames[i],AComponentClassName,Result) then
+          exit;
       end;
       // search class via codetools
       if TryFindDeclaration(Result) then exit;
@@ -6970,7 +6934,7 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     not found, user wants to skip this step and continue
 }
 
-  function TryLFM(LFMFilename: string): TModalResult;
+  function TryDepLFM(LFMFilename: string): TModalResult;
   var
     UnitFilename: String;
     CurUnitInfo: TUnitInfo;
@@ -6983,7 +6947,7 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
     Result:=LoadCodeBuffer(LFMCode,LFMFilename,[lbfCheckIfText],true);
     if Result<>mrOk then begin
       {$IFDEF VerboseLFMSearch}
-      debugln(['  TryLFM LoadCodeBuffer failed ',LFMFilename]);
+      debugln(['  TryDepLFM LoadCodeBuffer failed ',LFMFilename]);
       {$ENDIF}
       exit;
     end;
@@ -7015,7 +6979,7 @@ function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
       if SysUtils.CompareText(CurUnitInfo.Component.ClassName,LFMClassName)<>0
       then begin
         {$IFDEF VerboseLFMSearch}
-        debugln(['  TryLFM ERROR lfmclass=',LFMClassName,' unit.component=',DbgSName(CurUnitInfo.Component)]);
+        debugln(['  TryDepLFM ERROR lfmclass=',LFMClassName,' unit.component=',DbgSName(CurUnitInfo.Component)]);
         {$ENDIF}
         IDEMessageDialog('Error','Unable to load "'+LFMFilename+'".'
           +' The component '+DbgSName(CurUnitInfo.Component)
@@ -7095,7 +7059,7 @@ begin
     //   componentclass does not exist, but the ancestor is a registered class
 
     if (Result=mrOk) and (AComponentClass=nil) and (LFMFilename<>'') then
-      exit(TryLFM(LFMFilename));
+      exit(TryDepLFM(LFMFilename));
 
     if MustHaveLFM and (AComponentClass=nil) then
       Result:=mrCancel;
