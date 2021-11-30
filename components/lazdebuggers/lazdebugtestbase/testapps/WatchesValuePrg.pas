@@ -13,6 +13,7 @@ program WatchesValuePrg;
 {$hints off}
 {$notes off}
 {$warnings off}
+{$inline off}
 
 uses sysutils, Classes;
 
@@ -68,7 +69,7 @@ type
 
 
 var
-  BreakDummy: PtrUInt;
+  BreakDummy, BreakDummy2: PtrUInt;
   PByteDummy: PByte;
   p: Pointer;
   pw: PWord; // ensure we have the type
@@ -349,10 +350,13 @@ type
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=cl_v_, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
   public
     function SomeMeth1(SomeValue: Integer): Boolean;
+    procedure BaseMethFoo;
   public
     (* LOCATION: field in baseclass *)
     // mbcByte: Byte;
     TEST_PREPOCESS(WatchesValuePrgIdent.inc, pre__=mbc, _OP_=:, (=;//, _O2_=:, _EQ_=, _BLOCK_=TestVar )
+  public class var
+    ClassBaseVar1: integer;
   end;
   PMyBaseClass = ^TMyBaseClass;
 
@@ -367,6 +371,9 @@ type
 
     function SomeFuncIntRes(): Integer;
     function SomeFuncIntResAdd(a: integer): Integer;
+    procedure MethFoo;
+  public class var
+    ClassVar1: integer;
   end;
   PMyClass = ^TMyClass;
 
@@ -478,6 +485,18 @@ begin end;
 
 function TMyBaseClass.SomeMeth1(SomeValue: Integer): Boolean;
 begin result := SomeValue = 0; end;
+
+procedure TMyBaseClass.BaseMethFoo;
+begin
+  BreakDummy:= 112; // TEST_BREAKPOINT=BaseMethFoo
+  BreakDummy2 := ClassBaseVar1;
+end;
+
+procedure TMyClass.MethFoo;
+begin
+  BreakDummy:= 113; // TEST_BREAKPOINT=MethFoo
+  BreakDummy2 := ClassVar1;
+end;
 
 procedure Foo(
 (* LOCATION: param *)
@@ -968,6 +987,14 @@ begin
     MyTestRec1,
     0
   );
+
+  TMyClass.ClassBaseVar1 := 118;
+  TMyClass.ClassVar1 := 119;
+
+  MyClass1.BaseMethFoo();
+  MyClass1.MethFoo();
+
+  MyClass2.BaseMethFoo();
 
 end.
 

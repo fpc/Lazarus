@@ -18,7 +18,7 @@ type
     FEvalDone: Boolean;
     procedure DoEvalDone(Sender: TObject; ASuccess: Boolean;
       ResultText: String; ResultDBGType: TDBGType);
-    procedure RunToPause(var ABrk: TDBGBreakPoint);
+    procedure RunToPause(var ABrk: TDBGBreakPoint; ADisableBreak: Boolean = True);
   published
     procedure TestWatchesScope;
     procedure TestWatchesValue;
@@ -37,11 +37,13 @@ var
   ControlTestWatchAddressOf, ControlTestWatchTypeCast, ControlTestModify,
   ControlTestExpression, ControlTestErrors: Pointer;
 
-procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint);
+procedure TTestWatches.RunToPause(var ABrk: TDBGBreakPoint;
+  ADisableBreak: Boolean);
 begin
   Debugger.RunToNextPause(dcRun);
   AssertDebuggerState(dsPause);
-  ABrk.Enabled := False;
+  if ADisableBreak then
+    ABrk.Enabled := False;
 end;
 
 procedure TTestWatches.DoEvalDone(Sender: TObject; ASuccess: Boolean;
@@ -1123,6 +1125,12 @@ for i := StartIdx to t.Count-1 do
 for i := StartIdxClassConst to t.Count-1 do
   t.Tests[i].SkipIf(ALoc in [tlClassConst]);
 
+
+
+    // Trigger a search through everything
+    t.Add('NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+
+
   end;
 
 var
@@ -1130,7 +1138,7 @@ var
   t: TWatchExpectationList;
   Src: TCommonSource;
   BrkPrg, BrkFooBegin, BrkFoo, BrkFooVar, BrkFooVarBegin,
-    BrkFooConstRef: TDBGBreakPoint;
+    BrkFooConstRef, BrkMethFoo, BrkBaseMethFoo: TDBGBreakPoint;
   c, i: Integer;
 begin
   if SkipTest then exit;
@@ -1158,6 +1166,9 @@ begin
     BrkFooVarBegin := Debugger.SetBreakPoint(Src, 'FooVarBegin');
     BrkFooVar      := Debugger.SetBreakPoint(Src, 'FooVar');
     BrkFooConstRef := Debugger.SetBreakPoint(Src, 'FooConstRef');
+    BrkMethFoo     := Debugger.SetBreakPoint(Src, 'MethFoo');  // call with TMyClass
+    BrkBaseMethFoo := Debugger.SetBreakPoint(Src, 'BaseMethFoo'); // call with TMyClass
+
     AssertDebuggerNotInErrorState;
 
     (* ************ Nested Functions ************* *)
@@ -1354,6 +1365,39 @@ if Compiler.Version < 030300 then
     RunToPause(BrkFooConstRef);
     t.Clear;
     AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkBaseMethFoo, False);
+    t.Clear;
+    t.Add('BaseMethFoo of TMyClass1 - ClassBaseVar1', 'ClassBaseVar1', weInteger(118));
+//    t.Add('BaseMethFoo of TMyClass1 - ClassVar1', 'ClassVar1', weInteger(119));
+    // Trigger a search through everything
+    t.Add('BaseMethFoo of NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+    //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkMethFoo);
+    t.Clear;
+    t.Add('MethFoo of TMyClass1 - ClassBaseVar1', 'ClassBaseVar1', weInteger(118));
+    t.Add('MethFoo of TMyClass1 - ClassVar1', 'ClassVar1', weInteger(119));
+    // Trigger a search through everything
+    t.Add('MethFoo of TMyClass1 - NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+    //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
+    t.EvaluateWatches;
+    t.CheckResults;
+
+
+    RunToPause(BrkBaseMethFoo);
+    t.Clear;
+    t.Add('BaseMethFoo of TMyBaseClass - ClassBaseVar1', 'ClassBaseVar1', weInteger(118));
+//    t.Add('BaseMethFoo of TMyBaseClass - ClassVar1', 'ClassVar1', weInteger(119));
+    // Trigger a search through everything
+    t.Add('BaseMethFoo of TMyBaseClass - NotExistingFooBar123_X', weInteger(0))^.AddFlag(ehExpectError);
+    //AddWatches(t, 'foo const ref args', 'argconstref', 001, 'B', tlParam);
     t.EvaluateWatches;
     t.CheckResults;
 

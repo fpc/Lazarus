@@ -72,6 +72,8 @@ type
     class function ClassCanHandleCompUnit(ACU: TDwarfCompilationUnit): Boolean; override;
   public
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
+    function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
+      ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateSymbolScope(AThreadId, AStackFrame: Integer; AnAddress: TDBGPtr; ASymbol: TFpSymbol;
     //  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
     //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
@@ -88,11 +90,23 @@ type
   private
     FOuterNestContext: TFpDbgSymbolScope;
     FOuterNotFound: Boolean;
+    FClassVarStaticPrefix: String;
   protected
     function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; override;
+    function FindSymbolInStructure(const AName: String;
+      const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
+      ADbgValue: TFpValue): Boolean; override;
+    procedure Init; override;
   public
     destructor Destroy; override;
+  end;
+
+  { TFpDwarfFreePascalSymbolScopeDwarf3 }
+
+  TFpDwarfFreePascalSymbolScopeDwarf3 = class(TFpDwarfFreePascalSymbolScope)
+  protected
+    procedure Init; override;
   end;
 
   {%EndRegion }
@@ -450,6 +464,13 @@ begin
   end;
 end;
 
+function TFpDwarfFreePascalSymbolClassMapDwarf3.CreateScopeForSymbol(
+  ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
+  ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
+begin
+  Result := TFpDwarfFreePascalSymbolScopeDwarf3.Create(ALocationContext, ASymbol, ADwarf);
+end;
+
 type
 
   { TFpDbgDwarfSimpleLocationContext }
@@ -613,10 +634,61 @@ begin
   Result := True; // self, global was done by outer
 end;
 
+function TFpDwarfFreePascalSymbolScope.FindSymbolInStructure(
+  const AName: String; const ANameInfo: TNameSearchInfo;
+  InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean;
+var
+  CU: TDwarfCompilationUnit;
+  CurClassName, StaticName, FoundName: String;
+  MangledNameInfo: TNameSearchInfo;
+  FoundInfoEntry: TDwarfInformationEntry;
+  IsExternal: Boolean;
+begin
+  Result := inherited FindSymbolInStructure(AName, ANameInfo, InfoEntry, ADbgValue);
+  if Result then
+    exit;
+
+  CU := InfoEntry.CompUnit;
+  if (CU <> nil) and InfoEntry.HasValidScope and
+     InfoEntry.ReadName(CurClassName) and not InfoEntry.IsArtificial
+  then begin
+    StaticName := FClassVarStaticPrefix + LowerCase(CurClassName) + '_' + UpperCase(AName);
+    MangledNameInfo := NameInfoForSearch(StaticName);
+
+    if CU.KnownNameHashes^[MangledNameInfo.NameHash and KnownNameHashesBitMask] then begin
+      if FindExportedSymbolInUnit(CU, MangledNameInfo, FoundInfoEntry, IsExternal) then begin
+        if {(IsExternal) and} (FoundInfoEntry.ReadName(FoundName)) then begin
+          if FoundName = StaticName then begin // must be case-sensitive
+            ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, FoundInfoEntry));
+            Result := True;
+          end;
+        end;
+        FoundInfoEntry.ReleaseReference;
+        if Result then
+          exit;
+      end;
+    end;
+  end;
+end;
+
+procedure TFpDwarfFreePascalSymbolScope.Init;
+begin
+  inherited Init;
+  FClassVarStaticPrefix := '_static_';
+end;
+
 destructor TFpDwarfFreePascalSymbolScope.Destroy;
 begin
   FOuterNestContext.ReleaseReference;
   inherited Destroy;
+end;
+
+{ TFpDwarfFreePascalSymbolScopeDwarf3 }
+
+procedure TFpDwarfFreePascalSymbolScopeDwarf3.Init;
+begin
+  inherited Init;
+  FClassVarStaticPrefix := '$_static_';
 end;
 
 { TFpSymbolDwarfV2FreePascalTypeStructure }
