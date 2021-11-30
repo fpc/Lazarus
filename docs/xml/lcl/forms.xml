@@ -1741,9 +1741,14 @@
           <remark>
             No actions are performed in the method when a Parent form has not been assigned for the class instance.
           </remark>
+           <p>
+             AddActionList is called from the Notification method when a TCustomActionList instance has been added to the control. This occurs when a new Parent is assigned for the frame instance.
+           </p>
         </descr>
         <seealso>
+          <link id="TCustomFrame.Notification"/>
           <link id="GetParentForm"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
         </seealso>
       </element>
       <element name="TCustomFrame.AddActionList.ActionList">
@@ -1756,9 +1761,14 @@
           <remark>
             No actions are performed in the method when a Parent form has not been assigned for the class instance.
           </remark>
+          <p>
+            RemoveActionList is called from the Notification method when the TCustomActionList instance has been added to the control. This occurs when a new Parent which contains an action list is assigned for the frame instance.
+          </p>
         </descr>
         <seealso>
+          <link id="TCustomFrame.Notification"/>
           <link id="GetParentForm"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
         </seealso>
       </element>
       <element name="TCustomFrame.RemoveActionList.ActionList">
@@ -1819,11 +1829,11 @@
       </element>
 
       <element name="TCustomFrame.Notification">
-        <short>Also handles add/remove of ActionLists.</short>
+        <short>Adds or removes an action list for the control.</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
-          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
+          <link id="#rtl.classes.TComponent.Notification">TComponent.Notification</link>
         </seealso>
       </element>
       <element name="TCustomFrame.Notification.AComponent">
@@ -1855,7 +1865,9 @@
       <element name="TCustomFrame.SetParent">
         <short>Sets the value for the Parent property.</short>
         <descr>
-          Also updates the ActionLists, and performs automatic layout adjustments when needed.
+          <p>
+            Updates the action list for child components or nested frames by calling AddActionList or RemoveActionList. Frees the Handle for the control when Parent has not already been assigned. Calls the inherited method to update the value in Parent. Performs automatic layout adjustments when the PixelsPerInch settings for the Parent and the frame instance have different value.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
@@ -1863,25 +1875,37 @@
         </seealso>
       </element>
       <element name="TCustomFrame.SetParent.AParent">
-        <short>Value assigned to the Parent property.</short>
+        <short>New value for the Parent property.</short>
       </element>
 
       <element name="TCustomFrame.SetParentBackground">
         <short>Sets the value for the ParentBackground property.</short>
-        <descr/>
+        <descr>
+          <p>
+            Ensures that Color is changed to the value in the Parent control when the property is set to True. Color is set to clDefault when the property is set to False. Calls UpdateOpaque to ensure that the csOpaque style flag is applied to the ControlStyle property as needed.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomFrame.ParentBackground"/>
         </seealso>
       </element>
       <element name="TCustomFrame.SetParentBackground.AParentBackground">
-        <short>New value for the property.</short>
+        <short>New value for the ParentBackground property.</short>
       </element>
 
       <element name="TCustomFrame.CMParentColorChanged">
         <short>Handles the CM_PARENTCOLORCHANGED message for the control.</short>
-        <descr/>
+        <descr>
+          <p>
+            CMParentColorChanged is an overridden method in TCustomFrame. It calls the inherited method on entry to update the values in Color and ParentColor. If the control has finished loading using the LCL component streaming mechanism, the UpdateOpaque method is called to update flag values in the ControlStyle property. ControlStyle is not updated if csLoading is included in the ComponentState property.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomFrame.UpdateOpaque"/>
           <link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#rtl.classes.TComponent.ComponentState"/>
         </seealso>
       </element>
       <element name="TCustomFrame.CMParentColorChanged.Message">
@@ -1905,10 +1929,29 @@
         <short>TFiler instance where property definitions are added.</short>
       </element>
 
-      <element name="TCustomFrame.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize"/>
-      <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth"/>
-      <element name="TCustomFrame.CalculatePreferredSize.PreferredHeight"/>
-      <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace"/>
+      <element name="TCustomFrame.CalculatePreferredSize">
+        <short>Gets the preferred height and width for the control used during auto-sizing.</short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomFrame</var>. It ensures that the inherited method is <b>not</b> called when the frame is an un-parented component and visible on the form designer. This allows the dimensions to be freely resized on the design surface. Values in the PreferredWidth, PreferredHeight, and WithThemeSpace arguments are not modified at design-time.
+          </p>
+          <p>
+            If the frame has an Owner (parent form) at run-time, the inherited method is called to get the values used in the LCL auto-sizing algorithms.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth">
+        <short>Preferred width for the control.</short>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.PreferredHeight">
+        <short>Preferred height for the control.</short>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace">
+        <short>True if additional space is reserved in the width or height for theme details.</short>
+      </element>
 
       <element name="TCustomFrame.UpdateOpaque">
         <short>Updates control style flags to reflect the transparency for the frame.</short>
@@ -1956,9 +1999,19 @@
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TCustomFrame.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomFrame.GetControlClassDefaultSize">
+        <short>Gets the default dimensions for a new instance of the class.</short>
+        <descr>
+          <p>
+            GetControlClassDefaultSize is an overridden method in TCustomFrame, and does not call the inherited method. The return value is a TSize instance with the width and height for the new class instance in its X and Y members. The default dimensions in TCustomFrame are 320 pixels wide (X member) by 240 pixels tall (Y member).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScrollingWinControl.GetControlClassDefaultSize"/>
+        </seealso>
+      </element>
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
-        <short/>
+        <short>TSize type with the width and height for the new class instance.</short>
       </element>
 
       <element name="TCustomFrame.ParentBackground">
@@ -1982,7 +2035,13 @@
         </seealso>
       </element>
 
-      <element name="TCustomFrameClass" link="#lcl.forms.TCustomFrame"/>
+      <element name="TCustomFrameClass">
+        <short>Class type used to create new instances of TCustomFrame.</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomFrame"/>
+        </seealso>
+      </element>
 
       <element name="TFrame">
         <short>
@@ -2009,13 +2068,25 @@
       </element>
       <element name="TFrame.FLCLVersion" link="#lcl.forms.TFrame.LCLVersion"/>
       <element name="TFrame.LCLVersionIsStored" link="#lcl.forms.TFrame.LCLVersion"/>
-      <element name="TFrame.LCLVersionIsStored.Result">
-        <short/>
+      <element name="TFrame.LCLVersionIsStored.Result"/>
+
+      <element name="TFrame.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. It sets the value for the LCLVersion property to the lcl_version constant defined in the <file>lclversion.pas</file> unit. Create calls the inherited constructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFrame.LCLVersion"/>
+          <link id="TCustomFrame.Create"/>
+          <link id="#lcl.lclversion.lcl_version"/>
+        </seealso>
       </element>
-      <element name="TFrame.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TFrame.Create.TheOwner">
         <short>Owner of the class instance.</short>
       </element>
+
       <element name="TFrame.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TFrame.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TFrame.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
@@ -2034,7 +2105,22 @@
       <element name="TFrame.DragMode" link="#lcl.controls.TControl.DragMode"/>
       <element name="TFrame.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TFrame.Font" link="#lcl.controls.TControl.Font"/>
-      <element name="TFrame.LCLVersion" link="#lcl.lclversion.lcl_version"/>
+
+      <element name="TFrame.LCLVersion">
+        <short>LCL version number for the frame instance.</short>
+        <descr>
+          <p>
+            The value in <var>LCLVersion</var> is assigned in the Create constructor using the lcl_version constant defined in the <file>lclversion.pas</file> unit. Its value is stored during LCL component streaming if a value has not been assigned to the Parent for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TForm.LCLVersion"/>
+          <link id="TForm.Create"/>
+          <link id="#lcl.controls.TControl.Parent"/>
+          <link id="#lcl.lclversion.lcl_version"/>
+        </seealso>
+      </element>
+
       <element name="TFrame.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TFrame.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
       <element name="TFrame.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -2199,9 +2285,15 @@
       </element>
 
       <element name="TFormState" link="#lcl.forms.TFormStateType">
-        <short>The set of form state flags.</short>
-        <descr/>
-        <seealso/>
+        <short>Set type used to store values from the TFormState enumeration.</short>
+        <descr>
+          <p>
+            TFormState is the type used to implement the FormState property in TCustomForm and descendent classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.FormState"/>
+        </seealso>
       </element>
 
       <element name="TModalResult">
