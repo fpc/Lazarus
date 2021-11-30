@@ -2085,7 +2085,7 @@ begin
     ctnBeginBlock,ctnWithStatement,ctnWithVariable,  ctnOnBlock,ctnOnIdentifier,ctnOnStatement:
     //ctnInitialization,ctnFinalization: //AllPascalStatements
       begin
-        if CodeToolBoss.IdentComplAutoInvokeOnType then
+        if CodeToolBoss.IdentComplIncludeKeywords then
         if not (GatherContext.Node.Desc in AllClassObjects) then
         begin
           if not (ilcfDontAllowProcedures in CurrentIdentifierList.ContextFlags) then

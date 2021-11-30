@@ -95,7 +95,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Caption = 'ICReplaceCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 16
+    TabOrder = 17
   end
   object ICAddDoCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -206,7 +206,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Caption = 'ICJumpToErrorCheckBox'
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 17
+    TabOrder = 18
   end
   object ICAutoUseSingleIdent: TCheckBox
     AnchorSideLeft.Control = Owner
@@ -232,7 +232,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Top = 327
     Width = 157
     Caption = 'ICContainsFilterCheckBox'
-    TabOrder = 18
+    TabOrder = 19
   end
   object ICAppearanceDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -259,7 +259,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Top = 409
     Width = 224
     Caption = 'ICUseIconsInCompletionBoxCheckBox'
-    TabOrder = 15
+    TabOrder = 16
   end
   object ICContentDividerBevel: TDividerBevel
     AnchorSideLeft.Control = Owner
@@ -302,9 +302,21 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Style = csDropDownList
     TabOrder = 13
   end
-  object ICIncludeCodeTemplatesCheckBox: TCheckBox
+  object ICIncludeKeywordsCheckBox: TCheckBox
     AnchorSideLeft.Control = Owner
     AnchorSideTop.Control = ICAddWordsComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 19
+    Top = 382
+    Width = 167
+    BorderSpacing.Top = 2
+    Caption = 'ICIncludeKeywordsCheckBox'
+    TabOrder = 14
+  end  
+  object ICIncludeCodeTemplatesCheckBox: TCheckBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ICIncludeKeywordsCheckBox
     AnchorSideTop.Side = asrBottom
     Left = 0
     Height = 19
@@ -312,7 +324,7 @@ object CodetoolsIndentifierCompletionOptionsFrame: TCodetoolsIndentifierCompleti
     Width = 205
     BorderSpacing.Top = 2
     Caption = 'ICIncludeCodeTemplatesCheckBox'
-    TabOrder = 14
+    TabOrder = 15
   end
   object ICAutoOnTypeUseTimer: TCheckBox
     AnchorSideLeft.Control = Owner
