@@ -2435,10 +2435,11 @@ begin
       exit;
     end;
   end;
-  FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
 
   if CurrentThread = nil then
     exit;
+
+  FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
   if (FState = esSteppingFpcSpecialHandler) and AnIsFinished and
      (ACurCommand is TDbgControllerStepThroughFpcSpecialHandler)
   then begin
