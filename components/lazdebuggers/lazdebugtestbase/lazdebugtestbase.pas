@@ -11,14 +11,8 @@ uses
   TestDbgConfig, TestDbgTestSuites, TTestDbgExecuteables, 
   TestDbgCompilerProcess, TestDbgControlForm, TestDbgControl, 
   TestOutputLogger, TTestDebuggerClasses, TTestWatchUtilities, 
-  TestCommonSources, LazarusPackageIntf;
+  TestCommonSources;
 
 implementation
 
-procedure Register;
-begin
-end;
-
-initialization
-  RegisterPackage('LazDebugTestBase', @Register);
 end.
