@@ -158,7 +158,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Dummy handle creator. On Qt we don´t need a Handle for common dialogs
+  Dummy handle creator. On Qt we don't need a Handle for common dialogs
  ------------------------------------------------------------------------------}
 class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
@@ -171,7 +171,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Dummy handle destructor. On Qt we don´t need a Handle for common dialogs
+  Dummy handle destructor. On Qt we don't need a Handle for common dialogs
  ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
