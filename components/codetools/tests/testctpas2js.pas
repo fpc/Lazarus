@@ -112,7 +112,8 @@ end;
 procedure TCustomTestPas2js.TearDown;
 begin
   FCode:=nil;
-  CodeToolBoss.DefineTree.RemoveDefineTemplate(VirtualDirDefines);
+  if VirtualDirDefines<>nil then
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(VirtualDirDefines);
 
   inherited TearDown;
 end;
