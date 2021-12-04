@@ -28,8 +28,8 @@ type
     AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
-  TOnLibraryLoadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
-  TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
+  TOnLibraryLoadedEvent = procedure(var continue: boolean; ALibraryArray: TDbgLibraryArr) of object;
+  TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALibraryArray: TDbgLibraryArr) of object;
   TOnProcessLoopCycleEvent = procedure(var AFinishLoopAndSendEvents: boolean; var AnEventType: TFPDEvent;
     var ACurCommand: TDbgControllerCmd; var AnIsFinished: boolean) of object;
 
@@ -1871,15 +1871,14 @@ begin
     deLoadLibrary:
       begin
         continue:=true;
-        if assigned(OnLibraryLoadedEvent) and Assigned(FCurrentProcess.LastLibraryLoaded) then
-          OnLibraryLoadedEvent(continue, FCurrentProcess.LastLibraryLoaded);
+        if assigned(OnLibraryLoadedEvent) and (Length(FCurrentProcess.LastLibrariesLoaded)>0) then
+          OnLibraryLoadedEvent(continue, FCurrentProcess.LastLibrariesLoaded);
       end;
     deUnloadLibrary:
       begin
         continue:=true;
-        if assigned(OnLibraryUnloadedEvent) and Assigned(FCurrentProcess.LastLibraryUnloaded) then
-          OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibraryUnloaded);
-        FCurrentProcess.LastLibraryUnloaded := nil;
+        if assigned(OnLibraryUnloadedEvent) and (Length(FCurrentProcess.LastLibrariesUnloaded)>0) then
+          OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibrariesUnloaded);
       end;
     deInternalContinue:
       begin

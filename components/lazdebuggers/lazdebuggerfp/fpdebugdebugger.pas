@@ -334,8 +334,8 @@ type
     procedure FDbgControllerProcessExitEvent(AExitCode: DWord);
     procedure FDbgControllerExceptionEvent(var continue: boolean; const ExceptionClass, ExceptionMessage: string);
     procedure FDbgControllerDebugInfoLoaded(Sender: TObject);
-    procedure FDbgControllerLibraryLoaded(var continue: boolean; ALib: TDbgLibrary);
-    procedure FDbgControllerLibraryUnloaded(var continue: boolean; ALib: TDbgLibrary);
+    procedure FDbgControllerLibraryLoaded(var continue: boolean; ALibraries: TDbgLibraryArr);
+    procedure FDbgControllerLibraryUnloaded(var continue: boolean; ALibraries: TDbgLibraryArr);
     function GetDebugInfo: TDbgInfo;
   protected
     procedure GetCurrentThreadAndStackFrame(out AThreadId, AStackFrame: Integer);
@@ -2427,10 +2427,12 @@ begin
       exit;
     end;
     deLoadLibrary: begin
-      if (CurrentProcess <> nil) and (CurrentProcess.LastLibraryLoaded <> nil) then begin
-        n := ExtractFileName(CurrentProcess.LastLibraryLoaded.Name);
+      if (CurrentProcess <> nil) and (Length(CurrentProcess.LastLibrariesLoaded) > 0) then begin
+        // On Windows there is always only one library loaded at a deLoadLibrary
+        // event, so it is safe to only check the first item of LastLibrariesLoaded
+        n := ExtractFileName(CurrentProcess.LastLibrariesLoaded[0].Name);
         if n = 'ntdll.dll' then
-          FDebugger.FExceptionStepper.DoNtDllLoaded(CurrentProcess.LastLibraryLoaded);
+          FDebugger.FExceptionStepper.DoNtDllLoaded(CurrentProcess.LastLibrariesLoaded[0]);
       end;
       exit;
     end;
@@ -2830,22 +2832,32 @@ begin
   end;
 end;
 
-procedure TFpDebugDebugger.FDbgControllerLibraryLoaded(var continue: boolean;
-  ALib: TDbgLibrary);
+procedure TFpDebugDebugger.FDbgControllerLibraryLoaded(var continue: boolean; ALibraries: TDbgLibraryArr);
 var
   n: String;
+  i: Integer;
+  ALib: TDbgLibrary;
 begin
-  n := ExtractFileName(ALib.Name);
-  DoDbgEvent(ecModule, etModuleLoad, 'Loaded: ' + n + ' (' + ALib.Name +')');
+  for i := 0 to High(ALibraries) do
+    begin
+    ALib := ALibraries[i];
+    n := ExtractFileName(ALib.Name);
+    DoDbgEvent(ecModule, etModuleLoad, 'Loaded: ' + n + ' (' + ALib.Name +')');
+    end;
 end;
 
-procedure TFpDebugDebugger.FDbgControllerLibraryUnloaded(var continue: boolean;
-  ALib: TDbgLibrary);
+procedure TFpDebugDebugger.FDbgControllerLibraryUnloaded(var continue: boolean; ALibraries: TDbgLibraryArr);
 var
   n: String;
+  i: Integer;
+  ALib: TDbgLibrary;
 begin
-  n := ExtractFileName(ALib.Name);
-  DoDbgEvent(ecModule, etModuleUnload, 'Unloaded: ' + n + ' (' + ALib.Name +')');
+  for i := 0 to High(ALibraries) do
+    begin
+    ALib := ALibraries[i];
+    n := ExtractFileName(ALib.Name);
+    DoDbgEvent(ecModule, etModuleUnload, 'Unloaded: ' + n + ' (' + ALib.Name +')');
+    end;
 end;
 
 procedure TFpDebugDebugger.GetCurrentThreadAndStackFrame(out AThreadId,

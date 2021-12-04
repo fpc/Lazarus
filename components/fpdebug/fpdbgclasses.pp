@@ -287,16 +287,23 @@ type
     function GetEnumerator: TThreadMapEnumerator;
   end;
 
+  // Simple array to pass a list of multiple libraries in a parameter. Does
+  // not own or do anything other with the libraries.
+  TDbgLibraryArr = array of TDbgLibrary;
+
   { TLibraryMap }
 
   TLibraryMap = class(TMap)
   private
-    FLastLibraryAdded: TDbgLibrary;
+    FLibrariesAdded: TDbgLibraryArr;
+    FLibrariesRemoved: TDbgLibraryArr;
   public
     procedure Add(const AId, AData);
+    function Delete(const AId): Boolean;
     function GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     function GetLib(const AName: String; out ALib: TDbgLibrary; IsFullName: Boolean = True): Boolean;
-    property LastLibraryAdded: TDbgLibrary read FLastLibraryAdded;
+    procedure ClearAddedAndRemovedLibraries;
+    property LibrariesAdded: TDbgLibraryArr read FLibrariesAdded;
   end;
 
   TFpInternalBreakpointArray = array of TFpInternalBreakpoint;
@@ -556,7 +563,8 @@ type
     FWatchPointData: TFpWatchPointData;
     FProcessConfig: TDbgProcessConfig;
     function GetDisassembler: TDbgAsmDecoder;
-    function GetLastLibraryLoaded: TDbgLibrary;
+    function GetLastLibrariesLoaded: TDbgLibraryArr;
+    function GetLastLibrariesUnloaded: TDbgLibraryArr;
     function GetPauseRequested: boolean;
     procedure SetPauseRequested(AValue: boolean);
     procedure ThreadDestroyed(const AThread: TDbgThread);
@@ -631,8 +639,8 @@ type
 
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
-    property  LastLibraryLoaded: TDbgLibrary read GetLastLibraryLoaded;
-    property  LastLibraryUnloaded: TDbgLibrary read FLastLibraryUnloaded write SetLastLibraryUnloadedNil;
+    property  LastLibrariesLoaded: TDbgLibraryArr read GetLastLibrariesLoaded;
+    property  LastLibrariesUnloaded: TDbgLibraryArr read GetLastLibrariesUnloaded;
     function  GetThread(const AID: Integer; out AThread: TDbgThread): Boolean;
     procedure RemoveBreak(const ABreakPoint: TFpDbgBreakpoint);
     procedure DoBeforeBreakLocationMapChange;
@@ -897,7 +905,16 @@ end;
 procedure TLibraryMap.Add(const AId, AData);
 begin
   inherited Add(AId, AData);
-  FLastLibraryAdded := TDbgLibrary(AData);
+  FLibrariesAdded := Concat(FLibrariesAdded, [TDbgLibrary(AData)]);
+end;
+
+function TLibraryMap.Delete(const AId): Boolean;
+var
+  ALib: TDbgLibrary;
+begin
+  if GetData(AId, ALib) then
+    FLibrariesRemoved := Concat(FLibrariesRemoved, [TDbgLibrary(ALib)]);
+  Result := inherited Delete(AId);
 end;
 
 function TLibraryMap.GetLib(const AHandle: THandle; out ALib: TDbgLibrary
@@ -947,6 +964,12 @@ begin
     Iterator.Next;
   end;
   Iterator.Free;
+end;
+
+procedure TLibraryMap.ClearAddedAndRemovedLibraries;
+begin
+  FLibrariesAdded := [];
+  FLibrariesRemoved := [];
 end;
 
 { TBreakLocationEntry }
@@ -2226,16 +2249,21 @@ begin
   Result := False;
 end;
 
-function TDbgProcess.GetLastLibraryLoaded: TDbgLibrary;
-begin
-  Result := FLibMap.LastLibraryAdded;
-end;
-
 function TDbgProcess.GetDisassembler: TDbgAsmDecoder;
 begin
   if FDisassembler = nil then
     FDisassembler := OSDbgClasses.DbgDisassemblerClass.Create(Self);
   Result := FDisassembler;
+end;
+
+function TDbgProcess.GetLastLibrariesLoaded: TDbgLibraryArr;
+begin
+  Result := FLibMap.FLibrariesAdded;
+end;
+
+function TDbgProcess.GetLastLibrariesUnloaded: TDbgLibraryArr;
+begin
+  Result := FLibMap.FLibrariesRemoved;
 end;
 
 function TDbgProcess.GetAndClearPauseRequested: Boolean;
