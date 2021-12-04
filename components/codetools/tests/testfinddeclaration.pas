@@ -86,6 +86,7 @@ type
     procedure TestFindDeclaration_With;
     procedure TestFindDeclaration_ClassOf;
     procedure TestFindDeclaration_NestedClasses;
+    procedure TestFindDeclaration_NestedAliasClass;
     procedure TestFindDeclaration_ClassHelper;
     procedure TestFindDeclaration_TypeHelper;
     procedure TestFindDeclaration_ObjCClass;
@@ -584,6 +585,11 @@ end;
 procedure TTestFindDeclaration.TestFindDeclaration_NestedClasses;
 begin
   FindDeclarations('moduletests/fdt_nestedclasses.pas');
+end;
+
+procedure TTestFindDeclaration.TestFindDeclaration_NestedAliasClass;
+begin
+  FindDeclarations('moduletests/fdt_nestedaliasclass.pas');
 end;
 
 procedure TTestFindDeclaration.TestFindDeclaration_ClassHelper;
