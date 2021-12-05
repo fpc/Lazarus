@@ -3301,7 +3301,7 @@ begin
       &continue := False;
       if FDbgController.CurrentProcess.DbgInfo.HasInfo then begin
         addr:=nil;
-        if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(FStartuRunToFile, FStartuRunToLine, addr)
+        if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(FStartuRunToFile, FStartuRunToLine, addr, fsNext)
         then begin
           &continue := true;
           FDbgController.InitializeCommand(TDbgControllerRunToCmd.Create(FDbgController, addr));
@@ -3430,7 +3430,7 @@ begin
         if FDbgController.CurrentProcess.DbgInfo.HasInfo then
           begin
           addr:=nil;
-          if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger, addr)
+          if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger, addr{, fsNext})
           then begin
             result := true;
             FDbgController.InitializeCommand(TDbgControllerStepToCmd.Create(FDbgController, AnsiString(AParams[0].VAnsiString), AParams[1].VInteger));
@@ -3444,7 +3444,7 @@ begin
         if FDbgController.CurrentProcess.DbgInfo.HasInfo then
           begin
           addr:=nil;
-          if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger, addr)
+          if FDbgController.CurrentProcess.DbgInfo.GetLineAddresses(AnsiString(AParams[0].VAnsiString), AParams[1].VInteger, addr, fsNext)
           then begin
             result := true;
             FDbgController.InitializeCommand(TDbgControllerRunToCmd.Create(FDbgController, addr));
