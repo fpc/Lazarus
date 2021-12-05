@@ -961,6 +961,8 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetValueObject: TFpValue; override;
     function GetValueAddress(AValueObj: TFpValueDwarf; out
       AnAddress: TFpDbgMemLocation): Boolean; override;
+
+    property ProcAddress: TDBGPtr read FAddress;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
@@ -968,6 +970,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
+
+    function ResolveInternalFinallySymbol(Process: Pointer): TFpSymbol; virtual; // so it can be overriden by the fpc classes
+
     // Contineous (sub-)part of the line
     property LineStartAddress: TDBGPtr read GetLineStartAddress;
     property LineEndAddress: TDBGPtr read GetLineEndAddress;
@@ -6036,6 +6041,12 @@ begin
     end;
   end;
   InfoEntry.ReleaseReference;
+end;
+
+function TFpSymbolDwarfDataProc.ResolveInternalFinallySymbol(Process: Pointer
+  ): TFpSymbol;
+begin
+  Result := Self;
 end;
 
 { TFpSymbolDwarfTypeProc }

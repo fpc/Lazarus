@@ -1201,6 +1201,11 @@ begin
       FSymbol := FThread.Process.FindProcSymbol(FAnAddress - 1) // -1 => inside the call instruction
     else
       FSymbol := FThread.Process.FindProcSymbol(FAnAddress);
+
+    if FSymbol is TFpSymbolDwarfDataProc then
+      FSymbol := TFpSymbolDwarfDataProc(FSymbol).ResolveInternalFinallySymbol(FThread.Process);
+
+
     FIsSymbolResolved := FSymbol <> nil
   end;
   result := FSymbol;

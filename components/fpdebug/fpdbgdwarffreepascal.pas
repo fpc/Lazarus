@@ -8,7 +8,7 @@ interface
 uses
   Classes, SysUtils, Types, math,
   FpDbgDwarfDataClasses, FpDbgDwarf, FpDbgInfo,
-  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools,
+  FpDbgUtil, FpDbgDwarfConst, FpErrorMessages, FpdMemoryTools, FpDbgClasses,
   DbgIntfBaseTypes,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazStringUtils;
 
@@ -36,8 +36,9 @@ type
     function GetDwarfSymbolClass(ATag: Cardinal): TDbgDwarfSymbolBaseClass; override;
     function CreateScopeForSymbol(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
       ADwarf: TFpDwarfInfo): TFpDbgSymbolScope; override;
-    //class function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
-    //  AInfo: PDwarfAddressInfo; AAddress: TDbgPtr): TDbgDwarfSymbolBase; override;
+    function CreateProcSymbol(ACompilationUnit: TDwarfCompilationUnit;
+      AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo
+      ): TDbgDwarfSymbolBase; override;
 
     function GetInstanceClassNameFromPVmt(APVmt: TDbgPtr;
       AContext: TFpDbgLocationContext; ASizeOfAddr: Integer;
@@ -244,6 +245,12 @@ type
     function GetAsWideString: WideString; override;
   end;
 
+  { TFpSymbolDwarfFreePascalDataProc }
+
+  TFpSymbolDwarfFreePascalDataProc = class(TFpSymbolDwarfDataProc)
+  public
+    function ResolveInternalFinallySymbol(Process: Pointer): TFpSymbol; override;
+  end;
   {%EndRegion }
 
 implementation
@@ -367,6 +374,7 @@ begin
     DW_TAG_structure_type,
     DW_TAG_class_type:       Result := TFpSymbolDwarfFreePascalTypeStructure;
     DW_TAG_array_type:       Result := TFpSymbolDwarfFreePascalSymbolTypeArray;
+    DW_TAG_subprogram:       Result := TFpSymbolDwarfFreePascalDataProc;
     else                     Result := inherited GetDwarfSymbolClass(ATag);
   end;
 end;
@@ -376,6 +384,13 @@ function TFpDwarfFreePascalSymbolClassMap.CreateScopeForSymbol(
   ADwarf: TFpDwarfInfo): TFpDbgSymbolScope;
 begin
   Result := TFpDwarfFreePascalSymbolScope.Create(ALocationContext, ASymbol, ADwarf);
+end;
+
+function TFpDwarfFreePascalSymbolClassMap.CreateProcSymbol(
+  ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo;
+  AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo): TDbgDwarfSymbolBase;
+begin
+  Result := TFpSymbolDwarfFreePascalDataProc.Create(ACompilationUnit, AInfo, AAddress, ADbgInfo);
 end;
 
 function TFpDwarfFreePascalSymbolClassMap.GetInstanceClassNameFromPVmt(
@@ -1511,6 +1526,102 @@ begin
     if Context.ReadMemory(Addr, SizeVal(2), @Codepage) then
       Result := CodePageToCodePageName(Codepage) <> '';
   end;
+end;
+
+{ TFpSymbolDwarfFreePascalDataProc }
+
+function TFpSymbolDwarfFreePascalDataProc.ResolveInternalFinallySymbol(
+  Process: Pointer): TFpSymbol;
+{$IfDef WINDOWS}
+var
+  StartPC, EndPC: TDBGPtr;
+  HelpSymbol, HelpSymbol2: TFpSymbolDwarf;
+  AnAddresses: TDBGPtrArray;
+  FndLine, i: Integer;
+  IsDone: Boolean;
+{$EndIf}
+begin
+  Result := Self;
+
+  {$IfDef WINDOWS}
+  // On Windows: If in an SEH finally block, try to get the real procedure
+  // Look for the line, before the finally statement.
+  // TODO: This needs to move to a win-specific class, and ideally a FPC specific class too.
+  if ('$fin' = copy(Name,1, 4) ) then begin
+    IsDone := False;
+    if CompilationUnit.GetProcStartEnd(ProcAddress, StartPC, EndPC) and
+       (StartPC <> 0)
+    then begin
+      // TODO: use the assembler to skip the prologue
+      StartPC := StartPC + 9; // fpc puts the first 9 bytes on "end"
+
+      if StartPC = ProcAddress then begin
+        TFpSymbol(HelpSymbol) := Result;
+        HelpSymbol.AddReference;
+      end
+      else
+        TFpSymbol(HelpSymbol) := TDbgProcess(Process).FindProcSymbol(StartPC);
+
+      if not ( (HelpSymbol <> nil) and  HelpSymbol.InheritsFrom(TFpSymbolDwarf) ) then begin
+        HelpSymbol.ReleaseReference;
+        exit;
+      end;
+
+      AnAddresses := nil;
+      if HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line, AnAddresses, fsBefore, @FndLine)
+      then begin
+        if (FndLine = HelpSymbol.Line) then begin
+          if Length(AnAddresses) > 1 then begin // may be an internal finally on the begin/end line, sharing a line number
+            for i := 0 to Length(AnAddresses) - 1 do
+              if (AnAddresses[i] > StartPC) or (AnAddresses[i] < StartPC - 9) then begin
+                TFpSymbol(HelpSymbol2) := TDbgProcess(Process).FindProcSymbol(AnAddresses[i]);
+                if not HelpSymbol2.InheritsFrom(TFpSymbolDwarf) then begin
+                  HelpSymbol2.ReleaseReference;
+                  HelpSymbol2 := nil;
+                end;
+                if (HelpSymbol2 <> nil) then begin
+                  if ('$fin' = copy(HelpSymbol2.Name,1, 4) ) then begin
+                    HelpSymbol2.ReleaseReference;
+                  end
+                  else begin
+                    Result.ReleaseReference;
+                    TFpSymbol(Result) := HelpSymbol2;
+                    IsDone := True;
+                    break;
+                  end;
+                end;
+              end;
+          end;
+
+          AnAddresses := nil;
+          if not IsDone then
+            if not HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
+            then
+              AnAddresses := nil;
+        end;
+      end
+      else begin
+        AnAddresses := nil;
+        if not HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
+        then
+          AnAddresses := nil;
+      end;
+
+      if (not IsDone) and
+         (AnAddresses <> nil)
+      then begin
+        HelpSymbol.ReleaseReference;
+        TFpSymbol(HelpSymbol) := TDbgProcess(Process).FindProcSymbol(AnAddresses[0]);
+        if (HelpSymbol <> nil) and  HelpSymbol.InheritsFrom(TFpSymbolDwarf) then begin
+          Result.ReleaseReference;
+          Result := HelpSymbol;
+          HelpSymbol := nil;
+        end;
+      end;
+      HelpSymbol.ReleaseReference;
+    end;
+  end;
+  {$EndIf}
 end;
 
 initialization
