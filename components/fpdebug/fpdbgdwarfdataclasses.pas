@@ -64,6 +64,7 @@ type
 
 {%region Dwarf Header Structures }
   // compilation unit header
+  // In version 5 of the Dwarf-specification, the header has been changed.
   {$PACKRECORDS 1}
   PDwarfCUHeader32 = ^TDwarfCUHeader32;
   TDwarfCUHeader32 = record
@@ -71,6 +72,15 @@ type
     Version: Word;
     AbbrevOffset: LongWord;
     AddressSize: Byte;
+  end;
+
+  PDwarfCUHeader32v5 = ^TDwarfCUHeader32v5;
+  TDwarfCUHeader32v5 = record
+    Length: LongWord;
+    Version: Word;
+    unit_type: Byte;
+    AddressSize: Byte;
+    AbbrevOffset: LongWord;
   end;
 
   PDwarfCUHeader64 = ^TDwarfCUHeader64;
@@ -81,7 +91,17 @@ type
     AbbrevOffset: QWord;
     AddressSize: Byte;
   end;
-  
+
+  PDwarfCUHeader64v5 = ^TDwarfCUHeader64v5;
+  TDwarfCUHeader64v5 = record
+    Signature: LongWord;
+    Length: QWord;
+    Version: Word;
+    unit_type: Byte;
+    AddressSize: Byte;
+    AbbrevOffset: QWord;
+  end;
+
   // Line number program header
   PDwarfLNPInfoHeader = ^TDwarfLNPInfoHeader;
   TDwarfLNPInfoHeader = record
@@ -3762,11 +3782,15 @@ var
   p, pe: Pointer;
   CU32: PDwarfCUHeader32 absolute p;
   CU64: PDwarfCUHeader64 absolute p;
+  CU32v5: PDwarfCUHeader32v5 absolute p;
+  CU64v5: PDwarfCUHeader64v5 absolute p;
   CU: TDwarfCompilationUnit;
   CUClass: TDwarfCompilationUnitClass;
   inf: TDwarfSectionInfo;
   i: integer;
   DataOffs, DataLen: QWord;
+  AbbrevOffset: QWord;
+  AddressSize: Byte;
 begin
   CUClass := GetCompilationUnitClass;
   for i := 0 to high(FFiles) do
@@ -3780,39 +3804,73 @@ begin
       then begin
         if CU64^.Version < 3 then
           DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
-        DataOffs := PtrUInt(CU64 + 1) - PtrUInt(inf.RawData);
-        DataLen := CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length);
+        if CU32^.Version<5 then begin
+          DataOffs := PtrUInt(CU64 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length);
+          AbbrevOffset := CU32v5^.AbbrevOffset;
+          AddressSize := CU32v5^.AddressSize;
+        end
+        else begin
+          DataOffs := PtrUInt(CU64v5 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU64v5^.Length - SizeOf(CU64v5^) + SizeOf(CU64v5^.Signature) + SizeOf(CU64v5^.Length);
+          AbbrevOffset := CU32v5^.AbbrevOffset;
+          AddressSize := CU32v5^.AddressSize;
+
+          if CU64v5^.unit_type <> $01 then begin
+            DebugLn(FPDBG_DWARF_WARNINGS, 'Found Dwarf-5 partial compilation unit ot offset %d, which is not supported. Compilation unit is skipped.', [DataOffs]);
+            break; // Do not process invalid data
+          end;
+        end;
+
         if DataOffs + DataLen > inf.Size then begin
           DebugLn(FPDBG_DWARF_ERRORS, 'Error: Invalid size for compilation unit at offest %d with size %d exceeds section size %d', [DataOffs, DataLen, inf.Size]);
           break; // Do not process invalid data
         end;
+
         CU := CUClass.Create(
                 Self,
                 @FFiles[i],
                 DataOffs,
                 DataLen,
                 CU64^.Version,
-                CU64^.AbbrevOffset,
-                CU64^.AddressSize,
+                AbbrevOffset,
+                AddressSize,
                 True);
         p := Pointer(@CU64^.Version) + CU64^.Length;
       end
       else begin
         if CU32^.Length = 0 then Break;
-        DataOffs := PtrUInt(CU32 + 1) - PtrUInt(inf.RawData);
-        DataLen := CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length);
+        if CU32^.Version<5 then begin
+          DataOffs := PtrUInt(CU32 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length);
+          AbbrevOffset := CU32^.AbbrevOffset;
+          AddressSize := CU32^.AddressSize;
+        end
+        else begin
+          DataOffs := PtrUInt(CU32v5 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU32v5^.Length - SizeOf(CU32v5^) + SizeOf(CU32v5^.Length);
+          AbbrevOffset := CU32v5^.AbbrevOffset;
+          AddressSize := CU32v5^.AddressSize;
+
+          if CU32v5^.unit_type <> $01 then begin
+            DebugLn(FPDBG_DWARF_WARNINGS, 'Found Dwarf-5 partial compilation unit ot offset %d, which is not supported. Compilation unit is skipped.', [DataOffs]);
+            break; // Do not process invalid data
+          end;
+        end;
+
         if DataOffs + DataLen > inf.Size then begin
           DebugLn(FPDBG_DWARF_ERRORS, 'Error: Invalid size for compilation unit at offest %d with size %d exceeds section size %d', [DataOffs, DataLen, inf.Size]);
           break; // Do not process invalid data
         end;
+
         CU := CUClass.Create(
                 Self,
                 @FFiles[i],
                 DataOffs,
                 DataLen,
                 CU32^.Version,
-                CU32^.AbbrevOffset,
-                CU32^.AddressSize,
+                AbbrevOffset,
+                AddressSize,
                 False);
         p := Pointer(@CU32^.Version) + CU32^.Length;
       end;
