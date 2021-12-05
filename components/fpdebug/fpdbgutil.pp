@@ -885,8 +885,8 @@ begin
   end;
   if IsMarkedIdle then
     InterLockedDecrement(FQueue.FIdleThreadCount);
-  FQueue.RemoveThread(Self);
   debugln(FQueue.FLogGroup, '%s!%s WorkerThread-Exit', [dbgsThread, DbgSTime]);
+  FQueue.RemoveThread(Self);
 end;
 
 { TFpThreadWorkerQueue.TFpDbgTypedFifoQueue }
