@@ -2314,7 +2314,6 @@ end;
 
 destructor TFpDebugExceptionStepping.Destroy;
 begin
-  DoDbgStopped;
   inherited Destroy;
   FAddressFrameList.Destroy;
 end;
