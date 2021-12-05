@@ -671,6 +671,7 @@ type
     function GetConsoleOutput: string; virtual;
     procedure SendConsoleInput(AString: string); virtual;
 
+    procedure ClearAddedAndRemovedLibraries;
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
     function GetThreadArray: TFPDThreadArray;
     procedure ThreadsBeforeContinue;
@@ -967,7 +968,11 @@ begin
 end;
 
 procedure TLibraryMap.ClearAddedAndRemovedLibraries;
+var
+  lib: TDbgLibrary;
 begin
+  for lib in FLibrariesRemoved do
+    lib.Free;
   FLibrariesAdded := [];
   FLibrariesRemoved := [];
 end;
@@ -1839,6 +1844,7 @@ begin
   //FreeItemsInMap(FBreakMap);
   FreeItemsInMap(FThreadMap);
   FreeItemsInMap(FLibMap);
+  FLibMap.ClearAddedAndRemovedLibraries;
 
   FreeAndNil(FWatchPointData);
   FreeAndNil(FBreakMap);
@@ -2089,6 +2095,12 @@ end;
 procedure TDbgProcess.SendConsoleInput(AString: string);
 begin
   // Do nothing
+end;
+
+procedure TDbgProcess.ClearAddedAndRemovedLibraries;
+begin
+  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocotion');{$ENDIF}
+  FLibMap.ClearAddedAndRemovedLibraries;
 end;
 
 function TDbgProcess.AddThread(AThreadIdentifier: THandle): TDbgThread;

@@ -1391,7 +1391,6 @@ var
 begin
   Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), AInfo);
   ID := TDbgPtr(AInfo.lpBaseOfDll);
-  FLibMap.ClearAddedAndRemovedLibraries;
   FLibMap.Add(ID, Result);
   if (Result.DbgInfo.HasInfo) or (Result.SymbolTableInfo.HasInfo)
   then FSymInstances.Add(Result);
@@ -1406,7 +1405,6 @@ begin
   ID := TDbgPtr(AInfo.lpBaseOfDll);
   if not FLibMap.GetData(ID, Lib) then Exit;
   FSymInstances.Remove(Lib);
-  FLibMap.ClearAddedAndRemovedLibraries;
   FLibMap.Delete(ID);
 end;
 
