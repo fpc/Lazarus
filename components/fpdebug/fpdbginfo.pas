@@ -580,6 +580,7 @@ type
   end;
 
   { TDbgInfo }
+  TGetLineAddrFindSibling = (fsNone, fsBefore, fsNext);
 
   TDbgInfo = class(TObject)
   private
@@ -602,7 +603,8 @@ type
     function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; virtual;
 
     property HasInfo: Boolean read FHasInfo;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
     property MemManager: TFpDbgMemManager read FMemManager;
@@ -1758,7 +1760,8 @@ begin
 end;
 
 function TDbgInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
-  var AResultList: TDBGPtrArray): Boolean;
+  var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling;
+  AFoundLine: PInteger): Boolean;
 begin
   Result := False;
 end;

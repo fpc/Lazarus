@@ -486,7 +486,8 @@ type
     procedure Init;
     procedure SetAddressForLine(ALine: Cardinal; AnAddress: TDBGPtr); inline;
     function  GetAddressesForLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
-      NoData: Boolean = False): Boolean; inline;
+      NoData: Boolean = False; AFindSibling: TGetLineAddrFindSibling = fsNone;
+      AFoundLine: PInteger = nil): Boolean; inline;
       // NoData: only return True/False, but nothing in AResultList
     procedure Compress;
   end;
@@ -698,7 +699,8 @@ type
     procedure WaitForComputeHashes; inline;
     function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): boolean;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): boolean;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
@@ -761,7 +763,8 @@ type
     function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
 
     //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; override;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
     function PointerFromRVA(ARVA: QWord): Pointer;
@@ -3471,37 +3474,89 @@ begin
 end;
 
 function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal;
-  var AResultList: TDBGPtrArray; NoData: Boolean): Boolean;
+  var AResultList: TDBGPtrArray; NoData: Boolean;
+  AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger): Boolean;
 var
   idx, offset: TDBGPtr;
   LineOffsets: Array of Byte;
   Addresses: Array of TDBGPtr;
   o: Byte;
-  i, j, k, l: Integer;
+  i, j, k, l, CurOffs: Integer;
 begin
   Result := False;
+  if AFoundLine <> nil then
+    AFoundLine^ := ALine;
   idx := ALine div 256;
   offset := ALine mod 256;
-  if idx >= Length(FLineIndexList) then
-    exit;
-
-  LineOffsets := FLineIndexList[idx].LineOffsets;
-  Addresses := FLineIndexList[idx].Addresses;
-  if Addresses = nil then
-    exit;
-
-  l := Length(LineOffsets);
-  i := 0;
-  while (i < l) do begin
-    o := LineOffsets[i];
-    if o > offset then exit;
-    offset := offset - o;
-    if offset = 0 then break;
-    inc(i);
+  if idx >= Length(FLineIndexList) then begin
+    if AFindSibling  = fsBefore then begin
+      idx := Length(FLineIndexList);
+      offset := 255;
+    end
+    else
+      exit;
   end;
 
-  If (offset > 0) then
-    exit;
+  repeat
+    LineOffsets := FLineIndexList[idx].LineOffsets;
+    Addresses := FLineIndexList[idx].Addresses;
+    if Addresses = nil then
+      case AFindSibling of
+        fsNone:
+            exit;
+        fsBefore: begin
+            if idx = 0 then
+              exit;
+            dec(idx);
+            offset := 255;
+            Continue;
+          end;
+        fsNext: begin
+            inc(idx);
+            if idx >= Length(FLineIndexList) then
+              exit;
+            offset := 0;
+            Continue;
+          end;
+      end;
+
+    l := Length(LineOffsets);
+    i := 0;
+    CurOffs := 0;
+    while (i < l) do begin
+      o := LineOffsets[i];
+      CurOffs := CurOffs + o;
+      if o > offset then begin
+        case AFindSibling of
+          fsNone:
+              exit;
+          fsBefore: begin
+              if i > 0 then begin
+                dec(i);
+                offset := 0;  // found line before
+              end;
+            end;
+          fsNext: begin
+              offset := 0;  // found line after/next
+            end;
+        end;
+        break;
+      end;
+      offset := offset - o;
+      if offset = 0 then
+        break;
+      inc(i);
+    end;
+
+    if offset = 0 then
+      break;
+    case AFindSibling of
+      fsNone: exit;
+      else    continue;
+    end;
+  until False;
+  if AFoundLine <> nil then
+    AFoundLine^ := 256 * idx + CurOffs;
 
   if NoData then begin
     Result := True;
@@ -3747,7 +3802,8 @@ begin
 end;
 
 function TFpDwarfInfo.GetLineAddresses(const AFileName: String;
-  ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
+  ALine: Cardinal; var AResultList: TDBGPtrArray;
+  AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger): Boolean;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
@@ -3757,7 +3813,7 @@ begin
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
     CU.WaitForScopeScan;
-    Result := CU.GetLineAddresses(AFileName, ALine, AResultList) or Result;
+    Result := CU.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AFoundLine) or Result;
   end;
 end;
 
@@ -4702,14 +4758,15 @@ begin
 end;
 
 function TDwarfCompilationUnit.GetLineAddresses(const AFileName: String;
-  ALine: Cardinal; var AResultList: TDBGPtrArray): boolean;
+  ALine: Cardinal; var AResultList: TDBGPtrArray;
+  AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger): boolean;
 var
   Map: PDWarfLineMap;
 begin
   Result := False;
   Map := GetLineAddressMap(AFileName);
   if Map = nil then exit;
-  Result := Map^.GetAddressesForLine(ALine, AResultList);
+  Result := Map^.GetAddressesForLine(ALine, AResultList, False, AFindSibling, AFoundLine);
 end;
 
 function TDwarfCompilationUnit.InitLocateAttributeList(AEntry: Pointer;
