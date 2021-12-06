@@ -30,174 +30,148 @@
         <short>
           Specifies an event handler signalled for a drag/drop event on a notebook tab.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            TNotebookTabDragDropEvent is the type used for the OnTabDragDropEx property in TExtendedNotebook. It is used to perform actions needed when a tab on a TExtendedNotebook control is moved to a new location using drag and drop.
+          </p>
+          <p>
+            An application must implement and assign an object method which uses this signature to respond to the event notification. It is signalled from the DragDrop method in TExtendedNotebook, and occurs after its OnTabDragOverEx event.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TExtendedNotebook.OnTabDragDropEx"/>
+          <link id="TExtendedNotebook.OnTabDragOverEx"/>
+          <link id="TExtendedNotebook.DragDrop"/>
+        </seealso>
       </element>
       <element name="TNotebookTabDragDropEvent.Sender">
-        <short/>
+        <short>Object for the notification.</short>
       </element>
       <element name="TNotebookTabDragDropEvent.Source">
-        <short/>
+        <short>Control where the drag operation originated.</short>
       </element>
       <element name="TNotebookTabDragDropEvent.OldIndex">
-        <short/>
+        <short>Original ordinal position for the dragged tab.</short>
       </element>
       <element name="TNotebookTabDragDropEvent.NewIndex">
-        <short/>
+        <short>New ordinal position for the dragged tab.</short>
       </element>
       <element name="TNotebookTabDragDropEvent.CopyDrag">
-        <short/>
+        <short>True if the Ctrl key is pressed during the drag and drop operation.</short>
       </element>
       <element name="TNotebookTabDragDropEvent.Done">
-        <short/>
+        <short>True if the tab can be moved to the new location.</short>
       </element>
 
       <element name="TNotebookTabDragOverEvent">
         <short>
-          Specifies an event handler signalled for a drag event over a notebook tab.
+          Specifies an event handler signalled when a dragged tab is over a notebook control.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TExtendedNotebook.OnTabDragOverEx"/>
+          <link id="TExtendedNotebook.OnTabDragOver"/>
+          <link id="TExtendedNotebook.DragOver"/>
+        </seealso>
       </element>
       <element name="TNotebookTabDragOverEvent.Sender">
-        <short/>
+        <short>Object for the notification.</short>
       </element>
       <element name="TNotebookTabDragOverEvent.Source">
-        <short/>
+        <short>Control where the drag operation originated.</short>
       </element>
       <element name="TNotebookTabDragOverEvent.OldIndex">
-        <short/>
+        <short>Original ordinal position for the dragged tab.</short>
       </element>
       <element name="TNotebookTabDragOverEvent.NewIndex">
-        <short/>
+        <short>New ordinal position for the dragged tab.</short>
       </element>
       <element name="TNotebookTabDragOverEvent.CopyDrag">
-        <short/>
+        <short>True if the Ctrl key is pressed during the drag and drop operation.</short>
       </element>
       <element name="TNotebookTabDragOverEvent.Accept">
-        <short/>
+        <short>True if the notebook control can accept the dragged tab.</short>
       </element>
 
       <element name="TExtendedNotebook">
         <short>
-          Implements an notebook or page control which supports drag and drop events for its tabs.
+          Implements a notebook or page control which supports drag and drop events for its tabs.
         </short>
         <descr>
           <p>
-            TExtendedNotebook is a TPageControl descendant.
+            TExtendedNotebook is a TPageControl descendant, and extends the ancestor class with properties, methods, and events which enable drag and drop operations for the tabs on the paged notebook control. It works in conjunction with the DragManager (TDragManager) instance for the LCL interface.
+          </p>
+          <p>
+            Overridden methods are provided initiates and completes a drag and drop operation, as well as handle mouse up, down and move messages for the control. Event handlers signalled during drag and drop are also provided. Additional properties are introduced to indicate how drop / drop operations are handled by the control and to identify the tab affected by the operation.
+          </p>
+          <p>
+            TExtendedNotebook is used in the implementation of TSourceWindow in the Lazarus IDE, where it provides access to the source editor for a tab, as well as its form and anchor design surfaces.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.comctrls.TPageControl">TPageControl</link>
+          <link id="#lcl.controls.TDragManager">TDragManager</link>
+          <link id="#lcl.controls.DragManager">DragManager</link>
+        </seealso>
       </element>
 
-      <!-- private members and methods -->
-      <element name="TExtendedNotebook.FDraggingTabIndex">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FOnTabDragDrop">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FOnTabDragOver">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FOnTabDragOverEx">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FOnTabDragDropEx">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FOnTabEndDrag">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FOnTabStartDrag">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FTabDragMode">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FTabDragAcceptMode">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FTabDragged">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FDragOverIndex">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FDragToRightSide">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FDragOverTabRect">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FDragNextToTabRect">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FMouseWaitForDrag">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FMouseDownIndex">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FMouseDownX">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FMouseDownY">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FTriggerDragX">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.FTriggerDragY">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.InitDrag">
-        <short/>
-      </element>
+      <!-- private  -->
+      <element name="TExtendedNotebook.FDraggingTabIndex"/>
+      <element name="TExtendedNotebook.FOnTabDragDrop"/>
+      <element name="TExtendedNotebook.FOnTabDragOver"/>
+      <element name="TExtendedNotebook.FOnTabDragOverEx"/>
+      <element name="TExtendedNotebook.FOnTabDragDropEx"/>
+      <element name="TExtendedNotebook.FOnTabEndDrag"/>
+      <element name="TExtendedNotebook.FOnTabStartDrag"/>
+      <element name="TExtendedNotebook.FTabDragMode"/>
+      <element name="TExtendedNotebook.FTabDragAcceptMode"/>
+      <element name="TExtendedNotebook.FTabDragged"/>
+      <element name="TExtendedNotebook.FDragOverIndex"/>
+      <element name="TExtendedNotebook.FDragToRightSide"/>
+      <element name="TExtendedNotebook.FDragOverTabRect"/>
+      <element name="TExtendedNotebook.FDragNextToTabRect"/>
+      <element name="TExtendedNotebook.FMouseWaitForDrag"/>
+      <element name="TExtendedNotebook.FMouseDownIndex"/>
+      <element name="TExtendedNotebook.FMouseDownX"/>
+      <element name="TExtendedNotebook.FMouseDownY"/>
+      <element name="TExtendedNotebook.FTriggerDragX"/>
+      <element name="TExtendedNotebook.FTriggerDragY"/>
 
-      <element name="TExtendedNotebook.InvalidateRect">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.InvalidateRect.ARect">
-        <short/>
-      </element>
+      <element name="TExtendedNotebook.InitDrag"/>
 
-      <element name="TExtendedNotebook.TabIndexForDrag">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabIndexForDrag.Result">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabIndexForDrag.x">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabIndexForDrag.y">
-        <short/>
-      </element>
+      <element name="TExtendedNotebook.InvalidateRect"/>
+      <element name="TExtendedNotebook.InvalidateRect.ARect"/>
 
-      <element name="TExtendedNotebook.TabRectEx">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabRectEx.Result">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabRectEx.AIndex">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabRectEx.X">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabRectEx.Y">
-        <short/>
-      </element>
-      <element name="TExtendedNotebook.TabRectEx.IsRightHalf">
-        <short/>
-      </element>
+      <element name="TExtendedNotebook.TabIndexForDrag"/>
+      <element name="TExtendedNotebook.TabIndexForDrag.Result"/>
+      <element name="TExtendedNotebook.TabIndexForDrag.x"/>
+      <element name="TExtendedNotebook.TabIndexForDrag.y"/>
+
+      <element name="TExtendedNotebook.TabRectEx"/>
+      <element name="TExtendedNotebook.TabRectEx.Result"/>
+      <element name="TExtendedNotebook.TabRectEx.AIndex"/>
+      <element name="TExtendedNotebook.TabRectEx.X"/>
+      <element name="TExtendedNotebook.TabRectEx.Y"/>
+      <element name="TExtendedNotebook.TabRectEx.IsRightHalf"/>
 
       <element name="TExtendedNotebook.MouseDown">
-        <short>Handles mouse down events for the control.</short>
-        <descr/>
-        <seealso/>
+        <short>Handles mouse down messages for the control.</short>
+        <descr>
+          <p>
+            MouseDown is an overridden method in TExtendedNotebook. It initializes members used to track drag and drop operations in the class instance, and sets the DragCursor for the control. It calls the inherited MouseDown method to handle an OnEditingDone event for the ActiveControl on the parent form. It updates DragManager for the mouse button in the notification, and signals the OnMouseDown event handler (when assigned). When DragMode is set to dmAutomatic, a left mouse button event causes the value in MouseCapture to be set to True.
+          </p>
+          <p>
+            MouseDown is called from methods which process LM_LBUTTONDOWN, LM_RBUTTONDOWN, LM_MBUTTONDOWN, and LM_XBUTTONDOWN window messages for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+          <link id="#lcl.controls.TControl.MouseDown">TControl.MouseDown</link>
+          <link id="#lcl.controls.TControl.WMLButtonDown">TControl.WMLButtonDown</link>
+          <link id="#lcl.controls.TControl.WMRButtonDown">TControl.WMRButtonDown</link>
+          <link id="#lcl.controls.TControl.WMMButtonDown">TControl.WMMButtonDown</link>
+          <link id="#lcl.controls.TControl.WMXButtonDown">TControl.WMXButtonDown</link>
+        </seealso>
       </element>
       <element name="TExtendedNotebook.MouseDown.Button">
         <short>Mouse button for the event.</short>
@@ -307,7 +281,7 @@
 
       <element name="TExtendedNotebook.DragOver">
         <short>
-          Performs actions needed when a drag operation is over a page or tab on the control.
+          Performs actions needed when a drag operation is over a tab on the control.
         </short>
         <descr/>
         <seealso/>
@@ -337,7 +311,10 @@
       <element name="TExtendedNotebook.PaintWindow">
         <short>Paints the window for the control to the specified device context.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.PaintWindow">TWinControl.PaintWindow</link>
+          <link id="#lcl.comctrls.TPageControl.TabPosition">TPageControl.TabPosition</link>
+        </seealso>
       </element>
       <element name="TExtendedNotebook.PaintWindow.DC">
         <short>Device context where the window is drawn.</short>
@@ -350,7 +327,10 @@
             <var>Create</var> is the overridden constructor for the class instance. It ensures that internal members used in drag and drop operations are initialized for the class instance.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TExtendedNotebook.TabDragMode"/>
+          <link id="#lcl.comctrls.TPageControl.DragCursor">TPageControl.DragCursor</link>
+        </seealso>
       </element>
       <element name="TExtendedNotebook.Create.TheOwner">
         <short>Owner of the class instance.</short>
@@ -413,10 +393,19 @@
         <short>Ordinal position for the tab affected by a drag operation.</short>
         <descr>
           <p>
-            DraggingTabIndex is a read-only Integer property.
+            DraggingTabIndex is a read-only Integer property which contains the ordinal position for the tab or page active in a drag and drop operation. Its value is assigned in methods like BeginDragTab, DoEndDrag,  and DragCanceled. The value is set to -1 when drag and drop is not active for the control.
+          </p>
+          <p>
+            Its value is used in the DragOver and DragDrop methods, and is passed as an argument to event handlers signalled in the class instance.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TExtendedNotebook.BeginDragTab"/>
+          <link id="TExtendedNotebook.DoEndDrag"/>
+          <link id="TExtendedNotebook.DragCanceled"/>
+          <link id="TExtendedNotebook.DragOver"/>
+          <link id="TExtendedNotebook.DragDrop"/>
+        </seealso>
       </element>
 
       <element name="TExtendedNotebook.OnTabDragOver">
@@ -445,7 +434,7 @@
 
       <element name="TExtendedNotebook.OnTabDragDropEx">
         <short>
-          Event handler signalled when and object is dropped onto a tab on the control while the Ctrl key is held.
+          Event handler signalled when an object is dropped onto a tab on the control while the Ctrl key is held.
         </short>
         <descr/>
         <seealso/>
@@ -453,7 +442,7 @@
 
       <element name="TExtendedNotebook.OnTabEndDrag">
         <short>
-          Event handler signalled when a drag operation is ended for the control.
+          Event handler signalled when a drag operation is ended for a tab on the control.
         </short>
         <descr/>
         <seealso/>
@@ -461,7 +450,7 @@
 
       <element name="TExtendedNotebook.OnTabStartDrag">
         <short>
-          Event handler signalled when a drag operation is started for the control.
+          Event handler signalled when a drag operation is started for a tab on the control.
         </short>
         <descr/>
         <seealso/>
@@ -469,11 +458,11 @@
 
       <element name="TExtendedNotebook.TabDragMode">
         <short>
-          Drag mode for a tab on the control.
+          Indicates how a Drag operation is started for a tab on the control.
         </short>
         <descr>
           <p>
-            The default value for the property is <var>dmManual</var>.
+            The default value for the property is <var>dmManual</var>, and indicates that the operation is started in code executed by OnTabStartDrag event handler for the control. When set to <var>dmAutomatic</var>, the drag operation is initialized in the MouseDown method when the left mouse button is clicked on a tab for the notebook control.
           </p>
         </descr>
         <seealso/>
@@ -481,11 +470,14 @@
 
       <element name="TExtendedNotebook.TabDragAcceptMode">
         <short>
-          Default accept mode for drag operation for a tab.
+          Default accept mode for a drag operation for a tab.
         </short>
         <descr>
           <p>
-            The default value for the property is <var>dmManual</var>.
+            <var>TabDragAcceptMode</var> is a <var>TDragMode</var> property which indicates how a dragged tab is accepted on the destination control. It is used in the DragDrop method to determine whether the tab is positioned automatically, or handled in code assigned to an event handler.
+          </p>
+          <p>
+            The default value for the property is <var>dmManual</var>, and indicates that the tab is relocated manually in the OnTabDragDropEx event handler for the control. When set to <var>dmAutomatic</var>, the tab is automatically relocated using the Move method in the Pages collection for the control.
           </p>
         </descr>
         <seealso/>
