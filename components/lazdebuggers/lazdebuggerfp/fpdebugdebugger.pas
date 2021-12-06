@@ -2574,7 +2574,8 @@ begin
     R8  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(8).NumValue;
     if (not CurrentProcess.ReadAddress(R8 + 160, Base)) or (Base = 0) then // RPB at finally
       exit;
-    if (FState = esIgnoredRaise) and
+
+    if ( (FState = esIgnoredRaise) or (ACurCommand is TDbgControllerLineStepBaseCmd) ) and
        not CheckCommandFinishesInFrame(Base)
     then
       exit;
