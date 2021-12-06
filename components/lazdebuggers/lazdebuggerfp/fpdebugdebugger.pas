@@ -2404,7 +2404,7 @@ var
   o, i: Integer;
   EFlags, Cnt: Cardinal;
   Frames: TFrameList;
-  FinallyData: Array of array [0..3] of DWORD;
+  FinallyData: Array of array [0..3] of DWORD; //TScopeRec
   n: String;
 begin
   case AnEventType of
@@ -2537,6 +2537,15 @@ begin
 
     (* TODO: Look at using DW_TAG_try_block https://bugs.freepascal.org/view.php?id=34881 *)
 
+    (* Get parm in RCX:
+       EXCEPTION_RECORD = record
+          ExceptionCode : DWORD;
+          ExceptionFlags : DWORD;
+          ExceptionRecord : ^_EXCEPTION_RECORD;
+          ExceptionAddress : PVOID;
+          NumberParameters : DWORD;
+          ExceptionInformation : array[0..(EXCEPTION_MAXIMUM_PARAMETERS)-1] of ULONG_PTR;
+       end;     *)
     {$PUSH}{$Q-}{$R-}
     Rcx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue; // rec: TExceptionRecord
     {$PUSH}{$Q-}{$R-}
@@ -2546,6 +2555,7 @@ begin
       exit;
     {$POP}
 
+    (* Get FrameBasePointe (RPB) for finally block (passed in R8) *)
     R8  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(8).NumValue;
     if (not CurrentProcess.ReadAddress(R8 + 160, Base)) or (Base = 0) then // RPB at finally
       exit;
@@ -2554,10 +2564,20 @@ begin
     then
       exit;
 
+    // R9 = dispatch: TDispatcherContext
     R9  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(9).NumValue;
     //dispatch.HandlerData
     if (not CurrentProcess.ReadAddress(R9 + 56, HData)) or (HData = 0) then
       exit;
+      (* HandlerData = MaxScope: DWord, array of ^TScopeRec
+          TScopeRec=record
+            Typ: DWord;        { SCOPE_FINALLY: finally code in RvaHandler
+                                 SCOPE_CATCHALL: unwinds to RvaEnd, RvaHandler is the end of except block
+                                 SCOPE_IMPLICIT: finally code in RvaHandler, unwinds to RvaEnd
+                                 otherwise: except with 'on' stmts, value is RVA of filter data }
+            RvaStart: DWord;
+            RvaEnd: DWord;
+            RvaHandler: DWord;        *)
     if (not CurrentProcess.ReadData(HData, 4, Cnt)) or (Cnt = 0) or (Cnt > MaxFinallyHandlerCnt) then
       exit;
 
