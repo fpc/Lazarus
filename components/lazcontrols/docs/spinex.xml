@@ -208,7 +208,6 @@
         <seealso>
           <link id="TSpinEditExBase.MinValue"/>
           <link id="TSpinEditExBase.MaxValue"/>
-          <link id="TSpinEditExBase.IsOutOfLimits"/>
         </seealso>
       </element>
       <element name="TSpinEditExBase.IsLimited.Result">
@@ -675,8 +674,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.groupededitTCustomAbstractGroupedEdit.Loaded"/>
-          <link id="#lcl.groupededitTCustomAbstractGroupedEdit.UpdateSpacing"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Loaded"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.UpdateSpacing"/>
         </seealso>
       </element>
 
@@ -717,7 +716,7 @@
         </descr>
         <seealso>
           <link id="#lcl.groupededit.TGEEdit"/>
-          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Edit"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit"/>
         </seealso>
       </element>
 
@@ -764,7 +763,6 @@
         </descr>
         <seealso>
           <link id="#lcl.comctrls.TUpDown.MinRepeatInterval"/>
-          <link id="DefMinRepeatValue"/>
         </seealso>
       </element>
 
@@ -901,12 +899,12 @@
           </p>
         </descr>
         -<seealso>
-          <link id="TCustomSpinEditEx.Increment"/>
-          <link id="TCustomSpinEditEx.Value"/>
-          <link id="TCustomSpinEditEx.UpDown"/>
-          <link id="TCustomSpinEditEx.Edit"/>
-          <link id="TCustomSpinEditEx.ArrowKeys"/>
-          <link id="TCustomFloatSpinEditEx.Increment"/>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.UpDown"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="TSpinEditExBase.ArrowKeys"/>
+          <link id="TCustomSpinEditEx"/>
+          <link id="TCustomFloatSpinEditEx"/>
         </seealso>
       </element>
 
@@ -928,10 +926,6 @@
           <link id="TSpinEditExBase.NullValue"/>
           <link id="TSpinEditExBase.MaxValue"/>
           <link id="TSpinEditExBase.NullValueBehaviour"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
-          <link id="TSpinEditExBase.IsLimited"/>
-          <link id="TSpinEditExBase.IsOutOfLimits"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.GetLimitedValue"/>
         </seealso>
       </element>
@@ -954,10 +948,6 @@
           <link id="TSpinEditExBase.NullValue"/>
           <link id="TSpinEditExBase.MinValue"/>
           <link id="TSpinEditExBase.NullValueBehaviour"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
-          <link id="TSpinEditExBase.IsLimited"/>
-          <link id="TSpinEditExBase.IsOutOfLimits"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.GetLimitedValue"/>
         </seealso>
       </element>
@@ -1015,7 +1005,6 @@
           <link id="TSpinEditExBase.NullValueBehaviour"/>
           <link id="TSpinEditExBase.StrToValue"/>
           <link id="TSpinEditExBase.TextIsNumber"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
           <link id="TSpinEditExBase.UpDown"/>
         </seealso>
       </element>
@@ -1199,7 +1188,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TSpinEditExBase.Edit"/>
           <link id="TCustomFloatSpinEditEx.DecimalPlaces"/>
           <link id="TCustomFloatSpinEditEx.DecimalSeparator"/>
           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyPress"/>
@@ -1266,9 +1255,7 @@
         </descr>
         <seealso>
           <link id="TSpinEditExBase.Increment"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TCustomFloatSpinEditEx.SafeDec"/>
-          <link id="#rtl.math.MaxDouble"/>
         </seealso>
       </element>
       <element name="TCustomFloatSpinEditEx.SafeInc.Result">
@@ -1362,8 +1349,7 @@
         </descr>
         <seealso>
           <link id="TDisplayMode"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TSpinEditExBase.Edit"/>
         </seealso>
@@ -1394,10 +1380,10 @@
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
           <link id="TCustomFloatSpinEditEx.Precision"/>
           <link id="TCustomFloatSpinEditEx.ExponentDigits"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.ExponentialFormatLimitNeg"/>
-          <link id="TDisplayMode.dmAuto"/>
+          <link id="TDisplayMode"/>
         </seealso>
       </element>
 
@@ -1423,11 +1409,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
-          <link id="TCustomFloatSpinEditEx.GetValue"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
           <link id="TCustomFloatSpinEditEx.ExponentialFormatLimitPos"/>
           <link id="TCustomFloatSpinEditEx.Precision"/>
           <link id="TCustomFloatSpinEditEx.ExponentDigits"/>
@@ -1470,9 +1454,7 @@
           <link id="TCustomFloatSpinEditEx.Precision"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
-          <link id="TCustomFloatSpinEditEx.GetValue"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="TSpinEditExBase.Value"/>
         </seealso>
       </element>
 
@@ -1536,11 +1518,10 @@
         </descr>
         <seealso>
           <link id="TCustomFloatSpinEditEx.Create"/>
-          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TSpinEditExBase.Edit"/>
           <link id="TCustomFloatSpinEditEx.EditKeyPress"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
-          <link id="DefDecimalSeparator"/>
         </seealso>
       </element>
 
@@ -1555,14 +1536,11 @@
           </p>
         </descr>
         <seealso>
-          <link id=""/>
           <link id="TCustomFloatSpinEditEx.Create"/>
-          <link id="TCustomFloatSpinEditEx.Edit"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
-          <link id="DefDecimals"/>
         </seealso>
       </element>
 
@@ -1752,7 +1730,6 @@
         </descr>
         <seealso>
           <link id="TCustomSpinEditEx.Increment"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.SafeInc"/>
         </seealso>
       </element>
@@ -1781,7 +1758,6 @@
         </descr>
         <seealso>
           <link id="TCustomSpinEditEx.Increment"/>"
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.SafeDec"/>
         </seealso>
       </element>
@@ -1835,7 +1811,6 @@
         </descr>
         <seealso>
           <link id="TCustomSpinEditEx.ThousandSeparator"/>
-          <link id="RemoveThousandSeparator"/>
         </seealso>
       </element>
       <element name="TCustomSpinEditEx.TextIsNumber.Result">
@@ -1863,8 +1838,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFloatSpinEditEx.ThousandSeparator"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
+          <link id="TCustomSpinEditEx.ThousandSeparator"/>
           <link id="TSpinEditExBase.RealGetText"/>
         </seealso>
       </element>
@@ -1905,10 +1879,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomSpinEditEx.EditKeyPress"/>
+          <link id="TSpinEditExBase.EditKeyPress"/>
           <link id="TCustomSpinEditEx.TextIsNumber"/>
           <link id="TCustomSpinEditEx.ValueToStr"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
         </seealso>
       </element>
 
