@@ -5689,12 +5689,37 @@ end;
 
 procedure TLazPackageGraph.RegisterStaticPackage(APackage: TLazPackage;
   RegisterProc: TRegisterProc);
+var
+  PkgList: TFPList;
+  i: Integer;
+  Pkg: TLazPackage;
 begin
   if AbortRegistration then exit;
   //DebugLn(['TLazPackageGraph.RegisterStaticPackage ',APackage.IDAsString]);
-  RegistrationPackage:=APackage;
+
+  // translate (load resourcestrings) package and dependies
   if Assigned(OnTranslatePackage) then
-    OnTranslatePackage(APackage);
+  begin
+    PkgList:=nil;
+    try
+      PackageGraph.GetAllRequiredPackages(APackage,APackage.FirstRequiredDependency,PkgList,[]);
+      if PkgList<>nil then
+      begin
+        for i:=0 to PkgList.Count-1 do
+        begin
+          Pkg:=TLazPackage(PkgList[i]);
+          if (Pkg.Translated='') and (Pkg.POOutputDirectory<>'') then
+            OnTranslatePackage(Pkg);
+        end;
+      end;
+    finally
+      PkgList.Free;
+    end;
+    if (APackage.Translated='') and (APackage.POOutputDirectory<>'') then
+      OnTranslatePackage(APackage);
+  end;
+
+  RegistrationPackage:=APackage;
   CallRegisterProc(RegisterProc);
   APackage.Registered:=true;
   RegistrationPackage:=nil;
