@@ -2629,17 +2629,16 @@ begin
     AFinishLoopAndSendEvents := False;
     FBreakPoints[bplSehW64Finally].RemoveAllAddresses;
     o := FAddressFrameList.IndexOf(PC);
-    Rdx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(1).NumValue;
     if o >= 0 then begin
       Frames := FAddressFrameList.Data[o];
       Frames.Remove(CurrentThread.GetStackPointerRegisterValue);
       if Frames.Count = 0 then begin
-        FBreakPoints[bplSehW64Except].RemoveAddress(Rdx);
+        FBreakPoints[bplSehW64Except].RemoveAddress(PC);
         FAddressFrameList.Delete(o);
       end;
     end
     else
-      FBreakPoints[bplSehW64Except].RemoveAddress(Rdx);
+      FBreakPoints[bplSehW64Except].RemoveAddress(PC);
 
     // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
     if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
