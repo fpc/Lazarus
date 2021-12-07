@@ -2307,6 +2307,8 @@ end;
 
 procedure TFpDebugExceptionStepping.DoProcessLoaded;
 begin
+  FBreakEnabled := [];
+  FBreakNewEnabled := [];
   debuglnEnter(DBG_BREAKPOINTS, ['>> TFpDebugDebugger.SetSoftwareExceptionBreakpoint FPC_RAISEEXCEPTION' ]);
   FBreakPoints[bplRaise]         := FDebugger.AddBreak('FPC_RAISEEXCEPTION');
   FBreakPoints[bplBreakError]    := FDebugger.AddBreak('FPC_BREAK_ERROR');
@@ -2323,6 +2325,7 @@ end;
 procedure TFpDebugExceptionStepping.DoNtDllLoaded(ALib: TDbgLibrary);
 begin
   debugln(DBG_BREAKPOINTS, ['SetSoftwareExceptionBreakpoint RtlUnwind']);
+  DisableBreaksDirect([bplRtlUnwind]);
   FBreakPoints[bplRtlUnwind].Free;
   FBreakPoints[bplRtlUnwind] := FDebugger.AddBreak('RtlUnwindEx', ALib, False);
 end;
