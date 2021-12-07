@@ -517,9 +517,6 @@ begin
   // Debugger GUI
   TranslateUnitResourceStrings('DebuggerStrConst',
     Dir+'languages/debuggerstrconst'+Ext,Lang,FallbackLang);
-  // LCL
-  TranslateUnitResourceStrings('LCLStrConsts',
-    Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
 end;
 
 { TLazarusTranslations }
