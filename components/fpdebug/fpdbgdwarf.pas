@@ -3963,7 +3963,7 @@ var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
 begin
-  //debugln(['TDbgDwarfIdentifier.LocationFromAttrData', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+  //debugln(FPDBG_DWARF_VERBOSE, ['TDbgDwarfIdentifier.LocationFromAttrData', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   AnAddress := InvalidLoc;
@@ -3972,7 +3972,7 @@ begin
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
   if not InformationEntry.ReadValue(AnAttribData, Val) then begin
-    DebugLn([FPDBG_DWARF_VERBOSE, 'LocationFromAttrData: failed to read DW_AT_location']);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location']);
     SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
@@ -4007,7 +4007,7 @@ function TFpSymbolDwarf.LocationFromTag(ATag: Cardinal;
 var
   AttrData: TDwarfAttribData;
 begin
-  //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+  //debugln(FPDBG_DWARF_VERBOSE,['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   //TODO: avoid copying data
@@ -4023,7 +4023,7 @@ begin
     if not Result then
       AnAddress := InvalidLoc;
     if not Result then
-      DebugLn([FPDBG_DWARF_VERBOSE, 'LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
     exit;
   end;
 
@@ -5292,7 +5292,7 @@ end;
 function TFpSymbolDwarfDataMember.GetValueAddress(AValueObj: TFpValueDwarf; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  if AValueObj = nil then debugln([FPDBG_DWARF_VERBOSE, 'TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
+  if AValueObj = nil then debugln(FPDBG_DWARF_VERBOSE, ['TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
   else if AValueObj.StructureValue = nil then debugln(FPDBG_DWARF_VERBOSE, ['TFpSymbolDwarfDataMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
 
   if InformationEntry.HasAttrib(DW_AT_const_value) then begin

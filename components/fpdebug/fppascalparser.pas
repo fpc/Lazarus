@@ -456,6 +456,9 @@ type
 
 implementation
 
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
+
 const
   // 1 highest
   PRECEDENCE_MEMBER_OF  =  1;        // foo.bar
@@ -2071,26 +2074,26 @@ end;
 procedure TFpPascalExpression.SetError(AMsg: String);
 begin
   if IsError(FError) then begin
-DebugLn(['Skipping error ', AMsg]);
+DebugLn(DBG_WARNINGS, ['Skipping error ', AMsg]);
     FValid := False;
     exit;
   end;
   SetError(fpErrAnyError, [AMsg]);
-DebugLn(['PARSER ERROR ', AMsg]);
+DebugLn(DBG_WARNINGS, ['PARSER ERROR ', AMsg]);
 end;
 
 procedure TFpPascalExpression.SetError(AnErrorCode: TFpErrorCode; AData: array of const);
 begin
   FValid := False;
   FError := ErrorHandler.CreateError(AnErrorCode, AData);
-  DebugLn(['Setting error ', ErrorHandler.ErrorAsString(FError)]);
+  DebugLn(DBG_WARNINGS, ['Setting error ', ErrorHandler.ErrorAsString(FError)]);
 end;
 
 procedure TFpPascalExpression.SetError(const AnErr: TFpError);
 begin
   FValid := False;
   FError := AnErr;
-  DebugLn(['Setting error ', ErrorHandler.ErrorAsString(FError)]);
+  DebugLn(DBG_WARNINGS, ['Setting error ', ErrorHandler.ErrorAsString(FError)]);
 end;
 
 function TFpPascalExpression.PosFromPChar(APChar: PChar): Integer;
@@ -2868,7 +2871,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
             TmpVal := APointerVal.Member[1];
             if s1 <> (TmpVal.DataAddress.Address - APointerVal.DataAddress.Address) then begin
               TmpVal.ReleaseReference;
-              debugln('Size mismatch for pointer math');
+              debugln(DBG_WARNINGS, 'Size mismatch for pointer math');
               exit;
             end;
             TmpVal.ReleaseReference;
@@ -2877,7 +2880,7 @@ function TFpPascalExpressionPartOperatorPlusMinus.DoGetResultValue: TFpValue;
               m := Idx mod SizeToFullBytes(s1);
               Idx := Idx div SizeToFullBytes(s1);
               if m <> 0 then begin
-                debugln('Size mismatch for pointer math');
+                debugln(DBG_WARNINGS, 'Size mismatch for pointer math');
                 exit;
               end;
             end;
@@ -3629,6 +3632,9 @@ begin
 
   SetError(fpErrorNotAStructure, [MemberName, Items[0].GetText]);
 end;
+
+initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
 
 end.
 

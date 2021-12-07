@@ -141,6 +141,9 @@ procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
 
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
+
 const
   // Symbol-map section name
   _gnu_dbg_link        = '.gnu_debuglink';
@@ -466,7 +469,7 @@ function TDbgImageReader.LoadGnuDebugLink(ASearchPath, AFileName: String;
     c:=Crc32(c, mem, i);
     Result.UnloadMemory(mem);
 
-    DebugLn(c <> ACrc, ['Invalid CRC for ext debug info: ', AFullName]);
+    DebugLn(DBG_WARNINGS and (c <> ACrc), ['Invalid CRC for ext debug info: ', AFullName]);
     if c <> ACrc then
       FreeAndNil(Result);
   end;
@@ -517,6 +520,8 @@ begin
 end;
 
 initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
   InitDebugInfoLists;
 
 finalization
