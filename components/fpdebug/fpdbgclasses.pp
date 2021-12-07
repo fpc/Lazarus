@@ -477,7 +477,6 @@ type
 
     function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpInternalBreakpoint; overload;
     function AddBreak(const AFuncName: String; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
-    function AddrOffset: TDBGPtr; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
     function FindProcSymbol(const AName: String): TFpSymbol; overload;
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
     function  FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
@@ -1606,16 +1605,10 @@ function TDbgInstance.AddBreak(const AFileName: String; ALine: Cardinal;
   AnEnabled: Boolean): TFpInternalBreakpoint;
 var
   addr: TDBGPtrArray;
-  o: Int64;
-  i: Integer;
 begin
   Result := nil;
-  if GetLineAddresses(AFileName, ALine, addr) then begin
-    o := AddrOffset;
-    for i := 0 to High(addr) do
-      addr[i] := addr[i] - o;
+  if GetLineAddresses(AFileName, ALine, addr) then
     Result := FProcess.AddBreak(addr, AnEnabled);
-  end;
 end;
 
 function TDbgInstance.AddBreak(const AFuncName: String; AnEnabled: Boolean
@@ -1629,11 +1622,6 @@ begin
     Result := FProcess.AddBreak(AProc.Address.Address, AnEnabled);
     AProc.ReleaseReference;
   end;
-end;
-
-function TDbgInstance.AddrOffset: TDBGPtr;
-begin
-  Result := FLoaderList.ImageBase;
 end;
 
 function TDbgInstance.FindProcSymbol(const AName: String): TFpSymbol;
@@ -1674,7 +1662,7 @@ end;
 function TDbgInstance.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
 begin
   {$PUSH}{$R-}{$Q-}
-  AAdress := AAdress + AddrOffset;
+  AAdress := AAdress;
   {$POP}
   Result := FDbgInfo.FindProcSymbol(AAdress);
   if not assigned(Result) then
@@ -1685,7 +1673,7 @@ function TDbgInstance.FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC,
   AEndPC: TDBGPtr): boolean;
 begin
   {$PUSH}{$R-}{$Q-}
-  AAdress := AAdress + AddrOffset;
+  AAdress := AAdress;
   {$POP}
   Result := FDbgInfo.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
 end;

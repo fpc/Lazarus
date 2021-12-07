@@ -215,7 +215,6 @@ type
 
     procedure TerminateProcess; override;
 
-    function AddrOffset: TDBGPtr; override;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
   end;
@@ -1378,11 +1377,6 @@ procedure TDbgWinProcess.TerminateProcess;
 begin
   Windows.TerminateProcess(Handle, 0);
   FTerminated := True;
-end;
-
-function TDbgWinProcess.AddrOffset: TDBGPtr;
-begin
-  Result:=0;//inherited AddrOffset - TDbgPtr(FInfo.lpBaseOfImage);
 end;
 
 function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;

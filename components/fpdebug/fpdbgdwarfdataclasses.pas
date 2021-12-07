@@ -767,7 +767,6 @@ type
       AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
-    function PointerFromRVA(ARVA: QWord): Pointer;
     function CompilationUnitsCount: Integer; inline;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
 
@@ -3938,11 +3937,6 @@ begin
 
   for i := 0 to Result - 1 do
     TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker.MarkReadyToRun;
-end;
-
-function TFpDwarfInfo.PointerFromRVA(ARVA: QWord): Pointer;
-begin
-  Result := Pointer(PtrUInt(FImageBase + ARVA));
 end;
 
 function TFpDwarfInfo.CompilationUnitsCount: Integer;
