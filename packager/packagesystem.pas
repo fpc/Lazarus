@@ -435,7 +435,6 @@ type
     procedure RegisterComponentsHandler(const Page: string;
                                     ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
-    procedure RegisterStaticBasePackages;
     procedure RegisterStaticPackage(APackage: TLazPackage;
                                     RegisterProc: TRegisterProc);
     procedure CallRegisterProc(RegisterProc: TRegisterProc);
@@ -2243,9 +2242,6 @@ begin
   LoadLazarusBasePackage('LazControlDsgn');
 
   SortAutoInstallDependencies;
-
-  // register them
-  RegisterStaticBasePackages;
 end;
 
 procedure TLazPackageGraph.LoadAutoInstallPackages(PkgList: TStringList);
@@ -5675,18 +5671,6 @@ begin
   Result:=true;
 end;
 
-procedure TLazPackageGraph.RegisterStaticBasePackages;
-begin
-  BeginUpdate(true);
-  // IDE built-in packages
-  if Assigned(OnTranslatePackage) then
-  begin
-    OnTranslatePackage(BuildIntfPackage);
-    OnTranslatePackage(CodeToolsPackage);
-  end;
-  EndUpdate;
-end;
-
 procedure TLazPackageGraph.RegisterStaticPackage(APackage: TLazPackage;
   RegisterProc: TRegisterProc);
 var
@@ -5697,7 +5681,7 @@ begin
   if AbortRegistration then exit;
   //DebugLn(['TLazPackageGraph.RegisterStaticPackage ',APackage.IDAsString]);
 
-  // translate (load resourcestrings) package and dependies
+  // translate (load resourcestrings) package and dependencies
   if Assigned(OnTranslatePackage) then
   begin
     PkgList:=nil;
