@@ -76,6 +76,9 @@ implementation
 uses
   FpDbgCommon;
 
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
+
 const
   // Symbol-map section name
   _symbol        = '.symbols';
@@ -442,7 +445,7 @@ begin
     )
     div SizeOf(TImageSectionHeader);
   if SectionMax <> NtHeaders.Sys.FileHeader.NumberOfSections then begin
-    DebugLn(['Could not load all headers', NtHeaders.Sys.FileHeader.NumberOfSections, ' ', SectionMax]);
+    DebugLn(DBG_WARNINGS, ['Could not load all headers', NtHeaders.Sys.FileHeader.NumberOfSections, ' ', SectionMax]);
   end;
 
   for n := 0 to SectionMax - 1 do
@@ -493,6 +496,8 @@ end;
 
 
 initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
   RegisterImageReaderClass(TPEFileSource);
 
 end.

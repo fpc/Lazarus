@@ -330,7 +330,7 @@ type
 implementation
 
 var
-  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, FPDBG_LINUX: PLazLoggerLogGroup;
   GConsoleTty: string;
   GSlavePTyFd: cint;
 
@@ -492,7 +492,7 @@ begin
 
   result := fpkill(ID, SIGSTOP)=0;
   {$IFDEF DebuglnLinuxDebugEvents}
-  debugln('TDbgLinuxThread.RequestInternalPause fpkill(%d, SIGSTOP) => %s', [ID, dbgs(Result)]);
+  debugln(FPDBG_LINUX, 'TDbgLinuxThread.RequestInternalPause fpkill(%d, SIGSTOP) => %s', [ID, dbgs(Result)]);
   {$ENDIF}
   if not result then
     begin
@@ -1202,7 +1202,7 @@ begin
   // check for pending events in other threads
   if FPostponedSignals.Count > 0 then begin
     {$IFDEF DebuglnLinuxDebugEvents}
-    debugln(['Exit for DEFERRED event TID']);
+    debugln(FPDBG_LINUX, ['Exit for DEFERRED event TID']);
     {$ENDIF}
     exit;
   end;
@@ -1218,7 +1218,7 @@ begin
         while (ThreadToContinue.GetInstructionPointerRegisterValue = IP) do begin
           fpseterrno(0);
           {$IFDEF DebuglnLinuxDebugEvents}
-          Debugln(['Single-stepping other TID: ', ThreadToContinue.ID]);
+          Debugln(FPDBG_LINUX, ['Single-stepping other TID: ', ThreadToContinue.ID]);
           {$ENDIF}
           fpPTrace(PTRACE_SINGLESTEP, ThreadToContinue.ID, pointer(1), pointer(TDbgLinuxThread(ThreadToContinue).FExceptionSignal));
 
@@ -1248,7 +1248,7 @@ begin
 
   if FPostponedSignals.Count > 0 then begin
     {$IFDEF DebuglnLinuxDebugEvents}
-    debugln(['Exit for DEFERRED SingleSteps event TID']);
+    debugln(FPDBG_LINUX, ['Exit for DEFERRED SingleSteps event TID']);
     {$ENDIF}
     exit;
   end;
@@ -1260,7 +1260,7 @@ begin
     fpseterrno(0);
     AThread.BeforeContinue;
     {$IFDEF DebuglnLinuxDebugEvents}
-    Debugln(['Single-stepping current']);
+    Debugln(FPDBG_LINUX, ['Single-stepping current']);
     {$ENDIF}
     fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(TDbgLinuxThread(AThread).FExceptionSignal));
     TDbgLinuxThread(AThread).ResetPauseStates;
@@ -1277,7 +1277,7 @@ begin
     if (ThreadToContinue <> AThread) and (ThreadToContinue.FIsPaused) then begin
       fpseterrno(0);
       {$IFDEF DebuglnLinuxDebugEvents}
-      Debugln(['RUN other TID: ', ThreadToContinue.ID]);
+      Debugln(FPDBG_LINUX, ['RUN other TID: ', ThreadToContinue.ID]);
       {$ENDIF}
       fpPTrace(PTRACE_CONT, ThreadToContinue.ID, pointer(1), pointer(ThreadToContinue.FExceptionSignal));
       CheckNoError; // only log
@@ -1290,7 +1290,7 @@ begin
     fpseterrno(0);
     //AThread.BeforeContinue;
     {$IFDEF DebuglnLinuxDebugEvents}
-    Debugln(['RUN ']);
+    Debugln(FPDBG_LINUX, ['RUN ']);
     {$ENDIF}
     if AThread.NextIsSingleStep then
       fpPTrace(PTRACE_SINGLESTEP, AThread.ID, pointer(1), pointer(TDbgLinuxThread(AThread).FExceptionSignal))
@@ -1330,7 +1330,7 @@ begin
 
     ProcessIdentifier := ProcessID;
     {$IFDEF DebuglnLinuxDebugEvents}
-    debugln(['##### GOT EVENT FOR ',pid, ' st ', FStatus]);
+    debugln(FPDBG_LINUX, ['##### GOT EVENT FOR ',pid, ' st ', FStatus]);
     {$ENDIF}
     end;
 end;
@@ -1546,8 +1546,8 @@ begin
 
   {$IFDEF DebuglnLinuxDebugEvents}
   for TDbgThread(ThreadToPause) in FThreadMap do
-  debugln([ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause, ' exs:', ThreadToPause.FExceptionSignal, '  sstep:',ThreadToPause.NextIsSingleStep]);
-  debugln('<<<<<<<<<<<<<<<<<<<<<<<<');
+  debugln(FPDBG_LINUX, [ThreadToPause.id, ' =athrd:', ThreadToPause = AThread, ' psd:', ThreadToPause.FIsPaused,ThreadToPause.FIsInInternalPause, ' exs:', ThreadToPause.FExceptionSignal, '  sstep:',ThreadToPause.NextIsSingleStep]);
+  debugln(FPDBG_LINUX, '<<<<<<<<<<<<<<<<<<<<<<<<');
   {$ENDIF}
 
 end;
@@ -1555,6 +1555,7 @@ end;
 initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  FPDBG_LINUX := DebugLogger.FindOrRegisterLogGroup('FPDBG_LINUX' {$IFDEF DebuglnLinuxDebugEvents} , True {$ENDIF} );
 
   RegisterDbgOsClasses(TOSDbgClasses.Create(
     TDbgLinuxProcess,

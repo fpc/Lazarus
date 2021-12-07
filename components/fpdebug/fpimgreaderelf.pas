@@ -88,6 +88,9 @@ type
 
 implementation
 
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
+
 type
   TElf32symbol=record
     st_name  : longword;
@@ -169,7 +172,7 @@ begin
 
   sz := hdr.e_shetsize * hdr.e_shnum;
   if sz > LongWord(length(sect)*sizeof(Elf32_shdr)) then begin
-    debugln(['TElfFile.Load32BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
+    debugln(DBG_WARNINGS, ['TElfFile.Load32BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
     sz := LongWord(length(sect)*sizeof(Elf32_shdr));
   end;
   //ALoader.Read(sect[0], sz);
@@ -208,7 +211,7 @@ begin
 
   sz := hdr.e_shentsize * hdr.e_shnum;
   if sz > LongWord(length(sect)*sizeof(Elf64_shdr)) then begin
-    debugln(['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf64_shdr))]);
+    debugln(DBG_WARNINGS, ['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf64_shdr))]);
     sz := LongWord(length(sect)*sizeof(Elf64_shdr));
   end;
   //ALoader.Read(sect[0], sz);
@@ -495,6 +498,8 @@ begin
 end;
 
 initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
   RegisterImageReaderClass( TElfDbgSource );
 
 end.

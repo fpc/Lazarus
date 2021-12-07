@@ -238,7 +238,7 @@ type
 implementation
 
 var
-  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, FPDBG_WINDOWS: PLazLoggerLogGroup;
 
 {$ifdef cpux86_64}
 const
@@ -740,7 +740,7 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
 var
   EventThread, t: TDbgThread;
 begin
-debugln(['TDbgWinProcess.Continue ',SingleStep]);
+debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep]);
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
     AThread := nil;
   end;
@@ -756,7 +756,7 @@ debugln(['TDbgWinProcess.Continue ',SingleStep]);
       EventThread.NextIsSingleStep := SingleStep;
 
     if HasInsertedBreakInstructionAtLocation(EventThread.GetInstructionPointerRegisterValue) then begin
-debugln(['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
+debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
       TDbgWinThread(EventThread).SetSingleStepOverBreakPoint;
 
       for t in FThreadMap do
@@ -768,7 +768,7 @@ debugln(['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSi
         TDbgWinThread(EventThread).SetSingleStep;
 
       if HasThreadInSkippingBreak then begin
-debugln(['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
+debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
         // But other threads are still skipping
         for t in FThreadMap do
           if not (SingleStep and (t = AThread) and   // allow athread to single-step
@@ -785,7 +785,7 @@ debugln(['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventT
 
   else begin // EventThread is gone
     if HasThreadInSkippingBreak then begin
-debugln(['## skip brkpoint (others only) ']);
+debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ']);
       for t in FThreadMap do
         if not (SingleStep and (t = AThread) and   // allow athread to single-step
                 not TDbgWinThread(t).FIsSkippingBreakPoint  // already single stepping AND needs  TempRemoveBreakInstructionCode
@@ -805,7 +805,7 @@ debugln(['## skip brkpoint (others only) ']);
       TDbgWinThread(AThread).SetSingleStep;
   end;
   AProcess.ThreadsBeforeContinue;
-if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
+if AThread<>nil then debugln(FPDBG_WINDOWS, ['## ath.iss ',AThread.NextIsSingleStep]);
 
   if MDebugEvent.dwDebugEventCode = EXCEPTION_DEBUG_EVENT then
     case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
@@ -818,7 +818,7 @@ if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
     end
   else
     result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
-  DebugLn(not Result, 'ContinueDebugEvent failed: %d', [Windows.GetLastError]);
+  DebugLn((FPDBG_WINDOWS or DBG_WARNINGS) and (not Result), 'ContinueDebugEvent failed: %d', [Windows.GetLastError]);
   result := true;
   MDebugEvent.dwProcessId := 0; // Flag as running // for assert in ReadThreadState
 end;
@@ -883,13 +883,13 @@ begin
   repeat
     Done := True;
     result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
-    DebugLn(not Result, 'WaitForDebugEvent failed: %d', [Windows.GetLastError]);
+    DebugLn(FPDBG_WINDOWS and (not Result), 'WaitForDebugEvent failed: %d', [Windows.GetLastError]);
 
     if Result and FTerminated and (MDebugEvent.dwDebugEventCode <> EXIT_PROCESS_DEBUG_EVENT)
        and (MDebugEvent.dwDebugEventCode <> EXIT_THREAD_DEBUG_EVENT)
     then begin
       // Wait for the terminate event // Do not report any queued breakpoints
-      DebugLn(['Terimating... Skipping event: ', dbgs(MDebugEvent)]);
+      DebugLn(FPDBG_WINDOWS, ['Terimating... Skipping event: ', dbgs(MDebugEvent)]);
       for TDbgThread(t) in FThreadMap do
         t.Suspend;
       Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
@@ -927,10 +927,10 @@ begin
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
   {$IFDEF DebuglnWinDebugEvents}
-  DebugLn([dbgs(MDebugEvent), ' ', Result]);
+  DebugLn(FPDBG_WINDOWS, [dbgs(MDebugEvent), ' ', Result]);
   for TDbgThread(t) in FThreadMap do begin
   if t.ReadThreadState then
-    DebugLn('Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
+    DebugLn(FPDBG_WINDOWS, 'Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
   end;
   {$ENDIF}
 
@@ -1710,7 +1710,7 @@ begin
   begin
     Assert(FCurrentContext <> nil, 'TDbgWinThread.BeforeContinue: none existing context was changed');
     if not SetFpThreadContext(FCurrentContext) then
-      debugln(['Failed to SetFpThreadContext()']);
+      debugln(FPDBG_WINDOWS or DBG_WARNINGS, ['Failed to SetFpThreadContext()']);
   end;
   FThreadContextChanged := False;
   FThreadContextChangeFlags := [];
@@ -1881,6 +1881,7 @@ initialization
 
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  FPDBG_WINDOWS := DebugLogger.FindOrRegisterLogGroup('FPDBG_WINDOWS' {$IFDEF FPDBG_WINDOWS} , True {$ENDIF} );
 
   RegisterDbgOsClasses(TOSDbgClasses.Create(
     TDbgWinProcess,
