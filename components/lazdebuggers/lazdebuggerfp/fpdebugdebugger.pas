@@ -227,13 +227,24 @@ type
       esSteppingFpcSpecialHandler,
       esAtWSehExcept
     );
-    TFrameList = class(specialize TFPGList<TDbgPtr>);
+
+    { TFrameList }
+
+    TFrameList = class(specialize TFPGList<TDbgPtr>)
+    public
+      procedure RemoveOutOfScopeFrames(const ACurFrame: TDbgPtr); inline;
+    end;
 
     { TAddressFrameList }
 
     TAddressFrameList = class(specialize TFPGMapObject<TDbgPtr, TFrameList>)
+      FLastRemoveCheck: TDBGPtr;
+      procedure DoRemoveOutOfScopeFrames(const ACurFrame: TDbgPtr; ABreakPoint: TFpDbgBreakpoint);
     public
-      function Add(const AKey: TDbgPtr): TFrameList; inline;
+      function Add(const AnAddress: TDbgPtr): TFrameList; inline; overload;
+      function Add(const AnAddress, AFrame: TDbgPtr): boolean; inline; overload; // True if already exist
+      function Remove(const AnAddress, AFrame: TDbgPtr): boolean; inline; // True if last frame for address
+      procedure RemoveOutOfScopeFrames(const ACurFrame: TDbgPtr; ABreakPoint: TFpDbgBreakpoint); inline;
     end;
   const
     DBGPTRSIZE: array[TFPDMode] of Integer = (4, 8);
@@ -242,7 +253,8 @@ type
     FBreakPoints: array[TBreakPointLoc] of TFpDbgBreakpoint;
     FBreakEnabled: TBreakPointLocs;
     FBreakNewEnabled: TBreakPointLocs;
-    FAddressFrameList: TAddressFrameList;
+    FAddressFrameListSehW64Except,
+    FAddressFrameListSehW64Finally: TAddressFrameList;
     FState: TExceptStepState;
     function GetCurrentCommand: TDbgControllerCmd; inline;
     function GetCurrentProcess: TDbgProcess; inline;
@@ -597,6 +609,21 @@ type
 procedure Register;
 begin
   RegisterDebugger(TFpDebugDebugger);
+end;
+
+{ TFpDebugExceptionStepping.TFrameList }
+
+procedure TFpDebugExceptionStepping.TFrameList.RemoveOutOfScopeFrames(
+  const ACurFrame: TDbgPtr);
+var
+  i: Integer;
+begin
+  i := Count - 1;
+  while i >= 0 do begin
+    if Items[i] < ACurFrame then
+      Delete(i);
+    dec(i);
+  end;
 end;
 
 { TFpThreadWorkerModifyUpdate }
@@ -1242,10 +1269,79 @@ end;
 
 { TFpDebugExceptionStepping.TAddressFrameList }
 
-function TFpDebugExceptionStepping.TAddressFrameList.Add(const AKey: TDbgPtr): TFrameList;
+function TFpDebugExceptionStepping.TAddressFrameList.Add(
+  const AnAddress: TDbgPtr): TFrameList;
 begin
   Result := TFrameList.Create;
-  inherited Add(AKey, Result);
+  inherited Add(AnAddress, Result);
+end;
+
+function TFpDebugExceptionStepping.TAddressFrameList.Add(const AnAddress,
+  AFrame: TDbgPtr): boolean;
+var
+  i: Integer;
+  Frames: TFrameList;
+begin
+  if AFrame < FLastRemoveCheck then
+    FLastRemoveCheck := 0;
+  Result := False;
+  i := IndexOf(AnAddress);
+
+  if i >= 0 then
+    Frames := Data[i]
+  else
+    Frames := Add(AnAddress);
+
+  Result := IndexOf(AFrame) >= 0;
+  if Result then
+    exit;
+  Frames.Add(AFrame);
+end;
+
+function TFpDebugExceptionStepping.TAddressFrameList.Remove(const AnAddress,
+  AFrame: TDbgPtr): boolean;
+var
+  i: Integer;
+  Frames: TFrameList;
+begin
+  i := IndexOf(AnAddress);
+  Result := i < 0;
+  if Result then
+    exit;
+
+  Frames := Data[i];
+  Frames.Remove(AFrame);
+  Result := Frames.Count = 0;
+  if Result then
+    Delete(i);
+end;
+
+procedure TFpDebugExceptionStepping.TAddressFrameList.RemoveOutOfScopeFrames(
+  const ACurFrame: TDbgPtr; ABreakPoint: TFpDbgBreakpoint);
+begin
+  if ACurFrame = FLastRemoveCheck then
+    exit;
+  DoRemoveOutOfScopeFrames(ACurFrame, ABreakPoint);
+end;
+
+procedure TFpDebugExceptionStepping.TAddressFrameList.DoRemoveOutOfScopeFrames(
+  const ACurFrame: TDbgPtr; ABreakPoint: TFpDbgBreakpoint);
+var
+  i: Integer;
+  f: TFrameList;
+begin
+  FLastRemoveCheck := ACurFrame;
+
+  i := Count - 1;
+  while i >= 0 do begin
+    f := Data[i];
+    f.RemoveOutOfScopeFrames(ACurFrame);
+    if f.Count = 0 then begin
+      ABreakPoint.RemoveAddress(Keys[i]);
+      Delete(i);
+    end;
+    dec(i);
+  end;
 end;
 
 { TFPThreads }
@@ -2296,13 +2392,15 @@ end;
 constructor TFpDebugExceptionStepping.Create(ADebugger: TFpDebugDebugger);
 begin
   FDebugger := ADebugger;
-  FAddressFrameList := TAddressFrameList.Create(True);
+  FAddressFrameListSehW64Except := TAddressFrameList.Create(True);
+  FAddressFrameListSehW64Finally := TAddressFrameList.Create(True);
 end;
 
 destructor TFpDebugExceptionStepping.Destroy;
 begin
   inherited Destroy;
-  FAddressFrameList.Destroy;
+  FAddressFrameListSehW64Except.Destroy;
+  FAddressFrameListSehW64Finally.Destroy;
 end;
 
 procedure TFpDebugExceptionStepping.DoProcessLoaded;
@@ -2402,8 +2500,8 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
 const
   MaxFinallyHandlerCnt = 256; // more finally in a single proc is not probable....
 var
-  StepOutStackPos, ReturnAddress, Base, HData, ImgBase, Addr: TDBGPtr;
-  Rdx, Rcx, R8, R9, PC: TDBGPtr;
+  StepOutStackPos, ReturnAddress, Base, TargetSp, HData, ImgBase, Addr: TDBGPtr;
+  Rdx, Rcx, R8, R9, PC, SP: TDBGPtr;
   o, i: Integer;
   EFlags, Cnt: Cardinal;
   Frames: TFrameList;
@@ -2454,6 +2552,13 @@ begin
   DisableBreaksDirect([bplRtlUnwind, bplSehW64Finally]); // bplRtlUnwind must always be unset;
 
   PC := CurrentThread.GetInstructionPointerRegisterValue;
+  SP := CurrentThread.GetStackPointerRegisterValue;
+  FAddressFrameListSehW64Except.RemoveOutOfScopeFrames(SP, FBreakPoints[bplSehW64Except]);
+  if ACurCommand is TDbgControllerStepOutCmd then
+    FAddressFrameListSehW64Finally.RemoveOutOfScopeFrames(SP+1, FBreakPoints[bplSehW64Finally]) // include current frame
+  else
+    FAddressFrameListSehW64Finally.RemoveOutOfScopeFrames(SP, FBreakPoints[bplSehW64Finally]);
+
   // bplPopExcept / bplCatches
   if (assigned(FBreakPoints[bplPopExcept]) and FBreakPoints[bplPopExcept].HasLocation(PC)) or
      (assigned(FBreakPoints[bplCatches]) and FBreakPoints[bplCatches].HasLocation(PC))
@@ -2533,7 +2638,6 @@ begin
     if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
       exit;
     EnableBreaksDirect([bplRtlUnwind]);
-    FBreakPoints[bplSehW64Finally].RemoveAllAddresses;
 
     if (FState = esIgnoredRaise) and not(CurrentCommand is TDbgControllerHiddenBreakStepBaseCmd) then
       exit; // wrong command type // should not happen
@@ -2568,6 +2672,9 @@ begin
     then
       exit;
 
+    if (not CurrentProcess.ReadAddress(R8 + 152, TargetSp)) then
+      TargetSp := 0;
+
     // R9 = dispatch: TDispatcherContext
     R9  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(9).NumValue;
     //dispatch.HandlerData
@@ -2597,6 +2704,8 @@ begin
          (Addr = 0)
       then
         Continue;
+      if TargetSp <> 0 then
+        FAddressFrameListSehW64Finally.Add(ImgBase + Addr, TargetSp);
       FBreakPoints[bplSehW64Finally].AddAddress(ImgBase + Addr);
     end;
     {$POP}
@@ -2613,14 +2722,7 @@ begin
     Rcx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue; // rsp at target
     Rdx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(1).NumValue;
     if (Rcx <> 0) and (Rdx <> 0) then begin
-      o := FAddressFrameList.IndexOf(Rdx);
-      if o >= 0 then
-        Frames := FAddressFrameList.Data[o]
-      else
-        Frames := FAddressFrameList.Add(Rdx);
-      if Frames.IndexOf(Rcx) >= 0 then
-        exit;
-      Frames.Add(Rcx);
+      FAddressFrameListSehW64Except.Add(Rdx, Rcx);
       FBreakPoints[bplSehW64Except].AddAddress(Rdx);
       FBreakPoints[bplSehW64Except].SetBreak;
     end;
@@ -2630,17 +2732,7 @@ begin
   if assigned(FBreakPoints[bplSehW64Except]) and FBreakPoints[bplSehW64Except].HasLocation(PC) then begin // always assigned
     debugln(FPDBG_COMMANDS, ['@ bplSehW64Except ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
-    FBreakPoints[bplSehW64Finally].RemoveAllAddresses;
-    o := FAddressFrameList.IndexOf(PC);
-    if o >= 0 then begin
-      Frames := FAddressFrameList.Data[o];
-      Frames.Remove(CurrentThread.GetStackPointerRegisterValue);
-      if Frames.Count = 0 then begin
-        FBreakPoints[bplSehW64Except].RemoveAddress(PC);
-        FAddressFrameList.Delete(o);
-      end;
-    end
-    else
+    if FAddressFrameListSehW64Except.Remove(PC, SP) then
       FBreakPoints[bplSehW64Except].RemoveAddress(PC);
 
     // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
@@ -2666,10 +2758,19 @@ begin
   if assigned(FBreakPoints[bplSehW64Finally]) and FBreakPoints[bplSehW64Finally].HasLocation(PC) then begin // always assigned
     debugln(FPDBG_COMMANDS, ['@ bplSehW64Finally ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
+    if FAddressFrameListSehW64Finally.Remove(PC, SP) then
+      FBreakPoints[bplSehW64Finally].RemoveAddress(PC);
     // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
+
     if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
       exit;
-    FBreakPoints[bplSehW64Finally].RemoveAllAddresses;
+
+    // At the start of a finally the BasePointer is in RCX // reg 2
+    if (ACurCommand is TDbgControllerLineStepBaseCmd) and
+       not CheckCommandFinishesInFrame(CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue)
+    then
+      exit;
+
     // step over proloque
     ACurCommand := TDbgControllerStepOverFirstFinallyLineCmd.Create(DbgController);
     FState := esStepSehFinallyProloque;
