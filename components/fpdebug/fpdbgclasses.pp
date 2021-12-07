@@ -469,6 +469,12 @@ type
     constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
 
+    // Returns the addresses at the given source-filename and line-number.
+    // Searches the program and all libraries. This can lead to multiple hits,
+    // as the application and libraries can share sourcecode but have their own
+    // binary code.
+    function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
+
     function AddBreak(const AFileName: String; ALine: Cardinal; AnEnabled: Boolean = True): TFpInternalBreakpoint; overload;
     function AddBreak(const AFuncName: String; AnEnabled: Boolean = True): TFpDbgBreakpoint; overload;
     function AddrOffset: TDBGPtr; virtual;  // gives the offset between  the loaded addresses and the compiled addresses
@@ -637,6 +643,7 @@ type
     function  FindSymbolScope(AThreadId, AStackFrame: Integer): TFpDbgSymbolScope;
     function  FindProcStartEndPC(const AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
+    function  GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; override;
     function  ContextFromProc(AThreadId, AStackFrame: Integer; AProcSym: TFpSymbol): TFpDbgLocationContext; inline; deprecated 'use TFpDbgSimpleLocationContext.Create';
     function  GetLib(const AHandle: THandle; out ALib: TDbgLibrary): Boolean;
     property  LastLibrariesLoaded: TDbgLibraryArr read GetLastLibrariesLoaded;
@@ -1603,8 +1610,7 @@ var
   i: Integer;
 begin
   Result := nil;
-  if not FDbgInfo.HasInfo then Exit;
-  if FDbgInfo.GetLineAddresses(AFileName, ALine, addr) then begin
+  if GetLineAddresses(AFileName, ALine, addr) then begin
     o := AddrOffset;
     for i := 0 to High(addr) do
       addr[i] := addr[i] - o;
@@ -1655,6 +1661,14 @@ begin
   FreeAndNil(FSymbolTableInfo);
   FreeAndNil(FLoaderList);
   inherited;
+end;
+
+function TDbgInstance.GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
+begin
+  if Assigned(DbgInfo) and DbgInfo.HasInfo then
+    Result := DbgInfo.GetLineAddresses(AFileName, ALine, AResultList)
+  else
+    Result := False;
 end;
 
 function TDbgInstance.FindProcSymbol(AAdress: TDbgPtr): TFpSymbol;
@@ -1951,6 +1965,24 @@ begin
     Result := Inst.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
     if Result then Exit;
   end;
+end;
+
+function TDbgProcess.GetLineAddresses(AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
+var
+  Iterator: TMapIterator;
+  Lib: TDbgLibrary;
+begin
+  Result := inherited;
+
+  Iterator := TMapIterator.Create(FLibMap);
+  while not Iterator.EOM do
+  begin
+    Iterator.GetData(Lib);
+    if Lib.GetLineAddresses(AFileName, ALine, AResultList) then
+      Result := True;
+    Iterator.Next;
+  end;
+  Iterator.Free;
 end;
 
 function TDbgProcess.ContextFromProc(AThreadId, AStackFrame: Integer;
