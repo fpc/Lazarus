@@ -1340,7 +1340,7 @@ begin
     imgReader := nil;
     try
       source := TDbgFileLoader.Create(FExecutableFilename);
-      imgReader := GetImageReader(source, nil, false);
+      imgReader := GetImageReader(source, nil, 0, false);
 
       ATargetInfo := imgReader.TargetInfo;
     finally

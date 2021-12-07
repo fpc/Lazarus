@@ -81,7 +81,7 @@ type
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
-    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); override;
 
@@ -398,12 +398,14 @@ begin
   Result := 'ELF executable';
 end;
 
-constructor TElfDbgSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
+constructor TElfDbgSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 var
   DbgFileName, SourceFileName: String;
   crc: Cardinal;
   NewFileLoader: TDbgFileLoader;
 begin
+  inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
+
   FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := True;
   //FSections.Duplicates := dupError;
@@ -413,6 +415,8 @@ begin
   fOwnSource := OwnSource;
   fElfFile := TElfFile.Create;
   fElfFile.LoadFromFile(FFileLoader);
+
+  SetImageBase(LoadedTargetImageAddr);
 
   LoadSections;
   // check external debug file
@@ -439,8 +443,6 @@ begin
   end;
 
   FTargetInfo := fElfFile.FTargetInfo;
-
-  inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
 destructor TElfDbgSource.Destroy;

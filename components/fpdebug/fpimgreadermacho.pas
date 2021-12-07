@@ -46,7 +46,7 @@ type
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
   public
-    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); override;
     destructor Destroy; override;
   end;
 
@@ -411,7 +411,7 @@ begin
     end;
 end;
 
-constructor TDbgMachoDataSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
+constructor TDbgMachoDataSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 const
   SymbolsSectionName : array [Boolean] of AnsiString = (_symbol, _symbolstrings);
 var
@@ -422,6 +422,8 @@ var
   soffset: int64;
   ssize: int64;
 begin
+  inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
+
   fSource := ASource;
   fOwnSource := OwnSource;
 
@@ -475,8 +477,6 @@ begin
     ParseSubAppleDwarfDataMap(ADebugMap)
   else
     ParseMainAppleDwarfDataMap;
-
-  inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
 destructor TDbgMachoDataSource.Destroy;

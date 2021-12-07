@@ -117,7 +117,7 @@ type
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
-    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; OwnSource: Boolean); virtual;
+    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); virtual;
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
 
     property ImageBase: QWord read FImageBase;
@@ -132,11 +132,13 @@ type
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
     property ReaderErrors: String read FReaderErrors;
 
-    property LoadedTargetImageAddr: TDBGPtr read FLoadedTargetImageAddr write FLoadedTargetImageAddr;
+    // The target (library/process) is loaded/mapped into memory at the
+    // LoadedTargetImageAddr address.
+    property LoadedTargetImageAddr: TDBGPtr read FLoadedTargetImageAddr;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
 
-function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean): TDbgImageReader; overload;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean): TDbgImageReader; overload;
 procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
@@ -178,7 +180,7 @@ end;
    result := (r1.OrgAddr=r2.OrgAddr) and (r1.Length=r2.Length) and (r1.NewAddr=r2.NewAddr);
  end;
 
-function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean): TDbgImageReader;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean): TDbgImageReader;
 var
   i   : Integer;
   cls : TDbgImageReaderClass;
@@ -190,7 +192,7 @@ begin
     cls :=  TDbgImageReaderClass(RegisteredImageReaderClasses[i]);
     try
       if cls.isValid(ASource) then begin
-        Result := cls.Create(ASource, ADebugMap, OwnSource);
+        Result := cls.Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
         ASource.Close;
         Exit;
       end
@@ -497,9 +499,10 @@ begin
   //
 end;
 
-constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
+constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 begin
   inherited Create;
+  FLoadedTargetImageAddr := ALoadedTargetImageAddr;
 end;
 
 procedure TDbgImageReader.AddSubFilesToLoaderList(ALoaderList: TObject;
