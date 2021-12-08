@@ -705,6 +705,14 @@ type
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
     function MapAddressToNewValue(AValue: QWord): QWord;
+    // Calculates an address after relocation while (dynamically) loading a library
+    // into memory, based on the library's ImageBase.
+    // Conceptually it would be better to let the TDbgLibrary take the relocation
+    // into account. But it was chosen to do the relocation during the loading of
+    // the Dwarf-information due to performance reasons. And because of consistency
+    // with the symbol-information. In which the relocation also takes place while
+    // the debug-info is loaded.
+    function CalculateRelocatedAddress(AValue: QWord): QWord; inline;
     // Get start/end addresses of proc
     function GetProcStartEnd(const AAddress: TDBGPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
@@ -4097,6 +4105,7 @@ begin
               then FAddress := PQWord(pbyte(FLineInfoPtr)+1)^
               else FAddress := PLongWord(pbyte(FLineInfoPtr)+1)^;
               FAddress:=FOwner.MapAddressToNewValue(FAddress);
+              FAddress:=FOwner.CalculateRelocatedAddress(FAddress);
             end;
             DW_LNE_define_file: begin
               // don't move pb, it's done at the end by instruction length
@@ -4938,6 +4947,11 @@ begin
     end;
 end;
 
+function TDwarfCompilationUnit.CalculateRelocatedAddress(AValue: QWord): QWord;
+begin
+  Result := Result + FOwner.ImageBase;
+end;
+
 function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out
   AStartPC, AEndPC: TDBGPtr): boolean;
 var
@@ -5217,7 +5231,10 @@ function TDwarfCompilationUnit.ReadAddressValue(AAttribute: Pointer; AForm: Card
 begin
   result := ReadValue(AAttribute, AForm, AValue);
   if result then
+    begin
     AValue := MapAddressToNewValue(AValue);
+    AValue := CalculateRelocatedAddress(AValue);
+    end;
 end;
 
 initialization

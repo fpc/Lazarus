@@ -493,7 +493,7 @@ begin
 
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
             AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+ImageBase),
-              Sect^.Address + Sect^.Size);
+              Sect^.Address + Sect^.Size + ImageBase);
             end;
           {$pop}
         end
@@ -517,7 +517,7 @@ begin
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
             AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+ImageBase),
-              Sect^.Address + Sect^.Size);
+              Sect^.Address + Sect^.Size+ImageBase);
             end;
         end
       end;
