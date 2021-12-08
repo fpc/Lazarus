@@ -1251,15 +1251,10 @@ end;
 
 procedure TMessagesCtrl.SetSelectedLine(AValue: integer);
 // Select the given line, clear possibly existing selections.
-var
-  LineCnt: Integer;
 begin
   Assert(AValue>=-1, 'TMessagesCtrl.SetSelectedLine: AValue < -1.');
   Assert(Assigned(SelectedView), 'TMessagesCtrl.SetSelectedLine: View = Nil.');
-  LineCnt:=SelectedView.GetShownLineCount(false,true)-1;
-  Assert(AValue<=LineCnt, 'TMessagesCtrl.SetSelectedLine: Value '+IntToStr(AValue)
-                        + ' > line count ' + IntToStr(LineCnt));
-  //AValue:=Min(AValue, SelectedView.GetShownLineCount(false,true)-1);
+  AValue:=Min(AValue, SelectedView.GetShownLineCount(false,true)-1);
   if (FSelectedLines.Count>0) and (FSelectedLines[0]=AValue) then
     Exit;
   FSelectedLines.Count:=1;    // One line.
