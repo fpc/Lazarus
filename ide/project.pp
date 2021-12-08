@@ -5405,7 +5405,7 @@ procedure TProject.SetDebuggerBackend(AValue: String);
 begin
   if FDebuggerBackend = AValue then Exit;
   FDebuggerBackend := AValue;
-  Modified := True;
+  SessionModified := True;
 end;
 
 procedure TProject.SetEnableI18NForLFM(const AValue: boolean);
