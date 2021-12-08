@@ -483,7 +483,7 @@ var
 begin
   Loader := TDbgImageLoader.Create(FInfo.hFile);
   if Loader.IsValid then
-    AddToLoaderList(LoaderList)
+    Loader.AddToLoaderList(LoaderList)
   else
     Loader.Free;
 end;
