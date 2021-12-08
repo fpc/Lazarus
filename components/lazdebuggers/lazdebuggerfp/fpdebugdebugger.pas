@@ -2873,9 +2873,7 @@ begin
     bplRtlUnwind, bplStepOut]);
 
   if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
-    EnableBreaks([bplReRaise, bplRtlRestoreContext]);
-  if ACommand in [dcStepOut] then
-    EnableBreaks([bplFpcSpecific]);
+    EnableBreaks([bplReRaise, bplRtlRestoreContext, bplFpcSpecific]);
 
   case st of
     esStoppedAtRaise: begin
