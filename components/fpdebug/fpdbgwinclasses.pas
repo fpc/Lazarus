@@ -478,8 +478,14 @@ begin
 end;
 
 procedure TDbgWinProcess.InitializeLoaders;
+var
+  Loader: TDbgImageLoader;
 begin
-  TDbgImageLoader.Create(FInfo.hFile).AddToLoaderList(LoaderList);
+  Loader := TDbgImageLoader.Create(FInfo.hFile);
+  if Loader.IsValid then
+    AddToLoaderList(LoaderList)
+  else
+    Loader.Free;
 end;
 
 function TDbgWinProcess.CreateWatchPointData: TFpWatchPointData;

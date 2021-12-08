@@ -371,6 +371,8 @@ type
   { tDbgLinuxLibrary }
 
   tDbgLinuxLibrary = class(TDbgLibrary)
+  protected
+    procedure InitializeLoaders; override;
   public
     constructor Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
   end;
@@ -389,6 +391,21 @@ begin
 end;
 
 { tDbgLinuxLibrary }
+
+procedure tDbgLinuxLibrary.InitializeLoaders;
+var
+  Loader: TDbgImageLoader;
+begin
+  Loader := TDbgImageLoader.Create(Name, nil, BaseAddr);
+  // The dynamic-loader (dl) on Linux also loads other stuff then ELF-
+  // formatted libraries.
+  // So it is reasonable likely that the loaded 'library' can not be handled
+  // by the detault readers from the loader.
+  if Loader.IsValid then
+    Loader.AddToLoaderList(LoaderList)
+  else
+    Loader.Free;
+end;
 
 constructor tDbgLinuxLibrary.Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
 begin
@@ -867,8 +884,14 @@ begin
 end;
 
 procedure TDbgLinuxProcess.InitializeLoaders;
+var
+  Loader: TDbgImageLoader;
 begin
-  TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
+  Loader := TDbgImageLoader.Create(Name);
+  if Loader.IsValid then
+    Loader.AddToLoaderList(LoaderList)
+  else
+    Loader.Free;
 end;
 
 function TDbgLinuxProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
