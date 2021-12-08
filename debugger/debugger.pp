@@ -4733,7 +4733,7 @@ begin
     AutoContinueTime:=XMLConfig.GetValue(Path+'AutoContinueTime/Value',0);
     BreakHitCount := XMLConfig.GetValue(Path+'BreakHitCount/Value',0);
 
-    Address:=XMLConfig.GetValue(Path+'Address/Value',0);
+    Address:=XMLConfig.GetValue(Path+'Address/Value',Int64(0)); // shouldb TDBGPtr;
 
     FWatchData := XMLConfig.GetValue(Path+'WatchData/Value', '');
     try ReadStr(XMLConfig.GetValue(Path+'WatchScope/Value', 'wpsGlobal'), FWatchScope);
@@ -4786,7 +4786,7 @@ var
   CurAction: TIDEBreakPointAction;
 begin
   AConfig.SetDeleteValue(APath+'Kind/Value',GetEnumName(TypeInfo(TDBGBreakPointKind), Ord(Kind)), '');
-  AConfig.SetDeleteValue(APath+'Address/Value',Address,0);
+  AConfig.SetDeleteValue(APath+'Address/Value',Address,Int64(0)); // shouldb TDBGPtr;
 
   AConfig.SetDeleteValue(APath+'WatchData/Value', FWatchData, '');
   WriteStr(s{%H-}, FWatchScope);
