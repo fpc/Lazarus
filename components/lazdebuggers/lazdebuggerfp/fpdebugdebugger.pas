@@ -32,7 +32,7 @@ unit FpDebugDebugger;
 interface
 
 uses
-  Classes, SysUtils, fgl, math, process,
+  Classes, {$IfDef WIN64}windows,{$EndIf} SysUtils, fgl, math, process,
   Forms, Dialogs, syncobjs,
   Maps, LazLoggerBase, LazUTF8, lazCollections,
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
@@ -216,8 +216,8 @@ type
     TBreakPointLoc = (
       bplRaise, bplReRaise, bplBreakError, bplRunError,
       bplPopExcept, bplCatches,
-      bplRtlUnwind, bplFpcSpecific,
-      bplSehW64Finally, bplSehW64Except,
+      bplRtlUnwind, bplFpcSpecific, bplRtlRestoreContext,
+      bplSehW64Finally, bplSehW64Except, bplSehW64Unwound,
       bplStepOut  // Step out of Pop/Catches
     );
     TBreakPointLocs = set of TBreakPointLoc;
@@ -2426,13 +2426,18 @@ begin
   FBreakPoints[bplFpcSpecific]   := FDebugger.AddBreak('__FPC_specific_handler', nil, False);
   FBreakPoints[bplSehW64Except]  := FDebugger.AddBreak(0, False);
   FBreakPoints[bplSehW64Finally] := FDebugger.AddBreak(0, False);
+  FBreakPoints[bplSehW64Unwound] := FDebugger.AddBreak(0, False);
   debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.SetSoftwareExceptionBreakpoint ' ]);
 end;
 
 procedure TFpDebugExceptionStepping.DoNtDllLoaded(ALib: TDbgLibrary);
 begin
   debugln(DBG_BREAKPOINTS, ['SetSoftwareExceptionBreakpoint RtlUnwind']);
-  DisableBreaksDirect([bplRtlUnwind]);
+  DisableBreaksDirect([bplRtlUnwind, bplRtlRestoreContext]);
+  {$IfDef WIN64}
+  FreeAndNil(FBreakPoints[bplRtlRestoreContext]);
+  FBreakPoints[bplRtlRestoreContext] := FDebugger.AddBreak('RtlRestoreContext', ALib, False);
+  {$EndIf}
   FBreakPoints[bplRtlUnwind].Free;
   FBreakPoints[bplRtlUnwind] := FDebugger.AddBreak('RtlUnwindEx', ALib, False);
 end;
@@ -2452,6 +2457,8 @@ begin
   // Running in debug thread
   EnableBreaksDirect(FBreakNewEnabled - FBreakEnabled);
   DisableBreaksDirect(FBreakEnabled - FBreakNewEnabled);
+  if assigned(FBreakPoints[bplSehW64Unwound]) then
+    FBreakPoints[bplSehW64Unwound].RemoveAllAddresses;
 end;
 
 procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
@@ -2537,6 +2544,18 @@ begin
     exit;
 
   FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
+
+  PC := CurrentThread.GetInstructionPointerRegisterValue;
+  if Assigned(FBreakPoints[bplSehW64Unwound]) and FBreakPoints[bplSehW64Unwound].HasLocation(PC)
+  then begin
+    FBreakPoints[bplSehW64Unwound].RemoveAllAddresses;
+    AFinishLoopAndSendEvents := AnIsFinished or (FState = esStepToFinally);
+    if AFinishLoopAndSendEvents then begin
+      AnEventType := deFinishedStep; // only step commands can end up here
+      exit;
+    end;
+  end;
+
   if (FState = esSteppingFpcSpecialHandler) and
      (ACurCommand is TDbgControllerStepThroughFpcSpecialHandler) and
      (TDbgControllerStepThroughFpcSpecialHandler(ACurCommand).InteralFinished)
@@ -2561,7 +2580,6 @@ begin
   end;
   DisableBreaksDirect([bplRtlUnwind, bplSehW64Finally]); // bplRtlUnwind must always be unset;
 
-  PC := CurrentThread.GetInstructionPointerRegisterValue;
   SP := CurrentThread.GetStackPointerRegisterValue;
   FAddressFrameListSehW64Except.RemoveOutOfScopeFrames(SP, FBreakPoints[bplSehW64Except]);
   if ACurCommand is TDbgControllerStepOutCmd then
@@ -2712,6 +2730,25 @@ begin
     FBreakPoints[bplSehW64Finally].SetBreak;
   end
   else
+  // bplRtlRestoreContext
+  if assigned(FBreakPoints[bplRtlRestoreContext]) and FBreakPoints[bplRtlRestoreContext].HasLocation(PC) then begin
+    AFinishLoopAndSendEvents := False;
+    if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
+      exit;
+    debugln(FPDBG_COMMANDS, ['@ bplRtlRestoreContext ', DbgSName(CurrentCommand)]);
+    {$IfDef WIN64}
+    // RCX = TContext
+    Rcx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue; // rsp at target
+    if (Rcx <> 0) then begin
+    if (not CurrentProcess.ReadAddress(Rcx + PtrUInt(@PCONTEXT(nil)^.Rip), Addr)) or (Addr = 0) then
+      exit;
+
+      FBreakPoints[bplSehW64Unwound].AddAddress(Addr);
+      FBreakPoints[bplSehW64Unwound].SetBreak;
+    end;
+    {$EndIf}
+  end
+  else
   // bplRtlUnwind
   if assigned(FBreakPoints[bplRtlUnwind]) and FBreakPoints[bplRtlUnwind].HasLocation(PC) then begin
     debugln(FPDBG_COMMANDS, ['@ bplRtlUnwind ', DbgSName(CurrentCommand)]);
@@ -2817,11 +2854,11 @@ begin
   st := FState;
   FState := esNone;
   DisableBreaks([bplPopExcept, bplCatches, bplFpcSpecific,
-    bplReRaise,
+    bplReRaise, bplRtlRestoreContext,
     bplRtlUnwind, bplStepOut]);
 
   if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
-    EnableBreaks([bplReRaise]);
+    EnableBreaks([bplReRaise, bplRtlRestoreContext]);
   if ACommand in [dcStepOut] then
     EnableBreaks([bplFpcSpecific]);
 
