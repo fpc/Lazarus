@@ -244,7 +244,6 @@ begin
 end;
 {$endif}
 
-{$ifdef FPC_HAS_CPSTRING}
 procedure InternalUTF8ToDBCS(const s: string; TargetCodePage: TSystemCodePage;
   SetTargetCodePage: boolean;
   {$IfNDef UseSystemCPConv}const UTF8CharConvFunc: TUnicodeToCharID;{$endif}
@@ -281,27 +280,6 @@ function UTF8ToCP950(const s: string; SetTargetCodePage: boolean): RawByteString
 begin
   InternalUTF8ToDBCS(s,950,SetTargetCodePage{$IfNDef UseSystemCPConv},@UnicodeToCP950{$endif},Result);
 end;
-{$ELSE}
-function UTF8ToCP932(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP932);
-end;
-
-function UTF8ToCP936(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP936);
-end;
-
-function UTF8ToCP949(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP949);
-end;
-
-function UTF8ToCP950(const s: string): string;
-begin
-  Result := UTF8ToDBCS(s, @UnicodeToCP950);
-end;
-{$ENDIF}
 
 function UTF8ToDBCS(const s: string; const UTF8CharConvFunc: TUnicodeToCharID): string;
 var
