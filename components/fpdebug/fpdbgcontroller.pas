@@ -58,10 +58,10 @@ type
   end;
 
   { TDbgControllerContinueCmd }
+  (* Same as no command, but holds the thread that is being debugged / "run" do perform "step to finally/except" *)
 
   TDbgControllerContinueCmd = class(TDbgControllerCmd)
   protected
-    procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
   public
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
@@ -307,6 +307,7 @@ type
     procedure AbortCurrentCommand;
     function Run: boolean;
     procedure Stop;
+    procedure &ContinueRun;
     procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure Next;
@@ -680,12 +681,6 @@ end;
 
 { TDbgControllerContinueCmd }
 
-procedure TDbgControllerContinueCmd.Init;
-begin
-  inherited Init;
-  FThread := nil; // run until any thread has an event
-end;
-
 procedure TDbgControllerContinueCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerContinueCmd.DoContinue: FProcess=AProcess');
@@ -695,7 +690,7 @@ end;
 procedure TDbgControllerContinueCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Finished: boolean);
 begin
-  Finished := (AnEvent<>deInternalContinue); // TODO: always False? will be aborted, if another event terminates the ProcessLoop
+  Finished := False;
 end;
 
 { TDbgControllerStepIntoInstructionCmd }
@@ -1519,6 +1514,11 @@ begin
     FMainProcess.TerminateProcess
   else
     raise Exception.Create('Failed to stop debugging. No main process.');
+end;
+
+procedure TDbgController.&ContinueRun;
+begin
+  InitializeCommand(TDbgControllerContinueCmd.Create(self));
 end;
 
 procedure TDbgController.StepIntoInstr;
