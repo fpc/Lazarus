@@ -82,7 +82,7 @@ type
   private
     FStackFrameInfo: TDbgStackFrameInfo;
     FHiddenBreakpoint: TFpInternalBreakpoint;
-    FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakFrameAddr, FHiddenBreakStackPtrAddr: TDBGPtr;
+    FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakStackPtrAddr: TDBGPtr;
     function GetIsSteppedOut: Boolean;
   protected
     function IsAtHiddenBreak: Boolean; inline;
@@ -742,13 +742,9 @@ begin
   Result := HasHiddenBreak;
   if not Result then
     exit;
-  if (FHiddenBreakInstrPtr = FThread.GetInstructionPointerRegisterValue) then
-    Result := ((FHiddenBreakStackPtrAddr < FThread.GetStackPointerRegisterValue) or
-               (FHiddenBreakFrameAddr < FThread.GetStackBasePointerRegisterValue))
-  else
-    // InstructPtr moved, so SP can be equal
-    Result := ((FHiddenBreakStackPtrAddr <= FThread.GetStackPointerRegisterValue) or
-               (FHiddenBreakFrameAddr < FThread.GetStackBasePointerRegisterValue));
+  (* This is to check, if we have returned from a "call" instruction. Back to the original frame.  *)
+  Result := (FHiddenBreakStackPtrAddr <= FThread.GetStackPointerRegisterValue);
+
   debugln(FPDBG_COMMANDS and Result and (FHiddenBreakpoint <> nil), ['BreakStepBaseCmd.IsAtOrOutOfHiddenBreakFrame: Gone past hidden break = true']);
 end;
 
@@ -756,7 +752,6 @@ procedure TDbgControllerHiddenBreakStepBaseCmd.SetHiddenBreak(AnAddr: TDBGPtr);
 begin
   // The callee may not setup a stackfram (StackBasePtr unchanged). So we use SP to detect recursive hits
   FHiddenBreakStackPtrAddr := FThread.GetStackPointerRegisterValue;
-  FHiddenBreakFrameAddr := FThread.GetStackBasePointerRegisterValue;
   FHiddenBreakInstrPtr := FThread.GetInstructionPointerRegisterValue;
   FHiddenBreakAddr := AnAddr;
   FHiddenBreakpoint := FProcess.AddInternalBreak(AnAddr);
