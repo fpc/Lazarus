@@ -1874,7 +1874,7 @@ var
         else begin
           while TokenEndPtr^ in ['0'..'9'] do inc(TokenEndPtr);
           // identify "2.", but not "[2..3]"  // CurExpr.IsFloatAllowed
-          if (TokenEndPtr^ = DecimalSeparator) and (TokenEndPtr[1] <> '.') then begin
+          if (TokenEndPtr^ = '.') and (TokenEndPtr[1] <> '.') then begin
             inc(TokenEndPtr);
             while TokenEndPtr^ in ['0'..'9'] do inc(TokenEndPtr);
             if TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_'] then
