@@ -192,12 +192,14 @@ type
   private
     FAfterFinCallAddr: TDbgPtr;
     FDone: Boolean;
+    FInteralFinished: Boolean;
   protected
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
     procedure Init; override;
   public
     constructor Create(AController: TDbgController; AnAfterFinCallAddr: TDbgPtr); reintroduce;
+    property InteralFinished: Boolean read FInteralFinished;
   end;
 
   { TFpDebugExceptionStepping }
@@ -1225,20 +1227,27 @@ end;
 procedure TDbgControllerStepThroughFpcSpecialHandler.DoResolveEvent(
   var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean);
 begin
+  AnEvent := deInternalContinue;
+  Finished := False;
+  if FInteralFinished then
+    exit;
+
   if IsAtOrOutOfHiddenBreakFrame then
     RemoveHiddenBreak;
 
-  Finished := IsSteppedOut or FDone or ((not HasHiddenBreak) and (NextInstruction.IsReturnInstruction));
-  if Finished then
-    AnEvent := deFinishedStep
-  else
-  if AnEvent = deFinishedStep then
-    AnEvent := deInternalContinue;
+  FInteralFinished := IsSteppedOut or FDone or ((not HasHiddenBreak) and (NextInstruction.IsReturnInstruction));
+  if FInteralFinished then
+    RemoveHiddenBreak;
 end;
 
 procedure TDbgControllerStepThroughFpcSpecialHandler.InternalContinue(
   AProcess: TDbgProcess; AThread: TDbgThread);
 begin
+  if FInteralFinished then begin
+    CallProcessContinue(False);
+    exit;
+  end;
+
   {$PUSH}{$Q-}{$R-}
   if (AThread = FThread) and
      (NextInstruction.IsCallInstruction) and
@@ -2466,9 +2475,7 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
     sym: TFpSymbol;
     r: Boolean;
   begin
-    if (FState <> esNone) or (not(ACurCommand is TDbgControllerLineStepBaseCmd)) or
-       (ACurCommand.Thread <> CurrentThread)
-    then
+    if (FState <> esNone) or (not(ACurCommand is TDbgControllerLineStepBaseCmd)) then
       exit;
 
     if (pos('fin$', TDbgControllerLineStepBaseCmd(ACurCommand).StartedInFuncName) < 1) then
@@ -2523,12 +2530,16 @@ begin
     end;
   end;
 
-  if CurrentThread = nil then
+  // Needs to be correct thread, do not interfer with other threads
+  if (CurrentThread = nil) or
+     (CurrentCommand = nil) or (CurrentCommand.Thread <> CurrentThread)
+  then
     exit;
 
   FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
-  if (FState = esSteppingFpcSpecialHandler) and AnIsFinished and
-     (ACurCommand is TDbgControllerStepThroughFpcSpecialHandler)
+  if (FState = esSteppingFpcSpecialHandler) and
+     (ACurCommand is TDbgControllerStepThroughFpcSpecialHandler) and
+     (TDbgControllerStepThroughFpcSpecialHandler(ACurCommand).InteralFinished)
   then begin
     if TDbgControllerStepThroughFpcSpecialHandler(ACurCommand).FDone then begin
       FState := esNone;
@@ -2538,7 +2549,6 @@ begin
     end
     else begin
       FState := esStepToFinally;
-      ACurCommand := nil; // run
       EnableBreaksDirect([bplFpcSpecific]);
     end;
     AFinishLoopAndSendEvents := False;
@@ -2565,9 +2575,6 @@ begin
   then begin
     debugln(FPDBG_COMMANDS, ['@ bplPop/bplCatches ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
-    // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
-    if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
-      exit;
 
     //DebugLn(['THreadProcLoop ', dbgs(FState), ' ', DbgSName(CurrentCommand)]);
     DisableBreaksDirect([bplPopExcept, bplCatches, bplFpcSpecific]); // FpcSpecific was not needed -> not SEH based code
@@ -2610,10 +2617,8 @@ begin
   // bplStepOut => part of esIgnoredRaise
   if assigned(FBreakPoints[bplStepOut]) and FBreakPoints[bplStepOut].HasLocation(PC) then begin
     debugln(FPDBG_COMMANDS, ['@ bplStepOut ', DbgSName(CurrentCommand)]);
-    AFinishLoopAndSendEvents := False;
-    if (CurrentCommand = nil) or (CurrentCommand.Thread <> CurrentThread) then
-      exit;
     AFinishLoopAndSendEvents := AnIsFinished;
+    AnEventType := deFinishedStep;
     CurrentProcess.RemoveBreak(FBreakPoints[bplStepOut]);
     FreeAndNil(FBreakPoints[bplStepOut]);
   end
@@ -2622,8 +2627,6 @@ begin
   if assigned(FBreakPoints[bplReRaise]) and FBreakPoints[bplReRaise].HasLocation(PC) then begin
     debugln(FPDBG_COMMANDS, ['@ bplReRaise ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
-    if (CurrentCommand = nil) or (CurrentCommand.Thread <> CurrentThread) then
-      exit;
     EnableBreaksDirect([bplPopExcept, bplCatches, bplFpcSpecific]);
     // if not(FState = esStepToFinally) then
     FState := esIgnoredRaise;
@@ -2634,9 +2637,6 @@ begin
   if assigned(FBreakPoints[bplFpcSpecific]) and FBreakPoints[bplFpcSpecific].HasLocation(PC) then begin
     debugln(FPDBG_COMMANDS, ['@ bplFpcSpecific ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
-    // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
-    if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
-      exit;
     EnableBreaksDirect([bplRtlUnwind]);
 
     if (FState = esIgnoredRaise) and not(CurrentCommand is TDbgControllerHiddenBreakStepBaseCmd) then
@@ -2735,10 +2735,6 @@ begin
     if FAddressFrameListSehW64Except.Remove(PC, SP) then
       FBreakPoints[bplSehW64Except].RemoveAddress(PC);
 
-    // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
-    if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
-      exit;
-
     if (not (FState in [esStepToFinally, esSteppingFpcSpecialHandler])) and
        not(CurrentCommand is TDbgControllerHiddenBreakStepBaseCmd)
     then
@@ -2760,10 +2756,6 @@ begin
     AFinishLoopAndSendEvents := False;
     if FAddressFrameListSehW64Finally.Remove(PC, SP) then
       FBreakPoints[bplSehW64Finally].RemoveAddress(PC);
-    // TODO: esStepToFinally has "CurrentCommand = nil" and is Running, not stepping => thread not avail
-
-    if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
-      exit;
 
     // At the start of a finally the BasePointer is in RCX // reg 2
     if (ACurCommand is TDbgControllerLineStepBaseCmd) and
@@ -2838,6 +2830,7 @@ begin
       if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo] then begin
         FState := esStepToFinally;
         ACommand := dcRun;
+        FDebugger.FDbgController.&ContinueRun;
         EnableBreaks([bplPopExcept, bplCatches, bplFpcSpecific]);
       end
     end;
