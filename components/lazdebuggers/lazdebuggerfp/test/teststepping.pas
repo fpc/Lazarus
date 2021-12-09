@@ -5,7 +5,7 @@ unit TestStepping;
 interface
 
 uses
-  Classes, SysUtils, math, TestDbgControl, TestDbgTestSuites,
+  Classes, SysUtils, math, TestDbgControl, TestDbgTestSuites, TestBase,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, TestOutputLogger,
   FpDebugDebugger, FpDebugDebuggerUtils, DbgIntfDebuggerBase, DbgIntfBaseTypes,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, Forms;
@@ -41,6 +41,9 @@ type
     procedure DoTestStepOverInstr(ANextOnlyStopOnStartLine: Boolean);
     procedure DoTestExceptionStepOutEx(ANextOnlyStopOnStartLine: Boolean);
     procedure DoTestExceptionStepOverEx(ANextOnlyStopOnStartLine: Boolean);
+  public
+    function RunToNextPauseNoLoopBreak(AName: String; ACmd: TDBGCommand;
+      ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
   published
     (* Step over to work with various events happening during the step
        - creation/exit of threads
@@ -125,7 +128,7 @@ begin
   mx := 100; // max steps
   Result := True;
   while not IsAtLocation(ABrkName, AnExitIfNoLineInfo) do begin
-    RunToNextPauseNoInternal(ATestName, dcStepOver);
+    RunToNextPauseNoLoopBreak(ATestName, dcStepOver);
     AssertDebuggerState(dsPause, ATestName);
     dec(mx);
     if mx = 0 then begin
@@ -142,7 +145,7 @@ begin
   Result := True;
   if not IsAtLocation(ABrkName) then
     exit;
-  RunToNextPauseNoInternal(ATestName, dcStepOver);
+  RunToNextPauseNoLoopBreak(ATestName, dcStepOver);
   TestTrue(ATestName+' finally entered at begin (not end) / '+ ABrkName, False, 0, 'ignore');
   AssertDebuggerState(dsPause, ATestName);
   debugln(['XXXXXXXXXXXXXXXXXXXXXXXX STEPPED from END LINE to begin??? ', ABrkName, '  ',ATestName]);
@@ -180,37 +183,37 @@ begin
     ThreadIdMain := dbg.Threads.CurrentThreads.CurrentThreadId;
 
     // Step over a line
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStep', 'AfterStep', -1);
 
     // Step over a longer line
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepLongLine', 'AfterStepLongLine', -1);
 
     // Step over a subroutine call
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepProc', 'AfterStepProc', -1);
 
     // Step over a several subroutine calls
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepProcLong', 'AfterStepProcLong', -1);
 
     // Step over a subroutine call, with sleep
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepSleepProc', 'AfterStepSleepProc', -1);
 
     // Step over a call to sleep
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepSleep', 'AfterStepSleep', -1);
 
     // Step over a subroutine call, with a disabled breakpoint
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterStepBrkDis', 'AfterStepBrkDis', -1);
 
@@ -224,11 +227,11 @@ begin
 
     BrkDis.Enabled := True;
     // Step over a subroutine call, BUT STOP at the breakpoint within it
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkDisabled', 'BrkDisabled', -1);
     // And do another step
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
 
     TestEquals('No Hit for disabled break', 1, BrkDis.HitCount);
@@ -236,13 +239,13 @@ begin
 
 
     // Step over a RECURSIVE subroutine call
-    RunToNextPauseNoInternal('', dcRun);
+    RunToNextPauseNoLoopBreak('', dcRun);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkNested', 'BrkNested', -1);
 
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterNested', 'AfterNested', -1);
 
@@ -250,13 +253,13 @@ begin
     (* The debugger will encounter a thread create event, during the stepping
        This will mean the main-loop's FCurrentThread is the new thread
     *)
-    RunToNextPauseNoInternal('', dcRun);
+    RunToNextPauseNoLoopBreak('', dcRun);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkThreadCreateInStep', 'BrkThreadCreateInStep', -1);
 
     // This test can take longer, as the new thread gets very little scheduler time
     // during the single stepping of the main thread.
-    RunToNextPauseNoInternal('', dcStepOver, 25000);
+    RunToNextPauseNoLoopBreak('', dcStepOver, 25000);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterThreadCreateInStep', 'AfterThreadCreateInStep', -1);
     TestEquals('ThreadId AfterThreadCreateInStep', ThreadIdMain, dbg.Threads.CurrentThreads.CurrentThreadId);
@@ -264,12 +267,12 @@ begin
     (* The debugger will step over a call.
        Other threads will hit the FHiddenBreakpoint
     *)
-    RunToNextPauseNoInternal('', dcRun);
+    RunToNextPauseNoLoopBreak('', dcRun);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkInterfereByThread', 'BrkInterfereByThread', -1);
 
-    RunToNextPauseNoInternal('', dcStepOver);
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     AssertDebuggerState(dsPause);
     TestLocation('At AfterInterfereByThread', 'AfterInterfereByThread', -1);
     TestEquals('ThreadId AfterInterfereByThread', ThreadIdMain, dbg.Threads.CurrentThreads.CurrentThreadId);
@@ -281,21 +284,21 @@ begin
        Step into, and step to endline
        => ensure "end" takes ONE step to leave
     *)
-    RunToNextPauseNoInternal('', dcRun);
+    RunToNextPauseNoLoopBreak('', dcRun);
     TestLocation('At CallStepOverEnd', 'CallStepOverEnd', -1);
-    RunToNextPauseNoInternal('', dcStepInto);
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepInto);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     if not IsAtLocation('StepOverEnd') then  // depends on "begin" was code or not
-      RunToNextPauseNoInternal('', dcStepOver);
+      RunToNextPauseNoLoopBreak('', dcStepOver);
 
-    RunToNextPauseNoInternal('', dcStepInto);
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepInto);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     if not IsAtLocation('StepOverEnd') then  // depends on "begin" was code or not
-      RunToNextPauseNoInternal('', dcStepOver);
+      RunToNextPauseNoLoopBreak('', dcStepOver);
 
     TestLocation('At StepOverEnd', 'StepOverEnd', -1);
-    RunToNextPauseNoInternal('', dcStepOver);
-    RunToNextPauseNoInternal('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
+    RunToNextPauseNoLoopBreak('', dcStepOver);
     TestLocation('At AfterCallStepOverEnd', 'AfterCallStepOverEnd', -1);
 
 
@@ -440,7 +443,7 @@ begin
     TestEquals('No Hit for skipped break',  1, BrkHitCnt.HitCount);
 
 
-    RunToNextPauseNoInternal('', dcRun);
+    RunToNextPauseNoLoopBreak('', dcRun);
     AssertDebuggerState(dsPause);
     TestLocation('At BrkNested', 'BrkNested', -1);
 
@@ -487,15 +490,15 @@ begin
 
     THookedFpDebugDebugger(dbg).LockRelCount := 0;
     TstName := ' Step';
-    RunToNextPauseNoInternal(TestName, dcStepOver);
+    RunToNextPauseNoLoopBreak(TestName, dcStepOver);
     TestLocation(TstName+': CurLine ', 'BrkStep3Fin_A', -1);
     //TestLoopCount(TstName+': BrkStep3Fin_A');
 
-    RunToNextPauseNoInternal(TestName, dcStepOut);
+    RunToNextPauseNoLoopBreak(TestName, dcStepOut);
     TestLocation(TstName+': CurLine ', 'BrkStep3FinOuter_A', -1);
     //TestLoopCount(TstName+': BrkStep3FinOuter_A');
 
-    RunToNextPauseNoInternal(TestName, dcStepOut);
+    RunToNextPauseNoLoopBreak(TestName, dcStepOut);
     TestLocation(TstName+': CurLine ', 'BrkStepMainExcept1', -1, 1);
     //TestLoopCount(TstName+': BrkStepMainExcept1');
 
@@ -565,7 +568,7 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
       StepOverToLine(TstName, 'BrkStep3Fin_B_END', True);
 
     TstName := AName + ' Run to Finally C';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     TestLocation(TstName+': CurLine ', 'BrkStep3Fin_C', -1);
 
     if (ATestAppRecStep = 2) and (not ATestRaiseSkipped) then
@@ -574,7 +577,7 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
       StepOverToLine(TstName, 'BrkStep3Fin_C_END', True);
 
     TstName := AName + ' Run to Finally A(outer)';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     //StepIfAtLine(TstName, 'BrkStep3Fin_IMPLICIT'); // 32 bit
     //StepIfAtLine(TstName, 'BrkStep3Fin_IMPLICIT_1');
     TestLocation(TstName+': CurLine ', 'BrkStep3FinOuter_A', -1);
@@ -585,7 +588,7 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
       StepOverToLine(TstName, 'BrkStep3FinOuter_A_END', True);
 
     TstName := AName + ' Run to Finally B(outer)';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     TestLocation(TstName+': CurLine ', 'BrkStep3FinOuter_B', -1);
 
     //if (ATestAppRecStep = 5) and (not ATestRaiseSkipped) then
@@ -594,7 +597,7 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
       StepOverToLine(TstName, 'BrkStep3FinOuter_B_END', True);
 
     TstName := AName + ' Run to Finally C(outer)';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     TestLocation(TstName+': CurLine ', 'BrkStep3FinOuter_C', -1);
 
     if (ATestAppRecStep = 4) and (not ATestRaiseSkipped) then
@@ -610,39 +613,39 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
     TstName := AName + ' Run to raise';
     FGotExceptCount := 0;
     FContinue := False;
-    RunToNextPauseNoInternal(TstName, dcRun);
+    RunToNextPauseNoLoopBreak(TstName, dcRun);
     TestEquals(TstName+': Got 1 exceptions: ', 1, FGotExceptCount);
 //    TestLocation(TstName+': CurLine ', 'BrkMyRaise', -1);
 
     TstName := AName + ' Run to except fin';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to fin
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to fin
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept_Finally', -1);
 
     // NESTED
     TstName := AName + ' Run to raise nested';
     FGotExceptCount := 0;
     FContinue := False;
-    RunToNextPauseNoInternal(TstName, dcRun);
+    RunToNextPauseNoLoopBreak(TstName, dcRun);
     TestEquals(TstName+': Got 1 exceptions: ', 1, FGotExceptCount);
 //    TestLocation(TstName+': CurLine ', 'BrkMyRaise', -1);
 
     TstName := AName + ' Run to except fin nested';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to fin
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to fin
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept_Finally', -1);
 
     StepOverToLine(TstName,'BrkStepNestedExcept_Finally_END', True);
 
     TstName := AName + ' Run to except nested';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept', -1, 1);
 
     StepOverToLine(TstName,'BrkStepNestedExcept_END', True);
     // END NESTED
 
     TstName := AName + ' Run back except fin';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step back to end
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step back to end
     StepIfAtLine(TstName, 'BrkStepNestedExcept_TRY'); // may step to "try"
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step back to finaly
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step back to finaly
     //if not ANextOnlyStopOnStartLine then
     //  StepIfAtLine(TstName, 'BrkStepNestedExcept_Finally_BEFORE'); // TODO: XXXXX StepOver may stop at the step out line.
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept_Finally_AFTER', -1);
@@ -650,10 +653,10 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
     StepOverToLine(TstName,'BrkStepNestedExcept_Finally_END', True);
 
     TstName := AName + ' Run to except';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept', -1, 1);
 
-    RunToNextPauseNoInternal(TstName, dcStepOut);  // Step out
+    RunToNextPauseNoLoopBreak(TstName, dcStepOut);  // Step out
   end;
 
   procedure ExpectNestedExcept_Ignore(AName: String);
@@ -663,12 +666,12 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
     TstName := AName + ' Run to raise';
     FGotExceptCount := 0;
     FContinue := False;
-    RunToNextPauseNoInternal(TstName, dcRun);
+    RunToNextPauseNoLoopBreak(TstName, dcRun);
     TestEquals(TstName+': Got 1 exceptions: ', 1, FGotExceptCount);
 //    TestLocation(TstName+': CurLine ', 'BrkMyRaise', -1);
 
     TstName := AName + ' Run to except fin';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to fin
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to fin
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept_Finally', -1);
 
     // NESTED
@@ -683,11 +686,11 @@ procedure TTestStepping.DoTestExceptionStepOverEx(
     StepOverToLine(TstName,'BrkStepNestedExcept_Finally_END', True);
 
     TstName := AName + ' Run to except';
-    RunToNextPauseNoInternal(TstName, dcStepOver);  // Step to next finally
+    RunToNextPauseNoLoopBreak(TstName, dcStepOver);  // Step to next finally
     TestLocation(TstName+': CurLine ', 'BrkStepNestedExcept', -1, 1);
 
     //StepOverToLine(TstName,'BrkStepNestedExcept_END', True);
-    RunToNextPauseNoInternal(TstName, dcStepOut);  // Step out
+    RunToNextPauseNoLoopBreak(TstName, dcStepOut);  // Step out
 
   end;
 
@@ -744,6 +747,17 @@ begin
   end;
 
   AssertTestErrors;
+end;
+
+function TTestStepping.RunToNextPauseNoLoopBreak(AName: String;
+  ACmd: TDBGCommand; ATimeOut: Integer; AWaitForInternal: Boolean): Boolean;
+begin
+  THookedFpDebugDebugger(dbg).LockRelCount := 0;
+  Result := RunToNextPauseNoInternal(AName, ACmd, ATimeOut,
+      AWaitForInternal);
+
+  // LockRelease called in 2 * DoState / 1 * DebugLoopFinished
+  TestEquals(AName+' - lock cnt', 3, THookedFpDebugDebugger(dbg).LockRelCount);
 end;
 
 

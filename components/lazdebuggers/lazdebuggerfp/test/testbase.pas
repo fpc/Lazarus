@@ -10,10 +10,20 @@ uses
   FpDebugDebugger, Dialogs, Forms,
   FpDbgDwarfFreePascal;
 
+type
+
+  { THookedFpDebugDebugger }
+
+  THookedFpDebugDebugger = class(TFpDebugDebugger)
+  protected
+    procedure LockRelease; override;
+  public
+    LockRelCount: Integer;
+  end;
+
 implementation
 
 type
-
   { TTestFpDebugDebugger }
 
   TTestFpDebugDebugger = class(TTestDbgDebugger)
@@ -74,6 +84,14 @@ begin
     Result := Copy(AppDir, 1, p - 1);
 end;
 
+{ THookedFpDebugDebugger }
+
+procedure THookedFpDebugDebugger.LockRelease;
+begin
+  inc(LockRelCount);
+  inherited LockRelease;
+end;
+
 { TTestFpDebugDebugger }
 
 procedure TTestFpDebugDebugger.DoBetweenWaitForFinish;
@@ -87,7 +105,7 @@ function TTestFpDebugDebugger.StartDebugger(AppDir, TestExeName: String
   ): Boolean;
 begin
   Result := False;
-  FLazDebugger := TFpDebugDebugger.Create('');
+  FLazDebugger := THookedFpDebugDebugger.Create('');
   //FLazDebugger.OnDbgOutput  := @InternalDbgOutPut;
   //FLazDebugger.OnFeedback := @InternalFeedBack;
   //FLazDebugger.OnDbgEvent:=@InternalDbgEvent;
