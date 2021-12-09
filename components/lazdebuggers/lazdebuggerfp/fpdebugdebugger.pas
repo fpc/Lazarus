@@ -2537,13 +2537,14 @@ begin
     end;
   end;
 
+  if (CurrentThread <> nil) then
+    FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
+
   // Needs to be correct thread, do not interfer with other threads
   if (CurrentThread = nil) or
      (CurrentCommand = nil) or (CurrentCommand.Thread <> CurrentThread)
   then
     exit;
-
-  FDebugger.FDbgController.DefaultContext; // Make sure it is avail and cached / so it can be called outside the thread
 
   PC := CurrentThread.GetInstructionPointerRegisterValue;
   if Assigned(FBreakPoints[bplSehW64Unwound]) and FBreakPoints[bplSehW64Unwound].HasLocation(PC)
