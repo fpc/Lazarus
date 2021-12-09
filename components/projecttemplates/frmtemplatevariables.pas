@@ -94,7 +94,7 @@ procedure TProjectVariablesForm.SetVariables(const AValue: TStrings);
 
 Var
   N,V : String;
-  I : Integer;
+  I,J : Integer;
   
 begin
   FVariables:=AValue;
@@ -108,12 +108,19 @@ begin
     SGVariables.RowCount:=FVariables.Count+1;
     For I:=1 to FVariables.Count do
       begin
-      V:='';
-      N:='';
       FVariables.GetNameValue(I-1,N,V);
       SGVariables.Cells[0,I]:=N;
-      SGVariables.Cells[1,I]:='';
-      SGVariables.Cells[2,I]:=V;
+      J:=Pos('|',V);
+      if J>0 then
+        begin
+        SGVariables.Cells[1,I]:=copy(V,J+1,Length(V));
+        SGVariables.Cells[2,I]:=copy(V,1,J-1);
+        end
+      else
+        begin
+        SGVariables.Cells[1,I]:='';
+        SGVariables.Cells[2,I]:=V;
+        end;
       end;
     end;
 end;
