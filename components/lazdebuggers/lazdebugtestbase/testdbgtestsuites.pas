@@ -99,6 +99,9 @@ type
     Procedure TestCompile(const Prg: TCommonSource; out ExeName: string; const UsesDirs: array of TUsesDir;
                           NamePostFix: String=''; ExtraArgs: String=''); overload;
 
+    function RunToNextPauseTestInternal(AName: String; AnInternalCntExp: Integer; ACmd: TDBGCommand; ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
+    function RunToNextPauseNoInternal(AName: String; ACmd: TDBGCommand; ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
+
     // Logging
     procedure LogText(const s: string; CopyToTestLogger: Boolean = False);
     procedure LogError(const s: string; CopyToTestLogger: Boolean = False);
@@ -929,6 +932,23 @@ procedure TDBGTestCase.TestCompile(const Prg: TCommonSource; out
 begin
   Prg.Save(AppDir);
   TestCompile(Prg.FullFileName, ExeName, UsesDirs, NamePostFix, ExtraArgs);
+end;
+
+function TDBGTestCase.RunToNextPauseTestInternal(AName: String;
+  AnInternalCntExp: Integer; ACmd: TDBGCommand; ATimeOut: Integer;
+  AWaitForInternal: Boolean): Boolean;
+begin
+  Debugger.DebuggerStateCount[dsInternalPause] := 0;
+  Result := Debugger.RunToNextPause(ACmd, ATimeOut, AWaitForInternal);
+  TestEquals(AName + ' ' + dbgs(ACmd) + ' - no internal pause', AnInternalCntExp, Debugger.DebuggerStateCount[dsInternalPause]);
+end;
+
+function TDBGTestCase.RunToNextPauseNoInternal(AName: String;
+  ACmd: TDBGCommand; ATimeOut: Integer; AWaitForInternal: Boolean): Boolean;
+begin
+  Debugger.DebuggerStateCount[dsInternalPause] := 0;
+  Result := Debugger.RunToNextPause(ACmd, ATimeOut, AWaitForInternal);
+  TestEquals(AName + ' ' + dbgs(ACmd) + ' - no internal pause', 0, Debugger.DebuggerStateCount[dsInternalPause]);
 end;
 
 { TDBGTestWrapper }

@@ -92,12 +92,16 @@ type
     FThreads: TTestThreadsMonitor;
     FRegisters: TTestRegistersMonitor;
     FTestBreakPoints: TStringList;
+    FDebuggerStateCounts: array[TDBGState] of integer;
 
     function GetCpuBitTypes: TCpuBitTypes;
+    function GetDebuggerStateCount(AState: TDBGState): Integer;
     function GetSymbolTypes: TSymbolTypes;
+    procedure SetDebuggerStateCount(AState: TDBGState; AValue: Integer);
   protected
     FLazDebugger: TDebuggerIntf;
 
+    procedure DoDebuggerState(ADebugger: TDebuggerIntf; AOldState: TDBGState);
     procedure DoBetweenWaitForFinish; virtual;
   public
     function MatchesCompiler(ACompiler: TTestDbgCompiler): Boolean; virtual;
@@ -111,6 +115,7 @@ type
   public
     function StartDebugger(AppDir, TestExeName: String): boolean; virtual;
     procedure FreeDebugger;
+    procedure ClearDbgStateCounts;
     function RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
     function WaitForFinishRun(ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
 
@@ -122,6 +127,7 @@ type
     procedure CleanAfterTestDone; virtual;
 
     property LazDebugger: TDebuggerIntf read FLazDebugger write FLazDebugger;
+    property DebuggerStateCount[AState: TDBGState]: Integer read GetDebuggerStateCount write SetDebuggerStateCount;
 
     property CallStack: TTestCallStackMonitor read FCallStack;
     property Disassembler: TBaseDisassembler read FDisassembler;
@@ -329,9 +335,26 @@ begin
   Result := FExternalExeInfo.CpuBitTypes;
 end;
 
+function TTestDbgDebugger.GetDebuggerStateCount(AState: TDBGState): Integer;
+begin
+  Result := FDebuggerStateCounts[AState];
+end;
+
+procedure TTestDbgDebugger.DoDebuggerState(ADebugger: TDebuggerIntf;
+  AOldState: TDBGState);
+begin
+  FDebuggerStateCounts[ADebugger.State] := FDebuggerStateCounts[ADebugger.State] + 1;
+end;
+
 function TTestDbgDebugger.GetSymbolTypes: TSymbolTypes;
 begin
   Result := FExternalExeInfo.SymbolTypes;
+end;
+
+procedure TTestDbgDebugger.SetDebuggerStateCount(AState: TDBGState;
+  AValue: Integer);
+begin
+  FDebuggerStateCounts[AState] := AValue;
 end;
 
 procedure TTestDbgDebugger.DoBetweenWaitForFinish;
@@ -371,6 +394,8 @@ begin
   //FSignals.Master := ADebugger.Signals;
   FRegisters.Supplier := ADebugger.Registers;
   ADebugger.Exceptions := FExceptions;
+
+  ADebugger.OnState  := @DoDebuggerState;
 end;
 
 procedure TTestDbgDebugger.ClearDebuggerMonitors;
@@ -415,6 +440,14 @@ begin
   end;
   ClearDebuggerMonitors;
   FreeAndNil(FLazDebugger);
+end;
+
+procedure TTestDbgDebugger.ClearDbgStateCounts;
+var
+  i: TDBGState;
+begin
+  for i in TDBGState do
+    FDebuggerStateCounts[i] := 0;
 end;
 
 function TTestDbgDebugger.RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer;
