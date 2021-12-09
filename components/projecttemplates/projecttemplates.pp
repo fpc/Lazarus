@@ -287,6 +287,7 @@ procedure TProjectTemplate.InitFromDir(const DirName: String);
 Var
   L : TStringList;
   FN : String;
+  sr: TSearchRec;
   
 begin
   FDirectory:=IncludeTrailingPathDelimiter(DirName);
@@ -298,6 +299,13 @@ begin
       With TMemInifile.Create(FN) do
         try
           FProjectFile:=ReadString(SProject,KeyProjectFile,FProjectFile);
+          If Not FileExists(FDirectory+FProjectFile+'.lpi') then
+            begin
+              If (FindFirstUTF8(FDirectory+'*.lpi',0,sr)=0)
+              and FileExistsUTF8(FDirectory+sr.Name) then
+                FProjectFile:=ExtractFileNameOnly(sr.Name);
+              FindClose(sr);
+            end;
           FName:=ReadString(SProject,KeyName,DirName);
           FAuthor:=ReadString(SProject,KeyAuthor,'');
           FDescription:=ReadString(SProject,KeyDescription,'');
