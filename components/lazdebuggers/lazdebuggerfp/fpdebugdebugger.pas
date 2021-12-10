@@ -191,14 +191,14 @@ type
   TDbgControllerStepThroughFpcSpecialHandler = class(TDbgControllerStepOverInstructionCmd)
   private
     FAfterFinCallAddr: TDbgPtr;
-    FDone: Boolean;
+    FDone, FIsLeave: Boolean;
     FInteralFinished: Boolean;
   protected
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
     procedure InternalContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
     procedure Init; override;
   public
-    constructor Create(AController: TDbgController; AnAfterFinCallAddr: TDbgPtr); reintroduce;
+    constructor Create(AController: TDbgController; AnAfterFinCallAddr: TDbgPtr; AnIsLeave: Boolean); reintroduce;
     property InteralFinished: Boolean read FInteralFinished;
   end;
 
@@ -220,6 +220,14 @@ type
       bplRtlUnwind, bplFpcSpecific, bplRtlRestoreContext,
       bplSehW64Finally, bplSehW64Except, bplSehW64Unwound,
       {$ENDIF}
+      {$IFDEF MSWINDOWS} // 32 bit or WOW
+      bplFpcExceptHandler,
+      bplFpcFinallyHandler,
+      bplFpcLeaveHandler,
+      bplSehW32Except,
+      bplSehW32Finally,
+      {$ENDIF}
+
       bplStepOut  // Step out of Pop/Catches
     );
     TBreakPointLocs = set of TBreakPointLoc;
@@ -257,8 +265,14 @@ type
     FBreakPoints: array[TBreakPointLoc] of TFpDbgBreakpoint;
     FBreakEnabled: TBreakPointLocs;
     FBreakNewEnabled: TBreakPointLocs;
+    {$IFDEF WIN64}
     FAddressFrameListSehW64Except,
     FAddressFrameListSehW64Finally: TAddressFrameList;
+    {$ENDIF}
+    {$IFDEF MSWINDOWS}
+    FAddressFrameListSehW32Except: TAddressFrameList;
+    FAddressFrameListSehW32Finally: TAddressFrameList;
+    {$ENDIF}
     FState: TExceptStepState;
     function GetCurrentCommand: TDbgControllerCmd; inline;
     function GetCurrentProcess: TDbgProcess; inline;
@@ -1172,19 +1186,29 @@ var
   Instr: TDbgAsmInstruction;
 begin
 {
+32bit
+00000000004321D3 89E8                     mov eax,ebp
+00000000004321D5 E866FEFFFF               call -$0000019A
+
+64bit
 00000001000374AE 4889C1                   mov rcx,rax
 00000001000374B1 488D15D3FFFFFF           lea rdx,[rip-$0000002D]
 00000001000374B8 4989E8                   mov rax,rbp
 00000001000374BB E89022FEFF               call -$0001DD70
-
 }
   if (AThread = FThread) then begin
     Instr := NextInstruction;
     if Instr is TX86AsmInstruction then begin
       case TX86AsmInstruction(Instr).X86OpCode of
         OPmov:
-          if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'RBP') = 0 then
-            FFinState := fsMov;
+          if FProcess.Mode = dm32 then begin
+            if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'EBP') = 0 then
+              FFinState := fsMov;
+          end
+          else begin
+            if CompareText(TX86AsmInstruction(Instr).X86Instruction.Operand[2].Value, 'RBP') = 0 then
+              FFinState := fsMov;
+          end;
         OPcall:
           if FFinState = fsMov then begin
             CheckForCallAndSetBreak;
@@ -1239,8 +1263,12 @@ begin
     RemoveHiddenBreak;
 
   FInteralFinished := IsSteppedOut or FDone or ((not HasHiddenBreak) and (NextInstruction.IsReturnInstruction));
-  if FInteralFinished then
+  if FInteralFinished then begin
     RemoveHiddenBreak;
+    Finished := FIsLeave;
+    if Finished then
+      AnEvent := deFinishedStep;
+  end;
 end;
 
 procedure TDbgControllerStepThroughFpcSpecialHandler.InternalContinue(
@@ -1273,9 +1301,10 @@ begin
 end;
 
 constructor TDbgControllerStepThroughFpcSpecialHandler.Create(
-  AController: TDbgController; AnAfterFinCallAddr: TDbgPtr);
+  AController: TDbgController; AnAfterFinCallAddr: TDbgPtr; AnIsLeave: Boolean);
 begin
   FAfterFinCallAddr := AnAfterFinCallAddr;
+  FIsLeave := AnIsLeave;
   inherited Create(AController);
 end;
 
@@ -2417,15 +2446,27 @@ end;
 constructor TFpDebugExceptionStepping.Create(ADebugger: TFpDebugDebugger);
 begin
   FDebugger := ADebugger;
+  {$IFDEF WIN64}
   FAddressFrameListSehW64Except := TAddressFrameList.Create(True);
   FAddressFrameListSehW64Finally := TAddressFrameList.Create(True);
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  FAddressFrameListSehW32Except:= TAddressFrameList.Create(True);
+  FAddressFrameListSehW32Finally:= TAddressFrameList.Create(True);
+  {$ENDIF}
 end;
 
 destructor TFpDebugExceptionStepping.Destroy;
 begin
   inherited Destroy;
+  {$IFDEF WIN64}
   FAddressFrameListSehW64Except.Destroy;
   FAddressFrameListSehW64Finally.Destroy;
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  FAddressFrameListSehW32Except.Destroy;
+  FAddressFrameListSehW32Finally.Destroy;
+  {$ENDIF}
 end;
 
 procedure TFpDebugExceptionStepping.DoProcessLoaded;
@@ -2439,24 +2480,38 @@ begin
   FBreakPoints[bplReRaise]       := FDebugger.AddBreak('FPC_RERAISE', nil,            False);
   FBreakPoints[bplPopExcept]     := FDebugger.AddBreak('FPC_POPADDRSTACK', nil,       False);
   FBreakPoints[bplCatches]       := FDebugger.AddBreak('FPC_CATCHES', nil,            False);
+  {$IFDEF MSWINDOWS}
+  if CurrentProcess.Mode = dm32 then begin
+    FBreakPoints[bplFpcExceptHandler]  := FDebugger.AddBreak('__FPC_except_handler', nil,  False);
+    FBreakPoints[bplFpcFinallyHandler] := FDebugger.AddBreak('__FPC_finally_handler', nil, False);
+    FBreakPoints[bplFpcLeaveHandler]   := FDebugger.AddBreak('_FPC_leave', nil, False);
+    FBreakPoints[bplSehW32Except]      := FDebugger.AddBreak(0, False);
+    FBreakPoints[bplSehW32Finally]     := FDebugger.AddBreak(0, False);
   {$IfDef WIN64}
-  FBreakPoints[bplFpcSpecific]   := FDebugger.AddBreak('__FPC_specific_handler', nil, False);
-  FBreakPoints[bplSehW64Except]  := FDebugger.AddBreak(0, False);
-  FBreakPoints[bplSehW64Finally] := FDebugger.AddBreak(0, False);
-  FBreakPoints[bplSehW64Unwound] := FDebugger.AddBreak(0, False);
+  end
+  else
+  if CurrentProcess.Mode = dm64 then begin
+    FBreakPoints[bplFpcSpecific]   := FDebugger.AddBreak('__FPC_specific_handler', nil, False);
+    FBreakPoints[bplSehW64Except]  := FDebugger.AddBreak(0, False);
+    FBreakPoints[bplSehW64Finally] := FDebugger.AddBreak(0, False);
+    FBreakPoints[bplSehW64Unwound] := FDebugger.AddBreak(0, False);
   {$EndIf}
+  end;
+  {$ENDIF}
   debuglnExit(DBG_BREAKPOINTS, ['<< TFpDebugDebugger.SetSoftwareExceptionBreakpoint ' ]);
 end;
 
 procedure TFpDebugExceptionStepping.DoNtDllLoaded(ALib: TDbgLibrary);
 begin
   {$IFDEF WIN64}
-  debugln(DBG_BREAKPOINTS, ['SetSoftwareExceptionBreakpoint RtlUnwind']);
-  DisableBreaksDirect([bplRtlUnwind, bplRtlRestoreContext]);
-  FreeAndNil(FBreakPoints[bplRtlRestoreContext]);
-  FBreakPoints[bplRtlRestoreContext] := FDebugger.AddBreak('RtlRestoreContext', ALib, False);
-  FBreakPoints[bplRtlUnwind].Free;
-  FBreakPoints[bplRtlUnwind] := FDebugger.AddBreak('RtlUnwindEx', ALib, False);
+  if CurrentProcess.Mode = dm64 then begin
+    debugln(DBG_BREAKPOINTS, ['SetSoftwareExceptionBreakpoint RtlUnwind']);
+    DisableBreaksDirect([bplRtlUnwind, bplRtlRestoreContext]);
+    FreeAndNil(FBreakPoints[bplRtlRestoreContext]);
+    FBreakPoints[bplRtlRestoreContext] := FDebugger.AddBreak('RtlRestoreContext', ALib, False);
+    FBreakPoints[bplRtlUnwind].Free;
+    FBreakPoints[bplRtlUnwind] := FDebugger.AddBreak('RtlUnwindEx', ALib, False);
+  end;
   {$ENDIF}
 end;
 
@@ -2497,11 +2552,11 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
       Result := TDbgControllerHiddenBreakStepBaseCmd(CurrentCommand).StoredStackFrameInfo.StoredStackFrame <= AFrameAddr;
   end;
 
-  {$IFDEF WIN64}
+  {$IFDEF MSWINDOWS}
   procedure CheckSteppedOutFromW64SehFinally;
   var
     sym: TFpSymbol;
-    r: Boolean;
+    r, IsLeave: Boolean;
   begin
     if (FState <> esNone) or (not(ACurCommand is TDbgControllerLineStepBaseCmd)) then
       exit;
@@ -2510,20 +2565,30 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
       exit;
 
     if (not TDbgControllerLineStepBaseCmd(ACurCommand).IsSteppedOut) then begin
+      {$IFDEF WIN64}
       EnableBreaksDirect([bplFpcSpecific]);
+      {$ENDIF}
       exit;
     end;
 
+    IsLeave := False;
     sym := CurrentProcess.FindProcSymbol(CurrentThread.GetInstructionPointerRegisterValue);
-    r := (sym <> nil) and (CompareText(sym.Name, '__FPC_SPECIFIC_HANDLER') <> 0) and
-         (sym.FileName <> '');
+    if CurrentProcess.Mode = dm32 then begin
+      IsLeave := (CompareText(sym.Name, '_FPC_LEAVE') = 0);
+      r := (sym <> nil) and (sym.FileName <> '') and
+           (not IsLeave) and
+           (CompareText(sym.Name, '__FPC_FINALLY_HANDLER') <> 0);
+    end
+    else
+      r := (sym <> nil) and (CompareText(sym.Name, '__FPC_SPECIFIC_HANDLER') <> 0) and
+           (sym.FileName <> '');
     sym.ReleaseReference;
     if r then
       exit;
 
     FState := esSteppingFpcSpecialHandler;
     AFinishLoopAndSendEvents := False;
-    ACurCommand := TDbgControllerStepThroughFpcSpecialHandler.Create(DbgController, CurrentThread.GetInstructionPointerRegisterValue);
+    ACurCommand := TDbgControllerStepThroughFpcSpecialHandler.Create(DbgController, CurrentThread.GetInstructionPointerRegisterValue, IsLeave);
   end;
   {$ENDIF}
 
@@ -2536,12 +2601,16 @@ procedure TFpDebugExceptionStepping.ThreadProcessLoopCycle(
 const
   MaxFinallyHandlerCnt = 256; // more finally in a single proc is not probable....
 var
-  StepOutStackPos, ReturnAddress, Base, Addr, PC: TDBGPtr;
+  StepOutStackPos, ReturnAddress, PC: TDBGPtr;
   {$IFDEF WIN64}
-  Rdx, Rcx, R8, R9, SP, TargetSp, HData, ImgBase: TDBGPtr;
+  Rdx, Rcx, R8, R9, TargetSp, HData, ImgBase: TDBGPtr;
   i: Integer;
   EFlags, Cnt: Cardinal;
   FinallyData: Array of array [0..3] of DWORD; //TScopeRec
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  Base, Addr, SP: TDBGPtr;
+  Eax: TDBGPtr;
   {$ENDIF}
   o: Integer;
   Frames: TFrameList;
@@ -2586,11 +2655,14 @@ begin
   end;
   {$ENDIF}
 
-  {$IFDEF WIN64}
   if (FState = esSteppingFpcSpecialHandler) and
      (ACurCommand is TDbgControllerStepThroughFpcSpecialHandler) and
      (TDbgControllerStepThroughFpcSpecialHandler(ACurCommand).InteralFinished)
   then begin
+    if AnIsFinished then begin
+      exit; // stepped out of _FPC_LEAVE;
+    end
+    else
     if TDbgControllerStepThroughFpcSpecialHandler(ACurCommand).FDone then begin
       FState := esNone;
       if ACurCommand.Thread = CurrentThread then
@@ -2607,9 +2679,8 @@ begin
     exit;
   end
   else
-  {$ENDIF}
   if CurrentProcess.CurrentBreakpoint = nil then begin
-    {$IFDEF WIN64}
+    {$IFDEF MSWINDOWS}
     CheckSteppedOutFromW64SehFinally;
     {$ENDIF}
     exit;
@@ -2618,8 +2689,10 @@ begin
   DisableBreaksDirect([bplRtlUnwind, bplSehW64Finally]); // bplRtlUnwind must always be unset;
   {$ENDIF}
 
-  {$IFDEF WIN64}
+  {$IFDEF MSWINDOWS}
   SP := CurrentThread.GetStackPointerRegisterValue;
+  {$ENDIF}
+  {$IFDEF WIN64}
   FAddressFrameListSehW64Except.RemoveOutOfScopeFrames(SP, FBreakPoints[bplSehW64Except]);
   if ACurCommand is TDbgControllerStepOutCmd then
     FAddressFrameListSehW64Finally.RemoveOutOfScopeFrames(SP+1, FBreakPoints[bplSehW64Finally]) // include current frame
@@ -2689,6 +2762,114 @@ begin
     // if not(FState = esStepToFinally) then
     FState := esIgnoredRaise;
   end
+  {$IFDEF MSWINDOWS}
+  (* ***** Win32 SEH Except ***** *)
+  else
+  if assigned(FBreakPoints[bplSehW32Except]) and FBreakPoints[bplSehW32Except].HasLocation(PC) then begin
+    debugln(FPDBG_COMMANDS, ['@ bplSehW32Except ', DbgSName(CurrentCommand)]);
+    AFinishLoopAndSendEvents := False;
+
+    //if (not (FState in [esStepToFinally])) and
+    //   not(CurrentCommand is TDbgControllerHiddenBreakStepBaseCmd)
+    //then
+    //  exit; // wrong command type / should not happen
+    if (FState = esIgnoredRaise) and
+       (not CheckCommandFinishesInFrame(CurrentThread.GetStackBasePointerRegisterValue))
+    then
+      exit;
+
+    AFinishLoopAndSendEvents := True; // Stop at this address
+    FState := esAtWSehExcept;
+    AnIsFinished := True;
+    AnEventType := deFinishedStep;
+
+
+  end
+  (* ***** Win32 SEH Finally ***** *)
+  else
+  if assigned(FBreakPoints[bplSehW32Finally]) and FBreakPoints[bplSehW32Finally].HasLocation(PC) then begin
+    debugln(FPDBG_COMMANDS, ['@ bplSehW32Finally ', DbgSName(CurrentCommand)]);
+    AFinishLoopAndSendEvents := False;
+
+    // At the start of a finally the BasePointer is in EAX // reg 0
+    Eax  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(0).NumValue;
+    FAddressFrameListSehW32Finally.RemoveOutOfScopeFrames(EAX, FBreakPoints[bplSehW32Finally]);
+
+    if (ACurCommand is TDbgControllerLineStepBaseCmd) and
+       not CheckCommandFinishesInFrame(Eax)
+    then
+      exit;
+
+    // step over proloque
+    ACurCommand := TDbgControllerStepOverFirstFinallyLineCmd.Create(DbgController);
+    FState := esStepSehFinallyProloque;
+  end
+  else
+  (* ***** Win32 SEH ExceptHandler ***** *)
+  if assigned(FBreakPoints[bplFpcExceptHandler]) and FBreakPoints[bplFpcExceptHandler].HasLocation(PC) then begin
+    debugln(FPDBG_COMMANDS, ['@ bplFpcExceptHandler ', DbgSName(CurrentCommand)]);
+    AFinishLoopAndSendEvents := False;
+    AnIsFinished := False;
+
+    (*   TSEHFrame=record
+           Next: PSEHFrame;
+           Addr: Pointer;
+           _EBP: PtrUint;
+           HandlerArg: Pointer;
+         end;
+    *)
+    {$PUSH}{$Q-}{$R-}
+    if (not CurrentProcess.ReadAddress(SP + 8, Addr)) or (Addr = 0) then
+      exit;
+    if (not CurrentProcess.ReadAddress(Addr + 12, Addr)) or (Addr = 0) then
+      exit;
+    CurrentProcess.ReadAddress(Addr + 8, Base);
+    {$POP}
+
+    if Base <> 0 then
+    FAddressFrameListSehW32Except.Add(Addr, Base);
+    FBreakPoints[bplSehW32Except].AddAddress(Addr);
+    FBreakPoints[bplSehW32Except].SetBreak;
+  end
+  else
+  (* ***** Win32 SEH FinallyHandler ***** *)
+  if assigned(FBreakPoints[bplFpcFinallyHandler]) and FBreakPoints[bplFpcFinallyHandler].HasLocation(PC) then begin
+    debugln(FPDBG_COMMANDS, ['@ bplFpcFinallyHandler ', DbgSName(CurrentCommand)]);
+    AFinishLoopAndSendEvents := False;
+    AnIsFinished := False;
+
+    {$PUSH}{$Q-}{$R-}
+    if (not CurrentProcess.ReadAddress(SP + 8, Addr)) or (Addr = 0) then
+      exit;
+    if (not CurrentProcess.ReadAddress(Addr + 12, Addr)) or (Addr = 0) then
+      exit;
+    CurrentProcess.ReadAddress(Addr + 8, Base);
+    {$POP}
+
+    if Base <> 0 then
+      FAddressFrameListSehW32Finally.Add(Addr, Base);
+    FBreakPoints[bplSehW32Finally].AddAddress(Addr);
+    FBreakPoints[bplSehW32Finally].SetBreak;
+  end
+  else
+  (* ***** Win32 SEH LeaveHandler ***** *)
+  if assigned(FBreakPoints[bplFpcLeaveHandler]) and FBreakPoints[bplFpcLeaveHandler].HasLocation(PC) then begin
+    debugln(FPDBG_COMMANDS, ['@ bplFpcLeaveHandler ', DbgSName(CurrentCommand)]);
+    AFinishLoopAndSendEvents := False;
+    AnIsFinished := False;
+
+    {$PUSH}{$Q-}{$R-}
+    if (not CurrentProcess.ReadAddress(SP + 16, Addr)) or (Addr = 0) then
+      exit;
+    CurrentProcess.ReadAddress(Addr + 4, Base);
+    {$POP}
+
+    if Base <> 0 then
+      FAddressFrameListSehW32Finally.Add(Addr, Base);
+    FBreakPoints[bplSehW32Finally].AddAddress(Addr);
+    FBreakPoints[bplSehW32Finally].SetBreak;
+  end
+  {$ENDIF}
   {$IFDEF WIN64}
   else
   (* ***** Win64 SEH ***** *)
@@ -2847,6 +3028,8 @@ begin
     ACurCommand := TDbgControllerStepOverFirstFinallyLineCmd.Create(DbgController);
     FState := esStepSehFinallyProloque;
   end
+  {$ENDIF}
+  {$IFDEF MSWINDOWS}
   else
     CheckSteppedOutFromW64SehFinally
   {$ENDIF}
@@ -2899,13 +3082,21 @@ begin
   st := FState;
   FState := esNone;
   DisableBreaks([bplPopExcept, bplCatches, bplReRaise,
+    {$IFDEF MSWINDOWS}
     {$IFDEF WIN64}
     bplFpcSpecific, bplRtlRestoreContext, bplRtlUnwind,
+    {$ENDIF}
+    bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler,
     {$ENDIF}
     bplStepOut]);
 
   if ACommand in [dcStepInto, dcStepOver, dcStepOut, dcStepTo, dcRunTo, dcStepOverInstr{, dcStepIntoInstr}] then
-    EnableBreaks([bplReRaise{$IFDEF WIN64} , bplRtlRestoreContext, bplFpcSpecific {$ENDIF}]);
+    EnableBreaks([bplReRaise
+      {$IFDEF MSWINDOWS}
+      {$IFDEF WIN64} , bplRtlRestoreContext, bplFpcSpecific {$ENDIF}
+      , bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler
+      {$ENDIF}
+      ]);
 
   case st of
     esStoppedAtRaise: begin
@@ -2913,7 +3104,12 @@ begin
         FState := esStepToFinally;
         ACommand := dcRun;
         FDebugger.FDbgController.&ContinueRun;
-        EnableBreaks([bplPopExcept, bplCatches{$IFDEF WIN64} , bplFpcSpecific {$ENDIF}]);
+        EnableBreaks([bplPopExcept, bplCatches
+          {$IFDEF MSWINDOWS}
+          {$IFDEF WIN64} , bplFpcSpecific {$ENDIF}
+          , bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler
+          {$ENDIF}
+          ]);
       end
     end;
   end;
