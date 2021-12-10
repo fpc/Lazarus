@@ -1255,8 +1255,12 @@ begin
   Assert(AValue>=-1, 'TMessagesCtrl.SetSelectedLine: AValue < -1.');
   Assert(Assigned(SelectedView), 'TMessagesCtrl.SetSelectedLine: View = Nil.');
   AValue:=Min(AValue, SelectedView.GetShownLineCount(false,true)-1);
-  if (FSelectedLines.Count>0) and (FSelectedLines[0]=AValue) then
+  if (FSelectedLines.Count>0) and (FSelectedLines[0]=AValue) then begin
+    {$IFDEF VerboseMsgCtrlSelection}
+    DebugLn(['TMessagesCtrl.SetSelectedLine: Value ', AValue, ' already selected.']);
+    {$ENDIF}
     Exit;
+  end;
   FSelectedLines.Count:=1;    // One line.
   FSelectedLines[0]:=AValue;
   Invalidate;
@@ -2085,13 +2089,13 @@ var
   i: Integer;
 begin
   Result:=false;
-  {$IFDEF VerboseMsgCtrlSelectNextShown}
-  debugln(['TMessagesCtrl.SelectNextShown START']);
+  {$IFDEF VerboseMsgCtrlSelection}
+  DebugLn(['TMessagesCtrl.SelectNextShown START']);
   {$ENDIF}
   while Offset<>0 do begin
-    {$IFDEF VerboseMsgCtrlSelectNextShown}
-    debugln(['TMessagesCtrl.SelectNextShown LOOP Offset=',Offset,
-             ' ViewIndex=',IndexOfView(SelectedView),' Line=',SelectedLine]);
+    {$IFDEF VerboseMsgCtrlSelection}
+    DebugLn(['TMessagesCtrl.SelectNextShown LOOP Offset=',Offset,
+             ' ViewIndex=',IndexOfView(SelectedView),' Line=',SelectedLine1]);
     {$ENDIF}
     if SelectedView=nil then begin
       if Offset>0 then begin
@@ -2106,9 +2110,9 @@ begin
       View:=SelectedView;
       Line:=SelectedLine1;
       if Offset>0 then begin
-        {$IFDEF VerboseMsgCtrlSelectNextShown}
-        debugln(['TMessagesCtrl.SelectNextShown NEXT View.GetShownLineCount(false,true)=',
-                 View.GetShownLineCount(false,true),' ViewIndex=',IndexOfView(View),' Line=',Line]);
+        {$IFDEF VerboseMsgCtrlSelection}
+        DebugLn(['TMessagesCtrl.SelectNextShown NEXT View.GetShownLineCount(false,true)=',
+          View.GetShownLineCount(false,true),' ViewIndex=',IndexOfView(View),' Line=',Line]);
         {$ENDIF}
         inc(Line,Offset);
         if Line<View.GetShownLineCount(false,true) then
@@ -2117,14 +2121,14 @@ begin
           // next view
           Offset:=Line-View.GetShownLineCount(false,true);
           i:=IndexOfView(View);
-          {$IFDEF VerboseMsgCtrlSelectNextShown}
-          debugln(['TMessagesCtrl.SelectNextShown Line=',Line,' Offset=',Offset,' ViewIndex=',i]);
+          {$IFDEF VerboseMsgCtrlSelection}
+          DebugLn(['TMessagesCtrl.SelectNextShown Line=',Line,' Offset=',Offset,' ViewIndex=',i]);
           {$ENDIF}
           repeat
             inc(i);
             if i>=ViewCount then begin
-              {$IFDEF VerboseMsgCtrlSelectNextShown}
-              debugln(['TMessagesCtrl.SelectNextShown can not go further down']);
+              {$IFDEF VerboseMsgCtrlSelection}
+              DebugLn(['TMessagesCtrl.SelectNextShown can not go further down']);
               {$ENDIF}
               exit;
             end;
@@ -2143,8 +2147,8 @@ begin
           repeat
             dec(i);
             if i<0 then begin
-              {$IFDEF VerboseMsgCtrlSelectNextShown}
-              debugln(['TMessagesCtrl.SelectNextShown can not go further up']);
+              {$IFDEF VerboseMsgCtrlSelection}
+              DebugLn(['TMessagesCtrl.SelectNextShown can not go further up']);
               {$ENDIF}
               exit;
             end;
@@ -2153,15 +2157,17 @@ begin
           Line:=View.GetShownLineCount(false,false)-1;
         end;
       end;
-      {$IFDEF VerboseMsgCtrlSelectNextShown}
-      debugln(['TMessagesCtrl.SelectNextShown SELECT Offset=',Offset,' ViewIndex=',IndexOfView(View),' Line=',Line]);
+      {$IFDEF VerboseMsgCtrlSelection}
+      DebugLn(['TMessagesCtrl.SelectNextShown SELECT Offset=',Offset,
+               ' ViewIndex=',IndexOfView(View),' Line=',Line]);
       {$ENDIF}
       Select(View,Line,true,true);
       Result:=true;
     end;
   end;
-  {$IFDEF VerboseMsgCtrlSelectNextShown}
-  debugln(['TMessagesCtrl.SelectNextShown END ViewIndex=',IndexOfView(SelectedView),' Line=',SelectedLine]);
+  {$IFDEF VerboseMsgCtrlSelection}
+  DebugLn(['TMessagesCtrl.SelectNextShown END ViewIndex=',IndexOfView(SelectedView),
+           ' Line=',SelectedLine1]);
   {$ENDIF}
 end;
 
