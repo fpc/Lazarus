@@ -2613,7 +2613,6 @@ var
   Eax: TDBGPtr;
   {$ENDIF}
   o: Integer;
-  Frames: TFrameList;
   n: String;
 begin
   case AnEventType of
@@ -2877,6 +2876,7 @@ begin
   if assigned(FBreakPoints[bplFpcSpecific]) and FBreakPoints[bplFpcSpecific].HasLocation(PC) then begin
     debugln(FPDBG_COMMANDS, ['@ bplFpcSpecific ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
+    AnIsFinished := False;
     EnableBreaksDirect([bplRtlUnwind]);
 
     if (FState = esIgnoredRaise) and not(CurrentCommand is TDbgControllerHiddenBreakStepBaseCmd) then
@@ -2893,14 +2893,12 @@ begin
           NumberParameters : DWORD;
           ExceptionInformation : array[0..(EXCEPTION_MAXIMUM_PARAMETERS)-1] of ULONG_PTR;
        end;     *)
-    {$PUSH}{$Q-}{$R-}
     Rcx := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(2).NumValue; // rec: TExceptionRecord
     {$PUSH}{$Q-}{$R-}
     if (not CurrentProcess.ReadData(Rcx + 4, 4, EFlags)) or
        ((EFlags and 66) = 0) // rec.ExceptionFlags and EXCEPTION_UNWIND)=0
     then
       exit;
-    {$POP}
 
     (* Get FrameBasePointe (RPB) for finally block (passed in R8) *)
     R8  := CurrentThread.RegisterValueList.FindRegisterByDwarfIndex(8).NumValue;

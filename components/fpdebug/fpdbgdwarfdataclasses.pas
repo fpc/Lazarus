@@ -3762,8 +3762,6 @@ function TFpDwarfInfo.FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC,
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
-  Iter: TLockedMapIterator;
-  Info: PDwarfAddressInfo;
   MinMaxSet: boolean;
 begin
   for n := 0 to FCompilationUnits.Count - 1 do
