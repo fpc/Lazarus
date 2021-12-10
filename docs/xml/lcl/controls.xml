@@ -11536,7 +11536,7 @@
             </dd>
             <dt>alClient</dt>
             <dd>
-              Aligns the control fill the unused Height and Width for the parent control.
+              Aligns the control to fill the unused Height and Width for the parent control.
             </dd>
             <dt>alCustom</dt>
             <dd>
@@ -11552,10 +11552,61 @@
       <element name="TControl.Anchors">
         <short>The set of anchor definitions for this control.</short>
         <descr>
-          <p>Determines which sides of the control are anchored to other controls.</p>
+          <p>
+            Anchors is a TAnchors property which contains the edges used to align the position of the control relative to its Parent. Anchors allow the control to be repositioned and/or resized when the parent control is resized. Coordinate values in the control - like Left, Top, Bottom, and Right properties -  are updated when the corresponding edge is anchored to its Parent.
+          </p>
+          <p>
+            The default value for the property is [akLeft, akTop], and indicates that only the Top and Left coordinates are anchored in the parent control.
+          </p>
+          <p>
+            For example:
+          </p>
+          <dl>
+            <dt>
+              [akLeft, akRight]
+            </dt>
+            <dd>
+              Causes the relative width for the control to be adjusted when the width of the parent control is changed.
+            </dd>
+            <dt>
+              [akTop, akBottom]
+            </dt>
+            <dd>
+              Causes the relative height for the control to be adjusted when the height of the parent control is changed.
+            </dd>
+            <dt>
+              [akTop, akLeft, akRight]
+            </dt>
+            <dd>
+              Causes the relative width (but not the height) for the control to be adjusted when the parent is resized. Like using the Align property.
+            </dd>
+            <dt>
+              [akTop, akLeft, akBottom, akRight]
+            </dt>
+            <dd>
+              Causes both the height and width to be adjusted when the parent control is resized. Like using alCustom in Align.
+            </dd>
+          </dl>
+          <p>
+            Setting a new value for the property causes the UpdateAnchorRules and AdjustSize methods to be called.
+          </p>
+          <p>
+            Values in Anchors are used (along with Align) in the DoAutoAdjustLayout method. They control whether values in Left, Top, Bottom, and Right are calculated using the ClientWidth and ClientHeight for the Parent control. The values in Anchors also used in the HeightIsAnchored and WidthIsAnchored methods.
+          </p>
+          <p>
+            Values in Anchors may be updated when a new value is assigned to the Align property which conflicts with the existing values in the property. They may also be updated when values are assigned to  AnchorSide which cause vertical or horizontal centering to a sibling control (AnchorVerticalCenterTo, AnchorHorizontalCenterTo) or alignment to a companion control (AnchorToCompanion).
+          </p>
         </descr>
         <seealso>
           <link id="TAnchors"/>
+          <link id="TAnchorKind"/>
+          <link id="TControl.Align"/>
+          <link id="TControl.AnchorSide"/>
+          <link id="TControl.AdjustSize"/>
+          <link id="TControl.DoAutoAdjustLayout"/>
+          <link id="TControl.ClientHeight"/>
+          <link id="TControl.ClientWidth"/>
+          <link id="TControl.Parent"/>
         </seealso>
       </element>
 
