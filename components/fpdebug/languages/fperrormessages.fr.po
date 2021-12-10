@@ -26,8 +26,9 @@ msgid "%1:s"
 msgstr "%1:s"
 
 #: fperrormessages.msgfperrattachprocess
-#, object-pascal-format
-msgid "Failed to attach to process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+#, object-pascal-format, fuzzy
+#| msgid "Failed to attach to process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+msgid "Failed to attach to process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
 msgstr "Impossible d'attacher le processus \"%1:s\".%0:s Message d'erreur : %2:d \"%3:s\". %0:s%4:s"
 
 #: fperrormessages.msgfperrcannotdereferencetype
@@ -52,8 +53,9 @@ msgid "Changing the value of this variable is not supported"
 msgstr "La modification de la valeur de cette variable n'est pas prise en charge"
 
 #: fperrormessages.msgfperrcreateprocess
-#, object-pascal-format
-msgid "Failed to start process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+#, object-pascal-format, fuzzy
+#| msgid "Failed to start process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+msgid "Failed to start process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
 msgstr "Échec du démarrage du processus \"%1:s\".%0:s Message d'erreur : %2:d \"%3:s\". %0:s%4:s"
 
 #: fperrormessages.msgfperrfailedreadregiseter
