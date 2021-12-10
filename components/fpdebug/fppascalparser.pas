@@ -1688,8 +1688,15 @@ function TFpPascalExpressionPartConstantNumber.DoGetResultValue: TFpValue;
 var
   i: QWord;
   e: word;
+  ds, ts: Char;
 begin
+  ds := DecimalSeparator;
+  ts := ThousandSeparator;
+  DecimalSeparator := '.';
+  ThousandSeparator := #0;
   Val(GetText, i, e);
+  DecimalSeparator := ds;
+  ThousandSeparator := ts;
   if e <> 0 then begin
     Result := nil;
     SetError(fpErrInvalidNumber, [GetText]);
@@ -1709,9 +1716,19 @@ function TFpPascalExpressionPartConstantNumberFloat.DoGetResultValue: TFpValue;
 var
   f: Extended;
   s: String;
+  ds, ts: Char;
+  ok: Boolean;
 begin
   s := GetText;
-  if not TextToFloat(PChar(s), f) then begin
+  ds := DecimalSeparator;
+  ts := ThousandSeparator;
+  DecimalSeparator := '.';
+  ThousandSeparator := #0;
+  ok := TextToFloat(PChar(s), f);
+  DecimalSeparator := ds;
+  ThousandSeparator := ts;
+
+  if not ok then begin
     Result := nil;
     SetError(fpErrInvalidNumber, [GetText]);
     exit;
