@@ -1314,7 +1314,7 @@ function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnit(
   CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo; out
   AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean): Boolean;
 var
-  i, ExtVal: Integer;
+  ExtVal: Integer;
   InfoEntry: TDwarfInformationEntry;
   s: String;
 begin
@@ -1367,7 +1367,7 @@ var
   i, j: Integer;
   CU: TDwarfCompilationUnit;
   CUList: TDwarfCompilationUnitArray;
-  InfoEntry, FoundInfoEntry: TDwarfInformationEntry;
+  FoundInfoEntry: TDwarfInformationEntry;
   IsExt: Boolean;
   WorkItem, PrevWorkItem: TFpThreadWorkerFindSymbolInUnits;
 begin
