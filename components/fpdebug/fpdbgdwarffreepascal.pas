@@ -248,7 +248,14 @@ type
   { TFpSymbolDwarfFreePascalDataProc }
 
   TFpSymbolDwarfFreePascalDataProc = class(TFpSymbolDwarfDataProc)
+  private
+    FOrigSymbol: TFpSymbolDwarfFreePascalDataProc;
+  protected
+    function GetLine: Cardinal; override;
+    function GetColumn: Cardinal; override;
+    // Todo: LineStartAddress, ...
   public
+    destructor Destroy; override;
     function ResolveInternalFinallySymbol(Process: Pointer): TFpSymbol; override;
   end;
   {%EndRegion }
@@ -1530,6 +1537,28 @@ end;
 
 { TFpSymbolDwarfFreePascalDataProc }
 
+function TFpSymbolDwarfFreePascalDataProc.GetLine: Cardinal;
+begin
+  if FOrigSymbol <> nil then
+    Result := FOrigSymbol.GetLine
+  else
+    Result := inherited GetLine;
+end;
+
+function TFpSymbolDwarfFreePascalDataProc.GetColumn: Cardinal;
+begin
+  if FOrigSymbol <> nil then
+    Result := FOrigSymbol.GetColumn
+  else
+    Result := inherited GetColumn;
+end;
+
+destructor TFpSymbolDwarfFreePascalDataProc.Destroy;
+begin
+  inherited Destroy;
+  FOrigSymbol.ReleaseReference;
+end;
+
 function TFpSymbolDwarfFreePascalDataProc.ResolveInternalFinallySymbol(
   Process: Pointer): TFpSymbol;
 {$IfDef WINDOWS}
@@ -1538,88 +1567,77 @@ var
   HelpSymbol, HelpSymbol2: TFpSymbolDwarf;
   AnAddresses: TDBGPtrArray;
   FndLine, i: Integer;
-  IsDone: Boolean;
 {$EndIf}
 begin
   Result := Self;
+  // TODO: FindProcSymbol - ideally we could go to the CU for finding the procsym => but that needs some code from TFpDwarfInfo.FindProcSymbol to be moved there
 
   {$IfDef WINDOWS}
   // On Windows: If in an SEH finally block, try to get the real procedure
   // Look for the line, before the finally statement.
   // TODO: This needs to move to a win-specific class, and ideally a FPC specific class too.
-  if ('$fin' = copy(Name,1, 4) ) then begin
-    IsDone := False;
-    if CompilationUnit.GetProcStartEnd(ProcAddress, StartPC, EndPC) and
-       (StartPC <> 0)
+  if ('$fin' = copy(Name,1, 4) ) and
+     CompilationUnit.GetProcStartEnd(ProcAddress, StartPC, EndPC) and
+     (StartPC <> 0)
+  then begin
+    // TODO: use the assembler to skip the prologue
+    StartPC := StartPC + 9; // fpc puts the first 9 bytes on "end"
+    if EndPC < StartPC then
+      EndPC := StartPC;
+
+    if StartPC = ProcAddress then begin
+      TFpSymbol(HelpSymbol) := Self;
+      HelpSymbol.AddReference;
+    end
+    else
+      TFpSymbol(HelpSymbol) := DbgInfo.FindProcSymbol(StartPC); // same proc as self, but will return the FIRTS line
+
+    if (HelpSymbol = nil) or (HelpSymbol.CompilationUnit <> CompilationUnit) or
+       (not HelpSymbol.InheritsFrom(TFpSymbolDwarfFreePascalDataProc))
     then begin
-      // TODO: use the assembler to skip the prologue
-      StartPC := StartPC + 9; // fpc puts the first 9 bytes on "end"
+      HelpSymbol.ReleaseReference;
+      exit
+    end;
 
-      if StartPC = ProcAddress then begin
-        TFpSymbol(HelpSymbol) := Result;
-        HelpSymbol.AddReference;
-      end
-      else
-        TFpSymbol(HelpSymbol) := TDbgProcess(Process).FindProcSymbol(StartPC);
+    AnAddresses := nil;
+    if
+       //(FndLine = HelpSymbol.Line) and
+       HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line, AnAddresses, fsBefore, @FndLine) and
+       (Length(AnAddresses) > 1)  // may be an internal finally on the begin/end line, sharing a line number
+    then begin
+      for i := 0 to Length(AnAddresses) - 1 do
+        if (AnAddresses[i] < StartPC - 9) or (AnAddresses[i] > EndPC) then begin
+          TFpSymbol(HelpSymbol2) := DbgInfo.FindProcSymbol(AnAddresses[i]);
+          if (HelpSymbol2 <> nil) and (HelpSymbol2.CompilationUnit = CompilationUnit) and
+             (HelpSymbol2.InheritsFrom(TFpSymbolDwarfFreePascalDataProc)) and
+             ('$fin' <> copy(HelpSymbol2.Name,1, 4) )
+          then begin
+            Result := HelpSymbol2;
+            // *** FOrigSymbol has now the reference that the caller had. ***
+            TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
+            HelpSymbol.ReleaseReference;
+            exit;
+          end;
+          HelpSymbol2.ReleaseReference;
+        end;
+    end;
 
-      if not ( (HelpSymbol <> nil) and  HelpSymbol.InheritsFrom(TFpSymbolDwarf) ) then begin
+    AnAddresses := nil;
+    if HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
+    then begin
+      TFpSymbol(HelpSymbol2) := DbgInfo.FindProcSymbol(AnAddresses[0]);
+      if (HelpSymbol2 <> nil) and (HelpSymbol2.CompilationUnit = CompilationUnit) and
+         (HelpSymbol2.InheritsFrom(TFpSymbolDwarfFreePascalDataProc))
+      then begin
+        Result := HelpSymbol2;
+        // *** FOrigSymbol has now the reference that the caller had. ***
+        TFpSymbolDwarfFreePascalDataProc(Result).FOrigSymbol := Self;
         HelpSymbol.ReleaseReference;
         exit;
       end;
-
-      AnAddresses := nil;
-      if HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line, AnAddresses, fsBefore, @FndLine)
-      then begin
-        if (FndLine = HelpSymbol.Line) then begin
-          if Length(AnAddresses) > 1 then begin // may be an internal finally on the begin/end line, sharing a line number
-            for i := 0 to Length(AnAddresses) - 1 do
-              if (AnAddresses[i] > StartPC) or (AnAddresses[i] < StartPC - 9) then begin
-                TFpSymbol(HelpSymbol2) := TDbgProcess(Process).FindProcSymbol(AnAddresses[i]);
-                if not HelpSymbol2.InheritsFrom(TFpSymbolDwarf) then begin
-                  HelpSymbol2.ReleaseReference;
-                  HelpSymbol2 := nil;
-                end;
-                if (HelpSymbol2 <> nil) then begin
-                  if ('$fin' = copy(HelpSymbol2.Name,1, 4) ) then begin
-                    HelpSymbol2.ReleaseReference;
-                  end
-                  else begin
-                    Result.ReleaseReference;
-                    TFpSymbol(Result) := HelpSymbol2;
-                    IsDone := True;
-                    break;
-                  end;
-                end;
-              end;
-          end;
-
-          AnAddresses := nil;
-          if not IsDone then
-            if not HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
-            then
-              AnAddresses := nil;
-        end;
-      end
-      else begin
-        AnAddresses := nil;
-        if not HelpSymbol.CompilationUnit.GetLineAddresses(HelpSymbol.FileName, HelpSymbol.Line-1, AnAddresses, fsBefore)
-        then
-          AnAddresses := nil;
-      end;
-
-      if (not IsDone) and
-         (AnAddresses <> nil)
-      then begin
-        HelpSymbol.ReleaseReference;
-        TFpSymbol(HelpSymbol) := TDbgProcess(Process).FindProcSymbol(AnAddresses[0]);
-        if (HelpSymbol <> nil) and  HelpSymbol.InheritsFrom(TFpSymbolDwarf) then begin
-          Result.ReleaseReference;
-          Result := HelpSymbol;
-          HelpSymbol := nil;
-        end;
-      end;
-      HelpSymbol.ReleaseReference;
+      HelpSymbol2.ReleaseReference;
     end;
+    HelpSymbol.ReleaseReference;
   end;
   {$EndIf}
 end;
