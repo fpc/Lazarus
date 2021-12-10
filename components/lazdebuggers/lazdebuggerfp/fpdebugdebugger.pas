@@ -2750,6 +2750,8 @@ begin
   // bplRtlRestoreContext
   if assigned(FBreakPoints[bplRtlRestoreContext]) and FBreakPoints[bplRtlRestoreContext].HasLocation(PC) then begin
     AFinishLoopAndSendEvents := False;
+    AnIsFinished := False;
+
     if (CurrentCommand <> nil) and (CurrentCommand.Thread <> CurrentThread) then
       exit;
     debugln(FPDBG_COMMANDS, ['@ bplRtlRestoreContext ', DbgSName(CurrentCommand)]);
@@ -2770,6 +2772,8 @@ begin
   if assigned(FBreakPoints[bplRtlUnwind]) and FBreakPoints[bplRtlUnwind].HasLocation(PC) then begin
     debugln(FPDBG_COMMANDS, ['@ bplRtlUnwind ', DbgSName(CurrentCommand)]);
     AFinishLoopAndSendEvents := False;
+    AnIsFinished := False;
+
     // This is Win64 bit only
     // Must run for any thread => the thread may stop at a break in a finally block, and then attempt to step to except
     // maybe store the thread-id with each breakpoint // though SP register values should be unique
