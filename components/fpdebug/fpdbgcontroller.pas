@@ -1323,6 +1323,7 @@ var
   imgReader: TDbgImageReader;
   ATargetInfo: TTargetDescriptor;
 begin
+  ATargetInfo := hostDescriptor;
   if (FExecutableFilename <> '') and FileExists(FExecutableFilename) then
   begin
     DebugLn(DBG_VERBOSE, 'TDbgController.CheckExecutableAndLoadClasses');
@@ -1332,14 +1333,16 @@ begin
       source := TDbgFileLoader.Create(FExecutableFilename);
       imgReader := GetImageReader(source, nil, 0, false);
 
-      ATargetInfo := imgReader.TargetInfo;
+      // If the file-format of the 'executable' is not recognized, imgReader is
+      // nil. It can be anything, executable (some script) or non-executable (
+      // a jpeg-image). So use the default host-descriptor and see what happens...
+      if Assigned(imgReader) then
+        ATargetInfo := imgReader.TargetInfo;
     finally
       FreeAndNil(imgReader);  // TODO: Store object reference, it will be needed again
       FreeAndNil(source);
     end;
-  end
-  else
-    ATargetInfo := hostDescriptor;
+  end;
 
   FOsDbgClasses := FpDbgClasses.GetDbgProcessClass(ATargetInfo);
 end;
