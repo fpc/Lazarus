@@ -2146,7 +2146,7 @@ begin
             end;
             View:=Views[i];
           until View.HasContent;
-          Line:=View.GetShownLineCount(true,true)-1;
+          Line:=View.GetShownLineCount(false,false)-1;
         end;
       end;
       {$IFDEF VerboseMsgCtrlSelectNextShown}
