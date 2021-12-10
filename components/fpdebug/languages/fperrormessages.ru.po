@@ -25,10 +25,9 @@ msgid "%1:s"
 msgstr "%1:s"
 
 #: fperrormessages.msgfperrattachprocess
-#, object-pascal-format, fuzzy
-#| msgid "Failed to attach to process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+#, object-pascal-format
 msgid "Failed to attach to process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
-msgstr "Не удалось присоединиться к процессу \"%1:s\".%0:s Сообщение об ошибке: %2:d \"%3:s\". %0:s%4:s"
+msgstr "Не удалось присоединиться к процессу \"%1:s\".%0:sСообщение об ошибке: %2:d \"%3:s\".%0:s%4:s"
 
 #: fperrormessages.msgfperrcannotdereferencetype
 #, object-pascal-format
@@ -52,10 +51,9 @@ msgid "Changing the value of this variable is not supported"
 msgstr "Изменение значения этой переменной не поддерживается"
 
 #: fperrormessages.msgfperrcreateprocess
-#, object-pascal-format, fuzzy
-#| msgid "Failed to start process \"%1:s\".%0:s Error message: %2:d \"%3:s\". %0:s%4:s"
+#, object-pascal-format
 msgid "Failed to start process \"%1:s\".%0:sError message: %2:d \"%3:s\".%0:s%4:s"
-msgstr "Не удалось запустить процесс \"%1:s\".%0:s Сообщение об ошибке: %2:d \"%3:s\". %0:s%4:s"
+msgstr "Не удалось запустить процесс \"%1:s\".%0:sСообщение об ошибке: %2:d \"%3:s\".%0:s%4:s"
 
 #: fperrormessages.msgfperrfailedreadregiseter
 msgid "Failed to read data from register"
@@ -118,7 +116,7 @@ msgstr "После запятой ожидалось выражение, но н
 #: fperrormessages.msgfperrpasparsermissingindexexpression
 #, object-pascal-format
 msgid "Expected Expression but found closing bracket: %1:s"
-msgstr "Ожидалось выражение, но найдена закрывающая скобка %1:s"
+msgstr "Ожидалось выражение, но найдена закрывающая скобка: %1:s"
 
 #: fperrormessages.msgfperrpasparserunexpectedtoken
 #, object-pascal-format
