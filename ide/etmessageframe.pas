@@ -1750,8 +1750,12 @@ begin
       if (Button=mbLeft)
       or (View<>SelectedView) or (FSelectedLines.IndexOf(LineNumber)=-1) then
       begin
-        Select(View,LineNumber,true,true);
-        StoreSelectedAsSearchStart;
+        if Y<ItemHeight then           // The header is drawn on top as a hint.
+          Select(View,-1,true,true)    // Select the actual header line.
+        else begin
+          Select(View,LineNumber,true,true);
+          StoreSelectedAsSearchStart;
+        end;
       end;
       if (Button=mbRight) then Exit;
       if ((ssDouble in Shift) and (not (mcoSingleClickOpensFile in FOptions)))
