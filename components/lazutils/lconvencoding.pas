@@ -108,7 +108,7 @@ function GetConsoleTextEncoding: string;
 function NormalizeEncoding(const Encoding: string): string;
 
 type
-  TConvertEncodingFunction = function(const s: string): string;
+  TConvertEncodingFunction = function(const s: string; SetTargetCodePage: boolean = False): string;
   TConvertUTF8ToEncodingFunc = function(const s: string; SetTargetCodePage: boolean = false): RawByteString;
   TCharToUTF8Table = CodepagesCommon.TCharToUTF8Table;
   TUnicodeToCharID = function(Unicode: cardinal): integer;
@@ -2434,7 +2434,7 @@ begin
   if AFrom=EncodingUCS2BE then begin Result:=UCS2BEToUTF8(s, SetTargetCodePage); exit; end;
 
   if (AFrom=GetDefaultTextEncoding) and Assigned(ConvertAnsiToUTF8) then begin
-    Result:=ConvertAnsiToUTF8(s);
+    Result:=ConvertAnsiToUTF8(s, SetTargetCodePage);
     exit;
   end;
 
