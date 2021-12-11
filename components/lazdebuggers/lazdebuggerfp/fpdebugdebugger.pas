@@ -408,6 +408,7 @@ type
     procedure StopAllWorkers;
     function IsPausedAndValid: boolean; // ready for eval watches/stack....
 
+    procedure DoProcessMessages;
     property DebugInfo: TDbgInfo read GetDebugInfo;
   public
     constructor Create(const AExternalDebugger: String); override;
@@ -668,7 +669,7 @@ var
   c: LongInt;
 begin
   FpDebugger.FWorkQueue.Lock;
-  Application.ProcessMessages;
+  FpDebugger.DoProcessMessages;
   FpDebugger.CheckAndRunIdle;
   (* IdleThreadCount could (race condition) be to high.
      Then DebugHistory may loose ONE item. (only one working thread.
@@ -679,7 +680,7 @@ begin
   FpDebugger.FWorkQueue.Unlock;
 
   if c = 0 then begin
-    Application.ProcessMessages;
+    FPDebugger.DoProcessMessages;
     FpDebugger.StartDebugLoop;
   end
   else begin
@@ -3172,7 +3173,7 @@ procedure TFpDebugDebugger.FreeDebugThread;
 begin
   FWorkQueue.TerminateAllThreads(True);
   {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
-  Application.ProcessMessages; // run the AsyncMethods
+  DoProcessMessages // run the AsyncMethods
 end;
 
 procedure TFpDebugDebugger.FDbgControllerHitBreakpointEvent(
@@ -3598,7 +3599,7 @@ begin
         c := FWorkQueue.Count + FWorkQueue.ThreadCount - FWorkQueue.IdleThreadCount;
         FWorkQueue.Unlock;
         if c = 0 then
-          Application.ProcessMessages;
+          DoProcessMessages;
       end
       else
         c := 0;
@@ -3901,9 +3902,18 @@ begin
             (FDbgController.CurrentProcess <> nil);
 end;
 
+procedure TFpDebugDebugger.DoProcessMessages;
+begin
+  try
+    Application.ProcessMessages;
+  except
+    on E: Exception do debugln(['Application.ProcessMessages crashed with ', E.Message]);
+  end;
+end;
+
 constructor TFpDebugDebugger.Create(const AExternalDebugger: String);
 begin
-  ProcessMessagesProc := @Application.ProcessMessages;
+  ProcessMessagesProc := @DoProcessMessages;
   inherited Create(AExternalDebugger);
   FLockList := TFpDbgLockList.Create;
   FWorkQueue := TFpThreadPriorityWorkerQueue.Create(100);
@@ -3946,7 +3956,7 @@ begin
     except
     end;
   FWorkQueue.TerminateAllThreads(True);
-  Application.ProcessMessages; // run the AsyncMethods
+  DoProcessMessages; // run the AsyncMethods
   {$IFDEF FPDEBUG_THREAD_CHECK} CurrentFpDebugThreadIdForAssert := MainThreadID;{$ENDIF}
 
   Application.RemoveAsyncCalls(Self);
