@@ -169,6 +169,7 @@ type
     fUpdateLock: integer;
     FUpdateTimer: TTimer;
     fSomeViewsRunning: boolean;
+    fHasHeaderHint: boolean;
     fUrgencyStyles: array[TMessageLineUrgency] of TMsgCtrlUrgencyStyle;
     FAutoHeaderBackground: TColor;
     procedure CreateSourceMark(MsgLine: TMessageLine; aSynEdit: TSynEdit);
@@ -216,8 +217,7 @@ type
     fLastLoSearchText: string; // lower case search text
     procedure FetchNewMessages;
     function FetchNewMessages(View: TLMsgWndView): boolean; // true if new lines
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     procedure UpdateScrollBar(InvalidateScrollMax: boolean);
     procedure CreateWnd; override;
@@ -1582,9 +1582,9 @@ begin
   // paint background
   Canvas.Brush.Color:=BackgroundColor;
   Canvas.FillRect(0,0,ClientWidth,ClientHeight);
-
   Indent:=BorderWidth+2;
   LoSearchText:=fLastLoSearchText;
+  fHasHeaderHint:=False;
 
   // paint from top to bottom
   {$IFDEF EnableMsgWndLineWrap}
@@ -1653,6 +1653,7 @@ begin
     if FirstLineIsNotSelectedMessage and SecondLineIsNotSelectedMessage then begin
       // the first two lines are normal messages, not selected
       // => paint view header hint
+      fHasHeaderHint:=True;
       NodeRect:=Rect(0,0,ClientWidth,ItemHeight div 2);
       Canvas.Brush.Color:=HeaderBackground[View.ToolState];
       Canvas.Brush.Style:=bsSolid;
@@ -1754,8 +1755,9 @@ begin
       if (Button=mbLeft)
       or (View<>SelectedView) or (FSelectedLines.IndexOf(LineNumber)=-1) then
       begin
-        if Y<ItemHeight then           // The header is drawn on top as a hint.
-          Select(View,-1,true,true)    // Select the actual header line.
+        if fHasHeaderHint and (Y<ItemHeight) then
+          // The header is drawn on top as a hint. Select the actual header line.
+          Select(View,-1,true,true)
         else begin
           Select(View,LineNumber,true,true);
           StoreSelectedAsSearchStart;
