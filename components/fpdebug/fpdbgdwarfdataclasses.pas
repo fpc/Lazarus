@@ -4949,7 +4949,7 @@ end;
 
 function TDwarfCompilationUnit.CalculateRelocatedAddress(AValue: QWord): QWord;
 begin
-  Result := Result + FOwner.ImageBase;
+  Result := AValue + FOwner.ImageBase;
 end;
 
 function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out
