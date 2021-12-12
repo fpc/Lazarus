@@ -517,6 +517,9 @@ begin
   // Debugger GUI
   TranslateUnitResourceStrings('DebuggerStrConst',
     Dir+'languages/debuggerstrconst'+Ext,Lang,FallbackLang);
+  // LCL (needed to translate button captions in a dialog about config directory belonging to another Lazarus instance)
+  TranslateUnitResourceStrings('LCLStrConsts',
+    Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
 end;
 
 { TLazarusTranslations }
