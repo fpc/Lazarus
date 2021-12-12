@@ -352,6 +352,9 @@
       <element name="TConvertEncodingFunction.s">
         <short>Value examined and converted in the routine.</short>
       </element>
+      <element name="TConvertEncodingFunction.SetTargetCodePage">
+        <short>Indicates whether the code page is needed for the target encoding. Default is False.</short>
+      </element>
 
       <element name="TConvertUTF8ToEncodingFunc">
         <short/>
