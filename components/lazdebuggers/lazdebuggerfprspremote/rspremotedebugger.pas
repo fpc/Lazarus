@@ -16,7 +16,7 @@ uses
   FpPascalParser, FPDbgController, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
   FpDbgDwarf, FpDbgUtil,
   DebuggerPropertiesBase,
-  FpDbgRsp;
+  FpDbgRsp, FpDbgAvrClasses;
 
 type
 
