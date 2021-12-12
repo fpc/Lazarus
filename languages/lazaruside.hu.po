@@ -5028,8 +5028,8 @@ msgid "Ask name on create"
 msgstr "Kérjen nevet a létrehozáskor"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Egy jól használható beállítás Windows-on: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
+msgstr "Egy jól használható beállítás Windows-on: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"

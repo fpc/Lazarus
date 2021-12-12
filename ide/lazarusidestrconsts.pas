@@ -6266,7 +6266,7 @@ resourcestring
   lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive = 'The debugger '
     +'executable typically has the name "%s". Please give the full file path.';
   lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin = 'A useful setting on'
-    +' Windows systems is: $(LazarusDir)\mingw\bin\$(TargetCPU)-$(TargetOS)\'
+    +' Windows systems is: $(LazarusDir)\mingw\$(TargetCPU)-$(TargetOS)\bin\'
     +'gdb.exe';
   lisFoundVersionExpected = 'Found version %s, expected %s';
   lisInvalidVersionIn = 'invalid version in %s';
