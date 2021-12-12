@@ -26,7 +26,7 @@ type
     FGotExceptionLocation: TDBGLocationRec;
     FContinue: Boolean;
 
-    procedure TestLocation(ATestName, ABrkName: String; ABreakHitCount: Integer = 1; AnAcceptLinesBefore: integer = 0); // only line-number
+    function TestLocation(ATestName, ABrkName: String; ABreakHitCount: Integer = 1; AnAcceptLinesBefore: integer = 0): Boolean; // only line-number
     procedure TestLoopCount(ATestName: String);
     function IsAtLocation(ABrkName: String; ATrueOnNoLine: Boolean = False): Boolean; // only line-number
     procedure DoDebuggerException(Sender: TObject;
@@ -35,15 +35,21 @@ type
                                   const AExceptionLocation: TDBGLocationRec;
                                   const AExceptionText: String;
                                   out AContinue: Boolean);
-    function StepOverToLine(ATestName, ABrkName: String; AnExitIfNoLineInfo: Boolean = False): Boolean;
-    function StepIfAtLine(ATestName, ABrkName: String): Boolean;
+    function StepOverToLine(ATestName, ABrkName: String; AnExitIfNoLineInfo: Boolean = False;
+      ACmd: TDBGCommand = dcStepOver; AMaxSteps: Integer = 100; AForbiddenLine: String = ''): Boolean;
+    function StepIfAtLine(ATestName, ABrkName: String; ACmd: TDBGCommand = dcStepOver; AnExpAtBrkName: String = ''): Boolean;
     procedure DoTestStepOver(ANextOnlyStopOnStartLine: Boolean);
     procedure DoTestStepOverInstr(ANextOnlyStopOnStartLine: Boolean);
     procedure DoTestExceptionStepOutEx(ANextOnlyStopOnStartLine: Boolean);
     procedure DoTestExceptionStepOverEx(ANextOnlyStopOnStartLine: Boolean);
+    procedure DoTestStepTryBlocks(ANextOnlyStopOnStartLine: Boolean);
   public
+    function RunToNextPauseNoLoopBreak(AName: String; ACmd: TDBGCommand; ATimeOut: Integer;
+      AnExpAtBrkName: String = ''; AnExpAcceptLinesBefore: integer = 0): Boolean;
     function RunToNextPauseNoLoopBreak(AName: String; ACmd: TDBGCommand;
-      ATimeOut: Integer = 5000; AWaitForInternal: Boolean = False): Boolean;
+      AnExpAtBrkName: String = ''; AnExpAcceptLinesBefore: integer = 0): Boolean;
+    function RunToNextPauseEx(AName: String; ACmd: TDBGCommand;
+      AnExpAtBrkName: String = ''; AnExpAcceptLinesBefore: integer = 0): Boolean;
   published
     (* Step over to work with various events happening during the step
        - creation/exit of threads
@@ -55,11 +61,13 @@ type
     procedure TestStepOverInstr;
     procedure TestExceptionStepOutEx;
     procedure TestExceptionStepOverEx;
+    procedure TestStepTryBlocks;
 
     procedure TestStepOver_NextOnlyFalse;
     procedure TestStepOverInstr_NextOnlyFalse;
     procedure TestExceptionStepOutEx_NextOnlyFalse;
     procedure TestExceptionStepOverEx_NextOnlyFalse;
+    procedure TestStepTryBlocks_NextOnlyFalse;
   end;
 
 implementation
@@ -67,27 +75,30 @@ implementation
 var
   ControlTest,
   ControlTest_NextOnlyTrue, ControlTestStepOver, ControlTestStepOverInstr,
-  ControlTestExceptionStepOutEx, ControlTestExceptionStepOverEx: Pointer;
+  ControlTestExceptionStepOutEx, ControlTestExceptionStepOverEx, ControlTestStepTryBlocks: Pointer;
 
   ControlTest_NextOnly, ControlTestStepOver_NextOnly, ControlTestStepOverInstr_NextOnly,
-  ControlTestExceptionStepOutEx_NextOnly, ControlTestExceptionStepOverEx_NextOnly: Pointer;
+  ControlTestExceptionStepOutEx_NextOnly, ControlTestExceptionStepOverEx_NextOnly, ControlTestStepTryBlocks_NextOnly: Pointer;
 
-procedure TTestStepping.TestLocation(ATestName, ABrkName: String;
-  ABreakHitCount: Integer; AnAcceptLinesBefore: integer);
+function TTestStepping.TestLocation(ATestName, ABrkName: String;
+  ABreakHitCount: Integer; AnAcceptLinesBefore: integer): Boolean;
 var
   lc: TDBGLocationRec;
   brk: LongInt;
 begin
+  Result := True;
   AssertDebuggerState(dsPause);
   lc := Debugger.LazDebugger.GetLocation;
   brk := Src.BreakPoints[ABrkName];
   if (AnAcceptLinesBefore > 0) and (lc.SrcLine < brk) and (lc.SrcLine >= brk - AnAcceptLinesBefore)
   then
-    TestEquals(ATestName+' '+ABrkName+' Loc', brk, lc.SrcLine, 0, 'Ignored - In AcceptLinesBefore range')
+    Result := TestEquals(ATestName+' '+ABrkName+' Loc', brk, lc.SrcLine, 0, 'Ignored - In AcceptLinesBefore range')
   else
-    TestEquals(ATestName+' '+ABrkName+' Loc', brk, lc.SrcLine);
+    Result := TestEquals(ATestName+' '+ABrkName+' Loc', brk, lc.SrcLine);
   if ABreakHitCount >= 0 then
-    TestEquals(ATestName+' '+ABrkName+' HitCnt', Debugger.BreakPointByName(ABrkName).HitCount, ABreakHitCount);
+    if not TestEquals(ATestName+' '+ABrkName+' HitCnt', Debugger.BreakPointByName(ABrkName).HitCount, ABreakHitCount)
+    then
+      Result := False;
 end;
 
 procedure TTestStepping.TestLoopCount(ATestName: String);
@@ -121,34 +132,41 @@ begin
 end;
 
 function TTestStepping.StepOverToLine(ATestName, ABrkName: String;
-  AnExitIfNoLineInfo: Boolean): Boolean;
+  AnExitIfNoLineInfo: Boolean; ACmd: TDBGCommand; AMaxSteps: Integer;
+  AForbiddenLine: String): Boolean;
 var
-  mx: Integer;
+  i: Integer;
 begin
-  mx := 100; // max steps
-  Result := True;
-  while not IsAtLocation(ABrkName, AnExitIfNoLineInfo) do begin
-    RunToNextPauseNoLoopBreak(ATestName, dcStepOver);
+  Result := False;
+  ATestName := ATestName + dbgs(ACmd) + 'TO: ' + ABrkName + ' (StepOverToLine) ';
+  i := 1;
+  while (i <= AMaxSteps) and (not IsAtLocation(ABrkName, AnExitIfNoLineInfo)) do begin
+    RunToNextPauseNoLoopBreak(ATestName+' '+IntToStr(i), ACmd);
     AssertDebuggerState(dsPause, ATestName);
-    dec(mx);
-    if mx = 0 then begin
-      TestTrue(ATestName+'reached step target '+ ABrkName, False);
-      Result := False;
-      break;
-    end;
+    if (AForbiddenLine <> '') and IsAtLocation(AForbiddenLine, False) then
+      TestFalse(ATestName+' FORBIDDEN LINE '+AForbiddenLine, True);
+    inc(i);
   end;
+  Result := IsAtLocation(ABrkName, AnExitIfNoLineInfo);
+  if not AnExitIfNoLineInfo then
+    TestLocation(ATestName, ABrkName, -1);
   debugln(['XXXXXXXXXXXXXXXXXXXXXXXX to ', ABrkName, '  ',ATestName]);
 end;
 
-function TTestStepping.StepIfAtLine(ATestName, ABrkName: String): Boolean;
+function TTestStepping.StepIfAtLine(ATestName, ABrkName: String;
+  ACmd: TDBGCommand; AnExpAtBrkName: String): Boolean;
 begin
   Result := True;
+  ATestName := ATestName + dbgs(ACmd) + ' (StepIfAtLine) ';
   if not IsAtLocation(ABrkName) then
     exit;
-  RunToNextPauseNoLoopBreak(ATestName, dcStepOver);
+  RunToNextPauseNoLoopBreak(ATestName, ACmd);
   TestTrue(ATestName+' finally entered at begin (not end) / '+ ABrkName, False, 0, 'ignore');
   AssertDebuggerState(dsPause, ATestName);
   debugln(['XXXXXXXXXXXXXXXXXXXXXXXX STEPPED from END LINE to begin??? ', ABrkName, '  ',ATestName]);
+
+  if AnExpAtBrkName <> '' then
+    TestLocation(ATestName+': Finished at Line ', AnExpAtBrkName, -1);
 end;
 
 procedure TTestStepping.DoTestStepOver(ANextOnlyStopOnStartLine: Boolean);
@@ -338,6 +356,13 @@ begin
   DoTestExceptionStepOverEx(True);
 end;
 
+procedure TTestStepping.TestStepTryBlocks;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepTryBlocks) then exit;
+  DoTestStepTryBlocks(True);
+end;
+
 procedure TTestStepping.TestStepOver_NextOnlyFalse;
 begin
   if SkipTest then exit;
@@ -364,6 +389,13 @@ begin
   if SkipTest then exit;
   if not TestControlCanTest(ControlTestExceptionStepOverEx_NextOnly) then exit;
   DoTestExceptionStepOverEx(False);
+end;
+
+procedure TTestStepping.TestStepTryBlocks_NextOnlyFalse;
+begin
+  if SkipTest then exit;
+  if not TestControlCanTest(ControlTestStepTryBlocks_NextOnly) then exit;
+  DoTestStepTryBlocks(False);
 end;
 
 procedure TTestStepping.DoTestStepOverInstr(ANextOnlyStopOnStartLine: Boolean);
@@ -749,15 +781,416 @@ begin
   AssertTestErrors;
 end;
 
-function TTestStepping.RunToNextPauseNoLoopBreak(AName: String;
-  ACmd: TDBGCommand; ATimeOut: Integer; AWaitForInternal: Boolean): Boolean;
+procedure TTestStepping.DoTestStepTryBlocks(ANextOnlyStopOnStartLine: Boolean);
+  var NextCallAtName, NextTestAtName: String;
+      BrkAtCall, BrkInTest: TDBGBreakPoint;
+  procedure SetNextCallTo(ABrkName: String);
+  begin
+    NextCallAtName := ABrkName;
+    if BrkAtCall <> nil then begin
+      BrkAtCall.Enabled := False;
+      BrkAtCall.ReleaseReference;
+    end;
+    BrkAtCall := Debugger.SetBreakPoint(Src, ABrkName);
+  end;
+  function IsAtNextCallTo: Boolean;
+  begin
+    Result := IsAtLocation(NextCallAtName);
+  end;
+  procedure RunToNextCallTo(ATestName: String);
+  begin
+    if not IsAtNextCallTo then
+      RunToNextPauseEx(ATestName + ' (RunToNextCallTo) ', dcRun, NextCallAtName);
+  end;
+
+  procedure SetNextBreak(ABrkName: String);
+  begin
+    NextTestAtName := ABrkName;
+    if BrkInTest <> nil then begin
+      BrkInTest.Enabled := False;
+      BrkInTest.ReleaseReference;
+    end;
+    BrkInTest := Debugger.SetBreakPoint(Src, ABrkName);
+  end;
+  function IsAtNextBreak: Boolean;
+  begin
+    Result := IsAtLocation(NextTestAtName);
+  end;
+  function RunToNextBreak(ATestName: String): boolean;
+  begin
+    Result := IsAtNextBreak;
+    if not Result then
+      Result := RunToNextPauseEx(ATestName + ' (RunToNextBreakTo) ', dcRun, NextTestAtName);
+  end;
+
+
+  function MaybeStepMissingLine(TstName, AFirstBrkName, AFinalBrkName, IgnReason: String; AnUnwantedBrk: String = ''; ACmd1: TDBGCommand = dcStepOver; ACmd2: TDBGCommand = dcStepOver): boolean;
+  begin
+    FIgnoreReason := IgnReason + ' (Should go first to '+AFinalBrkName+' - But may directly go to '+AFinalBrkName+')';
+    Result := RunToNextPauseNoLoopBreak(TstName+'', ACmd1, AFirstBrkName);
+    FIgnoreReason := '';
+    if Result then begin
+      Result := RunToNextPauseNoLoopBreak(TstName+'', ACmd2, AFinalBrkName);
+    end
+    else begin
+      if AnUnwantedBrk <> '' then
+        FIgnoreReason := IgnReason + ' (Skipped desired first step to '+AFinalBrkName+' - May have hit undesired '+AnUnwantedBrk+')';
+      Result := TestLocation(TstName, AFinalBrkName, -1); // went directly to brk-2
+      FIgnoreReason := '';
+
+      if (AnUnwantedBrk <> '') and (not Result) and IsAtLocation(AnUnwantedBrk) then begin
+        FIgnoreReason := IgnReason + ' (Went to unwanted '+AnUnwantedBrk+' - May have skipped first hit at '+AFirstBrkName+')';
+        Result := RunToNextPauseNoLoopBreak(TstName+'', ACmd2, AFirstBrkName);
+        FIgnoreReason := '';
+        if (result) then
+          Result := RunToNextPauseNoLoopBreak(TstName+'', ACmd2, AFinalBrkName)
+        else
+          Result := TestLocation(TstName, AFinalBrkName, -1); // went directly to brk-2
+      end;
+    end;
+  end;
+
+  function MaybeStepUnWantedLine(TstName, AUnwantedBrkName, AFinalBrkName, IgnReason: String; ACmd: TDBGCommand = dcStepOver): boolean;
+  begin
+    FIgnoreReason := IgnReason + ' (Should go to '+AFinalBrkName+' - But may first hit '+AUnwantedBrkName+')';
+    Result := RunToNextPauseNoLoopBreak(TstName+'', ACmd, AFinalBrkName);
+    FIgnoreReason := '';
+    if Result then
+      exit;
+
+    TestLocation(TstName, AUnwantedBrkName, -1);
+    Result := RunToNextPauseNoLoopBreak(TstName+'', ACmd, AFinalBrkName); // try again
+  end;
+
+
+  function StepEnterTry_F(TstName, ATryBrkName, ANextBrk: String; ACmd1: TDBGCommand = dcStepOver; ACmd2: TDBGCommand = dcStepOver): boolean;
+  begin
+    Result := MaybeStepMissingLine(TstName, ATryBrkName, ANextBrk, '[Step-enter-try (try-finally)]', '', ACmd1, ACmd2);
+// 3.2.0 and above may be fine
+    //Result := RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, ATryBrkName);
+    //if Result then
+    //Result := RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, ANextBrk);
+  end;
+
+  function StepEnterFinally(TstName, AFinallyBrkName, ANextBrk, ATryBrkName: String; ACmd1: TDBGCommand = dcStepOver; ACmd2: TDBGCommand = dcStepOver): boolean;
+  begin
+    Result := MaybeStepMissingLine(TstName, AFinallyBrkName, ANextBrk, '[Step-enter-finally]', {Unwanted:} ATryBrkName, ACmd1, ACmd2);
+  end;
+
+  function StepLeaveFinally(TstName, ANextBrk, ATryBrkName: String; ACmd: TDBGCommand = dcStepOver): boolean;
+  begin
+    Result := MaybeStepUnWantedLine(TstName, ATryBrkName, ANextBrk, '[Step-leave-finally]', ACmd);
+    //Result := RunToNextPauseNoLoopBreak(TstName, ACmd, ANextBrk);
+  end;
+
+  function StepEnterTry_E(TstName, ATryBrkName, ANextBrk: String; ACmd1: TDBGCommand = dcStepOver; ACmd2: TDBGCommand = dcStepOver): boolean;
+  begin
+    Result := MaybeStepMissingLine(TstName, ATryBrkName, ANextBrk, '[Step-enter-try (try-except)]', '', ACmd1, ACmd2);
+  end;
+
+  function StepLeaveTryNoExcept(TstName, ANextBrk, ATryBrkName: String; ACmd: TDBGCommand = dcStepOver): boolean;
+  begin
+    Result := MaybeStepUnWantedLine(TstName, ATryBrkName, ANextBrk, '[Step-leave-try (try-except)]', ACmd);
+    //Result := RunToNextPauseNoLoopBreak(TstName, ACmd, ANextBrk);
+  end;
+
+
+  procedure TestSimpleStepOver(TstName: String; ACmd: TDBGCommand = dcStepOver);
+  var
+    IsDone: Boolean;
+  begin
+    IsDone := False;
+    try
+      FIgnoreReason := '';
+      SetNextBreak('BEGIN');
+      if not RunToNextBreak(TstName) then exit;
+
+      // Enter TRY_A
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'TRY_A_1')             then exit;
+      if not StepOverToLine(TstName+'', 'TRY_A_1_BEFORE_TRY_B', False, dcStepOver, 3)  then exit;
+
+      // Enter TRY_B
+      if not StepEnterTry_F(TstName+'', 'TRY_B_1_EARLY', 'TRY_B_1', dcStepOver, ACmd) then exit;
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'TRY_B_1_BEFORE_TRY_C')     then exit;
+
+      // Enter TRY_C
+      if not StepEnterTry_E(TstName+'', 'TRY_C_EARLY', 'TRY_C_1', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_C_AFTER_RAISE_1', False, dcStepOver, 4)  then exit;
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'TRY_C_BEFORE_EXCEPT_1')     then exit;
+
+      // Leave TRY_C => back to TRY_B
+      if not StepLeaveTryNoExcept(TstName, 'TRY_B_AFTER_EXCEPT_1', 'TRY_C_EARLY') then exit;
+
+      if not StepOverToLine(TstName+'', 'TRY_B_BEFORE_FINALLY', False, dcStepOver, 5)  then exit;
+      // Enter TRY_B_FINALLY
+      if not StepEnterFinally(TstName+'', 'TRY_B_FINALLY', 'TRY_B_FINALLY_1', 'TRY_B_1_EARLY', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_B_FINALLY_END', False, dcStepOver, 2)  then exit;
+
+      // Leave TRY_B => back to TRY_A
+      if not StepLeaveFinally(TstName, 'TRY_A_AFTER_FIN_B', 'TRY_B_1_EARLY') then exit;
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'TRY_A_BEFORE_FINALLY')      then exit;
+      // Enter finally A
+      if not StepEnterFinally(TstName+'', 'TRY_A_FINALLY_EARLY', 'TRY_A_FINALLY_1', 'TRY_A_1', dcStepOver, ACmd) then exit;
+
+      // Enter TRY_D
+      if not StepOverToLine(TstName+'', 'TRY_D_1', False, dcStepOver, 3)  then exit;
+      // Enter TRY_E
+      if not StepOverToLine(TstName+'', 'TRY_E_1', False, dcStepOver, 4)  then exit;
+      if not StepOverToLine(TstName+'', 'TRY_E_BEFORE_FINALLY', False, dcStepOver, 3)  then exit;
+      if not MaybeStepUnWantedLine(TstName, 'TRY_E_1', 'TRY_E_FINALLY_1', '[step-enter-finally-nop]') then exit;
+
+      // Enter TRY_F
+      if not StepOverToLine(TstName+'', 'TRY_F_1', False, dcStepOver, 4)  then exit;
+      if not StepOverToLine(TstName+'', 'TRY_F_BEFORE_FINALLY', False, dcStepOver, 8)  then exit;
+      // Enter finally_F
+      if not StepEnterFinally(TstName+'', 'TRY_F_FINALLY', 'TRY_F_FINALLY_1', 'TRY_F_1', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_F_BEFORE_TRY_G', False, dcStepOver, 6)  then exit;
+
+      // Enter TRY_G
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'TRY_G_1')      then exit;
+      if not StepOverToLine(TstName+'', 'TRY_G_2', False, dcStepOver, 6)  then exit;
+      if not StepEnterFinally(TstName+'', 'TRY_G_FINALLY', 'TRY_G_FINALLY_1', 'TRY_G_1', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_G_FINALLY_END', False, dcStepOver, 4)  then exit;
+
+      // LEAVE TRY_G => back to TRY F
+      if not StepLeaveFinally(TstName, 'TRY_F_FINALLY_AFTER_FIN_G', 'TRY_G_1') then exit;
+      if not StepOverToLine(TstName+'', 'TRY_F_FINALLY_END', False, dcStepOver, 3)  then exit;
+
+      // LEAVE TRY_F => back to TRY E
+      if not StepLeaveFinally(TstName, 'TRY_E_FINALLY_AFTER_FIN_F', 'TRY_F_1') then exit;
+      if not StepOverToLine(TstName+'', 'TRY_E_FINALLY_END', False, dcStepOver, 3)  then exit;
+
+      // LEAVE TRY_E => back to TRY A (skip except _D)
+      //if not StepLeaveFinally(TstName, 'TRY_A_FINALLY_AFTER_EXCEPT_D', 'TRY_E_1') then exit; // we can also hit the try for the EXCEPT block....
+      if not StepOverToLine(TstName, 'TRY_A_FINALLY_AFTER_EXCEPT_D', False, dcStepOver, 4) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_A_FINALLY_END', False, dcStepOver, 3)  then exit;
+
+      if not StepOverToLine(TstName+'', 'TRY_X_1', False, dcStepOver, 2)  then exit;
+      if not StepEnterFinally(TstName+'', 'TRY_X_FINALLY', 'TRY_X_FINALLY_1', 'TRY_X_EARLY', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'BEFORE_END', False, dcStepOver, 4)  then exit;
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'END')      then exit;
+
+
+      IsDone := True;
+    finally
+      TestTrue(TstName+' - DID NOT FINISH ALL TESTS', IsDone);
+    end;
+  end;
+
+  procedure TestSimpleRunAndStepOver(TstName: String; ACmd: TDBGCommand = dcStepOver);
+  (* Run into finally blocks, and see that step over behaves
+  *)
+  var
+    IsDone: Boolean;
+  begin
+    IsDone := False;
+    try
+      SetNextBreak('TRY_C_BEFORE_EXCEPT_1');
+      if not RunToNextBreak(TstName) then exit;
+      // Leave TRY_C => back to TRY_B
+      if not StepLeaveTryNoExcept(TstName, 'TRY_B_AFTER_EXCEPT_1', 'TRY_C_EARLY') then exit;
+
+      if not StepOverToLine(TstName+'', 'TRY_B_BEFORE_FINALLY', False, dcStepOver, 5)  then exit;
+      // Enter TRY_B_FINALLY
+      if not StepEnterFinally(TstName+'', 'TRY_B_FINALLY', 'TRY_B_FINALLY_1', 'TRY_B_1_EARLY', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_B_FINALLY_END', False, dcStepOver, 2)  then exit;
+
+
+      SetNextBreak('TRY_F_BEFORE_TRY_G');
+      RunToNextBreak(TstName);
+      // Enter TRY_G
+      if not RunToNextPauseNoLoopBreak(TstName+'', dcStepOver, 'TRY_G_1')      then exit;
+      if not StepOverToLine(TstName+'', 'TRY_G_2', False, dcStepOver, 6)  then exit;
+      if not StepEnterFinally(TstName+'', 'TRY_G_FINALLY', 'TRY_G_FINALLY_1', 'TRY_G_1', dcStepOver, ACmd) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_G_FINALLY_END', False, dcStepOver, 4)  then exit;
+
+      // LEAVE TRY_G => back to TRY F
+      if not StepLeaveFinally(TstName, 'TRY_F_FINALLY_AFTER_FIN_G', 'TRY_G_1') then exit;
+      if not StepOverToLine(TstName+'', 'TRY_F_FINALLY_END', False, dcStepOver, 3)  then exit;
+
+      // LEAVE TRY_F => back to TRY E
+      if not StepLeaveFinally(TstName, 'TRY_E_FINALLY_AFTER_FIN_F', 'TRY_F_1') then exit;
+      if not StepOverToLine(TstName+'', 'TRY_E_FINALLY_END', False, dcStepOver, 3)  then exit;
+
+      // LEAVE TRY_E => back to TRY A (skip except _D)
+      //if not StepLeaveFinally(TstName, 'TRY_A_FINALLY_AFTER_EXCEPT_D', 'TRY_E_1') then exit; // we can also hit the try for the EXCEPT block....
+      if not StepOverToLine(TstName, 'TRY_A_FINALLY_AFTER_EXCEPT_D', False, dcStepOver, 4) then exit;
+      if not StepOverToLine(TstName+'', 'TRY_A_FINALLY_END', False, dcStepOver, 3)  then exit;
+
+
+
+      IsDone := True;
+    finally
+      TestTrue(TstName+' - DID NOT FINISH ALL TESTS', IsDone);
+    end;
+  end;
+
+  procedure TestSimpleRunAndStepOverExit(TstName: String);
+  (* Run into finally blocks, and see that step over behaves
+  *)
+  var
+    IsDone: Boolean;
+    CurTstName: String;
+  begin
+    if (Compiler.Version < 030000) or
+       ( (Compiler.CpuBitType = cpu32) and (Compiler.Version < 030200) )
+    then
+      exit;
+
+    IsDone := False;
+    try
+      CurTstName := TstName + ' exit 1 ';
+      SetNextBreak('TRY_F_3');
+      if not RunToNextBreak(CurTstName) then exit;
+      if not StepOverToLine(CurTstName+'', 'TRY_F_FINALLY', False, dcStepOver, 4, 'TRY_F_BEFORE_FINALLY')  then exit;
+      if not RunToNextPauseNoLoopBreak(CurTstName+'', dcStepOver, 'TRY_F_FINALLY_1')      then exit;
+      if not StepOverToLine(CurTstName+'', 'TRY_F_BEFORE_TRY_G', False, dcStepOver, 5)  then exit;
+      if not StepOverToLine(CurTstName+'', 'TRY_G_1', False, dcStepOver, 2)  then exit;
+      if not StepOverToLine(CurTstName+'', 'TRY_G_FINALLY', False, dcStepOver, 4)  then exit;
+      if not StepOverToLine(CurTstName+'', 'TRY_F_FINALLY_END', False, dcStepOver, 8)  then exit;
+      if not StepOverToLine(CurTstName+'', 'BAR1_RET', False, dcStepOver, 25, 'TRY_E_FINALLY_AFTER_FIN_F_2')  then exit;
+
+
+(*
+      CurTstName := TstName + ' exit 2 ';
+      SetNextBreak('TRY_F_FINALLY_1');
+      if not RunToNextBreak(CurTstName) then exit;
+      if not StepOverToLine(CurTstName+'', 'BAR1_RET', False, dcStepOver, 35, 'TRY_E_FINALLY_AFTER_FIN_F_2')  then exit;
+*)
+
+      IsDone := True;
+    finally
+      TestTrue(CurTstName+' - DID NOT FINISH ALL TESTS', IsDone);
+    end;
+  end;
+
+  procedure TestSimpleRunAndStepOut(TstName: String);
+  (* Run into finally blocks, and see that step over behaves
+  *)
+  var
+    IsDone: Boolean;
+  begin
+    IsDone := False;
+    try
+      SetNextBreak('TRY_C_BEFORE_EXCEPT_1');
+      if not RunToNextBreak(TstName) then exit;
+      RunToNextPauseNoLoopBreak(TstName+'', dcStepOut); // may end at BEGIN OR END
+      if not StepOverToLine(TstName+'', 'BAR2_RET', False, dcStepOver, 4, 'BEFORE_END')  then exit;
+      if not StepOverToLine(TstName+'', 'BAR1_RET_FIN', False, dcStepOver, 4)  then exit;
+      RunToNextPauseNoLoopBreak(TstName+'', dcStepOut); // may end at BEGIN OR END
+      if not StepOverToLine(TstName+'', 'FOO_RET', False, dcStepOver, 4)  then exit;
+
+
+      SetNextBreak('TRY_F_BEFORE_TRY_G');
+      RunToNextBreak(TstName);
+      RunToNextPauseNoLoopBreak(TstName+'', dcStepOut); // may end at BEGIN OR END
+      if not StepOverToLine(TstName+'', 'BAR2_RET', False, dcStepOver, 4, 'BEFORE_END')  then exit;
+      RunToNextPauseNoLoopBreak(TstName+'', dcStepOut); // may end at BEGIN OR END
+      if not StepOverToLine(TstName+'', 'FOO_RET', False, dcStepOver, 4)  then exit;
+
+      IsDone := True;
+    finally
+      TestTrue(TstName+' - DID NOT FINISH ALL TESTS', IsDone);
+    end;
+  end;
+
+
+var
+  ExeName: String;
 begin
+  ClearTestErrors;
+  FGotExceptCount := 0;
+  FContinue := False;
+  BrkAtCall := nil;
+  BrkInTest := nil;
+
+  Src := GetCommonSourceFor(AppDir + 'StepTryBlocksPrg.pas');
+  TestCompile(Src, ExeName);
+
+  TestTrue('Start debugger', Debugger.StartDebugger(AppDir, ExeName));
+  dbg := Debugger.LazDebugger;
+  TFpDebugDebuggerProperties(dbg.GetProperties).NextOnlyStopOnStartLine := ANextOnlyStopOnStartLine;
+  try
+    dbg.OnException      := @DoDebuggerException;
+
+    SetNextCallTo('CALL_TestSimpleStepOver');
+    RunToNextCallTo('');
+
+    SetNextCallTo('CALL_TestSimpleRunAndStepOver'); // catch any run-away - stop here
+    TestSimpleStepOver('Simple Step-Over: ');
+    if BrkInTest <> nil then BrkInTest.Enabled := False;
+    RunToNextCallTo('');
+
+(* ONLY works if the compiler/RTL has no debug info / otherwise we correctly ?? step into the rtl *)
+    //SetNextCallTo('CALL_a');
+    //TestSimpleStepOver('Simple Step-Into: ', dcStepInto);
+    //RunToNextCallTo('');
+
+    SetNextCallTo('CALL_TestSimpleRunAndStepOverExit'); // catch any run-away - stop here
+    TestSimpleRunAndStepOver('TestSimpleRunAndStepOver: ');
+    if BrkInTest <> nil then BrkInTest.Enabled := False;
+    RunToNextCallTo('');
+
+    SetNextCallTo('CALL_TestSimpleRunAndStepOut'); // catch any run-away - stop here
+    TestSimpleRunAndStepOverExit('TestSimpleRunAndStepOverExit');
+    if BrkInTest <> nil then BrkInTest.Enabled := False;
+    RunToNextCallTo('');
+
+    SetNextCallTo('CALL_xx'); // catch any run-away - stop here
+    TestSimpleRunAndStepOut('TestSimpleRunAndStepOut: ');
+    if BrkInTest <> nil then BrkInTest.Enabled := False;
+    RunToNextCallTo('');
+
+
+
+
+    dbg.Stop;
+  finally
+    FIgnoreReason := '';
+    Debugger.FreeDebugger;
+  end;
+
+  AssertTestErrors;
+end;
+
+function TTestStepping.RunToNextPauseNoLoopBreak(AName: String;
+  ACmd: TDBGCommand; ATimeOut: Integer; AnExpAtBrkName: String;
+  AnExpAcceptLinesBefore: integer): Boolean;
+begin
+  if AnExpAtBrkName <> '' then
+    AName := AName + ' (TO: '+AnExpAtBrkName+')';
   THookedFpDebugDebugger(dbg).LockRelCount := 0;
-  Result := RunToNextPauseNoInternal(AName, ACmd, ATimeOut,
-      AWaitForInternal);
+  Result := RunToNextPauseNoInternal(AName, ACmd);
 
   // LockRelease called in 2 * DoState / 1 * DebugLoopFinished
-  TestEquals(AName+' - lock cnt', 3, THookedFpDebugDebugger(dbg).LockRelCount);
+  if not TestEquals(AName + ' ' + dbgs(ACmd)+' - lock cnt', 3, THookedFpDebugDebugger(dbg).LockRelCount)
+  then
+    Result := False;
+
+  if AnExpAtBrkName <> '' then
+    if not TestLocation(aName + ' ' + dbgs(ACmd)+': Finished at Line ', AnExpAtBrkName, -1, AnExpAcceptLinesBefore)
+    then
+      Result := False;
+end;
+
+function TTestStepping.RunToNextPauseNoLoopBreak(AName: String;
+  ACmd: TDBGCommand; AnExpAtBrkName: String; AnExpAcceptLinesBefore: integer
+  ): Boolean;
+begin
+  Result := RunToNextPauseNoLoopBreak(AName, ACmd, 5000, AnExpAtBrkName, AnExpAcceptLinesBefore);
+end;
+
+function TTestStepping.RunToNextPauseEx(AName: String; ACmd: TDBGCommand;
+  AnExpAtBrkName: String; AnExpAcceptLinesBefore: integer): Boolean;
+begin
+  if AnExpAtBrkName <> '' then
+    AName := AName + ' (TO: '+AnExpAtBrkName+')';
+  Result := Debugger.RunToNextPause(ACmd);
+
+  if AnExpAtBrkName <> '' then
+    if not TestLocation(aName + ' ' + dbgs(ACmd)+': Finished at Line ', AnExpAtBrkName, -1, AnExpAcceptLinesBefore)
+    then
+      Result := False;
 end;
 
 
@@ -771,11 +1204,14 @@ initialization
   ControlTestStepOverInstr := TestControlRegisterTest('TTestStepOverInstr', ControlTest_NextOnlyTrue);
   ControlTestExceptionStepOutEx  := TestControlRegisterTest('TTestExceptionStepOutEx', ControlTest_NextOnlyTrue);
   ControlTestExceptionStepOverEx := TestControlRegisterTest('TTestExceptionStepOverEx', ControlTest_NextOnlyTrue);
+  ControlTestStepTryBlocks := TestControlRegisterTest('TTestStepTryBlocks', ControlTest_NextOnlyTrue);
 
   ControlTest_NextOnly              := TestControlRegisterTest('TTestStepping_NextOnly=False', ControlTest);
   ControlTestStepOver_NextOnly      := TestControlRegisterTest('TTestStepOver_NextOnly=False', ControlTest_NextOnly);
   ControlTestStepOverInstr_NextOnly := TestControlRegisterTest('TTestStepOverInstr_NextOnly=False', ControlTest_NextOnly);
   ControlTestExceptionStepOutEx_NextOnly  := TestControlRegisterTest('TTestExceptionStepOutEx_NextOnly=False', ControlTest_NextOnly);
   ControlTestExceptionStepOverEx_NextOnly := TestControlRegisterTest('TTestExceptionStepOverEx_NextOnly=False', ControlTest_NextOnly);
+  ControlTestStepTryBlocks_NextOnly := TestControlRegisterTest('TTestStepTryBlocks_NextOnly=False', ControlTest_NextOnly);
+
 end.
 
