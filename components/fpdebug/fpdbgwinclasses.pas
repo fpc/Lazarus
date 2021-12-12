@@ -1765,7 +1765,7 @@ end;
 
 procedure TDbgWinThread.SetRegisterValue(AName: string; AValue: QWord);
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.SetRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.SetRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.SetRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   if not ReadThreadState then
@@ -1821,7 +1821,7 @@ end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetInstructionPointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetInstructionPointerRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetInstructionPointerRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   Result := 0;
@@ -1840,7 +1840,7 @@ end;
 
 function TDbgWinThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackBasePointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackBasePointerRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetStackBasePointerRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   Result := 0;
@@ -1859,7 +1859,7 @@ end;
 
 function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackPointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackPointerRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetStackPointerRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   Result := 0;
