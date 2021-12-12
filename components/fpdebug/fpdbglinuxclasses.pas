@@ -775,7 +775,7 @@ end;
 
 function TDbgLinuxThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetInstructionPointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetInstructionPointerRegisterValue');{$ENDIF}
   assert(FIsPaused, 'TDbgLinuxThread.GetInstructionPointerRegisterValue: FIsPaused');
 
   Result := 0;
@@ -789,7 +789,7 @@ end;
 
 function TDbgLinuxThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackBasePointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackBasePointerRegisterValue');{$ENDIF}
   assert(FIsPaused, 'TDbgLinuxThread.GetStackBasePointerRegisterValue: FIsPaused');
 
   Result := 0;
@@ -803,7 +803,7 @@ end;
 
 function TDbgLinuxThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackPointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgLinuxThread.GetStackPointerRegisterValue');{$ENDIF}
   assert(FIsPaused, 'TDbgLinuxThread.GetStackPointerRegisterValue: FIsPaused');
 
   Result := 0;
