@@ -6060,22 +6060,25 @@
         </short>
         <descr>
           <p>
-            <var>TCustomTrayIcon </var> is the base class for <var>TTrayIcon</var>, a multi-platform system tray icon component. It provides properties, methods, and events used to configure and control the tray icon.
+            <var>TCustomTrayIcon </var> is the base class for <var>TTrayIcon</var>, a multi-platform system tray icon component. It allows an icon to be displayed in the system tray when the Application or Form is active. TCustomTrayIcon provides properties, methods, and events used to configure, display, and control the tray icon. The component is supported on multiple platforms, but its implementation is platform-specific.
           </p>
           <p>
-            On the Windows platform, the system tray is usually located on the bottom-right corner of the screen, but it ban be located on other edges for the physical screen. For other operating systems, this position varies according to the window or display manager in use.
+            On the Windows platform, the system tray is usually located on the bottom-right corner of the screen, but it can be located on other edges for the physical screen. For other platforms, the position and other features varies according to the window or display manager in use.
           </p>
           <p>
-            Use ShowIcon, Icon, Icons, AnimateInterval and Animate to display an animated icon on the component.
+            Use Icon to set the icon image type displayed for the control. Use Icons to assign a list of images displayed as the animated icon for the control when the Show method is called.
           </p>
           <p>
-            Use BalloonFlags, BalloonHint, BalloonTimeout and BalloonTitle for the balloon hints displayed for the tray icon.
+            Use BalloonFlags, BalloonHint, BalloonTimeout and BalloonTitle to format and display balloon hints for the tray icon. If balloon hints are not supported for the platform, an internal TPopupNotifier is used to display the Hint for the control.
           </p>
           <p>
             Use PopUpMenu to set the menu displayed when the icon is right clicked with the mouse.
           </p>
+          <p>
+            Assign routines to the event handlers to perform actions needed when the icon is clicked - or when mouse move, up, or down messages are received.
+          </p>
           <remark>
-            TCustomTrayIcon / TTrayIcon is <b>partially</b> compatible with the Delphi component. It adds an OnPaint event handler which does not exist in Delphi. It omits properties like IconIndex and OnBalloonClick.
+            TCustomTrayIcon / TTrayIcon are <b>partially</b> compatible with the Delphi VCL component. It adds an OnPaint event handler which does not exist in Delphi. It omits properties like IconIndex and OnBalloonClick.
           </remark>
         </descr>
         <seealso>
@@ -6113,7 +6116,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.GetAnimateInterval.Result">
-        <short>Value for the property.</short>
+        <short>Value for the AnimateInterval property.</short>
       </element>
 
       <element name="TCustomTrayIcon.GetCanvas">
@@ -6124,7 +6127,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.GetCanvas.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Canvas property.</short>
       </element>
 
       <element name="TCustomTrayIcon.InternalShow">
@@ -6156,7 +6159,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetAnimate.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Animate property.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetAnimateInterval">
@@ -6167,7 +6170,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetAnimateInterval.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AnimateInterval property.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetHint">
@@ -6178,7 +6181,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetHint.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Hint property.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetIcon">
@@ -6189,7 +6192,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetIcon.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Icon property.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetIcons">
@@ -6200,7 +6203,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetIcons.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Icons property.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetPopUpMenu">
@@ -6211,7 +6214,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetPopUpMenu.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the PopUpMenu property.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetVisible">
@@ -6222,14 +6225,14 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.SetVisible.Value">
-        <short>New value for the property.</short>
+        <short>New value for the Visible property.</short>
       </element>
 
       <element name="TCustomTrayIcon.HandleNotifierClose">
-        <short>Performs actions needed when the popup notifier is closed.</short>
+        <short>Performs actions needed when the pop-up notifier is closed.</short>
         <descr>
           <p>
-            <var>HandleNotifierClose</var> ensures that the internal balloon hint timer for the tray icon is disabled when the notifier is closed or destroyed. HandleNotifierClose is assigned to the <var>OnClose</var> event handler in the internal <var>TPopupNotifier</var> class instance used in the tray icon.
+            <var>HandleNotifierClose</var> ensures that the internal balloon hint timer for the tray icon is disabled when the pop-up notifier is closed or destroyed. HandleNotifierClose is assigned to the <var>OnClose</var> event handler in the internal <var>TPopupNotifier</var> class instance used in the tray icon.
          </p>
         </descr>
         <seealso>
@@ -6244,10 +6247,10 @@
       </element>
 
       <element name="TCustomTrayIcon.HandleNotifierTimeout">
-        <short>Event handler used when the timer in the tray icon has expired.</short>
+        <short>Implements the event handler signalled when the timer in the tray icon has expired.</short>
         <descr>
           <p>
-            <var>HandleNotifierTimeout</var> is a procedure which implements an event handler used to disabled the timer and to close the popup notifier for the tray icon. HandleNotifierTimeout is used as the <var>OnTimer</var> event handler in the <var>TTimer</var> class instance used in the component.
+            <var>HandleNotifierTimeout</var> is a procedure which implements an event handler used to disabled the timer and to close the pop-up notifier for the tray icon. HandleNotifierTimeout is used as the <var>OnTimer</var> event handler in the <var>TTimer</var> class instance used in the component.
           </p>
         </descr>
         <seealso>
@@ -6259,7 +6262,9 @@
       </element>
 
       <element name="TCustomTrayIcon.HandleOnAnimateTimer">
-        <short>Event handler used when the interval for the animation timer has elapsed.</short>
+        <short>
+          Implements the event handler signalled when the interval for the animation timer has elapsed.
+        </short>
         <descr>
           <p>
             <var>HandleOnAnimateTimer</var> is a procedure used to implement an event handler signalled when the interval for the animation timer has elapsed. HandleOnAnimateTimer retrieves and displays a bitmap stored in the <var>Icons</var> property when the interval for the timer has elapsed. An internal counter is incremented in the handler to indicate the next image used in the animation sequence. The counter is reset to zero (0) when the last bitmap in Icons is used. HandleOnAnimateTimer calls the <var>InternalUpdate</var> method to refresh the widget set class for the tray icon.
@@ -6312,7 +6317,7 @@
       <element name="TCustomTrayIcon.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TCustomTrayIcon.Notification">
-        <short>Performs action when a component is added or removed at run-time.</short>
+        <short>Performs action when a component is added to or removed from the class instance at run-time.</short>
         <descr>
           <p>
             <var>Notification</var> is an overridden procedure used to perform actions when a component is added or removed at run-time. Notification calls the inherited method, and ensures that the <var>PopUpMenu</var> for the tray icon is set to <b>Nil</b> when the component is removed.
@@ -6347,19 +6352,29 @@
         <short>Operating system <var>Handle</var> for the Tray Icon.</short>
         <descr>
           <p>
-            <var>Handle</var> is a public <var>HWND</var> member that represents the operating system handle for the control. The value in Handle is used (when assigned) in the <var>IconChanged</var> event handler.
+            <var>Handle</var> is a public <var>HWND</var> member that represents the operating system handle for the control. Handle has a non-zero value when the widgetset class instance for the control has been allocated. The value in Handle is used (when assigned) in the private <var>IconChanged</var> event handler.
           </p>
         </descr>
         <seealso/>
       </element>
 
       <element name="TCustomTrayIcon.Create">
-        <short>
-          <var>Create</var> - constructor for <var>TCustomTrayIcon</var>: performs inherited <var>Create</var> then creates icon, timer and initializes balloon timeout.
-        </short>
+        <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> creates a new instance of a <var>TCustomTrayIcon</var> class. If <var>AOwner</var> is not <var>Nil</var>, the new component attempts to insert itself in the list of owned components of the owner.
+            <var>Create</var> is the overridden constructor for the class instance, and calls the inherited constructor on entry. If <var>AOwner</var> is not <var>Nil</var>, the new component attempts to insert itself in the list of owned components in the owner class instance.
+          </p>
+          <p>
+            Creates sets the default values for properties in the class instance, like:
+          </p>
+          <ul>
+            <li>BalloonTimeout (3000ms or 3 seconds)</li>
+            <li>ShowIcon (True)</li>
+            <li>BalloonFlags (bfNone)</li>
+            <li>Visible (False)</li>
+          </ul>
+          <p>
+            Create allocates resources for members which implement the Icon and Icons properties, and internal TTimer instances used for animated icons and balloon hints. A TPopupNotifier instance is also created for platforms without native support for balloon hint display.
           </p>
         </descr>
         <seealso>
@@ -6368,28 +6383,29 @@
       </element>
 
       <element name="TCustomTrayIcon.Destroy">
-        <short>
-          <var>Destroy</var> - destructor for <var>TCustomTrayIcon</var>: frees icon and timer then calls inherited <var>Destroy</var>.
-        </short>
+        <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> sends a <var>opRemove</var> notification to all components in the free-notification list. After that, all owned components are destroyed by calling <link id="#rtl.Classes.TComponent.DestroyComponents">DestroyComponents</link> (and hence removed from the list of owned components). When this is done, the component removes itself from its owner's child component list. After that, the parent's destroy method is called.
+            <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the Hide method at run-time to ensure that the widgetset class instance is not visible and its animation timer is disabled. It frees resources allocated in the constructor for members in the class instance. Destroy calls the inherited method prior to exit. This allows Free notifications to be performed for ancestor components, and to free child components for the control.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomTrayIcon.Hide"/>
+          <link id="TCustomTrayIcon.Icon"/>
+          <link id="TCustomTrayIcon.Icons"/>
           <link id="#rtl.Classes.TComponent.Destroy">TComponent.Destroy</link>
         </seealso>
       </element>
 
       <element name="TCustomTrayIcon.Hide">
-        <short>Hide removes the icon from the System Tray.</short>
+        <short>Removes the icon from the System Tray.</short>
         <descr>
           <p>
             <var>Hide</var> is a <var>Boolean</var> function used to hide the tray icon and to remove it from the tray area in the task bar.
           </p>
-          <remark>
+          <p>
             No actions are performed in the method when <var>Visible</var> is set to <b>False</b>, or at design-time, or when the component is loaded from the LCL streaming mechanism.
-          </remark>
+          </p>
           <p>
             Hide sets the value in the <var>Visible</var> property to <b>False</b>, and calls the namesake method in the <var>WidgetSetClass</var>. The internal animation timer for the tray icon is also disabled in the method.
           </p>
@@ -6397,26 +6413,33 @@
             The return value is <b>True</b> when the tray icon is successfully hidden. For other conditions, the return value is <b>False</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrayIcon.Visible"/>
+          <link id="#rtl.classes.TComponent.ComponentState">TComponent.ComponentState</link>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.Show">
-        <short>Show displays the icon in the System Tray.</short>
+        <short>Displays the icon in the System Tray.</short>
         <descr>
           <p>
-            <var>Show</var> is a Boolean function used to display the tray icon in the system tray. The return value is True if the control is successfully displayed in the method, or the control is already visible. No additional actions are performed in the method when Visible is already set to True.
+            <var>Show</var> is a Boolean function used to display the tray icon in the system tray. The return value is <b>True</b> if the control is successfully displayed in the method, or the control is already visible. No additional actions are performed in the method when Visible is already set to <b>True</b>.
           </p>
           <p>
-            The return value is always False at design-time. At run-time, the InternalShow method is called to display the control with delayed loading and to set the sate for the internal animation timer.
+            The return value is always <b>False</b> at design-time. At run-time, the InternalShow method is called to display the control (with delayed loading) and to set the state for the internal animation timer to the value in <var>Animate</var>.
+          </p>
+          <p>
+            Show is called when the value for the <var>Visible</var> property is changed to <b>True</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrayIcon.Animate"/>
+          <link id="TCustomTrayIcon.Visible"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.InternalUpdate">
-        <short>
-          <var>InternalUpdate</var> - updates any pending changes.
-        </short>
+        <short>Updates the control for any pending changes.</short>
         <descr>
           <p>
             The behavior of this method depends on the widgetset.It was added to provide a way to update items which either cannot be updated automatically when changed, or would be too inefficient to be updated on each change.
@@ -6433,14 +6456,29 @@
 
       <element name="TCustomTrayIcon.ShowBalloonHint">
         <short>
-          Displays a balloon-like window near the tray icon.
+          Displays a balloon hint window near the tray icon.
         </short>
         <descr>
           <p>
-            <var>ShowBalloonHint</var> displays a small balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an immediate response. The Balloon window disappears after the <var>BallonHintTimeout</var> interval has elapsed, or when the user clicks on the close button for the balloon hint.
+            <var>ShowBalloonHint</var> displays a small balloon-like window near the tray icon. It can be used to send notifications about the status of an action, or notify of a received message or any other event which doesn't require an immediate response.
+          </p>
+          <p>
+            The ShowBalloonHint method in the widgetset class is called to display the hint window. For platforms which do not provide native balloon hint support, an internal <var>TPopupNotifier</var> is used to display the values in <var>BalloonTitle</var> and <var>BalloonHint</var>. GetPosition is called to determine the coordinates for the balloon hint, and the ShowAtPos method in the pop-up notifier is called to display the values.
+          </p>
+          <p>
+            The balloon hint window disappears after the <var>BalloonHintTimeout</var> interval has elapsed, or when the user clicks on the close button for the balloon hint.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrayIcon.BalloonHint"/>
+          <link id="TCustomTrayIcon.BalloonTitle"/>
+          <link id="TCustomTrayIcon.BalloonTimeout"/>
+          <link id="TTimer.Interval"/>
+          <link id="#lcl.popupnotifier.TPopupNotifier">TPopupNotifier</link>
+        </seealso>
+        <notes>
+          <note>TODO: Which platforms have native balloon hint support?</note>
+        </notes>
       </element>
 
       <element name="TCustomTrayIcon.GetPosition">
@@ -6452,7 +6490,7 @@
             <var>GetPosition</var> is a <var>TPoint</var> function used to get the position of the tray icon on the display. GetPosition calls the namesake method in the <var>WidgetSetClass</var> to get the location for the tray icon. The coordinates in the return value are used to determine the location for a BalloonHint window for the tray icon.
           </p>
           <p>
-            For the Windows platform, an approximate location in the tray area in the Windows taskbar is used.
+            For the Windows platform, an approximate location in the tray area in the Windows taskbar is used. For other platforms, the position is dependent on the window manager or desktop environment. It may also contain an empty rectangle as the position value.
           </p>
         </descr>
         <seealso/>
@@ -6462,13 +6500,21 @@
         <short>Indicates if animations are displayed on the tray icon.</short>
         <descr>
           <p>
-            <var>Animate</var> is a <var>Boolean</var> property that indicates if animations are displayed on the tray icon.
+            <var>Animate</var> is a <var>Boolean</var> property that indicates if the tray icon is displayed as an animation.
           </p>
           <p>
-            The default value for the property is <b>False</b>. Sets Animate to <b>True</b> to enable the animation timer using the interval in <var>AnimateInterval</var>, and start the animation sequence stored in the <var>Icons</var> property.
+            The default value for the property is <b>False</b>. Set Animate to <b>True</b> to enable the internal animation timer using the interval in <var>AnimateInterval</var>, and to start the animation sequence using the images stored in the <var>Icons</var> property. Setting Animate to <b>True</b> does not enable the animation timer if the control is not <var>Visible</var>.
+          </p>
+          <p>
+            Use the <var>Icon</var> property to set the <var>TIcon</var> instance displayed when Animate is set to <b>False</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrayIcon.AnimateInterval"/>
+          <link id="TCustomTrayIcon.Visible"/>
+          <link id="TCustomTrayIcon.Icon"/>
+          <link id="TCustomTrayIcon.Icon"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.AnimateInterval">
@@ -6478,13 +6524,17 @@
             <var>AnimateInterval</var> is a <var>Cardinal</var> property that defines the elapsed time interval between updates to the image displayed on the tray icon. The default value for the property is 1000 (milliseconds), and causes the animation timer to refresh the image on the tray icon every second.
           </p>
           <p>
-            Update the <var>Icons</var> property to contain the bitmaps displayed in the animation sequence,
+            Update the <var>Icons</var> property to contain the bitmap images displayed in the animation sequence.
           </p>
           <p>
-            Set <var>Animate</var> to <b>True</b> to enable the animation timer for the tray icon.
+            Set <var>Animate</var> to <b>True</b> to enable the animation timer using the value in AnimateInterval when the control is <var>Visible</var>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTrayIcon.Icons"/>
+          <link id="TCustomTrayIcon.Visible"/>
+          <link id="TTimer"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.BalloonFlags">
@@ -6493,7 +6543,7 @@
         </short>
         <descr>
           <p>
-            <var>BalloonFlags</var> is a <var>TBalloonFlags</var> property which defines the balloon flag displayed for the tray icon balloon hint. BalloonFlags are used when the widget set class displays the balloon hint window for the tray icon. The default value for the property is <var>bfNone</var>. See <link id="TBalloonFlags"/> for more information about the values in the enumeration and their meanings.
+            <var>BalloonFlags</var> is a <var>TBalloonFlags</var> property which identifies an icon displayed for the content in the balloon hint window. BalloonFlags are used when the widget set class displays the balloon hint window for the tray icon. The default value for the property is <var>bfNone</var>. See <link id="TBalloonFlags"/> for more information about the values in the enumeration and their meanings.
           </p>
         </descr>
         <seealso>
@@ -6502,29 +6552,109 @@
       </element>
 
       <element name="TCustomTrayIcon.BalloonHint">
-        <short>The text to be shown in the hinting balloon.</short>
+        <short>The text displayed in the balloon hint window.</short>
+        <descr>
+          <p>
+            <var>BalloonHint</var> is a <var>String</var> property which contains the text displayed in a balloon hint window. It is used along with BalloonTimeout, BalloonTitle, and BalloonFlags in the ShowBalloonHint method. It is different than the value in the Hint property; Hint is used for mouse hover events.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.BalloonTitle"/>
+          <link id="TCustomTrayIcon.BalloonFlags"/>
+          <link id="TCustomTrayIcon.BalloonTimeout"/>
+          <link id="TCustomTrayIcon.ShowBalloonHint"/>
+          <link id="TCustomTrayIcon.Hint"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.BalloonTimeout">
-        <short>The period after which the hinting balloon disappears.</short>
+        <short>The interval after which the balloon hint disappears.</short>
+        <descr>
+          <p>
+            <var>BalloonTimeout</var> is an <var>Integer</var> property which contains the duration that a balloon hint window is visible before it is closed. The default value for the property is 3000 (milliseconds) or 3 seconds.
+          </p>
+          <p>
+            The value in BalloonTimeout is assigned as the internal for the internal timer activated when the <var>ShowBalloonHint</var> method is called. Set values in BalloonHint, BalloonTitle, BalloonFlags, and BalloonTimeout prior to calling the ShowBalloonHint method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.BalloonHint"/>
+          <link id="TCustomTrayIcon.BalloonTitle"/>
+          <link id="TCustomTrayIcon.BalloonFlags"/>
+          <link id="TCustomTrayIcon.ShowBalloonHint"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.BalloonTitle">
-        <short>The title to be shown on the hinting balloon.</short>
+        <short>Title used for the balloon hint window.</short>
+        <descr>
+          <p>
+            <var>BalloonTitle</var> is a <var>String</var> property which contains the title used for a balloon hint window displayed for the control. BalloonTitle is used - along with BalloonHint, BalloonTimeout, and BalloonFlags - when the ShowBalloonHint method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.BalloonHint"/>
+          <link id="TCustomTrayIcon.BalloonTimeout"/>
+          <link id="TCustomTrayIcon.BalloonFlags"/>
+          <link id="TCustomTrayIcon.ShowBalloonHint"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.Canvas">
-        <short>The canvas of the Tray Icon.</short>
+        <short>Canvas for the class instance.</short>
+        <descr>
+          <p>
+            Canvas is a read-only TCanvas property which gets the drawing surface for the tray icon control. The property value contains the TCanvas instance provided by the widgetset class. For some platforms, this is the canvas for the Icon. For others, it is the handle for the system tray class instance.
+          </p>
+          <p>
+            TCustomTrayIcon does not use Canvas directly in its implementation.
+          </p>
+        </descr>
+        <seealso/>
       </element>
 
       <element name="TCustomTrayIcon.PopUpMenu">
         <short>
-          PopUpMenu is a popup menu which is displayed when right mouse button is clicked over the icon, separate from the balloon hint window.
+          Pop-up menu displayed when right mouse button is clicked over the icon for the control.
         </short>
+        <descr>
+          <p>
+            <var>PopUpMenu</var> is a <var>TPopupMenu</var> property which contains the menu displayed when the Right mouse button is clicked on the Icon for the class instance. Setting a new value for the property causes the existing pop-up menu instance to be removed from the free notification list for the control. The new pop-up menu instance is added to the free notification list. It is used when the widgetset class instance detects a Right mouse button event over the control.
+          </p>
+          <p>
+            Use the OnMouseDown, OnMouseMove, or OnMouseUp to implement callbacks for mouse events in the widgetset class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.Icon"/>
+          <link id="TCustomTrayIcon.OnMouseDown"/>
+          <link id="TCustomTrayIcon.OnMouseMove"/>
+          <link id="TCustomTrayIcon.OnMouseUp"/>
+          <link id="#lcl.menus.TPopUpMenu">TPopUpMenu</link>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.Icon">
         <short>The Icon or picture that displayed on the tray icon.</short>
+        <descr>
+          <p>
+            <var>Icon</var> is a <var>Icon</var> property with the static icon displayed in the system tray for the control.
+          </p>
+          <p>
+            Use <var>Icons</var> to assign the bitmap images displayed as an animation sequence when <var>Animate</var> is set to True.
+          </p>
+          <p>
+            Use <var>ShowIcon</var> to indicate whether the Icon is displayed for the control. This feature is platform-specific. Use the <var>OnPaint</var> event handler and <var>Canvas</var> to perform drawing operations for the tray icon when ShowIcon is set to <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.OnPaint"/>
+          <link id="TCustomTrayIcon.Canvas"/>
+          <link id="TCustomTrayIcon.Icons"/>
+          <link id="TCustomTrayIcon.Animate"/>
+          <link id="TCustomTrayIcon.ShowIcon"/>
+          <link id="#lcl.graphics.TIcon">TIcon</link>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.Icons">
@@ -6550,53 +6680,250 @@
       </element>
 
       <element name="TCustomTrayIcon.Hint">
-        <short>A simple hint shown when the mouse hovers over the icon.</short>
+        <short>Hint text displayed when the mouse is hovered over the tray icon.</short>
+        <descr>
+          <p>
+            <var>Hint</var> is a <var>String</var> property  with the text displayed when the mouse is hovered over the tray icon in the system tray. Changing the value for the property causes the <var>InternalUpdate</var> method to be called when the control is <var>Visible</var>.
+          </p>
+          <p>
+            Hint is separate and distinct from the value in <var>BalloonHint</var>, which is displayed (on supported platforms) when the <var>ShowBalloonHint</var> method is called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.InternalUpdate"/>
+          <link id="TCustomTrayIcon.Visible"/>
+          <link id="TCustomTrayIcon.BalloonHint"/>
+          <link id="TCustomTrayIcon.ShowBalloonHint"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.ShowIcon">
         <short>
-          Determines if <var>Icon</var> should be painted to the System Tray. This can be set to false if one wishes to instead paint to the Canvas of the Tray Icon.
+          Indicates whether the Icon is drawn by the control (in its widgetset class).
         </short>
+        <descr>
+          <p>
+            <var>ShowIcon</var> is a <var>Boolean</var> property which indicates if the image in Icon is displayed when the control is redrawn. The default value for the property is <b>True</b>, and causes the widgetset class for the control to draw the image in <var>Icon</var> when the control is <var>Visible</var>. When set to <b>False</b>, it is assumed that the <var>OnPaint</var> event handler and <var>Canvas</var> are used to draw the Icon in application code.
+          </p>
+          <remark>
+            The OnPaint event handler is not signalled on the Windows platform.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.Canvas"/>
+          <link id="TCustomTrayIcon.Icon"/>
+          <link id="TCustomTrayIcon.OnPaint"/>
+          <link id="TCustomTrayIcon.Visible"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.Visible">
         <short>
-          It is set to true when the icon is shown and remains true until Hide is called. Setting <var>Visible</var> has the same effect as calling Hide or Show.
+          Indicates if the tray icon is displayed in the system tray.
         </short>
+        <descr>
+          <p>
+            Visible is a Boolean property which indicates if the control is displayed in the system tray. The default value for the property is False.
+          </p>
+          <p>
+            The value for the property is updated in methods where the control is displayed or hidden. It is set to True in the private InternalShow method, and to False in the Hide method. Setting a new value for the property causes the Show or Hide method to be called depending on the new property value.
+          </p>
+          <remark>
+            The value in Visible may continue to be False after calling the Show method; it must be successfully displayed by the widgetset class before the property is set to True.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.Show"/>
+          <link id="TCustomTrayIcon.Hide"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.OnClick">
-        <short>Event Handler for Mouse Click on Tray Icon.</short>
+        <short>
+          Event handler signalled when a mouse button is single-clicked on the tray icon.
+        </short>
+        <descr>
+          <p>
+            OnClick is a TNotifyEvent property with the event handler signalled when the Left mouse button is single-clicked on the tray icon. An application can implement and assign an object procedure to the event handler to perform any actions needed when the tray icon is clicked.
+          </p>
+          <p>
+            Use OnDblClick to perform actions needed when the Left mouse button is double-clicked on the tray icon.
+          </p>
+          <remark>
+            When both OnClick and OnDblClick are assigned, OnClick is signalled twice for a mouse double-click event. Once before OnDblClick, and once after OnDblClick.
+          </remark>
+          <p>
+            Use OnMouseUp and OnMouseDown if another mouse button (other than mbLeft), the keyboard modifier like Shift/Ctrl/Alt, or the mouse coordinates must be examined.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.OnDblClick"/>
+          <link id="TCustomTrayIcon.OnMouseDown"/>
+          <link id="TCustomTrayIcon.OnMouseUp"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.OnDblClick">
-        <short>Event handler for mouse double-click.</short>
+        <short>
+          Event handler signalled when a mouse button is double-clicked on the tray icon.
+        </short>
+        <descr>
+          <p>
+            OnDblClick is a TNotifyEvent property with the Event handler signalled when the Left mouse button is double-clicked on the tray icon. An application can implement and assign an object procedure to the event handler to perform any actions needed when the tray icon is double-clicked.
+          </p>
+          <p>
+            Use OnClick to perform actions needed when the Left mouse button is single-clicked on the tray icon.
+          </p>
+          <remark>
+            When both OnClick and OnDblClick are assigned, OnClick is signalled twice for a mouse double-click event. Once before OnDblClick, and once after OnDblClick.
+          </remark>
+          <p>
+            Use OnMouseUp and OnMouseDown if another mouse button (other than mbLeft), the keyboard modifier like Shift/Ctrl/Alt, or the mouse coordinates must be examined.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.OnClick"/>
+          <link id="TCustomTrayIcon.OnMouseDown"/>
+          <link id="TCustomTrayIcon.OnMouseUp"/>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.OnMouseDown">
-        <short>Event handler if mouse button is pressed down.</short>
+        <short>
+          Event handler signalled when a mouse button down event is detected for the tray icon.
+        </short>
+        <descr>
+          <p>
+            <var>OnMouseDown</var> is a <var>TMouseEvent</var> property with the event handler signalled when a mouse button down event is detected for the tray icon. Arguments passed to the event handler identify:
+          </p>
+          <dl>
+            <dt>
+              Sender
+            </dt>
+            <dd>
+              The object for the event notification.
+            </dd>
+            <dt>
+              Button
+            </dt>
+            <dd>
+              The mouse button for the event.
+            </dd>
+            <dt>
+              Shift
+            </dt>
+            <dd>
+              The state for the Shift / Ctrl / Alt keys.
+            </dd>
+            <dt>
+              X and Y
+            </dt>
+            <dd>
+              The current coordinates for the mouse pointer.
+            </dd>
+          </dl>
+          <p>
+            An application must implement and assign an object procedure using the signature for the event handler to respond to the notification.
+          </p>
+          <p>
+            Use OnMouseUp to respond to the mouse up event for a mouse button.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.OnMouseUp"/>
+          <link id="#lcl.controls.TMouseEvent">TMouseEvent</link>
+          <link id="#lcl.controls.TMouseButton">TMouseButton</link>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.OnMouseUp">
-        <short>Event handler if mouse button is up.</short>
+        <short>
+          Event handler signalled when a mouse button up event is detected for the tray icon.
+        </short>
+        <descr>
+          <p>
+            <var>OnMouseUp</var> is a <var>TMouseEvent</var> property with the event handler signalled when a mouse button up event is detected for the tray icon. Arguments passed to the event handler identify:
+          </p>
+          <dl>
+            <dt>
+              Sender
+            </dt>
+            <dd>
+              The object for the event notification.
+            </dd>
+            <dt>
+              Button
+            </dt>
+            <dd>
+              The mouse button for the event.
+            </dd>
+            <dt>
+              Shift
+            </dt>
+            <dd>
+              The state for the Shift / Ctrl / Alt keys.
+            </dd>
+            <dt>
+              X and Y
+            </dt>
+            <dd>
+              The current coordinates for the mouse pointer.
+            </dd>
+          </dl>
+          <p>
+            An application must implement and assign an object procedure using the signature for the event handler to respond to the notification.
+          </p>
+          <p>
+            Use OnMouseDown to respond to the mouse down event for a mouse button.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.OnMouseDown"/>
+          <link id="#lcl.controls.TMouseEvent">TMouseEvent</link>
+          <link id="#lcl.controls.TMouseButton">TMouseButton</link>
+          <link id="#rtl.classes.TShiftState">TShiftState</link>
+        </seealso>
       </element>
 
       <element name="TCustomTrayIcon.OnMouseMove">
-        <short>Event handler for mouse movement.</short>
+        <short>
+          Event handler signalled when a WM_MOUSEMOVE message is handled for the tray icon.
+        </short>
+        <descr>
+          <p>
+            <var>OnMouseMove</var> is a <var>TMouseMoveEvent</var> property with the event handler signalled when a mouse move message is handled in the message processing loop for the task bar / system tray. It is signalled (when assigned) when the WM_MOUSEMOVE message is detected in the WndProc routine for the system tray. Arguments for the event handler include the Application for the event notification, the Ctrl/Alt/Shift state for the mouse event, and the current coordinates for the mouse pointer.
+          </p>
+          <p>
+            OnMouseMove is a callback routine provided for the widgetset class instance.
+          </p>
+        </descr>
+        <seealso/>
       </element>
 
       <element name="TCustomTrayIcon.OnPaint">
         <short>
-          Event handler used to implement custom drawing for the tray icon.
+          Event handler signalled to implement custom drawing for the tray icon.
         </short>
         <descr>
           <p>
-            OnPaint is an event handler used to implement custom drawing for the tray icon. Draw using the canvas property for the tray icon.
+            OnPaint is a TNotifyEvent property with the event handler used to implement custom drawing for the tray icon. It is signalled when the widgetset class executes its internal paint routine. The handle  in Canvas is valid when OnPaint is executed, and can be used to perform drawing operations for the control Icon.
           </p>
           <remark>
-            OnPaint does <b>not</b> work on the Win32 platform.
+            OnPaint is <b>not</b> implemented for the Win32 platform.
           </remark>
         </descr>
+        <seealso>
+          <link id="TCustomTrayIcon.Canvas"/>
+          <link id="TCustomTrayIcon.Icon"/>
+          <link id="TCustomTrayIcon.Icons"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
+        <notes>
+          <note>
+            This needs help. Behavior is widgetset-specific. QT has already drawn the clipping rectangle and the icon. What about GTK and Mac?
+          </note>
+        </notes>
       </element>
 
       <element name="TTrayIcon">
@@ -6605,25 +6932,25 @@
         </short>
         <descr>
           <p>
-            <var>TTrayIcon</var> is a <var>TCustomTrayIcon</var> descendant which implements a multi-platform System Tray component.
+            <var>TTrayIcon</var> is a <var>TCustomTrayIcon</var> descendant which implements a multi-platform System Tray component. It allows an icon to be displayed in the system tray when the Application or Form is active. TTrayIcon provides properties, methods, and events used to configure, display, and control the tray icon. It sets the visibility for properties from ancestor classes. The component is supported on multiple platforms, but its implementation is platform-specific.
           </p>
           <p>
-            On the Windows platform, the System tray is usually located on the bottom-right corner of the screen, but it ban be located on other edges for the physical screen. For other operating systems, this position varies according to the window or display manager in use.
+            On the Windows platform, the system tray is usually located on the bottom-right corner of the screen, but it can be located on other edges for the physical screen. For other platforms, the position and other features varies according to the window or display manager in use.
           </p>
           <p>
-            Use ShowIcon, Icon, Icons, AnimateInterval and Animate to display an animated icon on the component.
+            Use Icon to set the icon image type displayed for the control. Use Icons to assign a list of images displayed as the animated icon for the control when the Show method is called.
           </p>
           <p>
-            Use BalloonFlags, BalloonHint, BalloonTimeout and BalloonTitle for the balloon hints displayed for the tray icon.
+            Use BalloonFlags, BalloonHint, BalloonTimeout and BalloonTitle to format and display balloon hints for the tray icon. If balloon hints are not supported for the platform, an internal TPopupNotifier is used to display the Hint for the control.
           </p>
           <p>
             Use PopUpMenu to set the menu displayed when the icon is right clicked with the mouse.
           </p>
           <p>
-            TTrayIcon sets the visibility for properties defined in the ancestor class.
+            Assign routines to the event handlers to perform actions needed when the icon is clicked - or when mouse move, up, or down messages are received.
           </p>
           <remark>
-            TCustomTrayIcon / TTrayIcon is <b>partially</b> compatible with the Delphi component. It adds an OnPaint event handler which does not exist in Delphi. It omits properties like IconIndex and OnBalloonClick.
+            TCustomTrayIcon / TTrayIcon are <b>partially</b> compatible with the Delphi VCL component. It adds an OnPaint event handler which does not exist in Delphi. It omits properties like IconIndex and OnBalloonClick.
           </remark>
         </descr>
         <seealso>
