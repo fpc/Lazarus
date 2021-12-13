@@ -313,7 +313,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure FreeHandle;override;
-    function ControlIsPainting: boolean;
+    function ControlIsPainting: Boolean;
     property Control: TControl read FControl write SetControl;
   end;
 
@@ -423,7 +423,7 @@ type
           Shift: TShiftState; MousePos: TPoint; var Handled: Boolean) of Object;
 
   TGetDockCaptionEvent = procedure(Sender: TObject; AControl: TControl;
-    var ACaption: String) of Object;
+    var ACaption: string) of Object;
 
 
   { TDragObject }
@@ -545,7 +545,7 @@ type
     procedure ShowDockImage; virtual;
     procedure HideDockImage; virtual;
     procedure MoveDockImage; virtual;
-    function HasOnDrawImage: boolean; virtual;
+    function HasOnDrawImage: Boolean; virtual;
   public
     property DockOffset: TPoint read FDockOffset write FDockOffset;
     property DockRect: TRect read FDockRect write FDockRect; // where to drop Control, screen coordinates
@@ -580,15 +580,15 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
 
-    function IsDragging: boolean; virtual;abstract;
-    function Dragging(AControl: TControl): boolean; virtual;abstract;
+    function IsDragging: Boolean; virtual;abstract;
+    function Dragging(AControl: TControl): Boolean; virtual;abstract;
     procedure RegisterDockSite(Site: TWinControl; DoRegister: Boolean); virtual;abstract;
 
     procedure DragStart(AControl: TControl; AImmediate: Boolean; AThreshold: Integer; StartFromCurrentMouse:Boolean=False);virtual;abstract;
     procedure DragMove(APosition: TPoint); virtual;abstract;
     procedure DragStop(ADrop: Boolean); virtual;abstract;
 
-    function CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): boolean; virtual;abstract;
+    function CanStartDragging(Site: TWinControl;  AThreshold: Integer; X,Y:Integer): Boolean; virtual;abstract;
 
     property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;
@@ -608,7 +608,7 @@ type
     procedure EndUpdate; virtual;
     procedure GetControlBounds(Control: TControl;
                                out AControlBounds: TRect); virtual; abstract;
-    function GetDockEdge(ADockObject: TDragDockObject): boolean; virtual;
+    function GetDockEdge(ADockObject: TDragDockObject): Boolean; virtual;
     procedure InsertControl(ADockObject: TDragDockObject); virtual; overload;
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
                             DropCtl: TControl); virtual; abstract; overload;
@@ -645,12 +645,12 @@ type
   private
     FControl: TControl;
     FMaxHeight: TConstraintSize;
-    FMaxInterfaceHeight: integer;
-    FMaxInterfaceWidth: integer;
+    FMaxInterfaceHeight: Integer;
+    FMaxInterfaceWidth: Integer;
     FMaxWidth: TConstraintSize;
     FMinHeight: TConstraintSize;
-    FMinInterfaceHeight: integer;
-    FMinInterfaceWidth: integer;
+    FMinInterfaceHeight: Integer;
+    FMinInterfaceWidth: Integer;
     FMinWidth: TConstraintSize;
     FOnChange: TNotifyEvent;
     FOptions: TSizeConstraintsOptions;
@@ -665,19 +665,19 @@ type
   public
     constructor Create(AControl: TControl); virtual;
     procedure UpdateInterfaceConstraints; virtual;
-    procedure SetInterfaceConstraints(MinW, MinH, MaxW, MaxH: integer); virtual;
-    function EffectiveMinWidth: integer; virtual;
-    function EffectiveMinHeight: integer; virtual;
-    function EffectiveMaxWidth: integer; virtual;
-    function EffectiveMaxHeight: integer; virtual;
-    function MinMaxWidth(Width: integer): integer;
-    function MinMaxHeight(Height: integer): integer;
+    procedure SetInterfaceConstraints(MinW, MinH, MaxW, MaxH: Integer); virtual;
+    function EffectiveMinWidth: Integer; virtual;
+    function EffectiveMinHeight: Integer; virtual;
+    function EffectiveMaxWidth: Integer; virtual;
+    function EffectiveMaxHeight: Integer; virtual;
+    function MinMaxWidth(Width: Integer): Integer;
+    function MinMaxHeight(Height: Integer): Integer;
     procedure AutoAdjustLayout(const AXProportion, AYProportion: Double);
   public
-    property MaxInterfaceHeight: integer read FMaxInterfaceHeight;
-    property MaxInterfaceWidth: integer read FMaxInterfaceWidth;
-    property MinInterfaceHeight: integer read FMinInterfaceHeight;
-    property MinInterfaceWidth: integer read FMinInterfaceWidth;
+    property MaxInterfaceHeight: Integer read FMaxInterfaceHeight;
+    property MaxInterfaceWidth: Integer read FMaxInterfaceWidth;
+    property MinInterfaceHeight: Integer read FMinInterfaceHeight;
+    property MinInterfaceWidth: Integer read FMinInterfaceWidth;
     property Control: TControl read FControl;
     property Options: TSizeConstraintsOptions read FOptions write SetOptions default [];
   published
@@ -698,19 +698,19 @@ type
     The spacing around its children and between its children is defined in
     TWinControl.ChildSizing.
 
-    Left, Top, Right, Bottom: integer;
+    Left, Top, Right, Bottom: Integer;
         minimum space left to the autosized control.
         For example: Control A lies left of control B.
         A has borderspacing Right=10 and B has borderspacing Left=5.
         Then A and B will have a minimum space of 10 between.
 
-    Around: integer;
+    Around: Integer;
         same as Left, Top, Right and Bottom all at once. This will be added to
         the effective Left, Top, Right and Bottom.
         Example: Left=3 and Around=5 results in a minimum spacing to the left
         of 8.
 
-    InnerBorder: integer;
+    InnerBorder: Integer;
         This is added to the preferred size.
         For example: A buttons widget returns 75x25 on GetPreferredSize.
         CalculatePreferredSize adds 2 times the InnerBorder to the width and
@@ -768,12 +768,12 @@ type
     function GetControlRight: Integer;
     function GetControlTop: Integer;
     function GetControlWidth: Integer;
-    function IsAroundStored: boolean;
-    function IsBottomStored: boolean;
-    function IsInnerBorderStored: boolean;
-    function IsLeftStored: boolean;
-    function IsRightStored: boolean;
-    function IsTopStored: boolean;
+    function IsAroundStored: Boolean;
+    function IsBottomStored: Boolean;
+    function IsInnerBorderStored: Boolean;
+    function IsLeftStored: Boolean;
+    function IsRightStored: Boolean;
+    function IsTopStored: Boolean;
     procedure SetAround(const AValue: TSpacingSize);
     procedure SetBottom(const AValue: TSpacingSize);
     procedure SetCellAlignHorizontal(const AValue: TControlCellAlign);
@@ -781,7 +781,7 @@ type
     procedure SetInnerBorder(const AValue: Integer);
     procedure SetLeft(const AValue: TSpacingSize);
     procedure SetRight(const AValue: TSpacingSize);
-    procedure SetSpace(Kind: TAnchorKind; const AValue: integer);
+    procedure SetSpace(Kind: TAnchorKind; const AValue: Integer);
     procedure SetTop(const AValue: TSpacingSize);
   protected
     procedure Change(InnerSpaceChanged: Boolean); virtual;
@@ -789,14 +789,14 @@ type
     constructor Create(OwnerControl: TControl; ADefault: PControlBorderSpacingDefault = nil);
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
-    function IsEqual(Spacing: TControlBorderSpacing): boolean;
+    function IsEqual(Spacing: TControlBorderSpacing): Boolean;
     procedure GetSpaceAround(var SpaceAround: TRect); virtual;
     function GetSideSpace(Kind: TAnchorKind): Integer; // Around+GetSpace
     function GetSpace(Kind: TAnchorKind): Integer; virtual;
     procedure AutoAdjustLayout(const AXProportion, AYProportion: Double);
   public
     property Control: TControl read FControl;
-    property Space[Kind: TAnchorKind]: integer read GetSpace write SetSpace;
+    property Space[Kind: TAnchorKind]: Integer read GetSpace write SetSpace;
     property AroundLeft: Integer read GetAroundLeft;
     property AroundTop: Integer read GetAroundTop;
     property AroundRight: Integer read GetAroundRight;
@@ -872,7 +872,7 @@ type
     FControl: TControl;
     FOwner: TControl;
     FSide: TAnchorSideReference;
-    function IsSideStored: boolean;
+    function IsSideStored: Boolean;
     procedure SetControl(const AValue: TControl);
     procedure SetSide(const AValue: TAnchorSideReference);
   protected
@@ -884,9 +884,9 @@ type
                 out ReferenceSide: TAnchorSideReference; out Position: Integer);
     function CheckSidePosition(NewControl: TControl; NewSide: TAnchorSideReference;
                 out ReferenceControl: TControl;
-                out ReferenceSide: TAnchorSideReference; out Position: Integer): boolean;
+                out ReferenceSide: TAnchorSideReference; out Position: Integer): Boolean;
     procedure Assign(Source: TPersistent); override;
-    function IsAnchoredToParent(ParentSide: TAnchorKind): boolean;
+    function IsAnchoredToParent(ParentSide: TAnchorKind): Boolean;
     procedure FixCenterAnchoring;
   public
     property Owner: TControl read FOwner;
@@ -904,7 +904,7 @@ type
     procedure AssignClient(AClient: TObject); override;
     procedure SetCaption(const Value: string); override;
     procedure SetEnabled(Value: Boolean); override;
-    procedure SetHint(const Value: String); override;
+    procedure SetHint(const Value: string); override;
     procedure SetHelpContext(Value: THelpContext); override;
     procedure SetHelpKeyword(const Value: string); override;
     procedure SetHelpType(Value: THelpType); override;
@@ -1131,7 +1131,7 @@ type
     FAutoSizingLockReasons: TStrings;
     {$ENDIF}
     FBaseBounds: TRect;
-    FBaseBoundsLock: integer;
+    FBaseBoundsLock: Integer;
     FBaseParentClientSize: TSize;
     FBiDiMode: TBiDiMode;
     FBorderSpacing: TControlBorderSpacing;
@@ -1151,16 +1151,16 @@ type
     FFont: TFont;
     FHeight: Integer;
     FHelpContext: THelpContext;
-    FHelpKeyword: String;
+    FHelpKeyword: string;
     FHelpType: THelpType;
     FHint: TTranslateString;
     FHostDockSite: TWinControl;
     FLastDoChangeBounds: TRect;
     FLastDoChangeClientSize: TPoint;
-    FLastResizeClientHeight: integer;
-    FLastResizeClientWidth: integer;
-    FLastResizeHeight: integer;
-    FLastResizeWidth: integer;
+    FLastResizeClientHeight: Integer;
+    FLastResizeClientWidth: Integer;
+    FLastResizeHeight: Integer;
+    FLastResizeWidth: Integer;
     FLeft: Integer;
     FLoadedClientSize: TSize;
     FLRDockWidth: Integer;
@@ -1193,13 +1193,13 @@ type
     FOnTripleClick: TNotifyEvent;
     FParent: TWinControl;
     FPopupMenu: TPopupMenu;
-    FPreferredMinWidth: integer;// without theme space
-    FPreferredMinHeight: integer;// without theme space
-    FPreferredWidth: integer;// with theme space
-    FPreferredHeight: integer;// with theme space
+    FPreferredMinWidth: Integer;// without theme space
+    FPreferredMinHeight: Integer;// without theme space
+    FPreferredWidth: Integer;// with theme space
+    FPreferredHeight: Integer;// with theme space
     FReadBounds: TRect;
     FSessionProperties: string;
-    FSizeLock: integer;
+    FSizeLock: Integer;
     FTBDockHeight: Integer;
     FTop: Integer;
     FUndockHeight: Integer;
@@ -1215,12 +1215,12 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FAutoSize: Boolean;
-    FAutoSizingAll: boolean;
+    FAutoSizingAll: Boolean;
     FAutoSizingSelf: Boolean;
     FEnabled: Boolean;
-    FMouseInClient: boolean;
+    FMouseInClient: Boolean;
     FVisible: Boolean;
-    function CaptureMouseButtonsIsStored: boolean;
+    function CaptureMouseButtonsIsStored: Boolean;
     procedure DoActionChange(Sender: TObject);
     function GetAccessibleName: TCaption;
     function GetAccessibleDescription: TCaption;
@@ -1228,7 +1228,7 @@ type
     function GetAccessibleRole: TLazAccessibilityRole;
     function GetAutoSizingAll: Boolean;
     function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
-    function GetAnchoredControls(Index: integer): TControl;
+    function GetAnchoredControls(Index: Integer): TControl;
     function GetBoundsRect: TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
@@ -1237,17 +1237,17 @@ type
     function GetText: TCaption;
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
-    function IsAnchorsStored: boolean;
-    function IsBiDiModeStored: boolean;
+    function IsAnchorsStored: Boolean;
+    function IsBiDiModeStored: Boolean;
     function IsEnabledStored: Boolean;
     function IsFontStored: Boolean;
     function IsHintStored: Boolean;
     function IsHelpContextStored: Boolean;
-    function IsHelpKeyWordStored: boolean;
+    function IsHelpKeyWordStored: Boolean;
     function IsShowHintStored: Boolean;
     function IsVisibleStored: Boolean;
     procedure DoBeforeMouseMessage;
-    procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: integer);
+    procedure DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
                           Shift: TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
@@ -1268,7 +1268,7 @@ type
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
     procedure SetHelpContext(const AValue: THelpContext);
-    procedure SetHelpKeyword(const AValue: String);
+    procedure SetHelpKeyword(const AValue: string);
     procedure SetHostDockSite(const AValue: TWinControl);
     procedure SetLeft(Value: Integer);
     procedure SetMouseCapture(Value: Boolean);
@@ -1308,11 +1308,11 @@ type
                                     InnerSpaceChanged: Boolean); virtual;
     function IsBorderSpacingInnerBorderStored: Boolean; virtual;
     function IsCaptionStored: Boolean;
-    procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
+    procedure SendMoveSizeMessages(SizeChanged, PosChanged: Boolean); virtual;
     procedure ConstrainedResize(var MinWidth, MinHeight,
                                 MaxWidth, MaxHeight: TConstraintSize); virtual;
     procedure CalculatePreferredSize(
-                         var PreferredWidth, PreferredHeight: integer;
+                         var PreferredWidth, PreferredHeight: Integer;
                          WithThemeSpace: Boolean); virtual;
     procedure DoOnResize; virtual;// call OnResize
     procedure DoOnChangeBounds; virtual;// call OnChangeBounds
@@ -1320,24 +1320,24 @@ type
     procedure Resize; virtual;// checks for changes and calls DoOnResize
     procedure RequestAlign; virtual;// smart calling Parent.AlignControls
     procedure UpdateAnchorRules;
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer; KeepBase: boolean); virtual;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer; KeepBase: Boolean); virtual;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer); virtual;
     procedure ScaleConstraints(Multiplier, Divider: Integer);
     procedure ChangeScale(Multiplier, Divider: Integer); virtual;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetBiDiMode(AValue: TBiDiMode); virtual;
     procedure SetParentBiDiMode(AValue: Boolean); virtual;
-    function IsAParentAligning: boolean;
+    function IsAParentAligning: Boolean;
     function GetClientOrigin: TPoint; virtual;
     function GetClientRect: TRect; virtual;// visual size of client area
     function GetLogicalClientRect: TRect; virtual;// logical size of client area (e.g. in a TScrollBox the logical client area can be bigger than the visual)
     function GetScrolledClientRect: TRect; virtual;// visual client area scrolled
     function GetClientScrollOffset: TPoint; virtual;
     function GetControlOrigin: TPoint; virtual;
-    function IsClientHeightStored: boolean; virtual;
-    function IsClientWidthStored: boolean; virtual;
-    function WidthIsAnchored: boolean;
-    function HeightIsAnchored: boolean;
+    function IsClientHeightStored: Boolean; virtual;
+    function IsClientWidthStored: Boolean; virtual;
+    function WidthIsAnchored: Boolean;
+    function HeightIsAnchored: Boolean;
 
     property AutoSizing: Boolean read FAutoSizingSelf;// see Begin/EndAutoSizing
     property AutoSizingAll: Boolean read GetAutoSizingAll;// set in DoAllAutoSize
@@ -1412,7 +1412,7 @@ type
                        var Accept: Boolean); virtual;
     procedure PositionDockRect(DragDockObject: TDragDockObject); virtual;
     procedure SetDragMode(Value: TDragMode); virtual;
-    function GetDefaultDockCaption: String; virtual;
+    function GetDefaultDockCaption: string; virtual;
     //procedure SendDockNotification; virtual; MG: probably not needed
   protected
     // key and mouse
@@ -1426,12 +1426,12 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); virtual;
     procedure MouseEnter; virtual;
     procedure MouseLeave; virtual;
-    function  DialogChar(var Message: TLMKey): boolean; virtual;
-    procedure UpdateMouseCursor(X, Y: integer);
+    function  DialogChar(var Message: TLMKey): Boolean; virtual;
+    procedure UpdateMouseCursor(X, Y: Integer);
   protected
     procedure Changed;
     function  GetPalette: HPalette; virtual;
-    function ChildClassAllowed(ChildClass: TClass): boolean; virtual;
+    function ChildClassAllowed(ChildClass: TClass): Boolean; virtual;
     procedure ReadState(Reader: TReader); override; // called
     procedure Loaded; override;
     procedure LoadedAll; virtual; // called when all controls were Loaded and lost their csLoading
@@ -1446,7 +1446,7 @@ type
     function RealGetText: TCaption; virtual;
     procedure RealSetText(const Value: TCaption); virtual;
     procedure TextChanged; virtual;
-    function GetCachedText(var CachedText: TCaption): boolean; virtual;
+    function GetCachedText(var CachedText: TCaption): Boolean; virtual;
     procedure SetAction(Value: TBasicAction); virtual;
     procedure SetColor(Value: TColor); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
@@ -1475,7 +1475,7 @@ type
     procedure EnabledChanging; virtual;
     procedure EnabledChanged; virtual;
     procedure AddHandler(HandlerType: TControlHandlerType;
-                         const AMethod: TMethod; AsFirst: boolean = false);
+                         const AMethod: TMethod; AsFirst: Boolean = false);
     procedure RemoveHandler(HandlerType: TControlHandlerType;
                             const AMethod: TMethod);
     procedure DoCallNotifyHandler(HandlerType: TControlHandlerType);
@@ -1487,7 +1487,7 @@ type
     procedure DoContextPopup(MousePos: TPoint; var Handled: Boolean); virtual;
     procedure SetZOrder(TopMost: Boolean); virtual;
     class function GetControlClassDefaultSize: TSize; virtual;
-    function ColorIsStored: boolean; virtual;
+    function ColorIsStored: Boolean; virtual;
     procedure DoAutoAdjustLayout(const AMode: TLayoutAdjustmentPolicy;
       const AXProportion, AYProportion: Double); virtual;
     procedure DoFixDesignFontPPI(const AFont: TFont; const ADesignTimePPI: Integer);
@@ -1571,7 +1571,7 @@ type
     // size
     procedure AdjustSize; virtual;// smart calling DoAutoSize
     function AutoSizePhases: TControlAutoSizePhases; virtual;
-    function AutoSizeDelayed: boolean; virtual;
+    function AutoSizeDelayed: Boolean; virtual;
     function AutoSizeDelayedReport: string; virtual;
     function AutoSizeDelayedHandle: Boolean; virtual;
     procedure AnchorToNeighbour(Side: TAnchorKind; Space: TSpacingSize;
@@ -1582,38 +1582,38 @@ type
     procedure AnchorVerticalCenterTo(Sibling: TControl);
     procedure AnchorToCompanion(Side: TAnchorKind; Space: TSpacingSize;
                                 Sibling: TControl;
-                                FreeCompositeSide: boolean = true);
+                                FreeCompositeSide: Boolean = true);
     procedure AnchorSame(Side: TAnchorKind; Sibling: TControl);
     procedure AnchorAsAlign(TheAlign: TAlign; Space: TSpacingSize);
     procedure AnchorClient(Space: TSpacingSize);
-    function AnchoredControlCount: integer;
-    property AnchoredControls[Index: integer]: TControl read GetAnchoredControls;
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer
+    function AnchoredControlCount: Integer;
+    property AnchoredControls[Index: Integer]: TControl read GetAnchoredControls;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: Integer); virtual;
+    procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: Integer); virtual;
+    procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: Integer
             ); virtual; // if you use this, disable the LCL autosizing for this control
-    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer;
-                               Raw: boolean = false;
-                               WithThemeSpace: boolean = true); virtual;
+    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: Integer;
+                               Raw: Boolean = false;
+                               WithThemeSpace: Boolean = true); virtual;
     function GetCanvasScaleFactor: Double;
-    function GetDefaultWidth: integer;
-    function GetDefaultHeight: integer;
+    function GetDefaultWidth: Integer;
+    function GetDefaultHeight: Integer;
     function GetDefaultColor(const DefaultColorType: TDefaultColorType): TColor; virtual;
     // These two are helper routines to help obtain the background color of a control
     function GetColorResolvingParent: TColor;
     function GetRGBColorResolvingParent: TColor;
     //
-    function GetSidePosition(Side: TAnchorKind): integer;
+    function GetSidePosition(Side: TAnchorKind): Integer;
     procedure CNPreferredSizeChanged;
     procedure InvalidatePreferredSize; virtual;
     function GetAnchorsDependingOnParent(WithNormalAnchors: Boolean): TAnchors;
     procedure DisableAutoSizing{$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
     procedure EnableAutoSizing{$IFDEF DebugDisableAutoSizing}(const Reason: string){$ENDIF};
     {$IFDEF DebugDisableAutoSizing}
-    procedure WriteAutoSizeReasons(NotIfEmpty: boolean);
+    procedure WriteAutoSizeReasons(NotIfEmpty: Boolean);
     {$ENDIF}
     procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
-                               UseLoadedValues: boolean); virtual;
+                               UseLoadedValues: Boolean); virtual;
     property BaseBounds: TRect read FBaseBounds;
     property ReadBounds: TRect read FReadBounds;
     property BaseParentClientSize: TSize read FBaseParentClientSize;
@@ -1637,7 +1637,7 @@ type
     procedure BringToFront;
     function HasParent: Boolean; override;
     function GetParentComponent: TComponent; override;
-    function IsParentOf(AControl: TControl): boolean; virtual;
+    function IsParentOf(AControl: TControl): Boolean; virtual;
     function GetTopParent: TControl;
     function FindSubComponent(AName: string): TComponent;
     function IsVisible: Boolean; virtual;// checks parents too
@@ -1645,14 +1645,14 @@ type
     function IsEnabled: Boolean; // checks parent too
     function IsParentColor: Boolean; // checks protected ParentColor, needed by widgetsets
     function IsParentFont: Boolean; // checks protected ParentFont, needed by widgetsets
-    function FormIsUpdating: boolean; virtual;
-    function IsProcessingPaintMsg: boolean;
+    function FormIsUpdating: Boolean; virtual;
+    function IsProcessingPaintMsg: Boolean;
     procedure Hide;
     procedure Refresh;
     procedure Repaint; virtual;
     procedure Invalidate; virtual;
     function CheckChildClassAllowed(ChildClass: TClass;
-                                    ExceptionOnInvalid: boolean): boolean;
+                                    ExceptionOnInvalid: Boolean): Boolean;
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
     procedure SetTempCursor(Value: TCursor); virtual;
@@ -1668,12 +1668,12 @@ type
     function  ControlToScreen(const APoint: TPoint): TPoint;
     function  ClientToParent(const Point: TPoint; AParent: TWinControl = nil): TPoint;
     function  ParentToClient(const Point: TPoint; AParent: TWinControl = nil): TPoint;
-    function GetChildrenRect(Scrolled: boolean): TRect; virtual;
+    function GetChildrenRect(Scrolled: Boolean): TRect; virtual;
     procedure Show;
     procedure Update; virtual;
-    function HandleObjectShouldBeVisible: boolean; virtual;
-    function ParentDestroyingHandle: boolean;
-    function ParentHandlesAllocated: boolean; virtual;
+    function HandleObjectShouldBeVisible: Boolean; virtual;
+    function ParentDestroyingHandle: Boolean;
+    function ParentHandlesAllocated: Boolean; virtual;
     procedure InitiateAction; virtual;
     procedure ShowHelp; virtual;
     function HasHelp: Boolean;
@@ -1681,28 +1681,28 @@ type
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
     procedure AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
-                                 AsFirst: boolean = false);
+                                 AsFirst: Boolean = false);
     procedure RemoveHandlerOnResize(const OnResizeEvent: TNotifyEvent);
     procedure AddHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent;
-                                       AsFirst: boolean = false);
+                                       AsFirst: Boolean = false);
     procedure RemoveHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent);
     procedure AddHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent;
-                                          AsFirst: boolean = false);
+                                          AsFirst: Boolean = false);
     procedure RemoveHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent);
     procedure AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent;
-                                         AsFirst: boolean = false);
+                                         AsFirst: Boolean = false);
     procedure RemoveHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent);
     procedure AddHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent;
-                                         AsFirst: boolean = false);
+                                         AsFirst: Boolean = false);
     procedure RemoveHandlerOnEnableChanging(const OnEnableChangingEvent: TNotifyEvent);
     procedure AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
-                                  AsFirst: boolean = false);
+                                  AsFirst: Boolean = false);
     procedure RemoveHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent);
     procedure AddHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent;
-                                  AsFirst: boolean = false);
+                                  AsFirst: Boolean = false);
     procedure RemoveHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent);
     procedure AddHandlerOnMouseWheel(const OnMouseWheelEvent: TMouseWheelEvent;
-                                  AsFirst: boolean = false);
+                                  AsFirst: Boolean = false);
     procedure RemoveHandlerOnMouseWheel(const OnMouseWheelEvent: TMouseWheelEvent);
   public
     // standard properties, which should be supported by all descendants
@@ -1773,7 +1773,7 @@ type
     property Top: Integer read FTop write SetTop; // no default value - controls usually placed to different positions
     property Width: Integer read FWidth write SetWidth; // no default value - controls usually have different sizes
     property HelpType: THelpType read FHelpType write FHelpType default htContext;
-    property HelpKeyword: String read FHelpKeyword write SetHelpKeyword stored IsHelpKeyWordStored;
+    property HelpKeyword: string read FHelpKeyword write SetHelpKeyword stored IsHelpKeyWordStored;
     property HelpContext: THelpContext read FHelpContext write SetHelpContext stored IsHelpContextStored default 0;
   end;
 
@@ -1784,11 +1784,11 @@ type
 
   { TControlChildSizing }
 
-  { LeftRightSpacing, TopBottomSpacing: integer;
+  { LeftRightSpacing, TopBottomSpacing: Integer;
         minimum space between left client border and left most children.
         For example: ClientLeftRight=5 means children Left position is at least 5.
 
-    HorizontalSpacing, VerticalSpacing: integer;
+    HorizontalSpacing, VerticalSpacing: Integer;
         minimum space between each child horizontally
   }
 
@@ -1882,43 +1882,43 @@ type
   TControlChildSizing = class(TPersistent)
   private
     FControl: TWinControl;
-    FControlsPerLine: integer;
+    FControlsPerLine: Integer;
     FEnlargeHorizontal: TChildControlResizeStyle;
     FEnlargeVertical: TChildControlResizeStyle;
-    FHorizontalSpacing: integer;
+    FHorizontalSpacing: Integer;
     FLayout: TControlChildrenLayout;
-    FLeftRightSpacing: integer;
+    FLeftRightSpacing: Integer;
     FOnChange: TNotifyEvent;
     FShrinkHorizontal: TChildControlResizeStyle;
     FShrinkVertical: TChildControlResizeStyle;
-    FTopBottomSpacing: integer;
-    FVerticalSpacing: integer;
-    procedure SetControlsPerLine(const AValue: integer);
+    FTopBottomSpacing: Integer;
+    FVerticalSpacing: Integer;
+    procedure SetControlsPerLine(const AValue: Integer);
     procedure SetEnlargeHorizontal(const AValue: TChildControlResizeStyle);
     procedure SetEnlargeVertical(const AValue: TChildControlResizeStyle);
-    procedure SetHorizontalSpacing(const AValue: integer);
+    procedure SetHorizontalSpacing(const AValue: Integer);
     procedure SetLayout(const AValue: TControlChildrenLayout);
-    procedure SetLeftRightSpacing(const AValue: integer);
+    procedure SetLeftRightSpacing(const AValue: Integer);
     procedure SetShrinkHorizontal(const AValue: TChildControlResizeStyle);
     procedure SetShrinkVertical(const AValue: TChildControlResizeStyle);
-    procedure SetTopBottomSpacing(const AValue: integer);
-    procedure SetVerticalSpacing(const AValue: integer);
+    procedure SetTopBottomSpacing(const AValue: Integer);
+    procedure SetVerticalSpacing(const AValue: Integer);
   protected
     procedure Change; virtual;
   public
     constructor Create(OwnerControl: TWinControl);
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
-    function IsEqual(Sizing: TControlChildSizing): boolean;
-    procedure SetGridSpacing(Spacing: integer);
+    function IsEqual(Sizing: TControlChildSizing): Boolean;
+    procedure SetGridSpacing(Spacing: Integer);
   public
     property Control: TWinControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing default 0;
-    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing default 0;
-    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing default 0;
-    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing default 0;
+    property LeftRightSpacing: Integer read FLeftRightSpacing write SetLeftRightSpacing default 0;
+    property TopBottomSpacing: Integer read FTopBottomSpacing write SetTopBottomSpacing default 0;
+    property HorizontalSpacing: Integer read FHorizontalSpacing write SetHorizontalSpacing default 0;
+    property VerticalSpacing: Integer read FVerticalSpacing write SetVerticalSpacing default 0;
     property EnlargeHorizontal: TChildControlResizeStyle read FEnlargeHorizontal
                            write SetEnlargeHorizontal default crsAnchorAligning;
     property EnlargeVertical: TChildControlResizeStyle read FEnlargeVertical
@@ -1928,7 +1928,7 @@ type
     property ShrinkVertical: TChildControlResizeStyle read FShrinkVertical
                               write SetShrinkVertical default crsAnchorAligning;
     property Layout: TControlChildrenLayout read FLayout write SetLayout default cclNone;
-    property ControlsPerLine: integer read FControlsPerLine write SetControlsPerLine default 0;
+    property ControlsPerLine: Integer read FControlsPerLine write SetControlsPerLine default 0;
   end;
 
 
@@ -1993,12 +1993,12 @@ type
 
   TWinControlEnumerator = class
   protected
-    FIndex: integer;
-    FLowToHigh: boolean;
+    FIndex: Integer;
+    FLowToHigh: Boolean;
     FParent: TWinControl;
     function GetCurrent: TControl;
   public
-    constructor Create(Parent: TWinControl; aLowToHigh: boolean = true);
+    constructor Create(Parent: TWinControl; aLowToHigh: Boolean = true);
     function GetEnumerator: TWinControlEnumerator;
     function MoveNext: Boolean;
     property Current: TControl read GetCurrent;
@@ -2008,7 +2008,7 @@ type
   private
     FAlignOrder: TFPList; // list of TControl. Last moved (SetBounds) comes first. Used by AlignControls.
     FBorderWidth: TBorderWidth;
-    FBoundsLockCount: integer;
+    FBoundsLockCount: Integer;
     FBoundsRealized: TRect;
     FBorderStyle: TBorderStyle;
     FBrush: TBrush;
@@ -2022,7 +2022,7 @@ type
     FClientWidth: Integer;
     FClientHeight: Integer;
     FDockManager: TDockManager;
-    FFlipped: boolean; // true if flipped - false if native
+    FFlipped: Boolean; // true if flipped - false if native
     FOnAlignInsertBefore: TAlignInsertBeforeEvent;
     FOnAlignPosition: TAlignPositionEvent;
     FOnDockDrop: TDockDropEvent;
@@ -2037,9 +2037,9 @@ type
     FOnUTF8KeyPress: TUTF8KeyPressEvent;
     FParentDoubleBuffered: Boolean;
     FParentWindow: HWND;
-    FRealizeBoundsLockCount: integer;
+    FRealizeBoundsLockCount: Integer;
     FHandle: HWND;
-    FTabOrder: integer;
+    FTabOrder: Integer;
     FTabList: TFPList;
     // keep small variables together to save some bytes
     FTabStop: Boolean;
@@ -2054,7 +2054,7 @@ type
     function GetDockClientCount: Integer;
     function GetDockClients(Index: Integer): TControl;
     function GetHandle: HWND;
-    function GetIsResizing: boolean;
+    function GetIsResizing: Boolean;
     function GetIsSpecialSubControl: Boolean;
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
@@ -2071,7 +2071,7 @@ type
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabOrder: TTabOrder);
     procedure Insert(AControl: TControl);
-    procedure Insert(AControl: TControl; Index: integer);
+    procedure Insert(AControl: TControl; Index: Integer);
     procedure Remove(AControl: TControl);
     procedure AlignNonAlignedControls(ListOfControls: TFPList;
                                       var BoundsModified: Boolean);
@@ -2095,8 +2095,8 @@ type
     procedure DoChildSizingChange(Sender: TObject); virtual;
     procedure InvalidatePreferredChildSizes;
     function CanTab: Boolean; override;
-    function IsClientHeightStored: boolean; override;
-    function IsClientWidthStored: boolean; override;
+    function IsClientHeightStored: Boolean; override;
+    function IsClientWidthStored: Boolean; override;
     procedure DoSendShowHideToInterface; virtual; // called by TWinControl.CMShowingChanged
     procedure ControlsAligned; virtual;// called by AlignControls after aligning controls
     procedure DoSendBoundsToInterface; virtual; // called by RealizeBounds
@@ -2105,16 +2105,16 @@ type
     procedure InvalidateBoundsRealized;
     procedure CreateSubClass(var Params: TCreateParams; ControlClassName: PChar);
     procedure DoConstraintsChange(Sender: TObject); override;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure DoAutoSize; override;
     procedure DoAllAutoSize; override;
     procedure AllAutoSized; virtual; // called by DoAllAutoSize after all bounds are computed, see TCustomForm.AllAutoSized
     procedure CalculatePreferredSize(var PreferredWidth,
-                                     PreferredHeight: integer;
+                                     PreferredHeight: Integer;
                                      WithThemeSpace: Boolean); override;
-    procedure GetPreferredSizeClientFrame(out aWidth, aHeight: integer); virtual;
+    procedure GetPreferredSizeClientFrame(out aWidth, aHeight: Integer); virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    function ChildClassAllowed(ChildClass: TClass): boolean; override;
+    function ChildClassAllowed(ChildClass: TClass): Boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
@@ -2162,8 +2162,8 @@ type
     function DoDragMsg(ADragMessage: TDragMessage; APosition: TPoint;
                        ADragObject: TDragObject; ATarget:
                        TControl; ADocking: Boolean): LRESULT; override;
-    function DoDockClientMsg(DragDockObject: TDragDockObject; aPosition: TPoint): boolean; virtual;
-    function DoUndockClientMsg(NewTarget, Client: TControl):boolean; virtual;
+    function DoDockClientMsg(DragDockObject: TDragDockObject; aPosition: TPoint): Boolean; virtual;
+    function DoUndockClientMsg(NewTarget, Client: TControl):Boolean; virtual;
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); virtual;
     procedure DockOver(Source: TDragDockObject; X, Y: Integer;
                        State: TDragState; var Accept: Boolean); virtual;
@@ -2181,7 +2181,7 @@ type
     function CreateDockManager: TDockManager; virtual;
     procedure SetDockManager(AMgr: TDockManager);
     procedure DoFloatMsg(ADockSource: TDragDockObject); override;//CM_FLOAT
-    procedure DoGetDockCaption(AControl: TControl; var ACaption: String); virtual;
+    procedure DoGetDockCaption(AControl: TControl; var ACaption: string); virtual;
   protected
     // mouse and keyboard
     procedure DoEnter; virtual;
@@ -2190,11 +2190,11 @@ type
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
     function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
-    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; virtual;
+    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): Boolean; virtual;
     function  DoKeyUpBeforeInterface(var Message: TLMKey): Boolean;
-    function  ChildKey(var Message: TLMKey): boolean; virtual;
+    function  ChildKey(var Message: TLMKey): Boolean; virtual;
     function  SendDialogChar(var Message: TLMKey): Boolean;
-    function  DialogChar(var Message: TLMKey): boolean; override;
+    function  DialogChar(var Message: TLMKey): Boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); virtual;
     procedure ControlKeyUp(var Key: Word; Shift: TShiftState); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); virtual;
@@ -2235,7 +2235,7 @@ type
     function GetMouseCapture: Boolean; override;
     procedure RealSetText(const AValue: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
-    procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
+    procedure SendMoveSizeMessages(SizeChanged, PosChanged: Boolean); override;
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
     procedure SetColor(Value: TColor); override;
     procedure SetChildZPosition(const AChild: TControl; const APosition: Integer);
@@ -2244,7 +2244,7 @@ type
     procedure UpdateControlState;
     procedure UpdateShowing; virtual; // checks control's handle visibility, called by DoAllAutoSize and UpdateControlState
     procedure WndProc(var Message: TLMessage); override;
-    procedure WSSetText(const AText: String); virtual;
+    procedure WSSetText(const AText: string); virtual;
   protected
     property WindowHandle: HWND read FHandle write FHandle;
     // properties which are not supported by all descendents
@@ -2255,10 +2255,10 @@ type
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
-    property BoundsLockCount: integer read FBoundsLockCount;
+    property BoundsLockCount: Integer read FBoundsLockCount;
     property Brush: TBrush read GetBrush;
-    property CachedClientHeight: integer read FClientHeight;
-    property CachedClientWidth: integer read FClientWidth;
+    property CachedClientHeight: Integer read FClientHeight;
+    property CachedClientWidth: Integer read FClientWidth;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
     property ControlCount: Integer read GetControlCount;
     property Controls[Index: Integer]: TControl read GetControl;
@@ -2295,7 +2295,7 @@ type
   public
     // size, position, bounds
     function AutoSizePhases: TControlAutoSizePhases; override;
-    function AutoSizeDelayed: boolean; override;
+    function AutoSizeDelayed: Boolean; override;
     function AutoSizeDelayedReport: string; override;
     function AutoSizeDelayedHandle: Boolean; override;
     procedure BeginUpdateBounds; // disable SetBounds
@@ -2308,10 +2308,10 @@ type
     function ControlAtPos(const Pos: TPoint; Flags: TControlAtPosFlags): TControl; virtual;
     function  ContainsControl(Control: TControl): Boolean;
     procedure DoAdjustClientRectChange(const InvalidateRect: Boolean = True);
-    procedure InvalidateClientRectCache(WithChildControls: boolean);
-    function ClientRectNeedsInterfaceUpdate: boolean;
-    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
-    function  GetChildrenRect(Scrolled: boolean): TRect; override;
+    procedure InvalidateClientRectCache(WithChildControls: Boolean);
+    function ClientRectNeedsInterfaceUpdate: Boolean;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
+    function  GetChildrenRect(Scrolled: Boolean): TRect; override;
     procedure DisableAlign;
     procedure EnableAlign;
     procedure ReAlign; // realign all children
@@ -2329,11 +2329,11 @@ type
     procedure DockDrop(DragDockObject: TDragDockObject; X, Y: Integer); virtual;
     function CanFocus: Boolean; virtual;
     function CanSetFocus: Boolean; virtual;
-    function GetControlIndex(AControl: TControl): integer;
-    procedure SetControlIndex(AControl: TControl; NewIndex: integer);
+    function GetControlIndex(AControl: TControl): Integer;
+    procedure SetControlIndex(AControl: TControl; NewIndex: Integer);
     function Focused: Boolean; virtual;
-    function PerformTab(ForwardTab: boolean): boolean; virtual;
-    function FindChildControl(const ControlName: String): TControl;
+    function PerformTab(ForwardTab: Boolean): Boolean; virtual;
+    function FindChildControl(const ControlName: string): TControl;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
     procedure SetTempCursor(Value: TCursor); override;
@@ -2345,7 +2345,7 @@ type
     procedure AddControl; virtual; // tell widgetset
 
     procedure InsertControl(AControl: TControl);
-    procedure InsertControl(AControl: TControl; Index: integer); virtual;
+    procedure InsertControl(AControl: TControl; Index: Integer); virtual;
     procedure RemoveControl(AControl: TControl); virtual;
     // enumerators
     function GetEnumeratorControls: TWinControlEnumerator;
@@ -2356,16 +2356,16 @@ type
     procedure SetFocus; virtual;
     procedure FlipChildren(AllLevels: Boolean); virtual;
     procedure ScaleBy(Multiplier, Divider: Integer);
-    function GetDockCaption(AControl: TControl): String; virtual;
+    function GetDockCaption(AControl: TControl): string; virtual;
     procedure UpdateDockCaption(Exclude: TControl = nil); virtual;
     procedure GetTabOrderList(List: TFPList); virtual;
     function HandleAllocated: Boolean;
-    function ParentHandlesAllocated: boolean; override;
+    function ParentHandlesAllocated: Boolean; override;
     procedure HandleNeeded;
     function BrushCreated: Boolean;
     procedure EraseBackground(DC: HDC); virtual;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
-                              RepeatCount: integer; SystemKey: boolean): boolean; virtual;
+                              RepeatCount: Integer; SystemKey: Boolean): Boolean; virtual;
     function IntfGetDropFilesTarget: TWinControl; virtual;
     procedure PaintTo(DC: HDC; X, Y: Integer); virtual; overload;
     procedure PaintTo(ACanvas: TCanvas; X, Y: Integer); overload;
@@ -2457,7 +2457,7 @@ type
   TDockZone = class
   private
     FChildControl: TControl;
-    FChildCount: integer;
+    FChildCount: Integer;
     FFirstChildZone: TDockZone;
     FTree: TDockTree;
     FParentZone: TDockZone;
@@ -2644,7 +2644,7 @@ type
     procedure SetReplacingControl(AControl: TControl); override;
     procedure ResetBounds(Force: Boolean); override;
     procedure PaintSite(DC: HDC); override;
-    procedure DumpLayout(FileName: String); virtual;
+    procedure DumpLayout(FileName: string); virtual;
   public
     property DockZoneClass: TDockZoneClass read FDockZoneClass;
     property DockSite: TWinControl read FDockSite write SetDockSite;
@@ -2771,7 +2771,7 @@ function CheckMouseButtonDownUp(const AWinHandle: THandle; const AWinControl: TW
 function GetKeyShiftState: TShiftState;
 
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
-  Left, Top, Right, Bottom: integer);
+  Left, Top, Right, Bottom: Integer);
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   const Space: TRect); inline;
 
@@ -2794,8 +2794,8 @@ function DbgS(fs: TFormStyle): string; overload;
 
 operator := (AVariant: Variant): TCaption;
 
-function CompareLazAccessibleObjectsByDataObject(o1, o2: Pointer): integer;
-function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): integer;
+function CompareLazAccessibleObjectsByDataObject(o1, o2: Pointer): Integer;
+function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): Integer;
 
 // register (called by the package initialization in design mode)
 procedure Register;
@@ -2816,11 +2816,11 @@ var
 
 operator := (AVariant: Variant): TCaption;
 begin
-  Result := String(AVariant);
+  Result := string(AVariant);
 end;
 
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
-  Left, Top, Right, Bottom: integer);
+  Left, Top, Right, Bottom: Integer);
 // RemainingClientRect: remaining clientrect without CurBorderSpace
 // CurBorderSpace: current borderspace around RemainingClientRect
 // Left, Top, Right, Bottom: apply these borderspaces to CurBorderSpace
@@ -3083,7 +3083,7 @@ begin
   then SetFocus(AWinControl.FHandle);
 end;
 
-function CompareLazAccessibleObjectsByDataObject(o1, o2: Pointer): integer;
+function CompareLazAccessibleObjectsByDataObject(o1, o2: Pointer): Integer;
 var
   AccObj1: TLazAccessibleObject absolute o1;
   AccObj2: TLazAccessibleObject absolute o2;
@@ -3091,7 +3091,7 @@ begin
   Result:=ComparePointers(AccObj1.DataObject,AccObj2.DataObject);
 end;
 
-function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): integer;
+function CompareDataObjectWithLazAccessibleObject(o, ao: Pointer): Integer;
 var
   AccObj: TLazAccessibleObject absolute ao;
 begin
@@ -3184,30 +3184,30 @@ const
   MSGKINDUP: array[1..4] of Integer =
     (LM_LBUTTONUP, LM_RBUTTONUP, LM_MBUTTONUP, LM_XBUTTONUP);
 
-  function LastClickInSameWinControl: boolean;
+  function LastClickInSameWinControl: Boolean;
   begin
     Result := (LastMouse.WinHandle <> 0) and
               (LastMouse.WinHandle = AWinHandle) and
               (LastMouse.WinControl = AWinControl);
   end;
 
-  function LastClickAtSamePosition: boolean;
+  function LastClickAtSamePosition: Boolean;
   begin
     Result:= (Abs(AMousePos.X-LastMouse.MousePos.X) <= DblClickThreshold) and
              (Abs(AMousePos.Y-LastMouse.MousePos.Y) <= DblClickThreshold);
   end;
 
-  function LastClickInTime: boolean;
+  function LastClickInTime: Boolean;
   begin
     Result:=((GetTickCount64 - LastMouse.Time) <= GetDoubleClickTime);
   end;
 
-  function LastClickSameButton: boolean;
+  function LastClickSameButton: Boolean;
   begin
     Result:=(AButton=LastMouse.Button);
   end;
 
-  function TestIfMultiClickDown: boolean;
+  function TestIfMultiClickDown: Boolean;
   begin
     Result:= LastClickInSameWinControl and
              LastClickAtSamePosition and
@@ -3215,7 +3215,7 @@ const
              LastClickSameButton;
   end;
 
-  function TestIfMultiClickUp: boolean;
+  function TestIfMultiClickUp: Boolean;
   begin
     Result:= LastClickInSameWinControl and
              LastClickAtSamePosition and
@@ -3223,7 +3223,7 @@ const
   end;
 
 var
-  IsMultiClick: boolean;
+  IsMultiClick: Boolean;
   TargetControl: TControl;
   Button: Byte;
 begin
@@ -3644,21 +3644,21 @@ begin
   Change(false);
 end;
 
-function TControlBorderSpacing.IsAroundStored: boolean;
+function TControlBorderSpacing.IsAroundStored: Boolean;
 begin
   if FDefault = nil
   then Result := FAround <> 0
   else Result := FAround <> FDefault^.Around;
 end;
 
-function TControlBorderSpacing.IsBottomStored: boolean;
+function TControlBorderSpacing.IsBottomStored: Boolean;
 begin
   if FDefault = nil
   then Result := FBottom <> 0
   else Result := FBottom <> FDefault^.Bottom;
 end;
 
-function TControlBorderSpacing.IsInnerBorderStored: boolean;
+function TControlBorderSpacing.IsInnerBorderStored: Boolean;
 begin
   if Control <> nil then
     Result:=Control.IsBorderSpacingInnerBorderStored
@@ -3666,21 +3666,21 @@ begin
     Result:=True;
 end;
 
-function TControlBorderSpacing.IsLeftStored: boolean;
+function TControlBorderSpacing.IsLeftStored: Boolean;
 begin
   if FDefault = nil
   then Result := FLeft <> 0
   else Result := FLeft <> FDefault^.Left;
 end;
 
-function TControlBorderSpacing.IsRightStored: boolean;
+function TControlBorderSpacing.IsRightStored: Boolean;
 begin
   if FDefault = nil
   then Result := FRight <> 0
   else Result := FRight <> FDefault^.Right;
 end;
 
-function TControlBorderSpacing.IsTopStored: boolean;
+function TControlBorderSpacing.IsTopStored: Boolean;
 begin
   if FDefault = nil
   then Result := FTop <> 0
@@ -3733,7 +3733,7 @@ begin
 end;
 
 procedure TControlBorderSpacing.SetSpace(Kind: TAnchorKind;
-  const AValue: integer);
+  const AValue: Integer);
 begin
   case Kind of
   akLeft: Left:=AValue;
@@ -3826,7 +3826,7 @@ begin
 end;
 
 function TControlBorderSpacing.IsEqual(Spacing: TControlBorderSpacing
-  ): boolean;
+  ): Boolean;
 begin
   Result:=(FAround=Spacing.Around)
       and (FBottom=Spacing.Bottom)
@@ -3944,7 +3944,7 @@ begin
   Change;
 end;
 
-procedure TControlChildSizing.SetControlsPerLine(const AValue: integer);
+procedure TControlChildSizing.SetControlsPerLine(const AValue: Integer);
 begin
   if FControlsPerLine=AValue then exit;
   FControlsPerLine:=AValue;
@@ -3959,7 +3959,7 @@ begin
   Change;
 end;
 
-procedure TControlChildSizing.SetHorizontalSpacing(const AValue: integer);
+procedure TControlChildSizing.SetHorizontalSpacing(const AValue: Integer);
 begin
   if FHorizontalSpacing=AValue then exit;
   FHorizontalSpacing:=AValue;
@@ -3974,7 +3974,7 @@ begin
   Change;
 end;
 
-procedure TControlChildSizing.SetLeftRightSpacing(const AValue: integer);
+procedure TControlChildSizing.SetLeftRightSpacing(const AValue: Integer);
 begin
   if FLeftRightSpacing=AValue then exit;
   FLeftRightSpacing:=AValue;
@@ -3997,14 +3997,14 @@ begin
   Change;
 end;
 
-procedure TControlChildSizing.SetTopBottomSpacing(const AValue: integer);
+procedure TControlChildSizing.SetTopBottomSpacing(const AValue: Integer);
 begin
   if FTopBottomSpacing=AValue then exit;
   FTopBottomSpacing:=AValue;
   Change;
 end;
 
-procedure TControlChildSizing.SetVerticalSpacing(const AValue: integer);
+procedure TControlChildSizing.SetVerticalSpacing(const AValue: Integer);
 begin
   if FVerticalSpacing=AValue then exit;
   FVerticalSpacing:=AValue;
@@ -4055,7 +4055,7 @@ begin
   Dest.Assign(Self);
 end;
 
-function TControlChildSizing.IsEqual(Sizing: TControlChildSizing): boolean;
+function TControlChildSizing.IsEqual(Sizing: TControlChildSizing): Boolean;
 begin
   Result:=(FEnlargeHorizontal=Sizing.EnlargeHorizontal)
       and (FEnlargeVertical=Sizing.EnlargeVertical)
@@ -4073,7 +4073,7 @@ begin
       and (FVerticalSpacing=Sizing.VerticalSpacing);
 end;
 
-procedure TControlChildSizing.SetGridSpacing(Spacing: integer);
+procedure TControlChildSizing.SetGridSpacing(Spacing: Integer);
 begin
   if (LeftRightSpacing=Spacing)
   and (TopBottomSpacing=Spacing)
@@ -4127,7 +4127,7 @@ begin
   FOwner.AnchorSideChanged(Self);
 end;
 
-function TAnchorSide.IsSideStored: boolean;
+function TAnchorSide.IsSideStored: Boolean;
 begin
   Result:=(Control<>nil) and (Side<>DefaultSideForAnchorKind[Kind]);
 end;
@@ -4184,11 +4184,11 @@ end;
 function TAnchorSide.CheckSidePosition(NewControl: TControl;
   NewSide: TAnchorSideReference;
   out ReferenceControl: TControl;
-  out ReferenceSide: TAnchorSideReference; out Position: Integer): boolean;
+  out ReferenceSide: TAnchorSideReference; out Position: Integer): Boolean;
 {off $DEFINE VerboseAnchorSide}
 var
   ParentRect: TRect;
-  ParentRectValid: boolean;
+  ParentRectValid: Boolean;
 
   procedure RaiseInvalidSide;
   begin
@@ -4196,7 +4196,7 @@ var
   end;
 
   function GetNextCentered(ReferenceControl: TControl; Side: TAnchorKind;
-    var NextReferenceSide: TAnchorSide): boolean;
+    var NextReferenceSide: TAnchorSide): Boolean;
   begin
     if (Side in ReferenceControl.Anchors)
     and (ReferenceControl.AnchorSide[Side].Control<>nil)
@@ -4207,7 +4207,7 @@ var
       Result:=false;
   end;
 
-  function GetParentSidePos(Side: TAnchorKind): integer;
+  function GetParentSidePos(Side: TAnchorKind): Integer;
   begin
     if not ParentRectValid then begin
       FOwner.Parent.GetAdjustedLogicalClientRect(ParentRect);
@@ -4481,7 +4481,7 @@ begin
     inherited Assign(Source);
 end;
 
-function TAnchorSide.IsAnchoredToParent(ParentSide: TAnchorKind): boolean;
+function TAnchorSide.IsAnchoredToParent(ParentSide: TAnchorKind): Boolean;
 var
   ReferenceControl: TControl;
   ReferenceSide: TAnchorSideReference;
@@ -4519,10 +4519,10 @@ end;
 procedure TControlPropertyStorage.GetPropertyList(List: TStrings);
 var
   ARoot: TPersistent;
-  PropsAsStr: String;
+  PropsAsStr: string;
   StartPos: Integer;
   EndPos: LongInt;
-  PropertyStr: String;
+  PropertyStr: string;
   AControl: TControl;
   PointPos: LongInt;
 begin
@@ -4609,7 +4609,7 @@ begin
 
 end;
 
-function TDockManager.GetDockEdge(ADockObject: TDragDockObject): boolean;
+function TDockManager.GetDockEdge(ADockObject: TDragDockObject): Boolean;
 begin
   { Determine the DropAlign.
     ADockObject contains valid DragTarget, DragPos, DragTargetPos relative

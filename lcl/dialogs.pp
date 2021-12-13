@@ -81,51 +81,51 @@ type
                           cdecWSNOCanCloseSupport);
   TCDWSEventCapabilities = set of TCDWSEventCapability;
 
-  TDialogResultEvent = procedure(sender: TObject; Success: boolean) of object;
+  TDialogResultEvent = procedure(Sender: TObject; Success: Boolean) of object;
 
   TCommonDialog = class(TLCLComponent)
   private
     FAttachTo: TCustomForm;
     FHandle : THandle;
-    FHeight: integer;
+    FHeight: Integer;
     FOnDialogResult: TDialogResultEvent;
-    FWidth: integer;
+    FWidth: Integer;
     FOnCanClose: TCloseQueryEvent;
     FOnShow, FOnClose : TNotifyEvent;
     FTitle : string;
-    FUserChoice: integer;
+    FUserChoice: Integer;
     FHelpContext: THelpContext;
     FDoCanCloseCalled: Boolean;
     FDoShowCalled: Boolean;
     FDoCloseCalled: Boolean;
-    FClosing: boolean;
+    FClosing: Boolean;
     FWSEventCapabilities :TCDWSEventCapabilities;
     procedure SetHandle(const AValue: THandle);
-    function IsTitleStored: boolean;
+    function IsTitleStored: Boolean;
   protected
     class procedure WSRegisterClass; override;
-    function DoExecute : boolean; virtual;
+    function DoExecute : Boolean; virtual;
     function DefaultTitle: string; virtual;
     function GetHeight: Integer; virtual;
     function GetWidth: Integer; virtual;
-    procedure SetHeight(const AValue: integer); virtual;
-    procedure SetWidth(const AValue: integer); virtual;
+    procedure SetHeight(const AValue: Integer); virtual;
+    procedure SetWidth(const AValue: Integer); virtual;
     procedure ResetShowCloseFlags;
     property AttachTo: TCustomForm read FAttachTo write FAttachTo; platform;
     property OnDialogResult:TDialogResultEvent read FOnDialogResult write FOnDialogResult; platform;
   public
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
-    function Execute: boolean; virtual;
+    function Execute: Boolean; virtual;
     property Handle: THandle read FHandle write SetHandle;
-    property UserChoice: integer read FUserChoice write FUserChoice;
+    property UserChoice: Integer read FUserChoice write FUserChoice;
     procedure Close; virtual;
     procedure DoShow; virtual;
     procedure DoCanClose(var CanClose: Boolean); virtual;
     procedure DoClose; virtual;
-    function HandleAllocated: boolean;
-    property Width: integer read GetWidth write SetWidth;
-    property Height: integer read GetHeight write SetHeight;
+    function HandleAllocated: Boolean;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
   published
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
@@ -141,9 +141,9 @@ type
   private
     FInternalFilterIndex: Integer;
     FDefaultExt: string;
-    FFileName : String;
+    FFileName : string;
     FFiles: TStrings;
-    FFilter: String;
+    FFilter: string;
     FFilterIndex: Integer;
     FHistoryList: TStrings;
     FInitialDir: string;
@@ -154,8 +154,8 @@ type
   protected
     class procedure WSRegisterClass; override;
     function GetFilterIndex: Integer; virtual;
-    procedure SetFileName(const Value: String); virtual;
-    procedure SetFilter(const Value: String); virtual;
+    procedure SetFileName(const Value: string); virtual;
+    procedure SetFilter(const Value: string); virtual;
     procedure SetHistoryList(const AValue: TStrings); virtual;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -165,14 +165,14 @@ type
     property Files: TStrings read FFiles;
     property HistoryList: TStrings read FHistoryList write SetHistoryList;
     procedure IntfFileTypeChanged(NewFilterIndex: Integer);
-    class function FindMaskInFilter(aFilter, aMask: string): integer;
+    class function FindMaskInFilter(aFilter, aMask: string): Integer;
     class function ExtractAllFilterMasks(aFilter: string;
-                                   SkipAllFilesMask: boolean = true): string;
+                                   SkipAllFilesMask: Boolean = true): string;
   published
     property Title;
     property DefaultExt: string read FDefaultExt write SetDefaultExt;
-    property FileName: String read FFileName write SetFileName;
-    property Filter: String read FFilter write SetFilter;
+    property FileName: string read FFileName write SetFileName;
+    property Filter: string read FFilter write SetFilter;
     property FilterIndex: Integer read GetFilterIndex write SetFilterIndex default 1;
     property InitialDir: string read FInitialDir write FInitialDir;
     property OnHelpClicked: TNotifyEvent read FOnHelpClicked write FOnHelpClicked;
@@ -227,10 +227,10 @@ type
     class procedure WSRegisterClass; override;
     procedure ResolveLinks; virtual;
     procedure DereferenceLinks; virtual; deprecated 'override ResolveLinks instead' {Laz 1.9};
-    function CheckFile(var AFilename: string): boolean; virtual;
-    function CheckFileMustExist(const AFileName: string): boolean; virtual;
-    function CheckAllFiles: boolean; virtual;
-    function DoExecute: boolean; override;
+    function CheckFile(var AFilename: string): Boolean; virtual;
+    function CheckFileMustExist(const AFileName: string): Boolean; virtual;
+    function CheckAllFiles: Boolean; virtual;
+    function DoExecute: Boolean; override;
     function DefaultTitle: string; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -261,7 +261,7 @@ type
   TSelectDirectoryDialog = class(TOpenDialog)
   protected
     class procedure WSRegisterClass; override;
-    function CheckFileMustExist(const AFilename: string): boolean; override;
+    function CheckFileMustExist(const AFilename: string): Boolean; override;
     function DefaultTitle: string; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -300,7 +300,7 @@ type
     FColorDialog: TColorDialog;
     FOnColorChanged: TNotifyEvent;
     FDisabledPattern: TBitmap;
-    function IsButtonColorAutoSizeStored: boolean;
+    function IsButtonColorAutoSizeStored: Boolean;
     procedure SetBorderWidth(const AValue: Integer);
     procedure SetButtonColor(const AValue: TColor);
     procedure SetButtonColorAutoSize(const AValue: Boolean);
@@ -310,7 +310,7 @@ type
     function DrawGlyph(ACanvas: TCanvas; const AClient: TRect; const AOffset: TPoint;
       AState: TButtonState; ATransparent: Boolean; BiDiFlags: Longint): TRect; override;
     function GetDisabledPattern: TBitmap; virtual;
-    function GetGlyphSize(Drawing: boolean; PaintRect: TRect): TSize; override;
+    function GetGlyphSize(Drawing: Boolean; PaintRect: TRect): TSize; override;
     class function GetControlClassDefaultSize: TSize; override;
     procedure ShowColorDialog; virtual;
   public
@@ -414,8 +414,8 @@ type
 
   TFindDialog = class(TCommonDialog)
   private
-    FFormLeft: integer;
-    FFormTop: integer;
+    FFormLeft: Integer;
+    FFormTop: Integer;
     function GetReplaceText: string;
     function GetFindText: string;
     function GetLeft: Integer;
@@ -629,7 +629,7 @@ type
     FTitle: TTranslateString;
     FVerificationText: TTranslateString;
     FOnButtonClicked: TTaskDlgClickEvent;
-    procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: integer;
+    procedure DoOnButtonClickedHandler(Sender: PTaskDialog; AButtonID: Integer;
       var ACanClose: Boolean);
     procedure SetButtons(const Value: TTaskDialogButtons);
     procedure SetRadioButtons(const Value: TTaskDialogButtons);
@@ -683,8 +683,8 @@ type
 
 
 var
-  MinimumDialogButtonWidth: integer = 75;
-  MinimumDialogButtonHeight: integer = 25;
+  MinimumDialogButtonWidth: Integer = 75;
+  MinimumDialogButtonHeight: Integer = 25;
 
 { MessageDlg }
 
@@ -708,10 +708,10 @@ function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
 function CreateMessageDialog(const aCaption, aMsg: string; DlgType: TMsgDlgType;
             Buttons: TMsgDlgButtons): TForm; overload;
 function DefaultPromptDialog(const DialogCaption,
-  DialogMessage: String;
+  DialogMessage: string;
   DialogType: longint; Buttons: PLongint;
   ButtonCount, DefaultIndex, EscapeResult: Longint;
-  UseDefaultPos: boolean;
+  UseDefaultPos: Boolean;
   X, Y: Longint): Longint;// widgetset independent implementation, see PromptDialogFunction
 
 function QuestionDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
@@ -726,8 +726,8 @@ procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 function DefaultMessageBox(Text, Caption: PChar; Flags: Longint) : Integer;// widgetset independent implementation, see MessageBoxFunction
 
-function InputBox(const ACaption, APrompt, ADefault : String) : String;
-function PasswordBox(const ACaption, APrompt : String) : String;
+function InputBox(const ACaption, APrompt, ADefault : string) : string;
+function PasswordBox(const ACaption, APrompt : string) : string;
 
 type
   TCustomCopyToClipboardDialog = class(TForm)
@@ -741,40 +741,40 @@ procedure RegisterDialogForCopyToClipboard(const ADlg: TCustomForm);
 procedure DialogCopyToClipboard(Self, Sender: TObject; var Key: Word; Shift: TShiftState);
 
 const
-  cInputQueryEditSizePixels: integer = 260; // Edit size in pixels
-  cInputQueryEditSizePercents: integer = 25; // Edit size in % of monitor width
-  cInputQuerySpacingSize: integer = 6;
+  cInputQueryEditSizePixels: Integer = 260; // Edit size in pixels
+  cInputQueryEditSizePercents: Integer = 25; // Edit size in % of monitor width
+  cInputQuerySpacingSize: Integer = 6;
 
 type
   TSelectDirOpt = (sdAllowCreate, sdPerformCreate, sdPrompt);
   TSelectDirOpts = set of TSelectDirOpt;
   TInputCloseQueryEvent = procedure(Sender: TObject; const AValues: array of string;
-    var ACanClose: boolean) of object;
+    var ACanClose: Boolean) of object;
 
 function SelectDirectory(const Caption, InitialDirectory: string;
-  out Directory: string): boolean;
+  out Directory: string): Boolean;
 function SelectDirectory(const Caption, InitialDirectory: string;
-  out Directory: string; ShowHidden: boolean; HelpCtx: Longint = 0): boolean;
+  out Directory: string; ShowHidden: Boolean; HelpCtx: Longint = 0): Boolean;
 function SelectDirectory(out Directory: string;
   Options: TSelectDirOpts; HelpCtx: Longint): Boolean;
 
-function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
-function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+function InputQuery(const ACaption, APrompt : string; MaskInput : Boolean; var Value : string) : Boolean;
+function InputQuery(const ACaption, APrompt : string; var Value : string) : Boolean;
 function InputQuery(const ACaption: string; const APrompts: array of string;
-  var AValues: array of string; ACloseEvent: TInputCloseQueryEvent = nil): boolean;
-function DefaultInputDialog(const InputCaption, InputPrompt : String;
-  MaskInput : Boolean; var Value : String) : Boolean;// widgetset independent implementation, see InputDialogFunction
+  var AValues: array of string; ACloseEvent: TInputCloseQueryEvent = nil): Boolean;
+function DefaultInputDialog(const InputCaption, InputPrompt : string;
+  MaskInput : Boolean; var Value : string) : Boolean;// widgetset independent implementation, see InputDialogFunction
 
 function InputCombo(const ACaption, APrompt: string; const AList: TStrings): Integer;
-function InputCombo(const ACaption, APrompt: string; const AList : Array of String): Integer;
-function InputComboEx(const ACaption, APrompt: string; const AList: TStrings; AllowCustomText: Boolean = False): String;
-function InputComboEx(const ACaption, APrompt: string; const AList : Array of String; AllowCustomText: Boolean = False): String;
+function InputCombo(const ACaption, APrompt: string; const AList : Array of string): Integer;
+function InputComboEx(const ACaption, APrompt: string; const AList: TStrings; AllowCustomText: Boolean = False): string;
+function InputComboEx(const ACaption, APrompt: string; const AList : Array of string; AllowCustomText: Boolean = False): string;
 
 function ExtractColorIndexAndColor(const AColorList: TStrings; const AIndex: Integer;
   out ColorIndex: Integer; out ColorValue: TColor): Boolean;
 
 // helper functions (search LCLType for idDiag)
-function GetDialogCaption(idDiag: Integer): String;
+function GetDialogCaption(idDiag: Integer): string;
 function GetDialogIcon(idDiag: Integer): TCustomBitmap;
 
 function dbgs(Option: TOpenOption): string; overload;
@@ -811,7 +811,7 @@ const
     bkOk, bkCancel, bkHelp, bkYes, bkNo, bkClose, bkAbort, bkRetry,
     bkIgnore, bkAll, bkYesToAll, bkNoToAll);
 
-  DialogResName: array[idDialogWarning..idDialogShield] of String =
+  DialogResName: array[idDialogWarning..idDialogShield] of string =
   (
 {idDialogWarning} 'dialog_warning',
 {idDialogError  } 'dialog_error',
@@ -909,7 +909,7 @@ begin
 end;
 
 {** Return the localized or not title of dialog}
-function GetDialogCaption(idDiag: Integer): String;
+function GetDialogCaption(idDiag: Integer): string;
 begin
   case idDiag of
     idDialogWarning : Result := rsMtWarning;
