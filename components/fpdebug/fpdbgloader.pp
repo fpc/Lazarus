@@ -73,10 +73,10 @@ type
   public
     constructor Create; virtual;
     constructor Create(AFileName: String; ADebugMap: TObject = nil;
-      ALoadedTargetImageAddr: TDBGPtr = 0);
+      ARelocationOffset: TDBGPtr = 0);
     {$ifdef USE_WIN_FILE_MAPPING}
     constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil;
-      ALoadedTargetImageAddr: TDBGPtr = 0);
+      ARelocationOffset: TDBGPtr = 0);
     {$endif}
     destructor Destroy; override;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
@@ -110,13 +110,16 @@ type
 
   TDbgImageLoaderList = class(TFPObjectList)
   private
+    FRelocationOffset: TDBGPtr;
     function GetImageBase: QWord;
     function GetTargetInfo: TTargetDescriptor;
     function GetItem(Index: Integer): TDbgImageLoader;
     procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
   public
+    constructor Create(FreeObjects : Boolean; ARelocationOffset: TDbgPtr);
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
+    property RelocationOffset: QWord read FRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
   end;
 
@@ -148,6 +151,12 @@ end;
 procedure TDbgImageLoaderList.SetItem(Index: Integer; AValue: TDbgImageLoader);
 begin
   inherited SetItem(Index, AValue);
+end;
+
+constructor TDbgImageLoaderList.Create(FreeObjects: Boolean; ARelocationOffset: TDbgPtr);
+begin
+  inherited  Create(FreeObjects);
+  FRelocationOffset := ARelocationOffset;
 end;
 
 { TDbgImageLoaderLibrary }
@@ -229,21 +238,21 @@ begin
 end;
 
 constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject;
-  ALoadedTargetImageAddr: TDBGPtr);
+  ARelocationOffset: TDBGPtr);
 begin
   FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, ARelocationOffset, False);
   if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
 constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject;
-  ALoadedTargetImageAddr: TDBGPtr);
+  ARelocationOffset: TDBGPtr);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, ARelocationOffset, False);
   if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
 end;

@@ -757,6 +757,7 @@ type
     FFiles: array of TDwarfDebugFile;
   private
     FImageBase: QWord;
+    FRelocationOffset: TDBGPtr;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit; inline;
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
@@ -779,6 +780,7 @@ type
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
 
     property ImageBase: QWord read FImageBase;
+    property RelocationOffset: TDBGPtr read FRelocationOffset;
     property WorkQueue: TFpGlobalThreadWorkerQueue read FWorkQueue;
   end;
 
@@ -3615,6 +3617,7 @@ begin
   FTargetInfo := ALoaderList.TargetInfo;
   FCompilationUnits := TList.Create;
   FImageBase := ALoaderList.ImageBase;
+  FRelocationOffset := ALoaderList.RelocationOffset;
 
   SetLength(FFiles, ALoaderList.Count);
   for i := 0 to ALoaderList.Count-1 do
@@ -4947,7 +4950,7 @@ end;
 
 function TDwarfCompilationUnit.CalculateRelocatedAddress(AValue: QWord): QWord;
 begin
-  Result := AValue + FOwner.ImageBase;
+  Result := AValue + FOwner.RelocationOffset;
 end;
 
 function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out

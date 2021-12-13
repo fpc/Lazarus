@@ -466,7 +466,7 @@ type
     procedure SetFileName(const AValue: String);
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
   public
-    constructor Create(const AProcess: TDbgProcess); virtual;
+    constructor Create(const AProcess: TDbgProcess; ARelocationOffset: TDBGPtr = 0); virtual;
     destructor Destroy; override;
 
     // Returns the addresses at the given source-filename and line-number.
@@ -498,12 +498,15 @@ type
   TDbgLibrary = class(TDbgInstance)
   private
     FModuleHandle: THandle;
-    FBaseAddr: TDBGPtr;
+    FRelocationOffset: TDBGPtr;
   public
-    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
+    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
     property Name: String read FFileName;
     property ModuleHandle: THandle read FModuleHandle;
-    property BaseAddr: TDBGPtr read FBaseAddr;
+    // The relocationoffset is the offset at which the binary (most likely
+    // library) is loaded into memory. It is not part of the binary itself, unlike
+    // the BaseAddr.
+    property RelocationOffset: TDBGPtr read FRelocationOffset;
   end;
 
   TStartInstanceFlag = (siRediretOutput, siForceNewConsole);
@@ -1634,11 +1637,11 @@ begin
     Result := SymbolTableInfo.FindProcSymbol(AName);
 end;
 
-constructor TDbgInstance.Create(const AProcess: TDbgProcess);
+constructor TDbgInstance.Create(const AProcess: TDbgProcess; ARelocationOffset: TDBGPtr);
 begin
   FProcess := AProcess;
   FMemManager := AProcess.MemManager;
-  FLoaderList := TDbgImageLoaderList.Create(True);
+  FLoaderList := TDbgImageLoaderList.Create(True, ARelocationOffset);
 
   inherited Create;
 end;
@@ -1722,12 +1725,12 @@ end;
 
 { TDbgLibrary }
 
-constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
+constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
 
 begin
-  inherited Create(AProcess);
+  inherited Create(AProcess, ARelocationAddress);
   FModuleHandle:=AModuleHandle;
-  FBaseAddr:=ABaseAddr;
+  FRelocationOffset:=ARelocationAddress;
 end;
 
 { TDbgProcess }

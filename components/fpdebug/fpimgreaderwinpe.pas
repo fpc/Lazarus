@@ -66,7 +66,7 @@ type
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
   public
-    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
     procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); override;
@@ -105,13 +105,13 @@ begin
   end;
 end;
 
-constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
+constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean);
 var
   crc: cardinal;
   DbgFileName, SourceFileName: String;
   NewFileLoader: TDbgFileLoader;
 begin
-  inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
+  inherited Create(ASource, ADebugMap, ARelocationOffset, OwnSource);
   FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := False;  // need sections in original order / Symbols use "SectionNumber"
   //FSections.Duplicates := dupError;

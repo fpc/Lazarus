@@ -416,8 +416,6 @@ begin
   fElfFile := TElfFile.Create;
   fElfFile.LoadFromFile(FFileLoader);
 
-  SetImageBase(LoadedTargetImageAddr);
-
   LoadSections;
   // check external debug file
   if ReadGnuDebugLinkSection(DbgFileName, crc) then
@@ -492,8 +490,8 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
-            AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+ImageBase),
-              Sect^.Address + Sect^.Size + ImageBase);
+            AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+RelocationOffset),
+              Sect^.Address + Sect^.Size + RelocationOffset);
             end;
           {$pop}
         end
@@ -516,8 +514,8 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
-            AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+ImageBase),
-              Sect^.Address + Sect^.Size+ImageBase);
+            AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+RelocationOffset),
+              Sect^.Address + Sect^.Size+RelocationOffset);
             end;
         end
       end;

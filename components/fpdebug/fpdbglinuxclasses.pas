@@ -374,7 +374,7 @@ type
   protected
     procedure InitializeLoaders; override;
   public
-    constructor Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
+    constructor Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
   end;
 
 
@@ -396,20 +396,20 @@ procedure tDbgLinuxLibrary.InitializeLoaders;
 var
   Loader: TDbgImageLoader;
 begin
-  Loader := TDbgImageLoader.Create(Name, nil, BaseAddr);
+  Loader := TDbgImageLoader.Create(Name, nil, LoaderList.RelocationOffset);
   // The dynamic-loader (dl) on Linux also loads other stuff then ELF-
   // formatted libraries.
   // So it is reasonable likely that the loaded 'library' can not be handled
-  // by the detault readers from the loader.
+  // by the default readers from the loader.
   if Loader.IsValid then
     Loader.AddToLoaderList(LoaderList)
   else
     Loader.Free;
 end;
 
-constructor tDbgLinuxLibrary.Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ABaseAddr: TDbgPtr);
+constructor tDbgLinuxLibrary.Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
 begin
-  Inherited Create(AProcess, AFileName, AModuleHandle, ABaseAddr);
+  Inherited Create(AProcess, AFileName, AModuleHandle, ARelocationAddress);
   SetFileName(AFileName);
 
   LoadInfo;
@@ -1075,7 +1075,7 @@ procedure TDbgLinuxProcess.AddLib(const ALibrary: TDbgLibrary);
 var
   ID: TDbgPtr;
 begin
-  ID := ALibrary.BaseAddr;
+  ID := ALibrary.RelocationOffset;
   FLibMap.Add(ID, ALibrary);
   if (ALibrary.DbgInfo.HasInfo) or (ALibrary.SymbolTableInfo.HasInfo) then
     FSymInstances.Add(ALibrary);
