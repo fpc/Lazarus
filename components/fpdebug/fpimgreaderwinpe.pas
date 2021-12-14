@@ -228,10 +228,10 @@ var
 {$ENDIF}
 begin
   {$ifdef windows}
-  if LoadedTargetImageAddr = 0 then
+  if ImageBase = 0 then
     exit;
 
-  SetImageBase(LoadedTargetImageAddr);
+  SetImageBase(ImageBase);
   FFileLoader.LoadMemory(0, 1, hBase); // size does not matter, only obtain address
   if (hBase = nil) or (hBase^.e_magic <> IMAGE_DOS_SIGNATURE) then
     exit;
@@ -292,7 +292,7 @@ begin
     if FuncAddr = 0 then
       Continue;
 
-    AFpSymbolInfo.Add(FuncName, LoadedTargetImageAddr + FuncAddr);
+    AFpSymbolInfo.Add(FuncName, ImageBase + FuncAddr);
   end;
   {$ENDIF}
 end;
