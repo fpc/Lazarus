@@ -21070,7 +21070,7 @@ msgstr "Chinês"
 
 #: lazarusidestrconsts.rslanguagecorsican
 msgid "Corsican"
-msgstr ""
+msgstr "Corso"
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

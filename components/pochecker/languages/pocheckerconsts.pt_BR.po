@@ -33,7 +33,7 @@ msgstr "Catalão"
 
 #: pocheckerconsts.rs_lang_co
 msgid "Corsican"
-msgstr ""
+msgstr "Corso"
 
 #: pocheckerconsts.rs_lang_cs
 msgid "Czech"
