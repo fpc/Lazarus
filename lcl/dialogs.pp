@@ -312,6 +312,7 @@ type
     function GetDisabledPattern: TBitmap; virtual;
     function GetGlyphSize(Drawing: Boolean; PaintRect: TRect): TSize; override;
     class function GetControlClassDefaultSize: TSize; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ShowColorDialog; virtual;
   public
     constructor Create(AnOwner: TComponent); override;
