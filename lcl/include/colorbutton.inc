@@ -148,6 +148,13 @@ begin
   Result.CY := 25;
 end;
 
+procedure TColorButton.Notification(AComponent: TComponent; Operation: TOperation); 
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FColorDialog) then
+    FColorDialog := nil;
+end;
+
 procedure TColorButton.SetButtonColorSize(const AValue: Integer);
 begin
   if FButtonColorSize = AValue then Exit;
