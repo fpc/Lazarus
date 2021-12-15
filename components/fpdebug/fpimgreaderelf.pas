@@ -411,6 +411,8 @@ begin
   //FSections.Duplicates := dupError;
   FSections.CaseSensitive := False;
 
+  SetRelocationOffset(ALoadedTargetImageAddr, sPositive);
+
   FFileLoader := ASource;
   fOwnSource := OwnSource;
   fElfFile := TElfFile.Create;

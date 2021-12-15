@@ -62,6 +62,7 @@ type
     FImgReader: TDbgImageReader;
     function GetAddressMapList: TDbgAddressMapList;
     function GetImageBase: QWord;
+    function GetRelocationOffset: TDBGPtrOffset;
     function GetReaderErrors: String;
     function GetSubFiles: TStrings;
     function GetTargetInfo: TTargetDescriptor;
@@ -73,10 +74,10 @@ type
   public
     constructor Create; virtual;
     constructor Create(AFileName: String; ADebugMap: TObject = nil;
-      ARelocationOffset: TDBGPtr = 0);
+      ALoadedTargetImageAddr: TDBGPtr = 0);
     {$ifdef USE_WIN_FILE_MAPPING}
     constructor Create(AFileHandle: THandle; ADebugMap: TObject = nil;
-      ARelocationOffset: TDBGPtr = 0);
+      ALoadedTargetImageAddr: TDBGPtr = 0);
     {$endif}
     destructor Destroy; override;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
@@ -85,6 +86,7 @@ type
     function IsValid: Boolean;
     property FileName: String read FFileName; // Empty if using USE_WIN_FILE_MAPPING
     property ImageBase: QWord read GetImageBase;
+    property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
 
     property UUID: TGuid read GetUUID;
@@ -110,22 +112,32 @@ type
 
   TDbgImageLoaderList = class(TFPObjectList)
   private
-    FRelocationOffset: TDBGPtr;
+    function GetRelocationOffset: TDBGPtrOffset;
     function GetImageBase: QWord;
     function GetTargetInfo: TTargetDescriptor;
     function GetItem(Index: Integer): TDbgImageLoader;
     procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
   public
-    constructor Create(FreeObjects : Boolean; ARelocationOffset: TDbgPtr);
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
-    property RelocationOffset: QWord read FRelocationOffset;
+    property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
   end;
 
 implementation
 
 { TDbgImageLoaderList }
+
+function TDbgImageLoaderList.GetRelocationOffset: TDBGPtrOffset;
+begin
+  if Count>0 then
+    result := Items[0].RelocationOffset
+  else
+    begin
+    Result.Offset := 0;
+    Result.Sign := sPositive;
+    end;
+end;
 
 function TDbgImageLoaderList.GetImageBase: QWord;
 begin
@@ -151,12 +163,6 @@ end;
 procedure TDbgImageLoaderList.SetItem(Index: Integer; AValue: TDbgImageLoader);
 begin
   inherited SetItem(Index, AValue);
-end;
-
-constructor TDbgImageLoaderList.Create(FreeObjects: Boolean; ARelocationOffset: TDbgPtr);
-begin
-  inherited  Create(FreeObjects);
-  FRelocationOffset := ARelocationOffset;
 end;
 
 { TDbgImageLoaderLibrary }
@@ -192,6 +198,17 @@ begin
     Result := FImgReader.ImageBase
   else
     Result := 0;
+end;
+
+function TDbgImageLoader.GetRelocationOffset: TDBGPtrOffset;
+begin
+  if Assigned(FImgReader) then
+    Result := FImgReader.RelocationOffset
+  else
+    begin
+    Result.Offset := 0;
+    Result.Sign := sPositive;
+    end;
 end;
 
 function TDbgImageLoader.GetReaderErrors: String;
@@ -238,21 +255,21 @@ begin
 end;
 
 constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject;
-  ARelocationOffset: TDBGPtr);
+  ALoadedTargetImageAddr: TDBGPtr);
 begin
   FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, ARelocationOffset, False);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
   if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
 end;
 
 {$ifdef USE_WIN_FILE_MAPPING}
 constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject;
-  ARelocationOffset: TDBGPtr);
+  ALoadedTargetImageAddr: TDBGPtr);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, ARelocationOffset, False);
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
   if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
 end;

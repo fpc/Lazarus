@@ -298,6 +298,8 @@ type
     function GetStackPointerRegisterValue: TDbgPtr; override;
   end;
 
+  tDbgLinuxLibrary = class;
+
   { TDbgLinuxProcess }
 
   TDbgLinuxProcess = class(TDbgProcess)
@@ -337,7 +339,7 @@ type
     function SynchronizeProcMapsWithLibraryList: TFPDEvent;
     // Scan /proc/[pid]/maps and return the results
     function ObtainProcMaps: TDbgLinuxMemoryMappingList;
-    procedure AddLib(const ALibrary: TDbgLibrary);
+    procedure AddLib(const ALibrary: tDbgLinuxLibrary);
   public
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
     constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
@@ -372,9 +374,10 @@ type
 
   tDbgLinuxLibrary = class(TDbgLibrary)
   protected
+    FLoadedTargetImageAddr: TDbgPtr;
     procedure InitializeLoaders; override;
   public
-    constructor Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
+    constructor Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ALoadedTargetImageAddr: TDbgPtr);
   end;
 
 
@@ -396,7 +399,7 @@ procedure tDbgLinuxLibrary.InitializeLoaders;
 var
   Loader: TDbgImageLoader;
 begin
-  Loader := TDbgImageLoader.Create(Name, nil, LoaderList.RelocationOffset);
+  Loader := TDbgImageLoader.Create(Name, nil, FLoadedTargetImageAddr);
   // The dynamic-loader (dl) on Linux also loads other stuff then ELF-
   // formatted libraries.
   // So it is reasonable likely that the loaded 'library' can not be handled
@@ -407,9 +410,10 @@ begin
     Loader.Free;
 end;
 
-constructor tDbgLinuxLibrary.Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
+constructor tDbgLinuxLibrary.Create(const AProcess: TDbgProcess; const AFileName: string; const AModuleHandle: THandle; const ALoadedTargetImageAddr: TDbgPtr);
 begin
-  Inherited Create(AProcess, AFileName, AModuleHandle, ARelocationAddress);
+  FLoadedTargetImageAddr := ALoadedTargetImageAddr;
+  Inherited Create(AProcess, AFileName, AModuleHandle);
   SetFileName(AFileName);
 
   LoadInfo;
@@ -1071,11 +1075,11 @@ begin
   end;
 end;
 
-procedure TDbgLinuxProcess.AddLib(const ALibrary: TDbgLibrary);
+procedure TDbgLinuxProcess.AddLib(const ALibrary: tDbgLinuxLibrary);
 var
   ID: TDbgPtr;
 begin
-  ID := ALibrary.RelocationOffset;
+  ID := ALibrary.FLoadedTargetImageAddr;
   FLibMap.Add(ID, ALibrary);
   if (ALibrary.DbgInfo.HasInfo) or (ALibrary.SymbolTableInfo.HasInfo) then
     FSymInstances.Add(ALibrary);

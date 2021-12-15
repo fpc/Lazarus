@@ -66,7 +66,7 @@ type
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
   public
-    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AfpSymbolInfo: TfpSymbolList); override;
     procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); override;
@@ -105,13 +105,13 @@ begin
   end;
 end;
 
-constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean);
+constructor TPEFileSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 var
   crc: cardinal;
   DbgFileName, SourceFileName: String;
   NewFileLoader: TDbgFileLoader;
 begin
-  inherited Create(ASource, ADebugMap, ARelocationOffset, OwnSource);
+  inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
   FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := False;  // need sections in original order / Symbols use "SectionNumber"
   //FSections.Duplicates := dupError;
@@ -231,7 +231,6 @@ begin
   if ImageBase = 0 then
     exit;
 
-  SetImageBase(ImageBase);
   FFileLoader.LoadMemory(0, 1, hBase); // size does not matter, only obtain address
   if (hBase = nil) or (hBase^.e_magic <> IMAGE_DOS_SIGNATURE) then
     exit;
@@ -457,6 +456,10 @@ begin
     SetImageBase(NtHeaders.W32.OptionalHeader.ImageBase);
     SetImageSize(NtHeaders.W32.OptionalHeader.SizeOfImage);
   end;
+  if LoadedTargetImageAddr >= ImageBase then
+    SetRelocationOffset(LoadedTargetImageAddr-ImageBase, sPositive)
+  else
+    SetRelocationOffset(ImageBase-LoadedTargetImageAddr, sNegative);
   FCodeBase := NtHeaders.W32.OptionalHeader.BaseOfCode;
   SectionMax := FFileLoader.LoadMemory(
     DosHeader.e_lfanew +

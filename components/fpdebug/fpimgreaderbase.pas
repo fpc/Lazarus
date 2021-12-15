@@ -97,7 +97,8 @@ type
   private
     FImageBase: QWord;
     FImageSize: QWord;
-    FRelocationOffset: TDBGPtr;
+    FRelocationOffset: TDBGPtrOffset;
+    FLoadedTargetImageAddr: TDBGPtr;
     FReaderErrors: String;
     FUUID: TGuid;
   protected
@@ -109,15 +110,17 @@ type
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
     procedure SetImageSize(ASize: QWord);
+    procedure SetRelocationOffset(AnOffset: TDBGPtr; Sign: TDBGPtrSign);
     procedure AddReaderError(AnError: String);
     function  ReadGnuDebugLinkSection(out AFileName: String; out ACrc: Cardinal): Boolean;
     function  LoadGnuDebugLink(ASearchPath, AFileName: String; ACrc: Cardinal): TDbgFileLoader;
+    property LoadedTargetImageAddr: TDBGPtr read FLoadedTargetImageAddr;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
-    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean); virtual;
+    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); virtual;
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
     // The ImageBase is the address at which the linker assumed the binary will be
     // loaded. So it is stored inside the binary itself, in contrast to the
@@ -125,6 +128,10 @@ type
     // been loaded into another position.
     property ImageBase: QWord read FImageBase;
     property ImageSize: QWord read FImageSize;
+    // The relocationoffset is the offset at which the binary (most likely
+    // library) is loaded into memory. It is not part of the binary itself, unlike
+    // the BaseAddr.
+    property RelocationOffset: TDBGPtrOffset read FRelocationOffset;
 
     property TargetInfo: TTargetDescriptor read FTargetInfo;
 
@@ -134,15 +141,10 @@ type
     property SubFiles: TStrings read GetSubFiles;
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
     property ReaderErrors: String read FReaderErrors;
-
-    // The relocationoffset is the offset at which the binary (most likely
-    // library) is loaded into memory. It is not part of the binary itself, unlike
-    // the BaseAddr.
-    property RelocationOffset: TDBGPtr read FRelocationOffset;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
 
-function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean): TDbgImageReader; overload;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean): TDbgImageReader; overload;
 procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
@@ -184,7 +186,7 @@ end;
    result := (r1.OrgAddr=r2.OrgAddr) and (r1.Length=r2.Length) and (r1.NewAddr=r2.NewAddr);
  end;
 
-function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean): TDbgImageReader;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean): TDbgImageReader;
 var
   i   : Integer;
   cls : TDbgImageReaderClass;
@@ -196,7 +198,7 @@ begin
     cls :=  TDbgImageReaderClass(RegisteredImageReaderClasses[i]);
     try
       if cls.isValid(ASource) then begin
-        Result := cls.Create(ASource, ADebugMap, ARelocationOffset, OwnSource);
+        Result := cls.Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
         ASource.Close;
         Exit;
       end
@@ -418,6 +420,12 @@ begin
   FImageSize := ASize;
 end;
 
+procedure TDbgImageReader.SetRelocationOffset(AnOffset: TDBGPtr; Sign: TDBGPtrSign);
+begin
+  FRelocationOffset.Offset := AnOffset;
+  FRelocationOffset.Sign := Sign;
+end;
+
 procedure TDbgImageReader.AddReaderError(AnError: String);
 begin
   if FReaderErrors <> '' then
@@ -503,10 +511,10 @@ begin
   //
 end;
 
-constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ARelocationOffset: TDbgPtr; OwnSource: Boolean);
+constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 begin
   inherited Create;
-  FRelocationOffset := ARelocationOffset;
+  FLoadedTargetImageAddr := ALoadedTargetImageAddr;
 end;
 
 procedure TDbgImageReader.AddSubFilesToLoaderList(ALoaderList: TObject;

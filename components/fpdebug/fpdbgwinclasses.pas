@@ -229,7 +229,7 @@ type
     procedure InitializeLoaders; override;
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String;
-      const AModuleHandle: THandle; const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
+      const AModuleHandle: THandle; AInfo: TLoadDLLDebugInfo);
   end;
 
 
@@ -451,11 +451,11 @@ end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
   const ADefaultName: String; const AModuleHandle: THandle;
-  const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
+  AInfo: TLoadDLLDebugInfo);
 var
   S: String;
 begin
-  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr);
+  inherited Create(AProcess, ADefaultName, AModuleHandle);
   FInfo := AInfo;
 
   s := TDbgWinProcess(AProcess).GetProcFilename(AProcess, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
@@ -481,7 +481,7 @@ procedure TDbgWinProcess.InitializeLoaders;
 var
   Loader: TDbgImageLoader;
 begin
-  Loader := TDbgImageLoader.Create(FInfo.hFile);
+  Loader := TDbgImageLoader.Create(FInfo.hFile, nil, TDbgPtr(FInfo.lpBaseOfImage));
   if Loader.IsValid then
     Loader.AddToLoaderList(LoaderList)
   else
@@ -1389,7 +1389,7 @@ function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
 var
   ID: TDbgPtr;
 begin
-  Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), AInfo);
+  Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, AInfo);
   ID := TDbgPtr(AInfo.lpBaseOfDll);
   FLibMap.Add(ID, Result);
   if (Result.DbgInfo.HasInfo) or (Result.SymbolTableInfo.HasInfo)

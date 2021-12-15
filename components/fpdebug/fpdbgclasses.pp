@@ -466,7 +466,7 @@ type
     procedure SetFileName(const AValue: String);
     procedure SetMode(AMode: TFPDMode); experimental; // for testcase
   public
-    constructor Create(const AProcess: TDbgProcess; ARelocationOffset: TDBGPtr = 0); virtual;
+    constructor Create(const AProcess: TDbgProcess); virtual;
     destructor Destroy; override;
 
     // Returns the addresses at the given source-filename and line-number.
@@ -498,15 +498,10 @@ type
   TDbgLibrary = class(TDbgInstance)
   private
     FModuleHandle: THandle;
-    FRelocationOffset: TDBGPtr;
   public
-    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
+    constructor Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle);
     property Name: String read FFileName;
     property ModuleHandle: THandle read FModuleHandle;
-    // The relocationoffset is the offset at which the binary (most likely
-    // library) is loaded into memory. It is not part of the binary itself, unlike
-    // the BaseAddr.
-    property RelocationOffset: TDBGPtr read FRelocationOffset;
   end;
 
   TStartInstanceFlag = (siRediretOutput, siForceNewConsole);
@@ -1637,11 +1632,11 @@ begin
     Result := SymbolTableInfo.FindProcSymbol(AName);
 end;
 
-constructor TDbgInstance.Create(const AProcess: TDbgProcess; ARelocationOffset: TDBGPtr);
+constructor TDbgInstance.Create(const AProcess: TDbgProcess);
 begin
   FProcess := AProcess;
   FMemManager := AProcess.MemManager;
-  FLoaderList := TDbgImageLoaderList.Create(True, ARelocationOffset);
+  FLoaderList := TDbgImageLoaderList.Create(True);
 
   inherited Create;
 end;
@@ -1725,12 +1720,11 @@ end;
 
 { TDbgLibrary }
 
-constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle; const ARelocationAddress: TDbgPtr);
+constructor TDbgLibrary.Create(const AProcess: TDbgProcess; const ADefaultName: String; const AModuleHandle: THandle);
 
 begin
-  inherited Create(AProcess, ARelocationAddress);
+  inherited Create(AProcess);
   FModuleHandle:=AModuleHandle;
-  FRelocationOffset:=ARelocationAddress;
 end;
 
 { TDbgProcess }
