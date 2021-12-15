@@ -7219,6 +7219,7 @@ var
   AScreen: Integer;
   R: TRect;
 begin
+  Result:=True;
   case uiAction of
     SPI_GETWHEELSCROLLLINES: PDword(pvPAram)^ := QApplication_wheelScrollLines;
     SPI_GETWORKAREA:
@@ -7227,7 +7228,6 @@ begin
       AScreen := QDesktopWidget_primaryScreen(ADesktop);
       QDesktopWidget_availableGeometry(ADesktop, @R, AScreen);
       TRect(pvParam^) := R;
-      Result:=True;
     end;
   else
     Result := False;
