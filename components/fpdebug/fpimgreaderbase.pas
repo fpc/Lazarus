@@ -120,17 +120,29 @@ type
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
+    // The LoadedTargetImageAddr is the start-address of the data of the binary
+    // once loaded into memory.
+    // On Linux it is 0 for executables, and had another value for libraries
+    // which are relocated into another position.
+    // On Windows it is the same as the ImageBase, except when the binary has
+    // been relocated. This only happens if two libraries with the same ImageBase
+    // are loaded. In that case, one of them is being relocated to another
+    // LoadedTargetImageAddr.
     constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); virtual;
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
     // The ImageBase is the address at which the linker assumed the binary will be
-    // loaded. So it is stored inside the binary itself, in contrast to the
-    // RelocationOffset, which contains an offset once the binary has really
-    // been loaded into another position.
+    // loaded at. So it is stored inside the binary itself and all addresses inside
+    // the binary assume that once loaded into memory, it is loaded at this
+    // address. (Which is not the case for relocated libraries, see the comments
+    // for the LoadedTargetImageAddr)
+    // On Linux it is always 0, on Windows it is set by the linker/compiler.
     property ImageBase: QWord read FImageBase;
     property ImageSize: QWord read FImageSize;
-    // The relocationoffset is the offset at which the binary (most likely
-    // library) is loaded into memory. It is not part of the binary itself, unlike
-    // the BaseAddr.
+    // The RelocationOffset is the offset between the addresses as they are encoded
+    // into the binary, and their real addresses once loaded in memory.
+    // On linux it is equal to the LoadedTargetImageAddr.
+    // On Windows it is 0, except for libraries which are re-located. In that
+    // case the offset is LoadedTargetImageAddr-ImageBase.
     property RelocationOffset: TDBGPtrOffset read FRelocationOffset;
 
     property TargetInfo: TTargetDescriptor read FTargetInfo;

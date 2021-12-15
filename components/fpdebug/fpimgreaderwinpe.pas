@@ -456,6 +456,12 @@ begin
     SetImageBase(NtHeaders.W32.OptionalHeader.ImageBase);
     SetImageSize(NtHeaders.W32.OptionalHeader.SizeOfImage);
   end;
+  // Windows has loaded the binary at the LoadedTargetImageAddr. But the addresses
+  // inside the library are encoded as if the binary is located at the ImageBase
+  // address. So when LoadedTargetImageAddr<>ImageBase (happens when the binary has been
+  // relocated) all addresses need a correction.
+  // The difference between the LoadedTargetImageAddr and ImageBase is the offset
+  // that has to be used to calculate the actual addresses in memory.
   if LoadedTargetImageAddr >= ImageBase then
     SetRelocationOffset(LoadedTargetImageAddr-ImageBase, sPositive)
   else

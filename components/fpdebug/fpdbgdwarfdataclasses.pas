@@ -705,8 +705,8 @@ type
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
     function MapAddressToNewValue(AValue: QWord): QWord;
-    // Calculates an address after relocation while (dynamically) loading a library
-    // into memory, based on the library's ImageBase.
+    // Calculates an address taking the relocation after being loaded (dynamically)
+    // into memory into account, based on the library's ImageBase.
     // Conceptually it would be better to let the TDbgLibrary take the relocation
     // into account. But it was chosen to do the relocation during the loading of
     // the Dwarf-information due to performance reasons. And because of consistency
