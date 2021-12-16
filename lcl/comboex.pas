@@ -156,6 +156,7 @@ type
     procedure DrawItem(Index: Integer; ARect: TRect; State: TOwnerDrawState); override;
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetItemHeight(const AValue: Integer); override;
   public
     constructor Create(TheOwner: TComponent); override;
