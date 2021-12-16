@@ -1135,6 +1135,7 @@ type
     function  MoveNextAuto(const Inverse: boolean): boolean;
     function  MoveNextSelectable(Relative:Boolean; DCol, DRow: Integer): Boolean; virtual;
     procedure MoveSelection; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function  OffsetToColRow(IsCol, Physical: Boolean; Offset: Integer;
                              out Index, Rest: Integer): Boolean;
     procedure Paint; override;
@@ -8288,6 +8289,16 @@ end;
 procedure TCustomGrid.MoveSelection;
 begin
   if Assigned(OnSelection) then OnSelection(Self, FCol, FRow);
+end;
+
+procedure TCustomGrid.Notification(AComponent: TComponent; Operation: TOperation); 
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FTitleImageList) then
+  begin
+    FTitleImageList := nil;
+    Invalidate;
+  end;
 end;
 
 procedure TCustomGrid.BeginUpdate;
