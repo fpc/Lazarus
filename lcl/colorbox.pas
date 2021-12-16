@@ -49,7 +49,7 @@ type
     FColorRectOffset: Integer;
     FDefaultColorColor: TColor;
     FNoneColorColor: TColor;
-    FcolorDialog:TColorDialog;
+    FColorDialog:TColorDialog;
     FOnGetColors: TGetColorsEvent;
     FStyle: TColorBoxStyle;
     FSelected: TColor;
@@ -76,6 +76,7 @@ type
     procedure DoGetColors; virtual;
     procedure CloseUp; override;
     function PickCustomColor: Boolean; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     property ColorRectWidth: Integer read GetColorRectWidth write SetColorRectWidth stored ColorRectWidthStored;
@@ -198,6 +199,7 @@ type
     procedure DoGetColors; virtual;
     procedure DoSelectionChange(User: Boolean); override;
     function PickCustomColor: Boolean; virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     property ColorRectWidth: Integer read GetColorRectWidth write SetColorRectWidth stored ColorRectWidthStored;
@@ -738,6 +740,14 @@ begin
   end;
 end;
 
+procedure TCustomColorBox.Notification(AComponent: TComponent; Operation: TOperation); 
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FColorDialog) then
+    FColorDialog := nil;
+end;
+
+
 {------------------------------------------------------------------------------}
 {------------------------------------------------------------------------------
   Method:   TCustomColorListBox.Create
@@ -1093,6 +1103,13 @@ begin
   finally
     If FreeDialog Then FreeAndNil(FcolorDialog);
   end;
+end;
+
+procedure TCustomColorListBox.Notification(AComponent: TComponent; Operation: TOperation); 
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FColorDialog) then
+    FColorDialog := nil;
 end;
 
 {------------------------------------------------------------------------------}
