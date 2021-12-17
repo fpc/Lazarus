@@ -24,7 +24,7 @@ interface
 uses
   Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,
   fpextjs, extjsjson, extjsxml, fpjsonrpc, jstree,jsparser,
-  fpextdirect,fpwebdata,
+  fpextdirect,fpwebdata, fpwebfile,
 {$IF FPC_FULLVERSION>=30004}
   fphttpclient,
   fphttpserver,
@@ -182,7 +182,8 @@ type
     FDir,
     FLoc : String;
     FPort : Integer;
-    function GetOPtions: TModalResult;
+    FDefaultFiles : Boolean;
+    function GetOptions: TModalResult;
   public
     constructor Create; override;
     function GetLocalizedName: string; override;
@@ -806,7 +807,7 @@ begin
   Result:=rsHTTPAppli2;
 end;
 
-function THTTPApplicationDescriptor.GetOPtions : TModalResult;
+function THTTPApplicationDescriptor.GetOptions : TModalResult;
 
 begin
   With TNewHTTPApplicationForm.Create(Application) do
@@ -821,7 +822,12 @@ begin
           begin
           FLoc:=Location;
           FDir:=Directory;
-          end;
+          end
+        else
+          begin
+          FDefaultFiles:=ServeFilesDefault;
+          FDir:=Directory;
+          end
         end;
     finally
       Free;
@@ -862,6 +868,12 @@ begin
     begin
     S:=Format('  RegisterFileLocation(''%s'',''%s'');',[FLoc,FDir]);
     NewSource:=NewSource+S+le
+    end
+  else if FDefaultFiles then
+    begin
+    S:='TSimpleFileModule.BaseDir:='+Format('''%s'';',[StringReplace(FDir,'''','''''',[rfReplaceAll])]);
+    S:=S+le+'TSimpleFileModule.RegisterDefaultRoute;';
+    NewSource:=NewSource+S+le;
     end;
   NewSource:=NewSource
     +'  Application.Title:=''httpproject1'';'+le
@@ -962,7 +974,7 @@ function TFileDescWebJSONRPCModule.GetImplementationSource(const Filename,
 
 Var
   RH,RM : Boolean;
-  HP : String;
+  JRC, HP : String;
 
 begin
   RH:=False;
@@ -974,6 +986,7 @@ begin
         begin
         RH:=RegisterHandlers;
         RM:=RegisterModule;
+        JRC:=JSONRPCClass;
         If RM then
           HP:=HTTPPath;
         end;
@@ -986,7 +999,7 @@ begin
   If RM then
     Result:=Result+'  RegisterHTTPModule('''+HP+''',T'+ResourceName+');'+LineEnding;
   If RH then
-    Result:=Result+'  JSONRPCHandlerManager.RegisterDatamodule(T'+ResourceName+','''+HP+''',);'+LineEnding;
+    Result:=Result+'  JSONRPCHandlerManager.RegisterDatamodule(T'+ResourceName+','''+JRC+''');'+LineEnding;
 end;
 
 { TFileDescExtDirectModule }

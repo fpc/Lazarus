@@ -16,12 +16,14 @@ type
     ButtonPanel1: TButtonPanel;
     CBRegisterFiles: TCheckBox;
     CBthreads: TCheckBox;
+    CBDefaultFileLocation: TCheckBox;
     DEDocumentroot: TDirectoryEdit;
     ELocation: TEdit;
     LSEPort: TLabel;
     LELocation: TLabel;
     LDEDocumentRoot: TLabel;
     SEPort: TSpinEdit;
+    procedure CBDefaultFileLocationChange(Sender: TObject);
     procedure CBRegisterFilesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -29,6 +31,7 @@ type
     function GetL: String;
     function GetP: Integer;
     function GetS: Boolean;
+    function GetSD: Boolean;
     function Gett: Boolean;
     procedure LocalizeForm;
     { private declarations }
@@ -39,7 +42,8 @@ type
     Property Directory : String Read GetD;
     Property Port: Integer Read GetP;
     Property Threaded : Boolean Read Gett;
-  end; 
+    Property ServeFilesDefault : Boolean Read GetSD;
+  end;
 
 var
   NewHTTPApplicationForm: TNewHTTPApplicationForm;
@@ -66,6 +70,20 @@ begin
   B:=GetS;
   ELocation.Enabled:=B;
   DEDocumentRoot.Enabled:=B;
+  CBDefaultFileLocation.Enabled:=Not B;
+  if not CBDefaultFileLocation.Enabled then
+    CBDefaultFileLocation.Checked:=False
+end;
+
+procedure TNewHTTPApplicationForm.CBDefaultFileLocationChange(Sender: TObject);
+begin
+  CBRegisterFiles.Enabled:=Not CBDefaultFileLocation.Checked;
+  ELocation.Enabled:=Not CBDefaultFileLocation.Checked;
+  if not CBRegisterFiles.Enabled then
+    begin
+    CBRegisterFiles.Checked:=False;
+    ELocation.Text:='';
+    end;
 end;
 
 procedure TNewHTTPApplicationForm.LocalizeForm;
@@ -97,6 +115,11 @@ end;
 function TNewHTTPApplicationForm.GetS: Boolean;
 begin
   Result:=CBRegisterFiles.Checked;
+end;
+
+function TNewHTTPApplicationForm.GetSD: Boolean;
+begin
+  Result:=CBDefaultFileLocation.Checked;
 end;
 
 function TNewHTTPApplicationForm.Gett: Boolean;

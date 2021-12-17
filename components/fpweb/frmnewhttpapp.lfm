@@ -1,39 +1,39 @@
 object NewHTTPApplicationForm: TNewHTTPApplicationForm
   Left = 521
-  Height = 310
+  Height = 374
   Top = 280
-  Width = 384
+  Width = 462
   Caption = 'New HTTP server application'
-  ClientHeight = 310
-  ClientWidth = 384
+  ClientHeight = 374
+  ClientWidth = 462
   OnCreate = FormCreate
-  LCLVersion = '0.9.31'
+  LCLVersion = '2.3.0.0'
   object DEDocumentroot: TDirectoryEdit
     Left = 40
-    Height = 22
-    Top = 128
+    Height = 27
+    Top = 160
     Width = 272
     DialogTitle = 'Select directory'
     ShowHidden = False
     ButtonWidth = 23
-    NumGlyphs = 0
+    NumGlyphs = 1
     Enabled = False
     MaxLength = 0
     TabOrder = 0
   end
   object CBRegisterFiles: TCheckBox
     Left = 16
-    Height = 21
+    Height = 23
     Top = 14
-    Width = 228
+    Width = 239
     Caption = 'Register location to serve files from'
     OnChange = CBRegisterFilesChange
     TabOrder = 1
   end
   object SEPort: TSpinEdit
-    Left = 40
-    Height = 22
-    Top = 192
+    Left = 34
+    Height = 27
+    Top = 232
     Width = 98
     MaxValue = 65355
     TabOrder = 2
@@ -41,57 +41,67 @@ object NewHTTPApplicationForm: TNewHTTPApplicationForm
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
-    Height = 34
-    Top = 270
-    Width = 372
+    Height = 38
+    Top = 330
+    Width = 450
     OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
     HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
     CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
   end
   object LSEPort: TLabel
-    Left = 22
-    Height = 15
-    Top = 160
-    Width = 153
+    Left = 16
+    Height = 16
+    Top = 200
+    Width = 157
     Caption = 'Port to listen for requests:'
     FocusControl = SEPort
-    ParentColor = False
   end
   object ELocation: TEdit
     Left = 40
-    Height = 22
-    Top = 72
+    Height = 27
+    Top = 64
     Width = 80
     Enabled = False
     TabOrder = 4
   end
   object LELocation: TLabel
     Left = 40
-    Height = 15
-    Top = 48
-    Width = 52
+    Height = 16
+    Top = 40
+    Width = 55
     Caption = 'Location:'
     FocusControl = ELocation
-    ParentColor = False
   end
   object LDEDocumentRoot: TLabel
-    Left = 40
-    Height = 15
-    Top = 104
-    Width = 52
-    Caption = '&Directory'
+    Left = 18
+    Height = 16
+    Top = 136
+    Width = 171
+    Caption = '&Directory to serve files from:'
     FocusControl = DEDocumentroot
-    ParentColor = False
   end
   object CBthreads: TCheckBox
-    Left = 24
-    Height = 21
-    Top = 232
-    Width = 213
+    Left = 18
+    Height = 23
+    Top = 272
+    Width = 217
     Caption = 'Use threads to serve requests in'
     TabOrder = 5
+  end
+  object CBDefaultFileLocation: TCheckBox
+    Left = 16
+    Height = 23
+    Top = 98
+    Width = 178
+    Caption = 'Default route serves files'
+    OnChange = CBDefaultFileLocationChange
+    TabOrder = 6
   end
 end
