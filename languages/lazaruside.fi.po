@@ -5033,8 +5033,8 @@ msgid "Ask name on create"
 msgstr "Kysy nimi luotaessa"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Hyödyllinen asetus Windowsissa on: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
+msgstr "Hyödyllinen asetus Windowsissa on: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -11475,10 +11475,6 @@ msgstr "Pidä muunnetut tiedostot auki editorissa"
 msgid "All project files will be open in editor after conversion"
 msgstr "Kaikki projektin tiedostot ovat auki editorissa konversion jälkeen"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Pidetään asennuksessa"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Hyväksy nimi tällaisenaan"
@@ -12780,7 +12776,9 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Muunna Delphi-käännösyksikkö Lazarukselle ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+#, fuzzy
+#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "Muunna binaarinen DFM-tiedosto teksti-LFM:ksi ja tarkista kielioppi ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -17365,10 +17363,6 @@ msgstr "Poistettiin ominaisuus \"%s\"."
 msgid "Remove %s files from package \"%s\"?"
 msgstr "Poista %s tiedostoa paketista \"%s\"?"
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Poistetaan asennuksesta"
-
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
 msgstr "Poista projektista"
@@ -20929,6 +20923,10 @@ msgstr "katalaani"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "kiina"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

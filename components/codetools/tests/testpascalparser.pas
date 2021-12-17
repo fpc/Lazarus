@@ -54,6 +54,7 @@ type
     procedure TestParseIFOpt;
     procedure TestParseProcAnoAssign;
     procedure TestParseProcAnoArg;
+    procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
   end;
 
@@ -562,6 +563,38 @@ begin
   'begin',
   '  DoIt(procedure begin end);',
   '  DoIt(procedure begin p:=procedure(w:word) begin end; end);',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseProcAnoArgSubFunc;
+begin
+  Add([
+  'program test1;',
+  '{$mode objfpc}',
+  '{$modeswitch closures}',
+  'procedure DoIt;',
+  'begin',
+  '  DoIt(',
+  '    procedure',
+  '      function Fly: word;',
+  '      begin InFly; end;',
+  '    begin InAno1;',
+  '    end);',
+  '  DoIt(',
+  '    procedure(v: word)',
+  '      function Run: word;',
+  '      begin InRun end;',
+  '    begin InAno2;',
+  '    end);',
+  'end;',
+  'begin',
+  '  DoIt(',
+  '    procedure',
+  '      function Say: word;',
+  '      begin InSay; end;',
+  '    begin InAno3;',
+  '    end);',
   '']);
   ParseModule;
 end;

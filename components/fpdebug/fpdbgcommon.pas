@@ -14,6 +14,12 @@ type
   TByteOrder = (boNone, boLSB, boMSB);
   TOperatingSystem = (osNone, osBSD, osDarwin, osEmbedded, osLinux, osUnix, osMac, osWindows);
 
+  TDBGPtrSign = (sPositive, sNegative);
+  TDBGPtrOffset = record
+    Offset: Int64;
+    Sign: TDBGPtrSign;
+  end;
+
   TTargetDescriptor = record
     machineType: TMachineType;
     bitness: TBitness;
@@ -31,6 +37,8 @@ procedure AssertFpDebugThreadIdNotMain(const AName: String);
 procedure SetCurrentFpDebugThreadIdForAssert(AnId: TThreadID);
 property CurrentFpDebugThreadIdForAssert: TThreadID write SetCurrentFpDebugThreadIdForAssert;
 {$ENDIF}
+
+Operator + (Addr : QWord; Offset : TDBGPtrOffset) Res : QWord;
 
 implementation
 
@@ -56,6 +64,14 @@ begin
                    {$elseif defined(UNIX)} osUnix
                    {$elseif defined(MSWINDOWS)} osWindows {$endif};
   end;
+end;
+
+operator+(Addr: QWord; Offset: TDBGPtrOffset) Res: QWord;
+begin
+  if Offset.Sign=sPositive then
+    Res := Addr + Offset.Offset
+  else
+    Res := Addr - Offset.Offset;
 end;
 
 {$IFDEF FPDEBUG_THREAD_CHECK}

@@ -31,7 +31,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, Types, Math,
-  StdCtrls, Graphics, LCLIntf, LCLType, LMessages, Themes,
+  StdCtrls, Graphics, LCLIntf, LCLType, Themes,
   IntegerList, LazUTF8,
   TAChartUtils, TACustomSeries, TALegend, TAGraph,
   TACustomSource, TADrawerCanvas, TADrawUtils, TAEnumerators, TAGeometry;

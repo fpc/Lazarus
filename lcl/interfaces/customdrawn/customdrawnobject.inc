@@ -9,7 +9,6 @@
 }
 //---------------------------------------------------------------
 
-{$IFnDEF WithOldDebugln}
 procedure TCDWidgetSet.AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean;
   Target: TLazLoggerWriteTarget; Data: Pointer);
 begin
@@ -17,12 +16,6 @@ begin
   if not AHandled then exit;
   AccumulatedStr := AccumulatedStr + AStr;
 end;
-{$ELSE}
-procedure TCDWidgetSet.AccumulatingDebugOut(AStr: string);
-begin
-  AccumulatedStr := AccumulatedStr + AStr;
-end;
-{$ENDIF}
 
 procedure TCDWidgetSet.CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
 var

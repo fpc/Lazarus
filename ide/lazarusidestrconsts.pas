@@ -583,7 +583,7 @@ resourcestring
   lisMenuMakeResourceString = 'Make Resource String ...';
   lisCaptionCompareFiles = 'Compare files (not for creating patches)';
   lisMenuCompareFiles = 'Compare files ...';
-  lisMenuConvertDFMtoLFM = 'Convert Binary DFM to Text LFM + Check Syntax ...';
+  lisMenuConvertDFMtoLFM = 'Convert Binary DFM to LFM ...';
   lisMenuCheckLFM = 'Check LFM File in Editor';
   lisMenuDelphiConversion = 'Delphi Conversion';
   lisMenuConvertDelphiUnit = 'Convert Delphi Unit to Lazarus Unit ...';
@@ -3549,6 +3549,7 @@ resourcestring
   rsLanguageTurkish      = 'Turkish';
   rsLanguageCzech        = 'Czech';
   rsLanguageHungarian    = 'Hungarian';
+  rsLanguageCorsican     = 'Corsican';
 
   // Unit dependencies
   dlgUnitDepCaption      = 'Unit Dependencies';
@@ -4423,8 +4424,8 @@ resourcestring
   lisPkgMangUnableToCreatePackageSourceDirectoryForPackage = 'Unable to '
     +'create package source directory "%s"%sfor package %s.';
   lisPkgMangUnableToLoadPackage = 'Unable to load package';
-  lisPkgMangUnableToOpenThePackage = 'Unable to open the package "%s".%s'
-    +'This package was marked for installation.';
+  lisPkgMangUnableToOpenThePackage = 'Unable to open the package "%s".'
+    +'%sThis package was marked for installation.';
   lisOpenPackage2 = 'Open package %s';
   lisPkgMangThePackageNameOfTheFileIsInvalid = 'The package name "%s" of'
     +'%sthe file "%s" is invalid.';
@@ -6131,8 +6132,6 @@ resourcestring
     +'the main unit. The new main unit will be %s.pas.';
   lisRemoveFilesFromPackage = 'Remove %s files from package "%s"?';
   lisDirectivesForNewUnit = 'Directives for new unit';
-  lisRemoveFromInstallList = 'Remove from install list';
-  lisKeepInInstallList = 'Keep in install list';
   lisInformationAboutUsedFPC = 'Information about used FPC';
 
   //Build mode differences dialog
@@ -6267,7 +6266,7 @@ resourcestring
   lisTheDebuggerExecutableTypicallyHasTheNamePleaseGive = 'The debugger '
     +'executable typically has the name "%s". Please give the full file path.';
   lisAUsefulSettingOnWindowsSystemsIsLazarusDirMingwBin = 'A useful setting on'
-    +' Windows systems is: $(LazarusDir)\mingw\bin\$(TargetCPU)-$(TargetOS)\'
+    +' Windows systems is: $(LazarusDir)\mingw\$(TargetCPU)-$(TargetOS)\bin\'
     +'gdb.exe';
   lisFoundVersionExpected = 'Found version %s, expected %s';
   lisInvalidVersionIn = 'invalid version in %s';

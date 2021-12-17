@@ -645,7 +645,7 @@ var
   IntfWidth, IntfHeight: integer;
 begin
   Result := False;
-  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth, IntfHeight);
+  LCLIntf.GetWindowSize(Sender.Handle, IntfWidth{%H-}, IntfHeight{%H-});
   if (Sender.Width = IntfWidth) and (Sender.Height = IntfHeight) and (not Sender.ClientRectNeedsInterfaceUpdate) then
     Exit;
   Result := True;
@@ -689,7 +689,7 @@ begin
   if not (Sender is TWinControl) then exit;
   if not TheWinControl.HandleAllocated then exit;
   Handle := TheWinControl.Handle;
-  FillChar(ORect, SizeOf(ORect), 0);
+  ORect := Default(TRect);
   if TheWinControl is TScrollingWinControl then
   begin
     {$ifdef RedirectDestroyMessages}
@@ -723,6 +723,7 @@ begin
     // add the upper frame with the caption
     DC := Windows.GetDC(Handle);
     SelectObject(DC, TheWinControl.Font.Reference.Handle);
+    TM := Default(Windows.TextMetric);
     Windows.GetTextMetrics(DC, TM);
     ORect.Top := TM.TMHeight + 3;
     Windows.ReleaseDC(Handle, DC);
@@ -776,7 +777,8 @@ end;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
-  parRect, winRect: Windows.TRect;
+  parRect: Windows.TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  winRect: Windows.TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
 begin
   Windows.GetWindowRect(Window, winRect);
   Windows.GetWindowRect(Parent, parRect);
@@ -815,7 +817,7 @@ var
   WindowInfo: PWin32WindowInfo;
 begin
   New(WindowInfo);
-  FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
+  WindowInfo^ := Default(TWin32WindowInfo);
   WindowInfo^.DrawItemIndex := -1;
   Windows.SetProp(Window, PTChar(PtrUInt(WindowInfoAtom)), PtrUInt(WindowInfo));
   Result := WindowInfo;
@@ -1039,7 +1041,7 @@ end;
 function MeasureTextForWnd(const AWindow: HWND; Text: string; var Width,
   Height: integer): boolean;
 var
-  textSize: Windows.SIZE;
+  textSize: Windows.SIZE = (cx: 0; cy: 0);
   canvasHandle: HDC;
   oldFontHandle, newFontHandle: HFONT;
 begin
@@ -1067,7 +1069,7 @@ end;
 function GetControlText(AHandle: HWND): string;
 var
   TextLen: longint;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   TextLen := Windows.GetWindowTextLengthW(AHandle);
   SetLength(WideBuffer, TextLen);
@@ -1166,11 +1168,13 @@ var
   OrgPixel, TstPixel: Cardinal;
   Scanline: Pointer;
   DC: HDC;
-  Info: record
+type
+  TLocalInfo = record
     Header: Windows.TBitmapInfoHeader;
     Colors: array[Byte] of Cardinal; // reserve extra color for colormasks
   end;
-  
+var
+  Info: TLocalInfo;
   FullScanLine: Boolean; // win9x requires a full scanline to be retrieved
                          // others won't fail when one pixel is requested
 begin
@@ -1193,7 +1197,7 @@ begin
   then ScanLine := GetMem(AWinBmp.bmWidthBytes)
   else ScanLine := nil;
 
-  FillChar(Info.Header, sizeof(Windows.TBitmapInfoHeader), 0);
+  Info := Default(TLocalInfo);
   Info.Header.biSize := sizeof(Windows.TBitmapInfoHeader);
   DC := Windows.GetDC(0);
   if Windows.GetDIBits(DC, ABitmap, 0, 1, nil, Windows.PBitmapInfo(@Info)^, DIB_RGB_COLORS) = 0
@@ -1326,7 +1330,7 @@ function IsAlphaBitmap(ABitmap: HBITMAP): Boolean;
 var
   Info: Windows.BITMAP;
 begin
-  FillChar(Info, SizeOf(Info), 0);
+  Info := Default(Windows.BITMAP);
   Result := (GetObject(ABitmap, SizeOf(Info), @Info) <> 0)
         and (Info.bmBitsPixel = 32);
 end;
@@ -1671,7 +1675,7 @@ end;
 
 procedure DoInitialization;
 begin
-  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  DefaultWindowInfo := Default(TWin32WindowInfo);
   DefaultWindowInfo.DrawItemIndex := -1;
   WindowInfoAtom := Windows.GlobalAddAtom('WindowInfo');
   ChangedMenus := TFPList.Create;

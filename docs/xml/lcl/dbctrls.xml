@@ -1486,21 +1486,7 @@
       <element link="#lcl.controls.TControl.BiDiMode" name="TDBEdit.BiDiMode"/>
       <element link="#lcl.controls.TControl.BorderSpacing" name="TDBEdit.BorderSpacing"/>
       <element name="TDBEdit.BorderStyle" link="#lcl.controls.TWinControl.BorderStyle"/>
-      <element name="TDBEdit.CharCase">
-        <descr>
-          <p>Indicates how text is displayed in a text editing control in the following ways:
-          </p>
-          <ul>
-            <li>Normal case letters</li>
-            <li>Upper case letters</li>
-            <li>Lower case letters</li>
-          </ul>
-          <p>The rules can be overridden by use of the Shift key.</p>
-        </descr>
-        <seealso>
-          <link id="#lcl.stdctrls.TCustomEdit.CharCase">TCustomEdit.CharCase</link>
-        </seealso>
-      </element>
+      <element name="TDBEdit.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
       <element link="#lcl.controls.TControl.Color" name="TDBEdit.Color"/>
       <element link="#lcl.controls.TControl.Constraints" name="TDBEdit.Constraints"/>
       <element link="#lcl.controls.TWinControl.DoubleBuffered" name="TDBEdit.DoubleBuffered"/>
@@ -1521,6 +1507,9 @@
       <element link="#lcl.controls.TControl.ShowHint" name="TDBEdit.ShowHint"/>
       <element link="#lcl.controls.TWinControl.TabOrder" name="TDBEdit.TabOrder"/>
       <element link="#lcl.controls.TWinControl.TabStop" name="TDBEdit.TabStop"/>
+
+      <element name="TDBEdit.TextHint" link="#lcl.stdctrls.TCustomEdit.TextHint"/>
+
       <element link="#lcl.controls.TControl.Visible" name="TDBEdit.Visible"/>
       <element link="#lcl.stdctrls.TCustomEdit.OnChange" name="TDBEdit.OnChange"/>
       <element name="TDBEdit.OnClick"  link="#lcl.controls.TControl.OnClick"/>
@@ -7742,7 +7731,7 @@
       </element>
       <element link="#lcl.controls.TControl.GetControlClassDefaultSize" name="TDBCustomNavigator.GetControlClassDefaultSize"/>
       <element name="TDBCustomNavigator.GetControlClassDefaultSize.Result">
-        <short/>
+        <short>Default size for new instances of the class.</short>
       </element>
       <element name="TDBCustomNavigator.BeginUpdateButtons">
         <short>

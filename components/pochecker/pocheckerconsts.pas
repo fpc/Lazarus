@@ -123,6 +123,7 @@ type
     lang_af_ZA,  {Afrikaans}
     lang_ar,     {Arabic}
     lang_ca,     {Catalan}
+    lang_co,     {Corsican}
     lang_cs,     {Czech}
     lang_de,     {German}
     lang_en,     {English}
@@ -151,6 +152,7 @@ resourcestring
   rs_lang_af_ZA =  'Afrikaans';
   rs_lang_ar =     'Arabic';
   rs_lang_ca =     'Catalan';
+  rs_lang_co =     'Corsican';
   rs_lang_cs =     'Czech';
   rs_lang_de =     'German';
   rs_lang_en =     'English';
@@ -179,6 +181,7 @@ const
     rs_lang_af_ZA,
     rs_lang_ar ,
     rs_lang_ca ,
+    rs_lang_co ,
     rs_lang_cs ,
     rs_lang_de ,
     rs_lang_en ,
@@ -207,6 +210,7 @@ const
      'af_ZA',  {Afrikaans}
      'ar',     {Arabic}
      'ca',     {Catalan}
+     'co',     {Corsican}
      'cs',     {Czech}
      'de',     {German}
      'en',     {English}
@@ -253,6 +257,7 @@ begin
   LanguageNames[lang_af_ZA]:=rs_lang_af_ZA;
   LanguageNames[lang_ar]:=rs_lang_ar;
   LanguageNames[lang_ca]:=rs_lang_ca;
+  LanguageNames[lang_co]:=rs_lang_co;
   LanguageNames[lang_cs]:=rs_lang_cs;
   LanguageNames[lang_de]:=rs_lang_de;
   LanguageNames[lang_en]:=rs_lang_en;

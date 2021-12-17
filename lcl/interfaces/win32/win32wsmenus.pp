@@ -25,7 +25,7 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T
 ////////////////////////////////////////////////////
-// To get as little as posible circles,
+// To get as little as possible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
   LCLType, Graphics, GraphType, ImgList, Menus, Forms,
@@ -83,7 +83,7 @@ type
 
 implementation
 
-uses strutils;
+//uses strutils;
 
 type
   TMenuItemHelper = class helper for TMenuItem
@@ -396,7 +396,7 @@ var
   AFont, OldFont: HFONT;
 begin
   Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
-  FillChar(Result{%H-}, SizeOf(Result), 0);
+  Result := Default(TVistaPopupMenuMetrics);
   GetThemeMargins(Theme, DC, MENU_POPUPITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
   GetThemePartSize(Theme, DC, MENU_POPUPCHECK, 0, nil, TS_TRUE, Result.CheckSize);
   GetThemeMargins(Theme, DC, MENU_POPUPCHECK, 0, TMT_CONTENTMARGINS, nil, Result.CheckMargins);
@@ -451,7 +451,7 @@ var
   AFont, OldFont: HFONT;
 begin
   Theme := TWin32ThemeServices(ThemeServices).Theme[teMenu];
-  FillChar(Result{%H-}, SizeOf(Result), 0);
+  Result := Default(TVistaBarMenuMetrics);
   GetThemeMargins(Theme, 0, MENU_BARITEM, 0, TMT_CONTENTMARGINS, nil, Result.ItemMargins);
 
   if AMenuItem.Default then
@@ -651,7 +651,7 @@ begin
     else
       SetProp(AWnd, 'LCL_MENUREDRAW', 0);
     // repainting menu bar bg
-    FillChar(Info{%H-}, SizeOf(Info), 0);
+    Info := Default(tagMENUBARINFO);
     Info.cbSize := SizeOf(Info);
     GetMenuBarInfo(AWnd, OBJID_MENU, 0, @Info);
     GetWindowRect(AWnd, @WndRect);
@@ -908,24 +908,22 @@ function MenuItemSize(AMenuItem: TMenuItem; AHDC: HDC): TSize;
 var
   CC: TControlCanvas;
 begin
+  Result.cx := 0;
+  Result.cy := 0;
+
   CC := TControlCanvas.Create;
   try
     CC.Handle := AHDC;
-    Result.cx := 0;
-    Result.cy := 0;
-
-    if not AMenuItem.MeasureItem(CC, Result.cx, Result.cy) then
+    if IsVistaMenu then
     begin
-      if IsVistaMenu then
-      begin
-        if AMenuItem.IsInMenuBar then
-          Result := VistaBarMenuItemSize(AMenuItem, AHDC)
-        else
-          Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
-      end
+      if AMenuItem.IsInMenuBar then
+        Result := VistaBarMenuItemSize(AMenuItem, AHDC)
       else
-        Result := ClassicMenuItemSize(AMenuItem, AHDC);
-    end;
+        Result := VistaPopupMenuItemSize(AMenuItem, AHDC);
+    end
+    else
+      Result := ClassicMenuItemSize(AMenuItem, AHDC);
+    AMenuItem.MeasureItem(CC, Result.cx, Result.cy);
   finally
     CC.Free;
   end;
@@ -1341,7 +1339,7 @@ function ChangeMenuFlag(const AMenuItem: TMenuItem; Flag: Cardinal; Value: boole
 var
   MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
 begin
-  FillChar(MenuInfo{%H-}, SizeOf(MenuInfo), 0);
+  MenuInfo := Default(MENUITEMINFO);
   MenuInfo.cbSize := sizeof(TMenuItemInfo);
   MenuInfo.fMask := MIIM_FTYPE;         // don't retrieve caption (MIIM_STRING not included)
   GetMenuItemInfoW(AMenuItem.MergedParent.Handle, AMenuItem.Command, False, @MenuInfo);
@@ -1364,7 +1362,7 @@ procedure SetMenuFlag(const Menu: HMenu; Flag: Cardinal; Value: boolean);
 var
   MenuInfo: MENUITEMINFO;     // TMenuItemInfoA and TMenuItemInfoW have same size and same structure type
 begin
-  FillChar(MenuInfo{%H-}, SizeOf(MenuInfo), 0);
+  MenuInfo := Default(MENUITEMINFO);
   MenuInfo.cbSize := sizeof(TMenuItemInfo);
   MenuInfo.fMask := MIIM_TYPE;  //MIIM_FTYPE not work here please use only MIIM_TYPE, caption not retrieved (dwTypeData = nil)
   GetMenuItemInfoW(Menu, 0, True, @MenuInfo);
@@ -1385,7 +1383,7 @@ begin
   if (AMenuItem.MergedParent = nil) or not AMenuItem.MergedParent.HandleAllocated then
     Exit;
 
-  FillChar(MenuInfo{%H-}, SizeOf(MenuInfo), 0);
+  MenuInfo := Default(MENUITEMINFO);
   with MenuInfo do
   begin
     cbSize := sizeof(TMenuItemInfo);
@@ -1448,7 +1446,7 @@ begin
   if AMenuItem.MergedParent=nil then
     Exit;
   ParentMenuHandle := AMenuItem.MergedParent.Handle;
-  FillChar(MenuInfo{%H-}, SizeOf(MenuInfo), 0);
+  MenuInfo := Default(MENUITEMINFO);
   MenuInfo.cbSize := sizeof(TMenuItemInfo);
 
   // Following part fixes the case when an item is added in runtime
@@ -1474,10 +1472,7 @@ begin
 
   ItemIndex := AMenuItem.MergedParent.VisibleIndexOf(AMenuItem);
   if ItemIndex<0 then
-  begin
-    DebugLn(['Invisible menu item: ', AMenuItem.Name, ' (', AMenuItem.Caption, ')']);
-    Exit;
-  end;
+    RaiseGDBException('Invisible menu item: '+AMenuItem.Name+' ('+AMenuItem.Caption+')');
   // MDI forms with a maximized MDI child insert a menu at the first index for
   // the MDI child's window menu, so we need to take that into account
   if Assigned(Application.MainForm) and
@@ -1556,7 +1551,7 @@ begin
        AMenuItem.MergedParent.MergedParent.HandleAllocated then
     begin
       ParentOfParentHandle := AMenuItem.MergedParent.MergedParent.Handle;
-      FillChar(MenuInfo{%H-}, SizeOf(MenuInfo), 0);
+      MenuInfo := Default(MENUITEMINFO);
       with MenuInfo do
       begin
         cbSize := sizeof(TMenuItemInfo);

@@ -134,6 +134,11 @@ procedure WindowCreateInitBuddy(const AWinControl: TWinControl;
 // Must be in win32proc but TCreateWindowExParams declared here
 procedure SetStdBiDiModeParams(const AWinControl: TWinControl; var Params:TCreateWindowExParams);
 
+var
+  // WindowPosChanging hack - see comment in TWin32WSWinControl.SetBounds
+  LockWindowPosChanging: Boolean = False;
+  LockWindowPosChangingXY: TPoint;
+
 implementation
 
 uses
@@ -441,6 +446,8 @@ var
   suppressMove: boolean;
   Handle: HWND;
   WindowPlacement: TWINDOWPLACEMENT;
+  Mon: HMONITOR;
+  MonInfo: TMonitorInfo;
 begin
   IntfLeft := ALeft;
   IntfTop := ATop;
@@ -459,13 +466,35 @@ begin
   begin
     Handle := AWinControl.Handle;
     WindowPlacement.length := SizeOf(WindowPlacement);
-    if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
-    begin
-      WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
-      SetWindowPlacement(Handle, @WindowPlacement);
-    end
-    else
-      Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
+
+    // Windows (at least Win 10) has the feature that SetWindowPos() forces dialogs with parent windows on the same screen
+    //   with the parent window - the position set with Windows.SetWindowPos() is ignored and instead the dialog
+    //   is centered with its parent window.
+    // To prevent Windows from changing the position defined by the LCL, the LM_WINDOWPOSCHANGING is handled and the
+    //   new coordinates are re-assigned within the message handler with LockWindowPosChanging&LockWindowPosChangingXY
+    // See issue #39479 for more description and demo application.
+    LockWindowPosChanging := True;
+    try
+      LockWindowPosChangingXY := Point(IntfLeft, IntfTop);
+      if IsIconic(Handle) and GetWindowPlacement(Handle, @WindowPlacement) then
+      begin
+        WindowPlacement.rcNormalPosition := Bounds(IntfLeft, IntfTop, IntfWidth, IntfHeight);
+        // workarea coordinates must be used for top-level windows without WS_EX_TOOLWINDOW window style
+        if (GetWindowLong(Handle, GWL_EXSTYLE) and WS_EX_TOOLWINDOW)=0 then
+        begin
+          Mon := MonitorFromRect(@WindowPlacement.rcNormalPosition, MONITOR_DEFAULTTOPRIMARY);
+          MonInfo := Default(TMonitorInfo);
+          MonInfo.cbSize := SizeOf(TMonitorInfo);
+          if (Mon<>0) and GetMonitorInfo(Mon, @MonInfo) then
+            WindowPlacement.rcNormalPosition.Offset(MonInfo.rcMonitor.Left-MonInfo.rcWork.Left, MonInfo.rcMonitor.Top-MonInfo.rcWork.Top);
+        end;
+        SetWindowPlacement(Handle, @WindowPlacement);
+      end
+      else
+        Windows.SetWindowPos(Handle, 0, IntfLeft, IntfTop, IntfWidth, IntfHeight, SWP_NOZORDER or SWP_NOACTIVATE);
+    finally
+      LockWindowPosChanging := False;
+    end;
   end;
   LCLControlSizeNeedsUpdate(AWinControl, True);
   // If this control is a child of an MDI form, then we need to update the MDI client bounds in

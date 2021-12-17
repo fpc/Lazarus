@@ -38,7 +38,7 @@ unit ProcedureList;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   LCLType, Forms, Controls, Dialogs, ComCtrls, ExtCtrls, StdCtrls, Clipbrd,
   Graphics, Grids,
@@ -94,6 +94,8 @@ type
     procedure SGDblClick(Sender: TObject);
     procedure SGDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
       {%H-}aState: TGridDrawState);
+    procedure SGMouseWheel(Sender: TObject; Shift: TShiftState;
+      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
     procedure SGSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
     procedure SomethingChange(Sender: TObject);
@@ -311,13 +313,22 @@ begin
   end;
 end;
 
+procedure TProcedureListForm.SGMouseWheel(Sender: TObject; Shift: TShiftState;
+  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+var
+  NLines: integer;
+begin
+  NLines := -WheelDelta * 3 div 120;
+  SG.TopRow := Max(SG.FixedRows, Min(SG.RowCount - 1, SG.TopRow + NLines));
+  Handled := True;
+end;
+
 procedure TProcedureListForm.SGSelectCell(Sender: TObject; aCol, aRow: Integer;
   var CanSelect: Boolean);
 var
   rowObject: TGridRowObject;
 begin
   rowObject := TGridRowObject(TStringGrid(Sender).Rows[aRow].Objects[0]);
-
   if Assigned(rowObject) then
   begin
     StatusBar.Panels[0].Text := rowObject.FullProcedureName;
@@ -665,23 +676,36 @@ begin
   begin
     if SG.Row < (SG.RowCount - 1) then
       SG.Row := SG.Row + 1;
+    Key := 0;
   end
   else if Key = VK_Up then
   begin
     if SG.Row > SG.FixedRows then
       SG.Row := SG.Row - 1;
+    Key := 0;
   end
   else if Key = VK_Home then
   begin
     if SG.RowCount > SG.FixedRows then
       SG.Row := SG.FixedRows;
+    Key := 0;
   end
   else if Key = VK_End then
   begin
     if SG.RowCount > SG.FixedRows then
       SG.Row := SG.RowCount - 1;
+    Key := 0;
+  end
+  else if Key = VK_PRIOR then
+  begin
+    SG.Row := Max(SG.FixedRows, SG.Row - (SG.VisibleRowCount - 1));
+    Key := 0;
+  end
+  else if Key = VK_NEXT then
+  begin
+    SG.Row := Min(SG.RowCount - 1, SG.Row + (SG.VisibleRowCount - 1));
+    Key := 0;
   end;
-
 end;
 
 procedure TProcedureListForm.SomethingChange(Sender: TObject);

@@ -192,6 +192,8 @@ function CheckEditorNeedsSave(AEditor: TSourceEditorInterface;
     IgnoreSharedEdits: Boolean): Boolean;
 procedure ArrangeSourceEditorAndMessageView(PutOnTop: boolean);
 // files/units/projects
+function MaybeOpenProject(AFiles: TStrings): Boolean;
+function MaybeOpenEditorFiles(AFiles: TStrings; WindowIndex: integer): Boolean;
 function SomethingOfProjectIsModified(Verbose: boolean = false): boolean;
 function NewFile(NewFileDescriptor: TProjectFileDescriptor;
   var NewFilename: string; NewSource: string;
@@ -286,7 +288,7 @@ function SaveEditorChangesToCodeCache(AEditor: TSourceEditorInterface): boolean;
   function LoadAncestorDependencyHidden(AnUnitInfo: TUnitInfo;
       const aComponentClassName: string; OpenFlags: TOpenFlags;
       out AncestorClass: TComponentClass; out AncestorUnitInfo: TUnitInfo): TModalResult;
-//  function FindComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: string;
+//  function SearchComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: string;
 //      Quiet: boolean; out ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass;
 //      out LFMFilename: string; out AncestorClass: TComponentClass): TModalResult;
   function LoadComponentDependencyHidden(AnUnitInfo: TUnitInfo;
@@ -1926,6 +1928,64 @@ begin
     end;
   end;
   MainIDE.DoShowMessagesView(PutOnTop);
+end;
+
+function MaybeOpenProject(AFiles: TStrings): Boolean;
+// Open a project if there is .lpi or .lpr file in AFiles[0].
+var
+  AProjectFN: String;
+begin
+  Result:=False;
+  if (AFiles=nil) or (AFiles.Count=0) then Exit;
+  //DebugLn(['MaybeOpenProject: AFiles=', AFiles.Count]);
+  AProjectFN:=AFiles[0];
+  if FilenameExtIs(AProjectFN,'lpr',true) then
+    AProjectFN:=ChangeFileExt(AProjectFN,'.lpi');
+  // only try to load .lpi files here, other files are loaded later
+  if FilenameExtIs(AProjectFN,'lpi',true) then begin
+    AProjectFN:=CleanAndExpandFilename(AProjectFN);
+    if FileExistsUTF8(AProjectFN) then begin
+      AFiles.Delete(0);
+      Result:=LazarusIDE.DoOpenProjectFile(AProjectFN,[ofAddToRecent])=mrOk;
+    end;
+  end;
+end;
+
+function MaybeOpenEditorFiles(AFiles: TStrings; WindowIndex: integer): Boolean;
+// Open editor files or packages listed in AFiles.
+// Returns True if something was loaded.
+var
+  AFilename: String;
+  OpenFlags: TOpenFlags;
+  ModRes: TModalResult;
+  i: Integer;
+begin
+  Result:=False;
+  if AFiles=nil then Exit;
+  for i:=0 to AFiles.Count-1 do
+  begin
+    AFilename:=CleanAndExpandFilename(AFiles.Strings[i]);
+    if not FileExistsCached(AFilename) then begin
+      debugln(['Warning: (lazarus) command line file not found: "',AFilename,'"']);
+      continue;
+    end;
+    if Project1=nil then begin
+      // to open a file a project is needed => create a project
+      LazarusIDE.DoNewProject(ProjectDescriptorEmptyProject);
+    end;
+    if FilenameExtIs(AFilename,'lpk',true) then begin
+      ModRes:=PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent,pofMultiOpen],true);
+      if ModRes=mrOK then Result:=True
+      else if ModRes=mrAbort then break;
+    end else begin
+      OpenFlags:=[ofAddToRecent,ofRegularFile];
+      if i<AFiles.Count then
+        Include(OpenFlags,ofMultiOpen);
+      ModRes:=OpenEditorFile(AFilename,-1,WindowIndex,Nil,OpenFlags);
+      if ModRes=mrOK then Result:=True
+      else if ModRes=mrAbort then break;
+    end;
+  end;
 end;
 
 function SomethingOfProjectIsModified(Verbose: boolean): boolean;
@@ -6005,11 +6065,7 @@ begin
             NestedUnitInfo:=nil;
             Result:=LoadComponentDependencyHidden(AnUnitInfo,NestedClassName,
                       OpenFlags,
-                      {$IFDEF EnableNestedComponentsWithoutLFM}
-                      false,
-                      {$ELSE}
-                      true,
-                      {$ENDIF}
+              {$IFDEF EnableNestedComponentsWithoutLFM}false,{$ELSE}true,{$ENDIF}
                       NestedClass,NestedUnitInfo,AncestorClass);
             if Result<>mrOk then begin
               DebugLn(['LoadLFM DoLoadComponentDependencyHidden NestedClassName=',NestedClassName,' failed for ',AnUnitInfo.Filename]);
@@ -6458,7 +6514,7 @@ begin
   Result:=mrOk;
 end;
 
-function FindComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: string;
+function SearchComponentClass(AnUnitInfo: TUnitInfo; const AComponentClassName: string;
   Quiet: boolean; out ComponentUnitInfo: TUnitInfo; out AComponentClass: TComponentClass;
   out LFMFilename: string; out AncestorClass: TComponentClass): TModalResult;
 { Possible results:
@@ -6515,7 +6571,7 @@ var
     CurUnitInfo:=Project1.UnitInfoWithFilename(UnitFilename);
     if (CurUnitInfo=nil) or (CurUnitInfo.Component=nil) then exit;
     // unit with loaded component found -> check if it is the right one
-    //DebugLn(['FindComponentClass unit with a component found CurUnitInfo=',CurUnitInfo.Filename,' ',dbgsName(CurUnitInfo.Component)]);
+    //DebugLn(['SearchComponentClass unit with a component found CurUnitInfo=',CurUnitInfo.Filename,' ',dbgsName(CurUnitInfo.Component)]);
     if SysUtils.CompareText(CurUnitInfo.Component.ClassName,AComponentClassName)<>0
     then exit;
     // component found (it was already loaded)
@@ -6542,13 +6598,14 @@ var
     if FoundComponentClass=nil then
     begin
       RegComp:=IDEComponentPalette.FindRegComponent(aClassName);
-      if RegComp<>nil then
+      if (RegComp<>nil) and
+      not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
         FoundComponentClass:=RegComp.ComponentClass;
     end;
     if FoundComponentClass=nil then
       FoundComponentClass:=FormEditor1.FindDesignerBaseClassByName(aClassName,true);
     if FoundComponentClass<>nil then begin
-      DebugLn(['FindComponentClass.TryRegisteredClasses found: ',FoundComponentClass.ClassName]);
+      DebugLn(['SearchComponentClass.TryRegisteredClasses found: ',FoundComponentClass.ClassName]);
       TheModalResult:=mrOk;
       Result:=true;
     end;
@@ -6594,7 +6651,7 @@ var
     TheModalResult:=LoadCodeBuffer(LFMCode,CurLFMFilename,[lbfCheckIfText],true);
     if TheModalResult<>mrOk then
     begin
-      debugln('FindComponentClass Failed loading ',CurLFMFilename);
+      DebugLn('SearchComponentClass Failed loading ',CurLFMFilename);
       exit;
     end;
     // read the LFM classname
@@ -6676,7 +6733,7 @@ var
     // parse interface current unit
     Code:=CodeToolBoss.LoadFile(AnUnitInfo.Filename,false,false);
     if Code=nil then begin
-      debugln(['FindComponentClass unable to load ',AnUnitInfo.Filename]);
+      DebugLn(['SearchComponentClass unable to load ',AnUnitInfo.Filename]);
       exit;
     end;
     if not CodeToolBoss.Explore(Code,Tool,false,true) then begin
@@ -6696,7 +6753,7 @@ var
           Node:=Tool.Tree.Root;
         Node:=FindTypeNode(Node,0);
         if Node=nil then begin
-          debugln('FindComponentClass Failed finding reference of ',AComponentClassName,' in ',Code.Filename);
+          DebugLn('SearchComponentClass Failed finding reference of ',AComponentClassName,' in ',Code.Filename);
           exit;
         end;
         if Node.Desc=ctnIdentifier then begin
@@ -6708,7 +6765,7 @@ var
                          fdfIgnoreCurContextNode];
           Params.SetIdentifier(Tool,@Tool.Src[Node.StartPos],nil);
           if not Tool.FindIdentifierInContext(Params) then begin
-            debugln(['FindComponentClass find declaration failed at ',Tool.CleanPosToStr(Node.StartPos,true)]);
+            DebugLn(['SearchComponentClass find declaration failed at ',Tool.CleanPosToStr(Node.StartPos,true)]);
             exit;
           end;
           NewNode:=Params.NewNode;
@@ -6734,7 +6791,7 @@ var
       if (NewNode.Desc<>ctnTypeDefinition)
       or (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then
       begin
-        debugln(['FindComponentClass ',AComponentClassName,' is not a class at ',NewTool.CleanPosToStr(NewNode.StartPos,true)]);
+        DebugLn(['SearchComponentClass ',AComponentClassName,' is not a class at ',NewTool.CleanPosToStr(NewNode.StartPos,true)]);
         exit;
       end;
       // find inheritance list
@@ -6742,7 +6799,7 @@ var
       while (InheritedNode<>nil) and (InheritedNode.Desc<>ctnClassInheritance) do
         InheritedNode:=InheritedNode.NextBrother;
       if (InheritedNode=nil) or (InheritedNode.FirstChild=nil) then begin
-        debugln(['FindComponentClass ',AComponentClassName,' is not a TComponent at ',NewTool.CleanPosToStr(NewNode.StartPos,true)]);
+        DebugLn(['SearchComponentClass ',AComponentClassName,' is not a TComponent at ',NewTool.CleanPosToStr(NewNode.StartPos,true)]);
         exit;
       end;
       StoreComponentClassDeclaration(NewTool.MainFilename);
@@ -6789,7 +6846,7 @@ var
     end;
     Code:=CodeToolBoss.LoadFile(UnitFilename,true,false);
     if Code=nil then begin
-      debugln(['FindComponentClass unable to load ',AnUnitInfo.Filename]);
+      DebugLn(['SearchComponentClass unable to load ',AnUnitInfo.Filename]);
       exit;
     end;
     if not CodeToolBoss.FindFormAncestor(Code,AComponentClassName,AncestorClassName,true) then
@@ -6827,13 +6884,13 @@ begin
 
   if not IsValidIdent(AComponentClassName) then
   begin
-    DebugLn(['FindComponentClass invalid component class name "',AComponentClassName,'"']);
+    DebugLn(['SearchComponentClass invalid component class name "',AComponentClassName,'"']);
     exit(mrCancel);
   end;
 
   // search component lfm
   {$ifdef VerboseFormEditor}
-  debugln('FindComponentClass START ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName);
+  DebugLn('SearchComponentClass START ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName);
   {$endif}
   // first search the resource of AnUnitInfo
   if AnUnitInfo<>nil then begin
@@ -6854,7 +6911,7 @@ begin
 
     {$IFDEF VerboseLFMSearch}
     if (UsedUnitFilenames=nil) or (UsedUnitFilenames.Count=0) then
-      debugln(['FindComponentClass unit has no main uses']);
+      DebugLn(['SearchComponentClass unit has no main uses']);
     {$ENDIF}
 
     if (UsedUnitFilenames<>nil) then begin
@@ -6996,7 +7053,7 @@ begin
   Quiet:=([ofProjectLoading,ofQuiet]*Flags<>[]);
   HideAbort:=not (ofProjectLoading in Flags);
 
-{  Will be checked in FindComponentClass()
+{  Will be checked in SearchComponentClass()
   if not IsValidIdent(AComponentClassName) then
   begin
     DebugLn(['LoadComponentDependencyHidden invalid component class name "',AComponentClassName,'"']);
@@ -7019,7 +7076,7 @@ begin
     debugln('LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,
       ' AComponentClass=',dbgsName(AComponentClass));
     {$endif}
-    Result:=FindComponentClass(AnUnitInfo,AComponentClassName,Quiet,
+    Result:=SearchComponentClass(AnUnitInfo,AComponentClassName,Quiet,
       ComponentUnitInfo,AComponentClass,LFMFilename,AncestorClass);
     { $if defined(VerboseFormEditor) or defined(VerboseLFMSearch)}
     debugln('LoadComponentDependencyHidden ',AnUnitInfo.Filename,' AComponentClassName=',AComponentClassName,

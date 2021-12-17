@@ -15,6 +15,10 @@
       <SessionStorage Value="InProjectDir"/>
       <Title Value="TestMasks"/>
       <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <VersionInfo>
       <Language Value=""/>
@@ -101,6 +105,12 @@
   <CompilerOptions>
     <Version Value="11"/>
     <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="testmasks"/>
+    </Target>
+    <SearchPaths>
+      <UnitOutputDirectory Value="units/$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
   </CompilerOptions>
   <Debugging>
     <Exceptions>

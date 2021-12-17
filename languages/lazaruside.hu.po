@@ -5028,8 +5028,8 @@ msgid "Ask name on create"
 msgstr "Kérjen nevet a létrehozáskor"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Egy jól használható beállítás Windows-on: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
+msgstr "Egy jól használható beállítás Windows-on: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -11529,10 +11529,6 @@ msgstr "Az átalakított fájlok maradjanak megnyitva a szerkesztőben"
 msgid "All project files will be open in editor after conversion"
 msgstr "A projekt minden fájlja meg lesz nyitva a szerkesztőben az átalakítás után"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Megtartás a telepítési listában"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Név megtartása"
@@ -12847,7 +12843,9 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Delphi unit Lazarus unittá alakítása ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+#, fuzzy
+#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "Bináris DFM átalakítása szöveges LFM fájllá + szintaxis ellenőrzés ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -17468,10 +17466,6 @@ msgstr "Tulajdonság eltávolítása: \"%s\""
 msgid "Remove %s files from package \"%s\"?"
 msgstr "%s fájl eltávolítása a(z) \"%s\" csomagból?"
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Eltávolítás a telepítési listáról"
-
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
 msgstr "Eltávolítás a projektből"
@@ -21042,6 +21036,10 @@ msgstr "Katalán"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Kínai"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

@@ -3,7 +3,8 @@ unit FpDbgRsp;
 interface
 
 uses
-  Classes, SysUtils, ssockets, DbgIntfDebuggerBase, DbgIntfBaseTypes;
+  Classes, SysUtils, ssockets, DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  FpDbgClasses;
 
 const
   // Possible signal numbers that can be expected over rsp
@@ -43,6 +44,31 @@ const
   SIGUNUSED  = 31;
 
 type
+  { TRemoteConfig }
+
+  TRemoteConfig = class(TDbgProcessConfig)
+  private
+    FHost: string;
+    FPort: integer;
+    FUploadBinary: boolean;
+    FAfterConnectMonitorCmds: TStringList;
+    FSkipSectionsList: TStringList;
+    FAfterUploadBreakZero: boolean;
+    FAfterUploadMonitorCmds: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Assign(Source: TPersistent); override;
+
+    property Host: string read FHost write FHost;
+    property Port: integer read FPort write FPort;
+    property UploadBinary: boolean read FUploadBinary write FUploadBinary;
+    property AfterConnectMonitorCmds: TStringList read FAfterConnectMonitorCmds write FAfterConnectMonitorCmds;
+    property SkipSectionsList: TStringList read FSkipSectionsList write FSkipSectionsList;
+    property AfterUploadBreakZero: boolean read FAfterUploadBreakZero write FAfterUploadBreakZero;
+    property AfterUploadMonitorCmds: TStringList read FAfterUploadMonitorCmds write FAfterUploadMonitorCmds;
+  end;
+
   TInitializedRegister = record
     Initialized: boolean;
     Value: qword; // sized to handle largest register, should truncate as required to smaller registers
@@ -54,6 +80,7 @@ type
   TStatusEvent = record
     signal: integer;
     coreID: integer;
+    processID: integer;
     threadID: integer;
     stopReason: TStopReason;
     watchPointAddress: qword;  // contains address which triggered watch point
@@ -67,28 +94,38 @@ type
     FState: integer;
     FStatusEvent: TStatusEvent;
     fCS: TRTLCriticalSection;
-    procedure FSetRegisterCacheSize(sz: cardinal);
-    procedure FResetStatusEvent;
-    // Blocking
-    function FWaitForData(): boolean; overload;
-    function FWaitForData(timeout_ms: integer): boolean; overload;
+    FFileName: string;
+    FOwner: TDbgProcess;
+    // Catch exceptions and store as socket errors
+    FSockErr: boolean;
+    FConfig: TRemoteConfig;
+    procedure SetRegisterCacheSize(sz: cardinal);
+    function WaitForData(timeout_ms: integer): integer; overload;
 
-    function FReadReply(out retval: string): boolean;
-    function FSendCommand(const cmd: string): boolean;
+    // Wrappers to catch exceptions and set SockErr
+    function SafeReadByte: byte;
+    function SafeWrite(const buffer; count : Longint): Longint;
+    procedure SafeWriteByte(b: Byte);
+
+    function ReadReply(out retval: string): boolean;
+    function SendCommand(const cmd: string): boolean;
     // Send command and wait for acknowledge
-    function FSendCommandOK(const cmd: string): boolean;
+    function SendCommandAck(const cmd: string): boolean;
     // Return reply to cmd
-    function FSendCmdWaitForReply(const cmd: string; out reply: string): boolean;
+    function SendCmdWaitForReply(const cmd: string; out reply: string): boolean;
 
     // Note that numbers are transmitted as hex characters in target endian sequence
     // For little endian targets this creates an endian swap if the string is parsed by Val
     // because a hex representation of a number is interpreted as big endian
-    function convertHexWithLittleEndianSwap(constref hextext: string; out value: qword): boolean;
+    function ConvertHexWithLittleEndianSwap(constref hextext: string; out value: qword): boolean;
+    function HexEncodeStr(s: string): string;
+    function HexDecodeStr(hexcode: string): string;
   public
-    constructor Create(const AHost: String; APort: Word; AHandler: TSocketHandler = Nil); Overload;
+    constructor Create(AFileName: string; AOwner: TDbgProcess; AConfig: TRemoteConfig); Overload;
     destructor Destroy; override;
     // Wait for async signal - blocking
     function WaitForSignal(out msg: string; out registers: TInitializedRegisters): integer;
+    procedure ResetStatusEvent;
 
     procedure Break();
     function Kill(): boolean;
@@ -96,7 +133,7 @@ type
     function MustReplyEmpty: boolean;
     function SetBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
     function DeleteBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
-    // TODO: no support thread ID or different address
+    // TODO: no support for thread ID or different address
     function Continue(): boolean;
     function SingleStep(): boolean;
 
@@ -110,19 +147,21 @@ type
     function WriteData(const AAdress: TDbgPtr;
       const ASize: Cardinal; const AData): Boolean;
 
+    function SendMonitorCmd(const s: string): boolean;
     // check state of target - ?
     function Init: integer;
 
     property State: integer read FState;
-    property RegisterCacheSize: cardinal write FSetRegisterCacheSize;
+    property RegisterCacheSize: cardinal write SetRegisterCacheSize;
     property lastStatusEvent: TStatusEvent read FStatusEvent;
+    property SockErr: boolean read FSockErr;
   end;
-
 
 implementation
 
 uses
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, StrUtils,
+  FpImgReaderBase,
   {$IFNDEF WINDOWS}BaseUnix, termio;
   {$ELSE}winsock2, windows;
   {$ENDIF}
@@ -130,12 +169,49 @@ uses
 var
   DBG_VERBOSE, DBG_WARNINGS, DBG_RSP: PLazLoggerLogGroup;
 
-procedure TRspConnection.FSetRegisterCacheSize(sz: cardinal);
+{ TRemoteConfig }
+
+constructor TRemoteConfig.Create;
+begin
+  FHost := 'localhost';
+  FPort := 1234;        // default port for qemu
+  FUploadBinary := false;
+  FAfterConnectMonitorCmds := TStringList.Create;
+  FSkipSectionsList := TStringList.Create;
+  FAfterUploadBreakZero := false;
+  FAfterUploadMonitorCmds := TStringList.Create;
+end;
+
+destructor TRemoteConfig.Destroy;
+begin
+  FreeAndNil(FAfterConnectMonitorCmds);
+  FreeAndNil(FSkipSectionsList);
+  FreeAndNil(FAfterUploadMonitorCmds);
+end;
+
+procedure TRemoteConfig.Assign(Source: TPersistent);
+var
+  ASource: TRemoteConfig;
+begin
+  if Assigned(Source) and (Source is TRemoteConfig) then
+  begin
+    ASource := TRemoteConfig(Source);
+    FHost := ASource.Host;
+    FPort := ASource.Port;
+    FUploadBinary := ASource.UploadBinary;
+    FAfterUploadBreakZero := ASource.AfterUploadBreakZero;
+    FAfterConnectMonitorCmds.Assign(ASource.AfterConnectMonitorCmds);
+    FSkipSectionsList.Assign(ASource.SkipSectionsList);
+    FAfterUploadMonitorCmds.Assign(ASource.AfterUploadMonitorCmds);
+  end;
+end;
+
+procedure TRspConnection.SetRegisterCacheSize(sz: cardinal);
 begin
   SetLength(FStatusEvent.registers, sz);
 end;
 
-procedure TRspConnection.FResetStatusEvent;
+procedure TRspConnection.ResetStatusEvent;
 var
   i: integer;
 begin
@@ -143,6 +219,7 @@ begin
   begin
     signal := 0;
     coreID := 0;
+    processID := 0;
     threadID := 0;
     stopReason := srNone;
     watchPointAddress := 0;
@@ -154,101 +231,100 @@ begin
   end;
 end;
 
-function TRspConnection.FWaitForData({timeout: integer}): boolean;
-{$if defined(unix) or defined(windows)}
-var
-  FDS: TFDSet;
-  r: integer;
-{$endif}
-begin
-  Result:=False;
-{$if defined(unix)}
-  FDS := Default(TFDSet);
-  fpFD_Zero(FDS);
-  fpFD_Set(self.Handle, FDS);
-  fpSelect(self.Handle + 1, @FDS, nil, nil, nil);
-  // FDS is set even if the socket has been closed.
-  // Read available data and if 0 data is available then socket must be closed/ or error
-  r := 0;
-  FpIOCtl(self.Handle, FIONREAD, @r);
-  Result := r > 0;
-{$elseif defined(windows)}
-  FDS := Default(TFDSet);
-  FD_Zero(FDS);
-  FD_Set(self.Handle, FDS);
-  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, nil) > SOCKET_ERROR;
-{$endif}
-end;
-
-function TRspConnection.FWaitForData(timeout_ms: integer): boolean;
+function TRspConnection.WaitForData(timeout_ms: integer): integer;
 {$if defined(unix) or defined(windows)}
 var
   FDS: TFDSet;
   TimeV: TTimeVal;
 {$endif}
 begin
-  Result:=False;
-//{$if defined(unix) or defined(windows)}
+  if SockErr then
+  begin
+    Result := -1;
+    exit;
+  end;
   TimeV.tv_usec := timeout_ms * 1000;  // 1 msec
   TimeV.tv_sec := 0;
-//{$endif}
-{$ifdef unix}
   FDS := Default(TFDSet);
+{$ifdef unix}
   fpFD_Zero(FDS);
   fpFD_Set(self.Handle, FDS);
-  Result := fpSelect(self.Handle + 1, @FDS, nil, nil, @TimeV) > 0;
+  Result := fpSelect(self.Handle + 1, @FDS, nil, nil, @TimeV);
 {$else}
 {$ifdef windows}
-  FDS := Default(TFDSet);
   FD_Zero(FDS);
   FD_Set(self.Handle, FDS);
-  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, @TimeV) > 0;
+  Result := winsock2.Select(self.Handle + 1, @FDS, nil, nil, @TimeV);
 {$endif}
 {$endif}
 end;
 
-function TRspConnection.FSendCommand(const cmd: string): boolean;
+function TRspConnection.SafeReadByte: byte;
+begin
+  try
+    Result := ReadByte;
+  except
+    FSockErr := true;
+    Result := 0;
+  end;
+end;
+
+function TRspConnection.SafeWrite(const buffer; count: Longint): Longint;
+begin
+  try
+    Result := Write(buffer, count);
+  except
+    FSockErr := true;
+    Result := 0;
+  end;
+end;
+
+procedure TRspConnection.SafeWriteByte(b: Byte);
+begin
+  try
+    WriteByte(b);
+  except
+    FSockErr := true;
+  end;
+end;
+
+function TRspConnection.SendCommand(const cmd: string): boolean;
 var
   checksum: byte;
   i, totalSent: integer;
   s: string;
 begin
+  Result := false;
+  if SockErr then exit;
   checksum := 0;
   for i := 1 to length(cmd) do
     checksum := byte(checksum + ord(cmd[i]));
 
   s := '$'+cmd+'#'+IntToHex(checksum, 2);
-  totalSent := Write(s[1], length(s));
-
-  // Debugging
-  //system.WriteLn(s);
+  totalSent := SafeWrite(s[1], length(s));
 
   result := (totalSent = length(s));
   if not result then
-  begin
-    //WriteLn('* FSendRspCommand error');
     DebugLn(DBG_WARNINGS, ['Warning: TRspConnection.FSendRspCommand error.'])
-  end
   else
-  begin
     DebugLn(DBG_RSP, ['RSP -> ', cmd]);
-  end;
 end;
 
-function TRspConnection.FSendCommandOK(const cmd: string): boolean;
+function TRspConnection.SendCommandAck(const cmd: string): boolean;
 var
   c: char;
   retryCount: integer;
 begin
   result := false;
+  if SockErr then exit;
   retryCount := 0;
 
   repeat
-    if FSendCommand(cmd) then
+    if SendCommand(cmd) then
     begin
       // now check if target returned error, resend ('-') or ACK ('+')
       // No support for ‘QStartNoAckMode’, i.e. always expect a -/+
-      c := char(ReadByte);
+      c := char(SafeReadByte);
       result := c = '+';
       if not result then
         inc(retryCount);
@@ -256,110 +332,123 @@ begin
     else
       inc(retryCount);
   // Abort this command if no ACK after 5 attempts
-  until result or (retryCount > 5);
+  until result or (retryCount > 5) or SockErr;
 end;
 
-function TRspConnection.FReadReply(out retval: string): boolean;
+function TRspConnection.ReadReply(out retval: string): boolean;
 const failcountmax = 1000;
 var
   c: char;
-  s: string;
   i: integer;
   cksum, calcSum: byte;
+  outputPacket: boolean;
 begin
-  i := 0;
-  s := '';
-  //IOTimeout := 10;  // sometimes an empty response needs to be swallowed to
-  repeat
-    c := chr(ReadByte);
-    inc(i);
-    s := s + c;
-  until (c = '$') or (i = failcountmax);  // exit loop after start or count expired
+  Result := false;
+  if SockErr then exit;
 
-  if c <> '$' then
-  begin
-    //WriteLn('* Timeout waiting for RSP reply');
-    DebugLn(DBG_WARNINGS, ['Warning: Timeout waiting for RSP reply']);
-    result := false;
+  repeat  // Outer loop runs until no more "O" packets received
+    i := 0;
     retval := '';
-    exit;
-  end
-  else if i > 1 then
-  begin
-    //WriteLn('* Discarding data before start of message: ', s);
-    DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', s]);
-  end;
+    repeat
+      c := chr(SafeReadByte);
+      inc(i);
+      retval := retval + c;
+    until (c = '$') or (i = failcountmax) or SockErr;  // exit loop after start or count expired
 
-  c := chr(ReadByte);
-  s := '';
-  calcSum := 0;
-  while c <> '#' do
-  begin
-    calcSum := byte(calcSum+byte(c));
-
-    if c=#$7D then // escape marker, unescape data
+    if c <> '$' then
     begin
-      c := char(ReadByte);
+      DebugLn(DBG_WARNINGS, ['Warning: Timeout waiting for RSP reply']);
+      result := false;
+      retval := '';
+      exit;
+    end
+    else if i > 1 then
+      DebugLn(DBG_WARNINGS, ['Warning: Discarding unexpected data before start of new message', retval])
+    else if SockErr then
+      DebugLn(DBG_WARNINGS, ['Warning: socket error.']);
 
-      // Something weird happened
-      if c = '#' then
+    c := chr(SafeReadByte);
+    retval := '';
+    calcSum := 0;
+    while c <> '#' do
+    begin
+      calcSum := byte(calcSum+byte(c));
+
+      if c=#$7D then // escape marker, unescape data
       begin
-        //WriteLn('* Received end of packet marker in escaped sequence: ', c);
-        DebugLn(DBG_WARNINGS, ['Warning: Received end of packet marker in escaped sequence: ', c]);
-        break;
+        c := char(SafeReadByte);
+
+        // Something weird happened
+        if c = '#' then
+        begin
+          DebugLn(DBG_WARNINGS, ['Warning: Received end of packet marker in escaped sequence: ', c]);
+          break;
+        end;
+
+        calcSum := byte(calcSum + byte(c));
+
+        c := char(byte(c) xor $20);
       end;
 
-      calcSum := byte(calcSum + byte(c));
-
-      c := char(byte(c) xor $20);
+      retval := retval + c;
+      c := char(SafeReadByte);
     end;
 
-    s := s + c;
-    c := char(ReadByte);
-  end;
+    cksum := StrToInt('$' + char(SafeReadByte) + char(SafeReadByte));
+    if not (calcSum = cksum) then
+      DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', retval]);
 
-  cksum := StrToInt('$' + char(ReadByte) + char(ReadByte));
-
-  // Ignore checksum for now
-  WriteByte(byte('+'));
-  result := true;
-  retval := s;
-  if not (calcSum = cksum) then
-  begin
-    //WriteLn('* Reply packet with invalid checksum: ', s);
-    DebugLn(DBG_WARNINGS, ['Warning: Reply packet with invalid checksum: ', s]);
-  end;
-
-  //WriteLn('RSP <- ', retval);
+    // Check if this packet is a console output packet, which isn't acknowledged
+    // Todo: display output somewhere
+    if (length(retval) > 2) and (retval[1] = 'O') and (retval[2] <> 'K') then
+    begin
+      outputPacket := True;
+      // Output should be hex encoded, length should be odd
+      if Odd(length(retval)) then
+      begin
+        delete(retval, 1, 1);
+        DebugLn(DBG_RSP, ['RSP <- <Console output> ', HexDecodeStr(retval)]);
+      end
+      else
+        DebugLn(DBG_WARNINGS, ['RSP <- <Possible unencoded output>: ', retval]);
+    end
+    else
+    begin
+      outputPacket := False;
+    end;
+  until not outputPacket;
+  SafeWriteByte(byte('+'));
+  result := not SockErr;
   DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
 
-function TRspConnection.FSendCmdWaitForReply(const cmd: string; out reply: string
+function TRspConnection.SendCmdWaitForReply(const cmd: string; out reply: string
   ): boolean;
 var
   retryCount: integer;
 begin
   reply := '';
+  if SockErr then exit;
   retryCount := 0;
 
-  if FSendCommandOK(cmd) then
+  if SendCommandAck(cmd) then
   begin
     // Read reply, with retry if no success
     repeat
-      result := FReadReply(reply);
+      result := ReadReply(reply);
       if not result then
       begin
         inc(retryCount);
-        WriteByte(ord('-'));
+        SafeWriteByte(ord('-'));
       end;
-    until result or (retryCount > 5);
+    until result or (retryCount > 5) or SockErr;
   end;
 
   if retryCount > 5 then
     DebugLn(DBG_WARNINGS, ['Warning: Retries exceeded in TRspConnection.FSendCmdWaitForReply for cmd: ', cmd]);
 end;
 
-function TRspConnection.convertHexWithLittleEndianSwap(constref
+function TRspConnection.ConvertHexWithLittleEndianSwap(constref
   hextext: string; out value: qword): boolean;
 var
   err: integer;
@@ -369,10 +458,10 @@ begin
   begin
     result := true;
     case length(hextext) of
-      2: ; // no conversion required
-      4:  value := SwapEndian(word(value));
-      8:  value := SwapEndian(dword(value));
-      16: value := SwapEndian(value);
+      1,2: ; // no conversion required
+      3,4:  value := SwapEndian(word(value));
+      5..8:  value := SwapEndian(dword(value));
+      9..16: value := SwapEndian(value);
       else
       begin
         result := false;
@@ -384,11 +473,39 @@ begin
     result := false;
 end;
 
+function TRspConnection.HexEncodeStr(s: string): string;
+var
+  i: integer;
+  tmp: string;
+begin
+  setlength(Result, length(s)*2);
+  for i := 1 to length(s) do
+  begin
+    tmp := HexStr(ord(s[i]), 2);
+    Result[2*i - 1] := tmp[1];
+    Result[2*i] := tmp[2];
+  end;
+end;
+
+function TRspConnection.HexDecodeStr(hexcode: string): string;
+var
+  i: integer;
+  s: string;
+begin
+  SetLength(Result, length(hexCode) div 2);
+  for i := 1 to length(Result) do
+  begin
+    s := '$' + hexCode[2*i-1] + hexCode[2*i];
+    result[i] := char(StrToInt(s));
+  end;
+end;
+
 procedure TRspConnection.Break();
 begin
   EnterCriticalSection(fCS);
   try
-    WriteByte(3);  // Ctrl-C
+    SafeWriteByte(3);  // Ctrl-C
+    DebugLn(DBG_RSP, ['RSP -> <Ctrl+C>']);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -400,16 +517,17 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCommand('k');
+    result := SendCommand('k');
     // Swallow the last ack if send
-    result := FWaitForData(1000);
+    if Result and not SockErr then
+      result := WaitForData(1000) > 0;
   finally
     LeaveCriticalSection(fCS);
   end;
 
   if result then
   begin
-    c := char(ReadByte);
+    c := char(SafeReadByte);
     Result := c = '+';
   end;
 end;
@@ -420,19 +538,29 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply('D', reply);
+    result := SendCmdWaitForReply('D', reply);
   finally
     LeaveCriticalSection(fCS);
   end;
-  result := pos('OK', reply) = 1;
+  result := not(SockErr) and (pos('OK', reply) = 1);
 end;
 
-constructor TRspConnection.Create(const AHost: String; APort: Word;
-  AHandler: TSocketHandler);
+constructor TRspConnection.Create(AFileName: string; AOwner: TDbgProcess;
+  AConfig: TRemoteConfig);
+var
+  FSocketHandler: TSocketHandler;
 begin
-  inherited Create(AHost, APort);
-  //self.IOTimeout := 1000;  // socket read timeout = 1000 ms
+  // Just copy reference to AConfig
+  FConfig := AConfig;
+  { Create a socket handler, so that TInetSocket.Create call doesn't automatically connect.
+    This can raise an exception when connection fails.
+    The FSocketHandler instance will be managed by TInetSocket. }
+  FSocketHandler := TSocketHandler.Create;
+  inherited Create(FConfig.Host, FConfig.Port, FSocketHandler);
   InitCriticalSection(fCS);
+  FFileName := AFileName;
+  FOwner := AOwner;
+  FSockErr := false;
 end;
 
 destructor TRspConnection.Destroy;
@@ -445,9 +573,9 @@ function TRspConnection.WaitForSignal(out msg: string; out
   registers: TInitializedRegisters): integer;
 var
   res: boolean;
-  startIndex, colonIndex, semicolonIndex: integer;
+  startIndex, colonIndex, semicolonIndex, i, ID: integer;
   tmp, tmp2: qword;
-  part1, part2: string;
+  part1, part2, s: string;
 begin
   result := 0;
   res := false;
@@ -455,16 +583,19 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    // False if no data available, e.g. socket is closed
-    if not FWaitForData() then
+    // -1 if no data could be read, e.g. socket is closed
+    // 0 if timeout.  Use timeout so that asynchronous evens such as break can also be processed
+    i := WaitForData(500);
+    if i <= 0 then
     begin
       msg := '';
-      result := SIGHUP;
+      if i < 0 then
+        result := SIGHUP;
       exit;
     end;
 
     try
-      res := FReadReply(msg);
+      res := ReadReply(msg);
     except
       on E: Exception do
         DebugLn(DBG_WARNINGS, ['Warning: WaitForSignal exception: ', E.Message]);
@@ -478,7 +609,7 @@ begin
     if (length(msg) > 2) and (msg[1] in ['S', 'T']) then
     begin
       try
-        FResetStatusEvent;
+        ResetStatusEvent;
         result := StrToInt('$' + copy(msg, 2, 2));
         FState := result;
         FStatusEvent.signal := result;
@@ -508,7 +639,8 @@ begin
                   'rwatch': FStatusEvent.stopReason := srReadWatchPoint;
                   'awatch': FStatusEvent.stopReason := srAnyWatchPoint;
                 end;
-                if convertHexWithLittleEndianSwap(part2, tmp) then
+                Val('$'+part2, tmp, i);
+                if i = 0 then
                   FStatusEvent.watchPointAddress := tmp
                 else
                   DebugLn(DBG_WARNINGS, format('Invalid value received for %s: %s ', [part1, part2]));
@@ -521,10 +653,56 @@ begin
               begin
                 FStatusEvent.stopReason := srHWBreakPoint;
               end;
-              else // catch valid hex numbers - will be register info
+              'thread':
+              begin
+                if length(part2) > 0 then
+                begin
+                  // ... optionally include both process and thread ID fields, as ‘ppid.tid’.
+                  if (part2[1] = 'p') then
+                  begin
+                    i := pos('.', part2);
+                    if i > 2 then
+                    begin
+                      s := copy(part2, 2, i-1);
+                      if ConvertHexWithLittleEndianSwap(s, tmp) then
+                        FStatusEvent.processID := tmp
+                      else
+                      begin
+                        FStatusEvent.processID := 0;
+                        DebugLn(DBG_WARNINGS, format('Invalid process ID prefix: [%s]', [s]));
+                      end;
+
+                      s := copy(part2, i+1, 255);
+                      if ConvertHexWithLittleEndianSwap(s, tmp) then
+                        FStatusEvent.threadID := tmp
+                      else
+                      begin
+                        FStatusEvent.threadID := 0;
+                        DebugLn(DBG_WARNINGS, format('Invalid thread ID postfix: [%s]', [s]));
+                      end;
+                    end
+                    else
+                      DebugLn(DBG_WARNINGS, format('Not enough text for a process ID: [%s]', [part2]));
+                  end
+                  else
+                  // Expect only thread ID
+                  begin
+                    if ConvertHexWithLittleEndianSwap(part2, tmp) then
+                      FStatusEvent.threadID := tmp
+                    else
+                    begin
+                      FStatusEvent.threadID := 0;
+                      DebugLn(DBG_WARNINGS, format('Invalid thread ID postfix: [%s]', [part2]));
+                    end;
+                  end;
+                end
+                else
+                  DebugLn(DBG_WARNINGS, 'Stop reason "thread" with no thread data');
+              end;
+            else // catch valid hex numbers - will be register info
               begin
                 // check if part1 is a number, this should then be a register index
-                if convertHexWithLittleEndianSwap(part1, tmp) and convertHexWithLittleEndianSwap(part2, tmp2) then
+                if ConvertHexWithLittleEndianSwap(part1, tmp) and ConvertHexWithLittleEndianSwap(part2, tmp2) then
                 begin
                   if tmp < length(FStatusEvent.registers) then
                   begin
@@ -532,11 +710,11 @@ begin
                     FStatusEvent.registers[tmp].Initialized := true;
                   end
                   else
-                    DebugLn(DBG_WARNINGS, format('Register index exceeds total number of registers (%d > %d] ',
+                    DebugLn(DBG_WARNINGS, format('Register index exceeds total number of registers (%d > %d)',
                             [tmp, length(FStatusEvent.registers)]));
                 end
                 else
-                  DebugLn(DBG_WARNINGS, format('Ignoring stop reply  pair [%s:%s] ', [part1, part2]));
+                  DebugLn(DBG_WARNINGS, format('Ignoring stop reply pair [%s:%s] ', [part1, part2]));
               end;
             end;
             startIndex := semicolonIndex + 1;
@@ -557,11 +735,11 @@ var
 begin
   EnterCriticalSection(fCS);
   try
-    FSendCmdWaitForReply('vMustReplyEmpty', reply);
+    SendCmdWaitForReply('vMustReplyEmpty', reply);
   finally
     LeaveCriticalSection(fCS);
   end;
-  result := reply = '';
+  result := not(SockErr) and (reply = '');
   if not result then
     DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
 end;
@@ -582,7 +760,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply);
+    result := SendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -606,7 +784,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply);
+    result := SendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -619,7 +797,7 @@ begin
   DebugLn(DBG_VERBOSE, ['TRspConnection.Continue() called']);
   EnterCriticalSection(fCS);
   try
-    result := FSendCommandOK('c');
+    result := SendCommandAck('c') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -631,7 +809,7 @@ function TRspConnection.SingleStep(): boolean;
 begin
   EnterCriticalSection(fCS);
   try
-    result := FSendCommandOK('s');
+    result := SendCommandAck('s') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -647,13 +825,13 @@ begin
   cmd := 'p'+IntToHex(ind, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply);
+    result := SendCmdWaitForReply(cmd, reply) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
   if result then
   begin
-    result := convertHexWithLittleEndianSwap(reply, tmp);
+    result := ConvertHexWithLittleEndianSwap(reply, tmp);
     AVal := PtrUInt(tmp);
   end;
 
@@ -668,7 +846,7 @@ begin
   cmd := 'P'+IntToHex(ind, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+    result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK');
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -687,14 +865,14 @@ begin
   // Normal receive error, or an error response of the form Exx
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
+    result := SendCmdWaitForReply('g', reply) and ((length(reply) > 4) and (reply[1] <> 'E'))
       and (length(reply) = 2*sz);
   finally
     LeaveCriticalSection(fCS);
   end;
+  Result := Result and not(SockErr);
   if Result then
   begin
-    //WriteLn('Read registers reply: ', reply);
     for i := 0 to sz-1 do
       b[i] := StrToInt('$'+reply[2*i+1]+reply[2*i+2]);
     result := true;
@@ -730,7 +908,7 @@ begin
   // Normal receive error, or an error number of the form Exx
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+    result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -750,7 +928,7 @@ begin
   cmd := 'm'+IntToHex(AAddress, 2)+',' + IntToHex(ASize, 2);
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2);
+    result := SendCmdWaitForReply(cmd, reply) and (length(reply) = ASize*2) and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -791,7 +969,7 @@ begin
 
   EnterCriticalSection(fCS);
   try
-    result := FSendCmdWaitForReply(cmd, reply) and (reply = 'OK');
+    result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK') and not(SockErr);
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -799,22 +977,114 @@ begin
     DebugLn(DBG_WARNINGS, ['Warning: "M" command returned unexpected result: ', reply]);
 end;
 
+function TRspConnection.SendMonitorCmd(const s: string): boolean;
+var
+  cmdstr, reply: string;
+begin
+  cmdstr := 'qRcmd,' + HexEncodeStr(s);
+  result := SendCmdWaitForReply(cmdstr, reply) and not(SockErr);
+
+  if reply = '' then
+    DebugLn(DBG_RSP, ['[Monitor '+s+'] : "qRcmd" not recognized by gdbserver.'])
+  else
+  begin
+    // Check if reply is not hex encoded, else decode reply
+    if Result and not((reply = 'OK') or ((length(reply) = 3) and (reply[1] = 'E'))) then
+      reply := HexDecodeStr(reply);
+
+    DebugLn(DBG_RSP, ['[Monitor '+s+'] reply: ', reply]);
+  end;
+end;
+
 function TRspConnection.Init: integer;
 var
   reply: string;
   intRegs: TInitializedRegisters;
   res: boolean;
+  pSection: PDbgImageSection;
+  dataStart: int64;
+  reloadData: boolean = false;
+  i: integer;
 begin
   result := 0;
   reply := '';
   EnterCriticalSection(fCS);
   try
-    if not FSendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') then
+    if not SendCmdWaitForReply('vMustReplyEmpty', reply) or (reply <> '') or SockErr then
     begin
       DebugLn(DBG_WARNINGS, ['Warning: vMustReplyEmpty command returned unexpected result: ', reply]);
       exit;
     end;
-    res := FSendCommand('?');
+
+    // Fancy stuff - load exe & sections, run monitor cmds etc
+    if assigned(FConfig.AfterConnectMonitorCmds) and (FConfig.AfterConnectMonitorCmds.Count > 0) then
+    begin
+      for i := 0 to FConfig.AfterConnectMonitorCmds.Count-1 do
+        SendMonitorCmd(FConfig.AfterConnectMonitorCmds[i]);
+    end;
+
+    // Start with AVR logic
+    // If more targets are supported, move this to target specific debugger class
+    if FConfig.UploadBinary and (FFileName <> '') then
+    begin
+      // Ensure loader is initialized
+      if not Assigned(FOwner.DbgInfo) then
+        FOwner.LoadInfo;
+      datastart := -1;
+      i := -1;
+      repeat
+        inc(i);
+        pSection := FOwner.LoaderList[0].SectionByID[i];
+
+        if (pSection <> nil) and (pSection^.Size > 0) and (pSection^.IsLoadable) then
+        begin
+          if Assigned(FConfig.SkipSectionsList) and
+             (FConfig.SkipSectionsList.IndexOf(pSection^.Name) < 0) then
+          begin
+            // .data section should be programmed straight after .text for AVR
+            // Require tracking because sections are sorted alphabetically,
+            // so .data is encountered before .text
+            if (pSection^.Name = '.data') then
+            begin
+              // Data can only be loaded after text, since the end address of text+1 is the start of data in flash
+              if (dataStart < 0) then
+              begin
+                reloadData := true;
+                system.Continue;
+              end
+              else
+                WriteData(dataStart, pSection^.Size, pSection^.RawData^);
+            end
+            else
+            begin
+              WriteData(pSection^.VirtualAddress, pSection^.Size, pSection^.RawData^);
+              if pSection^.Name = '.text' then
+                dataStart := pSection^.Size;
+            end;
+          end;
+        end;
+      until (pSection = nil);
+
+      // reloadData will only be set if it is not in the skipped sections list
+      if reloadData and (dataStart >= 0) then
+      begin
+        pSection := FOwner.LoaderList[0].Section['.data'];
+        WriteData(dataStart, pSection^.Size, pSection^.RawData^);
+      end;
+    end;
+
+    // Hack to finish initializing atbackend agent
+    if FConfig.AfterUploadBreakZero then
+      SetBreakWatchPoint(0, wkpExec);  // Todo: check if different address is required
+
+    if assigned(FConfig.AfterUploadMonitorCmds) and (FConfig.AfterUploadMonitorCmds.Count > 0) then
+    begin
+      for i := 0 to FConfig.AfterUploadMonitorCmds.Count-1 do
+        SendMonitorCmd(FConfig.AfterUploadMonitorCmds[i]);
+    end;
+
+    // Must be last init command, after init the debug loop waits for the response in WaitForSignal
+    res := SendCommandAck('?');
   finally
     LeaveCriticalSection(fCS);
   end;
@@ -830,5 +1100,6 @@ initialization
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
   DBG_RSP := DebugLogger.FindOrRegisterLogGroup('DBG_RSP' {$IFDEF DBG_RSP} , True {$ENDIF} );
+
 end.
 

@@ -6,6 +6,7 @@
 **/*.patch
 **/units/
 **/lib/
+**/backup/
 **/*;[1-9]
 **/*.~*
 **/*.*~
@@ -27,3 +28,4 @@
 /startlazarus
 ide/revision.inc
 /config
+link*.res

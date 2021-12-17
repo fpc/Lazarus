@@ -44,8 +44,8 @@ object Form1: TForm1
       end
       object Panel1: TPanel
         Left = 4
-        Height = 99
-        Top = 400
+        Height = 118
+        Top = 381
         Width = 860
         Align = alBottom
         AutoSize = True
@@ -54,7 +54,7 @@ object Form1: TForm1
         BorderSpacing.Right = 8
         BorderSpacing.Bottom = 8
         BevelOuter = bvNone
-        ClientHeight = 99
+        ClientHeight = 118
         ClientWidth = 860
         TabOrder = 2
         object rgSnapMode: TRadioGroup
@@ -94,7 +94,7 @@ object Form1: TForm1
           Left = 233
           Height = 99
           Top = 0
-          Width = 98
+          Width = 97
           AutoFill = True
           AutoSize = True
           BorderSpacing.Left = 16
@@ -109,7 +109,7 @@ object Form1: TForm1
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 1
           ClientHeight = 79
-          ClientWidth = 94
+          ClientWidth = 93
           ItemIndex = 1
           Items.Strings = (
             'tdmDefault'
@@ -123,10 +123,10 @@ object Form1: TForm1
           AnchorSideLeft.Control = cbShowLabel
           AnchorSideTop.Control = cbShowLabel
           AnchorSideTop.Side = asrBottom
-          Left = 471
+          Left = 470
           Height = 19
           Top = 23
-          Width = 82
+          Width = 80
           Caption = 'Rotate label'
           Checked = True
           OnClick = cbRotateLabelClick
@@ -137,10 +137,10 @@ object Form1: TForm1
           AnchorSideLeft.Control = rgDataPointMode
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
-          Left = 471
+          Left = 470
           Height = 19
           Top = 4
-          Width = 77
+          Width = 75
           BorderSpacing.Left = 16
           BorderSpacing.Top = 4
           Caption = 'Show label'
@@ -153,7 +153,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = clrBackgroundColor
           AnchorSideTop.Control = clrBackgroundColor
           AnchorSideTop.Side = asrBottom
-          Left = 729
+          Left = 726
           Height = 25
           Top = 31
           Width = 78
@@ -171,7 +171,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = clrBackgroundColor
           AnchorSideTop.Control = clrPenColor
           AnchorSideTop.Side = asrBottom
-          Left = 729
+          Left = 726
           Height = 25
           Top = 60
           Width = 78
@@ -189,7 +189,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = edEndbarLength
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edEndbarLength
-          Left = 729
+          Left = 726
           Height = 25
           Top = 2
           Width = 78
@@ -208,7 +208,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = cbShowLabel
           AnchorSideTop.Side = asrCenter
-          Left = 671
+          Left = 668
           Height = 23
           Top = 2
           Width = 50
@@ -223,7 +223,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edEndbarLength
           AnchorSideTop.Side = asrCenter
-          Left = 593
+          Left = 590
           Height = 15
           Top = 6
           Width = 74
@@ -234,10 +234,10 @@ object Form1: TForm1
           AnchorSideLeft.Control = cbShowLabel
           AnchorSideTop.Control = cbFlipLabel
           AnchorSideTop.Side = asrBottom
-          Left = 471
+          Left = 470
           Height = 19
           Top = 61
-          Width = 114
+          Width = 112
           Caption = 'Hide at mouse up'
           OnClick = cbHideClick
           TabOrder = 5
@@ -280,7 +280,7 @@ object Form1: TForm1
           AnchorSideRight.Side = asrBottom
           AnchorSideBottom.Control = cbHide
           AnchorSideBottom.Side = asrBottom
-          Left = 593
+          Left = 590
           Height = 48
           Top = 32
           Width = 128
@@ -296,7 +296,7 @@ object Form1: TForm1
           AnchorSideLeft.Control = rgDrawingMode
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
-          Left = 347
+          Left = 346
           Height = 99
           Top = 0
           Width = 108
@@ -328,10 +328,10 @@ object Form1: TForm1
           AnchorSideLeft.Control = cbShowLabel
           AnchorSideTop.Control = cbRotateLabel
           AnchorSideTop.Side = asrBottom
-          Left = 471
+          Left = 470
           Height = 19
           Top = 42
-          Width = 67
+          Width = 65
           Caption = 'Flip label'
           OnClick = cbFlipLabelClick
           TabOrder = 9
@@ -340,18 +340,32 @@ object Form1: TForm1
           AnchorSideLeft.Control = cbShowLabel
           AnchorSideTop.Control = cbHide
           AnchorSideTop.Side = asrBottom
-          Left = 471
+          Left = 470
           Height = 19
           Top = 80
-          Width = 65
+          Width = 63
           Caption = 'Clipping'
           OnChange = cbClippingChange
           TabOrder = 10
         end
+        object cbTransparency: TCheckBox
+          AnchorSideLeft.Control = cbShowLabel
+          AnchorSideTop.Control = cbClipping
+          AnchorSideTop.Side = asrBottom
+          Left = 470
+          Height = 19
+          Top = 99
+          Width = 108
+          Caption = 'Transparent label'
+          Checked = True
+          OnChange = cbTransparencyChange
+          State = cbChecked
+          TabOrder = 11
+        end
       end
       object Chart1: TChart
         Left = 0
-        Height = 392
+        Height = 373
         Top = 0
         Width = 872
         AutoFocus = True
@@ -447,7 +461,7 @@ object Form1: TForm1
           Left = 9
           Height = 53
           Top = 9
-          Width = 373
+          Width = 367
           AutoFill = False
           AutoSize = True
           BorderSpacing.Around = 8
@@ -461,7 +475,7 @@ object Form1: TForm1
           ChildSizing.Layout = cclLeftToRightThenTopToBottom
           ChildSizing.ControlsPerLine = 3
           ClientHeight = 33
-          ClientWidth = 369
+          ClientWidth = 363
           Columns = 3
           ItemIndex = 0
           Items.Strings = (
@@ -477,7 +491,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = rgFitParamCount
           AnchorSideTop.Side = asrCenter
-          Left = 414
+          Left = 408
           Height = 15
           Top = 28
           Width = 26

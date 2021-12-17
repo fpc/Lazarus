@@ -114,7 +114,7 @@ class procedure TWin32WSCustomImageListResolution.AddData(AListHandle: TLCLIntfH
     DC: HDC;
     DataCount, DataSize: Integer;
   begin
-    FillChar(Info, SizeOf(Info), 0);
+    Info := Default(Windows.TBitmapInfo);
     Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
     Info.bmiHeader.biWidth := AWidth;
     Info.bmiHeader.biHeight := -AHeight; // request top down
@@ -157,7 +157,7 @@ class procedure TWin32WSCustomImageListResolution.AddData(AListHandle: TLCLIntfH
     DC: HDC;
     DataCount, DataSize, x, y, MaskStride: Integer;
   begin
-    FillChar(Info, SizeOf(Info), 0);
+    Info := Default(Windows.TBitmapInfo);
     Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
     Info.bmiHeader.biWidth := AWidth;
     Info.bmiHeader.biHeight := -AHeight; // request top down
@@ -316,7 +316,7 @@ begin
   if (ADrawEffect = gdeDisabled) and HasComCtl6 then
   begin
     // if it is manifested exe then use winXP algoriphm of gray painting
-    FillChar(DrawParams, SizeOf(DrawParams), 0);
+    DrawParams := Default(TImageListDrawParams);
     DrawParams.cbSize := SizeOf(DrawParams);
     DrawParams.himl := AList.Reference._Handle;
     DrawParams.i := AIndex;

@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.0.4\n"
+"X-Generator: Poedit 3.0\n"
 
 #: todoliststrconsts.dlgfiltercsv
 msgid "CSV files"
@@ -26,18 +26,21 @@ msgid ""
 "Is it a valid source file?\n"
 "The rest of the file has been skipped."
 msgstr ""
+"Échec de la recherche des éléments à faire dans le fichier %0:s.\n"
+"Est-ce un fichier source valide ?\n"
+"Le reste du fichier a été ignoré."
 
 #: todoliststrconsts.excinvalidparsestate
 msgid "Invalid parse state."
-msgstr ""
+msgstr "État d'analyse non valide."
 
 #: todoliststrconsts.lisalternatetokens
 msgid "Use Alternate Tokens"
-msgstr ""
+msgstr "Utiliser des éléments alternatifs"
 
 #: todoliststrconsts.lisalternatetokenshint
 msgid "Standard token is #todo etc. Alternate is without the #"
-msgstr ""
+msgstr "L'élément standard est #todo etc. L'alternative est sans le #"
 
 #: todoliststrconsts.lisctinsertmacro
 msgid "Insert Macro"
@@ -45,31 +48,31 @@ msgstr "Insérer une macro"
 
 #: todoliststrconsts.lisfilteritem0
 msgid "All"
-msgstr ""
+msgstr "Tout"
 
 #: todoliststrconsts.lisfilteritem1
 msgid "ToDo Only"
-msgstr ""
+msgstr "À faire uniquement"
 
 #: todoliststrconsts.lisfilteritem2
 msgid "Done Only"
-msgstr ""
+msgstr "Terminés seulement"
 
 #: todoliststrconsts.lisfilteritem3
 msgid "Note Only"
-msgstr ""
+msgstr "Seulement les notes"
 
 #: todoliststrconsts.lisfilteritem4
 msgid "ToDo & Done"
-msgstr ""
+msgstr "À faire et terminés"
 
 #: todoliststrconsts.lisfilteritem5
 msgid "ToDo & Note"
-msgstr ""
+msgstr "À faire et notes"
 
 #: todoliststrconsts.lisfilteritem6
 msgid "Done & Note"
-msgstr ""
+msgstr "Terminés et notes"
 
 #: todoliststrconsts.lishelp
 msgid "Help"
@@ -86,7 +89,7 @@ msgstr "Paquets"
 #: todoliststrconsts.lispackageshint
 #, object-pascal-format
 msgid "Extends \"%s\" and \"%s\" options by units from used packages"
-msgstr "Étendre \"%s\" et les options \"%s\" par unités à partir de paquets utilisés "
+msgstr "Étendre \"%s\" et les options \"%s\" par unités à partir de paquets utilisés"
 
 #: todoliststrconsts.lispkgfiletypetext
 msgid "Text"
@@ -94,11 +97,11 @@ msgstr "Texte"
 
 #: todoliststrconsts.lisshowwhat
 msgid "Show"
-msgstr ""
+msgstr "Afficher"
 
 #: todoliststrconsts.lisshowwhathint
 msgid "Select which ToDo types to list"
-msgstr ""
+msgstr "Sélectionner les types de tâches à lister"
 
 #: todoliststrconsts.lissourceeditor
 msgid "Editor"
@@ -110,10 +113,8 @@ msgid "Add units in source editor"
 msgstr "Ajouter les unités de l'éditeur de source"
 
 #: todoliststrconsts.listddinserttodo
-#, fuzzy
-#| msgid "Insert ToDo"
 msgid "Insert a ToDo/Done/Note"
-msgstr "Insérer une note dans le pense-bête (\"ToDo\")"
+msgstr "Insérer une tâche à faire, une tâche terminée, une note"
 
 #: todoliststrconsts.listodoexport
 msgid "Export"
@@ -169,11 +170,11 @@ msgstr "Priorité"
 
 #: todoliststrconsts.listodoltype
 msgid "Type"
-msgstr ""
+msgstr "Type"
 
 #: todoliststrconsts.listodotodotype
 msgid "ToDo type"
-msgstr ""
+msgstr "Type de tâche à faire"
 
 #: todoliststrconsts.listodoused
 msgid "Used"
@@ -193,5 +194,5 @@ msgstr "Afficher le pense-bête"
 
 #: todoliststrconsts.rsexporttodoit
 msgid "Export ToDo items to CSV"
-msgstr ""
+msgstr "Exporter les éléments à faire vers CSV"
 

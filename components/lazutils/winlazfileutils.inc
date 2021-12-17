@@ -204,7 +204,7 @@ begin
     if SHGetFolderPathW(0,ID or CSIDL_FLAG_CREATE,0,0,@APATH[0]) = S_OK then
     begin
       Len := StrLen(APath);
-      SetLength(WS, Len);
+      SetLength(WS{%H-}, Len);
       System.Move(APath[0], WS[1], Len * SizeOf(WideChar));
       Result := AppendPathDelim(Utf16ToUtf8(WS));
     end;

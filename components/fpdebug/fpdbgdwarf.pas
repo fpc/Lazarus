@@ -123,10 +123,13 @@ type
     function FindExportedSymbolInUnits(const AName: String; const ANameInfo: TNameSearchInfo;
       SkipCompUnit: TDwarfCompilationUnit; out ADbgValue: TFpValue; const OnlyUnitNameLower: String = ''): Boolean;
     function FindSymbolInStructure(const AName: String; const ANameInfo: TNameSearchInfo;
+      InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; virtual;
+    function FindSymbolInStructureRecursive(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; inline;
     // FindLocalSymbol: for the subroutine itself
     function FindLocalSymbol(const AName: String; const ANameInfo: TNameSearchInfo;
       InfoEntry: TDwarfInformationEntry; out ADbgValue: TFpValue): Boolean; virtual;
+    procedure Init; virtual;
   public
     constructor Create(ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol; ADwarf: TFpDwarfInfo);
     destructor Destroy; override;
@@ -416,7 +419,7 @@ type
 
   TFpValueDwarfConstAddress = class(TFpValueConstAddress)
   protected
-    procedure Update(AnAddress: TFpDbgMemLocation);
+    procedure Update(const AnAddress: TFpDbgMemLocation);
   end;
 
   { TFpValueDwarfArray }
@@ -523,6 +526,9 @@ type
                                 AnInitLocParserData: PInitLocParserData = nil): Boolean; virtual;
     function ComputeDataMemberAddress(const AnInformationEntry: TDwarfInformationEntry;
                               AValueObj: TFpValueDwarf; var AnAddress: TFpDbgMemLocation): Boolean; inline;
+    (* ConstRefOrExprFromAttrData:
+       See DWARF spec "2.19 Static and Dynamic Properties of Types"
+    *)
     function ConstRefOrExprFromAttrData(const AnAttribData: TDwarfAttribData;
                               AValueObj: TFpValueDwarf; out AValue: Int64;
                               AReadState: PFpDwarfAtEntryDataReadState = nil;
@@ -955,6 +961,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function GetValueObject: TFpValue; override;
     function GetValueAddress(AValueObj: TFpValueDwarf; out
       AnAddress: TFpDbgMemLocation): Boolean; override;
+
+    property DbgInfo: TFpDwarfInfo read FDwarf;
+    property ProcAddress: TDBGPtr read FAddress;
   public
     constructor Create(ACompilationUnit: TDwarfCompilationUnit; AInfo: PDwarfAddressInfo; AAddress: TDbgPtr; ADbgInfo: TFpDwarfInfo = nil); overload;
     destructor Destroy; override;
@@ -962,6 +971,9 @@ DECL = DW_AT_decl_column, DW_AT_decl_file, DW_AT_decl_line
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; override;
     // TODO members = locals ?
     function GetSelfParameter(AnAddress: TDbgPtr = 0): TFpValueDwarf;
+
+    function ResolveInternalFinallySymbol(Process: Pointer): TFpSymbol; virtual; // so it can be overriden by the fpc classes
+
     // Contineous (sub-)part of the line
     property LineStartAddress: TDBGPtr read GetLineStartAddress;
     property LineEndAddress: TDBGPtr read GetLineEndAddress;
@@ -1311,7 +1323,7 @@ function TFpDwarfInfoSymbolScope.FindExportedSymbolInUnit(
   CU: TDwarfCompilationUnit; const ANameInfo: TNameSearchInfo; out
   AnInfoEntry: TDwarfInformationEntry; out AnIsExternal: Boolean): Boolean;
 var
-  i, ExtVal: Integer;
+  ExtVal: Integer;
   InfoEntry: TDwarfInformationEntry;
   s: String;
 begin
@@ -1364,7 +1376,7 @@ var
   i, j: Integer;
   CU: TDwarfCompilationUnit;
   CUList: TDwarfCompilationUnitArray;
-  InfoEntry, FoundInfoEntry: TDwarfInformationEntry;
+  FoundInfoEntry: TDwarfInformationEntry;
   IsExt: Boolean;
   WorkItem, PrevWorkItem: TFpThreadWorkerFindSymbolInUnits;
 begin
@@ -1474,22 +1486,34 @@ end;
 function TFpDwarfInfoSymbolScope.FindSymbolInStructure(const AName: String;
   const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
   ADbgValue: TFpValue): Boolean;
+begin
+  ADbgValue := nil;
+  Result := False;
+end;
+
+function TFpDwarfInfoSymbolScope.FindSymbolInStructureRecursive(const AName: String;
+  const ANameInfo: TNameSearchInfo; InfoEntry: TDwarfInformationEntry; out
+  ADbgValue: TFpValue): Boolean;
 var
   InfoEntryInheritance: TDwarfInformationEntry;
   FwdInfoPtr: Pointer;
   FwdCompUint: TDwarfCompilationUnit;
   SelfParam: TFpValue;
+  StartScope: Integer;
 begin
   Result := False;
   ADbgValue := nil;
   InfoEntry.AddReference;
+  InfoEntryInheritance := nil;
 
   while True do begin
     if not InfoEntry.IsAddressInStartScope(FAddress) then
       break;
 
+    InfoEntryInheritance.ReleaseReference;
     InfoEntryInheritance := InfoEntry.FindChildByTag(DW_TAG_inheritance);
 
+    StartScope := InfoEntry.ScopeIndex;
     if InfoEntry.GoNamedChildEx(ANameInfo) then begin
       if InfoEntry.IsAddressInStartScope(FAddress) then begin
         SelfParam := GetSelfParameter;
@@ -1501,12 +1525,13 @@ begin
         if ADbgValue = nil then begin // Todo: abort the searh /SetError
           ADbgValue := SymbolToValue(TFpSymbolDwarf.CreateSubClass(AName, InfoEntry));
         end;
-        InfoEntry.ReleaseReference;
-        InfoEntryInheritance.ReleaseReference;
-        Result := True;
-        exit;
+        break;
       end;
     end;
+    InfoEntry.ScopeIndex := StartScope;
+
+    if FindSymbolInStructure(AName, ANameInfo, InfoEntry, ADbgValue) then
+      break;
 
 
     if not( (InfoEntryInheritance <> nil) and
@@ -1515,10 +1540,10 @@ begin
       break;
     InfoEntry.ReleaseReference;
     InfoEntry := TDwarfInformationEntry.Create(FwdCompUint, FwdInfoPtr);
-    InfoEntryInheritance.ReleaseReference;
     DebugLn(FPDBG_DWARF_SEARCH, ['TDbgDwarf.FindIdentifier  PARENT ', dbgs(InfoEntry, FwdCompUint) ]);
   end;
 
+  InfoEntryInheritance.ReleaseReference;
   InfoEntry.ReleaseReference;
   Result := ADbgValue <> nil;
 end;
@@ -1541,6 +1566,11 @@ begin
   Result := ADbgValue <> nil;
 end;
 
+procedure TFpDwarfInfoSymbolScope.Init;
+begin
+  //
+end;
+
 constructor TFpDwarfInfoSymbolScope.Create(
   ALocationContext: TFpDbgLocationContext; ASymbol: TFpSymbol;
   ADwarf: TFpDwarfInfo);
@@ -1552,6 +1582,7 @@ begin
   FAddress := LocationContext.Address; // for quick access
   if FSymbol <> nil then
     FSymbol.AddReference{$IFDEF WITH_REFCOUNT_DEBUG}(@FSymbol, 'Context to Symbol'){$ENDIF};
+  Init;
 end;
 
 destructor TFpDwarfInfoSymbolScope.Destroy;
@@ -1648,7 +1679,7 @@ begin
 
 
       if (tg = DW_TAG_class_type) or (tg = DW_TAG_structure_type) then begin
-        if FindSymbolInStructure(AName,NameInfo, InfoEntry, Result) then begin
+        if FindSymbolInStructureRecursive(AName,NameInfo, InfoEntry, Result) then begin
           exit; // TODO: check error
         end;
         //InfoEntry.ScopeIndex := StartScopeIdx;
@@ -3185,7 +3216,7 @@ end;
 
 { TFpValueDwarfConstAddress }
 
-procedure TFpValueDwarfConstAddress.Update(AnAddress: TFpDbgMemLocation);
+procedure TFpValueDwarfConstAddress.Update(const AnAddress: TFpDbgMemLocation);
 begin
   Address := AnAddress;
 end;
@@ -3796,6 +3827,8 @@ function TFpSymbolDwarf.ConstRefOrExprFromAttrData(
   const AnAttribData: TDwarfAttribData; AValueObj: TFpValueDwarf; out
   AValue: Int64; AReadState: PFpDwarfAtEntryDataReadState;
   ADataSymbol: PFpSymbolDwarfData): Boolean;
+(* See DWARF spec "2.19 Static and Dynamic Properties of Types"
+*)
 var
   Form: Cardinal;
   FwdInfoPtr: Pointer;
@@ -3874,6 +3907,16 @@ begin
   else
   if Form in [DW_FORM_block, DW_FORM_block1, DW_FORM_block2, DW_FORM_block4]
   then begin
+    (* Dwarf Spec:
+       "For a block / For an exprloc, the value is interpreted as a DWARF
+        expression; evaluation of the expression yields the value of the
+        attribute"
+       - The examples given in the spec, show that the "location" returned, is
+         not used as address. It is treated as the integer result.
+       - Thus this not be a register-location.
+       - It may be a constant (DW_OP_lit/DW_OP_const), but those should probably
+         be DW_FORM_data.
+    *)
     // TODO: until there always will be an AValueObj
     if AValueObj = nil then begin
       if AReadState <> nil then
@@ -3893,6 +3936,7 @@ begin
     InitLocParserData.ObjectDataAddrPush := False;
     Result := LocationFromAttrData(AnAttribData, AValueObj, t, @InitLocParserData);
     if Result then begin
+      assert(t.MType in [mlfTargetMem, mlfConstant], 'TFpSymbolDwarf.ConstRefOrExprFromAttrData: t.MType in [mlfTargetMem, mlfConstant]');
       AValue := Int64(t.Address);
     end
     else begin
@@ -3920,7 +3964,7 @@ var
   Val: TByteDynArray;
   LocationParser: TDwarfLocationExpression;
 begin
-  //debugln(['TDbgDwarfIdentifier.LocationFromAttrData', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+  //debugln(FPDBG_DWARF_VERBOSE, ['TDbgDwarfIdentifier.LocationFromAttrData', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   AnAddress := InvalidLoc;
@@ -3929,7 +3973,7 @@ begin
   // DW_AT_data_member_location in members [ block or const]
   // DW_AT_location [block or reference] todo: const
   if not InformationEntry.ReadValue(AnAttribData, Val) then begin
-    DebugLn([FPDBG_DWARF_VERBOSE, 'LocationFromAttrData: failed to read DW_AT_location']);
+    DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromAttrData: failed to read DW_AT_location']);
     SetLastError(AValueObj, CreateError(fpErrAnyError));
     exit;
   end;
@@ -3964,7 +4008,7 @@ function TFpSymbolDwarf.LocationFromTag(ATag: Cardinal;
 var
   AttrData: TDwarfAttribData;
 begin
-  //debugln(['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
+  //debugln(FPDBG_DWARF_VERBOSE,['TDbgDwarfIdentifier.LocationFromTag', ClassName, '  ',Name, '  ', DwarfAttributeToString(ATag)]);
 
   Result := False;
   //TODO: avoid copying data
@@ -3980,7 +4024,7 @@ begin
     if not Result then
       AnAddress := InvalidLoc;
     if not Result then
-      DebugLn([FPDBG_DWARF_VERBOSE, 'LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
+      DebugLn(FPDBG_DWARF_VERBOSE, ['LocationFromTag: failed to read DW_AT_..._location / ASucessOnMissingTag=', dbgs(ASucessOnMissingTag)]);
     exit;
   end;
 
@@ -5249,7 +5293,7 @@ end;
 function TFpSymbolDwarfDataMember.GetValueAddress(AValueObj: TFpValueDwarf; out
   AnAddress: TFpDbgMemLocation): Boolean;
 begin
-  if AValueObj = nil then debugln([FPDBG_DWARF_VERBOSE, 'TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
+  if AValueObj = nil then debugln(FPDBG_DWARF_VERBOSE, ['TFpSymbolDwarfDataMember.InitLocationParser: NO VAl Obj !!!!!!!!!!!!!!!'])
   else if AValueObj.StructureValue = nil then debugln(FPDBG_DWARF_VERBOSE, ['TFpSymbolDwarfDataMember.InitLocationParser: NO STRUCT Obj !!!!!!!!!!!!!!!']);
 
   if InformationEntry.HasAttrib(DW_AT_const_value) then begin
@@ -5903,10 +5947,13 @@ begin
 
     FFrameBaseParser := TDwarfLocationExpression.Create(@Val[0], Length(Val), CompilationUnit,
       ASender.Context);
+    FFrameBaseParser.IsDwAtFrameBase := True;
     FFrameBaseParser.Evaluate;
   end;
 
   rd := FFrameBaseParser.ResultData;
+  // TODO: should mlfConstant be allowed?
+  assert(rd.MType in [mlfTargetMem, mlfConstant], 'TFpSymbolDwarfDataProc.GetFrameBase: rd.MType in [mlfTargetMem, mlfConstant]');
   if IsValidLoc(rd) then
     Result := rd.Address;
 
@@ -5995,6 +6042,12 @@ begin
     end;
   end;
   InfoEntry.ReleaseReference;
+end;
+
+function TFpSymbolDwarfDataProc.ResolveInternalFinallySymbol(Process: Pointer
+  ): TFpSymbol;
+begin
+  Result := Self;
 end;
 
 { TFpSymbolDwarfTypeProc }

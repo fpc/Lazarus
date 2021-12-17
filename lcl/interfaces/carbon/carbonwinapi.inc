@@ -2477,7 +2477,7 @@ begin
     Result := False;
 
     //Sanity Checks For Vertices Size vs. Count
-    if MemSize(Vertices) < PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices) then
+    if MemSizeLessThan(MemSize(Vertices), PtrUInt(SizeOf(tagTRIVERTEX)*NumVertices)) then
       exit;
 
     for I := 0 to NumMeshes - 1 do

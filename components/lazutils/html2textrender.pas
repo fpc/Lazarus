@@ -101,7 +101,7 @@ constructor THTML2TextRenderer.Create(const Stream: TStream);
 var
   s: string;
 begin
-  SetLength(s,Stream.Size);
+  SetLength(s{%H-},Stream.Size);
   if s<>'' then
     Stream.Read(s[1],length(s));
   Create(s);  // Call the constructor above.

@@ -75,7 +75,7 @@ while [ $# -gt 0 ]; do
 
   *)
     echo "invalid parameter $1"
-    echo "Usage: ./create_lazarus_deb.sh [chmhelp] [gtk1] [qt] [qtlib=<dir>] [release=svn] "
+    echo "Usage: ./create_lazarus_deb.sh [chmhelp] [gtk1] [qt] [qtlib=<dir>] [release=YourPostfix] "
     exit 1
     ;;
   esac
@@ -137,7 +137,7 @@ echo "LazVersion=$LazVersion"
 echo "FPCVersion=$FPCVersion"
 echo "ChangeLogDate=$ChangeLogDate"
 
-# download/export lazarus svn if needed
+# download/export lazarus git if needed
 if [ ! -f $SrcTGZ ]; then
   ./create_lazarus_export_tgz.sh $SrcTGZ
 fi
@@ -204,6 +204,7 @@ strip lazbuild
 strip tools/lazres
 strip tools/updatepofiles
 strip tools/lrstolfm
+# Note: svn2revisioninc supports git too
 strip tools/svn2revisioninc
 if [ -f components/chmhelp/lhelp/lhelp ]; then
   strip components/chmhelp/lhelp/lhelp

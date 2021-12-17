@@ -36,7 +36,7 @@ interface
 uses
   Classes, SysUtils, StrUtils,
   // LCL
-  Graphics, Forms, StdCtrls, LCLType, ComCtrls, ExtCtrls, MaskEdit, PairSplitter,
+  Graphics, Forms, StdCtrls, LCLType, ComCtrls, ExtCtrls, MaskEdit,
   // LazUtils
   LazStringUtils, LazLoggerBase,
   // IdeIntf
@@ -54,13 +54,11 @@ type
     MaskEdit1: TMaskEdit;
     Memo1: TMemo;
     PageControl1: TPageControl;
-    PairSplitterRaw: TPairSplitter;
-    PairSplitterRawLeft: TPairSplitterSide;
-    PairSplitterRawRight: TPairSplitterSide;
     Panel1: TPanel;
-    PanelRightBelowRG: TPanel;
+    PanelRawOptions: TPanel;
     PanelRightBelowCG: TPanel;
     RadioGroupRight: TRadioGroup;
+    Splitter1: TSplitter;
     StatusBar1: TStatusBar;
     TabSheet1: TTabSheet;
     TabSheetRaw: TTabSheet;

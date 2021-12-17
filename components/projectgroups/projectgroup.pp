@@ -41,10 +41,11 @@ uses
   Controls, Forms, Dialogs,
   // CodeTools
   FileProcs, CodeToolManager, CodeCache,
+  // BuildIntf
+  PackageIntf, PackageDependencyIntf, PackageLinkIntf, ProjectIntf, CompOptsIntf,
+  BaseIDEIntf, IDEExternToolIntf, MacroIntf, MacroDefIntf,
   // IdeIntf
-  PackageIntf, ProjectIntf, MenuIntf, LazIDEIntf, IDEDialogs, CompOptsIntf,
-  BaseIDEIntf, IDECommands, IDEExternToolIntf, MacroIntf, IDEMsgIntf,
-  ToolBarIntf, MacroDefIntf, PackageDependencyIntf, PackageLinkIntf,
+  MenuIntf, LazIDEIntf, IDEDialogs, IDECommands, IDEMsgIntf, ToolBarIntf,
   // ProjectGroups
   ProjectGroupIntf, ProjectGroupStrConst;
 
@@ -105,7 +106,6 @@ type
   public
     constructor Create(aOwner: TProjectGroup);
     Destructor Destroy; override;
-
   end;
 
   TTargetEvent = procedure(Sender: TObject; Target: TPGCompileTarget) of object;
@@ -1211,13 +1211,13 @@ end;
 procedure TIDEProjectGroup.ActiveTargetChanged(T: TPGCompileTarget);
 var
   Root: TIDEProjectGroup;
-begin
-  if T.Active then begin
-    FActiveTarget:=T;
-  end else begin
+begin        // T=Nil means the compilation ended and the GUI should be restored.
+  if Assigned(T) then
+    if T.Active then
+      FActiveTarget:=T
+    else
     if FActiveTarget=T then
       FActiveTarget:=nil;
-  end;
   Root:=TIDEProjectGroup(GetRootGroup);
   if Assigned(Root.OnTargetActiveChanged) then
     Root.OnTargetActiveChanged(Self,T);
@@ -1462,7 +1462,8 @@ end;
 function TIDECompileTarget.PerformBuildModeAction(AAction: TPGTargetAction;
   aModeIdentifier: string): TPGActionResult;
 begin
-  if TargetType<>ttProject then exit(arNotAllowed);
+  if TargetType<>ttProject then
+    exit(arNotAllowed);
   Result:=ProjectAction(AAction,aModeIdentifier);
 end;
 
@@ -1481,14 +1482,14 @@ begin
   case TargetType of
   ttProject:
     begin
-      ToolTitle := Format(lisCompileProject, [ExtractFileNameOnly(Filename)]);
+      ToolTitle := Format(lisCompileProject, [Filename]);
       if aBuildMode<>'' then
         ToolTitle += Format(lisBuildMode, [aBuildMode]);
       ToolKind := lisOtherProject;
     end;
   ttPackage:
     begin
-      ToolTitle := Format(lisCompilePackage, [ExtractFileNameOnly(Filename)]);
+      ToolTitle := Format(lisCompilePackage, [Filename]);
       ToolKind := lisPackage;
     end;
   else exit;
@@ -1514,8 +1515,8 @@ begin
   Tool:=ExternalToolList.Add(ToolTitle);
   Tool.Reference(Self, ClassName);
   try
-    Tool.Data:=TIDEExternalToolData.Create(ToolKind, ExtractFileNameOnly(
-      Filename), Filename);
+    Tool.Data:=TIDEExternalToolData.Create(ToolKind,
+                                        ExtractFileNameOnly(Filename), Filename);
     Tool.FreeData:=true;
     Tool.Hint:=CompileHint;
     Tool.Process.Executable:=LazBuildFilename;
@@ -1528,6 +1529,9 @@ begin
     //and (AProject.MainFilename<>'') then
     //  FPCParser.FilesToIgnoreUnitNotUsed.Add(AProject.MainFilename);
     Tool.AddParsers(SubToolMake);
+    DebugLn(['CompileUsingLazBuild: Calling "', LazBuildFilename, '" with parameters']);
+    Params.Delimiter:=' ';
+    DebugLn(['    ', Params.DelimitedText]);
     Tool.Execute;
     Tool.WaitForExit;
     if Tool.ErrorMessage='' then
@@ -1817,8 +1821,6 @@ var
   aProject: TLazProject;
 begin
   Result:=arFailed;
-
-  debugln(['TIDECompileTarget.ProjectAction ',Filename]);
   aProject:=LazarusIDE.ActiveProject;
   if (aProject<>nil)
   and (CompareFilenames(aProject.ProjectInfoFile,Filename)=0)
@@ -1847,7 +1849,6 @@ begin
          if not CheckIDEIsReadyForBuild then exit;
          // save project
          if LazarusIDE.DoSaveProject([])<>mrOk then exit;
-
          R:= crCompile;
          if (AAction=taCompileClean) then
            R:= crBuild;
@@ -1909,10 +1910,8 @@ begin
     taCompileFromHere:
       begin
         if not CheckIDEIsReadyForBuild then exit;
-
         // save files
         if LazarusIDE.DoSaveProject([])<>mrOk then exit;
-
         LazarusIDE.ToolStatus:=itBuilder;
         try
           if BuildModeCount>1 then begin
@@ -2002,14 +2001,18 @@ begin
   taSettings: ;
   taCompile,
   taCompileClean:
-    begin
+    try
       for i:=0 to ProjectGroup.TargetCount-1 do begin
         aTarget:=TIDECompileTarget(ProjectGroup.Targets[i]);
-        if AAction in aTarget.AllowedActions then
+        if AAction in aTarget.AllowedActions then begin
+          ActiveChanged(aTarget);
           if aTarget.PerformAction(AAction)<>arOk then
             exit;
+        end;
       end;
       Result:=arOk;
+    finally
+      ActiveChanged(Nil);
     end;
   taCompileFromHere:
     begin
@@ -2017,6 +2020,7 @@ begin
         exit;
       Result:=arOK;
       aTarget:=TIDECompileTarget(GetNext(true));
+      ActiveChanged(aTarget);
       if aTarget=nil then exit;
       Result:=aTarget.PerformAction(taCompileFromHere);
     end;
@@ -2097,10 +2101,7 @@ begin
   while (aTarget<>nil) do
   begin
     if AAction in aTarget.AllowedActions then
-    begin
-      Result:=aTarget.PerformAction(AAction);
-      exit;
-    end;
+      exit(aTarget.PerformAction(AAction));
     aTarget:=TIDECompileTarget(aTarget.GetNext(false));
   end;
   Result:=arOK;

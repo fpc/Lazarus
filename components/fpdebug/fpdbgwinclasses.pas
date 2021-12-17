@@ -184,7 +184,8 @@ type
     procedure InitializeLoaders; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -196,11 +197,9 @@ type
     procedure Interrupt; // required by app/fpd
     function  HandleDebugEvent(const ADebugEvent: TDebugEvent): Boolean;
 
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-      AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
+    function StartInstance(AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
+                      AFlags: TStartInstanceFlags; out AnError: TFpError): boolean; override;
+    function AttachToInstance(APid: Integer; out AnError: TFpError): boolean; override;
 
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
 
@@ -216,7 +215,6 @@ type
 
     procedure TerminateProcess; override;
 
-    function AddrOffset: TDBGPtr; override;
     function  AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
     procedure RemoveLib(const AInfo: TUnloadDLLDebugInfo);
   end;
@@ -231,14 +229,14 @@ type
     procedure InitializeLoaders; override;
   public
     constructor Create(const AProcess: TDbgProcess; const ADefaultName: String;
-      const AModuleHandle: THandle; const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
+      const AModuleHandle: THandle; AInfo: TLoadDLLDebugInfo);
   end;
 
 
 implementation
 
 var
-  DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
+  DBG_VERBOSE, DBG_WARNINGS, FPDBG_WINDOWS: PLazLoggerLogGroup;
 
 {$ifdef cpux86_64}
 const
@@ -453,11 +451,11 @@ end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
   const ADefaultName: String; const AModuleHandle: THandle;
-  const ABaseAddr: TDbgPtr; AInfo: TLoadDLLDebugInfo);
+  AInfo: TLoadDLLDebugInfo);
 var
   S: String;
 begin
-  inherited Create(AProcess, ADefaultName, AModuleHandle, ABaseAddr);
+  inherited Create(AProcess, ADefaultName, AModuleHandle);
   FInfo := AInfo;
 
   s := TDbgWinProcess(AProcess).GetProcFilename(AProcess, AInfo.lpImageName, AInfo.fUnicode, AInfo.hFile);
@@ -480,8 +478,14 @@ begin
 end;
 
 procedure TDbgWinProcess.InitializeLoaders;
+var
+  Loader: TDbgImageLoader;
 begin
-  TDbgImageLoader.Create(FInfo.hFile).AddToLoaderList(LoaderList);
+  Loader := TDbgImageLoader.Create(FInfo.hFile, nil, TDbgPtr(FInfo.lpBaseOfImage));
+  if Loader.IsValid then
+    Loader.AddToLoaderList(LoaderList)
+  else
+    Loader.Free;
 end;
 
 function TDbgWinProcess.CreateWatchPointData: TFpWatchPointData;
@@ -489,16 +493,15 @@ begin
   Result := TFpIntelWatchPointData.Create;
 end;
 
-constructor TDbgWinProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
-  );
+constructor TDbgWinProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 begin
   {$ifdef cpui386}
   FBitness := b32;
   {$else}
   FBitness := b64;
   {$endif}
-  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgWinProcess.Destroy;
@@ -576,12 +579,17 @@ begin
         0: Result := RegisterLoc(0); // EAX
         1: Result := RegisterLoc(2); // EDX
         2: Result := RegisterLoc(1); // ECX
+      else
+        Result := UnInitializedLoc;
       end;
     dm64: case AParamIdx of
        -1: Result := RegisterLoc(0); // RAX
         0: Result := RegisterLoc(2); // RCX
         1: Result := RegisterLoc(1); // RDX
         2: Result := RegisterLoc(8); // R8
+        3: Result := RegisterLoc(9); // R9
+      else
+        Result := UnInitializedLoc;
       end;
   end;
 end;
@@ -653,65 +661,63 @@ begin
   end;
 end;
 
-class function TDbgWinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
+function TDbgWinProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
-  AProcess: TProcessUTF8;
   LastErr: Integer;
 begin
-  result := nil;
-  AProcess := TProcessUTF8.Create(nil);
+  result := false;
+  FProcProcess := TProcessUTF8.Create(nil);
   try
     // To debug sub-processes, this needs to be poDebugProcess
-    AProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
+    FProcProcess.Options:=[poDebugProcess, poDebugOnlyThisProcess, poNewProcessGroup];
     if siForceNewConsole in AFlags then
-      AProcess.Options:=AProcess.Options+[poNewConsole];
-    AProcess.Executable:=AFilename;
-    AProcess.Parameters:=AParams;
-    AProcess.Environment:=AnEnvironment;
-    AProcess.CurrentDirectory:=AWorkingDirectory;
-    AProcess.Execute;
+      FProcProcess.Options:=FProcProcess.Options+[poNewConsole];
+    FProcProcess.Executable:=Name;
+    FProcProcess.Parameters:=AParams;
+    FProcProcess.Environment:=AnEnvironment;
+    FProcProcess.CurrentDirectory:=AWorkingDirectory;
+    FProcProcess.Execute;
 
-    result := TDbgWinProcess.Create(AFileName, AProcess.ProcessID, AProcess.ThreadID, AnOsClasses, AMemManager);
-    TDbgWinProcess(result).FProcProcess := AProcess;
+    Init(FProcProcess.ProcessID, 0);
+    Result:=true;
   except
     on E: Exception do
     begin
       LastErr := Integer(GetLastError);
-      DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s %d".',[AFileName, E.Message, LastErr]);
+      DebugLn(DBG_WARNINGS, 'Failed to start process "%s". Errormessage: "%s %d".',[Name, E.Message, LastErr]);
       {$ifdef cpui386}
       if (E is EProcess) and (GetLastError=50) then
       begin
-        AnError := CreateError(fpErrCreateProcess, [AFileName, LastErr, E.Message, 'Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'])
+        AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, 'Note that on Windows it is not possible to debug a 64-bit application with a 32-bit debugger.'])
       end
       else
       {$endif i386}
-      AnError := CreateError(fpErrCreateProcess, [AFileName, LastErr, E.Message, '']);
-      AProcess.Free;
+      AnError := CreateError(fpErrCreateProcess, [Name, LastErr, E.Message, '']);
+      FreeAndNil(FProcProcess);
     end;
   end;
 end;
 
-class function TDbgWinProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
-  AnError: TFpError): TDbgProcess;
+function TDbgWinProcess.AttachToInstance(APid: Integer; out AnError: TFpError
+  ): boolean;
 var
   LastErr: Integer;
 begin
-  Result := nil;
+  Result := false;
   if _DebugActiveProcess = nil then begin
-    AnError := CreateError(fpErrAttachProcess, [AFileName, 0, 'API unavailable', '']);
+    AnError := CreateError(fpErrAttachProcess, [Name, 0, 'API unavailable', '']);
     exit;
   end;
   if not _DebugActiveProcess(APid) then begin
     LastErr := Integer(GetLastError);
-    AnError := CreateError(fpErrAttachProcess, [AFileName, LastErr, GetLastErrorText(LastErr), '']);
+    AnError := CreateError(fpErrAttachProcess, [Name, LastErr, GetLastErrorText(LastErr), '']);
     exit;
   end;
 
-  result := TDbgWinProcess.Create(AFileName, APid, 0, AnOsClasses, AMemManager);
+  Init(APid, 0);
+  Result := true;
   // TODO: change the filename to the actual exe-filename. Load the correct dwarf info
 end;
 
@@ -740,7 +746,7 @@ function TDbgWinProcess.Continue(AProcess: TDbgProcess; AThread: TDbgThread;
 var
   EventThread, t: TDbgThread;
 begin
-debugln(['TDbgWinProcess.Continue ',SingleStep]);
+debugln(FPDBG_WINDOWS, ['TDbgWinProcess.Continue ',SingleStep]);
   if assigned(AThread) and not FThreadMap.HasId(AThread.ID) then begin
     AThread := nil;
   end;
@@ -756,7 +762,7 @@ debugln(['TDbgWinProcess.Continue ',SingleStep]);
       EventThread.NextIsSingleStep := SingleStep;
 
     if HasInsertedBreakInstructionAtLocation(EventThread.GetInstructionPointerRegisterValue) then begin
-debugln(['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
+debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
       TDbgWinThread(EventThread).SetSingleStepOverBreakPoint;
 
       for t in FThreadMap do
@@ -768,7 +774,7 @@ debugln(['## skip brkpoint ',AThread= EventThread, '  iss ',EventThread.NextIsSi
         TDbgWinThread(EventThread).SetSingleStep;
 
       if HasThreadInSkippingBreak then begin
-debugln(['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
+debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventThread.NextIsSingleStep]);
         // But other threads are still skipping
         for t in FThreadMap do
           if not (SingleStep and (t = AThread) and   // allow athread to single-step
@@ -785,7 +791,7 @@ debugln(['## skip brkpoint (others only) ',AThread= EventThread, '  iss ',EventT
 
   else begin // EventThread is gone
     if HasThreadInSkippingBreak then begin
-debugln(['## skip brkpoint (others only) ']);
+debugln(FPDBG_WINDOWS and DBG_VERBOSE, ['## skip brkpoint (others only) ']);
       for t in FThreadMap do
         if not (SingleStep and (t = AThread) and   // allow athread to single-step
                 not TDbgWinThread(t).FIsSkippingBreakPoint  // already single stepping AND needs  TempRemoveBreakInstructionCode
@@ -805,7 +811,7 @@ debugln(['## skip brkpoint (others only) ']);
       TDbgWinThread(AThread).SetSingleStep;
   end;
   AProcess.ThreadsBeforeContinue;
-if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
+if AThread<>nil then debugln(FPDBG_WINDOWS, ['## ath.iss ',AThread.NextIsSingleStep]);
 
   if MDebugEvent.dwDebugEventCode = EXCEPTION_DEBUG_EVENT then
     case MDebugEvent.Exception.ExceptionRecord.ExceptionCode of
@@ -818,7 +824,7 @@ if AThread<>nil then debugln(['## ath.iss ',AThread.NextIsSingleStep]);
     end
   else
     result := Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
-  DebugLn(not Result, 'ContinueDebugEvent failed: %d', [Windows.GetLastError]);
+  DebugLn((FPDBG_WINDOWS or DBG_WARNINGS) and (not Result), 'ContinueDebugEvent failed: %d', [Windows.GetLastError]);
   result := true;
   MDebugEvent.dwProcessId := 0; // Flag as running // for assert in ReadThreadState
 end;
@@ -883,13 +889,13 @@ begin
   repeat
     Done := True;
     result := Windows.WaitForDebugEvent(MDebugEvent, INFINITE);
-    DebugLn(not Result, 'WaitForDebugEvent failed: %d', [Windows.GetLastError]);
+    DebugLn(FPDBG_WINDOWS and (not Result), 'WaitForDebugEvent failed: %d', [Windows.GetLastError]);
 
     if Result and FTerminated and (MDebugEvent.dwDebugEventCode <> EXIT_PROCESS_DEBUG_EVENT)
        and (MDebugEvent.dwDebugEventCode <> EXIT_THREAD_DEBUG_EVENT)
     then begin
       // Wait for the terminate event // Do not report any queued breakpoints
-      DebugLn(['Terimating... Skipping event: ', dbgs(MDebugEvent)]);
+      DebugLn(FPDBG_WINDOWS, ['Terimating... Skipping event: ', dbgs(MDebugEvent)]);
       for TDbgThread(t) in FThreadMap do
         t.Suspend;
       Windows.ContinueDebugEvent(MDebugEvent.dwProcessId, MDebugEvent.dwThreadId, DBG_CONTINUE);
@@ -927,10 +933,10 @@ begin
   ProcessIdentifier:=MDebugEvent.dwProcessId;
   ThreadIdentifier:=MDebugEvent.dwThreadId;
   {$IFDEF DebuglnWinDebugEvents}
-  DebugLn([dbgs(MDebugEvent), ' ', Result]);
+  DebugLn(FPDBG_WINDOWS, [dbgs(MDebugEvent), ' ', Result]);
   for TDbgThread(t) in FThreadMap do begin
   if t.ReadThreadState then
-    DebugLn('Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
+    DebugLn(FPDBG_WINDOWS, 'Thr.Id:%d %x  SSTep %s EF %s     DR6:%x  DR7:%x  WP:%x  RegAcc: %d,  SStep: %d  Task: %d, ExcBrk: %d', [t.ID, t.GetInstructionPointerRegisterValue, dbgs(t.FCurrentContext^.def.EFlags and FLAG_TRACE_BIT), dbghex(t.FCurrentContext^.def.EFlags), t.FCurrentContext^.def.Dr6, t.FCurrentContext^.def.Dr7, t.FCurrentContext^.def.Dr6 and 15, t.FCurrentContext^.def.Dr6 and (1<< 13), t.FCurrentContext^.def.Dr6 and (1<< 14), t.FCurrentContext^.def.Dr6 and (1<< 15), t.FCurrentContext^.def.Dr6 and (1<< 16)]);
   end;
   {$ENDIF}
 
@@ -1379,16 +1385,11 @@ begin
   FTerminated := True;
 end;
 
-function TDbgWinProcess.AddrOffset: TDBGPtr;
-begin
-  Result:=0;//inherited AddrOffset - TDbgPtr(FInfo.lpBaseOfImage);
-end;
-
 function TDbgWinProcess.AddLib(const AInfo: TLoadDLLDebugInfo): TDbgLibrary;
 var
   ID: TDbgPtr;
 begin
-  Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, TDbgPtr(AInfo.lpBaseOfDll), AInfo);
+  Result := TDbgWinLibrary.Create(Self, HexValue(AInfo.lpBaseOfDll, SizeOf(Pointer), [hvfIncludeHexchar]), AInfo.hFile, AInfo);
   ID := TDbgPtr(AInfo.lpBaseOfDll);
   FLibMap.Add(ID, Result);
   if (Result.DbgInfo.HasInfo) or (Result.SymbolTableInfo.HasInfo)
@@ -1405,7 +1406,6 @@ begin
   if not FLibMap.GetData(ID, Lib) then Exit;
   FSymInstances.Remove(Lib);
   FLibMap.Delete(ID);
-  SetLastLibraryUnloaded(Lib);
 end;
 
 { TDbgWinThread }
@@ -1710,7 +1710,7 @@ begin
   begin
     Assert(FCurrentContext <> nil, 'TDbgWinThread.BeforeContinue: none existing context was changed');
     if not SetFpThreadContext(FCurrentContext) then
-      debugln(['Failed to SetFpThreadContext()']);
+      debugln(FPDBG_WINDOWS or DBG_WARNINGS, ['Failed to SetFpThreadContext()']);
   end;
   FThreadContextChanged := False;
   FThreadContextChangeFlags := [];
@@ -1765,7 +1765,7 @@ end;
 
 procedure TDbgWinThread.SetRegisterValue(AName: string; AValue: QWord);
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.SetRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.SetRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.SetRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   if not ReadThreadState then
@@ -1821,7 +1821,7 @@ end;
 
 function TDbgWinThread.GetInstructionPointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetInstructionPointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetInstructionPointerRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetInstructionPointerRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   Result := 0;
@@ -1840,7 +1840,7 @@ end;
 
 function TDbgWinThread.GetStackBasePointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackBasePointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackBasePointerRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetStackBasePointerRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   Result := 0;
@@ -1859,7 +1859,7 @@ end;
 
 function TDbgWinThread.GetStackPointerRegisterValue: TDbgPtr;
 begin
-  {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackPointerRegisterValue');{$ENDIF}
+  //{$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadId('TDbgWinThread.GetStackPointerRegisterValue');{$ENDIF}
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinThread.GetStackPointerRegisterValue: MDebugEvent.dwProcessId <> 0');
 
   Result := 0;
@@ -1881,6 +1881,7 @@ initialization
 
   DBG_VERBOSE := DebugLogger.FindOrRegisterLogGroup('DBG_VERBOSE' {$IFDEF DBG_VERBOSE} , True {$ENDIF} );
   DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+  FPDBG_WINDOWS := DebugLogger.FindOrRegisterLogGroup('FPDBG_WINDOWS' {$IFDEF FPDBG_WINDOWS} , True {$ENDIF} );
 
   RegisterDbgOsClasses(TOSDbgClasses.Create(
     TDbgWinProcess,

@@ -112,6 +112,8 @@ begin
     Result:=rsLanguageGerman
   else if CompareText(ID,'ca')=0 then
     Result:=rsLanguageCatalan
+  else if CompareText(ID,'co')=0 then
+    Result:=rsLanguageCorsican
   else if CompareText(ID,'fr')=0 then
     Result:=rsLanguageFrench
   else if CompareText(ID,'it')=0 then
@@ -130,8 +132,8 @@ begin
     Result:=rsLanguageArabic
   else if CompareText(ID,'pt_BR')=0 then
     Result:=rsLanguagePortugueseBr
-//  else if CompareText(ID,'pt')=0 then
-//    Result:=rsLanguagePortuguese
+  else if CompareText(ID,'pt')=0 then
+    Result:=rsLanguagePortuguese
   else if CompareText(ID,'uk')=0 then
     Result:=rsLanguageUkrainian
   else if CompareText(ID,'nl')=0 then
@@ -515,7 +517,7 @@ begin
   // Debugger GUI
   TranslateUnitResourceStrings('DebuggerStrConst',
     Dir+'languages/debuggerstrconst'+Ext,Lang,FallbackLang);
-  // LCL
+  // LCL (needed to translate button captions in a dialog about config directory belonging to another Lazarus instance)
   TranslateUnitResourceStrings('LCLStrConsts',
     Dir+'lcl/languages/lclstrconsts'+Ext,Lang,FallbackLang);
 end;

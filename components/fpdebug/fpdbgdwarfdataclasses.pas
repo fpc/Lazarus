@@ -43,9 +43,9 @@ interface
 
 uses
   Classes, Types, SysUtils, contnrs, Math, Maps, LazClasses, LazFileUtils,
-  LazLoggerDummy, LazUTF8, lazCollections,
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, lazCollections,
   // FpDebug
-  FpDbgUtil, FpDbgInfo, FpDbgDwarfConst,
+  FpDbgUtil, FpDbgInfo, FpDbgDwarfConst, FpDbgCommon,
   FpDbgLoader, FpImgReaderBase, FpdMemoryTools, FpErrorMessages, DbgIntfBaseTypes;
 
 type
@@ -64,6 +64,7 @@ type
 
 {%region Dwarf Header Structures }
   // compilation unit header
+  // In version 5 of the Dwarf-specification, the header has been changed.
   {$PACKRECORDS 1}
   PDwarfCUHeader32 = ^TDwarfCUHeader32;
   TDwarfCUHeader32 = record
@@ -71,6 +72,15 @@ type
     Version: Word;
     AbbrevOffset: LongWord;
     AddressSize: Byte;
+  end;
+
+  PDwarfCUHeader32v5 = ^TDwarfCUHeader32v5;
+  TDwarfCUHeader32v5 = record
+    Length: LongWord;
+    Version: Word;
+    unit_type: Byte;
+    AddressSize: Byte;
+    AbbrevOffset: LongWord;
   end;
 
   PDwarfCUHeader64 = ^TDwarfCUHeader64;
@@ -81,7 +91,17 @@ type
     AbbrevOffset: QWord;
     AddressSize: Byte;
   end;
-  
+
+  PDwarfCUHeader64v5 = ^TDwarfCUHeader64v5;
+  TDwarfCUHeader64v5 = record
+    Signature: LongWord;
+    Length: QWord;
+    Version: Word;
+    unit_type: Byte;
+    AddressSize: Byte;
+    AbbrevOffset: QWord;
+  end;
+
   // Line number program header
   PDwarfLNPInfoHeader = ^TDwarfLNPInfoHeader;
   TDwarfLNPInfoHeader = record
@@ -466,7 +486,8 @@ type
     procedure Init;
     procedure SetAddressForLine(ALine: Cardinal; AnAddress: TDBGPtr); inline;
     function  GetAddressesForLine(ALine: Cardinal; var AResultList: TDBGPtrArray;
-      NoData: Boolean = False): Boolean; inline;
+      NoData: Boolean = False; AFindSibling: TGetLineAddrFindSibling = fsNone;
+      AFoundLine: PInteger = nil): Boolean; inline;
       // NoData: only return True/False, but nothing in AResultList
     procedure Compress;
   end;
@@ -485,7 +506,7 @@ type
   public
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry);
     constructor Create(const AName: String; AnInformationEntry: TDwarfInformationEntry;
-                       AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
+                       AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
 
     function CreateSymbolScope(ALocationContext: TFpDbgLocationContext; ADwarfInfo: TFpDwarfInfo): TFpDbgSymbolScope; virtual; overload;
@@ -678,11 +699,22 @@ type
     procedure WaitForComputeHashes; inline;
     function GetDefinition(AAbbrevPtr: Pointer; out ADefinition: TDwarfAbbrev): Boolean; inline;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): boolean;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): boolean;
     procedure BuildLineInfo(AAddressInfo: PDwarfAddressInfo; ADoAll: Boolean);
     // On Darwin it could be that the debug-information is not included into the executable by the linker.
     // This function is to map object-file addresses into the corresponding addresses in the executable.
     function MapAddressToNewValue(AValue: QWord): QWord;
+    // Calculates an address taking the relocation after being loaded (dynamically)
+    // into memory into account, based on the library's ImageBase.
+    // Conceptually it would be better to let the TDbgLibrary take the relocation
+    // into account. But it was chosen to do the relocation during the loading of
+    // the Dwarf-information due to performance reasons. And because of consistency
+    // with the symbol-information. In which the relocation also takes place while
+    // the debug-info is loaded.
+    function CalculateRelocatedAddress(AValue: QWord): QWord; inline;
+    // Get start/end addresses of proc
+    function GetProcStartEnd(const AAddress: TDBGPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
 
     property Valid: Boolean read FValid;
     property FileName: String read FFileName;
@@ -725,6 +757,7 @@ type
     FFiles: array of TDwarfDebugFile;
   private
     FImageBase: QWord;
+    FRelocationOffset: TDBGPtrOffset;
     function GetCompilationUnit(AIndex: Integer): TDwarfCompilationUnit; inline;
   protected
     function GetCompilationUnitClass: TDwarfCompilationUnitClass; virtual;
@@ -736,15 +769,18 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; AAddress: TDbgPtr = 0): TFpDbgSymbolScope; override;
     function FindDwarfProcSymbol(AAddress: TDbgPtr): TDbgDwarfSymbolBase; inline;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; override; overload;
+    function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; override;
+
     //function FindSymbol(const AName: String): TDbgSymbol; override; overload;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; override;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; override;
     function GetLineAddressMap(const AFileName: String): PDWarfLineMap;
     function LoadCompilationUnits: Integer;
-    function PointerFromRVA(ARVA: QWord): Pointer;
     function CompilationUnitsCount: Integer; inline;
     property CompilationUnits[AIndex: Integer]: TDwarfCompilationUnit read GetCompilationUnit;
 
     property ImageBase: QWord read FImageBase;
+    property RelocationOffset: TDBGPtrOffset read FRelocationOffset;
     property WorkQueue: TFpGlobalThreadWorkerQueue read FWorkQueue;
   end;
 
@@ -783,6 +819,7 @@ type
     FContext: TFpDbgLocationContext;
     FCurrentObjectAddress: TFpDbgMemLocation;
     FFrameBase: TDbgPtr;
+    FIsDwAtFrameBase: Boolean;
     FLastError: TFpError;
     FOnFrameBaseNeeded: TNotifyEvent;
     FStack: TDwarfLocationStack;
@@ -796,13 +833,14 @@ type
     procedure SetLastError(ALastError: TFpError);
     procedure Evaluate;
     function ResultData: TFpDbgMemLocation;
-    procedure Push(AValue: TFpDbgMemLocation);
+    procedure Push(const AValue: TFpDbgMemLocation);
     property  FrameBase: TDbgPtr read FFrameBase write FFrameBase;
     property  OnFrameBaseNeeded: TNotifyEvent read FOnFrameBaseNeeded write FOnFrameBaseNeeded;
     property LastError: TFpError read FLastError;
     property Context: TFpDbgLocationContext read FContext write FContext;
     // for DW_OP_push_object_address
     property CurrentObjectAddress: TFpDbgMemLocation read FCurrentObjectAddress write FCurrentObjectAddress;
+    property IsDwAtFrameBase: Boolean read FIsDwAtFrameBase write FIsDwAtFrameBase;
     end;
 
 function ULEB128toOrdinal(var p: PByte): QWord;
@@ -2118,6 +2156,13 @@ var
       SetError(fpErrLocationParserNoAddressOnStack);
   end;
 
+  function AssertAddressOrRegOnStack: Boolean; inline;
+  begin
+    Result := (FStack.PeekKind in [mlfTargetMem, mlfSelfMem, mlfConstantDeref, mlfTargetRegister]);
+    if not Result then
+      SetError(fpErrLocationParserNoAddressOnStack);
+  end;
+
   function AssertMinCount(ACnt: Integer): Boolean; inline;
   begin
     Result := FStack.Count >= ACnt;
@@ -2125,7 +2170,7 @@ var
       SetError(fpErrLocationParserMinStack);
   end;
 
-  function ReadAddressFromMemory(AnAddress: TFpDbgMemLocation; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
+  function ReadAddressFromMemory(const AnAddress: TFpDbgMemLocation; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
@@ -2134,7 +2179,7 @@ var
       SetError;
   end;
 
-  function ReadAddressFromMemoryEx(AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
+  function ReadAddressFromMemoryEx(const AnAddress: TFpDbgMemLocation; AnAddrSpace: TDbgPtr; ASize: Cardinal; out AValue: TFpDbgMemLocation): Boolean;
   begin
     //TODO: zero fill / sign extend
     if (ASize > SizeOf(AValue)) or (ASize > AddrSize) then exit(False);
@@ -2194,7 +2239,7 @@ begin
           FStack.Push(FCU.ReadTargetAddressFromDwarfSection(CurData, True)); // always mlfTargetMem;
         end;
       DW_OP_deref: begin
-          if not AssertAddressOnStack then exit;
+          if not AssertAddressOrRegOnStack then exit;
           EntryP := FStack.PeekForDeref;
           if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
           EntryP^ := NewLoc; // mlfTargetMem;
@@ -2209,7 +2254,7 @@ begin
           EntryP^ := NewLoc; // mlfTargetMem;
         end;
       DW_OP_deref_size: begin
-          if not AssertAddressOnStack then exit;
+          if not AssertAddressOrRegOnStack then exit;
           EntryP := FStack.PeekForDeref;
           if not ReadAddressFromMemory(EntryP^, ReadUnsignedFromExpression(CurData, 1), NewLoc) then exit;
           EntryP^ := NewLoc; // mlfTargetMem;
@@ -2236,15 +2281,37 @@ begin
       DW_OP_consts:  FStack.PushConst(ReadSignedFromExpression(CurData, 0));
       DW_OP_lit0..DW_OP_lit31: FStack.PushConst(CurInstr^-DW_OP_lit0);
 
+      (* DW_OP_reg0..31 and DW_OP_regx
+         The DWARF spec does *not* specify that those should push the result on
+         the stack.
+         However it does not matter, since there can be no other instruction
+         after it to access the stack.
+         From the spec:
+           "A register location description must stand alone as the entire
+            description of an object or a piece of an object"
+
+         For DW_AT_frame_base the spec (dwarf 5) says:
+           "The use of one of the DW_OP_reg<n> operations in this context is
+            equivalent to using DW_OP_breg<n>(0) but more compact"
+         However, it does not say if this removes the "stand alone" restriction.
+      *)
       DW_OP_reg0..DW_OP_reg31: begin
-          if not FContext.ReadRegister(CurInstr^-DW_OP_reg0, NewValue) then begin
-            SetError;
-            exit;
+          FStack.PushTargetRegister(CurInstr^-DW_OP_reg0);
+          // Dwarf-5
+          if FIsDwAtFrameBase then begin
+            EntryP := FStack.PeekForDeref;
+            if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
+            EntryP^ := NewLoc; // mlfTargetMem;
           end;
-          FStack.PushConst(NewValue);
         end;
       DW_OP_regx: begin
           FStack.PushTargetRegister(ULEB128toOrdinal(CurData));
+          // Dwarf-5
+          if FIsDwAtFrameBase then begin
+            EntryP := FStack.PeekForDeref;
+            if not ReadAddressFromMemory(EntryP^, AddrSize, NewLoc) then exit;
+            EntryP^ := NewLoc; // mlfTargetMem;
+          end;
         end;
 
       DW_OP_breg0..DW_OP_breg31: begin
@@ -2564,7 +2631,7 @@ begin
     Result := InvalidLoc;
 end;
 
-procedure TDwarfLocationExpression.Push(AValue: TFpDbgMemLocation);
+procedure TDwarfLocationExpression.Push(const AValue: TFpDbgMemLocation);
 begin
   FStack.Push(AValue);
 end;
@@ -3416,37 +3483,89 @@ begin
 end;
 
 function TDWarfLineMap.GetAddressesForLine(ALine: Cardinal;
-  var AResultList: TDBGPtrArray; NoData: Boolean): Boolean;
+  var AResultList: TDBGPtrArray; NoData: Boolean;
+  AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger): Boolean;
 var
   idx, offset: TDBGPtr;
   LineOffsets: Array of Byte;
   Addresses: Array of TDBGPtr;
   o: Byte;
-  i, j, k, l: Integer;
+  i, j, k, l, CurOffs: Integer;
 begin
   Result := False;
+  if AFoundLine <> nil then
+    AFoundLine^ := ALine;
   idx := ALine div 256;
   offset := ALine mod 256;
-  if idx >= Length(FLineIndexList) then
-    exit;
-
-  LineOffsets := FLineIndexList[idx].LineOffsets;
-  Addresses := FLineIndexList[idx].Addresses;
-  if Addresses = nil then
-    exit;
-
-  l := Length(LineOffsets);
-  i := 0;
-  while (i < l) do begin
-    o := LineOffsets[i];
-    if o > offset then exit;
-    offset := offset - o;
-    if offset = 0 then break;
-    inc(i);
+  if idx >= Length(FLineIndexList) then begin
+    if AFindSibling  = fsBefore then begin
+      idx := Length(FLineIndexList);
+      offset := 255;
+    end
+    else
+      exit;
   end;
 
-  If (offset > 0) then
-    exit;
+  repeat
+    LineOffsets := FLineIndexList[idx].LineOffsets;
+    Addresses := FLineIndexList[idx].Addresses;
+    if Addresses = nil then
+      case AFindSibling of
+        fsNone:
+            exit;
+        fsBefore: begin
+            if idx = 0 then
+              exit;
+            dec(idx);
+            offset := 255;
+            Continue;
+          end;
+        fsNext: begin
+            inc(idx);
+            if idx >= Length(FLineIndexList) then
+              exit;
+            offset := 0;
+            Continue;
+          end;
+      end;
+
+    l := Length(LineOffsets);
+    i := 0;
+    CurOffs := 0;
+    while (i < l) do begin
+      o := LineOffsets[i];
+      CurOffs := CurOffs + o;
+      if o > offset then begin
+        case AFindSibling of
+          fsNone:
+              exit;
+          fsBefore: begin
+              if i > 0 then begin
+                dec(i);
+                offset := 0;  // found line before
+              end;
+            end;
+          fsNext: begin
+              offset := 0;  // found line after/next
+            end;
+        end;
+        break;
+      end;
+      offset := offset - o;
+      if offset = 0 then
+        break;
+      inc(i);
+    end;
+
+    if offset = 0 then
+      break;
+    case AFindSibling of
+      fsNone: exit;
+      else    continue;
+    end;
+  until False;
+  if AFoundLine <> nil then
+    AFoundLine^ := 256 * idx + CurOffs;
 
   if NoData then begin
     Result := True;
@@ -3498,6 +3617,7 @@ begin
   FTargetInfo := ALoaderList.TargetInfo;
   FCompilationUnits := TList.Create;
   FImageBase := ALoaderList.ImageBase;
+  FRelocationOffset := ALoaderList.RelocationOffset;
 
   SetLength(FFiles, ALoaderList.Count);
   for i := 0 to ALoaderList.Count-1 do
@@ -3640,6 +3760,27 @@ begin
   end;
 end;
 
+function TFpDwarfInfo.FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+var
+  n: Integer;
+  CU: TDwarfCompilationUnit;
+  MinMaxSet: boolean;
+begin
+  for n := 0 to FCompilationUnits.Count - 1 do
+  begin
+    CU := TDwarfCompilationUnit(FCompilationUnits[n]);
+    CU.WaitForScopeScan;
+    if not CU.Valid then Continue;
+    MinMaxSet := CU.FMinPC <> CU.FMaxPC;
+    if MinMaxSet and ((AAddress < CU.FMinPC) or (AAddress > CU.FMaxPC))
+    then Continue;
+
+    Result := CU.GetProcStartEnd(AAddress, AStartPC, AEndPC);
+    if Result then exit;
+  end;
+end;
+
 function TFpDwarfInfo.FindDwarfUnitSymbol(AAddress: TDbgPtr
   ): TDbgDwarfSymbolBase;
 var
@@ -3669,7 +3810,8 @@ begin
 end;
 
 function TFpDwarfInfo.GetLineAddresses(const AFileName: String;
-  ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean;
+  ALine: Cardinal; var AResultList: TDBGPtrArray;
+  AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger): Boolean;
 var
   n: Integer;
   CU: TDwarfCompilationUnit;
@@ -3679,7 +3821,7 @@ begin
   begin
     CU := TDwarfCompilationUnit(FCompilationUnits[n]);
     CU.WaitForScopeScan;
-    Result := CU.GetLineAddresses(AFileName, ALine, AResultList) or Result;
+    Result := CU.GetLineAddresses(AFileName, ALine, AResultList, AFindSibling, AFoundLine) or Result;
   end;
 end;
 
@@ -3704,11 +3846,15 @@ var
   p, pe: Pointer;
   CU32: PDwarfCUHeader32 absolute p;
   CU64: PDwarfCUHeader64 absolute p;
+  CU32v5: PDwarfCUHeader32v5 absolute p;
+  CU64v5: PDwarfCUHeader64v5 absolute p;
   CU: TDwarfCompilationUnit;
   CUClass: TDwarfCompilationUnitClass;
   inf: TDwarfSectionInfo;
   i: integer;
   DataOffs, DataLen: QWord;
+  AbbrevOffset: QWord;
+  AddressSize: Byte;
 begin
   CUClass := GetCompilationUnitClass;
   for i := 0 to high(FFiles) do
@@ -3722,39 +3868,73 @@ begin
       then begin
         if CU64^.Version < 3 then
           DebugLn(FPDBG_DWARF_WARNINGS, ['Unexpected 64 bit signature found for DWARF version 2']); // or version 1...
-        DataOffs := PtrUInt(CU64 + 1) - PtrUInt(inf.RawData);
-        DataLen := CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length);
+        if CU32^.Version<5 then begin
+          DataOffs := PtrUInt(CU64 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU64^.Length - SizeOf(CU64^) + SizeOf(CU64^.Signature) + SizeOf(CU64^.Length);
+          AbbrevOffset := CU32v5^.AbbrevOffset;
+          AddressSize := CU32v5^.AddressSize;
+        end
+        else begin
+          DataOffs := PtrUInt(CU64v5 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU64v5^.Length - SizeOf(CU64v5^) + SizeOf(CU64v5^.Signature) + SizeOf(CU64v5^.Length);
+          AbbrevOffset := CU32v5^.AbbrevOffset;
+          AddressSize := CU32v5^.AddressSize;
+
+          if CU64v5^.unit_type <> $01 then begin
+            DebugLn(FPDBG_DWARF_WARNINGS, 'Found Dwarf-5 partial compilation unit ot offset %d, which is not supported. Compilation unit is skipped.', [DataOffs]);
+            break; // Do not process invalid data
+          end;
+        end;
+
         if DataOffs + DataLen > inf.Size then begin
           DebugLn(FPDBG_DWARF_ERRORS, 'Error: Invalid size for compilation unit at offest %d with size %d exceeds section size %d', [DataOffs, DataLen, inf.Size]);
           break; // Do not process invalid data
         end;
+
         CU := CUClass.Create(
                 Self,
                 @FFiles[i],
                 DataOffs,
                 DataLen,
                 CU64^.Version,
-                CU64^.AbbrevOffset,
-                CU64^.AddressSize,
+                AbbrevOffset,
+                AddressSize,
                 True);
         p := Pointer(@CU64^.Version) + CU64^.Length;
       end
       else begin
         if CU32^.Length = 0 then Break;
-        DataOffs := PtrUInt(CU32 + 1) - PtrUInt(inf.RawData);
-        DataLen := CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length);
+        if CU32^.Version<5 then begin
+          DataOffs := PtrUInt(CU32 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU32^.Length - SizeOf(CU32^) + SizeOf(CU32^.Length);
+          AbbrevOffset := CU32^.AbbrevOffset;
+          AddressSize := CU32^.AddressSize;
+        end
+        else begin
+          DataOffs := PtrUInt(CU32v5 + 1) - PtrUInt(inf.RawData);
+          DataLen := CU32v5^.Length - SizeOf(CU32v5^) + SizeOf(CU32v5^.Length);
+          AbbrevOffset := CU32v5^.AbbrevOffset;
+          AddressSize := CU32v5^.AddressSize;
+
+          if CU32v5^.unit_type <> $01 then begin
+            DebugLn(FPDBG_DWARF_WARNINGS, 'Found Dwarf-5 partial compilation unit ot offset %d, which is not supported. Compilation unit is skipped.', [DataOffs]);
+            break; // Do not process invalid data
+          end;
+        end;
+
         if DataOffs + DataLen > inf.Size then begin
           DebugLn(FPDBG_DWARF_ERRORS, 'Error: Invalid size for compilation unit at offest %d with size %d exceeds section size %d', [DataOffs, DataLen, inf.Size]);
           break; // Do not process invalid data
         end;
+
         CU := CUClass.Create(
                 Self,
                 @FFiles[i],
                 DataOffs,
                 DataLen,
                 CU32^.Version,
-                CU32^.AbbrevOffset,
-                CU32^.AddressSize,
+                AbbrevOffset,
+                AddressSize,
                 False);
         p := Pointer(@CU32^.Version) + CU32^.Length;
       end;
@@ -3766,11 +3946,6 @@ begin
 
   for i := 0 to Result - 1 do
     TDwarfCompilationUnit(FCompilationUnits[i]).FComputeNameHashesWorker.MarkReadyToRun;
-end;
-
-function TFpDwarfInfo.PointerFromRVA(ARVA: QWord): Pointer;
-begin
-  Result := Pointer(PtrUInt(FImageBase + ARVA));
 end;
 
 function TFpDwarfInfo.CompilationUnitsCount: Integer;
@@ -3798,7 +3973,7 @@ end;
 
 constructor TDbgDwarfSymbolBase.Create(const AName: String;
   AnInformationEntry: TDwarfInformationEntry; AKind: TDbgSymbolKind;
-  AAddress: TFpDbgMemLocation);
+  const AAddress: TFpDbgMemLocation);
 begin
   FCU := AnInformationEntry.CompUnit;
   FInformationEntry := AnInformationEntry;
@@ -3931,6 +4106,7 @@ begin
               then FAddress := PQWord(pbyte(FLineInfoPtr)+1)^
               else FAddress := PLongWord(pbyte(FLineInfoPtr)+1)^;
               FAddress:=FOwner.MapAddressToNewValue(FAddress);
+              FAddress:=FOwner.CalculateRelocatedAddress(FAddress);
             end;
             DW_LNE_define_file: begin
               // don't move pb, it's done at the end by instruction length
@@ -4586,14 +4762,15 @@ begin
 end;
 
 function TDwarfCompilationUnit.GetLineAddresses(const AFileName: String;
-  ALine: Cardinal; var AResultList: TDBGPtrArray): boolean;
+  ALine: Cardinal; var AResultList: TDBGPtrArray;
+  AFindSibling: TGetLineAddrFindSibling; AFoundLine: PInteger): boolean;
 var
   Map: PDWarfLineMap;
 begin
   Result := False;
   Map := GetLineAddressMap(AFileName);
   if Map = nil then exit;
-  Result := Map^.GetAddressesForLine(ALine, AResultList);
+  Result := Map^.GetAddressesForLine(ALine, AResultList, False, AFindSibling, AFoundLine);
 end;
 
 function TDwarfCompilationUnit.InitLocateAttributeList(AEntry: Pointer;
@@ -4769,6 +4946,46 @@ begin
         break;
       end;
     end;
+end;
+
+function TDwarfCompilationUnit.CalculateRelocatedAddress(AValue: QWord): QWord;
+begin
+  Result := AValue + FOwner.RelocationOffset;
+end;
+
+function TDwarfCompilationUnit.GetProcStartEnd(const AAddress: TDBGPtr; out
+  AStartPC, AEndPC: TDBGPtr): boolean;
+var
+  Iter: TLockedMapIterator;
+  Info: PDwarfAddressInfo;
+begin
+  if not FAddressMapBuild then
+    BuildAddressMap;
+
+  Result := false;
+  Iter := TLockedMapIterator.Create(FAddressMap);
+  try
+    if not Iter.Locate(AAddress) then
+    begin
+      if not Iter.BOM then
+        Iter.Previous;
+
+      if Iter.BOM then
+        Exit;
+    end;
+
+    // iter is at the closest defined address before AAddress
+    Info := Iter.DataPtr;
+    result := (AAddress >= Info^.StartPC) and (AAddress <= Info^.EndPC);
+    if Result then
+    begin
+      AStartPC := Info^.StartPC;
+      AEndPC := Info^.EndPC;
+    end;
+
+  finally
+    Iter.Free;
+  end;
 end;
 
 function TDwarfCompilationUnit.ReadValue(AAttribute: Pointer; AForm: Cardinal; out AValue: Cardinal): Boolean;
@@ -5015,7 +5232,10 @@ function TDwarfCompilationUnit.ReadAddressValue(AAttribute: Pointer; AForm: Card
 begin
   result := ReadValue(AAttribute, AForm, AValue);
   if result then
+    begin
     AValue := MapAddressToNewValue(AValue);
+    AValue := CalculateRelocatedAddress(AValue);
+    end;
 end;
 
 initialization

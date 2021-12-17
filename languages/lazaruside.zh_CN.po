@@ -5162,8 +5162,8 @@ msgid "Ask name on create"
 msgstr "询问名称在创建之时"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "一个有用的设置对于Windows系统是s:$(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
+msgstr "一个有用的设置对于Windows系统是s:$(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -11738,10 +11738,6 @@ msgstr "保持转换的文件打开 在编辑器中"
 msgid "All project files will be open in editor after conversion"
 msgstr "所有工程文件将被打开在编辑器中 在转换后"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "保持在安装列表"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "保持名称"
@@ -13064,7 +13060,9 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "转换Delphi单元为Lazarus单元..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+#, fuzzy
+#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "转换二进制的DFM到文本LFM+检查语法..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -17715,10 +17713,6 @@ msgstr "移除属性\"%s\"."
 msgid "Remove %s files from package \"%s\"?"
 msgstr "移除%s文件从包\"%s\"?"
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "从安装列表移除"
-
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
 msgstr "从工程移除"
@@ -21334,6 +21328,10 @@ msgstr "西班牙语"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "中文"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

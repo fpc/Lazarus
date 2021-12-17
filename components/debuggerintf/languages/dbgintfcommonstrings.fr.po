@@ -1,0 +1,234 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr_FR\n"
+
+#: dbgintfcommonstrings.rsrunerrorarithmeticoverflowerror
+msgid "Arithmetic overflow error"
+msgstr "Erreur de débordement arithmétique"
+
+#: dbgintfcommonstrings.rsrunerrorassertionfailederror
+msgid "Assertion failed error"
+msgstr "Erreur d'assertion"
+
+#: dbgintfcommonstrings.rsrunerrorbaddriverequeststructleng
+msgid "Bad drive request struct length"
+msgstr "Longueur de structure de requête de lecteur incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorcalltoabstractmethod
+msgid "Call to abstract method"
+msgstr "Appel à la méthode abstraite"
+
+#: dbgintfcommonstrings.rsrunerrorcannotremovecurrentdirect
+msgid "Cannot remove current directory"
+msgstr "Impossible de supprimer le répertoire en cours"
+
+#: dbgintfcommonstrings.rsrunerrorcannotrenameacrossdrives
+msgid "Cannot rename across drives"
+msgstr "Impossible de renommer sur plusieurs lecteurs"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionindexoutofrange
+msgid "Collection index out of range"
+msgstr "Index hors limites pour la collection"
+
+#: dbgintfcommonstrings.rsrunerrorcollectionoverflowerror
+msgid "Collection overflow error"
+msgstr "Erreur de débordement de collection"
+
+#: dbgintfcommonstrings.rsrunerrorcrcerrorindata
+msgid "CRC error in data"
+msgstr "Erreur CRC des données"
+
+#: dbgintfcommonstrings.rsrunerrordevicereadfault
+msgid "Device read fault"
+msgstr "Erreur de lecture du périphérique"
+
+#: dbgintfcommonstrings.rsrunerrordevicewritefault
+msgid "Device write fault"
+msgstr "Erreur d'écriture du périphérique"
+
+#: dbgintfcommonstrings.rsrunerrordiskiswriteprotected
+msgid "Disk is write-protected"
+msgstr "Le disque est protégé en écriture"
+
+#: dbgintfcommonstrings.rsrunerrordiskreaderror
+msgid "Disk read error"
+msgstr "Erreur de lecture de disque"
+
+#: dbgintfcommonstrings.rsrunerrordiskseekerror
+msgid "Disk seek error"
+msgstr "Erreur de recherche de disque"
+
+#: dbgintfcommonstrings.rsrunerrordiskwriteerror
+msgid "Disk write error"
+msgstr "Erreur d'écriture sur disque"
+
+#: dbgintfcommonstrings.rsrunerrordivisionbyzero
+msgid "Division by zero"
+msgstr "Division par zéro"
+
+#: dbgintfcommonstrings.rsrunerrordrivenotready
+msgid "Drive not ready"
+msgstr "Lecteur non prêt"
+
+#: dbgintfcommonstrings.rsrunerrorexceptionstackcorrupted
+msgid "Exception stack corrupted"
+msgstr "Pile d'exceptions corrompue"
+
+#: dbgintfcommonstrings.rsrunerrorfileaccessdenied
+msgid "File access denied"
+msgstr "Accès en lecture refusé"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotassigned
+msgid "File not assigned"
+msgstr "Fichier non assigné"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotfound
+msgid "File not found"
+msgstr "Fichier non trouvé"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopen
+msgid "File not open"
+msgstr "Fichier non ouvert"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforinput
+msgid "File not open for input"
+msgstr "Fichier non ouvert pour la lecture"
+
+#: dbgintfcommonstrings.rsrunerrorfilenotopenforoutput
+msgid "File not open for output"
+msgstr "Fichier non ouvert pour la sortie"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointoverflow
+msgid "Floating point overflow"
+msgstr "Débordement en virgule flottante"
+
+#: dbgintfcommonstrings.rsrunerrorfloatingpointunderflow
+msgid "Floating point underflow"
+msgstr "Débordement en virgule flottante (bas)"
+
+#: dbgintfcommonstrings.rsrunerrorgeneralprotectionfault
+msgid "General Protection fault"
+msgstr "Erreur générale de protection"
+
+#: dbgintfcommonstrings.rsrunerrorhardwarefailure
+msgid "Hardware failure"
+msgstr "Erreur matérielle"
+
+#: dbgintfcommonstrings.rsrunerrorheapoverflowerror
+msgid "Heap overflow error"
+msgstr "Erreur de débordement de tas"
+
+#: dbgintfcommonstrings.rsrunerrorinvaliddrivenumber
+msgid "Invalid drive number"
+msgstr "Numéro de lecteur incorrect"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidenumeration
+msgid "Invalid enumeration"
+msgstr "Énumération incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfileaccesscode
+msgid "Invalid file access code"
+msgstr "Code d'accès au fichier incorrect"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfilehandle
+msgid "Invalid file handle"
+msgstr "Handle de fichier incorrect"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfloatingpointopera
+msgid "Invalid floating point operation"
+msgstr "Opération sur virgule flottante incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidfunctionnumber
+msgid "Invalid function number"
+msgstr "Numéro de fonction incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidnumericformat
+msgid "Invalid numeric format"
+msgstr "Valeur numérique incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidpointeroperation
+msgid "Invalid pointer operation"
+msgstr "Opération sur pointeur incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidtypecast
+msgid "Invalid typecast"
+msgstr "Transtypage incorrect"
+
+#: dbgintfcommonstrings.rsrunerrorinvalidvaluespecified
+msgid "Invalid value specified"
+msgstr "Valeur spécifiée incorrecte"
+
+#: dbgintfcommonstrings.rsrunerrorobjectnotinitialized
+msgid "Object not initialized"
+msgstr "Objet non initialisé"
+
+#: dbgintfcommonstrings.rsrunerrorpathnotfound
+msgid "Path not found"
+msgstr "Chemin non trouvé"
+
+#: dbgintfcommonstrings.rsrunerrorprinteroutofpaper
+msgid "Printer out of paper"
+msgstr "Pas de papier dans l'imprimante"
+
+#: dbgintfcommonstrings.rsrunerrorrangecheckerror
+msgid "Range check error"
+msgstr "Intervalle de pages incorrect"
+
+#: dbgintfcommonstrings.rsrunerrorsafecallerrorcheck
+msgid "Safecall error check"
+msgstr "Vérification des erreurs Safecall"
+
+#: dbgintfcommonstrings.rsrunerrorsectornotfound
+msgid "Sector Not Found"
+msgstr "Secteur introuvable"
+
+#: dbgintfcommonstrings.rsrunerrorstackoverflowerror
+msgid "Stack overflow error"
+msgstr "Débordement de pile"
+
+#: dbgintfcommonstrings.rsrunerrorstreamregistrationerror
+msgid "Stream registration error"
+msgstr "Erreur d'enregistrement du flux"
+
+#: dbgintfcommonstrings.rsrunerrorthreadsnotsupported
+msgid "Threads not supported"
+msgstr "Les tâches ne sont pas autorisées"
+
+#: dbgintfcommonstrings.rsrunerrortoomanyopenfiles
+msgid "Too many open files"
+msgstr "Trop de fichiers ouverts"
+
+#: dbgintfcommonstrings.rsrunerrorunhandledexceptionoccurre
+msgid "Unhandled exception occurred"
+msgstr "Une exception non traitée est survenue"
+
+#: dbgintfcommonstrings.rsrunerrorunknownmediatype
+msgid "Unknown media type"
+msgstr "Type de média inconnu"
+
+#: dbgintfcommonstrings.rsrunerrorvararrayboundscheckerror
+msgid "Var Array Bounds check error"
+msgstr "Erreur de vérification des limites du tableau var"
+
+#: dbgintfcommonstrings.rsrunerrorvariantarraycreate
+msgid "Variant array create"
+msgstr "Création d'un tableau de variants"
+
+#: dbgintfcommonstrings.rsrunerrorvariantdispatcherror
+msgid "Variant dispatch error"
+msgstr "Erreur de répartition"
+
+#: dbgintfcommonstrings.rsrunerrorvariantisnotanarray
+msgid "Variant is not an array"
+msgstr "Le variant n'est pas un tableau"
+

@@ -25,10 +25,15 @@ const
   // RSP commands
   Rsp_Status = '?';     // Request break reason - returns either S or T
   lastCPURegIndex = 31; // After this are SREG, SP and PC
-  SREGindex = 32;
-  SPindex = 33;
-  PCindex = 34;
+  // Use as dwarf register indexes
+  SREGindex = 32;  // 1 byte
+  SPindex = 33;    // 2 bytes
+  PCindex = 34;    // 4 bytes
   RegArrayLength = 35;
+  // Special register names
+  nSREG = 'SReg';
+  nSP = 'SP';
+  nPC = 'PC';
 
   // Byte level register indexes
   SPLindex = 33;
@@ -40,6 +45,7 @@ const
   RegArrayByteLength = 39;
 
 type
+
   { TDbgAvrThread }
 
   TDbgAvrThread = class(TDbgThread)
@@ -58,8 +64,9 @@ type
     // Cache registers if reported in event
     // Only cache if all reqisters are reported
     // if not, request registers from target
-    procedure FUpdateStatusFromEvent(event: TStatusEvent);
+    procedure UpdateStatusFromEvent(event: TStatusEvent);
     procedure InvalidateRegisters;
+    procedure RefreshRegisterCache;
   protected
     function ReadThreadState: boolean;
 
@@ -77,6 +84,8 @@ type
     function GetInstructionPointerRegisterValue: TDbgPtr; override;
     function GetStackBasePointerRegisterValue: TDbgPtr; override;
     function GetStackPointerRegisterValue: TDbgPtr; override;
+
+    procedure PrepareCallStackEntryList(AFrameRequired: Integer = -1); override;
   end;
 
   { TDbgAvrProcess }
@@ -88,6 +97,7 @@ type
     FIsTerminating: boolean;
     // RSP communication
     FConnection: TRspConnection;
+    FRemoteConfig: TRemoteConfig;
 
     procedure OnForkEvent(Sender : TObject);
   protected
@@ -96,23 +106,13 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    // TODO: Optional download to target as parameter DownloadExecutable=true
-    //class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-    //  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags): TDbgProcess; override;
-
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings;
-      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
-      AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-
-    // Not supported, returns false
-    //class function AttachToInstance(AFileName: string; APid: Integer
-    //  ): TDbgProcess; override;
-    class function AttachToInstance(AFileName: string; APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
-
     class function isSupported(target: TTargetDescriptor): boolean; override;
-
-    constructor Create(const AFileName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+      AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig); override;
     destructor Destroy; override;
+    function StartInstance(AParams, AnEnvironment: TStrings;
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
+      out AnError: TFpError): boolean; override;
 
     // FOR AVR target AAddress could be program or data (SRAM) memory (or EEPROM)
     // Gnu tools masks data memory with $800000
@@ -132,6 +132,8 @@ type
     // then debugger needs to manage insertion/deletion of break points in target memory
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; override;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; override;
+
+    property RspConfig: TRemoteConfig read FRemoteConfig;
   end;
 
   // Lets stick with points 4 for now
@@ -141,47 +143,58 @@ type
   TRspBreakWatchPoint = record
     Owner: Pointer;
     Address: TDBGPtr;
+    Size: Cardinal;
     Kind: TDBGWatchPointKind;
   end;
 
   TFpRspWatchPointData = class(TFpWatchPointData)
   private
     FData: array of TRspBreakWatchPoint;
-    function FBreakWatchPoint(AnIndex: Integer): TRspBreakWatchPoint;
-    function FCount: integer;
+    function BreakWatchPoint(AnIndex: Integer): TRspBreakWatchPoint;
+    function DataCount: integer;
+    function FindOwner(AnAddr: TDBGPtr): Pointer;
   public
     function AddOwnedWatchpoint(AnOwner: Pointer; AnAddr: TDBGPtr; ASize: Cardinal; AReadWrite: TDBGWatchPointKind): boolean; override;
     function RemoveOwnedWatchpoint(AnOwner: Pointer): boolean; override;
-    property Data[AnIndex: Integer]: TRspBreakWatchPoint read FBreakWatchPoint;
-    property Count: integer read FCount;
+    property Data[AnIndex: Integer]: TRspBreakWatchPoint read BreakWatchPoint;
+    property Count: integer read DataCount;
   end;
-
-var
-  // Difficult to see how this can be encapsulated except if
-  // added methods are introduced that needs to be called after .Create
-  HostName: string = 'localhost';
-  Port: integer = 12345;
 
 implementation
 
 uses
-  FpDbgDisasAvr;
+  FpDbgDisasAvr, FpDbgDwarfDataClasses, FpDbgInfo;
 
 var
   DBG_VERBOSE, DBG_WARNINGS: PLazLoggerLogGroup;
 
 { TFpRspWatchPointData }
 
-function TFpRspWatchPointData.FBreakWatchPoint(AnIndex: Integer
+function TFpRspWatchPointData.BreakWatchPoint(AnIndex: Integer
   ): TRspBreakWatchPoint;
 begin
   if AnIndex < length(FData) then
     result := FData[AnIndex];
 end;
 
-function TFpRspWatchPointData.FCount: integer;
+function TFpRspWatchPointData.DataCount: integer;
 begin
   result := length(FData);
+end;
+
+function TFpRspWatchPointData.FindOwner(AnAddr: TDBGPtr): Pointer;
+var
+  i: integer;
+begin
+  i := 0;
+  while (i < Count) and not ((AnAddr >= Data[i].Address) and (AnAddr < Data[i].Address + Data[i].Size)) do
+  begin
+    inc(i);
+  end;
+  if i < Count then
+    Result := Data[i].Owner
+  else
+    Result := nil;
 end;
 
 function TFpRspWatchPointData.AddOwnedWatchpoint(AnOwner: Pointer;
@@ -193,6 +206,7 @@ begin
   idx := length(FData);
   SetLength(FData, idx+1);
   FData[idx].Address := AnAddr;
+  FData[idx].Size := ASize;
   FData[idx].Kind := AReadWrite;
   FData[idx].Owner := AnOwner;
   Changed := true;
@@ -229,24 +243,17 @@ end;
 
 function TDbgAvrThread.ReadDebugReg(ind: byte; out AVal: TDbgPtr): boolean;
 begin
+  Result := false;
   if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
-  begin
-    DebugLn(DBG_WARNINGS, 'TDbgRspThread.GetDebugReg called while FIsTerminating is set.');
-    Result := false;
-  end
+    DebugLn(DBG_WARNINGS, 'TDbgRspThread.GetDebugReg called while FIsTerminating is set.')
   else
   begin
     DebugLn(DBG_VERBOSE, ['TDbgRspThread.GetDebugReg requesting register: ',ind]);
-    if FRegs[ind].Initialized then
+    RefreshRegisterCache;
+    if ind < length(FRegs) then
     begin
       AVal := FRegs[ind].Value;
-      result := true;
-    end
-    else
-    begin
-      result := TDbgAvrProcess(Process).FConnection.ReadDebugReg(ind, AVal);
-      FRegs[ind].Value := AVal;
-      FRegs[ind].Initialized := true;
+      Result := true;
     end;
   end;
 end;
@@ -262,7 +269,7 @@ begin
     result := TDbgAvrProcess(Process).FConnection.WriteDebugReg(ind, AVal);
 end;
 
-procedure TDbgAvrThread.FUpdateStatusFromEvent(event: TStatusEvent);
+procedure TDbgAvrThread.UpdateStatusFromEvent(event: TStatusEvent);
 var
   i: integer;
 begin
@@ -278,13 +285,36 @@ procedure TDbgAvrThread.InvalidateRegisters;
 var
   i: integer;
 begin
+  FRegsUpdated := false;
   for i := 0 to high(FRegs) do
     FRegs[i].Initialized := false;
 end;
 
+procedure TDbgAvrThread.RefreshRegisterCache;
+var
+  regs: TBytes;
+  i: integer;
+begin
+  if not FRegsUpdated then
+  begin
+    SetLength(regs, RegArrayByteLength);
+    FRegsUpdated := TDbgAvrProcess(Process).FConnection.ReadRegisters(regs[0], length(regs));
+    for i := 0 to lastCPURegIndex do
+    begin
+      FRegs[i].Initialized := true;
+      FRegs[i].Value := regs[i];
+    end;
+    // repack according to target endianness
+    FRegs[SPindex].Value := regs[SPLindex] + (regs[SPHindex] shl 8);
+    FRegs[SPHindex].Initialized := true;
+    FRegs[PCindex].Value := regs[PC0] + (regs[PC1] shl 8) + (regs[PC2] shl 16) + (regs[PC3] shl 24);
+    FRegs[PCindex].Initialized := true;
+  end;
+end;
+
 function TDbgAvrThread.ReadThreadState: boolean;
 begin
-  assert(FIsPaused, 'TDbgRspThread.ReadThreadState: FIsPaused');
+//  assert(FIsPaused, 'TDbgRspThread.ReadThreadState: FIsPaused');
   result := true;
   if FHasThreadState then
     exit;
@@ -357,25 +387,34 @@ end;
 procedure TDbgAvrThread.ApplyWatchPoints(AWatchPointData: TFpWatchPointData);
 var
   i: integer;
-  r: boolean;
   addr: PtrUInt;
+  watchData: TRspBreakWatchPoint;
+  tmpData: TBytes;
 begin
-  // Skip this for now...
-  exit;
-
-  // TODO: Derive a custom class from TFpWatchPointData to manage
-  //       break/watchpoints and communicate over rsp
-  r := True;
-  for i := 0 to TFpRspWatchPointData(AWatchPointData).Count-1 do begin   // TODO: make size dynamic
-    addr := PtrUInt(TFpRspWatchPointData(AWatchPointData).Data[i].Address);
-
-    r := r and WriteDebugReg(i, addr);
+  for i := 0 to TFpRspWatchPointData(AWatchPointData).Count-1 do
+  begin
+    watchData := TFpRspWatchPointData(AWatchPointData).Data[i];
+    addr := watchData.Address;
+    SetLength(tmpData, watchData.Size);
+    if Process.ReadData(addr, watchData.Size, tmpData[0]) then
+    begin
+      if not TDbgAvrProcess(Process).FConnection.SetBreakWatchPoint(addr, watchData.Kind) then
+        DebugLn(DBG_WARNINGS, 'Failed to set watch point.', []);
+    end
+    else
+      DebugLn(DBG_WARNINGS, 'Failed to read memory.', []);
   end;
 end;
 
 function TDbgAvrThread.DetectHardwareWatchpoint: Pointer;
 begin
-  result := nil;
+  if TDbgAvrProcess(Process).FConnection.LastStatusEvent.stopReason in [srAnyWatchPoint, srReadWatchPoint, srWriteWatchPoint] then
+  begin
+    Result := TFpRspWatchPointData(TDbgAvrProcess(Process).WatchPointData).FindOwner(TDbgAvrProcess(Process).FConnection.LastStatusEvent.watchPointAddress);
+    TDbgAvrProcess(Process).FConnection.ResetStatusEvent;
+  end
+  else
+    result := nil;
 end;
 
 procedure TDbgAvrThread.BeforeContinue;
@@ -403,7 +442,6 @@ end;
 procedure TDbgAvrThread.LoadRegisterValues;
 var
   i: integer;
-  regs: TBytes;
 begin
   if TDbgAvrProcess(Process).FIsTerminating or (TDbgAvrProcess(Process).FStatus = SIGHUP) then
   begin
@@ -414,25 +452,16 @@ begin
   if not ReadThreadState then
     exit;
 
-  if not FRegsUpdated then
-  begin
-    SetLength(regs, RegArrayByteLength);
-    FRegsUpdated := TDbgAvrProcess(Process).FConnection.ReadRegisters(regs[0], length(regs));
-    // repack according to target endianness
-    FRegs[SPindex].Value := regs[SPLindex] + (regs[SPHindex] shl 8);
-    FRegs[SPHindex].Initialized := true;
-    FRegs[PCindex].Value := regs[PC0] + (regs[PC1] shl 8) + (regs[PC2] shl 16) + (regs[PC3] shl 24);
-    FRegs[PCindex].Initialized := true;
-  end;
+  RefreshRegisterCache;
 
   if FRegsUpdated then
   begin
     for i := 0 to lastCPURegIndex do
       FRegisterValueList.DbgRegisterAutoCreate['r'+IntToStr(i)].SetValue(FRegs[i].Value, IntToStr(FRegs[i].Value),1, i); // confirm dwarf index
 
-    FRegisterValueList.DbgRegisterAutoCreate['sreg'].SetValue(FRegs[SREGindex].Value, IntToStr(FRegs[SREGindex].Value),1,0);
-    FRegisterValueList.DbgRegisterAutoCreate['sp'].SetValue(FRegs[SPindex].Value, IntToStr(FRegs[SPindex].Value),2,0);
-    FRegisterValueList.DbgRegisterAutoCreate['pc'].SetValue(FRegs[PCindex].Value, IntToStr(FRegs[PCindex].Value),4,0);
+    FRegisterValueList.DbgRegisterAutoCreate[nSREG].SetValue(FRegs[SREGindex].Value, IntToStr(FRegs[SREGindex].Value),1,SREGindex);
+    FRegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(FRegs[SPindex].Value, IntToStr(FRegs[SPindex].Value),2,SPindex);
+    FRegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(FRegs[PCindex].Value, IntToStr(FRegs[PCindex].Value),4,PCindex);
     FRegisterValueListValid := true;
   end
   else
@@ -492,21 +521,144 @@ begin
   ReadDebugReg(SPindex, result);
 end;
 
+procedure TDbgAvrThread.PrepareCallStackEntryList(AFrameRequired: Integer);
+const
+  MAX_FRAMES = 50000; // safety net
+  // To read RAM, add data space offset to address
+  DataOffset = $800000;
+  Size = 2;
+var
+  Address, FrameBase, LastFrameBase: TDBGPtr;
+  CountNeeded, CodeReadErrCnt: integer;
+  AnEntry: TDbgCallstackEntry;
+  R: TDbgRegisterValue;
+  NextIdx: LongInt;
+  OutSideFrame: Boolean;
+  StackPtr: TDBGPtr;
+  startPC, endPC: TDBGPtr;
+  returnAddrStackOffset: word;
+  b: byte;
+begin
+  // TODO: use AFrameRequired // check if already partly done
+  if FCallStackEntryList = nil then
+    FCallStackEntryList := TDbgCallstackEntryList.Create;
+  if AFrameRequired = -2 then
+    exit;
+
+  if (AFrameRequired >= 0) and (AFrameRequired < FCallStackEntryList.Count) then
+    exit;
+
+  FCallStackEntryList.FreeObjects:=true;
+  if FCallStackEntryList.Count > 0 then begin
+    AnEntry := FCallStackEntryList[FCallStackEntryList.Count - 1];
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(PCindex);
+    if R = nil then exit;
+    Address := R.NumValue;
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(28);
+    if R = nil then exit;
+    FrameBase := R.NumValue;
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(29);
+    if R = nil then exit;
+    FrameBase := FrameBase + (byte(R.NumValue) shl 8);
+
+    R := AnEntry.RegisterValueList.FindRegisterByDwarfIndex(SPindex);
+    if R = nil then exit;
+    StackPtr := R.NumValue;
+  end
+  else begin
+    Address := GetInstructionPointerRegisterValue;
+    FrameBase := GetStackBasePointerRegisterValue;
+    StackPtr := GetStackPointerRegisterValue;
+    AnEntry := TDbgCallstackEntry.create(Self, 0, FrameBase, Address);
+    // Top level could be without entry in registerlist / same as GetRegisterValueList / but some code tries to find it here ....
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PCindex);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
+
+    // Y pointer register [r28:r29] is used as frame pointer for AVR
+    // Store these to enable stack based parameters to be read correctly
+    // as they are frame pointer relative and dwarf stores the frame pointer under r28
+    //AnEntry.RegisterValueList.DbgRegisterAutoCreate[nFP].SetValue(FrameBase, IntToStr(FrameBase),Size, FPindex);
+    b := byte(FrameBase);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(b, IntToStr(b),Size, 28);
+    b := (FrameBase and $FF00) shr 8;
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue(b, IntToStr(b),Size, 29);
+
+    FCallStackEntryList.Add(AnEntry);
+  end;
+
+  NextIdx := FCallStackEntryList.Count;
+  if AFrameRequired < 0 then
+    AFrameRequired := MaxInt;
+  CountNeeded := AFrameRequired - FCallStackEntryList.Count;
+  LastFrameBase := 0;
+  CodeReadErrCnt := 0;
+  while (CountNeeded > 0) and (FrameBase <> 0) and (FrameBase > LastFrameBase) do
+  begin
+    // Get start/end PC of proc from debug info
+    if not Self.Process.FindProcStartEndPC(Address, startPC, endPC) then
+    begin
+      // Give up for now, it is complicated to locate prologue/epilogue in general without proc limits
+      // ToDo: Perhaps interpret .debug_frame info if available,
+      //       or scan forward from address until an epilogue is found.
+      break;
+    end;
+
+    if not TAvrAsmDecoder(Process.Disassembler).GetFunctionFrameReturnAddress(Address, startPC, endPC, returnAddrStackOffset, OutSideFrame) then
+    begin
+      OutSideFrame := False;
+    end;
+    LastFrameBase := FrameBase;
+
+    if OutSideFrame then begin
+      // Before adjustment of frame pointer, or after restoration of frame pointer,
+      // return PC should be located by offset from SP
+      if not Process.ReadData(DataOffset or (StackPtr + returnAddrStackOffset), Size, Address) or (Address = 0) then Break;
+    end
+    else begin
+      // Inside stack frame, return PC should be located by offset from FP
+      if not Process.ReadData(DataOffset or (FrameBase + returnAddrStackOffset), Size, Address) or (Address = 0) then Break;
+    end;
+    // Convert return address from BE to LE, shl 1 to get byte address
+    Address := BEtoN(word(Address)) shl 1;
+    {$PUSH}{$R-}{$Q-}
+    StackPtr := FrameBase + returnAddrStackOffset + Size - 1; // After popping return-addr from "StackPtr"
+    FrameBase := StackPtr;  // Estimate of previous FP
+    LastFrameBase := LastFrameBase - 1; // Make the loop think that LastFrameBase was smaller
+    {$POP}
+
+    AnEntry := TDbgCallstackEntry.create(Self, NextIdx, FrameBase, Address);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nPC].SetValue(Address, IntToStr(Address),Size, PCindex);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate[nSP].SetValue(StackPtr, IntToStr(StackPtr),Size, SPindex);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r28'].SetValue(byte(FrameBase), IntToStr(b),Size, 28);
+    AnEntry.RegisterValueList.DbgRegisterAutoCreate['r29'].SetValue((FrameBase and $FF00) shr 8, IntToStr(b),Size, 29);
+
+    FCallStackEntryList.Add(AnEntry);
+    Dec(CountNeeded);
+    inc(NextIdx);
+    CodeReadErrCnt := 0;
+    if (NextIdx > MAX_FRAMES) then
+      break;
+  end;
+  if CountNeeded > 0 then // there was an error / not possible to read more frames
+    FCallStackEntryList.SetHasReadAllAvailableFrames;
+end;
+
 { TDbgAvrProcess }
 
 procedure TDbgAvrProcess.InitializeLoaders;
 begin
-  TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
+  if LoaderList.Count = 0 then
+    TDbgImageLoader.Create(Name).AddToLoaderList(LoaderList);
 end;
 
 function TDbgAvrProcess.CreateThread(AthreadIdentifier: THandle; out IsMainThread: boolean): TDbgThread;
 begin
   IsMainThread:=False;
   if AthreadIdentifier<>feInvalidHandle then
-    begin
+  begin
     IsMainThread := AthreadIdentifier=ProcessID;
     result := TDbgAvrThread.Create(Self, AthreadIdentifier, AthreadIdentifier)
-    end
+  end
   else
     result := nil;
 end;
@@ -517,65 +669,72 @@ begin
   Result := TFpRspWatchPointData.Create;
 end;
 
-constructor TDbgAvrProcess.Create(const AFileName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager
-  );
+constructor TDbgAvrProcess.Create(const AFileName: string; AnOsClasses: TOSDbgClasses;
+  AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig);
 begin
-  inherited Create(AFileName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  if Assigned(AProcessConfig) and (AProcessConfig is TRemoteConfig) then
+  begin
+    FRemoteConfig := TRemoteConfig.Create;
+    FRemoteConfig.Assign(AProcessConfig);
+  end;
+
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 end;
 
 destructor TDbgAvrProcess.Destroy;
 begin
   if Assigned(FConnection) then
     FreeAndNil(FConnection);
+  if Assigned(FRemoteConfig) then
+    FreeAndNil(FRemoteConfig);
   inherited Destroy;
 end;
 
-class function TDbgAvrProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses;
-  AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess;
+function TDbgAvrProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
   AnExecutabeFilename: string;
-  dbg: TDbgAvrProcess;
 begin
-  result := nil;
-
-  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  Result := false;
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not debug %s, because it''s a directory',[AnExecutabeFilename]);
     Exit;
   end;
 
-  if not FileExists(AFileName) then
+  if not FileExists(Name) then
   begin
     DebugLn(DBG_WARNINGS, 'Can not find  %s.',[AnExecutabeFilename]);
     Exit;
   end;
 
-  dbg := TDbgAvrProcess.Create(AFileName, 0, 0, AnOsClasses, AMemManager);
+  if not Assigned(FRemoteConfig) then
+  begin
+    DebugLn(DBG_WARNINGS, 'TDbgAvrProcess only supports remote debugging and requires a valid TRemoteConfig class');
+    Exit;
+  end;
+
   try
-    dbg.FConnection := TRspConnection.Create(HostName, Port);
-    dbg.FConnection.RegisterCacheSize := RegArrayLength;
-    result := dbg;
-    dbg.FStatus := dbg.FConnection.Init;
-    dbg := nil;
+    FConnection := TRspConnection.Create(Name, self, self.FRemoteConfig);
+    FConnection.Connect;
+    try
+      FConnection.RegisterCacheSize := RegArrayLength;
+      FStatus := FConnection.Init;
+      Result := true;
+    except
+      on E: Exception do
+      begin
+        DebugLn(DBG_WARNINGS, Format('Failed to init remote connection. Errormessage: "%s".', [E.Message]));
+      end;
+    end;
   except
     on E: Exception do
     begin
-      if Assigned(dbg) then
-        dbg.Free;
       DebugLn(DBG_WARNINGS, Format('Failed to start remote connection. Errormessage: "%s".', [E.Message]));
     end;
   end;
-end;
-
-class function TDbgAvrProcess.AttachToInstance(AFileName: string;
-  APid: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out
-  AnError: TFpError): TDbgProcess;
-begin
-  result := nil;
 end;
 
 class function TDbgAvrProcess.isSupported(target: TTargetDescriptor): boolean;
@@ -712,7 +871,7 @@ begin
       end;
     end;
 
-  if TDbgAvrThread(AThread).FIsPaused then  // in case of deInternal, it may not be paused and can be ignored
+  if TDbgAvrThread(AThread).FIsPaused and SingleStep then  // in case of deInternal, it may not be paused and can be ignored
   if HasInsertedBreakInstructionAtLocation(AThread.GetInstructionPointerRegisterValue) then
   begin
     TempRemoveBreakInstructionCode(AThread.GetInstructionPointerRegisterValue);
@@ -776,20 +935,16 @@ begin
     repeat
       try
         FStatus := FConnection.WaitForSignal(s, initRegs); // TODO: Update registers cache
+        sleep(1);
       except
         FStatus := 0;
       end;
-    until FStatus <> 0;   // should probably wait at lower level...
+    until FStatus <> 0;
 
-  if FStatus <> 0 then
-  begin
-    if FStatus in [SIGINT, SIGTRAP] then
-    begin
-      RestoreTempBreakInstructionCodes;
-    end;
-  end;
+  if FStatus in [SIGINT, SIGTRAP] then
+    RestoreTempBreakInstructionCodes;
 
-  result := true;
+  result := FStatus <> 0;
 end;
 
 function TDbgAvrProcess.InsertBreakInstructionCode(const ALocation: TDBGPtr;
@@ -839,7 +994,7 @@ begin
 
   TDbgAvrThread(AThread).FExceptionSignal:=0;
   TDbgAvrThread(AThread).FIsPaused := True;
-  TDbgAvrThread(AThread).FUpdateStatusFromEvent(FConnection.lastStatusEvent);
+  TDbgAvrThread(AThread).UpdateStatusFromEvent(FConnection.lastStatusEvent);
 
   if FStatus in [SIGHUP, SIGKILL] then  // not sure which signals is relevant here
   begin
@@ -880,16 +1035,13 @@ begin
         else if TDbgAvrThread(AThread).FInternalPauseRequested then
         begin
           DebugLn(DBG_VERBOSE, ['???Received late SigTrap for thread ', AThread.ID]);
-          result := deBreakpoint;//deInternalContinue; // left over signal
+          result := deBreakpoint;
         end
         else
         begin
           DebugLn(DBG_VERBOSE, ['Received SigTrap for thread ', AThread.ID,
              ' PauseRequest=', PauseRequested]);
-          if PauseRequested then   // Hack to work around Pause problem
-            result := deFinishedStep
-          else
-            result := deBreakpoint;
+          result := deBreakpoint;
 
           if not TDbgAvrThread(AThread).FIsSteppingBreakPoint then
             AThread.CheckAndResetInstructionPointerAfterBreakpoint;
@@ -897,9 +1049,14 @@ begin
       end;
       SIGINT:
         begin
-          ExceptionClass:='SIGINT';
-          TDbgAvrThread(AThread).FExceptionSignal:=SIGINT;
-          result := deException;
+          if PauseRequested then
+            result := deBreakpoint
+          else
+          begin
+            ExceptionClass:='SIGINT';
+            TDbgAvrThread(AThread).FExceptionSignal:=SIGINT;
+            result := deException;
+          end;
         end;
       SIGKILL:
         begin

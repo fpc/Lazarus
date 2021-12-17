@@ -94,7 +94,7 @@ begin
 
   //writeln('StrLen(PCmdLineW) = ',CmdLen);
 
-  SetLength(CmdLineW, CmdLen);
+  SetLength(CmdLineW{%H-}, CmdLen);
   Move(PCmdLineW^, CmdLineW[1], CmdLen * SizeOf(WChar));
 
 
@@ -357,7 +357,7 @@ begin
   // this will null-terminate
   if UTF16WordCnt>0 then
   begin
-    setlength(UTF16Str, UTF16WordCnt);
+    setlength(UTF16Str{%H-}, UTF16WordCnt);
     MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, Pointer(s), length(s), @UTF16Str[1], UTF16WordCnt);
     Result:=UTF8Encode(UTF16Str);
     {$ifdef FPC_HAS_CPSTRING}
@@ -569,9 +569,9 @@ var
   U1, U2: String;
 begin
   if Count>0 then begin
-    SetLength(U1,Count);
+    SetLength(U1{%H-},Count);
     Move(S1^,PByte(U1)^,Count);
-    SetLength(U2,Count);
+    SetLength(U2{%H-},Count);
     Move(S2^,PByte(U2)^,Count);
     Result:=UTF8CompareText(U1,U2);
   end else

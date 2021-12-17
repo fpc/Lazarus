@@ -5592,6 +5592,7 @@ begin
   with CurFONT do begin
     Face := FindAttribute(htmlAttrFACE);
     Size.Free;
+    Size:=nil;
     Size := ParseRelSize{('+0')};
     Size.OnChange := SizeChanged;
     Color := ColorFromString(FindAttribute(htmlAttrCOLOR));
@@ -6971,7 +6972,7 @@ end;
 function TIpHtml.ParseRelSize{(const Default : string)} : TIpHtmlRelSize;
 var
   S : string;
-  Err : Integer;
+  i, Err : Integer;
 begin
   Result := TIpHtmlRelSize.Create;
   Result.FSizeType := hrsUnspecified;
@@ -6987,7 +6988,8 @@ begin
     Result.SizeType := hrsRelative;
   end else
     Result.SizeType := hrsAbsolute;
-  Val(S, Result.FValue, Err);
+  Val(S, i, Err);
+  Result.Value := i;
   if Err <> 0 then
     if FlagErrors then
       ReportError(SHtmlInvInt);
@@ -9098,6 +9100,14 @@ end;
 { TIpHtmlNodeFONT }
 
 procedure TIpHtmlNodeFONT.ApplyProps(const RenderProps: TIpHtmlProps);
+
+  function GetFontSizeValue(aSize: integer): integer;
+  begin
+    aSize:=MaxI2(aSize,low(FONTSIZESVALUESARRAY));
+    aSize:=MinI2(aSize,high(FONTSIZESVALUESARRAY));
+    Result:=FONTSIZESVALUESARRAY[aSize];
+  end;
+
 var
   TmpSize : Integer;
 begin
@@ -9106,17 +9116,14 @@ begin
     Props.FontName := FindFontName(Face);
   case Size.SizeType of
   hrsAbsolute :
-    Props.FontSize := FONTSIZESVALUESARRAY[Size.Value-1];
+    begin
+      TmpSize:=Size.Value;
+      Props.FontSize := GetFontSizeValue(TmpSize);
+    end;
   hrsRelative :
     begin
       TmpSize := Props.BaseFontSize + Size.Value;
-      if TmpSize <= 1 then
-        Props.FontSize := 8
-      else
-      if TmpSize > 7 then
-        Props.FontSize := 36
-      else
-        Props.FontSize := FONTSIZESVALUESARRAY[TmpSize-1];
+      Props.FontSize := GetFontSizeValue(TmpSize);
     end;
   end;
   if Color <> clNone then
@@ -9132,7 +9139,7 @@ end;
 destructor TIpHtmlNodeFONT.Destroy;
 begin
   inherited;
-  FSize.Free;
+  FreeAndNil(FSize);
 end;
 
 procedure TIpHtmlNodeFONT.SetColor(const Value: TColor);

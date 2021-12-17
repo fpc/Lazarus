@@ -355,6 +355,19 @@ function CustomFormWndProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam; LPar
     end;
   end;
 
+  procedure CallWindowPosChanging;
+  var
+    WP: PWindowPos;
+  begin
+    if not LockWindowPosChanging then
+      Exit;
+    WP := PWindowPos(LParam);
+    if (WP^.flags and SWP_NOMOVE)<>0 then
+      Exit;
+    WP^.x := LockWindowPosChangingXY.X;
+    WP^.y := LockWindowPosChangingXY.Y;
+  end;
+
 var
   Info: PWin32WindowInfo;
   WinControl: TWinControl;
@@ -362,6 +375,8 @@ begin
   Info := GetWin32WindowInfo(Window);
   WinControl := Info^.WinControl;
   case Msg of
+    WM_WINDOWPOSCHANGING:
+      CallWindowPosChanging;
     WM_GETMINMAXINFO:
       begin
         SetMinMaxInfo(WinControl, PMINMAXINFO(LParam)^);
@@ -626,7 +641,8 @@ class procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl;
     const ALeft, ATop, AWidth, AHeight: Integer);
 var
   AForm: TCustomForm absolute AWinControl;
-  CurRect, SizeRect: Windows.RECT;
+  CurRect: Windows.RECT = (Left: 0; Top: 0; Right: 0; Bottom: 0);
+  SizeRect: Windows.RECT;
   L, T, W, H: Integer;
 begin
   // the LCL defines the size of a form without border, win32 with.

@@ -299,7 +299,7 @@ var
   Flags: LongWord;
   Parent: HWND;
   PreferredSizeStatusBar: HWND;
-  R: TRect;
+  R: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   AErrorCode: Cardinal;
 begin
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;

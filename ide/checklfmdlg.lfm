@@ -9,7 +9,7 @@ object CheckLFMDialog: TCheckLFMDialog
   ClientWidth = 552
   OnClose = FormClose
   OnCreate = CheckLFMDialogCreate
-  LCLVersion = '1.1'
+  LCLVersion = '2.3.0.0'
   object NoteLabel: TLabel
     Left = 0
     Height = 15
@@ -17,7 +17,6 @@ object CheckLFMDialog: TCheckLFMDialog
     Width = 552
     Align = alTop
     Caption = 'NoteLabel'
-    ParentColor = False
     WordWrap = True
   end
   object LFMGroupBox: TGroupBox
@@ -585,7 +584,6 @@ object CheckLFMDialog: TCheckLFMDialog
       Caption = 'Cancel'
       Kind = bkCancel
       ModalResult = 2
-      NumGlyphs = 0
       TabOrder = 0
     end
     object RemoveAllButton: TBitBtn
@@ -597,7 +595,6 @@ object CheckLFMDialog: TCheckLFMDialog
       AutoSize = True
       BorderSpacing.Around = 6
       Caption = 'Remove all invalid properties'
-      NumGlyphs = 0
       OnClick = RemoveAllButtonClick
       TabOrder = 1
     end
@@ -605,12 +602,6 @@ object CheckLFMDialog: TCheckLFMDialog
   object SynLFMSyn1: TSynLFMSyn
     DefaultFilter = 'Lazarus Form Files (*.lfm)|*.lfm'
     Enabled = False
-    CommentAttri.FrameEdges = sfeAround
-    IdentifierAttri.FrameEdges = sfeAround
-    KeyAttri.FrameEdges = sfeAround
-    NumberAttri.FrameEdges = sfeAround
-    SpaceAttri.FrameEdges = sfeAround
-    StringAttri.FrameEdges = sfeAround
     left = 129
     top = 104
   end

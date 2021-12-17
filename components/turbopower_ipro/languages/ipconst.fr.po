@@ -3,14 +3,14 @@ msgstr ""
 "Project-Id-Version: lazaruside\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2019-02-07 10:22+0100\n"
+"PO-Revision-Date: 2021-11-25 16:12+0100\n"
 "Last-Translator: Alcatiz <alcatiz@redaction-developpez.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 3.0\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ipconst.cacheadding
@@ -1001,7 +1001,7 @@ msgstr " (stSendMail)"
 
 #: ipconst.slogtaskcomplete
 msgid "Generating OnTaskComplete event "
-msgstr "Génération d'un événement OnTaskComplete"
+msgstr "Génération d'un événement OnTaskComplete "
 
 #: ipconst.slogtaskstart
 msgid "Starting task: "
@@ -1284,7 +1284,7 @@ msgstr "Préparation en cours de l'envoi de l'article"
 #: ipconst.snsquit
 msgctxt "ipconst.snsquit"
 msgid "Disconnecting"
-msgstr "Déconnexion en cours "
+msgstr "Déconnexion en cours"
 
 #: ipconst.snsspecial
 msgctxt "ipconst.snsspecial"
@@ -1297,7 +1297,7 @@ msgstr "Récupération en cours du statut"
 
 #: ipconst.sntauthenticate
 msgid "Authenticating"
-msgstr "Authentification en cours "
+msgstr "Authentification en cours"
 
 #: ipconst.sntnewnews
 msgid "Retrieving new news"
@@ -1464,7 +1464,7 @@ msgstr "Date de modification : %s"
 
 #: ipconst.spngnoclipboard
 msgid "PNG Clipboard support is not supported."
-msgstr "Le format PNG n'est pas pris en charge par le presse-papiers"
+msgstr "Le format PNG n'est pas pris en charge par le presse-papiers."
 
 #: ipconst.spngpaletteentry
 #, object-pascal-format
@@ -1660,7 +1660,7 @@ msgstr "Récupération en cours de la liste des boîtes mail"
 #: ipconst.sptlogon
 msgctxt "ipconst.sptlogon"
 msgid "Logging on"
-msgstr "Connexion en cours "
+msgstr "Connexion en cours"
 
 #: ipconst.sptnone
 msgctxt "ipconst.sptnone"
@@ -2253,7 +2253,7 @@ msgstr "Certificat non supporté."
 
 #: ipconst.ssslunsupportedchiper
 msgid "Unsupported cipher chosen."
-msgstr "Le chiffrement choisi n'est pas pris en charge"
+msgstr "Le chiffrement choisi n'est pas pris en charge."
 
 #: ipconst.ssslunsupportedencoding
 msgid "Unsupported public encoding."

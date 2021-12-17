@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2020-01-04 16:00+0100\n"
+"PO-Revision-Date: 2021-11-25 15:04+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "Language: fr_FR\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 3.0\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -172,10 +172,8 @@ msgid "Cancel"
 msgstr "Annuler"
 
 #: objinspstrconsts.fescheckdset
-#, fuzzy
-#| msgid "Check dataset settings"
 msgid "Check dataset settings."
-msgstr "Vérifier les paramètres de données"
+msgstr "Vérifier les paramètres de données."
 
 #: objinspstrconsts.fesdata
 msgid "&Data"
@@ -191,6 +189,8 @@ msgid ""
 "Error message:\n"
 "%s"
 msgstr ""
+"Message d'erreur :\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -239,16 +239,12 @@ msgid "&Name:"
 msgstr "&Nom :"
 
 #: objinspstrconsts.fesnofields
-#, fuzzy
-#| msgid "It was not possible to get the dataset field's list"
 msgid "It was not possible to get the dataset fields list."
-msgstr "Impossible d'obtenir les données de la liste des champs"
+msgstr "Impossible d'obtenir les données de la liste des champs."
 
 #: objinspstrconsts.fesnofieldsnote
-#, fuzzy
-#| msgid "Field's list is not available, can't check for duplicates"
 msgid "Fields list is not available, can't check for duplicates."
-msgstr "Liste des champs indisponible : impossible de vérifier les doublons"
+msgstr "Liste des champs indisponible : impossible de vérifier les doublons."
 
 #: objinspstrconsts.fesokbtn
 msgctxt "objinspstrconsts.fesokbtn"
@@ -314,39 +310,39 @@ msgstr "Définir une valeur"
 
 #: objinspstrconsts.lrsbufdsfilters
 msgid "XML data files|*.xml;Binary data files|*.dat"
-msgstr ""
+msgstr "fichiers de données XML|*.xml;fichiers de données binaires|*.dat"
 
 #: objinspstrconsts.lrscopyfromdataset
 msgid "Copy data from other dataset"
-msgstr ""
+msgstr "Copier les données d'un autre ensemble de données"
 
 #: objinspstrconsts.lrscreatedataset
 msgid "Create dataset"
-msgstr ""
+msgstr "Créer un ensemble de données"
 
 #: objinspstrconsts.lrsdatasetactive
 msgid "Dataset is already active, close it first."
-msgstr ""
+msgstr "L'ensemble de données est déjà actif, fermez-le d'abord."
 
 #: objinspstrconsts.lrsloadfromfile
 msgid "Load data from file"
-msgstr ""
+msgstr "Charger les données du fichier"
 
 #: objinspstrconsts.lrsnodatasetsavailableforcopy
 msgid "No dataset available to copy data from."
-msgstr ""
+msgstr "Aucun jeu de données disponible pour copier des données."
 
 #: objinspstrconsts.lrsprovidedatafilename
 msgid "Select a data file to save data to"
-msgstr ""
+msgstr "Sélectionner un fichier de données dans lequel enregistrer les données"
 
 #: objinspstrconsts.lrssavetofile
 msgid "Save data to file"
-msgstr ""
+msgstr "Enregistrer les données dans le fichier"
 
 #: objinspstrconsts.lrsselectdatafilename
 msgid "Select a file with data to load into dataset"
-msgstr ""
+msgstr "Sélectionner un fichier avec des données à charger dans l'ensemble de données"
 
 #: objinspstrconsts.nbcesaddpage
 msgctxt "objinspstrconsts.nbcesaddpage"

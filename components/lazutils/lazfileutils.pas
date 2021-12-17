@@ -300,9 +300,9 @@ begin
     exit;
   end;
   {$IFDEF NotLiteralFilenames}
-  SetLength(File1,Len1);
+  SetLength(File1{%H-},Len1);
   System.Move(Filename1^,File1[1],Len1);
-  SetLength(File2,Len2);
+  SetLength(File2{%H-},Len2);
   System.Move(Filename2^,File2[1],Len2);
   Result:=CompareFilenames(File1,File2);
   {$ELSE}
@@ -1541,20 +1541,11 @@ var
 begin
   Result:=Option;
   if (Result='') or (Result[1] in ['"','''']) then exit;
-  for i:=1 to length(Result) do begin
+  for i:=1 to length(Result) do
     case Result[i] of
-    ' ','''':
-      begin
-        Result:=AnsiQuotedStr(Result,'"');
-        exit;
-      end;
-    '"':
-      begin
-        Result:=AnsiQuotedStr(Result,'''');
-        exit;
-      end;
+      ' ','''': exit(AnsiQuotedStr(Result,'"'));
+      '"':      exit(AnsiQuotedStr(Result,''''));
     end;
-  end;
 end;
 {
 function AddCmdLineParameter(const CmdLine, AddParameter: string): string;

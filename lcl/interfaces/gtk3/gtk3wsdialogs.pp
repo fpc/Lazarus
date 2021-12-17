@@ -60,11 +60,11 @@ type
   TGtk3WSOpenDialog = class(TWSOpenDialog)
   protected
     class function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      Chooser: PGtkFileChooser): string; virtual;
+      Chooser: PGtkFileChooser): string;
     class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget); virtual;
+      SelWidget: PGtkWidget);
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
-      Chooser: PGtkFileChooser); virtual;
+      Chooser: PGtkFileChooser);
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
@@ -961,8 +961,8 @@ end;
   Params: widget: PGtkWidget; data: gPointer
   Result: GBoolean
 
-  This function is called, when a commondialog is destroyed
--------------------------------------------------------------------------------}
+  This function is called when a commondialog is destroyed (caused a crash, removed)
+-------------------------------------------------------------------------------
 function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
   Result := True;
@@ -970,7 +970,7 @@ begin
   TCommonDialog(data).UserChoice := mrCancel;
   TCommonDialog(data).Close;
 end;
-
+}
 {-------------------------------------------------------------------------------
   function GTKDialogKeyUpDownCB
   Params: Widget: PGtkWidget; Event : pgdkeventkey; Data: gPointer
@@ -1482,8 +1482,8 @@ end;
 class procedure TGtk3WSCommonDialog.SetCallbacks(const AGtkWidget: PGtkWidget;
   const AWidgetInfo: TGtk3Dialog);
 begin
-  g_signal_connect_data(AGtkWidget,
-    'destroy', TGCallback(@gtkDialogDestroyCB), AWidgetInfo, nil, 0);
+  //g_signal_connect_data(AGtkWidget,
+  //  'destroy', TGCallback(@gtkDialogDestroyCB), AWidgetInfo, nil, 0);
   g_signal_connect_data(AGtkWidget,
     'delete-event', TGCallback(@gtkDialogCloseQueryCB), AWidgetInfo, nil, 0);
   g_signal_connect_data(AGtkWidget,

@@ -8,7 +8,7 @@ object Form1: TForm1
   ClientWidth = 547
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object Chart1: TChart
     Left = 0
     Height = 274
@@ -16,12 +16,16 @@ object Form1: TForm1
     Width = 347
     AxisList = <    
       item
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
         Title.LabelFont.Orientation = 900
+        Title.LabelBrush.Style = bsClear
       end    
       item
         Alignment = calBottom
+        Marks.LabelBrush.Style = bsClear
         Minors = <>
+        Title.LabelBrush.Style = bsClear
       end>
     Foot.Brush.Color = clBtnFace
     Foot.Font.Color = clBlue
@@ -42,11 +46,13 @@ object Form1: TForm1
       Pointer.HorizSize = 6
       Pointer.Style = psCircle
       Pointer.VertSize = 6
+      Pointer.Visible = True
       ShowPoints = True
       Source = DbChartSource1
     end
     object Chart1BarSeries1: TBarSeries
       BarBrush.Color = clRed
+      Stacked = False
     end
   end
   object DBGrid1: TDBGrid
@@ -88,19 +94,19 @@ object Form1: TForm1
         Name = 'Y'
         DataType = ftFloat
       end>
-    left = 271
-    top = 60
+    Left = 271
+    Top = 60
   end
   object Datasource1: TDataSource
     DataSet = MemDataset1
-    left = 271
-    top = 108
+    Left = 271
+    Top = 108
   end
   object DbChartSource1: TDbChartSource
     DataSource = Datasource1
     FieldX = 'X'
-    FieldY = 'Y,Y'
-    left = 271
-    top = 156
+    FieldY = 'Y'
+    Left = 271
+    Top = 156
   end
 end

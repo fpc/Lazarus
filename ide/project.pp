@@ -3028,6 +3028,7 @@ begin
   // load session info
   LoadSessionInfo(Path,false);
 
+  // This is for backward compatibility (only trunk 2.1 did use this / Can be removed in some time after 2.2 / but needs LoadFromSession to change default to '')
   FDebuggerBackend := FXMLConfig.GetValue(Path+'Debugger/Backend/Value', '');
 
   // call hooks to read their info (e.g. DebugBoss)
@@ -3061,6 +3062,9 @@ begin
   HistoryLists.Clear;
   if FFileVersion>=12 then
     HistoryLists.LoadFromXMLConfig(FXMLConfig,Path+'HistoryLists/');
+
+  // Load from LPI will have been called first => so if session has no value, we keep the LPI value (as for some time, the data was stored in the LPI)
+  FDebuggerBackend := FXMLConfig.GetValue(Path+'Debugger/Backend/Value', FDebuggerBackend);
 
   // call hooks to read their info (e.g. DebugBoss)
   if Assigned(OnLoadProjectInfo) then
@@ -3355,7 +3359,7 @@ begin
   // save units
   SaveUnits(Path,FSaveSessionInLPI);
 
-  FXMLConfig.SetDeleteValue(Path+'Debugger/Backend/Value', DebuggerBackend, '');
+  FXMLConfig.DeletePath(Path+'Debugger'); // remove old value from trunk 2.1
 
   if FSaveSessionInLPI then begin
     // save defines used for custom options
@@ -3410,6 +3414,8 @@ begin
   BuildModes.SaveSessionData(Path);
   // save all units
   SaveUnits(Path,true);
+
+  FXMLConfig.SetDeleteValue(Path+'Debugger/Backend/Value', DebuggerBackend, '');
   // save defines used for custom options
   SaveOtherDefines(Path);
   // save session info
@@ -5399,7 +5405,7 @@ procedure TProject.SetDebuggerBackend(AValue: String);
 begin
   if FDebuggerBackend = AValue then Exit;
   FDebuggerBackend := AValue;
-  Modified := True;
+  SessionModified := True;
 end;
 
 procedure TProject.SetEnableI18NForLFM(const AValue: boolean);
@@ -5551,9 +5557,11 @@ end;
 function TProject.UnitWithComponentClassName(const AClassName: string): TUnitInfo;
 begin
   Result := fFirst[uilWithComponent];
-  while (Result<>nil)
-  and (SysUtils.CompareText(Result.Component.ClassName, AClassName) <> 0) do
+  while (Result<>nil) and (CompareText(Result.Component.ClassName, AClassName)<>0) do
+  begin
+    DebugLn('TProject.UnitWithComponentClassName: ', Result.Component.ClassName);
     Result := Result.fNext[uilWithComponent];
+  end;
 end;
 
 function TProject.UnitWithComponentName(AComponentName: String;

@@ -64,7 +64,7 @@ end;
 function TWin32MemoStrings.Get(Index: Integer): string;
 var
   len: Integer;
-  WideBuffer: WideString;
+  WideBuffer: WideString = '';
 begin
   len := GetLineLength(Index);
   if len=0 then
@@ -168,7 +168,7 @@ begin
   if (AdjustedValue <> Text) then
   begin
     Windows.SetWindowTextW(FHandle, PWideChar(UTF8ToUTF16(AdjustedValue)));
-    FillChar(Msg, SizeOf(Msg), 0);
+    Msg := Default(TLMessage);
     Msg.Msg := CM_TEXTCHANGED;
     DeliverMessage(Owner, Msg);
   end;

@@ -146,7 +146,6 @@ type
     FRealPage: TBaseComponentPage;
     FVisible: boolean;
   protected
-    procedure SetVisible(const AValue: boolean); virtual;
   public
     constructor Create(TheComponentClass: TComponentClass; const ThePageName: string);
     destructor Destroy; override;
@@ -162,7 +161,7 @@ type
                                                      write FOnGetCreationClass;
     property OrigPageName: string read FOrigPageName; // case sensitive
     property RealPage: TBaseComponentPage read FRealPage write FRealPage;
-    property Visible: boolean read FVisible write SetVisible;
+    property Visible: boolean read FVisible write FVisible;
   end;
 
   { TBaseComponentPage }
@@ -174,15 +173,12 @@ type
     FVisible: boolean;
   protected
     FIndex: Integer;           // Index in the Pages container.
-    procedure SetVisible(const AValue: boolean); virtual;
-    procedure OnComponentVisibleChanged({%H-}AComponent: TRegisteredComponent); virtual;
   public
     constructor Create(const ThePageName: string);
-    destructor Destroy; override;
   public
     property PageName: string read FPageName;
     property Palette: TBaseComponentPalette read FPalette write FPalette;
-    property Visible: boolean read FVisible write SetVisible;
+    property Visible: boolean read FVisible write FVisible;
   end;
 
   TBaseComponentPageClass = class of TBaseComponentPage;
@@ -190,9 +186,10 @@ type
   { TBaseComponentPalette }
   
   TComponentPaletteHandlerType = (
-    cphtUpdateVisible,   // Visibility of component palette icons is recomputed
+    cphtVoteVisibility,  // Visibility of component palette icons is recomputed
     cphtComponentAdded,  // Typically selection is changed after component was added.
-    cphtSelectionChanged
+    cphtSelectionChanged,
+    cphtUpdated
     );
 
   TComponentSelectionMode = (
@@ -281,14 +278,17 @@ type
     procedure DoAfterComponentAdded(ALookupRoot, AComponent: TComponent;
                             ARegisteredComponent: TRegisteredComponent); virtual;
     procedure DoAfterSelectionChanged;
+    procedure DoAfterUpdate;
     procedure RemoveAllHandlersOfObject(AnObject: TObject);
-    procedure AddHandlerUpdateVisible(const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
-                                      AsLast: boolean = false);
-    procedure RemoveHandlerUpdateVisible(OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
+    procedure AddHandlerVoteVisibility(const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent;
+                                       AsLast: boolean = false);
+    procedure RemoveHandlerVoteVisibility(OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
     procedure AddHandlerComponentAdded(OnComponentAddedEvent: TComponentAddedEvent);
     procedure RemoveHandlerComponentAdded(OnComponentAddedEvent: TComponentAddedEvent);
     procedure AddHandlerSelectionChanged(OnSelectionChangedEvent: TPaletteHandlerEvent);
     procedure RemoveHandlerSelectionChanged(OnSelectionChangedEvent: TPaletteHandlerEvent);
+    procedure AddHandlerUpdated(OnUpdateEvent: TPaletteHandlerEvent);
+    procedure RemoveHandlerUpdated(OnUpdateEvent: TPaletteHandlerEvent);
   public
     property Pages: TBaseComponentPageList read fPages;
     property Comps: TRegisteredCompList read fComps;
@@ -457,7 +457,7 @@ begin
   for i:=0 to Source.FPageNamesCompNames.Count-1 do
   begin
     sl := TStringList.Create;
-    sl.Assign(Source.FPageNamesCompNames.Objects[i] as TStringList);
+    sl.Assign(TStringList(Source.FPageNamesCompNames.Objects[i]));
     FPageNamesCompNames.AddObject(Source.FPageNamesCompNames[i], sl);
   end;
   FHiddenPageNames.Assign(Source.FHiddenPageNames);
@@ -563,7 +563,7 @@ begin
     XMLConfig.DeletePath(SubPath);
     XMLConfig.SetDeleteValue(SubPath+'Count', FPageNamesCompNames.Count, 0);
     for i:=0 to FPageNamesCompNames.Count-1 do begin
-      CompNames:=FPageNamesCompNames.Objects[i] as TStringList;
+      CompNames:=TStringList(FPageNamesCompNames.Objects[i]);
       CompPath:=SubPath+'Page'+IntToStr(i+1)+'/';
       XMLConfig.SetDeleteValue(CompPath+'Value', FPageNamesCompNames[i], '');
       XMLConfig.SetDeleteValue(CompPath+'Components/Count', CompNames.Count, 0);
@@ -620,17 +620,16 @@ end;
 procedure TCompPaletteUserOrder.Assign(Source: TCompPaletteUserOrder);
 var
   i: Integer;
-  nm, ty: String;
-  obj: TObject;
+  nm: String;
+  cl: TRegisteredCompList;
 begin
   inherited Assign(Source);
   FComponentPages.Clear;
   for i:=0 to Source.FComponentPages.Count-1 do
   begin
     nm := Source.FComponentPages[i];
-    obj := Source.FComponentPages.Objects[i];
-    ty := obj.ClassName;
-    AssignCompPage(nm, obj as TRegisteredCompList);
+    cl := TRegisteredCompList(Source.FComponentPages.Objects[i]);
+    AssignCompPage(nm, cl);
   end;
 end;
 
@@ -657,8 +656,8 @@ begin
     if FComponentPages.Count<>Source.FComponentPages.Count then exit(false);
     for i:=0 to Source.FComponentPages.Count-1 do
     begin
-      MyList:=FComponentPages.Objects[i] as TRegisteredCompList;
-      SrcList:=Source.FComponentPages.Objects[i] as TRegisteredCompList;
+      MyList:=TRegisteredCompList(FComponentPages.Objects[i]);
+      SrcList:=TRegisteredCompList(Source.FComponentPages.Objects[i]);
       if not MyList.Equals(SrcList) then exit(false);
     end;
     Result:=true;
@@ -696,7 +695,7 @@ begin
     FComponentPages.Objects[PageI] := DstComps;
     i := fOptions.FPageNamesCompNames.IndexOf(PgName);
     if i >= 0 then begin                // Add components reordered by user.
-      sl := fOptions.FPageNamesCompNames.Objects[i] as TStringList;
+      sl := TStringList(fOptions.FPageNamesCompNames.Objects[i]);
       for j := 0 to sl.Count-1 do
       begin
         RegComp := fPalette.FindRegComponent(sl[j]);
@@ -709,14 +708,6 @@ begin
 end;
 
 { TRegisteredComponent }
-
-procedure TRegisteredComponent.SetVisible(const AValue: boolean);
-begin
-  if FVisible=AValue then exit;
-  FVisible:=AValue;
-  if (FRealPage<>nil) then
-    FRealPage.OnComponentVisibleChanged(Self);
-end;
 
 constructor TRegisteredComponent.Create(TheComponentClass: TComponentClass;
   const ThePageName: string);
@@ -769,24 +760,6 @@ constructor TBaseComponentPage.Create(const ThePageName: string);
 begin
   FPageName:=ThePageName;
   FVisible:=FPageName<>'';
-end;
-
-destructor TBaseComponentPage.Destroy;
-begin
-  inherited Destroy;
-end;
-
-procedure TBaseComponentPage.SetVisible(const AValue: boolean);
-begin
-  if FVisible=AValue then exit;
-  FVisible:=AValue;
-  //if (FPalette<>nil) then
-  //  FPalette.OnPageVisibleChanged(Self);
-end;
-
-procedure TBaseComponentPage.OnComponentVisibleChanged(AComponent: TRegisteredComponent);
-begin
-
 end;
 
 { TBaseComponentPalette }
@@ -913,7 +886,7 @@ begin
     fUserComponentPageCache.AddObject(PgName, UserRegComps);
     // Associate components belonging to this page
     aVisibleCompCnt := 0;
-    RegiComps := fUserOrder.ComponentPages.Objects[UserPageI] as TRegisteredCompList;
+    RegiComps := TRegisteredCompList(fUserOrder.ComponentPages.Objects[UserPageI]);
     for CompI := 0 to RegiComps.Count-1 do
     begin
       RegComp := RegiComps[CompI];
@@ -950,7 +923,7 @@ var
 begin
   Result := fOrigComponentPageCache.Find(PageName, i);
   if Result then begin
-    rcl := fOrigComponentPageCache.Objects[i] as TRegisteredCompList;
+    rcl := TRegisteredCompList(fOrigComponentPageCache.Objects[i]);
     DestComps.Assign(rcl);
   end
   else
@@ -968,7 +941,7 @@ begin
   DestCompNames.Clear;
   Result := fOrigComponentPageCache.Find(PageName, i);
   if not Result then Exit;
-  rcl := fOrigComponentPageCache.Objects[i] as TRegisteredCompList;
+  rcl := TRegisteredCompList(fOrigComponentPageCache.Objects[i]);
   for i := 0 to rcl.Count-1 do
     if rcl[i].Visible then
       DestCompNames.Add(rcl[i].ComponentClass.ClassName);
@@ -979,7 +952,7 @@ var
   i: Integer;
 begin
   if fUserComponentPageCache.Find(PageName, i) then
-    Result := fUserComponentPageCache.Objects[i] as TRegisteredCompList
+    Result := TRegisteredCompList(fUserComponentPageCache.Objects[i])
   else
     Result := Nil;
 end;
@@ -1173,6 +1146,7 @@ procedure TBaseComponentPalette.Update(ForceUpdateAll: Boolean);
 begin
   fUserOrder.SortPagesAndCompsUserOrder;
   CreatePagesFromUserOrder;
+  DoAfterUpdate;
 end;
 
 procedure TBaseComponentPalette.IterateRegisteredClasses(Proc: TGetComponentClassEvent);
@@ -1198,9 +1172,9 @@ begin
   Vote:=1;
   if HideControls and AComponent.ComponentClass.InheritsFrom(TControl) then
     Dec(Vote);
-  i:=FHandlers[cphtUpdateVisible].Count;
-  while FHandlers[cphtUpdateVisible].NextDownIndex(i) do
-    TUpdateCompVisibleEvent(FHandlers[cphtUpdateVisible][i])(AComponent,Vote);
+  i:=FHandlers[cphtVoteVisibility].Count;
+  while FHandlers[cphtVoteVisibility].NextDownIndex(i) do
+    TUpdateCompVisibleEvent(FHandlers[cphtVoteVisibility][i])(AComponent,Vote);
   Result:=Vote>0;
   AComponent.Visible:=Result;
 end;
@@ -1224,6 +1198,15 @@ begin
     TPaletteHandlerEvent(FHandlers[cphtSelectionChanged][i])();
 end;
 
+procedure TBaseComponentPalette.DoAfterUpdate;
+var
+  i: Integer;
+begin
+  i:=FHandlers[cphtUpdated].Count;
+  while FHandlers[cphtUpdated].NextDownIndex(i) do
+    TPaletteHandlerEvent(FHandlers[cphtUpdated][i])();
+end;
+
 procedure TBaseComponentPalette.RemoveAllHandlersOfObject(AnObject: TObject);
 var
   HandlerType: TComponentPaletteHandlerType;
@@ -1235,16 +1218,16 @@ end;
 // Add / Remove handlers
 
 // UpdateVisible
-procedure TBaseComponentPalette.AddHandlerUpdateVisible(
+procedure TBaseComponentPalette.AddHandlerVoteVisibility(
   const OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent; AsLast: boolean);
 begin
-  AddHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent),AsLast);
+  AddHandler(cphtVoteVisibility,TMethod(OnUpdateCompVisibleEvent),AsLast);
 end;
 
-procedure TBaseComponentPalette.RemoveHandlerUpdateVisible(
+procedure TBaseComponentPalette.RemoveHandlerVoteVisibility(
   OnUpdateCompVisibleEvent: TUpdateCompVisibleEvent);
 begin
-  RemoveHandler(cphtUpdateVisible,TMethod(OnUpdateCompVisibleEvent));
+  RemoveHandler(cphtVoteVisibility,TMethod(OnUpdateCompVisibleEvent));
 end;
 
 // ComponentAdded
@@ -1271,6 +1254,18 @@ procedure TBaseComponentPalette.RemoveHandlerSelectionChanged(
   OnSelectionChangedEvent: TPaletteHandlerEvent);
 begin
   RemoveHandler(cphtSelectionChanged,TMethod(OnSelectionChangedEvent));
+end;
+
+procedure TBaseComponentPalette.AddHandlerUpdated(
+  OnUpdateEvent: TPaletteHandlerEvent);
+begin
+  AddHandler(cphtUpdated,TMethod(OnUpdateEvent));
+end;
+
+procedure TBaseComponentPalette.RemoveHandlerUpdated(
+  OnUpdateEvent: TPaletteHandlerEvent);
+begin
+  RemoveHandler(cphtUpdated,TMethod(OnUpdateEvent));
 end;
 
 end.

@@ -68,22 +68,26 @@ TmpLazDir=$TmpDir/lazarus
 mkdir -p $TmpDir
 rm -rf $TmpLazDir
 if [ "x$Download" = "xyes" ]; then
-  echo "downloading lazarus svn ..."
+  echo "downloading lazarus git ..."
   mkdir -p $TmpLazDir
   Revision=Exported
   cd $TmpDir
-  svn export http://svn.freepascal.org/svn/lazarus/trunk $TmpLazDir
-#  git clone --depth=1 https://gitlab.com/freepascal.org/lazarus/lazarus.git  $TmpLazDir
-#  rm -rf $TmpLazDir/.git
+  # old-svn: svn export http://svn.freepascal.org/svn/lazarus/trunk $TmpLazDir
+  git clone --depth=1 https://gitlab.com/freepascal.org/lazarus/lazarus.git  $TmpLazDir
+  rm -rf $TmpLazDir/.git
   cd -
 else
-  echo "extracting lazarus from local svn ..."
+  echo "extracting lazarus from local git ..."
   LazSrcDir=$(pwd | sed -e 's#/tools/install.*$##')
-  #Revision=$(svnversion $LazSrcDir) - comment this out as svn no longer works
+  # old-svn: Revision=$(svnversion $LazSrcDir) - comment this out as svn no longer works
   Revision=$(git -C $LazSrcDir describe --always --first-parent)
   cd $TmpDir
-#  cp -a $LazSrcDir $TmpLazDir #can't use svn export anymore
-  git -C $LazSrcDir --work-tree=$TmpLazDir restore .
+  #  old-svn: cp -a $LazSrcDir $TmpLazDir
+  mkdir $TmpLazDir
+  cp -a $LazSrcDir/.git $TmpLazDir/
+  git -C $TmpLazDir checkout .
+  rm -rf $TmpLazDir/.git
+  #git -C $LazSrcDir --work-tree=$TmpLazDir restore .
   cd -
   if [ "$UseCHMHelp" = "1" ]; then
     echo

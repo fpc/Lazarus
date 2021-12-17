@@ -1,17 +1,17 @@
 object PseudoConsoleDlg: TPseudoConsoleDlg
-  Left = 438
+  Left = 226
   Height = 480
-  Top = 321
+  Top = 118
   Width = 800
   Caption = 'Console'
   ClientHeight = 480
   ClientWidth = 800
   DockSite = True
   OnResize = FormResize
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.2.0.3'
   object PageControl1: TPageControl
     Left = 0
-    Height = 460
+    Height = 458
     Top = 0
     Width = 800
     ActivePage = TabSheetRaw
@@ -20,12 +20,12 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Formatted'
-      ClientHeight = 430
-      ClientWidth = 790
+      ClientHeight = 426
+      ClientWidth = 796
       TabVisible = False
       object Panel1: TPanel
-        Left = 470
-        Height = 430
+        Left = 636
+        Height = 426
         Top = 0
         Width = 160
         Align = alRight
@@ -35,160 +35,137 @@ object PseudoConsoleDlg: TPseudoConsoleDlg
     end
     object TabSheetRaw: TTabSheet
       Caption = 'Raw Output'
-      ClientHeight = 430
-      ClientWidth = 790
-      object PairSplitterRaw: TPairSplitter
-        Left = 0
-        Height = 430
+      ClientHeight = 426
+      ClientWidth = 796
+      object PanelRawOptions: TPanel
+        Left = 596
+        Height = 426
         Top = 0
-        Width = 790
-        Align = alClient
-        Position = 600
-        object PairSplitterRawLeft: TPairSplitterSide
-          Cursor = crArrow
-          Left = 0
-          Height = 430
-          Top = 0
-          Width = 600
-          ClientWidth = 600
-          ClientHeight = 430
-          Constraints.MinWidth = 200
-          object Memo1: TMemo
-            Left = 4
-            Height = 422
-            Top = 4
-            Width = 592
-            Align = alClient
-            BorderSpacing.Around = 4
-            Font.Name = 'Monospace'
-            OnUTF8KeyPress = Memo1UTF8KeyPress
-            ParentFont = False
-            ReadOnly = True
-            ScrollBars = ssAutoBoth
-            TabOrder = 0
-            WantTabs = True
-          end
+        Width = 200
+        Align = alRight
+        ClientHeight = 426
+        ClientWidth = 200
+        TabOrder = 1
+        object RadioGroupRight: TRadioGroup
+          Left = 1
+          Height = 108
+          Top = 79
+          Width = 198
+          Align = alTop
+          AutoFill = True
+          AutoSize = True
+          Caption = 'Output Style'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 84
+          ClientWidth = 192
+          ItemIndex = 0
+          Items.Strings = (
+            'Unformatted'
+            'C0 as Control Pictures'
+            'C0 as ISO 2047'
+            'Hex + ASCII'
+          )
+          OnSelectionChanged = RadioGroupRightSelectionChanged
+          TabOrder = 1
         end
-        object PairSplitterRawRight: TPairSplitterSide
-          Cursor = crArrow
-          Left = 605
-          Height = 430
-          Top = 0
-          Width = 200
-          ClientWidth = 200
-          ClientHeight = 430
-          Constraints.MinWidth = 200
-          OnResize = PairSplitterRawRightResize
-          object RadioGroupRight: TRadioGroup
+        object CheckGroupRight: TCheckGroup
+          Left = 1
+          Height = 78
+          Top = 1
+          Width = 198
+          Align = alTop
+          AutoFill = True
+          AutoSize = True
+          Caption = 'Decorations'
+          ChildSizing.LeftRightSpacing = 6
+          ChildSizing.TopBottomSpacing = 6
+          ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+          ChildSizing.EnlargeVertical = crsHomogenousChildResize
+          ChildSizing.ShrinkHorizontal = crsScaleChilds
+          ChildSizing.ShrinkVertical = crsScaleChilds
+          ChildSizing.Layout = cclLeftToRightThenTopToBottom
+          ChildSizing.ControlsPerLine = 1
+          ClientHeight = 54
+          ClientWidth = 192
+          Enabled = False
+          Items.Strings = (
+            'Line numbers'
+            'C1 as C0 + Underbar'
+          )
+          TabOrder = 0
+          Data = {
+            020000000202
+          }
+        end
+        object PanelRightBelowCG: TPanel
+          Left = 1
+          Height = 238
+          Top = 187
+          Width = 198
+          Align = alClient
+          BevelOuter = bvNone
+          ClientHeight = 238
+          ClientWidth = 198
+          TabOrder = 2
+          object GroupBoxRight: TGroupBox
             Left = 0
-            Height = 103
+            Height = 64
             Top = 0
-            Width = 200
+            Width = 198
             Align = alTop
-            AutoFill = True
-            AutoSize = True
-            Caption = 'Output Style'
-            ChildSizing.LeftRightSpacing = 6
-            ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-            ChildSizing.EnlargeVertical = crsHomogenousChildResize
-            ChildSizing.ShrinkHorizontal = crsScaleChilds
-            ChildSizing.ShrinkVertical = crsScaleChilds
-            ChildSizing.Layout = cclLeftToRightThenTopToBottom
-            ChildSizing.ControlsPerLine = 1
-            ClientHeight = 84
-            ClientWidth = 198
-            ItemIndex = 0
-            Items.Strings = (
-              'Unformatted'
-              'C0 as Control Pictures'
-              'C0 as ISO 2047'
-              'Hex + ASCII'
-            )
-            OnSelectionChanged = RadioGroupRightSelectionChanged
-            TabOrder = 1
-          end
-          object PanelRightBelowRG: TPanel
-            Left = 0
-            Height = 327
-            Top = 103
-            Width = 200
-            Align = alClient
-            BevelOuter = bvNone
-            ClientHeight = 327
-            ClientWidth = 200
+            Caption = 'Line limit'
+            ClientHeight = 40
+            ClientWidth = 192
             TabOrder = 0
-            object CheckGroupRight: TCheckGroup
-              Left = 0
-              Height = 73
+            object MaskEdit1: TMaskEdit
+              Left = 9
+              Height = 23
               Top = 0
-              Width = 200
-              Align = alTop
-              AutoFill = True
-              AutoSize = True
-              Caption = 'Decorations'
-              ChildSizing.LeftRightSpacing = 6
-              ChildSizing.TopBottomSpacing = 6
-              ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-              ChildSizing.EnlargeVertical = crsHomogenousChildResize
-              ChildSizing.ShrinkHorizontal = crsScaleChilds
-              ChildSizing.ShrinkVertical = crsScaleChilds
-              ChildSizing.Layout = cclLeftToRightThenTopToBottom
-              ChildSizing.ControlsPerLine = 1
-              ClientHeight = 54
-              ClientWidth = 198
-              Enabled = False
-              Items.Strings = (
-                'Line numbers'
-                'C1 as C0 + Underbar'
-              )
-              TabOrder = 1
-              Data = {
-                020000000202
-              }
-            end
-            object PanelRightBelowCG: TPanel
-              Left = 0
-              Height = 254
-              Top = 73
-              Width = 200
-              Align = alClient
-              BevelOuter = bvNone
-              ClientHeight = 254
-              ClientWidth = 200
+              Width = 128
+              MaxLength = 7
               TabOrder = 0
-              object GroupBoxRight: TGroupBox
-                Left = 0
-                Height = 64
-                Top = 0
-                Width = 200
-                Align = alTop
-                Caption = 'Line limit'
-                ClientHeight = 45
-                ClientWidth = 198
-                TabOrder = 0
-                object MaskEdit1: TMaskEdit
-                  Left = 9
-                  Height = 30
-                  Top = 0
-                  Width = 128
-                  CharCase = ecNormal
-                  MaxLength = 7
-                  TabOrder = 0
-                  EditMask = '#######'
-                  Text = '5000   '
-                  SpaceChar = '_'
-                end
-              end
+              EditMask = '#######'
+              Text = '5000   '
+              SpaceChar = '_'
             end
           end
         end
+      end
+      object Splitter1: TSplitter
+        Left = 591
+        Height = 426
+        Top = 0
+        Width = 5
+        Align = alRight
+        ResizeAnchor = akRight
+      end
+      object Memo1: TMemo
+        Left = 4
+        Height = 418
+        Top = 4
+        Width = 583
+        Align = alClient
+        BorderSpacing.Around = 4
+        Font.Name = 'Monospace'
+        OnUTF8KeyPress = Memo1UTF8KeyPress
+        ParentFont = False
+        ReadOnly = True
+        ScrollBars = ssAutoBoth
+        TabOrder = 0
+        WantTabs = True
       end
     end
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 460
+    Height = 22
+    Top = 458
     Width = 800
     Panels = <    
       item

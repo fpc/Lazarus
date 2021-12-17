@@ -316,7 +316,7 @@ type
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAddress: TFpDbgMemLocation; override;
   public
-    constructor Create(AnAddress: TFpDbgMemLocation);
+    constructor Create(const AnAddress: TFpDbgMemLocation);
   end;
 
   { TFpValueTypeDefinition }
@@ -377,7 +377,7 @@ type
     procedure SetName(const AValue: String); inline;
     procedure SetKind(AValue: TDbgSymbolKind); inline;
     procedure SetSymbolType(AValue: TDbgSymbolType); inline;
-    procedure SetAddress(AValue: TFpDbgMemLocation); inline;
+    procedure SetAddress(const AValue: TFpDbgMemLocation); inline;
     procedure SetTypeInfo(ASymbol: TFpSymbol); inline;
     procedure SetMemberVisibility(AValue: TDbgSymbolMemberVisibility); inline;
 
@@ -391,7 +391,7 @@ type
     //procedure Needed; virtual;
   public
     constructor Create(const AName: String);
-    constructor Create(const AName: String; AKind: TDbgSymbolKind; AAddress: TFpDbgMemLocation);
+    constructor Create(const AName: String; AKind: TDbgSymbolKind; const AAddress: TFpDbgMemLocation);
     destructor Destroy; override;
     // Basic info
     property Name:       String read GetName;
@@ -580,6 +580,7 @@ type
   end;
 
   { TDbgInfo }
+  TGetLineAddrFindSibling = (fsNone, fsBefore, fsNext);
 
   TDbgInfo = class(TObject)
   private
@@ -598,8 +599,12 @@ type
     function FindSymbolScope(ALocationContext: TFpDbgLocationContext; {%H-}AAddress: TDbgPtr = 0): TFpDbgSymbolScope; virtual;
     function FindProcSymbol(AAddress: TDbgPtr): TFpSymbol; virtual; overload;
     function FindProcSymbol(const {%H-}AName: String): TFpSymbol; virtual; overload;
+
+    function  FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean; virtual;
+
     property HasInfo: Boolean read FHasInfo;
-    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray): Boolean; virtual;
+    function GetLineAddresses(const AFileName: String; ALine: Cardinal; var AResultList: TDBGPtrArray;
+      AFindSibling: TGetLineAddrFindSibling = fsNone; AFoundLine: PInteger = nil): Boolean; virtual;
     //property MemManager: TFpDbgMemReaderBase read GetMemManager write SetMemManager;
     property TargetInfo: TTargetDescriptor read FTargetInfo write FTargetInfo;
     property MemManager: TFpDbgMemManager read FMemManager;
@@ -1129,7 +1134,7 @@ begin
   Result := FAddress;
 end;
 
-constructor TFpValueConstAddress.Create(AnAddress: TFpDbgMemLocation);
+constructor TFpValueConstAddress.Create(const AnAddress: TFpDbgMemLocation);
 begin
   inherited Create;
   FAddress := AnAddress;
@@ -1255,7 +1260,7 @@ begin
 end;
 
 constructor TFpSymbol.Create(const AName: String; AKind: TDbgSymbolKind;
-  AAddress: TFpDbgMemLocation);
+  const AAddress: TFpDbgMemLocation);
 begin
   Create(AName);
   SetKind(AKind);
@@ -1395,7 +1400,7 @@ begin
   Result := 0;
 end;
 
-procedure TFpSymbol.SetAddress(AValue: TFpDbgMemLocation);
+procedure TFpSymbol.SetAddress(const AValue: TFpDbgMemLocation);
 begin
   FAddress := AValue;
   Include(FEvaluatedFields, sfiAddress);
@@ -1746,8 +1751,17 @@ begin
   Result := nil;
 end;
 
+function TDbgInfo.FindProcStartEndPC(const AAddress: TDbgPtr; out AStartPC,
+  AEndPC: TDBGPtr): boolean;
+begin
+  AStartPC := 0;
+  AEndPC := 0;
+  Result := false;
+end;
+
 function TDbgInfo.GetLineAddresses(const AFileName: String; ALine: Cardinal;
-  var AResultList: TDBGPtrArray): Boolean;
+  var AResultList: TDBGPtrArray; AFindSibling: TGetLineAddrFindSibling;
+  AFoundLine: PInteger): Boolean;
 begin
   Result := False;
 end;

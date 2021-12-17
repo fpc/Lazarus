@@ -208,7 +208,6 @@
         <seealso>
           <link id="TSpinEditExBase.MinValue"/>
           <link id="TSpinEditExBase.MaxValue"/>
-          <link id="TSpinEditExBase.IsOutOfLimits"/>
         </seealso>
       </element>
       <element name="TSpinEditExBase.IsLimited.Result">
@@ -525,6 +524,41 @@
         <short>The decremented (and possibly range limited) value.</short>
       </element>
 
+      <element name="TSpinEditExBase.SameValue">
+        <short>Determines whether the specified arguments have the same value.</short>
+        <descr>
+          <p>
+            <var>SameValue</var> is a <var>Boolean</var> function used to compare the values in <var>AValue1</var> and <var>AValue2</var> to determine if they have the same value.  The return value is <b>True</b> when both AValue1 and AValue2 have the same value. It is defined as an abstract virtual method in <var>TSpinEditExBase</var>, and must be implemented in descendent classes to compare the data type for the specialization.
+          </p>
+          <p>
+            SameValue is used in the implementation of storage specifiers for the <var>Increment</var>, <var>MinValue</var>, and <var>MaxValue</var> properties.
+          </p>
+          <p>
+            SameValue is defined when using FPC compiler version 3.2.2 on the Windows 64-bit platform. This method was introduced to ensure that the type specialization for the class instance is used when value comparisons are performed. Specifically, it allows the 64-bit compiler on Windows to determine which of the overloads in <var>Math.SameValue</var> is called for the <var>Currency</var> type.
+          </p>
+        </descr>
+        <version>
+          Introduced in version 2.2.0.
+        </version>
+        <seealso>
+          <link id="TSpinEditExBase.Increment"/>
+          <link id="TSpinEditExBase.MinValue"/>
+          <link id="TSpinEditExBase.MaxValue"/>
+          <link id="TCustomFloatSpinEditEx"/>
+          <link id="TCustomSpinEditEx"/>
+          <link id="#rtl.math.SameValue">Math.SameValue</link>
+        </seealso>
+      </element>
+      <element name="TSpinEditExBase.SameValue.Result">
+        <short>True if both arguments have the same value.</short>
+      </element>
+      <element name="TSpinEditExBase.SameValue.AValue1">
+        <short>First value for the comparison.</short>
+      </element>
+      <element name="TSpinEditExBase.SameValue.AValue2">
+        <short>Second value for the comparison.</short>
+      </element>
+
       <element name="TSpinEditExBase.SetValue">
         <short>Sets the value for the Value property.</short>
         <descr/>
@@ -640,8 +674,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.groupededitTCustomAbstractGroupedEdit.Loaded"/>
-          <link id="#lcl.groupededitTCustomAbstractGroupedEdit.UpdateSpacing"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Loaded"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.UpdateSpacing"/>
         </seealso>
       </element>
 
@@ -682,7 +716,7 @@
         </descr>
         <seealso>
           <link id="#lcl.groupededit.TGEEdit"/>
-          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.Edit"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit"/>
         </seealso>
       </element>
 
@@ -729,7 +763,6 @@
         </descr>
         <seealso>
           <link id="#lcl.comctrls.TUpDown.MinRepeatInterval"/>
-          <link id="DefMinRepeatValue"/>
         </seealso>
       </element>
 
@@ -866,12 +899,12 @@
           </p>
         </descr>
         -<seealso>
-          <link id="TCustomSpinEditEx.Increment"/>
-          <link id="TCustomSpinEditEx.Value"/>
-          <link id="TCustomSpinEditEx.UpDown"/>
-          <link id="TCustomSpinEditEx.Edit"/>
-          <link id="TCustomSpinEditEx.ArrowKeys"/>
-          <link id="TCustomFloatSpinEditEx.Increment"/>
+          <link id="TSpinEditExBase.Value"/>
+          <link id="TSpinEditExBase.UpDown"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="TSpinEditExBase.ArrowKeys"/>
+          <link id="TCustomSpinEditEx"/>
+          <link id="TCustomFloatSpinEditEx"/>
         </seealso>
       </element>
 
@@ -893,10 +926,6 @@
           <link id="TSpinEditExBase.NullValue"/>
           <link id="TSpinEditExBase.MaxValue"/>
           <link id="TSpinEditExBase.NullValueBehaviour"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
-          <link id="TSpinEditExBase.IsLimited"/>
-          <link id="TSpinEditExBase.IsOutOfLimits"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.GetLimitedValue"/>
         </seealso>
       </element>
@@ -919,10 +948,6 @@
           <link id="TSpinEditExBase.NullValue"/>
           <link id="TSpinEditExBase.MinValue"/>
           <link id="TSpinEditExBase.NullValueBehaviour"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
-          <link id="TSpinEditExBase.IsLimited"/>
-          <link id="TSpinEditExBase.IsOutOfLimits"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.GetLimitedValue"/>
         </seealso>
       </element>
@@ -980,7 +1005,6 @@
           <link id="TSpinEditExBase.NullValueBehaviour"/>
           <link id="TSpinEditExBase.StrToValue"/>
           <link id="TSpinEditExBase.TextIsNumber"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
           <link id="TSpinEditExBase.UpDown"/>
         </seealso>
       </element>
@@ -1164,7 +1188,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TSpinEditExBase.Edit"/>
           <link id="TCustomFloatSpinEditEx.DecimalPlaces"/>
           <link id="TCustomFloatSpinEditEx.DecimalSeparator"/>
           <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.EditKeyPress"/>
@@ -1231,9 +1255,7 @@
         </descr>
         <seealso>
           <link id="TSpinEditExBase.Increment"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TCustomFloatSpinEditEx.SafeDec"/>
-          <link id="#rtl.math.MaxDouble"/>
         </seealso>
       </element>
       <element name="TCustomFloatSpinEditEx.SafeInc.Result">
@@ -1271,6 +1293,34 @@
         <short>Numeric value decremented in the method.</short>
       </element>
 
+      <element name="TCustomFloatSpinEditEx.SameValue">
+        <short>Determines whether the specified arguments have the same value.</short>
+        <descr>
+          <p>
+            <var>SameValue</var> is an overridden <var>Boolean</var> function used to compare the values in <var>AValue1</var> and <var>AValue2</var> to determine if they have the same value.  The return value is <b>True</b> when both AValue1 and AValue2 have the same value.  The arguments are implemented using the Double type in TCustomFloatSpinEditEx. The overloaded SameValue routine in the <file>math.pp</file> unit is called to get the return value for the method.
+          </p>
+          <p>
+            SameValue is defined when using FPC compiler version 3.2.2 on the Windows 64-bit platform. This method was introduced to ensure that the type specialization for the class instance is used when value comparisons are performed. Specifically, it allows the 64-bit compiler on Windows to determine which of the overloads in <var>Math.SameValue</var> is called for the <var>Currency</var> type.
+          </p>
+        </descr>
+        <version>
+          Introduced in version 2.2.0.
+        </version>
+        <seealso>
+          <link id="TSpinEditExBase.SameValue"/>
+          <link id="#rtl.math.SameValue">Math.SameValue</link>
+        </seealso>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SameValue.Result">
+        <short>True if both arguments have the same value.</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SameValue.AValue1">
+        <short>First value for the comparison.</short>
+      </element>
+      <element name="TCustomFloatSpinEditEx.SameValue.AValue2">
+        <short>Second value for the comparison.</short>
+      </element>
+
       <element name="TCustomFloatSpinEditEx.SetDecimals">
         <short>Sets the value for the DecimalPlaces property.</short>
         <descr/>
@@ -1299,8 +1349,7 @@
         </descr>
         <seealso>
           <link id="TDisplayMode"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TSpinEditExBase.Edit"/>
         </seealso>
@@ -1331,10 +1380,10 @@
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
           <link id="TCustomFloatSpinEditEx.Precision"/>
           <link id="TCustomFloatSpinEditEx.ExponentDigits"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.ExponentialFormatLimitNeg"/>
-          <link id="TDisplayMode.dmAuto"/>
+          <link id="TDisplayMode"/>
         </seealso>
       </element>
 
@@ -1360,11 +1409,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
-          <link id="TCustomFloatSpinEditEx.GetValue"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
           <link id="TCustomFloatSpinEditEx.ExponentialFormatLimitPos"/>
           <link id="TCustomFloatSpinEditEx.Precision"/>
           <link id="TCustomFloatSpinEditEx.ExponentDigits"/>
@@ -1407,9 +1454,7 @@
           <link id="TCustomFloatSpinEditEx.Precision"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
-          <link id="TCustomFloatSpinEditEx.GetValue"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
+          <link id="TSpinEditExBase.Value"/>
         </seealso>
       </element>
 
@@ -1473,11 +1518,10 @@
         </descr>
         <seealso>
           <link id="TCustomFloatSpinEditEx.Create"/>
-          <link id="TCustomFloatSpinEditEx.Edit"/>
+          <link id="TSpinEditExBase.Edit"/>
           <link id="TCustomFloatSpinEditEx.EditKeyPress"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
-          <link id="DefDecimalSeparator"/>
         </seealso>
       </element>
 
@@ -1492,14 +1536,11 @@
           </p>
         </descr>
         <seealso>
-          <link id=""/>
           <link id="TCustomFloatSpinEditEx.Create"/>
-          <link id="TCustomFloatSpinEditEx.Edit"/>
-          <link id="TCustomFloatSpinEditEx.Value"/>
+          <link id="TSpinEditExBase.Edit"/>
+          <link id="TSpinEditExBase.Value"/>
           <link id="TCustomFloatSpinEditEx.ValueToStr"/>
           <link id="TCustomFloatSpinEditEx.DisplayMode"/>
-          <link id="TCustomFloatSpinEditEx.UpdateControl"/>
-          <link id="DefDecimals"/>
         </seealso>
       </element>
 
@@ -1689,7 +1730,6 @@
         </descr>
         <seealso>
           <link id="TCustomSpinEditEx.Increment"/>
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.SafeInc"/>
         </seealso>
       </element>
@@ -1718,7 +1758,6 @@
         </descr>
         <seealso>
           <link id="TCustomSpinEditEx.Increment"/>"
-          <link id="TSpinEditExBase.SpinUpDown"/>
           <link id="TSpinEditExBase.SafeDec"/>
         </seealso>
       </element>
@@ -1727,6 +1766,34 @@
       </element>
       <element name="TCustomSpinEditEx.SafeDec.AValue">
         <short>Numeric value decremented in the method.</short>
+      </element>
+
+      <element name="TCustomSpinEditEx.SameValue">
+        <short>Determines whether the specified arguments have the same value.</short>
+        <descr>
+          <p>
+            <var>SameValue</var> is an overridden <var>Boolean</var> function used to compare the values in <var>AValue1</var> and <var>AValue2</var> to determine if they have the same value.  The return value is <b>True</b> when both AValue1 and AValue2 have the same value.  The arguments are implemented using the Int64 type in TCustomSpinEditEx.
+          </p>
+          <p>
+            SameValue is defined when using FPC compiler version 3.2.2 on the Windows 64-bit platform. This method was introduced to ensure that the type specialization for the class instance is used when value comparisons are performed.
+          </p>
+        </descr>
+        <version>
+          Introduced in version 2.2.0.
+        </version>
+        <seealso>
+          <link id="TSpinEditExBase.SameValue"/>
+          <link id="#rtl.math.SameValue">Math.SameValue</link>
+        </seealso>
+      </element>
+      <element name="TCustomSpinEditEx.SameValue.Result">
+        <short>True if both arguments have the same value.</short>
+      </element>
+      <element name="TCustomSpinEditEx.SameValue.AValue1">
+        <short>First value for the comparison.</short>
+      </element>
+      <element name="TCustomSpinEditEx.SameValue.AValue2">
+        <short>Second value for the comparison.</short>
       </element>
 
       <element name="TCustomSpinEditEx.TextIsNumber">
@@ -1744,7 +1811,6 @@
         </descr>
         <seealso>
           <link id="TCustomSpinEditEx.ThousandSeparator"/>
-          <link id="RemoveThousandSeparator"/>
         </seealso>
       </element>
       <element name="TCustomSpinEditEx.TextIsNumber.Result">
@@ -1772,8 +1838,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomFloatSpinEditEx.ThousandSeparator"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
+          <link id="TCustomSpinEditEx.ThousandSeparator"/>
           <link id="TSpinEditExBase.RealGetText"/>
         </seealso>
       </element>
@@ -1814,10 +1879,9 @@
           </p>
         </descr>
         <seealso>
-          <link id="TCustomSpinEditEx.EditKeyPress"/>
+          <link id="TSpinEditExBase.EditKeyPress"/>
           <link id="TCustomSpinEditEx.TextIsNumber"/>
           <link id="TCustomSpinEditEx.ValueToStr"/>
-          <link id="TSpinEditExBase.UpdateControl"/>
         </seealso>
       </element>
 

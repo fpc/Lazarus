@@ -25,10 +25,6 @@ uses
 
 type
 
-  //TImageIndexEvent = function (Str: String; Data: TObject;
-  //                             var IsEnabled: Boolean): Integer of object;
-  TStringArray = array of string;
-
   { TListViewDataItem }
 
   TListViewDataItem = record

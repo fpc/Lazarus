@@ -128,18 +128,18 @@ type
       WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure CreatePopupMenu;
     procedure UnselectAllButtons;
-    procedure SelectionWasChanged;
     procedure GetUnregisteredIcon(var ImageList: TCustomImageList; var ImageIndex: TImageIndex);
     function GetSelectButtonIcon: TCustomBitmap;
     function SelectAButton(Button: TSpeedButton): boolean;
     procedure ComponentWasAdded({%H-}ALookupRoot, {%H-}AComponent: TComponent;
                                 {%H-}ARegisteredComponent: TRegisteredComponent);
+    procedure SelectionWasChanged;
   protected
     procedure DoChange; override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure OnGetNonVisualCompIcon(Sender: TObject;
+    procedure GetNonVisualCompIcon(Sender: TObject;
       AComponent: TComponent; var ImageList: TCustomImageList; var ImageIndex: TImageIndex);
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
@@ -507,7 +507,7 @@ begin
   fBtnIndex := 0;
   Assert(Assigned(fRegComps), 'TComponentPage.CreateButtons: fCompNames is not assigned.');
   for i := 0 to fRegComps.Count-1 do begin
-    Comp := fRegComps[i] as TPkgComponent;
+    Comp := TPkgComponent(fRegComps[i]);
     if Assigned(Comp) then
       CreateOrDelButton(Comp, Format('%d_%d_',[FIndex,i]), ScrollBox);
   end;
@@ -520,7 +520,7 @@ procedure TComponentPalette.ActivePageChanged(Sender: TObject);
 begin
   if (FPageControl=nil) or fUpdatingPageControl then exit;
   if (Selected<>nil)
-  and ((Selected.RealPage as TComponentPage).PageComponent=FPageControl.ActivePage) then exit;
+  and (TComponentPage(Selected.RealPage).PageComponent=FPageControl.ActivePage) then exit;
   {$IFDEF VerboseComponentPalette}
   DebugLn('TComponentPalette.ActivePageChanged: Calling ReAlignButtons, setting Selected:=nil.');
   {$ENDIF}
@@ -741,7 +741,7 @@ begin
   UnselectAllButtons;
   if Selected=nil then exit;
   Assert(Assigned(Selected.RealPage), 'TComponentPalette.SelectionWasChanged: Selected.RealPage = Nil.');
-  Sheet:=(Selected.RealPage as TComponentPage).PageComponent as TTabSheet;
+  Sheet:=TComponentPage(Selected.RealPage).PageComponent as TTabSheet;
   {$IFDEF VerboseComponentPalette}
   DebugLn(['TComponentPalette.SelectionWasChanged: Setting FPageControl.ActivePage index ',Sheet.PageIndex]);
   {$ENDIF}
@@ -876,8 +876,8 @@ begin
   if not (ForceUpdateAll or FChanged) then Exit;
   inherited Update(ForceUpdateAll);
   {$IFDEF VerboseComponentPalette}
-  DebugLn(['TComponentPalette.Update, calling UpdateNoteBookButtons, fUpdatingPageControl=',
-           fUpdatingPageControl, ', ForceUpdateAll=', ForceUpdateAll, ', FChanged=', FChanged]);
+  DebugLn(['TComponentPalette.Update, fUpdatingPageControl=', fUpdatingPageControl,
+           ', ForceUpdateAll=', ForceUpdateAll, ', FChanged=', FChanged]);
   {$ENDIF}
   UpdateNoteBookButtons(ForceUpdateAll);
   FChanged:=False;
@@ -1018,7 +1018,7 @@ begin
         Pg.RemoveSheet;
       end;
       {$ENDIF}
-      Pg.InsertVisiblePage(UserOrder.ComponentPages.Objects[i] as TRegisteredCompList);
+      Pg.InsertVisiblePage(TRegisteredCompList(UserOrder.ComponentPages.Objects[i]));
       {$IFDEF VerboseComponentPalette}
       DebugLn(['TComponentPalette.UpdateNoteBookButtons: PageIndex=', i, ' PageName=',Pages[i].PageName]);
       {$ENDIF}
@@ -1048,7 +1048,7 @@ begin
   end;
 end;
 
-procedure TComponentPalette.OnGetNonVisualCompIcon(Sender: TObject;
+procedure TComponentPalette.GetNonVisualCompIcon(Sender: TObject;
   AComponent: TComponent; var ImageList: TCustomImageList;
   var ImageIndex: TImageIndex);
 var
@@ -1072,7 +1072,7 @@ function TComponentPalette.IndexOfPageComponent(AComponent: TComponent): integer
 begin
   if AComponent<>nil then begin
     Result:=Pages.Count-1;
-    while (Result>=0) and ((Pages[Result] as TComponentPage).PageComponent<>AComponent) do
+    while (Result>=0) and (TComponentPage(Pages[Result]).PageComponent<>AComponent) do
       dec(Result);
   end else
     Result:=-1;
@@ -1091,7 +1091,7 @@ end;
 
 function TComponentPalette.FindPkgCompByButton(Button: TComponent): TPkgComponent;
 begin
-  Result := FindCompByButton(Button as TSpeedButton) as TPkgComponent;
+  Result := TPkgComponent(FindCompByButton(TSpeedButton(Button)));
 end;
 
 end.

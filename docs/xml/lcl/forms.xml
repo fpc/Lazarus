@@ -642,7 +642,7 @@
             Create is the constructor for the class instance, and calls the inherited constructor on entry.
           </p>
           <p>
-            Create sets the assocaited control for the class instance and the Kind property to the values specified in the AControl and AKind arguments. Create sets the default values for properties, including:
+            Create sets the associated control for the class instance and the Kind property to the values specified in the AControl and AKind arguments. Create sets the default values for properties, including:
           </p>
           <dl>
             <dt>Page</dt>
@@ -696,7 +696,7 @@
         </short>
         <descr>
           <p>
-            <var>IsScrollBarVisible</var> is a <var>Boolean</var> function used to determine if the scroll bar for the associatied control is visible. The return value defaults to the value in the <var>Visible</var> property. If the handle has been allocated for the control, the <var>GetScrollbarVisible</var> routine from the LCL interface is used to get the visiblity for the scroll bar <var>Kind</var>.
+            <var>IsScrollBarVisible</var> is a <var>Boolean</var> function used to determine if the scroll bar for the associated control is visible. The return value defaults to the value in the <var>Visible</var> property. If the handle has been allocated for the control, the <var>GetScrollbarVisible</var> routine from the LCL interface is used to get the visibility for the scroll bar <var>Kind</var>.
           </p>
           <p>
             IsScrollBarVisible is used in the implementation of the <var>ClientSizeWithBar</var> and <var>ClientSizeWithoutBar</var> methods.
@@ -1741,9 +1741,14 @@
           <remark>
             No actions are performed in the method when a Parent form has not been assigned for the class instance.
           </remark>
+           <p>
+             AddActionList is called from the Notification method when a TCustomActionList instance has been added to the control. This occurs when a new Parent is assigned for the frame instance.
+           </p>
         </descr>
         <seealso>
+          <link id="TCustomFrame.Notification"/>
           <link id="GetParentForm"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
         </seealso>
       </element>
       <element name="TCustomFrame.AddActionList.ActionList">
@@ -1756,9 +1761,14 @@
           <remark>
             No actions are performed in the method when a Parent form has not been assigned for the class instance.
           </remark>
+          <p>
+            RemoveActionList is called from the Notification method when the TCustomActionList instance has been added to the control. This occurs when a new Parent which contains an action list is assigned for the frame instance.
+          </p>
         </descr>
         <seealso>
+          <link id="TCustomFrame.Notification"/>
           <link id="GetParentForm"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
         </seealso>
       </element>
       <element name="TCustomFrame.RemoveActionList.ActionList">
@@ -1819,11 +1829,11 @@
       </element>
 
       <element name="TCustomFrame.Notification">
-        <short>Also handles add/remove of ActionLists.</short>
+        <short>Adds or removes an action list for the control.</short>
         <descr/>
         <seealso>
-          <link id="#rtl.Classes.TComponent.Notification">TComponent.Notification</link>
-          <link id="#LCL.Controls.TControl.Notification">TControl.Notification</link>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
+          <link id="#rtl.classes.TComponent.Notification">TComponent.Notification</link>
         </seealso>
       </element>
       <element name="TCustomFrame.Notification.AComponent">
@@ -1855,7 +1865,9 @@
       <element name="TCustomFrame.SetParent">
         <short>Sets the value for the Parent property.</short>
         <descr>
-          Also updates the ActionLists, and performs automatic layout adjustments when needed.
+          <p>
+            Updates the action list for child components or nested frames by calling AddActionList or RemoveActionList. Frees the Handle for the control when Parent has not already been assigned. Calls the inherited method to update the value in Parent. Performs automatic layout adjustments when the PixelsPerInch settings for the Parent and the frame instance have different value.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
@@ -1863,25 +1875,37 @@
         </seealso>
       </element>
       <element name="TCustomFrame.SetParent.AParent">
-        <short>Value assigned to the Parent property.</short>
+        <short>New value for the Parent property.</short>
       </element>
 
       <element name="TCustomFrame.SetParentBackground">
         <short>Sets the value for the ParentBackground property.</short>
-        <descr/>
+        <descr>
+          <p>
+            Ensures that Color is changed to the value in the Parent control when the property is set to True. Color is set to clDefault when the property is set to False. Calls UpdateOpaque to ensure that the csOpaque style flag is applied to the ControlStyle property as needed.
+          </p>
+        </descr>
         <seealso>
           <link id="TCustomFrame.ParentBackground"/>
         </seealso>
       </element>
       <element name="TCustomFrame.SetParentBackground.AParentBackground">
-        <short>New value for the property.</short>
+        <short>New value for the ParentBackground property.</short>
       </element>
 
       <element name="TCustomFrame.CMParentColorChanged">
         <short>Handles the CM_PARENTCOLORCHANGED message for the control.</short>
-        <descr/>
+        <descr>
+          <p>
+            CMParentColorChanged is an overridden method in TCustomFrame. It calls the inherited method on entry to update the values in Color and ParentColor. If the control has finished loading using the LCL component streaming mechanism, the UpdateOpaque method is called to update flag values in the ControlStyle property. ControlStyle is not updated if csLoading is included in the ComponentState property.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomFrame.UpdateOpaque"/>
           <link id="#lcl.controls.TControl.CMParentColorChanged">TControl.CMParentColorChanged</link>
+          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
+          <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#rtl.classes.TComponent.ComponentState"/>
         </seealso>
       </element>
       <element name="TCustomFrame.CMParentColorChanged.Message">
@@ -1905,10 +1929,29 @@
         <short>TFiler instance where property definitions are added.</short>
       </element>
 
-      <element name="TCustomFrame.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize"/>
-      <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth"/>
-      <element name="TCustomFrame.CalculatePreferredSize.PreferredHeight"/>
-      <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace"/>
+      <element name="TCustomFrame.CalculatePreferredSize">
+        <short>Gets the preferred height and width for the control used during auto-sizing.</short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomFrame</var>. It ensures that the inherited method is <b>not</b> called when the frame is an un-parented component and visible on the form designer. This allows the dimensions to be freely resized on the design surface. Values in the PreferredWidth, PreferredHeight, and WithThemeSpace arguments are not modified at design-time.
+          </p>
+          <p>
+            If the frame has an Owner (parent form) at run-time, the inherited method is called to get the values used in the LCL auto-sizing algorithms.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.CalculatePreferredSize">TWinControl.CalculatePreferredSize</link>
+        </seealso>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.PreferredWidth">
+        <short>Preferred width for the control.</short>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.PreferredHeight">
+        <short>Preferred height for the control.</short>
+      </element>
+      <element name="TCustomFrame.CalculatePreferredSize.WithThemeSpace">
+        <short>True if additional space is reserved in the width or height for theme details.</short>
+      </element>
 
       <element name="TCustomFrame.UpdateOpaque">
         <short>Updates control style flags to reflect the transparency for the frame.</short>
@@ -1956,9 +1999,19 @@
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TCustomFrame.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TCustomFrame.GetControlClassDefaultSize">
+        <short>Gets the default dimensions for a new instance of the class.</short>
+        <descr>
+          <p>
+            GetControlClassDefaultSize is an overridden method in TCustomFrame, and does not call the inherited method. The return value is a TSize instance with the width and height for the new class instance in its X and Y members. The default dimensions in TCustomFrame are 320 pixels wide (X member) by 240 pixels tall (Y member).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScrollingWinControl.GetControlClassDefaultSize"/>
+        </seealso>
+      </element>
       <element name="TCustomFrame.GetControlClassDefaultSize.Result">
-        <short/>
+        <short>TSize type with the width and height for the new class instance.</short>
       </element>
 
       <element name="TCustomFrame.ParentBackground">
@@ -1982,7 +2035,13 @@
         </seealso>
       </element>
 
-      <element name="TCustomFrameClass" link="#lcl.forms.TCustomFrame"/>
+      <element name="TCustomFrameClass">
+        <short>Class type used to create new instances of TCustomFrame.</short>
+        <descr/>
+        <seealso>
+          <link id="TCustomFrame"/>
+        </seealso>
+      </element>
 
       <element name="TFrame">
         <short>
@@ -2009,13 +2068,25 @@
       </element>
       <element name="TFrame.FLCLVersion" link="#lcl.forms.TFrame.LCLVersion"/>
       <element name="TFrame.LCLVersionIsStored" link="#lcl.forms.TFrame.LCLVersion"/>
-      <element name="TFrame.LCLVersionIsStored.Result">
-        <short/>
+      <element name="TFrame.LCLVersionIsStored.Result"/>
+
+      <element name="TFrame.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            <var>Create</var> is the overridden constructor for the class instance. It sets the value for the LCLVersion property to the lcl_version constant defined in the <file>lclversion.pas</file> unit. Create calls the inherited constructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFrame.LCLVersion"/>
+          <link id="TCustomFrame.Create"/>
+          <link id="#lcl.lclversion.lcl_version"/>
+        </seealso>
       </element>
-      <element name="TFrame.Create" link="#rtl.classes.TComponent.Create"/>
       <element name="TFrame.Create.TheOwner">
         <short>Owner of the class instance.</short>
       </element>
+
       <element name="TFrame.Align" link="#lcl.controls.TControl.Align"/>
       <element name="TFrame.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TFrame.AutoScroll" link="#lcl.forms.TScrollingWinControl.AutoScroll"/>
@@ -2034,7 +2105,22 @@
       <element name="TFrame.DragMode" link="#lcl.controls.TControl.DragMode"/>
       <element name="TFrame.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TFrame.Font" link="#lcl.controls.TControl.Font"/>
-      <element name="TFrame.LCLVersion" link="#lcl.lclversion.lcl_version"/>
+
+      <element name="TFrame.LCLVersion">
+        <short>LCL version number for the frame instance.</short>
+        <descr>
+          <p>
+            The value in <var>LCLVersion</var> is assigned in the Create constructor using the lcl_version constant defined in the <file>lclversion.pas</file> unit. Its value is stored during LCL component streaming if a value has not been assigned to the Parent for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TForm.LCLVersion"/>
+          <link id="TForm.Create"/>
+          <link id="#lcl.controls.TControl.Parent"/>
+          <link id="#lcl.lclversion.lcl_version"/>
+        </seealso>
+      </element>
+
       <element name="TFrame.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TFrame.OnConstrainedResize" link="#lcl.controls.TControl.OnConstrainedResize"/>
       <element name="TFrame.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
@@ -2199,9 +2285,15 @@
       </element>
 
       <element name="TFormState" link="#lcl.forms.TFormStateType">
-        <short>The set of form state flags.</short>
-        <descr/>
-        <seealso/>
+        <short>Set type used to store values from the TFormState enumeration.</short>
+        <descr>
+          <p>
+            TFormState is the type used to implement the FormState property in TCustomForm and descendent classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.FormState"/>
+        </seealso>
       </element>
 
       <element name="TModalResult">
@@ -5787,7 +5879,7 @@
 
       <element name="TForm.WSRegisterClass">
         <short>
-          Creates an assocation between the class type and its widgetset class.
+          Creates an association between the class type and its widgetset class.
         </short>
         <descr>
           WSRegisterClass is an overridden class procedure used to register the widgetset class used to create new instances of the form.
@@ -7039,6 +7131,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
 
+      <element name="TScreen.crScreen"/>
       <element name="TScreen.FActiveControl" link="#lcl.forms.TScreen.ActiveControl"/>
       <element name="TScreen.FActiveCustomForm" link="#lcl.forms.TScreen.ActiveCustomForm"/>
       <element name="TScreen.FActiveForm" link="#lcl.forms.TScreen.ActiveForm"/>
@@ -8108,27 +8201,31 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            <var>BeginTempCursor</var> is a method used to change the cursor shape to the temporary cursor in the <var>ACursor</var> argument. It adds the value in ACursor to an internal list of temporary cursors. The cursor shape is removed when the <var>EndTempCursor</var> method is called.
+            <var>BeginTempCursor</var> is a method used to change the mouse cursor shape to the temporary cursor in the <var>ACursor</var> argument. It adds the value in ACursor to an internal list of temporary cursors. The cursor shape is removed when the <var>EndTempCursor</var> method is called.
           </p>
           <p>
-            BeginTempCursor calls <var>SetCursor</var> in the widgetset class to change the cursor shape to the value in <var>Cursors</var> stored at the index in ACursor.
+            BeginTempCursor calls <var>SetCursor</var> in the widgetset class to change the mouse cursor shape to the value in <var>Cursors</var> stored at the index in ACursor.
           </p>
           <p>
-            Use EndTempCursor to remove a given cursor shape, and restore the cursor to a previous value.
+            Use EndTempCursor to remove a given cursor shape, and restore the mouse cursor to a previous value.
           </p>
         </descr>
         <seealso>
           <link id="TScreen.EndTempCursor"/>
+          <link id="TScreen.BeginScreenCursor"/>
+          <link id="TScreen.EndScreenCursor"/>
+          <link id="TScreen.BeginWaitCursor"/>
+          <link id="TScreen.EndWaitCursor"/>
           <link id="TScreen.Cursors"/>
           <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
       <element name="TScreen.BeginTempCursor.aCursor">
-        <short>Identifies the temporary cursor shape to apply to the screen.</short>
+        <short>Identifies the temporary mouse cursor shape to apply to the screen.</short>
       </element>
 
       <element name="TScreen.EndTempCursor">
-        <short>Releases a temporary cursor set with BeginTempCursor.</short>
+        <short>Releases a temporary mouse cursor set with BeginTempCursor.</short>
         <descr>
           <p>
             <var>EndTempCursor</var> is a method used to release the temporary cursor shape in <var>ACursor</var>. It removes the value from the internal list of temporary cursors updated in the <var>BeginTempCursor</var> method. Only the cursor shape in ACursor is removed from the list; other values are left intact.
@@ -8140,7 +8237,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             An <var>Exception</var> is raised with the message 'Unbalanced BeginTempCursor/EndTempCursor calls for cursor' if ACursor is not found in the list of temporary cursors.
           </p>
           <p>
-            Use BeginTempCursor to display and store a temporary cursor shape.
+            Use BeginTempCursor to display and store a temporary mouse cursor shape.
           </p>
         </descr>
         <errors>
@@ -8150,7 +8247,11 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
           <link id="TScreen.RealCursor"/>
           <link id="TScreen.Cursors"/>
           <link id="TScreen.BeginTempCursor"/>
-          <link id="TCursor"/>
+          <link id="TScreen.BeginScreenCursor"/>
+          <link id="TScreen.EndScreenCursor"/>
+          <link id="TScreen.BeginWaitCursor"/>
+          <link id="TScreen.EndWaitCursor"/>
+          <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
       <element name="TScreen.EndTempCursor.aCursor">
@@ -8166,20 +8267,59 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </descr>
         <seealso>
           <link id="TScreen.BeginTempCursor"/>
+          <link id="TScreen.BeginScreenCursor"/>
           <link id="#lcl.controls.crHourGlass">crHourGlass</link>
+          <link id="#lcl.controls.TCursor">TCursor</link>
         </seealso>
       </element>
 
       <element name="TScreen.EndWaitCursor">
-        <short>Removes the crHourGlass cursor shape.</short>
+        <short>Removes the crHourGlass mouse cursor shape.</short>
         <descr>
           <p>
-            Calls <var>EndTempCursor</var> to remove the <var>crHourGlass</var> cursor shape.
+            Calls <var>EndTempCursor</var> to remove the <var>crHourGlass</var> mouse cursor shape.
           </p>
         </descr>
         <seealso>
           <link id="TScreen.EndTempCursor"/>
           <link id="#lcl.controls.crHourGlass">crHourGlass</link>
+          <link id="#lcl.controls.TCursor">TCursor</link>
+        </seealso>
+      </element>
+
+      <element name="TScreen.BeginScreenCursor">
+        <short>Changes the active cursor to the most recent shape in the internal list of cursors.</short>
+        <descr>
+          <p>
+            Calls the BeginTempCursor method using the mouse cursor shape currently assigned to the internal member for the screen.
+          </p>
+          <p>
+            Use EndScreenCursor to revert the mouse cursor shape to the value on entry to the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.EndScreenCursor"/>
+          <link id="TScreen.BeginTempCursor"/>
+          <link id="TScreen.EndTempCursor"/>
+        </seealso>
+      </element>
+
+      <element name="TScreen.EndScreenCursor">
+        <short>
+          Removes the current mouse cursor shape from the internal list, and restores the previous cursor shape.
+        </short>
+        <descr>
+          <p>
+            Calls the EndTempCursor method to remove the current mouse cursor shape from the internal list of cursors. The most recent cursor shape in the internal list is restored when it differs from the value assigned to Cursor.
+          </p>
+          <p>
+            Use BeginScreenCursor to make the value in Cursor the current cursor shape for the screen.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.BeginScreenCursor"/>
+          <link id="TScreen.BeginTempCursor"/>
+          <link id="TScreen.EndTempCursor"/>
         </seealso>
       </element>
 
@@ -8239,7 +8379,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>Indicates the current mouse cursor shape.</short>
         <descr>
           <p>
-            <var>Cursor</var> is a <var>TCursor</var> property which identifies the current cursor shape drawn on the screen. The numeric value is the <var>HCURSOR</var> handle for the image drawn as the cursor shape. Cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
+            <var>Cursor</var> is a <var>TCursor</var> property which identifies the current mouse cursor shape drawn on the screen. The numeric value is the <var>HCURSOR</var> handle for the image drawn as the cursor shape. Cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
           </p>
           <p>
             Cursor is used as an index into the values in the <var>Cursors</var> property where the handle for the <var>TCursorImage</var> resources are stored. Changing the value for the property causes the <var>SetCursor</var> method in the widgetset class to be called to apply the handle in Cursors at the position in Cursor.
@@ -8270,10 +8410,10 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.Cursors">
-        <short>Provides indexed access to the available cursor shapes for the screen.</short>
+        <short>Provides indexed access to the available mouse cursor shapes for the screen.</short>
         <descr>
           <p>
-            <var>Cursors</var> is an indexed <var>HCURSOR</var> property which provides access to the handle for a cursor shape by its numeric value. The cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
+            <var>Cursors</var> is an indexed <var>HCURSOR</var> property which provides access to the handle for a mouse cursor shape by its numeric value. The cursor constants (like <var>crHourGlass</var>) defined in the <file>controls.pp</file> unit can be used instead of the numeric value.
           </p>
           <p>
             Cursors uses an internal <var>TMap</var> instance to store the handle values and provides access using the index values. When the value for the property is read, <var>CreateStandardCursor</var> in the widgetset class is called to retrieve the handle. If it has not been assigned, a temporary <var>TCursorImage</var> is created for the cursor resource and its handle is added to the internal map.
@@ -13198,6 +13338,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
 
+      <element name="TIDesigner.FLookupRoot">
+        <short>Member with the value for the LookupRoot property.</short>
+      </element>
+
+      <element name="TIDesigner.FDefaultFormBoundsValid">
+        <short>Member with the value for the DefaultFormBoundsValid property.</short>
+      </element>
+
       <element name="TIDesigner.IsDesignMsg">
         <short>
           <var>IsDesignMsg</var> - receives a message from Sender, and returns True if it is a design message.</short>
@@ -13214,9 +13362,19 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short/>
       </element>
 
-      <element name="TIDesigner.Modified">
-        <short>Method when design is <var>Modified</var>.
+      <element name="TIDesigner.UTF8KeyPress">
+        <short>
+          Defines the method used to handle a key press event for a UTF-8-encoded character.
         </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TIDesigner.UTF8KeyPress.UTF8Key">
+        <short>UTF-8-encoded character for the key press event.</short>
+      </element>
+
+      <element name="TIDesigner.Modified">
+        <short>Method when design is <var>Modified</var>.</short>
         <descr/>
         <seealso/>
       </element>
@@ -13288,12 +13446,34 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <descr/>
         <seealso/>
       </element>
-
       <element name="TIDesigner.UniqueName.Result">
         <short/>
       </element>
       <element name="TIDesigner.UniqueName.BaseName">
         <short/>
+      </element>
+
+      <element name="TIDesigner.PrepareFreeDesigner">
+        <short>Prepares the design surface and frees the root control.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TIDesigner.PrepareFreeDesigner.AFreeComponent">
+        <short/>
+      </element>
+
+      <element name="TIDesigner.LookupRoot">
+        <short>Component that is the root control in the form design surface.</short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="TIDesigner.DefaultFormBoundsValid">
+        <short>
+          Indicates whether the bounds are valid after moving or sizing the form on the design surface.
+        </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TFormPropertyStorage">
@@ -13309,34 +13489,69 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TFormPropertyStorage.FormCreate">
-        <short/>
+        <short>
+          Handler routine used as an OnCreate handler in the Owner of the class instance.
+        </short>
         <descr>
           Calls the Restore method.
         </descr>
         <seealso/>
       </element>
       <element name="TFormPropertyStorage.FormCreate.Sender">
-        <short/>
+        <short>Form which owns the class instance.</short>
       </element>
 
       <element name="TFormPropertyStorage.FormClose">
-        <short/>
+        <short>
+          Handler routine used as an OnClose handler in the Owner of the class instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TFormPropertyStorage.FormClose.Sender">
-        <short/>
+        <short>Form which owns the class instance.</short>
       </element>
       <element name="TFormPropertyStorage.FormClose.CloseAction">
-        <short/>
+        <short>Close action performed in the method.</short>
       </element>
 
-      <element name="TFormPropertyStorage.Create" link="#rtl.classes.TComponent.Create"/>
+      <element name="TFormPropertyStorage.FormDestroy">
+        <short>
+          Handler routine used as an OnDestroy handler in the Owner of the class instance.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TFormPropertyStorage.FormDestroy.Sender">
+        <short>Form which owns the class instance.</short>
+      </element>
+
+      <element name="TFormPropertyStorage.Create">
+        <short>Constructor for the class instance.</short>
+        <descr>
+          <p>
+            Create is the overridden constructor for the class instance. It calls the inherited method on entry, using the value in TheOwner as the Owner for the class instance. Create ensures that private methods in the class instance are assigned as event handler routines for the TCustomForm instance in TheOwner.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Create">TComponent.Create</link>
+        </seealso>
+      </element>
       <element name="TFormPropertyStorage.Create.TheOwner">
-        <short/>
+        <short>TCustomForm instance which owns th class instance.</short>
       </element>
 
-      <element name="TFormPropertyStorage.Destroy" link="#rtl.classes.TComponent.Destroy"/>
+      <element name="TFormPropertyStorage.Destroy">
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance. It ensures that event handler routines, assigned in the constructor to the form which owns the class instance, are removed before the class instance is freed. It calls the inherited destructor prior to exit.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.classes.TComponent.Destroy">TComponent.Destroy</link>
+        </seealso>
+      </element>
 
       <element name="KeysToShiftState">
         <short>

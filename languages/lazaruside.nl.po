@@ -5229,7 +5229,7 @@ msgid "Ask name on create"
 msgstr ""
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 msgstr ""
 
 #: lazarusidestrconsts.lisautoadjustideheight
@@ -11787,10 +11787,6 @@ msgstr ""
 msgid "All project files will be open in editor after conversion"
 msgstr ""
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr ""
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Houd naam"
@@ -13192,7 +13188,7 @@ msgstr "Converteer Delphi-unit naar Lazarus-unit ..."
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
 #| msgid "Convert binary DFM to text LFM + check syntax ..."
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "Converteer .dfm-bestand naar .lfm ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -18059,10 +18055,6 @@ msgstr ""
 msgid "Remove %s files from package \"%s\"?"
 msgstr ""
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr ""
-
 #: lazarusidestrconsts.lisremovefromproject
 #, fuzzy
 #| msgid "Remove from project"
@@ -21705,6 +21697,10 @@ msgstr "Catalaans"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Chinees"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

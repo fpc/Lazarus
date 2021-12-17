@@ -5340,7 +5340,7 @@ msgid "Ask name on create"
 msgstr "בקש שם ב יצירה"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 msgstr ""
 
 #: lazarusidestrconsts.lisautoadjustideheight
@@ -12025,10 +12025,6 @@ msgstr "שמור את הקובץ שהומר פתוח בעורך"
 msgid "All project files will be open in editor after conversion"
 msgstr "כל קבצי הפרוייקט ישארו פתוחים בעורך אחרי ההמרה"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "שמור ברשימת ההתקנות"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "שמור שם"
@@ -13528,7 +13524,7 @@ msgstr "המר יחידת דלפי ליחידת לזארוס"
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
 #, fuzzy
 #| msgid "Convert binary DFM to text LFM + check syntax ..."
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "המר קובץ בינארי  DFM לקובץ בינארי LFM ובדוק תחביר ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -18473,10 +18469,6 @@ msgstr ""
 msgid "Remove %s files from package \"%s\"?"
 msgstr ""
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "הסר מרשימת ההתקנות"
-
 #: lazarusidestrconsts.lisremovefromproject
 #, fuzzy
 #| msgid "Remove from project"
@@ -22198,6 +22190,10 @@ msgstr "קטלנית"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "סינית"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

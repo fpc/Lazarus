@@ -1218,58 +1218,12 @@ end;
 
 procedure TCustomForm.MoveToDefaultPosition;
 var
-  RealWidth, RealHeight: Integer;
-
-  procedure MoveToDefaultMonitor(var X, Y: Integer);
-  var
-    Source, Target: TMonitor;
-    ABounds: TRect;
-  begin
-    // delphi compatibility: if no main form then DefaultMonitor has no effect
-    if Application.MainForm = nil then Exit;
-    // find the monitor of the center of the form (the boundaries might be on another monitor)
-    Source := Screen.MonitorFromRect(Rect(X,Y,X+RealWidth,Y+RealHeight));
-    case DefaultMonitor of
-      dmDesktop:
-        Target := Source; // no need to move
-      dmPrimary:
-        Target := Screen.PrimaryMonitor;
-      dmMainForm:
-        Target := Application.MainForm.Monitor;
-      dmActiveForm:
-        if Screen.ActiveCustomForm <> nil then
-          Target := Screen.ActiveCustomForm.Monitor
-        else
-          Target := Source;
-    end;
-    if Source = Target then Exit; // no move
-    if Position in [poMainFormCenter, poOwnerFormCenter] then
-    begin
-      ABounds := Target.BoundsRect;
-      // shift X and Y from Source to Target monitor
-      X := (X - Source.Left) + ABounds.Left;
-      Y := (Y - Source.Top) + ABounds.Top;
-      // check that we are still in the desired monitor
-      X:= Max(ABounds.Left, Min(ABounds.Right-RealWidth, X));
-      Y:= Max(ABounds.Top, Min(ABounds.Bottom-RealHeight, Y));
-    end
-    else // poWorkAreaCenter, poScreenCenter
-    begin
-      if Position = poWorkAreaCenter then
-        ABounds := Target.WorkareaRect
-      else
-        ABounds := Target.BoundsRect;
-      X := (ABounds.Left + ABounds.Right - RealWidth) div 2;
-      Y := (ABounds.Top + ABounds.Bottom - RealHeight) div 2;
-    end;
-  end;
-
-var
   X, Y: integer;
   p: TPosition;
-  AForm: TCustomForm;
-  RealRect, AFormRealRect: TRect;
-  AFormRealWidth, AFormRealHeight: Integer;
+  BuddyForm: TCustomForm;
+  RealRect, CenterToRect, MonitorRect: TRect;
+  m: TMonitor;
+  CheckWorkArea: Boolean;
 begin
   if (Parent <> nil) or (ParentWindow <> 0) then exit;
 
@@ -1278,73 +1232,104 @@ begin
   // first make sure X and Y are assigned
   X := Left;
   Y := Top;
-  if HandleAllocated and (GetWindowRect(Handle, RealRect) <> 0) then
-  begin // success
-    RealWidth := RealRect.Right-RealRect.Left;
-    RealHeight := RealRect.Bottom-RealRect.Top;
-  end else
-  begin // error
-    RealWidth := Width;
-    RealHeight := Height;
+  if not (HandleAllocated and (GetWindowRect(Handle, RealRect) <> 0)) then
+    RealRect := BoundsRect;
+
+  // process DefaultMonitor
+  case DefaultMonitor of
+    dmDesktop: m := nil; // no need to move
+    dmPrimary: m := Screen.PrimaryMonitor;
+    dmMainForm:
+      if Application.MainForm <> nil then
+        m := Application.MainForm.Monitor
+      else
+        m := nil;
+    dmActiveForm:
+      if Screen.ActiveCustomForm <> nil then
+        m := Screen.ActiveCustomForm.Monitor
+      else
+        m := nil;
   end;
 
   p := Position;
-  if (Position = poMainFormCenter) and (Application.Mainform=nil) then
-    p := poScreenCenter;
-  case P of
-    poDesktopCenter:
-      begin
-        X := Screen.DesktopLeft + (Screen.DesktopWidth - RealWidth) div 2;
-        Y := Screen.DesktopTop +(Screen.DesktopHeight - RealHeight) div 2;
-      end;
-    poScreenCenter:
-      begin
-        X := (Screen.Width - RealWidth) div 2;
-        Y := (Screen.Height - RealHeight) div 2;
-      end;
-    poWorkAreaCenter:
-      begin
-        X := Screen.WorkAreaLeft + (Screen.WorkAreaWidth - RealWidth) div 2;
-        Y := Screen.WorkAreaTop + (Screen.WorkAreaHeight - RealHeight) div 2;
-      end;
-    poMainFormCenter,
-    poOwnerFormCenter:
-      begin
-        if (P = poOwnerFormCenter) and (Owner is TCustomForm) then
-          AForm := TCustomForm(Owner)
-        else
-          AForm := Application.MainForm;
-        if (Self <> AForm) and Assigned(AForm) then
+  BuddyForm := nil;
+  if p = poOwnerFormCenter then
+  begin
+    if Owner is TCustomForm then
+      BuddyForm := TCustomForm(Owner)
+    else
+      p := poMainFormCenter;
+  end;
+  if p = poMainFormCenter then
+  begin
+    if Assigned(Application.MainForm) then
+      BuddyForm := Application.MainForm
+    else
+      p := poScreenCenter;
+  end;
+
+  case Position of
+    poScreenCenter..poWorkAreaCenter:
+    begin
+      CheckWorkArea := True;
+      // decide about the rect to center to
+      CenterToRect := Screen.PrimaryMonitor.BoundsRect; // center by default to primary monitor
+      case p of
+        poScreenCenter:
+          if Screen.MonitorCount=1 then
+            CenterToRect := Rect(0, 0, Screen.Width, Screen.Height)
+          else
+          if Assigned(m) then
+            CenterToRect := m.BoundsRect;
+        poDesktopCenter:
+          if Screen.MonitorCount=1 then
+            CenterToRect := Screen.DesktopRect
+          else
+          if Assigned(m) then
+            CenterToRect := m.BoundsRect;
+        poWorkAreaCenter:
+          if Assigned(m) then // WorkArea is always on one monitor - there is no workarea for the whole screen (Screen.WorkAreaRect=PrimaryMonitor.WorkAreaRect)
+            CenterToRect := m.WorkareaRect
+          else
+            CenterToRect := Screen.PrimaryMonitor.WorkareaRect;
+        poMainFormCenter, poOwnerFormCenter:
         begin
+          if Assigned(m) and (m<>BuddyForm.Monitor) then // DefaultMonitor has precendence before Position
+            CenterToRect := m.BoundsRect
+          else
           if FormStyle = fsMDIChild then
           begin
-            X := (AForm.ClientWidth - RealWidth) div 2;
-            Y := (AForm.ClientHeight - RealHeight) div 2;
+            CenterToRect := BuddyForm.ClientRect;
+            CheckWorkArea := False;
           end else
-          begin
-            if AForm.HandleAllocated and (GetWindowRect(AForm.Handle, AFormRealRect) <> 0) then
-            begin // success
-              AFormRealWidth := AFormRealRect.Right-AFormRealRect.Left;
-              AFormRealHeight := AFormRealRect.Bottom-AFormRealRect.Top;
-            end else
-            begin // error
-              AFormRealWidth := AForm.Width;
-              AFormRealHeight := AForm.Height;
-            end;
-            X := ((AFormRealWidth - RealWidth) div 2) + AForm.Left;
-            Y := ((AFormRealHeight - RealHeight) div 2) + AForm.Top;
-          end;
+          if not (BuddyForm.HandleAllocated and (GetWindowRect(BuddyForm.Handle, CenterToRect) <> 0)) then
+            CenterToRect := Screen.PrimaryMonitor.BoundsRect; // CenterToRect may be zeroed, need to reassign to default value
         end;
-        // check that we are still in the viewarea
-        X:= Max(Screen.WorkAreaLeft, Min((Screen.WorkAreaLeft+Screen.WorkAreaWidth)-RealWidth, X));
-        Y:= Max(Screen.WorkAreaTop, Min((Screen.WorkAreaTop+Screen.WorkAreaHeight)-RealHeight, Y));
+        poDesigned..poDefaultSizeOnly: ;
       end;
+      // center the form
+      X := CenterToRect.Left + (CenterToRect.Width - RealRect.Width) div 2;
+      Y := CenterToRect.Top + (CenterToRect.Height - RealRect.Height) div 2;
+
+      if CheckWorkArea then
+      begin
+        if not Assigned(m) then
+          m := Screen.MonitorFromPoint(Point(X+RealRect.Width div 2, Y+RealRect.Height div 2));
+        if Assigned(m) then
+          MonitorRect := m.WorkareaRect
+        else
+          MonitorRect := Screen.WorkAreaRect;
+
+        X:= Max(MonitorRect.Left, Min(MonitorRect.Right-RealRect.Width, X));
+        Y:= Max(MonitorRect.Top, Min(MonitorRect.Bottom-RealRect.Height, Y));
+      end;
+    end;
+    poDefault, poDefaultPosOnly:
+      if HandleAllocated then // get current widgetset position
+        GetWindowRelativePosition(Handle,X,Y);
+    poDesigned, poDefaultSizeOnly: ;
   end;
-  // get current widgetset position
-  if (p in [poDefault, poDefaultPosOnly]) and HandleAllocated then
-    GetWindowRelativePosition(Handle,X,Y);
-  if (Position in [poScreenCenter, poMainFormCenter, poOwnerFormCenter, poWorkAreaCenter]) then
-    MoveToDefaultMonitor(X, Y);
+
   SetBounds(X, Y, Width, Height);
 end;
 
@@ -2590,7 +2575,7 @@ begin
   end;
 end;
 
-procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor; UseWorkarea: Boolean = False);
+procedure TCustomForm.MakeFullyVisible(AMonitor: TMonitor; UseWorkarea: Boolean);
 var
   newLeft, newTop, WindowWidth, WindowHeight: Integer;
   ABounds: TRect;
@@ -2963,7 +2948,7 @@ begin
     Screen.FSaveFocusedList.Insert(0, Screen.FFocusedForm);
     Screen.FFocusedForm := Self;
     Screen.MoveFormToFocusFront(Self);
-    Screen.BeginTempCursor(crDefault);
+    Screen.BeginScreenCursor;
     ModalResult := 0;
 
     try
@@ -3021,7 +3006,7 @@ begin
       end;
     finally
       RestoreFocusState(SavedFocusState);
-      Screen.EndTempCursor(crDefault);
+      Screen.EndScreenCursor;
       if LCLIntf.IsWindow(ActiveWindow) then
         SetActiveWindow(ActiveWindow);
       Exclude(FFormState, fsModal);

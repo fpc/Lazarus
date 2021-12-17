@@ -34,6 +34,8 @@ uses
   Classes, sysutils, UTF8Process, Process, LazFileUtils, MacroIntf,
   // DebuggerIntf
   DbgIntfDebuggerBase,
+  // CmdLineDebuggerBase
+  DebuggerPropertiesBase,
   // LazDebuggerGdbmi
   GDBMIDebugger, GDBMIMiscClasses, GdbmiStringConstants;
   

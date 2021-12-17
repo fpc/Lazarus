@@ -1,7 +1,7 @@
 object CharacterMapDialog: TCharacterMapDialog
-  Left = 242
+  Left = 258
   Height = 477
-  Top = 126
+  Top = 197
   Width = 590
   BorderStyle = bsSizeToolWin
   Caption = 'CharacterMapDialog'
@@ -13,7 +13,7 @@ object CharacterMapDialog: TCharacterMapDialog
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object ButtonPanel: TButtonPanel
     Left = 6
     Height = 26
@@ -59,11 +59,10 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideTop.Side = asrCenter
         Left = 6
         Height = 15
-        Top = 380
+        Top = 351
         Width = 118
         BorderSpacing.Around = 6
         Caption = 'UnicodeCharInfoLabel'
-        ParentColor = False
       end
       object UnicodeGrid: TStringGrid
         AnchorSideLeft.Control = pgUnicode
@@ -72,7 +71,7 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbUniRange
         Left = 0
-        Height = 370
+        Height = 341
         Top = 0
         Width = 570
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -91,6 +90,12 @@ object CharacterMapDialog: TCharacterMapDialog
         OnPrepareCanvas = GridPrepareCanvas
         OnSelectCell = UnicodeGridSelectCell
         ColWidths = (
+          36
+          36
+          36
+          36
+          36
+          36
           35
           35
           35
@@ -101,22 +106,15 @@ object CharacterMapDialog: TCharacterMapDialog
           35
           35
           35
-          35
-          35
-          35
-          35
-          35
-          41
         )
       end
       object cbUniRange: TComboBox
         AnchorSideTop.Control = UnicodeGrid
         AnchorSideRight.Control = SortUniRangeListButton
-        AnchorSideBottom.Control = pgUnicode
-        AnchorSideBottom.Side = asrBottom
+        AnchorSideBottom.Control = seUniSize
         Left = 242
         Height = 23
-        Top = 376
+        Top = 347
         Width = 291
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
@@ -132,11 +130,10 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Control = cbUniRange
         Left = 203
         Height = 15
-        Top = 380
+        Top = 351
         Width = 33
         Anchors = [akTop, akRight]
         Caption = 'Range'
-        ParentColor = False
       end
       object SortUniRangeListButton: TSpeedButton
         AnchorSideTop.Control = cbUniRange
@@ -146,7 +143,7 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Control = pgUnicode
         Left = 539
         Height = 25
-        Top = 375
+        Top = 346
         Width = 25
         AllowAllUp = True
         Anchors = [akTop, akRight]
@@ -155,6 +152,40 @@ object CharacterMapDialog: TCharacterMapDialog
         OnClick = SortUniRangeListButtonClick
         ShowHint = True
         ParentShowHint = False
+      end
+      object seUniSize: TSpinEdit
+        AnchorSideLeft.Control = cbUniRange
+        AnchorSideTop.Control = cbCodePage
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = pgUnicode
+        AnchorSideBottom.Side = asrBottom
+        Left = 242
+        Height = 23
+        Top = 376
+        Width = 80
+        Alignment = taRightJustify
+        Anchors = [akLeft, akBottom]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        MaxValue = 32
+        MinValue = 8
+        OnChange = seUniSizeChange
+        TabOrder = 2
+        Value = 12
+      end
+      object UniSizeLabel: TLabel
+        AnchorSideTop.Control = seUniSize
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = RangeLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 162
+        Height = 15
+        Top = 380
+        Width = 74
+        Anchors = [akTop, akRight]
+        Caption = 'Character Size'
+        FocusControl = seUniSize
       end
     end
     object pgAnsi: TTabSheet
@@ -171,11 +202,10 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideBottom.Side = asrBottom
         Left = 6
         Height = 15
-        Top = 380
+        Top = 351
         Width = 97
         BorderSpacing.Around = 6
         Caption = 'AnsiCharInfoLabel'
-        ParentColor = False
       end
       object AnsiGrid: TStringGrid
         AnchorSideLeft.Control = pgAnsi
@@ -184,7 +214,7 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideRight.Side = asrBottom
         AnchorSideBottom.Control = cbCodePage
         Left = 0
-        Height = 370
+        Height = 341
         Top = 0
         Width = 570
         Anchors = [akTop, akLeft, akRight, akBottom]
@@ -220,16 +250,14 @@ object CharacterMapDialog: TCharacterMapDialog
         )
       end
       object cbCodePage: TComboBox
-        AnchorSideTop.Control = AnsiGrid
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = pgAnsi
         AnchorSideRight.Side = asrBottom
-        AnchorSideBottom.Control = pgAnsi
-        AnchorSideBottom.Side = asrBottom
-        Left = 245
+        AnchorSideBottom.Control = seAnsiSize
+        Left = 242
         Height = 23
-        Top = 376
-        Width = 319
+        Top = 347
+        Width = 322
         Anchors = [akRight, akBottom]
         BorderSpacing.Around = 6
         DropDownCount = 25
@@ -268,13 +296,46 @@ object CharacterMapDialog: TCharacterMapDialog
         AnchorSideTop.Control = cbCodePage
         AnchorSideTop.Side = asrCenter
         AnchorSideRight.Control = cbCodePage
-        Left = 182
+        Left = 179
         Height = 15
-        Top = 380
+        Top = 351
         Width = 57
         Anchors = [akTop, akRight]
         Caption = 'Code page'
-        ParentColor = False
+      end
+      object AnsiSizeLabel: TLabel
+        AnchorSideTop.Control = seAnsiSize
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = CodePageLabel
+        AnchorSideRight.Side = asrBottom
+        Left = 162
+        Height = 15
+        Top = 380
+        Width = 74
+        Anchors = [akTop, akRight]
+        Caption = 'Character Size'
+        FocusControl = seAnsiSize
+      end
+      object seAnsiSize: TSpinEdit
+        AnchorSideLeft.Control = cbCodePage
+        AnchorSideTop.Control = cbCodePage
+        AnchorSideTop.Side = asrBottom
+        AnchorSideBottom.Control = pgAnsi
+        AnchorSideBottom.Side = asrBottom
+        Left = 242
+        Height = 23
+        Top = 376
+        Width = 80
+        Alignment = taRightJustify
+        Anchors = [akLeft, akBottom]
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        BorderSpacing.Bottom = 6
+        MaxValue = 32
+        MinValue = 8
+        OnChange = seAnsiSizeChange
+        TabOrder = 2
+        Value = 12
       end
     end
   end

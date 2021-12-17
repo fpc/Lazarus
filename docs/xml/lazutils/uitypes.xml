@@ -28,7 +28,7 @@
       <element name="mtWarning">
         <short>Alias to TMsgDlgType.mtWarning in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgType.mtWarning"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgType.mtWarning"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -38,7 +38,7 @@
       <element name="mtError">
         <short>Alias to TMsgDlgType.mtError in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgType.mtError"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgType.mtError"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -50,7 +50,7 @@
           Alias to TMsgDlgType.mtInformation in the System.UITypes unit for the FPC RTL.
         </short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgType.mtInformation"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgType.mtInformation"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -62,7 +62,7 @@
           Alias to TMsgDlgType.mtConfirmation in the System.UITypes unit for the FPC RTL.
         </short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgType.mtConfirmation"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgType.mtConfirmation"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -74,7 +74,7 @@
           Alias to TMsgDlgType.mtCustom in the System.UITypes unit for the FPC RTL.
         </short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgType.mtCustom"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgType.mtCustom"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -84,7 +84,7 @@
       <element name="mbYes">
         <short>Alias to TMsgDlgBtn.mbYes in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbYes"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbYes"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -94,7 +94,7 @@
       <element name="mbNo">
         <short>Alias to TMsgDlgBtn.mbNo in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbNo"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbNo"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -104,7 +104,7 @@
       <element name="mbOK">
         <short>Alias to TMsgDlgBtn.mbOK in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbOK"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbOK"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -114,7 +114,7 @@
       <element name="mbCancel">
         <short>Alias to TMsgDlgBtn.mbCancel in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbCancel"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbCancel"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -124,7 +124,7 @@
       <element name="mbAbort">
         <short>Alias to TMsgDlgBtn.mbAbort in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbAbort"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbAbort"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -134,7 +134,7 @@
       <element name="mbRetry">
         <short>Alias to TMsgDlgBtn.mbRetry in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbRetry"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbRetry"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -144,7 +144,7 @@
       <element name="mbIgnore">
         <short>Alias to TMsgDlgBtn.mbIgnore in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbIgnore"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbIgnore"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -154,7 +154,7 @@
       <element name="mbAll">
         <short>Alias to TMsgDlgBtn.mbAll in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbAll"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbAll"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -164,7 +164,7 @@
       <element name="mbNoToAll">
         <short>Alias to TMsgDlgBtn.mbNoToAll in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbNoToAll"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbNoToAll"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -174,7 +174,7 @@
       <element name="mbYesToAll">
         <short>Alias to TMsgDlgBtn.mbYesToAll in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbYesToAll"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbYesToAll"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -184,7 +184,7 @@
       <element name="mbHelp">
         <short>Alias to TMsgDlgBtn.mbHelp in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbHelp"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbHelp"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -194,7 +194,7 @@
       <element name="mbClose">
         <short>Alias to TMsgDlgBtn.mbClose in the System.UITypes unit for the FPC RTL.</short>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn.mbClose"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn.mbClose"/ -->
         </seealso>
         <version>
           Available in FPC 3.2.0 and Lazarus versions after 2.0.12.
@@ -217,7 +217,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgType"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgType"/ -->
           <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
           <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
           <link id="#lcl.dialogs.CreateMessageDialog">CreateMessageDialog</link>
@@ -267,7 +267,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgBtn"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgBtn"/ -->
           <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
           <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
           <link id="#lcl.dialogs.MessageDlgPosHelp">MessageDlgPosHep</link>
@@ -350,7 +350,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.TMsgDlgButtons"/>
+          <!-- link id="#rtl.system.uitypes.TMsgDlgButtons"/ -->
           <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
           <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
           <link id="#lcl.dialogs.MessageDlgPosHelp">MessageDlgPosHelp</link>
@@ -391,7 +391,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.TModalResult"/>
+          <!-- link id="#rtl.system.uitypes.TModalResult"/ -->
           <link id="#lcl.dialogs.MessageDlg">MessageDlg</link>
           <link id="#lcl.dialogs.MessageDlgPos">MessageDlgPos</link>
           <link id="#lcl.dialogs.MessageDlgPosHelp">MessageDlgPosHelp</link>
@@ -414,7 +414,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.PModalResult"/>
+          <!-- link id="#rtl.system.uitypes.PModalResult"/ -->
         </seealso>
       </element>
 
@@ -426,7 +426,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrNone"/>
+          <!-- link id="#rtl.system.uitypes.mrNone"/ -->
         </seealso>
       </element>
 
@@ -438,7 +438,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrOK"/>
+          <!-- link id="#rtl.system.uitypes.mrOK"/ -->
         </seealso>
       </element>
 
@@ -450,7 +450,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrCancel"/>
+          <!-- link id="#rtl.system.uitypes.mrCancel"/ -->
         </seealso>
       </element>
 
@@ -462,7 +462,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrAbort"/>
+          <!-- link id="#rtl.system.uitypes.mrAbort"/ -->
         </seealso>
       </element>
 
@@ -474,7 +474,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrRetry"/>
+          <!-- link id="#rtl.system.uitypes.mrRetry"/ -->
         </seealso>
       </element>
 
@@ -486,7 +486,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrIgnore"/>
+          <!-- link id="#rtl.system.uitypes.mrIgnore"/ -->
         </seealso>
       </element>
 
@@ -498,7 +498,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrYes"/>
+          <!-- link id="#rtl.system.uitypes.mrYes"/ -->
         </seealso>
       </element>
 
@@ -510,7 +510,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrNo"/>
+          <!-- link id="#rtl.system.uitypes.mrNo"/ -->
         </seealso>
       </element>
 
@@ -522,7 +522,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrAll"/>
+          <!-- link id="#rtl.system.uitypes.mrAll"/ -->
         </seealso>
       </element>
 
@@ -534,7 +534,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrNoToAll"/>
+          <!-- link id="#rtl.system.uitypes.mrNoToAll"/ -->
         </seealso>
       </element>
 
@@ -546,7 +546,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrYesToAll"/>
+          link id="#rtl.system.uitypes.mrYesToAll"/
         </seealso>
       </element>
 
@@ -558,7 +558,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrClose"/>
+          <!-- link id="#rtl.system.uitypes.mrClose"/ -->
         </seealso>
       </element>
 
@@ -570,7 +570,7 @@
           </remark>
         </descr>
         <seealso>
-          <link id="#rtl.system.uitypes.mrLast"/>
+          <!-- link id="#rtl.system.uitypes.mrLast"/ -->
         </seealso>
       </element>
 

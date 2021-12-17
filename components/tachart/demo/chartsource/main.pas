@@ -44,12 +44,12 @@ type
     chCalcLineSeriesSum: TLineSeries;
     cbAccDirStatistics: TComboBox;
     cbSmooth: TCheckBox;
+    Label1: TLabel;
     lblSortInfo: TLabel;
     seAccumulationRange: TSpinEdit;
     lblAccumulationRange: TLabel;
     ListChartSource1: TListChartSource;
     lcsDerivative: TListChartSource;
-    Memo1: TMemo;
     PageControl1: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;

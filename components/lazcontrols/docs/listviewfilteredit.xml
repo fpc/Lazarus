@@ -23,11 +23,6 @@
       <element name="EditBtn"/>
       <element name="LazUTF8"/>
 
-      <element name="TStringArray">
-        <short>Declares an array type with String values in its elements.</short>
-        <descr/>
-        <seealso/>
-      </element>
 
       <element name="TListViewDataItem">
         <short>
@@ -84,7 +79,6 @@
         <seealso>
           <link id="TListViewDataItem"/>
           <link id="TListViewFilterEdit.Items"/>
-          <link id="#fcl.Fgl.TFPGList">TFPGList</link>
         </seealso>
       </element>
 

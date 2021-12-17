@@ -39,6 +39,10 @@ interface
   {$ASSERTIONS ON}
 {$endif}
 
+{$if FPC_FULLVERSION >= 30203}
+{$define UseSystemUITypes}
+{$endif}
+
 uses
 {$IFDEF USE_UTF8BIDI_LCL}
   UTF8BIDI,
@@ -46,6 +50,9 @@ uses
 {$ifdef WINDOWS}
   windows,
 {$endif WINDOWS}
+{$ifdef UseSystemUITypes}
+  System.UITypes,
+{$endif}
   Classes, SysUtils;
 
 {$ifdef WinCE}
@@ -1657,7 +1664,7 @@ const
 //==============================================
 
 type
-  COLORREF = Cardinal;
+  COLORREF = {$ifdef UseSystemUITypes}System.UITypes.TColorRef{$else}Cardinal{$endif};
   TColorRef = COLORREF;
 
 const

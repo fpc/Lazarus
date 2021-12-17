@@ -149,7 +149,7 @@ type
   protected
     function GetValueObject: TFpValue; override;
   public
-    constructor Create(const AName: String; AKind: TDbgSymbolKind; ATypeSymbol: TFpSymbol; AMemLocation: TFpDbgMemLocation);
+    constructor Create(const AName: String; AKind: TDbgSymbolKind; ATypeSymbol: TFpSymbol; const AMemLocation: TFpDbgMemLocation);
   end;
 
   { TDbgHardcodedFPCClassMember }
@@ -520,7 +520,9 @@ begin
   (Result as TDbgHardcodedVariableValue).SetDataSymbol(Self);
 end;
 
-constructor TDbgHardcodedVariableAtMemLocation.Create(const AName: string; AKind: TDbgSymbolKind; ATypeSymbol: TFpSymbol; AMemLocation: TFpDbgMemLocation);
+constructor TDbgHardcodedVariableAtMemLocation.Create(const AName: String;
+  AKind: TDbgSymbolKind; ATypeSymbol: TFpSymbol;
+  const AMemLocation: TFpDbgMemLocation);
 begin
   inherited create(AName, AKind, AMemLocation);
   Assert(ATypeSymbol.SymbolType=stType);

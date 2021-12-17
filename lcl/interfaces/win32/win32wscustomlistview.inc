@@ -261,7 +261,7 @@ end;
 
 class procedure TWin32WSCustomListView.ColumnDoAutosize(const ALV: TCustomListView; const AIndex: Integer);
 var
-  CaptionSize: TSize;
+  CaptionSize: TSize = (cx: 0; cy: 0);
 begin
   if (ALV.Items.Count > 0) then
     ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
@@ -500,7 +500,7 @@ begin
   then Exit;
 
   Hdr := ListView_GetHeader(ALV.Handle);
-  FillChar(itm, sizeof(itm),0);
+  itm := Default(THDITEM);
   itm.mask := HDI_FORMAT;
   Header_GetItem(Hdr, AIndex, Itm);
   case AAndicator of
@@ -1120,7 +1120,7 @@ class procedure TWin32WSCustomListView.PositionHeader(const AHandle: THandle);
 var
   hwndHeader: HWND;
   dwStyle: PtrInt;
-  rc: TRect;
+  rc: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   hdLayout: THDLAYOUT;
   wpos: Windows.TWINDOWPOS;
 begin
@@ -1133,7 +1133,7 @@ begin
   if hwndHeader = 0 then Exit; // nothing to do
 
   Windows.GetClientRect(AHandle, rc);
-  FillChar(hdLayout, SizeOf(hdLayout), 0);
+  hdLayout := Default(THDLAYOUT);
   hdLayout.prc := @rc;
   hdLayout.pwpos := @wpos;
   Header_Layout(hwndHeader, hdLayout);
@@ -1392,7 +1392,7 @@ end;
 class procedure TWin32WSCustomListView.SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint);
 var
   dx, dy: Integer;
-  Origin: TPoint;
+  Origin: TPoint = (X: 0; Y: 0);
 begin
   if not WSCheckHandleAllocated(ALV, 'SetViewOrigin')
   then Exit;

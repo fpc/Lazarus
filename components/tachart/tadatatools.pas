@@ -124,7 +124,8 @@ type
 implementation
 
 uses
-  GraphMath, Math, SysUtils, Types,
+  //GraphMath, 
+  Math, SysUtils, Types,
   TAChartStrConsts, TAChartAxis, TACustomSeries, TAGeometry;
 
 const

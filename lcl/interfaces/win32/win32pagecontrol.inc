@@ -555,7 +555,7 @@ end;
 class procedure TWin32WSCustomTabControl.AdjustSizeTabControlPages(const ATabControl: TCustomTabControl);
 var
   I: Integer;
-  R: TRect;
+  R: TRect = (Left: 0; Top: 0; Right: 0; Bottom: 0);
   WinHandle: HWND;
   lPage: TCustomPage;
 begin
@@ -599,9 +599,9 @@ var
   Mess: TLMNotify;
   NMHdr: tagNMHDR;
 begin
-  FillChar(Mess,SizeOf(Mess),0);
+  Mess := Default(TLMNotify);
   Mess.Msg := LM_NOTIFY;
-  FillChar(NMHdr,SizeOf(NMHdr),0);
+  NMHdr := Default(tagNMHDR);
   NMHdr.code := TCN_SELCHANGE;
   NMHdr.hwndfrom := AHandle;
   NMHdr.idfrom := APageIndex;  //use this to set pageindex to the correct page.

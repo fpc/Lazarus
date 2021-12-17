@@ -5149,8 +5149,8 @@ msgid "Ask name on create"
 msgstr "Sukūrus, klausti pavadinimo"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Naudinga nuostata Windows sistemoje: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
+msgstr "Naudinga nuostata Windows sistemoje: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -11677,10 +11677,6 @@ msgstr "Konvertuotus failus rengyklėje palikti atvertus"
 msgid "All project files will be open in editor after conversion"
 msgstr "Pasibaigus konvertavimui, visi projekto failai bus atverti rengyklėje"
 
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Palikti diegiamųjų sąraše"
-
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
 msgstr "Nekeisti pavadinimo"
@@ -13025,7 +13021,9 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Konvertuoti Delphi modulį į Lazarus modulį…"
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+#, fuzzy
+#| msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
+msgid "Convert Binary DFM to LFM ..."
 msgstr "Konvertuoti dvejetainį DFM failą į LFM ir patikrinti sintaksę…"
 
 #: lazarusidestrconsts.lismenuconvertencoding
@@ -17706,10 +17704,6 @@ msgstr "Šalinti savybę „%s“."
 msgid "Remove %s files from package \"%s\"?"
 msgstr "Pašalinti %s failų iš paketo „%s“?"
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Pašalinti iš diegiamųjų sąrašo"
-
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
 msgstr "Pašalinti iš projekto"
@@ -21336,6 +21330,10 @@ msgstr "Katalanų"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Kiniečių"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr ""
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

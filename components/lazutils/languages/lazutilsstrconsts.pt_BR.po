@@ -198,34 +198,34 @@ msgstr "Conversão impossível de %s para %s"
 
 #: lazutilsstrconsts.rsincompletemask
 msgid "Reached end of mask, but missing close/escape sequence."
-msgstr ""
+msgstr "Fim da máscara atingido, porém falta a sequência de escape/fechamento."
 
 #: lazutilsstrconsts.rsinternalerror
 #, object-pascal-format
 msgid "Internal error in %s."
-msgstr ""
+msgstr "Erro interno em %s."
 
 #: lazutilsstrconsts.rsinvalidcharmask
 #, object-pascal-format
 msgid "Invalid character \"%s\" in mask."
-msgstr ""
+msgstr "Caractere inválido \"%s\" na máscara."
 
 #: lazutilsstrconsts.rsinvalidcharmaskat
 #, object-pascal-format
 msgid "Invalid character \"%s\" in mask (offset %d)."
-msgstr ""
+msgstr "Caractere inválido \"%s\" na máscara (deslocamento: %d)."
 
 #: lazutilsstrconsts.rsinvalidescapechar
 msgid "Escape character must be ASCII <= 127."
-msgstr ""
+msgstr "Caractere de escape deve ser ASCII <= 127."
 
 #: lazutilsstrconsts.rsmissingclosecharmask
 #, object-pascal-format
 msgid "Missing closing character \"%s\" in mask."
-msgstr ""
+msgstr "Caractere de fechamento \"%s\" faltando na máscara."
 
 #: lazutilsstrconsts.rsmissingclosecharmaskat
 #, object-pascal-format
 msgid "Missing closing character \"%s\" in mask (offset %d)."
-msgstr ""
+msgstr "Caractere de fechamento \"%s\" faltando na máscara (deslocamento: %d)."
 

@@ -441,33 +441,6 @@
         <short>True when invalid UTF-8 codepoints are repaired in the string.</short>
       </element>
 
-      <element name="SpecialCharsToHex">
-        <short>Converts special characters to Pascal-style hexadecimal character constants.</short>
-        <descr>
-          <p>
-            <var>SpecialCharsToHex</var> is a <var>String</var> function used to convert special or control characters (those prior to the Space character Decimal 32) to their representation as a Pascal-style hexadecimal character constant using notation like <b>#$1B</b>. Other character values in <var>s </var> are not altered in any way.
-          </p>
-          <p>
-            SpecialCharsToHex calls <var>Utf8EscapeControlChars</var> in <file>LazUtf8</file> to get the return value for the function. The value <var>emHexPascal</var> is passed as an argument to request hexadecimal notation in the special characters.
-          </p>
-          <p>
-            SpecialCharsToHex is used in the implementation of the Search Result view in the Lazarus IDE.
-          </p>
-          <remark>
-            SpecialCharsToHex has been <b>deprecated</b> in Lazarus 2.1, and will be removed in Lazarus 2.3. Use the <var>Utf8EscapeControlChars</var> routine in <file>LazUtf8.pas</file> instead.
-          </remark>
-        </descr>
-        <seealso>
-          <link id="#lazutils.lazutf8.Utf8EscapeControlChars">Utf8EscapeControlChars</link>
-        </seealso>
-      </element>
-      <element name="SpecialCharsToHex.Result">
-        <short>String after converting special characters to Pascal-style constants.</short>
-      </element>
-      <element name="SpecialCharsToHex.s">
-        <short>Values examined and converted in the routine.</short>
-      </element>
-
       <element name="ShortDotsLine">
         <short>Shortens and "ellipsifies" the specified value.</short>
         <descr>
@@ -475,15 +448,15 @@
             <var>ShortDotsLine</var> is a <var>String</var> function used to generate a shortened and  "ellipsified" string for the value in Line.
           </p>
           <p>
-            ShortDotsLine calls <var>SpecialCharsToHex</var> to convert any control characters in Line to their representation as a hexadecimal character value.
+            ShortDotsLine calls <var>Utf8EscapeControlChars</var> to convert any control characters in Line to their representation as a hexadecimal character value.
           </p>
           <p>
             The value in the <var>MaxTextLen</var> constant is used as the maximum length for the "ellipsified" string value. If the number of UTF-8 codepoints in the line is larger than the value in MaxTextLen, the string is shortened to the maximum length and 3 (three) Period ('.') characters are appended to the return value.
           </p>
         </descr>
         <seealso>
-          <link id="SpecialCharsToHex"/>
           <link id="MaxTextLen"/>
+          <link id="#lazutils.lazutf8.Utf8EscapeControlChars">Utf8EscapeControlChars</link>
         </seealso>
       </element>
       <element name="ShortDotsLine.Result">

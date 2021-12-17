@@ -71,7 +71,10 @@ uses
   Win32Int, Win32Proc;
 
 type
-  TBitBtnAceess = class(TCustomBitBtn)
+  TBitBtnAccess = class(TBitBtn)
+  end;
+
+  TCustomBitBtnAccess = class(TCustomBitBtn)
   end;
 
 { TWin32WSBitBtn }
@@ -97,7 +100,7 @@ function Create32BitHBitmap(ADC: HDC; AWidth, AHeight: Integer; out BitsPtr: Poi
 var
   Info: Windows.TBitmapInfo;
 begin
-  FillChar(Info, SizeOf(Info), 0);
+  Info := Default(Windows.TBitmapInfo);
   Info.bmiHeader.biSize := SizeOf(Info.bmiHeader);
   Info.bmiHeader.biWidth := AWidth;
   Info.bmiHeader.biHeight := -AHeight; // top down
@@ -123,7 +126,7 @@ var
   BitBtnDC: HDC; // Handle to DC of bitbtn window
   OldFontHandle: HFONT; // Handle of previous font in hdcNewBitmap
   hdcNewBitmap: HDC; // Device context of the new Bitmap
-  TextSize: Windows.SIZE; // For computing the length of button caption in pixels
+  TextSize: Windows.SIZE = (cx: 0; cy: 0); // For computing the length of button caption in pixels
   OldBitmap: HBITMAP; // Handle to the old selected bitmap
   NewBitmap: HBITMAP; // Handle of the new bitmap
   XDestBitmap, YDestBitmap: integer; // X,Y coordinate of destination rectangle for bitmap
@@ -154,7 +157,7 @@ var
     glyphWidth, glyphHeight: integer;
     OldBitmapHandle: HBITMAP; // Handle of the provious bitmap in hdcNewBitmap
     OldTextAlign: Integer;
-    TmpDC: HDC;
+    TmpDC: HDC = 0;
     PaintBuffer: HPAINTBUFFER;
     Options: DTTOpts;
     Details: TThemedElementDetails;
@@ -173,7 +176,7 @@ var
     OldBitmapHandle := SelectObject(hdcNewBitmap, NewBitmap);
     if UseThemes and AlphaDraw then
     begin
-      FillChar(PaintParams, SizeOf(PaintParams), 0);
+      PaintParams := Default(TBP_PaintParams);
       PaintParams.cbSize := SizeOf(PaintParams);
       PaintParams.dwFlags := BPPF_ERASE;
       PaintBuffer := BeginBufferedPaint(hdcNewBitmap, @BitmapRect, BPBF_COMPOSITED, @PaintParams, TmpDC);
@@ -202,7 +205,7 @@ var
     begin
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
+        TCustomBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
           AImageRes, AIndex, AEffect);
         TWin32WSCustomImageListResolution.DrawToDC(
           AImageRes.Resolution,
@@ -220,7 +223,7 @@ var
 
       if (srcWidth <> 0) and (srcHeight <> 0) then
       begin
-        TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
+        TCustomBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(AState, BitBtn.Font.PixelsPerInch, 1,
           AImageRes, AIndex, AEffect);
         if UseThemes and not AlphaDraw then
         begin
@@ -261,7 +264,7 @@ var
     else
     begin
       Details := ThemeServices.GetElementDetails(StateToDetail[AState]);
-      FillChar(Options, SizeOf(Options), 0);
+      Options := Default(DTTOpts);
       Options.dwSize := SizeOf(Options);
       Options.dwFlags := DTT_COMPOSITED;
       TextFlags := DT_SINGLELINE;
@@ -300,7 +303,7 @@ begin
 
   if BitBtn.CanShowGlyph(True) then
   begin
-    TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+    TCustomBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
       AImageRes, AIndex, AEffect);
     srcWidth := AImageRes.Width;
     srcHeight := AImageRes.Height;
@@ -590,7 +593,7 @@ begin
   begin
     if BitBtn.CanShowGlyph(True) then
     begin
-      TBitBtnAceess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
+      TBitBtnAccess(BitBtn).FButtonGlyph.GetImageIndexAndEffect(Low(TButtonState), BitBtn.Font.PixelsPerInch, 1,
         AImageRes, AIndex, AEffect);
       srcWidth := AImageRes.Width;
       if BitBtn.Spacing = -1 then

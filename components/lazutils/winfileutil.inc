@@ -12,7 +12,7 @@ begin
   if Win32MajorVersion >= 5 then
   begin
     WideFileName := UTF8ToUTF16(FileName);
-    SetLength(WideResult,Max_Path);
+    SetLength(WideResult{%H-},MAX_PATH);
     lPathSize := GetShortPathNameW(PWideChar(WideFileName), PWideChar(WideResult), Length(WideResult));
     SetLength(WideResult,lPathSize);
     Result := UTF16ToUTF8(WideResult);

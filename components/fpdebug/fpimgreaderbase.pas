@@ -21,6 +21,10 @@ type
     RawData: Pointer;
     Size: QWord;
     VirtualAddress: QWord;
+    // Use this flag to identify sections that should be uploaded via RSP
+    // This is probably only relevant for uploads to low level targets (embedded, FreeRTOS...)
+    IsLoadable: Boolean;
+    Name: String;
   end;
   PDbgImageSection = ^TDbgImageSection;
 
@@ -93,6 +97,7 @@ type
   private
     FImageBase: QWord;
     FImageSize: QWord;
+    FRelocationOffset: TDBGPtrOffset;
     FLoadedTargetImageAddr: TDBGPtr;
     FReaderErrors: String;
     FUUID: TGuid;
@@ -101,39 +106,63 @@ type
     function GetSubFiles: TStrings; virtual;
     function GetAddressMapList: TDbgAddressMapList; virtual;
     function GetSection(const AName: String): PDbgImageSection; virtual; abstract;
+    function GetSection(const ID: integer): PDbgImageSection; virtual; abstract;
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
     procedure SetImageSize(ASize: QWord);
+    procedure SetRelocationOffset(AnOffset: TDBGPtr; Sign: TDBGPtrSign);
     procedure AddReaderError(AnError: String);
     function  ReadGnuDebugLinkSection(out AFileName: String; out ACrc: Cardinal): Boolean;
     function  LoadGnuDebugLink(ASearchPath, AFileName: String; ACrc: Cardinal): TDbgFileLoader;
+    property LoadedTargetImageAddr: TDBGPtr read FLoadedTargetImageAddr;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; virtual; abstract;
     class function UserName: AnsiString; virtual; abstract;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
     procedure ParseLibrarySymbolTable(AFpSymbolInfo: TfpSymbolList); virtual;
-    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; OwnSource: Boolean); virtual;
+    // The LoadedTargetImageAddr is the start-address of the data of the binary
+    // once loaded into memory.
+    // On Linux it is 0 for executables, and had another value for libraries
+    // which are relocated into another position.
+    // On Windows it is the same as the ImageBase, except when the binary has
+    // been relocated. This only happens if two libraries with the same ImageBase
+    // are loaded. In that case, one of them is being relocated to another
+    // LoadedTargetImageAddr.
+    constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); virtual;
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
-
+    // The ImageBase is the address at which the linker assumed the binary will be
+    // loaded at. So it is stored inside the binary itself and all addresses inside
+    // the binary assume that once loaded into memory, it is loaded at this
+    // address. (Which is not the case for relocated libraries, see the comments
+    // for the LoadedTargetImageAddr)
+    // On Linux it is always 0, on Windows it is set by the linker/compiler.
     property ImageBase: QWord read FImageBase;
     property ImageSize: QWord read FImageSize;
+    // The RelocationOffset is the offset between the addresses as they are encoded
+    // into the binary, and their real addresses once loaded in memory.
+    // On linux it is equal to the LoadedTargetImageAddr.
+    // On Windows it is 0, except for libraries which are re-located. In that
+    // case the offset is LoadedTargetImageAddr-ImageBase.
+    property RelocationOffset: TDBGPtrOffset read FRelocationOffset;
 
     property TargetInfo: TTargetDescriptor read FTargetInfo;
 
     property UUID: TGuid read FUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
+    property SectionByID[const ID: integer]: PDbgImageSection read GetSection;
     property SubFiles: TStrings read GetSubFiles;
     property AddressMapList: TDbgAddressMapList read GetAddressMapList;
     property ReaderErrors: String read FReaderErrors;
-
-    property LoadedTargetImageAddr: TDBGPtr read FLoadedTargetImageAddr write FLoadedTargetImageAddr;
   end;
   TDbgImageReaderClass = class of TDbgImageReader;
 
-function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean): TDbgImageReader; overload;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean): TDbgImageReader; overload;
 procedure RegisterImageReaderClass(DataSource: TDbgImageReaderClass);
 
 implementation
+
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
 
 const
   // Symbol-map section name
@@ -169,7 +198,7 @@ end;
    result := (r1.OrgAddr=r2.OrgAddr) and (r1.Length=r2.Length) and (r1.NewAddr=r2.NewAddr);
  end;
 
-function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean): TDbgImageReader;
+function GetImageReader(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean): TDbgImageReader;
 var
   i   : Integer;
   cls : TDbgImageReaderClass;
@@ -181,7 +210,7 @@ begin
     cls :=  TDbgImageReaderClass(RegisteredImageReaderClasses[i]);
     try
       if cls.isValid(ASource) then begin
-        Result := cls.Create(ASource, ADebugMap, OwnSource);
+        Result := cls.Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
         ASource.Close;
         Exit;
       end
@@ -403,6 +432,12 @@ begin
   FImageSize := ASize;
 end;
 
+procedure TDbgImageReader.SetRelocationOffset(AnOffset: TDBGPtr; Sign: TDBGPtrSign);
+begin
+  FRelocationOffset.Offset := AnOffset;
+  FRelocationOffset.Sign := Sign;
+end;
+
 procedure TDbgImageReader.AddReaderError(AnError: String);
 begin
   if FReaderErrors <> '' then
@@ -460,7 +495,7 @@ function TDbgImageReader.LoadGnuDebugLink(ASearchPath, AFileName: String;
     c:=Crc32(c, mem, i);
     Result.UnloadMemory(mem);
 
-    DebugLn(c <> ACrc, ['Invalid CRC for ext debug info: ', AFullName]);
+    DebugLn(DBG_WARNINGS and (c <> ACrc), ['Invalid CRC for ext debug info: ', AFullName]);
     if c <> ACrc then
       FreeAndNil(Result);
   end;
@@ -488,9 +523,10 @@ begin
   //
 end;
 
-constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
+constructor TDbgImageReader.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 begin
   inherited Create;
+  FLoadedTargetImageAddr := ALoadedTargetImageAddr;
 end;
 
 procedure TDbgImageReader.AddSubFilesToLoaderList(ALoaderList: TObject;
@@ -511,6 +547,8 @@ begin
 end;
 
 initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
   InitDebugInfoLists;
 
 finalization

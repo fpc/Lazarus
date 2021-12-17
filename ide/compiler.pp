@@ -312,10 +312,8 @@ begin
   if Assigned(FOnCmdLineCreate) then begin
     Abort:=false;
     FOnCmdLineCreate(CmdLine,Abort);
-    if Abort then begin
-      Result:=mrAbort;
-      exit;
-    end;
+    if Abort then
+      exit(mrAbort);
   end;
   if ConsoleVerbosity>=0 then
     DebugLn('[TCompiler.Compile] CmdLine="',CompilerFilename+CmdLine,'"');
@@ -329,8 +327,7 @@ begin
   TargetCPU:=AProject.CompilerOptions.GetEffectiveTargetCPU;
   if TargetCPU<>GetCompiledTargetCPU then
     Title+=Format(lisCPU, [TargetCPU]);
-  TargetFilename:=AProject.GetShortFilename(
-          AProject.CompilerOptions.CreateTargetFilename,false);
+  TargetFilename:=AProject.CompilerOptions.CreateTargetFilename;
   if TargetFilename<>'' then
     Title+=Format(lisTarget2, [TargetFilename]);
 

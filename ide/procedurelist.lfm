@@ -13,7 +13,7 @@ object ProcedureListForm: TProcedureListForm
   OnResize = FormResize
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object StatusBar: TStatusBar
     Left = 0
     Height = 21
@@ -234,6 +234,7 @@ object ProcedureListForm: TProcedureListForm
     TabOrder = 3
     OnDblClick = SGDblClick
     OnDrawCell = SGDrawCell
+    OnMouseWheel = SGMouseWheel
     OnSelectCell = SGSelectCell
   end
 end

@@ -28,6 +28,7 @@ type
     ChartAxisTransformations3: TChartAxisTransformations;
     ChartAxisTransformations3AutoScaleAxisTransform1: TAutoScaleAxisTransform;
     cbClipping: TCheckBox;
+    cbTransparency: TCheckBox;
     chFit: TChart;
     chFitFitSeries1: TFitSeries;
     chFitLineSeries1: TLineSeries;
@@ -66,6 +67,7 @@ type
     procedure cbHideClick(Sender: TObject);
     procedure cbRotateLabelClick(Sender: TObject);
     procedure cbShowLabelClick(Sender: TObject);
+    procedure cbTransparencyChange(Sender: TObject);
     procedure clrBackgroundColorColorChanged(Sender: TObject);
     procedure clrFontColorColorChanged(Sender: TObject);
     procedure clrPenColorColorChanged(Sender: TObject);
@@ -129,6 +131,14 @@ begin
   ctDistance1.Marks.Visible := cbShowLabel.Checked;
   ctDistance2.Marks.Visible := cbShowLabel.Checked;
   UpdateButtons;
+end;
+
+procedure TForm1.cbTransparencyChange(Sender: TObject);
+begin
+  if cbTransparency.Checked then
+    ctDistance1.Transparency := 128
+  else
+    ctDistance1.Transparency := 0;
 end;
 
 procedure TForm1.clrBackgroundColorColorChanged(Sender: TObject);
@@ -265,6 +275,7 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
+  clrBackgroundColor.ButtonColor := Chart1.BackColor;
   cbHideClick(nil);
   cbRotateLabelClick(nil);
   mDistanceTextChange(nil);

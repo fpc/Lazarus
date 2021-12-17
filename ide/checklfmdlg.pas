@@ -178,6 +178,8 @@ var
   end;
   
   procedure FindMissingClass(ObjNode: TLFMObjectNode);
+  // Add a missing or nested class to MissingClasses.
+  // A nested class means a TFrame installed as a component.
   var
     i: Integer;
     AClassName: String;
@@ -194,14 +196,16 @@ var
     // search in designer base classes
     if BaseFormEditor1.FindDesignerBaseClassByName(AClassName,true)<>nil then
       exit;
+    // search in global registered classes
+    if GetClass(ObjNode.TypeName)<>nil then
+      exit;
     // search in registered classes
     RegComp:=IDEComponentPalette.FindRegComponent(ObjNode.TypeName);
-    if (RegComp<>nil) and (RegComp.GetUnitName<>'') then exit;
-    // search in global registered classes
-    if GetClass(ObjNode.TypeName) <> nil then
-      Exit;
+    if (RegComp<>nil) and (RegComp.GetUnitName<>'')
+    and not RegComp.ComponentClass.InheritsFrom(TCustomFrame) then // Nested TFrame
+      exit;
     // class is missing
-    DebugLn(['FindMissingClass ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
+    DebugLn(['QuickCheckLFMBuffer->FindMissingClass ',ObjNode.Name,':',ObjNode.TypeName,' IsInherited=',ObjNode.IsInherited]);
     if MissingClasses=nil then
       MissingClasses:=TStringList.Create;
     MissingClasses.Add(AClassName);

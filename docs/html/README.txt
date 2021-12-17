@@ -13,6 +13,8 @@ Build build_lcl_docs.lpi
 
 ./build_lcl_docs --fpdoc /path/to/fpc/trunk/utils/fpdoc/fpdoc --fpcdocs=../chm --outfmt chm --footer locallclfooter.xml
 
+Note: It is recommened to use the fpdoc from fpc trunk. If you are unlucky and got a buggy revision, you can try with the released fpdoc.
+
 For Windows:
 
 Build the project build_lcl_docs.lpi, fix the PATH in the build_html.bat batch

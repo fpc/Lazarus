@@ -80,7 +80,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Laz_AVL_Tree,
   // LazUtils
-  LazFileUtils, LazUtilities,
+  LazFileUtils, LazStringUtils, LazUtilities,
   // Codetools
   CodeToolsStrConsts, CodeTree, CodeAtom, CustomCodeTool,
   SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache,
@@ -4145,26 +4145,25 @@ var
                       fdfSearchForward in Flags,Params,SearchRangeFlags);
   end;
 
+  procedure RaiseNotFound;
+  var
+    Identifier: string;
+  begin
+    Identifier:=GetIdentifier(Params.Identifier);
+    if (Identifier='') and (Params.Identifier<>nil)
+    and (Params.Identifier[0]<>#0) then begin
+      Identifier:=Params.Identifier[0];
+      if Identifier='[' then begin
+        Params.IdentifierTool.RaiseException(20170421200103,ctsDefaultPropertyNotFound);
+      end;
+    end;
+    Params.IdentifierTool.RaiseExceptionFmt(20170421200105,ctsIdentifierNotFound,
+                                            [Identifier]);
+  end;
+
   function CheckResult(NewResult, CallOnIdentifierFound: boolean): boolean;
   // returns: true to stop search
   //          false if search should continue
-  
-    procedure RaiseNotFound;
-    var
-      Identifier: string;
-    begin
-      Identifier:=GetIdentifier(Params.Identifier);
-      if (Identifier='') and (Params.Identifier<>nil)
-      and (Params.Identifier[0]<>#0) then begin
-        Identifier:=Params.Identifier[0];
-        if Identifier='[' then begin
-          Params.IdentifierTool.RaiseException(20170421200103,ctsDefaultPropertyNotFound);
-        end;
-      end;
-      Params.IdentifierTool.RaiseExceptionFmt(20170421200105,ctsIdentifierNotFound,
-                                              [Identifier]);
-    end;
-
   begin
     Result:=true;
     FindIdentifierInContext:=NewResult and (not (fdfCollect in Flags));
@@ -4996,8 +4995,7 @@ begin
 
         ctnProcedure:
           begin
-            IdentifierFoundResult:=
-              FindIdentifierInProcContext(ContextNode,Params);
+            IdentifierFoundResult:=FindIdentifierInProcContext(ContextNode,Params);
             if IdentifierFoundResult in [ifrAbortSearch,ifrSuccess] then begin
               if CheckResult(IdentifierFoundResult=ifrSuccess,true) then begin
                 {$IFDEF ShowProcSearch}
@@ -9383,7 +9381,6 @@ var
       exit(true);
     end;
     Params.Load(OldInput,false);
-    Result:=false;
   end;
   
   procedure ResolveIdentifier;
@@ -9637,12 +9634,10 @@ var
           end;
 
           Params.Load(OldInput,true);
-          if IsEnd then
-            ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
-                                                               Params,AliasType)
-          else
-            ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
-                                                               Params);
+          if not IsEnd then
+            AliasType:=Nil;
+          ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
+                                                             Params,AliasType)
           {$IFDEF CheckNodeTool}
           if ExprType.Desc=xtContext then
             ExprType.Context.Tool.CheckNodeTool(ExprType.Context.Node);
@@ -14190,7 +14185,9 @@ end;
 
 procedure TFindDeclarationParams.AddOperandPart(aPart: string);
 begin
-  FExtractedOperand := FExtractedOperand + aPart;
+  // Prevent identifier being added many times. See issue #37384.
+  if not LazEndsStr(aPart, FExtractedOperand) then
+    FExtractedOperand:=FExtractedOperand+aPart;
 end;
 
 procedure TFindDeclarationParams.ChangeFoundProc(

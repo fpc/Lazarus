@@ -7,11 +7,10 @@ object ComponentListForm: TComponentListForm
   ClientHeight = 467
   ClientWidth = 300
   KeyPreview = True
-  OnActivate = FormActivate
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.3.0.0'
   object PageControl: TPageControl
     Left = 0
     Height = 397

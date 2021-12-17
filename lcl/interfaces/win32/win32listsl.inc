@@ -147,7 +147,7 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32ListStringList.Get(Index: Integer): String;
 Var
-  w: widestring;
+  w: widestring = '';
 begin
   if (Index < 0) Or (Index >= Count) then
     raise Exception.Create('Out of bounds.')
@@ -321,7 +321,7 @@ end;
 
 procedure TWin32ComboBoxStringList.Assign(Source: TPersistent);
 var
-  EditText: string;
+  EditText: string = '';
   lItemIndex: integer;
 begin
   if Source is TStrings then

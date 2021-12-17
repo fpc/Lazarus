@@ -452,6 +452,16 @@ begin
     end;
 end;
 
+procedure TCustomComboBoxEx.Notification(AComponent: TComponent; Operation: TOperation); 
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FImages) then
+  begin
+    FImages := nil;
+    Invalidate;
+  end;
+end;
+
 procedure TCustomComboBoxEx.SetItemHeight(const AValue: Integer);
 begin
   inherited SetItemHeight(AValue);

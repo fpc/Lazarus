@@ -1830,6 +1830,7 @@ var
     AMenuItem.BuildModeIndex := BuildModeIndex;
     AMenuItem.Caption := CurMode.GetCaption;
     AMenuItem.Checked := (Project1<>nil) and (Project1.ActiveBuildMode=CurMode);
+    AMenuItem.RadioItem := true;
     AMenuItem.ShowAlwaysCheckable:=true;
     inc(CurIndex);
   end;

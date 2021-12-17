@@ -363,7 +363,7 @@ begin
     Line:='$(LazarusDir)/'+StringReplace(CreateRelativePath(Pkg.Filename,PkgDir),'\','/',[rfReplaceAll]);
     if WriteCommands then begin
       writeln('echo '''+Line+''' > '+LPLFilename);
-      writeln('svn add '+LPLFilename);
+      writeln('git add '+LPLFilename);
     end else if ExecuteCommands then begin
       if not Quiet then
         writeln('Info: creating '+LPLFilename);
@@ -375,7 +375,7 @@ begin
         sl.Free;
       end;
       if WriteCommands then
-        writeln('ToDo: svn add '+LPLFilename);
+        writeln('ToDo: git add '+LPLFilename);
     end;
   end;
 end;
@@ -433,7 +433,7 @@ begin
           writeln('Wrong link ',ExtractFileNameOnly(Link.LPLFilename),' to '+CreateRelativePath(Link.PkgFilename,PkgDir));
       end;
       if WriteCommands then begin
-        writeln('svn rm ',CreateRelativePath(Link.LPLFilename,LazarusDir));
+        writeln('git rm ',CreateRelativePath(Link.LPLFilename,LazarusDir));
       end else if ExecuteCommands then begin
         if not Quiet then
           writeln('Info: deleting '+Link.LPLFilename);
@@ -472,7 +472,7 @@ begin
           OldLPLFilename:=CreateRelativePath(Link.LPLFilename,LazarusDir);
           NewLPLFilename:=AppendPathDelim(CreateRelativePath(LinksDir,LazarusDir))+Pkg.Name+'-'+Pkg.VersionAsString+'.lpl';
           if WriteCommands then begin
-            writeln('svn mv ',OldLPLFilename,' ',NewLPLFilename);
+            writeln('git mv ',OldLPLFilename,' ',NewLPLFilename);
           end else if ExecuteCommands then begin
             if not Quiet then
               writeln('Info: renaming "'+OldLPLFilename+'" -> "'+NewLPLFilename+'"');

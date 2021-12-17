@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, Math,
   // LCL
   Controls, Graphics, Dialogs, Buttons, StdCtrls, Forms,
-  LCLType, LCLUnicodeData, Grids, ButtonPanel, ComCtrls,
+  LCLType, LCLUnicodeData, Grids, ButtonPanel, ComCtrls, Spin,
   // LazUtils
   GraphType, LazUTF8, LConvEncoding,
   // IdeIntf
@@ -59,9 +59,13 @@ type
     cbCodePage: TComboBox;
     AnsiCharInfoLabel: TLabel;
     cbUniRange: TComboBox;
+    AnsiSizeLabel: TLabel;
+    UniSizeLabel: TLabel;
+    seUniSize: TSpinEdit;
     SortUniRangeListButton: TSpeedButton;
     CodePageLabel: TLabel;
     RangeLabel: TLabel;
+    seAnsiSize: TSpinEdit;
     UnicodeCharInfoLabel: TLabel;
     PageControl1: TPageControl;
     AnsiGrid: TStringGrid;
@@ -76,6 +80,8 @@ type
     procedure HelpButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure seAnsiSizeChange(Sender: TObject);
+    procedure seUniSizeChange(Sender: TObject);
     procedure SortUniRangeListButtonClick(Sender: TObject);
     procedure AnsiGridSelectCell(Sender: TObject; aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
@@ -211,13 +217,21 @@ begin
 end;
 
 procedure TCharacterMapDialog.FormShow(Sender: TObject);
+var
+  savedFontSize: Integer;
 begin
   AnsiGrid.Font.Name := EditorOpts.EditorFont;
   UnicodeGrid.Font.Name := EditorOpts.EditorFont;
-  AnsiGrid.Font.Size := 10;
-  UnicodeGrid.Font.Size := 10;
+  AnsiGrid.Font.Size := seAnsiSize.Value;
+  UnicodeGrid.Font.Size := seUniSize.Value;
 
+  // Auto-adjust the width of the AnsiGrid's fixed column. Note that
+  // the font defined in PrepareCanvas is ignored by AutoSizeColumn.
+  savedfontSize := AnsiGrid.Font.Size;
+  AnsiGrid.Font.Size := 10;
   AnsiGrid.AutoSizeColumn(0);
+  AnsiGrid.Font.Size := savedFontSize;
+  // Now also auto-adjust the widths of the other AnsiGrid to fill the client area.
   AnsiGrid.AutoFillColumns := true;
 
   FUnicodeBlockIndex:=NOT_SELECTED;
@@ -225,6 +239,18 @@ begin
   FillUnicodeGrid;
   cbCodePage.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
   cbUniRange.DropDownCount := Math.max(EnvironmentOptions.DropDownCount, 25);
+end;
+
+procedure TCharacterMapDialog.seAnsiSizeChange(Sender: TObject);
+begin
+  AnsiGrid.Font.Size := seAnsiSize.Value;
+  seUniSize.Value := seAnsiSize.Value;
+end;
+
+procedure TCharacterMapDialog.seUniSizeChange(Sender: TObject);
+begin
+  UnicodeGrid.Font.Size := seUniSize.Value;
+  seAnsiSize.Value := seUniSize.Value;
 end;
 
 procedure TCharacterMapDialog.SortUniRangeListButtonClick(Sender: TObject);
@@ -306,6 +332,8 @@ begin
     ts := Canvas.TextStyle;
     ts.Alignment := taCenter;
     Canvas.TextStyle := ts;
+    if (Sender = AnsiGrid) and ((aCol = 0) or (aRow = 0)) then 
+      Canvas.Font.Size := 10;
   end;
 end;
 

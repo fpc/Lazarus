@@ -69,7 +69,7 @@ codeBytes, '  ', asmInstr,
   end;
 
 begin
-  Process := TDummyProcess.Create('', 0, 0, nil, nil);
+  Process := TDummyProcess.Create('', nil, nil, nil);
   Process.NewMode := dm64;
   DisAss := TX86AsmDecoder.Create(Process);
   try

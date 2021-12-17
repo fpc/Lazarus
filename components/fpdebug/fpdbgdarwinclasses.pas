@@ -147,9 +147,11 @@ type
     function AnalyseDebugEvent(AThread: TDbgThread): TFPDEvent; override;
     function CreateWatchPointData: TFpWatchPointData; override;
   public
-    class function StartInstance(AFileName: string; AParams, AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; out AnError: TFpError): TDbgProcess; override;
+    function StartInstance(AParams, AnEnvironment: TStrings;
+      AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags;
+      out AnError: TFpError): boolean; override;
     class function isSupported(ATargetInfo: TTargetDescriptor): boolean; override;
-    constructor Create(const AName: string; const AProcessID, AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager); override;
+    constructor Create(const AFileName: string; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager; AProcessConfig: TDbgProcessConfig = nil); override;
     destructor Destroy; override;
 
     function ReadData(const AAdress: TDbgPtr; const ASize: Cardinal; out AData): Boolean; override;
@@ -622,19 +624,13 @@ begin
   Result := TFpIntelWatchPointData.Create;
 end;
 
-constructor TDbgDarwinProcess.Create(const AName: string; const AProcessID,
-  AThreadID: Integer; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager);
-var
-  aKernResult: kern_return_t;
+constructor TDbgDarwinProcess.Create(const AFileName: string;
+  AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
+  AProcessConfig: TDbgProcessConfig);
 begin
-  inherited Create(AName, AProcessID, AThreadID, AnOsClasses, AMemManager);
+  inherited Create(AFileName, AnOsClasses, AMemManager, AProcessConfig);
 
   GetDebugAccessRights;
-  aKernResult:=task_for_pid(mach_task_self, AProcessID, FTaskPort);
-  if aKernResult <> KERN_SUCCESS then
-    begin
-    debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(AProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
-    end;
 end;
 
 destructor TDbgDarwinProcess.Destroy;
@@ -643,19 +639,18 @@ begin
   inherited Destroy;
 end;
 
-class function TDbgDarwinProcess.StartInstance(AFileName: string; AParams,
-  AnEnvironment: TStrings; AWorkingDirectory, AConsoleTty: string;
-  AFlags: TStartInstanceFlags; AnOsClasses: TOSDbgClasses; AMemManager: TFpDbgMemManager;
-  out AnError: TFpError): TDbgProcess;
+function TDbgDarwinProcess.StartInstance(AParams, AnEnvironment: TStrings;
+  AWorkingDirectory, AConsoleTty: string; AFlags: TStartInstanceFlags; out
+  AnError: TFpError): boolean;
 var
-  PID: TPid;
   AProcess: TProcessUTF8;
   AnExecutabeFilename: string;
   AMasterPtyFd: cint;
+  aKernResult: kern_return_t;
 begin
-  result := nil;
+  result := false;
 
-  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(AFileName);
+  AnExecutabeFilename:=ExcludeTrailingPathDelimiter(Name);
   if DirectoryExists(AnExecutabeFilename) then
     begin
     if not (ExtractFileExt(AnExecutabeFilename)='.app') then
@@ -665,7 +660,7 @@ begin
       end;
 
     AnExecutabeFilename := AnExecutabeFilename + '/Contents/MacOS/' + ChangeFileExt(ExtractFileName(AnExecutabeFilename),'');
-    if not FileExists(AFileName) then
+    if not FileExists(AnExecutabeFilename) then
       begin
       DebugLn(DBG_WARNINGS, format('Can not find  %s.',[AnExecutabeFilename]));
       Exit;
@@ -700,17 +695,26 @@ begin
     GConsoleTty := AConsoleTty;
 
     AProcess.Execute;
-    PID:=AProcess.ProcessID;
-
+    Init(AProcess.ProcessID, 0);
+    FExecutableFilename:=AnExecutabeFilename;
+    FMasterPtyFd := AMasterPtyFd;
+    FProcProcess := AProcess;
     sleep(100);
-    result := TDbgDarwinProcess.Create(AFileName, Pid, -1, AnOsClasses, AMemManager);
-    TDbgDarwinProcess(result).FMasterPtyFd := AMasterPtyFd;
-    TDbgDarwinProcess(result).FProcProcess := AProcess;
-    TDbgDarwinProcess(result).FExecutableFilename := AnExecutabeFilename;
+    Result:=ProcessID > 0;
+
+    if Result then begin
+      aKernResult:=task_for_pid(mach_task_self, ProcessID, FTaskPort);
+      if aKernResult <> KERN_SUCCESS then
+        begin
+        Result := False;
+        debugln(DBG_WARNINGS, 'Failed to get task for process '+IntToStr(ProcessID)+'. Probably insufficient rights to debug applications. Mach error: '+mach_error_string(aKernResult));
+        end;
+    end;
+
   except
     on E: Exception do
     begin
-      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[AFileName, E.Message]));
+      DebugLn(DBG_WARNINGS, Format('Failed to start process "%s". Errormessage: "%s".',[AnExecutabeFilename, E.Message]));
       AProcess.Free;
 
       if AMasterPtyFd>-1 then

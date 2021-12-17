@@ -55,8 +55,8 @@ type
   { TFPGUIPrivate }
 
   TFPGUIPrivate = class(TInterfacedObject)
-    function _AddRef : longint;stdcall;
-    function _Release : longint;stdcall;
+    function _AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
+    function _Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
   end;
 
   { To access protected properties of TfpgWidget }
@@ -793,12 +793,12 @@ end;
 
 { TFPGUIPrivate }
 
-function TFPGUIPrivate._AddRef: longint; stdcall;
+function TFPGUIPrivate._AddRef: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
 
-function TFPGUIPrivate._Release: longint; stdcall;
+function TFPGUIPrivate._Release: longint; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;

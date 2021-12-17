@@ -136,6 +136,8 @@ object Form1: TForm1
         Width = 558
         AxisList = <        
           item
+            Grid.Color = clSilver
+            Grid.Style = psSolid
             TickLength = 6
             Group = 1
             Marks.LabelBrush.Style = bsClear
@@ -145,19 +147,21 @@ object Form1: TForm1
             Title.LabelBrush.Style = bsClear
           end        
           item
+            Grid.Color = clSilver
+            Grid.Style = psSolid
             Intervals.MaxLength = 100
             Intervals.MinLength = 30
             Intervals.NiceSteps = '0.2|0.25|0.5|1.0'
             TickLength = 6
             Alignment = calBottom
             Group = 2
+            Marks.Distance = 25
             Marks.LabelFont.Style = [fsBold]
             Marks.LabelBrush.Style = bsClear
             Minors = <            
               item
-                Grid.Color = clGray
+                Grid.Color = clSilver
                 Grid.Cosmetic = False
-                Intervals.Count = 10
                 Intervals.MinLength = 5
                 Intervals.Options = [aipUseCount, aipUseMinLength]
                 Marks.Distance = 4
@@ -253,7 +257,7 @@ object Form1: TForm1
           Left = 8
           Height = 19
           Top = 8
-          Width = 139
+          Width = 137
           BorderSpacing.Left = 8
           BorderSpacing.Top = 8
           BorderSpacing.Bottom = 8
@@ -268,10 +272,10 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
           AnchorSideTop.Side = asrCenter
-          Left = 163
+          Left = 161
           Height = 19
           Top = 8
-          Width = 145
+          Width = 143
           BorderSpacing.Left = 16
           Caption = 'Alternate format strings'
           OnChange = CbAlternateFormatChange
@@ -282,7 +286,7 @@ object Form1: TForm1
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = Panel1
           AnchorSideTop.Side = asrCenter
-          Left = 332
+          Left = 328
           Height = 15
           Top = 10
           Width = 34
@@ -455,7 +459,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
-        Color = clWhite
+        Color = clDefault
         object ChartPositionFuncSeries1: TFuncSeries
           Extent.UseXMax = True
           Extent.UseXMin = True
@@ -527,7 +531,7 @@ object Form1: TForm1
             Left = 8
             Height = 19
             Top = 54
-            Width = 103
+            Width = 101
             BorderSpacing.Top = 4
             Caption = 'Show static axis'
             OnChange = cbStaticXChange
@@ -540,7 +544,7 @@ object Form1: TForm1
             Left = 8
             Height = 19
             Top = 77
-            Width = 60
+            Width = 58
             BorderSpacing.Top = 4
             BorderSpacing.Bottom = 8
             Caption = 'Bottom'
@@ -553,10 +557,10 @@ object Form1: TForm1
             AnchorSideLeft.Control = rbPositionBottom
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = rbPositionBottom
-            Left = 76
+            Left = 74
             Height = 19
             Top = 77
-            Width = 40
+            Width = 38
             BorderSpacing.Left = 8
             Caption = 'Top'
             TabOrder = 2
@@ -628,7 +632,7 @@ object Form1: TForm1
             Left = 8
             Height = 19
             Top = 54
-            Width = 103
+            Width = 101
             BorderSpacing.Top = 4
             Caption = 'Show static axis'
             OnChange = cbStaticYChange
@@ -655,10 +659,10 @@ object Form1: TForm1
             AnchorSideLeft.Control = rbPositionLeft
             AnchorSideLeft.Side = asrBottom
             AnchorSideTop.Control = rbPositionLeft
-            Left = 64
+            Left = 62
             Height = 19
             Top = 77
-            Width = 48
+            Width = 46
             BorderSpacing.Left = 16
             Caption = 'Right'
             TabOrder = 2
@@ -670,7 +674,7 @@ object Form1: TForm1
             Left = 8
             Height = 19
             Top = 77
-            Width = 40
+            Width = 38
             BorderSpacing.Top = 4
             BorderSpacing.Bottom = 8
             Caption = 'Left'
@@ -749,6 +753,7 @@ object Form1: TForm1
           'TAChart'
         )
         Align = alClient
+        Color = clDefault
         object ChartRotatedBarSeries: TBarSeries
           BarBrush.Color = clRed
           Source = lcsRotatedSeries
@@ -773,7 +778,7 @@ object Form1: TForm1
           Left = 8
           Height = 19
           Top = 9
-          Width = 61
+          Width = 59
           BorderSpacing.Around = 8
           Caption = 'Rotated'
           OnChange = cbRotatedChange
@@ -807,12 +812,12 @@ object Form1: TForm1
     Params.MinLength = 20
     Params.Options = [aipUseCount, aipUseMaxLength, aipUseMinLength, aipUseNiceSteps]
     OnDateTimeStepChange = DateTimeIntervalChartSource1DateTimeStepChange
-    Left = 248
-    Top = 320
+    Left = 256
+    Top = 296
   end
   object ChartToolsetDateTime: TChartToolset
     Left = 448
-    Top = 320
+    Top = 296
     object ChartToolset1ZoomIn: TZoomClickTool
       Shift = [ssLeft]
       ZoomFactor = 4

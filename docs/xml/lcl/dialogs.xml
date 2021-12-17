@@ -1393,113 +1393,196 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       <element name="TColorButton.FDisabledPattern"/>
 
       <element name="TColorButton.IsButtonColorAutoSizeStored">
-        <short/>
+        <short>Implements the storage specifier for the ButtonColorAutoSize property.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TColorButton.IsButtonColorAutoSizeStored.Result">
-        <short/>
+        <short>True when ButtonColorAutoSize is set to False.</short>
       </element>
 
       <element name="TColorButton.SetBorderWidth">
-        <short/>
+        <short>Sets the value for the BorderWidth property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.BorderWidth"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetBorderWidth.AValue">
-        <short/>
+        <short>New value for the BorderWidth property.</short>
       </element>
 
       <element name="TColorButton.SetButtonColor">
-        <short/>
+        <short>Sets the value for the ButtonColor property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.ButtonColor"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetButtonColor.AValue">
-        <short/>
+        <short>New value for the ButtonColor property.</short>
       </element>
 
       <element name="TColorButton.SetButtonColorAutoSize">
-        <short/>
+        <short>Sets the value for the ButtonColorAutoSize property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetButtonColorAutoSize.AValue">
-        <short/>
+        <short>New value for the ButtonColorAutoSize property.</short>
       </element>
 
       <element name="TColorButton.SetButtonColorSize">
-        <short/>
+        <short>Sets the value for the ButtonColorSize property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.ButtonColorSize"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetButtonColorSize.AValue">
-        <short/>
+        <short>New value for the ButtonColorSize property.</short>
       </element>
 
       <element name="TColorButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TColorButton.DrawGlyph">
         <short>
-          <var>DrawGlyph</var> - draw the glyph on the button face.
+          Re-implements drawing the glyph for the control to use the selected color.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DrawGlyph</var> is an overridden method in <var>TColorButton</var>. It re-implements the ancestor method to draw the button face and color block (or swatch) for the control using the arguments passed to the method.
+          </p>
+          <p>
+            The value in AState determines the appearance for the glyph (color swatch). When set to bsDisabled, a bitmap with a disabled pattern (dotted lines) is drawn using the Color for the button face. Otherwise, the value in ButtonColor is used to draw the glyph. GetGlyphSize is called to get the dimensions for the glyph based on the settings in ButtonColorAutoSize and ButtonColorSize.
+          </p>
+          <p>
+            The return value is a TRect instance with the bounds affected in the drawing operation.
+          </p>
+          <p>
+            DrawGlyph calls the Rectangle method for the TCanvas instance in the Canvas argument using the return value for the method as an argument.
+          </p>
+          <p>
+            DrawGlyph does <b>not</b> call the inherited method which draws the glyph image for the speed button.
+          </p>
+          <p>
+            DrawGlyph is called from the MeasureDraw method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.Color"/>
+          <link id="TColorButton.ButtonColor"/>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.GetGlyphSize"/>
+          <link id="#lcl.buttons.TCustomSpeedButton.DrawGlyph">TCustomSpeedButton.DrawGlyph</link>
+          <link id="#lcl.buttons.TCustomSpeedButton.DrawGlyph">TCustomSpeedButton.MeasureDraw</link>
+          <link id="#lcl.buttons.TButtonState">TButtonState</link>
+        </seealso>
       </element>
       <element name="TColorButton.DrawGlyph.Result">
-        <short/>
+        <short>Rectangle where the color block is drawn for the control.</short>
       </element>
       <element name="TColorButton.DrawGlyph.ACanvas">
-        <short/>
+        <short>Drawing surface where the control is drawn.</short>
       </element>
       <element name="TColorButton.DrawGlyph.AClient">
-        <short/>
+        <short>Client rectangle where the button face / color block is rendered.</short>
       </element>
       <element name="TColorButton.DrawGlyph.AOffset">
-        <short/>
+        <short>
+          TPoint with horizontal and vertical offsets in AClient where the glyph is drawn.
+        </short>
       </element>
       <element name="TColorButton.DrawGlyph.AState">
-        <short/>
+        <short>Button state for the glyph; bsDisabled draws the disabled pattern for the button control.</short>
       </element>
       <element name="TColorButton.DrawGlyph.ATransparent">
-        <short/>
+        <short>Not used in the method.</short>
       </element>
       <element name="TColorButton.DrawGlyph.BiDiFlags">
-        <short/>
+        <short>Not used in the method.</short>
       </element>
 
       <element name="TColorButton.GetDisabledPattern">
-        <short>
-          <var>GetDisabledPattern</var> returns a BitMap with a disabled pattern.
-        </short>
-        <descr/>
+        <short>Gets a bitmap with the disabled pattern for the control.</short>
+        <descr>
+          <p>
+            GetDisabledPattern is a TBitmap function used to get the bitmap with the disabled pattern drawn on the control. It is used when the Enabled property (in the control or one of its parents) is set to False.
+          </p>
+          <p>
+            GetDisabledPattern ensures that a TBitmap instance has been created and assigned to an internal member for the class instance. The bitmap contains a pattern with dotted lines that indicate the control cannot accept input values. The allocated bitmap is freed (when assigned) in the destructor for the class instance.
+          </p>
+          <p>
+            GetDisabledPattern is called from the DrawGlyph method when its button state argument is set to bsDisabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TColorButton.GetDisabledPattern.Result">
-        <short/>
+        <short>TBitmap instance with the disabled pattern drawn for the control.</short>
       </element>
 
       <element name="TColorButton.GetGlyphSize">
         <short>
-          <var>GetGlyphSize</var> returns a value with the size for glyphs on the button.
+          Gets the size for the glyph (color block / swatch) on the button control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GetGlyphSize</var> is an overridden  <var>TSize</var> function used to get the dimensions for the glyph (color block / swatch) displayed on the button control. Values in ButtonColorAutoSize and ButtonColorSize determine the height and width used for the color block displayed on the control.
+          </p>
+          <p>
+            When ButtonColorAutoSize is set to True, the color block is auto-sized to fill the unused client area for the control specified in the PaintRect argument. Space is reserved for the Caption (color name), Spacing, BorderWidth, and Margin properties assigned to the control.
+          </p>
+          <p>
+            When ButtonColorAutoSize is False, ButtonColorSize is used as both the width and height for the color block.
+          </p>
+          <p>
+            The return value is a TSize instance where the width and height for the color block are stored in the CX and CY members (respectively). Layout determines whether spacing is reserved in the horizontal (blGlyphLeft, blGlyphRight) or vertical (blGlyphTop, blGlyphBottom) dimensions.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.BorderWidth"/>
+          <link id="TCustomSpeedButton.GetTextSize"/>
+          <link id="TCustomSpeedButton.Spacing"/>
+          <link id="TCustomSpeedButton.Layout"/>
+          <link id="TCustomSpeedButton.Margin"/>
+          <link id="#lcl.controls.TControl.Caption"/>
+        </seealso>
       </element>
       <element name="TColorButton.GetGlyphSize.Result">
-        <short/>
+        <short>TSize instance with the dimensions for the glyph (color block).</short>
+      </element>
+      <element name="TColorButton.GetGlyphSize.Drawing">
+        <short>True if a drawing operation is active; never set to False in LCL code.</short>
       </element>
       <element name="TColorButton.GetGlyphSize.PaintRect">
-        <short/>
+        <short>TRect instance with the display area for the button control.</short>
       </element>
 
-      <element name="TColorButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
+      <element name="TColorButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TColorButton.GetControlClassDefaultSize.Result" link="#lcl.controls.TControl.GetControlClassDefaultSize.Result"/>
+
+      <element name="TColorButton.Notification">
+        <short>
+          Performs actions when the specified component is added to or removed from the control.
+        </short>
+        <descr>
+          <p>
+            <var>Notification</var> is an overridden method in <var>TColorButton</var>, and calls the inherited method on entry. It ensures that the <var>ColorDialog</var> property is set to <b>Nil</b> when <var>AComponent</var> and <var>Operation</var> indicate the dialog class instance has been removed from the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <element name="TColorButton.GetControlClassDefaultSize.Result">
-        <short/>
+      <element name="TColorButton.Notification.AComponent">
+        <short>Component for the notification.</short>
+      </element>
+      <element name="TColorButton.Notification.Operation">
+        <short>Operation performed for the specified component.</short>
       </element>
 
       <element name="TColorButton.ShowColorDialog">
@@ -1509,7 +1592,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>ShowColorDialog</var> is a method used to display a <var>TColorDialog</var> and capture its result.
           </p>
           <p>
-            ShowColorDialog uses an existing dialog instance in <var>ColorDialog</var> when assigned. Otherwise, a new <var>TColorDialog</var> instance is created and temporarily stored in the property. The value in <var>ButtonColor</var> is used as the default color value in the dialog. The <var>Execute</var> method in the dialog is called to get the selected Color value, and it is stored in the <var>ButtonColor</var> property.
+            ShowColorDialog uses an existing dialog instance in <var>ColorDialog</var> when assigned. Otherwise, a new <var>TColorDialog</var> instance is created and temporarily stored in the property. The value in <var>ButtonColor</var> is used as the default color value in the dialog. The <var>Execute</var> method in the dialog is called to get the selected TColor value, and it is stored in the <var>ButtonColor</var> property.
           </p>
         </descr>
         <seealso>
@@ -1523,27 +1606,45 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TColorButton</var>, and calls the inherited <var>Create</var> method. Create sets initial bounds for the controls, as well as its size and pattern.
+            <var>Create</var> is the constructor for <var>TColorButton</var>, and calls the inherited <var>Create</var> method. Create sets the initial bounds for the controls to their default values, and sets the values for properties including:
           </p>
+          <ul>
+            <li>ButtonColorSize (16)</li>
+            <li>BorderWidth (2)</li>
+            <li>ButtonColorAutoSize (True)</li>
+          </ul>
         </descr>
         <seealso>
-          <link id="#LCL.Buttons.TCustomSpeedButton.Create">TCustomSpeedButton.create</link>
+          <link id="#lcl.buttons.TCustomSpeedButton.Create">TCustomSpeedButton.Create</link>
         </seealso>
       </element>
       <element name="TColorButton.Create.AnOwner">
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TColorButton.Destroy" link="#lcl.buttons.TCustomSpeedButton.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TColorButton.Destroy">
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance. It ensures that the internal bitmap with the pattern displayed for the disabled control is freed (when assigned). Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.Destroy">TCustomSpeedButton.Destroy</link>
+        </seealso>
       </element>
 
-      <element name="TColorButton.Click" link="#lcl.controls.TControl.Click">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TColorButton.Click">
+        <short>Performs actions needed when the control is clicked.</short>
+        <descr>
+          <p>
+            Click is an overridden method in TColorButton used to perform actions needed when the control is clicked or the Space key is pressed when the control has focus. It calls the inherited method on entry to execute the Action for the control, or signal its OnClick event handler (when assigned). It calls the ShowColorDialog method to configure, display, and execute the ColorDialog for the control. ButtonColor is updated to contain the new color selected when the dialog was executed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.Click">TCustomSpeedButton.Click</link>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.Action" link="#lcl.controls.TControl.Action"/>
@@ -1553,51 +1654,136 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       <element name="TColorButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 
       <element name="TColorButton.BorderWidth">
-        <short>Width for the borders on the button.</short>
+        <short>Width for the borders on the button control.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TColorButton.ButtonColorAutoSize">
-        <short>True if the button can be automatically re-sized.</short>
+        <short>
+          True if the color block for the button can be automatically resized to fill the unused client area.
+        </short>
         <descr>
           <p>
-            <var>ButtonColorAutoSize</var> is a Boolean property which indicates if the button can be automatically re-sized.
+            <var>ButtonColorAutoSize</var> is a <var>Boolean</var> property which indicates if the color block for the button can be automatically resized to fill the unused client area in the button control.
+          </p>
+          <p>
+            When set to <b>True</b>, the client area is examined to determine the dimensions for the color block. Space is reserved using the Caption, BorderWidth, Spacing, and Margin properties defined for the control. The unused area in the client rectangle is drawn using a frame filled with the selected ButtonColor for the control.
+          </p>
+          <p>
+            When set to False, the value in ButtonColorSize is used as both the height and width for the color block or swatch.
+          </p>
+          <p>
+            The default value for the property is True as assigned in the constructor for the class instance. Setting a new value for the property causes the control to be redrawn. When ButtonColorAutoSize is True, setting a new value for BorderWidth also causes the control to be redrawn.
+          </p>
+          <p>
+            ButtonColorAutoSize and ButtonColorSize are used in the GetGlyphSize method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.Create"/>
+          <link id="TColorButton.GetGlyphSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.BorderWidth"/>
+          <link id="TCustomSpeedButton.GetTextSize"/>
+          <link id="TCustomSpeedButton.Spacing"/>
+          <link id="TCustomSpeedButton.Layout"/>
+          <link id="TCustomSpeedButton.Margin"/>
+          <link id="#lcl.controls.TControl.Caption"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.ButtonColorSize">
         <short>
-          <var>ButtonColorSize</var> - the size of the button color block.
+          Size of the color block (or swatch) on the button control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ButtonColorSize</var> is an <var>Integer</var> property with the size for the color block (or swatch) displayed on the control. The default value for the property is 16 (pixels) as assigned in the constructor for the class instance. Its value is used in the <var>GetGlyphSize</var> method when <var>ButtonColorAutoSize</var> is set to <b>False</b>, and represents both the width and height returned for the button glyph.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.GetGlyphSize"/>
+          <link id="TColorButton.Create"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.ButtonColor">
         <short>
-          <var>ButtonColor</var> - the color that has been selected by the ColorDialog and is displayed in the button.
+          The TColor value selected in the button control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            ButtonColor is a TColor property which contains the selected color for the button control.
+          </p>
+          <p>
+            The value in ButtonColor is used as the initial selected color value when the ColorDialog is displayed in the ShowColorDialog method. It is updated with the newly selected color value when the ColorDialog is executed.
+          </p>
+          <p>
+            Setting a new value for the property causes the OnColorChanged event handler to be signalled (when assigned) and the control is redrawn.
+          </p>
+          <p>
+            Use Color to set the color used for the button face on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ColorDialog"/>
+          <link id="TColorButton.ShowColorDialog"/>
+          <link id="TColorButton.OnColorChanged"/>
+          <link id="TColorButton.Click"/>
+          <link id="#lcl.graphics.TColor">TColor</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.ColorDialog">
-        <short>The <var>ColorDialog</var> that opens when the button is activated.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The color selection dialog displayed when the control is clicked, or the ShowColorDialog method is called.
+        </short>
+        <descr>
+          <p>
+            ColorDialog is a TColorDialog property which contains the color selection dialog displayed for the button control. ColorDialog is used in the ShowColorDialog method. A TColorDialog instance is created if one has not already been assigned to the property. It is freed (when created) when the color selection dialog is closed. A TColorDialog instance not created by the button control is not freed prior to exiting from the method or destroying the control.
+          </p>
+          <p>
+            The value in ButtonColor is assigned as the initial color selection for the dialog, and the Execute method in the dialog is called to capture the newly selected color value (when available). The new color selection is stored in the ButtonColor property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ShowColorDialog"/>
+          <link id="TColorButton.Click"/>
+          <link id="TColorButton.ButtonColor"/>
+          <link id="TColorDialog"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
 
       <element name="TColorButton.Caption">
-        <short>
-          <var>Caption</var> - a string that can be placed beside the block of color.
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Text displayed next to the color block on the button control.</short>
+        <descr>
+          <p>
+            Caption is a String property with the text displayed beside the color block (or swatch) on the button control. When it has been assigned a non-empty value, space is reserved on the client area for the text plus the number of pixels in Spacing. When empty, no space is reserved for the text or the space between the text and the color block.
+          </p>
+          <p>
+            In general, Caption can be used to provide a human-readable value for the selected color in ButtonColor. The value in Caption is not, however, automatically linked to the selected color value. Use the OnColorChanged event handler to update the value in Caption as needed when the color selection has been changed.
+          </p>
+          <p>
+            The Layout property determines the order of the Caption and color block values on the button surface. Layout refers to the alignment for the glyph (color block).
+          </p>
+          <p>
+            Set ButtonColorAutoSize to True to allow the color block to fill the unused client area for the control. Use ButtonColorSize to set the dimensions for the color block when ButtonColorAutoSize is False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.OnColorChanged"/>
+          <link id="TCustomSpeedButton.Spacing"/>
+          <link id="TCustomSpeedButton.Layout"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.Color">
@@ -1605,7 +1791,9 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
           The <var>Color</var> of the control itself, i.e. the parts that are not the color display block; edges, background etc.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.Color">TCustomSpeedButton.Color</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.Down" link="#lcl.buttons.TCustomSpeedButton.Down"/>
@@ -1622,10 +1810,21 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
 
       <element name="TColorButton.OnColorChanged">
         <short>
-          <var>OnColorChanged</var> - event handler for a change in button color.
+          Event handler signalled when the button color has been changed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnColorChanged</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the selected color in ButtonColor has been changed. An application must implement and assign an object procedure to the property to respond to the event notification.
+          </p>
+          <p>
+            OnColorChanged is signalled (when assigned) when a new TColor value is assigned to the ButtonColor property. A common use for the event handler is to update the value in Caption when the value in ButtonColor has been updated. OnColorchanged is not signalled during LCL component streaming (csLoading in ComponentState).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColor"/>
+          <link id="TColorButton.Caption"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -4034,91 +4233,173 @@ end;
       </element>
 
       <element name="DefaultPromptDialog">
-        <short>Widgetset-independent implementation.</short>
-        <descr/>
+        <short>Widgetset-independent implementation of a prompt dialog.</short>
+        <descr>
+          <p>
+            DefaultPromptDialog is a LongInt function which implements a widgetset-independent prompt dialog. It is uses a  LCL TForm instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified using the arguments passed to the routine, including:
+          </p>
+          <dl>
+            <dt>
+              DialogCaption
+            </dt>
+            <dd>
+              The caption for the dialog, displayed in the title bar for the dialog form. If Caption is an empty string (''), GetDialogCaption is called to get the default caption for the value in DialogType. The caption can be set to the Application title if DialogType is not one of the idDialogBase values.
+            </dd>
+            <dt>
+              DialogMessage
+            </dt>
+            <dd>
+              The text displayed inside the dialog as a prompt or message.
+            </dd>
+            <dt>
+              DialogType
+            </dt>
+            <dd>
+              A LongInt value which indicates the icon and default caption displayed for the dialog. It contains one of the constant values defined in the LCLType unit like:  idDialogWarning, idDialogError, idDialogInfo, idDialogConfirm, or idDialogShield.
+            </dd>
+            <dt>
+              Buttons
+            </dt>
+            <dd>
+              Contains a pointer to an array of LongInt values which define the buttons displayed for the dialog. The values correspond to idButtonBase values defined in the LCLType unit like: idButtonOk, idButtonCancel, idButtonHelp, idButtonYes, idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore, idButtonAll, idButtonYesToAll, or idButtonNoToAll. Buttons using the identifiers idButtonOpen, idButtonSave, and  idButtonShield are not implemented in the current LCL version. The values for each of the buttons indicate the default icon and text for the button, as well as its modal result value.
+            </dd>
+            <dt>
+              ButtonCount
+            </dt>
+            <dd>
+              Contains the number of elements for the Buttons array.
+            </dd>
+            <dt>
+              DefaultIndex
+            </dt>
+            <dd>
+              Contains the ordinal position for the default button on the dialog. This is the button clicked when the Enter or the Space key is pressed during modal display of the dialog.
+            </dd>
+            <dt>
+              EscapeIndex
+            </dt>
+            <dd>
+              Contains the ordinal position for the button clicked when the Escape key is pressed during modal display of the dialog.
+            </dd>
+            <dt>
+              UseDefaultPos
+            </dt>
+            <dd>
+              Indicates if the dialog is displayed using the default position for the dialog form. When set to True, the value poDesigned is used in the Position property for the dialog form. When set to False, the values in the X and Y parameters are used in the Left and Top properties for the dialog form.
+            </dd>
+          </dl>
+          <p>
+            The return value contains the LongInt value returned for the button clicked on the dialog. It corresponds to the values passed in the Buttons argument, but may be changed to the value in EscapeIndex if the Escape key was pressed during dialog display.
+          </p>
+          <p>
+            The size and layout for elements on the dialog are calculated when the dialog form is created. The maximum width and height for the dialog is the largest space needed for the icon, message text and buttons on the dialog. For small-format devices (width is 300 pixel or less), a width of 200 pixels is used on the dialog form.
+          </p>
+          <p>
+            <b>Example</b>:
+          </p>
+<code>
+uses
+  LCLType;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var
+    btns: array[0..2] of LongInt = (idButtonOK, idButtonCancel, idButtonHelp);
+    res: LongInt;
+begin
+    res := DefaultPromptDialog('This is the caption', 'This is the message of this dialog', idDialogInfo, @btns, 3, 0, 1, true, 0, 0);
+    Caption := 'Dialog result is ' + IntToStr(res);
+end;
+</code>
+        </descr>
         <seealso>
+          <link id="#lcl.forms.TCustomForm.ShowModal"/>
+          <link id="#lcl.forms.TCustomForm.ModalResult"/>
           <link id="#lcl.interfacebase.PromptDialogFunction">PromptDialogFunction</link>
         </seealso>
       </element>
       <element name="DefaultPromptDialog.Result">
-        <short/>
+        <short>
+          LongInt value for the button clicked on the prompt dialog.
+        </short>
       </element>
       <element name="DefaultPromptDialog.DialogCaption">
-        <short/>
+        <short>Caption displayed on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.DialogMessage">
-        <short/>
+        <short>Text displayed as a prompt or message on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.DialogType">
-        <short/>
+        <short>Identifies the icon and default caption for the dialog.</short>
       </element>
       <element name="DefaultPromptDialog.Buttons">
-        <short/>
+        <short>Contains the button identifiers displayed on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.ButtonCount">
-        <short/>
+        <short>Number of values in the Buttons argument.</short>
       </element>
       <element name="DefaultPromptDialog.DefaultIndex">
-        <short/>
+        <short>Position for the default button on the dialog form.</short>
       </element>
       <element name="DefaultPromptDialog.EscapeResult">
-        <short/>
+        <short>Value returned when the Escape key is pressed for the dialog.</short>
       </element>
       <element name="DefaultPromptDialog.UseDefaultPos">
-        <short/>
+        <short>
+          True to use the default position for the dialog form, False to use the values in X and Y as the Top and Left coordinates.
+        </short>
       </element>
       <element name="DefaultPromptDialog.X">
-        <short/>
+        <short>Horizontal coordinate where the dialog form is displayed.</short>
       </element>
       <element name="DefaultPromptDialog.Y">
-        <short/>
+        <short>Vertical coordinate where the dialog form is displayed.</short>
       </element>
 
       <element name="QuestionDlg">
-        <short>Show a question to the user and get a response.</short>
+        <short>Show a question to the user and get a response. Similar to MessageDlg, but allows to use custom button captions and any response values.</short>
         <descr>
           <p>
-            QuestionDlg has the same functionality as MessageDlg except for the parameter Buttons which is of a different type. You can define your own captions and return values of this function.
+            QuestionDlg has the same functionality as MessageDlg except for the parameter <var>Buttons</var> which is of a different type. You can define your own captions and return values of this function.
           </p>
           <p>
-            Buttons is a list of TModalResult (defined as constants [mrNone..MrYesToAll] in <link id="Controls"/>) and strings. For each TModalResult a button is created. To set a custom caption, add a string after a button. You can use the special string parameters 'isdefault' and 'iscancel' to setup the default and cancel buttons.
+            <var>Buttons</var> contains an array of integer identifiers and optional strings. For each number a button is created. Usually the identifiers are selected as the <var>TModalResult</var> constants <var>[mrNone..mrYesLast]</var> in <link id="Controls"/>); the correspondig buttons will be decorated by an associated icon. Any other integers can be used as well, but their buttons will have no icon. The identifier number of the clicked button is returned by the <var>QuestionDlg()</var> function. The order of the buttons on the dialog form will be the same as the order of the array elements.
           </p>
           <p>
-            The default TModalResults defined in controls.pp (mrNone..mrLast) don't need a caption. The default captions will be used.
+            Each string following the button identifier in the <var>Buttons</var> array denotes the caption of the button. When the button identifier is one of the default <var>TModalResult</var> values defined in controls.pp (<var>mrNone..mrLast</var>) the caption can be omitted, and the default caption will be used. For non-<var>TModalResult</var> identifiers, the caption MUST be specified. Empty strings are not allowed as captions, they will create a runtime error.
           </p>
           <p>
-            You can mark one default button using the 'IsDefault' option. When the user presses 'Return' this button is triggered.
+            You can mark one default button by adding the 'IsDefault' option after the caption string. When the user presses 'Return' this button is triggered.
           </p>
           <p>
-            Some widgetsets provide an Escape key and/or a close button. This results in mrCancel even if it is not in the given button list. Use the 'IsCancel' option to redirect it to a button of your choice. You can combine 'IsDefault' and 'IsCancel'.
+            Some widgetsets provide an Escape key and/or a close button. This results in <var>mrCancel</var> even if it is not in the given button list. Use the 'IsCancel' option after the caption string to redirect it to a button of your choice. You can combine 'IsDefault' and 'IsCancel'.
+          </p>
+          <p>
+            <b>Example</b>
           </p>
 <code>
-case QuestionDlg('COPYING',
-    'Abort?',
-    mtConfirmation,
-    [mrNo, '&amp;No','IsDefault',
-    mrYes,'&amp;Yes'],0)
-of
-   mrYes : ShowMessage('You clicked Yes');
-   mrNo : ShowMessage('You clicked No');
-else
-  // mrCancel
-  ShowMessage('You cancelled the dialog.');
-end;
+var
+  res: TModalResult;
+...
+  res := case QuestionDlg('COPYING', 'Abort?', mtConfirmation, [mrNo,'&amp;No','IsDefault', mrYes,'&amp;Yes'], 0)
+  case res of
+    mrYes : ShowMessage('You clicked Yes');
+    mrNo : ShowMessage('You clicked No');
+  else
+    // mrCancel
+    ShowMessage('You cancelled the dialog.');
+  end;
 </code>
         </descr>
         <seealso>
           <link id="MessageDlg"/>
           <link id="InputQuery"/>
+          <link id="DefaultQuestionDialog"/>
         </seealso>
       </element>
       <element name="QuestionDlg.Result">
         <short>
-          The result of this function is the button the user pressed to close the dialog.
+          The result of this function is the identifier number of the button that the user had pressed to close the dialog.
         </short>
-        <descr>
-          The result of this function is the button the user pressed to close the dialog.
-        </descr>
       </element>
       <element name="QuestionDlg.aCaption">
         <short>Used to set the caption of the question dialog.</short>
@@ -4129,58 +4410,91 @@ end;
         <descr>The question the user has to answer.</descr>
       </element>
       <element name="QuestionDlg.DlgType">
-        <short>The type of dialog to be shown in fact which icon will be shown.</short>
+        <short>The type of dialog, it determines which icon will be shown.</short>
       </element>
       <element name="QuestionDlg.Buttons">
         <short>
-          An array of return values and caption for the buttons on the question dialog.
+          An array of return values and captions for the buttons on the question dialog.
         </short>
         <descr>
           <p>
-            Buttons is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists of only predefined return values like mrOK and mrCancel, the standard OK and Cancel buttons will be shown.
-          </p>
-          <p>
-            The strength of this function is however that you can fill the array like:
+            <var>Buttons</var> is defined as a array of const. This means you can define any number of buttons to be shown. If your array consists only of predefined return values like <var>mrOK</var> and <var>mrCancel</var>, the standard OK and Cancel buttons will be shown. The strength of this function, however, is that you can fill the array with arbitrary button identifiers and captions:
           </p>
           <code>[400, 'Yes!!!', 401, 'Are you mad?', 402, 'My mistake']</code>
           <p>
-            This will create a dialog with three buttons; the captions for the buttons will be the strings values given in the array.
-          </p>
-          <p>
-            The return value of the function will be 400, 401 or 402, depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.
+            This will create a dialog with three buttons; the captions for the buttons will be the strings values given in the array after the numeric return values. The return value of the function will be 400, 401 or 402, depending on whether the user clicked the 'Yes!!!', the 'Are you mad?' or the 'My mistake' button.
           </p>
         </descr>
       </element>
       <element name="QuestionDlg.HelpCtx">
-        <short>HelpCtx is used to specify which topic from the help should be shown.</short>
-        <descr>HelpCtx is used to specify which topic from the help should be shown.</descr>
+        <short>HelpCtx specifies the help topic that should be shown when F1 is pressed.</short>
+        <descr>HelpCtx specifies the help topic that should be shown when F1 is pressed.</descr>
       </element>
       <element name="QuestionDlg.HelpKeyword">
-        <short/>
+        <short>HelpKeyword specifies the help topic that should be shown when F1 is pressed.</short>
+        <descr>HelpKeyword specifies the help topic that should be shown when F1 is pressed.</descr>
       </element>
 
       <element name="DefaultQuestionDialog">
-        <short>Implements a widgetset-independent dialog.</short>
+        <short>Implements a widgetset-independent dialog similar to QuestionDlg.</short>
         <descr>
+          <p>DefaultQuestionDialog displays a message dialog, similar to QuestionDlg, but it uses a LCL <var>TForm</var> instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified by the arguments passed to the routine, including:
+          </p>
+          <dl>
+            <dt>aCaption</dt>
+            <dd>
+              The title of the dialog, displayed in the title bar of the dialog form. In case of an empty string (''), the default caption of the dialog type (<var>DlgType</var> parameter) is selected, or, when the <var>DlgType</var> is not one of the <var>idDialogXXX</var> values the application title is used instead.
+            </dd>
+            <dt>aMsg</dt>
+            <dd>The text of the message or question displayed in the dialog</dd>
+            <dt>DlgType</dt>
+            <dd>
+              A LongInt value which defines the icon and default caption displayed for the dialog. It contains one of the constant values defined in the <var>LCLType</var> unit like: <var>idDialogWarning</var>, <var>idDialogError</var>, <var>idDialogInfo</var>, <var>idDialogConfirm</var>, or <var>idDialogShield</var>. Do not use the <var>mtXXXX</var> values used by other dialogs, they will produce the wrong icon.
+            </dd>
+            <dt>Buttons</dt>
+            <dd>A collection of items representing the buttons shown in the dialog. Each item describes the button by its caption, an integer value which is returned by the function when this button is clicked, as well as boolean flags to identify the "Default" or "Cancel" button. The return value is typed <var>TModalResult</var>, but any other integers can be used as well. Be careful if you plan to use the <var>idButtonXXX</var> constants declared in the <var>LCLType</var> unit because they will assign the icons to the buttons differently. An empty caption string is NOT replaced by a default string here.
+            </dd>
+            <dt>HelpCtx</dt>
+            <dd>Help context value for the help text to be displayed when the user presses F1.</dd>
+          </dl>
           <p>
-            Shows a dialog with aCaption as Title, aMsg as Text, DlgType as Icon,
-              HelpCtx as Help context and Buttons to define the shown buttons and their
-              TModalResult.
+            <b>Example</b>
           </p>
           <p>
-            Buttons is a list of TModalResult and strings. For each number a button is
-              created. To set a custom caption, add a string after a button.
+            Since <var>Buttons</var> is a <var>TCollection</var> each item must be added individually:
           </p>
+          <code>
+var
+  btns: TDialogButtons;  // requires "uses InterfaceBase"
+  res: Integer;
+...
+  btns := TDialogButtons.Create(TDialogButton);
+  with btns.Add do
+  begin
+    Caption := 'OK';
+    ModalResult := mrOK;
+  end;
+  with btns.Add do
+  begin
+    Caption := 'Cancel now';
+    ModalResult := mrCancel;
+  end;
+  with btns.Add do
+  begin
+    Caption := 'Ignore';
+    ModalResult := mrIgnore;
+  end;
+  with btns.Add do
+  begin
+    Caption := 'Do it';
+    ModalResult := 300;
+    Default := true;
+  end;
+
+  res := DefaultQuestionDialog('This is the caption', 'This is the title', idDialogError, btns, 0);
+          </code>
           <p>
-            The default TModalResults defined in controls.pp (mrNone..mrLast) does not need
-              a caption. The default captions will be used.
-          </p>
-          <p>
-            Examples for Buttons:
-          </p>
-          <code>[mrOk,mrCancel,'Cancel now',mrIgnore,300,'Do it','IsDefault']</code>
-          <p>
-            This will result in 4 buttons:
+            This code will display a dialog box with the following four buttons:
           </p>
           <ul>
             <li>'Ok' returning mrOk</li>
@@ -4192,22 +4506,33 @@ end;
         <seealso/>
       </element>
       <element name="DefaultQuestionDialog.Result">
-        <short/>
+        <short>
+          Returns the number value associated with each button.
+        </short>
       </element>
       <element name="DefaultQuestionDialog.ACaption">
-        <short/>
+        <short>
+          Title text of the dialog form
+        </short>
       </element>
       <element name="DefaultQuestionDialog.AMsg">
-        <short/>
+        <short>
+          Message text displayed in the dialog form.
+        </short>
       </element>
       <element name="DefaultQuestionDialog.DlgType">
-        <short/>
+        <short>
+          A number to select the icon shown in the dialog. Select one of the <var>idDialogXXXX</var> constants declared in the unit LCLType (<var>idDialogWarning</var>, <var>idDialogError</var>, <var>idDialogInfo</var>, <var>idDialogConfirm</var> or <var>idDialogShield</var>). Do not use the TMsgDlgType values which are used by other dialogs!
+        </short>
       </element>
       <element name="DefaultQuestionDialog.Buttons">
-        <short/>
+        <short>
+          A collection of button definitions with caption, return value when clicked, and boolean flags to identify the default and cancel button.
+        </short>
       </element>
       <element name="DefaultQuestionDialog.HelpCtx">
-        <short/>
+        <short>HelpCtx specifies the help topic that should be shown when F1 is pressed.</short>
+        <descr>HelpCtx specifies the help topic that should be shown when F1 is pressed.</descr>
       </element>
 
       <element name="ShowMessage">

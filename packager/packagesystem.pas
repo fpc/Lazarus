@@ -435,7 +435,6 @@ type
     procedure RegisterComponentsHandler(const Page: string;
                                     ComponentClasses: array of TComponentClass);
     procedure RegistrationError(const Msg: string);
-    procedure RegisterStaticBasePackages;
     procedure RegisterStaticPackage(APackage: TLazPackage;
                                     RegisterProc: TRegisterProc);
     procedure CallRegisterProc(RegisterProc: TRegisterProc);
@@ -494,7 +493,7 @@ type
     property OnDeleteAmbiguousFiles: TPkgDeleteAmbiguousFiles
                      read FOnDeleteAmbiguousFiles write FOnDeleteAmbiguousFiles;
     property OnTranslatePackage: TPkgTranslate read FOnTranslatePackage
-                                                   write FOnTranslatePackage;
+                                               write FOnTranslatePackage;
     property OnUninstallPackage: TPkgUninstall read FOnUninstallPackage
                                                write FOnUninstallPackage;
     property OnBeforeCompilePackages: TOnBeforeCompilePackages read
@@ -912,7 +911,6 @@ procedure TLazPackageGraph.SetRegistrationPackage(const AValue: TLazPackage);
 begin
   if FRegistrationPackage=AValue then exit;
   FRegistrationPackage:=AValue;
-  AbortRegistration:=false;
   LazarusPackageIntf.RegisterUnitProc:=@RegisterUnitHandler;
   RegisterComponentsProc:=@RegisterComponentsGlobalHandler;
   RegisterNoIconProc:=@RegisterNoIconGlobalHandler;
@@ -2142,9 +2140,13 @@ begin
   UpdateBrokenDependenciesToPackage(APackage);
   
   // activate define templates
-  APackage.DefineTemplates.Active:=true;
-
-  if Assigned(OnAddPackage) then OnAddPackage(APackage);
+  if Assigned(APackage.DefineTemplates) then
+    APackage.DefineTemplates.Active:=true
+  else   // By Juha:
+    // Happened when an old package with the same name was replaced. Cannot reproduce.
+    DebugLn(['TLazPackageGraph.AddPackage: APackage.DefineTemplates=Nil']);
+  if Assigned(OnAddPackage) then
+    OnAddPackage(APackage);
   EndUpdate;
 end;
 
@@ -2186,9 +2188,8 @@ begin
   OldInstalled:=OldPackage.Installed;
   OldAutoInstall:=OldPackage.AutoInstall;
   OldEditor:=OldPackage.Editor;
-  if OldEditor<>nil then begin
+  if OldEditor<>nil then
     OldEditor.LazPackage:=nil;
-  end;
   // migrate components
   for i:=0 to OldPackage.FileCount-1 do
     MoveInstalledComponents(OldPackage.Files[i]);
@@ -2202,9 +2203,8 @@ begin
   NewPackage.AutoInstall:=OldAutoInstall;
   // add package to graph
   AddPackage(NewPackage);
-  if OldEditor<>nil then begin
+  if OldEditor<>nil then
     OldEditor.LazPackage:=NewPackage;
-  end;
   EndUpdate;
 end;
 
@@ -2215,8 +2215,7 @@ procedure TLazPackageGraph.LoadStaticBasePackages;
     Dependency: TPkgDependency;
     Quiet: Boolean;
   begin
-    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,
-      PkgName)<>nil
+    if FindDependencyByNameInList(FirstAutoInstallDependency,pddRequires,PkgName)<>nil
     then
       exit;
     Dependency:=TPkgDependency.Create;
@@ -2243,9 +2242,6 @@ begin
   LoadLazarusBasePackage('LazControlDsgn');
 
   SortAutoInstallDependencies;
-
-  // register them
-  RegisterStaticBasePackages;
 end;
 
 procedure TLazPackageGraph.LoadAutoInstallPackages(PkgList: TStringList);
@@ -2385,11 +2381,11 @@ procedure TLazPackageGraph.FreeAutoInstallDependencies;
 var
   Dependency: TPkgDependency;
 begin
-  while Assigned(PackageGraph.FirstAutoInstallDependency) do
+  while Assigned(FirstAutoInstallDependency) do
   begin
-    Dependency:=PackageGraph.FirstAutoInstallDependency;
+    Dependency:=FirstAutoInstallDependency;
     Dependency.RequiredPackage:=nil;
-    Dependency.RemoveFromList(PackageGraph.FirstAutoInstallDependency,pddRequires);
+    Dependency.RemoveFromList(FirstAutoInstallDependency,pddRequires);
     Dependency.Free;
   end;
 end;
@@ -2464,8 +2460,7 @@ function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
             RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
             FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
             if PathList<>nil then begin
-              // broken dependency found
-              // -> add current package to list
+              // broken dependency found -> add current package to list
               PathList.Insert(0,RequiredPackage);
               exit;
             end;
@@ -5676,26 +5671,39 @@ begin
   Result:=true;
 end;
 
-procedure TLazPackageGraph.RegisterStaticBasePackages;
-begin
-  BeginUpdate(true);
-  // IDE built-in packages
-  if Assigned(OnTranslatePackage) then
-  begin
-    OnTranslatePackage(BuildIntfPackage);
-    OnTranslatePackage(CodeToolsPackage);
-  end;
-  EndUpdate;
-end;
-
 procedure TLazPackageGraph.RegisterStaticPackage(APackage: TLazPackage;
   RegisterProc: TRegisterProc);
+var
+  PkgList: TFPList;
+  i: Integer;
+  Pkg: TLazPackage;
 begin
   if AbortRegistration then exit;
   //DebugLn(['TLazPackageGraph.RegisterStaticPackage ',APackage.IDAsString]);
-  RegistrationPackage:=APackage;
+
+  // translate (load resourcestrings) package and dependencies
   if Assigned(OnTranslatePackage) then
-    OnTranslatePackage(APackage);
+  begin
+    PkgList:=nil;
+    try
+      PackageGraph.GetAllRequiredPackages(APackage,APackage.FirstRequiredDependency,PkgList,[]);
+      if PkgList<>nil then
+      begin
+        for i:=0 to PkgList.Count-1 do
+        begin
+          Pkg:=TLazPackage(PkgList[i]);
+          if (Pkg.Translated='') and (Pkg.POOutputDirectory<>'') then
+            OnTranslatePackage(Pkg);
+        end;
+      end;
+    finally
+      PkgList.Free;
+    end;
+    if (APackage.Translated='') and (APackage.POOutputDirectory<>'') then
+      OnTranslatePackage(APackage);
+  end;
+
+  RegistrationPackage:=APackage;
   CallRegisterProc(RegisterProc);
   APackage.Registered:=true;
   RegistrationPackage:=nil;

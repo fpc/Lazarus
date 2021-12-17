@@ -2764,12 +2764,12 @@ end;
 
 function TPropertyEditor.AutoFill:Boolean;
 begin
-  Result:=True;
+  Result:=paValueList in GetAttributes;
 end;
 
 function TPropertyEditor.CallStoredFunction: Boolean;
 begin
-  Result := IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
+  Result := (FPropList^[0].Instance <> nil) and IsStoredProp(FPropList^[0].Instance, FPropList^[0].PropInfo);
 end;
 
 function TPropertyEditor.DrawCheckbox(ACanvas: TCanvas; const ARect: TRect;
@@ -5994,7 +5994,7 @@ begin
     begin
       Designer:=FindRootDesigner(MI);
       if Designer<>nil then
-        MI.Name:=Designer.UniqueName('N');
+        MI.Name:=Designer.UniqueName('Separator');
     end;
   end;
   SetStrValue(NewValue);

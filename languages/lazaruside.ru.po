@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-08-01 23:48+0300\n"
+"PO-Revision-Date: 2021-12-13 00:52+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -5026,8 +5026,8 @@ msgid "Ask name on create"
 msgstr "Спрашивать имя при создании"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
-msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
-msgstr "Типичное значение для ОС Windows: $(LazarusDir)\\mingw\\bin\\$(TargetCPU)-$(TargetOS)\\gdb.exe"
+msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
+msgstr "Типичное значение для ОС Windows: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
 
 #: lazarusidestrconsts.lisautoadjustideheight
 msgid "Automatically adjust IDE main window height"
@@ -10818,7 +10818,7 @@ msgstr "При установке/удалении пакетов IDE будет
 #: lazarusidestrconsts.lisideconficurationfoundmaybelongtootherlazarus
 #, object-pascal-format
 msgid "Welcome to Lazarus.%0:sThe IDE configuration found was previously used by another installation of Lazarus.%0:sIf you have two or more separate installations of Lazarus, they should not share the same configuration. This may lead to conflicts and your Lazarus installations may become unusable.%0:s%0:sIf you have only one installation and copied or moved the Lazarus executable, then you may upgrade this configuration.%0:s%1:s%0:s%0:sChoose:%0:s%0:s* Update info: Use this configuration and update it for being used with this Lazarus in future. The old installation will no longer use this.%0:s* Ignore: Use this configuration but keep the warning. This may lead to conflicts with the other installation.%0:s* Abort: Exit now. You can then fix the problem by starting this Lazarus with the correct configuration.%0:s%0:sAdditional information:%0:sThis configuration is at: %2:s%0:sIt belongs to the Lazarus installation at: %3:s%0:sThe current IDE was started from: %4:s%0:s"
-msgstr "Добро пожаловать в Lazarus.%0:sНайденный каталог настройки использовался другим экземпляром Lazarus.%0:sДва или более экземпляра Lazarus не должны иметь общий каталог настройки. Это может привести к конфликтам и невозможности использования IDE.%0:s%0:sЕсли вы имеете только один экземпляр и скопировали либо переместили исполнимый файл Lazarus, каталог настройки можно обновить.%0:s%1:s%0:s%0:sВыберите:%0:s%0:s* Обновить данные: Использовать этот каталог настройки и обновить его. Старый экземпляр Lazarus больше не будет его использовать.%0:s* Игнорировать: Использовать этот каталог настройки, но предупредить в дальнейшем. Это может привести к конфликтам с другими экземплярами Lazarus.%0:s* Прервать: Завершить работу. Проблему можно будет исправить, запустив Lazarus с указанием корректного каталога настройки.%0:s%0:sДополнительные сведения:%0:sПуть к каталогу настройки: %2:s%0:sЭкземпляр Lazarus, владеющий им: %3:s%0:sПуть запуска текущего экземпляра IDE: %4:s%0:s"
+msgstr "Добро пожаловать в Lazarus.%0:sНайденный каталог настройки использовался другим экземпляром Lazarus.%0:sДва или более экземпляра Lazarus не должны иметь общий каталог настройки. Это может привести к конфликтам и невозможности использования IDE.%0:s%0:sЕсли вы имеете только один экземпляр и скопировали либо переместили исполнимый файл Lazarus, каталог настройки можно обновить.%0:s%1:s%0:s%0:sВыберите:%0:s%0:s* Обновить данные: Использовать этот каталог настройки и обновить его. Старый экземпляр Lazarus больше не будет его использовать.%0:s* Пропустить: Использовать этот каталог настройки, но предупредить в дальнейшем. Это может привести к конфликтам с другими экземплярами Lazarus.%0:s* Прервать: Завершить работу. Проблему можно будет исправить, запустив Lazarus с указанием корректного каталога настройки.%0:s%0:sДополнительные сведения:%0:sПуть к каталогу настройки: %2:s%0:sЭкземпляр Lazarus, владеющий им: %3:s%0:sПуть запуска текущего экземпляра IDE: %4:s%0:s"
 
 #: lazarusidestrconsts.lisideinfocreatingmakefileforpackage
 #, object-pascal-format
@@ -11510,10 +11510,6 @@ msgstr "Оставлять преобразованные файлы откры�
 #: lazarusidestrconsts.liskeepfileopenhint
 msgid "All project files will be open in editor after conversion"
 msgstr "Все файлы проекта будут открыты в редакторе после преобразования"
-
-#: lazarusidestrconsts.liskeepininstalllist
-msgid "Keep in install list"
-msgstr "Оставить в списке на установку"
 
 #: lazarusidestrconsts.liskeepname
 msgid "Keep name"
@@ -12830,8 +12826,8 @@ msgid "Convert Delphi Unit to Lazarus Unit ..."
 msgstr "Преобразовать модуль Delphi в Lazarus ..."
 
 #: lazarusidestrconsts.lismenuconvertdfmtolfm
-msgid "Convert Binary DFM to Text LFM + Check Syntax ..."
-msgstr "Преобразовать двоичный файл DFM в текстовый LFM и проверить синтаксис ..."
+msgid "Convert Binary DFM to LFM ..."
+msgstr "Преобразовать двоичный файл DFM в LFM ..."
 
 #: lazarusidestrconsts.lismenuconvertencoding
 msgid "Convert Encoding of Projects/Packages ..."
@@ -17450,10 +17446,6 @@ msgstr "Удалено свойство \"%s\"."
 msgid "Remove %s files from package \"%s\"?"
 msgstr "Удалить файлы (%s шт.) из пакета \"%s\"?"
 
-#: lazarusidestrconsts.lisremovefrominstalllist
-msgid "Remove from install list"
-msgstr "Удалить из списка на установку"
-
 #: lazarusidestrconsts.lisremovefromproject
 msgid "Remove from Project"
 msgstr "Удалить из проекта"
@@ -21024,6 +21016,10 @@ msgstr "Каталанский"
 #: lazarusidestrconsts.rslanguagechinese
 msgid "Chinese"
 msgstr "Китайский"
+
+#: lazarusidestrconsts.rslanguagecorsican
+msgid "Corsican"
+msgstr "Корсиканский"
 
 #: lazarusidestrconsts.rslanguageczech
 msgid "Czech"

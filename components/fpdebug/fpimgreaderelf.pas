@@ -39,10 +39,12 @@ uses
 
 type
   TElfSection = packed record
-    name      : AnsiString;
-    FileOfs   : QWord;
-    Address   : QWord;
-    Size      : QWord;
+    name        : AnsiString;
+    FileOfs     : QWord;
+    Address     : QWord;
+    Size        : QWord;
+    SectionType : QWord;
+    Flags       : QWord;
   end;
   PElfSection = ^TElfSection;
 
@@ -55,7 +57,7 @@ type
   protected
     function Load32BitFile(ALoader: TDbgFileLoader): Boolean;
     function Load64BitFile(ALoader: TDbgFileLoader): Boolean;
-    procedure AddSection(const name: AnsiString; FileOffset, Address, Size: Qword);
+    procedure AddSection(const name: AnsiString; FileOffset, Address, Size, SectionType, Flags: Qword);
   public
     sections  : array of TElfSection;
     seccount  : Integer;
@@ -73,12 +75,13 @@ type
     fElfFile    : TElfFile;
   protected
     function GetSection(const AName: String): PDbgImageSection; override;
+    function GetSection(const ID: integer): PDbgImageSection; override;
     procedure LoadSections;
     procedure ClearSections;
   public
     class function isValid(ASource: TDbgFileLoader): Boolean; override;
     class function UserName: AnsiString; override;
-    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean); override;
+    constructor Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); override;
     destructor Destroy; override;
     procedure ParseSymbolTable(AFpSymbolInfo: TfpSymbolList); override;
 
@@ -87,6 +90,9 @@ type
   end;
 
 implementation
+
+var
+  DBG_WARNINGS: PLazLoggerLogGroup;
 
 type
   TElf32symbol=record
@@ -169,7 +175,7 @@ begin
 
   sz := hdr.e_shetsize * hdr.e_shnum;
   if sz > LongWord(length(sect)*sizeof(Elf32_shdr)) then begin
-    debugln(['TElfFile.Load32BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
+    debugln(DBG_WARNINGS, ['TElfFile.Load32BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf32_shdr))]);
     sz := LongWord(length(sect)*sizeof(Elf32_shdr));
   end;
   //ALoader.Read(sect[0], sz);
@@ -185,7 +191,7 @@ begin
   for i := 0 to hdr.e_shnum - 1 do
     with sect[i] do begin
       nm := PChar( @strs[sh_name] );
-      AddSection(nm, sh_offset, sh_addr, sh_size );
+      AddSection(nm, sh_offset, sh_addr, sh_size, sh_type, sh_flags);
     end;
 end;
 
@@ -208,7 +214,7 @@ begin
 
   sz := hdr.e_shentsize * hdr.e_shnum;
   if sz > LongWord(length(sect)*sizeof(Elf64_shdr)) then begin
-    debugln(['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf64_shdr))]);
+    debugln(DBG_WARNINGS, ['TElfFile.Load64BitFile Size of SectHdrs is ', sz, ' expected ', LongWord(length(sect)*sizeof(Elf64_shdr))]);
     sz := LongWord(length(sect)*sizeof(Elf64_shdr));
   end;
   //ALoader.Read(sect[0], sz);
@@ -224,12 +230,12 @@ begin
   for i := 0 to hdr.e_shnum - 1 do
     with sect[i] do begin
       nm := PChar( @strs[sh_name] );
-      AddSection(nm, sh_offset, sh_address, sh_size );
+      AddSection(nm, sh_offset, sh_address, sh_size, sh_type, sh_flags);
     end;
 end;
 
 procedure TElfFile.AddSection(const name: AnsiString; FileOffset, Address,
-  Size: Qword);
+  Size, SectionType, Flags: Qword);
 begin
   if seccount=Length(sections) then begin
     if seccount = 0 then SetLength(sections, 4)
@@ -239,6 +245,8 @@ begin
   sections[seccount].name:=name;
   sections[seccount].FileOfs:=FileOffset;
   sections[seccount].Size:=Size;
+  sections[seccount].SectionType:=SectionType;
+  sections[seccount].Flags:=Flags;
   inc(seccount);
 end;
 
@@ -319,6 +327,25 @@ begin
   FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
 end;
 
+function TElfDbgSource.GetSection(const ID: integer): PDbgImageSection;
+var
+  ex: PDbgImageSectionEx;
+begin
+  if (ID >= 0) and (ID < FSections.Count) then
+  begin
+    ex := PDbgImageSectionEx(FSections.Objects[ID]);
+    Result := @ex^.Sect;
+    Result^.Name := FSections[ID];
+    if not ex^.Loaded then
+    begin
+      FFileLoader.LoadMemory(ex^.Offs, Result^.Size, Result^.RawData);
+      ex^.Loaded  := True;
+    end;
+  end
+  else
+    Result := nil;
+end;
+
 procedure TElfDbgSource.LoadSections;
 var
   p: PDbgImageSectionEx;
@@ -332,7 +359,9 @@ begin
     New(p);
     P^.Offs := fs.FileOfs;
     p^.Sect.Size := fs.Size;
-    p^.Sect.VirtualAddress := 0; // Todo? fs.Address - ImageBase
+    p^.Sect.VirtualAddress := fs.Address; //0; // Todo? fs.Address - ImageBase
+    p^.Sect.IsLoadable := ((fs.SectionType and SHT_PROGBITS) > 0) and ((fs.Flags and SHF_ALLOC) > 0) and
+                          ((fs.SectionType and SHT_NOBITS) = 0);
     p^.Loaded := False;
     FSections.Objects[idx] := TObject(p);
   end;
@@ -369,16 +398,23 @@ begin
   Result := 'ELF executable';
 end;
 
-constructor TElfDbgSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; OwnSource: Boolean);
+constructor TElfDbgSource.Create(ASource: TDbgFileLoader; ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean);
 var
   DbgFileName, SourceFileName: String;
   crc: Cardinal;
   NewFileLoader: TDbgFileLoader;
 begin
+  inherited Create(ASource, ADebugMap, ALoadedTargetImageAddr, OwnSource);
+
   FSections := TStringListUTF8Fast.Create;
   FSections.Sorted := True;
   //FSections.Duplicates := dupError;
   FSections.CaseSensitive := False;
+
+  // Elf-binaries do not have an internal offset encoded into the binary (ImageBase)
+  // so their reloction-offset is just equal to the location at which the binary
+  // has been loaded into memory. (The LoadedTargetImageAddr)
+  SetRelocationOffset(ALoadedTargetImageAddr, sPositive);
 
   FFileLoader := ASource;
   fOwnSource := OwnSource;
@@ -410,8 +446,6 @@ begin
   end;
 
   FTargetInfo := fElfFile.FTargetInfo;
-
-  inherited Create(ASource, ADebugMap, OwnSource);
 end;
 
 destructor TElfDbgSource.Destroy;
@@ -461,8 +495,8 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
-            AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+ImageBase),
-              Sect^.Address + Sect^.Size);
+            AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+RelocationOffset),
+              Sect^.Address + Sect^.Size + RelocationOffset);
             end;
           {$pop}
         end
@@ -485,8 +519,8 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
-            AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+ImageBase),
-              Sect^.Address + Sect^.Size);
+            AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+RelocationOffset),
+              Sect^.Address + Sect^.Size+RelocationOffset);
             end;
         end
       end;
@@ -495,6 +529,8 @@ begin
 end;
 
 initialization
+  DBG_WARNINGS := DebugLogger.FindOrRegisterLogGroup('DBG_WARNINGS' {$IFDEF DBG_WARNINGS} , True {$ENDIF} );
+
   RegisterImageReaderClass( TElfDbgSource );
 
 end.

@@ -22,6 +22,7 @@ uses
 
 const
   DEF_TICK_LENGTH = 4;
+  DEF_TICK_WIDTH = 1;
 
 type
 
@@ -43,6 +44,7 @@ type
   published
     property Marks: TChartMinorAxisMarks read GetMarks write SetMarks;
     property TickLength default DEF_TICK_LENGTH div 2;
+    property TickWidth default DEF_TICK_WIDTH;
   end;
 
   TChartAxis = class;
@@ -195,6 +197,7 @@ type
       read FPositionUnits write SetPositionUnits default cuPercent;
     property Range: TChartRange read FRange write SetRange;
     property TickLength default DEF_TICK_LENGTH;
+    property TickWidth default DEF_TICK_WIDTH;
     property Title: TChartAxisTitle read FTitle write SetTitle;
     property Transformations: TChartAxisTransformations
       read FTransformations write SetTransformations;
@@ -352,6 +355,7 @@ begin
     MinLength := 5;
   end;
   TickLength := DEF_TICK_LENGTH div 2;
+  TickWidth := DEF_TICK_WIDTH;
 end;
 
 function TChartMinorAxis.GetAlignment: TChartAxisAlignment;
@@ -460,6 +464,7 @@ begin
   FPositionUnits := cuPercent;
   FRange := TChartRange.Create(ACollection.Owner as TCustomChart);
   TickLength := DEF_TICK_LENGTH;
+  TickWidth := DEF_TICK_WIDTH;
   FTitle := TChartAxisTitle.Create(ACollection.Owner as TCustomChart);
   FMarginsForMarks := true;
   FMarks.SetInsideDir(1, 0);

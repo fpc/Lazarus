@@ -182,12 +182,8 @@ type
     {$endif}
     {$ifdef CD_Android}
     CombiningAccent: Cardinal;
-    {$IFnDEF WithOldDebugln}
     procedure AndroidDebugLn(ASender: TObject; AStr: string; var AHandled: Boolean;
       Target: TLazLoggerWriteTarget; Data: Pointer);
-    {$ELSE}
-    procedure AndroidDebugLn(AStr: string);
-    {$ENDIF}
     function AndroidKeyCodeToLCLKeyCode(AAndroidKeyCode: Integer): Word;
     function DoOpenURLWidgetsetImplementation(AURL: string): Boolean;
     function DoOpenDocumentWidgetsetImplementation(APath: string): Boolean;
@@ -239,12 +235,8 @@ type
     // Mobile emulator and mobile mode
     MobileMainForm: TLCLIntfHandle;
     // For unusual implementations of DebugLn/DebugOut
-    {$IFnDEF WithOldDebugln}
     procedure AccumulatingDebugOut(ASender: TObject; AStr: string; var AHandled: Boolean;
       Target: TLazLoggerWriteTarget; Data: Pointer);
-    {$ELSE}
-    procedure AccumulatingDebugOut(AStr: string);
-    {$ENDIF}
     //
     procedure CDSetFocusToControl(ALCLControl, AIntfControl: TWinControl);
   //

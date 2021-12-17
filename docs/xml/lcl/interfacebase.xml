@@ -6911,21 +6911,60 @@
       </element>
 
       <element name="GetDefaultLCLWidgetType">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Gets the enumeration value representing the LCL platform for the current widgetset.
+        </short>
+        <descr>
+          <p>
+            The return value is the LCLPlatform property in the WidgetSet variable when assigned and not using the NoGui widgetset. Otherwise, the value from the BuildLCLWidgetType variable is used in the return value.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.lclplatformdef.TLCLPlatform">TLCLPlatform</link>
+          <link id="#lcl.lclplatformdef.BuildLCLWidgetType">BuildLCLWidgetType</link>
+        </seealso>
       </element>
       <element name="GetDefaultLCLWidgetType.Result">
-        <short/>
+        <short>TLCLPlatform enumeration value for the widgetset.</short>
       </element>
 
       <element name="GetLCLWidgetTypeName">
-        <short/>
+        <short>
+          Gets the directory name for the LCL platform enumeration value used for the widgetset.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="GetDefaultLCLWidgetType"/>
+          <link id="#lcl.lclplatformdef.TLCLPlatform">TLCLPlatform</link>
+          <link id="#lcl.lclplatformdef.LCLPlatformDirNames">LCLPlatformDirNames</link>
+          <link id="#lcl.lclplatformdef.LCLPlatformDisplayNames">LCLPlatformDisplayNames</link>
+        </seealso>
       </element>
       <element name="GetLCLWidgetTypeName.Result">
-        <short/>
+        <short>Name for the LCL platform enumeration value.</short>
+      </element>
+
+      <element name="MemSizeLessThan">
+        <short>
+          Determines if the specified non-zero memory size is smaller than a given value.
+        </short>
+        <descr>
+          <p>
+            Used in the implementation of widgetset classes.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="MemSizeLessThan.Result">
+        <short>
+          Returns True when AMemSize has been assigned and is smaller than AThen. Returns False when AMemSize is zero.
+        </short>
+      </element>
+      <element name="MemSizeLessThan.AMemSize">
+        <short>Memory size examined in the method.</short>
+      </element>
+      <element name="MemSizeLessThan.AThen">
+        <short>Value to which the memory size is compared.</short>
       </element>
 
       <element name="LCL_CAPABILITY_NO">

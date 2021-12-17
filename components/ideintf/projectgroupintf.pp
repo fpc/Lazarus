@@ -106,7 +106,8 @@ Type
     function GetNext(SkipChildren: boolean): TPGCompileTarget;
     function IndexOfBuildMode(aName: string): integer;
     function FindBuildMode(aName: string): TPGBuildMode;
-    function PerformBuildModeAction(AAction: TPGTargetAction; aModeIdentifier: string): TPGActionResult; virtual; abstract;
+    function PerformBuildModeAction(AAction: TPGTargetAction;
+      aModeIdentifier: string): TPGActionResult; virtual; abstract;
     procedure Modified; virtual; abstract;
     property Parent: TPGCompileTarget read FParent;
     property Filename: string read FFilename write SetFilename; // Absolute, not relative.
@@ -574,21 +575,16 @@ var
   i: Integer;
 begin
   // check first child
-  if (not SkipChildren) and (ProjectGroup<>nil) and (ProjectGroup.TargetCount>0)
-  then begin
-    Result:=ProjectGroup.Targets[0];
-    exit(Result);
-  end;
+  if (not SkipChildren) and (ProjectGroup<>nil) and (ProjectGroup.TargetCount>0) then
+    exit(ProjectGroup.Targets[0]);
   // check next sibling
   aTarget:=Self;
   while aTarget.Parent<>nil do begin
     PG:=aTarget.Parent.ProjectGroup;
     if PG<>nil then begin
       i:=PG.IndexOfTarget(aTarget);
-      if (i>=0) and (i+1<PG.TargetCount) then begin
-        Result:=PG.Targets[i+1];
-        exit(Result);
-      end;
+      if (i>=0) and (i+1<PG.TargetCount) then
+        exit(PG.Targets[i+1]);
     end;
     aTarget:=aTarget.Parent;
   end;

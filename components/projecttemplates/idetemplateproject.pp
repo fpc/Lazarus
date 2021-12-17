@@ -9,7 +9,7 @@ uses
   // LCL
   LResources, Forms, Controls, Graphics, Dialogs,
   // LazUtils
-  LazFileUtils,
+  LazFileUtils, LazLoggerBase,
   // IdeIntf
   ProjectIntf, NewItemIntf, MenuIntf, BaseIDEIntf, LazIDEIntf,
   // ProjectTemplates
@@ -113,7 +113,8 @@ var
   sl: TStringList;
   i: Integer;
 begin
-  if not FileExistsUTF8(FN) then
+  //DebugLn(['FileReplaceText: From=', AFrom, ', To=', ATo]);
+  if (not FileExistsUTF8(FN)) or (AFrom='') then
     exit;
   sl:=TStringList.Create;
   try

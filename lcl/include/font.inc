@@ -26,7 +26,9 @@ begin
   Result := CompareStr(Key^.LongFontName, Desc.LongFontName);
   //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',DbgS(Desc),' Result=',Result);
   if Result = 0 then
-    Result := CompareMemRange(@Key^.LogFont, @Desc.LogFont, SizeOf(Desc.LogFont));
+    Result := CompareMemRange(@Key^.LogFont, @Desc.LogFont, SizeOf(Desc.LogFont) - LF_FACESIZE * SizeOf(Char));
+  if Result = 0 then
+    Result := StrLComp(@Key^.LogFont.lfFaceName[0], @Desc.LogFont.lfFaceName[0], LF_FACESIZE);
   //debugln('CompareLogFontAndNameWithResDesc END Result=',Result);
 end;
 
@@ -49,10 +51,11 @@ var
   Descriptor2: TFontHandleCacheDescriptor absolute Desc2;
 begin
   Result := CompareStr(Descriptor1.LongFontName, Descriptor2.LongFontName);
-  if Result <> 0 then
-    Exit;
-  Result := CompareMemRange(@Descriptor1.LogFont, @Descriptor2.LogFont,
-                          SizeOf(Descriptor1.LogFont));
+  if Result = 0 then
+    Result := CompareMemRange(@Descriptor1.LogFont, @Descriptor2.LogFont,
+                              SizeOf(Descriptor1.LogFont) - LF_FACESIZE * SizeOf(Char));
+  if Result = 0 then
+    Result := StrLComp(@Descriptor1.LogFont.lfFaceName[0], @Descriptor2.LogFont.lfFaceName[0], LF_FACESIZE);
 end;
 
 function TFontHandleCache.FindFont(TheFont: TLCLHandle): TResourceCacheItem;

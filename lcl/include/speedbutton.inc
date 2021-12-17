@@ -432,8 +432,10 @@ begin
     if (NewAct.ActionList = nil) or (NewAct.ImageIndex < 0) then Exit;
     Imgs := NewAct.ActionList.Images;
     if (Imgs = nil) or (NewAct.ImageIndex >= Imgs.Count) then Exit;
-    ImgRes := Imgs.ResolutionForPPI[ImageWidth,Font.PixelsPerInch,GetCanvasScaleFactor];
-    ImgRes.GetBitmap(NewAct.ImageIndex, Glyph);
+    Images := Imgs;
+    ImageIndex := NewAct.ImageIndex;
+    //ImgRes := Imgs.ResolutionForPPI[ImageWidth,Font.PixelsPerInch,GetCanvasScaleFactor];
+    //ImgRes.GetBitmap(NewAct.ImageIndex, Glyph);
   end;
 end;
 
@@ -488,13 +490,13 @@ function TCustomSpeedButton.IsGlyphStored: Boolean;
 var
   act: TCustomAction;
 begin
-  result := true;
+  Result := true;
   if Action <> nil then
   begin
     act := TCustomAction(Action);
     if (act.ActionList <> nil) and (act.ActionList.Images <> nil) and
     (act.ImageIndex >= 0) and (act.ImageIndex < act.ActionList.Images.Count) then
-      result := false;
+      Result := false;
   end;
 end;
 
@@ -502,7 +504,7 @@ procedure TCustomSpeedButton.SetShowCaption(const AValue: boolean);
 begin
   if FShowCaption=AValue then exit;
   FShowCaption:=AValue;
-  invalidate;
+  Invalidate;
 end;
 
 {------------------------------------------------------------------------------

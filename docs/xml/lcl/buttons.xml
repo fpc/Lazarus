@@ -1288,13 +1288,31 @@
 
       <element name="TCustomBitBtn.ActionChange">
         <short>
-          <var>ActionChange</var> - Changes the action associated with the control.
+          Performs action when a new value is assigned to the Action property for the control.
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            ActionChange is overridden in TCustomBitBtn to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
+          </p>
+          <p>
+            Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
+          </p>
+          <p>
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to False, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
+          </p>
+          <p>
+            ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in ImageIndex and Images are also updated with the values from the action (when assigned).
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomBitBtn.ActionChange.Sender">
-        <short></short>
+        <short>New action instance for the event.</short>
+      </element>
+      <element name="TCustomBitBtn.ActionChange.CheckDefaults">
+        <short>
+          True to use existing properties as default values, False to use properties from the new action.
+        </short>
       </element>
 
       <element name="TCustomBitBtn.GlyphChanged">
@@ -1586,7 +1604,9 @@
       </element>
 
       <element name="TCustomBitBtn.GlyphShowMode">
-        <short>Indicates the policy for showing or hiding the glyph image of this button.</short>
+        <short>
+          Indicates the policy for showing or hiding the glyph image for the button.
+        </short>
         <descr></descr>
         <seealso>
           <link id="#lcl.menus.TGlyphShowMode">TGlyphShowMode</link>
@@ -2100,7 +2120,7 @@
             Calls MeasureDraw to gets the values for the variable parameters in PreferredWidth and PreferredHeight.
           </p>
           <remark>
-            Please note: The WithThemeSpace parameter is <b>NOT</b> used in the current implementation.
+            Please note that the WithThemeSpace parameter is <b>NOT</b> used in the current implementation.
           </remark>
         </descr>
         <seealso></seealso>
@@ -2322,12 +2342,35 @@
         <seealso></seealso>
       </element>
 
-      <element name="TCustomSpeedButton.ActionChange" link="#lcl.controls.TControl.ActionChange"/>
+      <element name="TCustomSpeedButton.ActionChange">
+        <short>
+          Performs action when a new value is assigned to the Action property for the control.
+        </short>
+        <descr>
+          <p>
+            ActionChange is overridden in TCustomSpeedButton to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
+          </p>
+          <p>
+            Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
+          </p>
+          <p>
+            CheckDefaults indicates whether existing properties values in the control are used as default values. When set to False, the values from the action instance are applied to the control. Values from the action may be used (when assigned) if  the properties in the control are unassigned - even when CheckDefaults is True.
+          </p>
+          <p>
+            ActionChange calls the inherited method to update property values like Caption, Enabled, Hint, Visible, HelpContext and HelpKeyword. When Sender is a TCustomAction instance, the values in GroupIndex, ImageIndex, and Images are also updated with the values from the action.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.ActionChange">TControl.ActionChange</link>
+        </seealso>
+      </element>
       <element name="TCustomSpeedButton.ActionChange.Sender">
-        <short></short>
+        <short>New action instance for the event.</short>
       </element>
       <element name="TCustomSpeedButton.ActionChange.CheckDefaults">
-        <short></short>
+        <short>
+          True to use existing properties as default values, False to use properties from the new action.
+        </short>
       </element>
 
       <element name="TCustomSpeedButton.GetActionLinkClass" link="#lcl.controls.TControl.GetActionLinkClass"/>
@@ -2449,13 +2492,27 @@
 
       <element name="TCustomSpeedButton.FindDownButton">
         <short>
-          <var>FindDownButton</var> - returns the button that is down.
+          Gets the speed button with the same GroupIndex that has its Down property set.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>FindDownButton</var> locates a <var>TCustomSpeedButton</var> instance on the parent form which has the same GroupIndex and its Down property is set to <b>True</b>. FindDownButton visits each of the child controls on the parent form to find the speed buttons in the list of controls.
+          </p>
+          <p>
+            The return value contains the TCustomSpeedButton instance located. The return value is <b>Nil</b> if another speed button does not exist, is not in the same group, or is not Down.
+          </p>
+          <p>
+            No actions are performed in the method if the Down property in the current class instance is set, or when GroupIndex is <b>0</b> (zero). The return value is the current class instance in this circumstance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.GroupIndex"/>
+          <link id="TCustomSpeedButton.Down"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+        </seealso>
       </element>
       <element name="TCustomSpeedButton.FindDownButton.Result">
-        <short></short>
+        <short>The speed button in the group which is down.</short>
       </element>
 
       <element name="TCustomSpeedButton.Click" link="#lcl.controls.TControl.Click"/>
@@ -2580,7 +2637,7 @@
 
       <element name="TCustomSpeedButton.ShowAccelChar">
         <short>
-          Indicates if the accelerator charactershould be shown (i.e. underlined character denoting key to be pressed for quick action).
+          Indicates if the accelerator character should be shown (i.e. underlined character denoting key to be pressed for quick action).
         </short>
       </element>
 

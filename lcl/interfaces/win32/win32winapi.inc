@@ -49,7 +49,11 @@
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.Arc(DC: HDC; Left, Top, Right, Bottom, Angle16Deg, Angle16DegLength: Integer): Boolean;
 var
-  SX, SY, EX, EY, OldArcDirection: Longint;
+  SX: LongInt = 0;
+  SY: LongInt = 0;
+  EX: LongInt = 0;
+  EY: LongInt = 0;
+  OldArcDirection: Longint;
 begin
   if Angle16DegLength < 0 then OldArcDirection := Windows.SetArcDirection(DC, AD_CLOCKWISE)
   else OldArcDirection := Windows.SetArcDirection(DC, AD_COUNTERCLOCKWISE);
@@ -77,7 +81,7 @@ function TWin32WidgetSet.AngleChord(DC: HDC; x1, y1, x2, y2, angle1,
 var
   SX, SY, EX, EY : Longint;
 begin
-  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX, SY, EX, EY);
+  Angles2Coords(x1, y1, x2-x1, y2-y1, Angle1, Angle2, SX{%H-}, SY{%H-}, EX{%H-}, EY{%H-});
   Result := Boolean(Windows.Chord(DC, x1, y1, x2, y2, SX, SY, EX, EY));
 end;
 
@@ -181,7 +185,7 @@ var
     SystemWParam := Windows.WParam(Longint(PointToSmallPointNoChecks(Pos)));
 
     // send scroll message
-    FillChar(ScrollInfo, sizeof(ScrollInfo), #0);
+    ScrollInfo := Default(Windows.tagScrollInfo);
     ScrollInfo.cbSize := sizeof(ScrollInfo);
     ScrollInfo.fMask := SIF_PAGE or SIF_POS or SIF_RANGE;
     // if mouse is over horizontal scrollbar, scroll horizontally
@@ -372,8 +376,8 @@ var
   {$ENDIF}
   Bitmap: TBitmap;
   BufferStream: TMemoryStream;
-  BufferWideString: widestring;
-  BufferString: ansistring;
+  BufferWideString: widestring = '';
+  BufferString: ansistring = '';
 
   function ReadClipboardToStream(DestStream: TStream): Boolean;
   begin
@@ -560,8 +564,8 @@ function TWin32WidgetSet.ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   var
     DataStream, BufferStream: TStream;
     Bitmap: TBitmap;
-    BufferWideString: widestring;
-    BufferString: ansistring;
+    BufferWideString: widestring = '';
+    BufferString: ansistring = '';
     ScreenDC, MemDC: HDC;
     OldBitmap, NewBitmap, Mask: HBitmap;
   begin
@@ -1340,6 +1344,7 @@ var
   Rec: PProcRedirRec absolute Data;
   ALogFont: TEnumLogFontExA;
 begin
+  ALogFont := Default(TEnumLogFontExA);
   Move(ELogFont.elfLogFont, ALogFont.elfLogFont, SizeOf(ALogFont.elfLogFont) - SizeOf(ALogFont.elfLogFont.lfFaceName));
   ALogFont.elfLogFont.lfFaceName := UTF16ToUTF8(ELogFont.elfLogFont.lfFaceName);
   ALogFont.elfFullName := UTF16ToUTF8(ELogFont.elfFullName);
@@ -1512,7 +1517,7 @@ function TWin32WidgetSet.ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt;
 var
   s: AnsiString;
   w: WideString;
-  DxWide: _TIntArray;
+  DxWide: _TIntArray = nil;
   nIndex: Integer;
 begin
   // use temp buffer, if count is set, there might be no null terminator
@@ -1856,6 +1861,8 @@ begin
   // there is no way to get offset for memory or metafile DC => assume it 0
   Result := GetObjectType(PaintDC) = OBJ_DC;
   if not Result then Exit;
+  DCOrg.X := 0;
+  DCOrg.Y := 0;
   Result := Windows.GetDCOrgEx(PaintDC, DCOrg);
   if not Result then Exit;
   winOrg.X := 0;
@@ -1898,6 +1905,7 @@ begin
         hWindow := WindowFromDC(DC);
         if hWindow <> HWND(nil) then
         begin
+          ClientRect := Rect(0, 0, 0, 0);
           Result := GetClientRect(hWindow, ClientRect);
           P.x := ClientRect.Right;
           P.y := ClientRect.Bottom;
@@ -2432,7 +2440,7 @@ begin
   // maximized or aero snap windows will have problems
   if (GetWindowLong(Handle, GWL_STYLE) and WS_CHILD = 0) then
   begin
-    FillChar(Info, SizeOf(Info), 0);
+    Info := Default(tagWINDOWINFO);
     Info.cbSize := SizeOf(Info);
     Result := GetWindowInfo(Handle, @Info);
     if Result then
@@ -3679,7 +3687,7 @@ function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Intege
     Result := HasAlphaN or (HasAlpha0 and HasAlpha255);
     if Result
     then begin
-      FillChar(Header, SizeOf(Header), 0);
+      Header := Default(Windows.TBitmapInfoHeader);
       Header.biSize := SizeOf(Header);
       Header.biWidth := AWinBmp.bmWidth;
       Header.biHeight := -AWinBmp.bmHeight;

@@ -475,7 +475,7 @@ type
 
     procedure SetAlternativeCompile(const Command: string; ScanFPCMsgs: boolean); override;
 
-    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String; virtual;
+    function MakeOptionsString(Flags: TCompilerCmdLineOptions): String;
     function GetSyntaxOptionsString(Kind: TPascalCompiler): string; virtual;
     function CreatePPUFilename(const SourceFileName: string): string; override;
     function CreateTargetFilename: string; override;
@@ -653,7 +653,7 @@ function InheritedOptionsToCompilerParameters(
   Flags: TCompilerCmdLineOptions): string;
 function MergeLinkerOptions(const OldOptions, AddOptions: string): string;
 function MergeCustomOptions(const OldOptions, AddOptions: string): string;
-function ConvertSearchPathToCmdLine(const switch, paths: String): String;
+function ConvertSearchPathToCmdLine(const Switch, Paths: String): String;
 function ConvertOptionsToCmdLine(const Switch, OptionStr: string): string;
 
 type
@@ -901,8 +901,7 @@ begin
   Result+=AddOptions;
 end;
 
-function ConvertSearchPathToCmdLine(
-  const Switch, Paths: String): String;
+function ConvertSearchPathToCmdLine(const Switch, Paths: String): String;
 var
   StartPos: Integer;
   l: Integer;
@@ -912,7 +911,6 @@ begin
     RaiseGDBException('ConvertSearchPathToCmdLine no Switch');
   Result := '';
   if (Paths = '') then exit;
-
   l:=length(Paths);
   StartPos:=1;
   while StartPos<=l do begin
@@ -929,9 +927,9 @@ begin
   end;
 end;
 
-function ConvertOptionsToCmdLine(const Switch,
-  OptionStr: string): string;
-var Startpos, EndPos: integer;
+function ConvertOptionsToCmdLine(const Switch, OptionStr: string): string;
+var
+  Startpos, EndPos: integer;
   p: Integer;
 begin
   Result:='';
@@ -1011,8 +1009,7 @@ begin
   FTree:=Tree;
 end;
 
-function TCompilerMsgIDFlagsEnumerator.
-  GetEnumerator: TCompilerMsgIDFlagsEnumerator;
+function TCompilerMsgIDFlagsEnumerator.GetEnumerator: TCompilerMsgIDFlagsEnumerator;
 begin
   Result:=Self;
 end;
@@ -3226,8 +3223,7 @@ begin
   Result := switches;
 end;
 
-function TBaseCompilerOptions.GetSyntaxOptionsString(Kind: TPascalCompiler
-  ): string;
+function TBaseCompilerOptions.GetSyntaxOptionsString(Kind: TPascalCompiler): string;
 var
   tempsw: String;
 begin
@@ -3264,8 +3260,7 @@ begin
   end;
 end;
 
-function TBaseCompilerOptions.CreatePPUFilename(const SourceFileName: string
-  ): string;
+function TBaseCompilerOptions.CreatePPUFilename(const SourceFileName: string): string;
 var
   UnitOutDir: String;
 begin

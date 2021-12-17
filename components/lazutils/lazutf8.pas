@@ -3667,7 +3667,9 @@ begin
           begin // 4 byte UTF-8 char
             C := ((B1 and %00000111) shl 18) or ((B2 and %00111111) shl 12)
               or ((B3 and %00111111) shl 6)  or (B4 and %00111111);
-            if C>$10FFFF then
+            if (C>$10FFFF) {out of range U+10FFFF} or
+               ((B1=%11110000) and (B2<=%10001111)) //4 bytes are mapped to the 1-3 byte codes
+            then
             begin
               if InvalidCharError(3) then Exit(trInvalidChar);
             end else

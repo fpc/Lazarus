@@ -1650,10 +1650,9 @@ function TFpDbgMemManager.WriteMemory(AReadDataType: TFpDbgMemReadDataType;
   const ASourceSize: QWord; AContext: TFpDbgLocationContext; const AFlags: TFpDbgMemManagerFlags
   ): Boolean;
 var
-  WriteData, WriteData2: Pointer;
   TmpVal: TDbgPtr;
-  BitOffset, DestExtraSize: Integer;
-  DestWriteSize, DestFullSize: QWord;
+  BitOffset: Integer;
+  DestWriteSize: QWord;
 begin
   Result := False;
   DebugLn(FPDBG_VERBOSE_MEM, ['$WriteMem: ', dbgs(AReadDataType),' ', dbgs(ADestLocation), ' ', dbgs(ADestSize), ' Source ', ASource]);
@@ -1671,7 +1670,7 @@ begin
   // ToDo: Use a TargetMemConverter
 
   BitOffset := ADestLocation.BitOffset;
-  DestExtraSize := (BitOffset + ADestSize.BitSize + 7) div 8;
+  //DestExtraSize := (BitOffset + ADestSize.BitSize + 7) div 8;
 
   case ADestLocation.MType of
     // ToDo: Add the ability to write to memory

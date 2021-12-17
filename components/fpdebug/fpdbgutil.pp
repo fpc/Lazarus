@@ -205,8 +205,6 @@ function QuickUtf8LowerCase(const AText: String): String;
 
 function AlignPtr(Src: Pointer; Alignment: Byte): Pointer;
 function HexValue(const AValue; ASize: Byte; AFlags: THexValueFormatFlags): String;
-procedure Log(const AText: String; const AParams: array of const); overload;
-procedure Log(const AText: String); overload;
 function FormatAddress(const AAddress): String;
 
 function GetFpDbgGlobalWorkerQueue: TFpGlobalThreadWorkerQueue;
@@ -411,16 +409,6 @@ begin
   then Result := Result + '$';
 
   Result := Result + HexStr(i, ASize * 2);
-end;
-
-procedure Log(const AText: String; const AParams: array of const); overload;
-begin
-  DebugLn(Format(AText, AParams));
-end;
-
-procedure Log(const AText: String); overload;
-begin
-  DebugLn(AText);
 end;
 
 type
@@ -885,8 +873,8 @@ begin
   end;
   if IsMarkedIdle then
     InterLockedDecrement(FQueue.FIdleThreadCount);
-  FQueue.RemoveThread(Self);
   debugln(FQueue.FLogGroup, '%s!%s WorkerThread-Exit', [dbgsThread, DbgSTime]);
+  FQueue.RemoveThread(Self);
 end;
 
 { TFpThreadWorkerQueue.TFpDbgTypedFifoQueue }

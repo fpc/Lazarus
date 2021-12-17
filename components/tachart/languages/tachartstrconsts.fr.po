@@ -3,13 +3,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2015-04-14 07:54+0100\n"
-"PO-Revision-Date: 2020-01-06 10:06+0100\n"
+"PO-Revision-Date: 2021-11-25 16:02+0100\n"
 "Last-Translator: Vasseur Gilles <gillesvasseur58@gmail.com>\n"
 "Language-Team: http://lazarus.developpez.com/\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: fr\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 3.0\n"
 
 #: tachartstrconsts.descolor
 msgid "Color"
@@ -215,7 +215,7 @@ msgstr "Le type de résultat d'expression doit être entier ou flottant. On a ob
 
 #: tachartstrconsts.rserrnumericaloverflow
 msgid "Numerical overflow."
-msgstr ""
+msgstr "Débordement numérique."
 
 #: tachartstrconsts.rsexpressioncolormapseries
 msgid "Math expression color map series"
@@ -279,7 +279,7 @@ msgstr "Total de la somme des carrés (SST)"
 
 #: tachartstrconsts.rsfittvalue
 msgid "t value"
-msgstr ""
+msgstr "valeur t"
 
 #: tachartstrconsts.rsfitvarianceratio
 msgid "Variance ratio F"
@@ -422,7 +422,7 @@ msgstr "Séries polaires"
 
 #: tachartstrconsts.rspolygonseries
 msgid "Polygon series"
-msgstr ""
+msgstr "Séries de polygones"
 
 #: tachartstrconsts.rspsclear
 msgctxt "tachartstrconsts.rspsclear"

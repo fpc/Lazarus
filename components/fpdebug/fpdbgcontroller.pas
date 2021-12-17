@@ -28,8 +28,8 @@ type
     AnEventType: TFPDEvent; AMoreHitEventsPending: Boolean) of object;
   TOnExceptionEvent = procedure(var continue: boolean; const ExceptionClass, ExceptionMessage: string) of object;
   TOnProcessExitEvent = procedure(ExitCode: DWord) of object;
-  TOnLibraryLoadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
-  TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALib: TDbgLibrary) of object;
+  TOnLibraryLoadedEvent = procedure(var continue: boolean; ALibraryArray: TDbgLibraryArr) of object;
+  TOnLibraryUnloadedEvent = procedure(var continue: boolean; ALibraryArray: TDbgLibraryArr) of object;
   TOnProcessLoopCycleEvent = procedure(var AFinishLoopAndSendEvents: boolean; var AnEventType: TFPDEvent;
     var ACurCommand: TDbgControllerCmd; var AnIsFinished: boolean) of object;
 
@@ -58,10 +58,10 @@ type
   end;
 
   { TDbgControllerContinueCmd }
+  (* Same as no command, but holds the thread that is being debugged / "run" do perform "step to finally/except" *)
 
   TDbgControllerContinueCmd = class(TDbgControllerCmd)
   protected
-    procedure Init; override;
     procedure DoResolveEvent(var AnEvent: TFPDEvent; AnEventThread: TDbgThread; out Finished: boolean); override;
   public
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
@@ -82,7 +82,7 @@ type
   private
     FStackFrameInfo: TDbgStackFrameInfo;
     FHiddenBreakpoint: TFpInternalBreakpoint;
-    FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakFrameAddr, FHiddenBreakStackPtrAddr: TDBGPtr;
+    FHiddenBreakAddr, FHiddenBreakInstrPtr, FHiddenBreakStackPtrAddr: TDBGPtr;
     function GetIsSteppedOut: Boolean;
   protected
     function IsAtHiddenBreak: Boolean; inline;
@@ -199,7 +199,7 @@ type
     procedure StoreRegisters;
     procedure RestoreRegisters;
   public
-    constructor Create(AController: TDbgController; ARoutineAddress: TFpDbgMemLocation; ACallContext:TFpDbgInfoCallContext);
+    constructor Create(AController: TDbgController; const ARoutineAddress: TFpDbgMemLocation; ACallContext:TFpDbgInfoCallContext);
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
@@ -280,6 +280,8 @@ type
     FConsoleTty: string;
     FRedirectConsoleOutput: boolean;
     FWorkingDirectory: string;
+    // This only holds a reference to the LazDebugger instance
+    FProcessConfig: TDbgProcessConfig;
     function GetCurrentThreadId: Integer;
     function GetDefaultContext: TFpDbgLocationContext;
     procedure SetCurrentThreadId(AValue: Integer);
@@ -305,6 +307,7 @@ type
     procedure AbortCurrentCommand;
     function Run: boolean;
     procedure Stop;
+    procedure &ContinueRun;
     procedure StepIntoInstr;
     procedure StepOverInstr;
     procedure Next;
@@ -405,6 +408,9 @@ type
     property OnThreadBeforeProcessLoop: TNotifyEvent read FOnThreadBeforeProcessLoop write FOnThreadBeforeProcessLoop;
     property OnThreadProcessLoopCycleEvent: TOnProcessLoopCycleEvent read FOnThreadProcessLoopCycleEvent write FOnThreadProcessLoopCycleEvent;
     property OnThreadDebugOutputEvent: TDebugOutputEvent read FOnThreadDebugOutputEvent write SetOnThreadDebugOutputEvent;
+
+    // Intermediate between FpDebugger and TDbgProcess.  Created by FPDebugger, so not owned by controller
+    property ProcessConfig: TDbgProcessConfig read FProcessConfig write FProcessConfig;
   end;
 
 implementation
@@ -417,7 +423,9 @@ var
 
 { TDbgControllerCallRoutineCmd }
 
-constructor TDbgControllerCallRoutineCmd.Create(AController: TDbgController; ARoutineAddress: TFpDbgMemLocation; ACallContext: TFpDbgInfoCallContext);
+constructor TDbgControllerCallRoutineCmd.Create(AController: TDbgController;
+  const ARoutineAddress: TFpDbgMemLocation; ACallContext: TFpDbgInfoCallContext
+  );
 begin
   inherited Create(AController);
 
@@ -673,12 +681,6 @@ end;
 
 { TDbgControllerContinueCmd }
 
-procedure TDbgControllerContinueCmd.Init;
-begin
-  inherited Init;
-  FThread := nil; // run until any thread has an event
-end;
-
 procedure TDbgControllerContinueCmd.DoContinue(AProcess: TDbgProcess; AThread: TDbgThread);
 begin
   assert(FProcess=AProcess, 'TDbgControllerContinueCmd.DoContinue: FProcess=AProcess');
@@ -688,7 +690,7 @@ end;
 procedure TDbgControllerContinueCmd.DoResolveEvent(var AnEvent: TFPDEvent;
   AnEventThread: TDbgThread; out Finished: boolean);
 begin
-  Finished := (AnEvent<>deInternalContinue); // TODO: always False? will be aborted, if another event terminates the ProcessLoop
+  Finished := False;
 end;
 
 { TDbgControllerStepIntoInstructionCmd }
@@ -740,13 +742,9 @@ begin
   Result := HasHiddenBreak;
   if not Result then
     exit;
-  if (FHiddenBreakInstrPtr = FThread.GetInstructionPointerRegisterValue) then
-    Result := ((FHiddenBreakStackPtrAddr < FThread.GetStackPointerRegisterValue) or
-               (FHiddenBreakFrameAddr < FThread.GetStackBasePointerRegisterValue))
-  else
-    // InstructPtr moved, so SP can be equal
-    Result := ((FHiddenBreakStackPtrAddr <= FThread.GetStackPointerRegisterValue) or
-               (FHiddenBreakFrameAddr < FThread.GetStackBasePointerRegisterValue));
+  (* This is to check, if we have returned from a "call" instruction. Back to the original frame.  *)
+  Result := (FHiddenBreakStackPtrAddr <= FThread.GetStackPointerRegisterValue);
+
   debugln(FPDBG_COMMANDS and Result and (FHiddenBreakpoint <> nil), ['BreakStepBaseCmd.IsAtOrOutOfHiddenBreakFrame: Gone past hidden break = true']);
 end;
 
@@ -754,7 +752,6 @@ procedure TDbgControllerHiddenBreakStepBaseCmd.SetHiddenBreak(AnAddr: TDBGPtr);
 begin
   // The callee may not setup a stackfram (StackBasePtr unchanged). So we use SP to detect recursive hits
   FHiddenBreakStackPtrAddr := FThread.GetStackPointerRegisterValue;
-  FHiddenBreakFrameAddr := FThread.GetStackBasePointerRegisterValue;
   FHiddenBreakInstrPtr := FThread.GetInstructionPointerRegisterValue;
   FHiddenBreakAddr := AnAddr;
   FHiddenBreakpoint := FProcess.AddInternalBreak(AnAddr);
@@ -1326,6 +1323,7 @@ var
   imgReader: TDbgImageReader;
   ATargetInfo: TTargetDescriptor;
 begin
+  ATargetInfo := hostDescriptor;
   if (FExecutableFilename <> '') and FileExists(FExecutableFilename) then
   begin
     DebugLn(DBG_VERBOSE, 'TDbgController.CheckExecutableAndLoadClasses');
@@ -1333,16 +1331,18 @@ begin
     imgReader := nil;
     try
       source := TDbgFileLoader.Create(FExecutableFilename);
-      imgReader := GetImageReader(source, nil, false);
+      imgReader := GetImageReader(source, nil, 0, false);
 
-      ATargetInfo := imgReader.TargetInfo;
+      // If the file-format of the 'executable' is not recognized, imgReader is
+      // nil. It can be anything, executable (some script) or non-executable (
+      // a jpeg-image). So use the default host-descriptor and see what happens...
+      if Assigned(imgReader) then
+        ATargetInfo := imgReader.TargetInfo;
     finally
       FreeAndNil(imgReader);  // TODO: Store object reference, it will be needed again
       FreeAndNil(source);
     end;
-  end
-  else
-    ATargetInfo := hostDescriptor;
+  end;
 
   FOsDbgClasses := FpDbgClasses.GetDbgProcessClass(ATargetInfo);
 end;
@@ -1472,24 +1472,37 @@ begin
   // Get exe info, load classes
   CheckExecutableAndLoadClasses;
   if not Assigned(OsDbgClasses) then
-  begin
+    begin
     result := false;
     DebugLn(DBG_WARNINGS, 'Error - No support registered for debug target');
-    exit;
-  end;
+    Exit;
+    end;
 
   Flags := [];
   if RedirectConsoleOutput then Include(Flags, siRediretOutput);
   if ForceNewConsoleWin then Include(Flags, siForceNewConsole);
+  FCurrentProcess := OSDbgClasses.DbgProcessClass.Create(FExecutableFilename, OsDbgClasses, MemManager, ProcessConfig);
+  if not Assigned(FCurrentProcess) then
+    begin
+    Result := false;
+    DebugLn(DBG_WARNINGS, 'Error - could not create TDbgProcess');
+    Exit;
+    end;
+
   if AttachToPid <> 0 then
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.AttachToInstance(FExecutableFilename, AttachToPid, OsDbgClasses, MemManager, FLastError)
+    Result := FCurrentProcess.AttachToInstance(AttachToPid, FLastError)
   else
-    FCurrentProcess := OSDbgClasses.DbgProcessClass.StartInstance(FExecutableFilename, Params, Environment, WorkingDirectory, FConsoleTty, Flags, OsDbgClasses, MemManager, FLastError);
-  if assigned(FCurrentProcess) then
+    Result := FCurrentProcess.StartInstance(Params, Environment, WorkingDirectory, FConsoleTty, Flags, FLastError);
+
+  if Result then
     begin
     FProcessMap.Add(FCurrentProcess.ProcessID, FCurrentProcess);
     DebugLn(DBG_VERBOSE, 'Got PID: %d, TID: %d', [FCurrentProcess.ProcessID, FCurrentProcess.ThreadID]);
-    result := true;
+    end
+  else
+    begin
+    Result := false;
+    FreeAndNil(FCurrentProcess);
     end;
 end;
 
@@ -1499,6 +1512,11 @@ begin
     FMainProcess.TerminateProcess
   else
     raise Exception.Create('Failed to stop debugging. No main process.');
+end;
+
+procedure TDbgController.&ContinueRun;
+begin
+  InitializeCommand(TDbgControllerContinueCmd.Create(self));
 end;
 
 procedure TDbgController.StepIntoInstr;
@@ -1571,6 +1589,8 @@ begin
   end;
 
   FreeAndNil(FCommandToBeFreed);
+  FCurrentProcess.ClearAddedAndRemovedLibraries;
+
   if FCommand <> nil then
     FCommand.DoBeforeLoopStart;
 
@@ -1691,7 +1711,9 @@ begin
     if FPDEvent=deExitProcess then begin
       FreeAndNil(FCommand);
       if assigned(FOnThreadProcessLoopCycleEvent) then begin
+        CurCmd := nil;
         FOnThreadProcessLoopCycleEvent(AExit, FPDEvent, CurCmd, IsFinished);
+        FreeAndNil(CurCmd);
         FPDEvent := deExitProcess;
       end;
       break;
@@ -1851,15 +1873,14 @@ begin
     deLoadLibrary:
       begin
         continue:=true;
-        if assigned(OnLibraryLoadedEvent) and Assigned(FCurrentProcess.LastLibraryLoaded) then
-          OnLibraryLoadedEvent(continue, FCurrentProcess.LastLibraryLoaded);
+        if assigned(OnLibraryLoadedEvent) and (Length(FCurrentProcess.LastLibrariesLoaded)>0) then
+          OnLibraryLoadedEvent(continue, FCurrentProcess.LastLibrariesLoaded);
       end;
     deUnloadLibrary:
       begin
         continue:=true;
-        if assigned(OnLibraryUnloadedEvent) and Assigned(FCurrentProcess.LastLibraryUnloaded) then
-          OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibraryUnloaded);
-        FCurrentProcess.LastLibraryUnloaded := nil;
+        if assigned(OnLibraryUnloadedEvent) and (Length(FCurrentProcess.LastLibrariesUnloaded)>0) then
+          OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibrariesUnloaded);
       end;
     deInternalContinue:
       begin

@@ -61,13 +61,15 @@ type
     FFileName: String;
     FImgReader: TDbgImageReader;
     function GetAddressMapList: TDbgAddressMapList;
+    function GetImageBase: QWord;
+    function GetRelocationOffset: TDBGPtrOffset;
     function GetReaderErrors: String;
     function GetSubFiles: TStrings;
     function GetTargetInfo: TTargetDescriptor;
     function GetUUID: TGuid;
   protected
-    FImageBase: QWord unimplemented;
     function GetSection(const AName: String): PDbgImageSection; virtual;
+    function GetSection(const ID: integer): PDbgImageSection; virtual;
     property ImgReader: TDbgImageReader read FImgReader write FImgReader;
   public
     constructor Create; virtual;
@@ -83,11 +85,13 @@ type
     procedure AddToLoaderList(ALoaderList: TDbgImageLoaderList);
     function IsValid: Boolean;
     property FileName: String read FFileName; // Empty if using USE_WIN_FILE_MAPPING
-    property ImageBase: QWord read FImageBase; unimplemented;
+    property ImageBase: QWord read GetImageBase;
+    property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
 
     property UUID: TGuid read GetUUID;
     property Section[const AName: String]: PDbgImageSection read GetSection;
+    property SectionByID[const ID: integer]: PDbgImageSection read GetSection;
     // On Darwin, the Dwarf-debuginfo is not linked into the main
     // executable, but has to be read from the object files.
     property SubFiles: TStrings read GetSubFiles;
@@ -108,6 +112,7 @@ type
 
   TDbgImageLoaderList = class(TFPObjectList)
   private
+    function GetRelocationOffset: TDBGPtrOffset;
     function GetImageBase: QWord;
     function GetTargetInfo: TTargetDescriptor;
     function GetItem(Index: Integer): TDbgImageLoader;
@@ -115,12 +120,24 @@ type
   public
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
+    property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
   end;
 
 implementation
 
 { TDbgImageLoaderList }
+
+function TDbgImageLoaderList.GetRelocationOffset: TDBGPtrOffset;
+begin
+  if Count>0 then
+    result := Items[0].RelocationOffset
+  else
+    begin
+    Result.Offset := 0;
+    Result.Sign := sPositive;
+    end;
+end;
 
 function TDbgImageLoaderList.GetImageBase: QWord;
 begin
@@ -175,6 +192,25 @@ begin
     result := nil
 end;
 
+function TDbgImageLoader.GetImageBase: QWord;
+begin
+  if Assigned(FImgReader) then
+    Result := FImgReader.ImageBase
+  else
+    Result := 0;
+end;
+
+function TDbgImageLoader.GetRelocationOffset: TDBGPtrOffset;
+begin
+  if Assigned(FImgReader) then
+    Result := FImgReader.RelocationOffset
+  else
+    begin
+    Result.Offset := 0;
+    Result.Sign := sPositive;
+    end;
+end;
+
 function TDbgImageLoader.GetReaderErrors: String;
 begin
   if FImgReader <> nil then
@@ -205,6 +241,14 @@ begin
     Result := nil;
 end;
 
+function TDbgImageLoader.GetSection(const ID: integer): PDbgImageSection;
+begin
+  if FImgReader <> nil then
+    Result := FImgReader.SectionByID[ID]
+  else
+    Result := nil;
+end;
+
 constructor TDbgImageLoader.Create;
 begin
   inherited Create;
@@ -215,10 +259,8 @@ constructor TDbgImageLoader.Create(AFileName: String; ADebugMap: TObject;
 begin
   FFileName := AFileName;
   FFileLoader := TDbgFileLoader.Create(AFileName);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, False);
-  if Assigned(FImgReader) then
-    FImgReader.LoadedTargetImageAddr := ALoadedTargetImageAddr
-  else
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
+  if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
 end;
 
@@ -227,10 +269,8 @@ constructor TDbgImageLoader.Create(AFileHandle: THandle; ADebugMap: TObject;
   ALoadedTargetImageAddr: TDBGPtr);
 begin
   FFileLoader := TDbgFileLoader.Create(AFileHandle);
-  FImgReader := GetImageReader(FFileLoader, ADebugMap, False);
-  if Assigned(FImgReader) then
-    FImgReader.LoadedTargetImageAddr := ALoadedTargetImageAddr
-  else
+  FImgReader := GetImageReader(FFileLoader, ADebugMap, ALoadedTargetImageAddr, False);
+  if not Assigned(FImgReader) then
     FreeAndNil(FFileLoader);
 end;
 {$endif}
