@@ -1393,113 +1393,196 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       <element name="TColorButton.FDisabledPattern"/>
 
       <element name="TColorButton.IsButtonColorAutoSizeStored">
-        <short/>
+        <short>Implements the storage specifier for the ButtonColorAutoSize property.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TColorButton.IsButtonColorAutoSizeStored.Result">
-        <short/>
+        <short>True when ButtonColorAutoSize is set to False.</short>
       </element>
 
       <element name="TColorButton.SetBorderWidth">
-        <short/>
+        <short>Sets the value for the BorderWidth property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.BorderWidth"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetBorderWidth.AValue">
-        <short/>
+        <short>New value for the BorderWidth property.</short>
       </element>
 
       <element name="TColorButton.SetButtonColor">
-        <short/>
+        <short>Sets the value for the ButtonColor property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.ButtonColor"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetButtonColor.AValue">
-        <short/>
+        <short>New value for the ButtonColor property.</short>
       </element>
 
       <element name="TColorButton.SetButtonColorAutoSize">
-        <short/>
+        <short>Sets the value for the ButtonColorAutoSize property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetButtonColorAutoSize.AValue">
-        <short/>
+        <short>New value for the ButtonColorAutoSize property.</short>
       </element>
 
       <element name="TColorButton.SetButtonColorSize">
-        <short/>
+        <short>Sets the value for the ButtonColorSize property.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.ButtonColorSize"/>
+        </seealso>
       </element>
       <element name="TColorButton.SetButtonColorSize.AValue">
-        <short/>
+        <short>New value for the ButtonColorSize property.</short>
       </element>
 
       <element name="TColorButton.WSRegisterClass" link="#lcl.lclclasses.TLCLComponent.WSRegisterClass"/>
 
       <element name="TColorButton.DrawGlyph">
         <short>
-          <var>DrawGlyph</var> - draw the glyph on the button face.
+          Re-implements drawing the glyph for the control to use the selected color.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DrawGlyph</var> is an overridden method in <var>TColorButton</var>. It re-implements the ancestor method to draw the button face and color block (or swatch) for the control using the arguments passed to the method.
+          </p>
+          <p>
+            The value in AState determines the appearance for the glyph (color swatch). When set to bsDisabled, a bitmap with a disabled pattern (dotted lines) is drawn using the Color for the button face. Otherwise, the value in ButtonColor is used to draw the glyph. GetGlyphSize is called to get the dimensions for the glyph based on the settings in ButtonColorAutoSize and ButtonColorSize.
+          </p>
+          <p>
+            The return value is a TRect instance with the bounds affected in the drawing operation.
+          </p>
+          <p>
+            DrawGlyph calls the Rectangle method for the TCanvas instance in the Canvas argument using the return value for the method as an argument.
+          </p>
+          <p>
+            DrawGlyph does <b>not</b> call the inherited method which draws the glyph image for the speed button.
+          </p>
+          <p>
+            DrawGlyph is called from the MeasureDraw method in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.Color"/>
+          <link id="TColorButton.ButtonColor"/>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.GetGlyphSize"/>
+          <link id="#lcl.buttons.TCustomSpeedButton.DrawGlyph">TCustomSpeedButton.DrawGlyph</link>
+          <link id="#lcl.buttons.TCustomSpeedButton.DrawGlyph">TCustomSpeedButton.MeasureDraw</link>
+          <link id="#lcl.buttons.TButtonState">TButtonState</link>
+        </seealso>
       </element>
       <element name="TColorButton.DrawGlyph.Result">
-        <short/>
+        <short>Rectangle where the color block is drawn for the control.</short>
       </element>
       <element name="TColorButton.DrawGlyph.ACanvas">
-        <short/>
+        <short>Drawing surface where the control is drawn.</short>
       </element>
       <element name="TColorButton.DrawGlyph.AClient">
-        <short/>
+        <short>Client rectangle where the button face / color block is rendered.</short>
       </element>
       <element name="TColorButton.DrawGlyph.AOffset">
-        <short/>
+        <short>
+          TPoint with horizontal and vertical offsets in AClient where the glyph is drawn.
+        </short>
       </element>
       <element name="TColorButton.DrawGlyph.AState">
-        <short/>
+        <short>Button state for the glyph; bsDisabled draws the disabled pattern for the button control.</short>
       </element>
       <element name="TColorButton.DrawGlyph.ATransparent">
-        <short/>
+        <short>Not used in the method.</short>
       </element>
       <element name="TColorButton.DrawGlyph.BiDiFlags">
-        <short/>
+        <short>Not used in the method.</short>
       </element>
 
       <element name="TColorButton.GetDisabledPattern">
-        <short>
-          <var>GetDisabledPattern</var> returns a BitMap with a disabled pattern.
-        </short>
-        <descr/>
+        <short>Gets a bitmap with the disabled pattern for the control.</short>
+        <descr>
+          <p>
+            GetDisabledPattern is a TBitmap function used to get the bitmap with the disabled pattern drawn on the control. It is used when the Enabled property (in the control or one of its parents) is set to False.
+          </p>
+          <p>
+            GetDisabledPattern ensures that a TBitmap instance has been created and assigned to an internal member for the class instance. The bitmap contains a pattern with dotted lines that indicate the control cannot accept input values. The allocated bitmap is freed (when assigned) in the destructor for the class instance.
+          </p>
+          <p>
+            GetDisabledPattern is called from the DrawGlyph method when its button state argument is set to bsDisabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TColorButton.GetDisabledPattern.Result">
-        <short/>
+        <short>TBitmap instance with the disabled pattern drawn for the control.</short>
       </element>
 
       <element name="TColorButton.GetGlyphSize">
         <short>
-          <var>GetGlyphSize</var> returns a value with the size for glyphs on the button.
+          Gets the size for the glyph (color block / swatch) on the button control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>GetGlyphSize</var> is an overridden  <var>TSize</var> function used to get the dimensions for the glyph (color block / swatch) displayed on the button control. Values in ButtonColorAutoSize and ButtonColorSize determine the height and width used for the color block displayed on the control.
+          </p>
+          <p>
+            When ButtonColorAutoSize is set to True, the color block is auto-sized to fill the unused client area for the control specified in the PaintRect argument. Space is reserved for the Caption (color name), Spacing, BorderWidth, and Margin properties assigned to the control.
+          </p>
+          <p>
+            When ButtonColorAutoSize is False, ButtonColorSize is used as both the width and height for the color block.
+          </p>
+          <p>
+            The return value is a TSize instance where the width and height for the color block are stored in the CX and CY members (respectively). Layout determines whether spacing is reserved in the horizontal (blGlyphLeft, blGlyphRight) or vertical (blGlyphTop, blGlyphBottom) dimensions.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.BorderWidth"/>
+          <link id="TCustomSpeedButton.GetTextSize"/>
+          <link id="TCustomSpeedButton.Spacing"/>
+          <link id="TCustomSpeedButton.Layout"/>
+          <link id="TCustomSpeedButton.Margin"/>
+          <link id="#lcl.controls.TControl.Caption"/>
+        </seealso>
       </element>
       <element name="TColorButton.GetGlyphSize.Result">
-        <short/>
+        <short>TSize instance with the dimensions for the glyph (color block).</short>
+      </element>
+      <element name="TColorButton.GetGlyphSize.Drawing">
+        <short>True if a drawing operation is active; never set to False in LCL code.</short>
       </element>
       <element name="TColorButton.GetGlyphSize.PaintRect">
-        <short/>
+        <short>TRect instance with the display area for the button control.</short>
       </element>
 
-      <element name="TColorButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
+      <element name="TColorButton.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
+      <element name="TColorButton.GetControlClassDefaultSize.Result" link="#lcl.controls.TControl.GetControlClassDefaultSize.Result"/>
+
+      <element name="TColorButton.Notification">
+        <short>
+          Performs actions when the specified component is added to or removed from the control.
+        </short>
+        <descr>
+          <p>
+            <var>Notification</var> is an overridden method in <var>TColorButton</var>, and calls the inherited method on entry. It ensures that the <var>ColorDialog</var> property is set to <b>Nil</b> when <var>AComponent</var> and <var>Operation</var> indicate the dialog class instance has been removed from the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <element name="TColorButton.GetControlClassDefaultSize.Result">
-        <short/>
+      <element name="TColorButton.Notification.AComponent">
+        <short>Component for the notification.</short>
+      </element>
+      <element name="TColorButton.Notification.Operation">
+        <short>Operation performed for the specified component.</short>
       </element>
 
       <element name="TColorButton.ShowColorDialog">
@@ -1509,7 +1592,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
             <var>ShowColorDialog</var> is a method used to display a <var>TColorDialog</var> and capture its result.
           </p>
           <p>
-            ShowColorDialog uses an existing dialog instance in <var>ColorDialog</var> when assigned. Otherwise, a new <var>TColorDialog</var> instance is created and temporarily stored in the property. The value in <var>ButtonColor</var> is used as the default color value in the dialog. The <var>Execute</var> method in the dialog is called to get the selected Color value, and it is stored in the <var>ButtonColor</var> property.
+            ShowColorDialog uses an existing dialog instance in <var>ColorDialog</var> when assigned. Otherwise, a new <var>TColorDialog</var> instance is created and temporarily stored in the property. The value in <var>ButtonColor</var> is used as the default color value in the dialog. The <var>Execute</var> method in the dialog is called to get the selected TColor value, and it is stored in the <var>ButtonColor</var> property.
           </p>
         </descr>
         <seealso>
@@ -1523,27 +1606,45 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Constructor for the class instance.</short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for <var>TColorButton</var>, and calls the inherited <var>Create</var> method. Create sets initial bounds for the controls, as well as its size and pattern.
+            <var>Create</var> is the constructor for <var>TColorButton</var>, and calls the inherited <var>Create</var> method. Create sets the initial bounds for the controls to their default values, and sets the values for properties including:
           </p>
+          <ul>
+            <li>ButtonColorSize (16)</li>
+            <li>BorderWidth (2)</li>
+            <li>ButtonColorAutoSize (True)</li>
+          </ul>
         </descr>
         <seealso>
-          <link id="#LCL.Buttons.TCustomSpeedButton.Create">TCustomSpeedButton.create</link>
+          <link id="#lcl.buttons.TCustomSpeedButton.Create">TCustomSpeedButton.Create</link>
         </seealso>
       </element>
       <element name="TColorButton.Create.AnOwner">
         <short>Owner of the class instance.</short>
       </element>
 
-      <element name="TColorButton.Destroy" link="#lcl.buttons.TCustomSpeedButton.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TColorButton.Destroy">
+        <short>Destructor for the class instance.</short>
+        <descr>
+          <p>
+            Destroy is the overridden destructor for the class instance. It ensures that the internal bitmap with the pattern displayed for the disabled control is freed (when assigned). Destroy calls the inherited destructor prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.Destroy">TCustomSpeedButton.Destroy</link>
+        </seealso>
       </element>
 
-      <element name="TColorButton.Click" link="#lcl.controls.TControl.Click">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TColorButton.Click">
+        <short>Performs actions needed when the control is clicked.</short>
+        <descr>
+          <p>
+            Click is an overridden method in TColorButton used to perform actions needed when the control is clicked or the Space key is pressed when the control has focus. It calls the inherited method on entry to execute the Action for the control, or signal its OnClick event handler (when assigned). It calls the ShowColorDialog method to configure, display, and execute the ColorDialog for the control. ButtonColor is updated to contain the new color selected when the dialog was executed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.Click">TCustomSpeedButton.Click</link>
+          <link id="#lcl.controls.TControl.Click">TControl.Click</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.Action" link="#lcl.controls.TControl.Action"/>
@@ -1553,51 +1654,136 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
       <element name="TColorButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 
       <element name="TColorButton.BorderWidth">
-        <short>Width for the borders on the button.</short>
+        <short>Width for the borders on the button control.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TColorButton.ButtonColorAutoSize">
-        <short>True if the button can be automatically re-sized.</short>
+        <short>
+          True if the color block for the button can be automatically resized to fill the unused client area.
+        </short>
         <descr>
           <p>
-            <var>ButtonColorAutoSize</var> is a Boolean property which indicates if the button can be automatically re-sized.
+            <var>ButtonColorAutoSize</var> is a <var>Boolean</var> property which indicates if the color block for the button can be automatically resized to fill the unused client area in the button control.
+          </p>
+          <p>
+            When set to <b>True</b>, the client area is examined to determine the dimensions for the color block. Space is reserved using the Caption, BorderWidth, Spacing, and Margin properties defined for the control. The unused area in the client rectangle is drawn using a frame filled with the selected ButtonColor for the control.
+          </p>
+          <p>
+            When set to False, the value in ButtonColorSize is used as both the height and width for the color block or swatch.
+          </p>
+          <p>
+            The default value for the property is True as assigned in the constructor for the class instance. Setting a new value for the property causes the control to be redrawn. When ButtonColorAutoSize is True, setting a new value for BorderWidth also causes the control to be redrawn.
+          </p>
+          <p>
+            ButtonColorAutoSize and ButtonColorSize are used in the GetGlyphSize method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TColorButton.Create"/>
+          <link id="TColorButton.GetGlyphSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.BorderWidth"/>
+          <link id="TCustomSpeedButton.GetTextSize"/>
+          <link id="TCustomSpeedButton.Spacing"/>
+          <link id="TCustomSpeedButton.Layout"/>
+          <link id="TCustomSpeedButton.Margin"/>
+          <link id="#lcl.controls.TControl.Caption"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.ButtonColorSize">
         <short>
-          <var>ButtonColorSize</var> - the size of the button color block.
+          Size of the color block (or swatch) on the button control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ButtonColorSize</var> is an <var>Integer</var> property with the size for the color block (or swatch) displayed on the control. The default value for the property is 16 (pixels) as assigned in the constructor for the class instance. Its value is used in the <var>GetGlyphSize</var> method when <var>ButtonColorAutoSize</var> is set to <b>False</b>, and represents both the width and height returned for the button glyph.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.GetGlyphSize"/>
+          <link id="TColorButton.Create"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.ButtonColor">
         <short>
-          <var>ButtonColor</var> - the color that has been selected by the ColorDialog and is displayed in the button.
+          The TColor value selected in the button control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            ButtonColor is a TColor property which contains the selected color for the button control.
+          </p>
+          <p>
+            The value in ButtonColor is used as the initial selected color value when the ColorDialog is displayed in the ShowColorDialog method. It is updated with the newly selected color value when the ColorDialog is executed.
+          </p>
+          <p>
+            Setting a new value for the property causes the OnColorChanged event handler to be signalled (when assigned) and the control is redrawn.
+          </p>
+          <p>
+            Use Color to set the color used for the button face on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ColorDialog"/>
+          <link id="TColorButton.ShowColorDialog"/>
+          <link id="TColorButton.OnColorChanged"/>
+          <link id="TColorButton.Click"/>
+          <link id="#lcl.graphics.TColor">TColor</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.ColorDialog">
-        <short>The <var>ColorDialog</var> that opens when the button is activated.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          The color selection dialog displayed when the control is clicked, or the ShowColorDialog method is called.
+        </short>
+        <descr>
+          <p>
+            ColorDialog is a TColorDialog property which contains the color selection dialog displayed for the button control. ColorDialog is used in the ShowColorDialog method. A TColorDialog instance is created if one has not already been assigned to the property. It is freed (when created) when the color selection dialog is closed. A TColorDialog instance not created by the button control is not freed prior to exiting from the method or destroying the control.
+          </p>
+          <p>
+            The value in ButtonColor is assigned as the initial color selection for the dialog, and the Execute method in the dialog is called to capture the newly selected color value (when available). The new color selection is stored in the ButtonColor property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ShowColorDialog"/>
+          <link id="TColorButton.Click"/>
+          <link id="TColorButton.ButtonColor"/>
+          <link id="TColorDialog"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
 
       <element name="TColorButton.Caption">
-        <short>
-          <var>Caption</var> - a string that can be placed beside the block of color.
-        </short>
-        <descr/>
-        <seealso/>
+        <short>Text displayed next to the color block on the button control.</short>
+        <descr>
+          <p>
+            Caption is a String property with the text displayed beside the color block (or swatch) on the button control. When it has been assigned a non-empty value, space is reserved on the client area for the text plus the number of pixels in Spacing. When empty, no space is reserved for the text or the space between the text and the color block.
+          </p>
+          <p>
+            In general, Caption can be used to provide a human-readable value for the selected color in ButtonColor. The value in Caption is not, however, automatically linked to the selected color value. Use the OnColorChanged event handler to update the value in Caption as needed when the color selection has been changed.
+          </p>
+          <p>
+            The Layout property determines the order of the Caption and color block values on the button surface. Layout refers to the alignment for the glyph (color block).
+          </p>
+          <p>
+            Set ButtonColorAutoSize to True to allow the color block to fill the unused client area for the control. Use ButtonColorSize to set the dimensions for the color block when ButtonColorAutoSize is False.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColorAutoSize"/>
+          <link id="TColorButton.ButtonColorSize"/>
+          <link id="TColorButton.OnColorChanged"/>
+          <link id="TCustomSpeedButton.Spacing"/>
+          <link id="TCustomSpeedButton.Layout"/>
+        </seealso>
       </element>
 
       <element name="TColorButton.Color">
@@ -1605,7 +1791,9 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
           The <var>Color</var> of the control itself, i.e. the parts that are not the color display block; edges, background etc.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.buttons.TCustomSpeedButton.Color">TCustomSpeedButton.Color</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.Down" link="#lcl.buttons.TCustomSpeedButton.Down"/>
@@ -1622,10 +1810,21 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
 
       <element name="TColorButton.OnColorChanged">
         <short>
-          <var>OnColorChanged</var> - event handler for a change in button color.
+          Event handler signalled when the button color has been changed.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>OnColorChanged</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the selected color in ButtonColor has been changed. An application must implement and assign an object procedure to the property to respond to the event notification.
+          </p>
+          <p>
+            OnColorChanged is signalled (when assigned) when a new TColor value is assigned to the ButtonColor property. A common use for the event handler is to update the value in Caption when the value in ButtonColor has been updated. OnColorchanged is not signalled during LCL component streaming (csLoading in ComponentState).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TColorButton.ButtonColor"/>
+          <link id="TColorButton.Caption"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
       </element>
 
       <element name="TColorButton.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
@@ -4239,7 +4438,7 @@ var
       <element name="DefaultQuestionDialog">
         <short>Implements a widgetset-independent dialog similar to QuestionDlg.</short>
         <descr>
-          <p>DefaultQuestionDialog displays a message dialog, similar to QuestionDlg, but it uses a LCL <var>TForm</var> instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified by the arguments passed to the routine, including: 
+          <p>DefaultQuestionDialog displays a message dialog, similar to QuestionDlg, but it uses a LCL <var>TForm</var> instance instead of relying on dialogs provided by the operating system. The content displayed on the dialog form is specified by the arguments passed to the routine, including:
           </p>
           <dl>
             <dt>aCaption</dt>
@@ -4260,12 +4459,12 @@ var
           </dl>
           <p>
             <b>Example</b>
-          </p>          
+          </p>
           <p>
             Since <var>Buttons</var> is a <var>TCollection</var> each item must be added individually:
           </p>
           <code>
-var 
+var
   btns: TDialogButtons;  // requires "uses InterfaceBase"
   res: Integer;
 ...
@@ -4291,7 +4490,7 @@ var
     ModalResult := 300;
     Default := true;
   end;
-            
+
   res := DefaultQuestionDialog('This is the caption', 'This is the title', idDialogError, btns, 0);
           </code>
           <p>
