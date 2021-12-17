@@ -658,8 +658,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.ChangeBounds
 ------------------------------------------------------------------------------}
-procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer;
-  KeepBase: boolean);
+procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer; KeepBase: Boolean);
 var
   SizeChanged, PosChanged : boolean;
   OldLeft, OldTop, OldWidth, OldHeight: Integer;
@@ -766,7 +765,7 @@ end;
 
   store bounds in private variables
 -------------------------------------------------------------------------------}
-procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
+procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 
   procedure BoundsOutOfBounds;
   begin
@@ -1043,7 +1042,7 @@ end;
 // Using IsHelpContextLinked() for controlling HelpKeyword
 // is not correct. Therefore, use IsHelpLinked which means that all 3 Help* properties
 // must be equal. Also, this function becomes exactly the same as one just above.
-function TControl.IsHelpKeyWordStored: boolean;
+function TControl.IsHelpKeyWordStored: Boolean;
 begin
   Result := (ActionLink = nil) or not ActionLink.IsHelpLinked;
 end;
@@ -1074,7 +1073,7 @@ begin
     Result := Width;
 end;
 
-function TControl.IsAnchorsStored: boolean;
+function TControl.IsAnchorsStored: Boolean;
 begin
   Result:=(Anchors<>AnchorAlign[Align]);
 end;
@@ -1139,12 +1138,12 @@ begin
   Result := FParentFont;
 end;
 
-function TControl.FormIsUpdating: boolean;
+function TControl.FormIsUpdating: Boolean;
 begin
   Result := Assigned(Parent) and Parent.FormIsUpdating;
 end;
 
-function TControl.IsProcessingPaintMsg: boolean;
+function TControl.IsProcessingPaintMsg: Boolean;
 begin
   Result:=cfProcessingWMPaint in FControlFlags;
 end;
@@ -1330,8 +1329,7 @@ end;
   some space around. This space is theme dependent, so it passed parameter to
   the widgetset.
  ------------------------------------------------------------------------------}
-procedure TControl.CalculatePreferredSize(var PreferredWidth,
-  PreferredHeight: integer; WithThemeSpace: Boolean);
+procedure TControl.CalculatePreferredSize(var PreferredWidth, PreferredHeight: Integer; WithThemeSpace: Boolean);
 begin
   PreferredWidth:=0;
   PreferredHeight:=0;
@@ -1345,7 +1343,7 @@ begin
   Result:=0;
 end;
 
-function TControl.ChildClassAllowed(ChildClass: TClass): boolean;
+function TControl.ChildClassAllowed(ChildClass: TClass): Boolean;
 begin
   Result:=false;
 end;
@@ -1412,7 +1410,7 @@ end;
 {------------------------------------------------------------------------------
   function TControl.ColorIsStored: boolean;
 ------------------------------------------------------------------------------}
-function TControl.ColorIsStored: boolean;
+function TControl.ColorIsStored: Boolean;
 begin
   Result := not ParentColor;
 end;
@@ -1448,8 +1446,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.DoConstrainedResize
 ------------------------------------------------------------------------------}
-procedure TControl.DoConstrainedResize(var NewLeft, NewTop,
-  NewWidth, NewHeight: integer);
+procedure TControl.DoConstrainedResize(var NewLeft, NewTop, NewWidth, NewHeight: Integer);
 var
   MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize;
 begin
@@ -1537,7 +1534,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
 ------------------------------------------------------------------------------}
-procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
+procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: Boolean);
 begin
 
 end;
@@ -1968,7 +1965,7 @@ begin
     AFont.PixelsPerInch := Round(AFont.PixelsPerInch*AProportion);
 end;
 
-function TControl.IsAParentAligning: boolean;
+function TControl.IsAParentAligning: Boolean;
 var
   p: TWinControl;
 begin
@@ -2007,8 +2004,7 @@ begin
   DoCallNotifyHandler(chtOnEnabledChanged);
 end;
 
-procedure TControl.AddHandler(HandlerType: TControlHandlerType;
-  const AMethod: TMethod; AsFirst: boolean);
+procedure TControl.AddHandler(HandlerType: TControlHandlerType; const AMethod: TMethod; AsFirst: Boolean);
 begin
   if FControlHandlers[HandlerType]=nil then
     FControlHandlers[HandlerType]:=TMethodList.Create;
@@ -2109,7 +2105,7 @@ begin
   Result := FAccessibleObject.AccessibleRole;
 end;
 
-function TControl.CaptureMouseButtonsIsStored: boolean;
+function TControl.CaptureMouseButtonsIsStored: Boolean;
 begin
   Result := FCaptureMouseButtons <> [mbLeft];
 end;
@@ -2119,7 +2115,7 @@ begin
   Result:=FAnchorSides[Kind];
 end;
 
-function TControl.GetAnchoredControls(Index: integer): TControl;
+function TControl.GetAnchoredControls(Index: Integer): TControl;
 begin
   Result := TControl(FAnchoredControls[Index]);
 end;
@@ -2182,7 +2178,7 @@ end;
   If Scrolled is true, the rectangle is moved by the current scrolling values
   (for an example see TScrollingWincontrol).
 ------------------------------------------------------------------------------}
-function TControl.GetChildrenRect(Scrolled: boolean): TRect;
+function TControl.GetChildrenRect(Scrolled: Boolean): TRect;
 var
   ScrolledOffset: TPoint;
 begin
@@ -2974,12 +2970,12 @@ end;
   
   Do something useful with accelerators etc.
 ------------------------------------------------------------------------------}
-function TControl.DialogChar(var Message: TLMKey): boolean;
+function TControl.DialogChar(var Message: TLMKey): Boolean;
 begin
   Result := False;
 end;
 
-procedure TControl.UpdateMouseCursor(X, Y: integer);
+procedure TControl.UpdateMouseCursor(X, Y: Integer);
 begin
   //DebugLn(['TControl.UpdateMouseCursor ',DbgSName(Self)]);
   if csDesigning in ComponentState then Exit;
@@ -2993,7 +2989,7 @@ end;
     
   Checks if this control can be the parent of a control of class ChildClass.
 ------------------------------------------------------------------------------}
-function TControl.CheckChildClassAllowed(ChildClass: TClass; ExceptionOnInvalid: boolean): boolean;
+function TControl.CheckChildClassAllowed(ChildClass: TClass; ExceptionOnInvalid: Boolean): Boolean;
 begin
   Result := ChildClassAllowed(ChildClass);
   if (not Result) and ExceptionOnInvalid then
@@ -3305,7 +3301,7 @@ end;
   Returns true, if the DoAutoSize should skip now, because not all parameters
   needed to calculate the AutoSize bounds are loaded or initialized.
 ------------------------------------------------------------------------------}
-function TControl.AutoSizeDelayed: boolean;
+function TControl.AutoSizeDelayed: Boolean;
 begin
   Result:=(FAutoSizingLockCount>0)
           // no autosize during loading or destruction
@@ -3646,17 +3642,17 @@ begin
   Result := TControlActionLink;
 end;
 
-function TControl.IsClientHeightStored: boolean;
+function TControl.IsClientHeightStored: Boolean;
 begin
   Result:=false;
 end;
 
-function TControl.IsClientWidthStored: boolean;
+function TControl.IsClientWidthStored: Boolean;
 begin
   Result:=false;
 end;
 
-function TControl.WidthIsAnchored: boolean;
+function TControl.WidthIsAnchored: Boolean;
 var
   CurAnchors: TAnchors;
 begin
@@ -3670,7 +3666,7 @@ begin
   end;
 end;
 
-function TControl.HeightIsAnchored: boolean;
+function TControl.HeightIsAnchored: Boolean;
 var
   CurAnchors: TAnchors;
 begin
@@ -4014,7 +4010,7 @@ end;
 {------------------------------------------------------------------------------
   TControl SetBounds
 ------------------------------------------------------------------------------}
-procedure TControl.SetBounds(aLeft, aTop, aWidth, aHeight: integer);
+procedure TControl.SetBounds(aLeft, aTop, aWidth, aHeight: Integer);
 begin
   ChangeBounds(ALeft, ATop, AWidth, AHeight, false);
 end;
@@ -4111,8 +4107,7 @@ begin
   AdjustSize;
 end;
 
-procedure TControl.UpdateBaseBounds(StoreBounds,
-  StoreParentClientSize, UseLoadedValues: boolean);
+procedure TControl.UpdateBaseBounds(StoreBounds, StoreParentClientSize, UseLoadedValues: Boolean);
 var
   NewBaseBounds: TRect;
   NewBaseParentClientSize: TSize;
@@ -4242,7 +4237,7 @@ begin
   FDragMode := Value;
 end;
 
-function TControl.GetDefaultDockCaption: String;
+function TControl.GetDefaultDockCaption: string;
 begin
   Result := Caption;
 end;
@@ -4392,7 +4387,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TControl.SetHelpKeyword(const AValue: String);
 ------------------------------------------------------------------------------}
-procedure TControl.SetHelpKeyword(const AValue: String);
+procedure TControl.SetHelpKeyword(const AValue: string);
 begin
   if FHelpKeyword=AValue then exit;
   if not (csLoading in ComponentState) then
@@ -4650,7 +4645,7 @@ end;
 {------------------------------------------------------------------------------
   function TControl.HandleObjectShouldBeVisible
 ------------------------------------------------------------------------------}
-function TControl.HandleObjectShouldBeVisible: boolean;
+function TControl.HandleObjectShouldBeVisible: Boolean;
 begin
   Result := not ((csDestroying in ComponentState) or (csDestroyingHandle in FControlState)) and IsControlVisible;
   if Result and Assigned(Parent) then
@@ -4671,7 +4666,7 @@ end;
   
   Returns whether any parent is destroying it's handle (and its children's)
  ------------------------------------------------------------------------------}
-function TControl.ParentDestroyingHandle: boolean;
+function TControl.ParentDestroyingHandle: Boolean;
 var
   CurControl: TControl;
 begin
@@ -4688,7 +4683,7 @@ end;
 {------------------------------------------------------------------------------
   function TControl.ParentHandlesAllocated: boolean;
 ------------------------------------------------------------------------------}
-function TControl.ParentHandlesAllocated: boolean;
+function TControl.ParentHandlesAllocated: Boolean;
 begin
   Result:=(Parent<>nil) and (Parent.ParentHandlesAllocated);
 end;
@@ -4952,8 +4947,7 @@ begin
   Result := Assigned(Parent) and (Parent = HostDockSite) and (GetParentForm(Parent) <> Parent);
 end;
 
-procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent;
-  AsFirst: boolean);
+procedure TControl.AddHandlerOnResize(const OnResizeEvent: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnResize,TMethod(OnResizeEvent),AsFirst);
 end;
@@ -4963,8 +4957,7 @@ begin
   RemoveHandler(chtOnResize,TMethod(OnResizeEvent));
 end;
 
-procedure TControl.AddHandlerOnChangeBounds(
-  const OnChangeBoundsEvent: TNotifyEvent; AsFirst: boolean);
+procedure TControl.AddHandlerOnChangeBounds(const OnChangeBoundsEvent: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent),AsFirst);
 end;
@@ -4975,8 +4968,7 @@ begin
   RemoveHandler(chtOnChangeBounds,TMethod(OnChangeBoundsEvent));
 end;
 
-procedure TControl.AddHandlerOnVisibleChanging(
-  const OnVisibleChangingEvent: TNotifyEvent; AsFirst: boolean);
+procedure TControl.AddHandlerOnVisibleChanging(const OnVisibleChangingEvent: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent),AsFirst);
 end;
@@ -4987,8 +4979,7 @@ begin
   RemoveHandler(chtOnVisibleChanging,TMethod(OnVisibleChangingEvent));
 end;
 
-procedure TControl.AddHandlerOnVisibleChanged(
-  const OnVisibleChangedEvent: TNotifyEvent; AsFirst: boolean);
+procedure TControl.AddHandlerOnVisibleChanged(const OnVisibleChangedEvent: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent),AsFirst);
 end;
@@ -4999,8 +4990,7 @@ begin
   RemoveHandler(chtOnVisibleChanged,TMethod(OnVisibleChangedEvent));
 end;
 
-procedure TControl.AddHandlerOnEnabledChanged(
-  const OnEnabledChangedEvent: TNotifyEvent; AsFirst: boolean);
+procedure TControl.AddHandlerOnEnabledChanged(const OnEnabledChangedEvent: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnEnabledChanged,TMethod(OnEnabledChangedEvent),AsFirst);
 end;
@@ -5011,8 +5001,7 @@ begin
   RemoveHandler(chtOnEnabledChanged,TMethod(OnEnableChangingEvent));
 end;
 
-procedure TControl.AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent;
-  AsFirst: boolean);
+procedure TControl.AddHandlerOnKeyDown(const OnKeyDownEvent: TKeyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnKeyDown,TMethod(OnKeyDownEvent),AsFirst);
 end;
@@ -5022,8 +5011,7 @@ begin
   RemoveHandler(chtOnKeyDown,TMethod(OnKeyDownEvent));
 end;
 
-procedure TControl.AddHandlerOnBeforeDestruction(
-  const OnBeforeDestructionEvent: TNotifyEvent; AsFirst: boolean);
+procedure TControl.AddHandlerOnBeforeDestruction(const OnBeforeDestructionEvent: TNotifyEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnBeforeDestruction,TMethod(OnBeforeDestructionEvent));
 end;
@@ -5034,8 +5022,7 @@ begin
   RemoveHandler(chtOnBeforeDestruction,TMethod(OnBeforeDestructionEvent));
 end;
 
-procedure TControl.AddHandlerOnMouseWheel(
-  const OnMouseWheelEvent: TMouseWheelEvent; AsFirst: boolean);
+procedure TControl.AddHandlerOnMouseWheel(const OnMouseWheelEvent: TMouseWheelEvent; AsFirst: Boolean);
 begin
   AddHandler(chtOnMouseWheel,TMethod(OnMouseWheelEvent),AsFirst);
 end;
@@ -5105,7 +5092,7 @@ procedure TControl.TextChanged;
 begin
 end;
 
-function TControl.GetCachedText(var CachedText: TCaption): boolean;
+function TControl.GetCachedText(var CachedText: TCaption): Boolean;
 begin
   CachedText := FCaption;
   Result:= true;
@@ -5315,7 +5302,7 @@ begin
   Result := Parent;
 end;
 
-function TControl.IsParentOf(AControl: TControl): boolean;
+function TControl.IsParentOf(AControl: TControl): Boolean;
 begin
   Result := False;
   while Assigned(AControl) do
@@ -5448,8 +5435,8 @@ begin
   end;
 end;
 
-procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: TSpacingSize;
-  Sibling: TControl; FreeCompositeSide: boolean);
+procedure TControl.AnchorToCompanion(Side: TAnchorKind; Space: TSpacingSize; Sibling: TControl;
+  FreeCompositeSide: Boolean);
 
   procedure AnchorCompanionSides(
     ResizeSide,// the side of this control, where Sibling is touched and moved
@@ -5536,7 +5523,7 @@ begin
   AnchorAsAlign(alClient,Space);
 end;
 
-function TControl.AnchoredControlCount: integer;
+function TControl.AnchoredControlCount: Integer;
 begin
   if FAnchoredControls = nil then
     Result := 0
@@ -5544,7 +5531,7 @@ begin
     Result := FAnchoredControls.Count;
 end;
 
-procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);
+procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: Integer);
 begin
   //DebugLn('TControl.SetInitialBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
   if (csLoading in ComponentState)
@@ -5554,7 +5541,7 @@ begin
   SetBounds(aLeft,aTop,aWidth,aHeight);
 end;
 
-procedure TControl.SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer);
+procedure TControl.SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: Integer);
 begin
   ChangeBounds(aLeft, aTop, aWidth, aHeight, true);
 end;
@@ -5580,8 +5567,8 @@ end;
   TWinControl overrides this and asks the interface for theme dependent values.
   See TWinControl.GetPreferredSize for more information.
  ------------------------------------------------------------------------------}
-procedure TControl.GetPreferredSize(var PreferredWidth,
-  PreferredHeight: integer; Raw: boolean; WithThemeSpace: boolean);
+procedure TControl.GetPreferredSize(var PreferredWidth, PreferredHeight: Integer; Raw: Boolean;
+  WithThemeSpace: Boolean);
 begin
   if WithThemeSpace then begin
     if not (cfPreferredSizeValid in FControlFlags) then begin
@@ -5633,7 +5620,7 @@ end;
   The default width for this control independent of any calculated values
   like Width and GetPreferredSize.
  ------------------------------------------------------------------------------}
-function TControl.GetDefaultWidth: integer;
+function TControl.GetDefaultWidth: Integer;
 begin
   if WidthIsAnchored then
     // if width is anchored the read and base bounds were changed at designtime
@@ -5653,7 +5640,7 @@ end;
   The default height for this control independent of any calculated values
   like Height and GetPreferredSize.
  ------------------------------------------------------------------------------}
-function TControl.GetDefaultHeight: integer;
+function TControl.GetDefaultHeight: Integer;
 begin
   if HeightIsAnchored then
     // if height is anchored the read and base bounds were changed at designtime
@@ -5684,7 +5671,7 @@ end;
 
   Utility function to retrieve Left,Top,Right and Bottom.
  ------------------------------------------------------------------------------}
-function TControl.GetSidePosition(Side: TAnchorKind): integer;
+function TControl.GetSidePosition(Side: TAnchorKind): Integer;
 begin
   case Side of
     akLeft: Result := Left;
@@ -5978,7 +5965,7 @@ end;
 {------------------------------------------------------------------------------
        TControl.IsBiDiModeStored
 ------------------------------------------------------------------------------}
-function TControl.IsBiDiModeStored: boolean;
+function TControl.IsBiDiModeStored: Boolean;
 begin
   Result := not ParentBidiMode;
 end;
