@@ -9777,6 +9777,28 @@
         <seealso/>
       </element>
 
+      <element name="TCustomGrid.Notification">
+        <short>
+          Performs actions needed when the specified component is added to or removed from the control.
+        </short>
+        <descr>
+          <p>
+            Notification is an overridden method in TCustomGrid. It calls the inherited method on entry to handle notifications in ancestor classes and their child components. It ensures that the reference in TitleImageList is set <b>Nil</b> when the component is removed from the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.TitleImageList"/>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
+      </element>
+      <element name="TCustomGrid.Notification.AComponent">
+        <short>Component for the notification.</short>
+      </element>
+      <element name="TCustomGrid.Notification.Operation">
+        <short>Operation performed for the specified component.</short>
+      </element>
+
       <element name="TCustomGrid.OffsetToColRow">
         <short>Moves to a column or row located at the specified offset.</short>
         <descr/>
