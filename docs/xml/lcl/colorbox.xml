@@ -386,6 +386,28 @@
         <short>True when a custom color was selected in the method.</short>
       </element>
 
+      <element name="TCustomColorBox.Notification">
+        <short>
+          Performs actions needed when the specified component is added to or removed from the control.
+        </short>
+        <descr>
+          <p>
+            Notification is an overridden method in TCustomColorBox. It calls the inherited method on entry to handle notifications for components used in the ancestor classes and their child components. It ensures that the reference in ColorDialog is set to <b>Nil</b> when the component is removed from the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorBox.ColorDialog"/>
+          <link id="#lcl.controls.TControl.Notification">TControl.Notification</link>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
+      </element>
+      <element name="TCustomColorBox.Notification.AComponent">
+        <short>Component for the notification.</short>
+      </element>
+      <element name="TCustomColorBox.Notification.Operation">
+        <short>Operation performed for the specified component.</short>
+      </element>
+
       <element name="TCustomColorBox.Create">
         <short>Constructor for the class instance.</short>
         <descr>
@@ -1031,6 +1053,28 @@ if iPos &lt;&gt; -1 then
       </element>
       <element name="TCustomColorListBox.PickCustomColor.Result">
         <short>True when a custom color was selected in the color dialog.</short>
+      </element>
+
+      <element name="TCustomColorListBox.Notification">
+        <short>
+          Performs actions needed when the specified component is added to or removed from the control.
+        </short>
+        <descr>
+          <p>
+            Notification is an overridden method in TCustomColorListBox. It calls the inherited method on entry to handle notifications in ancestor classes and their child components. It ensures that the reference in ColorDialog is set to <b>Nil</b> when the component is removed from the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomColorListBox.ColorDialog"/>
+          <link id="#lcl.controls.TControl.Notification"/>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
+      </element>
+      <element name="TCustomColorListBox.Notification.AComponent">
+        <short>Component for the notification.</short>
+      </element>
+      <element name="TCustomColorListBox.Notification.Operation">
+        <short>Action performed for the specified component.</short>
       </element>
 
       <element name="TCustomColorListBox.Create">
