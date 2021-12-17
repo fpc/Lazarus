@@ -56,15 +56,18 @@ uses fpWebStrConsts;
 { TNewHTTPApplicationForm }
 
 procedure TNewHTTPApplicationForm.FormCreate(Sender: TObject);
+var
+  SF: TServeFiles;
 begin
+  SF:=ServeFiles;
+  ELocation.Enabled:=(Sf=sfSingleRoute);
+  DEDocumentRoot.Enabled:=(Sf<>sfNoFiles);
   LocalizeForm;
 end;
 
 procedure TNewHTTPApplicationForm.RBNoFilesChange(Sender: TObject);
-
-Var
-  SF : TServeFiles;
-
+var
+  SF: TServeFiles;
 begin
   SF:=ServeFiles;
   ELocation.Enabled:=(Sf=sfSingleRoute);
