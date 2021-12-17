@@ -1663,7 +1663,8 @@ type
     procedure SetTextBuf(Buffer: PChar); virtual;
     function  Perform(Msg: Cardinal; WParam: WParam; LParam: LParam): LRESULT;
     function  ScreenToClient(const APoint: TPoint): TPoint; virtual;
-    function  ClientToScreen(const APoint: TPoint): TPoint; virtual;
+    function  ClientToScreen(const APoint: TPoint): TPoint; overload; virtual;
+    function  ClientToScreen(const ARect: TRect): TRect; overload;
     function  ScreenToControl(const APoint: TPoint): TPoint;
     function  ControlToScreen(const APoint: TPoint): TPoint;
     function  ClientToParent(const Point: TPoint; AParent: TWinControl = nil): TPoint;

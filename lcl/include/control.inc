@@ -1654,6 +1654,15 @@ begin
   Result.Y := APoint.Y + P.Y;
 end;
 
+function TControl.ClientToScreen(const ARect: TRect): TRect;
+var
+  P : TPoint;
+begin
+  P := ClientToScreen(Point(0, 0));
+  Result := ARect;
+  Result.Offset(P);
+end;
+
 {------------------------------------------------------------------------------
   function TControl.ScreenToControl(const APoint: TPoint): TPoint;
 ------------------------------------------------------------------------------}
