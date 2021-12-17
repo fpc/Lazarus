@@ -138,12 +138,8 @@ msgid "Enter your classes/style definitions here"
 msgstr "Čia reikia įvesti klasių/stilių apibrėžtis"
 
 #: fpwebstrconsts.sdefaultrouteservesfiles
-msgid "Default route serves files"
+msgid "Serve files from default location"
 msgstr ""
-
-#: fpwebstrconsts.sdocumentlocation
-msgid "&Location"
-msgstr "&Vieta"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"

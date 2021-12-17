@@ -129,12 +129,8 @@ msgid "Enter your classes/style definitions here"
 msgstr "Vložte své třídy/dinice stylů sem"
 
 #: fpwebstrconsts.sdefaultrouteservesfiles
-msgid "Default route serves files"
+msgid "Serve files from default location"
 msgstr ""
-
-#: fpwebstrconsts.sdocumentlocation
-msgid "&Location"
-msgstr "Umístění"
 
 #: fpwebstrconsts.sdocumentroot
 msgid "&Directory"

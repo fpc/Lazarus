@@ -117,11 +117,7 @@ msgid "Enter your classes/style definitions here"
 msgstr ""
 
 #: fpwebstrconsts.sdefaultrouteservesfiles
-msgid "Default route serves files"
-msgstr ""
-
-#: fpwebstrconsts.sdocumentlocation
-msgid "&Location"
+msgid "Serve files from default location"
 msgstr ""
 
 #: fpwebstrconsts.sdocumentroot
