@@ -119,6 +119,10 @@ resourcestring
   sDocumentLocation = '&Location';
   sDocumentRoot = '&Directory';
   sUseThreads = 'Use &threads to serve requests in';
+  sFileServing = 'File serving';
+  sNoFiles = 'Do not serve files';
+  sDefaultRouteServesFiles = 'Default route serves files';
+
 
   sCaption = 'Create a new JSON-RPC module';
   sRegisterJSON = 'Register JSON-RPC handlers in factory';

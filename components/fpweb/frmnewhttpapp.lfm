@@ -8,35 +8,13 @@ object NewHTTPApplicationForm: TNewHTTPApplicationForm
   ClientWidth = 462
   OnCreate = FormCreate
   LCLVersion = '2.3.0.0'
-  object DEDocumentroot: TDirectoryEdit
-    Left = 40
-    Height = 27
-    Top = 160
-    Width = 272
-    DialogTitle = 'Select directory'
-    ShowHidden = False
-    ButtonWidth = 23
-    NumGlyphs = 1
-    Enabled = False
-    MaxLength = 0
-    TabOrder = 0
-  end
-  object CBRegisterFiles: TCheckBox
-    Left = 16
-    Height = 23
-    Top = 14
-    Width = 239
-    Caption = 'Register location to serve files from'
-    OnChange = CBRegisterFilesChange
-    TabOrder = 1
-  end
   object SEPort: TSpinEdit
-    Left = 34
+    Left = 26
     Height = 27
-    Top = 232
+    Top = 256
     Width = 98
     MaxValue = 65355
-    TabOrder = 2
+    TabOrder = 0
     Value = 8080
   end
   object ButtonPanel1: TButtonPanel
@@ -52,56 +30,93 @@ object NewHTTPApplicationForm: TNewHTTPApplicationForm
     CloseButton.DefaultCaption = True
     CancelButton.Name = 'CancelButton'
     CancelButton.DefaultCaption = True
-    TabOrder = 3
+    TabOrder = 1
     ShowButtons = [pbOK, pbCancel]
   end
   object LSEPort: TLabel
-    Left = 16
+    Left = 8
     Height = 16
-    Top = 200
+    Top = 224
     Width = 157
     Caption = 'Port to listen for requests:'
     FocusControl = SEPort
   end
-  object ELocation: TEdit
-    Left = 40
-    Height = 27
-    Top = 64
-    Width = 80
-    Enabled = False
-    TabOrder = 4
-  end
-  object LELocation: TLabel
-    Left = 40
-    Height = 16
-    Top = 40
-    Width = 55
-    Caption = 'Location:'
-    FocusControl = ELocation
-  end
-  object LDEDocumentRoot: TLabel
-    Left = 18
-    Height = 16
-    Top = 136
-    Width = 171
-    Caption = '&Directory to serve files from:'
-    FocusControl = DEDocumentroot
-  end
   object CBthreads: TCheckBox
-    Left = 18
+    Left = 10
     Height = 23
-    Top = 272
+    Top = 296
     Width = 217
     Caption = 'Use threads to serve requests in'
-    TabOrder = 5
+    TabOrder = 2
   end
-  object CBDefaultFileLocation: TCheckBox
-    Left = 16
-    Height = 23
-    Top = 98
-    Width = 178
-    Caption = 'Default route serves files'
-    OnChange = CBDefaultFileLocationChange
-    TabOrder = 6
+  object GBFileServing: TGroupBox
+    Left = 0
+    Height = 216
+    Top = 0
+    Width = 462
+    Align = alTop
+    Caption = 'File serving'
+    ClientHeight = 199
+    ClientWidth = 460
+    TabOrder = 3
+    object RBNoFiles: TRadioButton
+      Left = 16
+      Height = 23
+      Top = 16
+      Width = 132
+      Caption = 'Do not serve files'
+      OnChange = RBNoFilesChange
+      TabOrder = 0
+    end
+    object RBSingleRoute: TRadioButton
+      Left = 16
+      Height = 23
+      Top = 52
+      Width = 236
+      Caption = 'Use single URL route to serve files: '
+      OnChange = RBNoFilesChange
+      TabOrder = 1
+    end
+    object RBDefaultRoute: TRadioButton
+      Left = 16
+      Height = 23
+      Top = 96
+      Width = 178
+      Caption = 'Default route serves files'
+      Checked = True
+      OnChange = RBNoFilesChange
+      TabOrder = 2
+      TabStop = True
+    end
+    object ELocation: TEdit
+      Left = 280
+      Height = 27
+      Top = 48
+      Width = 166
+      Anchors = [akTop, akLeft, akRight]
+      Enabled = False
+      TabOrder = 3
+    end
+    object LDEDocumentRoot: TLabel
+      Left = 16
+      Height = 16
+      Top = 136
+      Width = 171
+      Caption = '&Directory to serve files from:'
+      FocusControl = DEDocumentroot
+    end
+    object DEDocumentroot: TDirectoryEdit
+      Left = 16
+      Height = 27
+      Top = 160
+      Width = 430
+      DialogTitle = 'Select directory'
+      ShowHidden = False
+      ButtonWidth = 23
+      NumGlyphs = 1
+      Enabled = False
+      MaxLength = 0
+      TabOrder = 4
+    end
   end
 end

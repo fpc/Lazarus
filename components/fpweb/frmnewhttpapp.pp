@@ -11,38 +11,37 @@ uses
 type
 
   { TNewHTTPApplicationForm }
+  TServeFiles = (sfNoFiles, sfSingleRoute, sfDefaultRoute);
 
   TNewHTTPApplicationForm = class(TForm)
     ButtonPanel1: TButtonPanel;
-    CBRegisterFiles: TCheckBox;
     CBthreads: TCheckBox;
-    CBDefaultFileLocation: TCheckBox;
     DEDocumentroot: TDirectoryEdit;
     ELocation: TEdit;
-    LSEPort: TLabel;
-    LELocation: TLabel;
+    GBFileServing: TGroupBox;
     LDEDocumentRoot: TLabel;
+    LSEPort: TLabel;
+    RBSingleRoute: TRadioButton;
+    RBDefaultRoute: TRadioButton;
+    RBNoFiles: TRadioButton;
     SEPort: TSpinEdit;
-    procedure CBDefaultFileLocationChange(Sender: TObject);
-    procedure CBRegisterFilesChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure RBNoFilesChange(Sender: TObject);
   private
     function GetD: String;
-    function GetL: String;
+    function GetR: String;
     function GetP: Integer;
-    function GetS: Boolean;
-    function GetSD: Boolean;
-    function Gett: Boolean;
+    function GetS: TServeFiles;
+    function GetT: Boolean;
     procedure LocalizeForm;
     { private declarations }
   public
     { public declarations }
-    Property ServeFiles : Boolean Read GetS;
-    Property Location : String Read GetL;
+    Property ServeFiles : TServeFiles Read GetS;
+    Property FileRoute : String Read GetR;
     Property Directory : String Read GetD;
     Property Port: Integer Read GetP;
     Property Threaded : Boolean Read Gett;
-    Property ServeFilesDefault : Boolean Read GetSD;
   end;
 
 var
@@ -61,37 +60,30 @@ begin
   LocalizeForm;
 end;
 
-procedure TNewHTTPApplicationForm.CBRegisterFilesChange(Sender: TObject);
+procedure TNewHTTPApplicationForm.RBNoFilesChange(Sender: TObject);
 
 Var
-  B : Boolean;
+  SF : TServeFiles;
 
 begin
-  B:=GetS;
-  ELocation.Enabled:=B;
-  DEDocumentRoot.Enabled:=B;
-  CBDefaultFileLocation.Enabled:=Not B;
-  if not CBDefaultFileLocation.Enabled then
-    CBDefaultFileLocation.Checked:=False
-end;
-
-procedure TNewHTTPApplicationForm.CBDefaultFileLocationChange(Sender: TObject);
-begin
-  CBRegisterFiles.Enabled:=Not CBDefaultFileLocation.Checked;
-  ELocation.Enabled:=Not CBDefaultFileLocation.Checked;
-  if not CBRegisterFiles.Enabled then
-    begin
-    CBRegisterFiles.Checked:=False;
+  SF:=ServeFiles;
+  ELocation.Enabled:=(Sf=sfSingleRoute);
+  if not ELocation.Enabled then
     ELocation.Text:='';
-    end;
+  DEDocumentRoot.Enabled:=(Sf<>sfNoFiles);
+  if not DEDocumentRoot.Enabled then
+    DEDocumentRoot.Directory:='';
 end;
+
 
 procedure TNewHTTPApplicationForm.LocalizeForm;
 
 begin
   Caption:=sNewHTTPApp;
-  CBRegisterFiles.Caption:=sRegisterFiles;
-  LELocation.Caption:=sDocumentLocation;
+  GBFileServing.Caption:=sFileServing;
+  RBNoFiles.Caption:=sNoFiles;
+  RBSingleRoute.Caption:=sRegisterFiles;
+  RBDefaultRoute.Caption:=sDefaultRouteServesFiles;
   LDEDocumentRoot.Caption:=sDocumentRoot;
   LSEPort.Caption:=sHTTPPort;
   CBthreads.Caption:=sUseThreads;
@@ -102,7 +94,7 @@ begin
   Result:=DEDocumentRoot.Text;
 end;
 
-function TNewHTTPApplicationForm.GetL: String;
+function TNewHTTPApplicationForm.GetR: String;
 begin
   Result:=ELocation.Text;
 end;
@@ -112,17 +104,18 @@ begin
   Result:=SEPort.Value;
 end;
 
-function TNewHTTPApplicationForm.GetS: Boolean;
+function TNewHTTPApplicationForm.GetS: TServeFiles;
 begin
-  Result:=CBRegisterFiles.Checked;
+  if RBNoFiles.Checked then
+    Result:=sfNoFiles
+  else if RBSingleRoute.Checked then
+    Result:=sfSingleRoute
+  else
+    Result:=sfDefaultRoute;
 end;
 
-function TNewHTTPApplicationForm.GetSD: Boolean;
-begin
-  Result:=CBDefaultFileLocation.Checked;
-end;
 
-function TNewHTTPApplicationForm.Gett: Boolean;
+function TNewHTTPApplicationForm.GeTT: Boolean;
 begin
   Result:=CBThreads.Checked;
 end;

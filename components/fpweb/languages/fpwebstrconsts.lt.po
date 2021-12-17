@@ -137,6 +137,10 @@ msgstr "Kurti naują CSS failą…"
 msgid "Enter your classes/style definitions here"
 msgstr "Čia reikia įvesti klasių/stilių apibrėžtis"
 
+#: fpwebstrconsts.sdefaultrouteservesfiles
+msgid "Default route serves files"
+msgstr ""
+
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
 msgstr "&Vieta"
@@ -148,6 +152,10 @@ msgstr "&Aplankas"
 #: fpwebstrconsts.senteryoutext
 msgid "Enter your text ..."
 msgstr "Įveskite tekstą…"
+
+#: fpwebstrconsts.sfileserving
+msgid "File serving"
+msgstr ""
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
@@ -509,6 +517,10 @@ msgstr "Naujo Html failo savybės"
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
 msgstr "Nauja HTTP programa"
+
+#: fpwebstrconsts.snofiles
+msgid "Do not serve files"
+msgstr ""
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"

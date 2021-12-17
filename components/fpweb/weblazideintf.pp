@@ -36,6 +36,7 @@ uses
 {$ENDIF}
   webjsonrpc,
   Controls, Dialogs, Forms,
+  frmnewhttpapp,
   LazFileUtils,
   IDEExternToolIntf, ProjectIntf,
   LazIDEIntf, SrcEditorIntf, IDEMsgIntf,
@@ -177,8 +178,8 @@ type
   { THTTPApplicationDescriptor }
   THTTPApplicationDescriptor = class(TProjectDescriptor)
   private
-    FThreaded,
-    fReg : Boolean;
+    FThreaded : Boolean;
+    fServeFiles : TServeFiles;
     FDir,
     FLoc : String;
     FPort : Integer;
@@ -211,7 +212,7 @@ procedure Register;
 implementation
 
 uses LazarusPackageIntf,FormEditingIntf, PropEdits, DBPropEdits, sqldbwebdata, LResources,
-     frmrpcmoduleoptions,frmnewhttpapp, registersqldb, sqlstringspropertyeditordlg;
+     frmrpcmoduleoptions, registersqldb, sqlstringspropertyeditordlg;
 
 Const
   fpWebTab = 'fpWeb';
@@ -817,15 +818,10 @@ begin
         begin
         FThreaded:=Threaded;
         FPort:=Port;
-        FReg:=ServeFiles;
-        if Freg then
+        FServeFiles:=ServeFiles;
+        if FServeFiles<>sfNoFiles then
           begin
-          FLoc:=Location;
-          FDir:=Directory;
-          end
-        else
-          begin
-          FDefaultFiles:=ServeFilesDefault;
+          FLoc:=FileRoute;
           FDir:=Directory;
           end
         end;
@@ -858,23 +854,25 @@ begin
     +'{$mode objfpc}{$H+}'+le
     +le
     +'uses'+le;
-  if FReg then
+  if FServeFiles<>sfNoFiles then
     NewSource:=NewSource+'  fpwebfile,'+le;
   NewSource:=NewSource
     +'  fphttpapp;'+le
     +le
     +'begin'+le;
-  if Freg then
+  Case FServeFiles of
+  sfSingleRoute:
     begin
     S:=Format('  RegisterFileLocation(''%s'',''%s'');',[FLoc,FDir]);
     NewSource:=NewSource+S+le
-    end
-  else if FDefaultFiles then
+    end;
+  sfDefaultRoute:
     begin
-    S:='TSimpleFileModule.BaseDir:='+Format('''%s'';',[StringReplace(FDir,'''','''''',[rfReplaceAll])]);
-    S:=S+le+'TSimpleFileModule.RegisterDefaultRoute;';
+    S:='  TSimpleFileModule.BaseDir:='+Format('''%s'';',[StringReplace(FDir,'''','''''',[rfReplaceAll])]);
+    S:=S+le+'  TSimpleFileModule.RegisterDefaultRoute;';
     NewSource:=NewSource+S+le;
     end;
+  end;
   NewSource:=NewSource
     +'  Application.Title:=''httpproject1'';'+le
     +Format('  Application.Port:=%d;'+le,[FPort]);

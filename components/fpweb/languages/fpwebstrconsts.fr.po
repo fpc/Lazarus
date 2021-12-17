@@ -137,6 +137,10 @@ msgstr "Créer un nouveau fichier CSS..."
 msgid "Enter your classes/style definitions here"
 msgstr "Insérez vos définitions de classes et de styles ici"
 
+#: fpwebstrconsts.sdefaultrouteservesfiles
+msgid "Default route serves files"
+msgstr ""
+
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
 msgstr "&Emplacement"
@@ -148,6 +152,10 @@ msgstr "&Répertoire"
 #: fpwebstrconsts.senteryoutext
 msgid "Enter your text ..."
 msgstr "Entrez votre texte..."
+
+#: fpwebstrconsts.sfileserving
+msgid "File serving"
+msgstr ""
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
@@ -509,6 +517,10 @@ msgstr "Propriétés du nouveau fichier HTML"
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
 msgstr "Nouvelle application HTTP"
+
+#: fpwebstrconsts.snofiles
+msgid "Do not serve files"
+msgstr ""
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
