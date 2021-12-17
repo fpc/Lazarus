@@ -1191,6 +1191,26 @@
         </seealso>
       </element>
 
+      <element name="TCustomComboBoxEx.Notification">
+        <short>
+          Performs actions needed when the specified component is added to or removed from the control.
+        </short>
+        <descr>
+          Notification is an overridden method in TCustomComboBoxEx. It calls the inherited method on entry to handle notifications in ancestor classes and their child components. It ensures that the reference in Images is set to <b>Nil</b> when the component is removed from the control.
+        </descr>
+        <seealso>
+          <link id="TCustomComboBoxEx.Images"/>
+          <link id="#lcl.controls.TControl.Notification"/>
+          <link id="#rtl.classes.TComponent">TComponent</link>
+        </seealso>
+      </element>
+      <element name="TCustomComboBoxEx.Notification.AComponent">
+        <short>Component for the notification.</short>
+      </element>
+      <element name="TCustomComboBoxEx.Notification.Operation">
+        <short>Operation performed for the specified component.</short>
+      </element>
+
       <element name="TCustomComboBoxEx.SetItemHeight">
         <short>Sets the value for the ItemHeight property.</short>
         <descr>
