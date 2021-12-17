@@ -105,6 +105,10 @@ msgstr ""
 msgid "Enter your classes/style definitions here"
 msgstr ""
 
+#: fpwebstrconsts.sdefaultrouteservesfiles
+msgid "Default route serves files"
+msgstr ""
+
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
 msgstr ""
@@ -115,6 +119,10 @@ msgstr ""
 
 #: fpwebstrconsts.senteryoutext
 msgid "Enter your text ..."
+msgstr ""
+
+#: fpwebstrconsts.sfileserving
+msgid "File serving"
 msgstr ""
 
 #: fpwebstrconsts.shtmlautor
@@ -476,6 +484,10 @@ msgstr ""
 
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
+msgstr ""
+
+#: fpwebstrconsts.snofiles
+msgid "Do not serve files"
 msgstr ""
 
 #: fpwebstrconsts.sregisterfiles

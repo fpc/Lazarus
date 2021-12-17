@@ -117,6 +117,10 @@ msgstr "Створити новий файл CSS ..."
 msgid "Enter your classes/style definitions here"
 msgstr "Введіть визначення класів/стилів тут"
 
+#: fpwebstrconsts.sdefaultrouteservesfiles
+msgid "Default route serves files"
+msgstr ""
+
 #: fpwebstrconsts.sdocumentlocation
 msgid "&Location"
 msgstr "&Розміщення"
@@ -128,6 +132,10 @@ msgstr "&Директорія"
 #: fpwebstrconsts.senteryoutext
 msgid "Enter your text ..."
 msgstr "Введіть текст ..."
+
+#: fpwebstrconsts.sfileserving
+msgid "File serving"
+msgstr ""
 
 #: fpwebstrconsts.shtmlautor
 msgid "Html &author - <meta name=\"author\">"
@@ -489,6 +497,10 @@ msgstr "Властивості нового файлу Html"
 #: fpwebstrconsts.snewhttpapp
 msgid "New HTTP application"
 msgstr "Новий застосунок HTTP"
+
+#: fpwebstrconsts.snofiles
+msgid "Do not serve files"
+msgstr ""
 
 #: fpwebstrconsts.sregisterfiles
 msgid "&Register location to serve files from"
