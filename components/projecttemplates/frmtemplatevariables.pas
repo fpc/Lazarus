@@ -77,6 +77,8 @@ begin
     begin
     FVariables.GetNameValue(I,N,V);
     V:=SGVariables.Cells[1,I+1];
+    if V='' then
+      V:=N;                         // Let Value=Name if not given by user.
     FVariables[i]:=N+'='+V;
     end;
 end;
@@ -92,6 +94,8 @@ begin
   ProjNameLabel.Caption:= SNameforProject;
   DEDestDirLabel.Caption:= SCreateinDir;
   PDescription.Caption:= SThisProject;
+  // This is good for most projects and can be changed later. Only directory must be selected.
+  EProjectName.Text:='project1';
   EssentialDataChange(Nil);
 end;
 
