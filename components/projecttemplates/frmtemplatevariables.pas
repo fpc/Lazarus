@@ -24,6 +24,7 @@ type
     PDescription: TPanel;
     SGVariables: TStringGrid;
     procedure BOKClick(Sender: TObject);
+    procedure EssentialDataChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure ProjectVariablesFormShow(Sender: TObject);
     procedure SGVariablesSelectEditor(Sender: TObject; aCol, aRow: Integer;
@@ -74,12 +75,15 @@ Var
 begin
   For I:=0 to FVariables.Count-1 do
     begin
-    V:='';
-    N:='';
     FVariables.GetNameValue(I,N,V);
     V:=SGVariables.Cells[1,I+1];
     FVariables[i]:=N+'='+V;
     end;
+end;
+
+procedure TProjectVariablesForm.EssentialDataChange(Sender: TObject);
+begin
+  ButtonPanel1.OKButton.Enabled:=(EProjectName.Text<>'') and (DEDestDir.Text<>'');
 end;
 
 procedure TProjectVariablesForm.FormCreate(Sender: TObject);
@@ -88,6 +92,7 @@ begin
   ProjNameLabel.Caption:= SNameforProject;
   DEDestDirLabel.Caption:= SCreateinDir;
   PDescription.Caption:= SThisProject;
+  EssentialDataChange(Nil);
 end;
 
 procedure TProjectVariablesForm.SetVariables(const AValue: TStrings);
