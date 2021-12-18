@@ -653,7 +653,9 @@ var
   ItemHeight, MaxHeight: Integer;
 begin
   ItemHeight := ImageListBox.Canvas.TextHeight('Hg');
-  MaxHeight := Scale96ToFont(32);
+  if ImageList.ResolutionCount > 0 then  // smallest image will not be truncated
+    ItemHeight := Max(ItemHeight, ImageList.ResolutionByIndex[0].Height);
+  MaxHeight := Scale96ToFont(32);   // max height above with next sizes will be truncated
   for R in ImageList.Resolutions do
   begin
     if R.Height <= MaxHeight then
