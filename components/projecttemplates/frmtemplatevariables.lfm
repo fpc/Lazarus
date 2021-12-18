@@ -9,7 +9,7 @@ object ProjectVariablesForm: TProjectVariablesForm
   OnCreate = FormCreate
   OnShow = ProjectVariablesFormShow
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object ProjNameLabel: TLabel
     AnchorSideTop.Control = EProjectName
     AnchorSideTop.Side = asrCenter
@@ -20,7 +20,6 @@ object ProjectVariablesForm: TProjectVariablesForm
     Alignment = taRightJustify
     Caption = '&Name for new project:'
     Layout = tlCenter
-    ParentColor = False
   end
   object DEDestDirLabel: TLabel
     AnchorSideTop.Control = DEDestDir
@@ -32,7 +31,6 @@ object ProjectVariablesForm: TProjectVariablesForm
     Alignment = taRightJustify
     Caption = 'Create in &directory:'
     Layout = tlCenter
-    ParentColor = False
   end
   object PDescription: TPanel
     AnchorSideLeft.Control = Owner
@@ -89,6 +87,7 @@ object ProjectVariablesForm: TProjectVariablesForm
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 6
     BorderSpacing.Right = 6
+    OnChange = EssentialDataChange
     TabOrder = 1
   end
   object DEDestDir: TDirectoryEdit
@@ -104,6 +103,7 @@ object ProjectVariablesForm: TProjectVariablesForm
     Anchors = [akTop, akLeft, akRight]
     MaxLength = 0
     TabOrder = 2
+    OnChange = EssentialDataChange
   end
   object ButtonPanel1: TButtonPanel
     Left = 6
