@@ -18,7 +18,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, Math,
   // LCL
-  LCLType, Forms, Graphics, Buttons, Menus, Dialogs, Grids, ImgList, EditBtn,
+  LCLIntf, LCLType, Forms, Graphics, Buttons, Menus, Dialogs, Grids, ImgList, EditBtn,
   // LazUtils
   GraphType, UITypes, LazFileUtils,
   // IdeIntf
@@ -744,29 +744,36 @@ end;
 
 procedure TImageIndexPropertyEditor.ListMeasureHeight(const AValue: ansistring;
   Index: integer; ACanvas: TCanvas; var AHeight: Integer);
-var
-  Images: TCustomImageList;
 begin
   AHeight := ACanvas.TextHeight('1');
-  Images := GetImageList;
-  if Assigned(Images) then
-    AHeight := Max(AHeight, Images.Height + 2);
 end;
 
 procedure TImageIndexPropertyEditor.ListDrawValue(const CurValue: ansistring;
   Index: integer; ACanvas: TCanvas; const ARect: TRect; AState: TPropEditDrawState);
 var
   Images: TCustomImageList;
-  R: TRect;
+  R, RImg: TRect;
   dh: Integer;
+  wimg, himg: Integer;
 begin
   if GetDefaultOrdValue <> NoDefaultValue then
     Dec(Index);
   Images := GetImageList;
   R := ARect;
-  dh := R.Bottom - R.Top;  // Rect height.
+  dh := R.Bottom - R.Top;
   if Assigned(Images) then
   begin
+    if Images.Height <= dh - 2 then
+    begin
+      himg := Images.Height;
+      wimg := Images.Width;
+    end else
+    begin
+      himg := dh - 2;
+      wimg := round(hImg * Images.Width/Images.Height);
+    end;
+    RImg := Rect(0, 0, wimg, himg);
+    OffsetRect(RImg, R.Left + 1, (R.Top + R.Bottom - himg) div 2);
     if (pedsInComboList in AState) and not (pedsInEdit in AState) then
     begin
       if pedsSelected in AState then
@@ -775,10 +782,8 @@ begin
         ACanvas.Brush.Color := clWhite;
       ACanvas.FillRect(R);
     end;
-    Images.Draw(ACanvas, R.Left + 1, R.Top + 1, Index);
-    Inc(R.Left, Images.Width + 2);
-    // The numeric value in list goes too low without an adjustment. Why?
-    Dec(R.Top, (dh - ACanvas.TextHeight(CurValue)) div 2);
+    Images.StretchDraw(ACanvas, Index, RImg, true);
+    R.Left := RImg.Right + 2; 
   end;
   inherited ListDrawValue(CurValue, Index, ACanvas, R, AState);
 end;
