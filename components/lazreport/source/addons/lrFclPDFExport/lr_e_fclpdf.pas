@@ -900,7 +900,7 @@ begin
   FPDFDocument.Infos.ApplicationName := ApplicationName;
   FPDFDocument.Infos.CreationDate := Now;
 
-  FPDFDocument.Options:=FPDFDocument.Options + [poPageOriginAtTop, poUseRawJPEG, poSubsetFont];
+  FPDFDocument.Options:=FPDFDocument.Options + [poPageOriginAtTop, poUseRawJPEG, poSubsetFont, poUseImageTransparency];
   FPDFDocument.DefaultOrientation := ppoPortrait;
 
   FPDFDocument.StartDocument;
