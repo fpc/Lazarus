@@ -97,6 +97,7 @@ type
     property OverlayIndex: integer read FOverlayIndex write SetOverlayIndex; // requires ImageIndex>=0
     property ImageEffect: TGraphicsDrawEffect read FImageEffect write SetImageEffect default DefaultLvlGraphNodeImageEffect;
     property Graph: TLvlGraph read FGraph;
+    procedure SortEdges;
     function IndexOfInEdge(Source: TLvlGraphNode): integer;
     function FindInEdge(Source: TLvlGraphNode): TLvlGraphEdge; virtual;
     function InEdgeCount: integer; inline;
@@ -1171,6 +1172,16 @@ begin
 end;
 
 { TLvlGraphSubGraph }
+
+function DoCompareEdgesBySourceDrawPos(Item1, Item2: Pointer): Integer;
+begin
+  Result := TLvlGraphEdge(Item1).Source.DrawCenter - TLvlGraphEdge(Item2).Source.DrawCenter;
+end;
+
+function DoCompareEdgesByTargetDrawPos(Item1, Item2: Pointer): Integer;
+begin
+  Result := TLvlGraphEdge(Item1).Target.DrawCenter - TLvlGraphEdge(Item2).Target.DrawCenter;
+end;
 
 constructor TLvlGraphSubGraph.Create(TheGraph: TLvlGraph; TheIndex: integer);
 begin
@@ -4873,6 +4884,7 @@ type
     TheLevelIdx: Integer;
     DrawPosGapAbove: integer;
     CurDrawPos, TmpDrawPos: Integer;
+    CurUpDown: Integer; // -1 up / 1 down
   end;
   PNodeInfo = ^TNodeInfo;
 var
@@ -5083,13 +5095,119 @@ var
     end;
   end;
 
+  function FinalStraightenUp(ALvlIdx, ANodeIdx, ANodeCnt, AMinDrawPos, AMaxDrawPos: integer): Boolean;
+  var
+    NInfo, NInfoPrev: PNodeInfo;
+    Node, NeighbourNode: TLvlGraphNode;
+    CurMinDrawPos, CurDrawPos, y: Integer;
+  begin
+    Result := False;
+    NInfo := @NodeInfos[ALvlIdx, ANodeIdx];
+    Node := NInfo^.TheNode;
+    if Node.Visible or (NInfo^.CurUpDown = 1) then
+      exit;
+
+    if ANodeIdx > 0 then begin
+      NInfoPrev := @NodeInfos[ALvlIdx, ANodeIdx-1];
+      CurMinDrawPos := NInfoPrev^.CurDrawPos + NInfo^.DrawPosGapAbove;
+    end
+    else
+      CurMinDrawPos := AMinDrawPos;
+
+    if (Node.InEdgeCount <= 1) or (Node.OutEdgeCount <= 1) then begin
+      Node.SortEdges;
+      CurDrawPos := NInfo^.CurDrawPos;
+      //if Node.InEdgeCount = 1 then
+      //  CurDrawPos := Min(CurDrawPos, Node.InEdges[0].Source.DrawCenter);
+      //if Node.OutEdgeCount = 1 then
+      //  CurDrawPos := Min(CurDrawPos, Node.OUtEdges[0].Target.DrawCenter);
+      if Node.InEdgeCount >= 1 then begin
+        NeighbourNode := Node.InEdges[0].Source;
+        y := NeighbourNode.DrawCenter;
+        if (y >= CurMinDrawPos) and (not NeighbourNode.Visible) and
+           (NodeInfos[ALvlIdx-1, NeighbourNode.IndexInLevel].CurUpDown <> 1)
+        then
+          CurDrawPos := Min(CurDrawPos, y);
+      end;
+      if Node.OutEdgeCount >= 1 then begin
+        NeighbourNode := Node.OUtEdges[0].Target;
+        y := NeighbourNode.DrawCenter;
+        if (y >= CurMinDrawPos) and (not NeighbourNode.Visible) and
+           (NodeInfos[ALvlIdx+1, NeighbourNode.IndexInLevel].CurUpDown <> 1)
+        then
+          CurDrawPos := Min(CurDrawPos, y);
+      end;
+
+      CurDrawPos := Max(CurDrawPos, CurMinDrawPos);
+      Result := NInfo^.CurDrawPos <> CurDrawPos;
+      if Result then
+        NInfo^.CurUpDown := -1;
+      NInfo^.CurDrawPos := CurDrawPos;
+      Node.DrawCenter := CurDrawPos;
+    end;
+  end;
+
+  function FinalStraightenDown(ALvlIdx, ANodeIdx, ANodeCnt, AMinDrawPos, AMaxDrawPos: integer): Boolean;
+  var
+    NInfo, NInfoNext: PNodeInfo;
+    Node, NeighbourNode: TLvlGraphNode;
+    CurMaxDrawPos, CurDrawPos, y: Integer;
+  begin
+    Result := False;
+    NInfo := @NodeInfos[ALvlIdx, ANodeIdx];
+    Node := NInfo^.TheNode;
+    if Node.Visible or (NInfo^.CurUpDown = -1) then
+      exit;
+
+    if ANodeIdx < ANodeCnt-1 then begin
+      NInfoNext := @NodeInfos[ALvlIdx, ANodeIdx+1];
+      CurMaxDrawPos := NInfoNext^.CurDrawPos - NInfoNext^.DrawPosGapAbove;
+    end
+    else
+      CurMaxDrawPos := AMaxDrawPos;
+
+    if (Node.InEdgeCount <= 1) or (Node.OutEdgeCount <= 1) then begin
+      Node.SortEdges;
+      CurDrawPos := NInfo^.CurDrawPos;
+      //if Node.InEdgeCount = 1 then
+      //  CurDrawPos := Max(CurDrawPos, Node.InEdges[0].Source.DrawCenter);
+      //if Node.OutEdgeCount = 1 then
+      //  CurDrawPos := Max(CurDrawPos, Node.OUtEdges[0].Target.DrawCenter);
+      if Node.InEdgeCount >= 1 then begin
+        NeighbourNode := Node.InEdges[Node.InEdgeCount-1].Source;
+        y := NeighbourNode.DrawCenter;
+        if (y <= CurMaxDrawPos) and (not NeighbourNode.Visible) and
+           (NodeInfos[ALvlIdx-1, NeighbourNode.IndexInLevel].CurUpDown <> -1)
+        then
+          CurDrawPos := Max(CurDrawPos, y);
+      end;
+      if Node.OutEdgeCount >= 1 then begin
+        NeighbourNode := Node.OUtEdges[Node.OutEdgeCount-1].Target;
+        y := NeighbourNode.DrawCenter;
+        if (y <= CurMaxDrawPos) and (not NeighbourNode.Visible) and
+           (NodeInfos[ALvlIdx+1, NeighbourNode.IndexInLevel].CurUpDown <> -1)
+        then
+          CurDrawPos := Max(CurDrawPos, y);
+      end;
+
+      CurDrawPos := Min(CurDrawPos, CurMaxDrawPos);
+      Result := NInfo^.CurDrawPos <> CurDrawPos;
+      if Result then
+        NInfo^.CurUpDown := 1;
+      NInfo^.CurDrawPos := CurDrawPos;
+      Node.DrawCenter := CurDrawPos;
+    end;
+  end;
+
+
   procedure ProcessSubGraph(ALowLevelIdx, AHighLevelIdx: integer);
   var
     MaxLevelCount, LvlIdx: integer;
-    j, c, MaxDrawPos, MaxLvlIdx: integer;
+    i, j, c, MaxDrawPos, MaxLvlIdx, NodeIdx: integer;
     Node: TLvlGraphNode;
     Level: TLvlGraphLevel;
     NInfo, NInfoPrev: PNodeInfo;
+    Changed: Boolean;
   begin
     if AHighLevelIdx <= ALowLevelIdx then
       exit;
@@ -5110,6 +5228,7 @@ var
         NInfo^.TheNode := Node;
         NInfo^.TheNodeIdx := j;
         NInfo^.TheLevelIdx := LvlIdx;
+        NInfo^.CurUpDown := 0;
         NInfo^.CurDrawPos := Node.DrawCenter;
         if j = 0 then
           NInfo^.DrawPosGapAbove := NInfo^.CurDrawPos
@@ -5143,6 +5262,26 @@ var
       for LvlIdx := AHighLevelIdx downto ALowLevelIdx do begin
         PreComputeWantedPositions(LvlIdx, 1, 1);
         AdjustNodesInLevel(LvlIdx, 0, MaxDrawPos);
+      end;
+    end;
+
+    //for i := 0 to min(AHighLevelIdx-ALowLevelIdx, 3) do
+    for NodeIdx := 0 to MaxLevelCount-1 do begin
+      Changed := True;
+      c := AHighLevelIdx-ALowLevelIdx;
+      while Changed and (c >= 0) do begin
+        Changed := False;
+        dec(c);
+        for LvlIdx := ALowLevelIdx to AHighLevelIdx do begin
+          Level := Levels[LvlIdx];
+          if Level.Count = 0 then
+            Continue;
+          if NodeIdx < Level.Count then
+            Changed := FinalStraightenUp(LvlIdx, NodeIdx, Level.Count, 0, MaxDrawPos) or Changed;
+          if Level.Count - 1 - NodeIdx >= 0 then
+            Changed := FinalStraightenDown(LvlIdx, Level.Count - 1 - NodeIdx, Level.Count, 0, MaxDrawPos) or Changed;
+        end;
+//debugln(not Changed, 'N: %d  -- -- CHg: %s  -- %d  == i = %d', [NodeIdx, dbgs(Changed), c, i ])
       end;
     end;
   end;
@@ -5581,6 +5720,12 @@ procedure TLvlGraphNode.Invalidate;
 begin
   if Graph<>nil then
     Graph.Invalidate;
+end;
+
+procedure TLvlGraphNode.SortEdges;
+begin
+  FInEdges.Sort(@DoCompareEdgesBySourceDrawPos);
+  FOutEdges.Sort(@DoCompareEdgesByTargetDrawPos);
 end;
 
 constructor TLvlGraphNode.Create(TheGraph: TLvlGraph; TheCaption: string;
