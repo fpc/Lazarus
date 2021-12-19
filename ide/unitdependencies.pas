@@ -2137,6 +2137,12 @@ begin
       SourceGraphNode:=Graph.GetNode(c,true);
       SourceGraphNode.Data:=GroupUnit;
       SourceGraphNode.ImageIndex := fImgIndexUnit;
+      if GroupUnit.GetSCCNode.InIntfCycle then
+        SourceGraphNode.OverlayIndex:=fImgIndexOverlayIntfCycle
+      else if GroupUnit.GetSCCNode.InImplCycle then
+        SourceGraphNode.OverlayIndex:=fImgIndexOverlayImplCycle
+      else if GroupUnit.HasImplementationUses then
+        SourceGraphNode.OverlayIndex:=fImgIndexOverlayImplUses;
       if GroupUnit.UsesUnits<>nil then begin
         for i:=0 to GroupUnit.UsesUnits.Count-1 do begin
           CurUses:=TUDUses(GroupUnit.UsesUnits[i]);
@@ -2159,6 +2165,12 @@ begin
           TargetGraphNode:=Graph.GetNode(c,true);
           TargetGraphNode.Data:=UsedUnit;
           TargetGraphNode.ImageIndex := fImgIndexUnit;
+          if UsedUnit.GetSCCNode.InIntfCycle then
+            TargetGraphNode.OverlayIndex:=fImgIndexOverlayIntfCycle
+          else if UsedUnit.GetSCCNode.InImplCycle then
+            TargetGraphNode.OverlayIndex:=fImgIndexOverlayImplCycle
+          else if UsedUnit.HasImplementationUses then
+            TargetGraphNode.OverlayIndex:=fImgIndexOverlayImplUses;
           Graph.GetEdge(SourceGraphNode,TargetGraphNode,true);
         end;
       end;
