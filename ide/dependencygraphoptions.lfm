@@ -75,7 +75,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         Top = 0
         Width = 160
         Caption = 'chkReduceBackEdges'
-        TabOrder = 8
+        TabOrder = 1
       end
       object chkHighEdges: TCheckBox
         Left = 0
@@ -83,7 +83,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         Top = 24
         Width = 160
         Caption = 'chkHighEdges'
-        TabOrder = 1
+        TabOrder = 2
       end
       object chkStraigtenGraph: TCheckBox
         Left = 168
@@ -91,7 +91,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         Top = 24
         Width = 160
         Caption = 'chkStraigtenGraph'
-        TabOrder = 5
+        TabOrder = 3
       end
       object chkCaptionOnTop: TCheckBox
         Left = 0
@@ -99,7 +99,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         Top = 48
         Width = 160
         Caption = 'chkCaptionOnTop'
-        TabOrder = 6
+        TabOrder = 4
       end
       object DummySpaceHolder: TLabel
         Left = 168
@@ -119,7 +119,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 2
+        TabOrder = 6
         object lblEdgeShape: TLabel
           Left = 0
           Height = 15
@@ -150,7 +150,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 3
+        TabOrder = 7
         object lblEdgeSplit: TLabel
           Left = 0
           Height = 15
@@ -180,7 +180,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 4
+        TabOrder = 8
         object lblMaxLevelHeight: TLabel
           Left = 0
           Height = 15
@@ -238,7 +238,7 @@ object DependencyGraphOptDialog: TDependencyGraphOptDialog
         ChildSizing.ControlsPerLine = 1
         ClientHeight = 38
         ClientWidth = 160
-        TabOrder = 7
+        TabOrder = 9
         object lblExtraSpacing: TLabel
           Left = 0
           Height = 15
