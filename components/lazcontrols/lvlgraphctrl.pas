@@ -540,6 +540,8 @@ type
     procedure SetOptions(AValue: TLvlGraphCtrlOptions);
     procedure SetScrollLeft(AValue: integer);
     procedure SetScrollTop(AValue: integer);
+    function  ClientPosFor(AGraphPoint: TPoint): TPoint; overload;
+    function  ClientPosFor(AGraphRect: TRect): TRect; overload;
     procedure SetSelectedNode(AValue: TLvlGraphNode);
     procedure UpdateScrollBars;
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
@@ -2427,8 +2429,6 @@ var
   i: Integer;
   TxtW: Integer;
   p: TPoint;
-  x: Integer;
-  y: Integer;
   Details: TThemedElementDetails;
   NodeRect: TRect;
 begin
@@ -2450,9 +2450,8 @@ begin
       lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeStyle.Width-TxtW) div 2);
       end;
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p),' Selected=',Node.Selected]);
-      x:=p.x-ScrollLeft;
-      y:=p.y-ScrollTop;
-      NodeRect:=Bounds(x,y,TxtW,TxtH);
+      p := ClientPosFor(p);
+      NodeRect:=Bounds(p.x,p.y,TxtW,TxtH);
       Node.FDrawnCaptionRect:=NodeRect;
       if Node.Selected then begin
         if lgcFocusedPainting in FFlags then
@@ -2467,7 +2466,7 @@ begin
       end;
       ThemeServices.DrawText(Canvas, Details, Node.Caption, NodeRect,
            DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0)
-      //Canvas.TextOut(x,y,Node.Caption);
+      //Canvas.TextOut(p.x,p.y,Node.Caption);
     end;
   end;
 end;
@@ -2494,7 +2493,7 @@ begin
       // out edges
       TotalWeight:=Node.OutWeight;
       Weight:=0.0;
-      Start:=Node.DrawCenter-ScrollTop-integer(round(TotalWeight*PixelPerWeight) div 2);
+      Start:=Node.DrawCenter-integer(round(TotalWeight*PixelPerWeight) div 2);
       for e:=0 to Node.OutEdgeCount-1 do begin
         Edge:=Node.OutEdges[e];
         Edge.FDrawnAt.Top:=Start+round(Weight*PixelPerWeight);
@@ -2504,7 +2503,7 @@ begin
       // in edges
       TotalWeight:=Node.InWeight;
       Weight:=0.0;
-      Start:=Node.DrawCenter-ScrollTop-integer(round(TotalWeight*PixelPerWeight) div 2);
+      Start:=Node.DrawCenter-integer(round(TotalWeight*PixelPerWeight) div 2);
       for e:=0 to Node.InEdgeCount-1 do begin
         Edge:=Node.InEdges[e];
         Edge.FDrawnAt.Bottom:=Start+round(Weight*PixelPerWeight);
@@ -2515,8 +2514,8 @@ begin
       for e:=0 to Node.OutEdgeCount-1 do begin
         Edge:=Node.OutEdges[e];
         TargetNode:=Edge.Target;
-        x1:=Level.DrawPosition-ScrollLeft;
-        x2:=TargetNode.Level.DrawPosition-ScrollLeft;
+        x1:=Level.DrawPosition;
+        x2:=TargetNode.Level.DrawPosition;
         if TargetNode.Level.Index>Level.Index then begin
           // normal dependency
           // => draw line from right of Node to left of TargetNode
@@ -2657,6 +2656,19 @@ begin
   FScrollTop:=AValue;
   UpdateScrollBars;
   Invalidate;
+end;
+
+function TCustomLvlGraphControl.ClientPosFor(AGraphPoint: TPoint): TPoint;
+begin
+  Result := AGraphPoint;
+  Result.X := Result.X - ScrollLeft;
+  Result.Y := Result.Y - ScrollTop;
+end;
+
+function TCustomLvlGraphControl.ClientPosFor(AGraphRect: TRect): TRect;
+begin
+  Result.TopLeft     := ClientPosFor(AGraphRect.TopLeft);
+  Result.BottomRight := ClientPosFor(AGraphRect.BottomRight);
 end;
 
 procedure TCustomLvlGraphControl.SetSelectedNode(AValue: TLvlGraphNode);
@@ -2850,7 +2862,7 @@ begin
     end;
   end;
 
-  r:=Edge.DrawnAt;
+  r:=ClientPosFor(Edge.DrawnAt);
   if Edge.FNoGapCircle then begin
     if EdgeStyle.Shape = lgesCurved then begin
       if Edge.BackEdge then begin
@@ -2946,7 +2958,6 @@ begin
   end;
 
   // draw edges, node captions, nodes
-  ComputeEdgeCoords;
   if Draw(lgdsNormalEdges) then
     DrawEdges(false);
   if Draw(lgdsNodeCaptions) then
@@ -3199,6 +3210,7 @@ begin
 
     DoEndAutoLayout;
 
+    ComputeEdgeCoords;
     Exclude(FFlags,lgcNeedAutoLayout);
   finally
     EndUpdate;
@@ -3284,7 +3296,7 @@ begin
       Node:=Level.Nodes[n];
       for e:=Node.OutEdgeCount-1 downto 0 do begin
         Edge:=Node.OutEdges[e];
-        r:=Edge.DrawnAt;
+        r:=ClientPosFor(Edge.DrawnAt);
         CurDist:=GetDistancePointLine(X,Y,
                   r.Left,r.Top,r.Right,r.Bottom);
         if CurDist<Distance then begin
