@@ -520,6 +520,7 @@ type
     FOnSelectionChanged: TNotifyEvent;
     FOnStartAutoLayout: TNotifyEvent;
     FOptions: TLvlGraphCtrlOptions;
+    FZoom: Single;
     FPixelPerWeight: single;
     FScrollLeft: integer;
     FScrollLeftMax: integer;
@@ -542,11 +543,18 @@ type
     procedure SetScrollTop(AValue: integer);
     function  ClientPosFor(AGraphPoint: TPoint): TPoint; overload;
     function  ClientPosFor(AGraphRect: TRect): TRect; overload;
+    function  ApplyZoom(c: Integer): Integer; overload;
+    function  ApplyZoom(p: TPoint): TPoint; overload;
+    function  ApplyZoom(r: TRect): TRect; overload;
+    function  GetZoomedTop(ANode: TLvlGraphNode): Integer; overload;
+    function  GetZoomedCenter(ANode: TLvlGraphNode): Integer; overload;
+    function  GetZoomedBottom(ANode: TLvlGraphNode): Integer; overload;
     procedure SetSelectedNode(AValue: TLvlGraphNode);
     procedure UpdateScrollBars;
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
     procedure WMMouseWheel(var Message: TLMMouseEvent); message LM_MOUSEWHEEL;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure ImageListChange(Sender: TObject);
   protected
     procedure GraphInvalidate(Sender: TObject); virtual;
@@ -2440,19 +2448,19 @@ begin
       if (Node.Caption='') or (not Node.Visible) then continue;
       TxtW:=Canvas.TextWidth(Node.Caption);
       case NodeStyle.CaptionPosition of
-      lgncLeft,lgncRight: p.y:=Node.DrawCenter-(TxtH div 2);
-      lgncTop: p.y:=Node.DrawPosition-NodeStyle.GapTop-TxtH;
-      lgncBottom: p.y:=Node.DrawPositionEnd+NodeStyle.GapBottom;
+      lgncLeft,lgncRight: p.y:=GetZoomedCenter(Node)-(TxtH div 2);
+      lgncTop: p.y:=GetZoomedTop(Node)-NodeStyle.GapTop-TxtH;
+      lgncBottom: p.y:=GetZoomedBottom(Node)+NodeStyle.GapBottom;
       end;
       case NodeStyle.CaptionPosition of
-      lgncLeft: p.x:=Level.DrawPosition-NodeStyle.GapLeft-TxtW;
-      lgncRight: p.x:=Level.DrawPosition+NodeStyle.Width+NodeStyle.GapRight;
-      lgncTop,lgncBottom: p.x:=Level.DrawPosition+((NodeStyle.Width-TxtW) div 2);
+      lgncLeft: p.x:=ApplyZoom(Level.DrawPosition)-NodeStyle.GapLeft-TxtW;
+      lgncRight: p.x:=ApplyZoom(Level.DrawPosition)+NodeStyle.Width+NodeStyle.GapRight;
+      lgncTop,lgncBottom: p.x:=ApplyZoom(Level.DrawPosition)+((NodeStyle.Width-TxtW) div 2);
       end;
       //debugln(['TCustomLvlGraphControl.Paint ',Node.Caption,' DrawPosition=',Node.DrawPosition,' DrawSize=',Node.DrawSize,' TxtH=',TxtH,' TxtW=',TxtW,' p=',dbgs(p),' Selected=',Node.Selected]);
+      Node.FDrawnCaptionRect:=Bounds(p.x,p.y,TxtW,TxtH);
       p := ClientPosFor(p);
       NodeRect:=Bounds(p.x,p.y,TxtW,TxtH);
-      Node.FDrawnCaptionRect:=NodeRect;
       if Node.Selected then begin
         if lgcFocusedPainting in FFlags then
           Details := ThemeServices.GetElementDetails(ttItemSelected)
@@ -2493,7 +2501,7 @@ begin
       // out edges
       TotalWeight:=Node.OutWeight;
       Weight:=0.0;
-      Start:=Node.DrawCenter-integer(round(TotalWeight*PixelPerWeight) div 2);
+      Start:=GetZoomedCenter(Node)-integer(round(TotalWeight*PixelPerWeight) div 2);
       for e:=0 to Node.OutEdgeCount-1 do begin
         Edge:=Node.OutEdges[e];
         Edge.FDrawnAt.Top:=Start+round(Weight*PixelPerWeight);
@@ -2503,7 +2511,7 @@ begin
       // in edges
       TotalWeight:=Node.InWeight;
       Weight:=0.0;
-      Start:=Node.DrawCenter-integer(round(TotalWeight*PixelPerWeight) div 2);
+      Start:=GetZoomedCenter(Node)-integer(round(TotalWeight*PixelPerWeight) div 2);
       for e:=0 to Node.InEdgeCount-1 do begin
         Edge:=Node.InEdges[e];
         Edge.FDrawnAt.Bottom:=Start+round(Weight*PixelPerWeight);
@@ -2514,8 +2522,8 @@ begin
       for e:=0 to Node.OutEdgeCount-1 do begin
         Edge:=Node.OutEdges[e];
         TargetNode:=Edge.Target;
-        x1:=Level.DrawPosition;
-        x2:=TargetNode.Level.DrawPosition;
+        x1:=ApplyZoom(Level.DrawPosition);
+        x2:=ApplyZoom(TargetNode.Level.DrawPosition);
         if TargetNode.Level.Index>Level.Index then begin
           // normal dependency
           // => draw line from right of Node to left of TargetNode
@@ -2573,8 +2581,8 @@ begin
       // draw shape
       Canvas.Brush.Color:=FPColorToTColor(Node.Color);
       Canvas.Pen.Color:=Darker(Canvas.Brush.Color);
-      x:=Level.DrawPosition-ScrollLeft;
-      y:=Node.DrawPosition-ScrollTop;
+      x:=ApplyZoom(Level.DrawPosition)-ScrollLeft;
+      y:=GetZoomedTop(Node)-ScrollTop;
       case NodeStyle.Shape of
       lgnsRectangle:
         Canvas.Rectangle(x, y, x+NodeStyle.Width, y+Node.DrawSize);
@@ -2584,8 +2592,8 @@ begin
 
       // draw image and overlay
       if (Images<>nil) then begin
-        x:=Level.DrawPosition+((NodeStyle.Width-Images.Width) div 2)-ScrollLeft;
-        y:=Node.DrawCenter-(Images.Height div 2)-ScrollTop;
+        x:=ApplyZoom(Level.DrawPosition)+((NodeStyle.Width-Images.Width) div 2)-ScrollLeft;
+        y:=GetZoomedCenter(Node)-(Images.Height div 2)-ScrollTop;
         ImgIndex:=Node.ImageIndex;
         if (ImgIndex<0) or (ImgIndex>=Images.Count) then
           ImgIndex:=NodeStyle.DefaultImageIndex;
@@ -2671,6 +2679,38 @@ begin
   Result.BottomRight := ClientPosFor(AGraphRect.BottomRight);
 end;
 
+function TCustomLvlGraphControl.ApplyZoom(c: Integer): Integer;
+begin
+  Result := round(c*FZoom);
+end;
+
+function TCustomLvlGraphControl.ApplyZoom(p: TPoint): TPoint;
+begin
+  Result.X := round(p.X*FZoom);
+  Result.Y := round(p.Y*FZoom);
+end;
+
+function TCustomLvlGraphControl.ApplyZoom(r: TRect): TRect;
+begin
+  Result.TopLeft := ApplyZoom(r.TopLeft);
+  Result.BottomRight := ApplyZoom(r.BottomRight);
+end;
+
+function TCustomLvlGraphControl.GetZoomedTop(ANode: TLvlGraphNode): Integer;
+begin
+  Result := ApplyZoom(ANode.DrawCenter)-(ANode.DrawSize div 2);
+end;
+
+function TCustomLvlGraphControl.GetZoomedCenter(ANode: TLvlGraphNode): Integer;
+begin
+  Result := ApplyZoom(ANode.DrawCenter);
+end;
+
+function TCustomLvlGraphControl.GetZoomedBottom(ANode: TLvlGraphNode): Integer;
+begin
+  Result := ApplyZoom(ANode.DrawCenter)-(ANode.DrawSize div 2)+ANode.DrawSize;
+end;
+
 procedure TCustomLvlGraphControl.SetSelectedNode(AValue: TLvlGraphNode);
 begin
   if AValue=nil then
@@ -2751,6 +2791,16 @@ end;
 
 procedure TCustomLvlGraphControl.WMMouseWheel(var Message: TLMMouseEvent);
 begin
+  if (Message.State * [ssShift, ssAlt, ssAltGr, ssCtrl] = [ssCtrl]) then
+  begin
+    FZoom := FZoom + Message.WheelDelta / (120 * 20);
+    if FZoom < 0.3 then FZoom := 0.3;
+    if FZoom > 25 then FZoom := 25;
+    ComputeEdgeCoords;
+    UpdateScrollBars;
+    Invalidate;
+  end
+  else
   if Mouse.WheelScrollLines=-1 then
   begin
     // -1 : scroll by page
@@ -2763,6 +2813,20 @@ begin
         (Message.WheelDelta * Mouse.WheelScrollLines*NodeStyle.Width) div 240;
   end;
   Message.Result := 1;
+end;
+
+procedure TCustomLvlGraphControl.MouseUp(Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if (Button = mbMiddle) and (Shift * [ssShift, ssAlt, ssAltGr, ssCtrl] = [ssCtrl])
+  then begin
+    FZoom := 1;
+    ComputeEdgeCoords;
+    UpdateScrollBars;
+    Invalidate;
+    exit;
+  end;
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TCustomLvlGraphControl.DoAutoLayoutLevels(TxtHeight: integer);
@@ -3087,6 +3151,7 @@ end;
 constructor TCustomLvlGraphControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FZoom := 1;
   ControlStyle:=ControlStyle+[csAcceptsControls];
   Color := clWhite;
   FOptions:=DefaultLvlGraphCtrlOptions;
@@ -3265,11 +3330,11 @@ begin
   // check in reverse painting order
   for l:=Graph.LevelCount-1 downto 0 do begin
     Level:=Graph.Levels[l];
-    if (X<Level.DrawPosition) or (X>=Level.DrawPosition+NodeStyle.Width) then continue;
+    if (X<ApplyZoom(Level.DrawPosition)) or (X>=ApplyZoom(Level.DrawPosition)+NodeStyle.Width) then continue;
     for n:=Level.Count-1 downto 0 do begin
       Node:=Level.Nodes[n];
       if not Node.Visible then continue;
-      if (Y<Node.DrawPosition) or (Y>=Node.DrawPositionEnd) then continue;
+      if (Y<GetZoomedTop(Node)) or (Y>=GetZoomedBottom(Node)) then continue;
       exit(Node);
     end;
   end;
@@ -3288,6 +3353,8 @@ var
   r: TRect;
 begin
   Result:=nil;
+  X+=ScrollLeft;
+  Y+=ScrollTop;
   Distance:=High(Integer);
   // check in reverse painting order
   for l:=Graph.LevelCount-1 downto 0 do begin
@@ -3296,7 +3363,7 @@ begin
       Node:=Level.Nodes[n];
       for e:=Node.OutEdgeCount-1 downto 0 do begin
         Edge:=Node.OutEdges[e];
-        r:=ClientPosFor(Edge.DrawnAt);
+        r:=Edge.DrawnAt;
         CurDist:=GetDistancePointLine(X,Y,
                   r.Left,r.Top,r.Right,r.Bottom);
         if CurDist<Distance then begin
@@ -3330,15 +3397,15 @@ begin
       Node:=Level[n];
       CaptionRect:=Node.DrawnCaptionRect;
 
-      Result.Y:=Max(Result.Y,Node.DrawPositionEnd+NodeStyle.GapBottom);
-      Result.Y:=Max(Result.Y,CaptionRect.Bottom+ScrollTop);
+      Result.Y:=Max(Result.Y,GetZoomedBottom(Node)+NodeStyle.GapBottom);
+      Result.Y:=Max(Result.Y,CaptionRect.Bottom);
 
       x:=NodeStyle.GapRight;
       if Node.OutEdgeCount>0 then
         x:=Max(x,NodeStyle.Width);
       x+=Level.DrawPosition+NodeStyle.Width;
-      Result.X:=Max(Result.X,x);
-      Result.X:=Max(Result.X,CaptionRect.Right+ScrollLeft);
+      Result.X:=Max(Result.X,ApplyZoom(x));
+      Result.X:=Max(Result.X,CaptionRect.Right);
     end;
   end;
 end;
