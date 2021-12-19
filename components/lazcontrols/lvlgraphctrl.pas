@@ -2601,8 +2601,11 @@ begin
           ImgIndex:=NodeStyle.DefaultImageIndex;
         if (ImgIndex>=0) and (ImgIndex<Images.Count) then begin
           Images.Draw(Canvas, x, y, ImgIndex, Node.FImageEffect);
-          if (Node.OverlayIndex>=0) and (Node.OverlayIndex<Images.Count) then
-            Images.DrawOverlay(Canvas, x, y, ImgIndex, Node.OverlayIndex, Node.FImageEffect);
+          if (Node.OverlayIndex>=0) and (Node.OverlayIndex<Images.Count) then begin
+            Images.Overlay(Node.OverlayIndex, 0);
+            Images.DrawOverlay(Canvas, x, y, ImgIndex, 0, Node.FImageEffect);
+            Images.Overlay(-1, 0);
+          end;
         end;
       end;
     end;
