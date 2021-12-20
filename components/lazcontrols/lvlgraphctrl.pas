@@ -780,7 +780,7 @@ type
     destructor Destroy; override;
     procedure InitSearch;
     function FindBestPair: TMinXPair;
-    procedure SwitchCrossingPairs(MaxRun: int64; var Run: int64);
+    procedure SwitchCrossingPairs(MaxRun: int64; var Run: int64; ZeroRunLimit: int64);
     procedure Shuffle;
     procedure SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
     procedure SwitchPair(Pair: TMinXPair);
@@ -1782,7 +1782,8 @@ begin
     Result:=nil;
 end;
 
-procedure TMinXGraph.SwitchCrossingPairs(MaxRun: int64; var Run: int64);
+procedure TMinXGraph.SwitchCrossingPairs(MaxRun: int64; var Run: int64;
+  ZeroRunLimit: int64);
 (* Calculating how many rounds to go for ZeroRun
    Switching a node with SwitchDiff=0, can move other zero-nodes (i.e.,
    remove them in one place, and create another in a new place)
@@ -1826,11 +1827,10 @@ begin
       Pair.UnbindFromSwitchList;
       CountOfZeroDiffNodes := Pair.BindToSwitchList(True);
       if (ZeroRun < 0) then begin
-        If ZeroRun = -1 then
-          if CrossCount < BestCrossCount + BestCrossCount div 8 then // add 12% to BestCrossCount
-            ZeroRun := 8 * CountOfZeroDiffNodes+1 // closer to a new BestCrossCount, search harder
-          else
-            ZeroRun := 2 * CountOfZeroDiffNodes+1;
+        ZeroRun := Max(4 * CountOfZeroDiffNodes+1, Graph.NodeCount);
+        if CrossCount < BestCrossCount * 4 then
+          ZeroRun := ZeroRun * 4;
+        ZeroRun := Min(ZeroRun, ZeroRunLimit);
         if CrossCount < ZeroBest then
           ZeroBest := CrossCount;
       end;
@@ -1881,10 +1881,11 @@ var
 begin
   Run:=1;
   while BestCrossCount<>0 do begin
-    SwitchCrossingPairs(MaxSingleRun,Run);
-    if Run>MaxTotalRun then exit;
+    SwitchCrossingPairs(MaxSingleRun,Run,Graph.NodeCount div 2);
+    if Run>MaxTotalRun then break;
     Shuffle;
   end;
+  SwitchCrossingPairs(MaxSingleRun,Run, MaxTotalRun);
 end;
 
 procedure TMinXGraph.SwitchPair(Pair: TMinXPair);
