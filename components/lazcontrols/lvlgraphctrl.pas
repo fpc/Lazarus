@@ -291,9 +291,11 @@ type
     procedure SetAllNodeDrawSizes(PixelPerWeight: single = 1.0; MinWeight: single = 0.0);
     procedure MarkBackEdges;
     procedure MinimizeCrossings; // permutate nodes to minimize crossings
+    // MinimizeOverlappings: Adjust Node.DrawPosition to ensure all nodes have the required gaps between them.
     procedure MinimizeOverlappings(MinPos: integer = 0;
-      NodeGapAbove: integer = 1; NodeGapBelow: integer = 1;
-      aLevel: integer = -1); // set all Node.Position to minimize overlappings
+      NodeGapAbove: integer = 1; NodeGapBelow: integer = 1);
+    procedure MinimizeOverlappings(MinPos: integer; NodeGapAbove: integer;
+      NodeGapBelow: integer; aLevel: integer);
     procedure StraightenGraph;
     procedure SetColors(Palette: TLazCtrlPalette);
 
@@ -4623,33 +4625,40 @@ begin
 end;
 
 procedure TLvlGraph.MinimizeOverlappings(MinPos: integer;
+  NodeGapAbove: integer; NodeGapBelow: integer);
+var
+  i: Integer;
+begin
+  for i:=0 to LevelCount-1 do
+    MinimizeOverlappings(MinPos,NodeGapAbove,NodeGapBelow,i);
+end;
+
+procedure TLvlGraph.MinimizeOverlappings(MinPos: integer;
   NodeGapAbove: integer; NodeGapBelow: integer; aLevel: integer);
 var
-  i, Below: Integer;
+  Below, i: Integer;
   Level: TLvlGraphLevel;
   Node: TLvlGraphNode;
-  Last: TLvlGraphNode;
+  PreviousNode: TLvlGraphNode;
 begin
-  if aLevel<0 then begin
-    for i:=0 to LevelCount-1 do
-      MinimizeOverlappings(MinPos,NodeGapAbove,NodeGapBelow,i);
-  end else begin
-    Level:=Levels[aLevel];
-    Last:=nil;
-    for i:=0 to Level.Count-1 do begin
-      Node:=Level[i];
-      Below := 0;
-      if (Last <> nil) and Last.Visible then
-        Below := NodeGapBelow;
-      if Last=nil then
-        Node.DrawPosition:=MinPos+NodeGapAbove
-      else if Node.Visible then
-        Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+Below+NodeGapAbove)
-      else
-        Node.DrawPosition:=Max(Node.DrawPosition,Last.DrawPositionEnd+1+Below);
-      //debugln(['TLvlGraph.MinimizeOverlappings Level=',aLevel,' Node=',Node.Caption,' Size=',Node.DrawSize,' Position=',Node.DrawPosition]);
-      Last:=Node;
-    end;
+  Level:=Levels[aLevel];
+  if Level.Count = 0 then
+    exit;
+
+  PreviousNode := Level[0];
+  PreviousNode.DrawPosition:=MinPos+NodeGapAbove;
+
+  for i:=1 to Level.Count-1 do begin
+    Node:=Level[i];
+    Below := 0;
+    if PreviousNode.Visible then
+      Below := NodeGapBelow;
+    if Node.Visible then
+      Node.DrawPosition:=Max(Node.DrawPosition,PreviousNode.DrawPositionEnd+Below+NodeGapAbove)
+    else
+      Node.DrawPosition:=Max(Node.DrawPosition,PreviousNode.DrawPositionEnd+1+Below);
+    //debugln(['TLvlGraph.MinimizeOverlappings Level=',aLevel,' Node=',Node.Caption,' Size=',Node.DrawSize,' Position=',Node.DrawPosition]);
+    PreviousNode:=Node;
   end;
 end;
 
