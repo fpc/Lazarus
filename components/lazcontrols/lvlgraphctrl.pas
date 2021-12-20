@@ -753,18 +753,27 @@ type
   TMinXGraph = class
   private
     FGraphNodeToNode: TPointerToPointerTree; // TLvlGraphNode to TMinXNode
+    procedure InitPairs;
     procedure UnbindPairs;
     procedure BindPairs;
     function ComputeCrossCount: integer;
     procedure StoreAsBest(CheckIfBetter: boolean);
-    function ComputeLowestSwitchDiff(StartAtOld: boolean; IgnorePair: TMinXPair): integer;
+    function ComputeHighestSwitchDiff(StartAtOld: boolean; IgnorePair: TMinXPair): integer;
   public
     Graph: TLvlGraph;
     Levels: array of TMinXLevel;
     Pairs: array of TMinXPair;
-    SameSwitchDiffPairs: array of TMinXPair; //
-    SameSwitchDiffPair0: integer;
-    LowestSwitchDiff: integer;
+    (* SameSwitchDiffPairs:
+         TMinXPair ordered by their SwitchDiff.
+         - SwitchDiff is negative (for pairs that have "resolvable crossings")
+         - Pairs are stored at: SameSwitchDiffPairs[ - SwitchDiff]
+       HighestSwitchDiff:
+         - The highest index in use in SameSwitchDiffPairs.
+         - The index to the pair(s) with the most resolvable crossings"
+           This is Max(Abs(SwitchDiff))  OR  Abs(Min(SwitchDiff))
+    *)
+    SameSwitchDiffPairs: array of TMinXPair;
+    HighestSwitchDiff: integer;
     CrossCount: integer;
     BestCrossCount: integer;
     constructor Create(aGraph: TLvlGraph);
@@ -1477,13 +1486,13 @@ end;
 
 procedure TMinXPair.UnbindFromSwitchList;
 begin
+  if SwitchDiff > 0 then
+    exit;
   if PrevSameSwitchPair<>nil then
     PrevSameSwitchPair.NextSameSwitchPair:=NextSameSwitchPair
-  else if Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff]=Self
+  else if Graph.SameSwitchDiffPairs[-SwitchDiff]=Self
   then begin
-    Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff]:=NextSameSwitchPair;
-    if (NextSameSwitchPair=nil) and (Graph.LowestSwitchDiff=SwitchDiff) then
-      Graph.LowestSwitchDiff:=Graph.ComputeLowestSwitchDiff(true,Self);
+    Graph.SameSwitchDiffPairs[-SwitchDiff]:=NextSameSwitchPair;
   end;
   if NextSameSwitchPair<>nil then
     NextSameSwitchPair.PrevSameSwitchPair:=PrevSameSwitchPair;
@@ -1496,7 +1505,9 @@ var
   n: TMinXPair;
 begin
   Result := 0;
-  n:=Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff];
+  if SwitchDiff > 0 then
+    exit;
+  n:=Graph.SameSwitchDiffPairs[-SwitchDiff];
   if AtEnd and (n<> nil) then begin
     while n.NextSameSwitchPair <> nil do begin
       n:=n.NextSameSwitchPair;
@@ -1507,12 +1518,11 @@ begin
     exit;
   end;
   NextSameSwitchPair:=n;
-  Graph.SameSwitchDiffPairs[Graph.SameSwitchDiffPair0+SwitchDiff]:=Self;
+  Graph.SameSwitchDiffPairs[-SwitchDiff]:=Self;
   if NextSameSwitchPair<>nil then
     NextSameSwitchPair.PrevSameSwitchPair:=Self;
-  if (Graph.LowestSwitchDiff+Graph.SameSwitchDiffPair0<0)
-  or (Graph.LowestSwitchDiff>SwitchDiff) then
-    Graph.LowestSwitchDiff:=SwitchDiff;
+  if (Graph.HighestSwitchDiff<-SwitchDiff) then
+    Graph.HighestSwitchDiff:=-SwitchDiff;
 end;
 
 procedure TMinXPair.ComputeCrossingCount(out Crossing,
@@ -1604,6 +1614,7 @@ begin
     end;
   end;
 
+  InitPairs;
   BindPairs;
 
   {$IFDEF CheckMinXGraph}
@@ -1626,6 +1637,37 @@ begin
   inherited Destroy;
 end;
 
+procedure TMinXGraph.InitPairs;
+var
+  Cnt: Integer;
+  i, n: Integer;
+  Level: TMinXLevel;
+  Pair: TMinXPair;
+begin
+  Cnt:=0;
+  for i:=0 to length(Levels)-1 do
+    Cnt+=Max(0,length(Levels[i].Nodes)-1);
+  SetLength(Pairs,Cnt);
+
+  Cnt:=0;
+  for i:=0 to length(Levels)-1 do begin
+    Level:=Levels[i];
+    if length(Level.Nodes) > 0 then
+      SetLength(Level.Pairs,length(Level.Nodes)-1);
+    for n:=0 to length(Level.Pairs)-1 do begin
+      Pair:=TMinXPair.Create(Level,n);
+      Pairs[Cnt]:=Pair;
+      Level.Pairs[n]:=Pair;
+      Cnt+=1;
+    end;
+  end;
+
+  HighestSwitchDiff:=-1;
+  // TODO: CountOfEdges (even less: Max(Cnt(Level.OutEdges))
+  // Worst case: half the nodes are on Level[0], the other half on Level[1]
+  SetLength(SameSwitchDiffPairs,Graph.NodeCount*Graph.NodeCount div 4 +1);
+end;
+
 procedure TMinXGraph.UnbindPairs;
 var
   i: Integer;
@@ -1636,43 +1678,16 @@ end;
 
 procedure TMinXGraph.BindPairs;
 var
-  Cnt: Integer;
   i: Integer;
   Level: TMinXLevel;
-  n: Integer;
   Pair: TMinXPair;
-  First: Boolean;
 begin
-  First:=length(Pairs)=0;
-  if First then begin
-    Cnt:=0;
-    for i:=0 to length(Levels)-1 do
-      Cnt+=Max(0,length(Levels[i].Nodes)-1);
-    SetLength(Pairs,Cnt);
+  for i:=0 to length(Pairs)-1 do begin
+    Pair:=Pairs[i];
+    Pair.FSwitchDiff:=Pair.ComputeSwitchDiff;
+    Pair.BindToSwitchList;
   end;
-  Cnt:=0;
-  for i:=0 to length(Levels)-1 do begin
-    Level:=Levels[i];
-    if length(Level.Nodes) > 0 then
-      SetLength(Level.Pairs,length(Level.Nodes)-1);
-    for n:=0 to length(Level.Pairs)-1 do begin
-      if First then begin
-        Pair:=TMinXPair.Create(Level,n);
-        Pairs[Cnt]:=Pair;
-        Level.Pairs[n]:=Pair;
-      end else
-        Pair:=Pairs[Cnt];
-      Pair.FSwitchDiff:=Pair.ComputeSwitchDiff;
-      Cnt+=1;
-    end;
-  end;
-  if First then begin
-    SameSwitchDiffPair0:=Graph.NodeCount*Graph.NodeCount;
-    LowestSwitchDiff:=-SameSwitchDiffPair0-1;
-    SetLength(SameSwitchDiffPairs,2*SameSwitchDiffPair0+1);
-  end;
-  for i:=0 to length(Pairs)-1 do
-    Pairs[i].BindToSwitchList;
+
   CrossCount:=ComputeCrossCount;
 end;
 
@@ -1730,35 +1745,39 @@ begin
   end;
 end;
 
-function TMinXGraph.ComputeLowestSwitchDiff(StartAtOld: boolean;
+function TMinXGraph.ComputeHighestSwitchDiff(StartAtOld: boolean;
   IgnorePair: TMinXPair): integer;
 var
   i: Integer;
   Pair: TMinXPair;
 begin
   if StartAtOld then begin
-    for i:=LowestSwitchDiff to Graph.NodeCount-1 do begin
-      if SameSwitchDiffPairs[i+SameSwitchDiffPair0]<>nil then
+    for i:=HighestSwitchDiff-1 downto 0 do begin
+      if SameSwitchDiffPairs[i]<>nil then
         exit(i);
     end;
+    exit(-1);
   end;
-  Result:=SameSwitchDiffPair0+1;
+
+  // Search all Pairs
+  Result:= -1;
   for i:=0 to length(Pairs)-1 do begin
     Pair:=Pairs[i];
     if IgnorePair=Pair then continue;
-    Result:=Min(Result,Pairs[i].SwitchDiff);
+    Result:=Max(Result,-Pair.SwitchDiff);
   end;
-  if Result>SameSwitchDiffPair0 then
-    Result:=-1-SameSwitchDiffPair0;
 end;
 
 function TMinXGraph.FindBestPair: TMinXPair;
-var
-  i: Integer;
 begin
-  i:=LowestSwitchDiff+SameSwitchDiffPair0;
-  if i>=0 then
-    Result:=SameSwitchDiffPairs[i]
+  if HighestSwitchDiff>=0 then begin
+    Result:=SameSwitchDiffPairs[HighestSwitchDiff];
+    if Result = nil then begin
+      HighestSwitchDiff := ComputeHighestSwitchDiff(True, nil);
+      if HighestSwitchDiff>=0 then
+        Result:=SameSwitchDiffPairs[HighestSwitchDiff];
+    end;
+  end
   else
     Result:=nil;
 end;
@@ -1776,31 +1795,50 @@ procedure TMinXGraph.SwitchCrossingPairs(MaxRun: int64; var Run: int64);
 *)
 var
   Pair: TMinXPair;
-  LastInsertIdx, ZeroRun: Integer;
+  CountOfZeroDiffNodes, ZeroRun, ZeroBest: Integer;
 begin
-  ZeroRun := 0;
   while (MaxRun>0) and (BestCrossCount<>0) do begin
     //debugln(['TMinXGraph.SwitchCrossingPairs ',MaxRun,' ',Run]);
     Pair:=FindBestPair;
-    Run+=1;
     if (Pair=nil) then exit;
-    if (Pair.SwitchDiff=0) then begin
-      dec(ZeroRun);
-      if ZeroRun = 0 then
-        exit;
-    end
-    else
-      ZeroRun := 0;
+    if (Pair.SwitchDiff=0) then break; // Enter ZeroRun
+    Run+=1;
     SwitchPair(Pair);
-    if (Pair.SwitchDiff=0) then begin
+    MaxRun-=1;
+  end;
+
+  ZeroRun := -1;
+  ZeroBest := high(ZeroBest);
+  while (MaxRun>0) and (BestCrossCount<>0) do begin
+    if (Pair.SwitchDiff<0) then begin
+      SwitchPair(Pair);
+      if CrossCount < ZeroBest then
+        ZeroRun := -1;
+    end
+    else begin
+      if ZeroRun > 0 then begin
+        dec(ZeroRun);
+        if ZeroRun = 0 then
+          exit;
+      end;
+
+      SwitchPair(Pair);
       Pair.UnbindFromSwitchList;
-      LastInsertIdx := Pair.BindToSwitchList(True);
-      If ZeroRun = -1 then
-        if CrossCount < BestCrossCount + BestCrossCount div 8 then // add 12% to BestCrossCount
-          ZeroRun := 8 * LastInsertIdx+1 // closer to a new BestCrossCount, search harder
-        else
-          ZeroRun := 2 * LastInsertIdx+1;
+      CountOfZeroDiffNodes := Pair.BindToSwitchList(True);
+      if (ZeroRun < 0) then begin
+        If ZeroRun = -1 then
+          if CrossCount < BestCrossCount + BestCrossCount div 8 then // add 12% to BestCrossCount
+            ZeroRun := 8 * CountOfZeroDiffNodes+1 // closer to a new BestCrossCount, search harder
+          else
+            ZeroRun := 2 * CountOfZeroDiffNodes+1;
+        if CrossCount < ZeroBest then
+          ZeroBest := CrossCount;
+      end;
     end;
+
+    Pair:=FindBestPair;
+    if (Pair=nil) then exit;
+    Run+=1;
     MaxRun-=1;
   end;
 end;
@@ -2024,7 +2062,7 @@ begin
   for i:=0 to length(SameSwitchDiffPairs)-1 do begin
     Pair:=SameSwitchDiffPairs[i];
     while Pair<>nil do begin
-      if Pair.SwitchDiff<>i-SameSwitchDiffPair0 then
+      if -Pair.SwitchDiff<>i then
         Err(Pair.AsString);
       if Pair.PrevSameSwitchPair<>nil then begin
         if Pair.PrevSameSwitchPair.NextSameSwitchPair<>Pair then
@@ -2043,8 +2081,9 @@ begin
 
   if CrossCount<>ComputeCrossCount then
     Err;
-  if LowestSwitchDiff<>ComputeLowestSwitchDiff(false,nil) then
-    Err;
+  if (HighestSwitchDiff < 0) or (SameSwitchDiffPairs[HighestSwitchDiff] <> nil) then
+    if HighestSwitchDiff<>ComputeHighestSwitchDiff(false,nil) then
+      Err;
 end;
 
 { TMinXLevel }
@@ -2087,15 +2126,20 @@ procedure TMinXLevel.GetCrossingCount(Node1, Node2: TMinXNode; out
 var
   i: Integer;
   j: Integer;
+  n: TMinXNode;
 begin
+  if (Node1.IndexInLevel>Node2.IndexInLevel) then begin
+    n := Node1;
+    Node1 := Node2;
+    Node2 := n;
+  end;
+
   Crossing:=0;
   SwitchCrossing:=0;
   for i:=0 to length(Node1.OutEdges)-1 do begin
     for j:=0 to length(Node2.OutEdges)-1 do begin
       if Node1.OutEdges[i]=Node2.OutEdges[j] then continue;
-      // these two edges can cross
-      if (Node1.IndexInLevel<Node2.IndexInLevel)
-        <>(Node1.OutEdges[i].IndexInLevel<Node2.OutEdges[j].IndexInLevel)
+      if (Node1.OutEdges[i].IndexInLevel>Node2.OutEdges[j].IndexInLevel)
       then
         Crossing+=1
       else
@@ -2106,8 +2150,7 @@ begin
     for j:=0 to length(Node2.InEdges)-1 do begin
       if Node1.InEdges[i]=Node2.InEdges[j] then continue;
       // these two edges can cross
-      if (Node1.IndexInLevel<Node2.IndexInLevel)
-        <>(Node1.InEdges[i].IndexInLevel<Node2.InEdges[j].IndexInLevel)
+      if (Node1.InEdges[i].IndexInLevel>Node2.InEdges[j].IndexInLevel)
       then
         Crossing+=1
       else
