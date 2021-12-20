@@ -12743,7 +12743,7 @@ msgid "library path"
 msgstr "Bibliotheek pad"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr ""
 
 #: lazarusidestrconsts.lisline

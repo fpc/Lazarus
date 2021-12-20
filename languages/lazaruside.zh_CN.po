@@ -12641,7 +12641,9 @@ msgid "library path"
 msgstr "库路径"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+#, fuzzy
+#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "一个Free Pascal共享库(在Windows下.dll,在Linux下.so,在MacOS X下.dylib)."
 
 #: lazarusidestrconsts.lisline

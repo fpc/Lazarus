@@ -12432,7 +12432,9 @@ msgid "library path"
 msgstr "függvénytár elérési út"
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+#, fuzzy
+#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Egy Free Pascal megosztott függvénytár (.dll Windows alatt, .so Linux alatt, .dylib MacOS X alatt)."
 
 #: lazarusidestrconsts.lisline

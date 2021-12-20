@@ -5275,7 +5275,7 @@ resourcestring
     +' TCustomApplication to easily check command line options, handling exceptions, etc.';
   lisCustomProgramProgramDescriptor = 'A Custom Free Pascal program.';
   lisLibraryProgramDescriptor = 'A Free Pascal shared library (.dll under Windows,'
-    +' .so under Linux, .dylib under MacOS X).';
+    +' .so under Linux, .dylib under macOS).';
 
   lisNPCreateANewProject = 'Create a new project';
   lisNPCreate = 'Create';

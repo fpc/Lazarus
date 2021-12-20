@@ -12452,7 +12452,9 @@ msgid "library path"
 msgstr "caminho biblioteca."
 
 #: lazarusidestrconsts.lislibraryprogramdescriptor
-msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+#, fuzzy
+#| msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under MacOS X)."
+msgid "A Free Pascal shared library (.dll under Windows, .so under Linux, .dylib under macOS)."
 msgstr "Uma biblioteca compartilhada Free Pascal (.dll no Windows, .so no Linux, .dylib no MacOS X)."
 
 #: lazarusidestrconsts.lisline
