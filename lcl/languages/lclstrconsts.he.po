@@ -638,7 +638,9 @@ msgid "Hot Light"
 msgstr "לבן חם"
 
 #: lclstrconsts.rsicns
-msgid "Mac OS X Icon"
+#, fuzzy
+#| msgid "Mac OS X Icon"
+msgid "macOS Icon"
 msgstr "צלמית  של OSX של מקינטוש"
 
 #: lclstrconsts.rsicon

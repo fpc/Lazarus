@@ -615,7 +615,9 @@ msgid "Hot Light"
 msgstr "選択項目の背景色"
 
 #: lclstrconsts.rsicns
-msgid "Mac OS X Icon"
+#, fuzzy
+#| msgid "Mac OS X Icon"
+msgid "macOS Icon"
 msgstr "Mac OS X アイコンファイル"
 
 #: lclstrconsts.rsicon

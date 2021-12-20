@@ -617,7 +617,9 @@ msgid "Hot Light"
 msgstr "Indikatorius"
 
 #: lclstrconsts.rsicns
-msgid "Mac OS X Icon"
+#, fuzzy
+#| msgid "Mac OS X Icon"
+msgid "macOS Icon"
 msgstr "OSX piktogramos piktograma"
 
 #: lclstrconsts.rsicon

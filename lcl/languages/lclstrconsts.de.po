@@ -616,7 +616,9 @@ msgid "Hot Light"
 msgstr "Kräftig hervorgehoben"
 
 #: lclstrconsts.rsicns
-msgid "Mac OS X Icon"
+#, fuzzy
+#| msgid "Mac OS X Icon"
+msgid "macOS Icon"
 msgstr "OSX-Icon-Ressource"
 
 #: lclstrconsts.rsicon
