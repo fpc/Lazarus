@@ -1877,13 +1877,16 @@ end;
 
 procedure TMinXGraph.SwitchAndShuffle(MaxSingleRun, MaxTotalRun: int64);
 var
-  Run: int64;
+  Run, LastRun: int64;
 begin
   Run:=1;
+  LastRun := 0;
   while BestCrossCount<>0 do begin
     SwitchCrossingPairs(MaxSingleRun,Run,Graph.NodeCount div 2);
+    if Run = LastRun then exit;
     if Run>MaxTotalRun then break;
     Shuffle;
+    LastRun := Run;
   end;
   SwitchCrossingPairs(MaxSingleRun,Run, MaxTotalRun);
 end;
