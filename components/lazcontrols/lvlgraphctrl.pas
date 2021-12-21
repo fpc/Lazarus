@@ -1991,12 +1991,10 @@ begin
   Level:=Pair.Level;
 
   // switch nodes
-  Node1:=Level.Nodes[Pair.Index];
-  Node2:=Level.Nodes[Pair.Index+1];
-  Level.Nodes[Pair.Index]:=Node2;
-  Level.Nodes[Pair.Index+1]:=Node1;
-  Node1:=Level.Nodes[Pair.Index];
-  Node2:=Level.Nodes[Pair.Index+1];
+  Node2:=Level.Nodes[Pair.Index];
+  Node1:=Level.Nodes[Pair.Index+1];
+  Level.Nodes[Pair.Index]:=Node1;
+  Level.Nodes[Pair.Index+1]:=Node2;
   Node1.IndexInLevel:=Pair.Index;
   Node2.IndexInLevel:=Pair.Index+1;
 
