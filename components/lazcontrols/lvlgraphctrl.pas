@@ -1807,7 +1807,7 @@ end;
 
 procedure TMinXGraph.Shuffle;
 var
-  l: Integer;
+  l, i: Integer;
   Level: TMinXLevel;
   n1: Integer;
   n2: Integer;
@@ -1819,7 +1819,8 @@ begin
   UnbindPairs;
   for l:=0 to length(Levels)-1 do begin
     Level:=Levels[l];
-    for n1:=0 to length(Level.Nodes)-1 do begin
+    for i:=0 to 1 do begin
+      n1:=Random(length(Level.Nodes));
       n2:=Random(length(Level.Nodes));
       if n1=n2 then continue;
       Node:=Level.Nodes[n1];
