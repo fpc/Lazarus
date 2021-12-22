@@ -8,7 +8,7 @@
     -->
     <module name="LConvEncoding">
       <short>
-        Used to perform conversions between Unicode and System Code Page encodings.
+        Contains routines used to perform conversions between Unicode and System Code Page encodings.
       </short>
       <descr>
         <p>
@@ -16,6 +16,9 @@
         </p>
         <p>
           For environments where the RTL uses UTF-8 encoding, the UseSystemCPConv compiler define is enabled to include System Code Page conversions.
+        </p>
+        <p>
+          <file>lconvencoding.pas</file> is part of the <file>LazUtils</file> package.
         </p>
       </descr>
 
@@ -35,6 +38,9 @@
             <var>TConvertEncodingErrorMode</var> is an enumerated type with values that represent the behavior applied when an encoding conversion error is detected. TConvertEncodingErrorMode is the type used for the <var>ConvertEncodingErrorMode</var> variable.
           </p>
         </descr>
+        <version>
+          Introduced in version 2.2.
+        </version>
         <seealso>
           <link id="ConvertEncodingErrorMode"/>
         </seealso>
@@ -58,17 +64,20 @@
         <short>Error handling behavior for encoding conversion errors.</short>
         <descr>
           <p>
-            <var>ConvertEncodingErrorMode</var> is a unit global <var>TConvertEncodingErrorMode</var> variable which controls the behaviour of encoding conversion errors for the following:
+            <var>ConvertEncodingErrorMode</var> is a unit global <var>TConvertEncodingErrorMode</var> variable which controls the behavior when an error is detected in an encoding conversion routine. For example:
           </p>
           <ul>
             <li>UTF-8 to single byte encoding</li>
-            <li>DBCS (Asian) encoding to UTF-8</li>
-            <li>UTF-8 to DBCS</li>
+            <li>DBCS (Asian code pages) encoding to UTF-8</li>
+            <li>UTF-8 to DBCS (Double Byte Character Sets)</li>
           </ul>
           <p>
             The default value for the variable is <var>ceemSkip</var>, and indicates that an error is skipped or ignored when encountered in an encoding conversion.
           </p>
         </descr>
+        <version>
+          Introduced in version 2.2. Replaces use of the ConvertEncodingErrorRaisesException variable.
+        </version>
         <seealso>
           <link id="TConvertEncodingErrorMode"/>
           <link id="UTF8ToSingleByte"/>
@@ -148,13 +157,13 @@
         <short>Encoding name for the Macintosh Code Page.</short>
       </element>
       <element name="EncodingCPKOI8R">
-        <short>Encoding name for KOI-8R Code Page.</short>
+        <short>Encoding name for KOI8-R Code Page.</short>
       </element>
       <element name="EncodingCPKOI8U">
-        <short>Encoding name for KOI-8U Code Page.</short>
+        <short>Encoding name for KOI8-U Code Page.</short>
       </element>
       <element name="EncodingCPKOI8RU">
-        <short>Encoding name for KOI-8RU Code Page.</short>
+        <short>Encoding name for KOI8-RU Code Page.</short>
       </element>
       <element name="EncodingCPIso1">
         <short>Encoding name for ISO 8859-1 Code Page.</short>
@@ -222,121 +231,250 @@
       </element>
 
       <element name="ConvertEncodingFromUTF8">
-        <short>Converts the encoded value from UTF-8 to the specified encoding.</short>
+        <short>Converts the encoded value from UTF-8 to the encoding with the specified name.</short>
         <descr>
           <p>
-            Used in the implementation of the ConvertEncoding function.
+            The s argument contains the UTF-8-encoded value converted in the routine.
+          </p>
+          <p>
+            ToEncoding is a String value with the name for the target encoding. It is normalized in the routine to remove hyphen characters in the encoding name. The value corresponds to the encoding name constants defined in the unit, and is used to determine which routine is called to perform the encoding conversion.
+          </p>
+          <p>
+            For example, the following is a sample of the encoding names and their corresponding conversion routines:
+          </p>
+          <dl>
+            <dt>EncodingUTF8BOM ('utf8bom')</dt>
+            <dd>UTF8ToUTF8BOM</dd>
+            <dt>EncodingCPIso1 ('iso88591')</dt>
+            <dd>UTF8ToISO_8859_1</dd>
+            <dt>EncodingCP1250 ('cp1250')</dt>
+            <dd>UTF8ToCP1250</dd>
+            <dt>EncodingCP1252 ('cp1252')</dt>
+            <dd>UTF8ToCP1252</dd>
+            <dt>EncodingCP850 ('cp850')</dt>
+            <dd>UTF8ToCP850</dd>
+            <dt>EncodingCPKOI8R ('koi8r')</dt>
+            <dd>UTF8ToKOI8R</dd>
+            <dt>EncodingAnsi ('ansi')</dt>
+            <dd>ConvertUTF8ToAnsi</dd>
+          </dl>
+          <p>
+            Encoded is a Boolean output parameter which indicates if a routine was found to perform the requested conversion. Its value is False when a conversion routine was not found for the target encoding in ToEncoding.
+          </p>
+          <p>
+            SetTargetCodePage is a Boolean argument which indicates if SetCodePage is called to apply a translated code page for the converted value. The default value for the argument is False, and omits the code page for the return value.
+          </p>
+          <p>
+            ConvertEncodingFromUTF8 is used in the implementation of the ConvertEncoding function.
           </p>
         </descr>
         <seealso>
           <link id="ConvertEncoding"/>
+          <link id="NormalizeEncoding"/>
           <link id="ConvertEncodingToUTF8"/>
         </seealso>
       </element>
       <element name="ConvertEncodingFromUTF8.Result">
-        <short/>
+        <short>String value after conversion to the specified encoding.</short>
       </element>
       <element name="ConvertEncodingFromUTF8.s">
-        <short/>
+        <short>UTF-8-encoded value converted in the routine.</short>
       </element>
       <element name="ConvertEncodingFromUTF8.ToEncoding">
-        <short/>
+        <short>Encoding name for the converted value.</short>
       </element>
       <element name="ConvertEncodingFromUTF8.Encoded">
-        <short/>
+        <short>
+          True if the return value contains multi-byte encoded values, False if it contains a single-byte ANSI string.
+        </short>
       </element>
       <element name="ConvertEncodingFromUTF8.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the code page should be set for the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="ConvertEncodingToUTF8">
-        <short>Converts the specified value to the UTF-8 encoding.</short>
+        <short>Converts the specified string value to the UTF-8 encoding.</short>
         <descr>
           <p>
-            Used in the implementation of the ConvertEncoding function.
+            ConvertEncodingToUTF8 converts the encoding for a string value from the specified encoding to UTF-8. The s argument contains the string value converted in the routine.
           </p>
+          <p>
+            FromEncoding is a String value with the name for the existing encoding is s. It is normalized in the routine to remove hyphen characters in the encoding name. The value corresponds to the encoding name constants defined in the unit, and is used to determine which routine is called to perform the encoding conversion.
+          </p>
+          <p>
+            For example, the following is a sample of the encoding names and their corresponding conversion routines:
+          </p>
+          <dl>
+            <dt>EncodingUTF8BOM ('utf8bom')</dt>
+            <dd>UTF8BOMToUTF8</dd>
+            <dt>EncodingCPIso1 ('iso88591')</dt>
+            <dd>ISO_8859_1ToUTF8</dd>
+            <dt>EncodingCP1250 ('cp1250')</dt>
+            <dd>CP1250ToUTF8</dd>
+            <dt>EncodingCP1252 ('cp1252')</dt>
+            <dd>CP1252ToUTF8</dd>
+            <dt>EncodingCP850 ('cp850')</dt>
+            <dd>CP850ToUTF8</dd>
+            <dt>EncodingCPKOI8R ('koi8r')</dt>
+            <dd>KOI8RToUTF8</dd>
+            <dt>EncodingAnsi ('ansi') or the default text encoding for the platform</dt>
+            <dd>ConvertAnsiToUTF8</dd>
+          </dl>
+          <p>
+            Encoded is a Boolean output parameter which indicates if a routine was found to perform the requested conversion. Its value is False when a conversion routine was not found for the source encoding in FromEncoding.
+          </p>
+          <p>
+            ConvertEncodingToUTF8 is used in the implementation of the ConvertEncoding function.
+          </p>
+          <remark>
+            Conversions to the UTF-8 encoding will always set the code page for the converted value to CP_UTF8 (65001).  In other words,  the SetTargetCodePage argument to the ConvertEncoding() function is ignored for conversions to UTF-8.
+          </remark>
         </descr>
         <seealso>
           <link id="ConvertEncoding"/>
           <link id="ConvertEncodingFromUTF8"/>
+          <link id="ConvertAnsiToUTF8"/>
+          <link id="NormalizeEncoding"/>
+          <link id="GetDefaultTextEncoding"/>
         </seealso>
       </element>
       <element name="ConvertEncodingToUTF8.Result">
-        <short/>
+        <short>Value for the specified string after encoding conversion.</short>
       </element>
       <element name="ConvertEncodingToUTF8.s">
-        <short/>
+        <short>String with the encoded value converted to UTF-8.</short>
       </element>
       <element name="ConvertEncodingToUTF8.FromEncoding">
-        <short/>
+        <short>Encoding name for the value in s.</short>
       </element>
       <element name="ConvertEncodingToUTF8.Encoded">
-        <short/>
+        <short>True if the result contains a multi-byte encoded value. Always True for conversions to UTF-8.</short>
       </element>
 
       <element name="ConvertEncoding">
-        <short>Converts the encoding for a value from its source encoding to the target encoding.</short>
-        <descr/>
+        <short>
+          Converts the specified value from its source encoding to a target encoding using an optional code page.
+        </short>
+        <descr>
+          <p>
+            ConvertEncoding is a String function used to convert the string specified in s from its original encoding name (FromEncoding) to a target encoding (ToEncoding).
+          </p>
+          <p>
+            When FromEncoding is omitted, or specified as an empty string (''), UTF-8 is used as the original encoding. If the original encoding is ANSI, the default text encoding for the platform (GetDefaultTextEncoding) is used as the original encoding.
+          </p>
+          <p>
+            Conversely, when ToEncoding is omitted or an empty string, UTF-8 is used as the target encoding. If the target encoding is ANSI, the default text encoding for the platform (GetDefaultTextEncoding) is used as the target  encoding.
+          </p>
+          <p>
+            No actions are performed in the routine when FromEncoding and ToEncoding have the same values.
+          </p>
+          <p>
+            ConvertEncoding calls ConvertEncodingFromUTF8 to convert the string value when the FromEncoding is UTF-8. ConvertEncodingToUTF8 is called when ToEncoding is UTF-8. For other encoding conversions, ConvertEncodingToUTF8 is called to both get a UTF-8 value which is then converted using ConvertEncodingFromUTF8.
+          </p>
+          <p>
+            SetTargetCodePage indicates whether the string with the converted encoding should set the code page for the result. The default value for the argument is False. The SetTargetCodePage argument is ignored when ToEncoding is the UTF-8 encoding ('utf8'). The code page is always set to CP_UTF8 (65001) when UTF-8 encoding is used in the result.
+          </p>
+          <p>
+            For platforms where libiconv is enabled, the iconvert routine is used as a fallback when an encoding conversion routine was not found.
+          </p>
+          <p>
+            The return value is the original string in s if a transcoding operation is not successfully performed (or not needed) for the original string value using the specified encodings.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="ConvertEncoding.Result">
-        <short/>
+        <short>Value for the specified string after encoding conversion.</short>
       </element>
       <element name="ConvertEncoding.s">
-        <short/>
+        <short>String value converted in the routine.</short>
       </element>
       <element name="ConvertEncoding.FromEncoding">
-        <short/>
+        <short>Encoding name for the original string value.</short>
       </element>
       <element name="ConvertEncoding.ToEncoding">
-        <short/>
+        <short>Encoding name for the converted value.</short>
       </element>
       <element name="ConvertEncoding.SetTargetCodePage">
-        <short/>
+        <short>True if the code page should be set for the converted value. Default is False.</short>
       </element>
 
       <element name="GetDefaultTextEncoding">
-        <short/>
+        <short>Gets the name for the default text encoding used on the platform or operating system.</short>
         <descr>
           <p>
-            This routine gets the default encoding name used for text from the DefaultTextEncoding unit variable. It contains the encoding use for AnsiString in the RTL.
+            GetDefaultTextEncoding gets the default encoding name used for text from the DefaultTextEncoding variable (in the unit implementation), when assigned. Otherwise, platform-specific routines are used to get return value like: GetWindowsEncoding, GetUnixEncoding. The value in the EncodingUTF8 constant is used for the Darwin platforms. The return value contains the encoding used for AnsiString in the FPC RTL, and is retained in the DefaultTextEncoding variable for subsequent calls to the routine.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="EncodingUTF8"/>
+          <link id="NormalizeEncoding"/>
+        </seealso>
       </element>
       <element name="GetDefaultTextEncoding.Result">
-        <short>Returns the value in the EncodingAnsi constant ('ansi').</short>
+        <short>The name for the default text encoding used on the platform.</short>
       </element>
 
       <element name="GetConsoleTextEncoding">
-        <short>Gets the encoding used in a console on the platform.</short>
+        <short>Gets the encoding used for a console application on the platform.</short>
         <descr>
           <p>
-            This routine returns the console text encoding, which might be different from the normal system encoding on some Windows systems. See
-              <url href="http://mantis.freepascal.org/view.php?id=20552">
-              http://mantis.freepascal.org/view.php?id=20552</url>
+            GetConsoleTextEncoding is String function which gets the encoding name used for console applications.
+          </p>
+          <p>
+            The return value may differ from the normal system encoding on some Windows versions, where the OEM code page is used for a console application. For more details, see: <url href="https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/20552">https://gitlab.com/freepascal.org/lazarus/lazarus/-/issues/20552</url>.
+          </p>
+          <p>
+            For all other platforms, the value from GetDefaultTextEncoding is used in the return value. The return value is normalized (hyphen characters removed and converted to lowercase).
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="GetDefaultTextEncoding"/>
+          <link id="NormalizeEncoding"/>
+        </seealso>
       </element>
       <element name="GetConsoleTextEncoding.Result">
-        <short/>
+        <short>Name of the encoding used for text in a console application.</short>
       </element>
 
       <element name="NormalizeEncoding">
         <short>Converts the specified encoding name to lowercase and removes '-' characters.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Converts a value like 'UTF-8' to 'utf8', or 'ISO-8859-1' to 'iso88591'.
+          </p>
+          <p>
+            NormalizeEncoding is used in the implementation of conversion routines, like:
+          </p>
+          <ul>
+            <li>GetDefaultTextEncoding</li>
+            <li>GetConsoleTextEncoding</li>
+            <li>GuessEncoding</li>
+            <li>ConvertEncodingFromUTF8</li>
+            <li>ConvertEncodingToUTF8</li>
+            <li>ConvertEncoding</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="GetDefaultTextEncoding"/>
+          <link id="GetConsoleTextEncoding"/>
+          <link id="GuessEncoding"/>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="ConvertEncodingToUTF8"/>
+          <link id="ConvertEncoding"/>
+        </seealso>
       </element>
       <element name="NormalizeEncoding.Result">
-        <short/>
+        <short>Contains the encoding name converted to lowercase with hyphen ('-') characters removed.</short>
       </element>
       <element name="NormalizeEncoding.Encoding">
-        <short/>
+        <short>Encoding name normalized in the routine.</short>
       </element>
 
       <element name="TConvertEncodingFunction">
-        <short>Specifies a function used to convert the encoding for a string value.</short>
+        <short>Specifies a function used to convert a single-byte string value to a specific multi-byte encoding.</short>
         <descr>
           <p>
             <var>TConvertEncodingFunction</var> is the type used for the <var>ConvertAnsiToUTF8</var>  variable.
@@ -344,67 +482,106 @@
         </descr>
         <seealso>
           <link id="ConvertAnsiToUTF8"/>
+          <link id="ConvertUTF8ToAnsi"/>
+          <link id="TConvertUTF8ToEncodingFunc"/>
         </seealso>
       </element>
       <element name="TConvertEncodingFunction.Result">
         <short>Value after converting the value to the required encoding.</short>
       </element>
       <element name="TConvertEncodingFunction.s">
-        <short>Value examined and converted in the routine.</short>
-      </element>
-      <element name="TConvertEncodingFunction.SetTargetCodePage">
-        <short>Indicates whether the code page is needed for the target encoding. Default is False.</short>
+        <short>Single-byte string value examined and converted in the routine.</short>
       </element>
 
       <element name="TConvertUTF8ToEncodingFunc">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies a function used to convert a string value from UTF-8 encoding to another encoding with an optional code page.
+        </short>
+        <descr>
+          <p>
+            TConvertUTF8ToEncodingFunc is the type used for the ConvertUTF8ToAnsi variable in <file>lconvencoding.pas</file>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertUTF8ToAnsi"/>
+        </seealso>
       </element>
       <element name="TConvertUTF8ToEncodingFunc.Result">
-        <short/>
+        <short>Value for the string using the code page / encoding implemented in the routine.</short>
       </element>
       <element name="TConvertUTF8ToEncodingFunc.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="TConvertUTF8ToEncodingFunc.SetTargetCodePage">
-        <short/>
+        <short>True to set the target code page, False if the code page is not needed.</short>
       </element>
 
       <element name="TCharToUTF8Table">
-        <short>Alias for the TCharToUTF8Table type in CodepagesCommon.</short>
+        <short>Alias for the TCharToUTF8Table type in <file>CodepagesCommon.pas</file>.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TUnicodeToCharID">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Specifies an Integer function type used to get a character identifier for a specific Unicode character.
+        </short>
+        <descr>
+          <p>
+            TUnicodeToCharID is the type passed as an argument to conversion routines like UTF8ToSingleByte and UTF8ToDBCS.
+          </p>
+        </descr>
+        <seealso>
+          <link id="UTF8ToDBCS"/>
+          <link id="UTF8ToSingleByte"/>
+        </seealso>
       </element>
       <element name="TUnicodeToCharID.Result">
-        <short/>
+        <short>Integer value for the specified Unicode character.</short>
       </element>
       <element name="TUnicodeToCharID.Unicode">
-        <short/>
+        <short>Cardinal value for the Unicode character converted in the routine.</short>
       </element>
 
       <element name="ConvertAnsiToUTF8">
-        <short>Routine used to convert from ANSI to UTF-8 encoding.</short>
+        <short>Contains the routine used to convert an ANSI string value to UTF-8 encoding.</short>
         <descr>
           <p>
-            <var>ConvertAnsiToUTF8</var> is a <var>TConvertEncodingFunction</var> variable provides a routine used to convert a String value from its ANSI-encoded value to the UTF-8 encoding.
+            <var>ConvertAnsiToUTF8</var> is a <var>TConvertEncodingFunction</var> variable with the routine used to convert a String from its ANSI-encoded value to the UTF-8 encoding. A routine which implements the TConvertEncodingFunction interface can be assigned to ConvertAnsiToUTF8 to handle conversions from the  default text encoding, which may use an OEM code page, to the UTF-8 encoding.
+          </p>
+          <p>
+            By default, a routine is <b>NOT</b> assigned to ConvertAnsiToUTF8.
+          </p>
+          <p>
+            ConvertAnsiToUTF8 is called (when assigned) from the ConvertEncodingToUTF8 routine.
           </p>
         </descr>
         <seealso>
           <link id="TConvertEncodingFunction"/>
+          <link id="ConvertEncodingToUTF8"/>
         </seealso>
       </element>
 
       <element name="ConvertUTF8ToAnsi">
-        <short>Routine used to convert from UTF-8 to ANSI encoding.</short>
-        <descr/>
-        <seealso/>
+        <short>Contains the routine used to convert from UTF-8 encoding to ANSI encoding.</short>
+        <descr>
+          <p>
+            ConvertUTF8ToAnsi is a TConvertUTF8ToEncodingFunc variable with the routine used to convert a string value from UTF-8 encoding to ANSI encoding. A routine which implements the TConvertUTF8ToEncodingFunc interface can be assigned to ConvertUTF8ToAnsi to the conversion.
+          </p>
+          <p>
+            The arguments to the routine include the UTF-8-encoded string converted in the function, and a boolean argument which indicates if the code page should be set for the string in the return value. Set the SetTargetCodePage parameter to True to set the code page for the ANSI string in the return value. The default value for the argument is False.
+          </p>
+          <p>
+            By default, a routine is <b>NOT</b> assigned to ConvertUTF8ToAnsi.
+          </p>
+          <p>
+            ConvertUTF8ToAnsi is called (when assigned) from the ConvertEncodingFromUTF8 routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TConvertUTF8ToEncodingFunc"/>
+          <link id="ConvertEncodingFromUTF8"/>
+        </seealso>
       </element>
 
       <element name="UTF8BOMToUTF8">
@@ -427,207 +604,291 @@
       </element>
 
       <element name="ISO_8859_1ToUTF8">
-        <short>Converts an ISO 8859-1-encoded value to UTF-8.</short>
-        <descr/>
+        <short>Converts an ISO 8859-1-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_1ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="ISO_8859_1ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="ISO_8859_1ToUTF8.s">
-        <short/>
+        <short>String with the value in ISO 8859-1 encoding.</short>
+      </element>
+
+      <element name="ISO_8859_15ToUTF8">
+        <short>Converts an ISO 8859-15-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_15ToUTF8.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_15ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_15ToUTF8.s">
+        <short>String with the value in ISO 8859-15 encoding.</short>
       </element>
 
       <element name="ISO_8859_2ToUTF8">
-        <short>Converts an ISO 8859-2-encoded value to UTF-8.</short>
-        <descr/>
+        <short>Converts an ISO 8859-2-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayISO_8859_2ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="ISO_8859_2ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="ISO_8859_2ToUTF8.s">
-        <short/>
+        <short>String with the value in ISO 8859-2 encoding.</short>
       </element>
 
       <element name="CP1250ToUTF8">
-        <short>Converts a Code Page 1250-encoded value to UTF-8.</short>
-        <descr/>
+        <short>Converts a Code Page 1250-encoded string to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1250ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1250ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1250ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1250 encoding.</short>
       </element>
 
       <element name="CP1251ToUTF8">
         <short>Converts a Code Page 1251-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1251ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1251ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1251ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1251 encoding.</short>
       </element>
 
       <element name="CP1252ToUTF8">
         <short>Converts a Code Page 1252-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1252ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1252ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1252ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1252 encoding.</short>
       </element>
 
       <element name="CP1253ToUTF8">
         <short>Converts a Code Page 1253-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1253ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1253ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1253ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1253 encoding.</short>
       </element>
 
       <element name="CP1254ToUTF8">
         <short>Converts a Code Page 1254-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1254ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1254ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1254ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1254 encoding.</short>
       </element>
 
       <element name="CP1255ToUTF8">
         <short>Converts a Code Page 1255-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1255ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1255ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1255ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1255 encoding.</short>
       </element>
 
       <element name="CP1256ToUTF8">
         <short>Converts a Code Page 1256-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1256ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1256ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1256ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1256 encoding.</short>
       </element>
 
       <element name="CP1257ToUTF8">
         <short>Converts a Code Page 1257-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1257ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1257ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1257ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1257 encoding.</short>
       </element>
 
       <element name="CP1258ToUTF8">
         <short>Converts a Code Page 1258-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP1258ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP1258ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP1258ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 1258 encoding.</short>
       </element>
 
       <element name="CP437ToUTF8">
         <short>Converts a Code Page 437-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP437ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP437ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP437ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 437 encoding.</short>
       </element>
 
       <element name="CP850ToUTF8">
         <short>Converts a Code Page 850-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP850ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP850ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP850ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 850 encoding.</short>
       </element>
 
       <element name="CP852ToUTF8">
         <short>Converts a Code Page 852-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP852ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP852ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP852ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 852 encoding.</short>
       </element>
 
       <element name="CP866ToUTF8">
         <short>Converts a Code Page 866-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP866ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP866ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP866ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 866 encoding.</short>
       </element>
 
       <element name="CP874ToUTF8">
         <short>Converts a Code Page 874-encoded value to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayCP874ToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP874ToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="CP874ToUTF8.s">
-        <short/>
+        <short>String with the value in Code Page 874 encoding.</short>
       </element>
 
       <element name="KOI8RToUTF8">
-        <short>Converts a KOI-8R-encoded value to UTF-8.</short>
-        <descr/>
+        <short>Converts a KOI8-R-encoded value to UTF-8.</short>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayKOI8RToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="KOI8RToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="KOI8RToUTF8.s">
-        <short/>
+        <short>String with the value in the KOI8R encoding.</short>
       </element>
 
       <element name="KOI8ToUTF8">
@@ -650,19 +911,36 @@
 
       <element name="MacintoshToUTF8">
         <short>Converts a value encoded using the the Macintosh Code Page to UTF-8.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls SingleByteToUTF8 to convert the specified string using the character translation array in ArrayMacintoshToUTF8.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="MacintoshToUTF8.Result">
-        <short/>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="MacintoshToUTF8.s">
-        <short/>
+        <short>String with the value in the Macintosh Roman encoding.</short>
       </element>
 
       <element name="SingleByteToUTF8">
-        <short>Converts a string with single-byte values to UTF-8 using a character mapping table.</short>
-        <descr/>
+        <short>Converts a string with single-byte values to UTF-8 using a character translation array.</short>
+        <descr>
+          <p>
+            s is the string, in its single-byte encoding, with the character values converted in the routine.
+          </p>
+          <p>
+            Table is a TCharToUTF8Table type and contains an array with the multi-byte values for each of the character using the UTF-8 encoding. The array has 256 elements representing #0 and each of the decimal values in the single byte character set, and may contain 1-4 byte values as needed for the UTF-8 encoding.
+          </p>
+          <p>
+            SingleByteToUTF8 iterates over the character values in s, and converts each single-byte character to the multi-byte value at the corresponding ordinal position in Table. If s is an empty string (''), the return value is also an empty string.
+          </p>
+          <p>
+            The return value is cast to a RawByteString type, and its code page is set to CP_UTF8 (65001).
+          </p>
+        </descr>
         <seealso>
           <link id="TCharToUTF8Table"/>
           <link id="#lazutils.codepagescommon.ArrayISO_8859_1ToUTF8">ArrayISO_8859_1ToUTF8</link>
@@ -695,543 +973,1070 @@
       </element>
 
       <element name="UCS2LEToUTF8">
-        <short>Converts a value in UCS 2-byte LE encoding to UTF8.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UCS 2-byte LE encoding to UTF-8.</short>
+        <descr>
+          <p>
+            <var>UCS2LEToUTF8</var> is a <var>String</var> function used to convert a value encoded using UCS2 LE (Little Endian) to its UTF-8 encoding. UCS2  is a fixed-length encoding where each character is represented using 2 bytes (16-bits). Byte values are stored in Least Significant (Little Endian) byte order.
+          </p>
+          <p>
+            UCS2LEToUTF8 iterates over the characters in the string value, and converts each character to the variable length multi-byte encoding used for characters in UTF-8. LEToN is called to convert the byte values to the byte order used for the platform. The UnicodeToUTF8SkipErrors routine in <file>lazutf8.pas</file> is called to handle code points which are malformed, require translation or are not used in UTF-8.
+          </p>
+          <p>
+            An exception is raised in UCS2LEToUTF8 if the length of the converted string is longer than 1.5 times the original string length.
+          </p>
+          <p>
+            The return value is cast to a RawByteString type, and SetCodePage is called to set the code page to CP_UTF8 (65001) in the result.
+          </p>
+          <p>
+            No actions are performed in the routine when s is an empty string (''), and the return value is an empty string.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazutf8.UnicodeToUTF8SkipErrors">UnicodeToUTF8SkipErrors</link>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+          <link id="#rtl.system.LEToN">LEToN</link>
+        </seealso>
       </element>
       <element name="UCS2LEToUTF8.Result">
-        <short/>
+        <short>String value after conversion to UTF-8 encoding.</short>
       </element>
       <element name="UCS2LEToUTF8.s">
-        <short/>
+        <short>String value using UCS2 LE encoding.</short>
       </element>
 
       <element name="UCS2BEToUTF8">
-        <short>Converts a value in UCS 2-byte BE encoding to UTF8.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UCS 2-byte BE encoding to UTF-8.</short>
+        <descr>
+          <p>
+            <var>UCS2BEToUTF8</var> is a <var>String</var> function used to convert a value encoded using UCS2 BE (Big Endian) to its UTF-8 encoding. UCS2  is a fixed-length encoding where each character is represented using 2 bytes (16-bits). Byte values are stored in Most Significant (Big Endian) byte order.
+          </p>
+          <p>
+            UCS2BEToUTF8 iterates over the characters in the string value, and converts each character to the variable length multi-byte encoding used for characters in UTF-8. BEToN is called to convert the byte values to the byte order used for the platform. The UnicodeToUTF8SkipErrors routine in <file>lazutf8.pas</file> is called to handle code points which are malformed, require translation or are not used in UTF-8.
+          </p>
+          <p>
+            An exception is raised in UCS2BEToUTF8 if the length of the converted string is longer than 1.5 times the original string length.
+          </p>
+          <p>
+            The return value is cast to a RawByteString type, and SetCodePage is called to set the code page to CP_UTF8 (65001) in the result.
+          </p>
+          <p>
+            No actions are performed in the routine when s is an empty string (''), and the return value is an empty string.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazutf8.UnicodeToUTF8SkipErrors">UnicodeToUTF8SkipErrors</link>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+          <link id="#rtl.system.BEToN">BEToN</link>
+        </seealso>
       </element>
       <element name="UCS2BEToUTF8.Result">
-        <short/>
+        <short>String value after conversion to UTF-8 encoding.</short>
       </element>
       <element name="UCS2BEToUTF8.s">
-        <short/>
+        <short>String value using UCS2 BE encoding.</short>
       </element>
 
       <element name="UTF8ToUTF8BOM">
-        <short>Converts a value in UTF-8 encoding to UTF-8 with a Byte Order Mark.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to UTF-8 with a Byte Order Mark.</short>
+        <descr>
+          <p>
+            UTF8ToUTF8BOM simply prepends the byte values in UTF8BOM to the value passed in the s argument. No actual encoding conversion is required. The return value contains the concatenated values.
+          </p>
+        </descr>
+        <seealso>
+          <link id="UTF8BOM"/>
+        </seealso>
       </element>
       <element name="UTF8ToUTF8BOM.Result">
-        <short/>
+        <short>UTF-8-encoded string value after the BOM is inserted at the beginning of the string.</short>
       </element>
       <element name="UTF8ToUTF8BOM.s">
-        <short/>
+        <short>UTF8-encoded string value updated in the routine.</short>
       </element>
 
       <element name="UTF8ToISO_8859_1">
-        <short>Converts a value in UTF-8 encoding to ISO 8859-1.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to ISO 8859-1.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_1</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-1 (Central European) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-1 code page (28591). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_1 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_1 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToISO_8859_1.Result">
-        <short/>
+        <short>String value after conversion to ISO 8859-1.</short>
       </element>
       <element name="UTF8ToISO_8859_1.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToISO_8859_1.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+        </short>
+      </element>
+
+      <element name="UTF8ToISO_8859_15">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-15.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_15</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-15 (Western European) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-15 code page (28605). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_15 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_15 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_15.Result">
+        <short>String value after conversion to ISO 8859-15.</short>
+      </element>
+      <element name="UTF8ToISO_8859_15.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_15.SetTargetCodePage">
+        <short>
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+        </short>
       </element>
 
       <element name="UTF8ToISO_8859_2">
-        <short>Converts a value in UTF-8 encoding to ISO 8859-2.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to ISO 8859-2.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_2</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-2 (Eastern European) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-2 code page (28592). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_2 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_2 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToISO_8859_2.Result">
-        <short/>
+        <short>String value after conversion to ISO 8859-2.</short>
       </element>
       <element name="UTF8ToISO_8859_2.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToISO_8859_2.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1250">
-        <short>Converts a value in UTF-8 encoding to Code Page 1250.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 1250.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1250</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1250 (Central European) encoding.
+          </p>
+          <p>
+            UTF8ToCP1250 calls the UTF8ToSingleByte routine using UnicodeToCP1250 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP1250 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1250 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1250 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1250.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1250.</short>
       </element>
       <element name="UTF8ToCP1250.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1250.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1251">
-        <short>Converts a value in UTF-8 encoding to Code Page 1251.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 1251.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1251</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1251 (Cyrillic) encoding.
+          </p>
+          <p>
+            UTF8ToCP1251 calls the UTF8ToSingleByte routine using UnicodeToCP1251 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#152) to the target code page. The character translation table in UnicodeToCP1251 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1251 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1251 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1251.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1251.</short>
       </element>
       <element name="UTF8ToCP1251.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1251.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1252">
-        <short>Converts a value in UTF-8 encoding to Code Page 1252.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 1252.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1252</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1252 (Latin 1) encoding.
+          </p>
+          <p>
+            UTF8ToCP1252 calls the UTF8ToSingleByte routine using UnicodeToCP1252 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#128) to the target code page. The character translation table in UnicodeToCP1252 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1252 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1252 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1252.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1252.</short>
       </element>
       <element name="UTF8ToCP1252.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1252.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1253">
-        <short>Converts a value in UTF-8 encoding to Code Page 1253.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 1253.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1253</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1253 (Greek) encoding.
+          </p>
+          <p>
+            UTF8ToCP1253 calls the UTF8ToSingleByte routine using UnicodeToCP1253 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP1253 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1253 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1253 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1253.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1253.</short>
       </element>
       <element name="UTF8ToCP1253.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1253.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1254">
-        <short>Converts a value in UTF-8 encoding to Code Page 1254.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 1254.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1254</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1254 (Turkish) encoding.
+          </p>
+          <p>
+            UTF8ToCP1254 calls the UTF8ToSingleByte routine using UnicodeToCP1254 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP1254 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1254 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1254 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1254.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1254.</short>
       </element>
       <element name="UTF8ToCP1254.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1254.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1255">
-        <short>Converts a value in UTF-8 encoding to Code Page 1255.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 1255.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1255</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1255 (Hebrew) encoding.
+          </p>
+          <p>
+            UTF8ToCP1255 calls the UTF8ToSingleByte routine using UnicodeToCP1255 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP1255 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1255 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1255 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1255.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1255.</short>
       </element>
       <element name="UTF8ToCP1255.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1255.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1256">
-        <short>Converts a value in UTF-8 encoding to Code Page 1256.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 1256.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1256</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1256 (Arabic) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the Arabic  code page (1256). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToCP1256 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToCP1256 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1256.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1256.</short>
       </element>
       <element name="UTF8ToCP1256.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1256.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1257">
-        <short>Converts a value in UTF-8 encoding to Code Page 1257.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 1257.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1257</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1257 (Baltic) encoding.
+          </p>
+          <p>
+            UTF8ToCP1257 calls the UTF8ToSingleByte routine using UnicodeToCP1257 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP1257 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1257 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1255 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1257.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1257.</short>
       </element>
       <element name="UTF8ToCP1257.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1257.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP1258">
-        <short>Converts a value in UTF-8 encoding to Code Page 1258.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 1258.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP1258</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 1258 (Vietnamese) encoding.
+          </p>
+          <p>
+            UTF8ToCP1258 calls the UTF8ToSingleByte routine using UnicodeToCP1258 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP1258 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 1258 in the return value.
+          </p>
+          <p>
+            UTF8ToCP1258 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP1258.Result">
-        <short/>
+        <short>String value after conversion to Code Page 1258.</short>
       </element>
       <element name="UTF8ToCP1258.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP1258.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP437">
-        <short>Converts a value in UTF-8 encoding to Code Page 437.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 437.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP437</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 437 (DOS Latin US) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the DOS Latin US code page (437). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToCP437 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToCP437 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP437.Result">
-        <short/>
+        <short>String value after conversion to Code Page 437.</short>
       </element>
       <element name="UTF8ToCP437.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP437.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP850">
-        <short>Converts a value in UTF-8 encoding to Code Page 850.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 850.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP850</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 850 (DOS Western Europe) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the DOS Western Europe code page (850). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToCP850 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToCP850 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP850.Result">
-        <short/>
+        <short>String value after conversion to Code Page 850.</short>
       </element>
       <element name="UTF8ToCP850.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP850.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP852">
-        <short>Converts a value in UTF-8 encoding to Code Page 852.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 852.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP852</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 852 (DOS Central Europe) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the DOS Central Europe code page (852). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToCP852 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToCP852 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP852.Result">
-        <short/>
+        <short>String value after conversion to Code Page 852.</short>
       </element>
       <element name="UTF8ToCP852.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP852.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP866">
-        <short>Converts a value in UTF-8 encoding to Code Page 866.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 866.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP866</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 866 (DOS Cyrillic Russian) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the DOS Cyrillic Russian code page (866). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToCP866 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToCP866 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP866.Result">
-        <short/>
+        <short>String value after conversion to Code Page 866.</short>
       </element>
       <element name="UTF8ToCP866.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP866.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToCP874">
-        <short>Converts a value in UTF-8 encoding to Code Page 874.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a  string from UTF-8 encoding to Code Page 874.</short>
+        <descr>
+          <p>
+            <var>UTF8ToCP874</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Code Page 874 (Thai) encoding.
+          </p>
+          <p>
+            UTF8ToCP874 calls the UTF8ToSingleByte routine using UnicodeToCP874 to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because of a failure when translating Unicode code points (#129) to the target code page. The character translation table in UnicodeToCP874 is used instead. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 874 in the return value.
+          </p>
+          <p>
+            UTF8ToCP874 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP874.Result">
-        <short/>
+        <short>String value after conversion to Code Page 874.</short>
       </element>
       <element name="UTF8ToCP874.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToCP874.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToKOI8R">
-        <short>Converts a value in UTF-8 encoding to KOI-8R.</short>
-        <descr/>
+        <short>Converts a  string from UTF-8 encoding to KOI8-R encoding.</short>
+        <descr>
+          <p>
+            <var>UTF8ToKOI8R</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the KOI8-R (Russian Cyrillic 8-bit) encoding. KOI8R stands for  Kod Obmena Informatsiey, 8-bit Russian.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the KOI8-R  code page (20866). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToKOI8R to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToKOI8R is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToKOI8R.Result">
-        <short/>
+        <short>String value after conversion to KOI8-R encoding.</short>
       </element>
       <element name="UTF8ToKOI8R.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToKOI8R.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToKOI8U">
-        <short>Converts a value in UTF-8 encoding to KOI-8U.</short>
-        <descr/>
+        <short>Converts a  string from UTF-8 encoding to KOI8-U encoding.</short>
+        <descr>
+          <p>
+            <var>UTF8ToKOI8U</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the KOI8-U (Russian Ukranian 8-bit) encoding. KOI8R stands for  Kod Obmena Informatsiey, 8-bit Ukranian.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the KOI8-U  code page (21866). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToKOI8U to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToKOI8U is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToKOI8U.Result">
-        <short/>
+        <short>String value after conversion to KOI8-U encoding.</short>
       </element>
       <element name="UTF8ToKOI8U.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToKOI8U.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToKOI8RU">
-        <short>Converts a value in UTF-8 encoding to KOI-8RU.</short>
-        <descr/>
+        <short>Converts a  string from UTF-8 encoding to KOI8-RU encoding.</short>
+        <descr>
+          <p>
+            <var>UTF8ToKOI8RU</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the KOI8RU (Russian, Belarusian, Ukranian Cyrillic) encoding.
+          </p>
+          <p>
+            UTF8ToKOI8RU calls the UTF8ToSingleByte routine using UnicodeToKOI8RU to perform character conversions needed for the target encoding. System code pages are not used (when enabled) because KOI8RU does not have an official code page. The character translation table in UnicodeToKOI8RU is used to convert character values for the encoding. When SetTargetCodePage is True, SetCodePage is called (without character conversion) to set the code page to 0 in the return value.
+          </p>
+          <p>
+            UTF8ToKOI8RU is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToKOI8RU.Result">
-        <short/>
+        <short>String value after conversion to KOI8-RU encoding.</short>
       </element>
       <element name="UTF8ToKOI8RU.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToKOI8RU.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToMacintosh">
-        <short>Converts a value in UTF-8 encoding to the Macintosh Code Page.</short>
-        <descr/>
+        <short>Converts a value from UTF-8 encoding to the Macintosh Code Page.</short>
+        <descr>
+          <p>
+            <var>UTF8ToMacintosh</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the Apple Macintosh Roman code page.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the Macintosh Roman code page (10000). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToMacintosh to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToMacintosh is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToMacintosh.Result">
-        <short/>
+        <short>String value after conversion to Macintosh encoding.</short>
       </element>
       <element name="UTF8ToMacintosh.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToMacintosh.SetTargetCodePage">
-        <short/>
+        <short>
+          True if the target code page is set in the return value, False if a code page is not used.
+        </short>
       </element>
 
       <element name="UTF8ToSingleByte">
         <short>
-          Converts a UTF-8-encoded value to a single-bye character set using a conversion function.
+          Converts a UTF-8-encoded string value to a single-bye character set using a conversion function.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            UTF8ToSingleByte is used in an internal routine to convert the UTF-8-encoded value in s by calling the custom conversion routine in UTF8CharConvFunc. The return value is a string with the single-byte representation for the string value. UTF8ToSingleByte is called when the UseSystemCPConv compiler flag has not been defined for the platform, and system code pages are not availabe for the purpose.
+          </p>
+          <p>
+            No actions are performed in the routine when s is an empty string (''), and the return value is set to an empty string.
+          </p>
+          <p>
+            UTF8ToSingleByte iterates over the Unicode codepoints in s, and calls the routine in UTF8CharConvFunc for each of the codepoints. If a codepoint is not handled by the UTF8CodepointToUnicode routine, the value in ConvertEncodingErrorMode is used to determine the action taken for the character value. This includes:
+          </p>
+          <dl>
+            <dt>ceemSkip</dt>
+            <dd>The character value is ignored.</dd>
+            <dt>ceemReplace</dt>
+            <dd>Inserts a '?' character for the unknown codepoint.</dd>
+            <dt>ceemReturnEmpty</dt>
+            <dd>Returns an empty string ('') for the conversion routine.</dd>
+            <dt>ceemException</dt>
+            <dd>Raises an EConvertError exception with the message 'Cannot convert UTF8 to single byte'.</dd>
+          </dl>
+          <p>
+            UTF8ToSingleByte is called from an internal conversion routine, and occurs when the following routines are executed:
+          </p>
+          <ul>
+            <li>UTF8ToISO_8859_1</li>
+            <li>UTF8ToISO_8859_2</li>
+            <li>UTF8ToISO_8859_15</li>
+            <li>UTF8ToCP1250</li>
+            <li>UTF8ToCP1251</li>
+            <li>UTF8ToCP1252</li>
+            <li>UTF8ToCP1253</li>
+            <li>UTF8ToCP1254</li>
+            <li>UTF8ToCP1255</li>
+            <li>UTF8ToCP1256</li>
+            <li>UTF8ToCP1257</li>
+            <li>UTF8ToCP1258</li>
+            <li>UTF8ToCP437</li>
+            <li>UTF8ToCP850</li>
+            <li>UTF8ToCP852</li>
+            <li>UTF8ToCP866</li>
+            <li>UTF8ToCP874</li>
+            <li>UTF8ToKOI8R</li>
+            <li>UTF8ToKOI8U</li>
+            <li>UTF8ToKOI8RU</li>
+            <li>UTF8ToMacintosh</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="ConvertEncoding"/>
+        </seealso>
       </element>
       <element name="UTF8ToSingleByte.Result">
-        <short/>
+        <short>String value after conversion to an encoding using a single-byte character set.</short>
       </element>
       <element name="UTF8ToSingleByte.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
       <element name="UTF8ToSingleByte.UTF8CharConvFunc">
-        <short/>
+        <short>Routine used translate Unicode code points to the singe-byte character set for the encoding.</short>
       </element>
 
       <element name="UTF8ToUCS2LE">
-        <short>Converts a UTF-8-encoded value  to UCS 2-byte LE.</short>
-        <descr/>
+        <short>Converts a UTF-8-encoded value to UCS 2-byte Little Endian encoding.</short>
+        <descr>
+          <p>
+            UTF8ToUCS2LE converts the string value in s from its multi-byte variable length UTF-8 encoding to the fixed length 16-bit character set used in the UCS2 LE (Little Endian) encoding. UTF8ToUCS2LE iterates over each of the UTF-8 codepoints in s, and calls NtoLE to convert the Unicode character value to the Least Signifcant byte order used in the encoding. Unicode characters with a value $FFFF or greater are ignored in the conversion.
+          </p>
+          <p>
+            No actions are  performed in the routine when s contains an empty string (''), and the return value is set to an empty string as well.
+          </p>
+          <p>
+            UTF8ToUCS2LE does not include a byte order mark (BOM) in the UCS2-encoded output.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToUCS2LE.Result">
-        <short/>
+        <short>String value after conversion to UCS2 LE encoding.</short>
       </element>
       <element name="UTF8ToUCS2LE.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
 
       <element name="UTF8ToUCS2BE">
-        <short>Converts a UTF-8-encoded value  to UCS 2-byte BE.</short>
-        <descr/>
+        <short>Converts a UTF-8-encoded value to UCS 2-byte Big Endian encoding.</short>
+        <descr>
+          <p>
+            UTF8ToUCS2BE converts the string value in s from its multi-byte variable length UTF-8 encoding to the fixed length 16-bit character set used in the UCS2 BE (Big Endian) encoding. UTF8ToUCS2BE iterates over each of the UTF-8 codepoints in s, and calls NtoBE to convert the Unicode character value to the Most Signifcant byte order used in the encoding. Unicode characters with a value $FFFF or greater are ignored in the conversion.
+          </p>
+          <p>
+            No actions are  performed in the routine when s contains an empty string (''), and the return value is set to an empty string as well.
+          </p>
+          <p>
+            UTF8ToUCS2BE does not include a byte order mark (BOM) in the UCS2-encoded output.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToUCS2BE.Result">
-        <short/>
+        <short>String value after conversion to UCS2 BE encoding.</short>
       </element>
       <element name="UTF8ToUCS2BE.s">
-        <short/>
+        <short>UTF-8-encoded string value converted in the routine.</short>
       </element>
 
       <element name="CP932ToUTF8">
-        <short>Converts a value using Code Page 932 to UTF-8.</short>
-        <descr/>
+        <short>Converts a string value using Code Page 932 to UTF-8.</short>
+        <descr>
+          <p>
+            CP932ToUTF8 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP932ToUTF8.Result">
-        <short/>
+        <short>String value after conversion to UTF-8 encoding.</short>
       </element>
       <element name="CP932ToUTF8.s">
-        <short/>
+        <short>String value using code page 932.</short>
       </element>
 
       <element name="CP936ToUTF8">
-        <short>Converts a value using Code Page 936 to UTF-8.</short>
-        <descr/>
+        <short>Converts a string value using Code Page 936 to UTF-8.</short>
+        <descr>
+          <p>
+            CP936ToUTF8 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP936ToUTF8.Result">
-        <short/>
+        <short>String value after conversion to UTF-8 encoding.</short>
       </element>
       <element name="CP936ToUTF8.s">
-        <short/>
+        <short>String value using code page 936.</short>
       </element>
 
       <element name="CP949ToUTF8">
-        <short>Converts a value using Code Page 949 to UTF-8.</short>
-        <descr/>
+        <short>Converts a string value using Code Page 949 to UTF-8.</short>
+        <descr>
+          <p>
+            CP949ToUTF8 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP949ToUTF8.Result">
-        <short/>
+        <short>String value after conversion to UTF-8 encoding.</short>
       </element>
       <element name="CP949ToUTF8.s">
-        <short/>
+        <short>String value using code page 949.</short>
       </element>
 
       <element name="CP950ToUTF8">
-        <short>Converts a value using Code Page 950 to UTF-8.</short>
-        <descr/>
+        <short>Converts a string value using Code Page 950 to UTF-8.</short>
+        <descr>
+          <p>
+            CP950ToUTF8 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CP950ToUTF8.Result">
-        <short/>
+        <short>String value after conversion to UTF-8 encoding.</short>
       </element>
       <element name="CP950ToUTF8.s">
-        <short/>
+        <short>String value using code page 950.</short>
       </element>
 
       <element name="UTF8ToCP932">
-        <short>Converts a value using UTF-8 encoding to Code Page 932.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 932.</short>
+        <descr>
+          <p>
+            UTF8ToCP932 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP932.Result">
-        <short/>
+        <short>String value after conversion to code page 932.</short>
       </element>
       <element name="UTF8ToCP932.s">
-        <short/>
+        <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP932.SetTargetCodePage">
-        <short/>
+        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
       </element>
 
       <element name="UTF8ToCP936">
-        <short>Converts a value using UTF-8 encoding to Code Page 936.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 936.</short>
+        <descr>
+          <p>
+            UTF8ToCP936 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP936.Result">
-        <short/>
+        <short>String value after conversion to code page 936.</short>
       </element>
       <element name="UTF8ToCP936.s">
-        <short/>
+        <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP936.SetTargetCodePage">
-        <short/>
+        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
       </element>
 
       <element name="UTF8ToCP949">
-        <short>Converts a value using UTF-8 encoding to Code Page 949.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 949.</short>
+        <descr>
+          <p>
+            UTF8ToCP949 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP949.Result">
-        <short/>
+        <short>String value after conversion to code page 949.</short>
       </element>
       <element name="UTF8ToCP949.s">
-        <short/>
+        <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP949.SetTargetCodePage">
-        <short/>
+        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
       </element>
 
       <element name="UTF8ToCP950">
-        <short>Converts a value using UTF-8 encoding to Code Page 950.</short>
-        <descr/>
-        <seealso/>
+        <short>Converts a string from UTF-8 encoding to Code Page 950.</short>
+        <descr>
+          <p>
+            UTF8ToCP950 is defined for platforms where Asian code pages are enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
       </element>
       <element name="UTF8ToCP950.Result">
-        <short/>
+        <short>String value after conversion to code page 949.</short>
       </element>
       <element name="UTF8ToCP950.s">
-        <short/>
+        <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToCP950.SetTargetCodePage">
-        <short/>
+        <short>True to set the code page for the result, Falase to use the ANSI code page.</short>
       </element>
 
       <element name="UTF8ToDBCS">
         <short>
-          Converts a value from UTF-8 encoding to Double Byte Character Set encoding.
+          Converts a value from UTF-8 encoding to a Double Byte Character Set encoding.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Defined for platforms where Asian code pages are enabled. This is a common function used in all conversion routines which convert UTF-8 to an Asian code page.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="UTF8ToDBCS.Result">
-        <short/>
+        <short>String value using the double-byte character set generated in the conversion function.</short>
       </element>
       <element name="UTF8ToDBCS.s">
-        <short/>
+        <short>String value using UTF-8 encoding.</short>
       </element>
       <element name="UTF8ToDBCS.UTF8CharConvFunc">
-        <short/>
+        <short>Conversion routine used to translate characters to the double-byte encoding used in the result.</short>
       </element>
 
       <element name="GetSupportedEncodings">
-        <short>Fills the specified string list with supported encoding names for the platform.</short>
+        <short>Adds supported encoding names for the platform to the specified string list.</short>
         <descr>
           <p>
             <var>GetSupportedEncodings</var> is a procedure used to get the names for the supported encodings on the platform or operating system. GetSupportedEncodings adds each of the encoding names to <var>List</var>; it does <b>NOT</b> removing any existing content in the string list.
           </p>
           <p>
-            GetSupportedEncodings stores the following values in List:
+            GetSupportedEncodings stores the following values in the List argument:
           </p>
           <ul>
             <li>'UTF-8'</li>
             <li>'UTF-8BOM'</li>
             <li>'Ansi'</li>
-            <li>EncodingCP1250</li>
-            <li>EncodingCP1251</li>
-            <li>EncodingCP1252</li>
-            <li>EncodingCP1253</li>
-            <li>EncodingCP1254</li>
-            <li>EncodingCP1255</li>
-            <li>EncodingCP1256</li>
-            <li>EncodingCP1257</li>
-            <li>EncodingCP1258</li>
-            <li>EncodingCP437</li>
-            <li>EncodingCP850</li>
-            <li>EncodingCP852</li>
-            <li>EncodingCP866</li>
-            <li>EncodingCP874</li>
+            <li>'cp1250' (EncodingCP1250)</li>
+            <li>'cp1251' (EncodingCP1251)</li>
+            <li>'cp1252' (EncodingCP1252)</li>
+            <li>'cp1253' (EncodingCP1253)</li>
+            <li>'cp1254' (EncodingCP1254)</li>
+            <li>'cp1255' (EncodingCP1255)</li>
+            <li>'cp1256' (EncodingCP1256)</li>
+            <li>'cp1257' (EncodingCP1257)</li>
+            <li>'cp1258' (EncodingCP1258)</li>
+            <li>'cp437' (EncodingCP437)</li>
+            <li>'cp850' (EncodingCP850)</li>
+            <li>'cp852' (EncodingCP852)</li>
+            <li>'cp866' (EncodingCP866)</li>
+            <li>'cp874' (EncodingCP874)</li>
           </ul>
           <p>
             For platforms that support Asian code pages, the following encoding names are added to the list:
           </p>
           <ul>
-            <li>EncodingCP932</li>
-            <li>EncodingCP936</li>
-            <li>EncodingCP950</li>
-            <li>EncodingCP949</li>
+            <li>'cp932' (EncodingCP932)</li>
+            <li>'cp936' (EncodingCP936)</li>
+            <li>'cp950' (EncodingCP950)</li>
+            <li>'cp949' (EncodingCP949)</li>
           </ul>
           <p>
              The following encoding names are added to the end of the list:
@@ -1251,7 +2056,7 @@
         <seealso/>
       </element>
       <element name="GetSupportedEncodings.List">
-        <short>String list where supported encoding names are added.</short>
+        <short>String list updated with the supported encoding names.</short>
       </element>
 
     </module>
