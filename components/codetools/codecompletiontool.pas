@@ -6471,7 +6471,11 @@ begin
   xtByteBool,
   xtWordBool,
   xtLongBool,
-  xtQWordBool: begin AddAssignment('False'); AddAssignment('True'); end;
+  xtQWordBool,
+  xtBoolean8,
+  xtBoolean16,
+  xtBoolean32,
+  xtBoolean64: begin AddAssignment('False'); AddAssignment('True'); end;
   xtString,
   xtAnsiString,
   xtShortString,

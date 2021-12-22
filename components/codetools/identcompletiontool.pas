@@ -3763,7 +3763,9 @@ begin
 
     case ExprType.Desc of
 
-    xtBoolean,xtByteBool,xtWordBool,xtLongBool,xtQWordBool:
+    xtBoolean,
+    xtByteBool,xtWordBool,xtLongBool,xtQWordBool,
+    xtBoolean8,xtBoolean16,xtBoolean32,xtBoolean64:
       begin
         List.Add('True');
         List.Add('False');
