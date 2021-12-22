@@ -1753,6 +1753,10 @@ begin
     // types
     Add('ANSISTRING' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BOOLEAN'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BOOLEAN8'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BOOLEAN16'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BOOLEAN32'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('BOOLEAN64'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTEBOOL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CHAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);

@@ -246,6 +246,10 @@ type
     xtWordBool,    // wordbool
     xtLongBool,    // longbool
     xtQWordBool,   // qwordbool
+    xtBoolean8,    // boolean8
+    xtBoolean16,    // boolean16
+    xtBoolean32,    // boolean32
+    xtBoolean64,    // boolean64
     xtString,      // string
     xtAnsiString,  // ansistring
     xtShortString, // shortstring
@@ -298,6 +302,10 @@ var
     'WordBool',
     'LongBool',
     'QWordBool',
+    'Boolean8',
+    'Boolean16',
+    'Boolean32',
+    'Boolean64',
     'String',
     'AnsiString',
     'ShortString',
@@ -337,7 +345,9 @@ const
   xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongint,
                        xtLongWord, xtWord, xtCardinal, xtSmallInt, xtShortInt,
                        xtByte,xtNativeInt,xtNativeUInt,xtSizeInt];
-  xtAllBooleanTypes = [xtBoolean, xtByteBool, xtWordBool, xtLongBool,xtQWordBool];
+  xtAllBooleanTypes = [xtBoolean,
+                       xtByteBool, xtWordBool, xtLongBool,xtQWordBool,
+                       xtBoolean8,xtBoolean16,xtBoolean32,xtBoolean64];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble,
                     xtExtended, xtCExtended, xtCurrency, xtComp];
   xtAllStringTypes = [xtConstString, xtShortString, xtString, xtAnsiString];
@@ -1323,6 +1333,14 @@ begin
     Result:=xtLongBool
   else if CompareIdentifiers(Identifier,'QWORDBOOL')=0 then
     Result:=xtQWordBool
+  else if CompareIdentifiers(Identifier,'BOOLEAN8')=0 then
+    Result:=xtBoolean8
+  else if CompareIdentifiers(Identifier,'BOOLEAN16')=0 then
+    Result:=xtBoolean16
+  else if CompareIdentifiers(Identifier,'BOOLEAN32')=0 then
+    Result:=xtBoolean32
+  else if CompareIdentifiers(Identifier,'BOOLEAN64')=0 then
+    Result:=xtBoolean64
   else if CompareIdentifiers(Identifier,'CHAR')=0 then
     Result:=xtChar
   else if CompareIdentifiers(Identifier,'WIDECHAR')=0 then
@@ -12803,10 +12821,8 @@ function TFindDeclarationTool.FindForInTypeAsString(TermPos: TAtomPosition;
       xtByte,
       xtWord,
       xtBoolean,
-      xtByteBool,
-      xtWordBool,
-      xtLongBool,
-      xtQWordBool,
+      xtByteBool,xtWordBool,xtLongBool,xtQWordBool,
+      xtBoolean8,xtBoolean16,xtBoolean32,xtBoolean64,
       xtNativeInt,
       xtNativeUInt:
         Result:=ExpressionTypeDescNames[SubExprType.Desc];
@@ -13605,6 +13621,7 @@ begin
         xtWordBool,
         xtLongBool,
         xtQWordBool,
+        xtBoolean8,xtBoolean16,xtBoolean32,xtBoolean64,
         xtString,
         xtAnsiString,
         xtShortString,
@@ -13641,7 +13658,8 @@ begin
     xtByteBool,
     xtWordBool,
     xtLongBool,
-    xtQWordBool:
+    xtQWordBool,
+    xtBoolean8,xtBoolean16,xtBoolean32,xtBoolean64:
       Result:=ExpressionTypeDescNames[xtBoolean];
 
     xtString,

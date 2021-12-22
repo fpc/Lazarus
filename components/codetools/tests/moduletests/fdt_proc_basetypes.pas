@@ -22,6 +22,8 @@ procedure DoIt{#unicodestring}(p: unicodestring); external;
 procedure DoIt{#widestring}(p: widestring); external;
 procedure DoIt{#rawbytestring}(p: rawbytestring); external;
 procedure DoIt{#pointer}(p: pointer); external;
+procedure DoIt{#boolean8}(b: boolean8); external;
+procedure DoIt{#bytebool}(b: bytebool); external;
 
 implementation
 
@@ -44,6 +46,8 @@ var
   us: unicodestring;
   rs: rawbytestring;
   p: pointer;
+  b8: boolean8;
+  bb: bytebool;
 initialization
   DoIt{@boolean}(bo);
   DoIt{@byte}(by);
@@ -63,5 +67,7 @@ initialization
   DoIt{@unicodestring}(us);
   DoIt{@rawbytestring}(rs);
   DoIt{@pointer}(p);
+  DoIt{@boolean8}(b8);
+  DoIt{@bytebool}(bb);
 end.
 
