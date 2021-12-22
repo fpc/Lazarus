@@ -130,6 +130,7 @@ type
     // LoadedTargetImageAddr.
     constructor Create({%H-}ASource: TDbgFileLoader; {%H-}ADebugMap: TObject; ALoadedTargetImageAddr: TDbgPtr; OwnSource: Boolean); virtual;
     procedure AddSubFilesToLoaderList(ALoaderList: TObject; PrimaryLoader: TObject); virtual;
+    function EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean; virtual;
     // The ImageBase is the address at which the linker assumed the binary will be
     // loaded at. So it is stored inside the binary itself and all addresses inside
     // the binary assume that once loaded into memory, it is loaded at this
@@ -535,6 +536,10 @@ begin
   //
 end;
 
+function TDbgImageReader.EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+begin
+  Result := False;
+end;
 
 procedure InitDebugInfoLists;
 begin

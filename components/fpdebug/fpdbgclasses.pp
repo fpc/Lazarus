@@ -88,6 +88,7 @@ type
   { TDbgCallstackEntry }
   TDbgThread = class;
   TFPDThreadArray = array of TDbgThread;
+  TDbgInstance = class;
   TDbgLibrary = class;
   TOSDbgClasses = class;
   TDbgAsmInstruction = class;
@@ -366,6 +367,8 @@ type
   public
     function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; virtual; abstract;
     function HasLocation(const ALocation: TDBGPtr): Boolean; virtual; abstract;
+    // A breakpoint could also be inside/part of a library.
+    function BelongsToInstance(const AnInstance: TDbgInstance): Boolean; virtual; abstract;
 
     procedure AddAddress(const ALocation: TDBGPtr); virtual; abstract;
     procedure RemoveAddress(const ALocation: TDBGPtr); virtual; abstract;
@@ -404,6 +407,7 @@ type
     destructor Destroy; override;
     function Hit(const AThreadID: Integer; ABreakpointAddress: TDBGPtr): Boolean; override;
     function HasLocation(const ALocation: TDBGPtr): Boolean; override;
+    function BelongsToInstance(const AnInstance: TDbgInstance): Boolean; override;
 
     procedure AddAddress(const ALocation: TDBGPtr); override;
     procedure RemoveAddress(const ALocation: TDBGPtr); override;
@@ -480,6 +484,11 @@ type
     function FindProcSymbol(const AName: String): TFpSymbol; overload;
     function FindProcSymbol(AAdress: TDbgPtr): TFpSymbol; overload;
     function  FindProcStartEndPC(AAdress: TDbgPtr; out AStartPC, AEndPC: TDBGPtr): boolean;
+
+    // Check if a certain (range of) address(es) belongs to a specific Instance
+    // (for example a library)
+    function EnclosesAddress(AnAddress: TDBGPtr): Boolean;
+    function EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
 
     procedure LoadInfo; virtual;
 
@@ -599,7 +608,6 @@ type
 
     function InsertBreakInstructionCode(const ALocation: TDBGPtr; out OrigValue: Byte): Boolean; virtual;
     function RemoveBreakInstructionCode(const ALocation: TDBGPtr; const OrigValue: Byte): Boolean; virtual;
-    procedure RemoveAllBreakPoints;
     procedure BeforeChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); virtual;
     procedure AfterChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer); virtual;
 
@@ -670,6 +678,11 @@ type
     function Continue(AProcess: TDbgProcess; AThread: TDbgThread; SingleStep: boolean): boolean; virtual;
     function WaitForDebugEvent(out ProcessIdentifier, ThreadIdentifier: THandle): boolean; virtual; abstract;
     function ResolveDebugEvent(AThread: TDbgThread): TFPDEvent; virtual;
+
+    // Remove (and free if applicable) all breakpoints for this process. When a
+    // library is specified as OnlyForLibrary, only breakpoints that belong to this
+    // library are cleared.
+    procedure RemoveAllBreakPoints(const OnlyForLibrary: TDbgLibrary = nil);
 
     function CheckForConsoleOutput(ATimeOutMs: integer): integer; virtual;
     function GetConsoleOutput: string; virtual;
@@ -1676,6 +1689,16 @@ begin
   Result := FDbgInfo.FindProcStartEndPC(AAdress, AStartPC, AEndPC);
 end;
 
+function TDbgInstance.EnclosesAddress(AnAddress: TDBGPtr): Boolean;
+begin
+  EnclosesAddressRange(AnAddress, AnAddress);
+end;
+
+function TDbgInstance.EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+begin
+  Result := FLoaderList.EnclosesAddressRange(AStartAddress, AnEndAddress);
+end;
+
 procedure TDbgInstance.LoadInfo;
 begin
   InitializeLoaders;
@@ -2410,7 +2433,7 @@ begin
     AfterChangingInstructionCode(ALocation, 1);
 end;
 
-procedure TDbgProcess.RemoveAllBreakPoints;
+procedure TDbgProcess.RemoveAllBreakPoints(const OnlyForLibrary: TDbgLibrary = nil);
 var
   i: LongInt;
   b: TFpInternalBreakBase;
@@ -2418,20 +2441,24 @@ begin
   i := FBreakpointList.Count - 1;
   while i >= 0 do begin
     b := FBreakpointList[i];
-    b.ResetBreak;
-    b.FProcess := nil;
-    FBreakpointList.Delete(i);
+    if not Assigned(OnlyForLibrary) or b.BelongsToInstance(OnlyForLibrary) then begin
+      b.ResetBreak;
+      b.FProcess := nil;
+      FBreakpointList.Delete(i);
+    end;
     dec(i);
   end;
   i := FWatchPointList.Count - 1;
   while i >= 0 do begin
     b := FWatchPointList[i];
-    b.ResetBreak;
-    b.FProcess := nil;
-    FWatchPointList.Delete(i);
+    if not Assigned(OnlyForLibrary) or b.BelongsToInstance(OnlyForLibrary) then begin
+      b.ResetBreak;
+      b.FProcess := nil;
+      FWatchPointList.Delete(i);
+    end;
     dec(i);
   end;
-  assert(FBreakMap.Count = 0, 'TDbgProcess.RemoveAllBreakPoints: FBreakMap.Count = 0');
+  assert(Assigned(OnlyForLibrary) or (FBreakMap.Count = 0), 'TDbgProcess.RemoveAllBreakPoints: FBreakMap.Count = 0');
 end;
 
 procedure TDbgProcess.BeforeChangingInstructionCode(const ALocation: TDBGPtr; ACount: Integer);
@@ -3217,6 +3244,30 @@ begin
       exit;
   end;
   Result := False;
+end;
+
+function TFpInternalBreakpoint.BelongsToInstance(const AnInstance: TDbgInstance): Boolean;
+var
+  i: Integer;
+  Hi: TDBGPtr;
+  Lo: TDBGPtr;
+begin
+  if Length(FLocation) = 0 then
+    Exit(False);
+
+  // Search for the lowest and higest locations
+  Lo := FLocation[0];
+  Hi := FLocation[0];
+  for i := 0 to High(FLocation) do
+    begin
+    if FLocation[i] > Hi then
+      Hi := FLocation[i]
+    else if FLocation[i] < Lo then
+      Lo := FLocation[i];
+    end;
+  // Check if the range between the lowest and highest location belongs to (fits into)
+  // the instance
+  Result := AnInstance.EnclosesAddressRange(Lo, Hi);
 end;
 
 procedure TFpInternalBreakpoint.AddAddress(const ALocation: TDBGPtr);

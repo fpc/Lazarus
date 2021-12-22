@@ -1778,6 +1778,7 @@ procedure TDbgController.SendEvents(out continue: boolean);
 var
   HasPauseRequest: Boolean;
   CurWatch: TFpInternalWatchpoint;
+  i: Integer;
 begin
   // reset pause request. If Pause() is called after this, it will be seen in the next loop
   HasPauseRequest := InterLockedExchange(FPauseRequest, 0) = 1;
@@ -1881,6 +1882,10 @@ begin
         continue:=true;
         if assigned(OnLibraryUnloadedEvent) and (Length(FCurrentProcess.LastLibrariesUnloaded)>0) then
           OnLibraryUnloadedEvent(continue, FCurrentProcess.LastLibrariesUnloaded);
+        // The library is unloaded by the OS, so all breakpoints are already gone.
+        // This is more to update our administration and free some memory.
+        for i := 0 to High(FCurrentProcess.LastLibrariesUnloaded) do
+          FCurrentProcess.RemoveAllBreakPoints(FCurrentProcess.LastLibrariesUnloaded[i]);
       end;
     deInternalContinue:
       begin

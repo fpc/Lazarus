@@ -84,6 +84,8 @@ type
     procedure CloseFileLoader;
     procedure AddToLoaderList(ALoaderList: TDbgImageLoaderList);
     function IsValid: Boolean;
+    function EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+
     property FileName: String read FFileName; // Empty if using USE_WIN_FILE_MAPPING
     property ImageBase: QWord read GetImageBase;
     property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
@@ -118,6 +120,8 @@ type
     function GetItem(Index: Integer): TDbgImageLoader;
     procedure SetItem(Index: Integer; AValue: TDbgImageLoader);
   public
+    function EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
     property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
@@ -163,6 +167,16 @@ end;
 procedure TDbgImageLoaderList.SetItem(Index: Integer; AValue: TDbgImageLoader);
 begin
   inherited SetItem(Index, AValue);
+end;
+
+function TDbgImageLoaderList.EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+var
+  i: Integer;
+begin
+  for i := 0 to Count -1 do
+    if Items[0].EnclosesAddressRange(AStartAddress, AnEndAddress) then
+      Exit(True);
+  Result := False;
 end;
 
 { TDbgImageLoaderLibrary }
@@ -303,6 +317,14 @@ end;
 function TDbgImageLoader.IsValid: Boolean;
 begin
   Result := FImgReader <> nil;
+end;
+
+function TDbgImageLoader.EnclosesAddressRange(AStartAddress, AnEndAddress: TDBGPtr): Boolean;
+begin
+  Result := False;
+  if not IsValid then
+    Exit;
+  Result := FImgReader.EnclosesAddressRange(AStartAddress, AnEndAddress);
 end;
 
 end.
