@@ -738,6 +738,7 @@ type
     Graph: TMinXGraph;
     Index: integer;
     PrevSameSwitchPair, NextSameSwitchPair: TMinXPair;
+    NextChangedSinceBestStored: TMinXPair;
     constructor Create(aLevel: TMinXLevel; aIndex: integer);
     destructor Destroy; override;
     procedure UnbindFromSwitchList;
@@ -753,11 +754,13 @@ type
   TMinXGraph = class
   private
     FGraphNodeToNode: TPointerToPointerTree; // TLvlGraphNode to TMinXNode
+    PairsChangedSinceBestStored: TMinXPair;
     procedure InitPairs;
     procedure UnbindPairs;
     procedure BindPairs;
     function ComputeCrossCount: integer;
     procedure StoreAsBest(CheckIfBetter: boolean);
+    procedure StoreAsBest(APair: TMinXPair);
     function ComputeHighestSwitchDiff(StartAtOld: boolean; IgnorePair: TMinXPair): integer;
   public
     Graph: TLvlGraph;
@@ -1735,13 +1738,52 @@ var
   Level: TMinXLevel;
   n: Integer;
 begin
+  if CheckIfBetter then begin // e.g. after Shuffly => a new full StoreAsBest is needed
+    PairsChangedSinceBestStored := TMinXPair(PtrUInt(-1));
+  end;
+
   if CheckIfBetter and (BestCrossCount>=0) and (BestCrossCount<CrossCount) then
     exit;
+  PairsChangedSinceBestStored := nil;
   BestCrossCount:=CrossCount;
+
+  for l:=0 to length(Pairs)-1 do
+    Pairs[l].NextChangedSinceBestStored := nil;
   for l:=0 to length(Levels)-1 do begin
     Level:=Levels[l];
     for n:=0 to length(Level.Nodes)-1 do
       Level.BestNodes[n]:=Level.Nodes[n].GraphNode;
+  end;
+end;
+
+procedure TMinXGraph.StoreAsBest(APair: TMinXPair);
+var
+  idx: Integer;
+  NextPair: TMinXPair;
+begin
+  if PairsChangedSinceBestStored = TMinXPair(PtrUInt(-1)) then begin
+    StoreAsBest(True);
+    exit;
+  end;
+  if (BestCrossCount>=0) and (BestCrossCount<CrossCount) then begin
+    if APair.NextChangedSinceBestStored = nil then begin
+      APair.NextChangedSinceBestStored := PairsChangedSinceBestStored;
+      PairsChangedSinceBestStored := APair;
+    end;
+    exit;
+  end;
+  BestCrossCount:=CrossCount;
+
+  while APair <> nil do begin
+    with APair.Level do begin
+      idx := APair.Index;
+      BestNodes[idx]:=Nodes[idx].GraphNode;
+      inc(idx);
+      BestNodes[idx]:=Nodes[idx].GraphNode;
+    end;
+    NextPair := APair.NextChangedSinceBestStored;
+    APair.NextChangedSinceBestStored := nil;
+    APair := NextPair;
   end;
 end;
 
@@ -1955,7 +1997,7 @@ begin
     for j:=0 to length(Node2.InEdges)-1 do
       UpdateSwitchDiff(Node1.InEdges[i],Node2.InEdges[j]);
 
-  StoreAsBest(true);
+  StoreAsBest(Pair);
 
   {$IFDEF CheckMinXGraph}
   ConsistencyCheck;
