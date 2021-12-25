@@ -80,7 +80,7 @@ var
     lpWin32;
     {$ENDIF}
     {$IFDEF darwin}{$DEFINE WidgetSetDefined}
-    lpCarbon;
+    lpCocoa;
     {$ENDIF}
     {$IFDEF HASAMIGA}{$DEFINE WidgetSetDefined}
     lpMUI;
