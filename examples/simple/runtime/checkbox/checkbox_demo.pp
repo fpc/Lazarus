@@ -77,7 +77,7 @@ Form1 : TForm1;
 constructor TForm1.Create(AOwner: TComponent);  
 begin
   inherited CreateNew(AOwner, 1);
-  Caption := 'CheckBox Demo V.02';
+  Caption := 'CheckBox Demo v0.3';
   LoadMainMenu;
 end;
 
@@ -151,7 +151,7 @@ begin
    begin
       if ToggleBox.checked
          then ToggleBox.Caption := 'Togglebox1'
-	 else ToggleBox.Caption := 'does nothing:-(';
+         else ToggleBox.Caption := 'does nothing:-(';
    end;
 end;
 
@@ -181,7 +181,6 @@ begin
    CheckBox1.Height :=20;
    CheckBox1.Width := 200;
    CheckBox1.OnCLick := @CheckBoxClick;
-//   CheckBox1.Show;
    CheckBox1.Caption := 'Checkbox 1';
 
    { Create a label which shows the state checked/unchecked of the checkbox}
@@ -191,7 +190,6 @@ begin
    label1.left := 220;
    label1.Height :=20;
    label1.Width := 100;
-//   label1.Show;
    label1.Caption := 'unchecked';
 
    { Sample panel here }
@@ -207,7 +205,6 @@ begin
      BevelOuter:= bvRaised;
      BorderWidth:= 4;
      BevelWidth:= 4;
-//     Show;
      Caption:= 'Hello world';
    end;     
 
@@ -218,7 +215,6 @@ begin
    Button2.Top := Checkbox1.Top; //45;
    Button2.Width := 180;
    Button2.Height := 20;
-//   Button2.Show;
    Button2.Caption := 'Toggle checkbox';
    Button2.OnClick := @Button2Click;
 
@@ -251,7 +247,6 @@ begin
    Button12.Left := 55;
    Button12.Top := 5;
 //   Button12.Flat:= true;
-//   Button12.Visible:= true;
 
    Button13 := TSpeedButton.Create(Self);
    Button13.GroupIndex:= 1;
@@ -261,8 +256,6 @@ begin
    Button13.Top := 5;
    Button13.Flat:= true;
    Button13.AllowAllUp:= true;
-//   Button13.Visible:= true;
-   
 
    { Create a label which shows the caption of the active radiobutton }
    label2 := TLabel.Create(Self);
@@ -271,7 +264,6 @@ begin
    label2.left := 220;
    label2.Height :=20;
    label2.Width := 200;
-//   label2.Show;
    label2.Caption := 'active: unknown';
 
    { Create a radio button }
@@ -283,7 +275,6 @@ begin
    RadioButton.Width := 200;
    RadioButton.OnCLick := @RadioButtonClick;
    RadioButton.Checked := false;  
-//   RadioButton.Show;
    RadioButton.Caption := 'Radio button 1';
    
    { Create a 2nd radiobutton }
@@ -297,7 +288,6 @@ begin
      Width := 200;
      OnCLick := @RadioButtonClick;
      Checked := true; 
-//     Show;
      Caption := 'Radiobutton 2'
    end;
 
@@ -312,7 +302,6 @@ begin
      Width := 200;
      OnCLick := @RadioButtonClick;
      Checked := false;  
-//     Show;
      Caption := 'Radiobutton 3'
    end;
 
@@ -325,7 +314,7 @@ begin
      left := 10;
      Height :=200;
      Width := 150;
-     OnCLick := @RadioGroupClick;
+     OnClick := @RadioGroupClick;
      RadioGroup.Items.Add ('No 1');
      RadioGroup.Items.Add ('No 2');
      RadioGroup.Items.Add ('No 3');
@@ -344,7 +333,6 @@ begin
    Button3.Top := 220;
    Button3.Width := 180;
    Button3.Height := 30;
-//   Button3.Show;
    Button3.Caption := 'Mystic Radiogroups';
    Button3.OnClick := @Button3Click;
 
@@ -365,7 +353,6 @@ begin
      Items.Add ('No 5');
      Items.Add ('No 6');
      ItemIndex := 1;
-//     Show;
      Caption := '3 columns';
    end;
 
@@ -379,7 +366,6 @@ begin
      Height :=30;
      Width := 240;
      OnCLick := @ToggleBoxClick;
-//     Show;
      Caption := 'ToggleBox 1'
    end;
 
@@ -404,6 +390,7 @@ end;
 {------------------------------------------------------------------------------}
 
 begin
+  Application.Title:='';
    Application.Initialize; { calls InitProcedure which starts up GTK }
    Application.CreateForm(TForm1, Form1);
    Application.Run;

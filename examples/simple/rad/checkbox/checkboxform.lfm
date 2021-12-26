@@ -3,7 +3,7 @@ object Form1: TForm1
   Height = 450
   Top = 131
   Width = 700
-  Caption = 'CheckBox Demo V.03'
+  Caption = 'CheckBox Demo v0.3'
   ClientHeight = 430
   ClientWidth = 700
   Menu = mnuMain

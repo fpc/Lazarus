@@ -55,9 +55,6 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf2Set"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

@@ -32,11 +32,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="CheckBox_Demo"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="112"/>
-        <CursorPos X="25" Y="137"/>
+        <TopLine Value="353"/>
+        <CursorPos X="73" Y="373"/>
         <UsageCount Value="21"/>
         <Bookmarks Count="1">
-          <Item0 X="4" Y="241" ID="1"/>
+          <Item0 X="4" Y="237" ID="1"/>
         </Bookmarks>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -46,9 +46,6 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf2Set"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

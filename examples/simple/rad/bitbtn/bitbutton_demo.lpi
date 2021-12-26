@@ -12,7 +12,6 @@
       <XPManifest>
         <DpiAware Value="True"/>
       </XPManifest>
-      <Icon Value="0"/>
     </General>
     <BuildModes>
       <Item Name="Default" Default="True"/>
@@ -31,8 +30,9 @@
     </RequiredPackages>
     <Units>
       <Unit>
-        <Filename Value="BitButton_Demo.lpr"/>
+        <Filename Value="bitbutton_demo.lpr"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="BitButton_Demo"/>
       </Unit>
       <Unit>
         <Filename Value="bitbtnform.pas"/>
@@ -55,9 +55,6 @@
       <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
-      <Debugging>
-        <DebugInfoType Value="dsDwarf2Set"/>
-      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
