@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="12"/>
     <General>
       <Flags>
         <SaveOnlyProjectUnits Value="True"/>
         <LRSInOutputDirectory Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
-      <MainUnit Value="0"/>
+      <Scaled Value="True"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1">
       <Item1 Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default"/>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
@@ -32,8 +35,9 @@
       <Unit0>
         <Filename Value="bitbutton.pp"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="28" Y="26"/>
-        <UsageCount Value="20"/>
+        <EditorIndex Value="1"/>
+        <CursorPos X="19" Y="33"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit0>
@@ -41,9 +45,9 @@
         <Filename Value="bitbtnform.pp"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="24" Y="21"/>
-        <UsageCount Value="20"/>
+        <TopLine Value="249"/>
+        <CursorPos X="62" Y="265"/>
+        <UsageCount Value="21"/>
         <Loaded Value="True"/>
       </Unit1>
     </Units>
@@ -51,6 +55,9 @@
   <CompilerOptions>
     <Version Value="11"/>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>
