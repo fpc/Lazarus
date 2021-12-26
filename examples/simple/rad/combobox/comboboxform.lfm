@@ -1,0 +1,160 @@
+object Form1: TForm1
+  Left = 270
+  Height = 423
+  Top = 131
+  Width = 714
+  Caption = 'ComboBox Demo v0.2'
+  ClientHeight = 403
+  ClientWidth = 714
+  Menu = mnuMain
+  LCLVersion = '2.3.0.0'
+  object Button2: TButton
+    Left = 50
+    Height = 30
+    Top = 40
+    Width = 120
+    Caption = 'Add item'
+    OnClick = Button2Click
+    TabOrder = 0
+  end
+  object Button1: TButton
+    Left = 50
+    Height = 30
+    Top = 80
+    Width = 120
+    Caption = 'Edit -> Combo'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Left = 50
+    Height = 30
+    Top = 120
+    Width = 120
+    Caption = 'Combo -> Edit'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object Button4: TButton
+    Left = 50
+    Height = 30
+    Top = 160
+    Width = 120
+    Caption = 'Enabled On/Off'
+    OnClick = Button4Click
+    TabOrder = 3
+  end
+  object Button5: TButton
+    Left = 50
+    Height = 30
+    Top = 200
+    Width = 120
+    Caption = 'Dump'
+    OnClick = Button5Click
+    TabOrder = 4
+  end
+  object Button6: TButton
+    Left = 50
+    Height = 30
+    Top = 240
+    Width = 120
+    Caption = 'Index ?'
+    OnClick = Button6Click
+    TabOrder = 5
+  end
+  object Button7: TButton
+    Left = 49
+    Height = 30
+    Top = 280
+    Width = 120
+    Caption = 'Select All'
+    OnClick = Button7Click
+    TabOrder = 6
+  end
+  object Label1: TLabel
+    Left = 320
+    Height = 15
+    Top = 50
+    Width = 29
+    Caption = 'TEdit:'
+  end
+  object Edit1: TEdit
+    Left = 500
+    Height = 23
+    Top = 50
+    Width = 70
+    OnChange = ComboOnChange
+    OnClick = ComboOnClick
+    TabOrder = 7
+    Text = 'Edit1'
+  end
+  object Label2: TLabel
+    Left = 320
+    Height = 15
+    Top = 100
+    Width = 101
+    Caption = 'Combo (unsorted):'
+  end
+  object ComboBox1: TComboBox
+    Left = 500
+    Height = 23
+    Top = 100
+    Width = 170
+    ItemHeight = 15
+    ItemIndex = 1
+    Items.Strings = (
+      'wohh!'
+      '22222!'
+      '33333!'
+      'abcde!'
+    )
+    OnChange = ComboOnChange
+    OnClick = ComboOnClick
+    TabOrder = 8
+    Text = '22222!'
+  end
+  object Label3: TLabel
+    Left = 320
+    Height = 15
+    Top = 150
+    Width = 87
+    Caption = 'Combo (sorted):'
+  end
+  object ComboBox2: TComboBox
+    Left = 500
+    Height = 23
+    Top = 150
+    Width = 170
+    ItemHeight = 15
+    ItemIndex = 1
+    Items.Strings = (
+      '22222!'
+      '33333!'
+      'abcde!'
+      'wohhh!'
+    )
+    Sorted = True
+    Style = csDropDownList
+    TabOrder = 9
+    Text = '33333!'
+  end
+  object Memo1: TMemo
+    Left = 235
+    Height = 176
+    Top = 200
+    Width = 435
+    ScrollBars = ssBoth
+    TabOrder = 10
+  end
+  object mnuMain: TMainMenu
+    Left = 242
+    Top = 75
+    object itmFile: TMenuItem
+      Caption = '&File'
+      object itmFileQuit: TMenuItem
+        Caption = '&Quit'
+        OnClick = itmFileQuitClick
+      end
+    end
+  end
+end
