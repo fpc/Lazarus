@@ -211,9 +211,10 @@ begin
   end;
 end;
 
-procedure TCustomSpeedButton.SetImageIndex(const aImageIndex: TImageIndex);
+procedure TCustomSpeedButton.SetImageIndex(AState: TButtonState;
+  const AImageIndex: TImageIndex);
 begin
-  FGlyph.ExternalImageIndex := aImageIndex;
+  FGlyph.SetExternalImageIndex(AState, AImageIndex);
 end;
 
 procedure TCustomSpeedButton.SetImages(const aImages: TCustomImageList);
@@ -1077,9 +1078,9 @@ begin
   Result.CY := AImageRes.Height;
 end;
 
-function TCustomSpeedButton.GetImageIndex: TImageIndex;
+function TCustomSpeedButton.GetImageIndex(AState: TButtonState): TImageIndex;
 begin
-  Result := FGlyph.ExternalImageIndex;
+  Result := FGlyph.FExternalImageIndexes[AState];
 end;
 
 function TCustomSpeedButton.GetImages: TCustomImageList;

@@ -107,9 +107,9 @@ begin
   Result := FButtonGlyph.ShowMode;
 end;
 
-function TCustomBitBtn.GetImageIndex: TImageIndex;
+function TCustomBitBtn.GetImageIndex(AState: TButtonState): TImageIndex;
 begin
-  Result := FButtonGlyph.ExternalImageIndex;
+  Result := FButtonGlyph.FExternalImageIndexes[AState];
 end;
 
 function TCustomBitBtn.GetImages: TCustomImageList;
@@ -156,9 +156,10 @@ begin
   FButtonGlyph.ShowMode := AValue;
 end;
 
-procedure TCustomBitBtn.SetImageIndex(const aImageIndex: TImageIndex);
+procedure TCustomBitBtn.SetImageIndex(AState: TButtonState;
+  const AImageIndex: TImageIndex);
 begin
-  FButtonGlyph.ExternalImageIndex := aImageIndex;
+  FButtonGlyph.SetExternalImageIndex(AState, AImageIndex);
 end;
 
 procedure TCustomBitBtn.SetImages(const aImages: TCustomImageList);

@@ -77,7 +77,7 @@ type
     FImageIndexes: array[TButtonState] of Integer;
     FImages: TCustomImageList;
     FExternalImages: TCustomImageList;
-    FExternalImageIndex: Integer;
+    FExternalImageIndexes: array[TButtonState] of Integer;
     FExternalImageWidth: Integer;
     FLCLGlyphResourceName: string;
     FOriginal: TBitmap;
@@ -86,10 +86,12 @@ type
     FImagesCache: TImageListCache;
     FTransparentMode: TGlyphTransparencyMode;         // set by our owner to indicate that the glyphbitmap should be transparent
     FLCLGlyphName: string;
+    function GetExternalImageIndex(AState: TButtonState): Integer;
     function GetHeight: Integer;
     function GetNumGlyphs: TNumGlyphs;
     function GetWidth: Integer;
-    procedure SetExternalImageIndex(const AExternalImageIndex: Integer);
+    procedure ResetExternalImageIndexes;
+    procedure SetExternalImageIndex(AState: TButtonState; const AExternalImageIndex: Integer);
     procedure SetExternalImages(const AExternalImages: TCustomImageList);
     procedure SetExternalImageWidth(const AExternalImageWidth: Integer);
     procedure SetGlyph(Value: TBitmap);
@@ -134,8 +136,12 @@ type
     property Images: TCustomImageList read FImages;
     property LCLGlyphName: string read FLCLGlyphName write SetLCLGlyphName;
     property ExternalImages: TCustomImageList read FExternalImages write SetExternalImages;
-    property ExternalImageIndex: Integer read FExternalImageIndex write SetExternalImageIndex;
     property ExternalImageWidth: Integer read FExternalImageWidth write SetExternalImageWidth;
+    property ExternalImageIndex: Integer index bsUp read GetExternalImageIndex write SetExternalImageIndex;
+    property ExternalHotImageIndex: Integer index bsHot read GetExternalImageIndex write SetExternalImageIndex;
+    property ExternalDisabledImageIndex: Integer index bsDisabled read GetExternalImageIndex write SetExternalImageIndex;
+    property ExternalPressedImageIndex: Integer index bsDown read GetExternalImageIndex write SetExternalImageIndex;
+    property ExternalSelectedImageIndex: Integer index bsExclusive read GetExternalImageIndex write SetExternalImageIndex;
     property Width: Integer read GetWidth;
     property Height: Integer read GetHeight;
     property ShowMode: TGlyphShowMode read FShowMode write SetShowMode;
@@ -178,8 +184,8 @@ type
     function GetCaptionOfKind(AKind: TBitBtnKind): String;
     function GetImages: TCustomImageList;
     procedure SetImages(const aImages: TCustomImageList);
-    function GetImageIndex: TImageIndex;
-    procedure SetImageIndex(const aImageIndex: TImageIndex);
+    function GetImageIndex(AState: TButtonState): TImageIndex;
+    procedure SetImageIndex(AState: TButtonState; const AImageIndex: TImageIndex);
     function GetImageWidth: Integer;
     procedure SetImageWidth(const aImageWidth: Integer);
   protected
@@ -206,14 +212,18 @@ type
   public
     property Caption stored IsCaptionStored;
     property DefaultCaption: Boolean read FDefaultCaption write SetDefaultCaption default False;
+    property DisabledImageIndex: TImageIndex index bsDisabled read GetImageIndex write SetImageIndex default -1;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
+    property HotImageIndex: TImageIndex index bsHot read GetImageIndex write SetImageIndex default -1;
     property Images: TCustomImageList read GetImages write SetImages;
-    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex index bsUp read GetImageIndex write SetImageIndex default -1;
     property ImageWidth: Integer read GetImageWidth write SetImageWidth default 0;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
+    property PressedImageIndex: TImageIndex index bsDown read GetImageIndex write SetImageIndex default -1;
+//    property SelectedImageIndex: TImageIndex index bsExclusive read GetImageIndex write SetImageIndex default -1;
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property GlyphShowMode: TGlyphShowMode read GetGlyphShowMode write SetGlyphShowMode default gsmApplication;
   end;
@@ -236,6 +246,7 @@ type
     property Constraints;
     property Default;
     property DefaultCaption;
+    property DisabledImageIndex;
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -243,6 +254,7 @@ type
     property Font;
     property Glyph;
     property GlyphShowMode;
+    property HotImageIndex;
     property Kind;
     property Layout;
     property Margin;
@@ -277,6 +289,8 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property PressedImageIndex;
+//    property SelectedImageIndex;
     property ShowHint;
     property Spacing;
     property TabOrder;
@@ -339,8 +353,8 @@ type
     procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
     function GetImages: TCustomImageList;
     procedure SetImages(const aImages: TCustomImageList);
-    function GetImageIndex: TImageIndex;
-    procedure SetImageIndex(const aImageIndex: TImageIndex);
+    function GetImageIndex(AState: TButtonState): TImageIndex;
+    procedure SetImageIndex(AState: TButtonState; const AImageIndex: TImageIndex);
     function GetImageWidth: Integer;
     procedure SetImageWidth(const aImageWidth: Integer);
   protected
@@ -394,16 +408,20 @@ type
   public
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Color default clBtnFace;
+    property DisabledImageIndex: TImageIndex index bsDisabled read GetImageIndex write SetImageIndex default -1;
     property Down: Boolean read FDown write SetDown default false;
     property Flat: Boolean read FFlat write SetFlat default false;
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
+    property HotImageIndex: TImageIndex index bsHot read GetImageIndex write SetImageIndex default -1;
     property Images: TCustomImageList read GetImages write SetImages;
-    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
+    property ImageIndex: TImageIndex index bsUp read GetImageIndex write SetImageIndex default -1;
     property ImageWidth: Integer read GetImageWidth write SetImageWidth default 0;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
     property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
+    property PressedImageIndex: TImageIndex index bsDown read GetImageIndex write SetImageIndex default -1;
+    property SelectedImageIndex: TImageIndex index bsExclusive read GetImageIndex write SetImageIndex default -1;
     property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
     property ShowCaption: boolean read FShowCaption write SetShowCaption default true;
     property Spacing: integer read FSpacing write SetSpacing default 4;
@@ -425,6 +443,7 @@ type
     property Constraints;
     property Caption;
     property Color;
+    property DisabledImageIndex;
     property Down;
     property DragCursor;
     property DragKind;
@@ -434,12 +453,15 @@ type
     property Font;
     property Glyph;
     property GroupIndex;
+    property HotImageIndex;
     property Images;
     property ImageIndex;
     property ImageWidth;
     property Layout;
     property Margin;
     property NumGlyphs;
+    property PressedImageIndex;
+    property SelectedImageIndex;
     property Spacing;
     property Transparent;
     property Visible;
