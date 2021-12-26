@@ -5519,7 +5519,7 @@ begin
     end;
 
     // draw text
-    if Node.Text <> '' then
+    if (Node.Text <> '') and (Node<>FEditingItem) then
     begin
       CurTextRect := NodeRect;
       CurTextRect.Left := x;
