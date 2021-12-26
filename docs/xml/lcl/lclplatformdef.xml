@@ -7,17 +7,20 @@
   ====================================================================
 -->
 <module name="LCLPlatformDef">
-<short>Contains the non-GUI dependent parts of LCL Platform definition.</short>
+<short>Contains routines and types used in LCL Platform definitions.</short>
 <descr>
+<p>
 <file>lclplatformdef.pas</file> contains types, constants, variables and
-routines used in non-GUI dependent parts of LCL Platform definition.
+routines used in LCL platform definitions.
+</p>
+<p>
 This file is part of the Lazarus Component Library (<b>LCL</b>).
+</p>
 </descr>
 
 <element name="TLCLPlatform">
-<short>Represents the platforms supported in the LCL.</short>
-<descr>
-</descr>
+<short>Represents the supported platforms for the LCL.</short>
+<descr/>
 <seealso>
 <link id="LCLPlatformDirNames"/>
 <link id="TLCLPlatforms"/>
@@ -33,7 +36,7 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <short>GTK version 3.</short>
 </element>
 <element name="TLCLPlatform.lpWin32">
-<short>Windows API (formerly called Win32 API).</short>
+<short>Windows API (née Win32 API).</short>
 </element>
 <element name="TLCLPlatform.lpWinCE">
 <short>Windows CE.</short>
@@ -64,9 +67,8 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 </element>
 
 <element name="TLCLPlatforms">
-<short>Set type used to store TLCLPlatform value(s).</short>
-<descr>
-</descr>
+<short>Set type used to store TLCLPlatform enumeration value(s).</short>
+<descr/>
 <seealso>
 <link id="TLCLPlatform"/>
 </seealso>
@@ -75,8 +77,31 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <element name="DirNameToLCLPlatform">
 <short>Gets the platform enumeration value for the specified directory name.</short>
 <descr>
+<p>
+DirNameToLCLPlatform is a TLCLPlatform function used to get the platform
+identifier for the source directory specified in the ADirName argument. It is
+assumed that ADirName contains only the directory name relative to
+($LazarusDir)/lcl/interfaces without path delimiters. In other words, a value
+like: 'win32', 'qt5', or 'gtk3'.
+</p>
+<p>
+DirNameToLCLPlatform performs a case-insensitive comparison between ADirName
+and each of the values in the LCLPlatformDirNames constant. The return value
+is the enumeration value which identifies the platform and widgetset for the
+specified directory.
+</p>
+<p>
+If a matching value in LCLPlatformDirNames is not found, the return value is
+set to lpGtk2.
+</p>
+<p>
+DirNameToLCLPlatform is called from the <file>lazbuild</file> utility when a
+widgetset override has been provided on the command line.
+</p>
 </descr>
 <seealso>
+<link id="LCLPlatformDirNames"/>
+<link id="TLCLPlatform"/>
 </seealso>
 </element>
 <element name="DirNameToLCLPlatform.Result">
@@ -90,12 +115,13 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <short>Gets the value in the BuildLCLWidgetType variable.</short>
 <descr>
 <p>
-Used in the <var>lazbuild</var> utility to get the target widgetset using the
-platform defines.
+Used in the <var>lazbuild</var> utility to get the target widgetset used for the
+various platform defines.
 </p>
 </descr>
 <seealso>
 <link id="BuildLCLWidgetType"/>
+<link id="TLCLPlatform"/>
 </seealso>
 </element>
 <element name="GetBuildLCLWidgetType.Result">
@@ -106,9 +132,13 @@ platform defines.
 <short>Array constant with the directory names for supported LCL platforms.</short>
 <descr>
 <p>
-LCLPlatformDirNames is a array of Strings with directory names for the supported
-LCL platforms. The directory names are relative to the './lcl/interfaces/' base path.
-Values in the array are indexed by TLCLPlatform enumeration values. For example:
+LCLPlatformDirNames is a array of Strings with directory names for the
+platforms supported for the LCL. The directory names are relative to the
+($LazarusDir)/lcl/interfaces base path and should not include path delimiters.
+Values in the array are indexed by TLCLPlatform enumeration values.
+</p>
+<p>
+For example:
 </p>
 <code>
 // var SDir, SName: String;
@@ -126,41 +156,75 @@ enumeration value.
 </descr>
 <seealso>
 <link id="LCLPlatformDisplayNames"/>
+<link id="TLCLPlatform"/>
 </seealso>
 </element>
 
 <element name="LCLPlatformDisplayNames">
 <short>Array constant with the display names for supported LCL platforms.</short>
 <descr>
-  <p>
-  LCLPlatformDisplayNames is a array of Strings with display names for the supported
-  LCL platforms. Values in the array are indexed by TLCLPlatform enumeration values.
-  For example:
-  </p>
-  <code>
-  // var SDir, SName: String;
+<p>
+LCLPlatformDisplayNames is a array of Strings with display names for the supported
+LCL platforms. Values in the array are indexed by TLCLPlatform enumeration values.
+For example:
+</p>
+<code>
+// var SDir, SName: String;
 
-  // SDir contains 'win32'
-  SDir := LCLPlatformDirNames[lpWin32];
+// SDir contains 'win32'
+SDir := LCLPlatformDirNames[lpWin32];
 
-  // SName contains 'win32/win64'
-  SName := LCLPlatformDisplayNames[lpWin32];
-  </code>
-  <p>
-  Use LCLPlatformDirNames to get the directory name for a given TLCLPlatform
-  enumeration value.
-  </p>
+// SName contains 'win32/win64'
+SName := LCLPlatformDisplayNames[lpWin32];
+</code>
+<p>
+Use LCLPlatformDirNames to get the directory name for a given TLCLPlatform
+enumeration value.
+</p>
 </descr>
 <seealso>
-  <link id="LCLPlatformDirNames"/>
+<link id="LCLPlatformDirNames"/>
 </seealso>
 </element>
 
 <element name="BuildLCLWidgetType">
 <short>Gets the TLCLPlatform enumeration value for the current platform.</short>
 <descr>
+<p>
+BuildLCLWidgetType is a TLCLPlatform variable with an enumeration value which
+identifies the widgetset for the current platform. Its value is determined by
+the compiler define active when the LCL was built. For example:
+</p>
+<dl>
+<dt>MSWindows</dt>
+<dd>Sets the variable to lpWin32.</dd>
+<dt>darwin</dt>
+<dd>
+Sets the variable to lpCarbon for systems using the PowerPC processor.
+Otherwise, the variable is set to lpCocoa.
+</dd>
+<dt>HASAMIGA</dt>
+<dd>Sets the variable to lpMUI.</dd>
+</dl>
+<p>
+For other platforms where a specific compiler define was not set, the
+variable is set to lpGtk2.
+</p>
+<p>
+The value in BuildLCLWidgetType is used in the <file>lazbuild</file> utility
+to get the target widgetset used for the various platform defines, and when
+GetDefaultLCLWidgetType is called from the LCL interface.
+</p>
 </descr>
+<version>
+For LCL version 2.2 and higher, the default widgetset for the MacOS (darwin)
+platform uses the Cocoa (lpCocoa) API. For versions prior to 2.2, the default
+widgetset used was the Carbon (lpCarbon) API. For Macs using the PowerPC
+processor, the widgetset continues to use the Carbon (lpCarbon) API.
+</version>
 <seealso>
+<link id="TLCLPlatform"/>
+<link id="#lcl.interfacebase.GetDefaultLCLWidgetType">GetDefaultLCLWidgetType</link>
 </seealso>
 </element>
 
