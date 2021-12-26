@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                             checkbox.pp
-                             -----------
+                             checkbox_demo.pp
+                             ----------------
                         Sample for Lazarus Checkbox.
 
 
@@ -29,7 +29,7 @@
  *                                                                         *
  ***************************************************************************
 }
-program CheckBox;
+program CheckBox_Demo;
 
 {$mode objfpc}{$H+}
 
@@ -167,7 +167,7 @@ procedure TForm1.LoadMainMenu;
 var
   BtnGlyph: TPortableNetworkGraphic;
 begin
- OnDestroy := @FormKill;
+   OnDestroy := @FormKill;
 
 {    set the height and width }
    Height := 450;
@@ -181,7 +181,7 @@ begin
    CheckBox1.Height :=20;
    CheckBox1.Width := 200;
    CheckBox1.OnCLick := @CheckBoxClick;
-   CheckBox1.Show;
+//   CheckBox1.Show;
    CheckBox1.Caption := 'Checkbox 1';
 
    { Create a label which shows the state checked/unchecked of the checkbox}
@@ -191,35 +191,34 @@ begin
    label1.left := 220;
    label1.Height :=20;
    label1.Width := 100;
-   label1.Show;
+//   label1.Show;
    label1.Caption := 'unchecked';
-
 
    { Sample panel here }
    Panel1:= TPanel.Create(Self);
    with Panel1 do begin
      Parent := Self;
-     Left := 320;
+     Left := 400;
      Top := 60;
-     Width := 280;
+     Width := 180;
      Height := 81;
      Alignment:= taRightJustify;
      BevelInner:= bvLowered;
      BevelOuter:= bvRaised;
      BorderWidth:= 4;
      BevelWidth:= 4;
-     Show;
+//     Show;
      Caption:= 'Hello world';
    end;     
 
    { Create a button which toggles the checkbox }
    Button2 := TButton.Create(Self);
-   Button2.Parent := Panel1;
-   Button2.Left := 5;
-   Button2.Top := 45;
+   Button2.Parent := Self; //Panel1;
+   Button2.Left := Panel1.Left; //5;
+   Button2.Top := Checkbox1.Top; //45;
    Button2.Width := 180;
    Button2.Height := 20;
-   Button2.Show;
+//   Button2.Show;
    Button2.Caption := 'Toggle checkbox';
    Button2.OnClick := @Button2Click;
 
@@ -231,11 +230,11 @@ begin
    Button11.Left := 5;
    Button11.Top := 5;
    Button11.Width:= 45;
-   Button11.Height:= 55;
+//   Button11.Height:= 55;
    Button11.Flat:= true;
    BtnGlyph := TPortableNetworkGraphic.Create;
    try
-     BtnGlyph.LoadFromFile('../images/items/item_form.png');
+     BtnGlyph.LoadFromFile('../../../../images/items/item_form.png');
      Button11.Glyph.Assign(BtnGlyph);
    finally
      BtnGlyph.Free;
@@ -243,7 +242,7 @@ begin
 
 //   Button11.Spacing:= -1;
 //   Button11.Margin:= 4;
-   Button11.Visible:= true;
+//   Button11.Visible:= true;
    
    Button12 := TSpeedButton.Create(Self);
    Button12.GroupIndex:= 1;
@@ -252,7 +251,7 @@ begin
    Button12.Left := 55;
    Button12.Top := 5;
 //   Button12.Flat:= true;
-   Button12.Visible:= true;
+//   Button12.Visible:= true;
 
    Button13 := TSpeedButton.Create(Self);
    Button13.GroupIndex:= 1;
@@ -262,7 +261,7 @@ begin
    Button13.Top := 5;
    Button13.Flat:= true;
    Button13.AllowAllUp:= true;
-   Button13.Visible:= true;
+//   Button13.Visible:= true;
    
 
    { Create a label which shows the caption of the active radiobutton }
@@ -272,7 +271,7 @@ begin
    label2.left := 220;
    label2.Height :=20;
    label2.Width := 200;
-   label2.Show;
+//   label2.Show;
    label2.Caption := 'active: unknown';
 
    { Create a radio button }
@@ -284,7 +283,7 @@ begin
    RadioButton.Width := 200;
    RadioButton.OnCLick := @RadioButtonClick;
    RadioButton.Checked := false;  
-   RadioButton.Show;
+//   RadioButton.Show;
    RadioButton.Caption := 'Radio button 1';
    
    { Create a 2nd radiobutton }
@@ -298,7 +297,7 @@ begin
      Width := 200;
      OnCLick := @RadioButtonClick;
      Checked := true; 
-     Show;
+//     Show;
      Caption := 'Radiobutton 2'
    end;
 
@@ -313,7 +312,7 @@ begin
      Width := 200;
      OnCLick := @RadioButtonClick;
      Checked := false;  
-     Show;
+//     Show;
      Caption := 'Radiobutton 3'
    end;
 
@@ -334,7 +333,7 @@ begin
      RadioGroup.Items.Add ('No 5');
      RadioGroup.Items.Add ('No 6');
      ItemIndex := 3;
-     Show;
+//     Show;
      Caption := 'Radiogroup';
    end;
 
@@ -345,7 +344,7 @@ begin
    Button3.Top := 220;
    Button3.Width := 180;
    Button3.Height := 30;
-   Button3.Show;
+//   Button3.Show;
    Button3.Caption := 'Mystic Radiogroups';
    Button3.OnClick := @Button3Click;
 
@@ -366,7 +365,7 @@ begin
      Items.Add ('No 5');
      Items.Add ('No 6');
      ItemIndex := 1;
-     Show;
+//     Show;
      Caption := '3 columns';
    end;
 
@@ -380,7 +379,7 @@ begin
      Height :=30;
      Width := 240;
      OnCLick := @ToggleBoxClick;
-     Show;
+//     Show;
      Caption := 'ToggleBox 1'
    end;
 
@@ -395,9 +394,6 @@ begin
    itmFileQuit.Caption := 'Quit';
    itmFileQuit.OnClick := @mnuQuitClicked;
    itmFile.Add(itmFileQuit);
-
-   
-
 end;
 
 {------------------------------------------------------------------------------}

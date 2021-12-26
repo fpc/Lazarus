@@ -1,0 +1,231 @@
+object Form1: TForm1
+  Left = 270
+  Height = 450
+  Top = 131
+  Width = 700
+  Caption = 'CheckBox Demo V.03'
+  ClientHeight = 430
+  ClientWidth = 700
+  Menu = mnuMain
+  LCLVersion = '2.3.0.0'
+  object CheckBox1: TCheckBox
+    Left = 10
+    Height = 19
+    Top = 35
+    Width = 77
+    Caption = 'CheckBox1'
+    OnClick = CheckBox1Click
+    TabOrder = 0
+  end
+  object Label1: TLabel
+    Left = 220
+    Height = 15
+    Top = 35
+    Width = 59
+    Caption = 'Unchecked'
+  end
+  object Panel1: TPanel
+    Left = 400
+    Height = 80
+    Top = 60
+    Width = 180
+    Alignment = taRightJustify
+    BevelInner = bvLowered
+    BevelWidth = 4
+    Caption = 'Hello world'
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 400
+    Height = 25
+    Top = 32
+    Width = 180
+    Caption = 'Toggle checkbox'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Button11: TSpeedButton
+    Left = 5
+    Height = 22
+    Top = 5
+    Width = 45
+    AllowAllUp = True
+    Glyph.Data = {
+      36040000424D3604000000000000360000002800000010000000100000000100
+      2000000000000004000064000000640000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000000000C29A
+      74FFC29973FFC29972FFC19870FFC1976FFFC1966EFFC0956DFFC0956CFFC094
+      6BFFBF946BFFBE936AFFBE936AFFBD926AFFBD936BFFBD936BFF00000000C49B
+      75FFEEEEEEFFEEEEEEFFEEEEEEFFEEEEEEFFEEEEEEFFEEEEEEFFEEEEEEFFEDED
+      EDFFECECECFFEBEBEBFFEAEAEAFFEAEAEAFFE9E9E9FFBD936BFF00000000C69D
+      76FFF0F0F0FFF1F1F1FFF1F1F1FFF1F1F1FFF1F1F1FFF0F0F0FFF0F0F0FFF0F0
+      F0FFEFEFEFFFEDEDEDFFECECECFFEBEBEBFFEAEAEAFFBD936AFF00000000C89E
+      77FFF3F3F3FFF3F3F3FFF4F4F4FFF4F4F4FFF4F4F4FFF4F4F4FFF3F3F3FFF3F3
+      F3FFF1F1F1FFF0F0F0FFEEEEEEFFEDEDEDFFEBEBEBFFBE936AFF00000000CAA0
+      78FFF5F5F5FFF6F6F6FFF7F7F7FFF7F7F7FFF7F7F7FFF6F6F6FFF6F6F6FFF5F5
+      F5FFF3F3F3FFF1F1F1FFF0F0F0FFEEEEEEFFECECECFFBE936BFF00000000CCA1
+      79FFF8F8F8FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF9F9F9FFF8F8F8FFF7F7
+      F7FFF5F5F5FFF3F3F3FFF1F1F1FFEFEFEFFFEDEDEDFFBF946CFF00000000CEA3
+      7AFFFAFAFAFFFBFBFBFFFBFBFBFFFBFBFBFFFBFBFBFFFBFBFBFFFAFAFAFFF9F9
+      F9FFF7F7F7FFF5F5F5FFF2F2F2FFEFEFEFFFEDEDEDFFC0956CFF00000000CFA4
+      7BFFFBFBFBFFFCFCFCFFFDFDFDFFFDFDFDFFFDFDFDFFFCFCFCFFFBFBFBFFFAFA
+      FAFFF8F8F8FFF6F6F6FFF3F3F3FFF0F0F0FFEDEDEDFFC0966EFF00000000CFA4
+      7CFFFCFCFCFFFDFDFDFFFDFDFDFFFEFEFEFFFEFEFEFFFDFDFDFFFCFCFCFFFBFB
+      FBFFF9F9F9FFF6F6F6FFF3F3F3FFF1F1F1FFEEEEEEFFC1976FFF00000000D0A5
+      7CFFFCFCFCFFFDFDFDFFFEFEFEFFFEFEFEFFFEFEFEFFFDFDFDFFFCFCFCFFFBFB
+      FBFFF9F9F9FFF6F6F6FFF3F3F3FFF1F1F1FFEEEEEEFFC19870FF00000000D0A5
+      7CFFD1A57CFFD1A57CFFD1A57CFFD1A57BFFD1A47AFFD0A379FFCFA379FFCEA2
+      78FFCDA077FFCA9F76FFC89D75FFC69B73FFC49A72FFC29972FF00000000CFA4
+      7CFFD0A57CFFD1A57CFFD1A57CFFD1A57CFFD1A47BFFD0A47BFFCFA37AFFCEA2
+      79FFCCA178FFCB9F77FFC89E76FFC69C75FFC49B74FFC29973FF00000000CEA4
+      7CFFCFA47CFFD0A57DFFD0A57CFFD0A57CFFD0A47BFFCFA47BFFCFA37BFFCDA2
+      7AFFCCA179FFCAA078FFC89E77FFC69D76FFC49B75FFC29A74FF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000
+    }
+    GroupIndex = 1
+  end
+  object Button12: TSpeedButton
+    Left = 55
+    Height = 22
+    Top = 5
+    Width = 23
+    AllowAllUp = True
+    Caption = '2'
+    GroupIndex = 1
+  end
+  object Button13: TSpeedButton
+    Left = 95
+    Height = 22
+    Top = 5
+    Width = 23
+    AllowAllUp = True
+    Caption = '3'
+    Flat = True
+    GroupIndex = 1
+  end
+  object Label2: TLabel
+    Left = 220
+    Height = 15
+    Top = 90
+    Width = 87
+    Caption = 'active: unknown'
+  end
+  object RadioButton: TRadioButton
+    Left = 10
+    Height = 19
+    Top = 70
+    Width = 84
+    Caption = 'RadioButton'
+    OnClick = RadioButtonClick
+    TabOrder = 3
+  end
+  object RadioButton2: TRadioButton
+    Left = 10
+    Height = 19
+    Top = 90
+    Width = 90
+    Caption = 'RadioButton2'
+    Checked = True
+    OnClick = RadioButtonClick
+    TabOrder = 5
+    TabStop = True
+  end
+  object RadioButton1: TRadioButton
+    Left = 10
+    Height = 19
+    Top = 110
+    Width = 90
+    Caption = 'RadioButton1'
+    OnClick = RadioButtonClick
+    TabOrder = 4
+  end
+  object RadioGroup: TRadioGroup
+    Left = 10
+    Height = 200
+    Top = 200
+    Width = 150
+    AutoFill = True
+    Caption = 'RadioGroup'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 180
+    ClientWidth = 146
+    ItemIndex = 3
+    Items.Strings = (
+      'No 1'
+      'No 2'
+      'No 3'
+      'No 4'
+      'No 5'
+      'No 6'
+    )
+    OnClick = RadioGroupClick
+    TabOrder = 6
+  end
+  object Button3: TButton
+    Left = 220
+    Height = 30
+    Top = 220
+    Width = 280
+    Caption = 'Mystic Radiogroups'
+    OnClick = Button3Click
+    TabOrder = 7
+  end
+  object RadioGroup2: TRadioGroup
+    Left = 220
+    Height = 100
+    Top = 300
+    Width = 300
+    AutoFill = True
+    Caption = 'RadioGroup2'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 3
+    ClientHeight = 80
+    ClientWidth = 296
+    Columns = 3
+    Items.Strings = (
+      'No 1'
+      'No 2'
+      'No 3'
+      'No 4'
+      'No 5'
+      'No 6'
+    )
+    OnClick = RadioGroupClick
+    TabOrder = 8
+  end
+  object ToggleBox: TToggleBox
+    Left = 10
+    Height = 30
+    Top = 150
+    Width = 240
+    Caption = 'ToggleBox'
+    OnClick = ToggleBoxClick
+    TabOrder = 9
+  end
+  object mnuMain: TMainMenu
+    Left = 311
+    Top = 146
+    object itmFile: TMenuItem
+      Caption = 'File'
+      object itmFileQuit: TMenuItem
+        Caption = 'Quit'
+        OnClick = itmFileQuitClick
+      end
+    end
+  end
+end
