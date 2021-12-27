@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                             checkbox_demo.pp
-                             ----------------
+                             checkbox.pp
+                             -----------
                         Sample for Lazarus Checkbox.
 
 
@@ -29,7 +29,7 @@
  *                                                                         *
  ***************************************************************************
 }
-program CheckBox_Demo;
+program CheckBox;
 
 {$mode objfpc}{$H+}
 
@@ -77,7 +77,7 @@ Form1 : TForm1;
 constructor TForm1.Create(AOwner: TComponent);  
 begin
   inherited CreateNew(AOwner, 1);
-  Caption := 'CheckBox Demo v0.3';
+  Caption := 'CheckBox Demo V.02';
   LoadMainMenu;
 end;
 
@@ -151,7 +151,7 @@ begin
    begin
       if ToggleBox.checked
          then ToggleBox.Caption := 'Togglebox1'
-         else ToggleBox.Caption := 'does nothing:-(';
+	 else ToggleBox.Caption := 'does nothing:-(';
    end;
 end;
 
@@ -167,7 +167,7 @@ procedure TForm1.LoadMainMenu;
 var
   BtnGlyph: TPortableNetworkGraphic;
 begin
-   OnDestroy := @FormKill;
+ OnDestroy := @FormKill;
 
 {    set the height and width }
    Height := 450;
@@ -181,6 +181,7 @@ begin
    CheckBox1.Height :=20;
    CheckBox1.Width := 200;
    CheckBox1.OnCLick := @CheckBoxClick;
+   CheckBox1.Show;
    CheckBox1.Caption := 'Checkbox 1';
 
    { Create a label which shows the state checked/unchecked of the checkbox}
@@ -190,31 +191,35 @@ begin
    label1.left := 220;
    label1.Height :=20;
    label1.Width := 100;
+   label1.Show;
    label1.Caption := 'unchecked';
+
 
    { Sample panel here }
    Panel1:= TPanel.Create(Self);
    with Panel1 do begin
      Parent := Self;
-     Left := 400;
+     Left := 320;
      Top := 60;
-     Width := 180;
+     Width := 280;
      Height := 81;
      Alignment:= taRightJustify;
      BevelInner:= bvLowered;
      BevelOuter:= bvRaised;
      BorderWidth:= 4;
      BevelWidth:= 4;
+     Show;
      Caption:= 'Hello world';
    end;     
 
    { Create a button which toggles the checkbox }
    Button2 := TButton.Create(Self);
-   Button2.Parent := Self; //Panel1;
-   Button2.Left := Panel1.Left; //5;
-   Button2.Top := Checkbox1.Top; //45;
+   Button2.Parent := Panel1;
+   Button2.Left := 5;
+   Button2.Top := 45;
    Button2.Width := 180;
    Button2.Height := 20;
+   Button2.Show;
    Button2.Caption := 'Toggle checkbox';
    Button2.OnClick := @Button2Click;
 
@@ -226,11 +231,11 @@ begin
    Button11.Left := 5;
    Button11.Top := 5;
    Button11.Width:= 45;
-//   Button11.Height:= 55;
+   Button11.Height:= 55;
    Button11.Flat:= true;
    BtnGlyph := TPortableNetworkGraphic.Create;
    try
-     BtnGlyph.LoadFromFile('../../../../images/items/item_form.png');
+     BtnGlyph.LoadFromFile('../images/items/item_form.png');
      Button11.Glyph.Assign(BtnGlyph);
    finally
      BtnGlyph.Free;
@@ -238,7 +243,7 @@ begin
 
 //   Button11.Spacing:= -1;
 //   Button11.Margin:= 4;
-//   Button11.Visible:= true;
+   Button11.Visible:= true;
    
    Button12 := TSpeedButton.Create(Self);
    Button12.GroupIndex:= 1;
@@ -247,6 +252,7 @@ begin
    Button12.Left := 55;
    Button12.Top := 5;
 //   Button12.Flat:= true;
+   Button12.Visible:= true;
 
    Button13 := TSpeedButton.Create(Self);
    Button13.GroupIndex:= 1;
@@ -256,6 +262,8 @@ begin
    Button13.Top := 5;
    Button13.Flat:= true;
    Button13.AllowAllUp:= true;
+   Button13.Visible:= true;
+   
 
    { Create a label which shows the caption of the active radiobutton }
    label2 := TLabel.Create(Self);
@@ -264,6 +272,7 @@ begin
    label2.left := 220;
    label2.Height :=20;
    label2.Width := 200;
+   label2.Show;
    label2.Caption := 'active: unknown';
 
    { Create a radio button }
@@ -275,6 +284,7 @@ begin
    RadioButton.Width := 200;
    RadioButton.OnCLick := @RadioButtonClick;
    RadioButton.Checked := false;  
+   RadioButton.Show;
    RadioButton.Caption := 'Radio button 1';
    
    { Create a 2nd radiobutton }
@@ -288,6 +298,7 @@ begin
      Width := 200;
      OnCLick := @RadioButtonClick;
      Checked := true; 
+     Show;
      Caption := 'Radiobutton 2'
    end;
 
@@ -302,6 +313,7 @@ begin
      Width := 200;
      OnCLick := @RadioButtonClick;
      Checked := false;  
+     Show;
      Caption := 'Radiobutton 3'
    end;
 
@@ -314,7 +326,7 @@ begin
      left := 10;
      Height :=200;
      Width := 150;
-     OnClick := @RadioGroupClick;
+     OnCLick := @RadioGroupClick;
      RadioGroup.Items.Add ('No 1');
      RadioGroup.Items.Add ('No 2');
      RadioGroup.Items.Add ('No 3');
@@ -322,7 +334,7 @@ begin
      RadioGroup.Items.Add ('No 5');
      RadioGroup.Items.Add ('No 6');
      ItemIndex := 3;
-//     Show;
+     Show;
      Caption := 'Radiogroup';
    end;
 
@@ -333,6 +345,7 @@ begin
    Button3.Top := 220;
    Button3.Width := 180;
    Button3.Height := 30;
+   Button3.Show;
    Button3.Caption := 'Mystic Radiogroups';
    Button3.OnClick := @Button3Click;
 
@@ -353,6 +366,7 @@ begin
      Items.Add ('No 5');
      Items.Add ('No 6');
      ItemIndex := 1;
+     Show;
      Caption := '3 columns';
    end;
 
@@ -366,6 +380,7 @@ begin
      Height :=30;
      Width := 240;
      OnCLick := @ToggleBoxClick;
+     Show;
      Caption := 'ToggleBox 1'
    end;
 
@@ -380,6 +395,9 @@ begin
    itmFileQuit.Caption := 'Quit';
    itmFileQuit.OnClick := @mnuQuitClicked;
    itmFile.Add(itmFileQuit);
+
+   
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -390,7 +408,6 @@ end;
 {------------------------------------------------------------------------------}
 
 begin
-  Application.Title:='';
    Application.Initialize; { calls InitProcedure which starts up GTK }
    Application.CreateForm(TForm1, Form1);
    Application.Run;

@@ -82,6 +82,7 @@ begin
     Gutter.Color := clBtnface;
     Gutter.LineNumberPart.Visible := True;
     Color := clWindow;
+    Visible := True;
     Font.Name := 'courier';
     Font.Size := 12;
     HighLighter := Self.FHighLighter;
@@ -94,6 +95,7 @@ begin
     Top := 208;
     Width := 300;
     Height := 25;
+    Visible := True;
     Font.Name := 'courier';
     Font.Size := 12;
   end;

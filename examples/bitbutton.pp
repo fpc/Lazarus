@@ -18,14 +18,15 @@
  *                                                                         *
  ***************************************************************************
 }
-program ComDialogs_Demo;
+program bitbutton;
 
 {$mode objfpc}{$H+}
 
-uses Interfaces, Forms, DlgForm;
+uses
+  interfaces, forms, bitbtnform;
 
 begin
-  Application.Initialize;
-  Application.CreateForm(TSampleDialogs, SampleDialogs);
-  Application.Run;
+   Application.Initialize;
+   Application.CreateForm(TForm1, Form1);
+   Application.Run;
 end.

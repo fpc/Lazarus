@@ -1,7 +1,7 @@
 {
  /***************************************************************************
-                              combobox_demo.pp  
-                              ----------------
+                               combobox.pp  
+                              -------------
                    Example/test program for combobox usage in lcl
 
 
@@ -26,7 +26,7 @@
  *                                                                         *
  ***************************************************************************
 }
-program ComboBox_Demo;
+program ComboBox;
 
 {$mode objfpc}{$H+}
 
@@ -35,7 +35,7 @@ uses
   SysUtils, Extctrls, Controls;
 
 type
-  TForm1 = class(TForm)
+  TForm1 = class(TFORM)
   public
     Label1: TLabel;
     Label2: TLabel;
@@ -76,7 +76,7 @@ var
 constructor TForm1.Create(AOwner: TComponent);	
 begin
    inherited CreateNew(AOwner, 1);
-   Caption := 'ComboBox Demo v0.2';
+   Caption := 'ComboBox Demo v 0.1';
    LoadMainMenu;
 end;
 
@@ -119,7 +119,7 @@ Begin
       begin
          if assigned (Memo1)
             then Memo1.Lines.Add (ComboBox1.Items[i]);
-         inc (i); 
+	 inc (i); 
       end;
    end;
 End;
@@ -145,7 +145,7 @@ end;
 
 procedure TForm1.ComboOnChange (Sender:TObject);
 var
-   s : shortstring;
+   s : shortstring;	
 begin
    if sender is TEdit 
       then s := TCOntrol(Sender).name+':TEdit - '
@@ -176,17 +176,21 @@ begin
    OnDestroy := @FormKill;
 
    { set the height and width }
-   Height := 420;
+   Height := 350;
    Width := 700;
 
+   { Create 2 buttons inside the groupbox }
    Button2 := TButton.Create(Self);
    Button2.Parent := Self;
    Button2.Left := 50;
    Button2.Top := 40;
    Button2.Width := 120;
    Button2.Height := 30;
+   Button2.Show;
    Button2.Caption := 'Add item';
    Button2.OnClick := @Button2Click;
+
+
 
    Button1 := TButton.Create(Self);
    Button1.Parent := Self;
@@ -194,17 +198,22 @@ begin
    Button1.Top := 80;
    Button1.Width := 120;
    Button1.Height := 30;
+   Button1.Show;
    Button1.Caption := 'Edit->Combo';
    Button1.OnClick := @Button1Click;
 
+
+   { Create 2 more buttons outside the groupbox }
    Button3 := TButton.Create(Self);
    Button3.Parent := Self;
    Button3.Left := 50;
    Button3.Top := 120;
    Button3.Width := 120;
    Button3.Height := 30;
+   Button3.Show;
    Button3.Caption := 'Combo->Edit';
    Button3.OnClick := @Button3Click;
+
 
    Button4 := TButton.Create(Self);
    Button4.Parent := Self;
@@ -212,6 +221,7 @@ begin
    Button4.Top := 160;
    Button4.Width := 120;
    Button4.Height := 30;
+   Button4.Show;
    Button4.Caption := 'Enabled On/Off';
    Button4.OnClick := @Button4Click;
 
@@ -221,6 +231,7 @@ begin
    Button5.Top := 200;
    Button5.Width := 120;
    Button5.Height := 30;
+   Button5.Show;
    Button5.Caption := 'Dump';
    Button5.OnClick := @Button5Click;
 
@@ -230,6 +241,7 @@ begin
    Button6.Top := 240;
    Button6.Width := 120;
    Button6.Height := 30;
+   Button6.Show;
    Button6.Caption := 'Index ?';
    Button6.OnClick := @Button6Click;
 
@@ -239,8 +251,10 @@ begin
    Button7.Top := 280;
    Button7.Width := 120;
    Button7.Height := 30;
+   Button7.Show;
    Button7.Caption := 'Select All';
    Button7.OnClick := @Button7Click;
+
 
    { Create a label for the edit field }
    label1 := TLabel.Create(Self);
@@ -249,7 +263,9 @@ begin
    label1.left	 := 320;
    label1.Height := 20;
    label1.Width  := 130;
+   label1.Show;
    label1.Caption := 'TEdit :';
+
 
    Edit1 := TEdit.Create (self);
    with Edit1 do
@@ -259,10 +275,12 @@ begin
       Top    := 50;
       Width  := 70;
       Height := 20;
-      OnChange := @ComboOnChange;
+      OnChange := @ComboOnChange;	
       OnClick  := @ComboOnClick;
-      Name := 'Edit1';
+      Name := 'Edit1';	
+      Show;	
    end;
+
 
    { Create a label for the 1st combobox }
    label2 := TLabel.Create(Self);
@@ -272,13 +290,14 @@ begin
    label2.Height := 20;
    label2.Width  := 130;
    label2.Enabled:= true;
+   label2.Show;
    label2.Caption := 'Combo (unsorted)';
    label2.Enabled:= true;
 
+
    { Create the menu now }
    { WARNING: If you do it after creation of the combo, the menu will not 
-     appear. Reason is unknown by now!!!!!!
-     wp: No longer true for Laz 2.3/win32 }
+     appear. Reason is unknown by now!!!!!!}
    mnuMain := TMainMenu.Create(Self);
    Menu := mnuMain;
    itmFile := TMenuItem.Create(Self);
@@ -294,7 +313,7 @@ begin
    begin
       Parent := self;
       Left := 500;
-      Top := 100;
+      Top	:= 100;
       Width := 170;
       Height := 20;
       Style := csDropDown;	
@@ -306,7 +325,9 @@ begin
       OnChange := @ComboOnChange;	
       OnClick  := @ComboOnClick;	
       Name := 'ComboBox1';	
+      Show;	
    end;
+
 
    { Create a label for the 2nd combobox }
    label3 := TLabel.Create(Self);
@@ -315,7 +336,9 @@ begin
    label3.left	 := 320;
    label3.Height := 20;
    label3.Width  := 130;
+   label3.Show;
    label3.Caption := 'Combo (sorted)';
+
 
    ComboBox2 := TComboBox.Create (self);
    with ComboBox2 do
@@ -335,7 +358,9 @@ begin
       OnChange := @ComboOnChange;
       OnClick  := @ComboOnClick;
       Sorted := true;
+      Show;	
    end;
+
 
    Memo1 := TMemo.Create(Self);
    with Memo1 do
@@ -346,6 +371,7 @@ begin
       Top := 200;
       Width := 335;
       Height := 155;
+      Show;
    end;
 
 
@@ -359,7 +385,6 @@ end;
 {------------------------------------------------------------------------------}
 
 begin
-  Application.Title:='';
    Application.Initialize; { calls InitProcedure which starts up GTK }
    Application.CreateForm(TForm1, Form1);
    Application.Run;
