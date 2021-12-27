@@ -1,0 +1,20 @@
+object MainForm: TMainForm
+  Left = 200
+  Height = 75
+  Top = 200
+  Width = 200
+  Caption = 'Message Show'
+  ClientHeight = 75
+  ClientWidth = 200
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object Button1: TButton
+    Left = 69
+    Height = 32
+    Top = 22
+    Width = 85
+    Caption = 'Start Show'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+end
