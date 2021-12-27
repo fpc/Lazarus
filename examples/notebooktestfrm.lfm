@@ -1,0 +1,72 @@
+object Form1: TForm1
+  Left = 270
+  Height = 300
+  Top = 131
+  Width = 700
+  Caption = 'Notebook testing'
+  ClientHeight = 300
+  ClientWidth = 700
+  Position = poMainFormCenter
+  LCLVersion = '2.3.0.0'
+  object Button1: TButton
+    Left = 0
+    Height = 25
+    Top = 0
+    Width = 89
+    AutoSize = True
+    Caption = 'Create Page'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    AnchorSideLeft.Control = Button1
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrCenter
+    Left = 89
+    Height = 25
+    Top = 0
+    Width = 51
+    AutoSize = True
+    Caption = 'Back'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    AnchorSideLeft.Control = Button2
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Button2
+    AnchorSideTop.Side = asrCenter
+    Left = 140
+    Height = 25
+    Top = 0
+    Width = 69
+    AutoSize = True
+    Caption = 'Forward'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object Label1: TLabel
+    AnchorSideLeft.Control = Button3
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = Button3
+    AnchorSideTop.Side = asrCenter
+    Left = 215
+    Height = 15
+    Top = 5
+    Width = 67
+    BorderSpacing.Left = 6
+    Caption = '0 pages total'
+  end
+  object Notebook1: TNotebook
+    AnchorSideTop.Control = Button1
+    AnchorSideTop.Side = asrBottom
+    Left = 0
+    Height = 275
+    Top = 25
+    Width = 700
+    Align = alBottom
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 3
+  end
+end
