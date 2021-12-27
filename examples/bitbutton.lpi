@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="10"/>
+    <Version Value="12"/>
+    <PathDelim Value="\"/>
     <General>
       <Flags>
-        <SaveOnlyProjectUnits Value="True"/>
-        <LRSInOutputDirectory Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
-      <MainUnit Value="0"/>
+      <SessionStorage Value="InProjectDir"/>
+      <Title Value="BitButton"/>
+      <Scaled Value="True"/>
+      <ResourceType Value="res"/>
+      <UseXPManifest Value="True"/>
+      <XPManifest>
+        <DpiAware Value="True"/>
+      </XPManifest>
     </General>
     <BuildModes Count="1">
-      <Item1 Name="default" Default="True"/>
+      <Item1 Name="Default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+      <UseFileFilters Value="True"/>
     </PublishOptions>
     <RunParams>
-      <local>
-        <FormatVersion Value="1"/>
-      </local>
+      <FormatVersion Value="2"/>
     </RunParams>
     <RequiredPackages Count="1">
       <Item1>
@@ -30,26 +33,30 @@
     </RequiredPackages>
     <Units Count="2">
       <Unit0>
-        <Filename Value="bitbutton.pp"/>
+        <Filename Value="bitbutton.lpr"/>
         <IsPartOfProject Value="True"/>
-        <CursorPos X="28" Y="26"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
+        <UnitName Value="BitButton_Demo"/>
       </Unit0>
       <Unit1>
-        <Filename Value="bitbtnform.pp"/>
+        <Filename Value="bitbtnform.pas"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
-        <EditorIndex Value="1"/>
-        <CursorPos X="24" Y="21"/>
-        <UsageCount Value="20"/>
-        <Loaded Value="True"/>
+        <ComponentName Value="Form1"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="BitBtnForm"/>
       </Unit1>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
     <Version Value="11"/>
+    <PathDelim Value="\"/>
+    <Target>
+      <Filename Value="BitButton"/>
+    </Target>
+    <SearchPaths>
+      <IncludeFiles Value="$(ProjOutDir)"/>
+      <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+    </SearchPaths>
     <Linking>
       <Options>
         <Win32>
@@ -58,4 +65,17 @@
       </Options>
     </Linking>
   </CompilerOptions>
+  <Debugging>
+    <Exceptions Count="3">
+      <Item1>
+        <Name Value="EAbort"/>
+      </Item1>
+      <Item2>
+        <Name Value="ECodetoolError"/>
+      </Item2>
+      <Item3>
+        <Name Value="EFOpenError"/>
+      </Item3>
+    </Exceptions>
+  </Debugging>
 </CONFIG>
