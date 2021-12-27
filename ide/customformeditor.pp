@@ -59,8 +59,6 @@ uses
 
 const
   OrdinalTypes = [tkInteger,tkChar,tkEnumeration,tkbool];
-
-const
   LRSStreamChunkSize = 4096; // allocating mem in 4k chunks helps many mem managers
 
 type
@@ -1345,7 +1343,7 @@ begin
           mtError,[mbCancel]);
         exit;
       end;
-      
+
       // read inline streams
       if csInline in NewComponent.ComponentState then begin
         JITList:=FindJITList(OwnerComponent);

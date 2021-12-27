@@ -157,7 +157,7 @@ type
 
     // some useful functions
     function GetItem(Index:integer):TComponent;
-    function OnFindGlobalComponent(const {%H-}AName:AnsiString):TComponent;
+    function FindGlobalComponent(const {%H-}AName:AnsiString):TComponent;
     procedure InitReading;
     procedure CreateReader(BinStream: TStream;
                            UnitResourcefileFormat: TUnitResourcefileFormatClass;
@@ -985,12 +985,11 @@ begin
   FContextObject:=nil;
 end;
 
-function TJITComponentList.OnFindGlobalComponent(
-  const AName: AnsiString): TComponent;
+function TJITComponentList.FindGlobalComponent(const AName: AnsiString): TComponent;
 begin
   // This event is triggered everytime TReader searches a Component.
   // It is triggered for every sub component and every reference.
-  // The sub comonent are found by TReader itself.
+  // The sub components are found by TReader itself.
   // The other components are done at the end via GlobalFixupReferences.
   // So, there is nothing left to do here.
   Result := nil;
@@ -1003,7 +1002,7 @@ begin
   fRenameList.Clear;
   FErrors.Clear;
   
-  MyFindGlobalComponentProc:=@OnFindGlobalComponent;
+  MyFindGlobalComponentProc:=@FindGlobalComponent;
   RegisterFindGlobalComponentProc(@MyFindGlobalComponent);
   Application.FindGlobalComponentEnabled:=false;
 end;

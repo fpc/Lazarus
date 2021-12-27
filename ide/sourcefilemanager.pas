@@ -6043,7 +6043,7 @@ begin
       Result:=LoadAncestorDependencyHidden(AnUnitInfo,NewClassName,OpenFlags,
                                            AncestorType,AncestorUnitInfo);
       if Result<>mrOk then begin
-        DebugLn(['LoadLFM DoLoadAncestorDependencyHidden failed for ',AnUnitInfo.Filename]);
+        DebugLn(['LoadLFM LoadAncestorDependencyHidden failed for ',AnUnitInfo.Filename]);
         exit;
       end;
 
