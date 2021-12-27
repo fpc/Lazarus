@@ -1,0 +1,85 @@
+object Form1: TForm1
+  Left = 200
+  Height = 230
+  Top = 200
+  Width = 400
+  Caption = 'Common Dialogs'
+  ClientHeight = 230
+  ClientWidth = 400
+  Color = clTeal
+  LCLVersion = '2.3.0.0'
+  object dirLabel: TLabel
+    Left = 110
+    Height = 15
+    Top = 40
+    Width = 48
+    Caption = 'Directory'
+  end
+  object fileLabel: TLabel
+    Left = 110
+    Height = 15
+    Top = 80
+    Width = 18
+    Caption = 'File'
+  end
+  object closeButton: TButton
+    Tag = 1
+    Left = 110
+    Height = 25
+    Top = 145
+    Width = 75
+    Caption = 'Close'
+    OnClick = ButtonClick
+    TabOrder = 0
+  end
+  object openButton: TButton
+    Tag = 2
+    Left = 10
+    Height = 25
+    Top = 10
+    Width = 75
+    Caption = 'Open'
+    OnClick = ButtonClick
+    TabOrder = 1
+  end
+  object saveButton: TButton
+    Tag = 3
+    Left = 10
+    Height = 25
+    Top = 52
+    Width = 75
+    Caption = 'Save'
+    OnClick = ButtonClick
+    TabOrder = 2
+  end
+  object fontButton: TButton
+    Tag = 4
+    Left = 10
+    Height = 25
+    Top = 94
+    Width = 75
+    Caption = 'Font'
+    OnClick = ButtonClick
+    TabOrder = 3
+  end
+  object colorButton: TButton
+    Tag = 5
+    Left = 10
+    Height = 25
+    Top = 136
+    Width = 75
+    Caption = 'Color'
+    OnClick = ButtonClick
+    TabOrder = 4
+  end
+  object dirButton: TButton
+    Tag = 6
+    Left = 10
+    Height = 25
+    Top = 178
+    Width = 75
+    Caption = 'Directory'
+    OnClick = ButtonClick
+    TabOrder = 5
+  end
+end

@@ -65,7 +65,6 @@ begin
     Parent := Self;
     SetBounds(110, 40, 280, 35);
     Caption := 'Directory';
-    Show;
   end;
 
   fileLabel := TLabel.Create(Self);
@@ -74,7 +73,6 @@ begin
     Parent := Self;
     SetBounds(110, 80, 280, 35);
     Caption := 'File';
-    Show;
   end;
 
   closeButton := TButton.Create(Self);

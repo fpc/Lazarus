@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************
 }
-program ComDialogs;
+program ComDialogs_Demo;
 
 {$mode objfpc}{$H+}
 
