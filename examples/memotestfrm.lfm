@@ -1,0 +1,94 @@
+object MemoTestForm: TMemoTestForm
+  Left = 270
+  Height = 245
+  Top = 131
+  Width = 350
+  ClientHeight = 245
+  ClientWidth = 350
+  LCLVersion = '2.3.0.0'
+  object Button5: TButton
+    Left = 10
+    Height = 25
+    Top = 210
+    Width = 50
+    Caption = 'Add'
+    OnClick = Button5Click
+    TabOrder = 0
+  end
+  object Button3: TButton
+    Left = 65
+    Height = 25
+    Top = 210
+    Width = 50
+    Caption = 'Clear 1'
+    OnClick = Button3Click
+    TabOrder = 1
+  end
+  object Button1: TButton
+    Left = 120
+    Height = 25
+    Top = 210
+    Width = 50
+    Caption = '->'
+    OnClick = Button1Click
+    TabOrder = 2
+  end
+  object Button2: TButton
+    Left = 175
+    Height = 25
+    Top = 210
+    Width = 50
+    Caption = '<-'
+    OnClick = Button2Click
+    TabOrder = 3
+  end
+  object Button4: TButton
+    Left = 230
+    Height = 25
+    Top = 210
+    Width = 50
+    Caption = 'Clear 2'
+    OnClick = Button4Click
+    TabOrder = 4
+  end
+  object Button6: TButton
+    Left = 285
+    Height = 25
+    Top = 210
+    Width = 50
+    Caption = 'Add'
+    OnClick = Button6Click
+    TabOrder = 5
+  end
+  object Edit1: TEdit
+    Left = 10
+    Height = 23
+    Top = 180
+    Width = 325
+    TabOrder = 6
+  end
+  object MyLabel: TLabel
+    Left = 10
+    Height = 15
+    Top = 1
+    Width = 105
+    Caption = 'These are 2 TMemo:'
+  end
+  object Memo1: TMemo
+    Left = 10
+    Height = 155
+    Top = 20
+    Width = 160
+    ScrollBars = ssVertical
+    TabOrder = 7
+  end
+  object Memo2: TMemo
+    Left = 175
+    Height = 155
+    Top = 20
+    Width = 160
+    ScrollBars = ssBoth
+    TabOrder = 8
+    WordWrap = False
+  end
+end
