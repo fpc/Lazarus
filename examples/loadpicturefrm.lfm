@@ -1,0 +1,19 @@
+object LoadBitmapForm: TLoadBitmapForm
+  Left = 270
+  Height = 341
+  Top = 131
+  Width = 429
+  Caption = 'Example: Loading picture from file'
+  ClientHeight = 341
+  ClientWidth = 429
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object Image1: TImage
+    Left = 0
+    Height = 341
+    Top = 0
+    Width = 429
+    Align = alClient
+  end
+end
