@@ -1,0 +1,60 @@
+object ListBoxTestForm: TListBoxTestForm
+  Left = 200
+  Height = 200
+  Top = 200
+  Width = 300
+  Caption = 'ListBoxTestForm'
+  ClientHeight = 200
+  ClientWidth = 300
+  OnResize = FormResize
+  LCLVersion = '2.3.0.0'
+  object Button1: TButton
+    Left = 40
+    Height = 25
+    Top = 170
+    Width = 50
+    Anchors = [akLeft, akBottom]
+    Caption = 'New'
+    OnClick = Button1Click
+    TabOrder = 0
+  end
+  object Button2: TButton
+    Left = 95
+    Height = 25
+    Top = 170
+    Width = 50
+    Anchors = [akLeft, akBottom]
+    Caption = 'Delete'
+    OnClick = Button2Click
+    TabOrder = 1
+  end
+  object Button3: TButton
+    Left = 150
+    Height = 25
+    Top = 170
+    Width = 50
+    Anchors = [akLeft, akBottom]
+    Caption = 'Clear'
+    OnClick = Button3Click
+    TabOrder = 2
+  end
+  object Button4: TButton
+    Left = 205
+    Height = 25
+    Top = 170
+    Width = 50
+    Anchors = [akLeft, akBottom]
+    Caption = 'Unused'
+    OnClick = Button4Click
+    TabOrder = 3
+  end
+  object ListBox: TListBox
+    Left = 10
+    Height = 150
+    Top = 10
+    Width = 280
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    TabOrder = 4
+  end
+end
