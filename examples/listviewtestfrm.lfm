@@ -1,0 +1,64 @@
+object MyForm: TMyForm
+  Left = 270
+  Height = 200
+  Top = 131
+  Width = 300
+  Caption = 'ListView Test'
+  ClientHeight = 200
+  ClientWidth = 300
+  LCLVersion = '2.3.0.0'
+  object ListView: TListView
+    Left = 0
+    Height = 150
+    Top = 0
+    Width = 300
+    Align = alTop
+    Columns = <    
+      item
+        Caption = 'Column 1'
+      end    
+      item
+        Caption = 'Column 2'
+      end    
+      item
+        Caption = 'Column 3'
+      end>
+    HideSelection = False
+    TabOrder = 0
+    ViewStyle = vsReport
+  end
+  object Button1: TButton
+    Left = 10
+    Height = 25
+    Top = 160
+    Width = 65
+    Caption = 'Add Item'
+    OnClick = Button1Click
+    TabOrder = 1
+  end
+  object Button2: TButton
+    Left = 80
+    Height = 25
+    Top = 160
+    Width = 65
+    Caption = 'Del Item'
+    OnClick = Button2Click
+    TabOrder = 2
+  end
+  object Edit1: TEdit
+    Left = 150
+    Height = 23
+    Top = 160
+    Width = 65
+    OnChange = Edit1Change
+    TabOrder = 3
+  end
+  object Edit2: TEdit
+    Left = 220
+    Height = 23
+    Top = 160
+    Width = 65
+    OnChange = Edit2Change
+    TabOrder = 4
+  end
+end
