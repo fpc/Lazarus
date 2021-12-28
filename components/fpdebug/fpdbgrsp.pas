@@ -133,8 +133,8 @@ type
     function Kill(): boolean;
     function Detach(): boolean;
     function MustReplyEmpty: boolean;
-    function SetBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
-    function DeleteBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1): boolean;
+    function SetBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1; HWbreak: boolean = true): boolean;
+    function DeleteBreakWatchPoint(addr: PtrUInt; BreakWatchKind: TDBGWatchPointKind; watchsize: integer = 1; HWBreak: boolean = true): boolean;
     // TODO: no support for thread ID or different address
     function Continue(): boolean;
     function SingleStep(): boolean;
@@ -766,7 +766,8 @@ begin
 end;
 
 function TRspConnection.SetBreakWatchPoint(addr: PtrUInt;
-  BreakWatchKind: TDBGWatchPointKind; watchsize: integer): boolean;
+  BreakWatchKind: TDBGWatchPointKind; watchsize: integer; HWbreak: boolean
+  ): boolean;
 var
   cmd, reply: string;
 begin
@@ -776,7 +777,11 @@ begin
     wpkRead:  cmd := cmd + '3,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     wpkReadWrite: cmd := cmd + '4,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...
-    wkpExec: cmd := cmd + '1,' + IntToHex(addr, 4) + ',00';
+    wkpExec:
+      if HWbreak then
+        cmd := cmd + '1,' + IntToHex(addr, 4) + ',00'
+      else
+        cmd := cmd + '0,' + IntToHex(addr, 4) + ',00';
   end;
 
   EnterCriticalSection(fCS);
@@ -790,7 +795,8 @@ begin
 end;
 
 function TRspConnection.DeleteBreakWatchPoint(addr: PtrUInt;
-  BreakWatchKind: TDBGWatchPointKind; watchsize: integer): boolean;
+  BreakWatchKind: TDBGWatchPointKind; watchsize: integer; HWBreak: boolean
+  ): boolean;
 var
   cmd, reply: string;
 begin
@@ -800,7 +806,11 @@ begin
     wpkRead:  cmd := cmd + '3,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     wpkReadWrite: cmd := cmd + '4,' + IntToHex(addr, 4) + ',' + IntToHex(watchsize, 4);
     // NOTE: Not sure whether hardware break is better than software break, depends on gdbserver implementation...
-    wkpExec: cmd := cmd + '1,' + IntToHex(addr, 4) + ',00';
+    wkpExec:
+      if HWBreak then
+        cmd := cmd + '1,' + IntToHex(addr, 4) + ',00'
+      else
+        cmd := cmd + '0,' + IntToHex(addr, 4) + ',00';
   end;
 
   EnterCriticalSection(fCS);
