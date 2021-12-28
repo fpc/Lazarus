@@ -517,6 +517,9 @@ const
   ONEMASK   =$0101010101010101;
   EIGHTYMASK=$8080808080808080;
 {$endif}
+{$if defined(CPUX86_HAS_POPCNT)}
+{$define CPU_HAS_POPCNT}
+{$ENDIF}
 var
   pnx: PPtrUInt absolute p; // To get contents of text in PtrInt blocks. x refers to 32 or 64 bits
   pn8: puint8 absolute pnx; // To read text as Int8 in the initial and final loops
@@ -541,9 +544,13 @@ begin
   begin
     // Count bytes which are NOT the first byte of a character.
     nx := ((pnx^ and EIGHTYMASK) shr 7) and ((not pnx^) shr 6);
+    {$ifdef CPU_HAS_POPCNT}
+    Result += PopCnt(nx);
+    {$ELSE CPU_HAS_POPCNT}
     {$push}{$overflowchecks off} // "nx * ONEMASK" causes an arithmetic overflow.
     Result += (nx * ONEMASK) >> ((sizeof(PtrInt) - 1) * 8);
     {$pop}
+    {$ENDIF CPU_HAS_POPCNT}
     inc(pnx);
   end;
   // Take care of any left-over bytes.
