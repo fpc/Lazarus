@@ -477,19 +477,15 @@ end;
 
 function TRspConnection.IntToHexLittleEndian(value: qword): string;
 var
-  b, accumulator, digits: byte;
+  b, accumulator: byte;
 begin
   Result := '';
-  digits := 0;
   accumulator := 0;
   while value > 0 do
   begin
     inc(accumulator, 2);
     b := byte(value);
     value := value shr 8;
-    if b > 0 then
-      digits := accumulator;
-
     Result := Result + IntToHex(b, 2);
   end;
 end;
@@ -594,7 +590,7 @@ function TRspConnection.WaitForSignal(out msg: string; out
   registers: TInitializedRegisters): integer;
 var
   res: boolean;
-  startIndex, colonIndex, semicolonIndex, i, ID: integer;
+  startIndex, colonIndex, semicolonIndex, i: integer;
   tmp, tmp2: qword;
   part1, part2, s: string;
 begin
