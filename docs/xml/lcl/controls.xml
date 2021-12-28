@@ -8660,22 +8660,38 @@
         </seealso>
       </element>
       <element name="TControl.RealGetText.Result">
-        <short>The Caption property.</short>
+        <short>Value for the Caption property.</short>
       </element>
 
       <element name="TControl.RealSetText">
-        <short>Sets the Caption property.</short>
+        <short>Sets the value for the Caption property.</short>
         <descr>
-          This method is called by <var>SetText</var>, when SetTextBuf is not overridden.
+          <p>
+            RealSetText is a method used to apply the TCaption value in AValue to the text or caption for the control. RealSetText is called by the private <var>SetText</var> method, when <var>SetTextBuf</var> has not been overridden.
+          </p>
+          <p>
+            <b>Notes on TControl.Caption, TControl.Text, et. al.</b>
+          </p>
+          <p>
+            The Delphi VCL implementation relies on the virtual GetTextBuf and SetTextBuf methods to exchange text for controls.. This requires a lot of (unnecessary) copies to move values between Text and Caption.
+          </p>
+          <p>
+            The LCL uses strings to exchange text values because it is more efficient. To maintain VCL compatibility, the virtual RealGetText and RealSetText methods were  introduced. These functions use the LCLInterface. The default GetTextBuf and SetTextBuf implementations calls the RealGetText and RealSetText methods as needed. As long as the GetTextBuf and/or SetTextBuf aren't overridden, GetText and SetText call RealGetText and RealSetText to avoid copying PChar values.
+          </p>
+          <p>
+            To keep things optimal, LCL implementations should always override RealGetText and RealSetText. GetTextBuf and SetTextBuf are only kept for compatibility with Delphi code.
+          </p>
         </descr>
         <seealso>
-          <link id="TControl.SetTextBuf"/>
+          <link id="TControl.Caption"/>
+          <link id="TControl.Text"/>
           <link id="TControl.RealGetText"/>
+          <link id="TControl.SetTextBuf"/>
           <link id="TControl.GetTextBuf"/>
         </seealso>
       </element>
       <element name="TControl.RealSetText.Value">
-        <short>The string to store.</short>
+        <short>The string value to store in the Text / Caption properties.</short>
       </element>
 
       <element name="TControl.TextChanged">
@@ -8700,9 +8716,19 @@
         <short>Here: FCaption (can be overridden).</short>
       </element>
 
-      <element link="#lcl.controls.TControl.Action" name="TControl.SetAction"/>
+      <element name="TControl.SetAction">
+        <short>Sets the value for the Action property.</short>
+        <descr>
+          <p>
+            Ensures that ActionLink is updated when the value for the property is updated. When Value is unassigned (Nil), ActionLink is freed and set to Nil. The control style flags are also updated to remove the value csActionClient. Otherwise, a new ActionLink class instance is created for ActionLink and Value is assigned to its  Action property. Its OnChange handler is assigned, and the ActionChange method is called to apply values from the action to the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Action"/>
+        </seealso>
+      </element>
       <element name="TControl.SetAction.Value">
-        <short/>
+        <short>New value for the Action property.</short>
       </element>
 
       <element name="TControl.SetColor">
@@ -8723,9 +8749,19 @@
         <short>New value for the Color property.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.Enabled" name="TControl.SetEnabled"/>
+      <element name="TControl.SetEnabled">
+        <short>Sets the value for the Enabled property.</short>
+        <descr>
+          <p>
+            Calls EnabledChanging to notify handlers for the chtOnEnabledChanged type. Stores the new value for the property, and performs a CM_ENABLEDCHANGED control message. Calls EnabledChanged to notify handlers for the chtOnEnabledChanged type.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Enabled"/>
+        </seealso>
+      </element>
       <element name="TControl.SetEnabled.Value">
-        <short/>
+        <short>New value for the Enabled property.</short>
       </element>
 
       <element name="TControl.SetHint">
@@ -15112,9 +15148,24 @@
         <short>Value for the MouseCapture property.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.RealSetText" name="TWinControl.RealSetText"/>
+      <element name="TWinControl.RealSetText">
+        <short>Sets the text / caption for the control.</short>
+        <descr>
+          <p>
+            <var>RealSetText</var> is an overridden method in TWinControl. It ensures that the new value is applied to the widgetset class when its Handle has been allocated, and the control size is adjusted when needed/enabled. The inherited method is called to apply AValue to the Text and/or Caption properties for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.WSSetText"/>
+          <link id="TControl.Caption"/>
+          <link id="TControl.Text"/>
+          <link id="TControl.RealSetText"/>
+          <link id="TControl.RealGetText"/>
+          <link id="TControl.AdjustSize"/>
+        </seealso>
+      </element>
       <element name="TWinControl.RealSetText.AValue">
-        <short/>
+        <short>New value for the text / caption for the control.</short>
       </element>
 
       <element name="TWinControl.RemoveFocus">
