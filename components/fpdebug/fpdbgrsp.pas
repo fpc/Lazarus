@@ -117,7 +117,9 @@ type
     // Note that numbers are transmitted as hex characters in target endian sequence
     // For little endian targets this creates an endian swap if the string is parsed by Val
     // because a hex representation of a number is interpreted as big endian
-    function ConvertHexWithLittleEndianSwap(constref hextext: string; out value: qword): boolean;
+    function HexToIntLittleEndian(constref hextext: string; out value: qword): boolean;
+    function IntToHexLittleEndian(value: qword): string;
+
     function HexEncodeStr(s: string): string;
     function HexDecodeStr(hexcode: string): string;
   public
@@ -448,7 +450,7 @@ begin
     DebugLn(DBG_WARNINGS, ['Warning: Retries exceeded in TRspConnection.FSendCmdWaitForReply for cmd: ', cmd]);
 end;
 
-function TRspConnection.ConvertHexWithLittleEndianSwap(constref
+function TRspConnection.HexToIntLittleEndian(constref
   hextext: string; out value: qword): boolean;
 var
   err: integer;
@@ -471,6 +473,25 @@ begin
   end
   else
     result := false;
+end;
+
+function TRspConnection.IntToHexLittleEndian(value: qword): string;
+var
+  b, accumulator, digits: byte;
+begin
+  Result := '';
+  digits := 0;
+  accumulator := 0;
+  while value > 0 do
+  begin
+    inc(accumulator, 2);
+    b := byte(value);
+    value := value shr 8;
+    if b > 0 then
+      digits := accumulator;
+
+    Result := Result + IntToHex(b, 2);
+  end;
 end;
 
 function TRspConnection.HexEncodeStr(s: string): string;
@@ -664,7 +685,7 @@ begin
                     if i > 2 then
                     begin
                       s := copy(part2, 2, i-1);
-                      if ConvertHexWithLittleEndianSwap(s, tmp) then
+                      if HexToIntLittleEndian(s, tmp) then
                         FStatusEvent.processID := tmp
                       else
                       begin
@@ -673,7 +694,7 @@ begin
                       end;
 
                       s := copy(part2, i+1, 255);
-                      if ConvertHexWithLittleEndianSwap(s, tmp) then
+                      if HexToIntLittleEndian(s, tmp) then
                         FStatusEvent.threadID := tmp
                       else
                       begin
@@ -687,7 +708,7 @@ begin
                   else
                   // Expect only thread ID
                   begin
-                    if ConvertHexWithLittleEndianSwap(part2, tmp) then
+                    if HexToIntLittleEndian(part2, tmp) then
                       FStatusEvent.threadID := tmp
                     else
                     begin
@@ -702,7 +723,7 @@ begin
             else // catch valid hex numbers - will be register info
               begin
                 // check if part1 is a number, this should then be a register index
-                if ConvertHexWithLittleEndianSwap(part1, tmp) and ConvertHexWithLittleEndianSwap(part2, tmp2) then
+                if HexToIntLittleEndian(part1, tmp) and HexToIntLittleEndian(part2, tmp2) then
                 begin
                   if tmp < length(FStatusEvent.registers) then
                   begin
@@ -831,7 +852,7 @@ begin
   end;
   if result then
   begin
-    result := ConvertHexWithLittleEndianSwap(reply, tmp);
+    result := HexToIntLittleEndian(reply, tmp);
     AVal := PtrUInt(tmp);
   end;
 
@@ -843,7 +864,7 @@ function TRspConnection.WriteDebugReg(ind: byte; AVal: TDbgPtr): boolean;
 var
   cmd, reply: string;
 begin
-  cmd := 'P'+IntToHex(ind, 2);
+  cmd := 'P'+IntToHex(ind, 2)+'='+IntToHexLittleEndian(AVal);
   EnterCriticalSection(fCS);
   try
     result := SendCmdWaitForReply(cmd, reply) and (reply = 'OK');
