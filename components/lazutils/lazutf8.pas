@@ -518,10 +518,10 @@ const
   EIGHTYMASK=$8080808080808080;
 {$endif}
 var
-  pnx: PPtrInt absolute p; // To get contents of text in PtrInt blocks. x refers to 32 or 64 bits
-  pn8: pint8 absolute pnx; // To read text as Int8 in the initial and final loops
-  ix: PtrInt absolute pnx; // To read text as PtrInt in the block loop
-  nx: PtrInt;              // values processed in block loop
+  pnx: PPtrUInt absolute p; // To get contents of text in PtrInt blocks. x refers to 32 or 64 bits
+  pn8: puint8 absolute pnx; // To read text as Int8 in the initial and final loops
+  ix: PtrUInt absolute pnx; // To read text as PtrInt in the block loop
+  nx: PtrUInt;              // values processed in block loop
   i,cnt,e: PtrInt;
 begin
   Result := 0;
