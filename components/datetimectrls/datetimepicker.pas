@@ -125,14 +125,18 @@ type
   TDTCalAlignment = (dtaLeft, dtaRight, dtaDefault);
 
   TDateTimePickerOption = (
-    dtpoDoChangeOnSetDateTime, // The OnChange handler will be called also when
-                               // date/time is programatically changed.
-    dtpoEnabledIfUnchecked, // Enable the date time picker if the checkbox is unchecked.
-    dtpoAutoCheck, // Auto-check an unchecked checkbox when DateTime is changed
-                   // (makes sense only if dtpoEnabledIfUnchecked is set).
-    dtpoFlatButton, // Use flat button for calender picker.
-    dtpoResetSelection // When the control receives focus, the selection is always
-       // in the first part (the control does not remember which part was previously selected).
+    // The OnChange handler will be called also when date/time is programatically changed.
+    dtpoDoChangeOnSetDateTime,
+    // Enable the date time picker if the checkbox is unchecked.
+    dtpoEnabledIfUnchecked,
+    // Auto-check an unchecked checkbox when DateTime is changed
+    // (makes sense only if dtpoEnabledIfUnchecked is set).
+    dtpoAutoCheck,
+    // Use flat button for calender picker.
+    dtpoFlatButton,
+    // When the control receives focus, the selection is always
+    // in the first part (the control does not remember which part was previously selected).
+    dtpoResetSelection
     );
 
   TDateTimePickerOptions = set of TDateTimePickerOption;
