@@ -171,7 +171,7 @@ type
     procedure ScrollScroll(Sender: TObject; ScrollCode: TScrollCode;
       var ScrollPos: Integer);
     procedure SetItemList(const Value: TStrings);
-    procedure SetPosition(const Value: Integer);
+    procedure SetPosition(Value: Integer);
     procedure SetNbLinesInWindow(const Value: Integer);
     {$IFDEF HintClickWorkaround}
     procedure HintWindowMouseDown(Sender: TObject; Button: TMouseButton;
@@ -1349,18 +1349,17 @@ begin
   end;
 end;
 
-procedure TSynBaseCompletionForm.SetPosition(const Value: Integer);
+procedure TSynBaseCompletionForm.SetPosition(Value: Integer);
 begin
-  if Value < ItemList.Count then begin
-    if FPosition <> Value then begin
-      FPosition := Value;
-      if Position < Scroll.Position then
-        Scroll.Position := Position
-      else if Scroll.Position < Position - NbLinesInWindow + 1 then
-        Scroll.Position := Position - NbLinesInWindow + 1;
-      Invalidate;
-      if Assigned(OnPositionChanged) then OnPositionChanged(Self);
-    end;
+  Value := MinMax(Value, 0, ItemList.Count - 1);
+  if FPosition <> Value then begin
+    FPosition := Value;
+    if Position < Scroll.Position then
+      Scroll.Position := Position
+    else if Scroll.Position < Position - NbLinesInWindow + 1 then
+      Scroll.Position := Position - NbLinesInWindow + 1;
+    Invalidate;
+    if Assigned(OnPositionChanged) then OnPositionChanged(Self);
   end;
   if Showing then
     ShowItemHint(Position);
