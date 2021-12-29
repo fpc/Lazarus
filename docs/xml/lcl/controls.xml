@@ -1006,7 +1006,7 @@
         <short>The form stays system-wide on top.</short>
         <descr>
           <p>
-            Used in forms for a modal system dialogs Prevents another form from having a higher Z-order value than the current one. Generally treated the same as fsStayOnTop except for MacOS Cocoa, because... you know, Mac! Think different!
+            Used in forms for a modal system dialogs Prevents another form from having a higher Z-order value than the current one. Generally treated the same as fsStayOnTop except for macOS Cocoa.
           </p>
         </descr>
       </element>

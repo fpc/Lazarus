@@ -15,10 +15,10 @@
           <file>fileutils.pas</file> contains routines, types, and classes used to maintain compatibility with the FileUtil unit in Delphi. File routines that deal with UTF-8 file names are located in the <file>LazFileUtils</file> unit.
         </p>
         <p>
-          File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (MacOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b> string operator.
+          File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (macOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b> string operator.
         </p>
         <p>
-          This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the default system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOS. Normally these operating systems use UTF-8 as the system encoding so the WideStringManager is not needed.
+          This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the default system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and macOS. Normally these operating systems use UTF-8 as the system encoding so the WideStringManager is not needed.
         </p>
       </descr>
 
@@ -206,11 +206,11 @@
 
       <element name="ProgramDirectoryWithBundle">
         <short>
-          Gets the directory for the current executable without the MacOS bundle post-fix.
+          Gets the directory for the current executable without the macOS bundle post-fix.
         </short>
         <descr>
           <p>
-            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the MacOS operating system. It calls ProgramDirectory to get the return value,  and removes the bundle post-fix ('.app/Contents/MacOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
+            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the macOS operating system. It calls ProgramDirectory to get the return value,  and removes the bundle post-fix ('.app/Contents/macOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
           </p>
         </descr>
         <seealso>
@@ -218,7 +218,7 @@
         </seealso>
       </element>
       <element name="ProgramDirectoryWithBundle.Result">
-        <short>Path to the executable without the MacOS bundle post-fix.</short>
+        <short>Path to the executable without the macOS bundle post-fix.</short>
       </element>
 
       <element name="ExpandUNCFileNameUTF8">
