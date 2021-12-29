@@ -639,6 +639,7 @@ type
 
       Valid: Boolean;
       Addr64: Boolean;
+      AddrSize: Byte;
       MinimumInstructionLength: Byte;
       DefaultIsStmt: Boolean;
       LineBase: ShortInt;
@@ -4102,9 +4103,12 @@ begin
               Exit;
             end;
             DW_LNE_set_address: begin
-              if FOwner.FLineInfo.Addr64
-              then FAddress := PQWord(pbyte(FLineInfoPtr)+1)^
-              else FAddress := PLongWord(pbyte(FLineInfoPtr)+1)^;
+              if FOwner.FLineInfo.AddrSize = 8 then
+                FAddress := PQWord(pbyte(FLineInfoPtr)+1)^
+              else if FOwner.FLineInfo.AddrSize = 4 then
+                FAddress:= PLongWord(pbyte(FLineInfoPtr)+1)^
+              else
+                FAddress := PWord(pbyte(FLineInfoPtr)+1)^;
               FAddress:=FOwner.MapAddressToNewValue(FAddress);
               FAddress:=FOwner.CalculateRelocatedAddress(FAddress);
             end;
@@ -4536,6 +4540,7 @@ constructor TDwarfCompilationUnit.Create(AOwner: TFpDwarfInfo; ADebugFile: PDwar
     end;
     if Version=0 then ;
     FLineInfo.Addr64 := FAddressSize = 8;
+    FLineInfo.AddrSize := FAddressSize;
     FLineInfo.DataStart := PByte(Info) + HeaderLength;
 
     FLineInfo.MinimumInstructionLength := Info^.MinimumInstructionLength;
@@ -4909,8 +4914,10 @@ begin
   // do not need mem reader, address is in dwarf. Should be in correct format
   if (FAddressSize = 8) then
     Result := TargetLoc(PQWord(AData)^)
-  else
-    Result := TargetLoc(PLongWord(AData)^);
+  else if (FAddressSize = 4) then
+    Result := TargetLoc(PLongWord(AData)^)
+  else if (FAddressSize = 2) then
+    Result := TargetLoc(PWord(AData)^);
   if AIncPointer then inc(AData, FAddressSize);
 end;
 
