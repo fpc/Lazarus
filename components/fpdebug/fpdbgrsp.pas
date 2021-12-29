@@ -419,7 +419,10 @@ begin
       outputPacket := False;
     end;
   until not outputPacket;
-  SafeWriteByte(byte('+'));
+
+  // Do not acknowledge OK
+  if retval <> 'OK' then
+    SafeWriteByte(byte('+'));
   result := not SockErr;
   DebugLn(DBG_RSP, ['RSP <- ', retval]);
 end;
