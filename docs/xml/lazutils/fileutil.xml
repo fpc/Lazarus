@@ -18,7 +18,7 @@
           File name handling in the unit is platform- or OS-specific. For the Windows, Darwin (MacOS), and Amiga platforms, file names are <b>NOT</b> case sensitive. In addition, under Darwin, the <b>NotLiteralFilenames</b> define is enabled. This indicates that file names cannot be compared using the <b>=</b> string operator.
         </p>
         <p>
-          This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the default system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOSX. Normally these operating systems use UTF-8 as system encoding so the WideStringManager is not needed.
+          This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the default system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and MacOS. Normally these operating systems use UTF-8 as the system encoding so the WideStringManager is not needed.
         </p>
       </descr>
 
