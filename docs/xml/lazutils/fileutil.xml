@@ -210,7 +210,7 @@
         </short>
         <descr>
           <p>
-            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the macOS operating system. It calls ProgramDirectory to get the return value,  and removes the bundle post-fix ('.app/Contents/macOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
+            <var>ProgramDirectoryWithBundle</var> is a <var>String</var> function used to get the path to current executable on the macOS operating system. It calls ProgramDirectory to get the return value,  and removes the bundle post-fix ('.app/Contents/MacOS') from the return value. The return value is not changed if it does not contain the bundle post-fix.
           </p>
         </descr>
         <seealso>
