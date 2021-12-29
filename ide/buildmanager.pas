@@ -988,24 +988,23 @@ begin
       ProjCompilerFilename:=FBuildTarget.GetCompilerFilename;
       if not IsCompilerExecutable(ProjCompilerFilename,ProjCompilerErrorMsg,ProjCompilerKind,true)
       then begin
-        Msg+='Project''s compiler: "'+ProjCompilerFilename+'": '+ProjCompilerErrorMsg+#13;
+        Msg+='Project''s compiler: "'+ProjCompilerFilename+'": '+ProjCompilerErrorMsg+LineEnding;
       end;
     end;
 
     if not IsCompilerExecutable(DefCompilerFilename,DefCompilerErrorMsg,DefCompilerKind,true)
     then begin
-      Msg+='Environment compiler: "'+DefCompilerFilename+'": '+DefCompilerErrorMsg+#13;
+      Msg+='Environment compiler: "'+DefCompilerFilename+'": '+DefCompilerErrorMsg+LineEnding;
     end;
     if Msg='' then
-      Msg+='Compiler: "'+CompilerFilename+'": '+CompilerErrorMsg+#13;
+      Msg+='Compiler: "'+CompilerFilename+'": '+CompilerErrorMsg+LineEnding;
 
     debugln('Warning: (lazarus) [TBuildManager.RescanCompilerDefines]: invalid compiler:');
     debugln(Msg);
     if not Quiet then begin
-      IDEMessageDialog('Error','There is no Free Pascal Compiler'
-        +' (e.g. fpc'+ExeExt+' or ppc<cpu>'+ExeExt+') configured in the'
-        +' project options. Codetools will not work properly.'#13
-        +Msg,mtError,[mbOk]);
+      IDEMessageDialog(lisCCOErrorCaption, Format(
+        lisThereIsNoFreePascalCompilerEGFpcOrPpcCpuConfigured, [ExeExt,
+        LineEnding, Msg]), mtError, [mbOk]);
     end;
     UnitSetCache:=nil;
     exit;

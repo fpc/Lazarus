@@ -19185,6 +19185,11 @@ msgstr "Létezik \"%s\" nevű unit a projektben.%sVálasszon egy eltérő nevet!
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "Nincs fpc.exe a(z) %s könyvtárában. Általában a make program együtt van telepítve az FPC fordítóval."
 
+#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
 msgstr "Legalább egy építési módnak lennie kell."

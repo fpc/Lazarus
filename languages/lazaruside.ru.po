@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-12-21 01:53+0300\n"
+"PO-Revision-Date: 2021-12-30 01:24+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -19162,6 +19162,11 @@ msgstr "Модуль с именем \"%s\" уже имеется в проек�
 #, object-pascal-format
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "В каталоге с %s отсутствует fpc.exe. Обычно исполнимый файл make установлен вместе с компилятором FPC."
+
+#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr "В параметрах проекта не настроен компилятор Free Pascal (например, fpc%0:s либо ppc<cpu>%0:s). Подсистема CodeTools не будет правильно работать.%1:s%1:sСообщение об ошибке:%1:s%2:s"
 
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."

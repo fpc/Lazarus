@@ -19183,6 +19183,11 @@ msgstr "У проєкті є модуль з назвою \"%s\".%sВибері�
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "У теці з %s немає fpc.exe. Зазвичай виконуваний файл make встановлюється разом з компілятором FPC."
 
+#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
 msgstr "Має бути хоча б один режим збирання."

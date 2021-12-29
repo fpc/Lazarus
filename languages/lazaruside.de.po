@@ -19306,6 +19306,11 @@ msgstr "Es gibt schon eine Unit mit dem Namen \"%s\" im Projekt.%sBitte wählen 
 msgid "There is no fpc.exe in the directory of %s. Usually the make executable is installed together with the FPC compiler."
 msgstr "Es gibt keine fpc.exe im Verzeichnis von %s. Üblicherweise wird \"make\" zusammen mit dem FPC-Compiler installiert."
 
+#: lazarusidestrconsts.listhereisnofreepascalcompileregfpcorppccpuconfigured
+#, object-pascal-format
+msgid "There is no Free Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s"
+msgstr ""
+
 #: lazarusidestrconsts.listheremustbeatleastonebuildmode
 msgid "There must be at least one build mode."
 msgstr "Es muß wenigstens einen Erstellmodus geben."

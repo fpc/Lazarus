@@ -2555,6 +2555,9 @@ resourcestring
   dlgCCOTestRTLUnits = 'Test: Checking RTL units ...';
   dlgCCOTestCompilerDate = 'Test: Checking compiler date ...';
   lisCCOErrorCaption = 'Error';
+  lisThereIsNoFreePascalCompilerEGFpcOrPpcCpuConfigured = 'There is no Free '
+    +'Pascal Compiler (e. g. fpc%0:s or ppc<cpu>%0:s) configured in the project '
+    +'options. CodeTools will not work properly.%1:s%1:sError message:%1:s%2:s';
   lisFatal = 'Fatal';
   lisPanic = 'Panic';
   lisHideSearch = 'Hide Search';
