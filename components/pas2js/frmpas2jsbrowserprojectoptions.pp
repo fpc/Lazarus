@@ -117,6 +117,7 @@ begin
   CBCreateHTML.Caption:=pjsdCreateInitialHTMLPage;
   CBMaintainPage.Caption:=pjsdMaintainHTMLPage;
   CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
+  cbShowUncaughtExceptions.Caption:=pjsdLetRTLShowUncaughtExceptions;
   CBUseBrowserApp.Caption:=pjsdUseBrowserApplicationObject;
   CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
   CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;

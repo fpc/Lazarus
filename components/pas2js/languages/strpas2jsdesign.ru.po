@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
@@ -54,6 +54,10 @@ msgstr "Дополнительные параметры команды запу�
 #: strpas2jsdesign.pjsdhttpserveroptslabelhint
 msgid "Add extra command-line options for the command which starts the webserver."
 msgstr "Добавить дополнительные параметры в команду запуска веб-сервера."
+
+#: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
+msgid "Let RTL show uncaught exceptions"
+msgstr "Разрешать RTL показывать необработанные исключения"
 
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
@@ -218,8 +222,8 @@ msgid "Use this URL to start application"
 msgstr "Использовать следующий адрес для запуска приложения"
 
 #: strpas2jsdesign.pjsdusewasiapplicationobject
-msgid "Host webassembly program"
-msgstr ""
+msgid "Run WebAssembly program:"
+msgstr "Запускать программу WebAssembly:"
 
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
@@ -243,8 +247,8 @@ msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is search
 msgstr "Можно использовать макросы IDE, например, $MakeExe(). Если полный путь не указан, поиск %s производится при помощи переменной окружения PATH."
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
-msgid "Name of your webassembly file"
-msgstr ""
+msgid "Name of your WebAssembly file"
+msgstr "Имя файла WebAssembly"
 
 #: strpas2jsdesign.spasjswebservercaption
 msgctxt "strpas2jsdesign.spasjswebservercaption"

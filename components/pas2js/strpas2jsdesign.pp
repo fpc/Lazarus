@@ -80,9 +80,10 @@ Resourcestring
   // New browser project options form
   pjsdPas2JSBrowserProjectOptions = 'Pas2JS Browser project options';
   pjsdCreateInitialHTMLPage = 'Create initial HTML page';
+  pjsdLetRTLShowUncaughtExceptions = 'Let RTL show uncaught exceptions';
   pjsdUseBrowserApplicationObject = 'Use Browser Application object';
-  pjsdUseWASIApplicationObject = 'Host webassembly program';
-  pjsWasiProgramFileTextHint = 'Name of your webassembly file';
+  pjsdUseWASIApplicationObject = 'Run WebAssembly program:';
+  pjsWasiProgramFileTextHint = 'Name of your WebAssembly file';
 
   // New NodeJS project options form
   pjsdNodeJSProjectOptions = 'NodeJS project options';

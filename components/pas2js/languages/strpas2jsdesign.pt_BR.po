@@ -55,6 +55,10 @@ msgstr "Opções extra de linha de comando do servidor HTTP (uma por linha)"
 msgid "Add extra command-line options for the command which starts the webserver."
 msgstr "Adicionar opções extra de linha de comando para o comando que inicia o servidor web."
 
+#: strpas2jsdesign.pjsdletrtlshowuncaughtexceptions
+msgid "Let RTL show uncaught exceptions"
+msgstr ""
+
 #: strpas2jsdesign.pjsdmaintainhtmlpage
 msgid "Maintain HTML page"
 msgstr "Manter página HTML"
@@ -219,7 +223,7 @@ msgid "Use this URL to start application"
 msgstr "Usar esta URL para iniciar a aplicação"
 
 #: strpas2jsdesign.pjsdusewasiapplicationobject
-msgid "Host webassembly program"
+msgid "Run WebAssembly program:"
 msgstr ""
 
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
@@ -246,7 +250,7 @@ msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is search
 msgstr "Você pode usar macros IDE como \"$MakeExe()\". Sem um caminho completo, %s é pesquisado em \"PATH\""
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
-msgid "Name of your webassembly file"
+msgid "Name of your WebAssembly file"
 msgstr ""
 
 #: strpas2jsdesign.spasjswebservercaption
