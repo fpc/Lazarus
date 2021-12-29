@@ -383,11 +383,15 @@ end;
 function GetParamByNameCount(const AName: String): integer;
 var
   i, l: Integer;
+  s: String;
 begin
-  Result := 0;;
+  Result := 0;
   l := Length(AName);
   for i:= 1 to Paramcount do begin
-    if copy(ParamStrUTF8(i),1, l) = AName then
+    s := ParamStrUTF8(i);
+    if (copy(s, 1, l) = AName) and
+       ((length(s) = l) or (s[l+1] = '='))
+    then
       inc(Result);
   end;
 end;
@@ -395,13 +399,18 @@ end;
 function GetParamByName(const AName: String; AnIndex: Integer): string;
 var
   i, l: Integer;
+  s: String;
 begin
   Result := '';
   l := Length(AName);
   for i:= 1 to Paramcount do begin
-    if copy(ParamStrUTF8(i),1, l) = AName then begin
+    s := ParamStrUTF8(i);
+    if (copy(s, 1, l) = AName) and
+       ((length(s) = l) or (s[l+1] = '='))
+    then begin
       dec(AnIndex);
       if AnIndex < 0 then begin
+        inc(l); // skip = sign
         Result := copy(ParamStrUTF8(i), l+1, Length(ParamStrUTF8(i))-l);
         break;
       end;
