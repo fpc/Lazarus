@@ -219,6 +219,10 @@ msgstr ""
 msgid "Use this URL to start application"
 msgstr ""
 
+#: strpas2jsdesign.pjsdusewasiapplicationobject
+msgid "Host webassembly program"
+msgstr ""
+
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr ""
@@ -240,6 +244,10 @@ msgstr ""
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
+msgstr ""
+
+#: strpas2jsdesign.pjswasiprogramfiletexthint
+msgid "Name of your webassembly file"
 msgstr ""
 
 #: strpas2jsdesign.spasjswebservercaption

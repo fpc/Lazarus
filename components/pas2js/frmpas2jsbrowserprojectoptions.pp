@@ -16,26 +16,32 @@ type
     BPHelpOptions: TButtonPanel;
     CBCreateHTML: TCheckBox;
     CBUseBrowserApp: TCheckBox;
+    CBUseWASI: TCheckBox;
     CBUseBrowserConsole: TCheckBox;
     CBUseHTTPServer: TCheckBox;
     CBServerURL: TComboBox;
     CBMaintainPage: TCheckBox;
     CBRunOnReady: TCheckBox;
     cbShowUncaughtExceptions: TCheckBox;
+    edtWasmProgram: TEdit;
     RBUseURL: TRadioButton;
     RBStartServerAt: TRadioButton;
     SEPort: TSpinEdit;
     procedure CBCreateHTMLChange(Sender: TObject);
+    procedure CBUseBrowserAppChange(Sender: TObject);
     procedure CBUseHTTPServerChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
+    procedure CheckWasi;
     function GetB(AIndex: Integer): Boolean;
     function GetServerPort: Word;
     function GetURL: String;
+    function GetWasmProgramURL: String;
     procedure SetB(AIndex: Integer; AValue: Boolean);
     procedure SetServerPort(AValue: Word);
     procedure SetURL(AValue: String);
+    procedure SetWasmProgramURL(AValue: String);
   public
     property CreateHTML : Boolean Index 0 read GetB Write SetB;
     property MaintainHTML : Boolean Index 1 read GetB Write SetB;
@@ -45,8 +51,10 @@ type
     property UseURL : Boolean Index 5 read GetB Write SetB;
     property UseRunOnReady : Boolean Index 6 read GetB Write SetB;
     property ShowUncaughtExceptions : Boolean Index 7 read GetB Write SetB;
+    property UseWASI : Boolean Index 8 read GetB Write SetB;
     Property ServerPort : Word Read GetServerPort Write SetServerPort;
     Property URL : String Read GetURL Write SetURL;
+    Property WasmProgramURL : String Read GetWasmProgramURL Write SetWasmProgramURL;
   end;
 
 var
@@ -71,6 +79,18 @@ procedure TWebBrowserProjectOptionsForm.CBCreateHTMLChange(Sender: TObject);
 begin
   DoCB(CBRunOnReady);
   DoCB(CBMaintainPage);
+end;
+
+procedure TWebBrowserProjectOptionsForm.CBUseBrowserAppChange(Sender: TObject);
+begin
+  CheckWASI;
+end;
+
+procedure TWebBrowserProjectOptionsForm.CheckWasi;
+
+begin
+  CBUseWASI.Enabled:=UseBrowserApp;
+  edtWasmProgram.Enabled:=UseBrowserApp;
 end;
 
 procedure TWebBrowserProjectOptionsForm.CBUseHTTPServerChange(Sender: TObject);
@@ -102,6 +122,8 @@ begin
   CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;
   RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
   RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
+  CBUseWASI.Caption:=pjsdUseWASIApplicationObject;
+  edtWasmProgram.TextHint:=pjsWasiProgramFileTextHint;
   CBCreateHTMLChange(self);
   CBUseHTTPServerChange(Self);
 end;
@@ -124,6 +146,7 @@ begin
     5 : Result:=RBUseURL.Checked;
     6 : Result:=CBRunOnReady.Checked;
     7 : Result:=cbShowUncaughtExceptions.Checked;
+    8 : Result:=cbUseWASI.Checked;
   else
     Result:=False;
   end;
@@ -140,12 +163,21 @@ begin
   Result:=CBServerURL.Text;
 end;
 
+function TWebBrowserProjectOptionsForm.GetWasmProgramURL: String;
+begin
+  Result:=edtWasmProgram.Text;
+end;
+
 procedure TWebBrowserProjectOptionsForm.SetB(AIndex: Integer; AValue: Boolean);
 begin
   Case Aindex of
     0 : CBCreateHTML.Checked:=AValue;
     1 : CBMaintainPage.Checked:=AValue;
-    2 : CBUseBrowserApp.Checked:=AValue;
+    2 :
+       begin
+       CBUseBrowserApp.Checked:=AValue;
+       CheckWASI;
+       end;
     3 : CBUseBrowserConsole.Checked:=AValue;
     4 :
       begin
@@ -161,6 +193,7 @@ begin
       end;
     6 : CBRunOnReady.Checked:=Avalue;
     7 : cbShowUncaughtExceptions.Checked:=aValue;
+    8 : cbUseWASI.Checked:=aValue;
   end;
 end;
 
@@ -172,6 +205,11 @@ end;
 procedure TWebBrowserProjectOptionsForm.SetURL(AValue: String);
 begin
   CBServerURL.Text:=AValue;
+end;
+
+procedure TWebBrowserProjectOptionsForm.SetWasmProgramURL(AValue: String);
+begin
+  edtWasmProgram.Text:=aValue;
 end;
 
 end.

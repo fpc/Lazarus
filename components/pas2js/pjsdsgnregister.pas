@@ -30,7 +30,8 @@ type
                                baoUseBrowserConsole, // use browserconsole unit to display Writeln()
                                baoStartServer,       // Start simple server
                                baoUseURL,            // Use this URL to run/show project in browser
-                               baoShowException      // let RTL show uncaught exceptions
+                               baoShowException,     // let RTL show uncaught exceptions
+                               baoUseWASI           // Use WASI browser app object
                                );
   TBrowserApplicationOptions = set of TBrowserApplicationOption;
 
@@ -39,6 +40,7 @@ type
     FOptions: TBrowserApplicationOptions;
     FProjectPort: integer;
     FProjectURL: String;
+    FProjectWasmURL : String;
   protected
     function CreateHTMLFile(AProject: TLazProject; AFileName: String
       ): TLazProjectFile; virtual;
@@ -337,10 +339,12 @@ begin
       UseBrowserConsole:=CO(baoUseBrowserConsole);
       StartHTTPServer:=CO(baoStartServer);
       UseRunOnReady:=CO(baoRunOnReady);
+      UseWASI:=CO(baoUseWASI);
       ShowUncaughtExceptions:=CO(baoShowException);
       // We allocate the new port in all cases.
       ServerPort:=GetNextPort;
       URL:='';
+      WasmProgramURL:='';
       if Not CO(baoStartServer) then
         UseURL:=CO(baoUseURL);
       Result:=ShowModal;
@@ -353,6 +357,7 @@ begin
         SO(StartHTTPServer,baoStartServer);
         SO(UseRunOnReady,baoRunOnReady);
         SO(ShowUncaughtExceptions,baoShowException);
+        SO(UseWASI,baoUseWASI);
         DebugLN(['Start server:', CO(baoStartServer)]);
         if CO(baoStartServer) then
           begin
@@ -362,10 +367,11 @@ begin
         else
           begin
           UseURL:=CO(baoUseURL);
-          if CO(baoUseURL) then
-            URL:='';
+          if UseURL then
+            FProjectURL:=URL;
           end;
         end;
+        FProjectWasmURL:=WasmProgramURL;
     finally
       Free;
     end;
@@ -465,7 +471,11 @@ begin
   if baoUseBrowserConsole in Options then
     Units:=' browserconsole,';
   if baoUseBrowserApp in Options then
+    begin
     Units:=Units+' browserapp,' ;
+    if baoUseWASI in options then
+      Units:=Units+' wasihostapp,' ;
+    end;
   Units:=Units+' JS, Classes, SysUtils, Web';
   Src:=TStringList.Create;
   try
@@ -480,6 +490,9 @@ begin
     if baoUseBrowserApp in Options then
       begin
       Add('Type');
+      if baoUseWASI in Options then
+        Add('  TMyApplication = Class(TWASIHostApplication)')
+      else
         Add('  TMyApplication = Class(TBrowserApplication)');
       AddLn('    procedure doRun; override');
       AddLn('  end');
@@ -487,7 +500,14 @@ begin
       AddLn('Procedure TMyApplication.doRun');
       Add('');
       Add('begin');
-      Add('  // Your code here');
+      if baoUseWASI in Options then
+        begin
+        if FProjectWasmURL='' then
+          FProjectWasmURL:='yourwebassembly.wasm';
+        AddLn(Format('  StartWebAssembly(''%s'')',[FProjectWasmURL]));
+        end
+      else
+        Add('  // Your code here');
       AddLn('  Terminate');
       AddLn('end');
       Add('');

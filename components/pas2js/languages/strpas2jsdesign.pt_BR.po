@@ -218,6 +218,10 @@ msgstr "Usar este navegador ao abrir a URL ou arquivo HTML de um projeto de nave
 msgid "Use this URL to start application"
 msgstr "Usar esta URL para iniciar a aplicação"
 
+#: strpas2jsdesign.pjsdusewasiapplicationobject
+msgid "Host webassembly program"
+msgstr ""
+
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Diretório de modelos de extensão de código do Visual Studio"
@@ -240,6 +244,10 @@ msgstr "Projeto Web (pas2js)"
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
 msgstr "Você pode usar macros IDE como \"$MakeExe()\". Sem um caminho completo, %s é pesquisado em \"PATH\""
+
+#: strpas2jsdesign.pjswasiprogramfiletexthint
+msgid "Name of your webassembly file"
+msgstr ""
 
 #: strpas2jsdesign.spasjswebservercaption
 msgctxt "strpas2jsdesign.spasjswebservercaption"

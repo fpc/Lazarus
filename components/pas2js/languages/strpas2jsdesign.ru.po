@@ -217,6 +217,10 @@ msgstr "Браузер для открытия предназначенного 
 msgid "Use this URL to start application"
 msgstr "Использовать следующий адрес для запуска приложения"
 
+#: strpas2jsdesign.pjsdusewasiapplicationobject
+msgid "Host webassembly program"
+msgstr ""
+
 #: strpas2jsdesign.pjsdvisualstudiocodeextensiontemplatedirectory
 msgid "Visual Studio Code extension template directory"
 msgstr "Каталог шаблона расширения Visual Studio Code"
@@ -237,6 +241,10 @@ msgstr "Веб-проект (pas2js)"
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
 msgstr "Можно использовать макросы IDE, например, $MakeExe(). Если полный путь не указан, поиск %s производится при помощи переменной окружения PATH."
+
+#: strpas2jsdesign.pjswasiprogramfiletexthint
+msgid "Name of your webassembly file"
+msgstr ""
 
 #: strpas2jsdesign.spasjswebservercaption
 msgctxt "strpas2jsdesign.spasjswebservercaption"
