@@ -6011,7 +6011,7 @@
         <short>Copies the selected text in the control to the clipboard.</short>
         <descr>
           <p>
-            <var>CopyToClipboard</var> is a procedure used to copy the selected text in the control to the clipboard. CopyToClipboard is performed for selected text when the <b>Ctrl+C</b> or <b>Ctrl+Insert</b> key combination is handled for the edit control. <b>Meta+C</b> or <b>Meta+Insert</b> is used for MacOS. No actions are performed when text is not selected in the control.
+            <var>CopyToClipboard</var> is a procedure used to copy the selected text in the control to the clipboard. CopyToClipboard is performed for selected text when the <b>Ctrl+C</b> or <b>Ctrl+Insert</b> key combination is handled for the edit control. <b>Meta+C</b> or <b>Meta+Insert</b> is used for macOS. No actions are performed when text is not selected in the control.
           </p>
           <p>
             CopyToClipboard calls the <var>Copy</var> method in the widgetset class when a handle has been allocated for the control.
@@ -6039,7 +6039,7 @@
             <var>CutToClipboard</var> is a method used to move the current text selection in the control to the clipboard. The selected value is removed from the Text in the control.
           </p>
           <p>
-            CutToClipboard is performed when the <b>Ctrl+X</b> or <b>Shift+Delete</b> key combination is handled in the control (MacOS uses <b>Meta+X</b> or <b>Shift+Delete</b>). Pressing <b>Shift+Delete</b> when text is not selected (<var>SelLength</var> is 0) causes the the character prior to the editing cursor to be deleted but not copied to the clipboard. No actions are performed if the editing cursor is positioned before the first character in the Text for the control.
+            CutToClipboard is performed when the <b>Ctrl+X</b> or <b>Shift+Delete</b> key combination is handled in the control (macOS uses <b>Meta+X</b> or <b>Shift+Delete</b>). Pressing <b>Shift+Delete</b> when text is not selected (<var>SelLength</var> is 0) causes the the character prior to the editing cursor to be deleted but not copied to the clipboard. No actions are performed if the editing cursor is positioned before the first character in the Text for the control.
           </p>
           <p>
             CutToClipboard calls the <var>Cut</var> method in the widgetset class when its handle has been allocated.
@@ -6064,7 +6064,7 @@
             <var>PasteFromClipboard</var> is a method used to insert the contents of the clipboard at the current position in the edit control. If Text is selected in the control, the SelText is replaced with the clipboard content. When SelLength is 0, the clipboard values are inserted at the position for the editing cursor.
           </p>
           <p>
-            PasteFromClipboard is performed when the <b>Ctrl+V</b> or <b>Shift+Insert</b> key combination is handled for the control (MacOS uses <b>Meta+V</b> or <b>Shift+Insert</b>).
+            PasteFromClipboard is performed when the <b>Ctrl+V</b> or <b>Shift+Insert</b> key combination is handled for the control (macOS uses <b>Meta+V</b> or <b>Shift+Insert</b>).
           </p>
           <p>
             PasteFromClipboard calls the <var>Paste</var> method in the widgetset class when its handle has been allocated.
@@ -6086,7 +6086,7 @@
         <short>Reverts the last editing action in the control.</short>
         <descr>
           <p>
-            <var>Undo</var> is a method used to revert the last editing action performed in the control. Undo is performed when the <b>Ctrl+Z</b> (or <b>Meta+Z</b> on MacOS) key combination is handled for the control. Pressing <b>Ctrl+Z</b> causes the value in Text to revert to its value before editing. A subsequent <b>Ctrl+Z</b> key press causes the edited value to be toggled.
+            <var>Undo</var> is a method used to revert the last editing action performed in the control. Undo is performed when the <b>Ctrl+Z</b> (or <b>Meta+Z</b> on macOS) key combination is handled for the control. Pressing <b>Ctrl+Z</b> causes the value in Text to revert to its value before editing. A subsequent <b>Ctrl+Z</b> key press causes the edited value to be toggled.
           </p>
           <p>
             Undo calls the <var>Undo</var> method in the widgetset class when its handle has been allocated.

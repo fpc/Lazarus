@@ -42,7 +42,7 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <short>Windows CE.</short>
 </element>
 <element name="TLCLPlatform.lpCarbon">
-<short>MacOS Carbon API.</short>
+<short>macOS Carbon API.</short>
 </element>
 <element name="TLCLPlatform.lpQT">
 <short>QT version 4.</short>
@@ -57,7 +57,7 @@ This file is part of the Lazarus Component Library (<b>LCL</b>).
 <short>No GUI.</short>
 </element>
 <element name="TLCLPlatform.lpCocoa">
-<short>MacOS Cocoa API.</short>
+<short>macOS Cocoa API.</short>
 </element>
 <element name="TLCLPlatform.lpCustomDrawn">
 <short>Custom-drawn.</short>
@@ -217,7 +217,7 @@ GetDefaultLCLWidgetType is called from the LCL interface.
 </p>
 </descr>
 <version>
-For LCL version 2.2 and higher, the default widgetset for the MacOS (darwin)
+For LCL version 2.2 and higher, the default widgetset for the macOS (Darwin)
 platform uses the Cocoa (lpCocoa) API. For versions prior to 2.2, the default
 widgetset used was the Carbon (lpCarbon) API. For Macs using the PowerPC
 processor, the widgetset continues to use the Carbon (lpCarbon) API.

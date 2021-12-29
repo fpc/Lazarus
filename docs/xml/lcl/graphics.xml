@@ -9426,7 +9426,7 @@
         </descr>
         <seealso/>
         <notes>
-          <note>Which platforms support it? Win, Qt, MacOS Carbon...</note>
+          <note>Which platforms support it? Win, Qt, macOS Carbon...</note>
         </notes>
       </element>
       <element name="TRasterImage.ScanLine.Row">
@@ -12768,7 +12768,7 @@
         </descr>
         <seealso/>
       </element>
-      <!-- .ICNS is the Apple icon image format used in MacOS. -->
+      <!-- .ICNS is the Apple icon image format used in macOS. -->
       <element name="TIcnsRec">
         <short>
           Record type with the icon type and raw image data for a TIcnsIcon  instance.
@@ -12881,10 +12881,10 @@
         </seealso>
       </element>
       <element name="TIcnsIcon">
-        <short>Implements a MacOS Icon Resource file.</short>
+        <short>Implements a macOS Icon Resource file.</short>
         <descr>
           <p>
-            <var>TIcnsIcon</var> is a <var>TCustomIcon</var> descendant which implements a class used for MacOS Icon resources. TIcnsIcon is similar to the .ICO format used on Windows platforms. An Icns Icon can store one or more images, which generally use the PNG image format. Standard icon sizes used in Icns Icon files include: 16x16, 32x32, 48x48, 128x128, 256x256, 512x512, and 1024x1024 pixels.
+            <var>TIcnsIcon</var> is a <var>TCustomIcon</var> descendant which implements a class used for macOS Icon resources. TIcnsIcon is similar to the .ICO format used on Windows platforms. An Icns Icon can store one or more images, which generally use the PNG image format. Standard icon sizes used in Icns Icon files include: 16x16, 32x32, 48x48, 128x128, 256x256, 512x512, and 1024x1024 pixels.
           </p>
         </descr>
         <seealso>
