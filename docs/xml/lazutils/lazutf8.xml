@@ -423,10 +423,16 @@ end;
             <var>UTF8Length</var> is a function used to get the character length for the specified UTF-8-encoded string. The return value contains the number of UTF-8-encoded characters (or codepoints) found in the byte values for the string.
           </p>
           <p>
-            An overloaded variant of the function is provided which uses the <var>PChar</var> type to access the byte values in the string.
+            An overloaded variant of the function is provided which uses the <var>PChar</var> type to specify the byte values in the string. Internally, the String variant casts its value a PChar type and calls the overloaded variant.
+          </p>
+          <p>
+            UTF8Length iterates over the bytes in the UTF-8-encoded string data, and calls UTF8CodepointSize to determine the number of bytes needed for each codepoint. Use UTF8LengthFast for a version of the routine optimized for speed.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="UTF8CodepointSize"/>
+          <link id="UTF8LengthFast"/>
+        </seealso>
       </element>
       <element name="UTF8Length.Result">
         <short>Number of codepoints in the byte values for the string.</short>
@@ -447,10 +453,23 @@ end;
         </short>
         <descr>
           <p>
-            <var>UTF8LengthFast</var> gets the length of a UTF-8-encoded string in codepoints (or characters). UTF8LengthFast is the fast version of <var>UTF8Length</var>. It does not call the UTF8CodepointSize function. The UTF-8-encoded data is assumed to be valid. The native data size for the CPU is used to process blocks of UTF-8-encoded data. For a 64-bit CPU, this means that 8 bytes are read and processed at once.
+            <var>UTF8LengthFast</var> is an overloaded <var>PtrInt</var> function used to get the length of a UTF-8-encoded string in codepoints. UTF8LengthFast is the fast version of <var>UTF8Length</var>. It does not call the UTF8CodepointSize function. The UTF-8-encoded string data is assumed to be valid. The native data size for the CPU is used to process blocks of UTF-8-encoded data. For a 64-bit CPU, this means that 8 bytes are read and processed at once.
+          </p>
+          <p>
+            The overloaded variants allow the UTF-8-encoded data to be specified as either a String type, or a null-terminated PChar type.  Internally, the String-based variant casts its data to a PChar type and calls the overloaded variant.
+          </p>
+          <p>
+            UTF8LengthFast is a Free Pascal implementation of the C routine provided by Colin Percival:
+          </p>
+          <p>
+            <url href="http://www.daemonology.net/blog/2008-06-05-faster-utf8-strlen.html">
+              Even faster UTF-8 character counting
+            </url>
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="UTF8Length"/>
+        </seealso>
       </element>
       <element name="UTF8LengthFast.Result">
         <short>Number of codepoints in the string.</short>
@@ -2388,7 +2407,7 @@ end;
             <var>stdcp</var> contains the <var>TStandardCodePageEnum</var> enumeration value that identifies the default code page for the platform.
           </p>
           <p>
-            The return value is set from the <var>CP_UTF8</var> constant.
+            The return value is set to the <var>CP_UTF8</var> constant.
           </p>
         </descr>
         <seealso/>
