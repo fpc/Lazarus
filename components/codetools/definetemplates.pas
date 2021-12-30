@@ -3793,6 +3793,9 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
   procedure Intel_x86_64;
   begin
     aList.Add('ATHLON64');
+    aList.Add('COREI');
+    aList.Add('COREAVX');
+    aList.Add('COREAVX2');
   end;
 
   procedure PowerPC;
