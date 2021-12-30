@@ -105,7 +105,19 @@ type
     function GetLocalizedDescription: string; override;
     function GetImplementationSource(const Filename, SourceName, ResourceName: string): string;override;
   end;
-  
+
+  { TFileDescFileDataModule }
+
+  TFileDescFileDataModule = class(TFileDescPascalUnitWithResource)
+  public
+    constructor Create; override;
+    function GetInterfaceUsesSection: string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function GetImplementationSource(const Filename, SourceName, ResourceName: string): string;override;
+  end;
+
+
   TFileDescHTMLModule = class(TFileDescPascalUnitWithResource)
   public
     constructor Create; override;
@@ -184,6 +196,7 @@ type
     FLoc : String;
     FPort : Integer;
     FDefaultFiles : Boolean;
+    FStandardModule : TStandardModule;
     function GetOptions: TModalResult;
   public
     constructor Create; override;
@@ -202,9 +215,10 @@ var
   FileDescriptorHTMLModule: TFileDescHTMLModule;
   FileDescriptorWebModule: TFileDescWebDataModule;
   FileDescriptorWebProviderDataModule: TFileDescWebProviderDataModule;
-  ProjectDescriptorHTTPApplication : THTTPApplicationDescriptor;
   FileDescriptorJSONRPCModule : TFileDescWebJSONRPCModule;
   FileDescriptorExtDirectModule : TFileDescExtDirectModule;
+  FileDescriptorFileDataModule : TFileDescFileDataModule;
+  ProjectDescriptorHTTPApplication : THTTPApplicationDescriptor;
   AChecker : TJSSyntaxChecker;
 
 procedure Register;
@@ -276,16 +290,29 @@ end;
 procedure Register;
 begin
   RegisterWebComponents;
+  // Module file descriptors
   FileDescriptorWebProviderDataModule:=TFileDescWebProviderDataModule.Create;
   FileDescriptorJSONRPCModule:=TFileDescWebJSONRPCModule.Create;
   FileDescriptorExtDirectModule:=TFileDescExtDirectModule.Create;
+  FileDescriptorFileDataModule:=TFileDescFileDataModule.Create;
+  FileDescriptorWebModule:=TFileDescWebDataModule.Create;
+  FileDescriptorHTMLModule:=TFileDescHTMLModule.Create;
+  // Register descriptors
+  RegisterProjectFileDescriptor(FileDescriptorHTMLModule);
+  RegisterProjectFileDescriptor(FileDescriptorWebModule);
   RegisterProjectFileDescriptor(FileDescriptorWebProviderDataModule);
   RegisterProjectFileDescriptor(FileDescriptorJSONRPCModule);
   RegisterProjectFileDescriptor(FileDescriptorExtDirectModule);
+  RegisterProjectFileDescriptor(FileDescriptorFileDataModule);
+  // Register base class
+  FormEditingHook.RegisterDesignerBaseClass(TFPWebModule);
+  FormEditingHook.RegisterDesignerBaseClass(TFPHTMLModule);
   FormEditingHook.RegisterDesignerBaseClass(TFPCustomWebProviderDataModule);
   FormEditingHook.RegisterDesignerBaseClass(TFPWebProviderDataModule);
   FormEditingHook.RegisterDesignerBaseClass(TJSONRPCModule);
   FormEditingHook.RegisterDesignerBaseClass(TExtDirectModule);
+  FormEditingHook.RegisterDesignerBaseClass(TFPCustomFileModule);
+  //
   AChecker:=TJSSyntaxChecker.Create(Nil);
   LazarusIDE.AddHandlerOnQuickSyntaxCheck(@AChecker.CheckSource,False);
   RegisterPropertyEditor(TStrings.ClassInfo, TSQLDBWebDataProvider,  'SelectSQL', TSQLStringsPropertyEditor);
@@ -295,12 +322,8 @@ begin
   ProjectDescriptorHTTPApplication:=THTTPApplicationDescriptor.Create;
   RegisterProjectDescriptor(ProjectDescriptorHTTPApplication);
 
-  FileDescriptorWebModule:=TFileDescWebDataModule.Create;
-  RegisterProjectFileDescriptor(FileDescriptorWebModule);
   ProjectDescriptorCGIApplication:=TCGIApplicationDescriptor.Create;
   RegisterProjectDescriptor(ProjectDescriptorCGIApplication);
-  FileDescriptorHTMLModule:=TFileDescHTMLModule.Create;
-  RegisterProjectFileDescriptor(FileDescriptorHTMLModule);
   ProjectDescriptorCustomCGIApplication:=TCustomCGIApplicationDescriptor.Create;
   RegisterProjectDescriptor(ProjectDescriptorCustomCGIApplication);
   ProjectDescriptorApacheApplication:=TApacheApplicationDescriptor.Create;
@@ -309,8 +332,6 @@ begin
   RegisterProjectDescriptor(ProjectDescriptorFCGIApplication);
   ProjectDescriptorCustomFCGIApplication:=TCustomFCGIApplicationDescriptor.Create;
   RegisterProjectDescriptor(ProjectDescriptorCustomFCGIApplication);
-  FormEditingHook.RegisterDesignerBaseClass(TFPWebModule);
-  FormEditingHook.RegisterDesignerBaseClass(TFPHTMLModule);
 
   RegisterPropertyEditor(TypeInfo(string), THTMLDatasetSelectProducer, 'ItemField', TFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), THTMLDatasetSelectProducer, 'ValueField', TFieldProperty);
@@ -500,6 +521,43 @@ begin
 end;
 
 function TFileDescWebDataModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
+
+begin
+  Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
+  if GetResourceType = rtRes then
+    Result:=Result+'initialization'+LineEnding;
+  Result:=Result+'  RegisterHTTPModule(''T'+ResourceName+''',T'+ResourceName+');'+LineEnding;
+end;
+
+{ TFileDescFileDataModule }
+
+constructor TFileDescFileDataModule.Create;
+begin
+  inherited Create;
+  Name:='Web File Module';
+  ResourceClass:=TFPCustomFileModule;
+  UseCreateFormStatements:=true;
+end;
+
+function TFileDescFileDataModule.GetInterfaceUsesSection: string;
+begin
+  Result:='SysUtils, Classes';
+  if GetResourceType = rtLRS then
+    Result :=  Result+ ', LResources, ';
+  Result:=Result+',httpdefs, fpHTTP, fpWeb, fpWebFile';
+end;
+
+function TFileDescFileDataModule.GetLocalizedName: string;
+begin
+  Result:=rsFileModule;
+end;
+
+function TFileDescFileDataModule.GetLocalizedDescription: string;
+begin
+  Result:=rsFileModule2;
+end;
+
+function TFileDescFileDataModule.GetImplementationSource(const Filename, SourceName, ResourceName: string): string;
 
 begin
   Result:=Inherited GetImplementationSource(FileName,SourceName,ResourceName);
@@ -823,7 +881,8 @@ begin
           begin
           FLoc:=FileRoute;
           FDir:=Directory;
-          end
+          end;
+        FStandardModule:=StandardModule;
         end;
     finally
       Free;
@@ -898,8 +957,23 @@ end;
 
 function THTTPApplicationDescriptor.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
+
+Var
+  Desc :TProjectFileDescriptor ;
+
 begin
-  LazarusIDE.DoNewEditorFile(FileDescriptorWebModule,'','',
+  Case FStandardModule of
+    smWeb : Desc:=FileDescriptorWebModule;
+    smHTTP : Desc:=FileDescriptorHTMLModule;
+    smFile: Desc:=FileDescriptorFileDataModule;
+    smExtDirect : Desc:=FileDescriptorExtDirectModule;
+    smRPC : Desc:=FileDescriptorJSONRPCModule;
+    smWebData : Desc:=FileDescriptorWebProviderDataModule;
+  else
+    Desc:=Nil;
+  end;
+  if Desc<>Nil then
+  LazarusIDE.DoNewEditorFile(Desc,'','',
                          [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
   Result:= mrOK;
 end;

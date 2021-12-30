@@ -61,6 +61,14 @@ msgstr "FastCGI alkalmazás"
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "FastCGI alkalmazás%sEgy FastCGI (Common Gateway Interface) program Free Pascal-ban webmodulok használatával. A program forráskódját a Lazarus automatikusan karbantartja."
 
+#: fpwebstrconsts.rsfilemodule
+msgid "File serving Module"
+msgstr ""
+
+#: fpwebstrconsts.rsfilemodule2
+msgid "A datamodule to help serving files from the filesystem in WEB (HTTP)applications"
+msgstr ""
+
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "HTTP web modul"
@@ -80,6 +88,10 @@ msgstr "HTTP kiszolgáló alkalmazás"
 #| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
 msgstr "HTTP kiszolgáló alkalmazás. Teljes HTTP kiszolgáló program Free Pascal-ban webmodulok használatával. Az program forráskódját a Lazarus automatikusan karbantartja."
+
+#: fpwebstrconsts.rsnomodule
+msgid "Do not create a web module"
+msgstr ""
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
@@ -529,6 +541,10 @@ msgstr "JSON-RPC kezelők regisztrálása az előállítóban"
 #: fpwebstrconsts.sregisterwebm
 msgid "Register web module"
 msgstr "Web modul regisztrálása"
+
+#: fpwebstrconsts.sstandardmodule
+msgid "Web module to create:"
+msgstr ""
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

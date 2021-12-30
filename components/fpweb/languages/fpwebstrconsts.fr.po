@@ -51,6 +51,14 @@ msgstr "Application FastCGI"
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "Un programme FastCGI (Common Gateway Interface) en Free Pascal utilisant des modules Web."
 
+#: fpwebstrconsts.rsfilemodule
+msgid "File serving Module"
+msgstr ""
+
+#: fpwebstrconsts.rsfilemodule2
+msgid "A datamodule to help serving files from the filesystem in WEB (HTTP)applications"
+msgstr ""
+
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "Module Web HTML"
@@ -66,6 +74,10 @@ msgstr "Serveur HTTP"
 #: fpwebstrconsts.rshttpappli2
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
 msgstr "Un Serveur HTTP complet en Free Pascal utilisant les modules Web."
+
+#: fpwebstrconsts.rsnomodule
+msgid "Do not create a web module"
+msgstr ""
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
@@ -507,6 +519,10 @@ msgstr "Enregistrer les gestionnaires JSON-RPC dans la fabrique"
 #: fpwebstrconsts.sregisterwebm
 msgid "Register web module"
 msgstr "Enregistrer le module Web"
+
+#: fpwebstrconsts.sstandardmodule
+msgid "Web module to create:"
+msgstr ""
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

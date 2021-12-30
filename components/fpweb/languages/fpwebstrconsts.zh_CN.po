@@ -62,6 +62,14 @@ msgstr "FastCGI应用程序"
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "FastCGI 应用%s一个FastCGI (通用网关接口)程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
 
+#: fpwebstrconsts.rsfilemodule
+msgid "File serving Module"
+msgstr ""
+
+#: fpwebstrconsts.rsfilemodule2
+msgid "A datamodule to help serving files from the filesystem in WEB (HTTP)applications"
+msgstr ""
+
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "HTML Web模块"
@@ -81,6 +89,10 @@ msgstr "HTTP server应用程序"
 #| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
 msgstr "HTTP server应用.完整的HTTP Server程序在Free Pascal中使用webmodules.这个程序的source是由Lazarus自动地维护"
+
+#: fpwebstrconsts.rsnomodule
+msgid "Do not create a web module"
+msgstr ""
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
@@ -530,6 +542,10 @@ msgstr "在工厂注册JSON-RPC handlers"
 #: fpwebstrconsts.sregisterwebm
 msgid "Register web module"
 msgstr "注册web module"
+
+#: fpwebstrconsts.sstandardmodule
+msgid "Web module to create:"
+msgstr ""
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"

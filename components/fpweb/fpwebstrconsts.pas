@@ -128,6 +128,8 @@ resourcestring
   sJSONClass = 'JSON-RPC class';
   sRegisterWebM = 'Register web module';
   sHTTPPath = 'HTTP Path';
+  sStandardModule = 'Web module to create:';
+  rsNoModule = 'Do not create a web module';
 
   rsCGIApplicati = 'CGI Application';
   rsCGIApplicati2 = 'A CGI (Common Gateway Interface) program in Free Pascal using webmodules.';
@@ -154,6 +156,9 @@ resourcestring
   rsWebExtDirect = 'Web Ext.Direct Module';
   rsWEBExtDirect2 = 'A datamodule to dispatch Ext.Direct requests in WEB (HTTP) '
     +'applications using TJSONRPCHandler components.';
+  rsFileModule = 'File serving Module';
+  rsFileModule2 = 'A datamodule to help serving files from the filesystem in WEB (HTTP)'
+                  +'applications';
   rsHTTPAppli = 'HTTP server Application';
   rsHTTPAppli2 = 'Complete HTTP Server program in Free Pascal using webmodules.';
 

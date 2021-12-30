@@ -61,6 +61,14 @@ msgstr "FastCGI programa"
 msgid "A FastCGI (Common Gateway Interface) program in Free Pascal using webmodules."
 msgstr "FastCGI programa%sFastCGI (Common Gateway Interface) programa Free Pascal-yje, naudojanti „webmodules“. Lazarus automatiškai rūpinsis programos pirminiu kodu."
 
+#: fpwebstrconsts.rsfilemodule
+msgid "File serving Module"
+msgstr ""
+
+#: fpwebstrconsts.rsfilemodule2
+msgid "A datamodule to help serving files from the filesystem in WEB (HTTP)applications"
+msgstr ""
+
 #: fpwebstrconsts.rshtmlwebmodul
 msgid "HTML Web Module"
 msgstr "HTML saityno modulis"
@@ -80,6 +88,10 @@ msgstr "HTTP serverio programa"
 #| msgid "HTTP server Application. Complete HTTP Server program in Free Pascal using webmodules. The program source is automatically maintained by Lazarus."
 msgid "Complete HTTP Server program in Free Pascal using webmodules."
 msgstr "HTTP serverio programa. „Free Pascal“ aplinkoje naudojant saityno modulius sukurti HTTP serverio programą. Programos pirminį kodą automatiškai prižiūrės „Lazarus“."
+
+#: fpwebstrconsts.rsnomodule
+msgid "Do not create a web module"
+msgstr ""
 
 #: fpwebstrconsts.rswebdataprovi
 msgid "Web DataProvider Module"
@@ -529,6 +541,10 @@ msgstr "Registruoti JSON-RPC dorokles mechanizme"
 #: fpwebstrconsts.sregisterwebm
 msgid "Register web module"
 msgstr "Registruoti saityno modulį"
+
+#: fpwebstrconsts.sstandardmodule
+msgid "Web module to create:"
+msgstr ""
 
 #: fpwebstrconsts.susethreads
 msgid "Use &threads to serve requests in"
