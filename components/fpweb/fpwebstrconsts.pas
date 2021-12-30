@@ -157,8 +157,8 @@ resourcestring
   rsWEBExtDirect2 = 'A datamodule to dispatch Ext.Direct requests in WEB (HTTP) '
     +'applications using TJSONRPCHandler components.';
   rsFileModule = 'File serving Module';
-  rsFileModule2 = 'A datamodule to help serving files from the filesystem in WEB (HTTP)'
-                  +'applications';
+  rsFileModule2 = 'A datamodule to help serving files from the filesystem in WEB (HTTP) '
+                  +'applications.';
   rsHTTPAppli = 'HTTP server Application';
   rsHTTPAppli2 = 'Complete HTTP Server program in Free Pascal using webmodules.';
 

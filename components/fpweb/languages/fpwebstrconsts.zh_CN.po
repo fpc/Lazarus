@@ -67,7 +67,7 @@ msgid "File serving Module"
 msgstr ""
 
 #: fpwebstrconsts.rsfilemodule2
-msgid "A datamodule to help serving files from the filesystem in WEB (HTTP)applications"
+msgid "A datamodule to help serving files from the filesystem in WEB (HTTP) applications."
 msgstr ""
 
 #: fpwebstrconsts.rshtmlwebmodul
