@@ -323,7 +323,7 @@ begin
   FMapHandle := CreateFileMapping(FFileHandle, nil, PAGE_READONLY{ or SEC_IMAGE}, 0, 0, nil);
   if FMapHandle = 0
   then begin
-    raise Exception.Create('Could not create module mapping');
+    raise Exception.CreateFmt('Could not create module mapping, error %d', [GetLastError]);
     Exit;
   end;
 

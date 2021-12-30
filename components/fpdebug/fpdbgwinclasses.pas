@@ -445,8 +445,22 @@ end;
 { tDbgWinLibrary }
 
 procedure tDbgWinLibrary.InitializeLoaders;
+var
+  FileInformation: TByHandleFileInformation;
 begin
-  TDbgImageLoaderLibrary.Create(FInfo.hFile, nil, TDBGPtr(FInfo.lpBaseOfDll)).AddToLoaderList(LoaderList);
+  if GetFileInformationByHandle(FInfo.hFile, FileInformation) then
+    TDbgImageLoaderLibrary.Create(FInfo.hFile, nil, TDBGPtr(FInfo.lpBaseOfDll)).AddToLoaderList(LoaderList)
+  else if Name <> '' then
+    begin
+    // There are situations in which the provided handle is not a file-handle. In
+    // those cases, use the filename as fallback.
+    // (Happened in a Windows-docker (Azure, AKS) on the kernel32.dll. No idea
+    // why, though)
+    if FileExists(Name) then
+      TDbgImageLoaderLibrary.Create(Name, nil, TDBGPtr(FInfo.lpBaseOfDll)).AddToLoaderList(LoaderList)
+    else
+      DebugLn(DBG_WARNINGS, 'File [%s] related to library does not exist', [Name]);
+    end;
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
