@@ -2218,13 +2218,12 @@ begin
   or (IndexOfDesignerBaseClass(TComponentClass(AClass))>=0) then begin
     exit;
   end;
-  DebugLn(['TCustomFormEditor.JITListFindAncestors Class=',DbgSName(AClass)]);
   AnUnitInfo:=Project1.UnitWithComponentClassName(AClass.ClassName);
   //AnUnitInfo:=Project1.UnitWithComponentClass(TComponentClass(AClass));
   while AnUnitInfo<>nil do begin
-    {.$IFDEF VerboseFormEditor}
+    {$IFDEF VerboseFormEditor}
     DebugLn(['TCustomFormEditor.JITListFindAncestors FOUND ancestor ',DbgSName(AnUnitInfo.Component),', streaming ...']);
-    {.$ENDIF}
+    {$ENDIF}
     Ancestor:=AnUnitInfo.Component;
     BinStream:=nil;
     if SaveUnitComponentToBinStream(AnUnitInfo,BinStream)<>mrOk then begin
@@ -2260,7 +2259,7 @@ begin
     ComponentClass:=RegComp.ComponentClass;
   end else begin
     JITList:=Sender as TJITComponentList;
-    debugln(['TCustomFormEditor.JITListFindClass JITList.ContextObject=',DbgSName(JITList.ContextObject)]);
+    //DebugLn(['TCustomFormEditor.JITListFindClass JITList.ContextObject=',DbgSName(JITList.ContextObject)]);
     if JITList.ContextObject is TUnitInfo then begin
       AnUnitInfo:=TUnitInfo(JITList.ContextObject);
       if AnUnitInfo.ComponentFallbackClasses<>nil then
@@ -2284,7 +2283,7 @@ begin
       Component:=AnUnitInfo.Component;
       if CompareText(Component.ClassName,ComponentClassName)=0 then
       begin
-        DebugLn(['TCustomFormEditor.JITListFindClass found nested class '+DbgSName(Component)+' in unit '+AnUnitInfo.Filename]);
+        //DebugLn(['TCustomFormEditor.JITListFindClass found nested class '+DbgSName(Component)+' in unit '+AnUnitInfo.Filename]);
         ComponentClass:=TComponentClass(Component.ClassType);
         break;
       end;

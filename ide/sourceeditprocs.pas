@@ -941,15 +941,12 @@ begin
   if AddChar<>'' then
     Result+=AddChar;
 
-  if CanAddComma
-  and (ilcfNeedsEndComma in IdentList.ContextFlags) then
-  begin
+  if CanAddComma and (ilcfNeedsEndComma in IdentList.ContextFlags) then
     Result+=',';
-  end;
 
-  if CodeToolsOpts.IdentComplAddSemicolon and
-     (IdentItem.GetDesc in [ctnUseUnitNamespace,ctnUseUnitClearName]) and (AddChar<>'.') and
-     not IdentList.StartUpAtomBehindIs('.')//check if there is already a point
+  if CodeToolsOpts.IdentComplAddSemicolon
+  and (Dsc in [ctnUseUnitNamespace,ctnUseUnitClearName]) and (AddChar<>'.')
+  and not IdentList.StartUpAtomBehindIs('.')//check if there is already a point
   then
     Result+='.';
 

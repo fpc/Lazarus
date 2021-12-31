@@ -4972,7 +4972,6 @@ begin
       if (uifComponentUsedByDesigner in AnUnitInfo.FFlags) then
       begin
         // mark all that use indirectly this designer
-        Exclude(AnUnitInfo.FFlags,uifMarked);
         DFSRequiredDesigner(AnUnitInfo,AnUnitInfo);
       end;
       AnUnitInfo:=AnUnitInfo.NextUnitWithComponent;

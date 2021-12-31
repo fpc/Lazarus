@@ -7254,7 +7254,7 @@ var
     DependenciesFlags: TCloseFlags;
   begin
     ModResult:=mrOk;
-repeat
+    repeat
       DependingUnitInfo:=Project1.UnitUsingComponentUnit(AnUnitInfo,Types);
       if DependingUnitInfo=nil then break;
       if (not UserAsked) and (not (cfQuiet in Flags))

@@ -3917,7 +3917,8 @@ var
 begin
   GetCurrentUnit(ASrcEdit, AnUnitInfo);
   ActiveDesigner := GetActiveDesignerSkipMainBar;
-  if (ActiveDesigner is TDesigner) and not UpdateEditorCommandsStamp.Changed(ASrcEdit, ActiveDesigner as TDesigner, DisplayState) then
+  if (ActiveDesigner is TDesigner) and
+  not UpdateEditorCommandsStamp.Changed(ASrcEdit, ActiveDesigner as TDesigner, DisplayState) then
     Exit;
 
   Editable := Assigned(ASrcEdit) and not ASrcEdit.ReadOnly;
@@ -12195,8 +12196,7 @@ procedure TMainIDE.HandleApplicationUserInput(Sender: TObject; Msg: Cardinal);
 begin
   Include(FIdleIdeActions, iiaUserInputSinceLastIdle);
   if ToolStatus=itCodeTools then
-    // abort codetools
-    ToolStatus:=itCodeToolAborting;
+    ToolStatus:=itCodeToolAborting;    // abort codetools
 end;
 
 procedure TMainIDE.HandleApplicationIdle(Sender: TObject; var Done: Boolean);
