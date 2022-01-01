@@ -447,9 +447,11 @@ end;
 procedure tDbgWinLibrary.InitializeLoaders;
 var
   FileInformation: TByHandleFileInformation;
+  Loader: TDbgImageLoader;
 begin
+  Loader := nil;
   if GetFileInformationByHandle(FInfo.hFile, FileInformation) then
-    TDbgImageLoaderLibrary.Create(FInfo.hFile, nil, TDBGPtr(FInfo.lpBaseOfDll)).AddToLoaderList(LoaderList)
+    Loader := TDbgImageLoaderLibrary.Create(FInfo.hFile, nil, TDBGPtr(FInfo.lpBaseOfDll))
   else if Name <> '' then
     begin
     // There are situations in which the provided handle is not a file-handle. In
@@ -457,10 +459,14 @@ begin
     // (Happened in a Windows-docker (Azure, AKS) on the kernel32.dll. No idea
     // why, though)
     if FileExists(Name) then
-      TDbgImageLoaderLibrary.Create(Name, nil, TDBGPtr(FInfo.lpBaseOfDll)).AddToLoaderList(LoaderList)
+      Loader := TDbgImageLoaderLibrary.Create(Name, nil, TDBGPtr(FInfo.lpBaseOfDll))
     else
       DebugLn(DBG_WARNINGS, 'File [%s] related to library does not exist', [Name]);
     end;
+  if Assigned(Loader) and Loader.IsValid then
+    Loader.AddToLoaderList(LoaderList)
+  else
+    Loader.Free;
 end;
 
 constructor tDbgWinLibrary.Create(const AProcess: TDbgProcess;
@@ -493,10 +499,24 @@ end;
 
 procedure TDbgWinProcess.InitializeLoaders;
 var
+  FileInformation: TByHandleFileInformation;
   Loader: TDbgImageLoader;
 begin
-  Loader := TDbgImageLoader.Create(FInfo.hFile, nil, TDbgPtr(FInfo.lpBaseOfImage));
-  if Loader.IsValid then
+  Loader := nil;
+  if GetFileInformationByHandle(FInfo.hFile, FileInformation) then
+    Loader := TDbgImageLoader.Create(FInfo.hFile, nil, TDbgPtr(FInfo.lpBaseOfImage))
+  else if Name <> '' then
+    begin
+    // There are situations in which the provided handle is not a file-handle. In
+    // those cases, use the filename as fallback.
+    // (Happened in a Windows-docker (Azure, AKS) on the kernel32.dll. No idea
+    // why, though)
+    if FileExists(Name) then
+      Loader := TDbgImageLoader.Create(Name, nil, TDBGPtr(FInfo.lpBaseOfImage))
+    else
+      DebugLn(DBG_WARNINGS, 'File [%s] related to the process does not exist', [Name]);
+    end;
+  if Assigned(Loader) and Loader.IsValid then
     Loader.AddToLoaderList(LoaderList)
   else
     Loader.Free;
