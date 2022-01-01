@@ -97,7 +97,7 @@ type
   private
     FImageBase: QWord;
     FImageSize: QWord;
-    FRelocationOffset: TDBGPtrOffset;
+    FRelocationOffset: QWord;
     FLoadedTargetImageAddr: TDBGPtr;
     FReaderErrors: String;
     FUUID: TGuid;
@@ -110,7 +110,7 @@ type
     procedure SetUUID(AGuid: TGuid);
     procedure SetImageBase(ABase: QWord);
     procedure SetImageSize(ASize: QWord);
-    procedure SetRelocationOffset(AnOffset: TDBGPtr; Sign: TDBGPtrSign);
+    procedure SetRelocationOffset(AnOffset: QWord);
     procedure AddReaderError(AnError: String);
     function  ReadGnuDebugLinkSection(out AFileName: String; out ACrc: Cardinal): Boolean;
     function  LoadGnuDebugLink(ASearchPath, AFileName: String; ACrc: Cardinal): TDbgFileLoader;
@@ -144,7 +144,7 @@ type
     // On linux it is equal to the LoadedTargetImageAddr.
     // On Windows it is 0, except for libraries which are re-located. In that
     // case the offset is LoadedTargetImageAddr-ImageBase.
-    property RelocationOffset: TDBGPtrOffset read FRelocationOffset;
+    property RelocationOffset: QWord read FRelocationOffset;
 
     property TargetInfo: TTargetDescriptor read FTargetInfo;
 
@@ -433,10 +433,9 @@ begin
   FImageSize := ASize;
 end;
 
-procedure TDbgImageReader.SetRelocationOffset(AnOffset: TDBGPtr; Sign: TDBGPtrSign);
+procedure TDbgImageReader.SetRelocationOffset(AnOffset: QWord);
 begin
-  FRelocationOffset.Offset := AnOffset;
-  FRelocationOffset.Sign := Sign;
+  FRelocationOffset := AnOffset;
 end;
 
 procedure TDbgImageReader.AddReaderError(AnError: String);

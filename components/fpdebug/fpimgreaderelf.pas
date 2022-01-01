@@ -414,7 +414,7 @@ begin
   // Elf-binaries do not have an internal offset encoded into the binary (ImageBase)
   // so their reloction-offset is just equal to the location at which the binary
   // has been loaded into memory. (The LoadedTargetImageAddr)
-  SetRelocationOffset(ALoadedTargetImageAddr, sPositive);
+  SetRelocationOffset(ALoadedTargetImageAddr);
 
   FFileLoader := ASource;
   fOwnSource := OwnSource;
@@ -495,6 +495,7 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr64^[i].st_name);
+            {$Q-}
             AfpSymbolInfo.Add(SymbolName, TDbgPtr(SymbolArr64^[i].st_value+RelocationOffset),
               Sect^.Address + Sect^.Size + RelocationOffset);
             end;
@@ -519,8 +520,11 @@ begin
               continue; // not loaded, symbol not in memory
 
             SymbolName:=pchar(SymbolStr+SymbolArr32^[i].st_name);
+            {$push}
+            {$Q-}{$R-}
             AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr32^[i].st_value+RelocationOffset),
               Sect^.Address + Sect^.Size+RelocationOffset);
+            {$pop}
             end;
         end
       end;

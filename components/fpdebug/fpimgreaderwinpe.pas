@@ -463,10 +463,9 @@ begin
   // relocated) all addresses need a correction.
   // The difference between the LoadedTargetImageAddr and ImageBase is the offset
   // that has to be used to calculate the actual addresses in memory.
-  if LoadedTargetImageAddr >= ImageBase then
-    SetRelocationOffset(LoadedTargetImageAddr-ImageBase, sPositive)
-  else
-    SetRelocationOffset(ImageBase-LoadedTargetImageAddr, sNegative);
+  {$PUSH}{$Q-}{$R-}
+  SetRelocationOffset(LoadedTargetImageAddr-ImageBase);
+  {$POP}
   FCodeBase := NtHeaders.W32.OptionalHeader.BaseOfCode;
   SectionMax := FFileLoader.LoadMemory(
     DosHeader.e_lfanew +

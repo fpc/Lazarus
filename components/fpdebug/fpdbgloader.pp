@@ -62,7 +62,7 @@ type
     FImgReader: TDbgImageReader;
     function GetAddressMapList: TDbgAddressMapList;
     function GetImageBase: QWord;
-    function GetRelocationOffset: TDBGPtrOffset;
+    function GetRelocationOffset: QWord;
     function GetReaderErrors: String;
     function GetSubFiles: TStrings;
     function GetTargetInfo: TTargetDescriptor;
@@ -88,7 +88,7 @@ type
 
     property FileName: String read FFileName; // Empty if using USE_WIN_FILE_MAPPING
     property ImageBase: QWord read GetImageBase;
-    property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
+    property RelocationOffset: QWord read GetRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
 
     property UUID: TGuid read GetUUID;
@@ -114,7 +114,7 @@ type
 
   TDbgImageLoaderList = class(TFPObjectList)
   private
-    function GetRelocationOffset: TDBGPtrOffset;
+    function GetRelocationOffset: QWord;
     function GetImageBase: QWord;
     function GetTargetInfo: TTargetDescriptor;
     function GetItem(Index: Integer): TDbgImageLoader;
@@ -124,7 +124,7 @@ type
 
     property Items[Index: Integer]: TDbgImageLoader read GetItem write SetItem; default;
     property ImageBase: QWord read GetImageBase;
-    property RelocationOffset: TDBGPtrOffset read GetRelocationOffset;
+    property RelocationOffset: QWord read GetRelocationOffset;
     property TargetInfo: TTargetDescriptor read GetTargetInfo;
   end;
 
@@ -132,15 +132,12 @@ implementation
 
 { TDbgImageLoaderList }
 
-function TDbgImageLoaderList.GetRelocationOffset: TDBGPtrOffset;
+function TDbgImageLoaderList.GetRelocationOffset: QWord;
 begin
   if Count>0 then
     result := Items[0].RelocationOffset
   else
-    begin
-    Result.Offset := 0;
-    Result.Sign := sPositive;
-    end;
+    Result := 0;
 end;
 
 function TDbgImageLoaderList.GetImageBase: QWord;
@@ -214,15 +211,12 @@ begin
     Result := 0;
 end;
 
-function TDbgImageLoader.GetRelocationOffset: TDBGPtrOffset;
+function TDbgImageLoader.GetRelocationOffset: QWord;
 begin
   if Assigned(FImgReader) then
     Result := FImgReader.RelocationOffset
   else
-    begin
-    Result.Offset := 0;
-    Result.Sign := sPositive;
-    end;
+    Result := 0;
 end;
 
 function TDbgImageLoader.GetReaderErrors: String;
