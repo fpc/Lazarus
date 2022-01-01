@@ -25,9 +25,8 @@
       <UseVersionInfo Value="True"/>
       <MajorVersionNr Value="2"/>
       <MinorVersionNr Value="2"/>
-      <BuildNr Value="3"/>
+      <BuildNr Value="4"/>
       <CharSet Value="04B0"/>
-      <Attributes pvaPreRelease="True"/>
       <StringTable ProductName="Lazarus IDE"/>
     </VersionInfo>
     <BuildModes Count="1">
