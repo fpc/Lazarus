@@ -938,15 +938,15 @@ begin
       begin
         if ([mocSet,mocRange,
             mocAnyCharOrNone] * fMaskOpcodesAllowed <> [])
-            and not
-            (
-              ([mocSet,mocRange]*fMaskOpCodesAllowed = []) //only mocAnyCharOrNone enabled
-               and
-              (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?')// next char is not '?', so basically then the '[' is a literal
-            )
+        //in this case the '[' always mus be the start of a Range, a Set or AnyCharOrNone
         then
-          CompileRange
-        else begin //either mocSet,MocRange and mocAnyCharOrNone are all disabled, or only mocAnyCharOrNone is enabled and the '[' is not followed by a '?'
+          begin //it's just a bit easier later on if we handle this before we call CompileRange
+            if ([mocSet,mocRange]*fMaskOpCodesAllowed = []) {only mocAnyCharOrNone enabled}
+               and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?') {next char is not '?'} then
+                 Exception_InvalidCharMask(fMask[fMaskInd+1], fMaskInd+1);
+            CompileRange;
+          end
+        else begin //mocSet,MocRange and mocAnyCharOrNone are all disabled
           {
           if (fMask[fMaskInd]=FMaskEscapeChar) and (mocEscapeChar in FMaskOpcodesAllowed) then begin  //DEAD CODE?
             //This codepath could only be chosen if, at this point '[' is the escapechar
