@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: tr\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: opkman_const.rsaddrepositorypackagefrm_bcancel_caption
@@ -53,26 +53,23 @@ msgid "OK"
 msgstr "TAMAM"
 
 #: opkman_const.rscategoriesfrm_caption1
-#, fuzzy
 msgctxt "opkman_const.rscategoriesfrm_caption1"
 msgid "List with categories"
 msgstr "Kategorilere göre listele"
 
 #: opkman_const.rscategoriesfrm_caption2
 msgid "List with Lazarus versions"
-msgstr ""
+msgstr "Lazarus sürümleriyle listele"
 
 #: opkman_const.rscategoriesfrm_caption3
 msgid "List with FPC versions"
-msgstr ""
+msgstr "FPC sürümleriyle listele"
 
 #: opkman_const.rscategoriesfrm_caption4
 msgid "List with supported widgetsets"
-msgstr ""
+msgstr "Desteklenen widget setleri içeren liste"
 
 #: opkman_const.rscategoriesfrm_lbmessage_caption
-#, fuzzy
-#| msgid "Please select (check) one or more categories"
 msgid "Please select (check) one or more items"
 msgstr "Lütfen bir veya daha fazla kategori seçin (kontrol edin)"
 
@@ -216,28 +213,22 @@ msgid "The following file: \"%s\" already exists in the current repository. Over
 msgstr "Şu dosya: \"%s\" geçerli depoda zaten var. Üzerine yazılsın mı?"
 
 #: opkman_const.rscreaterepositoryfrm_error1
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Cannot open private repository: \"%s\". Error message: \n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Cannot open private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
 "Özel depo açılamıyor: \"%s\". Hata mesajı:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error3
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Cannot save private repository: \"%s\". Error message: \n"
-#| "\"%s\"\n"
+#, object-pascal-format
 msgid ""
 "Cannot save private repository: \"%s\". Error message: \n"
 "\"%s\""
 msgstr ""
 "\"%s\" adlı özel depo kaydedilemiyor. Hata mesajı:\n"
-"\"%s\"\n"
+"\"%s\""
 
 #: opkman_const.rscreaterepositoryfrm_error4
 msgid "Cannot add package to repository!"
@@ -249,40 +240,31 @@ msgid "Cannot delete package: \"%s\"!"
 msgstr "\"%s\"Paketi silinemedi!"
 
 #: opkman_const.rscreaterepositoryfrm_info1
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following directory: \"%s\" is not empty.\n"
-#| "It's recommended to save the repository to an empty directory. Continue?\n"
+#, object-pascal-format
 msgid ""
 "The following directory: \"%s\" is not empty.\n"
 "It's recommended to save the repository to an empty directory. Continue?"
 msgstr ""
 "Aşağıdaki dizin: \"%s\" boş değil.\n"
-"Depoyu boş bir dizine kaydetmeniz önerilir. Devam edilsin mi?\n"
+"Depoyu boş bir dizine kaydetmeniz önerilir. Devam edilsin mi?"
 
 #: opkman_const.rscreaterepositoryfrm_info3
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following package: \"%s\" is already in the current repository.\n"
-#| "Each repository and Lazarus package must be unique!\n"
+#, object-pascal-format
 msgid ""
 "The following package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
 "Aşağıdaki paket: \"%s\" zaten geçerli depoda.\n"
-"Her depo ve Lazarus paketi benzersiz olmalı!\n"
+"Her depo ve Lazarus paketi benzersiz olmalı!"
 
 #: opkman_const.rscreaterepositoryfrm_info5
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "The following Lazarus package: \"%s\" is already in the current repository.\n"
-#| "Each repository and Lazarus package must be unique!\n"
+#, object-pascal-format
 msgid ""
 "The following Lazarus package: \"%s\" is already in the current repository.\n"
 "Each repository and Lazarus package must be unique!"
 msgstr ""
 "Aşağıdaki Lazarus paketi: \"%s\" şu an için geçerli depoda.\n"
-"Her depo ve Lazarus paketi benzersiz olmalı!\n"
+"Her depo ve Lazarus paketi benzersiz olmalı!"
 
 #: opkman_const.rscreaterepositoryfrm_info7
 msgid "Package successfully added to repository."
@@ -573,16 +555,12 @@ msgid "Sending files (\"%s\"). Please wait..."
 msgstr "Dosya gönderiliyor (\"%s\"). Lütfen bekleyin..."
 
 #: opkman_const.rscreaterepositorypackagefrm_message9
-#, fuzzy
-#| msgid ""
-#| "Files successfully sent. Thank you for submitting packages!\n"
-#| "Your request will be processed in 24 hours.\n"
 msgid ""
 "Files successfully sent. Thank you for submitting packages!\n"
 "Your request will be processed in 24 hours."
 msgstr ""
 "Dosyalar başarıyla gönderildi. Paketleri gönderdiğiniz için teşekkür ederiz!\n"
-"İsteğiniz 24 saat içinde işleme alınacak.\n"
+"İsteğiniz 24 saat içinde işleme alınacak."
 
 #: opkman_const.rscreaterepositorypackagefrm_nopackage
 msgid "No packages found!"
@@ -620,7 +598,7 @@ msgstr "Çevrimiçi Paket Yöneticisi"
 
 #: opkman_const.rsmainfrm_breturn_caption
 msgid "Return"
-msgstr ""
+msgstr "Geridön"
 
 #: opkman_const.rsmainfrm_cball_caption
 msgid "All/None"
@@ -677,16 +655,12 @@ msgid "Descendent"
 msgstr "Azalan"
 
 #: opkman_const.rsmainfrm_mifromexternalsource
-#, fuzzy
-#| msgid "From external source"
 msgid "From third party repository"
-msgstr "Harici kaynaktan"
+msgstr "Üçüncü taraf depodan"
 
 #: opkman_const.rsmainfrm_mifromrepository
-#, fuzzy
-#| msgid "From repository"
 msgid "From official repository"
-msgstr "Depodan"
+msgstr "Resmi Depodan"
 
 #: opkman_const.rsmainfrm_mijsonhide
 msgid "Hide JSON"
@@ -735,7 +709,7 @@ msgstr "Aşağıdaki paketler zaten kurulu. Her halükarda devam et?"
 
 #: opkman_const.rsmainfrm_packageincompatible
 msgid "The following packages are not tested and the install might fail. Continue anyway?"
-msgstr ""
+msgstr "Aşağıdaki paketler test edilmemiştir ve yükleme başarısız olabilir. Her halükarda devam edilsin mi?"
 
 #: opkman_const.rsmainfrm_packagenamealreadyexists
 msgid "A package with the same name already exists!"
@@ -746,24 +720,20 @@ msgid "The following repository packages are not available externally. The packa
 msgstr "Aşağıdaki depo paketleri harici olarak mevcut değildir. Paketler atlanacak. Devam edilsin mi?"
 
 #: opkman_const.rsmainfrm_packageupdate1
-#, fuzzy
-#| msgid "None of the checked repository packages are available externally."
 msgid ""
 "None of the checked repository packages are available externally. Please make sure that package updates are enabled by default:\n"
 "Options->General->Check for package updates."
-msgstr "Kontrol edilen depo paketlerinin hiçbiri harici olarak mevcut değildir."
+msgstr ""
+"Kontrol edilen depo paketlerinin hiçbiri harici olarak mevcut değildir. Lütfen paket güncellemelerinin varsayılan olarak etkinleştirildiğinden emin olun:\n"
+"Seçenekler->Genel->Paket güncellemelerini kontrol et."
 
 #: opkman_const.rsmainfrm_packageupdatewarning
-#, fuzzy
-#| msgid ""
-#| "Installing packages from external link is not without a risk!\n"
-#| "Only install if you trust the package maintainer. Continue?\n"
 msgid ""
 "Installing packages from external link is not without a risk!\n"
 "Only install if you trust the package maintainer. Continue?"
 msgstr ""
 "Paketleri harici linkten kurmak risksizdir!\n"
-"Yalnızca paket bakımcısına güveniyorsanız kurun. Devam edilsin mi?\n"
+"Yalnızca paket bakımcısına güveniyorsanız kurun. Devam edilsin mi?"
 
 #: opkman_const.rsmainfrm_resmessagechecksloaded
 #, object-pascal-format
@@ -805,16 +775,12 @@ msgid "No packages to show."
 msgstr "Gösterilecek paket yok."
 
 #: opkman_const.rsmainfrm_rsmessagenorepository0
-#, fuzzy
-#| msgid ""
-#| "Remote package repository not configured.\n"
-#| "Do you wish to configure it now?\n"
 msgid ""
 "Remote package repository not configured.\n"
 "Do you wish to configure it now?"
 msgstr ""
 "Uzak paket deposu yapılandırılmadı.\n"
-"Şimdi yapılandırmak ister misiniz?\n"
+"Şimdi yapılandırmak ister misiniz?"
 
 #: opkman_const.rsmainfrm_rsmessagenothingchacked
 msgid "Please check at least one package!"
@@ -861,16 +827,13 @@ msgid "%s packages deleted!"
 msgstr "%s Paketler silindi!"
 
 #: opkman_const.rsmainfrm_rsuninstall
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "%sAre you sure you wish to uninstall the checked packages?\n"
-#| "Please note: in order for the changes to take effect you must rebuid the IDE.\n"
+#, object-pascal-format
 msgid ""
 "%sAre you sure you wish to uninstall the checked packages?\n"
 "Please note: in order for the changes to take effect you must rebuid the IDE."
 msgstr ""
 "%s Kontrol edilen paketleri kaldırmak istediğinizden emin misiniz?\n"
-"Lütfen dikkat: değişikliklerin geçerli olması için IDE'yi yeniden inşa etmeniz gerekir.\n"
+"Lütfen dikkat: değişikliklerin geçerli olması için IDE'yi yeniden inşa etmeniz gerekir."
 
 #: opkman_const.rsmainfrm_rsuninstall_error
 #, object-pascal-format
@@ -1000,26 +963,22 @@ msgid "Rating"
 msgstr "Değerlendirme"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository
-#, fuzzy
-#| msgid "Repository"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_repository"
 msgid "OPM repository"
-msgstr "Depo"
+msgstr "OPM Deposu"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_repository_hint
 msgid "Packages available in the OPM repository (https://packages.lazarus-ide.org/)"
-msgstr ""
+msgstr "OPM deposunda bulunan paketler (https://packages.lazarus-ide.org/)"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update
-#, fuzzy
-#| msgid "External"
 msgctxt "opkman_const.rsmainfrm_vstheadercolumn_update"
 msgid "External repository"
-msgstr "Harici"
+msgstr "Harici Depo"
 
 #: opkman_const.rsmainfrm_vstheadercolumn_update_hint
 msgid "Packages available at the developer's webpage (see node \"External link (JSON)\" for more details)"
-msgstr ""
+msgstr "Geliştiricinin web sayfasında bulunan paketler (daha fazla ayrıntı için \"Harici bağlantı (JSON)\" düğümüne bakın)"
 
 #: opkman_const.rsmainfrm_vsttext_author
 msgctxt "opkman_const.rsmainfrm_vsttext_author"
@@ -1061,12 +1020,12 @@ msgstr "Dış bağlantı (JSON)"
 #: opkman_const.rsmainfrm_vsttext_externaldeps
 msgctxt "opkman_const.rsmainfrm_vsttext_externaldeps"
 msgid "External dependencies"
-msgstr ""
+msgstr "Dış bağımlılıklar"
 
 #: opkman_const.rsmainfrm_vsttext_externalmetapackagedeps
 msgctxt "opkman_const.rsmainfrm_vsttext_externalmetapackagedeps"
 msgid "External dependencies for metapackage"
-msgstr ""
+msgstr "Meta paket için dış bağımlılıklar"
 
 #: opkman_const.rsmainfrm_vsttext_fpccompatibility
 msgctxt "opkman_const.rsmainfrm_vsttext_fpccompatibility"
@@ -1107,28 +1066,26 @@ msgid "License"
 msgstr "Lisans"
 
 #: opkman_const.rsmainfrm_vsttext_open
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open"
 msgid "Open"
 msgstr "Aç"
 
 #: opkman_const.rsmainfrm_vsttext_open_error
-#, fuzzy
 msgctxt "opkman_const.rsmainfrm_vsttext_open_error"
 msgid "Cannot open package file."
 msgstr "Paket dosyası açılamadı."
 
 #: opkman_const.rsmainfrm_vsttext_open_notfound
 msgid "Package file not found."
-msgstr ""
+msgstr "Paket dosyası bulunamadı."
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage1
 msgid "Orphaned package"
-msgstr ""
+msgstr "Yetim kalmış paketler"
 
 #: opkman_const.rsmainfrm_vsttext_orphanedpackage2
 msgid "currently has no active maintainer"
-msgstr ""
+msgstr "şu anda aktif bir bakıcı yok"
 
 #: opkman_const.rsmainfrm_vsttext_packagecategory
 msgid "Package category"
@@ -1347,35 +1304,33 @@ msgstr "Versiyon"
 
 #: opkman_const.rsmenulazaruspackagemanager
 msgid "Online Package Manager ..."
-msgstr ""
+msgstr "Çevrimiçi Paket Yöneticisi...."
 
 #: opkman_const.rsopensslfrm_bp_cancelbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_cancelbutton_caption"
 msgid "No"
 msgstr "Hayır"
 
 #: opkman_const.rsopensslfrm_bp_okbutton_caption
-#, fuzzy
 msgctxt "opkman_const.rsopensslfrm_bp_okbutton_caption"
 msgid "Yes"
 msgstr "Evet"
 
 #: opkman_const.rsopensslfrm_caption
 msgid "Download OpenSSL libraries"
-msgstr ""
+msgstr "OpenSSL kitaplıklarını indirin"
 
 #: opkman_const.rsopensslfrm_chpermanent_caption
 msgid "Do not ask this question again"
-msgstr ""
+msgstr "Bu soruyu bir daha sorma"
 
 #: opkman_const.rsopensslfrm_lbmessage1_caption
 msgid "In order to work properly, OPM needs the OpenSSL libraries: \"libeay32.dll\" and \"ssleay32.dll\""
-msgstr ""
+msgstr "OPM'nin düzgün çalışması için OpenSSL kitaplıklarına ihtiyacı vardır: \"libeay32.dll\" ve \"ssleay32.dll\""
 
 #: opkman_const.rsopensslfrm_lbmessage2_caption
 msgid "Download these files from \"https://packages.lazarus-ide.org/\"?"
-msgstr ""
+msgstr "Bu dosyaları \"https://packages.lazarus-ide.org/\" adresinden indirebilirsiniz?"
 
 #: opkman_const.rsopminterfacerebuildconf
 msgid "In order for the changes to take effect you must rebuild the IDE. Rebuild now?"
@@ -1465,11 +1420,11 @@ msgstr "Bu seçenek işaretliyse, paketler kurulumdan önce her zaman yeniden in
 
 #: opkman_const.rsoptions_cbloadjsonlocally_caption
 msgid "If available, parse the JSON from local source"
-msgstr ""
+msgstr "Varsa, yerel kaynaktan JSON'u ayrıştırın"
 
 #: opkman_const.rsoptions_cbloadjsonlocally_hint
 msgid "If this option is checked the JSON is parsed from a local source (useful if the internet connection is slow). After 25 local parses, OPM will attempt a live update."
-msgstr ""
+msgstr "Bu seçenek işaretlenirse, JSON yerel bir kaynaktan ayrıştırılmıştır (internet bağlantısı yavaşsa kullanışlıdır). 25 yerel ayrıştırıcıdan sonra OPM canlı bir güncelleme deneyecektir."
 
 #: opkman_const.rsoptions_cbproxy_caption
 msgid "Use proxy"
@@ -1523,9 +1478,9 @@ msgid "Add new exclusion"
 msgstr "Yeni hariç tutma ekle"
 
 #: opkman_const.rsoptions_inputbox_conf0
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "Delete selected extension (\"%s\")?"
-msgstr "Seçili uzantıyı sil (\"% s\")?"
+msgstr "Seçili uzantıyı sil (\"%s\")?"
 
 #: opkman_const.rsoptions_inputbox_conf1
 #, object-pascal-format
@@ -1555,13 +1510,11 @@ msgstr "Lütfen geçerli bir dizin giriniz!"
 #: opkman_const.rsoptions_lastupdate_never
 msgctxt "opkman_const.rsoptions_lastupdate_never"
 msgid "never"
-msgstr "Asla"
+msgstr "asla"
 
 #: opkman_const.rsoptions_lbcheckforupdates_caption
-#, fuzzy
-#| msgid "Check for package updates"
 msgid "Check external repositories for package updates"
-msgstr "Paket güncellemelerini kontrol et"
+msgstr "Paket güncelleştirmeleri için dış depoları denetleme"
 
 #: opkman_const.rsoptions_lbcontimeout_caption
 msgid "Connection timeout (seconds):"
@@ -1659,15 +1612,15 @@ msgstr "Kapalı"
 
 #: opkman_const.rsoptions_rbopenssl_item0
 msgid "Automatically download files from \"https://packages.lazarus-ide.org/\""
-msgstr ""
+msgstr "Dosyaları \"https://packages.lazarus-ide.org/\" adresinden otomatik olarak indirin"
 
 #: opkman_const.rsoptions_rbopenssl_item1
 msgid "Show confirmation dialog before download"
-msgstr ""
+msgstr "İndirmeden önce onay iletişim kutusunu göster"
 
 #: opkman_const.rsoptions_rbopenssl_item2
 msgid "Never download files"
-msgstr ""
+msgstr "Dosyaları asla indirme"
 
 #: opkman_const.rsoptions_remoterepository_information
 msgid "Please enter the remote repository address!"
@@ -1695,19 +1648,19 @@ msgstr "Proxy"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_caption
 msgid "Warn me about already installed packages"
-msgstr ""
+msgstr "Zaten kurulu paketler hakkında beni uyar"
 
 #: opkman_const.rsoption_cbcbalreadyinstalledpackages_hint
 msgid "If a package is already installed, OPM will show a warning message"
-msgstr ""
+msgstr "Bir paket zaten kuruluysa, OPM bir uyarı mesajı gösterecektir"
 
 #: opkman_const.rsoption_cbincompatiblepackage_caption
 msgid "Warn me about incompatible/untested packages"
-msgstr ""
+msgstr "Uyumsuz/test edilmemiş paketler hakkında beni uyar"
 
 #: opkman_const.rsoption_cbincompatiblepackage_hint
 msgid "If a package is not compatible with the current widgetset or Lazarus/FPC version, OPM will show a warning message"
-msgstr ""
+msgstr "Bir paket mevcut widget veya Lazarus / FPC versiyonuyla uyumlu değilse, OPM bir uyarı mesajı gösterecektir"
 
 #: opkman_const.rspackagelistfrm_bno_caption
 msgctxt "opkman_const.rspackagelistfrm_bno_caption"
@@ -1738,39 +1691,39 @@ msgstr "Paket listesini güncelle"
 
 #: opkman_const.rspackagelistfrm_caption3
 msgid "Incompatible package list"
-msgstr ""
+msgstr "Uyumsuz paket listesi"
 
 #: opkman_const.rspackagelistfrm_curfpcver
 msgid "Current FPC version: "
-msgstr ""
+msgstr "Şuanki FPC sürümü: "
 
 #: opkman_const.rspackagelistfrm_curlazver
 msgid "Current Lazarus version: "
-msgstr ""
+msgstr "Şuanki Lazarus sürümü: "
 
 #: opkman_const.rspackagelistfrm_curws
 msgid "Current widgetset: "
-msgstr ""
+msgstr "Şuanki widget setleri: "
 
 #: opkman_const.rspackagelistfrm_incompatible
 msgid "Not tested"
-msgstr ""
+msgstr "Test edilmedi"
 
 #: opkman_const.rspackagelistfrm_lbhint_caption
 msgid "Hint: for more details move the mouse over the problematic column."
-msgstr ""
+msgstr "İpucu: daha fazla ayrıntı için fareyi sorunlu sütunun üzerine getirin."
 
 #: opkman_const.rspackagelistfrm_supfpcvers
 msgid "Supported FPC versions: "
-msgstr ""
+msgstr "Desteklenen FPC sürümleri: "
 
 #: opkman_const.rspackagelistfrm_suplazvers
 msgid "Supported Lazarus versions: "
-msgstr ""
+msgstr "Desteklenen Lazarus sürümleri: "
 
 #: opkman_const.rspackagelistfrm_supwss
 msgid "Supported widgetsets: "
-msgstr ""
+msgstr "Desteklenen widget setleri: "
 
 #: opkman_const.rspackagesfound
 #, object-pascal-format
@@ -1960,9 +1913,9 @@ msgid "Delete selected repository \"%s\"?"
 msgstr "Seçili depoyu sil \"%s\"?"
 
 #: opkman_const.rsrepositories_info1
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "The following repository: \"%s\" is already in the list."
-msgstr "Aşağıdaki depo: \"% s\" zaten listede var."
+msgstr "Aşağıdaki depo: \"%s\" zaten listede var."
 
 #: opkman_const.rsrepositories_inputbox_caption0
 msgid "Add repository"
