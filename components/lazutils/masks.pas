@@ -818,7 +818,9 @@ var
   lCharsGroupInsertSize, lFirstRange, lSecondRange: integer;
 begin
   //writeln('CompileRange: fMask[fMaskInd]=',fMask[fMaskInd]);
-  if (mocAnyCharOrNone in fMaskOpcodesAllowed) and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]='?') then begin
+  if ([mocSet,mocRange,mocAnyCharOrNone]*fMaskOpCodesAllowed = [mocAnyCharOrNone]) or
+     ((mocAnyCharOrNone in fMaskOpcodesAllowed) and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]='?'))
+      then begin
     CompileAnyCharOrNone('?', True);
   end else begin//not AnyCharOrNone
     fLastOC:=TMaskParsedCode.CharsGroupBegin;
@@ -941,9 +943,9 @@ begin
         //in this case the '[' always mus be the start of a Range, a Set or AnyCharOrNone
         then
           begin //it's just a bit easier later on if we handle this before we call CompileRange
-            if ([mocSet,mocRange]*fMaskOpCodesAllowed = []) {only mocAnyCharOrNone enabled}
-               and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?') {next char is not '?'} then
-                 Exception_InvalidCharMask(fMask[fMaskInd+1], fMaskInd+1);
+            //if ([mocSet,mocRange]*fMaskOpCodesAllowed = []) {only mocAnyCharOrNone enabled}
+            //   and (fMaskInd<fMaskLimit) and (fMask[fMaskInd+1]<>'?') {next char is not '?'} then
+            //     Exception_InvalidCharMask(fMask[fMaskInd+1], fMaskInd+1);
             CompileRange;
           end
         else begin //mocSet,MocRange and mocAnyCharOrNone are all disabled
@@ -980,15 +982,18 @@ var
 begin
     //if any of the 2 conditions is true, this procedure should not have been called.
     {$IFDEF debug_anycharornone}
-    if BracketsRequired and (fMask[fMaskInd]<>'[') then
-      Exception_InternalError();
+    writeln('CompileAnyCharOrNone: QChar=#',Ord(QChar),', BracketsRequired=',BracketsRequired,', fMask[fMaskInd]=',fMask[fMaskInd]);
+    if (BracketsRequired and (fMask[fMaskInd]<>'[')) or ((not BracketsRequired) and (fMask[fMaskInd]<>QChar)) then
+        Exception_InternalError();
     {$ENDIF}
+
     if BracketsRequired then
+    begin
       Inc(fMaskInd); //consume the '['
-    {$IFDEF debug_anycharornone}
-    if fMask[fMaskInd]<>QChar then
-      Exception_InternalError();
-    {$ENDIF}
+      //the following happens when mocSet amd mocRange are disabled and the first char after the bracket is not a '?'
+      if fMask[fMaskInd]<>QChar then
+        Exception_InvalidCharMask(fMask[fMaskInd], fMaskInd);
+    end;
 
     QCount:=1;
     while (fMaskInd+QCount<=fMaskLimit) and (fMask[fMaskInd+QCount]=QChar) do Inc(QCount);
