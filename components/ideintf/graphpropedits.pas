@@ -753,11 +753,9 @@ procedure TImageIndexPropertyEditor.ListDrawValue(const CurValue: ansistring;
 var
   Images: TCustomImageList;
   R, RImg: TRect;
-  dh: Integer;
+  dh, ImageIndex: Integer;
   wimg, himg: Integer;
 begin
-  if GetDefaultOrdValue <> NoDefaultValue then
-    Dec(Index);
   Images := GetImageList;
   R := ARect;
   dh := R.Bottom - R.Top;
@@ -782,7 +780,9 @@ begin
         ACanvas.Brush.Color := clWhite;
       ACanvas.FillRect(R);
     end;
-    Images.StretchDraw(ACanvas, Index, RImg, true);
+    // the dropdown Index doesn't have to correlate with the ImageIndex (see GetValues()) - use the text instead
+    if TryStrToInt(CurValue, ImageIndex) and (ImageIndex>=0) then
+      Images.StretchDraw(ACanvas, ImageIndex, RImg, true);
     R.Left := RImg.Right + 2; 
   end;
   inherited ListDrawValue(CurValue, Index, ACanvas, R, AState);
