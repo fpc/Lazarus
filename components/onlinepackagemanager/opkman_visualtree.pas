@@ -1067,11 +1067,14 @@ end;
 procedure TVisualTree.ResetFilter;
 var
   Node: PVirtualNode;
+  Data: PData;
 begin
   Node := FVST.GetFirst;
   while Assigned(Node) do
   begin
-    FVST.IsVisible[Node] := True;
+    Data := FVST.GetNodeData(Node);
+    if Data^.DataType <> 21 then
+      FVST.IsVisible[Node] := True;
     Node := FVST.GetNext(Node);
   end;
   Node := FVST.GetFirst;
