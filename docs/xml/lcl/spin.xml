@@ -329,7 +329,7 @@
         </short>
         <descr>
           <p>
-            The return value contains the value from AValue after it has been limited to the range in the MinValue and MaxValue properties. This action does not occur when MaxValue has the same value as MinValue, or is smaller than MinValue.
+            The return value is set to AValue and limited to the range in the MinValue and MaxValue properties. This occurs when MaxValue has a value that is larger than MinValue. No constraints are applied when MinValue and MaxValue have the the same value, or when MaxValue is smaller than MinValue.
           </p>
           <remark>
             Delphi does not constrain the value when MinValue and MaxValue are the same, but does if MaxValue is smaller than MinValue.
