@@ -53,6 +53,7 @@ type
   protected
     class procedure WSRegisterClass; override;
     procedure Change; override;
+    procedure EditingDone; override;
     function  RealGetText: TCaption; override;
     procedure RealSetText(const AValue: TCaption); override;
     procedure TextChanged; override;

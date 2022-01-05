@@ -43,6 +43,12 @@ begin
   inherited Change;
 end;
 
+procedure TCustomFloatSpinEdit.EditingDone;
+begin
+  UpdateControl;
+  inherited EditingDone;
+end;
+
 function TCustomFloatSpinEdit.RealGetText: TCaption;
 begin
   if HandleAllocated then
