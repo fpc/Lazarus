@@ -1531,20 +1531,26 @@
         <short>Gets the color value used for clDefault.</short>
         <descr>
           <p>
-            <var>GetDefaultColor</var> is overridden in <var>TControlCanvas</var> to ensure that the <var>Control</var> is used (when assigned) to retrieve the default color. If Control is not assigned, the inherited method is called to get the default color value.
+            <var>GetDefaultColor</var> is used to resolve the default color (<var>clDefault</var>) to the TColor value used for the brush or font on the canvas. The <var>ADefaultColorType</var> argument indicates which value is needed in  the return value. See <var>TDefaultColorType</var> for the values available in the argument.
+          </p>
+          <p>
+            GetDefaultColor is overridden in <var>TControlCanvas</var> to ensure that the <var>Control</var> is used (when assigned) to retrieve the default color by calling its GetDefaultColor method. If Control is not assigned, the inherited method is called to get the default color value (unresolved in the ancestor class).
           </p>
         </descr>
         <seealso>
           <link id="TControlCanvas.Control"/>
           <link id="#lcl.graphics.TCanvas.GetDefaultColor">TCanvas.GetDefaultColor</link>
           <link id="#lcl.controls.TControl.GetDefaultColor">TControl.GetDefaultColor</link>
+          <link id="#lcl.graphics.TDefaultColorType">TDefaultColorType</link>
         </seealso>
       </element>
       <element name="TControlCanvas.GetDefaultColor.Result">
-        <short/>
+        <short>
+          TColor value for the specified color type. clDefault when the Control has not been assigned for the class instance.
+        </short>
       </element>
       <element name="TControlCanvas.GetDefaultColor.ADefaultColorType">
-        <short/>
+        <short>Identifies whether the font or brush color is resolved in the method.</short>
       </element>
 
       <element name="TControlCanvas.Create">
@@ -10368,20 +10374,49 @@
       </element>
 
       <element name="TControl.GetDefaultColor">
-        <short>Get the default color for this widget, from Parent or color type.</short>
-        <descr/>
+        <short>Gets the default color for the control.</short>
+        <descr>
+          <p>
+            <var>GetDefaultColor</var> is a <var>TColor</var> function used to resolve the default color (<var>clDefault</var>) to a TColor value for the control. GetDefaultColor can return a color value for either the control background or its text. The <var>DefaultColorType</var> argument identifies which value is needed in the return value. In TControl, the following color types and values are used:
+          </p>
+          <dl>
+            <dt>dctBrush</dt>
+            <dd>
+              Background or fill color for the control (Color). Returns the clWindow system color.
+            </dd>
+            <dt>dctFont</dt>
+            <dd>
+              Text color for the control (Font.Color). Returns the clWindowText system color.
+            </dd>
+          </dl>
+          <p>
+            GetDefaultColor uses the value provided by the corresponding method in the widgetset class instance when a value other than clDefault is returned. When not resolved in the widgetset class, the return value is retrieved using the Parent color or the local values in the class instance. If <var>ParentColor</var> is <b>True</b> (and <var>Parent</var> is assigned), the GetDefaultColor method in the Parent control is called to get the specified color type. Otherwise, one of the values from the preceding list is used for the color type.
+          </p>
+          <p>
+            GetDefaultColor is a virtual method and can be overridden in descedent classes to use the colors needed for a specific control.
+          </p>
+          <p>
+            GetDefaultColor is used in the implementation of the GetColorResolvingParent and GetRGBColorResolvingParent methods. It is also called from the SetColor and CreateBrush methods in the TWinControl descendant.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.Color"/>
+          <link id="TControl.Font"/>
           <link id="TControl.ParentColor"/>
+          <link id="TControl.Parent"/>
           <link id="TControl.GetColorResolvingParent"/>
           <link id="TControl.GetRGBColorResolvingParent"/>
+          <link id="TWinControl.SetColor"/>
+          <link id="TWinControl.CreateBrush"/>
+          <link id="#lcl.graphics.TColor">TColor</link>
+          <link id="#lcl.graphics.TDefaultColorType">TDefaultColorType</link>
         </seealso>
       </element>
       <element name="TControl.GetDefaultColor.Result">
-        <short/>
+        <short>TColor value for the specified color type.</short>
       </element>
       <element name="TControl.GetDefaultColor.DefaultColorType">
-        <short>The color type to use, as the last resort.</short>
+        <short>Identifies the color type needed in the return value (brush or font).</short>
       </element>
 
       <element name="TControl.GetColorResolvingParent">
@@ -10389,7 +10424,9 @@
           Returns the color of the control while resolving clDefault and ParentColor.
         </short>
         <descr>
-          GetColorResolvingParent is a convenience routine used to obtain the Color for the control while resolving clDefault. It will never return clDefault, but it might return a non-RGB color. To obtain a purely RGB result use GetRGBColorResolvingParent.
+          <p>
+            <var>GetColorResolvingParent</var> is a convenience routine used to obtain the Color for the control while resolving clDefault. It will never return clDefault, but it might return a non-RGB color. To obtain a purely RGB result use GetRGBColorResolvingParent.
+          </p>
         </descr>
         <seealso>
           <link id="TControl.Color"/>
@@ -10402,7 +10439,9 @@
       <element name="TControl.GetRGBColorResolvingParent">
         <short>Returns a RGB value for the color of the control.</short>
         <descr>
-          This convenience routine will allow to obtain the Color of the control while resolving clDefault, ParentColor and system color indexes and returns a TColor value.
+          <p>
+            This convenience routine will allow to obtain the Color of the control while resolving clDefault, ParentColor and system color indexes and returns a TColor value.
+          </p>
         </descr>
         <seealso>
           <link id="TControl.Color"/>
