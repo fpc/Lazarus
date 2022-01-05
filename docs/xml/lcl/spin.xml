@@ -153,6 +153,38 @@
         </seealso>
       </element>
 
+      <element name="TCustomFloatSpinEdit.EditingDone">
+        <short>
+          Performs actions when editing has been completed for the control.
+        </short>
+        <descr>
+          <p>
+            EditingDone is an overridden method in TCustomFloatSpinEdit. It ensures that the control is updated when editing has been completed.
+          </p>
+          <p>
+            EditingDone calls the UpdateControl method to normalize and validate the control Value using the assigned range in MinValue and MaxValue. This includes calling GetLimitedValue to update the control Value when  both MinValue and MaxValue contain a valid range. The value in the widgetset class is updated when component streaming is not active, and the control is not being freed.
+          </p>
+          <p>
+            EditingDone calls the inherited method to signal the OnEditingDone event handler (when assigned) when  ReadOnly is False.
+          </p>
+          <p>
+            EditingDone is called from the KeyUpAfterInterface method in TCustomEdit when the Enter (VK_RETURN) key code is handled for the control. It also occurs when the focused control has been changed.
+          </p>
+        </descr>
+        <version>
+          The method override was added in LCL version 2.2.1.
+        </version>
+        <seealso>
+          <link id="TCustomFloatSpinEdit.UpdateControl"/>
+          <link id="TCustomFloatSpinEdit.GetLimitedValue"/>
+          <link id="TCustomFloatSpinEdit.Value"/>
+          <link id="TCustomFloatSpinEdit.MinValue"/>
+          <link id="TCustomFloatSpinEdit.MaxValue"/>
+          <link id="#lcl.stdctrls.TCustomEdit.EditingDone">TCustomEdit.EditingDone</link>
+          <link id="#lcl.controls.TControl.OnEditingDone">TControl.OnEditingDone</link>
+        </seealso>
+      </element>
+
       <element name="TCustomFloatSpinEdit.RealGetText">
         <short>Gets the value for the text in the control.</short>
         <descr>
