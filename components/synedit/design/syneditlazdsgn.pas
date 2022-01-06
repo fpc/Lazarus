@@ -220,43 +220,42 @@ end;
 
 procedure Register;
 begin
-  RegisterUnit('SynGutter',@RegisterSynGutter);
-  RegisterUnit('SynGutterCodeFolding',@RegisterSynGutterCodeFolding);
-  RegisterUnit('SynGutterLineNumber',@RegisterSynGutterLineNumber);
-  RegisterUnit('SynGutterChanges',@RegisterSynGutterChanges);
-  RegisterUnit('SynGutterMarks',@RegisterSynGutterMarks);
+  RegisterSynGutter;
+  RegisterSynGutterCodeFolding;
+  RegisterSynGutterLineNumber;
+  RegisterSynGutterChanges;
+  RegisterSynGutterMarks;
 
-  RegisterUnit('SynEdit',@RegisterSynEdit);
-  RegisterUnit('SynMemo',@RegisterSynMemo);
+  RegisterSynEdit;
+  RegisterSynMemo;
 
-  RegisterUnit('SynCompletion',@RegisterSynCompletion);
-  RegisterUnit('SynMacroRecorder',@RegisterSynMacroRecorder);
-  RegisterUnit('SynExportHTML',@RegisterSynExportHTML);
-  RegisterUnit('SynPluginSyncroEdit',@RegisterSynSyncroEdit);
+  RegisterSynCompletion;
+  RegisterSynMacroRecorder;
+  RegisterSynExportHTML;
+  RegisterSynSyncroEdit;
 
-  RegisterUnit('SynHighlighterPas',@RegisterSynHighlighterPas);
-  RegisterUnit('SynHighlighterCPP',@RegisterSynHighlighterCPP);
-  RegisterUnit('SynHighlighterJava',@RegisterSynHighlighterJava);
-  RegisterUnit('SynHighlighterJScript',@RegisterSynHighlighterJScript);
-  RegisterUnit('SynHighlighterPerl',@RegisterSynHighlighterPerl);
-  RegisterUnit('SynHighlighterHTML',@RegisterSynHighlighterHTML);
-  RegisterUnit('SynHighlighterXML',@RegisterSynHighlighterXML);
-  RegisterUnit('SynHighlighterLFM',@RegisterSynHighlighterLFM);
-  RegisterUnit('SynHighlighterDiff',@RegisterSynHighlighterDiff);
-  RegisterUnit('SynHighlighterUNIXShellScript',
-                                        @RegisterSynHighlighterUNIXShellScript);
-  RegisterUnit('SynHighlighterCss',@RegisterSynHighlighterCSS);
-  RegisterUnit('SynHighlighterPHP',@RegisterSynHighlighterPHP);
-  RegisterUnit('SynHighlighterTeX',@RegisterSynHighlighterTeX);
-  RegisterUnit('SynHighlighterSQL',@RegisterSynHighlighterSQL);
-  RegisterUnit('SynHighlighterPython',@RegisterSynHighlighterPython);
-  RegisterUnit('SynHighlighterVB',@RegisterSynHighlighterVB);
+  RegisterSynHighlighterPas;;
+  RegisterSynHighlighterCPP;
+  RegisterSynHighlighterJava;
+  RegisterSynHighlighterJScript;
+  RegisterSynHighlighterPerl;
+  RegisterSynHighlighterHTML;
+  RegisterSynHighlighterXML;
+  RegisterSynHighlighterLFM;
+  RegisterSynHighlighterDiff;
+  RegisterSynHighlighterUNIXShellScript;
+  RegisterSynHighlighterCSS;
+  RegisterSynHighlighterPHP;
+  RegisterSynHighlighterTeX;
+  RegisterSynHighlighterSQL;
+  RegisterSynHighlighterPython;
+  RegisterSynHighlighterVB;
 
-  RegisterUnit('SynHighlighterAny',@RegisterSynHighlighterAny);
-  RegisterUnit('SynHighlighterMulti',@RegisterSynHighlighterMulti);
-  RegisterUnit('SynHighlighterBat',@RegisterSynHighlighterBat);
-  RegisterUnit('SynHighlighterIni',@RegisterSynHighlighterIni);
-  RegisterUnit('SynHighlighterPo',@RegisterSynHighlighterPo);
+  RegisterSynHighlighterAny;
+  RegisterSynHighlighterMulti;
+  RegisterSynHighlighterBat;
+  RegisterSynHighlighterIni;
+  RegisterSynHighlighterPo;
 
   RegisterClasses([TSynGutterPartList, TSynGutterSeparator, TSynGutterCodeFolding,
                   TSynGutterLineNumber, TSynGutterChanges, TSynGutterMarks]);
