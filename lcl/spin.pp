@@ -71,8 +71,8 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: Double): Double; virtual;
-    function ValueToStr(const AValue: Double): String; virtual;
-    function StrToValue(const S: String): Double; virtual;
+    function ValueToStr(const AValue: Double): string; virtual;
+    function StrToValue(const S: string): Double; virtual;
   public
     property DecimalPlaces: Integer read FDecimals write SetDecimals default DefDecimals;
     property EditorEnabled: Boolean read FEditorEnabled write SetEditorEnabled default True;
@@ -143,23 +143,23 @@ type
   
   TCustomSpinEdit = class(TCustomFloatSpinEdit)
   private
-    function GetIncrement: integer;
-    function GetMaxValue: integer;
-    function GetMinValue: integer;
-    function GetValue: integer;
+    function GetIncrement: Integer;
+    function GetMaxValue: Integer;
+    function GetMinValue: Integer;
+    function GetValue: Integer;
   protected
-    procedure SetMaxValue(const AValue: integer); overload; virtual;
-    procedure SetMinValue(const AValue: integer); overload; virtual;
-    procedure SetIncrement(const AValue: integer); overload; virtual;
-    procedure SetValue(const AValue: integer); overload; virtual;
+    procedure SetMaxValue(const AValue: Integer); overload; virtual;
+    procedure SetMinValue(const AValue: Integer); overload; virtual;
+    procedure SetIncrement(const AValue: Integer); overload; virtual;
+    procedure SetValue(const AValue: Integer); overload; virtual;
   public
     constructor Create(TheOwner: TComponent); override;
     function GetLimitedValue(const AValue: Double): Double; override;
   public
-    property Value: integer read GetValue write SetValue default 0;
-    property MinValue: integer read GetMinValue write SetMinValue default 0;
-    property MaxValue: integer read GetMaxValue write SetMaxValue default 0;
-    property Increment: integer read GetIncrement write SetIncrement default 1;
+    property Value: Integer read GetValue write SetValue default 0;
+    property MinValue: Integer read GetMinValue write SetMinValue default 0;
+    property MaxValue: Integer read GetMaxValue write SetMaxValue default 0;
+    property Increment: Integer read GetIncrement write SetIncrement default 1;
   end;
   
   

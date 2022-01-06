@@ -232,12 +232,12 @@ begin
   end;
 end;
 
-function TCustomFloatSpinEdit.ValueToStr(const AValue: Double): String;
+function TCustomFloatSpinEdit.ValueToStr(const AValue: Double): string;
 begin
   Result := FloatToStrF(GetLimitedValue(AValue), ffFixed, 20, DecimalPlaces);
 end;
 
-function TCustomFloatSpinEdit.StrToValue(const S: String): Double;
+function TCustomFloatSpinEdit.StrToValue(const S: string): Double;
 begin
   try
     Result := GetLimitedValue(StrToFloatDef(S, FValue));
@@ -254,45 +254,45 @@ end;
 
 { TCustomSpinEdit }
 
-function TCustomSpinEdit.GetIncrement: integer;
+function TCustomSpinEdit.GetIncrement: Integer;
 begin
   Result:=round(FIncrement);
 end;
 
-function TCustomSpinEdit.GetMaxValue: integer;
+function TCustomSpinEdit.GetMaxValue: Integer;
 begin
   Result:=round(FMaxValue);
 end;
 
-function TCustomSpinEdit.GetMinValue: integer;
+function TCustomSpinEdit.GetMinValue: Integer;
 begin
   Result:=round(FMinValue);
 end;
 
-function TCustomSpinEdit.GetValue: integer;
+function TCustomSpinEdit.GetValue: Integer;
 begin
   Result:=round(inherited GetValue);
 end;
 
-procedure TCustomSpinEdit.SetIncrement(const AValue: integer);
+procedure TCustomSpinEdit.SetIncrement(const AValue: Integer);
 begin
   if Increment = AValue then exit;
   inherited SetIncrement(AValue);
 end;
 
-procedure TCustomSpinEdit.SetMaxValue(const AValue: integer);
+procedure TCustomSpinEdit.SetMaxValue(const AValue: Integer);
 begin
   if MaxValue=AValue then exit;
   inherited SetMaxValue(AValue);
 end;
 
-procedure TCustomSpinEdit.SetMinValue(const AValue: integer);
+procedure TCustomSpinEdit.SetMinValue(const AValue: Integer);
 begin
   if MinValue=AValue then exit;
   inherited SetMinValue(AValue);
 end;
 
-procedure TCustomSpinEdit.SetValue(const AValue: integer);
+procedure TCustomSpinEdit.SetValue(const AValue: Integer);
 begin
   if Value=AValue then exit;
   inherited SetValue(AValue);
