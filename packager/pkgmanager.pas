@@ -4487,17 +4487,52 @@ function TPkgManager.GetUnitsAndDepsForComps(ComponentClasses: TClassList;
   out PackageList: TPackagePackageArray; out UnitList: TStringList): TModalResult;
 // returns a list of packages and units needed to use the Component in the unit
 var
+  CurPackages, AllPackages: TStringList;
+
+  procedure AddPkgDep(CurCompReq: TComponentRequirements; PkgFile: TPkgFile);
+  var
+    RequiredPackage: TLazPackageID;
+    Helper: TPackageIterateHelper;
+  begin
+    if PkgFile=nil then exit;
+    RequiredPackage:=PkgFile.LazPackage;
+    RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
+    if RequiredPackage=nil then exit;
+    if CurPackages=nil then
+    begin
+      CurPackages:=TStringListUTF8Fast.Create;
+      CurPackages.Sorted:=True;
+      CurPackages.Duplicates:=dupIgnore;
+    end else
+      CurPackages.Clear;
+    if AllPackages=nil then
+    begin
+      AllPackages:=TStringListUTF8Fast.Create;
+      AllPackages.Sorted:=True;
+      AllPackages.Duplicates:=dupIgnore;
+    end;
+    CurPackages.Add(RequiredPackage.Name);
+    if Assigned(CurCompReq) then
+      CurCompReq.RequiredPkgs(CurPackages);
+    Helper:=TPackageIterateHelper.Create;
+    try
+      Helper.PackageNames:=CurPackages;
+      Helper.PackageList:=AllPackages;
+      PackageGraph.IteratePackages(fpfSearchAllExisting,@Helper.AddDependency);
+    finally
+      Helper.Free;
+    end;
+  end;
+
+var
   CurClassID: Integer;
   CurUnitIdx, CurPackageIdx: Integer;
   CurCompClass: TClass;
   CurRegComp: TRegisteredComponent;
   PkgFile: TPkgFile;
-  RequiredPackage: TLazPackageID;
   CurUnitName: String;
   CurUnitNames: TStrings;
-  CurPackages, AllPackages: TStringList;
   CurCompReq: TComponentRequirements;
-  Helper: TPackageIterateHelper;
 begin
   Result:=mrCancel;
   PackageList:=nil;
@@ -4527,7 +4562,7 @@ begin
             CurUnitName:=CurRegComp.ComponentClass.UnitName;
             CurCompReq:=GetComponentRequirements(CurRegComp.ComponentClass);
           end;
-          //DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurUnitName=',CurUnitName]);
+          DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurCompClass=',DbgSName(CurCompClass),' CurUnitName=',CurUnitName,' CurCompReq=',DbgSName(CurCompReq)]);
           if CurUnitName='' then
             CurUnitName:=CurRegComp.GetUnitName;
           //Assert(CurUnitNames.IndexOf(CurUnitName)<0,
@@ -4540,42 +4575,10 @@ begin
             CurUnitName:=CurUnitNames[CurUnitIdx];
             UnitList.Add(CurUnitName);
             PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
-            //DebugLn(['            GetUnitsAndDepsForComps: CurUnitName=',CurUnitName,
-            //         ', PkgFile=', PkgFile.Unit_Name]);
-            if PkgFile=nil then
-              PkgFile:=TPkgComponent(CurRegComp).PkgFile;
-            if PkgFile<>nil then
-            begin
-              RequiredPackage:=PkgFile.LazPackage;
-              RequiredPackage:=RedirectPackageDependency(TIDEPackage(RequiredPackage));
-              if RequiredPackage<>nil then
-              begin
-                if CurPackages=nil then
-                begin
-                  CurPackages:=TStringListUTF8Fast.Create;
-                  CurPackages.Sorted:=True;
-                  CurPackages.Duplicates:=dupIgnore;
-                end else
-                  CurPackages.Clear;
-                if AllPackages=nil then
-                begin
-                  AllPackages:=TStringListUTF8Fast.Create;
-                  AllPackages.Sorted:=True;
-                  AllPackages.Duplicates:=dupIgnore;
-                end;
-                CurPackages.Add(RequiredPackage.Name);
-                if Assigned(CurCompReq) then
-                  CurCompReq.RequiredPkgs(CurPackages);
-                Helper:=TPackageIterateHelper.Create;
-                try
-                  Helper.PackageNames:=CurPackages;
-                  Helper.PackageList:=AllPackages;
-                  PackageGraph.IteratePackages(fpfSearchAllExisting,@Helper.AddDependency);
-                finally
-                  Helper.Free;
-                end;
-              end;
-            end;
+            AddPkgDep(CurCompReq,PkgFile);
+            if TPkgComponent(CurRegComp).PkgFile<>PkgFile then
+              // e.g. a designtime package has registered the componentclass
+              AddPkgDep(CurCompReq,TPkgComponent(CurRegComp).PkgFile);
           end;  // for CurUnitIdx:=
         finally
           CurCompReq.Free;
