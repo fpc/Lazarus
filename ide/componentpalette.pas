@@ -408,6 +408,8 @@ var
 begin
   if Assigned(SelectButton) then Exit;
   Pal := TComponentPalette(Palette);
+  if Pal=nil then
+    debugln(['TComponentPage.CreateSelectionButton missing Palette']);
   Btn := TSpeedButton.Create(nil);
   SelectButton:=Btn;
   IDEImages.AssignImage(Btn, 'tmouse');

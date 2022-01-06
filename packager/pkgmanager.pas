@@ -4562,7 +4562,7 @@ begin
             CurUnitName:=CurRegComp.ComponentClass.UnitName;
             CurCompReq:=GetComponentRequirements(CurRegComp.ComponentClass);
           end;
-          DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurCompClass=',DbgSName(CurCompClass),' CurUnitName=',CurUnitName,' CurCompReq=',DbgSName(CurCompReq)]);
+          //DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurCompClass=',DbgSName(CurCompClass),' CurUnitName=',CurUnitName,' CurCompReq=',DbgSName(CurCompReq)]);
           if CurUnitName='' then
             CurUnitName:=CurRegComp.GetUnitName;
           //Assert(CurUnitNames.IndexOf(CurUnitName)<0,

@@ -43,7 +43,7 @@ uses
   LCLProc, LCLType, LResources, LCLIntf, LMessages, InterfaceBase,
   Forms, Controls, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   // LazUtils
-  GraphType, LazFileUtils, LazFileCache, LazLoggerBase,
+  GraphType, LazFileUtils, LazFileCache, LazLoggerBase, LazUtilities,
   // IDEIntf
   IDEDialogs, PropEdits, PropEditUtils, ComponentEditors, MenuIntf,
   IDEImagesIntf, FormEditingIntf, ComponentReg, IDECommands, LazIDEIntf,
@@ -734,7 +734,8 @@ begin
   end;
 
   // create component and component interface
-  DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
+  if ConsoleVerbosity>0 then
+    DebugLn(['AddComponent ',DbgSName(NewComponentClass),' Parent=',DbgSName(NewParent),' ',NewLeft,',',NewTop,',',NewWidth,',',NewHeight]);
   DisableAutoSize:=true;
   NewComponent := TheFormEditor.CreateComponent(
      NewParent,NewComponentClass,'',
