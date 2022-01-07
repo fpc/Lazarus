@@ -246,7 +246,7 @@ type
     procedure Detach; override;
 
     function Evaluate(const AExpression: String; ACallback: TDBGEvaluateResultCallback;
-                      EvalFlags: TDBGEvaluateFlags = []): Boolean; override;
+                      EvalFlags: TWatcheEvaluateFlags = []): Boolean; override;
     function Modify(const AExpression, ANewValue: String): Boolean; override;
 
     procedure EvaluateModify(const AExpression: String); override;
@@ -2959,7 +2959,7 @@ begin
 end;
 
 function TDebugManager.Evaluate(const AExpression: String;
-  ACallback: TDBGEvaluateResultCallback; EvalFlags: TDBGEvaluateFlags): Boolean;
+  ACallback: TDBGEvaluateResultCallback; EvalFlags: TWatcheEvaluateFlags): Boolean;
 begin
   Result := (not Destroying)
         and (MainIDE.ToolStatus = itDebugger)

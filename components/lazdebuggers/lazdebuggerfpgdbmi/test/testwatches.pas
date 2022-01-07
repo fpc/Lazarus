@@ -70,16 +70,16 @@ type
     // Add to FLastAddedExp
     function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
     //
     function AddFmtDef        (AnExpr: string;
                                AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddFmtDef        (AnExpr: string; AnFormatParam: array of const;
                                AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
-    //function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags;
+    //function AddFmtDef        (AnExpr: String; AEvalFlags: TWatcheEvaluateFlags;
     //                           AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
-    function AddFmtDef        (AnExpr: String; AnFormatParam: array of const; AEvalFlags: TDBGEvaluateFlags;
+    function AddFmtDef        (AnExpr: String; AnFormatParam: array of const; AEvalFlags: TWatcheEvaluateFlags;
                                AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
 
     procedure JoinExpectsForHexReplace; // Join the lat 2 additions
@@ -249,7 +249,7 @@ begin
 end;
 
 function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
-  AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AEvalFlags: TWatcheEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := AddWatchExp(FCurrentExpect^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
@@ -268,14 +268,14 @@ begin
   Result := AddFmtDef(Format(AnExpr, AnFormatParam), AMtch, AKind, ATpNm, AFlgs);
 end;
 
-//function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+//function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
 //  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 //begin
 //  Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
 //end;
 
 function TTestWatches.AddFmtDef(AnExpr: String; AnFormatParam: array of const;
-  AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AEvalFlags: TWatcheEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := Add(Format(AnExpr, AnFormatParam), wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );

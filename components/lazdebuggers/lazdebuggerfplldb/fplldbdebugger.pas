@@ -167,7 +167,7 @@ type
                                 AExpression: String;
                                 out AResText: String;
                                 out ATypeInfo: TDBGType;
-                                EvalFlags: TDBGEvaluateFlags = []): Boolean;
+                                EvalFlags: TWatcheEvaluateFlags = []): Boolean;
     property CurrentThreadId;
     property CurrentStackFrame;
     property CommandQueue;
@@ -1268,13 +1268,13 @@ end;
 function TFpLldbDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const; const ACallback: TMethod): Boolean;
 var
-  EvalFlags: TDBGEvaluateFlags;
+  EvalFlags: TWatcheEvaluateFlags;
   ResText: String;
   ResType: TDBGType;
 begin
   if (ACommand = dcEvaluate) then begin
     EvalFlags := [];
-    EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
+    EvalFlags := TWatcheEvaluateFlags(AParams[1].VInteger);
     Result := False;
     if (HasDwarf) then begin
       Threads.CurrentThreads.Count; // trigger threads, in case
@@ -1458,7 +1458,7 @@ begin
 end;
 
 function TFpLldbDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
-  out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TDBGEvaluateFlags): Boolean;
+  out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TWatcheEvaluateFlags): Boolean;
 var
   Ctx: TFpDbgSymbolScope;
   PasExpr, PasExpr2: TFpPascalExpression;

@@ -216,7 +216,7 @@ type
     FInstr: TLldbInstructionExpression;
     FWatchValue: TWatchValue;
     FExpr: String;
-    FFlags: TDBGEvaluateFlags;
+    FFlags: TWatcheEvaluateFlags;
     FCallback: TDBGEvaluateResultCallback;
     procedure DoWatchFreed(Sender: TObject);
     procedure EvalInstructionFailed(Sender: TObject);
@@ -226,7 +226,7 @@ type
   public
     // TODO: Pass FCurrentStackFrame to create
     constructor Create(AOwner: TLldbDebugger; AWatchValue: TWatchValue);
-    constructor Create(AOwner: TLldbDebugger; AnExpr: String; AFlags: TDBGEvaluateFlags;
+    constructor Create(AOwner: TLldbDebugger; AnExpr: String; AFlags: TWatcheEvaluateFlags;
                        ACallback: TDBGEvaluateResultCallback);
     destructor Destroy; override;
   end;
@@ -329,7 +329,7 @@ type
     function  LldbStep(AStepAction: TLldbInstructionProcessStepAction): Boolean;
     function  LldbStop: Boolean;
     function  LldbPause: Boolean;
-    function  LldbEvaluate(const AExpression: String; EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
+    function  LldbEvaluate(const AExpression: String; EvalFlags: TWatcheEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
     function  LldbEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     procedure TerminateLldb;          // Kills external debugger
   protected
@@ -2593,7 +2593,7 @@ begin
 end;
 
 constructor TLldbDebuggerCommandEvaluate.Create(AOwner: TLldbDebugger;
-  AnExpr: String; AFlags: TDBGEvaluateFlags;
+  AnExpr: String; AFlags: TWatcheEvaluateFlags;
   ACallback: TDBGEvaluateResultCallback);
 begin
   FExpr := AnExpr;
@@ -2816,7 +2816,7 @@ begin
 end;
 
 function TLldbDebugger.LldbEvaluate(const AExpression: String;
-  EvalFlags: TDBGEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
+  EvalFlags: TWatcheEvaluateFlags; ACallback: TDBGEvaluateResultCallback): Boolean;
 var
   Cmd: TLldbDebuggerCommandEvaluate;
 begin
@@ -2996,7 +2996,7 @@ end;
 function TLldbDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const; const ACallback: TMethod): Boolean;
 var
-  EvalFlags: TDBGEvaluateFlags;
+  EvalFlags: TWatcheEvaluateFlags;
 begin
   LockRelease;
   try
@@ -3012,7 +3012,7 @@ begin
       dcEvaluate:    begin
                        EvalFlags := [];
                        if high(AParams) >= 1 then
-                         EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
+                         EvalFlags := TWatcheEvaluateFlags(AParams[1].VInteger);
                        Result := LldbEvaluate(String(AParams[0].VAnsiString),
                          EvalFlags, TDBGEvaluateResultCallback(ACallback));
                      end;

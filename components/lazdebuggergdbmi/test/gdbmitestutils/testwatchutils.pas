@@ -112,7 +112,7 @@ type
     Expression:  string;
     DspFormat: TWatchDisplayFormat;
     RepeatCount: Integer;
-    EvaluateFlags: TDBGEvaluateFlags;
+    EvaluateFlags: TWatcheEvaluateFlags;
     StackFrame: Integer;
     Result: Array [TSymbolType] of TWatchExpectationResult;
 
@@ -146,7 +146,7 @@ function AddWatchExp(var ExpArray: TWatchExpectationArray;
   AMinGdb: Integer = 0; AMinFpc: Integer = 0
 ): PWatchExpectation;
 function AddWatchExp(var ExpArray: TWatchExpectationArray;
-  AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags;
+  AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags;
   AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags = [];
   AStackFrame: Integer = 0;
@@ -160,7 +160,7 @@ function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
   AMinGdb: Integer = 0; AMinFpc: Integer = 0
 ): PWatchExpectation;
 function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags;
+  AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags;
   AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags = [];
   AStackFrame: Integer = 0;
@@ -210,7 +210,7 @@ begin
 end;
 
 function AddWatchExp(var ExpArray: TWatchExpectationArray; AnExpr: string;
-  AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags; AMtch: string;
+  AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags; AMtch: string;
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
   AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
 begin
@@ -229,7 +229,7 @@ begin
 end;
 
 function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr: string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TDBGEvaluateFlags; AMtch: string;
+  AnExpr: string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags; AMtch: string;
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
   AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
 var

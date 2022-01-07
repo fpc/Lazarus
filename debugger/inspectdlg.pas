@@ -226,7 +226,7 @@ procedure TIDEInspectDlg.DataGridDoubleClick(Sender: TObject);
 var
   i: Integer;
   s: String;
-  TestOpts: TDBGEvaluateFlags;
+  TestOpts: TWatcheEvaluateFlags;
 begin
   if FTestUpdateLock then
     exit;
@@ -938,7 +938,7 @@ end;
 
 procedure TIDEInspectDlg.UpdateData;
 var
-  Opts: TDBGEvaluateFlags;
+  Opts: TWatcheEvaluateFlags;
 begin
   FExpressionWasEvaluated := False;
   if DebugBoss.State in [dsRun, dsStop, dsIdle] then begin

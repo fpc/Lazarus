@@ -215,7 +215,7 @@ end;
 procedure TEvaluateDlg.Evaluate;
 var
   S: String;
-  Opts: TDBGEvaluateFlags;
+  Opts: TWatcheEvaluateFlags;
 begin
   S := cmbExpression.Text;
   if S = '' then Exit;

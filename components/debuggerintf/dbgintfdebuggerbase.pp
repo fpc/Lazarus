@@ -177,14 +177,14 @@ const
     'Error');
 
 type
-  TDBGEvaluateFlag =
-    (defNoTypeInfo,        // No Typeinfo object will be returned
+  TWatcheEvaluateFlag =
+    (defNoTypeInfo,        // No Typeinfo object will be returned // for structures that means a printed value will be returned
      defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)
      defFullTypeInfo,      // Get all typeinfo, resolve all anchestors
      defClassAutoCast,     // Find real class of instance, and use, instead of declared class of variable
      defAllowFunctionCall
     );
-  TDBGEvaluateFlags = set of TDBGEvaluateFlag;
+  TWatcheEvaluateFlags = set of TWatcheEvaluateFlag;
 
   { TRunningProcessInfo
     Used to enumerate running processes.
@@ -660,7 +660,7 @@ type
     function GetWatch: TWatch;
   protected
     FDisplayFormat: TWatchDisplayFormat;
-    FEvaluateFlags: TDBGEvaluateFlags;
+    FEvaluateFlags: TWatcheEvaluateFlags;
     FRepeatCount: Integer;
     FStackFrame: Integer;
     FThreadId: Integer;
@@ -674,7 +674,7 @@ type
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue); virtual;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
-    property EvaluateFlags: TDBGEvaluateFlags read FEvaluateFlags;
+    property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags;
     property RepeatCount: Integer read FRepeatCount;
     property ThreadId: Integer read FThreadId;
     property StackFrame: Integer read FStackFrame;
@@ -717,13 +717,13 @@ type
 
     procedure SetDisplayFormat(AValue: TWatchDisplayFormat);
     procedure SetEnabled(AValue: Boolean);
-    procedure SetEvaluateFlags(AValue: TDBGEvaluateFlags);
+    procedure SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
     procedure SetExpression(AValue: String);
     procedure SetRepeatCount(AValue: Integer);
     function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
   protected
     FEnabled: Boolean;
-    FEvaluateFlags: TDBGEvaluateFlags;
+    FEvaluateFlags: TWatcheEvaluateFlags;
     FExpression: String;
     FDisplayFormat: TWatchDisplayFormat;
     FRepeatCount: Integer;
@@ -743,7 +743,7 @@ type
     property Enabled: Boolean read FEnabled write SetEnabled;
     property Expression: String read FExpression write SetExpression;
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat write SetDisplayFormat;
-    property EvaluateFlags: TDBGEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
+    property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
     property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
@@ -1963,7 +1963,7 @@ type
     procedure Detach;
     procedure SendConsoleInput(AText: String);
     function  Evaluate(const AExpression: String; ACallback: TDBGEvaluateResultCallback;
-                       EvalFlags: TDBGEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
+                       EvalFlags: TWatcheEvaluateFlags = []): Boolean;                     // Evaluates the given expression, returns true if valid
     function GetProcessList({%H-}AList: TRunningProcessInfoList): boolean; virtual;
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
     function  Disassemble(AAddr: TDbgPtr; ABackward: Boolean; out ANextAddr: TDbgPtr;
@@ -2069,8 +2069,8 @@ function dbgs(AnAttributes: TDBGSymbolAttributes): String; overload;
 function dbgs(ADisassRange: TDBGDisassemblerEntryRange): String; overload;
 function dbgs(const AnAddr: TDisassemblerAddress): string; overload;
 function dbgs(ACategory: TDBGEventCategory): String; overload;
-function dbgs(AFlag: TDBGEvaluateFlag): String; overload;
-function dbgs(AFlags: TDBGEvaluateFlags): String; overload;
+function dbgs(AFlag: TWatcheEvaluateFlag): String; overload;
+function dbgs(AFlags: TWatcheEvaluateFlags): String; overload;
 function dbgs(AName: TDBGCommand): String; overload;
 
 var
@@ -2171,18 +2171,18 @@ begin
   writestr(Result{%H-}, ACategory);
 end;
 
-function dbgs(AFlag: TDBGEvaluateFlag): String;
+function dbgs(AFlag: TWatcheEvaluateFlag): String;
 begin
   Result := '';
   WriteStr(Result, AFlag);
 end;
 
-function dbgs(AFlags: TDBGEvaluateFlags): String;
+function dbgs(AFlags: TWatcheEvaluateFlags): String;
 var
-  i: TDBGEvaluateFlag;
+  i: TWatcheEvaluateFlag;
 begin
   Result:='';
-  for i := low(TDBGEvaluateFlags) to high(TDBGEvaluateFlags) do
+  for i := low(TWatcheEvaluateFlag) to high(TWatcheEvaluateFlag) do
     if i in AFlags then begin
       if Result <> '' then Result := Result + ', ';
       Result := Result + dbgs(i);
@@ -2881,7 +2881,7 @@ begin
   end;
 end;
 
-procedure TWatch.SetEvaluateFlags(AValue: TDBGEvaluateFlags);
+procedure TWatch.SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
 begin
   if FEvaluateFlags = AValue then Exit;
   FEvaluateFlags := AValue;
@@ -6173,7 +6173,7 @@ begin
 end;
 
 function TDebuggerIntf.Evaluate(const AExpression: String;
-  ACallback: TDBGEvaluateResultCallback; EvalFlags: TDBGEvaluateFlags): Boolean;
+  ACallback: TDBGEvaluateResultCallback; EvalFlags: TWatcheEvaluateFlags): Boolean;
 begin
   Result := ReqCmd(dcEvaluate, [AExpression, Integer(EvalFlags)], TMethod(ACallback));
 end;

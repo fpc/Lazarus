@@ -3568,7 +3568,7 @@ end;
 function TFpDebugDebugger.RequestCommand(const ACommand: TDBGCommand;
   const AParams: array of const; const ACallback: TMethod): Boolean;
 var
-  EvalFlags: TDBGEvaluateFlags;
+  EvalFlags: TWatcheEvaluateFlags;
   AConsoleTty, ResText: string;
   addr: TDBGPtrArray;
   Cmd: TDBGCommand;
@@ -3730,7 +3730,7 @@ begin
       end;
     dcEvaluate:
       begin
-        EvalFlags := TDBGEvaluateFlags(AParams[1].VInteger);
+        EvalFlags := TWatcheEvaluateFlags(AParams[1].VInteger);
         GetCurrentThreadAndStackFrame(AThreadId, AStackFrame);
         if FEvalWorkItem <> nil then begin
           EvalWorkItem := FEvalWorkItem;

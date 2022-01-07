@@ -57,10 +57,10 @@ type
     // using FCurrentExpArray
     function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
-    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+    function Add(AnExpr:  string; AFmt: TWatchDisplayFormat; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
                  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
     function AddFmtDef        (AnExpr, AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
-    function AddFmtDef        (AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
+    function AddFmtDef        (AnExpr: String; AEvalFlags: TWatcheEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddStringFmtDef  (AnExpr, AMtch, ATpNm: string; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddShortStrFmtDef(AnExpr, AMtch: string; ATpNm: string = 'ShortString'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
     function AddCharFmtDef    (AnExpr, AMtch: string; ATpNm: string = 'Char'; AFlgs: TWatchExpectationFlags=[]): PWatchExpectation;
@@ -161,7 +161,7 @@ begin
 end;
 
 function TTestWatches.Add(AnExpr: string; AFmt: TWatchDisplayFormat;
-  AEvalFlags: TDBGEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  AEvalFlags: TWatcheEvaluateFlags; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
   AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := AddWatchExp(FCurrentExpArray^, AnExpr, AFmt, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );
@@ -173,7 +173,7 @@ begin
   Result := Add(AnExpr, wdfDefault, AMtch, AKind, ATpNm, AFlgs );
 end;
 
-function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TDBGEvaluateFlags; AMtch: string;
+function TTestWatches.AddFmtDef(AnExpr: String; AEvalFlags: TWatcheEvaluateFlags; AMtch: string;
   AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags): PWatchExpectation;
 begin
   Result := Add(AnExpr, wdfDefault, AEvalFlags, AMtch, AKind, ATpNm, AFlgs );

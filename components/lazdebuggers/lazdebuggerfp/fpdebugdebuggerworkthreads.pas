@@ -244,7 +244,7 @@ type
                                 AStackFrame, AThreadId: Integer;
                                 ADispFormat: TWatchDisplayFormat;
                                 ARepeatCnt: Integer;
-                                AnEvalFlags: TDBGEvaluateFlags;
+                                AnEvalFlags: TWatcheEvaluateFlags;
                                 out AResText: String;
                                 out ATypeInfo: TDBGType
                                ): Boolean;
@@ -259,7 +259,7 @@ type
     FStackFrame, FThreadId: Integer;
     FDispFormat: TWatchDisplayFormat;
     FRepeatCnt: Integer;
-    FEvalFlags: TDBGEvaluateFlags;
+    FEvalFlags: TWatcheEvaluateFlags;
   protected
     FRes: Boolean;
     FResText: String;
@@ -272,7 +272,7 @@ type
                        AStackFrame, AThreadId: Integer;
                        ADispFormat: TWatchDisplayFormat;
                        ARepeatCnt: Integer;
-                       AnEvalFlags: TDBGEvaluateFlags
+                       AnEvalFlags: TWatcheEvaluateFlags
                       );
     function DebugText: String; override;
   end;
@@ -289,7 +289,7 @@ type
                        APriority: TFpThreadWorkerPriority;
                        const AnExpression: String;
                        AStackFrame, AThreadId: Integer;
-                       AnEvalFlags: TDBGEvaluateFlags;
+                       AnEvalFlags: TWatcheEvaluateFlags;
                        ACallback: TDBGEvaluateResultCallback
                       );
     destructor Destroy; override;
@@ -942,7 +942,7 @@ end;
 
 function TFpThreadWorkerEvaluate.EvaluateExpression(const AnExpression: String;
   AStackFrame, AThreadId: Integer; ADispFormat: TWatchDisplayFormat;
-  ARepeatCnt: Integer; AnEvalFlags: TDBGEvaluateFlags; out AResText: String;
+  ARepeatCnt: Integer; AnEvalFlags: TWatcheEvaluateFlags; out AResText: String;
   out ATypeInfo: TDBGType): Boolean;
 var
   APasExpr, PasExpr2: TFpPascalExpression;
@@ -1044,7 +1044,7 @@ end;
 constructor TFpThreadWorkerEvaluateExpr.Create(ADebugger: TFpDebugDebuggerBase;
   APriority: TFpThreadWorkerPriority; const AnExpression: String; AStackFrame,
   AThreadId: Integer; ADispFormat: TWatchDisplayFormat; ARepeatCnt: Integer;
-  AnEvalFlags: TDBGEvaluateFlags);
+  AnEvalFlags: TWatcheEvaluateFlags);
 begin
   inherited Create(ADebugger, APriority);
   FExpression := AnExpression;
@@ -1113,7 +1113,7 @@ end;
 
 constructor TFpThreadWorkerCmdEval.Create(ADebugger: TFpDebugDebuggerBase;
   APriority: TFpThreadWorkerPriority; const AnExpression: String; AStackFrame,
-  AThreadId: Integer; AnEvalFlags: TDBGEvaluateFlags;
+  AThreadId: Integer; AnEvalFlags: TWatcheEvaluateFlags;
   ACallback: TDBGEvaluateResultCallback);
 begin
   inherited Create(ADebugger, APriority, AnExpression, AStackFrame, AThreadId, wdfDefault, 0,
