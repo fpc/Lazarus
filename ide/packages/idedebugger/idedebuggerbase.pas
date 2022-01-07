@@ -5,23 +5,58 @@ unit IdeDebuggerBase;
 interface
 
 uses
-  Classes, SysUtils,
-  DbgIntfDebuggerBase, DbgIntfMiscClasses, LazDebuggerIntf;
+  Classes, SysUtils, DbgIntfDebuggerBase, DbgIntfMiscClasses, LazClasses,
+  LazLoggerBase, LazDebuggerIntf;
 
 type
 
   TWatch = class;
 
-  { TGuiWatchValue }
+  { TWatchValue }
 
-  TGuiWatchValue = class(TWatchValue)
+  TWatchValue = class(TFreeNotifyingObject, TWatchValueIntf)
   private
     FWatch: TWatch;
+    FTypeInfo: TDBGType;
+    FValue: String;
+    FValidity: TDebuggerDataState;
+
+    function GetDisplayFormat: TWatchDisplayFormat;
+    function GetEvaluateFlags: TWatcheEvaluateFlags;
+    function GetRepeatCount: Integer;
+    function GetStackFrame: Integer;
+    function GetThreadId: Integer;
+    function GetValidity: TDebuggerDataState;
+    procedure SetValidity(AValue: TDebuggerDataState); virtual;
+    procedure SetValue(AValue: String);
+    procedure SetTypeInfo(AValue: TDBGType);
+    procedure SetTypeInfo(AValue: TDBGTypeBase);
   protected
-    function GetExpression: String; override;
+    FDisplayFormat: TWatchDisplayFormat;
+    FEvaluateFlags: TWatcheEvaluateFlags;
+    FRepeatCount: Integer;
+    FStackFrame: Integer;
+    FThreadId: Integer;
+    procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); virtual;
+
+    function GetExpression: String; virtual;
+    function GetTypeInfo: TDBGType; virtual;
+    function GetValue: String; virtual;
   public
     constructor Create(AOwnerWatch: TWatch);
+    destructor Destroy; override;
+    procedure Assign(AnOther: TWatchValue); virtual;
+    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
+    property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
+    property RepeatCount: Integer read GetRepeatCount;
+    property ThreadId: Integer read GetThreadId;
+    property StackFrame: Integer read GetStackFrame;
+    property Expression: String read GetExpression;
+  public
     property Watch: TWatch read FWatch;
+    property Validity: TDebuggerDataState read GetValidity write SetValidity;
+    property Value: String read GetValue write SetValue;
+    property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
   end;
 
   { TWatchValueList }
@@ -30,20 +65,20 @@ type
   private
     FList: TList;
     FWatch: TWatch;
-    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TGuiWatchValue;
-    function GetEntryByIdx(AnIndex: integer): TGuiWatchValue;
+    function GetEntry(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
+    function GetEntryByIdx(AnIndex: integer): TWatchValue;
   protected
-    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TGuiWatchValue; virtual;
-    function CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue; virtual;
+    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; virtual;
+    function CopyEntry(AnEntry: TWatchValue): TWatchValue; virtual;
   public
     procedure Assign(AnOther: TWatchValueList);
     constructor Create(AOwnerWatch: TWatch);
     destructor Destroy; override;
-    procedure Add(AnEntry: TGuiWatchValue);
+    procedure Add(AnEntry: TWatchValue);
     procedure Clear;
     function Count: Integer;
-    property EntriesByIdx[AnIndex: integer]: TGuiWatchValue read GetEntryByIdx;
-    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TGuiWatchValue
+    property EntriesByIdx[AnIndex: integer]: TWatchValue read GetEntryByIdx;
+    property Entries[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetEntry; default;
     property Watch: TWatch read FWatch;
   end;
@@ -58,7 +93,7 @@ type
     procedure SetEvaluateFlags(AValue: TWatcheEvaluateFlags);
     procedure SetExpression(AValue: String);
     procedure SetRepeatCount(AValue: Integer);
-    function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TGuiWatchValue;
+    function GetValue(const AThreadId: Integer; const AStackFrame: Integer): TWatchValue;
   protected
     FEnabled: Boolean;
     FEvaluateFlags: TWatcheEvaluateFlags;
@@ -83,7 +118,7 @@ type
     property DisplayFormat: TWatchDisplayFormat read FDisplayFormat write SetDisplayFormat;
     property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags write SetEvaluateFlags;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount;
-    property Values[const AThreadId: Integer; const AStackFrame: Integer]: TGuiWatchValue
+    property Values[const AThreadId: Integer; const AStackFrame: Integer]: TWatchValue
              read GetValue;
   end;
   TWatchClass = class of TWatch;
@@ -105,17 +140,110 @@ type
 
 implementation
 
-{ TGuiWatchValue }
+var
+  DBG_DATA_MONITORS: PLazLoggerLogGroup;
 
-function TGuiWatchValue.GetExpression: String;
+{ TWatchValue }
+
+procedure TWatchValue.SetValidity(AValue: TDebuggerDataState);
+var
+  OldValidity: TDebuggerDataState;
+begin
+  if FValidity = AValue then exit;
+  //DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TWatchValue.SetValidity: FThreadId=', FThreadId, '  FStackFrame=',FStackFrame, ' Expr=', Expression, ' AValidity=',dbgs(AValue)]);
+  DebugLn(DBG_DATA_MONITORS, ['DebugDataMonitor: TWatchValue.SetValidity:  Expr=', Expression, ' AValidity=',dbgs(AValue)]);
+  OldValidity := FValidity;
+  FValidity := AValue;
+  DoDataValidityChanged(OldValidity);
+end;
+
+function TWatchValue.GetValidity: TDebuggerDataState;
+begin
+  Result := FValidity;
+end;
+
+function TWatchValue.GetStackFrame: Integer;
+begin
+  Result := FStackFrame;
+end;
+
+function TWatchValue.GetEvaluateFlags: TWatcheEvaluateFlags;
+begin
+  Result := FEvaluateFlags;
+end;
+
+function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
+begin
+  Result := FDisplayFormat;
+end;
+
+function TWatchValue.GetRepeatCount: Integer;
+begin
+  Result := FRepeatCount;
+end;
+
+function TWatchValue.GetThreadId: Integer;
+begin
+  Result := FThreadId;
+end;
+
+procedure TWatchValue.SetValue(AValue: String);
+begin
+  if FValue = AValue then exit;
+  //asser not immutable
+  FValue := AValue;
+end;
+
+procedure TWatchValue.SetTypeInfo(AValue: TDBGType);
+begin
+  //assert(Self is TCurrentWatchValue, 'TWatchValue.SetTypeInfo');
+  FreeAndNil(FTypeInfo);
+  FTypeInfo := AValue;
+end;
+
+procedure TWatchValue.SetTypeInfo(AValue: TDBGTypeBase);
+begin
+  SetTypeInfo(TDBGType(AValue));
+end;
+
+procedure TWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
+begin
+
+end;
+
+function TWatchValue.GetExpression: String;
 begin
   Result := FWatch.Expression;
 end;
 
-constructor TGuiWatchValue.Create(AOwnerWatch: TWatch);
+function TWatchValue.GetTypeInfo: TDBGType;
+begin
+  Result := FTypeInfo;
+end;
+
+function TWatchValue.GetValue: String;
+begin
+  Result := FValue;
+end;
+
+constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
   FWatch := AOwnerWatch;
   inherited Create;
+end;
+
+destructor TWatchValue.Destroy;
+begin
+  inherited Destroy;
+  FreeAndNil(FTypeInfo);
+end;
+
+procedure TWatchValue.Assign(AnOther: TWatchValue);
+begin
+  FreeAndNil(FTypeInfo);
+  //FTypeInfo    := TWatchValue(AnOther).FTypeInfo.cre;
+  FValue         := AnOther.FValue;
+  FValidity      := AnOther.FValidity;
 end;
 
 { TWatch }
@@ -163,7 +291,7 @@ begin
 end;
 
 function TWatch.GetValue(const AThreadId: Integer;
-  const AStackFrame: Integer): TGuiWatchValue;
+  const AStackFrame: Integer): TWatchValue;
 begin
   Result := FValueList[AThreadId, AStackFrame];
 end;
@@ -271,13 +399,13 @@ end;
 { TWatchValueList }
 
 function TWatchValueList.GetEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TGuiWatchValue;
+  const AStackFrame: Integer): TWatchValue;
 var
   i: Integer;
 begin
   i := FList.Count - 1;
   while i >= 0 do begin
-    Result := TGuiWatchValue(FList[i]);
+    Result := TWatchValue(FList[i]);
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
        (Result.DisplayFormat = FWatch.DisplayFormat) and
        (Result.RepeatCount = FWatch.RepeatCount) and
@@ -289,20 +417,20 @@ begin
   Result := CreateEntry(AThreadId, AStackFrame);
 end;
 
-function TWatchValueList.GetEntryByIdx(AnIndex: integer): TGuiWatchValue;
+function TWatchValueList.GetEntryByIdx(AnIndex: integer): TWatchValue;
 begin
-  Result := TGuiWatchValue(FList[AnIndex]);
+  Result := TWatchValue(FList[AnIndex]);
 end;
 
 function TWatchValueList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TGuiWatchValue;
+  const AStackFrame: Integer): TWatchValue;
 begin
   Result := nil;
 end;
 
-function TWatchValueList.CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue;
+function TWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
 begin
-  Result := TGuiWatchValue.Create(FWatch);
+  Result := TWatchValue.Create(FWatch);
   Result.Assign(AnEntry);
 end;
 
@@ -312,7 +440,7 @@ var
 begin
   Clear;
   for i := 0 to AnOther.FList.Count - 1 do begin
-    FList.Add(CopyEntry(TGuiWatchValue(AnOther.FList[i])));
+    FList.Add(CopyEntry(TWatchValue(AnOther.FList[i])));
   end;
 end;
 
@@ -331,7 +459,7 @@ begin
   FreeAndNil(FList);
 end;
 
-procedure TWatchValueList.Add(AnEntry: TGuiWatchValue);
+procedure TWatchValueList.Add(AnEntry: TWatchValue);
 begin
   Flist.Add(AnEntry);
 end;
@@ -348,6 +476,9 @@ function TWatchValueList.Count: Integer;
 begin
   Result := FList.Count;
 end;
+
+initialization
+  DBG_DATA_MONITORS := DebugLogger.FindOrRegisterLogGroup('DBG_DATA_MONITORS' {$IFDEF DBG_DATA_MONITORS} , True {$ENDIF} );
 
 end.
 

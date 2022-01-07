@@ -587,7 +587,7 @@ type
 
   { TIdeWatchValue }
 
-  TIdeWatchValue = class(TGuiWatchValue)
+  TIdeWatchValue = class(TWatchValue)
   private
     function GetWatch: TIdeWatch;
   protected
@@ -618,7 +618,7 @@ type
     function GetEntryByIdx(AnIndex: integer): TIdeWatchValue;
     function GetWatch: TIdeWatch;
   protected
-    function CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue; override;
+    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -3310,7 +3310,7 @@ begin
   Result := TIdeWatch(inherited Watch);
 end;
 
-function TIdeWatchValueList.CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue;
+function TIdeWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
 begin
   Result := TIdeWatchValue.Create(Watch);
   Result.Assign(AnEntry);
@@ -3350,7 +3350,7 @@ begin
   inherited Create(AOwnerWatch);
 end;
 
-{ TGuiWatchValue }
+{ TWatchValue }
 
 function TIdeWatchValue.GetValue: String;
 var
@@ -3359,7 +3359,7 @@ begin
   Result := '';
   if not Watch.Enabled then
     exit('<disabled>');
-  i := DbgStateChangeCounter;  // workaround for state changes during TGuiWatchValue.GetValue
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Result := '<evaluating>';
     Validity := ddsRequested;
@@ -3388,7 +3388,7 @@ begin
   Result := nil;
   if not Watch.Enabled then
     exit;
-  i := DbgStateChangeCounter;  // workaround for state changes during TGuiWatchValue.GetValue
+  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Validity := ddsRequested;
     RequestData;
