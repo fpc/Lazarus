@@ -420,10 +420,6 @@ begin
 end;
 
 procedure TLazThreadedQueue.Grow(ADelta: integer);
-var
-  NewList: array of T;
-  c: Integer;
-  i: QWord;
 begin
   FMonitor.Enter;
   try
