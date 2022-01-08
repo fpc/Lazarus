@@ -42,13 +42,15 @@ type
     procedure cbAntialiasingChange(Sender: TObject);
     procedure cbPieChange(Sender: TObject);
     procedure cbUseConnectorChange(Sender: TObject);
+    {
+    procedure chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
+      ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
+      var ADoDefaultDrawing: Boolean);
+      }
     procedure chBarEffectsBarSeries1CustomDrawBar(ASeries: TBarSeries;
       ADrawer: IChartDrawer; const ARect: TREct; APointIndex,
       AStackIndex: Integer);
     procedure chSimpleAfterPaint(ASender: TChart);
-    procedure chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
-      ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
-      var ADoDefaultDrawing: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
@@ -110,6 +112,10 @@ begin
   PaintBox1.Invalidate;
 end;
 
+{ This handler of the deprecated OnBeforeDrawBar event is left here for
+  reference only. The code is not executed in the current version of the 
+  demo. 
+  
 procedure TForm1.chBarEffectsBarSeries1BeforeDrawBar(ASender: TBarSeries;
   ACanvas: TCanvas; const ARect: TRect; APointIndex, AStackIndex: Integer;
   var ADoDefaultDrawing: Boolean);
@@ -141,6 +147,7 @@ begin
     2: DrawPhong3DBar(ASender, ACanvas, ARect, APointIndex);
   end;
 end;
+}
 
 procedure TForm1.chBarEffectsBarSeries1CustomDrawBar(ASeries: TBarSeries;
   ADrawer: IChartDrawer; const ARect: TRect; APointIndex, AStackIndex: Integer);
