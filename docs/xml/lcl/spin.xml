@@ -175,7 +175,6 @@
           The method override was added in LCL version 2.2.1.
         </version>
         <seealso>
-          <link id="TCustomFloatSpinEdit.UpdateControl"/>
           <link id="TCustomFloatSpinEdit.GetLimitedValue"/>
           <link id="TCustomFloatSpinEdit.Value"/>
           <link id="TCustomFloatSpinEdit.MinValue"/>
