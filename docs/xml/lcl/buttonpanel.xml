@@ -78,30 +78,56 @@
         <short>Use the button order Close, OK, Cancel, Help.</short>
       </element>
 
-      <element name="TPanelButton">
+      <element name="TPanelButtonEx">
         <short>
-          Enumeration with values that represent the button types used on TButtonPanel.
+          Enumeration with values that represent the buttons used on TButtonPanel.
         </short>
         <descr>
           <p>
-            <var>TPanelButton</var> is an enumeration type with values which represent the button types used on <var>TButtonPanel</var>.
+            <var>TPanelButtonEx</var> is an enumeration type with values which represent the default button used on <var>TButtonPanel</var>. Values from the enumeration (except for pbNone) are used to define the TPanelButton type.
           </p>
         </descr>
         <seealso>
-          <link id="TButtonPanel"/>
+          <link id="TPanelButton"/>
+          <link id="TCustomButtonPanel.DefaultButton"/>
         </seealso>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
       </element>
-      <element name="TPanelButton.pbOK">
+      <element name="TPanelButtonEx.pbOK">
         <short>Represents the OK button on the panel.</short>
       </element>
-      <element name="TPanelButton.pbCancel">
+      <element name="TPanelButtonEx.pbCancel">
         <short>Represents the Cancel button on the panel.</short>
       </element>
-      <element name="TPanelButton.pbClose">
+      <element name="TPanelButtonEx.pbClose">
         <short>Represents the Close button on the panel.</short>
       </element>
-      <element name="TPanelButton.pbHelp">
+      <element name="TPanelButtonEx.pbHelp">
         <short>Represents the Help button on the panel.</short>
+      </element>
+      <element name="TPanelButtonEx.pbNone">
+        <short>Indicates that a button is not enabled as the default button on a button panel.</short>
+      </element>
+
+      <element name="TPanelButton">
+        <short>
+          Represents the visible buttons and glyphs used on a TButtonPanel control.
+        </short>
+        <descr>
+          <p>
+            <var>TPanelButton</var> is a range type with values which represent the visible buttons and glyphs used on <var>TButtonPanel</var>. Values in TPanelButton are stored in the TPanelButtons collection type, and used in the ShowButtons and ShowGlyphs properties in TButtonPanel control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TPanelButtons"/>
+          <link id="TButtonPanel.ShowButtons"/>
+          <link id="TButtonPanel.ShowGlyphs"/>
+        </seealso>
+        <version>
+          Changed to a range type in LCL version 2.3.0.
+        </version>
       </element>
 
       <element name="TPanelButtons">
@@ -1011,7 +1037,7 @@
 
       <element name="TCustomButtonPanel.DefaultButton">
         <short>
-          The default button executed when pressing <b>Enter</b> or <b>Return</b>.
+          The default button executed when <b>Enter</b> or <b>Return</b> are pressed.
         </short>
         <descr>
           <p>
