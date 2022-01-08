@@ -3537,7 +3537,7 @@ end;
 procedure TIdeWatchesMonitor.RequestData(AWatchValue: TCurrentWatchValue);
 begin
   if Supplier <> nil
-  then Supplier.RequestData(AWatchValue)
+  then Supplier.RequestData(TWatchValueIntf(AWatchValue))
   else AWatchValue.Validity := ddsInvalid;
 end;
 

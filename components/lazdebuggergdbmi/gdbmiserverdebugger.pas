@@ -35,7 +35,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // CmdLineDebuggerBase
-  DebuggerPropertiesBase,
+  DebuggerPropertiesBase, LazDebuggerIntf,
   // LazDebuggerGdbmi
   GDBMIDebugger, GDBMIMiscClasses, GdbmiStringConstants;
   

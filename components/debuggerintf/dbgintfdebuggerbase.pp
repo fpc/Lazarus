@@ -51,7 +51,7 @@ uses
   LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazFileUtils, LazStringUtils, Maps, LazMethodList,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
-  DbgIntfCommonStrings, LazDebuggerIntf;
+  DbgIntfCommonStrings, LazDebuggerIntf, LazDebuggerTemplate;
 
 const
   DebuggerIntfVersion = 0;
@@ -91,58 +91,6 @@ type
     //, dcSendSignal
     );
   TDBGCommands = set of TDBGCommand;
-
-  { Debugger states
-    --------------------------------------------------------------------------
-    dsNone:
-      The debug object is created, but no instance of an external debugger
-      exists.
-      Initial state, leave with Init, enter with Done
-
-    dsIdle:
-      The external debugger is started, but no filename (or no other params
-      required to start) were given.
-
-    dsStop:
-      (Optional) The execution of the target is stopped
-      The external debugger is loaded and ready to (re)start the execution
-      of the target.
-      Breakpoints, watches etc can be defined
-
-    dsPause:
-      The debugger has paused the target. Target variables can be examined
-
-    dsInternalPause:
-      Pause, not visible to user.
-      For examble auto continue breakpoint: Allow collection of Snapshot data
-
-    dsInit:
-      (Optional, Internal) The debugger is about to run
-
-    dsRun:
-      The target is running.
-
-    dsError:
-      Something unforseen has happened. A shutdown of the debugger is in
-      most cases needed.
-
-    -dsDestroying
-      The debugger is about to be destroyed.
-      Should normally happen immediate on calling Release.
-      But the debugger may be in nested calls, and has to exit them first.
-    --------------------------------------------------------------------------
-  }
-  TDBGState = (
-    dsNone,
-    dsIdle,
-    dsStop,
-    dsPause,
-    dsInternalPause,
-    dsInit,
-    dsRun,
-    dsError,
-    dsDestroying
-    );
 
   TDBGLocationRec = record
     Address: TDBGPtr;
@@ -201,62 +149,74 @@ type
   private
     FNotifiedState: TDBGState;
     FOldState: TDBGState;
-    FUpdateCount: Integer;
   protected
-    //procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
     procedure DoStateEnterPause; virtual;
     procedure DoStateLeavePause; virtual;
     procedure DoStateLeavePauseClean; virtual;
     procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); virtual;
     property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
     property  OldState: TDBGState read FOldState;                               // The state before last DoStateChange
-
-    procedure DoBeginUpdate; virtual;
-    procedure DoEndUpdate; virtual;
   public
-    //destructor Destroy; override;
-    procedure BeginUpdate;
-    procedure EndUpdate;
-    function  IsUpdating: Boolean;
   end;
 
   { TDebuggerDataMonitor }
 
   TDebuggerDataMonitor = class(TDebuggerDataHandler)
   private
+    FUpdateCount: Integer;
     FSupplier: TDebuggerDataSupplier;
     procedure SetSupplier(const AValue: TDebuggerDataSupplier);
   protected
     procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
     procedure DoNewSupplier; virtual;
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
+
     property  Supplier: TDebuggerDataSupplier read FSupplier write SetSupplier;
   public
     destructor Destroy; override;
+
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function  IsUpdating: Boolean;
+  end;
+
+
+  { TDebuggerDataSupplierBase }
+
+  TDebuggerDataSupplierBase = class(TDebuggerDataHandler)
+  private
+    FDebugger: TDebuggerIntf;
+  protected
+    procedure DoStateLeavePauseClean; override;
+
+    property  Debugger: TDebuggerIntf read FDebugger write FDebugger;
+  public
+    constructor Create(const ADebugger: TDebuggerIntf);
   end;
 
   { TDebuggerDataSupplier }
 
-  TDebuggerDataSupplier = class(TDebuggerDataHandler)
+  TDebuggerDataSupplier = class(TDebuggerDataSupplierBase)
   private
-    FDebugger: TDebuggerIntf;
+    FUpdateCount: Integer;
     FMonitor: TDebuggerDataMonitor;
     procedure SetMonitor(const AValue: TDebuggerDataMonitor);
     property  Monitor: TDebuggerDataMonitor read FMonitor write SetMonitor;
   protected
     procedure DoNewMonitor; virtual;
-    property  Debugger: TDebuggerIntf read FDebugger write FDebugger;
   protected
 
-    procedure DoStateLeavePauseClean; override;
     procedure DoStateChange(const AOldState: TDBGState); virtual;
 
-    property  NotifiedState: TDBGState read FNotifiedState;                     // The last state seen by DoStateChange
-    property  OldState: TDBGState read FOldState;                               // The state before last DoStateChange
-    procedure DoBeginUpdate; override;
-    procedure DoEndUpdate; override;
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
   public
-    constructor Create(const ADebugger: TDebuggerIntf);
     destructor  Destroy; override;
+
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function  IsUpdating: Boolean;
   end;
 
 {$region Breakpoints **********************************************************}
@@ -618,34 +578,16 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  TWatchesMonitor = class;
-
   { TWatchesSupplier }
 
-  TWatchesSupplier = class(TDebuggerDataSupplier)
-  private
-    function GetMonitor: TWatchesMonitor;
-    procedure SetMonitor(AValue: TWatchesMonitor);
-    property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
+  TWatchesSupplier = class(specialize TWatchesSupplierClassTemplate<TDebuggerDataSupplierBase>, TWatchesSupplierIntf)
   protected
-    procedure DoStateChange(const AOldState: TDBGState); override; // workaround for state changes during TWatchValue.GetValue
+    procedure DoStateChange(const AOldState: TDBGState); override;
     procedure InternalRequestData(AWatchValue: TWatchValueIntf); virtual;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
-    procedure TriggerInvalidateWatchValues;
-    procedure RequestData(AWatchValue: TWatchValueIntf);
-  end;
-
-  { TWatchesMonitor }
-
-  TWatchesMonitor = class(TDebuggerDataMonitor)
-  private
-    function GetSupplier: TWatchesSupplier;
-    procedure SetSupplier(AValue: TWatchesSupplier);
-  protected
-    procedure InvalidateWatchValues; virtual;
-  public
-    property Supplier: TWatchesSupplier read GetSupplier write SetSupplier;
+    destructor Destroy; override;
+    procedure RequestData(AWatchValue: TWatchValueIntf); reintroduce;
   end;
 
 {%endregion   ^^^^^  Watches  ^^^^^   }
@@ -1722,6 +1664,7 @@ type
     function GetRunErrorText(ARunError: Integer): string;
     //function GetUnitInfoProvider: TDebuggerUnitInfoProvider;
     function  GetState: TDBGState;
+    function GetWatches: TWatchesSupplierIntf;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean; overload;
     function  ReqCmd(const ACommand: TDBGCommand;
@@ -1858,6 +1801,7 @@ type
     class function SupportedCommandsFor(AState: TDBGState): TDBGCommands; virtual;
     property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
     //property Waiting: Boolean read GetWaiting;                                   // Set when the debugger is wating for a command to complete
+    property WatchSupplier: TWatchesSupplierIntf read GetWatches;                                 // list of all watches etc
     property Watches: TWatchesSupplier read FWatches;                                 // list of all watches etc
     property Threads: TThreadsSupplier read FThreads;
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
@@ -2616,36 +2560,6 @@ begin
   DebugLnExit(DBG_DATA_MONITORS, [ClassName, ': <<EXIT: ', ClassName, '.DoStateChange']);
 end;
 
-procedure TDebuggerDataHandler.DoBeginUpdate;
-begin
-  //
-end;
-
-procedure TDebuggerDataHandler.DoEndUpdate;
-begin
-  //
-end;
-
-procedure TDebuggerDataHandler.BeginUpdate;
-begin
-  inc(FUpdateCount);
-  if FUpdateCount = 1 then
-    DoBeginUpdate;
-end;
-
-procedure TDebuggerDataHandler.EndUpdate;
-begin
-  assert(FUpdateCount > 0, 'TDebuggerDataMonitor.EndUpdate: FUpdateCount > 0');
-  dec(FUpdateCount);
-  if FUpdateCount = 0 then
-    DoEndUpdate;
-end;
-
-function TDebuggerDataHandler.IsUpdating: Boolean;
-begin
-  Result := FUpdateCount > 0;
-end;
-
 { TRegisterSupplier }
 
 function TRegisterSupplier.GetCurrentRegistersList: TRegistersList;
@@ -3126,6 +3040,49 @@ begin
   inherited Destroy;
 end;
 
+procedure TDebuggerDataMonitor.DoBeginUpdate;
+begin
+  //
+end;
+
+procedure TDebuggerDataMonitor.DoEndUpdate;
+begin
+  //
+end;
+
+procedure TDebuggerDataMonitor.BeginUpdate;
+begin
+  inc(FUpdateCount);
+  if FUpdateCount = 1 then
+    DoBeginUpdate;
+end;
+
+procedure TDebuggerDataMonitor.EndUpdate;
+begin
+  assert(FUpdateCount > 0, 'TDebuggerDataMonitor.EndUpdate: FUpdateCount > 0');
+  dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    DoEndUpdate;
+end;
+
+function TDebuggerDataMonitor.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount > 0;
+end;
+
+{ TDebuggerDataSupplierBase }
+
+procedure TDebuggerDataSupplierBase.DoStateLeavePauseClean;
+begin
+  DoStateLeavePause;
+end;
+
+constructor TDebuggerDataSupplierBase.Create(const ADebugger: TDebuggerIntf);
+begin
+  FDebugger := ADebugger;
+  inherited Create;
+end;
+
 { TDebuggerDataSupplier }
 
 procedure TDebuggerDataSupplier.SetMonitor(const AValue: TDebuggerDataMonitor);
@@ -3141,11 +3098,6 @@ begin
   //
 end;
 
-procedure TDebuggerDataSupplier.DoStateLeavePauseClean;
-begin
-  DoStateLeavePause;
-end;
-
 procedure TDebuggerDataSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   if (Debugger = nil) then Exit;
@@ -3154,16 +3106,30 @@ begin
     Monitor.DoStateChangeEx(AOldState, FDebugger.State);
 end;
 
-constructor TDebuggerDataSupplier.Create(const ADebugger: TDebuggerIntf);
-begin
-  FDebugger := ADebugger;
-  inherited Create;
-end;
-
 destructor TDebuggerDataSupplier.Destroy;
 begin
   if FMonitor <> nil then FMonitor.Supplier := nil;
   inherited Destroy;
+end;
+
+procedure TDebuggerDataSupplier.BeginUpdate;
+begin
+  inc(FUpdateCount);
+  if FUpdateCount = 1 then
+    DoBeginUpdate;
+end;
+
+procedure TDebuggerDataSupplier.EndUpdate;
+begin
+  assert(FUpdateCount > 0, 'TDebuggerDataSupplier.EndUpdate: FUpdateCount > 0');
+  dec(FUpdateCount);
+  if FUpdateCount = 0 then
+    DoEndUpdate;
+end;
+
+function TDebuggerDataSupplier.IsUpdating: Boolean;
+begin
+  Result := FUpdateCount > 0;
 end;
 
 procedure TDebuggerDataSupplier.DoBeginUpdate;
@@ -3956,33 +3922,22 @@ begin
   else AWatchValue.SetValidity(ddsInvalid);
 end;
 
-function TWatchesSupplier.GetMonitor: TWatchesMonitor;
-begin
-  Result := TWatchesMonitor(inherited Monitor);
-end;
-
-procedure TWatchesSupplier.SetMonitor(AValue: TWatchesMonitor);
-begin
-  inherited Monitor := AValue;
-end;
-
 procedure TWatchesSupplier.DoStateChange(const AOldState: TDBGState);
 begin
   // workaround for state changes during TWatchValue.GetValue
   inc(DbgStateChangeCounter);
   if DbgStateChangeCounter = high(DbgStateChangeCounter) then DbgStateChangeCounter := 0;
-  inherited DoStateChange(AOldState);
+
+  if (Debugger = nil) then Exit;
+
+  DoStateChangeEx(AOldState, Debugger.State);
+  if Monitor <> nil then
+    Monitor.DoStateChange(AOldState, Debugger.State);
 end;
 
 procedure TWatchesSupplier.InternalRequestData(AWatchValue: TWatchValueIntf);
 begin
   AWatchValue.SetValidity(ddsInvalid);
-end;
-
-procedure TWatchesSupplier.TriggerInvalidateWatchValues;
-begin
-  if Monitor <> nil then
-    Monitor.InvalidateWatchValues;
 end;
 
 constructor TWatchesSupplier.Create(const ADebugger: TDebuggerIntf);
@@ -3991,21 +3946,10 @@ begin
   FNotifiedState := dsNone;
 end;
 
-{ TWatchesMonitor }
-
-function TWatchesMonitor.GetSupplier: TWatchesSupplier;
+destructor TWatchesSupplier.Destroy;
 begin
-  Result := TWatchesSupplier(inherited Supplier);
-end;
-
-procedure TWatchesMonitor.SetSupplier(AValue: TWatchesSupplier);
-begin
-  inherited Supplier := AValue;
-end;
-
-procedure TWatchesMonitor.InvalidateWatchValues;
-begin
-  //
+  DoDestroy;
+  inherited Destroy;
 end;
 
 { TLocalsSupplier }
@@ -5790,6 +5734,11 @@ end;
 function TDebuggerIntf.GetState: TDBGState;
 begin
   Result := FState;
+end;
+
+function TDebuggerIntf.GetWatches: TWatchesSupplierIntf;
+begin
+  Result := FWatches;
 end;
 
 function TDebuggerIntf.ReqCmd(const ACommand: TDBGCommand;

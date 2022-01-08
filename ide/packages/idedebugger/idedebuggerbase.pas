@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, DbgIntfDebuggerBase, DbgIntfMiscClasses, LazClasses,
-  LazLoggerBase, LazDebuggerIntf;
+  LazLoggerBase, LazDebuggerIntf, LazDebuggerTemplate;
 
 type
 
@@ -137,6 +137,17 @@ type
     property Items[const AnIndex: Integer]: TWatch read GetItemBase write SetItemBase; default;
   end;
 
+  { TWatchesMonitor }
+
+  TWatchesMonitor = class(specialize TWatchesMonitorClassTemplate<TDebuggerDataHandler>, TWatchesMonitorIntf)
+  protected
+    procedure DoStateChange(const AOldState, ANewState: TDBGState); reintroduce;
+
+    // from TDebuggerDataMonitor
+    procedure DoModified; virtual;                                              // user-modified / xml-storable data modified
+  public
+    destructor Destroy; override;
+  end;
 
 implementation
 
@@ -475,6 +486,24 @@ end;
 function TWatchValueList.Count: Integer;
 begin
   Result := FList.Count;
+end;
+
+{ TWatchesMonitor }
+
+procedure TWatchesMonitor.DoStateChange(const AOldState, ANewState: TDBGState);
+begin
+  DoStateChangeEx(AOldState, ANewState);
+end;
+
+procedure TWatchesMonitor.DoModified;
+begin
+  //
+end;
+
+destructor TWatchesMonitor.Destroy;
+begin
+  DoDestroy;
+  inherited Destroy;
 end;
 
 initialization

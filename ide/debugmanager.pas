@@ -3278,7 +3278,7 @@ begin
   end
   else begin
     TManagedBreakpoints(FBreakpoints).Master := FDebugger.BreakPoints;
-    FWatches.Supplier := FDebugger.Watches;
+    FWatches.Supplier := FDebugger.WatchSupplier;
     FThreads.Supplier := FDebugger.Threads;
     FThreads.UnitInfoProvider := FUnitInfoProvider;
     FLocals.Supplier := FDebugger.Locals;

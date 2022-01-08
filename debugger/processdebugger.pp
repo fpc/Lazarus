@@ -44,7 +44,7 @@ uses
   // LazUtils
   FileUtil, UTF8Process, LazFileUtils, LazLoggerBase,
   // DebuggerIntf
-  DbgIntfDebuggerBase,
+  DbgIntfDebuggerBase, LazDebuggerIntf,
   // IDE
   ProcessList, Debugger;
 

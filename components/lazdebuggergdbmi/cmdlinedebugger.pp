@@ -47,7 +47,7 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
-  DebugUtils;
+  DebugUtils, LazDebuggerIntf;
 
 type
 
