@@ -21719,6 +21719,9 @@ AToolbar.ButtonHeight := 30;
       <element name="TTreeViewExpandSignType.tvestArrowFill">
         <short>Uses a filled Arrow.</short>
       </element>
+      <element name="TTreeViewExpandSignType.tvestAngleBracket">
+        <short>Uses chevrons (angle brackets)('>' and 'v') symbols.</short>
+      </element>
 
       <element name="TTreeViewInsertMarkType">
         <short>Represents insert mark locations used in TCustomTreeView.</short>
@@ -21767,6 +21770,7 @@ AToolbar.ButtonHeight := 30;
       <element name="TCustomTreeView.FEditingItem"/>
       <element name="TCustomTreeView.FExpandSignType"/>
       <element name="TCustomTreeView.FExpandSignSize"/>
+      <element name="TCustomTreeView.FExpandSignWidth"/>
       <element name="TCustomTreeView.FThemeExpandSignSize"/>
       <element name="TCustomTreeView.FDefItemHeight"/>
       <element name="TCustomTreeView.FDefItemSpace"/>
@@ -22053,6 +22057,8 @@ AToolbar.ButtonHeight := 30;
       <element name="TCustomTreeView.AllowMultiSelectWithShift.AState"/>
       <element name="TCustomTreeView.SetExpandSignSize"/>
       <element name="TCustomTreeView.SetExpandSignSize.AExpandSignSize"/>
+      <element name="TCustomTreeView.SetExpandSignWidth"/>
+      <element name="TCustomTreeView.SetExpandSignWidth.AValue"/>
 
       <!-- protected -->
       <element name="TCustomTreeView.FChangeTimer">
@@ -22829,13 +22835,13 @@ AToolbar.ButtonHeight := 30;
         <short>Renders the specified tree node to the canvas for the control.</short>
         <descr>
           <p>
-            DoPaintNode is a method used to render the tree node specified in Node to the Canvas for the control. DoPaintNode is called from the DoPaint method, and occurs for visible nodes processed in the method. No actions are performed in the method when the Node is not in the visible client area for the control.
+            <var>DoPaintNode</var> is a method used to render the tree node specified in <var>Node</var> to the <var>Canvas</var> for the control. DoPaintNode is called from the DoPaint method, and occurs for visible nodes processed in the method. No actions are performed in the method when the Node is not in the visible client area for the control.
           </p>
           <p>
             DoPaintNode draws the elements which represent a given tree node, including:
           </p>
           <ul>
-            <li>Text for the tree node.</li>
+            <li>Text for the tree node (when it is not the EditingItem for the control).</li>
             <li>An Image or State Image for the node.</li>
             <li>Expand or Collapse indicators for the node.</li>
             <li>Background for the node using theme services or node state.</li>
@@ -22850,7 +22856,19 @@ AToolbar.ButtonHeight := 30;
             Use of multi-stage custom drawing is supported. If event handlers are provided for the cdPrePaint and cdPostPaint stages, the CustomDraw and CustomDrawItem methods are used to render the node with the drawing state for the node.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomTreeView.DoPaint"/>
+          <link id="TCustomTreeView.ExpandSignType"/>
+          <link id="TCustomTreeView.EditingItem"/>
+          <link id="TCustomTreeView.CustomDraw"/>
+          <link id="TCustomTreeView.OnCustomDraw"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDraw"/>
+          <link id="TCustomTreeView.CustomDrawItem"/>
+          <link id="TCustomTreeView.OnCustomDrawItem"/>
+          <link id="TCustomTreeView.OnAdvancedCustomDrawItem"/>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
+        </seealso>
       </element>
       <element name="TCustomTreeView.DoPaintNode.Node">
         <short>Tree node rendered in the method.</short>
@@ -23659,7 +23677,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>OnAddition</var> is a <var>TTVExpandedEvent</var> property with the event handler signalled when a tree node is added to the Items for the control. The Sender argument contains the TCustomTreeViwe instance for the notification. The Node argument contains the TTreeNode instance added to the control.
+            <var>OnAddition</var> is a <var>TTVExpandedEvent</var> property with the event handler signalled when a tree node is added to the Items for the control. The Sender argument contains the TCustomTreeView instance for the notification. The Node argument contains the TTreeNode instance added to the control.
           </p>
           <remark>
             OnAddition is not used in the current LCL implementation.
@@ -24478,21 +24496,35 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.SelectionVisible">
         <short>
-          <var>SelectionVisible</var> - returns True if a selection is visible.
+          Indicates whether a selected tree node on the control is visible.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomTreeView.SelectionVisible.Result">
-        <short/>
+        <short>
+          True when a selected tree node on the control is visible.
+        </short>
       </element>
 
       <element name="TCustomTreeView.MakeSelectionVisible">
         <short>
-          <var>MakeSelectionVisible</var> - method for making a selection visible.
+          Makes a selected tree node visible on the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>MakeSelectionVisible</var> allows the control to display a selected node on the tree view control. It forces the tree node to become visible in the display area for the control. The node made visible is either the value in <var>Selected</var> or the first multi-selected node in <var>Selections</var>. The <var>MakeVisible</var> method for the <var>TTreeNode</var> instance is called to update the parent nodes and the associated tree view control.
+          </p>
+          <p>
+            No actions are performed in the method when SelectionVisible returns True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.Selected"/>
+          <link id="TCustomTreeView.Selections"/>
+          <link id="TCustomTreeView.SelectionVisible"/>
+          <link id="TTreeNode.MakeVisible"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.ClearInvisibleSelection">
@@ -24677,31 +24709,150 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.ExpandSignColor">
         <short>
-          Color used to paint expand/collapse (fold/unfold) symbol (i.e. plus/minus symbol).
+          Color used to paint expand / collapse (fold / unfold) indicators for tree nodes.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ExpandSignColor</var> is a <var>TColor</var> property with the color used to paint the expand / collapse indicators for tree nodes on the control. The default value for the property is <var>clWindowFrame</var>.
+          </p>
+          <p>
+            ExpandSignColor is used in the DoPaintNode method to render a TTreeNode instance with child node(s). It is assigned as the Pen color in Canvas, and controls the color of the lines drawn for the indicator. When ExpandSignType  is set to tvestArrowFill, it is assigned as the Brush color in Canvas, and controls the fill color for the indicator.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TCustomTreeView.ExpandSignType"/>
+          <link id="TTreeNode.HasChildren"/>
+          <link id="TTreeViewExpandSignType"/>
+          <link id="#lcl.graphics.TColor">TColor</link>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.ExpandSignSize">
-        <short>Size of expand/collapse (fold/unfold) symbol.</short>
+        <short>Size of the expand / collapse (fold / unfold) indicators for tree nodes.</short>
         <descr>
-          <p>Use 0 for the auto-sized value.</p>
+          <p>
+            <var>ExpandSignSize</var> is an <var>Integer</var> property with the dimensions for the expand / collapse indicator drawn for tree nodes on the control. The default value for the property is -1, and indicates that an explicit  value has not been assigned. When set to a positive non-zero value, it is scaled to the PPI (Pixels Per Inch) setting for the current Font. The value may be scaled in the DoAutoAdjustLayout method when specific layout policies are applied.
+          </p>
+          <p>
+            Use 0 to enable auto-sizing for the expand / collapse indicator.
+          </p>
+          <p>
+            The property value is ignored when ExpandSignType is set to tvestTheme; the dimensions are determined by theme element details.
+          </p>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Use ExpandSignWidth to set the line width used to draw the angle bracket (chevron) symbol on the indicator.
+          </p>
         </descr>
+        <seealso>
+          <link id="TCustomTreeView.ExpandSignType"/>
+          <link id="TCustomTreeView.ExpandSignWidth"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomTreeView.ExpandSignWidth">
+        <short>
+          Width of the lines drawn for the expand/collapse indicator when using the tvestAngleBracket drawing style.
+        </short>
+        <descr>
+          <p>
+            <var>ExpandSignWidth</var> is relevant when <var>ExpandSignType</var> is set to <var>tvestAngleBracket</var>. It contains the line width used to draw the chevron symbol on the expand / collapse indicator for a tree node. It is not needed or used for other drawing styles in ExpandSignType.
+          </p>
+          <p>
+            The default value for the property is 2 (pixels). Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Use ExpandSignSize to set the overall width and height for an expand / collapse indicator drawn on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.ExpandSignType"/>
+          <link id="TCustomTreeView.ExpandSignSize"/>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TTreeViewExpandSignType"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.ExpandSignType">
         <short>
-          Sets the shape for the expand/collapse (fold/unfold) symbols.
+          Sets the drawing style for the expand / collapse (fold/unfold) indicators for tree nodes.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            ExpandSignType is a TTreeViewExpandSignType property with the drawing style used for expand / collapse indicators on tree nodes in the control. It contains a value from the TTreeViewExpandSignType enumeration, such as:
+          </p>
+          <dl>
+            <dt>tvestTheme</dt>
+            <dd>
+              Uses theme element details for the platform to draw the indicators.
+            </dd>
+            <dt>tvestPlusMinus</dt>
+            <dd>
+              Uses '+' and '-' symbols to draw the indicators.
+            </dd>
+            <dt>tvestArrow</dt>
+            <dd>
+              Uses an unfilled arrow for the indicators.
+            </dd>
+            <dt>tvestArrowFill</dt>
+            <dd>
+              Uses a filled arrow for the indicators.
+            </dd>
+            <dt>tvestAngleBracket</dt>
+            <dd>
+              Uses chevrons (angle brackets) for the indicators.
+            </dd>
+          </dl>
+          <p>
+            The default value for the property is tvestTheme, and causes the DrawElement method in ThemeServices to be used to render the indicator. Other values cause methods in the control to be called to render the indicator. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            ExpandSignType is used in the DoPaintNode method to determine the drawing style for the expand / collapse indicator for a tree node that has child nodes. It also determines the scaling mechanism needed for themed versus non-themed drawing styles.
+          </p>
+          <p>
+            Use ExpandSignSize to set the default dimensions for the indicator before it is scaled for the theme or font size. Use  ExpandSignColor to set the fill color for a filled arrow-style indicator. Use ExpandSignWidth to set the line width used for a chevron or angle bracket-style indicator.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.ExpandSignColor"/>
+          <link id="TCustomTreeView.ExpandSignSize"/>
+          <link id="TCustomTreeView.ExpandSignWidth"/>
+          <link id="TCustomTreeView.Items"/>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TTreeViewExpandSignType"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.Images">
         <short>Image list which holds icons for the tree nodes in Items.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Images is a TCustomImageList property with the bitmaps drawn for tree nodes in the Items property. The bitmap is displayed to the left of the display text for a tree node. Use the ImageIndex property in a TTreeNode instance to specify which image is drawn for the value in Items.
+          </p>
+          <p>
+            Assigning a new image list to the property causes image change links and free notifications to be updated for the class instance. The control is redrawn when the new property value is assigned.
+          </p>
+          <p>
+            Use ImagesWidth to read or write the horizontal size for the bitmaps in Images.
+          </p>
+          <p>
+            Use StateImages to access the bitmaps drawn as state indicators for the tree nodes in Items.
+          </p>
+          <p>
+            Images is used in the DoPaintNode method when visible entries in Items are drawn on the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.ImagesWidth"/>
+          <link id="TCustomTreeView.StateImages"/>
+          <link id="TCustomTreeView.StateImagesWidth"/>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TTreeNode.ImageIndex"/>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.ImagesWidth">
@@ -24728,7 +24879,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.InsertMarkNode">
         <short>
-          <var>InsertMarkNode</var> - place a marker on the specified node.
+          Node displayed as an insertion mark on the tree view control.
         </short>
         <descr/>
         <seealso/>
@@ -24736,14 +24887,14 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.InsertMarkType">
         <short>
-          <var>InsertMarkType</var> - the type of marker to be inserted.
+          Indicates the default position for an insertion mark relative to a node and its parent or children.
         </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TCustomTreeView.Items">
-        <short>The container with the TTreeNode instances used in the control.</short>
+        <short>The container with the TTreeNode instances for the control.</short>
         <descr>
           <p>
             <var>Items</var> is a <var>TTreeNodes</var> property with the container used to access and maintain the hierarchical list of <var>TTreeNode</var> instances displayed in the tree view control.
@@ -24809,8 +24960,18 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
 
       <element name="TCustomTreeView.ScrollBars">
         <short>Specifies the scroll bars displayed for the tree view control.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ScrollBars</var> is a <var>TScrollStyle</var> property with the scrollbars displayed for the tree view control. The default value for the property is <var>ssBoth</var>, and indicates both horizontal and vertical scrollbars are always visible. See <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link> for more information about values in the enumeration and their meanings.
+          </p>
+          <p>
+            Changing the value for the property causes the States property to be update,  and the scollbars are  redrawn for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.States"/>
+          <link id="#lcl.stdctrls.TScrollStyle">TScrollStyle</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.Selected">
@@ -25009,6 +25170,9 @@ AText := ATreeView.Items.Item[0].Text;  // caption for the first tree node
       <element name="TCustomTreeView.TabStop">
         <short>Enables or disables navigation using the Tab key.</short>
         <descr>
+          <p>
+            <var>TabStop</var> is a <var>Boolean</var> property which enables or disables keyboard navigation for the control. When set to True, the control can be entered and exited using the Tab and Shift+Tab keys. When set to False, the control does not respond to these keystrokes, and cannot be entered or exited using the keyboard to  navigate the tab order for controls on a form.
+          </p>
           <p>
             The default value for the property is True in TCustomTreeView.
           </p>
