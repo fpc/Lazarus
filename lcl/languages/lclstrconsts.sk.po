@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: lclstrconsts\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-02-02 16:22+0100\n"
-"PO-Revision-Date: 2019-09-30 11:52+0200\n"
+"PO-Revision-Date: 2022-01-07 16:00+0100\n"
 "Last-Translator: Slavo Gbúr <slavusec@azet.sk>\n"
 "Language-Team: Slovenský <sk@li.org>\n"
 "Language: sk\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 2.2.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: lclstrconsts.hhshelpbrowsernotexecutable
 #, object-pascal-format
@@ -33,9 +33,9 @@ msgid "Unable to find a HTML browser."
 msgstr "Nie je možné nájsť prehliadač HTML."
 
 #: lclstrconsts.hhshelpnohtmlbrowserfoundpleasedefineone
-#, object-pascal-format, fuzzy, badformat
+#, object-pascal-format
 msgid "No HTML Browser found.%sPlease define one in Tools -> Options -> Help -> Help Options"
-msgstr "HTML prehliadač nebol nájdený.%Prosím zadajte jeden v Nástroje -> Možnosti -> Pomoc -> Možnosti pomoci"
+msgstr "HTML prehliadač nebol nájdený.%sProsím zadajte jeden v Nástroje -> Možnosti -> Pomoc -> Možnosti pomoci"
 
 #: lclstrconsts.hhshelpthehelpdatabasewasunabletofindfile
 #, object-pascal-format
@@ -122,7 +122,7 @@ msgstr "Vodná"
 #: lclstrconsts.rsascannothaveasparent
 #, object-pascal-format
 msgid "Class %s cannot have %s as parent."
-msgstr ""
+msgstr "Trieda %s nemôže mať %s ako rodiča."
 
 #: lclstrconsts.rsbackgroundcolorcaption
 msgid "Desktop"
@@ -197,7 +197,7 @@ msgstr "Prvok triedy '%s' nemôže mať prvok triedy '%s' ako dieťa"
 #: lclstrconsts.rscontrolhasnoparentformorframe
 #, object-pascal-format
 msgid "Control '%s' has no parent form or frame"
-msgstr ""
+msgstr "Ovládací prvok '%s' nemá nadradený formulár ani rámec"
 
 #: lclstrconsts.rscontrolisnotaparent
 #, object-pascal-format
@@ -369,11 +369,11 @@ msgstr "Prvý"
 
 #: lclstrconsts.rsfixedcolstoobig
 msgid "FixedCols can't be > ColCount"
-msgstr "FixedCols nemôže byť >= ColCount"
+msgstr "FixedCols nemôže byť > ColCount"
 
 #: lclstrconsts.rsfixedrowstoobig
 msgid "FixedRows can't be > RowCount"
-msgstr "FixedRows nemôže byť >= RowCount"
+msgstr "FixedRows nemôže byť > RowCount"
 
 #: lclstrconsts.rsformcolorcaption
 msgid "Form"
@@ -616,10 +616,8 @@ msgid "Hot Light"
 msgstr "Hot Light"
 
 #: lclstrconsts.rsicns
-#, fuzzy
-#| msgid "Mac OS X Icon"
 msgid "macOS Icon"
-msgstr "Mac OS X Iikony"
+msgstr "macOS Ikona"
 
 #: lclstrconsts.rsicon
 msgid "Icon"
@@ -732,29 +730,29 @@ msgstr "Index zoznamu prekračuje hranice (%d)"
 
 #: lclstrconsts.rsmacosfileformat
 msgid "File Format:"
-msgstr ""
+msgstr "Formát súboru:"
 
 #: lclstrconsts.rsmacosmenuhide
 #, object-pascal-format
 msgid "Hide %s"
-msgstr ""
+msgstr "Skryť %s"
 
 #: lclstrconsts.rsmacosmenuhideothers
 msgid "Hide Others"
-msgstr ""
+msgstr "Skryť ostatných"
 
 #: lclstrconsts.rsmacosmenuquit
 #, object-pascal-format
 msgid "Quit %s"
-msgstr ""
+msgstr "Skončiť %s"
 
 #: lclstrconsts.rsmacosmenuservices
 msgid "Services"
-msgstr ""
+msgstr "Služby"
 
 #: lclstrconsts.rsmacosmenushowall
 msgid "Show All"
-msgstr ""
+msgstr "Zobraziť všetko"
 
 #: lclstrconsts.rsmarooncolorcaption
 msgid "Maroon"
@@ -931,7 +929,7 @@ msgstr "Odoslať (pošta)"
 #: lclstrconsts.rspressoktoignoreandriskdatacorruptionpressaborttok
 #, object-pascal-format
 msgid "%s%sPress OK to ignore and risk data corruption.%sPress Abort to kill the program."
-msgstr ""
+msgstr "%s%sStlačte tlačítko OK, ak chcete ignorovať a riskovať poškodenie dát.%sStlačte tlačítko Prerušiť, ak chcete ukončiť program."
 
 #: lclstrconsts.rspriorrecordhint
 msgctxt "lclstrconsts.rspriorrecordhint"
@@ -953,7 +951,7 @@ msgstr "Fialová"
 
 #: lclstrconsts.rsqtoptiondisableaccurateframe
 msgid "-disableaccurateframe, disables fully accurate window frame under X11. This feature is implemented for Qt, Qt5 and Gtk2 interfaces and used mostly by GetWindowRect()."
-msgstr ""
+msgstr "-disableaccurateframe, deaktivuje úplne presný rám okna pod X11. Táto funkcia je implementovaná pre rozhrania Qt, Qt5 a Gtk2 a väčšinou ju používa GetWindowRect()."
 
 #: lclstrconsts.rsqtoptiondograb
 msgid "-dograb (only under X11), running under a debugger can cause an implicit -nograb, use -dograb to override. Need QT_DEBUG."
@@ -972,9 +970,8 @@ msgid "-reverse, sets the application's layout direction to Qt::RightToLeft."
 msgstr "-reverse, nastavuje smer rozloženia aplikácie na Qt::RightToLeft."
 
 #: lclstrconsts.rsqtoptionsession
-#, fuzzy
 msgid "-session session, restores the application from an earlier session."
-msgstr "-session session - obnovuje aplikáciu z skoršieho posedenia"
+msgstr "-session session, obnoví aplikáciu zo skoršej relácie."
 
 #: lclstrconsts.rsqtoptionstyle
 msgid "-style style or -style=style, sets the application GUI style. Possible values are motif, windows, and platinum. If you compiled Qt with additional styles or have additional styles as plugins these will be available to the -style  command line option. NOTE: Not all styles are available on all platforms. If style param does not exist Qt will start an application with default common style (windows)."
@@ -1120,7 +1117,7 @@ msgstr "Text"
 
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
-msgstr ""
+msgstr "Vstavaná adresa URL je len na čítanie. Namiesto toho zmeňte BaseURL."
 
 #: lclstrconsts.rstiff
 msgid "Tagged Image File Format"
@@ -1361,7 +1358,7 @@ msgstr "Nie sú dostupné žiadne časovače"
 #: lclstrconsts.sparentrequired
 #, object-pascal-format
 msgid "Control \"%s\" has no parent window."
-msgstr "Kontrola \"%s\" nemá nadradené okno."
+msgstr "Ovládací prvok \"%s\" nemá nadradené okno."
 
 #: lclstrconsts.sparexpected
 #, object-pascal-format
