@@ -729,8 +729,6 @@ end;
 
 function TLldbInstructionProcessLaunch.ProcessInputFromDbg(const AData: String
   ): Boolean;
-var
-  s: String;
 begin
   if StrStartsWith(AData, 'Process ') and (pos(' launched:', AData) > 8) then begin
     SetContentReceieved;
@@ -1216,7 +1214,7 @@ function TLldbInstructionRegister.ProcessInputFromDbg(const AData: String
 var
   found: TStringArray;
   i: Integer;
-  s, reg, val: String;
+  reg, val: String;
 begin
   Result := False;
   if StrStartsWith(AData, Command) then begin
@@ -1453,8 +1451,6 @@ begin
 end;
 
 function TLldbInstructionDisassem.ProcessInputFromDbg(const AData: String): Boolean;
-var i: Integer;
-    Address: TDBGPtr;
 begin
   Result := False;
   if StrStartsWith(AData, Command) then begin

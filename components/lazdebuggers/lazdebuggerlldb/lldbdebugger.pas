@@ -181,6 +181,7 @@ type
     procedure TargetCreated(Sender: TObject);
   protected
     procedure DoInitialExecute; override;
+  public
     constructor Create(AOwner: TLldbDebugger);
   end;
 
@@ -407,8 +408,9 @@ type
   private
     procedure ThreadInstructionSucceeded(Sender: TObject);
   protected
-    constructor Create(AOwner: TLldbDebugger);
     procedure DoExecute; override;
+  public
+    constructor Create(AOwner: TLldbDebugger);
   end;
 
   { TLldbThreads }
@@ -570,7 +572,6 @@ end;
 
 procedure TLldbDebuggerCommandRun.CatchesStackInstructionFinished(Sender: TObject);
 var
-  Instr: TLldbInstruction;
   r: TStringArray;
   Id, line: Integer;
   IsCur: Boolean;
@@ -973,7 +974,6 @@ const
 
   procedure DoBreakPointHit(BrkId: Integer);
   var
-    BreakPoint: TLldbBreakPoint;
     CanContinue: Boolean;
   begin
     CanContinue := Debugger.DoBreakpointHit(BrkId);
@@ -1408,9 +1408,8 @@ end;
 procedure TLldbThreads.ReadFromThreadInstruction(
   Instr: TLldbInstructionThreadList; ACurrentId: Integer);
 var
-  i, j, line: Integer;
+  i, line: Integer;
   s, func, filename, name, d, fullfile: String;
-  found, foundFunc, foundArg: TStringArray;
   TId, CurThrId: LongInt;
   CurThr: Boolean;
   Arguments: TStringList;
@@ -1506,7 +1505,6 @@ var
   Instr: TLldbInstructionStackTrace absolute Sender;
   i, FId, line: Integer;
   e: TCallStackEntry;
-  found, foundArg: TStringArray;
   Arguments: TStringList;
   It: TMapIterator;
   s, func, filename, d, fullfile: String;

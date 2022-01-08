@@ -6247,7 +6247,7 @@ var
 begin
   dummy.Code := nil;
   dummy.Data := nil;
-  ReqCmd(ACommand, AParams, dummy);
+  Result := ReqCmd(ACommand, AParams, dummy);
 end;
 
 class function TDebuggerIntf.GetSupportedCommands: TDBGCommands;

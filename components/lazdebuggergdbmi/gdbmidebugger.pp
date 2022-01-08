@@ -3091,8 +3091,6 @@ var
   end;
 
   procedure DoLogStream(const Line: String);
-  const
-    LogWarning = 'warning:';
   var
     Warning: String;
   begin
@@ -6485,12 +6483,9 @@ function TGDBMIDebuggerCommandExecute.ProcessStopped(const AParams: String;
   end;
 
   procedure CheckSehFinallyExited(const AFrame: String);
-  var
-    Location: TDBGLocationRec;
   begin
     if not (FStepStartedInFinSub = sfsStepStarted) then
       exit;
-    Location := FrameToLocation(AFrame);
 
     if IsSehFinallyFuncName(FTheDebugger.FCurrentLocation.FuncName) then // check if we left the seh handler
       exit;

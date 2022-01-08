@@ -81,7 +81,7 @@ end;
 function StrMatches(AString: string; const AFind: array of string; out
   AGapsContent: TStringArray): Boolean;
 var
-  FindIdx, FindLen, j, j2, ResIdx: Integer;
+  FindIdx, FindLen, j, ResIdx: Integer;
   OpenEnd: Boolean;
 begin
   FindLen := Length(AFind);
