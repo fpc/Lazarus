@@ -32,6 +32,7 @@ type
       FBoundsReportedToChildren: boolean;
       FIsOpaque:boolean;
       FIsEventRouting:boolean;
+      FLastWheelWasHorz:boolean;
   protected
     function GetHasCaret: Boolean;
     procedure SetHasCaret(AValue: Boolean);
@@ -1182,12 +1183,8 @@ var
   MousePos: NSPoint;
   MButton: NSInteger;
   bndPt, clPt, srchPt: TPoint;
-  dx,dy: double;
-  isPrecise: Boolean;
-const
-  WheelDeltaToLCLY = 1200; // the basic (one wheel-click) is 0.1 on cocoa
-  WheelDeltaToLCLX = 1200; // the basic (one wheel-click) is 0.1 on cocoa
-  LCLStep = 120;
+  scrollDelta: Single;
+  wheelDelta: Integer;
 begin
   Result := False; // allow cocoa to handle message
 
@@ -1210,44 +1207,41 @@ begin
   Msg.Y := round(clPt.Y);
   Msg.State := CocoaModifiersToShiftState(Event.modifierFlags, NSEvent.pressedMouseButtons);
 
-  if NSAppKitVersionNumber >= NSAppKitVersionNumber10_7 then
-  begin
-    isPrecise := event.hasPreciseScrollingDeltas;
-    dx := event.scrollingDeltaX;
-    dy := event.scrollingDeltaY;
-  end else
-  begin
-    isPrecise := false;
-    dx := event.deltaX;
-    dy := event.deltaY;
-  end;
-
   // Some info on event.deltaY can be found here:
   // https://developer.apple.com/library/mac/releasenotes/AppKit/RN-AppKitOlderNotes/
   // It says that deltaY=1 means 1 line, and in the LCL 1 line is 120
-  if dy <> 0 then
+  if (event.scrollingDeltaY <> 0) and
+     ((event.scrollingDeltaX = 0) or not FLastWheelWasHorz) then
   begin
     Msg.Msg := LM_MOUSEWHEEL;
-    if isPrecise then
-      Msg.WheelDelta := Round(dy * LCLStep)
+    if event.hasPreciseScrollingDeltas then
+      scrollDelta := event.scrollingDeltaY / 15 // Average line height
     else
-      Msg.WheelDelta := sign(dy) * LCLStep;
+      scrollDelta := event.scrollingDeltaY;
+    wheelDelta := round(scrollDelta * 120);
   end
   else
-  if dx <> 0 then
+  if event.scrollingDeltaX <> 0 then
   begin
     Msg.Msg := LM_MOUSEHWHEEL;
     // see "deltaX" documentation.
     // on macOS: -1 = right, +1 = left
     // on LCL:   -1 = left,  +1 = right
-    if isPrecise then
-      Msg.WheelDelta := Round(-dx * LCLStep)
-    else
-      Msg.WheelDelta := sign(-dx) * LCLStep;
+    wheelDelta := round(-event.scrollingDeltaX * 120);
   end
   else
     // Filter out empty events - See bug 28491
     Exit;
+
+  // Filter scrolls that affect both X and Y towards whatever the last scroll was
+  FLastWheelWasHorz := (Msg.Msg = LM_MOUSEHWHEEL);
+
+  // Avoid overflow/underflow in message
+  if wheelDelta > High(SmallInt) then
+    wheelDelta := High(SmallInt)
+  else if wheelDelta < Low(SmallInt) then
+    wheelDelta := Low(SmallInt);
+  Msg.WheelDelta := wheelDelta;
 
   NotifyApplicationUserInput(Target, Msg.Msg);
   Result := DeliverMessage(Msg) <> 0;
