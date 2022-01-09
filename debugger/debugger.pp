@@ -43,7 +43,8 @@ uses
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazConfigStorage, LazClasses, Maps,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase;
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
+  IdeDebuggerBase;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -584,11 +585,9 @@ type
     property Items[AIndex: Integer]: TWatchesNotification read GetItem; default;
   end;
 
-  { TWatchValue }
-
   { TIdeWatchValue }
 
-  TIdeWatchValue = class(TWatchValue)
+  TIdeWatchValue = class(TGuiWatchValue)
   private
     function GetWatch: TIdeWatch;
   protected
@@ -619,7 +618,7 @@ type
     function GetEntryByIdx(AnIndex: integer): TIdeWatchValue;
     function GetWatch: TIdeWatch;
   protected
-    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
+    function CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue; override;
     procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig;
                                 APath: string);
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
@@ -3311,7 +3310,7 @@ begin
   Result := TIdeWatch(inherited Watch);
 end;
 
-function TIdeWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
+function TIdeWatchValueList.CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue;
 begin
   Result := TIdeWatchValue.Create(Watch);
   Result.Assign(AnEntry);
@@ -3351,7 +3350,7 @@ begin
   inherited Create(AOwnerWatch);
 end;
 
-{ TWatchValue }
+{ TGuiWatchValue }
 
 function TIdeWatchValue.GetValue: String;
 var
@@ -3360,7 +3359,7 @@ begin
   Result := '';
   if not Watch.Enabled then
     exit('<disabled>');
-  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  i := DbgStateChangeCounter;  // workaround for state changes during TGuiWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Result := '<evaluating>';
     Validity := ddsRequested;
@@ -3389,7 +3388,7 @@ begin
   Result := nil;
   if not Watch.Enabled then
     exit;
-  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  i := DbgStateChangeCounter;  // workaround for state changes during TGuiWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Validity := ddsRequested;
     RequestData;

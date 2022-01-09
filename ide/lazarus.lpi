@@ -38,6 +38,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="IdeDebugger"/>
+      </Item>
+      <Item>
         <PackageName Value="LazDebuggerFp"/>
       </Item>
       <Item>
@@ -775,6 +778,7 @@
         <Filename Value="unitdependencies.pas"/>
         <IsPartOfProject Value="True"/>
         <HasResources Value="True"/>
+        <UnitName Value="UnitDependencies"/>
       </Unit>
       <Unit>
         <Filename Value="editorfilemanager.pas"/>
@@ -1453,6 +1457,11 @@
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="IdeStartup_Options"/>
       </Unit>
+      <Unit>
+        <Filename Value="../debugger/debugger.pp"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="Debugger"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -1479,6 +1488,9 @@
       </Item>
       <Item>
         <Name Value="ECodetoolError"/>
+      </Item>
+      <Item>
+        <Name Value="ELinkScannerError"/>
       </Item>
     </Exceptions>
   </Debugging>

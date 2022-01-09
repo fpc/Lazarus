@@ -384,7 +384,8 @@ DEFAULT_IDE_OPTIONS= $(LAZARUS_LIBPATHS) \
   -Fu../components/lazcontrols/design/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/lazdebuggers/cmdlinedebuggerbase/lib/$(CPU_TARGET)-$(OS_TARGET) \
   -Fu../components/lazdebuggergdbmi/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+  -Fu../units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)
 BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/synedit/design/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
   -Fu../components/rtticontrols/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
@@ -420,7 +421,8 @@ BIG_IDE_OPTIONS=-dBigIDE $(DEFAULT_IDE_OPTIONS) \
   -Fu../components/lclextensions/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
   -Fu../components/virtualtreeview/lib/$(CPU_TARGET)-$(OS_TARGET)-$(LCL_PLATFORM) \
   -Fu../components/onlinepackagemanager/lib/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
-  -Fu../components/pas2js/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM)
+  -Fu../components/pas2js/units/$(CPU_TARGET)-$(OS_TARGET)/$(LCL_PLATFORM) \
+  -Fupackages/idedebugger/lib/$(CPU_TARGET)-$(OS_TARGET)
 LAZBUILD_OPT=$(LAZARUS_LIBPATHS)
 ifneq ($(findstring $(OS_TARGET),win32 win64),)
 LAZARUS_OPT+= -WG
@@ -5100,16 +5102,18 @@ ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
 endif
 	../tools/svn2revisioninc$(SRCEXEEXT) .. revision.inc
 endif
-ide: $(COMPILER_UNITTARGETDIR) revisioninc
+idepackages:
+	$(MAKE) -C packages/idedebugger
+ide: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
-idepkg: $(COMPILER_UNITTARGETDIR) revisioninc
+idepkg: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
-bigide: $(COMPILER_UNITTARGETDIR) revisioninc
+bigide: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 starter: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
-lazbuilder: $(COMPILER_UNITTARGETDIR)
+lazbuilder: $(COMPILER_UNITTARGETDIR) idepackages
 	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(OPT)'
 all: ide starter lazbuilder
 cleanide:
@@ -5137,6 +5141,7 @@ ifneq ($(findstring $(OS_TARGET),win32 win64),)
 	-$(DEL) $(wildcard $(COMPILER_UNITTARGETDIR)/*.res)
 endif
 cleanlaz: clean cleanide
+	$(MAKE) -C packages/idedebugger clean
 	${DELTREE} ../units/*
 purge: cleanlaz
 distclean: cleanlaz

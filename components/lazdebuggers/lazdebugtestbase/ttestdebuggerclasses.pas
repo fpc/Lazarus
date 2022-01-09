@@ -5,7 +5,7 @@ unit TTestDebuggerClasses;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfDebuggerBase;
+  Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerBase;
 
 type
 
@@ -76,7 +76,7 @@ type
 
   { TTestWatchValue }
 
-  TTestWatchValue = class(TWatchValue)
+  TTestWatchValue = class(TGuiWatchValue)
   protected
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
@@ -93,8 +93,8 @@ type
 
   TTestWatchValueList = class(TWatchValueList)
   protected
-    function CopyEntry(AnEntry: TWatchValue): TWatchValue; override;
-    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TWatchValue; override;
+    function CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue; override;
+    function CreateEntry(const {%H-}AThreadId: Integer; const {%H-}AStackFrame: Integer): TGuiWatchValue; override;
   end;
 
   { TTestWatch }
@@ -112,7 +112,7 @@ type
   protected
     FMonitor: TTestWatchesMonitor;
     function WatchClass: TWatchClass; override;
-    procedure RequestData(AWatchValue: TWatchValue);
+    procedure RequestData(AWatchValue: TGuiWatchValue);
   end;
 
   { TTestWatchesMonitor }
@@ -122,7 +122,7 @@ type
     FWatches: TWatches;
   protected
     procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); override;
-    procedure RequestData(AWatchValue: TWatchValue);
+    procedure RequestData(AWatchValue: TGuiWatchValue);
     function CreateWatches: TWatches;
   public
     constructor Create;
@@ -317,7 +317,7 @@ begin
   Result := TTestWatch;
 end;
 
-procedure TTestWatches.RequestData(AWatchValue: TWatchValue);
+procedure TTestWatches.RequestData(AWatchValue: TGuiWatchValue);
 begin
   TTestWatchesMonitor(FMonitor).RequestData(AWatchValue);
 end;
@@ -330,7 +330,7 @@ begin
   Watches.ClearValues;
 end;
 
-procedure TTestWatchesMonitor.RequestData(AWatchValue: TWatchValue);
+procedure TTestWatchesMonitor.RequestData(AWatchValue: TGuiWatchValue);
 begin
   if Supplier <> nil
   then Supplier.RequestData(AWatchValue)
@@ -369,7 +369,7 @@ begin
   Result := nil;
   if not Watch.Enabled then
     exit;
-  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  i := DbgStateChangeCounter;  // workaround for state changes during TGuiWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Validity := ddsRequested;
     RequestData;
@@ -392,7 +392,7 @@ begin
     Result := '<disabled>';
     exit;
   end;
-  i := DbgStateChangeCounter;  // workaround for state changes during TWatchValue.GetValue
+  i := DbgStateChangeCounter;  // workaround for state changes during TGuiWatchValue.GetValue
   if Validity = ddsUnknown then begin
     Result := '<evaluating>';
     Validity := ddsRequested;
@@ -431,14 +431,14 @@ end;
 
 { TTestWatchValueList }
 
-function TTestWatchValueList.CopyEntry(AnEntry: TWatchValue): TWatchValue;
+function TTestWatchValueList.CopyEntry(AnEntry: TGuiWatchValue): TGuiWatchValue;
 begin
   Result := TTestWatchValue.Create(Watch);
   Result.Assign(AnEntry);
 end;
 
 function TTestWatchValueList.CreateEntry(const AThreadId: Integer;
-  const AStackFrame: Integer): TWatchValue;
+  const AStackFrame: Integer): TGuiWatchValue;
 begin
   Result := TTestWatchValue.Create(Watch, AThreadId, AStackFrame);
   Add(Result);

@@ -188,6 +188,7 @@ type
     FIDEIntfPackage: TLazPackage;
     FDebuggerIntfPackage: TLazPackage;
     FLazDebuggerGdbmiPackage: TLazPackage;
+    FIdeDebuggerPackage: TLazPackage;
     FItems: TFPList;   // unsorted list of TLazPackage
     FLazarusBasePackages: TFPList;
     FLazUtilsPackage: TLazPackage;
@@ -476,6 +477,7 @@ type
     property IDEIntfPackage: TLazPackage read FIDEIntfPackage;
     property DebuggerIntfPackage: TLazPackage read FDebuggerIntfPackage;
     property LazDebuggerGdbmiPackage: TLazPackage read FLazDebuggerGdbmiPackage;
+    property IdeDebuggerPackage: TLazPackage read FIdeDebuggerPackage;
     property LazarusBasePackages: TFPList read FLazarusBasePackages;
 
     // events
@@ -1145,6 +1147,8 @@ begin
     FDebuggerIntfPackage:=nil
   else if CurPkg=LazDebuggerGdbmiPackage then
     FLazDebuggerGdbmiPackage:=nil
+  else if CurPkg=IdeDebuggerPackage then
+    FIdeDebuggerPackage:=nil
   else if CurPkg=SynEditPackage then
     FSynEditPackage:=nil
   else if CurPkg=LazControlsPackage then
@@ -2119,6 +2123,8 @@ begin
       SetBasePackage(FDebuggerIntfPackage)
     else if SysUtils.CompareText(APackage.Name,'LazDebuggerGdbmi')=0 then
       SetBasePackage(FLazDebuggerGdbmiPackage)
+    else if SysUtils.CompareText(APackage.Name,'IdeDebugger')=0 then
+      SetBasePackage(FIdeDebuggerPackage)
     else if SysUtils.CompareText(APackage.Name,'SynEdit')=0 then
       SetBasePackage(FSynEditPackage)
     else if SysUtils.CompareText(APackage.Name,'LazControls')=0 then
@@ -2237,6 +2243,7 @@ begin
   LoadLazarusBasePackage('IDEIntf');
   LoadLazarusBasePackage('DebuggerIntf');
   LoadLazarusBasePackage('LazDebuggerGdbmi');
+  LoadLazarusBasePackage('IdeDebugger');
   LoadLazarusBasePackage('LazControls');
   LoadLazarusBasePackage('CodeTools');
   LoadLazarusBasePackage('LazControlDsgn');
@@ -2371,6 +2378,7 @@ begin
        or (PackageName='ideintf')
        or (PackageName='debuggerintf')
        or (PackageName='lazdebuggergdbmi')
+       or (PackageName='idedebugger')
        or (PackageName='codetools')
        or (PackageName='buildintf')
        or (PackageName='lazcontrols')

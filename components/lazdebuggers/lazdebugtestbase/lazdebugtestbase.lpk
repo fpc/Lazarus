@@ -81,22 +81,25 @@
       </Item15>
     </Files>
     <CompatibilityMode Value="True"/>
-    <RequiredPkgs Count="5">
+    <RequiredPkgs Count="6">
       <Item1>
-        <PackageName Value="fpdebug"/>
+        <PackageName Value="IdeDebugger"/>
       </Item1>
       <Item2>
-        <PackageName Value="DebuggerIntf"/>
+        <PackageName Value="fpdebug"/>
       </Item2>
       <Item3>
-        <PackageName Value="LCL"/>
+        <PackageName Value="DebuggerIntf"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCLBase"/>
+        <PackageName Value="LCL"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="LCLBase"/>
       </Item5>
+      <Item6>
+        <PackageName Value="FCL"/>
+      </Item6>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
