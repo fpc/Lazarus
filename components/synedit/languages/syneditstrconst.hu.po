@@ -636,41 +636,9 @@ msgstr "HTML"
 msgid "RTF"
 msgstr "RTF"
 
-#: syneditstrconst.syns_filteradsp21xx
-msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr "DSP fájlok (*.dsp,*.inc)|*.DSP;*.INC"
-
-#: syneditstrconst.syns_filterasm68hc11
-msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "68HC11 Assembler fájlok (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-
-#: syneditstrconst.syns_filterawk
-msgid "AWK Script (*.awk)|*.awk"
-msgstr "AWK parancsfájl (*.awk)|*.awk"
-
-#: syneditstrconst.syns_filterbaan
-msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr "Baan 4GL fájlok (*.cln)|*.cln"
-
 #: syneditstrconst.syns_filterbatch
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
 msgstr "MS-DOS Batch fájlok (*.bat;*.cmd)|*.bat;*.cmd"
-
-#: syneditstrconst.syns_filtercache
-msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "Cache fájlok (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-
-#: syneditstrconst.syns_filtercaclipper
-msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-msgstr "CA-Clipper fájlok (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-
-#: syneditstrconst.syns_filtercorbaidl
-msgid "CORBA IDL files (*.idl)|*.idl"
-msgstr "CORBA IDL fájlok (*.idl)|*.idl"
-
-#: syneditstrconst.syns_filtercpm
-msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
-msgstr "CPM jelentések (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 
 #: syneditstrconst.syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
@@ -680,34 +648,6 @@ msgstr "C++ fájlok (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 msgid "Cascading Stylesheets (*.css)|*.css"
 msgstr "Cascading Stylesheets (*.css)|*.css"
 
-#: syneditstrconst.syns_filterdfm
-msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
-msgstr "Borland Form fájlok (*.dfm;*.xfm)|*.dfm;*.xfm"
-
-#: syneditstrconst.syns_filterfortran
-msgid "Fortran Files (*.for)|*.for"
-msgstr "Fortran fájlok (*.for)|*.for"
-
-#: syneditstrconst.syns_filterfoxpro
-msgid "Foxpro Files (*.prg)|*.prg"
-msgstr "Foxpro fájlok (*.prg)|*.prg"
-
-#: syneditstrconst.syns_filtergalaxy
-msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "Galaxy fájlok (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-
-#: syneditstrconst.syns_filtergembase
-msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
-msgstr "GEMBASE fájlok (*.dml,*.gem)|*.DML;*.GEM"
-
-#: syneditstrconst.syns_filtergws
-msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "GW-TEL parancsfájlok (*.gws)|*.gws"
-
-#: syneditstrconst.syns_filterhp48
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "HP48 fájlok (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-
 #: syneditstrconst.syns_filterhtml
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
 msgstr "HTML dokumentumok (*.htm,*.html)|*.htm;*.html"
@@ -715,10 +655,6 @@ msgstr "HTML dokumentumok (*.htm,*.html)|*.htm;*.html"
 #: syneditstrconst.syns_filterini
 msgid "INI Files (*.ini)|*.ini"
 msgstr "INI-fájlok (*.ini)|*.ini"
-
-#: syneditstrconst.syns_filterinno
-msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Inno Setup parancsfájlok (*.iss)|*.iss"
 
 #: syneditstrconst.syns_filterjava
 msgid "Java Files (*.java)|*.java"
@@ -728,21 +664,9 @@ msgstr "Java fájlok (*.java)|*.java"
 msgid "Javascript Files (*.js)|*.js"
 msgstr "Javascript fájlok (*.js)|*.js"
 
-#: syneditstrconst.syns_filterkix
-msgid "KiXtart scripts (*.kix)|*.kix"
-msgstr "KiXtart parancsfájlok (*.kix)|*.kix"
-
 #: syneditstrconst.syns_filterlfm
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
 msgstr "Lazarus Form fájlok (*.lfm)|*.lfm"
-
-#: syneditstrconst.syns_filtermodelica
-msgid "Modelica Files (*.mo)|*.mo"
-msgstr "Modelica fájlok (*.mo)|*.mo"
-
-#: syneditstrconst.syns_filtermodula3
-msgid "Modula-3 Files (*.m3)|*.m3"
-msgstr "Modula-3 fájlok (*.m3)|*.m3"
 
 #: syneditstrconst.syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
@@ -760,37 +684,13 @@ msgstr "PHP fájlok (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 msgid "Po Files (*.po)|*.po"
 msgstr "Po fájlok (*.po)|*.po"
 
-#: syneditstrconst.syns_filterprogress
-msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "Progress fájlok (*.w,*.p,*.i)|*.w;*.p;*.i"
-
 #: syneditstrconst.syns_filterpython
 msgid "Python Files (*.py)|*.py"
 msgstr "Python fájlok (*.py)|*.py"
 
-#: syneditstrconst.syns_filterrtf
-msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "Rich Text Format (*.rtf)|*.rtf"
-
-#: syneditstrconst.syns_filtersdd
-msgid "Semanta DD files (*.sdd)|*.sdd"
-msgstr "Semanta DD fájlok (*.sdd)|*.sdd"
-
-#: syneditstrconst.syns_filtersml
-msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "Standard ML fájlok (*.sml)|*.sml"
-
 #: syneditstrconst.syns_filtersql
 msgid "SQL Files (*.sql)|*.sql"
 msgstr "SQL fájlok (*.sql)|*.sql"
-
-#: syneditstrconst.syns_filtersyngenmsgfiles
-msgid "Msg files (*.msg)|*.msg"
-msgstr "Msg fájlok (*.msg)|*.msg"
-
-#: syneditstrconst.syns_filtertcltk
-msgid "Tcl/Tk Files (*.tcl)|*.tcl"
-msgstr "Tcl/Tk fájlok (*.tcl)|*.tcl"
 
 #: syneditstrconst.syns_filtertex
 msgid "TeX Files (*.tex)|*.tex"
@@ -800,17 +700,9 @@ msgstr "TeX fájlok (*.tex)|*.tex"
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
 msgstr "UNIX Shell parancsfájlok (*.sh)|*.sh"
 
-#: syneditstrconst.syns_filtervbscript
-msgid "VBScript Files (*.vbs)|*.vbs"
-msgstr "VBScript fájlok (*.vbs)|*.vbs"
-
 #: syneditstrconst.syns_filtervisualbasic
 msgid "Visual Basic Files (*.bas)|*.bas"
 msgstr "Visual Basic fájlok (*.bas)|*.bas"
-
-#: syneditstrconst.syns_filterx86asm
-msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "x86 Assembly fájlok(*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"

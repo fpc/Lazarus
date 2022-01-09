@@ -636,41 +636,9 @@ msgstr "HTML"
 msgid "RTF"
 msgstr "RTF"
 
-#: syneditstrconst.syns_filteradsp21xx
-msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
-msgstr "Soubory DSP (*.dsp,*.inc)|*.DSP;*.INC"
-
-#: syneditstrconst.syns_filterasm68hc11
-msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "Soubory assembleru 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-
-#: syneditstrconst.syns_filterawk
-msgid "AWK Script (*.awk)|*.awk"
-msgstr "Skript AWK (*.awk)|*.awk"
-
-#: syneditstrconst.syns_filterbaan
-msgid "Baan 4GL Files (*.cln)|*.cln"
-msgstr "Soubory Baan 4GL (*.cln)|*.cln"
-
 #: syneditstrconst.syns_filterbatch
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
 msgstr "Dávkové soubory MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
-
-#: syneditstrconst.syns_filtercache
-msgid "Cache Files (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-msgstr "Cache soubory (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
-
-#: syneditstrconst.syns_filtercaclipper
-msgid "CA-Clipper Files (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-msgstr "Soubory CA-Clipper (*.prg,*.ch,*.inc)|*.prg;*.ch;*.inc"
-
-#: syneditstrconst.syns_filtercorbaidl
-msgid "CORBA IDL files (*.idl)|*.idl"
-msgstr "Soubory CORBA IDL (*.idl)|*.idl"
-
-#: syneditstrconst.syns_filtercpm
-msgid "CPM reports (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
-msgstr "Soubory sestav CPM (*.rdf,*.rif,*.rmf,*.rxf)|*.rdf;*.rif;*.rmf;*.rxf"
 
 #: syneditstrconst.syns_filtercpp
 msgid "C++ Files (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
@@ -680,34 +648,6 @@ msgstr "Soubory C++ (*.c,*.cpp,*.h,*.hpp,*.hh)|*.c;*.cpp;*.h;*.hpp;*.hh"
 msgid "Cascading Stylesheets (*.css)|*.css"
 msgstr "Kaskádové styly (*.css)|*.css"
 
-#: syneditstrconst.syns_filterdfm
-msgid "Borland Form Files (*.dfm;*.xfm)|*.dfm;*.xfm"
-msgstr "Formulářové soubory Borlandu (*.dfm;*.xfm)|*.dfm;*.xfm"
-
-#: syneditstrconst.syns_filterfortran
-msgid "Fortran Files (*.for)|*.for"
-msgstr "Soubory Fortranu (*.for)|*.for"
-
-#: syneditstrconst.syns_filterfoxpro
-msgid "Foxpro Files (*.prg)|*.prg"
-msgstr "Soubory Foxpro (*.prg)|*.prg"
-
-#: syneditstrconst.syns_filtergalaxy
-msgid "Galaxy Files (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-msgstr "Soubory Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
-
-#: syneditstrconst.syns_filtergembase
-msgid "GEMBASE Files (*.dml,*.gem)|*.DML;*.GEM"
-msgstr "Soubory GEMBASE (*.dml,*.gem)|*.DML;*.GEM"
-
-#: syneditstrconst.syns_filtergws
-msgid "GW-TEL Script Files (*.gws)|*.gws"
-msgstr "Soubory GW-TEL Script (*.gws)|*.gws"
-
-#: syneditstrconst.syns_filterhp48
-msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-msgstr "Soubory HP48 (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
-
 #: syneditstrconst.syns_filterhtml
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
 msgstr "HTML Dokument (*.htm,*.html)|*.htm;*.html"
@@ -715,10 +655,6 @@ msgstr "HTML Dokument (*.htm,*.html)|*.htm;*.html"
 #: syneditstrconst.syns_filterini
 msgid "INI Files (*.ini)|*.ini"
 msgstr "Soubory INI (*.ini)|*.ini"
-
-#: syneditstrconst.syns_filterinno
-msgid "Inno Setup Script Files (*.iss)|*.iss"
-msgstr "Soubory Inno Setup Script (*.iss)|*.iss"
 
 #: syneditstrconst.syns_filterjava
 msgid "Java Files (*.java)|*.java"
@@ -728,21 +664,9 @@ msgstr "Soubory Java (*.java)|*.java"
 msgid "Javascript Files (*.js)|*.js"
 msgstr "Soubory Javascript (*.js)|*.js"
 
-#: syneditstrconst.syns_filterkix
-msgid "KiXtart scripts (*.kix)|*.kix"
-msgstr "KiXtart scripty (*.kix)|*.kix"
-
 #: syneditstrconst.syns_filterlfm
 msgid "Lazarus Form Files (*.lfm)|*.lfm"
 msgstr "Soubory formulářů Lazarusu (*.lfm)|*.lfm"
-
-#: syneditstrconst.syns_filtermodelica
-msgid "Modelica Files (*.mo)|*.mo"
-msgstr "Soubory Modelica (*.mo)|*.mo"
-
-#: syneditstrconst.syns_filtermodula3
-msgid "Modula-3 Files (*.m3)|*.m3"
-msgstr "Soubory Modula-3 (*.m3)|*.m3"
 
 #: syneditstrconst.syns_filterpascal
 msgid "Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
@@ -760,37 +684,13 @@ msgstr "Soubory PHP (*.php,*.php3,*.phtml,*.inc)|*.php;*.php3;*.phtml;*.inc"
 msgid "Po Files (*.po)|*.po"
 msgstr "PO soubory (*.po)|*.po"
 
-#: syneditstrconst.syns_filterprogress
-msgid "Progress Files (*.w,*.p,*.i)|*.w;*.p;*.i"
-msgstr "Soubory Progress (*.w,*.p,*.i)|*.w;*.p;*.i"
-
 #: syneditstrconst.syns_filterpython
 msgid "Python Files (*.py)|*.py"
 msgstr "Soubory Python (*.py)|*.py"
 
-#: syneditstrconst.syns_filterrtf
-msgid "Rich Text Format (*.rtf)|*.rtf"
-msgstr "Rich Text Format (*.rtf)|*.rtf"
-
-#: syneditstrconst.syns_filtersdd
-msgid "Semanta DD files (*.sdd)|*.sdd"
-msgstr "Soubory Semanta DD (*.sdd)|*.sdd"
-
-#: syneditstrconst.syns_filtersml
-msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "Soubory Standard ML (*.sml)|*.sml"
-
 #: syneditstrconst.syns_filtersql
 msgid "SQL Files (*.sql)|*.sql"
 msgstr "Soubory SQL (*.sql)|*.sql"
-
-#: syneditstrconst.syns_filtersyngenmsgfiles
-msgid "Msg files (*.msg)|*.msg"
-msgstr "Soubory Msg (*.msg)|*.msg"
-
-#: syneditstrconst.syns_filtertcltk
-msgid "Tcl/Tk Files (*.tcl)|*.tcl"
-msgstr "Soubory Tcl/Tk (*.tcl)|*.tcl"
 
 #: syneditstrconst.syns_filtertex
 msgid "TeX Files (*.tex)|*.tex"
@@ -800,17 +700,9 @@ msgstr "Soubory TeX (*.tex)|*.tex"
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
 msgstr "Soubory UNIXového prostředí (*.sh)|*.sh"
 
-#: syneditstrconst.syns_filtervbscript
-msgid "VBScript Files (*.vbs)|*.vbs"
-msgstr "Soubory VBScript (*.vbs)|*.vbs"
-
 #: syneditstrconst.syns_filtervisualbasic
 msgid "Visual Basic Files (*.bas)|*.bas"
 msgstr "Soubory Visual Basic (*.bas)|*.bas"
-
-#: syneditstrconst.syns_filterx86asm
-msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "Soubory assembleru x86 (*.asm)|*.ASM"
 
 #: syneditstrconst.syns_filterxml
 msgid "XML Document (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*.dtd"
