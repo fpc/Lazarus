@@ -2,13 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit IdeDebuggerPackage;
+unit idedebuggerpackage;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  IdeDebuggerBase, LazarusPackageIntf;
+  IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, LazarusPackageIntf;
 
 implementation
 

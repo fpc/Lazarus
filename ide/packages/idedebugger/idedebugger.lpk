@@ -25,6 +25,18 @@
         <Type Value="Main Unit"/>
         <UnitName Value="idedebuggerpackage"/>
       </Item>
+      <Item>
+        <Filename Value="debugger.pp"/>
+        <UnitName Value="Debugger"/>
+      </Item>
+      <Item>
+        <Filename Value="processdebugger.pp"/>
+        <UnitName Value="ProcessDebugger"/>
+      </Item>
+      <Item>
+        <Filename Value="processlist.pas"/>
+        <UnitName Value="ProcessList"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>
