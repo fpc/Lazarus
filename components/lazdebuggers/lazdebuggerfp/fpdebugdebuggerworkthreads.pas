@@ -48,7 +48,8 @@ uses
   FpDebugDebuggerUtils, DbgIntfDebuggerBase, DbgIntfBaseTypes, FpDbgClasses,
   FpDbgUtil, FPDbgController, FpPascalBuilder, FpdMemoryTools, FpDbgInfo,
   FpPascalParser, FpErrorMessages, FpDbgCallContextInfo, FpDbgDwarf,
-  FpDbgDwarfDataClasses, Forms, fgl, math, Classes, sysutils, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
+  FpDbgDwarfDataClasses, LazDebuggerIntf,
+  Forms, fgl, math, Classes, sysutils, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
 

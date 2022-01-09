@@ -48,6 +48,7 @@ basecomponents:
 	$(MAKE) -C lazcontrols
 	$(MAKE) -C ideintf
 	$(MAKE) -C synedit
+	$(MAKE) -C lazdebuggers/lazdebuggerintf
 	$(MAKE) -C debuggerintf
 	$(MAKE) -C lazdebuggergdbmi
 	$(MAKE) -C lazcontrols/design

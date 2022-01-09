@@ -50,7 +50,8 @@ uses
   // LazUtils
   LazClasses, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazFileUtils, LazStringUtils, Maps, LazMethodList,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal, DbgIntfCommonStrings;
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfPseudoTerminal,
+  DbgIntfCommonStrings, LazDebuggerIntf;
 
 const
   DebuggerIntfVersion = 0;
@@ -60,7 +61,7 @@ type
   EDBGExceptions = class(EDebuggerException);
 
   TDBGFeature = (
-    dfEvalFunctionCalls   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TDBGEvaluateFlag
+    dfEvalFunctionCalls   // The debugger supports calling functions in watches/expressions. defAllowFunctionCall in TWatcheEvaluateFlags
   );
   TDBGFeatures = set of TDBGFeature;
 
@@ -157,13 +158,6 @@ type
     deRunError
   );
 
-  TDebuggerDataState = (ddsUnknown,                    //
-                        ddsRequested, ddsEvaluating,   //
-                        ddsValid,                      // Got a valid value
-                        ddsInvalid,                    // Does not have a value
-                        ddsError                       // Error, but got some Value to display (e.g. error msg)
-                       );
-
   (* TValidState: State for breakpoints *)
   TValidState = (vsUnknown, vsValid, vsInvalid, vsPending);
 
@@ -177,15 +171,6 @@ const
     'Error');
 
 type
-  TWatcheEvaluateFlag =
-    (defNoTypeInfo,        // No Typeinfo object will be returned // for structures that means a printed value will be returned
-     defSimpleTypeInfo,    // Returns: Kind (skSimple, skClass, ..); TypeName (but does make no attempt to avoid an alias)
-     defFullTypeInfo,      // Get all typeinfo, resolve all anchestors
-     defClassAutoCast,     // Find real class of instance, and use, instead of declared class of variable
-     defAllowFunctionCall
-    );
-  TWatcheEvaluateFlags = set of TWatcheEvaluateFlag;
-
   { TRunningProcessInfo
     Used to enumerate running processes.
   }
@@ -585,7 +570,7 @@ type
 
   { TDBGType }
 
-  TDBGType = class(TObject)
+  TDBGType = class(TDBGTypeBase)
   private
     function GetFields: TDBGFields;
   protected
@@ -633,28 +618,26 @@ type
  ******************************************************************************
  ******************************************************************************}
 
-  TWatchDisplayFormat =
-    (wdfDefault,
-     wdfStructure,
-     wdfChar, wdfString,
-     wdfDecimal, wdfUnsigned, wdfFloat, wdfHex,
-     wdfPointer,
-     wdfMemDump, wdfBinary
-    );
-
   TWatchesMonitor = class;
 
   { TWatchValue }
 
-  TWatchValue = class(TFreeNotifyingObject)
+  TWatchValue = class(TFreeNotifyingObject, TWatchValueIntf)
   private
     FTypeInfo: TDBGType;
     FValue: String;
     FValidity: TDebuggerDataState;
 
+    function GetDisplayFormat: TWatchDisplayFormat;
+    function GetEvaluateFlags: TWatcheEvaluateFlags;
+    function GetRepeatCount: Integer;
+    function GetStackFrame: Integer;
+    function GetThreadId: Integer;
+    function GetValidity: TDebuggerDataState;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
     procedure SetValue(AValue: String);
     procedure SetTypeInfo(AValue: TDBGType);
+    procedure SetTypeInfo(AValue: TDBGTypeBase);
   protected
     FDisplayFormat: TWatchDisplayFormat;
     FEvaluateFlags: TWatcheEvaluateFlags;
@@ -669,14 +652,14 @@ type
   public
     destructor Destroy; override;
     procedure Assign(AnOther: TWatchValue); virtual;
-    property DisplayFormat: TWatchDisplayFormat read FDisplayFormat;
-    property EvaluateFlags: TWatcheEvaluateFlags read FEvaluateFlags;
-    property RepeatCount: Integer read FRepeatCount;
-    property ThreadId: Integer read FThreadId;
-    property StackFrame: Integer read FStackFrame;
+    property DisplayFormat: TWatchDisplayFormat read GetDisplayFormat;
+    property EvaluateFlags: TWatcheEvaluateFlags read GetEvaluateFlags;
+    property RepeatCount: Integer read GetRepeatCount;
+    property ThreadId: Integer read GetThreadId;
+    property StackFrame: Integer read GetStackFrame;
     property Expression: String read GetExpression;
   public
-    property Validity: TDebuggerDataState read FValidity write SetValidity;
+    property Validity: TDebuggerDataState read GetValidity write SetValidity;
     property Value: String read GetValue write SetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
   end;
@@ -690,11 +673,11 @@ type
     property Monitor: TWatchesMonitor read GetMonitor write SetMonitor;
   protected
     procedure DoStateChange(const AOldState: TDBGState); override; // workaround for state changes during TWatchValue.GetValue
-    procedure InternalRequestData(AWatchValue: TWatchValue); virtual;
+    procedure InternalRequestData(AWatchValue: TWatchValueIntf); virtual;
   public
     constructor Create(const ADebugger: TDebuggerIntf);
     procedure TriggerInvalidateWatchValues;
-    procedure RequestData(AWatchValue: TWatchValue);
+    procedure RequestData(AWatchValue: TWatchValueIntf);
   end;
 
   { TWatchesMonitor }
@@ -2721,6 +2704,36 @@ begin
   DoDataValidityChanged(OldValidity);
 end;
 
+function TWatchValue.GetValidity: TDebuggerDataState;
+begin
+  Result := FValidity;
+end;
+
+function TWatchValue.GetStackFrame: Integer;
+begin
+  Result := FStackFrame;
+end;
+
+function TWatchValue.GetEvaluateFlags: TWatcheEvaluateFlags;
+begin
+  Result := FEvaluateFlags;
+end;
+
+function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
+begin
+  Result := FDisplayFormat;
+end;
+
+function TWatchValue.GetRepeatCount: Integer;
+begin
+  Result := FRepeatCount;
+end;
+
+function TWatchValue.GetThreadId: Integer;
+begin
+  Result := FThreadId;
+end;
+
 procedure TWatchValue.SetValue(AValue: String);
 begin
   if FValue = AValue then exit;
@@ -2733,6 +2746,11 @@ begin
   //assert(Self is TCurrentWatchValue, 'TWatchValue.SetTypeInfo');
   FreeAndNil(FTypeInfo);
   FTypeInfo := AValue;
+end;
+
+procedure TWatchValue.SetTypeInfo(AValue: TDBGTypeBase);
+begin
+  SetTypeInfo(TDBGType(AValue));
 end;
 
 procedure TWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
@@ -4067,7 +4085,7 @@ end;
 
 { TWatchesSupplier }
 
-procedure TWatchesSupplier.RequestData(AWatchValue: TWatchValue);
+procedure TWatchesSupplier.RequestData(AWatchValue: TWatchValueIntf);
 begin
   if FNotifiedState  in [dsPause, dsInternalPause]
   then InternalRequestData(AWatchValue)
@@ -4092,7 +4110,7 @@ begin
   inherited DoStateChange(AOldState);
 end;
 
-procedure TWatchesSupplier.InternalRequestData(AWatchValue: TWatchValue);
+procedure TWatchesSupplier.InternalRequestData(AWatchValue: TWatchValueIntf);
 begin
   AWatchValue.SetValidity(ddsInvalid);
 end;

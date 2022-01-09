@@ -102,7 +102,7 @@ uses
   // debugger
   LazDebuggerGdbmi, GDBMIDebugger,
   RunParamsOpts, BaseDebugManager, DebugManager, debugger, DebuggerDlg,
-  DebugAttachDialog, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DebugAttachDialog, DbgIntfBaseTypes, DbgIntfDebuggerBase, LazDebuggerIntf,
   // packager
   PackageSystem, PkgManager, BasePkgManager, LPKCache,
   // source editing

@@ -43,7 +43,7 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase,
+  DbgIntfDebuggerBase, LazDebuggerIntf,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
   Debugger, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;

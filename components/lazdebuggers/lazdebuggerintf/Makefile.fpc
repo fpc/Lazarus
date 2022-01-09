@@ -1,20 +1,20 @@
 #   File generated automatically by Lazarus Package Manager
 #
-#   Makefile.fpc for fpdebug 1.0
+#   Makefile.fpc for LazDebuggerIntf 0.0.1
 #
-#   This file was generated on 09/01/2022
+#   This file was generated on 08/01/2022
 
 [package]
-name=fpdebug
-version=1.0
+name=lazdebuggerintf
+version=0.0.1
 
 [compiler]
 unittargetdir=lib/$(CPU_TARGET)-$(OS_TARGET)
-unitdir=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
-options= -MObjFPC -Scghi -O1 -g -gl -l -venibq -vw-h- -vm6058,3057 $(DBG_OPTIONS)
+unitdir=../../../packager/units/$(CPU_TARGET)-$(OS_TARGET) .
+options= -MObjFPC -Scghi -O1 -g -gl -l -vewnhibq $(DBG_OPTIONS)
 
 [target]
-units=fpdebug.pas
+units=lazdebuggerintfpackage.pas
 
 [clean]
 files=$(wildcard $(COMPILER_UNITTARGETDIR)/*$(OEXT)) \
@@ -53,12 +53,12 @@ endif
 .PHONY: cleartarget compiled all
 
 cleartarget:
-        -$(DEL) $(COMPILER_UNITTARGETDIR)/fpdebug$(PPUEXT)
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/lazdebuggerintfpackage$(PPUEXT)
 
 compiled:
-        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/fpdebug.compiled
+        $(CPPROG) -f Makefile.compiled $(COMPILER_UNITTARGETDIR)/LazDebuggerIntf.compiled
 
-all: cleartarget $(COMPILER_UNITTARGETDIR) fpdebug$(PPUEXT) compiled
+all: cleartarget $(COMPILER_UNITTARGETDIR) lazdebuggerintfpackage$(PPUEXT) compiled
 
 distclean: clean
         ${DELTREE} lib/*

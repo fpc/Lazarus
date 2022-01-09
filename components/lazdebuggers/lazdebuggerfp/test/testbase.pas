@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, LazFileUtils, LazLogger, DbgIntfDebuggerBase,
   TestDbgConfig, TTestDbgExecuteables, TestDbgTestSuites, TestDbgControl,
-  FpDebugDebugger, Dialogs, Forms,
+  FpDebugDebugger, LazDebuggerIntf, Dialogs, Forms,
   FpDbgDwarfFreePascal;
 
 type

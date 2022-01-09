@@ -40,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, StdCtrls, Extctrls, ButtonPanel,
-  LazarusIDEStrConsts, IDEHelpIntf, DbgIntfDebuggerBase, Debugger,
-  BaseDebugManager, EnvironmentOpts, DebuggerStrConst;
+  LazarusIDEStrConsts, IDEHelpIntf, DbgIntfDebuggerBase, LazDebuggerIntf,
+  Debugger, BaseDebugManager, EnvironmentOpts, DebuggerStrConst;
 
 type
 

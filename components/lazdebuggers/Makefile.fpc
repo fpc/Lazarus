@@ -38,6 +38,7 @@ base:
 #-----------------------------------------------------------------------------
 # build the extra packages needed by the bigide
 bigide:
+	$(MAKE) -C lazdebuggerintf
 	$(MAKE) -C cmdlinedebuggerbase
 	$(MAKE) -C lazdebuggerlldb
 	$(MAKE) -C lazdebuggerfplldb
@@ -46,6 +47,7 @@ bigide:
 all: base bigide
 
 clean:
+	$(MAKE) -C lazdebuggerintf clean
 	$(MAKE) -C cmdlinedebuggerbase clean
 	$(MAKE) -C lazdebuggerlldb clean
 	$(MAKE) -C lazdebuggerfplldb clean
@@ -54,6 +56,7 @@ clean:
 cleanall: clean
 
 distclean:
+	$(MAKE) -C lazdebuggerintf distclean
 	$(MAKE) -C cmdlinedebuggerbase distclean
 	$(MAKE) -C lazdebuggerlldb distclean
 	$(MAKE) -C lazdebuggerfplldb distclean

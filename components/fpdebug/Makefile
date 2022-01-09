@@ -58,7 +58,7 @@ SRCBATCHEXT=.bat
 endif
 endif
 ifdef COMSPEC
-ifneq ($(findstring $(OS_SOURCE),$(OSNeedsComspecToRunBatch)),)
+ifneq ($(filter $(OS_SOURCE),$(OSNeedsComspecToRunBatch)),)
 ifndef RUNBATCH
 RUNBATCH=$(COMSPEC) /C
 endif
@@ -213,11 +213,11 @@ $(error When compiling for arm-freertos, a sub-architecture (e.g. SUBARCH=armv6m
 endif
 override FPCOPT+=-Cp$(SUBARCH)
 endif
-ifneq ($(findstring $(OS_SOURCE),$(LIMIT83fs)),)
+ifneq ($(filter $(OS_SOURCE),$(LIMIT83fs)),)
 TARGETSUFFIX=$(OS_TARGET)
 SOURCESUFFIX=$(OS_SOURCE)
 else
-ifneq ($(findstring $(OS_TARGET),$(LIMIT83fs)),)
+ifneq ($(filter $(OS_TARGET),$(LIMIT83fs)),)
 TARGETSUFFIX=$(OS_TARGET)
 else
 TARGETSUFFIX=$(FULL_TARGET)
@@ -228,11 +228,11 @@ ifneq ($(FULL_TARGET),$(FULL_SOURCE))
 CROSSCOMPILE=1
 endif
 ifeq ($(findstring makefile,$(MAKECMDGOALS)),)
-ifeq ($(findstring $(FULL_TARGET),$(MAKEFILETARGETS)),)
+ifeq ($(filter $(FULL_TARGET),$(MAKEFILETARGETS)),)
 $(error The Makefile doesn't support target $(FULL_TARGET), please run fpcmake first)
 endif
 endif
-ifneq ($(findstring $(OS_TARGET),$(BSDs)),)
+ifneq ($(filter $(OS_TARGET),$(BSDs)),)
 BSDhier=1
 endif
 ifeq ($(OS_TARGET),linux)
@@ -286,8 +286,8 @@ endif
 ifndef CROSSBINDIR
 CROSSBINDIR:=$(wildcard $(FPCDIR)/bin/$(TARGETSUFFIX))
 endif
-ifneq ($(findstring $(OS_TARGET),darwin iphonesim ios),)
-ifneq ($(findstring $(OS_SOURCE),darwin ios),)
+ifneq ($(filter $(OS_TARGET),darwin iphonesim ios),)
+ifneq ($(filter $(OS_SOURCE),darwin ios),)
 DARWIN2DARWIN=1
 endif
 endif
@@ -1323,322 +1323,322 @@ ifeq ($(FULL_TARGET),z80-amstradcpc)
 override COMPILER_OPTIONS+=-MObjFPC -Scghi -O1 -g -gl -l -venibq -vw-h- -vm6058,3057 $(DBG_OPTIONS)
 endif
 ifeq ($(FULL_TARGET),i386-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-go32v2)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-win32)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-os2)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-freebsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-beos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-haiku)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-netbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-solaris)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-netware)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-openbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-wdosx)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-darwin)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-emx)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-watcom)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-netwlibc)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-wince)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-symbian)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-nativent)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-iphonesim)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-android)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-aros)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-netbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-amiga)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-atari)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-palmos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-macosclassic)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),m68k-sinclairql)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-netbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-amiga)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-macosclassic)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-darwin)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-morphos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-wii)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc-aix)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-netbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-solaris)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-freebsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-haiku)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-netbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-solaris)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-openbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-darwin)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-win64)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-iphonesim)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-android)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-aros)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),x86_64-dragonfly)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-netbsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-palmos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-wince)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-gba)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-nds)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-symbian)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-android)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-aros)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-freertos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),arm-ios)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc64-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc64-darwin)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc64-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),powerpc64-aix)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),avr-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),armeb-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),armeb-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),mips-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),mipsel-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),mipsel-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),mipsel-android)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),mips64el-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),jvm-java)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),jvm-android)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i8086-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i8086-msdos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i8086-win16)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),aarch64-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),aarch64-freebsd)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),aarch64-darwin)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),aarch64-win64)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),aarch64-android)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),aarch64-ios)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),wasm32-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),wasm32-wasi)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),sparc64-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),riscv32-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),riscv32-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),riscv64-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),riscv64-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),xtensa-linux)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),xtensa-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),xtensa-freertos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),z80-embedded)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),z80-zxspectrum)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),z80-msxdos)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),z80-amstradcpc)
-override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
+override COMPILER_UNITDIR+=. ../../packager/units/$(CPU_TARGET)-$(OS_TARGET) ../lazdebuggers/lazdebuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET) ../lazutils/lib/$(CPU_TARGET)-$(OS_TARGET) ../freetype/lib/$(CPU_TARGET)-$(OS_TARGET) ../../lcl/units/$(CPU_TARGET)-$(OS_TARGET) ../debuggerintf/lib/$(CPU_TARGET)-$(OS_TARGET)
 endif
 ifeq ($(FULL_TARGET),i386-linux)
 override COMPILER_UNITTARGETDIR+=lib/$(CPU_TARGET)-$(OS_TARGET)
@@ -1965,11 +1965,11 @@ ifdef REQUIRE_PACKAGESDIR
 override PACKAGESDIR+=$(REQUIRE_PACKAGESDIR)
 endif
 ifdef ZIPINSTALL
-ifneq ($(findstring $(OS_TARGET),$(UNIXs)),)
+ifneq ($(filter $(OS_TARGET),$(UNIXs)),)
 UNIXHier=1
 endif
 else
-ifneq ($(findstring $(OS_SOURCE),$(UNIXs)),)
+ifneq ($(filter $(OS_SOURCE),$(UNIXs)),)
 UNIXHier=1
 endif
 endif
@@ -2157,7 +2157,7 @@ endif
 ifeq ($(OS_SOURCE),linux)
 ifndef GCCLIBDIR
 ifeq ($(CPU_TARGET),i386)
-ifneq ($(findstring x86_64,$(shell uname -a)),)
+ifneq ($(filter x86_64,$(shell uname -a)),)
 ifeq ($(BINUTILSPREFIX),)
 GCCLIBDIR:=$(shell dirname `gcc -m32 -print-libgcc-file-name`)
 else
@@ -2180,11 +2180,11 @@ CROSSGCCOPT=-m64
 endif
 endif
 ifeq ($(CPU_TARGET),sparc)
-ifneq ($(findstring sparc64,$(shell uname -a)),)
+ifneq ($(filter sparc64,$(shell uname -a)),)
 ifeq ($(BINUTILSPREFIX),)
 GCCLIBDIR:=$(shell dirname `gcc -m32 -print-libgcc-file-name`)
 else
-ifneq ($(findstring $(FPCFPMAKE_CPU_OPT),mips mipsel),)
+ifneq ($(filter $(FPCFPMAKE_CPU_OPT),mips mipsel),)
 CROSSGCCOPT=-mabi=32
 else
 CROSSGCCOPT=-m32
@@ -2198,19 +2198,19 @@ FPCFPMAKE_CPU_TARGET=$(shell $(FPCFPMAKE) -iTP)
 ifeq ($(CPU_TARGET),$(FPCFPMAKE_CPU_TARGET))
 FPCMAKEGCCLIBDIR:=$(GCCLIBDIR)
 else
-ifneq ($(findstring $(FPCFPMAKE_CPU_TARGET),aarch64 powerpc64 riscv64 sparc64 x86_64),)
+ifneq ($(filter $(FPCFPMAKE_CPU_TARGET),aarch64 powerpc64 riscv64 sparc64 x86_64),)
 FPCMAKE_CROSSGCCOPT=-m64
 else
-ifneq ($(findstring $(FPCFPMAKE_CPU_OPT),mips64 mips64el),)
+ifneq ($(filter $(FPCFPMAKE_CPU_OPT),mips64 mips64el),)
 FPCMAKE_CROSSGCCOPT=-mabi=64
 else
-ifneq ($(findstring $(FPCFPMAKE_CPU_OPT),mips mipsel),)
+ifneq ($(filter $(FPCFPMAKE_CPU_OPT),mips mipsel),)
 FPCMAKE_CROSSGCCOPT=-mabi=32
 else
-ifneq ($(findstring $(FPCFPMAKE_CPU_OPT),riscv64),)
+ifeq ($(FPCFPMAKE_CPU_OPT),riscv64)
 FPCMAKE_CROSSGCCOPT=-mabi=lp64
 else
-ifneq ($(findstring $(FPCFPMAKE_CPU_OPT),riscv32),)
+ifeq ($(FPCFPMAKE_CPU_OPT),riscv32)
 FPCMAKE_CROSSGCCOPT=-mabi=ilp32
 else
 FPCMAKE_CROSSGCCOPT=-m32
@@ -2389,7 +2389,7 @@ DEBUGSYMEXT=.xcoff
 SHORTSUFFIX=mac
 IMPORTLIBPREFIX=imp
 endif
-ifneq ($(findstring $(OS_TARGET),darwin iphonesim ios),)
+ifneq ($(filter $(OS_TARGET),darwin iphonesim ios),)
 BATCHEXT=.sh
 EXEEXT=
 HASSHAREDLIB=1
@@ -2468,7 +2468,7 @@ endif
 ifeq ($(OS_TARGET),wasi)
 EXEEXT=.wasm
 endif
-ifneq ($(findstring $(OS_SOURCE),$(LIMIT83fs)),)
+ifneq ($(filter $(OS_SOURCE),$(LIMIT83fs)),)
 FPCMADE=fpcmade.$(SHORTSUFFIX)
 ZIPSUFFIX=$(SHORTSUFFIX)
 ZIPCROSSPREFIX=
@@ -3186,8 +3186,8 @@ ifdef SYSROOTPATH
 override FPCOPT+=-XR$(SYSROOTPATH)
 else
 ifeq ($(OS_TARGET),$(OS_SOURCE))
-ifneq ($(findstring $(OS_TARGET),darwin),)
-ifneq ($(findstring $(CPU_TARGET),aarch64),)
+ifeq ($(OS_TARGET),darwin)
+ifeq ($(CPU_TARGET),aarch64)
 ifneq ($(wildcard /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk),)
 override FPCOPT+=-XR/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 endif
@@ -3198,8 +3198,8 @@ endif
 ifdef CREATESHARED
 override FPCOPT+=-Cg
 endif
-ifneq ($(findstring $(OS_TARGET),dragonfly freebsd openbsd netbsd linux solaris),)
-ifneq ($(findstring $(CPU_TARGET),x86_64 mips mipsel riscv64),)
+ifneq ($(filter $(OS_TARGET),dragonfly freebsd openbsd netbsd linux solaris),)
+ifneq ($(filter $(CPU_TARGET),x86_64 mips mipsel riscv64 powerpc64),)
 override FPCOPT+=-Cg
 endif
 endif
@@ -3242,10 +3242,10 @@ ifdef ACROSSCOMPILE
 override FPCOPT+=$(CROSSOPT)
 endif
 override COMPILER:=$(strip $(FPC) $(FPCOPT))
-ifneq (,$(findstring -sh ,$(COMPILER)))
+ifneq (,$(filter -sh,$(COMPILER)))
 UseEXECPPAS=1
 endif
-ifneq (,$(findstring -s ,$(COMPILER)))
+ifneq (,$(filter -s,$(COMPILER)))
 ifeq ($(FULL_SOURCE),$(FULL_TARGET))
 UseEXECPPAS=1
 endif

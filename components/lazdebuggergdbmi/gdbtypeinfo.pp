@@ -40,7 +40,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
-  DebugUtils, GDBMIMiscClasses;
+  DebugUtils, GDBMIMiscClasses, LazDebuggerIntf;
 
 (*
   ptype = {

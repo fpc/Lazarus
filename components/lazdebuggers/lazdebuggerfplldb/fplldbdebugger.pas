@@ -26,10 +26,10 @@ uses
   windows,
   {$ENDIF}
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
-  LldbInstructions, LldbHelper, DbgIntfBaseTypes, DbgIntfDebuggerBase, LCLProc,
-  Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase, LazClasses, FpPascalParser,
-  FpPascalBuilder, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal,
-  FpDbgCommon;
+  LldbInstructions, LldbHelper, LazDebuggerIntf, DbgIntfBaseTypes,
+  DbgIntfDebuggerBase, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
+  LazClasses, FpPascalParser, FpPascalBuilder, FpErrorMessages,
+  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon;
 
 type
 
@@ -163,7 +163,7 @@ type
     property MemReader: TFpLldbDbgMemReader read FMemReader;
   protected
     procedure DoWatchFreed(Sender: TObject);
-    function EvaluateExpression(AWatchValue: TWatchValue;
+    function EvaluateExpression(AWatchValue: TWatchValueIntf;
                                 AExpression: String;
                                 out AResText: String;
                                 out ATypeInfo: TDBGType;
@@ -214,7 +214,7 @@ type
     procedure DoStateChange(const AOldState: TDBGState); override;
     procedure ProcessEvalList;
     procedure QueueCommand;
-    procedure InternalRequestData(AWatchValue: TWatchValue); override;
+    procedure InternalRequestData(AWatchValue: TWatchValueIntf); override;
   public
   end;
 
@@ -805,7 +805,7 @@ end;
 
 procedure TFPLldbWatches.ProcessEvalList;
 var
-  WatchValue: TWatchValue;
+  WatchValue: TWatchValueIntf;
   ResTypeInfo: TDBGType;
   ResText: String;
 
@@ -823,7 +823,7 @@ debugln(['ProcessEvalList ']);
   try // TODO: if the stack/thread is changed, registers will be wrong
     while (FpDebugger.FWatchEvalList.Count > 0) and (FEvaluationCmdObj = nil) and (not FWatchEvalCancel)
     do begin
-      WatchValue := TWatchValue(FpDebugger.FWatchEvalList[0]);
+      WatchValue := TWatchValueIntf(FpDebugger.FWatchEvalList[0]);
     if FpDebugger.Registers.CurrentRegistersList[WatchValue.ThreadId, WatchValue.StackFrame].Count = 0 then begin
       // trigger register
       FpDebugger.Registers.CurrentRegistersList[FpDebugger.CurrentThreadId, FpDebugger.CurrentStackFrame].Count;
@@ -862,7 +862,7 @@ begin
   FEvaluationCmdObj.ReleaseReference;
 end;
 
-procedure TFPLldbWatches.InternalRequestData(AWatchValue: TWatchValue);
+procedure TFPLldbWatches.InternalRequestData(AWatchValue: TWatchValueIntf);
 begin
   if (Debugger = nil) or not(Debugger.State in [dsPause, dsInternalPause]) then begin
     AWatchValue.Validity := ddsInvalid;
@@ -1144,7 +1144,7 @@ begin
       ReleaseRefAndNil(FLastContext[i]);
     if not(State in [dsPause, dsInternalPause]) then begin
       for i := 0 to FWatchEvalList.Count - 1 do begin
-        TWatchValue(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
+        TWatchValueIntf(FWatchEvalList[i]).RemoveFreeNotification(@DoWatchFreed);
         //TWatchValueBase(FWatchEvalList[i]).Validity := ddsInvalid;
       end;
       FWatchEvalList.Clear;
@@ -1457,7 +1457,7 @@ begin
   FWatchEvalList.Remove(pointer(Sender));
 end;
 
-function TFpLldbDebugger.EvaluateExpression(AWatchValue: TWatchValue; AExpression: String;
+function TFpLldbDebugger.EvaluateExpression(AWatchValue: TWatchValueIntf; AExpression: String;
   out AResText: String; out ATypeInfo: TDBGType; EvalFlags: TWatcheEvaluateFlags): Boolean;
 var
   Ctx: TFpDbgSymbolScope;

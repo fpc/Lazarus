@@ -49,6 +49,7 @@ uses
   IDEOptionsIntf, IDEOptEditorIntf,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfPseudoTerminal,
+  LazDebuggerIntf,
   // IDE
   Debugger, SourceMarks, Project, ProjectDefs, LazarusIDEStrConsts;
 

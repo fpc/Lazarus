@@ -10,7 +10,7 @@ uses
   Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase,
   FpPascalBuilder, LazLoggerBase, Forms, IdeDebuggerBase, RegExpr,
   TestDbgTestSuites, TTestDebuggerClasses, TTestDbgExecuteables, TestDbgConfig,
-  TestOutputLogger;
+  LazDebuggerIntf, TestOutputLogger;
 
 type
   TWatchExpectationResultKind = (

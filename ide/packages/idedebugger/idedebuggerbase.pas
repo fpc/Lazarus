@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils,
-  DbgIntfDebuggerBase, DbgIntfMiscClasses;
+  DbgIntfDebuggerBase, DbgIntfMiscClasses, LazDebuggerIntf;
 
 type
 

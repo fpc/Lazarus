@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="LazDebuggerIntf"/>
+    <Author Value="Martin Friebe"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="An interface for integrating Debugger-Backends into the IDE"/>
+    <License Value="LGPL with linking exception
+
+See LCL license for details."/>
+    <Version Release="1"/>
+    <Files>
+      <Item>
+        <Filename Value="lazdebuggerintf.pas"/>
+        <UnitName Value="LazDebuggerIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="lazdebuggertemplate.pas"/>
+        <UnitName Value="LazDebuggerTemplate"/>
+      </Item>
+      <Item>
+        <Filename Value="lazdebuggerintfpackage.pas"/>
+        <Type Value="Main Unit"/>
+        <UnitName Value="lazdebuggerintfpackage"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

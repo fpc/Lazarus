@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, TTestDbgExecuteables, TestDbgControl, TestDbgConfig,
-  TestOutputLogger, TestCommonSources, LazFileUtils, LazLogger,
+  TestOutputLogger, TestCommonSources, LazDebuggerIntf, LazFileUtils, LazLogger,
   DbgIntfDebuggerBase, StrUtils, fpcunit, testregistry, RegExpr;
 
 const

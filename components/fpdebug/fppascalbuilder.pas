@@ -8,7 +8,8 @@ interface
 uses
   Classes, SysUtils, DbgIntfBaseTypes, DbgIntfDebuggerBase, FpDbgInfo,
   FpdMemoryTools, FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarf,
-  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazUTF8, LazClasses;
+  {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif},
+  LazUTF8, LazClasses, LazDebuggerIntf;
 
 type
   TTypeNameFlag = (

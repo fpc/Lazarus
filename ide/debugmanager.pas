@@ -52,13 +52,14 @@ uses
   CompOptsIntf, IDEDialogs, ToolBarIntf,
   // IDE
   CompilerOptions, EnvironmentOpts, SourceEditor, ProjectDefs, Project,
-  InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros,
-  MainBar, MainIntf, MainBase, BaseBuildManager, SourceMarks, DebuggerDlg,
-  Watchesdlg, BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg,
-  CallStackDlg, EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm,
-  ExceptionDlg, InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg,
-  ThreadDlg, HistoryDlg, ProcessDebugger, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  DbgIntfMiscClasses, DbgIntfPseudoTerminal, BaseDebugManager;
+  InputHistory, Debugger, LazarusIDEStrConsts, TransferMacros, MainBar,
+  MainIntf, MainBase, BaseBuildManager, SourceMarks, DebuggerDlg, Watchesdlg,
+  BreakPointsdlg, BreakPropertyDlg, LocalsDlg, WatchPropertyDlg, CallStackDlg,
+  EvaluateDlg, RegistersDlg, AssemblerDlg, DebugOutputForm, ExceptionDlg,
+  InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
+  HistoryDlg, ProcessDebugger, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, DbgIntfPseudoTerminal, LazDebuggerIntf,
+  BaseDebugManager;
 
 
 type

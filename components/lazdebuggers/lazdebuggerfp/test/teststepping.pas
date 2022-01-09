@@ -7,7 +7,8 @@ interface
 uses
   Classes, SysUtils, math, TestDbgControl, TestDbgTestSuites, TestBase,
   TTestWatchUtilities, TestCommonSources, TestDbgConfig, TestOutputLogger,
-  FpDebugDebugger, FpDebugDebuggerUtils, DbgIntfDebuggerBase, DbgIntfBaseTypes,
+  FpDebugDebugger, FpDebugDebuggerUtils, LazDebuggerIntf, DbgIntfDebuggerBase,
+  DbgIntfBaseTypes,
   {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, Forms;
 
 type

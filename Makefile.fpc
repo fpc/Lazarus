@@ -150,6 +150,7 @@ lcl:
 # requires lcl
 basecomponents:
 	$(MAKE) -C components/buildintf
+	$(MAKE) -C components/lazdebuggers/lazdebuggerintf
 	$(MAKE) -C components/debuggerintf
 	$(MAKE) -C components/lazcontrols
 	$(MAKE) -C components/ideintf
@@ -224,6 +225,7 @@ lazbuild: registration lazutils codetools
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools
+	$(MAKE) -C components/lazdebuggers/lazdebuggerintf LCL_PLATFORM=nogui
 	$(MAKE) -C components/debuggerintf LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazcontrols LCL_PLATFORM=nogui
 	$(MAKE) -C components/synedit LCL_PLATFORM=nogui

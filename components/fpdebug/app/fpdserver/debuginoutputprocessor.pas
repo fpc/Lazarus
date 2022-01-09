@@ -12,7 +12,7 @@ uses
   DebugThreadCommand,
   DbgIntfDebuggerBase,
   debugthread,
-  FpDbgClasses,
+  FpDbgClasses, LazDebuggerIntf,
   typinfo,
   variants,
   jsonparser;

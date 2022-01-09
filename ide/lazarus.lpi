@@ -38,6 +38,9 @@
     </RunParams>
     <RequiredPackages>
       <Item>
+        <PackageName Value="LazDebuggerIntf"/>
+      </Item>
+      <Item>
         <PackageName Value="IdeDebugger"/>
       </Item>
       <Item>

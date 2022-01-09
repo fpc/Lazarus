@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, Maps, FpDbgDwarf, FpDbgUtil, FpDbgLoader, FpDbgInfo,
   FpdMemoryTools, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif}, LazClasses, LazFileUtils, DbgIntfBaseTypes,
   fgl, DbgIntfDebuggerBase, FpPascalBuilder, fpDbgSymTableContext,
-  FpDbgDwarfDataClasses, FpDbgCommon, FpErrorMessages;
+  FpDbgDwarfDataClasses, FpDbgCommon, FpErrorMessages, LazDebuggerIntf;
 
 type
   TFPDEvent = (

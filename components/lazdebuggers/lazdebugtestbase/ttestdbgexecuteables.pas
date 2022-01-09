@@ -6,8 +6,9 @@ interface
 
 uses
   Classes, SysUtils, fgl, TestDbgConfig, TestDbgCompilerProcess,
-  TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazFileUtils,
-  LazLoggerBase, FileUtil, LazStringUtils, DbgIntfDebuggerBase, fpcunit;
+  TestOutputLogger, TTestDebuggerClasses, TestCommonSources, LazDebuggerIntf,
+  LazFileUtils, LazLoggerBase, FileUtil, LazStringUtils, DbgIntfDebuggerBase,
+  fpcunit;
 
 type
 

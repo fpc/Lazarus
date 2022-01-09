@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, strutils, fpcunit, testutils, testregistry, RegExpr,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc,
   IdeDebuggerBase, TestWatchUtils, GDBMIDebugger, FpErrorMessages,
-  TestDbgControl, TestDbgConfig, TTestDbgExecuteables, TestDbgTestSuites;
+  TestDbgControl, TestDbgConfig, TTestDbgExecuteables, TestDbgTestSuites,
+  LazDebuggerIntf;
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;

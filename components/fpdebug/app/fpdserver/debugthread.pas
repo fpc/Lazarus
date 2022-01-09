@@ -17,7 +17,7 @@ uses
   syncobjs,
   LazFglHash,
   fpjson,
-  FpDbgClasses;
+  FpDbgClasses, LazDebuggerIntf;
 
 type
   // The debug-thread sends three different kind of messages to it's listeners

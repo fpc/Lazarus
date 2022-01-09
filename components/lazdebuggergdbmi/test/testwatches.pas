@@ -7,8 +7,8 @@ interface
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, RegExpr,
   DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, GDBMIDebugger, TestDbgConfig,
-  TestDbgControl, TTestDbgExecuteables, TestDbgTestSuites, LCLProc,
-  TestWatchUtils, IdeDebuggerBase;
+  TestDbgControl, TTestDbgExecuteables, TestDbgTestSuites, LazDebuggerIntf,
+  LCLProc, TestWatchUtils, IdeDebuggerBase;
 
 const
   BREAK_LINE_FOOFUNC_NEST  = 206;

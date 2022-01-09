@@ -44,7 +44,7 @@ uses
   LazConfigStorage, LazClasses, Maps,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
-  IdeDebuggerBase;
+  LazDebuggerIntf, IdeDebuggerBase;
 
 const
   XMLBreakPointsNode = 'BreakPoints';

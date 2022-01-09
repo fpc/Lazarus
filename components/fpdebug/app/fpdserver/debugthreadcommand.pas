@@ -23,6 +23,7 @@ uses
   FpErrorMessages,
   DbgIntfDebuggerBase,
   DbgIntfBaseTypes,
+  LazDebuggerIntf,
   strutils,
   debugthread,
   CustApp,
