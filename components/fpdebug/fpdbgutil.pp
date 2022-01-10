@@ -654,6 +654,9 @@ var
   OldState: Cardinal;
   Evnt: PRTLEvent;
 begin
+  {$IFDEF TEST_FPDEBUG_SINGLE_THREAD}
+  exit;
+  {$ENDIF}
   (*                  | True (wait for run in work thread)  | False (run in caller thread)
   TWSTATE_NEW         : mark TWSTATE_WAIT_WORKER => wait    : ~
   TWSTATE_RUNNING     : mark TWSTATE_WAIT_WORKER => wait    : mark TWSTATE_WAITING => wait
@@ -927,6 +930,9 @@ procedure TFpThreadWorkerQueue.SetThreadCount(AValue: integer);
 var
   c: Integer;
 begin
+  {$IFDEF TEST_FPDEBUG_SINGLE_THREAD}
+  exit;
+  {$ENDIF}
   FThreadMonitor.Enter;
   try
     InterLockedExchange(FWantedCount, AValue);
@@ -1082,6 +1088,13 @@ begin
   DebugLn(FLogGroup and DBG_VERBOSE, '%s!%s PUSH WorkItem: "%s"', [dbgsThread, DbgSTime, AItem.DebugText]);
   AItem.FLogGroup := FLogGroup;
   AItem.AddRef;
+  {$IFDEF TEST_FPDEBUG_SINGLE_THREAD}
+  if not ShutDown then begin
+    AItem.DoExecute;
+    AItem.DecRef;
+    exit;
+  end;
+  {$ENDIF}
   if ShutDown or (ThreadCount = 0) then begin
     AItem.DoUnQueued;
     AItem.DecRef;
@@ -1098,6 +1111,13 @@ begin
   DebugLn(FLogGroup and DBG_VERBOSE, '%s!%s PUSHorRUN WorkItem: "%s"', [dbgsThread, DbgSTime, AItem.DebugText]);
   AItem.FLogGroup := FLogGroup;
   AItem.AddRef;
+  {$IFDEF TEST_FPDEBUG_SINGLE_THREAD}
+  if not ShutDown then begin
+    AItem.DoExecute;
+    AItem.DecRef;
+    exit;
+  end;
+  {$ENDIF}
   if ShutDown or (ThreadCount = 0) then begin
     AItem.DoUnQueued;
     AItem.DecRef;
