@@ -2238,14 +2238,29 @@ end;
 procedure TDataPointCrosshairTool.MouseMove(APoint: TPoint);
 var
   id: IChartDrawer;
+  lastSeries, currentSeries: TBasicChartSeries;
+  lastIndex: Integer;
+  xorMode: Boolean;
 begin
   id := GetCurrentDrawer;
-  if Assigned(id) then
-    DoHide(id);
+  lastSeries := FSeries;
+  lastIndex := FPointIndex;
+  xorMode := EffectiveDrawingMode = tdmXOR;
+
+  FSeries := nil;
   FindNearestPoint(APoint);
+
+  if xorMode and (FSeries = lastSeries) and (FPointIndex = lastIndex) and (FPointIndex > -1) then exit;
+  currentSeries := FSeries;
+
+  FSeries := lastSeries;
+  if Assigned(id) then DoHide(id);
+
+  FSeries := currentSeries;
   if FSeries = nil then exit;
+
   FPosition := FNearestGraphPoint;
-  if (EffectiveDrawingMode = tdmXor) and Assigned(id) then begin
+  if xorMode and Assigned(id) then begin
     id.SetXor(true);
     DoDraw(id);
     id.SetXor(false);
