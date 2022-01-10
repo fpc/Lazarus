@@ -3629,7 +3629,8 @@ begin
       else
         ResText := GetFpErrorHandler.ErrorAsString(FDbgController.LastError);
       DoDbgEvent(ecProcess, etProcessExit, ResText); // or ecDebugger?
-      OnFeedback(self, ResText, '', ftError, [frOk]);
+      if Assigned(OnFeedback) then
+        OnFeedback(self, ResText, '', ftError, [frOk]);
       Exit;
     end;
     // TODO: any step commond should run to "main" or "pascalmain"
