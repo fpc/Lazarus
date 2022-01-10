@@ -70,9 +70,12 @@
         <short>A set of constants to define the state of a SpeedButton.</short>
         <descr>
           <p>
-            <var>TButtonState</var> is an enumerated type with constants that define the drawing state for a button. <var>TButtonState</var> is the type used to implement the <var>State</var> property in <var>TCustomSpeedButton</var>.
+            <var>TButtonState</var> is an enumerated type with constants that define the drawing state for a button. <var>TButtonState</var> is the type used to implement the internal State member in <var>TCustomSpeedButton</var>. It is also used to access bitmap images in <var>TButtonGlyph</var> drawn for the corresponding state using its Draw method.
           </p>
         </descr>
+        <seealso>
+          <link id="TButtonGlyph.Draw"/>
+        </seealso>
       </element>
       <element name="TButtonState.bsUp">
         <short>Draw the button in its up state.</short>
@@ -85,6 +88,9 @@
       </element>
       <element name="TButtonState.bsExclusive">
         <short>Draw the button as the only one down in its group.</short>
+      </element>
+      <element name="TButtonState.bsHot">
+        <short>Draw the button when the mouse cursor is hovered over the control.</short>
       </element>
 
       <element name="TNumGlyphs">
@@ -104,9 +110,12 @@
       <element name="TGlyphTransparencyMode">
         <short>Enumerated type with transparency mode values for button glyphs.</short>
         <descr>
-          TGlyphTransparencyMode is an enumerated type which contains values representing the transparency modes used for button glyphs. TGlyphTransparencyMode is the type used to implement the TransparentMode property in TButtonGlyph.
+          <p>
+            <var>TGlyphTransparencyMode</var> is an enumerated type which contains values representing the transparency modes used for button glyphs. TGlyphTransparencyMode is the type used to implement the <var>TransparentMode</var> property in <var>TButtonGlyph</var>.
+          </p>
         </descr>
         <seealso>
+          <link id="TButtonGlyph.TransparentMode"/>
         </seealso>
       </element>
       <element name="TGlyphTransparencyMode.gtmGlyph">
@@ -153,7 +162,7 @@
       <element name="TButtonGlyph.FImageIndexes"/>
       <element name="TButtonGlyph.FImages"/>
       <element name="TButtonGlyph.FExternalImages"/>
-      <element name="TButtonGlyph.FExternalImageIndex"/>
+      <element name="TButtonGlyph.FExternalImageIndexes"/>
       <element name="TButtonGlyph.FExternalImageWidth"/>
       <element name="TButtonGlyph.FLCLGlyphResourceName"/>
       <element name="TButtonGlyph.FOriginal"/>
@@ -163,9 +172,23 @@
       <element name="TButtonGlyph.FTransparentMode"/>
       <element name="TButtonGlyph.FLCLGlyphName"/>
 
+      <element name="TButtonGlyph.GetExternalImageIndex">
+        <short>Gets the value for the ExternalImageIndex property.</short>
+        <descr/>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImageIndex"/>
+        </seealso>
+      </element>
+      <element name="TButtonGlyph.GetExternalImageIndex.Result">
+        <short>Value for the ExternalImageIndex property.</short>
+      </element>
+      <element name="TButtonGlyph.GetExternalImageIndex.AState">
+        <short>Ordinal position in the array of image indexes accessed for the property value.</short>
+      </element>
+
       <element name="TButtonGlyph.GetHeight">
         <short>Gets the value for the Height property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.Height"/>
         </seealso>
@@ -176,7 +199,7 @@
 
       <element name="TButtonGlyph.GetNumGlyphs">
         <short>Gets the value for the NumGlyphs property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.NumGlyphs"/>
         </seealso>
@@ -187,7 +210,7 @@
 
       <element name="TButtonGlyph.GetWidth">
         <short>Gets the value for the Width property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.Width"/>
         </seealso>
@@ -196,20 +219,39 @@
         <short>Value for the property.</short>
       </element>
 
+      <element name="TButtonGlyph.ResetExternalImageIndexes">
+        <short>Initializes values in the internal array of image indexes used in property values.</short>
+        <descr>
+          <p>
+            Sets all byte values in the storage for an internal array of image indexes to the value $FF. Called from the Create constructor, and when a new bitmap is assigned to the Glyph property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TButtonGlyph.Create"/>
+          <link id="TButtonGlyph.Glyph"/>
+        </seealso>
+      </element>
+
       <element name="TButtonGlyph.SetExternalImageIndex">
         <short>Sets the value for the ExternalImageIndex property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.ExternalImageIndex"/>
         </seealso>
       </element>
+      <element name="TButtonGlyph.SetExternalImageIndex.AState">
+        <short>Ordinal position in the array of image indexes updated with the new value for the property.</short>
+      </element>
       <element name="TButtonGlyph.SetExternalImageIndex.AExternalImageIndex">
-        <short>New value for the property.</short>
+        <short>New value for the ExternalImageIndex property.</short>
       </element>
 
       <element name="TButtonGlyph.SetExternalImages">
         <short>Sets the value for the ExternalImages property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.SetExternalImages"/>
         </seealso>
@@ -220,7 +262,7 @@
 
       <element name="TButtonGlyph.SetExternalImageWidth">
         <short>Sets the value for the ExternalImageWidth property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.ExternalImageWidth"/>
         </seealso>
@@ -231,7 +273,7 @@
 
       <element name="TButtonGlyph.SetGlyph">
         <short>Sets the value for the Glyph property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.Glyph"/>
         </seealso>
@@ -242,7 +284,7 @@
 
       <element name="TButtonGlyph.SetNumGlyphs">
         <short>Sets the value for the NumGlyphs property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.NumGlyphs"/>
         </seealso>
@@ -253,7 +295,7 @@
 
       <element name="TButtonGlyph.SetShowMode">
         <short>Sets the value for the ShowMode property.</short>
-        <descr></descr>
+        <descr/>
         <seealso>
           <link id="TButtonGlyph.ShowMode"/>
         </seealso>
@@ -265,7 +307,9 @@
       <element name="TButtonGlyph.ClearImages">
         <short>Removes the references to Images for the button states.</short>
         <descr>
-          ClearImages is a procedure used to remove index references to Images used for button states in the glyph. ClearImages sets the values in an internal member to -1 to indicate that the image for the corresponding TButtonState is not used.
+          <p>
+            ClearImages is a procedure used to remove index references to Images used for button states in the glyph. ClearImages sets the values in an internal member to -1 to indicate that the image for the corresponding TButtonState is not used.
+          </p>
         </descr>
         <seealso>
           <link id="TButtonGlyph.Images"/>
@@ -277,20 +321,22 @@
       </element>
 
       <element name="TButtonGlyph.ClearLCLGlyph">
-        <short>Removes the name for the LCL Glyph used in the class instance.</short>
+        <short>Removes the name for the LCL Glyph resource used in the class instance.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
       <element name="TButtonGlyph.SetLCLGlyphName">
         <short>
-          Sets the resource name for the LCL glyph used in the instance to the specified value.
+          Sets the value for the LCLGlyphName property.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr/>
+        <seealso>
+          <link id="TButtonGlyph.LCLGlyphName"/>
+        </seealso>
       </element>
       <element name="TButtonGlyph.SetLCLGlyphName.ALCLGlyphName">
-        <short>LCL glyph resource name used to get images in the glyph.</short>
+        <short>New value for the LCLGlyphName property.</short>
       </element>
 
       <element name="TButtonGlyph.QueryInterface">
@@ -353,7 +399,7 @@
       </element>
 
       <element name="TButtonGlyph.CanShow">
-        <short>Indicates if the glyph can be drawn for the button glyph.</short>
+        <short>Indicates if the glyph image can be drawn for the button glyph.</short>
         <descr>
           <p>
             <var>CanShow</var> is a <var>Boolean</var> function which indicates if the glyph can be drawn for the button glyph. The return value is determined by examining the value in the <var>ShowMode</var> property. Values in the TGlyphShowMode enumeration determine the return value using the following logic:
@@ -578,7 +624,7 @@
 
       <element name="TButtonGlyph.Draw">
         <short>
-          Draws the glyph for the button using the specified settings.
+          Draws the glyph for the button using the specified settings and state.
         </short>
         <descr>
           <p>
@@ -675,7 +721,7 @@
             <var>Glyph</var> is a <var>TBitmap</var> property with the bitmap image drawn as the glyph for the class instance. The value in Glyph is created/loaded when a bitmap is assigned directly to the property, or when loaded from a Lazarus resource or stock icon.
           </p>
           <p>
-            Assigning a new TBitmap value to Glyph causes the content in <var>ExternalImages</var> to be discarded. The <var>GlyphChanged</var> method is assigned to the <var>OnChange</var> event handler in the bitmap to track changes to the image. If the Bitmap contains multiple adjacent images (determined using Width and Height), the <var>NumGlyphs</var> property is updated to contain the number of glyphs stored in the bitmap. The <var>Refresh</var> method is called to update the button glyph following changes to its property values.
+            Assigning a new TBitmap value to Glyph causes the reference in <var>ExternalImages</var> to be discarded. The <var>GlyphChanged</var> method is assigned to the <var>OnChange</var> event handler in the bitmap to track changes to the image. If the Bitmap contains multiple adjacent images (determined using Width and Height), the <var>NumGlyphs</var> property is updated to contain the number of glyphs stored in the bitmap. The <var>Refresh</var> method is called to update the button glyph following changes to its property values.
           </p>
         </descr>
         <seealso>
@@ -737,13 +783,13 @@
         <short>The list of available images for the button glyph.</short>
         <descr>
           <p>
-            <var>Images</var> is a read-only <var>TCustomImageList</var> property which contains the images available for the <var>Glyph</var> in the class instance.
+            <var>Images</var> is a read-only <var>TCustomImageList</var> property which contains the images available for the <var>Glyph</var> in the class instance. The values in Images come from ExternalImages (when an image list has been assigned to its button control). The values may come from the list of bitmaps loaded from the glyph resource with the name in LCLGlyphName.
           </p>
           <p>
-            <var>Images</var> is used in conjunction with the <var>ExternalImages</var> and <var>LCLGlyphName</var> properties. ExternalImages (when assigned) is used as the source for the Images in the class instance. The images with the resolution needed for the display density (PPI) are scaled to the <var>ExternalImageWidth</var> and stored in Images. <var>LCLGlyphName</var> (when assigned) is used to retrieve a resource in LCLGlyphs when ExternalImages are unassigned. Otherwise, existing items in Images are used.
+             ExternalImages (when assigned) is used as the source for the Images in the class instance. The images with the resolution needed for the display density (PPI) are scaled to the <var>ExternalImageWidth</var> and stored in Images. <var>LCLGlyphName</var> (when assigned) is used to retrieve a resource in LCLGlyphs when ExternalImages are unassigned.
           </p>
           <p>
-            See <link id="TButtonGlyph.GetImageIndexAndEffect"/> for more information about image retrieval for the button glyph.
+            See <link id="TButtonGlyph.GetImageIndexAndEffect"/> for more information about image retrieval for the button glyph with a given state.
           </p>
         </descr>
         <seealso>
@@ -780,33 +826,29 @@
 
       <element name="TButtonGlyph.ExternalImages">
         <short>
-          Contains a reference to an existing list of images available for use in the Glyph property.
+          Contains a reference to an external list of images that can be used as the Glyph image,
         </short>
         <descr>
           <p>
-            <var>ExternalImages</var> is a <var>TCustomImageList</var> property with a list of images that can be used to set the glyph for  the class instance.
+            <var>ExternalImages</var> is a <var>TCustomImageList</var> property with the list of images that can be displayed as a glyph for the class instance. ExternalImages represents an image list assigned to the Images property for a button control, like TBitBtn or TSpeedButton. The image list contains bitmaps displayed for the various states for an associated button; i. e. Up, Pressed, Hot, Disabled, or Selected. The image used for a given button state is indicated in the properties: ExternalImageIndex, ExternalHotImageIndex, ExternalDisabledImageIndex, ExternalPressedImageIndex, and ExternalSelectedImageIndex.
           </p>
           <p>
-            TButtonGlyph can use images that originate from one of several properties: Images, ExternalImages, or Glyph. Images is a cached imaged list which may be refreshed  when the cached images are changed. ExternalImages is an image list explicitly assigned to the property which does not use the image cache. Glyph is the bitmap to use for the glyph, and can originate from an LCL resource.
+            Values in ExternalImages are used when a glyph bitmap has not been allocated in the Glyph property.
+            Setting a new value for ExternalImages causes the Glyph property to be cleared, and the OnChange event handler is signalled. Conversely, setting a value for the LCLGlyphName property causes the reference in ExternalImages to be discarded.
           </p>
           <p>
-            These image sources are used in the GetImageIndexAndEffect method to determine the image resolution and bitmap used for the glyph and the button state.
+            Bitmaps in ExternalImages (or Glyph) are stored in the Images property, and used in the GetImageIndexAndEffect method to determine the image resolution and bitmap used for the glyph and the button state.
           </p>
           <p>
-            Setting a new value for the property causes the Glyph property to be cleared, and the OnChange event handler is signalled.
-          </p>
-          <p>
-            Setting a value for the Glyph or LCLGlyphName properties causes the image list in ExternalImages to be discarded.
-          </p>
-          <p>
-            Use ExternalImageWidth to specify the width of the images in ExternalImages.
-          </p>
-          <p>
-            Use ExternalImageIndex to specify the position in ExternalImages for the bitmap displayed as the button glyph.
+            Use ExternalImageWidth to specify the width of the images in the ExternalImages container.
           </p>
         </descr>
         <seealso>
           <link id="TButtonGlyph.ExternalImageIndex"/>
+          <link id="TButtonGlyph.ExternalPressedImageIndex"/>
+          <link id="TButtonGlyph.ExternalDisabledImageIndex"/>
+          <link id="TButtonGlyph.ExternalHotImageIndex"/>
+          <link id="TButtonGlyph.ExternalSelectedImageIndex"/>
           <link id="TButtonGlyph.ExternalImageWidth"/>
           <link id="TButtonGlyph.GetImageIndexAndEffect"/>
           <link id="TButtonGlyph.Images"/>
@@ -817,28 +859,155 @@
         </seealso>
       </element>
 
-      <element name="TButtonGlyph.ExternalImageIndex">
-        <short>Ordinal position in the external image list for the glyph image.</short>
-        <descr></descr>
-        <seealso></seealso>
+      <element name="TButtonGlyph.ExternalImageWidth">
+        <short>Width for the images in the ExternalImages property.</short>
+        <descr>
+          <p>
+            <var>ExternalImageWidth</var> is an <var>Integer</var> property with the width for the images in the ExternalImages property. The property value is used to determine the image resolution needed for the Images displayed in the GetImageIndexAndEffect method.
+          </p>
+           <p>
+             Changing the value for the property causes the OnChange event handler to be signalled (when assigned).
+           </p>
+        </descr>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.Glyph"/>
+          <link id="TButtonGlyph.Images"/>
+          <link id="TButtonGlyph.GetImageIndexAndEffect"/>
+        </seealso>
       </element>
 
-      <element name="TButtonGlyph.ExternalImageWidth">
-        <short>Width of an image in the external image list.</short>
-        <descr></descr>
-        <seealso></seealso>
+      <element name="TButtonGlyph.ExternalImageIndex">
+        <short>Ordinal position for the bitmap in ExternalImages displayed when the button is Up (not pressed).</short>
+        <descr>
+          <p>
+            ExternalImageIndex is a Integer property with the ordinal position for the bitmap drawn on the control when the button is in the Up (not pressed) state. ExternalImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
+          </p>
+        </descr>
+        <version>
+          Modified in LCL version 2.3.0 to use an internal array of button states for the property value.
+        </version>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.ExternalHotImageIndex"/>
+          <link id="TButtonGlyph.ExternalDisabledImageIndex"/>
+          <link id="TButtonGlyph.ExternalPressedImageIndex"/>
+          <link id="TButtonGlyph.ExternalSelectedImageIndex"/>
+        </seealso>
+      </element>
+
+      <element name="TButtonGlyph.ExternalHotImageIndex">
+        <short>Ordinal position in ExternalImages for the image displayed when the button is Hot (hovered).</short>
+        <descr>
+          <p>
+            ExternalHotImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.ExternalImageIndex"/>
+          <link id="TButtonGlyph.ExternalDisabledImageIndex"/>
+          <link id="TButtonGlyph.ExternalPressedImageIndex"/>
+          <link id="TButtonGlyph.ExternalSelectedImageIndex"/>
+        </seealso>
+      </element>
+
+      <element name="TButtonGlyph.ExternalDisabledImageIndex">
+        <short>Ordinal position in ExternalImages for the image displayed when the button is Disabled.</short>
+        <descr>
+          <p>
+            ExternalDiasabledImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.ExternalImageIndex"/>
+          <link id="TButtonGlyph.ExternalHotImageIndex"/>
+          <link id="TButtonGlyph.ExternalPressedImageIndex"/>
+          <link id="TButtonGlyph.ExternalSelectedImageIndex"/>
+        </seealso>
+      </element>
+
+      <element name="TButtonGlyph.ExternalPressedImageIndex">
+        <short>Ordinal position in ExternalImages for the image displayed when the button is Pressed (down).</short>
+        <descr>
+          <p>
+            ExternalPressedImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.ExternalImageIndex"/>
+          <link id="TButtonGlyph.ExternalHotImageIndex"/>
+          <link id="TButtonGlyph.ExternalDisabledImageIndex"/>
+          <link id="TButtonGlyph.ExternalSelectedImageIndex"/>
+        </seealso>
+      </element>
+
+      <element name="TButtonGlyph.ExternalSelectedImageIndex">
+        <short>
+          Ordinal position in ExternalImages for the image displayed when the button is Selected (has focus).
+        </short>
+        <descr>
+          <p>
+            ExternalSelectedImageIndex is an indexed property which accesses the value stored in an internal array of image indexes for each of the button states. The property value contains the ordinal position in ExternalImages with the bitmap used for the button state. -1 indicates that an explicit value has not been assigned for the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TButtonGlyph.ExternalImages"/>
+          <link id="TButtonGlyph.ExternalImageIndex"/>
+          <link id="TButtonGlyph.ExternalHotImageIndex"/>
+          <link id="TButtonGlyph.ExternalDisabledImageIndex"/>
+          <link id="TButtonGlyph.ExternalPressedImageIndex"/>
+        </seealso>
       </element>
 
       <element name="TButtonGlyph.Width">
-        <short>The width of the glyph image.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>The width of the Glyph image.</short>
+        <descr>
+          <p>
+            <var>Width</var> is an <var>Integer</var> property with the width for bitmaps displayed in the class instance. When Images has been assigned, its Width is used as the property value. Otherwise, the property value is 0.
+          </p>
+          <p>
+            Width is used when a value is assigned to the Glyph property, and determines if multiple images are present in the bitmap loaded into the Images property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TButtonGlyph.Height"/>
+          <link id="TButtonGlyph.Images"/>
+          <link id="TButtonGlyph.Glyph"/>
+          <link id="TButtonGlyph.NumGlyphs"/>
+        </seealso>
       </element>
 
       <element name="TButtonGlyph.Height">
         <short>The height of the glyph image.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>Height</var> is an <var>Integer</var> property with the height for bitmaps displayed in the class instance. When Images has been assigned, its Height is used as the property value. Otherwise, the property value is 0.
+          </p>
+          <p>
+            Height is used when a value is assigned to the Glyph property, and determines if multiple images are present in the bitmap loaded into the Images property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TButtonGlyph.Height"/>
+          <link id="TButtonGlyph.Images"/>
+          <link id="TButtonGlyph.Glyph"/>
+          <link id="TButtonGlyph.NumGlyphs"/>
+        </seealso>
       </element>
 
       <element name="TButtonGlyph.ShowMode">
@@ -853,7 +1022,7 @@
             The default value for the property is <var>gsmApplication</var>, and indicates that <var>ShowButtonGlyphs</var> in <var>TApplication</var> determines the visibility of the button Glyph. See <link id="TButtonGlyph.CanShow"/> for more information about <var>TGlyphShowMode</var> enumeration values and their usage in <var>TButtonGlyph</var>.
           </p>
           <p>
-            Changing the value for the property causes the <var>Refresh</var> method to be called when <var>IsDesigning</var> contains <b>False</b>.
+            Changing the value for the property causes the <var>Refresh</var> method to be called at run-time (<var>IsDesigning</var> contains <b>False</b>).
           </p>
         </descr>
         <seealso>
@@ -866,10 +1035,10 @@
       </element>
 
       <element name="TButtonGlyph.OnChange">
-        <short>Event handler for a change in the glyph.</short>
+        <short>Event handler signalled when the bitmap in Glyph has been changed.</short>
         <descr>
           <p>
-            OnChange is a TNotifyEvent property that represents an event handler signalled when the image used in the Glyph property is altered. OnChange is signalled from the DoChange method, and occurs after Glyph has been loaded using resources or image lists available to the class instance.
+            <var>OnChange</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the image used in the Glyph property is changed. OnChange is signalled from the DoChange method, and occurs after Glyph has been loaded using the resource or image lists available to the class instance.
           </p>
           <p>
             TButtonGlyph provides a default implementation for the event handler in its GlyphChanged method.
@@ -886,7 +1055,8 @@
 
       <element name="TBitBtnKind">
         <short>
-          <var>TBitBtnKind</var> - enumerated type of possible kinds of BitButtons.</short>
+          <var>TBitBtnKind</var> - enumerated type of possible kinds of BitButtons.
+        </short>
         <descr>
           <p>
             <var>TBitBtnKind</var> - enumerated type of possible kinds of BitButtons. Values in <var>TBitBtnKind</var> are used to select the appropriate image displayed as the glyph for <var>TBitBtn</var> class instances. <var>TBitBtnKind</var> is the type used to implement the <var>Kind</var> property in <var>TCustomBitBtn</var>.
@@ -1161,7 +1331,7 @@
           <link id="TBitBtnKind"/>
           <link id="GetDefaultBitBtnGlyph"/>
           <link id="BitBtnModalResults"/>
-          <link id=" #LCL.themes.TThemeServices.GetStockImage"/>
+          <link id=" #lcl.themes.TThemeServices.GetStockImage"/>
         </seealso>
       </element>
       <element name="TCustomBitBtn.RealizeKind.ForceDefaults">
@@ -1235,6 +1405,9 @@
       <element name="TCustomBitBtn.GetImageIndex.Result">
         <short>Value for the property.</short>
       </element>
+      <element name="TCustomBitBtn.GetImageIndex.AState">
+        <short></short>
+      </element>
 
       <element name="TCustomBitBtn.SetImageIndex">
         <short>Sets the value for the ImageIndex property.</short>
@@ -1242,6 +1415,9 @@
         <seealso>
           <link id="TCustomBitBtn.ImageIndex"/>
         </seealso>
+      </element>
+      <element name="TCustomBitBtn.SetImageIndex.AState">
+        <short></short>
       </element>
       <element name="TCustomBitBtn.SetImageIndex.AImageIndex">
         <short>New value for the property.</short>
@@ -1541,9 +1717,32 @@
         </seealso>
       </element>
 
+      <element name="TCustomBitBtn.DisabledImageIndex">
+        <short>Ordinal position for the image displayed when the button is Disabled.</short>
+        <descr>
+          <p>
+            <var>DisabledImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed on the button when it is Disabled. It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso/>
+      </element>
+
       <element name="TCustomBitBtn.Glyph">
         <short>Bitmap with the Glyph displayed on the control.</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>Glyph</var> is a <var>TBitmap</var> property with bitmap(s) displayed on the button control. The bitmap is stored internally in a TButtonGlyph instance that is populated when a glyph resource is used for image(s) on the control. A bitmap can be assigned directly to the property. Or, it can be loaded when the LoadGlyphFromResourceName, LoadGlyphFromLazarusResource, or LoadGlyphFromStock method is called.
+          </p>
+          <p>
+            Glyph can contain a bitmap with multiple adjacent images representing the states for the button control. Use ImageWidth to define the width for individual images in the combined bitmap. If the bitmap has a width that is larger than ImageWidth, it is split into separate bitmaps for use in the internal TButtonGlyph instance. Use ImageIndex, DisabledImageIndex, HotImageIndex, and PressedImageIndex to indicate which bitmap is used for the corresponding button state.
+          </p>
+          <remark>
+            Unlike TCustomSpeedButton, SelectedImageIndex is not available in TCustomBitBtn; it cannot receive input focus, so a selected image is neither needed nor implemented.
+          </remark>
+        </descr>
         <seealso>
           <link id="TCustomBitBtn.Images"/>
           <link id="TCustomBitBtn.ImageIndex"/>
@@ -1556,20 +1755,52 @@
       </element>
 
       <element name="TCustomBitBtn.NumGlyphs">
-        <short>The number of glyphs available for the control.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>The number of glyph bitmaps available for the control.</short>
+        <descr>
+          <p>
+            <var>NumGlyphs</var> is a <var>TNumGlyphs</var> property with the number of images in the bitmap assigned to the Glyph property. The property value is read from and written to the internal TButtonGlyph instance for the control. Changing the value for the property causes the original image to be re-examined and split into separate images based on the width specified in the ImageWidth property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomBitBtn.Glyph"/>
+          <link id="TCustomBitBtn.ImageWidth"/>
+          <link id="TButtonGlyph.NumGlyphs"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomBitBtn.HotImageIndex">
+        <short>Ordinal position for the bitmap displayed when the button control is hot (hovered).</short>
+        <descr>
+          <p>
+            <var>HotImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed on the button when it is hot (under the mouse cursor - hovered). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso/>
       </element>
 
       <element name="TCustomBitBtn.Images">
         <short>Contains images available for the control.</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>Images</var> is a <var>TCustomImageList</var> property with the images displayed for the various states used on the button control.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomBitBtn.ImageIndex">
-        <short>Ordinal position for the image displayed on the control.</short>
-        <descr></descr>
+        <short>Ordinal position for the default bitmap displayed when the button control is up (not pressed).</short>
+        <descr>
+          <p>
+            ImageIndex is a TImageIndex property with the ordinal position for the bitmap displayed on the button when it is in its default state (up). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
         <seealso></seealso>
       </element>
 
@@ -1596,6 +1827,35 @@
         <descr></descr>
         <seealso></seealso>
       </element>
+
+      <element name="TCustomBitBtn.PressedImageIndex">
+        <short>Ordinal position for the bitmap displayed when the button control is pressed (down).</short>
+        <descr>
+          <p>
+            PressedImageIndex is a TImageIndex property with the ordinal position for the bitmap displayed on the button when it is pressed (down). It refers to the position in the Images property where the associated image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso></seealso>
+      </element>
+
+      <!--
+      <element name="TCustomBitBtn.SelectedImageIndex">
+        <short>Ordinal position for the image displayed on the control.</short>
+        <descr>
+          <p>
+            SelectedImageIndex is a TImageIndex property.
+            The default value for the property is -1, and indicates that an explicit value has not been assigned to the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso></seealso>
+      </element>
+      -->
 
       <element name="TCustomBitBtn.Spacing">
         <short>The spacing around the BitButton.</short>
@@ -1641,6 +1901,7 @@
       <element name="TBitBtn.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TBitBtn.Default" link="#lcl.stdctrls.TCustomButton.Default"/>
       <element name="TBitBtn.DefaultCaption" link="#lcl.buttons.TCustomBitBtn.DefaultCaption"/>
+      <element name="TBitBtn.DisabledImageIndex" link="#lcl.buttons.TCustomBitBtn.DisabledImageIndex"/>
       <element name="TBitBtn.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TBitBtn.DragKind" link="#lcl.controls.TControl.DragKind"/>
       <element name="TBitBtn.DragMode" link="#lcl.controls.TControl.DragMode"/>
@@ -1648,6 +1909,7 @@
       <element name="TBitBtn.Font" link="#lcl.controls.TControl.Font"/>
       <element name="TBitBtn.Glyph" link="#lcl.buttons.TCustomBitBtn.Glyph"/>
       <element name="TBitBtn.GlyphShowMode" link="#lcl.buttons.TCustomBitBtn.GlyphShowMode"/>
+      <element name="TBitBtn.HotImageIndex" link="#lcl.buttons.TCustomBitBtn.HotImageIndex"/>
       <element name="TBitBtn.Kind" link="#lcl.buttons.TCustomBitBtn.Kind"/>
       <element name="TBitBtn.Layout" link="#lcl.buttons.TCustomBitBtn.Layout"/>
       <element name="TBitBtn.Margin" link="#lcl.buttons.TCustomBitBtn.Margin"/>
@@ -1657,7 +1919,6 @@
       <element name="TBitBtn.ImageIndex" link="#lcl.buttons.TCustomBitBtn.ImageIndex"/>
       <element name="TBitBtn.ImageWidth" link="#lcl.buttons.TCustomBitBtn.ImageWidth"/>
       <element name="TBitBtn.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
-
       <element name="TBitBtn.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TBitBtn.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TBitBtn.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
@@ -1723,6 +1984,10 @@
       <element name="TBitBtn.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TBitBtn.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TBitBtn.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
+      <element name="TBitBtn.PressedImageIndex" link="#lcl.buttons.TCustomBitBtn.PressedImageIndex"/>
+      <!--
+      <element name="TBitBtn.SelectedImageIndex" link="#lcl.buttons.TCustomBitBtn.SelectedImageIndex"/>
+      -->
       <element name="TBitBtn.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
       <element name="TBitBtn.Spacing" link="#lcl.buttons.TCustomBitBtn.Spacing"/>
       <element name="TBitBtn.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
@@ -1747,7 +2012,7 @@
         <short>Links a TSpeedButton with a TAction instance.</short>
       </element>
 
-      <element name="TSpeedButtonActionLink.AssignClient" link="#rtl.Classes.TBasicActionLink.AssignClient"/>
+      <element name="TSpeedButtonActionLink.AssignClient" link="#rtl.classes.TBasicActionLink.AssignClient"/>
       <element name="TSpeedButtonActionLink.AssignClient.AClient">
         <short></short>
       </element>
@@ -1765,13 +2030,14 @@
 
       <element name="TSpeedButtonActionLink.SetChecked">
         <short>
-          <var>SetChecked</var> - stores the Checked status (True or False).</short>
-          <descr></descr>
-          <seealso></seealso>
-        </element>
-        <element name="TSpeedButtonActionLink.SetChecked.Value">
-          <short></short>
-        </element>
+          Sets the Checked state for the control in the action link.
+        </short>
+        <descr></descr>
+        <seealso></seealso>
+      </element>
+      <element name="TSpeedButtonActionLink.SetChecked.Value">
+        <short>New value for the Checked state in the linked speed button control.</short>
+      </element>
 
       <element name="TSpeedButtonActionLink.SetImageIndex">
         <short>
@@ -1826,13 +2092,13 @@
       </element>
 
       <element name="TCustomSpeedButton">
-        <short>The ancestor class for <var>TSpeedButton</var>.</short>
+        <short>The ancestor for the <var>TSpeedButton</var> class.</short>
         <descr>
           <p>
-            <var>TCustomSpeedButton</var> is a <var>TGraphicControl</var> descendant, and the ancestor for <var>TSpeedButton</var>. If you want to define your own SpeedButton class, you should derive it from this class.
+            <var>TCustomSpeedButton</var> is a <var>TGraphicControl</var> descendant, and the ancestor for <var>TSpeedButton</var>. If you want to define your own speed button class, you should derive it from TCustomSpeedButton.
           </p>
           <p>
-            A SpeedButton is designed to automatically perform a process when it is depressed.  The user can push the button to start an action or set a mode. When a user clicks on a SpeedButton focus is not shifted; a Speed Button never gets focus. The button may have a descriptive glyph (symbol or pictograph), and has a state (checked or unchecked).
+            A speed button is designed to automatically perform a process when it is pressed or clicked.  The user can push the button to start an action or set a mode. When a user clicks on a speed button, focus is not shifted; a speed button never receives focus. The button may have a descriptive glyph (symbol or pictograph), and has state (checked, unchecked, Up, Down, Hovered, Selected, Disabled).
           </p>
         </descr>
       </element>
@@ -2036,6 +2302,9 @@
       <element name="TCustomSpeedButton.GetImageIndex.Result">
         <short>Value for the property.</short>
       </element>
+      <element name="TCustomSpeedButton.GetImageIndex.AState">
+        <short></short>
+      </element>
 
       <element name="TCustomSpeedButton.SetImageIndex">
         <short>Sets the value for the ImageIndex property.</short>
@@ -2043,6 +2312,9 @@
         <seealso>
           <link id="TCustomSpeedButton.ImageIndex"/>
         </seealso>
+      </element>
+      <element name="TCustomSpeedButton.SetImageIndex.AState">
+        <short></short>
       </element>
       <element name="TCustomSpeedButton.SetImageIndex.AImageIndex">
         <short>New value for the property.</short>
@@ -2137,10 +2409,12 @@
 
       <element name="TCustomSpeedButton.MeasureDraw">
         <short>
-          Calculates the Width and Height for theSpeedButton, and optionally renders the control.
+          Calculates the Width and Height for the speed button, and optionally renders the control.
         </short>
         <descr>
-          Used in the implementation of the CalculatePreferredSize and Paint methods.
+          <p>
+            Used in the implementation of the CalculatePreferredSize and Paint methods.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -2213,10 +2487,29 @@
         <short>Action performed for the notification message.</short>
       </element>
 
-      <element name="TCustomSpeedButton.Paint" link="#lcl.controls.TGraphicControl.Paint"/>
+      <element name="TCustomSpeedButton.Paint">
+        <short>Updates the state for the control, and paints it to the control Canvas.</short>
+        <descr>
+          <p>
+            <var>Paint</var> is an overridden method in <var>TCustomSpeedButton</var> used to draw the control to its <var>Canvas</var>.
+          </p>
+          <p>
+            Paint calls UpdateState to ensure that the internal TButtonState for the control is updated to reflect its current condition. No additional actions are performed in the method when a bitmap has not been assigned in the Glyph property.
+          </p>
+          <p>
+            When a Glyph is available,  additional actions are performed to draw the control to its client rectangle. MeasureDraw is called to draw the background, Glyph, and Caption using the layout and state for the control.
+          </p>
+          <p>
+            Paint calls the inherited method prior to exit to signal the OnPaint event handler (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TGraphicControl.Paint">TGraphicControl.Paint</link>
+        </seealso>
+      </element>
 
       <element name="TCustomSpeedButton.PaintBackground">
-        <short>Paints the background for the control.</short>
+        <short>Paints the background for the control to the specified rectangle.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -2305,7 +2598,9 @@
       <element name="TCustomSpeedButton.RealSetText" link="#lcl.controls.TControl.RealSetText">
         <short></short>
         <descr>
-          Used by SetTextBuf to store a text string rather than performing read/write using a PChar buffer
+          <p>
+            Used by SetTextBuf to store a text string rather than performing read/write using a PChar buffer
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -2318,7 +2613,7 @@
           Updates internal members used to track state changes in the control.
         </short>
         <descr>
-          <var>UpdateState</var> - brings the state up to date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is True
+          <var>UpdateState</var> brings the state up to date, implementing any pending changes, and rendering non-valid if <var>InvalidateOnChange</var> is True.
         </descr>
         <seealso></seealso>
       </element>
@@ -2400,24 +2695,38 @@
 
       <element name="TCustomSpeedButton.GetGlyphSize">
         <short>
-          <var>GetGlyphSize</var> - returns the size of the glyph within the specified <var>PaintRect</var>.
+          Gets the size of the glyph within the specified <var>PaintRect</var>.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>GetGlyphSize</var> is a <var>TSize</var> function used to get the size of the glyph within the client rectangle specified in the <var>PaintRect</var> argument. The return value contains the width (in CX) and the height (in CY). The member values are retrieved from a scaled image resolution for the glyph bitmaps in ButtonGlyph. The values are scaled to the client rectangle using the PixelsPerInch for the Font and the Canvas scaling factor for the control.
+          </p>
+          <p>
+            Use GetTextSize to get the width and height or the Caption displayed on the control.
+          </p>
+          <p>
+            GetGlyphSize is used in the implementation of the MeasureDraw method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.ButtonGlyph"/>
+          <link id="TCustomSpeedButton.GetTextSize"/>
+          <link id="TCustomSpeedButton.MeasureDraw"/>
+        </seealso>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.Result">
-        <short></short>
+        <short>TSize instance with the width (CX) and height ( CY) for the glyph .</short>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.Drawing">
-        <short></short>
+        <short>True if the control is drawing, False if the control is measuring its components.</short>
       </element>
       <element name="TCustomSpeedButton.GetGlyphSize.PaintRect">
-        <short></short>
+        <short>Client rectangle for the control.</short>
       </element>
 
       <element name="TCustomSpeedButton.GetTextSize">
         <short>
-          <var>GetTextSize</var> - returns the size of the text within the specified <var>PaintRect</var>.
+          Gets the size of the text within the specified <var>PaintRect</var>.
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -2434,7 +2743,7 @@
 
       <element name="TCustomSpeedButton.DrawGlyph">
         <short>
-          Draws the glyph on the specified canvas in the specified rectangle at a given offset within the client, with specified state and transparency.
+          Draws the glyph on the canvas in the specified rectangle at a given offset.
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -2443,16 +2752,16 @@
         <short></short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.ACanvas">
-        <short></short>
+        <short>Canvas where the control is glyph is drawn.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.AClient">
-        <short></short>
+        <short>Client rectangle for the drawing operation.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.AOffset">
-        <short></short>
+        <short>Offset into the client rectangle where the glyph is drawn.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.AState">
-        <short></short>
+        <short>Button state drawn for the control.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.ATransparent">
         <short></short>
@@ -2544,7 +2853,7 @@
 
       <element name="TCustomSpeedButton.AllowAllUp">
         <short>
-          Boolean flag which indicates if all buttons in a group are allowed to be Up (default is False).
+          Indicates if all buttons in a group can be in an up state.
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -2559,7 +2868,7 @@
             The default value for the property is clBtnFace in TCustomSpeedButton.
           </p>
           <p>
-            If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to a TColor value. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided as TControl.GetColorResolvingParent and TControl.GetRGBColorResolvingParent.
+            If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to a TColor value. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided in the GetColorResolvingParent and GetRGBColorResolvingParent methods.
           </p>
         </descr>
         <seealso>
@@ -2567,62 +2876,152 @@
           <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
           <link id="#lcl.controls.TControl.GetDefaultColor">TControl.GetDefaultColor</link>
           <link id="#lcl.controls.TControl.GetColorResolvingParent">TControl.GetColorResolvingParent</link>
-          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGColGetRGBColorResolvingParentarent</link>
+          <link id="#lcl.controls.TControl.GetRGBColorResolvingParent">TControl.GetRGBColorResolvingParent</link>
+        </seealso>
+      </element>
+
+      <element name="TCustomSpeedButton.DisabledImageIndex">
+        <short>Ordinal position for the image displayed when the control is disabled.</short>
+        <descr>
+          <p>
+            <var>DisabledImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed when Enabled is set to False. It indicates the position in Images or Glyph where the image data is stored. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+          </p>
+          <p>
+            The property value is read from and written to the image index members in ButtonGlyph.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TCustomSpeedButton.Images"/>
+          <link id="TCustomSpeedButton.Glyph"/>
+          <link id="TCustomSpeedButton.ButtonGlyph"/>
+          <link id="TCustomSpeedButton.ImageIndex"/>
+          <link id="TCustomSpeedButton.HotImageIndex"/>
+          <link id="TCustomSpeedButton.PressedImageIndex"/>
+          <link id="TCustomSpeedButton.SelectedImageIndex"/>
         </seealso>
       </element>
 
       <element name="TCustomSpeedButton.Down">
         <short>Indicates if the button has been set to the Down state.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>Down</var> is a <var>Boolean</var> property which indicates whether the button control is in the down (or pressed) state. The default value for the property is False. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            The value in Down is toggled in the DialogChar method when ShowAccelChar has been enabled and the accelerator key in Caption is received for the control. This also calls the Click method to execute the OnClick event handler or the action for the control.
+          </p>
+          <p>
+            Down is used in the UpdateState method, along with GroupIndex and MouseInControl, to determine the current TButtonState for the control.
+          </p>
+        </descr>
+        <seealso/>
       </element>
 
       <element name="TCustomSpeedButton.Flat">
-        <short>Whether the button is to be displayed <var>Flat</var> or in relief.</short>
+        <short>Indicates whether the button is displayed with a Flat (non-relief) appearance.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomSpeedButton.Glyph">
-        <short>The Bitmap used for the glyph image on the button.</short>
+        <short>The bitmap with the glyph image(s) displayed the button states.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomSpeedButton.GroupIndex">
         <short>
-          The ordinal position for the control within a group of related speedbuttons.
+          Identifies the group of related speed buttons for the control.
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            GroupIndex is used with AllowAllUp and Down to determine if the button state can be changed within the related group of controls. The default value for the property is 0 (zero).
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
+      <element name="TCustomSpeedButton.HotImageIndex">
+        <short>
+          Ordinal position for the glyph bitmap displayed when the mouse is hovered over the button control.
+        </short>
+        <descr>
+          <p>
+            <var>HotImageIndex</var> is a <var>TImageIndex</var> property with the ordinal position for the bitmap displayed when the mouse cursor is hovered over the control. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+          </p>
+          <p>
+            The property value is read from and written to the image index members in ButtonGlyph.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TCustomSpeedButton.Images"/>
+          <link id="TCustomSpeedButton.Glyph"/>
+          <link id="TCustomSpeedButton.ButtonGlyph"/>
+          <link id="TCustomSpeedButton.DrawGlyph"/>
+          <link id="TCustomSpeedButton.ImageIndex"/>
+          <link id="TCustomSpeedButton.DisabledImageIndex"/>
+          <link id="TCustomSpeedButton.PressedImageIndex"/>
+          <link id="TCustomSpeedButton.SelectedImageIndex"/>
+        </seealso>
+      </element>
+
       <element name="TCustomSpeedButton.Images">
-        <short>Contains images available for use as the glyph for the control.</short>
-        <descr></descr>
+        <short>List of images available for use as state glyphs on the control.</short>
+        <descr>
+          <p>
+            Provides an alternate way to specify images (individually) as opposed to multiple adjacent bitmaps in Glyph.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomSpeedButton.ImageIndex">
-        <short>Ordinal position for the Image used as the glyph for the control.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>
+          Ordinal position for the glyph bitmap displayed when the button is in its up state.
+        </short>
+        <descr>
+          <p>
+            ImageIndex is a TImageIndex property with the ordinal position for the glyph bitmap displayed when the button is in its up state. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+          </p>
+          <p>
+            The property value is read from and written to the image index members in ButtonGlyph.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TCustomSpeedButton.Images"/>
+          <link id="TCustomSpeedButton.Glyph"/>
+          <link id="TCustomSpeedButton.ButtonGlyph"/>
+          <link id="TCustomSpeedButton.DrawGlyph"/>
+          <link id="TCustomSpeedButton.DisabledImageIndex"/>
+          <link id="TCustomSpeedButton.HotImageIndex"/>
+          <link id="TCustomSpeedButton.PressedImageIndex"/>
+          <link id="TCustomSpeedButton.SelectedImageIndex"/>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.ImageWidth">
-        <short>Display width for the glyph image in the control.</short>
+        <short>Width for the glyph bitmap displayed on the control.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomSpeedButton.Layout">
-        <short>The button layout - Glyph at top, bottom, left or right.</short>
+        <short>Indicates the alignment of the glyph bitmap relative to the caption for the control.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomSpeedButton.Margin">
-        <short>Margin - the space around glyph and caption.</short>
+        <short>Space around the Glyph bitmap and Caption for the control.</short>
         <descr>
           A value of -1 centers the content. If Spacing is -1 too then there is the same space on the left, between the glyph and caption, and on the right.
         </descr>
@@ -2630,32 +3029,108 @@
       </element>
 
       <element name="TCustomSpeedButton.NumGlyphs">
-        <short>The number of Glyphs available.</short>
+        <short>The number of glyph bitmaps available for the control.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
 
+      <element name="TCustomSpeedButton.PressedImageIndex">
+        <short>
+          Ordinal position for the glyph bitmap displayed when the button is in a pressed (down) state.
+        </short>
+        <descr>
+          <p>
+            PressedImageIndex is a TImageIndex property with the ordinal position for the glyph bitmap displayed when the Down property is True. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+          </p>
+          <p>
+            The property value is read from and written to the image index members in ButtonGlyph.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso>
+          <link id="TCustomSpeedButton.Images"/>
+          <link id="TCustomSpeedButton.Glyph"/>
+          <link id="TCustomSpeedButton.ButtonGlyph"/>
+          <link id="TCustomSpeedButton.DrawGlyph"/>
+          <link id="TCustomSpeedButton.DisabledImageIndex"/>
+          <link id="TCustomSpeedButton.HotImageIndex"/>
+          <link id="TCustomSpeedButton.ImageIndex"/>
+          <link id="TCustomSpeedButton.SelectedImageIndex"/>
+        </seealso>
+      </element>
+
+      <element name="TCustomSpeedButton.SelectedImageIndex">
+        <short>
+          Ordinal position for the glyph bitmap displayed when the button is selected.
+        </short>
+        <descr>
+          <p>
+            SelectedImageIndex is a TImageIndex property. The default value for the property is -1, and indicates that an explicit value has not been assigned for the property.
+          </p>
+        </descr>
+        <version>
+          Added in LCL version 2.3.0.
+        </version>
+        <seealso/>
+      </element>
+
       <element name="TCustomSpeedButton.ShowAccelChar">
         <short>
-          Indicates if the accelerator character should be shown (i.e. underlined character denoting key to be pressed for quick action).
+          Indicates if the accelerator key (shortcut) is displayed in the Caption for the control.
         </short>
+        <descr>
+          <p>
+            <var>ShowAccelChar</var> is a <var>Boolean</var> property which controls whether an accelerator key in Caption is displayed as an underlined character. The accelerator (or shortcut) key in Caption is identified by the '&amp;' character, with the subsequent character used as the accelerator key.
+          </p>
+          <p>
+            When set to False, the underlined character is not drawn in Caption and the accelerator key is not handled in the DialogChar method.
+          </p>
+          <p>
+            The default value for ShowAccelChar is <b>True</b>. Changing the value for the property causes the control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.DialogChar"/>
+          <link id="TCustomSpeedButton.ShowCaption"/>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.ShowCaption">
-        <short>Indicates if the caption for the speed button is displayed.</short>
+        <short>Indicates if the Caption for the speed button is displayed.</short>
+        <descr>
+          <p>
+            The default value for the property is True. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            ShowCaption is used in the MeasureDraw method. When set to True, the text extent for Caption is  displayed using the Font and Layout for the control. It is also used in the GetTextSize method when the text extent is calculated.
+          </p>
+        </descr>
+        <seealso/>
       </element>
 
       <element name="TCustomSpeedButton.Spacing">
-        <short>Spacing between Glyph and Caption.</short>
+        <short>Spacing between the Glyph bitmap and the Caption for the control.</short>
         <descr>
-          If Spacing is -1 and Margin is -1 then Glyph and Caption are centered and there is the same amount of space between Glyph and Caption and on the left and right. If Spacing is -1 and Margin is not -1 then Spacing will fill the remaining space.
+          <p>
+            If Spacing is -1 and Margin is -1 then the glyph and the Caption are centered, with the same amount of unused space on each side of the control. If Spacing is -1 and Margin is not -1 then Spacing will fill the remaining unused space.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
 
       <element name="TCustomSpeedButton.Transparent">
         <short>Indicates if the control is drawn with transparency.</short>
-        <descr></descr>
+        <descr>
+          <p>
+            <var>Transparent</var> is a <var>Boolean</var> property which indicates whether the control is drawn with transparency. Changing the value for the property causes the ControlStyle property to be updated to include or exclude the csOpaque flag as needed, and the control is redrawn.  The property value is read from and written to the TransparentMode property in ButtonGlyph.
+          </p>
+          <p>
+            The property value is passed as an argument to the DrawGlyph method when MeasureDraw is executed. When set to False, the PaintBackground method fills the display area with the background Color when theme element details have transparent areas.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
 
@@ -2719,6 +3194,7 @@
       </element>
 
       <element name="TSpeedButton.Color" link="#lcl.buttons.TCustomSpeedButton.Color"/>
+      <element name="TSpeedButton.DisabledImageIndex" link="#lcl.buttons.TCustomSpeedButton.DisabledImageIndex"/>
       <element name="TSpeedButton.Down" link="#lcl.buttons.TCustomSpeedButton.Down"/>
       <element name="TSpeedButton.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TSpeedButton.DragKind" link="#lcl.controls.TControl.DragKind"/>
@@ -2728,12 +3204,15 @@
       <element name="TSpeedButton.Font" link="#lcl.controls.TControl.Font"/>
       <element name="TSpeedButton.Glyph" link="#lcl.buttons.TCustomSpeedButton.Glyph"/>
       <element name="TSpeedButton.GroupIndex" link="#lcl.buttons.TCustomSpeedButton.GroupIndex"/>
+      <element name="TSpeedButton.HotImageIndex" link="#lcl.buttons.TCustomSpeedButton.HotImageIndex"/>
       <element name="TSpeedButton.Images" link="#lcl.buttons.TCustomSpeedButton.Images"/>
       <element name="TSpeedButton.ImageIndex" link="#lcl.buttons.TCustomSpeedButton.ImageIndex"/>
       <element name="TSpeedButton.ImageWidth" link="#lcl.buttons.TCustomSpeedButton.ImageWidth"/>
       <element name="TSpeedButton.Layout" link="#lcl.buttons.TCustomSpeedButton.Layout"/>
       <element name="TSpeedButton.Margin" link="#lcl.buttons.TCustomSpeedButton.Margin"/>
       <element name="TSpeedButton.NumGlyphs" link="#lcl.buttons.TCustomSpeedButton.NumGlyphs"/>
+      <element name="TSpeedButton.PressedImageIndex" link="#lcl.buttons.TCustomSpeedButton.PressedImageIndex"/>
+      <element name="TSpeedButton.SelectedImageIndex" link="#lcl.buttons.TCustomSpeedButton.SelectedImageIndex"/>
        <element name="TSpeedButton.Spacing" link="#lcl.buttons.TCustomSpeedButton.Spacing"/>
       <element name="TSpeedButton.Transparent" link="#lcl.buttons.TCustomSpeedButton.Transparent"/>
 
@@ -2743,10 +3222,10 @@
         </short>
         <descr>
           <p>
-            The Visible property represents the ability to see a visual control. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets, among others, Visible to True. Setting Visible to False is equivalent to calling Hide method.
+            The Visible property indicates whether a visual control is displayed. If Visible is True the control is shown, otherwise it is hidden. Calling Show sets Visible to True. Setting Visible to False is equivalent to calling the Hide method.
           </p>
           <remark>
-            The Visible property does not depend on control's parent visibility. Use IsVisible method to consider this and get real visibility.
+            The Visible property does not use the visibility for the parent control. Use the IsVisible method to get the realized visibility.
           </remark>
         </descr>
         <seealso>
