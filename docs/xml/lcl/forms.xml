@@ -68,6 +68,7 @@
       <element name="LazUtilities"/>
       <element name="GraphType"/>
       <element name="UITypes"/>
+      <element name="System.UITypes"/>
       <element name="gettext"/>
 
       <element name="TProcedure">
@@ -3727,21 +3728,78 @@
         <short>Moves the form to the location specified in the Position property.</short>
         <descr>
           <p>
-            <var>MoveToDefaultPosition</var> is a method used to move the form instance to the location specified in its <var>Position</var> property. Position indicates the size and relative position for the form instance. See <link id="TCustomForm.Position"/> and <link id="TPosition"/> for information about the property values and their meanings.
+            <var>MoveToDefaultPosition</var> is a method used to move a form instance to the location specified in its <var>Position</var> property. It ensures that the form appears on the correct monitor for the values in the DefaultMonitor and Position properties.
           </p>
           <p>
-            MoveToDefaultPosition gets the display rectangle for the form instance. Its dimensions and coordinates are translated to the Monitor and/or relative layout indicated in <var>Position</var>. <var>SetBounds</var> is called to apply the
-              translated origin, height and width to the form instance.
+             DefaultMonitor is used to determine whether the form needs to be moved to a different monitor for  the value in Position. For instance:
+          </p>
+          <dl>
+            <dt>dmDesktop</dt>
+            <dd>
+              The form does not need to be moved, and the current monitor is used.
+            </dd>
+            <dt>dmPrimary</dt>
+            <dd>
+              The PrimaryMonitor in Screen is used to display the form.
+            </dd>
+            <dt>dmMainForm</dt>
+            <dd>
+              If the Application has a MainForm, the monitor for the main form is used. Otherwise, the form is not relocated to another monitor.
+            </dd>
+            <dt>dmActiveForm</dt>
+            <dd>
+              If the Screen has an ActiveForm, the monitor for the active form is used. Otherwise, the form is not moved to another monitor.
+            </dd>
+          </dl>
+          <p>
+            Position specifies an associated form and the relative position for the relocated form instance. For instance:
+          </p>
+          <dl>
+            <dt>poOwnerFormCenter</dt>
+            <dd>
+              Uses the Owner form to center align the relocated form instance. If the Owner is not a TCustomForm instance, Position is converted to poMainFormCenter to center the form to the MainForm  in the application.
+            </dd>
+            <dt>poMainFormCenter</dt>
+            <dd>
+              Centers the form to the MainForm for the Application. When not assigned, Position is converted to poScreenCenter to center the form on the Screen.
+            </dd>
+            <dt>poScreenCenter</dt>
+            <dd>
+              Centers the form on the default monitor.
+            </dd>
+            <dt>poDesktopCenter</dt>
+            <dd>
+              Centers the form to the desktop (width for all screens).
+            </dd>
+            <dt>poWorkAreaCenter</dt>
+            <dd>
+              Centers the form on work area for the default monitor.
+            </dd>
+            <dt>poDesigned, poDefaultSizeOnly</dt>
+            <dd>
+              Ignored in the method.
+            </dd>
+            <dt>poDefault, poDefaultPosOnly</dt>
+            <dd>
+              Uses the size / relative position provided by the widgetset class instance.
+            </dd>
+          </dl>
+          <p>
+            MoveToDefaultPosition gets the display rectangle for the form instance, and translates the form coordinates to the correct Monitor. <var>SetBounds</var> is called to apply the translated origin using the height and width for the form instance.
           </p>
           <p>
             No actions are performed in the method when either <var>Parent</var> or the <var>ParentWindow</var> handle has been assigned for the form instance. No actions are performed in the method when <var>WindowState</var> contains <var>wsFullScreen</var> or <var>wsMaximized</var>.
           </p>
           <p>
-            MoveToDefaultPosition is called from the <var>AllAutoSized</var>, <var>SetRestoredBounds</var>, and <var>UpdateShowing</var> methods. It is also called when a new value is assigned to the Position property.
+            MoveToDefaultPosition is called from the <var>AllAutoSized</var>, <var>SetRestoredBounds</var>, and <var>UpdateShowing</var> methods. It is also called when a new value is assigned to the <var>Position</var> property.
           </p>
         </descr>
+        <version>
+          The implementation for the method was changed in LCL version 2.3.0.
+        </version>
         <seealso>
           <link id="TCustomForm.Position"/>
+          <link id="TCustomForm.DefaultMonitor"/>
         </seealso>
       </element>
 
@@ -4509,17 +4567,17 @@
         <short>Resizes the form for the specified monitor.</short>
         <descr>
           <p>
-            <var>MakeFullyVisible</var> is a method used to make the form instance fully visible on the specified monitor. This prevents the form from being partially visible on multiple monitors.
+            <var>MakeFullyVisible</var> is a method used to make the form instance fully visible on the specified monitor. It ensures the form fits within the required bounds for the monitor or work area. If the form is too wide or too tall, the form bounds are adjusted so that the form fits within the required bounds. This prevents the form from being partially visible on multiple monitors.
           </p>
           <p>
             <var>AMonitor</var> is the <var>TMonitor</var> instance where the form is displayed. If AMonitor is not specified (contains <b>Nil</b>), the value in the <var>Monitor</var> property is used.
           </p>
           <p>
-            <var>UseWorkarea</var> indicates whether the work area for the target monitor is used. When set to <b>True</b>, the form uses the bounds established for the work area instead of the physical monitor. The default value for the parameter is <b>False</b>.
+            <var>UseWorkarea</var> indicates whether the work area for the target monitor is used. When set to <b>True</b>, the form uses the bounds established for the work area instead of the physical monitor. The default value for the parameter is <b>True</b>.
           </p>
-          <p>
-            MakeFullyVisible ensures the form fits within the required bounds for the monitor or work area. If the form is too wide or too tall, the form bounds are adjusted so that the form fits within the required bounds.
-          </p>
+          <remark>
+            The default value for UseWorkArea was changed from False to True in LCL version 2.3.0. This is the more sensible default value, and it is also Delphi-compatible.
+          </remark>
         </descr>
         <seealso/>
       </element>
