@@ -579,6 +579,8 @@ procedure TChartAxis.Draw;
     j: Integer;
     minorMarks: TChartValueTextArray;
     m: TChartValueText;
+    isFlipped: Boolean;
+    trMin, trMax: Double;
   begin
     if IsNan(AMin) or (AMin = AMax) then exit;
     for j := 0 to Minors.Count - 1 do begin
@@ -587,10 +589,15 @@ procedure TChartAxis.Draw;
       with FHelper.Clone do
         try
           FAxis := Minors[j];
+          trMin := FAxisTransf(AMin);
+          trMax := FAxisTransf(AMax);
           // Only draw minor marks strictly inside the major mark interval.
-          FValueMin := Max(FAxisTransf(AMin), FValueMin);
-          FValueMax := Min(FAxisTransf(AMax), FValueMax);
-          if FValueMax <= FValueMin then
+          isFlipped := (AMin < AMax) and (trMin > trMax);
+          FValueMin := Max(trMin, FValueMin);
+          FValueMax := Min(trMax, FValueMax);
+          if (not isFlipped and (FValueMax <= FValueMin)) or 
+             (isFlipped and (FValueMax >= FValueMin))
+          then
             continue;
           ExpandRange(FValueMin, FValueMax, -EPS);
           FClipRangeDelta := 1;
