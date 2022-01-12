@@ -777,20 +777,15 @@ function GetIdentCompletionValue(aCompletion : TSynCompletion;
   AddChar: TUTF8Char;
   out ValueType: TIdentComplValue; out CursorToLeft: integer): string;
 var
-  Index: Integer;
+  Index, ProcModifierPos, Indent: Integer;
   IdentItem: TIdentifierListItem;
   IdentList: TIdentifierList;
-  CursorAtEnd: boolean;
-  ProcModifierPos: LongInt;
+  CanAddSemicolon, CanAddComma, CursorAtEnd, IsReadOnly: boolean;
   ProcHeadFlags: TProcHeadAttributes;
-  CanAddSemicolon: Boolean;
-  CanAddComma: Boolean;
-  ClassNode: TCodeTreeNode;
-  IsReadOnly: Boolean;
-  Line, s: string;
-  Indent: LongInt;
-  StartContextPos: TCodeXYPosition;
+  ClassNode: TCodeTreeNode;  // For a class node or a procedure type node.
   Dsc: TCodeTreeNodeDesc;
+  Line, s: string;
+  StartContextPos: TCodeXYPosition;
 begin
   Result:='';
   CursorToLeft:=0;
@@ -807,24 +802,26 @@ begin
 
   IdentItem.BeautifyIdentifier(IdentList);
   CodeToolBoss.IdentItemCheckHasChilds(IdentItem);
-
   CanAddSemicolon:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>';');
   CanAddComma:=CodeToolsOpts.IdentComplAddSemicolon and (AddChar<>',');
   IsReadOnly:=false;
-
   Result:=IdentItem.Identifier;
+  Dsc:=IdentItem.GetDesc;
+  //DebugLn(['GetIdentCompletionValue IdentItem.GetDesc=',NodeDescriptionAsString(Dsc),
+  //  ', IdentList.ContextFlags=',dbgs(IdentList.ContextFlags),' IdentItem.Node=',IdentItem.Node<>nil]);
+  if Dsc=ctnVarDefinition then begin
+    ClassNode:=IdentItem.Node.FirstChild;
+    if Assigned(ClassNode) and (ClassNode.Desc=ctnProcedureType) then
+      Dsc:=ctnProcedure;
+  end;
 
-  //debugln(['GetIdentCompletionValue IdentItem.GetDesc=',NodeDescriptionAsString(IdentItem.GetDesc),' IdentList.ContextFlags=',dbgs(IdentList.ContextFlags),' IdentItem.Node=',IdentItem.Node<>nil]);
-
-  case IdentItem.GetDesc of
+  case Dsc of
 
     ctnProcedure:
     begin
-      if (ilcfCanProcDeclaration in IdentList.ContextFlags)
-      and (IdentItem.Node<>nil) then begin
-        //DebugLn(['GetIdentCompletionValue icvCompleteProcDeclaration']);
-        ValueType:=icvCompleteProcDeclaration;
-      end else if IdentItem.IsProcNodeWithParams then
+      if (ilcfCanProcDeclaration in IdentList.ContextFlags) and (IdentItem.Node<>nil) then
+        ValueType:=icvCompleteProcDeclaration
+      else if IdentItem.IsProcNodeWithParams then
         ValueType:=icvProcWithParams;
     end;
 
@@ -927,7 +924,7 @@ begin
   and (not IsReadOnly)
   and (not IdentList.StartUpAtomBehindIs(':='))
   and (not IdentList.StartUpAtomBehindIs('('))
-  and (IdentItem.CanBeAssigned)
+  and (IdentItem.CanBeAssigned(Dsc))
   and CodeToolsOpts.IdentComplAddAssignOperator then begin
     if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
     or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then
@@ -960,10 +957,8 @@ begin
 
   // add semicolon for statement ends
   //debugln(['GetIdentCompletionValue CanAddSemicolon=',CanAddSemicolon,' ilcfNoEndSemicolon=',ilcfNoEndSemicolon in IdentList.ContextFlags,' ']);
-  if CanAddSemicolon
-  and (not (ilcfNoEndSemicolon in IdentList.ContextFlags))
-  then begin
-    Dsc:=IdentItem.GetDesc;
+  if CanAddSemicolon and not (ilcfNoEndSemicolon in IdentList.ContextFlags) then
+  begin
     if Dsc=ctnLabel then
       Result+=':'
     else

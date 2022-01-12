@@ -3349,27 +3349,37 @@ begin
 end;
 
 function TPascalReaderTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
+var
+  ChildNode: TCodeTreeNode;
 begin
 
   // ToDo: ppu, dcu
 
   Result:=false;
   if ProcNode=nil then exit;
-  if ProcNode.Desc=ctnProcedure then begin
-    ProcNode:=ProcNode.FirstChild;
-    if ProcNode=nil then exit;
+  ChildNode:=ProcNode.FirstChild;
+  // A variable of procedure type.
+  if (ProcNode.Desc=ctnVarDefinition)
+  and Assigned(ChildNode) and (ChildNode.Desc=ctnProcedureType) then
+  begin
+    ProcNode:=ChildNode.FirstChild;      // ctnProcedureHead
+    if Assigned(ProcNode) then
+      ChildNode:=ProcNode.FirstChild;    // There is no ctnParameterList. Why?
+  end
+  // Procedure
+  else if ProcNode.Desc=ctnProcedure then
+    ProcNode:=ChildNode;
+
+  if Assigned(ProcNode) and (ProcNode.Desc=ctnProcedureHead) then
+  begin
+    if Assigned(ChildNode) then
+      exit(ChildNode.Desc=ctnParameterList);
+    MoveCursorBehindProcName(ProcNode);
+    Result:=CurPos.Flag=cafRoundBracketOpen;
   end;
-  if ProcNode.Desc<>ctnProcedureHead then exit;
-  if ProcNode.FirstChild<>nil then begin
-    Result:=ProcNode.FirstChild.Desc=ctnParameterList;
-    exit;
-  end;
-  MoveCursorBehindProcName(ProcNode);
-  Result:=CurPos.Flag=cafRoundBracketOpen;
 end;
 
-function TPascalReaderTool.ProcNodeHasOfObject(ProcNode: TCodeTreeNode
-  ): boolean;
+function TPascalReaderTool.ProcNodeHasOfObject(ProcNode: TCodeTreeNode): boolean;
 begin
 
   // ToDo: ppu, dcu
