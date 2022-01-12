@@ -1536,8 +1536,11 @@ DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
       </element>
 
       <element name="TLvlGraph.MinimizeOverlappings">
-        <short>Sets the position for all nodes to minimize overlappings.</short>
+        <short>Sets the position for all nodes to ensure the required gaps between nodes.</short>
         <descr/>
+        <version>
+          An overloaded variant without the ALevel parameter was added in version 2.3.0.
+        </version>
         <seealso/>
       </element>
       <element name="TLvlGraph.MinimizeOverlappings.MinPos">
@@ -2541,6 +2544,7 @@ DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
       <element name="TCustomLvlGraphControl.FOnSelectionChanged"/>
       <element name="TCustomLvlGraphControl.FOnStartAutoLayout"/>
       <element name="TCustomLvlGraphControl.FOptions"/>
+      <element name="TCustomLvlGraphControl.FZoom"/>
       <element name="TCustomLvlGraphControl.FPixelPerWeight"/>
       <element name="TCustomLvlGraphControl.FScrollLeft"/>
       <element name="TCustomLvlGraphControl.FScrollLeftMax"/>
@@ -2631,6 +2635,41 @@ DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
         <short/>
       </element>
 
+      <element name="TCustomLvlGraphControl.ClientPosFor">
+        <short>
+          Converts a given point or rectangle to client coordinates in the visible area for the control.
+        </short>
+      </element>
+      <element name="TCustomLvlGraphControl.ClientPosFor.Result"/>
+      <element name="TCustomLvlGraphControl.ClientPosFor.AGraphPoint"/>
+      <element name="TCustomLvlGraphControl.ClientPosFor.AGraphRect"/>
+
+      <element name="TCustomLvlGraphControl.ApplyZoom">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.ApplyZoom.Result"/>
+      <element name="TCustomLvlGraphControl.ApplyZoom.c"/>
+      <element name="TCustomLvlGraphControl.ApplyZoom.p"/>
+      <element name="TCustomLvlGraphControl.ApplyZoom.r"/>
+
+      <element name="TCustomLvlGraphControl.GetZoomedTop">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetZoomedTop.Result"/>
+      <element name="TCustomLvlGraphControl.GetZoomedTop.ANode"/>
+
+      <element name="TCustomLvlGraphControl.GetZoomedCenter">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetZoomedCenter.Result"/>
+      <element name="TCustomLvlGraphControl.GetZoomedCenter.ANode"/>
+
+      <element name="TCustomLvlGraphControl.GetZoomedBottom">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.GetZoomedBottom.Result"/>
+      <element name="TCustomLvlGraphControl.GetZoomedBottom.ANode"/>
+
       <element name="TCustomLvlGraphControl.SetSelectedNode">
         <short/>
       </element>
@@ -2662,6 +2701,14 @@ DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
       <element name="TCustomLvlGraphControl.WMMouseWheel.Message">
         <short/>
       </element>
+
+      <element name="TCustomLvlGraphControl.MouseUp">
+        <short/>
+      </element>
+      <element name="TCustomLvlGraphControl.MouseUp.Button"/>
+      <element name="TCustomLvlGraphControl.MouseUp.Shift"/>
+      <element name="TCustomLvlGraphControl.MouseUp.X"/>
+      <element name="TCustomLvlGraphControl.MouseUp.Y"/>
 
       <element name="TCustomLvlGraphControl.ImageListChange">
         <short/>
@@ -3286,18 +3333,34 @@ DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
       </element>
 
       <element name="GetManhattanDistancePointLine">
-        <short/>
-        <descr/>
+        <short>Gets the distance from a point measured along axes at right angles.</short>
+        <descr>
+          <p>
+            GetManhattanDistancePointLine is an Integer function used to get a distance from a point measured along axes at right angles. Also called "taxicab geometry". In taxicab geometry, the distance  between two points is the sum of the absolute differences of their Cartesian coordinates.
+          </p>
+          <p>
+            In other words, Geometric distance measures the hypotenuse for a right triangle. Manhattan distance is the cumulative length of the adjacent and opposite sides for that right triangle.
+          </p>
+          <p>
+            X and Y contain the coordinates with the origin for the measurement.
+          </p>
+          <p>
+            LineX1 and LineY1 contain the end coordinates for the adjacent side of the right triangle (starting at X, Y).
+          </p>
+          <p>
+            LineX2 and LineY2 contain the end coordinates for the opposite side of the right triangle (start at LineX1, LineY1).
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="GetManhattanDistancePointLine.Result">
-        <short/>
+        <short>Distance along the sides of a right triangle using the specified coordinates.</short>
       </element>
       <element name="GetManhattanDistancePointLine.X">
-        <short/>
+        <short>Horizontal coordinate for the origin of the measurement.</short>
       </element>
       <element name="GetManhattanDistancePointLine.Y">
-        <short/>
+        <short>Vertical coordinate for the origin of the measurement.</short>
       </element>
       <element name="GetManhattanDistancePointLine.LineX1">
         <short/>
@@ -3448,15 +3511,15 @@ DrawPositionEnd := DrawPosition + Max(InSize, OutSize);
       </element>
 
       <element name="NodeArrayAsString">
-        <short/>
+        <short>Gets a string with a comma-delimited list of captions for the specified node array.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="NodeArrayAsString.Result">
-        <short/>
+        <short>Comma-delimited list of captions for the specified node array.</short>
       </element>
       <element name="NodeArrayAsString.Nodes">
-        <short/>
+        <short>Array with the TLvlGraphNode instances examined in the routine.</short>
       </element>
 
       <element name="dbgs">
