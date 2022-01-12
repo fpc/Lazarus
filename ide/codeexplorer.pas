@@ -1359,9 +1359,9 @@ begin
           if (cefcPublishedPropWithoutDefault in ObserverCats)
           and (CodeNode.Parent.Desc=ctnClassPublished) then
           begin
-            if (not Tool.PropertyHasSpecifier(CodeNode,'default',false))
-            and (Tool.PropertyHasSpecifier(CodeNode,'read',false))
-            and (Tool.PropertyHasSpecifier(CodeNode,'write',false))
+            if (not Tool.PropertyHasSpecifier(CodeNode,'DEFAULT',false))
+            and (Tool.PropertyHasSpecifier(CodeNode,'READ',false))
+            and (Tool.PropertyHasSpecifier(CodeNode,'WRITE',false))
             then
               AddCodeNode(cefcPublishedPropWithoutDefault,CodeNode);
           end;

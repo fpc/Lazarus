@@ -140,7 +140,7 @@ type
     function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
     function PropNodeIsTypeLess(PropNode: TCodeTreeNode): boolean;
     function PropertyHasSpecifier(PropNode: TCodeTreeNode;
-                 UpperKeyword: string; ExceptionOnNotFound: boolean = true): boolean;
+      const UpperKeyword: string; ExceptionOnNotFound: boolean = true): boolean;
 
     // procs
     function ExtractProcName(ProcNode: TCodeTreeNode;
@@ -3270,7 +3270,7 @@ begin
 end;
 
 function TPascalReaderTool.PropertyHasSpecifier(PropNode: TCodeTreeNode;
-  UpperKeyword: string; ExceptionOnNotFound: boolean): boolean;
+  const UpperKeyword: string; ExceptionOnNotFound: boolean): boolean;
 // true if cursor is on keyword
 begin
 
@@ -3296,7 +3296,6 @@ begin
     end;
   end;
 
-  UpperKeyword:=UpperCaseStr(UpperKeyword);
   // read specifiers
   while not (CurPos.Flag in [cafSemicolon,cafNone]) do begin
     if WordIsPropertySpecifier.DoIdentifier(@Src[CurPos.StartPos])

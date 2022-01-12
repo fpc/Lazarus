@@ -4065,8 +4065,8 @@ begin
   if not (iliIsReadOnlyValid in Flags) then begin
     Include(Flags,iliIsReadOnlyValid);
     ANode:=Node;
-    if (ANode<>nil) and Tool.PropertyHasSpecifier(ANode,'read',false)
-    and not Tool.PropertyHasSpecifier(ANode,'write',false) then
+    if (ANode<>nil) and Tool.PropertyHasSpecifier(ANode,'READ',false)
+    and not Tool.PropertyHasSpecifier(ANode,'WRITE',false) then
       Include(Flags,iliIsReadOnly)
     else
       Exclude(Flags,iliIsReadOnly);

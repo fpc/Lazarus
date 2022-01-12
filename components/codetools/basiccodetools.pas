@@ -630,8 +630,7 @@ function FindProgramNameInSource(const Source:string;
 begin
   ProgramNameStart:=0;
   ProgramNameEnd:=0;
-  if uppercasestr(FindSourceType(Source,ProgramNameStart,ProgramNameEnd))=
-    'PROGRAM'
+  if UpperCaseStr(FindSourceType(Source,ProgramNameStart,ProgramNameEnd))='PROGRAM'
   then
     Result:=copy(Source,ProgramNameStart,ProgramNameEnd-ProgramNameStart)
   else

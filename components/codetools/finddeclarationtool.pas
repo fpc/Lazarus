@@ -13288,7 +13288,7 @@ begin
   case FoundContext.Node.Desc of
   ctnProperty:
     begin
-      if FoundContext.Tool.PropertyHasSpecifier(FoundContext.Node,'Enumerator',false)
+      if FoundContext.Tool.PropertyHasSpecifier(FoundContext.Node,'ENUMERATOR',false)
       then begin
         FoundContext.Tool.ReadNextAtom;
         if FoundContext.Tool.UpAtomIs('CURRENT') then

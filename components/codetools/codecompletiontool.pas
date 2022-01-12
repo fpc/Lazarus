@@ -6036,8 +6036,8 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
         GatherAssignableMembers(Child)
       else if (Child.Desc=ctnVarDefinition)
       or ((Child.Desc=ctnProperty)
-        and (PropertyHasSpecifier(Child,'read'))
-        and (PropertyHasSpecifier(Child,'write')))
+        and (PropertyHasSpecifier(Child,'READ'))
+        and (PropertyHasSpecifier(Child,'WRITE')))
       then begin
         // a variable or a property which is readable and writable
         if MemberNodeExts=nil then
@@ -6067,7 +6067,7 @@ function TCodeCompletionCodeTool.FindAssignMethod(CursorPos: TCodeXYPosition;
     while AVLNode<>nil do begin
       NodeExt:=TCodeTreeNodeExtension(AVLNode.Data);
       if NodeExt.Node.Desc=ctnProperty then begin
-        if PropertyHasSpecifier(NodeExt.Node,'write') then begin
+        if PropertyHasSpecifier(NodeExt.Node,'WRITE') then begin
           ReadNextAtom;
           if AtomIsIdentifier then begin
             WrittenNodeExt:=FindCodeTreeNodeExtWithIdentifier(MemberNodeExts,
