@@ -46,16 +46,13 @@
         <UnitName Value="sparta_abstractresizer"/>
       </Item8>
     </Files>
-    <RequiredPkgs Count="3">
-      <Item1>
-        <PackageName Value="sparta_Generics"/>
-      </Item1>
+    <RequiredPkgs Count="2">
       <Item2>
         <PackageName Value="LCL"/>
       </Item2>
-      <Item3>
+      <Item1>
         <PackageName Value="FCL"/>
-      </Item3>
+      </Item1>
     </RequiredPkgs>
     <UsageOptions>
       <UnitPath Value="$(PkgOutDir)"/>
