@@ -616,7 +616,7 @@ var
       dtsYear:
         Result := FormatDateTime(DateTimeStepFormat.YearFormat, AValue);
       dtsQuarter:
-        Result := IntToRoman(Floor(AValue / helper.FStepLen) mod 4 + 1) + '/' +
+        Result := IntToRoman((MonthOf(AValue)-1) div 3 + 1) + '/' +
           FormatDateTime(DateTimeStepFormat.YearFormat, AValue);
       dtsMonth:
         if FSuppressPrevUnit and (st.Year = prevSt.Year) then
