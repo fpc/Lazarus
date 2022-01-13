@@ -3070,6 +3070,7 @@ begin
     bplFpcSpecific, bplRtlRestoreContext, bplRtlUnwind,
     {$ENDIF}
     bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler,
+    bplSehW32Except, bplSehW32Finally,
     {$ENDIF}
     bplStepOut]);
 
@@ -3079,6 +3080,7 @@ begin
       {$IFDEF WIN64} , bplRtlRestoreContext, bplFpcSpecific {$ENDIF}
       , bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler
       {$ENDIF}
+      , bplSehW32Except, bplSehW32Finally
       ]);
 
   case st of
@@ -3091,6 +3093,7 @@ begin
           {$IFDEF MSWINDOWS}
           {$IFDEF WIN64} , bplFpcSpecific {$ENDIF}
           , bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler
+          , bplSehW32Except, bplSehW32Finally
           {$ENDIF}
           ]);
       end
