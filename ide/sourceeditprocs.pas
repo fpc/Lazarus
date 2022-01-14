@@ -782,7 +782,7 @@ var
   IdentList: TIdentifierList;
   CanAddSemicolon, CanAddComma, CursorAtEnd, IsReadOnly: boolean;
   ProcHeadFlags: TProcHeadAttributes;
-  ClassNode: TCodeTreeNode;  // For a class node or a procedure type node.
+  ClassNode: TCodeTreeNode;
   Dsc: TCodeTreeNodeDesc;
   Line, s: string;
   StartContextPos: TCodeXYPosition;
@@ -809,11 +809,6 @@ begin
   Dsc:=IdentItem.GetDesc;
   //DebugLn(['GetIdentCompletionValue IdentItem.GetDesc=',NodeDescriptionAsString(Dsc),
   //  ', IdentList.ContextFlags=',dbgs(IdentList.ContextFlags),' IdentItem.Node=',IdentItem.Node<>nil]);
-  if Dsc=ctnVarDefinition then begin
-    ClassNode:=IdentItem.Node.FirstChild;
-    if Assigned(ClassNode) and (ClassNode.Desc=ctnProcedureType) then
-      Dsc:=ctnProcedure;
-  end;
 
   case Dsc of
 
@@ -924,7 +919,7 @@ begin
   and (not IsReadOnly)
   and (not IdentList.StartUpAtomBehindIs(':='))
   and (not IdentList.StartUpAtomBehindIs('('))
-  and (IdentItem.CanBeAssigned(Dsc))
+  and (IdentItem.CanBeAssigned)
   and CodeToolsOpts.IdentComplAddAssignOperator then begin
     if (atIdentifier in CodeToolsOpts.DoInsertSpaceAfter)
     or (atSymbol in CodeToolsOpts.DoInsertSpaceInFront) then

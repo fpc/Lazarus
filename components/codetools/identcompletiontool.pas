@@ -161,7 +161,7 @@ type
     function IsPropertyReadOnly: boolean;
     function GetHintModifiers: TPascalHintModifiers;
     function CheckHasChilds: boolean;
-    function CanBeAssigned(ADesc: TCodeTreeNodeDesc): boolean;
+    function CanBeAssigned: boolean;
     procedure UpdateBaseContext;
     function HasChilds: boolean;
     function HasIndex: boolean;
@@ -4018,6 +4018,8 @@ var
   ANode: TCodeTreeNode;
   StartPos: Integer;
 begin
+  Result:=(GetDesc=ctnProcedure);
+  if not Result then exit;
   if (iliParamNameListValid in Flags) then begin
     StartPos:=1;
     while (StartPos<=length(FParamTypeList))
@@ -4120,16 +4122,16 @@ begin
   Result:=true;
 end;
 
-function TIdentifierListItem.CanBeAssigned(ADesc: TCodeTreeNodeDesc): boolean;
+function TIdentifierListItem.CanBeAssigned: boolean;
 var
   ANode: TCodeTreeNode;
 begin
   Result:=false;
   ANode:=Node;
-  Assert(Assigned(ANode), 'CanBeAssigned: Node=Nil');
-  if (ADesc=ctnVarDefinition) then
+  if (ANode=nil) then exit;
+  if (GetDesc=ctnVarDefinition) then
     Result:=true;
-  if (ADesc in [ctnProperty,ctnGlobalProperty]) then begin
+  if (ANode.Desc in [ctnProperty,ctnGlobalProperty]) then begin
     if Tool.PropertyHasSpecifier(ANode,'WRITE') then exit(true);
     if Tool.PropNodeIsTypeLess(ANode) then begin
       exit(true);// ToDo: search the real property definition
