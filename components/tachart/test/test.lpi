@@ -6,6 +6,9 @@
     <General>
       <Flags>
         <MainUnitHasCreateFormStatements Value="False"/>
+        <MainUnitHasTitleStatement Value="False"/>
+        <MainUnitHasScaledStatement Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
       <Title Value="TAChart tests"/>
@@ -18,8 +21,8 @@
       <Language Value=""/>
       <CharSet Value=""/>
     </VersionInfo>
-    <BuildModes>
-      <Item Name="default" Default="True"/>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -35,27 +38,27 @@
         <PackageName Value="TAChartLazarusPkg"/>
       </Item1>
     </RequiredPackages>
-    <Units>
-      <Unit>
+    <Units Count="5">
+      <Unit0>
         <Filename Value="test.lpr"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
+      </Unit0>
+      <Unit1>
         <Filename Value="UtilsTest.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
+      </Unit1>
+      <Unit2>
         <Filename Value="SourcesTest.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
+      </Unit2>
+      <Unit3>
         <Filename Value="AssertHelpers.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
+      </Unit3>
+      <Unit4>
         <Filename Value="DbTest.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
+      </Unit4>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

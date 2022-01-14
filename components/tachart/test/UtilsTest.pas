@@ -219,8 +219,8 @@ procedure TMathTest.TestIsEquivalent;
 begin
   AssertTrue(IsEquivalent(1.2345, 1.2345));
   AssertTrue(IsEquivalent(SafeNaN, SafeNaN));
-  AssertTrue(IsEquivalent(1e100, 1e100+1));
-  AssertFalse(IsEquivalent(1e10, 1e10+1));
+  AssertTrue(IsEquivalent(double(1e100), double(1e100)+1));
+  AssertFalse(IsEquivalent(double(1e10), double(1e10)+1));
   AssertFalse(IsEquivalent(5, SafeNaN));
   AssertFalse(IsEquivalent(SafeNaN, 5));
 end;
