@@ -218,9 +218,6 @@ begin
 end;
 
 function TDateTimeIntervalsHelper.NextValue(AValue: TDateTime): Double;
-var
-  y, m, d: Word;
-  month_steps: Byte;
 begin
   case FBestStep of
     dtsYear:
@@ -229,25 +226,16 @@ begin
         Result := AValue + FStepLen
       else
         Result := IncYear(AValue, Round(FBestStepCoeff));
-    dtsQuarter:
-      begin
-        DecodeDate(AValue, y,m,d);
-        if SameValue(FStepLen, YEAR/4, 1E-3) then  
-          month_steps := 3
-        else
-          month_steps := 6; 
-        m := ((m - 1) div month_steps) * month_steps + month_steps + 1;
-        if m <= 12 then
-          Result := EncodeDate(y, m, 1)
-        else
-          Result := EncodeDate(y+1, 1, 1);
-      end;
+    dtsQuarter: 
+      Result := IncQuarter(AValue, Round(FStepLen/DATE_STEP_INTERVALS[dtsQuarter]));
     dtsMonth: Result := IncMonth(AValue, Round(FBestStepCoeff));
     otherwise Result := AValue + FStepLen;
   end;
 end;
 
 function TDateTimeIntervalsHelper.StartValue(AValue: TDateTime): TDateTime;
+var
+  d, m, y: Word;
 begin
   Result := Int(AValue / FStepLen - 1) * FStepLen;
   case FBestStep of
@@ -255,6 +243,17 @@ begin
       // DateTime arithmetics fails on large year numbers.
       if FBestStepCoeff <= 10 then
         Result := StartOfTheYear(AValue);
+    dtsQuarter: 
+      begin
+        Result := StartOfTheQuarter(AValue);
+        // Make sure that first mark is at start of year.
+        if round(FStepLen/DATE_STEP_INTERVALS[dtsQuarter]) = 2 then
+        begin
+          DecodeDate(Result, y,m,d);
+          if m < 7 then m := 1 else m := 7;
+          Result := EncodeDate(y, m, 1);
+        end;
+      end;
     dtsMonth: Result := StartOfTheMonth(AValue);
     else ;
   end;
