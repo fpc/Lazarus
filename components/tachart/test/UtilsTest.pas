@@ -85,6 +85,13 @@ type
     procedure TestFitEquationText;
   end;
 
+  TQuarterTest = class(TTestCase)
+  published
+    procedure TestStartOfTheQuarter;
+    procedure TestIncQuarter;
+  end;
+  
+  
 implementation
 
 uses
@@ -629,11 +636,113 @@ begin
 end;
 
 
+{ TQuarterTest }
+
+procedure TQuarterTest.TestStartOfTheQuarter;
+begin
+  AssertEquals(EncodeDate(2020, 1, 1), StartOfTheQuarter(EncodeDate(2020, 1, 1)));
+  AssertEquals(EncodeDate(2020, 1, 1), StartOfTheQuarter(EncodeDate(2020, 1, 31)));
+  AssertEquals(EncodeDate(2020, 1, 1), StartOfTheQuarter(EncodeDate(2020, 2, 1)));
+  AssertEquals(EncodeDate(2020, 1, 1), StartOfTheQuarter(EncodeDate(2020, 2, 29)));
+  AssertEquals(EncodeDate(2020, 1, 1), StartOfTheQuarter(EncodeDate(2020, 3, 1)));
+  AssertEquals(EncodeDate(2020, 4, 1), StartOfTheQuarter(EncodeDate(2020, 4, 1)));
+  AssertEquals(EncodeDate(2020, 4, 1), StartOfTheQuarter(EncodeDate(2020, 4, 30)));
+  AssertEquals(EncodeDate(2020, 4, 1), StartOfTheQuarter(EncodeDate(2020, 5, 15)));
+  AssertEquals(EncodeDate(2020, 4, 1), StartOfTheQuarter(EncodeDate(2020, 6, 15)));
+  AssertEquals(EncodeDate(2020, 7, 1), StartOfTheQuarter(EncodeDate(2020, 7, 15)));
+  AssertEquals(EncodeDate(2020, 7, 1), StartOfTheQuarter(EncodeDate(2020, 8, 15)));
+  AssertEquals(EncodeDate(2020, 7, 1), StartOfTheQuarter(EncodeDate(2020, 9, 15)));
+  AssertEquals(EncodeDate(2020, 10, 1), StartOfTheQuarter(EncodeDate(2020, 10, 1)));
+  AssertEquals(EncodeDate(2020, 10, 1), StartOfTheQuarter(EncodeDate(2020, 11, 5)));
+  AssertEquals(EncodeDate(2020, 10, 1), StartOfTheQuarter(EncodeDate(2020, 12, 6)));
+  AssertEquals(EncodeDate(2020, 10, 1), StartOfTheQuarter(EncodeDate(2020, 12, 31)));
+  AssertEquals(EncodeDate(2021, 1, 1), StartOfTheQuarter(EncodeDate(2021, 2, 28)));
+end;
+
+procedure TQuarterTest.TestIncQuarter;
+begin
+  AssertEquals(EncodeDate(2020, 4, 1), IncQuarter(EncodeDate(2020, 1, 1), 1));
+  AssertEquals(EncodeDate(2020, 4, 1), IncQuarter(EncodeDate(2020, 1, 2), 1));
+  AssertEquals(EncodeDate(2020, 4, 1), IncQuarter(EncodeDate(2020, 2, 29), 1));
+  AssertEquals(EncodeDate(2020, 4, 1), IncQuarter(EncodeDate(2020, 3, 31), 1));
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 4, 1), 1));
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 5, 1), 1));
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 6, 30), 1));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 7, 1), 1));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 8, 1), 1));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 9, 30), 1));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 10, 31), 1));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 11, 30), 1));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 12, 31), 1));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2021, 1, 10), 1));
+
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 1, 1), 2));
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 1, 2), 2));
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 2, 29), 2));
+  AssertEquals(EncodeDate(2020, 7, 1), IncQuarter(EncodeDate(2020, 3, 31), 2));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 4, 1), 2));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 5, 1), 2));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 6, 30), 2));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 7, 1), 2));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 8, 1), 2));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 9, 30), 2));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 10, 31), 2));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 11, 30), 2));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 12, 31), 2));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2021, 1, 10), 2));
+
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 1, 1), 3));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 1, 2), 3));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 2, 29), 3));
+  AssertEquals(EncodeDate(2020, 10, 1), IncQuarter(EncodeDate(2020, 3, 31), 3));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 4, 1), 3));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 5, 1), 3));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 6, 30), 3));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 7, 1), 3));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 8, 1), 3));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 9, 30), 3));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 10, 31), 3));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 11, 30), 3));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 12, 31), 3));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2021, 1, 10), 3));
+  
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 1, 1), 4));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 1, 2), 4));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 2, 29), 4));
+  AssertEquals(EncodeDate(2021, 1, 1), IncQuarter(EncodeDate(2020, 3, 31), 4));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 4, 1), 4));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 5, 1), 4));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 6, 30), 4));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 7, 1), 4));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 8, 1), 4));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 9, 30), 4));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2020, 10, 31), 4));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2020, 11, 30), 4));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2020, 12, 31), 4));
+  AssertEquals(EncodeDate(2022, 1, 1), IncQuarter(EncodeDate(2021, 1, 10), 4));
+  
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 1, 1), 5));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 1, 2), 5));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 2, 29), 5));
+  AssertEquals(EncodeDate(2021, 4, 1), IncQuarter(EncodeDate(2020, 3, 31), 5));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 4, 1), 5));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 5, 1), 5));
+  AssertEquals(EncodeDate(2021, 7, 1), IncQuarter(EncodeDate(2020, 6, 30), 5));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2020, 7, 1), 5));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2020, 8, 1), 5));
+  AssertEquals(EncodeDate(2021, 10, 1), IncQuarter(EncodeDate(2020, 9, 30), 5));
+  AssertEquals(EncodeDate(2022, 1, 1), IncQuarter(EncodeDate(2020, 10, 31), 5));
+  AssertEquals(EncodeDate(2022, 1, 1), IncQuarter(EncodeDate(2020, 11, 30), 5));
+  AssertEquals(EncodeDate(2022, 1, 1), IncQuarter(EncodeDate(2020, 12, 31), 5));
+  AssertEquals(EncodeDate(2022, 4, 1), IncQuarter(EncodeDate(2021, 1, 10), 5));
+end;
+
+
 initialization
 
   RegisterTests([
     TIntervalListTest, TMathTest, TGeometryTest, TColorTest, TRTTITest,
-    TPublishedIntegerSetTest, THistoryTest, TFitTest]);
+    TPublishedIntegerSetTest, THistoryTest, TFitTest, TQuarterTest]);
 
 end.
 

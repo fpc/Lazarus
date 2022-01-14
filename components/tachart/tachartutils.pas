@@ -347,6 +347,7 @@ function FormatIfNotEmpty(AFormat, AStr: String): String; inline;
 
 function IfThen(ACond: Boolean; ATrue, AFalse: TObject): TObject; overload;
 function ImgRoundChecked(A: Double): Integer; inline;
+function IncQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 function IntToColorHex(AColor: Integer): String; inline;
 function IsEquivalent(const A1, A2: Double): Boolean; inline;
@@ -365,6 +366,8 @@ procedure SetPropDefaults(AObject: TPersistent; APropNames: array of String);
 
 function Split(
   AString: String; ADest: TStrings = nil; ADelimiter: Char = '|'): TStrings;
+
+function StartOfTheQuarter(ADate: TDateTime): TDate;
 
 // Accept both locale-specific and default decimal separators.
 function StrToFloatDefSep(const AStr: String; ADefault: Double = 0.0): Double;
@@ -494,6 +497,17 @@ begin
   Result := Round(EnsureRange(A, -MAX_COORD, MAX_COORD));
 end;
 
+function IncQuarter(ADate: TDateTime; NumberOfQuarters: Integer): TDate;
+var
+  y, m, d: Word;
+begin
+  DecodeDate(ADate, y,m,d);
+  m := (((m - 1) div 3) + NumberOfQuarters) * 3;
+  inc(y, m div 12);
+  m := m mod 12 + 1;
+  Result := EncodeDate(y, m, 1);
+end;
+
 function InterpolateRGB(AColor1, AColor2: Integer; ACoeff: Double): Integer;
 type
   TBytes = packed array [1..4] of Byte;
@@ -590,6 +604,15 @@ begin
   Result.Delimiter := ADelimiter;
   Result.StrictDelimiter := true;
   Result.DelimitedText := AString;
+end;
+
+function StartOfTheQuarter(ADate: TDateTime): TDate;
+var
+  y,m,d: Word;
+begin
+  DecodeDate(ADate, y,m,d);
+  m := ((m - 1) div 3) * 3 + 1;
+  Result := EncodeDate(y, m, 1);
 end;
 
 function StrToFloatDefSep(const AStr: String; ADefault: Double = 0.0): Double;
