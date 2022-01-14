@@ -254,7 +254,8 @@ begin
           Result := EncodeDate(y, m, 1);
         end;
       end;
-    dtsMonth: Result := StartOfTheMonth(AValue);
+    dtsMonth: Result := StartOfTheYear(AValue);
+    dtsWeek: Result := StartOfTheWeek(AValue);
     else ;
   end;
 end;
