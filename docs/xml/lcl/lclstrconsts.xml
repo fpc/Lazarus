@@ -195,8 +195,6 @@
       <element name="rsBitmaps"/>
       <element name="rsPixmap"/>
       <element name="rsPortableNetworkGraphic"/>
-      <element name="rsPortableBitmap"/>
-      <element name="rsPortableGrayMap"/>
       <element name="rsPortablePixmap"/>
       <element name="rsIcon"/>
       <element name="rsIcns"/>
@@ -204,6 +202,7 @@
       <element name="rsJpeg"/>
       <element name="rsTiff"/>
       <element name="rsGIF"/>
+      <element name="rsTGA"/>
       <element name="rsGraphic"/>
       <element name="rsUnsupportedClipboardFormat"/>
       <element name="rsGroupIndexCannotBeLessThanPrevious"/>
