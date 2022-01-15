@@ -132,7 +132,9 @@ msgid "Backward"
 msgstr "Nanzu"
 
 #: lclstrconsts.rsbitmaps
-msgid "Bitmaps"
+#, fuzzy
+#| msgid "Bitmaps"
+msgid "Bitmap Files"
 msgstr "Fiure"
 
 #: lclstrconsts.rsblackcolorcaption
@@ -208,7 +210,9 @@ msgid "Cream"
 msgstr "Crema"
 
 #: lclstrconsts.rscursor
-msgid "Cursor"
+#, fuzzy
+#| msgid "Cursor"
+msgid "Cursor Files"
 msgstr "Cursore"
 
 #: lclstrconsts.rscustomcolorcaption
@@ -405,7 +409,9 @@ msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "--gdk-no-debug flags     Disattiveghja i messaghji particulari di traccia/spannatura GDK."
 
 #: lclstrconsts.rsgif
-msgid "Graphics Interchange Format"
+#, fuzzy
+#| msgid "Graphics Interchange Format"
+msgid "Graphics Interchange Format Files"
 msgstr "Furmatu di scambiu graficu (GIF)"
 
 #: lclstrconsts.rsgoptionfatalwarnings
@@ -617,11 +623,13 @@ msgstr "Luce calda"
 #: lclstrconsts.rsicns
 #, fuzzy
 #| msgid "Mac OS X Icon"
-msgid "macOS Icon"
+msgid "macOS Icon Files"
 msgstr "Icona Mac OS X"
 
 #: lclstrconsts.rsicon
-msgid "Icon"
+#, fuzzy
+#| msgid "Icon"
+msgid "Icon Files"
 msgstr "Icona"
 
 #: lclstrconsts.rsiconimageempty
@@ -713,7 +721,9 @@ msgid "%s is already associated with %s"
 msgstr "%s hè dighjà assuciatu à %s"
 
 #: lclstrconsts.rsjpeg
-msgid "Joint Picture Expert Group"
+#, fuzzy
+#| msgid "Joint Picture Expert Group"
+msgid "JPEG Files"
 msgstr "Gruppu d’esperti di fiura ghjunta"
 
 #: lclstrconsts.rslastrecordhint
@@ -904,23 +914,21 @@ msgid "Select a date"
 msgstr "Selezziunà una data"
 
 #: lclstrconsts.rspixmap
-msgid "Pixmap"
+#, fuzzy
+#| msgid "Pixmap"
+msgid "Pixmap Files"
 msgstr "Pixmap"
 
-#: lclstrconsts.rsportablebitmap
-msgid "Portable BitMap"
-msgstr "BitMap purtavule"
-
-#: lclstrconsts.rsportablegraymap
-msgid "Portable GrayMap"
-msgstr "GrayMap purtavule"
-
 #: lclstrconsts.rsportablenetworkgraphic
-msgid "Portable Network Graphic"
+#, fuzzy
+#| msgid "Portable Network Graphic"
+msgid "PNG Files"
 msgstr "Graficu di reta purtavule"
 
 #: lclstrconsts.rsportablepixmap
-msgid "Portable PixMap"
+#, fuzzy
+#| msgid "Portable PixMap"
+msgid "Portable Pixmap Files"
 msgstr "PixMap purtavule"
 
 #: lclstrconsts.rspostrecordhint
@@ -1116,12 +1124,18 @@ msgstr "Smeraldu"
 msgid "Text"
 msgstr "Testu"
 
+#: lclstrconsts.rstga
+msgid "TGA Image Files"
+msgstr ""
+
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
 msgstr "L’indirizzu integratu hè solu di lettura. Cambiate piuttostu « BaseURL »."
 
 #: lclstrconsts.rstiff
-msgid "Tagged Image File Format"
+#, fuzzy
+#| msgid "Tagged Image File Format"
+msgid "Tagged Image File Format Files"
 msgstr "Furmatu etichettatu di schedariu di fiura"
 
 #: lclstrconsts.rstpanelaccessibilitydescription

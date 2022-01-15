@@ -131,7 +131,9 @@ msgid "Backward"
 msgstr "後方へ"
 
 #: lclstrconsts.rsbitmaps
-msgid "Bitmaps"
+#, fuzzy
+#| msgid "Bitmaps"
+msgid "Bitmap Files"
 msgstr "ビットマップファイル"
 
 #: lclstrconsts.rsblackcolorcaption
@@ -207,7 +209,9 @@ msgid "Cream"
 msgstr "クリーム色"
 
 #: lclstrconsts.rscursor
-msgid "Cursor"
+#, fuzzy
+#| msgid "Cursor"
+msgid "Cursor Files"
 msgstr "カーソルファイル"
 
 #: lclstrconsts.rscustomcolorcaption
@@ -404,7 +408,9 @@ msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "--gdk-no-debug flags  GDK 固有のトレース／デバッグメッセージを無効にします。"
 
 #: lclstrconsts.rsgif
-msgid "Graphics Interchange Format"
+#, fuzzy
+#| msgid "Graphics Interchange Format"
+msgid "Graphics Interchange Format Files"
 msgstr "GIF ファイル"
 
 #: lclstrconsts.rsgoptionfatalwarnings
@@ -617,11 +623,13 @@ msgstr "選択項目の背景色"
 #: lclstrconsts.rsicns
 #, fuzzy
 #| msgid "Mac OS X Icon"
-msgid "macOS Icon"
+msgid "macOS Icon Files"
 msgstr "Mac OS X アイコンファイル"
 
 #: lclstrconsts.rsicon
-msgid "Icon"
+#, fuzzy
+#| msgid "Icon"
+msgid "Icon Files"
 msgstr "アイコンファイル"
 
 #: lclstrconsts.rsiconimageempty
@@ -713,7 +721,9 @@ msgid "%s is already associated with %s"
 msgstr "%s は既に %s と関連付けられています"
 
 #: lclstrconsts.rsjpeg
-msgid "Joint Picture Expert Group"
+#, fuzzy
+#| msgid "Joint Picture Expert Group"
+msgid "JPEG Files"
 msgstr "JPEG ファイル"
 
 #: lclstrconsts.rslastrecordhint
@@ -904,23 +914,21 @@ msgid "Select a date"
 msgstr "日付の選択"
 
 #: lclstrconsts.rspixmap
-msgid "Pixmap"
+#, fuzzy
+#| msgid "Pixmap"
+msgid "Pixmap Files"
 msgstr "XPM ファイル"
 
-#: lclstrconsts.rsportablebitmap
-msgid "Portable BitMap"
-msgstr "PBM ファイル"
-
-#: lclstrconsts.rsportablegraymap
-msgid "Portable GrayMap"
-msgstr "PGM ファイル"
-
 #: lclstrconsts.rsportablenetworkgraphic
-msgid "Portable Network Graphic"
+#, fuzzy
+#| msgid "Portable Network Graphic"
+msgid "PNG Files"
 msgstr "PNG ファイル"
 
 #: lclstrconsts.rsportablepixmap
-msgid "Portable PixMap"
+#, fuzzy
+#| msgid "Portable PixMap"
+msgid "Portable Pixmap Files"
 msgstr "PNM ファイル"
 
 #: lclstrconsts.rspostrecordhint
@@ -1116,12 +1124,18 @@ msgstr "暗青緑色"
 msgid "Text"
 msgstr "テキスト"
 
+#: lclstrconsts.rstga
+msgid "TGA Image Files"
+msgstr ""
+
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
 msgstr ""
 
 #: lclstrconsts.rstiff
-msgid "Tagged Image File Format"
+#, fuzzy
+#| msgid "Tagged Image File Format"
+msgid "Tagged Image File Format Files"
 msgstr "TIFF ファイル"
 
 #: lclstrconsts.rstpanelaccessibilitydescription

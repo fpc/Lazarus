@@ -136,7 +136,9 @@ msgid "Backward"
 msgstr "Mundur"
 
 #: lclstrconsts.rsbitmaps
-msgid "Bitmaps"
+#, fuzzy
+#| msgid "Bitmaps"
+msgid "Bitmap Files"
 msgstr "Bitmaps"
 
 #: lclstrconsts.rsblackcolorcaption
@@ -213,7 +215,7 @@ msgid "Cream"
 msgstr ""
 
 #: lclstrconsts.rscursor
-msgid "Cursor"
+msgid "Cursor Files"
 msgstr ""
 
 #: lclstrconsts.rscustomcolorcaption
@@ -415,7 +417,7 @@ msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "--gdk-no-debug flags  Matikan pesan khusus GDK trace/debug."
 
 #: lclstrconsts.rsgif
-msgid "Graphics Interchange Format"
+msgid "Graphics Interchange Format Files"
 msgstr ""
 
 #: lclstrconsts.rsgoptionfatalwarnings
@@ -645,11 +647,13 @@ msgid "Hot Light"
 msgstr ""
 
 #: lclstrconsts.rsicns
-msgid "macOS Icon"
+msgid "macOS Icon Files"
 msgstr ""
 
 #: lclstrconsts.rsicon
-msgid "Icon"
+#, fuzzy
+#| msgid "Icon"
+msgid "Icon Files"
 msgstr "Ikon"
 
 #: lclstrconsts.rsiconimageempty
@@ -741,7 +745,7 @@ msgid "%s is already associated with %s"
 msgstr "%s sudah dikaitkan dengan %s"
 
 #: lclstrconsts.rsjpeg
-msgid "Joint Picture Expert Group"
+msgid "JPEG Files"
 msgstr ""
 
 #: lclstrconsts.rslastrecordhint
@@ -932,23 +936,19 @@ msgid "Select a date"
 msgstr "Pilih tanggal"
 
 #: lclstrconsts.rspixmap
-msgid "Pixmap"
+#, fuzzy
+#| msgid "Pixmap"
+msgid "Pixmap Files"
 msgstr "Pixmap"
 
-#: lclstrconsts.rsportablebitmap
-msgid "Portable BitMap"
-msgstr ""
-
-#: lclstrconsts.rsportablegraymap
-msgid "Portable GrayMap"
-msgstr ""
-
 #: lclstrconsts.rsportablenetworkgraphic
-msgid "Portable Network Graphic"
+#, fuzzy
+#| msgid "Portable Network Graphic"
+msgid "PNG Files"
 msgstr "Portable Network Graphic"
 
 #: lclstrconsts.rsportablepixmap
-msgid "Portable PixMap"
+msgid "Portable Pixmap Files"
 msgstr ""
 
 #: lclstrconsts.rspostrecordhint
@@ -1144,12 +1144,16 @@ msgstr ""
 msgid "Text"
 msgstr "Teks"
 
+#: lclstrconsts.rstga
+msgid "TGA Image Files"
+msgstr ""
+
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
 msgstr ""
 
 #: lclstrconsts.rstiff
-msgid "Tagged Image File Format"
+msgid "Tagged Image File Format Files"
 msgstr ""
 
 #: lclstrconsts.rstpanelaccessibilitydescription

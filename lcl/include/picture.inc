@@ -39,6 +39,25 @@ type
     property Formats[Index: integer]: PPicFileFormat read GetFormats; default;
   end;
 
+function GetLocalizedFormatDescription(GraphicClass: TGraphicClass; OriginalDescription: string): string;
+begin
+  case GraphicClass.ClassName of
+    'TPortableNetworkGraphic': Result:=rsPortableNetworkGraphic;
+    'TPixmap': Result:=rsPixmap;
+    'TBitmap': Result:=rsBitmaps;
+    'TCursorImage': Result:=rsCursor;
+    'TIcon': Result:=rsIcon;
+    'TIcnsIcon': Result:=rsIcns;
+    'TJpegImage': Result:=rsJpeg;
+    'TTiffImage': Result:=rsTiff;
+    'TGIFImage': Result:=rsGIF;
+    'TPortableAnyMapGraphic': Result:=rsPortablePixmap;
+    'TTGAImage': Result:=rsTGA;
+  otherwise
+    Result:=OriginalDescription;
+  end;
+end;
+
 constructor TPicFileFormatsList.Create;
 begin
   inherited Create;
@@ -207,7 +226,7 @@ begin
         end;
         Filter := GetFormatFilter(I);
         FmtStr(Descriptions, '%s%s (%s)|%s',
-             [Descriptions, Description, Filter, Filter]);
+             [Descriptions, GetLocalizedFormatDescription(GraphicClass, Description), Filter, Filter]);
         FmtStr(Filters, '%s%s', [Filters, Filter]);
         Inc(C);
       end;

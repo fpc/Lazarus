@@ -134,7 +134,9 @@ msgid "Backward"
 msgstr "Навпаки"
 
 #: lclstrconsts.rsbitmaps
-msgid "Bitmaps"
+#, fuzzy
+#| msgid "Bitmaps"
+msgid "Bitmap Files"
 msgstr "Піктограмки"
 
 #: lclstrconsts.rsblackcolorcaption
@@ -210,7 +212,9 @@ msgid "Cream"
 msgstr "Кремовий"
 
 #: lclstrconsts.rscursor
-msgid "Cursor"
+#, fuzzy
+#| msgid "Cursor"
+msgid "Cursor Files"
 msgstr "Курсор"
 
 #: lclstrconsts.rscustomcolorcaption
@@ -407,7 +411,9 @@ msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "--gdk-no-debug flags Вимкнути вказані зневаджувальні повідомлення GDK."
 
 #: lclstrconsts.rsgif
-msgid "Graphics Interchange Format"
+#, fuzzy
+#| msgid "Graphics Interchange Format"
+msgid "Graphics Interchange Format Files"
 msgstr "Формат обміну графічними даними"
 
 #: lclstrconsts.rsgoptionfatalwarnings
@@ -619,11 +625,13 @@ msgstr "Гаряче світло"
 #: lclstrconsts.rsicns
 #, fuzzy
 #| msgid "Mac OS X Icon"
-msgid "macOS Icon"
+msgid "macOS Icon Files"
 msgstr "Значок Mac OS X"
 
 #: lclstrconsts.rsicon
-msgid "Icon"
+#, fuzzy
+#| msgid "Icon"
+msgid "Icon Files"
 msgstr "Іконка"
 
 #: lclstrconsts.rsiconimageempty
@@ -715,7 +723,9 @@ msgid "%s is already associated with %s"
 msgstr "%s вже зіставлено з %s"
 
 #: lclstrconsts.rsjpeg
-msgid "Joint Picture Expert Group"
+#, fuzzy
+#| msgid "Joint Picture Expert Group"
+msgid "JPEG Files"
 msgstr "Joint Picture Expert Group"
 
 #: lclstrconsts.rslastrecordhint
@@ -906,23 +916,21 @@ msgid "Select a date"
 msgstr "Виберіть дату"
 
 #: lclstrconsts.rspixmap
-msgid "Pixmap"
+#, fuzzy
+#| msgid "Pixmap"
+msgid "Pixmap Files"
 msgstr "Растрове зображення"
 
-#: lclstrconsts.rsportablebitmap
-msgid "Portable BitMap"
-msgstr "Чорно-біле зображення (PBM)"
-
-#: lclstrconsts.rsportablegraymap
-msgid "Portable GrayMap"
-msgstr "Напівтонове зображення (PGM)"
-
 #: lclstrconsts.rsportablenetworkgraphic
-msgid "Portable Network Graphic"
+#, fuzzy
+#| msgid "Portable Network Graphic"
+msgid "PNG Files"
 msgstr "Переносна мережева графіка (PNG)"
 
 #: lclstrconsts.rsportablepixmap
-msgid "Portable PixMap"
+#, fuzzy
+#| msgid "Portable PixMap"
+msgid "Portable Pixmap Files"
 msgstr "Кольорове зображення (PPM)"
 
 #: lclstrconsts.rspostrecordhint
@@ -1118,12 +1126,18 @@ msgstr "Синьо-зелений"
 msgid "Text"
 msgstr "Текст"
 
+#: lclstrconsts.rstga
+msgid "TGA Image Files"
+msgstr ""
+
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
 msgstr "Вбудований URL доступний лише для читання. Змініть натомість BaseURL."
 
 #: lclstrconsts.rstiff
-msgid "Tagged Image File Format"
+#, fuzzy
+#| msgid "Tagged Image File Format"
+msgid "Tagged Image File Format Files"
 msgstr "Тегований формат файлу зображення"
 
 #: lclstrconsts.rstpanelaccessibilitydescription

@@ -129,7 +129,9 @@ msgid "Backward"
 msgstr "Taaksepäin"
 
 #: lclstrconsts.rsbitmaps
-msgid "Bitmaps"
+#, fuzzy
+#| msgid "Bitmaps"
+msgid "Bitmap Files"
 msgstr "Bittikartat"
 
 #: lclstrconsts.rsblackcolorcaption
@@ -205,7 +207,9 @@ msgid "Cream"
 msgstr "Kerma"
 
 #: lclstrconsts.rscursor
-msgid "Cursor"
+#, fuzzy
+#| msgid "Cursor"
+msgid "Cursor Files"
 msgstr "Kursori"
 
 #: lclstrconsts.rscustomcolorcaption
@@ -402,7 +406,7 @@ msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "--gdk-no-debug liput     Älä näytä tiettyjä GDK trace/debug viestejä."
 
 #: lclstrconsts.rsgif
-msgid "Graphics Interchange Format"
+msgid "Graphics Interchange Format Files"
 msgstr ""
 
 #: lclstrconsts.rsgoptionfatalwarnings
@@ -614,11 +618,13 @@ msgstr "Kuuma kevyt"
 #: lclstrconsts.rsicns
 #, fuzzy
 #| msgid "Mac OS X Icon"
-msgid "macOS Icon"
+msgid "macOS Icon Files"
 msgstr "Mac OS X kuvake"
 
 #: lclstrconsts.rsicon
-msgid "Icon"
+#, fuzzy
+#| msgid "Icon"
+msgid "Icon Files"
 msgstr "Kuvake"
 
 #: lclstrconsts.rsiconimageempty
@@ -710,7 +716,7 @@ msgid "%s is already associated with %s"
 msgstr "%s on jo yhdistetty %s:hen"
 
 #: lclstrconsts.rsjpeg
-msgid "Joint Picture Expert Group"
+msgid "JPEG Files"
 msgstr ""
 
 #: lclstrconsts.rslastrecordhint
@@ -901,23 +907,19 @@ msgid "Select a date"
 msgstr "Valitse päivä"
 
 #: lclstrconsts.rspixmap
-msgid "Pixmap"
+msgid "Pixmap Files"
 msgstr ""
 
-#: lclstrconsts.rsportablebitmap
-msgid "Portable BitMap"
-msgstr "Siirrettävä bittikartta"
-
-#: lclstrconsts.rsportablegraymap
-msgid "Portable GrayMap"
-msgstr "Siirrettävä harmaakartta"
-
 #: lclstrconsts.rsportablenetworkgraphic
-msgid "Portable Network Graphic"
+#, fuzzy
+#| msgid "Portable Network Graphic"
+msgid "PNG Files"
 msgstr "Siirrettävä verkkografiikka"
 
 #: lclstrconsts.rsportablepixmap
-msgid "Portable PixMap"
+#, fuzzy
+#| msgid "Portable PixMap"
+msgid "Portable Pixmap Files"
 msgstr "Siirrettävä PixMap"
 
 #: lclstrconsts.rspostrecordhint
@@ -1113,12 +1115,16 @@ msgstr "Sinivihreä"
 msgid "Text"
 msgstr "Teksti"
 
+#: lclstrconsts.rstga
+msgid "TGA Image Files"
+msgstr ""
+
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
 msgstr "Sisäistä URL:a voi vain lukea. Muuta sen sijaan BaseURL."
 
 #: lclstrconsts.rstiff
-msgid "Tagged Image File Format"
+msgid "Tagged Image File Format Files"
 msgstr ""
 
 #: lclstrconsts.rstpanelaccessibilitydescription

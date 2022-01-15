@@ -133,7 +133,9 @@ msgid "Backward"
 msgstr "אחורה"
 
 #: lclstrconsts.rsbitmaps
-msgid "Bitmaps"
+#, fuzzy
+#| msgid "Bitmaps"
+msgid "Bitmap Files"
 msgstr "מפת סיביות"
 
 #: lclstrconsts.rsblackcolorcaption
@@ -209,7 +211,9 @@ msgid "Cream"
 msgstr "קרמי"
 
 #: lclstrconsts.rscursor
-msgid "Cursor"
+#, fuzzy
+#| msgid "Cursor"
+msgid "Cursor Files"
 msgstr "סמן"
 
 #: lclstrconsts.rscustomcolorcaption
@@ -410,7 +414,9 @@ msgid "--gdk-no-debug flags  Turn off specific GDK trace/debug messages."
 msgstr "הפעל הודעות GDK trace/debug מסוימות .  gdk-debug flags--"
 
 #: lclstrconsts.rsgif
-msgid "Graphics Interchange Format"
+#, fuzzy
+#| msgid "Graphics Interchange Format"
+msgid "Graphics Interchange Format Files"
 msgstr "פורמט להחלפת גרפיקה"
 
 #: lclstrconsts.rsgoptionfatalwarnings
@@ -640,11 +646,13 @@ msgstr "לבן חם"
 #: lclstrconsts.rsicns
 #, fuzzy
 #| msgid "Mac OS X Icon"
-msgid "macOS Icon"
+msgid "macOS Icon Files"
 msgstr "צלמית  של OSX של מקינטוש"
 
 #: lclstrconsts.rsicon
-msgid "Icon"
+#, fuzzy
+#| msgid "Icon"
+msgid "Icon Files"
 msgstr "צלמית"
 
 #: lclstrconsts.rsiconimageempty
@@ -736,7 +744,7 @@ msgid "%s is already associated with %s"
 msgstr "כבר משוייך ל s%"
 
 #: lclstrconsts.rsjpeg
-msgid "Joint Picture Expert Group"
+msgid "JPEG Files"
 msgstr ""
 
 #: lclstrconsts.rslastrecordhint
@@ -927,23 +935,21 @@ msgid "Select a date"
 msgstr "בחר תאריך"
 
 #: lclstrconsts.rspixmap
-msgid "Pixmap"
+#, fuzzy
+#| msgid "Pixmap"
+msgid "Pixmap Files"
 msgstr "מפת פיקסלים"
 
-#: lclstrconsts.rsportablebitmap
-msgid "Portable BitMap"
-msgstr "מפת סיביות ברת ניידות"
-
-#: lclstrconsts.rsportablegraymap
-msgid "Portable GrayMap"
-msgstr "מפת רמות אפור ברת ניידות"
-
 #: lclstrconsts.rsportablenetworkgraphic
-msgid "Portable Network Graphic"
+#, fuzzy
+#| msgid "Portable Network Graphic"
+msgid "PNG Files"
 msgstr "גרפיקת ברת ניידות ברשת "
 
 #: lclstrconsts.rsportablepixmap
-msgid "Portable PixMap"
+#, fuzzy
+#| msgid "Portable PixMap"
+msgid "Portable Pixmap Files"
 msgstr "מפת פיקסלים ברת ניידות"
 
 #: lclstrconsts.rspostrecordhint
@@ -1139,12 +1145,18 @@ msgstr "כחלחל ירקרק"
 msgid "Text"
 msgstr "טקסט"
 
+#: lclstrconsts.rstga
+msgid "TGA Image Files"
+msgstr ""
+
 #: lclstrconsts.rsthebuiltinurlisreadonlychangethebaseurlinstead
 msgid "The built-in URL is read only. Change the BaseURL instead."
 msgstr ""
 
 #: lclstrconsts.rstiff
-msgid "Tagged Image File Format"
+#, fuzzy
+#| msgid "Tagged Image File Format"
+msgid "Tagged Image File Format Files"
 msgstr "פורמט מתוייג של קובץ דמות"
 
 #: lclstrconsts.rstpanelaccessibilitydescription
