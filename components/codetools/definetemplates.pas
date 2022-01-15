@@ -3790,6 +3790,21 @@ procedure GetTargetProcessors(const TargetCPU: string; aList: TStrings);
     aList.Add('PentiumM');
   end;
 
+  procedure Intel_i8086;
+  begin
+    aList.Add('8086');
+    aList.Add('80186');
+    aList.Add('80286');
+    aList.Add('80386');
+    aList.Add('80486');
+    aList.Add('PENTIUM');
+    aList.Add('PENTIUM2');
+    aList.Add('PENTIUM3');
+    aList.Add('PENTIUM4');
+    aList.Add('PENTIUMM');
+
+  end;
+
   procedure Intel_x86_64;
   begin
     aList.Add('ATHLON64');
@@ -3876,6 +3891,7 @@ begin
     'arm'    : Arm;
     'avr'    : AVR;
     'i386'   : Intel_i386;
+    'i8086'  : Intel_i8086;
     'm68k'   : M68k;
     'powerpc'  : PowerPC;
     'powerpc64': PowerPC64;
