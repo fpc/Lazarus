@@ -1162,9 +1162,9 @@ begin
     { Setup directory path }
     lDirName:=EnvironmentOptions.GetParsedValue(eopLazarusDirectory, TargetDirectoryComboBox.Text);
     lExpandedName:=CleanAndExpandDirectory(lDirName);
-    lDirName:=GetValidDirectoryAndFilename(lDirName, lDirNameF);
+    lDirName:=GetValidDirectoryAndFilename(lExpandedName, lDirNameF);
 
-    DirDialog.InitialDir:=IncludeTrailingBackslash(lDirName);
+    DirDialog.InitialDir:=ChompPathDelim(lExpandedName);
     DirDialog.FileName:=lDirNameF;
 
     if DirDialog.Execute then begin
