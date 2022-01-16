@@ -26,16 +26,11 @@ help:
 	@$(ECHO) " Targets"
 	@$(ECHO) "   all         same as base + bigide"
 	@$(ECHO) "   clean       deletes output files of base and bigide components"
-	@$(ECHO) "   base        build lazutils, codetools, buildintf, freetype"
-	@$(ECHO) "               requires packager/registration"
-	@$(ECHO) "               needed by lcl"
-	@$(ECHO) "   basecomponents  build lazcontrols, ideintf, synedit"
-	@$(ECHO) "               requires lcl"
 	@$(ECHO) "   bigide      build the extra packages for the bigide"
-	@$(ECHO) "               requires basecomponents"
+	@$(ECHO) "               requires lcl"
 
 #-----------------------------------------------------------------------------
-# build base packages, requires packager/registration, needed by lcl
+# build base packages, requires packager/registration, needed by lazbuild
 base:
 	$(MAKE) -C lazutils
 	$(MAKE) -C codetools
@@ -43,18 +38,7 @@ base:
 	$(MAKE) -C freetype
 
 #-----------------------------------------------------------------------------
-# build base packages, requires lcl
-basecomponents:
-	$(MAKE) -C lazcontrols
-	$(MAKE) -C ideintf
-	$(MAKE) -C synedit
-	$(MAKE) -C lazdebuggers/lazdebuggerintf
-	$(MAKE) -C debuggerintf
-	$(MAKE) -C lazdebuggergdbmi
-	$(MAKE) -C lazcontrols/design
-
-#-----------------------------------------------------------------------------
-# build the extra packages needed by the bigide
+# build the extra packages needed by the bigide, requires lcl
 bigide:
 	$(MAKE) -C synedit/design
 	$(MAKE) -C rtticontrols

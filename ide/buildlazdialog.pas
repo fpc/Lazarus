@@ -511,7 +511,7 @@ begin
       if blfDontClean in Flags then
         IdeBuildMode:=bmBuild;
       if IdeBuildMode=bmBuild then
-        Cmd:='idepkg'
+        Cmd:='ide'
       else
         Cmd:='cleanide ide';
 

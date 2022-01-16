@@ -1697,8 +1697,8 @@ For example:
   (9015) Linking ../lazarus
   /usr/bin/ld: cannot find -lGL
   make[2]: *** [lazarus] Error 1
-  make[1]: *** [idepkg] Error 2
-  make: *** [idepkg] Error 2
+  make[1]: *** [ide] Error 2
+  make: *** [ide] Error 2
   /home/mattias/pascal/wichtig/lazarus/ide/lazarus.pp(161,1) Error: (9013) Error while linking
 
 }

@@ -254,8 +254,8 @@ procedure TIDEMakeParser.ReadLine(Line: string; OutputIndex: integer;
      make[1]: *** [<filename>] Killed
      make <command>
      make[2]: *** [lazarus] Error 1
-     make[1]: *** [idepkg] Error 2
-     make: *** [idepkg] Error 2
+     make[1]: *** [ide] Error 2
+     make: *** [ide] Error 2
      /bin/cp <options>
 }
 const

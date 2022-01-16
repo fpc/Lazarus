@@ -3639,7 +3639,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: help registration lazutils codetools tools lcl basecomponents bigidecomponents lazbuild ide idepkg idebig cleanide bigide useride starter lhelp all clean purge distclean install
+.PHONY: help registration tools lcl basecomponents bigidecomponents lazbuild ide idebig cleanide bigide useride starter lhelp all clean purge distclean install
 help:
 	@$(ECHO)
 	@$(ECHO) " Main targets"
@@ -3656,8 +3656,6 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
-	@$(ECHO) "   lazutils       build package LazUtils, requires registration"
-	@$(ECHO) "   codetools      build package CodeTools, requires lazutils"
 	@$(ECHO) "   lcl            build package FreeType, LCLBase and LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
 	@$(ECHO) "                  requires LCL with nogui widgetset"
@@ -3686,18 +3684,14 @@ help:
 	@$(ECHO) " Note: You can start lazarus with 'startlazarus'"
 	@$(ECHO) " Note: Use the IDE or lazbuild to compile your projects/packages."
 	@$(ECHO)
-	@$(ECHO) " Updating svn and build an IDE with your last set of packages:"
-	@$(ECHO) "   make clean"
-	@$(ECHO) "   svn up"
+	@$(ECHO) " Updating git and build an IDE with your last set of packages:"
+	@$(ECHO) "   make distclean"
+	@$(ECHO) "   git pull"
 	@$(ECHO) "   make clean lazbuild useride"
 	@$(ECHO)
 	@$(ECHO) " Clean up:"
-	@$(ECHO) "  svn cleanup --remove-unversioned"
-	@$(ECHO) "  If the above is not supported by your svn"
-	@$(ECHO) "  you can use the following command under Linux/OS X:"
-	@$(ECHO) "  svn status | grep '\?' | sed -e 's/\? *//' | xargs rm -r"
-	@$(ECHO)
-	@$(ECHO) "  Another possibility is to create a clean copy via the "svn export" command."
+	@$(ECHO) "   git restore ."
+	@$(ECHO) "   make distclean"
 	@$(ECHO)
 	@$(ECHO) " Install:"
 	@$(ECHO) "   Note: You can use Lazarus without installing. Just start the lazarus executable."
@@ -3710,10 +3704,6 @@ help:
 	@exit
 registration:
 	$(MAKE) -C packager/registration
-lazutils:
-	$(MAKE) -C components/lazutils
-codetools:
-	$(MAKE) -C components/codetools
 lcl:
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl
@@ -3727,6 +3717,7 @@ basecomponents:
 	$(MAKE) -C components/lazdebuggers/cmdlinedebuggerbase
 	$(MAKE) -C components/lazdebuggergdbmi
 	$(MAKE) -C components/lazcontrols/design
+	$(MAKE) -C ide/packages/idedebugger
 bigidecomponents:
 	$(MAKE) -C components bigide
 tools:
@@ -3735,10 +3726,9 @@ revisioninc:
 	$(MAKE) -C ide revisioninc
 ide:
 	$(MAKE) -C ide ide
+idepkg: ide
 idebig:
 	$(MAKE) -C ide bigide
-idepkg:
-	$(MAKE) -C ide idepkg
 useride: 
 ifdef LAZBUILDJOBS
 ifdef LCL_PLATFORM
@@ -3755,7 +3745,9 @@ endif
 endif
 starter:
 	$(MAKE) -C ide starter
-lazbuild: registration lazutils codetools
+lazbuild: registration
+	$(MAKE) -C components/lazutils
+	$(MAKE) -C components/codetools
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
 	$(MAKE) -C tools

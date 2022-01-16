@@ -5296,7 +5296,7 @@ makefiles: fpc_makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
-.PHONY: ide idepkg bigide starter lazbuilder all clean cleanide purge revisioninc codepage
+.PHONY: ide bigide starter lazbuilder all clean cleanide purge revisioninc codepage
 revisioninc:
 ifneq ($(USESVN2REVISIONINC),0)
 ifeq ($(wildcard ../tools/svn2revisioninc$(SRCEXEEXT)),)
@@ -5308,9 +5308,7 @@ idepackages:
 	$(MAKE) -C packages/idedebugger
 ide: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
-idepkg: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
-	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(LAZARUS_OPT) $(OPT)'
-bigide: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
+bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 starter: $(COMPILER_UNITTARGETDIR)
