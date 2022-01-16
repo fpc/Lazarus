@@ -45,7 +45,7 @@ uses
   StdCtrls,
   ExtCtrls,
   // Codetools
-  CodeToolManager,
+  CodeToolManager, DefineTemplates,
   // IDE
   IDEProcs,
   LazConf,
