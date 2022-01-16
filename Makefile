@@ -3759,6 +3759,7 @@ lazbuild: registration
 	$(MAKE) -C components/ideintf LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazdebuggers/cmdlinedebuggerbase LCL_PLATFORM=nogui
 	$(MAKE) -C components/lazdebuggergdbmi LCL_PLATFORM=nogui
+	$(MAKE) -C ide/packages/idedebugger LCL_PLATFORM=nogui
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp

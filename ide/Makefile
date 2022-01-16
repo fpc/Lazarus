@@ -5306,14 +5306,14 @@ endif
 endif
 idepackages:
 	$(MAKE) -C packages/idedebugger
-ide: $(COMPILER_UNITTARGETDIR) idepackages revisioninc
+ide: $(COMPILER_UNITTARGETDIR) revisioninc
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
 bigide: $(COMPILER_UNITTARGETDIR) revisioninc
 	-$(DEL) $(COMPILER_UNITTARGETDIR)/pkgmanager$(PPUEXT)
 	$(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT) OPT='$(OPT) $(BIG_IDE_OPTIONS)'
 starter: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(LAZARUS_OPT) $(OPT)'
-lazbuilder: $(COMPILER_UNITTARGETDIR) idepackages
+lazbuilder: $(COMPILER_UNITTARGETDIR)
 	$(MAKE) --assume-new=lazbuild.lpr lazbuild$(EXEEXT) OPT='$(DEFAULT_IDE_OPTIONS) $(OPT)'
 all: ide starter lazbuilder
 cleanide:
