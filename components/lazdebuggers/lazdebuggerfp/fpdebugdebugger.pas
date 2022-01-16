@@ -3092,8 +3092,8 @@ begin
       {$IFDEF MSWINDOWS}
       {$IFDEF WIN64} , bplRtlRestoreContext, bplFpcSpecific {$ENDIF}
       , bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler
-      {$ENDIF}
       , bplSehW32Except, bplSehW32Finally
+      {$ENDIF}
       ]);
 
   case st of
