@@ -45,7 +45,7 @@ uses
   StdCtrls,
   ExtCtrls,
   // Codetools
-  CodeToolManager,
+  CodeToolManager, DefineTemplates,
   // IDE
   IDEProcs,
   LazConf,
@@ -169,6 +169,9 @@ begin
   {$ELSE}
   CheckPath('/usr/lib/fpc', FpcPrefixCombobox.Items);
   CheckPath('/usr/lib64/fpc', FpcPrefixCombobox.Items);
+  {$IFDEF Linux}
+  CheckPath('/usr/lib/'+GetCompiledTargetCPU+'-linux-gnu/fpc', FpcPrefixCombobox.Items);
+  {$ENDIF}
   CheckPath('/usr/local/lib/fpc', FpcPrefixCombobox.Items);
   CheckPath('/usr/local/lib64/fpc', FpcPrefixCombobox.Items);
   {$ENDIF WINDOWS}
