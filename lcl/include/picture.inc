@@ -39,7 +39,7 @@ type
     property Formats[Index: integer]: PPicFileFormat read GetFormats; default;
   end;
 
-function GetLocalizedFormatDescription(GraphicClass: TGraphicClass; OriginalDescription: string): string;
+function GetLocalizedFormatDescription(const GraphicClass: TGraphicClass; const OriginalDescription: string): string;
 begin
   case GraphicClass.ClassName of
     'TPortableNetworkGraphic': Result:=rsPortableNetworkGraphic;
