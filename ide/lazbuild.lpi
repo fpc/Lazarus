@@ -51,7 +51,7 @@
     </RunParams>
     <RequiredPackages Count="4">
       <Item1>
-        <PackageName Value="DebuggerFrontEnd"/>
+        <PackageName Value="IdeDebugger"/>
       </Item1>
       <Item2>
         <PackageName Value="DebuggerIntf"/>
