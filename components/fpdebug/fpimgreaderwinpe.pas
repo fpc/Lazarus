@@ -170,7 +170,7 @@ var
   SectNumber, SectCount: Integer;
   SectRVA: QWord;
 begin
-  AfpSymbolInfo.SetAddressBounds(ImageBase, ImageBase+ImageSize);
+  AfpSymbolInfo.SetAddressBounds(LoadedTargetImageAddr, LoadedTargetImageAddr+ImageSize);
   p := Section[_symbol];
   ps := Section[_symbolstrings];
   if assigned(p) and assigned(ps) then
@@ -203,7 +203,7 @@ begin
           SectRVA := PDbgImageSectionEx(FSections.Objects[SectNumber])^.Sect.VirtualAddress
         else
           SectRVA := 0;
-        AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr^[i].Value+ImageBase+SectRVA));
+        AfpSymbolInfo.Add(SymbolName, TDBGPtr(SymbolArr^[i].Value+LoadedTargetImageAddr+SectRVA));
       end
     end;
     {$POP}
@@ -229,7 +229,7 @@ var
 {$ENDIF}
 begin
   {$ifdef windows}
-  if ImageBase = 0 then
+  if LoadedTargetImageAddr = 0 then
     exit;
 
   FFileLoader.LoadMemory(0, 1, hBase); // size does not matter, only obtain address
@@ -262,7 +262,7 @@ begin
     ExportSize := header32^.OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].Size;
     SetImageSize(header32^.OptionalHeader.SizeOfImage);
   end;
-  AfpSymbolInfo.SetAddressBounds(ImageBase, ImageBase+ImageSize);
+  AfpSymbolInfo.SetAddressBounds(LoadedTargetImageAddr, LoadedTargetImageAddr+ImageSize);
 
   if (ExportSect = nil) or (ExportSect^.AddressOfNames = 0) or (ExportSize = 0) then
     exit;
@@ -292,7 +292,7 @@ begin
     if FuncAddr = 0 then
       Continue;
 
-    AFpSymbolInfo.Add(FuncName, ImageBase + FuncAddr);
+    AFpSymbolInfo.Add(FuncName, LoadedTargetImageAddr + FuncAddr);
   end;
   {$ENDIF}
 end;
