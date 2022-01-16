@@ -167,8 +167,10 @@ begin
   CheckPath('C:\FPC', FpcPrefixCombobox.Items);
   CheckPath('D:\FPC', FpcPrefixCombobox.Items);
   {$ELSE}
-  CheckPath('/usr', FpcPrefixCombobox.Items);
-  CheckPath('/usr/local', FpcPrefixCombobox.Items);
+  CheckPath('/usr/lib/fpc', FpcPrefixCombobox.Items);
+  CheckPath('/usr/lib64/fpc', FpcPrefixCombobox.Items);
+  CheckPath('/usr/local/lib/fpc', FpcPrefixCombobox.Items);
+  CheckPath('/usr/local/lib64/fpc', FpcPrefixCombobox.Items);
   {$ENDIF WINDOWS}
 end;
 
@@ -199,22 +201,8 @@ begin
   end
   else
   begin
+    LibPath := AppendPathDelim(APrefix);
     LibPathValid := True;
-
-    {$IFNDEF WINDOWS}
-    LibPath := ConcatPaths([APrefix, 'lib', 'fpc']);
-    if not DirPathExistsCached(LibPath) then
-    begin
-      LibPath := ConcatPaths([APrefix, 'lib64', 'fpc']);
-      if not DirPathExistsCached(LibPath) then
-      begin
-        LibPathValid := False;
-      end;
-    end;
-    {$ELSE}
-    LibPath := APrefix;
-    {$ENDIF}
-    LibPath := IncludeTrailingPathDelimiter(LibPath);
 
     if DirPathExistsCached(LibPath+PathDelim+'fpmkinst') and
       DirPathExistsCached(LibPath+PathDelim+'units') then
