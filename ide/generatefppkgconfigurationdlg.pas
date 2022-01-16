@@ -170,7 +170,11 @@ begin
   CheckPath('/usr/lib/fpc', FpcPrefixCombobox.Items);
   CheckPath('/usr/lib64/fpc', FpcPrefixCombobox.Items);
   {$IFDEF Linux}
-  CheckPath('/usr/lib/'+GetCompiledTargetCPU+'-linux-gnu/fpc', FpcPrefixCombobox.Items);
+  CheckPath('/usr/lib/'+GetCompiledTargetCPU+'-linux-gnu/fpc/default', FpcPrefixCombobox.Items);
+  {$IFDEF CPUARM}
+  CheckPath('/usr/lib/'+GetCompiledTargetCPU+'-linux-gnueabi/fpc/default', FpcPrefixCombobox.Items);
+  CheckPath('/usr/lib/'+GetCompiledTargetCPU+'-linux-gnueabihf/fpc/default', FpcPrefixCombobox.Items);
+  {$ENDIF}
   {$ENDIF}
   CheckPath('/usr/local/lib/fpc', FpcPrefixCombobox.Items);
   CheckPath('/usr/local/lib64/fpc', FpcPrefixCombobox.Items);
