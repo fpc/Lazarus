@@ -298,11 +298,11 @@ type
 
     procedure SetToolStatus(const AToolStatus: TLazToolStatus); virtual;
     function GetActiveProject: TLazProject; virtual; abstract;
-    procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType); overload;
     function DoCallModalFunctionHandler(HandlerType: TLazarusIDEHandlerType
                                         ): TModalResult;
     function DoCallModalHandledHandler(HandlerType: TLazarusIDEHandlerType;
                                        var Handled: boolean): TModalResult;
+    procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType); overload;
     procedure DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType;
                                   Sender: TObject); overload;
     procedure DoCallShowDesignerFormOfSourceHandler(Sender: TObject;
@@ -678,12 +678,6 @@ begin
   end;
 end;
 
-procedure TLazIDEInterface.DoCallNotifyHandler(
-  HandlerType: TLazarusIDEHandlerType);
-begin
-  FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Self);
-end;
-
 function TLazIDEInterface.DoCallModalFunctionHandler(
   HandlerType: TLazarusIDEHandlerType): TModalResult;
 var
@@ -736,7 +730,13 @@ begin
   Result:=mrOk;
 end;
 
-procedure TLazIDEInterface.DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType; Sender: TObject);
+procedure TLazIDEInterface.DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType);
+begin
+  FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Self);
+end;
+
+procedure TLazIDEInterface.DoCallNotifyHandler(HandlerType: TLazarusIDEHandlerType;
+  Sender: TObject);
 begin
   FLazarusIDEHandlers[HandlerType].CallNotifyEvents(Sender);
 end;
