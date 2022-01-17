@@ -19,7 +19,7 @@ uses
   Forms, Controls, Graphics, Dialogs, ComCtrls, Menus,
   ActnList, Clipbrd, ImgList, LCLType,
   // LazUtils
-  LazFileUtils, LazLoggerBase, LazFileCache,
+  FileUtil, LazFileUtils, LazLoggerBase, LazFileCache,
   // BuildIntf
   PackageIntf, ProjectIntf,
   // IdeIntf
@@ -51,6 +51,7 @@ type
   { TProjectGroupEditorForm }
 
   TProjectGroupEditorForm = class(TForm)
+    AProjectGroupAddAll: TAction;
     AProjectGroupNew: TAction;
     AProjectGroupAddCurrent: TAction;
     ATargetInfo: TAction;
@@ -76,6 +77,7 @@ type
     AProjectGroupDelete: TAction;
     AProjectGroupSave: TAction;
     ActionListMain: TActionList;
+    PMIAddAll: TMenuItem;
     PMINew: TMenuItem;
     PMIAddExisting: TMenuItem;
     PMIAddCurrent: TMenuItem;
@@ -99,6 +101,7 @@ type
     PopupMenuMore: TPopupMenu;
     PopupMenuTree: TPopupMenu;
     SBPG: TStatusBar;
+    SelectDirectoryDialog: TSelectDirectoryDialog;
     TBProjectGroup: TToolBar;
     TBSave: TToolButton;
     TBAdd: TToolButton;
@@ -113,6 +116,8 @@ type
     TBActivate: TToolButton;
     TBReload: TToolButton;
     TVPG: TTreeView;
+    procedure AProjectGroupAddAllExecute(Sender: TObject);
+    procedure AProjectGroupAddAllUpdate(Sender: TObject);
     procedure AProjectGroupAddCurrentExecute(Sender: TObject);
     procedure AProjectGroupAddCurrentUpdate(Sender: TObject);
     procedure AProjectGroupAddExistingExecute(Sender: TObject);
@@ -143,7 +148,6 @@ type
     procedure ATargetEarlierExecute(Sender: TObject);
     procedure ATargetEarlierUpdate(Sender: TObject);
     procedure ATargetInfoExecute(Sender: TObject);
-    procedure ATargetInfoUpdate(Sender: TObject);
     procedure ATargetInstallExecute(Sender: TObject);
     procedure ATargetInstallUpdate(Sender: TObject);
     procedure ATargetLaterExecute(Sender: TObject);
@@ -159,7 +163,6 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure PopupMenuMorePopup(Sender: TObject);
     procedure TVPGAdvancedCustomDrawItem(Sender: TCustomTreeView;
       Node: TTreeNode; {%H-}State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -418,6 +421,7 @@ begin
   ConfigAction(AProjectGroupSave,'pg_save_simple',lisProjectGroupSaveCaption,lisProjectGroupSaveHint,Nil);
   ConfigAction(AProjectGroupSaveAs,'pg_save_as_simple',lisProjectGroupSaveAsCaption,lisProjectGroupSaveAsHint,Nil);
   ConfigAction(AProjectGroupNew,'pg_new',lisProjectGroupNewCaption,lisProjectGroupNewHint,Nil);
+  ConfigAction(AProjectGroupAddAll,'',lisAddAllFromDirectoryCaption,lisAddAllFromDirectoryHint,Nil);
   ConfigAction(AProjectGroupAddExisting,'pg_add_project_from_file',lisProjectGroupAddExistingCaption,lisProjectGroupAddExistingHint,Nil);
   ConfigAction(AProjectGroupAddCurrent,'pg_add_project',lisProjectGroupAddCurrentProjectCaption,lisProjectGroupAddCurrentProjectHint,Nil);
   ConfigAction(AProjectGroupDelete,'laz_delete',lisProjectGroupDeleteCaption,lisProjectGroupDeleteHint,Nil);
@@ -508,11 +512,6 @@ end;
 procedure TProjectGroupEditorForm.ATargetInfoExecute(Sender: TObject);
 begin
   ShowPrgGrpInfo(SelectedTarget as TIDECompileTarget);
-end;
-
-procedure TProjectGroupEditorForm.ATargetInfoUpdate(Sender: TObject);
-begin
-
 end;
 
 procedure TProjectGroupEditorForm.ATargetLaterExecute(Sender: TObject);
@@ -640,11 +639,6 @@ begin
   and (PGEditMenuSectionMisc.MenuItem=PopupMenuMore.Items) then
     PGEditMenuSectionMisc.MenuItem:=nil;
   //debugln(['TProjectGroupEditorForm.FormDestroy END ',ProjectGroup<>nil]);
-end;
-
-procedure TProjectGroupEditorForm.FormShow(Sender: TObject);
-begin
-
 end;
 
 procedure TProjectGroupEditorForm.PopupMenuMorePopup(Sender: TObject);
@@ -1030,6 +1024,28 @@ procedure TProjectGroupEditorForm.AProjectGroupAddCurrentExecute(Sender: TObject
 begin
   if LazarusIDE.ActiveProject.ProjectInfoFile<>'' then
     AddTarget(LazarusIDE.ActiveProject.ProjectInfoFile);
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupAddAllExecute(Sender: TObject);
+var
+  i: PtrInt;
+  Files: TStringList;
+begin
+  if FProjectGroup=nil then exit;
+  InitIDEFileDialog(SelectDirectoryDialog);
+  If SelectDirectoryDialog.Execute then
+  begin
+    Files := FindAllFiles(SelectDirectoryDialog.FileName, '*.lpi;*.lpk;*.lpg');
+    for i := 0 to Files.Count - 1 do
+      AddTarget(Files[i]);
+    FreeAndNil(Files);
+  end;
+  StoreIDEFileDialog(SelectDirectoryDialog);
+end;
+
+procedure TProjectGroupEditorForm.AProjectGroupAddAllUpdate(Sender: TObject);
+begin
+  (Sender as TAction).Enabled:=FProjectGroup<>nil;
 end;
 
 procedure TProjectGroupEditorForm.AProjectGroupAddCurrentUpdate(Sender: TObject);
@@ -1834,4 +1850,3 @@ end;
 
 
 end.
-
