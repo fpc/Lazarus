@@ -1921,6 +1921,7 @@ cleanall: clean
 distclean:
 	$(MAKE) -C lazutils distclean
 	$(MAKE) -C codetools distclean
+	$(MAKE) -C codetools/ide distclean
 	$(MAKE) -C freetype distclean
 	$(MAKE) -C debuggerintf distclean
 	$(MAKE) -C lazdebuggergdbmi distclean
@@ -1962,3 +1963,5 @@ distclean:
 	$(MAKE) -C virtualtreeview distclean
 	$(MAKE) -C onlinepackagemanager distclean
 	$(MAKE) -C pas2js distclean
+	$(MAKE) -C anchordocking/design distclean
+	$(MAKE) -C anchordocking distclean
