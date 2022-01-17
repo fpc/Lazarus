@@ -185,6 +185,7 @@ type
     function GetOPtions: TModalResult;
   public
     constructor Create; override;
+    function DoInitDescriptor: TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
@@ -796,6 +797,11 @@ begin
   Name:='FPHTTPApplication';
 end;
 
+function THTTPApplicationDescriptor.DoInitDescriptor: TModalResult;
+begin
+  Result:=GetOptions;
+end;
+
 function THTTPApplicationDescriptor.GetLocalizedName: string;
 begin
   Result:=rsHTTPAppli;
@@ -838,9 +844,6 @@ Var
 
 begin
   inherited InitProject(AProject);
-  Result:=GetOptions;
-  if Result<>mrOK then
-    Exit;
   MainFile:=AProject.CreateProjectFile('httpproject1.lpr');
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
