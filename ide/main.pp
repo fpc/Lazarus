@@ -813,8 +813,8 @@ type
     function DoRunProject: TModalResult; override;
     function DoRunProjectWithoutDebug: TModalResult; override;
     function DoSaveProjectToTestDirectory(Flags: TSaveFlags): TModalResult;
+    procedure RunFinished(Sender: TObject);
     function QuitIDE: boolean;
-
     // edit menu
     procedure DoCommand(ACommand: integer); override;
     procedure DoSourceEditorCommand(EditorCommand: integer;
@@ -7389,8 +7389,11 @@ begin
       Exit(mrNone);
     end;
 
+    AddHandlerOnRunFinished(@RunFinished);
     Project1.RunParameterOptions.AssignEnvironmentTo(Process.Environment);
     try
+      if EnvironmentOptions.Desktop.HideIDEOnRun then
+        HideIDE;
       TNotifyProcessEnd.Create(Process, @DoCallRunFinishedHandler);
       Process:=nil; // Process is freed by TNotifyProcessEnd
     except
@@ -7401,6 +7404,12 @@ begin
     Process.Free;
     Params.Free;
   end;
+end;
+
+procedure TMainIDE.RunFinished(Sender: TObject);
+begin
+  if EnvironmentOptions.Desktop.HideIDEOnRun then
+    UnhideIDE;
 end;
 
 procedure TMainIDE.DoRestart;
