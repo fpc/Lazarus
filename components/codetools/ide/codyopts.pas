@@ -210,7 +210,7 @@ begin
 end;
 
 finalization
-  if CodyOptions<>nil then
+  if (CodyOptions<>nil) and CodyOptions.Modified then
     CodyOptions.SaveSafe;
   FreeAndNil(CodyOptions);
 
