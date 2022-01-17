@@ -2187,7 +2187,8 @@ begin
       end;
 
       // no specific message found? try send a general msg
-      lWinControl.Perform(CN_COMMAND, WParam, LParam);
+      if lWinControl <> nil then
+        lWinControl.Perform(CN_COMMAND, WParam, LParam);
     end;
 
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
