@@ -3656,6 +3656,7 @@ help:
 	@$(ECHO)
 	@$(ECHO) " Sub targets"
 	@$(ECHO) "   registration   build package FCL"
+	@$(ECHO) "   lazutils       build package lazutils"
 	@$(ECHO) "   lcl            build package FreeType, LCLBase and LCL, requires lazutils"
 	@$(ECHO) "   tools          build lazres, svn2revisioninc, updatepofiles, lrstolfm,"
 	@$(ECHO) "                  requires LCL with nogui widgetset"
@@ -3704,6 +3705,8 @@ help:
 	@exit
 registration:
 	$(MAKE) -C packager/registration
+lazutils:
+	$(MAKE) -C components/lazutils
 lcl:
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl
@@ -3745,8 +3748,7 @@ endif
 endif
 starter:
 	$(MAKE) -C ide starter
-lazbuild: registration
-	$(MAKE) -C components/lazutils
+lazbuild: registration lazutils
 	$(MAKE) -C components/codetools
 	$(MAKE) -C components/freetype
 	$(MAKE) -C lcl LCL_PLATFORM=nogui
