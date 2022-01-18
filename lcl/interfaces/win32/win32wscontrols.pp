@@ -247,12 +247,12 @@ begin
         WindowInfo^.WinControl := AWinControl;
         AWinControl.Handle := Window;
         if Assigned(SubClassWndProc) then
-          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(
             Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
         // Set control ID to map WinControl. This is required for messages that sent to parent
         // to extract control from the passed ID.
         // In case of subclassing this ID will be set in WM_NCCREATE message handler
-        SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
+        SetWindowLongPtrW(Window, GWL_ID, PtrInt(AWinControl));
       end;
 
       if AWinControl.Font.IsDefault then
@@ -274,7 +274,7 @@ begin
     begin
       BuddyWindowInfo := AllocWindowInfo(Buddy);
       BuddyWindowInfo^.AWinControl := AWinControl;
-      BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLong(
+      BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(
         Buddy, GWL_WNDPROC, PtrInt(SubClassWndProc)));
       if AWinControl.Font.IsDefault then
         lhFont := Win32Widgetset.DefaultFont
@@ -576,7 +576,7 @@ var
 begin
   Handle := AWinControl.Handle;
   {$ifdef RedirectDestroyMessages}
-  SetWindowLong(Handle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
+  SetWindowLongPtrW(Handle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
   {$endif}
   // Instead of calling DestroyWindow directly, we need to call WM_MDIDESTROY for MDI children
   if Assigned(Application.MainForm) and (Application.MainForm.FormStyle=fsMDIForm) and

@@ -67,7 +67,7 @@ var
 begin
   if iMsg = WM_USER + uIDTrayIcon then
   begin
-    vwsTrayIcon := TCustomTrayIcon(PtrUInt(GetWindowLong(Handle, GWL_USERDATA)));
+    vwsTrayIcon := TCustomTrayIcon(PtrUInt(GetWindowLongPtrW(Handle, GWL_USERDATA)));
     case LParam_ of
       WM_RBUTTONUP:
       begin
@@ -137,13 +137,13 @@ begin
   if iMsg = WM_CREATE then
   begin
     msgTaskbarRestart := RegisterWindowMessage('TaskbarCreated');
-    SetWindowLong(Handle, GWL_USERDATA, PtrInt(PCREATESTRUCT(LParam_)^.lpCreateParams));
+    SetWindowLongPtrW(Handle, GWL_USERDATA, PtrInt(PCREATESTRUCT(LParam_)^.lpCreateParams));
   end
   else
   if (iMsg = msgTaskbarRestart) then
   begin
     // add taskbar icon
-    vwsTrayIcon := TCustomTrayIcon(PtrUInt(GetWindowLong(Handle, GWL_USERDATA)));
+    vwsTrayIcon := TCustomTrayIcon(PtrUInt(GetWindowLongPtrW(Handle, GWL_USERDATA)));
     if Assigned(vwsTrayIcon) then
       TWin32WSCustomTrayIcon.AddIcon(vwsTrayIcon);
   end;
