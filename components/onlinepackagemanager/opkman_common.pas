@@ -507,11 +507,19 @@ begin
 end;
 
 function CleanDirectory(const ADirectory: String): Boolean;
+const
+  SkipDir = 'ct4laz';
 var
   SR: TSearchRec;
   DirName: String;
   Name: String;
 begin
+  if Pos(SkipDir, ADirectory) > 0 then
+  begin
+    Result := True;
+    Exit;
+  end;
+
   DirName := AppendPathDelim(ADirectory);
   if IsDirectoryEmpty(DirName) then
     RemoveDirUTF8(DirName);
