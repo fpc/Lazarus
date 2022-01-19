@@ -311,7 +311,6 @@ begin
   FPosition := -1;
 end;
 
-
 function TIDEToolButtonsEnumerator.GetCurrent: TIDEToolButton;
 begin
   Result := FList[FPosition];
