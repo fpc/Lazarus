@@ -1682,7 +1682,7 @@ end;
         </short>
         <descr>
           <p>
-            <var>Utf8EscapeControlChars</var> translates control characters inside a UTF-8-encoded string into human readable format. Characters in the range 0..31 are converted into the human-readable values for the control characters in the format specified by <var>EscapeMode</var>, including:
+            <var>Utf8EscapeControlChars</var> translates control characters inside a UTF-8-encoded string into human readable format. Characters in the range #0..#31 are converted into the human-readable values for the control characters in the format specified by <var>EscapeMode</var>, including:
           </p>
           <dl>
             <dt>emPascal</dt>
@@ -1700,7 +1700,7 @@ end;
             Utf8EscapeControlChars calls <var>FindInvalidUTF8Codepoint</var> to see if <var>S</var> contains any invalid codepoints for the UTF-8 encoding. <var>UTF8FixBroken</var> is called to repair the input value.
           </p>
           <p>
-            Utf8EscapeControlChars iterates over the characters in S, and converts any value in the eligible range using an internal lookup table for the value in EscapeMode. All other character values (or values in multi-byte UTF-8 code points) are included in the return value in their unmodified form.
+            Utf8EscapeControlChars iterates over the characters in S, and converts any character value in the eligible range using an internal lookup table for the value in EscapeMode. All other character  values (or values in multi-byte UTF-8 code points) are included in the return value in their unmodified form.
           </p>
           <p>
             Mainly used as a diagnostic or logging tool.
@@ -1718,7 +1718,7 @@ end;
         <short>UTF-8 encoded string with values converted in the routine.</short>
       </element>
       <element name="Utf8EscapeControlChars.EscapeMode">
-        <short>Controls the human readable format for escape characters.</short>
+        <short>Controls the human readable format for escaped characters.</short>
       </element>
 
       <element name="TUTF8TrimFlag">
