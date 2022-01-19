@@ -1877,16 +1877,16 @@ end;
 
 procedure TToolButton_GotoBookmarks.RefreshMenu;
 var
-  i: TIDEMenuCommand;
+  cmd: TIDEMenuCommand;
 begin
-  for i in SrcEditMenuGotoBookmark do
-    if i <> nil then begin
-      i.CreateMenuItem;
-      DropdownMenu.Items.Add(i.MenuItem);
+  for cmd in SrcEditMenuGotoBookmark do
+    if cmd <> nil then begin
+      cmd.CreateNewMenuItem;
+      DropdownMenu.Items.Add(cmd.MenuItem);
     end;
   DropdownMenu.Items.AddSeparator;
-  SrcEditMenuPrevBookmark.CreateMenuItem;
-  SrcEditMenuNextBookmark.CreateMenuItem;
+  SrcEditMenuPrevBookmark.CreateNewMenuItem;
+  SrcEditMenuNextBookmark.CreateNewMenuItem;
   DropdownMenu.Items.Add([
     SrcEditMenuPrevBookmark.MenuItem,
     SrcEditMenuNextBookmark.MenuItem]);
@@ -1907,19 +1907,19 @@ end;
 
 procedure TToolButton_ToggleBookmarks.RefreshMenu;
 var
-  i: TIDEMenuCommand;
+  cmd: TIDEMenuCommand;
 begin
-  for i in SrcEditMenuToggleBookmark do
-    if i <> nil then begin
-      i.CreateMenuItem;
-      DropdownMenu.Items.Add(i.MenuItem);
+  for cmd in SrcEditMenuToggleBookmark do
+    if cmd <> nil then begin
+      cmd.CreateNewMenuItem;
+      DropdownMenu.Items.Add(cmd.MenuItem);
     end;
   DropdownMenu.Items.AddSeparator;
-  SrcEditMenuSetFreeBookmark.CreateMenuItem;
+  SrcEditMenuSetFreeBookmark.CreateNewMenuItem;
   DropdownMenu.Items.Add(SrcEditMenuSetFreeBookmark.MenuItem);
   DropdownMenu.Items.AddSeparator;
-  SrcEditMenuClearFileBookmark.CreateMenuItem;
-  SrcEditMenuClearAllBookmark.CreateMenuItem;
+  SrcEditMenuClearFileBookmark.CreateNewMenuItem;
+  SrcEditMenuClearAllBookmark.CreateNewMenuItem;
   DropdownMenu.Items.Add([
     SrcEditMenuClearFileBookmark.MenuItem,
     SrcEditMenuClearAllBookmark.MenuItem]);

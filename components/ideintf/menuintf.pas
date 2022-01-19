@@ -74,6 +74,7 @@ type
     function GetImageList: TCustomImageList; virtual;
     function HasBitmap: Boolean;
     procedure CreateMenuItem; virtual; // only create and set properties, does not add to Section.MenuItem
+    procedure CreateNewMenuItem;
     function GetPath: string;
     function GetRoot: TIDEMenuItem;
     function VisibleActive: boolean; virtual;
@@ -788,6 +789,12 @@ begin
   {$IFDEF VerboseMenuIntf}
   //debugln('TIDEMenuItem.CreateMenuItem ',dbgsName(Self),' Name="',Name,'"');
   {$ENDIF}
+  MenuItem:=MenuItemClass.Create(nil);
+end;
+
+procedure TIDEMenuItem.CreateNewMenuItem;
+begin
+  FMenuItem.Free;
   MenuItem:=MenuItemClass.Create(nil);
 end;
 
