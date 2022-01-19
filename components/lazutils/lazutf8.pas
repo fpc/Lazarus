@@ -2937,30 +2937,61 @@ const
     '[CAN]', '[EM]' , '[SUB]', '[ESC]', '[FS]' , '[GS]' , '[RS]' , '[US]');
 var
   Ch: Char;
-  i: Integer;
+  i,ResLen: Integer;
+  SubLen: SizeInt;
+const
+  MaxGrowFactor: array[TEscapeMode] of integer = (3, 4, 5, 5, 5);
 begin
   if FindInvalidUTF8Codepoint(PChar(S), Length(S)) <> -1 then
   begin
     UTF8FixBroken(S);
   end;
   Result := '';
+  SetLength(Result, Length(S)*MaxGrowFactor[EscapeMode]);
+  ResLen := 0;
   //a byte < 127 cannot be part of a multi-byte codepoint, so this is safe
   for i := 1 to Length(S) do
   begin
+    Inc(ResLen);
     Ch := S[i];
     if (Ch < #32) then
     begin
       case EscapeMode of
-        emPascal: Result := Result + PascalEscapeStrings[Ch];
-        emHexPascal: Result := Result + HexEscapePascalStrings[Ch];
-        emHexC: Result := Result + HexEscapeCStrings[Ch];
-        emC: Result := Result + CEscapeStrings[Ch];
-        emAsciiControlNames: Result := Result + AsciiControlStrings[Ch];
+        emPascal:
+        begin
+          Move(PascalEscapeStrings[Ch][1], Result[ResLen], 3);
+          Inc(ResLen, 3-1);
+        end;
+        emHexPascal:
+        begin
+          Move(HexEscapePascalStrings[Ch][1], Result[ResLen], 4);
+          Inc(ResLen, 4-1);
+        end;
+        emHexC:
+        begin
+          Move(HexEscapeCStrings[Ch][1], Result[ResLen], 5);
+          Inc(ResLen, 5-1);
+        end;
+        emC:
+        begin
+          SubLen := Length(CEscapeStrings[Ch]);
+          Move(CEscapeStrings[Ch][1], Result[ResLen], SubLen);
+          Inc(ResLen, SubLen-1);
+        end;
+        emAsciiControlNames:
+        begin
+          SubLen := Length(AsciiControlStrings[Ch]);
+          Move(AsciiControlStrings[Ch][1], Result[ResLen], SubLen);
+          Inc(ResLen, SubLen-1);
+        end;
       end;//case
     end
     else
-      Result := Result + Ch;
+    begin
+      Result[ResLen] := Ch;
+    end;
   end;
+  SetLength(Result, ResLen);
 end;
 
 function UTF8StringOfChar(AUtf8Char: String; N: Integer): String;
