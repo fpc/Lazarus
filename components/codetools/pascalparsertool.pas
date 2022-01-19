@@ -4237,6 +4237,8 @@ begin
   CurNode.Desc:=ctnGenericParams;
   ReadNextAtom;
   //debugln(['TPascalParserTool.ReadGenericParamList START ctnGenericParams ',GetAtom]);
+  if UpAtomIs('CONST') then // read const after <
+    ReadNextAtom;
   if AtomIsIdentifier then begin
     CreateChildNode;
     CurNode.Desc:=ctnGenericParameter;
@@ -4253,6 +4255,8 @@ begin
         // read next name
         EndChildNode;
         ReadNextAtom;
+        if UpAtomIs('CONST') then // read const after , or ;
+          ReadNextAtom;
         AtomIsIdentifierSaveE(20180411194201);
         CreateChildNode;
         CurNode.Desc:=ctnGenericParameter;
