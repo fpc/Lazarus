@@ -79,7 +79,7 @@ interface
 uses
   Classes, SysUtils, Math,
   // LCL
-  LCLType, LCLProc, Controls, ClipBrd, ComCtrls, GroupedEdit;
+  LCLType, LCLProc, Controls, ClipBrd, ComCtrls, GroupedEdit, LResources;
 
 
 {.$define debugspinex}
@@ -220,6 +220,7 @@ type
     function SameValue(AValue1, AValue2: Double): Boolean; override;
     {$endif}
     procedure SetDecimals(ADecimals: Integer); virtual;
+    class procedure WSRegisterClass; override;
   public
     function ValueToStr(const AValue: Double): String; override;
     function KeyAllowed(Key: Char): Boolean; override;
@@ -263,7 +264,6 @@ type
     property Hint;
     property Layout;
     property MaxLength;
-    property NumbersOnly;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;

@@ -543,6 +543,12 @@ begin
   UpdateControl;
 end;
 
+class procedure TCustomFloatSpinEditEx.WSRegisterClass;
+begin
+  inherited WSRegisterClass;
+  RegisterPropertyToSkip(TCustomFloatSpinEditEx, 'NumbersOnly', 'Should never have been published for this control.', '');
+end;
+
 
 function TCustomFloatSpinEditEx.ValueToStr(const AValue: Double): String;
 var
