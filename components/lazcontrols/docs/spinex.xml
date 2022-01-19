@@ -26,6 +26,7 @@
       <element name="ClipBrd"/>
       <element name="ComCtrls"/>
       <element name="GroupedEdit"/>
+      <element name="LResources"/>
 
       <element name="TNullValueBehaviour">
         <short>
@@ -1042,6 +1043,9 @@
           <p>
             Do not create instances of TCustomFloatSpinEditEx; use the <var>TFloatSpinEditEx</var> descendant which sets the visibility and default values for properties in the class.
           </p>
+          <remark>
+            The <var>NumbersOnly</var> property has been removed as a published property in TCustomFloatSpinEditEx and its descendent classes. It is not appropriate for use in floating point notation. Removed in LazUtils version 2.3.0.
+          </remark>
         </descr>
         <seealso>
           <link id="TSpinEditExBase"/>
@@ -1332,6 +1336,23 @@
         <short>New value for the  property.</short>
       </element>
 
+      <element name="TCustomFloatSpinEditEx.WSRegisterClass">
+        <short>Registers the widget set class used for the control.</short>
+        <descr>
+          <p>
+            Calls the inherited method on entry, and registers the following properties to be skipped during LCL component streaming:
+          </p>
+          <dl>
+            <dt>NumbersOnly</dt>
+            <dd>Property should not be published for this control.</dd>
+          </dl>
+        </descr>
+        <version>
+          Added in LazUtils version 2.3.0 and higher.
+        </version>
+        <seealso/>
+      </element>
+
       <element name="TCustomFloatSpinEditEx.DisplayMode">
         <short>Specifies the formatting used to edit and display the Value for the control.</short>
         <descr>
@@ -1583,7 +1604,6 @@
       <element name="TFloatSpinEditEx.Hint" link="#lcl.controls.TControl.Hint"/>
       <element name="TFloatSpinEditEx.Layout" link="#lcl.groupededit.TCustomAbstractGroupedEdit.Layout"/>
       <element name="TFloatSpinEditEx.MaxLength" link="#lcl.groupededit.TCustomAbstractGroupedEdit.MaxLength"/>
-      <element name="TFloatSpinEditEx.NumbersOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.NumbersOnly"/>
       <element name="TFloatSpinEditEx.ParentBiDiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
       <element name="TFloatSpinEditEx.ParentColor" link="#lcl.groupededit.TCustomAbstractGroupedEdit.ParentColor"/>
       <element name="TFloatSpinEditEx.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
