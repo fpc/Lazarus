@@ -252,7 +252,8 @@ begin
         // Set control ID to map WinControl. This is required for messages that sent to parent
         // to extract control from the passed ID.
         // In case of subclassing this ID will be set in WM_NCCREATE message handler
-        LCLIntf.SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
+        // Ondrej: the GWL_ID is 32bit only - it makes problems on 64bit windows target. See issue #39502
+        //LCLIntf.SetWindowLong(Window, GWL_ID, PtrInt(AWinControl));
       end;
 
       if AWinControl.Font.IsDefault then

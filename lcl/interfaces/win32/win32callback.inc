@@ -1848,13 +1848,15 @@ begin
           DebugLn('WM_MEASUREITEM for a menuitem catched but menuitem is not TmenuItem');
         {$endif}
       end;
+    { Ondrej: WinAPI combobox / listbox sends WM_MEASUREITEM to its parent during CreateHandle
+      the GWL_ID is 32bit only - it makes problems on 64bit windows target. See issue #39502 
     else
     if WParam <> 0 then
     begin
       lWinControl := TWinControl(WParam);
       //if Assigned(lWinControl) then   <- already tested
       SetLMessageAndParams(LM_MEASUREITEM, True);
-    end;
+    end;}
   end;
 end;
 
