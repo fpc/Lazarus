@@ -1258,7 +1258,19 @@
       </element>
 
       <element name="TControlStyleType">
-        <short>TControlStyleType - enumerated type describing features of the Control.</short>
+        <short>Enumerated type with values for features or behaviors for a control.</short>
+        <descr>
+          <p>
+            <var>TControlStyleType</var> is an enumeration type with values that represent features or behaviors that can be enabled or disabled in a control. Zero or more values from TControlStyleType can be stored in the <var>TControlStyle</var> set type used to implement the <var>ControlStyle</var> property in <var>TControl</var>.
+          </p>
+          <p>
+            When an enumeration value is present in the set, it indicates that the corresponding feature or behavior is enabled for the control. Conversely, when the value is omitted from the set the feature or behavior is disabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControlStyle"/>
+          <link id="TControl.ControlStyle"/>
+        </seealso>
       </element>
       <element name="TControlStyleType.csAcceptsControls">
         <short>
@@ -1269,21 +1281,18 @@
         <short>Control focus and style changes when under the mouse cursor.</short>
       </element>
       <element name="TControlStyleType.csDesignInteractive">
-        <short>wants mouse events in design mode.</short>
+        <short>Control handles mouse events at design-time.</short>
       </element>
       <element name="TControlStyleType.csClickEvents">
-        <short>Control responds to single mouse clicks.</short>
+        <short>Control responds to mouse click events.</short>
       </element>
       <element name="TControlStyleType.csFramed">
         <short>Control has a 3D frame; used on scroll bars in the current LCL version.</short>
       </element>
       <element name="TControlStyleType.csSetCaption">
-        <short>As long as Name=Text, changing the Name will set the Caption.</short>
-        <descr>
-          <p>
-            When, for example, a button's Name and Caption have the value 'Button1' and the Name is changed to 'Button2' then the Caption is changed as well. When Name and Caption differ, this flag has no effect. This flag has no effect when loading the control using the LCL component streaming mechanism.
-          </p>
-        </descr>
+        <short>
+          Indicates that the Caption for a control is updated when a value is assigned to the Name property. As long as Name=Text, changing the Name will set the Caption. When, for example, a button's Name and Caption have the value 'Button1' and the Name is changed to 'Button2' then the Caption is changed as well. When Name and Caption differ, this flag has no effect. This flag has no effect when loading the control using the LCL component streaming mechanism.
+        </short>
       </element>
       <element name="TControlStyleType.csOpaque">
         <short>
@@ -1291,19 +1300,19 @@
         </short>
       </element>
       <element name="TControlStyleType.csDoubleClicks">
-        <short>Indicates that the control understands mouse double clicks.</short>
+        <short>Indicates that the control understands mouse double click events.</short>
       </element>
       <element name="TControlStyleType.csTripleClicks">
-        <short>Indicates that the control understands mouse triple clicks.</short>
+        <short>Indicates that the control understands mouse triple click events.</short>
       </element>
       <element name="TControlStyleType.csQuadClicks">
-        <short>Indicates that the control understands mouse quadruple clicks.</short>
+        <short>Indicates that the control understands mouse quadruple click events.</short>
       </element>
       <element name="TControlStyleType.csFixedWidth">
         <short>Indicates that the control cannot change its width.</short>
       </element>
       <element name="TControlStyleType.csFixedHeight">
-        <short>Indicates that the control cannot change its height (e.g. combobox).</short>
+        <short>Indicates that the control cannot change its height (e. g. a combo-box).</short>
       </element>
       <element name="TControlStyleType.csNoDesignVisible">
         <short>Indicates that the control is invisible in the form designer.</short>
@@ -1315,7 +1324,7 @@
         <short>Key messages are handler by widgetset classes instead of control events.</short>
       </element>
       <element name="TControlStyleType.csDisplayDragImage">
-        <short>Display images from the drag imagelist during drag operation over control.</short>
+        <short>Display images from the drag imagelist during a drag operation over the control.</short>
       </element>
       <element name="TControlStyleType.csReflector">
         <short>
@@ -1329,57 +1338,59 @@
         <short>Control responds to menu and menu item events.</short>
       </element>
       <element name="TControlStyleType.csNoFocus">
-        <short>
-          Indicates that the control cannot receive focus.
-        </short>
+        <short>Indicates that the control or form cannot receive focus.</short>
       </element>
       <element name="TControlStyleType.csNeedsBorderPaint">
-        <short>[not implemented]</short>
+        <short>
+          Indicates that the client area for the control needs to be redrawn including its borders. LCL controls do not use this value in their control styles property. Implemented for JVCL controls and its theme engine.
+        </short>
       </element>
       <element name="TControlStyleType.csParentBackground">
-        <short>[not implemented]</short>
+        <short>
+          Indicates whether the background for the parent control is used to fill the client area in the control. Used for controls which have a window handle for the parent control and do not use csOpaque in their control style. On some platforms (like WinXP and Windows 7), csParentBackground can be used to reduce flicker when the parent control is resized.
+        </short>
       </element>
       <element name="TControlStyleType.csDesignNoSmoothResize">
-        <short>no WYSIWYG resizing in designer.</short>
+        <short>WYSIWYG resizing is not used on the design surface.</short>
       </element>
       <element name="TControlStyleType.csDesignFixedBounds">
-        <short>control can not be moved nor resized in designer.</short>
+        <short>Control cannot be moved or resized on the designer surface.</short>
       </element>
       <element name="TControlStyleType.csHasDefaultAction">
-        <short>control implements useful ExecuteDefaultAction.</short>
+        <short>Control executes a default action when the Space or Enter key is pressed.</short>
       </element>
       <element name="TControlStyleType.csHasCancelAction">
-        <short>control implements useful ExecuteCancelAction.</short>
+        <short>
+          Control executes an action when the Escape key is pressed or the form/dialog is closed using the window decoration.
+        </short>
       </element>
       <element name="TControlStyleType.csNoDesignSelectable">
-        <short>control can not be selected at design time.</short>
+        <short>Control cannot be selected at design-time.</short>
       </element>
       <element name="TControlStyleType.csOwnedChildrenNotSelectable">
-        <short>child controls owned by this control are NOT selectable in the designer.</short>
+        <short>Child controls owned by this control are not selectable in the designer.</short>
       </element>
       <element name="TControlStyleType.csAutoSize0x0">
-        <short>if the preferred size is 0x0 then control is shrunk to 0x0</short>
+        <short>If the preferred size is 0x0 then control is shrunk to 0x0</short>
       </element>
       <element name="TControlStyleType.csAutoSizeKeepChildLeft">
-        <short>when AutoSize=true do not move children horizontally.</short>
+        <short>When AutoSize is True, do not move child controls horizontally.</short>
       </element>
       <element name="TControlStyleType.csAutoSizeKeepChildTop">
-        <short>when AutoSize=true do not move children vertically.</short>
+        <short>When AutoSize is True, do not move child controls vertically.</short>
       </element>
       <element name="TControlStyleType.csRequiresKeyboardInput">
         <short>
-          Indicates that a control requires keyboard input to be utilized by the user.
+          Indicates that a control requires keyboard input to be utilized by the user. Used for the Android (and other) platforms to activate the virtual keyboard when an active control needs to respond to input values. Used primarily for devices that do not have a hardware keyboard.
         </short>
-        <descr>
-          <p>
-            Indicates that a control requires keyboard input to be utilized by the user. This information is utilized in Android and other platforms to activate the virtual keyboard when the control receives. Used primarily for devices that do not have a hardware keyboard.
-          </p>
-        </descr>
       </element>
 
       <element name="TControlStyle">
         <short>Set type used to store values from the TControlStyleType enumeration.</short>
         <descr>
+          <p>
+            TControlStyle is a set type used to store zero or more values from the TControlStyleType enumeration. Values from TControlStyleType are included in the set when the corresponding feature or behavior is enabled for a control.
+          </p>
           <p>
             TControlStyle is the type used to implement the ControlStyle property in TControl and descendent classes.
           </p>
@@ -1391,7 +1402,7 @@
       </element>
 
       <element name="csMultiClicks">
-        <short>Set of styles which require/provide multiple clicks on a control.</short>
+        <short>Set of style values which require/provide multiple clicks on a control.</short>
       </element>
 
       <element name="TControlStateType">
@@ -1462,7 +1473,7 @@
       </element>
 
       <element name="TControlState">
-        <short>Set of Control States allowed in a control.</short>
+        <short>Set of control states used in a control.</short>
         <seealso>
           <link id="TControlStateType"/>
         </seealso>
@@ -1499,7 +1510,7 @@
         </seealso>
       </element>
       <element name="TControlCanvas.SetControl.AControl">
-        <short>New value for the property.</short>
+        <short>New value for the Control property.</short>
       </element>
 
       <element name="TControlCanvas.CreateHandle">
@@ -3894,7 +3905,7 @@
         <seealso/>
       </element>
       <element name="TSizeConstraints.SetOptions.AValue">
-         <short>New value for the property.</short>
+         <short>New value for the Options property.</short>
       </element>
 
       <element name="TSizeConstraints.Change">
@@ -4430,7 +4441,7 @@
         </seealso>
       </element>
       <element name="TControlBorderSpacing.SetAround.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Around property.</short>
       </element>
 
       <element name="TControlBorderSpacing.SetBottom">
@@ -4441,7 +4452,7 @@
         </seealso>
       </element>
       <element name="TControlBorderSpacing.SetBottom.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Bottom property.</short>
       </element>
 
       <element name="TControlBorderSpacing.SetCellAlignHorizontal">
@@ -4939,7 +4950,7 @@
         </seealso>
       </element>
       <element name="TAnchorSide.SetControl.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Control property.</short>
       </element>
 
       <element name="TAnchorSide.SetSide">
@@ -4950,7 +4961,7 @@
         </seealso>
       </element>
       <element name="TAnchorSide.SetSide.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the Side property.</short>
       </element>
 
       <element name="TAnchorSide.GetOwner">
@@ -5707,7 +5718,7 @@
         </seealso>
       </element>
       <element name="TLazAccessibleObject.SetHandle.AValue">
-         <short>New value for the property.</short>
+         <short>New value for the Handle property.</short>
       </element>
 
       <element name="TLazAccessibleObject.SetPosition">
@@ -5728,7 +5739,7 @@
         </seealso>
       </element>
       <element name="TLazAccessibleObject.SetSize.AValue">
-         <short>New value for the property.</short>
+         <short>New value for the Size property.</short>
       </element>
 
       <element name="TLazAccessibleObject.FHandle">
@@ -6410,7 +6421,7 @@
         </seealso>
       </element>
       <element name="TControl.SetAccessibleDescription.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AccessibleDescription property.</short>
       </element>
 
       <element name="TControl.SetAccessibleValue">
@@ -6421,7 +6432,7 @@
         </seealso>
       </element>
       <element name="TControl.SetAccessibleValue.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AccessibleValue property.</short>
       </element>
 
       <element name="TControl. SetAccessibleRole">
@@ -6432,7 +6443,7 @@
         </seealso>
       </element>
       <element name="TControl. SetAccessibleRole.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the AccessibleRole property.</short>
       </element>
 
       <element name="TControl.SetAnchorSide">
@@ -7959,7 +7970,7 @@
         <descr>
           <p>
             An instance of this class is created whenever a control shall float,
-            but can not (or shall not) float by itself.
+            but cannot (or shall not) float by itself.
           </p>
           <p>
             Only TWinControls can float on the screen (with Parent=Nil), but not ordinary TControls.
@@ -10870,10 +10881,15 @@
       </element>
 
       <element name="TControl.IsEnabled">
-        <short>Returns True if the control is Enabled, including all of its Parents.</short>
+        <short>Returns True if both the control and all of its Parent controls are Enabled.</short>
+        <descr>
+          <p>
+            Returns <b>True</b> when both the control instance and its parent control hierarchy are enabled. Used internally by TGraphicControls for painting and various states during run-time.
+          </p>
+        </descr>
       </element>
       <element name="TControl.IsEnabled.Result">
-        <short>True only if all Parents also are enabled.</short>
+        <short>True when the control and  all Parent controls are enabled.</short>
       </element>
 
       <element name="TControl.IsParentColor">
@@ -10893,8 +10909,7 @@
         <short>Provides access to the value in the protected ParentFont property.</short>
         <descr>
           <p>
-            Checks the value in the member for the protected ParentFont property. Used in places where we need to check ParentFont from TControl.
-            Needed for widgetset classes.
+            Checks the value in the member for the protected ParentFont property. Used in places where we need to check ParentFont from TControl. Needed for widgetset classes.
           </p>
         </descr>
         <seealso/>
@@ -10907,7 +10922,7 @@
         <short>True if the form is being updated.</short>
         <descr>
           <p>
-            The return value is True a value has been assigned to Parent, and its FormIsUpdating method returns True.
+            The return value is <b>True</b> when a value has been assigned to Parent, and its FormIsUpdating method returns True.
           </p>
         </descr>
         <seealso/>
@@ -10929,7 +10944,7 @@
       </element>
 
       <element name="TControl.Hide">
-        <short>Hides this control, by setting Visible to False.</short>
+        <short>Hides the control by setting Visible to False.</short>
         <seealso>
           <link id="TControl.Visible"/>
           <link id="TControl.Show"/>
@@ -10950,7 +10965,20 @@
 
       <element name="TControl.Repaint">
         <short>Immediately redraws the control when visible, bypassing the message queue.</short>
-        <descr/>
+        <descr>
+          <p>
+            Repaint is a method called redraw the control when it is visible. No actions are performed in the method when:
+          </p>
+          <ul>
+            <li>Parent has not been assigned.</li>
+            <li>Parent does not have a valid handle.</li>
+            <li>ComponentState contains the value csDestroying.</li>
+            <li>The effective visibility from IsVisible is False.</li>
+          </ul>
+          <p>
+            When control is Parented, it is redrawn using the values in ControlStyle. When csOpaque is included, a device context is retrieved and the PaintControl method is called for the clipping rectangle in the Parent control. When csOpaque is omitted, the Invalidate and Update methods are called to request the control to redrawn.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.Parent"/>
           <link id="TControl.IsVisible"/>
@@ -10966,12 +10994,25 @@
         <short>
           Force a delayed Repaint of the control, by marking its visible area of the control as invalid.
         </short>
+        <descr>
+          <p>
+            Calls the <var>InvalidateControl</var> method to invalidate the bounds rectangle for the control using the clipping rectangle for the Parent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.InvalidateControl"/>
+          <link id="TControl.IsVisible"/>
+          <link id="TControl.ControlStyle"/>
+          <link id="TControl.Parent"/>
+        </seealso>
       </element>
 
       <element name="TControl.CheckChildClassAllowed">
         <short>Returns True if the class is allowed for child controls.</short>
         <descr>
-          Only few controls restrict the class of acceptable child controls. E.g. a PageControl only accepts TTabSheet descendants as children
+          <p>
+            Only few controls restrict the class of acceptable child controls. E.g. a PageControl only accepts TTabSheet descendants as children.
+          </p>
         </descr>
         <errors>
           An EInvalidOperation can be generated (see ExceptionOnInvalid).
@@ -11004,15 +11045,41 @@
         <short>Moves all sibling controls in front of this control.</short>
         <descr>
           <p>
-            Use SendToBack to supply an specific background (image) for the Parent control. Only those portions of the control not covered by other controls will be visible.
+            Use <var>SendToBack</var> to move the control beneath all other sibling controls on the Parent. Only those portions of the control not covered by other controls will be visible.
+          </p>
+          <p>
+            Calls SetZOrder to move the position for the control on the z-axis (depth) to the maximum Integer value for the platform.
+          </p>
+          <p>
+            Use BringToFront to move a control to the top of the Z-axis on the Parent control.
+          </p>
+          <p>
+            Use SetChildZPosition in TWinControl to move a child control to a specific position on the Z-axis where 0 is the top and MaxInt is the bottom of the Z-order.
           </p>
         </descr>
+        <seealso>
+          <link id="TControl.BringToFront"/>
+          <link id="TWinControl.SetChildZPosition"/>
+        </seealso>
       </element>
 
       <element name="TControl.SetTempCursor">
         <short>
           Changes the cursor shape temporarily, preserving the original <link id="TControl.Cursor"/>
         </short>
+        <descr>
+          <p>
+            <var>SetTempCursor</var> is a method used to temporarily change the cursor shape to the <var>TCursor</var> value specified in <var>Value</var>. SetTempCursor calls the overridden method in the <var>Parent</var> control to apply the cursor shape in Value.
+          </p>
+          <p>
+            No actions are performed in the method when Parent has not been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Parent"/>
+          <link id="TWinControl.SetTempCursor"/>
+          <link id="TCursor"/>
+        </seealso>
       </element>
       <element name="TControl.SetTempCursor.Value">
         <short>The temporary cursor shape for the control.</short>
@@ -11095,52 +11162,65 @@
       <element name="TControl.Perform">
         <short>Direct call of an message handler, bypassing the message queue.</short>
         <descr>
-          The parameters and result depend on the concrete message.
+          <p>
+            <var>Perform</var> is a method used to pass a message to the processing loop for the control.
+          </p>
+          <p>
+            Values in the Msg, WParam, and LParam arguments are stored in a <var>TLMessage</var> instance and passed as an argument to the routine in the <var>WindowProc</var> property. The return value is the <var>LRESULT</var> returned from the WindowProc routine.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TControl.WindowProc"/>
+          <link id="TWndMethod"/>
+          <link id="#lcl.lmessages.TLMessage">TLMessage</link>
+          <link id="#lcl.lcltype.LRESULT">LRESULT</link>
+        </seealso>
       </element>
       <element name="TControl.Perform.Result">
-        <short/>
+        <short>Result value from the WindowProc routine.</short>
       </element>
       <element name="TControl.Perform.Msg">
-        <short/>
+        <short>Control message constant for the message executed in the method.</short>
       </element>
       <element name="TControl.Perform.WParam">
-        <short/>
+        <short>Parameter with a handle or Integer value (not necessarily 16-bits any more).</short>
       </element>
       <element name="TControl.Perform.LParam">
-        <short/>
+        <short>Parameter with a Pointer to its value (not necessarily 32-bits any more).</short>
       </element>
 
       <element name="TControl.ScreenToClient">
         <short>Convert absolute screen coordinates into client-relative coordinates.</short>
         <seealso>
           <link id="TControl.ClientToScreen"/>
+          <link id="TControl.ClientOrigin"/>
         </seealso>
       </element>
       <element name="TControl.ScreenToClient.Result">
-        <short/>
+        <short>TPoint instance with the client-relative coordinates for the specified screen coordinates.</short>
       </element>
       <element name="TControl.ScreenToClient.APoint">
-        <short/>
+        <short>TPoint instance with the screen coordinates converted in the method.</short>
       </element>
 
       <element name="TControl.ClientToScreen">
         <short>Convert client-relative coordinates into absolute screen coordinates.</short>
         <seealso>
           <link id="TControl.ScreenToClient"/>
+          <link id="TControl.ClientOrigin"/>
         </seealso>
       </element>
       <element name="TControl.ClientToScreen.Result">
-        <short/>
+        <short>TPoint instance with the screen coordinates for the specified client coordinates.</short>
       </element>
       <element name="TControl.ClientToScreen.APoint">
-        <short/>
+        <short>TPoint instance with the client-relative coordinates converted in the method.</short>
       </element>
 
       <element name="TControl.ScreenToControl">
-        <short>Convert absolute screen coordinates into control-relative coordinates.</short>
+        <short>Converts absolute screen coordinates into control-relative coordinates.</short>
         <seealso>
+          <link id="TControl.ControlOrigin"/>
           <link id="TControl.ControlToScreen"/>
           <link id="TControl.ScreenToClient"/>
           <link id="TControl.ClientToScreen"/>
@@ -11156,6 +11236,7 @@
       <element name="TControl.ControlToScreen">
         <short>Converts control-relative coordinates to absolute screen coordinates.</short>
         <seealso>
+          <link id="TControl.ControlOrigin"/>
           <link id="TControl.ScreenToControl"/>
           <link id="TControl.ScreenToClient"/>
           <link id="TControl.ClientToScreen"/>
@@ -11233,8 +11314,18 @@
       </element>
 
       <element name="TControl.Show">
-        <short>Makes the control visible, by setting Visible to True.</short>
-        <descr/>
+        <short>Makes the control visible by setting Visible to True.</short>
+        <descr>
+          <p>
+            Show calls the ShowControl method in the Parent control (when assigned) to ensure that the control instance is visible on the Parent control. Show sets the value in the Visibile property to True. The value in the Visible property is not changed at design-time or when csNoDesignVisible  has not been included in the ControlStyle property.
+          </p>
+          <p>
+            Use the Hide method to hide the control on its Parent.
+          </p>
+          <p>
+            Use ShowControl to display a specific sibling control on the Parent.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.Visible"/>
           <link id="TControl.Hide"/>
@@ -11244,6 +11335,15 @@
 
       <element name="TControl.Update">
         <short>Redraw invalidated parts of the control immediately.</short>
+        <descr>
+          <p>
+            Updates calls the overridden method for the Parent control to update child control instances. No actions are performed in the method when Parent has not been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Parent"/>
+          <link id="TWinControl.Update"/>
+        </seealso>
       </element>
 
       <element name="TControl.HandleObjectShouldBeVisible">
@@ -11276,24 +11376,24 @@
       </element>
 
       <element name="TControl.InitiateAction">
-        <short>Update the action associated with this control.</short>
+        <short>Update the action associated with the control.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TControl.ShowHelp">
-        <short>Show the Help associated with this control.</short>
+        <short>Show the Help associated with the control.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TControl.HasHelp">
-        <short>True when a HelpKeyword or HelpContext ID is assigned.</short>
+        <short>Indicates whether a HelpKeyword or HelpContext ID is assigned for the control.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TControl.HasHelp.Result">
-        <short/>
+        <short>True when a HelpKeyword or HelpContext ID is assigned.</short>
       </element>
 
       <element link="#lcl.lclclasses.TLCLComponent.RemoveAllHandlersOfObject" name="TControl.RemoveAllHandlersOfObject"/>
@@ -11839,31 +11939,91 @@
 
       <element name="TControl.ControlState">
         <short>
-          State flags, telling whether the control has been clicked, data being read, control being re-drawn, etc.
+          Contains state flags which indicate whether the control has been clicked, data is being read, or the control is being re-drawn, etc.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ControlState</var> is a <var>TControlState</var> property which contains flags that indicate when actions are detected or handled for the control. It is a set type which contains zero or more values from the TControlStateType enumeration.
+          </p>
+          <p>
+            Values are added to the property when an event is detected. Values are removed from the property in methods which handle the event by performing some action on the control.
+          </p>
+          <p>
+            For more information about the values in the enumeration and their uses and meanings, please refer to <link id="TControlStateType">TControlStateType</link>.
+          </p>
+        </descr>
         <seealso>
+          <link id="TControl.ReadState"/>
+          <link id="TControl.Dock"/>
+          <link id="TControl.WMLButtonDown"/>
+          <link id="TControl.WMLButtonUp"/>
+          <link id="TControl.WndProc"/>
           <link id="TControlState"/>
+          <link id="TControlStateType"/>
         </seealso>
       </element>
 
       <element name="TControl.ControlStyle">
         <short>
-          Style flags, specifying whether the control responds to mouse clicks, can be re-sized, has particular actions, etc.
+          Contains style flags which control the features or behaviors enabled for the control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>ControlStyle</var> is a <var>TControlStyle</var> property used to enable features or behaviors for a control. Values from the <var>TControlStyleType</var> enumeration are added to the property to enable the corresponding feature supported in the control.
+          </p>
+          <p>
+            Values in ControlStyle are normally assigned in the constructor for a given control class.
+          </p>
+          <p>
+            Some controls implement properties which cause the values in the set to be changed when a new value is assigned to the property. For example, TToolBar.Transparent includes or excludes csOpaque in ControlStyle as needed to reflect the value for the property. Values in the property may also be read and/or updated when methods in the control are called.
+          </p>
+          <p>
+            The visibility for the ControlStyle property is public, so it does not appear in the Lazarus Object Inspector. But it can be updated in program code as needed.
+          </p>
+          <p>
+            See TControlStyleType for more information about values in the enumeration and their intended usage.
+          </p>
+        </descr>
         <seealso>
+          <link id="TControlStyleType"/>
           <link id="TControlStyle"/>
         </seealso>
       </element>
 
       <element name="TControl.Enabled">
         <short>Determines whether the control reacts on mouse or keyboard input.</short>
-        <descr>Disabled controls usually appear 'greyed-out'</descr>
+        <descr>
+          <p>
+            <var>Enabled</var> is a <var>Boolean</var> property which indicates whether the control can respond to focus, input, or mouse events. The default value for the property is <b>True</b>. When Enabled is set to <b>False</b>, the control is displayed with a "grayed-out" appearance. It is unable to receive input focus, handle keyboard navigation or input, respond to mouse click events, or execute its Action.
+          </p>
+          <p>
+            Changing the value for the property causes additional actions to be performed. EnabledChanging is called to signal any chtOnEnabledChanging control handlers assigned for the control. The property value is updated, and a CM_ENABLEDCHANGED control message is dispatched for the control. The EnabledChanged method is called to signal any chtOnEnabledChanged control handlers for the control.
+          </p>
+          <p>
+            Use IsEnabled to check the effective enabled state for both the control and its Parent control (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.EnabledChanging"/>
+          <link id="TControl.EnabledChanged"/>
+          <link id="TControl.DoCallNotifyHandler"/>
+          <link id="TControl.IsEnabled"/>
+        </seealso>
       </element>
 
       <element name="TControl.Font">
         <short>The <link id="#lcl.graphics.TFont">font</link> to be used for text display in this control.</short>
+        <descr>
+          <p>
+            <var>Font</var> is a <var>TFont</var> property with the typeface and display attributes used for  textual values on the control. Use properties in the TFont instance to change attributes like Name (for the typeface), Charset, Color, Height, Orientation (rotation degrees), Pitch, Quality, Size, and Style. Assigning a new TFont instance to the property causes the control to be redrawn.
+          </p>
+          <remark>
+            Some Font attributes may be ignored in TControl descendants. It depends on the drawing style for the specific control, and whether theme services are enabled for text on the control.
+          </remark>
+          <p>
+            The PixelsPerInch property in Font is used to perform font size scaling in methods like Scale96ToFont,  ScaleFontTo96, ScaleScreenToFont, and ScaleFontToScreen.
+          </p>
+        </descr>
         <seealso>
           <link id="#lcl.graphics.TFont">TFont</link>
         </seealso>
@@ -12753,7 +12913,7 @@
             <dt>capfHasScrollOffset</dt>
             <dd>Scroll offset is already included in the coordinates</dd>
             <dt>capfOnlyWinControls</dt>
-            <dd>Include only TWinControls (ignore TControls)</dd>
+            <dd>Include only TWinControl descendents (ignores TControl descendents)</dd>
           </dl>
           <p>
             Values from the enumeration are stored in the TControlAtPosFlags type.
@@ -13136,7 +13296,7 @@
         </seealso>
       </element>
       <element name="TWinControl.SetDesignerDeleting.AValue">
-        <short>New value for the property.</short>
+        <short>New value for the DesignerDeleting property.</short>
       </element>
 
       <element link="#lcl.controls.TWinControl.DockSite" name="TWinControl.SetDockSite"/>
@@ -13686,7 +13846,7 @@
           </p>
           <ul>
             <li>If there are child components, their total preferred size is calculated</li>
-            <li>If this value can not be computed (e.g. the children depend too much on their
+            <li>If this value cannot be computed (e.g. the children depend too much on their
               parent clientrect), then the interface is asked for the preferred size</li>
           </ul>
           <p>
@@ -15279,7 +15439,7 @@
         </seealso>
       </element>
       <element name="TWinControl.SetParentBackground.AParentBackground">
-        <short>New value for the property.</short>
+        <short>New value for the ParentBackground property.</short>
       </element>
 
       <element name="TWinControl.ShowControl">
@@ -15641,18 +15801,29 @@
         <seealso/>
       </element>
 
-      <!-- HERE -->
       <element name="TWinControl.IsResizing">
         <short>
-          Check IsResizing and drop or delay changes to the control, until the new size has been determined.
+          Indicates if the control is changing its size after the BeginUpdateBounds method has been called.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>IsResizing</var> is a read-only <var>Boolean</var> property which indicates if SetBounds has been called to resize the control, but the action has not been completed. An internal bounds lock counter is used to track the progress of a resize operation. It is incremented when <var>BeginUpdateBounds</var> is called and decremented in the <var>EndUpdateBounds</var> method. The property value is <b>True</b> when the internal bounds lock counter has a non-zero value.
+          </p>
+          <p>
+            IsResizing is used when a designer surface in the Lazarus IDE tries to select one of its components. It prevents the selection if the SetBounds operation is still in progress (IsResizing is <b>True</b>).
+          </p>
+         </descr>
+        <seealso>
+          <link id="TWinControl.BeginUpdateBounds"/>
+          <link id="TWinControl.EndUpdateBounds"/>
+          <link id="TWinControl.SetBounds"/>
+          <link id="TControl.SetBounds"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.TabOrder">
         <short>
-          Determines the sequence of control navigation when the user presses the Tab key.
+          Determines the navigation order for the control when the user presses the Tab or Shift+Tab key.
         </short>
         <descr/>
         <seealso>
