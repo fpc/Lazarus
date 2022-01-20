@@ -1,4 +1,12 @@
-unit gtk3wssplitter;
+{
+ *****************************************************************************
+  This file is part of the Lazarus Component Library (LCL)
+
+  See the file COPYING.modifiedLGPL.txt, included in this distribution,
+  for details about the license.
+ *****************************************************************************
+}
+unit Gtk3WSSplitter;
 
 {$mode objfpc}{$H+}
 {$I gtk3defines.inc}

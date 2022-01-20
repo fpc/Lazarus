@@ -14,9 +14,9 @@
  *****************************************************************************
 }
 unit gtk3int;
+
+{$mode objfpc}{$H+}
 {$i gtk3defines.inc}
-{$mode objfpc}
-{$H+}
 
 interface
 

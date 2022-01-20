@@ -13,10 +13,10 @@
   for details about the license.
  *****************************************************************************
 }
-unit gtk3objects;
+unit Gtk3Objects;
+
+{$mode objfpc}{$H+}
 {$i gtk3defines.inc}
-{$mode objfpc}
-{$H+}
 
 interface
 
@@ -736,11 +736,11 @@ begin
   if not AOwnsContext then
   begin
     AContext := gtk_widget_get_pango_context(AWidget);
-    // DebugLn('TGtk3Font.Create AContext created from widget ....context=',dbgHex(PtrUInt(AContext)));
+    //DebugLn('TGtk3Font.Create AContext created from widget ....context=',dbgHex(PtrUInt(AContext)));
   end else
   begin
     AContext := pango_cairo_create_context(ACairo);
-    // DebugLn('TGtk3Font.Create AContext created from pango cairo ....');
+    //DebugLn('TGtk3Font.Create AContext created from pango cairo ....');
   end;
   FHandle := pango_font_description_copy(pango_context_get_font_description(AContext));
   FFontName := pango_font_description_get_family(FHandle);
@@ -749,18 +749,18 @@ begin
   if FHandle^.get_size_is_absolute then
   begin
     FHandle^.set_absolute_size(FHandle^.get_size);
-    // writeln('**TGtk3Font.Create size is absolute ',FFontName,' size ',FHandle^.get_size);
+    //DebugLn(['**TGtk3Font.Create size is absolute ',FFontName,' size ',FHandle^.get_size]);
   end else
   begin
     FHandle^.set_size(FHandle^.get_size);
-    // writeln('*TGtk3Font.Create size is not absolute ',FFontName,' size ',FHandle^.get_size);
+    //DebugLn(['*TGtk3Font.Create size is not absolute ',FFontName,' size ',FHandle^.get_size]);
   end;
 
   FLayout^.set_font_description(FHandle);
-  // writeln('TGtk3Font.Create1 ',FFontName);
+  //DebugLn('TGtk3Font.Create1 ',FFontName);
   if AOwnsContext then
     g_object_unref(AContext);
-  // writeln('TGtk3Font.Create1 ',FFontName);
+  //DebugLn('TGtk3Font.Create1 ',FFontName);
 end;
 
 constructor TGtk3Font.Create(ALogFont: TLogFont; const ALongFontName: String);
@@ -1368,7 +1368,7 @@ begin
   else
     AFont := FFont;
   if AFont<>nil then ;
-  debugln(['TGtk3DeviceContext.ApplyFont ToDo']);
+  DebugLn(['TGtk3DeviceContext.ApplyFont ToDo']);
 end;
 
 procedure TGtk3DeviceContext.ApplyPen;
@@ -1459,7 +1459,7 @@ var
   ARect: TGdkRectangle;
 begin
   {$ifdef VerboseGtk3DeviceContext}
-    WriteLn('TGtk3DeviceContext.Create (',
+    DebugLn('TGtk3DeviceContext.Create (',
      ' WidgetHandle: ', dbghex(PtrInt(AWidget)),
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
@@ -1533,7 +1533,7 @@ constructor TGtk3DeviceContext.Create(AWindow: PGdkWindow;
   const APaintEvent: Boolean);
 begin
   {$ifdef VerboseGtk3DeviceContext}
-    WriteLn('TGtk3DeviceContext.Create (',
+    DebugLn('TGtk3DeviceContext.Create (',
      ' WindowHandle: ', dbghex(PtrInt(AWindow)),
      ' FromPaintEvent:',BoolToStr(APaintEvent),' )');
   {$endif}
@@ -1562,7 +1562,7 @@ var
   AGdkRect: TGdkRectangle;
 begin
   {$ifdef VerboseGtk3DeviceContext}
-    WriteLn('TGtk3DeviceContext.CreateFromCairo (',
+    DebugLn('TGtk3DeviceContext.CreateFromCairo (',
      ' WidgetHandle: ', dbghex(PtrInt(AWidget)),
      ' FromPaintEvent:',BoolToStr(True),' )');
   {$endif}
@@ -1584,7 +1584,7 @@ end;
 destructor TGtk3DeviceContext.Destroy;
 begin
   {$ifdef VerboseGtk3DeviceContext}
-    WriteLn('TGtk3DeviceContext.Destroy ',dbgHex(PtrUInt(Self)));
+    DebugLn('TGtk3DeviceContext.Destroy ',dbgHex(PtrUInt(Self)));
   {$endif}
   DeleteObjects;
   if FOwnsCairo and (pcr <> nil) then
@@ -2003,7 +2003,7 @@ var
   ATempBrush: TGtk3Brush;
 begin
   {$ifdef VerboseGtk3DeviceContext}
-  // WriteLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
+  //DebugLn('TGtk3DeviceContext.fillRect ',Format('x %d y %d w %d h %d',[x, y, w, h]));
   {$endif}
 
   cairo_save(pcr);
@@ -2173,7 +2173,6 @@ end;
 function TGtk3DeviceContext.drawFocusRect(const aRect: TRect): boolean;
 var
   Context: PGtkStyleContext;
-  //AValue: TGValue;
 begin
   Result := False;
 

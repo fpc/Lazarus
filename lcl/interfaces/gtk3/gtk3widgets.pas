@@ -14,10 +14,10 @@
  *****************************************************************************
 }
 
-unit gtk3widgets;
+unit Gtk3Widgets;
+
+{$mode objfpc}{$H+}
 {$i gtk3defines.inc}
-{$mode objfpc}
-{$H+}
 
 interface
 
@@ -1050,6 +1050,10 @@ begin
     begin
       // DebugLn('****** GDK_MAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
     end;
+  GDK_UNMAP:
+    begin
+      // DebugLn('****** GDK_UNMAP FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
+    end;
   GDK_PROPERTY_NOTIFY:
     begin
       // DebugLn('****** GDK_PROPERTY_NOTIFY FOR ',dbgsName(TGtk3Widget(Data).LCLObject));
@@ -1344,8 +1348,7 @@ begin
     end;
   otherwise
     DebugLn('****** GDK unhandled event type ' + dbgsName(TGtk3Widget(Data).LCLObject));
-    WriteLn(event^.type_);
-
+   // DebugLn(event^.type_);
   end;
 end;
 
@@ -1607,7 +1610,7 @@ var
   Range: PGtkRange;
 begin
   {$IFDEF SYNSCROLLDEBUG}
-  debugln(['Gtk3ScrolledWindowScrollEvent ']);
+  DebugLn(['Gtk3ScrolledWindowScrollEvent ']);
   {$ENDIF}
   Result := False;
   case AEvent^.scroll.direction of
@@ -2558,7 +2561,7 @@ begin
     FWidget^.Visible := AValue;
 end;
 
-function TGtk3Widget.QueryInterface(constref iid: TGuid; out obj): LongInt; cdecl;
+function TGtk3Widget.QueryInterface(constref iid: TGuid; out obj): LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   if GetInterface(iid, obj) then
     Result := 0
@@ -2566,12 +2569,12 @@ begin
     Result := E_NOINTERFACE;
 end;
 
-function TGtk3Widget._AddRef: LongInt; cdecl;
+function TGtk3Widget._AddRef: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1; // no ref counting
 end;
 
-function TGtk3Widget._Release: LongInt; cdecl;
+function TGtk3Widget._Release: LongInt; {$IFDEF WINDOWS}stdcall{$ELSE}cdecl{$ENDIF};
 begin
   Result := -1;
 end;
@@ -3615,7 +3618,7 @@ begin
     begin
        if not (atext[i] in ['0'..'9']) then
        begin
-         g_signal_stop_emission_by_name(Self, 'insert-text');
+         g_signal_stop_emission_by_name(PGObject(Self), 'insert-text');
          exit;
        end;
     end;
@@ -3646,15 +3649,8 @@ begin
 end;
 
 procedure TGtk3Entry.SetBounds(Left, Top, Width, Height: integer);
-var val:TGvalue;
 begin
-  val.clear;
-  val.init(G_TYPE_UINT);
-  val.set_uint(Width);
-
   inherited SetBounds(Left, Top, Width, Height);
-  PGtkEntry(FWidget)^.set_property('width-request',@val);
-  val.unset;
 end;
 
 procedure TGtk3Entry.InitializeWidget;
@@ -7449,21 +7445,21 @@ begin
   if msk and GDK_WINDOW_STATE_FOCUSED<>0 then
   begin
     if AState and GDK_WINDOW_STATE_FOCUSED<>0 then
-      writeln('Focused')
+      DebugLn('Focused')
     else
-      writeln('Defocused');
+      DebugLn('Defocused');
     exit;
   end else
   if msk and GDK_WINDOW_STATE_WITHDRAWN<>0 then
   begin
     if AState and GDK_WINDOW_STATE_WITHDRAWN<>0 then
-      writeln('Shown')
+      DebugLn('Shown')
     else
-      writeln('Hidden');
+      DebugLn('Hidden');
     exit;
   end else
   begin
-    writeln(format('other changes state=%.08x mask=%.08x',[AState,msk]));
+    DebugLn(format('other changes state=%.08x mask=%.08x',[AState,msk]));
     exit;
   end;
 

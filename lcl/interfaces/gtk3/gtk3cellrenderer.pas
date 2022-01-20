@@ -262,7 +262,8 @@ begin
   else
     ANaturalHeight := 0;
 }
-  // writeln('1.minimumheight ',AMinHeight,' naturalheight ',ANaturalHeight,' min ',dbgs(minimum_height <> nil),' nat ',dbgs(natural_height <> nil));
+  //DebugLn(['1.minimumheight ',AMinHeight,' naturalheight ',ANaturalHeight,
+  //     ' min ',dbgs(minimum_height <> nil),' nat ',dbgs(natural_height<>nil)]);
 
   AWinControl := GetControl(widget);
   if AWinControl = Nil then exit;
@@ -291,7 +292,7 @@ begin
   if natural_height <> nil then
     natural_height^ := gint(MeasureItemStruct.itemHeight);
 
-  // writeln('Final cell height ',MeasureItemStruct.itemHeight);
+  //DebugLn('Final cell height ',MeasureItemStruct.itemHeight);
 end;
 
 procedure LCLIntfCellRenderer_GetSize(cell: PGtkCellRenderer; widget: PGtkWidget;
@@ -620,7 +621,7 @@ const
     class_size: SizeOf(TLCLIntfCellRenderer) + 1024;
     base_init: nil; // TGBaseInitFunc;
     base_finalize: nil; // TGBaseFinalizeFunc;
-    class_init: @LCLIntfCellRenderer_ClassInit;
+    class_init: TGClassInitFunc(@LCLIntfCellRenderer_ClassInit);
     class_finalize: nil; // @LCLIntfCellRenderer_ClassFinalize; // nil; // TGClassFinalizeFunc;
     class_data: nil;
     instance_size: SizeOf(TLCLIntfCellRenderer) + 1024;
@@ -641,7 +642,7 @@ end;
 function LCLIntfCellRenderer_New: PGtkCellRenderer;
 begin
   // PGtkCellRenderer(g_type_class_ref(LCLIntfCellRenderer_GetType));
-  Result := g_object_new(LCLIntfCellRenderer_GetType, nil,[]);
+  Result := PGtkCellRenderer(g_object_new(LCLIntfCellRenderer_GetType, nil,[]));
 end;
 
 procedure LCLIntfCellRenderer_CellDataFunc(cell_layout:PGtkCellLayout;

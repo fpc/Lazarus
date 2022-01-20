@@ -15,8 +15,8 @@
 }
 unit Gtk3WSDialogs;
 
-{$I gtk3defines.inc}
 {$mode objfpc}{$H+}
+{$I gtk3defines.inc}
 
 interface
 
@@ -60,11 +60,11 @@ type
   TGtk3WSOpenDialog = class(TWSOpenDialog)
   protected
     class function CreateOpenDialogFilter(OpenDialog: TOpenDialog;
-      Chooser: PGtkFileChooser): string;
+      Chooser: PGtkFileChooser): string; virtual;
     class procedure CreateOpenDialogHistory(OpenDialog: TOpenDialog;
-      SelWidget: PGtkWidget);
+      SelWidget: PGtkWidget); virtual;
     class procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
-      Chooser: PGtkFileChooser);
+      Chooser: PGtkFileChooser); virtual;
   published
     class function CreateHandle(const ACommonDialog: TCommonDialog): THandle; override;
   end;
@@ -243,7 +243,7 @@ var
           CurDesc:=CurDesc+' ';
         CurDesc:=CurDesc+'('+Masks[i]+')';
       end;
-      //debugln('AddEntries ',CurDesc,' ',Masks[i]);
+      //DebugLn('AddEntries ',CurDesc,' ',Masks[i]);
       AddEntry(CurDesc,Masks[i]);
     end;
     inc(CurFilterIndex);
@@ -559,7 +559,7 @@ begin
   Result := False;
   DebugLn('Gtk3WSDialogs: WARNING gtkDialogSelectRowCB is not implemented since PGtkFileSelection is deprecated.');
   (*
-  //debugln('GTKDialogSelectRowCB A ');
+  //DebugLn('GTKDialogSelectRowCB A ');
   Result:=CallBackDefaultReturn;
   if (Data=nil) or (BEvent=nil) or (Column=0) or (Row=0) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
@@ -823,9 +823,9 @@ begin
     FontName := gtk_font_chooser_get_font(PGtkFontChooser(FPointer));
     // FontName := gtk_font_selection_dialog_get_font_name(
     //                                         pgtkfontselectiondialog(FPointer));
-    //debugln('gtkDialogOKclickedCB FontName=',FontName);
+    //DebugLn('gtkDialogOKclickedCB FontName=',FontName);
     //SelectedFont:=gdk_font_load(PChar(FontName));
-    //debugln('gtkDialogOKclickedCB ',dbgs(SelectedFont));
+    //DebugLn('gtkDialogOKclickedCB ',dbgs(SelectedFont));
 
     if IsFontNameXLogicalFontDesc(FontName) then
     begin
@@ -982,7 +982,7 @@ end;
 function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
 begin
-  //debugln('GTKDialogKeyUpDownCB A ');
+  //DebugLn('GTKDialogKeyUpDownCB A ');
   Result := False;
   (*
   if (Widget=nil) then ;
@@ -1016,7 +1016,7 @@ function GTKDialogFocusInCB(widget: PGtkWidget; data: gPointer): GBoolean;
 var
   theDialog: TCommonDialog;
 begin
-  //debugln('GTKDialogFocusInCB A ');
+  //DebugLn('GTKDialogFocusInCB A ');
   Result := False;
   if (Data=nil) then ;
   (*

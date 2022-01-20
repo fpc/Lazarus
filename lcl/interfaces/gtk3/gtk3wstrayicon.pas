@@ -23,7 +23,7 @@ Also refer to discussion in ../gtk2/UnityWSCtrls.pas
 }
 
 
-unit gtk3wstrayicon;
+unit Gtk3WSTrayIcon;
 
 interface
 

@@ -49,7 +49,7 @@ unit LazCairo1;
   October 2007
 *)
 
-{$mode ObjFpc}
+{$mode ObjFpc}{$H+}
 
 interface
 
@@ -195,13 +195,13 @@ type
   Tcairo_content_t = cairo_content_t;
 
   cairo_format_t = (
-    // CAIRO_FORMAT_INVALID   = -1,
+    CAIRO_FORMAT_INVALID   = -1,
     CAIRO_FORMAT_ARGB32,
     CAIRO_FORMAT_RGB24,
     CAIRO_FORMAT_A8,
-    CAIRO_FORMAT_A1
-    // CAIRO_FORMAT_RGB16_565
-    // CAIRO_FORMAT_RGB30
+    CAIRO_FORMAT_A1,
+    CAIRO_FORMAT_RGB16_565,
+    CAIRO_FORMAT_RGB30
   );
 
   cairo_extend_t = (

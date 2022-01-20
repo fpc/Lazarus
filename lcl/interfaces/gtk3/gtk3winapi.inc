@@ -67,13 +67,13 @@ function TGtk3WidgetSet.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   {$ifdef VerboseGtk3DeviceContext}
-    WriteLn('Trace:> [TGtk3WidgetSet.BitBlt]');
+    DebugLn('Trace:> [TGtk3WidgetSet.BitBlt]');
   {$endif}
   Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width,
                        Height, ROP);
 
   {$ifdef VerboseGtk3DeviceContext}
-    WriteLn('Trace:< [TGtk3WidgetSet.BitBlt]');
+    DebugLn('Trace:< [TGtk3WidgetSet.BitBlt]');
   {$endif}
 end;
 
@@ -177,10 +177,13 @@ begin
 end;
 
 function TGtk3WidgetSet.ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
+ var xGA:PGdkAtom;
 begin
   if Assigned(Application) then
-    Result := {%H-}TClipboardFormat(TGdkAtom.intern(PChar(AMimeType), False))
-  else
+  begin
+    xGA:=TGdkAtom.intern(PChar(AMimeType), False);
+    Result := TClipboardFormat(xGA);
+  end else
     RaiseGDBException(
       'ERROR: TGtk3WidgetSet.ClipboardRegisterFormat gdk not initialized');
 end;
@@ -223,7 +226,7 @@ begin
     RGN_COPY:
     begin
       AStatus := cairo_region_intersect(RDest, RSrc1);
-      // writeln('CombineRgn RGN_COPY ',AStatus);
+      //DebugLn(['CombineRgn RGN_COPY ',AStatus]);
     end;
     RGN_DIFF:
     begin
@@ -726,7 +729,7 @@ var
       end;
 
       Gtk3WordWrap(DC, PChar(AStr), MaxWidth, Lines, NumLines);
-      // writeln('WORD WRAP RESULTED IN ',NumLines,' lines for ',AStr,' MAX=',MaxWidth);
+      //DebugLn(['WORD WRAP RESULTED IN ',NumLines,' lines for ',AStr,' MAX=',MaxWidth]);
       if (Flags and DT_CALCRECT)<>0 then
       begin
         LineWidth := 0;
@@ -752,7 +755,8 @@ var
       if NumLines>1 then
         Inc(theRect.Bottom, (NumLines-1)*TM.tmDescent);// space between lines
 
-      // debugln('TGtk3WidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
+      //DebugLn('TGtk3WidgetSet.DrawText A ',dbgs(theRect),' TM.tmHeight=',dbgs(TM.tmHeight),
+      //        ' LineWidth=',dbgs(LineWidth),' NumLines=',dbgs(NumLines));
     end;
 
     if not CalcRect then
@@ -812,7 +816,6 @@ var
 
   function NeedOffsetCalc: Boolean;
   begin
-
     Result := (TGtk3DeviceContext(DC).CurrentFont.LogFont.lfOrientation <> 0) and
         (Flags and DT_SINGLELINE <> 0) and
         (Flags and DT_VCENTER = 0) and (Flags and DT_CENTER = 0) and
@@ -1264,8 +1267,8 @@ var
 begin
   Result := 0;
   {$ifdef VerboseEnumFonts}
-  WriteLn('[TGtk3WidgetSet.EnumFontFamiliesEx] Charset=',lpLogFont^.lfCharSet,
-  ' face ',lpLogFont^.lfFaceName,' pitchAndFamily=',lpLogFont^.lfPitchAndFamily);
+  DebugLn(['[TGtk3WidgetSet.EnumFontFamiliesEx] Charset=',lpLogFont^.lfCharSet,
+  ' face ',lpLogFont^.lfFaceName,' pitchAndFamily=',lpLogFont^.lfPitchAndFamily]);
   {$endif}
   Result := 0;
   Metric.ntmentm.ntmAvgWidth := 0; // just to shutup compiler
@@ -1475,9 +1478,9 @@ begin
 
           // get transformation
           GetWindowOrgEx(DC, @DCOrigin);
-          // writeln('ExtSelectClipRgn DCOrigin=',dbgs(DCOrigin),' R=',dbgs(R));
+          // DebugLn('ExtSelectClipRgn DCOrigin=',dbgs(DCOrigin),' R=',dbgs(R));
           // OffsetRect(R, -DCOrigin.X, -DCOrigin.Y);
-          // writeln('ExtSelectClipRgn after DCOrigin=',dbgs(DCOrigin),' R=',dbgs(R));
+          // DebugLn('ExtSelectClipRgn after DCOrigin=',dbgs(DCOrigin),' R=',dbgs(R));
           Clip := CreateRectRGN(0, 0, R.Right - R.Left, R.Bottom - R.Top);
 
           cairo_region_translate(TGtk3Region(Clip).Handle, -DCOrigin.X, -DCOrigin.Y);
@@ -2222,7 +2225,7 @@ begin
   if not IsValidGDIObject(GDIObj) then
   begin
     {$ifdef VerboseGtk3WinAPI}
-      WriteLn('Trace:< TGtk3WidgetSet.GetObject Invalid GDI Object');
+    DebugLn('Trace:< TGtk3WidgetSet.GetObject Invalid GDI Object');
     {$endif}
     Exit;
   end;
@@ -2438,7 +2441,7 @@ end;
 function TGtk3WidgetSet.GetSysColor(nIndex: Integer): DWORD;
 begin
   {$IFDEF GTK3DEBUGNOTIMPLEMENTED}
-  writeln('TGtk3WidgetSet.GetSysColor WARNING: SOME SYSCOLORS ARE STILL HARDCODED nIndex=',nIndex);
+  DebugLn(['TGtk3WidgetSet.GetSysColor WARNING: SOME SYSCOLORS ARE STILL HARDCODED nIndex=',nIndex]);
   {$ENDIF}
   if (nIndex = COLOR_WINDOW) or (nIndex = COLOR_WINDOWTEXT) or
     (nIndex = COLOR_HIGHLIGHT) or (nIndex = COLOR_HIGHLIGHTTEXT) then
@@ -2715,7 +2718,7 @@ begin
   if not IsValidDC(DC) and (P <> nil) then
   begin
     {$ifdef VerboseGtk3WinAPI}
-      WriteLn('Trace: < [WinAPI GetWindowOrgEx] No valid DC or P is nil');
+      DebugLn('Trace: < [WinAPI GetWindowOrgEx] No valid DC or P is nil');
     {$endif}
     exit;
   end;
@@ -3373,15 +3376,12 @@ begin
     if IsValidHandle(AHandle) then
     begin
       TGtk3Widget(AHandle).SetCapture;
-      //if (Result <> 0) then
-      begin
-        Message.Msg := 0;
-        FillChar(Message, SizeOf(Message), 0);
-        Message.msg := LM_CAPTURECHANGED;
-        Message.wParam := 0;
-        Message.lParam := PtrInt(Result);
-        LCLMessageGlue.DeliverMessage(TGtk3Widget(AHandle).LCLObject, Message);
-      end;
+      Message.Msg := 0;
+      FillChar(Message, SizeOf(Message), 0);
+      Message.msg := LM_CAPTURECHANGED;
+      Message.wParam := 0;
+      Message.lParam := PtrInt(Result);
+      LCLMessageGlue.DeliverMessage(TGtk3Widget(AHandle).LCLObject, Message);
     end;
   end;
 end;

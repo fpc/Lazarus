@@ -13,9 +13,10 @@
   for details about the license.
  *****************************************************************************
 }
-unit gtk3procs;
-{$i gtk3defines.inc}
+unit Gtk3Procs;
+
 {$mode objfpc}{$H+}
+{$i gtk3defines.inc}
 
 interface
 
@@ -839,7 +840,7 @@ begin
   {$IFDEF NoStyle}
   exit;
   {$ENDIF}
-  //debugln('UpdateSysColorMap ',GetWidgetDebugReport(Widget));
+  //DebugLn('UpdateSysColorMap ',GetWidgetDebugReport(Widget));
   // gtk_widget_set_rc_style(Widget);
   MainStyle := Widget^.get_style;
   if MainStyle = nil then exit;

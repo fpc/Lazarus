@@ -22,8 +22,7 @@
 
 unit LazPangoCairo1;
 
-{$mode objfpc}
-{$H+}
+{$mode objfpc}{$H+}
 
 interface
 uses LazGlib2, LazPango1, LazCairo1, LazGObject2;

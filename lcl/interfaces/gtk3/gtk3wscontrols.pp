@@ -544,7 +544,7 @@ begin
       NewPos := v - DeltaY;
     if NewPos < 0 then
       NewPos := 0;
-    // writeln('OldValue ',dbgs(V),' NewValue ',dbgs(NewPos),' upper=',dbgs(Adjustment^.upper - Adjustment^.page_size));
+    //DebugLn('OldValue ',dbgs(V),' NewValue ',dbgs(NewPos),' upper=',dbgs(Adjustment^.upper - Adjustment^.page_size));
     gtk_adjustment_set_value(Adjustment, NewPos);
   end;
   AWinControl.Invalidate;

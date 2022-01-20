@@ -15,8 +15,8 @@
 }
 unit Gtk3WSCheckLst;
 
-{$i gtk3defines.inc}
 {$mode objfpc}{$H+}
+{$i gtk3defines.inc}
 
 interface
 

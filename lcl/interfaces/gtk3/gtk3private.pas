@@ -14,10 +14,10 @@
  *****************************************************************************
 }
 
-unit gtk3private;
+unit Gtk3Private;
 
-{$i gtk3defines.inc}
 {$mode objfpc}{$H+}
+{$i gtk3defines.inc}
 
 interface
 

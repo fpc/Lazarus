@@ -19,8 +19,7 @@
 
 unit interfaces;
  
-{$mode objfpc} 
-{$H+} 
+{$mode objfpc}{$H+}
 
 interface
 

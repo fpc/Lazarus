@@ -309,15 +309,15 @@ function TGtk3WidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADe
 const
   CairoImageFormatToDepth: array[cairo_format_t] of integer =
   (
-    // {CAIRO_FORMAT_RGB30}15,
-    // {CAIRO_FORMAT_RGB16_565}16,
-
-    {CAIRO_FORMAT_ARGB32} 32,
-    {CAIRO_FORMAT_RGB24}  24,
-    {CAIRO_FORMAT_A8}      8,
-    {CAIRO_FORMAT_A1}      1
+    {CAIRO_FORMAT_RGB30}     15,
+    {CAIRO_FORMAT_RGB16_565} 16,
+    {CAIRO_FORMAT_ARGB32}    32,
+    {CAIRO_FORMAT_RGB24}     24,
+    {CAIRO_FORMAT_A8}         8,
+    {CAIRO_FORMAT_A1}         1,
+    {CAIRO_FORMAT_INVALID}   -1
   );
-
+//============================
 var
   Image: TGtk3Image absolute ABitmap;
 
@@ -993,7 +993,7 @@ begin
   Desc.Height := DCSize.cy;
 
   {$ifdef VerboseGtk3WinApi}
-    WriteLn('Trace:< [WinAPI GetRawImageFromDevice]');
+  DebugLn('Trace:< [WinAPI GetRawImageFromDevice]');
   {$endif}
 
   (*
@@ -1096,7 +1096,8 @@ begin
         Widget:=GetStyleWidget(lgsVScale);
         MinWidth:=Widget^.requisition.width;
       end;
-      //DebugLn(['TGtk3WidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),' ',MinWidth,',',MinHeight]);
+      //DebugLn(['TGtk3WidgetSet.GetControlConstraints ',DbgSName(SizeConstraints.Control),
+      //         ' ',MinWidth,',',MinHeight]);
     end;
 
     SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
@@ -1181,7 +1182,7 @@ function waithandle_iocallback({%H-}source: PGIOChannel; condition: TGIOConditio
 // var
 //  lEventHandler: PWaitHandleEventHandler absolute data;
 begin
-  //debugln('waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8));
+  //DebugLn(['waithandle_iocallback lEventHandler=',HexStr(Cardinal(lEventHandler),8)]);
   // lEventHandler^.OnEvent(lEventHandler^.UserData, condition);
   Result := true;
 end;
@@ -1203,7 +1204,8 @@ begin
   lEventHandler^.OnEvent := AEventHandler;
   lEventHandler^.GSourceID := g_io_add_watch(giochannel,
     AFlags, @waithandle_iocallback, lEventHandler);
-  //debugln('TGtk3WidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+  //DebugLn(['TGtk3WidgetSet.AddEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),
+  //         ' AHandle=',dbgs(lEventHandler^.Handle)]);
   lEventHandler^.PrevHandler := nil;
   lEventHandler^.NextHandler := FWaitHandles;
   if FWaitHandles <> nil then
@@ -1229,7 +1231,8 @@ begin
     lEventHandler^.PrevHandler^.NextHandler := lEventHandler^.NextHandler;
   if lEventHandler^.NextHandler <> nil then
     lEventHandler^.NextHandler^.PrevHandler := lEventHandler^.PrevHandler;
-  //debugln('TGtk3WidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+  //DebugLn(['TGtk3WidgetSet.RemoveEventHandler lEventHandler=',HexStr(Cardinal(lEventHandler),8),
+  //         ' AHandle=',dbgs(lEventHandler^.Handle)]);
   Dispose(lEventHandler);
   *)
   AHandler := nil;
@@ -1243,7 +1246,8 @@ begin
   // g_source_remove(lEventHandler^.GSourceID);
   // lEventHandler^.GSourceID := g_io_add_watch(lEventHandler^.GIOChannel,
   //  NewFlags, @waithandle_iocallback, lEventHandler);
-  //debugln('TGtk3WidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),' AHandle=',dbgs(lEventHandler^.Handle));
+  //DebugLn(['TGtk3WidgetSet.SetEventHandlerFlags lEventHandler=',HexStr(Cardinal(lEventHandler),8),
+  //        ' AHandle=',dbgs(lEventHandler^.Handle)]);
 end;
 
 procedure TGtk3WidgetSet.SetRubberBandRect(const ARubberBand: HWND; const ARect: TRect);

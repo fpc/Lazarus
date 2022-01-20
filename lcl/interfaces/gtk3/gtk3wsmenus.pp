@@ -15,8 +15,8 @@
 }
 unit Gtk3WSMenus;
 
-{$i gtk3defines.inc}
 {$mode objfpc}{$H+}
+{$i gtk3defines.inc}
 
 interface
 
@@ -291,7 +291,7 @@ begin
   if ((not AMenuItem.Parent.HasParent) and (AMenuItem.GetParentMenu is TMainMenu)) then
   begin
     AForm := TCustomForm(AMenuItem.GetParentMenu.Owner);
-    PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(TGtk3MenuItem(AMenuItem.Handle).Widget);
+    PGtkMenuBar(TGtk3Window(AForm.Handle).GetMenuBar)^.append(PGtkMenuItem(AMenuItem.Handle){.Widget});
   end else
   (*
   if (AMenuItem.GetParentMenu is TPopupMenu) then
@@ -332,7 +332,7 @@ begin
         ContainerMenu := TGtkMenu.new;
         g_object_set_data(ParentMenuWidget, 'ContainerMenu',
                             ContainerMenu);
-        PGTKMenuItem(ParentMenuWidget)^.set_submenu(ContainerMenu);
+        PGTKMenuItem(ParentMenuWidget)^.set_submenu(PGtkMenu(ContainerMenu));
       end;
     end;
     PGtkMenu(ContainerMenu)^.insert(MenuItem.Widget, AMenuItem.MenuVisibleIndex);
