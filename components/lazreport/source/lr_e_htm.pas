@@ -372,10 +372,10 @@ begin
       s += Format('  border-color: %s;%s', [ColorToHex(p^.BorderColor),LineEnding]);
     end;
     case p^.Alignment of
-      taRightJustify: s += '  align="right";';
-      taCenter: s += '  align="center";';
+      taRightJustify: s += '  text-align: right;';
+      taCenter: s += '  text-align: center;';
       else
-        s += '  align="left";';
+        s += '  text-align: left;';
     end;
     s += ' } '+LineEnding+LineEnding;
   end;
