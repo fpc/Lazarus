@@ -2938,7 +2938,7 @@ const
 var
   Ch: Char;
   i,ResLen: Integer;
-  SubLen: SizeInt;
+  SLen, SubLen: SizeInt;
 const
   MaxGrowFactor: array[TEscapeMode] of integer = (3, 4, 5, 5, 5);
 begin
@@ -2950,7 +2950,11 @@ begin
   SetLength(Result, Length(S)*MaxGrowFactor[EscapeMode]);
   ResLen := 0;
   //a byte < 127 cannot be part of a multi-byte codepoint, so this is safe
-  for i := 1 to Length(S) do
+
+  //for i := 1 to Length(S) do
+  i := 1;
+  SLen := Length(S);
+  while (i <= SLen) do
   begin
     Inc(ResLen);
     Ch := S[i];
@@ -2985,10 +2989,17 @@ begin
           Inc(ResLen, SubLen-1);
         end;
       end;//case
+      Inc(i);
     end
     else
     begin
-      Result[ResLen] := Ch;
+      //Result[ResLen] := Ch;
+      SubLen := 1;
+      while (i + SubLen <= SLen) and (S[i+SubLen] > #31) do
+        Inc(SubLen);
+      Move(S[i], Result[ResLen], SubLen);
+      Inc(ResLen, SubLen-1);
+      Inc(i, SubLen);
     end;
   end;
   SetLength(Result, ResLen);
