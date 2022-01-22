@@ -720,7 +720,7 @@ begin
       Style := Style or PBS_MARQUEE
     else
       Style := Style and not PBS_MARQUEE;
-    SetWindowLong(AProgressBar.Handle, GWL_STYLE, Style);
+    SetWindowLongPtrW(AProgressBar.Handle, GWL_STYLE, Style);
     SendMessage(AProgressBar.Handle, PBM_SETMARQUEE, Ord(NewStyle = pbstMarquee), DefMarqueeTime);
     if NewStyle = pbstNormal then
       SetPosition(AProgressBar, AProgressBar.Position);

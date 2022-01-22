@@ -137,7 +137,7 @@ begin
   if iMsg = WM_CREATE then
   begin
     msgTaskbarRestart := RegisterWindowMessage('TaskbarCreated');
-    LCLIntf.SetWindowLong(Handle, GWL_USERDATA, PtrInt(PCREATESTRUCT(LParam_)^.lpCreateParams));
+    SetWindowLongPtrW(Handle, GWL_USERDATA, PtrInt(PCREATESTRUCT(LParam_)^.lpCreateParams));
   end
   else
   if (iMsg = msgTaskbarRestart) then

@@ -187,7 +187,7 @@ class function TWin32WSScrollBox.CreateHandle(const AWinControl: TWinControl;
           WindowInfo^.needParentPaint := true;
         WindowInfo^.WinControl := AWinControl;
         if SubClassWndProc <> nil then
-          WindowInfo^.DefWndProc := Windows.WNDPROC(LCLIntf.SetWindowLong(
+          WindowInfo^.DefWndProc := Windows.WNDPROC(SetWindowLongPtrW(
             Window, GWL_WNDPROC, PtrInt(SubClassWndProc)));
         lhFont := FDefaultFont;
         Windows.SendMessage(Window, WM_SETFONT, WPARAM(lhFont), 0);}
@@ -562,7 +562,7 @@ begin
   NewStyle := (ExStyle and not WS_EX_CONTEXTHELP) or CalcBorderIconsFlagsEx(AForm);
   if ExStyle <> NewStyle then
   begin
-    SetWindowLong(AForm.Handle, GWL_EXSTYLE, NewStyle);
+    SetWindowLongPtrW(AForm.Handle, GWL_EXSTYLE, NewStyle);
     Windows.RedrawWindow(AForm.Handle, nil, 0, RDW_FRAME or RDW_ERASE or RDW_INVALIDATE or RDW_NOCHILDREN);
   end;
 end;
@@ -731,7 +731,7 @@ begin
   if Visible then
     ShowWindow(AForm.Handle, SW_HIDE);
 
-  SetWindowLong(AForm.Handle, GWL_EXSTYLE, NewStyle);
+  SetWindowLongPtrW(AForm.Handle, GWL_EXSTYLE, NewStyle);
 
   // now we need to restore window visibility with saving focus
   if Visible then
@@ -917,13 +917,13 @@ begin
   if AlphaBlend then
   begin
     if (Style and WS_EX_LAYERED) = 0 then
-      SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, Style or WS_EX_LAYERED);
+      SetWindowLongPtrW(ACustomForm.Handle, GWL_EXSTYLE, Style or WS_EX_LAYERED);
     Win32Extra.SetLayeredWindowAttributes(ACustomForm.Handle, 0, Alpha, LWA_ALPHA);
   end
   else
   begin
     if (Style and WS_EX_LAYERED) <> 0 then
-      SetWindowLong(ACustomForm.Handle, GWL_EXSTYLE, Style and not WS_EX_LAYERED);
+      SetWindowLongPtrW(ACustomForm.Handle, GWL_EXSTYLE, Style and not WS_EX_LAYERED);
     RedrawWindow(ACustomForm.Handle, nil, 0, RDW_ERASE or RDW_INVALIDATE or RDW_FRAME or RDW_ALLCHILDREN);
   end;
 end;

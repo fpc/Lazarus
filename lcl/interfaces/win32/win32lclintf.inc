@@ -351,10 +351,10 @@ begin
     Getmem(PMethod, SizeOf(TMethod));
     PMethod^ := Method;
 
-    Self.SetWindowLong(Result, GWL_USERDATA, {%H-}PtrInt(PMethod));
+    SetWindowLongPtrW(Result, GWL_USERDATA, {%H-}PtrInt(PMethod));
   end;
   
-  Self.SetWindowLong(Result, GWL_WNDPROC, {%H-}PtrInt(@CallbackAllocateHWnd))
+  SetWindowLongPtrW(Result, GWL_WNDPROC, {%H-}PtrInt(@CallbackAllocateHWnd))
 end;
 
 function TWin32WidgetSet.AskUser(const DialogCaption, DialogMessage: string;
@@ -665,7 +665,7 @@ begin
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
         WindowHandle, {%H-}HMENU(nil), HInstance, nil);
     OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
-    OverlayWindowInfo^.DefWndProc := {%H-}Windows.WNDPROC(SetWindowLong(
+    OverlayWindowInfo^.DefWndProc := {%H-}Windows.WNDPROC(SetWindowLongPtrW(
         OverlayWindow, GWL_WNDPROC, {%H-}PtrInt(@OverlayWindowProc)));
     OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
     WindowInfo^.Overlay := OverlayWindow;

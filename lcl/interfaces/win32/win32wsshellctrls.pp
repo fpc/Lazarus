@@ -139,7 +139,7 @@ begin
   listHandle := AListView.Handle;
   if ListView_GetImageList(ListHandle, lvsil) = 0 then
   begin
-    SetWindowLong(listHandle, GWL_STYLE,
+    SetWindowLongPtrW(listHandle, GWL_STYLE,
       GetWindowLong(listHandle, GWL_STYLE) or LVS_SHAREIMAGELISTS);
     ListView_SetImageList(listHandle, sysImageHandle, lvsil);
   end;

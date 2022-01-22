@@ -580,7 +580,7 @@ begin
         begin
           //the dialog window will not process the click on OK button
           //as a result the dialog will not close
-          SetWindowLong(Wnd, DWL_MSGRESULT, 1);
+          SetWindowLongPtrW(Wnd, DWL_MSGRESULT, 1);
           Result := 1;
         end;
       end;

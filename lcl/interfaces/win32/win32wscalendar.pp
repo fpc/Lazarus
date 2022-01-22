@@ -220,7 +220,7 @@ begin
     Style := Style or MCS_WEEKNUMBERS
   else
     Style := Style and not MCS_WEEKNUMBERS;
-  SetWindowLong(ACalendar.Handle, GWL_STYLE, Style);
+  SetWindowLongPtrW(ACalendar.Handle, GWL_STYLE, Style);
 end;
 
 class procedure TWin32WSCustomCalendar.SetFirstDayOfWeek(const ACalendar: TCustomCalendar; const ADayOfWeek: TCalDayOfWeek);

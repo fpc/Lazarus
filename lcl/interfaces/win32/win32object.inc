@@ -78,7 +78,7 @@ begin
   if FAppHandle <> 0 then
   begin
     {$ifdef RedirectDestroyMessages}
-    SetWindowLong(FAppHandle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
+    SetWindowLongPtrW(FAppHandle, GWL_WNDPROC, PtrInt(@DestroyWindowProc));
     {$endif}
     DestroyWindow(FAppHandle);
   end;

@@ -145,11 +145,7 @@ begin
   if AInfo^.Width < 50 then W := 50 else w := AInfo^.Width;
   if AInfo^.Height < 25 then H := 25 else H := AInfo^.Height;
   window := CreateWindowEx(WS_EX_TOOLWINDOW, 'LazDbgWindow', PChar(ATitle), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, W + 8, H+ 25, 0, 0, HINSTANCE, nil);
-  {$ifdef CPU64}
-  SetWindowLongPtr(window, GWL_USERDATA, PtrInt(AInfo));
-  {$else}
-  SetWindowLong(window, GWL_USERDATA, PtrInt(AInfo));
-  {$endif}
+  SetWindowLongPtrW(window, GWL_USERDATA, PtrInt(AInfo));
 
   ShowWindow(window, SW_SHOWNOACTIVATE); 
 end;

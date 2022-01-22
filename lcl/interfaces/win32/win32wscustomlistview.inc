@@ -1426,7 +1426,7 @@ begin
 
   if OldStyle = NewStyle then Exit;
 
-  SetWindowLong(AHandle, GWL_STYLE, NewStyle);
+  SetWindowLongPtrW(AHandle, GWL_STYLE, NewStyle);
 
   // fix header if needed
   if (NewStyle and LVS_NOSCROLL)<> 0 then begin

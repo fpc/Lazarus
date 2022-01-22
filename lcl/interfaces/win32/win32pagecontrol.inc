@@ -777,7 +777,7 @@ begin
     NewStyle := CurrentStyle and not TCS_MULTILINE;
   if NewStyle <> CurrentStyle then
   begin
-    SetWindowLong(ATabControl.Handle, GWL_STYLE, NewStyle);
+    SetWindowLongPtrW(ATabControl.Handle, GWL_STYLE, NewStyle);
     SetWindowPos(ATabControl.Handle, 0, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE or SWP_NOZORDER or SWP_DRAWFRAME);
     if LCLControlSizeNeedsUpdate(ATabControl, True) then
       AdjustSizeTabControlPages(ATabControl);

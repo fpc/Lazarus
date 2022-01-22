@@ -809,7 +809,7 @@ var
 begin
   CurrentStyle := GetWindowLong(Handle, GWL_STYLE);
   NewStyle := (Style and StyleMask) or (CurrentStyle and (not StyleMask));
-  SetWindowLong(Handle, GWL_STYLE, NewStyle);
+  SetWindowLongPtrW(Handle, GWL_STYLE, NewStyle);
 end;
 
 function AllocWindowInfo(Window: HWND): PWin32WindowInfo;
