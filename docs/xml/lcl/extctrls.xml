@@ -956,7 +956,7 @@
             The <var>AutoEnabled</var> property is checked to determine if the value in the <var>Enabled</var> property can be updated to reflect the state needed for the <var>AutoEndEvent</var> and <var>AutoStartEvent</var> properties. If AutoEndEvent contains <var>itaOnIdle</var>, the value in Enabled is set to <b>False</b>. If <var>AutoStartEvent</var> contains <var>itaOnIdle</var>, the value in Enabled is set to <b>True</b>.
           </p>
           <remark>
-            The Enabled property is not modified when AutoEnabled contains False.
+            The Enabled property is not modified when AutoEnabled contains <b>False</b>.
           </remark>
           <p>
             DoOnIdle is assigned as a handler for the <var>Application</var> singleton in the <var>UpdateHandlers</var> method.
@@ -968,7 +968,7 @@
         <short>Object for the event notification.</short>
       </element>
       <element name="TCustomIdleTimer.DoOnIdle.Done">
-        <short>True if the idle timer has already executed its OnTimer event handler.</short>
+        <short><b>True</b> if the idle timer has already executed its OnTimer event handler.</short>
       </element>
 
       <element name="TCustomIdleTimer.DoOnIdleEnd">
@@ -1062,7 +1062,7 @@
         </short>
         <descr>
           <p>
-            AutoStartEvent defines, when Enabled is automatically set to true. This is one of the following events:
+            AutoStartEvent defines, when Enabled is automatically set to <b>True</b>. This is one of the following events:
           </p>
           <ul>
             <li>on application becomes idle</li>
@@ -1077,11 +1077,11 @@
 
       <element name="TCustomIdleTimer.AutoEndEvent">
         <short>
-          <var>AutoEndEvent</var> - the event that stops the timer by setting Enabled to False.
+          <var>AutoEndEvent</var> - the event that stops the timer by setting Enabled to <b>False</b>.
         </short>
         <descr>
           <p>
-            AutoEndEvent defines, when Enabled is automatically set to false. This is one of the following events:
+            AutoEndEvent defines, when Enabled is automatically set to <b>False</b>. This is one of the following events:
           </p>
           <ul>
             <li>on application becomes idle</li>
@@ -1285,7 +1285,7 @@
         </short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TGraphicControl.Create">TGraphicControl.Create</link>
+          <link id="#lcl.controls.TGraphicControl.Create">TGraphicControl.Create</link>
         </seealso>
       </element>
       <element name="TShape.Create.TheOwner">
@@ -1439,7 +1439,7 @@
         <short>Offset value examined in the routine.</short>
       </element>
       <element name="TCanOffsetEvent.Accept">
-        <short>True if the offset value is valid.</short>
+        <short><b>True</b> if the offset value is valid.</short>
       </element>
 
       <element name="TCanResizeEvent">
@@ -1448,7 +1448,7 @@
         </short>
         <descr>
           <p>
-            <var>TCanResizeEvent</var> specifies an event handler signalled when a control is resized.  Use to the arguments to event handler to access the new size for the control and to set a flag that indicates if the new value is acceptable.
+            <var>TCanResizeEvent</var> specifies an event handler signalled when a control is resized.  Use to the arguments to the event handler to access the new size for the control and to set a flag that indicates if the new value is acceptable.
           </p>
           <p>
             TCanResizeEvent is the type used to implement the <var>OnCanResize</var> event handler in <var>TCustomSplitter</var> and <var>TCustomControlBar</var>.
@@ -1590,7 +1590,7 @@
 
       <element name="TCustomSplitter.CheckNewSize">
         <short>
-          <var>CheckNewSize</var> ensures the new size is appropriate; returns True if successful.
+          <var>CheckNewSize</var> ensures the new size is appropriate; returns <b>True</b> if successful.
         </short>
         <descr>
           <p>
@@ -1607,7 +1607,7 @@
         </seealso>
       </element>
       <element name="TCustomSplitter.CheckNewSize.Result">
-        <short>True when NewSize is an acceptable size for the splitter.</short>
+        <short><b>True</b> when NewSize is an acceptable size for the splitter.</short>
       </element>
       <element name="TCustomSplitter.CheckNewSize.NewSize">
         <short>New sized for the splitter.</short>
@@ -1831,21 +1831,37 @@
         <short>
           Performs actions when splitter movement is stopped at the specified mouse position.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>StopSplitterMove</var> calculates the offset for the mouse position relative to the position where the drag operation was started, and calls MoveSplitter to apply the changed position. The OnMoved event handler is signalled (when assigned).
+          </p>
+          <p>
+            No actions are performed in method if a drag operation has not been started using StartSplitterMove.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomSplitter.StopSplitterMove.MouseXY">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>TPoint instance with the coordinates for the mouse pointer.</short>
       </element>
 
       <element name="TCustomSplitter.UpdateCursor">
         <short>
           Updates the cursor to reflect the ResizeAnchor for the splitter.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            When the splitter is <var>Enabled</var>, the value in <var>Cursor</var> is changed. crHSplit is used when ResizeAnchor contains akLeft or akRight. For other values, crVSpit is used.
+          </p>
+          <p>
+            If the splitter is not Enabled, Cursor is set to the crDefault cursor shape.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.Cursor"/>
+          <link id="#lcl.controls.TControl.Enabled">TControl.Enabled</link>
+          <link id="#lcl.controls.TCursor">TCursor</link>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.Create">
@@ -1881,6 +1897,11 @@
         <short>
           <var>AnchorSplitter</var> anchors the splitter to <var>AControl </var>using the specified <var>Kind</var> of anchor.
         </short>
+        <descr>
+          <p>
+            Updates values in <var>ResizeAnchor</var>, <var>Anchors</var> and <var>AnchorSide</var> to reflect the value in <var>Kind</var>. Calls <var>UpdateCursor</var> to set the cursor shape for the anchor kind. Resizes the splitter to reflect the new value in ResizeAnchor.
+          </p>
+        </descr>
       </element>
       <element name="TCustomSplitter.AnchorSplitter.Kind">
         <short/>
@@ -1891,19 +1912,21 @@
 
       <element name="TCustomSplitter.ResizeControl">
         <short>
-          <var>ResizeControl</var> is the control that is to be re-sized with the splitter.
+          Contains the anchored control that is re-sized when the splitter is moved.
         </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TCustomSplitter.GetOtherResizeControl">
         <short>
-          <var>GetOtherResizeControl</var> finds the other adjacent control to be re-sized.
+          Gets the adjacent anchored control that is re-sized when the splitter is moved.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomSplitter.GetOtherResizeControl.Result">
-        <short/>
+        <short>TControl instance opposite of the anchor side.</short>
       </element>
 
       <element name="TCustomSplitter.MoveSplitter">
@@ -1968,53 +1991,134 @@
         </short>
         <descr>
           <p>
-            The default value for the property is <var>crHSplit</var> in TCustomSplitter.
+            <var>Cursor</var> is a <var>TCursor</var> property with the cursor resource constant displayed when the splitter control is dragged. The default value for the property is <var>crHSplit</var> in <var>TCustomSplitter</var>. The value is updated in the UpdateCursor method to reflect the ResizeAnchor for the control.
           </p>
+          <dl>
+            <dt>crHSplit</dt>
+            <dd>Used when ResizeAnchor contains akLeft or akRight.</dd>
+            <dt>crVSplit</dt>
+            <dd>Used when ResizeAnchor contains akRight or akBottom.</dd>
+            <dt>crDefault</dt>
+            <dd>Used when the splitter control is not Enabled.</dd>
+          </dl>
         </descr>
         <seealso>
+          <link id="TCustomSplitter.UpdateCursor"/>
+          <link id="TCustomSplitter.ResizeAnchor"/>
+          <link id="#lcl.controls.TControl.Enabled">TControl.Enabled</link>
           <link id="#lcl.controls.TControl.Cursor">TControl.Cursor</link>
+          <link id="#lcl.controls.TAnchorKind">TAnchorKind</link>
         </seealso>
       </element>
 
       <element name="TCustomSplitter.MinSize">
-        <short>Minimum size for splitter; default is 30 pixels.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Minimum size for either of the anchored controls on opposing sides of the splitter.
+        </short>
+        <descr>
+          <p>
+            <var>MinSize</var> indicates the smallest size allowed for either of the anchored controls on opposing sides of the splitter. MinSize is used in the <var>MoveSplitter</var> method to prevent adjacent controls from becoming too small when the splitter is dragged. The default value for the property is 30 (pixels). When set to 0 (zero), an adjacent control can be resized until is no longer visible. MinSize does not accept negative Integer values in the property.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.ResizeAnchor"/>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.Align"/>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.OnCanOffset">
         <short>
-          Event handler signalled to calculate the control offset, and to accept or reject the offset value.
+          Event handler signalled to calculate the offset when the splitter is dragged, and to accept or reject the offset value.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the CheckOffset method when the splitter control is dragged. The Accept argument can be set to False to reject the offset value for the splitter, and prevent the resize operation.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.ResizeAnchor"/>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.Align"/>
+          <link id="TCanOffsetEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.OnCanResize">
-        <short>Event handler for receiving permission to resize.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled to determine if the splitter control can be resized / dragged / moved.
+        </short>
+        <descr>
+          <p>
+            <var>OnCanResize</var> is a <var>TCanResizeEvent</var> proprety with the event handler signalled to determine if the splitter control can be resized. OnCanResise is signalled (when assigned) from the <var>CheckNewSize</var> method using the splitter control and the new size for the anchored control as arguments. The <var>Accept</var> argument can be updated in the event handler to indicate whether the new size is acceptable (True) or rejected (False).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.CheckNewSize"/>
+          <link id="TCanResizeEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.OnMoved">
-        <short>Event handler for occasion when splitter has moved.</short>
-        <descr/>
-        <seealso/>
+        <short>Event handler signalled when the splitter has been dragged / moved.</short>
+        <descr>
+          <p>
+            <var>OnMoved</var> is a <var>TNotifyEvent</var> property with the event handler signalled when the  splitter control has been dragged / moved. It is signalled (when assigned) from the <var>StopSplitterMove</var> method when the mouse button is released to end the drag operation. It occurs after the splitter has been moved using the <var>MoveSplitter</var> method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.StopSplitterMove"/>
+          <link id="TCustomSplitter.StartSplitterMove"/>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.ResizeAnchor">
         <short>
-          <var>ResizeAnchor</var> - the kind of anchor to be used for resizing.
+          Indicates the orientation and alignment for the splitter control.
         </short>
         <descr>
-          akLeft for a vertical splitter, akTop for a horizontal splitter.
+          <p>
+            <var>ResizeAnchor</var> is a <var>TAnchorKind</var> property which indicates the <var>AnchorSide</var> (and the associated Control) used to align the splitter. The default value for the property is <var>akLeft</var>, and causes the splitter to align to the control for the corresponding position in AnchorSide. akLeft and akRight allow the splitter to be moved along the horizontal axis. akTop and akBottom allow the splitter to be moved along the vertical axis.
+          </p>
+          <p>
+            Changing the value for the property causes the UpdateCursor method to be called to set the cursor shape displayed when the splitter control is dragged.
+          </p>
+          <p>
+            ResizeAnchor is linked to the Align property in TCustomSplitter. Changing the value in Align causes  ResizeAnchor (and Cursor) to be updated with corresponding values as needed.
+          </p>
+          <p>
+            ResizeAnchor is used in the MoveSplitter method to determine the size for the splitter control and the limits for the resize operation. It is used in MouseMove to determine the starting position and offset used when the control is dragged.
+          </p>
         </descr>
+        <seealso>
+          <link id="TCustomSplitter.Align"/>
+          <link id="TCustomSplitter.Cursor"/>
+          <link id="TCustomSplitter.UpdateCursor"/>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.MouseMove"/>
+          <link id="TAnchorKind"/>
+          <link id="#lcl.controls.TControl.AnchorSide">TControl.AnchorSide</link>
+        </seealso>
       </element>
 
       <element name="TCustomSplitter.ResizeStyle">
-        <short>Style for resizing - as a line, a pattern, full update, or none.</short>
-        <descr/>
-        <seealso/>
+        <short>Display style used when the splitter control is moved.</short>
+        <descr>
+          <p>
+            <var>ResizeStyle</var> is a <var>TResizeStyle</var> property with the display style used when the splitter control is moved. The default value for the property is <var>rsUpdate</var>, and causes anchored control(s) and the splitter position to be updated when the position is changed. <var>rsLine</var> and <var>rsPattern</var> indicate the splitter position in the corresponding style, but do not update the sizes for the anchored controls until the resize operation is completed. <var>rsNone</var> does not update the splitter position (or anchored controls) when moved; the update occurs when the resize operation is completed.
+          </p>
+          <p>
+            The value in ResizeStyle is used in the MoveSplitter, StartSplitterMove, and StopSplitterMove methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSplitter.MoveSplitter"/>
+          <link id="TCustomSplitter.StartSplitterMove"/>
+          <link id="TCustomSplitter.StopSplitterMove"/>
+          <link id="TResizeStyle"/>
+        </seealso>
       </element>
 
       <element name="TSplitter">
@@ -2023,7 +2127,7 @@
         </short>
         <descr>
           <p>
-            <var>TSplitter</var> is a vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the constituent sub-panels.
+            <var>TSplitter</var> is a vertical or horizontal bar that can be placed on a panel or form, to separate sub-panels functionally and allow re-sizing of the sub-panels.
           </p>
           <p>
             The splitter extends for the full height (if vertical) or full width (if horizontal) of the parent control (form or panel) and is anchored to the edges; its position along the length or height of the parent is determined by the programmer or user by moving the whole control with the mouse, and its size can be adjusted using the sizing bars and with the <var>ResizeAnchor</var> property.
@@ -2177,18 +2281,44 @@
 
       <element name="TCustomImage">
         <short>
-          <var>TCustomImage</var> - the base type for <var>TImage</var>.
+          Implements the base class for <var>TImage</var>.
         </short>
         <descr>
           <p>
-            <var>TCustomImage</var>is the base type for <var>TImage</var>. This is a control descended from <var>TGraphicControl</var>, and is designed to be lightweight and fast.
+            <var>TCustomImage</var> is a <var>TGraphicControl</var> descendent, and the base class for <var>TImage</var>. It is a lightweight and fast class used to display a graphic image using one of the image formats supported in the LCL. This includes:
+          </p>
+          <ul>
+            <li>Bitmap</li>
+            <li>Pixmap</li>
+            <li>PNG</li>
+            <li>JPEG</li>
+            <li>GIF</li>
+            <li>TIFF</li>
+            <li>Icon</li>
+          </ul>
+          <p>
+            Use the Picture property to assign, load or save an image using one of the supported formats.
           </p>
           <p>
-            <var>TCustomImage</var> provides a <var>Canvas</var> that is used to render the bitmap graphic in its <var>Picture</var> property. Additional properties are provided to control how the image is rendered, and includes: <var>AntialiasingMode</var>, <var>Stretch</var>, <var>Transparent</var>, and <var>Proportional</var>.
+            The Canvas property is used to render the graphic image in Picture, or to perform custom drawing operations on the image.
+          </p>
+          <p>
+            Use properties in the class instance to control how the image is rendered, including: <var>AntialiasingMode</var>, <var>Center</var>, <var>Stretch</var>, <var>Transparent</var>, and <var>Proportional</var>.
+          </p>
+          <p>
+            Do not create instances of TCustomImage; use the TImage descendant instead.
+          </p>
+          <p>
+            Use TImageList when a list of images with scaling capabilities is needed.
           </p>
         </descr>
         <seealso>
+          <link id="TImage"/>
           <link id="#lcl.controls.TGraphicControl">TGraphicControl</link>
+          <link id="#lcl.graphics.TPicture">TPicture</link>
+          <link id="#lcl.graphics.TGraphic">TGraphic</link>
+          <link id="#lcl.graphics.TCanvas">TCanvas</link>
+          <link id="#lcl.controls.TImageList">TImageList</link>
         </seealso>
       </element>
 
@@ -2361,28 +2491,47 @@
         <short>Object instance for the change notification.</short>
       </element>
 
-      <element name="TCustomImage.CalculatePreferredSize" link="#lcl.controls.TControl.CalculatePreferredSize">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomImage.CalculatePreferredSize">
+        <short>Gets the preferred width and height used as the default size for the control.</short>
+        <descr>
+          <p>
+            <var>CalculatePreferredSize</var> is an overridden method in <var>TCustomImage</var>. It calculates the preferred width and height for the control, which is used by the LCL auto-sizing algorithms as the default size. In TCustomImage, the values in the PreferredWidth and PreferredHeight arguments are set to the Width and Height used in the <var>Picture</var> property. The WithThemeSpace argument is not used in the method.
+          </p>
+          <p>
+            CalculatePreferredSize does <b>not</b> call the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomImage.Picture"/>
+          <link id="#lcl.graphics.TPicture">TPicture</link>
+          <link id="#lcl.controls.TControl.CalculatePreferredSize">TControl.CalculatePreferredSize</link>
+        </seealso>
       </element>
       <element name="TCustomImage.CalculatePreferredSize.PreferredWidth">
-        <short/>
+        <short>Preferred width for the control instance.</short>
       </element>
       <element name="TCustomImage.CalculatePreferredSize.PreferredHeight">
-        <short/>
+        <short>Preferred height for the control instance.</short>
       </element>
       <element name="TCustomImage.CalculatePreferredSize.WithThemeSpace">
-        <short/>
+        <short>
+          Indicates if additional space is reserved for theme element details. Not used in TCustomImage.
+        </short>
       </element>
 
-      <element name="TCustomImage.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomImage.GetControlClassDefaultSize">
+        <short>Gets the default size for a new instance of the class type.</short>
+        <descr>
+          <p>
+            <var>GetControlClassDefaultSize</var> is an overridden method in TCustomImage. It sets the Width and Height in the <var>TSize</var> return value to 90 x 90 pixels. It does <b>not</b> call the inherited method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.GetControlClassDefaultSize">TControl.GetControlClassDefaultSize</link>
+        </seealso>
       </element>
       <element name="TCustomImage.GetControlClassDefaultSize.Result">
-        <short/>
+        <short>Dimensions used for a new instance of the class type.</short>
       </element>
 
       <element name="TCustomImage.Paint">
@@ -2445,10 +2594,18 @@
         </seealso>
       </element>
 
-      <element name="TCustomImage.Canvas" link="#lcl.controls.TGraphicControl.Canvas">
+      <element name="TCustomImage.Canvas">
         <short>Canvas used to draw the image.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>TCustomImage</var> re-implements the read access specifier for the property to ensure that a drawing surface is available in Picture. When not assigned, a temporary TBitmap instance is created and used as the image class in the Picture property. The Canvas for the bitmap is used as the property value. If the TCanvas has already been assigned, the inherited Canvas property (from TGraphicControl) is used.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomImage.Picture"/>
+          <link id="#lcl.graphics.TPicture">TPicture</link>
+          <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
+        </seealso>
       </element>
 
       <element name="TCustomImage.DestRect">
@@ -2456,7 +2613,9 @@
           Gets the rectangle where the image is painted.
         </short>
         <descr>
-          <var>DestRect</var> is a TRect function used to get the rectangle where the image is drawn.
+          <p>
+            <var>DestRect</var> is a TRect function used to get the rectangle where the image is drawn.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -2507,7 +2666,7 @@
       <element name="TCustomImage.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
 
       <element name="TCustomImage.Center">
-        <short>Indicates if the  image should be centered.</short>
+        <short>Indicates if the image should be centered.</short>
         <descr>
           <p>
             <var>Center</var> is a <var>Boolean</var> property which indicates if the image is drawn aligned to the center of the client area for the control. Center is used in the <var>DestRect</var> method to find the horizontal and vertical coordinates for the <var>Picture</var> aligned to the <var>ClientWidth</var> and <var>ClientHeight</var> for the control.
@@ -2599,7 +2758,7 @@
 
       <element name="TCustomImage.StretchOutEnabled">
         <short>
-          Allows the image to be resized proportionally when the image drawing area is resized.
+          Allows the image to be resized proportionally when the image drawing area is expanded.
         </short>
         <descr>
           <p>
@@ -2611,7 +2770,7 @@
 
       <element name="TCustomImage.StretchInEnabled">
         <short>
-          Allows the image to be resized proportionally when the image drawing area is resized.
+          Allows the image to be resized proportionally when the image drawing area is shrunk.
         </short>
         <descr>
           <p>
@@ -2643,7 +2802,7 @@
       </element>
 
       <element name="TCustomImage.Proportional">
-        <short>True if image is proportional.</short>
+        <short><b>True</b> if image is proportional.</short>
         <descr>
           <p>
             <var>Proportional</var> is a <var>Boolean</var> property which indicates if the proportions (the ratio of width to  height) for an image are maintained when it is resized. When set to <b>True</b>, a change to the image size maintains the ratio of width to height for the original image. Proportional is used (along with <var>Stretch</var>) in the <var>DestRect</var> method to determine the rectangle needed to render the image in the control.
@@ -2689,21 +2848,44 @@
 
       <element name="TImage">
         <short>
-          <var>TImage</var> is a graphic image placed on the form; usually loaded from a picture file.
+          Implements a graphic image placed on a form, and usually loaded from a picture file.
         </short>
         <descr>
           <p>
-            <var>TImage</var> : a graphic image placed on the form; usually loaded from a picture file. The actual image is found in <var>Picture</var> or <var>Canvas</var>.
+            <var>TImage</var> is a <var>TCustomImage</var> descendent which implements a lightweight and fast class used to display a graphic image using one of the image formats supported in the LCL. This includes:
+          </p>
+          <ul>
+            <li>Bitmap</li>
+            <li>Pixmap</li>
+            <li>PNG</li>
+            <li>JPEG</li>
+            <li>GIF</li>
+            <li>TIFF</li>
+            <li>Icon</li>
+          </ul>
+          <p>
+            Use the Picture property to assign, load or save an image using one of the supported formats.
           </p>
           <p>
-            Inherits most of its properties from its ancestors, <link id="#lcl.ExtCtrls.TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link>
+            Use the Canvas property to render the graphic image in Picture, or to perform custom drawing operations.
+          </p>
+          <p>
+            Use properties in the class instance to control how the image is rendered, including: <var>AntialiasingMode</var>, <var>Center</var>, <var>Stretch</var>, <var>Transparent</var>, and <var>Proportional</var>.
+          </p>
+          <p>
+            TImage inherits most of its properties from its ancestors, <link id="#lcl.ExtCtrls.TCustomImage">TCustomImage</link>, <link id="#lcl.Controls.TGraphicControl">TGraphicControl</link> and <link id="#lcl.Controls.TControl">TControl</link>
+          </p>
+          <p>
+            Use TImageList when a list of images with scaling capabilities is needed.
           </p>
         </descr>
         <seealso>
-          <link id="TCustomImage"/>
+          <link id="TImage"/>
           <link id="#lcl.controls.TGraphicControl">TGraphicControl</link>
-          <link id="#lcl.controls.TControl">TControl</link>
-          <link id="#lcl.StdCtrls.HowToUseStdCtrls">How To Use Standard Controls</link>
+          <link id="#lcl.graphics.TPicture">TPicture</link>
+          <link id="#lcl.graphics.TGraphic">TGraphic</link>
+          <link id="#lcl.graphics.TCanvas">TCanvas</link>
+          <link id="#lcl.controls.TImageList">TImageList</link>
         </seealso>
       </element>
 
@@ -2713,19 +2895,8 @@
       <element name="TImage.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
       <element name="TImage.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
       <element name="TImage.Center" link="#lcl.extctrls.TCustomImage.Center"/>
-
-      <element name="TImage.KeepOriginXWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginXWhenClipped">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TImage.KeepOriginYWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginYWhenClipped">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
+      <element name="TImage.KeepOriginXWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginXWhenClipped"/>
+      <element name="TImage.KeepOriginYWhenClipped" link="#lcl.extctrls.TCustomImage.KeepOriginYWhenClipped"/>
       <element name="TImage.Constraints" link="#lcl.controls.TControl.Constraints"/>
       <element name="TImage.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
       <element name="TImage.DragMode" link="#lcl.controls.TControl.DragMode"/>
@@ -3274,7 +3445,7 @@
 
       <element name="TCustomRadioGroup.UpdateTabStops">
         <short>
-          Ensures that checked radio buttons have their TabStop property set to True.
+          Ensures that checked radio buttons have their TabStop property set to <b>True</b>.
         </short>
         <descr/>
         <seealso/>
@@ -3310,7 +3481,7 @@
         </short>
         <descr>
           <p>
-            Updates the value in ItemIndex, and the tabs stop settings for all checked radio buttons in the control. ItemIndex is set to -1 when none of the radio buttons in the control have their Checked property set to True.
+            Updates the value in ItemIndex, and the tabs stop settings for all checked radio buttons in the control. ItemIndex is set to -1 when none of the radio buttons in the control have their Checked property set to <b>True</b>.
           </p>
         </descr>
         <seealso/>
@@ -3420,7 +3591,7 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.CanModify.Result">
-        <short>True when the control can be modified.</short>
+        <short><b>True</b> when the control can be modified.</short>
       </element>
 
       <element name="TCustomRadioGroup.FlipChildren">
@@ -3433,7 +3604,7 @@
         <seealso/>
       </element>
       <element name="TCustomRadioGroup.FlipChildren.AllLevels">
-        <short>True if all descendent child controls are affected in the method.</short>
+        <short><b>True</b> if all descendent child controls are affected in the method.</short>
       </element>
 
       <element name="TCustomRadioGroup.Rows">
@@ -4119,7 +4290,7 @@
         </seealso>
       </element>
       <element name="TCustomCheckGroup.FlipChildren.AllLevels">
-        <short>True all child controls and their descendants are flipped.</short>
+        <short><b>True</b> all child controls and their descendants are flipped.</short>
       </element>
 
       <element name="TCustomCheckGroup.Rows">
@@ -5050,7 +5221,7 @@
         </seealso>
       </element>
       <element name="TCustomPanel.SetParentBackground.AParentBackground">
-        <short>When True, the panel is drawn with transparency.</short>
+        <short>When <b>True</b>, the panel is drawn with transparency.</short>
       </element>
 
       <element name="TCustomPanel.UpdateParentColorChange">
@@ -5213,7 +5384,7 @@
 
       <element name="TCustomPanel.FullRepaint">
         <short>
-          <var>FullRepaint</var> - if True, the panel needs to be fully repainted after each change.
+          <var>FullRepaint</var> - if <b>True</b>, the panel needs to be fully repainted after each change.
         </short>
         <descr>
           <p>
@@ -5268,7 +5439,7 @@
         <short>Enables or disables navigation using the Tab key.</short>
         <descr>
           <p>
-            The default value for the property is False in TCustomPanel.
+            The default value for the property is <b>False</b> in TCustomPanel.
           </p>
         </descr>
         <seealso>
@@ -5331,10 +5502,10 @@
         <short>Determines whether a DockManager is used for this DockSite.</short>
         <descr>
           <p>
-            The default value for the property is True in TPanel.
+            The default value for the property is <b>True</b> in TPanel.
           </p>
           <p>
-            When UseDockManager is set to True, and DockSite is also set to True, a DockManager is created automatically. When set to False, an existing DockManager is ignored. If you want to use a special DockManager, install it before setting UseDockManager to True.
+            When UseDockManager is set to <b>True</b>, and DockSite is also set to <b>True</b>, a DockManager is created automatically. When set to <b>False</b>, an existing DockManager is ignored. If you want to use a special DockManager, install it before setting UseDockManager to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -5906,7 +6077,7 @@
         <short>Determines if controls in TCustomFlowPanel are wrapped.</short>
         <descr>
           <p>
-            The default value for the property is True in TFlowPanel.
+            The default value for the property is <b>True</b> in TFlowPanel.
           </p>
         </descr>
       </element>
@@ -5950,7 +6121,7 @@
         </short>
         <descr>
           <p>
-            The default value for the property is True in TFlowPanel.
+            The default value for the property is <b>True</b> in TFlowPanel.
           </p>
         </descr>
         <seealso>
@@ -5974,10 +6145,10 @@
         <short>Determines whether a DockManager is used for this DockSite.</short>
         <descr>
           <p>
-            The default value for the property is True in TFlowPanel.
+            The default value for the property is <b>True</b> in TFlowPanel.
           </p>
           <p>
-            When UseDockManager is set to True, and DockSite is also set to True, a DockManager is created automatically. When set to False, an existing DockManager is ignored. If you want to use a special DockManager, install it before setting UseDockManager to True.
+            When UseDockManager is set to <b>True</b>, and DockSite is also set to <b>True</b>, a DockManager is created automatically. When set to <b>False</b>, an existing DockManager is ignored. If you want to use a special DockManager, install it before setting UseDockManager to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -6148,7 +6319,7 @@
         </seealso>
       </element>
       <element name="TCustomTrayIcon.InternalShow.Result">
-        <short>True when the tray icon is enabled and visible.</short>
+        <short><b>True</b> when the tray icon is enabled and visible.</short>
       </element>
 
       <element name="TCustomTrayIcon.SetAnimate">
@@ -6641,7 +6812,7 @@
             <var>Icon</var> is a <var>Icon</var> property with the static icon displayed in the system tray for the control.
           </p>
           <p>
-            Use <var>Icons</var> to assign the bitmap images displayed as an animation sequence when <var>Animate</var> is set to True.
+            Use <var>Icons</var> to assign the bitmap images displayed as an animation sequence when <var>Animate</var> is set to <b>True</b>.
           </p>
           <p>
             Use <var>ShowIcon</var> to indicate whether the Icon is displayed for the control. This feature is platform-specific. Use the <var>OnPaint</var> event handler and <var>Canvas</var> to perform drawing operations for the tray icon when ShowIcon is set to <b>False</b>.
@@ -6661,13 +6832,13 @@
         <short>Image list with the bitmaps used for an animated icon.</short>
         <descr>
           <p>
-            <var>Icons</var> is a <var>TCustomImageList</var> property with the bitmap images displayed for an animated icon. Icons is used when the Animate property is set to True.
+            <var>Icons</var> is a <var>TCustomImageList</var> property with the bitmap images displayed for an animated icon. Icons is used when the Animate property is set to <b>True</b>.
           </p>
           <p>
             Setting a new value for the property causes the widgetset class to be updated when the control is Visible. The current animation step (or frame) is reset to 0 to prevent an index out-of-bounds exception.
           </p>
           <p>
-            Use Icon to set the single image displayed on the tray icon when Animate is set to False.
+            Use Icon to set the single image displayed on the tray icon when Animate is set to <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -6723,13 +6894,13 @@
         </short>
         <descr>
           <p>
-            Visible is a Boolean property which indicates if the control is displayed in the system tray. The default value for the property is False.
+            Visible is a Boolean property which indicates if the control is displayed in the system tray. The default value for the property is <b>False</b>.
           </p>
           <p>
-            The value for the property is updated in methods where the control is displayed or hidden. It is set to True in the private InternalShow method, and to False in the Hide method. Setting a new value for the property causes the Show or Hide method to be called depending on the new property value.
+            The value for the property is updated in methods where the control is displayed or hidden. It is set to <b>True</b> in the private InternalShow method, and to <b>False</b> in the Hide method. Setting a new value for the property causes the Show or Hide method to be called depending on the new property value.
           </p>
           <remark>
-            The value in Visible may continue to be False after calling the Show method; it must be successfully displayed by the widgetset class before the property is set to True.
+            The value in Visible may continue to be <b>False</b> after calling the Show method; it must be successfully displayed by the widgetset class before the property is set to <b>True</b>.
           </remark>
         </descr>
         <seealso>
@@ -7040,11 +7211,17 @@
         <short>
           Specifies an event handler used to get layout and positioning information for control bands.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            TBandInfo is the type used to implement the OnBandInfo event handler in TCustomControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.OnBandInfo"/>
+        </seealso>
       </element>
       <element name="TBandInfoEvent.Sender">
-        <short/>
+        <short>Object for the notification event.</short>
       </element>
       <element name="TBandInfoEvent.Control">
         <short/>
@@ -7094,19 +7271,19 @@
         </seealso>
       </element>
       <element name="TBandPaintEvent.Sender">
-        <short/>
+        <short>Object for the notification.</short>
       </element>
       <element name="TBandPaintEvent.Control">
-        <short/>
+        <short>Control which owns the control band for the notification.</short>
       </element>
       <element name="TBandPaintEvent.ACanvas">
-        <short/>
+        <short>Canvas for the control bar where the handler draws the control band.</short>
       </element>
       <element name="TBandPaintEvent.ARect">
-        <short/>
+        <short>Dimensions for the control bar band.</short>
       </element>
       <element name="TBandPaintEvent.Options">
-        <short/>
+        <short>Paint options for the control bar.</short>
       </element>
 
       <element name="TRowSize">
@@ -7115,25 +7292,35 @@
         </short>
         <descr>
           <p>
-            TRowSize a range type which defines the range of values available for the RowSize property in TCustomControlBar. Essentially, any positive non-zero Integer value.
+            TRowSize a range type which defines the range of values available for the RowSize property in TCustomControlBar. Essentially, any positive non-zero Integer value. TRowSize is the type used to implement the RowSize property in TCustomControlBar.
          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomControlBar.RowSize"/>
+        </seealso>
       </element>
 
       <element name="TBandMove">
         <short>Represents band move states in TCtrlBand.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Used in the implementation of MouseUp, MouseMove, and MouseDown methods in TCustomControlBar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.MouseDown"/>
+          <link id="TCustomControlBar.MouseMove"/>
+          <link id="TCustomControlBar.MouseUp"/>
+        </seealso>
       </element>
       <element name="TBandMove.bmNone">
-        <short/>
+        <short>A control band cannot be dragged.</short>
       </element>
       <element name="TBandMove.bmReady">
-        <short/>
+        <short>A control band is ready for a drag operation.</short>
       </element>
       <element name="TBandMove.bmMoving">
-        <short/>
+        <short>A control band is being dragged after a mouse down event.</short>
       </element>
 
       <element name="TCursorDesign">
@@ -7869,7 +8056,7 @@
         <seealso/>
       </element>
       <element name="TCustomControlBar.IsBandOverlap.Result">
-        <short>True when the rectangles overlap horizontally or vertically.</short>
+        <short><b>True</b> when the rectangles overlap horizontally or vertically.</short>
       </element>
       <element name="TCustomControlBar.IsBandOverlap.ARect">
         <short/>
@@ -8109,16 +8296,28 @@
         <short>
           Increments the internal counter used to track the number of active update requests.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Used in conjunction with EndUpdate to consolidate redraw requests for the control. Various methods check the value in the internal update counter before calling Invalidate to ensure that an unfinished update is not in progress. Invalidate is called in these methods when the internal counter reaches 0 (zero).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.EndUpdate"/>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.EndUpdate">
         <short>
           Decrements the internal counter used to track update requests, and calls Invalidate when the counter is zero (0)
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Used in conjunction with BeginUpdate to consolidate redraw requests for the control. Various methods check the value in the internal update counter before calling Invalidate to ensure that an unfinished update is not in progress. Invalidate is called in these methods when the internal counter reaches 0 (zero).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.BeginUpdate"/>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.FlipChildren">
@@ -8131,7 +8330,7 @@
         <seealso/>
       </element>
       <element name="TCustomControlBar.FlipChildren.AllLevels">
-        <short>True all descendent controls are flipped as well.</short>
+        <short>When <b>True</b> all descendent controls are flipped as well.</short>
       </element>
 
       <element name="TCustomControlBar.HitTest">
@@ -8140,7 +8339,8 @@
         <seealso/>
       </element>
       <element name="TCustomControlBar.HitTest.Result">
-        <short>The tool bar or tool button in the band at the specified position, or Nil when a visible control is not found.
+        <short>
+          The tool bar or tool button in the band at the specified position, or Nil when a visible control is not found.
         </short>
       </element>
       <element name="TCustomControlBar.HitTest.X">
@@ -8170,37 +8370,48 @@
 
       <element name="TCustomControlBar.MouseToBandPos">
         <short>
-          Finds the band on the control bar which contains the specified mouse coordinates.
+          Gets the control band at the specified mouse coordinates.
         </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCustomControlBar.MouseMove"/>
+        </seealso>
       </element>
       <element name="TCustomControlBar.MouseToBandPos.Result">
-        <short/>
+        <short>TCtrlBand instance at the specified coordinates, or Nil when not on a visible band.</short>
       </element>
       <element name="TCustomControlBar.MouseToBandPos.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TCustomControlBar.MouseToBandPos.Y">
-        <short/>
+        <short>Vertical coordinate for the mouse pointer.</short>
       </element>
       <element name="TCustomControlBar.MouseToBandPos.AGrabber">
-        <short/>
+        <short><b>True</b> if the mouse coordinates are over the grabber for the band.</short>
       </element>
 
       <element name="TCustomControlBar.RemoveControl">
-        <short>Removes the band for the specified control.</short>
+        <short>Removes the specified band from the control bar.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TCtrlBand"/>
+          <link id="TCtrlBands"/>
+        </seealso>
       </element>
       <element name="TCustomControlBar.RemoveControl.AControl">
-        <short>Tool bar or tool button removed from the bands in the control bar.</short>
+        <short>Band removed from the control bar.</short>
       </element>
 
       <element name="TCustomControlBar.StickControls">
-        <short>Aligns control to the bands in the control bar.</short>
-        <descr/>
-        <seealso/>
+        <short>Aligns controls for the bands to the control bar.</short>
+        <descr>
+          <p>
+            Calls the AlignControlsToBands method to align / resize controls on the visible bands for the control bar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.AlignControlsToBands"/>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.AutoDock">
@@ -8237,7 +8448,7 @@
         </short>
         <descr>
           <p>
-            When AutoSize is False, the CheckBandsSizeAndVisibility method is called to Resize the bands in the control bar. When set to False, the inherited method is used. In addition, AutoSize determines if InvalidatePreferredSize is used when setting the value for the RowSize property.
+            When AutoSize is <b>False</b>, the CheckBandsSizeAndVisibility method is called to Resize the bands in the control bar. When set to <b>False</b>, the inherited method is used. In addition, AutoSize determines if InvalidatePreferredSize is used when setting the value for the RowSize property.
           </p>
         </descr>
         <seealso/>
@@ -8249,7 +8460,7 @@
         </short>
         <descr>
           <p>
-            A DockSite reacts on controls dragged over this control, signals acceptance and where a dragged control would be dropped. The default value for the property is True in TCustomControlBar.
+            A DockSite reacts on controls dragged over this control, signals acceptance and where a dragged control would be dropped. The default value for the property is <b>True</b> in TCustomControlBar.
           </p>
         </descr>
         <seealso>
@@ -8337,9 +8548,24 @@
       </element>
 
       <element name="TCustomControlBar.OnBandDrag">
-        <short>Event handler signalled when a control band is dropped in the control bar.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Event handler signalled when a drag operation is about to begin for a band on the control bar.
+        </short>
+        <descr>
+          <p>
+            <var>OnBandDrag</var> can be used to determine if the <var>TCtrlBand</var> instance can be used in a drag and drop operation. The <var>Drag</var> argument can be set to <b>False</b> in the event handler to prevent the drag and drop operation.
+          </p>
+          <p>
+            Called from the DragControl method before the Drag manager starts the drag and drop operation for the band.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.DragControl"/>
+          <link id="TCtrlBand"/>
+          <link id="TBandDragEvent"/>
+          <link id="#lcl.controls.DragManager">DragManager</link>
+          <link id="#lcl.controls.TDragManager">TDragManager</link>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.OnBandInfo">
@@ -8359,17 +8585,26 @@
 
       <element name="TCustomControlBar.OnBandMove">
         <short>Event handler signalled when a control band is moved on the control bar.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Signalled from the DoBandMove method (when assigned) using the TCustomControlBar and TCtrlBand instances as arguments. It occurs when the visibility and size for bands on the control are updated.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.InitializeBand"/>
+          <link id="TCustomControlBar.MoveBand"/>
+          <link id="TCustomControlBar.InsertControl"/>
+          <link id="TCustomControlBar.CheckBandsSizeAndVisibility"/>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.OnBandPaint">
         <short>
-          Event handler signalled to render a visible band with the specified control and paint options.
+          Event handler signalled to render a visible band on the specified control with the specified paint options.
         </short>
         <descr>
           <p>
-            <var>OnBandPaint</var> is a <var>TBandPaintEvent</var> property with the event handler signalled to render a band with the specified control and paint options. OnBandPaint is signalled from the <var>DoBandPaint</var> method, and occurs when the Paint method draws each of the visible bands for the control bar.
+            <var>OnBandPaint</var> is a <var>TBandPaintEvent</var> property with the event handler signalled to render a band with the specified paint options. OnBandPaint is signalled from the <var>DoBandPaint</var> method, and occurs when the Paint method draws each of the visible bands for the control bar.
           </p>
         </descr>
         <seealso>
@@ -8392,13 +8627,26 @@
       </element>
 
       <element name="TCustomControlBar.OnPaint">
-        <short>
-          Event handler signalled to perform default drawing in the ancestor class.
-        </short>
-        <descr/>
+        <short>Event handler signalled to perform default drawing in the inherited Paint method.</short>
+        <descr>
+          <p>
+            <var>OnPaint</var> is a <var>TNotifyEvent</var> property with the event handler signalled to draw the control bar on its <var>Canvas</var>. An object procedure which draws all aspects of the control must be implemented and assigned to the property.
+          </p>
+          <p>
+            The <var>Sender</var> argument provides access to properties and methods for the control instance. It must be cast to <var>TCustomControlBar</var> to access members for the class type.
+          </p>
+          <p>
+            Use the Canvas property to render the background for the control in the event handler. The values from Font and Color are already applied to the corresponding properties in Canvas.
+          </p>
+          <p>
+            OnPaint is signalled from the inherited <var>Paint</var> method, and occurs before the <var>OnBandPaint</var> event handler in the control is signalled.
+          </p>
+        </descr>
         <seealso>
-          <link id="TCustomControl.Paint"/>
-          <link id="TCustomControl.OnPaint"/>
+          <link id="TCustomControlBar.Paint"/>
+          <link id="TCustomControlBar.OnBandPaint"/>
+          <link id="#lcl.controls.TCustomControl.Paint">TCustomControl.Paint</link>
+          <link id="#lcl.controls.TCustomControl.OnPaint">TCustomControl.OnPaint</link>
         </seealso>
       </element>
 
