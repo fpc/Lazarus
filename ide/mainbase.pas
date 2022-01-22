@@ -1243,8 +1243,7 @@ begin
     ParentMI:=itmProjectSaveSection;
     CreateMenuItem(ParentMI,itmProjectSave,'itmProjectSave',lisMenuSaveProject, 'menu_project_save');
     CreateMenuItem(ParentMI,itmProjectSaveAs,'itmProjectSaveAs',lisMenuSaveProjectAs, 'menu_project_save_as');
-    CreateMenuItem(ParentMI, itmProjectResaveFormsWithI18n, 'itmProjectResaveFo'
-      +'rmsWithI18n', lisMenuResaveFormsWithI18n);
+    CreateMenuItem(ParentMI, itmProjectResaveFormsWithI18n, 'itmProjectResaveFormsWithI18n', lisMenuResaveFormsWithI18n);
     CreateMenuItem(ParentMI,itmProjectPublish,'itmProjectPublish',lisMenuPublishProject);
 
     CreateMenuSeparatorSection(mnuProject,itmProjectWindowSection,'itmProjectWindowSection');
@@ -1274,7 +1273,7 @@ begin
     CreateMenuItem(ParentMI,itmRunMenuQuickCompile,'itmRunMenuQuickCompile',lisMenuQuickCompile,'menu_quick_compile');
     CreateMenuItem(ParentMI,itmRunMenuCleanUpAndBuild,'itmRunMenuCleanUpAndBuild',lisMenuCleanUpAndBuild,'menu_build');
     CreateMenuItem(ParentMI,itmRunMenuBuildManyModes,'itmRunMenuBuildManyModes',lisMenuCompileManyModes,'menu_build_all');
-    CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild,'menu_abort_build');
+    CreateMenuItem(ParentMI,itmRunMenuAbortBuild,'itmRunMenuAbortBuild',lisMenuAbortBuild,'menu_abort_build',False);
 
     CreateMenuSeparatorSection(mnuRun,itmRunnning,'itmRunnning');
     ParentMI:=itmRunnning;
