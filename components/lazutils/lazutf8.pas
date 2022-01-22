@@ -1181,44 +1181,96 @@ end;
 
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
   Flags: TReplaceFlags; out Count: Integer; const ALanguage: string=''): String;
-// same algorithm as StringReplace, but using UTF8LowerCase
+// same algorithm as fpc's StringReplace, but using UTF8LowerCase
 // for case insensitive search
 var
-  Srch, OldP, RemS: string;
-  P: Integer;
+  Srch, OldP: string;
+  P, PrevP, PatLength, NewPatLength, Cnt: Integer;
+  c, d: PChar;
 begin
   Srch := S;
   OldP := OldPattern;
   Count := 0;
-  if rfIgnoreCase in Flags then
+  PatLength:=Length(OldPattern);
+  if PatLength=0 then
+  begin
+    Result:=S;
+    Exit;
+  end;
+
+  if (rfIgnoreCase in Flags) then
   begin
     Srch := UTF8LowerCase(Srch,ALanguage);
     OldP := UTF8LowerCase(OldP,ALanguage);
   end;
-  RemS := S;
-  Result := '';
-  while Length(Srch) <> 0 do
-  begin
-    P := Pos(OldP, Srch);
-    if P = 0 then
-    begin
-      Result := Result + RemS;
-      Srch := '';
-    end
-    else
-    begin
-      Inc(Count);
-      Result := Result + Copy(RemS,1,P-1) + NewPattern;
-      P := P + Length(OldP);
-      RemS := Copy(RemS, P, Length(RemS)-P+1);
-      if not (rfReplaceAll in Flags) then
+  PatLength := Length(OldP);
+
+  if (Length(NewPattern) = PatLength) then
+  begin //length will not change
+    Result := S;
+    P := 1;
+    repeat
+      P := Pos(OldP,Srch,P);
+      if (P > 0) then
       begin
-        Result := Result + RemS;
-        Srch := '';
-      end
-      else
-        Srch := Copy(Srch, P, Length(Srch)-P+1);
+        Inc(Count);
+        Move(NewPattern[1],Result[P],PatLength*SizeOf(Char));
+        if not (rfReplaceAll in Flags) then Exit;
+        Inc(P,PatLength);
+      end;
+    until (P = 0);
+  end
+  else
+  begin
+    //Different pattern length -> Result length will change
+    //To avoid creating a lot of temporary strings, we count how many
+    //replacements we're going to make.
+    P := 1;
+    repeat
+      P:=Pos(OldP,Srch,P);
+      if (P > 0) then
+      begin
+        Inc(P,PatLength);
+        Inc(Count);
+        if not (rfReplaceAll in Flags) then Break;
+      end;
+    until (P = 0);
+    if (Count = 0) then
+    begin
+      Result:=S;
+      Exit;
     end;
+    NewPatLength := Length(NewPattern);
+    SetLength(Result, Length(S) + Count*(NewPatLength - PatLength));
+    P := 1;
+    PrevP := 0;
+    c := PChar(Result);
+    d := PChar(S);
+    repeat
+      P:=Pos(OldP, Srch, P);
+      if (P > 0) then
+      begin
+        Cnt := P - PrevP - 1;
+        if (Cnt > 0) then
+        begin
+          Move(d^, c^, Cnt*SizeOf(Char));
+          Inc(c,Cnt);
+          Inc(d,Cnt);
+        end;
+        if (NewPatLength > 0) then
+        begin
+          Move(NewPattern[1], c^, NewPatLength*SizeOf(Char));
+          Inc(c,NewPatLength);
+        end;
+        Inc(P,PatLength);
+        Inc(d,PatLength);
+        PrevP:=P-1;
+        if not (rfReplaceAll in Flags) then Break;
+      end;
+    until (P = 0);
+    Cnt := Length(S) - PrevP;
+    if (Cnt > 0) then
+      Move(d^, c^, Cnt*SizeOf(Char));
   end;
 end;
 
