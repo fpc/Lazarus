@@ -8,7 +8,8 @@ unit idedebuggerpackage;
 interface
 
 uses
-  IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, LazarusPackageIntf;
+  IdeDebuggerBase, Debugger, ProcessDebugger, ProcessList, DebuggerTreeView, 
+  LazarusPackageIntf;
 
 implementation
 

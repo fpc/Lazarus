@@ -5,7 +5,7 @@ object WatchesDlg: TWatchesDlg
   Width = 500
   HorzScrollBar.Page = 499
   VertScrollBar.Page = 199
-  ActiveControl = lvWatches
+  ActiveControl = tvWatches
   BorderStyle = bsSizeToolWin
   Caption = 'Watch list'
   ClientHeight = 200
@@ -14,34 +14,33 @@ object WatchesDlg: TWatchesDlg
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   OnShow = FormShow
-  LCLVersion = '1.9.0.0'
-  object lvWatches: TListView
+  LCLVersion = '2.3.0.0'
+  object tvWatches: TDbgTreeView
     Left = 0
     Height = 174
     Top = 26
     Width = 295
     Align = alClient
-    Columns = <    
+    DefaultText = 'Node'
+    Header.AutoSizeIndex = 0
+    Header.Columns = <    
       item
-        Caption = 'Expression'
-        Width = 10
+        Position = 0
       end    
       item
-        Caption = 'Value'
-        Width = 10
+        Position = 1
       end>
-    MultiSelect = True
+    Header.Options = [hoColumnResize, hoDrag, hoShowSortGlyphs, hoVisible]
     PopupMenu = mnuPopup
-    ReadOnly = True
-    RowSelect = True
-    ScrollBars = ssAutoBoth
-    SortType = stText
     TabOrder = 0
-    ViewStyle = vsReport
-    OnDblClick = lvWatchesDblClick
-    OnDragDrop = lvWatchesDragDrop
-    OnDragOver = lvWatchesDragOver
-    OnSelectItem = lvWatchesSelectItem
+    TreeOptions.MiscOptions = [toAcceptOLEDrop, toFullRepaintOnResize, toInitOnSave, toWheelPanning]
+    TreeOptions.PaintOptions = [toShowButtons, toShowDropmark, toShowRoot, toShowTreeLines, toThemeAware, toUseBlendedImages, toUseExplorerTheme]
+    TreeOptions.SelectionOptions = [toFullRowSelect, toMultiSelect, toRightClickSelect]
+    OnChange = tvWatchesChange
+    OnDragOver = tvWatchesDragOver
+    OnDragDrop = tvWatchesDragDrop
+    OnFocusChanged = tvWatchesFocusChanged
+    OnNodeDblClick = tvWatchesNodeDblClick
   end
   object ToolBar1: TToolBar
     Left = 0
@@ -221,8 +220,8 @@ object WatchesDlg: TWatchesDlg
     end
   end
   object ActionList1: TActionList
-    left = 184
-    top = 88
+    Left = 184
+    Top = 88
     object actPower: TAction
       Caption = 'actPower'
       Checked = True

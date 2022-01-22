@@ -4,7 +4,7 @@
 
    fpmake.pp for IdeDebugger 0.0.1
 
-   This file was generated on 08/01/2022
+   This file was generated on 23/01/2022
 }
 
 {$ifndef ALLPACKAGES} 
@@ -35,6 +35,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('laz.virtualtreeview_package');
     D := P.Dependencies.Add('debuggerintf');
     D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
@@ -44,10 +45,20 @@ begin
     P.Options.Add('-gl');
     P.Options.Add('-l');
     P.Options.Add('-vewnhibq');
+    P.Options.Add('-dLCL');
+    P.Options.Add('-dLCL$(LCLWidgetType)');
     P.UnitPath.Add('.');
     T:=P.Targets.AddUnit('idedebuggerpackage.pas');
     D := T.Dependencies.AddUnit('IdeDebuggerBase');
+    D := T.Dependencies.AddUnit('Debugger');
+    D := T.Dependencies.AddUnit('ProcessDebugger');
+    D := T.Dependencies.AddUnit('ProcessList');
+    D := T.Dependencies.AddUnit('DebuggerTreeView');
     T := P.Targets.AddImplicitUnit('idedebuggerbase.pas');
+    T := P.Targets.AddImplicitUnit('debugger.pp');
+    T := P.Targets.AddImplicitUnit('processdebugger.pp');
+    T := P.Targets.AddImplicitUnit('processlist.pas');
+    T := P.Targets.AddImplicitUnit('debuggertreeview.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('IdeDebugger.compiled');

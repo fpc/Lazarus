@@ -37,8 +37,15 @@
         <Filename Value="processlist.pas"/>
         <UnitName Value="ProcessList"/>
       </Item>
+      <Item>
+        <Filename Value="debuggertreeview.pas"/>
+        <UnitName Value="debuggertreeview"/>
+      </Item>
     </Files>
     <RequiredPkgs>
+      <Item>
+        <PackageName Value="laz.virtualtreeview_package"/>
+      </Item>
       <Item>
         <PackageName Value="DebuggerIntf"/>
       </Item>

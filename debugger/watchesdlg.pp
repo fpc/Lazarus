@@ -39,10 +39,12 @@ interface
 
 uses
   Classes, Forms, Controls, math, sysutils, LazLoggerBase, Clipbrd,
+  {$ifdef Windows} ActiveX, {$else} laz.FakeActiveX, {$endif}
   IDEWindowIntf, Menus, ComCtrls, ActnList, ExtCtrls, StdCtrls, LCLType,
-  IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit,
-  LazDebuggerIntf, BaseDebugManager, EnvironmentOpts;
+  IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger,
+  DebuggerTreeView, DebuggerDlg, DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfMiscClasses, SynEdit, laz.VirtualTrees, LazDebuggerIntf,
+  BaseDebugManager, EnvironmentOpts;
 
 type
 
@@ -73,7 +75,7 @@ type
     ActionList1: TActionList;
     actProperties: TAction;
     InspectLabel: TLabel;
-    lvWatches: TListView;
+    tvWatches: TDbgTreeView;
     InspectMemo: TMemo;
     MenuItem1: TMenuItem;
     nbInspect: TNotebook;
@@ -121,11 +123,17 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormShow(Sender: TObject);
-    procedure lvWatchesDblClick(Sender: TObject);
-    procedure lvWatchesDragDrop(Sender, Source: TObject; {%H-}X, {%H-}Y: Integer);
-    procedure lvWatchesDragOver(Sender, Source: TObject; {%H-}X, {%H-}Y: Integer;
-      {%H-}State: TDragState; var Accept: Boolean);
-    procedure lvWatchesSelectItem(Sender: TObject; {%H-}AItem: TListItem; {%H-}Selected: Boolean);
+    procedure tvWatchesChange(Sender: TBaseVirtualTree; Node: PVirtualNode);
+    procedure tvWatchesDragDrop(Sender: TBaseVirtualTree; Source: TObject;
+      DataObject: IDataObject; Formats: TFormatArray; Shift: TShiftState;
+      const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
+    procedure tvWatchesDragOver(Sender: TBaseVirtualTree; Source: TObject;
+      Shift: TShiftState; State: TDragState; const Pt: TPoint; Mode: TDropMode;
+      var Effect: LongWord; var Accept: Boolean);
+    procedure tvWatchesFocusChanged(Sender: TBaseVirtualTree;
+      Node: PVirtualNode; Column: TColumnIndex);
+    procedure tvWatchesNodeDblClick(Sender: TBaseVirtualTree;
+      const HitInfo: THitInfo);
     procedure popAddClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
     procedure popEnabledClick(Sender: TObject);
@@ -142,7 +150,7 @@ type
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FUpdatingAll: Boolean;
     FStateFlags: TWatchesDlgStateFlags;
-    function GetSelected: TCurrentWatch;
+    function GetSelected: TIdeWatch; // The focused Selected Node
     function  GetThreadId: Integer;
     function  GetSelectedThreads(Snap: TSnapshot): TIdeThreads;
     function GetStackframe: Integer;
@@ -151,7 +159,7 @@ type
     procedure WatchRemove(const {%H-}ASender: TIdeWatches; const AWatch: TIdeWatch);
 
     procedure UpdateInspectPane;
-    procedure UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch);
+    procedure UpdateItem(const VNode: PVirtualNode; const AWatch: TIdeWatch);
     procedure UpdateAll;
     procedure DisableAllActions;
     function  GetSelectedSnapshot: TSnapshot;
@@ -268,21 +276,15 @@ begin
 
   Caption:=liswlWatchList;
 
-  lvWatches.Columns[0].Caption:=liswlExpression;
-  lvWatches.Columns[1].Caption:=dlgValueColor;
-
-  lvWatches.Column[0].Width := COL_WIDTHS[COL_WATCH_EXPR];
-  lvWatches.Column[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
+  tvWatches.Header.Columns[0].Text := liswlExpression;
+  tvWatches.Header.Columns[1].Text := dlgValueColor;
+  tvWatches.Header.Columns[0].Width := COL_WIDTHS[COL_WATCH_EXPR];
+  tvWatches.Header.Columns[1].Width := COL_WIDTHS[COL_WATCH_VALUE];
 end;
 
-function TWatchesDlg.GetSelected: TCurrentWatch;
-var
-  Item: TListItem;
+function TWatchesDlg.GetSelected: TIdeWatch;
 begin
-  Item := lvWatches.Selected;
-  if Item = nil
-  then Result := nil
-  else Result := TCurrentWatch(Item.Data);
+  Result := TIdeWatch(tvWatches.FocusedItem(True));
 end;
 
 function TWatchesDlg.GetThreadId: Integer;
@@ -333,13 +335,14 @@ begin
   else Result := 0;
 end;
 
-procedure TWatchesDlg.lvWatchesSelectItem(Sender: TObject; AItem: TListItem; Selected: Boolean);
+procedure TWatchesDlg.tvWatchesChange(Sender: TBaseVirtualTree;
+  Node: PVirtualNode);
 var
   ItemSelected: Boolean;
-  Watch: TCurrentWatch;
+  Watch, VNdWatch: TIdeWatch;
   SelCanEnable, SelCanDisable: Boolean;
   AllCanEnable, AllCanDisable: Boolean;
-  i: Integer;
+  VNode: PVirtualNode;
 begin
   if FUpdatingAll then exit;
   if GetSelectedSnapshot <> nil then begin
@@ -361,24 +364,23 @@ begin
     exit;
   end;
 
-  ItemSelected := lvWatches.Selected <> nil;
-  if ItemSelected then
-    Watch:=TCurrentWatch(lvWatches.Selected.Data)
-  else
-    Watch:=nil;
+  Watch:= GetSelected;
+  ItemSelected := Watch <> nil;
   SelCanEnable := False;
   SelCanDisable := False;
   AllCanEnable := False;
   AllCanDisable := False;
-  for i := 0 to lvWatches.Items.Count - 1 do begin
-    if lvWatches.Items[i].Data = nil then
-      continue;
-    if lvWatches.Items[i].Selected then begin
-      SelCanEnable := SelCanEnable or not TCurrentWatch(lvWatches.Items[i].Data).Enabled;
-      SelCanDisable := SelCanDisable or TCurrentWatch(lvWatches.Items[i].Data).Enabled;
+
+  for VNode in tvWatches.NoInitNodes do begin
+    VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
+    if VNdWatch <> nil then begin
+      if tvWatches.Selected[VNode] then begin
+        SelCanEnable := SelCanEnable or not VNdWatch.Enabled;
+        SelCanDisable := SelCanDisable or VNdWatch.Enabled;
+      end;
+      AllCanEnable := AllCanEnable or not VNdWatch.Enabled;
+      AllCanDisable := AllCanDisable or VNdWatch.Enabled;
     end;
-    AllCanEnable := AllCanEnable or not TCurrentWatch(lvWatches.Items[i].Data).Enabled;
-    AllCanDisable := AllCanDisable or TCurrentWatch(lvWatches.Items[i].Data).Enabled;
   end;
 
   actToggleCurrentEnable.Enabled := ItemSelected;
@@ -386,7 +388,7 @@ begin
 
   actEnableSelected.Enabled := SelCanEnable;
   actDisableSelected.Enabled := SelCanDisable;
-  actDeleteSelected.Enabled := ItemSelected;
+  actDeleteSelected.Enabled := tvWatches.SelectedCount > 0;
 
   actAddWatchPoint.Enabled := ItemSelected;
   actEvaluate.Enabled := ItemSelected;
@@ -394,7 +396,7 @@ begin
 
   actEnableAll.Enabled := AllCanEnable;
   actDisableAll.Enabled := AllCanDisable;
-  actDeleteAll.Enabled := lvWatches.Items.Count > 0;
+  actDeleteAll.Enabled := tvWatches.RootNodeCount > 0;
 
   actCopyName.Enabled := ItemSelected;
   actCopyValue.Enabled := ItemSelected;
@@ -408,16 +410,19 @@ begin
   UpdateInspectPane;
 end;
 
-procedure TWatchesDlg.lvWatchesDblClick(Sender: TObject);
+procedure TWatchesDlg.tvWatchesNodeDblClick(Sender: TBaseVirtualTree;
+  const HitInfo: THitInfo);
 begin
   if GetSelectedSnapshot <> nil then exit;
-  if lvWatches.SelCount >= 0 then
+  if (HitInfo.HitNode <> nil) and (GetSelected <> nil) then
     popPropertiesClick(Sender)
   else
     popAddClick(Sender);
 end;
 
-procedure TWatchesDlg.lvWatchesDragDrop(Sender, Source: TObject; X, Y: Integer);
+procedure TWatchesDlg.tvWatchesDragDrop(Sender: TBaseVirtualTree;
+  Source: TObject; DataObject: IDataObject; Formats: TFormatArray;
+  Shift: TShiftState; const Pt: TPoint; var Effect: LongWord; Mode: TDropMode);
 var
   s: String;
   NewWatch: TCurrentWatch;
@@ -440,11 +445,18 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.lvWatchesDragOver(Sender, Source: TObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
+procedure TWatchesDlg.tvWatchesDragOver(Sender: TBaseVirtualTree;
+  Source: TObject; Shift: TShiftState; State: TDragState; const Pt: TPoint;
+  Mode: TDropMode; var Effect: LongWord; var Accept: Boolean);
 begin
   Accept := ( (Source is TSynEdit) and (TSynEdit(Source).SelAvail) ) or
             ( (Source is TCustomEdit) and (TCustomEdit(Source).SelText <> '') );
+end;
+
+procedure TWatchesDlg.tvWatchesFocusChanged(Sender: TBaseVirtualTree;
+  Node: PVirtualNode; Column: TColumnIndex);
+begin
+  tvWatchesChange(Sender, Node);
 end;
 
 procedure TWatchesDlg.FormDestroy(Sender: TObject);
@@ -517,54 +529,60 @@ end;
 
 procedure TWatchesDlg.actEnableSelectedExecute(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
+  VNdWatch: TIdeWatch;
 begin
   try
     DisableAllActions;
-    for n := 0 to lvWatches.Items.Count -1 do
+    for VNode in tvWatches.SelectedNodes do
     begin
-      Item := lvWatches.Items[n];
-      if Item.Selected then
-        TCurrentWatch(Item.Data).Enabled := True;
+      VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
+      VNdWatch.Enabled := True;
     end;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.actEvaluateExecute(Sender: TObject);
+var
+  CurWatch: TIdeWatch;
 begin
-  DebugBoss.EvaluateModify(lvWatches.Selected.Caption);
+  CurWatch := GetSelected;
+  if CurWatch <> nil then
+    DebugBoss.EvaluateModify(CurWatch.Expression);
 end;
 
 procedure TWatchesDlg.actInspectExecute(Sender: TObject);
+var
+  CurWatch: TIdeWatch;
 begin
-  DebugBoss.Inspect(lvWatches.Selected.Caption);
+  CurWatch := GetSelected;
+  if CurWatch <> nil then
+    DebugBoss.Inspect(CurWatch.Expression);
 end;
 
 procedure TWatchesDlg.actDisableSelectedExecute(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
+  VNdWatch: TIdeWatch;
 begin
   try
     DisableAllActions;
-    for n := 0 to lvWatches.Items.Count -1 do
+    for VNode in tvWatches.SelectedNodes do
     begin
-      Item := lvWatches.Items[n];
-      if Item.Selected then
-        TCurrentWatch(Item.Data).Enabled := False;
+      VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
+      VNdWatch.Enabled := False;
     end;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.actAddWatchPointExecute(Sender: TObject);
 var
   NewBreakpoint: TIDEBreakPoint;
-  Watch: TCurrentWatch;
+  Watch: TIdeWatch;
 begin
   Watch := GetSelected;
   if Watch = nil then Exit;
@@ -576,16 +594,26 @@ begin
 end;
 
 procedure TWatchesDlg.actCopyNameExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
 begin
+  Node := tvWatches.GetFocusedNode;
+  if Node = nil then
+    exit;
   Clipboard.Open;
-  Clipboard.AsText := lvWatches.Selected.Caption;
+  Clipboard.AsText := tvWatches.NodeText[Node, COL_WATCH_EXPR-1];
   Clipboard.Close;
 end;
 
 procedure TWatchesDlg.actCopyValueExecute(Sender: TObject);
+var
+  Node: PVirtualNode;
 begin
+  Node := tvWatches.GetFocusedNode;
+  if Node = nil then
+    exit;
   Clipboard.Open;
-  Clipboard.AsText := lvWatches.Selected.SubItems[0];
+  Clipboard.AsText := tvWatches.NodeText[Node, COL_WATCH_VALUE-1];
   Clipboard.Close;
 end;
 
@@ -595,23 +623,28 @@ begin
     DisableAllActions;
     DebugBoss.ShowWatchProperties(nil);
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.popDeleteAllClick(Sender: TObject);
 var
-  n: Integer;
+  VNode: PVirtualNode;
 begin
   Include(FStateFlags, wdsfNeedDeleteAll);
   if wdsfUpdating in FStateFlags then exit;
   Exclude(FStateFlags, wdsfNeedDeleteAll);
+  tvWatches.BeginUpdate;
   try
     DisableAllActions;
-    for n := lvWatches.Items.Count - 1 downto 0 do
-      TCurrentWatch(lvWatches.Items[n].Data).Free;
+    VNode := tvWatches.GetFirst;
+    while VNode <> nil do begin
+      tvWatches.NodeItem[VNode].Free;
+      VNode := tvWatches.GetFirst;
+    end;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatches.EndUpdate;
+    tvWatchesChange(nil, nil);
   end;
 end;
 
@@ -620,18 +653,18 @@ var
   NewWatches: TIdeWatches;
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
-  lvWatches.BeginUpdate;
+  tvWatches.BeginUpdate;
   // prevent lvWatchesSelectItem when deleting the itews. Snapsot may have been deleted
   FUpdatingAll := True; // will be reset by UpdateAll
   try
     NewWatches := Watches;
     if FWatchesInView <> NewWatches
-    then lvWatches.Items.Clear;
+    then tvWatches.Clear;
     FWatchesInView := NewWatches;
     UpdateAll;
   finally
     FUpdatingAll := False; // wan reset by UpdateAll anyway
-    lvWatches.EndUpdate;
+    tvWatches.EndUpdate;
   end;
 end;
 
@@ -670,8 +703,8 @@ begin
     Result := ASize <> COL_WIDTHS[AColId - 1];
   end
   else
-  if (AColId - 1 >= 0) and (AColId - 1 < lvWatches.ColumnCount) then begin
-    ASize := lvWatches.Column[AColId - 1].Width;
+  if (AColId - 1 >= 0) and (AColId - 1 < tvWatches.Header.Columns.Count) then begin
+    ASize := tvWatches.Header.Columns[AColId - 1].Width;
     Result := ASize <> COL_WIDTHS[AColId - 1];
   end
   else
@@ -681,70 +714,68 @@ end;
 procedure TWatchesDlg.ColSizeSetter(AColId: Integer; ASize: Integer);
 begin
   case AColId of
-    COL_WATCH_EXPR:  lvWatches.Column[0].Width := ASize;
-    COL_WATCH_VALUE: lvWatches.Column[1].Width := ASize;
+    COL_WATCH_EXPR:  tvWatches.Header.Columns[0].Width := ASize;
+    COL_WATCH_VALUE: tvWatches.Header.Columns[1].Width := ASize;
     COL_SPLITTER_INSPECT: nbInspect.Width := ASize;
   end;
 end;
 
 procedure TWatchesDlg.popDeleteClick(Sender: TObject);
 var
-  Item: TCurrentWatch;
+  VNode: PVirtualNode;
 begin
   Include(FStateFlags, wdsfNeedDeleteCurrent);
   if (wdsfUpdating in FStateFlags) then exit;
   Exclude(FStateFlags, wdsfNeedDeleteCurrent);
   try
     DisableAllActions;
-    repeat
-      Item := GetSelected;
-      Item.Free;
-    until Item = nil;
-    //GetSelected.Free;
+    VNode := tvWatches.GetFirstSelected;
+    while VNode <> nil do begin
+      tvWatches.DeleteNodeEx(VNode, True);
+      VNode := tvWatches.GetFirstSelected;
+    end;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.popDisableAllClick(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
+  VNdWatch: TIdeWatch;
 begin
   try
     DisableAllActions;
-    for n := 0 to lvWatches.Items.Count - 1 do
+    for VNode in tvWatches.NoInitNodes do
     begin
-      Item := lvWatches.Items[n];
-      if Item.Data <> nil
-      then TCurrentWatch(Item.Data).Enabled := False;
+      VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
+      VNdWatch.Enabled := False;
     end;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.popEnableAllClick(Sender: TObject);
 var
-  n: Integer;
-  Item: TListItem;
+  VNode: PVirtualNode;
+  VNdWatch: TIdeWatch;
 begin
   try
     DisableAllActions;
-    for n := 0 to lvWatches.Items.Count - 1 do
+    for VNode in tvWatches.NoInitNodes do
     begin
-      Item := lvWatches.Items[n];
-      if Item.Data <> nil
-      then TCurrentWatch(Item.Data).Enabled := True;
+      VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
+      VNdWatch.Enabled := True;
     end;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.popEnabledClick(Sender: TObject);
 var
-  Watch: TCurrentWatch;
+  Watch: TIdeWatch;
 begin
   try
     DisableAllActions;
@@ -753,23 +784,24 @@ begin
     popEnabled.Checked := not popEnabled.Checked;
     Watch.Enabled := popEnabled.Checked;
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.popPropertiesClick(Sender: TObject);
 begin
+  if GetSelectedSnapshot <> nil then exit;
   try
     DisableAllActions;
-    DebugBoss.ShowWatchProperties(GetSelected);
+    DebugBoss.ShowWatchProperties(TCurrentWatch(GetSelected));
   finally
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
 end;
 
 procedure TWatchesDlg.UpdateInspectPane;
 var
-  Watch: TCurrentWatch;
+  Watch: TIdeWatch;
   i: integer;
   d: TIdeWatchValue;
   t: TDBGType;
@@ -780,11 +812,10 @@ begin
 
   InspectMemo.Clear;
   InspectLabel.Caption := '...';
-  if (lvWatches.Selected = nil) then begin
-    exit;
-  end;
 
-  Watch:=TCurrentWatch(lvWatches.Selected.Data);
+  Watch:=GetSelected;
+  if Watch = nil then
+    exit;
   InspectLabel.Caption := Watch.Expression;
 
   d := Watch.Values[GetThreadId, GetStackframe];
@@ -832,7 +863,8 @@ begin
   end;
 end;
 
-procedure TWatchesDlg.UpdateItem(const AItem: TListItem; const AWatch: TIdeWatch);
+procedure TWatchesDlg.UpdateItem(const VNode: PVirtualNode;
+  const AWatch: TIdeWatch);
   function ClearMultiline(const AValue: ansistring): ansistring;
   var
     j: SizeInt;
@@ -870,36 +902,36 @@ var
   WatchValue: TIdeWatchValue;
   WatchValueStr: string;
 begin
-  DebugBoss.LockCommandProcessing;
-  try
-// Expression
-// Result
   if (not ToolButtonPower.Down) or (not Visible) then exit;
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) then exit;
   if GetStackframe < 0 then exit; // TODO need dedicated validity property
 
   include(FStateFlags, wdsfUpdating);
-  AItem.Caption := AWatch.Expression;
-  WatchValue := AWatch.Values[GetThreadId, GetStackframe];
-  if (WatchValue <> nil) and
-     ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
-  then begin
-    WatchValueStr := ClearMultiline(DebugBoss.FormatValue(WatchValue.TypeInfo, WatchValue.Value));
-    if (WatchValue.TypeInfo <> nil) and
-       (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
-       (WatchValue.TypeInfo.Len >= 0)
-    then AItem.SubItems[0] := Format(drsLen, [WatchValue.TypeInfo.Len]) + WatchValueStr
-    else AItem.SubItems[0] := WatchValueStr;
-  end
-  else
-    AItem.SubItems[0] := '<not evaluated>';
-  exclude(FStateFlags, wdsfUpdating);
-  if wdsfNeedDeleteCurrent in FStateFlags then
-    popDeleteClick(nil);
-  if wdsfNeedDeleteAll in FStateFlags then
-    popDeleteAllClick(nil);
+  DebugBoss.LockCommandProcessing;
+  try
+    tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.Expression;
+    WatchValue := AWatch.Values[GetThreadId, GetStackframe];
+    if (WatchValue <> nil) and
+       ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
+    then begin
+      WatchValueStr := ClearMultiline(DebugBoss.FormatValue(WatchValue.TypeInfo, WatchValue.Value));
+      if (WatchValue.TypeInfo <> nil) and
+         (WatchValue.TypeInfo.Attributes * [saArray, saDynArray] <> []) and
+         (WatchValue.TypeInfo.Len >= 0)
+      then tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := Format(drsLen, [WatchValue.TypeInfo.Len]) + WatchValueStr
+      else tvWatches.NodeText[VNode, COL_WATCH_VALUE-1] := WatchValueStr;
+    end
+    else
+      tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+    exclude(FStateFlags, wdsfUpdating);
+    if wdsfNeedDeleteCurrent in FStateFlags then
+      popDeleteClick(nil);
+    if wdsfNeedDeleteAll in FStateFlags then
+      popDeleteAllClick(nil);
+
   finally
     DebugBoss.UnLockCommandProcessing;
+    tvWatches.Invalidate;
   end;
 end;
 
@@ -923,7 +955,7 @@ begin
 
   FUpdatingAll := True;
   DebugBoss.LockCommandProcessing;
-  lvWatches.BeginUpdate;
+  tvWatches.BeginUpdate;
   try
     l := Watches.Count;
     i := 0;
@@ -937,9 +969,9 @@ begin
     end;
   finally
     FUpdatingAll := False;
-    lvWatches.EndUpdate;
+    tvWatches.EndUpdate;
     DebugBoss.UnLockCommandProcessing;
-    lvWatchesSelectItem(nil, nil, False);
+    tvWatchesChange(nil, nil);
   end;
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.UpdateAll: <<EXIT: TWatchesDlg.UpdateAll ']); end;
 end;
@@ -961,45 +993,43 @@ end;
 
 procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 var
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
-  Item := lvWatches.Items.FindData(AWatch);
-  if Item = nil
+  VNode := tvWatches.FindNodeForItem(AWatch);
+  if VNode = nil
   then begin
-    Item := lvWatches.Items.Add;
-    Item.Data := AWatch;
-    Item.SubItems.Add('');
-    Item.Selected := True;
+    VNode := tvWatches.AddChild(nil, AWatch);
+    tvWatches.SelectNode(VNode);
   end;
   
-  UpdateItem(Item, AWatch);
-  lvWatchesSelectItem(nil, nil, False);
+  UpdateItem(VNode, AWatch);
+  tvWatchesChange(nil, nil);
 end;
 
 procedure TWatchesDlg.WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 var
-  Item: TListItem;
+  VNode: PVirtualNode;
 begin
   if AWatch = nil then Exit; // TODO: update all
   if AWatch.Collection <> FWatchesInView then exit;
   try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]);
 
-  Item := lvWatches.Items.FindData(AWatch);
-  if Item = nil
+  VNode := tvWatches.FindNodeForItem(AWatch);
+  if VNode = nil
   then WatchAdd(ASender, AWatch)
-  else UpdateItem(Item, AWatch);
+  else UpdateItem(VNode, AWatch);
 
   // TODO: if AWatch <> Selected, then prevent UpdateInspectPane
   // Selected may update later, and calling UpdateInspectPane will schedule an unsucesful attemptn to fetch data
   if not FUpdatingAll
-  then lvWatchesSelectItem(nil, nil, False);
+  then tvWatchesChange(nil, nil);
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate']); end;
 end;
 
 procedure TWatchesDlg.WatchRemove(const ASender: TIdeWatches; const AWatch: TIdeWatch);
 begin
-  lvWatches.Items.FindData(AWatch).Free;
-  lvWatchesSelectItem(nil, nil, False);
+  tvWatches.DeleteNode(tvWatches.FindNodeForItem(AWatch));
+  tvWatchesChange(nil, nil);
 end;
 
 initialization
