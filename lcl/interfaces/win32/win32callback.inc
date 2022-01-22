@@ -1829,6 +1829,7 @@ var
   menuItem: TObject;
   menuHDC: HDC;
   TmpSize: TSize; // used by WM_MEASUREITEM
+  AControl: TWinControl;
 begin
   case PMeasureItemStruct(LParam)^.CtlType of
     ODT_MENU:
@@ -1851,9 +1852,16 @@ begin
     else
     if WParam <> 0 then
     begin
-      lWinControl := TWinControl(WParam);
-      //if Assigned(lWinControl) then   <- already tested
-      SetLMessageAndParams(LM_MEASUREITEM, True);
+      // Important: the WParam of WM_MEASUREITEM holds the GWL_ID value
+      //   GWL_ID can take only 32bit values (also on 64bit systems)
+      //   Windows Handles are always 32bit (also on 64bit systems) so it is safe to store the Handle here
+      //   we have to find the WinControl from the Handle now
+      AControl := FindControl(WParam);
+      if Assigned(AControl) then
+      begin
+        lWinControl := AControl;
+        SetLMessageAndParams(LM_MEASUREITEM, True);
+      end;
     end;
   end;
 end;

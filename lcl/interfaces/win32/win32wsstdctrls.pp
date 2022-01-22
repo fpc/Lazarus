@@ -392,7 +392,11 @@ begin
           WindowInfo^.WinControl.Handle := Window;
           WindowInfo^.DefWndProc := NCCreateParams^.DefWndProc;
           WindowInfo^.needParentPaint := False;
-          LCLIntf.SetWindowLong(Window, GWL_ID, PtrInt(NCCreateParams^.WinControl));
+          // Important: do not store the object pointer here because GWL_ID can take only 32bit values
+          //   Windows Handles are always 32bit (also on 64bit system) so it is safe to store the Handle and find the WinControl from the Handle then
+          //   We need to set the WinControl property here because WM_MEASUREITEM needs to read it and it is set too late in InitializeWnd
+          SetProp(Window, 'WinControl', WindowInfo^.WinControl);
+          LCLIntf.SetWindowLong(Window, GWL_ID, PtrInt(Window));
           NCCreateParams^.Handled := True;
         end;
       end;
@@ -723,7 +727,11 @@ begin
           WindowInfo^.DefWndProc := NCCreateParams^.DefWndProc;
           // listbox is not a transparent control -> no need for parentpainting
           WindowInfo^.needParentPaint := False;
-          LCLIntf.SetWindowLong(Window, GWL_ID, PtrInt(NCCreateParams^.WinControl));
+          // Important: do not store the object pointer here because GWL_ID can take only 32bit values
+          //   Windows Handles are always 32bit (also on 64bit system) so it is safe to store the Handle and find the WinControl from the Handle then
+          //   We need to set the WinControl property here because WM_MEASUREITEM needs to read it and it is set too late in InitializeWnd
+          SetProp(Window, 'WinControl', WindowInfo^.WinControl);
+          LCLIntf.SetWindowLong(Window, GWL_ID, PtrInt(Window));
           NCCreateParams^.Handled := True;
         end;
       end;
