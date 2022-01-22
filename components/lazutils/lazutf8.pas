@@ -118,15 +118,15 @@ procedure UTF8Delete(var s: String; StartCharIndex, CharCount: PtrInt);
 procedure UTF8Insert(const source: Utf8String; var s: Utf8String; StartCharIndex: PtrInt);
 procedure UTF8Insert(const source: String; var s: String; StartCharIndex: PtrInt);
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
-  Flags: TReplaceFlags; ALanguage: string=''): String; inline;
+  Flags: TReplaceFlags; const ALanguage: string=''): String; inline;
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
-  Flags: TReplaceFlags; out Count: Integer; ALanguage: string=''): String;
+  Flags: TReplaceFlags; out Count: Integer; const ALanguage: string=''): String;
 
-function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8LowerCase(const AInStr: string; const ALanguage: string=''): string;
 function UTF8LowerString(const s: string): string; inline;
-function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8UpperCase(const AInStr: string; const ALanguage: string=''): string;
 function UTF8UpperString(const s: string): string; inline;
-function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8SwapCase(const AInStr: string; const ALanguage: string=''): string;
 // Capitalize the first letters of every word
 function UTF8ProperCase(const AInStr: string; const WordDelims: TSysCharSet): string;
 function FindInvalidUTF8Codepoint(p: PChar; Count: PtrInt; StopOnNonUTF8: Boolean = true): PtrInt;
@@ -1172,7 +1172,7 @@ begin
 end;
 
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
-  Flags: TReplaceFlags; ALanguage: string): String; inline;
+  Flags: TReplaceFlags; const ALanguage: string): String; inline;
 var
   DummyCount: Integer;
 begin
@@ -1180,7 +1180,7 @@ begin
 end;
 
 function UTF8StringReplace(const S, OldPattern, NewPattern: String;
-  Flags: TReplaceFlags; out Count: Integer; ALanguage: string=''): String;
+  Flags: TReplaceFlags; out Count: Integer; const ALanguage: string=''): String;
 // same algorithm as StringReplace, but using UTF8LowerCase
 // for case insensitive search
 var
@@ -1232,7 +1232,7 @@ end;
   ALanguage - The language. Use '' for maximum speed if one desires to ignore the language
     (See UTF8LowerCase comment for more details on ALanguage parameter.)
 }
-function UTF8SwapCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8SwapCase(const AInStr: string; const ALanguage: string=''): string;
 var
   xUpperCase: string;
   xLowerCase: string;
@@ -1296,7 +1296,7 @@ end;
   The columns in the file UnicodeData.txt are explained here:
   http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
-function UTF8LowerCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8LowerCase(const AInStr: string; const ALanguage: string=''): string;
 var
   CounterDiff: PtrInt;
   InStr, InStrEnd, OutStr: PChar;
@@ -2448,7 +2448,7 @@ end;
   The columns in the file UnicodeData.txt are explained here:
   http://www.ksu.ru/eng/departments/ktk/test/perl/lib/unicode/UCDFF301.html#Case Mappings
 }
-function UTF8UpperCase(const AInStr: string; ALanguage: string=''): string;
+function UTF8UpperCase(const AInStr: string; const ALanguage: string=''): string;
 var
   i, InCounter, OutCounter: PtrInt;
   OutStr: PChar;
