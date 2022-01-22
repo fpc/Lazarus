@@ -4620,7 +4620,6 @@
         <descr/>
         <seealso/>
       </element>
-      <!-- TODO: Separate into individual topics -->
       <element name="TPicture">
         <short>Implements a container for TGraphic and descendent classes.</short>
         <descr>
@@ -4634,7 +4633,8 @@
           </p>
           <p>Defines many <b>private</b> methods for getting and storing various sorts of images such as bitmaps, pixmaps, icons, PNGs etc.
           </p>
-          <p>It does not itself contain a defined area for displaying the image, but this is supplied by the descendant classes such as BitMap, PixMap, PNG or Icon, which define a <var>Canvas</var> property.
+          <p>
+            TPicture does not have a defined area used to display the image. This is supplied in the <var>Canvas</var> property in the classes which support BitMap, PixMap, PNG, JPEG, GIF, TIFF or Icon image formats.
           </p>
           <p>
             <var>LoadFromFile</var> and
