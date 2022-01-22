@@ -851,13 +851,17 @@ procedure TMainIDEBar.AllowCompilation(aAllow: Boolean);
 // Enables or disables IDE GUI controls associated with compiling and building.
 // Does it interfere with DebugBoss.UpdateButtonsAndMenuItems? Maybe should be refactored and combined.
 begin
+  // Run menu
   itmRunMenuRunWithoutDebugging.Enabled:=aAllow;
   itmRunMenuRun.Enabled:=aAllow;
   itmRunMenuCompile.Enabled:=aAllow;
   itmRunMenuBuild.Enabled:=aAllow;
   itmRunMenuQuickCompile.Enabled:=aAllow;
   itmRunMenuCleanUpAndBuild.Enabled:=aAllow;
+  itmRunMenuAbortBuild.Enabled:=not aAllow;
+  // Package menu
   itmPkgEditInstallPkgs.Enabled:=aAllow;
+  // Tools menu
   itmToolRescanFPCSrcDir.Enabled:=aAllow;
   itmToolBuildLazarus.Enabled:=aAllow;
   //itmToolConfigureBuildLazarus.Enabled:=aAllow;
