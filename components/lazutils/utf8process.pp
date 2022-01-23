@@ -153,8 +153,7 @@ begin
     Result:='';
 end;
 
-// Runs a short command which should point to an executable in
-// the environment PATH
+// Runs a short command which should point to an executable in the environment PATH
 // For example: ProgramFilename='ls' CmdLineParameters='-l /home'
 // Will locate and execute the file '/bin/ls'
 // If the command isn't found, an exception will be raised
@@ -174,6 +173,7 @@ begin
   BrowserProcess := TProcessUTF8.Create(nil);
   try
     BrowserProcess.InheritHandles:=false;
+    BrowserProcess.Options := [poWaitOnExit];       // Prevent a zombie process.
     // Encloses the executable with "" if its name has spaces
     if Pos(' ',NewProgramFilename)>0 then
       NewProgramFilename:='"'+NewProgramFilename+'"';
