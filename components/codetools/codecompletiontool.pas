@@ -1009,7 +1009,8 @@ begin
   while (NearestProcNode.NextBrother<>nil) do
     NearestProcNode:=NearestProcNode.NextBrother;
   if NearestProcNode<>nil then begin
-    SetIndentAndInsertPos(NearestProcNode,true);
+    // don't insert after "begin end." block in program.  Issue #39510
+    SetIndentAndInsertPos(NearestProcNode, NearestProcNode.Desc<>ctnBeginBlock);
     exit;
   end;
 
