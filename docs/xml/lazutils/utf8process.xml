@@ -12,6 +12,9 @@
         <p>
           <file>utf8process.pp</file> implements the <var>TProcessUTF8</var> component which provides a TProcess descendant that allows UTF-8-encoded values in its properties. The TProcessUTF8 component is added to the <b>System</b> tab in the Lazarus IDE Component Palette.
         </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
+        </p>
       </descr>
 
       <!-- unresolved external references -->
@@ -96,7 +99,7 @@
         <short>Starts execution of the process.</short>
         <descr>
           <p>
-            <var>Execute</var> is an overridden method in <var>TProcessUTF8</var>, and is defined only for the Microsoft Windows platforms. Execute handles the nuances of configuring and executing a call to CreateProcessW in the Windows API.
+            <var>Execute</var> is an overridden method in <var>TProcessUTF8</var>, and is defined only for the Microsoft Windows platforms where poDetached in not available as a process option. Execute handles the nuances of configuring and executing a call to CreateProcessW in the Windows API.
           </p>
           <p>
             The values in <var>ApplicationName</var>, <var>CommandLine</var>, and <var>Executable</var> are checked to ensure that they contain non-empty values. An <var>EProcess</var> exception is raised if any of these properties contain an empty string (<b>''</b>).
@@ -151,7 +154,7 @@
             ParseCmdLine creates an internal <var>TStringList</var> instance used to store values returned from the <var>SplitCmdLineParams</var> routine in <file>lazfileutils.pas</file>. The first value in the string list (when present) is stored in the <var>Executable</var> property. The remaining values are stored in the <var>Parameters</var> property.
           </p>
           <p>
-            ParseCmdLine is provided as a convenience method. An equivalent operation can be performed using the values in Executable and Parameters properties.
+            ParseCmdLine is provided as a convenience method. The same result can be achieved by setting the values in the Executable and Parameters properties directly.
           </p>
         </descr>
         <seealso>
@@ -171,30 +174,37 @@
         <short>Executes a command found in the current PATH environment.</short>
         <descr>
           <p>
-            <var>RunCmdFromPath</var> is used to execute a command which can be found in the current <var>PATH</var> environment. For example, the following locates and executes the /bin/ls command with the specified arguments:
+            <var>RunCmdFromPath</var> is used to execute a command which can be found in the current <var>PATH</var> environment. For example, the following locates and executes the <b>/bin/ls -l /home</b> command:
           </p>
           <code>
             RunCmdFromPath('ls', '-l /home');
           </code>
           <p>
-            An exception will be raised if the program file cannot be located, or cannot be executed.
+            An exception is raised if the program file cannot be located, or cannot be executed.
           </p>
           <p>
-            RunCmdFromPath creates an instance of <var>TProcessUTF8</var> to execute the process. The value in <var>ProgramFilename</var> is surrounded by <b>Quotation Mark</b> (<b>"</b>) characters if it contains a <b>Space</b> (<b>' '</b>) in the path or file name. RunCmdFromPath calls the <var>Execute</var> method to perform the process using the specified arguments.
+            RunCmdFromPath creates and configures a <var>TProcessUTF8</var> instance which is used to execute the program file.  <var>ProgramFilename</var> contains the qualified executable file name for the process. If the argument contains a <b>Space</b> (<b>' '</b>), it is surrounded by <b>Quotation Mark</b> (<b>"</b>) characters before it is assigned to the class instance. <var>CmdLineParameters</var> contains optional parameters values for the executable file. It is assumed that parameter values with embedded spaces are already quoted when passed to the routine. CmdLineParameters is included in the class instance when the value is not an empty string (<b>''</b>).
+          </p>
+          <p>
+            RunCmdFromPath calls the <var>Execute</var> method in the TProcessUTF8 instance to execute the specified program file name with the specified parameter values.
           </p>
         </descr>
         <errors>
           <dl>
             <dt>EFOpenError</dt>
             <dd>
-              Raised with the message in lrsProgramFileNotFound
-            </dd>
-            <dt>EFOpenError</dt>
-            <dd>
-              Raised with the message in lrsCanNotExecute
+              Raised with the message in lrsProgramFileNotFound or lrsCanNotExecute.
             </dd>
           </dl>
         </errors>
+        <!--
+        ===========================================
+        Uncomment when the target version is known.
+        ===========================================
+        <version>
+          Modified in LazUtils version 2.3.0 to wait for process exit during execution.
+        </version>
+        -->
         <seealso>
           <!-- not an error: {$IFDEF UseTProcessW} -->
           <link id="TProcessUTF8.Execute"/>
@@ -206,10 +216,10 @@
         </seealso>
       </element>
       <element name="RunCmdFromPath.ProgramFilename">
-        <short>Name of the program to execute.</short>
+        <short>Path and name for the program executed.</short>
       </element>
       <element name="RunCmdFromPath.CmdLineParameters">
-        <short>Command line parameters for the process.</short>
+        <short>Command line parameters for the program.</short>
       </element>
 
       <element name="FindFilenameOfCmd">
