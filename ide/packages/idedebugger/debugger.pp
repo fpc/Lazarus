@@ -701,6 +701,7 @@ type
   TCurrentWatch = class(TIdeWatch)
   private
     FSnapShot: TIdeWatch;
+    FAdded: Boolean;
     procedure SetSnapShot(const AValue: TIdeWatch);
   protected
     function CreateValueList: TWatchValueList; override;
@@ -724,6 +725,7 @@ type
     FMonitor: TIdeWatchesMonitor;
     FSnapShot: TIdeWatches;
     FDestroying: Boolean;
+    FSkipUpdatedNotification: integer;
     procedure SetSnapShot(const AValue: TIdeWatches);
     procedure WatchesChanged(Sender: TObject);
   protected
@@ -5535,13 +5537,18 @@ begin
 end;
 
 destructor TCurrentWatch.Destroy;
+var
+  w: TCurrentWatches;
 begin
   if (TCurrentWatches(Collection) <> nil)
   then begin
     TCurrentWatches(Collection).NotifyRemove(Self);
     TCurrentWatches(Collection).DoModified;
   end;
+  w := TCurrentWatches(Collection);
+  inc(w.FSkipUpdatedNotification);
   inherited Destroy;
+  dec(w.FSkipUpdatedNotification);
 end;
 
 procedure TCurrentWatch.LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -5582,10 +5589,8 @@ end;
 
 function TIdeWatches.Add(const AExpression: String): TIdeWatch;
 begin
-  BeginUpdate;
-  Result := TIdeWatch(inherited Add);
+  Result := TIdeWatch(inherited Add); // calls update
   Result.Expression := AExpression;
-  EndUpdate;
 end;
 
 function TIdeWatches.GetItem(const AnIndex: Integer): TIdeWatch;
@@ -5638,7 +5643,9 @@ var
   R: TIdeWatch;
 begin
   // if this is modified, then also update LoadFromXMLConfig
+  inc(FSkipUpdatedNotification);
   Result := TCurrentWatch(inherited Add(AExpression));
+  dec(FSkipUpdatedNotification);
   if FSnapShot <> nil then begin
     R := FSnapShot.Add(AExpression);
     Result.SnapShot := R;
@@ -5729,6 +5736,11 @@ end;
 
 procedure TCurrentWatches.NotifyAdd(const AWatch: TCurrentWatch);
 begin
+  if UpdateCount > 0 then begin
+    AWatch.FAdded := True;
+    exit;
+  end;
+  AWatch.FAdded := False;
   FMonitor.NotifyAdd(Self, AWatch);
 end;
 
@@ -5775,12 +5787,17 @@ procedure TCurrentWatches.Update(Item: TCollectionItem);
 var
   m, c: Integer;
 begin
+  if (UpdateCount > 0) or (FSkipUpdatedNotification > 0) then
+    exit;
+
   if Item <> nil then begin
     FMonitor.NotifyUpdate(Self, TCurrentWatch(Item));
   end else begin
     m := 0;
     c := Count;
     while m < c do begin
+      if Items[m].FAdded then
+        NotifyAdd(Items[m]);
       FMonitor.NotifyUpdate(Self, Items[m]);
       if c <> Count then begin
         m := Max(0, m - Max(0, Count - c));

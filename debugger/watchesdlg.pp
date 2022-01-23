@@ -149,6 +149,7 @@ type
     FWatchesInView: TIdeWatches;
     FPowerImgIdx, FPowerImgIdxGrey: Integer;
     FUpdateAllNeeded, FUpdatingAll: Boolean;
+    FWatchInUpDateItem: TIdeWatch;
     FStateFlags: TWatchesDlgStateFlags;
     function GetSelected: TIdeWatch; // The focused Selected Node
     function  GetThreadId: Integer;
@@ -165,6 +166,7 @@ type
     function  GetSelectedSnapshot: TSnapshot;
     property Watches: TIdeWatches read GetWatches;
   protected
+    procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure DoWatchesChanged; override;
     function  ColSizeGetter(AColId: Integer; var ASize: Integer): Boolean;
@@ -345,6 +347,7 @@ var
   VNode: PVirtualNode;
 begin
   if FUpdatingAll then exit;
+  if IsUpdating then exit;
   if GetSelectedSnapshot <> nil then begin
     actToggleCurrentEnable.Enabled := False;
     actToggleCurrentEnable.Checked := False;
@@ -534,13 +537,14 @@ var
 begin
   try
     DisableAllActions;
+    BeginUpdate;
     for VNode in tvWatches.SelectedNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
       VNdWatch.Enabled := True;
     end;
   finally
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -569,13 +573,14 @@ var
 begin
   try
     DisableAllActions;
+    BeginUpdate;
     for VNode in tvWatches.SelectedNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
       VNdWatch.Enabled := False;
     end;
   finally
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -634,7 +639,8 @@ begin
   Include(FStateFlags, wdsfNeedDeleteAll);
   if wdsfUpdating in FStateFlags then exit;
   Exclude(FStateFlags, wdsfNeedDeleteAll);
-  tvWatches.BeginUpdate;
+  DisableAllActions;
+  BeginUpdate;
   try
     DisableAllActions;
     VNode := tvWatches.GetFirst;
@@ -643,8 +649,7 @@ begin
       VNode := tvWatches.GetFirst;
     end;
   finally
-    tvWatches.EndUpdate;
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -653,7 +658,7 @@ var
   NewWatches: TIdeWatches;
 begin
   DebugLn(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.SnapshotChanged ',  DbgSName(Sender), '  Upd:', IsUpdating]);
-  tvWatches.BeginUpdate;
+  BeginUpdate;
   // prevent lvWatchesSelectItem when deleting the itews. Snapsot may have been deleted
   FUpdatingAll := True; // will be reset by UpdateAll
   try
@@ -664,7 +669,7 @@ begin
     UpdateAll;
   finally
     FUpdatingAll := False; // wan reset by UpdateAll anyway
-    tvWatches.EndUpdate;
+    EndUpdate;
   end;
 end;
 
@@ -682,6 +687,12 @@ begin
   else Result := WatchesMonitor.CurrentWatches;
 end;
 
+procedure TWatchesDlg.DoBeginUpdate;
+begin
+  inherited DoBeginUpdate;
+  tvWatches.BeginUpdate;
+end;
+
 procedure TWatchesDlg.DoEndUpdate;
 begin
   inherited DoEndUpdate;
@@ -689,6 +700,10 @@ begin
     FUpdateAllNeeded := False;
     UpdateAll;
   end;
+
+  tvWatches.EndUpdate;
+  if not FUpdatingAll then
+    tvWatchesChange(nil, nil);
 end;
 
 procedure TWatchesDlg.DoWatchesChanged;
@@ -727,15 +742,16 @@ begin
   Include(FStateFlags, wdsfNeedDeleteCurrent);
   if (wdsfUpdating in FStateFlags) then exit;
   Exclude(FStateFlags, wdsfNeedDeleteCurrent);
+  DisableAllActions;
+  BeginUpdate;
   try
-    DisableAllActions;
     VNode := tvWatches.GetFirstSelected;
     while VNode <> nil do begin
       tvWatches.DeleteNodeEx(VNode, True);
       VNode := tvWatches.GetFirstSelected;
     end;
   finally
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -746,13 +762,14 @@ var
 begin
   try
     DisableAllActions;
+    BeginUpdate;
     for VNode in tvWatches.NoInitNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
       VNdWatch.Enabled := False;
     end;
   finally
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -763,13 +780,14 @@ var
 begin
   try
     DisableAllActions;
+    BeginUpdate;
     for VNode in tvWatches.NoInitNodes do
     begin
       VNdWatch := TIdeWatch(tvWatches.NodeItem[VNode]);
       VNdWatch.Enabled := True;
     end;
   finally
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -779,12 +797,13 @@ var
 begin
   try
     DisableAllActions;
+    BeginUpdate;
     Watch := GetSelected;
     if Watch = nil then Exit;
     popEnabled.Checked := not popEnabled.Checked;
     Watch.Enabled := popEnabled.Checked;
   finally
-    tvWatchesChange(nil, nil);
+    EndUpdate;
   end;
 end;
 
@@ -906,8 +925,16 @@ begin
   if (ThreadsMonitor = nil) or (CallStackMonitor = nil) then exit;
   if GetStackframe < 0 then exit; // TODO need dedicated validity property
 
+  if wdsfUpdating in FStateFlags then begin
+    if FWatchInUpDateItem <> AWatch then  // The watch got data while we requested it, that is fine
+      FUpdateAllNeeded := True;
+    exit;
+  end;
+
+  BeginUpdate;
   include(FStateFlags, wdsfUpdating);
   DebugBoss.LockCommandProcessing;
+  FWatchInUpDateItem := AWatch;
   try
     tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.Expression;
     WatchValue := AWatch.Values[GetThreadId, GetStackframe];
@@ -923,13 +950,15 @@ begin
     end
     else
       tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
+  finally
+    FWatchInUpDateItem := nil;
     exclude(FStateFlags, wdsfUpdating);
     if wdsfNeedDeleteCurrent in FStateFlags then
       popDeleteClick(nil);
     if wdsfNeedDeleteAll in FStateFlags then
       popDeleteAllClick(nil);
 
-  finally
+    EndUpdate;
     DebugBoss.UnLockCommandProcessing;
     tvWatches.Invalidate;
   end;
@@ -995,15 +1024,19 @@ procedure TWatchesDlg.WatchAdd(const ASender: TIdeWatches; const AWatch: TIdeWat
 var
   VNode: PVirtualNode;
 begin
-  VNode := tvWatches.FindNodeForItem(AWatch);
-  if VNode = nil
-  then begin
-    VNode := tvWatches.AddChild(nil, AWatch);
-    tvWatches.SelectNode(VNode);
+  BeginUpdate;
+  try
+    VNode := tvWatches.FindNodeForItem(AWatch);
+    if VNode = nil
+    then begin
+      VNode := tvWatches.AddChild(nil, AWatch);
+      tvWatches.SelectNode(VNode);
+    end;
+
+    UpdateItem(VNode, AWatch);
+  finally
+    EndUpdate;
   end;
-  
-  UpdateItem(VNode, AWatch);
-  tvWatchesChange(nil, nil);
 end;
 
 procedure TWatchesDlg.WatchUpdate(const ASender: TIdeWatches; const AWatch: TIdeWatch);
@@ -1014,15 +1047,18 @@ begin
   if AWatch.Collection <> FWatchesInView then exit;
   try DebugLnEnter(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate  Upd:', IsUpdating, '  Watch=',AWatch.Expression]);
 
-  VNode := tvWatches.FindNodeForItem(AWatch);
-  if VNode = nil
-  then WatchAdd(ASender, AWatch)
-  else UpdateItem(VNode, AWatch);
+  BeginUpdate;
+  try
+    VNode := tvWatches.FindNodeForItem(AWatch);
+    if VNode = nil
+    then WatchAdd(ASender, AWatch)
+    else UpdateItem(VNode, AWatch);
+  finally
+    EndUpdate;
+  end;
 
   // TODO: if AWatch <> Selected, then prevent UpdateInspectPane
   // Selected may update later, and calling UpdateInspectPane will schedule an unsucesful attemptn to fetch data
-  if not FUpdatingAll
-  then tvWatchesChange(nil, nil);
   finally DebugLnExit(DBG_DATA_MONITORS, ['DebugDataWindow: TWatchesDlg.WatchUpdate']); end;
 end;
 
