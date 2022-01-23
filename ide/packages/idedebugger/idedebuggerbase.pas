@@ -250,9 +250,16 @@ begin
 end;
 
 procedure TWatchValue.Assign(AnOther: TWatchValue);
+var
+  i: Integer;
 begin
   FreeAndNil(FTypeInfo);
-  //FTypeInfo    := TWatchValue(AnOther).FTypeInfo.cre;
+  if AnOther.FTypeInfo <> nil then begin
+    // partial assign
+    FTypeInfo      := TDBGType.Create(AnOther.FTypeInfo.Kind, AnOther.FTypeInfo.TypeName);
+    for i := 0 to AnOther.FTypeInfo.Fields.Count - 1 do
+      FTypeInfo.Fields.Add(AnOther.FTypeInfo.Fields.Items[i]);
+  end;
   FValue         := AnOther.FValue;
   FValidity      := AnOther.FValidity;
 end;
