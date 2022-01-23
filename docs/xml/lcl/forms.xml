@@ -13891,7 +13891,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
             Control is the <var>TControl</var> instance examined in the method. The <var>Parent</var> property is used to navigate to preceding parent controls until a <var>TCustomForm</var> instance is found.
           </p>
           <p>
-            <var>TopForm</var> indicates if the top-most form instance in the hierarchy is needed. When set to <b>False</b> (the default), the first TCustomForm instance found in the control hierarchy is used. Otherwise,  all Parent controls in the hierarchy are examined until a Parent control has not been assigned.
+            <var>TopForm</var> indicates if the top-most form instance in the hierarchy is needed. When set to <b>False</b>, the first TCustomForm instance found in the control hierarchy is used. Otherwise,  all Parent controls in the hierarchy are examined until a Parent control has not been assigned.
           </p>
           <p>
             The return value can contain the value in Control if it is a TCustomForm descendant and no other form instances are used in the control  hierarchy. This is Delphi compatible.
