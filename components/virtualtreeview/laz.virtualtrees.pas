@@ -18327,7 +18327,7 @@ begin
       begin
         // Only horizontal movement allowed.
         if X < FLastClickPos.X then
-          Name := 'VT_MOVEW'
+          NewCursor := crVT_MOVEW
         else
           NewCursor := crVT_MOVEE;
       end
