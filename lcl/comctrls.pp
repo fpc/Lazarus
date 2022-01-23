@@ -2845,6 +2845,7 @@ type
     nsHasChildren,   // = Node.HasChildren
     nsDeleting,      // = Node.Deleting, set on Destroy
     nsVisible,       // = Node.Visible
+    nsEnabled,       // = Node.Enabled
     nsBound,          // bound to a tree, e.g. has Parent or is top lvl node
     nsValidHasChildren// Node.HasChildren has been assigned
     );
@@ -2877,6 +2878,7 @@ type
     ncImageIndex,    //The Node's Image Index has changed
     ncParentChanged, //The Node's Parent has changed
     ncVisibility,    //The Node's Visibility has changed
+    ncEnablement,    //The Node's Enabled/Disabled state has changed
     ncOverlayIndex,  //The Node's Overlay Index has Changed
     ncStateIndex,    //The Node's State Index has Changed
     ncSelectedIndex  //The Node's Selected Index has Changed
@@ -3012,6 +3014,7 @@ type
     function GetTreeView: TCustomTreeView;
     function GetTop: integer;
     function GetVisible: Boolean;
+    function GetEnabled: Boolean;
     procedure InternalMove(ANode: TTreeNode; AddMode: TAddMode);
     function IsEqual(Node: TTreeNode): Boolean;
     function IsNodeVisible: Boolean;
@@ -3036,6 +3039,7 @@ type
     procedure SetStateIndex(AValue: Integer);
     procedure SetText(const S: string);
     procedure SetVisible(const AValue: Boolean);
+    procedure SetEnabled(const AValue: Boolean);
     procedure Unbind;
     procedure UnbindFromMultiSelected;
     procedure WriteData(Stream: TStream; StreamVersion: integer);
@@ -3135,6 +3139,7 @@ type
     property TreeNodes: TTreeNodes read GetTreeNodes;
     property TreeView: TCustomTreeView read GetTreeView;
     property Visible: Boolean read GetVisible write SetVisible default True;
+    property Enabled: Boolean read GetEnabled write SetEnabled default True;
   end;
 
   { TTreeNodesEnumerator }

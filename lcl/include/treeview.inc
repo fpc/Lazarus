@@ -306,7 +306,7 @@ begin
   FOverlayIndex := -1;
   FSelectedIndex := -1;
   FStateIndex := -1;
-  FStates := [nsVisible];
+  FStates := [nsVisible, nsEnabled];
   FOwner := AnOwner;
   FSubTreeCount := 1;
   FIndex := -1;
@@ -412,6 +412,11 @@ end;
 function TTreeNode.GetVisible: Boolean;
 begin
   Result:=nsVisible in FStates;
+end;
+
+function TTreeNode.GetEnabled: Boolean;
+begin
+  Result:=nsEnabled in FStates;
 end;
 
 function TTreeNode.HasAsParent(AValue: TTreeNode): Boolean;
@@ -548,6 +553,24 @@ begin
                                         tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate];
   Update;
   Changed(ncVisibility);
+end;
+
+procedure TTreeNode.SetEnabled(const AValue: Boolean);
+begin
+  if Enabled = AValue then exit;
+  if AValue then
+    Include(FStates,nsEnabled)
+  else
+    Exclude(FStates,nsEnabled);
+  Selected := False;
+  {
+  if TreeView<>nil then
+    TreeView.FStates:=TreeView.FStates+[tvsTopsNeedsUpdate,
+                                        tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate
+                                        ];
+  }
+  Update;
+  Changed(ncEnablement);
 end;
 
 procedure TTreeNode.SetOverlayIndex(AValue: Integer);
@@ -776,6 +799,7 @@ var
   MultiSelect: Boolean;
   TV: TCustomTreeView;
 begin
+  if not Enabled then AValue:=False;
   if AValue=GetSelected then exit;
   TV:=TreeView;
   if AValue then
@@ -5347,6 +5371,7 @@ var
   begin
     if IsSelected then
     begin
+      Assert(Node.Enabled, 'DrawNodeText: not Enabled.');
       if tvoFocusedPainting in FStates then
         Details := ThemeServices.GetElementDetails(ttItemSelected)
       else
@@ -5386,13 +5411,13 @@ var
     NdRect.Offset(ScaleX(2, 96), 0);
     if (tvoThemedDraw in Options) then
     begin
-      if not Enabled then
+      if not (Enabled and Node.Enabled) then
         Details.State := 4; // TmSchema.TREIS_DISABLED = 4
       ThemeServices.DrawText(Canvas, Details, AText, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX, 0);
     end
     else
     begin
-      if not Enabled and (FDisabledFontColor<>clNone) then
+      if not (Enabled and Node.Enabled) and (FDisabledFontColor<>clNone) then
         Canvas.Font.Color := FDisabledFontColor;
       DrawText(Canvas.Handle, PChar(AText), -1, NdRect, DT_LEFT or DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX);
     end;
@@ -5723,6 +5748,7 @@ begin
   FStates:=FStates-[tvsEditOnMouseUp,tvsSingleSelectOnMouseUp];
 
   CursorNode := GetNodeAt(X, Y);
+  if (CursorNode <> nil) and not CursorNode.Enabled then Exit;
   CursorNdSelected := NodeIsSelected(CursorNode);
   LogicalX:=X;
 
