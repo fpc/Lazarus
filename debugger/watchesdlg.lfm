@@ -40,6 +40,7 @@ object WatchesDlg: TWatchesDlg
     OnDragOver = tvWatchesDragOver
     OnDragDrop = tvWatchesDragDrop
     OnFocusChanged = tvWatchesFocusChanged
+    OnInitChildren = tvWatchesInitChildren
     OnNodeDblClick = tvWatchesNodeDblClick
   end
   object ToolBar1: TToolBar
