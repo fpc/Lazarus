@@ -15160,9 +15160,6 @@
             Set Wrapable to <b>text</b> to allow a new row or column to be created when the cumulative button width is larger than the width for the tool bar. Or set the <var>Wrap</var> property in a specific tool button to <b>True</b> to force it and subsequent controls onto a new row or column.
           </p>
         </descr>
-        <notes>
-        <note>This topic needs some work.</note>
-        </notes>
         <seealso/>
       </element>
       <element name="TToolBar.WrapButtons.Result">
@@ -17425,7 +17422,8 @@ AToolbar.ButtonHeight := 30;
         </descr>
         <notes>
           <note>
-            Code comments say its not used. It is used in MouseUp. Also says it is defined but not used in VCL. Is that correct?
+            Code comments say its not used. It is used in MouseUp.
+            Also says it is defined but not used in VCL. It is documented, so apparently used in VCL.
           </note>
         </notes>
         <seealso>
@@ -20516,7 +20514,11 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodesEnumerator">
         <short>Implements an enumerator for items in the TTreeNodes container.</short>
-        <descr/>
+        <descr>
+          <p>
+            Implements the Current property and MoveNext method used to navigate the tree nodes in the container.  The nodes in the container are passed as an argument to the Create constructor.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -20581,7 +20583,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="PNodeCache">
         <short>
-          <var>PNodeCache</var> - pointer to <var>TNodeCache</var>.
+          <var>PNodeCache</var> - pointer to <var>TNodeCache</var> type.
         </short>
         <descr/>
         <seealso/>
@@ -20596,13 +20598,13 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TNodeCache.CacheNode">
-        <short/>
+        <short>Member with the TTreeNode instance for the cache entry.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TNodeCache.CacheIndex">
-        <short/>
+        <short>Ordinal position for the tree node in the cache storage.</short>
         <descr/>
         <seealso/>
       </element>
@@ -20688,25 +20690,35 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodes.InternalAddObject">
         <short>
-          <var>InternalAddObject</var> - method for adding text of data within the structure of the current node; returns the value of the new updated node.
+          Creates or updates a tree node with the specified text and a pointer to data.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Expands the parent for the Node (when assigned). Updates the accessibility role, description, and value when enabled in the tree view which owns the container. Updates the scroll bars for the tree view control prior to exit.
+          </p>
+          <p>
+            Used in the implementation of methods like: AddNode, AddObject, Insert, AddChildObject, et. al.
+          </p>
+        </descr>
+        <errors>
+          Raises an ETreeNodeError exception if the Owner for the container (the tree view control) has not been assigned.
+        </errors>
         <seealso/>
       </element>
       <element name="TTreeNodes.InternalAddObject.Result">
-        <short/>
+        <short>TTreeNode instance created or updated in the method.</short>
       </element>
       <element name="TTreeNodes.InternalAddObject.Node">
-        <short/>
+        <short>An existing tree node to update, or Nil to create a new tree node.</short>
       </element>
       <element name="TTreeNodes.InternalAddObject.S">
-        <short/>
+        <short>Text for the tree node.</short>
       </element>
       <element name="TTreeNodes.InternalAddObject.Data">
-        <short/>
+        <short>Pointer to the data for the tree node.</short>
       </element>
       <element name="TTreeNodes.InternalAddObject.AddMode">
-        <short/>
+        <short>Position in the tree hierarchy where the node is stored.</short>
       </element>
 
       <element name="TTreeNodes.DefineProperties" link="#rtl.classes.TPersistent.DefineProperties">
@@ -20715,7 +20727,9 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNodes.DefineProperties.Filer">
-        <short/>
+        <short>
+         TFiler instance used to read or write properties for the class instance during LCL streaming.
+        </short>
       </element>
 
       <element name="TTreeNodes.GetCount">
@@ -20812,7 +20826,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNodes.AddChild">
         <short>
-          Adds a node tree with the specified text as a child of the specified parent node.
+          Adds a tree node with the specified text as a child of the specified parent node.
         </short>
         <descr/>
         <seealso/>
@@ -22452,9 +22466,13 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.GetNodeAtY">
         <short>
-          <var>GetNodeAtY</var> - returns the node at the specified vertical coordinate.
+          Gets an expanded node at the specified vertical coordinate.
         </short>
-        <descr/>
+        <descr>
+         <p>
+           Used in the implementation of the GetNodeAt, GetNodeWithExpandSignAt, GetInsertMarkAt, and GetHitTestInfoAt methods.
+         </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeAtY.Result">
@@ -22464,19 +22482,27 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
 
-      <element name="TCustomTreeView.GetNodeWithExpandSign">
-        <short/>
-        <descr/>
+      <element name="TCustomTreeView.GetNodeWithExpandSignAt">
+        <short>Gets an expanded tree node for the specified screen coordinates.</short>
+        <descr>
+         <p>
+             Used to implement the EnsureNodeIsVisible method.
+         </p>
+        </descr>
         <seealso/>
       </element>
-      <element name="TCustomTreeView.GetNodeWithExpandSign.Result">
-        <short/>
+      <element name="TCustomTreeView.GetNodeWithExpandSignAt.Result">
+        <short>The expanded tree node found at the vertical coordinate, or Nil when a node is not found.</short>
       </element>
-      <element name="TCustomTreeView.GetNodeWithExpandSign.X">
-        <short/>
+      <element name="TCustomTreeView.GetNodeWithExpandSignAt.X">
+        <short>
+         Horizontal coordinate used to detected the border, expand indicator, or display text for the tree node.
+        </short>
       </element>
-      <element name="TCustomTreeView.GetNodeWithExpandSign.Y">
-        <short/>
+      <element name="TCustomTreeView.GetNodeWithExpandSignAt.Y">
+        <short>
+         Vertical coordinate for the expanded node to locate in the node hierarchy.
+        </short>
       </element>
 
       <element name="TCustomTreeView.GetNodeDrawAreaHeight">
@@ -22485,7 +22511,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeDrawAreaHeight.Result">
-        <short/>
+        <short>Calculated usable client height after borders are removed.</short>
       </element>
 
       <element name="TCustomTreeView.GetNodeDrawAreaWidth">
@@ -22494,7 +22520,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.GetNodeDrawAreaWidth.Result">
-        <short/>
+        <short>Calculated usable client width after borders are removed.</short>
       </element>
 
       <element name="TCustomTreeView.IndentIsStored">
@@ -22503,7 +22529,7 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TCustomTreeView.IndentIsStored.Result">
-        <short>True when Indent has a value other than the default (-1).</short>
+        <short>True when Indent has a value other than the default value (-1).</short>
       </element>
 
       <element name="TCustomTreeView.IsCustomDrawn">
@@ -22659,44 +22685,60 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView.Click">
         <short>
-          Performs actions needed when mouse is clicked on a tree node in the control.
+          Performs actions needed when the Left mouse is clicked on the tree view control.
         </short>
         <descr>
           <p>
-            <var>Click</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when a tree node has been selected using a mouse down event. No actions are performed in the method when a tree node has not been selected using the mouse.
+            <var>Click</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when the mouse event occurs on a node with an expand / collapse indicator. Click is called when the mouse up event is handled for the corresponding mouse down event.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomTreeView.MouseDown"/>
+          <link id="TCustomTreeView.MouseUp"/>
           <link id="#lcl.controls.TControl.Click">TControl.Click</link>
         </seealso>
       </element>
 
       <element name="TCustomTreeView.DblClick">
         <short>
-          Performs actions needed when the Left mouse button is double clicked on a selected tree node.
+          Performs actions needed when the Left mouse button is double clicked on the tree view control.
         </short>
         <descr>
           <p>
-            <var>DblClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when a tree node has been double clicked using the mouse. No actions are performed in the method when a tree node has not been selected and a double click event occurs.
+            <var>DblClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when the mouse event occurs on a node with an expand / collapse indicator. DblClick is called when the mouse up event is handled for the corresponding mouse down event.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomTreeView.MouseDown"/>
+          <link id="TCustomTreeView.MouseUp"/>
           <link id="#lcl.controls.TControl.DblClick">TControl.DblClick</link>
         </seealso>
       </element>
 
-      <element name="TCustomTreeView.TripleClick" link="#lcl.controls.TControl.TripleClick">
-        <short/>
-        <descr/>
+      <element name="TCustomTreeView.TripleClick">
+        <short>Performs actions needed when the Left mouse is triple clicked on the tree view control.</short>
+        <descr>
+          <p>
+            <var>TripleClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when the mouse event occurs on a node with an expand / collapse indicator. TripleClick is called when the mouse up event is handled for the corresponding mouse down event.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomTreeView.MouseDown"/>
+          <link id="TCustomTreeView.MouseUp"/>
           <link id="#lcl.controls.TControl.TripleClick">TControl.TripleClick</link>
         </seealso>
       </element>
 
-      <element name="TCustomTreeView.QuadClick" link="#lcl.controls.TControl.QuadClick">
-        <short/>
-        <descr/>
+      <element name="TCustomTreeView.QuadClick">
+        <short>Performs actions needed when the Left mouse is quadruple clicked on the tree view control.</short>
+        <descr>
+          <p>
+            <var>QuadClick</var> is an overridden method in <var>TCustomTreeView</var>. It calls the inherited method when the mouse event occurs on a node with an expand / collapse indicator. QuadClick is called when the mouse up event is handled for the corresponding mouse down event.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCustomTreeView.MouseDown"/>
+          <link id="TCustomTreeView.MouseUp"/>
           <link id="#lcl.controls.TControl.QuadClick">TControl.QuadClick</link>
         </seealso>
       </element>
@@ -22732,7 +22774,9 @@ AToolbar.ButtonHeight := 30;
       <element name="TCustomTreeView.DoCreateNodeClass">
         <short>Signals the OnCreateNodeClass event handler (when assigned).</short>
         <descr>
-          Signals the OnCreateNodeClass event handler (when assigned).
+          <p>
+            Signals the OnCreateNodeClass event handler (when assigned).
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -22741,13 +22785,15 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TCustomTreeView.DoEndDrag" link="#lcl.controls.TControl.DoEndDrag">
-        <short/>
+        <short>Performs actions needed when a drag operation is completed for the control.</short>
         <descr>
           <p>
-            Ensures that the previous drop target is reset, and that the drag scroll timer is disabled. Restores the Tooltips to their previous values.
+            DoEndDrag is an overridden method used to perform actions needed when a drag operation is completed for the control. DoEndDrag calls the inherited method on entry to signal the OnEndDrag event handler (when assigned). DoEndDrag ensures that the previous drop target is reset, and that the drag scroll timer is disabled. Tooltips are restored to their previous values.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.controls.TControl.DoEndDrag">TControl.DoEndDrag</link>
+        </seealso>
       </element>
       <element name="TCustomTreeView.DoEndDrag.Target">
         <short/>
@@ -22874,19 +22920,33 @@ AToolbar.ButtonHeight := 30;
         <short>Tree node rendered in the method.</short>
       </element>
 
-      <element name="TCustomTreeView.DoStartDrag" link="#lcl.controls.TControl.DoStartDrag">
-        <short/>
+      <element name="TCustomTreeView.DoStartDrag">
+       <short>Performs actions needed when a drag operation is started for the control.</short>
         <descr/>
-        <seealso/>
+         <seealso>
+           <link id="#lcl.controls.TControl.DoStartDrag">TControl.DoStartDrag</link>
+         </seealso>
       </element>
       <element name="TCustomTreeView.DoStartDrag.DragObject">
-        <short/>
+        <short>TDragObject instance for the drag and drop operation.</short>
       </element>
 
-      <element name="TCustomTreeView.DragOver" link="#lcl.controls.TControl.DragOver">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.DragOver">
+        <short>Performs actions needed when an object is dragged over the tree view control.</short>
+        <descr>
+          <p>
+            DragOver is an overridden method in TCustomTreeView used to perform actions needed when an object is dragged over the tree view control. DragOver calls the inherited method on entry to get the initial value for the Accept argument and signal the OnDragOver event handler (when assigned). The event handler is used to determine whether a drop can be accepted for the specified object instance. If the event handler has not been aasigned, Accept is set False.
+          </p>
+          <p>
+            DragOver checks for a tree node at the coordinates in X and Y, and checks whether the node is DropTarget for the control. If the node is different than the DropTarget for the control,  the DropTarget property in the TTreeNode instance is set to True.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomTreeView.DropTarget"/>
+          <link id="TTreeNode.DropTarget"/>
+          <link id="#lcl.controls.TControl.DragOver">TControl.DragOver</link>
+          <link id="#lcl.controls.TControl.OnDragOver">TControl.OnDragOver</link>
+        </seealso>
       </element>
       <element name="TCustomTreeView.DragOver.Source">
         <short/>
@@ -23029,10 +23089,16 @@ AToolbar.ButtonHeight := 30;
         </short>
       </element>
 
-      <element name="TCustomTreeView.InitializeWnd" link="#lcl.controls.TWinControl.InitializeWnd">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.InitializeWnd">
+        <short>Configures the control when its window handle is (re-)initialized.</short>
+        <descr>
+          <p>
+            InitializeWnd is called after the Handle has been created, and before the missing child handles are created. Calls the inherited method on entry to assign the Handle and and its control flags, and synchronize values in the widgetset class instance. InitializeWnd calls the UpdateDefaultItemHeight method to update property values when tvoAutoItemHeight has been included in the Options for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.InitializeWnd">TWinControl.InitializeWnd</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.KeyDown">
@@ -23108,10 +23174,19 @@ AToolbar.ButtonHeight := 30;
         <short>Shift, Ctrl, Alt modifier for the key code.</short>
       </element>
 
-      <element name="TCustomTreeView.Loaded" link="#lcl.controls.TWinControl.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomTreeView.Loaded">
+        <short>Performs actions needed when LCL component streaming has been completed.</short>
+        <descr>
+          <p>
+            Loaded is an overridden method in TCustomTreeView, and calls the inherited method on entry. AT  design-time, the FullExpand method is called to expand all of the tree nodes on the control. The UpdateDefaultItemHeight method is called to set property values when tvoAutoItemHeight has been included in the Options for the control.
+          </p>
+          <p>
+            Loaded is called when the control has been loaded from a resource, transfers the loaded property values to the widget.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TWinControl.Loaded">TWinControl.Loaded</link>
+        </seealso>
       </element>
 
       <element name="TCustomTreeView.MouseDown">
@@ -23433,11 +23508,6 @@ AToolbar.ButtonHeight := 30;
             <dd>Ends scroll bar message handling.</dd>
           </dl>
         </descr>
-        <notes>
-          <note>
-            (?) Using client / item height instead of client / item width. Is that correct?
-          </note>
-        </notes>
         <seealso/>
       </element>
       <element name="TCustomTreeView.WMHScroll.Msg">
