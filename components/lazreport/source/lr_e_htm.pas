@@ -193,7 +193,7 @@ begin
     end;
   end;
 
-  s := '<table align="center" width="90%">'+LineEnding;
+  s := '<table align="center" width="90%" cellspacing="0" style="border-collapse: collapse;">'+LineEnding;
   s += '<tr>';
   for j:=1 to xPos.Count do
     s += '<td></td>';
@@ -301,7 +301,7 @@ begin
   Result := p^.FontName;
   Result += LowerCase(IntToHex(p^.FontSize, 2) + IntToHex(p^.FontStyle, 2) +
                       IntToHex(p^.FontColor, 8) + IntToHex(p^.FillColor, 8) +
-                      IntToHex(Integer(p^.Borders), 2));
+                      IntToHex(Integer(p^.Borders), 2) + IntToHex(Ord(p^.Alignment), 2));
   for x:=1 to Length(Result) do
     if not (Result[x] in ['$', '%', '&', '0'..'9', '@'..'z']) then
       Result[x]:= '_';
@@ -370,6 +370,12 @@ begin
         s += '  border-bottom-style: none;'+LineEnding;
       s += Format('  border-width: %dpx;%s', [p^.BorderWidth,LineEnding]);
       s += Format('  border-color: %s;%s', [ColorToHex(p^.BorderColor),LineEnding]);
+    end;
+    case p^.Alignment of
+      taRightJustify: s += '  text-align: right;';
+      taCenter: s += '  text-align: center;';
+      else
+        s += '  text-align: left;';
     end;
     s += ' } '+LineEnding+LineEnding;
   end;

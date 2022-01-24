@@ -12413,7 +12413,7 @@ begin
         FontStyle   := frGetFontStyle(Font.Style);
         FontColor   := Font.Color;
         FontCharset := Font.Charset;
-        Alignment   := Alignment;
+        PfrTextRec(p)^.Alignment := Alignment;
       end;
   end;
 end;
