@@ -49,7 +49,7 @@ uses
   NewItemIntf, ProjectIntf, PackageIntf, PackageDependencyIntf, IDEExternToolIntf,
   // IdeIntf
   IDEDialogs, PropEdits, IDEMsgIntf, LazIDEIntf, MenuIntf, IDEWindowIntf, FormEditingIntf,
-  ObjectInspector, ComponentReg, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources,
+  ObjectInspector, SrcEditorIntf, EditorSyntaxHighlighterDef, UnitResources,
   // IDE
   IDEProcs, DialogProcs, IDEProtocol, LazarusIDEStrConsts, NewDialog, NewProjectDlg,
   MainBase, MainBar, MainIntf, Project, ProjectDefs, ProjectInspector, CompilerOptions,
@@ -6693,8 +6693,10 @@ var
     NewTool: TFindDeclarationTool;
     InheritedNode: TCodeTreeNode;
     ClassNode: TCodeTreeNode;
+    {$IFDEF VerboseLFMSearch}
     AncestorNode: TCodeTreeNode;
     AncestorClassName: String;
+    {$ENDIF}
     Node: TCodeTreeNode;
     ok: Boolean;
   begin
@@ -6773,8 +6775,10 @@ var
         exit;
       end;
       StoreComponentClassDeclaration(NewTool.MainFilename);
+      {$IFDEF VerboseLFMSearch}
       AncestorNode:=InheritedNode.FirstChild;
       AncestorClassName:=GetIdentifier(@NewTool.Src[AncestorNode.StartPos]);
+      {$ENDIF}
       //debugln(['TryFindDeclaration declaration of ',AComponentClassName,' found at ',NewTool.CleanPosToStr(NewNode.StartPos),' ancestor="',AncestorClassName,'"']);
 
       // try unit component
