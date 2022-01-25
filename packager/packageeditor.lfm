@@ -16,7 +16,7 @@ object PackageEditorForm: TPackageEditorForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object ToolBar: TToolBar
     Left = 0
     Height = 48
@@ -214,6 +214,7 @@ object PackageEditorForm: TPackageEditorForm
     BorderSpacing.Top = 1
     DragMode = dmAutomatic
     MultiSelect = True
+    MultiSelectStyle = [msControlSelect, msShiftSelect, msSiblingOnly]
     ParentFont = False
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
