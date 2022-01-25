@@ -14,7 +14,7 @@ object ProjectInspectorForm: TProjectInspectorForm
   OnDeactivate = FormDeactivate
   OnDestroy = FormDestroy
   OnDropFiles = FormDropFiles
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object ItemsTreeView: TTreeView
     Left = 0
     Height = 261
@@ -25,6 +25,7 @@ object ProjectInspectorForm: TProjectInspectorForm
     BorderSpacing.Top = 2
     DragMode = dmAutomatic
     MultiSelect = True
+    MultiSelectStyle = [msControlSelect, msShiftSelect, msSiblingOnly]
     PopupMenu = ItemsPopupMenu
     ReadOnly = True
     RightClickSelect = True
