@@ -946,7 +946,9 @@
       <Unit>
         <Filename Value="projectinspector.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectInspectorForm"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
         <UnitName Value="ProjectInspector"/>
       </Unit>
       <Unit>
@@ -1459,11 +1461,6 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Frame"/>
         <UnitName Value="IdeStartup_Options"/>
-      </Unit>
-      <Unit>
-        <Filename Value="../debugger/debugger.pp"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="Debugger"/>
       </Unit>
     </Units>
   </ProjectOptions>
