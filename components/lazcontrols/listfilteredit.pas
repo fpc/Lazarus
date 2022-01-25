@@ -328,9 +328,10 @@ begin
       xOldItemIndex := fFilteredListbox.ItemIndex;
       xSelStart := xOldItemIndex;
       xSelEnd := xOldItemIndex;
-      while (xSelStart>=0) and fFilteredListbox.Selected[xSelStart] do
+      while (xSelStart >= 0) and fFilteredListbox.Selected[xSelStart] do
         Dec(xSelStart);
-      while (xSelEnd<fFilteredListbox.Count) and fFilteredListbox.Selected[xSelEnd] do
+      while (xSelEnd < fFilteredListbox.Count)
+      and ((xSelEnd < 0) or fFilteredListbox.Selected[xSelEnd]) do
         Inc(xSelEnd);
       fFilteredListbox.ItemIndex := AIndex;
       for i := Min(AIndex+1, xSelStart+1) to Max(AIndex-1, xSelEnd-1) do
