@@ -1028,7 +1028,7 @@ begin
       else
         tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
 
-      if (DebugBoss.Debugger <> nil) and (DebugBoss.Debugger.State <> dsRun) and
+      if (DebugBoss <> nil) and (DebugBoss.State <> dsRun) and
          (WatchValue <> nil) and (WatchValue.Validity <> ddsRequested)
       then begin
         TypInfo := WatchValue.TypeInfo;
