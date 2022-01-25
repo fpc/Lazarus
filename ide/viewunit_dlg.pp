@@ -70,8 +70,9 @@ type
     Name: string;
     ID: integer;
     Selected: boolean;
+    Open: boolean;
     Filename: string;
-    constructor Create(const AName, AFilename: string; AnID: integer; ASelected: boolean);
+    constructor Create(const AName, AFilename: string; AnID: integer; ASelected, AOpen: boolean);
   end;
 
   { TViewUnitsEntryEnumerator }
@@ -96,7 +97,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    function Add(AName, AFilename: string; AnID: integer; ASelected: boolean): TViewUnitsEntry;
+    function Add(AName, AFilename: string; AnID: integer; ASelected, AOpen: boolean): TViewUnitsEntry;
     function Find(const aName: string): TViewUnitsEntry; inline;
     function Count: integer; inline;
     function GetFiles: TStringList;
@@ -277,7 +278,7 @@ begin
 end;
 
 function TViewUnitEntries.Add(AName, AFilename: string; AnID: integer;
-  ASelected: boolean): TViewUnitsEntry;
+  ASelected, AOpen: boolean): TViewUnitsEntry;
 var
   i: Integer;
 begin
@@ -287,19 +288,20 @@ begin
       inc(i);
     AName:=AName+'('+IntToStr(i)+')';
   end;
-  Result:=TViewUnitsEntry.Create(AName,AFilename,AnID,ASelected);
+  Result:=TViewUnitsEntry.Create(AName,AFilename,AnID,ASelected,AOpen);
   fItems[AName]:=Result;
 end;
 
 { TViewUnitsEntry }
 
 constructor TViewUnitsEntry.Create(const AName, AFilename: string;
-  AnID: integer; ASelected: boolean);
+  AnID: integer; ASelected, AOpen: boolean);
 begin
   inherited Create;
   Name := AName;
   ID := AnID;
   Selected := ASelected;
+  Open := AOpen;
   Filename := AFilename;
 end;
 
@@ -317,6 +319,7 @@ begin
   ButtonPanel.HelpButton.Caption:=lisMenuHelp;
   ButtonPanel.CancelButton.Caption:=lisCancel;
   SortAlphabeticallySpeedButton.Hint:=lisPESortFilesAlphabetically;
+  FilterEdit.ButtonHint:=lisClearFilter;
   IDEImages.AssignImage(SortAlphabeticallySpeedButton, 'pkg_sortalphabetically');
 end;
 
@@ -348,6 +351,7 @@ begin
   mniMultiselect.Checked := EnableMultiSelect;
   ListBox.MultiSelect := mniMultiselect.Enabled;
   ShowEntries;
+  FilterEdit.SimpleSelection := true;
 
   if aStartFilename<>'' then begin
     // init search for units
@@ -382,6 +386,8 @@ begin
     IDEImages.Images_16.Draw(Canvas, 1, aTop, FImageIndex);
     aTop := (ARect.Bottom + ARect.Top - Canvas.TextHeight('Šj9')) div 2;
     Canvas.TextRect(ARect, ARect.Left + IDEImages.Images_16.Width + Scale96ToFont(4), aTop, Items[Index]);
+    if Items.Objects[Index] <> nil then // already open indicator
+      Canvas.TextRect(ARect, ARect.Right - Scale96ToFont(8), aTop, '•');
   end;
 end;
 
@@ -519,13 +525,18 @@ end;
 procedure TViewUnitDialog.ShowEntries;
 var
   UEntry: TViewUnitsEntry;
+  flags: PtrInt;
 begin
   DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TViewUnitDialog.ShowEntries'){$ENDIF};
   try
     // Data items
     FilterEdit.Items.Clear;
-    for UEntry in fEntries do
-      FilterEdit.Items.Add(UEntry.Name);
+    for UEntry in fEntries do begin
+      flags := PtrInt(UEntry.Selected);
+      if UEntry.Open then
+        flags := flags or 2;
+      FilterEdit.Items.AddObject(UEntry.Name, TObject(flags));
+    end;
     FilterEdit.InvalidateFilter;
   finally
     EnableAutoSizing{$IFDEF DebugDisableAutoSizing}('TViewUnitDialog.ShowEntries'){$ENDIF};
@@ -538,7 +549,7 @@ var
 begin
   fEntries.Clear;
   for F2SItem in fFoundFiles do
-    fEntries.Add(F2SItem^.Value,F2SItem^.Name,-1,false);
+    fEntries.Add(F2SItem^.Value,F2SItem^.Name,-1,false,false);
   ShowEntries;
 end;
 

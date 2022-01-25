@@ -3352,6 +3352,7 @@ var
   LFMClassName: String;
   anUnitName: String;
   LFMCode: TCodeBuffer;
+  AlreadyOpen: Boolean;
 begin
   if Project1=nil then exit(mrCancel);
   MainIDE.GetCurrentUnit(ActiveSourceEditor, ActiveUnitInfo);
@@ -3360,6 +3361,7 @@ begin
     CurUnitInfo:=Project1.Units[i];
     if not CurUnitInfo.IsPartOfProject then
       Continue;
+    AlreadyOpen := CurUnitInfo.OpenEditorInfoCount > 0;
     if ItemType in [piComponent, piFrame] then
     begin
       // add all form names of project
@@ -3368,7 +3370,7 @@ begin
         if (ItemType = piComponent) or
            ((ItemType = piFrame) and (CurUnitInfo.ResourceBaseClass = pfcbcFrame)) then
           ItemList.Add(CurUnitInfo.ComponentName,
-                       CurUnitInfo.Filename, i, CurUnitInfo = ActiveUnitInfo);
+                       CurUnitInfo.Filename, i, CurUnitInfo = ActiveUnitInfo, AlreadyOpen);
       end else if FilenameIsAbsolute(CurUnitInfo.Filename)
       and FilenameIsPascalSource(CurUnitInfo.Filename)
       and FileExistsCached(CurUnitInfo.Filename) then
@@ -3385,7 +3387,7 @@ begin
             if anUnitName='' then
               anUnitName:=ExtractFileNameOnly(LFMFilename);
             ItemList.Add(LFMComponentName, CurUnitInfo.Filename,
-              i, CurUnitInfo = ActiveUnitInfo);
+              i, CurUnitInfo = ActiveUnitInfo, AlreadyOpen);
           end;
         end;
       end;
@@ -3397,7 +3399,7 @@ begin
         AUnitName := ExtractFileName(CurUnitInfo.Filename);
         if ItemList.Find(AUnitName) = nil then
           ItemList.Add(AUnitName, CurUnitInfo.Filename,
-                       i, CurUnitInfo = ActiveUnitInfo);
+                       i, CurUnitInfo = ActiveUnitInfo, AlreadyOpen);
       end
       else
       if Project1.MainUnitID = i then
@@ -3409,7 +3411,7 @@ begin
           if (AUnitName <> '') and (ItemList.Find(AUnitName) = nil) then
           begin
             ItemList.Add(AUnitName, MainUnitInfo.Filename,
-                         i, MainUnitInfo = ActiveUnitInfo);
+                         i, MainUnitInfo = ActiveUnitInfo, MainUnitInfo.OpenEditorInfoCount > 0);
           end;
         end;
       end;
@@ -3556,7 +3558,7 @@ begin
     for S2SItem in UnitToFilename do begin
       AnUnitName:=S2SItem^.Name;
       AFilename:=S2SItem^.Value;
-      UnitList.Add(AnUnitName,AFilename,i,false);
+      UnitList.Add(AnUnitName,AFilename,i,false,false);
       inc(i);
     end;
     // show dialog
@@ -3595,7 +3597,7 @@ Begin
       if (AnUnitInfo.IsPartOfProject) and (i<>Project1.MainUnitID) then
       begin
         AName := Project1.RemoveProjectPathFromFilename(AnUnitInfo.FileName);
-        ViewUnitEntries.Add(AName,AnUnitInfo.FileName,i,false);
+        ViewUnitEntries.Add(AName,AnUnitInfo.FileName,i,false,false);
       end;
     end;
     if ShowViewUnitsDlg(ViewUnitEntries,true,lisRemoveFromProject,piUnit) <> mrOk then

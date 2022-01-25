@@ -1,7 +1,7 @@
 object ViewUnitDialog: TViewUnitDialog
-  Left = 330
+  Left = 308
   Height = 386
-  Top = 280
+  Top = 275
   Width = 378
   HorzScrollBar.Page = 377
   HorzScrollBar.Range = 112
@@ -16,11 +16,11 @@ object ViewUnitDialog: TViewUnitDialog
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   Position = poScreenCenter
-  LCLVersion = '1.7'
+  LCLVersion = '2.3.0.0'
   object Listbox: TListBox
     Left = 6
-    Height = 272
-    Top = 41
+    Height = 279
+    Top = 35
     Width = 366
     Align = alClient
     BorderSpacing.Around = 6
@@ -36,8 +36,8 @@ object ViewUnitDialog: TViewUnitDialog
   end
   object ButtonPanel: TButtonPanel
     Left = 6
-    Height = 35
-    Top = 345
+    Height = 34
+    Top = 346
     Width = 366
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -56,19 +56,19 @@ object ViewUnitDialog: TViewUnitDialog
   end
   object BtnPanel: TPanel
     Left = 6
-    Height = 29
+    Height = 23
     Top = 6
     Width = 366
     Align = alTop
     AutoSize = True
     BorderSpacing.Around = 6
     BevelOuter = bvNone
-    ClientHeight = 29
+    ClientHeight = 23
     ClientWidth = 366
     TabOrder = 0
     object SortAlphabeticallySpeedButton: TSpeedButton
       Left = 0
-      Height = 29
+      Height = 23
       Top = 0
       Width = 25
       Align = alLeft
@@ -82,13 +82,14 @@ object ViewUnitDialog: TViewUnitDialog
     end
     object FilterEdit: TListFilterEdit
       Left = 31
-      Height = 29
+      Height = 23
       Top = 0
       Width = 335
+      ButtonHint = 'Clear Filter'
       ButtonWidth = 23
-      NumGlyphs = 1
       Align = alClient
       BorderSpacing.Left = 6
+      NumGlyphs = 1
       MaxLength = 0
       ParentFont = False
       TabOrder = 0
@@ -98,7 +99,7 @@ object ViewUnitDialog: TViewUnitDialog
   object ProgressBar1: TProgressBar
     Left = 6
     Height = 20
-    Top = 319
+    Top = 320
     Width = 366
     Align = alBottom
     BorderSpacing.Left = 6
@@ -107,8 +108,8 @@ object ViewUnitDialog: TViewUnitDialog
     Visible = False
   end
   object popListBox: TPopupMenu
-    left = 144
-    top = 112
+    Left = 144
+    Top = 112
     object mniMultiSelect: TMenuItem
       AutoCheck = True
       Caption = 'Multi Select'
