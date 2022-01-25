@@ -63,6 +63,10 @@
         <short>Stores / restores the selections in the associated control.</short>
       </element>
 
+      <element name="TListFilterEdit.FSimpleSelection">
+        <short>Stores a flag that indicates a single selection is used for the control.</short>
+      </element>
+
       <element name="TListFilterEdit.FOriginalData">
         <short>The original value supplied in the Data property.</short>
       </element>
@@ -276,6 +280,22 @@
       </element>
 
       <!-- public properties -->
+      <element name="TListFilterEdit.SimpleSelection">
+        <short>Indicates whether a single selection has been made using the FilteredListbox for the control.</short>
+        <descr>
+          <p>
+            The value is updated in StoreSelection. It is set to True when SelectionList contains a single entry. The property value is updated before the the items in SelectionList are checked.
+          </p>
+          <p>
+            Used in RestoreSelection to prevent unneeded updates to check boxes in SelectionList .
+          </p>
+          <p>
+            Used in the ApplyFilterCore method when checked values in the SelectionList are located and displayed in FilteredListbox.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
+
       <element name="TListFilterEdit.SelectionList">
         <short>List of selected items. They are restored after filtering.</short>
         <descr/>
