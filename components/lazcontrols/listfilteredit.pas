@@ -35,6 +35,7 @@ type
     fSelectionList: TStringList;      // Store/restore the old selections here.
     // Data supplied by caller through Data property.
     fOriginalData: TStringList;
+    fSimpleSelection: boolean;
     // Data sorted for viewing.
     fSortedData: TStringList;
     fCheckedItems: TStringMap;         // Only needed for TCheckListBox
@@ -62,6 +63,7 @@ type
     procedure StoreSelection; override;
     procedure RestoreSelection; override;
   public
+    property SimpleSelection: boolean read fSimpleSelection write fSimpleSelection;
     property SelectionList: TStringList read fSelectionList;
     property Items: TStringList read fOriginalData;
   published
@@ -213,6 +215,18 @@ begin
     end;
   end;
   fFilteredListbox.Items.EndUpdate;
+  if FSimpleSelection and (fSortedData.Count > 0) then begin
+    if (Text<>'') then begin
+      MoveTo(0, true);
+    end else begin
+      for i:=0 to fSortedData.Count-1 do
+        if PtrInt(fSortedData.Objects[i]) and 1 > 0 then begin
+          MoveTo(i, false);
+          MoveTo(i, true);
+          Break;
+        end;
+    end;
+  end;
 end;
 
 procedure TListFilterEdit.StoreSelection;
@@ -221,6 +235,8 @@ var
 begin
   if fFilteredListbox = nil then
     exit;
+  if fFilteredListbox.SelCount > 1 then
+    FSimpleSelection := false;
   fSelectionList.Clear;
   if fFilteredListbox.SelCount > 0 then
     for i := 0 to fFilteredListbox.Count-1 do
@@ -233,6 +249,8 @@ var
   i: Integer;
   clb: TCustomCheckListBox;
 begin
+  if FSimpleSelection then
+    Exit;
   if fSelectionList.Count > 0 then
     for i := 0 to fFilteredListbox.Count-1 do
       if fSelectionList.IndexOf(fFilteredListbox.Items[i]) > -1 then
@@ -317,22 +335,22 @@ begin
       fFilteredListbox.ItemIndex := AIndex;
       for i := Min(AIndex+1, xSelStart+1) to Max(AIndex-1, xSelEnd-1) do
         fFilteredListbox.Selected[i] := True;
-      //Win32 sets ItemIndex to the last Selected[?] := True - in contrast to Gtk2 -> set selected again to work on all widgetsets
-       fFilteredListbox.Selected[AIndex] := True;
+      // Win32 sets ItemIndex to the last Selected[?] := True
+      //  - in contrast to Gtk2 -> set selected again to work on all widgetsets
+      fFilteredListbox.Selected[AIndex] := True;
     end else
     begin
       fFilteredListbox.ItemIndex := AIndex;
       fFilteredListbox.Selected[AIndex] := True;
     end;
-    Assert(fFilteredListbox.ItemFullyVisible(AIndex), 'TListFilterEdit.MoveTo: Item not fully visible');
-{    if not fFilteredListbox.ItemFullyVisible(AIndex) then
+    if not fFilteredListbox.ItemFullyVisible(AIndex) then
     begin
       if fFilteredListbox.TopIndex < AIndex then
-        fFilteredListbox.TopIndex := AIndex - Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight)
+        // was: Pred(fFilteredListbox.ClientHeight div fFilteredListbox.ItemHeight)
+        fFilteredListbox.TopIndex := AIndex - 5 //but ItemHeight can be 0. Use const 5.
       else
         fFilteredListbox.TopIndex := AIndex;
     end;
-}
   finally
     fFilteredListbox.UnlockSelectionChange;
     fFilteredListbox.Items.EndUpdate;
