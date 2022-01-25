@@ -52,7 +52,7 @@ uses
   DbgIntfDebuggerBase,
   // IDE
   IDEProcs, DialogProcs, LazarusIDEStrConsts, IDETranslations, LazConf,
-  IDEOptionDefs, TransferMacros, ModeMatrixOpts, Debugger,
+  IDEOptionDefs, TransferMacros, ModeMatrixOpts,
   IdeCoolbarData, EditorToolbarStatic;
 
 const
@@ -122,6 +122,63 @@ type
     Foreground: TColor;
     Background: TColor;
   end;
+
+  { TDebuggerConfigStore }
+  (* TODO: maybe revert relations. Create this in Debugger, and call environmentoptions for the configstore only? *)
+
+  { TDebuggerConfigStoreBase }
+
+  TDebuggerConfigStoreBase = class(TPersistent)
+  private
+    FConfigStore: TConfigStorage;
+  public
+    property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
+    procedure Init; virtual;
+    procedure Load; virtual;
+    procedure Save; virtual;
+  end;
+
+  //{ TDebuggerWatchesDlgConfig }
+  //
+  //TDebuggerWatchesDlgConfig = class(TDebuggerConfigStoreBase)
+  //private
+  //  FColumnNameWidth: Integer;
+  //  FColumnValueWidth: Integer;
+  //public
+  //  constructor Create;
+  //  procedure Init; override;
+  //published
+  //  property ColumnNameWidth: Integer read FColumnNameWidth write FColumnNameWidth;
+  //  property ColumnValueWidth: Integer read FColumnValueWidth write FColumnValueWidth;
+  //end;
+
+  { TDebuggerCallStackDlgConfig }
+
+  TDebuggerCallStackDlgConfig = class(TDebuggerConfigStoreBase)
+  private
+    FViewCount: Integer;
+  public
+    constructor Create;
+    procedure Init; override;
+  published
+    property ViewCount: Integer read FViewCount write FViewCount;
+  end;
+
+  TDebuggerConfigStore = class(TDebuggerConfigStoreBase)
+  private
+    FDlgCallStackConfig: TDebuggerCallStackDlgConfig;
+    //FTDebuggerWatchesDlgConfig: TDebuggerWatchesDlgConfig;
+  public
+    procedure Load; override;
+    procedure Save; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    //property DlgWatchesConfig: TDebuggerWatchesDlgConfig read FTDebuggerWatchesDlgConfig;
+    property DlgCallStackConfig: TDebuggerCallStackDlgConfig read FDlgCallStackConfig write FDlgCallStackConfig;
+  published
+  end;
+
 
 const
   DebuggerDefaultColors: array[TDBGEventType] of TDebuggerEventLogColor = (
@@ -1203,6 +1260,103 @@ end;
 function dbgs(u: TMessageLineUrgency): string;
 begin
   WriteStr(Result, u);
+end;
+
+{ TDebuggerConfigStoreBase }
+
+procedure TDebuggerConfigStoreBase.Init;
+begin
+  //
+end;
+
+procedure TDebuggerConfigStoreBase.Load;
+begin
+  Init;
+  ConfigStore.ReadObject('', self);
+end;
+
+procedure TDebuggerConfigStoreBase.Save;
+begin
+  ConfigStore.WriteObject('', self);
+end;
+
+//{ TDebuggerWatchesDlgConfig }
+//
+//constructor TDebuggerWatchesDlgConfig.Create;
+//begin
+//  Init;
+//end;
+//
+//procedure TDebuggerWatchesDlgConfig.Init;
+//begin
+//  FColumnNameWidth := -1;
+//  FColumnValueWidth := -1;
+//end;
+
+{ TDebuggerCallStackDlgConfig }
+
+constructor TDebuggerCallStackDlgConfig.Create;
+begin
+  Init;
+end;
+
+procedure TDebuggerCallStackDlgConfig.Init;
+begin
+  inherited Init;
+end;
+
+{ TDebuggerConfigStore }
+
+procedure TDebuggerConfigStore.Load;
+begin
+  inherited;
+  //ConfigStore.AppendBasePath('WatchesDlg/');
+  //try
+  //  FTDebuggerWatchesDlgConfig.ConfigStore := ConfigStore;
+  //  FTDebuggerWatchesDlgConfig.Load;
+  //finally
+  //  ConfigStore.UndoAppendBasePath;
+  //end;
+  ConfigStore.AppendBasePath('CallStackDlg/');
+  try
+    FDlgCallStackConfig.ConfigStore := ConfigStore;
+    FDlgCallStackConfig.Load;
+  finally
+    ConfigStore.UndoAppendBasePath;
+  end;
+end;
+
+procedure TDebuggerConfigStore.Save;
+begin
+  inherited;
+  ConfigStore.DeletePath('Type');
+  //ConfigStore.AppendBasePath('WatchesDlg/');
+  //try
+  //  FTDebuggerWatchesDlgConfig.ConfigStore := ConfigStore;
+  //  FTDebuggerWatchesDlgConfig.Save;
+  //finally
+  //  ConfigStore.UndoAppendBasePath;
+  //end;
+  ConfigStore.AppendBasePath('CallStackDlg/');
+  try
+    FDlgCallStackConfig.ConfigStore := ConfigStore;
+    FDlgCallStackConfig.Save;
+  finally
+    ConfigStore.UndoAppendBasePath;
+  end;
+end;
+
+constructor TDebuggerConfigStore.Create;
+begin
+  //FTDebuggerWatchesDlgConfig := TDebuggerWatchesDlgConfig.Create;
+  FDlgCallStackConfig := TDebuggerCallStackDlgConfig.Create;
+end;
+
+destructor TDebuggerConfigStore.Destroy;
+begin
+  inherited Destroy;
+  //FreeAndNil(FTDebuggerWatchesDlgConfig);
+  FreeAndNil(FDlgCallStackConfig);
 end;
 
 { TDebuggerPropertiesConfigList }
