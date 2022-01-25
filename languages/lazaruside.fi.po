@@ -6301,6 +6301,10 @@ msgstr "Tyhjennä"
 msgid "Clear Directory?"
 msgstr "Tyhjennä hakemisto?"
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr "Tyhjennä asetusten suodatin"

@@ -6262,6 +6262,10 @@ msgstr "Temizle"
 msgid "Clear Directory?"
 msgstr "Dizini Temizle?"
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr "Seçenekler için filtreyi temizle"

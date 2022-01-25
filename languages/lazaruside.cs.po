@@ -6344,6 +6344,10 @@ msgstr "Smazat"
 msgid "Clear Directory?"
 msgstr "Vyprázdnit adresář?"
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr "Vyčistit filtr pro možnosti"

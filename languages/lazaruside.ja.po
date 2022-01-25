@@ -6424,6 +6424,10 @@ msgstr "消去"
 msgid "Clear Directory?"
 msgstr "ディレクトリ内を消去しますか？"
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr "オプションのためのフィルタをクリア"

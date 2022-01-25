@@ -6302,6 +6302,10 @@ msgstr "Kiürítés"
 msgid "Clear Directory?"
 msgstr "Könyvtár tartalmának törlése?"
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr "Beállításszűrők törlése"

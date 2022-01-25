@@ -6428,6 +6428,10 @@ msgstr "Clear"
 msgid "Clear Directory?"
 msgstr "Išvalyti aplanką?"
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr "Išvalyti parinkčių filtrą"

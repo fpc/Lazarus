@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-12-30 01:24+0300\n"
+"PO-Revision-Date: 2022-01-26 01:18+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -6299,6 +6299,10 @@ msgstr "Очистить"
 #: lazarusidestrconsts.liscleardirectory
 msgid "Clear Directory?"
 msgstr "Очистить каталог?"
+
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr "Очистить фильтр"
 
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"

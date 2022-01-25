@@ -6314,6 +6314,10 @@ msgstr ""
 msgid "Clear Directory?"
 msgstr ""
 
+#: lazarusidestrconsts.lisclearfilter
+msgid "Clear filter"
+msgstr ""
+
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
 msgstr ""
