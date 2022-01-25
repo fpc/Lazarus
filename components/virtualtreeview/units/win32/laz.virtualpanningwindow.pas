@@ -92,7 +92,7 @@ begin
       nil, WS_POPUP, X - lSize.CX div 2, Y - lSize.CY div 2, lSize.CX, lSize.CY,
       OwnerHandle, 0, HInstance, nil);
   //todo use SetWindowLongPtr later
-  SetWindowLong(FHandle,GWL_USERDATA,PtrInt(Self));
+  SetWindowLongPtrW(FHandle,GWL_USERDATA,PtrInt(Self));
   
   FImage := TBitmap.Create;
 end;
