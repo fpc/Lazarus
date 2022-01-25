@@ -92,6 +92,8 @@ object ViewUnitDialog: TViewUnitDialog
       NumGlyphs = 1
       MaxLength = 0
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       FilteredListbox = Listbox
     end
