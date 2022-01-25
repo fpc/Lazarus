@@ -84,10 +84,11 @@ else
   cd $TmpDir
   #  old-svn: cp -a $LazSrcDir $TmpLazDir
   mkdir $TmpLazDir
-  cp -a $LazSrcDir/.git $TmpLazDir/
-  git -C $TmpLazDir checkout .
-  rm -rf $TmpLazDir/.git
-  #git -C $LazSrcDir --work-tree=$TmpLazDir restore .
+  cd $TmpLazDir
+  #cp -a $LazSrcDir/.git $TmpLazDir/
+  #git -C $TmpLazDir checkout .
+  #rm -rf $TmpLazDir/.git
+  git -C $LazSrcDir --work-tree=$TmpLazDir restore .
   cd -
   if [ "$UseCHMHelp" = "1" ]; then
     echo
