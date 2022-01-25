@@ -2591,6 +2591,17 @@ begin
         da_DefineRecurse));
     RTLDir.AddChild(IFTempl);
 
+    // rtl: IFdef HASAMIGA then add include path rtl/amicommon
+    IFTempl:=TDefineTemplate.Create('Ifdef HASAMIGA','',
+      '','defined(HASAMIGA)',da_If);
+    IFTempl.AddChild(TDefineTemplate.Create('Include Path',
+        Format(ctsIncludeDirectoriesPlusDirs,['amiga,morphos,aros']),
+        IncludePathMacroName,
+        IncPathMacro
+        +';'+Dir+'rtl'+DS+'amicommon',
+        da_DefineRecurse));
+    RTLDir.AddChild(IFTempl);
+
     // add processor and SrcOS alias defines for the RTL
     AddSrcOSDefines(RTLDir);
 
