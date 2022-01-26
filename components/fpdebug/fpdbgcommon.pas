@@ -44,6 +44,7 @@ begin
                    {$elseif defined(CPUAARCH64)} mtARM64
                    {$elseif defined(CPUARM)} mtARM
                    {$elseif defined(CPUPOWERPC)} mtPPC
+                   {$else} mtNone
                    {$endif};
     bitness     := {$if defined(CPU64)} b64 {$elseif defined(CPU32)} b32 {$else} bNone {$endif};
 
