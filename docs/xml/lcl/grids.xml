@@ -1062,7 +1062,7 @@
         <seealso>
           <link id="TCustomGrid"/>
           <link id="TGridMessage"/>
-          <link id="#lcl.maskedit.TCustomMaskEdit">TCustomMaskEdit"</link>
+          <link id="#lcl.maskedit.TCustomMaskEdit">TCustomMaskEdit</link>
         </seealso>
       </element>
 
