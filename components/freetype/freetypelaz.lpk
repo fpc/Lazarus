@@ -124,6 +124,10 @@
     </Files>
     <RequiredPkgs>
       <Item>
+        <PackageName Value="fcl-image"/>
+        <DependencyType Value="FPMake"/>
+      </Item>
+      <Item>
         <PackageName Value="LazUtils"/>
       </Item>
     </RequiredPkgs>

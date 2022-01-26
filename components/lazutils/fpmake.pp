@@ -35,7 +35,6 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
-    D := P.Dependencies.Add('fcl-image');
     D := P.Dependencies.Add('fcl');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
