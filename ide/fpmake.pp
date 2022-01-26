@@ -134,6 +134,7 @@ begin
     P.Dependencies.Add('synedit');
     P.Dependencies.Add('debuggerintf');
     P.Dependencies.Add('lazdebuggergdbmi');
+    P.Dependencies.Add('idedebugger');
 
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
