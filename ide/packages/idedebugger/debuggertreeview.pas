@@ -198,5 +198,8 @@ begin
     Item.Free;
 end;
 
+initialization
+  RegisterClass(TDbgTreeView);
+
 end.
 
