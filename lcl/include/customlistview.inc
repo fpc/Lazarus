@@ -1443,13 +1443,19 @@ begin
     if not (lffSelectedValid in FFlags) or MultiSelect then
     begin
       FSelected := nil;
-      for i := 0 to Items.Count - 1 do
+      if (not FOwnerData) or (FSelectedIdx >= 0) then
       begin
-        if Items[i].Selected then
-        begin
-          FSelected := Items[i];
-          break;
-        end;
+        if MultiSelect and FOwnerData and (FSelectedIdx >= 0) then
+          FSelected := Items[FSelectedIdx]
+        else
+          for i := 0 to Items.Count - 1 do
+          begin
+            if Items[i].Selected then
+            begin
+              FSelected := Items[i];
+              break;
+            end;
+          end;
       end;
       Include(FFlags, lffSelectedValid);
     end;
