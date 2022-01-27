@@ -823,6 +823,7 @@ type
     procedure SetStorePathDelim(const AValue: TPathDelimSwitch);
     procedure SetTargetFilename(const NewTargetFilename: string);
     procedure SourceDirectoriesChanged(Sender: TObject);
+    function UnitNameExists(const AnUnitName: string): boolean;
     procedure UpdateFileBuffer;
     procedure UpdateProjectDirectory;
     procedure UpdateSessionFilename;
@@ -4023,34 +4024,33 @@ begin
   Result:=UnitCount;
 end;
 
-function TProject.NewUniqueUnitName(const AnUnitName: string):string;
+function ExpUnitName(const AnUnitName: string): string;
+begin
+  Result:=UpperCase(ExtractFileNameOnly(AnUnitName));
+end;
 
-  function ExpandedUnitname(const AnUnitName:string):string;
-  begin
-    Result:=uppercase(ExtractFileNameOnly(AnUnitName));
-  end;
-
-  function UnitNameExists(const AnUnitName:string):boolean;
-  var i:integer;
-    ExpName:string;
-  begin
-    Result:=true;
-    ExpName:=ExpandedUnitName(AnUnitName);
-    if ExtractFileNameOnly(fProjectInfoFile)=ExpName then exit;
-    for i:=0 to UnitCount-1 do
-      if (Units[i].IsPartOfProject) 
-      and (ExpandedUnitName(Units[i].FileName)=ExpName) then
-        exit;
-    Result:=false;
-  end;
-
+function TProject.UnitNameExists(const AnUnitName: string): boolean;
 var
-  u:integer;
+  i: integer;
+  ExpName: string;
+begin
+  Result:=true;
+  ExpName:=ExpUnitName(AnUnitName);
+  if ExpUnitName(fProjectInfoFile)=ExpName then exit;
+  for i:=0 to UnitCount-1 do
+    if Units[i].IsPartOfProject and (ExpUnitName(Units[i].FileName)=ExpName) then
+      exit;
+  Result:=false;
+end;
+
+function TProject.NewUniqueUnitName(const AnUnitName: string): string;
+var
+  u: integer;
   Prefix: string;
 begin
   Prefix:=AnUnitName;
   while (Prefix<>'') and (Prefix[length(Prefix)] in ['0'..'9']) do
-    Prefix:=copy(Prefix,1,length(Prefix)-1);
+    SetLength(Prefix,length(Prefix)-1);
   if not IsValidIdent(Prefix) then
     Prefix:='Unit';
   u:=0;
@@ -4062,19 +4062,17 @@ end;
 
 function TProject.NewUniqueFilename(const Filename: string): string;
 var
-  FileNameOnly: String;
-  FileExt: String;
+  FileNOnly, FileExt: String;
   i: Integer;
 begin
-  FileNameOnly:=ExtractFilenameOnly(Filename);
-  while (FileNameOnly<>'')
-  and (FileNameOnly[length(FileNameOnly)] in ['0'..'9']) do
-    FileNameOnly:=copy(FileNameOnly,1,length(FileNameOnly)-1);
+  FileNOnly:=ExtractFilenameOnly(Filename);
+  while (FileNOnly<>'') and (FileNOnly[length(FileNOnly)] in ['0'..'9']) do
+    SetLength(FileNOnly,length(FileNOnly)-1);
   FileExt:=ExtractFileExt(Filename);
   i:=0;
   repeat
     inc(i);
-    Result:=FileNameOnly+IntToStr(i)+FileExt;
+    Result:=FileNOnly+IntToStr(i)+FileExt;
   until ProjectUnitWithShortFilename(Result)=nil;
 end;
 
