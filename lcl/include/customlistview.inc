@@ -356,7 +356,8 @@ begin
                   InvalidateSelected
               end else
                 if (nm^.iItem < 0) or (nm^.iItem = FSelectedIdx) then
-                  InvalidateSelected;
+                  if not MultiSelect then
+                    InvalidateSelected;
             end else
             begin
               FSelected := Item;
