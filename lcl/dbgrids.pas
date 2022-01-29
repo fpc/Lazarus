@@ -500,7 +500,6 @@ type
     procedure PrepareCanvas(aCol,aRow: Integer; aState:TGridDrawState); override;
     procedure PrepareCellHints(aCol,aRow: Integer); override;
     procedure RemoveAutomaticColumns;
-    procedure ResetSizes; override;
     procedure SaveGridOptions(Cfg: TXMLConfig); override;
     procedure SelectEditor; override;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); override;
@@ -2863,12 +2862,6 @@ procedure TCustomDBGrid.RemoveAutomaticColumns;
 begin
   if not (csDesigning in ComponentState) then
     TDBGridColumns(Columns).RemoveAutoColumns;
-end;
-
-procedure TCustomDBGrid.ResetSizes;
-begin
-  LayoutChanged;
-  inherited ResetSizes;
 end;
 
 procedure TCustomDBGrid.SaveGridOptions(Cfg: TXMLConfig);
