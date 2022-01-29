@@ -77,7 +77,7 @@
         <short>Represents permissible results for a hit test.</short>
         <descr>
           <p>
-            <var>THitTest</var> is an enumerated type with values that represent permissible results for a hit test (position of a mouse click etc relative to objects on a form). Values from THitTest are stored in the THitTests set type.
+            <var>THitTest</var> is an enumerated type with values that represent permissible results for a hit test (position of a mouse click relative to objects on a form). Values from THitTest are stored in the THitTests set type.
           </p>
         </descr>
         <seealso>
@@ -18256,6 +18256,9 @@ AToolbar.ButtonHeight := 30;
       <element name="TNodeState.nsVisible">
         <short>Visible has been set in the TTreeNode.</short>
       </element>
+      <element name="TNodeState.nsEnabled">
+        <short>Enabled has been set to True for the TTreeNode.</short>
+      </element>
       <element name="TNodeState.nsBound">
         <short>The tree node is bound to a tree (has a Parent) or is a top-level node.</short>
       </element>
@@ -18426,6 +18429,9 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeNodeChangeReason.ncVisibility">
         <short>The Node Visibility has changed.</short>
+      </element>
+      <element name="TTreeNodeChangeReason.ncEnablement">
+        <short>The enabled / disabled state has changed for a tree node.</short>
       </element>
       <element name="TTreeNodeChangeReason.ncOverlayIndex">
         <short>The Node Overlay Index has changed.</short>
@@ -19044,8 +19050,11 @@ AToolbar.ButtonHeight := 30;
       <element name="TTreeNode.FText"/>
       <element name="TTreeNode.FTop"/>
 
-      <element name="TTreeNode.AreParentsExpandedAndVisible"/>
-      <element name="TTreeNode.AreParentsExpandedAndVisible.Result"/>
+      <element name="TTreeNode.ParentsExpandedVisible"/>
+      <element name="TTreeNode.ParentsExpandedVisible.Result"/>
+      <element name="TTreeNode.ParentsExpandedVisibleEnabled"/>
+      <element name="TTreeNode.ParentsExpandedVisibleEnabled.Result"/>
+
       <element name="TTreeNode.BindToMultiSelected"/>
       <element name="TTreeNode.CompareCount"/>
       <element name="TTreeNode.CompareCount.Result"/>
@@ -19098,6 +19107,11 @@ AToolbar.ButtonHeight := 30;
       <element name="TTreeNode.GetTop.Result"/>
       <element name="TTreeNode.GetVisible"/>
       <element name="TTreeNode.GetVisible.Result"/>
+      <element name="TTreeNode.GetEnabled"/>
+      <element name="TTreeNode.GetEnabled.Result"/>
+      <element name="TTreeNode.HasStates"/>
+      <element name="TTreeNode.HasStates.Result"/>
+      <element name="TTreeNode.HasStates.NodeStates"/>
       <element name="TTreeNode.InternalMove"/>
       <element name="TTreeNode.InternalMove.ANode"/>
       <element name="TTreeNode.InternalMove.AddMode"/>
@@ -19151,6 +19165,8 @@ AToolbar.ButtonHeight := 30;
       <element name="TTreeNode.SetText.S"/>
       <element name="TTreeNode.SetVisible"/>
       <element name="TTreeNode.SetVisible.AValue"/>
+      <element name="TTreeNode.SetEnabled"/>
+      <element name="TTreeNode.SetEnabled.AValue"/>
       <element name="TTreeNode.Unbind"/>
       <element name="TTreeNode.UnbindFromMultiSelected"/>
       <element name="TTreeNode.WriteData"/>
@@ -19540,6 +19556,15 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
 
+      <element name="TTreeNode.GetFirstVisibleEnabledChild">
+        <short>Gets the first child node or next sibling node which is visible.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetFirstVisibleEnabledChild.Result">
+        <short/>
+      </element>
+
       <element name="TTreeNode.GetHandle">
         <short>
           Gets the value for the Handle property.
@@ -19601,6 +19626,15 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
 
+      <element name="TTreeNode.GetLastVisibleEnabledChild">
+        <short>Gets the last child for the current node which is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetLastVisibleEnabledChild.Result">
+        <short/>
+      </element>
+
       <element name="TTreeNode.GetNext">
         <short>
           Gets the next node in the tree.
@@ -19634,6 +19668,15 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.GetNextExpanded.Result">
+        <short/>
+      </element>
+
+      <element name="TTreeNode.GetNextExpandedEnabled">
+        <short>Gets the next child or sibling node that is expanded and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetNextExpandedEnabled.Result">
         <short/>
       </element>
 
@@ -19691,6 +19734,15 @@ AToolbar.ButtonHeight := 30;
         <short>Next node in the tree node navigation order, or Nil.</short>
       </element>
 
+      <element name="TTreeNode.GetNextVisibleEnabled">
+        <short>Gets the next child or sibling for the current node that is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetNextVisibleEnabled.Result">
+        <short>Child or sibling tree node, or Nil when not enabled and visible.</short>
+      </element>
+
       <element name="TTreeNode.GetNextVisibleSibling">
         <short>
           Gets the next visible node at the same level in the tree.
@@ -19700,6 +19752,15 @@ AToolbar.ButtonHeight := 30;
         <seealso/>
       </element>
       <element name="TTreeNode.GetNextVisibleSibling.Result">
+        <short/>
+      </element>
+
+      <element name="TTreeNode.GetNextVisibleEnabledSibling">
+        <short>Gets the next sibling node that is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetNextVisibleEnabledSibling.Result">
         <short/>
       </element>
 
@@ -19753,6 +19814,15 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
 
+      <element name="TTreeNode.GetPrevExpandedEnabled">
+        <short>Gets the last child node in a previous sibling that is expanded and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetPrevExpandedEnabled.Result">
+        <short/>
+      </element>
+
       <element name="TTreeNode.GetPrevMultiSelected">
         <short>
           <var>GetPrevMultiSelected</var> - returns the previous node in a multi-selection.
@@ -19786,6 +19856,15 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
 
+      <element name="TTreeNode.GetPrevVisibleEnabled">
+        <short>Gets the tree node in a previous sibling that is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetPrevVisibleEnabled.Result">
+        <short/>
+      </element>
+
       <element name="TTreeNode.GetPrevVisibleSibling">
         <short>Gets the previous visible sibling tree node for the current node.</short>
         <descr/>
@@ -19793,6 +19872,15 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeNode.GetPrevVisibleSibling.Result">
         <short/>
+      </element>
+
+      <element name="TTreeNode.GetPrevVisibleEnabledSibling">
+        <short>Gets the previous sibling node which is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNode.GetPrevVisibleEnabledSibling.Result">
+        <short>The located tree node, or Nil if none of the sibling nodes are both visible and enabled.</short>
       </element>
 
       <element name="TTreeNode.GetTextPath">
@@ -19805,7 +19893,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.HasAsParent">
         <short>
-          <var>HasAsParent</var> - returns True if the node specified by <var>AValue </var> has a parent node.
+          Returns True if the specified node is a parent for the current node.
         </short>
         <descr/>
         <seealso/>
@@ -20219,7 +20307,7 @@ AToolbar.ButtonHeight := 30;
             <var>IsFullHeightVisible</var> is a read-only <var>Boolean</var> property which indicates if the entire tree node is visible in the display area for the associated <var>TreeView</var> control.
           </p>
           <p>
-            The <var>IsNodeHeightFullVisible</var> method in TreeView is called to get the value for the property. If the TreeView control has not been assigned, the <var>AreParentsExpandedAndVisible</var> method is used to get the return value.
+            The <var>IsNodeHeightFullVisible</var> method in TreeView is called to get the value for the property. If the TreeView control has not been assigned, the <var>ParentsExpandedVisible</var> method is used to get the return value.
           </p>
           <p>
             IsFullHeightVisible is used in the SelectionVisible method in TCustomTreeView when MultiSelect has not been enabled for the tree view control.
@@ -20237,7 +20325,7 @@ AToolbar.ButtonHeight := 30;
             <var>IsVisible</var> is a read-only <var>Boolean</var> property which indicates if the tree node is visible in the associated <var>TreeView</var> control. IsVisible is <b>True</b> if the node can be seen in the display area for the control. The property value is <b>False</b> when an ancestor node is collapsed (not <var>Expanded</var>).
           </p>
           <p>
-            The <var>IsNodeVisible</var> method in TreeView is called to get the value for the property. If TreeView has not been assigned, the <var>AreParentsExpandedAndVisible</var> method is called to get the property value.
+            The <var>IsNodeVisible</var> method in TreeView is called to get the value for the property. If TreeView has not been assigned, the <var>ParentsExpandedVisible</var> method is called to get the property value.
           </p>
           <p>
             IsNodeVisible is used in the <var>Repaint</var> method in <var>TTreeNodes</var>, and in the <var>SelectionVisible</var> method in <var>TCustomTreeView</var>.
@@ -20513,6 +20601,41 @@ AToolbar.ButtonHeight := 30;
           </p>
         </descr>
         <seealso/>
+      </element>
+
+      <element name="TTreeNode.Enabled">
+        <short>Controls whether the tree node can be selected, and its visual appearance.</short>
+        <descr>
+          <p>
+            <var>Enabled</var> is a <var>Boolean</var> property which indicates if the tree node can be selected in a tree control. The <var>Selected</var> and <var>MultiSelected</var> properties cannot be set to <b>True</b> when Enabled is <b>False</b>. A mouse click used to select the node is also ignored when Enabled is False. The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            Read and write access to the property value are redirected to the <var>States</var> property. Enabled is <b>True</b> when <var>nsEnabled</var> is included in the States property. It is <b>False</b> if the value is omitted from States.
+          </p>
+          <p>
+            Changing the property value causes States to be updated to include or exclude nsEnabled as needed.  Selected is set to <b>False</b> for any change to the property value, and the <var>Update</var> method is called to redrawn the Node on the tree view control. The <var>Changed</var> method is called to notify the tree view control of the reason for the update (<var>ncEnablement</var>).
+          </p>
+          <p>
+            Enabled also affects the visual display for the tree node. When set to <b>False</b>, the text for the node is drawn using either the <var>DisabledFontColor</var> (when assigned) or theme element details for the tree view control.
+          </p>
+          <remark>
+            A tree node can still be expanded (if it has child nodes) even when Enabled is <b>False</b>.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TTreeNode.Selected"/>
+          <link id="TTreeNode.MultiSelected"/>
+          <link id="TTreeNode.Expanded"/>
+          <link id="TTreeNode.States"/>
+          <link id="TTreeNode.Update"/>
+          <link id="TTreeNode.Changed"/>
+          <link id="TTreeNode.TreeView"/>
+          <link id="TCustomTreeView.Selected"/>
+          <link id="TCustomTreeView.MouseDown"/>
+          <link id="TCustomTreeView.DoPaintNode"/>
+          <link id="TCustomTreeView.Options"/>
+          <link id="TCustomTreeView.DisabledFontColor"/>
+        </seealso>
       </element>
 
       <element name="TTreeNodesEnumerator">
@@ -21078,9 +21201,18 @@ AToolbar.ButtonHeight := 30;
         <short/>
       </element>
 
+      <element name="TTreeNodes.GetFirstVisibleEnabledNode">
+        <short>Gets the first top-level sibling node that is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNodes.GetFirstVisibleEnabledNode.Result">
+        <short/>
+      </element>
+
       <element name="TTreeNodes.GetLastExpandedSubNode">
         <short>
-          <var>GetLastExpandedSubNode</var> - absolute last node.
+          Absolute last visible, enabled, expanded tree node in the node hierarchy.
         </short>
         <descr/>
         <seealso/>
@@ -21120,6 +21252,15 @@ AToolbar.ButtonHeight := 30;
       </element>
       <element name="TTreeNodes.GetLastVisibleNode.Result">
         <short/>
+      </element>
+
+      <element name="TTreeNodes.GetLastVisibleEnabledNode">
+        <short>Gets the last top-level sibling node that is visible and enabled.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TTreeNodes.GetLastVisibleEnabledNode.Result">
+        <short>The tree node, or Nil when a top-level sibling is not visible and enabled.</short>
       </element>
 
       <element name="TTreeNodes.GetSelections">
@@ -22899,7 +23040,10 @@ AToolbar.ButtonHeight := 30;
             <li>The Separator line drawn after a node.</li>
           </ul>
           <p>
-            DoPaintNode retrieves scaled image resolutions needed for the Images and StateImages in the control. The images sizes  are determined by applying the scaling factor in Canvas to the current Pixels Per Inch setting in Font.
+            The text color is determined using the Enabled properties in both the tree view control and the tree Node. When theme services are enabled in Options (using tvoThemedDraw), theme element details provide the color and font style for the enabled state. Otherwise, the color value in DisabledFontColor or Font is used.
+          </p>
+          <p>
+            DoPaintNode retrieves scaled image resolutions needed for the Images and StateImages in the control. The images sizes  are determined by applying the scaling factor in Canvas to the current PixelsPerInch setting in Font.
           </p>
           <p>
             Use of multi-stage custom drawing is supported. If event handlers are provided for the cdPrePaint and cdPostPaint stages, the CustomDraw and CustomDrawItem methods are used to render the node with the drawing state for the node.
