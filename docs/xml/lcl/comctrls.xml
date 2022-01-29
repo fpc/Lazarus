@@ -11677,28 +11677,31 @@
         <short>Contains the selected list item in the list view control.</short>
         <descr>
           <p>
-            Selected is a TListItem property which contains the selected list item in the list view control. Assign a value from the Items property to select the list item.
+            <var>Selected</var> is a <var>TListItem</var> property which contains the selected list item in the list view control. Assign a value from the Items property to select the list item.
           </p>
           <p>
-            When MultiSelect is enabled, Selected represents the first entry in Items that has its Selected property set to True. If none of the list items has its Selected property set to True, or SelCount is 0, the property value is Nil.
+            When MultiSelect is enabled, Selected represents the first entry in Items that has its Selected property set to <b>True</b>. If none of the list items has its Selected property set to <b>True</b>, or SelCount is <b>0</b>, the property value is <b>Nil</b>.
           </p>
           <p>
-            When OwnerData (or Virtual Mode) is enabled, Selected refers to the most recent owner data item retrieved when the value in ItemIndex was changed. If the item index was set to -1, the property value is Nil.
+            When OwnerData (or Virtual Mode) is enabled, Selected refers to the most recent owner data item retrieved when the value in ItemIndex was changed. If the item index was set to <b>-1</b>, the property value is <b>Nil</b>.
           </p>
           <p>
-            Assigning a new value to Selected causes the existing list item in the property to be updated. In single select mode (MultiSelect = False), the Selected property for the list item is set to False prior to clearing or reassigning the property value.
+            When both OwnerData and MultiSelect are enabled, Selected refers to the first entry in Items with its Selected property set to <b>True</b>. If none of the list items has its Selected property set to <b>True</b>,  the property value is <b>Nil</b>.
           </p>
           <p>
-            When MultiSelect is enabled, setting a new value for the property causes the list item to be included in the list of multi-selected Items. If the new value is Nil, all of the entries in Items reset their Selected properties to False. In short, setting Selected to Nil clears any existing multi-selections in Items.
+            Setting a new value for Selected causes the affected list item(s) in the Items property to be updated. In single select mode (MultiSelect = <b>False</b>), the Selected property in the current list item is set to <b>False</b> prior to updating the property value. In MultiSelect mode, a list item assigned as the new property value causes its Selected property to be set to <b>True</b> in the Items for the control.
           </p>
           <p>
-            Setting a new value for the property causes the OnChange and OnSelectItem event handlers to be signalled (when assigned) when the LVN_ITEMCHANGED notification message is handled for the control.
+           Set Selected to <b>Nil</b> to clear the current selection(s) in the control. When MultiSelect is enabled, this causes all of the entries in Items to reset their Selected properties to <b>False</b>. In short, setting Selected to <b>Nil</b> clears any existing multi-selections in Items.
           </p>
           <p>
-            Use ClearSelection to remove all selections (single or multi-) for the control.
+            Setting a new value for the property causes the OnChange and OnSelectItem event handlers to be signalled (when assigned) when the LVN_ITEMCHANGED notification message is handled for the control. If both handlers are assigned, both handlers are signalled.
           </p>
           <p>
-            Use SelectAll to select all list items when MultiSelect is enabled.
+            Assigning a list item to Selected that is not owned by the current list view control causes an exception to be raised.
+          </p>
+          <p>
+            Use ClearSelection to clear the Selected attribute for all single or multi-selected Items in the control.
           </p>
         </descr>
         <seealso>
@@ -11716,11 +11719,11 @@
 
       <element name="TCustomListView.LastSelected">
         <short>
-          Contains the list item to was the most recently selected item on the control.
+          Contains the list item that was the most recently selected item on the control.
         </short>
         <descr>
           <p>
-            <var>LastSelected</var> is a read-only <var>TListItem</var> property with the most recently selected item on the control. Its value references the internal member used for the <var>Selected</var> property. It is updated when a value is assigned to the Selected property, or a list item is selected using the kyboard or mouse at run-time. Setting Selected to Nil or calling ClearSelection causes LastSelected to return Nil.
+            <var>LastSelected</var> is a read-only <var>TListItem</var> property with the most recently selected item on the control. Its value references the internal member used for the <var>Selected</var> property. It is updated when a value is assigned to the Selected property, or a list item is selected using the keyboard or mouse at run-time. Setting Selected to <b>Nil</b> or calling ClearSelection causes LastSelected to return <b>Nil</b>.
           </p>
         </descr>
         <seealso>
