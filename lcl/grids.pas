@@ -7037,8 +7037,6 @@ begin
       if FMoveLast.X>=0 then InvalidateRow(0);
       if FMoveLast.Y>=0 then InvalidateCol(0);
     end;
-    {$else}
-    Invalidate;
     {$endif}
     if not (fGridState in [gsColMoving,gsRowMoving]) then
       RestoreCursor;
