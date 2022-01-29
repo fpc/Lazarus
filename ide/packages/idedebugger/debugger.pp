@@ -41,7 +41,6 @@ uses
   TypInfo, Classes, SysUtils, math,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
-  //LazConfigStorage,
   LazClasses, Maps,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
@@ -3116,7 +3115,8 @@ end;
 procedure TCurrentWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
 begin
   if Validity = ddsRequested then exit;
-  TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
+  if Watch <> nil then
+    TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
 end;

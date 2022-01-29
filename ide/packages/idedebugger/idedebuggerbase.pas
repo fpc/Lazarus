@@ -14,7 +14,7 @@ type
 
   { TWatchValue }
 
-  TWatchValue = class(TFreeNotifyingObject, TWatchValueIntf)
+  TWatchValue = class(TRefCountedObject, TWatchValueIntf)
   private
     FWatch: TWatch;
     FTypeInfo: TDBGType;
@@ -224,7 +224,8 @@ end;
 
 function TWatchValue.GetExpression: String;
 begin
-  Result := FWatch.Expression;
+  if FWatch <> nil then
+    Result := FWatch.Expression;
 end;
 
 function TWatchValue.GetTypeInfo: TDBGType;
@@ -241,6 +242,7 @@ constructor TWatchValue.Create(AOwnerWatch: TWatch);
 begin
   FWatch := AOwnerWatch;
   inherited Create;
+  AddReference;
 end;
 
 destructor TWatchValue.Destroy;
@@ -485,7 +487,8 @@ end;
 procedure TWatchValueList.Clear;
 begin
   while FList.Count > 0 do begin
-    TObject(FList[0]).Free;
+    TWatchValue(FList[0]).FWatch := nil;
+    TWatchValue(FList[0]).ReleaseReference;
     FList.Delete(0);
   end;
 end;
