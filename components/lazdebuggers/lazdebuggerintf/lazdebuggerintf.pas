@@ -149,6 +149,33 @@ type
   { TWatchValueIntf }
 
   TWatchValueIntf = interface(TDbgDataRequestIntf)
+    (* Begin/EndUdate
+       - shall indicate that the newly set values are now valid. Ready for display.
+         (Indicated by EndUpdate)
+       - shall protect the object from destruction.
+         A debugger backend may access the object during this time, without further checks.
+       - shall ensure changes outside the backend, will not affect calls by the
+         backend to any method setting/adding/modifing requested data.
+         ~ I.e. if the backend adds values to an array or structure, further calls
+           by the backend to add more data must be accepted without failure.
+         ~ However, further data may be discarded internally, if possible without
+           causing later failures (e.g. if the requested data is no longer needed)
+   (!) - does NOT affect, if read-only properties/functions can change their value.
+         E.g., if the requested value is no longer needed, then "Expression" and
+         other "passed in/provided values" may change (reset to default/empty)
+     * When used in the IDE (Begin/EndUpdate themself shall only be valid in the main thread),
+       shall
+       - allow the backend to read "passed in/provided values" from another thread
+       - allow the backend to set new values from another thread
+         (I.e., if the IDE (or any non-backend code) makes changes, they must
+          consider thread safety)
+       // Any "frontend" outside the IDE (commandline / dbg-server) doens not
+          need to consider thread safety, as long as it knows that this in not
+          required by any of the backends it uses.
+    *)
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
     function GetExpression: String;

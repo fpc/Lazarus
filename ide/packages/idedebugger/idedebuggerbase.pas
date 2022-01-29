@@ -14,13 +14,14 @@ type
 
   { TWatchValue }
 
-  TWatchValue = class(TRefCountedObject, TWatchValueIntf)
+  TWatchValue = class(TRefCountedObject)
   private
     FWatch: TWatch;
     FTypeInfo: TDBGType;
     FValue: String;
     FValidity: TDebuggerDataState;
 
+  protected
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
     function GetRepeatCount: Integer;

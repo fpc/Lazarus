@@ -639,11 +639,18 @@ type
 
   { TCurrentWatchValue }
 
-  TCurrentWatchValue = class(TIdeWatchValue)
+  TCurrentWatchValue = class(TIdeWatchValue, TWatchValueIntf)
+  private
+    FCurrentExpression: String;
+    FUpdateCount: Integer;
+
+    procedure BeginUpdate;
+    procedure EndUpdate;
   private
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
+    function GetExpression: String; override;
     procedure RequestData; override;
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); override;
   public
@@ -3098,6 +3105,26 @@ end;
 
 { TCurrentWatchValue }
 
+procedure TCurrentWatchValue.BeginUpdate;
+begin
+  AddReference;
+  if FUpdateCount = 0 then
+    FCurrentExpression := Expression;
+  inc(FUpdateCount);
+end;
+
+procedure TCurrentWatchValue.EndUpdate;
+begin
+  dec(FUpdateCount);
+  if (FUpdateCount = 0) then begin
+    if Validity <> ddsValid then
+      SetValidity(ddsValid)
+    else
+      DoDataValidityChanged(ddsRequested);
+  end;
+  ReleaseReference; // Last statemnet, may call Destroy
+end;
+
 procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValue already have snapshot');
@@ -3107,6 +3134,14 @@ begin
   then FSnapShot.Assign(self);
 end;
 
+function TCurrentWatchValue.GetExpression: String;
+begin
+  if FUpdateCount > 0 then
+    Result := FCurrentExpression
+  else
+    Result := inherited GetExpression;
+end;
+
 procedure TCurrentWatchValue.RequestData;
 begin
   TCurrentWatch(Watch).RequestData(self);
@@ -3114,6 +3149,8 @@ end;
 
 procedure TCurrentWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
 begin
+  if FUpdateCount > 0 then
+    exit;
   if Validity = ddsRequested then exit;
   if Watch <> nil then
     TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
