@@ -309,13 +309,13 @@ function TGtk3WidgetSet.RawImage_DescriptionFromBitmap(ABitmap: HBITMAP; out ADe
 const
   CairoImageFormatToDepth: array[cairo_format_t] of integer =
   (
-    {CAIRO_FORMAT_RGB30}     15,
-    {CAIRO_FORMAT_RGB16_565} 16,
+    {CAIRO_FORMAT_INVALID}   -1,
     {CAIRO_FORMAT_ARGB32}    32,
     {CAIRO_FORMAT_RGB24}     24,
     {CAIRO_FORMAT_A8}         8,
     {CAIRO_FORMAT_A1}         1,
-    {CAIRO_FORMAT_INVALID}   -1
+    {CAIRO_FORMAT_RGB16_565} 16,
+    {CAIRO_FORMAT_RGB30}     15
   );
 //============================
 var
