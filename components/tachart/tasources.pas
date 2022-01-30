@@ -149,6 +149,7 @@ type
   TRandomChartSource = class(TCustomChartSource)
   strict private
     FPointsNumber: Integer;
+    FRandomColors: Boolean;
     FRandomX: Boolean;
     FRandSeed: Integer;
     FXMax: Double;
@@ -163,6 +164,7 @@ type
 
     procedure Reset;
     procedure SetPointsNumber(AValue: Integer);
+    procedure SetRandomColors(AValue: Boolean);
     procedure SetRandomX(AValue: Boolean);
     procedure SetRandSeed(AValue: Integer);
     procedure SetXMax(const AValue: Double);
@@ -182,8 +184,8 @@ type
   public
     function IsSorted: Boolean; override;
   published
-    property PointsNumber: Integer
-      read FPointsNumber write SetPointsNumber default 0;
+    property PointsNumber: Integer read FPointsNumber write SetPointsNumber default 0;
+    property RandomColors: Boolean read FRandomColors write SetRandomColors default false;
     property RandomX: Boolean read FRandomX write SetRandomX default false;
     property RandSeed: Integer read FRandSeed write SetRandSeed;
     property XCount;
@@ -1262,6 +1264,11 @@ end;
 
 function TRandomChartSource.GetItem(AIndex: Integer): PChartDataItem;
 
+  function GetRandomColor: TChartColor;
+  begin
+    Result := FRNG.Get and $00FFFFFF;
+  end;
+  
   function GetRandomX: Double;
   begin
     Result := FRNG.Get / High(LongWord) * (XMax - XMin) + XMin;
@@ -1329,6 +1336,8 @@ begin
         end;
       end;
     end;
+    if FRandomColors then
+      FCurItem.Color := GetRandomColor;;
   end;
   Result := @FCurItem;
 end;
@@ -1349,6 +1358,13 @@ procedure TRandomChartSource.SetPointsNumber(AValue: Integer);
 begin
   if FPointsNumber = AValue then exit;
   FPointsNumber := AValue;
+  Reset;
+end;
+
+procedure TRandomChartSource.SetRandomColors(AValue: Boolean);
+begin
+  if FRandomColors = AValue then exit;
+  FRandomColors := AValue;
   Reset;
 end;
 
