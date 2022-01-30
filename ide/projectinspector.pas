@@ -77,8 +77,10 @@ uses
   AddToProjectDlg, AddPkgDependencyDlg, AddFPMakeDependencyDlg, LResources;
 
 const
-  ProjectInspectorMenuRootName = 'ProjectInspector';
+  ProjectInspectorMenuItemsRootName = 'ProjectInspectorItems';
+  ProjectInspectorMenuAddRootName = 'ProjectInspectorAdd';
 var
+  // items popupmenu: files
   ProjInspMenuAddDiskFile: TIDEMenuCommand;
   ProjInspMenuRemoveNonExistingFiles: TIDEMenuCommand;
   ProjInspMenuOpenFolder: TIDEMenuCommand;
@@ -88,6 +90,7 @@ var
   ProjInspMenuEnableI18NForLFM: TIDEMenuCommand;
   ProjInspMenuDisableI18NForLFM: TIDEMenuCommand;
 
+  // items popupmenu: dependencies
   ProjInspMenuAddDependency: TIDEMenuCommand;
   ProjInspMenuReAddDependency: TIDEMenuCommand;
   ProjInspMenuMoveDependencyUp: TIDEMenuCommand;
@@ -95,6 +98,12 @@ var
   ProjInspMenuStoreFilenameAsDefaultOfDependencyDown: TIDEMenuCommand;
   ProjInspMenuStoreFilenameAsPreferredOfDependencyDown: TIDEMenuCommand;
   ProjInspMenuClearPreferredFilenameOfDependencyDown: TIDEMenuCommand;
+
+  // add popupmenu
+  ProjInspAddMenuDiskFile: TIDEMenuCommand;
+  ProjInspAddMenuEditorFiles: TIDEMenuCommand;
+  ProjInspAddMenuDependency: TIDEMenuCommand;
+  ProjInspAddMenuFPMakeDependency: TIDEMenuCommand;
 
 type
   TOnAddUnitToProject =
@@ -114,11 +123,6 @@ type
     DirectoryHierarchyButton: TSpeedButton;
     FilterEdit: TTreeFilterEdit;
     PropsGroupBox: TGroupBox;
-    MenuItem2: TMenuItem;
-    mnuAddFPMakeReq: TMenuItem;
-    mnuAddEditorFiles: TMenuItem;
-    mnuAddDiskFile: TMenuItem;
-    mnuAddReq: TMenuItem;
     OpenButton: TSpeedButton;
     ItemsTreeView: TTreeView;
     ItemsPopupMenu: TPopupMenu;
@@ -131,6 +135,7 @@ type
     RemoveBitBtn: TToolButton;
     OptionsBitBtn: TToolButton;
     HelpBitBtn: TToolButton;
+    procedure AddPopupMenuPopup(Sender: TObject);
     procedure CopyMoveToDirMenuItemClick(Sender: TObject);
     procedure DirectoryHierarchyButtonClick(Sender: TObject);
     procedure FilterEditKeyDown(Sender: TObject; var Key: Word; {%H-}Shift: TShiftState);
@@ -428,10 +433,11 @@ procedure RegisterStandardProjectInspectorMenuItems;
 var
   AParent: TIDEMenuSection;
 begin
-  ProjectInspectorMenuRoot  :=RegisterIDEMenuRoot(ProjectInspectorMenuRootName);
+  // items popupmenu
+  ProjectInspectorItemsMenuRoot:=RegisterIDEMenuRoot(ProjectInspectorMenuItemsRootName);
 
   // register the section for operations on selected files
-  ProjInspMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuRootName,'Files');
+  ProjInspMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuItemsRootName,'Files');
   AParent:=ProjInspMenuSectionFiles;
   ProjInspMenuAddDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisBtnDlgAdd);
   ProjInspMenuRemoveNonExistingFiles:=RegisterIDEMenuCommand(AParent,'Remove non existing files',lisRemoveNonExistingFiles);
@@ -443,7 +449,8 @@ begin
   ProjInspMenuEnableI18NForLFM:=RegisterIDEMenuCommand(AParent,'Enable I18N for LFM',lisEnableI18NForLFM);
   ProjInspMenuDisableI18NForLFM:=RegisterIDEMenuCommand(AParent,'Disable I18N for LFM',lisDisableI18NForLFM);
 
-  ProjInspMenuSectionDependencies:=RegisterIDEMenuSection(ProjectInspectorMenuRootName,'Dependencies');
+  // register the section for operations on dependencies
+  ProjInspMenuSectionDependencies:=RegisterIDEMenuSection(ProjectInspectorMenuItemsRootName,'Dependencies');
   AParent:=ProjInspMenuSectionDependencies;
   ProjInspMenuReAddDependency:=RegisterIDEMenuCommand(AParent,'ReAdd dependency',lisPckEditReAddDependency);
   ProjInspMenuMoveDependencyUp:=RegisterIDEMenuCommand(AParent,'Move dependency up',lisPckEditMoveDependencyUp);
@@ -452,6 +459,20 @@ begin
   ProjInspMenuStoreFilenameAsPreferredOfDependencyDown:=RegisterIDEMenuCommand(AParent,'Store filename as preferred of dependency',lisPckEditStoreFileNameAsPreferredForThisDependency);
   ProjInspMenuClearPreferredFilenameOfDependencyDown:=RegisterIDEMenuCommand(AParent,'Clear preferred filename of dependency',lisPckEditClearDefaultPreferredFilenameOfDependency);
 
+  // add popupmenu
+  ProjectInspectorAddMenuRoot:=RegisterIDEMenuRoot(ProjectInspectorMenuAddRootName);
+
+  // register the section for adding files
+  ProjInspAddMenuSectionFiles:=RegisterIDEMenuSection(ProjectInspectorMenuAddRootName,'Files');
+  AParent:=ProjInspAddMenuSectionFiles;
+  ProjInspAddMenuDiskFile:=RegisterIDEMenuCommand(AParent,'Add disk file',lisBtnDlgAdd);
+  ProjInspAddMenuEditorFiles:=RegisterIDEMenuCommand(AParent,'Add editor files',lisProjAddEditorFile);
+
+  // register the section for adding dependency
+  ProjInspAddMenuSectionDependencies:=RegisterIDEMenuSection(ProjectInspectorMenuAddRootName,'Dependencies');
+  AParent:=ProjInspAddMenuSectionFiles;
+  ProjInspAddMenuDependency:=RegisterIDEMenuCommand(AParent,'Add dependency',lisProjAddNewRequirement);
+  ProjInspAddMenuFPMakeDependency:=RegisterIDEMenuCommand(AParent,'Add fpmake dependency',lisProjAddNewFPMakeRequirement);
 end;
 
 
@@ -752,6 +773,24 @@ begin
   OnCopyMoveFiles(Self);
 end;
 
+procedure TProjectInspectorForm.AddPopupMenuPopup(Sender: TObject);
+
+  procedure SetItem(Item: TIDEMenuCommand; AnOnClick: TNotifyEvent;
+                    aShow: boolean = true; AEnable: boolean = true);
+  begin
+    Item.OnClick:=AnOnClick;
+    Item.Visible:=aShow;
+    Item.Enabled:=AEnable;
+  end;
+
+begin
+  ProjectInspectorAddMenuRoot.MenuItem:=AddPopupMenu.Items;
+  SetItem(ProjInspAddMenuDiskFile,@mnuAddDiskFileClick);
+  SetItem(ProjInspAddMenuEditorFiles,@mnuAddEditorFilesClick);
+  SetItem(ProjInspAddMenuDependency,@mnuAddReqClick);
+  SetItem(ProjInspAddMenuFPMakeDependency,@mnuAddFPMakeReqClick);
+end;
+
 procedure TProjectInspectorForm.DirectoryHierarchyButtonClick(Sender: TObject);
 begin
   ShowDirectoryHierarchy:=DirectoryHierarchyButton.Down;
@@ -845,7 +884,7 @@ var
   OpenItemCapt: String;
   OnlyFilesNodeSelected, OnlyDependenciesNodeSelected, CanI18NforLFM: Boolean;
 begin
-  ProjectInspectorMenuRoot.MenuItem:=ItemsPopupMenu.Items;
+  ProjectInspectorItemsMenuRoot.MenuItem:=ItemsPopupMenu.Items;
 
   CanRemoveCount:=0;
   CanOpenCount:=0;
@@ -1280,10 +1319,6 @@ begin
   HelpBitBtn    := CreateToolButton('HelpBitBtn', GetButtonCaption(idButtonHelp), lisMenuOnlineHelp, 'btn_help', @HelpBitBtnClick);
 
   AddBitBtn.DropdownMenu:=AddPopupMenu;
-  mnuAddDiskFile.Caption:=lisPckEditAddFilesFromFileSystem;
-  mnuAddEditorFiles.Caption:=lisProjAddEditorFile;
-  mnuAddReq.Caption:=lisProjAddNewRequirement;
-  mnuAddFPMakeReq.Caption:=lisProjAddNewFPMakeRequirement;
 
   IDEImages.AssignImage(OpenButton, 'laz_open');
   OpenButton.Caption:='';

@@ -400,9 +400,12 @@ var
     DesignerMenuSectionOptions: TIDEMenuSection;
 
   // Project inspector
-  ProjectInspectorMenuRoot: TIDEMenuSection = nil;
+  ProjectInspectorItemsMenuRoot: TIDEMenuSection = nil; // popupmenu of items
     ProjInspMenuSectionFiles: TIDEMenuSection; // e.g. open, sort files, clean up files
     ProjInspMenuSectionDependencies: TIDEMenuSection; // e.g. // e.g. open package, remove dependency
+  ProjectInspectorAddMenuRoot: TIDEMenuSection = nil; // popupmenu of add button
+    ProjInspAddMenuSectionFiles: TIDEMenuSection;
+    ProjInspAddMenuSectionDependencies: TIDEMenuSection;
 
   // Package editor(s)
   PackageEditorMenuRoot: TIDEMenuSection = nil;
