@@ -241,6 +241,7 @@ type
       AFunctionValue, ASelfValue: TFpValue; AParams: TFpPascalExpressionPartList;
       out AResult: TFpValue; var AnError: TFpError): boolean;
   protected
+    FWatchValue: TWatchValueIntf;
     function EvaluateExpression(const AnExpression: String;
                                 AStackFrame, AThreadId: Integer;
                                 ADispFormat: TWatchDisplayFormat;
@@ -956,8 +957,11 @@ begin
   ATypeInfo := nil;
 
   FExpressionScope := FDebugger.FDbgController.CurrentProcess.FindSymbolScope(AThreadId, AStackFrame);
-  if FExpressionScope = nil then
+  if FExpressionScope = nil then begin
+    if FWatchValue <> nil then
+      FWatchValue.Validity := ddsInvalid;
     exit;
+  end;
 
   PrettyPrinter := nil;
   APasExpr := TFpPascalExpression.Create(AnExpression, FExpressionScope);
@@ -967,17 +971,28 @@ begin
     APasExpr.ResultValue; // trigger full validation
     if not APasExpr.Valid then begin
       AResText := ErrorHandler.ErrorAsString(APasExpr.Error);
+      if FWatchValue <> nil then begin
+        FWatchValue.Value := AResText;
+        FWatchValue.Validity := ddsError;
+      end;
       exit;
     end;
 
     ResValue := APasExpr.ResultValue;
     if ResValue = nil then begin
       AResText := 'Error';
+      if FWatchValue <> nil then begin
+        FWatchValue.Value := AResText;
+        FWatchValue.Validity := ddsError;
+      end;
       exit;
     end;
 
-    if StopRequested then
+    if StopRequested then begin
+      if FWatchValue <> nil then
+        FWatchValue.Validity := ddsInvalid;
       exit;
+    end;
     if (ResValue.Kind = skClass) and (ResValue.AsCardinal <> 0) and
        (not IsError(ResValue.LastError)) and (defClassAutoCast in AnEvalFlags)
     then begin
@@ -998,8 +1013,11 @@ begin
       end;
     end;
 
-    if StopRequested then
+    if StopRequested then begin
+      if FWatchValue <> nil then
+        FWatchValue.Validity := ddsInvalid;
       exit;
+    end;
 
     PrettyPrinter := TFpPascalPrettyPrinter.Create(FExpressionScope.SizeOfAddress);
     PrettyPrinter.Context := FExpressionScope.LocationContext;
@@ -1027,6 +1045,11 @@ begin
 
     if not Result then
       FreeAndNil(ATypeInfo);
+    if FWatchValue <> nil then begin
+      FWatchValue.Value := AResText;
+      FWatchValue.TypeInfo := ATypeInfo;
+      FWatchValue.Validity := ddsValid;
+    end;
   finally
     PrettyPrinter.Free;
     APasExpr.Free;

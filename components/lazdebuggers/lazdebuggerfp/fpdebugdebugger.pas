@@ -134,8 +134,7 @@ type
 
   TFpThreadWorkerWatchValueEvalUpdate = class(TFpThreadWorkerWatchValueEval)
   private
-    FWatchValue: TWatchValueIntf;
-    procedure DoWatchFreed_DecRef(Sender: TObject);
+    procedure DoWachCanceled(Sender: TObject);
   protected
     procedure UpdateWatch_DecRef(Data: PtrInt = 0); override;
     procedure DoRemovedFromLinkedList; override; // _DecRef
@@ -1013,13 +1012,14 @@ end;
 
 { TFpThreadWorkerWatchValueEvalUpdate }
 
-procedure TFpThreadWorkerWatchValueEvalUpdate.DoWatchFreed_DecRef(
-  Sender: TObject);
+procedure TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled(Sender: TObject);
 begin
-  assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEval.DoWatchFreed_DecRef: system.ThreadID = classes.MainThreadID');
-  FWatchValue := nil;
+  assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEvalUpdate.DoWachCanceled: system.ThreadID = classes.MainThreadID');
   RequestStop;
   UnQueue_DecRef;
+  if IsCancelled then begin
+  ///
+  end;
 end;
 
 procedure TFpThreadWorkerWatchValueEvalUpdate.UpdateWatch_DecRef(Data: PtrInt);
@@ -1029,20 +1029,8 @@ begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEval.UpdateWatch_DecRef: system.ThreadID = classes.MainThreadID');
 
   if FWatchValue <> nil then begin
-    FWatchValue.RemoveFreeNotification(@DoWatchFreed_DecRef);
-
-    FWatchValue.Value := FResText;
-    FWatchValue.TypeInfo := FResDbgType;
-    if not FRes then begin
-      if FResText = '' then
-        FWatchValue.Validity := ddsInvalid
-      else
-        FWatchValue.Validity := ddsError;
-    end
-    else begin
-      FWatchValue.Validity := ddsValid;
-    end;
-
+    FWatchValue.RemoveNotification(weeCancel, @DoWachCanceled);
+    FWatchValue.EndUpdate;
     FWatchValue := nil;
   end;
 
@@ -1054,20 +1042,13 @@ end;
 procedure TFpThreadWorkerWatchValueEvalUpdate.DoRemovedFromLinkedList;
 begin
   if FWatchValue <> nil then begin
-    FWatchValue.RemoveFreeNotification(@DoWatchFreed_DecRef);
-    if FRes then begin
-      UpdateWatch_DecRef;
-    end
-    else begin
-      FWatchValue.Validity := ddsInvalid;
-      FWatchValue := nil;
-      UnQueue_DecRef;
-    end;
-  end
-  else begin
-    UnQueue_DecRef;
+    FWatchValue.RemoveNotification(weeCancel, @DoWachCanceled);
+    if FWatchValue.Validity = ddsRequested then
+      FWatchValue.Validity :=  ddsInvalid;
+    FWatchValue.EndUpdate;
     FWatchValue := nil;
   end;
+  UnQueue_DecRef;
 end;
 
 constructor TFpThreadWorkerWatchValueEvalUpdate.Create(
@@ -1075,7 +1056,9 @@ constructor TFpThreadWorkerWatchValueEvalUpdate.Create(
 begin
   assert(system.ThreadID = classes.MainThreadID, 'TFpThreadWorkerWatchValueEval.Create: system.ThreadID = classes.MainThreadID');
   FWatchValue := AWatchValue;
-  FWatchValue.AddFreeNotification(@DoWatchFreed_DecRef);
+  FWatchValue.BeginUpdate;
+  FWatchValue.AddNotification(weeCancel, @DoWachCanceled);
+
   inherited Create(ADebugger, twpWatch, FWatchValue.Expression, FWatchValue.StackFrame, FWatchValue.ThreadId,
     FWatchValue.DisplayFormat, FWatchValue.RepeatCount, FWatchValue.EvaluateFlags);
 end;
