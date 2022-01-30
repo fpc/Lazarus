@@ -9690,55 +9690,192 @@
         <short>Vertical coordinate for the mouse event.</short>
       </element>
 
-      <element name="TCustomGrid.MouseMove" link="#lcl.controls.TControl.MouseMove">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomGrid.MouseMove">
+        <short>Applies a change in the mouse pointer position to the grid control.</short>
+        <descr>
+          <p>
+            <var>MouseMove</var> is an overridden method in <var>TCustomGrid</var>. It calls the inherited method on entry to update the DragManager when it is active, and to signal the OnMouseMove event handler (when assigned). No additional actions are performed in the method if a drag operation is already active in the DragManager.
+          </p>
+          <p>
+            If the mouse coordinates are located in the fixed headers for the control, hot tracking and cell down / pushed drawing are applied to the grid control when enabled in Options.
+          </p>
+          <p>
+            Cell selections are handled for the mouse movement depending on grid state values and Options set for the control. No additional actions are performed in the method when gsHeaderClicking or gsButtonColumnClicking are in the grid state for the control. Performs the following for a corresponding mouse movement:
+          </p>
+          <dl>
+            <dt>
+              Extend an active selection in the control when needed.
+            </dt>
+            <dd>
+              Calls MoveExtend when the mouse pointer is not in the current selection, not in a fixed header area for the control, and editing is not active or allowed. Occurs when gsSelecting is in the grid state values for the control.
+            </dd>
+            <dt>
+              Move the column under the mouse pointer.
+            </dt>
+            <dd>
+              Occurs when goColMoving is in Options.
+            </dd>
+            <dt>
+              Resize the column under the mouse pointer.
+            </dt>
+            <dd>
+              Occurs when goColSizing is in Options.
+            </dd>
+            <dt>
+              Resize the row under the mouse pointer.
+            </dt>
+            <dd>
+              Occurs when goRowSizing is in Options.
+            </dd>
+          </dl>
+          <p>
+            MouseMove sets the Hint displayed for the cell under the mouse pointer when ShowHint is enabled. Values in Hint, CellHintPriority, Options, and the OnGetCellHint event hander are used for the purpose. If the mouse pointer is not over a cell, the Hint for the application is reset to a previous hint or an empty string ('') when saved hint text is not available.
+          </p>
+          <p>
+            Called from WMMouseMove when a LM_MOUSEMOVE window message is handled for the grid control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
+          <link id="#lcl.controls.TControl.WMMouseMove">TControl.WMMouseMove</link>
+        </seealso>
       </element>
       <element name="TCustomGrid.MouseMove.Shift">
-        <short/>
+        <short>Ctrl, Alt, or Shift modifier for the mouse event.</short>
       </element>
       <element name="TCustomGrid.MouseMove.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TCustomGrid.MouseMove.Y">
-        <short/>
+        <short>Vertical coordinate for the mouse pointer.</short>
       </element>
 
-      <element name="TCustomGrid.MouseUp" link="#lcl.controls.TControl.MouseUp">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="TCustomGrid.MouseUp">
+        <short>
+          Handles a mouse up event for the grid control.
+        </short>
+        <descr>
+          <p>
+            <var>MouseUp</var> is an overridden method in <var>TCustomGrid</var> used to perform actions needed when a mouse up event has been received for the grid control. It calls the inherited method on entry to signal the OnMouseUp event handler (when assigned). MouseUp performs additional actions based on the grid zone where the mouse up event occurred and the current grid state flags for the control.
+          </p>
+          <p>
+            For example:
+          </p>
+          <dl>
+            <dt>
+              Mouse event on a fixed header for the grid.
+            </dt>
+            <dd>
+              Calls HeaderClick for the column header under the mouse pointer. Changes the sort order in the column when enabled. Occurs when gsHeaderClicking is in the grid state flags.
+            </dd>
+            <dt>
+              Mouse event on a column button in the grid header.
+            </dt>
+            <dd>
+              Calls DoEditButton to signal the OnEditButtonClick or OnButtonClick event handlers (when assigned). Occurs when gsButtonColumnClicking is in the grid state flags.
+            </dd>
+            <dt>
+              Mouse event on a non-fixed cell in the grid control.
+            </dt>
+            <dd>
+              Selects and displays an editor for the cell, and calls the CellClick method to apply the mouse event to the cell. If a selection is already active in the control, it is extended to include the range of cells ending at the mouse pointer. Occurs when gsNormal or gsSelecting is in the grid state flags.
+            </dd>
+            <dt>
+              The mouse event occurs when dragging a column header.
+            </dt>
+            <dd>
+              Moves the dragged column to the column position under the mouse pointer. Calls HeaderClick to refresh the sort order for cells in the column. Occurs when gsColMoving is in the grid state flags.
+            </dd>
+            <dt>
+              The mouse event occurs when dragging a row header.
+            </dt>
+            <dd>
+              Moves the dragged row to the row position under the mouse pointer. Calls HeaderClick to refresh the sort order for cells in the row. Occurs when gsRowMoving is in the grid state flags.
+            </dd>
+            <dt>
+              The mouse event occurs when resizing a column header.
+            </dt>
+            <dd>
+              Calls ResizeColumn to apply the new column size, and calls the HeaderSized method for the resized column number. Occurs when gsColSizing is in the grid state flags.
+            </dd>
+            <dt>
+              The mouse event occurs when resizing a row header.
+            </dt>
+            <dd>
+              Calls ResizeRow to apply the new row size, and calls the HeaderSized method for the resized row  number. Occurs when gsRowSizing is in the grid state flags.
+            </dd>
+          </dl>
+          <p>
+            Values in GridFlags are updated to remove flag values for the handled actions, and the grid state is set to gsNormal prior to exit.
+          </p>
+          <p>
+            MouseUp is called when window messages are handled in the WMLButtonUp, WMRButtonUp, and WMXButtonUp methods in the ancestor class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.GridFlags"/>
+          <link id="TGridState"/>
+          <link id="#lcl.controls.TControl.MouseUp">TControl.MouseUp</link>
+          <link id="#lcl.controls.TControl.OnMouseUp">TControl.OnMouseUp</link>
+          <link id="#lcl.controls.TControl.WMLButtonUp">TControl.WMLButtonUp</link>
+          <link id="#lcl.controls.TControl.WMRButtonUp">TControl.WMRButtonUp</link>
+          <link id="#lcl.controls.TControl.WMXButtonUp">TControl.WMXButtonUp</link>
+        </seealso>
       </element>
       <element name="TCustomGrid.MouseUp.Button">
-        <short/>
+        <short>Mouse button for the event notification.</short>
       </element>
       <element name="TCustomGrid.MouseUp.Shift">
-        <short/>
+        <short>Ctrl, Alt, or Shift modifier for the mouse event.</short>
       </element>
       <element name="TCustomGrid.MouseUp.X">
-        <short/>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TCustomGrid.MouseUp.Y">
-        <short/>
+        <short>Vertical  coordinate for the mouse pointer.</short>
       </element>
 
       <element name="TCustomGrid.MoveExtend">
-        <short>Moves an extended selection.</short>
-        <descr/>
-        <seealso/>
+        <short>Moves the selected cell or extends a selection using the specified column and row values.</short>
+        <descr>
+          <p>
+            Calls TryMoveSelection to perform the selection change using the specified arguments. No actions are performed in the method when:
+          </p>
+          <ul>
+            <li>
+              FixedGrid is True. All cells are fixed and cannot be selected.
+            </li>
+            <li>
+              DCol and DRow are not valid for the Col, Row, ColCount or RowCount for the grid control.
+            </li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.TryMoveSelection"/>
+          <link id="TCustomGrid.SelectCell"/>
+          <link id="TCustomGrid.FixedGrid"/>
+          <link id="TCustomGrid.Col"/>
+          <link id="TCustomGrid.ColCount"/>
+          <link id="TCustomGrid.Row"/>
+          <link id="TCustomGrid.RowCount"/>
+        </seealso>
       </element>
       <element name="TCustomGrid.MoveExtend.Result">
-        <short/>
+        <short>True if the selection was moved or extended in the method.</short>
       </element>
       <element name="TCustomGrid.MoveExtend.Relative">
-        <short/>
+        <short>
+          True if the selection is extended by the relative number of columns and rows. False to move the selection to the specified cell coordinates.
+        </short>
       </element>
       <element name="TCustomGrid.MoveExtend.DCol">
-        <short/>
+        <short>Column number for the selection, or the delta when a selection is extended.</short>
       </element>
       <element name="TCustomGrid.MoveExtend.DRow">
-        <short/>
+        <short>Row number for the selection, or the delta when a selection is extended.</short>
+      </element>
+      <element name="TCustomGrid.MoveExtend.ForceFullyVisible">
+        <short>True if the cell in DCol and DRow must be fully visible after the selection change.</short>
       </element>
 
       <element name="TCustomGrid.MoveNextAuto">
@@ -9962,6 +10099,9 @@
           </p>
           <p>
             Calls UpdateCachedSizes to recalculate the cached grid information in GCache. Calls CacheVisibleGrid to cache the current visible grid (excluding fixed cells).
+          </p>
+          <p>
+            Called from the Paint method when the client width or height has changed for the control.
           </p>
         </descr>
         <seealso/>
