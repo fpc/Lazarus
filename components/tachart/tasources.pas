@@ -1337,7 +1337,10 @@ begin
       end;
     end;
     if FRandomColors then
-      FCurItem.Color := GetRandomColor;;
+      FCurItem.Color := GetRandomColor
+    else
+      FCurItem.Color := clTAColor;
+    
   end;
   Result := @FCurItem;
 end;
