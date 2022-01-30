@@ -2564,6 +2564,7 @@ begin
   RegisterStandardSourceTabMenuItems;
   RegisterStandardSourceEditorMenuItems;
   RegisterStandardMessagesViewMenuItems;
+  RegisterStandardProjectInspectorMenuItems;
   RegisterStandardCodeExplorerMenuItems;
   RegisterStandardCodeTemplatesMenuItems;
   RegisterStandardDesignerMenuItems;

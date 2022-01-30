@@ -399,6 +399,11 @@ var
     DesignerMenuSectionMisc: TIDEMenuSection;
     DesignerMenuSectionOptions: TIDEMenuSection;
 
+  // Project inspector
+  ProjectInspectorMenuRoot: TIDEMenuSection = nil;
+    ProjInspMenuSectionFiles: TIDEMenuSection; // e.g. open, sort files, clean up files
+    ProjInspMenuSectionDependencies: TIDEMenuSection; // e.g. // e.g. open package, remove dependency
+
   // Package editor(s)
   PackageEditorMenuRoot: TIDEMenuSection = nil;
     PkgEditMenuSectionFiles: TIDEMenuSection; // e.g. sort files, clean up files
@@ -409,7 +414,7 @@ var
     PkgEditMenuSectionMisc: TIDEMenuSection; // e.g. options
   PackageEditorMenuFilesRoot: TIDEMenuSection = nil;
     PkgEditMenuSectionFile: TIDEMenuSection; // e.g. open file, remove file, move file up/down
-    PkgEditMenuSectionDirectory: TIDEMenuSection; // e.g. change all properties of all files in a directory and ub directories moved ..
+    PkgEditMenuSectionDirectory: TIDEMenuSection; // e.g. change all properties of all files in a directory and sub directories moved ..
     PkgEditMenuSectionDependency: TIDEMenuSection; // e.g. open package, remove dependency
 
   // Component Palette, pages drop down. (no submenus allowed / only top level / must have OnClick(Proc))
