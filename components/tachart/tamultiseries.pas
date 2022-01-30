@@ -981,7 +981,10 @@ procedure TBoxAndWhiskerSeries.Draw(ADrawer: IChartDrawer);
       r.TopLeft := MaybeRotate(AX1, AY1);
       r.BottomRight := MaybeRotate(AX2, AY2);
     end;
-    ADrawer.Rectangle(r);
+    if (r.Left = r.Right) or (r.Top = r.Bottom) then
+      ADrawer.Line(r.TopLeft, r.BottomRight)
+    else
+      ADrawer.Rectangle(r);
   end;
 
 var
