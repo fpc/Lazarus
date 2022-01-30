@@ -950,7 +950,7 @@ var
   APasExpr, PasExpr2: TFpPascalExpression;
   PrettyPrinter: TFpPascalPrettyPrinter;
   ResValue: TFpValue;
-  CastName, ResText2: String;
+  CastName, ResText2, t: String;
 begin
   Result := False;
   AResText := '';
@@ -1018,6 +1018,34 @@ begin
         FWatchValue.Validity := ddsInvalid;
       exit;
     end;
+
+    if (FWatchValue <> nil) and  (ADispFormat <> wdfMemDump) and (FWatchValue.RepeatCount <= 0) and
+       (ResValue <> nil) and (not IsError(ResValue.LastError))
+    then begin
+      t := '';
+      if ResValue.TypeInfo <> nil then
+        GetTypeName(t, ResValue.TypeInfo, []);
+      case ResValue.Kind of
+        skPointer:  begin
+          if ResValue.FieldFlags * [svfString, svfWideString] = [] then begin
+            FWatchValue.SetNumValue(ResValue.AsCardinal, SizeToFullBytes(ResValue.DataSize), [nvfUnsigned, nvfAddrType]);
+            FWatchValue.SetTypeName(t);
+            exit;
+          end;
+        end;
+        skInteger:  begin
+          FWatchValue.SetNumValue(QWord(ResValue.AsInteger), SizeToFullBytes(ResValue.DataSize), []);
+          FWatchValue.SetTypeName(t);
+          exit;
+        end;
+        skCardinal: begin
+          FWatchValue.SetNumValue(ResValue.AsCardinal, SizeToFullBytes(ResValue.DataSize), [nvfUnsigned]);
+          FWatchValue.SetTypeName(t);
+          exit;
+        end;
+      end;
+    end;
+
 
     PrettyPrinter := TFpPascalPrettyPrinter.Create(FExpressionScope.SizeOfAddress);
     PrettyPrinter.Context := FExpressionScope.LocationContext;

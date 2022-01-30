@@ -150,6 +150,15 @@ type
   TDBGTypeBase = class(TObject)
   end;
 
+
+
+  TNumValueFlag = (
+    nvfUnsigned,
+    //nvfUnknownSize,  // same as size = 0
+    nvfAddrType     // default to hex display (Pointer)
+  );
+  TNumValueFlags = set of TNumValueFlag;
+
   { TWatchValueIntf }
 
   TWatchValueIntf = interface(TDbgDataRequestIntf)
@@ -181,6 +190,9 @@ type
     procedure EndUpdate;
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
+
+    procedure SetNumValue(ANumValue: QWord; AByteSize: Integer = 0; AFlags: TNumValueFlags = []);
+    procedure SetTypeName(ATypeName: String);
 
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;

@@ -14615,7 +14615,9 @@ var
 var
   S: String;
   ResultList: TGDBMINameValueList;
-  frameidx: Integer;
+  frameidx, n: Integer;
+  NumVal: QWord;
+  NumFlags: TNumValueFlags;
   {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
   SelectContext;
@@ -14675,6 +14677,36 @@ begin
   finally
     UnSelectContext;
     if FWatchValue <> nil then begin
+      if (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
+         (FWatchValue.RepeatCount <= 0)
+      then begin
+        NumFlags := [];
+        n := 0;
+        if (FTypeInfo.Kind = skPointer) then begin
+          NumFlags := [nvfAddrType];
+          n := TargetInfo^.TargetPtrSize;
+        end;
+
+        FTextValue := Trim(FTextValue);
+        if (FTypeInfo.Kind = skInteger) or ((FTextValue <> '') and (FTextValue[1]='-')) then begin
+          if TryStrToInt64(FTextValue, Int64(NumVal)) then begin
+            FWatchValue.SetNumValue(NumVal, n, NumFlags);
+            FWatchValue.SetTypeName(FTypeInfo.TypeName);
+            FWatchValue.Validity := FValidity;
+            exit;
+          end;
+        end
+        else begin
+          Include(NumFlags, nvfUnsigned);
+          if TryStrToQWord(FTextValue, NumVal) then begin
+            FWatchValue.SetNumValue(NumVal, n, NumFlags);
+            FWatchValue.SetTypeName(FTypeInfo.TypeName);
+            FWatchValue.Validity := FValidity;
+            exit;
+          end;
+        end;
+      end;
+
       FWatchValue.Value := FTextValue;
       FWatchValue.TypeInfo := TypeInfo;
       FWatchValue.Validity := FValidity;
