@@ -239,8 +239,15 @@ var
     then // the above 3 controls need windows to handle wheel messages
       MMessage^.Result := CallDefaultWindowProc(Handle, MMessage^.Msg, TLMessage(Message).WParam, TLMessage(Message).LParam);
 
-    if (MMessage^.Result = 0) and (TControl(Sender).Parent <> nil) then // send unhandled scroll messages to parent
+    // Send unhandled scroll messages to parent
+    if (MMessage^.Result = 0) and (TControl(Sender).Parent <> nil) then 
+    begin
+      // Transform mouse coordinate to be relative to parent
+      Pos := TControl(Sender).Parent.ScreenToClient(Pos);
+      MMessage^.X := Pos.X;
+      MMessage^.Y := Pos.Y;
       TControl(Sender).Parent.WindowProc(TLMessage(Message));
+    end;
   end;
 
 begin
