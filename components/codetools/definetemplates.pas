@@ -3115,7 +3115,7 @@ const
     PrefixLen: Integer;
   begin
     PrefixLen:=length(Prefix);
-    SetLength(aName,PrefixLen+Len);
+    SetLength(aName{%H-},PrefixLen+Len);
     if PrefixLen>0 then
       Move(Prefix[1],aName[1],PrefixLen);
     if Len>0 then
@@ -3195,7 +3195,7 @@ const
               if not (p2^ in AlphaNum) then exit;  // invalid option
               while p2^ in AlphaNum do inc(p2);
               if (p2^<>'=') then exit; // invalid option
-              SetLength(aName,p2-p);
+              SetLength(aName{%H-},p2-p);
               Move(p^,aName[1],p2-p);
               inc(p2);
               Add(Option+aName,p2,fpkValue);
@@ -3497,7 +3497,7 @@ procedure ParseMakefileFPC(const Filename, SrcOS: string;
     end;
 
     // allocate space
-    SetLength(Result,DestPos);
+    SetLength(Result{%H-},DestPos);
 
     // create semicolon delimited search path
     SrcPos:=1;
@@ -6370,7 +6370,7 @@ begin
   LastDefTempl:=nil;
   // find all initial compiler macros and all unit paths
   // -> ask compiler with the -va switch
-  SetLength(Buf,1024);
+  SetLength(Buf{%H-},1024);
   Step:='Init';
   try
     Params:=TStringList.Create;
@@ -6691,6 +6691,7 @@ begin
       d(LazarusSrcDir+'/ide;'
        +LazarusSrcDir+'/ide/frames;'
        +LazarusSrcDir+'/designer;'
+       +LazarusSrcDir+'/ide/packages/idedebugger;'
        +LazarusSrcDir+'/debugger;'
        +LazarusSrcDir+'/debugger/frames;'
        +LazarusSrcDir+'/converter;'
@@ -6705,6 +6706,7 @@ begin
        +LazarusSrcDir+'/components/codetools;'
        +LazarusSrcDir+'/components/lazdebuggergdbmi;'
        +LazarusSrcDir+'/components/debuggerintf;'
+       +LazarusSrcDir+'/components/lazdebuggers/lazdebuggerintf;'
        +LazarusSrcDir+'/lcl;'
        +LazarusSrcDir+'/lcl/interfaces;'
        +LazarusSrcDir+'/lcl/interfaces/'+WidgetType+';'
