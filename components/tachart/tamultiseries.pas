@@ -1020,6 +1020,8 @@ begin
     ww := w * WhiskersWidth;
 
     ADrawer.Pen := WhiskersPen;
+    if (Source[i]^.Color <> clTAColor) and (WhiskersPen.Color = clTAColor) then
+      ADrawer.SetPenColor(Source[i]^.Color);
     ADrawer.SetBrushParams(bsClear, clTAColor);
     DoLine(x - ww, ymin, x + ww, ymin);
     DoLine(x, ymin, x, yqmin);
@@ -1027,11 +1029,17 @@ begin
     DoLine(x, ymax, x, yqmax);
     ADrawer.Pen := BoxPen;
     if Source[i]^.Color <> clTAColor then
-      ADrawer.SetBrushParams(bsSolid, Source[i]^.Color)
+    begin
+      if BoxPen.Color = clTAColor then
+        ADrawer.SetPenColor(Source[i]^.Color);
+      ADrawer.SetBrushParams(bsSolid, Source[i]^.Color);
+    end
     else
       ADrawer.Brush := BoxBrush;
     DoRect(x - wb, yqmin, x + wb, yqmax);
     ADrawer.Pen := MedianPen;
+    if (Source[i]^.Color <> clTAColor) and (MedianPen.Color = clTAColor) then
+      ADrawer.SetPenColor(Source[i]^.Color);
     ADrawer.SetBrushParams(bsClear, clTAColor);
     DoLine(x - wb, ymed, x + wb, ymed);
   end;
