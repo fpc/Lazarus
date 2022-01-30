@@ -41,7 +41,7 @@ uses
   TypInfo, Classes, SysUtils, math,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
-  LazClasses, Maps,
+  LazClasses, Maps, LazMethodList,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
   LazDebuggerIntf, IdeDebuggerBase;
@@ -643,17 +643,24 @@ type
   private
     FCurrentExpression: String;
     FUpdateCount: Integer;
+    FEvents: array [TWatcheEvaluateEvent] of TMethodList;
 
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
+    procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
   private
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
+    procedure SetWatch(AValue: TWatch); override;
     function GetExpression: String; override;
+    function GetValidity: TDebuggerDataState;
     procedure RequestData; override;
+    procedure CancelRequestData;
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); override;
   public
+    destructor Destroy; override;
     property SnapShot: TIdeWatchValue read FSnapShot write SetSnapShot;
   end;
 
@@ -3117,12 +3124,28 @@ procedure TCurrentWatchValue.EndUpdate;
 begin
   dec(FUpdateCount);
   if (FUpdateCount = 0) then begin
-    if Validity <> ddsValid then
+    if Validity = ddsRequested then
       SetValidity(ddsValid)
     else
       DoDataValidityChanged(ddsRequested);
   end;
   ReleaseReference; // Last statemnet, may call Destroy
+end;
+
+procedure TCurrentWatchValue.AddNotification(AnEventType: TWatcheEvaluateEvent;
+  AnEvent: TNotifyEvent);
+begin
+  if FEvents[AnEventType] = nil then
+    FEvents[AnEventType] := TMethodList.Create;
+  FEvents[AnEventType].Add(TMethod(AnEvent));
+end;
+
+procedure TCurrentWatchValue.RemoveNotification(
+  AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
+begin
+  if FEvents[AnEventType] = nil then
+    exit;
+  FEvents[AnEventType].Remove(TMethod(AnEvent));
 end;
 
 procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);
@@ -3134,6 +3157,12 @@ begin
   then FSnapShot.Assign(self);
 end;
 
+procedure TCurrentWatchValue.SetWatch(AValue: TWatch);
+begin
+  CancelRequestData;
+  inherited SetWatch(AValue);
+end;
+
 function TCurrentWatchValue.GetExpression: String;
 begin
   if FUpdateCount > 0 then
@@ -3142,9 +3171,23 @@ begin
     Result := inherited GetExpression;
 end;
 
+function TCurrentWatchValue.GetValidity: TDebuggerDataState;
+begin
+  if FUpdateCount > 0 then
+    Result := ddsRequested  // prevent reading FValue
+  else
+    Result := inherited GetValidity;
+end;
+
 procedure TCurrentWatchValue.RequestData;
 begin
   TCurrentWatch(Watch).RequestData(self);
+end;
+
+procedure TCurrentWatchValue.CancelRequestData;
+begin
+  if FEvents[weeCancel] <> nil then
+    FEvents[weeCancel].CallNotifyEvents(Self);
 end;
 
 procedure TCurrentWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
@@ -3156,6 +3199,15 @@ begin
     TCurrentWatches(TCurrentWatch(Watch).Collection).Update(Watch);
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
+end;
+
+destructor TCurrentWatchValue.Destroy;
+var
+  e: TMethodList;
+begin
+  for e in FEvents do
+    e.Free;
+  inherited Destroy;
 end;
 
 { TCurrentWatchValueList }

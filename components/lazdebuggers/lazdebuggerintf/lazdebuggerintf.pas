@@ -143,6 +143,10 @@ type
     );
   TWatcheEvaluateFlags = set of TWatcheEvaluateFlag;
 
+  TWatcheEvaluateEvent = (
+    weeCancel
+  );
+
   TDBGTypeBase = class(TObject)
   end;
 
@@ -175,6 +179,8 @@ type
     *)
     procedure BeginUpdate;
     procedure EndUpdate;
+    procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
+    procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
 
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;

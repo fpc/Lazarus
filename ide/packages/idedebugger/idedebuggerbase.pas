@@ -22,6 +22,7 @@ type
     FValidity: TDebuggerDataState;
 
   protected
+    procedure SetWatch(AValue: TWatch); virtual;
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
     function GetRepeatCount: Integer;
@@ -54,7 +55,7 @@ type
     property StackFrame: Integer read GetStackFrame;
     property Expression: String read GetExpression;
   public
-    property Watch: TWatch read FWatch;
+    property Watch: TWatch read FWatch write SetWatch;
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
     property Value: String read GetValue write SetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
@@ -182,6 +183,12 @@ end;
 function TWatchValue.GetEvaluateFlags: TWatcheEvaluateFlags;
 begin
   Result := FEvaluateFlags;
+end;
+
+procedure TWatchValue.SetWatch(AValue: TWatch);
+begin
+  if FWatch = AValue then Exit;
+  FWatch := AValue;
 end;
 
 function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
@@ -488,7 +495,7 @@ end;
 procedure TWatchValueList.Clear;
 begin
   while FList.Count > 0 do begin
-    TWatchValue(FList[0]).FWatch := nil;
+    TWatchValue(FList[0]).Watch := nil;
     TWatchValue(FList[0]).ReleaseReference;
     FList.Delete(0);
   end;
