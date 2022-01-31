@@ -970,7 +970,8 @@ end;
 
 function TFpValue.GetDataSize: TFpDbgValueSize;
 begin
-  GetSize(Result);
+  if not GetSize(Result) then
+    Result := ZeroSize;
 end;
 
 function TFpValue.GetSize(out ASize: TFpDbgValueSize): Boolean;
