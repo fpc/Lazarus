@@ -121,9 +121,9 @@ type
     function TestEquals(Name: string; const Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     function TestEquals(Name: string; const Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
-    function TestEquals(Expected, Got: integer): Boolean;
-    function TestEquals(Name: string; Expected, Got: integer; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
-    function TestEquals(Name: string; Expected, Got: integer; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Expected, Got: Int64): Boolean;
+    function TestEquals(Name: string; Expected, Got: int64; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; Expected, Got: Int64; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
     function TestTrue(Name: string; Got: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     function TestTrue(Name: string; Got: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
@@ -569,18 +569,18 @@ begin
   else AddTestError(Name, MinDbgVers, MinFpcVers, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestEquals(Expected, Got: integer): Boolean;
+function TDBGTestCase.TestEquals(Expected, Got: Int64): Boolean;
 begin
   Result := TestEquals('', Expected, Got);
 end;
 
-function TDBGTestCase.TestEquals(Name: string; Expected, Got: integer;
+function TDBGTestCase.TestEquals(Name: string; Expected, Got: int64;
   MinDbgVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result := TestEquals(Name, Expected, Got, MinDbgVers, 0, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestEquals(Name: string; Expected, Got: integer;
+function TDBGTestCase.TestEquals(Name: string; Expected, Got: Int64;
   MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result :=  Got = Expected;

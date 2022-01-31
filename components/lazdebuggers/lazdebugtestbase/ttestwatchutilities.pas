@@ -223,7 +223,7 @@ type
     function TestMatches(Name: string; Expected, Got: string; ACaseSense: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestEquals(Name: string; Expected, Got: string; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestEquals(Name: string; Expected, Got: string; ACaseSense: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
-    function TestEquals(Name: string; Expected, Got: integer; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
+    function TestEquals(Name: string; Expected, Got: int64; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestTrue(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestFalse(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 
@@ -326,6 +326,7 @@ function weDynArray(const AExpVal: Array of TWatchExpectationResult; AExpFullLen
 function weChar(const AExpVal: array of char; ATypeName: String=#1): TWatchExpectationResultArray;
 function weWideChar(const AExpVal: array of char; ATypeName: String=#1): TWatchExpectationResultArray;
 function weInteger(const AExpVal: array of Int64; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResultArray;
+function weCardinal(const AExpVal: array of QWord; ATypeName: String=#1; ASize: Integer = 4): TWatchExpectationResultArray;
 function weAnsiStr(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
 function weShortStr(const AExpVal: array of string; ATypeName: String=#1): TWatchExpectationResultArray;
 function weBool(const AExpVal: array of Boolean; ATypeName: String=#1): TWatchExpectationResultArray;
@@ -693,6 +694,16 @@ begin
   SetLength(Result, Length(AExpVal));
   for i := 0 to Length(AExpVal) - 1 do
     Result[i] := weInteger(AExpVal[i], ATypeName, ASize);
+end;
+
+function weCardinal(const AExpVal: array of QWord; ATypeName: String;
+  ASize: Integer): TWatchExpectationResultArray;
+var
+  i: Integer;
+begin
+  SetLength(Result, Length(AExpVal));
+  for i := 0 to Length(AExpVal) - 1 do
+    Result[i] := weCardinal(AExpVal[i], ATypeName, ASize);
 end;
 
 function weAnsiStr(const AExpVal: array of string; ATypeName: String
@@ -1254,7 +1265,7 @@ begin
   Result := FTest.TestEquals(Name, Expected, Got, ACaseSense, AContext.WatchExp.TstMinDbg, AContext.WatchExp.TstMinFpc, AIgnoreReason);
 end;
 
-function TWatchExpectationList.TestEquals(Name: string; Expected, Got: integer;
+function TWatchExpectationList.TestEquals(Name: string; Expected, Got: int64;
   AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 begin
   Result := FTest.TestEquals(Name, Expected, Got, AContext.WatchExp.TstMinDbg, AContext.WatchExp.TstMinFpc, AIgnoreReason);
@@ -1332,10 +1343,15 @@ begin
       if not TestTrue('TstWatch.value is valid', WatchVal.Validity = ddsValid, Context, AnIgnoreRsn) then
         exit;
 
-      if (not (ehNoTypeInfo in ehf)) and
-         TestTrue('Has TypeInfo', Context.WatchVal.TypeInfo <> nil, Context, AnIgnoreRsn)
-      then
-        Context.HasTypeInfo := True;
+      if (not (ehNoTypeInfo in ehf)) then begin
+        if (Context.WatchVal.ValidTypes * [vtNumVal, vtTypeName] = [vtNumVal, vtTypeName])
+        then
+          Context.HasTypeInfo := True
+        else
+        if TestTrue('Has TypeInfo', Context.WatchVal.TypeInfo <> nil, Context, AnIgnoreRsn)
+        then
+          Context.HasTypeInfo := True;
+      end;
 
       if EvalCallTestFlags <> [] then begin
         TestTrue('Got eval res', EvalCallResReceived, Context, AnIgnoreRsn);
@@ -1404,6 +1420,11 @@ begin
     if (not AContext.HasTypeInfo) then
       exit;
 
+    if (AContext.WatchVal.TypeInfo = nil) then begin
+      TestTrue('numval instead of typeinfo', vtNumVal in AContext.WatchVal.ValidTypes, AContext, AnIgnoreRsn);
+      exit;
+    end;
+
     t := AContext.WatchVal.TypeInfo.Kind;
     WriteStr(s1, t);
     WriteStr(s2, Expect.ExpSymKind);
@@ -1459,7 +1480,10 @@ begin
     if ehNotImplementedType in ehf then
       AnIgnoreRsn := AnIgnoreRsn + 'Not implemented (typename)';
 
-    WtchTpName := AContext.WatchVal.TypeInfo.TypeName;
+    if vtTypeName in AContext.WatchVal.ValidTypes then
+      WtchTpName := AContext.WatchVal.TypeName
+    else
+      WtchTpName := AContext.WatchVal.TypeInfo.TypeName;
 
     if ehMatchTypeName in ehf then
       Result := TestMatches('TypeName', Expect.ExpTypeName, WtchTpName, AContext, AnIgnoreRsn)
@@ -1502,12 +1526,18 @@ function TWatchExpectationList.CheckResultMatch(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
+  s: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestMatches('Data', Expect.ExpTextData, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    if vtNumVal in AContext.WatchVal.ValidTypes then
+      s := AContext.WatchVal.NumValue[wdfDefault]
+    else
+      s := AContext.WatchVal.Value;
+
+    Result := TestMatches('Data', Expect.ExpTextData, s, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1521,13 +1551,29 @@ begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
+    //AContext.Expectation.ExpSymKind ???
 
-    if IsCardinal then
-      s := IntToStr(Expect.expCardinalValue)
-    else
-      s := IntToStr(Expect.expIntValue);
+    //Result := TestTrue('NumVal ', vtNumVal in AContext.WatchVal.ValidTypes, AContext, AnIgnoreRsn);
 
-    Result := TestEquals('Data', s, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    if vtNumVal in AContext.WatchVal.ValidTypes then begin
+      if IsCardinal then begin
+        Result := TestTrue('NumFlag ', AContext.WatchVal.NumFlags = [nvfUnsigned], AContext, AnIgnoreRsn);
+        Result := TestEquals('num Data', Int64(Expect.ExpCardinalValue), Int64(AContext.WatchVal.NumValueRaw), AContext, AnIgnoreRsn);
+      end
+      else begin
+        Result := TestTrue('NumFlag ', AContext.WatchVal.NumFlags = [], AContext, AnIgnoreRsn);
+        Result := TestEquals('num Data', Expect.ExpIntValue, Int64(AContext.WatchVal.NumValueRaw), AContext, AnIgnoreRsn);
+      end;
+    end
+    else begin
+      if IsCardinal then
+        s := IntToStr(Expect.expCardinalValue)
+      else
+        s := IntToStr(Expect.expIntValue);
+
+      Result := TestEquals('Data', s, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    end;
+
 
     //if not TestEquals('DataSize', Expect.ExpIntSize, AContext.WatchVal.TypeInfo.Len, AContext, AnIgnoreRsn) then
     //  Result := False;
@@ -1742,19 +1788,19 @@ begin
     if (tn <> '') and
        (Length(Expect.ExpSubResults) = 1) and
        (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) and
-       (not FTest.Matches(tn+'\(', AContext.WatchVal.Value))
+       (not FTest.Matches(tn+'\(', AContext.WatchVal.NumValue[wdfDefault]))
     then
       tn := ''; // char pointer to not (always?) include the type
     if tn <> '' then
       e := tn+'\('+e+'\)';
     e := '^'+e;
 
-    Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    Result := TestMatches('Data', e, AContext.WatchVal.NumValue[wdfDefault], AContext, AnIgnoreRsn);
 
     if ehIgnPointerDerefData in ehf then
       exit;
 
-    g := AContext.WatchVal.Value;
+    g := AContext.WatchVal.NumValue[wdfDefault];
     i := pos(' ', g);
     if i > 1 then
       delete(g, 1, i)
@@ -1815,7 +1861,7 @@ begin
       e := tn+'\('+e+'\)';
     e := '^'+e;
 
-    Result := TestMatches('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    Result := TestMatches('Data', e, AContext.WatchVal.NumValue[wdfDefault], AContext, AnIgnoreRsn);
   end;
 end;
 
