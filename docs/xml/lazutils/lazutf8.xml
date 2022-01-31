@@ -135,7 +135,7 @@
         </seealso>
       </element>
       <element name="ConsoleToUTF8.Result">
-        <short>UTF-8-encode value for the string.</short>
+        <short>UTF-8-encoded value for the specified string.</short>
       </element>
       <element name="ConsoleToUTF8.s">
         <short>Value to convert in the function.</short>
@@ -580,7 +580,7 @@ end;
         <seealso/>
       </element>
       <element name="UnicodeToUTF8.Result">
-        <short>Number of bytes needed for the UTF-8-encode value.</short>
+        <short>Number of bytes needed for the UTF-8-encoded value.</short>
       </element>
       <element name="UnicodeToUTF8.Codepoint">
         <short>Unicode character value to convert in the function.</short>
