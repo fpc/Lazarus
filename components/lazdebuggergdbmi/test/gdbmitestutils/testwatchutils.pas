@@ -132,88 +132,89 @@ type
                         AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String = '');
     procedure AddWatches(ExpectList: TWatchExpectationArray;
                          AWatches: TWatches;
-                         Only: Integer; OnlyName, OnlyNamePart: String);
-    procedure TestWatchList(AName: String; ExpectList: TWatchExpectationArray;
+                         Only: Integer; const OnlyName, OnlyNamePart: String);
+    procedure TestWatchList(const AName: String; ExpectList: TWatchExpectationArray;
                           ADbg: TDebuggerIntf;
                           Only: Integer; OnlyName, OnlyNamePart: String);
   end;
 
 
 function AddWatchExp(var ExpArray: TWatchExpectationArray;
-  AnExpr:  string; AFmt: TWatchDisplayFormat;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  const AnExpr:  string; AFmt: TWatchDisplayFormat;
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string;
   AFlgs: TWatchExpectationFlags = [];
   AStackFrame: Integer = 0;
   AMinGdb: Integer = 0; AMinFpc: Integer = 0
 ): PWatchExpectation;
 function AddWatchExp(var ExpArray: TWatchExpectationArray;
-  AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  const AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags;
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string;
   AFlgs: TWatchExpectationFlags = [];
   AStackFrame: Integer = 0;
   AMinGdb: Integer = 0; AMinFpc: Integer = 0
 ): PWatchExpectation;
 function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr:  string; AFmt: TWatchDisplayFormat;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  const AnExpr:  string; AFmt: TWatchDisplayFormat;
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string;
   AFlgs: TWatchExpectationFlags = [];
   AStackFrame: Integer = 0;
   AMinGdb: Integer = 0; AMinFpc: Integer = 0
 ): PWatchExpectation;
 function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
+  const AnExpr:  string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags;
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string;
   AFlgs: TWatchExpectationFlags = [];
   AStackFrame: Integer = 0;
   AMinGdb: Integer = 0; AMinFpc: Integer = 0
 ): PWatchExpectation;
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string; AFlgs: TWatchExpectationFlags;
   AMinGdb: Integer; AMinFpc: Integer
 );
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags = []
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string; AFlgs: TWatchExpectationFlags = []
 );
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind
+  const AMtch: string; AKind: TDBGSymbolKind
 );
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
   AKind: TDBGSymbolKind
 );
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  ATpNm: string; AFlgs: TWatchExpectationFlags
+  const ATpNm: string; AFlgs: TWatchExpectationFlags
 );
 procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinGdb: Integer);
 procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType; AMinFpc: Integer);
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
-  ATpNm: string; AFlgs: TWatchExpectationFlags
+  const ATpNm: string; AFlgs: TWatchExpectationFlags
 );
 procedure UpdResMinGdb(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinGdb: Integer);
 procedure UpdResMinFpc(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes; AMinFpc: Integer);
 
 procedure AddMemberExpect(AWatchExp: PWatchExpectation;
-  AName, ATpNm: string; AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind;
+  const AName, ATpNm: string; AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind;
   ASymbolTypes: TSymbolTypes = stSymAll
 );
 
 implementation
 
-function AddWatchExp(var ExpArray: TWatchExpectationArray; AnExpr: string;
-  AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind; ATpNm: string;
-  AFlgs: TWatchExpectationFlags; AStackFrame: Integer = 0; AMinGdb: Integer = 0;
-  AMinFpc: Integer = 0): PWatchExpectation;
+function AddWatchExp(var ExpArray: TWatchExpectationArray;
+  const AnExpr: string; AFmt: TWatchDisplayFormat; const AMtch: string;
+  AKind: TDBGSymbolKind; const ATpNm: string; AFlgs: TWatchExpectationFlags;
+  AStackFrame: Integer; AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
 begin
   Result := AddWatchExp(ExpArray,
     AnExpr + ' (' + TWatchDisplayFormatNames[AFmt] + ', []',
     AnExpr, AFmt, [], AMtch, AKind, ATpNm, AFlgs, AStackFrame, AMinGdb, AMinFpc);
 end;
 
-function AddWatchExp(var ExpArray: TWatchExpectationArray; AnExpr: string;
-  AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags; AMtch: string;
-  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
-  AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
+function AddWatchExp(var ExpArray: TWatchExpectationArray;
+  const AnExpr: string; AFmt: TWatchDisplayFormat;
+  AEvaluateFlags: TWatcheEvaluateFlags; const AMtch: string;
+  AKind: TDBGSymbolKind; const ATpNm: string; AFlgs: TWatchExpectationFlags;
+  AStackFrame: Integer; AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
 begin
   Result := AddWatchExp(ExpArray,
     AnExpr + ' (' + TWatchDisplayFormatNames[AFmt] + ', ' + dbgs(AEvaluateFlags) + ')',
@@ -221,18 +222,19 @@ begin
 end;
 
 function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr: string; AFmt: TWatchDisplayFormat; AMtch: string; AKind: TDBGSymbolKind;
-  ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer; AMinGdb: Integer = 0;
-  AMinFpc: Integer = 0): PWatchExpectation;
+  const AnExpr: string; AFmt: TWatchDisplayFormat; const AMtch: string;
+  AKind: TDBGSymbolKind; const ATpNm: string; AFlgs: TWatchExpectationFlags;
+  AStackFrame: Integer; AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
 begin
   Result := AddWatchExp(ExpArray, ATestName, AnExpr, AFmt, [], AMtch, AKind, ATpNm,
     AFlgs, AStackFrame, AMinGdb, AMinFpc);
 end;
 
 function AddWatchExp(var ExpArray: TWatchExpectationArray; ATestName: String;
-  AnExpr: string; AFmt: TWatchDisplayFormat; AEvaluateFlags: TWatcheEvaluateFlags; AMtch: string;
-  AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags; AStackFrame: Integer;
-  AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
+  const AnExpr: string; AFmt: TWatchDisplayFormat;
+  AEvaluateFlags: TWatcheEvaluateFlags; const AMtch: string;
+  AKind: TDBGSymbolKind; const ATpNm: string; AFlgs: TWatchExpectationFlags;
+  AStackFrame: Integer; AMinGdb: Integer; AMinFpc: Integer): PWatchExpectation;
 var
   i: TSymbolType;
 begin
@@ -260,8 +262,8 @@ begin
 end;
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags;
-  AMinGdb: Integer; AMinFpc: Integer);
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string;
+  AFlgs: TWatchExpectationFlags; AMinGdb: Integer; AMinFpc: Integer);
 begin
   with AWatchExp^ do begin
     Result[ASymbolType].ExpMatch     := AMtch;
@@ -274,7 +276,8 @@ begin
 end;
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind; ATpNm: string; AFlgs: TWatchExpectationFlags);
+  const AMtch: string; AKind: TDBGSymbolKind; const ATpNm: string;
+  AFlgs: TWatchExpectationFlags);
 begin
   with AWatchExp^ do begin
     Result[ASymbolType].ExpMatch     := AMtch;
@@ -285,7 +288,7 @@ begin
 end;
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  AMtch: string; AKind: TDBGSymbolKind);
+  const AMtch: string; AKind: TDBGSymbolKind);
 begin
   with AWatchExp^ do begin
     Result[ASymbolType].ExpMatch     := AMtch;
@@ -302,7 +305,7 @@ begin
 end;
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolType: TSymbolType;
-  ATpNm: string; AFlgs: TWatchExpectationFlags);
+  const ATpNm: string; AFlgs: TWatchExpectationFlags);
 begin
   with AWatchExp^ do begin
     Result[ASymbolType].ExpTypeName  := ATpNm;
@@ -311,7 +314,7 @@ begin
 end;
 
 procedure UpdExpRes(AWatchExp: PWatchExpectation; ASymbolTypes: TSymbolTypes;
-  ATpNm: string; AFlgs: TWatchExpectationFlags);
+  const ATpNm: string; AFlgs: TWatchExpectationFlags);
 var
   i: TSymbolType;
 begin
@@ -340,8 +343,9 @@ begin
       UpdResMinFpc(AWatchExp, i, AMinFpc);
 end;
 
-procedure AddMemberExpect(AWatchExp: PWatchExpectation; AName, ATpNm: string;
-  AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind; ASymbolTypes: TSymbolTypes);
+procedure AddMemberExpect(AWatchExp: PWatchExpectation; const AName,
+  ATpNm: string; AFlgs: TWatchExpectationFlags; AnExpKind: TDBGSymbolKind;
+  ASymbolTypes: TSymbolTypes);
 var
   i: TSymbolType;
   l: Integer;
@@ -379,8 +383,8 @@ var
 
 { TTestWatchesBase }
 
-procedure TTestWatchesBase.TestWatch(Name: String; ADbg: TDebuggerIntf; AWatch: TTestWatch;
-  Data: TWatchExpectation; WatchValue: String);
+procedure TTestWatchesBase.TestWatch(Name: String; ADbg: TDebuggerIntf;
+  AWatch: TTestWatch; Data: TWatchExpectation; WatchValue: String);
 var
   rx: TRegExpr;
   s, s2: String;
@@ -396,7 +400,7 @@ var
   fld: TDBGField;
   MemberTests: TFullTypeMemberExpectationResultArray;
 
-  function CmpNames(TestName, Exp, Got: String; Match: Boolean): Boolean;
+  function CmpNames(const TestName, Exp, Got: String; Match: Boolean): Boolean;
   begin
     if Match then begin
       if Frx = nil then Frx := TRegExpr.Create;
@@ -431,11 +435,18 @@ begin
     flag := AWatch <> nil; // test for typeinfo/kind  // Awatch=nil > direct gdb command
     IsValid := True;
     HasTpInfo := True;
-    if flag then begin;
+    if flag then begin
       WV := AWatch.Values[1, Stack];// trigger read
-      s := WV.Value;
+      WV.Value;
+      if vtNumVal in WV.ValidTypes then
+        s := WV.NumValue[AWatch.DisplayFormat]
+      else
+        s := WV.Value;
       IsValid := WV.Validity = ddsValid;
-      HasTpInfo := IsValid and (WV.TypeInfo <> nil);
+      HasTpInfo := IsValid and (
+        (WV.TypeInfo <> nil) or
+        (WV.ValidTypes * [vtNumVal, vtTypeName] = [vtNumVal, vtTypeName])
+      );
   //      flag := flag and IsValid;
     end
     else
@@ -465,7 +476,18 @@ begin
 
     // Check TypeInfo
     s:='';
-    if HasTpInfo then WriteStr(s, WV.TypeInfo.Kind);
+    if HasTpInfo then begin
+      if (WV.TypeInfo <> nil) then
+        WriteStr(s, WV.TypeInfo.Kind)
+      else
+      if vtNumVal in WV.ValidTypes then begin
+        if WV.NumFlags = [] then s := 'skSimple' // 'skInteger'
+        else
+        if WV.NumFlags = [nvfUnsigned] then s := 'skSimple' // 'skCardinal'
+        else
+        if nvfAddrType in WV.NumFlags then s := 'skPointer';
+      end;
+    end;
     WriteStr(s2, DataRes.ExpKind);
     IgnoreText := '';    if IgnoreKind then IgnoreText := 'Ignored by flag';
     if IsValid and HasTpInfo then begin
@@ -484,7 +506,13 @@ begin
     IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
     if IsValid and HasTpInfo then begin
       s:='';
-      if HasTpInfo then s := WV.TypeInfo.TypeName;
+      if HasTpInfo then begin
+        if vtTypeName in WV.ValidTypes then
+          s := WV.TypeName
+        else
+        if WV.TypeInfo <> nil then
+          s := WV.TypeInfo.TypeName;
+      end;
       CmpNames(Name+' TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
       //if fTpMtch  in DataRes.Flgs
       //then begin
@@ -503,25 +531,28 @@ begin
     MemberTests := DataRes.FullTypesExpect;
     if Length(MemberTests) > 0 then begin
       if HasTpInfo then begin
-        for i := 0 to Length(MemberTests) - 1 do begin
-          j := WV.TypeInfo.Fields.Count - 1;
-          while (j >= 0) and (CompareText(WV.TypeInfo.Fields[j].Name, MemberTests[i].Name) <> 0) do dec(j);
-          TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
-                   (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
-                   DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-          if j >= 0 then begin
-            fld := WV.TypeInfo.Fields[j];
-            WriteStr(s, MemberTests[i].ExpKind);
-            WriteStr(s2, fld.DBGType.Kind);
-            if fld.DBGType <> nil then begin
-              TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type='
-              + s + ' but was ' + s2,
-                  MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
-              CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
-                       MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);
-            end
-            else
-              TestTrue(Name + ' no dbgtype for members with name' +  MemberTests[i].Name, False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+        TestTrue('has field type info', WV.TypeInfo <> nil, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
+        if WV.TypeInfo <> nil then begin
+          for i := 0 to Length(MemberTests) - 1 do begin
+            j := WV.TypeInfo.Fields.Count - 1;
+            while (j >= 0) and (CompareText(WV.TypeInfo.Fields[j].Name, MemberTests[i].Name) <> 0) do dec(j);
+            TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
+                     (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
+                     DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+            if j >= 0 then begin
+              fld := WV.TypeInfo.Fields[j];
+              WriteStr(s, MemberTests[i].ExpKind);
+              WriteStr(s2, fld.DBGType.Kind);
+              if fld.DBGType <> nil then begin
+                TestTrue(Name + ' members with name ' +  MemberTests[i].Name + ' type='
+                + s + ' but was ' + s2,
+                    MemberTests[i].ExpKind = fld.DBGType.Kind, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+                CmpNames(Name + ' members with name ' +  MemberTests[i].Name + 'TypeName',
+                         MemberTests[i].ExpTypeName, fld.DBGType.TypeName, fTpMtch  in MemberTests[i].Flgs);
+              end
+              else
+                TestTrue(Name + ' no dbgtype for members with name' +  MemberTests[i].Name, False, DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+            end;
           end;
         end;
       end
@@ -534,8 +565,8 @@ begin
   end;
 end;
 
-procedure TTestWatchesBase.AddWatches(ExpectList: TWatchExpectationArray; AWatches: TWatches;
-  Only: Integer; OnlyName, OnlyNamePart: String);
+procedure TTestWatchesBase.AddWatches(ExpectList: TWatchExpectationArray;
+  AWatches: TWatches; Only: Integer; const OnlyName, OnlyNamePart: String);
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin
@@ -569,9 +600,9 @@ begin
   end;
 end;
 
-procedure TTestWatchesBase.TestWatchList(AName: String; ExpectList: TWatchExpectationArray;
-  ADbg: TDebuggerIntf; Only: Integer; OnlyName,
-  OnlyNamePart: String);
+procedure TTestWatchesBase.TestWatchList(const AName: String;
+  ExpectList: TWatchExpectationArray; ADbg: TDebuggerIntf; Only: Integer;
+  OnlyName, OnlyNamePart: String);
 
   function SkipTest(const Data: TWatchExpectation): Boolean;
   begin

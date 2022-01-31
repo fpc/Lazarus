@@ -76,8 +76,14 @@ type
 
   { TTestWatchValue }
 
-  TTestWatchValue = class(TWatchValue)
+  TTestWatchValue = class(TWatchValue, TWatchValueIntf)
   protected
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure AddNotification(AnEventType: TWatcheEvaluateEvent;
+      AnEvent: TNotifyEvent);
+    procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent;
+      AnEvent: TNotifyEvent);
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
     function GetValue: String; override;
@@ -112,7 +118,7 @@ type
   protected
     FMonitor: TTestWatchesMonitor;
     function WatchClass: TWatchClass; override;
-    procedure RequestData(AWatchValue: TWatchValue);
+    procedure RequestData(AWatchValue: TTestWatchValue);
   end;
 
   { TTestWatchesMonitor }
@@ -122,7 +128,7 @@ type
     FWatches: TWatches;
   protected
     procedure DoStateChangeEx(const AOldState, ANewState: TDBGState); override;
-    procedure RequestData(AWatchValue: TWatchValue);
+    procedure RequestData(AWatchValue: TTestWatchValue);
     function CreateWatches: TWatches;
   public
     constructor Create;
@@ -317,7 +323,7 @@ begin
   Result := TTestWatch;
 end;
 
-procedure TTestWatches.RequestData(AWatchValue: TWatchValue);
+procedure TTestWatches.RequestData(AWatchValue: TTestWatchValue);
 begin
   TTestWatchesMonitor(FMonitor).RequestData(AWatchValue);
 end;
@@ -330,7 +336,7 @@ begin
   Watches.ClearValues;
 end;
 
-procedure TTestWatchesMonitor.RequestData(AWatchValue: TWatchValue);
+procedure TTestWatchesMonitor.RequestData(AWatchValue: TTestWatchValue);
 begin
   if Supplier <> nil
   then Supplier.RequestData(AWatchValue)
@@ -356,6 +362,29 @@ begin
 end;
 
 { TTestWatchValue }
+
+procedure TTestWatchValue.BeginUpdate;
+begin
+  //
+end;
+
+procedure TTestWatchValue.EndUpdate;
+begin
+  if Validity = ddsRequested then
+    Validity := ddsValid;
+end;
+
+procedure TTestWatchValue.AddNotification(AnEventType: TWatcheEvaluateEvent;
+  AnEvent: TNotifyEvent);
+begin
+  //
+end;
+
+procedure TTestWatchValue.RemoveNotification(AnEventType: TWatcheEvaluateEvent;
+  AnEvent: TNotifyEvent);
+begin
+  //
+end;
 
 procedure TTestWatchValue.RequestData;
 begin

@@ -108,18 +108,18 @@ type
 
     function Matches(RegEx, Val: string; ACaseSense: Boolean = False): Boolean;
     // TestAsserts
-    function TestMatches(Expected, Got: string; ACaseSense: Boolean = False): Boolean;
-    function TestMatches(Name: string; Expected, Got: string; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
-    function TestMatches(Name: string; Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
-    function TestMatches(Name: string; Expected, Got: string; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
-    function TestMatches(Name: string; Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+    function TestMatches(const Expected, Got: string; ACaseSense: Boolean = False): Boolean;
+    function TestMatches(Name: string; const Expected, Got: string; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestMatches(Name: string; const Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestMatches(Name: string; const Expected, Got: string; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+    function TestMatches(Name: string; const Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
-    function TestEquals(Expected, Got: string; ACaseSense: Boolean = False): Boolean;
-    function TestEquals(Name: string; Expected, Got: string; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
-    function TestEquals(Name: string; Expected, Got: string; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(const Expected, Got: string; ACaseSense: Boolean = False): Boolean;
+    function TestEquals(Name: string; const Expected, Got: string; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; const Expected, Got: string; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
-    function TestEquals(Name: string; Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
-    function TestEquals(Name: string; Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; const Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; const Expected, Got: string; ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
     function TestEquals(Expected, Got: integer): Boolean;
     function TestEquals(Name: string; Expected, Got: integer; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
@@ -488,31 +488,31 @@ begin
     Fail(s1+ LineEnding + s);
 end;
 
-function TDBGTestCase.TestMatches(Expected, Got: string; ACaseSense: Boolean
-  ): Boolean;
+function TDBGTestCase.TestMatches(const Expected, Got: string;
+  ACaseSense: Boolean): Boolean;
 begin
   Result := TestMatches('', Expected, Got, ACaseSense, 0, 0);
 end;
 
-function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
+function TDBGTestCase.TestMatches(Name: string; const Expected, Got: string;
   MinDbgVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result := TestMatches(Name, Expected, Got, MinDbgVers, 0, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
+function TDBGTestCase.TestMatches(Name: string; const Expected, Got: string;
   ACaseSense: Boolean; MinDbgVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result := TestMatches(Name, Expected, Got, ACaseSense, MinDbgVers);
 end;
 
-function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
+function TDBGTestCase.TestMatches(Name: string; const Expected, Got: string;
   MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result := TestMatches(Name, Expected, Got, False, MinDbgVers, MinFpcVers, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestMatches(Name: string; Expected, Got: string;
+function TDBGTestCase.TestMatches(Name: string; const Expected, Got: string;
   ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer;
   AIgnoreReason: String): Boolean;
 begin
@@ -527,19 +527,19 @@ begin
   else AddTestError(Name, MinDbgVers, MinFpcVers, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestEquals(Expected, Got: string; ACaseSense: Boolean
-  ): Boolean;
+function TDBGTestCase.TestEquals(const Expected, Got: string;
+  ACaseSense: Boolean): Boolean;
 begin
   Result := TestEquals('', Expected, Got, ACaseSense);
 end;
 
-function TDBGTestCase.TestEquals(Name: string; Expected, Got: string;
+function TDBGTestCase.TestEquals(Name: string; const Expected, Got: string;
   MinDbgVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result := TestEquals(Name, Expected, Got, MinDbgVers, 0, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestEquals(Name: string; Expected, Got: string;
+function TDBGTestCase.TestEquals(Name: string; const Expected, Got: string;
   MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result :=  Got = Expected;
@@ -549,13 +549,13 @@ begin
   else AddTestError(Name, MinDbgVers, MinFpcVers, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestEquals(Name: string; Expected, Got: string;
+function TDBGTestCase.TestEquals(Name: string; const Expected, Got: string;
   ACaseSense: Boolean; MinDbgVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result := TestEquals(Name, Expected, Got, ACaseSense, MinDbgVers, 0, AIgnoreReason);
 end;
 
-function TDBGTestCase.TestEquals(Name: string; Expected, Got: string;
+function TDBGTestCase.TestEquals(Name: string; const Expected, Got: string;
   ACaseSense: Boolean; MinDbgVers: Integer; MinFpcVers: Integer;
   AIgnoreReason: String): Boolean;
 begin
