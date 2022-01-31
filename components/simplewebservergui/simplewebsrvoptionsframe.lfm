@@ -1,0 +1,122 @@
+object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
+  Left = 0
+  Height = 339
+  Top = 0
+  Width = 565
+  ClientHeight = 339
+  ClientWidth = 565
+  TabOrder = 0
+  DesignLeft = 359
+  DesignTop = 176
+  object ServerAddrLabel: TLabel
+    AnchorSideTop.Control = ServerAddrComboBox
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = ServerAddrComboBox
+    Left = 8
+    Height = 15
+    Top = 54
+    Width = 44
+    BorderSpacing.Left = 20
+    BorderSpacing.Right = 2
+    Caption = 'Address'
+  end
+  object ServerAddrComboBox: TComboBox
+    AnchorSideLeft.Control = ServerAddrLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ServerExeComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 54
+    Height = 30
+    Top = 46
+    Width = 136
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    TabOrder = 0
+    Text = '127.0.0.1'
+  end
+  object PortLabel: TLabel
+    AnchorSideLeft.Control = ServerAddrLabel
+    AnchorSideTop.Control = PortComboBox
+    AnchorSideTop.Side = asrCenter
+    AnchorSideRight.Control = PortComboBox
+    Left = 8
+    Height = 15
+    Top = 90
+    Width = 24
+    BorderSpacing.Right = 2
+    Caption = 'Port'
+  end
+  object PortComboBox: TComboBox
+    AnchorSideLeft.Control = PortLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ServerAddrComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 34
+    Height = 30
+    Top = 82
+    Width = 100
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    TabOrder = 1
+    Text = '7777'
+  end
+  object ServerExeLabel: TLabel
+    AnchorSideLeft.Control = ServerAddrLabel
+    AnchorSideTop.Control = ServerExeComboBox
+    AnchorSideTop.Side = asrCenter
+    Left = 8
+    Height = 15
+    Top = 18
+    Width = 120
+    Caption = 'Path of compileserver'
+  end
+  object ServerExeComboBox: TComboBox
+    AnchorSideLeft.Control = ServerExeLabel
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = ServerExeBrowseButton
+    Left = 134
+    Height = 30
+    Top = 10
+    Width = 400
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    ItemHeight = 0
+    TabOrder = 2
+    Text = 'compileserver'
+  end
+  object ServerExeBrowseButton: TButton
+    AnchorSideTop.Control = ServerExeComboBox
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ServerExeComboBox
+    AnchorSideBottom.Side = asrBottom
+    Left = 534
+    Height = 30
+    Top = 10
+    Width = 25
+    Anchors = [akTop, akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 6
+    Caption = '...'
+    OnClick = ServerExeBrowseButtonClick
+    TabOrder = 3
+  end
+  object BindAnyCheckBox: TCheckBox
+    AnchorSideLeft.Control = ServerAddrComboBox
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ServerAddrLabel
+    AnchorSideTop.Side = asrCenter
+    Left = 196
+    Height = 23
+    Top = 50
+    Width = 123
+    BorderSpacing.Left = 6
+    Caption = 'Bind Any (0.0.0.0)'
+    TabOrder = 4
+  end
+end

@@ -1,0 +1,298 @@
+object SimpleWebSrvAddDialog: TSimpleWebSrvAddDialog
+  Left = 598
+  Height = 368
+  Top = 313
+  Width = 426
+  Caption = 'Add Simple Web Server Location'
+  ClientHeight = 368
+  ClientWidth = 426
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object OptionsPageControl: TPageControl
+    Left = 0
+    Height = 368
+    Top = 0
+    Width = 426
+    ActivePage = ServerTabSheet
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object LocationTabSheet: TTabSheet
+      Caption = 'Location'
+      ClientHeight = 339
+      ClientWidth = 416
+      object LocButtonPanel: TButtonPanel
+        Left = 6
+        Height = 40
+        Top = 293
+        Width = 404
+        OKButton.Name = 'OKButton'
+        OKButton.DefaultCaption = True
+        HelpButton.Name = 'HelpButton'
+        HelpButton.DefaultCaption = True
+        CloseButton.Name = 'CloseButton'
+        CloseButton.DefaultCaption = True
+        CancelButton.Name = 'CancelButton'
+        CancelButton.DefaultCaption = True
+        TabOrder = 0
+        ShowButtons = [pbOK, pbCancel]
+      end
+      object LocationLabel: TLabel
+        AnchorSideLeft.Control = LocationTabSheet
+        AnchorSideTop.Control = LocationComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 14
+        Width = 47
+        BorderSpacing.Left = 6
+        Caption = 'Location'
+      end
+      object LocationURLLabel: TLabel
+        AnchorSideLeft.Control = LocationTabSheet
+        AnchorSideTop.Control = LocationDirComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 87
+        Width = 98
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 15
+        Caption = 'LocationURLLabel'
+      end
+      object LocationDirLabel: TLabel
+        AnchorSideLeft.Control = LocationTabSheet
+        AnchorSideTop.Control = LocationDirComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 50
+        Width = 84
+        BorderSpacing.Left = 6
+        Caption = 'Local Directory'
+      end
+      object LocationBrowserButton: TButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = LocationDirComboBox
+        AnchorSideRight.Control = LocationTabSheet
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = LocationDirComboBox
+        AnchorSideBottom.Side = asrBottom
+        Left = 385
+        Height = 30
+        Top = 42
+        Width = 25
+        Anchors = [akTop, akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        Caption = '...'
+        OnClick = LocationBrowserButtonClick
+        TabOrder = 1
+      end
+      object LocationDirComboBox: TComboBox
+        AnchorSideLeft.Control = LocationDirLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = LocationComboBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = LocationBrowserButton
+        Left = 96
+        Height = 30
+        Top = 42
+        Width = 289
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        TabOrder = 2
+        Text = 'LocationDirComboBox'
+      end
+      object LocationComboBox: TComboBox
+        AnchorSideLeft.Control = LocationLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = LocationTabSheet
+        Left = 59
+        Height = 30
+        Top = 6
+        Width = 189
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        OnEditingDone = LocationComboBoxEditingDone
+        TabOrder = 3
+        Text = 'LocationComboBox'
+      end
+    end
+    object ServerTabSheet: TTabSheet
+      Caption = 'Custom Server'
+      ClientHeight = 339
+      ClientWidth = 416
+      object SrvButtonPanel: TButtonPanel
+        Left = 6
+        Height = 40
+        Top = 293
+        Width = 404
+        OKButton.Name = 'OKButton'
+        OKButton.DefaultCaption = True
+        HelpButton.Name = 'HelpButton'
+        HelpButton.DefaultCaption = True
+        CloseButton.Name = 'CloseButton'
+        CloseButton.DefaultCaption = True
+        CancelButton.Name = 'CancelButton'
+        CancelButton.DefaultCaption = True
+        TabOrder = 0
+        ShowButtons = [pbOK, pbCancel]
+      end
+      object SrvPortLabel: TLabel
+        AnchorSideLeft.Control = ServerTabSheet
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 14
+        Width = 24
+        BorderSpacing.Left = 6
+        Caption = 'Port'
+      end
+      object SrvWorkDirLabel: TLabel
+        AnchorSideLeft.Control = ServerTabSheet
+        AnchorSideTop.Control = SrvWorkDirComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 86
+        Width = 85
+        BorderSpacing.Left = 6
+        Caption = 'Work Directory'
+      end
+      object SrvBrowserButton: TButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SrvWorkDirComboBox
+        AnchorSideRight.Control = ServerTabSheet
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = SrvWorkDirComboBox
+        AnchorSideBottom.Side = asrBottom
+        Left = 385
+        Height = 30
+        Top = 78
+        Width = 25
+        Anchors = [akTop, akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        Caption = '...'
+        TabOrder = 1
+      end
+      object SrvExeLabel: TLabel
+        AnchorSideLeft.Control = ServerTabSheet
+        AnchorSideTop.Control = SrvExeComboBox
+        AnchorSideTop.Side = asrCenter
+        Left = 6
+        Height = 15
+        Top = 50
+        Width = 61
+        BorderSpacing.Left = 6
+        Caption = 'Executable'
+      end
+      object SrvExeBrowseButton: TButton
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SrvExeComboBox
+        AnchorSideRight.Control = ServerTabSheet
+        AnchorSideRight.Side = asrBottom
+        AnchorSideBottom.Control = SrvExeComboBox
+        AnchorSideBottom.Side = asrBottom
+        Left = 385
+        Height = 30
+        Top = 42
+        Width = 25
+        Anchors = [akTop, akRight, akBottom]
+        AutoSize = True
+        BorderSpacing.Right = 6
+        Caption = '...'
+        TabOrder = 2
+      end
+      object SrvParamsLabel: TLabel
+        AnchorSideLeft.Control = ServerTabSheet
+        AnchorSideTop.Control = SrvWorkDirComboBox
+        AnchorSideTop.Side = asrBottom
+        Left = 6
+        Height = 15
+        Top = 114
+        Width = 63
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        Caption = 'Parameters'
+      end
+      object SrvParamsComboBox: TComboBox
+        AnchorSideLeft.Control = ServerTabSheet
+        AnchorSideTop.Control = SrvParamsLabel
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = ServerTabSheet
+        AnchorSideRight.Side = asrBottom
+        Left = 6
+        Height = 30
+        Top = 135
+        Width = 404
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        BorderSpacing.Right = 6
+        ItemHeight = 0
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+      end
+      object SrvExeComboBox: TComboBox
+        AnchorSideLeft.Control = SrvExeLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SrvPortComboBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SrvExeBrowseButton
+        Left = 73
+        Height = 30
+        Top = 42
+        Width = 312
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
+      end
+      object SrvWorkDirComboBox: TComboBox
+        AnchorSideLeft.Control = SrvWorkDirLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = SrvExeComboBox
+        AnchorSideTop.Side = asrBottom
+        AnchorSideRight.Control = SrvBrowserButton
+        Left = 97
+        Height = 30
+        Top = 78
+        Width = 288
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+        Text = 'SrvWorkDirComboBox'
+      end
+      object SrvPortComboBox: TComboBox
+        AnchorSideLeft.Control = SrvPortLabel
+        AnchorSideLeft.Side = asrBottom
+        AnchorSideTop.Control = ServerTabSheet
+        Left = 36
+        Height = 30
+        Top = 6
+        Width = 141
+        BorderSpacing.Left = 6
+        BorderSpacing.Top = 6
+        ItemHeight = 0
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 6
+        TextHint = 'Location'
+      end
+    end
+  end
+end

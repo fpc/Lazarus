@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="SimpleWebServerGUI"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="simplewebsrvwnd.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="SimpleWebSrvWnd"/>
+      </Item>
+      <Item>
+        <Filename Value="simplewebsrvoptionsframe.pas"/>
+        <UnitName Value="SimpleWebSrvOptionsFrame"/>
+      </Item>
+      <Item>
+        <Filename Value="simplewebsrvoptions.pas"/>
+        <UnitName Value="SimpleWebSrvOptions"/>
+      </Item>
+      <Item>
+        <Filename Value="simplewebsrvutils.pas"/>
+        <UnitName Value="SimpleWebSrvUtils"/>
+      </Item>
+      <Item>
+        <Filename Value="simplewebsrvcontroller.pas"/>
+        <UnitName Value="SimpleWebSrvController"/>
+      </Item>
+      <Item>
+        <Filename Value="simplewebsrvstrconsts.pas"/>
+        <UnitName Value="SimpleWebSrvStrConsts"/>
+      </Item>
+      <Item>
+        <Filename Value="simplewebsrvadd.pas"/>
+        <UnitName Value="SimpleWebSrvAdd"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="CodeTools"/>
+      </Item>
+      <Item>
+        <PackageName Value="SynEditDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
