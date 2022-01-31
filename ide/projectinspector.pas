@@ -1523,7 +1523,6 @@ var
   TVNode: TTreeNode;
   NodeData: TPENodeData;
   Item: TObject;
-  CurUnitInfo: TUnitInfo;
 begin
   Result:=nil;
   for i:=0 to ItemsTreeView.SelectionCount-1 do begin
