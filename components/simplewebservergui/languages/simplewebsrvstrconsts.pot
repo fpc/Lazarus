@@ -1,0 +1,27 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: simplewebsrvstrconsts.rsswsaddress
+msgid "Address"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswsbindany
+msgid "Bind Any"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswspathofcompileserver
+msgid "Path of compileserver"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswsport
+msgid "Port"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswstitle
+msgid "Simple Web Server"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswsuserorigin
+msgid "User"
+msgstr ""
+
