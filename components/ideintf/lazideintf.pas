@@ -390,6 +390,8 @@ type
     function DoCallRunWithoutDebugInit(var Handled: boolean): TModalResult;
     procedure DoCallRunFinishedHandler;
     function DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult; virtual; abstract;
+    // project inspector
+    function GetProjectInspectorSelection: TFPList; virtual; abstract;
 
     // configs
     class function GetPrimaryConfigPath: String; virtual; abstract;

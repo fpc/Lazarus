@@ -799,6 +799,7 @@ type
     function DoPublishProject(Flags: TSaveFlags;
                               ShowDialog: boolean): TModalResult; override;
     procedure DoShowProjectInspector(State: TIWGetFormState = iwgfShowOnTop); override;
+    function GetProjectInspectorSelection: TFPList; override;
     function DoWarnAmbiguousFiles: TModalResult;
     function DoSaveForBuild(AReason: TCompileReason): TModalResult; override;
     function DoBuildProject(const AReason: TCompileReason;
@@ -6509,6 +6510,14 @@ begin
 
   if State>=iwgfShow then
     IDEWindowCreators.ShowForm(ProjInspector,State=iwgfShowOnTop);
+end;
+
+function TMainIDE.GetProjectInspectorSelection: TFPList;
+begin
+  if ProjInspector=nil then
+    exit(nil)
+  else
+    Result:=ProjInspector.GetSelectedItems;
 end;
 
 function TMainIDE.DoAddUnitToProject(AEditor: TSourceEditorInterface): TModalResult;

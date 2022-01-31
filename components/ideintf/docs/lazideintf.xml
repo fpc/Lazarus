@@ -16,6 +16,11 @@ fuooPackages: Extends fuooListed and fuooUsed by units from used packages.
 
 fuooSourceEditor: Add units in source editor.</descr>
       </element>
+    <element name="TLazIDEInterface.GetProjectInspectorSelection"><short>returns list of selected items in the Project Inspector</short><descr>Result can be nil.
+Caller must free the list, do not free the items.
+Items can be TLazProjectFile or TPkgDependencyID
+</descr>
+      </element>
     </module>
   </package>
 </fpdoc-descriptions>

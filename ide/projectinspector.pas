@@ -237,6 +237,7 @@ type
     procedure UpdateTitle(Immediately: boolean = false);
     procedure UpdateRequiredPackages(Immediately: boolean = false);
     function TreeViewToInspector(TV: TTreeView): TProjectInspectorForm;
+    function GetSelectedItems: TFPList;
   public
     // IFilesEditorInterface
     procedure BeginUpdate;
@@ -1514,6 +1515,26 @@ begin
     Result:=Self
   else
     Result:=nil;
+end;
+
+function TProjectInspectorForm.GetSelectedItems: TFPList;
+var
+  i: Integer;
+  TVNode: TTreeNode;
+  NodeData: TPENodeData;
+  Item: TObject;
+  CurUnitInfo: TUnitInfo;
+begin
+  Result:=nil;
+  for i:=0 to ItemsTreeView.SelectionCount-1 do begin
+    TVNode:=ItemsTreeView.Selections[i];
+    if not GetNodeDataItem(TVNode,NodeData,Item) then continue;
+    if (Item is TLazProjectFile)
+        or (Item is TPkgDependency) then begin
+      if Result=nil then Result:=TFPList.Create;
+      Result.Add(Item);
+    end;
+  end;
 end;
 
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);
