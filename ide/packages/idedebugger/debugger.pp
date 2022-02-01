@@ -632,7 +632,10 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig;
                               APath: string);
   public
-    function Add(const AExpression: String): TIdeWatch;
+{$IfOpt C+}
+    function Add: TCollectionItem; reintroduce;
+{$EndIF}
+    function Add(const AExpression: String): TIdeWatch; virtual;
     function Find(const AExpression: String): TIdeWatch; reintroduce;
     property Items[const AnIndex: Integer]: TIdeWatch read GetItem write SetItem; default;
   end;
@@ -724,7 +727,7 @@ type
     constructor Create(AMonitor: TIdeWatchesMonitor);
     destructor Destroy; override;
     // Watch
-    function Add(const AExpression: String): TCurrentWatch;
+    function Add(const AExpression: String): TCurrentWatch; override;
     function Find(const AExpression: String): TCurrentWatch; reintroduce;
     // IDE
     procedure LoadFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
@@ -3230,7 +3233,6 @@ begin
     FSnapShot.Clear;
     for i := 0 to Count - 1 do begin
       R := TIdeWatchValue.Create(FSnapShot.Watch);
-      R.Assign(EntriesByIdx[i]);
       FSnapShot.Add(R);
       TCurrentWatchValue(EntriesByIdx[i]).SnapShot := R;
     end;
@@ -5530,7 +5532,6 @@ begin
   Result.SetParentWatch(Self);
   Result.Enabled       := Enabled;
   Result.DisplayFormat := DisplayFormat;
-  //snapshot
   EndChildUpdate;
 end;
 
@@ -5742,6 +5743,13 @@ begin
     Items[i].SaveDataToXMLConfig(AConfig, APath + IntToStr(i) + '/');
 end;
 
+{$IfOpt C+}
+function TIdeWatches.Add: TCollectionItem;
+begin
+  assert(False, 'TIdeWatches.Add: False');
+end;
+{$EndIf}
+
 function TIdeWatches.Find(const AExpression: String): TIdeWatch;
 begin
   Result := TIdeWatch(inherited Find(AExpression));
@@ -5808,7 +5816,6 @@ begin
     FSnapShot.Clear;
     for i := 0 to Count - 1 do begin
       R := FSnapShot.Add('');
-      R.Assign(Items[i]);
       Items[i].SnapShot := R;
     end;
   end;

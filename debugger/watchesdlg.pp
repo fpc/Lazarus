@@ -1035,7 +1035,9 @@ begin
       else
         tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
 
-      if (DebugBoss <> nil) and (DebugBoss.State <> dsRun) and
+      if ( ((DebugBoss <> nil) and (DebugBoss.State <> dsRun)) or
+           ((GetSelectedSnapshot <> nil) and not(AWatch is TCurrentWatch) )
+         ) and
          (WatchValue <> nil) and (WatchValue.Validity <> ddsRequested)
       then begin
         TypInfo := WatchValue.TypeInfo;
@@ -1055,6 +1057,11 @@ begin
         end;
       end;
     end
+    else
+    if (GetSelectedSnapshot = nil) and
+       (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
+    then
+      tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<evaluating>'
     else
       tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<not evaluated>';
 
@@ -1117,7 +1124,7 @@ end;
 procedure TWatchesDlg.tvWatchesInitChildren(Sender: TBaseVirtualTree;
   Node: PVirtualNode; var ChildCount: Cardinal);
 var
-  VNdWatch, NewWatch: TIdeWatch;
+  VNdWatch: TIdeWatch;
   WatchValue: TIdeWatchValue;
 begin
   ChildCount := 0;
