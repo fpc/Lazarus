@@ -22,15 +22,15 @@ Working:
 - IDE macros SWSPort,SWSAddress, SWSExe
 - listview
 - delete button
+- custom http servers on different ports
+  - check port conflict
+  - changing main port: check conflict with custom servers
+  - list in window
+  - stop all on close
+- dialog to add user folder
 
 ToDos:
- - custom http servers on different ports
-   - check port conflict
-   - changing main port: check conflict with custom servers
-   - list in window
-   - stop all on close
-   - log with time and port
- - add user folder
+ - log with time and port
  - ide macro SWSExe param: 'resolved', 'base', 'used' and ''
  - Windows: add GetUDPTable2
  - resourcestrings
