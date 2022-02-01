@@ -43,7 +43,7 @@ uses
   Forms, ImgList,
   // Codetools
   LazConfigStorage, DefineTemplates, CodeToolManager,
-  CodeCache, CodeToolsCfgScript, CodeToolsStructs,
+  CodeCache, CodeToolsCfgScript, CodeToolsStructs, BasicCodeTools,
   // LazUtils
   FileUtil, LazFileUtils, LazUtilities, LazFileCache, LazUTF8, FileReferenceList,
   LazTracer, LazLoggerBase, UITypes, Laz2_XMLCfg, AvgLvlTree,
@@ -898,6 +898,7 @@ var
   Code: TCodeBuffer;
   SrcType: String;
   HasName: Boolean;
+  p, AtomStart: Integer;
 begin
   HasName:=ExtractFileNameOnly(AFilename)<>'';
   if HasName then begin
@@ -915,7 +916,13 @@ begin
       Code:=CodeToolBoss.LoadFile(aFilename,true,false);
       if Code<>nil then begin
         SrcType:=CodeToolBoss.GetSourceType(Code,false);
-        if CompareText(SrcType,'unit')<>0 then
+        if SrcType='' then begin
+          // parse error, e.g. missing include files
+          p:=1;
+          AtomStart:=1;
+          SrcType:=ReadNextPascalAtom(Code.Source,p,AtomStart,false,true);
+        end;
+        if not SameText(SrcType,'unit') then
           Result:=pftInclude;
       end;
       exit;
