@@ -18972,7 +18972,7 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TDelphiNodeInfo.ImageIndex">
-        <short/>
+        <short>Ordinal position for the image displayed for the node</short>
         <descr/>
         <seealso/>
       </element>
@@ -19015,11 +19015,26 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode">
         <short>
-          Contains data for an item displayed in a TTreeView control.
+          Implements a tree node displayed in a TTreeView control.
         </short>
         <descr>
           <p>
-            A <var>TTreeNode</var> is part of a <var>TTreeView</var> and is used to store the data displayed in the control. This can be done by using the <var>Text</var> property or for more complex data the <var>Data</var> property can be used. Each node can have sibling or child items associated with it.
+            A <var>TTreeNode</var> implements a node which is part a hierarchical tree structure displayed in a  <var>TTreeView</var> control.
+          </p>
+          <p>
+            TTreeNode has properties with the content displayed for the tree node like: Text, Data, ImageIndex, and OverlayIndex. It has properties which indicate the the the state for the node on the tree view control like: Cut, Deleting, Expanded, Focused, IsVisible, Selected, MultiSelected, States, Visible, and Enabled. It also includes properties that represent its relationship and position in the hierarchical tree structure like: TreeView, Owner / TreeNodes, Parent, Items, Level, Index, and AbsoluteIndex.
+          </p>
+          <p>
+            Methods are provided to locate and navigate between the parent, sibling, and child nodes in the tree structure.
+          </p>
+          <p>
+            Tree nodes are normally created and maintained using the TTreeNodes container which is the Owner for the tree node.
+          </p>
+          <p>
+            An excellent tutorial for using TTreeView, TTreeNodes, and TTreeNode can be found at:
+          </p>
+          <p>
+            <url href="https://wiki.freepascal.org/TTreeView">TTreeView Page on the Lazarus Wiki</url>
           </p>
         </descr>
         <seealso>
@@ -19557,7 +19572,7 @@ AToolbar.ButtonHeight := 30;
       </element>
 
       <element name="TTreeNode.GetFirstVisibleEnabledChild">
-        <short>Gets the first child node or next sibling node which is visible.</short>
+        <short>Gets the first child node or next sibling node which is visible and enabled.</short>
         <descr/>
         <seealso/>
       </element>
@@ -20741,18 +20756,24 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>TTreeNodes</var> is a <var>TPersistent</var> descendant which implements a container used to store <var>TTreeNode</var> instances.  TTreeNodes provides properties and methods used to create, store, access, and maintain nodes with a hierarchical tree structure.
+            <var>TTreeNodes</var> is a <var>TPersistent</var> descendant which implements a container used to store <var>TTreeNode</var> instances.  TTreeNodes provides properties and methods used to create, store, access, and maintain nodes in a hierarchical tree structure.
           </p>
           <p>
-            The indexed <var>Item</var> property provides access to the nodes in the container by their ordinal position. An enumerator can also be used to access tree nodes in the container.
+            The indexed <var>Item</var> property provides access to the nodes in the container by their ordinal position. An enumerator can also be used to access tree nodes in the container. Use TopLvlItems to access the tree nodes that are the top-level sibling nodes in the container.
           </p>
           <p>
-            TTreeNodes is the type used for the <var>Items</var> property in <var>TCustomTreeView</var>.
+            TTreeNodes has methods that are used to create, store, locate, and maintain the tree nodes in the container; for example: Add, AddChild, Insert, Delete, Clear, FindNodeWithText, GetFirstNode,  et. al.
+          </p>
+          <p>
+            Internally, it maintains a node cache for its tree node instances. A list of selected (or multi-selected) tree nodes is also maintained.
+          </p>
+          <p>
+            TTreeNodes is the type used for the <var>Items</var> property in <var>TCustomTreeView</var>. It is also used to implement the <var>Owner</var> and <var>TreeNodes</var> properties in <var>TTreeNode</var>.
           </p>
         </descr>
         <seealso>
-          <link id="TTreeNode"/>
           <link id="TCustomTreeView.Items"/>
+          <link id="TTreeNode"/>
           <link id="TTreeNodesEnumerator"/>
         </seealso>
       </element>
@@ -21907,11 +21928,35 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TCustomTreeView">
         <short>
-          Ancestor class for <var>TTreeView</var>.
+          The base class for <var>TTreeView</var>.
         </short>
         <descr>
           <p>
-            <var>TCustomTreeView</var> - ancestor class for <var>TTreeView</var>, which displays a collection of items in a hierarchical tree form. This class defines many properties which are inherited by descendent classes, including loading the data from files or streams, saving to files or streams, updating, sorting alphabetically, editing, making visible or invisible, expanding or collapsing the tree display, and many more.
+            <var>TCustomTreeView</var> is the base class for <var>TTreeView</var> which displays a collection of nodes using a hierarchical tree structure using a parent / sibling / child arrangement. Each tree node has descriptive text displayed for the item on the tree view control. A node may also include optional images which are displayed for the content or item state. The control can be used to select or navigate between tree nodes using either the mouse or the keyboard.
+          </p>
+          <p>
+            TCustomTreeView has properties and methods are used to perform actions for the control, like:
+          </p>
+          <ul>
+            <li>Load or Save the tree nodes on the control.</li>
+            <li>Add or Delete nodes on the control.</li>
+            <li>Sort tree nodes by their content.</li>
+            <li>Expand or collapse a tree node with child elements.</li>
+            <li>Format and display text or arbitrary data for the tree nodes.</li>
+            <li>Select or de-select one or more nodes in the tree hierarchy.</li>
+            <li>And much more...</li>
+          </ul>
+          <p>
+            Use the Items property to access and maintain the hierarchical list of tree nodes for the control. Use the OnCustomCreateItem event handler to create instances of a class derived from TTreeNode in the Items property.
+          </p>
+          <p>
+            Configure the visual aspects for the tree view control using properties including: BackgroundColor, Color, DefaultItemHeight ExpandSignColor, Images, Options, et. al.
+          </p>
+          <p>
+            An excellent tutorial for using TCustomTreeView / TTreeView, TTreeNodes, and TTreeNode can be found at:
+          </p>
+          <p>
+            <url href="https://wiki.freepascal.org/TTreeView">TTreeView Page on the Lazarus Wiki</url>
           </p>
           <p>
             Please note that Accessibility support in TCustomTreeView might make this control slower if there are a very large number of items, for example: 10,000+ items. If the performance impact is unacceptable, it is possible to turn accessibility off for tree view items by setting the <var>AccessibilityOn</var> property to <b>False</b>. The default value is <b>True</b>.
@@ -21919,6 +21964,7 @@ AToolbar.ButtonHeight := 30;
         </descr>
         <seealso>
           <link id="TTreeView"/>
+          <link id="#lcl.controls.TCustomControl">TCustomControl</link>
         </seealso>
       </element>
 
