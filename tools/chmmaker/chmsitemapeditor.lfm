@@ -8,30 +8,27 @@ object SitemapEditForm: TSitemapEditForm
   ClientHeight = 651
   ClientWidth = 773
   ShowInTaskBar = stAlways
-  LCLVersion = '0.9.27'
+  LCLVersion = '2.3.0.0'
   object Label3: TLabel
     Left = 424
-    Height = 18
+    Height = 15
     Top = 16
-    Width = 110
+    Width = 90
     Caption = 'Global Properties'
-    ParentColor = False
   end
   object Label4: TLabel
     Left = 444
-    Height = 18
+    Height = 15
     Top = 136
-    Width = 111
+    Width = 94
     Caption = 'Foreground Color'
-    ParentColor = False
   end
   object Label5: TLabel
     Left = 444
-    Height = 18
+    Height = 15
     Top = 176
-    Width = 114
+    Width = 96
     Caption = 'Background Color'
-    ParentColor = False
   end
   object ForegroundClrBtn: TColorButton
     Left = 600
@@ -41,7 +38,6 @@ object SitemapEditForm: TSitemapEditForm
     BorderWidth = 2
     ButtonColorSize = 16
     ButtonColor = clBlack
-    Color = clBtnFace
   end
   object BackgroundClrBtn: TColorButton
     Left = 600
@@ -51,7 +47,6 @@ object SitemapEditForm: TSitemapEditForm
     BorderWidth = 2
     ButtonColorSize = 16
     ButtonColor = clNone
-    Color = clBtnFace
   end
   object GroupBox1: TGroupBox
     Left = 0
@@ -60,25 +55,23 @@ object SitemapEditForm: TSitemapEditForm
     Width = 404
     Align = alLeft
     Caption = 'Sitemap Tree/List'
-    ClientHeight = 632
+    ClientHeight = 631
     ClientWidth = 400
     TabOrder = 0
     object Label1: TLabel
       Left = 11
-      Height = 18
+      Height = 15
       Top = 467
-      Width = 116
+      Width = 98
       Caption = 'Local link (in chm)'
       Enabled = False
-      ParentColor = False
     end
     object Label2: TLabel
       Left = 11
-      Height = 18
+      Height = 15
       Top = 575
-      Width = 59
+      Width = 49
       Caption = 'Add Item'
-      ParentColor = False
     end
     object SitemapTree: TTreeView
       Left = 0
@@ -86,7 +79,6 @@ object SitemapEditForm: TSitemapEditForm
       Top = 0
       Width = 400
       Align = alTop
-      DefaultItemHeight = 19
       ReadOnly = True
       TabOrder = 0
       OnCustomCreateItem = SitemapTreeCustomCreateItem
@@ -95,17 +87,12 @@ object SitemapEditForm: TSitemapEditForm
     end
     object DescriptionEdit: TLabeledEdit
       Left = 11
-      Height = 25
+      Height = 23
       Top = 435
       Width = 292
-      EditLabel.AnchorSideLeft.Control = DescriptionEdit
-      EditLabel.AnchorSideBottom.Control = DescriptionEdit
-      EditLabel.Left = 11
-      EditLabel.Height = 18
-      EditLabel.Top = 414
-      EditLabel.Width = 73
+      EditLabel.Height = 15
+      EditLabel.Width = 292
       EditLabel.Caption = 'Description'
-      EditLabel.ParentColor = False
       Enabled = False
       TabOrder = 1
       OnChange = DescriptionEditChange
@@ -122,30 +109,23 @@ object SitemapEditForm: TSitemapEditForm
     end
     object LocalCombo: TComboBox
       Left = 11
-      Height = 29
+      Height = 23
       Top = 487
       Width = 375
-      AutoComplete = False
       Enabled = False
-      ItemHeight = 0
-      ItemWidth = 0
+      ItemHeight = 15
       OnChange = LocalComboChange
       OnKeyUp = LocalComboKeyUp
       TabOrder = 3
     end
     object URLEdit: TLabeledEdit
       Left = 11
-      Height = 25
+      Height = 23
       Top = 539
       Width = 375
-      EditLabel.AnchorSideLeft.Control = URLEdit
-      EditLabel.AnchorSideBottom.Control = URLEdit
-      EditLabel.Left = 11
-      EditLabel.Height = 18
-      EditLabel.Top = 518
-      EditLabel.Width = 66
+      EditLabel.Height = 15
+      EditLabel.Width = 375
       EditLabel.Caption = 'URL (http)'
-      EditLabel.ParentColor = False
       Enabled = False
       TabOrder = 4
       OnChange = URLEditChange
@@ -195,24 +175,19 @@ object SitemapEditForm: TSitemapEditForm
   end
   object FontEdit: TLabeledEdit
     Left = 444
-    Height = 25
+    Height = 23
     Top = 72
     Width = 232
-    EditLabel.AnchorSideLeft.Control = FontEdit
-    EditLabel.AnchorSideBottom.Control = FontEdit
-    EditLabel.Left = 444
-    EditLabel.Height = 18
-    EditLabel.Top = 51
-    EditLabel.Width = 29
+    EditLabel.Height = 15
+    EditLabel.Width = 232
     EditLabel.Caption = 'Font'
-    EditLabel.ParentColor = False
     TabOrder = 1
   end
   object FolderViewCheck: TCheckBox
     Left = 444
-    Height = 22
+    Height = 19
     Top = 212
-    Width = 129
+    Width = 104
     Caption = 'Use Folder Icons'
     TabOrder = 2
   end

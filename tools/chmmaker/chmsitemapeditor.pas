@@ -146,8 +146,8 @@ procedure TSitemapEditForm.SaveBtnClick(Sender: TObject);
   begin
     ChmItem := ChmItems.NewItem;
     ChmItem.Text := TreeNode.Text;
-    ChmItem.URL := TreeNode.URL;
-    ChmItem.Local := TreeNode.Local;
+    ChmItem.AddURL(TreeNode.URL);
+    ChmItem.AddLocal(TreeNode.Local);
     for I := 0 to TreeNode.Count-1 do begin
       AddItem(TChmTreeNode(TreeNode.Items[I]), ChmItem.Children);
     end;
@@ -266,7 +266,7 @@ procedure TSitemapEditForm.LoadFromStream(AStream: TStream);
        ChmItem := Items.Item[I];
        TreeNode := TChmTreeNode(SitemapTree.Items.AddChild(ParentItem, ChmItem.Text));
        TreeNode.Local := ChmItem.Local;
-       TreeNode.URL := ChmItem.URL;
+       TreeNode.URL := ChmItem.SubItem[0].URL;
        AddItems(ChmItem.Children, TreeNode);
      end;
    end;
