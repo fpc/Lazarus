@@ -2391,7 +2391,7 @@ begin
   if Assigned(FOnActionUpdate) then FOnActionUpdate(TheAction, Result);
 end;
 
-function TApplication.IsRTLLang(ALang: String): Boolean;
+function TApplication.IsRTLLang(const ALang: String): Boolean;
 var
  lng : String;
  p   : word;
@@ -2436,7 +2436,7 @@ begin
             ;
 end;
 
-function TApplication.Direction(ALang: String): TBiDiMode;
+function TApplication.Direction(const ALang: String): TBiDiMode;
 const
   BidiModeMap: array[Boolean] of TBiDiMode = (bdLeftToRight, bdRightToLeft);
 begin

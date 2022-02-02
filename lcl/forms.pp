@@ -1610,8 +1610,8 @@ type
     procedure IntfThemeOptionChange(AThemeServices: TThemeServices; AOption: TThemeOption);
 
     function IsRightToLeft: Boolean;
-    function IsRTLLang(ALang: string): Boolean;
-    function Direction(ALang: string): TBiDiMode;
+    function IsRTLLang(const ALang: string): Boolean;
+    function Direction(const ALang: string): TBiDiMode;
   public
     // on key down
     procedure DoArrowKey(AControl: TWinControl; var Key: Word; Shift: TShiftState);
