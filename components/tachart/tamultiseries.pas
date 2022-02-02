@@ -1157,6 +1157,9 @@ var
 
 begin
   Result := Source.ExtentList;
+  if Source.Count = 0 then
+    exit;
+  
   // Show first and last boxes fully.
   j := -1;
   x := NaN;
