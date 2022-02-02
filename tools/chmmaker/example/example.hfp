@@ -28,5 +28,6 @@
     <DefaultFont Value=""/>
     <DefaultWindow Value=""/>
     <ScanHtmlContents Value="False"/>
+    <LocaleID Value="1033"/>
   </Settings>
 </CONFIG>
