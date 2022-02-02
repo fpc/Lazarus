@@ -1933,11 +1933,11 @@ begin
 
   if (X2 - X1 <= 0) or (Y2 - Y1 <= 0) then Exit;
 
-  Dec(X2);
-  Dec(Y2);
-
   if not ((RX <= 0) or (RY <= 0)) then
   begin
+    Dec(X2);
+    Dec(Y2);
+
     if X2 - X1 < RX then RX := X2 - X1;
     if Y2 - Y1 < RY then RY := Y2 - Y1;
 
