@@ -961,36 +961,132 @@ end;
 
 procedure TBoxAndWhiskerSeries.Draw(ADrawer: IChartDrawer);
 
-  function MaybeRotate(AX, AY: Double): TPoint;
+  procedure GraphToImage_Whisker(X, XW, Y1, Y2: Double; 
+    out iX1, iX, iX2, iY1, iY2: Integer);
   begin
     if IsRotated then
-      Exchange(AX, AY);
-    Result := ParentChart.GraphToImage(DoublePoint(AX, AY));
-  end;
-
-  procedure DoLine(AX1, AY1, AX2, AY2: Double);
-  begin
-    ADrawer.Line(MaybeRotate(AX1, AY1), MaybeRotate(AX2, AY2));
-  end;
-
-  procedure DoRect(AX1, AY1, AX2, AY2: Double);
-  var
-    r: TRect;
-  begin
-    with ParentChart do begin
-      r.TopLeft := MaybeRotate(AX1, AY1);
-      r.BottomRight := MaybeRotate(AX2, AY2);
+    begin
+      iX1 := ParentChart.YGraphToImage(X - XW);
+      iX2 := ParentChart.YGraphToImage(X + XW);
+      if iX1 <> iX2 then
+        iX := ParentChart.YGraphToImage(X)
+      else
+        iX := iX1;
+      iY1 := ParentChart.XGraphToImage(Y1);
+      iY2 := ParentChart.XGraphToImage(Y2);      
+    end else
+    begin
+      iX1 := ParentChart.XGraphToImage(X - XW);
+      iX2 := ParentChart.XGraphToImage(X + XW);
+      if iX1 <> iX2 then
+        iX := ParentChart.XGraphToImage(X)
+      else
+        iX := iX1;
+      iY1 := ParentChart.YGraphToImage(Y1);
+      iY2 := ParentChart.YGraphToImage(Y2);
     end;
-    if (r.Left = r.Right) or (r.Top = r.Bottom) then
-      ADrawer.Line(r.TopLeft, r.BottomRight)
+  end;
+  
+  procedure GraphToImage_Bar(X1, X2, Y1, Y2: Double; 
+    out iX1, iX2, iY1, iY2: Integer);
+  begin
+    if IsRotated then
+    begin
+      iX1 := ParentChart.YGraphToImage(X1);
+      iX2 := ParentChart.YGraphToImage(X2);
+      iY1 := ParentChart.XGraphToImage(Y1);
+      iY2 := ParentChart.XGraphToImage(Y2);
+    end else
+    begin
+      iX1 := ParentChart.XGraphToImage(X1);
+      iX2 := ParentChart.XGraphToImage(X2);
+      iY1 := ParentChart.YGraphToImage(Y1);
+      iY2 := ParentChart.YGraphToImage(Y2);
+    end;
+  end;
+  
+  procedure GraphToImage_Median(Y: Double; out iY: Integer);
+  begin
+    if IsRotated then
+      iY := ParentChart.XGraphToImage(Y)
     else
-      ADrawer.Rectangle(r);
+      iY := ParentChart.YGraphToImage(Y);
+  end;
+
+  procedure PrepareLine(i: Integer; APen: TPen);
+  begin
+    ADrawer.Pen := APen;
+    if (Source[i]^.Color <> clTAColor) and (APen.Color = clTAColor) then
+      ADrawer.SetPenColor(Source[i]^.Color);
+    ADrawer.SetBrushParams(bsClear, clTAColor);
+  end;
+    
+  procedure PrepareBox(i: Integer);
+  begin
+    ADrawer.Pen := BoxPen;
+    if Source[i]^.Color <> clTAColor then
+    begin
+      if BoxPen.Color = clTAColor then
+        ADrawer.SetPenColor(Source[i]^.Color);
+      ADrawer.SetBrushParams(bsSolid, Source[i]^.Color);
+    end
+    else
+      ADrawer.Brush := BoxBrush;
+  end;
+  
+  {    X1   X   X2
+       |----+----|       Y
+            |
+      +-----+-----+      YBox
+      |           |
+      |           |
+  }
+  procedure DrawWhisker(X1, X, X2, Y, YBox: Integer);
+  begin
+    if IsRotated then
+    begin
+      if X1 <> X2 then
+        ADrawer.Line(Y, X1, Y, X2);
+      ADrawer.Line(Y, X, YBox, X);
+    end else
+    begin
+      if X1 <> X2 then
+        ADrawer.Line(X1, Y, X2, Y);
+      ADrawer.Line(X, Y, X, YBox);
+    end;
+  end;
+  
+  procedure DrawBox(XBox1, XBox2, YBox1, YBox2: Integer);
+  begin
+    if XBox1 = XBox2 then
+    begin
+      if IsRotated then
+        ADrawer.Line(YBox1, XBox1, YBox2, XBox2)
+      else
+        ADrawer.Line(XBox1, YBox1, XBox2, YBox2);
+    end else
+    begin
+      if IsRotated then
+        ADrawer.Rectangle(YBox1, XBox1, YBox2, XBox2)
+      else
+        ADrawer.Rectangle(XBox1, YBox1, XBox2, YBox2);
+    end;
+  end;
+  
+  procedure DrawMedian(X1, X2, Y: Integer);
+  begin
+    if IsRotated then
+      ADrawer.Line(Y, X1, Y, X2)
+    else
+      ADrawer.Line(X1, Y, X2, Y);
   end;
 
 var
   ext2: TDoubleRect;
   x, ymin, yqmin, ymed, yqmax, ymax, wb, ww, w: Double;
   i: Integer;
+  ix, ixb1, ixb2, ixw1, ixw2: Integer;
+  iymin, iyqmin, iymed, iyqmax, iymax: Integer;
   nx, ny: Cardinal;
 begin
   if IsEmpty or (not Active) then exit;
@@ -1021,30 +1117,25 @@ begin
     end;
     wb := w * BoxWidth;
     ww := w * WhiskersWidth;
-
+    
+    // Calculate image coordiantes
+    GraphToImage_Whisker(x, ww, ymin, ymax, ixw1, ix, ixw2, iymin, iymax);
+    GraphToImage_Bar(x-wb, x+wb, yqmin, yqmax, ixb1, ixb2, iyqmin, iyqmax);
+    GraphToImage_Median(ymed, iymed);
+     
+    // Draw whisker
+    PrepareLine(i, WhiskersPen);
+    DrawWhisker(ixw1, ix, ixw2, iymin, iyqmin);
+    DrawWhisker(ixw1, ix, ixw2, iymax, iyqmax);
+    
+    // Draw box
+    PrepareBox(i);
+    DrawBox(ixb1, ixb2, iyqmin, iyqmax);
     ADrawer.Pen := WhiskersPen;
-    if (Source[i]^.Color <> clTAColor) and (WhiskersPen.Color = clTAColor) then
-      ADrawer.SetPenColor(Source[i]^.Color);
-    ADrawer.SetBrushParams(bsClear, clTAColor);
-    DoLine(x - ww, ymin, x + ww, ymin);
-    DoLine(x, ymin, x, yqmin);
-    DoLine(x - ww, ymax, x + ww, ymax);
-    DoLine(x, ymax, x, yqmax);
-    ADrawer.Pen := BoxPen;
-    if Source[i]^.Color <> clTAColor then
-    begin
-      if BoxPen.Color = clTAColor then
-        ADrawer.SetPenColor(Source[i]^.Color);
-      ADrawer.SetBrushParams(bsSolid, Source[i]^.Color);
-    end
-    else
-      ADrawer.Brush := BoxBrush;
-    DoRect(x - wb, yqmin, x + wb, yqmax);
-    ADrawer.Pen := MedianPen;
-    if (Source[i]^.Color <> clTAColor) and (MedianPen.Color = clTAColor) then
-      ADrawer.SetPenColor(Source[i]^.Color);
-    ADrawer.SetBrushParams(bsClear, clTAColor);
-    DoLine(x - wb, ymed, x + wb, ymed);
+    
+    // Draw median line
+    PrepareLine(i, MedianPen);
+    DrawMedian(ixb1, ixb2, iymed);
   end;
 
   GetXYCountNeeded(nx, ny);
