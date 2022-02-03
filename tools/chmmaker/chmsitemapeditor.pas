@@ -266,7 +266,8 @@ procedure TSitemapEditForm.LoadFromStream(AStream: TStream);
        ChmItem := Items.Item[I];
        TreeNode := TChmTreeNode(SitemapTree.Items.AddChild(ParentItem, ChmItem.Text));
        TreeNode.Local := ChmItem.Local;
-       TreeNode.URL := ChmItem.SubItem[0].URL;
+       if ChmItem.SubItemCount > 0 then
+         TreeNode.URL := ChmItem.SubItem[0].URL;
        AddItems(ChmItem.Children, TreeNode);
      end;
    end;
