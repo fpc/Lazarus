@@ -14,6 +14,7 @@ var
   i: Integer;
   Filename: String;
 begin
+  Application.Title:='';
   Application.Initialize;
   Application.CreateForm(TCHMForm, CHMForm);
   Application.CreateForm(TSitemapEditForm, SitemapEditForm);
