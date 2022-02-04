@@ -129,6 +129,7 @@ type
     procedure SetYIndexCenter(AValue: Integer);
     procedure SetYIndexWhiskerMax(AValue: Integer);
     procedure SetYIndexWhiskerMin(AValue: Integer);
+    procedure UpdateYDataLayout;
   protected
     procedure GetLegendItems(AItems: TChartLegendItems); override;
     function GetSeriesColor: TColor; override;
@@ -1405,6 +1406,7 @@ procedure TBoxAndWhiskerSeries.SetYIndexBoxMax(AValue: Integer);
 begin
   if FYIndexBoxMax = AValue then exit;
   FYIndexBoxMax := AValue;
+  UpdateYDataLayout;
   UpdateParentChart;
 end;
 
@@ -1412,6 +1414,7 @@ procedure TBoxAndWhiskerSeries.SetYIndexBoxMin(AValue: Integer);
 begin
   if FYIndexBoxMin = AValue then exit;
   FYIndexBoxMin := AValue;
+  UpdateYDataLayout;
   UpdateParentChart;
 end;
 
@@ -1419,6 +1422,7 @@ procedure TBoxAndWhiskerSeries.SetYIndexCenter(AValue: Integer);
 begin
   if FYIndexCenter = AValue then exit;
   FYIndexCenter := AValue;
+  UpdateYDataLayout;
   UpdateParentChart;
 end;
 
@@ -1426,6 +1430,7 @@ procedure TBoxAndWhiskerSeries.SetYIndexWhiskerMax(AValue: Integer);
 begin
   if FYIndexWhiskerMax = AValue then exit;
   FYIndexWhiskerMax := AValue;
+  UpdateYDataLayout;
   UpdateParentChart;
 end;
 
@@ -1433,6 +1438,7 @@ procedure TBoxAndWhiskerSeries.SetYIndexWhiskerMin(AValue: Integer);
 begin
   if FYIndexWhiskerMin = AValue then exit;
   FYIndexWhiskerMin := AValue;
+  UpdateYDataLayout;
   UpdateParentChart;
 end;
 
@@ -1538,6 +1544,21 @@ begin
     y3 := AxisToGraphY(item^.GetY(FYIndexWhiskerMax));
     ALevel := (y0 + y3) * 0.5;
   end;
+end;
+
+procedure TBoxAndWhiskerSeries.UpdateYDataLayout;
+begin
+  if (FYIndexWhiskerMin = 0) and (FYIndexBoxMin = 1) and (FYIndexCenter = 2) and
+     (FYIndexBoxMax = 3) and (FYIndexWhiskerMax = 4) 
+  then 
+    FYDataLayout := bwlLegacy
+  else
+  if (FYIndexCenter = 0) and (FYIndexWhiskerMin = 1) and (FYIndexBoxMin = 2) and
+     (FYIndexBoxMax = 3) and (FYIndexWhiskerMax = 4) 
+  then 
+    FYDataLayout := bwlNormal
+  else
+    FYDataLayout := bwlCustom;
 end;
 
 
