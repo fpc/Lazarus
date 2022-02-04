@@ -439,17 +439,16 @@ end;
 
 function TShellTreeNode.ShortFilename: String;
 begin
-  Result := ExtractFileName(FFileInfo.Name);
-  if (Result = '') then Result := FFileInfo.Name;
+  Result := Text;
 end;
 
 function TShellTreeNode.FullFilename: String;
 begin
   if (FBasePath <> '') then
-    Result := AppendPathDelim(FBasePath) + FFileInfo.Name
+    Result := AppendPathDelim(FBasePath) + Text 
   else
     //root nodes
-    Result := FFileInfo.Name;
+    Result := Text;
   {$if defined(windows) and not defined(wince)}
   if (Length(Result) = 2) and (Result[2] = DriveSeparator) then
     Result := Result + PathDelim;
