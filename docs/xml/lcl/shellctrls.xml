@@ -1681,10 +1681,13 @@
       <element name="TShellListView.ShellTreeView" link="#lcl.shellctrls.TCustomShellListView.ShellTreeView"/>
 
       <element name="TShellTreeNode">
-        <short>Represents tree nodes in TShellTreeView.</short>
+        <short>Represents tree nodes in TCustomShellTreeView / TShellTreeView.</short>
         <descr>
           <p>
-            <var>TShellTreeNode</var> is a <var>TTreeNode</var> descendant which represents tree nodes in <var>TShellTreeView</var>. TShellTreeNode extends the ancestor class with properties and methods needed to work with files or directories on the local file system. TShellTreeNode is the class type reference used to create new nodes in  the <var>TCustomShellTreeView.CreateNode</var> method.
+            <var>TShellTreeNode</var> is a <var>TTreeNode</var> descendant which represents tree nodes in <var>TShellTreeView</var>. TShellTreeNode extends the ancestor class with properties and methods needed to work with files or directories on the local file system. It includes an internal <var>TSearchRec</var> instance for the file system object stored when the node is created by a Shell tree view control.
+          </p>
+          <p>
+            TShellTreeNode is the class type used to create new nodes in  the <var>TCustomShellTreeView.CreateNode</var> method.
           </p>
         </descr>
         <seealso>
@@ -1703,25 +1706,29 @@
         </seealso>
       </element>
       <element name="TShellTreeNode.SetBasePath.ABasePath">
-        <short>New value for the property.</short>
+        <short>New value for the BasePath property.</short>
       </element>
 
       <element name="TShellTreeNode.ShortFilename">
-        <short>Gets the short file name for the item represented in the tree node.</short>
+        <short>Gets the name for the item represented in the tree node.</short>
         <descr>
           <p>
-            <var>ShortFilename</var> is a <var>String</var> function used to get the short file name for the item represented in the tree node. ShortFilename tries to get the file name from an internal <var>TSearchRec</var> for the tree node. If the file name is an empty string (<b>''</b>), the name in the search record is used as the return value. ShortFilename <b>does not</b> include path information in the return value.
+            <var>ShortFilename</var> is a <var>String</var> function used to get the short file name for the item represented in the tree node. The return value contains the value in the Text property for the tree node, and represents the name for the file system entry without drive or path information.
           </p>
           <p>
-            Use <var>FullFilename</var> to get a complete file name which includes path information for the item represented in the tree node.
+            Use <var>FullFilename</var> to get the complete name which includes complete path information for the item represented in the tree node.
           </p>
         </descr>
+        <version>
+          Modified in LCL version 2.2.2 to remove direct access to the internal TSearchRec instance for the node when getting the property value.
+        </version>
         <seealso>
           <link id="TShellTreeNode.FullFilename"/>
+          <link id="#lcl.comctrls.TTreeNode.Text">TTreeNode.Text</link>
         </seealso>
       </element>
       <element name="TShellTreeNode.ShortFilename.Result">
-        <short>Short file name for the item represented in the tree node.</short>
+        <short>Name for the item represented in the tree node without path information.</short>
       </element>
 
       <element name="TShellTreeNode.FullFilename">
@@ -1730,16 +1737,23 @@
         </short>
         <descr>
           <p>
-            <var>FullFilename</var> is a <var>String</var> function used to get the full path and name for the file system object represented by the tree node. FullFilename includes the value in <var>BasePath</var> when it is available, and the name from the <var>TSearchRec</var> for the tree node. For directory and/or device nodes, the return value <b>does not</b> include a trailing path delimiter. On Windows platforms (other than WinCE), device identifiers (like 'C:') are modified to include a trailing path delimiter ('C:\').
+            <var>FullFilename</var> is a <var>String</var> function used to get the full path and name for the file system object represented by the tree node. When <var>BasePath</var> is not empty (a root node), it is included in the return value followed by a path delimiter and the value in <var>Text</var> (<var>ShortFilename</var>). For a root node, only the value in <var>Text</var> is used.
           </p>
           <p>
-            Use <var>ShortFilename</var> to get the name for the tree node without path information.
+            Trailing path delimiters are not included in the property value for directory nodes, and are not needed for file nodes. On Windows platforms (other than WinCE), device identifiers (like 'C:') are modified to include a trailing path delimiter ('C:\').
+          </p>
+          <p>
+            Use ShortFilename to get the name for the tree node without path information.
           </p>
         </descr>
+        <version>
+          Modified in LCL version 2.2.2 to remove direct access to the internal TSearchRec instance when getting the value for the property.
+        </version>
         <seealso>
           <link id="TShellTreeNode.BasePath"/>
           <link id="TShellTreeNode.ShortFilename"/>
           <link id="TShellTreeNode.IsDirectory"/>
+          <link id="#lcl.comctrls.TTreeNode.Text">TTreeNode.Text</link>
         </seealso>
       </element>
       <element name="TShellTreeNode.FullFilename.Result">
@@ -1750,10 +1764,10 @@
         <short>Indicates if the tree node is a directory on the local file system.</short>
         <descr>
           <p>
-            <var>IsDirectory</var> is a <var>Boolean</var> function which indicates if the file system object for the the tree node is a directory on the local file system. The return value is <b>True</b> when the file attributes in the <var>TSearchRec</var> for the tree node includes the <var>faDirectory</var> attribute.
+            <var>IsDirectory</var> is a <var>Boolean</var> function which indicates if the file system object for the the tree node is a directory on the local file system. The return value is <b>True</b> when the file attributes in the internal <var>TSearchRec</var> instance for the tree node includes the <var>faDirectory</var> attribute.
           </p>
           <p>
-            Use <var>HasChildren</var> to determine if the shell tree node has child nodes representing sub-directories.
+            Use <var>HasChildren</var> to determine if the shell tree node has child nodes representing files or sub-directories.
           </p>
         </descr>
         <seealso>
@@ -1769,10 +1783,16 @@
       </element>
 
       <element name="TShellTreeNode.BasePath">
-        <short>Contains the path to the file system object in the tree node.</short>
+        <short>Contains the base path to the file system object in the tree node.</short>
         <descr>
           <p>
-            <var>BasePath</var> is a read-only <var>String</var> property which contains the path on the local file system to the object in the tree node. The value for the property is set when the tree node is created in TShellTreeView methods using the SetBasePath method in the class instance.
+            <var>BasePath</var> is a read-only <var>String</var> property which contains the base path on the local file system to the object in the tree node. It contains an empty string ('') when the file system object is located at the root of the tree.
+          </p>
+          <p>
+            The value for the property is assigned by calling <var>SetBasePath</var> when the tree node is created in TCustomShellTreeView / TShellTreeView methods.
+          </p>
+          <p>
+            Use <var>ShortFilename</var> to get the name for the tree node without path information.
           </p>
         </descr>
         <seealso>
