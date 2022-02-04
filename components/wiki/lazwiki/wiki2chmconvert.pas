@@ -171,7 +171,7 @@ begin
   AItem := FIndexSiteMap.Items.NewItem;
   AItem.Text := UTF8Trim(AText);
   {$IF FPC_FULLVERSION>=30200}
-  AItem.AddURL(AUrl);
+  AItem.AddLocal(AUrl);
   {$ELSE}
   AItem.Local := Trim(AUrl);
   AItem.Keyword := UTF8Trim(AText);
@@ -205,7 +205,7 @@ var
 begin
   item := NewItemAtLevel(ALevel);
   {$IF FPC_FULLVERSION>=30200}
-  item.AddURL(AUrl);
+  Item.AddLocal(AUrl);
   {$ELSE}
   item.Local := AUrl;
   {$ENDIF}
