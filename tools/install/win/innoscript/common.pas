@@ -81,7 +81,7 @@ begin
   Content := s;
   StringChange(Content, '%Temp%', GetTempDir);
   StringChange(Content, '%LazDir%', ExpandConstant('{app}'));
-  StringChange(Content, '%FpcBinDir%', '$Lazarusdir'+ExpandConstant('\fpc\{#FPCVersion}\bin\{#FPCFullTarget}\'));
+  StringChange(Content, '%FpcBinDir%', '$(Lazarusdir)'+ExpandConstant('\fpc\{#FPCVersion}\bin\{#FPCFullTarget}'));
   SaveStringToFile(FileName, Content, False);
 end;
 
