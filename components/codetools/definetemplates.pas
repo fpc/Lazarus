@@ -213,9 +213,11 @@ const
     'FPC', 'ObjFPC', 'Delphi', 'TP', 'MacPas', 'ISO'
     );
 
-  Pas2jsPlatformNames: array[1..2] of shortstring = (
+  Pas2jsPlatformNames: array[1..4] of shortstring = (
     'Browser',
-    'NodeJS'
+    'NodeJS',
+    'Electron',
+    'Module'
     );
   Pas2jsProcessorNames: array[1..2] of shortstring = (
     'ECMAScript5',
@@ -3927,9 +3929,14 @@ begin
 end;
 
 function IsPas2jsTargetOS(TargetOS: string): boolean;
+var
+  i: Integer;
 begin
-  Result:=(CompareText(TargetOS,'browser')=0)
-       or (CompareText(TargetOS,'nodejs')=0);
+  TargetOS:=lowercase(TargetOS);
+  for i:=low(Pas2jsPlatformNames) to high(Pas2jsPlatformNames) do
+    if Pas2jsPlatformNames[i]=TargetOS then
+      exit(true);
+  Result:=false;
 end;
 
 function IsPas2jsTargetCPU(TargetCPU: string): boolean;

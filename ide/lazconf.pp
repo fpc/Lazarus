@@ -326,17 +326,17 @@ function GetExecutableExt(TargetOS: string): string;
 begin
   if TargetOS='' then
     TargetOS:=GetCompiledTargetOS;
-  if (CompareText(copy(TargetOS,1,3), 'win') = 0)
-  or (CompareText(copy(TargetOS,1,3), 'dos') = 0) then
+  TargetOS:=LowerCase(TargetOS);
+  if (copy(TargetOS,1,3)='win')
+  or (copy(TargetOS,1,3)='dos') then
     Result:='.exe'
-  else if SameText(TargetOS, 'browser') or SameText(TargetOS,'nodejs') then
-    Result:='.js'
-  else if SameText(TargetOS, 'wasi') then
-    Result:='.wasm'
-  else if SameText(TargetOS, 'embedded') then
-    Result:='.elf'
   else
-    Result:='';
+    case TargetOS of
+    'browser','nodejs','electron','module': Result:='.js';
+    'wasi': Result:='.wasm';
+    'embedded': Result:='.elf';
+    else Result:='';
+    end;
 end;
 
 function MakeStandardExeFilename(TargetOS, Filename: string): string;
@@ -379,9 +379,11 @@ var
 begin
   if TargetOS='' then
     TargetOS:=GetCompiledTargetOS;
+  TargetOS:=LowerCase(TargetOS);
   Result:='';
-  if SameText(TargetOS, 'browser') or SameText(TargetOS,'nodejs') then
-    exit('.js');
+  case TargetOS of
+  'browser','nodejs','electron','module': exit('.js');
+  end;
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   if CompareText(SrcOS, 'unix') = 0 then
     Result:='lib';
