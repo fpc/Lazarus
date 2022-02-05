@@ -704,7 +704,7 @@ begin
   SetDefaultModuleCompileOptions(CompOpts);
   CompOpts.TargetFilename:='js/project1';
 
-  SetDefaultNodeRunParams(AProject.RunParameters.GetOrCreate('Default'));
+  SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
 
   // create program source
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
