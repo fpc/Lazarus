@@ -69,6 +69,14 @@ msgstr "Підтримувати HTML-сторінку"
 msgid "missing path to pas2js"
 msgstr "відсутній шлях до pas2js"
 
+#: strpas2jsdesign.pjsdmoduleappdescription
+msgid "A pas2js library that is transpiled to a javascript module."
+msgstr ""
+
+#: strpas2jsdesign.pjsdmoduleapplication
+msgid "Pas2JS Library/Javascript module"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
 msgstr "Пакунок Atom"

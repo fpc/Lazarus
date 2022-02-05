@@ -67,6 +67,14 @@ msgstr "Manter página HTML"
 msgid "missing path to pas2js"
 msgstr "caminho ausente para pas2js"
 
+#: strpas2jsdesign.pjsdmoduleappdescription
+msgid "A pas2js library that is transpiled to a javascript module."
+msgstr ""
+
+#: strpas2jsdesign.pjsdmoduleapplication
+msgid "Pas2JS Library/Javascript module"
+msgstr ""
+
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
 msgstr "Pacote Atom"

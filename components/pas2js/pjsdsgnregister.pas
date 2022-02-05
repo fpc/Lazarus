@@ -18,7 +18,7 @@ uses
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
   ProjDescNamePas2JSNodeJSApp = 'NodeJS Application';
-
+  ProjDescNamePas2JSModuleApp = 'Pas2JS Library';
 
 type
 
@@ -79,6 +79,19 @@ type
     property Options : TNodeJSApplicationOptions Read FOptions Write FOptions;
   end;
 
+  TProjectPas2JSModuleApp = class(TProjectDescriptor)
+  protected
+    function CreateProjectSource: String; virtual;
+  public
+    constructor Create; override;
+    Function DoInitDescriptor : TModalResult; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
+
 var
   PJSOptionsFrameID: integer = 1000;
 
@@ -119,6 +132,8 @@ begin
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSNodeJSApp.Create);
+  RegisterProjectDescriptor(TProjectPas2JSModuleApp.Create);
+
   // add IDE options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
                                               PJSOptionsFrameID)^.Index;
@@ -597,6 +612,115 @@ begin
     Result:=LazarusIDE.DoOpenEditorFile('project1.html',-1,-1,
                                         [ofProjectLoading,ofRegularFile]);
 end;
+
+{ ----------------------------------------------------------------------
+  Module
+  ----------------------------------------------------------------------}
+
+{ TProjectPas2JSModuleApp }
+
+function TProjectPas2JSModuleApp.CreateProjectSource: String;
+Var
+  Src : TStrings;
+  units : string;
+
+  Procedure Add(aLine : String);
+
+  begin
+    Src.Add(aLine);
+  end;
+
+  Procedure AddLn(aLine : String);
+
+  begin
+    if (Aline<>'') then
+      Aline:=Aline+';';
+    Add(Aline);
+  end;
+
+
+begin
+  Units:=' JS, Classes, SysUtils';
+  Src:=TStringList.Create;
+  try
+    // create program source
+    AddLn('library Project1');
+    AddLn('');
+    Add('{$mode objfpc}');
+    Add('');
+    Add('uses');
+    AddLn(units) ;
+    Add('');
+    Add('// add functions/procedures here');
+    Add('');
+    Add('// Add your exports statement here: ');
+    Add('// exports yourfunction {as functionalias} ;');
+    Add('');
+    Add('begin');
+    Add('  // Your library initialization code here');
+    Add('end.');
+    Result:=Src.Text;
+  finally
+    Src.Free;
+  end;
+end;
+
+
+constructor TProjectPas2JSModuleApp.Create;
+begin
+  inherited Create;
+  Name:= ProjDescNamePas2JSModuleApp;
+  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+end;
+
+function TProjectPas2JSModuleApp.DoInitDescriptor: TModalResult;
+begin
+  Result:=mrOK;
+end;
+
+function TProjectPas2JSModuleApp.GetLocalizedName: string;
+begin
+  Result:=pjsdModuleApplication;
+end;
+
+function TProjectPas2JSModuleApp.GetLocalizedDescription: string;
+begin
+  Result:=pjsdModuleAppDescription;
+end;
+
+function TProjectPas2JSModuleApp.InitProject(AProject: TLazProject ): TModalResult;
+
+var
+  MainFile : TLazProjectFile;
+  CompOpts : TLazCompilerOptions;
+
+begin
+  Result:=inherited InitProject(AProject);
+  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazBuildModes.BuildModes[0].LazCompilerOptions;
+  SetDefaultModuleCompileOptions(CompOpts);
+  CompOpts.TargetFilename:='js/project1';
+
+  SetDefaultNodeRunParams(AProject.RunParameters.GetOrCreate('Default'));
+
+  // create program source
+  AProject.MainFile.SetSourceText(CreateProjectSource,true);
+
+  //AProject.AddPackageDependency('pas2js_rtl');
+  //if naoUseNodeJSApp in Options then
+  //  AProject.AddPackageDependency('fcl_base_pas2js');
+end;
+
+function TProjectPas2JSModuleApp.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+end;
+
 
 end.
 

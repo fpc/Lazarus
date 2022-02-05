@@ -57,6 +57,8 @@ Procedure SetDefaultWebRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultNodeRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultWebCompileOptions(CompOpts: TLazCompilerOptions);
 Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
+Procedure SetDefaultModuleCompileOptions(CompOpts: TLazCompilerOptions);
+
 
 implementation
 
@@ -130,6 +132,13 @@ Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
 begin
   SetPasJSCompileOptions(CompOpts,'nodejs','-Jeutf-8 -Jminclude');
 end;
+
+Procedure SetDefaultModuleCompileOptions(CompOpts: TLazCompilerOptions);
+
+begin
+  SetPasJSCompileOptions(CompOpts,'module','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
+end;
+
 
 {$R *.lfm}
 
