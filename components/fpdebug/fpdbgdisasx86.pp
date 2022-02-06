@@ -52,24 +52,49 @@ uses
   () ignored opcode
   ?? unspecified
   !! internal error, a group got called for an opcode which wasn't decoded there
+
+  The disassember starts to decode the first byte according to
+
+  Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 2:
+  Table A-2. One-byte Opcode Map: (00H — F7H)
+  and
+  Table A-2. One-byte Opcode Map: (08H — FFH)
+
+  The 3DNow!(tm) instructions are decoded according to
+  AMD64 Architecture Programmer’s Manual Volume 3:
+  Table A-13. Immediate Byte for 3DNow!(tm) Opcodes, Low Nibble 0–7h
+  and
+  Table A-14. Immediate Byte for 3DNow!(tm) Opcodes, Low Nibble 8–Fh
+
+  The routines Addxx use the same abbriviations as used in those tables
+
 }  
 
 
 type
+  // rexB, rexX, rexR, rexW see
+  // Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 2:
+  // Table 2-4. REX Prefix Fields [BITS: 0100WRXB]
+
   TFlag = (
     flagRex, // $4x: set for any $4X
-    flagSib, flagModRM,
-    rexB, rexX, rexR,
-    rexW,    // $4x bit 4:  	64 Bit Operand Size
-    preOpr,  // $66:  	Precision-size override prefix  (32 and 64 bit)
-    preAdr, preLock, preRep{N}, preRepNE);
+    flagSib,
+    flagModRM,
+    rexB,    // $4x bit 0:  Extension of the ModR/M r/m field, SIB base field, or Opcode reg field
+    rexX,    // $4x bit 1:  Extension of the SIB index field
+    rexR,    // $4x bit 2:  Extension of the ModR/M reg field
+    rexW,    // $4x bit 3:  64 Bit Operand Size
+    preOpr,  // $66:  	Operand-size override prefix  (32 and 64 bit)
+    preAdr,  // $67:    Address-size override prefix
+    preLock,
+    preRep{N},
+    preRepNE,
+    oprDefault64,  // In 64bit mode set default operand size to 64 (d64 note in Table A-x)
+    oprForce64     // In 64bit mode set operand size to 64 (f64 note in Table A-x)
+  );
   TFlags = set of TFlag;
   
   // Keep 8,16,32,64 together
-  TOperandDefaultType = (
-      v_16_32,
-      vq_64_16
-  );
   TOperandSize = (os8, os16, os32, os64, os48, os80, os128);
   TAddressSize = (as16, as32, as64);
   TRegisterType = (reg0, reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87);
@@ -281,6 +306,16 @@ const
   OPERAND_BYTES: array[TOperandSize] of Byte = (1, 2, 4, 8, 6, 10, 16);
   OPERAND_REG: array[os8..os64] of TRegisterType = (reg8, reg16, reg32, reg64);
   STD_REGS = [reg8..reg64];
+  ADDRESS_REG: array[TAddressSize] of TRegisterType = (reg16, reg32, reg64);
+
+  // reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87
+  REGISTER_SIZE: array[TFPDMode, reg8..High(TRegisterType)] of TOperandSize = (
+    { dm32 } (os8, os16, os32, os64, os64, os128, os16, os32, os32, os80),
+    { dm64 } (os8, os16, os32, os64, os64, os128, os16, os64, os64, os80)
+  );
+
+
+
   OPCODE_NAME: array [TOpCode] of String = (
        '???', // OPX_InternalUnknown
        '???',
@@ -637,7 +672,20 @@ var
     else
       Result := s;
   end;
-  
+
+  procedure Default64;
+  begin
+    if FProcess.Mode = dm64 then
+      Include(Flags, oprDefault64);
+  end;
+
+  procedure Force64;
+  begin
+    if FProcess.Mode = dm64 then
+      Include(Flags, oprForce64);
+  end;
+
+
   procedure CheckLock;
     function CheckMem: boolean;
     var
@@ -731,24 +779,33 @@ var
     end;
   end;
 
-  function OperandSize64_16: TOperandSize;
+  function OperandSize: TOperandSize;
   begin
-    // effective AnInstruction.operand size for default 64 AnInstruction.operand size
-    if preOpr in Flags
-    then Result := os16
-    else Result := os64;
-  end;
+    // effective AnInstruction.operand size
 
-  function OperandSize32: TOperandSize;
-  begin
-    // effective AnInstruction.operand size for default 32 AnInstruction.operand size
-    if rexW in FLags
+    // Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 1:
+    // 3.6 OPERAND-SIZE AND ADDRESS-SIZE ATTRIBUTES
+    //
+    // Table 3-3 D-flag = 1 for 32 bit processes ->
+    // default 32, prefix 16
+    //
+    // Table 3-4
+    // REX.W 64, default 32, prefix 16 (REX.W overrules prefix)
+    //
+    // So for both dm32 and dm64 the default size is 32 unless overridden by flags
+
+    // A.3 ONE, TWO, AND THREE-BYTE OPCODE MAPS
+    // Some instructions default or force to 64bit in dm64
+
+    if [oprForce64, rexW] * Flags <> []
     then begin
       Result := os64;
     end
     else begin
       if preOpr in Flags
       then Result := os16
+      else if oprDefault64 in Flags
+      then Result := os64
       else Result := os32;
     end;
   end;
@@ -772,7 +829,7 @@ var
 
   procedure AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
   begin
-    AddOperand(AValue, OperandSize32, AByteCount, AFormatFlags, AFlags);
+    AddOperand(AValue, OperandSize, AByteCount, AFormatFlags, AFlags);
   end;
 
   function SizeReg32(const AReg: String; ASize: TOperandSize): String;
@@ -788,7 +845,7 @@ var
 
   function SizeReg32(const AReg: String): String;
   begin
-    Result := SizeReg32(AReg, OperandSize32);
+    Result := SizeReg32(AReg, OperandSize);
   end;
 
   procedure StdCond(AIndex: Byte);
@@ -853,45 +910,35 @@ var
 
   function StdReg(AIndex: Byte): String;
   begin
-    Result := StdReg(AIndex, OPERAND_REG[OperandSize32], rexR in Flags);
+    Result := StdReg(AIndex, OPERAND_REG[OperandSize], rexB in Flags);
   end;
 
-  procedure AddStdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean);
-  const
-    // reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87
-    REGSIZE: array[Boolean, reg8..High(TRegisterType)] of TOperandSize = (
-    {32}(os8, os16, os32, os64, os64, os128, os16, os32, os32, os80),
-    {64}(os8, os16, os32, os64, os64, os128, os16, os64, os64, os80)
-    );
+  procedure AddStdReg(AIndex: Byte; AType: TRegisterType);
   begin
-    AddOperand(StdReg(AIndex, AType, AExtReg), REGSIZE[(FProcess.Mode = dm64), AType]);
+    AddOperand(StdReg(AIndex, AType, rexB in Flags), REGISTER_SIZE[FProcess.Mode, AType]);
   end;
 
-  procedure AddStdReg(AIndex: Byte; AnOpDefType: TOperandDefaultType = v_16_32);
+  procedure AddStdReg(AIndex: Byte);
   begin
-    case AnOpDefType of
-      v_16_32:  AddOperand(StdReg(AIndex, OPERAND_REG[OperandSize32],    rexR in Flags));
-      vq_64_16: AddOperand(StdReg(AIndex, OPERAND_REG[OperandSize64_16], rexB in Flags));
-    end;
-
+    AddOperand(StdReg(AIndex));
   end;
 
   procedure AddModReg(AType: TRegisterType; ASize: TOperandSize);
   begin
     Include(Flags, flagModRM);
-    AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, False), ASize);
+    AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, rexR in Flags), ASize);
   end;
 
-  procedure AddModReg(AType: TRegisterType; AExtReg: Boolean);
+  procedure AddModReg(AType: TRegisterType);
   begin
     Include(Flags, flagModRM);
-    AddStdReg(Code[ModRMIdx] shr 3, AType, AExtReg);
+    AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, rexR in Flags), REGISTER_SIZE[FProcess.Mode, AType]);
   end;
 
   procedure AddModReg;
   begin
     Include(Flags, flagModRM);
-    AddStdReg(Code[ModRMIdx] shr 3);
+    AddOperand(StdReg(Code[ModRMIdx] shr 3, OPERAND_REG[OperandSize], rexR in Flags));
   end;
 
   procedure AddModRM(AReqTypes: TModRMTypes; ASize: TOperandSize; AType: TRegisterType);
@@ -931,7 +978,7 @@ var
     if mode = 3
     then begin
       if modReg in AReqTypes
-      then AddStdReg(rm, AType, False)
+      then AddStdReg(rm, AType)
       else AddOperand('**');
       Exit;
     end;
@@ -974,9 +1021,7 @@ var
         else Oper.Flags := [hvfSigned, hvfIncludeHexchar];                   // [base]
       end
       else begin
-        if AddrSize = as32
-        then Oper.Value := StdReg(sib.Base, reg32, rexB in Flags)
-        else Oper.Value := StdReg(sib.Base, reg64, rexB in Flags);
+        Oper.Value := StdReg(sib.Base, ADDRESS_REG[AddrSize], rexB in Flags);
         if (sib.Index <> 4) or (rexX in Flags)
         then Oper.Value := '+' + Oper.Value;  // [reg + base]
       end;
@@ -988,16 +1033,12 @@ var
         then Oper.Value := Format('*%u', [1 shl sib.Scale]) + Oper.Value;
 
         // get index
-        if AddrSize = as32
-        then Oper.Value := StdReg(sib.Index, reg32, rexX in Flags) + Oper.Value
-        else Oper.Value := StdReg(sib.Index, reg64, rexX in Flags) + Oper.Value;
+        Oper.Value := StdReg(sib.Index, ADDRESS_REG[AddrSize], rexX in Flags) + Oper.Value
       end;
     end
     else begin
       // no sib
-      if AddrSize = as32
-      then Oper.Value := StdReg(rm, reg32, rexB in Flags)
-      else Oper.Value := StdReg(rm, reg64, rexB in Flags);
+      Oper.Value := StdReg(rm, ADDRESS_REG[AddrSize], rexB in Flags);
     end;
     
     case mode of
@@ -1035,19 +1076,19 @@ var
 
   procedure AddAp;
   begin
-    if OperandSize32 = os16 //XXXX:XXXX
+    if OperandSize = os16 //XXXX:XXXX
     then AddOperand('$%1:s:%0:s', os32, 2, [], [], 2)
     else AddOperand('$%1:s:%0:s', os48, 4, [], [], 2)
   end;
   
   procedure AddCd_q;
   begin
-    AddModReg(regControl, rexR in Flags);
+    AddModReg(regControl);
   end;
 
   procedure AddDd_q;
   begin
-    AddModReg(regDebug, rexR in Flags);
+    AddModReg(regDebug);
   end;
   
   procedure AddEb;
@@ -1069,7 +1110,7 @@ var
   
   procedure AddEv;
   begin
-    AddModRM([modReg, modMem], OperandSize32, OPERAND_REG[OperandSize32]);
+    AddModRM([modReg, modMem], OperandSize, OPERAND_REG[OperandSize]);
   end;
   
   procedure AddEw;
@@ -1079,7 +1120,7 @@ var
   
   procedure AddFv;
   begin
-    case OperandSize32 of
+    case OperandSize of
       os64: AddOperand('rflags');
       os32: AddOperand('eflags');
     else
@@ -1089,19 +1130,19 @@ var
   
   procedure AddGb;
   begin
-    AddModReg(reg8, rexR in Flags);
+    AddModReg(reg8);
   end;
 
   procedure AddGd;
   begin
-    AddModReg(reg32, rexR in Flags);
+    AddModReg(reg32);
   end;
 
   procedure AddGd_q;
   begin
     if flagRex in Flags
-    then AddModReg(reg64, rexR in Flags)
-    else AddModReg(reg32, rexR in Flags);
+    then AddModReg(reg64)
+    else AddModReg(reg32);
   end;
 
   procedure AddGv;
@@ -1111,14 +1152,14 @@ var
   
   procedure AddGw;
   begin
-    AddModReg(reg16, rexR in Flags);
+    AddModReg(reg16);
   end;
 
   procedure AddGz;
   begin
-    if OperandSize32 = os16
-    then AddModReg(reg16, rexR in Flags)
-    else AddModReg(reg32, rexR in Flags);
+    if OperandSize = os16
+    then AddModReg(reg16)
+    else AddModReg(reg32);
   end;
   
   procedure AddIb;
@@ -1128,7 +1169,7 @@ var
   
   procedure AddIv;
   begin
-    AddOperand('%s', OPERAND_BYTES[OperandSize32], [hvfIncludeHexchar]);
+    AddOperand('%s', OPERAND_BYTES[OperandSize], [hvfIncludeHexchar]);
   end;
   
   procedure AddIw;
@@ -1138,7 +1179,7 @@ var
   
   procedure AddIz;
   begin
-    if OperandSize32 = os16
+    if OperandSize = os16
     then AddOperand('%s', os16, 2, [hvfIncludeHexchar])
     else AddOperand('%s', os32, 4, [hvfIncludeHexchar]);
   end;
@@ -1150,19 +1191,19 @@ var
   
   procedure AddJz;
   begin
-    if OperandSize32 = os16
+    if OperandSize = os16
     then AddOperand('%s', os16, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar])
     else AddOperand('%s', os32, 4, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
   end;
   
   procedure AddM;
   begin
-    AddModRM([modMem], OperandSize32, reg0 {do not care});
+    AddModRM([modMem], OperandSize, reg0 {do not care});
   end;
 
   procedure AddMa;
   begin
-    AddModRM([modMem], OperandSize32, reg0 {do not care});
+    AddModRM([modMem], OperandSize, reg0 {do not care});
   end;
 
   procedure AddMb;
@@ -1189,7 +1230,7 @@ var
 
   procedure AddMp;
   begin
-    if OperandSize32 = os16 //XXXX:XXXX
+    if OperandSize = os16 //XXXX:XXXX
     then AddModRM([modMem], os32, reg0 {do not care})
     else AddModRM([modMem], os48, reg0 {do not care});
   end;
@@ -1209,7 +1250,7 @@ var
   procedure AddMw_Rv;
   begin
     if Code[ModRMIdx] shr 6 = 3 // mode = 3 -> reg
-    then AddModRM([modReg], OperandSize32, OPERAND_REG[OperandSize32])
+    then AddModRM([modReg], OperandSize, OPERAND_REG[OperandSize])
     else AddModRM([modMem], os16, reg0 {do not care});
   end;
 
@@ -1232,7 +1273,7 @@ var
 
   procedure AddPq;
   begin
-    AddModReg(regMmx, False);
+    AddModReg(regMmx);
   end;
 
   procedure AddPRq;
@@ -1259,7 +1300,7 @@ var
   
   procedure AddSw;
   begin
-    AddModReg(regSegment, False);
+    AddModReg(regSegment);
   end;
 
   procedure AddVd_q;
@@ -1415,12 +1456,12 @@ var
     
     procedure AddMem14_28Env;
     begin
-      AddModRM([modMem], OperandSize32, reg0 {do not care});
+      AddModRM([modMem], OperandSize, reg0 {do not care});
     end;
 
     procedure AddMem98_108Env;
     begin
-      AddModRM([modMem], OperandSize32, reg0 {do not care});
+      AddModRM([modMem], OperandSize, reg0 {do not care});
     end;
 
     procedure AddMem16;
@@ -1817,11 +1858,11 @@ var
     case Index of
       0: begin AddEv; Opcode := OPinc;  end;
       1: begin AddEv; Opcode := OPdec;  end;
-      2: begin AddEv; Opcode := OPcall; end;
+      2: begin Force64; AddEv; Opcode := OPcall; end;
       3: begin AddMp; Opcode := OPcall; end;
-      4: begin AddEv; Opcode := OPjmp;  end;
+      4: begin Force64; AddEv; Opcode := OPjmp; end;
       5: begin AddMp; Opcode := OPjmp;  end;
-      6: begin AddEv; Opcode := OPpush; end;
+      6: begin Default64; AddEv; Opcode := OPpush; end;
     else
       Opcode := OPX_Group5;
     end;
@@ -1941,7 +1982,7 @@ var
     Index := (Code[ModRMIdx] shr 3) and 7;
     if Index = 1
     then begin
-      if OperandSize32 = os64
+      if OperandSize = os64
       then begin
         Opcode :=  OPcmpxchg16b;
         AddMdq;
@@ -2619,6 +2660,7 @@ var
       end;
       //---
       $80..$8F: begin
+        Force64;
         Opcode := OPj__; StdCond(Code[CodeIdx]);
         AddJz;
       end;
@@ -2629,10 +2671,12 @@ var
       end;
       //---
       $A0: begin
+        Default64;
         Opcode := OPpush;
         AddOperand('fs');
       end;
       $A1: begin
+        Default64;
         Opcode := OPpop;
         AddOperand('fs');
       end;
@@ -2654,10 +2698,12 @@ var
       end;
       // $A6..$A7: OPX_Invalid
       $A8: begin
+        Default64;
         Opcode := OPpush;
         AddOperand('gs');
       end;
       $A9: begin
+        Default64;
         Opcode := OPpop;
         AddOperand('gs');
       end;
@@ -2903,8 +2949,6 @@ var
   end;
 
   procedure DoDisassemble;
-  const
-    OPDEFTYPE_PUSH: array [TFPDMode] {dm32, dm64} of TOperandDefaultType = (v_16_32, vq_64_16);
   begin
     Opcode := OPX_InternalUnknown;
     repeat
@@ -3020,22 +3064,24 @@ var
         end;
         //---
         $50..$57: begin
+          Default64;
           Opcode := OPpush;
-          AddStdReg(Code[CodeIdx], OPDEFTYPE_PUSH[FProcess.Mode]);
+          AddStdReg(Code[CodeIdx]);
         end;
         $58..$5F: begin
+          Default64;
           Opcode := OPpop;
-          AddStdReg(Code[CodeIdx], OPDEFTYPE_PUSH[FProcess.Mode]);
+          AddStdReg(Code[CodeIdx]);
         end;
         //---
         $60: begin
-          if OperandSize32 = os16
+          if OperandSize = os16
           then Opcode := OPpusha
           else Opcode := OPpushad;
           Check32;
         end;
         $61: begin
-          if OperandSize32 = os16
+          if OperandSize = os16
           then Opcode := OPpopa
           else Opcode := OPpopad;
           Check32;
@@ -3068,6 +3114,7 @@ var
           Include(FLags, preAdr);
         end;
         $68: begin
+          Default64;
           Opcode := OPpush;
           AddIz;
         end;
@@ -3076,6 +3123,7 @@ var
           AddGv; AddEv; AddIz;
         end;
         $6A: begin
+          Default64;
           Opcode := OPpush;
           AddIb;
         end;
@@ -3091,7 +3139,7 @@ var
           {$endif}
         end;
         $6D: begin
-          if OperandSize32 = os16
+          if OperandSize = os16
           then Opcode := OPinsw
           else Opcode := OPinsd;
           CheckRepeat;
@@ -3108,7 +3156,7 @@ var
           {$endif}
         end;
         $6F: begin
-          if OperandSize32 = os16
+          if OperandSize = os16
           then Opcode := OPoutsw
           else Opcode := OPoutsd;
           CheckRepeat;
@@ -3118,6 +3166,7 @@ var
           {$endif}
         end;
         $70..$7F: begin
+          Force64;
           Opcode := OPj__;  StdCond(Code[CodeIdx]);
           AddJb;
         end;
@@ -3158,11 +3207,12 @@ var
           AddSw; AddEw;
         end;
         $8F: begin
+          Default64;
           DoGroup1;
         end;
         //---
         $90..$97: begin
-          if (Code[CodeIdx] = $90) and not (rexR in Flags)
+          if (Code[CodeIdx] = $90) and not (rexB in Flags)
           then Opcode := OPnop
           else begin
             Opcode := OPxchg;
@@ -3171,7 +3221,7 @@ var
           end;
         end;
         $98: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPcdqe;
             os32: Opcode := OPcwde;
           else
@@ -3179,7 +3229,7 @@ var
           end;
         end;
         $99: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPcqo;
             os32: Opcode := OPcqd;
           else
@@ -3194,7 +3244,8 @@ var
           Opcode := OPwait_fwait;
         end;
         $9C: begin
-          case OperandSize32 of
+          Default64;
+          case OperandSize of
             os64: Opcode := OPpushfq;
             os32: Opcode := OPpushfd;
           else
@@ -3203,7 +3254,8 @@ var
           AddFv;
         end;
         $9D: begin
-          case OperandSize32 of
+          Default64;
+          case OperandSize of
             os64: Opcode := OPpopfq;
             os32: Opcode := OPpopfd;
           else
@@ -3245,7 +3297,7 @@ var
           {$endif}
         end;
         $A5: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPmovsq;
             os32: Opcode := OPmovsd;
           else
@@ -3263,7 +3315,7 @@ var
           {$endif}
         end;
         $A7: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPcmpsq;
             os32: Opcode := OPcmpsd;
           else
@@ -3292,7 +3344,7 @@ var
           {$endif}
         end;
         $AB: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPstosq;
             os32: Opcode := OPstosd;
           else
@@ -3312,7 +3364,7 @@ var
           {$endif}
         end;
         $AD: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPlodsq;
             os32: Opcode := OPlodsd;
           else
@@ -3332,7 +3384,7 @@ var
           {$endif}
         end;
         $AF: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPscasq;
             os32: Opcode := OPscasd;
           else
@@ -3347,7 +3399,7 @@ var
         //---
         $B0..$B7: begin
           Opcode := OPmov;
-          AddStdReg(Code[CodeIdx], reg8, rexR in Flags);
+          AddStdReg(Code[CodeIdx], reg8);
           AddIb;
         end;
         $B8..$BF: begin
@@ -3360,10 +3412,12 @@ var
           DoGroup2;
         end;
         $C2: begin
+          Force64;
           Opcode := OPret;
           AddIw;
         end;
         $C3: begin
+          Force64;
           Opcode := OPret;
         end;
         $C4: begin
@@ -3382,6 +3436,7 @@ var
           AddIw; AddIb;
         end;
         $C9: begin
+          Default64;
           Opcode := OPleave;
         end;
         $CA: begin
@@ -3402,7 +3457,7 @@ var
           Opcode := OPint0; Check32;
         end;
         $CF: begin
-          case OperandSize32 of
+          case OperandSize of
             os64: Opcode := OPiretq;
             os32: Opcode := OPiretd;
           else
@@ -3430,18 +3485,22 @@ var
         end;
         //---
         $E0: begin
+          Force64;
           Opcode := OPloopne;
           AddJb;
         end;
         $E1: begin
+          Force64;
           Opcode := OPloope;
           AddJb;
         end;
         $E2: begin
+          Force64;
           Opcode := OPloop;
           AddJb;
         end;
         $E3: begin
+          Force64;
           Opcode := OPjrcxz;
           AddJb;
         end;
@@ -3466,10 +3525,12 @@ var
           AddOperand(SizeReg32('ax'));
         end;
         $E8: begin
+          Force64;
           Opcode := OPcall;
           AddJz;
         end;
         $E9: begin
+          Force64;
           Opcode := OPjmp;
           AddJz;
         end;
@@ -3478,6 +3539,7 @@ var
           AddAp;
         end;
         $EB: begin
+          Force64;
           Opcode := OPjmp;
           AddJb;
         end;
