@@ -373,16 +373,16 @@ begin
         SO(UseRunOnReady,baoRunOnReady);
         SO(ShowUncaughtExceptions,baoShowException);
         SO(UseWASI,baoUseWASI);
-        DebugLN(['Start server:', CO(baoStartServer)]);
-        if CO(baoStartServer) then
+        SO(StartHTTPServer,baoStartServer);
+        Self.ProjectPort:=ServerPort;
+        SO(UseURL,baoUseURL);
+        if baoStartServer in FOptions then
           begin
-          Self.ProjectPort:=ServerPort;
           DebugLN(['Start server port: ', Self.ProjectPort,'from: ',ServerPort]);
           end
         else
           begin
-          UseURL:=CO(baoUseURL);
-          if UseURL then
+          if baoUseURL in Options then
             FProjectURL:=URL;
           end;
         end;
