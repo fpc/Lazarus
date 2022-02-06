@@ -91,6 +91,11 @@ Resourcestring
   pjsdNodeJSProjectOptions = 'NodeJS project options';
   pjsdUseNodeJSApplicationObject = 'Use NodeJS Application object';
 
+  // New class definition from HTML File
+  rsCreateClassFromHTMLName = 'Create class definition from HTML file';
+  rsCreateClassFromHTMLDescription = 'Create a "form" class definition from HTML file using ID attributes in HTML';
+
+
   // Macros names
   pjsdPas2JSExecutable = 'Pas2JS executable';
   pjsdPas2JSWebServerExe = 'Pas2JS webserver executable';

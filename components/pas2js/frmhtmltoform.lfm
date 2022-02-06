@@ -1,0 +1,461 @@
+object frmHTML2Form: TfrmHTML2Form
+  Left = 472
+  Height = 484
+  Top = 247
+  Width = 633
+  Caption = 'HTML to Form'
+  ClientHeight = 484
+  ClientWidth = 633
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object BPHTMLToForm: TButtonPanel
+    Left = 6
+    Height = 38
+    Top = 440
+    Width = 621
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 0
+    ShowButtons = [pbOK, pbCancel]
+  end
+  object PCOptions: TPageControl
+    Left = 0
+    Height = 434
+    Top = 0
+    Width = 633
+    ActivePage = TSCodeGen
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 1
+    object TSHTML: TTabSheet
+      Caption = 'HTML File'
+      ClientHeight = 404
+      ClientWidth = 623
+      object lblHTMLFile: TLabel
+        AnchorSideTop.Control = FEHTMLFile
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FEHTMLFile
+        Left = 40
+        Height = 16
+        Top = 13
+        Width = 88
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'HTML File'
+      end
+      object FEHTMLFile: TFileNameEdit
+        AnchorSideRight.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 8
+        Width = 434
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 0
+      end
+      object cbAddHTMLFile: TCheckBox
+        AnchorSideTop.Control = FEHTMLFile
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 23
+        Top = 43
+        Width = 174
+        BorderSpacing.Top = 8
+        Caption = 'Add HTML file to project'
+        TabOrder = 1
+      end
+      object cbBelowID: TComboBox
+        AnchorSideLeft.Control = FEHTMLFile
+        AnchorSideTop.Control = cbAddHTMLFile
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 74
+        Width = 216
+        BorderSpacing.Top = 8
+        ItemHeight = 0
+        TabOrder = 2
+      end
+      object lblBelowID: TLabel
+        AnchorSideTop.Control = cbBelowID
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbBelowID
+        Left = 10
+        Height = 16
+        Top = 79
+        Width = 118
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Below element ID'
+      end
+      object mExclude: TMemo
+        AnchorSideLeft.Control = FEHTMLFile
+        AnchorSideTop.Control = cbBelowID
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 272
+        Top = 109
+        Width = 424
+        BorderSpacing.Top = 8
+        Lines.Strings = (
+          'mExclude'
+        )
+        TabOrder = 3
+      end
+      object lblExclude: TLabel
+        AnchorSideTop.Control = mExclude
+        AnchorSideRight.Control = mExclude
+        Left = 16
+        Height = 16
+        Top = 117
+        Width = 112
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Top = 8
+        BorderSpacing.Right = 8
+        Caption = 'Exclude elements'
+      end
+    end
+    object TSCodeGen: TTabSheet
+      Caption = 'Generated code'
+      ClientHeight = 404
+      ClientWidth = 623
+      object edtFormClassName: TEdit
+        AnchorSideTop.Control = TSCodeGen
+        Left = 136
+        Height = 27
+        Top = 8
+        Width = 216
+        BorderSpacing.Top = 8
+        TabOrder = 0
+      end
+      object cbParentName: TComboBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = edtFormClassName
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 43
+        Width = 216
+        BorderSpacing.Top = 8
+        ItemHeight = 0
+        TabOrder = 1
+      end
+      object cbGetElementFunction: TComboBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbParentName
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 78
+        Width = 216
+        BorderSpacing.Top = 8
+        ItemHeight = 0
+        TabOrder = 2
+      end
+      object CBEvents: TCheckBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbGetElementFunction
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 23
+        Top = 113
+        Width = 174
+        BorderSpacing.Top = 8
+        Caption = 'Generate event handlers'
+        OnChange = CBEventsChange
+        TabOrder = 3
+      end
+      object lblGetElements: TLabel
+        AnchorSideTop.Control = cbGetElementFunction
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbGetElementFunction
+        Left = 32
+        Height = 16
+        Top = 83
+        Width = 96
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'GetElement'
+      end
+      object cgOverrides: TCheckGroup
+        AnchorSideTop.Control = edtFormClassName
+        Left = 360
+        Height = 105
+        Top = 8
+        Width = 185
+        AutoFill = True
+        Caption = 'Overrides'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 88
+        ClientWidth = 183
+        Items.Strings = (
+          'Constructor'
+          'BindElements'
+          'BindElementEvents'
+        )
+        TabOrder = 8
+        Data = {
+          03000000020202
+        }
+      end
+      object cbEventSignature: TComboBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = CBEvents
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 144
+        Width = 216
+        BorderSpacing.Top = 8
+        ItemHeight = 0
+        TabOrder = 4
+      end
+      object cbEventModifiers: TComboBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbEventSignature
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 179
+        Width = 216
+        BorderSpacing.Top = 8
+        ItemHeight = 0
+        TabOrder = 5
+      end
+      object cgAddFunctions: TCheckGroup
+        AnchorSideLeft.Control = cgOverrides
+        AnchorSideTop.Control = cgOverrides
+        AnchorSideTop.Side = asrBottom
+        Left = 360
+        Height = 105
+        Top = 121
+        Width = 185
+        AutoFill = True
+        BorderSpacing.Top = 8
+        Caption = 'Add methods'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 88
+        ClientWidth = 183
+        Items.Strings = (
+          'Constructor'
+          'BindElements'
+          'BindElementEvents'
+        )
+        TabOrder = 9
+        Data = {
+          03000000020202
+        }
+      end
+      object cgVirtualFunctions: TCheckGroup
+        AnchorSideLeft.Control = cgOverrides
+        AnchorSideTop.Control = cgAddFunctions
+        AnchorSideTop.Side = asrBottom
+        Left = 360
+        Height = 105
+        Top = 234
+        Width = 185
+        AutoFill = True
+        BorderSpacing.Top = 8
+        Caption = 'Virtual methods'
+        ChildSizing.LeftRightSpacing = 6
+        ChildSizing.TopBottomSpacing = 6
+        ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+        ChildSizing.EnlargeVertical = crsHomogenousChildResize
+        ChildSizing.ShrinkHorizontal = crsScaleChilds
+        ChildSizing.ShrinkVertical = crsScaleChilds
+        ChildSizing.Layout = cclLeftToRightThenTopToBottom
+        ChildSizing.ControlsPerLine = 1
+        ClientHeight = 88
+        ClientWidth = 183
+        Items.Strings = (
+          'Constructor'
+          'BindElements'
+          'BindElementEvents'
+        )
+        TabOrder = 10
+        Data = {
+          03000000020202
+        }
+      end
+      object cbConstructorArgs: TComboBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbEventModifiers
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 215
+        Width = 216
+        BorderSpacing.Top = 9
+        ItemHeight = 0
+        TabOrder = 6
+      end
+      object lblClassName: TLabel
+        AnchorSideTop.Control = edtFormClassName
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = edtFormClassName
+        Left = 30
+        Height = 16
+        Top = 13
+        Width = 98
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Class name'
+      end
+      object lblParentClassName: TLabel
+        AnchorSideTop.Control = cbParentName
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbParentName
+        Left = 10
+        Height = 16
+        Top = 48
+        Width = 118
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Parent class name'
+      end
+      object lblEventSignature: TLabel
+        AnchorSideTop.Control = cbEventSignature
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbEventSignature
+        Left = 30
+        Height = 16
+        Top = 149
+        Width = 98
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Event signature'
+      end
+      object lblEventModifiers: TLabel
+        AnchorSideTop.Control = cbEventModifiers
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbEventModifiers
+        Left = 24
+        Height = 16
+        Top = 184
+        Width = 104
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Event modifiers'
+      end
+      object lblConstructorArgs: TLabel
+        AnchorSideTop.Control = cbConstructorArgs
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbConstructorArgs
+        Left = 23
+        Height = 16
+        Top = 220
+        Width = 105
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Constructor args'
+      end
+      object FETagMapFile: TFileNameEdit
+        Left = 137
+        Height = 27
+        Top = 344
+        Width = 436
+        FilterIndex = 0
+        HideDirectories = False
+        ButtonWidth = 23
+        NumGlyphs = 1
+        Anchors = [akTop, akLeft, akRight]
+        MaxLength = 0
+        TabOrder = 11
+      end
+      object lblTagMap: TLabel
+        AnchorSideTop.Control = FETagMapFile
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = FETagMapFile
+        Left = 24
+        Height = 16
+        Top = 349
+        Width = 105
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Tag Map file'
+      end
+      object cbDefaultElements: TCheckBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbConstructorArgs
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 23
+        Top = 250
+        Width = 154
+        BorderSpacing.Top = 8
+        Caption = 'Use default Elements'
+        TabOrder = 7
+      end
+      object cbBindElementsInConstructor: TCheckBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbDefaultElements
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 23
+        Top = 281
+        Width = 199
+        BorderSpacing.Top = 8
+        Caption = 'Bind elements in constructor'
+        TabOrder = 12
+      end
+      object cbExtraUnits: TComboBox
+        AnchorSideLeft.Control = edtFormClassName
+        AnchorSideTop.Control = cbBindElementsInConstructor
+        AnchorSideTop.Side = asrBottom
+        Left = 136
+        Height = 27
+        Top = 313
+        Width = 216
+        BorderSpacing.Top = 9
+        ItemHeight = 0
+        TabOrder = 13
+      end
+      object lblExtraUnits: TLabel
+        AnchorSideTop.Control = cbExtraUnits
+        AnchorSideTop.Side = asrCenter
+        AnchorSideRight.Control = cbExtraUnits
+        Left = 10
+        Height = 16
+        Top = 318
+        Width = 118
+        Alignment = taRightJustify
+        Anchors = [akTop, akLeft, akRight]
+        BorderSpacing.Right = 8
+        Caption = 'Extra units in uses'
+      end
+    end
+  end
+end

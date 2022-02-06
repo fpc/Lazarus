@@ -258,6 +258,14 @@ msgstr "Vous pouvez utiliser des macros de l'EDI comme $MakeExe(). Sans chemin c
 msgid "Name of your WebAssembly file"
 msgstr ""
 
+#: strpas2jsdesign.rscreateclassfromhtmldescription
+msgid "Create a \"form\" class definition from HTML file using ID attributes in HTML"
+msgstr ""
+
+#: strpas2jsdesign.rscreateclassfromhtmlname
+msgid "Create class definition from HTML file"
+msgstr ""
+
 #: strpas2jsdesign.spasjswebservercaption
 msgctxt "strpas2jsdesign.spasjswebservercaption"
 msgid "Pas2JS WebServers"

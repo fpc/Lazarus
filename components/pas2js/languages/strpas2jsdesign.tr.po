@@ -262,6 +262,14 @@ msgstr ""
 msgid "Name of your WebAssembly file"
 msgstr ""
 
+#: strpas2jsdesign.rscreateclassfromhtmldescription
+msgid "Create a \"form\" class definition from HTML file using ID attributes in HTML"
+msgstr ""
+
+#: strpas2jsdesign.rscreateclassfromhtmlname
+msgid "Create class definition from HTML file"
+msgstr ""
+
 #: strpas2jsdesign.spasjswebservercaption
 #, fuzzy
 msgctxt "strpas2jsdesign.spasjswebservercaption"
