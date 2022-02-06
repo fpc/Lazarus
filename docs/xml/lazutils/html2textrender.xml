@@ -427,6 +427,27 @@
         <seealso/>
       </element>
 
+      <element name="RenderHTML2Text">
+        <short>Converts the specified HTML content to a plain text value.</short>
+        <descr>
+          <p>
+            <var>RenderHTML2Text</var> is a <var>String</var> function used to convert the HTML content specified in <var>AHTML</var> to a string with the plain text for the content.  RenderHTML2Text creates a temporary <var>THTML2TextRenderer</var> instance (using its default configuration values) to remove any HTML mark-up found in the AHTML argument by calling its <var>Render</var> method.
+          </p>
+          <p>
+            RenderHTML2Text is a convenience routine; use a THTML2TextRenderer instance when the HTML content is stored in a TStream instance, or to override the default configuration settings for the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="THTML2TextRenderer.Render"/>
+        </seealso>
+      </element>
+      <element name="RenderHTML2Text.Result">
+        <short>String with the plain text value for the specified HTML content.</short>
+      </element>
+      <element name="RenderHTML2Text.AHTML">
+        <short>String with the HTML content converted in the routine.</short>
+      </element>
+
     </module>
     <!-- html2textrender -->
   </package>
