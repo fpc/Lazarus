@@ -2178,6 +2178,28 @@ begin
                      and (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags));
   end;
   NewSrcEdit := Nil;
+
+  // Update HasResources property (if the .lfm file was created separately)
+  if (not NewUnitInfo.HasResources)
+  and FilenameIsPascalUnit(NewUnitInfo.Filename) then begin
+    //debugln('NewFile no HasResources ',NewUnitInfo.Filename);
+    LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
+    SearchFlags:=[];
+    if NewUnitInfo.IsPartOfProject then
+      Include(SearchFlags,pfsfOnlyProjectFiles);
+    if NewUnitInfo.IsVirtual then
+      Include(SearchFlags,pfsfOnlyVirtualFiles);
+    if (AProject.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
+      //debugln('NewFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
+      NewUnitInfo.HasResources:=true;
+    end;
+  end;
+
+  // call hook
+  Result:=NewFileDescriptor.Initialized(NewUnitInfo);
+  if Result<>mrOk then
+    exit(mrCancel);
+
   if nfOpenInEditor in NewFlags then begin
     // open a new sourceeditor
     SrcNoteBook := SourceEditorManager.ActiveOrNewSourceWindow;
@@ -2269,22 +2291,6 @@ begin
     end;
   end else begin
     // do not open in editor
-  end;
-
-  // Update HasResources property (if the .lfm file was created separately)
-  if (not NewUnitInfo.HasResources)
-  and FilenameIsPascalUnit(NewUnitInfo.Filename) then begin
-    //debugln('NewFile no HasResources ',NewUnitInfo.Filename);
-    LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
-    SearchFlags:=[];
-    if NewUnitInfo.IsPartOfProject then
-      Include(SearchFlags,pfsfOnlyProjectFiles);
-    if NewUnitInfo.IsVirtual then
-      Include(SearchFlags,pfsfOnlyVirtualFiles);
-    if (AProject.UnitInfoWithFilename(LFMFilename,SearchFlags)<>nil) then begin
-      //debugln('NewFile no HasResources ',NewUnitInfo.Filename,' ResourceFile exists');
-      NewUnitInfo.HasResources:=true;
-    end;
   end;
 
   if (nfAskForFilename in NewFlags) then begin
