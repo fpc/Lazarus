@@ -287,9 +287,8 @@ var
   Pixbuf: PGdkPixbuf;
   Mask: PGdkBitmap;
   AGlyph: TBitmap;
-  AIndex, aPPI: Integer;
+  AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
-  aCanvasScaleFactor: Double;
   ImgResolution: TScaledImageListResolution;
 begin
   WidgetInfo := GetWidgetInfo(Pointer(ABitBtn.Handle));
@@ -298,8 +297,8 @@ begin
   if ABitBtn.CanShowGlyph then
   begin
     AGlyph := TBitmap.Create;
-    AValue.GetImageIndexAndEffect(AButtonState, aPPI, aCanvasScaleFactor,
-      ImgResolution, AIndex, AEffect);
+    AValue.GetImageIndexAndEffect(AButtonState, ABitBtn.Font.PixelsPerInch,
+      ABitBtn.GetCanvasScaleFactor, ImgResolution, AIndex, AEffect);
     if (AIndex <> -1) and (AValue.Images <> nil) then
       AValue.Images.GetBitmap(AIndex, AGlyph, AEffect);
   end

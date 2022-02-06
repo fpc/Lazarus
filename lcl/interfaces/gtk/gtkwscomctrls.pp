@@ -249,7 +249,7 @@ type
 implementation
 
 uses
-  SysUtils,
+  SysUtils, LazUtilities,
   GtkProc, GtkInt, GtkGlobals,
   GtkWSControls;
 

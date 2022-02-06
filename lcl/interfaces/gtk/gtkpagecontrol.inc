@@ -271,6 +271,11 @@ begin
 
   // remove the dummy page (a gtk_notebook needs at least one page)
   RemoveDummyNotebookPage(PGtkNotebook(TabControlWidget));
+  // unrealize the page widget if it is already realized as Gtk 1.2 will try to
+  // deref PageWidget->window for realized widgets when the latter are added to
+  // a container without checking if the pointer is not null
+  if GTK_WIDGET_REALIZED(PageWidget) then
+    gtk_widget_unrealize(PageWidget);
   // insert the page
   gtk_notebook_insert_page_menu(PGtkNotebook(TabControlWidget), PageWidget,
     TabWidget, MenuWidget, AIndex);

@@ -1601,7 +1601,7 @@ var
 begin
   if DC=0 then ;
   if not (cfColorAllocated in GDIColor^.ColorFlags) then begin
-    RGBColor := ColorToRGB(GDIColor^.ColorRef);
+    RGBColor := ColorToRGB(TColor(GDIColor^.ColorRef));
 
     With GDIColor^.Color do begin
       Red := gushort(GetRValue(RGBColor)) shl 8;
@@ -4528,15 +4528,11 @@ begin
   // get the tab container and the tab components: pixmap, label and closebtn
   TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
                                         PageWidget);
-  if TabWidget<>nil then begin
-    TabImageWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabImage');
-    TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel');
-    TabCloseBtnWidget:=gtk_object_get_data(PGtkObject(TabWidget),'TabCloseBtn');
-  end else begin
-    TabImageWidget:=nil;
-    TabLabelWidget:=nil;
-    TabCloseBtnWidget:=nil;
-  end;
+  if TabWidget=nil then exit;
+
+  TabImageWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabImage');
+  TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel');
+  TabCloseBtnWidget:=gtk_object_get_data(PGtkObject(TabWidget),'TabCloseBtn');
 
   // get the menu container and its components: pixmap and label
   MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
@@ -4589,7 +4585,7 @@ begin
     Result.Y:=0;
   end;
   // check if the gdkwindow is the clientwindow of the parent
-  if gtk_widget_get_parent_window(TheWidget)=TheWindow then begin
+  if (TheWidget^.Parent<>nil) and (gtk_widget_get_parent_window(TheWidget)=TheWindow) then begin
     // the widget is using its parent window
     // -> adjust the coordinates
     inc(Result.X,TheWidget^.Allocation.X);
@@ -8567,7 +8563,7 @@ begin
   GC := nil;
   Pixmap := nil;
 
-  SysColor := ColorToRGB(Color);
+  SysColor := ColorToRGB(TColor(Color));
   Result.Fill := GDK_Solid;
   RedGreenBlue(TColor(SysColor), Red, Green, Blue);
   Result.foreground.Red:=gushort(Red) shl 8 + Red;
@@ -9869,6 +9865,8 @@ begin
     ay:=current_desktop[1];
     awidth:=current_desktop[2];
     aheight:=current_desktop[3];
+    // if an invalid size was given, assume garbage from the window manager
+    if (awidth < 1) or (aheight < 1) then result := -1;
   end;
   if current_desktop <> nil then
     XFree (current_desktop);

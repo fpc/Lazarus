@@ -355,7 +355,8 @@ uses
   GtkThemes,
   Buttons, StdCtrls, PairSplitter,
   GTKWinApiWindow, ComCtrls, Calendar, Spin,
-  ExtCtrls, FileCtrl, LResources, gtkglobals;
+  ExtCtrls, FileCtrl, LResources, gtkglobals,
+  LazUtilities;
 
 {$I gtklistsl.inc}
 {$I gtkfiledialogutils.inc}

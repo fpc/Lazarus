@@ -613,7 +613,7 @@ implementation
 
 uses
   // until all code is transfered to objects, these circles are needed;
-  gtkint, gtkproc, GtkFontCache, GTKWinApiWindow;
+  gtkint, gtkproc, GtkFontCache, GTKWinApiWindow, LazUtilities;
 
 {$IFOpt R+}{$Define RangeChecksOn}{$Endif}
 

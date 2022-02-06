@@ -204,7 +204,7 @@ type
   TTimerRecord = record
     Control: TControl;
     Notify: TTimerNotify;
-    Id: LongWord;
+    Id: UINT_PTR;
     TimerHandle: guint;
   end;
   PTimerRecord = ^TTimerRecord;
@@ -217,9 +217,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Add(hWnd: THandle; ID: LongWord; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
-    function GetTimerInfo(Handle: hWnd; idEvent:LongWord; out TimerInfo: TTimerRecord):Boolean;
-    function GetTimerInfoPtr(Handle: hWnd; idEvent:LongWord): PTimerRecord;
+    function Add(hWnd: THandle; ID: UINT_PTR; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
+    function GetTimerInfo(Handle: hWnd; idEvent:UINT_PTR; out TimerInfo: TTimerRecord):Boolean;
+    function GetTimerInfoPtr(Handle: hWnd; idEvent:UINT_PTR): PTimerRecord;
   end;
 
 var
@@ -244,7 +244,7 @@ begin
   inherited Destroy;
 end;
 
-function TTimerList.Add(hWnd: THandle; ID: LongWord; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
+function TTimerList.Add(hWnd: THandle; ID: UINT_PTR; NotifyFunc: TTimerNotify; WinControl: TControl):PTimerRecord;
 var
   AID: QWord;
   ATimerRec: TTimerRecord;
@@ -263,13 +263,13 @@ begin
   end;
 end;
 
-function TTimerList.GetTimerInfo(Handle: hWnd; idEvent: LongWord; out
+function TTimerList.GetTimerInfo(Handle: hWnd; idEvent: UINT_PTR; out
   TimerInfo: TTimerRecord): Boolean;
 begin
   Result:= FList.GetData(MakeQWord(Handle,idEvent),TimerInfo);
 end;
 
-function TTimerList.GetTimerInfoPtr(Handle: hWnd; idEvent: LongWord
+function TTimerList.GetTimerInfoPtr(Handle: hWnd; idEvent: UINT_PTR
   ): PTimerRecord;
 begin
   Result := FList.GetDataPtr(MakeQWord(Handle,idEvent));
@@ -300,7 +300,7 @@ begin
   end;
 end;
 
-function SetTimer(hWnd:THandle; nIDEvent:LongWord; uElapse:LongWord; lpTimerFunc:TTimerNotify):LongWord;
+function SetTimer(hWnd:THandle; nIDEvent:UINT_PTR; uElapse:LongWord; lpTimerFunc:TTimerNotify):UINT_PTR;
 var
   TimerInfo: PTimerRecord;
   Control: TControl;
@@ -313,13 +313,15 @@ begin
     Control := nil;
   TimerInfo := FTimerList.Add(hWnd, nIDEvent, lpTimerFunc, Control);
   TimerInfo^.TimerHandle := gtk_timeout_add(uElapse, @gtkTimerCB, TimerInfo);
+  Result:=nIDEvent;
   //DebugLn('SetTimer HWnd: %d ID: %d TimerHandle: %d',[hWnd,nIDEvent,TimerInfo^.TimerHandle]);
 end;
 
-function KillTimer(hWnd:THandle; nIDEvent: LongWord):Boolean;
+function KillTimer(hWnd:THandle; nIDEvent: UINT_PTR):Boolean;
 var
   TimerInfo: PTimerRecord;
 begin
+  Result:=True;
   TimerInfo := FTimerList.GetTimerInfoPtr(hWnd,nIDEvent);
   if TimerInfo <> nil then
   begin
