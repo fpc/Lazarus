@@ -7,8 +7,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, LCLProc, Math,
-  FpDbgDisasX86;
+  ExtCtrls, LCLProc, Math, LazStringUtils,
+  FpDbgDisasX86, FpDbgClasses, FpDbgUtil;
 
 type
 
@@ -35,6 +35,9 @@ implementation
 
 {$R asmtestunit.lfm}
 
+type
+  TFakeProcess = class(TDbgProcess);
+
 { TForm1 }
 
 procedure TForm1.Timer1Timer(Sender: TObject);
@@ -46,6 +49,8 @@ var
   Value: Int64;
   e: Integer;
   p: Pointer;
+  Process: TFakeProcess;
+  Decoder: TX86AsmDecoder;
 begin
   n := txtCode.SelStart;
   if n < 0 then Exit;
@@ -68,11 +73,22 @@ begin
     Move(Value, Code[CodeIdx], B div 2);
     Inc(CodeIdx, B div 2);
   end;
+
   if CodeIdx > 0
   then begin
+    // The disassembler only needs the process mode, so we create a fake instance and set the mode flag
+    TObject(Process) := TFakeProcess.NewInstance;
+    if chk64Bit.Checked
+    then Process.SetMode(dm64)
+    else Process.SetMode(dm32);
+
+    Decoder := TX86AsmDecoder.Create(Process);
     p := @Code;
-    Disassemble(p, chk64Bit.Checked, S, Line);
+    Decoder.Disassemble(p, S, Line);
     txtOutput.Text := S + ' '+ Line;
+
+    Decoder.Free;
+    Process.FreeInstance;
   end
 //  else txtOutput.Text :='';
 end;
