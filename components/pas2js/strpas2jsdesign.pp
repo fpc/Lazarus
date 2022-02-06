@@ -92,8 +92,8 @@ Resourcestring
   pjsdUseNodeJSApplicationObject = 'Use NodeJS Application object';
 
   // New class definition from HTML File
-  rsCreateClassFromHTMLName = 'Create class definition from HTML file';
-  rsCreateClassFromHTMLDescription = 'Create a "form" class definition from HTML file using ID attributes in HTML';
+  rsCreateClassFromHTMLName = 'Pas2JS class definition from HTML file';
+  rsCreateClassFromHTMLDescription = 'Create a Pas2JS "form" class definition from HTML file using ID attributes in the HTML file.';
 
 
   // Macros names
