@@ -68,7 +68,20 @@ type
     property IndentStep: integer read fIndentStep write fIndentStep;
   end;
 
+  function RenderHTML2Text(const AHTML: String): String;
+
+
 implementation
+
+function RenderHTML2Text(const AHTML: String): String;
+begin
+  with THTML2TextRenderer.Create(AHTML) do
+    try
+      Result:=Render;
+    finally
+      Free;
+    end;
+end;
 
 { THTML2TextRenderer }
 
