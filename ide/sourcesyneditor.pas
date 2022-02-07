@@ -2507,6 +2507,7 @@ begin
       Result := i;
     until FDebugMarkInfo[Result] = aLinePos;
     if (FDebugMarkInfo[Result] < aLinePos) and // line not found
+       (FDebugMarkInfo[Result] <> 0) and
        (Result < c-1) and (FDebugMarkInfo[Result + 1] = 0)
     then
       inc(Result);
