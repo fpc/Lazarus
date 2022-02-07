@@ -8166,6 +8166,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomLabel, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomStaticText, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomCheckBox, 'Caption', TStringMultilinePropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TTranslateString), TCustomSpeedButton, 'Caption', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TMenuItem, 'Caption', TMenuItemCaptionEditor);
   RegisterPropertyEditor(TypeInfo(TTranslateString), TComponent, 'Hint', TStringMultilinePropertyEditor);
   RegisterPropertyEditor(TypeInfo(TCaption), TGridColumnTitle, 'Caption', TStringMultilinePropertyEditor);
