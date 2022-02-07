@@ -700,6 +700,8 @@ begin
 
   if Draw then
   begin
+    if not HasGlyph then 
+      S := 0;
     case CurLayout of
       blGlyphLeft : begin
         Offset.X:= M;
@@ -735,11 +737,17 @@ begin
       begin
         Left := Left + OffsetCap.X;
         Top := Top + OffsetCap.Y;
-        if CurLayout = blGlyphRight then
-          Right := ClientSize.cx - M - GlyphWidth - S;
+        case CurLayout of
+          blGlyphLeft: Right := Left + TextSize.CX; 
+          blGlyphRight: 
+            begin
+              Right := ClientSize.cx - M - GlyphWidth - S;
+              Left := Right - TextSize.CX;
+            end;
+        end;
       end;
 
-      TextFlags := DT_LEFT or DT_TOP or DT_CENTER or DT_NOCLIP;
+      TextFlags := DT_TOP or DT_CENTER; 
       if UseRightToLeftReading then
         TextFlags := TextFlags or DT_RTLREADING;
 
@@ -1073,6 +1081,13 @@ var
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
 begin
+  if (FGlyph.Glyph.Empty) and ((Images = nil) or (ImageIndex = -1)) then
+  begin
+    Result.CX := 0;
+    Result.CY := 0;
+    exit;
+  end;
+  
   FGlyph.GetImageIndexAndEffect(Low(TButtonState), Font.PixelsPerInch,
     GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
   Result.CX := AImageRes.Width;
