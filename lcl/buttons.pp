@@ -333,12 +333,14 @@ type
     FDragging: Boolean;
     FFlat: Boolean;
     FMouseInControl: Boolean;
+    FAlignment: TAlignment;
     function GetGlyph: TBitmap;
     procedure ImageListChange(Sender: TObject);
     function IsGlyphStored: Boolean;
     procedure SetShowCaption(const AValue: boolean);
     procedure UpdateExclusive;
     function  GetTransparent: Boolean;
+    procedure SetAlignment(Value: TAlignment);
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
     procedure SetLayout(const Value: TButtonLayout);
@@ -406,6 +408,7 @@ type
     procedure LoadGlyphFromResourceName(Instance: THandle; const AName: String);
     procedure LoadGlyphFromLazarusResource(const AName: String);
   public
+    property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
     property Color default clBtnFace;
     property DisabledImageIndex: TImageIndex index bsDisabled read GetImageIndex write SetImageIndex default -1;
@@ -435,6 +438,7 @@ type
   published
     property Action;
     property Align;
+    property Alignment;
     property AllowAllUp;
     property Anchors;
     property AutoSize;

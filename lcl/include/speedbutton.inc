@@ -56,6 +56,7 @@ begin
   FMargin := -1;
   Color := clBtnFace;
   FShowCaption := true;
+  FAlignment := taCenter;
 end;
 
 {------------------------------------------------------------------------------
@@ -112,6 +113,15 @@ end;
 procedure TCustomSpeedButton.Click;
 begin
   inherited Click;
+end;
+
+procedure TCustomSpeedButton.SetAlignment(Value: TAlignment);
+begin
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    Invalidate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -563,6 +573,8 @@ end;
 
 procedure TCustomSpeedButton.MeasureDraw(Draw: boolean;
   PaintRect: TRect; out PreferredWidth, PreferredHeight: integer);
+const
+  cAlignment: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
 var
   GlyphWidth, GlyphHeight: Integer;
   Offset, OffsetCap: TPoint;
@@ -719,13 +731,13 @@ begin
       blGlyphTop : begin
         Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
         Offset.Y:= M;
-        OffsetCap.X:= 0; 
+        OffsetCap.X:= M; 
         OffsetCap.Y:= Offset.Y + GlyphHeight + S;
       end;
       blGlyphBottom : begin
         Offset.X:= (ClientSize.cx - GlyphWidth) div 2;
         Offset.Y:= ClientSize.cy - M - GlyphHeight;
-        OffsetCap.X:= 0; 
+        OffsetCap.X:= M; 
         OffsetCap.Y:= Offset.Y - S - TextSize.cy;
       end;
     end;
@@ -739,16 +751,19 @@ begin
         Left := Left + OffsetCap.X;
         Top := Top + OffsetCap.Y;
         case CurLayout of
-          blGlyphLeft: Right := Left + TextSize.CX; 
+          blGlyphLeft: 
+            Right := Left + TextSize.CX; 
           blGlyphRight: 
             begin
               Right := ClientSize.cx - M - GlyphWidth - S;
               Left := Right - TextSize.CX;
             end;
+          blGlyphTop, blGlyphBottom:
+            Right := ClientSize.cx - M;
         end;
       end;
 
-      TextFlags := DT_TOP or DT_CENTER; 
+      TextFlags := DT_TOP or cAlignment[BidiFlipAlignment(FAlignment, UseRightToLeftAlignment)]; 
       if UseRightToLeftReading then
         TextFlags := TextFlags or DT_RTLREADING;
 
