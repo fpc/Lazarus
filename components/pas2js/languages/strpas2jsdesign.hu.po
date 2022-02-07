@@ -68,11 +68,11 @@ msgid "missing path to pas2js"
 msgstr "a pas2js útvonala hiányzik"
 
 #: strpas2jsdesign.pjsdmoduleappdescription
-msgid "A pas2js library that is transpiled to a javascript module."
+msgid "A pas2js library that is transpiled to a JavaScript module."
 msgstr ""
 
 #: strpas2jsdesign.pjsdmoduleapplication
-msgid "Pas2JS Library/Javascript module"
+msgid "Pas2JS Library / JavaScript module"
 msgstr ""
 
 #: strpas2jsdesign.pjsdnewatompackage
@@ -263,11 +263,11 @@ msgid "Name of your WebAssembly file"
 msgstr ""
 
 #: strpas2jsdesign.rscreateclassfromhtmldescription
-msgid "Create a pas2js \"form\" class definition from HTML file using ID attributes in the HTML file."
+msgid "Create a Pas2JS \"form\" class definition from HTML file using ID attributes in the HTML file."
 msgstr ""
 
 #: strpas2jsdesign.rscreateclassfromhtmlname
-msgid "pas2js class definition from HTML file"
+msgid "Pas2JS class definition from HTML file"
 msgstr ""
 
 #: strpas2jsdesign.spasjswebservercaption

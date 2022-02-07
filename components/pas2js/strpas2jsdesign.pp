@@ -12,8 +12,8 @@ Resourcestring
   pjsdWebAppDescription = 'A pas2js program running in the browser.';
   pjsdNodeJSApplication = 'Node.js Application';
   pjsdNodeJSAppDescription = 'A pas2js program running in node.js.';
-  pjsdModuleApplication = 'Pas2JS Library/Javascript module';
-  pjsdModuleAppDescription = 'A pas2js library that is transpiled to a javascript module.';
+  pjsdModuleApplication = 'Pas2JS Library / JavaScript module';
+  pjsdModuleAppDescription = 'A pas2js library that is transpiled to a JavaScript module.';
   pjsdNewAtomPackage = 'Atom package';
   pjsdNewAtomPackageDescr = 'A pas2js program running as Atom package.';
   pjsdNewVSCodeExtension = 'Visual Studio Code extension';

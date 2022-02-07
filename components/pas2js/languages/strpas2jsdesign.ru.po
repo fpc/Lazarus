@@ -68,12 +68,12 @@ msgid "missing path to pas2js"
 msgstr "отсутствует путь к pas2js"
 
 #: strpas2jsdesign.pjsdmoduleappdescription
-msgid "A pas2js library that is transpiled to a javascript module."
-msgstr ""
+msgid "A pas2js library that is transpiled to a JavaScript module."
+msgstr "Библиотека pas2js, транслируемая в модуль JavaScript."
 
 #: strpas2jsdesign.pjsdmoduleapplication
-msgid "Pas2JS Library/Javascript module"
-msgstr ""
+msgid "Pas2JS Library / JavaScript module"
+msgstr "Библиотека Pas2JS / модуль JavaScript"
 
 #: strpas2jsdesign.pjsdnewatompackage
 msgid "Atom package"
@@ -259,12 +259,12 @@ msgid "Name of your WebAssembly file"
 msgstr "Имя файла WebAssembly"
 
 #: strpas2jsdesign.rscreateclassfromhtmldescription
-msgid "Create a pas2js \"form\" class definition from HTML file using ID attributes in the HTML file."
-msgstr ""
+msgid "Create a Pas2JS \"form\" class definition from HTML file using ID attributes in the HTML file."
+msgstr "Создать объявление класса \"формы\" Pas2JS из файла HTML с использованием его атрибутов-идентификаторов."
 
 #: strpas2jsdesign.rscreateclassfromhtmlname
-msgid "pas2js class definition from HTML file"
-msgstr ""
+msgid "Pas2JS class definition from HTML file"
+msgstr "Объявление класса Pas2JS из файла HTML"
 
 #: strpas2jsdesign.spasjswebservercaption
 msgctxt "strpas2jsdesign.spasjswebservercaption"
