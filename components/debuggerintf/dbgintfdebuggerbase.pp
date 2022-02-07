@@ -3947,6 +3947,8 @@ end;
 procedure TDBGBreakPoint.DoStateChange(const AOldState: TDBGState);
 begin
   if Debugger.State <> dsStop then Exit;
+  SetValid(vsUnknown);
+
   if not (AOldState in [dsIdle, dsNone]) then Exit;
 
   BeginUpdate;
