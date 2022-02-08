@@ -585,7 +585,7 @@
             <var>GetImageIndexAndEffect</var> is a procedure used to get the ordinal position for the image used to render the <var>Glyph</var> for the class instance. In addition, it returns the image resolution for the specified display density and the drawing effect for the button <var>State</var>.
           </p>
           <p>
-            <var>GetImageIndexAndEffect</var> uses <var>ThemeServiecs</var> to determine if drawing effects are automatically applied to glyph images, and captures the  effect in the <var>AEffect</var> output argument.
+            <var>GetImageIndexAndEffect</var> uses <var>ThemeServices</var> to determine if drawing effects are automatically applied to glyph images, and captures the  effect in the <var>AEffect</var> output argument.
           </p>
           <p>
             <var>GetImageIndexAndEffect</var> determines the image source and the ordinal position for the  image used for the button glyph. <var>ExternalImages</var> and <var>ExternalImageIndex</var> are used (when assigned). The next available source is the resource name specified in <var>LCLGlyphResourceName</var> (when specified). Finally, the <var>Images</var> property is used (when assigned). When the image source has been determined, the correct image resolution for the value in <var>APPI</var> is selected and stored in <var>AImageResolution</var>. <var>ImageIndexes</var> is used to get the position for the image with the specified button <var>State</var>.
@@ -2119,6 +2119,7 @@
       <element name="TCustomSpeedButton.FDragging"/>
       <element name="TCustomSpeedButton.FFlat"/>
       <element name="TCustomSpeedButton.FMouseInControl"/>
+      <element name="TCustomSpeedButton.FAlignment"/>
 
       <element name="TCustomSpeedButton.GetGlyph">
         <short>Gets the value for the Glyph property.</short>
@@ -2172,6 +2173,24 @@
           <link id="TCustomSpeedButton.GroupIndex"/>
           <link id="TCustomSpeedButton.Down"/>
         </seealso>
+      </element>
+
+      <element name="TCustomSpeedButton.GetTransparent">
+        <short>Gets the value for the Transparent property.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomSpeedButton.GetTransparent.Result">
+        <short>Value for the Transparent property.</short>
+      </element>
+
+      <element name="TCustomSpeedButton.SetAlignment">
+        <short>Sets the value for the Alignment property.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TCustomSpeedButton.SetAlignment.Value">
+        <short>New value for the Alignment property.</short>
       </element>
 
       <element name="TCustomSpeedButton.SetAllowAllUp">
@@ -2230,16 +2249,23 @@
       </element>
 
       <element name="TCustomSpeedButton.CMButtonPressed">
-        <short>Control message passed when the button is pressed.</short>
-        <descr></descr>
+        <short>Handles the Control message passed when the button is pressed.</short>
+        <descr>
+          <p>
+            <var>CMButtonPressed</var> is a method used to handle a <var>CM_BUTTONPRESSED</var> control message received for the control. CMButtonPressed ensures that the Down property is set to <b>False</b> when another speed button with the same GroupIndex is pressed. AllowAllUp is updated and the control is redrawn.
+          </p>
+          <p>
+            No actions are performed in the method when the control in Message does not have the same GroupIndex value.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomSpeedButton.CMButtonPressed.Message">
-        <short></short>
+        <short>TLMessage instance examined in the method.</short>
       </element>
 
       <element name="TCustomSpeedButton.CMEnabledChanged">
-        <short>Control message passed when the control is enabled.</short>
+        <short>Handles the Control message passed when the control is enabled.</short>
         <descr></descr>
         <seealso></seealso>
       </element>
@@ -2249,7 +2275,7 @@
 
       <element name="TCustomSpeedButton.DoMouseUp">
         <short>
-          Performs actions needed when the Mouse Up message is received for the control.
+          Performs actions needed when a Mouse Up message is received for the control.
         </short>
         <descr></descr>
         <seealso></seealso>
@@ -2409,7 +2435,7 @@
 
       <element name="TCustomSpeedButton.MeasureDraw">
         <short>
-          Calculates the Width and Height for the speed button, and optionally renders the control.
+          Calculates the Width, Height, and layout for the speed button and optionally renders the control.
         </short>
         <descr>
           <p>
@@ -2434,43 +2460,83 @@
       <element name="TCustomSpeedButton.MouseEnter" link="#lcl.controls.TControl.MouseEnter"/>
       <element name="TCustomSpeedButton.MouseLeave" link="#lcl.controls.TControl.MouseLeave"/>
 
-      <element name="TCustomSpeedButton.MouseDown" link="#lcl.controls.TControl.MouseDown"/>
+      <element name="TCustomSpeedButton.MouseDown">
+        <short>
+          Performs actions needed for a mouse down event on the control.
+        </short>
+        <descr>
+          <p>
+            <var>MouseDown</var> is an overridden method in <var>TCustomSpeedButton</var>. It calls the inherited MouseDown method on entry to signal the OnEditingDone event for the active control on the Parent form. It also updates the DragManager coordinates when a drag operation is already active.
+          </p>
+          <p>
+            No additional actions are performed in the method at design-time.
+          </p>
+          <p>
+            If the Left mouse button was pressed when the control is Enabled, Down is set to True (when needed) and the Action for the control is unchecked. An internal flag for a pending drag operation in MouseMove is set prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.MouseDown">TControl.MouseDown</link>
+        </seealso>
+      </element>
       <element name="TCustomSpeedButton.MouseDown.Button">
-        <short></short>
+        <short>Button for the mouse event.</short>
       </element>
       <element name="TCustomSpeedButton.MouseDown.Shift">
-        <short></short>
+        <short>Shift, Ctrl, or Alt modifier for the mouse event.</short>
       </element>
       <element name="TCustomSpeedButton.MouseDown.X">
-        <short></short>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TCustomSpeedButton.MouseDown.Y">
-        <short></short>
+        <short>Vertical coordinate for the mouse pointer.</short>
       </element>
 
-      <element name="TCustomSpeedButton.MouseMove" link="#lcl.controls.TControl.MouseMove"/>
+      <element name="TCustomSpeedButton.MouseMove">
+        <short>
+          Performs actions needed for a mouse move message received for the control.
+        </short>
+        <descr>
+          <p>
+            <var>MouseMove</var> calls the inherited method on entry to update the pointer position for the DragManager (when active) and to signal the OnMouseMove event handler (when assigned).
+          </p>
+          <p>
+            No additional actions are performed in the method at design-time.
+          </p>
+          <p>
+            if a drag operation has been started in MouseDown, the internal TButtonState for the control is updated to reflect the values in AllowAllUp and Down. When the button state has changed, the control is redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.MouseDown"/>
+          <link id="TButtonState"/>
+          <link id="#lcl.controls.TControl.OnMouseMove">TControl.OnMouseMove</link>
+          <link id="#lcl.controls.TControl.MouseMove">TControl.MouseMove</link>
+          <link id="#lcl.controls.TControl.WMMouseMove">TControl.WMMouseMove</link>
+        </seealso>
+      </element>
       <element name="TCustomSpeedButton.MouseMove.Shift">
-        <short></short>
+        <short>Shift, Ctrl, or Alt modifier for the mouse move event.</short>
       </element>
       <element name="TCustomSpeedButton.MouseMove.X">
-        <short></short>
+        <short>Horizontal coordinate where the mouse pointer was moved.</short>
       </element>
       <element name="TCustomSpeedButton.MouseMove.Y">
-        <short></short>
+        <short>Vertical coordinate where the mouse pointer was moved.</short>
       </element>
 
       <element name="TCustomSpeedButton.MouseUp" link="#lcl.controls.TControl.MouseUp"/>
       <element name="TCustomSpeedButton.MouseUp.Button">
-        <short></short>
+        <short>Button for the mouse event.</short>
       </element>
       <element name="TCustomSpeedButton.MouseUp.Shift">
-        <short></short>
+        <short>Shift, Ctrl, or Alt modifier for the mouse up event.</short>
       </element>
       <element name="TCustomSpeedButton.MouseUp.X">
-        <short></short>
+        <short>Horizontal coordinate for the mouse pointer.</short>
       </element>
       <element name="TCustomSpeedButton.MouseUp.Y">
-        <short></short>
+        <short>Vertical coordinate for the mouse pointer.</short>
       </element>
 
       <element name="TCustomSpeedButton.Notification">
@@ -2510,8 +2576,25 @@
 
       <element name="TCustomSpeedButton.PaintBackground">
         <short>Paints the background for the control to the specified rectangle.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>PaintBackground</var> is a method used to draw the background for the speed button control on its Canvas. When Transparent is <b>True</b> and the theme element has transparent areas, the value in Color is used to fill the drawing area in PaintRect.
+          </p>
+          <p>
+            The DrawElement method in ThemeServices is called to render the drawing area to the Canvas for the control. PaintRect is updated following the drawing operation with the reduced content rectangle (the button surface without borders/edges) needed for the control.
+          </p>
+          <p>
+            PaintBackground is called when the MeasureDraw method is used to render the control. The adjusted rectangle is later used in the method to calculate the drawing areas for the glyph bitmap and caption text.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.Color"/>
+          <link id="TCustomSpeedButton.MeasureDraw"/>
+          <link id="TCustomSpeedButton.Paint"/>
+          <link id="TCustomSpeedButton.Transparent"/>
+          <link id="#lcl.themes.ThemeServices">ThemeServices</link>
+          <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
+        </seealso>
       </element>
       <element name="TCustomSpeedButton.PaintBackground.PaintRect">
         <short>Rectangle where the control is drawn.</short>
@@ -2623,18 +2706,63 @@
 
       <element name="TCustomSpeedButton.GetDrawDetails">
         <short>
-          <var>GetDrawDetails</var> - returns the structured details for drawing.
+          Gets the theme element details used to draw the control.
         </short>
+        <descr>
+          <p>
+            Called from the <var>MeasureDraw</var> method. The return value can be an enumeration value from either <var>TThemedToolBar</var> or <var>TThemedButton</var> depending on the value in the <var>Flat</var> property.
+          </p>
+          <p>
+            When Flat is True, one of the following TThemedToolBar values is returned:
+          </p>
+          <dl>
+            <dt>ttbButtonDisabled</dt>
+            <dd>Used when IsEnabled is False.</dd>
+            <dt>ttbButtonChecked</dt>
+            <dd>Used when Down is True and the mouse pointer is not over the control.</dd>
+            <dt>ttbButtonCheckedHot</dt>
+            <dd>Used when Down is True and the mouse pointer is hovered over the control.</dd>
+            <dt>ttbButtonPressed</dt>
+            <dd>Used when Down is False and the mouse is hovered over a grouped button control.</dd>
+            <dt>ttbButtonHot</dt>
+            <dd>Used when Down is False and the mouse is hovered over a non-grouped button control.</dd>
+            <dt>ttbButtonNormal</dt>
+            <dd>Default state for the control.</dd>
+          </dl>
+          <p>
+            When Flat is False, one of the following TThemedButton values is returned:
+          </p>
+          <dl>
+            <dt>tbPushButtonDisabled</dt>
+            <dd>Used when IsEnabled is False.</dd>
+            <dt>tbPushButtonPressed</dt>
+            <dd>Used when a grouped button control is Down.</dd>
+            <dt>tbPushButtonHot</dt>
+            <dd>Used when a grouped button control is under the mouse pointer.</dd>
+            <dt>tbPushButtonNormal</dt>
+            <dd>Default state for the control.</dd>
+          </dl>
+        </descr>
       </element>
       <element name="TCustomSpeedButton.GetDrawDetails.Result">
-        <short></short>
+        <short>Theme element detail used to draw the control in its current state.</short>
       </element>
 
       <element name="TCustomSpeedButton.MouseInControl">
         <short>
-          <var>MouseInControl</var> - returns True if the mouse cursor is in the control.</short>
-        <descr></descr>
-        <seealso></seealso>
+          Returns True if the mouse pointer is in the display area for the control.
+        </short>
+        <descr>
+          <p>
+            The property value is updated in the <var>MouseEnter</var> and <var>MouseLeave</var> methods when the mouse pointer enters or leaves the control area. The property value is used in the <var>UpdateState</var> method to determine if the button control is drawn using the "up" or "hot" states. It is used in the <var>GetDrawDetails</var> method to selected the theme element detail needed to draw the control in its current state.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.MouseEnter"/>
+          <link id="TCustomSpeedButton.MouseLeave"/>
+          <link id="TCustomSpeedButton.UpdateState"/>
+          <link id="TCustomSpeedButton.GetDrawDetails"/>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.ActionChange">
@@ -2643,7 +2771,7 @@
         </short>
         <descr>
           <p>
-            ActionChange is overridden in TCustomSpeedButton to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
+            <var>ActionChange</var> is overridden in <var>TCustomSpeedButton</var> to ensure that values from the new action instance in Sender are stored to properties in the control. ActionChange is the routine which implements the OnChange event handler for the ActionLink in the control. It is signalled (from TControl) when a new value is assigned to the Action property, or when the control is loaded using LCL component streaming.
           </p>
           <p>
             Sender is the new action instance for the event, or Nil when the value in Action has been removed (set to Nil).
@@ -2684,8 +2812,7 @@
             <var>Loaded</var> is called by the LCL streaming system when a root component was completely read from a stream and all properties and references to other objects have been resolved. Descendents of <var>TComponent</var> should override this method to perform additional processing when all published properties have been set from values obtained from the LCL component stream.
           </p>
           <p>
-            Application programmers should never call <var>Loaded</var> directly; this
-            is done automatically by the LCL streaming system.
+            Application programmers should never call <var>Loaded</var> directly; this is done automatically by the LCL streaming system.
           </p>
         </descr>
         <seealso>
@@ -2728,28 +2855,53 @@
         <short>
           Gets the size of the text within the specified <var>PaintRect</var>.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>GetTextSize</var> is a <var>TSize</var> function used to get the dimensions for the <var>Caption</var> text for the control.
+          </p>
+           <p>
+             GetTextSize removes Ampersand (&amp;) characters in Caption prior to calculating the dimensions for the text using the TextStyle for the control Canvas. The value in PaintRect is updated with the calculated dimensions. The X and Y members in the return value contain the width and the height for the text using the Font for the control. Both member values are set to <b>0</b> when ShowCaption is <b>False</b> or Caption contains an empty string (<b>''</b>).
+           </p>
+           <p>
+             GetTextSize is called from the <var>MeasureDraw</var> method.
+           </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.MeasureDraw"/>
+          <link id="TCustomSpeedButton.ShowCaption"/>
+          <link id="#lcl.controls.TGraphicControl.Canvas">TGraphicControl.Canvas</link>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
+        </seealso>
       </element>
       <element name="TCustomSpeedButton.GetTextSize.Result">
-        <short></short>
+        <short>TSize instance with the dimensions for the caption text.</short>
       </element>
       <element name="TCustomSpeedButton.GetTextSize.Drawing">
-        <short></short>
+        <short>Not used in the current implementation.</short>
       </element>
       <element name="TCustomSpeedButton.GetTextSize.PaintRect">
-        <short></short>
+        <short>
+          Display rectangle for the control; updated in the method with the calculated text dimensions.
+        </short>
       </element>
 
       <element name="TCustomSpeedButton.DrawGlyph">
         <short>
-          Draws the glyph on the canvas in the specified rectangle at a given offset.
+          Draws the glyph image on the canvas at a given offset in the specified client rectangle.
         </short>
-        <descr></descr>
+        <descr>
+          <p>
+            Uses the internal TButtonGlyph instance for the control (when assigned) to access its Draw method. The PixelsPerInch setting in Font and the Canvas scaling factor for the control are used to scale the image.
+          </p>
+          <p>
+            The return value is a TRect instance with are needed to draw the glyph image on the the specified canvas. Its member values are set to 0 (zero) when a TButtonGlyph instance has not been assigned by setting a Glyph bitmap for the control.
+          </p>
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.Result">
-        <short></short>
+        <short>TRect instance used to draw the glyph bitmap.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.ACanvas">
         <short>Canvas where the control is glyph is drawn.</short>
@@ -2764,10 +2916,10 @@
         <short>Button state drawn for the control.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.ATransparent">
-        <short></short>
+        <short>True if the glyph image is drawn with transparency.</short>
       </element>
       <element name="TCustomSpeedButton.DrawGlyph.BiDiFlags">
-        <short></short>
+        <short>Not used in the current implementation.</short>
       </element>
 
       <element name="TCustomSpeedButton.Create">
@@ -2851,12 +3003,59 @@
         <short></short>
       </element>
 
+      <element name="TCustomSpeedButton.Alignment">
+        <short>Horizontal alignment for the text displayed on the button control.</short>
+        <descr>
+          <p>
+            <var>Alignment</var> is a <var>TAlignment</var> property with the horizontal alignment for the <var>Caption</var> displayed on the button control. Alignment is used (along with <var>UseRightToLeftReading</var>) in the <var>MeasureDraw</var> method to set the text flags needed to measure / draw the Caption> for the control.
+          </p>
+          <p>
+            The default value for the property is <var>taCenter</var>, and causes the Caption to be centered in the text area on the control. Use <var>taLeft</var> to left-align the Caption in the text area. Use <var>taRight</var> to right-align the Caption for the control. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Set the value in <var>ShowCaption</var> to <b>True</b> to display the Caption for the control.
+          </p>
+          <p>
+            Use the <var>Layout</var> property to control the placement of the image relative to the text value displayed on the control.
+          </p>
+          <p>
+            Use the <var>Align</var> property to specify the side on the parent control to which the speed button is aligned, or to specify that custom <var>Anchors</var> are used for positioning and sizing.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.Layout"/>
+          <link id="TCustomSpeedButton.MeasureDraw"/>
+          <link id="TCustomSpeedButton.ShowCaption"/>
+          <link id="#lcl.controls.TControl.Align">TControl.Align</link>
+          <link id="#lcl.controls.TControl.Anchors">TControl.Anchors</link>
+          <link id="#lcl.controls.TControl.Caption">TControl.Caption</link>
+          <link id="#lcl.controls.TControl.UseRightToLeftReading">TControl.UseRightToLeftReading</link>
+          <link id="#rtl.classes.TAlignment">TAlignment</link>
+        </seealso>
+      </element>
+
       <element name="TCustomSpeedButton.AllowAllUp">
         <short>
           Indicates if all buttons in a group can be in an up state.
         </short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            <var>AllowAllUp</var> is a <var>Boolean</var> property which indicates whether all speed buttons with the same <var>GroupIndex</var> value can be in the "up" state. The default value for the property is <b>False</b>, and means that one of the grouped speed buttons must have its <var>Down</var> property set to <b>True</b> when GroupIndex has a non-zero value.
+          </p>
+          <p>
+            Changing the value for the property causes a button pressed event to be sent to the Parent control (when assigned) and the Down property is toggled and updated for the new property value.
+          </p>
+          <p>
+            Set GroupIndex to a value other than 0 (zero) to use AllowAllUp when a mouse button or an accelerator key is handled for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.GroupIndex"/>
+          <link id="TCustomSpeedButton.Down"/>
+          <link id="TCustomSpeedButton.MouseUp"/>
+          <link id="TCustomSpeedButton.DialogChar"/>
+          <link id="#lcl.controls.TControl.Parent">TControl.Parent</link>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.Color">
@@ -2868,7 +3067,7 @@
             The default value for the property is clBtnFace in TCustomSpeedButton.
           </p>
           <p>
-            If the color is clDefault , the result will need to be passed through GetDefaultColor to resolve clDefault to a TColor value. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided in the GetColorResolvingParent and GetRGBColorResolvingParent methods.
+            If the color is clDefault, the result will need to be passed through GetDefaultColor to resolve clDefault to a TColor value. Convenience routines which obtain the color by resolving clDefault and ParentColor are also provided in the GetColorResolvingParent and GetRGBColorResolvingParent methods.
           </p>
         </descr>
         <seealso>
@@ -2922,26 +3121,59 @@
 
       <element name="TCustomSpeedButton.Flat">
         <short>Indicates whether the button is displayed with a Flat (non-relief) appearance.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <descr>
+          <p>
+            Set <var>Flat</var> to <b>True</b> to draw the control without relief, elevation, or a three-dimensional appearance. The default value for the property is <b>False</b>. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            Flat is used in the <var>GetDrawDetails</var> method to select the theme element details applied to the control for its current state. When set to False, TThemedButton element details are used. When set to True, TThemedToolBar element details are used. See <link id="TCustomSpeedButton.GetDrawDetails">GetDrawDetails</link> for more information about the values used for specific button states.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.GetDrawDetails"/>
+          <link id="TCustomSpeedButton.MeasureDraw"/>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.Glyph">
-        <short>The bitmap with the glyph image(s) displayed the button states.</short>
-        <descr></descr>
-        <seealso></seealso>
+        <short>The bitmap with the glyph image(s) displayed for button states.</short>
+        <descr>
+          <p>
+            <var>Glyph</var> is a <var>TBitmap</var> property with the image drawn for the button control. Read and write access to the property value are redirected to an internal <var>TButtonGlyph</var> instance for the control.  This allows a single image to be specified for Glyph, or multiple bitmaps for various button states using the Images property.
+          </p>
+          <p>
+            Changing the value for the property cause the control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomSpeedButton.Images"/>
+          <link id="TCustomSpeedButton.ImageIndex"/>
+          <link id="TCustomSpeedButton.DisabledImageIndex"/>
+          <link id="TCustomSpeedButton.HotImageIndex"/>
+          <link id="TCustomSpeedButton.PressedImageIndex"/>
+          <link id="TCustomSpeedButton.SelectedImageIndex"/>
+          <link id="TButtonGlyph"/>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.GroupIndex">
         <short>
-          Identifies the group of related speed buttons for the control.
+          Identifies the group to which the speed button control belongs.
         </short>
         <descr>
           <p>
-            GroupIndex is used with AllowAllUp and Down to determine if the button state can be changed within the related group of controls. The default value for the property is 0 (zero).
+            <var>GroupIndex</var> is used with <var>AllowAllUp</var> and <var>Down</var> to determine if the button state can be changed within the related group of controls. All buttons on the Parent control with the same value in GroupIndex are treated as a single group. The default value for the property is 0 (zero), and indicates that an explicit value has not been assigned for the property.
+          </p>
+          <p>
+            Set GroupIndex to a positive non-zero value to enable AllowAllUp checking when a mouse button event or an accelerator key is handled for the control.
           </p>
         </descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TCustomSpeedButton.AllowAllUp"/>
+          <link id="TCustomSpeedButton.Down"/>
+          <link id="TCustomSpeedButton.MouseUp"/>
+          <link id="TCustomSpeedButton.DialogChar"/>
+        </seealso>
       </element>
 
       <element name="TCustomSpeedButton.HotImageIndex">
@@ -2976,6 +3208,12 @@
         <descr>
           <p>
             Provides an alternate way to specify images (individually) as opposed to multiple adjacent bitmaps in Glyph.
+          </p>
+          <p>
+            Use ImageIndex to specify the ordinal position in Images for the glyph bitmap displayed on the control.
+          </p>
+          <p>
+            Use Glyph to access an image in the TButtonGlyph assigned to the control.
           </p>
         </descr>
         <seealso></seealso>
@@ -3023,7 +3261,9 @@
       <element name="TCustomSpeedButton.Margin">
         <short>Space around the Glyph bitmap and Caption for the control.</short>
         <descr>
-          A value of -1 centers the content. If Spacing is -1 too then there is the same space on the left, between the glyph and caption, and on the right.
+          <p>
+            A value of -1 centers the content. If Spacing is -1 too then there is the same space on the left, between the glyph and caption, and on the right.
+          </p>
         </descr>
         <seealso></seealso>
       </element>
@@ -3151,6 +3391,7 @@
 
       <element name="TSpeedButton.Action" link="#lcl.controls.TControl.Action"/>
       <element name="TSpeedButton.Align" link="#lcl.controls.TControl.Align"/>
+      <element name="TSpeedButton.Alignment" link="#lcl.buttons.TCustomSpeedButton.Alignment"/>
       <element name="TSpeedButton.AllowAllUp" link="#lcl.buttons.TCustomSpeedButton.AllowAllUp"/>
       <element name="TSpeedButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
       <element name="TSpeedButton.AutoSize" link="#lcl.controls.TControl.AutoSize"/>
