@@ -1904,6 +1904,8 @@ var
   ALastAddr, tmpAddr, tmpPointer, prevInstructionSize: TDBGPtr;
   ADisassembler: TDbgAsmDecoder;
   AOffset: longint;
+  RealReadLen: Cardinal;
+
 begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State = dsPause) or FInPrepare then
@@ -1977,7 +1979,7 @@ begin
                SrcStatementCount := StatIndex;
            end;
            StatIndex := 0;
-           FirstIndex := i;
+           FirstIndex:=AReversedRange.Count;
          end;
 
          if assigned(sym) then
@@ -2030,10 +2032,12 @@ begin
 
   if ALinesAfter > 0 then
   begin
+  StatIndex:=0;
+  FirstIndex:=ARange.Count;
   sz := ALinesAfter * ADisassembler.MaxInstructionSize;
   SetLength(CodeBin, sz);
   bytesDisassembled := 0;
-  if not TFpDebugDebugger(Debugger).ReadData(AnAddr, sz, CodeBin[0]) then
+  if not TFpDebugDebugger(Debugger).ReadData(AnAddr, sz, CodeBin[0], RealReadLen) then
     begin
     DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
     inc(AnAddr);
@@ -2046,7 +2050,8 @@ begin
 
       prevInstructionSize := p - @CodeBin[bytesDisassembled];
       bytesDisassembled := bytesDisassembled + prevInstructionSize;
-      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
+      if bytesDisassembled > RealReadLen then
+        break;      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
       // If this is the last statement for this source-code-line, fill the
       // SrcStatementCount from the prior statements.
       if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
@@ -2055,7 +2060,7 @@ begin
         for j := 0 to StatIndex-1 do
           ARange.EntriesPtr[FirstIndex+j]^.SrcStatementCount:=StatIndex;
         StatIndex:=0;
-        FirstIndex:=i;
+        FirstIndex:=ARange.Count;
         end;
 
       if assigned(sym) then
