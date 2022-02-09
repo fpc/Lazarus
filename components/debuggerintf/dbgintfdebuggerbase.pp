@@ -1225,6 +1225,8 @@ type
 
     FEntryRanges: TDBGDisassemblerEntryMap;
     FCurrentRange: TDBGDisassemblerEntryRange;
+    FPreparingBefore, FPreparingAfter: Integer;
+    FPreparingAddr: TDbgPtr;
     procedure EntryRangesOnDelete(Sender: TObject);
     procedure EntryRangesOnMerge(MergeReceiver, MergeGiver: TDBGDisassemblerEntryRange);
     function FindRange(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): Boolean;
@@ -5242,16 +5244,42 @@ begin
   if (ALinesBefore < 0) or (ALinesAfter < 0)
   then raise Exception.Create('invalid PrepareRange request');
 
-  // Do not LockChange, if FindRange changes something, then notification must be send to syncronize counts on IDE-object
-  Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
-  if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  found existing data  Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-  if Result
-  then exit;
+  if (FPreparingBefore > 0) or (FPreparingAfter > 0) then begin
+    if AnAddr <> FPreparingAddr then begin
+      FPreparingBefore := ALinesBefore;
+      FPreparingAfter  := ALinesAfter;
+      FPreparingAddr   := AnAddr;
+    end
+    else begin
+      FPreparingBefore := Max(FPreparingBefore, ALinesBefore);
+      FPreparingAfter  := Max(FPreparingAfter, ALinesAfter);
+    end;
+    exit;
+  end;
 
-  if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
-  if PrepareEntries(AnAddr, ALinesBefore, ALinesAfter)
-  then Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
-  if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+  FPreparingBefore := ALinesBefore;
+  FPreparingAfter  := ALinesAfter;
+  FPreparingAddr   := AnAddr;
+  try
+    repeat
+      ALinesBefore := FPreparingBefore;
+      ALinesAfter  := FPreparingAfter;
+      AnAddr       := FPreparingAddr;
+      // Do not LockChange, if FindRange changes something, then notification must be send to syncronize counts on IDE-object
+      Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
+      if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  found existing data  Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+      if Result
+      then exit;
+
+      if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  calling PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+      if PrepareEntries(AnAddr, ALinesBefore, ALinesAfter)
+      then Result:= FindRange(AnAddr, ALinesBefore, ALinesAfter);
+      if result then debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.PrepareRange  found data AFTER PrepareEntries Addr=', AnAddr,' before=', ALinesBefore, ' After=', ALinesAfter ]);
+    until (FPreparingBefore = ALinesBefore) and (FPreparingAfter = ALinesAfter) and (FPreparingAddr = AnAddr);
+  finally
+    FPreparingBefore := 0;
+    FPreparingAfter := 0;
+  end;
 end;
 
 (******************************************************************************)
