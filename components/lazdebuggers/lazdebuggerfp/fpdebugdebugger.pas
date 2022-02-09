@@ -541,6 +541,8 @@ type
   { TFPDBGDisassembler }
 
   TFPDBGDisassembler = class(TDBGDisassembler)
+  private
+    FInPrepare: boolean;
   protected
     function PrepareEntries(AnAddr: TDbgPtr; ALinesBefore, ALinesAfter: Integer): boolean; override;
   end;
@@ -1904,9 +1906,11 @@ var
   AOffset: longint;
 begin
   Result := False;
-  if (Debugger = nil) or not(Debugger.State = dsPause) then
+  if (Debugger = nil) or not(Debugger.State = dsPause) or FInPrepare then
     exit;
 
+  FInPrepare := True;
+  try
   ADisassembler := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.Disassembler;
   Sym:=nil;
   ASrcFileLine:=0;
@@ -2091,6 +2095,7 @@ begin
     ARange.RangeEndAddr:=ALastAddr;
     ARange.LastEntryEndAddr:={%H-}TDBGPtr(p);
     EntryRanges.AddRange(ARange);
+    Changed;
     result := true;
     end
   else
@@ -2098,6 +2103,9 @@ begin
     result := false;
     ARange.Free;
     end;
+  finally
+    FInPrepare := False;
+  end;
 end;
 
 { TFPRegisters }
