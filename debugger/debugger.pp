@@ -7022,7 +7022,7 @@ end;
 function TIDEDisassembler.PrepareRange(AnAddr: TDbgPtr; ALinesBefore,
   ALinesAfter: Integer): Boolean;
 begin
-  if (AnAddr = BaseAddr) and (ALinesBefore < CountBefore) and (ALinesAfter < CountAfter)
+  if (AnAddr = BaseAddr) and (ALinesBefore <= CountBefore) and (ALinesAfter <= CountAfter)
   then exit(True);
 
   if FMaster <> nil
