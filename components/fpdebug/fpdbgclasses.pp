@@ -2977,7 +2977,7 @@ begin
       if Process.Disassembler.LastErrorWasMemReadErr then begin
         inc(CodeReadErrCnt);
         if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
-        if NextIdx = 0 then
+        if NextIdx <= 1 then
           OutSideFrame := True; // Maybe after "TProc(nil)();" call, then no frame could have been set up
       end;
     end;
