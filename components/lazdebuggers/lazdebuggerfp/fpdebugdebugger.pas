@@ -1906,6 +1906,49 @@ var
   AOffset: longint;
   RealReadLen: Cardinal;
 
+  procedure AddInfoToRange(ALineAddr: TDBGPtr; ATargetRange: TDBGDisassemblerEntryRange);
+  var
+    j: integer;
+  begin
+    Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(ALineAddr);
+    // If this is the last statement for this source-code-line, fill the
+    // SrcStatementCount from the prior statements.
+    if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
+      (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
+      begin
+      for j := 0 to StatIndex-1 do
+        ATargetRange.EntriesPtr[FirstIndex+j]^.SrcStatementCount:=StatIndex;
+      StatIndex:=0;
+      FirstIndex:=ATargetRange.Count;
+      end;
+
+    if assigned(sym) then
+      begin
+      ASrcFileName:=sym.FileName;
+      ASrcFileLine:=sym.Line;
+      AFuncName := sym.Name;
+      AOffset := int32(int64(ALineAddr) - int64(Sym.Address.Address));
+      sym.ReleaseReference;
+      end
+    else
+      begin
+      ASrcFileName:='';
+      AFuncName := '';
+      ASrcFileLine:=0;
+      AOffset := -1;
+      end;
+    AnEntry.Addr := ALineAddr;
+    AnEntry.Dump := ADump;
+    AnEntry.Statement := AStatement;
+    AnEntry.SrcFileLine:=ASrcFileLine;
+    AnEntry.SrcFileName:=ASrcFileName;
+    AnEntry.FuncName := AFuncName;
+    AnEntry.SrcStatementIndex:=StatIndex;
+    AnEntry.Offset := AOffset;
+    ATargetRange.Append(@AnEntry);
+    inc(StatIndex);
+  end;
+
 begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State = dsPause) or FInPrepare then
@@ -1967,46 +2010,7 @@ begin
          DebugLn(DBG_VERBOSE, format('Disassembled: [%.8X:  %s] %s',[tmpAddr, ADump, Astatement]));
 
          Dec(tmpAddr, prevInstructionSize);
-         Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(tmpAddr);
-         // If this is the last statement for this source-code-line, fill the
-         // SrcStatementCount from the prior statements.
-         if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
-           (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
-         begin
-           for j := 0 to StatIndex-1 do
-           begin
-             with AReversedRange.EntriesPtr[FirstIndex+j]^ do
-               SrcStatementCount := StatIndex;
-           end;
-           StatIndex := 0;
-           FirstIndex:=AReversedRange.Count;
-         end;
-
-         if assigned(sym) then
-         begin
-           ASrcFileName:=sym.FileName;
-           ASrcFileLine:=sym.Line;
-           AFuncName := sym.Name;
-           AOffset := int32(int64(tmpAddr) - int64(Sym.Address.Address));
-           sym.ReleaseReference;
-         end
-         else
-         begin
-           ASrcFileName:='';
-           AFuncName := '';
-           ASrcFileLine:=0;
-           AOffset := -1;
-         end;
-         AnEntry.Addr := tmpAddr;
-         AnEntry.Dump := ADump;
-         AnEntry.Statement := AStatement;
-         AnEntry.SrcFileLine:=ASrcFileLine;
-         AnEntry.SrcFileName:=ASrcFileName;
-         AnEntry.FuncName := AFuncName;
-         AnEntry.SrcStatementIndex:=StatIndex;  // should be inverted for reverse parsing
-         AnEntry.Offset := AOffset;
-         AReversedRange.Append(@AnEntry);
-         inc(StatIndex);
+         AddInfoToRange(tmpAddr, AReversedRange);
        end;
 
      if AReversedRange.Count>0 then
@@ -2028,69 +2032,82 @@ begin
      end;
      // Entries are all pointers, don't free entries
      FreeAndNil(AReversedRange);
-   end;
+   end
+  else
+  if ALinesBefore > 0 then begin
+    Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
+    if Sym <> nil then begin
+      tmpAddr := Sym.Address.Address;
+      Sym.ReleaseReference;
+      if tmpAddr < AnAddr then begin
+        sz := AnAddr - tmpAddr + ADisassembler.MaxInstructionSize;
+        SetLength(CodeBin, sz);
+        bytesDisassembled := 0;
+        if not TFpDebugDebugger(Debugger).ReadData(tmpAddr, sz, CodeBin[0], RealReadLen) then begin
+          DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(tmpAddr)]));
+        end
+        else begin
+          while tmpAddr < AnAddr do begin
+            p := @CodeBin[bytesDisassembled];
+            ADisassembler.Disassemble(p, ADump, AStatement);
+
+            prevInstructionSize := p - @CodeBin[bytesDisassembled];
+            if prevInstructionSize = 0 then
+              break;
+            bytesDisassembled := bytesDisassembled + prevInstructionSize;
+            if bytesDisassembled > RealReadLen then
+              break;
+            if tmpAddr + prevInstructionSize > AnAddr then
+              break;
+
+            AddInfoToRange(tmpAddr, ARange);
+            ALastAddr:=tmpAddr;
+            Inc(tmpAddr, prevInstructionSize);
+          end;
+          if tmpAddr <> AnAddr then begin
+            AnEntry.Addr := tmpAddr;
+            AnEntry.Dump := '???';
+            AnEntry.Statement := '???';
+            AnEntry.SrcFileLine:=-1;
+            AnEntry.SrcFileName:='';
+            AnEntry.FuncName := '';
+            AnEntry.SrcStatementIndex:=StatIndex;
+            AnEntry.Offset := -1;
+            ARange.Append(@AnEntry);
+            inc(StatIndex);
+          end;
+        end;
+      end;
+    end;
+  end;
 
   if ALinesAfter > 0 then
   begin
-  StatIndex:=0;
-  FirstIndex:=ARange.Count;
-  sz := ALinesAfter * ADisassembler.MaxInstructionSize;
-  SetLength(CodeBin, sz);
-  bytesDisassembled := 0;
-  if not TFpDebugDebugger(Debugger).ReadData(AnAddr, sz, CodeBin[0], RealReadLen) then
-    begin
-    DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
-    inc(AnAddr);
-    end
-  else
-    for i := 0 to ALinesAfter-1 do
+    StatIndex:=0;
+    FirstIndex:=ARange.Count;
+    sz := ALinesAfter * ADisassembler.MaxInstructionSize;
+    SetLength(CodeBin, sz);
+    bytesDisassembled := 0;
+    if not TFpDebugDebugger(Debugger).ReadData(AnAddr, sz, CodeBin[0], RealReadLen) then
       begin
-      p := @CodeBin[bytesDisassembled];
-      ADisassembler.Disassemble(p, ADump, AStatement);
+      DebugLn(Format('Disassemble: Failed to read memory at %s.', [FormatAddress(AnAddr)]));
+      inc(AnAddr);
+      end
+    else
+      for i := 0 to ALinesAfter-1 do
+        begin
+        p := @CodeBin[bytesDisassembled];
+        ADisassembler.Disassemble(p, ADump, AStatement);
 
-      prevInstructionSize := p - @CodeBin[bytesDisassembled];
-      bytesDisassembled := bytesDisassembled + prevInstructionSize;
-      if bytesDisassembled > RealReadLen then
-        break;      Sym := TFpDebugDebugger(Debugger).FDbgController.CurrentProcess.FindProcSymbol(AnAddr);
-      // If this is the last statement for this source-code-line, fill the
-      // SrcStatementCount from the prior statements.
-      if (assigned(sym) and ((ASrcFileName<>sym.FileName) or (ASrcFileLine<>sym.Line))) or
-        (not assigned(sym) and ((ASrcFileLine<>0) or (ASrcFileName<>''))) then
-        begin
-        for j := 0 to StatIndex-1 do
-          ARange.EntriesPtr[FirstIndex+j]^.SrcStatementCount:=StatIndex;
-        StatIndex:=0;
-        FirstIndex:=ARange.Count;
-        end;
+        prevInstructionSize := p - @CodeBin[bytesDisassembled];
+        bytesDisassembled := bytesDisassembled + prevInstructionSize;
+        if bytesDisassembled > RealReadLen then
+          break;
 
-      if assigned(sym) then
-        begin
-        ASrcFileName:=sym.FileName;
-        ASrcFileLine:=sym.Line;
-        AFuncName := sym.Name;
-        AOffset := int32(int64(AnAddr) - int64(Sym.Address.Address));
-        sym.ReleaseReference;
-        end
-      else
-        begin
-        ASrcFileName:='';
-        AFuncName := '';
-        ASrcFileLine:=0;
-        AOffset := -1;
+        AddInfoToRange(AnAddr, ARange);
+        ALastAddr:=AnAddr;
+        Inc(AnAddr, prevInstructionSize);
         end;
-      AnEntry.Addr := AnAddr;
-      AnEntry.Dump := ADump;
-      AnEntry.Statement := AStatement;
-      AnEntry.SrcFileLine:=ASrcFileLine;
-      AnEntry.SrcFileName:=ASrcFileName;
-      AnEntry.FuncName := AFuncName;
-      AnEntry.SrcStatementIndex:=StatIndex;
-      AnEntry.Offset := AOffset;
-      ARange.Append(@AnEntry);
-      ALastAddr:=AnAddr;
-      inc(StatIndex);
-      Inc(AnAddr, prevInstructionSize);
-      end;
   end
   else
     ALastAddr := AnAddr;
