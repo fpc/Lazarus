@@ -1949,6 +1949,8 @@ var
     inc(StatIndex);
   end;
 
+const
+  MAX_DISASS_DIST_TO_ENTRY = 10000;
 begin
   Result := False;
   if (Debugger = nil) or not(Debugger.State = dsPause) or FInPrepare then
@@ -2039,7 +2041,9 @@ begin
     if Sym <> nil then begin
       tmpAddr := Sym.Address.Address;
       Sym.ReleaseReference;
-      if tmpAddr < AnAddr then begin
+      {$PUSH}{$Q-}{$R-}
+      if (tmpAddr < AnAddr) and (AnAddr - tmpAddr < MAX_DISASS_DIST_TO_ENTRY) then begin
+      {$POP}
         sz := AnAddr - tmpAddr + ADisassembler.MaxInstructionSize;
         SetLength(CodeBin, sz);
         bytesDisassembled := 0;
