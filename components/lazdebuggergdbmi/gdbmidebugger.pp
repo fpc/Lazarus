@@ -4532,7 +4532,7 @@ begin
     if i > 0
     then dec(i);
     ALinesBefore := i;
-    ALinesAfter := ARange.Count - i;
+    ALinesAfter := ARange.Count - 1 - i;
     Result := True;
     exit;
   end;

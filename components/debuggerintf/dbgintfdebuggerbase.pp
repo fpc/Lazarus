@@ -1323,7 +1323,7 @@ type
     // Returns "True", if the range is valid, if not a ChangeNotification will be triggered later
     function PrepareRange({%H-}AnAddr: TDbgPtr; {%H-}ALinesBefore, {%H-}ALinesAfter: Integer): Boolean; virtual;
     property BaseAddr: TDbgPtr read FBaseAddr;
-    property CountAfter: Integer read FCountAfter; // Includes the line at BaseAddr, as set by PrepareRange(AnAddr, ...)
+    property CountAfter: Integer read FCountAfter;
     property CountBefore: Integer read FCountBefore;
     property Entries[AIndex: Integer]: TDisassemblerEntry read GetEntry;
     property EntriesPtr[Index: Integer]: PDisassemblerEntry read GetEntryPtr;
@@ -5696,7 +5696,7 @@ begin
     FCurrentRange := NewRange;
     SetBaseAddr(AnAddr);
     SetCountBefore(i);
-    SetCountAfter(NewRange.Count - i);
+    SetCountAfter(NewRange.Count - 1 - i);
     Result := (i >= ALinesBefore) and (CountAfter >= ALinesAfter);
     debugln(DBG_DISASSEMBLER, ['INFO: TDBGDisassembler.FindRange: Address found ',AnAddr,' Result=', dbgs(result), ' before=',CountBefore, ' after=', CountAfter, ' wanted-before=',ALinesBefore,' wanted-after=',ALinesAfter,' in map with count=', FEntryRanges.Count]);
   finally
