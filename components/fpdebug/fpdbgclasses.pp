@@ -2763,7 +2763,7 @@ procedure TDbgThread.PrepareCallStackEntryList(AFrameRequired: Integer);
 const
   MAX_FRAMES = 50000; // safety net
 var
-  Address, FrameBase, LastFrameBase: QWord;
+  Address, FrameBase, LastFrameBase, Dummy: QWord;
   Size, CountNeeded, IP, BP, CodeReadErrCnt, SP: integer;
   AnEntry: TDbgCallstackEntry;
   R: TDbgRegisterValue;
@@ -2840,12 +2840,14 @@ begin
   CodeReadErrCnt := 0;
   while (CountNeeded > 0) and (FrameBase <> 0) and (FrameBase > LastFrameBase) do
   begin
+      OutSideFrame := False;
     if not Process.Disassembler.GetFunctionFrameInfo(Address, OutSideFrame) then begin
       if Process.Disassembler.LastErrorWasMemReadErr then begin
-      inc(CodeReadErrCnt);
-      if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
+        inc(CodeReadErrCnt);
+        if CodeReadErrCnt > 5 then break; // If the code cannot be read the stack pointer is wrong.
+        if NextIdx = 0 then
+          OutSideFrame := True; // Maybe after "TProc(nil)();" call, then no frame could have been set up
       end;
-        OutSideFrame := False;
     end;
     LastFrameBase := FrameBase;
 
@@ -2855,14 +2857,20 @@ begin
 
     if OutSideFrame then begin
       if not Process.ReadData(StackPtr, Size, Address) or (Address = 0) then Break;
-      {$PUSH}{$R-}{$Q-}
-      StackPtr := StackPtr + 1 * Size; // After popping return-addr from "StackPtr"
-      LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
-      {$POP}
-      // last stack has no frame
-      //AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',Size, BP);
-    end
-    else begin
+
+      if (not Process.ReadData(Address, 1, Dummy) or (Address = 0)) then begin
+        OutSideFrame := False;
+      end
+      else begin
+        {$PUSH}{$R-}{$Q-}
+        StackPtr := StackPtr + 1 * Size; // After popping return-addr from "StackPtr"
+        LastFrameBase := LastFrameBase - 1; // Make the loop think thas LastFrameBase was smaller
+        {$POP}
+        // last stack has no frame
+        //AnEntry.RegisterValueList.DbgRegisterAutoCreate[nBP].SetValue(0, '0',Size, BP);
+      end;
+    end;
+    if not OutSideFrame then begin
       {$PUSH}{$R-}{$Q-}
       StackPtr := FrameBase + 2 * Size; // After popping return-addr from "FrameBase + Size"
       {$POP}
