@@ -13,7 +13,9 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: glazresmain.cbtncancel
-msgid "Cancel"
+#, fuzzy
+#| msgid "Cancel"
+msgid "Close"
 msgstr "取消"
 
 #: glazresmain.defilter

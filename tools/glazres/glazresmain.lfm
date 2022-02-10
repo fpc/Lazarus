@@ -342,11 +342,9 @@ object GLazResForm: TGLazResForm
     Hint = 'Exit the program'
     Top = 488
     Width = 120
-    Cancel = True
     DefaultCaption = True
-    Kind = bkCancel
-    ModalResult = 2
-    OnClick = AddAnyBtnClick
+    Kind = bkClose
+    ModalResult = 11
     ParentShowHint = False
     ShowHint = True
     TabOrder = 8

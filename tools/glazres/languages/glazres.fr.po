@@ -12,7 +12,9 @@ msgstr ""
 "X-Generator: Poedit 2.2.1\n"
 
 #: glazresmain.cbtncancel
-msgid "Cancel"
+#, fuzzy
+#| msgid "Cancel"
+msgid "Close"
 msgstr "Annuler"
 
 #: glazresmain.defilter

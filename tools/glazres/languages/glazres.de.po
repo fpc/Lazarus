@@ -1,24 +1,24 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.4\n"
 "Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: glazresmain.cbtncancel
-msgid "Cancel"
-msgstr "Abbrechen"
+msgid "Close"
+msgstr "Beenden"
 
 #: glazresmain.defilter
 msgctxt "glazresmain.defilter"
 msgid "Lazarus Resource Files|*.lrs|All Files|*"
-msgstr "Lazarus-Ressourcen-Dateien|*.lrs|Alle Dateien|*"
+msgstr "Lazarus-Ressourcendateien|*.lrs|Alle Dateien|*"
 
 #: glazresmain.desaveresourcefileas
 msgctxt "glazresmain.desaveresourcefileas"
@@ -71,7 +71,7 @@ msgid " Resource name = \"%s\", Type = \"%s\""
 msgstr " Ressourcenname = \"%s\", Typ = \"%s\""
 
 #: glazresmain.msgsuccess
-#, object-pascal-format, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid ""
 #| "Done.\n"
 #| "Number of resources added: %d.\n"
@@ -117,7 +117,7 @@ msgstr "Bilder zur Liste hinzufügen"
 
 #: tglazresform.caption
 msgid "LRS Builder"
-msgstr "LRS-Ersteller"
+msgstr "LRS-Erzeuger"
 
 #: tglazresform.clearbtn.caption
 msgid "Clear"
@@ -137,7 +137,7 @@ msgstr "Ausgewählte Dateien aus Liste löschen"
 
 #: tglazresform.fileslabel.caption
 msgid "Files to include"
-msgstr "Dateien zum Einschliessen"
+msgstr "Einzuschließende Dateien"
 
 #: tglazresform.lrslabel.caption
 msgid "Lazarus Resource Filename"
@@ -154,4 +154,3 @@ msgstr "LRS erzeugen"
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "Die Ausgabe-LRS-Datei erstellen"
-

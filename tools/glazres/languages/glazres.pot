@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
 #: glazresmain.cbtncancel
-msgid "Cancel"
+msgid "Close"
 msgstr ""
 
 #: glazresmain.defilter
