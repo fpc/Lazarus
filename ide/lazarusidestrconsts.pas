@@ -469,6 +469,7 @@ resourcestring
   lisMenuViewHistory = 'History';
   lisMenuViewAssembler = 'Assembler';
   lisDbgAsmCopyToClipboard = 'Copy to Clipboard';
+  lisDbgAsmCopyAddressToClipboard = 'Copy address to Clipboard';
   lisMenuViewDebugOutput = 'Debug Output';
   lisMenuViewDebugEvents = 'Event Log';
   lisMenuIDEInternals = 'IDE Internals';

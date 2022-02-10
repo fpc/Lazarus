@@ -162,6 +162,10 @@ object AssemblerDlg: TAssemblerDlg
       Action = actCopy
       OnClick = CopyToClipboardClick
     end
+    object popCopyAddr: TMenuItem
+      Caption = 'popCopyAddr'
+      OnClick = popCopyAddrClick
+    end
   end
   object ActionList1: TActionList
     Left = 104

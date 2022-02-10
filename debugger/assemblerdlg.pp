@@ -56,6 +56,7 @@ type
     CopyToClipboard: TMenuItem;
     EditGotoAddr: TEdit;
     ImageList1: TImageList;
+    popCopyAddr: TMenuItem;
     pnlToolAddr: TPanel;
     pbAsm: TPaintBox;
     PopupMenu1: TPopupMenu;
@@ -88,6 +89,7 @@ type
       {%H-}Y: Integer);
     procedure pbAsmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure pbAsmPaint(Sender: TObject);
+    procedure popCopyAddrClick(Sender: TObject);
     procedure sbHorizontalChange(Sender: TObject);
     procedure sbVerticalChange(Sender: TObject);
     procedure sbVerticalScroll(Sender: TObject; ScrollCode: TScrollCode; var ScrollPos: Integer);
@@ -159,6 +161,7 @@ type
     procedure DoBeginUpdate; override;
     procedure DoEndUpdate; override;
     procedure UpdateShowing; override;
+    function GetLinMapEntryForLine(ALine: Integer; out AnEntry: TAsmDlgLineEntry): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -271,6 +274,7 @@ begin
   EditorOpts.AddHandlerAfterWrite(@DoEditorOptsChanged);
   Caption := lisMenuViewAssembler;
   CopyToClipboard.Caption := lisDbgAsmCopyToClipboard;
+  popCopyAddr.Caption := lisDbgAsmCopyAddressToClipboard;
 
 
   ToolBar1.Images := IDEImages.Images_16;
@@ -581,6 +585,16 @@ begin
   end;
 end;
 
+function TAssemblerDlg.GetLinMapEntryForLine(ALine: Integer; out
+  AnEntry: TAsmDlgLineEntry): Boolean;
+begin
+  AnEntry := Default(TAsmDlgLineEntry);
+  ALine := ALine - FTopLine;
+  Result := (ALine > 0) and (ALine < length(FLineMap));
+  if Result then
+    AnEntry := FLineMap[ALine];
+end;
+
 procedure TAssemblerDlg.pbAsmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if Button <> mbLeft then exit;
@@ -687,6 +701,14 @@ begin
   end;
 end;
 
+procedure TAssemblerDlg.popCopyAddrClick(Sender: TObject);
+var
+  Entry: TAsmDlgLineEntry;
+begin
+  if GetLinMapEntryForLine(FSelectLine, Entry) then
+    Clipboard.AsText := '$'+IntToHex(Entry.Addr);
+end;
+
 function TAssemblerDlg.FormatLine(ALine: TAsmDlgLineEntry; W: Integer) : String;
 begin
   Result := '';
@@ -728,11 +750,13 @@ end;
 procedure TAssemblerDlg.UpdateActionEnabled;
 var
   HasDisassembler: Boolean;
+  dummy: TAsmDlgLineEntry;
 begin
   HasDisassembler := (FDebugger <> nil) and (FDisassembler <> nil);
   actCurrentInstr.Enabled := HasDisassembler and (FLocation <> 0);
   actGotoAddr.Enabled := HasDisassembler and (StrToQWordDef(EditGotoAddr.Text, 0) <> 0);
   actCopy.Enabled := HasDisassembler;
+  popCopyAddr.Enabled := GetLinMapEntryForLine(FSelectLine, dummy);
   actStepOverInstr.Enabled := HasDisassembler;
   actStepIntoInstr.Enabled := HasDisassembler;
 end;
