@@ -200,6 +200,7 @@ type
     procedure RestoreRegisters;
   public
     constructor Create(AController: TDbgController; ARoutineAddress: TFpDbgMemLocation; ACallContext:TFpDbgInfoCallContext);
+    destructor Destroy; override;
     procedure DoContinue(AProcess: TDbgProcess; AThread: TDbgThread); override;
   end;
 
@@ -439,6 +440,12 @@ begin
   StoreRegisters;
 end;
 
+destructor TDbgControllerCallRoutineCmd.Destroy;
+begin
+  RemoveHiddenBreakpointAtReturnAddress;
+  inherited Destroy;
+end;
+
 procedure TDbgControllerCallRoutineCmd.Init;
 begin
   inherited Init;
@@ -563,6 +570,8 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.SetHiddenBreakpointAtReturnAddress(AnAddress: TDBGPtr);
 begin
+  assert(FHiddenBreakpoint = nil, 'TDbgControllerCallRoutineCmd.SetHiddenBreakpointAtReturnAddress: FHiddenBreakpoint = nil');
+  FHiddenBreakpoint.Free;
   FHiddenBreakpoint := FProcess.AddInternalBreak(AnAddress);
 end;
 
@@ -595,7 +604,7 @@ end;
 
 procedure TDbgControllerCallRoutineCmd.RemoveHiddenBreakpointAtReturnAddress();
 begin
-  FHiddenBreakpoint.Free;
+  FreeAndNil(FHiddenBreakpoint);
 end;
 
 procedure TDbgControllerCallRoutineCmd.StoreRegisters;
@@ -743,6 +752,8 @@ end;
 
 procedure TDbgControllerHiddenBreakStepBaseCmd.SetHiddenBreak(AnAddr: TDBGPtr);
 begin
+  assert(FHiddenBreakpoint = nil, 'TDbgControllerHiddenBreakStepBaseCmd.SetHiddenBreak: FHiddenBreakpoint = nil');
+  FHiddenBreakpoint.Free;
   // The callee may not setup a stackfram (StackBasePtr unchanged). So we use SP to detect recursive hits
   FHiddenBreakStackPtrAddr := FThread.GetStackPointerRegisterValue;
   FHiddenBreakInstrPtr := FThread.GetInstructionPointerRegisterValue;
