@@ -68,19 +68,16 @@ msgstr "Verarbeite \"%s\""
 #: glazresmain.msgresourcenametype
 #, object-pascal-format
 msgid " Resource name = \"%s\", Type = \"%s\""
-msgstr " Ressourcenname = \"%s\", Typ = \"%s\""
+msgstr "Ressourcenname = \"%s\", Typ = \"%s\""
 
 #: glazresmain.msgsuccess
-#, fuzzy, object-pascal-format
-#| msgid ""
-#| "Done.\n"
-#| "Number of resources added: %d.\n"
+#, object-pascal-format
 msgid ""
 "Done.\n"
 "Number of resources added: %d."
 msgstr ""
 "Erledigt.\n"
-"Anzahl hinzugefügter Ressourcen: %d.\n"
+"Anzahl hinzugefügter Ressourcen: %d."
 
 #: glazresmain.msgwrongext
 msgid "Filename does not have the required extension: fix it?"
