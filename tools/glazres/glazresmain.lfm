@@ -3,9 +3,7 @@ object GLazResForm: TGLazResForm
   Height = 532
   Top = 94
   Width = 610
-  HorzScrollBar.Page = 592
-  VertScrollBar.Page = 518
-  AutoScroll = True
+  AllowDropFiles = True
   Caption = 'LRS Builder'
   ClientHeight = 532
   ClientWidth = 610
@@ -183,13 +181,14 @@ object GLazResForm: TGLazResForm
   }
   OnClose = FormClose
   OnCreate = FormCreate
+  OnDropFiles = FormDropFiles
   OnShow = FormShow
   LCLVersion = '2.3.0.0'
   object LrsLabel: TLabel
     Left = 16
-    Height = 17
+    Height = 15
     Top = 14
-    Width = 154
+    Width = 141
     Caption = 'Lazarus Resource Filename'
   end
   object AddAnyBtn: TBitBtn
@@ -262,9 +261,9 @@ object GLazResForm: TGLazResForm
   end
   object FilesLabel: TLabel
     Left = 16
-    Height = 17
+    Height = 15
     Top = 64
-    Width = 86
+    Width = 79
     Caption = 'Files to include'
   end
   object DeleteBtn: TBitBtn
@@ -369,7 +368,7 @@ object GLazResForm: TGLazResForm
   end
   object DestEdt: TFileNameEdit
     Left = 16
-    Height = 31
+    Height = 23
     Top = 32
     Width = 552
     OnAcceptFileName = DestEdtAcceptFileName
@@ -386,9 +385,9 @@ object GLazResForm: TGLazResForm
   end
   object MessagesLabel: TLabel
     Left = 16
-    Height = 17
+    Height = 15
     Top = 304
-    Width = 56
+    Width = 51
     Caption = 'Messages'
   end
   object AddImgBtn: TBitBtn

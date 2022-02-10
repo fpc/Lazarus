@@ -65,6 +65,7 @@ type
       ARect: TRect; {%H-}State: TOwnerDrawState);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure AddAnyBtnClick(Sender: TObject);
@@ -154,6 +155,24 @@ begin
   OpenPictureDialog.Title := OPDOpenExistingPicture;
   OpenPictureDialog.Filter := OPDFilter + OPDFilterAll + {$IFDEF WINDOWS} ' (*.*)|*.*|' {$ELSE} ' (*)|*|' {$ENDIF} ;
   CloseBtn.Caption := CBtnCancel;
+end;
+
+procedure TGLazResForm.FormDropFiles(Sender: TObject; 
+  const FileNames: array of string);
+var 
+  Files: TStringList = nil;
+  i: Integer;
+begin
+  Files := TStringList.Create;
+  try
+    for i := 0 to High(FileNames) do
+      Files.Add(Filenames[i]);
+    if Files.Count > 0 then
+      AddFiles(Files);
+  finally
+    Files.Free;
+  end;
+  MaybeEnableButtons;
 end;
 
 procedure TGLazResForm.FormShow(Sender: TObject);
