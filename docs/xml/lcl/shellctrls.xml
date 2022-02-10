@@ -163,8 +163,11 @@
             <var>TCustomShellTreeView</var> is a <var>TCustomTreeView</var> descendant that defines the base class used to display files, directories, and other objects (such as devices) from the local file system. TCustomShellTreeView provides a hierarchical tree view for the file system objects, and is used to navigate between items in the control.
           </p>
           <p>
-            TCustomShellTreeView extends the ancestor class with properties, methods, and events needed to access, maintain, and navigate file system objects in the tree. Applications should not create instances of TCustomShellTreeView; use the <var>TShellTreeView</var> class instead.
+            TCustomShellTreeView extends the ancestor class with properties, methods, and events needed to access, maintain, and navigate file system objects in the control. Applications should not create instances of TCustomShellTreeView; use the <var>TShellTreeView</var> class instead.
           </p>
+          <remark>
+            Event handlers inherited from TCustomTreeView may include arguments which use TCustomTreeView or TTreeNode types. When they are implemented in TCustomShellTreeView, it is often necessary to cast these arguments to the TShellTreeNode or TCustomShellTreeView types to access properties and/or methods implemented in the descendent classes.
+          </remark>
         </descr>
         <seealso>
           <link id="TShellTreeView"/>
@@ -518,7 +521,7 @@
              When an event handler has not been assigned, the return value is set to True when the specified Node is a Directory on the local file system.
            </p>
            <p>
-             The return value is also True when the path to the node is a accessible sub-directory in Node when ObjectTypes does not include otNonFolders objects. Include otHidden in ObjectTypes to include hidden directories in the comparison.
+             The return value is also True when the path to the node can be accessed as a sub-directory in Node (when ObjectTypes does not include otNonFolders objects). Include otHidden in ObjectTypes to include hidden directories in the comparison.
            </p>
          </descr>
          <seealso>
@@ -540,7 +543,7 @@
             <var>Create</var> is the constructor for the class instance.  Create calls the inherited method using the value in <var>AOwner</var> as the owner for the class instance. Create initializes an internal member used to monitor the <var>Root</var> property for changes to its value. Create sets the value in <var>ObjectTypes</var> to display folders.
           </p>
           <p>
-            Please note: Design-time values in the <var>Items</var> property are populated when the <var>Loaded</var> method is called during component streaming.
+            Please note: Values in the <var>Items</var> property are populated when the <var>Loaded</var> method is called during component streaming.
           </p>
         </descr>
         <seealso>
@@ -569,7 +572,7 @@
 
       <element name="TCustomShellTreeView.GetBasePath">
         <short>
-          Returns the initial path in the file system hierarchy for the platform.
+          Returns the initial path in the file system hierarchy for the tree structure in the control.
         </short>
         <descr>
           <p>
@@ -594,21 +597,48 @@
 
       <element name="TCustomShellTreeView.GetRootPath">
         <short>
-          Returns the effective root value, returning the value of GetBasePath() of Root is empty or the Root property value otherwise.
+          Returns the effective value for Root when an explicit value has not been assigned.
         </short>
-        <descr/>
-        <errors>
-        </errors>
+        <descr>
+          <p>
+            If Root has an non-empty string value, it is used as the return value. Otherwise, GetBasePath is called to get the root designation for the platform. A trailing path delimiter is appended to the return value if it is not already present.
+          </p>
+          <p>
+            GetRootPath is called from GetPathFromNode when a relative path is found in the fully-qualified path for a node. It is also called from the Refresh method to get a path when a tree node is not specified as an argument to the method.
+          </p>
+        </descr>
         <seealso>
         </seealso>
       </element>
 
       <element name="TCustomShellTreeView.GetPathFromNode">
           <short>
-            Returns the path (including the file name) from the file system that a particular node represents.
-        </short>
-          <descr></descr>
-          <seealso></seealso>
+            Returns the path (including the file name) for the file system object represented in the specified  node.
+          </short>
+          <descr>
+            <p>
+              GetPathFromNode casts the tree node in ANode to a TShellTreeNode type to access the file system-specific properties and methods for the node.
+            </p>
+            <p>
+              When IsDirectory returns True, the return value contains the path to the folder with a trailing path delimiter. Otherwise, the return value has the fully-qualified path for the file.
+            </p>
+            <p>
+              An absolute path in the return value includes the root directory prepended to the value.
+            </p>
+          </descr>
+          <seealso>
+            <link id="TCustomShellTreeView.GetRootPath"/>
+            <link id="TShellTreeNode.IsDirectory"/>
+            <link id="TShellTreeNode.FullFilename"/>
+            <link id="TShellTreeNode.BasePath"/>
+            <link id="#lazutils.lazfileutils.FilenameIsAbsolute">FilenameIsAbsolute</link>
+          </seealso>
+      </element>
+      <element name="TCustomShellTreeView.GetPathFromNode.Result">
+        <short>Fully qualified path for the file system object represented in the node.</short>
+      </element>
+      <element name="TCustomShellTreeView.GetPathFromNode.ANode">
+        <short>Tree node with the path and file name for the node.</short>
       </element>
 
       <element name="TCustomShellTreeView.PopulateWithBaseFiles">
@@ -638,11 +668,18 @@
           Updates the tree view to display file system objects starting at the specified tree node.
         </short>
         <descr>
-          Used in the implementation of the SetObjectTypes method.
+          <p>
+            <var>Refresh</var> is an overloaded method in <var>TCustomShellTreeView</var>. It ensures that the tree node specified in ANode is selected and expanded to reveal its immediate first-level child nodes. When ANode is unassigned (Nil), the value in Root is updated for the tree view an associated list view control (when assigned). Setting the value in Root also populates the TShellTreeNode instances in the Items property.
+          </p>
+          <p>
+            Refresh is called when a new value is assigned to the ObjectTypes property.
+          </p>
         </descr>
         <seealso>
           <link id="TCustomShellTreeView.Items"/>
           <link id="TCustomShellTreeView.Root"/>
+          <link id="TCustomShellTreeView.ShellListView"/>
+          <link id="TCustomShellTreeView.ObjectTypes"/>
         </seealso>
       </element>
       <element name="TCustomShellTreeView.Refresh.ANode">
@@ -671,13 +708,32 @@
 
       <element name="TCustomShellTreeView.ObjectTypes">
         <short>
-          Indicates which objects should be shown in this control (for example if it should show files and directories or only directories).
+          Indicates the file system objects displayed using the control.
         </short>
         <descr>
+          <p>
+            <var>ObjectTypes</var> is a <var>TObjectTypes</var> property with the file system objects which can be stored in Items and displayed on the tree view control. It is a set type and can contains zero or more values from the TObjectType enumeration. When values are included in the set, they are enabled and displayed on the control.
+          </p>
+          <dl>
+            <dt>otFolders</dt>
+            <dd>Enables and displays folders.</dd>
+            <dt>otNonFolders</dt>
+            <dd>Enables and displays files and other file system entries which are not a folder.</dd>
+            <dt>otHidden</dt>
+            <dd>Enables and displays hidden directories and/or files on the tree view control.</dd>
+          </dl>
+          <p>
+            Changing the values in the property causes the Refresh method to be called to reload the Items for the control starting at the root directory. The currently Selected tree node is saved before the nodes are refreshed, and restored when Items has been reloaded. An exception raised when the path no longer exists in the tree nodes is handled and ignored in the method.
+          </p>
         </descr>
         <seealso>
+          <link id="TCustomShellTreeView.ObjectTypes"/>
+          <link id="TCustomShellTreeView.Items"/>
+          <link id="TCustomShellTreeView.Path"/>
+          <link id="TCustomShellTreeView.Root"/>
+          <link id="TCustomShellTreeView.Refresh"/>
           <link id="TObjectTypes"/>
-          <link id="TCustomShellListView.ObjectTypes"/>
+          <link id="TObjectType"/>
         </seealso>
       </element>
 
@@ -797,11 +853,16 @@
         </short>
         <descr>
           <p>
-            <var>OnAddItem</var> is a <var>TAddItemEvent</var> property which contains the event handler signalled when an item (tree node) is added to the shell control. OnAddItem is signalled from the <var>PopulateTreeNodeWithFiles</var> method, and allows the base path and file information for each file to be checked before it is added to the tree view.
+            <var>OnAddItem</var> is a <var>TAddItemEvent</var> property which contains the event handler signalled when an item (tree node) is added to the shell control. OnAddItem is signalled from the <var>PopulateTreeNodeWithFiles</var> method, and allows the base path and file information for each file to be checked before it is added to the Items for the tree view control.
+          </p>
+          <p>
+            An application must implement and assign an object procedure using the signature in TAddItemEvent to the handler. The Sender argument is the tree view control for the event notification. ABasePath contains the value from BasePath in the tree view control. AFileInfo is a TSearchRec instance with the attributes for the file system object represented in the node. CanAdd is a variable parameter which indicates whether the file system object should be added to the Items property. Set CanAdd to False in the event handler to omit the file system object in Items.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomShellTreeView.Items"/>
           <link id="TCustomShellTreeView.PopulateTreeNodeWithFiles"/>
+          <link id="TAddItemEvent"/>
         </seealso>
       </element>
 
