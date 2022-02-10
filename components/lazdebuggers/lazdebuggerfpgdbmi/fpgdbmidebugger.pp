@@ -932,6 +932,7 @@ function TFpGDBMIDebugger.GetInfoContextForContext(AThreadId,
 var
   Addr: TDBGPtr;
   i, sa: Integer;
+  LocCtx: TFpDbgSimpleLocationContext;
 begin
   Result := nil;
   if FDwarfInfo = nil then
@@ -968,10 +969,9 @@ begin
     sa := 4
   else
     sa := 8;
-  Result := FDwarfInfo.FindSymbolScope(
-    TFpDbgSimpleLocationContext.Create(FMemManager, Addr, sa, AThreadId, AStackFrame),
-    Addr
-  );
+  LocCtx := TFpDbgSimpleLocationContext.Create(FMemManager, Addr, sa, AThreadId, AStackFrame);
+  Result := FDwarfInfo.FindSymbolScope(LocCtx, Addr);
+  LocCtx.ReleaseReference;
 
   if Result = nil then begin
     debugln(DBG_VERBOSE, ['GetInfoContextForContext CTX NOT FOUND for ', AThreadId, ', ', AStackFrame]);
@@ -979,7 +979,7 @@ begin
   end;
 
   ReleaseRefAndNil(FLastContext[MAX_CTX_CACHE-1]);
-  move(FLastContext[0], FLastContext[1], (MAX_CTX_CACHE-1) + SizeOf(FLastContext[0]));
+  move(FLastContext[0], FLastContext[1], (MAX_CTX_CACHE-1) * SizeOf(FLastContext[0]));
   FLastContext[0] := Result;
   // TODO Result.AddReference;
 end;
