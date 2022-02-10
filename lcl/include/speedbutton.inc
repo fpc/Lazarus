@@ -1080,13 +1080,13 @@ var
   AImageRes: TScaledImageListResolution;
   AIndex: Integer;
   AEffect: TGraphicsDrawEffect;
-begin
-  if (FGlyph.Glyph.Empty) and ((Images = nil) or (ImageIndex = -1)) then
+begin           
+  if (FGlyph.Glyph.Empty) and ((Images = nil) or (ImageIndex = -1)) and (FGlyph.LCLGlyphName <> '') then
   begin
     Result.CX := 0;
     Result.CY := 0;
     exit;
-  end;
+  end;            
   
   FGlyph.GetImageIndexAndEffect(Low(TButtonState), Font.PixelsPerInch,
     GetCanvasScaleFactor, AImageRes, AIndex, AEffect);
