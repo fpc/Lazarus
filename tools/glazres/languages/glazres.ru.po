@@ -9,13 +9,11 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: ru\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.3\n"
 
 #: glazresmain.cbtncancel
-#, fuzzy
-#| msgid "Cancel"
 msgid "Close"
-msgstr "Отмена"
+msgstr "Закрыть"
 
 #: glazresmain.defilter
 msgctxt "glazresmain.defilter"
