@@ -704,9 +704,14 @@ end;
 procedure TAssemblerDlg.popCopyAddrClick(Sender: TObject);
 var
   Entry: TAsmDlgLineEntry;
+  W: Integer;
 begin
+  if FDebugger = nil
+  then W := 16
+  else W := FDebugger.TargetWidth div 4;
+
   if GetLinMapEntryForLine(FSelectLine, Entry) then
-    Clipboard.AsText := '$'+IntToHex(Entry.Addr);
+    Clipboard.AsText := '$'+IntToHex(Entry.Addr, W);
 end;
 
 function TAssemblerDlg.FormatLine(ALine: TAsmDlgLineEntry; W: Integer) : String;
