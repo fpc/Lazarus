@@ -58,11 +58,11 @@ SolidCompression=yes
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
-WizardImageFile=lazarus_install_cheetah.bmp
+WizardImageFile=laz_gear_big.bmp
 WizardSmallImageFile=lazgear.bmp
-WizardImageStretch=false
 ShowTasksTreeLines=true
 TimeStampRounding=0
+; PrivilegesRequired=none means no-setting or default => admin needed
 PrivilegesRequired=none
 ChangesAssociations=yes
 ; prevent checkbox pre-set (for delete user conf). Latest inno supports unchecked checkedonce
