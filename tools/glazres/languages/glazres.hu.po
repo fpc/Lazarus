@@ -68,8 +68,9 @@ msgid "Processing \"%s\""
 msgstr "\"%s\" feldolgozása"
 
 #: glazresmain.msgresourcenametype
-#, object-pascal-format
-msgid " Resource name = \"%s\", Type = \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid " Resource name = \"%s\", Type = \"%s\""
+msgid "Resource name = \"%s\", Type = \"%s\""
 msgstr " Erőforrás neve = \"%s\", típusa = \"%s\""
 
 #: glazresmain.msgsuccess
@@ -147,7 +148,9 @@ msgid "Messages"
 msgstr "Üzenetek"
 
 #: tglazresform.startbtn.caption
-msgid "Create LRS"
+#, fuzzy
+#| msgid "Create LRS"
+msgid "Create"
 msgstr "LRS létrehozása"
 
 #: tglazresform.startbtn.hint

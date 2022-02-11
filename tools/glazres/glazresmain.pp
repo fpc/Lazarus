@@ -45,6 +45,7 @@ type
     ClearBtn: TBitBtn;
     CloseBtn: TBitBtn;
     DestEdt: TFileNameEdit;
+    Images: TImageList;
     MessagesLabel: TLabel;
     OpenPictureDialog: TOpenPictureDialog;
     AddImgBtn: TBitBtn;
@@ -103,7 +104,7 @@ resourcestring
   ErrNoResourceName = 'ERROR: No resourcename found for "%s"';
   MsgCreatingLrs = 'Creating "%s"';
   MsgProcessing = 'Processing "%s"';
-  MsgResourceNameType = ' Resource name = "%s", Type = "%s"';
+  MsgResourceNameType = 'Resource name = "%s", Type = "%s"';
   ErrRead = 'ERROR: Cannot read from "%s"';
   MsgSuccess = 'Done.'+ LineEnding + 'Number of resources added: %d.';
 
@@ -345,7 +346,7 @@ begin
   MsgMemo.Width := FileListBox.Width;
   StartBtn.Left := CW - (StartBtn.Width + CloseBtn.Width + 5) - LMargin;
 
-  MinH := 532; //desing time value
+  MinH := 532; //design time value
   if CH <= MinH then
   begin
     MsgMemo.Height := 138;// design time value;

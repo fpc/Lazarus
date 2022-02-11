@@ -69,8 +69,9 @@ msgid "Processing \"%s\""
 msgstr "Dorojamas „%s“"
 
 #: glazresmain.msgresourcenametype
-#, object-pascal-format
-msgid " Resource name = \"%s\", Type = \"%s\""
+#, object-pascal-format, fuzzy
+#| msgid " Resource name = \"%s\", Type = \"%s\""
+msgid "Resource name = \"%s\", Type = \"%s\""
 msgstr "Ištekliaus pavadinimas = „%s“, tipas = „%s“"
 
 #: glazresmain.msgsuccess
@@ -151,7 +152,9 @@ msgid "Messages"
 msgstr "Pranešimai"
 
 #: tglazresform.startbtn.caption
-msgid "Create LRS"
+#, fuzzy
+#| msgid "Create LRS"
+msgid "Create"
 msgstr "Kurti „LRS“"
 
 #: tglazresform.startbtn.hint
