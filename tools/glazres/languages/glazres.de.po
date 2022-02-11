@@ -149,3 +149,4 @@ msgstr "Erzeugen"
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "Die Ausgabe-Ressourcendatei erstellen"
+

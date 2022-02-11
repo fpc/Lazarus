@@ -66,10 +66,9 @@ msgid "Processing \"%s\""
 msgstr "Обработка \"%s\""
 
 #: glazresmain.msgresourcenametype
-#, object-pascal-format, fuzzy
-#| msgid " Resource name = \"%s\", Type = \"%s\""
+#, object-pascal-format
 msgid "Resource name = \"%s\", Type = \"%s\""
-msgstr " Имя ресурса = \"%s\", Тип = \"%s\""
+msgstr "Имя ресурса = \"%s\", тип = \"%s\""
 
 #: glazresmain.msgsuccess
 #, object-pascal-format
@@ -144,10 +143,8 @@ msgid "Messages"
 msgstr "Сообщения"
 
 #: tglazresform.startbtn.caption
-#, fuzzy
-#| msgid "Create LRS"
 msgid "Create"
-msgstr "Создать LRS"
+msgstr "Создать"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
