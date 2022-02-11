@@ -53,10 +53,10 @@ SolidCompression=yes
 VersionInfoVersion={#FileVersion}
 VersionInfoTextVersion={#AppVersion}-{#SetupDate}
 ShowLanguageDialog=yes
-WizardImageFile=lazarus_install_cheetah.bmp
+WizardImageFile=laz_gear_big.bmp
 WizardSmallImageFile=lazgear.bmp
-WizardImageStretch=false
 ShowTasksTreeLines=true
+; PrivilegesRequired=none means no-setting or default => admin needed
 PrivilegesRequired=none
 ; since appid can change, UsePreviousLanguage must be off
 UsePreviousLanguage=no
