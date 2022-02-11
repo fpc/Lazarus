@@ -8,7 +8,7 @@
 {"hash":4860802,"name":"tglazresform.clearbtn.caption","sourcebytes":[67,108,101,97,114],"value":"Clear"},
 {"hash":34324493,"name":"tglazresform.closebtn.hint","sourcebytes":[69,120,105,116,32,116,104,101,32,112,114,111,103,114,97,109],"value":"Exit the program"},
 {"hash":242581029,"name":"tglazresform.startbtn.hint","sourcebytes":[67,114,101,97,116,101,32,116,104,101,32,111,117,116,112,117,116,32,76,82,83,32,102,105,108,101],"value":"Create the output LRS file"},
-{"hash":144964035,"name":"tglazresform.startbtn.caption","sourcebytes":[67,114,101,97,116,101,32,76,82,83],"value":"Create LRS"},
+{"hash":78166181,"name":"tglazresform.startbtn.caption","sourcebytes":[67,114,101,97,116,101],"value":"Create"},
 {"hash":212433139,"name":"tglazresform.messageslabel.caption","sourcebytes":[77,101,115,115,97,103,101,115],"value":"Messages"},
 {"hash":201932964,"name":"tglazresform.addimgbtn.hint","sourcebytes":[65,100,100,32,105,109,97,103,101,115,32,116,111,32,116,104,101,32,108,105,115,116],"value":"Add images to the list"}
 ]}

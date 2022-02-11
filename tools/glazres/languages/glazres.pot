@@ -57,7 +57,7 @@ msgstr ""
 
 #: glazresmain.msgresourcenametype
 #, object-pascal-format
-msgid " Resource name = \"%s\", Type = \"%s\""
+msgid "Resource name = \"%s\", Type = \"%s\""
 msgstr ""
 
 #: glazresmain.msgsuccess
@@ -131,7 +131,7 @@ msgid "Messages"
 msgstr ""
 
 #: tglazresform.startbtn.caption
-msgid "Create LRS"
+msgid "Create"
 msgstr ""
 
 #: tglazresform.startbtn.hint
