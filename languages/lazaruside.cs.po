@@ -8271,6 +8271,10 @@ msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "Povolit vše"
 
+#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
 msgstr "Kopírovat do schránky"

@@ -8239,6 +8239,10 @@ msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "激活所有"
 
+#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr ""
+
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
 msgstr "复制到剪贴板"
