@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-01-26 01:18+0300\n"
+"PO-Revision-Date: 2022-02-12 01:20+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -8211,6 +8211,10 @@ msgstr "Включить все"
 msgctxt "lazarusidestrconsts.lisdbgallitemenablehint"
 msgid "Enable all"
 msgstr "Включить все"
+
+#: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
+msgid "Copy address to Clipboard"
+msgstr "Копировать адрес в буфер обмена"
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
