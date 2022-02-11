@@ -343,6 +343,45 @@ type
     destructor Destroy; override;
   end;
 
+  TGlyphArray = array of NSGlyph;
+
+  { TCocoaTextLayout }
+
+  TCocoaTextLayout = class
+  strict private
+    FBackgroundColor: TColor;
+    FForegroundColor: TColor;
+    FLayout: NSLayoutManager;
+    FTextStorage: NSTextStorage;
+    FTextContainer: NSTextContainer;
+    FText: String;
+    FFont: TCocoaFont;
+    // surrogate pairs (for UTF16)
+    FSurr: array of NSRange;
+    FSurrCount: Integer;
+    procedure SetBackgoundColor(AValue: TColor);
+    procedure SetForegoundColor(AValue: TColor);
+    procedure SetFont(AFont: TCocoaFont);
+    procedure UpdateFont;
+    procedure UpdateColor;
+    function GetTextRange: NSRange;
+
+    procedure EvalSurrogate(s: NSString);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure SetFontToStr(dst: NSMutableAttributedString);
+    procedure SetText(UTF8Text: PChar; ByteSize: Integer);
+    function GetSize: TSize;
+    function GetGlyphs: TGlyphArray;
+    procedure Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
+
+    property Font: TCocoaFont read FFont write SetFont;
+    property BackgroundColor: TColor read FBackgroundColor write SetBackgoundColor;
+    property ForegroundColor: TColor read FForegroundColor write SetForegoundColor;
+    property Layout: NSLayoutManager read FLayout;
+  end;
+
   { TCocoaContext }
 
   TCocoaBitmapContext = class;
@@ -352,10 +391,8 @@ type
     FBkColor: TColor;
     FBkMode: Integer;
     FROP2: Integer;
+    FText   : TCocoaTextLayout;
     FBrush  : TCocoaBrush;
-    FBackgroundColor: TColor;
-    FForegroundColor: TColor;
-    FFont: TCocoaFont;
     FPen    : TCocoaPen;
     FRegion : TCocoaRegion;
     // In Cocoa there is no way to enlarge a clip region :(
@@ -1243,6 +1280,297 @@ begin
  NSCursor.arrowCursor.set_;
 end;
 
+{ TCocoaTextLayout }
+
+procedure TCocoaTextLayout.UpdateFont;
+begin
+  SetFontToStr(FTextStorage);
+end;
+
+procedure TCocoaTextLayout.SetFontToStr(dst: NSMutableAttributedString);
+const
+  UnderlineStyle = NSUnderlineStyleSingle or NSUnderlinePatternSolid;
+var
+  Range: NSRange;
+begin
+  if Assigned(FFont) then
+  begin
+    Range.location := 0;
+    Range.length := dst.string_.length;
+    if (Range.length <= 0) or (FFont.Font = nil) then Exit;
+    // apply font itself
+    dst.addAttribute_value_range(NSFontAttributeName, FFont.Font, Range);
+    // aply font attributes which are not in NSFont
+    if cfs_Underline in FFont.Style then
+      dst.addAttribute_value_range(NSUnderlineStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
+    else
+      dst.removeAttribute_range(NSUnderlineStyleAttributeName, Range);
+
+    if cfs_Strikeout in FFont.Style then
+      dst.addAttribute_value_range(NSStrikethroughStyleAttributeName, NSNumber.numberWithInteger(UnderlineStyle), Range)
+    else
+      dst.removeAttribute_range(NSStrikethroughStyleAttributeName, Range);
+  end;
+end;
+
+procedure TCocoaTextLayout.UpdateColor;
+var
+  lForegroundColor: NSColor;
+begin
+  lForegroundColor := SysColorToNSColor(SysColorToSysColorIndex(ForegroundColor));
+  if lForegroundColor = nil then
+    lForegroundColor := ColorToNSColor(ColorToRGB(ForegroundColor));
+  FTextStorage.addAttribute_value_range(NSForegroundColorAttributeName, lForegroundColor, GetTextRange);
+  FTextStorage.addAttribute_value_range(NSBackgroundColorAttributeName, ColorToNSColor(BackgroundColor), GetTextRange);
+end;
+
+function TCocoaTextLayout.GetTextRange: NSRange;
+begin
+  Result.location := 0;
+  Result.length := FTextStorage.length;
+end;
+
+procedure TCocoaTextLayout.EvalSurrogate(s: NSString);
+var
+  res  : NSRange;
+  i    : integer;
+  ln   : integer;
+  scnt : integer;
+  ch   : integer;
+begin
+  FSurrCount := 0;
+  i := 0;
+  ln := s.length;
+  // must analyze the string to presence of surrogate pairs.
+  // this is required for the use
+  ch := 0;
+  while i < ln do
+  begin
+    res := s.rangeOfComposedCharacterSequenceAtIndex(i); //s.rangeOfComposedCharacterSequencesForRange(src);
+    inc(i, res.length);
+    if res.length>1 then
+    begin
+      if length(FSurr) = FSurrCount then
+      begin
+        if FSurrCount = 0 then SetLength(FSurr, 4)
+        else SetLength(FSurr, FSurrCount * 2)
+      end;
+      FSurr[FSurrCount] := res;
+      inc(fSurrCount);
+    end;
+    inc(ch);
+  end;
+  if ((FSurrCount = 0) and (length(FSurr)<>0)) or (length(FSurr) div 2>FSurrCount) then
+    SetLength(FSurr, FSurrCount);
+end;
+
+procedure TCocoaTextLayout.SetForegoundColor(AValue: TColor);
+begin
+  if FForegroundColor <> AValue then
+  begin
+    FForegroundColor := AValue;
+    FTextStorage.beginEditing;
+    UpdateColor;
+    FTextStorage.endEditing;
+  end;
+end;
+
+procedure TCocoaTextLayout.SetBackgoundColor(AValue: TColor);
+begin
+  if FBackgroundColor <> AValue then
+  begin
+    FBackgroundColor := AValue;
+    FTextStorage.beginEditing;
+    UpdateColor;
+    FTextStorage.endEditing;
+  end;
+end;
+
+constructor TCocoaTextLayout.Create;
+var
+  LocalPool: NSAutoReleasePool;
+begin
+  inherited Create;
+  LocalPool := NSAutoReleasePool.alloc.init;
+  FTextStorage := NSTextStorage.alloc.initWithString(NSSTR(''));
+  FLayout := NSLayoutManager.alloc.init;
+  FTextStorage.addLayoutManager(FLayout);
+  FTextContainer := NSTextContainer.alloc.init;
+  FTextContainer.setLineFragmentPadding(0);
+  FLayout.addTextContainer(FTextContainer);
+
+  LocalPool.release;
+
+  FFont := DefaultFont;
+  FFont.AddRef;
+  FText := '';
+  FBackgroundColor := clWhite;
+  FForegroundColor := clBlack;
+end;
+
+destructor TCocoaTextLayout.Destroy;
+begin
+  FLayout.release;
+  FTextContainer.release;
+  FTextStorage.release;
+  if Assigned(FFont) then
+    FFont.Release;
+  inherited Destroy;
+end;
+
+procedure TCocoaTextLayout.SetFont(AFont: TCocoaFont);
+begin
+  if TCocoaGDIObject.UpdateRefs(FFont, AFont) then
+  begin
+    FFont := AFont as TCocoaFont;
+    FTextStorage.beginEditing;
+    updateFont;
+    FTextStorage.endEditing;
+  end;
+end;
+
+procedure TCocoaTextLayout.SetText(UTF8Text: PChar; ByteSize: Integer);
+var
+  NewText: String;
+  S: NSString;
+begin
+  if ByteSize >= 0 then
+    System.SetString(NewText, UTF8Text, ByteSize)
+  else
+    NewText := StrPas(UTF8Text);
+  if FText <> NewText then
+  begin
+    FText := NewText;
+    S := NSStringUTF8(NewText);
+    try
+      FSurrCount:=-1; // invalidating surragete pair search
+      FTextStorage.beginEditing;
+      if S <> nil then
+        FTextStorage.replaceCharactersInRange_withString(GetTextRange, S);
+      updateFont;
+      updateColor;
+      FTextStorage.endEditing;
+    except
+    end;
+    S.release;
+  end;
+end;
+
+function TCocoaTextLayout.GetSize: TSize;
+var
+  Range: NSRange;
+  bnds: NSRect;
+begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  //for text with soft-breaks (#13) the vertical bounds is too high!
+  //(feels like it tryes to span it from top to bottom)
+  //bnds := FLayout.boundingRectForGlyphRange_inTextContainer(Range, FTextContainer);
+  bnds := FLayout.usedRectForTextContainer(FTextContainer);
+  Result.cx := Round(bnds.size.width);
+  Result.cy := Round(bnds.size.height);
+end;
+
+function TCocoaTextLayout.GetGlyphs: TGlyphArray;
+var
+  Range: NSRange;
+begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  // required length + 1 space
+  SetLength(Result, Range.length + 1);
+  FLayout.getGlyphs_range(@Result[0], Range);
+  SetLength(Result, Range.length);
+end;
+
+procedure TCocoaTextLayout.Draw(ctx: NSGraphicsContext; X, Y: Integer; FillBackground: Boolean; DX: PInteger);
+var
+  Range: NSRange;
+  Pt: NSPoint;
+  Context: NSGraphicsContext;
+  Locations: array of NSPoint;
+  Indexes: array of NSUInteger;
+  I,j, Count, ii: NSUInteger;
+  si: Integer;
+  transform : NSAffineTransform;
+begin
+  Range := FLayout.glyphRangeForTextContainer(FTextContainer);
+  if Range.length = 0 then
+    Exit; // cannot render anything. string is empty or invalid characters
+
+  if not ctx.isFlipped then
+    Context := NSGraphicsContext.graphicsContextWithGraphicsPort_flipped(ctx.graphicsPort, True)
+  else
+    Context := ctx;
+
+  NSGraphicsContext.classSaveGraphicsState;
+  NSGraphicsContext.setCurrentContext(Context);
+  ctx.setShouldAntialias(FFont.Antialiased);
+  if FFont.RotationDeg<>0 then
+  begin
+    transform := NSAffineTransform.transform;
+    transform.translateXBy_yBy(X, Y);
+    if ctx.isFlipped then
+      transform.rotateByDegrees( FFont.RotationDeg )
+    else
+      transform.rotateByDegrees( -FFont.RotationDeg );
+    transform.translateXBy_yBy(-X, -Y);
+    transform.concat;
+  end;
+
+  Pt.x := X;
+  Pt.y := Y;
+  if Assigned(DX) then
+  begin
+    // DX - is provided for UTF8 characters. UTF8 doesn't have surrogate pairs
+    // UTF16 does. UTF16 is the base for NSTextLayout and NSString.
+    // Thus for any character in DX, there might be mulitple "characeters"
+    // in NSTextLayout. See #35675.
+    if FSurrCount<0 then EvalSurrogate(FTextStorage.string_);
+
+    Count := Range.length;
+    SetLength(Locations, Count);
+    SetLength(Indexes, Count);
+    Locations[0] := FLayout.locationForGlyphAtIndex(0);
+    Indexes[0] := 0;
+    for I := 1 to Count - 1 do Indexes[I] := I;
+
+    // no surrogate pairs
+    I := 1;
+    j := 0;
+    if FSurrCount > 0 then
+    begin
+      si := 0;
+      for si:=0 to FSurrCount - 1 do
+      begin
+        for ii := i to FSurr[si].location do
+        begin
+          Locations[I] := Locations[I - 1];
+          Locations[I].x := Locations[I].x + DX[J];
+          inc(i);
+          inc(j);
+        end;
+        for ii := 2 to FSurr[si].length do
+        begin
+          Locations[I] := Locations[I - 1];
+          inc(I);
+        end;
+      end;
+    end;
+
+    // remaining DX offsets
+    for I := I to Count - 1 do
+    begin
+      Locations[I] := Locations[I - 1];
+      Locations[I].x := Locations[I].x + DX[J];
+      inc(j);
+    end;
+    FLayout.setLocations_startingGlyphIndexes_count_forGlyphRange(@Locations[0], @Indexes[0], Count, Range);
+  end;
+
+  if FillBackground then
+    FLayout.drawBackgroundForGlyphRange_atPoint(Range, Pt);
+  FLayout.drawGlyphsForGlyphRange_atPoint(Range, Pt);
+  NSGraphicsContext.classRestoreGraphicsState;
+end;
 
 { TCocoaContext }
 
@@ -1297,12 +1625,12 @@ end;
 
 function TCocoaContext.GetTextColor: TColor;
 begin
-  Result := FForegroundColor;
+  Result := FText.ForegroundColor;
 end;
 
 function TCocoaContext.GetFont: TCocoaFont;
 begin
-  Result := FFont;
+  Result := FText.Font;
 end;
 
 procedure TCocoaContext.SetBkColor(AValue: TColor);
@@ -1332,7 +1660,7 @@ end;
 
 procedure TCocoaContext.SetFont(const AValue: TCocoaFont);
 begin
-  FFont := AValue;        // UpdateRefs done within property setter
+  FText.Font := AValue;        // UpdateRefs done within property setter
 end;
 
 procedure TCocoaContext.SetPen(const AValue: TCocoaPen);
@@ -1365,7 +1693,7 @@ end;
 
 procedure TCocoaContext.SetTextColor(AValue: TColor);
 begin
-  FForegroundColor := AValue;
+  FText.ForegroundColor := AValue;
 end;
 
 procedure TCocoaContext.UpdateContextOfs(const AWindowOfs, AViewOfs: TPoint);
@@ -1474,6 +1802,7 @@ begin
   FClipRegion.AddRef;
 
   FSavedDCList := nil;
+  FText := TCocoaTextLayout.Create;
   FClipped := False;
   FFlipped := False;
 end;
@@ -1490,6 +1819,7 @@ begin
   FClipRegion.Release;
 
   FSavedDCList.Free;
+  FText.Free;
 
   FBkBrush.Free;
 
@@ -1843,25 +2173,7 @@ end;
 
 procedure TCocoaContext.TextOut(X, Y: Integer; Options: Longint; Rect: PRect; UTF8Chars: PChar; Count: Integer; CharsDelta: PInteger);
 var
-const
-  UnderlineStyle = NSUnderlineStyleSingle or NSUnderlinePatternSolid;
-var
   BrushSolid, FillBg: Boolean;
-  AttribStr: CFAttributedStringRef;
-  Str: CFStringRef;
-  CoreLine: CTLineRef;
-  r: NSRect;
-  Glyphcount, k, i, CurGlyphCount: integer;
-  Locations: array of NSPoint;
-  Runs: CFArrayRef;
-  CurRun: CTRunRef;
-  RunCount: Integer;
-  Glyphs: array of CGGlyph;
-  RunFont: CTFontRef;
-  transform: NSAffineTransform;
-  Dict: NSMutableDictionary;
-  YPrime: CGFloat;
-  lForegroundColor: NSColor;
 begin
   CGContextSaveGState(CGContext());
 
@@ -1890,106 +2202,14 @@ begin
   begin
     FillBg := BkMode = OPAQUE;
     if FillBg then
-      FBackgroundColor := BkBrush.ColorRef;
-
-    Str := CFStringUTF8(UTF8Chars, Count);
-    try
-
-      lForegroundColor := SysColorToNSColor(SysColorToSysColorIndex(FForegroundColor));
-      if lForegroundColor = nil then
-        lForegroundColor := ColorToNSColor(ColorToRGB(FForegroundColor));
-
-      Dict := NSMutableDictionary.dictionaryWithObjectsAndKeys(
-            Font.Font, kCTFontAttributeName,
-            lForegroundColor, NSForegroundColorAttributeName,
-            nil);
-
-      if FillBg then
-        Dict.setObject_forKey(ColorToNSColor(FBackgroundColor), NSBackgroundColorAttributeName);
-
-      if cfs_Underline in Font.Style then
-        Dict.setObject_forKey(NSNumber.numberWithInteger(UnderlineStyle), NSUnderlineStyleAttributeName);
-
-      AttribStr := CFAttributedStringCreate(kCFAllocatorDefault, (Str), CFDictionaryRef(Dict));
-      try
-        CoreLine := CTLineCreateWithAttributedString(CFAttributedStringRef(AttribStr));
-        try
-
-          // handle rotation from .draw()
-          if FFont.RotationDeg <> 0 then
-          begin
-            transform := NSAffineTransform.transform;
-            transform.translateXBy_yBy(X, Y);
-            if ctx.isFlipped then
-              transform.rotateByDegrees( FFont.RotationDeg )
-            else
-              transform.rotateByDegrees( -FFont.RotationDeg );
-            transform.translateXBy_yBy(-X, -Y);
-            transform.concat;
-          end;
-
-          CGContextTranslateCTM(CGContext, 0, FSize.Height);
-          CGContextScaleCTM(CGContext, 1, -1);
-          r := CTLineGetImageBounds(CoreLine, CGContext);
-          YPrime := FSize.Height - y - r.size.height;
-          CGContextSetTextPosition(CGContext, x, YPrime);
-
-          if CharsDelta = nil then
-          begin
-            CTLineDraw(CoreLine, CGContext);
-          end
-          else // CharsDelta <> nil;
-          begin
-            CGContextSetFillColorWithColor(CGContext, lForegroundColor.CGColor);
-            GlyphCount := CTLineGetGlyphCount(CoreLine);
-
-            SetLength(Locations, GlyphCount);
-            Locations[0].x := 0;
-            Locations[0].y := 0;
-            for k := 1 to GlyphCount - 1 do
-            begin
-              Locations[k] := Locations[k - 1];
-              Locations[k].x := Locations[k].x + CharsDelta[k - 1]
-            end;
-
-            Runs := CTLineGetGlyphRuns(CoreLine);
-            if Runs <> nil then
-            begin
-              GlyphCount := 0;
-              RunCount := CFArrayGetCount(Runs);
-              for i := 0 to RunCount - 1 do
-              begin
-                CurRun := CTRunRef(CFArrayGetValueAtIndex(Runs, i));
-                CurGlyphCount := CTRunGetGlyphCount(CurRun);
-                SetLength(Glyphs, CurGlyphCount);
-                CTRunGetGlyphs(CurRun, CFRangeMake(0,0), @Glyphs[0]);
-                RunFont := CFDictionaryGetValue(CTRunGetAttributes(CurRun), kCTFontAttributeName);
-                CTFontDrawGlyphs(runFont, @Glyphs[0], @Locations[GlyphCount], CurGlyphCount, CGContext);
-                GlyphCount := GlyphCount + CurGlyphCount;
-              end;
-            end
-          end;
-        finally
-          CFRelease(CoreLine);
-        end;
-      finally
-        if cfs_Strikeout in FFont.Style then begin
-          CGContextSetStrokeColorWithColor(CGContext, lForegroundColor.CGColor);
-          CGContextMoveToPoint(CGContext, X, YPrime + r.size.height / 2.0);
-          CGContextAddLineToPoint(CGContext, X + r.size.width, YPrime + r.size.height / 2.0);
-          CGContextStrokePath(CGcontext);
-          end;
-        CFRelease(AttribStr);
-      end;
-    finally
-      CFRelease(Str);
-    end;
+      FText.BackgroundColor := BkBrush.ColorRef;
+    FText.SetText(UTF8Chars, Count);
+    FText.Draw(ctx, X, Y, FillBg, CharsDelta);
   end;
 
   CGContextRestoreGState(CGContext());
 
   AttachedBitmap_SetModified();
-end;
 end;
 
 procedure TCocoaContext.Frame(const R: TRect);
@@ -2190,31 +2410,29 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaContext.GetTextExtentPoint(AStr: PChar; ACount: Integer; var Size: TSize): Boolean;
 var
-  s : CFStringRef;
-  AttribStr : CFAttributedStringRef;
-  CoreLine : CTLineRef;
+  s : NSString;
+  M : NSMutableAttributedString;
   r : NSRect;
 begin
-  S := CFStringUtf8(AStr, ACount);
-
+  {FText.SetText(AStr, ACount);
+  Size := FText.GetSize;
+  Result := True;}
+  S := NSString( CFStringCreateWithBytesNoCopy(nil, AStr, ACount, kCFStringEncodingUTF8,
+    false,
+    kCFAllocatorNull));
   Result := Assigned(S);
   if not Result then Exit;
 
-  AttribStr := CFAttributedStringCreate(kCFAllocatorDefault, (S),
-     CFDictionaryRef(NSDictionary.dictionaryWithObject_forKey(
-        Font.Font, id(kCTFontAttributeName))));
-
-  Result := Assigned(AttribStr);
+  M := NSMutableAttributedString.alloc.initWithString(S);
+  Result := Assigned(M);
   if Result then
   begin
-    CoreLine := CTLineCreateWithAttributedString(CFAttributedStringRef(AttribStr));
-    try
-      r := CTLineGetBoundsWithOptions(CoreLine, 0);
-      Size.cx := Round(r.size.width);
-      Size.cy := Round(r.Size.height);
-    finally
-      CFRelease(CoreLine);
-    end;
+    FText.SetFontToStr(M);
+    r := M.boundingRectWithSize_options(NSMakeSize(MaxInt, MaxInt), 0);
+
+    Size.cx := Round(r.size.width);
+    Size.cy := Round(r.Size.height);
+    M.release;
   end;
   CFRelease(S);
 end;
@@ -2228,9 +2446,11 @@ end;
  ------------------------------------------------------------------------------}
 function TCocoaContext.GetTextMetrics(var TM: TTextMetric): Boolean;
 var
+  Glyphs: TGlyphArray;
+  Adjustments: array of NSSize;
+  I: Integer;
+  A: Single;
   lNSFont: NSFont;
-  AttrStr: CFAttributedStringRef;
-  CoreLine: CTLineRef;
 begin
   result := False;
   if not Assigned(Font) then
@@ -2247,22 +2467,21 @@ begin
   TM.tmExternalLeading := 0;
 
   TM.tmMaxCharWidth := Round(lNSFont.maximumAdvancement.width);
-
-  AttrStr := CFAttributedStringCreate(kCFAllocatorDefault,
-               CFSTR('WMTigq[_|^'),
-               CFDictionaryRef(NSDictionary.dictionaryWithObject_forKey(
-                 Font.Font, id(kCTFontAttributeName))));
-  try
-    CoreLine := CTLineCreateWithAttributedString(CFAttributedStringRef(AttrStr));
-    try
-      TM.tmAveCharWidth := Round(CTLineGetTypographicBounds(CoreLine, nil, nil, nil) /
-                                 CTLineGetGlyphCount(CoreLine));
-    finally
-      CFRelease(CoreLine);
-    end;
-  finally
-    CFRelease(AttrStr);
-  end;
+  FText.SetText('WMTigq[_|^', 10);
+  Glyphs := FText.GetGlyphs;
+  if Length(Glyphs) > 0 then
+  begin
+    SetLength(Adjustments, Length(Glyphs));
+    lNSFont.getAdvancements_forGlyphs_count(@Adjustments[0], @Glyphs[0], Length(Glyphs));
+    A := 0;
+    for I := 0 to High(Adjustments) do
+      A := A + Adjustments[I].width;
+    TM.tmAveCharWidth := Round(A / Length(Adjustments));
+    SetLength(Adjustments, 0);
+    SetLength(Glyphs, 0);
+  end
+  else
+    TM.tmAveCharWidth := TM.tmMaxCharWidth;
 
   TM.tmOverhang := 0;
   TM.tmDigitizedAspectX := 0;
