@@ -1702,18 +1702,28 @@ object GLazResForm: TGLazResForm
   OnShow = FormShow
   LCLVersion = '2.3.0.0'
   object LrsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
     Left = 16
     Height = 15
     Top = 14
     Width = 141
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 14
     Caption = 'Lazarus Resource Filename'
   end
   object AddAnyBtn: TBitBtn
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Splitter
     Left = 16
-    Height = 30
+    Height = 26
     Hint = 'Add (any kind of) files to the list'
-    Top = 264
-    Width = 88
+    Top = 262
+    Width = 46
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 16
+    BorderSpacing.Bottom = 8
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -1758,20 +1768,41 @@ object GLazResForm: TGLazResForm
     TabOrder = 2
   end
   object MsgMemo: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = MessagesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CloseBtn
     Left = 16
-    Height = 138
-    Top = 328
-    Width = 576
+    Height = 147
+    Top = 327
+    Width = 578
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 16
+    BorderSpacing.Right = 16
+    BorderSpacing.Bottom = 16
     ReadOnly = True
     ScrollBars = ssAutoVertical
     TabOrder = 6
     WordWrap = False
   end
   object FileListBox: TListBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = FilesLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = AddAnyBtn
     Left = 16
-    Height = 176
-    Top = 80
-    Width = 576
+    Height = 173
+    Top = 81
+    Width = 578
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 16
+    BorderSpacing.Bottom = 8
     ItemHeight = 0
     MultiSelect = True
     OnDrawItem = FileListBoxDrawItem
@@ -1779,18 +1810,30 @@ object GLazResForm: TGLazResForm
     TabOrder = 1
   end
   object FilesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = DestEdt
+    AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 15
-    Top = 64
+    Top = 63
     Width = 79
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 8
     Caption = 'Files to include'
   end
   object DeleteBtn: TBitBtn
-    Left = 216
-    Height = 30
+    AnchorSideLeft.Control = AddImgBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = AddAnyBtn
+    AnchorSideBottom.Side = asrBottom
+    Left = 124
+    Height = 26
     Hint = 'Delete selected files from the list'
-    Top = 264
-    Width = 88
+    Top = 262
+    Width = 46
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 8
     Glyph.Data = {
       F6000000424DF60000000000000076000000280000000F000000100000000100
       04000000000080000000130B0000130B00001000000000000000000000000000
@@ -1809,11 +1852,18 @@ object GLazResForm: TGLazResForm
     TabOrder = 4
   end
   object ClearBtn: TBitBtn
-    Left = 312
-    Height = 30
+    AnchorSideLeft.Control = DeleteBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = AddAnyBtn
+    AnchorSideBottom.Side = asrBottom
+    Left = 178
+    Height = 26
     Hint = 'Cleare the entire list'
-    Top = 264
-    Width = 88
+    Top = 262
+    Width = 73
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 8
     Caption = 'Clear'
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
@@ -1860,11 +1910,19 @@ object GLazResForm: TGLazResForm
     TabOrder = 5
   end
   object CloseBtn: TBitBtn
-    Left = 472
-    Height = 30
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 519
+    Height = 26
     Hint = 'Exit the program'
-    Top = 488
-    Width = 120
+    Top = 490
+    Width = 75
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 16
+    BorderSpacing.Bottom = 16
     DefaultCaption = True
     Kind = bkClose
     ModalResult = 11
@@ -1875,11 +1933,17 @@ object GLazResForm: TGLazResForm
     TabOrder = 8
   end
   object StartBtn: TBitBtn
-    Left = 344
-    Height = 30
+    AnchorSideRight.Control = CloseBtn
+    AnchorSideBottom.Control = CloseBtn
+    AnchorSideBottom.Side = asrBottom
+    Left = 431
+    Height = 26
     Hint = 'Create the output LRS file'
-    Top = 488
-    Width = 120
+    Top = 490
+    Width = 80
+    Anchors = [akRight, akBottom]
+    AutoSize = True
+    BorderSpacing.Right = 8
     Caption = 'Create'
     Enabled = False
     Glyph.Data = {
@@ -1927,10 +1991,15 @@ object GLazResForm: TGLazResForm
     TabOrder = 7
   end
   object DestEdt: TFileNameEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = LrsLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
     Left = 16
     Height = 23
     Top = 32
-    Width = 552
+    Width = 578
     OnAcceptFileName = DestEdtAcceptFileName
     DialogKind = dkSave
     DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
@@ -1939,23 +2008,40 @@ object GLazResForm: TGLazResForm
     HideDirectories = False
     ButtonWidth = 23
     NumGlyphs = 1
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 16
     MaxLength = 0
     TabOrder = 0
     OnEditingDone = DestEdtEditingDone
   end
   object MessagesLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Splitter
+    AnchorSideTop.Side = asrBottom
     Left = 16
     Height = 15
-    Top = 304
+    Top = 309
     Width = 51
+    BorderSpacing.Left = 16
+    BorderSpacing.Top = 8
+    BorderSpacing.Bottom = 3
     Caption = 'Messages'
   end
   object AddImgBtn: TBitBtn
-    Left = 112
-    Height = 30
+    AnchorSideLeft.Control = AddAnyBtn
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = AddAnyBtn
+    AnchorSideBottom.Side = asrBottom
+    Left = 70
+    Height = 26
     Hint = 'Add images to the list'
-    Top = 264
-    Width = 88
+    Top = 262
+    Width = 46
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 8
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -1998,6 +2084,19 @@ object GLazResForm: TGLazResForm
     ParentShowHint = False
     ShowHint = True
     TabOrder = 3
+  end
+  object Splitter: TSplitter
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 296
+    Width = 610
+    Align = alNone
+    Anchors = [akLeft, akRight]
+    ResizeAnchor = akTop
   end
   object OpenDialog: TOpenDialog
     Options = [ofAllowMultiSelect, ofEnableSizing, ofViewDetail]
