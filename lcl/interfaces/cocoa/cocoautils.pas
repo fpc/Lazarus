@@ -46,7 +46,7 @@ function NSScreenZeroHeight: CGFloat;
 
 function CreateParamsToNSRect(const params: TCreateParams): NSRect;
 
-function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
+function NSStringUtf8(s: PChar): NSString;
 function NSStringUtf8(const s: String): NSString;
 function NSStringToString(ns: NSString): String;
 
@@ -773,20 +773,14 @@ begin
   with params do Result:=GetNSRect(X,Y,Width,Height);
 end;
 
-function NSStringUtf8(s: PChar; len: Integer = -1): NSString;
+function NSStringUtf8(s: PChar): NSString;
 var
-  W: WideString;
-  WLen: Integer;
+  cf: CFStringRef;
+  r: Integer;
 begin
-  // Avoid CFString/NSString UTF8 functions (see other overload)
-  if len = -1 then
-    len := StrLen(s);
-  SetLength(W, len);
-  WLen := Utf8ToUnicode(PWideChar(W), Length(w) + 1, s, len);
-  if WLen = 0 then
-    Result := NSString.alloc.init
-  else
-    Result := NSString.alloc.initWithCharacters_length(unicharPtr(W), WLen);
+  {NSString and CFStringRef are interchangable}
+  cf := CFStringCreateWithCString(nil, S, kCFStringEncodingUTF8);
+  Result := NSString(cf);
 end;
 
 function NSStringUtf8(const s: String): NSString;
