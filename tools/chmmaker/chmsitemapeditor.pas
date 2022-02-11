@@ -70,12 +70,12 @@ type
 
   { TChmTreeNode }
 
-  TChmTreeNode = class(TTreeNode)
+  TChmTreeNode = class(TTreeNode) // make pairs
   private
+    FName: String;
     FLocal: String;
-    FURL: String;
   public
-    property URL: String read FURL write FURL;
+    property Name: String read FName write FName;
     property Local: String read FLocal write FLocal;
   end;
 
@@ -145,9 +145,13 @@ procedure TSitemapEditForm.SaveBtnClick(Sender: TObject);
     I: Integer;
   begin
     ChmItem := ChmItems.NewItem;
-    ChmItem.Text := TreeNode.Text;
-    ChmItem.AddURL(TreeNode.URL);
-    ChmItem.AddLocal(TreeNode.Local);
+    // indexes typically have 3 keys per item. A name, and nested within a name-local pair.
+    // the name parts are often the same. For now we fake it by issuing name twice.
+    ChmItem.Name := TreeNode.Text;    // Sets name in item.
+    if FSiteMapType=stIndex then
+      ChmItem.AddName(TreeNode.Name);   // sets name in first subitem
+    ChmItem.AddLocal(TreeNode.Local); // sets local in first subitem
+
     for I := 0 to TreeNode.Count-1 do begin
       AddItem(TChmTreeNode(TreeNode.Items[I]), ChmItem.Children);
     end;
@@ -217,7 +221,7 @@ begin
     Item := TChmTreeNode(SitemapTree.Selected);
     DescriptionEdit.Text := Item.Text;
     LocalCombo.Text := Item.Local;
-    URLEdit.Text := Item.URL;
+    URLEdit.Text := ''; // Item.url; // hardly used
   end
   else begin
     DescriptionEdit.Text := '';
@@ -238,7 +242,7 @@ end;
 procedure TSitemapEditForm.URLEditChange(Sender: TObject);
 begin
   if SitemapTree.Selected = nil then Exit;
-  TChmTreeNode(SitemapTree.Selected).URL := URLEdit.Text;
+//  TChmTreeNode(SitemapTree.Selected). url := URLEdit.Text;
 end;
 
 procedure TSitemapEditForm.InitControls;
@@ -265,9 +269,9 @@ procedure TSitemapEditForm.LoadFromStream(AStream: TStream);
      for I := 0 to Items.Count-1 do begin
        ChmItem := Items.Item[I];
        TreeNode := TChmTreeNode(SitemapTree.Items.AddChild(ParentItem, ChmItem.Text));
-       TreeNode.Local := ChmItem.Local;
+       TreeNode.Name := ChmItem.Name;
        if ChmItem.SubItemCount > 0 then
-         TreeNode.URL := ChmItem.SubItem[0].URL;
+         TreeNode.Local := ChmItem.Local;
        AddItems(ChmItem.Children, TreeNode);
      end;
    end;

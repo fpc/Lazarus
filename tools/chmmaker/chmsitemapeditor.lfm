@@ -8,7 +8,6 @@ object SitemapEditForm: TSitemapEditForm
   ClientHeight = 651
   ClientWidth = 773
   ShowInTaskBar = stAlways
-  LCLVersion = '2.3.0.0'
   object Label3: TLabel
     Left = 424
     Height = 15
