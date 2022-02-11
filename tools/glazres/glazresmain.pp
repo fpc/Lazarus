@@ -34,7 +34,7 @@ interface
 uses
   Classes, SysUtils, Types, IniFiles,
   Forms, Controls, Graphics, Dialogs, StdCtrls, Buttons, ExtDlgs, EditBtn,
-  LResources, LCLProc, LCLType,
+  LResources, LCLProc, LCLType, ExtCtrls,
   LazFileUtils, LazUTF8;
 
 type
@@ -49,6 +49,7 @@ type
     MessagesLabel: TLabel;
     OpenPictureDialog: TOpenPictureDialog;
     AddImgBtn: TBitBtn;
+    Splitter: TSplitter;
     StartBtn: TBitBtn;
     FilesLabel: TLabel;
     FileListBox: TListBox;
@@ -67,14 +68,12 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
-    procedure FormResize(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure AddAnyBtnClick(Sender: TObject);
     procedure StartBtnClick(Sender: TObject);
   private
     FIniFileName: String;
-    procedure CreateAnchors;
-    procedure ResizeControls({%H-}Dummy: PtrInt);
+    procedure ResizeControls;
     procedure CreateLazarusResourceFile;
     procedure ConvertFormToText(Stream: TMemoryStream);
     procedure AddFiles(Names: TStrings);
@@ -126,6 +125,7 @@ const
   idTop = 'Top';
   idWidth = 'Width';
   idHeight = 'Height';
+  idSplitter = 'Splitter';
 
 //Needed for GetAppConfigDir
 function GetVendorName: String;
@@ -138,6 +138,16 @@ begin
   Result := AppName;
 end;
 
+function MaxValue(const Data: array of integer): Integer;
+var
+  value: Integer;
+begin
+  Result := -MaxInt;
+  for value in Data do
+    if value > Result then Result := value;
+end;
+
+
 {TGLazResForm}
 
 // *************** Component Events *********************** //
@@ -147,7 +157,6 @@ begin
   OnGetVendorName := @GetVendorName;
   OnGetApplicationName := @GetAppName;
   FIniFileName := GetAppConfigDir(False) + IniName;
-  CreateAnchors;
   LoadWindowGeometry;
   DestEdt.DialogTitle := DESaveResourcefileAs;
   DestEdt.Filter := DEFilter;
@@ -179,23 +188,13 @@ end;
 procedure TGLazResForm.FormShow(Sender: TObject);
 begin
   MaybeEnableButtons;
-  OnResize := @FormResize;
-  //Using QueueAsyncCall delays the layout until the form is shown,
-  //before that ClientWidth may have wrong value (depending on widgetset and windowmanager)
-  Application.QueueAsyncCall(@ResizeControls,0);
+  ResizeControls;
 end;
 
 procedure TGLazResForm.FormClose(Sender: TObject; var CloseAction: TCloseAction);
 begin
   SaveWindowGeometry;
 end;
-
-
-procedure TGLazResForm.FormResize(Sender: TObject);
-begin
-  ResizeControls(0);
-end;
-
 
 procedure TGLazResForm.DestEdtAcceptFileName(Sender: TObject; var Value: String);
 begin
@@ -310,50 +309,22 @@ end;
 
 // ***************** Form layout and looks *********************** //
 
-procedure TGLazResForm.CreateAnchors;
-begin
-  DestEdt.AnchorToNeighbour(akTop, 5, LrsLabel);
-  FilesLabel.AnchorToNeighbour(akTop, 10, DestEdt);
-  FileListBox.AnchorToNeighbour(akTop, 5, FilesLabel);
-  AddAnyBtn.AnchorToNeighbour(akTop, 10, FileListBox);
-  AddImgBtn.AnchorToNeighbour(akTop, 10, FileListBox);
-  DeleteBtn.AnchorToNeighbour(akTop, 10, FileListBox);
-  ClearBtn.AnchorToNeighbour(akTop, 10, FileListBox);
-  AddImgBtn.AnchorToNeighbour(akLeft, 5 , AddAnyBtn);
-  DeleteBtn.AnchorToNeighbour(akLeft, 15, AddImgBtn);
-  ClearBtn.AnchorToNeighbour(akLeft, 5, DeleteBtn);
-  MessagesLabel.AnchorToNeighbour(akTop, 10, AddAnyBtn);
-  MsgMemo.AnchorToNeighbour(akTop, 5, MessagesLabel);
-  StartBtn.AnchorToNeighbour(akTop, 10, MsgMemo);
-  CloseBtn.AnchorToNeighbour(akTop, 10, MsgMemo);
-  CloseBtn.AnchorToNeighbour(akLeft, 5, StartBtn);
-end;
-
-
-
-procedure TGLazResForm.ResizeControls(Dummy: PtrInt);
+procedure TGLazResForm.ResizeControls;
 var
-  CH, CW, LMargin, MinW, MinH, HeightLeft: Integer;
+  w: Integer;
 begin
-  CH := ClientHeight;
-  CW := ClientWidth;
-  LMargin := LrsLabel.Left;
-  MinW :=  ClearBtn.Left + ClearBtn.Width + 2 * LMargin;
-  DestEdt.Width := CW - (2 * LMargin) - DestEdt.ButtonWidth;
-  if (DestEdt.Width < MinW) then DestEdt.Width := MinW;
-  FileListBox.Width := CW - (2 * LMargin);
-  if (FileListBox.Width < MinW) then FileListBox.Width := MinW;
-  MsgMemo.Width := FileListBox.Width;
-  StartBtn.Left := CW - (StartBtn.Width + CloseBtn.Width + 5) - LMargin;
-
-  MinH := 532; //design time value
-  if CH <= MinH then
-  begin
-    MsgMemo.Height := 138;// design time value;
-    Exit;
-  end;
-  HeightLeft := CH - MsgMemo.Top;
-  MsgMemo.Height := HeightLeft - StartBtn.Height - 10 - 10;
+  w := MaxValue([CloseBtn.Width, StartBtn.Width]);
+  CloseBtn.Constraints.MinWidth := w;
+  StartBtn.Constraints.MinWidth := w;
+  
+  w := MaxValue([AddAnyBtn.Width, AddImgBtn.Width, DeleteBtn.Width, ClearBtn.Width]);
+  AddAnyBtn.Constraints.MinWidth := w;
+  AddImgBtn.Constraints.MinWidth := w;
+  DeleteBtn.Constraints.MinWidth := w;
+  ClearBtn.Constraints.MinWidth := w;
+  
+  Constraints.MinWidth := ClearBtn.Left + ClearBtn.Width + AddAnyBtn.Left;
+  Constraints.MinHeight := Constraints.MinWidth;
 end;
 
 
@@ -372,7 +343,10 @@ begin
       T := Ini.ReadInteger(scPosition, idTop, Top);
       W := Ini.ReadInteger(scPosition, idWidth, Width);
       H := Ini.ReadInteger(scPosition, idHeight, Height);
-      SetBounds(L, T, W, H);
+      Scaled := false;   // Avoid double scaling when exe created at 96 ppi is run at higher ppi
+      SetBounds(L, T, Scale96ToForm(W), Scale96ToForm(H));  // manually scale from stored size at 96 ppi
+      Splitter.Top := Scale96ToForm(Ini.ReadInteger(scPosition, idSplitter, Splitter.Top));
+      Scaled := true;
     finally
       Ini.Free;
     end;
@@ -398,8 +372,9 @@ begin
       Ini.CacheUpdates := True;
       Ini.WriteInteger(scPosition, idLeft, Left);
       Ini.WriteInteger(scPosition, idTop, Top);
-      Ini.WriteInteger(scPosition, idWidth, Width);
-      Ini.WriteInteger(scPosition, idHeight, Height);
+      Ini.WriteInteger(scPosition, idWidth, ScaleFormTo96(Width));   // Store size for 96 ppi
+      Ini.WriteInteger(scPosition, idHeight, ScaleFormTo96(Height));
+      Ini.WriteInteger(scPosition, idSplitter, ScaleFormTo96(Splitter.Top));
     finally
       Ini.Free;
     end;
