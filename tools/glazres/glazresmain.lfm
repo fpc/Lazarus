@@ -2,11 +2,11 @@ object GLazResForm: TGLazResForm
   Left = 552
   Height = 532
   Top = 143
-  Width = 610
+  Width = 730
   AllowDropFiles = True
   Caption = 'LRS Builder'
   ClientHeight = 532
-  ClientWidth = 610
+  ClientWidth = 730
   Icon.Data = {
     CBD200000000010007000000000001002000F56C000076000000303000000100
     2000A82500006B6D00002828000001002000681A000013930000202000000100
@@ -1719,11 +1719,12 @@ object GLazResForm: TGLazResForm
     Height = 26
     Hint = 'Add (any kind of) files to the list'
     Top = 262
-    Width = 46
+    Width = 92
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 16
     BorderSpacing.Bottom = 8
+    Caption = 'Add files'
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -1777,14 +1778,14 @@ object GLazResForm: TGLazResForm
     Left = 16
     Height = 147
     Top = 327
-    Width = 578
+    Width = 698
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 16
     BorderSpacing.Right = 16
     BorderSpacing.Bottom = 16
     ReadOnly = True
     ScrollBars = ssAutoVertical
-    TabOrder = 6
+    TabOrder = 7
     WordWrap = False
   end
   object FileListBox: TListBox
@@ -1797,7 +1798,7 @@ object GLazResForm: TGLazResForm
     Left = 16
     Height = 173
     Top = 81
-    Width = 578
+    Width = 698
     Anchors = [akTop, akLeft, akRight, akBottom]
     BorderSpacing.Left = 16
     BorderSpacing.Top = 3
@@ -1826,14 +1827,15 @@ object GLazResForm: TGLazResForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = AddAnyBtn
     AnchorSideBottom.Side = asrBottom
-    Left = 124
+    Left = 233
     Height = 26
     Hint = 'Delete selected files from the list'
     Top = 262
-    Width = 46
+    Width = 125
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 8
+    Caption = 'Delete selected'
     Glyph.Data = {
       F6000000424DF60000000000000076000000280000000F000000100000000100
       04000000000080000000130B0000130B00001000000000000000000000000000
@@ -1856,15 +1858,15 @@ object GLazResForm: TGLazResForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = AddAnyBtn
     AnchorSideBottom.Side = asrBottom
-    Left = 178
+    Left = 366
     Height = 26
-    Hint = 'Cleare the entire list'
+    Hint = 'Clear the entire list'
     Top = 262
-    Width = 73
+    Width = 94
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 8
-    Caption = 'Clear'
+    Caption = 'Delete all'
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000240000008F78
@@ -1914,7 +1916,7 @@ object GLazResForm: TGLazResForm
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 519
+    Left = 639
     Height = 26
     Hint = 'Exit the program'
     Top = 490
@@ -1930,13 +1932,13 @@ object GLazResForm: TGLazResForm
     ImageIndex = 5
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 8
+    TabOrder = 9
   end
   object StartBtn: TBitBtn
     AnchorSideRight.Control = CloseBtn
     AnchorSideBottom.Control = CloseBtn
     AnchorSideBottom.Side = asrBottom
-    Left = 431
+    Left = 551
     Height = 26
     Hint = 'Create the output LRS file'
     Top = 490
@@ -1988,7 +1990,7 @@ object GLazResForm: TGLazResForm
     OnClick = StartBtnClick
     ParentShowHint = False
     ShowHint = True
-    TabOrder = 7
+    TabOrder = 8
   end
   object DestEdt: TFileNameEdit
     AnchorSideLeft.Control = Owner
@@ -1999,7 +2001,7 @@ object GLazResForm: TGLazResForm
     Left = 16
     Height = 23
     Top = 32
-    Width = 578
+    Width = 698
     OnAcceptFileName = DestEdtAcceptFileName
     DialogKind = dkSave
     DialogOptions = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
@@ -2036,14 +2038,15 @@ object GLazResForm: TGLazResForm
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = AddAnyBtn
     AnchorSideBottom.Side = asrBottom
-    Left = 70
+    Left = 116
     Height = 26
     Hint = 'Add images to the list'
     Top = 262
-    Width = 46
+    Width = 109
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 8
+    Caption = 'Add images'
     Glyph.Data = {
       36040000424D3604000000000000360000002800000010000000100000000100
       2000000000000004000064000000640000000000000000000000FFFFFF00FFFF
@@ -2095,7 +2098,7 @@ object GLazResForm: TGLazResForm
     Left = 0
     Height = 5
     Top = 296
-    Width = 610
+    Width = 730
     Align = alNone
     Anchors = [akLeft, akRight]
     ResizeAnchor = akTop

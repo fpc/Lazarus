@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: glazresmain.cbtncancel
 #, fuzzy
@@ -68,10 +68,9 @@ msgid "Processing \"%s\""
 msgstr "\"%s\" feldolgozása"
 
 #: glazresmain.msgresourcenametype
-#, object-pascal-format, fuzzy
-#| msgid " Resource name = \"%s\", Type = \"%s\""
+#, object-pascal-format
 msgid "Resource name = \"%s\", Type = \"%s\""
-msgstr " Erőforrás neve = \"%s\", típusa = \"%s\""
+msgstr "Erőforrás neve = \"%s\", típusa = \"%s\""
 
 #: glazresmain.msgsuccess
 #, object-pascal-format
@@ -107,9 +106,19 @@ msgctxt "glazresmain.opdopenexistingpicture"
 msgid "Open existing picture"
 msgstr "Létező kép megnyitása"
 
+#: tglazresform.addanybtn.caption
+msgctxt "tglazresform.addanybtn.caption"
+msgid "Add files"
+msgstr ""
+
 #: tglazresform.addanybtn.hint
 msgid "Add (any kind of) files to the list"
 msgstr "Fájlok hozzáadása a listához (bármilyen típusú)"
+
+#: tglazresform.addimgbtn.caption
+msgctxt "tglazresform.addimgbtn.caption"
+msgid "Add images"
+msgstr ""
 
 #: tglazresform.addimgbtn.hint
 msgid "Add images to the list"
@@ -120,16 +129,24 @@ msgid "LRS Builder"
 msgstr "LRS építő"
 
 #: tglazresform.clearbtn.caption
-msgid "Clear"
-msgstr "Kiürítés"
+msgctxt "tglazresform.clearbtn.caption"
+msgid "Delete all"
+msgstr ""
 
 #: tglazresform.clearbtn.hint
-msgid "Cleare the entire list"
+#, fuzzy
+#| msgid "Cleare the entire list"
+msgid "Clear the entire list"
 msgstr "A lista kiürítése"
 
 #: tglazresform.closebtn.hint
 msgid "Exit the program"
 msgstr "Kilépés a programból"
+
+#: tglazresform.deletebtn.caption
+msgctxt "tglazresform.deletebtn.caption"
+msgid "Delete selected"
+msgstr ""
 
 #: tglazresform.deletebtn.hint
 msgid "Delete selected files from the list"
@@ -150,10 +167,10 @@ msgstr "Üzenetek"
 #: tglazresform.startbtn.caption
 #, fuzzy
 #| msgid "Create LRS"
+msgctxt "tglazresform.startbtn.caption"
 msgid "Create"
 msgstr "LRS létrehozása"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "Az LRS kimeneti fájl létrehozása"
-

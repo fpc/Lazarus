@@ -317,14 +317,11 @@ begin
   CloseBtn.Constraints.MinWidth := w;
   StartBtn.Constraints.MinWidth := w;
   
-  w := MaxValue([AddAnyBtn.Width, AddImgBtn.Width, DeleteBtn.Width, ClearBtn.Width]);
-  AddAnyBtn.Constraints.MinWidth := w;
-  AddImgBtn.Constraints.MinWidth := w;
-  DeleteBtn.Constraints.MinWidth := w;
-  ClearBtn.Constraints.MinWidth := w;
-  
   Constraints.MinWidth := ClearBtn.Left + ClearBtn.Width + AddAnyBtn.Left;
   Constraints.MinHeight := Constraints.MinWidth;
+  
+  if Width < Constraints.MinWidth then Width := Constraints.MinWidth;     // enforce constraints
+  if Height < Constraints.MinHeight then Height := Constraints.MinHeight;
 end;
 
 

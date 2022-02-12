@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: X-1.9\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: 郑建平@夏宗萍 aka  robsean <robsean@126.com>\n"
 "Language-Team: \n"
-"MIME-Version: 1.0\n"
-"Content-Transfer-Encoding: 8bit\n"
 "Language: zh_CN\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0.1\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
 #: glazresmain.cbtncancel
@@ -69,22 +69,19 @@ msgid "Processing \"%s\""
 msgstr "处理(Processing)\"%s\""
 
 #: glazresmain.msgresourcenametype
-#, object-pascal-format, fuzzy
+#, fuzzy, object-pascal-format
 #| msgid " Resource name = \"%s\", Type = \"%s\""
 msgid "Resource name = \"%s\", Type = \"%s\""
 msgstr "资源名称= \"%s\",类型= \"%s\""
 
 #: glazresmain.msgsuccess
-#, object-pascal-format, fuzzy
-#| msgid ""
-#| "Done.\n"
-#| "Number of resources added: %d.\n"
+#, object-pascal-format
 msgid ""
 "Done.\n"
 "Number of resources added: %d."
 msgstr ""
 "完成.\n"
-"添加的资源数量(Number of resources added):%d.\n"
+"添加的资源数量(Number of resources added):%d."
 
 #: glazresmain.msgwrongext
 msgid "Filename does not have the required extension: fix it?"
@@ -111,9 +108,19 @@ msgctxt "glazresmain.opdopenexistingpicture"
 msgid "Open existing picture"
 msgstr "打开存在的图片"
 
+#: tglazresform.addanybtn.caption
+msgctxt "tglazresform.addanybtn.caption"
+msgid "Add files"
+msgstr ""
+
 #: tglazresform.addanybtn.hint
 msgid "Add (any kind of) files to the list"
 msgstr "添加(任何种类)文件到列表"
+
+#: tglazresform.addimgbtn.caption
+msgctxt "tglazresform.addimgbtn.caption"
+msgid "Add images"
+msgstr ""
 
 #: tglazresform.addimgbtn.hint
 msgid "Add images to the list"
@@ -124,16 +131,24 @@ msgid "LRS Builder"
 msgstr "LRS构建器(Builder)"
 
 #: tglazresform.clearbtn.caption
-msgid "Clear"
-msgstr "清理"
+msgctxt "tglazresform.clearbtn.caption"
+msgid "Delete all"
+msgstr ""
 
 #: tglazresform.clearbtn.hint
-msgid "Cleare the entire list"
+#, fuzzy
+#| msgid "Cleare the entire list"
+msgid "Clear the entire list"
 msgstr "清理该整个列表"
 
 #: tglazresform.closebtn.hint
 msgid "Exit the program"
 msgstr "退出程序"
+
+#: tglazresform.deletebtn.caption
+msgctxt "tglazresform.deletebtn.caption"
+msgid "Delete selected"
+msgstr ""
 
 #: tglazresform.deletebtn.hint
 msgid "Delete selected files from the list"
@@ -154,10 +169,10 @@ msgstr "信息"
 #: tglazresform.startbtn.caption
 #, fuzzy
 #| msgid "Create LRS"
+msgctxt "tglazresform.startbtn.caption"
 msgid "Create"
 msgstr "创建LRS"
 
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "创建输出LRS文件"
-
