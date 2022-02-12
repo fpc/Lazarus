@@ -306,7 +306,7 @@ procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
 implementation
 
 uses
-  GtkWSControls;
+  GtkWSControls, LazUtilities;
   
 const
   StaticBorderShadowMap: array[TStaticBorderStyle] of TGtkShadowType =

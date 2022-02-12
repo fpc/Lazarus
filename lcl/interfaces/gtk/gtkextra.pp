@@ -40,6 +40,9 @@ interface
 
 implementation
 
+uses
+  LazUtilities;
+
 {$ifdef gtk1}
 {$I gtk1extra.inc}
 {$endif}

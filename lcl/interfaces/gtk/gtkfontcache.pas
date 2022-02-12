@@ -92,6 +92,9 @@ var
 
 implementation
 
+uses
+  LazUtilities;
+
 type
   TLogFontAndName = record
     LogFont: TLogFont;

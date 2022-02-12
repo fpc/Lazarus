@@ -1864,7 +1864,7 @@ begin
       {$IFDEF VerboseFonts}
       DebugLn('[TGtkWidgetSet.CreateFontIndirect] ',DbgS(GdiObject),'  ',dbgs(FGDIObjects.Count));
       {$ENDIF}
-      DisposeGDIObject(GdiObject);
+      ReleaseGDIObject(GdiObject);
       Result := 0;
     end
     else begin
@@ -6820,7 +6820,10 @@ begin
     Rect^.Top := 0;//PaintWidget^.Allocation.Y;
     Rect^.Right := PaintWidget^.Allocation.Width;
     Rect^.Bottom := PaintWidget^.Allocation.Height;
-   end;
+  end
+  // ignore the request if the rectangle is invalid
+  else if (Rect^.Left >= Rect^.Right) or (Rect^.Top >= Rect^.Bottom) then
+    Exit(True);
   gdkRect.X := Rect^.Left;
   gdkRect.Y := Rect^.Top;
   gdkRect.Width := (Rect^.Right - Rect^.Left);
@@ -8066,6 +8069,15 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkWidgetSet.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
 begin
+  // HACK: the full functionality necessary by ScrollWindowEx isn't supported
+  // but as this is mainly used to update controls, we'll invalidate the full
+  // window to ensure that the control is up to date (this fixes controls that
+  // rely on ScrollWindowEx for scrolling part of the content with the irony
+  // that the idea of using it was to make painting faster but this fix makes
+  // it slower than if they just repainted themselves)
+  InvalidateRect(hWnd, nil, False);
+  // We'll still report this as a failure since, technically speaking, the
+  // request didn't work
   Result := False;
 end;
 

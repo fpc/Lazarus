@@ -281,18 +281,27 @@ begin
 end;
 
 function GtkWSFormUnMapEvent(Widget: PGtkWidget; Event: PGdkEvent; WidgetInfo: PWidgetInfo): gboolean; cdecl;
+const
+  LastSleepTime: QWord = 0;
 var
   Message: TLMSize;
   AForm: TCustomForm;
 begin
+  // HACK: sleep for a bit to avoid the race condition where the unmap event is
+  // sent before the window manager updates the state attribute.  We also only
+  // do that if some time has passed since the last Sleep, otherwise every
+  // window will cause Sleep to be called by itself.
+  if GetTickCount64 - LastSleepTime > 100 then begin
+    Sleep(100); // even 10ms seems to work on my PC so 100ms should be safe
+    LastSleepTime:=GetTickCount64;
+  end;
+  // ignore the unmap signal if the window is not being minimized (e.g. desktop
+  // switches or windows become shaded)
+  if not GDK_WINDOW_GET_MINIMIZED(PGdkWindowPrivate(Widget^.Window)) then Exit;
+
   Result := True;
   FillChar(Message, 0, SizeOf(Message));
   AForm := TCustomForm(WidgetInfo^.LCLObject);
-  
-  // ignore the unmap signals when we switch desktops
-  // as this results in irritating behavior when we return to the desktop
-  if GDK_GET_CURRENT_DESKTOP <> GDK_WINDOW_GET_DESKTOP(PGdkWindowPrivate(Widget^.Window)) then Exit;
-
   Message.Msg := LM_SIZE;
   Message.SizeType := SIZEICONIC or Size_SourceIsInterface;
   Message.Width := AForm.Width;

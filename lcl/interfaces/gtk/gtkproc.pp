@@ -791,7 +791,7 @@ implementation
 
 uses
   {$IFDEF StaticXinerama} Xinerama, {$ENDIF}
-  dynlibs, GtkWSPrivate, URIParser, GtkInt;
+  dynlibs, GtkWSPrivate, URIParser, GtkInt, LazUtilities;
 
 const
   KCINFO_FLAG_SHIFT         = $01;
