@@ -1590,9 +1590,12 @@ var
   DesignOnlySignal: boolean;
   AWinControl: TWinControl;
   {$IFDEF GTK1}
-  CaptureWidget: PGtkWidget;
+  CaptureWidget, W: PGtkWidget;
   EventXY: TPoint;
-  MappedXY: TPoint;
+  MappedXY, CursorPos: TPoint;
+  Info: PWidgetInfo;
+  Old: TObject;
+  Msg: TLMContextMenu;
   {$ENDIF}
 begin
   Result := CallBackDefaultReturn;
@@ -1631,7 +1634,7 @@ begin
     begin
       {$IFDEF Gtk1}
       // gtk2: the LCL will capture itself if DragMode=dmAutomatic
-      CaptureWidget := PGtkWidget(AWinControl.Handle);
+      CaptureWidget := {%H-}PGtkWidget(AWinControl.Handle);
       EventXY := Point(TruncToInt(Event^.X), TruncToInt(Event^.Y));
       MappedXY := TranslateGdkPointToClientArea(Event^.Window, EventXY, CaptureWidget);
       SetCaptureControl(AWinControl, MappedXY);
@@ -1639,16 +1642,39 @@ begin
       //CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
     end
     else
-    // how to skip default right click handling? LCL can tell only on mouse up
-    // if handling can be skiped but gtk needs on mouse down
-    if (Event^.button = 3) and
-       ((AWinControl.PopupMenu <> nil) or
+    if (Event^.button = 3) then begin
+      // Send LM_CONTEXTMENU to the first control that responds to it
+      W := Widget;
+      CursorPos := Mouse.CursorPos;
+      Old := nil;
+      while W <> nil do
+      begin
+        Info := GetWidgetInfo(W);
+        if (Info <> nil) and (Info^.LCLObject <> Old) then
+        begin
+          Old := Info^.LCLObject;
+          FillChar(Msg{%H-}, SizeOf(Msg), #0);
+          Msg.Msg := LM_CONTEXTMENU;
+          Msg.hWnd := {%H-}HWND(W);
+          Msg.XPos := CursorPos.X;
+          Msg.YPos := CursorPos.Y;
+
+          Result := DeliverMessage(Old, Msg) <> 0;
+          if Result then begin
+            g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+            Break;
+          end;
+        end;
+        W := W^.parent;
+      end;
+      // how to skip default right click handling? LCL can tell only on mouse up
+      // if handling can be skiped but gtk needs on mouse down
+      if ((AWinControl.PopupMenu <> nil) or
         (TWinControlAccess(Data).OnContextPopup <> nil)) then begin
-      {$IFDEF GTK1}
-      if (TControl(Data) is TCustomTabControl) then
-        g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
-      {$ENDIF}
-      Result := True;
+        if (TControl(Data) is TCustomTabControl) then
+          g_signal_stop_emission_by_name(PGTKObject(Widget), 'button-press-event');
+        Result := True;
+      end;
     end;
   end else begin
     if (event^.Button=1) and (TControl(Data) is TCustomTabControl) then
