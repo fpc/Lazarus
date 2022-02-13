@@ -105,7 +105,7 @@ msgstr "Открыть существующее изображение"
 #: tglazresform.addanybtn.caption
 msgctxt "tglazresform.addanybtn.caption"
 msgid "Add files"
-msgstr ""
+msgstr "Добавить файлы"
 
 #: tglazresform.addanybtn.hint
 msgid "Add (any kind of) files to the list"
@@ -114,7 +114,7 @@ msgstr "Добавить файлы (любого типа) в список"
 #: tglazresform.addimgbtn.caption
 msgctxt "tglazresform.addimgbtn.caption"
 msgid "Add images"
-msgstr ""
+msgstr "Добавить изображения"
 
 #: tglazresform.addimgbtn.hint
 msgid "Add images to the list"
@@ -127,11 +127,9 @@ msgstr "Программа создания ресурсов LRS"
 #: tglazresform.clearbtn.caption
 msgctxt "tglazresform.clearbtn.caption"
 msgid "Delete all"
-msgstr ""
+msgstr "Удалить все"
 
 #: tglazresform.clearbtn.hint
-#, fuzzy
-#| msgid "Cleare the entire list"
 msgid "Clear the entire list"
 msgstr "Очистить весь список"
 
@@ -142,7 +140,7 @@ msgstr "Выйти из программы"
 #: tglazresform.deletebtn.caption
 msgctxt "tglazresform.deletebtn.caption"
 msgid "Delete selected"
-msgstr ""
+msgstr "Удалить выделенные"
 
 #: tglazresform.deletebtn.hint
 msgid "Delete selected files from the list"

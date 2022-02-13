@@ -174,3 +174,4 @@ msgstr "LRS létrehozása"
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "Az LRS kimeneti fájl létrehozása"
+

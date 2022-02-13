@@ -176,3 +176,4 @@ msgstr "Створити LRS"
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "Створити файл ресурсів формату LRS"
+

@@ -69,7 +69,7 @@ msgid "Processing \"%s\""
 msgstr "处理(Processing)\"%s\""
 
 #: glazresmain.msgresourcenametype
-#, fuzzy, object-pascal-format
+#, object-pascal-format, fuzzy
 #| msgid " Resource name = \"%s\", Type = \"%s\""
 msgid "Resource name = \"%s\", Type = \"%s\""
 msgstr "资源名称= \"%s\",类型= \"%s\""
@@ -176,3 +176,4 @@ msgstr "创建LRS"
 #: tglazresform.startbtn.hint
 msgid "Create the output LRS file"
 msgstr "创建输出LRS文件"
+
