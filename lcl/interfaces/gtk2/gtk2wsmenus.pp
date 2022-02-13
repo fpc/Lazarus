@@ -198,7 +198,7 @@ var
   IconWidth: Integer;
   DC: HDC;
 begin
-  if LCLItem.HasIcon then
+  if LCLItem.HasIcon and (LCLItem.Caption <> cLineCaption) then
   begin
     DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
     IconWidth := LCLItem.GetIconSize(DC).X;
@@ -221,11 +221,14 @@ var
   DC: HDC;
 begin
   GTK_WIDGET_GET_CLASS(AMenuItem)^.size_request(PGtkWidget(AMenuItem), requisition);
-  DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
-  IconHeight := LCLItem.GetIconSize(DC).Y;
-  Widgetset.ReleaseDC(HWND({%H-}PtrUInt(AMenuItem)), DC);
-  if requisition^.height < IconHeight then
-    requisition^.height := IconHeight;
+  if LCLItem.Caption <> cLineCaption then
+  begin
+    DC := Widgetset.GetDC(HWND({%H-}PtrUInt(AMenuItem)));
+    IconHeight := LCLItem.GetIconSize(DC).Y;
+    Widgetset.ReleaseDC(HWND({%H-}PtrUInt(AMenuItem)), DC);
+    if requisition^.height < IconHeight then
+      requisition^.height := IconHeight;
+  end;
 end;
 
 function Gtk2MenuItemDeselect({%H-}item: Pointer; {%H-}AMenuItem: TMenuItem): GBoolean; cdecl;
