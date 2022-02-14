@@ -282,20 +282,22 @@ begin
     S := FrameAlphaSpin;
   if Width > S.Left + S.Width + FrameStyleBox.Width + FrameEdgesBox.Width + 15 then
   begin
-    FrameEdgesBox.AnchorSide[akTop].Control := S;
+    //FrameEdgesBox.AnchorSide[akTop].Control := S;
     FrameEdgesBox.AnchorSide[akTop].Side := asrTop;
     FrameEdgesBox.AnchorSide[akLeft].Control := S;
     FrameEdgesBox.AnchorSide[akLeft].Side := asrBottom;
     FrameEdgesBox.BorderSpacing.Top := 0;
     FrameEdgesBox.BorderSpacing.Left := 6;
+    MarkupFoldColorBox.AnchorSide[akTop].Control := FrameColorBox;
   end
   else begin
-    FrameEdgesBox.AnchorSide[akTop].Control := FrameColorBox;
+    //FrameEdgesBox.AnchorSide[akTop].Control := FrameColorBox;
     FrameEdgesBox.AnchorSide[akTop].Side := asrBottom;
     FrameEdgesBox.AnchorSide[akLeft].Control := FrameColorBox;
     FrameEdgesBox.AnchorSide[akLeft].Side := asrTop;
     FrameEdgesBox.BorderSpacing.Top := 3;
     FrameEdgesBox.BorderSpacing.Left := 0;
+    MarkupFoldColorBox.AnchorSide[akTop].Control := FrameEdgesBox;
   end;
 end;
 
