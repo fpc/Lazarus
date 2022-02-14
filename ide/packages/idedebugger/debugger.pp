@@ -44,7 +44,7 @@ uses
   LazClasses, Maps, LazMethodList,
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
-  LazDebuggerIntf, IdeDebuggerBase;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeDebuggerBase;
 
 const
   XMLBreakPointsNode = 'BreakPoints';

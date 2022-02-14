@@ -30,7 +30,7 @@ uses
   // CmdLineDebuggerBase
   DebugProcess,
   // LazDebuggerLldb
-  LldbInstructions, LldbHelper, LazDebuggerIntf;
+  LldbInstructions, LldbHelper, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 

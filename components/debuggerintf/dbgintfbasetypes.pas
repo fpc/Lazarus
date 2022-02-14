@@ -9,15 +9,15 @@ unit DbgIntfBaseTypes;
 interface
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, LazDebuggerIntfBaseTypes;
 
 type
   (* TDBGPtr
      datatype pointing to data on the target
   *)
-  TDBGPtr = type QWord;
-  PDBGPtr = ^TDBGPtr;
-  TDBGPtrArray = Array of TDBGPtr;
+  TDBGPtr      = LazDebuggerIntfBaseTypes.TDBGPtr;
+  PDBGPtr      = LazDebuggerIntfBaseTypes.PDBGPtr;
+  TDBGPtrArray = LazDebuggerIntfBaseTypes.TDBGPtrArray;
 
   (* TDbgSymbolKind
      Enum of types that a value can have.

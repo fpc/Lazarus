@@ -59,7 +59,7 @@ uses
   InspectDlg, DebugEventsForm, PseudoTerminalDlg, FeedbackDlg, ThreadDlg,
   HistoryDlg, ProcessDebugger, DbgIntfBaseTypes, DbgIntfDebuggerBase,
   DbgIntfMiscClasses, DbgIntfPseudoTerminal, LazDebuggerIntf,
-  BaseDebugManager;
+  LazDebuggerIntfBaseTypes, BaseDebugManager;
 
 
 type

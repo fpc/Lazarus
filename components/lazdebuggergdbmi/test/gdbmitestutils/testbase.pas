@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, FileUtil, fpcunit, testregistry, LCLProc, LazLogger,
   LazFileUtils, DbgIntfDebuggerBase, Dialogs, Forms, RegExpr, GDBMIDebugger,
   TestDbgConfig, TestDbgTestSuites, TTestDbgExecuteables, TTestDebuggerClasses,
-  TestDbgCompilerProcess, TestDbgControl, TestOutputLogger, LazDebuggerIntf; // , FpGdbmiDebugger;
+  TestDbgCompilerProcess, TestDbgControl, TestOutputLogger, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes; // , FpGdbmiDebugger;
   // EnvironmentOpts, ExtToolDialog, TransferMacros,
 
 

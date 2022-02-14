@@ -35,7 +35,7 @@ uses
   Classes, {$IfDef WIN64}windows,{$EndIf} SysUtils, fgl, math, process,
   Forms, Dialogs, syncobjs,
   Maps, LazLoggerBase, LazUTF8, lazCollections,
-  DbgIntfBaseTypes, DbgIntfDebuggerBase,
+  DbgIntfDebuggerBase, LazDebuggerIntfBaseTypes,
   FpDebugDebuggerUtils, FpDebugDebuggerWorkThreads, LazDebuggerIntf,
   // FpDebug
   {$IFDEF FPDEBUG_THREAD_CHECK} FpDbgCommon, {$ENDIF}

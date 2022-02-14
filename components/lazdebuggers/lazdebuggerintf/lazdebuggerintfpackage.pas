@@ -2,13 +2,13 @@
   This source is only used to compile and install the package.
  }
 
-unit LazDebuggerIntfPackage;
+unit lazdebuggerintfpackage;
 
 {$warn 5023 off : no warning about unused units}
 interface
 
 uses
-  LazDebuggerIntf, LazDebuggerTemplate;
+  LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes;
 
 implementation
 

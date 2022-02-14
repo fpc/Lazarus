@@ -17,7 +17,7 @@ uses
   GDBTypeInfo, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
   LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder,
   FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon,
-  MenuIntf, LazDebuggerIntf;
+  MenuIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 

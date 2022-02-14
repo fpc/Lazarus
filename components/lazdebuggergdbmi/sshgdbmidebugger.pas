@@ -47,7 +47,8 @@ uses
   // DebuggerIntf
   DbgIntfDebuggerBase,
   // LazDebuggerGdbmi
-  GDBMIDebugger, GdbmiStringConstants, LazDebuggerIntf;
+  GDBMIDebugger, GdbmiStringConstants, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes;
 
 type
 

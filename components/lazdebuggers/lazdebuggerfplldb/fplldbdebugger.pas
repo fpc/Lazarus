@@ -26,7 +26,7 @@ uses
   windows,
   {$ENDIF}
   Classes, sysutils, math, FpdMemoryTools, FpDbgInfo, LldbDebugger,
-  LldbInstructions, LldbHelper, LazDebuggerIntf, DbgIntfBaseTypes,
+  LldbInstructions, LldbHelper, LazDebuggerIntf, DbgIntfBaseTypes, LazDebuggerIntfBaseTypes,
   DbgIntfDebuggerBase, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
   LazClasses, FpPascalParser, FpPascalBuilder, FpErrorMessages,
   FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon;

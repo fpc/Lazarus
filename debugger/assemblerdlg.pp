@@ -16,7 +16,8 @@ uses
   // IdeIntf
   IDEWindowIntf, IDECommands, IDEImagesIntf,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfDebuggerBase, LazDebuggerIntf,
+  DbgIntfDebuggerBase,
+  LazDebuggerIntfBaseTypes,
   // IDE
   DebuggerDlg, Debugger, BaseDebugManager, EditorOptions, SourceEditor;
 

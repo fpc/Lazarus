@@ -9,7 +9,7 @@ uses
   DbgIntfBaseTypes, DbgIntfDebuggerBase, TestBase, FpGdbmiDebugger, LCLProc,
   IdeDebuggerBase, TestWatchUtils, GDBMIDebugger, FpErrorMessages,
   TestDbgControl, TestDbgConfig, TTestDbgExecuteables, TestDbgTestSuites,
-  LazDebuggerIntf;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 const
   BREAK_COUNT_TestWatchesUnitSimple = 17;

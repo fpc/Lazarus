@@ -7,7 +7,8 @@ interface
 uses
   SysUtils, fpcunit, testutils, testregistry, TestBase, GDBMIDebugger, LCLProc,
   FileUtil, LazUTF8, DbgIntfDebuggerBase, TestDbgControl, TestDbgTestSuites,
-  TestDbgConfig, TestDbgCompilerProcess, LazDebuggerIntf, TestWatches;
+  TestDbgConfig, TestDbgCompilerProcess, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes, TestWatches;
 
 const
   BREAK_LINE_ARGV = 40;

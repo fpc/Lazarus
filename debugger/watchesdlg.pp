@@ -44,7 +44,7 @@ uses
   IDEImagesIntf, LazarusIDEStrConsts, DebuggerStrConst, Debugger,
   DebuggerTreeView, IdeDebuggerBase, DebuggerDlg, DbgIntfBaseTypes,
   DbgIntfDebuggerBase, DbgIntfMiscClasses, SynEdit, laz.VirtualTrees,
-  LazDebuggerIntf, BaseDebugManager, EnvironmentOpts;
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, BaseDebugManager, EnvironmentOpts;
 
 type
 

@@ -44,7 +44,7 @@ uses
   // IdeIntf
   IDEWindowIntf, IDEImagesIntf,
   // DebuggerIntf
-  DbgIntfDebuggerBase, LazDebuggerIntf,
+  DbgIntfDebuggerBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
   // IDE
   BaseDebugManager, LazarusIDEStrConsts, DebuggerStrConst, Debugger, DebuggerDlg;
 

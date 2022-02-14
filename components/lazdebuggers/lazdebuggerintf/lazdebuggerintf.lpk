@@ -33,6 +33,10 @@ See LCL license for details."/>
         <Type Value="Main Unit"/>
         <UnitName Value="lazdebuggerintfpackage"/>
       </Item>
+      <Item>
+        <Filename Value="lazdebuggerintfbasetypes.pas"/>
+        <UnitName Value="lazdebuggerintfbasetypes"/>
+      </Item>
     </Files>
     <RequiredPkgs>
       <Item>

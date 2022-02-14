@@ -35,6 +35,7 @@ uses
   IDEWindowIntf, IDEImagesIntf, ObjectInspector, PropEdits,
   // DebuggerIntf
   DbgIntfDebuggerBase, DbgIntfBaseTypes, LazDebuggerIntf,
+  LazDebuggerIntfBaseTypes,
   // IDE
   LazarusIDEStrConsts, BaseDebugManager, InputHistory, IDEProcs,
   Debugger, DebuggerDlg, DebuggerStrConst, EnvironmentOpts;

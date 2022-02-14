@@ -64,7 +64,7 @@ uses
   // DebuggerIntf
   DbgIntfBaseTypes, DbgIntfDebuggerBase,
   // CmdLineDebuggerBase
-  DebuggerPropertiesBase, LazDebuggerIntf,
+  DebuggerPropertiesBase, LazDebuggerIntf, LazDebuggerIntfBaseTypes,
 {$IFDEF DBG_ENABLE_TERMINAL}
   DbgIntfPseudoTerminal,
 {$ENDIF}
