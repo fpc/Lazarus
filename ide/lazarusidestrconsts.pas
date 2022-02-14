@@ -2010,8 +2010,8 @@ resourcestring
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
   dlgGutterCollapsedColor = 'Collapsed';
-  dlgCaretForeColor = 'Color (NotXor)';
-  dlgCaretBackColor = 'Multi/2nd (NotXor)';
+  dlgCaretForeColor = 'Color (Main-Caret / NotXor)';
+  dlgCaretBackColor = 'Multi-Caret-Mode (2ndary C.)';
   dlgOverviewGutterBack1Color = 'Background 1';
   dlgOverviewGutterBack2Color = 'Background 2';
   dlgOverviewGutterPageColor = 'Page';
