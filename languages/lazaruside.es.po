@@ -890,17 +890,26 @@ msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "No puedes usar el escritorio acoplado en entornos sin acoplamiento y viceversa."
 
 #: lazarusidestrconsts.dlgcaretbackcolor
-msgid "Multi/2nd (NotXor)"
+#, fuzzy
+#| msgid "Multi/2nd (NotXor)"
+msgid "Secondary carets (multi-caret mode)"
 msgstr "Multi/2nd (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretcolor
 #, fuzzy
+#| msgid "Caret"
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
-msgid "Caret"
+msgid "Caret (Text-Cursor)"
 msgstr "Cursor de texto"
 
+#: lazarusidestrconsts.dlgcaretcolorinfo
+msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcaretforecolor
-msgid "Color (NotXor)"
+#, fuzzy
+#| msgid "Color (NotXor)"
+msgid "Main or primary caret"
 msgstr "Color (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions

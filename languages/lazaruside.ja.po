@@ -885,17 +885,22 @@ msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "非ドック環境でドックデスクトップを使用したりその逆を行ったりはできません。"
 
 #: lazarusidestrconsts.dlgcaretbackcolor
-msgid "Multi/2nd (NotXor)"
+msgid "Secondary carets (multi-caret mode)"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcaretcolor
 #, fuzzy
+#| msgid "Caret"
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
-msgid "Caret"
+msgid "Caret (Text-Cursor)"
 msgstr "キャレット"
 
+#: lazarusidestrconsts.dlgcaretcolorinfo
+msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
+msgstr ""
+
 #: lazarusidestrconsts.dlgcaretforecolor
-msgid "Color (NotXor)"
+msgid "Main or primary caret"
 msgstr ""
 
 #: lazarusidestrconsts.dlgcaretgroupoptions

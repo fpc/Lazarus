@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-02-12 01:20+0300\n"
+"PO-Revision-Date: 2022-02-16 01:44+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -876,17 +876,21 @@ msgid "You cannot use docked desktop in undocked environment and vice versa."
 msgstr "Невозможно использовать стыкуемый рабочий стол в нестыкуемом окружении, и наоборот."
 
 #: lazarusidestrconsts.dlgcaretbackcolor
-msgid "Multi/2nd (NotXor)"
-msgstr "Второй/остальные (не XOR)"
+msgid "Secondary carets (multi-caret mode)"
+msgstr "Вторичные курсоры (многокурсорный режим)"
 
 #: lazarusidestrconsts.dlgcaretcolor
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
-msgid "Caret"
-msgstr "Курсор"
+msgid "Caret (Text-Cursor)"
+msgstr "Курсор (в тексте)"
+
+#: lazarusidestrconsts.dlgcaretcolorinfo
+msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
+msgstr "Цвет курсора зависит от цветов находящихся под ним текста и фона. Значения RGB каждого пикселя побитово инвертируются и складываются по XOR со значением RGB выбранного цвета."
 
 #: lazarusidestrconsts.dlgcaretforecolor
-msgid "Color (NotXor)"
-msgstr "Цвет (не XOR)"
+msgid "Main or primary caret"
+msgstr "Главный или первичный курсор"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
