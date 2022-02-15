@@ -763,4 +763,22 @@ object SynColorAttrEditor: TSynColorAttrEditor
     TabOrder = 21
     Text = 'slsSolid'
   end
+  object lblInfo: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = pnlUnderline
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 170
+    Width = 746
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 3
+    BorderSpacing.Right = 6
+    Caption = 'lblInfo'
+    Visible = False
+    WordWrap = True
+  end
 end

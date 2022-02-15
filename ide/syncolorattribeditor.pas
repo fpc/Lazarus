@@ -26,6 +26,7 @@ type
     ColumnPosBevel: TPanel;
     ForePriorLabel: TLabel;
     ForePriorSpin: TSpinEdit;
+    lblInfo: TLabel;
     MarkupFoldStyleBox: TComboBox;
     MarkupFoldAlphaSpin: TSpinEdit;
     MarkupFoldAlphaLabel: TLabel;
@@ -455,7 +456,7 @@ begin
   CheckControl(MarkupFoldColorUseDefaultCheckBox);
 
   ColumnPosBevel.AnchorSide[akLeft].Control := MinAnchor;
-  Constraints.MinHeight := pnlItalic.Top + pnlItalic.Height;
+  Constraints.MinHeight := lblInfo.Top + lblInfo.Height;
   S := BackPriorSpin;
   if not S.Visible then
     S := BackAlphaSpin;
@@ -737,6 +738,12 @@ begin
       TextBoldCheckBox.Checked      := fsBold in FCurHighlightElement.Style;
       TextItalicCheckBox.Checked    := fsItalic in FCurHighlightElement.Style;
       TextUnderlineCheckBox.Checked := fsUnderline in FCurHighlightElement.Style;
+    end;
+
+    lblInfo.Visible := False;
+    if IsAhaElement(FCurHighlightElement, ahaCaretColor) then begin
+      lblInfo.Caption := dlgCaretColorInfo;
+      lblInfo.Visible := True;
     end;
 
     UpdatingColor := False;

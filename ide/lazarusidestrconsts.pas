@@ -2010,8 +2010,10 @@ resourcestring
   dlgUnsavedLineColor = 'Unsaved line';
   dlgSavedLineColor = 'Saved line';
   dlgGutterCollapsedColor = 'Collapsed';
-  dlgCaretForeColor = 'Color (Main-Caret / NotXor)';
-  dlgCaretBackColor = 'Multi-Caret-Mode (2ndary C.)';
+  dlgCaretForeColor = 'Main or primary caret';
+  dlgCaretBackColor = 'Secondary carets (multi-caret mode)';
+  dlgCaretColorInfo = 'The caret color depends on the colors of text and background under the caret. '
+    + 'Each pixel''s RGB are bitwise inverted and XOR''ed with the chosen color''s RGB.';
   dlgOverviewGutterBack1Color = 'Background 1';
   dlgOverviewGutterBack2Color = 'Background 2';
   dlgOverviewGutterPageColor = 'Page';
@@ -2209,7 +2211,7 @@ resourcestring
   dlgAddHiAttrOutlineLevel10Color = 'Level 10';
   dlgAddHiSpecialVisibleChars     = 'Visualized Special Chars';
   dlgTopInfoHint                  = 'Current Class/Proc Hint';
-  dlgCaretColor                   = 'Caret';
+  dlgCaretColor                   = 'Caret (Text-Cursor)';
   dlgOverviewGutterColor          = 'Overview Gutter';
   dlgIfDefBlockInactive           = 'Inactive $IFDEF code';
   dlgIfDefBlockActive             = 'Active $IFDEF code';
