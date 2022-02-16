@@ -1124,7 +1124,7 @@ procedure TBoxAndWhiskerSeries.Draw(ADrawer: IChartDrawer);
   
   procedure DrawBox(XBox1, XBox2, YBox1, YBox2: Integer);
   begin
-    if XBox1 = XBox2 then
+    if (XBox1 = XBox2) or (YBox1 = YBox2) then
     begin
       if IsRotated then
         ADrawer.Line(YBox1, XBox1, YBox2, XBox2)
