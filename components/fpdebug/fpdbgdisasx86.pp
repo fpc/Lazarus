@@ -84,13 +84,18 @@ type
     rexX,    // $4x bit 1:  Extension of the SIB index field
     rexR,    // $4x bit 2:  Extension of the ModR/M reg field
     rexW,    // $4x bit 3:  64 Bit Operand Size
-    preOpr,  // $66:  	Operand-size override prefix  (32 and 64 bit)
+    pre66,   // $66:  	Operand-size override prefix  (32 and 64 bit) or SIMD prefix
     preAdr,  // $67:    Address-size override prefix
     preLock,
-    preRep{N},
-    preRepNE,
+    preF2,   // $F2: Repeat string/input/output or SIMD prefix
+    preF3,   // $F3: Repeat string/input/output or SIMD prefix
     oprDefault64,  // In 64bit mode set default operand size to 64 (d64 note in Table A-x)
-    oprForce64     // In 64bit mode set operand size to 64 (f64 note in Table A-x)
+    oprForce64,    // In 64bit mode set operand size to 64 (f64 note in Table A-x)
+    flagVex,
+    vexL,
+    vexW,
+    vexX,
+    vexB
   );
   TFlags = set of TFlag;
   
@@ -100,6 +105,7 @@ type
   TRegisterType = (reg0, reg8, reg16, reg32, reg64, regMmx, regXmm, regSegment, regControl, regDebug, regX87);
   TModRMType = (modReg, modMem);
   TModRMTypes = set of TModRMType;
+  TSimdOpcode = (soInvalid, soNone, so66, soF2, soF3);
 
   TInstructionFlag = (
     ifOnly32, ifOnly64,
@@ -649,6 +655,7 @@ var
   OperIdx: Integer;
   ModRMIdx: Byte;
   Flags: TFlags;
+  SimdOpcode: TSimdOpcode;
 
   procedure Check32;
   begin
@@ -706,61 +713,70 @@ var
 
   procedure CheckRepeat;
   begin
-    if preRep in Flags
+    if preF3 in Flags
     then begin
-      Exclude(Flags, preRep);
+      Exclude(Flags, preF3);
       Include(AnInstruction.Flags, ifPrefixRep);
     end;
   end;
   
   procedure CheckRepeatX;
   begin
-    if preRep in Flags
+    if preF3 in Flags
     then begin
-      Exclude(Flags, preRep);
+      Exclude(Flags, preF3);
       Include(AnInstruction.Flags, ifPrefixRepE);
       Exit;
     end;
-    if preRepNE in Flags
+    if preF2 in Flags
     then begin
-      Exclude(Flags, preRepNE);
+      Exclude(Flags, preF2);
       Include(AnInstruction.Flags, ifPrefixRepNe);
       Exit;
     end;
   end;
-  
+
+  procedure CheckSIMD;
+  var
+    check: TFlags;
+  begin
+    check := Flags * [pre66, preF3, preF2];
+    if check = []
+    then SimdOpcode := soNone
+    else if check - [preF3] = []
+    then SimdOpcode := soF3
+    else if check - [preF2] = []
+    then SimdOpcode := soF2
+    else if check - [pre66] = []
+    then SimdOpcode := so66
+    else SimdOpcode := soInvalid;
+  end;
+
   //===================
 
-  function DecodePrefix(const AOpcode, AOpcodeRep, AOpcodeOpr, AOpcodeRepNE: TOpCode): Integer;
+  function DecodePrefix(AOpcode, AOpcode66, AOpcodeF2, AOpcodeF3: TOpCode): TSimdOpcode;
   var
     S: TOpCode;
   begin
-    S := OPX_Invalid;
-    if preRep in Flags
+    CheckSIMD;
+
+    case SimdOpcode of
+      soNone: Opcode := AOpcode;
+      so66:   Opcode := AOpcode66;
+      soF2:   Opcode := AOpcodeF2;
+      soF3:   Opcode := AOpcodeF3;
+    else
+      Opcode := OPX_Invalid;
+    end;
+
+    if Opcode = OPX_Invalid
     then begin
-      S := AOpcodeRep;
-      Exclude(Flags, preRep);
-      Result := 1;
-    end
-    else if preOpr in Flags
-    then begin
-      S := AOpcodeOpr;
-      Exclude(Flags, preOpr);
-      Result := 2;
-    end
-    else if preRepNE in Flags
-    then begin
-      S := AOpcodeRepNE;
-      Exclude(Flags, preRepNE);
-      Result := 3;
+      Result := soInvalid;
     end
     else begin
-      S := AOpcode;
-      Result := 0;
+      Flags := Flags - [pre66, preF2, preF3];
+      Result := SimdOpcode;
     end;
-    if S = OPX_Invalid then
-      Result := -1;
-    Opcode := S;
   end;
 
   function AddressSize32: TAddressSize;
@@ -802,7 +818,7 @@ var
       Result := os64;
     end
     else begin
-      if preOpr in Flags
+      if pre66 in Flags
       then Result := os16
       else if oprDefault64 in Flags
       then Result := os64
@@ -2045,9 +2061,9 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], OPX_Invalid, OPC[Index], OPX_Invalid) of
-      0: begin AddPRq;  AddIb; end;
-      2: begin AddVRdq; AddIb;  end;
+    case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
+      soNone: begin AddPRq;  AddIb; end;
+      so66:   begin AddVRdq; AddIb; end;
     else
       Opcode := OPX_Group12;
     end;
@@ -2066,9 +2082,9 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], OPX_Invalid, OPC[Index], OPX_Invalid) of
-      0: begin AddPRq;  AddIb; end;
-      2: begin AddVRdq; AddIb;  end;
+    case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
+      soNone: begin AddPRq;  AddIb; end;
+      so66:   begin AddVRdq; AddIb; end;
     else
       Opcode := OPX_Group13;
     end;
@@ -2087,13 +2103,13 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], OPX_Invalid, OPC[Index], OPX_Invalid) of
-      0: begin
+    case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
+      soNone: begin
         if (Index = 3) or (Index = 7)
         then Opcode := OPX_Group14
         else begin AddPRq; AddIb; end;
       end;
-      2: begin AddVRdq; AddIb; end;
+      so66: begin AddVRdq; AddIb; end;
     else
       Opcode := OPX_Group14;
     end;
@@ -2111,7 +2127,7 @@ var
       Exit;
     end;
     Index := (Code[ModRMIdx] shr 3) and 7;
-    if (Flags * [preOpr, preRep, preRepNE] <> [])
+    if (Flags * [pre66, preF3, preF2] <> [])
     or (Index = 4)
     then begin
       Opcode := OPX_Group15;
@@ -2247,24 +2263,24 @@ var
       end;
       //---
       $10: begin
-        case DecodePrefix(OPmovups, OPmovss, OPmovupd, OPmovsd) of
-          0: begin AddVps;    AddWps; end;
-          1: begin AddVdq_ss; AddWss; end;
-          2: begin AddVpd;    AddWpd; end;
-          3: begin AddVdq_sd; AddWsd; end;
+        case DecodePrefix(OPmovups, OPmovupd, OPmovsd, OPmovss) of
+          soNone: begin AddVps;    AddWps; end;
+          so66:   begin AddVpd;    AddWpd; end;
+          soF2:   begin AddVdq_sd; AddWsd; end;
+          soF3:   begin AddVdq_ss; AddWss; end;
         end;
       end;
       $11: begin
-        case DecodePrefix(OPmovups, OPmovss, OPmovupd, OPmovsd) of
-          0: begin AddWps; AddVps; end;
-          1: begin AddWss; AddVss; end;
-          2: begin AddWpd; AddVpd; end;
-          3: begin AddWsd; AddVsd; end;
+        case DecodePrefix(OPmovups, OPmovupd, OPmovsd, OPmovss) of
+          soNone: begin AddWps; AddVps; end;
+          so66:   begin AddWpd; AddVpd; end;
+          soF2:   begin AddWsd; AddVsd; end;
+          soF3:   begin AddWss; AddVss; end;
         end;
       end;
       $12: begin
-        case DecodePrefix(OPmovhlps, OPmovsldup, OPmovlpd, OPmovddup) of
-          0: begin
+        case DecodePrefix(OPmovhlps, OPmovlpd, OPmovddup, OPmovsldup) of
+          soNone: begin
             // Opcode differs on type found
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
@@ -2272,36 +2288,32 @@ var
             if ofMemory in AnInstruction.Operand[2].Flags
             then Opcode := OPmovlps;
           end;
-          1: begin AddVps; AddWps; end;
-          2: begin AddVsd; AddMq;  end;
-          3: begin AddVpd; AddWsd; end;
+          so66: begin AddVsd; AddMq;  end;
+          soF2: begin AddVpd; AddWsd; end;
+          soF3: begin AddVps; AddWps; end;
         end;
       end;
       $13: begin
-        case DecodePrefix(OPmovlps, OPX_Invalid, OPmovlpd, OPX_Invalid) of
-          0: begin AddMq; AddVps; end;
-          2: begin AddMq; AddVsd; end;
+        case DecodePrefix(OPmovlps, OPmovlpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddMq; AddVps; end;
+          so66:   begin AddMq; AddVsd; end;
         end;
       end;
       $14: begin
-        case DecodePrefix(OPunpcklps, OPX_Invalid, OPunpcklpd, OPX_Invalid) of
-          0: begin AddVps; AddWq; end;
-          2: begin AddVpd; AddWq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPunpcklps, OPunpcklpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddVps; AddWq; end;
+          so66:   begin AddVpd; AddWq; end;
         end;
       end;
       $15: begin
-        case DecodePrefix(OPunpckhps, OPX_Invalid, OPunpckhpd, OPX_Invalid) of
-          0: begin AddVps; AddWq; end;
-          2: begin AddVpd; AddWq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPunpckhps, OPunpckhpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddVps; AddWq; end;
+          so66:   begin AddVpd; AddWq; end;
         end;
       end;
       $16: begin
-        case DecodePrefix(OPmovlhps, OPmovshdup, OPmovhpd, OPX_Invalid) of
-          0: begin
+        case DecodePrefix(OPmovlhps, OPmovhpd, OPX_Invalid, OPmovshdup) of
+          soNone: begin
             // Opcode differs on type found
             // it is specified as Mq or VRq
             // So when getting Wq, we Add both and know the type
@@ -2309,18 +2321,14 @@ var
             if ofMemory in AnInstruction.Operand[2].Flags
             then Opcode := OPmovhps;
           end;
-          1: begin AddVps; AddWps; end;
-          2: begin AddVsd; AddMq; end;
-        else
-          Opcode := OPX_Invalid;
+          so66: begin AddVsd; AddMq; end;
+          soF3: begin AddVps; AddWps; end;
         end;
       end;
       $17: begin
-        case DecodePrefix(OPmovhps, OPX_Invalid, OPmovhpd, OPX_Invalid) of
-          0: begin AddMq; AddVps; end;
-          2: begin AddMq; AddVsd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovhps, OPmovhpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddMq; AddVps; end;
+          so66:   begin AddMq; AddVsd; end;
         end;
       end;
       $18: begin
@@ -2349,67 +2357,57 @@ var
       end;
       // $24..$27: OPX_Invalid
       $28: begin
-        case DecodePrefix(OPmovaps, OPX_Invalid, OPmovapd, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          2: begin AddVpd; AddWpd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovaps, OPmovapd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddVps; AddWps; end;
+          so66:   begin AddVpd; AddWpd; end;
         end;
       end;
       $29: begin
-        case DecodePrefix(OPmovaps, OPX_Invalid, OPmovapd, OPX_Invalid) of
-          0: begin AddWps; AddVps; end;
-          2: begin AddWpd; AddVpd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovaps, OPmovapd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddWps; AddVps; end;
+          so66:   begin AddWpd; AddVpd; end;
         end;
       end;
       $2A: begin
-        case DecodePrefix(OPcvtpi2ps, OPcvtsi2ss, OPcvtpi2pd, OPcvtsi2sd) of
-          0: begin AddVps; AddQq;   end;
-          1: begin AddVss; AddEd_q; end;
-          2: begin AddVpd; AddQq;   end;
-          3: begin AddVsd; AddEd_q; end;
+        case DecodePrefix(OPcvtpi2ps, OPcvtpi2pd, OPcvtsi2sd, OPcvtsi2ss) of
+          soNone: begin AddVps; AddQq;   end;
+          so66:   begin AddVpd; AddQq;   end;
+          soF2:   begin AddVsd; AddEd_q; end;
+          soF3:   begin AddVss; AddEd_q; end;
         end;
       end;
       $2B: begin
-        case DecodePrefix(OPmovntps, OPX_Invalid, OPmovntpd, OPX_Invalid) of
-          0: begin AddMdq; AddVps; end;
-          2: begin AddMdq; AddVpd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovntps, OPmovntpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddMdq; AddVps; end;
+          so66:   begin AddMdq; AddVpd; end;
         end;
       end;
       $2C: begin
-        case DecodePrefix(OPcvttps2pi, OPcvttss2si, OPcvttpd2pi, OPcvttsd2si) of
-          0: begin AddPq;   AddWps; end;
-          1: begin AddGd_q; AddWss; end;
-          2: begin AddPq;   AddWpd; end;
-          3: begin AddGd_q; AddWsd; end;
+        case DecodePrefix(OPcvttps2pi, OPcvttpd2pi, OPcvttsd2si, OPcvttss2si) of
+          soNone: begin AddPq;   AddWps; end;
+          so66:   begin AddPq;   AddWpd; end;
+          soF2:   begin AddGd_q; AddWsd; end;
+          soF3:   begin AddGd_q; AddWss; end;
         end;
       end;
       $2D: begin
-        case DecodePrefix(OPcvtps2pi, OPcvtss2si, OPcvtpd2pi, OPcvtsd2si) of
-          0: begin AddPq;   AddWps; end;
-          1: begin AddGd_q; AddWss; end;
-          2: begin AddPq;   AddWpd; end;
-          3: begin AddGd_q; AddWsd; end;
+        case DecodePrefix(OPcvtps2pi, OPcvtpd2pi, OPcvtsd2si, OPcvtss2si) of
+          soNone: begin AddPq;   AddWps; end;
+          so66:   begin AddPq;   AddWpd; end;
+          soF2:   begin AddGd_q; AddWsd; end;
+          soF3:   begin AddGd_q; AddWss; end;
         end;
       end;
       $2E: begin
-        case DecodePrefix(OPucomiss, OPX_Invalid, OPucomissd, OPX_Invalid) of
-          0: begin AddVss; AddWss; end;
-          2: begin AddVsd; AddWsd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPucomiss, OPucomissd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddVss; AddWss; end;
+          so66:   begin AddVsd; AddWsd; end;
         end;
       end;
       $2F: begin
-        case DecodePrefix(OPcomiss, OPX_Invalid, OPcomissd, OPX_Invalid) of
-          0: begin AddVss; AddWss; end;
-          2: begin AddVsd; AddWsd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPcomiss, OPcomissd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddVss; AddWss; end;
+          so66:   begin AddVsd; AddWsd; end;
         end;
       end;
       //---
@@ -2439,223 +2437,152 @@ var
       end;
       //---
       $50: begin
-        case DecodePrefix(OPmovmskps, OPX_Invalid, OPmovmskpd, OPX_Invalid) of
-          0: begin AddGd; AddVRps; end;
-          2: begin AddGd; AddVRpd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovmskps, OPmovmskpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddGd; AddVRps; end;
+          so66:   begin AddGd; AddVRpd; end;
         end;
       end;
-      $51, $58..$59, $5C..$5F: begin
+      $51..$59, $5C..$5F: begin
         case Code[CodeIdx] of
-          $51: Idx := DecodePrefix(OPsqrtps, OPsqrtss, OPsqrtpd, OPsqrtsd);
-          $58: Idx := DecodePrefix(OPaddps, OPaddss, OPaddpd, OPaddsd);
-          $59: Idx := DecodePrefix(OPmulps, OPmulss, OPmulpd, OPmulsd);
-          $5C: Idx := DecodePrefix(OPsubps, OPsubss, OPsubpd, OPsubsd);
-          $5D: Idx := DecodePrefix(OPminps, OPminss, OPminpd, OPminsd);
-          $5E: Idx := DecodePrefix(OPdivps, OPdivss, OPdivpd, OPdivsd);
-          $5F: Idx := DecodePrefix(OPmaxps, OPmaxss, OPmaxpd, OPmaxsd);
-        else
-          Idx := -1;
+          $51: DecodePrefix(OPsqrtps,  OPsqrtpd,    OPsqrtsd,    OPsqrtss);
+          $52: DecodePrefix(OPrsqrtps, OPX_Invalid, OPX_Invalid, OPrsqrtss);
+          $53: DecodePrefix(OPrcpps,   OPX_Invalid, OPX_Invalid, OPrcpss);
+          $54: DecodePrefix(OPandps,   OPandpd,     OPX_Invalid, OPX_Invalid);
+          $55: DecodePrefix(OPandnps,  OPandnpd,    OPX_Invalid, OPX_Invalid);
+          $56: DecodePrefix(OPorps,    OPorpd,      OPX_Invalid, OPX_Invalid);
+          $57: DecodePrefix(OPxorps,   OPxorpd,     OPX_Invalid, OPX_Invalid);
+          $58: DecodePrefix(OPaddps,   OPaddpd,     OPaddsd,     OPaddss);
+          $59: DecodePrefix(OPmulps,   OPmulpd,     OPmulsd,     OPmulss);
+          $5C: DecodePrefix(OPsubps,   OPsubpd,     OPsubsd,     OPsubss);
+          $5D: DecodePrefix(OPminps,   OPminpd,     OPminsd,     OPminss);
+          $5E: DecodePrefix(OPdivps,   OPdivpd,     OPdivsd,     OPdivss);
+          $5F: DecodePrefix(OPmaxps,   OPmaxpd,     OPmaxsd,     OPmaxss);
         end;
 
-        case Idx of
-          0: begin AddVps; AddWps; end;
-          1: begin AddVss; AddWss; end;
-          2: begin AddVpd; AddWpd; end;
-          3: begin AddVsd; AddWsd; end;
-        else
-          Opcode := OPX_Invalid;
+        case SimdOpcode of
+          soNone: begin AddVps; AddWps; end;
+          so66:   begin AddVpd; AddWpd; end;
+          soF2:   begin AddVsd; AddWsd; end;
+          soF3:   begin AddVss; AddWss; end;
         end;
       end;
-      $52: begin
-        case DecodePrefix(OPrsqrtps, OPrsqrtss, OPX_Invalid, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          1: begin AddVss; AddWss; end;
-        else
-          Opcode := OPX_Invalid;
-        end;
-      end;
-      $53: begin
-        case DecodePrefix(OPrcpps, OPrcpss, OPX_Invalid, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          1: begin AddVss; AddWss; end;
-        else
-          Opcode := OPX_Invalid;
-        end;
-      end;
-      $54: begin
-        case DecodePrefix(OPandps, OPX_Invalid, OPandpd, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          2: begin AddVpd; AddWpd; end;
-        else
-          Opcode := OPX_Invalid;
-        end;
-      end;
-      $55: begin
-        case DecodePrefix(OPandnps, OPX_Invalid, OPandnpd, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          2: begin AddVpd; AddWpd; end;
-        else
-          Opcode := OPX_Invalid;
-        end;
-      end;
-      $56: begin
-        case DecodePrefix(OPorps, OPX_Invalid, OPorpd, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          2: begin AddVpd; AddWpd; end;
-        else
-          Opcode := OPX_Invalid;
-        end;
-      end;
-      $57: begin
-        case DecodePrefix(OPxorps, OPX_Invalid, OPxorpd, OPX_Invalid) of
-          0: begin AddVps; AddWps; end;
-          2: begin AddVpd; AddWpd; end;
-        else
-          Opcode := OPX_Invalid;
-        end;
-      end;
-      // $58..$59: see $51
       $5A: begin
-        case DecodePrefix(OPcvtps2pd, OPcvtss2sd, OPcvtpd2ps, OPcvtsd2ss) of
-          0: begin AddVpd; AddWps; end;
-          1: begin AddVsd; AddWss; end;
-          2: begin AddVps; AddWpd; end;
-          3: begin AddVss; AddWsd; end;
+        case DecodePrefix(OPcvtps2pd, OPcvtpd2ps, OPcvtsd2ss, OPcvtss2sd) of
+          soNone: begin AddVpd; AddWps; end;
+          so66:   begin AddVps; AddWpd; end;
+          soF2:   begin AddVss; AddWsd; end;
+          soF3:   begin AddVsd; AddWss; end;
         end;
       end;
       $5B: begin
-        case DecodePrefix(OPcvtdq2ps, OPcvttps2dq, OPcvtps2dq, OPX_Invalid) of
-          0: begin AddVps; AddWdq; end;
-          1: begin AddVdq; AddWps; end;
-          2: begin AddVdq; AddWps; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPcvtdq2ps, OPcvtps2dq, OPX_Invalid, OPcvttps2dq) of
+          soNone: begin AddVps; AddWdq; end;
+          so66:   begin AddVdq; AddWps; end;
+          soF3:   begin AddVdq; AddWps; end;
         end;
       end;
       // $5C..$5F: see $51
       //---
       $60..$6D: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_6x[idx], OPX_Invalid, OPR_6x[idx], OPX_Invalid);
-
-        if (idx = 0) and (Code[CodeIdx] in [$6C, $6D])
-        then idx := -1;
-
-        case Idx of
-          0: begin AddPq;  AddQd; end;
-          2: begin
+        CheckSIMD;
+        case DecodePrefix(OPR_6x[idx], OPR_6x[idx], OPX_Invalid, OPX_Invalid) of
+          soNone: begin
+            if Code[CodeIdx] in [$6C, $6D]
+            then Opcode := OPX_Invalid
+            else begin AddPq;  AddQd; end;
+          end;
+          so66: begin
             AddVdq;
             if Code[CodeIdx] = $6B then AddWdq else AddWq;
           end;
-        else
-          Opcode := OPX_Invalid;
         end;
       end;
       $6E: begin
-        case DecodePrefix(OPmovd, OPX_Invalid, OPmovd, OPX_Invalid) of
-          0: begin AddPq;  AddEd_q; end;
-          2: begin AddVdq; AddEd_q; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovd, OPmovd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddEd_q; end;
+          so66:   begin AddVdq; AddEd_q; end;
         end;
       end;
       $6F: begin
-        case DecodePrefix(OPmovq, OPmovdqu, OPmovdqa, OPX_Invalid) of
-          0: begin AddPq;  AddQq;  end;
-          1: begin AddVdq; AddWdq; end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovq, OPmovdqa, OPX_Invalid, OPmovdqu) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
+          soF3:   begin AddVdq; AddWdq; end;
         end;
       end;
       //---
       $70: begin
-        case DecodePrefix(OPpshufw, OPpshufhw, OPpshufd, OPpshuflw) of
-          0: begin AddPq;  AddQq;  AddIb; end;
-          1: begin AddVq;  AddWq;  AddIb; end;
-          2: begin AddVdq; AddWdq; AddIb; end;
-          3: begin AddVq;  AddWq;  AddIb; end;
+        case DecodePrefix(OPpshufw, OPpshufd, OPpshuflw, OPpshufhw) of
+          soNone: begin AddPq;  AddQq;  AddIb; end;
+          so66:   begin AddVdq; AddWdq; AddIb; end;
+          soF2:   begin AddVq;  AddWq;  AddIb; end;
+          soF3:   begin AddVq;  AddWq;  AddIb; end;
         end;
       end;
       $71: begin
-        if Flags * [preRep, preRepNE] = []
+        if Flags * [preF3, preF2] = []
         then DoGroup12
         else Opcode := OPX_Invalid;
       end;
       $72: begin
-        if Flags * [preRep, preRepNE] = []
+        if Flags * [preF3, preF2] = []
         then DoGroup13
         else Opcode := OPX_Invalid;
       end;
       $73: begin
-        if Flags * [preRep, preRepNE] = []
+        if Flags * [preF3, preF2] = []
         then DoGroup14
         else Opcode := OPX_Invalid;
       end;
       $74: begin
-        case DecodePrefix(OPpcmpeqb, OPX_Invalid, OPpcmpeqb, OPX_Invalid) of
-          0: begin AddPq;  AddQq;  end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPpcmpeqb, OPpcmpeqb, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
         end;
       end;
       $75: begin
-        case DecodePrefix(OPpcmpeqw, OPX_Invalid, OPpcmpeqw, OPX_Invalid) of
-          0: begin AddPq;  AddQq;  end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPpcmpeqw, OPpcmpeqw, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
         end;
       end;
       $76: begin
-        case DecodePrefix(OPpcmpeqd, OPX_Invalid, OPpcmpeqd, OPX_Invalid) of
-          0: begin AddPq;  AddQq;  end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPpcmpeqd, OPpcmpeqd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
         end;
       end;
       $77: begin
-        if Flags * [preRep, preRepNE, preOpr] = []
+        if Flags * [preF3, preF2, pre66] = []
         then Opcode := OPemms
         else Opcode := OPX_Invalid;
       end;
       // $78..$7B: OPX_Invalid
       $7C: begin
-        case DecodePrefix(OPX_Invalid, OPX_Invalid, OPhaddpd, OPhaddps) of
-          2: begin AddVpd; AddWpd; end;
-          3: begin AddVps; AddWps; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPX_Invalid, OPhaddpd, OPhaddps, OPX_Invalid) of
+          so66: begin AddVpd; AddWpd; end;
+          soF2: begin AddVps; AddWps; end;
         end;
       end;
       $7D: begin
-        case DecodePrefix(OPX_Invalid, OPX_Invalid, OPhsubpd, OPhsubps) of
-          2: begin AddVpd; AddWpd; end;
-          3: begin AddVps; AddWps; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPX_Invalid, OPhsubpd, OPhsubps, OPX_Invalid) of
+          so66: begin AddVpd; AddWpd; end;
+          soF2: begin AddVps; AddWps; end;
         end;
       end;
       $7E: begin
-        case DecodePrefix(OPmovd, OPmovq, OPmovd, OPX_Invalid) of
-          0: begin AddEd_q; AddPd_q; end;
-          1: begin AddVq;   AddWq;   end;
-          2: begin AddEd_q; AddVd_q; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovd, OPmovd, OPX_Invalid, OPmovq) of
+          soNone: begin AddEd_q; AddPd_q; end;
+          so66:   begin AddEd_q; AddVd_q; end;
+          soF3:   begin AddVq;   AddWq;   end;
         end;
       end;
       $7F: begin
-        case DecodePrefix(OPmovq, OPmovdqu, OPmovdqa, OPX_Invalid) of
-          0: begin AddQq;  AddPq;  end;
-          1: begin AddWdq; AddVdq; end;
-          2: begin AddWdq; AddVdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovq, OPmovdqa, OPX_Invalid, OPmovdqu) of
+          soNone: begin AddQq;  AddPq;  end;
+          so66:   begin AddWdq; AddVdq; end;
+          soF3:   begin AddWdq; AddVdq; end;
         end;
       end;
       //---
@@ -2800,15 +2727,15 @@ var
         Opcode := OPxadd; CheckLock;
       end;
       $C2: begin
-        case DecodePrefix(OPcmpps, OPcmpss, OPcmppd, OPcmpsd) of
-          0: begin AddVps; AddWps; AddIb end;
-          1: begin AddVss; AddWss; AddIb end;
-          2: begin AddVpd; AddWpd; AddIb end;
-          3: begin AddVsd; AddWsd; AddIb end;
+        case DecodePrefix(OPcmpps, OPcmppd, OPcmpsd, OPcmpss) of
+          soNone: begin AddVps; AddWps; AddIb end;
+          so66:   begin AddVpd; AddWpd; AddIb end;
+          soF2:   begin AddVsd; AddWsd; AddIb end;
+          soF3:   begin AddVss; AddWss; AddIb end;
         end;
       end;
       $C3: begin
-        if Flags * [preRep, preRepNE, preOpr] = []
+        if Flags * [preF3, preF2, pre66] = []
         then begin
           Opcode := OPmovnti;
           AddMd_q; AddGd_q;
@@ -2816,27 +2743,21 @@ var
         else Opcode := OPX_Invalid;
       end;
       $C4: begin
-        case DecodePrefix(OPpinsrw, OPX_Invalid, OPpinsrw, OPX_Invalid) of
-          0: begin AddPq;  AddEw; AddIb end;
-          2: begin AddVdq; AddEw; AddIb end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPpinsrw, OPpinsrw, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddEw; AddIb end;
+          so66:   begin AddVdq; AddEw; AddIb end;
         end;
       end;
       $C5: begin
-        case DecodePrefix(OPpextrw, OPX_Invalid, OPpextrw, OPX_Invalid) of
-          0: begin AddGd; AddPRq;  AddIb end;
-          2: begin AddGd; AddVRdq; AddIb end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPpextrw, OPpextrw, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddGd; AddPRq;  AddIb end;
+          so66:   begin AddGd; AddVRdq; AddIb end;
         end;
       end;
       $C6: begin
-        case DecodePrefix(OPshufps, OPX_Invalid, OPshufpd, OPX_Invalid) of
-          0: begin AddVps; AddWps; AddIb end;
-          2: begin AddVpd; AddWpd; AddIb end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPshufps, OPshufpd, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddVps; AddWps; AddIb end;
+          so66:   begin AddVpd; AddWpd; AddIb end;
         end;
       end;
       $C7: begin
@@ -2848,74 +2769,56 @@ var
       end;
       //---
       $D0: begin
-        case DecodePrefix(OPX_Invalid, OPX_Invalid, OPaddsubpd, OPaddsubps) of
-          2: begin AddVpd; AddWpd; end;
-          3: begin AddVps; AddWps; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPX_Invalid, OPaddsubpd, OPaddsubps, OPX_Invalid) of
+          so66: begin AddVpd; AddWpd; end;
+          soF2: begin AddVps; AddWps; end;
         end;
       end;
       $D1..$D5, $D8..$DF: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_Dx[idx], OPX_Invalid, OPR_Dx[idx], OPX_Invalid);
-
-        case Idx of
-          0: begin AddPq;  AddQq;  end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPR_Dx[idx], OPR_Dx[idx], OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
         end;
       end;
       $D6: begin
-        case DecodePrefix(OPX_Invalid, OPmovq2dq, OPmovq, OPmovdq2q) of
-          1: begin AddVdq; AddPRq; end;
-          2: begin AddWq;  AddVq;  end;
-          3: begin AddPq;  AddVRq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPX_Invalid, OPmovq, OPmovdq2q, OPmovq2dq) of
+          so66: begin AddWq;  AddVq;  end;
+          soF2: begin AddPq;  AddVRq; end;
+          soF3: begin AddVdq; AddPRq; end;
         end;
       end;
       $D7: begin
-        case DecodePrefix(OPpmovmskb, OPX_Invalid, OPpmovmskb, OPX_Invalid) of
-          0: begin AddGd; AddPRq;  end;
-          2: begin AddGd; AddVRdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPpmovmskb, OPpmovmskb, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddGd; AddPRq;  end;
+          so66:   begin AddGd; AddVRdq; end;
         end;
       end;
       // $D8..$DF: see $D1
       //---
       $E0..$E5, $E8..$EF: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_Ex[idx], OPX_Invalid, OPR_Ex[idx], OPX_Invalid);
-
-        case Idx of
-          0: begin AddPq;  AddQq;  end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPR_Ex[idx], OPR_Ex[idx], OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
         end;
       end;
       $E6: begin
-        case DecodePrefix(OPX_Invalid, OPcvtdq2pd, OPcvttpd2dq, OPcvtpd2dq) of
-          1: begin AddVpd; AddWq;  end;
-          2: begin AddVq;  AddWpd; end;
-          3: begin AddVq;  AddWpd; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPX_Invalid, OPcvttpd2dq, OPcvtpd2dq, OPcvtdq2pd) of
+          so66: begin AddVq;  AddWpd; end;
+          soF2: begin AddVq;  AddWpd; end;
+          soF3: begin AddVpd; AddWq;  end;
         end;
       end;
       $E7: begin
-        case DecodePrefix(OPmovntq, OPX_Invalid, OPmovntdqu, OPX_Invalid) of
-          0: begin AddMq;  AddPq;  end;
-          2: begin AddMdq; AddVdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmovntq, OPmovntdqu, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddMq;  AddPq;  end;
+          so66:   begin AddMdq; AddVdq; end;
         end;
       end;
       // $E8..$EF: see $E0
       $F0: begin
-        if preRepNE in Flags
+        if preF2 in Flags
         then begin
           Opcode := OPlddqu;
           AddVpd; AddMdq;
@@ -2924,21 +2827,15 @@ var
       end;
       $F1..$F6, $F8..$FE: begin
         idx := Code[CodeIdx] and $F;
-        idx := DecodePrefix(OPR_Fx[idx], OPX_Invalid, OPR_Fx[idx], OPX_Invalid);
-
-        case Idx of
-          0: begin AddPq;  AddQq;  end;
-          2: begin AddVdq; AddWdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPR_Fx[idx], OPR_Fx[idx], OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddQq;  end;
+          so66:   begin AddVdq; AddWdq; end;
         end;
       end;
       $F7: begin
-        case DecodePrefix(OPmaskmovq, OPX_Invalid, OPmaskmovdqu, OPX_Invalid) of
-          0: begin AddPq;  AddPRq;  end;
-          2: begin AddVdq; AddVRdq; end;
-        else
-          Opcode := OPX_Invalid;
+        case DecodePrefix(OPmaskmovq, OPmaskmovdqu, OPX_Invalid, OPX_Invalid) of
+          soNone: begin AddPq;  AddPRq;  end;
+          so66:   begin AddVdq; AddVRdq; end;
         end;
       end;
       // $F8..$FE: see $F1
@@ -3108,7 +3005,7 @@ var
           AnInstruction.Segment := AnInstruction.Segment + 'gs:';
         end;
         $66: begin
-          Include(FLags, preOpr);
+          Include(FLags, pre66);
         end;
         $67: begin
           Include(FLags, preAdr);
@@ -3570,10 +3467,10 @@ var
           Opcode := OPint1;
         end;
         $F2: begin
-          Include(Flags, preRepNE);
+          Include(Flags, preF2);
         end;
         $F3: begin
-          Include(Flags, preRep);
+          Include(Flags, preF3);
         end;
         $F4: begin
           Opcode := OPhlt;
@@ -3628,6 +3525,7 @@ begin
   AnInstruction.OpCodeSuffix := OPSx_none;
   AnInstruction.Flags := [];
   Code := AAddress;
+  SimdOpcode := soInvalid;
 
   AnInstruction.Segment := '';
   Flags := [];
@@ -3717,8 +3615,8 @@ begin
 
   S := '';
   if preLock in Instr.ParseFlags then S := S + '**lock**';
-  if preRep in Instr.ParseFlags then S := S + '?rep?';
-  if preRepNE in Instr.ParseFlags then S := S + '?repne?';
+  if preF3 in Instr.ParseFlags then S := S + '?rep?';
+  if preF2 in Instr.ParseFlags then S := S + '?repne?';
   S := S + OpcodeName;
   if not HasMem and (Instr.Segment <> '') then S := S + ' ?' + Instr.Segment + '?';
   ACode := S + ' ' + Soper;
