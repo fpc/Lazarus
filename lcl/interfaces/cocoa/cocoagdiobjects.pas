@@ -2206,7 +2206,7 @@ var
   s : NSString;
   AttribStr : CFAttributedStringRef;
   CoreLine : CTLineRef;
-  r : NSRect;
+  height, width, asc, dsc, lead: CGFloat;
 begin
   S := NSStringUtf8(AStr, ACount);
 
@@ -2222,9 +2222,10 @@ begin
   begin
     CoreLine := CTLineCreateWithAttributedString(CFAttributedStringRef(AttribStr));
     try
-      r := CTLineGetBoundsWithOptions(CoreLine, 0);
-      Size.cx := Round(r.size.width);
-      Size.cy := Round(r.Size.height);
+      width := CTLineGetTypographicBounds(CoreLine, @asc, @dsc, @lead);
+      height := asc + abs(dsc) + lead;
+      Size.cx := Round(width);
+      Size.cy := Round(height);
     finally
       CFRelease(CoreLine);
     end;
