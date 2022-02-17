@@ -175,7 +175,7 @@ type
     OPmovsldup, OPmovlpd, OPmovddup, OPmovlps, OPunpcklps, OPunpcklpd, OPunpckhps, OPunpckhpd, OPmovlhps,
     OPmovshdup, OPmovhpd, OPmovhps, OPmovaps, OPmovapd,
     OPcvtpi2ps, OPcvtsi2ss, OPcvtpi2pd, OPcvtsi2sd, OPmovntps, OPmovntpd,
-    OPcvttps2pi, OPcvttss2pi, OPcvttpd2pi, OPcvttsd2pi, OPcvtps2pi, OPcvtss2pi, OPcvtpd2pi, OPcvtsd2pi,
+    OPcvttps2pi, OPcvttss2si, OPcvttpd2pi, OPcvttsd2si, OPcvtps2pi, OPcvtss2si, OPcvtpd2pi, OPcvtsd2si,
     OPucomiss, OPucomissd, OPcomiss, OPcomissd, OPwrmsr, OPrdtsc, OPrdmsr, OPrdpmc,
 
     OPcmov__, OPmovmskps, OPmovmskpd, OPsqrtps, OPsqrtss, OPsqrtpd, OPsqrtsd,
@@ -385,7 +385,7 @@ const
       'movsldup', 'movlpd', 'movddup', 'movlps', 'unpcklps', 'unpcklpd', 'unpckhps', 'unpckhpd', 'movlhps',
       'movshdup', 'movhpd', 'movhps', 'movaps', 'movapd',
       'cvtpi2ps', 'cvtsi2ss', 'cvtpi2pd', 'cvtsi2sd', 'movntps', 'movntpd',
-      'cvttps2pi', 'cvttss2pi', 'cvttpd2pi', 'cvttsd2pi', 'cvtps2pi', 'cvtss2pi', 'cvtpd2pi', 'cvtsd2pi',
+      'cvttps2pi', 'cvttss2si', 'cvttpd2pi', 'cvttsd2si', 'cvtps2pi', 'cvtss2si', 'cvtpd2pi', 'cvtsd2si',
       'ucomiss', 'ucomissd', 'comiss', 'comissd', 'wrmsr', 'rdtsc', 'rdmsr', 'rdpmc',
 
       'cmov', 'movmskps', 'movmskpd', 'sqrtps', 'sqrtss', 'sqrtpd', 'sqrtsd',
@@ -2381,7 +2381,7 @@ var
         end;
       end;
       $2C: begin
-        case DecodePrefix(OPcvttps2pi, OPcvttss2pi, OPcvttpd2pi, OPcvttsd2pi) of
+        case DecodePrefix(OPcvttps2pi, OPcvttss2si, OPcvttpd2pi, OPcvttsd2si) of
           0: begin AddPq;   AddWps; end;
           1: begin AddGd_q; AddWss; end;
           2: begin AddPq;   AddWpd; end;
@@ -2389,7 +2389,7 @@ var
         end;
       end;
       $2D: begin
-        case DecodePrefix(OPcvtps2pi, OPcvtss2pi, OPcvtpd2pi, OPcvtsd2pi) of
+        case DecodePrefix(OPcvtps2pi, OPcvtss2si, OPcvtpd2pi, OPcvtsd2si) of
           0: begin AddPq;   AddWps; end;
           1: begin AddGd_q; AddWss; end;
           2: begin AddPq;   AddWpd; end;
