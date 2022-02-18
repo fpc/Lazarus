@@ -9,7 +9,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
   ClientWidth = 549
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '2.3.0.0'
   object PGenerator: TPanel
     Left = 0
     Height = 40
@@ -30,15 +30,16 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
       Caption = '&Save to'
       FocusControl = FEFile
       Layout = tlCenter
-      ParentColor = False
     end
     object FEFile: TFileNameEdit
       Left = 72
-      Height = 29
+      Height = 27
       Top = 5
       Width = 304
-      DialogOptions = []
+      DialogKind = dkSave
+      DialogOptions = [ofOverwritePrompt, ofPathMustExist]
       FilterIndex = 0
+      DefaultExt = '.pas'
       HideDirectories = False
       ButtonWidth = 23
       NumGlyphs = 1
@@ -51,14 +52,14 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
       Left = 384
       Height = 23
       Top = 8
-      Width = 147
+      Width = 156
       Caption = 'Sho&w generated code'
       TabOrder = 1
     end
   end
   object PCConf: TPageControl
     Left = 0
-    Height = 287
+    Height = 288
     Top = 40
     Width = 549
     ActivePage = TSFields
@@ -68,7 +69,7 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     OnChange = PCConfChange
     object TSFields: TTabSheet
       Caption = 'Fields'
-      ClientHeight = 256
+      ClientHeight = 258
       ClientWidth = 539
       object Panel2: TPanel
         Left = 0
@@ -90,7 +91,6 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
           AutoSize = False
           Caption = 'Fields to generate code for'
           Layout = tlCenter
-          ParentColor = False
         end
         object LProperties: TLabel
           Left = 170
@@ -102,22 +102,21 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
           AutoSize = False
           Caption = 'Properties for selected field'
           Layout = tlCenter
-          ParentColor = False
         end
       end
       object PFieldList: TPanel
         Left = 0
-        Height = 228
+        Height = 230
         Top = 28
         Width = 170
         Align = alLeft
         BevelOuter = bvNone
-        ClientHeight = 228
+        ClientHeight = 230
         ClientWidth = 170
         TabOrder = 1
         object CLBFields: TCheckListBox
           Left = 35
-          Height = 228
+          Height = 230
           Top = 0
           Width = 135
           Align = alClient
@@ -130,12 +129,12 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
         end
         object PButtons: TPanel
           Left = 0
-          Height = 228
+          Height = 230
           Top = 0
           Width = 35
           Align = alLeft
           BevelOuter = bvNone
-          ClientHeight = 228
+          ClientHeight = 230
           ClientWidth = 35
           TabOrder = 1
           object SBup: TSpeedButton
@@ -320,14 +319,14 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
       end
       object Splitter1: TSplitter
         Left = 170
-        Height = 228
+        Height = 230
         Top = 28
         Width = 5
         OnMoved = Splitter1Moved
       end
       object GFieldProps: TTIPropertyGrid
         Left = 175
-        Height = 228
+        Height = 230
         Top = 28
         Width = 364
         Align = alClient
@@ -341,13 +340,13 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     end
     object TSOptions: TTabSheet
       Caption = 'Options'
-      ClientHeight = 256
+      ClientHeight = 258
       ClientWidth = 539
       object GCodeOptions: TTIPropertyGrid
         Left = 0
-        Height = 240
+        Height = 258
         Top = 0
-        Width = 452
+        Width = 539
         Align = alClient
         CheckboxForBoolean = False
         DefaultValueFont.Color = clWindowText
@@ -361,11 +360,11 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
     end
     object TSPreview: TTabSheet
       Caption = 'Preview'
-      ClientHeight = 256
+      ClientHeight = 258
       ClientWidth = 539
       inline sePreview: TSynEdit
         Left = 0
-        Height = 256
+        Height = 258
         Top = 0
         Width = 539
         Align = alClient
@@ -867,8 +866,8 @@ object BaseConfigGeneratorForm: TBaseConfigGeneratorForm
   end
   object PDlgButtons: TButtonPanel
     Left = 6
-    Height = 39
-    Top = 333
+    Height = 38
+    Top = 334
     Width = 537
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True

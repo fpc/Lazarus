@@ -144,12 +144,14 @@ begin
     can be configured, or all fields. }
   FreeAndNil(FFieldMap);
   FFieldMap:=TFieldPropDefs.Create(FGen.Fields.ItemClass);
+{$IFNDEF VER3_2}
   If Not FGen.NeedsFieldDefs then
     begin
     PCConf.ActivePage:=TSOptions;
     TSFields.TabVisible:=False;
     end
   else
+{$ENDIF}
     begin
     S:=TStringList.Create;
     try
@@ -247,6 +249,7 @@ begin
      begin
      NewName:=ExtractFileName(FEFile.FileName);
      FLastName:=NewName;
+     if NewName='' then NewName:='unit1';
      // Strip off known extensions
      if FilenameExtIn(NewName,['.pas','.pp','.inc','.lpr','.dpr']) then
        FCodeOptions.UnitName:=ChangeFileExt(NewName,'')
@@ -286,7 +289,7 @@ begin
     sePreview.Lines.BeginUpdate;
     sePreview.Lines.Clear;
     CG.CodeOptions.Assign(FCodeOptions);
-    CG.Fields.Assign(FGen.Fields);
+    CG.Fields.Assign(FFieldMap);
     CG.GenerateCode(sePreview.Lines);
   finally
     sePreview.Lines.EndUpdate;

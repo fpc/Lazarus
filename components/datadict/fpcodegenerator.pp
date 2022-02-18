@@ -107,7 +107,9 @@ Var
   F : TBaseConfigGeneratorForm;
 
 begin
+{$IFNDEF VER3_2}
   If FGenerator.NeedsFieldDefs then
+{$ENDIF}
     begin
     FP:=FGenerator.Fields;
     if Assigned(Dataset) then
