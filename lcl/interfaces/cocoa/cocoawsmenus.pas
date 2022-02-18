@@ -216,6 +216,10 @@ procedure MenuTrackEnded(mn: NSMenu);
 var
   i : integer;
 begin
+  if not Assigned(menuTrack) then
+    // it's possible if popup menu was used, without mainmenu in the app
+    Exit;
+
   i := menuTrack.IndexOf(mn);
   if i>=0 then
     menuTrack.Delete(i);
