@@ -163,6 +163,7 @@ type
     wv8,
     wv8_1,
     wv10,
+    wv11,
     wvLater
   );
 
@@ -1657,15 +1658,16 @@ begin
      end;
     end;
     10: begin
-     case Win32MinorVersion of
-       0: WindowsVersion := wv10;
-     else
-       WindowsVersion := wvLater;
-     end;
+        case Win32MinorVersion of
+           0: if Win32BuildNumber >= 22000 then
+                WindowsVersion := wv11
+              else
+                WindowsVersion := wv10
+        end; {case}
+      end
+    else
+      WindowsVersion := wvLater;
     end;
-  else
-    WindowsVersion := wvLater;
-  end;
 end;
 
 function ValidateWindowTitle(const Str: String): String;
