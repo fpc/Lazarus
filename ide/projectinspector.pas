@@ -978,6 +978,7 @@ begin
   SetItem(ProjInspMenuStoreFilenameAsDefaultOfDependencyDown,@SetDependencyDefaultFilenameMenuItemClick,HasValidDep>0);
   SetItem(ProjInspMenuStoreFilenameAsPreferredOfDependencyDown,@SetDependencyPreferredFilenameMenuItemClick,HasValidDep>0);
   SetItem(ProjInspMenuClearPreferredFilenameOfDependencyDown,@ClearDependencyFilenameMenuItemClick,CanClearDep>0);
+  ProjectInspectorItemsMenuRoot.NotifySubSectionOnShow(Self);
 end;
 
 procedure TProjectInspectorForm.ItemsTreeViewAdvancedCustomDrawItem(
