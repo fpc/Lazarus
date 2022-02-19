@@ -3913,10 +3913,10 @@ procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState)
   begin
     RedGreenBlue(C1, r1, g1, b1);
     RedGreenBlue(C2, r2, g2, b2);
-    Result := {Sqrt}(Sqr(Integer(r1)- r2) + Sqr(Integer(g1)- g2) + Sqr(Integer(b1)- b2));
+    Result := Sqrt(Sqr(Integer(r1) - r2) + Sqr(Integer(g1) - g2) + Sqr(Integer(b1) - b2));
   end;
 var
-  C, C1, C2, FontColor: TColor;
+  C, C1, FontColor: TColor;
   CurrentTextStyle: TTextStyle;
   IsSelected: boolean;
   gc: TGridColumn;
@@ -3936,12 +3936,10 @@ begin
       else if FadeUnfocusedSelection and not Focused then begin
         C := ColorToRGB(Color);
         C1 := ColorToRGB(clBtnFace);
-        C2 := ColorToRGB(clInactiveCaption);
-        if SimpleColorDistance(C, C1) > SimpleColorDistance(C, C2) then begin
+        if SimpleColorDistance(C, C1) >= 25 then begin // Windows: clWindow = FFFFFF, clBtnFace = F0F0F0
           Canvas.Brush.Color := clBtnFace;
           FontColor := clBtnText;
-        end
-        else begin
+        end else begin
           Canvas.Brush.Color := clInactiveCaption;
           FontColor := clInactiveCaptionText;
         end;
