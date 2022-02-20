@@ -47,6 +47,7 @@ type
     TSCodeGen: TTabSheet;
     TSHTML: TTabSheet;
     procedure CBEventsChange(Sender: TObject);
+    procedure FEHTMLFileEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
   private
@@ -132,6 +133,17 @@ end;
 procedure TfrmHTML2Form.CBEventsChange(Sender: TObject);
 begin
   CheckEventEdits;
+end;
+
+procedure TfrmHTML2Form.FEHTMLFileEditingDone(Sender: TObject);
+begin
+  if (FEHTMLFile.FileName<>'') and FileExists(FEHTMLFile.FileName) then
+    With THTMLExtractIDS.Create(Self) do
+      try
+        ExtractIDS(FEHTMLFile.FileName,cbBelowID.Items);
+      finally
+        Free;
+      end;
 end;
 
 procedure TfrmHTML2Form.CheckEventEdits;

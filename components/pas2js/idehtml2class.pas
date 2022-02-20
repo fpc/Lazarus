@@ -214,6 +214,28 @@ Type
     Property OnLog : TLogEvent Read FOnLog Write FOnLog;
   end;
 
+  { THTMLExtractIDS }
+
+  THTMLExtractIDS = Class(TComponent)
+  Private
+    FBelowID: String;
+    FLevel: Integer;
+    FList: TStrings;
+  Protected
+    procedure DoStartElement(Sender: TObject; const {%H-}NamespaceURI, LocalName,
+      {%H-}QName: SAXString; Atts: TSAXAttributes);  virtual;
+    procedure DoEndElement(Sender: TObject; const {%H-}NamespaceURI, {%H-}LocalName,
+      {%H-}QName: SAXString);  virtual;
+    Property List : TStrings Read FList;
+    Property Level : Integer Read FLevel Write FLevel;
+  Public
+    Procedure ExtractIDS(aInput : TStream; aList : TStrings);
+    Function ExtractIDS(aInput : TStream) : TStringArray;
+    Procedure ExtractIDS(Const aFileName : String; aList : TStrings);
+    function ExtractIDS(const aFileName: String): TStringArray;
+    Property BelowID : String Read FBelowID Write FBelowID;
+  end;
+
   { TFormCodeGen }
 
 
@@ -314,7 +336,109 @@ Type
 
 implementation
 
-uses TypInfo;
+uses TypInfo, bufstream;
+
+{ THTMLExtractIDS }
+
+procedure THTMLExtractIDS.DoStartElement(Sender: TObject; const NamespaceURI, LocalName, QName: SAXString; Atts: TSAXAttributes);
+
+Var
+  aID,aType : String;
+  El : TFormElement;
+
+begin
+  if Not Assigned(atts) then exit;
+  aID:=UTF8Encode(Atts.GetValue('','id'));
+  if (aID<>'') then
+    begin
+    if (Level=0) and (BelowID=aID) then
+      begin
+      Level:=1;
+      exit;
+      end
+    else if (BelowID<>'') and (Level<=0) then
+      Exit;
+    FList.Add(aID);
+    end;
+end;
+
+procedure THTMLExtractIDS.DoEndElement(Sender: TObject; const NamespaceURI, LocalName, QName: SAXString);
+begin
+  if Level>0 then
+    Dec(FLevel);
+end;
+
+procedure THTMLExtractIDS.ExtractIDS(aInput: TStream; aList: TStrings);
+var
+  MyReader : THTMLReader;
+
+begin
+  FList:=aList;
+  MyReader:=THTMLReader.Create;
+  Try
+    MyReader.OnStartElement:=@DoStartElement;
+    MyReader.OnEndElement:=@DoEndElement;
+    MyReader.ParseStream(aInput);
+  finally
+    FreeAndNil(MyReader);
+  end;
+
+end;
+
+function THTMLExtractIDS.ExtractIDS(aInput: TStream): TStringArray;
+
+Var
+  L : TStringList;
+  I : Integer;
+
+begin
+  L:=TStringList.Create;
+  try
+    ExtractIDS(aInput,L);
+    L.Sort;
+    Setlength(Result,L.Count);
+    For I:=0 to L.Count-1 do
+      Result[I]:=L[i];
+  finally
+    L.Free;
+  end;
+end;
+
+procedure THTMLExtractIDS.ExtractIDS(const aFileName: String; aList: TStrings);
+
+Var
+  F : TFileStream;
+  B : TBufStream;
+
+begin
+  F:=TFileStream.Create(aFileName,fmOpenRead or fmShareDenyWrite);
+  try
+    B:=TReadBufStream.Create(F,4096);
+    B.SourceOwner:=True;
+    ExtractIDS(B,aList);
+  finally
+    B.Free;
+  end;
+end;
+
+function THTMLExtractIDS.ExtractIDS(const aFileName : String): TStringArray;
+
+Var
+  L : TStringList;
+  I : Integer;
+
+begin
+  L:=TStringList.Create;
+  try
+    ExtractIDS(aFileName,L);
+    L.Sort;
+    Setlength(Result,L.Count);
+    For I:=0 to L.Count-1 do
+      Result[I]:=L[i];
+  finally
+    L.Free;
+  end;
+end;
 
 { ----------------------------------------------------------------------
 

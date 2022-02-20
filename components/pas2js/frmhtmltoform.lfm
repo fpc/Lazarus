@@ -29,9 +29,9 @@ object frmHTML2Form: TfrmHTML2Form
     Height = 434
     Top = 0
     Width = 633
-    ActivePage = TSCodeGen
+    ActivePage = TSHTML
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     object TSHTML: TTabSheet
       Caption = 'HTML File'
@@ -56,6 +56,7 @@ object frmHTML2Form: TfrmHTML2Form
         Height = 27
         Top = 8
         Width = 434
+        DialogOptions = [ofFileMustExist, ofEnableSizing, ofViewDetail]
         FilterIndex = 0
         HideDirectories = False
         ButtonWidth = 23
@@ -63,6 +64,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         MaxLength = 0
         TabOrder = 0
+        OnEditingDone = FEHTMLFileEditingDone
       end
       object cbAddHTMLFile: TCheckBox
         AnchorSideTop.Control = FEHTMLFile
