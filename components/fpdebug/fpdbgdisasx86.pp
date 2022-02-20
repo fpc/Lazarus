@@ -53,7 +53,7 @@ uses
   ?? unspecified
   !! internal error, a group got called for an opcode which wasn't decoded there
 
-  The disassember starts to decode the first byte according to
+  The disassembler starts to decode the first byte according to
 
   Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 2:
   Table A-2. One-byte Opcode Map: (00H — F7H)
@@ -241,6 +241,157 @@ type
 
     ParseFlags: TFlags;
   end;
+  PInstruction = ^TInstruction;
+
+  { TX86Disassembler }
+
+  TX86Disassembler = object
+  private
+    ProcessMode: TFPDMode;
+    Code: PByte;
+    CodeIdx: Byte;
+    OperIdx: Integer;
+    ModRMIdx: Byte;
+    Flags: TFlags;
+    SimdOpcode: TSimdOpcode;
+
+    //--- result ---
+    Instruction: PInstruction;
+
+    //--- add operands ---
+    // the the Zz as used in AddZz routines are encoded according to:
+    //
+    // Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 2:
+    //  A.2 KEY TO ABBREVIATIONS
+    //
+    // and
+    //
+    // AMD64 Architecture Programmer’s Manual Volume 3:
+    //  Appendix A Opcode and Operand Encodings
+    //
+    //---
+    procedure AddAp;
+    procedure AddCd_q;
+    procedure AddDd_q;
+    procedure AddEb;
+    procedure AddEd;
+    procedure AddEd_q;
+    procedure AddEv;
+    procedure AddEw;
+    procedure AddFv;
+    procedure AddGb;
+    procedure AddGd;
+    procedure AddGd_q;
+    procedure AddGv;
+    procedure AddGw;
+    procedure AddGz;
+    procedure AddIb;
+    procedure AddIv;
+    procedure AddIw;
+    procedure AddIz;
+    procedure AddJb;
+    procedure AddJz;
+    procedure AddM;
+    procedure AddMa;
+    procedure AddMb;
+    procedure AddMd;
+    procedure AddMdq;
+    procedure AddMd_q;
+    procedure AddMp;
+    procedure AddMq;
+    procedure AddMs;
+    procedure AddMw_Rv;
+    procedure AddOb;
+    procedure AddOv;
+    procedure AddPd_q;
+    procedure AddPq;
+    procedure AddPRq;
+    procedure AddQd;
+    procedure AddQq;
+    procedure AddRd_q;
+    procedure AddSw;
+    procedure AddVdq;
+    procedure AddVdq_sd;
+    procedure AddVdq_ss;
+    procedure AddVd_q;
+    procedure AddVpd;
+    procedure AddVps;
+    procedure AddVq;
+    procedure AddVRdq;
+    procedure AddVRpd;
+    procedure AddVRps;
+    procedure AddVRq;
+    procedure AddVsd;
+    procedure AddVss;
+    procedure AddWdq;
+    procedure AddWpd;
+    procedure AddWps;
+    procedure AddWq;
+    procedure AddWsd;
+    procedure AddWss;
+    {$ifdef verbose_string_instructions}
+    procedure AddXb;
+    procedure AddXv;
+    procedure AddXz;
+    procedure AddYb;
+    procedure AddYv;
+    procedure AddYz;
+    {$endif}
+    //---
+
+    procedure AddModReg;
+    procedure AddModReg(AType: TRegisterType);
+    procedure AddModReg(AType: TRegisterType; ASize: TOperandSize);
+    procedure AddModRM(AReqTypes: TModRMTypes; ASize: TOperandSize; AType: TRegisterType);
+    procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte=0; AFormatFlags: THexValueFormatFlags=[]; AFlags: TOperandFlags=[]; AByteCount2: Byte=0);
+    procedure AddOperand(const AValue: String; AByteCount: Byte=0;  AFormatFlags: THexValueFormatFlags=[]; AFlags: TOperandFlags=[]);
+    procedure AddStdOperands(AIndex: Byte);
+    procedure AddStdReg(AIndex: Byte);
+    procedure AddStdReg(AIndex: Byte; AType: TRegisterType);
+
+    procedure Check32;
+    procedure Check64;
+    procedure CheckLock;
+    procedure CheckRepeat;
+    procedure CheckRepeatX;
+    procedure CheckSIMD;
+
+    procedure Do2ByteOpcode;
+    procedure Do3DNow;
+    procedure DoDisassemble;
+    procedure DoGroup1;
+    procedure DoGroup2;
+    procedure DoGroup3;
+    procedure DoGroup4;
+    procedure DoGroup5;
+    procedure DoGroup6;
+    procedure DoGroup7;
+    procedure DoGroup8;
+    procedure DoGroup9;
+    procedure DoGroup10;
+    procedure DoGroup11;
+    procedure DoGroup12;
+    procedure DoGroup13;
+    procedure DoGroup14;
+    procedure DoGroup15;
+    procedure DoGroup16;
+    procedure DoGroupP;
+    procedure DoX87;
+
+    function AddressSize32: TAddressSize;
+    function DecodePrefix(AOpcode, AOpcode66, AOpcodeF2, AOpcodeF3: TOpCode): TSimdOpcode;
+    procedure Default64;
+    procedure Force64;
+    function Ignore64(s: String): String;
+    function OperandSize: TOperandSize;
+    function SizeReg32(const AReg: String): String;
+    function SizeReg32(const AReg: String; ASize: TOperandSize): String;
+    procedure StdCond(AIndex: Byte);
+    function StdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean): String;
+    function StdReg(AIndex: Byte): String;
+  public
+    procedure Disassemble(AMode: TFPDMode; var AAddress: Pointer; out AnInstruction: TInstruction);
+  end;
 
   TX86AsmDecoder = class;
 
@@ -250,7 +401,7 @@ type
   const
     INSTR_CODEBIN_LEN = 16;
   private
-    FAsmDecoder: TX86AsmDecoder;
+    FProcess: TDbgProcess;
     FAddress: TDBGPtr;
     FCodeBin: array[0..INSTR_CODEBIN_LEN-1] of byte;
     FInstruction: TInstruction;
@@ -260,7 +411,7 @@ type
     procedure ReadCode; inline;
     procedure Disassemble; inline;
   public
-    constructor Create(AAsmDecoder: TX86AsmDecoder);
+    constructor Create(AProcess: TDbgProcess);
     procedure SetAddress(AnAddress: TDBGPtr);
     function IsCallInstruction: boolean; override;
     function IsReturnInstruction: boolean; override;
@@ -291,7 +442,6 @@ type
     function GetMinInstrSize: integer; override;
     function GetCanReverseDisassemble: boolean; override;
     function ReadCodeAt(AnAddress: TDBGPtr; var ALen: Cardinal): Boolean; inline;
-    procedure Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
   public
     constructor Create(AProcess: TDbgProcess); override;
     destructor Destroy; override;
@@ -426,12 +576,2892 @@ const
     'o', 'no', 'b', 'nb', 'z', 'nz', 'be', 'nbe', 's', 'ns', 'p', 'np', 'l', 'nl', 'le', 'nle'
   );
 
+{ TX86Disassembler }
+
+procedure TX86Disassembler.Check32;
+begin
+  // only valid in 32-bit ProcessMode
+  if (ProcessMode = dm64) then
+    Include(Instruction^.Flags, ifOnly32);
+end;
+
+procedure TX86Disassembler.Check64;
+begin
+  // only valid in 64-bit ProcessMode
+  if (ProcessMode = dm64) then
+    Include(Instruction^.Flags, ifOnly64);
+end;
+
+function TX86Disassembler.Ignore64(s: String): String;
+begin
+  // ignored in 64-bit ProcessMode
+  if (ProcessMode = dm64) then
+    Result := '('+s+')'
+  else
+    Result := s;
+end;
+
+procedure TX86Disassembler.Default64;
+begin
+  if ProcessMode = dm64 then
+    Include(Flags, oprDefault64);
+end;
+
+procedure TX86Disassembler.Force64;
+begin
+  if ProcessMode = dm64 then
+    Include(Flags, oprForce64);
+end;
+
+
+procedure TX86Disassembler.CheckLock;
+  function CheckMem: boolean;
+  var
+    n: Byte;
+  begin
+    Result := True;
+    for n := 1 to OperIdx do
+      if ofMemory in Instruction^.Operand[n].Flags then Exit;
+    Result := False;
+  end;
+begin
+  if (preLock in Flags) and CheckMem
+  then begin
+    Exclude(Flags, preLock);
+    Include(Instruction^.Flags, ifPrefixLock);
+  end;
+end;
+
+procedure TX86Disassembler.CheckRepeat;
+begin
+  if preF3 in Flags
+  then begin
+    Exclude(Flags, preF3);
+    Include(Instruction^.Flags, ifPrefixRep);
+  end;
+end;
+
+procedure TX86Disassembler.CheckRepeatX;
+begin
+  if preF3 in Flags
+  then begin
+    Exclude(Flags, preF3);
+    Include(Instruction^.Flags, ifPrefixRepE);
+    Exit;
+  end;
+  if preF2 in Flags
+  then begin
+    Exclude(Flags, preF2);
+    Include(Instruction^.Flags, ifPrefixRepNe);
+    Exit;
+  end;
+end;
+
+procedure TX86Disassembler.CheckSIMD;
+var
+  check: TFlags;
+begin
+  check := Flags * [pre66, preF3, preF2];
+  if check = []
+  then SimdOpcode := soNone
+  else if check - [preF3] = []
+  then SimdOpcode := soF3
+  else if check - [preF2] = []
+  then SimdOpcode := soF2
+  else if check - [pre66] = []
+  then SimdOpcode := so66
+  else SimdOpcode := soInvalid;
+end;
+
+function TX86Disassembler.DecodePrefix(AOpcode, AOpcode66, AOpcodeF2, AOpcodeF3: TOpCode): TSimdOpcode;
+begin
+  CheckSIMD;
+
+  case SimdOpcode of
+    soNone: Instruction^.Opcode := AOpcode;
+    so66:   Instruction^.Opcode := AOpcode66;
+    soF2:   Instruction^.Opcode := AOpcodeF2;
+    soF3:   Instruction^.Opcode := AOpcodeF3;
+  else
+    Instruction^.Opcode := OPX_Invalid;
+  end;
+
+  if Instruction^.Opcode = OPX_Invalid
+  then begin
+    Result := soInvalid;
+  end
+  else begin
+    Flags := Flags - [pre66, preF2, preF3];
+    Result := SimdOpcode;
+  end;
+end;
+
+function TX86Disassembler.AddressSize32: TAddressSize;
+begin
+  // effective address size for default 32 AnInstruction.operand size
+  if (ProcessMode = dm64)
+  then begin
+    if preAdr in Flags
+    then Result := as32
+    else Result := as64;
+  end
+  else begin
+    if preAdr in Flags
+    then Result := as16
+    else Result := as32;
+  end;
+end;
+
+function TX86Disassembler.OperandSize: TOperandSize;
+begin
+  // effective AnInstruction.operand size
+
+  // Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 1:
+  // 3.6 OPERAND-SIZE AND ADDRESS-SIZE ATTRIBUTES
+  //
+  // Table 3-3 D-flag = 1 for 32 bit processes ->
+  // default 32, prefix 16
+  //
+  // Table 3-4
+  // REX.W 64, default 32, prefix 16 (REX.W overrules prefix)
+  //
+  // So for both dm32 and dm64 the default size is 32 unless overridden by flags
+
+  // A.3 ONE, TWO, AND THREE-BYTE Instruction^.Opcode MAPS
+  // Some instructions default or force to 64bit in dm64
+
+  if [oprForce64, rexW] * Flags <> []
+  then begin
+    Result := os64;
+  end
+  else begin
+    if pre66 in Flags
+    then Result := os16
+    else if oprDefault64 in Flags
+    then Result := os64
+    else Result := os32;
+  end;
+end;
+
+procedure TX86Disassembler.AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []; AByteCount2: Byte = 0);
+begin
+  Inc(OperIdx);
+  if OperIdx > High(Instruction^.Operand)
+  then begin
+    Debugln(DBG_WARNINGS, 'AddOperand: Only %d operands supported, got %d', [High(Instruction^.Operand), OperIdx]);
+    Exit;
+  end;
+
+  Instruction^.Operand[OperIdx].Size := ASize;
+  Instruction^.Operand[OperIdx].ByteCount := AByteCount;
+  Instruction^.Operand[OperIdx].ByteCount2 := AByteCount2;
+  Instruction^.Operand[OperIdx].FormatFlags := AFormatFlags;
+  Instruction^.Operand[OperIdx].Value := AValue;
+  Instruction^.Operand[OperIdx].Flags := AFlags;
+end;
+
+procedure TX86Disassembler.AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
+begin
+  AddOperand(AValue, OperandSize, AByteCount, AFormatFlags, AFlags);
+end;
+
+function TX86Disassembler.SizeReg32(const AReg: String; ASize: TOperandSize): String;
+begin
+  // prefix a reg for default 32 AnInstruction.operand size
+  case ASize of
+    os64: Result := 'r' + AReg;
+    os32: Result := 'e' + AReg;
+  else
+    Result := AReg;
+  end;
+end;
+
+function TX86Disassembler.SizeReg32(const AReg: String): String;
+begin
+  Result := SizeReg32(AReg, OperandSize);
+end;
+
+procedure TX86Disassembler.StdCond(AIndex: Byte);
+const
+  COND: array[0..$F] of TOpCodeSuffix = (
+    OPSx_o, OPSx_no, OPSx_b, OPSx_nb, OPSx_z, OPSx_nz, OPSx_be, OPSx_nbe, OPSx_s, OPSx_ns, OPSx_p, OPSx_np, OPSx_l, OPSx_nl, OPSx_le, OPSx_nle
+  );
+begin
+  Instruction^.OpCodeSuffix := COND[AIndex and $F];
+end;
+
+function TX86Disassembler.StdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean): String;
+const
+  REGS: array[0..7] of string = ('ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di');
+  REG8_: array[0..7] of String = ('al', 'cl', 'dl', 'bl', 'ah', 'ch', 'dh', 'bh');
+  REG8r: array[0..7] of String = ('al', 'cl', 'dl', 'bl', 'spl', 'bpl', 'sil', 'dil');
+  SREG: array[0..7] of String = ('es', 'cs', 'ss', 'ds', 'fs', 'gs', '**', '**');
+  POSTFIX: array[reg16..reg64] of String = ('w', 'd', '');
+  OSMAP: array[reg8..reg64] of TOperandSize = (os8, os16, os32, os64);
+begin
+  AIndex := AIndex and $7;
+  case AType of
+    reg8: begin
+      if AExtReg
+      then begin
+        Result := Format('r%db', [8 + AIndex]);
+      end
+      else begin
+        if flagRex in Flags
+        then Result := REG8r[AIndex]
+        else Result := REG8_[AIndex];
+      end;
+    end;
+    reg16..reg64: begin
+      if AExtReg
+      then Result := Format('r%d', [8 + AIndex]) + POSTFIX[AType]
+      else Result := SizeReg32(REGS[AIndex], OSMAP[AType]);
+    end;
+    regX87: begin
+      Result := Format('st(%d)', [AIndex]);
+    end;
+    regMmx: begin
+      Result := Format('mmx%d', [AIndex]);
+    end;
+    regXmm: begin
+      if AExtReg then Inc(AIndex, 8);
+      Result := Format('xmm%d', [AIndex]);
+    end;
+    regSegment: begin
+      Result := SREG[AIndex];
+    end;
+    regControl: begin
+      if AExtReg then Inc(AIndex, 8);
+      Result := Format('cr%d', [AIndex]);
+    end;
+    regDebug: begin
+      if AExtReg then Inc(AIndex, 8);
+      Result := Format('dr%d', [AIndex]);
+    end;
+  end;
+end;
+
+function TX86Disassembler.StdReg(AIndex: Byte): String;
+begin
+  Result := StdReg(AIndex, OPERAND_REG[OperandSize], rexB in Flags);
+end;
+
+procedure TX86Disassembler.AddStdReg(AIndex: Byte; AType: TRegisterType);
+begin
+  AddOperand(StdReg(AIndex, AType, rexB in Flags), REGISTER_SIZE[ProcessMode, AType]);
+end;
+
+procedure TX86Disassembler.AddStdReg(AIndex: Byte);
+begin
+  AddOperand(StdReg(AIndex));
+end;
+
+procedure TX86Disassembler.AddModReg(AType: TRegisterType; ASize: TOperandSize);
+begin
+  Include(Flags, flagModRM);
+  AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, rexR in Flags), ASize);
+end;
+
+procedure TX86Disassembler.AddModReg(AType: TRegisterType);
+begin
+  Include(Flags, flagModRM);
+  AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, rexR in Flags), REGISTER_SIZE[ProcessMode, AType]);
+end;
+
+procedure TX86Disassembler.AddModReg;
+begin
+  Include(Flags, flagModRM);
+  AddOperand(StdReg(Code[ModRMIdx] shr 3, OPERAND_REG[OperandSize], rexR in Flags));
+end;
+
+procedure TX86Disassembler.AddModRM(AReqTypes: TModRMTypes; ASize: TOperandSize; AType: TRegisterType);
+var
+  Mode, Rm: Byte;
+  procedure Mem16;
+  const
+    REGS16: array[0..7] of string = ('bx+si', 'bx+di', 'bp+si', 'bp+di', 'si', 'di', 'bp', 'bx');
+  begin
+    case Mode of
+      0: begin
+        if rm = 6 // disp16 -> exception to the regs
+        then AddOperand('%s', ASize, 2, [hvfSigned, hvfIncludeHexchar], [ofMemory])
+        else AddOperand(REGS16[rm], ASize, 0, [], [ofMemory]);
+      end;
+      1: AddOperand(REGS16[rm] + '%s', ASize, 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], [ofMemory]);
+      2: AddOperand(REGS16[rm] + '%s', ASize, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], [ofMemory]);
+    end;
+  end;
+
+var
+  AddrSize: TAddressSize;
+  Sib: record
+    Scale, Index, Base: Byte;
+  end;
+  Oper: record
+    Size: Byte;
+    Flags: THexValueFormatFlags;
+    Value: String;
+  end;
+begin
+  Include(Flags, flagModRM);
+  Mode := Code[ModRMIdx] shr 6;
+  Rm := Code[ModRMIdx] and $7;
+
+  // Check for reg (ProcessMode = 3) first;
+  if Mode = 3
+  then begin
+    if modReg in AReqTypes
+    then AddStdReg(rm, AType)
+    else AddOperand('**');
+    Exit;
+  end;
+
+  // Check if mem is allowed
+  if not (modMem in AReqTypes)
+  then begin
+    AddOperand('**', 0, [], [ofMemory]);
+    Exit;
+  end;
+
+  Oper.Size := 0;
+  Oper.Flags := [];
+  Oper.Value := '';
+
+  // Here only mem access
+  AddrSize := AddressSize32;
+  if AddrSize = as16
+  then begin
+    Mem16;
+    Exit;
+  end;
+
+  if rm = 4
+  then begin
+    // sib folows
+    Include(Flags, flagSib);
+    sib.Scale := Code[ModRMIdx+1] shr 6;
+    sib.Index := (Code[ModRMIdx+1] shr 3) and $7;
+    sib.Base := Code[ModRMIdx+1] and $7;
+
+    // base
+    if (Mode = 0) and (sib.Base = 5)
+    then begin
+      // disp32
+      Oper.Value := '%s';
+      Oper.Size := 4;
+      if (sib.Index <> 4) or (rexX in Flags)
+      then Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar] // [reg + base]
+      else Oper.Flags := [hvfSigned, hvfIncludeHexchar];                   // [base]
+    end
+    else begin
+      Oper.Value := StdReg(sib.Base, ADDRESS_REG[AddrSize], rexB in Flags);
+      if (sib.Index <> 4) or (rexX in Flags)
+      then Oper.Value := '+' + Oper.Value;  // [reg + base]
+    end;
+
+    // reg
+    if (rexX in Flags) or (sib.Index <> 4)
+    then begin
+      if sib.Scale > 0
+      then Oper.Value := Format('*%u', [1 shl sib.Scale]) + Oper.Value;
+
+      // get index
+      Oper.Value := StdReg(sib.Index, ADDRESS_REG[AddrSize], rexX in Flags) + Oper.Value
+    end;
+  end
+  else begin
+    // no sib
+    Oper.Value := StdReg(rm, ADDRESS_REG[AddrSize], rexB in Flags);
+  end;
+
+  case Mode of
+    0: begin
+      // exceptions to std encoding
+      if rm = 5
+      then begin
+        // disp32
+        if AddrSize = as64
+        then begin
+          Oper.Value := 'rip%s';
+          Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
+        end
+        else begin
+          Oper.Value := '%s';
+          Oper.Flags := [hvfSigned, hvfIncludeHexchar];
+        end;
+        Oper.Size := 4;
+      end;
+    end;
+    1: begin
+      Oper.Value := Oper.Value + '%s';
+      Oper.Size := 1;
+      Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
+    end;
+    2: begin
+      Oper.Value := Oper.Value + '%s';
+      Oper.Size := 4;
+      Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
+    end;
+  end;
+  AddOperand(Oper.Value, ASize, Oper.Size, Oper.Flags, [ofMemory]);
+end;
+
+procedure TX86Disassembler.AddAp;
+begin
+  if OperandSize = os16 //XXXX:XXXX
+  then AddOperand('$%1:s:%0:s', os32, 2, [], [], 2)
+  else AddOperand('$%1:s:%0:s', os48, 4, [], [], 2)
+end;
+
+procedure TX86Disassembler.AddCd_q;
+begin
+  AddModReg(regControl);
+end;
+
+procedure TX86Disassembler.AddDd_q;
+begin
+  AddModReg(regDebug);
+end;
+
+procedure TX86Disassembler.AddEb;
+begin
+  AddModRM([modReg, modMem], os8, reg8);
+end;
+
+procedure TX86Disassembler.AddEd;
+begin
+  AddModRM([modReg, modMem], os32, reg32);
+end;
+
+procedure TX86Disassembler.AddEd_q;
+begin
+  if flagRex in Flags
+  then AddModRM([modReg, modMem], os64, reg64)
+  else AddModRM([modReg, modMem], os32, reg32);
+end;
+
+procedure TX86Disassembler.AddEv;
+begin
+  AddModRM([modReg, modMem], OperandSize, OPERAND_REG[OperandSize]);
+end;
+
+procedure TX86Disassembler.AddEw;
+begin
+  AddModRM([modReg, modMem], os16, reg16);
+end;
+
+procedure TX86Disassembler.AddFv;
+begin
+  case OperandSize of
+    os64: AddOperand('rflags');
+    os32: AddOperand('eflags');
+  else
+    AddOperand('flags');
+  end;
+end;
+
+procedure TX86Disassembler.AddGb;
+begin
+  AddModReg(reg8);
+end;
+
+procedure TX86Disassembler.AddGd;
+begin
+  AddModReg(reg32);
+end;
+
+procedure TX86Disassembler.AddGd_q;
+begin
+  if flagRex in Flags
+  then AddModReg(reg64)
+  else AddModReg(reg32);
+end;
+
+procedure TX86Disassembler.AddGv;
+begin
+  AddModReg;
+end;
+
+procedure TX86Disassembler.AddGw;
+begin
+  AddModReg(reg16);
+end;
+
+procedure TX86Disassembler.AddGz;
+begin
+  if OperandSize = os16
+  then AddModReg(reg16)
+  else AddModReg(reg32);
+end;
+
+procedure TX86Disassembler.AddIb;
+begin
+  AddOperand('%s', os8, 1, [hvfIncludeHexchar]);
+end;
+
+procedure TX86Disassembler.AddIv;
+begin
+  AddOperand('%s', OPERAND_BYTES[OperandSize], [hvfIncludeHexchar]);
+end;
+
+procedure TX86Disassembler.AddIw;
+begin
+  AddOperand('%s', os16, 2, [hvfIncludeHexchar]);
+end;
+
+procedure TX86Disassembler.AddIz;
+begin
+  if OperandSize = os16
+  then AddOperand('%s', os16, 2, [hvfIncludeHexchar])
+  else AddOperand('%s', os32, 4, [hvfIncludeHexchar]);
+end;
+
+procedure TX86Disassembler.AddJb;
+begin
+  AddOperand('%s', os8, 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
+end;
+
+procedure TX86Disassembler.AddJz;
+begin
+  if OperandSize = os16
+  then AddOperand('%s', os16, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar])
+  else AddOperand('%s', os32, 4, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
+end;
+
+procedure TX86Disassembler.AddM;
+begin
+  AddModRM([modMem], OperandSize, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMa;
+begin
+  AddModRM([modMem], OperandSize, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMb;
+begin
+  AddModRM([modMem], os8, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMd;
+begin
+  AddModRM([modMem], os32, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMd_q;
+begin
+  if flagRex in Flags
+  then AddModRM([modMem], os64, reg0 {do not care})
+  else AddModRM([modMem], os32, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMdq;
+begin
+  AddModRM([modMem], os128, reg0 {do not care})
+end;
+
+procedure TX86Disassembler.AddMp;
+begin
+  if OperandSize = os16 //XXXX:XXXX
+  then AddModRM([modMem], os32, reg0 {do not care})
+  else AddModRM([modMem], os48, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMq;
+begin
+  AddModRM([modMem], os64, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMs;
+begin
+  if (ProcessMode = dm64)
+  then AddModRM([modMem], os80, reg0 {do not care})
+  else AddModRM([modMem], os48, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddMw_Rv;
+begin
+  if Code[ModRMIdx] shr 6 = 3 // ProcessMode = 3 -> reg
+  then AddModRM([modReg], OperandSize, OPERAND_REG[OperandSize])
+  else AddModRM([modMem], os16, reg0 {do not care});
+end;
+
+procedure TX86Disassembler.AddOb;
+begin
+  AddOperand('%s', os8, ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], [ofMemory])
+end;
+
+procedure TX86Disassembler.AddOv;
+begin
+  AddOperand('%s', ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], [ofMemory])
+end;
+
+procedure TX86Disassembler.AddPd_q;
+begin
+  if flagRex in Flags
+  then AddModReg(regMmx, os64)
+  else AddModReg(regMmx, os32);
+end;
+
+procedure TX86Disassembler.AddPq;
+begin
+  AddModReg(regMmx);
+end;
+
+procedure TX86Disassembler.AddPRq;
+begin
+  AddModRM([modReg], os64, regMmx);
+end;
+
+procedure TX86Disassembler.AddQd;
+begin
+  AddModRM([modReg, modMem], os32, regMmx);
+end;
+
+procedure TX86Disassembler.AddQq;
+begin
+  AddModRM([modReg, modMem], os64, regMmx);
+end;
+
+procedure TX86Disassembler.AddRd_q;
+begin
+  if (ProcessMode = dm64)
+  then AddModRM([modReg], os64, reg64)
+  else AddModRM([modReg], os32, reg32);
+end;
+
+procedure TX86Disassembler.AddSw;
+begin
+  AddModReg(regSegment);
+end;
+
+procedure TX86Disassembler.AddVd_q;
+begin
+  if flagRex in Flags
+  then AddModReg(regXmm, os64)
+  else AddModReg(regXmm, os32);
+end;
+
+procedure TX86Disassembler.AddVdq;
+begin
+  AddModReg(regXmm, os128);
+end;
+
+procedure TX86Disassembler.AddVdq_sd;
+begin
+  AddModReg(regXmm, os64); // only lower 64 bit
+end;
+
+procedure TX86Disassembler.AddVdq_ss;
+begin
+  AddModReg(regXmm, os32); // only lower 32 bit
+end;
+
+procedure TX86Disassembler.AddVpd;
+begin
+  AddModReg(regXmm, os128);
+end;
+
+procedure TX86Disassembler.AddVps;
+begin
+  AddModReg(regXmm, os128);
+end;
+
+procedure TX86Disassembler.AddVq;
+begin
+  AddModReg(regXmm, os64);
+end;
+
+procedure TX86Disassembler.AddVsd;
+begin
+  AddModReg(regXmm, os64);
+end;
+
+procedure TX86Disassembler.AddVss;
+begin
+  AddModReg(regXmm, os32);
+end;
+
+procedure TX86Disassembler.AddVRdq;
+begin
+  AddModRM([modReg], os128, regXmm);
+end;
+
+procedure TX86Disassembler.AddVRpd;
+begin
+  AddModRM([modReg], os128, regXmm);
+end;
+
+procedure TX86Disassembler.AddVRps;
+begin
+  AddModRM([modReg], os128, regXmm);
+end;
+
+procedure TX86Disassembler.AddVRq;
+begin
+  AddModRM([modReg], os64, regXmm);
+end;
+
+procedure TX86Disassembler.AddWdq;
+begin
+  AddModRM([modReg, modMem], os128, regXmm);
+end;
+
+procedure TX86Disassembler.AddWpd;
+begin
+  AddModRM([modReg, modMem], os128, regXmm);
+end;
+
+procedure TX86Disassembler.AddWps;
+begin
+  AddModRM([modReg, modMem], os128, regXmm);
+end;
+
+procedure TX86Disassembler.AddWq;
+begin
+  AddModRM([modReg, modMem], os64, regXmm);
+end;
+
+procedure TX86Disassembler.AddWsd;
+begin
+  AddModRM([modReg, modMem], os64, regXmm);
+end;
+
+procedure TX86Disassembler.AddWss;
+begin
+  AddModRM([modReg, modMem], os32, regXmm);
+end;
+
+{$ifdef verbose_string_instructions}
+procedure TX86Disassembler.AddXb;
+begin
+  AddOperand('Xb');
+end;
+
+procedure TX86Disassembler.AddXv;
+begin
+  AddOperand('Xv');
+end;
+
+procedure TX86Disassembler.AddXz;
+begin
+  AddOperand('Xz');
+end;
+
+procedure TX86Disassembler.AddYb;
+begin
+  AddOperand('Yb');
+end;
+
+procedure TX86Disassembler.AddYv;
+begin
+  AddOperand('Yv');
+end;
+
+procedure TX86Disassembler.AddYz;
+begin
+  AddOperand('Yz');
+end;
+{$endif}
+
+procedure TX86Disassembler.AddStdOperands(AIndex: Byte);
+begin
+  case AIndex and $7 of
+    0: begin AddEb; AddGb; end;
+    1: begin AddEv; AddGv; end;
+    2: begin AddGb; AddEb; end;
+    3: begin AddGv; AddEv; end;
+    4: begin AddOperand('al', os8); AddIb; end;
+    5: begin AddOperand(SizeReg32('ax')); AddIz; end;
+  else
+    AddOperand('!!');
+  end;
+end;
+
+procedure TX86Disassembler.DoX87;
+var
+  Index: Byte;
+  ModRM: Byte;
+
+  procedure AddMem14_28Env;
+  begin
+    AddModRM([modMem], OperandSize, reg0 {do not care});
+  end;
+
+  procedure AddMem98_108Env;
+  begin
+    AddModRM([modMem], OperandSize, reg0 {do not care});
+  end;
+
+  procedure AddMem16;
+  begin
+    AddModRM([modMem], os16, reg0 {do not care});
+  end;
+
+  procedure AddMem32;
+  begin
+    AddModRM([modMem], os32, reg0 {do not care});
+  end;
+
+  procedure AddMem64;
+  begin
+    AddModRM([modMem], os64, reg0 {do not care});
+  end;
+
+  procedure AddMem80;
+  begin
+    AddModRM([modMem], os80, reg0 {do not care});
+  end;
+
+  procedure AddReg0;
+  begin
+    AddOperand('st(0)', os80);
+  end;
+
+  procedure AddRegN;
+  begin
+    AddOperand(Format('st(%u)', [Code[ModRMIdx] and $7]), os80);
+  end;
+
+  procedure DoD8;
+  const
+    OPC: array[0..7] of TOpCode = (OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr);
+  begin
+    Instruction^.Opcode := OPC[Index];
+    case ModRM of
+      $00..$BF: AddMem32
+    else
+      AddReg0; AddRegN;
+    end;
+  end;
+
+  procedure DoD9;
+  const
+    OPC: array[0..7] of TOpCode = (OPfld, OPfxch, OPfst, OPfstp, OPfldenv, OPfldcw, OPfnstenv, OPfnstcw);
+    OPCx: array[0..$1F] of TOpCode = (
+      OPfchs, OPfabs, OPX_InvalidX87, OPX_InvalidX87, OPftst, OPfxam, OPX_InvalidX87, OPX_InvalidX87,
+      OPfld1, OPfldl2t, OPfldl2e, OPfldpi, OPfldlg2, OPfldln2, OPfldz, OPX_InvalidX87,
+      OPf2xm1, OPfyl2x, OPfptan, OPfpatan, OPfxtract, OPfprem1, OPfdecstp, OPfincstp,
+      OPfprem, OPfyl2xp1, OPfsqrt, OPfsincos, OPfrndint, OPfscale, OPfsin, OPfcos
+    );
+  begin
+    case ModRM of
+      $00..$BF: begin
+        Instruction^.Opcode := OPC[Index];
+        case Index of
+          0, 2, 3: AddMem32;
+          1: Instruction^.Opcode := OPX_InvalidX87;
+          4, 6 : AddMem14_28Env;
+          5, 7: AddMem16;
+        end;
+      end;
+      $C0..$CF: begin Instruction^.Opcode := OPC[Index]; AddReg0; AddRegN; end;
+      $D0:      begin Instruction^.Opcode := OPnop; end;
+      $D8..$DF: begin Instruction^.Opcode := OPX_ReservedX87; end;
+      $E0..$E1,
+      $E4..$E5,
+      $E8..$FF: begin Instruction^.Opcode := OPCx[ModRM and $1F]; end;
+    else
+      Instruction^.Opcode := OPX_InvalidX87;
+    end;
+  end;
+
+  procedure DoDA;
+  const
+    OPC: array[0..7] of TOpCode = (OPfiadd, OPfimull, OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr);
+    OPCx: array[0..3] of TOpCode = (OPfcmovb, OPfcmove, OPfcmovbe, OPfcmovu);
+  begin
+    case ModRM of
+      $00..$BF: begin Instruction^.Opcode := OPC[Index]; AddMem32; end;
+      $C0..$DF: begin Instruction^.Opcode := OPCx[Index]; AddReg0; AddRegN; end;
+      $E9:      begin Instruction^.Opcode := OPfucompp; end;
+    else
+      Instruction^.Opcode := OPX_InvalidX87;
+    end;
+  end;
+
+  procedure DoDB;
+  const
+    OPC: array[0..7] of TOpCode = (OPfild, OPfisttp, OPfist, OPfistp, OPX_InvalidX87, OPfld, OPX_InvalidX87, OPfstp);
+    OPCx: array[0..7] of TOpCode = (OPfcmovnb, OPfcmovne, OPfcmovnbe, OPfcmovnu, OPX_InvalidX87, OPfucomi, OPfcomi, OPX_InvalidX87);
+  begin
+    case ModRM of
+      $00..$BF: begin
+        case Index of
+          0..3: begin Instruction^.Opcode := OPC[Index]; AddMem32; end;
+          5, 7: begin Instruction^.Opcode := OPC[Index]; AddMem80; end;
+        else
+          Instruction^.Opcode := OPX_InvalidX87;
+        end;
+      end;
+      $C0..$DF,
+      $E8..$F7: begin Instruction^.Opcode := OPCx[Index];  AddReg0; AddRegN; end;
+      $E0..$E1: begin Instruction^.Opcode := OPX_ReservedX87; end;
+      $E2:      begin Instruction^.Opcode := OPfnclex; end;
+      $E3:      begin Instruction^.Opcode := OPfninit; end;
+      $E4:      begin Instruction^.Opcode := OPX_ReservedX87; end;
+    else
+      Instruction^.Opcode := OPX_InvalidX87;
+    end;
+  end;
+
+  procedure DoDC;
+  const
+    OPC: array[0..7] of TOpCode = (OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr);
+    OPCx: array[0..7] of TOpCode = (OPfadd, OPfmul, OPX_InvalidX87, OPX_InvalidX87, OPfsubr, OPfsub, OPfdivr, OPfdiv);
+  begin
+    case ModRM of
+      $00..$BF: begin Instruction^.Opcode := OPC[Index]; AddMem64; end;
+      $C0..$CF,
+      $E0..$FF: begin Instruction^.Opcode := OPCx[Index]; AddRegN; AddReg0; end;
+    else
+      Instruction^.Opcode := OPX_ReservedX87;
+    end;
+  end;
+
+  procedure DoDD;
+  const
+    OPC: array[0..7] of TOpCode = (OPfld, OPfisttp, OPfst, OPfstp, OPfrstor, OPX_InvalidX87, OPfnsave, OPfnstsw);
+    OPCx: array[0..7] of TOpCode = (OPffree, OPX_InvalidX87, OPfst, OPfstp, OPX_InvalidX87, OPfucomp, OPX_InvalidX87, OPX_InvalidX87);
+  begin
+    case ModRM of
+      $00..$BF: begin
+        case Index of
+          0..3: begin Instruction^.Opcode := OPC[Index]; AddMem64; end;
+          4, 6: begin Instruction^.Opcode := OPC[Index]; AddMem98_108Env; end;
+          5: Instruction^.Opcode := OPX_InvalidX87;
+          7:    begin Instruction^.Opcode := OPC[Index]; AddMem16; end;
+        end;
+      end;
+      $C0..$C7,
+      $D0..$DF,
+      $E8..$EF: begin Instruction^.Opcode := OPCx[Index]; AddRegN; end;
+      $E0..$E7: begin Instruction^.Opcode := OPCx[Index]; AddRegN; AddReg0; end;
+      $C8..$CF: Instruction^.Opcode := OPX_ReservedX87;
+    else
+      Instruction^.Opcode := OPX_InvalidX87;
+    end;
+  end;
+
+  procedure DoDE;
+  const
+    OPC: array[0..7] of TOpCode = (OPfiadd, OPfimull, OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr);
+    OPCx: array[0..7] of TOpCode = (OPfaddp, OPfmullp, OPX_InvalidX87, OPX_InvalidX87, OPfsubrp, OPfsubp, OPfdivrp, OPfdivp);
+  begin
+    case ModRM of
+      $00..$BF: begin Instruction^.Opcode := OPC[Index]; AddMem16; end;
+      $C0..$CF,
+      $E0..$FF: begin Instruction^.Opcode := OPCx[Index]; AddRegN; AddReg0; end;
+      $D9:      begin Instruction^.Opcode := OPfcompp; end;
+      $D0..$D7: Instruction^.Opcode := OPX_ReservedX87;
+    else
+      Instruction^.Opcode := OPX_InvalidX87;
+    end;
+  end;
+
+  procedure DoDF;
+  const
+    OPC: array[0..7] of TOpCode = (OPfild, OPfisttp, OPfist, OPfistp, OPfbld, OPfild, OPfbstp, OPfistp);
+  begin
+    case ModRM of
+      $00..$BF: begin
+        case Index of
+          0..3: begin Instruction^.Opcode := OPC[Index]; AddMem16; end;
+          4, 6: begin Instruction^.Opcode := OPC[Index]; AddMem80; end;
+          5, 7: begin Instruction^.Opcode := OPC[Index]; AddMem64; end;
+        end;
+      end;
+      $E0:      begin Instruction^.Opcode := OPfnstsw;  AddOperand('ax', os16); end;
+      $E8..$EF: begin Instruction^.Opcode := OPfucomip; AddReg0; AddRegN; end;
+      $F0..$F7: begin Instruction^.Opcode := OPfcomip;  AddReg0; AddRegN; end;
+      $C0..$DF: Instruction^.Opcode := OPX_ReservedX87;
+    else
+      Instruction^.Opcode := OPX_InvalidX87;
+    end;
+  end;
+
+begin
+  Include(Flags, flagModRM);
+
+  ModRM := Code[ModRMIdx];
+  Index := (ModRM shr 3) and $7;
+  case Code[CodeIdx] of
+    $D8: DoD8;
+    $D9: DoD9;
+    $DA: DoDA;
+    $DB: DoDB;
+    $DC: DoDC;
+    $DD: DoDD;
+    $DE: DoDE;
+    $DF: DoDF;
+  else
+    Instruction^.Opcode := OPX_Not87;
+  end;
+end;
+
+procedure TX86Disassembler.Do3DNow;
+var
+  n, idx: Byte;
+begin
+  // 0Fh 0Fh [ModRM] [SIB] [displacement] imm8_opcode
+  // sigh, we need to get the operands first, luckely they are all te same.
+  AddPq;
+  AddQq;
+  // to adjust the instruction length, add an empty AnInstruction.operand for the Instruction^.Opcode
+  AddOperand('', 1);
+  // calc index of imm_opcode
+  idx := 0;
+  if flagModRM in Flags then Inc(idx);
+  if flagSib in Flags then Inc(idx);
+  for n := 1 to OperIdx do
+  begin
+    Inc(idx, Instruction^.Operand[n].ByteCount);
+    Inc(idx, Instruction^.Operand[n].ByteCount2);
+  end;
+  // now we can lookup the Instruction^.Opcode
+  case Code[CodeIdx + idx] of
+    $0C: Instruction^.Opcode := OPpi2fw;
+    $0D: Instruction^.Opcode := OPpi2fd;
+    $1C: Instruction^.Opcode := OPpf2iw;
+    $1D: Instruction^.Opcode := OPpf2id;
+    $8A: Instruction^.Opcode := OPpfnacc;
+    $8E: Instruction^.Opcode := OPpfpnacc;
+    $90: Instruction^.Opcode := OPpfcmpge;
+    $94: Instruction^.Opcode := OPpfmin;
+    $96: Instruction^.Opcode := OPpfrcp;
+    $97: Instruction^.Opcode := OPpfrsqrt;
+    $9A: Instruction^.Opcode := OPpfsub;
+    $9E: Instruction^.Opcode := OPpfadd;
+    $A0: Instruction^.Opcode := OPpgcmpgt;
+    $A4: Instruction^.Opcode := OPpfmax;
+    $A6: Instruction^.Opcode := OPpfrcpit1;
+    $A7: Instruction^.Opcode := OPpfrsqit1;
+    $AA: Instruction^.Opcode := OPpfsubr;
+    $AE: Instruction^.Opcode := OPpfacc;
+    $B0: Instruction^.Opcode := OPpfcmpeq;
+    $B4: Instruction^.Opcode := OPpfmul;
+    $B6: Instruction^.Opcode := OPpfrcpit2;
+    $B7: Instruction^.Opcode := OPpmulhrw;
+    $BB: Instruction^.Opcode := OPpswapd;
+    $BF: Instruction^.Opcode := OPpavgusb;
+  else
+    Instruction^.Opcode := OPX_3dnow;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup1;
+const
+  OPC: array[0..7] of TOpCode = (OPadd, OPor, OPadc, OPsbb, OPand, OPsub, OPxor, OPcmp);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  Index := (Code[ModRMIdx] shr 3) and 7;
+
+  // group 1a
+  if Code[CodeIdx] = $8F
+  then begin
+    if Index = 0
+    then begin
+      Instruction^.Opcode := OPpop;
+      AddEv;
+    end
+    else Instruction^.Opcode := OPX_group1a;
+    Exit;
+  end;
+
+  // Group 1
+  Instruction^.Opcode := OPC[Index];
+  case Code[CodeIdx] of
+    $80: begin AddEb; AddIb; end;
+    $81: begin AddEv; AddIz; end;
+    $82: begin AddEb; AddIb; Check32; end;
+    $83: begin AddEv; AddIb; end;
+  else
+    Instruction^.Opcode := OPX_NotGroup1;
+    Exit;
+  end;
+  if (Index <> 7)
+  then  CheckLock;
+end;
+
+procedure TX86Disassembler.DoGroup2;
+const
+  OPC: array[0..7] of TOpCode = (OProl, OPror, OPrcl, OPrcr, OPshl, OPshr, OPsal, OPsar);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  Instruction^.Opcode := OPC[Index];
+  case Code[CodeIdx] of
+    $C0: begin AddEb; AddIb; end;
+    $C1: begin AddEv; AddIb; end;
+    $D0: begin AddEb; AddOperand('1', os8); end;
+    $D1: begin AddEv; AddOperand('1', os8); end;
+    $D2: begin AddEb; AddOperand('cl', os8); end;
+    $D3: begin AddEv; AddOperand('cl', os8); end;
+  else
+    Instruction^.Opcode := OPX_NotGroup2;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup3;
+const
+  OPC: array[0..7] of TOpCode = (OPtest, OPtest, OPnot, OPneg, OPmul, OPimul, OPdiv, OPidiv);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  Instruction^.Opcode := OPC[Index];
+  case Code[CodeIdx] of
+    $F6: begin
+      if (Index = 0) or (Index = 1)
+      then begin
+        AddEb; AddIb;
+      end
+      else begin
+        AddEb;
+      end;
+    end;
+    $F7: begin
+      if (Index = 0) or (Index = 1)
+      then begin
+        AddEv; AddIz;
+      end
+      else begin
+        AddEv;
+      end;
+    end;
+  else
+    Instruction^.Opcode := OPX_NotGroup3;
+    Exit;
+  end;
+  if (Index = 2) or (Index = 3)
+  then CheckLock;
+end;
+
+procedure TX86Disassembler.DoGroup4;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $FE
+  then begin
+    Instruction^.Opcode := OPX_NotGroup4;
+    Exit;
+  end;
+
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case Index of
+    0: Instruction^.Opcode := OPinc;
+    1: Instruction^.Opcode := OPdec;
+  else
+    Instruction^.Opcode := OPX_Group4;
+    Exit;
+  end;
+  AddEb;
+  CheckLock;
+end;
+
+procedure TX86Disassembler.DoGroup5;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $FF
+  then begin
+    Instruction^.Opcode := OPX_NotGroup5;
+    Exit;
+  end;
+
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case Index of
+    0: begin AddEv; Instruction^.Opcode := OPinc;  end;
+    1: begin AddEv; Instruction^.Opcode := OPdec;  end;
+    2: begin Force64; AddEv; Instruction^.Opcode := OPcall; end;
+    3: begin AddMp; Instruction^.Opcode := OPcall; end;
+    4: begin Force64; AddEv; Instruction^.Opcode := OPjmp; end;
+    5: begin AddMp; Instruction^.Opcode := OPjmp;  end;
+    6: begin Default64; AddEv; Instruction^.Opcode := OPpush; end;
+  else
+    Instruction^.Opcode := OPX_Group5;
+  end;
+  if Index in [0,1] then
+    CheckLock;
+end;
+
+procedure TX86Disassembler.DoGroup6;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $00
+  then begin
+    Instruction^.Opcode := OPX_NotGroup5;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case Index of
+    0: begin AddMw_Rv; Instruction^.Opcode := OPsldt; end;
+    1: begin AddMw_Rv; Instruction^.Opcode := OPstr;  end;
+    2: begin AddEw;    Instruction^.Opcode := OPlldt; end;
+    3: begin AddEw;    Instruction^.Opcode := OPltr;  end;
+    4: begin AddEw;    Instruction^.Opcode := OPverr; end;
+    5: begin AddEw;    Instruction^.Opcode := OPverw; end;
+  else
+    Instruction^.Opcode := OPX_Group6;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup7;
+const
+  RM3: array [0..7] of TOpCode = (OPvmrun, OPvmmcall, OPvmload, OPvmsave, OPstgi, OPclgi, OPskinit, OPinvlpga);
+var
+  Mode: Byte;
+  Index: Byte;
+  RM: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $01
+  then begin
+    Instruction^.Opcode := OPX_NotGroup7;
+    Exit;
+  end;
+  Mode :=  (Code[ModRMIdx] shr 6) and 3;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  RM :=    (Code[ModRMIdx]      ) and 7;
+  case Index of
+    0: begin AddMs; Instruction^.Opcode := OPsgdt; end;
+    1: begin AddMs; Instruction^.Opcode := OPsidt;  end;
+    2: begin AddMs; Instruction^.Opcode := OPlgdt; end;
+    3: begin
+      if Mode = 3
+      then begin
+        Instruction^.Opcode := RM3[RM];
+      end
+      else begin
+        AddMs; Instruction^.Opcode := OPlidt;
+      end;
+    end;
+    4: begin AddMw_Rv; Instruction^.Opcode := OPsmsw; end;
+    //5 : invalid
+    6: begin AddEw;    Instruction^.Opcode := OPlmsw; end;
+    7: begin
+      if Mode = 3
+      then begin
+        case RM of
+          0: Instruction^.Opcode := OPswapgs;
+          1: Instruction^.Opcode := OPrdtscp;
+        else
+          Instruction^.Opcode := OPX_Group7;
+        end;
+      end
+      else begin
+        AddMb; Instruction^.Opcode := OPinvlpg;
+      end;
+    end;
+  else
+    Instruction^.Opcode := OPX_Group7;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup8;
+const
+  RM8: array [0..7] of TOpCode = (OPX_Group8, OPX_Group8, OPX_Group8, OPX_Group8, OPbt, OPbts, OPbtr, OPbtc);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $BA
+  then begin
+    Instruction^.Opcode := OPX_NotGroup8;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  if Index < 4
+  then begin
+    Instruction^.Opcode := OPX_Group8;
+    Exit;
+  end;
+  AddEv; AddIb;
+  Instruction^.Opcode := RM8[Index];
+  if Index in [5..7] then
+    CheckLock;
+end;
+
+procedure TX86Disassembler.DoGroup9;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $C7
+  then begin
+    Instruction^.Opcode := OPX_NotGroup9;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  if Index = 1
+  then begin
+    if OperandSize = os64
+    then begin
+      Instruction^.Opcode :=  OPcmpxchg16b;
+      AddMdq;
+    end
+    else begin
+      Instruction^.Opcode := OPcmpxchg8b;
+      AddMq;
+    end;
+    CheckLock;
+  end
+  else begin
+    Instruction^.Opcode := OPX_Group9;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup10;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $B9
+  then begin
+    Instruction^.Opcode := OPX_NotGroup10;
+    Exit;
+  end;
+  // whole goup is invalid ??
+  Instruction^.Opcode := OPX_Group10;
+end;
+
+procedure TX86Disassembler.DoGroup11;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  if Index <> 0
+  then begin
+    Instruction^.Opcode := OPX_NotGroup11;
+    Exit;
+  end;
+
+  case Code[CodeIdx] of
+    $C6: begin AddEb; AddIb; end;
+    $C7: begin AddEv; AddIz; end;
+  else
+    Instruction^.Opcode := OPX_Group11;
+    Exit;
+  end;
+  Instruction^.Opcode := OPmov;
+end;
+
+procedure TX86Disassembler.DoGroup12;
+const
+  OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrlw, OPX_Invalid, OPpsraw, OPX_Invalid, OPpsllw, OPX_Invalid);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $71
+  then begin
+    Instruction^.Opcode := OPX_NotGroup12;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
+    soNone: begin AddPRq;  AddIb; end;
+    so66:   begin AddVRdq; AddIb; end;
+  else
+    Instruction^.Opcode := OPX_Group12;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup13;
+const
+  OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrld, OPX_Invalid, OPpsrad, OPX_Invalid, OPpslld, OPX_Invalid);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $72
+  then begin
+    Instruction^.Opcode := OPX_NotGroup13;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
+    soNone: begin AddPRq;  AddIb; end;
+    so66:   begin AddVRdq; AddIb; end;
+  else
+    Instruction^.Opcode := OPX_Group13;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup14;
+const
+  OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrlq, OPpsrldq, OPX_Invalid, OPX_Invalid, OPpsllq, OPpsrldq);
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $73
+  then begin
+    Instruction^.Opcode := OPX_NotGroup14;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
+    soNone: begin
+      if (Index = 3) or (Index = 7)
+      then Instruction^.Opcode := OPX_Group14
+      else begin AddPRq; AddIb; end;
+    end;
+    so66: begin AddVRdq; AddIb; end;
+  else
+    Instruction^.Opcode := OPX_Group14;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup15;
+var
+  Index: Byte;
+  Mode: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $AE
+  then begin
+    Instruction^.Opcode := OPX_NotGroup15;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  if (Flags * [pre66, preF3, preF2] <> [])
+  or (Index = 4)
+  then begin
+    Instruction^.Opcode := OPX_Group15;
+    Exit;
+  end;
+  Mode :=  (Code[ModRMIdx] shr 6) and 3;
+  case Index of
+    0: begin Instruction^.Opcode := OPfxsave;  AddM;  end;
+    1: begin Instruction^.Opcode := OPfxrstor; AddM;  end;
+    2: begin Instruction^.Opcode := OPldmxcsr; AddMd; end;
+    3: begin Instruction^.Opcode := OPstmxcsr; AddMd; end;
+    5: Instruction^.Opcode := OPlfence;
+    6: Instruction^.Opcode := OPmfence;
+    7: if Mode = 3 then Instruction^.Opcode := OPlfence
+                   else begin Instruction^.Opcode := OPclflush; AddMb; end;
+  end;
+end;
+
+procedure TX86Disassembler.DoGroup16;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $18
+  then begin
+    Instruction^.Opcode := OPX_NotGroup16;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  if Index=0 then ;
+  Instruction^.Opcode := OPX_Invalid;
+end;
+
+procedure TX86Disassembler.DoGroupP;
+var
+  Index: Byte;
+begin
+  Include(Flags, flagModRM);
+  if Code[CodeIdx] <> $0D
+  then begin
+    Instruction^.Opcode := OPX_NotGroupP;
+    Exit;
+  end;
+  Index := (Code[ModRMIdx] shr 3) and 7;
+  case Index of
+    0:   Instruction^.Opcode := OPprefetch_exclusive;
+    1,3: Instruction^.Opcode := OPprefetch_modified;
+  else
+    Instruction^.Opcode := OPX_prefetch;
+  end;
+end;
+
+procedure TX86Disassembler.Do2ByteOpcode;
+const
+  INVALID = '**2byte**';
+
+const
+  OPR_6x: array[0..$F] of TOpCode = (
+    OPpunpcklbw, OPpunpcklwd, OPpunpcklqd, OPpacksswb,
+    OPpcmpgtb, OPpcmpgtw, OPpcmpgtd, OPpackuswb,
+    OPpunpkhbw, OPpunpkhwd, OPpunpkhdq, OPpackssdw,
+    OPpunpcklqdq, OPpunpckhqdq, OPX_Invalid, OPX_Invalid
+  );
+  OPR_Dx: array[0..$F] of TOpCode = (
+    OPX_Invalid, OPpsrlw, OPpsrld, OPpsrlq,
+    OPpaddq, OPpmullw, OPX_Invalid, OPX_Invalid,
+    OPpsubusb, OPpsubusw, OPpminub, OPpand,
+    OPpaddusb, OPpaddusw, OPpmaxub, OPpandn
+  );
+  OPR_Ex: array[0..$F] of TOpCode = (
+    OPpavgb, OPpsraw, OPpsrad, OPpavgw,
+    OPpmulhuw, OPpmulhw, OPX_Invalid, OPX_Invalid,
+    OPpsubsb, OPpsubsw, OPpminsw, OPpor,
+    OPpaddsb, OPpaddsw, OPpmaxsw, OPpxor
+  );
+  OPR_Fx: array[0..$F] of TOpCode = (
+    OPX_Invalid, OPpsllw, OPpslld, OPpsllq,
+    OPpmuludq, OPpmaddwd, OPpsadbw, OPX_Invalid,
+    OPpsubb, OPpsubw, OPpsubd, OPpsubq,
+    OPpaddb, OPpaddw, OPpaddd, OPX_Invalid
+  );
+var
+  idx: Integer;
+begin
+  Inc(CodeIdx);
+  Inc(ModRMIdx);
+  case Code[CodeIdx] of
+    $00: begin
+      DoGroup6;
+    end;
+    $01: begin
+      DoGroup7;
+    end;
+    $02: begin
+      Instruction^.Opcode := OPlar;
+      AddGv; AddEw;
+    end;
+    $03: begin
+      Instruction^.Opcode := OPlsl;
+      AddGv; AddEw;
+    end;
+    // $04: invalid
+    $05: begin
+      Instruction^.Opcode := OPsyscall;
+    end;
+    $06: begin
+      Instruction^.Opcode := OPclts;
+    end;
+    $07: begin
+      Instruction^.Opcode := OPsysret;
+    end;
+    $08: begin
+      Instruction^.Opcode := OPinvd;
+    end;
+    $09: begin
+      Instruction^.Opcode := OPwbinvd;
+    end;
+    // $0A: invalid
+    $0B: begin
+      Instruction^.Opcode := OPud2;
+    end;
+    // $0C: invalid
+    $0D: begin
+      DoGroupP;
+    end;
+    $0E: begin
+      Instruction^.Opcode := OPfemms;
+    end;
+    $0F: begin
+      Do3DNow;
+    end;
+    //---
+    $10: begin
+      case DecodePrefix(OPmovups, OPmovupd, OPmovsd, OPmovss) of
+        soNone: begin AddVps;    AddWps; end;
+        so66:   begin AddVpd;    AddWpd; end;
+        soF2:   begin AddVdq_sd; AddWsd; end;
+        soF3:   begin AddVdq_ss; AddWss; end;
+      end;
+    end;
+    $11: begin
+      case DecodePrefix(OPmovups, OPmovupd, OPmovsd, OPmovss) of
+        soNone: begin AddWps; AddVps; end;
+        so66:   begin AddWpd; AddVpd; end;
+        soF2:   begin AddWsd; AddVsd; end;
+        soF3:   begin AddWss; AddVss; end;
+      end;
+    end;
+    $12: begin
+      case DecodePrefix(OPmovhlps, OPmovlpd, OPmovddup, OPmovsldup) of
+        soNone: begin
+          // Instruction^.Opcode differs on type found
+          // it is specified as Mq or VRq
+          // So when getting Wq, we Add both and know the type
+          AddVps; AddWq;
+          if ofMemory in Instruction^.Operand[2].Flags
+          then Instruction^.Opcode := OPmovlps;
+        end;
+        so66: begin AddVsd; AddMq;  end;
+        soF2: begin AddVpd; AddWsd; end;
+        soF3: begin AddVps; AddWps; end;
+      end;
+    end;
+    $13: begin
+      case DecodePrefix(OPmovlps, OPmovlpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddMq; AddVps; end;
+        so66:   begin AddMq; AddVsd; end;
+      end;
+    end;
+    $14: begin
+      case DecodePrefix(OPunpcklps, OPunpcklpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddVps; AddWq; end;
+        so66:   begin AddVpd; AddWq; end;
+      end;
+    end;
+    $15: begin
+      case DecodePrefix(OPunpckhps, OPunpckhpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddVps; AddWq; end;
+        so66:   begin AddVpd; AddWq; end;
+      end;
+    end;
+    $16: begin
+      case DecodePrefix(OPmovlhps, OPmovhpd, OPX_Invalid, OPmovshdup) of
+        soNone: begin
+          // Instruction^.Opcode differs on type found
+          // it is specified as Mq or VRq
+          // So when getting Wq, we Add both and know the type
+          AddVps; AddWq;
+          if ofMemory in Instruction^.Operand[2].Flags
+          then Instruction^.Opcode := OPmovhps;
+        end;
+        so66: begin AddVsd; AddMq; end;
+        soF3: begin AddVps; AddWps; end;
+      end;
+    end;
+    $17: begin
+      case DecodePrefix(OPmovhps, OPmovhpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddMq; AddVps; end;
+        so66:   begin AddMq; AddVsd; end;
+      end;
+    end;
+    $18: begin
+      DoGroup16;
+    end;
+    $19..$1F: begin
+      Instruction^.Opcode := OPnop;
+      AddEv;
+    end;
+    //---
+    $20: begin
+      Instruction^.Opcode := OPmov;
+      AddRd_q; AddCd_q;
+    end;
+    $21: begin
+      Instruction^.Opcode := OPmov;
+      AddRd_q; AddDd_q;
+    end;
+    $22: begin
+      Instruction^.Opcode := OPmov;
+      AddCd_q; AddRd_q;
+    end;
+    $23: begin
+      Instruction^.Opcode := OPmov;
+      AddDd_q; AddRd_q;
+    end;
+    // $24..$27: OPX_Invalid
+    $28: begin
+      case DecodePrefix(OPmovaps, OPmovapd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddVps; AddWps; end;
+        so66:   begin AddVpd; AddWpd; end;
+      end;
+    end;
+    $29: begin
+      case DecodePrefix(OPmovaps, OPmovapd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddWps; AddVps; end;
+        so66:   begin AddWpd; AddVpd; end;
+      end;
+    end;
+    $2A: begin
+      case DecodePrefix(OPcvtpi2ps, OPcvtpi2pd, OPcvtsi2sd, OPcvtsi2ss) of
+        soNone: begin AddVps; AddQq;   end;
+        so66:   begin AddVpd; AddQq;   end;
+        soF2:   begin AddVsd; AddEd_q; end;
+        soF3:   begin AddVss; AddEd_q; end;
+      end;
+    end;
+    $2B: begin
+      case DecodePrefix(OPmovntps, OPmovntpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddMdq; AddVps; end;
+        so66:   begin AddMdq; AddVpd; end;
+      end;
+    end;
+    $2C: begin
+      case DecodePrefix(OPcvttps2pi, OPcvttpd2pi, OPcvttsd2si, OPcvttss2si) of
+        soNone: begin AddPq;   AddWps; end;
+        so66:   begin AddPq;   AddWpd; end;
+        soF2:   begin AddGd_q; AddWsd; end;
+        soF3:   begin AddGd_q; AddWss; end;
+      end;
+    end;
+    $2D: begin
+      case DecodePrefix(OPcvtps2pi, OPcvtpd2pi, OPcvtsd2si, OPcvtss2si) of
+        soNone: begin AddPq;   AddWps; end;
+        so66:   begin AddPq;   AddWpd; end;
+        soF2:   begin AddGd_q; AddWsd; end;
+        soF3:   begin AddGd_q; AddWss; end;
+      end;
+    end;
+    $2E: begin
+      case DecodePrefix(OPucomiss, OPucomissd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddVss; AddWss; end;
+        so66:   begin AddVsd; AddWsd; end;
+      end;
+    end;
+    $2F: begin
+      case DecodePrefix(OPcomiss, OPcomissd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddVss; AddWss; end;
+        so66:   begin AddVsd; AddWsd; end;
+      end;
+    end;
+    //---
+    $30: begin
+      Instruction^.Opcode := OPwrmsr;
+    end;
+    $31: begin
+      Instruction^.Opcode := OPrdtsc;
+    end;
+    $32: begin
+      Instruction^.Opcode := OPrdmsr;
+    end;
+    $33: begin
+      Instruction^.Opcode := OPrdpmc;
+    end;
+    $34: begin
+      Instruction^.Opcode := OPXsysenter;
+    end;
+    $35: begin
+      Instruction^.Opcode := OPXsysexit;
+    end;
+    // $36..$3F: OPX_Invalid
+    //---
+    $40..$4F: begin
+      Instruction^.Opcode := OPcmov__; StdCond(Code[CodeIdx]);
+      AddGv; AddEv;
+    end;
+    //---
+    $50: begin
+      case DecodePrefix(OPmovmskps, OPmovmskpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddGd; AddVRps; end;
+        so66:   begin AddGd; AddVRpd; end;
+      end;
+    end;
+    $51..$59, $5C..$5F: begin
+      case Code[CodeIdx] of
+        $51: DecodePrefix(OPsqrtps,  OPsqrtpd,    OPsqrtsd,    OPsqrtss);
+        $52: DecodePrefix(OPrsqrtps, OPX_Invalid, OPX_Invalid, OPrsqrtss);
+        $53: DecodePrefix(OPrcpps,   OPX_Invalid, OPX_Invalid, OPrcpss);
+        $54: DecodePrefix(OPandps,   OPandpd,     OPX_Invalid, OPX_Invalid);
+        $55: DecodePrefix(OPandnps,  OPandnpd,    OPX_Invalid, OPX_Invalid);
+        $56: DecodePrefix(OPorps,    OPorpd,      OPX_Invalid, OPX_Invalid);
+        $57: DecodePrefix(OPxorps,   OPxorpd,     OPX_Invalid, OPX_Invalid);
+        $58: DecodePrefix(OPaddps,   OPaddpd,     OPaddsd,     OPaddss);
+        $59: DecodePrefix(OPmulps,   OPmulpd,     OPmulsd,     OPmulss);
+        $5C: DecodePrefix(OPsubps,   OPsubpd,     OPsubsd,     OPsubss);
+        $5D: DecodePrefix(OPminps,   OPminpd,     OPminsd,     OPminss);
+        $5E: DecodePrefix(OPdivps,   OPdivpd,     OPdivsd,     OPdivss);
+        $5F: DecodePrefix(OPmaxps,   OPmaxpd,     OPmaxsd,     OPmaxss);
+      end;
+
+      case SimdOpcode of
+        soNone: begin AddVps; AddWps; end;
+        so66:   begin AddVpd; AddWpd; end;
+        soF2:   begin AddVsd; AddWsd; end;
+        soF3:   begin AddVss; AddWss; end;
+      end;
+    end;
+    $5A: begin
+      case DecodePrefix(OPcvtps2pd, OPcvtpd2ps, OPcvtsd2ss, OPcvtss2sd) of
+        soNone: begin AddVpd; AddWps; end;
+        so66:   begin AddVps; AddWpd; end;
+        soF2:   begin AddVss; AddWsd; end;
+        soF3:   begin AddVsd; AddWss; end;
+      end;
+    end;
+    $5B: begin
+      case DecodePrefix(OPcvtdq2ps, OPcvtps2dq, OPX_Invalid, OPcvttps2dq) of
+        soNone: begin AddVps; AddWdq; end;
+        so66:   begin AddVdq; AddWps; end;
+        soF3:   begin AddVdq; AddWps; end;
+      end;
+    end;
+    // $5C..$5F: see $51
+    //---
+    $60..$6D: begin
+      idx := Code[CodeIdx] and $F;
+      CheckSIMD;
+      case DecodePrefix(OPR_6x[idx], OPR_6x[idx], OPX_Invalid, OPX_Invalid) of
+        soNone: begin
+          if Code[CodeIdx] in [$6C, $6D]
+          then Instruction^.Opcode := OPX_Invalid
+          else begin AddPq;  AddQd; end;
+        end;
+        so66: begin
+          AddVdq;
+          if Code[CodeIdx] = $6B then AddWdq else AddWq;
+        end;
+      end;
+    end;
+    $6E: begin
+      case DecodePrefix(OPmovd, OPmovd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddEd_q; end;
+        so66:   begin AddVdq; AddEd_q; end;
+      end;
+    end;
+    $6F: begin
+      case DecodePrefix(OPmovq, OPmovdqa, OPX_Invalid, OPmovdqu) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+        soF3:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    //---
+    $70: begin
+      case DecodePrefix(OPpshufw, OPpshufd, OPpshuflw, OPpshufhw) of
+        soNone: begin AddPq;  AddQq;  AddIb; end;
+        so66:   begin AddVdq; AddWdq; AddIb; end;
+        soF2:   begin AddVq;  AddWq;  AddIb; end;
+        soF3:   begin AddVq;  AddWq;  AddIb; end;
+      end;
+    end;
+    $71: begin
+      if Flags * [preF3, preF2] = []
+      then DoGroup12
+      else Instruction^.Opcode := OPX_Invalid;
+    end;
+    $72: begin
+      if Flags * [preF3, preF2] = []
+      then DoGroup13
+      else Instruction^.Opcode := OPX_Invalid;
+    end;
+    $73: begin
+      if Flags * [preF3, preF2] = []
+      then DoGroup14
+      else Instruction^.Opcode := OPX_Invalid;
+    end;
+    $74: begin
+      case DecodePrefix(OPpcmpeqb, OPpcmpeqb, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    $75: begin
+      case DecodePrefix(OPpcmpeqw, OPpcmpeqw, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    $76: begin
+      case DecodePrefix(OPpcmpeqd, OPpcmpeqd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    $77: begin
+      if Flags * [preF3, preF2, pre66] = []
+      then Instruction^.Opcode := OPemms
+      else Instruction^.Opcode := OPX_Invalid;
+    end;
+    // $78..$7B: OPX_Invalid
+    $7C: begin
+      case DecodePrefix(OPX_Invalid, OPhaddpd, OPhaddps, OPX_Invalid) of
+        so66: begin AddVpd; AddWpd; end;
+        soF2: begin AddVps; AddWps; end;
+      end;
+    end;
+    $7D: begin
+      case DecodePrefix(OPX_Invalid, OPhsubpd, OPhsubps, OPX_Invalid) of
+        so66: begin AddVpd; AddWpd; end;
+        soF2: begin AddVps; AddWps; end;
+      end;
+    end;
+    $7E: begin
+      case DecodePrefix(OPmovd, OPmovd, OPX_Invalid, OPmovq) of
+        soNone: begin AddEd_q; AddPd_q; end;
+        so66:   begin AddEd_q; AddVd_q; end;
+        soF3:   begin AddVq;   AddWq;   end;
+      end;
+    end;
+    $7F: begin
+      case DecodePrefix(OPmovq, OPmovdqa, OPX_Invalid, OPmovdqu) of
+        soNone: begin AddQq;  AddPq;  end;
+        so66:   begin AddWdq; AddVdq; end;
+        soF3:   begin AddWdq; AddVdq; end;
+      end;
+    end;
+    //---
+    $80..$8F: begin
+      Force64;
+      Instruction^.Opcode := OPj__; StdCond(Code[CodeIdx]);
+      AddJz;
+    end;
+    //---
+    $90..$9F: begin
+      Instruction^.Opcode := OPset__; StdCond(Code[CodeIdx]);
+      AddEb;
+    end;
+    //---
+    $A0: begin
+      Default64;
+      Instruction^.Opcode := OPpush;
+      AddOperand('fs');
+    end;
+    $A1: begin
+      Default64;
+      Instruction^.Opcode := OPpop;
+      AddOperand('fs');
+    end;
+    $A2: begin
+      Instruction^.Opcode := OPcpuid;
+    end;
+    $A3: begin
+      Instruction^.Opcode := OPbt;
+      AddEv; AddGv;
+    end;
+    $A4: begin
+      Instruction^.Opcode := OPshld;
+      AddEv; AddGv; AddIb;
+    end;
+    $A5: begin
+      Instruction^.Opcode := OPshld;
+      AddEv; AddGv;
+      AddOperand('cl');
+    end;
+    // $A6..$A7: OPX_Invalid
+    $A8: begin
+      Default64;
+      Instruction^.Opcode := OPpush;
+      AddOperand('gs');
+    end;
+    $A9: begin
+      Default64;
+      Instruction^.Opcode := OPpop;
+      AddOperand('gs');
+    end;
+    $AA: begin
+      Instruction^.Opcode := OPrsm;
+    end;
+    $AB: begin
+      Instruction^.Opcode := OPbts;
+      AddEv; AddGv;
+    end;
+    $AC: begin
+      Instruction^.Opcode := OPshrd;
+      AddEv; AddGv; AddIb;
+    end;
+    $AD: begin
+      Instruction^.Opcode := OPshld;
+      AddEv; AddGv;
+      AddOperand('cl');
+    end;
+    $AE: begin
+      DoGroup15;
+    end;
+    $AF: begin
+      Instruction^.Opcode := OPimul;
+      AddGv; AddEv;
+    end;
+    //---
+    $B0: begin
+      AddEb; AddGb;
+      Instruction^.Opcode := OPcmpxchg; CheckLock;
+    end;
+    $B1: begin
+      AddEv; AddGv;
+      Instruction^.Opcode := OPcmpxchg; CheckLock;
+    end;
+    $B2: begin
+      Instruction^.Opcode := OPlss;
+      AddGz; AddMp;
+    end;
+    $B3: begin
+      Instruction^.Opcode := OPbtr;
+      AddEv; AddGv;
+    end;
+    $B4: begin
+      Instruction^.Opcode := OPlfs;
+      AddGz; AddMp;
+    end;
+    $B5: begin
+      Instruction^.Opcode := OPlgs;
+      AddGz; AddMp;
+    end;
+    $B6: begin
+      Instruction^.Opcode := OPmovzx;
+      AddGv; AddEb;
+    end;
+    $B7: begin
+      Instruction^.Opcode := Opmovzx;
+      AddGv; AddEw;
+    end;
+    // $B8: OPX_Invalid
+    $B9: begin
+      DoGroup10;
+    end;
+    $BA: begin
+      DoGroup8;
+    end;
+    $BB: begin
+      Instruction^.Opcode := OPbtc;
+      AddEv; AddGv;
+    end;
+    $BC: begin
+      Instruction^.Opcode := OPbsf;
+      AddGv; AddEv;
+    end;
+    $BD: begin
+      Instruction^.Opcode := OPbsr;
+      AddGv; AddEv;
+    end;
+    $BE: begin
+      Instruction^.Opcode := OPmovsx;
+      AddGv; AddEb;
+    end;
+    $BF: begin
+      Instruction^.Opcode := OPmovsx;
+      AddGv; AddEw;
+    end;
+    //---
+    $C0: begin
+      AddEb; AddGb;
+      Instruction^.Opcode := OPxadd; CheckLock;
+    end;
+    $C1: begin
+      AddEv; AddGv;
+      Instruction^.Opcode := OPxadd; CheckLock;
+    end;
+    $C2: begin
+      case DecodePrefix(OPcmpps, OPcmppd, OPcmpsd, OPcmpss) of
+        soNone: begin AddVps; AddWps; AddIb end;
+        so66:   begin AddVpd; AddWpd; AddIb end;
+        soF2:   begin AddVsd; AddWsd; AddIb end;
+        soF3:   begin AddVss; AddWss; AddIb end;
+      end;
+    end;
+    $C3: begin
+      if Flags * [preF3, preF2, pre66] = []
+      then begin
+        Instruction^.Opcode := OPmovnti;
+        AddMd_q; AddGd_q;
+      end
+      else Instruction^.Opcode := OPX_Invalid;
+    end;
+    $C4: begin
+      case DecodePrefix(OPpinsrw, OPpinsrw, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddEw; AddIb end;
+        so66:   begin AddVdq; AddEw; AddIb end;
+      end;
+    end;
+    $C5: begin
+      case DecodePrefix(OPpextrw, OPpextrw, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddGd; AddPRq;  AddIb end;
+        so66:   begin AddGd; AddVRdq; AddIb end;
+      end;
+    end;
+    $C6: begin
+      case DecodePrefix(OPshufps, OPshufpd, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddVps; AddWps; AddIb end;
+        so66:   begin AddVpd; AddWpd; AddIb end;
+      end;
+    end;
+    $C7: begin
+      DoGroup9;
+    end;
+    $C8..$CF: begin
+      Instruction^.Opcode := OPbswp;
+      AddStdReg(Code[CodeIdx]);
+    end;
+    //---
+    $D0: begin
+      case DecodePrefix(OPX_Invalid, OPaddsubpd, OPaddsubps, OPX_Invalid) of
+        so66: begin AddVpd; AddWpd; end;
+        soF2: begin AddVps; AddWps; end;
+      end;
+    end;
+    $D1..$D5, $D8..$DF: begin
+      idx := Code[CodeIdx] and $F;
+      case DecodePrefix(OPR_Dx[idx], OPR_Dx[idx], OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    $D6: begin
+      case DecodePrefix(OPX_Invalid, OPmovq, OPmovdq2q, OPmovq2dq) of
+        so66: begin AddWq;  AddVq;  end;
+        soF2: begin AddPq;  AddVRq; end;
+        soF3: begin AddVdq; AddPRq; end;
+      end;
+    end;
+    $D7: begin
+      case DecodePrefix(OPpmovmskb, OPpmovmskb, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddGd; AddPRq;  end;
+        so66:   begin AddGd; AddVRdq; end;
+      end;
+    end;
+    // $D8..$DF: see $D1
+    //---
+    $E0..$E5, $E8..$EF: begin
+      idx := Code[CodeIdx] and $F;
+      case DecodePrefix(OPR_Ex[idx], OPR_Ex[idx], OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    $E6: begin
+      case DecodePrefix(OPX_Invalid, OPcvttpd2dq, OPcvtpd2dq, OPcvtdq2pd) of
+        so66: begin AddVq;  AddWpd; end;
+        soF2: begin AddVq;  AddWpd; end;
+        soF3: begin AddVpd; AddWq;  end;
+      end;
+    end;
+    $E7: begin
+      case DecodePrefix(OPmovntq, OPmovntdqu, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddMq;  AddPq;  end;
+        so66:   begin AddMdq; AddVdq; end;
+      end;
+    end;
+    // $E8..$EF: see $E0
+    $F0: begin
+      if preF2 in Flags
+      then begin
+        Instruction^.Opcode := OPlddqu;
+        AddVpd; AddMdq;
+      end
+      else Instruction^.Opcode := OPX_Invalid;
+    end;
+    $F1..$F6, $F8..$FE: begin
+      idx := Code[CodeIdx] and $F;
+      case DecodePrefix(OPR_Fx[idx], OPR_Fx[idx], OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddQq;  end;
+        so66:   begin AddVdq; AddWdq; end;
+      end;
+    end;
+    $F7: begin
+      case DecodePrefix(OPmaskmovq, OPmaskmovdqu, OPX_Invalid, OPX_Invalid) of
+        soNone: begin AddPq;  AddPRq;  end;
+        so66:   begin AddVdq; AddVRdq; end;
+      end;
+    end;
+    // $F8..$FE: see $F1
+    // $FF: OPX_Invalid
+  else
+    Instruction^.Opcode := OPX_Invalid;
+  end;
+end;
+
+procedure TX86Disassembler.DoDisassemble;
+begin
+  Instruction^.Opcode := OPX_InternalUnknown;
+  repeat
+    ModRMIdx := CodeIdx + 1;
+    case Code[CodeIdx] of
+      $00..$05: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPadd; CheckLock;
+      end;
+      $06: begin
+        Instruction^.Opcode := OPpush; Check32;
+        AddOperand('es');
+      end;
+      $07: begin
+        Instruction^.Opcode := OPpop; Check32;
+        AddOperand('es');
+      end;
+      $08..$0D: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPor; CheckLock;
+      end;
+      $0E: begin
+        Instruction^.Opcode := OPpush; Check32;
+        AddOperand('cs');
+      end;
+      $0F: begin
+        Do2ByteOpcode;
+      end;
+      //---
+      $10..$15: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPadc; CheckLock;
+      end;
+      $16: begin
+        Instruction^.Opcode := OPpush; Check32;
+        AddOperand('ss');
+      end;
+      $17: begin
+        Instruction^.Opcode := OPpop; Check32;
+        AddOperand('ss');
+      end;
+      $18..$1D: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPsbb; CheckLock;
+      end;
+      $1E: begin
+        Instruction^.Opcode := OPpush; Check32;
+        AddOperand('ds');
+      end;
+      $1F: begin
+        Instruction^.Opcode := OPpop; Check32;
+        AddOperand('ds');
+      end;
+      //---
+      $20..$25: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPand; CheckLock;
+      end;
+      $26: begin
+        Instruction^.Segment := Instruction^.Segment + Ignore64('es:');
+      end;
+      $27: begin
+        Instruction^.Opcode := OPdaa; Check32;
+      end;
+      $28..$2D: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPsub; CheckLock;
+      end;
+      $2E: begin
+        Instruction^.Segment := Instruction^.Segment + Ignore64('cs:');
+      end;
+      $2F: begin
+        Instruction^.Opcode := OPdas; Check32;
+      end;
+      //---
+      $30..$35: begin
+        AddStdOperands(Code[CodeIdx]);
+        Instruction^.Opcode := OPxor; CheckLock;
+      end;
+      $36: begin
+        Instruction^.Segment := Instruction^.Segment + Ignore64('ss:');
+      end;
+      $37: begin
+        Instruction^.Opcode := OPaaa; Check32;
+      end;
+      $38..$3D: begin
+        Instruction^.Opcode := OPcmp;
+        AddStdOperands(Code[CodeIdx]);
+      end;
+      $3E: begin
+        Instruction^.Segment := Instruction^.Segment + Ignore64('ds:');
+      end;
+      $3F: begin
+        Instruction^.Opcode := OPaas; Check32;
+      end;
+      //---
+      $40..$4F: begin
+        if (ProcessMode = dm64)
+        then begin
+          if (Code[CodeIdx] and 1) <> 0 then Include(Flags, rexB);
+          if (Code[CodeIdx] and 2) <> 0 then Include(Flags, rexX);
+          if (Code[CodeIdx] and 4) <> 0 then Include(Flags, rexR);
+          if (Code[CodeIdx] and 8) <> 0 then Include(Flags, rexW);
+          Include(Flags, flagRex);
+        end
+        else begin
+          AddStdReg(Code[CodeIdx]);
+          if Code[CodeIdx] <= $47
+          then Instruction^.Opcode := OPinc
+          else Instruction^.Opcode := OPdec;
+          CheckLock;
+        end;
+      end;
+      //---
+      $50..$57: begin
+        Default64;
+        Instruction^.Opcode := OPpush;
+        AddStdReg(Code[CodeIdx]);
+      end;
+      $58..$5F: begin
+        Default64;
+        Instruction^.Opcode := OPpop;
+        AddStdReg(Code[CodeIdx]);
+      end;
+      //---
+      $60: begin
+        if OperandSize = os16
+        then Instruction^.Opcode := OPpusha
+        else Instruction^.Opcode := OPpushad;
+        Check32;
+      end;
+      $61: begin
+        if OperandSize = os16
+        then Instruction^.Opcode := OPpopa
+        else Instruction^.Opcode := OPpopad;
+        Check32;
+      end;
+      $62: begin
+        Instruction^.Opcode := OPbound; Check32;
+        AddGv; AddMa;
+      end;
+      $63: begin
+        if (ProcessMode = dm64)
+        then begin
+          Instruction^.Opcode := (OPmovsxd);
+          AddGv; AddEd;
+        end
+        else begin
+          Instruction^.Opcode := OParpl; Check32;
+          AddEw; AddGw;
+        end;
+      end;
+      $64: begin
+        Instruction^.Segment := Instruction^.Segment + 'fs:';
+      end;
+      $65: begin
+        Instruction^.Segment := Instruction^.Segment + 'gs:';
+      end;
+      $66: begin
+        Include(FLags, pre66);
+      end;
+      $67: begin
+        Include(FLags, preAdr);
+      end;
+      $68: begin
+        Default64;
+        Instruction^.Opcode := OPpush;
+        AddIz;
+      end;
+      $69: begin
+        Instruction^.Opcode := OPimul;
+        AddGv; AddEv; AddIz;
+      end;
+      $6A: begin
+        Default64;
+        Instruction^.Opcode := OPpush;
+        AddIb;
+      end;
+      $6B: begin
+        Instruction^.Opcode := OPimul;
+        AddGv; AddEv; AddIb;
+      end;
+      $6C: begin
+        Instruction^.Opcode := OPinsb; CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddYb;
+        AddOperand('dx', os16);
+        {$endif}
+      end;
+      $6D: begin
+        if OperandSize = os16
+        then Instruction^.Opcode := OPinsw
+        else Instruction^.Opcode := OPinsd;
+        CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddYz;
+        AddOperand('dx', os16);
+        {$endif}
+      end;
+      $6E: begin
+        Instruction^.Opcode := OPoutsb; CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddOperand('dx', os16);
+        AddXb;
+        {$endif}
+      end;
+      $6F: begin
+        if OperandSize = os16
+        then Instruction^.Opcode := OPoutsw
+        else Instruction^.Opcode := OPoutsd;
+        CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddOperand('dx', os16);
+        AddXz;
+        {$endif}
+      end;
+      $70..$7F: begin
+        Force64;
+        Instruction^.Opcode := OPj__;  StdCond(Code[CodeIdx]);
+        AddJb;
+      end;
+      //---
+      $80..$83: begin
+        DoGroup1;
+      end;
+      $84: begin
+        Instruction^.Opcode := OPtest;
+        AddEb; AddGb;
+      end;
+      $85: begin
+        Instruction^.Opcode := OPtest;
+        AddEv; AddGv;
+      end;
+      $86: begin
+        AddEb; AddGb;
+        Instruction^.Opcode := OPxchg; CheckLock;
+      end;
+      $87: begin
+        AddEv; AddGv;
+        Instruction^.Opcode := OPxchg; CheckLock;
+      end;
+      $88..$8B: begin
+        Instruction^.Opcode := OPmov;
+        AddStdOperands(Code[CodeIdx]);
+      end;
+      $8C: begin
+        Instruction^.Opcode := OPmov;
+        AddMw_Rv; AddSw;
+      end;
+      $8D: begin
+        Instruction^.Opcode := OPlea;
+        AddGv; AddM;
+      end;
+      $8E: begin
+        Instruction^.Opcode := OPmov;
+        AddSw; AddEw;
+      end;
+      $8F: begin
+        Default64;
+        DoGroup1;
+      end;
+      //---
+      $90..$97: begin
+        if (Code[CodeIdx] = $90) and not (rexB in Flags)
+        then Instruction^.Opcode := OPnop
+        else begin
+          Instruction^.Opcode := OPxchg;
+          AddStdReg(Code[CodeIdx]);
+          AddOperand(SizeReg32('ax'));
+        end;
+      end;
+      $98: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPcdqe;
+          os32: Instruction^.Opcode := OPcwde;
+        else
+          Instruction^.Opcode := OPcbw;
+        end;
+      end;
+      $99: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPcqo;
+          os32: Instruction^.Opcode := OPcqd;
+        else
+          Instruction^.Opcode := OPcwd;
+        end;
+      end;
+      $9A: begin
+        Instruction^.Opcode := OPcall; Check32;
+        AddAp;
+      end;
+      $9B: begin
+        Instruction^.Opcode := OPwait_fwait;
+      end;
+      $9C: begin
+        Default64;
+        case OperandSize of
+          os64: Instruction^.Opcode := OPpushfq;
+          os32: Instruction^.Opcode := OPpushfd;
+        else
+          Instruction^.Opcode := OPpushf;
+        end;
+        AddFv;
+      end;
+      $9D: begin
+        Default64;
+        case OperandSize of
+          os64: Instruction^.Opcode := OPpopfq;
+          os32: Instruction^.Opcode := OPpopfd;
+        else
+          Instruction^.Opcode := OPpopf;
+        end;
+        AddFv;
+      end;
+      $9E: begin
+        Instruction^.Opcode := OPsahf;
+      end;
+      $9F: begin
+        Instruction^.Opcode := OPlahf;
+      end;
+      //---
+      $A0: begin
+        Instruction^.Opcode := OPmov;
+        AddOperand('al', os8);
+        AddOb;
+      end;
+      $A1: begin
+        Instruction^.Opcode := OPmov;
+        AddOperand(SizeReg32('ax'));
+        AddOv;
+      end;
+      $A2: begin
+        Instruction^.Opcode := OPmov;
+        AddOb;
+        AddOperand('al', os8);
+      end;
+      $A3: begin
+        Instruction^.Opcode := OPmov;
+        AddOv;
+        AddOperand(SizeReg32('ax'));
+      end;
+      $A4: begin
+        Instruction^.Opcode := OPmovsb; CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddYb; AddXb;
+        {$endif}
+      end;
+      $A5: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPmovsq;
+          os32: Instruction^.Opcode := OPmovsd;
+        else
+          Instruction^.Opcode := OPmovsw;
+        end;
+        CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddYv; AddXv;
+        {$endif}
+      end;
+      $A6: begin
+        Instruction^.Opcode := OPcmpsb; CheckRepeatX;
+        {$ifdef verbose_string_instructions}
+        AddXb; AddYb;
+        {$endif}
+      end;
+      $A7: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPcmpsq;
+          os32: Instruction^.Opcode := OPcmpsd;
+        else
+          Instruction^.Opcode := OPcmpsw;
+        end;
+        CheckRepeatX;
+        {$ifdef verbose_string_instructions}
+        AddYv; AddXv;
+        {$endif}
+      end;
+      $A8: begin
+        Instruction^.Opcode := OPtest;
+        AddOperand('al', os8);
+        AddIb;
+      end;
+      $A9: begin
+        Instruction^.Opcode := OPtest;
+        AddOperand(SizeReg32('ax'));
+        AddIv;
+      end;
+      $AA: begin
+        Instruction^.Opcode := OPstosb; CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddYb;
+        AddOperand('al', os8);
+        {$endif}
+      end;
+      $AB: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPstosq;
+          os32: Instruction^.Opcode := OPstosd;
+        else
+          Instruction^.Opcode := OPstosw;
+        end;
+        CheckRepeat;;
+        {$ifdef verbose_string_instructions}
+        AddYv;
+        AddOperand(SizeReg32('ax'));
+        {$endif}
+      end;
+      $AC: begin
+        Instruction^.Opcode := OPlodsb; CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddOperand('al', os8);
+        AddXb;
+        {$endif}
+      end;
+      $AD: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPlodsq;
+          os32: Instruction^.Opcode := OPlodsd;
+        else
+          Instruction^.Opcode := OPlodsw;
+        end;
+        CheckRepeat;
+        {$ifdef verbose_string_instructions}
+        AddOperand(SizeReg32('ax'));
+        AddXv;
+        {$endif}
+      end;
+      $AE: begin
+        Instruction^.Opcode := OPscasb; CheckRepeatX;
+        {$ifdef verbose_string_instructions}
+        AddOperand('al', os8);
+        AddYb;
+        {$endif}
+      end;
+      $AF: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPscasq;
+          os32: Instruction^.Opcode := OPscasd;
+        else
+          Instruction^.Opcode := OPscasw;
+        end;
+        CheckRepeatX;
+        {$ifdef verbose_string_instructions}
+        AddOperand(SizeReg32('ax'));
+        AddYv;
+        {$endif}
+      end;
+      //---
+      $B0..$B7: begin
+        Instruction^.Opcode := OPmov;
+        AddStdReg(Code[CodeIdx], reg8);
+        AddIb;
+      end;
+      $B8..$BF: begin
+        Instruction^.Opcode := OPmov;
+        AddStdReg(Code[CodeIdx]);
+        AddIv;
+      end;
+      //---
+      $C0..$C1: begin
+        DoGroup2;
+      end;
+      $C2: begin
+        Force64;
+        Instruction^.Opcode := OPret;
+        AddIw;
+      end;
+      $C3: begin
+        Force64;
+        Instruction^.Opcode := OPret;
+      end;
+      $C4: begin
+        Instruction^.Opcode := OPles;
+        AddGz; AddMp;
+      end;
+      $C5: begin
+        Instruction^.Opcode := OPlds;
+        AddGz; AddMp;
+      end;
+      $C6..$C7: begin
+        DoGroup11;
+      end;
+      $C8: begin
+        Instruction^.Opcode := OPenter;
+        AddIw; AddIb;
+      end;
+      $C9: begin
+        Default64;
+        Instruction^.Opcode := OPleave;
+      end;
+      $CA: begin
+        Instruction^.Opcode := OPretf;
+        AddIw;
+      end;
+      $CB: begin
+        Instruction^.Opcode := OPretf;
+      end;
+      $CC: begin
+        Instruction^.Opcode := OPint3;
+      end;
+      $CD: begin
+        Instruction^.Opcode := OPint;
+        AddIb;
+      end;
+      $CE: begin
+        Instruction^.Opcode := OPint0; Check32;
+      end;
+      $CF: begin
+        case OperandSize of
+          os64: Instruction^.Opcode := OPiretq;
+          os32: Instruction^.Opcode := OPiretd;
+        else
+          Instruction^.Opcode := OPiret;
+        end;
+      end;
+      //---
+      $D0..$D3: begin
+        DoGroup2;
+      end;
+      $D4: begin
+        Instruction^.Opcode := OPaam; Check32;
+      end;
+      $D5: begin
+        Instruction^.Opcode := OPaad; Check32;
+      end;
+      $D6: begin
+        Instruction^.Opcode := OPsalc; Check32;
+      end;
+      $D7: begin
+        Instruction^.Opcode := OPxlat;
+      end;
+      $D8..$DF: begin
+        DoX87;
+      end;
+      //---
+      $E0: begin
+        Force64;
+        Instruction^.Opcode := OPloopne;
+        AddJb;
+      end;
+      $E1: begin
+        Force64;
+        Instruction^.Opcode := OPloope;
+        AddJb;
+      end;
+      $E2: begin
+        Force64;
+        Instruction^.Opcode := OPloop;
+        AddJb;
+      end;
+      $E3: begin
+        Force64;
+        Instruction^.Opcode := OPjrcxz;
+        AddJb;
+      end;
+      $E4: begin
+        Instruction^.Opcode := OPin;
+        AddOperand('al', os8);
+        AddIb;
+      end;
+      $E5: begin
+        Instruction^.Opcode := OPin;
+        AddOperand(SizeReg32('ax'));
+        AddIb;
+      end;
+      $E6: begin
+        Instruction^.Opcode := OPout;
+        AddIb;
+        AddOperand('al', os8);
+      end;
+      $E7: begin
+        Instruction^.Opcode := OPout;
+        AddIb;
+        AddOperand(SizeReg32('ax'));
+      end;
+      $E8: begin
+        Force64;
+        Instruction^.Opcode := OPcall;
+        AddJz;
+      end;
+      $E9: begin
+        Force64;
+        Instruction^.Opcode := OPjmp;
+        AddJz;
+      end;
+      $EA: begin
+        Instruction^.Opcode := OPjmp; Check32;
+        AddAp;
+      end;
+      $EB: begin
+        Force64;
+        Instruction^.Opcode := OPjmp;
+        AddJb;
+      end;
+      $EC: begin
+        Instruction^.Opcode := OPin;
+        AddOperand('al', os8);
+        AddOperand('dx', os16);
+      end;
+      $ED: begin
+        Instruction^.Opcode := OPin;
+        AddOperand(SizeReg32('ax'));
+        AddOperand('dx', os16);
+      end;
+      $EE: begin
+        Instruction^.Opcode := OPout;
+        AddOperand('dx', os16);
+        AddOperand('al', os8);
+      end;
+      $EF: begin
+        Instruction^.Opcode := OPout;
+        AddOperand('dx', os16);
+        AddOperand(SizeReg32('ax'));
+      end;
+      $F0: begin
+        Include(Flags, preLock);
+      end;
+      $F1: begin
+        Instruction^.Opcode := OPint1;
+      end;
+      $F2: begin
+        Include(Flags, preF2);
+      end;
+      $F3: begin
+        Include(Flags, preF3);
+      end;
+      $F4: begin
+        Instruction^.Opcode := OPhlt;
+      end;
+      $F5: begin
+        Instruction^.Opcode := OPcmc;
+      end;
+      $F6..$F7: begin
+        DoGroup3;
+      end;
+      $F8: begin
+        Instruction^.Opcode := OPclc;
+      end;
+      $F9: begin
+        Instruction^.Opcode := OPstc;
+      end;
+      $FA: begin
+        Instruction^.Opcode := OPcli;
+      end;
+      $FB: begin
+        Instruction^.Opcode := OPsti;
+      end;
+      $FC: begin
+        Instruction^.Opcode := OPcld;
+      end;
+      $FD: begin
+        Instruction^.Opcode := OPstd;
+      end;
+      $FE: begin
+        DoGroup4;
+      end;
+      $FF: begin
+        DoGroup5;
+      end;
+    else
+      Instruction^.Opcode := OPX_Invalid; // HexValue(Code[CodeIdx], 1, []);
+    end;
+
+    Inc(CodeIdx);
+    if CodeIdx > 16 // max instruction length
+    then begin
+      Debugln(DBG_WARNINGS, 'Disassemble: instruction longer than 16 bytes');
+      Exit;
+    end;
+  until Instruction^.Opcode <> OPX_InternalUnknown;
+end;
+
+procedure TX86Disassembler.Disassemble(AMode: TFPDMode; var AAddress: Pointer; out AnInstruction: TInstruction);
+var
+  n: Integer;
+begin
+  ProcessMode := AMode;
+  Code := AAddress;
+  Instruction := @AnInstruction;
+  Instruction^.Opcode := OPX_Invalid;
+  Instruction^.OpCodeSuffix := OPSx_none;
+  Instruction^.Flags := [];
+  Instruction^.Segment := '';
+
+  Flags := [];
+  CodeIdx := 0;
+  OperIdx := 0;
+  SimdOpcode := soInvalid;
+
+  DoDisassemble;
+
+  Instruction^.OperCnt := OperIdx;
+  Instruction^.ParseFlags := Flags;
+
+  if flagModRM in Flags then Inc(CodeIdx);
+  if flagSib in Flags then Inc(CodeIdx);
+
+  for n := 1 to OperIdx do
+  begin
+    AnInstruction.Operand[n].CodeIndex := CodeIdx;
+    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount);
+    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount2);
+  end;
+  Inc(AAddress, CodeIdx);
+end;
+
 { TX86AsmInstruction }
 
 procedure TX86AsmInstruction.ReadCode;
 begin
   if not (diCodeRead in FFlags) then begin
-    if not FAsmDecoder.FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
+    if not FProcess.ReadData(FAddress, INSTR_CODEBIN_LEN, FCodeBin) then
       Include(FFlags, diCodeReadError);
     Include(FFlags, diCodeRead);
   end;
@@ -440,21 +3470,22 @@ end;
 procedure TX86AsmInstruction.Disassemble;
 var
   a: PByte;
+  Disassembler: TX86Disassembler;
 begin
   if not (diDisAss in FFlags) then begin
     ReadCode;
     if diCodeReadError in FFlags then
       exit;
     a := @FCodeBin[0];
-    FAsmDecoder.Disassemble(a, FInstruction);
+    Disassembler.Disassemble(FProcess.Mode, a, FInstruction);
     FInstrLen := a - @FCodeBin[0];
     Include(FFlags, diDisAss);
   end;
 end;
 
-constructor TX86AsmInstruction.Create(AAsmDecoder: TX86AsmDecoder);
+constructor TX86AsmInstruction.Create(AProcess: TDbgProcess);
 begin
-  FAsmDecoder := AAsmDecoder;
+  FProcess := AProcess;
   inherited Create;
   AddReference;
 end;
@@ -475,7 +3506,7 @@ begin
     exit;
   a := @FCodeBin[0];
 
-  if (FAsmDecoder.FProcess.Mode = dm64) then begin
+  if (FProcess.Mode = dm64) then begin
     while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$40..$4F, $64..$67]) do
       inc(a);
     if not (a^ in [$E8, $FF]) then
@@ -517,7 +3548,7 @@ begin
   Result := (a^ = $C9);
   if Result then
     exit;
-  if (FAsmDecoder.FProcess.Mode = dm64) then begin
+  if (FProcess.Mode = dm64) then begin
     Result :=
       // 48 8D 65 00 / 5D: lea rsp,[rbp+$00] / pop ebp
       ( (a^ = $48) and (a[1] = $8D) and (a[2] = $65) and (a[3] = $00)
@@ -558,7 +3589,7 @@ begin
     exit;
   a := @FCodeBin[0];
 
-  if (FAsmDecoder.FProcess.Mode = dm64) then begin
+  if (FProcess.Mode = dm64) then begin
     while (a < @FCodeBin[0] + INSTR_CODEBIN_LEN) and (a^ in [$40..$4F, $64..$67]) do
       inc(a);
 
@@ -647,2908 +3678,6 @@ begin
   Result := FInstruction.OpCode;
 end;
 
-procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer; out AnInstruction: TInstruction);
-var
-  Code: PByte;
-  CodeIdx: Byte;
-  Opcode: TOpCode;
-  OperIdx: Integer;
-  ModRMIdx: Byte;
-  Flags: TFlags;
-  SimdOpcode: TSimdOpcode;
-
-  procedure Check32;
-  begin
-    // only valid in 32-bit mode
-    if (FProcess.Mode = dm64) then
-      Include(AnInstruction.Flags, ifOnly32);
-  end;
-
-  procedure Check64;
-  begin
-    // only valid in 64-bit mode
-    if (FProcess.Mode = dm64) then
-      Include(AnInstruction.Flags, ifOnly64);
-  end;
-
-  function Ignore64(s: String): String;
-  begin
-    // ignored in 64-bit mode
-    if (FProcess.Mode = dm64) then
-      Result := '('+s+')'
-    else
-      Result := s;
-  end;
-
-  procedure Default64;
-  begin
-    if FProcess.Mode = dm64 then
-      Include(Flags, oprDefault64);
-  end;
-
-  procedure Force64;
-  begin
-    if FProcess.Mode = dm64 then
-      Include(Flags, oprForce64);
-  end;
-
-
-  procedure CheckLock;
-    function CheckMem: boolean;
-    var
-      n: Byte;
-    begin
-      Result := True;
-      for n := 1 to OperIdx do
-        if ofMemory in AnInstruction.Operand[n].Flags then Exit;
-      Result := False;
-    end;
-  begin
-    if (preLock in Flags) and CheckMem
-    then begin
-      Exclude(Flags, preLock);
-      Include(AnInstruction.Flags, ifPrefixLock);
-    end;
-  end;
-
-  procedure CheckRepeat;
-  begin
-    if preF3 in Flags
-    then begin
-      Exclude(Flags, preF3);
-      Include(AnInstruction.Flags, ifPrefixRep);
-    end;
-  end;
-  
-  procedure CheckRepeatX;
-  begin
-    if preF3 in Flags
-    then begin
-      Exclude(Flags, preF3);
-      Include(AnInstruction.Flags, ifPrefixRepE);
-      Exit;
-    end;
-    if preF2 in Flags
-    then begin
-      Exclude(Flags, preF2);
-      Include(AnInstruction.Flags, ifPrefixRepNe);
-      Exit;
-    end;
-  end;
-
-  procedure CheckSIMD;
-  var
-    check: TFlags;
-  begin
-    check := Flags * [pre66, preF3, preF2];
-    if check = []
-    then SimdOpcode := soNone
-    else if check - [preF3] = []
-    then SimdOpcode := soF3
-    else if check - [preF2] = []
-    then SimdOpcode := soF2
-    else if check - [pre66] = []
-    then SimdOpcode := so66
-    else SimdOpcode := soInvalid;
-  end;
-
-  //===================
-
-  function DecodePrefix(AOpcode, AOpcode66, AOpcodeF2, AOpcodeF3: TOpCode): TSimdOpcode;
-  var
-    S: TOpCode;
-  begin
-    CheckSIMD;
-
-    case SimdOpcode of
-      soNone: Opcode := AOpcode;
-      so66:   Opcode := AOpcode66;
-      soF2:   Opcode := AOpcodeF2;
-      soF3:   Opcode := AOpcodeF3;
-    else
-      Opcode := OPX_Invalid;
-    end;
-
-    if Opcode = OPX_Invalid
-    then begin
-      Result := soInvalid;
-    end
-    else begin
-      Flags := Flags - [pre66, preF2, preF3];
-      Result := SimdOpcode;
-    end;
-  end;
-
-  function AddressSize32: TAddressSize;
-  begin
-    // effective address size for default 32 AnInstruction.operand size
-    if (FProcess.Mode = dm64)
-    then begin
-      if preAdr in Flags
-      then Result := as32
-      else Result := as64;
-    end
-    else begin
-      if preAdr in Flags
-      then Result := as16
-      else Result := as32;
-    end;
-  end;
-
-  function OperandSize: TOperandSize;
-  begin
-    // effective AnInstruction.operand size
-
-    // Intel(r) 64 and IA-32 Architectures Software Developer’s Manual Volume 1:
-    // 3.6 OPERAND-SIZE AND ADDRESS-SIZE ATTRIBUTES
-    //
-    // Table 3-3 D-flag = 1 for 32 bit processes ->
-    // default 32, prefix 16
-    //
-    // Table 3-4
-    // REX.W 64, default 32, prefix 16 (REX.W overrules prefix)
-    //
-    // So for both dm32 and dm64 the default size is 32 unless overridden by flags
-
-    // A.3 ONE, TWO, AND THREE-BYTE OPCODE MAPS
-    // Some instructions default or force to 64bit in dm64
-
-    if [oprForce64, rexW] * Flags <> []
-    then begin
-      Result := os64;
-    end
-    else begin
-      if pre66 in Flags
-      then Result := os16
-      else if oprDefault64 in Flags
-      then Result := os64
-      else Result := os32;
-    end;
-  end;
-
-  procedure AddOperand(const AValue: String; ASize: TOperandSize; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []; AByteCount2: Byte = 0);
-  begin
-    Inc(OperIdx);
-    if OperIdx > High(AnInstruction.Operand)
-    then begin
-      Debugln(DBG_WARNINGS, 'AddOperand: Only %d operands supported, got %d', [High(AnInstruction.Operand), OperIdx]);
-      Exit;
-    end;
-
-    AnInstruction.Operand[OperIdx].Size := ASize;
-    AnInstruction.Operand[OperIdx].ByteCount := AByteCount;
-    AnInstruction.Operand[OperIdx].ByteCount2 := AByteCount2;
-    AnInstruction.Operand[OperIdx].FormatFlags := AFormatFlags;
-    AnInstruction.Operand[OperIdx].Value := AValue;
-    AnInstruction.Operand[OperIdx].Flags := AFlags;
-  end;
-
-  procedure AddOperand(const AValue: String; AByteCount: Byte = 0; AFormatFlags: THexValueFormatFlags = []; AFlags: TOperandFlags = []);
-  begin
-    AddOperand(AValue, OperandSize, AByteCount, AFormatFlags, AFlags);
-  end;
-
-  function SizeReg32(const AReg: String; ASize: TOperandSize): String;
-  begin
-    // prefix a reg for default 32 AnInstruction.operand size
-    case ASize of
-      os64: Result := 'r' + AReg;
-      os32: Result := 'e' + AReg;
-    else
-      Result := AReg;
-    end;
-  end;
-
-  function SizeReg32(const AReg: String): String;
-  begin
-    Result := SizeReg32(AReg, OperandSize);
-  end;
-
-  procedure StdCond(AIndex: Byte);
-  const
-    COND: array[0..$F] of TOpCodeSuffix = (
-      OPSx_o, OPSx_no, OPSx_b, OPSx_nb, OPSx_z, OPSx_nz, OPSx_be, OPSx_nbe, OPSx_s, OPSx_ns, OPSx_p, OPSx_np, OPSx_l, OPSx_nl, OPSx_le, OPSx_nle
-    );
-  begin
-    AnInstruction.OpCodeSuffix := COND[AIndex and $F];
-  end;
-
-  function StdReg(AIndex: Byte; AType: TRegisterType; AExtReg: Boolean): String;
-  const
-    REGS: array[0..7] of string = ('ax', 'cx', 'dx', 'bx', 'sp', 'bp', 'si', 'di');
-    REG8_: array[0..7] of String = ('al', 'cl', 'dl', 'bl', 'ah', 'ch', 'dh', 'bh');
-    REG8r: array[0..7] of String = ('al', 'cl', 'dl', 'bl', 'spl', 'bpl', 'sil', 'dil');
-    SREG: array[0..7] of String = ('es', 'cs', 'ss', 'ds', 'fs', 'gs', '**', '**');
-    POSTFIX: array[reg16..reg64] of String = ('w', 'd', '');
-    OSMAP: array[reg8..reg64] of TOperandSize = (os8, os16, os32, os64);
-  begin
-    AIndex := AIndex and $7;
-    case AType of
-      reg8: begin
-        if AExtReg
-        then begin
-          Result := Format('r%db', [8 + AIndex]);
-        end
-        else begin
-          if flagRex in Flags
-          then Result := REG8r[AIndex]
-          else Result := REG8_[AIndex];
-        end;
-      end;
-      reg16..reg64: begin
-        if AExtReg
-        then Result := Format('r%d', [8 + AIndex]) + POSTFIX[AType]
-        else Result := SizeReg32(REGS[AIndex], OSMAP[AType]);
-      end;
-      regX87: begin
-        Result := Format('st(%d)', [AIndex]);
-      end;
-      regMmx: begin
-        Result := Format('mmx%d', [AIndex]);
-      end;
-      regXmm: begin
-        if AExtReg then Inc(AIndex, 8);
-        Result := Format('xmm%d', [AIndex]);
-      end;
-      regSegment: begin
-        Result := SREG[AIndex];
-      end;
-      regControl: begin
-        if AExtReg then Inc(AIndex, 8);
-        Result := Format('cr%d', [AIndex]);
-      end;
-      regDebug: begin
-        if AExtReg then Inc(AIndex, 8);
-        Result := Format('dr%d', [AIndex]);
-      end;
-    end;
-  end;
-
-  function StdReg(AIndex: Byte): String;
-  begin
-    Result := StdReg(AIndex, OPERAND_REG[OperandSize], rexB in Flags);
-  end;
-
-  procedure AddStdReg(AIndex: Byte; AType: TRegisterType);
-  begin
-    AddOperand(StdReg(AIndex, AType, rexB in Flags), REGISTER_SIZE[FProcess.Mode, AType]);
-  end;
-
-  procedure AddStdReg(AIndex: Byte);
-  begin
-    AddOperand(StdReg(AIndex));
-  end;
-
-  procedure AddModReg(AType: TRegisterType; ASize: TOperandSize);
-  begin
-    Include(Flags, flagModRM);
-    AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, rexR in Flags), ASize);
-  end;
-
-  procedure AddModReg(AType: TRegisterType);
-  begin
-    Include(Flags, flagModRM);
-    AddOperand(StdReg(Code[ModRMIdx] shr 3, AType, rexR in Flags), REGISTER_SIZE[FProcess.Mode, AType]);
-  end;
-
-  procedure AddModReg;
-  begin
-    Include(Flags, flagModRM);
-    AddOperand(StdReg(Code[ModRMIdx] shr 3, OPERAND_REG[OperandSize], rexR in Flags));
-  end;
-
-  procedure AddModRM(AReqTypes: TModRMTypes; ASize: TOperandSize; AType: TRegisterType);
-  var
-    Mode, Rm: Byte;
-    procedure Mem16;
-    const
-      REGS16: array[0..7] of string = ('bx+si', 'bx+di', 'bp+si', 'bp+di', 'si', 'di', 'bp', 'bx');
-    begin
-      case Mode of
-        0: begin
-          if rm = 6 // disp16 -> exception to the regs
-          then AddOperand('%s', ASize, 2, [hvfSigned, hvfIncludeHexchar], [ofMemory])
-          else AddOperand(REGS16[rm], ASize, 0, [], [ofMemory]);
-        end;
-        1: AddOperand(REGS16[rm] + '%s', ASize, 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], [ofMemory]);
-        2: AddOperand(REGS16[rm] + '%s', ASize, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar], [ofMemory]);
-      end;
-    end;
-    
-  var
-    AddrSize: TAddressSize;
-    Sib: record
-      Scale, Index, Base: Byte;
-    end;
-    Oper: record
-      Size: Byte;
-      Flags: THexValueFormatFlags;
-      Value: String;
-    end;
-  begin
-    Include(Flags, flagModRM);
-    Mode := Code[ModRMIdx] shr 6;
-    Rm := Code[ModRMIdx] and $7;
-
-    // Check for reg (mode = 3) first;
-    if mode = 3
-    then begin
-      if modReg in AReqTypes
-      then AddStdReg(rm, AType)
-      else AddOperand('**');
-      Exit;
-    end;
-    
-    // Check if mem is allowed
-    if not (modMem in AReqTypes)
-    then begin
-      AddOperand('**', 0, [], [ofMemory]);
-      Exit;
-    end;
-    
-    Oper.Size := 0;
-    Oper.Flags := [];
-    Oper.Value := '';
-    
-    // Here only mem access
-    AddrSize := AddressSize32;
-    if AddrSize = as16
-    then begin
-      Mem16;
-      Exit;
-    end;
-
-    if rm = 4
-    then begin
-      // sib folows
-      Include(Flags, flagSib);
-      sib.Scale := Code[ModRMIdx+1] shr 6;
-      sib.Index := (Code[ModRMIdx+1] shr 3) and $7;
-      sib.Base := Code[ModRMIdx+1] and $7;
-      
-      // base
-      if (mode = 0) and (sib.Base = 5)
-      then begin
-        // disp32
-        Oper.Value := '%s';
-        Oper.Size := 4;
-        if (sib.Index <> 4) or (rexX in Flags)
-        then Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar] // [reg + base]
-        else Oper.Flags := [hvfSigned, hvfIncludeHexchar];                   // [base]
-      end
-      else begin
-        Oper.Value := StdReg(sib.Base, ADDRESS_REG[AddrSize], rexB in Flags);
-        if (sib.Index <> 4) or (rexX in Flags)
-        then Oper.Value := '+' + Oper.Value;  // [reg + base]
-      end;
-
-      // reg
-      if (rexX in Flags) or (sib.Index <> 4)
-      then begin
-        if sib.Scale > 0
-        then Oper.Value := Format('*%u', [1 shl sib.Scale]) + Oper.Value;
-
-        // get index
-        Oper.Value := StdReg(sib.Index, ADDRESS_REG[AddrSize], rexX in Flags) + Oper.Value
-      end;
-    end
-    else begin
-      // no sib
-      Oper.Value := StdReg(rm, ADDRESS_REG[AddrSize], rexB in Flags);
-    end;
-    
-    case mode of
-      0: begin
-        // exceptions to std encoding
-        if rm = 5
-        then begin
-          // disp32
-          if AddrSize = as64
-          then begin
-            Oper.Value := 'rip%s';
-            Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
-          end
-          else begin
-            Oper.Value := '%s';
-            Oper.Flags := [hvfSigned, hvfIncludeHexchar];
-          end;
-          Oper.Size := 4;
-        end;
-      end;
-      1: begin
-        Oper.Value := Oper.Value + '%s';
-        Oper.Size := 1;
-        Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
-      end;
-      2: begin
-        Oper.Value := Oper.Value + '%s';
-        Oper.Size := 4;
-        Oper.Flags := [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar];
-      end;
-    end;
-    AddOperand(Oper.Value, ASize, Oper.Size, Oper.Flags, [ofMemory]);
-  end;
-  //===================
-
-  procedure AddAp;
-  begin
-    if OperandSize = os16 //XXXX:XXXX
-    then AddOperand('$%1:s:%0:s', os32, 2, [], [], 2)
-    else AddOperand('$%1:s:%0:s', os48, 4, [], [], 2)
-  end;
-  
-  procedure AddCd_q;
-  begin
-    AddModReg(regControl);
-  end;
-
-  procedure AddDd_q;
-  begin
-    AddModReg(regDebug);
-  end;
-  
-  procedure AddEb;
-  begin
-    AddModRM([modReg, modMem], os8, reg8);
-  end;
-  
-  procedure AddEd;
-  begin
-    AddModRM([modReg, modMem], os32, reg32);
-  end;
-
-  procedure AddEd_q;
-  begin
-    if flagRex in Flags
-    then AddModRM([modReg, modMem], os64, reg64)
-    else AddModRM([modReg, modMem], os32, reg32);
-  end;
-  
-  procedure AddEv;
-  begin
-    AddModRM([modReg, modMem], OperandSize, OPERAND_REG[OperandSize]);
-  end;
-  
-  procedure AddEw;
-  begin
-    AddModRM([modReg, modMem], os16, reg16);
-  end;
-  
-  procedure AddFv;
-  begin
-    case OperandSize of
-      os64: AddOperand('rflags');
-      os32: AddOperand('eflags');
-    else
-      AddOperand('flags');
-    end;
-  end;
-  
-  procedure AddGb;
-  begin
-    AddModReg(reg8);
-  end;
-
-  procedure AddGd;
-  begin
-    AddModReg(reg32);
-  end;
-
-  procedure AddGd_q;
-  begin
-    if flagRex in Flags
-    then AddModReg(reg64)
-    else AddModReg(reg32);
-  end;
-
-  procedure AddGv;
-  begin
-    AddModReg;
-  end;
-  
-  procedure AddGw;
-  begin
-    AddModReg(reg16);
-  end;
-
-  procedure AddGz;
-  begin
-    if OperandSize = os16
-    then AddModReg(reg16)
-    else AddModReg(reg32);
-  end;
-  
-  procedure AddIb;
-  begin
-    AddOperand('%s', os8, 1, [hvfIncludeHexchar]);
-  end;
-  
-  procedure AddIv;
-  begin
-    AddOperand('%s', OPERAND_BYTES[OperandSize], [hvfIncludeHexchar]);
-  end;
-  
-  procedure AddIw;
-  begin
-    AddOperand('%s', os16, 2, [hvfIncludeHexchar]);
-  end;
-  
-  procedure AddIz;
-  begin
-    if OperandSize = os16
-    then AddOperand('%s', os16, 2, [hvfIncludeHexchar])
-    else AddOperand('%s', os32, 4, [hvfIncludeHexchar]);
-  end;
-  
-  procedure AddJb;
-  begin
-    AddOperand('%s', os8, 1, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
-  end;
-  
-  procedure AddJz;
-  begin
-    if OperandSize = os16
-    then AddOperand('%s', os16, 2, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar])
-    else AddOperand('%s', os32, 4, [hvfSigned, hvfPrefixPositive, hvfIncludeHexchar]);
-  end;
-  
-  procedure AddM;
-  begin
-    AddModRM([modMem], OperandSize, reg0 {do not care});
-  end;
-
-  procedure AddMa;
-  begin
-    AddModRM([modMem], OperandSize, reg0 {do not care});
-  end;
-
-  procedure AddMb;
-  begin
-    AddModRM([modMem], os8, reg0 {do not care});
-  end;
-
-  procedure AddMd;
-  begin
-    AddModRM([modMem], os32, reg0 {do not care});
-  end;
-  
-  procedure AddMd_q;
-  begin
-    if flagRex in Flags
-    then AddModRM([modMem], os64, reg0 {do not care})
-    else AddModRM([modMem], os32, reg0 {do not care});
-  end;
-
-  procedure AddMdq;
-  begin
-    AddModRM([modMem], os128, reg0 {do not care})
-  end;
-
-  procedure AddMp;
-  begin
-    if OperandSize = os16 //XXXX:XXXX
-    then AddModRM([modMem], os32, reg0 {do not care})
-    else AddModRM([modMem], os48, reg0 {do not care});
-  end;
-
-  procedure AddMq;
-  begin
-    AddModRM([modMem], os64, reg0 {do not care});
-  end;
-
-  procedure AddMs;
-  begin
-    if (FProcess.Mode = dm64)
-    then AddModRM([modMem], os80, reg0 {do not care})
-    else AddModRM([modMem], os48, reg0 {do not care});
-  end;
-
-  procedure AddMw_Rv;
-  begin
-    if Code[ModRMIdx] shr 6 = 3 // mode = 3 -> reg
-    then AddModRM([modReg], OperandSize, OPERAND_REG[OperandSize])
-    else AddModRM([modMem], os16, reg0 {do not care});
-  end;
-
-  procedure AddOb;
-  begin
-    AddOperand('%s', os8, ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], [ofMemory])
-  end;
-
-  procedure AddOv;
-  begin
-    AddOperand('%s', ADDRESS_BYTES[AddressSize32], [hvfIncludeHexchar], [ofMemory])
-  end;
-
-  procedure AddPd_q;
-  begin
-    if flagRex in Flags
-    then AddModReg(regMmx, os64)
-    else AddModReg(regMmx, os32);
-  end;
-
-  procedure AddPq;
-  begin
-    AddModReg(regMmx);
-  end;
-
-  procedure AddPRq;
-  begin
-    AddModRM([modReg], os64, regMmx);
-  end;
-  
-  procedure AddQd;
-  begin
-    AddModRM([modReg, modMem], os32, regMmx);
-  end;
-  
-  procedure AddQq;
-  begin
-    AddModRM([modReg, modMem], os64, regMmx);
-  end;
-
-  procedure AddRd_q;
-  begin
-    if (FProcess.Mode = dm64)
-    then AddModRM([modReg], os64, reg64)
-    else AddModRM([modReg], os32, reg32);
-  end;
-  
-  procedure AddSw;
-  begin
-    AddModReg(regSegment);
-  end;
-
-  procedure AddVd_q;
-  begin
-    if flagRex in Flags
-    then AddModReg(regXmm, os64)
-    else AddModReg(regXmm, os32);
-  end;
-
-  procedure AddVdq;
-  begin
-    AddModReg(regXmm, os128);
-  end;
-
-  procedure AddVdq_sd;
-  begin
-    AddModReg(regXmm, os64); // only lower 64 bit
-  end;
-
-  procedure AddVdq_ss;
-  begin
-    AddModReg(regXmm, os32); // only lower 32 bit
-  end;
-
-  procedure AddVpd;
-  begin
-    AddModReg(regXmm, os128);
-  end;
-
-  procedure AddVps;
-  begin
-    AddModReg(regXmm, os128);
-  end;
-
-  procedure AddVq;
-  begin
-    AddModReg(regXmm, os64);
-  end;
-
-  procedure AddVsd;
-  begin
-    AddModReg(regXmm, os64);
-  end;
-
-  procedure AddVss;
-  begin
-    AddModReg(regXmm, os32);
-  end;
-
-  procedure AddVRdq;
-  begin
-    AddModRM([modReg], os128, regXmm);
-  end;
-
-  procedure AddVRpd;
-  begin
-    AddModRM([modReg], os128, regXmm);
-  end;
-
-  procedure AddVRps;
-  begin
-    AddModRM([modReg], os128, regXmm);
-  end;
-
-  procedure AddVRq;
-  begin
-    AddModRM([modReg], os64, regXmm);
-  end;
-
-  procedure AddWdq;
-  begin
-    AddModRM([modReg, modMem], os128, regXmm);
-  end;
-  
-  procedure AddWpd;
-  begin
-    AddModRM([modReg, modMem], os128, regXmm);
-  end;
-
-  procedure AddWps;
-  begin
-    AddModRM([modReg, modMem], os128, regXmm);
-  end;
-
-  procedure AddWq;
-  begin
-    AddModRM([modReg, modMem], os64, regXmm);
-  end;
-
-  procedure AddWsd;
-  begin
-    AddModRM([modReg, modMem], os64, regXmm);
-  end;
-
-  procedure AddWss;
-  begin
-    AddModRM([modReg, modMem], os32, regXmm);
-  end;
-
-{$ifdef verbose_string_instructions}
-  procedure AddXb;
-  begin
-    AddOperand('Xb');
-  end;
-  
-  procedure AddXv;
-  begin
-    AddOperand('Xv');
-  end;
-  
-  procedure AddXz;
-  begin
-    AddOperand('Xz');
-  end;
-  
-  procedure AddYb;
-  begin
-    AddOperand('Yb');
-  end;
-  
-  procedure AddYv;
-  begin
-    AddOperand('Yv');
-  end;
-  
-  procedure AddYz;
-  begin
-    AddOperand('Yz');
-  end;
-{$endif}
-  //===================
-  
-  procedure AddStdOperands(AIndex: Byte);
-  begin
-    case AIndex and $7 of
-      0: begin AddEb; AddGb; end;
-      1: begin AddEv; AddGv; end;
-      2: begin AddGb; AddEb; end;
-      3: begin AddGv; AddEv; end;
-      4: begin AddOperand('al', os8); AddIb; end;
-      5: begin AddOperand(SizeReg32('ax')); AddIz; end;
-    else
-      AddOperand('!!');
-    end;
-  end;
-  
-  //===================
-
-  procedure DoX87;
-  var
-    Index: Byte;
-    ModRM: Byte;
-    
-    procedure AddMem14_28Env;
-    begin
-      AddModRM([modMem], OperandSize, reg0 {do not care});
-    end;
-
-    procedure AddMem98_108Env;
-    begin
-      AddModRM([modMem], OperandSize, reg0 {do not care});
-    end;
-
-    procedure AddMem16;
-    begin
-      AddModRM([modMem], os16, reg0 {do not care});
-    end;
-    
-    procedure AddMem32;
-    begin
-      AddModRM([modMem], os32, reg0 {do not care});
-    end;
-    
-    procedure AddMem64;
-    begin
-      AddModRM([modMem], os64, reg0 {do not care});
-    end;
-    
-    procedure AddMem80;
-    begin
-      AddModRM([modMem], os80, reg0 {do not care});
-    end;
-
-    procedure AddReg(AIndex: Byte);
-    begin
-      AddOperand(Format('st(%u)', [index]), os80);
-    end;
-
-    procedure AddReg0;
-    begin
-      AddOperand('st(0)', os80);
-    end;
-    
-    procedure AddRegN;
-    begin
-      AddOperand(Format('st(%u)', [Code[ModRMIdx] and $7]), os80);
-    end;
-
-    procedure DoD8;
-    const
-      OPC: array[0..7] of TOpCode = (OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr);
-    begin
-      Opcode := OPC[Index];
-      case ModRM of
-        $00..$BF: AddMem32
-      else
-        AddReg0; AddRegN;
-      end;
-    end;
-
-    procedure DoD9;
-    const
-      OPC: array[0..7] of TOpCode = (OPfld, OPfxch, OPfst, OPfstp, OPfldenv, OPfldcw, OPfnstenv, OPfnstcw);
-      OPCx: array[0..$1F] of TOpCode = (
-        OPfchs, OPfabs, OPX_InvalidX87, OPX_InvalidX87, OPftst, OPfxam, OPX_InvalidX87, OPX_InvalidX87,
-        OPfld1, OPfldl2t, OPfldl2e, OPfldpi, OPfldlg2, OPfldln2, OPfldz, OPX_InvalidX87,
-        OPf2xm1, OPfyl2x, OPfptan, OPfpatan, OPfxtract, OPfprem1, OPfdecstp, OPfincstp,
-        OPfprem, OPfyl2xp1, OPfsqrt, OPfsincos, OPfrndint, OPfscale, OPfsin, OPfcos
-      );
-    begin
-      case ModRM of
-        $00..$BF: begin
-          Opcode := OPC[Index];
-          case Index of
-            0, 2, 3: AddMem32;
-            1: Opcode := OPX_InvalidX87;
-            4, 6 : AddMem14_28Env;
-            5, 7: AddMem16;
-          end;
-        end;
-        $C0..$CF: begin Opcode := OPC[Index]; AddReg0; AddRegN; end;
-        $D0:      begin Opcode := OPnop; end;
-        $D8..$DF: begin Opcode := OPX_ReservedX87; end;
-        $E0..$E1,
-        $E4..$E5,
-        $E8..$FF: begin Opcode := OPCx[ModRM and $1F]; end;
-      else
-        Opcode := OPX_InvalidX87;
-      end;
-    end;
-
-    procedure DoDA;
-    const
-      OPC: array[0..7] of TOpCode = (OPfiadd, OPfimull, OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr);
-      OPCx: array[0..3] of TOpCode = (OPfcmovb, OPfcmove, OPfcmovbe, OPfcmovu);
-    begin
-      case ModRM of
-        $00..$BF: begin Opcode := OPC[Index]; AddMem32; end;
-        $C0..$DF: begin Opcode := OPCx[Index]; AddReg0; AddRegN; end;
-        $E9:      begin Opcode := OPfucompp; end;
-      else
-        Opcode := OPX_InvalidX87;
-      end;
-    end;
-
-    procedure DoDB;
-    const
-      OPC: array[0..7] of TOpCode = (OPfild, OPfisttp, OPfist, OPfistp, OPX_InvalidX87, OPfld, OPX_InvalidX87, OPfstp);
-      OPCx: array[0..7] of TOpCode = (OPfcmovnb, OPfcmovne, OPfcmovnbe, OPfcmovnu, OPX_InvalidX87, OPfucomi, OPfcomi, OPX_InvalidX87);
-    begin
-      case ModRM of
-        $00..$BF: begin
-          case Index of
-            0..3: begin Opcode := OPC[Index]; AddMem32; end;
-            5, 7: begin Opcode := OPC[Index]; AddMem80; end;
-          else
-            Opcode := OPX_InvalidX87;
-          end;
-        end;
-        $C0..$DF,
-        $E8..$F7: begin Opcode := OPCx[Index];  AddReg0; AddRegN; end;
-        $E0..$E1: begin Opcode := OPX_ReservedX87; end;
-        $E2:      begin Opcode := OPfnclex; end;
-        $E3:      begin Opcode := OPfninit; end;
-        $E4:      begin Opcode := OPX_ReservedX87; end;
-      else
-        Opcode := OPX_InvalidX87;
-      end;
-    end;
-
-    procedure DoDC;
-    const
-      OPC: array[0..7] of TOpCode = (OPfadd, OPfmul, OPfcom, OPfcomp, OPfsub, OPfsubr, OPfdiv, OPfdivr);
-      OPCx: array[0..7] of TOpCode = (OPfadd, OPfmul, OPX_InvalidX87, OPX_InvalidX87, OPfsubr, OPfsub, OPfdivr, OPfdiv);
-    begin
-      case ModRM of
-        $00..$BF: begin Opcode := OPC[Index]; AddMem64; end;
-        $C0..$CF,
-        $E0..$FF: begin Opcode := OPCx[Index]; AddRegN; AddReg0; end;
-      else
-        Opcode := OPX_ReservedX87;
-      end;
-    end;
-
-    procedure DoDD;
-    const
-      OPC: array[0..7] of TOpCode = (OPfld, OPfisttp, OPfst, OPfstp, OPfrstor, OPX_InvalidX87, OPfnsave, OPfnstsw);
-      OPCx: array[0..7] of TOpCode = (OPffree, OPX_InvalidX87, OPfst, OPfstp, OPX_InvalidX87, OPfucomp, OPX_InvalidX87, OPX_InvalidX87);
-    begin
-      case ModRM of
-        $00..$BF: begin
-          case Index of
-            0..3: begin Opcode := OPC[Index]; AddMem64; end;
-            4, 6: begin Opcode := OPC[Index]; AddMem98_108Env; end;
-            5: Opcode := OPX_InvalidX87;
-            7:    begin Opcode := OPC[Index]; AddMem16; end;
-          end;
-        end;
-        $C0..$C7,
-        $D0..$DF,
-        $E8..$EF: begin Opcode := OPCx[Index]; AddRegN; end;
-        $E0..$E7: begin Opcode := OPCx[Index]; AddRegN; AddReg0; end;
-        $C8..$CF: Opcode := OPX_ReservedX87;
-      else
-        Opcode := OPX_InvalidX87;
-      end;
-    end;
-
-    procedure DoDE;
-    const
-      OPC: array[0..7] of TOpCode = (OPfiadd, OPfimull, OPficom, OPficomp, OPfisub, OPfisubr, OPfidiv, OPfidivr);
-      OPCx: array[0..7] of TOpCode = (OPfaddp, OPfmullp, OPX_InvalidX87, OPX_InvalidX87, OPfsubrp, OPfsubp, OPfdivrp, OPfdivp);
-    begin
-      case ModRM of
-        $00..$BF: begin Opcode := OPC[Index]; AddMem16; end;
-        $C0..$CF,
-        $E0..$FF: begin Opcode := OPCx[Index]; AddRegN; AddReg0; end;
-        $D9:      begin Opcode := OPfcompp; end;
-        $D0..$D7: Opcode := OPX_ReservedX87;
-      else
-        Opcode := OPX_InvalidX87;
-      end;
-    end;
-
-    procedure DoDF;
-    const
-      OPC: array[0..7] of TOpCode = (OPfild, OPfisttp, OPfist, OPfistp, OPfbld, OPfild, OPfbstp, OPfistp);
-    begin
-      case ModRM of
-        $00..$BF: begin
-          case Index of
-            0..3: begin Opcode := OPC[Index]; AddMem16; end;
-            4, 6: begin Opcode := OPC[Index]; AddMem80; end;
-            5, 7: begin Opcode := OPC[Index]; AddMem64; end;
-          end;
-        end;
-        $E0:      begin Opcode := OPfnstsw;  AddOperand('ax', os16); end;
-        $E8..$EF: begin Opcode := OPfucomip; AddReg0; AddRegN; end;
-        $F0..$F7: begin Opcode := OPfcomip;  AddReg0; AddRegN; end;
-        $C0..$DF: Opcode := OPX_ReservedX87;
-      else
-        Opcode := OPX_InvalidX87;
-      end;
-    end;
-    
-  begin
-    Include(Flags, flagModRM);
-
-    ModRM := Code[ModRMIdx];
-    Index := (ModRM shr 3) and $7;
-    case Code[CodeIdx] of
-      $D8: DoD8;
-      $D9: DoD9;
-      $DA: DoDA;
-      $DB: DoDB;
-      $DC: DoDC;
-      $DD: DoDD;
-      $DE: DoDE;
-      $DF: DoDF;
-    else
-      Opcode := OPX_Not87;
-    end;
-  end;
-  
-  procedure Do3DNow;
-  var
-    n, idx: Byte;
-  begin
-    // 0Fh 0Fh [ModRM] [SIB] [displacement] imm8_opcode
-    // sigh, we need to get the operands first, luckely they are all te same.
-    AddPq;
-    AddQq;
-    // to adjust the instruction length, add an empty AnInstruction.operand for the opcode
-    AddOperand('', 1);
-    // calc index of imm_opcode
-    idx := 0;
-    if flagModRM in Flags then Inc(idx);
-    if flagSib in Flags then Inc(idx);
-    for n := 1 to OperIdx do
-    begin
-      Inc(idx, AnInstruction.Operand[n].ByteCount);
-      Inc(idx, AnInstruction.Operand[n].ByteCount2);
-    end;
-    // now we can lookup the opcode
-    case Code[CodeIdx + idx] of
-      $0C: Opcode := OPpi2fw;
-      $0D: Opcode := OPpi2fd;
-      $1C: Opcode := OPpf2iw;
-      $1D: Opcode := OPpf2id;
-      $8A: Opcode := OPpfnacc;
-      $8E: Opcode := OPpfpnacc;
-      $90: Opcode := OPpfcmpge;
-      $94: Opcode := OPpfmin;
-      $96: Opcode := OPpfrcp;
-      $97: Opcode := OPpfrsqrt;
-      $9A: Opcode := OPpfsub;
-      $9E: Opcode := OPpfadd;
-      $A0: Opcode := OPpgcmpgt;
-      $A4: Opcode := OPpfmax;
-      $A6: Opcode := OPpfrcpit1;
-      $A7: Opcode := OPpfrsqit1;
-      $AA: Opcode := OPpfsubr;
-      $AE: Opcode := OPpfacc;
-      $B0: Opcode := OPpfcmpeq;
-      $B4: Opcode := OPpfmul;
-      $B6: Opcode := OPpfrcpit2;
-      $B7: Opcode := OPpmulhrw;
-      $BB: Opcode := OPpswapd;
-      $BF: Opcode := OPpavgusb;
-    else
-      Opcode := OPX_3dnow;
-    end;
-  end;
-  
-  // Group
-  
-  procedure DoGroup1;
-  const
-    OPC: array[0..7] of TOpCode = (OPadd, OPor, OPadc, OPsbb, OPand, OPsub, OPxor, OPcmp);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    Index := (Code[ModRMIdx] shr 3) and 7;
-
-    // group 1a
-    if Code[CodeIdx] = $8F
-    then begin
-      if Index = 0
-      then begin
-        Opcode := OPpop;
-        AddEv;
-      end
-      else Opcode := OPX_group1a;
-      Exit;
-    end;
-
-    // Group 1
-    Opcode := OPC[Index];
-    case Code[CodeIdx] of
-      $80: begin AddEb; AddIb; end;
-      $81: begin AddEv; AddIz; end;
-      $82: begin AddEb; AddIb; Check32; end;
-      $83: begin AddEv; AddIb; end;
-    else
-      Opcode := OPX_NotGroup1;
-      Exit;
-    end;
-    if (Index <> 7)
-    then  CheckLock;
-  end;
-  
-  procedure DoGroup2;
-  const
-    OPC: array[0..7] of TOpCode = (OProl, OPror, OPrcl, OPrcr, OPshl, OPshr, OPsal, OPsar);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    Opcode := OPC[Index];
-    case Code[CodeIdx] of
-      $C0: begin AddEb; AddIb; end;
-      $C1: begin AddEv; AddIb; end;
-      $D0: begin AddEb; AddOperand('1', os8); end;
-      $D1: begin AddEv; AddOperand('1', os8); end;
-      $D2: begin AddEb; AddOperand('cl', os8); end;
-      $D3: begin AddEv; AddOperand('cl', os8); end;
-    else
-      Opcode := OPX_NotGroup2;
-    end;
-  end;
-  
-  procedure DoGroup3;
-  const
-    OPC: array[0..7] of TOpCode = (OPtest, OPtest, OPnot, OPneg, OPmul, OPimul, OPdiv, OPidiv);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    Opcode := OPC[Index];
-    case Code[CodeIdx] of
-      $F6: begin
-        if (Index = 0) or (Index = 1)
-        then begin
-          AddEb; AddIb;
-        end
-        else begin
-          AddEb;
-        end;
-      end;
-      $F7: begin
-        if (Index = 0) or (Index = 1)
-        then begin
-          AddEv; AddIz;
-        end
-        else begin
-          AddEv;
-        end;
-      end;
-    else
-      Opcode := OPX_NotGroup3;
-      Exit;
-    end;
-    if (Index = 2) or (Index = 3)
-    then CheckLock;
-  end;
-  
-  procedure DoGroup4;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $FE
-    then begin
-      Opcode := OPX_NotGroup4;
-      Exit;
-    end;
-    
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case Index of
-      0: Opcode := OPinc;
-      1: Opcode := OPdec;
-    else
-      Opcode := OPX_Group4;
-      Exit;
-    end;
-    AddEb;
-    CheckLock;
-  end;
-  
-  procedure DoGroup5;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $FF
-    then begin
-      Opcode := OPX_NotGroup5;
-      Exit;
-    end;
-
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case Index of
-      0: begin AddEv; Opcode := OPinc;  end;
-      1: begin AddEv; Opcode := OPdec;  end;
-      2: begin Force64; AddEv; Opcode := OPcall; end;
-      3: begin AddMp; Opcode := OPcall; end;
-      4: begin Force64; AddEv; Opcode := OPjmp; end;
-      5: begin AddMp; Opcode := OPjmp;  end;
-      6: begin Default64; AddEv; Opcode := OPpush; end;
-    else
-      Opcode := OPX_Group5;
-    end;
-    if Index in [0,1] then
-      CheckLock;
-  end;
-
-  procedure DoGroup6;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $00
-    then begin
-      Opcode := OPX_NotGroup5;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case Index of
-      0: begin AddMw_Rv; Opcode := OPsldt; end;
-      1: begin AddMw_Rv; Opcode := OPstr;  end;
-      2: begin AddEw;    Opcode := OPlldt; end;
-      3: begin AddEw;    Opcode := OPltr;  end;
-      4: begin AddEw;    Opcode := OPverr; end;
-      5: begin AddEw;    Opcode := OPverw; end;
-    else
-      Opcode := OPX_Group6;
-    end;
-  end;
-
-  procedure DoGroup7;
-  const
-    RM3: array [0..7] of TOpCode = (OPvmrun, OPvmmcall, OPvmload, OPvmsave, OPstgi, OPclgi, OPskinit, OPinvlpga);
-  var
-    Mode: Byte;
-    Index: Byte;
-    RM: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $01
-    then begin
-      Opcode := OPX_NotGroup7;
-      Exit;
-    end;
-    Mode :=  (Code[ModRMIdx] shr 6) and 3;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    RM :=    (Code[ModRMIdx]      ) and 7;
-    case Index of
-      0: begin AddMs; Opcode := OPsgdt; end;
-      1: begin AddMs; Opcode := OPsidt;  end;
-      2: begin AddMs; Opcode := OPlgdt; end;
-      3: begin
-        if Mode = 3
-        then begin
-          Opcode := RM3[RM];
-        end
-        else begin
-          AddMs; Opcode := OPlidt;
-        end;
-      end;
-      4: begin AddMw_Rv; Opcode := OPsmsw; end;
-      //5 : invalid
-      6: begin AddEw;    Opcode := OPlmsw; end;
-      7: begin
-        if Mode = 3
-        then begin
-          case RM of
-            0: Opcode := OPswapgs;
-            1: Opcode := OPrdtscp;
-          else
-            Opcode := OPX_Group7;
-          end;
-        end
-        else begin
-          AddMb; Opcode := OPinvlpg;
-        end;
-      end;
-    else
-      Opcode := OPX_Group7;
-    end;
-  end;
-  
-  procedure DoGroup8;
-  const
-    RM8: array [0..7] of TOpCode = (OPX_Group8, OPX_Group8, OPX_Group8, OPX_Group8, OPbt, OPbts, OPbtr, OPbtc);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $BA
-    then begin
-      Opcode := OPX_NotGroup8;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    if Index < 4
-    then begin
-      Opcode := OPX_Group8;
-      Exit;
-    end;
-    AddEv; AddIb;
-    Opcode := RM8[Index];
-    if Index in [5..7] then
-      CheckLock;
-  end;
-
-  procedure DoGroup9;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $C7
-    then begin
-      Opcode := OPX_NotGroup9;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    if Index = 1
-    then begin
-      if OperandSize = os64
-      then begin
-        Opcode :=  OPcmpxchg16b;
-        AddMdq;
-      end
-      else begin
-        Opcode := OPcmpxchg8b;
-        AddMq;
-      end;
-      CheckLock;
-    end
-    else begin
-      Opcode := OPX_Group9;
-    end;
-  end;
-
-  procedure DoGroup10;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $B9
-    then begin
-      Opcode := OPX_NotGroup10;
-      Exit;
-    end;
-    // whole goup is invalid ??
-    Opcode := OPX_Group10;
-  end;
-
-  procedure DoGroup11;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    if Index <> 0
-    then begin
-      Opcode := OPX_NotGroup11;
-      Exit;
-    end;
-    
-    case Code[CodeIdx] of
-      $C6: begin AddEb; AddIb; end;
-      $C7: begin AddEv; AddIz; end;
-    else
-      Opcode := OPX_Group11;
-      Exit;
-    end;
-    Opcode := OPmov;
-  end;
-  
-  procedure DoGroup12;
-  const
-    OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrlw, OPX_Invalid, OPpsraw, OPX_Invalid, OPpsllw, OPX_Invalid);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $71
-    then begin
-      Opcode := OPX_NotGroup12;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
-      soNone: begin AddPRq;  AddIb; end;
-      so66:   begin AddVRdq; AddIb; end;
-    else
-      Opcode := OPX_Group12;
-    end;
-  end;
-
-  procedure DoGroup13;
-  const
-    OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrld, OPX_Invalid, OPpsrad, OPX_Invalid, OPpslld, OPX_Invalid);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $72
-    then begin
-      Opcode := OPX_NotGroup13;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
-      soNone: begin AddPRq;  AddIb; end;
-      so66:   begin AddVRdq; AddIb; end;
-    else
-      Opcode := OPX_Group13;
-    end;
-  end;
-
-  procedure DoGroup14;
-  const
-    OPC: array[0..7] of TOpCode = (OPX_Invalid, OPX_Invalid, OPpsrlq, OPpsrldq, OPX_Invalid, OPX_Invalid, OPpsllq, OPpsrldq);
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $73
-    then begin
-      Opcode := OPX_NotGroup14;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case DecodePrefix(OPC[Index], OPC[Index], OPX_Invalid, OPX_Invalid) of
-      soNone: begin
-        if (Index = 3) or (Index = 7)
-        then Opcode := OPX_Group14
-        else begin AddPRq; AddIb; end;
-      end;
-      so66: begin AddVRdq; AddIb; end;
-    else
-      Opcode := OPX_Group14;
-    end;
-  end;
-
-  procedure DoGroup15;
-  var
-    Index: Byte;
-    Mode: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $AE
-    then begin
-      Opcode := OPX_NotGroup15;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    if (Flags * [pre66, preF3, preF2] <> [])
-    or (Index = 4)
-    then begin
-      Opcode := OPX_Group15;
-      Exit;
-    end;
-    Mode :=  (Code[ModRMIdx] shr 6) and 3;
-    case Index of
-      0: begin Opcode := OPfxsave;  AddM;  end;
-      1: begin Opcode := OPfxrstor; AddM;  end;
-      2: begin Opcode := OPldmxcsr; AddMd; end;
-      3: begin Opcode := OPstmxcsr; AddMd; end;
-      5: Opcode := OPlfence;
-      6: Opcode := OPmfence;
-      7: if Mode = 3 then Opcode := OPlfence
-                     else begin Opcode := OPclflush; AddMb; end;
-    end;
-  end;
-
-  procedure DoGroup16;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $18
-    then begin
-      Opcode := OPX_NotGroup16;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    if Index=0 then ;
-    Opcode := OPX_Invalid;
-  end;
-
-  procedure DoGroupP;
-  var
-    Index: Byte;
-  begin
-    Include(Flags, flagModRM);
-    if Code[CodeIdx] <> $0D
-    then begin
-      Opcode := OPX_NotGroupP;
-      Exit;
-    end;
-    Index := (Code[ModRMIdx] shr 3) and 7;
-    case Index of
-      0:   Opcode := OPprefetch_exclusive;
-      1,3: Opcode := OPprefetch_modified;
-    else
-      Opcode := OPX_prefetch;
-    end;
-  end;
-  
-  //---
-  
-  procedure Do2ByteOpcode;
-  const
-    INVALID = '**2byte**';
-
-  const
-    OPR_6x: array[0..$F] of TOpCode = (
-      OPpunpcklbw, OPpunpcklwd, OPpunpcklqd, OPpacksswb,
-      OPpcmpgtb, OPpcmpgtw, OPpcmpgtd, OPpackuswb,
-      OPpunpkhbw, OPpunpkhwd, OPpunpkhdq, OPpackssdw,
-      OPpunpcklqdq, OPpunpckhqdq, OPX_Invalid, OPX_Invalid
-    );
-    OPR_Dx: array[0..$F] of TOpCode = (
-      OPX_Invalid, OPpsrlw, OPpsrld, OPpsrlq,
-      OPpaddq, OPpmullw, OPX_Invalid, OPX_Invalid,
-      OPpsubusb, OPpsubusw, OPpminub, OPpand,
-      OPpaddusb, OPpaddusw, OPpmaxub, OPpandn
-    );
-    OPR_Ex: array[0..$F] of TOpCode = (
-      OPpavgb, OPpsraw, OPpsrad, OPpavgw,
-      OPpmulhuw, OPpmulhw, OPX_Invalid, OPX_Invalid,
-      OPpsubsb, OPpsubsw, OPpminsw, OPpor,
-      OPpaddsb, OPpaddsw, OPpmaxsw, OPpxor
-    );
-    OPR_Fx: array[0..$F] of TOpCode = (
-      OPX_Invalid, OPpsllw, OPpslld, OPpsllq,
-      OPpmuludq, OPpmaddwd, OPpsadbw, OPX_Invalid,
-      OPpsubb, OPpsubw, OPpsubd, OPpsubq,
-      OPpaddb, OPpaddw, OPpaddd, OPX_Invalid
-    );
-  var
-    idx: Integer;
-  begin
-    Inc(CodeIdx);
-    Inc(ModRMIdx);
-    case Code[CodeIdx] of
-      $00: begin
-        DoGroup6;
-      end;
-      $01: begin
-        DoGroup7;
-      end;
-      $02: begin
-        Opcode := OPlar;
-        AddGv; AddEw;
-      end;
-      $03: begin
-        Opcode := OPlsl;
-        AddGv; AddEw;
-      end;
-      // $04: invalid
-      $05: begin
-        Opcode := OPsyscall;
-      end;
-      $06: begin
-        Opcode := OPclts;
-      end;
-      $07: begin
-        Opcode := OPsysret;
-      end;
-      $08: begin
-        Opcode := OPinvd;
-      end;
-      $09: begin
-        Opcode := OPwbinvd;
-      end;
-      // $0A: invalid
-      $0B: begin
-        Opcode := OPud2;
-      end;
-      // $0C: invalid
-      $0D: begin
-        DoGroupP;
-      end;
-      $0E: begin
-        Opcode := OPfemms;
-      end;
-      $0F: begin
-        Do3DNow;
-      end;
-      //---
-      $10: begin
-        case DecodePrefix(OPmovups, OPmovupd, OPmovsd, OPmovss) of
-          soNone: begin AddVps;    AddWps; end;
-          so66:   begin AddVpd;    AddWpd; end;
-          soF2:   begin AddVdq_sd; AddWsd; end;
-          soF3:   begin AddVdq_ss; AddWss; end;
-        end;
-      end;
-      $11: begin
-        case DecodePrefix(OPmovups, OPmovupd, OPmovsd, OPmovss) of
-          soNone: begin AddWps; AddVps; end;
-          so66:   begin AddWpd; AddVpd; end;
-          soF2:   begin AddWsd; AddVsd; end;
-          soF3:   begin AddWss; AddVss; end;
-        end;
-      end;
-      $12: begin
-        case DecodePrefix(OPmovhlps, OPmovlpd, OPmovddup, OPmovsldup) of
-          soNone: begin
-            // Opcode differs on type found
-            // it is specified as Mq or VRq
-            // So when getting Wq, we Add both and know the type
-            AddVps; AddWq;
-            if ofMemory in AnInstruction.Operand[2].Flags
-            then Opcode := OPmovlps;
-          end;
-          so66: begin AddVsd; AddMq;  end;
-          soF2: begin AddVpd; AddWsd; end;
-          soF3: begin AddVps; AddWps; end;
-        end;
-      end;
-      $13: begin
-        case DecodePrefix(OPmovlps, OPmovlpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddMq; AddVps; end;
-          so66:   begin AddMq; AddVsd; end;
-        end;
-      end;
-      $14: begin
-        case DecodePrefix(OPunpcklps, OPunpcklpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddVps; AddWq; end;
-          so66:   begin AddVpd; AddWq; end;
-        end;
-      end;
-      $15: begin
-        case DecodePrefix(OPunpckhps, OPunpckhpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddVps; AddWq; end;
-          so66:   begin AddVpd; AddWq; end;
-        end;
-      end;
-      $16: begin
-        case DecodePrefix(OPmovlhps, OPmovhpd, OPX_Invalid, OPmovshdup) of
-          soNone: begin
-            // Opcode differs on type found
-            // it is specified as Mq or VRq
-            // So when getting Wq, we Add both and know the type
-            AddVps; AddWq;
-            if ofMemory in AnInstruction.Operand[2].Flags
-            then Opcode := OPmovhps;
-          end;
-          so66: begin AddVsd; AddMq; end;
-          soF3: begin AddVps; AddWps; end;
-        end;
-      end;
-      $17: begin
-        case DecodePrefix(OPmovhps, OPmovhpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddMq; AddVps; end;
-          so66:   begin AddMq; AddVsd; end;
-        end;
-      end;
-      $18: begin
-        DoGroup16;
-      end;
-      $19..$1F: begin
-        Opcode := OPnop;
-        AddEv;
-      end;
-      //---
-      $20: begin
-        Opcode := OPmov;
-        AddRd_q; AddCd_q;
-      end;
-      $21: begin
-        Opcode := OPmov;
-        AddRd_q; AddDd_q;
-      end;
-      $22: begin
-        Opcode := OPmov;
-        AddCd_q; AddRd_q;
-      end;
-      $23: begin
-        Opcode := OPmov;
-        AddDd_q; AddRd_q;
-      end;
-      // $24..$27: OPX_Invalid
-      $28: begin
-        case DecodePrefix(OPmovaps, OPmovapd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddVps; AddWps; end;
-          so66:   begin AddVpd; AddWpd; end;
-        end;
-      end;
-      $29: begin
-        case DecodePrefix(OPmovaps, OPmovapd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddWps; AddVps; end;
-          so66:   begin AddWpd; AddVpd; end;
-        end;
-      end;
-      $2A: begin
-        case DecodePrefix(OPcvtpi2ps, OPcvtpi2pd, OPcvtsi2sd, OPcvtsi2ss) of
-          soNone: begin AddVps; AddQq;   end;
-          so66:   begin AddVpd; AddQq;   end;
-          soF2:   begin AddVsd; AddEd_q; end;
-          soF3:   begin AddVss; AddEd_q; end;
-        end;
-      end;
-      $2B: begin
-        case DecodePrefix(OPmovntps, OPmovntpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddMdq; AddVps; end;
-          so66:   begin AddMdq; AddVpd; end;
-        end;
-      end;
-      $2C: begin
-        case DecodePrefix(OPcvttps2pi, OPcvttpd2pi, OPcvttsd2si, OPcvttss2si) of
-          soNone: begin AddPq;   AddWps; end;
-          so66:   begin AddPq;   AddWpd; end;
-          soF2:   begin AddGd_q; AddWsd; end;
-          soF3:   begin AddGd_q; AddWss; end;
-        end;
-      end;
-      $2D: begin
-        case DecodePrefix(OPcvtps2pi, OPcvtpd2pi, OPcvtsd2si, OPcvtss2si) of
-          soNone: begin AddPq;   AddWps; end;
-          so66:   begin AddPq;   AddWpd; end;
-          soF2:   begin AddGd_q; AddWsd; end;
-          soF3:   begin AddGd_q; AddWss; end;
-        end;
-      end;
-      $2E: begin
-        case DecodePrefix(OPucomiss, OPucomissd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddVss; AddWss; end;
-          so66:   begin AddVsd; AddWsd; end;
-        end;
-      end;
-      $2F: begin
-        case DecodePrefix(OPcomiss, OPcomissd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddVss; AddWss; end;
-          so66:   begin AddVsd; AddWsd; end;
-        end;
-      end;
-      //---
-      $30: begin
-        Opcode := OPwrmsr;
-      end;
-      $31: begin
-        Opcode := OPrdtsc;
-      end;
-      $32: begin
-        Opcode := OPrdmsr;
-      end;
-      $33: begin
-        Opcode := OPrdpmc;
-      end;
-      $34: begin
-        Opcode := OPXsysenter;
-      end;
-      $35: begin
-        Opcode := OPXsysexit;
-      end;
-      // $36..$3F: OPX_Invalid
-      //---
-      $40..$4F: begin
-        Opcode := OPcmov__; StdCond(Code[CodeIdx]);
-        AddGv; AddEv;
-      end;
-      //---
-      $50: begin
-        case DecodePrefix(OPmovmskps, OPmovmskpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddGd; AddVRps; end;
-          so66:   begin AddGd; AddVRpd; end;
-        end;
-      end;
-      $51..$59, $5C..$5F: begin
-        case Code[CodeIdx] of
-          $51: DecodePrefix(OPsqrtps,  OPsqrtpd,    OPsqrtsd,    OPsqrtss);
-          $52: DecodePrefix(OPrsqrtps, OPX_Invalid, OPX_Invalid, OPrsqrtss);
-          $53: DecodePrefix(OPrcpps,   OPX_Invalid, OPX_Invalid, OPrcpss);
-          $54: DecodePrefix(OPandps,   OPandpd,     OPX_Invalid, OPX_Invalid);
-          $55: DecodePrefix(OPandnps,  OPandnpd,    OPX_Invalid, OPX_Invalid);
-          $56: DecodePrefix(OPorps,    OPorpd,      OPX_Invalid, OPX_Invalid);
-          $57: DecodePrefix(OPxorps,   OPxorpd,     OPX_Invalid, OPX_Invalid);
-          $58: DecodePrefix(OPaddps,   OPaddpd,     OPaddsd,     OPaddss);
-          $59: DecodePrefix(OPmulps,   OPmulpd,     OPmulsd,     OPmulss);
-          $5C: DecodePrefix(OPsubps,   OPsubpd,     OPsubsd,     OPsubss);
-          $5D: DecodePrefix(OPminps,   OPminpd,     OPminsd,     OPminss);
-          $5E: DecodePrefix(OPdivps,   OPdivpd,     OPdivsd,     OPdivss);
-          $5F: DecodePrefix(OPmaxps,   OPmaxpd,     OPmaxsd,     OPmaxss);
-        end;
-
-        case SimdOpcode of
-          soNone: begin AddVps; AddWps; end;
-          so66:   begin AddVpd; AddWpd; end;
-          soF2:   begin AddVsd; AddWsd; end;
-          soF3:   begin AddVss; AddWss; end;
-        end;
-      end;
-      $5A: begin
-        case DecodePrefix(OPcvtps2pd, OPcvtpd2ps, OPcvtsd2ss, OPcvtss2sd) of
-          soNone: begin AddVpd; AddWps; end;
-          so66:   begin AddVps; AddWpd; end;
-          soF2:   begin AddVss; AddWsd; end;
-          soF3:   begin AddVsd; AddWss; end;
-        end;
-      end;
-      $5B: begin
-        case DecodePrefix(OPcvtdq2ps, OPcvtps2dq, OPX_Invalid, OPcvttps2dq) of
-          soNone: begin AddVps; AddWdq; end;
-          so66:   begin AddVdq; AddWps; end;
-          soF3:   begin AddVdq; AddWps; end;
-        end;
-      end;
-      // $5C..$5F: see $51
-      //---
-      $60..$6D: begin
-        idx := Code[CodeIdx] and $F;
-        CheckSIMD;
-        case DecodePrefix(OPR_6x[idx], OPR_6x[idx], OPX_Invalid, OPX_Invalid) of
-          soNone: begin
-            if Code[CodeIdx] in [$6C, $6D]
-            then Opcode := OPX_Invalid
-            else begin AddPq;  AddQd; end;
-          end;
-          so66: begin
-            AddVdq;
-            if Code[CodeIdx] = $6B then AddWdq else AddWq;
-          end;
-        end;
-      end;
-      $6E: begin
-        case DecodePrefix(OPmovd, OPmovd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddEd_q; end;
-          so66:   begin AddVdq; AddEd_q; end;
-        end;
-      end;
-      $6F: begin
-        case DecodePrefix(OPmovq, OPmovdqa, OPX_Invalid, OPmovdqu) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-          soF3:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      //---
-      $70: begin
-        case DecodePrefix(OPpshufw, OPpshufd, OPpshuflw, OPpshufhw) of
-          soNone: begin AddPq;  AddQq;  AddIb; end;
-          so66:   begin AddVdq; AddWdq; AddIb; end;
-          soF2:   begin AddVq;  AddWq;  AddIb; end;
-          soF3:   begin AddVq;  AddWq;  AddIb; end;
-        end;
-      end;
-      $71: begin
-        if Flags * [preF3, preF2] = []
-        then DoGroup12
-        else Opcode := OPX_Invalid;
-      end;
-      $72: begin
-        if Flags * [preF3, preF2] = []
-        then DoGroup13
-        else Opcode := OPX_Invalid;
-      end;
-      $73: begin
-        if Flags * [preF3, preF2] = []
-        then DoGroup14
-        else Opcode := OPX_Invalid;
-      end;
-      $74: begin
-        case DecodePrefix(OPpcmpeqb, OPpcmpeqb, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      $75: begin
-        case DecodePrefix(OPpcmpeqw, OPpcmpeqw, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      $76: begin
-        case DecodePrefix(OPpcmpeqd, OPpcmpeqd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      $77: begin
-        if Flags * [preF3, preF2, pre66] = []
-        then Opcode := OPemms
-        else Opcode := OPX_Invalid;
-      end;
-      // $78..$7B: OPX_Invalid
-      $7C: begin
-        case DecodePrefix(OPX_Invalid, OPhaddpd, OPhaddps, OPX_Invalid) of
-          so66: begin AddVpd; AddWpd; end;
-          soF2: begin AddVps; AddWps; end;
-        end;
-      end;
-      $7D: begin
-        case DecodePrefix(OPX_Invalid, OPhsubpd, OPhsubps, OPX_Invalid) of
-          so66: begin AddVpd; AddWpd; end;
-          soF2: begin AddVps; AddWps; end;
-        end;
-      end;
-      $7E: begin
-        case DecodePrefix(OPmovd, OPmovd, OPX_Invalid, OPmovq) of
-          soNone: begin AddEd_q; AddPd_q; end;
-          so66:   begin AddEd_q; AddVd_q; end;
-          soF3:   begin AddVq;   AddWq;   end;
-        end;
-      end;
-      $7F: begin
-        case DecodePrefix(OPmovq, OPmovdqa, OPX_Invalid, OPmovdqu) of
-          soNone: begin AddQq;  AddPq;  end;
-          so66:   begin AddWdq; AddVdq; end;
-          soF3:   begin AddWdq; AddVdq; end;
-        end;
-      end;
-      //---
-      $80..$8F: begin
-        Force64;
-        Opcode := OPj__; StdCond(Code[CodeIdx]);
-        AddJz;
-      end;
-      //---
-      $90..$9F: begin
-        Opcode := OPset__; StdCond(Code[CodeIdx]);
-        AddEb;
-      end;
-      //---
-      $A0: begin
-        Default64;
-        Opcode := OPpush;
-        AddOperand('fs');
-      end;
-      $A1: begin
-        Default64;
-        Opcode := OPpop;
-        AddOperand('fs');
-      end;
-      $A2: begin
-        Opcode := OPcpuid;
-      end;
-      $A3: begin
-        Opcode := OPbt;
-        AddEv; AddGv;
-      end;
-      $A4: begin
-        Opcode := OPshld;
-        AddEv; AddGv; AddIb;
-      end;
-      $A5: begin
-        Opcode := OPshld;
-        AddEv; AddGv;
-        AddOperand('cl');
-      end;
-      // $A6..$A7: OPX_Invalid
-      $A8: begin
-        Default64;
-        Opcode := OPpush;
-        AddOperand('gs');
-      end;
-      $A9: begin
-        Default64;
-        Opcode := OPpop;
-        AddOperand('gs');
-      end;
-      $AA: begin
-        Opcode := OPrsm;
-      end;
-      $AB: begin
-        Opcode := OPbts;
-        AddEv; AddGv;
-      end;
-      $AC: begin
-        Opcode := OPshrd;
-        AddEv; AddGv; AddIb;
-      end;
-      $AD: begin
-        Opcode := OPshld;
-        AddEv; AddGv;
-        AddOperand('cl');
-      end;
-      $AE: begin
-        DoGroup15;
-      end;
-      $AF: begin
-        Opcode := OPimul;
-        AddGv; AddEv;
-      end;
-      //---
-      $B0: begin
-        AddEb; AddGb;
-        Opcode := OPcmpxchg; CheckLock;
-      end;
-      $B1: begin
-        AddEv; AddGv;
-        Opcode := OPcmpxchg; CheckLock;
-      end;
-      $B2: begin
-        Opcode := OPlss;
-        AddGz; AddMp;
-      end;
-      $B3: begin
-        Opcode := OPbtr;
-        AddEv; AddGv;
-      end;
-      $B4: begin
-        Opcode := OPlfs;
-        AddGz; AddMp;
-      end;
-      $B5: begin
-        Opcode := OPlgs;
-        AddGz; AddMp;
-      end;
-      $B6: begin
-        Opcode := OPmovzx;
-        AddGv; AddEb;
-      end;
-      $B7: begin
-        Opcode := Opmovzx;
-        AddGv; AddEw;
-      end;
-      // $B8: OPX_Invalid
-      $B9: begin
-        DoGroup10;
-      end;
-      $BA: begin
-        DoGroup8;
-      end;
-      $BB: begin
-        Opcode := OPbtc;
-        AddEv; AddGv;
-      end;
-      $BC: begin
-        Opcode := OPbsf;
-        AddGv; AddEv;
-      end;
-      $BD: begin
-        Opcode := OPbsr;
-        AddGv; AddEv;
-      end;
-      $BE: begin
-        Opcode := OPmovsx;
-        AddGv; AddEb;
-      end;
-      $BF: begin
-        Opcode := OPmovsx;
-        AddGv; AddEw;
-      end;
-      //---
-      $C0: begin
-        AddEb; AddGb;
-        Opcode := OPxadd; CheckLock;
-      end;
-      $C1: begin
-        AddEv; AddGv;
-        Opcode := OPxadd; CheckLock;
-      end;
-      $C2: begin
-        case DecodePrefix(OPcmpps, OPcmppd, OPcmpsd, OPcmpss) of
-          soNone: begin AddVps; AddWps; AddIb end;
-          so66:   begin AddVpd; AddWpd; AddIb end;
-          soF2:   begin AddVsd; AddWsd; AddIb end;
-          soF3:   begin AddVss; AddWss; AddIb end;
-        end;
-      end;
-      $C3: begin
-        if Flags * [preF3, preF2, pre66] = []
-        then begin
-          Opcode := OPmovnti;
-          AddMd_q; AddGd_q;
-        end
-        else Opcode := OPX_Invalid;
-      end;
-      $C4: begin
-        case DecodePrefix(OPpinsrw, OPpinsrw, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddEw; AddIb end;
-          so66:   begin AddVdq; AddEw; AddIb end;
-        end;
-      end;
-      $C5: begin
-        case DecodePrefix(OPpextrw, OPpextrw, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddGd; AddPRq;  AddIb end;
-          so66:   begin AddGd; AddVRdq; AddIb end;
-        end;
-      end;
-      $C6: begin
-        case DecodePrefix(OPshufps, OPshufpd, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddVps; AddWps; AddIb end;
-          so66:   begin AddVpd; AddWpd; AddIb end;
-        end;
-      end;
-      $C7: begin
-        DoGroup9;
-      end;
-      $C8..$CF: begin
-        Opcode := OPbswp;
-        AddStdReg(Code[CodeIdx]);
-      end;
-      //---
-      $D0: begin
-        case DecodePrefix(OPX_Invalid, OPaddsubpd, OPaddsubps, OPX_Invalid) of
-          so66: begin AddVpd; AddWpd; end;
-          soF2: begin AddVps; AddWps; end;
-        end;
-      end;
-      $D1..$D5, $D8..$DF: begin
-        idx := Code[CodeIdx] and $F;
-        case DecodePrefix(OPR_Dx[idx], OPR_Dx[idx], OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      $D6: begin
-        case DecodePrefix(OPX_Invalid, OPmovq, OPmovdq2q, OPmovq2dq) of
-          so66: begin AddWq;  AddVq;  end;
-          soF2: begin AddPq;  AddVRq; end;
-          soF3: begin AddVdq; AddPRq; end;
-        end;
-      end;
-      $D7: begin
-        case DecodePrefix(OPpmovmskb, OPpmovmskb, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddGd; AddPRq;  end;
-          so66:   begin AddGd; AddVRdq; end;
-        end;
-      end;
-      // $D8..$DF: see $D1
-      //---
-      $E0..$E5, $E8..$EF: begin
-        idx := Code[CodeIdx] and $F;
-        case DecodePrefix(OPR_Ex[idx], OPR_Ex[idx], OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      $E6: begin
-        case DecodePrefix(OPX_Invalid, OPcvttpd2dq, OPcvtpd2dq, OPcvtdq2pd) of
-          so66: begin AddVq;  AddWpd; end;
-          soF2: begin AddVq;  AddWpd; end;
-          soF3: begin AddVpd; AddWq;  end;
-        end;
-      end;
-      $E7: begin
-        case DecodePrefix(OPmovntq, OPmovntdqu, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddMq;  AddPq;  end;
-          so66:   begin AddMdq; AddVdq; end;
-        end;
-      end;
-      // $E8..$EF: see $E0
-      $F0: begin
-        if preF2 in Flags
-        then begin
-          Opcode := OPlddqu;
-          AddVpd; AddMdq;
-        end
-        else Opcode := OPX_Invalid;
-      end;
-      $F1..$F6, $F8..$FE: begin
-        idx := Code[CodeIdx] and $F;
-        case DecodePrefix(OPR_Fx[idx], OPR_Fx[idx], OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddQq;  end;
-          so66:   begin AddVdq; AddWdq; end;
-        end;
-      end;
-      $F7: begin
-        case DecodePrefix(OPmaskmovq, OPmaskmovdqu, OPX_Invalid, OPX_Invalid) of
-          soNone: begin AddPq;  AddPRq;  end;
-          so66:   begin AddVdq; AddVRdq; end;
-        end;
-      end;
-      // $F8..$FE: see $F1
-      // $FF: OPX_Invalid
-    else
-      Opcode := OPX_Invalid;
-    end;
-  end;
-
-  procedure DoDisassemble;
-  begin
-    Opcode := OPX_InternalUnknown;
-    repeat
-      ModRMIdx := CodeIdx + 1;
-      case Code[CodeIdx] of
-        $00..$05: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPadd; CheckLock;
-        end;
-        $06: begin
-          Opcode := OPpush; Check32;
-          AddOperand('es');
-        end;
-        $07: begin
-          Opcode := OPpop; Check32;
-          AddOperand('es');
-        end;
-        $08..$0D: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPor; CheckLock;
-        end;
-        $0E: begin
-          Opcode := OPpush; Check32;
-          AddOperand('cs');
-        end;
-        $0F: begin
-          Do2ByteOpcode;
-        end;
-        //---
-        $10..$15: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPadc; CheckLock;
-        end;
-        $16: begin
-          Opcode := OPpush; Check32;
-          AddOperand('ss');
-        end;
-        $17: begin
-          Opcode := OPpop; Check32;
-          AddOperand('ss');
-        end;
-        $18..$1D: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPsbb; CheckLock;
-        end;
-        $1E: begin
-          Opcode := OPpush; Check32;
-          AddOperand('ds');
-        end;
-        $1F: begin
-          Opcode := OPpop; Check32;
-          AddOperand('ds');
-        end;
-        //---
-        $20..$25: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPand; CheckLock;
-        end;
-        $26: begin
-          AnInstruction.Segment := AnInstruction.Segment + Ignore64('es:');
-        end;
-        $27: begin
-          Opcode := OPdaa; Check32;
-        end;
-        $28..$2D: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPsub; CheckLock;
-        end;
-        $2E: begin
-          AnInstruction.Segment := AnInstruction.Segment + Ignore64('cs:');
-        end;
-        $2F: begin
-          Opcode := OPdas; Check32;
-        end;
-        //---
-        $30..$35: begin
-          AddStdOperands(Code[CodeIdx]);
-          Opcode := OPxor; CheckLock;
-        end;
-        $36: begin
-          AnInstruction.Segment := AnInstruction.Segment + Ignore64('ss:');
-        end;
-        $37: begin
-          Opcode := OPaaa; Check32;
-        end;
-        $38..$3D: begin
-          Opcode := OPcmp;
-          AddStdOperands(Code[CodeIdx]);
-        end;
-        $3E: begin
-          AnInstruction.Segment := AnInstruction.Segment + Ignore64('ds:');
-        end;
-        $3F: begin
-          Opcode := OPaas; Check32;
-        end;
-        //---
-        $40..$4F: begin
-          if (FProcess.Mode = dm64)
-          then begin
-            if (Code[CodeIdx] and 1) <> 0 then Include(Flags, rexB);
-            if (Code[CodeIdx] and 2) <> 0 then Include(Flags, rexX);
-            if (Code[CodeIdx] and 4) <> 0 then Include(Flags, rexR);
-            if (Code[CodeIdx] and 8) <> 0 then Include(Flags, rexW);
-            Include(Flags, flagRex);
-          end
-          else begin
-            AddStdReg(Code[CodeIdx]);
-            if Code[CodeIdx] <= $47
-            then Opcode := OPinc
-            else Opcode := OPdec;
-            CheckLock;
-          end;
-        end;
-        //---
-        $50..$57: begin
-          Default64;
-          Opcode := OPpush;
-          AddStdReg(Code[CodeIdx]);
-        end;
-        $58..$5F: begin
-          Default64;
-          Opcode := OPpop;
-          AddStdReg(Code[CodeIdx]);
-        end;
-        //---
-        $60: begin
-          if OperandSize = os16
-          then Opcode := OPpusha
-          else Opcode := OPpushad;
-          Check32;
-        end;
-        $61: begin
-          if OperandSize = os16
-          then Opcode := OPpopa
-          else Opcode := OPpopad;
-          Check32;
-        end;
-        $62: begin
-          Opcode := OPbound; Check32;
-          AddGv; AddMa;
-        end;
-        $63: begin
-          if (FProcess.Mode = dm64)
-          then begin
-            Opcode := (OPmovsxd);
-            AddGv; AddEd;
-          end
-          else begin
-            Opcode := OParpl; Check32;
-            AddEw; AddGw;
-          end;
-        end;
-        $64: begin
-          AnInstruction.Segment := AnInstruction.Segment + 'fs:';
-        end;
-        $65: begin
-          AnInstruction.Segment := AnInstruction.Segment + 'gs:';
-        end;
-        $66: begin
-          Include(FLags, pre66);
-        end;
-        $67: begin
-          Include(FLags, preAdr);
-        end;
-        $68: begin
-          Default64;
-          Opcode := OPpush;
-          AddIz;
-        end;
-        $69: begin
-          Opcode := OPimul;
-          AddGv; AddEv; AddIz;
-        end;
-        $6A: begin
-          Default64;
-          Opcode := OPpush;
-          AddIb;
-        end;
-        $6B: begin
-          Opcode := OPimul;
-          AddGv; AddEv; AddIb;
-        end;
-        $6C: begin
-          Opcode := OPinsb; CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddYb;
-          AddOperand('dx', os16);
-          {$endif}
-        end;
-        $6D: begin
-          if OperandSize = os16
-          then Opcode := OPinsw
-          else Opcode := OPinsd;
-          CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddYz;
-          AddOperand('dx', os16);
-          {$endif}
-        end;
-        $6E: begin
-          Opcode := OPoutsb; CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddOperand('dx', os16);
-          AddXb;
-          {$endif}
-        end;
-        $6F: begin
-          if OperandSize = os16
-          then Opcode := OPoutsw
-          else Opcode := OPoutsd;
-          CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddOperand('dx', os16);
-          AddXz;
-          {$endif}
-        end;
-        $70..$7F: begin
-          Force64;
-          Opcode := OPj__;  StdCond(Code[CodeIdx]);
-          AddJb;
-        end;
-        //---
-        $80..$83: begin
-          DoGroup1;
-        end;
-        $84: begin
-          Opcode := OPtest;
-          AddEb; AddGb;
-        end;
-        $85: begin
-          Opcode := OPtest;
-          AddEv; AddGv;
-        end;
-        $86: begin
-          AddEb; AddGb;
-          Opcode := OPxchg; CheckLock;
-        end;
-        $87: begin
-          AddEv; AddGv;
-          Opcode := OPxchg; CheckLock;
-        end;
-        $88..$8B: begin
-          Opcode := OPmov;
-          AddStdOperands(Code[CodeIdx]);
-        end;
-        $8C: begin
-          Opcode := OPmov;
-          AddMw_Rv; AddSw;
-        end;
-        $8D: begin
-          Opcode := OPlea;
-          AddGv; AddM;
-        end;
-        $8E: begin
-          Opcode := OPmov;
-          AddSw; AddEw;
-        end;
-        $8F: begin
-          Default64;
-          DoGroup1;
-        end;
-        //---
-        $90..$97: begin
-          if (Code[CodeIdx] = $90) and not (rexB in Flags)
-          then Opcode := OPnop
-          else begin
-            Opcode := OPxchg;
-            AddStdReg(Code[CodeIdx]);
-            AddOperand(SizeReg32('ax'));
-          end;
-        end;
-        $98: begin
-          case OperandSize of
-            os64: Opcode := OPcdqe;
-            os32: Opcode := OPcwde;
-          else
-            Opcode := OPcbw;
-          end;
-        end;
-        $99: begin
-          case OperandSize of
-            os64: Opcode := OPcqo;
-            os32: Opcode := OPcqd;
-          else
-            Opcode := OPcwd;
-          end;
-        end;
-        $9A: begin
-          Opcode := OPcall; Check32;
-          AddAp;
-        end;
-        $9B: begin
-          Opcode := OPwait_fwait;
-        end;
-        $9C: begin
-          Default64;
-          case OperandSize of
-            os64: Opcode := OPpushfq;
-            os32: Opcode := OPpushfd;
-          else
-            Opcode := OPpushf;
-          end;
-          AddFv;
-        end;
-        $9D: begin
-          Default64;
-          case OperandSize of
-            os64: Opcode := OPpopfq;
-            os32: Opcode := OPpopfd;
-          else
-            Opcode := OPpopf;
-          end;
-          AddFv;
-        end;
-        $9E: begin
-          Opcode := OPsahf;
-        end;
-        $9F: begin
-          Opcode := OPlahf;
-        end;
-        //---
-        $A0: begin
-          Opcode := OPmov;
-          AddOperand('al', os8);
-          AddOb;
-        end;
-        $A1: begin
-          Opcode := OPmov;
-          AddOperand(SizeReg32('ax'));
-          AddOv;
-        end;
-        $A2: begin
-          Opcode := OPmov;
-          AddOb;
-          AddOperand('al', os8);
-        end;
-        $A3: begin
-          Opcode := OPmov;
-          AddOv;
-          AddOperand(SizeReg32('ax'));
-        end;
-        $A4: begin
-          Opcode := OPmovsb; CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddYb; AddXb;
-          {$endif}
-        end;
-        $A5: begin
-          case OperandSize of
-            os64: Opcode := OPmovsq;
-            os32: Opcode := OPmovsd;
-          else
-            Opcode := OPmovsw;
-          end;
-          CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddYv; AddXv;
-          {$endif}
-        end;
-        $A6: begin
-          Opcode := OPcmpsb; CheckRepeatX;
-          {$ifdef verbose_string_instructions}
-          AddXb; AddYb;
-          {$endif}
-        end;
-        $A7: begin
-          case OperandSize of
-            os64: Opcode := OPcmpsq;
-            os32: Opcode := OPcmpsd;
-          else
-            Opcode := OPcmpsw;
-          end;
-          CheckRepeatX;
-          {$ifdef verbose_string_instructions}
-          AddYv; AddXv;
-          {$endif}
-        end;
-        $A8: begin
-          Opcode := OPtest;
-          AddOperand('al', os8);
-          AddIb;
-        end;
-        $A9: begin
-          Opcode := OPtest;
-          AddOperand(SizeReg32('ax'));
-          AddIv;
-        end;
-        $AA: begin
-          Opcode := OPstosb; CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddYb;
-          AddOperand('al', os8);
-          {$endif}
-        end;
-        $AB: begin
-          case OperandSize of
-            os64: Opcode := OPstosq;
-            os32: Opcode := OPstosd;
-          else
-            Opcode := OPstosw;
-          end;
-          CheckRepeat;;
-          {$ifdef verbose_string_instructions}
-          AddYv;
-          AddOperand(SizeReg32('ax'));
-          {$endif}
-        end;
-        $AC: begin
-          Opcode := OPlodsb; CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddOperand('al', os8);
-          AddXb;
-          {$endif}
-        end;
-        $AD: begin
-          case OperandSize of
-            os64: Opcode := OPlodsq;
-            os32: Opcode := OPlodsd;
-          else
-            Opcode := OPlodsw;
-          end;
-          CheckRepeat;
-          {$ifdef verbose_string_instructions}
-          AddOperand(SizeReg32('ax'));
-          AddXv;
-          {$endif}
-        end;
-        $AE: begin
-          Opcode := OPscasb; CheckRepeatX;
-          {$ifdef verbose_string_instructions}
-          AddOperand('al', os8);
-          AddYb;
-          {$endif}
-        end;
-        $AF: begin
-          case OperandSize of
-            os64: Opcode := OPscasq;
-            os32: Opcode := OPscasd;
-          else
-            Opcode := OPscasw;
-          end;
-          CheckRepeatX;
-          {$ifdef verbose_string_instructions}
-          AddOperand(SizeReg32('ax'));
-          AddYv;
-          {$endif}
-        end;
-        //---
-        $B0..$B7: begin
-          Opcode := OPmov;
-          AddStdReg(Code[CodeIdx], reg8);
-          AddIb;
-        end;
-        $B8..$BF: begin
-          Opcode := OPmov;
-          AddStdReg(Code[CodeIdx]);
-          AddIv;
-        end;
-        //---
-        $C0..$C1: begin
-          DoGroup2;
-        end;
-        $C2: begin
-          Force64;
-          Opcode := OPret;
-          AddIw;
-        end;
-        $C3: begin
-          Force64;
-          Opcode := OPret;
-        end;
-        $C4: begin
-          Opcode := OPles;
-          AddGz; AddMp;
-        end;
-        $C5: begin
-          Opcode := OPlds;
-          AddGz; AddMp;
-        end;
-        $C6..$C7: begin
-          DoGroup11;
-        end;
-        $C8: begin
-          Opcode := OPenter;
-          AddIw; AddIb;
-        end;
-        $C9: begin
-          Default64;
-          Opcode := OPleave;
-        end;
-        $CA: begin
-          Opcode := OPretf;
-          AddIw;
-        end;
-        $CB: begin
-          Opcode := OPretf;
-        end;
-        $CC: begin
-          Opcode := OPint3;
-        end;
-        $CD: begin
-          Opcode := OPint;
-          AddIb;
-        end;
-        $CE: begin
-          Opcode := OPint0; Check32;
-        end;
-        $CF: begin
-          case OperandSize of
-            os64: Opcode := OPiretq;
-            os32: Opcode := OPiretd;
-          else
-            Opcode := OPiret;
-          end;
-        end;
-        //---
-        $D0..$D3: begin
-          DoGroup2;
-        end;
-        $D4: begin
-          Opcode := OPaam; Check32;
-        end;
-        $D5: begin
-          Opcode := OPaad; Check32;
-        end;
-        $D6: begin
-          Opcode := OPsalc; Check32;
-        end;
-        $D7: begin
-          Opcode := OPxlat;
-        end;
-        $D8..$DF: begin
-          DoX87;
-        end;
-        //---
-        $E0: begin
-          Force64;
-          Opcode := OPloopne;
-          AddJb;
-        end;
-        $E1: begin
-          Force64;
-          Opcode := OPloope;
-          AddJb;
-        end;
-        $E2: begin
-          Force64;
-          Opcode := OPloop;
-          AddJb;
-        end;
-        $E3: begin
-          Force64;
-          Opcode := OPjrcxz;
-          AddJb;
-        end;
-        $E4: begin
-          Opcode := OPin;
-          AddOperand('al', os8);
-          AddIb;
-        end;
-        $E5: begin
-          Opcode := OPin;
-          AddOperand(SizeReg32('ax'));
-          AddIb;
-        end;
-        $E6: begin
-          Opcode := OPout;
-          AddIb;
-          AddOperand('al', os8);
-        end;
-        $E7: begin
-          Opcode := OPout;
-          AddIb;
-          AddOperand(SizeReg32('ax'));
-        end;
-        $E8: begin
-          Force64;
-          Opcode := OPcall;
-          AddJz;
-        end;
-        $E9: begin
-          Force64;
-          Opcode := OPjmp;
-          AddJz;
-        end;
-        $EA: begin
-          Opcode := OPjmp; Check32;
-          AddAp;
-        end;
-        $EB: begin
-          Force64;
-          Opcode := OPjmp;
-          AddJb;
-        end;
-        $EC: begin
-          Opcode := OPin;
-          AddOperand('al', os8);
-          AddOperand('dx', os16);
-        end;
-        $ED: begin
-          Opcode := OPin;
-          AddOperand(SizeReg32('ax'));
-          AddOperand('dx', os16);
-        end;
-        $EE: begin
-          Opcode := OPout;
-          AddOperand('dx', os16);
-          AddOperand('al', os8);
-        end;
-        $EF: begin
-          Opcode := OPout;
-          AddOperand('dx', os16);
-          AddOperand(SizeReg32('ax'));
-        end;
-        $F0: begin
-          Include(Flags, preLock);
-        end;
-        $F1: begin
-          Opcode := OPint1;
-        end;
-        $F2: begin
-          Include(Flags, preF2);
-        end;
-        $F3: begin
-          Include(Flags, preF3);
-        end;
-        $F4: begin
-          Opcode := OPhlt;
-        end;
-        $F5: begin
-          Opcode := OPcmc;
-        end;
-        $F6..$F7: begin
-          DoGroup3;
-        end;
-        $F8: begin
-          Opcode := OPclc;
-        end;
-        $F9: begin
-          Opcode := OPstc;
-        end;
-        $FA: begin
-          Opcode := OPcli;
-        end;
-        $FB: begin
-          Opcode := OPsti;
-        end;
-        $FC: begin
-          Opcode := OPcld;
-        end;
-        $FD: begin
-          Opcode := OPstd;
-        end;
-        $FE: begin
-          DoGroup4;
-        end;
-        $FF: begin
-          DoGroup5;
-        end;
-      else
-        Opcode := OPX_Invalid; // HexValue(Code[CodeIdx], 1, []);
-      end;
-
-      Inc(CodeIdx);
-      if CodeIdx > 16 // max instruction length
-      then begin
-        Debugln(DBG_WARNINGS, 'Disassemble: instruction longer than 16 bytes');
-        Exit;
-      end;
-    until Opcode <> OPX_InternalUnknown;
-  end;
-
-var
-  n: Integer;
-begin
-  Opcode := OPX_Invalid;
-  AnInstruction.OpCodeSuffix := OPSx_none;
-  AnInstruction.Flags := [];
-  Code := AAddress;
-  SimdOpcode := soInvalid;
-
-  AnInstruction.Segment := '';
-  Flags := [];
-  CodeIdx := 0;
-  OperIdx := 0;
-  DoDisassemble;
-
-  AnInstruction.OpCode := Opcode;
-  AnInstruction.OperCnt := OperIdx;
-  AnInstruction.ParseFlags := Flags;
-
-  if flagModRM in Flags then Inc(CodeIdx);
-  if flagSib in Flags then Inc(CodeIdx);
-
-  for n := 1 to OperIdx do
-  begin
-    AnInstruction.Operand[n].CodeIndex := CodeIdx;
-    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount);
-    Inc(CodeIdx, AnInstruction.Operand[n].ByteCount2);
-  end;
-  Inc(AAddress, CodeIdx);
-end;
-
 procedure TX86AsmDecoder.Disassemble(var AAddress: Pointer;
   out ACodeBytes: String; out ACode: String);
 const
@@ -3557,6 +3686,7 @@ const
   OSTEXT: array[TOperandSize] of string = ('os8', 'os16', 'os32', 'os64', 'os48', 'os80', 'os128');
 {$endif}
 var
+  Disassembler: TX86Disassembler;
   Instr: TInstruction;
   S, Soper: String;
   n, i: Integer;
@@ -3565,7 +3695,7 @@ var
   Code: PByte;
 begin
   Code := AAddress;
-  Disassemble(AAddress, Instr);
+  Disassembler.Disassemble(FProcess.Mode, AAddress, Instr);
 
   Soper := '';
   HasMem := False;
@@ -3631,12 +3761,11 @@ begin
   ACodeBytes := S;
 end;
 
-function TX86AsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr
-  ): TDbgAsmInstruction;
+function TX86AsmDecoder.GetInstructionInfo(AnAddress: TDBGPtr): TDbgAsmInstruction;
 begin
   if (FLastInstr = nil) or (FLastInstr.RefCount > 1) then begin
     ReleaseRefAndNil(FLastInstr);
-    FLastInstr := TX86AsmInstruction.Create(Self);
+    FLastInstr := TX86AsmInstruction.Create(FProcess);
   end;
 
   FLastInstr.SetAddress(AnAddress);
