@@ -131,7 +131,7 @@ type
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    property Title: TTranslateString read FTitle write FTitle stored IsTitleStored;
+    property Title: TTranslateString read FTitle write FTitle stored IsTitleStored nodefault;
   end;
 
 
