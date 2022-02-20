@@ -48,7 +48,7 @@ msgstr ""
 #: strpas2jsdesign.pjsdhtmlfilenotfound
 #, object-pascal-format
 msgid ""
-"Cannot file the HTML Source file for this class:\n"
+"Cannot find the HTML Source file for this class:\n"
 "%s\n"
 "Would you like to select the file from disk?"
 msgstr ""

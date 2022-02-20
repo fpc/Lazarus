@@ -112,8 +112,8 @@ Resourcestring
   pjsdFileNameDoesNotStartWithPas2js = 'filename does not start with "pas2js"';
   pjsdHTMLFilter = 'HTML Files|*.html|All files|*.*';
   pjsdHTMLSourceFileNotFound = 'HTML Source not found';
-  pjsdHTMLFileNotFound = 'Cannot file the HTML Source file for this class:'#13#10+
-                         '%s'#13#10+
+  pjsdHTMLFileNotFound = 'Cannot find the HTML Source file for this class:'+LineEnding+
+                         '%s'+LineEnding+
                          'Would you like to select the file from disk?';
   pjsdBtnSelectFile = 'Select the file';
   pjsdButtonCancel = 'Cancel refresh';

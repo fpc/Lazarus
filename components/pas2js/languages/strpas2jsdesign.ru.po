@@ -26,11 +26,11 @@ msgstr "Браузер для открытия страницы HTML, макро
 
 #: strpas2jsdesign.pjsdbtnselectfile
 msgid "Select the file"
-msgstr ""
+msgstr "Выбрать файл"
 
 #: strpas2jsdesign.pjsdbuttoncancel
 msgid "Cancel refresh"
-msgstr ""
+msgstr "Отменить обновление"
 
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
@@ -58,18 +58,21 @@ msgstr "файл \"%s\" не найден"
 #: strpas2jsdesign.pjsdhtmlfilenotfound
 #, object-pascal-format
 msgid ""
-"Cannot file the HTML Source file for this class:\n"
+"Cannot find the HTML Source file for this class:\n"
 "%s\n"
 "Would you like to select the file from disk?"
 msgstr ""
+"Невозможно найти файл с исходным текстом HTML для следующего класса:\n"
+"%s\n"
+"Выбрать файл на диске?"
 
 #: strpas2jsdesign.pjsdhtmlfilter
 msgid "HTML Files|*.html|All files|*.*"
-msgstr ""
+msgstr "Файлы HTML|*.html|Все файлы|*.*"
 
 #: strpas2jsdesign.pjsdhtmlsourcefilenotfound
 msgid "HTML Source not found"
-msgstr ""
+msgstr "Не найден исходный текст HTML"
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelcaption
 msgid "HTTP Server extra command-line options (one per line)"
@@ -280,11 +283,11 @@ msgstr "Можно использовать макросы IDE, например
 
 #: strpas2jsdesign.pjsrefreshallclassesfromhtml
 msgid "Refresh all classes from HTML source"
-msgstr ""
+msgstr "Обновить все классы из исходного текста HTML"
 
 #: strpas2jsdesign.pjsrefreshclassfromhtml
 msgid "Refresh class from HTML source"
-msgstr ""
+msgstr "Обновить класс из исходного текста HTML"
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"
