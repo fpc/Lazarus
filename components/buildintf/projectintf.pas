@@ -60,7 +60,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure SetSourceText(const SourceText: string; Beautify: boolean = false); virtual; abstract;
+    procedure SetSourceText(const SourceText: string; Beautify: boolean = false); virtual; abstract; // sets corresponding codetool buffer and source editor, clears undo history
     function GetSourceText: string; virtual; abstract;
     procedure ClearModifieds; virtual; abstract;
   public

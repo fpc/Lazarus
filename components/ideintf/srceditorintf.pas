@@ -136,8 +136,8 @@ type
 
     // screen and text position mapping
     function LineCount: Integer; virtual; abstract;
-    function TextToScreenPosition(const Position: TPoint): TPoint; virtual; abstract;
-    function ScreenToTextPosition(const Position: TPoint): TPoint; virtual; abstract;
+    function TextToScreenPosition(const Position: TPoint): TPoint; virtual; abstract; // aka byte to glyph
+    function ScreenToTextPosition(const Position: TPoint): TPoint; virtual; abstract; // aka glyph to byte
 
     // characters and pixels
     function WidthInChars: Integer; virtual; abstract;
@@ -178,8 +178,8 @@ type
     property BlockBegin: TPoint read GetBlockBegin write SetBlockBegin;
     property BlockEnd: TPoint read GetBlockEnd write SetBlockEnd;
     property CodeToolsBuffer: TObject read GetCodeToolsBuffer;
-    property CursorScreenXY: TPoint read GetCursorScreenXY write SetCursorScreenXY;
-    property CursorTextXY: TPoint read GetCursorTextXY write SetCursorTextXY;
+    property CursorScreenXY: TPoint read GetCursorScreenXY write SetCursorScreenXY; // glyph/character,line coord, both 1-based
+    property CursorTextXY: TPoint read GetCursorTextXY write SetCursorTextXY; // byte,line coord, both 1-based
     property EditorControl: TWinControl read GetEditorControl;// normally TSynEdit
     property FileName: string read GetFileName;
     property Lines: TStrings read GetLines write SetLines;// the whole file
@@ -187,10 +187,10 @@ type
     property PageCaption: string read GetPageCaption;// the beatified unit name with modifiers ('*', '#') as it is shown in tab caption
     property PageName: string read GetPageName;// the beatified unit name
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
-    property Selection: string read GetSelection write SetSelection;
+    property Selection: string read GetSelection write SetSelection; // setting selection is undoable
     property SelEnd: Integer read GetSelEnd write SetSelEnd;
     property SelStart: Integer read GetSelStart write SetSelStart;
-    property SourceText: string read GetSourceText write SetSourceText;// the whole file
+    property SourceText: string read GetSourceText write SetSourceText;// the whole file, raw format, writing clears undo list
     property TopLine: Integer read GetTopLine write SetTopLine;// first visible line
     property LinesInWindow: Integer read GetLinesInWindow;
     property Modified: Boolean read GetModified write SetModified;
