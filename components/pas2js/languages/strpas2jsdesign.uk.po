@@ -26,6 +26,14 @@ msgctxt "strpas2jsdesign.pjsdbrowsertoopenhtmlpage"
 msgid "Browser to open HTML page, macro $(Pas2JSBrowser)"
 msgstr "Оглядач для відкривання файлів HTML), макрос $(Pas2JSBrowser)"
 
+#: strpas2jsdesign.pjsdbtnselectfile
+msgid "Select the file"
+msgstr ""
+
+#: strpas2jsdesign.pjsdbuttoncancel
+msgid "Cancel refresh"
+msgstr ""
+
 #: strpas2jsdesign.pjsdcreateinitialhtmlpage
 msgid "Create initial HTML page"
 msgstr "Створити початкову HTML-сторінку"
@@ -48,6 +56,22 @@ msgstr "файл \"%s\" не є виконуваним"
 #, object-pascal-format
 msgid "file \"%s\" not found"
 msgstr "файл \"%s\" не знайдено"
+
+#: strpas2jsdesign.pjsdhtmlfilenotfound
+#, object-pascal-format
+msgid ""
+"Cannot file the HTML Source file for this class:\n"
+"%s\n"
+"Would you like to select the file from disk?"
+msgstr ""
+
+#: strpas2jsdesign.pjsdhtmlfilter
+msgid "HTML Files|*.html|All files|*.*"
+msgstr ""
+
+#: strpas2jsdesign.pjsdhtmlsourcefilenotfound
+msgid "HTML Source not found"
+msgstr ""
 
 #: strpas2jsdesign.pjsdhttpserveroptslabelcaption
 msgid "HTTP Server extra command-line options (one per line)"
@@ -255,6 +279,14 @@ msgstr "Веб-проєкт (pas2js)"
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
 msgstr "Можна використовувати макроси ІСР на зразок $MakeExe(). Без повного шляху %s буде шукатись у PATH."
+
+#: strpas2jsdesign.pjsrefreshallclassesfromhtml
+msgid "Refresh all classes from HTML source"
+msgstr ""
+
+#: strpas2jsdesign.pjsrefreshclassfromhtml
+msgid "Refresh class from HTML source"
+msgstr ""
 
 #: strpas2jsdesign.pjswasiprogramfiletexthint
 msgid "Name of your WebAssembly file"

@@ -110,6 +110,16 @@ Resourcestring
   pjsdDirectoryNotFound = 'directory "%s" not found';
   pjsdFileNotExecutable = 'file "%s" not executable';
   pjsdFileNameDoesNotStartWithPas2js = 'filename does not start with "pas2js"';
+  pjsdHTMLFilter = 'HTML Files|*.html|All files|*.*';
+  pjsdHTMLSourceFileNotFound = 'HTML Source not found';
+  pjsdHTMLFileNotFound = 'Cannot file the HTML Source file for this class:'#13#10+
+                         '%s'#13#10+
+                         'Would you like to select the file from disk?';
+  pjsdBtnSelectFile = 'Select the file';
+  pjsdButtonCancel = 'Cancel refresh';
+
+  pjsRefreshClassFromHTML = 'Refresh class from HTML source';
+  pjsRefreshAllClassesFromHTML = 'Refresh all classes from HTML source';
 
 function SafeFormat(const Fmt: String; const Args: Array of const): String;
 

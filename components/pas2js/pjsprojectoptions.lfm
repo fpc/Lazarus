@@ -10,9 +10,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
   DesignTop = 400
   object CBWebProject: TCheckBox
     Left = 12
-    Height = 19
+    Height = 23
     Top = 8
-    Width = 232
+    Width = 267
     Caption = 'Project is a Web Browser (pas2js) project'
     OnChange = CBWebProjectChange
     TabOrder = 0
@@ -22,12 +22,11 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBWebProject
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 15
-    Top = 33
-    Width = 95
+    Height = 16
+    Top = 37
+    Width = 107
     BorderSpacing.Top = 6
     Caption = 'Project HTML file:'
-    ParentColor = False
   end
   object CBHTMLFile: TComboBox
     AnchorSideLeft.Control = CBWebProject
@@ -36,13 +35,13 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
-    Height = 23
-    Top = 50
+    Height = 29
+    Top = 55
     Width = 467
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     BorderSpacing.Right = 16
-    ItemHeight = 15
+    ItemHeight = 0
     Style = csDropDownList
     TabOrder = 1
   end
@@ -51,9 +50,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBHTMLFile
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 19
-    Top = 79
-    Width = 124
+    Height = 23
+    Top = 90
+    Width = 142
     BorderSpacing.Top = 6
     Caption = 'Maintain HTML File'
     OnChange = CBMaintainHTMLFileChange
@@ -64,9 +63,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBUseBrowserConsole
     AnchorSideTop.Side = asrBottom
     Left = 36
-    Height = 19
-    Top = 129
-    Width = 268
+    Height = 23
+    Top = 148
+    Width = 313
     BorderSpacing.Top = 6
     Caption = 'Run rtl when all page resources are fully loaded'
     TabOrder = 3
@@ -76,8 +75,8 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = RBStartServerAt
     AnchorSideTop.Side = asrBottom
     Left = 76
-    Height = 23
-    Top = 200
+    Height = 27
+    Top = 231
     Width = 82
     BorderSpacing.Left = 32
     BorderSpacing.Top = 2
@@ -91,9 +90,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBUseHTTPServer
     AnchorSideTop.Side = asrBottom
     Left = 44
-    Height = 19
-    Top = 179
-    Width = 154
+    Height = 23
+    Top = 206
+    Width = 180
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Start HTTP Server on port'
@@ -109,13 +108,13 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 76
-    Height = 23
-    Top = 246
+    Height = 27
+    Top = 285
     Width = 403
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     BorderSpacing.Right = 16
-    ItemHeight = 15
+    ItemHeight = 0
     TabOrder = 6
   end
   object RBUseURL: TRadioButton
@@ -123,9 +122,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = SEPort
     AnchorSideTop.Side = asrBottom
     Left = 44
-    Height = 19
-    Top = 225
-    Width = 148
+    Height = 23
+    Top = 260
+    Width = 173
     BorderSpacing.Top = 2
     Caption = 'Use this URL to start app'
     OnChange = RBUseURLChange
@@ -136,9 +135,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBRunOnReady
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 19
-    Top = 154
-    Width = 168
+    Height = 23
+    Top = 177
+    Width = 194
     BorderSpacing.Top = 6
     Caption = 'Project needs a HTTP Server'
     OnChange = CBUseHTTPServerChange
@@ -149,9 +148,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBMaintainHTMLFile
     AnchorSideTop.Side = asrBottom
     Left = 36
-    Height = 19
-    Top = 104
-    Width = 294
+    Height = 23
+    Top = 119
+    Width = 341
     BorderSpacing.Left = 24
     BorderSpacing.Top = 6
     Caption = 'Use Browser Console unit to display writeln() output'
@@ -162,8 +161,8 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 12
-    Height = 25
-    Top = 341
+    Height = 30
+    Top = 336
     Width = 138
     Anchors = [akLeft, akBottom]
     AutoSize = True
@@ -178,9 +177,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 156
-    Height = 25
-    Top = 341
-    Width = 160
+    Height = 30
+    Top = 336
+    Width = 161
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -188,5 +187,22 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Caption = 'Reset compile Command'
     OnClick = BResetCompileCommandClick
     TabOrder = 11
+  end
+  object BMakePas2jsPoject: TButton
+    AnchorSideLeft.Control = BResetCompileCommand
+    AnchorSideLeft.Side = asrBottom
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 323
+    Height = 30
+    Top = 336
+    Width = 133
+    Anchors = [akLeft, akBottom]
+    AutoSize = True
+    BorderSpacing.Left = 6
+    BorderSpacing.Bottom = 6
+    Caption = 'Make pas2js project'
+    OnClick = BMakePas2jsPojectClick
+    TabOrder = 12
   end
 end

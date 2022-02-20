@@ -18,6 +18,7 @@ type
   { TPas2JSProjectOptionsFrame }
 
   TPas2JSProjectOptionsFrame = class(TAbstractIDEOptionsEditor)
+    BMakePas2jsPoject: TButton;
     BResetRunCommand: TButton;
     BResetCompileCommand: TButton;
     CBRunOnReady: TCheckBox;
@@ -31,6 +32,7 @@ type
     RBStartServerAt: TRadioButton;
     RBUseURL: TRadioButton;
     SEPort: TSpinEdit;
+    procedure BMakePas2jsPojectClick(Sender: TObject);
     procedure BResetCompileCommandClick(Sender: TObject);
     procedure BResetRunCommandClick(Sender: TObject);
     procedure CBMaintainHTMLFileChange(Sender: TObject);
@@ -204,6 +206,15 @@ begin
   SetDefaultWebCompileOptions(PRJ.LazCompilerOptions);
 end;
 
+procedure TPas2JSProjectOptionsFrame.BMakePas2jsPojectClick(Sender: TObject);
+Var
+  Prj : TLazProject;
+
+begin
+  PRJ:=LazarusIDE.ActiveProject;
+  PRJ.CustomData.Values[PJSProject]:='1';
+end;
+
 procedure TPas2JSProjectOptionsFrame.CBUseHTTPServerChange(Sender: TObject);
 begin
   CheckServerOptions(CBUseHTTPServer.Checked);
@@ -330,8 +341,9 @@ begin
   // Clear everything
   With PRJ.CustomData do
     begin
-    Remove(PJSProjectWebBrowser);
+    Remove(PJSProject);
     Remove(PJSProjectHTMLFile);
+    Remove(PJSProjectNodeJS);
     Remove(PJSProjectMaintainHTML);
     Remove(PJSProjectWebBrowser);
     Remove(PJSProjectRunAtReady);
@@ -341,6 +353,7 @@ begin
   // Set what is needed
   if CBWebProject.Checked then
     begin
+    PRJ.CustomData[PJSProject]:='1';
     PRJ.CustomData[PJSProjectWebBrowser]:='1';
     With CBHTMLFile do
       if ItemIndex<>-1 then

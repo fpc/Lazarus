@@ -59,8 +59,7 @@ uses
   {$IFDEF UNIX}
   baseunix,
   {$ENDIF}
-
-  fpjson,frmpas2jsatompackagesettings,  CompOptsIntf,
+  fpjson,frmpas2jsatompackagesettings, CompOptsIntf, pjscontroller,
   NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
 
 Var
@@ -479,6 +478,8 @@ Var
 begin
   AProject.Title:=FPackageName;
   AProject.ProjectInfoFile:=FPackageDir+StripNonIdentifierChars(FPackageName)+'.lpi';
+  AProject.CustomData.Values[PJSProject]:='1';
+  AProject.CustomData.Values[PJSProjectAtom]:='1';
   CreateProjectDirs;
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);

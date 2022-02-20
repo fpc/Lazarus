@@ -78,7 +78,12 @@ Type
 
 Const
   // Custom settings in .lpi
-  PJSProjectWebBrowser =  'PasJSWebBrowserProject';
+  PJSProject = 'Pas2JSProject'; // Project is pas2js project
+  PJSProjectWebBrowser =  'PasJSWebBrowserProject'; // Web browser project
+  PJSProjectNodeJS =  'PJSProjectNodeJS'; // NodeJS project
+  PJSProjectModule =  'PJSProjectModule'; // Module project
+  PJSProjectVSCode =  'PJSProjectVSCode'; // VS Code project
+  PJSProjectAtom =  'PJSProjectAtom'; // VS Code project
   PJSProjectHTMLFile = 'PasJSHTMLFile';
   PJSIsProjectHTMLFile = 'PasJSIsProjectHTMLFile';
   PJSProjectMaintainHTML = 'MaintainHTML';

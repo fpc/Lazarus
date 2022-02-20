@@ -36,6 +36,7 @@ Type
     Destructor Destroy; override;
     Procedure Reset; virtual;
     Procedure toJSON(aObject : TJSONObject);
+    Procedure FromJSON(aJSON : String);
     Procedure FromJSON(aObject : TJSONObject);
     Function asJSON(Formatted : Boolean) : String;
     Property OverrideMethods : TSpecialMethods index 1 Read GetMethods Write SetMethods;
@@ -431,7 +432,6 @@ begin
     Add('BelowID',BelowID);
     Add('HTMLFileName',HTMLFileName);
     Add('FormClassname',FormClassname);
-    Add('FormClassname',FormClassname);
     Add('UseDefaultElements',UseDefaultElements);
     Add('AddHTMLToProject',AddHTMLToProject);
     arr:=TJSONArray.Create;
@@ -439,6 +439,23 @@ begin
     For S in ExcludeElements do
       arr.Add(S);
     end;
+end;
+
+procedure THTML2ClassOptions.FromJSON(aJSON: String);
+
+Var
+  D : TJSONData;
+  J : TJSONObject Absolute D;
+
+begin
+  D:=GetJSON(aJSON);
+  try
+    if D is TJSONObject then
+      FromJSON(J);
+  finally
+    D.Free;
+  end;
+
 end;
 
 procedure THTML2ClassOptions.FromJSON(aObject: TJSONObject);

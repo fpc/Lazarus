@@ -55,7 +55,7 @@ procedure Register;
 implementation
 
 uses
-  fpjson,frmpas2jsvscodeextensionsettings,  CompOptsIntf,
+  fpjson,frmpas2jsvscodeextensionsettings,  CompOptsIntf, pjscontroller,
   NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
 
 Var
@@ -451,6 +451,8 @@ Var
 begin
   AProject.Title:=FPackageName;
   AProject.ProjectInfoFile:=FPackageDir+StripNonIdentifierChars(FPackageName)+'.lpi';
+  AProject.CustomData.Values[PJSProject]:='1';
+  AProject.CustomData.Values[PJSProjectVSCode]:='1';
   CreateProjectDirs;
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);
