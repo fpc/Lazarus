@@ -62,7 +62,7 @@ msgid ""
 "%s\n"
 "Would you like to select the file from disk?"
 msgstr ""
-"Невозможно найти файл с исходным текстом HTML для следующего класса:\n"
+"Невозможно найти файл с исходным текстом HTML для класса в модуле %s:\n"
 "%s\n"
 "Выбрать файл на диске?"
 
@@ -302,21 +302,21 @@ msgid "Pas2JS class definition from HTML file"
 msgstr "Объявление класса Pas2JS из файла HTML"
 
 #: strpas2jsdesign.rscreateunitfromtypescript
-msgid "Pas2JS import unit from Typescript declaration module."
-msgstr ""
+msgid "Pas2JS import unit from TypeScript declaration module"
+msgstr "Модуль импорта Pas2JS из модуля объявлений TypeScript"
 
 #: strpas2jsdesign.rscreateunitfromtypescriptdescription
-msgid "Create a Pas2JS import unit from a Typescript declaration module."
-msgstr ""
+msgid "Create a Pas2JS import unit from a TypeScript declaration module."
+msgstr "Создать модуль импорта Pas2JS из модуля объявлений TypeScript."
 
 #: strpas2jsdesign.rsdtsdidnotproduceoutput
 msgid "The DTS2pas tool did not produce an output file."
-msgstr ""
+msgstr "Средство DTS2pas не создало файл вывода."
 
 #: strpas2jsdesign.rshttprequestfailed
 #, object-pascal-format
 msgid "HTML request to service URL %s failed: %s"
-msgstr ""
+msgstr "Запрос HTML по адресу сервиса %s завершился с ошибкой: %s"
 
 #: strpas2jsdesign.spasjswebservercaption
 msgctxt "strpas2jsdesign.spasjswebservercaption"

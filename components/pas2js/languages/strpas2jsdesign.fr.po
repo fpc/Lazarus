@@ -299,11 +299,11 @@ msgid "Pas2JS class definition from HTML file"
 msgstr ""
 
 #: strpas2jsdesign.rscreateunitfromtypescript
-msgid "Pas2JS import unit from Typescript declaration module."
+msgid "Pas2JS import unit from TypeScript declaration module"
 msgstr ""
 
 #: strpas2jsdesign.rscreateunitfromtypescriptdescription
-msgid "Create a Pas2JS import unit from a Typescript declaration module."
+msgid "Create a Pas2JS import unit from a TypeScript declaration module."
 msgstr ""
 
 #: strpas2jsdesign.rsdtsdidnotproduceoutput
