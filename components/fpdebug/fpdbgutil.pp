@@ -130,7 +130,7 @@ type
     FIdleThreadCount: integer;
     function  GetRtlEvent: PRTLEvent;
     procedure FreeRtrEvent(AnEvent: PRTLEvent);
-    function RemoveThread(Item: TFpWorkerThread): Integer;
+    procedure RemoveThread(Item: TFpWorkerThread);
     property WantedCount: Integer read GetWantedCount;
     property CurrentCount: Integer read GetCurrentCount;
     property ThreadMonitor: TLazMonitor read FThreadMonitor;
@@ -978,7 +978,7 @@ begin
     RTLEventDestroy(AnEvent);
 end;
 
-function TFpThreadWorkerQueue.RemoveThread(Item: TFpWorkerThread): Integer;
+procedure TFpThreadWorkerQueue.RemoveThread(Item: TFpWorkerThread);
 begin
   FThreadMonitor.Enter;
   try

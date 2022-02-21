@@ -1525,7 +1525,7 @@ begin
     // use these hardcoded information, and hope that FPC does not change and
     // we never reach this point for a compilationunit that is not compiled by
     // fpc.
-    if TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300{$030301} then
+    if TFpDwarfFreePascalSymbolClassMapDwarf3(TypeInfo.CompilationUnit.DwarfSymbolClassMap).FCompilerVersion >= $030300 { $030301 } then
       CodepageOffset := AddressSize + SizeOf(Longint) + SizeOf(Word) + SizeOf(Word)
     else
       CodepageOffset := AddressSize * 3;
