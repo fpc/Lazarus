@@ -3098,6 +3098,7 @@ begin
     {$IFDEF MSWINDOWS}
     {$IFDEF WIN64}
     bplFpcSpecific, bplRtlRestoreContext, bplRtlUnwind,
+    bplSehW64Finally, bplSehW64Except, bplSehW64Unwound,
     {$ENDIF}
     bplFpcExceptHandler ,bplFpcFinallyHandler, bplFpcLeaveHandler,
     bplSehW32Except, bplSehW32Finally,
