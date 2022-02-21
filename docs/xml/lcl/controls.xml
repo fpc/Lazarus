@@ -1003,7 +1003,7 @@
         <short>The form is used as a Splash form.</short>
         <descr>
           <p>
-            Signifies that the form cannot become the main form in an application. Implies that the form responds to fewer messages; generally, paint messages and little else. May affect the border style and even the window class used for the form on some widget sets.
+            Signifies that the form cannot become the main form in an application. Implies that the form responds to fewer messages; generally, paint messages and little else. May affect the border style and even the window class used for the form on some widgetsets.
           </p>
         </descr>
       </element>
@@ -3220,7 +3220,7 @@
             <var>HasOnDrawImage</var> is a <var>Boolean</var> function used to determine if an event handler has been assigned to the <var>OnDrawDockImage</var> property. The return value is <b>True</b> if a routine has been assigned to the property. If an event handler has not been supplied,  the <var>HintDockImage</var> routine is assigned to the event handler, and the return value is set to <b>True</b>.
           </p>
           <p>
-            For platforms where the Alpha blending is not enabled for Forms, the return value is always <b>False</b> (determined by calling <var>GetSystemMetrics</var> for the <var>SM_LCLHasFormAlphaBlend</var> metric in the widget set class).
+            For platforms where the Alpha blending is not enabled for Forms, the return value is always <b>False</b> (determined by calling <var>GetSystemMetrics</var> for the <var>SM_LCLHasFormAlphaBlend</var> metric in the widgetset class).
           </p>
           <p>
             <var>HasOnDrawImage</var> is used in methods like <var>ShowDockImage</var>, <var>HideDockImage</var>, and <var>MoveDockImage</var>.
@@ -3289,7 +3289,7 @@
             <var>EraseDockRect</var> is a <var>TRect</var> property that represents the area to be erased when redrawing the docking rectangle. The value in EraseDockRect is assigned in InitDock, and updated to contain the value from DockRect when the docking rectangle has been altered in methods like ShowDockImage, HideDockImage, and MoveDockImage.
           </p>
           <p>
-            EraseDockRect is passed as an argument to OnDrawDockImage, and to the underlying widget set class.
+            EraseDockRect is passed as an argument to OnDrawDockImage, and to the underlying widgetset class.
           </p>
         </descr>
         <seealso>
@@ -10241,7 +10241,7 @@
 
       <element name="TControl.AutoSizeDelayed">
         <short>
-          Returns <b>True</b> if auto-sizing must be has been delayed, until some other process is complete.
+          Returns <b>True</b> if auto-sizing has been delayed until some other process is complete.
         </short>
       </element>
       <element name="TControl.AutoSizeDelayed.Result">
@@ -12620,7 +12620,9 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
   Button1.Caption := 'Click me'; // parent is not set, so it does not update the whole form
   Button1.Parent := Form1; // set parent as last, the LCL now applies all properties
 </code>
-          <p>Delphi/VCL: Parent must be set first under Delphi, because many properties work differently if they are set before or after Handle creation. The LCL applies the properties when the Handle is created.</p>
+          <p>
+            Delphi/VCL: Parent must be set first under Delphi, because many properties work differently if they are set before or after Handle creation. The LCL applies the properties when the Handle is created.
+          </p>
         </descr>
       </element>
 
@@ -12649,14 +12651,14 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             Use the Hint property to set the text displayed in the pop-up hint window when ShowHint is enabled. Use the OnShowHint event handler to provide custom text uses in the Hint display.
           </p>
           <p>
-            Use the ShowHint property in a TForm instance to enable or disable pop-up hint display for all controls on the form. Use the ShowHint property in TApplication to enable or disable pop-up hint display for all form and controls in an application.
+            Use the ShowHint property in a TForm instance to enable or disable pop-up hint display for all controls on a given form. Use the ShowHint property in TApplication to enable or disable pop-up hint display for all forms and controls in an application.
           </p>
         </descr>
         <seealso>
           <link id="TControl.Hint"/>
           <link id="TControl.OnShowHint"/>
           <link id="TControl.ParentShowHint"/>
-          <link id="#lcl.forms.TCustomForm.ShowHint">TCustomForm.ShowHint</link>
+          <link id="#lcl.forms.TForm.ShowHint">TForm.ShowHint</link>
           <link id="#lcl.forms.TApplication.ShowHint">TApplication.ShowHint</link>
         </seealso>
       </element>
@@ -12965,9 +12967,34 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </seealso>
       </element>
 
-      <!-- HERE -->
       <element name="TControl.Height">
         <short>The vertical size for the control.</short>
+        <descr>
+          <p>
+            Height is an Integer property with the vertical size for the control in pixels.
+          </p>
+          <p>
+            Setting a negative value in Height is not allowed, and the property defaults to <b>0</b> (zero). At design-time, setting Height to a value not in the range 0..9999 causes an ELayoutException to be raised (and handled in the IDE).
+          </p>
+          <p>
+            Setting a new value for the property causes SetBounds and ChangeBounds to be called. This ensures that the new value is is the range allowed in Constraints, and that the control is aligned on its Parent using the Anchors for the control.
+          </p>
+          <p>
+            A value assigned to Height is ignored when AutoSize is set to <b>True</b>; the control is automatically adjusted to the size needed for its aligned content.
+          </p>
+          <p>
+            Values in Top, Left, Width, and Height are used to calculate the display area for the control in GetClientRect. They determine the clipping rectangle used when the control is drawn on its Parent.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Left"/>
+          <link id="TControl.Top"/>
+          <link id="TControl.Width"/>
+          <link id="TControl.Parent"/>
+          <link id="TControl.GetClientRect"/>
+          <link id="TControl.SetBounds"/>
+          <link id="TControl.ChangeBounds"/>
+        </seealso>
       </element>
 
       <element name="TControl.Hint">
@@ -13003,58 +13030,158 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TControl.Top">
-        <short>The client coordinate of the top edge of the control.</short>
+        <short>The client coordinate for the top edge of the control.</short>
+        <descr>
+          <p>
+            <var>Top</var> is an <var>Integer</var> property with the coordinate for the top edge of the control relative to its Parent. Changing the value for the property causes SetBounds to be called to apply the new value for the property along with the existing values in Left, Width, and Height.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Height"/>
+          <link id="TControl.Left"/>
+          <link id="TControl.Width"/>
+          <link id="TControl.Parent"/>
+          <link id="TControl.SetBounds"/>
+          <link id="TControl.ChangeBounds"/>
+        </seealso>
       </element>
 
       <element name="TControl.Width">
         <short>The horizontal size for the control.</short>
         <descr>
           <p>
-            <var>Width</var> is an <var>Integer</var> property with the width for the control in pixels. Setting a new value for the property causes SetBounds and ChangeBounds to be called. This ensures that the new value is is the range allowed in Constraints, and that the control is aligned on its Parent using the Anchors for the control.
+            <var>Width</var> is an <var>Integer</var> property with the horizontal size for the control in pixels.
           </p>
           <p>
-            Setting a negative value in Width is not allowed, and the property defaults to 0.
+            Setting a negative value in Width is not allowed, and the property defaults to <b>0</b> (zero). At design-time, setting Width to a value not in the range 0..9999 causes an ELayoutException to be raised (and handled in the IDE).
+          </p>
+          <p>
+            Setting a new value for the property causes SetBounds and ChangeBounds to be called. This ensures that the new value is is the range allowed in Constraints, and that the control is aligned on its Parent using the Anchors for the control.
           </p>
           <p>
             A value assigned to Width is ignored when AutoSize is set to <b>True</b>; the control is automatically adjusted to the size needed for its aligned content.
           </p>
           <p>
-            Values in Top, Left, Width, and Height are used to calculate the display area for the control in GetClientRect. They also determine the clipping rectangle used when the control is drawn on its Parent.
+            Values in Top, Left, Width, and Height are used to calculate the display area for the control in GetClientRect. They determine the clipping rectangle used when the control is drawn on its Parent.
           </p>
         </descr>
+        <seealso>
+          <link id="TControl.Height"/>
+          <link id="TControl.Left"/>
+          <link id="TControl.Top"/>
+          <link id="TControl.Parent"/>
+          <link id="TControl.GetClientRect"/>
+          <link id="TControl.SetBounds"/>
+          <link id="TControl.ChangeBounds"/>
+        </seealso>
       </element>
 
       <element name="TControl.HelpType">
-        <short>Determines whether context-sensitive Help is selected by numeric ID or keyword.</short>
-        <descr/>
+        <short>Indicates whether context-sensitive Help is selected by numeric ID or keyword.</short>
+        <descr>
+          <p>
+            <var>HelpType</var> is a <var>THelpType</var> property which indicates the mechanism used to locate and display a help topic for the control.
+          </p>
+          <dl>
+            <dt>htKeyword</dt>
+            <dd>
+              Uses the value in HelpKeyword to locate help content for the control.
+            </dd>
+            <dt>htContext</dt>
+            <dd>
+              Uses the numeric identifier in the HelpContext property to locate help content for the control.
+            </dd>
+          </dl>
+          <p>
+            The default value for the property is htContext.
+          </p>
+          <p>
+            The value in HelpType is updated when an explicit value is assigned to the HelpKeyword or HelpContext properties.
+          </p>
+          <p>
+            HelpType is used in the ShowHelp method to select the TApplication method called to display the help content. When set to htContext, the HelpContext method in Application is called. When set to htKeyword, the HelpKeyword method in Application is called. If the help request cannot be handled using the values assigned to the control, the ShowHelp method in Parent is called (when assigned).
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.HelpContext"/>
           <link id="TControl.HelpKeyword"/>
+          <link id="#lcl.forms.TApplication.HelpContext">TApplication.HelpContext</link>
+          <link id="#lcl.forms.TApplication.HelpKeyword">TApplication.HelpKeyword</link>
+          <link id="#lcl.forms.TApplicationProperties.HelpFile">TApplicationProperties.HelpFile</link>
+          <link id="#lcl.forms.TCustomForm.HelpFile">TCustomForm.HelpFile</link>
+          <link id="#rtl.classes.THelpType">THelpType</link>
         </seealso>
       </element>
 
       <element name="TControl.HelpKeyword">
         <short>The context-sensitive Help keyword for the control.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>HelpKeyword</var> is a <var>String</var> type with the context-sensitive keyword used to locate and display a help topic for the control. When an value is assigned to the property, the HelpType property is set to htKeyword.
+          </p>
+          <p>
+            HelpKeyword is used in the ShowHelp method, and passed as an argument to the HelpKeyword method in the Application singleton.
+          </p>
+          <p>
+            Use HelpContext to specify a numeric context identifier for the help topic displayed for the control.
+          </p>
+          <p>
+            Use the HelpFile property, found on the parent form or in a TApplicationProperties instance, to set the help file with the content for the help topic.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.HelpContext"/>
+          <link id="TControl.HelpType"/>
+          <link id="TControl.ShowHelp"/>
+          <link id="#lcl.forms.TApplication.HelpKeyword">TApplication.HelpKeyword</link>
+          <link id="#lcl.forms.TApplicationProperties.HelpFile">TApplicationProperties.HelpFile</link>
+          <link id="#lcl.forms.TCustomForm.HelpFile">TCustomForm.HelpFile</link>
         </seealso>
       </element>
 
       <element name="TControl.HelpContext">
-        <short>The context-sensitive Help identifier for the control.</short>
-        <descr/>
+        <short>The numeric context-sensitive Help identifier for the control.</short>
+        <descr>
+          <p>
+            HelpContext is an Integer property with the numeric identifier used to locate and display a context-sensitive help topic for the control. The default value for the property is <b>0</b> (zero).
+          </p>
+          <p>
+            Setting a new value for the property causes HelpType to be changed to htContext.
+          </p>
+          <p>
+            HelpContext is used in the ShowHelp method, and passed as an argument to the HelpContext method in the Application singleton.
+          </p>
+          <p>
+            Use HelpKeyword to specify a string value with the help topic displayed for the control.
+          </p>
+          <p>
+            Use the HelpFile property, found on the parent form or in a TApplicationProperties instance, to set the help file with the content for the help topic.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.HelpKeyword"/>
+          <link id="TControl.HelpType"/>
+          <link id="TControl.ShowHelp"/>
+          <link id="#lcl.forms.TApplication.HelpKeyword">TApplication.HelpKeyword</link>
+          <link id="#lcl.forms.TApplicationProperties.HelpFile">TApplicationProperties.HelpFile</link>
+          <link id="#lcl.forms.TCustomForm.HelpFile">TCustomForm.HelpFile</link>
         </seealso>
       </element>
 
       <element name="TBorderWidth">
-        <short>Integer type for <link id="TWinControl.BorderWidth"/></short>
+        <short>Integer type used for <link id="TWinControl.BorderWidth"/></short>
+        <descr>
+          <p>
+            <var>TBorderWidth</var> is an <var>Integer</var> type with the range of values that can be used as the width for a border on a control. TBorderWidth is the type used to implement the <var>BorderWidth</var> property in <var>TWinControl</var> and descendent classes.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.BorderWidth"/>
+        </seealso>
       </element>
 
       <element name="TGetChildProc">
-        <short>Type of a callback method, to be called for all children of a control.</short>
+        <short>Type used for a callback method, to be called for all children of a control.</short>
         <descr/>
         <seealso>
           <link id="TWinControl.GetChildren"/>
@@ -13065,21 +13192,76 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TChildControlResizeStyle">
-        <short>Modes for resizing child controls.</short>
+        <short>Defines how child controls are resized / aligned.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TChildControlResizeStyle.crsAnchorAligning">
         <short>Using <link id="TControl.Anchors"/> (Delphi compatible).</short>
+        <descr>
+          <p>
+            Anchors and Align work like Delphi. For example if Anchors property of the control is [akLeft], it means fixed distance between left border of parent's client area. [akRight] means fixed distance between right border of the control and the right border of the parent's client area. When the parent is resized the child is moved to keep the distance. [akLeft,akRight] means fixed distance to left border and fixed distance to right border. When the parent is resized, the controls width is changed (resized) to keep the left and right distance. Same for akTop,akBottom.
+          </p>
+          <p>
+            Align=alLeft for a control means set Left leftmost, Top topmost and maximize Height. The width is kept, if akRight is not set. If akRight is set in the Anchors property, then the right distance is kept and the control's width is resized. If there several controls with Align=alLeft, they will not overlap and be put side by side. Same for alRight, alTop, alBottom. (Always expand 3 sides).
+          </p>
+          <p>
+            Align=alClient. The control will fill the whole remaining space. Setting two children to Align=alClient does only make sense, if you set maximum Constraints.
+          </p>
+          <p>
+            Order: First all alTop children are resized, then alBottom, then alLeft, then alRight and finally alClient.
+          </p>
+        </descr>
       </element>
       <element name="TChildControlResizeStyle.crsScaleChilds">
         <short>Scale children, keep space between children fixed.</short>
+        <descr>
+          <p>
+            Scale children, keep space between them fixed. Children are resized to their normal / advised size. If there is some space left in the client area of the parent, then the children are scaled to fill the space. You can set maximum Constraints. Then the other children are scaled more.
+          </p>
+          <p>
+            For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and C.Width=30 (total=60). If the Parent's client area has a ClientWidth of 120, then the children are scaled with Factor 2.
+          </p>
+          <p>
+            If B has a maximum constraint width of 30, then first the children will be scaled with 1.5 (A.Width=15, B.Width=30, C.Width=45). Then A and C (15+45=60 and 30 pixel space left) will be scaled by 1.5 again, to a final result of: A.Width=23, B.Width=30, C.Width=67 (23+30+67=120).
+          </p>
+        </descr>
       </element>
       <element name="TChildControlResizeStyle.crsHomogenousChildResize">
         <short>Enlarge children equally, i.e. by the same amount of pixels.</short>
+        <descr>
+          <p>
+            Enlarge children equally. Children are resized to their normal/adviced size. If there is some space left in the client area of the parent, then the remaining space is distributed equally to each child.
+          </p>
+          <p>
+            For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and C.Width=30 (total=60). If the Parent's client area has a ClientWidth of 120, then 60/3=20 is added to each Child.
+          </p>
+          <p>
+            If B has a maximum constraint width of 30, then first 10 is added to all children (A.Width=20, B.Width=30, C.Width=40). Then A and C (20+40=60 and 30 pixel space left) will get 30/2=15 additional, resulting in: A.Width=35, B.Width=30, C.Width=55 (35+30+55=120).
+          </p>
+        </descr>
       </element>
       <element name="TChildControlResizeStyle.crsHomogenousSpaceResize">
         <short>Enlarge space between children equally.</short>
+        <descr>
+          <p>
+            Enlarge space between children equally. Children are resized to their normal/adviced size. If there is some space left in the client area of the parent, then the space between the children is expanded.
+          </p>
+          <p>
+            For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and C.Width=30 (total=60). If the Parent's client area has a ClientWidth of 120, then there will be 60/2=30 space between A and B and between B and C.
+          </p>
+        </descr>
+      </element>
+      <element name="TChildControlResizeStyle.crsSameSize">
+        <short>Each child gets the same size (maybe one pixel difference).</short>
+        <descr>
+          <remark>
+            Not implemented in the current LCL version.
+          </remark>
+          <p>
+            Set each child to the same size (maybe one pixel difference). The client area is divided by the number of controls and each control gets the same size. The remainder is distributed to the first children.
+          </p>
+        </descr>
       </element>
 
       <element name="TControlChildrenLayout">
@@ -13355,7 +13537,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Alias for the TControlActionLink type.</short>
         <descr>
           <p>
-            Since HelpContext and HelpKeyword are properties of TControl, this class is obsolete. In order not to break existing code, its declaration is aliased to TControlActionLink.
+            Since HelpContext and HelpKeyword are properties of TControl, this class is obsolete. To maintain compatibility with existing code, its declaration is aliased to TControlActionLink.
           </p>
         </descr>
         <seealso>
@@ -13379,10 +13561,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <seealso/>
       </element>
       <element name="TWinControlFlag.wcfClientRectNeedsUpdate">
-        <short/>
+        <short>Client rectangle has been invalidated and needs to be updated.</short>
       </element>
       <element name="TWinControlFlag.wcfColorChanged">
-        <short/>
+        <short>The Color property in s control has been changed.</short>
       </element>
       <element name="TWinControlFlag.wcfFontChanged">
         <short>Set when the font was changed before handle creation.</short>
@@ -13391,10 +13573,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Set during DoAllAutosize.</short>
       </element>
       <element name="TWinControlFlag.wcfAligningControls">
-        <short>Set during <link id="TWinControl.AlignControls"/></short>
+        <short>Set when the AlignControls method is called.</short>
       </element>
       <element name="TWinControlFlag.wcfEraseBackground">
-        <short/>
+        <short>Set in the method Paint before the LM_ERASEBKGND message is performed.</short>
       </element>
       <element name="TWinControlFlag.wcfCreatingHandle">
         <short>Set while constructing the handle of this control.</short>
@@ -13414,10 +13596,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </short>
       </element>
       <element name="TWinControlFlag.wcfUpdateShowing">
-        <short/>
+        <short>Set before a visible control and its children are updated during auto-sizing.</short>
       </element>
       <element name="TWinControlFlag.wcfHandleVisible">
-        <short/>
+        <short>Set when a control is visible and not obscured on its parent.</short>
       </element>
       <element name="TWinControlFlag.wcfAdjustedLogicalClientRectValid">
         <short>Set when the adjusted ClientRect is valid.</short>
@@ -13426,7 +13608,9 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </seealso>
       </element>
       <element name="TWinControlFlag.wcfKillIntfSetBounds">
-        <short/>
+        <short>
+          Set when the LCL interface has already called SetBounds during size and move operations. Prevents a loop.
+        </short>
       </element>
       <element name="TWinControlFlag.wcfDesignerDeleting">
         <short>Only used for TCustomPairSplitter / TPairSplitter.</short>
@@ -13437,9 +13621,14 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControlFlags">
         <short>Set of TWinControlFlag enumeration values.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TWinControlFlags</var> is a set type used to store zero (0) or more values from the <var>TWinControlFlag</var> enumeration. TWinControlFlags is the type used to implement an internal member in TWinControl. Values are added to and removed from the set as needed in <var>TWinControl</var> methods.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControlFlag"/>
+          <link id="TWinControl"/>
         </seealso>
       </element>
 
@@ -13451,20 +13640,6 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
           <p>
             TControlAtPosFlag is an enumeration type with values that indicate the mechanism used to locate a control at a given client position.
           </p>
-          <dl>
-            <dt>capfAllowDisabled</dt>
-            <dd>Include disabled controls</dd>
-            <dt>capfAllowWinControls</dt>
-            <dd>Do not find WinControls if <b>False</b></dd>
-            <dt>capfOnlyClientAreas</dt>
-            <dd>Hit client areas only</dd>
-            <dt>capfRecursive</dt>
-            <dd>Search in child controls</dd>
-            <dt>capfHasScrollOffset</dt>
-            <dd>Scroll offset is already included in the coordinates</dd>
-            <dt>capfOnlyWinControls</dt>
-            <dd>Include only TWinControl descendents (ignores TControl descendents)</dd>
-          </dl>
           <p>
             Values from the enumeration are stored in the TControlAtPosFlags type.
           </p>
@@ -13474,22 +13649,23 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </descr>
         <seealso>
           <link id="TWinControl.ControlAtPos"/>
+          <link id="FindControlAtPosition"/>
         </seealso>
       </element>
       <element name="TControlAtPosFlag.capfAllowDisabled">
-        <short>If set: include disabled controls.</short>
+        <short>Include disabled controls when set.</short>
       </element>
       <element name="TControlAtPosFlag.capfAllowWinControls">
-        <short>If set: include TWinControls, in addition to TControls.</short>
+        <short>Include both TWinControls and TControl instances when set.</short>
       </element>
       <element name="TControlAtPosFlag.capfOnlyClientAreas">
-        <short>If set: hit client areas only.</short>
+        <short>Checks for hits are limited to the client area when set.</short>
       </element>
       <element name="TControlAtPosFlag.capfRecursive">
-        <short>If set: recurse into grand children.</short>
+        <short>Recurse into grand-children controls when set.</short>
       </element>
       <element name="TControlAtPosFlag.capfHasScrollOffset">
-        <short>If set: scroll offset is already included in the coordinates.</short>
+        <short>Scroll offset is already included in the coordinates when set.</short>
       </element>
       <element name="TControlAtPosFlag.capfOnlyWinControls">
         <short>Include only TWinControls (and ignore TControls) when set.</short>
@@ -13497,16 +13673,24 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TControlAtPosFlags">
         <short>Set type used to store values from the TControlAtPosFlag enumeration.</short>
-        <descr/>
+        <descr>
+          <p>
+            Passed as an argument to the ControlAtPos method in TWinControl. Used internally in the implementation of the FindControlAtPosition routine.
+          </p>
+        </descr>
         <seealso>
           <link id="TControlAtPosFlag"/>
+          <link id="TWinControl.ControlAtPos"/>
+          <link id="FindControlAtPosition"/>
         </seealso>
       </element>
 
       <element name="TAlignInfo">
         <short>Used in custom alignment (alCustom).</short>
         <descr>
-          This record was added for compatibility with Delphi releases after Version 7. It is used in CustomInsertBefore and CustomAlignPosition methods and handlers.
+          <p>
+            This record was added for compatibility with Delphi releases after Version 7. It is used in CustomInsertBefore and CustomAlignPosition methods and handlers.
+          </p>
         </descr>
         <seealso>
           <link id="TWinControl.CustomAlignPosition"/>
@@ -13516,26 +13700,18 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TAlignInfo.AlignList">
         <short>The list of controls currently being aligned.</short>
-        <descr/>
-        <seealso/>
       </element>
 
       <element name="TAlignInfo.ControlIndex">
         <short>Index of current control.</short>
-        <descr/>
-        <seealso/>
       </element>
 
       <element name="TAlignInfo.Align">
         <short>The kind of alignment currently processed (always alCustom).</short>
-        <descr/>
-        <seealso/>
       </element>
 
       <element name="TAlignInfo.Scratch">
         <short>For internal use.</short>
-        <descr/>
-        <seealso/>
       </element>
 
       <element name="TAlignInsertBeforeEvent">
@@ -13563,7 +13739,9 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       <element name="TAlignPositionEvent">
         <short>Type of an OnAlignPosition handler.</short>
         <descr>
-          Handler which positions the Control using the specified coordinates.
+          <p>
+            Specified an event handler which positions the Control using the specified coordinates and  alignment information.
+          </p>
         </descr>
         <seealso>
           <link id="TWinControl.CustomAlignPosition"/>
@@ -13671,14 +13849,31 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl">
         <short>
-          The base class for controls which can contain other (child) controls.
+          Implements a windowed control which can contain other child controls.
         </short>
         <descr>
           <p>
             <var>TWinControl</var> is a <var>TControl</var> descendant which implements a base class for controls that can contain child controls. The name reflects the fact that (on Windows platforms) the controls are based on OS-provided widgets, which have window Handles.
           </p>
+          <p>
+            TWinControl extends the ancestor class with new properties, methods, and events which are specific to the windowed control. It also provides overridden methods which re-implement the functionality for some inherited methods. The properties, methods, and event fall into categories like:
+          </p>
+          <ul>
+            <li>Hi-DPI Awareness and Scaling</li>
+            <li>Control, Window, and Notification Message Handlers</li>
+            <li>Keyboard and Mouse Message Handlers</li>
+            <li>Drag and Drop, Drag and Dock</li>
+            <li>Sizing, Positioning, and Alignment</li>
+            <li>Alternate Constructors and Class Functions used to create TWinControl Instances</li>
+            <li>Forward and Reverse Enumerators for Child Controls</li>
+          </ul>
+          <p>
+            TWinControl is often used as the ancestor for control classes defined in the LCL. For example: TButtonControl, TCustomCalendar, TCustomComboBox, TCustomControl, TCustomEdit, TCustomGroupBox, TCustomListBox, TCustomListView, TCustomPage, TCustomPairSplitter, TCustomProgressBar, TCustomRubberBand, TCustomScrollBar, TCustomStaticText, TCustomTabControl, TCustomTrackBar, TPreviewFileControl, and TStatusBar.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TControl"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.FAlignOrder"/>
@@ -13705,27 +13900,27 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       <element name="TWinControl.FDockManager"/>
       <element name="TWinControl.FFlipped"/>
       <element name="TWinControl.FOnAlignInsertBefore"/>
-      <element link="#lcl.controls.TWinControl.OnAlignPosition" name="TWinControl.FOnAlignPosition"/>
-      <element link="#lcl.controls.TWinControl.OnDockDrop" name="TWinControl.FOnDockDrop"/>
-      <element link="#lcl.controls.TWinControl.OnDockOver" name="TWinControl.FOnDockOver"/>
-      <element link="#lcl.controls.TWinControl.OnGetSiteInfo" name="TWinControl.FOnGetSiteInfo"/>
-      <element link="#lcl.controls.TWinControl.OnKeyDown" name="TWinControl.FOnKeyDown"/>
-      <element link="#lcl.controls.TWinControl.OnKeyPress" name="TWinControl.FOnKeyPress"/>
-      <element link="#lcl.controls.TWinControl.OnKeyUp" name="TWinControl.FOnKeyUp"/>
-      <element link="#lcl.controls.TWinControl.OnEnter" name="TWinControl.FOnEnter"/>
-      <element link="#lcl.controls.TWinControl.OnExit" name="TWinControl.FOnExit"/>
-      <element link="#lcl.controls.TWinControl.OnUnDock" name="TWinControl.FOnUnDock"/>
-      <element link="#lcl.controls.TWinControl.OnUTF8KeyPress" name="TWinControl.FOnUTF8KeyPress"/>
+      <element name="TWinControl.FOnAlignPosition"/>
+      <element name="TWinControl.FOnDockDrop"/>
+      <element name="TWinControl.FOnDockOver"/>
+      <element name="TWinControl.FOnGetSiteInfo"/>
+      <element name="TWinControl.FOnKeyDown"/>
+      <element name="TWinControl.FOnKeyPress"/>
+      <element name="TWinControl.FOnKeyUp"/>
+      <element name="TWinControl.FOnEnter"/>
+      <element name="TWinControl.FOnExit"/>
+      <element name="TWinControl.FOnUnDock"/>
+      <element name="TWinControl.FOnUTF8KeyPress"/>
       <element name="TWinControl.FParentDoubleBuffered"/>
-      <element link="#lcl.controls.TWinControl.ParentWindow" name="TWinControl.FParentWindow"/>
+      <element name="TWinControl.FParentWindow"/>
       <element name="TWinControl.FRealizeBoundsLockCount"/>
-      <element link="#lcl.controls.TWinControl.Handle" name="TWinControl.FHandle"/>
-      <element link="#lcl.controls.TWinControl.TabOrder" name="TWinControl.FTabOrder"/>
+      <element name="TWinControl.FHandle"/>
+      <element name="TWinControl.FTabOrder"/>
       <element name="TWinControl.FTabList"/>
-      <element link="#lcl.controls.TWinControl.TabStop" name="TWinControl.FTabStop"/>
-      <element link="#lcl.controls.TWinControl.Showing" name="TWinControl.FShowing"/>
-      <element link="#lcl.controls.TWinControl.DockSite" name="TWinControl.FDockSite"/>
-      <element link="#lcl.controls.TWinControl.UseDockManager" name="TWinControl.FUseDockManager"/>
+      <element name="TWinControl.FTabStop"/>
+      <element name="TWinControl.FShowing"/>
+      <element name="TWinControl.FDockSite"/>
+      <element name="TWinControl.FUseDockManager"/>
 
       <element name="TWinControl.AlignControl">
         <short>Aligns the control and its child controls.</short>
@@ -13740,7 +13935,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             No actions are performed in the method when the control is being freed (the value csDestroying is in ComponentState).
           </remark>
           <p>
-            AlignControl gets the client rectangle used to display the control, and calls <var>AdjustClientRect</var> to allocate border spacing when needed. <var>AlignControls</var> is called to align child controls relative to the control in AControl using the calculated client rectangle. Some widget sets update their client rectangle when the first child is positioned; a second call to AlignControls is made if the client rectangle is altered in the initial call to the method.
+            AlignControl gets the client rectangle used to display the control, and calls <var>AdjustClientRect</var> to allocate border spacing when needed. <var>AlignControls</var> is called to align child controls relative to the control in AControl using the calculated client rectangle. Some widgetsets update their client rectangle when the first child is positioned; a second call to AlignControls is made if the client rectangle is altered in the initial call to the method.
           </p>
           <p>
             AlignControl is used in the implementation of the <var>DoAllAutoSize</var> method in <var>TControl</var>.
@@ -13993,17 +14188,9 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Control removed from the list of child Controls in the class instance.</short>
       </element>
 
-      <element name="TWinControl.AlignNonAlignedControls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.AlignNonAlignedControls.ListOfControls">
-        <short/>
-      </element>
-      <element name="TWinControl.AlignNonAlignedControls.BoundsModified">
-        <short/>
-      </element>
+      <element name="TWinControl.AlignNonAlignedControls"/>
+      <element name="TWinControl.AlignNonAlignedControls.ListOfControls"/>
+      <element name="TWinControl.AlignNonAlignedControls.BoundsModified"/>
 
       <element name="TWinControl.CreateControlAlignList">
         <short>
@@ -14028,43 +14215,72 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short/>
       </element>
 
-      <element name="TWinControl.UpdateAlignIndex">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TWinControl.UpdateAlignIndex.aChild">
-        <short/>
-      </element>
+      <element name="TWinControl.UpdateAlignIndex"/>
+      <element name="TWinControl.UpdateAlignIndex.aChild"/>
 
-      <element link="#lcl.controls.TWinControl.DoubleBuffered" name="TWinControl.FDoubleBuffered"/>
+      <element name="TWinControl.FDoubleBuffered">
+        <short>Member used to store the value for the DoubleBuffered property.</short>
+      </element>
 
       <element name="TWinControl.FWinControlFlags">
-        <short>Various window control state flags.</short>
+        <short>Contains various window control state flags.</short>
         <descr/>
         <seealso/>
       </element>
 
-      <element link="#lcl.lclclasses.TLCLComponent.WSRegisterClass" name="TWinControl.WSRegisterClass"/>
+      <element name="TWinControl.WSRegisterClass">
+        <short>Registers the class instance for use in the widgetset.</short>
+        <descr>
+          <p>
+            No actions are performed in the method when the class type has already been registered in the widgetset.
+          </p>
+          <p>
+            Calls the inherited method on entry to ensure that the TControl class type has been registered in the widgetset. Calls the widgetset routine used to register the TWinControl class type.
+          </p>
+          <p>
+            Registers properties in TWinControl which are ignored during LCL component streaming. These are Delphi / VCL compatibility properties like ParentDoubleBuffered, ImeMode, and ImeName. They are not used in the LCL.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.WSRegisterClass"/>
+          <link id="#lcl.lclclasses.TLCLComponent.WSRegisterClass">TLCLComponent.WSRegisterClass</link>
+        </seealso>
+      </element>
 
       <element name="TWinControl.AdjustClientRect">
         <short>
           Override this method when the ClientRect for a control differs from the default value.
         </short>
         <descr>
-          It is called often, so don't use expensive code here, or cache the resulting client rectangle.
+          <p>
+            In TWinControl, the virtual method has an empty implementation. It can be overridden in descendent classes to perform actions needed for the class type. Such as:
+          </p>
+          <ul>
+            <li>
+              Shrink or grow the client rectangle to account for added or removed borders or bezels.
+            </li>
+            <li>
+              Reserve space for companion controls or user interface elements.
+            </li>
+            <li>
+              Set state or configuration flags which affect the client rectangle for the class.
+            </li>
+          </ul>
+          <p>
+            AdjustClientRect can be called often, especially during auto-sizing and anchoring operations. Do not use expensive code here, or cache the resulting client rectangle for subsequent access.
+          </p>
         </descr>
         <seealso>
           <link id="TWinControl.GetAdjustedLogicalClientRect"/>
         </seealso>
       </element>
       <element name="TWinControl.AdjustClientRect.ARect">
-        <short/>
+        <short>The client rectangle examined and updated in the method.</short>
       </element>
 
       <element name="TWinControl.GetAdjustedLogicalClientRect">
         <short>
-          Returns the adjusted ClientRect, using the cached value if available.
+          Returns the adjusted logical ClientRect, using the cached value when available.
         </short>
         <descr/>
         <seealso>
@@ -14078,14 +14294,30 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.AlignControls">
-        <short>Aligns all child controls.</short>
-        <descr/>
+        <short>Repositions and resizes the control and child controls.</short>
+        <descr>
+          <p>
+            <var>AlignControls</var> is a method used to reposition and resize the specified control and the children in its Controls property. This includes using the DockManager (when assigned and enabled) to reserve space for docked controls in the client rectangle. It uses settings in the Align, Anchor, BorderSpacing, ChildSizing, and Constraints properties to determine the actions needed in the method for each of the controls.
+          </p>
+          <p>
+            AlignControls checks and updates the windowed control flags prior to starting the operation. No actions are performed in the method when wcfAligningControls is already included in the control flags.
+          </p>
+          <p>
+            The ControlsAligned method is called when the method is completed, and the control flags are updated to remove the value wcfAligningControls.
+          </p>
+          <p>
+            AlignControls is called from the private AlignControl method after the client rectangle has been adjusted and the logical display area for the control has been determined. AlignControl is the boss; AlignControls performs the heavy lifting.
+          </p>
+        </descr>
         <seealso>
+          <link id="TWinControl.Controls"/>
+          <link id="TWinControl.DoAdjustClientRectChange"/>
+          <link id="TControl.DoAllAutoSize"/>
           <link id="TWinControlFlag"/>
         </seealso>
       </element>
       <element name="TWinControl.AlignControls.AControl">
-        <short/>
+        <short>Control examined and updated in the method.</short>
       </element>
       <element name="TWinControl.AlignControls.RemainingClientRect">
         <short>The available space, becomes remaining space on exit.</short>
@@ -14100,7 +14332,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </seealso>
       </element>
       <element name="TWinControl.CustomAlignInsertBefore.Result">
-        <short><b>True</b> if Control2 shall be placed before Control1 is placed.</short>
+        <short><b>True</b> if Control2 should be placed before Control1.</short>
       </element>
       <element name="TWinControl.CustomAlignInsertBefore.AControl1">
         <short/>
@@ -14111,7 +14343,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.CustomAlignPosition">
         <short>
-          Returns the aligned position for a custom-aligned child control, using the <var>OnAlignPosition</var> handler.
+          Returns the aligned position for a custom-aligned child control, using the <var>OnAlignPosition</var> event handler.
         </short>
         <descr>
           <p>
@@ -14151,9 +14383,13 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.DoAlignChildControls">
         <short>
-          Override this method to position/align all given controls.
+          Override this method to position / align all child controls for the specified control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            DoAlignChildControls always returns False in TWinControl. It can be overridden in descendent classes to perform any actions needed, and to set the return value to True to avoid the default handling performed in AlignControls.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControl.AlignControls"/>
         </seealso>
@@ -14165,13 +14401,13 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>The alignment of all given controls.</short>
       </element>
       <element name="TWinControl.DoAlignChildControls.AControl">
-        <short/>
+        <short>Control with child controls and client rectangle used in the method.</short>
       </element>
       <element name="TWinControl.DoAlignChildControls.AControlList">
         <short>The controls to be placed.</short>
       </element>
       <element name="TWinControl.DoAlignChildControls.ARect">
-        <short/>
+        <short>The unused client rectangle available for the child controls.</short>
       </element>
 
       <element name="TWinControl.DoChildSizingChange">
@@ -14245,10 +14481,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.DoSendShowHideToInterface">
-        <short>Sends the new Visible state to the widgetset.</short>
+        <short>Sends the new Visible state to the widgetset class instance.</short>
         <descr>
           <p>
-            Called by the CMShowingChanged method.
+            Called from the CMShowingChanged method.
           </p>
         </descr>
         <seealso>
@@ -14257,14 +14493,20 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.ControlsAligned">
-        <short>Called by AlignControls after aligning controls.</short>
-        <descr/>
+        <short>Called from AlignControls when alignment for the control is completed.</short>
+        <descr>
+          <p>
+            ControlsAligned has an empty implementation in the current LCL version.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TWinControl.DoSendBoundsToInterface">
-        <short>Sends the control's new bounds to the widget.</short>
-        <descr>Called by RealizeBounds.</descr>
+        <short>Sends the new bounds for the control to the widgetset class instance.</short>
+        <descr>
+          Called from RealizeBounds.
+        </descr>
         <seealso>
           <link id="TWinControlFlag"/>
         </seealso>
@@ -14272,15 +14514,19 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.RealizeBounds">
         <short>
-          Checks for changes in BoundsRect, and sends the new bounds to the widget using DoSendBoundsToInterface.
+          Checks for changes in BoundsRect, and sends the new bounds to the widget.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Calls DoSendBoundsToInterface to update the widget.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TWinControl.RealizeBoundsRecursive">
         <short>
-          Sends changed BoundsRects to the widget, for this and all child controls.
+          Sends changed BoundsRects to the widget, for both the control and all child controls.
         </short>
         <descr/>
         <seealso>
@@ -14290,7 +14536,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.InvalidateBoundsRealized">
-        <short>Resets the bounds rectangle for the control.</short>
+        <short>Resets the realized bounds rectangle for the control.</short>
         <descr>
           <p>
             Creates a new, empty TRect instance for the internal member passed to the widgetset class. Used in widgetset methods which apply changes to the Font for the control.
@@ -14315,14 +14561,27 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Class name for the control added as a subclass.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.DoConstraintsChange" name="TWinControl.DoConstraintsChange"/>
+      <element link="" name="TWinControl.DoConstraintsChange">
+        <short>Notifies the widgetset class instance when Constraints are changed.</short>
+        <descr>
+          <p>
+            DoConstraintsChange is an overridden method in TWinControl, and calls the inherited method on entry to size and position child controls to Constraints. Calls the ConstraintsChange method in the widgetset class instance when its Handle has been allocated.
+          </p>
+          <p>
+            DoConstraintsChange is called from the TSizeConstraints.Change method before it signals the OnChange event handler in the constraints class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.DoConstraintsChange">TControl.DoConstraintsChange</link>
+        </seealso>
+      </element>
       <element name="TWinControl.DoConstraintsChange.Sender">
-        <short/>
+        <short>Object (TWinControl) instance for the change notification.</short>
       </element>
 
       <element name="TWinControl.DoSetBounds">
         <short>
-          Updates the size and extent of the control and its ClientRect.
+          Updates the size and extent of the control as well as its ClientRect.
         </short>
         <descr>
           <p>
@@ -14358,11 +14617,11 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             Because this method is frequently overridden, the LCL calls the <link id="TControl.AdjustSize"/> method instead; it checks whether DoAutoSize really should be called right now.
           </p>
           <p>
-            DoAutoSize does roughly this:
+            DoAutoSize performs the following:
           </p>
           <ul>
-            <li>Checks whether Autosize is in fact permitted</li>
-            <li>Checks for unaligned child components and fits them in as best it can</li>
+            <li>Checks whether Autosize is permitted</li>
+            <li>Checks for unaligned child components and aligns them as best it can</li>
             <li>Moves the constrained (aligned) child components to the correct position</li>
             <li>Adjusts the size of the client rectangle</li>
             <li>Adjusts the bounds of the whole control</li>
@@ -14373,10 +14632,44 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         </seealso>
       </element>
 
-      <element link="#lcl.controls.TControl.DoAllAutoSize" name="TWinControl.DoAllAutoSize"/>
+      <element name="TWinControl.DoAllAutoSize">
+        <short>
+          Performs actions to resize and align the control and all of its children.
+        </short>
+        <descr>
+          <p>
+            DoAllAutoSize is an overridden method in TWinControl.
+          </p>
+          <p>
+            No actions are performed in the method when wcfAllAutoSizing has already been included in the window control flags; in other words, the method has already been called. No actions are performed when AutoSizeDelayed returns <b>True</b>.
+          </p>
+          <p>
+            DoAllAutoSize checks to ensure that a Handle has been allocated for the control, and that it and its Parent are Visible. If AutoSizing is not possible, the flag is removed from the control and its children and the method is exited.
+          </p>
+          <p>
+            DoAllAutoSize calls the inherited method to change the bounds, invalidate the preferred size, and update flags for the control. RealizeBoundsRecursive is called to update the bounds for the all child controls. The child controls are made visible first, and then the current control instance.
+          </p>
+          <p>
+            DoAllAutoSize is called from the AdjustSize and EnableAutoSizing methods.
+          </p>
+        </descr>
+        <errors>
+          <p>
+            The inherited method raises an EInvalidOperation exception if Parent has not been assigned for the control.
+          </p>
+          <p>
+            Raises a catchable exception when cfAutoSizeNeeded is already included in the control flags when the method is called.
+          </p>
+        </errors>
+        <seealso>
+          <link id="TControl.DoAllAutoSize"/>
+          <link id="TControl.Parent"/>
+          <link id="TControl.AutoSizingAll"/>
+        </seealso>
+      </element>
 
       <element name="TWinControl.AllAutoSized">
-        <short>Called by DoAllAutoSize after all bounds are computed.</short>
+        <short>Called from DoAllAutoSize after all bounds are computed for the control.</short>
         <descr/>
         <seealso>
           <link id="#lcl.forms.TCustomForm.AllAutoSized">TCustomForm.AllAutoSized</link>
@@ -14406,7 +14699,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             This value is independent of constraints and siblings, only the inner parts are relevant for the calculates values.
           </p>
           <p>
-            <var>WithThemeSpace</var> adds space for stacking when set to <b>True</b>. For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be space around each control. This space is theme- dependent, so it is passed as a parameter to the widget set.
+            <var>WithThemeSpace</var> adds space for stacking when set to <b>True</b>. For example: <var>TRadioButton</var> has a minimum size. But for stacking multiple TRadioButtons there should be space around each control. This space is theme- dependent, so it is passed as a parameter to the widgetset.
           </p>
         </descr>
         <seealso>
@@ -14449,9 +14742,13 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.GetChildren">
         <short>
-          Calls the specified procedure for each child control owned by the control in Root.
+          Calls the specified procedure for each child control with Root as the Owner.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Iterates the value in Controls to locate any controls where Root is the Owner of the control  instance. Calls the procedure in Proc using the control instance as an argument. An application must implement an object procedure using the signature in TGetChildProc, and pass the procedure in the Proc argument.
+          </p>
+        </descr>
         <seealso>
         </seealso>
       </element>
@@ -14459,26 +14756,58 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>The callback procedure.</short>
       </element>
       <element name="TWinControl.GetChildren.Root">
-        <short>Owner of the affected controls.</short>
+        <short>Owner of the controls passed to the procedure.</short>
       </element>
 
       <element name="TWinControl.ChildClassAllowed">
-        <short>Returns <b>True</b> if the specified  class is allowed in child controls.</short>
-        <descr/>
-        <seealso/>
+        <short>Checks whether the specified class type is allowed as a child control.</short>
+        <descr>
+          <p>
+            ChildClassAllowed is an overridden method in TWinControl used to determine if instances of the class type in ClassType are allowed as child controls. Returns <b>True</b> if the specified  class type is allowed as a child control in the Controls property.
+          </p>
+          <p>
+            In TWinControl, the return value is <b>True</b> when ChildClass has been assigned (not <b>Nil</b>) and the class type is derived from TControl.
+          </p>
+          <p>
+            ChildClassAllowed does not call the inherited method which always returns <b>False</b>.
+          </p>
+          <p>
+            ChildClassAllowed is called from the CheckChildClassAllowed method in TControl.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.Controls"/>
+          <link id="TControl.CheckChildClassAllowed"/>
+          <link id="TControl.Parent"/>
+        </seealso>
       </element>
       <element name="TWinControl.ChildClassAllowed.Result">
-        <short><b>True</b> when allowed.</short>
+        <short><b>True</b> when ChildClass is allowed in Controls.</short>
       </element>
       <element name="TWinControl.ChildClassAllowed.ChildClass">
         <short>Class type examined in the method.</short>
       </element>
 
       <element name="TWinControl.PaintControls">
-        <short>Paints all child controls which do not have a Handle.</short>
+        <short>Paints all child controls which do not have a Handle as part of their Parent.</short>
         <descr>
           <p>
             Controls which do <b>not</b> descend from <var>TWinControl</var> have no handle of their own; they are repainted when the parent control is redrawn.
+          </p>
+          <p>
+            No actions are performed in the method when the device context in DC is unassigned (0),  the Handle has not been allocated for the control, or an internal TFPList has not been created to store the child controls in the Controls property.
+          </p>
+          <p>
+            PaintControls tries to locate and paint controls (starting with the control in First) not derived from TWinControl. When First is omitted (<b>Nil</b>) or not found in the internal list, all child controls in the list are examined. The control must be Visible and within the visible client area on the Parent to be painted.
+          </p>
+          <p>
+            Each eligible control is positioned on the device context using the Left and Top properties for the control. Its clipping rectangle is copied to the device context, and an LM_PAINT message is performed on the DC to redraw the parent control.
+          </p>
+          <p>
+            The ControlState property is updated prior to and following the paint operation for each child control to include or exclude the csPaintCopy value.
+          </p>
+          <p>
+            PaintControls is called from the PaintHandler method, and occurs when the WMPaint method handles an LM_PAINT message for a control.
           </p>
         </descr>
         <seealso/>
@@ -14492,78 +14821,156 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.PaintHandler">
         <short>Handler for TLMPaint, manages the painting of child controls.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>PaintHandler</var> is a method used to apply the LM_PAINT window message in TheMessage to the client rectangle for the control. The device context in TheMessage is used as the target for the paint operation. If the device context is unassigned on entry, the BeginPaint routine in the LCL interface is called to get a device context for the Handle in the control.
+          </p>
+          <p>
+            PaintHandler checks the list of child controls if any of the items are visible, opaque TControl class instances which need to be drawn using the Handle for the control. When found, a clipping rectangle for the child control is calculated on the device context.
+          </p>
+          <p>
+            PaintHandler calls the PaintSite method in the DockManager (when assigned and enabled) to paint the DockSite to the device context. The  PaintControls method is called to force the all child controls to be painted to the device context.
+          </p>
+          <p>
+            PaintHandler calls the EndPaint routine in the LCL interface to free the device context prior to exiting from the method.
+          </p>
+          <p>
+            PaintHandler is called when the WMPaint method receives an LM_PAINT message for the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWinControl.PaintHandler.TheMessage">
-        <short/>
+        <short>LM_PAINT window message handled in the method.</short>
       </element>
 
       <element name="TWinControl.PaintWindow">
-        <short>Paints a clipped portion (child control) on the specified device context.</short>
-        <descr/>
+        <short>Paints a clipping region for the control on the specified device context.</short>
+        <descr>
+          <p>
+            <var>PaintWindow</var> is a method used to paint a clipping region for the control (or a child control) to the device context in DC.
+          </p>
+          <p>
+            PaintWindow creates a TLMessage instance using the LM_PAINT window message and the specified device context. The DefaultHandler method is called to pass the message to the widgetset class instance (and ultimately its message processing loop).
+          </p>
+          <p>
+            No actions are performed in the method when DC is unassigned (<b>0</b>), the Handle for the control has not been allocated, or the control is being freed.
+          </p>
+          <p>
+            PaintWindow is called from the PaintHandler method.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWinControl.PaintWindow.DC">
-        <short/>
+        <short>Device context with the requested clipping region.</short>
       </element>
 
       <element name="TWinControl.CreateBrush">
         <short>
           Creates the <link id="TWinControl.Brush">Brush</link>, if not already created.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Creates and assigns a <var>TBrush</var> instance used in the <var>Brush</var> property. The brush Color is updated using the resolved value in the Color property. clDefault in Color causes the default brush color value from the widgetset to be used.
+          </p>
+          <p>
+            CreateBrush is called when the value for the Brush property is read, and the member has not yet been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.Brush"/>
+          <link id="TControl.Color"/>
+          <link id="TControl.GetDefaultColor"/>
+          <link id="#lcl.graphics.TBrush">TBrush</link>
+        </seealso>
       </element>
 
       <element name="TWinControl.ScaleControls">
-        <short>Scales (resizes) all child controls.</short>
-        <descr/>
+        <short>Scales values for all child controls.</short>
+        <descr>
+          <p>
+            <var>ScaleControls</var> is a method used to scale the child controls in the Controls property using the specified multiplier and divisor. ScaleControls visits each of the class instances in Controls and calls its ChangeScale method using Multiplier and Divider as arguments.
+          </p>
+          <p>
+            ScaleControls is called from the overridden ChangeScale method. This causes all controls in the hierarchy to apply the scaling factor to values in their Constraints, Font, Left, Top, Right and Bottom properties. For top-level Forms, the values in Left and Top are <b>not</b>  scaled.
+          </p>
+        </descr>
         <seealso>
+          <link id="TWinControl.ChangeScale"/>
           <link id="TControl.ChangeScale"/>
+          <link id="TControl.UpdateAnchorRules"/>
         </seealso>
       </element>
       <element name="TWinControl.ScaleControls.Multiplier">
-        <short/>
+        <short>Multiplier applied to a value to achieve a scaling factor.</short>
       </element>
       <element name="TWinControl.ScaleControls.Divider">
-        <short/>
+        <short>Divisor applied to a value to achieve a scaling factor.</short>
       </element>
 
       <element name="TWinControl.ChangeScale">
         <short>
           Scales (resizes) the control and all of its child controls.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            ChangeScale is an overridden method in TWinControl used to ensure that child controls are scaled using the values in the Multiplier and Divider arguments.
+          </p>
+          <p>
+            ChangeScale extends the inherited method by calling DisableAlign before applying the scaling factor. It calls the ScaleControls method to apply Multiplier and Divider to the child controls. It calls the inherited method to apply  scaling to the Bounds, Constraints, and Font in the control.
+          </p>
+          <p>
+            ChangeScale visits each of the control instances in Controls, and calls their UpdateAnchorRules method to update the BaseBounds in the control as needed.
+          </p>
+          <p>
+            EnableAlign is called prior to exiting from the method.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.ChangeScale"/>
         </seealso>
       </element>
       <element name="TWinControl.ChangeScale.Multiplier">
-        <short/>
+        <short>Multiplier applied to a value to achieve a scaling factor.</short>
       </element>
       <element name="TWinControl.ChangeScale.Divider">
-        <short/>
+        <short>Divisor applied to a value to achieve a scaling factor.</short>
       </element>
 
       <element name="TWinControl.CMBiDiModeChanged">
         <short>
-          Handler for a changed <link id="#lcl.Controls.TControl.BiDiMode">BiDiMode</link> message; notifies the widget and all child controls.
+          Handles a CM_BIDIMODECHANGED control message for the control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            CMBiDiModeChanged is an overridden method in TWinControl used to handle a CM_BIDIMODECHANGED control message received for the control. It calls the inherited method on entry to invalidate the control when needed. It extends the inherited method to notify child controls of the change using a CM_PARENTBIDIMODECHANGED message.
+          </p>
+          <p>
+            If a handle has been allocated in the widgetset class instance, its SetBiDiMode method is called to reflect the values from UseRightToLeftAlignment, UseRightToLeftReading, and  UseRightToLeftScrollBar.
+          </p>
+          <p>
+            AdjustSize is called to update the sizes for parent and child controls after the property value has been changed.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TWinControl.CMBiDiModeChanged.Message">
-        <short/>
+        <short>Control message examined and handled in the method.</short>
       </element>
 
       <element name="TWinControl.CMBorderChanged">
         <short>
-          Handler for changed Border property messages; adjusts and invalidates the control.
+          Handles a CM_BORDERCHANGED message received for the control.
         </short>
+        <descr>
+          <p>
+            <var>CMBorderChanged</var> ensures that the size and client rectangle are adjusted when a border is added to or removed from the control. It calls DoAdjustClientRectChange and AdjustSize to update values in the control. It calls Invalidate to force the control to be redrawn with the new size and client rectangle.
+          </p>
+        </descr>
       </element>
       <element name="TWinControl.CMBorderChanged.Message">
-        <short>Message examined in the method.</short>
+        <short>Control message examined and applied in the method.</short>
       </element>
 
       <element name="TWinControl.CMDoubleBufferedChanged">
@@ -14573,7 +14980,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             <var>CMDoubleBufferedChanged</var> is the handler used to process <b>CM_PARENTDOUBLEBUFFEREDCHANGED</b> messages when the value in <var>DoubleBuffered</var> has been been changed.
           </p>
           <p>
-            CMDoubleBufferedChanged calls <var>NotifyControls</var> to apply the message in the widget set class; the value in the Message argument is ignored.
+            CMDoubleBufferedChanged calls <var>NotifyControls</var> to apply the message in the widgetset class; the value in the Message argument is ignored.
           </p>
           <p>
             CMDoubleBufferedChanged calls <var>Invalidate</var> to cause the control to be redrawn.
@@ -15241,7 +15648,9 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       <element name="TWinControl.DoFloatMsg">
         <short>Handler called when the control starts floating.</short>
         <descr>
-          TWinControls can float for themselves, unless they request a special FloatingDockSiteClass.
+          <p>
+            A TWinControl can be floated as a stand-alone window, unless they request a special FloatingDockSiteClass.
+          </p>
         </descr>
         <seealso>
           <link id="TControl.DoFloatMsg"/>
@@ -15271,11 +15680,33 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.DoEnter">
-        <short>Invokes the <link id="#lcl.Controls.TWinControl.OnEnter">OnEnter</link> event handler.</short>
+        <short>Signals the OnEnter event handler (when assigned) when the control receives focus.</short>
+        <descr>
+          <p>
+            <var>DoEnter</var> is called from the CMEnter method when a CM_ENTER message is received for the control. The event handler allows actions to be performed when the control receives focus, either by using keyboard navigation or by mouse click in the client area for the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.OnEnter"/>
+          <link id="TWinControl.CMEnter"/>
+          <link id="TWinControl.DoExit"/>
+          <link id="TWinControl.OnExit"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.DoExit">
-        <short>Invoke the <link id="#lcl.Controls.TWinControl.OnExit">OnExit</link> event handler.</short>
+        <short>Signals the OnExit event handler (when assigned) when the control loses focus.</short>
+        <descr>
+          <p>
+            <var>DoExit</var> is called from the CMExit method when a CM_EXIT message is received for the control. The event handler allows actions to be performed when the control loses focus, either by using keyboard navigation or by mouse click in the client area for another control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.OnExit"/>
+          <link id="TWinControl.CMExit"/>
+          <link id="TWinControl.DoEnter"/>
+          <link id="TWinControl.OnEnter"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.DoKeyDownBeforeInterface">
@@ -15298,7 +15729,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
             Finally, the <link id="TWinControl.OnKeyDown"/> user handler is invoked.
           </p>
           <p>
-            If none of the  handlers accept / respond to the key, the widget set class is used to process  the key.
+            If none of the  handlers accept / respond to the key, the widgetset class is used to process  the key.
           </p>
         </descr>
         <seealso>
@@ -15347,26 +15778,72 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.DoKeyPress">
         <short>
-          Tries all <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> handlers;  the Parent OnKeyPress handler is tried first.
+          Performs actions needed to handle a key press message for the control.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>DoKeyPress</var> is a <var>Boolean</var> function used to handle a key press event received for the control. The return value is <b>True</b> if the character code in the specified Message is handled for the control.
+          </p>
+          <p>
+            DoKeyPress allows a TCustomForm instance in Parent with KeyPreview enabled to handle the notification message using its DoKeyPress method. If the character code is handled, the return value is set and no further actions are performed in the method.
+          </p>
+          <p>
+            The return value is <b>False</b> when standard events have been disabled by including csNoStdEvents in the ControlStyle property.
+          </p>
+          <p>
+            When not disabled, the KeyPress method is called using the character code in Message as an argument. If the character was handled in the OnKeyPress event handler, the return value is <b>True</b>.
+          </p>
+          <p>
+            DoKeyPress is called from the CNChar method when a CN_CHAR control notification message is received for the control.
+          </p>
+        </descr>
         <seealso>
+          <link id="TWinControl.OnKeyPress"/>
           <link id="TWinControl.OnUTF8KeyPress"/>
+          <link id="TWinControl.DoUTF8KeyPress"/>
+          <link id="TWinControl.CNChar"/>
+          <link id="TControl.ControlStyle"/>
         </seealso>
       </element>
       <element name="TWinControl.DoKeyPress.Result">
-        <short><b>True</b> if the key was handled.</short>
+        <short><b>True</b> if the key press was handled for the control.</short>
       </element>
       <element name="TWinControl.DoKeyPress.Message">
-        <short/>
+        <short>Control Notification message handled in the method.</short>
       </element>
 
       <element name="TWinControl.DoUTF8KeyPress">
         <short>
-          Tries all <link id="#lcl.Controls.TWinControl.OnUTF8KeyPress">OnUTF8KeyPress</link> handlers;  the Parent OnUTF8KeyPress handler is tried first.
+          Performs actions needed to handle a UTF-8-encoded key press message for the control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoUTF8KeyPress</var> is a <var>Boolean</var> function used to handle a key press event for a UTF-8-encoded value received for the control. The return value is <b>True</b> if the character code in the specified Message is handled for the control.
+          </p>
+          <p>
+            DoUTF8KeyPress allows a TCustomForm instance in Parent with KeyPreview enabled to handle the notification message using its DoUTF8KeyPress method. If the character code is handled, the return value is set and no further actions are performed in the method.
+          </p>
+          <p>
+            The return value is <b>False</b> when standard events have been disabled by including csNoStdEvents in the ControlStyle property.
+          </p>
+          <p>
+            When not disabled, the UTF8KeyPress method is called using the character code in Message as an argument. If the character was handled in the OnUTF8KeyPress event handler, the return value is <b>True</b>.
+          </p>
+          <p>
+            At design-time, DoUTF8KeyPress redirects the key event to the active design surface in the Lazarus IDE.
+          </p>
+          <p>
+            DoUTF8KeyPress is called from the IntfUTF8KeyPress method when a CN_CHAR control notification message is received for the control. DoUTF8KeyPress is called after KeyDown has been executed.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.OnUTF8KeyPress"/>
+          <link id="TWinControl.IntfUTF8KeyPress"/>
+          <link id="TWinControl.OnKeyPress"/>
+          <link id="TWinControl.DoKeyPress"/>
+          <link id="TWinControl.CNChar"/>
+          <link id="TControl.ControlStyle"/>
+        </seealso>
       </element>
       <element name="TWinControl.DoUTF8KeyPress.Result">
         <short><b>True</b> if the key was handled.</short>
@@ -15394,15 +15871,22 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.ChildKey">
-        <short>Applies the key message using ChildKey in the parent control.</short>
-        <descr/>
-        <seealso/>
+        <short>Allows a parent form to process a keyboard message in one of its child controls.</short>
+        <descr>
+          <remark>
+            WantChildKey in TCustomForm always returns <b>False</b>.
+          </remark>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DoRemainingKeyDown"/>
+          <link id="#lcl.forms.TCustomForm.WantChildKey"/>
+        </seealso>
       </element>
       <element name="TWinControl.ChildKey.Result">
-        <short><b>True</b> if the key was handled.</short>
+        <short><b>True</b> if the key message was handled.</short>
       </element>
       <element name="TWinControl.ChildKey.Message">
-        <short/>
+        <short>Child key message handled in the method.</short>
       </element>
 
       <element name="TWinControl.SendDialogChar">
@@ -15423,64 +15907,106 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short/>
       </element>
 
-      <element link="#lcl.controls.TControl.DialogChar" name="TWinControl.DialogChar"/>
+      <element name="TWinControl.DialogChar">
+        <short>Handles the specified key in Message as an accelerator or shortcut  key.</short>
+        <descr>
+          <p>
+            DialogChar is an overridden Boolean function in TWinControl used to handle a character code in Message as an accelerator (or shortcut) key for a control. It re-implements the inherited method which always returns False. In TWinControl, the Message is sent to each of the children in Controls until one of them indicates that it responds to the accelerator key.
+          </p>
+          <p>
+            DialogChar is overridden in descendent classes to perform actions needed when the shortcut key is handled in the method. These classes allow the accelerator key to be defined using the Caption or Shortcut properties. Some examples include:
+          </p>
+          <ul>
+            <li>TCustomGrid  / TGrid</li>
+            <li>TCustomButton / TButton</li>
+            <li>TCustomLabel / TLabel</li>
+            <li>TCustomStaticText / TStaticText</li>
+            <li>TCustomSpeedButton / TSpeedButton</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.DialogChar">TControl.DialogChar</link>
+        </seealso>
+      </element>
       <element name="TWinControl.DialogChar.Result">
         <short><b>True</b> if the key was handled.</short>
       </element>
       <element name="TWinControl.DialogChar.Message">
-        <short/>
+        <short>Message with the character examined in the method.</short>
       </element>
 
       <element name="TWinControl.ControlKeyDown">
-        <short>Lets the Application handle an navigation key.</short>
-        <descr/>
-        <seealso/>
+        <short>Handles key down events for special navigation keys used in a control.</short>
+        <descr>
+          <p>
+            <var>ControlKeyDown</var> is a method used to detect and handle key down events for navigation keys used in the control. ControlKeyDown calls the corresponding method in TApplication to determine the actions needed for the key and modifier. The application handles Tab and cursor  keys which may affect control or form focus.
+          </p>
+          <p>
+            ControlKeyDown is called from the DoRemainingKeyDown method to handle keys not otherwise handled by a control or its parent forms.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DoRemainingKeyDown"/>
+          <link id="#lcl.forms.TApplication.ControlKeyDown">TApplication.ControlKeyDown</link>
+          <link id="#lcl.forms.TApplication.DoTabKey">TApplication.DoTabKey</link>
+          <link id="#lcl.forms.TApplication.DoArrowKey">TApplication.DoArrowKey</link>
+        </seealso>
       </element>
       <element name="TWinControl.ControlKeyDown.Key">
-        <short/>
+        <short>Numeric key code examined in the method.</short>
       </element>
       <element name="TWinControl.ControlKeyDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key.</short>
       </element>
 
       <element name="TWinControl.ControlKeyUp">
-        <short>Lets the Application handle an navigation key.</short>
-        <descr/>
-        <seealso/>
+        <short>Handles key up events for special navigation keys.</short>
+        <descr>
+          <p>
+            <var>ControlKeyUp</var> is a method used to detect and handle key up events for navigation keys used in the control. ControlKeyUp calls the corresponding method in TApplication to determine the actions needed for the key and modifier. The application handles Return (Enter) and Escape keys which may affect control or form focus.
+          </p>
+          <p>
+            ControlKeyUp is called from the DoRemainingKeyUp method to handle keys not otherwise handled by a control or its parent forms.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DoRemainingKeyUp"/>
+          <link id="#lcl.forms.TApplication.ControlKeyUp">TApplication.ControlKeyUp</link>
+          <link id="#lcl.forms.TApplication.DoReturnKey">TApplication.DoReturnKey</link>
+          <link id="#lcl.forms.TApplication.DoEscapeKey">TApplication.DoEscapeKey</link>
+        </seealso>
       </element>
       <element name="TWinControl.ControlKeyUp.Key">
-        <short/>
+        <short>Numeric key code examined in the method.</short>
       </element>
       <element name="TWinControl.ControlKeyUp.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key.</short>
       </element>
 
       <element name="TWinControl.KeyDown">
-        <short>
-          Invokes the <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> handler.
-        </short>
+        <short>Signals the OnKeyDown event handler (when assigned).</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWinControl.KeyDown.Key">
-        <short/>
+        <short>Numeric key code examined in the method.</short>
       </element>
       <element name="TWinControl.KeyDown.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key.</short>
       </element>
 
       <element name="TWinControl.KeyDownBeforeInterface">
         <short>
-          Invokes the <link id="#lcl.Controls.TWinControl.OnKeyDown">OnKeyDown</link> handler.
+            Lets the application, parent forms, or control handle key preview before the LCL interface.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWinControl.KeyDownBeforeInterface.Key">
-        <short/>
+        <short>Numeric key code examined in the method.</short>
       </element>
       <element name="TWinControl.KeyDownBeforeInterface.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key.</short>
       </element>
 
       <element name="TWinControl.KeyDownAfterInterface">
@@ -15500,28 +16026,24 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.KeyPress">
-        <short>
-          Invokes the <link id="#lcl.Controls.TWinControl.OnKeyPress">OnKeyPress</link> handler.
-        </short>
+        <short>Signals the OnKeyPress event handler (when assigned).</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWinControl.KeyPress.Key">
-        <short/>
+        <short>Character value for the key press event.</short>
       </element>
 
       <element name="TWinControl.KeyUp">
-        <short>
-          Invokes the <link id="#lcl.Controls.TWinControl.OnKeyUp">OnKeyUp</link> handler.
-        </short>
+        <short>Signals the OnKeyUp event handler (when assigned).</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWinControl.KeyUp.Key">
-        <short/>
+        <short>Numeric key code for the key up event.</short>
       </element>
       <element name="TWinControl.KeyUp.Shift">
-        <short/>
+        <short>Shift, Ctrl, or Alt modifier for the key.</short>
       </element>
 
       <element name="TWinControl.KeyUpBeforeInterface">
@@ -15555,14 +16077,12 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.UTF8KeyPress">
-        <short>
-          Invokes the <link id="TWinControl.OnUTF8KeyPress">OnUTF8KeyPress</link> handler.
-        </short>
+        <short>Signals the OnUTF8KeyPress event handler (when assigned).</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWinControl.UTF8KeyPress.UTF8Key">
-        <short/>
+        <short>UTF-8-encoded character value for the key press event.</short>
       </element>
 
       <element name="TWinControl.FindNextControl">
@@ -15593,7 +16113,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.SelectFirst">
-        <short>Returns the first control in tab order.</short>
+        <short>Returns the first control in the tab order for the parent form.</short>
         <descr/>
         <seealso/>
       </element>
@@ -15632,10 +16152,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>Gets the value for the ClientRect property.</short>
         <descr>
           <p>
-            GetClientRect is an overridden method in TWinControl used to get the value for the ClientRect property. ClientRect contains the visual client area for the control.
+            <var>GetClientRect</var> is an overridden method in TWinControl used to get the value for the ClientRect property. ClientRect contains the visual client area for the control.
           </p>
           <p>
-            GetClientRect extends the ancestor method to synchronize values in the control and its widgetset class using the Handle for the control. It uses values in ComponentState and the control flags for the TWinControl instance to determine the actions needed in the method. If an action cannot be determined, or the handle is not available, values in ClientWidth and ClientHeight are used as the Width and Height in the TRect instance.
+            GetClientRect extends the inherited method to synchronize values in the control with its widgetset class instance using the Handle for the control. It uses values in ComponentState and the control flags for the TWinControl instance to determine the actions needed in the method. If an action cannot be determined, or the handle is not available, values in ClientWidth and ClientHeight are used as the Width and Height in the TRect instance.
           </p>
         </descr>
         <seealso>
@@ -15647,23 +16167,49 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.GetControlOrigin">
-        <short>The screen coordinates for the control.</short>
+        <short>Gets the value for the ControlOrigin property.</short>
         <descr>
+          <p>
+            <var>GetControlOrigin</var> is overridden in TWinControl to get a window rectangle from the LCL interface. If the Handle for the control has not been allocated, the inherited method is called.
+          </p>
+          <p>
+            Returns the screen coordinates for the Top and Left coordinate 0,0 of the control area. (The top / left pixel of the control on the screen). Note that this value is the position as stored in the interface and is not always in sync with the LCL. When a control is moved, the LCL sets the bounds to the wanted position and sends a move message to the interface. It is up to the interface to handle moves instantly or to queue them.
+          </p>
         </descr>
         <seealso>
           <link id="#lcl.controls.TControl.GetControlOrigin">TControl.GetControlOrigin</link>
         </seealso>
       </element>
       <element name="TWinControl.GetControlOrigin.Result">
-        <short/>
+        <short>TPoint instance with the screen coordinates for the Top and Left properties.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.GetDeviceContext" name="TWinControl.GetDeviceContext"/>
+      <element name="TWinControl.GetDeviceContext">
+        <short>Gets the device context for the control.</short>
+        <descr>
+          <p>
+            <var>GetDeviceContext</var> is an overridden <var>HDC</var> function in TWinControl used to get the device context used for the control.
+          </p>
+          <p>
+            The device context provides a Handle (yes another one) with information about the drawing region on a display or printer. In the LCL, this essentially identifies a clipping rectangle for a given window handle. In TControl, the device context for the WindowHandle in the Parent control is used (because it does not have its own handle). In TWinControl, the Handle for the control is used.
+          </p>
+          <p>
+            GetDevice context calls the GetDC routine in the LCL interface to get a device context for the value in its Handle property. On successful completion of the routine, the return value is also assigned to the WindowHandle argument (which is the member for the WindowHandle property for display purposes).
+          </p>
+          <p>
+            An EOutOfResources exception is raised when GetDC returns an unassigned device context (0).
+          </p>
+          <p>
+            GetDeviceContext re-implements the inherited method.
+          </p>
+        </descr>
+        <seealso/>
+      </element>
       <element name="TWinControl.GetDeviceContext.Result">
-        <short/>
+        <short>Device context created for the control, or 0 when unavailable.</short>
       </element>
       <element name="TWinControl.GetDeviceContext.WindowHandle">
-        <short/>
+        <short>Handle for the control represented in the device context. Updated in the method.</short>
       </element>
 
       <element name="TWinControl.GetParentBackground">
@@ -15835,9 +16381,19 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.Loaded">
         <short>
-          Called when the control has been loaded from a resource, transfers the loaded property values to the widget.
+          Performs actions when a component has been loaded during LCL streaming.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Loaded is an overridden method in TWinControl used to perform actions needed when a component has been loaded from a resource during LCL streaming. It extends the inherited method to align and resize it child Controls, as well synchronize property values with those in the widgetset class instance when its handle has been allocated.
+          </p>
+          <p>
+            Loaded calls the inherited method to update the BaseBounds for control, and to apply property values dependent on the Parent control.
+          </p>
+          <p>
+            Loaded calls FixupTabList to populate an internal list with child Controls ordered by their TabOrder property.
+          </p>
+        </descr>
         <seealso>
           <link id="TControl.Loaded"/>
         </seealso>
@@ -15845,7 +16401,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.FormEndUpdated">
         <short>
-          Realizes all cached changes after a bulk update of the form. Calls inherited <var>FormEndUpdated</var>, then informs each child control.
+          Realizes all cached changes after a bulk update of the form. Calls the inherited <var>FormEndUpdated</var> method, then informs each child control.
         </short>
         <descr/>
         <seealso>
@@ -15854,13 +16410,18 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.MainWndProc">
-        <short>This method allows handling messages in Windows.</short>
+        <short> The message handler for the control.</short>
         <descr>
+          <p>
+            Used for controls which need features not yet supported by the LCL. MainWndProc has an empty implementation in TWinControl.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="#lcl.forms.TApplication">TApplication</link>
+        </seealso>
       </element>
       <element name="TWinControl.MainWndProc.Msg">
-        <short/>
+        <short>Message handled in the method.</short>
       </element>
 
       <element name="TWinControl.ParentFormHandleInitialized">
@@ -15919,15 +16480,40 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.RemoveFocus">
-        <short>Notifies the parent when the control loses focus.</short>
-        <descr/>
-        <seealso/>
+        <short>Notifies the parent Form when the control cannot be focused.</short>
+        <descr>
+          <p>
+            <var>RemoveFocus</var> is a method used to notify the parent form when the control cannot be focused. RemoveFocus is called from methods like Destroy and RemoveControl, where the control will no  longer exist on the parent form. It is also called from methods like CMEnabledChanged and CMVisibleChanged, where the parent form should no longer allow the control to be focused.
+          </p>
+          <p>
+            RemoveFocus calls GetParentForm to get the parent form instance, and calls its DefocusControl method to ensure that the control is removed as the ActiveControl (when assigned).
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.CMEnabledChanged"/>
+          <link id="TWinControl.CMVisibleChanged"/>
+          <link id="TWinControl.RemoveControl"/>
+          <link id="TWinControl.Destroy"/>
+          <link id="#lcl.forms.TCustomForm.DefocusControl">TCustomForm.DefocusControl</link>
+          <link id="#lcl.forms.TCustomForm.ActiveControl">TCustomForm.ActiveControl</link>
+          <link id="#lcl.forms.GetParentForm">GetParentForm</link>
+        </seealso>
       </element>
       <element name="TWinControl.RemoveFocus.Removing">
-        <short/>
+        <short>True if the control is being freed, False when it is not enabled or not visible.</short>
       </element>
 
-      <element link="#lcl.controls.TControl.SendMoveSizeMessages" name="TWinControl.SendMoveSizeMessages"/>
+      <element name="TWinControl.SendMoveSizeMessages">
+        <short>Sends Move or Size messages using the window message processing loop.</short>
+        <descr>
+          <p>
+            Send Move and Size messages through the LCL message paths. This simulates the VCL behavior and has no real effect.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lcl.controls.TControl.SendMoveSizeMessages">TControl.SendMoveSizeMessages</link>
+        </seealso>
+      </element>
       <element name="TWinControl.SendMoveSizeMessages.SizeChanged">
         <short/>
       </element>
@@ -15935,9 +16521,13 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short/>
       </element>
 
-      <element link="#lcl.controls.TWinControl.BorderStyle" name="TWinControl.SetBorderStyle">
+      <element name="TWinControl.SetBorderStyle">
         <short>Sets the value for the BorderStyle property.</short>
-        <descr/>
+        <descr>
+          <p>
+            Notifies the widgetset class instance of the new property value when its handle has been allocated.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControl.BorderStyle"/>
         </seealso>
@@ -15976,10 +16566,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <seealso/>
       </element>
       <element name="TWinControl.SetChildZPosition.AChild">
-        <short/>
+        <short>Control to locate and move in the method.</short>
       </element>
       <element name="TWinControl.SetChildZPosition.APosition">
-        <short/>
+        <short>New ordinal position for the control in the Controls property.</short>
       </element>
 
       <element name="TWinControl.SetParentBackground">
@@ -15994,28 +16584,61 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.ShowControl">
-        <short>Asks the parent to show itself.</short>
-        <descr/>
-        <seealso/>
+        <short>Displays the control on its Parent.</short>
+        <descr>
+          <p>
+            <var>ShowControl</var> is a method used to display the control on its Parent. When Parent has been assigned, its ShowControl is called. This is repeated until a control without an assigned Parent is encountered.
+          </p>
+          <p>
+            ShowControl is called from the Show method in a control instance. It occurs before the Visible property is set to True, and forces each of the parent controls to become visible before setting the value in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TControl.Parent"/>
+          <link id="TControl.Show"/>
+        </seealso>
       </element>
       <element name="TWinControl.ShowControl.AControl">
-        <short>The control to show, here: ignored!</short>
+        <short>A control to display. Ignored in this method.</short>
       </element>
 
       <element name="TWinControl.UpdateControlState">
         <short>
-          Updates the visible state for the control; updates the widget set class when  already created.
+          Updates the visible state for the control, and notifies the widgetset class when available.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            Calls AdjustSize when the Handle has been allocated for the control and the control is  logically visible in the client area for the parent. This causes DoAllAutoSize and UpdateShowing to be called. If the control is not visible, UpdateShowing is called to hide the control.
+          </p>
+          <p>
+            Called from the SetParentWindow method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TWinControl.UpdateShowing">
         <short>
-          When the widget should be visible and has not yet been created, it's created along with all children.
+          Updates the Showing property with the visibility for the control, its Parents, and its child controls.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>UpdateShowing</var> is a method used to determine the visibility for the Handle in the control. It calls HandleObjectShouldBeVisible to check the handle state and visibility for both the control and each of its Parent controls. If the control should be showing and Handle has not already been allocated, CreateHandle is called.
+          </p>
+          <p>
+            When child controls exist in the Controls property, they are visited to call the UpdatingShowing method for each of the TWinControl instances.
+          </p>
+          <p>
+            If an auto-sizing request is not active, a CM_SHOWINGCHANGED message is performed to apply the new visibility for the control(s). The Showing property is updated prior to exiting from the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.Showing"/>
+          <link id="TWinControl.CreateHandle"/>
+          <link id="TWinControl.AutoSizeDelayed"/>
+          <link id="TWinControl.AutoSizePhases"/>
+          <link id="TControl.HandleObjectShouldBeVisible"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.WndProc">
@@ -16187,7 +16810,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.CachedClientHeight">
         <short>
-          The intended ClientHeight, as sent to the widget set class.
+          The intended ClientHeight, as sent to the widgetset class.
         </short>
         <descr/>
         <seealso/>
@@ -16195,7 +16818,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.CachedClientWidth">
         <short>
-          The intended ClientWidth, as sent to the widget set class.
+          The intended ClientWidth, as sent to the widgetset class.
         </short>
         <descr/>
         <seealso/>
@@ -16343,17 +16966,37 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.Handle">
         <short>
-          A reference to the widgetset class instance associated with this control.
+          A reference handle to the widgetset class instance associated with this control.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Handle</var> is a <var>HWND</var> property which represents the handle to the widgetset class instance for the control. It provides a bi-directional communication mechanism between an LCL component and the native control on a given platform or widgetset. Handle has a non-zero value when it has been allocated for the widget.
+          </p>
+          <p>
+            Read access to the property value calls the HandleNeeded method to create the handle if it does not already exist in the control (and its Parent controls). When the property value is changed, the InvalidatePreferredSize method is called to update control flags and clear the cached size for the control.
+          </p>
+          <p>
+            Use HandleAllocated to check Handle for a non-zero value. Use HandleNeeded when the LCL component needs to ensure that the control and Parent controls have an assigned Handle. Or call CreateHandle.
+          </p>
+          <p>
+            Use WindowHandle to access the unique identifier for a device context used in drawing operations for the widgetset class.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.HandleAllocated"/>
+          <link id="TWinControl.HandleNeeded"/>
+          <link id="TWinControl.CreateHandle"/>
+          <link id="TWinControl.CreateWnd"/>
+          <link id="TWinControl.WindowHandle"/>
+          <link id="TWinControl.ParentHandlesAllocated"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.IsFlipped">
         <short>Used in Carbon and Cocoa widgetsets</short>
         <descr>
           <p>
-            IsFlipped is a read-only Boolean property. It is used in the Carbon and Cocoa widgetsets for these Mac platforms.
+            IsFlipped is a read-only Boolean property. It is used in the Carbon and Cocoa widgetsets for the macOS platforms.
           </p>
         </descr>
         <seealso/>
@@ -16381,9 +17024,19 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.TabOrder">
         <short>
-          Determines the navigation order for the control when the user presses the Tab or Shift+Tab key.
+          Indicates the navigation order for the control when the user presses the Tab or Shift+Tab key.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TabOrder</var> is a <var>TTabOrder</var> with a numeric value which indicates the navigation order for the control when the user presses the Tab or Shift+Tab key. The default value for the property is -1 and indicates that an explicit value has not been assigned.
+          </p>
+          <p>
+            Each TWinControl has an internal list used to maintain the tab order for its child Controls. When TabOrder is -1 for a given child control, it added to the end of the tab order list. A non-zero value forces the control to be stored at that ordinal position in the tab order list. Setting a new value for the property causes the private UpdateTabOrder method to be called to maintain the sequence for the child controls.
+          </p>
+          <p>
+            Use TabStop to indicate if the control can be focused using tab order navigation request.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControl.TabStop"/>
         </seealso>
@@ -16391,17 +17044,36 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.TabStop">
         <short>
-          Allows the user to navigate to this control, by pressing the Tab key.
+          Allows the user to navigate to / from the control by pressing the Tab or Shift+Tab keys.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>TabStop</var> is a <var>TabStop</var> property which indicates if the control can be focused when using the <b>Tab</b> or <b>Shift+Tab</b> keys to navigate between controls on a form. The default value for the property is <b>False</b>. At design-time, the Lazarus IDE sets the value to <b>True</b> in newly created control instances.
+          </p>
+          <p>
+            When set to <b>True</b>, the windows style flags are updated to include the value WS_TABSTOP in the CreateParams method.
+          </p>
+          <p>
+            Changing the value for the property causes the internal tab order list to be updated, and a CM_TABSTOPCHANGED control message is performed for the control.
+          </p>
+          <p>
+            TabStop is used in methods like FindNextControl, and may be updated in methods like Insert.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControl.TabOrder"/>
+          <link id="TWinControl.FindNextControl"/>
+          <link id="TWinControl.CanTab"/>
+          <link id="TWinControl.CanFocus"/>
+          <link id="TControl.IsControlVisible"/>
+          <link id="TControl.Visible"/>
+          <link id="TControl.Enabled"/>
         </seealso>
       </element>
 
       <element name="TWinControl.OnAlignInsertBefore">
         <short>
-          Handler for custom-aligned child controls; determines the order of control placement.
+          Event handler signalled to determine the order and placement for custom-aligned child controls.
         </short>
         <descr/>
         <seealso/>
@@ -16409,7 +17081,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.OnAlignPosition">
         <short>
-          Handler for custom-aligned child controls, determines the position of the child control.
+          Event handler signalled to determines the position for custom-aligned child controls.
         </short>
         <descr/>
         <seealso/>
@@ -16480,9 +17152,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.OnKeyUp">
-        <short>
-          Handler for keyboard key released.
-        </short>
+        <short>Event handler signalled when a key up event has occurred for the control.</short>
         <descr>
           <p>
             Unlike OnKeyDown, this event occurs only once for auto-repeated keys.
@@ -16498,12 +17168,21 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.OnUnDock">
-        <short>Event handler for control being undocked from this DockSite.</short>
+        <short>Event handler signalled before a control is undocked from its DockSite.</short>
         <descr>
           <p>
-            The handler can be used to disallow undocking.
+            <var>OnUnDock</var> is a <var>TUnDockEvent</var> property with the event handler signalled before a control is undocked from its DockSite. The event handler arguments identify the control with the DockSite, the client control which will become undocked, the control that has the new dock site, and a Boolean which indicates if the operation is allowed.
+          </p>
+          <p>
+            The event handler can be used to disallow undocking by setting the Boolean argument to False in the handler routine.
+          </p>
+          <p>
+            OnUnDock is signalled from the DoUnDock method.
           </p>
         </descr>
+        <seealso>
+          <link id="TWinControl.DoUnDock"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.OnUTF8KeyPress">
@@ -16525,23 +17204,67 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.ParentDoubleBuffered">
-        <short>Value from the DoubleBuffered property in a Parent control.</short>
-        <descr/>
-        <seealso/>
+        <short>Value for the DoubleBuffered property in a Parent control.</short>
+        <descr>
+          <p>
+            <var>ParentDoubleBuffered</var> is a <var>Boolean</var> property which indicates the value for the DoubleBuffered property in the Parent control. The default value for the property is <b>True</b>. Changing the value for the property causes a CM_PARENTDOUBLEBUFFEREDCHANGED message to be performed (for the control) when Parent has been assigned.
+          </p>
+          <p>
+            To disable double buffering for a single control, make sure both DoubleBuffered and ParentDoubleBuffered are set to <b>False</b>.
+          </p>
+          <p>
+            Double buffering is a technique used to reduce screen flicker when controls are redrawn. It uses an additional off-screen buffer to perform drawing operations, and transfers the content to the on-screen buffer when completed.
+          </p>
+          <p>
+            DoubleBuffered and ParentDoubleBuffered are implemented for the Win32 platform/widgetset. It is implemented for TWinControl (and descendants) and TApplication. In TApplication, the setting is applied to all forms and controls when assigned before the forms and controls are created.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DoubleBuffered"/>
+          <link id="TControl.Parent"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.ParentWindow">
-        <short>The Handle for the parent widget.</short>
-        <descr/>
-        <seealso/>
+        <short>The window Handle for the Parent widget.</short>
+        <descr>
+          <p>
+            ParentWindow is a HWND property with the window Handle for the Parent widget. A new value assigned to the property is ignored when Parent has already been assigned.
+          </p>
+          <p>
+            The property value is assigned when the CreateParented constructor or the CreateParentedControl class function is used to create a new TWinControl instance. Setting the property to <b>0</b> (zero) causes the handle to be destroyed. <b>0</b> is the unassigned handle value.
+          </p>
+          <p>
+            ParentWindow is used in the the CreateWnd method to form an association between the Handle in the widgetset class instance and the window handle value for a control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.GetParentHandle"/>
+          <link id="TWinControl.GetTopParentHandle"/>
+          <link id="TWinControl.CreateParented"/>
+          <link id="TWinControl.CreateParentedControl"/>
+          <link id="TWinControl.CreateWnd"/>
+          <link id="TControl.Parent"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.Showing">
         <short>
-          Cached widget visibility, not necessarily in sync with the widget.
+          Cached visibility for the widget. Not necessarily in sync with the widget.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Showing</var> is a read-only <var>Boolean</var> property with the visibility for the Handle in a control or its Parent. The value for the property is assigned in the UpdateShowing method when the control hierarchy is checked for valid and Visible window handles for the control or its Parents. Showing may be updated when the DoAllAutoSize or UpdateControlState methods are called.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.UpdateShowing"/>
+          <link id="TWinControl.Handle"/>
+          <link id="TWinControl.DoAllAutoSize"/>
+          <link id="TWinControl.UpdateControlState"/>
+          <link id="TWinControl.CMShowingChanged"/>
+          <link id="TControl.Visible"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.UseDockManager">
@@ -16593,17 +17316,55 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.AutoSizePhases">
-        <short>Translates state flags into AutoSizePhases.</short>
-        <descr/>
-        <seealso/>
+        <short>Translates control state flags into AutoSizePhases.</short>
+        <descr>
+          <p>
+            The return value is a <var>TControlAutoSizePhases</var> set type. It is populated with values from the <var>TControlAutoSizePhase</var> enumeration based on window control flags and other internal members in the class instance. When Parent has been assigned, the values are derived by calling AutoSizePhases in Parent.
+          </p>
+          <p>
+            AutoSizePhases is called from methods like DoAutoSize and UpdateShowing. It is also called from window messgae handlers like WMMove, WMSize, and WMWindowPosChanged.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.DoAutoSize"/>
+          <link id="TWinControl.UpdateShowing"/>
+          <link id="TWinControl.WMMove"/>
+          <link id="TWinControl.WMSize"/>
+          <link id="TWinControl.WMWindowPosChanged"/>
+          <link id="TControl.Parent"/>
+          <link id="TControlAutoSizePhases"/>
+          <link id="TControlAutoSizePhase"/>
+        </seealso>
       </element>
       <element name="TWinControl.AutoSizePhases.Result">
-        <short/>
+        <short>Set withe auto-size phase values enabled for the control.</short>
       </element>
 
-      <element name="TWinControl.AutoSizeDelayed" link="#lcl.controls.TControl.AutoSizeDelayed"/>
+      <element name="TWinControl.AutoSizeDelayed">
+        <short>
+          Returns <b>True</b> if auto-sizing has been delayed until some other process is completed.
+        </short>
+        <descr>
+          <p>
+            <var>AutoSizeDelayed</var> is an overridden Boolean function in TWinControl. It returns True when auto-sizing cannot or should not be performed at the current time, or when the value in  Showing cannot be changed.
+          </p>
+          <p>
+            In TWinControl, it checks the ControlState flags for the value csDestroyingHandle when determining the return value for the method. AutoSizeDelayed calls the inherited method, and sets the return value to True if either condition is True.
+          </p>
+          <p>
+            The value from AutoSizeDelayed is used in methods like DoAllAutoSize and UpdateShowing.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.Showing"/>
+          <link id="TWinControl.UpdateShowing"/>
+          <link id="TWinControl.DoAllAutoSize"/>
+          <link id="TControl.ControlState"/>
+          <link id="TControl.AutoSizeDelayed"/>
+        </seealso>
+      </element>
       <element name="TWinControl.AutoSizeDelayed.Result">
-        <short/>
+        <short><b>True</b> if auto-sizing cannot be performed at the current time.</short>
       </element>
 
       <element name="TWinControl.AutoSizeDelayedReport" link="#lcl.controls.TControl.AutoSizeDelayedReport"/>
@@ -16613,6 +17374,8 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
         <short>
           Returns <b>True</b> if AutoSize should be skipped / delayed because of its handle.
         </short>
+        <descr/>
+        <seealso/>
       </element>
 
       <element name="TWinControl.BeginUpdateBounds">
@@ -16683,7 +17446,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.ContainsControl">
         <short>
-          Returns <b>True</b> if this is a parent for the given control.
+          Returns <b>True</b> if the control is a parent for the specified control.
         </short>
         <descr/>
         <seealso/>
@@ -16708,7 +17471,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.InvalidateClientRectCache">
         <short>
-          The ClientRect is cached; call this procedure to invalidate the cache, so that the next ClientRect value is fetched from the widget set class.
+          The ClientRect is cached; call this procedure to invalidate the cache, so that the next ClientRect value is fetched from the widgetset class.
         </short>
         <descr/>
         <seealso/>
@@ -16730,21 +17493,46 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.SetBounds">
         <short>Sets the control bounds and adjusts child and docked controls.</short>
+        <descr>
+          <p>
+            <var>SetBounds</var> is an overridden method in TWinControl. used to set the bounds for the control to the values in the ALeft, ATop, AWidth, and AHeight arguments.
+          </p>
+          <p>
+            No actions are performed in the method when the internal BoundsLockCount member has a non-zero value. In other words, when BeginUpdateBounds has been called and EndUpdateBounds has not been called.
+          </p>
+          <p>
+            At design-time, SetBounds checks to ensure that negative is not present in the Width or Height properties when the user has changed the bounds for the control.
+          </p>
+          <p>
+            SetBounds calls DisableAutoSizing to reduce the overhead for recomputing/moving/resizing when the bounds are changed. The inherited method is called to apply the new values in ALeft, ATop, AWidth, and AHeight. EnableAutoSizing is called to re-enable auto-sizing when the operation has been completed.
+          </p>
+          <p>
+            SetBounds is called when any one of these Left, Top, Width or Height properties, or the BoundsRect property has been changed.
+          </p>
+          <p>
+            Keep in mind that the given aLeft, aTop, aWidth, aHeight might not be valid and will be changed by the LCL before applied.
+          </p>
+        </descr>
         <seealso>
+          <link id="TWinControl.BeginUpdateBounds"/>
+          <link id="TWinControl.EndUpdateBounds"/>
           <link id="TControl.SetBounds"/>
+          <link id="TControl.ChangeBounds"/>
+          <link id="TControl.DisableAutoSizing"/>
+          <link id="TControl.EnableAutoSizing"/>
         </seealso>
       </element>
       <element name="TWinControl.SetBounds.aLeft">
-        <short/>
+        <short>The X coordinate for the left side of the control.</short>
       </element>
       <element name="TWinControl.SetBounds.aTop">
-        <short/>
+        <short>The Y coordinate for the left side of the control.</short>
       </element>
       <element name="TWinControl.SetBounds.aWidth">
-        <short/>
+        <short>The width for the control.</short>
       </element>
       <element name="TWinControl.SetBounds.aHeight">
-        <short/>
+        <short>The height for the control.</short>
       </element>
 
       <element name="TWinControl.GetChildrenRect">
@@ -16769,13 +17557,13 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.DisableAlign">
-        <short>Disables auto-sizing for the control and its parent.</short>
+        <short>Disables auto-sizing when aligning the control and its parent.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TWinControl.EnableAlign">
-        <short>Re-enables auto-sizing for the control and its parent.</short>
+        <short>Re-enables auto-sizing after aligning the control and its parent.</short>
         <descr/>
         <seealso/>
       </element>
@@ -16793,10 +17581,10 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
       </element>
 
       <element name="TWinControl.ScrollBy_WS">
-        <short>Scrolls the control using the handle for the widget set class.</short>
+        <short>Scrolls the control using the handle for the widgetset class.</short>
         <descr/>
         <errors>
-          Raises an Exception if the handle has not been allocated for the widget set class instance. Raised with the message 'TWinControl.ScrollBy_WS: Handle not allocated'.
+          Raises an Exception if the handle has not been allocated for the widgetset class instance. Raised with the message 'TWinControl.ScrollBy_WS: Handle not allocated'.
         </errors>
         <seealso>
           <link id="TWinControl.HandleAllocated"/>
@@ -17012,7 +17800,7 @@ if FormFoo.EditBar.CanFocus then
           <p>A possible usage:</p>
 <code>
 if MyControl.CanSetFocus then
-  MyControl.SetFocus;
+   MyControl.SetFocus;
 </code>
           <p>
             <var>CanSetFocus</var> should be preferred over <var>CanFocus</var> if used in CanSetFocus/SetFocus combination because it checks also if the parent form can receive focus and thus prevents the "cannot focus an invisible window" LCL exception.
@@ -17029,10 +17817,17 @@ if MyControl.CanSetFocus then
 
       <element name="TWinControl.GetControlIndex">
         <short>
-          Finds the index value for the given control, in <link id="TWinControl.Controls"/>
+          Finds the position for the specified control in the Controls property.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls the <var>IndexOf</var> method in Controls to find the child control in AControl. The return value contains the ordinal position in Controls where AControl is stored, or -1 when not found or Controls has not been assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.Controls"/>
+          <link id="#rtl.classes.TFPList.IndexOf">TFPList.IndexOf</link>
+        </seealso>
       </element>
       <element name="TWinControl.GetControlIndex.Result">
         <short>The ordinal position in Controls, -1 if not found.</short>
@@ -17051,15 +17846,22 @@ if MyControl.CanSetFocus then
 
       <element name="TWinControl.Focused">
         <short>Checks whether the control has focus.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Focused</var> is a <var>Boolean</var> function which indicates whether the control can be and is the currently focused control. The return value is True when the control can become focused during tab order navigation, has a valid Handle, and is the currently focused control in the widgetset class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TWinControl.CanTab"/>
+          <link id="FindOwnerControl"/>
+        </seealso>
       </element>
       <element name="TWinControl.Focused.Result">
         <short><b>True</b> when the control has focus.</short>
       </element>
 
       <element name="TWinControl.PerformTab">
-        <short>Sets the focus to the next (or preceding) control.</short>
+        <short>Changes the focus to the next (or preceding) control.</short>
         <descr/>
         <seealso/>
       </element>
@@ -17073,9 +17875,7 @@ if MyControl.CanSetFocus then
       </element>
 
       <element name="TWinControl.FindChildControl">
-        <short>
-          Finds a child control by name.
-        </short>
+        <short>Finds a child control with the specified name.</short>
         <descr/>
         <seealso/>
       </element>
@@ -17116,6 +17916,17 @@ if MyControl.CanSetFocus then
         <short>
           Posts the specified message to all of the child controls.
         </short>
+        <descr>
+          <p>
+            Allows the specified method to be handled by one of the child Controls. The ToAllMessage argument is untyped; any TLMessage descendant can be passed as the value for the argument.
+          </p>
+          <p>
+            The method name is a misnomer. Broadcast implies delivery of the message simultaneously to all of the recipients. Actually, it is more like a telegraph. The message is posted sequentially to child controls until one of them handles the message using its WindowProc method.
+          </p>
+          <p>
+            Use NotifyControls to post a message with a specific message identifier constant to child Controls in the class instance.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControl.NotifyControls"/>
         </seealso>
@@ -17126,7 +17937,11 @@ if MyControl.CanSetFocus then
 
       <element name="TWinControl.NotifyControls">
         <short>Sends a message to all child controls.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls the BroadCast method to deliver a TLMessage instance with the identifier in Msg.
+          </p>
+        </descr>
         <seealso>
           <link id="TWinControl.BroadCast"/>
         </seealso>
@@ -17162,15 +17977,18 @@ if MyControl.CanSetFocus then
         <short>Schedules a repaint request.</short>
         <descr>
           <p>
-            This implementation calls the Invalidate method for the widgetset class instance.
+            <var>Invalidate</var> is an overridden method in TWinControl. It re-implements the inherited method to call the Invalidate method in the widgetset class instance when its Handle has been allocated. It does not call the inherited method.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TControl.Invalidate"/>
+        </seealso>
       </element>
 
       <element name="TWinControl.AddControl">
-        <short>Tells the widgetset to add a Handle object to a parent Handle object.</short>
-        <descr/>
+        <short>Tells the widgetset to add a Handle object representing the current control.</short>
+        <descr>
+        </descr>
         <seealso/>
       </element>
 
@@ -17252,23 +18070,25 @@ if MyControl.CanSetFocus then
       <element name="TWinControl.ScaleBy.Divider" link="#lcl.controls.TWinControl.ChangeScale.Divider"/>
 
       <element name="TWinControl.GetDockCaption">
-        <short>Returns the caption for the docked control.</short>
+        <short>Returns the docking caption for the specified control.</short>
+        <descr/>
+        <seealso/>
       </element>
       <element name="TWinControl.GetDockCaption.Result">
-        <short/>
+        <short>String the docking caption for the control.</short>
       </element>
       <element name="TWinControl.GetDockCaption.AControl">
-        <short/>
+        <short>Control instance examined in the method.</short>
       </element>
 
       <element name="TWinControl.UpdateDockCaption">
-        <short>Updates the Caption to reflect the names of the docked clients.</short>
+        <short>Updates the Caption to reflect the names for the docked clients.</short>
         <descr>
           <p>
-            Called when this is a hostdocksite and either the list of docked clients have changed, or one of their captions.
+            Called when this is a HostDockSite and either the list of docked clients have changed, or one of their captions has changed.
           </p>
           <p>
-            When a control is currently being undocked, but still is in the DockClients list, Exclude is set to this control.
+            If the control is being undocked, but still is in the DockClients list, it is excluded from the docking caption and the Exclude argument is set to <b>True</b>.
           </p>
         </descr>
         <seealso/>
@@ -17288,13 +18108,13 @@ if MyControl.CanSetFocus then
 
       <element name="TWinControl.HandleAllocated">
         <short>
-          Check whether a widget has been assigned to this control.
+          Checks whether a handle for the widget has been allocated for the control.
         </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TWinControl.HandleAllocated.Result">
-        <short><b>True</b> when a widget exists (Handle is not Nil).</short>
+        <short><b>True</b> when a widget exists and its Handle is not <b>Nil</b>.</short>
       </element>
 
       <element name="TWinControl.ParentHandlesAllocated">
@@ -17338,7 +18158,7 @@ if MyControl.CanSetFocus then
 
       <element name="TWinControl.BrushCreated">
         <short>
-          Has a <link id="TWinControl.Brush">Brush</link> been created for this control?
+          Indicates whether a Brush has been created for the control.
         </short>
         <descr/>
         <seealso/>
@@ -17406,10 +18226,10 @@ if MyControl.CanSetFocus then
       </element>
 
       <element name="TWinControl.PaintTo">
-        <short>Paints the control using the handle for the widget set class.</short>
+        <short>Paints the control using the handle for the widgetset class.</short>
         <descr>
           <p>
-            <var>PaintTo</var> is a procedure used to draw the control using the handle for the widget set class. An overloaded variant is provided which uses the handle in a <var>TCanvas</var> instance as the target for the drawing operation.
+            <var>PaintTo</var> is a procedure used to draw the control using the handle for the widgetset class. An overloaded variant is provided which uses the handle in a <var>TCanvas</var> instance as the target for the drawing operation.
           </p>
         </descr>
         <seealso/>
@@ -17434,7 +18254,7 @@ if MyControl.CanSetFocus then
             SetShape is an overloaded procedure used to set the shape for the control to the non-rectangular value in AShape. The overloaded methods allow AShape to be either a TBitmap or a TRegion value.
           </p>
           <p>
-            When TBitmap is used, the widget set class calls its SetShape method to apply the TBitmap handle to the handle for the widget. No actions are performed in the method when a handle has not been allocated for the widget set class.
+            When TBitmap is used, the widgetset class calls its SetShape method to apply the TBitmap handle to the handle for the widget. No actions are performed in the method when a handle has not been allocated for the widgetset class.
           </p>
           <p>
             When TRegion is used,  SetWindowRgn in the LCL interface is called to apply the region in AShape to the handle for the control.
@@ -17485,7 +18305,7 @@ if MyControl.CanSetFocus then
         <short>Performs actions needed when the Font for the control has been changed.</short>
         <descr>
           <p>
-            FontChanged is an overridden method in TGraphicControl used to perform actions needed when the Font for the control has been changed. It is the routine used as the OnChange event handler for the Font property, and is assigned in the inherited constructor for the class instance.
+            <var>FontChanged</var> is an overridden method in TGraphicControl used to perform actions needed when the Font for the control has been changed. It is the routine used as the OnChange event handler for the Font property, and is assigned in the inherited constructor for the class instance.
           </p>
           <p>
             Sender contains the object instance for the event notification, and is provided to maintain compatibility with the TNotifyEvent signature for the event handler. It is not used in TGraphicControl, but is passed as an argument to the inherited method.
@@ -17511,7 +18331,7 @@ if MyControl.CanSetFocus then
         </short>
         <descr>
           <p>
-            Paint is a method which causes the control to be drawn using the drawing mechanism for the control. In TGraphicControl, like TCustomControl, the OnPaint event handler is used (when assigned). Assign a routine to the OnPaint handler to perform the drawing operations needed for the control.
+            <var>Paint</var> is a method which causes the control to be drawn using the drawing mechanism for the control. In TGraphicControl, like TCustomControl, the OnPaint event handler is used (when assigned). Assign a routine to the OnPaint handler to perform the drawing operations needed for the control.
           </p>
         </descr>
         <seealso>
@@ -17523,7 +18343,7 @@ if MyControl.CanSetFocus then
         <short>Performs action needed when the bounds for the control have been changed.</short>
         <descr>
           <p>
-            DoOnChangeBounds is an overridden method in TGraphicControl. It calls the inherited method on entry to update control flags and signal OnChangeBounds event handlers for the control. The Handle in Canvas is freed prior to exiting from the method. The handle is re-allocated the next time it is accessed.
+            <var>DoOnChangeBounds</var> is an overridden method in TGraphicControl. It calls the inherited method on entry to update control flags and signal OnChangeBounds event handlers for the control. The Handle in Canvas is freed prior to exiting from the method. The handle is re-allocated the next time it is accessed.
           </p>
           <p>
             DoOnChangeBounds is called when the component is loaded using the LCL streaming mechanism, and from the ChangeBounds method when the control is resized.
@@ -19125,7 +19945,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
       </element>
 
       <element name="RecreateWnd">
-        <short>(Re-)Creates the widget set class instance for a TWinControl.</short>
+        <short>(Re-)Creates the widgetset class instance for a TWinControl.</short>
         <descr>
           <p>
             This function was originally a member of TWinControl.
@@ -19134,7 +19954,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             From a VCL point of view, that made perfectly sense since the VCL knows when a Win32 widget has to be recreated when properties have changed.
           </p>
           <p>
-            The LCL, however, does not know when properties values are changed. But the widget set does. To avoid the old VCL behavior, and to provide a central function for use in the widget set, it has been moved here.
+            The LCL, however, does not know when properties values are changed. But the widgetset does. To avoid the old VCL behavior, and to provide a central function for use in the widgetset, it has been moved here.
           </p>
         </descr>
         <seealso/>
@@ -19159,7 +19979,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
             <var>CancelDrag</var> is a procedure used to cancel an active drag operation. <var>CancelDrag</var> calls the <var>DragStop</var> method in the currently active <var>DragManager</var>.
           </p>
           <remark>
-            No actions are performed in the routine when DragManager has been assigned (contains Nil), or when DragManager returns <b>False</b> from its IsDragging method.
+            No actions are performed in the routine when DragManager has not been assigned (contains <b>Nil</b>), or when DragManager returns <b>False</b> from its IsDragging method.
           </remark>
         </descr>
         <seealso>
@@ -19415,7 +20235,7 @@ AControl.Align := AnchorAlign[alRight]; // contains [akRight, akTop, akBottom]
         <short>Determines if the color for the control is the system default (GTK).</short>
         <descr>
           <p>
-            Used by GTK-based widget set classes to determine if the color in a control needs to be compares to the SYS_COLOR_BASE value used in the widget set.
+            Used by GTK-based widgetset classes to determine if the color in a control needs to be compares to the SYS_COLOR_BASE value used in the widgetset.
           </p>
         </descr>
         <seealso/>
@@ -19652,7 +20472,7 @@ var
             Some controls override this method. For example the <var>TGraphicControl</var> descendants like <var>TLabel</var> have no window handle and so cannot query the widgetset. They must calculate their preferred Width and Height themselves.
           </p>
           <p>
-            The widget sets must override the <var>GetPreferredSize</var> method for each widget class that has a preferred size (Width or Height or both).
+            The widgetsets must override the <var>GetPreferredSize</var> method for each widget class that has a preferred size (Width or Height or both).
           </p>
           <p><b>Parent.AutoSize</b></p>
           <p>
@@ -19661,7 +20481,7 @@ var
           <p><b>Properties / Methods</b></p>
           <p><b>Left and Top</b></p>
           <p>
-            If <var>Parent</var> is not <b>Nil</b> then <var>Left, Top</var> are the pixel distance to the top, left pixel of the parent's client area (not scrolled). Remember the client area is always without the frame and scrollbars of the parent. For Delphi users, some VCL controls like TGroupbox define the client area as the whole control including the frame.  Others do not. The LCL is more consistent, and therefore Delphi incompatible. Left and Top can be negative or bigger than the client area. Some widget sets define a minimum, and maximum somewhere around 10,000 pixels or more.
+            If <var>Parent</var> is not <b>Nil</b> then <var>Left, Top</var> are the pixel distance to the top, left pixel of the parent's client area (not scrolled). Remember the client area is always without the frame and scrollbars of the parent. For Delphi users, some VCL controls like TGroupbox define the client area as the whole control including the frame.  Others do not. The LCL is more consistent, and therefore Delphi incompatible. Left and Top can be negative or bigger than the client area. Some widgetsets define a minimum, and maximum somewhere around 10,000 pixels or more.
           </p>
           <p>
             When the client area is scrolled the Left and Top are kept unchanged.
@@ -19916,7 +20736,6 @@ B.AnchorSide[akTop].Side:=asrTop;
 |       | +---+
 +-------+
 </pre>
-
           <p>
             use:
           </p>
