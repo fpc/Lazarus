@@ -12,8 +12,8 @@ uses
   PJSDsgnOptions, frmpas2jsnodejsprojectoptions, pjscontroller, 
   frmpas2jswebservers, strpas2jsdesign, pjsprojectoptions, 
   frmPas2jsAtomPackageSettings, regpas2jsatom, regpas2jsvscode, 
-  frmPas2jsVSCodeExtensionSettings, frmhtmltoform, idehtml2class, 
-  LazarusPackageIntf;
+  frmPas2jsVSCodeExtensionSettings, frmhtmltoform, idehtml2class, frmdtstopas, 
+  idedtstopas, LazarusPackageIntf;
 
 implementation
 

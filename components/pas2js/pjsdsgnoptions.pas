@@ -21,6 +21,8 @@ uses
 const
   PJSDsgnOptsFile = 'pas2jsdsgnoptions.xml';
   PJSDefaultCompiler = '$MakeExe(IDE,pas2js)';
+  PJSDefaultDTS2Pas = '$MakeExe(IDE,dts2pas)';
+  PJSDefaultDTS2PasService = 'https://www.freepascal.org/~michael/service/dts2pas.cgi';
   PJSDefaultWebServerName = 'compileserver';
   PJSDefaultWebServer = '$MakeExe(IDE,'+PJSDefaultWebServerName+')';
   PJSDefaultStartAtPort = 3000; // compileserver default port
@@ -36,9 +38,12 @@ Type
     p2jcoHTTPServerPort,
     p2jcoNodeJSFilename,
     p2jcoAtomTemplateDir,
-    p2jcoVSCodeTemplateDir
+    p2jcoVSCodeTemplateDir,
+    p2jcoDTSToPas,
+    p2jcoDTSToPasServiceURL
     );
   TPas2jsCachedOptions = set of TPas2jsCachedOption;
+
 const
   p2jcoFilenames = [
     p2jcoCompilerFilename,
@@ -46,7 +51,8 @@ const
     p2jcoHTTPServerFilename,
     p2jcoNodeJSFilename,
     p2jcoAtomTemplateDir,
-    p2jcoVSCodeTemplateDir
+    p2jcoVSCodeTemplateDir,
+    p2jcoDTSToPas
   ];
 
 type
@@ -70,6 +76,8 @@ type
     function GetAtomTemplateDir: String;
     function GetBrowserFileName: String;
     function GetCompilerFilename: string;
+    function GetDTS2Pas: String;
+    function GetDTS2PasService: String;
     function GetStartAtPort: Word;
     function GetVSCodeTemplateDir: String;
     function GetWebServerFileName: string;
@@ -78,6 +86,8 @@ type
     function GetParsedOptionValue(Option: TPas2jsCachedOption): string;
     procedure SetAtomTemplateDir(AValue: String);
     procedure SetBrowserFileName(AValue: String);
+    procedure SetDTS2Pas(AValue: String);
+    procedure SetDTS2PasService(AValue: String);
     procedure SetVSCodeTemplateDir(AValue: String);
     procedure SetWebServerFileName(AValue: string);
     procedure SetHTTPServerOpts(AValue: TStrings);
@@ -110,6 +120,8 @@ type
     property Modified: boolean read GetModified write SetModified;
     Property AtomTemplateDir : String Read GetAtomTemplateDir Write SetAtomTemplateDir;
     Property VSCodeTemplateDir : String Read GetVSCodeTemplateDir Write SetVSCodeTemplateDir;
+    Property DTS2Pas : String Read GetDTS2Pas Write SetDTS2Pas;
+    Property DTS2PasServiceURL : String Read GetDTS2PasService Write SetDTS2PasService;
   end;
 
 var
@@ -237,6 +249,16 @@ begin
   Result:=FCachedOptions[p2jcoCompilerFilename].RawValue;
 end;
 
+function TPas2jsOptions.GetDTS2Pas: String;
+begin
+  Result:=FCachedOptions[p2jcoDTSToPas].RawValue
+end;
+
+function TPas2jsOptions.GetDTS2PasService: String;
+begin
+  Result:=FCachedOptions[p2jcoDTSToPasServiceURL].RawValue
+end;
+
 function TPas2jsOptions.GetStartAtPort: Word;
 begin
   Result:=StrToIntDef(FCachedOptions[p2jcoHTTPServerPort].RawValue,PJSDefaultStartAtPort);
@@ -280,6 +302,8 @@ begin
   FCachedOptions[p2jcoBrowserFilename].RawValue:=PJSDefaultBrowser;
   FCachedOptions[p2jcoAtomTemplateDir].RawValue:='';
   FCachedOptions[p2jcoVSCodeTemplateDir].RawValue:='';
+  FCachedOptions[p2jcoDTSToPas].RawValue:=PJSDefaultDTS2Pas;
+  FCachedOptions[p2jcoDTSToPasServiceURL].RawValue:=PJSDefaultDTS2PasService;
   for o in TPas2jsCachedOption do
     FCachedOptions[o].Stamp:=LUInvalidChangeStamp64;
   FHTTPServerOpts:=TStringList.Create;
@@ -330,6 +354,8 @@ Const
   KeyAtomTemplate = 'atomtemplate/value';
   KeyVSCodeTemplate = 'vscodetemplate/value';
   KeyStartPortAt = 'webserver/startatport/value';
+  KeyDTS2PasTool = 'dts2pastool/value';
+  KeyDTS2PasServiceURL= 'dts2passerviceurl/value';
 
 procedure TPas2jsOptions.LoadFromConfig(Cfg: TConfigStorage);
 
@@ -340,6 +366,8 @@ begin
   NodeJSFileName:=Cfg.GetValue(KeyNodeJS,PJSDefaultNodeJS);
   AtomTemplateDir:=Cfg.GetValue(KeyAtomTemplate,'');
   VSCodeTemplateDir:=Cfg.GetValue(KeyVSCodeTemplate,'');
+  DTS2Pas:=cfg.GetValue(KeyDTS2PasTool,PJSDefaultDTS2Pas);
+  DTS2PasServiceURL:=cfg.GetValue(KeyDTS2PasServiceURL,PJSDefaultDTS2PasService);
   StartAtPort :=Cfg.GetValue(KeyStartPortAt,PJSDefaultStartAtPort);
   Cfg.GetValue(KeyHTTPServerOptions,FHTTPServerOpts);
   Modified:=false;
@@ -355,6 +383,8 @@ begin
   Cfg.SetDeleteValue(KeyBrowser,BrowserFileName,PJSDefaultBrowser);
   Cfg.SetDeleteValue(KeyAtomTemplate,AtomTemplateDir,'');
   Cfg.SetDeleteValue(KeyVSCodeTemplate,VSCodeTemplateDir,'');
+  cfg.SetDeleteValue(KeyDTS2PasTool,DTS2Pas,PJSDefaultDTS2Pas);
+  cfg.SetDeleteValue(KeyDTS2PasServiceURL,DTS2PasServiceURL,PJSDefaultDTS2PasService);
   Cfg.SetValue(KeyHTTPServerOptions,FHTTPServerOpts);
   Modified:=false;
 end;
@@ -441,6 +471,17 @@ procedure TPas2jsOptions.SetBrowserFileName(AValue: String);
 begin
   AValue:=TrimFilename(AValue);
   SetCachedOption(p2jcoBrowserFilename,AValue);
+end;
+
+procedure TPas2jsOptions.SetDTS2Pas(AValue: String);
+begin
+  AValue:=TrimFilename(AValue);
+  SetCachedOption(p2jcoDTSToPas,AValue);
+end;
+
+procedure TPas2jsOptions.SetDTS2PasService(AValue: String);
+begin
+  SetCachedOption(p2jcoDTSToPasServiceURL,AValue);
 end;
 
 procedure TPas2jsOptions.SetVSCodeTemplateDir(AValue: String);

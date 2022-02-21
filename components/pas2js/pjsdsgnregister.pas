@@ -13,7 +13,7 @@ uses
   // IdeIntf
   ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEMsgIntf, IDEExternToolIntf,
   // Pas2js
-  idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame;
+  idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame, idedtstopas;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
@@ -113,6 +113,23 @@ type
     function GetLocalizedDescription: string; override;
   end;
 
+  { TPas2JSDTSToPasUnitDef }
+
+  TPas2JSDTSToPasUnitDef = class(TFileDescPascalUnit)
+  private
+    FConverter : TCreateUnitFromDTS;
+  public
+    constructor Create; override;
+    destructor destroy; override;
+    function Init(var {%H-}NewFilename: string; {%H-}NewOwner: TObject;
+                  var {%H-}NewSource: string; {%H-}Quiet: boolean): TModalResult; override;
+    function CreateSource(const Filename, SourceName,
+                          ResourceName: string): string; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+  end;
+
+
 
 var
   PJSOptionsFrameID: integer = 1000;
@@ -158,7 +175,7 @@ Type
      Procedure OnSrcEditPopup(Sender : TObject);
      Procedure OnPrjInspPopup(Sender : TObject);
    private
-     function AskUserFile(aHTMLFileName: String): string;
+     function AskUserFile(aUnitName,aHTMLFileName: String): string;
      function RefreshHTML(aFile: TLazProjectFile; out aSource: String): Boolean;
    end;
 
@@ -167,6 +184,7 @@ Const
 
 Var
   Pas2JSHTMLClassDef : TPas2JSHTMLClassDef;
+  Pas2JSDTSToPasUnitDef : TPas2JSDTSToPasUnitDef;
   MenuHandler : TPas2JSMenuHandler;
 
 procedure Register;
@@ -187,6 +205,8 @@ begin
   RegisterProjectDescriptor(TProjectPas2JSModuleApp.Create);
   Pas2JSHTMLClassDef:=TPas2JSHTMLClassDef.Create;
   RegisterProjectFileDescriptor(Pas2JSHTMLClassDef);
+  Pas2JSDTSToPasUnitDef:=TPas2JSDTSToPasUnitDef.Create;
+  RegisterProjectFileDescriptor(Pas2JSDTSToPasUnitDef);
 
   // add IDE options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
@@ -211,6 +231,49 @@ begin
       'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@MenuHandler.OnRefreshProjHTMLFormAllContext);
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@MenuHandler.OnPrjInspPopup);
 
+end;
+
+{ TPas2JSDTSToPasUnitDef }
+
+constructor TPas2JSDTSToPasUnitDef.Create;
+begin
+  inherited Create;
+  FConverter:=TCreateUnitFromDTS.Create(Nil);
+end;
+
+destructor TPas2JSDTSToPasUnitDef.destroy;
+begin
+  FreeAndNil(FConverter);
+  inherited destroy;
+end;
+
+
+function TPas2JSDTSToPasUnitDef.Init(var NewFilename: string;
+  NewOwner: TObject; var NewSource: string; Quiet: boolean): TModalResult;
+begin
+  inherited Init(NewFilename, NewOwner, NewSource, Quiet);
+  If FConverter.ShowOptionsDialog then
+    Result:=mrOK
+  else
+    Result:=mrCancel;
+end;
+
+function TPas2JSDTSToPasUnitDef.CreateSource(const Filename, SourceName,
+  ResourceName: string): string;
+begin
+  FConverter.TargetUnitName:=ChangeFileExt(ExtractFileName(SourceName),'');
+  FConverter.Execute;
+  Result:=FConverter.Source.Text;
+end;
+
+function TPas2JSDTSToPasUnitDef.GetLocalizedName: string;
+begin
+  Result:=rsCreateUnitFromTypeScript;
+end;
+
+function TPas2JSDTSToPasUnitDef.GetLocalizedDescription: string;
+begin
+  Result:=rsCreateUnitFromTypeScriptDescription;
 end;
 
 { TPas2JSMenuHandler }
@@ -277,7 +340,7 @@ begin
   PrjMnuItemAll.Visible:=AnyOK;
 end;
 
-function TPas2JSMenuHandler.AskUserFile(aHTMLFileName: String): string;
+function TPas2JSMenuHandler.AskUserFile(aUnitName,aHTMLFileName: String): string;
 
 Var
   Dlg : TOpenDialog;
@@ -285,7 +348,7 @@ Var
 begin
   Result:='';
   if mrOK<>QuestionDlg(pjsdHTMLSourceFileNotFound,
-                      Format(pjsdHTMLFileNotFOund,[aHTMLFileName]),mtInformation,
+                      Format(pjsdHTMLFileNotFOund,[aUnitName,aHTMLFileName]),mtInformation,
                       [mrOK,pjsdBtnSelectFile,mrCancel,pjsdButtonCancel],0) then
     Exit;
   Dlg:=TOpenDialog.Create(Application);
@@ -335,7 +398,7 @@ begin
     aOptions.FromJSON(aFile.CustomData.Values[SHTML2FormOptions]);
     if Not FileExists(aOptions.HTMLFileName) then
        begin
-       aFileName:=AskUserFile(aOptions.HTMLFileName);
+       aFileName:=AskUserFile(aFile.Unit_Name, aOptions.HTMLFileName);
        if aFileName='' then
          exit;
        aOptions.HTMLFileName:=aFileName;

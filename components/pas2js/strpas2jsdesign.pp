@@ -95,6 +95,10 @@ Resourcestring
   rsCreateClassFromHTMLName = 'Pas2JS class definition from HTML file';
   rsCreateClassFromHTMLDescription = 'Create a Pas2JS "form" class definition from HTML file using ID attributes in the HTML file.';
 
+  rsCreateUnitFromTypeScript = 'Pas2JS import unit from Typescript declaration module.';
+  rsCreateUnitFromTypeScriptDescription = 'Create a Pas2JS import unit from a Typescript declaration module.';
+  rsDTSDidNotProduceOutput = 'The DTS2pas tool did not produce an output file.';
+
 
   // Macros names
   pjsdPas2JSExecutable = 'Pas2JS executable';
@@ -112,14 +116,15 @@ Resourcestring
   pjsdFileNameDoesNotStartWithPas2js = 'filename does not start with "pas2js"';
   pjsdHTMLFilter = 'HTML Files|*.html|All files|*.*';
   pjsdHTMLSourceFileNotFound = 'HTML Source not found';
-  pjsdHTMLFileNotFound = 'Cannot find the HTML Source file for this class:'+LineEnding+
-                         '%s'+LineEnding+
+  pjsdHTMLFileNotFound = 'Cannot find the HTML Source file for the class in unit %s:'#13#10+
+                         '%s'#13#10+
                          'Would you like to select the file from disk?';
   pjsdBtnSelectFile = 'Select the file';
   pjsdButtonCancel = 'Cancel refresh';
 
   pjsRefreshClassFromHTML = 'Refresh class from HTML source';
   pjsRefreshAllClassesFromHTML = 'Refresh all classes from HTML source';
+  rsHTTPRequestFailed = 'HTML request to service URL %s failed: %s';
 
 function SafeFormat(const Fmt: String; const Args: Array of const): String;
 

@@ -60,7 +60,7 @@ msgstr "файл \"%s\" не знайдено"
 #: strpas2jsdesign.pjsdhtmlfilenotfound
 #, object-pascal-format
 msgid ""
-"Cannot find the HTML Source file for this class:\n"
+"Cannot find the HTML Source file for the class in unit %s:\n"
 "%s\n"
 "Would you like to select the file from disk?"
 msgstr ""
@@ -298,6 +298,23 @@ msgstr ""
 
 #: strpas2jsdesign.rscreateclassfromhtmlname
 msgid "Pas2JS class definition from HTML file"
+msgstr ""
+
+#: strpas2jsdesign.rscreateunitfromtypescript
+msgid "Pas2JS import unit from Typescript declaration module."
+msgstr ""
+
+#: strpas2jsdesign.rscreateunitfromtypescriptdescription
+msgid "Create a Pas2JS import unit from a Typescript declaration module."
+msgstr ""
+
+#: strpas2jsdesign.rsdtsdidnotproduceoutput
+msgid "The DTS2pas tool did not produce an output file."
+msgstr ""
+
+#: strpas2jsdesign.rshttprequestfailed
+#, object-pascal-format
+msgid "HTML request to service URL %s failed: %s"
 msgstr ""
 
 #: strpas2jsdesign.spasjswebservercaption
