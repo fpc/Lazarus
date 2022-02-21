@@ -1840,7 +1840,7 @@ var
   sym: TFpSymbol;
 begin
   Result := nil;
-  Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
+  Ctx := nil;
 
   if GetThread(AThreadId, Thread) then begin
     Thread.PrepareCallStackEntryList(AStackFrame + 1);
@@ -1849,12 +1849,13 @@ begin
       Frame := Thread.CallStackEntryList[AStackFrame];
 
       if Frame <> nil then begin
+        Addr := Frame.AnAddress;
+        Ctx := TFpDbgSimpleLocationContext.Create(MemManager, Addr, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
         sym := Frame.ProcSymbol;
         if sym <> nil then
           Result := sym.CreateSymbolScope(Ctx);
 
         if Result = nil then begin
-          Addr := Frame.AnAddress;
           if Addr <> 0 then
             Result := FDbgInfo.FindSymbolScope(Ctx, Addr);
         end;
@@ -1864,8 +1865,11 @@ begin
     // SymbolTableInfo.FindSymbolScope()
   end;
 
-  if Result = nil then
+  if Result = nil then begin
+    if Ctx = nil then
+      Ctx := TFpDbgSimpleLocationContext.Create(MemManager, 0, DBGPTRSIZE[Mode], AThreadId, AStackFrame);
     Result := TFpDbgSymbolScope.Create(Ctx);
+  end;
 
   Ctx.ReleaseReference;
 end;
