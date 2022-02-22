@@ -374,7 +374,7 @@
         </short>
         <descr>
           <p>
-            <var>TPopupNotifier</var> is a TComponent descendant which implements a pop-up notification component. TPopupNotifier includes an intenral TNotifierForm member which displays the TItle, Text, Icon and close button for the notification. TPopupNotifier provides methods needed to display or hide the form.
+            <var>TPopupNotifier</var> is a TComponent descendant which implements a pop-up notification component. TPopupNotifier includes an internal TNotifierForm member which displays the Title, Text, Icon and the close button for the notification. TPopupNotifier provides methods needed to display or hide the notification form.
           </p>
         </descr>
         <seealso>
