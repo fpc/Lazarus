@@ -2342,6 +2342,14 @@ begin
       Debugger.FTargetRegisters[2] := '$ecx';
     end
     else
+    if StrContains(found[1], 'arm64') then begin
+      DebugLn(DBG_VERBOSE, ['Target ARM/M1: ', found[1]]);
+      Debugger.FTargetWidth := 64;
+      Debugger.FTargetRegisters[0] := '$x0';
+      Debugger.FTargetRegisters[1] := '$x1';
+      Debugger.FTargetRegisters[2] := '$x2';
+    end
+    else
     if (found[1] = '(x86_64)') or  (found[1] = 'x86_64') then begin
       DebugLn(DBG_VERBOSE, ['Target 64 bit: ', found[1]]);
       Debugger.FTargetWidth := 64;
