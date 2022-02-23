@@ -10,15 +10,16 @@ REM =======================================================================
 REM ======================================
 REM SET THE CORRECT PATHS FOR YOUR SYSTEM
 REM ======================================
-
 REM lazarus documentation directory
 set docdir=..\..\..\docs
 REM fpdoc executable directory
-set fpcdir=..\..\..\..\lazarus-2.2.0-RC2\fpc\3.2.2\bin\x86_64-win64
+REM set fpcdir=..\..\..\..\lazarus-2.2.0-RC2\fpc\3.2.2\bin\x86_64-win64
+set fpcdir=..\..\..\..\fpc331\fpc\bin\x86_64-win64
 REM directory with lazarus git repository
 set gitdir=..\..\..\..\usr\work\git-lazarus
 
 REM values used in the footer
+REM package title for CHM
 set pkgtitle=Lazarus Controls Package (LazControls)
 
 REM CHANGE THIS BEFORE BUILDING
@@ -49,7 +50,6 @@ echo|(set /p="  <td class='footer-date'>Generated %dtstamp%</td>" & echo.) >> la
 echo|(set /p=" </tr>" & echo.) >> lazcontrols-footer.xml
 echo|(set /p="</table>" & echo.) >> lazcontrols-footer.xml
 
-echo.
 echo Generating CHM help...
 
 REM generate chm format
@@ -58,7 +58,6 @@ REM output to current directory
 
 %fpcdir%\fpdoc --project=lazcontrols-project.xml --format=chm --verbose --import="%docdir%\chm\rtl.xct,ms-its:rtl.chm::/" --import="%docdir%\chm\fcl.xct,ms-its:fcl.chm::/" --import="%docdir%\chm\lcl.xct,ms-its:lcl.chm::/" --import="%docdir%\chm\lazutils.xct,ms-its:lazutils.chm::/" > .\build_chm.log
 
-echo.
 echo Generating HTML help...
 
 REM generate html format
