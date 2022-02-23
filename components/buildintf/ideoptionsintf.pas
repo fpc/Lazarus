@@ -136,6 +136,7 @@ type
 
     function GetParsedCompilerFilename: string; virtual; abstract;
     function GetParsedFppkgConfig: string; virtual; abstract;
+    function GetParsedLazarusDirectory: string; virtual; abstract;
 
     procedure AddHandlerAddToRecentOpenFiles(Handler: TOnAddToRecent; const AsFirst: boolean = true); // AsFirst means: first to call
     procedure RemoveHandlerAddToRecentOpenFiles(Handler: TOnAddToRecent);
