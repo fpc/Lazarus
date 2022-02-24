@@ -239,11 +239,41 @@ begin
   FCSSFile:=AValue;
 end;
 
+{ Handles fpdoc 3.3.1 changed usage of the --footer argument. It can be
+   either a string with the content for the footer, or a file name when
+   prefixed with @. Handles both old and new syntax.
+   @ cannot be included in the call to TrimAndExpandFilename.
+   All file name validation occurs here. }
 procedure TFPDocRun.SetFooterFilename(AValue: String);
+var
+  vFilename: String;
 begin
-  AValue:=TrimAndExpandFilename(AValue);
-  if FFooterFilename=AValue then Exit;
-  FFooterFilename:=AValue;
+  vFileName := '';
+  if (AValue <> '') then
+  begin
+    // check for fpdoc 3.3.1 file name with @ prefix
+    if (AValue[1] = '@') then
+    begin
+      vFilename := TrimAndExpandFilename(Copy(AValue, 2, Length(AValue)-1));
+      if not FileExistsUTF8(vFileName) then
+         AValue := '"Footer file not found: @' + vFileName + '"'
+      else
+         AValue := '@' + vFilename;
+    end
+    // wrap anything with spaces in Quote characters when needed
+    else if (Pos(' ', AValue) <> 0) and (aValue[1] <> '"') then
+    begin
+     AValue :='"' + AValue + '"';
+    end
+    // expand and validate file name without the @ prefix
+    else
+    begin
+      vFilename := TrimAndExpandFilename(AValue);
+      if FileExistsUTF8(vFileName) then AValue := vFilename;
+    end;
+  end;
+  if FFooterFilename = AValue then Exit;
+  FFooterFilename := AValue;
 end;
 
 procedure TFPDocRun.SetPasSrcDir(AValue: string);
@@ -349,7 +379,10 @@ begin
       Params.Add('--css-file='+ExtractFileName(CSSFile)); // the css file is copied to the OutDir
   end;
 
-  if (FooterFilename<>'') and FileExistsUTF8(FooterFilename) then
+  { In fpdoc 3.3.1 footerfilename is no longer just a file name. It can be the
+    footer text or a file name when prefixed with @.
+    Validation and quoting handled in the property setter. }
+  if (FooterFilename<>'') then // and FileExistsUTF8(FooterFilename) then
     Params.Add('--footer='+FooterFilename);
 
   if EnvParams<>'' then
