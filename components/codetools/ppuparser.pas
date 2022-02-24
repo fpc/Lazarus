@@ -413,6 +413,8 @@ type
     po_auto_raised_visibility,
     { procedure is far (x86 only) }
     po_far,
+    { Procedure can't be inlined }
+    po_noinline,
     { the procedure never returns, this information is usefull for dfa }
     po_noreturn
   );
@@ -545,6 +547,8 @@ const
     'auto_raised_visibility',
     { procedure is far (x86 only) }
     'far',
+    { Procedure can't be inlined }
+    'noinline',
     { the procedure never returns, this information is usefull for dfa }
     'noreturn'
   );
