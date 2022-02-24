@@ -1908,6 +1908,11 @@ begin
         SaveRaiseCharExpectedButAtomFound(20170421195502,':');
       ReadNextAtom;
       ReadConstant(true,false,[]);
+    end else if UpAtomIs('INTERNPROC') then begin
+      if not ReadNextAtomIsChar(':') then
+        SaveRaiseCharExpectedButAtomFound(20210616075400,':');
+      ReadNextAtom;
+      ReadConstant(true,false,[]);
     end else if UpAtomIs('INTERRUPT') then begin
       ReadNextAtom;
     end else if UpAtomIs('SYSCALL') then begin
