@@ -1,7 +1,7 @@
 program update_lcl_docs;
 
-{ Runs FPC's fpdoc document generator to generate LCL documentation,
-  e.g. in CHM format }
+{ Runs the FPC fpdoc document generator to generate LCL and LazUtils
+  documentation in CHM or HTML format }
 
 {$mode objfpc}{$H+}
 {$IFDEF MSWINDOWS}
@@ -9,7 +9,7 @@ program update_lcl_docs;
 {$ENDIF}
 
 uses
-  Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process, LazUtilities,
+  Classes, Sysutils, GetOpts, LazFileUtils, FileUtil, UTF8Process,
   LazStringUtils, Process;
 
 var
@@ -22,7 +22,7 @@ var
   DefaultXCTDir: String;
   DefaultFPDocParams: string = '';
   DefaultOutFormat: string = 'html';
-  DefaultFooterFilename: string = 'locallclfooter.xml'; // ToDo
+  DefaultFooterFilename: string = ''; // default is no footer(s)
 
 type
   TFPDocRunStep = (
@@ -79,7 +79,7 @@ type
     procedure InitVars;
     procedure AddFilesToList(Dir: String; List: TStrings);
     procedure FindSourceFiles;
-    procedure CreateOuputDir;
+    procedure CreateOutputDir;
     procedure RunFPDoc;
     procedure CopyToXCTDir;
     procedure Execute;
@@ -94,7 +94,7 @@ type
     property PackageName: string read FPackageName;
     property PasSrcDir: string read FPasSrcDir write SetPasSrcDir;
     property Step: TFPDocRunStep read FStep;
-    property UsedPkgs: TStringList read FUsedPkgs; // e.g. 'rtl','fcl', 'lazutils'
+    property UsedPkgs: TStringList read FUsedPkgs; // e.g. 'rtl','fcl', 'lcl', 'lazutils'
     property XCTDir: string read FXCTDir write SetXCTDir;
     property XMLSrcDir: string read FXMLSrcDir write SetXMLSrcDir;
     property XCTFile: string read FXCTFile;
@@ -205,7 +205,7 @@ begin
 
   if DefaultOutFormat = '' then
   begin
-    writeln('Error: Param outfmt wrong');
+    writeln('Error: Parameter outfmt is missing');
     PrintHelp;
   end;
 end;
@@ -405,7 +405,7 @@ var
   XMLFile, Filename: String;
 begin
   if ord(Step)>=ord(frsFilesGathered) then
-    raise Exception.Create('TFPDocRun.FindSourceFiles not again');
+    raise Exception.Create('TFPDocRun.FindSourceFiles already called');
   if ord(Step)<ord(frsVarsInitialized) then
     InitVars;
 
@@ -446,18 +446,18 @@ begin
   FStep:=frsFilesGathered;
 end;
 
-procedure TFPDocRun.CreateOuputDir;
+procedure TFPDocRun.CreateOutputDir;
 var
   TargetCSSFile: String;
 begin
   if ord(Step)>=ord(frsOutDirCreated) then
-    raise Exception.Create('TFPDocRun.CreateOuputDir not again');
+    raise Exception.Create('TFPDocRun.CreateOutputDir already called');
 
   if Not DirectoryExistsUTF8(OutDir) then
   begin
     writeln('Creating directory "',OutDir,'"');
     if not CreateDirUTF8(OutDir) then
-      raise Exception.Create('unable to create directory "'+OutDir+'"');
+      raise Exception.Create('Unable to create directory "'+OutDir+'"');
   end;
 
   if ord(Step)<ord(frsFilesGathered) then
@@ -469,7 +469,7 @@ begin
     if CompareFilenames(TargetCSSFile,CSSFile)<>0 then
     begin
       if not CopyFile(CSSFile,TargetCSSFile) then
-        raise Exception.Create('unable to copy css file: CSSfile="'+CSSFile+'" to "'+TargetCSSFile+'"');
+        raise Exception.Create('Unable to copy css file: CSSfile="'+CSSFile+'" to "'+TargetCSSFile+'"');
     end;
   end;
 
@@ -482,9 +482,9 @@ var
   CmdLine: String;
 begin
   if ord(Step)>=ord(frsFPDocExecuted) then
-    raise Exception.Create('TFPDocRun.Run not again');
+    raise Exception.Create('TFPDocRun.Run already called');
   if ord(Step)<ord(frsOutDirCreated) then
-    CreateOuputDir;
+    CreateOutputDir;
 
   if ShowCmd then
   begin
@@ -537,7 +537,7 @@ var
   TargetXCTFile, SrcCHMFile, TargetCHMFile: String;
 begin
   if ord(Step)>=ord(frsCopiedToXCTDir) then
-    raise Exception.Create('TFPDocRun.CopyToXCTDir not again');
+    raise Exception.Create('TFPDocRun.CopyToXCTDir already called');
   if ord(Step)<ord(frsFPDocExecuted) then
     RunFPDoc;
 
@@ -548,7 +548,7 @@ begin
     if ShowCmd then
       writeln('cp ',XCTFile,' ',TargetXCTFile)
     else if not CopyFile(XCTFile,TargetXCTFile) then
-      raise Exception.Create('unable to copy xct file: "'+XCTFile+'" to "'+TargetXCTFile+'"');
+      raise Exception.Create('Unable to copy xct file: "'+XCTFile+'" to "'+TargetXCTFile+'"');
     writeln('Created ',TargetXCTFile);
     if OutFormat='chm' then
     begin
@@ -557,7 +557,7 @@ begin
       if ShowCmd then
         writeln('cp ',SrcCHMFile,' ',TargetCHMFile)
       else if not CopyFile(SrcCHMFile,TargetCHMFile) then
-        raise Exception.Create('unable to copy chm file: "'+SrcCHMFile+'" to "'+TargetCHMFile+'"');
+        raise Exception.Create('Unable to copy chm file: "'+SrcCHMFile+'" to "'+TargetCHMFile+'"');
       writeln('Created ',TargetCHMFile);
     end;
   end;
@@ -569,7 +569,7 @@ procedure TFPDocRun.Execute;
 begin
   writeln('===================================================================');
   if ord(Step)>=ord(frsComplete) then
-    raise Exception.Create('TFPDocRun.Execute not again');
+    raise Exception.Create('TFPDocRun.Execute already called');
   if ord(Step)<ord(frsCopiedToXCTDir) then
     CopyToXCTDir;
 
@@ -602,6 +602,5 @@ begin
   Run.Free;
 
   if ShowCmd then
-    writeln('Not executing, simulation ended. Stop');
+    writeln('Not executed... simulation ended');
 end.
-
