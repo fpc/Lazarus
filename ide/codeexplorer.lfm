@@ -55,7 +55,7 @@ object CodeExplorerView: TCodeExplorerView
         ClientHeight = 24
         ClientWidth = 218
         TabOrder = 0
-        object CodeFilterEdit: TEdit
+        object CodeFilterEdit: TEditButton
           AnchorSideLeft.Control = CodeTreeviewButtonPanel
           AnchorSideTop.Control = CodeTreeviewButtonPanel
           AnchorSideRight.Control = CodeRefreshSpeedButton
@@ -64,8 +64,15 @@ object CodeExplorerView: TCodeExplorerView
           Top = 0
           Width = 149
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 2
+          ButtonWidth = 23
+          MaxLength = 0
+          NumGlyphs = 1
+          OnButtonClick = FilterEditButtonClick
           OnChange = CodeFilterEditChange
           OnEnter = FilterEditEnter
+          PasswordChar = #0
+          Spacing = 2
           TabOrder = 0
           Text = 'CodeFilterEdit'
         end
@@ -131,15 +138,22 @@ object CodeExplorerView: TCodeExplorerView
         ClientHeight = 24
         ClientWidth = 218
         TabOrder = 0
-        object DirectivesFilterEdit: TEdit
+        object DirectivesFilterEdit: TEditButton
           AnchorSideRight.Control = DirRefreshSpeedButton
           Left = 0
           Height = 24
           Top = 0
           Width = 172
           Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Right = 2
+          ButtonWidth = 23
+          MaxLength = 0
+          NumGlyphs = 1
+          OnButtonClick = FilterEditButtonClick
           OnChange = DirectivesFilterEditChange
           OnEnter = FilterEditEnter
+          PasswordChar = #0
+          Spacing = 2
           TabOrder = 0
           Text = 'DirectivesFilterEdit'
         end

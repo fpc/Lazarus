@@ -43,7 +43,7 @@ uses
   // LazUtils
   LazStringUtils, LazLoggerBase,
   // LCL
-  LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, StdCtrls, ExtCtrls,
+  LCLProc, LCLType, Forms, Controls, Dialogs, Buttons, ComCtrls, Menus, ExtCtrls, EditBtn,
   // CodeTools
   FileProcs, BasicCodeTools, CustomCodeTool, CodeToolManager, CodeAtom,
   CodeCache, CodeTree, KeywordFuncLists, FindDeclarationTool, DirectivesTree,
@@ -113,10 +113,10 @@ type
   { TCodeExplorerView }
 
   TCodeExplorerView = class(TForm)
-    CodeFilterEdit: TEdit;
+    CodeFilterEdit: TEditButton;
     CodePage: TTabSheet;
     CodeTreeview: TTreeView;
-    DirectivesFilterEdit: TEdit;
+    DirectivesFilterEdit: TEditButton;
     DirectivesPage: TTabSheet;
     DirectivesTreeView: TTreeView;
     IdleTimer1: TIdleTimer;
@@ -137,6 +137,7 @@ type
       {%H-}Shift: TShiftState; X, Y: Integer);
     procedure DirectivesFilterEditChange(Sender: TObject);
     procedure DirRefreshSpeedButtonClick(Sender: TObject);
+    procedure FilterEditButtonClick(Sender: TObject);
     procedure FilterEditEnter(Sender: TObject);
     procedure FormActivate(Sender: TObject);
     procedure IdleTimer1Timer(Sender: TObject);
@@ -486,6 +487,8 @@ begin
   DirOptionsSpeedButton.Hint:=lisOptions;
   CodeFilterEdit.TextHint:=lisCEFilter;
   DirectivesFilterEdit.TextHint:=lisCEFilter;
+  CodeFilterEdit.Button.Enabled:=false;
+  DirectivesFilterEdit.Button.Enabled:=false;
 
   AssignAllImages;
   // assign the root TMenuItem to the registered menu root.
@@ -543,9 +546,15 @@ begin
   RefreshDirectives(true);
 end;
 
+procedure TCodeExplorerView.FilterEditButtonClick(Sender: TObject);
+begin
+  (Sender as TEditButton).Text:='';
+  IdleTimer1Timer(nil); // immediately reset filter
+end;
+
 procedure TCodeExplorerView.FilterEditEnter(Sender: TObject);
 begin
-  (Sender as TEdit).SelectAll;
+  (Sender as TEditButton).SelectAll;
 end;
 
 procedure TCodeExplorerView.FormActivate(Sender: TObject);
@@ -725,6 +734,9 @@ begin
     CheckOnIdle;
 end;
 
+type
+  TSpeedButtonFriend = class(TSpeedButton);
+
 procedure TCodeExplorerView.AssignAllImages;
 begin
   IDEImages.AssignImage(CodeRefreshSpeedButton, 'laz_refresh');
@@ -758,6 +770,9 @@ begin
   // sections
   ImgIDSection := IDEImages.GetImageIndex('ce_section');
   ImgIDHint := IDEImages.GetImageIndex('state_hint');
+
+  TSpeedButtonFriend(CodeFilterEdit.Button).ButtonGlyph.LCLGlyphName := ResBtnListFilter;
+  TSpeedButtonFriend(DirectivesFilterEdit.Button).ButtonGlyph.LCLGlyphName := ResBtnListFilter;
 end;
 
 function TCodeExplorerView.GetCodeNodeDescription(ACodeTool: TCodeTool;
@@ -2587,6 +2602,7 @@ var
   TheFilter: String;
 begin
   TheFilter:=GetCodeFilter;
+  CodeFilterEdit.Button.Enabled:=TheFilter<>'';
   if FLastCodeFilter=TheFilter then exit;
   if (FUpdateCount>0) or (CurrentPage<>cepCode) then begin
     Include(FFlags,cevCodeRefreshNeeded);
@@ -2606,6 +2622,7 @@ var
   TheFilter: String;
 begin
   TheFilter:=DirectivesFilterEdit.Text;
+  DirectivesFilterEdit.Button.Enabled:=TheFilter<>'';
   if FLastDirectivesFilter=TheFilter then exit;
   if (FUpdateCount>0) or (CurrentPage<>cepDirectives) then begin
     Include(FFlags,cevDirectivesRefreshNeeded);
