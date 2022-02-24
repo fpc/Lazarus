@@ -375,6 +375,13 @@ begin
     Params.Add('--auto-toc');
     Params.Add('--auto-index');
     Params.Add('--make-searchable');
+
+    // set an explicit title used in the LHelp TOC navigation tree
+    if (LowerCase(PackageName) = 'lcl') then
+      Params.Add('--chm-title="(LCL) Lazarus Component Library"')
+    else
+      Params.Add('--chm-title="(LazUtils) Lazarus Utilities"');
+
     if CSSFile<>'' then
       Params.Add('--css-file='+ExtractFileName(CSSFile)); // the css file is copied to the OutDir
   end;
