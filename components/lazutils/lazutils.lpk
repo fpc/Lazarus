@@ -346,10 +346,6 @@
     </i18n>
     <RequiredPkgs>
       <Item>
-        <PackageName Value="fcl-image"/>
-        <DependencyType Value="FPMake"/>
-      </Item>
-      <Item>
         <PackageName Value="FCL"/>
       </Item>
     </RequiredPkgs>
