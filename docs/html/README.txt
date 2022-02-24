@@ -26,8 +26,8 @@ output formats.
 Build build_lcl_docs.lpi:
   ../../lazbuild build_lcl_docs.lpi
 
-Update the PATH environment variable in build_chm.bat and build_html.bat for
-your local installation. Run the script(s), or run build_lcl_docs.exe directly.
+Update the PATH environment variable in build_chm.sh and build_html.sh for
+your local installation. Run the script(s), or run build_lcl_docs directly.
 
 Run a script:
   ./build_chm.sh
@@ -65,15 +65,16 @@ For FPDoc version 3.2.X, the syntax is:
 
   --footer=path/to/filename.ext
 
-For  FPDoc verions 3.3.X, the syntax requires an @ symbol as a prefix for the file
-name. For example:
+For  FPDoc versions 3.3.X, the syntax requires an @ symbol as a prefix for the
+file name. For example:
 
   --footer=@path/to/filename.ext
 
-FPDoc verions 3.3.X allows a string of text to used as the footer. For example:
+FPDoc versions 3.3.X allows a string of text to be used as the footer.
+For example:
 
   --footer="(c) 2022. All rights reserved."
 
 
-All of the scripts have a commented version of the various command using the FPDoc 3.3.X
-syntax. Use the one needed for your system and FPDoc version.
+All of the scripts have a commented version of the various commands using
+the FPDoc 3.3.X syntax. Use the one needed for your system and FPDoc version.
