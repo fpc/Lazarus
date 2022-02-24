@@ -621,15 +621,30 @@ var
 begin
   ReadOptions;
 
+  {
+    LazUtils was never built with external links to LCL (See Also and source
+    declarations) because lcl.xct could not be imported. The file does not exist
+    when LazUtils is built.
+
+    To solve this problem, the output format for LazUtils is built twice. It is the
+    smaller of the two packages. Building LazUtils twice ensures that the
+    "chicken or the egg" problem with inter-file links is avoided.
+
+    Build LazUtils WITHOUT any external links (faster).
+    Build LCL with links to RTL, FCL, LazUtils.
+    Build LazUtils with links to RTL, FCL, LCL.
+  }
+  // build lazutils WITHOUT any external links
   Run:=TFPDocRun.Create('lazutils');
   Run.ExtraOptions:='-MObjFPC -Scghi'; // extra options from in lazutils makefile.
-  Run.UsedPkgs.Add('rtl');
-  Run.UsedPkgs.Add('fcl');
+  // Run.UsedPkgs.Add('rtl');
+  // Run.UsedPkgs.Add('fcl');
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lazutils';
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'components'+PathDelim+'lazutils';
   Run.Execute;
   Run.Free;
 
+  // build lcl with links to rtl, fcl, lazutils
   Run:=TFPDocRun.Create('lcl');
   Run.ExtraOptions:='-MObjFPC -Sic'; // extra options from in LCL makefile.
   Run.UsedPkgs.Add('rtl');
@@ -638,6 +653,17 @@ begin
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lcl'+PathDelim;
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'lcl'+PathDelim;
   Run.IncludePath := Run.PasSrcDir+PathDelim+'include';
+  Run.Execute;
+  Run.Free;
+
+  // build lazutils with links to rtl, fcl, lcl
+  Run:=TFPDocRun.Create('lazutils');
+  Run.ExtraOptions:='-MObjFPC -Scghi'; // extra options from in lazutils makefile.
+  Run.UsedPkgs.Add('rtl');
+  Run.UsedPkgs.Add('fcl');
+  Run.UsedPkgs.Add('lcl');
+  Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lazutils';
+  Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'components'+PathDelim+'lazutils';
   Run.Execute;
   Run.Free;
 
