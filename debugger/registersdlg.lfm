@@ -125,7 +125,6 @@ object RegistersDlg: TRegistersDlg
     Left = 300
     Top = 168
     object actPower: TAction
-      Enabled = False
       OnExecute = actPowerExecute
     end
     object actCopyName: TAction
