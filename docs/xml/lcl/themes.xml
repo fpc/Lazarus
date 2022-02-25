@@ -2249,19 +2249,23 @@ Default drawing for the edges on a themed element.
 Draws a theme element using the specified theme element details.
 </short>
 <descr/>
+<version>
+Modified in version 2.3.0 to use clBtnFace as the fill color for Tab pane or Tab body parts.
+clBackground was used in previous versions.
+</version>
 <seealso/>
 </element>
 <element name="TThemeServices.DrawElement.DC">
-<short/>
+<short>Device context where the theme element is drawn.</short>
 </element>
 <element name="TThemeServices.DrawElement.Details">
-<short/>
+<short>Theme element details used in the method.</short>
 </element>
 <element name="TThemeServices.DrawElement.R">
-<short/>
+<short>Rectangle used to draw the frame for the themed element.</short>
 </element>
 <element name="TThemeServices.DrawElement.ClipRect">
-<short/>
+<short>Not used in the current implementation. Default value is Nil.</short>
 </element>
 
 <element name="TThemeServices.DrawIcon">
