@@ -158,7 +158,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Dummy handle creator. On Qt we don´t need a Handle for common dialogs
+  Dummy handle creator. On Qt we don't need a Handle for common dialogs
  ------------------------------------------------------------------------------}
 class function TQtWSCommonDialog.CreateHandle(const ACommonDialog: TCommonDialog): THandle;
 begin
@@ -171,7 +171,7 @@ end;
   Params:  None
   Returns: Nothing
 
-  Dummy handle destructor. On Qt we don´t need a Handle for common dialogs
+  Dummy handle destructor. On Qt we don't need a Handle for common dialogs
  ------------------------------------------------------------------------------}
 class procedure TQtWSCommonDialog.DestroyHandle(const ACommonDialog: TCommonDialog);
 begin
@@ -189,15 +189,24 @@ end;
 class function TQtWSFileDialog.GetQtFilterString(const AFileDialog: TFileDialog;
   var ASelectedFilter: WideString): WideString;
 
-  function GetExtensionString(ASource: String; AStart, ALength: Integer): String; inline;
+const
+  FULLWIDTH_LEFT_PARENTHESIS_UTF8 = #$EF#$BC#$88;
+  FULLWIDTH_RIGHT_PARENTHESIS_UTF8 = #$EF#$BC#$89;
+
+  function ReplaceExtensionDelimiter(const ASource: String): String; inline;
   begin
-    // replace *.ext1, *.ext2 by *.ext1 *.ext2
-    Result := '(' + StringReplace(Copy(ASource, AStart, ALength), ';', ' ', [rfReplaceAll]) + ')';
+    // replace *.ext1;*.ext2 by *.ext1 *.ext2
+    Result := StringReplace(ASource, ';', ' ', [rfReplaceAll]);
+  end;
+
+  function GetExtensionString(const ASource: String): String; inline;
+  begin
+    Result := '(' + ReplaceExtensionDelimiter(ASource) + ')';
   end;
   
 var
-  TmpFilter, strExtensions, DialogFilter: string;
-  ParserState, Position, i: Integer;
+  TmpFilter, strExtensions, DialogFilter, S, S1: string;
+  ParserState, Position, i, L: Integer;
   List: TStrings;
 begin
     {------------------------------------------------------------------------------
@@ -231,59 +240,45 @@ begin
   ParserState := 0;
   Position := 1;
   TmpFilter := AFileDialog.Filter;
-  DialogFilter := AFileDialog.Filter;
   ASelectedFilter := '';
 
-  {we must remove all brackets since qt-45 doesn't like brackets
-   outside filters,so our eg. Pascal source (*.pas;*.pp) | *.pas;*.pp
-   becomes invalid after filters processing.}
-  TmpFilter := StringReplace(TmpFilter,'(','',[rfReplaceAll]);
-  TmpFilter := StringReplace(TmpFilter,')','',[rfReplaceAll]);
   DialogFilter := TmpFilter;
 
   TmpFilter := '';
 
   List := TStringList.Create;
   try
-    for i := 1 to Length(DialogFilter) do
+    S1 := '';
+    L := Length(DialogFilter);
+    for i := 1 to L + 1 do
     begin
-      if Copy(DialogFilter, i, 1) = '|' then
+      if (i = L + 1) or (DialogFilter[i] = '|') then
       begin
         ParserState := ParserState + 1;
 
+        S := Copy(DialogFilter, Position, i - Position);
         if ParserState = 1 then
         begin
-          List.Add(Copy(DialogFilter, Position, i - Position));
-          TmpFilter := TmpFilter + Copy(DialogFilter, Position, i - Position);
+          S := StringReplace(S, ' (', FULLWIDTH_LEFT_PARENTHESIS_UTF8, []);
+          S := StringReplace(S, '(', FULLWIDTH_LEFT_PARENTHESIS_UTF8, []);
+          S := StringReplace(S, ')', FULLWIDTH_RIGHT_PARENTHESIS_UTF8, []);
+          S1 := S;
+          List.Add(S1);
+          TmpFilter := TmpFilter + S1;
         end else
-        if ParserState = 2 then
+        //if ParserState = 2 then
         begin
-          strExtensions := GetExtensionString(DialogFilter, Position, i - Position);
+          strExtensions := GetExtensionString(S);
+          List.Strings[List.Count - 1] := S1 + ' ' + strExtensions;
+          TmpFilter := TmpFilter + ' ' + strExtensions;
 
-          if Pos(strExtensions, TmpFilter) = 0 then
-          begin
-            if List.Count > 0 then
-              List.Strings[List.Count - 1] := List.Strings[List.Count - 1] +' '+ strExtensions;
-            TmpFilter := TmpFilter + ' ' + strExtensions;
-          end;
-
-          TmpFilter := TmpFilter + ';;';
-
+          if i <> L + 1 then
+            TmpFilter := TmpFilter + ';;';
           ParserState := 0;
         end;
 
-        if i <> Length(DialogFilter) then
-          Position := i + 1;
+        Position := i + 1;
       end;
-    end;
-
-    strExtensions := GetExtensionString(DialogFilter, Position, i + 1 - Position);
-
-    if Pos(strExtensions, TmpFilter) = 0 then
-    begin
-      if List.Count > 0 then
-        List.Strings[List.Count - 1] := List.Strings[List.Count - 1] +' '+ strExtensions;
-      TmpFilter := TmpFilter + ' ' + strExtensions;
     end;
 
     // Remember that AFileDialog.FilterIndex is a 1-based index and that
@@ -387,9 +382,8 @@ begin
   QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
 
-  {$note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
-    QFileDialogDontUseNativeDialog, True);
+    QFileDialogDontUseNativeDialog, False);
 
   FileDialog.AttachEvents;
   
@@ -660,10 +654,9 @@ begin
     {$ifdef darwin}
     QWidget_setWindowFlags(FileDialog.Widget, QtDialog or QtWindowSystemMenuHint or QtCustomizeWindowHint);
     {$endif}
-    {. $note WE MUST USE NON NATIVE DIALOGS HERE, OTHERWISE NO SIGNALS #16532.}
+    {$ifndef QT_NATIVE_DIALOGS}
     QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
       QFileDialogDontUseNativeDialog, True);
-    {$ifndef QT_NATIVE_DIALOGS}
     FileDialog.initializePreview(TPreviewFileDialog(ACommonDialog).PreviewFileControl);
     {$endif}
     FileDialog.AttachEvents;
@@ -734,9 +727,8 @@ begin
     QtWindowSystemMenuHint or QtCustomizeWindowHint);
   {$endif}
 
-  {$note qt-4.5.0,qt-4.5.1 currently supports macosx only.}
   QFileDialog_setOption(QFileDialogH(FileDialog.Widget),
-    QFileDialogDontUseNativeDialog, True);
+    QFileDialogDontUseNativeDialog, False);
 
   FileDialog.setFileMode(QFileDialogDirectoryOnly);
 
