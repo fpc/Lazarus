@@ -2212,7 +2212,7 @@ begin
     teTab:
       begin
         if Details.Part in [TABP_PANE, TABP_BODY] then
-          FillWithColor(ARect, clBackground);
+          FillWithColor(ARect, clBtnFace{clBackground});
       end;
     teTreeView:
       begin
