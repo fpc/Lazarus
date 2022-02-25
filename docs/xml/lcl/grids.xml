@@ -4805,6 +4805,7 @@
       <element name="TCustomGrid.FFocusColor"/>
       <element name="TCustomGrid.FSelectedColor"/>
       <element name="TCustomGrid.FDisabledFontColor"/>
+      <element name="TCustomGrid.FFadeUnfocusedSelection"/>
       <element name="TCustomGrid.FFocusRectVisible"/>
       <element name="TCustomGrid.FCols"/>
       <element name="TCustomGrid.FRows"/>
@@ -10534,6 +10535,22 @@
         <short>New value for the property.</short>
       </element>
 
+      <element name="TCustomGrid.SetFadeUnfocusedSelection">
+        <short>Sets the value for the FadeUnfocusedSelection property.</short>
+        <descr>
+          <p>
+            Changing the value for the property causes the control to be redrawn.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.FadeUnfocusedSelection"/>
+          <link id="TCustomGrid.Invalidate"/>
+        </seealso>
+      </element>
+      <element name="TCustomGrid.SetFadeUnfocusedSelection.AValue">
+        <short>New value for the FadeUnfocusedSelection property.</short>
+      </element>
+
       <element name="TCustomGrid.ShowCellHintWindow">
         <short>Gets and displays the cell hint(s) for the current cell in the grid.</short>
         <descr>
@@ -11978,6 +11995,43 @@
           </p>
         </descr>
         <seealso/>
+      </element>
+
+      <element name="TCustomGrid.FadeUnfocusedSelection">
+        <short>Indicates if special color are used for selected cells when the control loses focus.</short>
+        <descr>
+          <p>
+            <var>FadeUnfocusedSelection</var> is a <var>Boolean</var> property which indicates if inactive caption and text colors are used to draw the selected cells in the grid when the control loses focus. It causes color values for the Brush and Font on the Canvas to be updated.
+          </p>
+          <p>
+            When set to <b>True</b> and the control is not Focused, an sRGB color difference between the Font color and the clBtnFace color is used to select the color values applied to the Canvas. If the color distance at least 25%, clBtnFace is used for the background and clBtnText is used for the text. For a smaller color distance, clInactiveCaption is used for the background and clInactiveCaptionText is used for the text.
+          </p>
+          <p>
+            When set to <b>False</b>, or when the control has Focus, the color in SelectedColor is used for the background in selected cells and the color assigned to Font is used for text.
+          </p>
+          <p>
+            The default value for the property is <b>False</b>. Changing the value for the property causes the control to be redrawn.
+          </p>
+          <p>
+            FadeUnfocusedSelection has no effect on cells which use a button-style editor; they are drawn using the style and color values needed for the button control.
+          </p>
+          <p>
+            FadeUnfocusedSelection is used in the PrepareCanvas method to assign the Brush and Font colors used on the Canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomGrid.DisabledFontColor"/>
+          <link id="TCustomGrid.Focused"/>
+          <link id="TCustomGrid.FocusColor"/>
+          <link id="TCustomGrid.SelectedColor"/>
+          <link id="TCustomGrid.PrepareCanvas"/>
+          <link id="TCustomGrid.OnPrepareCanvas"/>
+          <link id="#lcl.controls.TCustomControl.Canvas">TCustomControl.Canvas</link>
+          <link id="#lcl.graphics.clBtnFace"/>
+          <link id="#lcl.graphics.clBtnText"/>
+          <link id="#lcl.graphics.clInactiveCaption"/>
+          <link id="#lcl.graphics.clInactiveCaptionText"/>
+        </seealso>
       </element>
 
       <element name="TCustomGrid.SelectedColumn">
@@ -14268,6 +14322,7 @@
       <element name="TCustomDrawGrid.DefaultDrawing" link="#lcl.grids.TCustomGrid.DefaultDrawing"/>
       <element name="TCustomDrawGrid.DefaultRowHeight" link="#lcl.grids.TCustomGrid.DefaultRowHeight"/>
       <element name="TCustomDrawGrid.Enabled" link="#lcl.controls.TControl.Enabled"/>
+      <element name="TCustomDrawGrid.FadeUnfocusedSelection" link="#lcl.grids.TCustomGrid.FadeUnfocusedSelection"/>
       <element name="TCustomDrawGrid.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor"/>
       <element name="TCustomDrawGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
       <element name="TCustomDrawGrid.FixedHotColor" link="#lcl.grids.TCustomGrid.FixedHotColor"/>
@@ -14468,6 +14523,7 @@
       <element name="TDrawGrid.DragMode" link="#lcl.controls.TControl.DragMode"/>
       <element name="TDrawGrid.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TDrawGrid.ExtendedSelect" link="#lcl.grids.TCustomGrid.ExtendedSelect"/>
+      <element name="TDrawGrid.FadeUnfocusedSelection" link="#lcl.grids.TCustomGrid.FadeUnfocusedSelection"/>
       <element name="TDrawGrid.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor"/>
       <element name="TDrawGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
       <element name="TDrawGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
@@ -15753,6 +15809,7 @@
       <element name="TStringGrid.DragMode" link="#lcl.controls.TControl.DragMode"/>
       <element name="TStringGrid.Enabled" link="#lcl.controls.TControl.Enabled"/>
       <element name="TStringGrid.ExtendedSelect" link="#lcl.grids.TCustomGrid.ExtendedSelect"/>
+      <element name="TStringGrid.FadeUnfocusedSelection" link="#lcl.grids.TCustomGrid.FadeUnfocusedSelection"/>
       <element name="TStringGrid.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor"/>
       <element name="TStringGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
       <element name="TStringGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
