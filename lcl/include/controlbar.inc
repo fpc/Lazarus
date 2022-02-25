@@ -133,8 +133,13 @@ begin
 end;
 
 function TCustomControlBar.CalcBandHeightSnapped(AControl: TControl): Integer;
+var
+  rowsz : integer;
+  rows  : integer;
 begin
-  Result := (1 + trunc((AControl.Height + 2 * cBandBorderV) div RowSize)) * RowSize;
+  rowsz := RowSize;
+  rows := (AControl.Height - (2 * cBandBorderV) + (rowsz-1)) div rowsz;
+  Result := rows * rowsz;
 end;
 
 function TCustomControlBar.CalcInnerBevelWidth: Integer;
@@ -485,7 +490,7 @@ begin
   for i := 0 to ControlCount - 1 do begin
     aBand := TCtrlBand.Create;
     aBand.Control := Controls[i];
-    aBand.Height := CalcBandHeight(Controls[i]);
+    aBand.Height := CalcBandHeight(aBand.Control);
     aBand.Width := cFullGrabber + Controls[i].Width + cBandBorderH;
     aBand.Top := Controls[i].Top - (aBand.Height - Controls[i].Height) div 2;
     aBand.Left := Controls[i].Left - aIndent;
