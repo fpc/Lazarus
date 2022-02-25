@@ -39,6 +39,7 @@ begin
     App := QApplication_Create(@argc, argv);
   end;
   QCoreApplication_setAttribute(QtAA_DontCreateNativeWidgetSiblings, True);
+  QGuiApplication_setFallbackSessionManagementEnabled(False);
   {$IFDEF QtUseNativeEventLoop}
   FMainTimerID := -1;
   {$ENDIF}
