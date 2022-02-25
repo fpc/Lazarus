@@ -618,12 +618,16 @@
         <short>The Title or Caption displayed for the dialog.</short>
         <descr>
           <p>
-            <var>Title</var> can be used to provide a usage context for the re-usable dialog. The default value for the property is provided by the <var>DefaultTitle</var> method, and assigned in the <var>Create</var> constructor.
+            <var>Title</var> can be used to provide a usage context for the re-usable dialog. It is defined using the <var>TTranslateString</var> type which allows the value to be recognized and translated using the localization facilities found in the LCL and the Lazarus IDE. When an explicit value has been assigned for the property, it is included the LCL component streaming mechanism.
+          </p>
+          <p>
+            The default value for the property is provided by the <var>DefaultTitle</var> method, and assigned in the <var>Create</var> constructor.
           </p>
         </descr>
         <seealso>
           <link id="TCommonDialog.DefaultTitle"/>
           <link id="TCommonDialog.Create"/>
+          <link id="#lcl.lcltype.TTranslateString">TTranslateString</link>
         </seealso>
       </element>
 
