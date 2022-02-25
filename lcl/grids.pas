@@ -774,6 +774,7 @@ type
     FGridLineColor, FFixedGridLineColor: TColor;
     FFixedColor, FFixedHotColor, FFocusColor, FSelectedColor: TColor;
     FDisabledFontColor: TColor;
+    FFadeUnfocusedSelection: boolean;
     FFocusRectVisible: boolean;
     FCols,FRows: TIntegerList;
     FsaveOptions: TSaveOptions;
@@ -1173,6 +1174,7 @@ type
     procedure SetFixedRows(const AValue: Integer); virtual;
     procedure SetRawColWidths(ACol: Integer; AValue: Integer);
     procedure SetSelectedColor(const AValue: TColor); virtual;
+    procedure SetFadeUnfocusedSelection(const AValue: boolean);
     procedure ShowCellHintWindow(APoint: TPoint);
     procedure SizeChanged(OldColCount, OldRowCount: Integer); virtual;
     procedure Sort(ColSorting: Boolean; index,IndxFrom,IndxTo:Integer); virtual;
@@ -1264,6 +1266,7 @@ type
     property SaveOptions: TSaveOptions read FsaveOptions write FSaveOptions;
     property SelectActive: Boolean read FSelectActive write SetSelectActive;
     property SelectedColor: TColor read GetSelectedColor write SetSelectedColor;
+    property FadeUnfocusedSelection: boolean read FFadeUnfocusedSelection write SetFadeUnfocusedSelection default false;
     property SelectedColumn: TGridColumn read GetSelectedColumn;
     property Selection: TGridRect read GetSelection write SetSelection;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssAutoBoth;
@@ -1486,6 +1489,7 @@ type
     //property DragKind;
     //property DragMode;
     property Enabled;
+    property FadeUnfocusedSelection;
     property FixedColor;
     property FixedCols;
     property FixedHotColor;
@@ -1595,6 +1599,7 @@ type
     property DragMode;
     property Enabled;
     property ExtendedSelect;
+    property FadeUnfocusedSelection;
     property FixedColor;
     property FixedCols;
     property FixedRows;
@@ -1839,6 +1844,7 @@ type
     property DragMode;
     property Enabled;
     property ExtendedSelect;
+    property FadeUnfocusedSelection;
     property FixedColor;
     property FixedCols;
     property FixedRows;
@@ -3901,8 +3907,16 @@ procedure TCustomGrid.PrepareCanvas(aCol, aRow: Integer; aState: TGridDrawState)
     if (gdRowHighlight in aState) and not (gdFixed in AState) then
       Result := ColorToRGB(Result) xor $1F1F1F
   end;
+  function SimpleColorDistance(C1, C2: TColor): Double;
+  var
+    r1, g1, b1, r2, g2, b2: Byte;
+  begin
+    RedGreenBlue(C1, r1, g1, b1);
+    RedGreenBlue(C2, r2, g2, b2);
+    Result := Sqrt(Sqr(Integer(r1) - r2) + Sqr(Integer(g1) - g2) + Sqr(Integer(b1) - b2));
+  end;
 var
-  AColor: TColor;
+  C, C1, FontColor: TColor;
   CurrentTextStyle: TTextStyle;
   IsSelected: boolean;
   gc: TGridColumn;
@@ -3911,6 +3925,7 @@ begin
     Canvas.Pen.Mode := pmCopy;
     GetSelectedState(aState, IsSelected);
     if IsSelected then begin
+      FontColor:=clHighlightText;
       if FEditorMode and (aCol = Self.Col)
       and (((FEditor=FStringEditor) and (FStringEditor.BorderStyle=bsNone))
          or (FEditor=FButtonStringEditor))
@@ -3918,11 +3933,22 @@ begin
         Canvas.Brush.Color := FEditor.Color
       else if FEditorMode and (aCol = Self.Col) and (FEditor=FPicklistEditor) then
         Canvas.Brush.Color := GetNotSelectedColor
+      else if FadeUnfocusedSelection and not Focused then begin
+        C := ColorToRGB(Color);
+        C1 := ColorToRGB(clBtnFace);
+        if SimpleColorDistance(C, C1) >= 25 then begin // Windows: clWindow = FFFFFF, clBtnFace = F0F0F0
+          Canvas.Brush.Color := clBtnFace;
+          FontColor := clBtnText;
+        end else begin
+          Canvas.Brush.Color := clInactiveCaption;
+          FontColor := clInactiveCaptionText;
+        end;
+      end
       else
         Canvas.Brush.Color := SelectedColor;
       SetCanvasFont(GetColumnFont(aCol, False));
       if not IsCellButtonColumn(point(aCol,aRow)) then
-        Canvas.Font.Color := clHighlightText;
+        Canvas.Font.Color := FontColor;
       FLastFont:=nil;
     end else begin
       Canvas.Brush.Color := GetNotSelectedColor;
@@ -9378,6 +9404,15 @@ begin
   end;
 end;
 
+procedure TCustomGrid.SetFadeUnfocusedSelection(const AValue: boolean);
+begin
+  if FFadeUnfocusedSelection<>AValue then begin
+    FFadeUnfocusedSelection:=AValue;
+    if not Focused then
+      Invalidate;
+  end;
+end;
+
 procedure TCustomGrid.SetFixedcolor(const AValue: TColor);
 begin
   if FFixedColor<>AValue then begin
@@ -9831,6 +9866,7 @@ begin
   FFixedColor:=clBtnFace;
   FFixedHotColor:=cl3DLight;
   FSelectedColor:= clHighlight;
+  FFadeUnfocusedSelection:=false;
   FDisabledFontColor:=clGrayText;
   FRange:=Rect(-1,-1,-1,-1);
   FDragDx:=3;
