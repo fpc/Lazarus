@@ -2803,6 +2803,8 @@ begin
   if FDataValidity = AValidity then exit;
   Old := FDataValidity;
   FDataValidity := AValidity;
+  if AValidity = ddsUnknown then
+    ClearDispValues;
   DoDataValidityChanged(Old);
 end;
 
