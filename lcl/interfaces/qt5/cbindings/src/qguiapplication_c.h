@@ -52,6 +52,8 @@ C_EXPORT void QGuiApplication_setQuitOnLastWindowClosed(bool quit);
 C_EXPORT bool QGuiApplication_quitOnLastWindowClosed();
 C_EXPORT int QGuiApplication_exec();
 C_EXPORT bool QGuiApplication_notify(QGuiApplicationH handle, QObjectH AnonParam1, QEventH AnonParam2);
+C_EXPORT bool QGuiApplication_isFallbackSessionManagementEnabled();
+C_EXPORT void QGuiApplication_setFallbackSessionManagementEnabled(bool enabled);
 C_EXPORT bool QGuiApplication_isSessionRestored(QGuiApplicationH handle);
 C_EXPORT void QGuiApplication_sessionId(QGuiApplicationH handle, PWideString retval);
 C_EXPORT void QGuiApplication_sessionKey(QGuiApplicationH handle, PWideString retval);
