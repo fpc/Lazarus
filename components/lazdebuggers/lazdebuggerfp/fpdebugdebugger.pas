@@ -2181,6 +2181,7 @@ begin
     ARegisterValue := ARegisters.EntriesByName[ARegisterList[i].Name];
     ARegisterValue.ValueObj.SetAsNum(ARegisterList[i].NumValue, ARegisterList[i].Size);
     ARegisterValue.ValueObj.SetAsText(ARegisterList[i].StrValue);
+    ARegisterValue.Modified := ARegisterList.IsModified[ARegisterList[i]];
     ARegisterValue.DataValidity:=ddsValid;
     end;
   ARegisters.DataValidity:=ddsValid;

@@ -63,6 +63,8 @@ type
     FStrValue: string;
   public
     constructor Create(const AName: String);
+    procedure Assign(ASource: TDbgRegisterValue);
+    function HasEqualVal(AnOther: TDbgRegisterValue): Boolean;
     procedure SetValue(ANumValue: TDBGPtr; const AStrValue: string; ASize: byte; ADwarfIdx: cardinal);
     procedure Setx86EFlagsValue(ANumValue: TDBGPtr);
     property Name: string read FName;
@@ -78,11 +80,16 @@ type
 
   TDbgRegisterValueList = class(TGDbgRegisterValueList)
   private
+    FPreviousRegisterValueList: TDbgRegisterValueList;
+
     function GetDbgRegister(const AName: string): TDbgRegisterValue;
     function GetDbgRegisterAutoCreate(const AName: string): TDbgRegisterValue;
+    function GetIsModified(AReg: TDbgRegisterValue): boolean;
   public
+    procedure Assign(ASource: TDbgRegisterValueList);
     property DbgRegisterAutoCreate[AName: string]: TDbgRegisterValue read GetDbgRegisterAutoCreate;
     function FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
+    property IsModified[AReg: TDbgRegisterValue]: boolean read GetIsModified;
   end;
 
   { TDbgCallstackEntry }
@@ -198,7 +205,8 @@ type
   protected
     FCallStackEntryList: TDbgCallstackEntryList;
     FRegisterValueListValid: boolean;
-    FRegisterValueList: TDbgRegisterValueList;
+    FRegisterValueList,
+    FPreviousRegisterValueList: TDbgRegisterValueList;
     FStoreStepSrcFilename, FStoreStepFuncName: string;
     FStoreStepStartAddr, FStoreStepEndAddr: TDBGPtr;
     FStoreStepSrcLineNo: integer;
@@ -210,6 +218,7 @@ type
     procedure ValidateRemovedBreakPointInfo;
   public
     constructor Create(const AProcess: TDbgProcess; const AID: Integer; const AHandle: THandle); virtual;
+    procedure DoBeforeProcessLoop;
     function HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean; // include removed breakpoints that (may have) already triggered
     (* CheckAndResetInstructionPointerAfterBreakpoint
        This will check if the last instruction was a breakpoint (int3).
@@ -689,6 +698,7 @@ type
     procedure SendConsoleInput(AString: string); virtual;
 
     procedure ClearAddedAndRemovedLibraries;
+    procedure DoBeforeProcessLoop;
     function AddThread(AThreadIdentifier: THandle): TDbgThread;
     function GetThreadArray: TFPDThreadArray;
     procedure ThreadsBeforeContinue;
@@ -1480,6 +1490,35 @@ begin
     end;
 end;
 
+function TDbgRegisterValueList.GetIsModified(AReg: TDbgRegisterValue): boolean;
+begin
+  Result := FPreviousRegisterValueList <> nil;
+  if not Result then
+    exit;
+
+  Result := not FPreviousRegisterValueList.FindRegisterByDwarfIndex(AReg.DwarfIdx).HasEqualVal(AReg);
+end;
+
+procedure TDbgRegisterValueList.Assign(ASource: TDbgRegisterValueList);
+var
+  i: Integer;
+  Dest: TDbgRegisterValue;
+begin
+  If Count > ASource.Count then
+    Count := ASource.Count;
+  Capacity := ASource.Count;
+
+  for i := 0 to ASource.Count - 1 do begin
+    if i >= Count then begin
+      Dest := TDbgRegisterValue.Create('');
+      Add(Dest);
+    end
+    else
+      Dest := Items[i];
+    Dest.Assign(ASource[i]);
+  end;
+end;
+
 function TDbgRegisterValueList.FindRegisterByDwarfIndex(AnIdx: cardinal): TDbgRegisterValue;
 var
   i: Integer;
@@ -1498,6 +1537,23 @@ end;
 constructor TDbgRegisterValue.Create(const AName: String);
 begin
   FName:=AName;
+end;
+
+procedure TDbgRegisterValue.Assign(ASource: TDbgRegisterValue);
+begin
+  FDwarfIdx := ASource.FDwarfIdx;
+  FName     := ASource.FName;
+  FNumValue := ASource.FNumValue;
+  FSize     := ASource.FSize;
+  FStrValue := ASource.FStrValue;
+end;
+
+function TDbgRegisterValue.HasEqualVal(AnOther: TDbgRegisterValue): Boolean;
+begin
+  Result :=
+    (FNumValue = AnOther.FNumValue) and
+    (FSize     = AnOther.FSize)     and
+    (FStrValue = AnOther.FStrValue);
 end;
 
 procedure TDbgRegisterValue.SetValue(ANumValue: TDBGPtr;
@@ -2150,6 +2206,16 @@ procedure TDbgProcess.ClearAddedAndRemovedLibraries;
 begin
   {$IFDEF FPDEBUG_THREAD_CHECK}AssertFpDebugThreadIdNotMain('TBreakLocationMap.AddLocotion');{$ENDIF}
   FLibMap.ClearAddedAndRemovedLibraries;
+end;
+
+procedure TDbgProcess.DoBeforeProcessLoop;
+var
+  t: TDbgThread;
+begin
+  ClearAddedAndRemovedLibraries;
+
+  for t in FThreadMap do
+    t.DoBeforeProcessLoop;
 end;
 
 function TDbgProcess.AddThread(AThreadIdentifier: THandle): TDbgThread;
@@ -2838,7 +2904,18 @@ begin
   FHandle := AHandle;
   FProcess := AProcess;
   FRegisterValueList:=TDbgRegisterValueList.Create;
+  FPreviousRegisterValueList:=TDbgRegisterValueList.Create;
   inherited Create;
+end;
+
+procedure TDbgThread.DoBeforeProcessLoop;
+begin
+  FPreviousRegisterValueList.Assign(FRegisterValueList);
+  if FRegisterValueListValid then
+    FRegisterValueList.FPreviousRegisterValueList := FPreviousRegisterValueList
+  else
+    FRegisterValueList.FPreviousRegisterValueList := nil;
+  FRegisterValueListValid:=false;
 end;
 
 function TDbgThread.HasInsertedBreakInstructionAtLocation(const ALocation: TDBGPtr): Boolean;
@@ -3114,6 +3191,7 @@ destructor TDbgThread.Destroy;
 begin
   FProcess.ThreadDestroyed(Self);
   FreeAndNil(FRegisterValueList);
+  FreeAndNil(FPreviousRegisterValueList);
   ClearCallStack;
   FreeAndNil(FCallStackEntryList);
   inherited;

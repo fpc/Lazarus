@@ -1600,7 +1600,7 @@ begin
   end;
 
   FreeAndNil(FCommandToBeFreed);
-  FCurrentProcess.ClearAddedAndRemovedLibraries;
+  FCurrentProcess.DoBeforeProcessLoop;
 
   if FCommand <> nil then
     FCommand.DoBeforeLoopStart;
