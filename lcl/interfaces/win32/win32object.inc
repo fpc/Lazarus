@@ -806,6 +806,7 @@ end;
  ------------------------------------------------------------------------------}
 var
   IntSetPixel : function (DC:HDC; X, Y:longint; cl:Windows.COLORREF):Windows.COLORREF; stdcall = nil;
+  IntSendMessage : function(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; stdcall = nil;
 
 function VistaSetPixel(DC:HDC; X,Y:longint; cl:Windows.COLORREF):Windows.COLORREF; stdcall;
 var

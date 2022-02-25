@@ -3145,7 +3145,8 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32WidgetSet.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult;
 begin
-  Result := Windows.SendMessage(HandleWnd, Msg, WParam, LParam);
+  // Win32 Widgetset use unicode API functions internally, SendMessage also use SendMessageW function.
+  Result := IntSendMessage(HandleWnd, Msg, WParam, LParam);
 end;
 
 {------------------------------------------------------------------------------

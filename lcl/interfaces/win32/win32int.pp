@@ -359,6 +359,11 @@ initialization
   else
     IntSetPixel:=@Windows.SetPixel;
 
+  if WindowsVersion>=wvXP then
+    IntSendMessage:=@Windows.SendMessageW
+  else
+    IntSendMessage:=@Windows.SendMessage;
+
   // Register a windows sub-classes failed in a DLL library
   // https://bugs.freepascal.org/view.php?id=37982
   if IsLibrary then begin
@@ -373,7 +378,7 @@ initialization
     L:=Length(pChar(LCLCheckListboxClsName));
     Move( S[1], LCLCheckListboxClsName[L], L1);
     LCLCheckListboxClsName[L+L1] := #0;
-    end;
+  end;
 
 finalization
   if CurDoubleBuffer.Bitmap <> 0 then
@@ -388,5 +393,5 @@ finalization
     Windows.UnregisterClassW(PWideChar(  WideString(LCLListboxClsName) ), System.HInstance);
     Windows.UnregisterClassW(PWideChar(  WideString(LCLComboboxClsName) ), System.HInstance);
     Windows.UnregisterClassW(PWideChar(  WideString(LCLCheckListboxClsName) ), System.HInstance);
-    end;
+  end;
 end.
