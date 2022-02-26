@@ -1,6 +1,7 @@
 unit TestBase;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch typehelpers}
 
 interface
 
@@ -41,9 +42,12 @@ type
 
   TDebuggerInfo = TExternalExeInfo;
   TCompilerInfo = TExternalExeInfo;
+
   { TCompilerList }
 
-  TCompilerList = class(TBaseList)
+  TCompilerList = TBaseList;
+
+  TCompilerListHelper = class helper for TBaseList
   private
     function GetCompilerInfo(Index: Integer): TCompilerInfo;
   public
@@ -52,7 +56,9 @@ type
 
   { TDebuggerList }
 
-  TDebuggerList = class(TBaseList)
+  TDebuggerList = TBaseList;
+
+  TDebuggerListHelper = class  helper for TBaseList
   private
     function GetDebuggerInfo(Index: Integer): TDebuggerInfo;
   public
@@ -108,10 +114,10 @@ type
     FLogDebuglnCount: Integer;
     function GetCompilerInfo: TCompilerInfo;
     function GetSymbolType: TSymbolType;
-    procedure DoDbgOut(Sender: TObject; S: string; var Handled: Boolean); override;
-    procedure DoDebugln(Sender: TObject; S: string; var Handled: Boolean); override;
     function GetWatches: TTestWatchesMonitor;
   protected
+    procedure DoDbgOut(Sender: TObject; S: string; var Handled: Boolean); override;
+    procedure DoDebugln(Sender: TObject; S: string; var Handled: Boolean); override;
     procedure SetUp; override;
     function GetFinalLogFileName: String; override;
     procedure DoDbgOutPut(Sender: TObject; const AText: String); virtual;
@@ -365,16 +371,16 @@ begin
   LogText('## '+s);
 end;
 
-{ TCompilerList }
+{ TCompilerListHelper }
 
-function TCompilerList.GetCompilerInfo(Index: Integer): TCompilerInfo;
+function TCompilerListHelper.GetCompilerInfo(Index: Integer): TCompilerInfo;
 begin
   Result := FullInfo[Index];
 end;
 
-{ TDebuggerList }
+{ TCompilerListHelper }
 
-function TDebuggerList.GetDebuggerInfo(Index: Integer): TDebuggerInfo;
+function TDebuggerListHelper.GetDebuggerInfo(Index: Integer): TDebuggerInfo;
 begin
   Result := FullInfo[Index];
 end;

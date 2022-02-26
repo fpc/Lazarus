@@ -3,14 +3,22 @@ unit TTestWatchUtilities;
 {$mode objfpc}{$H+}
 {$modeswitch AdvancedRecords}
 {$modeswitch TypeHelpers}
+{$WARN 5093 off : function result variable of a managed type does not seem to be initialized}
 
 interface
 
 uses
   Classes, SysUtils, math, DbgIntfBaseTypes, DbgIntfDebuggerBase,
-  FpPascalBuilder, LazLoggerBase, Forms, IdeDebuggerBase, RegExpr,
+  FpPascalBuilder, LazLoggerBase, Forms, IdeDebuggerBase, IdeDebuggerUtils,
+  IdeDebuggerWatchResult, RegExpr,
   TestDbgTestSuites, TTestDebuggerClasses, TTestDbgExecuteables, TestDbgConfig,
   LazDebuggerIntf, LazDebuggerIntfBaseTypes, TestOutputLogger;
+
+const
+  SIZE_1 = 1;
+  SIZE_2 = 2;
+  SIZE_4 = 4;
+  SIZE_8 = 8;
 
 type
   TWatchExpectationResultKind = (
@@ -190,7 +198,8 @@ type
 
   TWatchExpTestCurrentData = record
     WatchExp: TWatchExpectation;
-    WatchVal: TWatchValue;
+    WatchRes: TWatchResultData;
+    WatchTpInf: TDBGType; //deprecated;
     Expectation: TWatchExpectationResult;
     HasTypeInfo: Boolean;
   end;
@@ -214,6 +223,7 @@ type
     function GetTests(Index: Integer): PWatchExpectation;
     function ParseCommaList(AVal: String; out AFoundCount: Integer;
       AMaxLen: Integer = -1; AComma: char = ','): TStringArray;
+    function GetExpTypeNameAsRegEx(AnExpect: TWatchExpectationResult): String;
   protected
     function EvaluateWatch(AWatchExp: PWatchExpectation; AThreadId: Integer; constref CurLoc: TDBGLocationRec; AWaitForEval: Boolean = True): Boolean; virtual;
     function EvaluateExprCmd(AWatchExp: PWatchExpectation; AThreadId: Integer; constref CurLoc: TDBGLocationRec; AWaitForEval: Boolean = True): Boolean; virtual;
@@ -224,6 +234,7 @@ type
     function TestEquals(Name: string; Expected, Got: string; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestEquals(Name: string; Expected, Got: string; ACaseSense: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestEquals(Name: string; Expected, Got: int64; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
+    function TestEquals(Name: string; Expected, Got: QWord; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestTrue(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
     function TestFalse(Name: string; Got: Boolean; AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 
@@ -1165,6 +1176,18 @@ begin
   end;
 end;
 
+function TWatchExpectationList.GetExpTypeNameAsRegEx(
+  AnExpect: TWatchExpectationResult): String;
+begin
+  if AnExpect.ExpTypeName = #1 then
+    Result := ''
+  else
+    Result := QuoteRegExprMetaChars(AnExpect.ExpTypeName);
+
+  if ehIgnTypeNameInData in AnExpect.ExpErrorHandlingFlags[Compiler.SymbolType] then
+    Result := '[a-zA-Z0-9_]*';
+end;
+
 procedure TWatchExpectationList.EvalCallback(Sender: TObject;
   ASuccess: Boolean; ResultText: String; ResultDBGType: TDBGType);
 begin
@@ -1271,6 +1294,12 @@ begin
   Result := FTest.TestEquals(Name, Expected, Got, AContext.WatchExp.TstMinDbg, AContext.WatchExp.TstMinFpc, AIgnoreReason);
 end;
 
+function TWatchExpectationList.TestEquals(Name: string; Expected, Got: QWord;
+  AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
+begin
+  Result := FTest.TestEquals(Name, Expected, Got, AContext.WatchExp.TstMinDbg, AContext.WatchExp.TstMinFpc, AIgnoreReason);
+end;
+
 function TWatchExpectationList.TestTrue(Name: string; Got: Boolean;
   AContext: TWatchExpTestCurrentData; AIgnoreReason: String): Boolean;
 begin
@@ -1320,7 +1349,8 @@ begin
       Thread := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
       Stack  := TstStackFrame;
       WatchVal := TstWatch.Values[Thread, Stack];
-      Context.WatchVal := WatchVal;
+      Context.WatchRes := WatchVal.ResultData;
+      Context.WatchTpInf := WatchVal.TypeInfo;
 
       if not VerifyDebuggerState then
         exit;
@@ -1344,11 +1374,11 @@ begin
         exit;
 
       if (not (ehNoTypeInfo in ehf)) then begin
-        if (Context.WatchVal.ValidTypes * [vtNumVal, vtTypeName] = [vtNumVal, vtTypeName])
+        if not(Context.WatchRes.ValueKind in [rdkUnknown, rdkPrePrinted, rdkError])
         then
           Context.HasTypeInfo := True
         else
-        if TestTrue('Has TypeInfo', Context.WatchVal.TypeInfo <> nil, Context, AnIgnoreRsn)
+        if TestTrue('Has TypeInfo', Context.WatchTpInf <> nil, Context, AnIgnoreRsn)
         then
           Context.HasTypeInfo := True;
       end;
@@ -1356,6 +1386,7 @@ begin
       if EvalCallTestFlags <> [] then begin
         TestTrue('Got eval res', EvalCallResReceived, Context, AnIgnoreRsn);
         TestTrue('Got eval success', EvalCallResSuccess, Context, AnIgnoreRsn);
+//        if (Context.WatchRes.ValueKind in [rdkUnknown, rdkPrePrinted, rdkError]) then
         TestTrue('Got eval type', EvalCallResDBGType <> nil, Context, AnIgnoreRsn);
       end;
 
@@ -1420,12 +1451,15 @@ begin
     if (not AContext.HasTypeInfo) then
       exit;
 
-    if (AContext.WatchVal.TypeInfo = nil) then begin
-      TestTrue('numval instead of typeinfo', vtNumVal in AContext.WatchVal.ValidTypes, AContext, AnIgnoreRsn);
+    if (AContext.WatchTpInf = nil) then begin
+      TestTrue('ResultValue instead of typeinfo',
+        not (AContext.WatchRes.ValueKind in [rdkUnknown, rdkPrePrinted, rdkError]),
+        AContext, AnIgnoreRsn
+      );
       exit;
     end;
 
-    t := AContext.WatchVal.TypeInfo.Kind;
+    t := AContext.WatchTpInf.Kind;
     WriteStr(s1, t);
     WriteStr(s2, Expect.ExpSymKind);
 
@@ -1480,10 +1514,14 @@ begin
     if ehNotImplementedType in ehf then
       AnIgnoreRsn := AnIgnoreRsn + 'Not implemented (typename)';
 
-    if vtTypeName in AContext.WatchVal.ValidTypes then
-      WtchTpName := AContext.WatchVal.TypeName
-    else
-      WtchTpName := AContext.WatchVal.TypeInfo.TypeName;
+    //if vtTypeName in AContext.WatchVal.ValidTypes then
+    WtchTpName := AContext.WatchRes.TypeName;
+    if (AContext.WatchTpInf <> nil) then begin
+      if (WtchTpName = '') then
+        WtchTpName := AContext.WatchTpInf.TypeName
+      else
+        TestEquals('same typename in type-info', WtchTpName, AContext.WatchTpInf.TypeName, False, AContext, AnIgnoreRsn);
+    end;
 
     if ehMatchTypeName in ehf then
       Result := TestMatches('TypeName', Expect.ExpTypeName, WtchTpName, AContext, AnIgnoreRsn)
@@ -1526,18 +1564,12 @@ function TWatchExpectationList.CheckResultMatch(
   AContext: TWatchExpTestCurrentData; AnIgnoreRsn: String): Boolean;
 var
   Expect: TWatchExpectationResult;
-  s: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
     Expect := AContext.Expectation;
 
-    if vtNumVal in AContext.WatchVal.ValidTypes then
-      s := AContext.WatchVal.NumValue[wdfDefault]
-    else
-      s := AContext.WatchVal.Value;
-
-    Result := TestMatches('Data', Expect.ExpTextData, s, AContext, AnIgnoreRsn);
+    Result := TestMatches('Data', Expect.ExpTextData, PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1553,30 +1585,30 @@ begin
     Expect := AContext.Expectation;
     //AContext.Expectation.ExpSymKind ???
 
-    //Result := TestTrue('NumVal ', vtNumVal in AContext.WatchVal.ValidTypes, AContext, AnIgnoreRsn);
-
-    if vtNumVal in AContext.WatchVal.ValidTypes then begin
-      if IsCardinal then begin
-        Result := TestTrue('NumFlag ', AContext.WatchVal.NumFlags = [nvfUnsigned], AContext, AnIgnoreRsn);
-        Result := TestEquals('num Data', Int64(Expect.ExpCardinalValue), Int64(AContext.WatchVal.NumValueRaw), AContext, AnIgnoreRsn);
-      end
-      else begin
-        Result := TestTrue('NumFlag ', AContext.WatchVal.NumFlags = [], AContext, AnIgnoreRsn);
-        Result := TestEquals('num Data', Expect.ExpIntValue, Int64(AContext.WatchVal.NumValueRaw), AContext, AnIgnoreRsn);
-      end;
-    end
-    else begin
+    if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
       if IsCardinal then
         s := IntToStr(Expect.expCardinalValue)
       else
         s := IntToStr(Expect.expIntValue);
 
-      Result := TestEquals('Data', s, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', s, PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+    end
+    else begin
+      if IsCardinal then begin
+        Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkUnsignedNumVal, AContext, AnIgnoreRsn);
+        Result := TestEquals('num Data', Expect.ExpCardinalValue, AContext.WatchRes.AsQWord, AContext, AnIgnoreRsn);
+
+        if (Expect.ExpCardinalSize > 0) then
+          TestEquals('DataSize', Expect.ExpCardinalSize, AContext.WatchRes.ByteSize, AContext, AnIgnoreRsn);
+      end
+      else begin
+        Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkSignedNumVal, AContext, AnIgnoreRsn);
+        Result := TestEquals('num Data', Expect.ExpIntValue, AContext.WatchRes.AsInt64, AContext, AnIgnoreRsn);
+
+        if (Expect.ExpIntSize > 0) then
+          TestEquals('DataSize', Expect.ExpIntSize, AContext.WatchRes.ByteSize, AContext, AnIgnoreRsn);
+      end;
     end;
-
-
-    //if not TestEquals('DataSize', Expect.ExpIntSize, AContext.WatchVal.TypeInfo.Len, AContext, AnIgnoreRsn) then
-    //  Result := False;
   end;
 end;
 
@@ -1592,7 +1624,7 @@ begin
     Expect := AContext.Expectation;
 
     WriteStr(s, Expect.ExpBoolValue);
-    v := AContext.WatchVal.Value;
+    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
     if AContext.Expectation.ExpResultKind = rkSizedBool then begin
       i := pos('(', v);
       if i > 1 then
@@ -1612,7 +1644,13 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), AContext.WatchVal.Value, EqIgnoreCase, AContext, AnIgnoreRsn);
+    if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
+      Result := TestEquals('Data', FloatToStr(Expect.ExpFloatValue), PrintWatchValue(AContext.WatchRes, wdfDefault), EqIgnoreCase, AContext, AnIgnoreRsn);
+    end
+    else begin
+      Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkFloatVal, AContext, AnIgnoreRsn);
+      Result := TestTrue('Data', CompareValue(AContext.WatchRes.AsFloat, Expect.ExpFloatValue, 0.000001)=0,AContext, AnIgnoreRsn);
+    end;
   end;
 end;
 
@@ -1625,7 +1663,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    Result := TestEquals('Data', Expect.ExpTextData, AContext.WatchVal.Value, not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
+    Result := TestEquals('Data', Expect.ExpTextData, PrintWatchValue(AContext.WatchRes, wdfDefault), not(Compiler.SymbolType in stDwarf2), AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1641,7 +1679,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    v := AContext.WatchVal.Value;
+    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
 
     if (v='') or (v[1] <> '[') or (v[length(v)] <> ']') then begin
       Result := TestTrue('elements are in [...]', False, AContext, AnIgnoreRsn);
@@ -1667,7 +1705,7 @@ function TWatchExpectationList.CheckResultChar(
 var
   Expect: TWatchExpectationResult;
   ehf: TWatchExpErrorHandlingFlags;
-  e: String;
+  e, v: String;
 begin
   with AContext.WatchExp do begin
     Result := True;
@@ -1679,11 +1717,12 @@ begin
     else
       e := QuoteText(Expect.ExpTextData);
 
+    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
     if ehCharFromIndex in ehf then begin
-      if AContext.WatchVal.Value <> e then begin
+      if v <> e then begin
 //AnIgnoreRsn := AnIgnoreRsn + 'char from index not implemented';
         Result := TestMatches('Data (pchar/string)', '([Pp][Cc]har|[Ss]tring):? *'+e,
-          AContext.WatchVal.Value, EqMatchCase, AContext, AnIgnoreRsn);
+          v, EqMatchCase, AContext, AnIgnoreRsn);
         exit;
       end
       else
@@ -1691,7 +1730,7 @@ begin
         TestTrue('Expect from Index, yet got only one value', False, AContext, 'Success, better than expected');
     end;
 
-    Result := TestEquals('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    Result := TestEquals('Data', e, v, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1706,43 +1745,73 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    v := AContext.WatchVal.Value;
-    ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
+    if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
+      v := PrintWatchValue(AContext.WatchRes, wdfDefault);
+      ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    // in dwarf 2 ansistring are pchar
-    // widestring are always pwidechar
-    if (Compiler.SymbolType in stDwarf2) or (AContext.Expectation.ExpResultKind = rkWideString) then begin
-      tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
-      if ehIgnTypeNameInData in ehf then
-        tn := '.*';
-      if (tn <> '') then begin
-        if (Expect.ExpTextData = '') and
-           FTest.Matches('^'+tn+'\(nil\)', v) or
-           FTest.Matches('^nil$', v)  // new format, no typename
-        then
-          v := ''''''
-        else
-        if FTest.Matches('^'+tn+'\(\$[0-9a-fA-F]+\) ', v) then
-          delete(v, 1, pos(') ', v)+1)
-        else
-        if FTest.Matches('^\$[0-9a-fA-F]+(\^:)? ', v) then
-          delete(v, 1, pos(' ', v));
+      // in dwarf 2 ansistring are pchar
+      // widestring are always pwidechar
+      if (Compiler.SymbolType in stDwarf2) or (AContext.Expectation.ExpResultKind = rkWideString) then begin
+        tn := GetExpTypeNameAsRegEx(Expect);
+        if (tn <> '') then begin
+          if (Expect.ExpTextData = '') and
+             FTest.Matches('^'+tn+'\(nil\)', v) or
+             FTest.Matches('^nil$', v)  // new format, no typename
+          then
+            v := ''''''
+          else
+          if FTest.Matches('^'+tn+'\(\$[0-9a-fA-F]+\) ', v) then
+            delete(v, 1, pos(') ', v)+1)
+          else
+          if FTest.Matches('^\$[0-9a-fA-F]+(\^:)? ', v) then
+            delete(v, 1, pos(' ', v));
+        end
+        else begin
+          if (Expect.ExpTextData = '') and (v = 'nil')
+          then
+            v := ''''''
+          else
+          if FTest.Matches('^\$[0-9a-fA-F]+ ', v) then
+            delete(v, 1, pos(' ', v));
+        end;
+      end;
+
+      if ehNoCharQuoting in ehf then
+        e := Expect.ExpTextData
+      else
+        e := QuoteText(Expect.ExpTextData);
+      Result := TestEquals('Data', e, v, AContext, AnIgnoreRsn);
+    end
+    else begin
+      if ((Compiler.SymbolType in stDwarf2) or (AContext.Expectation.ExpResultKind = rkWideString)) and
+         (AContext.WatchRes.ValueKind = rdkPointerVal)
+      then begin
+        // got pchar
+        if (Expect.ExpTextData = '') and (AContext.WatchRes.DerefData = nil) then // valid nil pointer
+          exit;
+        Result := TestTrue('Has Deref', AContext.WatchRes.DerefData <> nil, AContext, AnIgnoreRsn);
+        if AContext.WatchRes.DerefData = nil then
+          exit;
+
+        Result := TestTrue('Deref is string', AContext.WatchRes.DerefData.ValueKind in [rdkString, rdkWideString], AContext, AnIgnoreRsn);
+        if not Result then
+          exit;
+        v := AContext.WatchRes.DerefData.AsString;
+      end
+      else
+      if (AContext.WatchRes.ValueKind = rdkWideString) then begin
+        v := AContext.WatchRes.AsWideString;
+      end
+      else
+      if (AContext.WatchRes.ValueKind = rdkString) then begin
+        v := AContext.WatchRes.AsString;
       end
       else begin
-        if (Expect.ExpTextData = '') and (v = 'nil')
-        then
-          v := ''''''
-        else
-        if FTest.Matches('^\$[0-9a-fA-F]+ ', v) then
-          delete(v, 1, pos(' ', v));
+        TestTrue('got correct type', False, AContext, AnIgnoreRsn);
+        exit;
       end;
+      Result := TestEquals('Data', Expect.ExpTextData, v, AContext, AnIgnoreRsn);
     end;
-
-    if ehNoCharQuoting in ehf then
-      e := Expect.ExpTextData
-    else
-      e := QuoteText(Expect.ExpTextData);
-    Result := TestEquals('Data', e, v, AContext, AnIgnoreRsn);
   end;
 end;
 
@@ -1757,12 +1826,19 @@ begin
     Result := True;
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
-    if ehNoCharQuoting in ehf then
-      e := Expect.ExpTextData
-    else
-      e := QuoteText(Expect.ExpTextData);
 
-    Result := TestEquals('Data', e, AContext.WatchVal.Value, AContext, AnIgnoreRsn);
+    if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
+      if ehNoCharQuoting in ehf then
+        e := Expect.ExpTextData
+      else
+        e := QuoteText(Expect.ExpTextData);
+
+      Result := TestEquals('Data', e, PrintWatchValue(AContext.WatchRes, wdfDefault), AContext, AnIgnoreRsn);
+    end
+    else begin
+      Result := TestTrue('ValueKind', AContext.WatchRes.ValueKind = rdkString, AContext, AnIgnoreRsn);
+      Result := TestEquals('Data', Expect.ExpTextData, AContext.WatchRes.AsString, AContext, AnIgnoreRsn);
+    end;
   end;
 end;
 
@@ -1779,62 +1855,94 @@ begin
     Result := True;
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
-    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
-    if ehIgnTypeNameInData in ehf then
-      tn := '.*';
 
-    e := '(\$[0-9a-fA-F]*|nil)';
+    if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
+      g := PrintWatchValue(AContext.WatchRes, wdfDefault);
 
-    if (tn <> '') and
-       (Length(Expect.ExpSubResults) = 1) and
-       (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) and
-       (not FTest.Matches(tn+'\(', AContext.WatchVal.NumValue[wdfDefault]))
-    then
-      tn := ''; // char pointer to not (always?) include the type
-    if tn <> '' then
-      e := tn+'\('+e+'\)';
-    e := '^'+e;
+      e := '(\$[0-9a-fA-F]*|nil)';
+      tn := GetExpTypeNameAsRegEx(Expect);
+      if (tn <> '') and
+         (Length(Expect.ExpSubResults) = 1) and
+         (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) and
+         (not FTest.Matches(tn+'\(', g))
+      then
+        tn := ''; // char pointer to not (always?) include the type
+      if tn <> '' then
+        e := tn+'\('+e+'\)';
+      e := '^'+e+'([:\s=]|$)';
 
-    Result := TestMatches('Data', e, AContext.WatchVal.NumValue[wdfDefault], AContext, AnIgnoreRsn);
+      Result := TestMatches('Data', e, g, AContext, AnIgnoreRsn);
 
-    if ehIgnPointerDerefData in ehf then
-      exit;
+      if ehIgnPointerDerefData in ehf then
+        exit;
 
-    g := AContext.WatchVal.NumValue[wdfDefault];
-    i := pos(' ', g);
-    if i > 1 then
-      delete(g, 1, i)
-    else
-    if not((Length(Expect.ExpSubResults) = 1) and (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) ) then begin
-      TestTrue('nil pointer, but expecting data / internal test correctness', False, AContext, AnIgnoreRsn);
-      exit;
+      i := pos(' ', g);
+      if i > 1 then
+        delete(g, 1, i)
+      else
+      if not((Length(Expect.ExpSubResults) = 1) and (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) ) then begin
+        TestTrue('nil pointer, but expecting data / internal test correctness', False, AContext, AnIgnoreRsn);
+        exit;
+      end
+      else
+      if pos('nil', g) > 0 then
+        g := '''''' // only pchar, ... / simulate empty string for nil pointer
+      else begin
+        TestTrue('pointer has data', False, AContext, AnIgnoreRsn);
+        exit;
+      end;
+
+      if Length(Expect.ExpSubResults) = 0 then begin
+        TestTrue('pointer has expectation / internal test correctness', False, AContext, AnIgnoreRsn);
+        exit;
+      end;
+
+
+      n := FTest.TestBaseName;
+      SubContext := AContext;
+      SubContext.WatchRes := TWatchResultDataPrePrinted.Create(g);
+      SubContext.Expectation := Expect.ExpSubResults[0];
+      FTest.TestBaseName := n + ' / deref value';
+
+      Result := CheckData(SubContext, AnIgnoreRsn);
+
+      FreeAndNil(SubContext.WatchRes);
+      FTest.TestBaseName := n;
     end
-    else
-    if pos('nil', g) > 0 then
-      g := '''''' // only pchar, ... / simulate empty string for nil pointer
     else begin
-      TestTrue('pointer has data', False, AContext, AnIgnoreRsn);
-      exit;
+      Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkPointerVal, AContext, AnIgnoreRsn);
+      //TODO: FLAG for nil/non-nil pointer
+      //Result := TestTrue('Not nil', AContext.WatchRes.AsQWord <> 0, AContext, AnIgnoreRsn);
+
+      if (Length(Expect.ExpSubResults) = 1) then begin
+        if (Expect.ExpSubResults[0].ExpResultKind in [rkChar, rkAnsiString, rkWideString, rkShortString]) and
+           (Expect.ExpSubResults[0].ExpTextData = '')
+        then begin
+          //TODO: check pointed-to type
+          if AContext.WatchRes.DerefData = nil then  // valid nil pointer
+            exit;
+        end;
+
+        Result := TestTrue('Has Deref', AContext.WatchRes.DerefData <> nil, AContext, AnIgnoreRsn);
+        if AContext.WatchRes.DerefData <> nil then begin
+          n := FTest.TestBaseName;
+          SubContext := AContext;
+          SubContext.WatchRes := AContext.WatchRes.DerefData;
+          SubContext.Expectation := Expect.ExpSubResults[0];
+          FTest.TestBaseName := n + ' / deref value';
+
+          Result := VerifyTypeName(SubContext, AnIgnoreRsn);
+          // TODO: check type specifics, like ValueKind, ByteSize, ...  // ehIgnData
+          if not (ehIgnPointerDerefData in ehf) then
+            Result := CheckData(SubContext, AnIgnoreRsn);
+
+          FTest.TestBaseName := n;
+        end;
+      end
+      else begin
+        TestTrue('SelfTest: ehIgnPointerDerefData for pointer without sub-expect', ehIgnPointerDerefData in ehf, AContext, AnIgnoreRsn);
+      end;
     end;
-
-    if Length(Expect.ExpSubResults) = 0 then begin
-      TestTrue('pointer has expectation / internal test correctness', False, AContext, AnIgnoreRsn);
-      exit;
-    end;
-
-
-    n := FTest.TestBaseName;
-    SubContext := AContext;
-    SubContext.WatchVal.Value := g;
-    FTest.TestBaseName := n + ' / deref value';
-
-    //SubContext.WatchExp.TstExpected := Expect.ExpSubResults[0];
-    SubContext.Expectation := Expect.ExpSubResults[0];
-    Result := CheckData(SubContext, AnIgnoreRsn);
-
-    FTest.TestBaseName := n;
-    //AContext.WatchVal.Value := v;
-
   end;
 end;
 
@@ -1849,19 +1957,23 @@ begin
     Result := True;
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
-    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
-    if ehIgnTypeNameInData in ehf then
-      tn := '.*';
 
-    if Expect.ExpPointerValue = nil then
-      e := 'nil'
-    else
-      e := '\$0*'+IntToHex(PtrUInt(Expect.ExpPointerValue), 8);
-    if tn <> '' then
-      e := tn+'\('+e+'\)';
-    e := '^'+e;
+    if AContext.WatchRes.ValueKind = rdkPrePrinted then begin
+      tn := GetExpTypeNameAsRegEx(Expect);
 
-    Result := TestMatches('Data', e, AContext.WatchVal.NumValue[wdfDefault], AContext, AnIgnoreRsn);
+      if Expect.ExpPointerValue = nil then
+        e := 'nil'
+      else
+        e := '\$0*'+IntToHex(PtrUInt(Expect.ExpPointerValue), 8);
+      if tn <> '' then
+        e := tn+'\('+e+'\)';
+      e := '^'+e;
+
+      Result := TestMatches('Data', e, AContext.WatchRes.AsString, AContext, AnIgnoreRsn);
+    end
+    else begin
+      Result := TestTrue('ValKind', AContext.WatchRes.ValueKind = rdkPointerVal, AContext, AnIgnoreRsn);
+    end;
   end;
 end;
 
@@ -1878,7 +1990,7 @@ begin
     Result := True;
     Expect := AContext.Expectation;
 
-    v := AContext.WatchVal.Value;
+    v := PrintWatchValue(AContext.WatchRes, wdfDefault);
 debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
 
     if CompareText(v, 'nil') = 0 then begin
@@ -1903,16 +2015,15 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     n := FTest.TestBaseName;
     SubContext := AContext;
     for i := 0 to min(e, length(Expect.ExpSubResults)) - 1 do begin
-      SubContext.WatchVal.Value := parsed[i];
       FTest.TestBaseName := n + ' Idx='+IntToStr(i);
-
-      //SubContext.WatchExp.TstExpected := Expect.ExpSubResults[i];
+      SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed[i]);
       SubContext.Expectation := Expect.ExpSubResults[i];
-      Result := CheckData(SubContext, AnIgnoreRsn);
-    end;
 
+      Result := CheckData(SubContext, AnIgnoreRsn);
+
+      FreeAndNil(SubContext.WatchRes);
+    end;
     FTest.TestBaseName := n;
-    AContext.WatchVal.Value := v;
   end;
 
 end;
@@ -1933,7 +2044,7 @@ begin
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(AContext.WatchVal.Value);
+    v := Trim(PrintWatchValue(AContext.WatchRes, wdfDefault));
     delete(v, 1, pos('(', v));
     delete(v, length(v), 1);
 
@@ -1949,10 +2060,10 @@ begin
       if not TestTrue('field name ' + IntToStr(i), sr.ExpFieldName<>'', AContext, AnIgnoreRsn) then
         Continue;
 
-      if AContext.WatchVal.TypeInfo <> nil then begin
-        a := AContext.WatchVal.TypeInfo.Fields.Count -1;
+      if AContext.WatchTpInf <> nil then begin
+        a := AContext.WatchTpInf.Fields.Count -1;
         while (a >= 0)
-        and (CompareText(AContext.WatchVal.TypeInfo.Fields[a].Name, sr.ExpFieldName) <> 0) do
+        and (CompareText(AContext.WatchTpInf.Fields[a].Name, sr.ExpFieldName) <> 0) do
           dec(a);
         TestTrue('typeinfo has field '+sr.ExpFieldName, a >= 0, AContext, AnIgnoreRsn);
       end;
@@ -1979,7 +2090,7 @@ begin
           Continue;
       end;
 
-      SubContext.WatchVal.Value := parsed.ValueOfFieldName(j);
+      SubContext.WatchRes := TWatchResultDataPrePrinted.Create(parsed.ValueOfFieldName(j));
       FTest.TestBaseName := n + ' Idx=' + IntToStr(i);
 
       dec(e);
@@ -1988,9 +2099,10 @@ begin
       //SubContext.WatchExp.TstExpected := sr;
       SubContext.Expectation := sr;
       Result := CheckData(SubContext, AnIgnoreRsn);
+
+      FreeAndNil(SubContext.WatchRes);
     end;
     FTest.TestBaseName := n;
-    AContext.WatchVal.Value := v;
   end;
 end;
 
@@ -2006,7 +2118,7 @@ begin
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(AContext.WatchVal.Value);
+    v := Trim(PrintWatchValue(AContext.WatchRes, wdfDefault));
 debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     //if (LowerCase(v) = 'nil') then
 
@@ -2015,9 +2127,7 @@ debugln([' expect ',Expect.ExpFullArrayLen,'  got "',v,'"' ]);
     //delete(v, 1, 7);
     //delete(v, length(v)-2, 3);
 
-    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
-    if ehIgnTypeNameInData in ehf then
-      tn := '[a-z0-9_]*';
+    tn := GetExpTypeNameAsRegEx(Expect);
     if not TestMatches('Is record', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
       exit;
 
@@ -2037,12 +2147,10 @@ begin
     Expect := AContext.Expectation;
     ehf := Expect.ExpErrorHandlingFlags[Compiler.SymbolType];
 
-    v := Trim(AContext.WatchVal.Value);
+    v := Trim(PrintWatchValue(AContext.WatchRes, wdfDefault));
     //if (LowerCase(v) = 'nil') then
 
-    tn := QuoteRegExprMetaChars(Expect.ExpTypeName);
-    if ehIgnTypeNameInData in ehf then
-      tn := '[a-z0-9_]*';
+    tn := GetExpTypeNameAsRegEx(Expect);
     if not TestMatches('Is class ', '^'+tn+' *\(.*\)$', v, False, AContext, AnIgnoreRsn) then
       exit;
 

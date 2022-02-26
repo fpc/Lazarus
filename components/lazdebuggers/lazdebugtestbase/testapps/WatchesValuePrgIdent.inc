@@ -57,7 +57,7 @@
   pre__Currency{e}      _OP_ Currency    (125.123              + ADD);          //@@ _pre3_Currency{e3};
   {$ENDIF}
   {$ELSE}
-  pre__Currency{e}    _OP_ Currency    (-125.123             + ADD);          //@@ _pre3_Currency{e3};
+  pre__Currency{e}      _OP_ Currency    (125.123             + ADD);          //@@ _pre3_Currency{e3};
   {$ENDIF}
 
   pre__Real_2{e}        _OP_ Real        (-50.25               + ADD);          //@@ _pre3_Real_2{e3};

@@ -5,7 +5,8 @@ unit TTestDebuggerClasses;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerBase, LazDebuggerIntf;
+  Classes, SysUtils, DbgIntfDebuggerBase, IdeDebuggerBase, Debugger,
+  IdeDebuggerWatchResult, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 
@@ -77,16 +78,24 @@ type
   { TTestWatchValue }
 
   TTestWatchValue = class(TWatchValue, TWatchValueIntf)
+  private
+    FCurrentResData: TCurrentResData;
+    FUpdateCount: Integer;
   protected
+    (* TWatchValueIntf *)
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent;
       AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent;
       AnEvent: TNotifyEvent);
+    function ResData: TLzDbgWatchDataIntf;
+  protected
     procedure RequestData;
     function GetTypeInfo: TDBGType; override;
+    function GetValidity: TDebuggerDataState; override;
     function GetValue: String; override;
+    procedure SetValue(AValue: String); override;
   public
     constructor Create(AOwnerWatch: TWatch;
                        const AThreadId: Integer;
@@ -333,7 +342,8 @@ end;
 procedure TTestWatchesMonitor.DoStateChangeEx(const AOldState, ANewState: TDBGState);
 begin
   inherited DoStateChangeEx(AOldState, ANewState);
-  Watches.ClearValues;
+  if ANewState <> dsError then
+    Watches.ClearValues;
 end;
 
 procedure TTestWatchesMonitor.RequestData(AWatchValue: TTestWatchValue);
@@ -365,13 +375,37 @@ end;
 
 procedure TTestWatchValue.BeginUpdate;
 begin
-  //
+  AddReference;
+  inc(FUpdateCount);
 end;
 
 procedure TTestWatchValue.EndUpdate;
+var
+  NewValid: TDebuggerDataState;
 begin
-  if Validity = ddsRequested then
-    Validity := ddsValid;
+  //assert(Validity = ddsRequested, 'TCurrentWatchValue.EndUpdate: Validity = ddsRequested');
+  dec(FUpdateCount);
+  if (FUpdateCount = 0) then begin
+    NewValid := ddsValid;
+
+    if (FCurrentResData <> nil) and (FCurrentResData.NewResultData <> nil) then begin
+      FCurrentResData.Done;
+      SetResultData(FCurrentResData.NewResultData);
+
+      if ResultData.ValueKind = rdkError then
+        NewValid := ddsError;
+
+      FreeAndNil(FCurrentResData);
+    end
+    else
+      NewValid := ddsInvalid;
+
+    if Validity = ddsRequested then
+      SetValidity(NewValid)
+    else
+      DoDataValidityChanged(ddsRequested);
+  end;
+  ReleaseReference; // Last statemnet, may call Destroy
 end;
 
 procedure TTestWatchValue.AddNotification(AnEventType: TWatcheEvaluateEvent;
@@ -384,6 +418,13 @@ procedure TTestWatchValue.RemoveNotification(AnEventType: TWatcheEvaluateEvent;
   AnEvent: TNotifyEvent);
 begin
   //
+end;
+
+function TTestWatchValue.ResData: TLzDbgWatchDataIntf;
+begin
+  if FCurrentResData = nil then
+    FCurrentResData := TCurrentResData.Create;
+  Result := FCurrentResData;
 end;
 
 procedure TTestWatchValue.RequestData;
@@ -413,6 +454,14 @@ begin
   end;
 end;
 
+function TTestWatchValue.GetValidity: TDebuggerDataState;
+begin
+  if FUpdateCount > 0 then
+    Result := ddsRequested  // prevent reading FValue
+  else
+    Result := inherited GetValidity;
+end;
+
 function TTestWatchValue.GetValue: String;
 var
   i: Integer;
@@ -435,6 +484,13 @@ begin
     ddsInvalid:                  Result := '<invalid>';
     ddsError:                    Result := '<Error: '+ (inherited GetValue) +'>';
   end;
+end;
+
+procedure TTestWatchValue.SetValue(AValue: String);
+begin
+  BeginUpdate;
+  ResData.CreatePrePrinted(AValue);
+  EndUpdate;
 end;
 
 constructor TTestWatchValue.Create(AOwnerWatch: TWatch; const AThreadId: Integer;

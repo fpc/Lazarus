@@ -310,6 +310,63 @@ type
   TFuncSelfRef = function(SomeValue, Foo: PFuncSelfRef): PFuncSelfRef;
   {$ENDIF}
 
+
+  // Recursive pointers
+  TRecursePtrA1 = ^TRecursePtrA2;
+  TRecursePtrA2 = ^TRecursePtrA1;
+
+  TRecursePtrB1 = ^TRecursePtrB2;
+  TRecursePtrB2 = ^TRecursePtrB3;
+  TRecursePtrB3 = ^TRecursePtrB4;
+  TRecursePtrB4 = ^TRecursePtrB1;
+
+  TRecursePtrC1  = ^TRecursePtrC2;
+  TRecursePtrC2  = ^TRecursePtrC3;
+  TRecursePtrC3  = ^TRecursePtrC4;
+  TRecursePtrC4  = ^TRecursePtrC5;
+  TRecursePtrC5  = ^TRecursePtrC6;
+  TRecursePtrC6  = ^TRecursePtrC7;
+  TRecursePtrC7  = ^TRecursePtrC8;
+  TRecursePtrC8  = ^TRecursePtrC9;
+  TRecursePtrC9  = ^TRecursePtrC10;
+  TRecursePtrC10 = ^TRecursePtrC11;
+  TRecursePtrC11 = ^TRecursePtrC12;
+  TRecursePtrC12 = ^TRecursePtrC13;
+  TRecursePtrC13 = ^TRecursePtrC14;
+  TRecursePtrC14 = ^TRecursePtrC15;
+  TRecursePtrC15 = ^TRecursePtrC16;
+  TRecursePtrC16 = ^TRecursePtrC17;
+  TRecursePtrC17 = ^TRecursePtrC18;
+  TRecursePtrC18 = ^TRecursePtrC1;
+
+var
+ RecursePtrA1:  TRecursePtrA1;
+ RecursePtrA2:  TRecursePtrA2;
+
+ RecursePtrB1:  TRecursePtrB1;
+ RecursePtrB2:  TRecursePtrB2;
+ RecursePtrB3:  TRecursePtrB3;
+ RecursePtrB4:  TRecursePtrB4;
+
+ RecursePtrC1:  TRecursePtrC1;
+ RecursePtrC2:  TRecursePtrC2;
+ RecursePtrC3:  TRecursePtrC3;
+ RecursePtrC4:  TRecursePtrC4;
+ RecursePtrC5:  TRecursePtrC5;
+ RecursePtrC6:  TRecursePtrC6;
+ RecursePtrC7:  TRecursePtrC7;
+ RecursePtrC8:  TRecursePtrC8;
+ RecursePtrC9:  TRecursePtrC9;
+ RecursePtrC10: TRecursePtrC10;
+ RecursePtrC11: TRecursePtrC11;
+ RecursePtrC12: TRecursePtrC12;
+ RecursePtrC13: TRecursePtrC13;
+ RecursePtrC14: TRecursePtrC14;
+ RecursePtrC15: TRecursePtrC15;
+ RecursePtrC16: TRecursePtrC16;
+ RecursePtrC17: TRecursePtrC17;
+ RecursePtrC18: TRecursePtrC18;
+
 type
   (* LOCATION: TYPE *)
 
@@ -960,6 +1017,34 @@ begin
 (* INIT: global var  pointer <each type> *)
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp_, _OP_={, _O2_={, _pre3_=@gv, "//@@=} :=", _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
   TEST_PREPOCESS(WatchesValuePrgIdent.inc,pre__=gvp2_, _OP_={, _O2_={, _pre3_=@gva, "//@@=} :=", {e3}=[1], _BLOCK_=TestVar, _BLOCK2_=TestPointer) //}
+
+
+  RecursePtrA1  := @RecursePtrA2;
+  RecursePtrA2  := @RecursePtrA1;
+
+  RecursePtrB1  := @RecursePtrB2;
+  RecursePtrB2  := @RecursePtrB3;
+  RecursePtrB3  := @RecursePtrB4;
+  RecursePtrB4  := @RecursePtrB1;
+
+  RecursePtrC1  := @RecursePtrC2;
+  RecursePtrC2  := @RecursePtrC3;
+  RecursePtrC3  := @RecursePtrC4;
+  RecursePtrC4  := @RecursePtrC5;
+  RecursePtrC5  := @RecursePtrC6;
+  RecursePtrC6  := @RecursePtrC7;
+  RecursePtrC7  := @RecursePtrC8;
+  RecursePtrC8  := @RecursePtrC9;
+  RecursePtrC9  := @RecursePtrC10;
+  RecursePtrC10 := @RecursePtrC11;
+  RecursePtrC11 := @RecursePtrC12;
+  RecursePtrC12 := @RecursePtrC13;
+  RecursePtrC13 := @RecursePtrC14;
+  RecursePtrC14 := @RecursePtrC15;
+  RecursePtrC15 := @RecursePtrC16;
+  RecursePtrC16 := @RecursePtrC17;
+  RecursePtrC17 := @RecursePtrC18;
+  RecursePtrC18 := @RecursePtrC1;
 
 
   BreakDummy:= 1; // TEST_BREAKPOINT=Prg

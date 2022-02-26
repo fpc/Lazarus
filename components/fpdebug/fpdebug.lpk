@@ -221,6 +221,10 @@ File(s) with other licenses (see also header in file(s):
         <Filename Value="fpdbgcallcontextinfo.pas"/>
         <UnitName Value="FpDbgCallContextInfo"/>
       </Item>
+      <Item>
+        <Filename Value="fpwatchresultdata.pas"/>
+        <UnitName Value="fpwatchresultdata"/>
+      </Item>
     </Files>
     <i18n>
       <EnableI18N Value="True"/>

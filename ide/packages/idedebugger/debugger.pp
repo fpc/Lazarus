@@ -43,8 +43,9 @@ uses
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList,
   // DebuggerIntf
-  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase,
-  LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeDebuggerBase;
+  DbgIntfBaseTypes, DbgIntfMiscClasses, DbgIntfDebuggerBase, Contnrs,
+  LazDebuggerIntf, LazDebuggerIntfBaseTypes, IdeDebuggerBase,
+  IdeDebuggerWatchResult;
 
 const
   XMLBreakPointsNode = 'BreakPoints';
@@ -640,25 +641,58 @@ type
     property Items[const AnIndex: Integer]: TIdeWatch read GetItem write SetItem; default;
   end;
 
+  { TCurrentResData }
+
+  TCurrentResData = class(TObject, TLzDbgWatchDataIntf)
+  private
+    FNewResultData: TWatchResultData;
+    FSubCurrentData,     // Deref
+    FOwnerCurrentData: TCurrentResData;
+
+    procedure AfterDataCreated;
+    procedure AfterSubDataCreated;
+  public
+    destructor Destroy; override;
+    procedure Done;
+    property  NewResultData: TWatchResultData read FNewResultData;
+  public
+    procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
+    procedure CreateString(AVal: String);// AnEncoding // "pchar data"
+    procedure CreateWideString(AVal: WideString);
+    procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
+    procedure CreatePointerValue(AnAddrValue: TDbgPtr);
+    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+
+    procedure CreateError(AVal: String);
+
+    procedure SetTypeName(ATypeName: String);
+
+    function  SetDerefData: TLzDbgWatchDataIntf;
+  end;
+
   { TCurrentWatchValue }
 
   TCurrentWatchValue = class(TIdeWatchValue, TWatchValueIntf)
   private
+    FCurrentResData: TCurrentResData;
     FCurrentExpression: String;
     FUpdateCount: Integer;
     FEvents: array [TWatcheEvaluateEvent] of TMethodList;
 
+  (* TWatchValueIntf *)
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
+    function ResData: TLzDbgWatchDataIntf;
   private
     FSnapShot: TIdeWatchValue;
     procedure SetSnapShot(const AValue: TIdeWatchValue);
   protected
+    procedure SetValue(AValue: String); override; // TODO: => one per DisplayFormat???
     procedure SetWatch(AValue: TWatch); override;
     function GetExpression: String; override;
-    function GetValidity: TDebuggerDataState;
+    function GetValidity: TDebuggerDataState; override;
     procedure RequestData; override;
     procedure CancelRequestData;
     procedure DoDataValidityChanged({%H-}AnOldValidity: TDebuggerDataState); override;
@@ -3113,6 +3147,103 @@ begin
   FSnapshots.RemoveSnapShot(AnID);
 end;
 
+{ TCurrentResData }
+
+procedure TCurrentResData.AfterDataCreated;
+begin
+  if FOwnerCurrentData <> nil then
+    FOwnerCurrentData.AfterSubDataCreated;
+end;
+
+procedure TCurrentResData.AfterSubDataCreated;
+begin
+  assert(FNewResultData <> nil, 'TCurrentResData.AfterSubDataCreated: FNewResultData <> nil');
+  if FNewResultData is TWatchResultDataPointer then begin
+    TWatchResultDataPointer(FNewResultData).SetDerefData(FSubCurrentData.FNewResultData);
+  end;
+end;
+
+destructor TCurrentResData.Destroy;
+begin
+  // Do NOT destroy FNewResultData;
+  FSubCurrentData.Free;
+  inherited Destroy;
+end;
+
+procedure TCurrentResData.Done;
+begin
+end;
+
+procedure TCurrentResData.CreatePrePrinted(AVal: String);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.SetPrePrinted: FNewResultData=nil');
+  FNewResultData := TWatchResultDataPrePrinted.Create(AVal);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateString(AVal: String);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.CreateString: FNewResultData=nil');
+  FNewResultData := TWatchResultDataString.Create(AVal);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateWideString(AVal: WideString);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.CreateWideString: FNewResultData=nil');
+  FNewResultData := TWatchResultDataWideString.Create(AVal);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateNumValue(ANumValue: QWord; ASigned: Boolean;
+  AByteSize: Integer);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.SetNumValue: FNewResultData=nil');
+  if ASigned then
+    FNewResultData := TWatchResultDataSignedNum.Create(Int64(ANumValue), AByteSize)
+  else
+    FNewResultData := TWatchResultDataUnSignedNum.Create(ANumValue, AByteSize);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreatePointerValue(AnAddrValue: TDbgPtr);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.CreatePointerValue: FNewResultData=nil');
+  FNewResultData := TWatchResultDataPointer.Create(AnAddrValue);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateFloatValue(AFloatValue: Extended;
+  APrecission: TLzDbgFloatPrecission);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.SetFloatValue: FNewResultData=nil');
+  FNewResultData := TWatchResultDataFloat.Create(AFloatValue, APrecission);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateError(AVal: String);
+begin
+  FNewResultData.Free; // This frees: FOwnerCurrentData.FNewResultData.DerefData
+  FNewResultData := TWatchResultDataError.Create(AVal);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.SetTypeName(ATypeName: String);
+begin
+  assert(FNewResultData<>nil, 'TCurrentResData.SetTypeName: FNewResultData<>nil');
+  FNewResultData.SetTypeName(ATypeName);
+end;
+
+function TCurrentResData.SetDerefData: TLzDbgWatchDataIntf;
+begin
+  assert((FNewResultData<>nil) and (FNewResultData is TWatchResultDataPointer), 'TCurrentResData.SetDerefData: (FNewResultData<>nil) and (FNewResultData is TWatchResultDataPointer)');
+  if FSubCurrentData = nil then begin
+    FSubCurrentData := TCurrentResData.Create;
+    FSubCurrentData.FOwnerCurrentData := Self;
+  end;
+  Result := FSubCurrentData;
+end;
+
 { TCurrentWatchValue }
 
 procedure TCurrentWatchValue.BeginUpdate;
@@ -3124,11 +3255,28 @@ begin
 end;
 
 procedure TCurrentWatchValue.EndUpdate;
+var
+  NewValid: TDebuggerDataState;
 begin
+  //assert(Validity = ddsRequested, 'TCurrentWatchValue.EndUpdate: Validity = ddsRequested');
   dec(FUpdateCount);
   if (FUpdateCount = 0) then begin
+    NewValid := ddsValid;
+
+    if (FCurrentResData <> nil) and (FCurrentResData.FNewResultData <> nil) then begin
+      FCurrentResData.Done;
+      SetResultData(FCurrentResData.FNewResultData);
+
+      if ResultData.ValueKind = rdkError then
+        NewValid := ddsError;
+
+      FreeAndNil(FCurrentResData);
+    end
+    else
+      NewValid := ddsInvalid;
+
     if Validity = ddsRequested then
-      SetValidity(ddsValid)
+      SetValidity(NewValid)
     else
       DoDataValidityChanged(ddsRequested);
   end;
@@ -3151,6 +3299,13 @@ begin
   FEvents[AnEventType].Remove(TMethod(AnEvent));
 end;
 
+function TCurrentWatchValue.ResData: TLzDbgWatchDataIntf;
+begin
+  if FCurrentResData = nil then
+    FCurrentResData := TCurrentResData.Create;
+  Result := FCurrentResData;
+end;
+
 procedure TCurrentWatchValue.SetSnapShot(const AValue: TIdeWatchValue);
 begin
   assert((FSnapShot=nil) or (AValue=nil), 'TCurrentWatchValue already have snapshot');
@@ -3158,6 +3313,13 @@ begin
   FSnapShot := AValue;
   if FSnapShot <> nil
   then FSnapShot.Assign(self);
+end;
+
+procedure TCurrentWatchValue.SetValue(AValue: String);
+begin
+  BeginUpdate;
+  ResData.CreatePrePrinted(AValue);
+  EndUpdate;
 end;
 
 procedure TCurrentWatchValue.SetWatch(AValue: TWatch);
@@ -3208,6 +3370,7 @@ destructor TCurrentWatchValue.Destroy;
 var
   e: TMethodList;
 begin
+  FCurrentResData.Free;
   for e in FEvents do
     e.Free;
   inherited Destroy;
@@ -3379,39 +3542,45 @@ end;
 
 procedure TIdeWatchValue.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
   const APath: string);
-var
-  NewValidity: TDebuggerDataState;
 begin
   FThreadId   := AConfig.GetValue(APath + 'ThreadId', -1);
   FStackFrame := AConfig.GetValue(APath + 'StackFrame', -1);
-  Value      := AConfig.GetValue(APath + 'Value', '');
+  AConfig.GetValue(APath + 'Validity', int64(ord(ddsValid)), FValidity, system.TypeInfo(TDebuggerDataState));
   if AConfig.GetValue(APath + 'ClassAutoCast', False)
   then Include(FEvaluateFlags, defClassAutoCast)
   else Exclude(FEvaluateFlags, defClassAutoCast);
   FRepeatCount := AConfig.GetValue(APath + 'RepeatCount', 0);
-  try    ReadStr(AConfig.GetValue(APath + 'DisplayFormat', 'wdfDefault'), FDisplayFormat);
-  except FDisplayFormat := wdfDefault; end;
-  try
-    ReadStr(AConfig.GetValue(APath + 'Validity', 'ddsValid'), NewValidity);
-    Validity := NewValidity;
-  except
-    Validity := ddsUnknown;
-  end;
+  AConfig.GetValue(APath + 'DisplayFormat', int64(ord(wdfDefault)), FDisplayFormat, system.TypeInfo(TWatchDisplayFormat));
+
+  // Defaults to PrePrinted
+  FResultData := TWatchResultData.CreateFromXMLConfig(AConfig, APath);
+  if ResultData = nil then
+    FValidity := ddsUnknown
+  else
+  if ResultData.ValueKind = rdkError then
+    FValidity := ddsError;
 end;
 
 procedure TIdeWatchValue.SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
-var
-  s: String;
 begin
   AConfig.SetValue(APath + 'ThreadId', ThreadId);
   AConfig.SetValue(APath + 'StackFrame', StackFrame);
-  AConfig.SetValue(APath + 'Value', Value);
-  WriteStr(s{%H-}, DisplayFormat);
-  AConfig.SetDeleteValue(APath + 'DisplayFormat', s, 'wdfDefault');
-  WriteStr(s, Validity);
-  AConfig.SetDeleteValue(APath + 'Validity', s, 'ddsValid');
+  AConfig.SetDeleteValue(APath + 'Validity', Validity, int64(ord(ddsValid)), system.TypeInfo(TDebuggerDataState));
   AConfig.SetDeleteValue(APath + 'ClassAutoCast', defClassAutoCast in EvaluateFlags, False);
   AConfig.SetDeleteValue(APath + 'RepeatCount', RepeatCount, 0);
+
+  if (Watch <> nil) and (FDisplayFormat <> wdfMemDump) and
+     (FResultData <> nil) and
+     (FResultData.ValueKind <> rdkPrePrinted)
+  then begin
+    // Use same path => "Value" will be readable for older IDE (read as wdDefault)
+    // ResultData does not write any "path/value" conflicting with the above fields
+    ResultData.SaveDataToXMLConfig(AConfig, APath);
+  end
+  else begin
+    AConfig.SetDeleteValue(APath + 'DisplayFormat', DisplayFormat, int64(ord(wdfDefault)), system.TypeInfo(TWatchDisplayFormat));
+    AConfig.SetValue(APath + 'Value', Value);
+  end;
 end;
 
 constructor TIdeWatchValue.Create(AOwnerWatch: TIdeWatch);
@@ -6899,7 +7068,7 @@ begin
   Result := TIDEException(inherited GetItem(AIndex));
 end;
 
-procedure TIDEExceptions.LoadFromXMLConfig (const AXMLConfig: TXMLConfig;
+procedure TIDEExceptions.LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
   const APath: string);
 var
   NewCount: Integer;

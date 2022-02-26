@@ -14615,9 +14615,8 @@ var
 var
   S: String;
   ResultList: TGDBMINameValueList;
-  frameidx, n: Integer;
+  frameidx: Integer;
   NumVal: QWord;
-  NumFlags: TNumValueFlags;
   {$IFDEF DBG_WITH_GDB_WATCHES} R: TGDBMIExecResult; {$ENDIF}
 begin
   SelectContext;
@@ -14677,31 +14676,34 @@ begin
   finally
     UnSelectContext;
     if FWatchValue <> nil then begin
+      FWatchValue.BeginUpdate;
       repeat
         if (FTypeInfo <> nil) and (FTypeInfo.Kind in [skSimple, skPointer, skInteger, skCardinal]) and
            (FWatchValue.RepeatCount <= 0)
         then begin
-          NumFlags := [];
-          n := 0;
+          FTextValue := Trim(FTextValue);
+
           if (FTypeInfo.Kind = skPointer) then begin
-            NumFlags := [nvfAddrType];
-            n := TargetInfo^.TargetPtrSize;
+            if TryStrToInt64(FTextValue, Int64(NumVal)) then begin
+              FWatchValue.ResData.CreatePointerValue(NumVal);
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.Validity := FValidity;
+              break;
+            end;
           end;
 
-          FTextValue := Trim(FTextValue);
           if (FTypeInfo.Kind = skInteger) or ((FTextValue <> '') and (FTextValue[1]='-')) then begin
             if TryStrToInt64(FTextValue, Int64(NumVal)) then begin
-              FWatchValue.SetNumValue(NumVal, n, NumFlags);
-              FWatchValue.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.ResData.CreateNumValue(NumVal, True);
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
               FWatchValue.Validity := FValidity;
               break;
             end;
           end
           else begin
-            Include(NumFlags, nvfUnsigned);
             if TryStrToQWord(FTextValue, NumVal) then begin
-              FWatchValue.SetNumValue(NumVal, n, NumFlags);
-              FWatchValue.SetTypeName(FTypeInfo.TypeName);
+              FWatchValue.ResData.CreateNumValue(NumVal, False);
+              FWatchValue.ResData.SetTypeName(FTypeInfo.TypeName);
               FWatchValue.Validity := FValidity;
               break;
             end;
@@ -14712,6 +14714,7 @@ begin
         FWatchValue.TypeInfo := TypeInfo;
         FWatchValue.Validity := FValidity;
       until true;
+      FWatchValue.EndUpdate;
     end;
   end;
 end;

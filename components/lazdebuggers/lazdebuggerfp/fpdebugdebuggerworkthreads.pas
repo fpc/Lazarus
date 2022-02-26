@@ -48,7 +48,7 @@ uses
   FpDebugDebuggerUtils, DbgIntfDebuggerBase, DbgIntfBaseTypes, FpDbgClasses,
   FpDbgUtil, FPDbgController, FpPascalBuilder, FpdMemoryTools, FpDbgInfo,
   FpPascalParser, FpErrorMessages, FpDbgCallContextInfo, FpDbgDwarf,
-  FpDbgDwarfDataClasses, LazDebuggerIntf,
+  FpDbgDwarfDataClasses, FpWatchResultData, LazDebuggerIntf,
   Forms, fgl, math, Classes, sysutils, {$ifdef FORCE_LAZLOGGER_DUMMY} LazLoggerDummy {$else} LazLoggerBase {$endif};
 
 type
@@ -950,7 +950,8 @@ var
   APasExpr, PasExpr2: TFpPascalExpression;
   PrettyPrinter: TFpPascalPrettyPrinter;
   ResValue: TFpValue;
-  CastName, ResText2, t: String;
+  CastName, ResText2: String;
+  WatchResConv: TFpWatchResultConvertor;
 begin
   Result := False;
   AResText := '';
@@ -1019,33 +1020,16 @@ begin
       exit;
     end;
 
-    if (FWatchValue <> nil) and  (ADispFormat <> wdfMemDump) and (FWatchValue.RepeatCount <= 0) and
-       (ResValue <> nil) and (not IsError(ResValue.LastError))
+    if (FWatchValue <> nil) and
+       (ResValue <> nil) and (not IsError(ResValue.LastError)) and
+       (ADispFormat <> wdfMemDump) and (FWatchValue.RepeatCount <= 0)  // TODO
     then begin
-      t := '';
-      if ResValue.TypeInfo <> nil then
-        GetTypeName(t, ResValue.TypeInfo, []);
-      case ResValue.Kind of
-        skPointer:  begin
-          if ResValue.FieldFlags * [svfString, svfWideString] = [] then begin
-            FWatchValue.SetNumValue(ResValue.AsCardinal, SizeToFullBytes(ResValue.DataSize), [nvfUnsigned, nvfAddrType]);
-            FWatchValue.SetTypeName(t);
-            exit;
-          end;
-        end;
-        skInteger:  begin
-          FWatchValue.SetNumValue(QWord(ResValue.AsInteger), SizeToFullBytes(ResValue.DataSize), []);
-          FWatchValue.SetTypeName(t);
-          exit;
-        end;
-        skCardinal: begin
-          FWatchValue.SetNumValue(ResValue.AsCardinal, SizeToFullBytes(ResValue.DataSize), [nvfUnsigned]);
-          FWatchValue.SetTypeName(t);
-          exit;
-        end;
-      end;
+      WatchResConv := TFpWatchResultConvertor.Create(FExpressionScope.LocationContext);
+      Result := WatchResConv.WriteWatchResultData(ResValue, FWatchValue.ResData);
+      WatchResConv.Free;
+      if Result then
+        exit;
     end;
-
 
     PrettyPrinter := TFpPascalPrettyPrinter.Create(FExpressionScope.SizeOfAddress);
     PrettyPrinter.Context := FExpressionScope.LocationContext;

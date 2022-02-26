@@ -29,7 +29,7 @@ uses
   LldbInstructions, LldbHelper, LazDebuggerIntf, DbgIntfBaseTypes, LazDebuggerIntfBaseTypes,
   DbgIntfDebuggerBase, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
   LazClasses, FpPascalParser, FpPascalBuilder, FpErrorMessages,
-  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon;
+  FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon, FpWatchResultData;
 
 type
 
@@ -1479,6 +1479,7 @@ var
   CastName: String;
   ClassAddr, CNameAddr: TFpDbgMemLocation;
   NameLen: QWord;
+  WatchResConv: TFpWatchResultConvertor;
 begin
   Result := False;
 
@@ -1514,6 +1515,8 @@ begin
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
   try
     if not IsWatchValueAlive then exit;
+    if AWatchValue <> nil then
+      AWatchValue.BeginUpdate;
     PasExpr.ResultValue; // trigger evaluate // and check errors
     if not IsWatchValueAlive then exit;
 
@@ -1567,6 +1570,18 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
         end;
       end;
     end;
+
+    if (AWatchValue <> nil) and
+       (ResValue <> nil) and (not IsError(ResValue.LastError)) and
+       (DispFormat <> wdfMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
+    then begin
+      WatchResConv := TFpWatchResultConvertor.Create(Ctx.LocationContext);
+      Result := WatchResConv.WriteWatchResultData(ResValue, AWatchValue.ResData);
+      WatchResConv.Free;
+      if Result then
+        exit;
+    end;
+
 
     case ResValue.Kind of
       skNone: begin
@@ -1626,6 +1641,8 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     end;
 
   finally
+    if AWatchValue <> nil then
+      AWatchValue.EndUpdate;
     PasExpr.Free;
     Ctx.ReleaseReference;
     UnLockUnLoadDwarf;

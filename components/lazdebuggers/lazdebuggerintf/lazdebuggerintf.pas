@@ -99,14 +99,37 @@ type
   TDBGTypeBase = class(TObject)
   end;
 
+  TLzDbgToken = QWord;
+  {$If SizeOf(TLzDbgToken) < SizeOf(Pointer)} {$Error 'TLzDbgToken must be able to store pointers'} {$EndIf}
 
 
-  TNumValueFlag = (
-    nvfUnsigned,
-    //nvfUnknownSize,  // same as size = 0
-    nvfAddrType     // default to hex display (Pointer)
-  );
-  TNumValueFlags = set of TNumValueFlag;
+  TLzDbgFloatPrecission = (dfpSingle, dfpDouble, dfpExtended);
+
+  { TLzDbgWatchDataIntf:
+    - Interface for providing result-data.
+    - The backend must call one of the "Create...." methods, before setting/adding
+      any other data.
+    - The backend must call exactly one of the "Create...." methods (one and only one).
+      Except for:
+      - CreateError may be called even if one of the non-erroc "Create..." had been called before
+  }
+
+  TLzDbgWatchDataIntf = interface
+    procedure CreatePrePrinted(AVal: String); // ATypes: TLzDbgWatchDataTypes);
+    procedure CreateString(AVal: String);// AnEncoding // "pchar data" // shortstring
+    procedure CreateWideString(AVal: WideString);
+    procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
+    procedure CreatePointerValue(AnAddrValue: TDbgPtr);
+    procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+
+    procedure CreateError(AVal: String);
+
+    // For all Values (except error)
+    procedure SetTypeName(ATypeName: String);
+
+    // For Pointers:
+    function  SetDerefData: TLzDbgWatchDataIntf;
+  end;
 
   { TWatchValueIntf }
 
@@ -140,8 +163,9 @@ type
     procedure AddNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
     procedure RemoveNotification(AnEventType: TWatcheEvaluateEvent; AnEvent: TNotifyEvent);
 
-    procedure SetNumValue(ANumValue: QWord; AByteSize: Integer = 0; AFlags: TNumValueFlags = []);
-    procedure SetTypeName(ATypeName: String);
+    function ResData: TLzDbgWatchDataIntf;
+
+    (* ***** Methods for the front-end to provide the request  ***** *)
 
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;

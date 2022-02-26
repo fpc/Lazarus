@@ -17,7 +17,7 @@ uses
   GDBTypeInfo, LCLProc, Forms, FpDbgLoader, FpDbgDwarf, LazLoggerBase,
   LazLoggerProfiling, LazClasses, FpPascalParser, FpPascalBuilder,
   FpErrorMessages, FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, FpDbgCommon,
-  MenuIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
+  FpWatchResultData, MenuIntf, LazDebuggerIntf, LazDebuggerIntfBaseTypes;
 
 type
 
@@ -225,15 +225,6 @@ begin
     CurrentDebugger.Watches.TriggerInvalidateWatchValues;
   if (CurrentDebugger <> nil) and (CurrentDebugger.Locals <> nil) then
     CurrentDebugger.Locals.TriggerInvalidateLocals;
-end;
-
-procedure MarkWatchValueAsGdb(AWatchValue: TWatchValueIntf);
-begin
-  AWatchValue.Value := '{GDB:}' + AWatchValue.Value;
-  if AWatchValue.Validity = ddsValid then begin
-    AWatchValue.Validity := ddsEvaluating;
-    AWatchValue.Validity := ddsValid;
-  end;
 end;
 
 { TFpGDBMIDebuggerCommandLocals }
@@ -587,8 +578,6 @@ begin
         ResTypeInfo := nil;
         if UseGDB then begin
           inherited InternalRequestData(WatchValue);
-          if IsWatchValueAlive then
-            MarkWatchValueAsGdb(WatchValue);
         end
         else
         if not FpDebugger.EvaluateExpression(WatchValue, WatchValue.Expression, ResText, ResTypeInfo)
@@ -596,8 +585,6 @@ begin
           if IsWatchValueAlive then    debugln(['TFPGDBMIWatches.InternalRequestData FAILED ', WatchValue.Expression]);
           if IsWatchValueAlive then
             inherited InternalRequestData(WatchValue);
-          if IsWatchValueAlive then
-            MarkWatchValueAsGdb(WatchValue);
         end;
       finally
         if IsWatchValueAlive then begin
@@ -1028,6 +1015,7 @@ var
 
 var
   CastName: String;
+  WatchResConv: TFpWatchResultConvertor;
 begin
   Result := False;
   ATypeInfo := nil;
@@ -1062,6 +1050,8 @@ begin
   PasExpr := TFpPascalExpression.Create(AExpression, Ctx);
   try
     if not IsWatchValueAlive then exit;
+    if AWatchValue <> nil then
+      AWatchValue.BeginUpdate;
     PasExpr.ResultValue; // trigger evaluate // and check errors
     if not IsWatchValueAlive then exit;
 
@@ -1104,6 +1094,18 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
           PasExpr2.Free;
       end;
     end;
+
+    if (AWatchValue <> nil) and
+       (ResValue <> nil) and (not IsError(ResValue.LastError)) and
+       (DispFormat <> wdfMemDump) and (AWatchValue.RepeatCount <= 0)  // TODO
+    then begin
+      WatchResConv := TFpWatchResultConvertor.Create(Ctx.LocationContext);
+      Result := WatchResConv.WriteWatchResultData(ResValue, AWatchValue.ResData);
+      WatchResConv.Free;
+      if Result then
+        exit;
+    end;
+
 
     TiSym := ResValue.DbgSymbol;
     if (ResValue.Kind = skNone) and (TiSym <> nil) and (TiSym.SymbolType = stType) then begin
@@ -1157,6 +1159,8 @@ DebugLn(DBG_VERBOSE, [ErrorHandler.ErrorAsString(PasExpr.Error)]);
     end;
 
   finally
+    if AWatchValue <> nil then
+      AWatchValue.EndUpdate;
     PasExpr.Free;
     UnLockUnLoadDwarf;
   end;

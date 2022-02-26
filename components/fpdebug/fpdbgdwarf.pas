@@ -2403,7 +2403,9 @@ begin
 
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
-  if (t <> nil) and (t.Kind = skChar) and IsValidLoc(GetDerefAddress) then begin // pchar
+  if (t <> nil) and (t.Kind = skChar) and
+     (IsNilLoc(OrdOrDataAddr) or IsValidLoc(GetDerefAddress))
+  then begin // pchar
     if not t.ReadSize(nil, Size) then
       Size := ZeroSize;
     case Size.Size of
@@ -2437,6 +2439,8 @@ begin
     exit;
   t := t.TypeInfo;
   if t = nil then
+    exit;
+  if IsNilLoc(OrdOrDataAddr) then
     exit;
 
   // Only test for hardcoded size. TODO: dwarf 3 could have variable size, but for char that is not expected
@@ -2479,8 +2483,11 @@ var
   t: TFpSymbol;
   i: Cardinal;
 begin
+  Result := '';
   t := TypeInfo;
   if (t <> nil) then t := t.TypeInfo;
+  if IsNilLoc(OrdOrDataAddr) then
+    exit;
   // skWideChar ???
   if  (MemManager <> nil) and (t <> nil) and (t.Kind = skChar) and IsReadableMem(GetDerefAddress) then begin // pchar
     i := MemManager.MemLimits.MaxNullStringSearchLen * 2;

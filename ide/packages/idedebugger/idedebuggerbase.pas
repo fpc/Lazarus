@@ -5,47 +5,37 @@ unit IdeDebuggerBase;
 interface
 
 uses
-  Classes, SysUtils, DbgIntfDebuggerBase, DbgIntfMiscClasses, LazClasses,
-  LazLoggerBase, StrUtils, LazDebuggerIntf, LazDebuggerTemplate;
+  Classes, SysUtils, LazClasses, LazLoggerBase, IdeDebuggerWatchResult,
+  DbgIntfDebuggerBase, DbgIntfMiscClasses,
+  LazDebuggerIntf, LazDebuggerTemplate, LazDebuggerIntfBaseTypes;
 
 type
 
   TWatch = class;
 
-  TWatchValueTypeFlag = (vtTypeName, vtNumVal);
-  TWatchValueTypeFlags = set of TWatchValueTypeFlag;
-
   { TWatchValue }
 
   TWatchValue = class(TRefCountedObject)
-  private
+  protected
     FWatch: TWatch;
     FTypeInfo: TDBGType;
-    FValue: String;
     FValidity: TDebuggerDataState;
+    FResultData: TWatchResultData;
 
-    FValidTypes: TWatchValueTypeFlags;
-    FNumValue: QWord;
-    FNumByteSize: Integer;
-    FNumFlags: TNumValueFlags;
-    FTypeName: String;
-    function GetNumValue(ADispFormat: TWatchDisplayFormat): String;
-
-  protected
     procedure SetWatch(AValue: TWatch); virtual;
     function GetDisplayFormat: TWatchDisplayFormat;
     function GetEvaluateFlags: TWatcheEvaluateFlags;
     function GetRepeatCount: Integer;
     function GetStackFrame: Integer;
     function GetThreadId: Integer;
-    function GetValidity: TDebuggerDataState;
+    function GetValidity: TDebuggerDataState; virtual;
     procedure SetValidity(AValue: TDebuggerDataState); virtual;
-    procedure SetValue(AValue: String);
+    procedure SetValue(AValue: String); virtual;
     procedure SetTypeInfo(AValue: TDBGType);
     procedure SetTypeInfo(AValue: TDBGTypeBase);
 
-    procedure SetNumValue(ANumValue: QWord; AByteSize: Integer = 0; AFlags: TNumValueFlags = []);
-    procedure SetTypeName(ATypeName: String);
+    function GetResultData: TWatchResultData; virtual;
+    procedure SetResultData(AResultData: TWatchResultData);
   protected
     FDisplayFormat: TWatchDisplayFormat;
     FEvaluateFlags: TWatcheEvaluateFlags;
@@ -68,17 +58,11 @@ type
     property StackFrame: Integer read GetStackFrame;
     property Expression: String read GetExpression;
   public
-    property ValidTypes: TWatchValueTypeFlags read FValidTypes;
-  public
     property Watch: TWatch read FWatch write SetWatch;
     property Validity: TDebuggerDataState read GetValidity write SetValidity;
     property Value: String read GetValue write SetValue;
     property TypeInfo: TDBGType read GetTypeInfo write SetTypeInfo;
-
-    property NumValue[ADispFormat: TWatchDisplayFormat]: String read GetNumValue;
-    property NumValueRaw: QWord read FNumValue;
-    property TypeName: String read FTypeName;
-    property NumFlags: TNumValueFlags read FNumFlags;
+    property ResultData: TWatchResultData read GetResultData;
   end;
 
   { TWatchValueList }
@@ -205,87 +189,15 @@ begin
   Result := FEvaluateFlags;
 end;
 
-function TWatchValue.GetNumValue(ADispFormat: TWatchDisplayFormat): String;
-  function HexDigicCount(ANum: QWord; AForceAddr: Boolean = False): integer;
-  begin
-    if (FNumValue > high(DWord)) then
-      Result := 16
-    else
-    if (FNumValue > high(Word)) then
-      Result := 8
-    else
-    if (FNumValue > high(Byte)) then
-      Result := 4
-    else
-      Result := 2;
-
-    if FNumByteSize*2 > Result then
-      Result := FNumByteSize*2;
-
-    if AForceAddr or ( (nvfAddrType in FNumFlags) and (FNumByteSize = 0) ) then begin
-       // Fallback / TODO: Use Target-AddrSize
-      if Result < SizeOf(Pointer)*2 then
-        Result := 16;
-    end;
-  end;
-var
-  n: Integer;
-  t: String;
+function TWatchValue.GetResultData: TWatchResultData;
 begin
-  if (Validity <> ddsValid) or not(vtNumVal in FValidTypes) then
-    exit(Value);
+  Result := FResultData;
+end;
 
-  if (nvfAddrType in FNumFlags) and (FTypeName <> '') and
-     (ADispFormat in [wdfDefault, wdfStructure])
-  then
-    t := FTypeName;
-
-  if ( ((nvfAddrType in FNumFlags) and (ADispFormat in [wdfDefault, wdfStructure])) or
-       (ADispFormat = wdfPointer)
-     ) and
-     (FNumValue = 0)
-  then begin
-    Result := 'nil';
-  end
-  else begin
-    if not (ADispFormat in [wdfDecimal, wdfUnsigned, wdfHex, wdfBinary, wdfPointer]) then begin
-      //wdfDefault, wdfStructure, wdfChar, wdfString, wdfFloat
-      if nvfAddrType in FNumFlags then
-        ADispFormat := wdfPointer
-      else
-      if nvfUnsigned in FNumFlags then
-        ADispFormat := wdfUnsigned
-      else
-        ADispFormat := wdfDecimal;
-    end;
-
-    case ADispFormat of
-      wdfUnsigned: begin
-        Result := IntToStr(QWord(FNumValue))
-      end;
-      wdfHex: begin
-        n := HexDigicCount(FNumValue);
-        Result := '$'+IntToHex(QWord(FNumValue), n);
-      end;
-      wdfBinary: begin
-        n := HexDigicCount(FNumValue);
-        Result := '%'+IntToBin(Int64(FNumValue), n*4);
-      end;
-      wdfPointer: begin
-        n := HexDigicCount(FNumValue, True);
-        Result := '$'+IntToHex(QWord(FNumValue), n);
-      end;
-      else begin // wdfDecimal
-        if nvfUnsigned in FNumFlags then
-          Result := IntToStr(QWord(FNumValue))
-        else
-          Result := IntToStr(Int64(FNumValue));
-      end;
-    end;
-  end;
-
-  if t <> '' then
-    Result := t + '(' + Result + ')';
+procedure TWatchValue.SetResultData(AResultData: TWatchResultData);
+begin
+  assert(FResultData=nil, 'TWatchValue.SetResultData: FResultData=nil');
+  FResultData := AResultData;
 end;
 
 procedure TWatchValue.SetWatch(AValue: TWatch);
@@ -296,7 +208,15 @@ end;
 
 function TWatchValue.GetDisplayFormat: TWatchDisplayFormat;
 begin
-  Result := FDisplayFormat;
+  if (FWatch <> nil) and
+     (FWatch.FDisplayFormat <> wdfMemDump) and
+     (FDisplayFormat <> wdfMemDump) and
+     (FResultData <> nil) and
+     (FResultData.ValueKind <> rdkPrePrinted)
+  then
+    Result := FWatch.DisplayFormat
+  else
+    Result := FDisplayFormat;
 end;
 
 function TWatchValue.GetRepeatCount: Integer;
@@ -311,9 +231,7 @@ end;
 
 procedure TWatchValue.SetValue(AValue: String);
 begin
-  if FValue = AValue then exit;
-  //asser not immutable
-  FValue := AValue;
+  assert(False, 'TWatchValue.SetValue: False');
 end;
 
 procedure TWatchValue.SetTypeInfo(AValue: TDBGType);
@@ -326,24 +244,6 @@ end;
 procedure TWatchValue.SetTypeInfo(AValue: TDBGTypeBase);
 begin
   SetTypeInfo(TDBGType(AValue));
-end;
-
-
-procedure TWatchValue.SetNumValue(ANumValue: QWord; AByteSize: Integer;
-  AFlags: TNumValueFlags);
-begin
-  assert(not(vtNumVal in FValidTypes), 'TWatchValue.SetNumValue: not(vtNumVal in FValidTypes)');
-  Include(FValidTypes, vtNumVal);
-  FNumValue    := ANumValue;
-  FNumByteSize := AByteSize;
-  FNumFlags    :=  AFlags;
-end;
-
-procedure TWatchValue.SetTypeName(ATypeName: String);
-begin
-  assert(not(vtTypeName in FValidTypes), 'TWatchValue.SetTypeName: not(vtTypeName in FValidTypes)');
-  Include(FValidTypes, vtTypeName);
-  FTypeName := ATypeName;
 end;
 
 procedure TWatchValue.DoDataValidityChanged(AnOldValidity: TDebuggerDataState);
@@ -364,7 +264,10 @@ end;
 
 function TWatchValue.GetValue: String;
 begin
-  Result := FValue;
+  if FResultData <> nil then
+    Result := FResultData.AsString
+  else
+    Result := '';
 end;
 
 constructor TWatchValue.Create(AOwnerWatch: TWatch);
@@ -378,6 +281,7 @@ destructor TWatchValue.Destroy;
 begin
   inherited Destroy;
   FreeAndNil(FTypeInfo);
+  FreeAndNil(FResultData);
 end;
 
 procedure TWatchValue.Assign(AnOther: TWatchValue);
@@ -391,14 +295,9 @@ begin
     for i := 0 to AnOther.FTypeInfo.Fields.Count - 1 do
       FTypeInfo.Fields.Add(AnOther.FTypeInfo.Fields.Items[i]);
   end;
-  FValue         := AnOther.FValue;
   FValidity      := AnOther.FValidity;
-
-  FValidTypes    := AnOther.FValidTypes;
-  FNumValue      := AnOther.FNumValue;
-  FNumByteSize   := AnOther.FNumByteSize;
-  FNumFlags      := AnOther.FNumFlags;
-  FTypeName      := AnOther.FTypeName;
+  FResultData.Free;
+  FResultData := AnOther.FResultData.CreateCopy;
 end;
 
 { TWatch }
@@ -562,11 +461,7 @@ begin
   while i >= 0 do begin
     Result := TWatchValue(FList[i]);
     if (Result.ThreadId = AThreadId) and (Result.StackFrame = AStackFrame) and
-       ( ( (vtNumVal in Result.ValidTypes) and
-           not(FWatch.DisplayFormat in [wdfMemDump, wdfChar, wdfString, wdfFloat])
-         ) or
-         (Result.DisplayFormat = FWatch.DisplayFormat)
-       ) and
+       (Result.DisplayFormat = FWatch.DisplayFormat) and
        (Result.RepeatCount = FWatch.RepeatCount) and
        (Result.EvaluateFlags = FWatch.EvaluateFlags)
     then

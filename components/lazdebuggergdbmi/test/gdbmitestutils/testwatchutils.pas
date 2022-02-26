@@ -437,15 +437,19 @@ begin
     HasTpInfo := True;
     if flag then begin
       WV := AWatch.Values[1, Stack];// trigger read
+      // read did not enter error?
+      if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then
+        exit;
       WV.Value;
-      if vtNumVal in WV.ValidTypes then
-        s := WV.NumValue[AWatch.DisplayFormat]
-      else
-        s := WV.Value;
+      // read did not enter error?
+      if not TestTrue('Dbg did NOT enter dsError', ADbg.State <> dsError) then
+        exit;
+
+      s := PrintWatchValue(WV.ResultData, AWatch.DisplayFormat);
       IsValid := WV.Validity = ddsValid;
       HasTpInfo := IsValid and (
         (WV.TypeInfo <> nil) or
-        (WV.ValidTypes * [vtNumVal, vtTypeName] = [vtNumVal, vtTypeName])
+        (not (WV.ResultData.ValueKind in [rdkError, rdkPrePrinted, rdkUnknown]))
       );
   //      flag := flag and IsValid;
     end
@@ -480,12 +484,13 @@ begin
       if (WV.TypeInfo <> nil) then
         WriteStr(s, WV.TypeInfo.Kind)
       else
-      if vtNumVal in WV.ValidTypes then begin
-        if WV.NumFlags = [] then s := 'skSimple' // 'skInteger'
-        else
-        if WV.NumFlags = [nvfUnsigned] then s := 'skSimple' // 'skCardinal'
-        else
-        if nvfAddrType in WV.NumFlags then s := 'skPointer';
+      case wv.ResultData.ValueKind of
+        rdkString:         s := 'skString';
+        rdkWideString:     s := 'skWideString';
+        rdkSignedNumVal:   s := 'skSimple';  // 'skInteger'
+        rdkUnsignedNumVal: s := 'skSimple';
+        rdkPointerVal:     s := 'skPointer';
+        rdkFloatVal:       s := 'skFloat';
       end;
     end;
     WriteStr(s2, DataRes.ExpKind);
@@ -505,13 +510,14 @@ begin
     // Check TypeName
     IgnoreText := '';    if IgnoreTpName then IgnoreText := 'Ignored by flag';
     if IsValid and HasTpInfo then begin
-      s:='';
-      if HasTpInfo then begin
-        if vtTypeName in WV.ValidTypes then
-          s := WV.TypeName
+      s := '';
+      if WV.ResultData <> nil then
+        s := WV.ResultData.TypeName;
+      if (WV.TypeInfo <> nil) then begin
+        if s = '' then
+          s := WV.TypeInfo.TypeName
         else
-        if WV.TypeInfo <> nil then
-          s := WV.TypeInfo.TypeName;
+          TestEquals(Name+' TypeName ResData=TpInfo ', WV.TypeInfo.TypeName, s, False);
       end;
       CmpNames(Name+' TypeName', DataRes.ExpTypeName, s, fTpMtch  in DataRes.Flgs);
       //if fTpMtch  in DataRes.Flgs
@@ -538,7 +544,7 @@ begin
             while (j >= 0) and (CompareText(WV.TypeInfo.Fields[j].Name, MemberTests[i].Name) <> 0) do dec(j);
             TestTrue(Name + ' no members with name ' +  MemberTests[i].Name,
                      (fTExpectNotFOund  in MemberTests[i].Flgs) <> (j >= 0),
-                     DataRes.MinGdb, DataRes.MinFpc, IgnoreText);;
+                     DataRes.MinGdb, DataRes.MinFpc, IgnoreText);
             if j >= 0 then begin
               fld := WV.TypeInfo.Fields[j];
               WriteStr(s, MemberTests[i].ExpKind);

@@ -125,6 +125,7 @@ type
     function TestEquals(Expected, Got: Int64): Boolean;
     function TestEquals(Name: string; Expected, Got: int64; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     function TestEquals(Name: string; Expected, Got: Int64; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
+    function TestEquals(Name: string; Expected, Got: QWord; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
 
     function TestTrue(Name: string; Got: Boolean; MinDbgVers: Integer = 0; AIgnoreReason: String = ''): Boolean;
     function TestTrue(Name: string; Got: Boolean; MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String = ''): Boolean;
@@ -582,6 +583,16 @@ begin
 end;
 
 function TDBGTestCase.TestEquals(Name: string; Expected, Got: Int64;
+  MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
+begin
+  Result :=  Got = Expected;
+  Name := Name + ': Expected "'+IntToStr(Expected)+'", Got "'+IntToStr(Got)+'"';
+  if Result
+  then AddTestSuccess(Name, MinDbgVers, MinFpcVers, AIgnoreReason)
+  else AddTestError(Name, MinDbgVers, MinFpcVers, AIgnoreReason);
+end;
+
+function TDBGTestCase.TestEquals(Name: string; Expected, Got: QWord;
   MinDbgVers: Integer; MinFpcVers: Integer; AIgnoreReason: String): Boolean;
 begin
   Result :=  Got = Expected;

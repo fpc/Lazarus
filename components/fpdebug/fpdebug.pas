@@ -15,7 +15,8 @@ uses
   FpdMemoryTools, FpErrorMessages, FPDbgController, FpDbgDwarfVerbosePrinter, 
   FpDbgDwarfDataClasses, FpDbgDwarfFreePascal, fpDbgSymTableContext, 
   fpDbgSymTable, FpDbgAvrClasses, FpDbgDisasAvr, FpDbgRsp, FpDbgCommon, 
-  FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, FpDbgCallContextInfo;
+  FpImgReaderWinPETypes, FpDbgHardcodedFreepascalInfo, FpDbgCallContextInfo, 
+  FpWatchResultData;
 
 implementation
 
