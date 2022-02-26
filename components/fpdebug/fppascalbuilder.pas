@@ -733,6 +733,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
   var
     s: String;
     v: QWord;
+    m: TFpValue;
   begin
     if ((ADisplayFormat = wdfDefault) and (ANestLevel=0)) or // default for unested: with typename
        (ADisplayFormat = wdfStructure)
@@ -780,9 +781,17 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       if v <> 0 then
         APrintedValue := APrintedValue + '^: ' + QuoteWideText(AValue.AsWideString)
     end
-    else
-    if s <> '' then
-      APrintedValue := s + '(' + APrintedValue + ')'; // no typeinfo for strings/pchar
+    else begin
+      m := AValue.Member[0];
+      if (m<>nil) and (svfString in m.FieldFlags) then
+        APrintedValue := APrintedValue + '^: ' + QuoteText(m.AsString)
+      else
+      if (m<>nil) and (svfWideString in m.FieldFlags) then
+        APrintedValue := APrintedValue + '^: ' + QuoteWideText(m.AsWideString)
+      else
+      if s <> '' then
+        APrintedValue := s + '(' + APrintedValue + ')'; // no typeinfo for strings/pchar
+    end;
 
     Result := True;
   end;
