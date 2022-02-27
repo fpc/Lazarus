@@ -754,7 +754,8 @@ begin
   end;
 
   result := FConnection.ReadData(AAdress, ASize, AData);
-  MaskBreakpointsInReadData(AAdress, ASize, AData);
+  if Result then
+    MaskBreakpointsInReadData(AAdress, ASize, AData);
 end;
 
 function TDbgAvrProcess.WriteData(const AAdress: TDbgPtr;

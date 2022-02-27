@@ -553,8 +553,10 @@ begin
   assert(MDebugEvent.dwProcessId <> 0, 'TDbgWinProcess.ReadData: MDebugEvent.dwProcessId <> 0');
   Result := ReadProcessMemory(Handle, Pointer(PtrUInt(AAdress)), @AData, ASize, BytesRead) and (BytesRead = ASize);
 
-  if not Result then LogLastError;
-  MaskBreakpointsInReadData(AAdress, ASize, AData);
+  if Result then
+    MaskBreakpointsInReadData(AAdress, ASize, AData)
+  else
+    LogLastError;
 end;
 
 function TDbgWinProcess.WriteData(const AAdress: TDbgPtr; const ASize: Cardinal; const AData): Boolean;
