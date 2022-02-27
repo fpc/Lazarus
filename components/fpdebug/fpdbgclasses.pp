@@ -2415,7 +2415,7 @@ var
 begin
   for Brk in FBreakMap do begin
     if (Brk.Location >= AAdress) and (Brk.Location < (AAdress+ASize)) then
-      TByteArray(AData)[Brk.Location-AAdress] := Brk.OrigValue;
+      PByte(@AData)[Brk.Location-AAdress] := Brk.OrigValue;
   end;
 end;
 
