@@ -636,9 +636,9 @@ begin
   }
   // build lazutils WITHOUT any external links
   Run:=TFPDocRun.Create('lazutils');
-  Run.ExtraOptions:='-MObjFPC -Scghi'; // extra options from in lazutils makefile.
-  // Run.UsedPkgs.Add('rtl');
-  // Run.UsedPkgs.Add('fcl');
+  Run.ExtraOptions:='-MObjFPC -Scghi -dUseSystemUITypes'; // extra options from in lazutils makefile.
+  Run.UsedPkgs.Add('rtl');
+  Run.UsedPkgs.Add('fcl');
   Run.XMLSrcDir := '..'+PathDelim+'xml'+PathDelim+'lazutils';
   Run.PasSrcDir := '..'+PathDelim+'..'+PathDelim+'components'+PathDelim+'lazutils';
   Run.Execute;
@@ -646,7 +646,7 @@ begin
 
   // build lcl with links to rtl, fcl, lazutils
   Run:=TFPDocRun.Create('lcl');
-  Run.ExtraOptions:='-MObjFPC -Sic'; // extra options from in LCL makefile.
+  Run.ExtraOptions:='-MObjFPC -Sic -dUseSystemUITypes'; // extra options from in LCL makefile.
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
   Run.UsedPkgs.Add('lazutils');
@@ -658,7 +658,7 @@ begin
 
   // build lazutils with links to rtl, fcl, lcl
   Run:=TFPDocRun.Create('lazutils');
-  Run.ExtraOptions:='-MObjFPC -Scghi'; // extra options from in lazutils makefile.
+  Run.ExtraOptions:='-MObjFPC -Scghi -dUseSystemUITypes'; // extra options from in lazutils makefile.
   Run.UsedPkgs.Add('rtl');
   Run.UsedPkgs.Add('fcl');
   Run.UsedPkgs.Add('lcl');
