@@ -666,6 +666,7 @@ begin
     VNode := tvWatches.GetFirst;
     while VNode <> nil do begin
       tvWatches.NodeItem[VNode].Free;
+      tvWatches.DeleteNode(VNode);
       VNode := tvWatches.GetFirst;
     end;
     tvWatches.Clear;
