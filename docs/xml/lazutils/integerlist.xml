@@ -12,19 +12,47 @@
       </short>
       <descr>
         <p>
-          <file>integerlist.pas</file> contains a list for Integer values implemented using generics, and provides the same methods and properties for <var>Integer</var> types as provided for <var>Strings</var> in <var>TStringList</var>. They provide an overloaded <var>Sort</var> method to ensure that the specialization types are handled in the methods.
+          <file>integerlist.pas</file> contains a list for Integer values implemented using generics, and provides the same methods and properties for <var>Integer</var> types as provided for <var>String</var> types in <var>TStringList</var>. Specializations are provided for the Byte, Word, Cardinal, Integer, and Int64 types. Each provides an overloaded <var>Sort</var> method to ensure that the type for the specialization is handled in the method.
+        </p>
+        <p>
+          This file is part of the <file>LazUtils</file> package.
         </p>
       </descr>
 
       <element name="TByteList">
-        <short>Implements a specialization of TFPGList for Byte data types.</short>
+        <short>Implements a specialization of TFPGList for the Byte data type.</short>
         <descr>
           <p>
-            <var>TByteList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Byte values.
+            <var>TByteList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Byte values. Internally, it provides a TFPGListEnumerator which is specialized for the Byte type used in the implementation.
+          </p>
+          <p>
+            Use the properties and methods defined in the ancestor class to perform common operations for Byte values, including:
+          </p>
+          <ul>
+            <li>Add</li>
+            <li>IndexOf</li>
+            <li>Insert</li>
+            <li>Extract</li>
+            <li>Remove</li>
+            <li>Sort</li>
+            <li>AddList</li>
+            <li>Assign</li>
+            <li>First</li>
+            <li>Last</li>
+            <li>Items</li>
+            <li>List</li>
+          </ul>
+          <p>
+            Items is the default property, and allows access to values by ordinal position or by using an enumerator to traverse the Byte values in List.
           </p>
         </descr>
         <seealso>
+          <link id="TWordList"/>
+          <link id="TCardinalList"/>
+          <link id="TIntegerList"/>
+          <link id="TInt64List"/>
           <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="#rtl.fgl.TFPGListEnumerator">TFPGListEnumerator</link>
         </seealso>
       </element>
 
@@ -32,7 +60,7 @@
         <short>Sorts the Byte values stored in the list.</short>
         <descr>
           <p>
-            <var>Sort</var> is an overloaded method in <var>TByteList</var> which calls the inherited method using the CompareByte function in the implementation section.
+            <var>Sort</var> is an overloaded method in <var>TByteList</var> which calls the inherited method using the CompareByte function defined in the implementation section.
           </p>
         </descr>
         <seealso>
@@ -41,14 +69,62 @@
       </element>
 
       <element name="TWordList">
-        <short>Implements a specialization of TFPGList for Word data types.</short>
+        <short>Implements a specialization of TFPGList for the Word data type.</short>
         <descr>
           <p>
-            <var>TWordList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Word  values.
+            <var>TWordList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Word values. Internally, it provides a TFPGListEnumerator which is specialized for the Word type used in the implementation.
           </p>
+          <p>
+            Use the properties and methods defined in the ancestor class to perform common operations for Word  values, including:
+          </p>
+          <ul>
+            <li>Add</li>
+            <li>IndexOf</li>
+            <li>Insert</li>
+            <li>Extract</li>
+            <li>Remove</li>
+            <li>Sort</li>
+            <li>AddList</li>
+            <li>Assign</li>
+            <li>First</li>
+            <li>Last</li>
+            <li>Items</li>
+            <li>List</li>
+          </ul>
+          <p>
+            Items is the default property, and allows access to values by ordinal position or by using an enumerator to traverse the Word values in List.
+          </p>
+<code>
+// using TWordList properties and methods
+// var
+//    AWordList: TWordList;
+//    AIndex, ACount: Integer;
+//    AMax, AValue: Word;
+AWordList := TWordList.Create;
+AMax := High(Word);
+AWordList.Add(Random(AMax));
+AWordList.Add(Random(AMax));
+AWordList.Add(Random(AMax));
+AWordList.Add(Random(AMax));
+AWordList.Insert(2, 42);
+AWordList.Sort;
+ACount := AWordList.Count;
+AIndex := AWordList.IndexOf(AWordList.Last);
+AValue := AWordList.Last;
+AWordList.Last := AValue - 1;
+AValue := AWordList.Extract(AInt64List.First);
+AIndex := AWordList.Remove(42);
+AWordList.Clear;
+AWordList.Free;
+</code>
         </descr>
         <seealso>
+          <link id="TByteList"/>
+          <link id="TCardinalList"/>
+          <link id="TIntegerList"/>
+          <link id="TInt64List"/>
           <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="#rtl.fgl.TFPGListEnumerator">TFPGListEnumerator</link>
         </seealso>
       </element>
 
@@ -68,13 +144,67 @@
         <short>Implements a specialization of TFPGList for Cardinal data types.</short>
         <descr>
           <p>
-            <var>TCardinalList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Cardinal values.
+            <var>TCardinalList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Cardinal values. Internally, it provides a TFPGListEnumerator which is specialized for the Cardinal type used in the implementation.
+          </p>
+          <p>
+            Use the properties and methods defined in the ancestor class to perform common operations for Cardinal values, including:
+          </p>
+          <ul>
+            <li>Add</li>
+            <li>IndexOf</li>
+            <li>Insert</li>
+            <li>Extract</li>
+            <li>Remove</li>
+            <li>Sort</li>
+            <li>AddList</li>
+            <li>Assign</li>
+            <li>First</li>
+            <li>Last</li>
+            <li>Items</li>
+            <li>List</li>
+          </ul>
+          <p>
+            Items is the default property, and allows access to values by ordinal position or by using an enumerator to traverse the Cardinal values in List.
+          </p>
+          <p>
+            <b>Example:</b>
+          </p>
+<code>
+// using TCardinalList properties and methods
+// var
+//    ACardinalList: TCardinalList;
+//    AIndex, ACount: Integer;
+//    AMax, AValue: Cardinal;
+ACardinalList := TCardinalList.Create;
+AMax := High(Cardinal);
+ACardinalList.Add(Random(AMax));
+ACardinalList.Add(Random(AMax));
+ACardinalList.Add(Random(AMax));
+ACardinalList.Add(Random(AMax));
+ACardinalList.Insert(2, 42);
+ACardinalList.Sort;
+ACount := ACardinalList.Count;
+AIndex := ACardinalList.IndexOf(ACardinalList.Last);
+AValue := ACardinalList.Last;
+ACardinalList.Last := AValue - 1;
+AValue := ACardinalList.Extract(AInt64List.First);
+AIndex := ACardinalList.Remove(42);
+ACardinalList.Clear;
+ACardinalList.Free;
+</code>
+          <p>
+            Another example using TCardinalList can be found in the <file>components/jcf2/ReadWrite/diffmerge.pas</file> unit.
           </p>
         </descr>
         <seealso>
+          <link id="TByteList"/>
+          <link id="TWordList"/>
+          <link id="TIntegerList"/>
+          <link id="TInt64List"/>
           <link id="TCardinalList.Sort"/>
           <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
           <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="#rtl.fgl.TFPGListEnumerator">TFPGListEnumerator</link>
         </seealso>
       </element>
 
@@ -94,13 +224,67 @@
         <short>Implements a specialization of TFPGList for Integer data types.</short>
         <descr>
           <p>
-            <var>TIntegerList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Integer values.
+            <var>TIntegerList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Integer values. Internally, it provides a TFPGListEnumerator which is specialized for the Integer type used in the implementation.
+          </p>
+          <p>
+            Use the properties and methods defined in the ancestor class to perform common operations for Integer values, including:
+          </p>
+          <ul>
+            <li>Add</li>
+            <li>IndexOf</li>
+            <li>Insert</li>
+            <li>Extract</li>
+            <li>Remove</li>
+            <li>Sort</li>
+            <li>AddList</li>
+            <li>Assign</li>
+            <li>First</li>
+            <li>Last</li>
+            <li>Items</li>
+            <li>List</li>
+          </ul>
+          <p>
+            Items is the default property, and allows access to values by ordinal position or by using an enumerator to traverse the Integer values in List.
+          </p>
+          <p>
+            <b>Examples:</b>
+          </p>
+<code>
+// using TIntegerList properties and methods
+// var
+//    AIntegerList: TIntegerList;
+//    AIndex, ACount: Integer;
+//    AMax, AValue: Integer;
+AIntegerList := TIntegerList.Create;
+AMax := High(Integer);
+AIntegerList.Add(Random(AMax));
+AIntegerList.Add(Random(AMax));
+AIntegerList.Add(Random(AMax));
+AIntegerList.Add(Random(AMax));
+AIntegerList.Insert(2, 42);
+AIntegerList.Sort;
+ACount := AIntegerList.Count;
+AIndex := AIntegerList.IndexOf(AIntegerList.Last);
+AValue := AIntegerList.Last;
+AIntegerList.Last := AValue - 1;
+AValue := AIntegerList.Extract(AInt64List.First);
+AIndex := AIntegerList.Remove(42);
+AIntegerList.Clear;
+AIntegerList.Free;
+</code>
+          <p>
+            An example using TIntegerList can be found in the implementation of the TCustomGrid class in <file>lcl/grids.pas</file>.
           </p>
         </descr>
         <seealso>
+          <link id="TByteList"/>
+          <link id="TWordList"/>
+          <link id="TCardinalList"/>
+          <link id="TInt64List"/>
           <link id="TIntegerList.Sort"/>
           <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
           <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="#rtl.fgl.TFPGListEnumerator">TFPGListEnumerator</link>
         </seealso>
       </element>
 
@@ -120,12 +304,68 @@
         <short>Implements a specialization of TFPGList for Int64 data types.</short>
         <descr>
           <p>
-            <var>TInt64List</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Int64  values.
+            <var>TInt64List</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Int64  values. Internally, it provides a TFPGListEnumerator which is specialized for the Int64 type used in the implementation.
           </p>
+          <p>
+            <var>TIntegerList</var> provides an overloaded <var>Sort</var> method to ensure that values in the list are handled using a compare function that operates on Int64 values. Internally, it provides a TFPGListEnumerator which is specialized for the Int64 type used in the implementation.
+          </p>
+          <p>
+            Use the properties and methods defined in the ancestor class to perform common operations for Integer values, including:
+          </p>
+          <ul>
+            <li>Add</li>
+            <li>IndexOf</li>
+            <li>Insert</li>
+            <li>Extract</li>
+            <li>Remove</li>
+            <li>Sort</li>
+            <li>AddList</li>
+            <li>Assign</li>
+            <li>First</li>
+            <li>Last</li>
+            <li>Items</li>
+            <li>List</li>
+          </ul>
+          <p>
+            Items is the default property, and allows access to values by ordinal position or by using an enumerator to traverse the Int64 values in List.
+          </p>
+          <p>
+            <b>Example:</b>
+          </p>
+<code>
+// using TInt64List properties and methods
+// var
+//    AInt64List: TInt64List;
+//    AIndex, ACount: Integer;
+//    AMax, AValue: Int64;
+AInt64List := TInt64List.Create;
+ACount := 25;
+AMax := High(Int64);
+
+for AIndex := 1 to ACount do
+  AInt64List.Add(Random(AMax));
+
+AInt64List.Insert(4, 42);
+AInt64List.Sort;
+ACount := AInt64List.Count;
+AIndex := AInt64List.IndexOf(AInt64List.Last);
+AValue := AInt64List.Last;
+AInt64List.Last := AValue - 1;
+AValue := AInt64List.Extract(AInt64List.First);
+AIndex := AInt64List.Remove(42);
+AInt64List.Clear;
+AInt64List.Free;
+</code>
         </descr>
         <seealso>
-          <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="TByteList"/>
+          <link id="TWordList"/>
+          <link id="TCardinalList"/>
+          <link id="TIntegerList"/>
+          <link id="TInt64List.Sort"/>
           <link id="#rtl.fgl.TFPGList.Sort">TFPGList.Sort</link>
+          <link id="#rtl.fgl.TFPGList">TFPGList</link>
+          <link id="#rtl.fgl.TFPGListEnumerator">TFPGListEnumerator</link>
         </seealso>
       </element>
 
