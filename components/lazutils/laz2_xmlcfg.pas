@@ -41,6 +41,8 @@ type
   { TXMLConfig }
 
   TXMLConfig = class(TComponent)
+  private const
+    ZeroSrc: array [0..3] of QWord = (0,0,0,0);
   private
     FFilename: String;
     FReadFlags: TXMLReaderFlags;
@@ -79,6 +81,9 @@ type
     procedure Loaded; override;
     function ExtendedToStr(const e: extended): string;
     function StrToExtended(const s: string; const ADefault: extended): extended;
+    function SizeOfTypeInfo(const APTypeInfo: PTypeInfo): Integer;
+    function ValueWithTypeInfoToString(const AValue; const APTypeInfo: PTypeInfo): String;
+    function StringToValueWithTypeInfo(const AString: String; const APTypeInfo: PTypeInfo; out AResult): Boolean;
     procedure ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String); virtual;
     procedure WriteXMLFile(ADoc: TXMLDocument; const AFileName: String); virtual;
     procedure FreeDoc; virtual;
@@ -106,6 +111,9 @@ type
     function  GetValue(const APath: String; ADefault: Integer): Integer;
     function  GetValue(const APath: String; ADefault: Int64): Int64;
     function  GetValue(const APath: String; ADefault: Boolean): Boolean;
+    procedure GetValue(const APath: String; const ADefault; out AResult; const APTypeInfo: PTypeInfo);
+    procedure GetValue(const APath: String; ADefault: Int64; out AResult; const APTypeInfo: PTypeInfo);
+    procedure GetValue(const APath: String; out AResult; const APTypeInfo: PTypeInfo);
     function  GetExtendedValue(const APath: String;
                                const ADefault: extended): extended;
     procedure SetValue(const APath, AValue: String);
@@ -120,6 +128,13 @@ type
     procedure SetExtendedValue(const APath: String; const AValue: extended);
     procedure SetDeleteExtendedValue(const APath: String;
                                      const AValue, DefValue: extended);
+
+    // Set/Enum/Named-Int
+    procedure SetValue(const APath: String; const AValue; const APTypeInfo: PTypeInfo);
+    procedure SetDeleteValue(const APath: String; const AValue, DefValue; const APTypeInfo: PTypeInfo);
+    procedure SetDeleteValue(const APath: String; const AValue; DefValue: Int64; const APTypeInfo: PTypeInfo);
+    procedure SetDeleteValue(const APath: String; const AValue; const APTypeInfo: PTypeInfo);
+
     procedure DeletePath(const APath: string);
     procedure DeleteValue(const APath: string);
     function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
@@ -422,6 +437,56 @@ begin
     Result := ADefault;
 end;
 
+procedure TXMLConfig.GetValue(const APath: String; const ADefault; out AResult;
+  const APTypeInfo: PTypeInfo);
+begin
+  if not StringToValueWithTypeInfo(GetValue(APath, ''), APTypeInfo, AResult) then begin
+    case APTypeInfo^.Kind of
+      tkInteger, tkEnumeration: begin
+        case GetTypeData(APTypeInfo)^.OrdType of
+          otUByte,  otSByte:  ShortInt(AResult) := ShortInt(ADefault);
+          otUWord,  otSWord:  SmallInt(AResult) := SmallInt(ADefault);
+          otULong,  otSLong:  Integer(AResult)  := Integer(ADefault);
+          otUQWord, otSQWord: Int64(AResult)    := Int64(ADefault);
+        end;
+      end;
+      tkInt64: Int64(AResult) := Int64(aDefault);
+      tkQWord: QWord(AResult) := QWord(aDefault);
+      tkSet: Move(ADefault, AResult, GetTypeData(APTypeInfo)^.SetSize);
+      tkChar:  Char(AResult) := Char(ADefault);
+      tkWChar: WideChar(AResult) := WideChar(ADefault);
+    end;
+  end;
+end;
+
+procedure TXMLConfig.GetValue(const APath: String; ADefault: Int64; out
+  AResult; const APTypeInfo: PTypeInfo);
+begin
+  if not StringToValueWithTypeInfo(GetValue(APath, ''), APTypeInfo, AResult) then begin
+    case APTypeInfo^.Kind of
+      tkInteger, tkEnumeration: begin
+        case GetTypeData(APTypeInfo)^.OrdType of
+          otUByte,  otSByte:  ShortInt(AResult) := ADefault;
+          otUWord,  otSWord:  SmallInt(AResult) := ADefault;
+          otULong,  otSLong:  Integer(AResult)  := ADefault;
+          otUQWord, otSQWord: Int64(AResult)    := ADefault;
+        end;
+      end;
+      tkInt64: Int64(AResult) := aDefault;
+      tkQWord: QWord(AResult) := QWord(aDefault);
+      tkSet:   raise Exception.Create('not supported');
+      tkChar:  Char(AResult) := Char(ADefault);
+      tkWChar: WideChar(AResult) := WideChar(ADefault);
+    end;
+  end;
+end;
+
+procedure TXMLConfig.GetValue(const APath: String; out AResult;
+  const APTypeInfo: PTypeInfo);
+begin
+  GetValue(APath, ZeroSrc, AResult, APTypeInfo);
+end;
+
 function TXMLConfig.GetExtendedValue(const APath: String;
   const ADefault: extended): extended;
 begin
@@ -549,6 +614,46 @@ begin
     SetExtendedValue(APath,AValue);
 end;
 
+procedure TXMLConfig.SetValue(const APath: String; const AValue;
+  const APTypeInfo: PTypeInfo);
+begin
+  SetValue(APath, ValueWithTypeInfoToString(AValue, APTypeInfo));
+end;
+
+procedure TXMLConfig.SetDeleteValue(const APath: String; const AValue,
+  DefValue; const APTypeInfo: PTypeInfo);
+begin
+  if CompareMem(@AValue, @DefValue, SizeOfTypeInfo(APTypeInfo)) then
+    DeletePath(APath)
+  else
+    SetValue(APath, ValueWithTypeInfoToString(AValue, APTypeInfo));
+end;
+
+procedure TXMLConfig.SetDeleteValue(const APath: String; const AValue;
+  DefValue: Int64; const APTypeInfo: PTypeInfo);
+var
+  t: Boolean;
+begin
+  case SizeOfTypeInfo(APTypeInfo) of
+    1: t := ShortInt(AValue) = DefValue;
+    2: t := SmallInt(AValue) = DefValue;
+    4: t := Integer(AValue) = DefValue;
+    8: t := Int64(AValue) = DefValue;
+    else t := False;
+  end;
+  if t then
+    DeletePath(APath)
+  else
+    SetValue(APath, AValue, APTypeInfo);
+end;
+
+procedure TXMLConfig.SetDeleteValue(const APath: String; const AValue;
+  const APTypeInfo: PTypeInfo);
+begin
+  assert(SizeOfTypeInfo(APTypeInfo) <= SizeOf(ZeroSrc), 'TXMLConfig.SetDeleteValue: SizeOfTypeInfo(APTypeInfo) <= SizeOf(ZeroSrc)');
+  SetDeleteValue(APath, AValue, ZeroSrc, APTypeInfo);
+end;
+
 procedure TXMLConfig.DeletePath(const APath: string);
 var
   Node: TDOMNode;
@@ -632,6 +737,128 @@ end;
 function TXMLConfig.StrToExtended(const s: string; const ADefault: extended): extended;
 begin
   Result := StrToFloatDef(s, ADefault, FPointSettings);
+end;
+
+function TXMLConfig.SizeOfTypeInfo(const APTypeInfo: PTypeInfo): Integer;
+begin
+  Result := 0;
+  case APTypeInfo^.Kind of
+    tkInteger, tkEnumeration: begin
+      case GetTypeData(APTypeInfo)^.OrdType of
+        otUByte,  otSByte:  Result := 1;
+        otUWord,  otSWord:  Result := 2;
+        otULong,  otSLong:  Result := 4;
+        otUQWord, otSQWord: Result := 8;
+      end;
+    end;
+    tkInt64, tkQWord: Result := 8;
+    tkSet:   Result := GetTypeData(APTypeInfo)^.SetSize;
+    tkChar:  Result := 1;
+    tkWChar: Result := 2;
+  end;
+end;
+
+function TXMLConfig.ValueWithTypeInfoToString(const AValue; const APTypeInfo: PTypeInfo): String;
+var
+  APTypeData: PTypeData;
+  IntToIdentFn: TIntToIdent;
+  Val: Int64;
+begin
+  Result := '';
+  case APTypeInfo^.Kind of
+    tkInteger, tkEnumeration: begin
+      APTypeData := GetTypeData(APTypeInfo);
+      case APTypeData^.OrdType of
+        otUByte,  otSByte:  Val := ShortInt(AValue);
+        otUWord,  otSWord:  Val := SmallInt(AValue);
+        otULong,  otSLong:  Val := Integer(AValue);
+        otUQWord, otSQWord: Val := Int64(AValue);
+      end;
+      case APTypeInfo^.Kind of
+        tkInteger:
+          begin                      // Check if this integer has a string identifier
+            IntToIdentFn := FindIntToIdent(APTypeInfo);
+            if (not Assigned(IntToIdentFn)) or
+               (not IntToIdentFn(Val, Result))
+            then begin
+              if APTypeData^.OrdType in [otSByte,otSWord,otSLong,otSQWord] then
+                Result := IntToStr(Val)
+              else
+                Result := IntToStr(QWord(Val));
+            end;
+          end;
+        tkEnumeration:
+          Result := GetEnumName(APTypeInfo, Val);
+      end;
+    end;
+    tkInt64: Result := IntToStr(Int64(AValue));
+    tkQWord: Result := IntToStr(QWord(AValue));
+    tkSet:   Result := SetToString(APTypeInfo, @AValue, True);
+    tkChar:  Result := Char(AValue);
+    tkWChar: Result := WideChar(AValue);
+  end;
+end;
+
+function TXMLConfig.StringToValueWithTypeInfo(const AString: String;
+  const APTypeInfo: PTypeInfo; out AResult): Boolean;
+var
+  APTypeData: PTypeData;
+  IdentToIntFn: TIdentToInt;
+  Val: Integer;
+begin
+  if APTypeInfo^.Kind in [tkChar, tkWideChar] then
+    Result := Length(AString) = 1 // exactly one char
+  else
+    Result := AString <> '';
+  if not Result then
+    exit;
+
+  case APTypeInfo^.Kind of
+    tkInteger, tkEnumeration: begin
+      APTypeData := GetTypeData(APTypeInfo);
+      case APTypeInfo^.Kind of
+        tkInteger: begin
+          if APTypeData^.OrdType in [otSByte,otSWord,otSLong,otSQWord] then
+            Result := TryStrToInt(AString, Val)
+          else
+            Result := TryStrToDWord(AString, DWord(Val));
+          if not Result then begin
+            IdentToIntFn := FindIdentToInt(APTypeInfo);
+            Result := Assigned(IdentToIntFn) and IdentToIntFn(AString, Val);
+          end;
+        end;
+        tkEnumeration: begin
+          Val := GetEnumValue(APTypeInfo, AString);
+          Result := Val >= 0;
+        end;
+      end;
+      try
+        {$PUSH}{$R+}{$Q+} // Enable range/overflow checks.
+        case APTypeData^.OrdType of
+          otUByte,  otSByte:  ShortInt(AResult) := Val;
+          otUWord,  otSWord:  SmallInt(AResult) := Val;
+          otULong,  otSLong:  Integer(AResult)  := Val;
+          otUQWord, otSQWord: Int64(AResult)    := Val;
+        end;
+        {$POP}
+      except
+        Result := False;
+      end;
+    end;
+    tkInt64: Result := TryStrToInt64(AString, Int64(AResult));
+    tkQWord: Result := TryStrToQWord(AString, QWord(AResult));
+    tkSet: begin
+      try
+        StringToSet(APTypeInfo, AString, @AResult);
+      except
+        Result := False;
+      end;
+    end;
+    tkChar:  Char(AResult) := AString[1];
+    tkWChar: WideChar(AResult) := AString[1];
+    else
+      Result := False;
+  end;
 end;
 
 procedure TXMLConfig.ReadXMLFile(out ADoc: TXMLDocument; const AFilename: String);
