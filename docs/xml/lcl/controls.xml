@@ -1949,7 +1949,7 @@
             <var>BeginDrag</var> is a <var>Boolean</var> function used to start display of images in the resolution for a Drag and Drop operation. The return value is <b>True</b> if the widgetset successfully received the BeginDrag notification.
           </p>
           <remark>
-            Please note: No actions are performed in the method if the widgetset class does note successfully start the drag operation.
+            No actions are performed in the method if the widgetset class does note successfully start the drag operation.
           </remark>
           <p>
             BeginDrag calls the <var>DragLock</var> method to lock the window handle for the control, and to start displaying the drag image for the operation. The current screen cursor is captured, and the <var>DragCursor</var> in <var>ImageList</var> is displayed for the operation.
@@ -7963,7 +7963,7 @@
             In the floating state, it sets UndockWidth/Height to the current Width/Height. In docked state, it sets LRDockWidth/TBDockHeight to the current Width/Height.
           </p>
           <remark>
-            Please note: Should save both in any case, independent from DockOrientation or host Align. Rationale: a DockManager will either ignore these values, or use them according to the <b><i>new</i></b> alignment. Without a DockManager both extents are required, because no (valid) alignment information applies.
+            Should save both in any case, independent from DockOrientation or host Align. Rationale: a DockManager will either ignore these values, or use them according to the <b><i>new</i></b> alignment. Without a DockManager both extents are required, because no (valid) alignment information applies.
           </remark>
         </descr>
       </element>
@@ -8225,7 +8225,7 @@
             When an OnDragOver handler is installed, Accept is set to <b>True</b> and can be changed by the handler.
           </p>
           <remark>
-            Please note: Source can be either a TDragObject, or the dragged control.
+            Source can be either a TDragObject, or the dragged control.
           </remark>
         </descr>
         <seealso>

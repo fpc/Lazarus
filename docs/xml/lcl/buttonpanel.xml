@@ -323,7 +323,7 @@
             Create sets values in the Name, Kind, AutoSize, TabOrder, Align, and Default properties in the button instance. The Bitmap for the button Glyph is created or re-assigned as necessary.
           </p>
           <remark>
-            Please note: No actions are performed in the method if the button type in AButton has already been created for the panel.
+            No actions are performed in the method if the button type in AButton has already been created for the panel.
           </remark>
           <p>
             CreateButton is used in the implementation of the DoShowButtons method.
@@ -367,7 +367,7 @@
             <var>DoShowButtons</var> calls <var>UpdateButtonOrder</var> to display the buttons in the order specified in the <var>ButtonOrder</var> property. <var>UpdateButtonLayout</var> is called to ensure that the buttons use custom alignment, and to set the default button for the layout.
           </p>
           <remark>
-            Please note: <var>Autosizing</var> for the panel control is disabled prior to updating the button layout, and restored prior to exiting from the method.
+            <var>Autosizing</var> for the panel control is disabled prior to updating the button layout, and restored prior to exiting from the method.
           </remark>
           <p>
             <var>DoShowButtons</var> is called when a value is assigned to the <var>ShowButtons</var> property.
@@ -388,7 +388,7 @@
             <var>DoShowGlyphs</var> is a procedure used to assign the bitmaps used as glyphs for the buttons on the panel. DoShowGlyphs iterates over the buttons displayed on the panel, and uses the values in the <var>ShowGlyphs</var> property to set or reset the glyph used in the button instance.
           </p>
           <remark>
-            Please note: <var>Autosizing</var> for the panel control is disabled prior to updating the button glyphs, and restored prior to exiting from the method.
+            <var>Autosizing</var> for the panel control is disabled prior to updating the button glyphs, and restored prior to exiting from the method.
           </remark>
           <p>
             <var>DoShowGlyph</var> is called when a value is assigned to the <var>ShowGlyphs</var> property.
@@ -573,7 +573,7 @@
             <var>UpdateSizes</var> is called when a value is assigned to the <var>Align</var> property, and from the <var>Notification</var> method.
           </p>
           <remark>
-            Please note: No actions are performed in the method at design-time.
+            No actions are performed in the method at design-time.
           </remark>
         </descr>
         <seealso>

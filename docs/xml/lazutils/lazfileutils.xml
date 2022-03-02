@@ -311,7 +311,7 @@
             The return value is True when a file can be added, deleted, or modified in the specified path.  To get the return value, DirectoryIsWritable creates a temporary file in DirectoryName, adds content to it, and deletes the temporary file. DirectoryIsWritable calls the FileCreateUTF8, FileWrite, FileClose, and DeleteFileUTF8 routines to perform the file operations. The return value is True when FileWrite completes successfully.
           </p>
           <remark>
-            Please note: DirectoryIsWritable calls InvalidateFileStateCache with the temporary file name if DeleteFileUTF8 cannot remove the file.
+            DirectoryIsWritable calls InvalidateFileStateCache with the temporary file name if DeleteFileUTF8 cannot remove the file.
           </remark>
         </descr>
         <errors>
@@ -1053,7 +1053,7 @@ D:\db\employee.fdb
             PathIsInPath calls the <var>CompareFilenames</var> routine to determine the return value for the function.
           </p>
           <remark>
-            Please note: PathIsInPath ensures that a trailing path delimiter is included in the Path and Directory arguments prior to performing its comparison. On Windows, this results in a Path like 'C:' being treated as if it contains 'C:\'.
+            PathIsInPath ensures that a trailing path delimiter is included in the Path and Directory arguments prior to performing its comparison. On Windows, this results in a Path like 'C:' being treated as if it contains 'C:\'.
           </remark>
         </descr>
         <seealso/>
@@ -1077,7 +1077,7 @@ D:\db\employee.fdb
             <var>ShortDisplayFilename</var> is a <var>String</var> function used to get a shortened version of the specified file name up to the specified maximum length. The characters '...' are appended to a shortened file name.
           </p>
           <remark>
-            Please note: These are three (3) Period characters and not an Ellipsis character.
+            These are three (3) Period characters and not an Ellipsis character.
           </remark>
           <p>
             The return value is the same as the <var>aFileName</var> argument if the file name did not need to be shortened.

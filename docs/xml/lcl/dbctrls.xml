@@ -229,7 +229,8 @@
             <b>Nil</b> when the FieldName  does not exist in the linked dataset. If the Field is assigned (not
             <b>Nil</b>), the EditingChanged and RecordChanged methods are called.
           </p>
-          <remark>Please note: LayoutChanged does not call the inherited method.
+          <remark>
+            LayoutChanged does not call the inherited method.
           </remark>
           <p>LayoutChanged is used primarily in the implementation of methods in TCustomDBGrid and descendent classes.
           </p>
@@ -280,7 +281,8 @@
           </p>
           <p>UpdateData signals the <var>OnUpdateData</var> event handler when it has been assigned for the class instance. This event handler normally contains a reference to the <var>UpdateData</var> method defined for the associated data-aware <var>Control</var>, such as <var>TCustomDBGrid.UpdateData</var> and <var>TDBEdit.UpdateData</var>.
           </p>
-          <remark>Please note: UpdateData does <b>not</b> call the inherited method in the ancestor class.
+          <remark>
+            UpdateData does <b>not</b> call the inherited method in the ancestor class.
           </remark>
         </descr>
         <seealso>
@@ -1181,7 +1183,8 @@
             <var>CanModify</var> property in the
             <var>TFieldDataLink</var> instance in the control.
           </p>
-          <remark>Please note: EditCanModify does <b>NOT</b> call the inherited method which always returns <b>True</b>. In addition, it is provided to maintain Delphi code compatibility; it is not referenced directly by any methods in the implementation of the control or its descendants.
+          <remark>
+            EditCanModify does <b>NOT</b> call the inherited method which always returns <b>True</b>. In addition, it is provided to maintain Delphi code compatibility; it is not referenced directly by any methods in the implementation of the control or its descendants.
           </remark>
         </descr>
         <seealso>
@@ -1464,7 +1467,8 @@
           </p>
           <p>Read and write access for the property value are redirected to the ReadOnly property in the TFieldDataLink instance used in the control.
           </p>
-          <remark>Please note: A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
+          <remark>
+            A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
           </remark>
         </descr>
         <seealso>
@@ -2765,7 +2769,8 @@
             <var>TDBLookupListBox</var>. It implements the abstract virtual method defined in the ancestor class. UpdateData uses the value in
             <var>ItemIndex</var> to update the internal TDBLookup instance for the control. When ItemIndex contains a positive non-zero value, the UpdateData method in TDBLookup is called to apply the ItemIndex value.
           </p>
-          <remark>Please note: No actions are performed in the method when ItemIndex contains a negative non-zero value.
+          <remark>
+            No actions are performed in the method when ItemIndex contains a negative non-zero value.
           </remark>
           <p>UpdateData is called from the <var>DoSelectionChange</var> method when <var>IsUnbound</var> returns <b>True</b>.
           </p>
@@ -4301,7 +4306,8 @@
             <var>Change</var> is an overridden method in
             <var>TCustomDBComboBox</var>. It ensures that the internal data link for the control is notified when the value for the control is changed. This includes posting the DBCBEVENT_CHANGE deferred event message to the handle for the control.
           </p>
-          <remark>Please note: Change does not call the inherited method directly.
+          <remark>
+            Change does not call the inherited method directly.
           </remark>
         </descr>
         <seealso>
@@ -4571,7 +4577,8 @@
           </p>
           <p>Read and write access for the property value are redirected to the ReadOnly property in the TFieldDataLink instance used in the control.
           </p>
-          <remark>Please note: A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
+          <remark>
+            A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
           </remark>
         </descr>
         <seealso>
@@ -6845,7 +6852,8 @@
         <descr>
           <p>QuickDraw is a Boolean property which indicates if QuickDraw is enabled for the platform or OS. The default value for the property is <b>True</b>.
           </p>
-          <remark>Please note: QucikDraw is not used in the current LCL implementation.
+          <remark>
+            QucikDraw is not used in the current LCL implementation.
           </remark>
         </descr>
         <seealso/>
@@ -7255,7 +7263,8 @@
           </p>
           <p>Read and write access for the property value are redirected to the ReadOnly property in the TFieldDataLink instance used in the control.
           </p>
-          <remark>Please note: A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
+          <remark>
+            A value assigned to ReadOnly may be overridden by the Field definition from the target database table.
           </remark>
         </descr>
         <seealso>
@@ -7365,7 +7374,8 @@
             <var>NavStyle</var> property in
             <var>TDBNavButton</var>.
           </p>
-          <remark>Please note: These style options are not used in the current implementation of the LCL.
+          <remark>
+            These style options are not used in the current implementation of the LCL.
           </remark>
         </descr>
         <seealso>
@@ -8000,7 +8010,8 @@
             <var>TDBCustomNavigator</var> control is called when the value in
             <var>DataSet</var> has been changed.
           </p>
-          <remark>Please note: ActiveChanged does not call the inherited method.
+          <remark>
+            ActiveChanged does not call the inherited method.
           </remark>
         </descr>
         <seealso/>
@@ -8016,7 +8027,8 @@
             <var>TDBNavDataLink</var> used to ensure that the Navigator control is updated when the value for the
             <var>Active</var> property has been changed.
           </p>
-          <remark>Please note: ActiveChanged does not call the inherited method.
+          <remark>
+            ActiveChanged does not call the inherited method.
           </remark>
         </descr>
         <seealso>

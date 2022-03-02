@@ -2334,7 +2334,7 @@
       <element name="TCustomImageList.GetResolutionCount">
         <short>Gets the value for the ResolutionCount property.</short>
         <seealso>
-          <link id="TCustomImageList.ResolutionCount"/>          
+          <link id="TCustomImageList.ResolutionCount"/>
         </seealso>
         <seealso>
           <link id="TCustomImageList.ResolutionCount"/>
@@ -2659,7 +2659,7 @@
             Create calls the <var>Initialize</var> method to allocate resources and to set the default value for properties used in the image list.
           </p>
           <remark>
-            Please note: CreateSize does not assign a value for the Owner property; it will not receive Notify events when the Application, Form, or Component where it is used is freed.
+            CreateSize does not assign a value for the Owner property; it will not receive Notify events when the Application, Form, or Component where it is used is freed.
           </remark>
         </descr>
         <seealso>
@@ -2834,7 +2834,7 @@
             <var>WriteData</var> is a procedure used to write the image data for the default resolution to the stream specified in AStream. WriteData calls <var>GetResolution</var> using the value in <var>Width</var> to retrieve the default image resolution. The WriteData method in <var>TCustomImageListResolution</var> is called to perform the write operation using the specified stream.
           </p>
           <remark>
-            Please note: Data compression is enabled when writing image data for the resolution. Data compression was not enabled in previous LCL versions to maintain compatibility with earlier versions of Lazarus. That backward compatibility is no longer possible with image compression enabled.
+            Data compression is enabled when writing image data for the resolution. Data compression was not enabled in previous LCL versions to maintain compatibility with earlier versions of Lazarus. That backward compatibility is no longer possible with image compression enabled.
           </remark>
           <p>
             Use <var>WriteAdvData</var> to write image data for all resolutions in the image list.
