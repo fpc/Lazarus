@@ -784,7 +784,7 @@
             Create configures the <var>Edit</var> and <var>UpDown</var> instances used in the grouped edit control. Edit is configured to use right alignment for its text (since it is a numeric value). UpDown is configured to include the flags needed in its ControlStyle property. The OnChangingEx and OnClick event handlers for UpDown are also set in the method.
           </p>
           <remark>
-            Please note: UpDown does not use its Associate property to maintain the relationship to Edit. This is by design, and allows Edit to be used with floating point numbers and have a NullValue (in a descendent class instance). It also enables proper alignment and anchoring for the grouped edit control.
+            UpDown does not use its Associate property to maintain the relationship to Edit. This is by design, and allows Edit to be used with floating point numbers and have a NullValue (in a descendent class instance). It also enables proper alignment and anchoring for the grouped edit control.
           </remark>
           <p>
             Internal members needed in the class instance are also initialized.
@@ -812,7 +812,7 @@
             The return value contains the original value after it has been range adjusted. When AValue is smaller than MinValue, MinValue is assigned to the return value. When AValue is larger than MaxValue, MaxValue is assigned to the return value.
           </p>
           <remark>
-            Please note: The return value is not range adjusted when MinValue and MaxValue have the same value. This is Delphi VCL compatible.
+            The return value is not range adjusted when MinValue and MaxValue have the same value. This is Delphi VCL compatible.
           </remark>
         </descr>
         <seealso/>

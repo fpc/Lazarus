@@ -371,7 +371,7 @@
             <dd>Uses the value from SystemShowButtonGlyphs as the return value</dd>
           </dl>
           <remark>
-            Please note: The return value is always True at design-time.
+            The return value is always <b>True</b> at design-time.
           </remark>
           <p>
             Use CanShowGlyph to determine if an image is available to be drawn on the button.

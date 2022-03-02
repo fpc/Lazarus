@@ -212,7 +212,7 @@
             PushInternal calls <var>System.Move</var> to transfer byte data from Source to the internal storage for the queue, or calls the Read method in AStream to read the item data. The <var>Size</var> property is incremented by the number of bytes actually read in the method. <var>AddItem</var> is called to adjust the internal storage allocation for the calculated item size.
           </p>
           <remark>
-            Please note: PushInternal assumes that the TStream instance is already positioned at the location needed to access the item data for the queue entry. It does not reposition the stream prior to or following a call to the TStream.Read method. Be aware that reading from a stream can raise an exception.
+            PushInternal assumes that the TStream instance is already positioned at the location needed to access the item data for the queue entry. It does not reposition the stream prior to or following a call to the TStream.Read method. Be aware that reading from a stream can raise an exception.
           </remark>
           <p>
             The return value contains the number of bytes transferred to the internal queue storage in the method.
@@ -368,7 +368,7 @@
             <var>Push</var> is an overloaded <var>Integer</var> function used to add the specified item data to the bottom of the FIFO queue. Overloaded variants are provided to supply item data as a sequence of arbitrary byte values, either from an untyped buffer or from a <var>TStream</var> instance.
           </p>
           <remark>
-            Please note: Push assumes that <var>AStream</var> is already positioned at the start of the data for the new item. It does not reposition the stream instance.
+            Push assumes that <var>AStream</var> is already positioned at the start of the data for the new item. It does not reposition the stream instance.
           </remark>
           <p>
             Push calls the <var>PushInternal</var> method to perform the actions needed to enqueue the specified item data.
@@ -407,7 +407,7 @@
             <var>Pop</var> is an overloaded <var>Integer</var> function used to remove an item from the top of the FIFO queue. Overloaded variants are provided to get item data and store them as a sequence of arbitrary byte values, either in an untyped buffer or in a <var>TStream</var> instance.
           </p>
           <remark>
-            Please note: Pop assumes that <var>AStream</var> is already positioned where the item data will be written. It does not reposition the stream instance. Be aware that writing to a stream can raise an exception.
+            Pop assumes that <var>AStream</var> is already positioned where the item data will be written. It does not reposition the stream instance. Be aware that writing to a stream can raise an exception.
           </remark>
           <p>
             Pop calls the <var>PopTopInternal</var> method to perform the actions needed to get the data for the queue item, and to removed the entry from the top of FIFO queue.

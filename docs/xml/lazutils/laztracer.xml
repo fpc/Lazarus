@@ -72,7 +72,7 @@
             <var>RaiseGDBException</var> is a procedure used to raise an exception in the GDB debugger. Normally, GDB does not catch FPC <var>Exception</var> objects. This procedure raises a standard <b>"Division By Zero"</b> exception, which <b>IS</b> caught by GDB. This allows a program to be stopped in the debugger without extra GDB  configuration.
           </p>
           <remark>
-            Please note: For the Amiga platform, Division by Zero errors are not catchable. The program will simply crash.
+            For the Amiga platform, Division by Zero errors are not catchable. The program will simply crash.
           </remark>
           <p>
             <var>Msg</var> contains the value used as the message in the exception.
@@ -91,7 +91,7 @@
             <var>RaiseAndCatchException</var> is a procedure used to generate an <var>Exception</var> that is caught and handled by an application.
           </p>
           <remark>
-            Please note: For the Amiga platform, Division by Zero errors are not catchable. The program will simply crash.
+            For the Amiga platform, Division by Zero errors are not catchable. The program will simply crash.
           </remark>
         </descr>
         <seealso></seealso>

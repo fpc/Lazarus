@@ -89,7 +89,7 @@
         <short>Load the TrueType header table in the resident table.</short>
         <descr>
           <remark>
-            Please note: A font header is a static table that owns no subttable. It has neither a constructor nor a destructor.
+            A font header is a static table that owns no subttable. It has neither a constructor nor a destructor.
           </remark>
         </descr>
         <seealso/>
@@ -105,7 +105,7 @@
         <short>Loads the location table in resident table.</short>
         <descr>
           <remark>
-            Please note: The Font Header <b>must</b> be loaded in the leading segment before calling this function. This table is destroyed directly by the resident destructor.
+            The Font Header <b>must</b> be loaded in the leading segment before calling this function. This table is destroyed directly by the resident destructor.
           </remark>
         </descr>
         <seealso/>
@@ -137,7 +137,7 @@
         <short/>
         <descr>
           <remark>
-            Please note:  The Cmap table directory is destroyed by the resident destructor. The Cmap subtables must be destroyed by Free_CMap_Table.
+            The Cmap table directory is destroyed by the resident destructor. The Cmap subtables must be destroyed by Free_CMap_Table.
           </remark>
         </descr>
         <seealso/>
@@ -165,7 +165,7 @@
         <short>Loads the name table into the face table.</short>
         <descr>
           <remark>
-            Please note: This attribute table is destroyed by the resident destructor.
+            This attribute table is destroyed by the resident destructor.
           </remark>
         </descr>
         <seealso/>

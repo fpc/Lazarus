@@ -37,7 +37,7 @@
           <li>added variable precision for finer rendering at small ppems</li>
         </ul>
         <remark>
-          Please note:  The interface in the unit may change in the future.
+          The interface in the unit may change in the future.
         </remark>
       </descr>
 

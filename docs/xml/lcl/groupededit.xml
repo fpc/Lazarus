@@ -1957,7 +1957,7 @@
             <var>Destroy</var> is the overridden destructor for the class instance. Destroy calls the inherited destructor.
           </p>
           <remark>
-            Please note: Resources allocated for BaseEditor and Buddy in the constructor are not explicitly freed in the destructor; that action is performed using the Notification that occurs when this class instance (which is the owner for those resources) is freed.
+            Resources allocated for BaseEditor and Buddy in the constructor are not explicitly freed in the destructor; that action is performed using the Notification that occurs when this class instance (which is the owner for those resources) is freed.
           </remark>
         </descr>
         <seealso/>
@@ -2133,7 +2133,7 @@
             Read and write access to the property value are redirected to the   <var>BaseEditor</var> control.
           </p>
           <remark>
-            Please note:  The value in CharCase can automatically be changed to ecNormal when an edit mask is assigned to the control.
+            The value in CharCase can automatically be changed to ecNormal when an edit mask is assigned to the control.
           </remark>
         </descr>
         <seealso>

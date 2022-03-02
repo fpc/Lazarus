@@ -397,7 +397,7 @@
             <var>InternalCleanNode</var> ensures that the specified DOM node is removed from the <var>Document</var>, both as a parent or child node in the element tree. InternalCleanNode calls <var>InvalidatePathCache</var> to reflect the change in the Document, and sets the value in <var>Modified</var> to <b>True</b>.
           </p>
           <remark>
-            Please note: No actions are performed in the method when Node is unassigned (contains <b>Nil</b>).
+            No actions are performed in the method when Node is unassigned (contains <b>Nil</b>).
           </remark>
           <p>
             InternalCleanNode is used in the implementation of the <var>DeletePath</var> and <var>DeleteValue</var> methods.
@@ -755,7 +755,7 @@
             <var>DeletePath</var> calls <var>InternalFindNode</var> to get the node removed in the method. The node is removed from its parent DOM node, and the value in <var>Modified</var> is set to <b>True</b>. The <var>InvalidatePathCache</var> method is called to reflect the change in the Document. <var>InternalCleanNode</var> is called to ensure that the node is removed from the parent DOM node in <var>Document</var>.
           </p>
           <remark>
-            Please note: No actions are performed in the method when a node for the specified path cannot be located, or the node does not have a parent node (it is the root node in the Document).
+            No actions are performed in the method when a node for the specified path cannot be located, or the node does not have a parent node (it is the root node in the Document).
           </remark>
         </descr>
         <seealso>
@@ -780,7 +780,7 @@
             DeleteValue calls the <var>FindNode</var> method to get the DOM node updated in the method.
           </p>
           <remark>
-            Please note: No actions are performed in the method when a node cannot be found with the specified path.
+            No actions are performed in the method when a node cannot be found with the specified path.
           </remark>
         </descr>
         <seealso>
@@ -1020,7 +1020,7 @@
             If <var>Document</var> contains a valid <var>TXMLDocument</var> instance, the <var>Flush</var> method is called to write any pending changes to disk. The <var>FreeDoc</var> method is called to re-initialize the <var>Document</var> instance. The XML content in <var>Document</var> is then reloaded using the file or string content as required.
           </p>
           <remark>
-            Please note: No actions are performed in the method when the value in <var>Filename</var> is assigned as the component is loaded using the LCL streaming mechanism.
+            No actions are performed in the method when the value in <var>Filename</var> is assigned as the component is loaded using the LCL streaming mechanism.
           </remark>
         </descr>
         <seealso>
@@ -1121,7 +1121,7 @@
             <li>tkClass</li>
           </ul>
           <remark>
-            Please note: Properties must be implemented with both getter and setter procedures to be available for use in <var>TRttiXMLConfig</var>. Properties which do not use both types of procedure are ignored.
+            Properties must be implemented with both getter and setter procedures to be available for use in <var>TRttiXMLConfig</var>. Properties which do not use both types of procedure are ignored.
           </remark>
         </descr>
         <seealso>

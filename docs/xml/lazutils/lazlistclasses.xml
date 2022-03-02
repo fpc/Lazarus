@@ -15,7 +15,7 @@
           <file>lazlistclasses.pas</file> contains list classes implemented using generics. The lists are provided as "object" and "class" versions. Each list can be specialized to hold either items of a given type (specialized to type at compile-time) or untyped data with the size specified as a run-time argument to the constructor.
         </p>
         <remark>
-          Please note: The current implementations for these list classess are not suitable for managed types, such as String.
+          The current implementations for these list classes are not suitable for managed types, such as String.
         </remark>
         <p>
           <b>TLazShiftBufferList</b>
