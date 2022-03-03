@@ -212,7 +212,6 @@ HEADERS +=  \
            qtextdocumentwriter_c.h \
            qicon_c.h \
            qpixmap_c.h \
-           qpixmapcache_c.h \
            qimage_c.h \
            qbitmap_c.h \
            qpicture_c.h \
@@ -557,7 +556,6 @@ SOURCES +=  \
            qtextdocumentwriter_c.cpp \
            qicon_c.cpp \
            qpixmap_c.cpp \
-           qpixmapcache_c.cpp \
            qimage_c.cpp \
            qbitmap_c.cpp \
            qpicture_c.cpp \
