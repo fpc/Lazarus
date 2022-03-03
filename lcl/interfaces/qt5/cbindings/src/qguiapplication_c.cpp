@@ -230,14 +230,3 @@ bool QGuiApplication_isSavingSession(QGuiApplicationH handle)
 	return (bool) ((QGuiApplication *)handle)->isSavingSession();
 }
 
-bool QGuiApplication_isFallbackSessionManagementEnabled()
-{
-	return (bool) QGuiApplication::isFallbackSessionManagementEnabled();
-}
-
-void QGuiApplication_setFallbackSessionManagementEnabled(bool enabled)
-{
-	QGuiApplication::setFallbackSessionManagementEnabled(enabled);
-}
-
-
