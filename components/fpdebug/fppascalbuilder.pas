@@ -791,6 +791,7 @@ function TFpPascalPrettyPrinter.InternalPrintValue(out APrintedValue: String;
       else
       if s <> '' then
         APrintedValue := s + '(' + APrintedValue + ')'; // no typeinfo for strings/pchar
+      m.ReleaseReference;
     end;
 
     Result := True;
