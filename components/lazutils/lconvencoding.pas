@@ -79,6 +79,7 @@ const
 
   EncodingCPIso1 = 'iso88591';
   EncodingCPIso2 = 'iso88592';
+  EncodingCPIso9 = 'iso88599';
   EncodingCPIso15 = 'iso885915';
 
 //signatures in ansi
@@ -125,6 +126,7 @@ function UTF8BOMToUTF8(const s: string): string; // UTF8 with BOM
 function ISO_8859_1ToUTF8(const s: string): string; // central europe
 function ISO_8859_15ToUTF8(const s: string): string; // Western European languages
 function ISO_8859_2ToUTF8(const s: string): string; // eastern europe
+function ISO_8859_9ToUTF8(const s: string): string; // Turkish
 function CP1250ToUTF8(const s: string): string; // central europe
 function CP1251ToUTF8(const s: string): string; // cyrillic
 function CP1252ToUTF8(const s: string): string; // latin 1
@@ -151,6 +153,7 @@ function UTF8ToUTF8BOM(const s: string): string; // UTF8 with BOM
 
 function UTF8ToISO_8859_1(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
 function UTF8ToISO_8859_2(const s: string; SetTargetCodePage: boolean = false): RawByteString; // eastern europe
+function UTF8ToISO_8859_9(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Turkish
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean = false): RawByteString; // Western European languages
 function UTF8ToCP1250(const s: string; SetTargetCodePage: boolean = false): RawByteString; // central europe
 function UTF8ToCP1251(const s: string; SetTargetCodePage: boolean = false): RawByteString; // cyrillic
@@ -354,6 +357,11 @@ end;
 function ISO_8859_2ToUTF8(const s: string): string;
 begin
   Result:=SingleByteToUTF8(s,ArrayISO_8859_2ToUTF8);
+end;
+
+function ISO_8859_9ToUTF8(const s: string): string;
+begin
+  Result:=SingleByteToUTF8(s,ArrayISO_8859_9ToUTF8);
 end;
 
 function CP1250ToUTF8(const s: string): string;
@@ -1077,6 +1085,20 @@ function UnicodeToISO_8859_1(Unicode: cardinal): integer;
 begin
   case Unicode of
   0..255: Result:=Unicode;
+  else Result:=-1;
+  end;
+end;
+
+function UnicodeToISO_8859_9(Unicode: cardinal): integer;
+begin
+  case Unicode of
+  0..255: Result:=Unicode;
+  $011E: Result:= $D0;
+  $0130: Result:= $DD;
+  $015E: Result:= $DE;
+  $011F: Result:= $F0;
+  $0131: Result:= $FD;
+  $015F: Result:= $FE;
   else Result:=-1;
   end;
 end;
@@ -1947,6 +1969,11 @@ begin
   InternalUTF8ToCP(s,28592,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_2{$endif},Result);
 end;
 
+function UTF8ToISO_8859_9(const s: string; SetTargetCodePage: boolean): RawByteString;
+begin
+  InternalUTF8ToCP(s,28599,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_9{$endif},Result);
+end;
+
 function UTF8ToISO_8859_15(const s: string; SetTargetCodePage: boolean): RawByteString;
 begin
   InternalUTF8ToCP(s,28605,SetTargetCodePage,{$IfDef UseSystemCPConv}nil{$else}@UnicodeToISO_8859_15{$endif},Result);
@@ -2359,6 +2386,7 @@ begin
   if ATo=EncodingCPIso1 then begin Result:=UTF8ToISO_8859_1(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso15 then begin Result:=UTF8ToISO_8859_15(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCPIso2 then begin Result:=UTF8ToISO_8859_2(s,SetTargetCodePage); exit; end;
+  if ATo=EncodingCPIso9 then begin Result:=UTF8ToISO_8859_9(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP1250 then begin Result:=UTF8ToCP1250(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP1251 then begin Result:=UTF8ToCP1251(s,SetTargetCodePage); exit; end;
   if ATo=EncodingCP1252 then begin Result:=UTF8ToCP1252(s,SetTargetCodePage); exit; end;
@@ -2406,6 +2434,7 @@ begin
   if AFrom=EncodingCPIso1 then begin Result:=ISO_8859_1ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso15 then begin Result:=ISO_8859_15ToUTF8(s); exit; end;
   if AFrom=EncodingCPIso2 then begin Result:=ISO_8859_2ToUTF8(s); exit; end;
+  if AFrom=EncodingCPIso9 then begin Result:=ISO_8859_9ToUTF8(s); exit; end;
   if AFrom=EncodingCP1250 then begin Result:=CP1250ToUTF8(s); exit; end;
   if AFrom=EncodingCP1251 then begin Result:=CP1251ToUTF8(s); exit; end;
   if AFrom=EncodingCP1252 then begin Result:=CP1252ToUTF8(s); exit; end;
