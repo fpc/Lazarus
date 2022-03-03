@@ -583,7 +583,7 @@ begin
       if (c = #0) and (SPos >= SEnd) then begin
         // END OF TEXT
         Assert(RPos-1 <= @Result[Length(Result)], 'RPos-1 <= @Result[Length(Result)]');
-        SetLength(Result, RPos - @Result[1]);
+        SetLength(Result, RPos - PWideChar(@Result[1]));
         exit;
       end;
 
