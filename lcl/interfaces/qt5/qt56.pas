@@ -8959,8 +8959,6 @@ procedure QIcon_setThemeSearchPaths(searchpath: QStringListH); cdecl; external Q
 procedure QIcon_themeName(retval: PWideString); cdecl; external Qt5PasLib name 'QIcon_themeName';
 procedure QIcon_setThemeName(path: PWideString); cdecl; external Qt5PasLib name 'QIcon_setThemeName';
 
-procedure QPixmapCache_Clear(); cdecl; external Qt5PasLib name 'QPixmapCache_Clear';
-
 function QPixmap_Create(): QPixmapH; cdecl; external Qt5PasLib name 'QPixmap_Create';
 procedure QPixmap_Destroy(handle: QPixmapH); cdecl; external Qt5PasLib name 'QPixmap_Destroy'; 
 function QPixmap_Create(w: Integer; h: Integer): QPixmapH; cdecl; external Qt5PasLib name 'QPixmap_Create2';
