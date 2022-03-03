@@ -22,7 +22,7 @@ unit ShellCtrls;
 interface
 
 uses
-  Classes, SysUtils, Laz_AVL_Tree,
+  Classes, SysUtils, Math, Laz_AVL_Tree,
   // LCL
   Forms, Graphics, ComCtrls, LCLProc, LCLType, LCLStrConsts, Types,
   // LazUtils
@@ -1601,7 +1601,7 @@ begin
       Column[0].Width := (70 * iWidth) div 100;
       Column[1].Width := (15 * iWidth) div 100;
     end;
-    Column[2].Width := iWidth - Column[0].Width - Column[1].Width;
+    Column[2].Width := Max(0, iWidth - Column[0].Width - Column[1].Width);
   finally
     EndUpdate;
   end;

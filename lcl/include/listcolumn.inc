@@ -188,10 +188,10 @@ var
   W: TWidth;
 begin
   W := AValue;
-  if (MinWidth > 0) and (W < MinWidth) then
+  if W < MinWidth then
     W := MinWidth
   else
-  if (MaxWidth > 0) and (W > MaxWidth) then
+  if W > MaxWidth then
     W := MaxWidth;
   if Width = W then Exit; // compare with Width instead of FWidth - FWidth is not updated from the WS automatically
   FWidth := W;
