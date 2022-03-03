@@ -171,6 +171,9 @@
       <element name="EncodingCPIso2">
         <short>Encoding name for ISO 8859-2 Code Page.</short>
       </element>
+      <element name="EncodingCPIso9">
+        <short>Encoding name for ISO 8859-9 Code Page.</short>
+      </element>
       <element name="EncodingCPIso15">
         <short>Encoding name for ISO 8859-15 Code Page.</short>
       </element>
@@ -350,7 +353,9 @@
         <short>Encoding name for the value in s.</short>
       </element>
       <element name="ConvertEncodingToUTF8.Encoded">
-        <short>True if the result contains a multi-byte encoded value. Always True for conversions to UTF-8.</short>
+        <short>
+          True if the result contains a multi-byte encoded value. Always True for conversions to UTF-8.
+        </short>
       </element>
 
       <element name="ConvertEncoding">
@@ -649,6 +654,18 @@
       </element>
       <element name="ISO_8859_2ToUTF8.s">
         <short>String with the value in ISO 8859-2 encoding.</short>
+      </element>
+
+      <element name="ISO_8859_9ToUTF8">
+        <short>Converts a string from its ISO 8859-9 (Turkish) encoding to UTF-8 encoding.</short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="ISO_8859_9ToUTF8.Result">
+        <short>UTF-8-encoded value for the specified string.</short>
+      </element>
+      <element name="ISO_8859_9ToUTF8.s">
+        <short>String with the value in ISO 8859-9 encoding.</short>
       </element>
 
       <element name="CP1250ToUTF8">
@@ -1084,7 +1101,7 @@
       </element>
       <element name="UTF8ToISO_8859_1.SetTargetCodePage">
         <short>
-          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is used.
         </short>
       </element>
 
@@ -1118,7 +1135,7 @@
       </element>
       <element name="UTF8ToISO_8859_15.SetTargetCodePage">
         <short>
-          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is used.
         </short>
       </element>
 
@@ -1152,7 +1169,41 @@
       </element>
       <element name="UTF8ToISO_8859_2.SetTargetCodePage">
         <short>
-          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is used.
+        </short>
+      </element>
+
+      <element name="UTF8ToISO_8859_9">
+        <short>Converts a string from UTF-8 encoding to ISO 8859-9 (Turkish) encoding.</short>
+        <descr>
+          <p>
+            <var>UTF8ToISO_8859_9</var> is a <var>RawByteString</var> function used to convert a UTF-8-encoded string to the ISO 8859-9 (Turkish) encoding.
+          </p>
+          <p>
+            For platforms where system code pages are enabled, SetCodePage is called to convert the value to the ISO 8859-9 code page (28599). If SetTargetCodePage is False, SetCodePage is called again to apply  the CP_ACP (ANSI) code page in the return value.
+          </p>
+          <p>
+            For other platforms, the UTF8ToSingleByte routine is called using UnicodeToISO_8859_9 to perform character conversions needed for the target encoding.
+          </p>
+          <p>
+            UTF8ToISO_8859_9 is used in the implementation of the ConvertEncodingFromUTF8 encoding conversion routine.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ConvertEncodingFromUTF8"/>
+          <link id="UTF8ToSingleByte"/>
+          <link id="#rtl.system.SetCodePage">SetCodePage</link>
+        </seealso>
+      </element>
+      <element name="UTF8ToISO_8859_9.Result">
+        <short>String value after conversion to ISO 8859-9.</short>
+      </element>
+      <element name="UTF8ToISO_8859_9.s">
+        <short>UTF-8-encoded string value converted in the routine.</short>
+      </element>
+      <element name="UTF8ToISO_8859_9.SetTargetCodePage">
+        <short>
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is used.
         </short>
       </element>
 
@@ -1372,7 +1423,7 @@
       </element>
       <element name="UTF8ToCP1256.SetTargetCodePage">
         <short>
-          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is  used.
+          True if the target code page is set in the return value, False if the default system code page (CP_ACP) is used.
         </short>
       </element>
 

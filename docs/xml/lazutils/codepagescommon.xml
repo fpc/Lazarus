@@ -4,7 +4,11 @@
 
     <module name="codepagescommon">
       <short>Contains Unicode conversion tables for common code pages.</short>
-      <descr></descr>
+      <descr>
+        <p>
+          <file>codepagescommon.pas</file> is part of the <file>LazUtils</file> package.
+        </p>
+      </descr>
 
       <element name="TCharToUTF8Table">
         <short/>
@@ -20,6 +24,18 @@
           </url>
         </descr>
         <seealso/>
+      </element>
+
+      <element name="ArrayISO_8859_9ToUTF8">
+        <short>Provides a mapping for ISO-8859-9 characters to UTF-8 codepoints.</short>
+        <descr>
+          <p>
+            <url href="https://en.wikipedia.org/wiki/ISO/IEC_8859-9">ISO/IEC 8859-9</url>
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lconvencoding.ISO_8859_9ToUTF8">ISO_8859_9ToUTF8</link>
+        </seealso>
       </element>
 
       <element name="ArrayISO_8859_15ToUTF8">
