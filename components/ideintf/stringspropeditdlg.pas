@@ -18,11 +18,11 @@ interface
 uses
   SysUtils,
   // LCL
-  Forms, Controls, StdCtrls, ButtonPanel,
+  Forms, Controls, StdCtrls, ButtonPanel, Dialogs,
   // LazUtils
   LazUTF8,
   // IdeIntf
-  TextTools, ObjInspStrConsts, IDEWindowIntf;
+  TextTools, ObjInspStrConsts, IDEWindowIntf, Classes;
 
 type
 
@@ -31,6 +31,8 @@ type
   TStringsPropEditorFrm = class(TForm)
     BtnPanel: TButtonPanel;
     ClearButton: TButton;
+    SaveButton: TButton;
+    SaveDialog1: TSaveDialog;
     StatusLabel: TLabel;
     SortButton: TButton;
     TextGroupBox: TGroupBox;
@@ -39,6 +41,7 @@ type
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure MemoChange(Sender: TObject);
+    procedure SaveButtonClick(Sender: TObject);
     procedure SortButtonClick(Sender: TObject);
   public
     procedure AddButtons; virtual;
@@ -84,6 +87,13 @@ begin
     StatusLabel.Caption := Format(ois1LineDChars, [NumChars])
   else
     StatusLabel.Caption := Format(oisDLinesDChars, [Memo.Lines.Count, NumChars]);
+end;
+
+procedure TStringsPropEditorFrm.SaveButtonClick(Sender: TObject);
+begin
+  SaveDialog1.Title:=sccsSGEdtSaveDialog;
+  if SaveDialog1.Execute then
+    Memo.Lines.SaveToFile(SaveDialog1.FileName);
 end;
 
 procedure TStringsPropEditorFrm.SortButtonClick(Sender: TObject);
