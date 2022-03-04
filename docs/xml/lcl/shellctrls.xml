@@ -19,11 +19,15 @@
         <li>TShellTreeView</li>
         <li>TShellListView</li>
       </ul>
+      <p>
+        <file>ShellCtrls.pas</file> is part of the Lazarus Component Library (LCL).
+      </p>
     </descr>
 
       <!-- unresolved references -->
       <element name="Classes"/>
       <element name="SysUtils"/>
+      <element name="Math"/>
       <element name="Laz_AVL_Tree"/>
       <element name="Forms"/>
       <element name="Graphics"/>
@@ -1159,7 +1163,6 @@
           <p>
             AdjustColWidths is a method used to adjust the width of columns according to the overall width for the control. It ensures that the columns are proportionately sized in the control layout.
           </p>
-
           <p>
             No actions are performed in the method when the control has fewer than three (3) columns, or when AutoSizeColumns is <b>False</b> and an explicit value has been assigned to the first column in the control.
           </p>
@@ -1173,7 +1176,7 @@
             </dd>
             <dt>Width &gt;= 400 pixels</dt>
             <dd>
-              The initial column is give 70% of the overall width, and the second column is given 15% of the overall width. The third column is given the remaining client area for the control.
+              The initial column is give 70% of the overall width, and the second column is given 15% of the overall width. The third column is given the remaining client area for the control, or 0 when no space is available.
             </dd>
           </dl>
           <p>
