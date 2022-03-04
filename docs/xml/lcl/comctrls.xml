@@ -7846,28 +7846,58 @@
       </element>
 
       <element name="TListColumn.Visible">
-        <short>Allow to show this column.</short>
-        <descr/>
+        <short>Indicates whether the column is visible on the associated list view control.</short>
+        <descr>
+          <p>
+            <var>Visible</var> is a <var>Boolean</var> property which indicates if the column is visible on the list view control where it is defined.  The default value for the property is <b>True</b>.
+          </p>
+          <p>
+            Changing the property value causes the item to updated in its collection, and any observers are notified of the change. The widgetset class instance is also notified when its handle has been allocated.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TListColumn.Width">
-        <short>Current width of column. May be calculated auto, if AutoSize used.</short>
-        <descr/>
-        <seealso/>
+        <short>Width for the column on a list view control.</short>
+        <descr>
+          <p>
+            <var>Width</var> is an <var>Integer</var> property with the width for the column on a list view control. Width is used along with MaxWidth and MinWidth to control the amount of space needed or available for the column.
+          </p>
+          <p>
+            The property value is read from and written to the widgetset class instance when its handle is allocated.
+          </p>
+          <p>
+            The default value for the property is 50 (pixels). If the property is changed, the value is normalized to the range indicated by MinWidth and MaxWidth (when assigned). Default values are not assigned for the MinWidth and MaxWidth properties. The collection which owns the column instance is updated, and the list view and any observers are notified when the column is modified.
+          </p>
+          <p>
+            Set AutoSize to <b>True</b> to automatically resize the column to its content and the available space on the associated list view control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TListColumn.AutoSize"/>
+          <link id="TListColumn.MaxWidth"/>
+          <link id="TListColumn.MinWidth"/>
+        </seealso>
       </element>
 
       <element name="TListColumn.SortIndicator">
         <short>
-          Sort indicator for the column. Reflects the sort direction for the list view control where the column is used.
+          Specifies the sort indicator displayed for the column.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Reflects the sort direction or order for the column on the associated list view control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TSortIndicator"/>
+        </seealso>
       </element>
 
       <element name="TListColumns">
-        <short>
-          <var>TListColumns</var> - a collection of Items of type <var>TListColumn</var> (the columns appearing in a multi-column list).
+          A collection for TListColumn instances defined for a multi-column list view control.
+          <short>
         </short>
         <descr/>
         <seealso/>
@@ -7963,7 +7993,7 @@
 
       <element name="TListColumns.Add">
         <short>
-          <var>Add</var> calls inherited method, then adjusts state flags.
+          <var>Add</var> calls the inherited method, then adjusts state flags.
         </short>
         <descr/>
         <seealso>
