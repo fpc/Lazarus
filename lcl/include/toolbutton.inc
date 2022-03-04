@@ -874,25 +874,14 @@ begin
   inherited GetPreferredSize(PreferredWidth, PreferredHeight, Raw, WithThemeSpace);
 
   if FToolbar = nil then Exit;
-
   RealButtonWidth := FToolbar.ButtonWidth;
   RealButtonHeight := FToolbar.ButtonHeight;
   if RealButtonHeight <= 0 then Exit;
-
-  if (AutoSize) then begin
-    // why FToolbar overrides prefered size?
-    if FToolBar.IsVertical then
-      PreferredWidth  := max( PreferredWidth, RealButtonWidth )
-    else
-      PreferredHeight := max( PreferredHeight, RealButtonHeight );
-  end
-  else begin
-    if FToolBar.IsVertical then
-      PreferredWidth := RealButtonWidth
-    else
-      PreferredHeight:= RealButtonHeight;
-  end;
-
+  // buttonheight overrules in hor toolbar
+  if FToolBar.IsVertical then
+    PreferredWidth := RealButtonWidth
+  else
+    PreferredHeight := RealButtonHeight;
 end;
 
 function TToolButton.IsWidthStored: Boolean;

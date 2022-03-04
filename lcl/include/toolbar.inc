@@ -599,7 +599,6 @@ end;
 procedure TToolBar.DoAutoSize;
 begin
   // children are moved in ControlsAligned independent of AutoSize=true
-  inherited DoAutoSize; // needed for autosizing toolbar in controlbar bands
 end;
 
 function TToolBar.DropDownWidthIsStored: Boolean;
