@@ -7829,7 +7829,7 @@
         </short>
         <descr>
           <p>
-            Space is reserved for borders on the band (cBandBorderV). The remaining Height for the control in aControl is divided by RowSize to get the return value.
+            Space is reserved for borders on the band (cBandBorderV). The remaining Height for the control in aControl is evenly allocated for RowSize and used as the return value.
           </p>
           <p>
             Called property when RowSnap is set to <b>True</b> from the CalcBandHeight method and when a new value is assigned to the RowSize property. Called from CheckBandsSizeAndVisibility for each of the visible bands on the control bar.
@@ -8076,7 +8076,7 @@
         <short>Performs actions needed when component loading has been completed.</short>
         <descr>
           <p>
-            Calls the inherited method on entry to determine the parent color and opacity for the control. Loaded creates, configures, and stores a TCtrlBand instance for each of the child Controls on the control bar. CalcBandHeight is called to determine the height for the bands.  Space is reserved for the grabber and borders on the bands, and the Width properties are updated. The Top and Left values for the bands are also assigned.
+            Calls the inherited method on entry to determine the parent color and opacity for the control. Loaded creates, configures, and stores a TCtrlBand instance for each of the child Controls on the control bar. CalcBandHeight is called to determine the height for the child Controls.  Space is reserved on the bands for the grabber and borders, and the Width properties for the bands are updated. The Top and Left values for the bands are also assigned.
           </p>
         </descr>
         <seealso>
