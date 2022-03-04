@@ -14236,7 +14236,7 @@
             When WithThemeSpace is True, additional space is reserved for stacking.
           </p>
           <p>
-            Calls the inherited method on entry. Values from the ButtonWidth and ButtonHeight properties in the parent tool bar may be used in the PreferredWidth and PreferredHeight arguments, depending on the orientation for the tool bar. No additional actions are performed in the method if the parent tool bar has not been assigned.
+            Calls the inherited method on entry. Values from the ButtonWidth and ButtonHeight properties in the parent tool bar may be used in the PreferredWidth and PreferredHeight arguments, depending on the orientation for the tool bar and whether AutoSiz is enabled. No additional actions are performed in the method if the parent tool bar has not been assigned.
           </p>
         </descr>
         <seealso>
@@ -14951,10 +14951,15 @@
 
       <element name="TToolBar.DoAutoSize">
         <short>Defers auto-sizing actions to the AlignControls method.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls the inherited method to allow a tool bar in a control bar band to be resized properly.
+          </p>
+        </descr>
         <seealso>
           <link id="TToolBar.AlignControls"/>
           <link id="TToolBar.AutoSize"/>
+          <link id="#lcl.controls.TWinControl.DoAutoSize">TWinControl.DoAutoSize</link>
         </seealso>
       </element>
 

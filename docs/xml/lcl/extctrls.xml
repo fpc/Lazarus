@@ -7804,7 +7804,9 @@
       <element name="TCustomControlBar.AlignControlsToBands">
         <short>Aligns visible control bands in the container.</short>
         <descr>
-          Temporarily disables AutoSizing during the alignment process. Restores AutoSizing prior to exiting from the method.
+          <p>
+            Temporarily disables AutoSizing during the alignment process. Restores AutoSizing prior to exiting from the method.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -7823,27 +7825,55 @@
 
       <element name="TCustomControlBar.CalcBandHeightSnapped">
         <short>
-          Calculates the vertical space needed for the control bar when RowSnap is enabled.
+          Calculates the vertical space needed for a band on the control bar when RowSnap is enabled.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Space is reserved for borders on the band (cBandBorderV). The remaining Height for the control in aControl is divided by RowSize to get the return value.
+          </p>
+          <p>
+            Called property when RowSnap is set to <b>True</b> from the CalcBandHeight method and when a new value is assigned to the RowSize property. Called from CheckBandsSizeAndVisibility for each of the visible bands on the control bar.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.RowSize"/>
+          <link id="TCustomControlBar.RowSnap"/>
+          <link id="TCustomControlBar.CalcBandHeight"/>
+          <link id="TCustomControlBar.CheckBandsSizeAndVisibility"/>
+          <link id="#lcl.controls.TControl.Height">TControl.Height</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.CalcBandHeightSnapped.Result">
-        <short/>
+        <short>Number of pixels needed for the specified band when RowSnap is enabled.</short>
       </element>
       <element name="TCustomControlBar.CalcBandHeightSnapped.AControl">
-        <short/>
+        <short>Control bar band examined and updated in the method.</short>
       </element>
 
       <element name="TCustomControlBar.CalcInnerBevelWidth">
         <short>
           Calculates the cumulative width for all borders and bevels used on the control bar.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Uses values in the BevelInner, BevelOuter, BevelWidth, and BorderWidth properties to calculate the return value.
+          </p>
+          <p>
+            Called from the CalculatePreferredSize, CMBorderChanged, and Paint methods.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.CalculatePreferredSize"/>
+          <link id="TCustomControlBar.CMBorderChanged"/>
+          <link id="TCustomControlBar.Paint"/>
+          <link id="TCustomPanel.BevelInner"/>
+          <link id="TCustomPanel.BevelOuter"/>
+          <link id="TCustomPanel.BevelWidth"/>
+          <link id="#lcl.controls.TWinControl.BorderWidth">TWinControl.BorderWidth</link>
+        </seealso>
       </element>
       <element name="TCustomControlBar.CalcInnerBevelWidth.Result">
-        <short/>
+        <short>Number of pixels needed for the bevels and borders on the control bar.</short>
       </element>
 
       <element name="TCustomControlBar.CalcLowestBandBottomPx">
@@ -8044,8 +8074,17 @@
 
       <element name="TCustomControlBar.Loaded">
         <short>Performs actions needed when component loading has been completed.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            Calls the inherited method on entry to determine the parent color and opacity for the control. Loaded creates, configures, and stores a TCtrlBand instance for each of the child Controls on the control bar. CalcBandHeight is called to determine the height for the bands.  Space is reserved for the grabber and borders on the bands, and the Width properties are updated. The Top and Left values for the bands are also assigned.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomControlBar.CalcBandHeight"/>
+          <link id="TCtrlBand"/>
+          <link id="TCustomPanel.Loaded"/>
+          <link id="#lcl.controls.TWinControl.Controls">TWinControl.Controls</link>
+        </seealso>
       </element>
 
       <element name="TCustomControlBar.IsBandOverlap">
