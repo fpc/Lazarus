@@ -355,22 +355,30 @@ function GetLibraryExt(TargetOS: string): string;
 begin
   if TargetOS='' then
     TargetOS:=GetCompiledTargetOS;
-  if CompareText(copy(TargetOS,1,3), 'win') = 0 then
+  TargetOS:=LowerCase(TargetOS);
+  if copy(TargetOS,1,3)='win' then
     Result:='.dll'
-  else if CompareText(TargetOS, 'darwin') = 0 then
-    Result:='.dylib'
-  else if CompareText(TargetOS, 'ios') = 0 then
-    Result:='.dylib'
-  else if (CompareText(TargetOS, 'linux') = 0)
-  or (CompareText(TargetOS, 'android') = 0)
-  or (CompareText(TargetOS, 'freebsd') = 0)
-  or (CompareText(TargetOS, 'openbsd') = 0)
-  or (CompareText(TargetOS, 'netbsd') = 0)
-  or (CompareText(TargetOS, 'dragonfly') = 0)
-  or (CompareText(TargetOS, 'haiku') = 0) then
-    Result:='.so'
   else
-    Result:='';
+    case TargetOS of
+      'darwin',
+      'ios':
+         Result:='.dylib';
+      'linux',
+      'android',
+      'freebsd',
+      'openbsd',
+      'netbsd',
+      'dragonfly',
+      'haiku':
+         Result:='.so';
+      'browser',
+      'nodejs',
+      'electron',
+      'module':
+        Result:='.js';
+    else
+      Result:='';
+    end;
 end;
 
 function GetLibraryPrefix(TargetOS: string): string;
@@ -382,7 +390,7 @@ begin
   TargetOS:=LowerCase(TargetOS);
   Result:='';
   case TargetOS of
-  'browser','nodejs','electron','module': exit('.js');
+  'browser','nodejs','electron','module': exit('');
   end;
   SrcOS:=GetDefaultSrcOSForTargetOS(TargetOS);
   if CompareText(SrcOS, 'unix') = 0 then
