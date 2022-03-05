@@ -1,3 +1,26 @@
+{
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 51 Franklin Street - Fifth Floor, Boston, MA 02110-1335, USA.   *
+ *                                                                         *
+ ***************************************************************************
+
+  Abstract:
+    A GUI for managing editor macros.
+}
 unit EditorMacroListViewer;
 
 {$mode objfpc}{$H+}
@@ -55,7 +78,6 @@ type
     destructor Destroy; override;
     procedure AssignEventsFrom(AMacroRecorder: TEditorMacro); override;
     function  AddEditor(AValue: TCustomSynEdit): integer;
-
     procedure Clear; override;
 
     function  GetAsSource: String; override;
@@ -170,17 +192,19 @@ type
   { TMacroListView }
 
   TMacroListView = class(TForm)
-    btnEdit: TButton;
-    btnSetKeys: TButton;
-    btnPlay: TButton;
-    btnRecord: TButton;
-    btnRecordStop: TButton;
-    btnDelete: TButton;
-    btnSelect: TButton;
-    btnRename: TButton;
+    btnDelete: TBitBtn;
+    btnEdit: TBitBtn;
+    btnPlay: TBitBtn;
+    btnRecord: TBitBtn;
+    btnRecordStop: TBitBtn;
+    btnAddEditNew: TBitBtn;
+    btnRename: TBitBtn;
+    btnSelect: TBitBtn;
+    btnSetKeys: TBitBtn;
+    BtnWarnClose: TSpeedButton;
     ButtonPanel1: TButtonPanel;
     chkRepeat: TCheckBox;
-    GroupBox1: TGroupBox;
+    gbAddMacro: TGroupBox;
     LabelWarning: TLabel;
     lbMoveTo: TLabel;
     lbMacroView: TListView;
@@ -188,7 +212,6 @@ type
     mnImport: TMenuItem;
     OpenDialog1: TOpenDialog;
     Panel1: TPanel;
-    PnlWarnClose: TPanel;
     PanelWarnings: TPanel;
     PanelRepeat: TPanel;
     pnlButtons: TPanel;
@@ -196,7 +219,6 @@ type
     RenameButton: TPanelBitBtn;
     edRepeat: TSpinEdit;
     SaveDialog1: TSaveDialog;
-    BtnWarnClose: TSpeedButton;
     ToolBar1: TToolBar;
     tbRecorded: TToolButton;
     tbProject: TToolButton;
@@ -210,6 +232,7 @@ type
     procedure btnEditClick(Sender: TObject);
     procedure btnPlayClick(Sender: TObject);
     procedure btnRecordClick(Sender: TObject);
+    procedure btnAddEditNewClick(Sender: TObject);
     procedure btnRecordStopClick(Sender: TObject);
     procedure btnRenameClick(Sender: TObject);
     procedure btnSelectClick(Sender: TObject);
@@ -226,6 +249,7 @@ type
     procedure tbProjectClick(Sender: TObject);
     procedure tbRecordedClick(Sender: TObject);
   private
+    FImageReady: Integer;
     FImageRec: Integer;
     FImagePlay: Integer;
     FImageSel: Integer;
@@ -295,22 +319,19 @@ var
 const
   GlobalConfFileName = 'EditorMacros.xml';
 
+procedure DoMacroListViewerWarningChanged({%H-}Sender: TObject);
+begin
+  if MacroListView = nil then exit;
+  MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
+  MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
+end;
+
 function MacroListViewer: TMacroListView;
 begin
   if MacroListView = nil then
     MacroListView := TMacroListView.Create(Application);
   Result := MacroListView;
-
-  MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
-  MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
-end;
-
-procedure DoMacroListViewerWarningChanged({%H-}ASender: TObject);
-begin
-  if MacroListView <> nil then begin
-    MacroListView.LabelWarning.Caption := MacroListViewerWarningText;
-    MacroListView.PanelWarnings.Visible := MacroListViewerWarningText <> '';
-  end;
+  DoMacroListViewerWarningChanged(nil);
 end;
 
 procedure ShowMacroListViewer;
@@ -678,7 +699,6 @@ end;
 procedure TIdeEditorMacro.Clear;
 begin
   FSynMacro.Clear;
-
   DoChanged;
 end;
 
@@ -1119,7 +1139,8 @@ begin
   if se = nil then Exit;
 
   i := 1;
-  if chkRepeat.Checked then i := edRepeat.Value;
+  if chkRepeat.Checked then
+    i := edRepeat.Value;
   FIsPlaying := True;
   UpdateButtons;
 
@@ -1143,12 +1164,11 @@ var
   m: TEditorMacro;
 begin
   if lbMacroView.ItemIndex < 0 then exit;
-  if IDEMessageDialog(lisReallyDelete, lisDeleteSelectedMacro, mtConfirmation, [
-    mbYes, mbNo]) = mrYes
+  if IDEMessageDialog(lisReallyDelete, lisDeleteSelectedMacro, mtConfirmation,
+                      [mbYes, mbNo]) = mrYes
   then begin
-    if SelectedEditorMacro = CurrentEditorMacroList.Macros[lbMacroView.ItemIndex] then begin
+    if SelectedEditorMacro = CurrentEditorMacroList.Macros[lbMacroView.ItemIndex] then
       SelectedEditorMacro := nil;
-    end;
     m := CurrentEditorMacroList.Macros[lbMacroView.ItemIndex];
     CurrentEditorMacroList.Delete(lbMacroView.ItemIndex);
     m.Free;
@@ -1176,8 +1196,14 @@ var
 begin
   se := SourceEditorManagerIntf.ActiveEditor;
   if se = nil then Exit;
+  if CurrentEditorMacroList <> EditorMacroListRec then
+  begin
+    tbRecorded.Down := True;        // Switch to "recorded" page when recording.
+    tbRecorded.Click;
+  end;
+  lbMacroView.ItemIndex := -1;
   if (ActiveEditorMacro = nil) and (EditorMacroForRecording.State = emStopped) then
-    EditorMacroForRecording.RecordMacro(TCustomSynEdit(se.EditorControl))
+    EditorMacroForRecording.RecordMacro(se.EditorControl)
   else
   if EditorMacroForRecording.State = emRecording then
     EditorMacroForRecording.Pause
@@ -1191,6 +1217,30 @@ procedure TMacroListView.btnRecordStopClick(Sender: TObject);
 begin
   FIsPlaying := False;
   EditorMacroForRecording.Stop;
+  UpdateButtons;
+end;
+
+procedure TMacroListView.btnAddEditNewClick(Sender: TObject);
+var
+  se: TSourceEditorInterface;
+  M: TEditorMacro;
+begin
+  se := SourceEditorManagerIntf.ActiveEditor;
+  Assert(Assigned(se) and (ActiveEditorMacro=nil) and (EditorMacroForRecording.State=emStopped),
+         'TMacroListView.btnAddEditNewClick: Problem');
+  lbMacroView.ItemIndex := -1;
+  M := TIdeEditorMacro.Create(nil);
+  M.OnStateChange := @MacroListViewer.DoMacroStateChanged;
+  M.OnChange := @MacroListViewer.DoMacroContentChanged;
+  M.MacroName := Format(lisNewMacroName, [MacroRecCounter]);
+  inc(MacroRecCounter);
+  CurrentEditorMacroList.Add(M);
+  Assert(not FIsPlaying, 'TMacroListView.btnAddEditNewClick: IsPlaying');
+  LazarusIDE.DoOpenEditorFile(
+    EditorMacroVirtualDrive+MacroListToName(CurrentEditorMacroList)+'|'+M.MacroName,
+    -1, -1, [ofVirtualFile, ofInternalFile]);
+
+  UpdateDisplay;
 end;
 
 procedure TMacroListView.btnSelectClick(Sender: TObject);
@@ -1239,7 +1289,9 @@ end;
 
 procedure TMacroListView.FormActivate(Sender: TObject);
 begin
-  lbMacroView.HideSelection := Active;
+  DebugLn(['TMacroListView.FormActivate: Active=', Active]);
+  lbMacroView.HideSelection := Active; // Active = False always ?
+  UpdateButtons;
 end;
 
 procedure TMacroListView.HelpButtonClick(Sender: TObject);
@@ -1343,7 +1395,6 @@ end;
 procedure TMacroListView.DoOnMacroListChange(Sender: TObject);
 begin
   UpdateDisplay;
-
   if Sender = EditorMacroListProj then
     Project1.SessionModified := True;
 end;
@@ -1428,14 +1479,24 @@ begin
   btnRecord.Enabled := Assigned(SourceEditorManagerIntf.ActiveEditor)
                   and (RecState in [emStopped, emRecPaused, emRecording])
                   and (not FIsPlaying);
+  btnAddEditNew.Enabled := Assigned(SourceEditorManagerIntf.ActiveEditor)
+                  and (RecState = emStopped) and not FIsPlaying;
   btnRecordStop.Enabled := (not IsStopped) or FIsPlaying;
 
   if (RecState = emRecording) then
-    btnRecord.Caption := lisPause
+  begin
+    btnRecord.Caption := lisPause;
+    btnRecord.ImageIndex := FImageRec;
+  end
   else if (RecState = emRecPaused) then
-    btnRecord.Caption := lisContinue
-  else
+  begin
+    btnRecord.Caption := lisContinue;
+    btnRecord.ImageIndex := FImageReady;
+  end
+  else begin
     btnRecord.Caption := lisRecord;
+    btnRecord.ImageIndex := FImageReady;
+  end;
 
   mnImport.Enabled := IsStopped and (not FIsPlaying);
   mnExport.Enabled := IsStopped and IsSel and (not FIsPlaying);
@@ -1492,32 +1553,64 @@ begin
   tbMoveIDE.Caption := lisIDE;
   lbMoveTo.Caption := lisMoveTo + '  '; // Anchors do not work here. Use spaces.
 
+  // Preloaded images
+  lbMacroView.SmallImages := IDEImages.Images_16;
+  FImageReady := IDEImages.LoadImage('InactiveBreakPoint'); // green dot
+  FImageRec := IDEImages.LoadImage('Record');               // red dot
+  FImagePlay := IDEImages.LoadImage('menu_run');            // green triangle
+  FImageSel := IDEImages.LoadImage('arrow_right');
+  FImageErr := IDEImages.LoadImage('state_error');
+
+  // Controls in pnlButtons
   btnSelect.Caption := lisMakeCurrent;
+  btnSelect.Images := IDEImages.Images_16;
+  btnSelect.ImageIndex := IDEImages.LoadImage('btn_ok');
+
   btnRename.Caption := lisRename2;
+  btnRename.Images := IDEImages.Images_16;
+  btnRename.ImageIndex := IDEImages.LoadImage('laz_edit');
+
   btnSetKeys.Caption := lisEditKey;
-  btnEdit.Caption   := lisEdit;
+  btnSetKeys.Images := IDEImages.Images_16;
+  btnSetKeys.ImageIndex := IDEImages.LoadImage('item_character');
+
+  btnEdit.Caption := lisEdit;
+  btnEdit.Images := IDEImages.Images_16;
+  btnEdit.ImageIndex := IDEImages.LoadImage('show_source');
+
   btnDelete.Caption := lisDelete;
+  btnDelete.Images := IDEImages.Images_16;
+  btnDelete.ImageIndex := IDEImages.LoadImage('laz_delete');
+
   btnPlay.Caption := lisPlay;
+  btnPlay.Images := IDEImages.Images_16;
+  btnPlay.ImageIndex := IDEImages.LoadImage('menu_run');
+
   chkRepeat.Caption := lisRepeat;
+
+  // Add new macro
+  gbAddMacro.Caption := lisAddNewMacro;
+
   btnRecord.Caption := lisRecord;
+  btnRecord.Images := IDEImages.Images_16;
+  btnRecord.ImageIndex := FImageReady;
+
   btnRecordStop.Caption := lisStop;
+  btnRecordStop.Images := IDEImages.Images_16;
+  btnRecordStop.ImageIndex := IDEImages.LoadImage('menu_stop');
+
+  btnAddEditNew.Caption := lisCreateAndEdit;
+  btnAddEditNew.Images := IDEImages.Images_16;
+  btnAddEditNew.ImageIndex := IDEImages.LoadImage('laz_add');
+
+  // Warning
+  BtnWarnClose.Images := IDEImages.Images_16;
+  BtnWarnClose.ImageIndex := IDEImages.LoadImage('menu_close');
 
   SaveDialog1.Title := lisSaveMacroAs;
   OpenDialog1.Title := lisLoadMacroFrom;
   mnImport.Caption := lisDlgImport;
   mnExport.Caption := lisDlgExport;
-
-  lbMacroView.SmallImages := IDEImages.Images_16;
-  FImageRec := IDEImages.LoadImage('Record');  // red dot
-  FImagePlay := IDEImages.LoadImage('menu_run');  // green triangle
-  FImageSel := IDEImages.LoadImage('arrow_right');
-  FImageErr := IDEImages.LoadImage('state_error');
-  FIsPlaying := False;
-
-  BtnWarnClose.Images := IDEImages.Images_16;
-  BtnWarnClose.ImageIndex := IDEImages.LoadImage('menu_close');
-
-  UpdateDisplay;
 end;
 
 destructor TMacroListView.Destroy;

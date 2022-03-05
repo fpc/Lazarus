@@ -6383,6 +6383,7 @@ resourcestring
   lisPlay = 'Play';
   lisRecord = 'Record';
   lisRepeat = 'Repeat';
+  lisCreateAndEdit = 'Create and edit';
   lisDeleteSelectedMacro = 'Delete selected macro?';
   lisReallyDelete = 'Really delete?';
   lisSaveMacroAs = 'Save macro as';
