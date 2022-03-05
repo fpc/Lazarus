@@ -2934,7 +2934,7 @@ begin
     itmViewCodeBrowser.Command:=GetIdeCmdRegToolBtn(ecToggleCodeBrowser);
     itmViewRestrictionBrowser.Command:=GetIdeCmdRegToolBtn(ecToggleRestrictionBrowser);
     itmViewComponents.Command:=GetIdeCmdRegToolBtn(ecViewComponents);
-    itmMacroListView.Command:=GetIdeCmdRegToolBtn(ecViewMacroList);
+    itmMacroListView.Command:=GetCommand(ecViewMacroList,nil,TMacrosToolButton);
     itmJumpHistory.Command:=GetIdeCmdRegToolBtn(ecViewJumpHistory);
     itmViewMessage.Command:=GetIdeCmdRegToolBtn(ecToggleMessages);
     itmViewSearchResults.Command:=GetIdeCmdRegToolBtn(ecToggleSearchResults);

@@ -18,7 +18,7 @@ uses
   LazIDEIntf, IDEDialogs,
   // IDE
   LazarusIDEStrConsts, ProjectDefs, LazConf, Project, KeyMapping,
-  KeyMapShortCutDlg, MainIntf;
+  KeyMapShortCutDlg, MainIntf, ToolBarIntf;
 
 type
   TSynEditorMacro = class(TSynMacroRecorder)
@@ -244,6 +244,19 @@ type
     function  MacroByFullName(AName: String): TEditorMacro;
     procedure UpdateDisplay;
   end;
+
+  { TMacrosToolButton }
+
+  TMacrosToolButton = class(TIDEToolButton)
+  private
+    procedure AddList(AList: TEditorMacroList);
+    procedure AddMenuItem(AMacro: TEditorMacro);
+    procedure RefreshMenu(Sender: TObject);
+    procedure mnuPlayMacro(Sender: TObject);
+  public
+    procedure DoOnAdded; override;
+  end;
+
 
 function MacroListViewer: TMacroListView;
 procedure ShowMacroListViewer;
@@ -1641,6 +1654,60 @@ begin
 end;
 
 // itmMacroListView.enabled
+
+{ TMacrosToolButton }
+
+procedure TMacrosToolButton.DoOnAdded;
+begin
+  inherited DoOnAdded;
+  DropdownMenu := TPopupMenu.Create(Self);
+  DropdownMenu.OnPopup := @RefreshMenu;
+  Style := tbsDropDown;
+end;
+
+procedure TMacrosToolButton.mnuPlayMacro(Sender: TObject);
+var
+  M: TEditorMacro;
+  se: TSourceEditorInterface;
+begin
+  se := SourceEditorManagerIntf.ActiveEditor;
+  if se = nil then
+    Exit;
+  M := TEditorMacro(TMenuItem(Sender).Tag);
+  M.PlaybackMacro(TCustomSynEdit(se.EditorControl));
+end;
+
+procedure TMacrosToolButton.AddMenuItem(AMacro: TEditorMacro);
+var
+  MI: TMenuItem;
+begin
+  MI := TMenuItem.Create(DropdownMenu);
+  DropdownMenu.Items.Add(MI);
+  MI.OnClick := @mnuPlayMacro;
+  MI.Caption := AMacro.MacroName+'  '+AMacro.KeyBinding.ShortCutAsText;
+  MI.Tag := PtrInt(AMacro);
+end;
+
+procedure TMacrosToolButton.AddList(AList: TEditorMacroList);
+var
+  i: integer;
+begin
+  if AList.Count = 0 then
+    Exit;
+  if DropdownMenu.Items.Count > 0 then
+    DropdownMenu.Items.AddSeparator;
+  for i := 0 to Pred(AList.Count) do
+    AddMenuItem(AList.Macros[i]);
+end;
+
+procedure TMacrosToolButton.RefreshMenu(Sender: TObject);
+begin
+  DropdownMenu.Items.Clear;
+  AddList(EditorMacroListGlob);
+  AddList(EditorMacroListProj);
+  AddList(EditorMacroListRec);
+end;
+
 
 {$R *.lfm}
 
