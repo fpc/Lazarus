@@ -16,6 +16,7 @@ type
     BPHelpOptions: TButtonPanel;
     CBCreateHTML: TCheckBox;
     CBUseBrowserApp: TCheckBox;
+    CBUseModule: TCheckBox;
     CBUseWASI: TCheckBox;
     CBUseBrowserConsole: TCheckBox;
     CBUseHTTPServer: TCheckBox;
@@ -52,6 +53,7 @@ type
     property UseRunOnReady : Boolean Index 6 read GetB Write SetB;
     property ShowUncaughtExceptions : Boolean Index 7 read GetB Write SetB;
     property UseWASI : Boolean Index 8 read GetB Write SetB;
+    property UseModule : Boolean Index 9 read GetB Write SetB;
     Property ServerPort : Word Read GetServerPort Write SetServerPort;
     Property URL : String Read GetURL Write SetURL;
     Property WasmProgramURL : String Read GetWasmProgramURL Write SetWasmProgramURL;
@@ -148,6 +150,7 @@ begin
     6 : Result:=CBRunOnReady.Checked;
     7 : Result:=cbShowUncaughtExceptions.Checked;
     8 : Result:=cbUseWASI.Checked;
+    9 : Result:=cbUseModule.Checked;
   else
     Result:=False;
   end;
@@ -195,6 +198,7 @@ begin
     6 : CBRunOnReady.Checked:=Avalue;
     7 : cbShowUncaughtExceptions.Checked:=aValue;
     8 : cbUseWASI.Checked:=aValue;
+    9 : cbUseModule.Checked:=aValue;
   end;
 end;
 

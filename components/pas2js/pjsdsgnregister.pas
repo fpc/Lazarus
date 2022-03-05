@@ -33,7 +33,8 @@ type
                                baoStartServer,       // Start simple server
                                baoUseURL,            // Use this URL to run/show project in browser
                                baoShowException,     // let RTL show uncaught exceptions
-                               baoUseWASI           // Use WASI browser app object
+                               baoUseWASI,           // Use WASI browser app object
+                               baoUseModule          // include as module as opposed to regular script
                                );
   TBrowserApplicationOptions = set of TBrowserApplicationOption;
 
@@ -783,6 +784,7 @@ begin
       StartHTTPServer:=CO(baoStartServer);
       UseRunOnReady:=CO(baoRunOnReady);
       UseWASI:=CO(baoUseWASI);
+      UseModule:=CO(baoUseModule);
       ShowUncaughtExceptions:=CO(baoShowException);
       // We allocate the new port in all cases.
       ServerPort:=GetNextPort;
@@ -801,6 +803,7 @@ begin
         SO(UseRunOnReady,baoRunOnReady);
         SO(ShowUncaughtExceptions,baoShowException);
         SO(UseWASI,baoUseWASI);
+        SO(UseModule,baoUseModule);
         SO(StartHTTPServer,baoStartServer);
         Self.ProjectPort:=ServerPort;
         SO(UseURL,baoUseURL);
@@ -851,12 +854,10 @@ Const
     +'  <meta http-equiv="Content-type" content="text/html; charset=utf-8">'+LineEnding
     +'  <meta name="viewport" content="width=device-width, initial-scale=1">'+LineEnding
     +'  <title>Project1</title>'+LineEnding
-    +'  <script src="%s"></script>'+LineEnding
+    +'  <script %s src="%s"></script>'+LineEnding
     +'</head>'+LineEnding
     +'<body>'+LineEnding
-    +'  <script>'+LineEnding
     +'  %s'+LineEnding
-    +'  </script>'+LineEnding
     +'  %s'+LineEnding
     +'</body>'+LineEnding
     +'</html>'+LineEnding;
@@ -865,7 +866,7 @@ Const
 Var
   HTMLFile : TLazProjectFile;
   HTMLSource : String;
-  RunScript,Content : String;
+  ScriptType, RunScript,Content : String;
 
 begin
   HTMLFile:=AProject.CreateProjectFile('project1.html');
@@ -873,17 +874,29 @@ begin
   AProject.CustomData.Values[PJSProjectHTMLFile]:=HTMLFile.Filename;
   AProject.AddFile(HTMLFile,false);
   Content:='';
+  ScriptType:='';
+  RunScript:='';
   if baoUseBrowserConsole in Options then
     Content:=ConsoleDiv;
-  if baoShowException in Options then
-    Runscript:='rtl.showUncaughtExceptions=true;'+LineEnding+'  '
+  if baoUseModule in Options then
+    begin
+    ScriptType:='type="module"';
+    end
   else
-    RunScript:='';
-  if baoRunOnReady in Options then
-    RunScript:=Runscript+'window.addEventListener("load", rtl.run);'+LineEnding
-  else
-    RunScript:=Runscript+'rtl.run();'+LineEnding;
-  HTMLSource:=Format(TemplateHTMLSource,[aFileName,RunScript,Content]);
+    begin
+    if baoShowException in Options then
+      Runscript:='rtl.showUncaughtExceptions=true;'+LineEnding+'  '
+    else
+      RunScript:='';
+    if baoRunOnReady in Options then
+      RunScript:=Runscript+'window.addEventListener("load", rtl.run);'+LineEnding
+    else
+      RunScript:=Runscript+'rtl.run();'+LineEnding;
+    RunScript:='  <script>'+LineEnding
+               +RunScript
+               +'  </script>'+LineEnding
+    end;
+  HTMLSource:=Format(TemplateHTMLSource,[ScriptType,aFileName,RunScript,Content]);
   HTMLFile.SetSourceText(HTMLSource);
   Result:=HTMLFile;
 end;
@@ -991,6 +1004,8 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultWebCompileOptions(CompOpts);
   CompOpts.TargetFilename:='project1';
+  if baoUseModule in Options then
+     CompOpts.TargetOS:='module';
   SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProject]:='1';

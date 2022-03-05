@@ -204,4 +204,17 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     TabOrder = 13
     TextHint = 'Name of your webassembly file'
   end
+  object CBUseModule: TCheckBox
+    AnchorSideLeft.Control = CBCreateHTML
+    AnchorSideTop.Control = CBServerURL
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 23
+    Top = 391
+    Width = 293
+    BorderSpacing.Top = 6
+    Caption = 'Create a javascript module instead of a script'
+    OnChange = CBUseHTTPServerChange
+    TabOrder = 14
+  end
 end
