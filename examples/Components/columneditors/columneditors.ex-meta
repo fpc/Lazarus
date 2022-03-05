@@ -1,0 +1,8 @@
+{ "ColumnEditors" : {
+   "Category" : "Components",
+   "Keywords" : ["grid","TStringGrid","editor", "columns", "Wiki"],
+   "Description" : "Demonstrates a number of things relating to Column Editors, EditMask, changing colour of cells,  triggering events.
+
+See the included readme.txt and wiki page http://wiki.freepascal.org/Grids_Reference_Page
+"}
+}

@@ -1,0 +1,5 @@
+{ "dbeditmask" : {
+   "Category" : "DBase",
+   "Keywords" : ["TDBEdit", "TDBGrid", "Date"],
+   "Description" : "Demonstrates masking some DBEdits to control what can be entered into them."}
+}

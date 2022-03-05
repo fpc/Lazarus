@@ -1,0 +1,6 @@
+{ "levelgraph" : {
+   "Category" : "Components",
+   "Keywords" : ["TLvlGraphControl", "TTIPropertyGrid"],
+   "Description" : "Demonstrates use of TLvlGraphControl (LazControls tab) to display a level graph, used to show the relationship between a number of interrelated entities.
+"}
+}

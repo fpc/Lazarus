@@ -1,0 +1,10 @@
+{
+"TrayIcon" : {
+  "Category" : "Components",
+  "Keywords" : ["trayicon", "systray", "needs work"],
+  "Description" : "This project demonstrates how the use the TrayIcon, places a small Icon in the System Tray that the user can interact with the application through. Note that it includes functionality that is not available anymore in many Linux distributions."}
+}
+
+ 
+
+ 

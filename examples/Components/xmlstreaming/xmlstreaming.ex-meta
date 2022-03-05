@@ -1,0 +1,7 @@
+{ "xmlstreaming" : {
+   "Category" : "Components",
+   "Keywords" : ["xml", "xml streaming", "components", "Needs work"],
+   "Description" : "Writes a component to an XML stream then uses that stream to create more such components. 
+
+I am not sure its useful to use the word Stream here, further, it appears the rewritten components do not popup where they should, that is in the Destination box."}
+}

@@ -1,0 +1,6 @@
+{ "Imagelist_HighDPI_RunTime" : {
+   "Category" : "Components",
+   "Keywords" : ["TImageList", "Run Time"],
+   "Description" : "Demonstrates how to use a TImageList at Run Time to put images on TPageControl, TToolBar, TListView, TMainMenu.
+"}
+}

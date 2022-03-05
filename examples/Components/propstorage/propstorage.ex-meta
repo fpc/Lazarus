@@ -1,0 +1,5 @@
+{ "propstorage" : {
+   "Category" : "Components",
+   "Keywords" : ["TIniPropStorage", "TXMLPropStorage", "config file", "configuration file"],
+   "Description" : "Records the size, location and contents (ie the Properties) of a  TMemo in both an xml and ini file for later retrival."}
+}

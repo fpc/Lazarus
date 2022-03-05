@@ -1,0 +1,5 @@
+{ "shapedcontrols" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Shaped", "No rectangular"],
+   "Description" : "How to make controls, in this case a Button, a different shape than the traditional rectangle."}
+}

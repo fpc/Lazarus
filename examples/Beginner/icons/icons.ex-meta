@@ -1,0 +1,5 @@
+{ "Icons" : {
+   "Category" : "Beginner",
+   "Keywords" : ["Icon","ico","icns","Application Icon"],
+   "Description" : "Demonstrates loading icon files (ico and icns), scalling and setting as application icon."}
+}

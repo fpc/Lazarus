@@ -1,0 +1,71 @@
+object MainForm: TMainForm
+  Left = 155
+  Height = 327
+  Top = 282
+  Width = 569
+  HorzScrollBar.Page = 568
+  VertScrollBar.Page = 326
+  ActiveControl = OpenHTMLFileButton1
+  Caption = 'Example for turbopower internet pro HTML control'
+  ClientHeight = 327
+  ClientWidth = 569
+  OnCreate = MainFormCreate
+  LCLVersion = '2.2.0.4'
+  object IpHtmlPanel1: TIpHtmlPanel
+    Left = 0
+    Height = 285
+    Top = 42
+    Width = 569
+    Align = alClient
+    FixedTypeface = 'Courier New'
+    DefaultTypeFace = 'default'
+    DefaultFontSize = 12
+    FlagErrors = False
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    PrintSettings.Preview.Left = 480
+    PrintSettings.Preview.Top = 270
+    PrintSettings.Preview.Width = 1440
+    PrintSettings.Preview.Height = 810
+    TabOrder = 1
+    OnHotClick = IpHtmlPanel1HotClick
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 42
+    Top = 0
+    Width = 569
+    Align = alTop
+    ClientHeight = 42
+    ClientWidth = 569
+    TabOrder = 0
+    object OpenHTMLFileButton1: TButton
+      Left = 16
+      Height = 26
+      Top = 8
+      Width = 152
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Open HTML File'
+      OnClick = OpenHTMLFileButtonClick
+      TabOrder = 0
+    end
+    object Button1: TButton
+      Left = 192
+      Height = 25
+      Top = 8
+      Width = 75
+      BorderSpacing.InnerBorder = 4
+      Caption = 'Preview'
+      OnClick = Button1Click
+      TabOrder = 1
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 'Web Pages|*.html;*.htm'
+    FilterIndex = 0
+    Left = 24
+    Top = 120
+  end
+end

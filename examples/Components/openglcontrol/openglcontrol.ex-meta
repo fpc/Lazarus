@@ -1,0 +1,5 @@
+{ "openglcontrol" : {
+   "Category" : "Components",
+   "Keywords" : ["OpenGL","Effects","Rotate","TOpenGLControl","Drawing", "No Object Inspector"],
+   "Description" : "Demonstrates a number of effects using the TOpenGLControl.\n\nNote, written before Lazarus had an ObjectInspector so components are created 'one the fly' in user code. You don't need to do that now."}
+}

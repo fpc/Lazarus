@@ -1,0 +1,5 @@
+{ "ImageList_HighDPI_DesignTime" : {
+   "Category" : "Components",
+   "Keywords" : ["TImageList", "TToolBar", "HighDPI"],
+   "Description" : "Demonstrates using an ImageList to populate a TToolBar, TTreeView, TListView and  TPageControl. Including use with HighDPI. "}
+}

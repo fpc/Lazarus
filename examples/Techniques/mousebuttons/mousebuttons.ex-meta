@@ -1,0 +1,7 @@
+{ "mousebuttons" : {
+   "Category" : "Techniques",
+   "Keywords" : ["mouse", "buttons", "mouse wheel", "extra buttons"],
+   "Description" : "Demonstrates detecting the various mouse action including those of the more complicated multiple button mice.
+
+"}
+}

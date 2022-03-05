@@ -1,0 +1,5 @@
+{ "combobox" : {
+   "Category" : "Beginner",
+   "Keywords" : ["TComboBox"],
+   "Description" : "Demonstrates TComboBox, allows user to select an entry from a pull down list."}
+}

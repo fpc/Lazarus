@@ -1,0 +1,5 @@
+{ "SearchAndReplace" : {
+   "Category" : "Components",
+   "Keywords" : ["TSynEdit", "SearchAndReplace"],
+   "Description" : "Demonstrates TSynEdit's Searc and Replace capability, and the range of options it can use."}
+}

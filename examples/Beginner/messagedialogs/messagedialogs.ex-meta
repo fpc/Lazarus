@@ -1,0 +1,5 @@
+{ "messagedialogs" : {
+   "Category" : "Beginner",
+   "Keywords" : ["MessageDlg","ShowMessage"],
+   "Description" : "Shows how to display both ShowMessage and MessageDlg in a couple of formats."}
+}

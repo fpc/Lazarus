@@ -1,0 +1,14 @@
+{ "mssql" : {
+   "Category" : "DBase",
+   "Keywords" : ["MSSQL","Microsoft SQL Server","SyBase","Connector", "Needs Work"],
+   "Description" : "Example program for the MS SQL Server and Sybase connectors in Lazarus.
+
+These connectors require the FreeTDS shared library (dblib.dll/.so/.dylib), which at least on Windows requires libiconv2.dll for UTF8 support.
+These can be downloaded via www.freetds.org and are provided by a lot of Linux distributions.
+
+There is a readme.txt file that should be consulted as you look at this example.
+
+The readme.txt refers to ftp://ftp.freepascal.org/fpc/contrib/windows/ however that does not appear to work.
+
+"}
+}

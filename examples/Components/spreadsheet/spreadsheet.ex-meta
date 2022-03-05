@@ -1,0 +1,5 @@
+{ "SpreadSheet" : {
+   "Category" : "Components",
+   "Keywords" : ["Grid", "TStringGrid", "SpreadSheet"],
+   "Description" : "Builds a basic spreadsheet."}
+}

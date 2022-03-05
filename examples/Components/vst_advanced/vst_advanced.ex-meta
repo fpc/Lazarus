@@ -1,0 +1,7 @@
+{ "vst_advanced" : {
+   "Category" : "Components",
+   "Keywords" : ["TLazVirtualStringTree", "TVirtualTreeView", "Advanced Features"],
+   "Description" : "This is about TLazVirtualStringTree, a component renamed from TVirtualTreeView that exists in the LazControls Component Tab. 
+
+This example demonstrates some advanced features such as Extended Characters, Property Page, Syncing Trees, Grid Extensions, A Draw Tree (showing images), bidi ability,  Painting the tree under a specific theme (ie WinXP style), Spanning Columns and Advanced drawing of Headers."}
+}

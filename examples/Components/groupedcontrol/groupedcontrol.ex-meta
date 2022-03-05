@@ -1,0 +1,5 @@
+{ "GroupedControl" : {
+   "Category" : "Components",
+   "Keywords" : ["RTTI", "RTTIGrids", "TTIPropertyGrid", "TGroupBox"],
+   "Description" : "Compares the use of a TGroupBox with some other techniques using RTTI components TTIPropertyGroup to group controls. Also introduces a self defined TCustomTransparentPanel and TCustomGroupedEditButton. "}
+}

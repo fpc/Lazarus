@@ -1,0 +1,5 @@
+{ "lclversion" : {
+   "Category" : "Beginner",
+   "Keywords" : ["LCL Version","Version String"],
+   "Description" : "Small app that demonstrates how to read the LCL version defined in every Lazarus app.\n"}
+}

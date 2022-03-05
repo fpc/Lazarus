@@ -1,0 +1,6 @@
+{
+"Canvas_Test" : {
+    "Category" : "Techniques",
+    "Keywords" : ["Drawing", "Canvas", "Needs Work"],
+    "Description" : "Demonstrates drawing directly on the canvas in a number of styles. Noted a crash when drawing Shaped Window."}
+}

@@ -1,0 +1,5 @@
+{ "bitbtn" : {
+   "Category" : "Beginner",
+   "Keywords" : ["TBitBtn"],
+   "Description" : "Demonstrates TBitBtn, a button with a bitmap image."}
+}

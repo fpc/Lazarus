@@ -1,0 +1,6 @@
+{ "idehelp" : {
+   "Category" : "Techniques",
+   "Keywords" : ["IDE", "Help"],
+   "Description" : "Demo package to show the various help types of the IDE.
+Note, its a package that needs to be installed in the IDE, it is not a project you can just open. Written for a very early version of the IDE and may not be useful with something current."}
+}

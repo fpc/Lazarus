@@ -1,0 +1,5 @@
+{ "openurltest" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Open Browser", "Open application", "Open Document"],
+   "Description" : "Demonstrates how to open either your system's default browser or the system's default for a local document."}
+}

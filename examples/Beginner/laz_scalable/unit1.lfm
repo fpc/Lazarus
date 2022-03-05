@@ -1,0 +1,60 @@
+object Form1: TForm1
+  Left = 515
+  Height = 226
+  Top = 174
+  Width = 467
+  Caption = 'Form1'
+  ClientHeight = 226
+  ClientWidth = 467
+  LCLVersion = '2.3.0.0'
+  object ButtonHello: TButton
+    AnchorSideLeft.Control = Owner
+    AnchorSideBottom.Control = Owner
+    AnchorSideBottom.Side = asrBottom
+    Left = 10
+    Height = 41
+    Top = 175
+    Width = 103
+    Anchors = [akLeft, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Bottom = 10
+    Caption = 'Say Hello'
+    OnClick = ButtonHelloClick
+    TabOrder = 0
+  end
+  object ButtonClose: TButton
+    AnchorSideRight.Control = Memo1
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonHello
+    AnchorSideBottom.Side = asrBottom
+    Left = 320
+    Height = 41
+    Top = 175
+    Width = 137
+    Anchors = [akRight, akBottom]
+    Caption = 'Close'
+    OnClick = ButtonCloseClick
+    TabOrder = 1
+  end
+  object Memo1: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonHello
+    Left = 10
+    Height = 155
+    Top = 10
+    Width = 447
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 10
+    BorderSpacing.Top = 10
+    BorderSpacing.Right = 10
+    BorderSpacing.Bottom = 10
+    Lines.Strings = (
+      'Memo1'
+    )
+    ScrollBars = ssAutoVertical
+    TabOrder = 2
+  end
+end

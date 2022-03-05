@@ -1,0 +1,5 @@
+{ "CustomHint" : {
+   "Category" : "Beginner",
+   "Keywords" : ["Hint","Timeout","Format","TTrackBar"],
+   "Description" : "Shows how to control the shown Hint, Timeout etc. Demonstrates performing a function in the Hint (showing updated time of day). Also incidently demonstrates TTrackBar."}
+}

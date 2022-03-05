@@ -1,0 +1,5 @@
+{ "loadpicture" : {
+   "Category" : "Beginner",
+   "Keywords" : ["TImage","LoadFromFile"],
+   "Description" : "Shows how to load an image file and display it. In this case a png file but many other formats also supported."}
+}

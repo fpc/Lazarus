@@ -1,0 +1,7 @@
+{ "translation" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Translations", "POEdit", "i18n", "Needs Work"],
+   "Description" : "Demonstrates internationalisation using po file. 
+
+Note - appears to use a more complicated mechanism (LocalizedForms.*) than is now necessary, needs review."}
+}

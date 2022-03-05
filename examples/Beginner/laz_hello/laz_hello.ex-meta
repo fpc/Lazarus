@@ -1,0 +1,5 @@
+{ "Laz_Hello" : {
+   "Category" : "Beginner",
+   "Keywords" : ["Lazarus","Hello World","TButton","TMemo"],
+   "Description" : "This might be your first Lazarus project, its the traditional Hello World.  Two buttons have been dropped on the form, renamed and their captions set. A memo was then added and each button was double clicked and what they are expected to do was set."}
+}

@@ -1,0 +1,5 @@
+{ "embedded_images" : {
+   "Category" : "Components",
+   "Keywords" : ["Grid", "TStringGrid", "Image"],
+   "Description" : "Demonstrates how to embed an image in a StringGrid."}
+}

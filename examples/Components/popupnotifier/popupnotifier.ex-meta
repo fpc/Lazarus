@@ -1,0 +1,9 @@
+{ "popupnotifier" : {
+   "Category" : "Components",
+   "Keywords" : ["TPopupNotifier"],
+   "Description" : "Shows how to us TPopupNotifier. 
+
+(You may, as an alternative use Libnotify on Linux, other more OS friendy notification tools exist on other OSs, just a suggestion)
+
+"}
+}

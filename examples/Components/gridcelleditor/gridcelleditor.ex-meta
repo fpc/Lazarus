@@ -1,0 +1,5 @@
+{ "GridCellEditor" : {
+   "Category" : "Components",
+   "Keywords" : ["Grid", "TStringGrid", "Cell Editor"],
+   "Description" : "Demonstrates a simple Cell Editor model using a String Grid"}
+}

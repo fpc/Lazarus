@@ -1,0 +1,10 @@
+{ "lpicustomdata" : {
+   "Category" : "Techniques",
+   "Keywords" : ["LPI File","Custom Data", "Needs Work"],
+   "Description" : "This example shows how to read the custom data of an .lpi file and how to change it. The .lpi file is given as first command line parameter.
+
+This example has not been tested because I simply don't understand what custom data belongs in an LPI file. If you do, please contribute.
+
+
+"}
+}

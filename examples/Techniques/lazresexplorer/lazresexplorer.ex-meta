@@ -1,0 +1,8 @@
+{ "lazresexplorer" : {
+   "Category" : "Techniques",
+   "Keywords" : ["resources"],
+   "Description" : "Shows how to display the resources in a lazarus resource file or a binary, DLL or object file.
+The actual content may not be particulary useful as it is but the techniques used do demonstrate how to read the mostly bitmap resources in these files might be.
+
+"}
+}

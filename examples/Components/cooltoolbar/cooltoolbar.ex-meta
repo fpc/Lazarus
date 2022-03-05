@@ -1,0 +1,6 @@
+{
+"CoolToolBar" : {
+    "Category" : "Components",
+    "Keywords" : ["TCoolBar", "TToolBar", "TActionList", "TAction"],
+    "Description" : "Demonstrates TCoolBar and TToolBar in a number of modes. Also uses TAction and TActionList."}
+}

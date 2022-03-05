@@ -1,0 +1,7 @@
+{ "lazintfimage" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Images","fade in","rotate","Needs Work"],
+   "Description" : "Proports to show how to display an image with a fade in. However, the image, on my system, seems to appear instantly. Maybe a case of today's hardware being faster ?
+
+Also demonstrates how to rotate that image to a particular angle."}
+}

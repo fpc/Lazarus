@@ -1,0 +1,10 @@
+{ "messages" : {
+   "Category" : "Techniques",
+   "Keywords" : ["PostMessage", "SendMessage", "QueueSsyncCall"],
+   "Description" : "These two example demonstrates the usage of PostMessage, SendMessage and the message methods in Lazarus and FreePascal and its widgetset independent counterpart, the direct method call and QueueAsyncCall.
+
+There is a readme.txt file that explains the process that you should read when looking at this example.
+
+
+"}
+}

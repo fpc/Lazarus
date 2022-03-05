@@ -1,0 +1,7 @@
+{ "vst_dragdrop" : {
+   "Category" : "Components",
+   "Keywords" : ["TLazVirtualStringTree", "TVirtualTreeView", "Drag and Drop"],
+   "Description" : "This is about TLazVirtualStringTree, a component renamed from TVirtualTreeView that exists in the LazControls Component Tab. 
+
+This example shows drag and drop (from a TListBox) to the TLazVirtualStringTree."}
+}

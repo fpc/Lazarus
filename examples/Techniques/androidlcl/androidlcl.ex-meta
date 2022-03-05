@@ -1,0 +1,5 @@
+{ "AndroidLCL" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Android","SQLite","TButton","TMemo","Needs Work"],
+   "Description" : "Demonstrates and LCL based Android project. Two projects, one requires ARM (ie Android) cross compiler and other SQLite3. Needs a far better description than this."}
+}

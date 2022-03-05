@@ -1,0 +1,5 @@
+{ "xmlreader" : {
+   "Category" : "Components",
+   "Keywords" : ["xml", "xml reader", "ReadXMLFile", "TTreeView"],
+   "Description" : "Shows how to read an XML file, displaying the data on its various nodes."}
+}

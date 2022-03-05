@@ -1,0 +1,17 @@
+{ "CleanDir" : {
+   "Category" : "Techniques",
+   "Keywords" : ["Needs Work","daemon","service application"],
+   "Description" : "This is the cleandirs demonstration program for Lazarus.
+
+Note - problem loading cleandirs that appears to relate to a redefinition of streams.
+
+It demonstrates 3 things:
+
+1. How to use services and the TEventLog component (cleandirs)
+2. How to use RTTI controls (confcleandirs)
+3. How to write a TCustomApplication descendent (cleandir)
+
+See the included README.TXT for much more information.
+
+"}
+}

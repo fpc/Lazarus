@@ -1,0 +1,6 @@
+{
+"BiDi" : {
+    "Category" : "Techniques",
+    "Keywords" : ["Left to Right", "Right to Left"],
+    "Description" : "Demonstrates different BiDi Modes. Allows RTL languages such as Arabic and Hebrew to be used. In left-to-right, LTR, text entry starts at the left, text is almost left justified, and vertical scrollbars sit at the right side of the control. In right-to-left mode text entry starts at the right, text is almost right justified, and vertical scrollbars sit at the left side of the control. "}
+}

@@ -1,0 +1,5 @@
+{ "pascalstream" : {
+   "Category" : "Components",
+   "Keywords" : ["Needs Work", "component stream"],
+   "Description" : "Might be about writing a component to a stream. Seems to create a non-visual component and stream that. This description (and maybe the demo) needs to be improved."}
+}

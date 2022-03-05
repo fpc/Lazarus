@@ -1,0 +1,5 @@
+{ "Laz_Scalable" : {
+   "Category" : "Beginner",
+   "Keywords" : ["Anchors","scaleable"],
+   "Description" : "This project has the anchors set of all its components in the Object Inspector. Now, as you resize the window, the components auto adjust their position."}
+}

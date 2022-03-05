@@ -1,0 +1,129 @@
+object Form1: TForm1
+  Left = 270
+  Height = 170
+  Top = 131
+  Width = 335
+  Caption = 'TBitBtn Verify'
+  ClientHeight = 170
+  ClientWidth = 335
+  OnCreate = FormCreate
+  LCLVersion = '2.3.0.0'
+  object Button1: TBitBtn
+    Left = 12
+    Height = 120
+    Top = 12
+    Width = 120
+    Caption = 'Button1'
+    TabOrder = 0
+  end
+  object GroupBox1: TGroupBox
+    Left = 144
+    Height = 120
+    Top = 12
+    Width = 80
+    Caption = 'Kind'
+    ClientHeight = 100
+    ClientWidth = 76
+    TabOrder = 1
+    object RadioButton1: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 6
+      Width = 47
+      Caption = 'Close'
+      Checked = True
+      OnChange = RadioButton1Change
+      TabOrder = 3
+      TabStop = True
+    end
+    object RadioButton2: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 28
+      Width = 34
+      Caption = 'OK'
+      OnChange = RadioButton2Change
+      TabOrder = 0
+    end
+    object RadioButton3: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 50
+      Width = 54
+      Caption = 'Cancel'
+      OnChange = RadioButton3Change
+      TabOrder = 1
+    end
+    object RadioButton4: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 72
+      Width = 43
+      Caption = 'Help'
+      OnChange = RadioButton4Change
+      TabOrder = 2
+    end
+  end
+  object GroupBox2: TGroupBox
+    Left = 240
+    Height = 120
+    Top = 12
+    Width = 80
+    Caption = 'Type'
+    ClientHeight = 100
+    ClientWidth = 76
+    TabOrder = 2
+    object RadioButton5: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 6
+      Width = 38
+      Caption = 'Left'
+      Checked = True
+      OnChange = RadioButton5Change
+      TabOrder = 0
+      TabStop = True
+    end
+    object RadioButton6: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 28
+      Width = 38
+      Caption = 'Top'
+      OnChange = RadioButton6Change
+      TabOrder = 1
+    end
+    object RadioButton7: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 50
+      Width = 46
+      Caption = 'Right'
+      OnChange = RadioButton7Change
+      TabOrder = 2
+    end
+    object RadioButton8: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 72
+      Width = 58
+      Caption = 'Bottom'
+      OnChange = RadioButton8Change
+      TabOrder = 3
+    end
+  end
+  object Label1: TLabel
+    Left = 144
+    Height = 15
+    Top = 144
+    Width = 34
+    Caption = 'Label1'
+  end
+  object Label2: TLabel
+    Left = 240
+    Height = 15
+    Top = 144
+    Width = 34
+    Caption = 'Label2'
+  end
+end
