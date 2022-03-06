@@ -1,0 +1,50 @@
+object ExWinSettingsFrame: TExWinSettingsFrame
+  Left = 0
+  Height = 240
+  Top = 0
+  Width = 320
+  ClientHeight = 240
+  ClientWidth = 320
+  TabOrder = 0
+  DesignLeft = 567
+  DesignTop = 426
+  object ButtonDefault: TButton
+    AnchorSideLeft.Control = DirectoryEdit1
+    AnchorSideTop.Control = DirectoryEdit1
+    AnchorSideTop.Side = asrBottom
+    Left = 20
+    Height = 25
+    Top = 159
+    Width = 75
+    BorderSpacing.Top = 10
+    Caption = 'Default'
+    OnClick = ButtonDefaultClick
+    TabOrder = 0
+  end
+  object DirectoryEdit1: TDirectoryEdit
+    AnchorSideLeft.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 20
+    Height = 29
+    Top = 120
+    Width = 280
+    Directory = 'DirectoryEdit1'
+    ShowHidden = False
+    ButtonWidth = 23
+    NumGlyphs = 1
+    Anchors = [akLeft, akRight]
+    BorderSpacing.Left = 20
+    BorderSpacing.Right = 20
+    MaxLength = 0
+    TabOrder = 1
+    Text = 'DirectoryEdit1'
+  end
+  object Label1: TLabel
+    Left = 27
+    Height = 21
+    Top = 91
+    Width = 287
+    Caption = 'Directory where examples are saved'
+  end
+end

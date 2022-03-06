@@ -1,0 +1,194 @@
+object FormLazExam: TFormLazExam
+  Left = 562
+  Height = 574
+  Top = 168
+  Width = 781
+  Caption = 'Prototype Lazarus Examples Window'
+  ClientHeight = 574
+  ClientWidth = 781
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '2.3.0.0'
+  object Memo1: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Splitter2
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = CheckGroupCategory
+    Left = 5
+    Height = 216
+    Top = 225
+    Width = 771
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Right = 5
+    BorderSpacing.Bottom = 5
+    Lines.Strings = (
+      'Memo1'
+    )
+    ParentShowHint = False
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 2
+  end
+  object ListView1: TListView
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Panel1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Splitter2
+    Left = 5
+    Height = 178
+    Hint = 'Click for Info, Double Click to download'
+    Top = 37
+    Width = 776
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BorderSpacing.Left = 5
+    BorderSpacing.Top = 5
+    BorderSpacing.Bottom = 5
+    Columns = <    
+      item
+      end    
+      item
+      end    
+      item
+        Width = 661
+      end>
+    ParentShowHint = False
+    ReadOnly = True
+    ShowHint = True
+    TabOrder = 1
+    OnClick = ListView1Click
+    OnDblClick = ListView1DblClick
+    OnSelectItem = ListView1SelectItem
+  end
+  object CheckGroupCategory: TCheckGroup
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ButtonOpen
+    AnchorSideRight.Control = ButtonClose
+    AnchorSideBottom.Control = StatusBar1
+    Left = 10
+    Height = 105
+    Top = 446
+    Width = 577
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    AutoFill = True
+    BorderSpacing.Left = 10
+    BorderSpacing.Right = 10
+    Caption = 'Category'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.TopBottomSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 2
+    Columns = 2
+    OnItemClick = CheckGroupCategoryItemClick
+    TabOrder = 3
+  end
+  object Splitter2: TSplitter
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ListView1
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = Memo1
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 220
+    Width = 781
+    Align = alNone
+    Anchors = [akLeft, akRight]
+    ResizeAnchor = akTop
+  end
+  object Panel1: TPanel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 781
+    Anchors = [akTop, akLeft, akRight]
+    ClientHeight = 32
+    ClientWidth = 781
+    TabOrder = 0
+    TabStop = True
+    object EditSearch: TEdit
+      AnchorSideLeft.Control = Panel1
+      AnchorSideTop.Control = Panel1
+      Left = 10
+      Height = 29
+      Hint = 'Searches for Keywords'
+      Top = 1
+      Width = 415
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 9
+      BorderSpacing.Right = 25
+      OnExit = EditSearchExit
+      OnKeyUp = EditSearchKeyUp
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      Text = 'EditSearch'
+    end
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 551
+    Width = 781
+    Panels = <>
+  end
+  object ButtonDownload: TButton
+    AnchorSideLeft.Control = ButtonClose
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonClose
+    Left = 597
+    Height = 35
+    Top = 481
+    Width = 179
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Right = 5
+    Caption = 'Download'
+    OnClick = ButtonDownloadClick
+    TabOrder = 6
+  end
+  object ButtonClose: TButton
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = StatusBar1
+    Left = 597
+    Height = 35
+    Top = 516
+    Width = 179
+    Anchors = [akRight, akBottom]
+    BorderSpacing.Right = 5
+    Caption = 'Close'
+    OnClick = ButtonCloseClick
+    TabOrder = 7
+  end
+  object ButtonOpen: TButton
+    AnchorSideLeft.Control = ButtonClose
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonDownload
+    Left = 597
+    Height = 35
+    Top = 446
+    Width = 179
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Right = 5
+    Caption = 'Open'
+    OnClick = ButtonOpenClick
+    TabOrder = 8
+  end
+end

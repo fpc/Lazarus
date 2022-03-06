@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="exampleprojects"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value=" David Bannon"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="$(IDEBuildOptions)"/>
+      </Other>
+    </CompilerOptions>
+    <Description Value="Example Projects."/>
+    <License Value="GPL"/>
+    <Version Major="1"/>
+    <Files>
+      <Item>
+        <Filename Value="uintf.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="uIntf"/>
+      </Item>
+      <Item>
+        <Filename Value="uconst.pas"/>
+        <UnitName Value="uConst"/>
+      </Item>
+      <Item>
+        <Filename Value="ulaz_examples.pas"/>
+        <UnitName Value="uLaz_Examples"/>
+      </Item>
+      <Item>
+        <Filename Value="uexampledata.pas"/>
+        <UnitName Value="uexampledata"/>
+      </Item>
+      <Item>
+        <Filename Value="exwinsettings.pas"/>
+        <UnitName Value="exwinsettings"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
