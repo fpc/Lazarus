@@ -7996,6 +7996,10 @@ msgstr "Ouvrir l'unité %s"
 msgid ", CPU: %s"
 msgstr ", CPU : %s"
 
+#: lazarusidestrconsts.liscreateandedit
+msgid "Create and edit"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Veuillez d'abord créer un projet !"

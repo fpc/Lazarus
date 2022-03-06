@@ -8131,6 +8131,10 @@ msgstr "Atverti modulį %s"
 msgid ", CPU: %s"
 msgstr ", procesorius: %s"
 
+#: lazarusidestrconsts.liscreateandedit
+msgid "Create and edit"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Pirma sukurkite projektą!"

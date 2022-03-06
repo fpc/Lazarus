@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-02-16 01:44+0300\n"
+"PO-Revision-Date: 2022-03-07 00:07+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -7985,6 +7985,10 @@ msgstr "Открыть модуль %s"
 #, object-pascal-format
 msgid ", CPU: %s"
 msgstr ", процессор: %s"
+
+#: lazarusidestrconsts.liscreateandedit
+msgid "Create and edit"
+msgstr "Создать и редактировать"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"

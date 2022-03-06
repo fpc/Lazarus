@@ -8009,6 +8009,10 @@ msgstr "Відкрити модуль %s"
 msgid ", CPU: %s"
 msgstr ", ЦП: %s"
 
+#: lazarusidestrconsts.liscreateandedit
+msgid "Create and edit"
+msgstr ""
+
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
 msgstr "Спочатку створіть проєкт!"
