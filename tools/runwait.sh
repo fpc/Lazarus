@@ -1,6 +1,6 @@
 #!/bin/sh
 
-CommandLine=$@
+CommandLine="$@"
 #set -x
 
 echo $CommandLine
@@ -13,7 +13,7 @@ if [ "$ext" = "exe" ]; then
     echo "WINE not found in path"
   fi
 else
-  $CommandLine
+  "$CommandLine"
 fi
 
 echo "--------------------------------------------------"
