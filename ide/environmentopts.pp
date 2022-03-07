@@ -3490,9 +3490,10 @@ begin
         eopLazarusDirectory:
           // lazarus directory
           begin
-            ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetPrimaryConfigPath);
             if ParsedValue='' then
-              ParsedValue:=TrimFilename(AppendPathDelim(GetCurrentDirUTF8));
+              ParsedValue:=AppendPathDelim(GetCurrentDirUTF8)
+            else
+              ParsedValue:=TrimAndExpandDirectory(ParsedValue,GetCurrentDirUTF8);
           end;
         eopFPCSourceDirectory,eopTestBuildDirectory:
           // directory
