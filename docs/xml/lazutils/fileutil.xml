@@ -20,6 +20,9 @@
         <p>
           This unit contains basic functions similar to those in the RTL, but use UTF-8 instead of the default system encoding. Please note that AnsiToUTF8 and UTF8ToAnsi need a widestring manager under Linux, BSD, and macOS. Normally these operating systems use UTF-8 as the system encoding so the WideStringManager is not needed.
         </p>
+        <p>
+          <file>fileutil.pas</file> is part of the <file>LazUtils</file> package.
+        </p>
       </descr>
 
       <!-- unresolved type reference Visibility: default -->
@@ -90,14 +93,33 @@
 
       <element name="CompareFilenames">
         <short>
-          <var>CompareFileNames</var> compares two file names to see whether they are equal.
+          Compares two file names to see whether they are equal.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>CompareFileNames</var> is an <var>Integer</var> function used to compare the specified file names (and lengths).
+          </p>
+          <p>
+            The <var>Filename1</var> and <var>Filename2</var> arguments are <var>PChar</var> types with pointers to the first character in each of the compared file names.The <var>Len1</var> and <var>Len2</var> arguments contain the length (or number of characters) for the pointers. If a length value is omitted, it implies the corresponding file name argument is empty.
+          </p>
+          <p>
+            <var>ResolveLinks</var> indicates whether file system or symbolic links are resolved before comparing the file name arguments. When set to <b>True</b>, the ComparePhysicalFilenames routine is called to resolve the file system links to actual path and file names for the comparison. For platforms where <b>NotLiteralFilenames</b> is defined, the file names are copied to a temporary string before resolving the file names.
+          </p>
+          <p>
+            Otherwise, the CompareFileNames routine (in <file>LazFileUtils</file>) is used to compare the file names and to get the return value.
+          </p>
+          <p>
+            The return value is <b>0</b> (zero) when the file names contain (or resolve to) the same files on the local file system. It is set to the difference between the lengths in Len1 and Len2 when one of the arguments has been omitted. For platforms where NotLiteralFilenames is not defined, it contains the initial difference between the ordinal values in the file names. Otherwise, it is set to the value from CompareFilenames (in <file>LazFIleUtils</file>) or ComparePhysicalFilenames.
+          </p>
+        </descr>
+        <seealso>
+          <link id="ComparePhysicalFilenames"/>
+          <link id="#lazutils.lazfileutils.CompareFilenames">CompareFilenames</link>
+        </seealso>
       </element>
       <element name="CompareFilenames.Result">
         <short>
-          Returns zero if files are equal, or the index of differences, or the difference in length if filenames are not equal.
+          Returns zero (<b>0</b>) if files are equal, or when character values or file name lengths are not equal.
         </short>
       </element>
       <element name="CompareFilenames.Filename1">
@@ -114,7 +136,7 @@
       </element>
       <element name="CompareFilenames.ResolveLinks">
         <short>
-          <var>ResolveLinks</var> - if True, searches through links to find the actual file for comparison.
+          When <b>True</b>, file system links are searched to find the actual file(s) for the comparison.
         </short>
       </element>
 
@@ -138,7 +160,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.sysutils.ExtractShortPathName"/>
+          <link id="#rtl.sysutils.ExtractShortPathName">ExtractShortPathName</link>
         </seealso>
       </element>
       <element name="ExtractShortPathNameUTF8.FileName">
@@ -222,8 +244,15 @@
       </element>
 
       <element name="ExpandUNCFileNameUTF8">
-        <short>Expands the specified UTF-8-encoded UNC file name.</short>
-        <descr/>
+        <short>Expands the specified UTF-8-encoded UNC file name to an absolute UNC file name.</short>
+        <descr>
+          <p>
+            <var>ExpandUNCFileNameUTF8</var> is a <var>String</var> function used to expand the UNC file name in the <var>FileName</var> argument to an absolute UNC file name. It is the UTF-8-enabled equivalent of the ExpandUNCFileName routine from the FPC RTL.
+          </p>
+          <p>
+            ExpandUNCFileNameUTF8 calls the ExpandUNCFileName routine in RTL to get the return value for the method. Drive letters which are mapped to shared disks are replaced with the UNC device name for the mapped drive. The return value is an empty string ('') if an error occurs in ExpandUNCFileName.
+          </p>
+        </descr>
         <seealso>
           <link id="#rtl.sysutils.ExpandUNCFileName">ExpandUNCFileName</link>
           <link id="#rtl.sysutils.ExpandFileName">ExpandFileName</link>
@@ -289,46 +318,117 @@
 
       <element name="FileIsInPath">
         <short>
-          <var>FileIsInPath</var> - checks that <var>FileName</var> refers to a file that exists within the given <var>Path</var>.
+          Checks whether the specified file name shares the path specified in Path.
         </short>
+        <descr>
+          <p>
+            <var>FileIsInPath</var> is a Boolean function used to determine whether the file in <var>FileName</var> is located in the specified <var>Path</var>. FileIsInPath calls the CleanAndExpandFilename and CleanAndExpandDirectory routines to resolve drive letters or relative path information included in the arguments.
+          </p>
+          <p>
+            The return value is <b>True</b> when the resolved paths for the arguments contain the same values. FileIsInPath does <b>not</b> verify whether Path or FileName actually exist on the local file system. It compares the specified string values only.
+          </p>
+          <p>
+            Use DirectoryExists or DirectoryExistsUTF8 to determine whether a path exists on the local file system.
+          </p>
+          <p>
+            Use FileExists or FileExistsUTF8 to determine whether a file exists on the local file system.
+          </p>
+          <p>
+            <b>Example:</b>
+          </p>
+<code>
+// uses FileUtil;
+// ...
+// var
+//   sDir, sFile: String;
+//   bResult: Boolean;
+// ...
+// neither the file nor the directory exist on the file system
+sDir := 'q:\bogus\path\';
+sFile := 'q:\bogus\path\..\path\filename.ext';
+bResult := FileIsInPath(sFile, sDir);
+
+ShowMessage('File: ' + sFile + LineEnding +
+  'is in Path: ' + sDir + '?' + LineEnding +
+  'FileIsInPath() result is: ' + bResult.ToString(TUseBoolStrs.True) + '.');
+</code>
+        </descr>
+        <seealso>
+          <link id="FileIsInDirectory"/>
+          <link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
+          <link id="#lazutils.lazfileutils.CleanAndExpandDirectory">CleanAndExpandDirectory</link>
+          <link id="#lazutils.lazfileutils.CompareFileNames">CompareFileNames</link>
+        </seealso>
       </element>
       <element name="FileIsInPath.Result">
         <short>
-          Returns True if a file named <var>Filename</var> exists within the given <var>Path</var>.
+          Returns <b>True</b> the arguments share the same path information.
         </short>
       </element>
       <element name="FileIsInPath.Filename">
-        <short>The name of the file for checking.</short>
+        <short>The name of the file examined in the routine.</short>
       </element>
       <element name="FileIsInPath.Path">
-        <short>
-          The <var>Path</var> to be searched.
-        </short>
+        <short>The path name examined in the routine.</short>
       </element>
 
       <element name="FileIsInDirectory">
         <short>
-          <var>FileIsInDirectory</var> - checks whether a file with <var>FileName</var> exists within the given <var>Directory</var>.
+          Checks whether the specified file name shares the path specified in Directory.
         </short>
         <descr>
           <p>
-            <var>FileIsInDirectory</var> - checks whether a file with <var>FileName</var> exists within the given <var>Directory</var>.
+            <var>FileIsInDirectory</var> is a Boolean function used to determine whether the file in <var>FileName</var> is located in <var>Directory</var>. FileIsInDirectory calls the CleanAndExpandFilename and CleanAndExpandDirectory routines to resolve drive letters or relative path information included in the arguments.
           </p>
+          <p>
+            The return value is <b>True</b> when the resolved paths for the arguments contain the same values. FileIsInDirectory does <b>not</b> verify whether Directory or FileName actually exist on the local file system. It compares the specified string values only.
+          </p>
+          <p>
+            Use DirectoryExists or DirectoryExistsUTF8 to determine whether a path exists on the local file system.
+          </p>
+          <p>
+            Use FileExists or FileExistsUTF8 to determine whether a file exists on the local file system.
+          </p>
+          <p>
+            <b>Example:</b>
+          </p>
+<code>
+// uses FileUtil;
+// ...
+// var
+//   sDir, sFile: String;
+//   bResult: Boolean;
+// ...
+// neither the file nor the directory exist on the file system
+sDir := 'q:\bogus\path\';
+sFile := 'q:\bogus\path\..\path\filename.ext';
+bResult := FileIsInDirectory(sFile, sDir);
+
+ShowMessage('File: ' + sFile + LineEnding +
+  'is in Directory: ' + sDir + '?' + LineEnding +
+  'FileIsInDirectory() result is: ' + bResult.ToString(TUseBoolStrs.True) + '.');
+</code>
         </descr>
+        <seealso>
+          <link id="FileIsInPath"/>
+          <link id="#lazutils.lazfileutils.CleanAndExpandFilename">CleanAndExpandFilename</link>
+          <link id="#lazutils.lazfileutils.CleanAndExpandDirectory">CleanAndExpandDirectory</link>
+          <link id="#lazutils.lazfileutils.CompareFileNames">CompareFileNames</link>
+        </seealso>
       </element>
       <element name="FileIsInDirectory.Result">
-        <short>Returns True if the file is in the directory.</short>
+        <short>Returns True if the file and directory share the same paths.</short>
       </element>
       <element name="FileIsInDirectory.Filename">
         <short>The name of the file to be checked.</short>
       </element>
       <element name="FileIsInDirectory.Directory">
-        <short>The name of the directory to be searched for the file.</short>
+        <short>The name of the directory compared to the file.</short>
       </element>
 
       <element name="ExtractFileNameWithoutExt">
         <short>
-          <var>ExtractFileNameWithoutExt</var> - returns just the name of the file without an extension.
+          Returns the file name without a file extension.
         </short>
       </element>
       <element name="ExtractFileNameWithoutExt.Result">
@@ -342,7 +442,7 @@
 
       <element name="CreateAbsoluteSearchPath">
         <short>
-          <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory </var>and <var>SearchPath</var> to form an absolute path to search for files.
+          Forms an absolute search path for files from values in <var>BaseDirectory </var>and <var>SearchPath</var>.
         </short>
         <descr>
           <p>
@@ -397,21 +497,21 @@
 
       <element name="GetAllFilesMask">
         <short>
-          Gets the file mask representing all files suitable for showing in a file filter.
+          Gets the file mask representing all files in a file filter.
         </short>
         <descr>
-          GetAllFilesMask returns a File Mask suitable for showing in a filter of a Open File Dialog. For Windows, '*.*' is returned; on other operating systems just '*'.
+          GetAllFilesMask returns a File Mask suitable for showing in a filter for a Open File Dialog. For Windows, '*.*' is returned; on other operating systems '*' is used.
         </descr>
         <errors/>
         <seealso/>
       </element>
       <element name="GetAllFilesMask.Result">
-        <short>All files mask for the platform.</short>
+        <short>The All Files mask for the platform.</short>
       </element>
 
       <element name="GetExeExt">
         <short>
-          <var>GetExeExt</var> - find the correct extension (including the starting .) for an executable file.
+        Returns the file extension (including the starting .) for an executable file on the platform.
         </short>
       </element>
       <element name="GetExeExt.Result">
@@ -642,24 +742,55 @@
 
       <element name="FindDiskFilename">
         <short>
-          <var>FindDiskFilename</var> - finds the file that best fits the supplied filename.
+          Finds the file name that most closely matches the specified file name.
         </short>
         <descr>
           <p>
-            <var>FindDiskFilename</var> finds the file that best fits the supplied filename. Searches for the filename case on disk. The file must exist.
+            <var>FindDiskFilename</var> is a String function used to get the file name which most closely matches the value in the <var>FileName</var> argument.  It does not use case-sensitivity when comparing file names - regardless of the platform. In addition, the file must exist on the local file system.
           </p>
           <p>
-            For example: If Filename='file' and there is only a 'File', then 'File' will be returned.
+            FileName can include a fully-qualified path including a drive letter on Windows platforms. A drive letter in the value is always converted to uppercase. The path to the file is extracted and sanitized to resolve relative path references.
           </p>
+          <p>
+            The file path is used to locate and compare all files in the directory by calling FindFirstUTF8 and FindNextUTF8. Each file entry is examined using CompareFilenamesIgnoreCase for a case-insensitive match for the specified file name. When a single match is found, its fully qualified path and file name are assigned as the return value. If more than one file is a match, the result is ambiguous and the resolved value for the original FileName argument is returned.
+          </p>
+          <remark>
+            The "All Files" mask for the platform is used to find the files in the path. This can be time consuming when a folder has a large number of files.
+          </remark>
+          <p>
+            <b>Example:</b>
+          </p>
+<code>
+// uses FileUtil;
+// var AFileName, AResult: String;
+// ...
+
+// Windows
+AFileName := 'c:\WINDOWS\WIN.INI';
+AResult := FindDiskFileName(AFileName);
+// AResult contains: 'C:\Windows\win.ini';
+
+// UNIX-like platforms
+AFileName := '/ETC/FONTS/FONTS.CONF';
+AResult := FindDiskFileName(AFileName);
+// AResult contains: '/etc/fonts/fonts.conf';
+</code>
         </descr>
+        <seealso>
+          <link id="FindFirstUTF8"/>
+          <link id="FindNextUTF8"/>
+          <link id="GetAllFilesMask"/>
+          <link id="#lazutils.lazfileutils.ResolveDots">ResolveDots</link>
+          <link id="#lazutils.lazfileutils.CompareFilenamesIgnoreCase">CompareFilenamesIgnoreCase</link>
+        </seealso>
       </element>
       <element name="FindDiskFilename.Result">
         <short>
-          Returns the best fitting filename from the disk (taking case into consideration).
+          Resolved path and file name which is the case-insensitive match for the specified value.
         </short>
       </element>
       <element name="FindDiskFilename.Filename">
-        <short>The name of the file for checking.</short>
+        <short>The qualified path (optional) and file name to locate in the routine.</short>
       </element>
 
       <element name="FindDiskFileCaseInsensitive">
@@ -1043,7 +1174,7 @@
           <link id="TFileSearcher.PathSeparator"/>
           <link id="TFileSearcher.Search"/>
           <link id="TFileSearcher.Create"/>
-          <link id="#lazutils.masks.TMaskList"/>
+          <link id="#lazutils.masks.TMaskList">TMaskList</link>
         </seealso>
       </element>
 
