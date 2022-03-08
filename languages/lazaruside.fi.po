@@ -9220,6 +9220,7 @@ msgid "Editor Colors"
 msgstr "Editorin värit"
 
 #: lazarusidestrconsts.liseditormacros
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "Editorin makrot"
 
@@ -13637,7 +13638,10 @@ msgid "Lowercase Selection"
 msgstr "Valinta pieniksi kirjaimiksi"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
+#, fuzzy
+#| msgid "Editor Macros ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
 msgstr "Editorin makrot ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring

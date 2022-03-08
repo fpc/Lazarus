@@ -9426,6 +9426,7 @@ msgid "Editor Colors"
 msgstr ""
 
 #: lazarusidestrconsts.liseditormacros
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "Makrá editora"
 
@@ -13977,7 +13978,10 @@ msgid "Lowercase Selection"
 msgstr "Výber na malé písmená"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
+#, fuzzy
+#| msgid "Editor Macros ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
 msgstr "Makrá editora ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring

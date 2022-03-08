@@ -9367,6 +9367,7 @@ msgstr "色を編集"
 #: lazarusidestrconsts.liseditormacros
 #, fuzzy
 #| msgid "Editor macros"
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "マクロエディタ"
 
@@ -13865,7 +13866,10 @@ msgid "Lowercase Selection"
 msgstr "選択部を小文字化"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
+#, fuzzy
+#| msgid "Editor Macros ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
 msgstr "マクロを編集 ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring

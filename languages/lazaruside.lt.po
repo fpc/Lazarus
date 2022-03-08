@@ -9371,6 +9371,7 @@ msgstr "Spalvos rengyklėje"
 #: lazarusidestrconsts.liseditormacros
 #, fuzzy
 #| msgid "Editor macros"
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "Rengyklės makrokomandos"
 
@@ -13895,7 +13896,10 @@ msgid "Lowercase Selection"
 msgstr "Pažymėjime visas raides mažosiomis"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
+#, fuzzy
+#| msgid "Editor Macros ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
 msgstr "Keisti makrokomandas…"
 
 #: lazarusidestrconsts.lismenumakeresourcestring

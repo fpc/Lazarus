@@ -5,7 +5,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-03-07 00:07+0300\n"
+"PO-Revision-Date: 2022-03-08 23:33+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "X-Poedit-Bookmarks: -1,-1,-1,-1,-1,-1,-1,3325,-1,-1\n"
@@ -9219,6 +9219,7 @@ msgid "Editor Colors"
 msgstr "Цвета редактора"
 
 #: lazarusidestrconsts.liseditormacros
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "Макросы редактора"
 
@@ -13684,8 +13685,9 @@ msgid "Lowercase Selection"
 msgstr "Нижний регистр выделенного"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
-msgstr "Макросы редактора ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
+msgstr "Макросы редактора"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."

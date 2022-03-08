@@ -9257,6 +9257,7 @@ msgid "Editor Colors"
 msgstr "Cores do Editor"
 
 #: lazarusidestrconsts.liseditormacros
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "Macros do Editor"
 
@@ -13729,7 +13730,10 @@ msgid "Lowercase Selection"
 msgstr "Seleção em minúsculas"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
+#, fuzzy
+#| msgid "Editor Macros ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
 msgstr "Editor de macros ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring

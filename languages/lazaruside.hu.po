@@ -9242,6 +9242,7 @@ msgid "Editor Colors"
 msgstr "Szerkesztő színei"
 
 #: lazarusidestrconsts.liseditormacros
+msgctxt "lazarusidestrconsts.liseditormacros"
 msgid "Editor Macros"
 msgstr "Szerkesztő makrók"
 
@@ -13711,7 +13712,10 @@ msgid "Lowercase Selection"
 msgstr "Kijelölés kisbetűssé alakítása"
 
 #: lazarusidestrconsts.lismenumacrolistview
-msgid "Editor Macros ..."
+#, fuzzy
+#| msgid "Editor Macros ..."
+msgctxt "lazarusidestrconsts.lismenumacrolistview"
+msgid "Editor Macros"
 msgstr "Szerkesztő makrók ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
