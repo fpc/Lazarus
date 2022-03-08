@@ -390,7 +390,7 @@ resourcestring
   lisMenuJumpForward = 'Jump Forward';
   lisMenuAddJumpPointToHistory = 'Add Jump Point to History';
   lisMenuViewJumpHistory = 'Jump History';
-  lisMenuMacroListView = 'Editor Macros ...';
+  lisMenuMacroListView = 'Editor Macros';
   lisMenuFindBlockOtherEndOfCodeBlock = 'Find Other End of Code Block';
   lisMenuFindCodeBlockStart = 'Find Start of Code Block';
   lisMenuFindDeclarationAtCursor = 'Find Declaration at Cursor';
