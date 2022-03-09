@@ -62,10 +62,10 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TStrings"/>
-          <link id="#lcl.stdctrls.TCustomMemo"/>
-          <link id="#lcl.stdctrls.TMemo"/>
           <link id="TTextStrings"/>
+          <link id="#rtl.classes.TStrings">TStrings</link>
+          <link id="#lcl.stdctrls.TCustomMemo">TCustomMemo</link>
+          <link id="#lcl.stdctrls.TMemo">TMemo</link>
         </seealso>
       </element>
 
@@ -118,9 +118,9 @@
           </p>
         </descr>
         <seealso>
+          <link id="TCustomMemoStrings"/>
           <link id="#lcl.stdctrls.TCustomMemo.Create">TCustomMemo.Create</link>
           <link id="#lcl.stdctrls.TMemo">TMemo</link>
-          <link id="TCustomMemoStrings"/>
         </seealso>
       </element>
 
@@ -210,10 +210,10 @@
           <link id="TTextStrings.Move"/>
           <link id="TTextStrings.AddObject"/>
           <link id="TTextStrings.AddStrings"/>
-          <link id="#rtl.classes.TStrings.Strings"/>
-          <link id="#rtl.classes.TStrings.Objects"/>
-          <link id="#rtl.classes.TStrings.Count"/>
           <link id="TTextLineRange"/>
+          <link id="#rtl.classes.TStrings.Strings">TStrings.Strings</link>
+          <link id="#rtl.classes.TStrings.Objects">TStrings.Objects</link>
+          <link id="#rtl.classes.TStrings.Count">TStrings.Count</link>
         </seealso>
       </element>
 
@@ -222,7 +222,7 @@
         <descr>
           <p>
             <var>GetCount</var> is overridden in <var>TTextStrings</var> to re-implement the method. It ensures that the internal array of line ranges is valid, and calls <var>BuildArrays</var> when the validity flag has not been set.
-          </p>
+          </p></descr>
           <p>
             The property value is set to the member value used to store the line count.
           </p>
@@ -231,7 +231,7 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TStrings.Count"/>
+          <link id="#rtl.classes.TStrings.Count">TStrings.Count</link>
         </seealso>
       </element>
       <element name="TTextStrings.GetCount.Result">
@@ -754,8 +754,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TStrings.LoadFromFile">TStrings.LoadFromFile</link>
           <link id="TTextStrings.SaveToFile"/>
+          <link id="#rtl.classes.TStrings.LoadFromFile">TStrings.LoadFromFile</link>
         </seealso>
       </element>
       <element name="TTextStrings.LoadFromFile.FileName">
@@ -770,8 +770,8 @@
           </p>
         </descr>
         <seealso>
-          <link id="#rtl.classes.TStrings.SaveToFile">TStrings.SaveToFile</link>
           <link id="TTextStrings.LoadFromFile"/>
+          <link id="#rtl.classes.TStrings.SaveToFile">TStrings.SaveToFile</link>
         </seealso>
       </element>
       <element name="TTextStrings.SaveToFile.FileName">

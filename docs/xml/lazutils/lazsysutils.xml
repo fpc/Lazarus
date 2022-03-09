@@ -33,7 +33,7 @@
         </short>
         <descr></descr>
         <seealso>
-          <link id="#rtl.SysUtils.GetTickCount64"/>
+          <link id="#rtl.SysUtils.GetTickCount64">GetTickCount64</link>
         </seealso>
       </element>
 
