@@ -513,7 +513,7 @@ begin
   FLineCount:=-1;
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then begin
-      if (Markers[i].NewPosition<=Pos) and (Markers[i].NewPosition<Pos+Len) then
+      if (Markers[i].NewPosition>=Pos) and (Markers[i].NewPosition<Pos+Len) then
         Markers[i].Deleted:=true
       else begin
         DeleteSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
