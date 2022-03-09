@@ -12,10 +12,10 @@
         </short>
       <descr>
         <p>
-          <file>lazfileutils.pas</file> contains types, procedures, and functions used for file and directory operations. This file is part of the <file>LazUtils</file> package.
+          <file>lazfileutils.pas</file> contains types, procedures, and functions used for file and directory operations. <file>lazfileutils.pas</file> is part of the <file>LazUtils</file> package.
         </p>
         <remark>
-          All functions are thread safe unless explicitly stated.
+          All functions are thread-safe unless explicitly stated.
         </remark>
       </descr>
 
@@ -200,7 +200,7 @@
       </element>
 
       <element name="FilenameExtIs">
-        <short>Determines if the Filename has the specified file extension.</short>
+        <short>Determines if Filename has the specified file extension.</short>
         <descr>
           <p>
             <var>FilenameExtIs</var> is a <var>Boolean</var> function used to determines if the file in the <var>Filename</var> parameter has the specified file extension in <var>Ext</var>.
@@ -234,7 +234,7 @@
         </seealso>
       </element>
       <element name="FilenameExtIs.Result">
-        <short>Returns True if the Filename has the specified file extension.</short>
+        <short>Returns <b>True</b> if Filename has the specified file extension.</short>
       </element>
       <element name="FilenameExtIs.Filename">
         <short>File name examined in the routine.</short>
@@ -267,7 +267,7 @@
         </seealso>
       </element>
       <element name="FilenameExtIn.Result">
-        <short>Returns True if the Filename has one of the specified file extensions.</short>
+        <short>Returns <b>True</b> if Filename has one of the specified file extensions.</short>
       </element>
       <element name="FilenameExtIn.Filename">
         <short>File name examined in the routine.</short>
@@ -305,10 +305,10 @@
         </short>
         <descr>
           <p>
-            <var>DirectoryIsWritable</var> is a <var>Boolean</var> function used to determine if the specified directory name is writable in the file system. The path name in DirectoryName must already exist on the local file system. The return value is False if a directory with the specified name does not exist.
+            <var>DirectoryIsWritable</var> is a <var>Boolean</var> function used to determine if the specified directory name is writable in the file system. The path name in DirectoryName must already exist on the local file system. The return value is <b>False</b> if a directory with the specified name does not exist.
           </p>
           <p>
-            The return value is True when a file can be added, deleted, or modified in the specified path.  To get the return value, DirectoryIsWritable creates a temporary file in DirectoryName, adds content to it, and deletes the temporary file. DirectoryIsWritable calls the FileCreateUTF8, FileWrite, FileClose, and DeleteFileUTF8 routines to perform the file operations. The return value is True when FileWrite completes successfully.
+            The return value is <b>True</b> when a file can be added, deleted, or modified in the specified path.  To get the return value, DirectoryIsWritable creates a temporary file in DirectoryName, adds content to it, and deletes the temporary file. DirectoryIsWritable calls the FileCreateUTF8, FileWrite, FileClose, and DeleteFileUTF8 routines to perform the file operations. The return value is <b>True</b> when FileWrite completes successfully.
           </p>
           <remark>
             DirectoryIsWritable calls InvalidateFileStateCache with the temporary file name if DeleteFileUTF8 cannot remove the file.
@@ -376,16 +376,16 @@
             <var>FilenameIsAbsolute</var> is a <var>Boolean</var> function used to determine if the value in TheFilename contains an absolute file path (and not a relative one). The implementation for FilenameIsAbsolute is platform- and/or OS-specific.
           </p>
           <p>
-            In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation. The return value is False if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
+            In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation. The return value is <b>False</b> if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
           </p>
           <p>
             On Windows, the FilenameIsWinAbsolute function is called in the implementation. FilenameIsWinAbsolute takes Device identifiers into consideration when examining the value in TheFilename. For example:
           </p>
-          <code>
+<code>
 D:\db\employee.fdb
-          </code>
+</code>
           <p>
-            The return value is False if TheFilename (without the optional device identifier) is an empty string (''), or does not start with the directory separator for the environment.
+            The return value is <b>False</b> if TheFilename (without the optional device identifier) is an empty string (''), or does not start with the directory separator for the environment.
           </p>
         </descr>
         <seealso/>
@@ -408,11 +408,11 @@ D:\db\employee.fdb
           <p>
             On Windows, the FilenameIsWinAbsolute function is called in the implementation of FilenameIsAbsolute. FilenameIsWinAbsolute takes Device identifiers into consideration when examine the value in TheFilename. For example:
           </p>
-          <code>
+<code>
 D:\db\employee.fdb
-          </code>
+</code>
           <p>
-            The return value is False if TheFilename (without the optional device identifier)is an empty string (''), or does not start with the directory separator for the environment.
+            The return value is <b>False</b> if TheFilename (without the optional device identifier)is an empty string (''), or does not start with the directory separator for the environment.
           </p>
         </descr>
         <seealso/>
@@ -433,7 +433,7 @@ D:\db\employee.fdb
             <var>FilenameIsUnixAbsolute</var> is a <var>Boolean</var> function used to determine if the value in TheFilename contains an absolute file path (and not a relative one).
           </p>
           <p>
-            In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation of FilenameIsAbsolute. The return value is False if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
+            In  UNIX-like environments, the FilenameIsUnixAbsolute function is used in the implementation of FilenameIsAbsolute. The return value is <b>False</b> if TheFilename is an empty string (''), or does not start with the directory separator for the environment.
           </p>
         </descr>
         <seealso/>
@@ -467,7 +467,7 @@ D:\db\employee.fdb
         </seealso>
       </element>
       <element name="ForceDirectory.Result">
-        <short>Returns True if directory exists or if it was successfully created.</short>
+        <short>Returns <b>True</b> if directory exists or if it was successfully created.</short>
       </element>
       <element name="ForceDirectory.DirectoryName">
         <short>Path information for the operation.</short>
@@ -541,7 +541,7 @@ D:\db\employee.fdb
             <var>CheckIfFileIsSymlink</var> is a routine used to ensure that the file name specified in <var>AFilename</var> is a valid symbolic link on the local file system. It acts as an assert for the pre-condition.
           </p>
           <p>
-            The implementation for the routine is platform- or OS-specific. In general, all of the platforms raise an exception if the file name does not exist on the local file system of when the filename is not a symbolic link. The mechanism used to check for a symbolic link is platform-dependent.
+            The implementation for the routine is platform- or OS-specific. In general, all of the platforms raise an exception if the file name does not exist on the local file system of when the file name is not a symbolic link. The mechanism used to check for a symbolic link is platform-dependent.
           </p>
           <p>
             For the Windows platform, the file name must be a link create using mklink on the local file system.
@@ -689,7 +689,7 @@ D:\db\employee.fdb
             <var>FileIsText</var> is a <var>Boolean</var> function used to determine if the specified file contains plain text content. The overloaded variant that includes the FileReadable argument is used to examine the content in the file.
           </p>
           <p>
-            FileIsText calls FileOpenUtf8 for the specified file name. The return value is False is the file handle contains feInvalidHandle.
+            FileIsText calls FileOpenUtf8 for the specified file name. The return value is <b>False</b> is the file handle contains feInvalidHandle.
           </p>
           <p>
             FileIsText checks for (and skips) common Byte Order Marks, such as:
@@ -700,7 +700,7 @@ D:\db\employee.fdb
             <li>UCS-2BE BOM (Hex $FE $FF)</li>
           </ul>
           <p>
-            Content in the file (up to 1024 characters) is checked to ensure that invalid Null and Control characters are not found in the file. The return value is True when the specified file name exists in the local file system, and does not contain Null or Control characters.
+            Content in the file (up to 1024 characters) is checked to ensure that invalid Null and Control characters are not found in the file. The return value is <b>True</b> when the specified file name exists in the local file system, and does not contain Null or Control characters.
           </p>
         </descr>
         <seealso/>
@@ -717,11 +717,11 @@ D:\db\employee.fdb
 
       <element name="FilenameIsTrimmed">
         <short>
-          True if the specified file name contains characters to remove or resolve before use.
+          <b>True</b> if the specified file name contains characters to remove or resolve before use.
         </short>
         <descr>
           <p>
-            <var>FilenameIsTrimmed</var> is an overloaded <var>Boolean</var> function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is False when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
+            <var>FilenameIsTrimmed</var> is an overloaded <var>Boolean</var> function used to determine if the specified file name contains characters to remove or resolve before use. The variant which uses PChar values performs the comparison. The  return value is <b>False</b> when the file name is a candidate for use of TrimFilename to remove whitespace or special characters.
           </p>
           <p>
             Use TrimFilename to remove leading or trailing whitespace, duplicate directory separators, or relative path symbols.
@@ -879,24 +879,66 @@ D:\db\employee.fdb
         <short>
           Returns an absolute path relative to the specified base directory (when needed).
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>CreateAbsolutePath</var> is a <var>String</var> function used to get the absolute path to the file specified in the <var>Filename</var> argument. A relative path reference in Filename is resolved to the path in the <var>BaseDir</var> argument. The return value contains the fully-qualified absolute path to the specified file name.
+          </p>
+          <p>
+            When Filename is an empty string ('') or already uses an absolute path reference, the value in Filename is used as the return value.
+          </p>
+          <p>
+            For the Windows platform, a file name which starts with '\' (root directory on the current drive) is resolved to the drive letter and root directory in BaseDIr.  For all other platforms, the values in BaseDir and PathDelim are prepended to the relative path information in FileName.
+          </p>
+          <p>
+            CreateAbsolutePath calls TrimFileName to remove leading or trailing whitespace or duplicate path delimiters in the return value.
+          </p>
+          <remark>
+            CreateAbsolutePath does not validate path or file name information; the file or directory does not have to exist on the local file system.
+          </remark>
+          <p>
+            <b>Example:</b>
+          </p>
+<code>
+// uses LazFileUtils;
+// var vFile, vBaseDir: String;
+
+vFile := '.\foo\bar\baz.txt';
+vBaseDir := 'c:\temp';
+
+ShowMessage('File: ' + vFile + LineEnding +
+  'Base Directory: ' + vBaseDir + LineEnding +
+  'Absolute Path: ' + CreateAbsolutePath(vFile, vBaseDir));
+
+vFile := '\foo\\bar\\baz.txt';
+vBaseDir := 'c:\temp';
+
+ShowMessage('File: ' + vFile + LineEnding +
+  'Base Directory: ' + vBaseDir + LineEnding +
+  'Absolute Path: ' + CreateAbsolutePath(vFile, vBaseDir));
+</code>
+        </descr>
+        <seealso>
+          <link id="FilenameIsAbsolute"/>
+          <link id="TrimFileName"/>
+          <link id="AppendPathDelim"/>
+          <link id="#rtl.sysutils.ExtractFileDrive">ExtractFileDrive</link>
+        </seealso>
       </element>
       <element name="CreateAbsolutePath.Result">
-        <short/>
+        <short>Fully-qualified absolute path to the specified file relative to a given base directory.</short>
       </element>
       <element name="CreateAbsolutePath.Filename">
-        <short/>
+        <short>File name with relative path references resolved in the routine.</short>
       </element>
       <element name="CreateAbsolutePath.BaseDirectory">
-        <short/>
+        <short>Base directory used to resolve a relative path reference in the file name.</short>
       </element>
 
       <element name="TryCreateRelativePath">
         <short>Attempts to create a path in Dest relative the path in Source.</short>
         <descr>
           <p>
-            Returns True if it is possible to create a relative path from Source to Dest Function must be thread safe, so no expanding of filenames is done, since this is not threadsafe (at least on Windows platform).
+            Returns <b>True</b> if it is possible to create a relative path from Source to Dest Function must be thread safe, so no expanding of filenames is done, since this is not thread-safe (at least on Windows platform).
           </p>
           <ul>
             <li>Dest and Source must either be both absolute filenames, or relative</li>
@@ -904,28 +946,27 @@ D:\db\employee.fdb
             <li>Dest and Source must be on same drive or UNC path (Windows)</li>
             <li>If both Dest and Source are relative they must at least share their base directory</li>
             <li>Double PathDelims are ignored (unless they are part of the UNC convention)</li>
-            <li>If UsePointDirectory is True and Result is True then if RelPath is Empty string, RelPath becomes '.'</li>
-            <li>If AlwaysRequireSharedBaseFolder is False then Absolute filenames need not share a basefolder</li>
+            <li>If UsePointDirectory is <b>True</b> and Result is <b>True</b> then if RelPath is Empty string, RelPath becomes '.'</li>
+            <li>If AlwaysRequireSharedBaseFolder is <b>False</b> then Absolute filenames need not share a basefolder</li>
             <li>if the function succeeds RelPath contains the relative path from Source to Dest,
               no PathDelimiter is appended to the end of RelPath</li>
           </ul>
           <p>
             Examples:
           </p>
-
   <code>
-- Dest = /foo/bar Source = /foo Result = True RelPath = bar
-- Dest = /foo///bar Source = /foo// Result = True RelPath = bar
-- Dest = /foo Source = /foo/bar Result = True RelPath = ../
-- Dest = /foo/bar Source = /bar Result = True RelPath = ../foo/bar
-- Dest = foo/bar Source = foo/foo Result = True RelPath = ../bar
-- Dest = foo/bar Source = bar/foo Result = False (no shared base directory)
-- Dest = /foo Source = bar Result = False (mixed absolute and relative)
-- Dest = c:foo Source = c:bar Result = False (no expanding)
-- Dest = c:\foo Source = d:\bar Result is False (different drives)
-- Dest = \foo Source = foo (Windows) Result is False (too ambiguous to guess what this should mean)
-- Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = True Result = False
-- Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = False Result = True RelPath = ../foo
+- Dest = /foo/bar Source = /foo Result = <b>True</b> RelPath = bar
+- Dest = /foo///bar Source = /foo// Result = <b>True</b> RelPath = bar
+- Dest = /foo Source = /foo/bar Result = <b>True</b> RelPath = ../
+- Dest = /foo/bar Source = /bar Result = <b>True</b> RelPath = ../foo/bar
+- Dest = foo/bar Source = foo/foo Result = <b>True</b> RelPath = ../bar
+- Dest = foo/bar Source = bar/foo Result = <b>False</b> (no shared base directory)
+- Dest = /foo Source = bar Result = <b>False</b> (mixed absolute and relative)
+- Dest = c:foo Source = c:bar Result = <b>False</b> (no expanding)
+- Dest = c:\foo Source = d:\bar Result is <b>False</b> (different drives)
+- Dest = \foo Source = foo (Windows) Result is <b>False</b> (too ambiguous to guess what this should mean)
+- Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = <b>True</b> Result = False
+- Dest = /foo Source = /bar AlwaysRequireSharedBaseFolder = <b>False</b> Result = <b>True</b> RelPath = ../foo
   </code>
         </descr>
         <seealso/>
@@ -977,13 +1018,13 @@ D:\db\employee.fdb
       </element>
       <element name="CreateRelativePath.UsePointDirectory">
         <short>
-          True if '.' (current directory symbol) is prepended to the relative path.
+          <b>True</b> if '.' (current directory symbol) is prepended to the relative path.
         </short>
       </element>
 
       <element name="FileIsInPath">
         <short>
-          Returns True if Filename exists in the specified Path.
+          Returns <b>True</b> if Filename exists in the specified Path.
         </short>
         <descr>
           <p>
@@ -993,7 +1034,7 @@ D:\db\employee.fdb
             Path is the directory name used to locate the specified file. For example: '/usr/lib/fpc'.
           </p>
           <p>
-            The returns value is True when Filename is a file or directory somewhere below Path. For example, under UNIX the Filename '/usr/lib/fpc' is below Path '/usr/lib', '/usr' and '/'. When Filename and Path contain the same value, the return value is False. Please note: the return value is False when Path contains an empty string ('').
+            The returns value is <b>True</b> when Filename is a file or directory somewhere below Path. For example, under UNIX the file name '/usr/lib/fpc' is below Path '/usr/lib', '/usr' and '/'. When Filename and Path contain the same value, the return value is False. Please note: the return value is <b>False</b> when Path contains an empty string ('').
           </p>
           <p>
             FileIsInPath calls ResolveDots to resolve relative path information in both Filename and Path, and ensures that a trailing path delimiter is included in Path when needed. FileIsInPath calls CompareFileNames.
@@ -1279,11 +1320,11 @@ D:\db\employee.fdb
            </dd>
             <dt>pdsUnix</dt>
             <dd>
-              Return value is set to True when PathDelim contains the UNIX forward slash (/) character.
+              Return value is set to <b>True</b> when PathDelim contains the UNIX forward slash (/) character.
            </dd>
             <dt>pdsWindows</dt>
             <dd>
-              Return value is set to True when PathDelim contains the Windows backslash (\) character.
+              Return value is set to <b>True</b> when PathDelim contains the Windows backslash (\) character.
            </dd>
           </dl>
         </descr>
@@ -1639,7 +1680,7 @@ D:\db\employee.fdb
            </dd>
             <dt>faHidden</dt>
             <dd>
-              The file is hidden (On UNIX, the filename starts with a dot)
+              The file is hidden (On UNIX, the file name starts with a dot)
            </dd>
             <dt>faSysFile</dt>
             <dd>
@@ -1683,7 +1724,7 @@ D:\db\employee.fdb
            </dd>
             <dt>faHidden</dt>
             <dd>
-              The file is hidden (On UNIX, the filename starts with a dot)
+              The file is hidden (On UNIX, the file name starts with a dot)
            </dd>
             <dt>faSysFile</dt>
             <dd>
@@ -1733,7 +1774,7 @@ D:\db\employee.fdb
             For the Windows environment, DeleteFileW in Windows is called to remove the specified file name. For UNIX-like environments, DeleteFile in the <file>SysUtils</file> unit is called to delete the specified file name. InvalidateFileStateCache is also called.
           </p>
           <p>
-            The return value contains True when Filename is successfully deleted from the local file system.
+            The return value contains <b>True</b> when Filename is successfully deleted from the local file system.
           </p>
         </descr>
         <seealso/>
@@ -1757,7 +1798,7 @@ D:\db\employee.fdb
             For the Windows environment, MoveFileW is called to rename the file using the values specified in OldName and NewName. For UNIX-like environments, RenameFile in SysUtils is called to rename the file to the specified new value. InvalidateFileStateCache is also called.
           </p>
           <p>
-            The return value is True if the file is renamed successfully.
+            The return value is <b>True</b> if the file is renamed successfully.
           </p>
         </descr>
         <errors/>
@@ -1809,7 +1850,7 @@ D:\db\employee.fdb
         </short>
         <descr>
           <p>
-            <var>FileIsReadOnlyUTF8</var> is a <var>Boolean</var> function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is True when faReadOnly has been included in the file attributes.
+            <var>FileIsReadOnlyUTF8</var> is a <var>Boolean</var> function used to determine if the specified file is marked as read-only in the local file system. FileIsReadOnlyUTF8 calls FileGetAttrUTF8 for the specified file name and checks to see if  faReadOnly has been included in the file attributes value. The return value is <b>True</b> when faReadOnly has been included in the file attributes.
           </p>
         </descr>
         <seealso/>
@@ -1859,7 +1900,7 @@ D:\db\employee.fdb
             For UNIX-like environments, SetCurrentDir in SysUtils is used to set the current directory to the specified value.
           </p>
           <p>
-            The return value is True if the current directory is successfully changed to the new value.
+            The return value is <b>True</b> if the current directory is successfully changed to the new value.
           </p>
         </descr>
         <errors>
@@ -1888,7 +1929,7 @@ D:\db\employee.fdb
             <var>CreateDirUTF8</var> is a <var>Boolean</var> function used to create a new directory in the local file system with the specified name. For the Windows environments, the value in NewDir is converted to wide string format and passed to the CreateDirectoryW function in the Windows unit. For UNIX-like environments, CreateDir in SysUtils is used to create the new directory with the specified name.
           </p>
           <p>
-            The return value is True if the new directory is successfully created.
+            The return value is <b>True</b> if the new directory is successfully created.
           </p>
         </descr>
         <errors>
@@ -1920,7 +1961,7 @@ D:\db\employee.fdb
             For UNIX-like environments, RemoveDir in SysUtils is called to remove the specified directory.
           </p>
           <p>
-            The return value is True when the specified directory is successfully removed.
+            The return value is <b>True</b> when the specified directory is successfully removed.
           </p>
         </descr>
         <seealso>
@@ -1963,7 +2004,7 @@ D:\db\employee.fdb
       </element>
       <element name="ForceDirectoriesUTF8.Result">
         <short>
-          True when directories exist or are successfully created in the function.
+          <b>True</b> when directories exist or are successfully created in the function.
         </short>
       </element>
       <element name="ForceDirectoriesUTF8.Dir">
@@ -2047,9 +2088,9 @@ D:\db\employee.fdb
           <p>
             For UNIX-like environments, the return value can contain information that indicates the permissions for the user, group, and owner of the file as returned from the FPStat routine. It also includes the file user and group IDs, file size, and modification timestamp. For example:
           </p>
-          <code>
+<code>
 ld-rwxrwxrwx Owner: UID.GID Size: 99999 Modified: MM/DD/YYYY hh:nn
-          </code>
+</code>
           <dl>
             <dt>l</dt>
              <dd>File is a symbolic link</dd>
@@ -2087,9 +2128,9 @@ ld-rwxrwxrwx Owner: UID.GID Size: 99999 Modified: MM/DD/YYYY hh:nn
           <p>
             For the Amiga platform, the content in the return value is derived using a  TFileInfoBlock for a shared lock on the file. The return value can be an empty string if the file could not be locked using a shared lock on the file system. It can contain values like the following:
           </p>
-        <code>
+<code>
 asperwd
-        </code>
+</code>
         <dl>
           <dt>a</dt>
           <dd>File is an archived (unchanged) file</dd>
@@ -2439,9 +2480,9 @@ asperwd
           <p>
             GetTempFileNameUTF8 signals the OnGetTempFile event handler (when assigned) to get the value used as the temporary file name. When OnGetTempFile has not been assigned, a string is constructed using the path information in Dir and a numeric suffix to make the file name unique. For example:
           </p>
-          <code>
+<code>
 /usr/tmp/TMP0.tmp
-          </code>
+</code>
           <p>
             GetTempFileNameUTF8 examines the files in the specified directory to determine if a file already exists which starts with the value in  Prefix. If a file is located in the directory, a numeric suffix (starting at 0) is appended to the base file name in Prefix to build a temporary file name which does not already exist in the directory.
           </p>
@@ -2467,11 +2508,11 @@ asperwd
           <p>
             The implementation of IsUNCPath is platform- and/or OS-specific. For the Windows platform, IsUNCPath checks Path to see if it begins with the double backslash notation used for a UNC path. For example:
           </p>
-          <code>
-  \\C:\directory\
-  \\?\C:\directory\
-  \\?\UNC\volume\directory\
-          </code>
+<code>
+\\C:\directory\
+\\?\C:\directory\
+\\?\UNC\volume\directory\
+</code>
           <p>
             For UNIX-like environments, as well as the Amiga platform, the return value is always False. UNC paths are not used on those platforms.
           </p>
@@ -2497,12 +2538,12 @@ asperwd
           <p>
             The return value contains information needed to access shared resources by their host and volume names, and contains one of the following formats:
           </p>
-          <code>
-  \\server-name\shared-resource-path-name\
-  \\mypc\nas-drive\
-  \\?\c:\
-  \\?\UNC\c:\
-          </code>
+<code>
+\\server-name\shared-resource-path-name\
+\\mypc\nas-drive\
+\\?\c:\
+\\?\UNC\c:\
+</code>
           <p>
             ExtractUNCVolume calls the <var>IsUNCPath</var> function to determine if the value in <var>Path</var> starts with the UNC naming delimiters. The return value is an empty string (<b>''</b>), and no additional actions are performed in the function, when Path does not use UNC notation.
           </p>
@@ -2530,10 +2571,10 @@ asperwd
           <p>
             When FileName uses Universal Naming Convention (UNC),  the return value will contain any server and share/volume information included in the parameter. For example:
           </p>
-          <code>
-  \\server-name\share-name\
-  \\?\C:\
-         </code>
+<code>
+\\server-name\share-name\
+\\?\C:\
+</code>
          <p>
            For UNIX-like environments (as well as WinCE), an initial path delimiter marks the root directory in the file system.
          </p>
@@ -2543,9 +2584,9 @@ asperwd
          <p>
            For the Windows platform, a drive designation up to and including the first path delimiter are used as the root directory. For example:
          </p>
-         <code>
+<code>
 C:\
-          </code>
+</code>
         </descr>
         <seealso/>
       </element>
