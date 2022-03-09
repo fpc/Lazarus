@@ -1401,6 +1401,9 @@ type
 
   TEditorOptionsBase = class(TIDEEditorOptions)
   private
+    FTabFont: String;
+    FTabFontDisableAntialiasing: Boolean;
+    FTabFontSize: Integer;
     {$IFDEF WinIME}
     FUseMinimumIme: Boolean;
     {$ENDIF}
@@ -1506,6 +1509,10 @@ type
       read fMiddleTabClickClosesToRightModifier write fMiddleTabClickClosesToRightModifier default [];
     property ShowFileNameInCaption: Boolean
       read fShowFileNameInCaption write fShowFileNameInCaption default False;
+    property TabFont: String read FTabFont write FTabFont;
+    property TabFontSize: Integer read FTabFontSize write FTabFontSize;
+    property TabFontDisableAntialiasing: Boolean read FTabFontDisableAntialiasing
+      write FTabFontDisableAntialiasing default DefaultEditorDisableAntiAliasing;
     // Comment Continue
     property AnsiCommentContinueEnabled: Boolean
       read FAnsiCommentContinueEnabled write FAnsiCommentContinueEnabled;
@@ -1670,6 +1677,7 @@ type
                              aMarkup: TSynSelectedColor);
     procedure SetMarkupColors(aSynEd: TSynEdit);
     procedure ApplyFontSettingsTo(ASynEdit: TSynEdit);
+    procedure ApplyTabFontSettingsTo(APageCtrl: TPageControl);
     function ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter; override;
   public
     // general options
@@ -4721,6 +4729,9 @@ begin
   fMiddleTabClickClosesOthersModifier := [ssCtrl];
   fMiddleTabClickClosesToRightModifier := [];
   fShowFileNameInCaption := False;
+  TabFont := '';
+  TabFontSize := 0;
+  TabFontDisableAntialiasing := DefaultEditorDisableAntiAliasing;
   // Comment
   FAnsiCommentContinueEnabled := False;
   FAnsiCommentMatch := '^\s?(\*)';
@@ -4903,6 +4914,7 @@ begin
     FileVersion:=XMLConfig.GetValue('EditorOptions/Version', EditorOptsFormatVersion);
 
     XMLConfig.ReadObject('EditorOptions/Misc/', Self, FDefaultValues);
+    RepairEditorFontSize(FTabFontSize);
 
     // general options
     DefOpts := SynEditDefaultOptions;
@@ -5794,6 +5806,25 @@ begin
     ASynEdit.Font.Quality := fqNonAntialiased
   else
     ASynEdit.Font.Quality := fqDefault;
+end;
+
+procedure TEditorOptions.ApplyTabFontSettingsTo(APageCtrl: TPageControl);
+begin
+  if FTabFont <> '' then begin
+    if FTabFontSize < 0 then
+      APageCtrl.Font.Height := -FTabFontSize
+    else
+      APageCtrl.Font.Size := FTabFontSize;
+    APageCtrl.Font.Name := FTabFont;
+  end
+  else begin
+    APageCtrl.Font.Size := 0;
+    APageCtrl.Font.Name := 'default';
+  end;
+  if FTabFontDisableAntialiasing then
+    APageCtrl.Font.Quality := fqNonAntialiased
+  else
+    APageCtrl.Font.Quality := fqDefault;
 end;
 
 function TEditorOptions.ExtensionToLazSyntaxHighlighter(Ext: String): TLazSyntaxHighlighter;

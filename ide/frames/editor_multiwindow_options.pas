@@ -27,9 +27,9 @@ interface
 uses
   Classes, SysUtils,
   // LCL
-  LCLType, StdCtrls, ExtCtrls, CheckLst, ComCtrls,
+  LCLType, StdCtrls, ExtCtrls, CheckLst, ComCtrls, Dialogs, Spin, Controls,
   // IdeIntf
-  IDEOptionsIntf, IDEOptEditorIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // IDE
   EditorOptions, LazarusIDEStrConsts, SourceEditor;
 
@@ -51,6 +51,11 @@ type
     chkShowCloseBtn: TCheckBox;
     chkShowNumbers: TCheckBox;
     chkHideSingleTab: TCheckBox;
+    DisableAntialiasingCheckBox: TCheckBox;
+    TabFontButton: TButton;
+    TabFontComboBox: TComboBox;
+    TabFontGroupBox: TGroupBox;
+    TabFontSizeSpinEdit: TSpinEdit;
     EditorTabPositionCheckBox: TComboBox;
     EditorTabPositionLabel: TLabel;
     lblAccessTypeDesc: TLabel;
@@ -69,6 +74,10 @@ type
     procedure listAccessTypeClickCheck(Sender: TObject);
     procedure listAccessTypeKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure radioAccessOrderEditChange(Sender: TObject);
+    procedure TabFontButtonClick(Sender: TObject);
+    procedure TabFontComboBoxChange(Sender: TObject);
+    procedure TabFontSizeSpinEditChange(Sender: TObject);
+    procedure SetTabFontSizeSpinEditValue(FontSize: Integer);
   private
     FMultiWinEditAccessOrder: TEditorOptionsEditAccessOrderList;
   public
@@ -111,6 +120,80 @@ begin
     FMultiWinEditAccessOrder.SearchOrder := eoeaOrderByEditFocus;
   if radioAccessOrderWin.Checked then
     FMultiWinEditAccessOrder.SearchOrder := eoeaOrderByWindowFocus;
+end;
+
+procedure TEditorMultiWindowOptionsFrame.TabFontButtonClick(Sender: TObject);
+var
+  FontDialog: TFontDialog;
+  fs: Integer;
+begin
+  FontDialog := TFontDialog.Create(nil);
+  try
+    with FontDialog do
+    begin
+      Font.Name := TabFontComboBox.Text;
+      if TabFontSizeSpinEdit.Value < 0 then
+        Font.Height := -TabFontSizeSpinEdit.Value
+      else
+        Font.Size := TabFontSizeSpinEdit.Value;
+      if Execute then begin
+        SetComboBoxText(TabFontComboBox, Font.Name, cstCaseInsensitive);
+        fs := Font.Size;
+        RepairEditorFontSize(fs);
+        SetTabFontSizeSpinEditValue(fs);
+      end;
+    end;
+  finally
+    FontDialog.Free;
+  end;
+end;
+
+procedure TEditorMultiWindowOptionsFrame.TabFontComboBoxChange(Sender: TObject);
+begin
+  TabFontSizeSpinEdit.Enabled := TabFontComboBox.Text <> '';
+  DisableAntialiasingCheckBox.Enabled := TabFontComboBox.Text <> '';
+end;
+
+procedure TEditorMultiWindowOptionsFrame.TabFontSizeSpinEditChange(
+  Sender: TObject);
+var
+  s: TCaption;
+begin
+  s := TabFontSizeSpinEdit.Text;
+  if copy(trim(s),1,1) = '-' then begin
+    if TabFontSizeSpinEdit.MinValue > 0 then begin
+      TabFontSizeSpinEdit.MinValue := -100;
+      TabFontSizeSpinEdit.MaxValue := -EditorOptionsMinimumFontSize;
+      TabFontSizeSpinEdit.Text := s;
+    end
+    else
+    if TabFontSizeSpinEdit.Value > -EditorOptionsMinimumFontSize then
+      TabFontSizeSpinEdit.Value := -EditorOptionsMinimumFontSize;
+  end
+  else begin
+    if TabFontSizeSpinEdit.MinValue < 0 then begin
+      TabFontSizeSpinEdit.MaxValue := 100;
+      TabFontSizeSpinEdit.MinValue := EditorOptionsMinimumFontSize;
+      TabFontSizeSpinEdit.Text := s;
+    end
+    else
+    if TabFontSizeSpinEdit.Value < EditorOptionsMinimumFontSize then
+      TabFontSizeSpinEdit.Value := EditorOptionsMinimumFontSize;
+  end;
+end;
+
+procedure TEditorMultiWindowOptionsFrame.SetTabFontSizeSpinEditValue(
+  FontSize: Integer);
+begin
+  if FontSize < 0 then begin
+    TabFontSizeSpinEdit.MinValue := -100;
+    TabFontSizeSpinEdit.MaxValue := -EditorOptionsMinimumFontSize;
+  end
+  else begin
+    TabFontSizeSpinEdit.MaxValue := 100;
+    TabFontSizeSpinEdit.MinValue := EditorOptionsMinimumFontSize;
+  end;
+  TabFontSizeSpinEdit.Value := FontSize;
 end;
 
 constructor TEditorMultiWindowOptionsFrame.Create(AOwner: TComponent);
@@ -156,6 +239,8 @@ begin
   EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosLeft);
   EditorTabPositionCheckBox.Items.Add(lisNotebookTabPosRight);
   EditorTabPositionLabel.Caption := dlgNotebookTabPos;
+  TabFontGroupBox.Caption := dlgDefaultTabFont;
+  DisableAntialiasingCheckBox.Caption := dlgDisableAntialiasing;
   cgCloseOther.Caption := dlgMiddleTabCloseOtherPagesMod;
   cgCloseRight.Caption := dlgMiddleTabCloseRightPagesMod;
 end;
@@ -181,6 +266,10 @@ begin
     chkShowFileNameInCaption.Checked := ShowFileNameInCaption;
     chkMultiLine.Checked := MultiLineTab;
     EditorTabPositionCheckBox.ItemIndex := TabPosToIndex[TabPosition];
+
+    SetComboBoxText(TabFontComboBox, TabFont, cstCaseInsensitive);
+    SetTabFontSizeSpinEditValue(TabFontSize);
+    DisableAntialiasingCheckBox.Checked := TabFontDisableAntialiasing;
   end;
   FMultiWinEditAccessOrder.Assign(TEditorOptions(AOptions).MultiWinEditAccessOrder);
 
@@ -219,6 +308,10 @@ begin
     ShowFileNameInCaption := chkShowFileNameInCaption.Checked;
     MultiLineTab := chkMultiLine.Checked;
     TabPosition := TabIndexToPos[EditorTabPositionCheckBox.ItemIndex];
+
+    TabFont := TabFontComboBox.Text;
+    TabFontSize := TabFontSizeSpinEdit.Value;
+    TabFontDisableAntialiasing := DisableAntialiasingCheckBox.Checked;
   end;
 end;
 

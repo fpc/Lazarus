@@ -1952,6 +1952,7 @@ resourcestring
   dlgGutterColor = 'Gutter Color';
   dlgDefaultEditorFont='Default editor font';
   dlgEditorFontSize = 'Editor font size';
+  dlgDefaultTabFont='Default tab font';
   dlgExtraCharSpacing = 'Extra character spacing';
   dlgExtraLineSpacing = 'Extra line spacing';
   dlgDisableAntialiasing = 'Disable anti-aliasing';

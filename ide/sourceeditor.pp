@@ -6662,6 +6662,7 @@ Begin
     {$IFDEF IDE_DEBUG}
     debugln('[TSourceNotebook.CreateNotebook] C');
     {$ENDIF}
+    EditorOpts.ApplyTabFontSettingsTo(FNotebook);
     Align := alClient;
     APage:=TTabSheet.Create(FNotebook);
     APage.Caption:='unit1';
@@ -9084,6 +9085,7 @@ Begin
     FNotebook.TabPosition := EditorOpts.TabPosition
   else
     FNotebook.TabPosition := tpTop;
+  EditorOpts.ApplyTabFontSettingsTo(FNotebook);
 
   Exclude(States,snWarnedFont);
   CheckFont;
