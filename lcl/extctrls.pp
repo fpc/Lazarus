@@ -1148,6 +1148,7 @@ type
     property UseDockManager default True;
     property Visible;
     property Wordwrap;
+    property OnChangeBounds;
     property OnClick;
     property OnContextPopup;
     property OnDockDrop;
