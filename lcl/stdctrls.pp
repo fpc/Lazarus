@@ -1613,7 +1613,6 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     property AutoSize default True;
     property Color default clNone;
-    property ParentColor default False;
   end;
 
 
