@@ -348,7 +348,6 @@ type
         itmToolConfigure: TIDEMenuCommand;
       //itmSecondaryTools: TIDEMenuSection;
         itmToolManageDesktops: TIDEMenuCommand;
-        itmToolManageExamples: TIDEMenuCommand;
         itmToolDiff: TIDEMenuCommand;
       //itmDelphiConversion: TIDEMenuSection;
         itmToolCheckLFM: TIDEMenuCommand;

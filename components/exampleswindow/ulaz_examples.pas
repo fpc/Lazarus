@@ -190,11 +190,6 @@ begin
     try
         for St in STL do begin
             FFName := appendPathDelim(DestDir) + RightSide();
-
-            debugln('TFormLazExam.CopyFiles Forcing an ExamplesHome of ' + extractFileDir(FFname));
-            debugln('TFormLazExam.CopyFiles Copying a file to  ' + FFname);
-            debugln('TFormLazExam.CopyFiles DestDir = ' + DestDir);
-            debugln('TFormLazExam.CopyFiles ExamplesHome = ' + ExamplesHome);
             if not ForceDirectoriesUTF8(extractFileDir(FFName)) then begin
                 debugln('TFormLazExam.CopyFiles - Failed to force ' + extractFileDir(FFName));
                 exit;

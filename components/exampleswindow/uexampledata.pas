@@ -610,9 +610,13 @@ begin
     if Node1 <> nil then begin
        Node := Node1.FindNode('LazarusDirectory');
         if Node <> nil then
-           Result := AppendPathDelim(Node.Attributes.GetNamedItem('Value').NodeValue);
+           Result := AppendPathDelim(Resolvedots(Node.Attributes.GetNamedItem('Value').NodeValue));
+            // Apparently sometimes Lazarus puts a relative path in envopts.xml - danger here is
+            // that if Lazarus now has a working dir different from when the path was written, it
+            // will be wrong anyway. Further research is indicated.
     end;
     Doc.free;
+    debugln('TExampleData.GetLazDir = ' + Result);
 end;
 
 function TExampleData.GetLocalTime: ANSIstring;

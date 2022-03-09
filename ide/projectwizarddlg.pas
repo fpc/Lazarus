@@ -68,10 +68,12 @@ function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelecti
 implementation
 
 {$R *.lfm}
+uses PackageIntf;
 
 function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 var
   ProjectWizardDialog: TProjectWizardDialog;
+  Pkg: TIDEPackage;
 begin
   Result := tpws_closeIDE;
   ARecentProject := '';
@@ -81,6 +83,10 @@ begin
     Caption:=lisProjectWizard;
     btnNewProject.caption:=lisPWNewProject;
     btnOpenProject.caption:=lisPWOpenProject;
+
+    btnExamples.Enabled :=
+        (PackageEditingInterface.FindPackageWithName('exampleprojects') <> Nil);
+
     btnExamples.Caption:=lisPWViewExampleProjects;
     btnConvertProject.caption:=lisPWConvertProject;
     gbRecent.Caption:=lisPWOpenRecentProject;

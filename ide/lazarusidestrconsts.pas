@@ -592,8 +592,6 @@ resourcestring
   lisMenuConvertDelphiPackage = 'Convert Delphi Package to Lazarus Package ...';
   lisMenuConvertEncoding = 'Convert Encoding of Projects/Packages ...';
   lisConvertEncodingOfProjectsPackages = 'Convert encoding of projects/packages';
-  lisMenuExampleProjects = 'Example Projects ...';
-  lisKMExampleProjects = 'Example Projects';
   lisMenuBuildLazarus = 'Build Lazarus with Current Profile';
   lisMenuBuildLazarusProf = 'Build Lazarus with Profile: %s';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus" ...';

@@ -1124,7 +1124,10 @@
       <Unit>
         <Filename Value="projectwizarddlg.pas"/>
         <IsPartOfProject Value="True"/>
+        <ComponentName Value="ProjectWizardDialog"/>
         <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ProjectWizardDlg"/>
       </Unit>
       <Unit>
         <Filename Value="projectdefs.pas"/>
@@ -1324,6 +1327,7 @@
       <Unit>
         <Filename Value="keymapping.pp"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="KeyMapping"/>
       </Unit>
       <Unit>
         <Filename Value="redirect_stderr.pas"/>
@@ -1369,11 +1373,6 @@
       <Unit>
         <Filename Value="idedefs.pas"/>
         <IsPartOfProject Value="True"/>
-      </Unit>
-      <Unit>
-        <Filename Value="examplemanager.pas"/>
-        <IsPartOfProject Value="True"/>
-        <HasResources Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="formeditor.pp"/>

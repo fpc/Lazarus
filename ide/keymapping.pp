@@ -740,7 +740,6 @@ begin
     ecManageDesktops          : Result:= lisDesktops;
 
     ecExtToolSettings         : Result:= srkmecExtToolSettings;
-    ecManageExamples          : Result:= lisMenuExampleProjects;
     ecConfigBuildLazarus      : Result:= lismenuconfigurebuildlazarus;
     ecBuildLazarus            : Result:= srkmecBuildLazarus;
     ecExtToolFirst
@@ -1400,7 +1399,6 @@ begin
   ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
 
   ecExtToolSettings:     SetSingle(VK_UNKNOWN,[]);
-  ecManageExamples:      SetSingle(VK_UNKNOWN,[]);
   ecBuildLazarus:        SetSingle(VK_UNKNOWN,[]);
   ecConfigBuildLazarus:  SetSingle(VK_UNKNOWN,[]);
   ecMakeResourceString:  SetSingle(VK_UNKNOWN,[]);
@@ -1845,7 +1843,6 @@ begin
   ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
 
   ecExtToolSettings:     SetSingle(VK_UNKNOWN,[]);
-  ecManageExamples:      SetSingle(VK_UNKNOWN,[]);
   ecBuildLazarus:        SetSingle(VK_UNKNOWN,[]);
   ecConfigBuildLazarus:  SetSingle(VK_UNKNOWN,[]);
   ecMakeResourceString:  SetSingle(VK_UNKNOWN,[]);
@@ -2477,7 +2474,6 @@ begin
   ecCodeToolsDefinesEd:  SetSingle(VK_UNKNOWN,[]);
 
   ecExtToolSettings:     SetSingle(VK_UNKNOWN,[]);
-  ecManageExamples:      SetSingle(VK_UNKNOWN,[]);
   ecBuildLazarus:        SetSingle(VK_UNKNOWN,[]);
   ecConfigBuildLazarus:  SetSingle(VK_UNKNOWN,[]);
   ecMakeResourceString:  SetSingle(VK_UNKNOWN,[]);
@@ -3210,7 +3206,6 @@ begin
   AddDefault(C, 'Manage desktops', dlgManageDesktops, ecManageDesktops);
 
   AddDefault(C, 'External Tools settings', lisKMExternalToolsSettings, ecExtToolSettings);
-  AddDefault(C, 'Example Projects', lisKMExampleProjects, ecManageExamples);
   AddDefault(C, 'Build Lazarus', lisMenuBuildLazarus, ecBuildLazarus);
   AddDefault(C, 'Configure "Build Lazarus"', lisConfigureBuildLazarus, ecConfigBuildLazarus);
   AddDefault(C, 'Diff editor files', lisKMDiffEditorFiles, ecDiff);
