@@ -5515,6 +5515,7 @@
 
       <element name="TPanel.Visible" link="#lcl.controls.TControl.Visible"/>
       <element name="TPanel.WordWrap" link="#lcl.extctrls.TCustomPanel.WordWrap"/>
+      <element name="TPanel.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
       <element name="TPanel.OnClick" link="#lcl.controls.TControl.OnClick"/>
       <element name="TPanel.OnContextPopup" link="#lcl.controls.TControl.OnContextPopup"/>
       <element name="TPanel.OnDockDrop" link="#lcl.controls.TWinControl.OnDockDrop"/>
