@@ -222,7 +222,7 @@
         <descr>
           <p>
             <var>GetCount</var> is overridden in <var>TTextStrings</var> to re-implement the method. It ensures that the internal array of line ranges is valid, and calls <var>BuildArrays</var> when the validity flag has not been set.
-          </p></descr>
+          </p>
           <p>
             The property value is set to the member value used to store the line count.
           </p>
