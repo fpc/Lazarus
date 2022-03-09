@@ -9957,7 +9957,7 @@ end;
         </seealso>
       </element>
       <element name="TCustomLabel.GetTransparent.Result">
-        <short>Value for the property.</short>
+        <short>Value for the Transparent property.</short>
       </element>
 
       <element name="TCustomLabel.SetColor">
@@ -10260,17 +10260,27 @@ end;
       </element>
 
       <element name="TCustomLabel.Color">
-        <short>Sets the color used for the background in the control.</short>
+        <short>Sets the color used for the background of the control.</short>
         <descr>
           <p>
             The default value for the property is <var>clNone</var> in <var>TCustomLabel</var>. This value is used because labels, by default, are transparent in the LCL. Please note that this differs from the Delphi VCL where the default value for Transparent is <b>False</b>.
           </p>
           <p>
-            Set Transparent to <b>False</b> to fill the control background with a given <var>TColor</var> value. Set <var>ParentColor</var> to <b>True</b> to use the Color defined for the parent control or form.
+            Changing the value in Color causes ControlStyle flags to be updated to include or exclude the value csOpaque as needed for the new property value. When set to clNone, the csOpaque flag is excluded from ControlStyle. Other values cause csOpaque to be included in ControlStyle.
+          </p>
+          <p>
+            Color is updated when a new value is assigned to the Transparent property. When Transparent is set to <b>True</b>, clNone is assigned to Color. When Transparent is set to <b>False</b> and color contains clNone, Color is changed to clBackground.
+          </p>
+          <p>
+            Values in Color and Font are used when the background and text for the control are drawn in the Paint method. Use the Font property to assign the typeface and color used for the text displayed on the control.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomLabel.Paint"/>
+          <link id="TCustomLabel.Transparent"/>
           <link id="#lcl.controls.TControl.Color">TControl.Color</link>
+          <link id="#lcl.controls.TControl.Font">TControl.Font</link>
+          <link id="#lcl.controls.TControl.ControlStyle">TControl.ControlStyle</link>
         </seealso>
       </element>
 
@@ -10362,24 +10372,31 @@ end;
         <short>Indicates whether the viewer can see through the control.</short>
         <descr>
           <p>
-            Opaque labels have their enclosing rectangle filled with the background Color for the label. This can be the color of the Parent control, when ParentColor is <b>True</b>. Setting Transparent to <b>True</b> makes the label transparent, and does not fill the background for the control or hide any background details.
+            When Transparent is set to <b>False</b>, the enclosing rectangle for the control is filled with the background Color for the label. If Color contains clNone, then clBackground is used in the Color property.
           </p>
           <p>
-            Please note: The default value of this property in the LCL is <b>True</b>, which differs from the default value in the Delphi VCL.
+            When set to <b>True</b>, Color is changed to clNone and the background appears to be transparent (no opacity).
+          </p>
+          <p>
+            The default value for Transparent in the LCL is <b>True</b>, which differs from the default value in the Delphi VCL.
+          </p>
+          <p>
+            Values in Color, Transparent, and ParentColor are inter-dependent; changing the value in one property affects the values in the other properties. Use ParentColor to toggle values in Color and Transparent. Use Color to set an explicit background color for the control and toggle values in Transparent and ParentColor.
           </p>
         </descr>
         <seealso>
+          <link id="TCustomLabel.Color"/>
           <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
         </seealso>
       </element>
 
       <element name="TCustomLabel.WordWrap">
         <short>
-          Allows the caption to wrap into multiple lines when it is too long for the available Width.
+          Allows the caption to wrap to multiple lines when it is longer than the available Width.
         </short>
         <descr>
           <p>
-            <var>WordWrap</var> is a <var>Boolean</var> property which indicates if the caption in the control can be wrapped into multiple lines when its length exceeds the value in <var>Width</var>. The default value for the property is <b>False</b>.
+            <var>WordWrap</var> is a <var>Boolean</var> property which indicates if the caption in the control can be wrapped to multiple lines when its length exceeds the value in <var>Width</var>. The default value for the property is <b>False</b>.
           </p>
           <p>
             When a new value is assigned to the property, the <var>Invalidate</var> and <var>UpdateSize</var> methods are called to auto-size and repaint the control.
@@ -10393,21 +10410,6 @@ end;
           <link id="TCustomLabel.UpdateSize"/>
           <link id="#lcl.controls.TControl.Width">TControl.Width</link>
           <link id="#lcl.controls.TControl.Invalidate">TControl.Invalidate</link>
-        </seealso>
-      </element>
-
-      <element name="TCustomLabel.ParentColor">
-        <short>Uses the color from the parent control, when enabled.</short>
-        <descr>
-          <p>
-            ParentColor determines if the control should use the Color from the Parent control, when enabled. The default value is False in TCustomLabel.
-          </p>
-          <p>
-            When this property is True, all changes to the Color of the parent will also be applied to the Color of the control, ensuring that they both contain same value. If the Color of the control is changed by the application, then ParentColor will be automatically set to False.
-          </p>
-        </descr>
-        <seealso>
-          <link id="#lcl.controls.TControl.ParentColor">TControl.ParentColor</link>
         </seealso>
       </element>
 
@@ -10465,7 +10467,7 @@ end;
       <element name="TLabel.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
       <element name="TLabel.OptimalFill" link="#lcl.stdctrls.TCustomLabel.OptimalFill"/>
       <element name="TLabel.ParentBidiMode" link="#lcl.controls.TControl.ParentBiDiMode"/>
-      <element name="TLabel.ParentColor" link="#lcl.stdctrls.TCustomLabel.ParentColor"/>
+      <element name="TLabel.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
       <element name="TLabel.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
       <element name="TLabel.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
       <element name="TLabel.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
