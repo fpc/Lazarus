@@ -1762,7 +1762,7 @@ begin
     and (not CheckIfInLazarus(Result))
     then begin
       // not found
-      if AnOwner=nil then
+{      if AnOwner=nil then
         DebugLn(['TCodeHelpManager.GetFPDocFilenameForSource Hint: file without owner: ',SrcFilename])
       else if AnOwner is TLazProject then begin
         if TLazProject(AnOwner).FPDocPaths='' then
@@ -1774,7 +1774,7 @@ begin
           debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner (package ',TLazPackage(AnOwner).Name,') has no fpdoc paths: ',SrcFilename])
         else
           debugln(['TCodeHelpManager.GetFPDocFilenameForSource Hint: Owner (package ',TLazPackage(AnOwner).Name,') has no fpdoc file for: ',SrcFilename])
-      end;
+      end;  }
     end;
 
     // save to cache
