@@ -10,7 +10,10 @@
       <short>Useful lower-level helper functions and classes.</short>
       <descr>
         <p>
-          <file>lclproc.pas</file> contains lower-level  classes and helper routines that are useful in LCL applications. This file is part of the Lazarus Component Library (<b>LCL</b>).
+          <file>lclproc.pas</file> contains lower-level  classes and helper routines that are useful in LCL applications.
+        </p>
+        <p>
+          This file is part of the Lazarus Component Library (<b>LCL</b>).
         </p>
       </descr>
 
@@ -59,7 +62,7 @@
       </element>
 
       <element name="TDebugLCLItemInfo.IsDestroyed">
-        <short>True when the item has been destroyed.</short>
+        <short><b>True</b> when the item has been destroyed.</short>
         <descr/>
         <seealso/>
       </element>
@@ -91,7 +94,7 @@
         <short/>
       </element>
       <element name="TDebugLCLItemInfo.AsString.WithStackTraces">
-        <short>True to include stack traces.</short>
+        <short><b>True</b> to include stack traces.</short>
       </element>
 
       <element name="TDebugLCLItemInfo.Destroy">
@@ -144,17 +147,17 @@
         <seealso/>
       </element>
       <element name="TDebugLCLItems.FindInfo.Result">
-        <short>The item information, or Nil if none was found or created.</short>
+        <short>The item information, or <b>Nil</b> if none was found or created.</short>
       </element>
       <element name="TDebugLCLItems.FindInfo.p">
         <short>The address of the item to find.</short>
       </element>
       <element name="TDebugLCLItems.FindInfo.CreateIfNotExists">
-        <short>True means create an according list entry, if none existed yet.</short>
+        <short><b>True</b> means create an according list entry, if none existed yet.</short>
       </element>
 
       <element name="TDebugLCLItems.IsDestroyed">
-        <short>True when the item has been destroyed.</short>
+        <short><b>True</b> when the item has been destroyed.</short>
         <descr/>
         <errors>
         </errors>
@@ -162,7 +165,7 @@
       </element>
       <element name="TDebugLCLItems.IsDestroyed.Result">
         <short>
-          True when destroyed, False when alive or not listed.
+          <b>True</b> when destroyed, <b>False</b> when alive or not listed.
         </short>
       </element>
       <element name="TDebugLCLItems.IsDestroyed.p">
@@ -170,12 +173,12 @@
       </element>
 
       <element name="TDebugLCLItems.IsCreated">
-        <short>True when the item is alive.</short>
+        <short><b>True</b> when the item is alive.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TDebugLCLItems.IsCreated.Result">
-        <short>True when the item is listed and has not yet been destroyed.</short>
+        <short><b>True</b> when the item is listed and has not yet been destroyed.</short>
       </element>
       <element name="TDebugLCLItems.IsCreated.p">
         <short>The address to find.</short>
@@ -231,7 +234,7 @@
         <short>The address to find.</short>
       </element>
       <element name="TDebugLCLItems.GetInfo.WithStackTraces">
-        <short>True means include stack traces.</short>
+        <short><b>True</b> means include stack traces.</short>
       </element>
 
       <element name="TDebugLCLItems.Name">
@@ -310,7 +313,7 @@
         <short>Implements a merge/sort for TStrings or TFPList.</short>
         <descr>
           <p>
-            MergeSort is an overloaded routine used to implement a comparison-based sort routine for values in List. List can be a TStrings or TFPList instance. No actions are performed in the routine when List has not been assigned (contains Nil).
+            MergeSort is an overloaded routine used to implement a comparison-based sort routine for values in List. List can be a TStrings or TFPList instance. No actions are performed in the routine when List has not been assigned (contains <b>Nil</b>).
           </p>
           <p>
             The StartIndex and EndIndex arguments allow the initial and final entries in a TFPList instance to be specified. When the values are omitted, they default to the first value (position 0) and the last value (Count-1) in List.
@@ -321,7 +324,6 @@
           <p>
             MergeSort implements the J. von Nuemann divide-and-conquer algorithm, with an insertion sort used for lists with 6 or fewer elements.
           </p>
-          <!-- TODO: Explain TStrings vs TFPList, insertion sort, etc. -->
         </descr>
         <seealso>
           <link id="TListSortCompare"/>
@@ -366,7 +368,7 @@
         <seealso/>
       </element>
       <element name="KeyStringIsIrregular.Result">
-        <short>True when the string is not a named virtual key code.</short>
+        <short><b>True</b> when the string is not a named virtual key code.</short>
       </element>
       <element name="KeyStringIsIrregular.s">
         <short>Value examined in the method.</short>
@@ -439,10 +441,10 @@
         <short>The list index where the search should start.</short>
       </element>
       <element name="GetCompleteText.bCaseSensitive">
-        <short>True means case-sensitive comparison.</short>
+        <short><b>True</b> means case-sensitive comparison.</short>
       </element>
       <element name="GetCompleteText.bSearchAscending">
-        <short>True means search ascending from iSelStart.</short>
+        <short><b>True</b> means search ascending from iSelStart.</short>
       </element>
       <element name="GetCompleteText.slTextList">
         <short>The list to search.</short>
@@ -463,7 +465,7 @@
       </element>
 
       <element name="TSendApplicationMessageFunction">
-        <short>Hooks used to prevent circular unit references.</short>
+        <short>Hook used to prevent circular unit references.</short>
         <descr/>
         <seealso/>
       </element>
@@ -481,12 +483,12 @@
       </element>
 
       <element name="TOwnerFormDesignerModifiedProc">
-        <short/>
+        <short>Hook used to prevent circular unit references.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="TOwnerFormDesignerModifiedProc.AComponent">
-        <short/>
+        <short>Component for the change notification.</short>
       </element>
 
       <element name="SendApplicationMessageFunction">
@@ -498,9 +500,16 @@
       </element>
 
       <element name="OwnerFormDesignerModifiedProc">
-        <short/>
+        <short>
+          Routine used to notify the form designer which owns the specified component when it has been changed.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TOwnerFormDesignerModifiedProc"/>
+        </seealso>
+      </element>
+      <element name="OwnerFormDesignerModifiedProc.AComponent">
+        <short>Modified component that needs to be updated on its form design surface.</short>
       </element>
 
       <element name="SendApplicationMessage">
@@ -525,31 +534,42 @@
       </element>
 
       <element name="OwnerFormDesignerModified">
-        <short/>
-        <descr/>
-        <errors/>
+        <short>
+          Executes the routine which notifies the form designer when the specified component has been changed.
+        </short>
+        <descr>
+          <p>
+            The <file>forms.pp</file> unit provides a private implementation in its IfOwnerIsFormThenDesignerModified routine which is assigned to the variable during unit initialization.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="OwnerFormDesignerModified.AComponent">
-        <short/>
+        <short>The modified component which needs to be updated on its form design surface.</short>
       </element>
 
       <element name="FreeThenNil">
-        <short>Frees the TObject instance, before setting the reference to Nil.</short>
-        <descr/>
-        <seealso/>
+        <short>Frees the TObject instance (when assigned) before setting the reference to <b>Nil</b>.</short>
+        <descr>
+          <p>
+            Calls the FreeThenNil routine in the <file>lazutilities.pas</file> unit from the <file>lazutils</file> package.
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazutilities.FreeThenNil">LazUtilities.FreeThenNil</link>
+        </seealso>
       </element>
       <element name="FreeThenNil.obj">
-        <short>The object reference (variable).</short>
+        <short>The object reference freed and <b>Nil</b>'d in the routine.</short>
       </element>
 
       <element name="RegisterInterfaceInitializationHandler">
-        <short/>
+        <short>Registers an initialization routine needed before the LCL is initialized.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="RegisterInterfaceInitializationHandler.p">
-        <short/>
+        <short>Procedure registered in the routine.</short>
       </element>
 
       <element name="CallInterfaceInitializationHandlers">
@@ -559,7 +579,7 @@
       </element>
 
       <element name="RegisterInterfaceFinalizationHandler">
-        <short/>
+        <short>Registers an finalization routine needed after the LCL has been finalized.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -583,7 +603,7 @@
         <seealso/>
       </element>
       <element name="OffsetRect.Result">
-        <short>True when the TopLeft coordinates are all positive.</short>
+        <short><b>True</b> when the TopLeft coordinates are all positive.</short>
       </element>
       <element name="OffsetRect.ARect">
         <short/>
@@ -637,7 +657,7 @@
       </element>
 
       <element name="CalculateLeftTopWidthHeight">
-        <short>Converts coordinates into kind of a rectangle with positive Width and Height.</short>
+        <short>Transposes coordinates to ensure Width and Height are positive Integer values.</short>
         <descr/>
         <seealso/>
       </element>
@@ -755,7 +775,7 @@
       </element>
       <element name="CompareRect.Result">
         <short>
-          True when the top, left, bottom, and right values in each rectangle are the same.
+          <b>True</b> when the top, left, bottom, and right values in each rectangle are the same.
         </short>
       </element>
       <element name="CompareRect.R1">
@@ -889,7 +909,7 @@
       </element>
 
       <element name="DebugLnEnter">
-        <short/>
+        <short>Optionally writes a value to the debugger and increases the indentation level.</short>
         <descr/>
         <seealso/>
       </element>
@@ -919,7 +939,7 @@
       <element name="DebugLnEnter.s18"/>
 
       <element name="DebugLnExit">
-        <short/>
+        <short>Optionally writes a value to the debugger and decreases the indentation level.</short>
         <descr/>
         <errors>
         </errors>
@@ -951,7 +971,7 @@
       <element name="DebugLnExit.s18"/>
 
       <element name="DbgOut">
-        <short/>
+        <short>Signals the OnDbgOut event handler for the debug logger class instance.</short>
         <descr/>
         <errors/>
         <seealso/>
@@ -1144,7 +1164,7 @@
       </element>
 
       <element name="dbghex">
-        <short>Provides an hex dump of an Int64 value, (sign + absolute value).</short>
+        <short>Provides a hex dump of an Int64 value, (sign + absolute value).</short>
         <descr/>
         <errors>
         </errors>
@@ -1158,7 +1178,7 @@
       </element>
 
       <element name="DbgSWindowPosFlags">
-        <short>Provides an dump of SetWindowPosition flags.</short>
+        <short>Provides a dump of SetWindowPosition flags.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1182,7 +1202,7 @@
       </element>
 
       <element name="DbgOutThreadLog">
-        <short/>
+        <short>Writes a debugging message to the log file for the current thread.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1191,7 +1211,9 @@
       </element>
 
       <element name="DebuglnThreadLog">
-        <short/>
+        <short>
+          Writes a debugging message to the log file for the current thread which includes the thread identifier.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -1203,7 +1225,7 @@
       </element>
 
       <element name="DbgSaveData">
-        <short>Writes data into an file.</short>
+        <short>Writes data to a file.</short>
         <descr/>
         <seealso/>
       </element>
@@ -1244,7 +1266,7 @@
       </element>
 
       <element name="CloseDebugOutput">
-        <short/>
+        <short>Calls the Finish method for the debug logger class instance.</short>
         <descr/>
         <errors>
         </errors>
@@ -1268,7 +1290,7 @@
         <short>Array of TClass instances to examine in the routine.</short>
       </element>
       <element name="ClassCase.ADescendant">
-        <short>True to consider descendants of AClass as a match in the routine.</short>
+        <short><b>True</b> to consider descendants of AClass as a match in the routine.</short>
       </element>
 
       <element name="UTF16String">
@@ -1342,7 +1364,11 @@
 
       <element name="CreateFirstIdentifier">
         <short>Replaces last digits with 1.</short>
-        <descr>For example Name321 becomes Name1</descr>
+        <descr>
+        <p>
+            For example Name321 becomes Name1.
+        </p>
+        </descr>
         <seealso/>
       </element>
       <element name="CreateFirstIdentifier.Result">
@@ -1370,40 +1396,10 @@
         <seealso/>
       </element>
       <element name="IsFontNameDefault.Result">
-        <short>True when AName contains 'default'.</short>
+        <short><b>True</b> when AName contains 'default'.</short>
       </element>
       <element name="IsFontNameDefault.AName">
         <short>Font name examined in the routine.</short>
-      </element>
-
-      <element name="DebugLnMaxNestPrefixLen">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="DebugLnNestLvlIndent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="DebugText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="DebugLnProc">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="DebugOutProc">
-        <short/>
-        <descr/>
-        <seealso/>
       </element>
 
     </module>
