@@ -2,8 +2,8 @@
 <CONFIG>
   <Package Version="5">
     <PathDelim Value="\"/>
-    <Name Value="exampleprojects"/>
-    <Type Value="RunAndDesignTime"/>
+    <Name Value="ExampleProjects"/>
+    <Type Value="DesignTime"/>
     <Author Value=" David Bannon"/>
     <CompilerOptions>
       <Version Value="11"/>
@@ -17,7 +17,7 @@
     </CompilerOptions>
     <Description Value="Example Projects."/>
     <License Value="GPL"/>
-    <Version Major="1"/>
+    <Version Minor="7"/>
     <Files>
       <Item>
         <Filename Value="uintf.pas"/>
@@ -41,6 +41,10 @@
         <UnitName Value="exwinsettings"/>
       </Item>
     </Files>
+    <i18n>
+      <EnableI18N Value="True"/>
+      <OutDir Value="languages"/>
+    </i18n>
     <RequiredPkgs>
       <Item>
         <PackageName Value="IDEIntf"/>
