@@ -6,13 +6,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
-  ButtonPanel, ExtCtrls, ComCtrls, idehtml2class;
+  ButtonPanel, ExtCtrls, ComCtrls, ActnList, idehtml2class, Types;
 
 type
 
   { TfrmHTML2Form }
 
   TfrmHTML2Form = class(TForm)
+    aSave: TAction;
+    aLoad: TAction;
+    alHTMLToForm: TActionList;
     BPHTMLToForm: TButtonPanel;
     cbAddHTMLFile: TCheckBox;
     cbBindElementsInConstructor: TCheckBox;
@@ -31,6 +34,7 @@ type
     edtFormClassName: TEdit;
     FEHTMLFile: TFileNameEdit;
     FETagMapFile: TFileNameEdit;
+    ilHTML2Form: TImageList;
     lblExtraUnits: TLabel;
     lblExclude: TLabel;
     lblClassName: TLabel;
@@ -43,12 +47,21 @@ type
     lblBelowID: TLabel;
     lblTagMap: TLabel;
     mExclude: TMemo;
+    odSettings: TOpenDialog;
     PCOptions: TPageControl;
+    sdSettings: TSaveDialog;
+    ToolBar1: TToolBar;
+    tbLoad: TToolButton;
+    tbSave: TToolButton;
     TSCodeGen: TTabSheet;
     TSHTML: TTabSheet;
+    procedure aLoadExecute(Sender: TObject);
+    procedure aSaveExecute(Sender: TObject);
     procedure CBEventsChange(Sender: TObject);
     procedure FEHTMLFileEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure TSHTMLContextPopup(Sender: TObject; MousePos: TPoint;
+      var Handled: Boolean);
 
   private
     procedure CheckEventEdits;
@@ -97,7 +110,7 @@ var
 
 implementation
 
-uses lazideintf;
+uses fpjson, lazideintf;
 
 {$R *.lfm}
 
@@ -130,9 +143,64 @@ begin
   FETagMapFile.InitialDir:=aDir;
 end;
 
+procedure TfrmHTML2Form.TSHTMLContextPopup(Sender: TObject; MousePos: TPoint;
+  var Handled: Boolean);
+begin
+
+end;
+
 procedure TfrmHTML2Form.CBEventsChange(Sender: TObject);
 begin
   CheckEventEdits;
+end;
+
+procedure TfrmHTML2Form.aSaveExecute(Sender: TObject);
+
+Var
+  aOptions : THTML2ClassOptions;
+  aJSON : TJSONStringType;
+  fd : TStringStream;
+
+begin
+  if sdSettings.Execute then
+    begin
+    fd:=nil;
+    aOptions:=THTML2ClassOptions.Create;
+    try
+      SaveOptions(aOptions);
+      aJSON:=aOptions.asJSON(True);
+      FD:=TStringStream.Create(aJSON,CP_UTF8);
+      FD.SaveToFile(sdSettings.FileName);
+    finally
+      FD.Free;
+      aoptions.Free;
+    end;
+    end;
+end;
+
+procedure TfrmHTML2Form.aLoadExecute(Sender: TObject);
+
+Var
+  aOptions : THTML2ClassOptions;
+  aJSON : TJSONStringType;
+  fd : TStringStream;
+
+begin
+  if odSettings.Execute then
+    begin
+    fd:=nil;
+    aOptions:=THTML2ClassOptions.Create;
+    try
+      FD:=TStringStream.Create('',CP_UTF8);
+      FD.LoadFromFile(odSettings.FileName);
+      aJSON:=FD.DataString;
+      aOptions.FromJSON(aJSON);
+      LoadOptions(aOptions);
+    finally
+      FD.Free;
+      aoptions.Free;
+    end;
+    end;
 end;
 
 procedure TfrmHTML2Form.FEHTMLFileEditingDone(Sender: TObject);
