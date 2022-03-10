@@ -1377,8 +1377,19 @@ AResult := FindDiskFileName(AFileName);
         <short>
           Performs actions required to add a file name to the list of matches for the file searcher.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>DoFileFound</var> is an overridden method in <var>TListFileSearcher</var>. It adds the current value from the FileName property to the internal TStrings member maintained in the class instance. The inherited method is called prior to exit to signal the OnFileFound event handler (when assigned).
+          </p>
+          <p>
+            DoFileFound is called from the Search method when a file on the local file system is located that matches a given mask.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.FileName"/>
+          <link id="TFileSearcher.OnFileFound"/>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
       <element name="TListFileSearcher.Create">
@@ -1417,8 +1428,19 @@ AResult := FindDiskFileName(AFileName);
         <short>
           Performs actions needed to add a directory path to the list of matches for the searcher.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            DoDirectoryFound is an overridden method in TListDirectoriesSearcher. It adds the current value from the FileName property to the internal TStrings member used in the class instance. The inherited method is called prior to exit to signal the OnDirectoryFound event handler (when assigned).
+          </p>
+          <p>
+            DoDirectoryFound is called from the Search method when a directory on the local file system is located that matches a given mask.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TFileIterator.FileName"/>
+          <link id="TFileSearcher.OnDirectoryFound"/>
+          <link id="TFileSearcher.Search"/>
+        </seealso>
       </element>
 
       <element name="TListDirectoriesSearcher.Create">
