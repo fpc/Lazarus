@@ -32,17 +32,17 @@ resourcestring
 
     // ---------- uLaz_Examples
     rsExSearchPrompt = 'Search Here';
-    rsExNoProjectFile = 'Maybe no project file ?';
+    rsExNoProjectFile = 'Project file not found.';
     rsFoundExampleProjects = 'Found %d Example Projects';
-    rsRefreshExistingExample =  'Refresh Existing Example ?';
-    rsExDownloadingProject = 'Downloading Project...';
-    rsExCopyingProject = 'Copying Project...';
+    rsRefreshExistingExample =  'Refresh Existing Example?';
+    rsExDownloadingProject = 'Downloading Project ...';
+    rsExCopyingProject = 'Copying Project ...';
     rsExProjectDownloadedTo = 'Project Downloaded to';      // followed by a full path name
     rsExProjectCopiedTo = 'Project Copied to';              // followed by a full path name
     rsExampleName = 'Name';                                 // Column title
     rsExamplePath = 'Path';                                 //  "
-    rsExampleKeyWords = 'Key Words';                        //  "
-    rsExSearchingForExamples = 'Searching for Examples';
+    rsExampleKeyWords = 'Keywords';                         //  "
+    rsExSearchingForExamples = 'Searching for Examples ...';
     rsFailedToCopyFilesTo = 'Failed to copy files to';        // Followed by a dir were we, apparently, cannot write
 
     // These are ObjectInspector set but I believe I cannot get OI literals i18n in a Package ??
@@ -57,7 +57,7 @@ resourcestring
     // ------- rsExampleData
     // Most literals in uExampleData are for debugging only and very unlikely to be
     // seen by the end user. But a couple of network related ones may need i18n -
-    rsExNetWorkError = 'GitLab NetWork Error';              // Followed by system error msg
+    rsExNetWorkError = 'GitLab Network Error';              // Followed by system error msg
 
 
 implementation

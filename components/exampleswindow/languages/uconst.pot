@@ -1,0 +1,84 @@
+msgid ""
+msgstr "Content-Type: text/plain; charset=UTF-8"
+
+#: uconst.rsdirwhereexamplesgo
+msgid "Directory where Examples go"
+msgstr ""
+
+#: uconst.rsexamplecategory
+msgid "Category"
+msgstr ""
+
+#: uconst.rsexampleclose
+msgid "Close"
+msgstr ""
+
+#: uconst.rsexampledownload
+msgid "Download"
+msgstr ""
+
+#: uconst.rsexamplekeywords
+msgid "Keywords"
+msgstr ""
+
+#: uconst.rsexamplename
+msgid "Name"
+msgstr ""
+
+#: uconst.rsexampleopen
+msgid "Open"
+msgstr ""
+
+#: uconst.rsexamplepath
+msgid "Path"
+msgstr ""
+
+#: uconst.rsexampleprojects
+msgid "Example Projects"
+msgstr ""
+
+#: uconst.rsexcopyingproject
+msgid "Copying Project ..."
+msgstr ""
+
+#: uconst.rsexdownloadingproject
+msgid "Downloading Project ..."
+msgstr ""
+
+#: uconst.rsexnetworkerror
+msgid "GitLab Network Error"
+msgstr ""
+
+#: uconst.rsexnoprojectfile
+msgid "Project file not found."
+msgstr ""
+
+#: uconst.rsexprojectcopiedto
+msgid "Project Copied to"
+msgstr ""
+
+#: uconst.rsexprojectdownloadedto
+msgid "Project Downloaded to"
+msgstr ""
+
+#: uconst.rsexsearchingforexamples
+msgid "Searching for Examples ..."
+msgstr ""
+
+#: uconst.rsexsearchprompt
+msgid "Search Here"
+msgstr ""
+
+#: uconst.rsfailedtocopyfilesto
+msgid "Failed to copy files to"
+msgstr ""
+
+#: uconst.rsfoundexampleprojects
+#, object-pascal-format
+msgid "Found %d Example Projects"
+msgstr ""
+
+#: uconst.rsrefreshexistingexample
+msgid "Refresh Existing Example?"
+msgstr ""
+

@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ru\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#: uconst.rsdirwhereexamplesgo
+msgid "Directory where Examples go"
+msgstr "Каталог для помещения примеров"
+
+#: uconst.rsexamplecategory
+msgid "Category"
+msgstr "Категория"
+
+#: uconst.rsexampleclose
+msgid "Close"
+msgstr "Закрыть"
+
+#: uconst.rsexampledownload
+msgid "Download"
+msgstr "Загрузить"
+
+#: uconst.rsexamplekeywords
+msgid "Keywords"
+msgstr "Ключевые слова"
+
+#: uconst.rsexamplename
+msgid "Name"
+msgstr "Имя"
+
+#: uconst.rsexampleopen
+msgid "Open"
+msgstr "Открыть"
+
+#: uconst.rsexamplepath
+msgid "Path"
+msgstr "Путь"
+
+#: uconst.rsexampleprojects
+msgid "Example Projects"
+msgstr "Примеры проектов"
+
+#: uconst.rsexcopyingproject
+msgid "Copying Project ..."
+msgstr "Копирование проекта ..."
+
+#: uconst.rsexdownloadingproject
+msgid "Downloading Project ..."
+msgstr "Загрузка проекта ..."
+
+#: uconst.rsexnetworkerror
+msgid "GitLab Network Error"
+msgstr "Ошибка подключения к GitLab"
+
+#: uconst.rsexnoprojectfile
+msgid "Project file not found."
+msgstr "Файл проекта не найден."
+
+#: uconst.rsexprojectcopiedto
+msgid "Project Copied to"
+msgstr "Проект скопирован в"
+
+#: uconst.rsexprojectdownloadedto
+msgid "Project Downloaded to"
+msgstr "Проект загружен в"
+
+#: uconst.rsexsearchingforexamples
+msgid "Searching for Examples ..."
+msgstr "Поиск примеров ..."
+
+#: uconst.rsexsearchprompt
+msgid "Search Here"
+msgstr "Поисковый запрос"
+
+#: uconst.rsfailedtocopyfilesto
+msgid "Failed to copy files to"
+msgstr "Не удалось скопировать файлы в"
+
+#: uconst.rsfoundexampleprojects
+#, object-pascal-format
+msgid "Found %d Example Projects"
+msgstr "Найдено примеров проектов: %d"
+
+#: uconst.rsrefreshexistingexample
+msgid "Refresh Existing Example?"
+msgstr "Обновить уже имеющийся пример?"
+
