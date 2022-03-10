@@ -11747,10 +11747,6 @@ msgstr "Zabalit výběr do bloku kódu"
 msgid "Evaluate/Modify"
 msgstr "Vyhodnocení/Upravení"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Ukázkový projekt"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Nastavení vnějších nástrojů"
@@ -13552,10 +13548,6 @@ msgstr "Obklopit výběr ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Vyhodnocení/Upravení ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Ukázkové projekty ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

@@ -11653,10 +11653,6 @@ msgstr "Kapseloi valinta"
 msgid "Evaluate/Modify"
 msgstr "Arvioi/Muuta"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Esimerkkiprojektit"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Ulkoisten työkalujen asetukset"
@@ -13422,10 +13418,6 @@ msgstr "Kapseloi valinta ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "&Arvioi/Muuta ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Esimerkkiprojektit ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

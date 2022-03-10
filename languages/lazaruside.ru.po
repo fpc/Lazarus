@@ -11687,10 +11687,6 @@ msgstr "Заключить выделенное"
 msgid "Evaluate/Modify"
 msgstr "Вычислить/Изменить"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Примеры проектов"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Настройка внешних средств"
@@ -13468,10 +13464,6 @@ msgstr "Заключить выделенное в ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "&Вычислить/Изменить ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Примеры проектов ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

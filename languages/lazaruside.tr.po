@@ -11659,10 +11659,6 @@ msgstr "Seçimi Dahil Et"
 msgid "Evaluate/Modify"
 msgstr "Değiştir / değerlendirin"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Örnek Projeler"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Harici Araçlar ayarları"
@@ -13430,10 +13426,6 @@ msgstr "Seçimi Dahil Et..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "&Değerlendir/Değiştir ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Örnek Projeler ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

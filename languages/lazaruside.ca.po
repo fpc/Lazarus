@@ -11919,10 +11919,6 @@ msgstr ""
 msgid "Evaluate/Modify"
 msgstr ""
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr ""
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr ""
@@ -13737,10 +13733,6 @@ msgstr "Tanca la selecció ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "Avalua/Modifica ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 #, fuzzy

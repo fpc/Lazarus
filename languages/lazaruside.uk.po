@@ -11710,10 +11710,6 @@ msgstr "Задужкувати вибране"
 msgid "Evaluate/Modify"
 msgstr "Обчислити/Змінити"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Приклади проєктів"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Налаштування зовнішніх інструментів"
@@ -13494,10 +13490,6 @@ msgstr "Задужкувати вибране ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Об&числити/Змінити..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Приклади проєктів ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

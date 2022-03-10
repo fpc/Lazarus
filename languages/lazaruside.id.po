@@ -12020,10 +12020,6 @@ msgstr "Tutupi pilihan"
 msgid "Evaluate/Modify"
 msgstr "Evaluasi/Ubah"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr ""
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Seting Piranti Eksternal"
@@ -13916,10 +13912,6 @@ msgstr "Tutupi pilihan ..."
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "Evaluasi/Ubah ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 #, fuzzy

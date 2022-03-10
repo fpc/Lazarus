@@ -11771,10 +11771,6 @@ msgstr "Bereich einschließen"
 msgid "Evaluate/Modify"
 msgstr "Überprüfen/Ändern"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Beispielprojekte"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Einstellungen für externe Werkzeuge"
@@ -13573,10 +13569,6 @@ msgstr "Auswahl einschließen ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Prüfen/Ändern ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Beispielprojekte ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

@@ -11711,10 +11711,6 @@ msgstr "Kijelölés közrezárása"
 msgid "Evaluate/Modify"
 msgstr "Kiértékelés/Módosítás"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Példa projektek"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Külső eszközök beállításai"
@@ -13495,10 +13491,6 @@ msgstr "Kijelölés közrezárása ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Kiértékelés/Módosítás ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Példa projektek ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

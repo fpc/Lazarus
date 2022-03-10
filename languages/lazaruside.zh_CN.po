@@ -11721,10 +11721,6 @@ msgstr "封装(Enclose)选中的东西"
 msgid "Evaluate/Modify"
 msgstr "评估/修改"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "示例工程"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "外部工具设置"
@@ -13508,10 +13504,6 @@ msgstr "封装(Enclose)选中的东西 ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "诊断/评估/修改...(&E)"
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "示例工程..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

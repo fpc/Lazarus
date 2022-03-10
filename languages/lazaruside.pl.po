@@ -11880,10 +11880,6 @@ msgstr "Zamknięcie zaznaczenia"
 msgid "Evaluate/Modify"
 msgstr "Sprawdź/Modyfikuj"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Przykładowe projekty"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Ustawienia zewnętrznych narzędzi"
@@ -13666,10 +13662,6 @@ msgstr "Zaznacz i zamknij zaznaczenie w ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Sprawdź/Modyfikuj ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Przykładowe projekty ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

@@ -11726,10 +11726,6 @@ msgstr "Circundar seleção"
 msgid "Evaluate/Modify"
 msgstr "Avaliar/Modificar"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Projetos de exemplo"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Configurações Ferramentas Externas"
@@ -13513,10 +13509,6 @@ msgstr "Circundar seleção ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "A&valiar/Modificar ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Projetos de exemplo ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

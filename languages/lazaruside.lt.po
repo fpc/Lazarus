@@ -11856,10 +11856,6 @@ msgstr "Apgaubti pažymėtąjį"
 msgid "Evaluate/Modify"
 msgstr "Įvertinti/keisti"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Pavyzdžių projektai"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Išorinių įrankių nuostatos"
@@ -13679,10 +13675,6 @@ msgstr "Apgaubti pažymėtąjį…"
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Į&vertinti/modifikuoti…"
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Pavyzdžių projektai…"
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

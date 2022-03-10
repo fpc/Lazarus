@@ -11680,10 +11680,6 @@ msgstr ""
 msgid "Evaluate/Modify"
 msgstr ""
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr ""
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr ""
@@ -13446,10 +13442,6 @@ msgstr ""
 
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
-msgstr ""
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
 msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc

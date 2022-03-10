@@ -11828,10 +11828,6 @@ msgstr "選択部分を囲む"
 msgid "Evaluate/Modify"
 msgstr "評価/変更"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "サンプルプロジェクト"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "外部ツールの設定"
@@ -13649,10 +13645,6 @@ msgstr "選択部分を囲む ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "評価/変更(&v) ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "サンプルプロジェクト ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

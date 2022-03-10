@@ -11947,10 +11947,6 @@ msgstr "Encerrar Selección"
 msgid "Evaluate/Modify"
 msgstr "Evaluar/Modificar"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr "Projectos Ejemplo"
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "Opciones de herramientas externas"
@@ -13841,10 +13837,6 @@ msgstr "Encerrar Selección ..."
 #: lazarusidestrconsts.lismenuevaluate
 msgid "E&valuate/Modify ..."
 msgstr "Evaluar/Modificar ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr "Proyectos Ejemplo ..."
 
 #: lazarusidestrconsts.lismenuextractproc
 msgid "Extract Procedure ..."

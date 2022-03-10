@@ -12220,10 +12220,6 @@ msgstr "צרף את הבחירה"
 msgid "Evaluate/Modify"
 msgstr "חשב/שנה"
 
-#: lazarusidestrconsts.liskmexampleprojects
-msgid "Example Projects"
-msgstr ""
-
 #: lazarusidestrconsts.liskmexternaltoolssettings
 msgid "External Tools settings"
 msgstr "הגדרת כלים חצוניים"
@@ -14174,10 +14170,6 @@ msgstr "צרף את הבחירה"
 #| msgid "Evaluate/Modify ..."
 msgid "E&valuate/Modify ..."
 msgstr "הערכה/שינוי ..."
-
-#: lazarusidestrconsts.lismenuexampleprojects
-msgid "Example Projects ..."
-msgstr ""
 
 #: lazarusidestrconsts.lismenuextractproc
 #, fuzzy
