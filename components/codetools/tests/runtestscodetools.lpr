@@ -74,6 +74,7 @@ begin
   inherited AppendLongOpts;
   LongOpts.Add('machine:');
   LongOpts.Add('submitter:');
+  LongOpts.Add('filemask:');
 end;
 
 {$IF FPC_FULLVERSION>=30100}
