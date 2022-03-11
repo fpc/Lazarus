@@ -194,6 +194,7 @@ const
   fdfGlobals = [fdfExceptionOnNotFound, fdfTopLvlResolving,
                 fdfExtractOperand, fdfPropertyResolving,
                 fdfOverrideStringTypesWithFirstParamType];
+  fdfGlobalsAndAncestor = fdfGlobals+[fdfSearchInAncestors];
   fdfGlobalsSameIdent = fdfGlobals+[fdfExceptionOnPredefinedIdent,
                 fdfIgnoreMissingParams, fdfIgnoreUsedUnits, fdfDoNotCache,
                 fdfOnlyCompatibleProc, fdfSearchInAncestors, fdfCollect, fdfSearchInHelpers];
@@ -5268,7 +5269,7 @@ var
       debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier Identifier=',GetIdentifier(@Src[IdentStart])]);
       {$ENDIF}
       SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                      +(fdfGlobals*Params.Flags);
+                      +(fdfGlobalsAndAncestor*Params.Flags);
       SubParams.ContextNode:=StartNode.Parent;
       if (SubParams.ContextNode.Desc in (AllIdentifierDefinitions))
       then begin

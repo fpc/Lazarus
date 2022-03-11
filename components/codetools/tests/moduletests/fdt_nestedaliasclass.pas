@@ -25,7 +25,7 @@ type
     TAliasBirdWing = TBirdWing{declaration:fdt_nestedaliasclass.TBird.TBirdWing};
     TEagleWing = class(TAliasBirdWing{declaration:fdt_nestedaliasclass.TEagle.TAliasBirdWing})
     public
-      procedure Fly; override;
+      procedure Fly{declaration:fdt_nestedaliasclass.TBird.TBirdWing.Fly}; override;
     end;
   end;
 
