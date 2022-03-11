@@ -4426,8 +4426,8 @@ begin
   if NewItem=nil then exit;
   OldAVLNode:=FindItem(NewItem);
   {$IFDEF ShowHistory}
-  DebugLn('TIdentifierHistoryList.Add Count=',Count,' Found=',OldAVLNode<>nil,
-    ' ITEM: ',NewItem.AsString);
+  DebugLn(['TIdentifierHistoryList.Add Count=',Count,' Found=',OldAVLNode<>nil,
+    ' ITEM: ',NewItem.AsString]);
   {$ENDIF}
   if OldAVLNode<>nil then begin
     // already in tree
@@ -4457,7 +4457,7 @@ begin
     FItems.FreeAndDelete(FItems.FindHighest);
   FItems.Add(NewHistItem);
   {$IFDEF ShowHistory}
-  DebugLn('TIdentifierHistoryList.Added Count=',Count);
+  DebugLn(['TIdentifierHistoryList.Added Count=',Count]);
   {$ENDIF}
 end;
 
