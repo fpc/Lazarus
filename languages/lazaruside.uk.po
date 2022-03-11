@@ -1391,6 +1391,10 @@ msgstr "Тип зневаджувача і шлях"
 msgid "Default editor font"
 msgstr "Типовий шрифт редактора"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Типове значення"

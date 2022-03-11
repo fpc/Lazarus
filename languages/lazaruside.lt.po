@@ -1421,6 +1421,10 @@ msgstr "Derintuvės tipas ir failas"
 msgid "Default editor font"
 msgstr "Numatytas rengyklės šriftas"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Numatyta vertė"

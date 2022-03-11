@@ -1399,6 +1399,10 @@ msgstr "Typ a cesta ladiče"
 msgid "Default editor font"
 msgstr "Výchozí písmo editoru"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Výchozí hodnota"

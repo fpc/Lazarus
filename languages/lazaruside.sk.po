@@ -1397,6 +1397,10 @@ msgstr "Typ a cesta debugera"
 msgid "Default editor font"
 msgstr "Predvolený font editora"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Predvolená hodnota"

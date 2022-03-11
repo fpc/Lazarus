@@ -1380,6 +1380,10 @@ msgstr ""
 msgid "Default editor font"
 msgstr ""
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr ""

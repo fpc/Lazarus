@@ -1424,6 +1424,10 @@ msgstr "Debuggertype en pad"
 msgid "Default editor font"
 msgstr "Standaard editorfont"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Standaardwaarde"

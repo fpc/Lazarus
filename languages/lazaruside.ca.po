@@ -1422,6 +1422,10 @@ msgstr "Tipus i trajectòria del depurador"
 msgid "Default editor font"
 msgstr "Font de l'editor predeterminat"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valor per defecte"

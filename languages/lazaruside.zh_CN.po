@@ -1398,6 +1398,10 @@ msgstr "调试器类型和路径"
 msgid "Default editor font"
 msgstr "默认的编辑器字体"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "默认值"

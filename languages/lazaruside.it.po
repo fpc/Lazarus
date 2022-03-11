@@ -1420,6 +1420,10 @@ msgstr "Tipo di debugger e percorso"
 msgid "Default editor font"
 msgstr "Carattere dell'editor predefinito"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valore predefinito"

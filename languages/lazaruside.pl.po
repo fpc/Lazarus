@@ -1416,6 +1416,10 @@ msgstr "Rodzaj i ścieżka do odpluskwiacza"
 msgid "Default editor font"
 msgstr "Domyślna czcionka edytora"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Wartość domyślna"

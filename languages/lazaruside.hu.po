@@ -1388,6 +1388,10 @@ msgstr "Hibakereső típusa és útvonala"
 msgid "Default editor font"
 msgstr "Szerkesztő alapértelmezett betűtípusa"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Alapértelmezett érték"

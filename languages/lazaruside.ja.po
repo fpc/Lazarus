@@ -1416,6 +1416,10 @@ msgstr "デバッガの種類とパス"
 msgid "Default editor font"
 msgstr "初期エディタ フォント"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "デフォルト値"

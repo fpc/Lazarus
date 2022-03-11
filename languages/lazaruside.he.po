@@ -1458,6 +1458,10 @@ msgstr "סוג מנפה השגיאות והנתיב אליו"
 msgid "Default editor font"
 msgstr "גופן ברירת מחדל של העורך"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "ערך ברירת מחדל"

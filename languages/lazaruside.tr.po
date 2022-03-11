@@ -1383,6 +1383,10 @@ msgstr "Hata ayıklayıcı türü ve yolu"
 msgid "Default editor font"
 msgstr "Varsayılan düzenleyici yazı tipi"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Varsayılan değer"

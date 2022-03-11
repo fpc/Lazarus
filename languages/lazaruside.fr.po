@@ -1390,6 +1390,10 @@ msgstr "Type de débogueur et chemin"
 msgid "Default editor font"
 msgstr "Police par défaut pour l'éditeur"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valeur par défaut"

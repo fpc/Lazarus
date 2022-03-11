@@ -1425,6 +1425,10 @@ msgstr "Tipo de depurador y ruta"
 msgid "Default editor font"
 msgstr "Fuente predeterminada del editor"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Valor predeterminado"

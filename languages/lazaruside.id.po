@@ -1424,6 +1424,10 @@ msgstr "Path dan Tipe Debugger"
 msgid "Default editor font"
 msgstr "Font editor default"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Nilai default"

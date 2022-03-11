@@ -1385,6 +1385,10 @@ msgstr "Virheenjäljittimen tyyppi ja polku"
 msgid "Default editor font"
 msgstr "Editorin oletuskirjasin"
 
+#: lazarusidestrconsts.dlgdefaulttabfont
+msgid "Default tab font"
+msgstr ""
+
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
 msgstr "Oletusarvo"
