@@ -5268,7 +5268,7 @@ var
       debugln(['TFindDeclarationTool.FindBaseTypeOfNode.SearchIdentifier Identifier=',GetIdentifier(@Src[IdentStart])]);
       {$ENDIF}
       SubParams.Flags:=[fdfSearchInParentNodes,fdfExceptionOnNotFound]
-                      +(fdfGlobals*SubParams.Flags);
+                      +(fdfGlobals*Params.Flags);
       SubParams.ContextNode:=StartNode.Parent;
       if (SubParams.ContextNode.Desc in (AllIdentifierDefinitions))
       then begin
