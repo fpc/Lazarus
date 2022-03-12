@@ -78,8 +78,6 @@ help:
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
-	@$(ECHO) "   examples       build basic examples, requires basecomponents"
-	@$(ECHO) "                  Note: There are more examples having their own directory"
 	@$(ECHO)
 	@$(ECHO) " Flags:"
 	@$(ECHO) "   PP=/path/to/fpc        use another compiler"
@@ -232,12 +230,6 @@ lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
 
 #-----------------------------------------------------------------------------
-# build examples for the LCL_PLATFORM
-# requires basecomponents
-examples:
-	$(MAKE) -C examples
-
-#-----------------------------------------------------------------------------
 # build lazarus,lcl,lazbuild,startlazarus with base packages for the LCL_PLATFORM
 all: lazbuild lcl basecomponents ide starter
 
@@ -268,8 +260,6 @@ purge:
 	$(MAKE) -C components distclean
 	$(MAKE) -C tools distclean
 	$(MAKE) -C components/chmhelp/lhelp distclean
-
-	$(MAKE) -C examples clean
 #	$(MAKE) -C doceditor clean
 
 cleanall: purge

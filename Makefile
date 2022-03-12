@@ -3713,8 +3713,6 @@ help:
 	@$(ECHO) "   bigidecomponents build many extra packages for the LCL_PLATFORM, requires basecomponents"
 	@$(ECHO) "   lhelp          build lhelp, requires bigidecomponents"
 	@$(ECHO) "   starter        build startlazarus, requires basecomponents"
-	@$(ECHO) "   examples       build basic examples, requires basecomponents"
-	@$(ECHO) "                  Note: There are more examples having their own directory"
 	@$(ECHO)
 	@$(ECHO) " Flags:"
 	@$(ECHO) "   PP=/path/to/fpc        use another compiler"
@@ -3814,8 +3812,6 @@ lazbuild: registration lazutils
 	$(MAKE) -C ide lazbuilder LCL_PLATFORM=nogui
 lhelp:
 	$(MAKE) -C components/chmhelp/lhelp
-examples:
-	$(MAKE) -C examples
 all: lazbuild lcl basecomponents ide starter
 bigide: lazbuild lcl basecomponents bigidecomponents idebig starter lhelp
 cleanide:
@@ -3836,7 +3832,6 @@ purge:
 	$(MAKE) -C components distclean
 	$(MAKE) -C tools distclean
 	$(MAKE) -C components/chmhelp/lhelp distclean
-	$(MAKE) -C examples clean
 cleanall: purge
 distclean: purge
 installbase:
