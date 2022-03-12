@@ -43,17 +43,20 @@
       </element>
 
       <!-- included from lazloggerintf.inc -->
-      <!-- TODO: combine with topics in lazloggerbase.xml  -->
-
       <element name="DebuglnStack">
         <short>Writes a message to the log.</short>
-        <descr/>
+        <descr>
+          <p>
+            Calls the DebuglnStack method for the  logger class instance.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="DebuglnStack.s">
         <short/>
       </element>
 
+      <!-- procedure Visibility: default -->
       <element name="DbgOut">
         <short>Writes a message to the log.</short>
         <descr>
@@ -75,6 +78,66 @@
           <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
           <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
+      </element>
+      <element name="DbgOut.s">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.Args">
+        <short></short>
+      </element>
+      <element name="DbgOut.s1">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s2">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s3">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s4">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s5">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s6">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s7">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s8">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s9">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s10">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s11">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s12">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s13">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s14">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s15">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s16">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s17">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DbgOut.s18">
+        <short>String argument for the routine.</short>
       </element>
 
       <element name="DebugLn">
@@ -99,6 +162,66 @@
           <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
       </element>
+      <element name="DebugLn.s">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.Args">
+        <short></short>
+      </element>
+      <element name="DebugLn.s1">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s2">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s3">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s4">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s5">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s6">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s7">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s8">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s9">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s10">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s11">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s12">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s13">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s14">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s15">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s16">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s17">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLn.s18">
+        <short>String argument for the routine.</short>
+      </element>
 
       <element name="DebugLnEnter">
         <short>Writes a message to the log.</short>
@@ -121,6 +244,66 @@
           <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
           <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
+      </element>
+      <element name="DebugLnEnter.s">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.Args">
+        <short></short>
+      </element>
+      <element name="DebugLnEnter.s1">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s2">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s3">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s4">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s5">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s6">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s7">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s8">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s9">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s10">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s11">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s12">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s13">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s14">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s15">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s16">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s17">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnEnter.s18">
+        <short>String argument for the routine.</short>
       </element>
 
       <element name="DebugLnExit">
@@ -145,159 +328,329 @@
           <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
         </seealso>
       </element>
+      <element name="DebugLnExit.s">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.Args">
+        <short></short>
+      </element>
+      <element name="DebugLnExit.s1">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s2">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s3">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s4">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s5">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s6">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s7">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s8">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s9">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s10">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s11">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s12">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s13">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s14">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s15">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s16">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s17">
+        <short>String argument for the routine.</short>
+      </element>
+      <element name="DebugLnExit.s18">
+        <short>String argument for the routine.</short>
+      </element>
 
+      <!-- function Visibility: default -->
       <element name="DbgS">
-        <short>Create a text representation for the specified value.</short>
-        <descr><p>Create a text representation for the specified value. Does not produce a log output.</p>
+        <short>
+          Generates a debugger message formatted with the value(s) for the specified type(s).
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
+      </element>
+      <element name="DbgS.Result">
+        <short>String with the formatted content for the specified value(s).</short>
+      </element>
+      <element name="DbgS.c">
+        <short>Cardinal value for the message.</short>
+      </element>
+      <element name="DbgS.i">
+        <short>Integer (LongInt, Int64) value for the message.</short>
+      </element>
+      <element name="DbgS.q">
+        <short>QWord value for the message.</short>
+      </element>
+      <element name="DbgS.r">
+        <short>TRect value for the message.</short>
+      </element>
+      <element name="DbgS.p">
+        <short>Untyped pointer value for the message.</short>
+      </element>
+      <element name="DbgS.e">
+        <short>Extended value for the message.</short>
+      </element>
+      <element name="DbgS.MaxDecimals">
+        <short>Number of decimal places for the Extended value in the message.</short>
+      </element>
+      <element name="DbgS.b">
+        <short>Boolean value for the message.</short>
+      </element>
+      <element name="DbgS.m">
+        <short>TMethod value for the message. </short>
+      </element>
+      <element name="DbgS.ASize">
+        <short></short>
+      </element>
+      <element name="DbgS.s">
+        <short>String value for the message.</short>
+      </element>
+      <element name="DbgS.i1">
+        <short>Integer value for the message.</short>
+      </element>
+      <element name="DbgS.i2">
+        <short>Integer value for the message.</short>
+      </element>
+      <element name="DbgS.i3">
+        <short>Integer value for the message.</short>
+      </element>
+      <element name="DbgS.i4">
+        <short>Integer value for the message.</short>
+      </element>
+      <element name="DbgS.Shift">
+        <short>TShiftStateEnum value for the message.</short>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="DbgSJoin">
+        <short>
+          Generates a debugger message with the combined values of the specified arguments.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="DbgSJoin.Result">
+        <short>Message with the values in s1 and s2 combined into a single string.</short>
+      </element>
+      <element name="DbgSJoin.s1">
+        <short>String value for the message.</short>
+      </element>
+      <element name="DbgSJoin.s2">
+        <short>String value for the message.</short>
+      </element>
+
+      <!-- function Visibility: default -->
+      <element name="DbgSName">
+        <short>
+          Generates a message with the optional name and class type for the specified object.
+        </short>
+        <descr>
+          <p>
+            DbgSName generates a log message with the optional name and class type for the object in p.
+          </p>
+          <p>
+            When p has not been assigned, the return value contains:
+          </p>
+          <code>'Nil'</code>
+          <p>
+            When p is a TComponent descendant, the return value contains a value like:
+          </p>
+          <code>TComponent.Name + ':' + TComponent.ClassName</code>
+          <p>
+            Otherwise, the return value is set to:
+          </p>
+          <code>TObject.ClassName</code>
+          <p>
+            If the LazLogger_Dummy unit has been included in the application, the  return value is an empty string.
+          </p>
         </descr>
         <seealso/>
       </element>
-      <element name="DbgS.Result">
-        <short/>
-      </element>
-      <element name="DbgS.c">
-        <short/>
-      </element>
-      <element name="DbgS.i">
-        <short/>
-      </element>
-      <element name="DbgS.p">
-        <short/>
-      </element>
-      <element name="DbgS.q">
-        <short/>
-      </element>
-      <element name="DbgS.r">
-        <short/>
-      </element>
-      <element name="DbgS.s">
-        <short/>
-      </element>
-      <element name="DbgS.e">
-        <short/>
-      </element>
-      <element name="DbgS.b">
-        <short/>
-      </element>
-      <element name="DbgS.m">
-        <short/>
-      </element>
-      <element name="DbgS.ASize">
-        <short/>
-      </element>
-      <element name="DbgS.i1">
-        <short/>
-      </element>
-      <element name="DbgS.i2">
-        <short/>
-      </element>
-      <element name="DbgS.i3">
-        <short/>
-      </element>
-      <element name="DbgS.i4">
-        <short/>
-      </element>
-      <element name="DbgS.Shift">
-        <short/>
-      </element>
-
-      <element name="DbgSJoin">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="DbgSJoin.s1">
-        <short/>
-      </element>
-      <element name="DbgSJoin.s2">
-        <short/>
-      </element>
-
-      <element name="DbgSName">
-        <short/>
-        <descr/>
-        <seealso/>
+      <element name="DbgSName.Result">
+        <short>
+          Formatted message with the optional name and class type for the specified value.
+        </short>
       </element>
       <element name="DbgSName.p">
-        <short/>
+        <short>TObject instance examined in the routine.</short>
       </element>
 
+      <!-- function Visibility: default -->
       <element name="dbgObjMem">
-        <short/>
+        <short>
+          Generates a message with the hexadecimal-encoded memory content for the specified object instance.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="dbgObjMem.Result">
-        <short/>
+        <short>String with hexadecimal-encoded values for the specified object instance.</short>
       </element>
       <element name="dbgObjMem.AnObject">
-        <short/>
+        <short>Object instance examined in the routine.</short>
       </element>
 
+      <!-- function Visibility: default -->
       <element name="dbghex">
-        <short/>
+        <short>
+          Generates a message with the hexadecimal representation for the specified Int64 value.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="dbghex.Result">
-        <short/>
+        <short>String with the hexadecimal representation for the specified value.</short>
       </element>
       <element name="dbghex.i">
-        <short/>
+        <short>Int64 value converted in the routine.</short>
       </element>
 
       <element name="DbgSTime">
-        <short/>
+        <short>Generates a message with the tick count for the computer system.</short>
         <descr/>
         <seealso/>
       </element>
       <element name="DbgSTime.Result">
-        <short/>
+        <short>String with the tick count for the system.</short>
       </element>
 
+      <!-- function Visibility: default -->
       <element name="dbgMemRange">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Generates a message with the hexadecimal-encoded content for the specified block of memory and size.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
       <element name="dbgMemRange.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="dbgMemRange.P">
-        <short/>
+        <short>Untyped pointer to the byte values examined in the routine.</short>
       </element>
       <element name="dbgMemRange.Count">
-        <short/>
+        <short>Number of bytes from the pointer to include in the message.</short>
       </element>
       <element name="dbgMemRange.Width">
-        <short/>
+        <short>
+          Maximum number of columns to use in the formatted message string. A LineEnd sequence is inserted in the message when Width is exceeded.
+        </short>
       </element>
 
+      <!-- function Visibility: default -->
       <element name="dbgMemStream">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>
+          Generates a message with the hexadecimal-encoded values from the specified memory stream.
+        </short>
+        <descr>
+        </descr>
+        <errors>
+        </errors>
+        <seealso>
+        </seealso>
       </element>
       <element name="dbgMemStream.Result">
-        <short/>
+        <short></short>
       </element>
       <element name="dbgMemStream.MemStream">
-        <short/>
+        <short></short>
       </element>
       <element name="dbgMemStream.Count">
-        <short/>
+        <short></short>
       </element>
 
       <element name="DumpExceptionBackTrace">
-        <short/>
+        <short>Write the stack trace back when an exception is detected.</short>
+        <descr>
+          <p>
+            Calls the <var>DumpExceptionBackTrace</var> method for the logger in the <var>DebugLogger</var> variable.
+          </p>
+        </descr>
+        <seealso>
+          <!-- link id="#lazutils.lazloggerbase.DebugLogger"/ -->
+          <link id="TLazLogger.DebugLn"/>
+          <link id="TLazLogger.DumpExceptionBackTrace"/>
+        </seealso>
+      </element>
+
+      <element name="operator assign(plazloggerloggroup): tlazloggerlogenabled">
+        <short>
+          Implements the Assign (':=') operator using a Pointer to a logger group for the  TLazLoggerLogEnabled type.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="operator assign(boolean): tlazloggerlogenabled">
+        <short>
+          Implements the Assign (':=') operator using a Boolean argument for the  TLazLoggerLogEnabled type.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="operator logicaland(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
+        <short>
+          Implements the logical And operator for TLazLoggerLogEnabled types.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+
+      <element name="operator logicalor(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
+        <short>
+          Implements the logical Or operator for TLazLoggerLogEnabled types.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="DbgStr">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Generates a debugger message with the content from the specified value.</short>
+        <descr>
+          <p>
+            Calls the DbgStr routine in <file>LazLoggerBase</file> unit to write the value(s).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazloggerbase.DbgStr">LazLoggerBase.DbgStr</link>
+        </seealso>
       </element>
       <element name="DbgStr.Result">
         <short/>
@@ -316,9 +669,15 @@
       </element>
 
       <element name="DbgWideStr">
-        <short/>
-        <descr/>
-        <seealso/>
+        <short>Generates a debugger message with the specified WideString content.</short>
+        <descr>
+          <p>
+            Calls the DbgWideStr routine in <file>LazLoggerBase</file> unit to write the value(s).
+          </p>
+        </descr>
+        <seealso>
+          <link id="#lazutils.lazloggerbase.DbgStr">LazLoggerBase.DbgWideStr</link>
+        </seealso>
       </element>
       <element name="DbgWideStr.Result">
         <short/>
