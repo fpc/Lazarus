@@ -1872,6 +1872,7 @@ bigide:
 	$(MAKE) -C virtualtreeview
 	$(MAKE) -C onlinepackagemanager
 	$(MAKE) -C pas2js
+	$(MAKE) -C exampleswindow
 all: base
 clean:
 	$(MAKE) -C lazutils clean
@@ -1917,6 +1918,7 @@ clean:
 	$(MAKE) -C virtualtreeview clean
 	$(MAKE) -C onlinepackagemanager clean
 	$(MAKE) -C pas2js clean
+	$(MAKE) -C exampleswindow clean
 cleanall: clean
 distclean:
 	$(MAKE) -C lazutils distclean
@@ -1965,3 +1967,4 @@ distclean:
 	$(MAKE) -C pas2js distclean
 	$(MAKE) -C anchordocking/design distclean
 	$(MAKE) -C anchordocking distclean
+	$(MAKE) -C exampleswindow distclean
