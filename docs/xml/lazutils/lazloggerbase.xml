@@ -228,36 +228,33 @@ LazLoggerBase
 
 <!-- procedure type Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent">
-  <short></short>
+  <short>
+    Specifies an event handler used to perform widgetset-specific debug log message handling.
+  </short>
   <descr>
+    <p>
+      TLazLoggerWidgetSetWriteEvent is the type used for the OnWidgetSetDebugLn and OnWidgetSetDbgOut unit variables. Used primarily for the custom-drawn Android widgetset.
+    </p>
   </descr>
   <seealso>
   </seealso>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent.Sender">
-  <short></short>
+  <short>Object with the logger class instance (TLazLogger) for the event.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent.S">
-  <short></short>
+  <short>Log message handled in the routine.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent.Handled">
-  <short></short>
+  <short>
+    <b>True</b> if the message was handled in the routine, <var>False</var> if the default output mechanism for the logger class is used.
+  </short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent.Target">
-  <short></short>
+  <short>Destination where the log message is written.</short>
 </element>
-
-<!-- argument Visibility: default -->
 <element name="TLazLoggerWidgetSetWriteEvent.Data">
-  <short></short>
+  <short>Optional pointer to data for the log message.</short>
 </element>
 
 <!-- class Visibility: default -->
@@ -775,7 +772,7 @@ LazLoggerBase
 </element>
 
 <element name="TLazLogger.RemoveBlockHandler">
-  <short>Removes the specifed block hander for the logger type.</short>
+  <short>Removes the specified block hander for the logger type.</short>
   <descr/>
   <seealso/>
 </element>
@@ -887,19 +884,24 @@ LazLoggerBase
 </element>
 
 <element name="TLazLogger.DebugLn">
-  <short></short>
+  <short>Writes a message to the logger class instance at the current indentation level.</short>
   <descr>
+    <p>
+      DebugLn is used to write a log message using the logger class instance. DebugLn is overloaded in TLazLogger to provide variants which accept String or Array values, a Format()-like expression, or a fixed number of String arguments.
+    </p>
+    <p>
+      DebugLn calls the DoDebugLn method to write the formatted string with the message for the logger class instance.
+    </p>
   </descr>
-  <errors>
-  </errors>
   <seealso>
+    <link id="TLazLogger.DoDebugLn"/>
   </seealso>
 </element>
 <element name="TLazLogger.DebugLn.s">
   <short>String argument for the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.Args">
-  <short></short>
+  <short>Array of constant values written in the method.</short>
 </element>
 <element name="TLazLogger.DebugLn.s1">
   <short>String argument for the method.</short>
@@ -958,7 +960,7 @@ LazLoggerBase
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebugLnEnter">
-  <short></short>
+  <short>Increases the indentation level for the logger and writes an optional log message.</short>
   <descr>
   </descr>
   <errors>
@@ -1029,7 +1031,7 @@ LazLoggerBase
 
 <!-- procedure Visibility: public -->
 <element name="TLazLogger.DebugLnExit">
-  <short></short>
+  <short>Decreases the indentation level for the logger and writes an optional log message.</short>
   <descr>
   </descr>
   <errors>
@@ -1099,7 +1101,7 @@ LazLoggerBase
 </element>
 
 <!-- argument Visibility: default -->
-<element name="TLazLogger.DebuglnStack.LogGroup">
+<element name="TLazLogger.DebugLnStack.LogGroup">
   <short></short>
 </element>
 
@@ -1121,6 +1123,14 @@ LazLoggerBase
 <!-- argument Visibility: default -->
 <element name="TLazLogger.DebugLnExit.LogGroup">
   <short></short>
+</element>
+
+<element name="TLazLogger.DumpExceptionBackTrace">
+  <short>
+    Writes addresses and exception frames representing the backtrace for an exception.
+  </short>
+  <descr/>
+  <seealso/>
 </element>
 
 <!-- class Visibility: default -->
@@ -1245,28 +1255,40 @@ LazLoggerBase
 </element>
 
 <!-- included from LazLoggerIntf.inc -->
-<!-- procedure Visibility: default -->
 <element name="DebuglnStack">
-  <short></short>
+  <short>Writes a message to the log.</short>
   <descr>
+    <p>
+      Calls the DebuglnStack method for the  logger class instance.
+    </p>
   </descr>
-  <errors>
-  </errors>
-  <seealso>
-  </seealso>
+  <seealso/>
 </element>
 <element name="DebuglnStack.s">
-  <short></short>
+  <short/>
 </element>
 
 <!-- procedure Visibility: default -->
 <element name="DbgOut">
-  <short></short>
+  <short>Writes a message to the log.</short>
   <descr>
+    <p>
+      Writes the text to the log. Does not append a new line.
+      The Argument can be:
+    </p>
+    <ul>
+      <li>One or more string(s)</li>
+      <li>An open array of const: All values are converted to string and joined</li>
+      <li>A single string and open array of const:  Will be passed to Format</li>
+      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+    </ul>
+    <p>
+      This is a forwarder to the log TLazLogger object. See there for details.
+    </p>
   </descr>
-  <errors>
-  </errors>
   <seealso>
+    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
   </seealso>
 </element>
 <element name="DbgOut.s">
@@ -1330,14 +1352,26 @@ LazLoggerBase
   <short>String argument for the routine.</short>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="DebugLn">
-  <short></short>
+  <short>Writes a message to the log.</short>
   <descr>
+    <p>
+      Writes the text to the log. Does append a new line.
+    </p>
+    <p>
+      The Argument can be:
+    </p>
+    <ul>
+      <li>One or more string</li>
+      <li>An open array of const: All values are converted to string and joined</li>
+      <li>A single string and open array of const:  Will be passed to Format</li>
+      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+    </ul>
+    <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
   </descr>
-  <errors>
-  </errors>
   <seealso>
+    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
   </seealso>
 </element>
 <element name="DebugLn.s">
@@ -1401,14 +1435,26 @@ LazLoggerBase
   <short>String argument for the routine.</short>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="DebugLnEnter">
-  <short></short>
+  <short>Writes a message to the log.</short>
   <descr>
+    <p>
+      Writes the text to the log. Does append a new line. Increases the current intend.
+    </p>
+    <p>
+      The Argument can be:
+    </p>
+    <ul>
+      <li>One or more string</li>
+      <li>An open array of const: All values are converted to string and joined</li>
+      <li>A single string and open array of const:  Will be passed to Format</li>
+      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+    </ul>
+    <p>This is a forwarder to the log TLazLogger object. See there for details.</p>
   </descr>
-  <errors>
-  </errors>
   <seealso>
+    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
   </seealso>
 </element>
 <element name="DebugLnEnter.s">
@@ -1472,14 +1518,26 @@ LazLoggerBase
   <short>String argument for the routine.</short>
 </element>
 
-<!-- procedure Visibility: default -->
 <element name="DebugLnExit">
-  <short></short>
+  <short>Writes a message to the log.</short>
   <descr>
+    <p>
+      Writes the text to the log. Does append a new line. Increases the current indentation level.
+    </p>
+    <p>
+      The Argument can be:
+    </p>
+    <ul>
+      <li>One or more string</li>
+      <li>An open array of const: All values are converted to string and joined</li>
+      <li>A single string and open array of const:  Will be passed to Format</li>
+      <li>Any of the above with a PLazLoggerLogGroup as filter</li>
+      <li>This is a forwarder to the log TLazLogger object. See there for details.</li>
+    </ul>
   </descr>
-  <errors>
-  </errors>
   <seealso>
+    <link id="#lazutils.lazlogger.GetDebugLogger">GetDebugLogger</link>
+    <link id="#lazutils.lazlogger.SetDebugLogger">SetDebugLogger</link>
   </seealso>
 </element>
 <element name="DebugLnExit.s">
@@ -1645,7 +1703,7 @@ LazLoggerBase
     <p>
       Otherwise, the return value is set to:
     </p>
-    <code>TObject.ClasName</code>
+    <code>TObject.ClassName</code>
     <p>
       If the LazLogger_Dummy unit has been included in the application, the  return value is an empty string.
     </p>
@@ -1664,7 +1722,7 @@ LazLoggerBase
 <!-- function Visibility: default -->
 <element name="dbgObjMem">
   <short>
-    Generates a message with the hexadecimal-encoded memory content for the specifed object instance.
+    Generates a message with the hexadecimal-encoded memory content for the specified object instance.
   </short>
   <descr/>
   <seealso/>
@@ -1773,7 +1831,7 @@ LazLoggerBase
 
 <element name="operator assign(boolean): tlazloggerlogenabled">
   <short>
-    Implements the Assign (':=') operator using a Bollean argument for the  TLazLoggerLogEnabled type.
+    Implements the Assign (':=') operator using a Boolean argument for the  TLazLoggerLogEnabled type.
   </short>
   <descr/>
   <seealso/>
@@ -1781,7 +1839,7 @@ LazLoggerBase
 
 <element name="operator logicaland(tlazloggerlogenabled, tlazloggerlogenabled): tlazloggerlogenabled">
   <short>
-    Implementd the logical And operator for TLazLoggerLogEnabled types.
+    Implements the logical And operator for TLazLoggerLogEnabled types.
   </short>
   <descr/>
   <seealso/>
