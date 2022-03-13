@@ -13,6 +13,7 @@
 **/*.fpcunit.ini
 **/*.lps
 **/*.compiled
+!**/Makefile.compiled
 /docs/chm/**/*.chm
 /docs/chm/**/*.xct
 /docs/chm/**/*.kwd
