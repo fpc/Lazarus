@@ -1955,7 +1955,7 @@ implementation
 {$R lcl_grid_images.res}
 
 uses
-  WSGrids;
+  WSGrids, GraphMath;
 
 {$WARN SYMBOL_DEPRECATED OFF}
 {$IFDEF FPC_HAS_CPSTRING}
@@ -4694,16 +4694,48 @@ end;
 
 procedure TCustomGrid.DrawCellText(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState; aText: String);
+var
+  Rtxt, Rrot, R: TRect;
+  angle: Double;
+  ts: TTextStyle;
 begin
-  dec(ARect.Right, varCellPadding);
-  case Canvas.TextStyle.Alignment of
-    Classes.taLeftJustify: Inc(ARect.Left, varCellPadding);
-    Classes.taRightJustify: Dec(ARect.Right, 1);
-  end;
-  case Canvas.TextStyle.Layout of
-    tlTop: Inc(ARect.Top, varCellPadding);
-    tlBottom: Dec(ARect.Bottom, varCellPadding);
-  end;
+  ts := Canvas.TextStyle;
+
+  if Canvas.Font.Orientation = 0 then
+  begin
+    dec(ARect.Right, varCellPadding);
+    case Canvas.TextStyle.Alignment of
+      Classes.taLeftJustify: Inc(ARect.Left, varCellPadding);
+      Classes.taRightJustify: Dec(ARect.Right, 1);
+    end;
+    case Canvas.TextStyle.Layout of
+      tlTop: Inc(ARect.Top, varCellPadding);
+      tlBottom: Dec(ARect.Bottom, varCellPadding);
+    end;
+  end else
+  begin
+    angle := Canvas.Font.Orientation * pi / 1800;
+    Rtxt.TopLeft := Point(0, 0);
+    Rtxt.BottomRight := TPoint(Canvas.TextExtent(aText));
+    Rrot := RotateRect(Rtxt.Width, Rtxt.Height, angle);
+    R := Rrot;
+    case Canvas.TextStyle.Alignment of
+      taLeftJustify: OffsetRect(R, -Rrot.Left + varCellPadding, 0);
+      taCenter: OffsetRect(R, (ARect.Width - Rrot.Width) div 2 - Rrot.Left, 0);
+      taRightJustify: OffsetRect(R, ARect.Width - Rrot.Right - varCellPadding, 0);
+    end;
+    case Canvas.TextStyle.Layout of
+      tlTop: OffsetRect(R, 0, -Rrot.Top + varCellPadding);
+      tlCenter: OffsetRect(R, 0, (ARect.Height - Rrot.Height) div 2 - Rrot.Top);
+      tlBottom: OffsetRect(R, 0, ARect.Height - Rrot.Bottom - varCellPadding);
+    end;
+    OffsetRect(R, -Rrot.Left, -Rrot.Top);
+    OffsetRect(R, ARect.Left, ARect.Top);
+    ARect := R;
+    ts.Clipping := false;
+    ts.Layout := tlTop;
+    ts.Alignment := taLeftJustify;
+  end;  
 
   if ARect.Right<ARect.Left then
     ARect.Right:=ARect.Left;
@@ -4715,7 +4747,7 @@ begin
     ARect.Top:=ARect.Bottom;
 
   if (ARect.Left<>ARect.Right) and (ARect.Top<>ARect.Bottom) then
-    Canvas.TextRect(aRect,ARect.Left,ARect.Top, aText);
+    Canvas.TextRect(aRect,ARect.Left,ARect.Top, aText, ts);
 end;
 
 procedure TCustomGrid.DrawGridCheckboxBitmaps(const aCol,aRow: Integer;
