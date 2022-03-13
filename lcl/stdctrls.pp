@@ -1676,7 +1676,8 @@ procedure Register;
 implementation
 
 uses
-  WSControls, WSStdCtrls, interfacebase; // Widgetset uses circle is allowed
+  WSControls, WSStdCtrls, interfacebase,  // Widgetset uses circle is allowed
+  Graphmath; 
 
 
 type

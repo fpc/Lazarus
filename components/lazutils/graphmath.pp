@@ -90,6 +90,9 @@ function Quadrant(const PT, Center : TPoint) : Integer;
 
 function RadialPoint(EccentricAngle : Extended; const Rect : TRect) : TPoint;
 
+function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
+function RotateRect(AWidth, AHeight: Integer; AAngle: Double): TRect;
+
 procedure SplitBezier(const Bezier : TBezier; var Left, Right : TBezier);
 
 Operator + (const Addend1, Addend2 : TFloatPoint) : TFloatPoint; inline;
@@ -1020,6 +1023,62 @@ var
 Begin
   R := EllipseRadialLength(Rect,EccentricAngle);
   Result := LineEndPoint(CenterPoint(Rect), EccentricAngle, R);
+end;
+
+{-------------------------------------------------------------------------------
+  Method:  RotatePoint
+  Params:  APoint, AAngle
+  Returns: TPoint after rotation
+  
+  Rotates a point around the origin (0,0) by the angle AAngle. The angle is
+  in radians and positive for counter-clockwise rotation.
+  Note that y points downwards.
+-------------------------------------------------------------------------------}
+function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
+var
+  sa, ca: Double;
+begin
+  sa := sin(AAngle);
+  ca := cos(AAngle);
+  Result.X := Round( ca * APoint.X + sa * APoint.Y);
+  Result.Y := Round(-sa * APoint.X + ca * APoint.Y);
+end;
+
+procedure GetMinMax(x: Integer; var min, max: Integer);
+begin
+  if x < min then min := x;
+  if x > max then max := x;
+end;
+
+{-------------------------------------------------------------------------------
+  Method:   RotateRect
+  Params:   AWidth, AHeight, AAngle
+  Returns:  smallest TRect containing the rotated rectangle.
+  
+  Rotates the rectangle (0, 0, AWidth, AHeight) around its top-left corner (0,0)
+  by the angle AAngle (in radians).
+  Note that y points downwards.
+-------------------------------------------------------------------------------}
+function RotateRect(AWidth, AHeight: Integer; AAngle: Double): TRect;
+var
+  P1, P2, P3: TPoint;
+begin
+  if AAngle = 0 then
+    Result := Rect(0, 0, AWidth, AHeight)
+  else
+  begin
+    P1 := RotatePoint(Point(AWidth, 0), AAngle);
+    P2 := RotatePoint(Point(0, AHeight), AAngle);
+    P3 := P1 + P2;
+
+    Result := Rect(0, 0, 0, 0);
+    GetMinMax(P1.X, Result.Left, Result.Right);
+    GetMinMax(P2.X, Result.Left, Result.Right);
+    GetMinMax(P3.X, Result.Left, Result.Right);
+    GetMinMax(P1.Y, Result.Top, Result.Bottom);
+    GetMinMax(P2.Y, Result.Top, Result.Bottom);
+    GetMinMax(P3.Y, Result.Top, Result.Bottom);
+  end;
 end;
 
 {------------------------------------------------------------------------------

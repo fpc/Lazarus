@@ -24,45 +24,6 @@
 const
   cMaxLabelSize = 10000;
 
-// AAngle is in radians, counter-clockwise = positive. But: y points down!
-function RotatePoint(const APoint: TPoint; AAngle: Double): TPoint;
-var
-  sa, ca: Double;
-begin
-  sa := sin(AAngle);
-  ca := cos(AAngle);
-  Result.X := Round( ca * APoint.X + sa * APoint.Y);
-  Result.Y := Round(-sa * APoint.X + ca * APoint.Y);
-end;
-
-procedure GetMinMax(x: Integer; var min, max: Integer);
-begin
-  if x < min then min := x;
-  if x > max then max := x;
-end;
-
-function RotateRect(AWidth, AHeight: Integer; AAngle: Double): TRect;
-var
-  P1, P2, P3: TPoint;
-begin
-  if AAngle = 0 then
-    Result := Rect(0, 0, AWidth, AHeight)
-  else
-  begin
-    P1 := RotatePoint(Point(AWidth, 0), AAngle);
-    P2 := RotatePoint(Point(0, AHeight), AAngle);
-    P3 := Point(P1.X+P2.X, P1.Y+P2.Y);
-
-    Result := Rect(0, 0, 0, 0);
-    GetMinMax(P1.X, Result.Left, Result.Right);
-    GetMinMax(P2.X, Result.Left, Result.Right);
-    GetMinMax(P3.X, Result.Left, Result.Right);
-    GetMinMax(P1.Y, Result.Top, Result.Bottom);
-    GetMinMax(P2.Y, Result.Top, Result.Bottom);
-    GetMinMax(P3.Y, Result.Top, Result.Bottom);
-  end;
-end;
-
 procedure TCustomLabel.CalculatePreferredSize(
   var PreferredWidth, PreferredHeight: integer; WithThemeSpace: Boolean);
 // assumes: (Parent <> nil) and Parent.HandleAllocated
