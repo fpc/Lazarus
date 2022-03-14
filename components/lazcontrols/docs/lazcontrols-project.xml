@@ -11,12 +11,12 @@
     <option name="dont-trim" value="true"/>
     <option name="emit-notes" value="false"/>
     <option name="css-file" value="lazcontrols.css"/>
-    <option name="footer" value="@lazcontrols-footer.xml"/>
     <option name="auto-index" value="true"/>
     <option name="auto-toc" value="true"/>
     <option name="chm-title" value="(LazControls) Lazarus Controls Package"/>
     <!--
-      pass format as a command line argument: format="chm"
+    <option name="footer" value="lazcontrols-footer.xml"/>
+    <option name="format" value="chm | html"/>
     -->
   </options>
   <packages>
