@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# Builds  Lazarus documentaiton for LCL and LazUtils in CHM format.
+# Builds Lazarus documentation for LCL and LazUtils in CHM format.
 # Requires a $(LazarusDir)/docs/chm directory which contains rtl.xct and fcl.xct.
 # Process fails if either the directory or the files are missing.
 # Process creates ./lcl and ./lazutils subdirectories for CHM output.
