@@ -1,2932 +1,3769 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fpdoc-descriptions>
-  <package name="RunTimeTypeInfoControls">
-    <module name="RTTICtrls">
-      <short>
-        Contains controls which access properties in TPersistent objects using RTTI.
-      </short>
-      <descr>
-        <p>
-          Provides LCL controls that access properties of TPersistent objects via RTTI (the FreePascal Run Time Type Information). Every published property can be edited in the Object Inspector. There you have a TOIPropertyGrid working with TEdit, TComboBox and TButton. These controls extends the possibilities to edit single properties and the developer can choose how to represent the property.
-        </p>
-      </descr>
-
-      <!-- unresolved external references -->
-      <element name="Classes"/>
-      <element name="SysUtils"/>
-      <element name="TypInfo"/>
-      <element name="LResources"/>
-      <element name="LCLProc"/>
-      <element name="LCLType"/>
-      <element name="LCLIntf"/>
-      <element name="Forms"/>
-      <element name="Controls"/>
-      <element name="Graphics"/>
-      <element name="MaskEdit"/>
-      <element name="Calendar"/>
-      <element name="Spin"/>
-      <element name="Dialogs"/>
-      <element name="CheckLst"/>
-      <element name="ComCtrls"/>
-      <element name="StdCtrls"/>
-      <element name="Buttons"/>
-      <element name="ExtCtrls"/>
-      <element name="GraphPropEdits"/>
-      <element name="PropEdits"/>
-
-      <element name="TAliasStrings">
-        <short>
-          Maps strings to alias strings.
-        </short>
-        <descr>
-          <p>
-            Some RTTI controls uses this to map RTTI values to display values. Eventually accelerate search for Names and Values.
-          </p>
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TAliasStrings.IndexOfValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TAliasStrings.IndexOfValue.Result">
-        <short/>
-      </element>
-      <element name="TAliasStrings.IndexOfValue.AValue">
-        <short/>
-      </element>
-
-      <element name="TAliasStrings.ValueAt">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TAliasStrings.ValueAt.Result">
-        <short/>
-      </element>
-      <element name="TAliasStrings.ValueAt.Index">
-        <short/>
-      </element>
-
-      <element name="TAliasStrings.ValueToAlias">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TAliasStrings.ValueToAlias.Result">
-        <short/>
-      </element>
-      <element name="TAliasStrings.ValueToAlias.AValue">
-        <short/>
-      </element>
-
-      <element name="TAliasStrings.AliasToValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TAliasStrings.AliasToValue.Result">
-        <short/>
-      </element>
-      <element name="TAliasStrings.AliasToValue.Alias">
-        <short/>
-      </element>
-
-      <element name="TPropertyLinkNotifier">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyLinkNotifier.FLink"/>
-
-      <element name="TPropertyLinkNotifier.Notification">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyLinkNotifier.Notification.AComponent">
-        <short/>
-      </element>
-      <element name="TPropertyLinkNotifier.Notification.Operation">
-        <short/>
-      </element>
-
-      <element name="TPropertyLinkNotifier.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyLinkNotifier.Create.TheLink">
-        <short/>
-      </element>
-
-      <element name="TPropertyLinkNotifier.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyLinkOption">
-        <short>Optional flags for TPropertyLink.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyLinkOption">
-        <short>Options for the RTTI Control to Property Editor link.</short>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyLinkOption.ploReadOnIdle">
-        <short/>
-      </element>
-      <element name="TPropertyLinkOption.ploAutoSave">
-        <short>Auto-save on EditingDone.</short>
-      </element>
-      <!-- TODO:
-      <element name="TPropertyLinkOption.ploDisableOnNil">
-        <short>Disable control if link disconnected.</short>
-      </element>
-      <element name="TPropertyLinkOption.ploReadOnly">
-        <short/>
-      </element> -->
-
-      <element name="TPropertyLinkOptions ">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-
-      <element name="DefaultLinkOptions ">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTestEditing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTestEditing.Result">
-        <short/>
-      </element>
-      <element name="TTestEditing.Sender">
-        <short/>
-      </element>
-
-      <element name="TBeforeWriteProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TBeforeWriteProperty.Sender">
-        <short/>
-      </element>
-      <element name="TBeforeWriteProperty.AllowWrite">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.FAliasValues"/>
-      <element name="TCustomPropertyLink.FCollectedValues"/>
-      <element name="TCustomPropertyLink.FCollectedValues"/>
-      <element name="TCustomPropertyLink.FEditor"/>
-      <element name="TCustomPropertyLink.FFilter"/>
-      <element name="TCustomPropertyLink.FHook"/>
-      <element name="TCustomPropertyLink.FIdleHandlerConnected"/>
-      <element name="TCustomPropertyLink.FLinkNotifier"/>
-      <element name="TCustomPropertyLink.FOnAfterWrite"/>
-      <element name="TCustomPropertyLink.FOnBeforeWrite"/>
-      <element name="TCustomPropertyLink.FOnEditorChanged"/>
-      <element name="TCustomPropertyLink.FOnLoadFromProperty"/>
-      <element name="TCustomPropertyLink.FOnSaveToProperty"/>
-      <element name="TCustomPropertyLink.FOnTestEditing"/>
-      <element name="TCustomPropertyLink.FOnTestEditor"/>
-      <element name="TCustomPropertyLink.FOptions"/>
-      <element name="TCustomPropertyLink.FOwner"/>
-      <element name="TCustomPropertyLink.FPropertyLoaded"/>
-      <element name="TCustomPropertyLink.FSaveEnabled"/>
-      <element name="TCustomPropertyLink.FTIElementName"/>
-      <element name="TCustomPropertyLink.FTIObject"/>
-      <element name="TCustomPropertyLink.FTIPropertyName"/>
-
-      <element name="TCustomPropertyLink.SetCollectValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetCollectValues.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetEditor.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetFilter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetFilter.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetOptions">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetOptions.NewOptions">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetTIElementName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetTIElementName.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetTIObject">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetTIObject.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetTIPropertyName">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetTIPropertyName.AValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetCanModify">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetCanModify.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.EditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetPropertyEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetPropertyEditor.APropertyEditor">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.CheckPropInfo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.CheckPropInfo.Result">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.CheckPropInfo.APropInfo">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.CreateHook">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.UpdateIdleHandler">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnApplicationIdle">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.OnApplicationIdle.Sender">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.OnApplicationIdle.Done">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.Notification">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.Notification.AComponent">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.Notification.Operation">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetEditorValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetEditorValues.NewValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.Assign">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.Assign.Source">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetObjectAndProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetObjectAndProperty.NewPersistent">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.SetObjectAndProperty.NewPropertyName">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.SetObjectAndProperty.NewElementName">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.InvalidateEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.CreateEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.FetchValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.LoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.SaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetAsText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetAsText.NewText">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetAsText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetAsText.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetAsInt">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetAsInt.NewInt">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetAsInt">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetAsInt.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.CheckBeforeWrite">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.CheckBeforeWrite.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.CheckAfterWrite">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.DoError">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.DoError.Writing">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.DoError.E">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.MapValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.MapValues.Values">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapValues.AliasStrings">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapValues.MappedValues">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapValues.UseAllExistingAlias">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapValues.AddValuesWithoutAlias">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapValues.IfNoValuesAvailableAddAllAlias">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.MapCollectedValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.MapCollectedValues.AliasStrings">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapCollectedValues.MappedValues">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapCollectedValues.UseAllExistingAlias">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapCollectedValues.AddValuesWithoutAlias">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.MapCollectedValues.IfNoValuesAvailableAddAllAlias">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.AssignCollectedAliasValuesTo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.AssignCollectedAliasValuesTo.DestList">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.AssignCollectedAliasValuesTo.KeepIfNoneCollected">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.HasAliasValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.HasAliasValues.Result">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.BuildEnumAliasValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.BuildEnumAliasValues.AStringArray">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.AssignSetEnumsAliasTo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.AssignSetEnumsAliasTo.DestList">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetSetElementValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetSetElementValue.Result">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.GetSetElementValue.AliasName">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.SetSetElementValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.SetSetElementValue.AliasName">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.SetSetElementValue.NewValue">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetIndexOfSetElement">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetIndexOfSetElement.Result">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.GetIndexOfSetElement.AliasName">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.GetSetTypeData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TCustomPropertyLink.GetSetTypeData.Result">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.GetSetTypeData.CompData">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.GetSetTypeData.PTypeInfo">
-        <short/>
-      </element>
-      <element name="TCustomPropertyLink.GetSetTypeData.TypeData">
-        <short/>
-      </element>
-
-      <element name="TCustomPropertyLink.AliasValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.CanModify">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.CollectedValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.CollectValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.Editor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.Filter">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.Hook">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.LinkNotifier">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnLoadFromProperty">
-        <short/>
-        <descr>
-           Do not publish; it is used by the TTI controls.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnSaveToProperty">
-        <short/>
-        <descr>
-          Do not publish; it is used by the TTI controls.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnBeforeWrite">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnAfterWrite">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnTestEditing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.OnTestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.Options">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.Owner">
-        <short>The RTTI control using the link.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.SaveEnabled">
-        <short>Enable to automatically save changes.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.PropertyLoaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.TIObject">
-        <short>The object for the property.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.TIPropertyName">
-        <short>The name of the property.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TCustomPropertyLink.TIElementName">
-        <short>If the property is a set then the name of the enum can be given here.</short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyLink.ReadAliasValuesData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyLink.ReadAliasValuesData.Reader">
-        <short/>
-      </element>
-
-      <element name="TPropertyLink.WriteAliasValuesData">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyLink.WriteAliasValuesData.Writer">
-        <short/>
-      </element>
-
-      <element name="TPropertyLink.DefineProperties">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyLink.DefineProperties.Filer">
-        <short/>
-      </element>
-
-      <!-- TODO: add links to ancestor -->
-      <element name="TPropertyLink.AliasValues" link=""/>
-      <element name="TPropertyLink.OnBeforeWrite" link=""/>
-      <element name="TPropertyLink.OnAfterWrite" link=""/>
-      <element name="TPropertyLink.Options" link=""/>
-      <element name="TPropertyLink.TIObject" link=""/>
-      <element name="TPropertyLink.TIPropertyName" link=""/>
-      <element name="TPropertyLink.TIElementName" link=""/>
-
-      <element name="TPropertyLinkPropertyEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyLinkPropertyEditor.GetAttributes">
-        <short/>
-      </element>
-      <element name="TPropertyLinkPropertyEditor.GetAttributes.Result">
-        <short/>
-      </element>
-
-      <element name="TTIObjectPropertyEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor">
-        <short/>
-        <descr>
-          TPropertyNamePropertyEditor Property editor for TCustomPropertyLink.TIPropertyName. Shows all compatible properties.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor.FPropEdits">
-        <short/>
-        <descr>
-          List of TPropertyEditor instances.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor.GetCompatiblePropEdits">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyNamePropertyEditor.GetCompatiblePropEdits.Prop">
-        <short/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor.TestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyNamePropertyEditor.TestEditor.Result">
-        <short/>
-      </element>
-      <element name="TPropertyNamePropertyEditor.TestEditor.Prop">
-        <short/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor.GetAttributes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyNamePropertyEditor.GetAttributes.Result">
-        <short/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor.GetEditLimit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyNamePropertyEditor.GetEditLimit.Result">
-        <short/>
-      </element>
-
-      <element name="TPropertyNamePropertyEditor.GetValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropertyNamePropertyEditor.GetValues.Proc">
-        <short/>
-      </element>
-
-
-      <element name="TTIElementNamePropertyEditor ">
-        <short/>
-        <descr>
-          TTIElementNamePropertyEditor Property editor for TCustomPropertyLink.TIElementName. Shows all elements.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.FPropEdits">
-        <short>
-          List of TPropertyEditor instances for TIPropertyName.
-        </short>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.FElementPropEdits">
-        <short>
-          List of TPropertyEditor for TIElementName.
-        </short>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.GetCompatiblePropEdits">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.GetCompatiblePropEdits.Prop">
-        <short/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.GetElementPropEdits">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.GetElementPropEdits.Prop">
-        <short/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.TestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.TestEditor.Result">
-        <short/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.TestEditor.Prop">
-        <short/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.GetAttributes">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.GetAttributes.Result">
-        <short/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.GetEditLimit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.GetEditLimit.Result">
-        <short/>
-      </element>
-
-      <element name="TTIElementNamePropertyEditor.GetValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTIElementNamePropertyEditor.GetValues.Proc">
-        <short/>
-      </element>
-
-      <element name="TAliasStringsPropEditorDlg">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TAliasStringsPropEditorDlgGetDefaultValuesButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TAliasStringsPropEditorDlg.GetDefaultValuesButtonClick">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TAliasStringsPropEditorDlg.GetDefaultValuesButtonClick.Sender">
-        <short/>
-      </element>
-
-      <element name="TAliasStringsPropEditorDlg.FCollectedValues"/>
-
-      <element name="TAliasStringsPropEditorDlg.AddValue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TAliasStringsPropEditorDlg.AddValue.s">
-        <short/>
-      </element>
-
-      <element name="TAliasStringsPropEditorDlg.AddButtons">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TPropLinkAliasPropertyEditor">
-        <short/>
-        <descr>
-          TPropLinkAliasPropertyEditor Property Editor for TCustomPropertyLink.AliasValues. Prrovides a dialog to edit.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TPropLinkAliasPropertyEditor.CreateDlg">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TPropLinkAliasPropertyEditor.CreateDlg.Result">
-        <short/>
-      </element>
-      <element name="TPropLinkAliasPropertyEditor.CreateDlg.s">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink">
-        <short/>
-        <descr>
-          TMultiPropertyLink A component to switch the TIObjects of multiple RTTI controls at once.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TMultiPropertyLink.FTIObject"/>
-      <element name="TMultiPropertyLink.FMaintainGrandChilds"/>
-      <element name="TMultiPropertyLink.FMaintainSiblings"/>
-      <element name="TMultiPropertyLink.FOnSetTIObject"/>
-      <element name="TMultiPropertyLink.FParentControl"/>
-      <element name="TMultiPropertyLink.FRootComponent"/>
-
-      <element name="TMultiPropertyLink.SetTIObject">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetTIObject.AValue">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetMaintainGrandChilds">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetMaintainGrandChilds.AValue">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetMaintainSiblings">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetMaintainSiblings.AValue">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetParentControl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetParentControl.AValue">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetRootComponent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetRootComponent.AValue">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetLinks">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetLinksForChildControls">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetLinksForChildControls.AParent">
-        <short/>
-      </element>
-      <element name="TMultiPropertyLink.SetLinksForChildControls.WithGrandChilds">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.SetLinksForChildComponents">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TMultiPropertyLink.SetLinksForChildComponents.AComponent">
-        <short/>
-      </element>
-
-      <element name="TMultiPropertyLink.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMultiPropertyLink.TIObject">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMultiPropertyLink.OnSetTIObject">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMultiPropertyLink.ParentControl">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TMultiPropertyLink.RootComponent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-     <element name="TMultiPropertyLink.MaintainGrandChilds">
-       <short/>
-       <descr/>
-       <seealso/>
-     </element>
-
-      <element name="TMultiPropertyLink.MaintainSiblings">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomEdit.FLink"/>
-
-      <element name="TTICustomEdit.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomEdit.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomEdit.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomEdit.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomEdit.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomEdit.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomEdit.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomEdit.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomEdit.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomEdit.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomEdit.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomEdit.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-
-      <!-- TODO: needs published properties and links to ancestors -->
-      <element name="TTIEdit" link="TTICustomEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMaskEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMaskEdit.FLink"/>
-
-      <element name="TTICustomMaskEdit.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMaskEdit.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomMaskEdit.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMaskEdit.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomMaskEdit.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMaskEdit.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomMaskEdit.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMaskEdit.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomMaskEdit.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMaskEdit.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMaskEdit.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMaskEdit.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: TTIMaskEdit needs published properties and links to ancestors -->
-      <element name="TTIMaskEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.FHistoryCaseSensitive"/>
-      <element name="TTICustomComboBox.FLink"/>
-      <element name="TTICustomComboBox.FMaxHistoryCount"/>
-
-      <element name="TTICustomComboBox.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.SetMaxHistoryCount">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.SetMaxHistoryCount.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.LinkLoadFromProperty.Sender">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.LinkTestEditing">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.LinkTestEditing.Result">
-        <short/>
-      </element>
-      <element name="TTICustomComboBox.LinkTestEditing.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.GetItems">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.DrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.DrawItem.Index">
-        <short/>
-      </element>
-      <element name="TTICustomComboBox.DrawItem.ARect">
-        <short/>
-      </element>
-      <element name="TTICustomComboBox.DrawItem.State">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomComboBox.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomComboBox.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.MaxHistoryCount">
-        <short/>
-        <descr>
-          Set MaxHistoryCount to a positive non-zero value to enable history in the control.
-        </descr>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomComboBox.HistoryCaseSensitive">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Needs published properties and links to ancestors -->
-      <element name="TTIComboBox" link="TTICustomComboBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomRadioGroup">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomRadioGroup.FLink"/>
-
-      <element name="TTICustomRadioGroup.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomRadioGroup.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomRadioGroup.LinkLoadFromProperty">
-        <short/>
-      </element>
-      <element name="TTICustomRadioGroup.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomRadioGroup.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomRadioGroup.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomRadioGroup.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomRadioGroup.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomRadioGroup.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomRadioGroup.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomRadioGroup.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomRadioGroup.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomRadioGroup.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomRadioGroup.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTIRadioGroup" link="TTICustomRadioGroup">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckGroup">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckGroup.FLink"/>
-
-      <element name="TTICustomCheckGroup.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckGroup.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckGroup.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckGroup.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckGroup.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckGroup.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckGroup.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckGroup.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckGroup.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckGroup.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckGroup.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckGroup.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckGroup.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckGroup.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTICheckGroup" link="TTICustomCheckGroup">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckListBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckListBox.FLink"/>
-
-      <element name="TTICustomCheckListBox.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckListBox.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckListBox.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckListBox.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckListBox.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckListBox.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckListBox.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckListBox.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckListBox.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckListBox.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckListBox.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckListBox.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckListBox.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckListBox.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTICheckListBox" link="TTICustomCheckListBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomListBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomListBox.FLink"/>
-
-      <element name="TTICustomListBox.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomListBox.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomListBox.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomListBox.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomListBox.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomListBox.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomListBox.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomListBox.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomListBox.DrawItem">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomListBox.DrawItem.Index">
-        <short/>
-      </element>
-      <element name="TTICustomListBox.DrawItem.ARect">
-        <short/>
-      </element>
-      <element name="TTICustomListBox.DrawItem.State">
-        <short/>
-      </element>
-
-      <element name="TTICustomListBox.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomListBox.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomListBox.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomListBox.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomListBox.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomListBox.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTIListBox" link="TTICustomListBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      TTICustomCheckBox
-
-      <element name="TTICustomCheckBox.FLink"/>
-      <element name="TTICustomCheckBox.FLinkValueFalse"/>
-      <element name="TTICustomCheckBox.FLinkValueTrue"/>
-      <element name="TTICustomCheckBox.FPropertyNameAsCaption"/>
-
-      <element name="TTICustomCheckBox.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckBox.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckBox.SetPropertyNameAsCaption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckBox.SetPropertyNameAsCaption.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckBox.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckBox.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckBox.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckBox.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckBox.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckBox.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckBox.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCheckBox.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomCheckBox.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckBox.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckBox.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckBox.LinkValueTrue">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckBox.LinkValueFalse">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckBox.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCheckBox.PropertyNameAsCaption">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTICheckBox" link="TTICustomCheckBox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomButton.FLink"/>
-
-      <element name="TTICustomButton.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomButton.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomButton.LinkTestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomButton.LinkTestEditor.Result">
-        <short/>
-      </element>
-      <element name="TTICustomButton.LinkTestEditor.ATestEditor">
-        <short/>
-      </element>
-
-      <element name="TTICustomButton.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomButton.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomButton.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomButton.Click">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomButton.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTIButton" link="TTICustomButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomLabel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomLabel.FLink"/>
-
-      <element name="TTICustomLabel.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomLabel.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomLabel.GetLabelText">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomLabel.GetLabelText.Result">
-        <short/>
-      </element>
-
-      <element name="TTICustomLabel.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomLabel.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomLabel.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomLabel.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomLabel.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomLabel.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomLabel.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTILabel" link="TTICustomLabel">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomGroupbox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomGroupbox.FLink"/>
-
-      <element name="TTICustomGroupbox.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomGroupbox.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomGroupbox.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomGroupbox.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomGroupbox.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomGroupbox.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomGroupbox.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomGroupbox.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomGroupbox.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors   -->
-      <element name="TTIGroupBox" link="TTICustomGroupbox">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMemo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMemo.FLink"/>
-
-      <element name="TTICustomMemo.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMemo.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomMemo.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMemo.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomMemo.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMemo.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomMemo.LinkTestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMemo.LinkTestEditor.Result">
-        <short/>
-      </element>
-      <element name="TTICustomMemo.LinkTestEditor.ATestEditor">
-        <short/>
-      </element>
-
-      <element name="TTICustomMemo.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomMemo.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomMemo.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMemo.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMemo.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomMemo.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors   -->
-      <element name="TTIMemo" link="TTICustomMemo">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCalendar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCalendar.FLink"/>
-
-      <element name="TTICustomCalendar.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCalendar.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomCalendar.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCalendar.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCalendar.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCalendar.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomCalendar.LinkTestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCalendar.LinkTestEditor.Result">
-        <short/>
-      </element>
-      <element name="TTICustomCalendar.LinkTestEditor.ATestEditor">
-        <short/>
-      </element>
-
-      <element name="TTICustomCalendar.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomCalendar.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomCalendar.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCalendar.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCalendar.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomCalendar.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTICalendar" link="TTICustomCalendar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomImage">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomImage.FLink"/>
-
-      <element name="TTICustomImage.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomImage.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomImage.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomImage.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomImage.LinkTestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomImage.LinkTestEditor.Result">
-        <short/>
-      </element>
-      <element name="TTICustomImage.LinkTestEditor.ATestEditor">
-        <short/>
-      </element>
-
-      <element name="TTICustomImage.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomImage.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomImage.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomImage.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomImage.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTIImage" link="TTICustomImage">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.FLink"/>
-      <element name="TTICustomFloatSpinEdit.FUseRTTIMinMax"/>
-
-      <element name="TTICustomFloatSpinEdit.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomFloatSpinEdit.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomFloatSpinEdit.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomFloatSpinEdit.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomFloatSpinEdit.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.GetRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomFloatSpinEdit.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomFloatSpinEdit.UseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTIFloatSpinEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit.FLink"/>
-      <element name="TTICustomSpinEdit.FUseRTTIMinMax"/>
-
-      <element name="TTICustomSpinEdit.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomSpinEdit.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomSpinEdit.SetUseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomSpinEdit.SetUseRTTIMinMax.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomSpinEdit.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomSpinEdit.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomSpinEdit.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomSpinEdit.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomSpinEdit.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomSpinEdit.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomSpinEdit.GetRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomSpinEdit.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomSpinEdit.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomSpinEdit.UseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTISpinEdit" link="TTICustomSpinEdit">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar.FLink"/>
-      <element name="TTICustomTrackBar.FUseRTTIMinMax"/>
-
-      <element name="TTICustomTrackBar.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomTrackBar.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomTrackBar.SetUseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomTrackBar.SetUseRTTIMinMax.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomTrackBar.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomTrackBar.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomTrackBar.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomTrackBar.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomTrackBar.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomTrackBar.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomTrackBar.GetRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomTrackBar.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomTrackBar.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomTrackBar.UseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTITrackBar" link="TTICustomTrackBar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar.FLink"/>
-      <element name="TTICustomProgressBar.FUseRTTIMinMax"/>
-
-      <element name="TTICustomProgressBar.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomProgressBar.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomProgressBar.SetUseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomProgressBar.SetUseRTTIMinMax.AValue">
-        <short/>
-      </element>
-
-      <element name="TTICustomProgressBar.LinkLoadFromProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomProgressBar.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomProgressBar.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomProgressBar.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomProgressBar.LinkEditorChanged">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomProgressBar.LinkEditorChanged.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomProgressBar.GetRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomProgressBar.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomProgressBar.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomProgressBar.UseRTTIMinMax">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with linnks to ancestors -->
-      <element name="TTIProgressBar" link="TTICustomProgressBar">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomColorButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomColorButton.FLink"/>
-
-      <element name="TTICustomColorButton.SetLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomColorButton.SetLink.AValue">
-        <short/>
-      </element>
-
-      <element name="'TTICustomColorButton.LinkLoadFromProperty'">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomColorButton.LinkLoadFromProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomColorButton.LinkSaveToProperty">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomColorButton.LinkSaveToProperty.Sender">
-        <short/>
-      </element>
-
-      <element name="TTICustomColorButton.LinkTestEditor">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomColorButton.LinkTestEditor.Result">
-        <short/>
-      </element>
-      <element name="TTICustomColorButton.LinkTestEditor.ATestEditor">
-        <short/>
-      </element>
-
-      <element name="TTICustomColorButton.ShowColorDialog">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomColorButton.Create">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="TTICustomColorButton.Create.TheOwner">
-        <short/>
-      </element>
-
-      <element name="TTICustomColorButton.Destroy">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomColorButton.Loaded">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomColorButton.EditingDone">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <element name="TTICustomColorButton.Link">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-      <!-- TODO: Add published properties with links to ancestors -->
-      <element name="TTIColorButton" link="TTICustomColorButton">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-
-      <element name="GetPropertyLinkOfComponent">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="GetPropertyLinkOfComponent.Result">
-        <short/>
-      </element>
-      <element name="GetPropertyLinkOfComponent.AComponent">
-        <short/>
-      </element>
-
-      <element name="SaveActivePropertyLink">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="SaveActivePropertyLink.AForm">
-        <short/>
-      </element>
-
-      <element name="CreateEnumAliasValues">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-      <element name="CreateEnumAliasValues.EnumType">
-        <short/>
-      </element>
-      <element name="CreateEnumAliasValues.List">
-        <short/>
-      </element>
-      <element name="CreateEnumAliasValues.AStringArray">
-        <short/>
-      </element>
-
-      <element name="Register">
-        <short/>
-        <descr/>
-        <seealso/>
-      </element>
-
-    </module>
-  </package>
+<package name="RunTimeTypeInfoControls">
+<module name="RTTICtrls">
+<short>
+Contains controls which access properties in TPersistent objects using RTTI.
+</short>
+<descr>
+<p>
+Provides LCL controls that access properties of TPersistent objects via
+RTTI (the FreePascal Run-Time Type Information). Every published property
+can be edited in the Object Inspector. There you have a TOIPropertyGrid
+which works with TEdit, TComboBox and TButton. The RTTI controls extend
+these capabilities to edit a single property in an associated persistent
+object or component. The developer can choose how the property is displayed
+and edited.
+</p>
+<p>
+Please note that the current RTTI implementation is limited to published
+properties. Type information cannot be retrieved for properties with lesser
+visibility, like public or protected.
+</p>
+<p>
+<file>rttictrls.pas</file> registers property editors in its initialization
+section for the following classes and types:
+</p>
+<dl>
+<dt>
+TPropertyLink
+</dt>
+<dd>
+Used for all instances of the class type.
+</dd>
+<dt>
+TPersistent
+</dt>
+<dd>
+Used for the TCustomPropertyLink.TIObject and TMultiPropertyLink.TIObject
+properties.
+</dd>
+<dt>
+TAliasStrings
+</dt>
+<dd>
+Used for the TCustomPropertyLink.AliasValues property.
+</dd>
+<dt>
+String
+</dt>
+<dd>
+Used for the TCustomPropertyLink.TIPropertyName and
+TCustomPropertyLink.TIElementName properties.
+</dd>
+</dl>
+<p>
+In addition, editors for the following component types are registered:
+</p>
+<dl>
+<dt>
+TTIMaskEdit
+</dt>
+<dd>
+Used for all instances of the class type.
+</dd>
+</dl>
+<p>
+The following components are added to the component palette in the Lazarus
+IDE:
+</p>
+<p>
+<b>RTTI Tab</b>
+</p>
+<ul>
+<li>TTIEdit</li>
+<li>TTIComboBox</li>
+<li>TTIButton</li>
+<li>TTICheckBox</li>
+<li>TTILabel</li>
+<li>TTIGroupBox</li>
+<li>TTIRadioGroup</li>
+<li>TTICheckGroup</li>
+<li>TTICheckListBox</li>
+<li>TTIListBox</li>
+<li>TTIMemo</li>
+<li>TTICalendar</li>
+<li>TTIImage</li>
+<li>TTIFloatSpinEdit</li>
+<li>TTISpinEdit</li>
+<li>TTITrackBar</li>
+<li>TTIProgressBar</li>
+<li>TTIMaskEdit</li>
+<li>TTIColorButton</li>
+<li>TMultiPropertyLink</li>
+</ul>
+<p>
+<file>rttictrls.pas</file> is part of the
+<file>runtimetypeinfocontrols</file> package.
+</p>
+</descr>
+
+<!-- unresolved external references -->
+<element name="Classes"/>
+<element name="SysUtils"/>
+<element name="TypInfo"/>
+<element name="LResources"/>
+<element name="LCLProc"/>
+<element name="LCLType"/>
+<element name="LCLIntf"/>
+<element name="Forms"/>
+<element name="Controls"/>
+<element name="Graphics"/>
+<element name="MaskEdit"/>
+<element name="Calendar"/>
+<element name="Spin"/>
+<element name="Dialogs"/>
+<element name="CheckLst"/>
+<element name="ComCtrls"/>
+<element name="StdCtrls"/>
+<element name="Buttons"/>
+<element name="ExtCtrls"/>
+<element name="GraphPropEdits"/>
+<element name="PropEdits"/>
+
+<element name="TAliasStrings">
+<short>
+TStringList descendant which maps alias names to their values.
+</short>
+<descr>
+<p>
+Some RTTI controls use TAliasStrings to map RTTI values to display values.
+Eventually accelerate search for Names and Values.
+</p>
+<p>
+TAliasStrings is the type used for the AliasValues property in
+TCustomPropertyLink.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.AliasValues"/>
+<link id="TAliasStringsPropEditorDlg"/>
+</seealso>
+</element>
+
+<element name="TAliasStrings.IndexOfValue">
+<short>
+Gets the ordinal position in the list where the specified value is stored.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TAliasStrings.IndexOfValue.Result">
+<short>
+Ordinal position for the specified value, or -1 when the value is not found.
+</short>
+</element>
+<element name="TAliasStrings.IndexOfValue.AValue">
+<short>Value to locate in the list of aliases.</short>
+</element>
+
+<element name="TAliasStrings.ValueAt">
+<short>
+Gets the value for the alias stored at the specified ordinal position in
+the list.
+</short>
+<descr>
+<p>
+Index must be in the range 0..Count-1 or an exception is raised when
+accessing the value for an alias.
+</p>
+<p>
+The return value is an empty string ('') if a value is not stored for the
+alias using the NAME=VALUE format.
+</p>
+</descr>
+<seealso/>
+</element>
+<element name="TAliasStrings.ValueAt.Result">
+<short>Value for the alias at the specified position.</short>
+</element>
+<element name="TAliasStrings.ValueAt.Index">
+<short>Ordinal position in the list examined for its value.</short>
+</element>
+
+<element name="TAliasStrings.ValueToAlias">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TAliasStrings.ValueToAlias.Result">
+<short/>
+</element>
+<element name="TAliasStrings.ValueToAlias.AValue">
+<short/>
+</element>
+
+<element name="TAliasStrings.AliasToValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TAliasStrings.AliasToValue.Result">
+<short/>
+</element>
+<element name="TAliasStrings.AliasToValue.Alias">
+<short/>
+</element>
+
+<element name="TPropertyLinkNotifier">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyLinkNotifier.FLink"/>
+
+<element name="TPropertyLinkNotifier.Notification">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyLinkNotifier.Notification.AComponent">
+<short/>
+</element>
+<element name="TPropertyLinkNotifier.Notification.Operation">
+<short/>
+</element>
+
+<element name="TPropertyLinkNotifier.Create">
+<short>
+Constructor for the class instance.
+</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyLinkNotifier.Create.TheLink">
+<short/>
+</element>
+
+<element name="TPropertyLinkNotifier.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyLinkOption">
+<short>Options for the RTTI Control to Property Editor link.</short>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyLinkOption.ploReadOnIdle">
+<short>
+Allows reading / updating property values in an Application OnIdle handler
+routine.
+</short>
+</element>
+<element name="TPropertyLinkOption.ploAutoSave">
+<short>
+Auto-save the property value when EditingDone is called for the RTTI
+control.
+</short>
+</element>
+
+<!-- TODO:
+<element name="TPropertyLinkOption.ploDisableOnNil">
+<short>Disable control if link disconnected.</short>
+</element>
+<element name="TPropertyLinkOption.ploReadOnly">
+<short/>
+</element>
+-->
+
+<element name="TPropertyLinkOptions">
+<short>
+Set of options enabled for a RTTI control.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="DefaultLinkOptions">
+<short>
+Contains the default options enabled in the property links for RTTI
+controls.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTestEditing">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTestEditing.Result">
+<short/>
+</element>
+<element name="TTestEditing.Sender">
+<short/>
+</element>
+
+<element name="TBeforeWriteProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TBeforeWriteProperty.Sender">
+<short/>
+</element>
+<element name="TBeforeWriteProperty.AllowWrite">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink">
+<short>
+Provides the connection between an RTTI control and a property editor.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.FAliasValues"/>
+<element name="TCustomPropertyLink.FCollectedValues"/>
+<element name="TCustomPropertyLink.FCollectedValues"/>
+<element name="TCustomPropertyLink.FEditor"/>
+<element name="TCustomPropertyLink.FFilter"/>
+<element name="TCustomPropertyLink.FHook"/>
+<element name="TCustomPropertyLink.FIdleHandlerConnected"/>
+<element name="TCustomPropertyLink.FLinkNotifier"/>
+<element name="TCustomPropertyLink.FOnAfterWrite"/>
+<element name="TCustomPropertyLink.FOnBeforeWrite"/>
+<element name="TCustomPropertyLink.FOnEditorChanged"/>
+<element name="TCustomPropertyLink.FOnLoadFromProperty"/>
+<element name="TCustomPropertyLink.FOnSaveToProperty"/>
+<element name="TCustomPropertyLink.FOnTestEditing"/>
+<element name="TCustomPropertyLink.FOnTestEditor"/>
+<element name="TCustomPropertyLink.FOptions"/>
+<element name="TCustomPropertyLink.FOwner"/>
+<element name="TCustomPropertyLink.FPropertyLoaded"/>
+<element name="TCustomPropertyLink.FSaveEnabled"/>
+<element name="TCustomPropertyLink.FTIElementName"/>
+<element name="TCustomPropertyLink.FTIObject"/>
+<element name="TCustomPropertyLink.FTIPropertyName"/>
+
+<element name="TCustomPropertyLink.SetCollectValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetCollectValues.AValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetEditor.AValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetFilter">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetFilter.AValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetOptions">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetOptions.NewOptions">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetTIElementName">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetTIElementName.AValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetTIObject">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetTIObject.AValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetTIPropertyName">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetTIPropertyName.AValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetCanModify">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetCanModify.Result">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.EditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.SetPropertyEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetPropertyEditor.APropertyEditor">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.CheckPropInfo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.CheckPropInfo.Result">
+<short/>
+</element>
+<element name="TCustomPropertyLink.CheckPropInfo.APropInfo">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.CreateHook">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.UpdateIdleHandler">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnApplicationIdle">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.OnApplicationIdle.Sender">
+<short/>
+</element>
+<element name="TCustomPropertyLink.OnApplicationIdle.Done">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.Notification">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.Notification.AComponent">
+<short/>
+</element>
+<element name="TCustomPropertyLink.Notification.Operation">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetEditorValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetEditorValues.NewValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.Assign">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.Assign.Source">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetObjectAndProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetObjectAndProperty.NewPersistent">
+<short/>
+</element>
+<element name="TCustomPropertyLink.SetObjectAndProperty.NewPropertyName">
+<short/>
+</element>
+<element name="TCustomPropertyLink.SetObjectAndProperty.NewElementName">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.InvalidateEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.CreateEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.FetchValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.LoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.SaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.SetAsText">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetAsText.NewText">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetAsText">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetAsText.Result">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetAsInt">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetAsInt.NewInt">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetAsInt">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetAsInt.Result">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.CheckBeforeWrite">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.CheckBeforeWrite.Result">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.CheckAfterWrite">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.DoError">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.DoError.Writing">
+<short/>
+</element>
+<element name="TCustomPropertyLink.DoError.E">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.MapValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.MapValues.Values">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapValues.AliasStrings">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapValues.MappedValues">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapValues.UseAllExistingAlias">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapValues.AddValuesWithoutAlias">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapValues.IfNoValuesAvailableAddAllAlias">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.MapCollectedValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.MapCollectedValues.AliasStrings">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapCollectedValues.MappedValues">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapCollectedValues.UseAllExistingAlias">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapCollectedValues.AddValuesWithoutAlias">
+<short/>
+</element>
+<element name="TCustomPropertyLink.MapCollectedValues.IfNoValuesAvailableAddAllAlias">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.AssignCollectedAliasValuesTo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.AssignCollectedAliasValuesTo.DestList">
+<short/>
+</element>
+<element name="TCustomPropertyLink.AssignCollectedAliasValuesTo.KeepIfNoneCollected">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.HasAliasValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.HasAliasValues.Result">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.BuildEnumAliasValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.BuildEnumAliasValues.AStringArray">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.AssignSetEnumsAliasTo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.AssignSetEnumsAliasTo.DestList">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetSetElementValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetSetElementValue.Result">
+<short/>
+</element>
+<element name="TCustomPropertyLink.GetSetElementValue.AliasName">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.SetSetElementValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.SetSetElementValue.AliasName">
+<short/>
+</element>
+<element name="TCustomPropertyLink.SetSetElementValue.NewValue">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetIndexOfSetElement">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetIndexOfSetElement.Result">
+<short/>
+</element>
+<element name="TCustomPropertyLink.GetIndexOfSetElement.AliasName">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.GetSetTypeData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TCustomPropertyLink.GetSetTypeData.Result">
+<short/>
+</element>
+<element name="TCustomPropertyLink.GetSetTypeData.CompData">
+<short/>
+</element>
+<element name="TCustomPropertyLink.GetSetTypeData.PTypeInfo">
+<short/>
+</element>
+<element name="TCustomPropertyLink.GetSetTypeData.TypeData">
+<short/>
+</element>
+
+<element name="TCustomPropertyLink.AliasValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.CanModify">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.CollectedValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.CollectValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.Editor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.Filter">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.Hook">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.LinkNotifier">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnLoadFromProperty">
+<short/>
+<descr>
+<p>
+Do not publish; it is used internally by the RTTI controls.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnSaveToProperty">
+<short/>
+<descr>
+<p>
+Do not publish; it is used internally by the RTTI controls.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnBeforeWrite">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnAfterWrite">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnTestEditing">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.OnTestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.Options">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.Owner">
+<short>The RTTI control using the link.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.SaveEnabled">
+<short>Enable to automatically save changes.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.PropertyLoaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.TIObject">
+<short>The persistent object with the value for the property.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.TIPropertyName">
+<short>The name of the property in the persistent object.</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TCustomPropertyLink.TIElementName">
+<short>
+If the property is a set type, the name of the enumeration value can be
+given here.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyLink.ReadAliasValuesData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyLink.ReadAliasValuesData.Reader">
+<short/>
+</element>
+
+<element name="TPropertyLink.WriteAliasValuesData">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyLink.WriteAliasValuesData.Writer">
+<short/>
+</element>
+
+<element name="TPropertyLink.DefineProperties">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyLink.DefineProperties.Filer">
+<short/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TPropertyLink.AliasValues"/>
+<element name="TPropertyLink.OnBeforeWrite"/>
+<element name="TPropertyLink.OnAfterWrite"/>
+<element name="TPropertyLink.Options"/>
+<element name="TPropertyLink.TIObject"/>
+<element name="TPropertyLink.TIPropertyName"/>
+<element name="TPropertyLink.TIElementName"/>
+
+<element name="TPropertyLinkPropertyEditor">
+<short>
+Implements the property editor for the TPropertyLink type.
+</short>
+<descr/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
+</element>
+
+<element name="TPropertyLinkPropertyEditor.GetAttributes">
+<short/>
+</element>
+<element name="TPropertyLinkPropertyEditor.GetAttributes.Result">
+<short/>
+</element>
+
+<element name="TTIObjectPropertyEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyNamePropertyEditor">
+<short>
+TPropertyNamePropertyEditor is the property editor for
+TCustomPropertyLink.TIPropertyName.
+</short>
+<descr>
+<p>
+It displays all compatible properties.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TPropertyNamePropertyEditor.FPropEdits">
+<short>
+List of TPropertyEditor instances for TIPropertyName.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropertyNamePropertyEditor.GetCompatiblePropEdits">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyNamePropertyEditor.GetCompatiblePropEdits.Prop">
+<short/>
+</element>
+
+<element name="TPropertyNamePropertyEditor.TestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyNamePropertyEditor.TestEditor.Result">
+<short/>
+</element>
+<element name="TPropertyNamePropertyEditor.TestEditor.Prop">
+<short/>
+</element>
+
+<element name="TPropertyNamePropertyEditor.GetAttributes">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyNamePropertyEditor.GetAttributes.Result">
+<short/>
+</element>
+
+<element name="TPropertyNamePropertyEditor.GetEditLimit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyNamePropertyEditor.GetEditLimit.Result">
+<short/>
+</element>
+
+<element name="TPropertyNamePropertyEditor.GetValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropertyNamePropertyEditor.GetValues.Proc">
+<short/>
+</element>
+
+<element name="TTIElementNamePropertyEditor">
+<short>
+Implements the editor for the TIElementName property in TCustomPropertyLink.
+</short>
+<descr>
+<p>
+TTIElementNamePropertyEditor Property editor for
+TCustomPropertyLink.TIElementName. Shows all elements.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.TIElementName"/>
+</seealso>
+</element>
+
+<element name="TTIElementNamePropertyEditor.FPropEdits">
+<short>
+List of TPropertyEditor instances for TIPropertyName.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTIElementNamePropertyEditor.FElementPropEdits">
+<short>
+List of TPropertyEditor instances for TIElementName.
+</short>
+</element>
+
+<element name="TTIElementNamePropertyEditor.GetCompatiblePropEdits">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTIElementNamePropertyEditor.GetCompatiblePropEdits.Prop">
+<short/>
+</element>
+
+<element name="TTIElementNamePropertyEditor.GetElementPropEdits">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTIElementNamePropertyEditor.GetElementPropEdits.Prop">
+<short/>
+</element>
+
+<element name="TTIElementNamePropertyEditor.TestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTIElementNamePropertyEditor.TestEditor.Result">
+<short/>
+</element>
+<element name="TTIElementNamePropertyEditor.TestEditor.Prop">
+<short/>
+</element>
+
+<element name="TTIElementNamePropertyEditor.GetAttributes">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTIElementNamePropertyEditor.GetAttributes.Result">
+<short/>
+</element>
+
+<element name="TTIElementNamePropertyEditor.GetEditLimit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTIElementNamePropertyEditor.GetEditLimit.Result">
+<short/>
+</element>
+
+<element name="TTIElementNamePropertyEditor.GetValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTIElementNamePropertyEditor.GetValues.Proc">
+<short/>
+</element>
+
+<element name="TAliasStringsPropEditorDlg">
+<short>
+Implements the property editor dialog used for the TAliasStrings type.
+</short>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TAliasStringsPropEditorDlgGetDefaultValuesButton">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TAliasStringsPropEditorDlg.GetDefaultValuesButtonClick">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TAliasStringsPropEditorDlg.GetDefaultValuesButtonClick.Sender">
+<short/>
+</element>
+
+<element name="TAliasStringsPropEditorDlg.FCollectedValues"/>
+
+<element name="TAliasStringsPropEditorDlg.AddValue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TAliasStringsPropEditorDlg.AddValue.s">
+<short/>
+</element>
+
+<element name="TAliasStringsPropEditorDlg.AddButtons">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TPropLinkAliasPropertyEditor">
+<short>
+Property editor for TCustomPropertyLink.AliasValues.
+</short>
+<descr>
+<p>
+Provides a dialog used to edit an alias and its value.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TPropLinkAliasPropertyEditor.CreateDlg">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TPropLinkAliasPropertyEditor.CreateDlg.Result">
+<short/>
+</element>
+<element name="TPropLinkAliasPropertyEditor.CreateDlg.s">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink">
+<short>
+Changes the object reference for multiple RTTI controls in one action.
+</short>
+<descr>
+<p>
+TMultiPropertyLink is a component to switch the TIObjects of multiple RTTI
+controls at once.
+</p>
+</descr>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.FTIObject"/>
+<element name="TMultiPropertyLink.FMaintainGrandChilds"/>
+<element name="TMultiPropertyLink.FMaintainSiblings"/>
+<element name="TMultiPropertyLink.FOnSetTIObject"/>
+<element name="TMultiPropertyLink.FParentControl"/>
+<element name="TMultiPropertyLink.FRootComponent"/>
+
+<element name="TMultiPropertyLink.SetTIObject">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetTIObject.AValue">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.SetMaintainGrandChilds">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetMaintainGrandChilds.AValue">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.SetMaintainSiblings">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetMaintainSiblings.AValue">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.SetParentControl">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetParentControl.AValue">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.SetRootComponent">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetRootComponent.AValue">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.SetLinks">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.SetLinksForChildControls">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetLinksForChildControls.AParent">
+<short/>
+</element>
+<element name="TMultiPropertyLink.SetLinksForChildControls.WithGrandChilds">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.SetLinksForChildComponents">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TMultiPropertyLink.SetLinksForChildComponents.AComponent">
+<short/>
+</element>
+
+<element name="TMultiPropertyLink.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.TIObject">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.OnSetTIObject">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.ParentControl">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.RootComponent">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.MaintainGrandChilds">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TMultiPropertyLink.MaintainSiblings">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomEdit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomEdit.FLink"/>
+
+<element name="TTICustomEdit.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomEdit.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomEdit.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomEdit.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomEdit.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomEdit.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomEdit.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomEdit.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomEdit.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomEdit.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomEdit.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomEdit.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTIEdit">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomEdit"/>
+</seealso>
+</element>
+
+<!-- TODO: needs links to ancestors -->
+<element name="TTIEdit.Action"/>
+<element name="TTIEdit.Align"/>
+<element name="TTIEdit.Anchors"/>
+<element name="TTIEdit.AutoSize"/>
+<element name="TTIEdit.BorderSpacing"/>
+<element name="TTIEdit.Constraints"/>
+<element name="TTIEdit.CharCase"/>
+<element name="TTIEdit.DragMode"/>
+<element name="TTIEdit.EchoMode"/>
+<element name="TTIEdit.Enabled"/>
+<element name="TTIEdit.Link"/>
+<element name="TTIEdit.MaxLength"/>
+<element name="TTIEdit.OnChange"/>
+<element name="TTIEdit.OnChangeBounds"/>
+<element name="TTIEdit.OnClick"/>
+<element name="TTIEdit.OnEditingDone"/>
+<element name="TTIEdit.OnEnter"/>
+<element name="TTIEdit.OnExit"/>
+<element name="TTIEdit.OnKeyDown"/>
+<element name="TTIEdit.OnKeyPress"/>
+<element name="TTIEdit.OnKeyUp"/>
+<element name="TTIEdit.OnMouseDown"/>
+<element name="TTIEdit.OnMouseMove"/>
+<element name="TTIEdit.OnMouseUp"/>
+<element name="TTIEdit.OnResize"/>
+<element name="TTIEdit.ParentFont"/>
+<element name="TTIEdit.ParentShowHint"/>
+<element name="TTIEdit.PasswordChar"/>
+<element name="TTIEdit.PopupMenu"/>
+<element name="TTIEdit.ReadOnly"/>
+<element name="TTIEdit.ShowHint"/>
+<element name="TTIEdit.TabStop"/>
+<element name="TTIEdit.TabOrder"/>
+<element name="TTIEdit.Visible"/>
+
+<element name="TTICustomMaskEdit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMaskEdit.FLink"/>
+
+<element name="TTICustomMaskEdit.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMaskEdit.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomMaskEdit.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMaskEdit.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomMaskEdit.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMaskEdit.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomMaskEdit.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMaskEdit.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomMaskEdit.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMaskEdit.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMaskEdit.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMaskEdit.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTIMaskEdit">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomMaskEdit"/>
+</seealso>
+</element>
+
+<!-- TODO: needs links to ancestors -->
+<element name="TTIMaskEdit.Align"/>
+<element name="TTIMaskEdit.Anchors"/>
+<element name="TTIMaskEdit.AutoSize"/>
+<element name="TTIMaskEdit.BorderSpacing"/>
+<element name="TTIMaskEdit.CharCase"/>
+<element name="TTIMaskEdit.Color"/>
+<element name="TTIMaskEdit.Constraints"/>
+<element name="TTIMaskEdit.DragCursor"/>
+<element name="TTIMaskEdit.DragKind"/>
+<element name="TTIMaskEdit.DragMode"/>
+<element name="TTIMaskEdit.Enabled"/>
+<element name="TTIMaskEdit.EditMask"/>
+<element name="TTIMaskEdit.Font"/>
+<element name="TTIMaskEdit.Link"/>
+<element name="TTIMaskEdit.MaxLength"/>
+<element name="TTIMaskEdit.ParentColor"/>
+<element name="TTIMaskEdit.ParentFont"/>
+<element name="TTIMaskEdit.ParentShowHint"/>
+<element name="TTIMaskEdit.PasswordChar"/>
+<element name="TTIMaskEdit.PopupMenu"/>
+<element name="TTIMaskEdit.ReadOnly"/>
+<element name="TTIMaskEdit.ShowHint"/>
+<element name="TTIMaskEdit.TabOrder"/>
+<element name="TTIMaskEdit.TabStop"/>
+<element name="TTIMaskEdit.Visible"/>
+<element name="TTIMaskEdit.OnChange"/>
+<element name="TTIMaskEdit.OnClick"/>
+<element name="TTIMaskEdit.OnDblClick"/>
+<element name="TTIMaskEdit.OnDragDrop"/>
+<element name="TTIMaskEdit.OnDragOver"/>
+<element name="TTIMaskEdit.OnEditingDone"/>
+<element name="TTIMaskEdit.OnEndDrag"/>
+<element name="TTIMaskEdit.OnEnter"/>
+<element name="TTIMaskEdit.OnExit"/>
+<element name="TTIMaskEdit.OnKeyDown"/>
+<element name="TTIMaskEdit.OnKeyPress"/>
+<element name="TTIMaskEdit.OnKeyUp"/>
+<element name="TTIMaskEdit.OnMouseDown"/>
+<element name="TTIMaskEdit.OnMouseMove"/>
+<element name="TTIMaskEdit.OnMouseUp"/>
+<element name="TTIMaskEdit.OnStartDrag"/>
+
+<element name="TTICustomComboBox">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.FHistoryCaseSensitive"/>
+<element name="TTICustomComboBox.FLink"/>
+<element name="TTICustomComboBox.FMaxHistoryCount"/>
+
+<element name="TTICustomComboBox.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.SetMaxHistoryCount">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.SetMaxHistoryCount.AValue">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.LinkLoadFromProperty.Sender">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.LinkTestEditing">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.LinkTestEditing.Result">
+<short/>
+</element>
+<element name="TTICustomComboBox.LinkTestEditing.Sender">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.GetItems">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.DrawItem">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.DrawItem.Index">
+<short/>
+</element>
+<element name="TTICustomComboBox.DrawItem.ARect">
+<short/>
+</element>
+<element name="TTICustomComboBox.DrawItem.State">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomComboBox.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomComboBox.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.MaxHistoryCount">
+<short/>
+<descr>
+Set MaxHistoryCount to a positive non-zero value to enable history in the
+control.
+</descr>
+<seealso/>
+</element>
+
+<element name="TTICustomComboBox.HistoryCaseSensitive">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIComboBox" link="TTICustomComboBox">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTIComboBox.ItemIndex"/>
+<element name="TTIComboBox.Align"/>
+<element name="TTIComboBox.Anchors"/>
+<element name="TTIComboBox.ArrowKeysTraverseList"/>
+<element name="TTIComboBox.AutoComplete"/>
+<element name="TTIComboBox.AutoCompleteText"/>
+<element name="TTIComboBox.AutoDropDown"/>
+<element name="TTIComboBox.BorderSpacing"/>
+<element name="TTIComboBox.DropDownCount"/>
+<element name="TTIComboBox.Enabled"/>
+<element name="TTIComboBox.Font"/>
+<element name="TTIComboBox.HistoryCaseSensitive"/>
+<element name="TTIComboBox.Link"/>
+<element name="TTIComboBox.MaxHistoryCount"/>
+<element name="TTIComboBox.MaxLength"/>
+<element name="TTIComboBox.OnChange"/>
+<element name="TTIComboBox.OnChangeBounds"/>
+<element name="TTIComboBox.OnClick"/>
+<element name="TTIComboBox.OnCloseUp"/>
+<element name="TTIComboBox.OnDrawItem"/>
+<element name="TTIComboBox.OnDropDown"/>
+<element name="TTIComboBox.OnEditingDone"/>
+<element name="TTIComboBox.OnEnter"/>
+<element name="TTIComboBox.OnExit"/>
+<element name="TTIComboBox.OnGetItems"/>
+<element name="TTIComboBox.OnKeyDown"/>
+<element name="TTIComboBox.OnKeyPress"/>
+<element name="TTIComboBox.OnKeyUp"/>
+<element name="TTIComboBox.OnMouseDown"/>
+<element name="TTIComboBox.OnMouseMove"/>
+<element name="TTIComboBox.OnMouseUp"/>
+<element name="TTIComboBox.OnSelect"/>
+<element name="TTIComboBox.ParentFont"/>
+<element name="TTIComboBox.ParentShowHint"/>
+<element name="TTIComboBox.ShowHint"/>
+<element name="TTIComboBox.Sorted"/>
+<element name="TTIComboBox.Style"/>
+<element name="TTIComboBox.TabOrder"/>
+<element name="TTIComboBox.TabStop"/>
+<element name="TTIComboBox.Visible"/>
+
+<element name="TTICustomRadioGroup">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomRadioGroup.FLink"/>
+
+<element name="TTICustomRadioGroup.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomRadioGroup.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomRadioGroup.LinkLoadFromProperty">
+<short/>
+</element>
+<element name="TTICustomRadioGroup.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomRadioGroup.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomRadioGroup.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomRadioGroup.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomRadioGroup.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomRadioGroup.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomRadioGroup.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomRadioGroup.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomRadioGroup.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomRadioGroup.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomRadioGroup.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Add links to ancestors -->
+<element name="TTIRadioGroup" link="TTICustomRadioGroup">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTIRadioGroup.Align"/>
+<element name="TTIRadioGroup.Anchors"/>
+<element name="TTIRadioGroup.BorderSpacing"/>
+<element name="TTIRadioGroup.Caption"/>
+<element name="TTIRadioGroup.ChildSizing"/>
+<element name="TTIRadioGroup.Color"/>
+<element name="TTIRadioGroup.ColumnLayout"/>
+<element name="TTIRadioGroup.Columns"/>
+<element name="TTIRadioGroup.Constraints"/>
+<element name="TTIRadioGroup.Enabled"/>
+<element name="TTIRadioGroup.ItemIndex"/>
+<element name="TTIRadioGroup.Link"/>
+<element name="TTIRadioGroup.OnChangeBounds"/>
+<element name="TTIRadioGroup.OnClick"/>
+<element name="TTIRadioGroup.OnDblClick"/>
+<element name="TTIRadioGroup.OnEditingDone"/>
+<element name="TTIRadioGroup.OnEnter"/>
+<element name="TTIRadioGroup.OnExit"/>
+<element name="TTIRadioGroup.OnKeyDown"/>
+<element name="TTIRadioGroup.OnKeyPress"/>
+<element name="TTIRadioGroup.OnKeyUp"/>
+<element name="TTIRadioGroup.OnMouseDown"/>
+<element name="TTIRadioGroup.OnMouseMove"/>
+<element name="TTIRadioGroup.OnMouseUp"/>
+<element name="TTIRadioGroup.OnResize"/>
+<element name="TTIRadioGroup.ParentColor"/>
+<element name="TTIRadioGroup.ParentShowHint"/>
+<element name="TTIRadioGroup.PopupMenu"/>
+<element name="TTIRadioGroup.ShowHint"/>
+<element name="TTIRadioGroup.Visible"/>
+
+<element name="TTICustomCheckGroup">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckGroup.FLink"/>
+
+<element name="TTICustomCheckGroup.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckGroup.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomCheckGroup.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckGroup.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckGroup.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckGroup.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckGroup.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckGroup.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckGroup.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckGroup.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomCheckGroup.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckGroup.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckGroup.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckGroup.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICheckGroup">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomCheckGroup"/>
+</seealso>
+</element>
+
+<element name="TTICheckGroup.Align"/>
+<element name="TTICheckGroup.Anchors"/>
+<element name="TTICheckGroup.BorderSpacing"/>
+<element name="TTICheckGroup.Caption"/>
+<element name="TTICheckGroup.Color"/>
+<element name="TTICheckGroup.ColumnLayout"/>
+<element name="TTICheckGroup.Columns"/>
+<element name="TTICheckGroup.Constraints"/>
+<element name="TTICheckGroup.Enabled"/>
+<element name="TTICheckGroup.Items"/>
+<element name="TTICheckGroup.Link"/>
+<element name="TTICheckGroup.OnChangeBounds"/>
+<element name="TTICheckGroup.OnClick"/>
+<element name="TTICheckGroup.OnDblClick"/>
+<element name="TTICheckGroup.OnEditingDone"/>
+<element name="TTICheckGroup.OnEnter"/>
+<element name="TTICheckGroup.OnExit"/>
+<element name="TTICheckGroup.OnItemClick"/>
+<element name="TTICheckGroup.OnKeyDown"/>
+<element name="TTICheckGroup.OnKeyPress"/>
+<element name="TTICheckGroup.OnKeyUp"/>
+<element name="TTICheckGroup.OnMouseDown"/>
+<element name="TTICheckGroup.OnMouseMove"/>
+<element name="TTICheckGroup.OnMouseUp"/>
+<element name="TTICheckGroup.OnResize"/>
+<element name="TTICheckGroup.ParentColor"/>
+<element name="TTICheckGroup.ParentShowHint"/>
+<element name="TTICheckGroup.PopupMenu"/>
+<element name="TTICheckGroup.ShowHint"/>
+<element name="TTICheckGroup.Visible"/>
+
+<element name="TTICustomCheckListBox">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckListBox.FLink"/>
+
+<element name="TTICustomCheckListBox.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckListBox.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomCheckListBox.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckListBox.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckListBox.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckListBox.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckListBox.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckListBox.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckListBox.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckListBox.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomCheckListBox.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckListBox.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckListBox.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckListBox.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICheckListBox">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomCheckListBox"/>
+</seealso>
+</element>
+
+<element name="TTICheckListBox.Align"/>
+<element name="TTICheckListBox.Anchors"/>
+<element name="TTICheckListBox.BorderSpacing"/>
+<element name="TTICheckListBox.BorderStyle"/>
+<element name="TTICheckListBox.Constraints"/>
+<element name="TTICheckListBox.ExtendedSelect"/>
+<element name="TTICheckListBox.Items"/>
+<element name="TTICheckListBox.ItemHeight"/>
+<element name="TTICheckListBox.Link"/>
+<element name="TTICheckListBox.MultiSelect"/>
+<element name="TTICheckListBox.OnClick"/>
+<element name="TTICheckListBox.OnDblClick"/>
+<element name="TTICheckListBox.OnDrawItem"/>
+<element name="TTICheckListBox.OnEditingDone"/>
+<element name="TTICheckListBox.OnEnter"/>
+<element name="TTICheckListBox.OnExit"/>
+<element name="TTICheckListBox.OnKeyPress"/>
+<element name="TTICheckListBox.OnKeyDown"/>
+<element name="TTICheckListBox.OnKeyUp"/>
+<element name="TTICheckListBox.OnMouseMove"/>
+<element name="TTICheckListBox.OnMouseDown"/>
+<element name="TTICheckListBox.OnMouseUp"/>
+<element name="TTICheckListBox.OnResize"/>
+<element name="TTICheckListBox.ParentShowHint"/>
+<element name="TTICheckListBox.ShowHint"/>
+<element name="TTICheckListBox.Sorted"/>
+<element name="TTICheckListBox.Style"/>
+<element name="TTICheckListBox.TabOrder"/>
+<element name="TTICheckListBox.TabStop"/>
+<element name="TTICheckListBox.TopIndex"/>
+<element name="TTICheckListBox.Visible"/>
+
+<element name="TTICustomListBox">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomListBox.FLink"/>
+
+<element name="TTICustomListBox.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomListBox.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomListBox.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomListBox.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomListBox.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomListBox.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomListBox.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomListBox.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomListBox.DrawItem">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomListBox.DrawItem.Index">
+<short/>
+</element>
+<element name="TTICustomListBox.DrawItem.ARect">
+<short/>
+</element>
+<element name="TTICustomListBox.DrawItem.State">
+<short/>
+</element>
+
+<element name="TTICustomListBox.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomListBox.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomListBox.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomListBox.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomListBox.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomListBox.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIListBox">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomListBox"/>
+</seealso>
+</element>
+
+<element name="TTIListBox.Align"/>
+<element name="TTIListBox.Anchors"/>
+<element name="TTIListBox.BorderSpacing"/>
+<element name="TTIListBox.BorderStyle"/>
+<element name="TTIListBox.ClickOnSelChange"/>
+<element name="TTIListBox.Constraints"/>
+<element name="TTIListBox.ExtendedSelect"/>
+<element name="TTIListBox.Font"/>
+<element name="TTIListBox.IntegralHeight"/>
+<element name="TTIListBox.ItemHeight"/>
+<element name="TTIListBox.MultiSelect"/>
+<element name="TTIListBox.Link"/>
+<element name="TTIListBox.OnChangeBounds"/>
+<element name="TTIListBox.OnClick"/>
+<element name="TTIListBox.OnDblClick"/>
+<element name="TTIListBox.OnDrawItem"/>
+<element name="TTIListBox.OnEditingDone"/>
+<element name="TTIListBox.OnEnter"/>
+<element name="TTIListBox.OnExit"/>
+<element name="TTIListBox.OnKeyPress"/>
+<element name="TTIListBox.OnKeyDown"/>
+<element name="TTIListBox.OnKeyUp"/>
+<element name="TTIListBox.OnMouseMove"/>
+<element name="TTIListBox.OnMouseDown"/>
+<element name="TTIListBox.OnMouseUp"/>
+<element name="TTIListBox.OnMouseEnter"/>
+<element name="TTIListBox.OnMouseLeave"/>
+<element name="TTIListBox.OnMouseWheel"/>
+<element name="TTIListBox.OnMouseWheelDown"/>
+<element name="TTIListBox.OnMouseWheelUp"/>
+<element name="TTIListBox.OnResize"/>
+<element name="TTIListBox.OnSelectionChange"/>
+<element name="TTIListBox.ParentShowHint"/>
+<element name="TTIListBox.ParentFont"/>
+<element name="TTIListBox.PopupMenu"/>
+<element name="TTIListBox.ShowHint"/>
+<element name="TTIListBox.Sorted"/>
+<element name="TTIListBox.Style"/>
+<element name="TTIListBox.TabOrder"/>
+<element name="TTIListBox.TabStop"/>
+<element name="TTIListBox.TopIndex"/>
+<element name="TTIListBox.Visible"/>
+
+<element name="TTICustomCheckBox.FLink"/>
+<element name="TTICustomCheckBox.FLinkValueFalse"/>
+<element name="TTICustomCheckBox.FLinkValueTrue"/>
+<element name="TTICustomCheckBox.FPropertyNameAsCaption"/>
+
+<element name="TTICustomCheckBox.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckBox.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomCheckBox.SetPropertyNameAsCaption">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckBox.SetPropertyNameAsCaption.AValue">
+<short/>
+</element>
+
+<element name="TTICustomCheckBox.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckBox.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckBox.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckBox.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckBox.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckBox.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCheckBox.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCheckBox.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomCheckBox.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckBox.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckBox.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckBox.LinkValueTrue">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckBox.LinkValueFalse">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckBox.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCheckBox.PropertyNameAsCaption">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICheckBox">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomCheckBox"/>
+</seealso>
+</element>
+
+<element name="TTICheckBox.Action"/>
+<element name="TTICheckBox.Align"/>
+<element name="TTICheckBox.AllowGrayed"/>
+<element name="TTICheckBox.Anchors"/>
+<element name="TTICheckBox.AutoSize"/>
+<element name="TTICheckBox.BorderSpacing"/>
+<element name="TTICheckBox.Caption"/>
+<element name="TTICheckBox.Constraints"/>
+<element name="TTICheckBox.DragCursor"/>
+<element name="TTICheckBox.DragKind"/>
+<element name="TTICheckBox.DragMode"/>
+<element name="TTICheckBox.Enabled"/>
+<element name="TTICheckBox.Hint"/>
+<element name="TTICheckBox.Link"/>
+<element name="TTICheckBox.OnChange"/>
+<element name="TTICheckBox.OnChangeBounds"/>
+<element name="TTICheckBox.OnClick"/>
+<element name="TTICheckBox.OnDragDrop"/>
+<element name="TTICheckBox.OnDragOver"/>
+<element name="TTICheckBox.OnEditingDone"/>
+<element name="TTICheckBox.OnEndDrag"/>
+<element name="TTICheckBox.OnEnter"/>
+<element name="TTICheckBox.OnExit"/>
+<element name="TTICheckBox.OnMouseDown"/>
+<element name="TTICheckBox.OnMouseMove"/>
+<element name="TTICheckBox.OnMouseUp"/>
+<element name="TTICheckBox.OnResize"/>
+<element name="TTICheckBox.OnStartDrag"/>
+<element name="TTICheckBox.ParentShowHint"/>
+<element name="TTICheckBox.PopupMenu"/>
+<element name="TTICheckBox.PropertyNameAsCaption"/>
+<element name="TTICheckBox.ShowHint"/>
+<element name="TTICheckBox.State"/>
+<element name="TTICheckBox.TabOrder"/>
+<element name="TTICheckBox.TabStop"/>
+<element name="TTICheckBox.Visible"/>
+
+<element name="TTICustomButton">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomButton.FLink"/>
+
+<element name="TTICustomButton.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomButton.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomButton.LinkTestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomButton.LinkTestEditor.Result">
+<short/>
+</element>
+<element name="TTICustomButton.LinkTestEditor.ATestEditor">
+<short/>
+</element>
+
+<element name="TTICustomButton.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomButton.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomButton.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomButton.Click">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomButton.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIButton">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomButton"/>
+</seealso>
+</element>
+
+<element name="TTIButton.Action"/>
+<element name="TTIButton.Align"/>
+<element name="TTIButton.Anchors"/>
+<element name="TTIButton.BorderSpacing"/>
+<element name="TTIButton.Cancel"/>
+<element name="TTIButton.Caption"/>
+<element name="TTIButton.Constraints"/>
+<element name="TTIButton.Default"/>
+<element name="TTIButton.Enabled"/>
+<element name="TTIButton.Font"/>
+<element name="TTIButton.Link"/>
+<element name="TTIButton.ModalResult"/>
+<element name="TTIButton.OnClick"/>
+<element name="TTIButton.OnEditingDone"/>
+<element name="TTIButton.OnEnter"/>
+<element name="TTIButton.OnExit"/>
+<element name="TTIButton.OnKeyDown"/>
+<element name="TTIButton.OnKeyPress"/>
+<element name="TTIButton.OnKeyUp"/>
+<element name="TTIButton.OnMouseDown"/>
+<element name="TTIButton.OnMouseMove"/>
+<element name="TTIButton.OnMouseUp"/>
+<element name="TTIButton.OnResize"/>
+<element name="TTIButton.ParentShowHint"/>
+<element name="TTIButton.PopupMenu"/>
+<element name="TTIButton.ShowHint"/>
+<element name="TTIButton.TabOrder"/>
+<element name="TTIButton.TabStop"/>
+<element name="TTIButton.Visible"/>
+
+<element name="TTICustomLabel">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomLabel.FLink"/>
+
+<element name="TTICustomLabel.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomLabel.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomLabel.GetLabelText">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomLabel.GetLabelText.Result">
+<short/>
+</element>
+
+<element name="TTICustomLabel.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomLabel.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomLabel.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomLabel.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomLabel.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomLabel.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomLabel.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTILabel">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomLabel"/>
+</seealso>
+</element>
+
+<element name="TTILabel.Align"/>
+<element name="TTILabel.Alignment"/>
+<element name="TTILabel.Anchors"/>
+<element name="TTILabel.AutoSize"/>
+<element name="TTILabel.BorderSpacing"/>
+<element name="TTILabel.Color"/>
+<element name="TTILabel.Constraints"/>
+<element name="TTILabel.FocusControl"/>
+<element name="TTILabel.Font"/>
+<element name="TTILabel.Layout"/>
+<element name="TTILabel.Link"/>
+<element name="TTILabel.OnChangeBounds"/>
+<element name="TTILabel.OnClick"/>
+<element name="TTILabel.OnDblClick"/>
+<element name="TTILabel.OnMouseDown"/>
+<element name="TTILabel.OnMouseEnter"/>
+<element name="TTILabel.OnMouseLeave"/>
+<element name="TTILabel.OnMouseMove"/>
+<element name="TTILabel.OnMouseUp"/>
+<element name="TTILabel.OnResize"/>
+<element name="TTILabel.ParentFont"/>
+<element name="TTILabel.ShowAccelChar"/>
+<element name="TTILabel.Visible"/>
+<element name="TTILabel.WordWrap"/>
+
+<element name="TTICustomGroupbox">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomGroupbox.FLink"/>
+
+<element name="TTICustomGroupbox.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomGroupbox.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomGroupbox.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomGroupbox.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomGroupbox.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomGroupbox.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomGroupbox.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomGroupbox.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomGroupbox.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIGroupBox">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomGroupbox"/>
+</seealso>
+</element>
+
+<element name="TTIGroupBox.Align"/>
+<element name="TTIGroupBox.Anchors"/>
+<element name="TTIGroupBox.BorderSpacing"/>
+<element name="TTIGroupBox.ChildSizing"/>
+<element name="TTIGroupBox.ClientHeight"/>
+<element name="TTIGroupBox.ClientWidth"/>
+<element name="TTIGroupBox.Color"/>
+<element name="TTIGroupBox.Constraints"/>
+<element name="TTIGroupBox.Enabled"/>
+<element name="TTIGroupBox.Font"/>
+<element name="TTIGroupBox.Link"/>
+<element name="TTIGroupBox.OnChangeBounds"/>
+<element name="TTIGroupBox.OnClick"/>
+<element name="TTIGroupBox.OnDblClick"/>
+<element name="TTIGroupBox.OnEditingDone"/>
+<element name="TTIGroupBox.OnEnter"/>
+<element name="TTIGroupBox.OnExit"/>
+<element name="TTIGroupBox.OnKeyDown"/>
+<element name="TTIGroupBox.OnKeyPress"/>
+<element name="TTIGroupBox.OnKeyUp"/>
+<element name="TTIGroupBox.OnMouseDown"/>
+<element name="TTIGroupBox.OnMouseMove"/>
+<element name="TTIGroupBox.OnMouseUp"/>
+<element name="TTIGroupBox.OnResize"/>
+<element name="TTIGroupBox.ParentColor"/>
+<element name="TTIGroupBox.ParentFont"/>
+<element name="TTIGroupBox.ParentShowHint"/>
+<element name="TTIGroupBox.PopupMenu"/>
+<element name="TTIGroupBox.ShowHint"/>
+<element name="TTIGroupBox.TabOrder"/>
+<element name="TTIGroupBox.TabStop"/>
+<element name="TTIGroupBox.Visible"/>
+
+<element name="TTICustomMemo">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMemo.FLink"/>
+
+<element name="TTICustomMemo.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMemo.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomMemo.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMemo.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomMemo.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMemo.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomMemo.LinkTestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMemo.LinkTestEditor.Result">
+<short/>
+</element>
+<element name="TTICustomMemo.LinkTestEditor.ATestEditor">
+<short/>
+</element>
+
+<element name="TTICustomMemo.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomMemo.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomMemo.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMemo.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMemo.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomMemo.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIMemo">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomMemo"/>
+</seealso>
+</element>
+
+<element name="TTIMemo.Align"/>
+<element name="TTIMemo.Anchors"/>
+<element name="TTIMemo.BorderSpacing"/>
+<element name="TTIMemo.Color"/>
+<element name="TTIMemo.Constraints"/>
+<element name="TTIMemo.Font"/>
+<element name="TTIMemo.Lines"/>
+<element name="TTIMemo.Link"/>
+<element name="TTIMemo.MaxLength"/>
+<element name="TTIMemo.OnChange"/>
+<element name="TTIMemo.OnEditingDone"/>
+<element name="TTIMemo.OnEnter"/>
+<element name="TTIMemo.OnExit"/>
+<element name="TTIMemo.OnKeyDown"/>
+<element name="TTIMemo.OnKeyPress"/>
+<element name="TTIMemo.OnKeyUp"/>
+<element name="TTIMemo.OnMouseDown"/>
+<element name="TTIMemo.OnMouseUp"/>
+<element name="TTIMemo.OnMouseMove"/>
+<element name="TTIMemo.OnMouseEnter"/>
+<element name="TTIMemo.OnMouseLeave"/>
+<element name="TTIMemo.ParentFont"/>
+<element name="TTIMemo.PopupMenu"/>
+<element name="TTIMemo.ReadOnly"/>
+<element name="TTIMemo.ScrollBars"/>
+<element name="TTIMemo.Tabstop"/>
+<element name="TTIMemo.Visible"/>
+<element name="TTIMemo.WordWrap"/>
+
+<element name="TTICustomCalendar">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCalendar.FLink"/>
+
+<element name="TTICustomCalendar.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCalendar.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomCalendar.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCalendar.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCalendar.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCalendar.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomCalendar.LinkTestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCalendar.LinkTestEditor.Result">
+<short/>
+</element>
+<element name="TTICustomCalendar.LinkTestEditor.ATestEditor">
+<short/>
+</element>
+
+<element name="TTICustomCalendar.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomCalendar.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomCalendar.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCalendar.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCalendar.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomCalendar.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICalendar">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomCalendar"/>
+</seealso>
+</element>
+
+<element name="TTICalendar.Align"/>
+<element name="TTICalendar.Anchors"/>
+<element name="TTICalendar.BorderSpacing"/>
+<element name="TTICalendar.Constraints"/>
+<element name="TTICalendar.DisplaySettings"/>
+<element name="TTICalendar.Link"/>
+<element name="TTICalendar.OnChange"/>
+<element name="TTICalendar.OnChangeBounds"/>
+<element name="TTICalendar.OnClick"/>
+<element name="TTICalendar.OnDayChanged"/>
+<element name="TTICalendar.OnEditingDone"/>
+<element name="TTICalendar.OnEnter"/>
+<element name="TTICalendar.OnExit"/>
+<element name="TTICalendar.OnKeyDown"/>
+<element name="TTICalendar.OnKeyPress"/>
+<element name="TTICalendar.OnKeyUp"/>
+<element name="TTICalendar.OnMonthChanged"/>
+<element name="TTICalendar.OnMouseDown"/>
+<element name="TTICalendar.OnMouseEnter"/>
+<element name="TTICalendar.OnMouseLeave"/>
+<element name="TTICalendar.OnMouseMove"/>
+<element name="TTICalendar.OnMouseUp"/>
+<element name="TTICalendar.OnResize"/>
+<element name="TTICalendar.OnYearChanged"/>
+<element name="TTICalendar.PopupMenu"/>
+<element name="TTICalendar.Tabstop"/>
+<element name="TTICalendar.Visible"/>
+
+<element name="TTICustomImage">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomImage.FLink"/>
+
+<element name="TTICustomImage.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomImage.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomImage.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomImage.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomImage.LinkTestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomImage.LinkTestEditor.Result">
+<short/>
+</element>
+<element name="TTICustomImage.LinkTestEditor.ATestEditor">
+<short/>
+</element>
+
+<element name="TTICustomImage.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomImage.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomImage.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomImage.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomImage.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIImage">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomImage"/>
+</seealso>
+</element>
+
+<element name="TTIImage.Align"/>
+<element name="TTIImage.Anchors"/>
+<element name="TTIImage.AutoSize"/>
+<element name="TTIImage.BorderSpacing"/>
+<element name="TTIImage.Center"/>
+<element name="TTIImage.Constraints"/>
+<element name="TTIImage.Link"/>
+<element name="TTIImage.OnChangeBounds"/>
+<element name="TTIImage.OnClick"/>
+<element name="TTIImage.OnMouseDown"/>
+<element name="TTIImage.OnMouseEnter"/>
+<element name="TTIImage.OnMouseLeave"/>
+<element name="TTIImage.OnMouseMove"/>
+<element name="TTIImage.OnMouseUp"/>
+<element name="TTIImage.OnPaint"/>
+<element name="TTIImage.OnResize"/>
+<element name="TTIImage.Proportional"/>
+<element name="TTIImage.Stretch"/>
+<element name="TTIImage.Transparent"/>
+<element name="TTIImage.Visible"/>
+
+<element name="TTICustomFloatSpinEdit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.FLink"/>
+<element name="TTICustomFloatSpinEdit.FUseRTTIMinMax"/>
+
+<element name="TTICustomFloatSpinEdit.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomFloatSpinEdit.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax.AValue">
+<short/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomFloatSpinEdit.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomFloatSpinEdit.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomFloatSpinEdit.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.GetRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomFloatSpinEdit.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomFloatSpinEdit.UseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIFloatSpinEdit">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomFloatSpinEdit"/>
+</seealso>
+</element>
+
+<element name="TTIFloatSpinEdit.Align"/>
+<element name="TTIFloatSpinEdit.Anchors"/>
+<element name="TTIFloatSpinEdit.BorderSpacing"/>
+<element name="TTIFloatSpinEdit.Constraints"/>
+<element name="TTIFloatSpinEdit.DecimalPlaces"/>
+<element name="TTIFloatSpinEdit.Enabled"/>
+<element name="TTIFloatSpinEdit.Increment"/>
+<element name="TTIFloatSpinEdit.Link"/>
+<element name="TTIFloatSpinEdit.MaxValue"/>
+<element name="TTIFloatSpinEdit.MinValue"/>
+<element name="TTIFloatSpinEdit.OnChange"/>
+<element name="TTIFloatSpinEdit.OnChangeBounds"/>
+<element name="TTIFloatSpinEdit.OnClick"/>
+<element name="TTIFloatSpinEdit.OnEditingDone"/>
+<element name="TTIFloatSpinEdit.OnEnter"/>
+<element name="TTIFloatSpinEdit.OnExit"/>
+<element name="TTIFloatSpinEdit.OnKeyDown"/>
+<element name="TTIFloatSpinEdit.OnKeyPress"/>
+<element name="TTIFloatSpinEdit.OnKeyUp"/>
+<element name="TTIFloatSpinEdit.OnMouseDown"/>
+<element name="TTIFloatSpinEdit.OnMouseMove"/>
+<element name="TTIFloatSpinEdit.OnMouseUp"/>
+<element name="TTIFloatSpinEdit.OnResize"/>
+<element name="TTIFloatSpinEdit.ParentShowHint"/>
+<element name="TTIFloatSpinEdit.PopupMenu"/>
+<element name="TTIFloatSpinEdit.ShowHint"/>
+<element name="TTIFloatSpinEdit.TabStop"/>
+<element name="TTIFloatSpinEdit.TabOrder"/>
+<element name="TTIFloatSpinEdit.UseRTTIMinMax"/>
+<element name="TTIFloatSpinEdit.Visible"/>
+
+<element name="TTICustomSpinEdit">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomSpinEdit.FLink"/>
+<element name="TTICustomSpinEdit.FUseRTTIMinMax"/>
+
+<element name="TTICustomSpinEdit.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomSpinEdit.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomSpinEdit.SetUseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomSpinEdit.SetUseRTTIMinMax.AValue">
+<short/>
+</element>
+
+<element name="TTICustomSpinEdit.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomSpinEdit.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomSpinEdit.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomSpinEdit.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomSpinEdit.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomSpinEdit.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomSpinEdit.GetRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomSpinEdit.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomSpinEdit.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomSpinEdit.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomSpinEdit.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomSpinEdit.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomSpinEdit.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomSpinEdit.UseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTISpinEdit">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomSpinEdit"/>
+</seealso>
+</element>
+
+<element name="TTISpinEdit.Align"/>
+<element name="TTISpinEdit.Anchors"/>
+<element name="TTISpinEdit.BorderSpacing"/>
+<element name="TTISpinEdit.Constraints"/>
+<element name="TTISpinEdit.Enabled"/>
+<element name="TTISpinEdit.Increment"/>
+<element name="TTISpinEdit.Link"/>
+<element name="TTISpinEdit.MaxValue"/>
+<element name="TTISpinEdit.MinValue"/>
+<element name="TTISpinEdit.OnChange"/>
+<element name="TTISpinEdit.OnChangeBounds"/>
+<element name="TTISpinEdit.OnClick"/>
+<element name="TTISpinEdit.OnEditingDone"/>
+<element name="TTISpinEdit.OnEnter"/>
+<element name="TTISpinEdit.OnExit"/>
+<element name="TTISpinEdit.OnKeyDown"/>
+<element name="TTISpinEdit.OnKeyPress"/>
+<element name="TTISpinEdit.OnKeyUp"/>
+<element name="TTISpinEdit.OnMouseDown"/>
+<element name="TTISpinEdit.OnMouseMove"/>
+<element name="TTISpinEdit.OnMouseUp"/>
+<element name="TTISpinEdit.OnResize"/>
+<element name="TTISpinEdit.ParentShowHint"/>
+<element name="TTISpinEdit.PopupMenu"/>
+<element name="TTISpinEdit.ShowHint"/>
+<element name="TTISpinEdit.TabStop"/>
+<element name="TTISpinEdit.TabOrder"/>
+<element name="TTISpinEdit.UseRTTIMinMax"/>
+<element name="TTISpinEdit.Visible"/>
+
+<element name="TTICustomTrackBar">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomTrackBar.FLink"/>
+<element name="TTICustomTrackBar.FUseRTTIMinMax"/>
+
+<element name="TTICustomTrackBar.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomTrackBar.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomTrackBar.SetUseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomTrackBar.SetUseRTTIMinMax.AValue">
+<short/>
+</element>
+
+<element name="TTICustomTrackBar.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomTrackBar.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomTrackBar.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomTrackBar.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomTrackBar.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomTrackBar.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomTrackBar.GetRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomTrackBar.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomTrackBar.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomTrackBar.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomTrackBar.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomTrackBar.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomTrackBar.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomTrackBar.UseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTITrackBar">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomTrackBar"/>
+</seealso>
+</element>
+
+<element name="TTITrackBar.Align"/>
+<element name="TTITrackBar.Anchors"/>
+<element name="TTITrackBar.BorderSpacing"/>
+<element name="TTITrackBar.Constraints"/>
+<element name="TTITrackBar.DragCursor"/>
+<element name="TTITrackBar.DragMode"/>
+<element name="TTITrackBar.Enabled"/>
+<element name="TTITrackBar.Frequency"/>
+<element name="TTITrackBar.Hint"/>
+<element name="TTITrackBar.LineSize"/>
+<element name="TTITrackBar.Link"/>
+<element name="TTITrackBar.Max"/>
+<element name="TTITrackBar.Min"/>
+<element name="TTITrackBar.OnChange"/>
+<element name="TTITrackBar.OnChangeBounds"/>
+<element name="TTITrackBar.OnClick"/>
+<element name="TTITrackBar.OnDragDrop"/>
+<element name="TTITrackBar.OnDragOver"/>
+<element name="TTITrackBar.OnEditingDone"/>
+<element name="TTITrackBar.OnEndDrag"/>
+<element name="TTITrackBar.OnEnter"/>
+<element name="TTITrackBar.OnExit"/>
+<element name="TTITrackBar.OnMouseDown"/>
+<element name="TTITrackBar.OnMouseEnter"/>
+<element name="TTITrackBar.OnMouseLeave"/>
+<element name="TTITrackBar.OnMouseMove"/>
+<element name="TTITrackBar.OnMouseUp"/>
+<element name="TTITrackBar.OnKeyDown"/>
+<element name="TTITrackBar.OnKeyPress"/>
+<element name="TTITrackBar.OnKeyUp"/>
+<element name="TTITrackBar.OnResize"/>
+<element name="TTITrackBar.OnStartDrag"/>
+<element name="TTITrackBar.Orientation"/>
+<element name="TTITrackBar.PageSize"/>
+<element name="TTITrackBar.ParentShowHint"/>
+<element name="TTITrackBar.PopupMenu"/>
+<element name="TTITrackBar.ScalePos"/>
+<element name="TTITrackBar.ShowHint"/>
+<element name="TTITrackBar.TabOrder"/>
+<element name="TTITrackBar.TabStop"/>
+<element name="TTITrackBar.TickMarks"/>
+<element name="TTITrackBar.TickStyle"/>
+<element name="TTITrackBar.UseRTTIMinMax"/>
+<element name="TTITrackBar.Visible"/>
+
+<element name="TTICustomProgressBar">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomProgressBar.FLink"/>
+<element name="TTICustomProgressBar.FUseRTTIMinMax"/>
+
+<element name="TTICustomProgressBar.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomProgressBar.SetLink.AValue">
+<short/>
+</element>
+
+<element name="TTICustomProgressBar.SetUseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomProgressBar.SetUseRTTIMinMax.AValue">
+<short/>
+</element>
+
+<element name="TTICustomProgressBar.LinkLoadFromProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomProgressBar.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomProgressBar.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomProgressBar.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomProgressBar.LinkEditorChanged">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomProgressBar.LinkEditorChanged.Sender">
+<short/>
+</element>
+
+<element name="TTICustomProgressBar.GetRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomProgressBar.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomProgressBar.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomProgressBar.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomProgressBar.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomProgressBar.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomProgressBar.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomProgressBar.UseRTTIMinMax">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIProgressBar">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomProgressBar"/>
+</seealso>
+</element>
+
+<element name="TTIProgressBar.Align"/>
+<element name="TTIProgressBar.Anchors"/>
+<element name="TTIProgressBar.BarShowText"/>
+<element name="TTIProgressBar.BorderSpacing"/>
+<element name="TTIProgressBar.BorderWidth"/>
+<element name="TTIProgressBar.Constraints"/>
+<element name="TTIProgressBar.DragCursor"/>
+<element name="TTIProgressBar.DragKind"/>
+<element name="TTIProgressBar.DragMode"/>
+<element name="TTIProgressBar.Enabled"/>
+<element name="TTIProgressBar.Hint"/>
+<element name="TTIProgressBar.Link"/>
+<element name="TTIProgressBar.Max"/>
+<element name="TTIProgressBar.Min"/>
+<element name="TTIProgressBar.OnDragDrop"/>
+<element name="TTIProgressBar.OnDragOver"/>
+<element name="TTIProgressBar.OnEditingDone"/>
+<element name="TTIProgressBar.OnEndDrag"/>
+<element name="TTIProgressBar.OnEnter"/>
+<element name="TTIProgressBar.OnExit"/>
+<element name="TTIProgressBar.OnMouseDown"/>
+<element name="TTIProgressBar.OnMouseMove"/>
+<element name="TTIProgressBar.OnMouseUp"/>
+<element name="TTIProgressBar.OnStartDock"/>
+<element name="TTIProgressBar.OnStartDrag"/>
+<element name="TTIProgressBar.Orientation"/>
+<element name="TTIProgressBar.ParentShowHint"/>
+<element name="TTIProgressBar.PopupMenu"/>
+<element name="TTIProgressBar.Position"/>
+<element name="TTIProgressBar.ShowHint"/>
+<element name="TTIProgressBar.Smooth"/>
+<element name="TTIProgressBar.Step"/>
+<element name="TTIProgressBar.TabOrder"/>
+<element name="TTIProgressBar.TabStop"/>
+<element name="TTIProgressBar.UseRTTIMinMax"/>
+<element name="TTIProgressBar.Visible"/>
+
+<element name="TTICustomColorButton">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomColorButton.FLink"/>
+
+<element name="TTICustomColorButton.SetLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomColorButton.SetLink.AValue">
+<short/>
+</element>
+
+<element name="'TTICustomColorButton.LinkLoadFromProperty'">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomColorButton.LinkLoadFromProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomColorButton.LinkSaveToProperty">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomColorButton.LinkSaveToProperty.Sender">
+<short/>
+</element>
+
+<element name="TTICustomColorButton.LinkTestEditor">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomColorButton.LinkTestEditor.Result">
+<short/>
+</element>
+<element name="TTICustomColorButton.LinkTestEditor.ATestEditor">
+<short/>
+</element>
+
+<element name="TTICustomColorButton.ShowColorDialog">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomColorButton.Create">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="TTICustomColorButton.Create.TheOwner">
+<short/>
+</element>
+
+<element name="TTICustomColorButton.Destroy">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomColorButton.Loaded">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomColorButton.EditingDone">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<element name="TTICustomColorButton.Link">
+<short/>
+<descr/>
+<seealso/>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIColorButton">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICustomColorButton"/>
+</seealso>
+</element>
+
+<element name="TTIColorButton.Align"/>
+<element name="TTIColorButton.Anchors"/>
+<element name="TTIColorButton.BorderSpacing"/>
+<element name="TTIColorButton.BorderWidth"/>
+<element name="TTIColorButton.ButtonColor"/>
+<element name="TTIColorButton.Hint"/>
+<element name="TTIColorButton.Link"/>
+<element name="TTIColorButton.OnChangeBounds"/>
+<element name="TTIColorButton.OnColorChanged"/>
+<element name="TTIColorButton.OnMouseDown"/>
+<element name="TTIColorButton.OnMouseMove"/>
+<element name="TTIColorButton.OnMouseUp"/>
+<element name="TTIColorButton.OnPaint"/>
+<element name="TTIColorButton.OnResize"/>
+<element name="TTIColorButton.ParentShowHint"/>
+<element name="TTIColorButton.PopupMenu"/>
+<element name="TTIColorButton.ShowHint"/>
+<element name="TTIColorButton.Visible"/>
+
+<element name="GetPropertyLinkOfComponent">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="GetPropertyLinkOfComponent.Result">
+<short/>
+</element>
+<element name="GetPropertyLinkOfComponent.AComponent">
+<short/>
+</element>
+
+<element name="SaveActivePropertyLink">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="SaveActivePropertyLink.AForm">
+<short/>
+</element>
+
+<element name="CreateEnumAliasValues">
+<short/>
+<descr/>
+<seealso/>
+</element>
+<element name="CreateEnumAliasValues.EnumType">
+<short/>
+</element>
+<element name="CreateEnumAliasValues.List">
+<short/>
+</element>
+<element name="CreateEnumAliasValues.AStringArray">
+<short/>
+</element>
+
+<element name="Register">
+<short>
+Registers components for use in the Lazarus IDE.
+</short>
+<descr>
+<p>
+The following components are added to the component palette in the Lazarus
+IDE:
+</p>
+<p>
+<b>RTTI Tab</b>
+</p>
+<ul>
+<li>TTIEdit</li>
+<li>TTIComboBox</li>
+<li>TTIButton</li>
+<li>TTICheckBox</li>
+<li>TTILabel</li>
+<li>TTIGroupBox</li>
+<li>TTIRadioGroup</li>
+<li>TTICheckGroup</li>
+<li>TTICheckListBox</li>
+<li>TTIListBox</li>
+<li>TTIMemo</li>
+<li>TTICalendar</li>
+<li>TTIImage</li>
+<li>TTIFloatSpinEdit</li>
+<li>TTISpinEdit</li>
+<li>TTITrackBar</li>
+<li>TTIProgressBar</li>
+<li>TTIMaskEdit</li>
+<li>TTIColorButton</li>
+<li>TMultiPropertyLink</li>
+</ul>
+</descr>
+<seealso/>
+</element>
+
+</module>
+</package>
 </fpdoc-descriptions>
