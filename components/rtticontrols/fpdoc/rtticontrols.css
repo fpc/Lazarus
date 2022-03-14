@@ -1,0 +1,204 @@
+/*
+  fpdoc.css
+  Modified for use with Lazarus LCL and LazUtils documentation
+*/
+
+body {
+  background: white;
+  color: black;
+  font-size: 12pt;
+  font-family: "San Francisco", "Roboto", "Noto Sans", "Open Sans", "Segoe UI", "Helvetica", "Arial", sans-serif;
+}
+
+p, th, td, caption, h1, h2, h3, ul, ol, dl {
+  font-family: "San Francisco", "Roboto", "Noto Sans", "Open Sans", "Segoe UI", "Helvetica", "Arial", sans-serif;
+  color: black;
+}
+
+tt, span.kw, pre {
+  font-family: "Menlo", "JetBrains Mono", "Roboto Mono", "Noto Sans Mono", "Inconsolata", "Courier New", Courier, monospace;
+  font-size: 1em;
+}
+
+p, th, td, caption, ul, ol, dl, tt, span.kw, pre {
+  font-size: 1em;
+}
+
+A:link {
+  color: blue;
+}
+
+A:visited {
+  color: darkblue;
+}
+
+A:active {
+  color: red;
+}
+
+A {
+  text-decoration: none;
+}
+
+A:hover {
+  text-decoration: underline;
+}
+
+h1, h2, td.h2 {
+  color: #005A9C;
+}
+
+/* Especially for Netscape on Linux: */
+h3, td.h3 {
+  font-size: 1em;
+}
+
+/* source fragments */
+span.code {
+  white-space: nowrap;
+}
+
+/* symbols in source fragments */
+span.sym {
+  color: darkred;
+}
+
+/* keywords in source fragments */
+span.kw {
+  font-weight: bold;
+}
+
+/* comments in source fragments */
+span.cmt {
+  color: darkcyan;
+  font-style: italic;
+}
+
+/* directives in source fragments */
+span.dir {
+  color: OrangeRed;
+  font-style: italic;
+}
+
+/* numbers in source fragments */
+span.num {
+  color: darkmagenta;
+}
+
+/* characters (#...) in source fragments */
+span.chr {
+  color: darkcyan;
+}
+
+/* strings in source fragments */
+span.str {
+  color: blue;
+}
+
+/* assembler passages in source fragments */
+span.asm {
+  color: green;
+}
+
+td {
+  vertical-align: baseline;
+}
+
+td.pre {
+  white-space: pre;
+}
+
+table caption {
+  font-weight: bold;
+}
+
+p.cmt {
+  color: gray;
+}
+
+span.warning {
+  color: red;
+  font-weight: bold;
+}
+
+/* !!!: How should we define this...? */
+span.file {
+  color: darkgreen;
+}
+
+table.remark {
+  background-color: #ffffc0;
+}
+
+table.bar {
+  background-color: #a0c0ff;
+}
+
+table.footer {
+  margin-top: .5em;
+  width: 100%;
+  font-size: .875em;
+  /* font-style: italic; */
+  font-style: normal;
+}
+
+span.bartitle {
+  font-weight: bold;
+  font-style: normal;
+  color: darkblue;
+}
+
+span.footer {
+  font-style: italic;
+  color: darkblue;
+}
+
+/* definition list */
+dl {
+ /* border: 2px solid #ccc; */
+ display: block;
+ margin: 1em 0 1em 0;
+}
+
+/* definition list: term */
+dt {
+ /*
+ float: left;
+ clear: left;
+ */
+ width: auto; /* normally browsers default width of largest item */
+ /* padding-right: 1.25em; */
+ font-weight: bold;
+ color: darkgreen;
+}
+
+/* definition list: description */
+dd {
+ margin: 0 0 0 2em;
+ padding: 0 0 0.5em 0;
+}
+
+/* for browsers in standards compliance mode */
+td p { margin: 0; }
+
+var { font-weight: bold; }
+
+span.toggletreeclose {
+    background: url(minus.png) center left no-repeat;
+    padding-left: 20px;
+}
+
+span.toggletreeopen {
+    background: url(plus.png) center left no-repeat;
+    padding-left: 20px;
+}
+
+li.classtree ul { display: block; }
+ul.classtreelist { list-style-type:none; }
+ul.classtreelist li { padding-left: 0px; }
+li.classtreeclosed ul { display: none; }
+
+hr.footer-sep { margin-top: .667em; }
+td.footer-doc { width: 36%; text-align: left; font-weight: bold; color: Black; }
+td.footer-ver { width: 32%; text-align: center; color: Gray; }
+td.footer-date { width: 32%; text-align: right; color: Gray; }
