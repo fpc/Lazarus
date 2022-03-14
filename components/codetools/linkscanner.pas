@@ -227,7 +227,8 @@ type
     cmsExternalClass,      { pas2js: allow  class external [pkgname] name [symbol] }
     cmsIgnoreAttributes,   { pas2js: ignore attributes }
     cmsOmitRTTI,           { pas2js: treat class section 'published' as 'public' and typeinfo does not work on symbols declared with this switch }
-    cmsImplicitFunctionSpecialization { infer types on calls of generic functions }
+    cmsImplicitFunctionSpecialization, { infer types on calls of generic functions }
+    cmsMultiLineStrings    { pas2js: Multiline strings }
     );
   TCompilerModeSwitches = set of TCompilerModeSwitch;
 const
@@ -318,7 +319,8 @@ const
     'EXTERNALCLASS',
     'IGNOREATTRIBUTES',
     'OMITRTTI',
-    'IMPLICITFUNCTIONSPECIALIZATION'
+    'IMPLICITFUNCTIONSPECIALIZATION',
+    'MULTILINESTRINGS'
     );
 
 
@@ -1922,7 +1924,7 @@ begin
       end;
       SrcPos:=p-PChar(Src)+1;
     end;
-  '''','#':
+  '''','#','`':
     begin
       TokenType:=lsttStringConstant;
       while true do begin
@@ -1957,6 +1959,27 @@ begin
                 end;
               #10,#13:
                 break;
+              else
+                inc(p);
+              end;
+            end;
+          end;
+        '`':
+          begin
+            inc(p);
+            while true do begin
+              case p^ of
+              #0:
+                begin
+                  SrcPos:=p-PChar(Src)+1;
+                  if SrcPos>SrcLen then break;
+                  inc(p);
+                end;
+              '`':
+                begin
+                  inc(p);
+                  break;
+                end;
               else
                 inc(p);
               end;
@@ -4588,6 +4611,14 @@ begin
           inc(p);
           while not (p^ in ['''',#0,#10,#13]) do inc(p);
           if p^='''' then
+            inc(p);
+        end;
+      '`':
+        begin
+          // skip multiline string constant
+          inc(p);
+          while not (p^ in ['`',#0]) do inc(p);
+          if p^='`' then
             inc(p);
         end;
       #0:

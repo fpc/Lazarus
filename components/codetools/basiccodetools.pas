@@ -1409,7 +1409,17 @@ begin
       begin
         inc(Result);
         while (Result<=MaxPos) do begin
-          if (ASource[Result] in ['''',#10,#13]) then
+          if (ASource[Result] in ['''',#0,#10,#13]) then
+            break;
+          inc(Result);
+        end;
+      end;
+
+    '`':
+      begin
+        inc(Result);
+        while (Result<=MaxPos) do begin
+          if (ASource[Result] in ['`',#0]) then
             break;
           inc(Result);
         end;
@@ -1493,11 +1503,16 @@ begin
       begin
         inc(Result);
         while (Result<=MaxPos) do begin
-          if (ASource[Result]<>'''') then
-            inc(Result)
-          else begin
-            inc(Result);
+          case ASource[Result] of
+          '''':
+            begin
+              inc(Result);
+              break;
+            end;
+          #0,#10,#13:
             break;
+          else
+            inc(Result);
           end;
         end;
       end;
@@ -2106,7 +2121,7 @@ begin
           inc(Src);
       end;
     end;
-  '''','#':  // string constant
+  '''','#','`':  // string constant
     begin
       while true do begin
         case Src^ of
@@ -2124,9 +2139,17 @@ begin
         '''':
           begin
             inc(Src);
-            while not (Src^ in ['''',#0]) do
+            while not (Src^ in ['''',#0,#10,#13]) do
               inc(Src);
             if Src^='''' then
+              inc(Src);
+          end;
+        '`':
+          begin
+            inc(Src);
+            while not (Src^ in ['`',#0]) do
+              inc(Src);
+            if Src^='`' then
               inc(Src);
           end;
         else
@@ -2245,6 +2268,13 @@ var
             dec(Position);
           until (Position<1) or (Source[Position] in [#0,#10,#13,'''']);
         end;
+      '`':
+        begin
+          dec(Position);
+          repeat
+            dec(Position);
+          until (Position<1) or (Source[Position] in [#0,'`']);
+        end;
       '0'..'9','A'..'Z','a'..'z':
         begin
           // test if char constant
@@ -2356,6 +2386,18 @@ var
           if IsStringConstant then break;
         end;
 
+      '`':
+        begin
+          // a multiline string constant -> skip it
+          OldPrePos:=PrePos;
+          while (PrePos<Position) do begin
+            inc(PrePos);
+            if Source[PrePos]='`' then
+              break;
+          end;
+          if IsStringConstant then break;
+        end;
+
       #10,#13:
         // no comment and no string constant found
         break;
@@ -2445,7 +2487,7 @@ begin
   // read atom
   if IsStringConstant then begin
     Position:=OldPrePos;
-    if (Position>1) and (Source[Position-1]='''') then begin
+    if (Position>1) and (Source[Position-1] in ['''','`']) then begin
       ReadStringConstantBackward;
     end;
     exit;
@@ -2473,7 +2515,7 @@ begin
           end;
         end;
       end;
-    '''':
+    '''','`':
       begin
         inc(Position);
         ReadStringConstantBackward;
@@ -2683,7 +2725,7 @@ begin
           inc(p);
       end;
     end;
-   '''','#':  // string constant
+   '''','#','`':  // string constant
     begin
       while true do begin
         case p^ of
@@ -2696,7 +2738,14 @@ begin
         '''':
           begin
             inc(p);
-            while not (p^ in ['''',#10,#13]) do
+            while not (p^ in ['''',#0,#10,#13]) do
+              inc(p);
+            inc(p);
+          end;
+        '`':
+          begin
+            inc(p);
+            while not (p^ in ['`',#0]) do
               inc(p);
             inc(p);
           end;
@@ -2819,6 +2868,20 @@ function FindStartOfAtom(const Source: string; Position: integer): integer;
           until (Source[PrePos]='''');
           p:=PrePos;
         end;
+      '`':
+        begin
+          PrePos:=p;
+          dec(PrePos);
+          repeat
+            dec(PrePos);
+            if (PrePos<1) then begin
+              // the StartPos was the start of a string constant
+              p:=StartPos-1;
+              exit;
+            end;
+          until (Source[PrePos]='`');
+          p:=PrePos;
+        end;
       '0'..'9','A'..'Z','a'..'z':
         begin
           // test if char constant
@@ -2887,7 +2950,7 @@ begin
         end;
       end;
     end;
-  '''':
+  '''','`':
     begin
       // could be start or end
       inc(Result);
@@ -4078,6 +4141,19 @@ begin
         end;
       end;
 
+    '`':
+      begin
+        inc(Result);
+        while (Result<=MaxPos) do begin
+          if (ASource[Result]<>'`') then
+            inc(Result)
+          else begin
+            inc(Result);
+            break;
+          end;
+        end;
+      end;
+
     '/':
       begin
         inc(Result);
@@ -4123,7 +4199,7 @@ var
   l: Integer;
   p: PChar;
 begin
-  SetLength(Result,length(Src));
+  SetLength(Result{%H-},length(Src));
   SrcPos:=1;
   ResultPos:=1;
   while SrcPos<=length(Src) do begin
@@ -4453,7 +4529,7 @@ begin
   end;
 
   case p1^ of
-  '''':
+  '''','`':
     // compare string constants case sensitive
     exit(CompareStringConstants(p1,p2));
   '{':
@@ -4495,9 +4571,13 @@ end;
 function CompareStringConstants(p1, p2: PChar): integer;
 // 1: 'aa' 'ab' because bigger
 // 1: 'aa' 'a'  because longer
+var
+  s1, s2: Char;
 begin
   Result := 0;
-  if (p1^='''') and (p2^='''') then begin
+  s1:=p1^;
+  s2:=p2^;
+  if (s1 in ['''','`']) and (s2 in ['''','`']) then begin
     inc(p1);
     inc(p2);
     repeat
@@ -4507,19 +4587,19 @@ begin
         exit(-1); // p2 bigger
       inc(p1);
       inc(p2);
-      if p1^='''' then begin
-        // maybe ''
+      if p1^=s1 then begin
+        // maybe '' or ``
         inc(p1);
         inc(p2);
-        if p1^='''' then begin
-          if p2^='''' then begin
+        if p1^=s1 then begin
+          if p2^=s2 then begin
             inc(p1);
             inc(p2);
           end else begin
             // p1 is longer (e.g.: 'a''b' 'a')
             exit(1);
           end;
-        end else if p2^='''' then begin
+        end else if p2^=s2 then begin
           // p2 is longer (e.g. 'a' 'a''b')
           exit(-1);
         end else begin
@@ -4527,25 +4607,28 @@ begin
           exit(0);
         end;
       end;
-      if p1^ in [#0,#10,#13] then begin
+      if ((s1='''') and (p1^ in [#0,#10,#13]))
+          or ((s1='`') and (p1^=#0)) then begin
         // end of p1 found
-        if p2^ in [#0,#10,#13] then begin
+        if ((s2='''') and (p2^ in [#0,#10,#13]))
+            or ((s2='`') and (p2^=#0)) then begin
           // same
           exit(0);
         end else begin
           // p2 is longer
           exit(-1);
         end;
-      end else if p2^ in [#0,#10,#13] then begin
+      end else if ((s2='''') and (p2^ in [#0,#10,#13]))
+          or ((s2='`') and (p2^=#0)) then begin
         // p1 is longer
         exit(1);
       end;
     until false;
   end else begin
-    if p1^='''' then
+    if p1^=s1 then
       // p1 longer
       exit(1)
-    else if p2^='''' then
+    else if p2^=s2 then
       // p2 longer
       exit(-1)
     else
@@ -4748,11 +4831,21 @@ begin
   while (Result<=MaxPos) do begin
     c:=Source[Result];
     if IsIdentStartChar[c] then exit;
-    if c='''' then begin
-      // skip string constant
-      inc(Result);
-      while (Result<=MaxPos) and (not (Source[Result] in ['''',#10,#13])) do
+    case c of
+    '''':
+      begin
+        // skip string constant
         inc(Result);
+        while (Result<=MaxPos) and (not (Source[Result] in ['''',#10,#13])) do
+          inc(Result);
+      end;
+    '`':
+      begin
+        // skip multiline string constant
+        inc(Result);
+        while (Result<=MaxPos) and (Source[Result]<>'`') do
+          inc(Result);
+      end;
     end;
     inc(Result);
   end;
@@ -4917,7 +5010,7 @@ var
   i: Integer;
 begin
   if TabWidth<=0 then begin
-    SetLength(Result,Indent);
+    SetLength(Result{%H-},Indent);
     if Indent>0 then
       FillChar(Result[1],length(Result),' ');
   end else begin
@@ -5101,7 +5194,7 @@ var
   l: Integer;
 begin
   l:=DottedIdentifierLength(Identifier);
-  SetLength(Result,l);
+  SetLength(Result{%H-},l);
   if l>0 then
     System.Move(Identifier^,Result[1],l);
 end;
@@ -5182,7 +5275,7 @@ var CodePos, ResultPos, CodeLen, SpaceEndPos: integer;
   c1, c2: char;
 begin
   CodeLen:=length(ACode);
-  SetLength(Result,CodeLen);
+  SetLength(Result{%H-},CodeLen);
   CodePos:=1;
   ResultPos:=1;
   while CodePos<=CodeLen do begin

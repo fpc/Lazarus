@@ -56,6 +56,7 @@ type
     procedure TestParseProcAnoArg;
     procedure TestParseProcAnoArgSubFunc;
     procedure TestParseThreadVar;
+    procedure TestParseMultilineString;
   end;
 
 implementation
@@ -609,6 +610,25 @@ begin
   '      foo:Boolean;',
   '  end;',
   '',
+  'begin',
+  '']);
+  ParseModule;
+end;
+
+procedure TTestPascalParser.TestParseMultilineString;
+begin
+  Add([
+  'program test1;',
+  '{$modeswitch multilinestrings}',
+  'const',
+  '  s = `First',
+  'Second',
+  'Third`;',
+  '  a = ``;',
+  '  b = `',
+  '`#10`',
+  'line`;',
+  '  c = ''''``;',
   'begin',
   '']);
   ParseModule;

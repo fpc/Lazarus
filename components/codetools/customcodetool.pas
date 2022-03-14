@@ -881,7 +881,7 @@ var
 begin
   if (CurPos.StartPos<1) or (CurPos.StartPos>SrcLen) then exit(false);
   p:=@Src[CurPos.StartPos];
-  Result:=(p^ in ['''','#']) or ((p^='^') and (p[1] in ['A'..'Z']));
+  Result:=(p^ in ['''','#','`']) or ((p^='^') and (p[1] in ['A'..'Z']));
 end;
 
 function TCustomCodeTool.AtomIsCharConstant: boolean;
@@ -922,6 +922,20 @@ begin
         end;
       end;
 
+    '`':
+      begin
+        inc(p);
+        if p^='`' then begin
+          // could be ````
+          if (p[1]<>'`') or (p[2]<>'`') then exit;
+          inc(p,3);
+        end else begin
+          // could be `a`
+          if p[1]<>'`' then exit;
+          inc(p,2);
+        end;
+      end;
+
     '^':
       begin
         if not (p[1] in ['A'..'Z']) then exit;
@@ -930,18 +944,25 @@ begin
 
     end;
     // check that no second character is following
-    Result:=not (p^ in ['''','#','^']);
+    Result:=not (p^ in ['''','`','#','^']);
   end;
 end;
 
 function TCustomCodeTool.AtomIsEmptyStringConstant: boolean;
 var
   p: LongInt;
+  c: Char;
 begin
   p:=CurPos.StartPos;
-  while (p<=SrcLen) and (Src[p]='''') do inc(p);
-  dec(p,CurPos.StartPos);
-  Result:=(p>0) and ((p and 1)=0);
+  if (p>SrcLen) then exit(false);
+  c:=Src[p];
+  if not (c in ['''','`']) then exit(false);
+  inc(p);
+  if (p>SrcLen) then exit(true);
+  if Src[p]<>c then exit(false);
+  inc(p);
+  if (p>SrcLen) then exit(true);
+  if Src[p] in ['''','`','#'] then exit(false);
 end;
 
 function TCustomCodeTool.LastAtomIs(BackIndex: integer;
@@ -1181,7 +1202,7 @@ begin
           CurPos.Flag:=cafEnd;
       end;
     end;
-  '''','#':
+  '''','#','`':
     begin
       // string constant
       while true do begin
@@ -1212,6 +1233,23 @@ begin
                   break;
                 end;
               #0,#10,#13:
+                break;
+              else
+                inc(p);
+              end;
+            end;
+          end;
+        '`':
+          begin
+            inc(p);
+            while true do begin
+              case p^ of
+              '`':
+                begin
+                  inc(p);
+                  break;
+                end;
+              #0:
                 break;
               else
                 inc(p);
@@ -1404,6 +1442,13 @@ var
             dec(CurPos.StartPos);
           until (CurPos.StartPos<1) or (Src[CurPos.StartPos] in [#0,#10,#13,'''']);
         end;
+      '`':
+        begin
+          dec(CurPos.StartPos);
+          repeat
+            dec(CurPos.StartPos);
+          until (CurPos.StartPos<1) or (Src[CurPos.StartPos] in [#0,'`']);
+        end;
       '0'..'9','A'..'Z','a'..'z':
         begin
           // test if char constant
@@ -1515,6 +1560,29 @@ var
           if IsStringConstant then break;
         end;
 
+      '`':
+        begin
+          // a multiline string constant -> skip it
+          OldPrePos:=PrePos;
+          while (PrePos<CurPos.StartPos) do begin
+            inc(PrePos);
+            case Src[PrePos] of
+            '`':
+              break;
+
+            #0:
+              begin
+                // string constant right border is the line end
+                // -> last atom of line found
+                IsStringConstant:=true;
+                break;
+              end;
+
+            end;
+          end;
+          if IsStringConstant then break;
+        end;
+
       #10,#13:
         // no comment and no string constant found
         break;
@@ -1610,7 +1678,7 @@ begin
   // read atom
   if IsStringConstant then begin
     CurPos.StartPos:=OldPrePos;
-    if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='''') then begin
+    if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1] in ['''','`']) then begin
       ReadStringConstantBackward;
     end;
     LastAtoms.AddReverse(CurPos);
@@ -1649,7 +1717,7 @@ begin
           end;
         end;
       end;
-    '''':
+    '''','`':
       begin
         inc(CurPos.StartPos);
         ReadStringConstantBackward;
@@ -1884,6 +1952,25 @@ begin
             end;
 
           #0,#10,#13:
+            break;
+
+          else
+            inc(p);
+          end;
+        end;
+      end;
+    '`':
+      begin
+        inc(p);
+        while true do begin
+          case p^ of
+          '`':
+            begin
+              inc(p);
+              break;
+            end;
+
+          #0:
             break;
 
           else
@@ -3099,7 +3186,7 @@ begin
     while (CleanStartPos<=SrcLen)
     and (IsIdentChar[Src[CleanStartPos+len]]) do
       inc(len);
-    SetLength(Result,len);
+    SetLength(Result{%H-},len);
     if len>0 then
       Move(Src[CleanStartPos],Result[1],len);
   end else

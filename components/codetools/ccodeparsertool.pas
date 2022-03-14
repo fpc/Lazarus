@@ -2044,7 +2044,7 @@ begin
   // first read and compute needed length
   ReadIt;
   // allocate space and copy tokens
-  SetLength(s,p-1);
+  SetLength(s{%H-},p-1);
   ReadIt;
   Result:=s;
 end;

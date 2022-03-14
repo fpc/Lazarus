@@ -2347,7 +2347,7 @@ begin
   try
     WritePascalToStream(ms);
   
-    SetLength(NewSrc,ms.Size);
+    SetLength(NewSrc{%H-},ms.Size);
     if NewSrc<>'' then begin
       ms.Position:=0;
       ms.Read(NewSrc[1],length(NewSrc));
