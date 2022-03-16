@@ -15,12 +15,16 @@ type
   { TForm1 }
 
   TForm1 = class(TForm)
+    cmdSave: TButton;
+    cmdLoad: TButton;
     chk64Bit: TCheckBox;
     Timer1: TTimer;
     txtOutput: TEdit;
     Label1: TLabel;
     Label2: TLabel;
     txtCode: TMemo;
+    procedure cmdLoadClick(Sender: TObject);
+    procedure cmdSaveClick(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
   private
     { private declarations }
@@ -29,7 +33,10 @@ type
   end; 
 
 var
-  Form1: TForm1; 
+  Form1: TForm1;
+
+const
+  TEST_FILE = 'asmcheck.test';
 
 implementation
 
@@ -91,6 +98,17 @@ begin
     Process.FreeInstance;
   end
 //  else txtOutput.Text :='';
+end;
+
+procedure TForm1.cmdSaveClick(Sender: TObject);
+begin
+  txtCode.Lines.SaveToFile(TEST_FILE);
+end;
+
+procedure TForm1.cmdLoadClick(Sender: TObject);
+begin
+  if FileExists(TEST_FILE)
+  then txtCode.Lines.LoadFromFile(TEST_FILE);
 end;
 
 end.
