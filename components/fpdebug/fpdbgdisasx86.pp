@@ -411,7 +411,7 @@ type
     procedure CheckRepeatX;
 
     procedure ClearSIMDPrefix;
-    procedure DecodeSIMD(AClearPrefix: Boolean = False; AValidClear: TSimdOpcodes = [soNone, so66, soF2, soF3]);
+    procedure DecodeSIMD(AValidClear: TSimdOpcodes = [soNone, so66, soF2, soF3]);
     procedure DecodeModRM;
 
     procedure Do2ByteOpcode;
@@ -764,7 +764,7 @@ begin
   end;
 end;
 
-procedure TX86Disassembler.DecodeSIMD(AClearPrefix: Boolean; AValidClear: TSimdOpcodes);
+procedure TX86Disassembler.DecodeSIMD(AValidClear: TSimdOpcodes);
 var
   check: TFlags;
 begin
@@ -779,7 +779,7 @@ begin
   then SimdOpcode := so66
   else SimdOpcode := soInvalid;
 
-  if AClearPrefix and (SimdOpcode in AValidClear)
+  if SimdOpcode in AValidClear
   then Flags := Flags - [pre66, preF3, preF2];
 end;
 
@@ -2211,7 +2211,7 @@ begin
     Exit;
   end;
 
-  DecodeSIMD(True, [soNone, so66]);
+  DecodeSIMD([soNone, so66]);
   if (SimdOpcode in [soNone, so66]) and (OPC[ModRM.Index] <> OPX_Invalid)
   then begin
     SetOpcode(OPC[ModRM.Index], OPSx_w);
@@ -2237,7 +2237,7 @@ begin
     Exit;
   end;
 
-  DecodeSIMD;
+  DecodeSIMD([]);
   if (SimdOpcode in [soNone, so66]) and (OPC[ModRM.Index] <> OPX_Invalid)
   then begin
     ClearSIMDPrefix;
@@ -2265,7 +2265,7 @@ begin
     Exit;
   end;
 
-  DecodeSIMD;
+  DecodeSIMD([]);
   if (SimdOpcode in [soNone, so66]) and (OPC[ModRM.Index] <> OPX_Invalid)
   then begin
     ClearSIMDPrefix;
@@ -2469,7 +2469,7 @@ begin
     end;
     //---
     $10: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovu, OPSx_ps); AddVps; AddWps; end;
         so66:   begin SetOpcode(OPmovu, OPSx_pd); AddVpd; AddWpd; end;
@@ -2478,7 +2478,7 @@ begin
       end;
     end;
     $11: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovu, OPSx_ps); AddWps; AddVps; end;
         so66:   begin SetOpcode(OPmovu, OPSx_pd); AddWpd; AddVpd; end;
@@ -2487,7 +2487,7 @@ begin
       end;
     end;
     $12: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin
           DecodeModRM;
@@ -2501,28 +2501,28 @@ begin
       end;
     end;
     $13: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovl, OPSx_ps); AddMq; AddVps; end;
         so66:   begin SetOpcode(OPmovl, OPSx_pd); AddMq; AddVsd; end;
       end;
     end;
     $14: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPunpckl, OPSx_ps); AddVps; AddWq; end;
         so66:   begin SetOpcode(OPunpckl, OPSx_pd); AddVpd; AddWq; end;
       end;
     end;
     $15: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPunpckh, OPSx_ps); AddVps; AddWq; end;
         so66:   begin SetOpcode(OPunpckh, OPSx_pd); AddVpd; AddWq; end;
       end;
     end;
     $16: begin
-      DecodeSIMD(True, [soNone, so66, soF3]);
+      DecodeSIMD([soNone, so66, soF3]);
       case SimdOpcode of
         soNone: begin
           DecodeModRM;
@@ -2535,7 +2535,7 @@ begin
       end;
     end;
     $17: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovh, OPSx_ps); AddMq; AddVps; end;
         so66:   begin SetOpcode(OPmovh, OPSx_pd); AddMq; AddVsd; end;
@@ -2549,7 +2549,7 @@ begin
       AddEv;
     end;
     $1E: begin
-      DecodeSIMD(True, [soNone, soF3]);
+      DecodeSIMD([soNone, soF3]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPNop);          AddEv; end;
         soF3:   begin SetOpcode(OPrdss, OPSx_p); AddRy; end;
@@ -2578,21 +2578,21 @@ begin
     end;
     // $24..$27: OPX_Invalid
     $28: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmova, OPSx_ps); AddVps; AddWps; end;
         so66:   begin SetOpcode(OPmova, OPSx_pd); AddVpd; AddWpd; end;
       end;
     end;
     $29: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmova, OPSx_ps); AddWps; AddVps; end;
         so66:   begin SetOpcode(OPmova, OPSx_pd); AddWpd; AddVpd; end;
       end;
     end;
     $2A: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPcvtpi2, OPSx_ps); AddVps; AddQq;   end;
         so66:   begin SetOpcode(OPcvtpi2, OPSx_pd); AddVpd; AddQq;   end;
@@ -2601,14 +2601,14 @@ begin
       end;
     end;
     $2B: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovnt, OPSx_ps); AddMdq; AddVps; end;
         so66:   begin SetOpcode(OPmovnt, OPSx_pd); AddMdq; AddVpd; end;
       end;
     end;
     $2C: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPcvttps2, OPSx_pi); AddPq;   AddWps; end;
         so66:   begin SetOpcode(OPcvttpd2, OPSx_pi); AddPq;   AddWpd; end;
@@ -2617,7 +2617,7 @@ begin
       end;
     end;
     $2D: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPcvtps2, OPSx_pi); AddPq;   AddWps; end;
         so66:   begin SetOpcode(OPcvtpd2, OPSx_pi); AddPq;   AddWpd; end;
@@ -2626,14 +2626,14 @@ begin
       end;
     end;
     $2E: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPucomi, OPSx_ss); AddVss; AddWss; end;
         so66:   begin SetOpcode(OPucomi, OPSx_sd); AddVsd; AddWsd; end;
       end;
     end;
     $2F: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPcomi, OPSx_ss); AddVss; AddWss; end;
         so66:   begin SetOpcode(OPcomi, OPSx_sd); AddVsd; AddWsd; end;
@@ -2666,7 +2666,7 @@ begin
     end;
     //---
     $50: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovmsk, OPSx_ps); AddGd; AddUps; end;
         so66:   begin SetOpcode(OPmovmsk, OPSx_pd); AddGd; AddUpd; end;
@@ -2684,7 +2684,7 @@ begin
       else
         ValidSimd := [soNone, so66, soF2, soF3];
       end;
-      DecodeSIMD(True, ValidSimd);
+      DecodeSIMD(ValidSimd);
 
       if SimdOpcode in ValidSimd
       then begin
@@ -2697,7 +2697,7 @@ begin
       end;
     end;
     $5A: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPcvtps2, OPSx_pd); AddVpd; AddWps; end;
         so66:   begin SetOpcode(OPcvtpd2, OPSx_ps); AddVps; AddWpd; end;
@@ -2706,7 +2706,7 @@ begin
       end;
     end;
     $5B: begin
-      DecodeSIMD(True, [soNone, so66, soF3]);
+      DecodeSIMD([soNone, so66, soF3]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPcvtdq2,  OPSx_ps); AddVps; AddWdq; end;
         so66:   begin SetOpcode(OPcvtps2,  OPSx_dq); AddVdq; AddWps; end;
@@ -2717,7 +2717,7 @@ begin
     //---
     $60..$6B: begin
       idx := Code[CodeIdx] and $F;
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPC_6x[idx], OPS_6x[idx]); AddPq;  AddQd; end;
         so66:   begin
@@ -2729,7 +2729,7 @@ begin
     end;
     $6C..$6D: begin
       idx := Code[CodeIdx] and $F;
-      DecodeSIMD(True, [so66]);
+      DecodeSIMD([so66]);
       if SimdOpcode = so66
       then begin
         SetOpcode(OPC_6x[idx], OPS_6x[idx]);
@@ -2738,14 +2738,14 @@ begin
       end;
     end;
     $6E: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmov, OPSx_d); AddPq;  AddEy; end;
         so66:   begin SetOpcode(OPmov, OPSx_d); AddVdq; AddEy; end;
       end;
     end;
     $6F: begin
-      DecodeSIMD(True, [soNone, so66, soF3]);
+      DecodeSIMD([soNone, so66, soF3]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmov, OPSx_q);   AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPmov, OPSx_dqa); AddVdq; AddWdq; end;
@@ -2754,7 +2754,7 @@ begin
     end;
     //---
     $70: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPpshuf, OPSx_w);  AddPq;  AddQq;  AddIb; end;
         so66:   begin SetOpcode(OPpshuf, OPSx_d);  AddVdq; AddWdq; AddIb; end;
@@ -2772,58 +2772,58 @@ begin
       DoGroup14
     end;
     $74: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPpcmpeq, OPSx_b); AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPpcmpeq, OPSx_b); AddVdq; AddWdq; end;
       end;
     end;
     $75: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPpcmpeq, OPSx_w); AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPpcmpeq, OPSx_w); AddVdq; AddWdq; end;
       end;
     end;
     $76: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPpcmpeq, OPSx_d); AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPpcmpeq, OPSx_d); AddVdq; AddWdq; end;
       end;
     end;
     $77: begin
-      DecodeSIMD(True, [soNone]);
+      DecodeSIMD([soNone]);
       if SimdOpcode = soNone
       then SetOpcode(OPemms);
     end;
     $78: begin
-      DecodeSIMD(True, [soNone]);
+      DecodeSIMD([soNone]);
       if SimdOpcode = soNone
       then begin SetOpcode(OPvmread); AddEy; AddGy; end;
     end;
     $79: begin
-      DecodeSIMD(True, [soNone]);
+      DecodeSIMD([soNone]);
       if SimdOpcode = soNone
       then begin SetOpcode(OPvmwrite); AddGy; AddEy; end;
     end;
     // $7A..$7B: OPX_Invalid
     $7C: begin
-      DecodeSIMD(True, [so66, soF2]);
+      DecodeSIMD([so66, soF2]);
       case SimdOpcode of
         so66: begin SetOpcode(OPhadd, OPSx_pd); AddVpd; AddWpd; end;
         soF2: begin SetOpcode(OPhadd, OPSx_ps); AddVps; AddWps; end;
       end;
     end;
     $7D: begin
-      DecodeSIMD(True, [so66, soF2]);
+      DecodeSIMD([so66, soF2]);
       case SimdOpcode of
         so66: begin SetOpcode(OPsub, OPSx_pd); AddVpd; AddWpd; end;
         soF2: begin SetOpcode(OPsub, OPSx_ps); AddVps; AddWps; end;
       end;
     end;
     $7E: begin
-      DecodeSIMD(True, [soNone, so66, soF3]);
+      DecodeSIMD([soNone, so66, soF3]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmov, OPSx_d); AddEy; AddPy; end;
         so66:   begin SetOpcode(OPmov, OPSx_d); AddEy; AddVy; end;
@@ -2831,7 +2831,7 @@ begin
       end;
     end;
     $7F: begin
-      DecodeSIMD(True, [soNone, so66, soF3]);
+      DecodeSIMD([soNone, so66, soF3]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmov, OPSx_q);   AddQq;  AddPq;  end;
         so66:   begin SetOpcode(OPmov, OPSx_dqa); AddWdq; AddVdq; end;
@@ -2980,7 +2980,7 @@ begin
       AddEv; AddGv;
     end;
     $C2: begin
-      DecodeSIMD(True);
+      DecodeSIMD;
       case SimdOpcode of
         soNone: begin SetOpcode(OPcmp, OPSx_ps); AddVps; AddWps; AddIb end;
         so66:   begin SetOpcode(OPcmp, OPSx_pd); AddVpd; AddWpd; AddIb end;
@@ -2989,7 +2989,7 @@ begin
       end;
     end;
     $C3: begin
-      DecodeSIMD(True, [soNone]);
+      DecodeSIMD([soNone]);
       if SimdOpcode = soNone
       then begin
         SetOpcode(OPmovnt, OPSx_i);
@@ -2997,21 +2997,21 @@ begin
       end;
     end;
     $C4: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPpinsr, OPSx_w); AddPq;  AddEw; AddIb end;
         so66:   begin SetOpcode(OPpinsr, OPSx_w); AddVdq; AddEw; AddIb end;
       end;
     end;
     $C5: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPpextr, OPSx_w); AddGd; AddNq;  AddIb end;
         so66:   begin SetOpcode(OPpextr, OPSx_w); AddGd; AddUdq; AddIb end;
       end;
     end;
     $C6: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPshuf, OPSx_ps); AddVps; AddWps; AddIb end;
         so66:   begin SetOpcode(OPshuf, OPSx_pd); AddVpd; AddWpd; AddIb end;
@@ -3026,7 +3026,7 @@ begin
     end;
     //---
     $D0: begin
-      DecodeSIMD(True, [so66, soF2]);
+      DecodeSIMD([so66, soF2]);
       case SimdOpcode of
         so66: begin SetOpcode(OPaddsub, OPSx_pd); AddVpd; AddWpd; end;
         soF2: begin SetOpcode(OPaddsub, OPSx_ps); AddVps; AddWps; end;
@@ -3034,14 +3034,14 @@ begin
     end;
     $D1..$D5, $D8..$DF: begin
       idx := Code[CodeIdx] and $F;
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPC_Dx[idx], OPS_Dx[idx]); AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPC_Dx[idx], OPS_Dx[idx]); AddVdq; AddWdq; end;
       end;
     end;
     $D6: begin
-      DecodeSIMD(True, [so66, soF2, soF3]);
+      DecodeSIMD([so66, soF2, soF3]);
       case SimdOpcode of
         so66: begin SetOpcode(OPmov, OPSx_q); AddWq;  AddVq;  end;
         soF2: begin SetOpcode(OPmovdq2q);     AddPq;  AddUq; end;
@@ -3049,7 +3049,7 @@ begin
       end;
     end;
     $D7: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPpmovmskb); AddGd; AddNq;  end;
         so66:   begin SetOpcode(OPpmovmskb); AddGd; AddUdq; end;
@@ -3059,14 +3059,14 @@ begin
     //---
     $E0..$E5, $E8..$EF: begin
       idx := Code[CodeIdx] and $F;
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPC_Ex[idx], OPS_Ex[idx]); AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPC_Ex[idx], OPS_Ex[idx]); AddVdq; AddWdq; end;
       end;
     end;
     $E6: begin
-      DecodeSIMD(True, [so66, soF2, soF3]);
+      DecodeSIMD([so66, soF2, soF3]);
       case SimdOpcode of
         so66: begin SetOpcode(OPcvttpd2, OPSx_dq); AddVq;  AddWpd; end;
         soF2: begin SetOpcode(OPcvtpd2,  OPSx_dq); AddVq;  AddWpd; end;
@@ -3074,7 +3074,7 @@ begin
       end;
     end;
     $E7: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmovnt, OPSx_q);   AddMq;  AddPq;  end;
         so66:   begin SetOpcode(OPmovnt, OPSx_dqu); AddMdq; AddVdq; end;
@@ -3090,14 +3090,14 @@ begin
     end;
     $F1..$F6, $F8..$FE: begin
       idx := Code[CodeIdx] and $F;
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPC_Fx[idx], OPS_Fx[idx]); AddPq;  AddQq;  end;
         so66:   begin SetOpcode(OPC_Fx[idx], OPS_Fx[idx]); AddVdq; AddWdq; end;
       end;
     end;
     $F7: begin
-      DecodeSIMD(True, [soNone, so66]);
+      DecodeSIMD([soNone, so66]);
       case SimdOpcode of
         soNone: begin SetOpcode(OPmaskmov, OPSx_q);   AddPq;  AddNq;  end;
         so66:   begin SetOpcode(OPmaskmov, OPSx_dqu); AddVdq; AddUdq; end;
