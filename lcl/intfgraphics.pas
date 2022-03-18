@@ -504,7 +504,6 @@ type
     procedure InitLineBuf;
     procedure FreeLineBuf;
 
-
     procedure ReadScanLine(Row: Integer); virtual;
     procedure WriteScanLine(Row: Cardinal); virtual;
     // required by TFPCustomImageReader
@@ -5275,7 +5274,7 @@ begin
   // Add here support for compressed lines. The 'readsize' is the same in the end.
 
   // MWE: Note: when doing so, keep in mind that the bufer is expected to be in Little Endian.
-  // for better performance, the conversion is done when writeing the buffer.
+  // for better performance, the conversion is done when writing the buffer.
 
   if Info.Encoding = lrdeRLE
   then begin
@@ -5359,8 +5358,8 @@ begin
   if Info.MaskSize.A = 0
   then Result.Alpha := AlphaOpaque
   else begin
-    RBytes.Ah := AColor.A;
-    RBytes.Al := AColor.A;
+    RBytes.Ah := 255-AColor.A;
+    RBytes.Al := RBytes.Ah;
   end;
 end;
 
@@ -5756,7 +5755,7 @@ begin
     GetMaskShiftSize(FDibInfo.PixelMasks.A, FDibInfo.MaskShift.A, FDibInfo.MaskSize.A);
   end
   else begin
-    // officially no alpha support, but that breaks older LCL compatebility
+    // officially no alpha support, but that breaks older LCL compatibility
     // so add it
     if Info.BitCount = 32
     then begin
@@ -5812,7 +5811,6 @@ begin
 end;
 
 procedure TLazReaderDIB.InternalReadBody;
-
 
   procedure SaveTransparentColor;
   begin
