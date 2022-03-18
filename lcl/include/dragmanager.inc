@@ -261,7 +261,7 @@ begin
 
   finally
     //erase global variables (dragging stopped)
-    if ADragObjectCopy.AutoFree then
+    if (ADragObjectCopy <>nil) and ADragObjectCopy.AutoFree then
       ADragObjectCopy.Free;
   end;
 end;

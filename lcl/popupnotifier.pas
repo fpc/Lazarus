@@ -451,6 +451,8 @@ begin
   inherited Create(AOwner);
 
   vNotifierForm := TNotifierForm.Create(nil);
+  if Application <> nil then
+     vNotifierForm.BidiMode := Application.BidiMode;
   vNotifierForm.Visible := False;
 end;
 
