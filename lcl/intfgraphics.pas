@@ -5358,7 +5358,8 @@ begin
   if Info.MaskSize.A = 0
   then Result.Alpha := AlphaOpaque
   else begin
-    RBytes.Ah := 255-AColor.A;
+    RBytes.Ah := AColor.A;
+    // fpreadbmp says reverse: RBytes.Ah := 255-AColor.A;
     RBytes.Al := RBytes.Ah;
   end;
 end;
