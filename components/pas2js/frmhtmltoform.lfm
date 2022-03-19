@@ -26,8 +26,8 @@ object frmHTML2Form: TfrmHTML2Form
   end
   object PCOptions: TPageControl
     Left = 0
-    Height = 408
-    Top = 26
+    Height = 394
+    Top = 40
     Width = 633
     ActivePage = TSHTML
     Align = alClient
@@ -35,7 +35,7 @@ object frmHTML2Form: TfrmHTML2Form
     TabOrder = 1
     object TSHTML: TTabSheet
       Caption = 'HTML File'
-      ClientHeight = 378
+      ClientHeight = 364
       ClientWidth = 623
       OnContextPopup = TSHTMLContextPopup
       object lblHTMLFile: TLabel
@@ -50,6 +50,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'HTML File'
+        ParentColor = False
       end
       object FEHTMLFile: TFileNameEdit
         AnchorSideRight.Side = asrBottom
@@ -102,15 +103,17 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Below element ID'
+        ParentColor = False
       end
       object mExclude: TMemo
         AnchorSideLeft.Control = FEHTMLFile
         AnchorSideTop.Control = cbBelowID
         AnchorSideTop.Side = asrBottom
         Left = 136
-        Height = 272
+        Height = 245
         Top = 109
         Width = 424
+        Anchors = [akTop, akLeft, akRight, akBottom]
         BorderSpacing.Top = 8
         Lines.Strings = (
           'mExclude'
@@ -128,11 +131,12 @@ object frmHTML2Form: TfrmHTML2Form
         BorderSpacing.Top = 8
         BorderSpacing.Right = 8
         Caption = 'Exclude elements'
+        ParentColor = False
       end
     end
     object TSCodeGen: TTabSheet
       Caption = 'Generated code'
-      ClientHeight = 378
+      ClientHeight = 364
       ClientWidth = 623
       object edtFormClassName: TEdit
         AnchorSideTop.Control = TSCodeGen
@@ -192,6 +196,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'GetElement'
+        ParentColor = False
       end
       object cgOverrides: TCheckGroup
         AnchorSideTop.Control = edtFormClassName
@@ -331,6 +336,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Class name'
+        ParentColor = False
       end
       object lblParentClassName: TLabel
         AnchorSideTop.Control = cbParentName
@@ -344,6 +350,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Parent class name'
+        ParentColor = False
       end
       object lblEventSignature: TLabel
         AnchorSideTop.Control = cbEventSignature
@@ -357,6 +364,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Event signature'
+        ParentColor = False
       end
       object lblEventModifiers: TLabel
         AnchorSideTop.Control = cbEventModifiers
@@ -370,6 +378,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Event modifiers'
+        ParentColor = False
       end
       object lblConstructorArgs: TLabel
         AnchorSideTop.Control = cbConstructorArgs
@@ -383,6 +392,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Constructor args'
+        ParentColor = False
       end
       object FETagMapFile: TFileNameEdit
         Left = 137
@@ -409,6 +419,7 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Tag Map file'
+        ParentColor = False
       end
       object cbDefaultElements: TCheckBox
         AnchorSideLeft.Control = edtFormClassName
@@ -458,16 +469,19 @@ object frmHTML2Form: TfrmHTML2Form
         Anchors = [akTop, akLeft, akRight]
         BorderSpacing.Right = 8
         Caption = 'Extra units in uses'
+        ParentColor = False
       end
     end
   end
-  object ToolBar1: TToolBar
+  object TBHTML2Form: TToolBar
     Left = 0
-    Height = 26
+    Height = 40
     Top = 0
     Width = 633
-    Caption = 'TBHTML2Form'
+    ButtonHeight = 40
+    ButtonWidth = 32
     Images = ilHTML2Form
+    ShowCaptions = True
     TabOrder = 2
     object tbLoad: TToolButton
       Left = 1
@@ -475,7 +489,7 @@ object frmHTML2Form: TfrmHTML2Form
       Action = aLoad
     end
     object tbSave: TToolButton
-      Left = 24
+      Left = 39
       Top = 2
       Action = aSave
     end

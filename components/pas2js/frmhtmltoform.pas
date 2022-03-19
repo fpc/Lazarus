@@ -50,7 +50,7 @@ type
     odSettings: TOpenDialog;
     PCOptions: TPageControl;
     sdSettings: TSaveDialog;
-    ToolBar1: TToolBar;
+    TBHTML2Form: TToolBar;
     tbLoad: TToolButton;
     tbSave: TToolButton;
     TSCodeGen: TTabSheet;
