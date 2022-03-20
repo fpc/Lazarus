@@ -17109,7 +17109,7 @@ ALabel.Caption := '&amp;Notes &amp;&amp; Comments';
 
       <element name="TWinControl.OnExit">
         <short>
-          Handler for control loosing the focus; This is a good place for checking the finished user input.
+          Handler for control losing the focus; This is a good place for checking the finished user input.
         </short>
         <descr/>
         <seealso/>
