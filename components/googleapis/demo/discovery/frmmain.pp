@@ -16,7 +16,7 @@ interface
 uses
   Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
   ComCtrls, ActnList, Menus, ListViewFilterEdit, restbase, googleclient,
-  googlediscovery, frmgenoptions, frmview;
+  googlediscovery, frmgenoptions, frmview, opensslsockets;
 
 type
 

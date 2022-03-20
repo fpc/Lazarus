@@ -29,6 +29,8 @@ implementation
 
 { TForm1 }
 
+uses LazFileUtils;
+
 procedure TForm1.FormCreate(Sender: TObject);
 var
   HasFont: Boolean;
@@ -47,7 +49,7 @@ begin
   end;
   {$IFDEF LCLGtk2}
   HasFont:=true;
-  FontFilename:=SetDirSeparators('../../verdana.ttf');
+  FontFilename:=SetDirSeparators('FreeSans.ttf');
   if not FileExistsUTF8(FontFilename) then begin
     ShowMessage('file not found: '+FontFilename+' CurDir='+GetCurrentDirUTF8);
     HasFont:=false;
