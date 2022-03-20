@@ -58,7 +58,7 @@ begin
     Ellipse(40,65,120,130);
 
     // solid blue text
-    FontFilename:=SetDirSeparators('../../verdana.ttf');
+    FontFilename:='FreeSerif.ttf';
     DebugLn(['TForm1.FormCreate ',FontFilename,' ',FileExistsUTF8(FontFilename)]);
     Font.LoadFromFile(FontFilename);
     Font.Size:=18;

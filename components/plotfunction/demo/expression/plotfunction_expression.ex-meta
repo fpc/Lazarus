@@ -1,0 +1,5 @@
+{ "plotfunction_expression" : {
+   "Category" : "Components",
+   "Keywords" : ["fpexprpars", "plot", "expression"],
+   "Description" : "Plots a square function with adjustable values."}
+}
