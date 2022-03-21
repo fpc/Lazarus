@@ -1186,10 +1186,9 @@ begin
 //t.Add('gvBitPackBoolArray',     weStatArray(weBool([True, False, True, True])   ));
   //t.Add('MyClass2.cl_c_Byte',     weStatArray(weBool([True, False, True, True])   ));
   //t.Add('MyClass2.cl_c_ShortRec',     weStatArray(weBool([True, False, True, True])   ));
-t.Add('', 'gcPChar',      wePointer(weAnsiStr(''), 'PChar'));
-t.EvaluateWatches;
-t.CheckResults;
-exit;
+//t.EvaluateWatches;
+//t.CheckResults;
+//exit;
 
     t.Add('U8Data1',    weAnsiStr(''''#$E2#$89#$A7'''', 'Utf8String'))
     //t.Add('U8Data1',    weAnsiStr(''''#$2267'''', 'Utf8String'))
