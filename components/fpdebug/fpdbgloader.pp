@@ -222,7 +222,9 @@ end;
 function TDbgImageLoader.GetReaderErrors: String;
 begin
   if FImgReader <> nil then
-    Result := FImgReader.ReaderErrors;
+    Result := FImgReader.ReaderErrors
+  else
+    Result := '';
 end;
 
 function TDbgImageLoader.GetSubFiles: TStrings;

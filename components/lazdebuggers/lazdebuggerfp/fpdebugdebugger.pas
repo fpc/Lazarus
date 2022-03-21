@@ -95,8 +95,8 @@ type
     FCallstackEntry: TCallStackEntry;
     procedure DoCallstackFreed_DecRef(Sender: TObject);
     procedure DoCallstackEntryFreed_DecRef(Sender: TObject);
-    procedure DoRemovedFromLinkedList; override;
   protected
+    procedure DoRemovedFromLinkedList; override;
     procedure UpdateCallstackEntry_DecRef(Data: PtrInt = 0); override;
   public
     constructor Create(ADebugger: TFpDebugDebuggerBase; AThread: TDbgThread; ACallstackEntry: TCallStackEntry; ACallstack: TCallStackBase = nil);
@@ -4247,13 +4247,13 @@ function TFpDebugDebugger.GetLocationRec(AnAddress: TDBGPtr;
 var
   sym, symproc: TFpSymbol;
 begin
+  result.FuncName:='';
+  result.SrcFile:='';
+  result.SrcFullName:='';
+  result.SrcLine:=0;
+
   if Assigned(FDbgController.CurrentProcess) then
     begin
-    result.FuncName:='';
-    result.SrcFile:='';
-    result.SrcFullName:='';
-    result.SrcLine:=0;
-
     if AnAddress=0 then
       result.Address := FDbgController.DefaultContext.Address // DefaultContext has the InstrPtr cached
       //result.Address := FDbgController.CurrentThread.GetInstructionPointerRegisterValue
@@ -4277,7 +4277,7 @@ begin
     if assigned(symproc) then
       result.FuncName:=symproc.Name;
     sym.ReleaseReference;
-    end
+    end;
 end;
 
 function TFpDebugDebugger.GetLocation: TDBGLocationRec;

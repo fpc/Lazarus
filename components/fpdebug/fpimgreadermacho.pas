@@ -191,7 +191,7 @@ begin
           end;
         end
       else
-        DebugLn('File with debug-info "'+DwarfDebugMap.ObjectFile+'" does not exist. This could lead to missing debug-information.');
+        DebugLn('File with debug-info "'+ASubFiles[i]+'" does not exist. This could lead to missing debug-information.');
       end;
     end;
 end;

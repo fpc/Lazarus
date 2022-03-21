@@ -1364,7 +1364,7 @@ begin
     dec(i);
     if i = 0 then begin
       DebugLn(FPDBG_DWARF_WARNINGS, ['ENDLESS LEB128']);
-      exit;
+      exit(nil);
     end;
   end;
   Result := LEB128 + 1;
