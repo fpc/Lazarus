@@ -426,6 +426,8 @@ end;
 procedure TDbgImageReader.SetImageBase(ABase: QWord);
 begin
   FImageBase := ABase;
+  if FLoadedTargetImageAddr = 0 then
+    FLoadedTargetImageAddr := ABase;
 end;
 
 procedure TDbgImageReader.SetImageSize(ASize: QWord);
