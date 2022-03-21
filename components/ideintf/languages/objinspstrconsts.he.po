@@ -1648,9 +1648,35 @@ msgstr "עורך StringGrid "
 msgid "Clean"
 msgstr "נקה"
 
+#: objinspstrconsts.sccssgedtdelcol
+msgid "Delete Col"
+msgstr ""
+
+#: objinspstrconsts.sccssgedtdelcolno
+#, object-pascal-format
+msgid "Delete column #%d?"
+msgstr ""
+
+#: objinspstrconsts.sccssgedtdelrow
+msgid "Delete Row"
+msgstr ""
+
+#: objinspstrconsts.sccssgedtdelrowno
+#, object-pascal-format
+msgid "Delete row #%d?"
+msgstr ""
+
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
 msgstr "רשת מחרוזות"
+
+#: objinspstrconsts.sccssgedtinscol
+msgid "Insert Col"
+msgstr ""
+
+#: objinspstrconsts.sccssgedtinsrow
+msgid "Insert Row"
+msgstr ""
 
 #: objinspstrconsts.sccssgedtload
 #, fuzzy

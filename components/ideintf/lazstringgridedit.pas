@@ -11,9 +11,9 @@ unit LazStringGridEdit;
 interface
 
 uses
-  Classes,
+  Classes, SysUtils,
   // LCL
-  Forms, Controls, Dialogs, Arrow, StdCtrls, Buttons, Grids, ExtCtrls,
+  Forms, Controls, Dialogs, StdCtrls, Buttons, Grids, ExtCtrls,
   // IdeIntf
   ObjInspStrConsts, IDEWindowIntf;
 
@@ -22,10 +22,6 @@ type
   { TStringGridEditorDlg }
 
   TStringGridEditorDlg = class(TForm)
-    ArrowLeft: TArrow;
-    ArrowRight: TArrow;
-    ArrowDown: TArrow;
-    ArrowUp: TArrow;
     BtnOK: TBitBtn;
     BtnCancel: TBitBtn;
     BtnApply: TBitBtn;
@@ -38,16 +34,27 @@ type
     OpenDialog: TOpenDialog;
     BtnPanel: TPanel;
     LoadSavePanel: TPanel;
+    PanelEdit: TPanel;
     SaveDialog: TSaveDialog;
+    BtnAddRow: TSpeedButton;
+    BtnDelRow: TSpeedButton;
+    BtnRowUp: TSpeedButton;
+    BtnRowDown: TSpeedButton;
+    BtnAddCol: TSpeedButton;
+    BtnDelCol: TSpeedButton;
+    BtnColLeft: TSpeedButton;
+    BtnColRight: TSpeedButton;
     StringGrid: TStringGrid;
     procedure BtnApplyClick(Sender: TObject);
     procedure BtnCleanClick(Sender: TObject);
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure StringGridPrepareCanvas({%H-}sender: TObject; Col, Row: Integer;
       {%H-}aState: TGridDrawState);
+    procedure ManageGrid(Sender:TObject);
     procedure SwapRowCol(Sender:TObject);
   private
     FModified: Boolean;
@@ -110,6 +117,15 @@ begin
   OpenDialog.Title := sccsSGEdtOpenDialog;
   SaveDialog.Title := sccsSGEdtSaveDialog;
 
+  BtnRowUp.Hint := sccsSGEdtMoveRowsCols;
+  BtnRowDown.Hint := sccsSGEdtMoveRowsCols;
+  BtnColLeft.Hint := sccsSGEdtMoveRowsCols;
+  BtnColRight.Hint := sccsSGEdtMoveRowsCols;
+  BtnAddRow.Hint := sccsSGEdtInsRow;
+  BtnAddCol.Hint := sccsSGEdtInsCol;
+  BtnDelRow.Hint := sccsSGEdtDelRow;
+  BtnDelCol.Hint := sccsSGEdtDelCol;
+
   StringGrid.ExtendedColSizing := True;
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
@@ -134,6 +150,7 @@ procedure TStringGridEditorDlg.BtnLoadClick(Sender: TObject);
 begin
   if OpenDialog.Execute then
   begin
+    StringGrid.SaveOptions := [soDesign, soContent];
     StringGrid.LoadFromFile(OpenDialog.FileName);
   end;
 end;
@@ -142,8 +159,20 @@ procedure TStringGridEditorDlg.BtnSaveClick(Sender: TObject);
 begin
   if SaveDialog.Execute then
   begin
+    StringGrid.SaveOptions := [soDesign, soContent];
     StringGrid.SaveToFile(SaveDialog.FileName);
   end;
+end;
+
+procedure TStringGridEditorDlg.FormActivate(Sender: TObject);
+var
+  delta: Integer;
+begin
+  delta := Groupbox.BorderSpacing.Around;  // Assuming all borderspacings are equal
+  Constraints.MinWidth := BtnColRight.Left + BtnColRight.Width + 
+    (BtnClean.Left + BtnClean.Width - BtnLoad.Left) + 6*delta;
+  if Width < Constraints.MinWidth then
+    Width := 0;  // Enforce constraints
 end;
 
 procedure TStringGridEditorDlg.StringGridPrepareCanvas(sender: TObject; Col,
@@ -153,39 +182,55 @@ begin
     StringGrid.Canvas.Brush.Color := FStringGrid.FixedColor;
 end;
 
+procedure TStringGridEditorDlg.ManageGrid(Sender:TObject);
+var 
+  irow, icol: integer;
+begin
+  irow := StringGrid.Row;
+  icol := StringGrid.Col;
+  if (Sender = BtnAddRow) then
+  begin
+    StringGrid.InsertColRow(false, irow);
+    StringGrid.Row := StringGrid.Row-1;
+  end 
+  else
+  if (Sender = BtnDelRow) and (irow >= 0) then
+  begin
+    if MessageDlg(Application.Title, Format(sccsSGEdtDelRowNo, [irow]), mtConfirmation, mbYesNo, 0) = mrYes then
+      StringGrid.DeleteRow(irow);
+  end else
+  if Sender = BtnAddCol then
+  begin
+    StringGrid.InsertColRow(true, icol);
+    StringGrid.Col := StringGrid.Col - 1;
+  end
+  else
+  if (Sender = BtnDelCol) and (icol >= 0) then
+    if MessageDlg(Application.Title, Format(sccsSGEdtDelColNo, [icol]), mtConfirmation, mbYesNo, 0) = mrYes then
+      StringGrid.DeleteCol(icol);
+end;
+
 procedure TStringGridEditorDlg.SwapRowCol(Sender:TObject);
 begin
-  if TObject(Sender)=ArrowLeft then begin
-    try
+  if Sender = BtnColLeft then begin
+    if StringGrid.Col > 0 then
       StringGrid.ExchangeColRow(true,StringGrid.Col,StringGrid.Col-1);
-      StringGrid.Col:=StringGrid.Col-1;
-    except
-
-    end;
-  end;
-  if TObject(Sender)=ArrowUp then begin
-    try
+      //StringGrid.Col := StringGrid.Col - 1;
+  end else
+  if Sender = BtnRowUp then begin
+    if StringGrid.Row > 0 then
       StringGrid.ExchangeColRow(false,StringGrid.Row,StringGrid.Row-1);
-      StringGrid.Row:=StringGrid.Row-1;
-    except
-
-    end;
+      //StringGrid.Row := StringGrid.Row - 1;
   end;
-  if TObject(Sender)=ArrowRight then begin
-    try
+  if Sender = BtnColRight then begin
+    if StringGrid.Col < StringGrid.ColCount-1 then
       StringGrid.ExchangeColRow(true,StringGrid.Col,StringGrid.Col+1);
-      StringGrid.Col:=StringGrid.Col+1;
-    except
-
-    end;
+      //StringGrid.Col := StringGrid.Col + 1;
   end;
-  if TObject(Sender)=ArrowDown then begin
-    try
+  if Sender = BtnRowDown then begin
+    if StringGrid.Row < StringGrid.RowCount-1 then
       StringGrid.ExchangeColRow(false,StringGrid.Row,StringGrid.Row+1);
-      StringGrid.Row:=StringGrid.Row+1;
-    except
-
-    end;
+      //StringGrid.Row := StringGrid.Row + 1;
   end;
 end;
 
@@ -204,7 +249,7 @@ procedure TStringGridEditorDlg.SaveToGrid;
 begin
   if Assigned(FStringGrid) then
   begin
-    AssignGrid(FStringGrid, StringGrid, False);
+    AssignGrid(FStringGrid, StringGrid, true);
     FModified := True;
   end;
 end;

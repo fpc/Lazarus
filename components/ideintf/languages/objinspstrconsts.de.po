@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2018-11-05 18:07+0100\n"
+"PO-Revision-Date: 2022-03-21 13:46+0100\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: utf-8\n"
-"Language: de\n"
-"X-Generator: Poedit 2.1.1\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: objinspstrconsts.cactionlisteditorallcategory
 msgid "(All)"
@@ -1582,11 +1582,37 @@ msgstr "StringGrid Editor"
 
 #: objinspstrconsts.sccssgedtclean
 msgid "Clean"
-msgstr "Sauber"
+msgstr "Löschen"
+
+#: objinspstrconsts.sccssgedtdelcol
+msgid "Delete Col"
+msgstr "Spalte löschen"
+
+#: objinspstrconsts.sccssgedtdelcolno
+#, object-pascal-format
+msgid "Delete column #%d?"
+msgstr "Spalte Nr. %d löschen?"
+
+#: objinspstrconsts.sccssgedtdelrow
+msgid "Delete Row"
+msgstr "Zeile löschen"
+
+#: objinspstrconsts.sccssgedtdelrowno
+#, object-pascal-format
+msgid "Delete row #%d?"
+msgstr "Zeile Nr. %d löschen?"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
 msgstr "String-Gitter"
+
+#: objinspstrconsts.sccssgedtinscol
+msgid "Insert Col"
+msgstr "Spalte einfügen"
+
+#: objinspstrconsts.sccssgedtinsrow
+msgid "Insert Row"
+msgstr "Zeile einfügen"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
@@ -1619,7 +1645,7 @@ msgstr "Treeview-Einträge bearbeiten ..."
 #: objinspstrconsts.sccstredtapply
 msgctxt "objinspstrconsts.sccstredtapply"
 msgid "Apply"
-msgstr "Anwenden"
+msgstr "Übernehmen"
 
 #: objinspstrconsts.sccstredtcaption
 msgid "TreeView Items Editor"
@@ -1747,4 +1773,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

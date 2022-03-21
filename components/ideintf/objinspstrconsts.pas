@@ -183,6 +183,12 @@ resourcestring
   sccsSGEdtOpenDialog = 'Open';
   sccsSGEdtSaveDialog = 'Save';
   sccsSGEdtMoveRowsCols = 'Move Rows/Cols';
+  sccsSGEdtDelRow     = 'Delete Row';
+  sccsSGEdtDelCol     = 'Delete Col';
+  sccsSGEdtInsRow     = 'Insert Row';
+  sccsSGEdtInsCol     = 'Insert Col';
+  sccsSGEdtDelRowNo   = 'Delete row #%d?';
+  sccsSGEdtDelColNo   = 'Delete column #%d?';
 
   // HeaderControl Editor
   sccsHCEditSections  = 'Sections Editor ...';
