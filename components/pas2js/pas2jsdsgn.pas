@@ -13,7 +13,7 @@ uses
   frmpas2jswebservers, strpas2jsdesign, pjsprojectoptions, 
   frmPas2jsAtomPackageSettings, regpas2jsatom, regpas2jsvscode, 
   frmPas2jsVSCodeExtensionSettings, frmhtmltoform, idehtml2class, frmdtstopas, 
-  idedtstopas, LazarusPackageIntf;
+  idedtstopas, idehtmltools, LazarusPackageIntf;
 
 implementation
 

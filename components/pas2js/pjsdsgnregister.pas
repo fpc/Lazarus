@@ -138,18 +138,19 @@ var
 Const
   // Position in project options dialog.
   Pas2JSOptionsIndex  = ProjectOptionsMisc + 100;
-  SHTML2FormOptions = 'HTML2FormOptions';
 
 procedure Register;
 
 implementation
 
 uses
+  ComponentEditors,
   dialogs,
   frmpas2jswebservers,
   frmpas2jsnodejsprojectoptions,
   frmpas2jsbrowserprojectoptions,
   pjsprojectoptions,
+  idehtmltools,
   frmhtmltoform,
   fpjson, pjscontroller, srceditorintf, strpas2jsdesign, IDECommands, ToolbarIntf, MenuIntf;
 
@@ -231,6 +232,7 @@ begin
   PrjMnuItemAll:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
       'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@MenuHandler.OnRefreshProjHTMLFormAllContext);
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@MenuHandler.OnPrjInspPopup);
+
 
 end;
 
@@ -403,6 +405,7 @@ begin
        if aFileName='' then
          exit;
        aOptions.HTMLFileName:=aFileName;
+       aFile.CustomData.Values[SDesignHTMLFile]:=aFileName;
        aFile.CustomData.Values[SHTML2FormOptions]:=aOptions.asJSON(False);
        LazarusIDE.ActiveProject.Modified:=True;
        end;

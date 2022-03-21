@@ -18,7 +18,7 @@
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="2"/>
-    <Files Count="20">
+    <Files Count="21">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -102,6 +102,10 @@
         <Filename Value="idedtstopas.pas"/>
         <UnitName Value="idedtstopas"/>
       </Item20>
+      <Item21>
+        <Filename Value="idehtmltools.pas"/>
+        <UnitName Value="idehtmltools"/>
+      </Item21>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
