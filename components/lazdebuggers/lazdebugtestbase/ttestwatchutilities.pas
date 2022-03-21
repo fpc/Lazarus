@@ -1332,7 +1332,7 @@ begin
 
   with AnWatchExp do begin
     try
-      with LazDebugger.GetLocation do
+      with Debugger.CurLocation do
         FTest.TestBaseName := FTest.TestBaseName + ' ' + TstTestName + ' WATCH: '+TstWatch.Expression+' AT '+ SrcFile + ':' + IntToStr(SrcLine) +')';
       if TstStackFrame > 0 then
         FTest.TestBaseName := FTest.TestBaseName + ' (Stack: ' + IntToStr(TstStackFrame) + ')';
@@ -2318,7 +2318,7 @@ var
   l: TDBGLocationRec;
 begin
   t := LazDebugger.Threads.CurrentThreads.CurrentThreadId;
-  l := LazDebugger.GetLocation;
+  l := Debugger.CurLocation;
 
   // Fire up all watches / so the debugger does not need to wait for the testcase
   for i := 0 to Length(FList)-1 do

@@ -94,8 +94,10 @@ type
     FRegisters: TTestRegistersMonitor;
     FTestBreakPoints: TStringList;
     FDebuggerStateCounts: array[TDBGState] of integer;
+    FCurLocation: TDBGLocationRec;
 
     function GetCpuBitTypes: TCpuBitTypes;
+    function GetCurLocation: TDBGLocationRec; inline;
     function GetDebuggerStateCount(AState: TDBGState): Integer;
     function GetSymbolTypes: TSymbolTypes;
     procedure SetDebuggerStateCount(AState: TDBGState; AValue: Integer);
@@ -129,6 +131,7 @@ type
 
     property LazDebugger: TDebuggerIntf read FLazDebugger write FLazDebugger;
     property DebuggerStateCount[AState: TDBGState]: Integer read GetDebuggerStateCount write SetDebuggerStateCount;
+    property CurLocation: TDBGLocationRec read GetCurLocation;
 
     property CallStack: TTestCallStackMonitor read FCallStack;
     property Disassembler: TBaseDisassembler read FDisassembler;
@@ -336,6 +339,13 @@ begin
   Result := FExternalExeInfo.CpuBitTypes;
 end;
 
+function TTestDbgDebugger.GetCurLocation: TDBGLocationRec;
+begin
+  if FCurLocation.Address = 0 then
+    FCurLocation := LazDebugger.GetLocation;
+  Result := FCurLocation;
+end;
+
 function TTestDbgDebugger.GetDebuggerStateCount(AState: TDBGState): Integer;
 begin
   Result := FDebuggerStateCounts[AState];
@@ -455,7 +465,7 @@ function TTestDbgDebugger.RunToNextPause(ACmd: TDBGCommand; ATimeOut: Integer;
   AWaitForInternal: Boolean): Boolean;
 begin
   Result := False;
-  with LazDebugger.GetLocation do DebugLnEnter('>>> RunToNextPause Starting at %s %d @ %x', [SrcFile, SrcLine, Address]);
+  with CurLocation do DebugLnEnter('>>> RunToNextPause Starting at %s %d @ %x', [SrcFile, SrcLine, Address]);
   case ACmd of
     dcRun:      LazDebugger.Run;
     dcStepOver: LazDebugger.StepOver;
@@ -469,7 +479,7 @@ begin
   end;
   Result := WaitForFinishRun(ATimeOut, AWaitForInternal);
   if (LazDebugger.State = dsPause) and (ACmd <> dcStop) then
-    with LazDebugger.GetLocation do begin
+    with CurLocation do begin
       DebugLnExit('<<< RunToNextPause Ending at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
       TestLogger.DebugLn('at %s %d @ %x %s', [SrcFile, SrcLine, Address, dbgs(LazDebugger.State)]);
     end
@@ -482,6 +492,7 @@ function TTestDbgDebugger.WaitForFinishRun(ATimeOut: Integer;
 var
   t, d: QWord;
 begin
+  FCurLocation.Address := 0;
   t := GetTickCount64;
   repeat
     DoBetweenWaitForFinish;
@@ -496,6 +507,7 @@ begin
     else
       d := high(d) - t + d;
   until d > ATimeOut;
+  FCurLocation.Address := 0;
 end;
 
 function TTestDbgDebugger.SetBreakPoint(AFileName: String; ALine: Integer
