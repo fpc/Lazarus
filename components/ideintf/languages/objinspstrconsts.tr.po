@@ -1584,7 +1584,7 @@ msgid "Clean"
 msgstr "Temizle"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
+msgid "Delete Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1606,7 +1606,7 @@ msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
+msgid "Insert Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinsrow
@@ -1618,7 +1618,9 @@ msgid "Load ..."
 msgstr "Yükle..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+#, fuzzy
+#| msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr "Taşı Satır/Sütun"
 
 #: objinspstrconsts.sccssgedtopendialog

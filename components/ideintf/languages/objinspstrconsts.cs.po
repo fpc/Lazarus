@@ -1585,7 +1585,7 @@ msgid "Clean"
 msgstr "Vyčistit"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
+msgid "Delete Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1607,7 +1607,7 @@ msgid "String Grid"
 msgstr "Řetězcová mřížka"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
+msgid "Insert Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinsrow
@@ -1619,7 +1619,9 @@ msgid "Load ..."
 msgstr "Načít ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+#, fuzzy
+#| msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr "Přesunout řádky/sloupce"
 
 #: objinspstrconsts.sccssgedtopendialog

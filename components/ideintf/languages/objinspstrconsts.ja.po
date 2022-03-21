@@ -1592,7 +1592,7 @@ msgid "Clean"
 msgstr "掃除する"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
+msgid "Delete Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1614,7 +1614,7 @@ msgid "String Grid"
 msgstr "文字列グリッド"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
+msgid "Insert Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinsrow
@@ -1626,7 +1626,9 @@ msgid "Load ..."
 msgstr "読み込み ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+#, fuzzy
+#| msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr "行/列を移動"
 
 #: objinspstrconsts.sccssgedtopendialog

@@ -1585,7 +1585,9 @@ msgid "Clean"
 msgstr "Löschen"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
+#, fuzzy
+#| msgid "Delete Col"
+msgid "Delete Column"
 msgstr "Spalte löschen"
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1607,7 +1609,9 @@ msgid "String Grid"
 msgstr "String-Gitter"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
+#, fuzzy
+#| msgid "Insert Col"
+msgid "Insert Column"
 msgstr "Spalte einfügen"
 
 #: objinspstrconsts.sccssgedtinsrow
@@ -1619,7 +1623,9 @@ msgid "Load ..."
 msgstr "Laden..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+#, fuzzy
+#| msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr "Zeilen/Spalten verschieben"
 
 #: objinspstrconsts.sccssgedtopendialog
@@ -1773,3 +1779,4 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
+

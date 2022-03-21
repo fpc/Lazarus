@@ -1640,7 +1640,7 @@ msgid "Clean"
 msgstr "Netejar"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
+msgid "Delete Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1662,7 +1662,7 @@ msgid "String Grid"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
+msgid "Insert Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinsrow
@@ -1676,7 +1676,7 @@ msgid "Load ..."
 msgstr "Carrega..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtopendialog

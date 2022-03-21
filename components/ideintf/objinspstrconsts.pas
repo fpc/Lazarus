@@ -182,11 +182,11 @@ resourcestring
   sccsSGEdtSave       = 'Save ...';
   sccsSGEdtOpenDialog = 'Open';
   sccsSGEdtSaveDialog = 'Save';
-  sccsSGEdtMoveRowsCols = 'Move Rows/Cols';
+  sccsSGEdtMoveRowsCols = 'Move Rows/Columns';
   sccsSGEdtDelRow     = 'Delete Row';
-  sccsSGEdtDelCol     = 'Delete Col';
+  sccsSGEdtDelCol     = 'Delete Column';
   sccsSGEdtInsRow     = 'Insert Row';
-  sccsSGEdtInsCol     = 'Insert Col';
+  sccsSGEdtInsCol     = 'Insert Column';
   sccsSGEdtDelRowNo   = 'Delete row #%d?';
   sccsSGEdtDelColNo   = 'Delete column #%d?';
 

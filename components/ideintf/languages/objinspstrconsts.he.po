@@ -1649,7 +1649,7 @@ msgid "Clean"
 msgstr "נקה"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
+msgid "Delete Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1671,7 +1671,7 @@ msgid "String Grid"
 msgstr "רשת מחרוזות"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
+msgid "Insert Column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinsrow
@@ -1685,7 +1685,9 @@ msgid "Load ..."
 msgstr "טען ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+#, fuzzy
+#| msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr "הזז שורות.עמודות"
 
 #: objinspstrconsts.sccssgedtopendialog

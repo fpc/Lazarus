@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-08-03 01:35+0300\n"
+"PO-Revision-Date: 2022-03-22 01:25+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1580,41 +1580,41 @@ msgid "Clean"
 msgstr "Очистить"
 
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Col"
-msgstr ""
+msgid "Delete Column"
+msgstr "Удалить столбец"
 
 #: objinspstrconsts.sccssgedtdelcolno
 #, object-pascal-format
 msgid "Delete column #%d?"
-msgstr ""
+msgstr "Удалить столбец №%d?"
 
 #: objinspstrconsts.sccssgedtdelrow
 msgid "Delete Row"
-msgstr ""
+msgstr "Удалить строку"
 
 #: objinspstrconsts.sccssgedtdelrowno
 #, object-pascal-format
 msgid "Delete row #%d?"
-msgstr ""
+msgstr "Удалить строку №%d?"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Col"
-msgstr ""
+msgid "Insert Column"
+msgstr "Вставить столбец"
 
 #: objinspstrconsts.sccssgedtinsrow
 msgid "Insert Row"
-msgstr ""
+msgstr "Вставить строку"
 
 #: objinspstrconsts.sccssgedtload
 msgid "Load ..."
 msgstr "Загрузить ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Cols"
+msgid "Move Rows/Columns"
 msgstr "Переместить строки/столбцы"
 
 #: objinspstrconsts.sccssgedtopendialog
