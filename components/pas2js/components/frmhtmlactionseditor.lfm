@@ -1,0 +1,208 @@
+object HTMLActionListEditorForm: THTMLActionListEditorForm
+  Left = 497
+  Height = 315
+  Top = 189
+  Width = 404
+  HorzScrollBar.Page = 399
+  VertScrollBar.Page = 299
+  Caption = 'HTML Action list editor'
+  ClientHeight = 315
+  ClientWidth = 404
+  KeyPreview = True
+  OnClose = ActionListEditorClose
+  OnCreate = FormCreate
+  OnHide = FormHide
+  OnKeyDown = ActionListEditorKeyDown
+  OnKeyPress = ActionListEditorKeyPress
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '2.3.0.0'
+  object PanelDescr: TPanel
+    Left = 0
+    Height = 26
+    Top = 28
+    Width = 404
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 26
+    ClientWidth = 404
+    FullRepaint = False
+    PopupMenu = PopMenuActions
+    TabOrder = 0
+    object lblName: TLabel
+      Left = 8
+      Height = 16
+      Top = 8
+      Width = 48
+      Caption = 'Actions:'
+      ParentColor = False
+    end
+  end
+  object lstActionName: TListBox
+    Left = 0
+    Height = 261
+    Top = 54
+    Width = 404
+    Align = alClient
+    ItemHeight = 0
+    OnClick = lstActionNameClick
+    OnDblClick = lstActionNameDblClick
+    OnKeyDown = lstActionNameKeyDown
+    OnMouseDown = lstActionNameMouseDown
+    PopupMenu = PopMenuActions
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 28
+    Top = 0
+    Width = 404
+    ButtonHeight = 26
+    ButtonWidth = 26
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    EdgeInner = esNone
+    EdgeOuter = esNone
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    object btnAdd: TToolButton
+      Left = 1
+      Top = 0
+      Action = ActNew
+      DropdownMenu = PopMenuToolBarActions
+      Style = tbsDropDown
+    end
+    object btnDelete: TToolButton
+      Left = 39
+      Top = 0
+      Action = ActDelete
+    end
+    object ToolButton4: TToolButton
+      Left = 65
+      Height = 26
+      Top = 0
+      Caption = 'ToolButton4'
+      Style = tbsDivider
+    end
+    object btnUp: TToolButton
+      Left = 70
+      Top = 0
+      Action = ActMoveUp
+    end
+    object btnDown: TToolButton
+      Left = 96
+      Top = 0
+      Action = ActMoveDown
+    end
+  end
+  object alHTMLActions: TActionList
+    Left = 136
+    Top = 64
+    object ActDelete: TAction
+      Category = 'AddDelete'
+      OnExecute = ActDeleteExecute
+      OnUpdate = ActDeleteUpdate
+      ShortCut = 46
+    end
+    object ActNew: TAction
+      Category = 'AddDelete'
+      OnExecute = ActNewExecute
+      ShortCut = 45
+    end
+    object ActMoveUp: TAction
+      Category = 'MoveUpDown'
+      OnExecute = ActMoveUpDownExecute
+      OnUpdate = ActMoveUpUpdate
+      ShortCut = 16422
+    end
+    object ActMoveDown: TAction
+      Category = 'MoveUpDown'
+      OnExecute = ActMoveUpDownExecute
+      OnUpdate = ActMoveDownUpdate
+      ShortCut = 16424
+    end
+    object ActPanelDescr: TAction
+      Category = 'Panels'
+      AutoCheck = True
+      Caption = 'ActPanelDescr'
+      Checked = True
+      OnExecute = ActPanelDescrExecute
+    end
+    object ActPanelToolBar: TAction
+      Category = 'Panels'
+      AutoCheck = True
+      Caption = 'ActPanelToolBar'
+      Checked = True
+      OnExecute = ActPanelToolBarExecute
+    end
+    object actAddMissing: TAction
+      Category = 'AddDelete'
+      Caption = 'Add Missing tags'
+      OnExecute = actAddMissingExecute
+    end
+  end
+  object PopMenuActions: TPopupMenu
+    Left = 56
+    Top = 216
+    object mItemActListNewAction: TMenuItem
+      Action = ActNew
+      Caption = 'New Action'
+      OnClick = ActNewExecute
+    end
+    object mItemActListNewStdAction: TMenuItem
+      ShortCut = 16429
+    end
+    object MenuItem8: TMenuItem
+      Caption = '-'
+    end
+    object mItemActListMoveUpAction: TMenuItem
+      Action = ActMoveUp
+      Caption = 'Move Up'
+      OnClick = ActMoveUpDownExecute
+    end
+    object mItemActListMoveDownAction: TMenuItem
+      Action = ActMoveDown
+      Caption = 'Move Down'
+      OnClick = ActMoveUpDownExecute
+    end
+    object MenuItem6: TMenuItem
+      Caption = '-'
+    end
+    object mItemActListDelAction: TMenuItem
+      Action = ActDelete
+      Caption = 'Delete'
+      OnClick = ActDeleteExecute
+    end
+    object MenuItem1: TMenuItem
+      Caption = '-'
+    end
+    object mItemActListPanelDescr: TMenuItem
+      Action = ActPanelDescr
+      AutoCheck = True
+      OnClick = ActPanelDescrExecute
+    end
+    object MenuItem2: TMenuItem
+      Action = ActPanelToolBar
+      AutoCheck = True
+      OnClick = ActPanelToolBarExecute
+    end
+  end
+  object PopMenuToolBarActions: TPopupMenu
+    Left = 56
+    Top = 164
+    object mItemToolBarNewAction: TMenuItem
+      Action = ActNew
+      Default = True
+      OnClick = ActNewExecute
+    end
+    object mItemToolBarNewStdAction: TMenuItem
+      Action = actAddMissing
+    end
+  end
+  object ActionList1: TActionList
+    Left = 61
+    Top = 106
+  end
+end

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <Name Value="pas2jscomponents"/>
+    <Type Value="RunAndDesignTime"/>
+    <Author Value="Michael Van Canneyt"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <SearchPaths>
+        <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
+      </SearchPaths>
+    </CompilerOptions>
+    <Description Value="(Non-visual) Design-time components for Pas2js projects."/>
+    <License Value="Modified LGPL, as per FPC license"/>
+    <Version Minor="1"/>
+    <Files>
+      <Item>
+        <Filename Value="regpas2jscomponents.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="regpas2jscomponents"/>
+      </Item>
+      <Item>
+        <Filename Value="frmhtmlactionseditor.lfm"/>
+        <Type Value="LFM"/>
+      </Item>
+      <Item>
+        <Filename Value="frmhtmlactionseditor.pas"/>
+        <UnitName Value="frmHTMLActionsEditor"/>
+      </Item>
+      <Item>
+        <Filename Value="htmlactions.pas"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="htmlactions"/>
+      </Item>
+      <Item>
+        <Filename Value="htmleventnames.pas"/>
+        <Type Value="Virtual Unit"/>
+        <UnitName Value="htmleventnames"/>
+      </Item>
+      <Item>
+        <Filename Value="strpas2jscomponents.pas"/>
+        <UnitName Value="strpas2jscomponents"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="Pas2JSDsgn"/>
+      </Item>
+      <Item>
+        <PackageName Value="IDEIntf"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>
