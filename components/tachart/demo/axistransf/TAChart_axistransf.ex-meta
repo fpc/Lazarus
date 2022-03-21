@@ -1,0 +1,5 @@
+{ "TAChart_axistransf" : {
+   "Category" : "Components",
+   "Keywords" : ["TAChart", "Axis Transform"],
+   "Description" : "Demonstrates the transformation of  a charts axis, adjusted for non linear data. "}
+}
