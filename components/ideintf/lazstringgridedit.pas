@@ -30,7 +30,6 @@ type
     BtnSave: TButton;
     BtnClean: TButton;
     GroupBox: TGroupBox;
-    LabelMove: TLabel;
     OpenDialog: TOpenDialog;
     BtnPanel: TPanel;
     LoadSavePanel: TPanel;
@@ -108,7 +107,6 @@ begin
   BtnApply.Caption := sccsSGEdtApply;
   BtnLoad.Caption := sccsSGEdtLoad;
   BtnSave.Caption := sccsSGEdtSave;
-  LabelMove.Caption := sccsSGEdtMoveRowsCols;
 
   BtnHelp.Caption:=cActionListEditorHelpCategory;
   BtnCancel.Caption:=oiStdActDataSetCancel1Hint;

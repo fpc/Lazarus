@@ -1,56 +1,39 @@
 object StringGridEditorDlg: TStringGridEditorDlg
   Left = 527
-  Height = 433
+  Height = 541
   Top = 240
-  Width = 644
+  Width = 805
   Caption = 'StringGridEditorDlg'
-  ClientHeight = 433
-  ClientWidth = 644
-  Constraints.MinHeight = 270
+  ClientHeight = 541
+  ClientWidth = 805
+  Constraints.MinHeight = 338
+  DesignTimePPI = 120
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.3.0.0'
   object GroupBox: TGroupBox
     AnchorSideBottom.Control = BtnOK
-    Left = 6
-    Height = 383
-    Top = 6
-    Width = 632
+    Left = 8
+    Height = 479
+    Top = 8
+    Width = 789
     Align = alClient
     Anchors = [akRight]
-    BorderSpacing.Around = 6
+    BorderSpacing.Around = 8
     Caption = 'String Grid'
-    ClientHeight = 363
-    ClientWidth = 628
+    ClientHeight = 454
+    ClientWidth = 785
     TabOrder = 0
-    object LabelMove: TLabel
-      AnchorSideLeft.Control = StringGrid
-      AnchorSideLeft.Side = asrBottom
-      AnchorSideTop.Side = asrBottom
-      AnchorSideRight.Control = GroupBox
-      AnchorSideRight.Side = asrBottom
-      Left = 628
-      Height = 10000
-      Top = 187
-      Width = 0
-      Alignment = taCenter
-      Anchors = [akTop, akLeft, akRight]
-      BorderSpacing.Left = 6
-      Caption = 'Move Cols/Rows'
-      ParentColor = False
-      WordWrap = True
-    end
     object StringGrid: TStringGrid
       AnchorSideRight.Control = LoadSavePanel
-      Left = 6
-      Height = 317
-      Top = 40
-      Width = 616
+      Left = 8
+      Height = 396
+      Top = 50
+      Width = 769
       Align = alLeft
       Anchors = [akTop, akLeft, akRight, akBottom]
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 8
       FixedCols = 0
       FixedRows = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSizing, goColSizing, goRowMoving, goColMoving, goEditing, goSmoothScroll]
@@ -61,7 +44,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
       AnchorSideTop.Control = GroupBox
       AnchorSideRight.Control = GroupBox
       AnchorSideRight.Side = asrBottom
-      Left = 628
+      Left = 785
       Height = 0
       Top = 0
       Width = 0
@@ -72,21 +55,21 @@ object StringGridEditorDlg: TStringGridEditorDlg
     end
     object PanelEdit: TPanel
       Left = 0
-      Height = 34
+      Height = 42
       Top = 0
-      Width = 628
+      Width = 785
       Align = alTop
       BevelOuter = bvNone
-      ClientHeight = 34
-      ClientWidth = 628
+      ClientHeight = 42
+      ClientWidth = 785
       TabOrder = 2
       object BtnAddRow: TSpeedButton
-        Left = 6
-        Height = 34
+        Left = 8
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
-        BorderSpacing.Left = 6
+        BorderSpacing.Left = 8
         Glyph.Data = {
           36090000424D3609000000000000360000002800000018000000180000000100
           2000000000000009000064000000640000000000000000000000000000000000
@@ -168,10 +151,10 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnDelRow: TSpeedButton
-        Left = 40
-        Height = 34
+        Left = 50
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
         Glyph.Data = {
           36090000424D3609000000000000360000002800000018000000180000000100
@@ -254,10 +237,10 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnRowUp: TSpeedButton
-        Left = 76
-        Height = 34
+        Left = 94
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
         BorderSpacing.Left = 2
         Glyph.Data = {
@@ -341,10 +324,10 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnRowDown: TSpeedButton
-        Left = 110
-        Height = 34
+        Left = 136
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
         Glyph.Data = {
           36090000424D3609000000000000360000002800000018000000180000000100
@@ -427,12 +410,12 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnAddCol: TSpeedButton
-        Left = 152
-        Height = 34
+        Left = 188
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
-        BorderSpacing.Left = 8
+        BorderSpacing.Left = 10
         Glyph.Data = {
           36090000424D3609000000000000360000002800000018000000180000000100
           2000000000000009000064000000640000000000000000000000000000000000
@@ -514,10 +497,10 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnDelCol: TSpeedButton
-        Left = 186
-        Height = 34
+        Left = 230
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
         Glyph.Data = {
           36090000424D3609000000000000360000002800000018000000180000000100
@@ -600,10 +583,10 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnColLeft: TSpeedButton
-        Left = 222
-        Height = 34
+        Left = 274
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
         BorderSpacing.Left = 2
         Glyph.Data = {
@@ -687,10 +670,10 @@ object StringGridEditorDlg: TStringGridEditorDlg
         ParentShowHint = False
       end
       object BtnColRight: TSpeedButton
-        Left = 256
-        Height = 34
+        Left = 316
+        Height = 42
         Top = 0
-        Width = 34
+        Width = 42
         Align = alLeft
         Glyph.Data = {
           36090000424D3609000000000000360000002800000018000000180000000100
@@ -775,40 +758,40 @@ object StringGridEditorDlg: TStringGridEditorDlg
       object BtnLoad: TButton
         AnchorSideLeft.Side = asrBottom
         AnchorSideRight.Side = asrBottom
-        Left = 393
-        Height = 22
-        Top = 6
-        Width = 75
+        Left = 503
+        Height = 26
+        Top = 8
+        Width = 94
         Align = alRight
         AutoSize = True
-        BorderSpacing.Around = 6
+        BorderSpacing.Around = 8
         Caption = 'Load...'
-        Constraints.MinWidth = 75
+        Constraints.MinWidth = 94
         OnClick = BtnLoadClick
         TabOrder = 0
       end
       object BtnSave: TButton
         AnchorSideTop.Side = asrBottom
-        Left = 474
-        Height = 22
-        Top = 6
-        Width = 68
+        Left = 605
+        Height = 26
+        Top = 8
+        Width = 79
         Align = alRight
         AutoSize = True
-        BorderSpacing.Around = 6
+        BorderSpacing.Around = 8
         Caption = 'BtnSave'
         OnClick = BtnSaveClick
         TabOrder = 1
       end
       object BtnClean: TButton
         AnchorSideTop.Side = asrBottom
-        Left = 548
-        Height = 22
-        Top = 6
-        Width = 74
+        Left = 692
+        Height = 26
+        Top = 8
+        Width = 85
         Align = alRight
         AutoSize = True
-        BorderSpacing.Around = 6
+        BorderSpacing.Around = 8
         Caption = 'BtnClean'
         OnClick = BtnCleanClick
         TabOrder = 2
@@ -817,70 +800,70 @@ object StringGridEditorDlg: TStringGridEditorDlg
   end
   object BtnPanel: TPanel
     Left = 0
-    Height = 38
-    Top = 395
-    Width = 644
+    Height = 46
+    Top = 495
+    Width = 805
     Align = alBottom
     AutoSize = True
     BevelOuter = bvNone
-    ClientHeight = 38
-    ClientWidth = 644
+    ClientHeight = 46
+    ClientWidth = 805
     TabOrder = 1
     object BtnHelp: TBitBtn
       AnchorSideRight.Side = asrBottom
       AnchorSideBottom.Side = asrBottom
-      Left = 563
-      Height = 26
-      Top = 6
-      Width = 75
+      Left = 703
+      Height = 30
+      Top = 8
+      Width = 94
       Align = alRight
       AutoSize = True
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 8
       Caption = '&Help'
-      Constraints.MinWidth = 75
+      Constraints.MinWidth = 94
       Kind = bkHelp
       TabOrder = 0
     end
     object BtnApply: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 482
-      Height = 26
-      Top = 6
-      Width = 75
+      Left = 601
+      Height = 30
+      Top = 8
+      Width = 94
       Align = alRight
       AutoSize = True
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 8
       Caption = '&Apply'
-      Constraints.MinWidth = 75
+      Constraints.MinWidth = 94
       OnClick = BtnApplyClick
       TabOrder = 1
     end
     object BtnCancel: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 394
-      Height = 26
-      Top = 6
-      Width = 82
+      Left = 499
+      Height = 30
+      Top = 8
+      Width = 94
       Align = alRight
       AutoSize = True
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 8
       Caption = 'Cancel'
-      Constraints.MinWidth = 75
+      Constraints.MinWidth = 94
       Kind = bkCancel
       ModalResult = 2
       TabOrder = 2
     end
     object BtnOK: TBitBtn
       AnchorSideBottom.Side = asrBottom
-      Left = 313
-      Height = 26
-      Top = 6
-      Width = 75
+      Left = 397
+      Height = 30
+      Top = 8
+      Width = 94
       Align = alRight
       AutoSize = True
-      BorderSpacing.Around = 6
+      BorderSpacing.Around = 8
       Caption = '&OK'
-      Constraints.MinWidth = 75
+      Constraints.MinWidth = 94
       Default = True
       Kind = bkOK
       ModalResult = 1
@@ -890,13 +873,13 @@ object StringGridEditorDlg: TStringGridEditorDlg
   object OpenDialog: TOpenDialog
     Title = 'Open'
     FilterIndex = 0
-    Left = 135
-    Top = 243
+    Left = 169
+    Top = 304
   end
   object SaveDialog: TSaveDialog
     Title = 'Save'
     FilterIndex = 0
-    Left = 176
-    Top = 243
+    Left = 220
+    Top = 304
   end
 end
