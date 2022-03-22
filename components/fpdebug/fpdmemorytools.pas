@@ -664,10 +664,14 @@ end;
 function SizeToFullBytes(const ASize: TFpDbgValueSize): Int64;
 begin
   assert((ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) ), '(ASize.Size=0) or (ASize.BitSize=0) or ( (ASize.Size<0) = (ASize.BitSize<0) )');
-  if ASize < 0 then
-    Result := ASize.Size + (ASize.BitSize - 7) div 8
+  Result := ASize.Size;
+  if ASize.BitSize = 0 then
+    exit
   else
-    Result := ASize.Size + (ASize.BitSize + 7) div 8;
+  if ASize.BitSize > 0 then
+    inc(Result)
+  else
+    dec(Result);
 end;
 
 function SizeToBits(const ASize: TFpDbgValueSize): Int64;
