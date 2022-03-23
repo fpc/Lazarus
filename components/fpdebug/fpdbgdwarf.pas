@@ -4439,6 +4439,8 @@ procedure TFpSymbolDwarfType.ResetValueBounds;
 var
   ti: TFpSymbolDwarfType;
 begin
+  if FNestedTypeInfo = nil then
+    exit;
   ti := NestedTypeInfo;
   if (ti <> nil) then
     ti.ResetValueBounds;
