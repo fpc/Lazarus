@@ -684,12 +684,13 @@
         </short>
         <descr>
           <p>
-            <var>Create</var> is the constructor for the component instance. Create calls the inherited constructor using AOwner as the owner for the component instance. Create allocates resources needed for the vNotifierForm member, and sets the forms Visible property to False.
+            <var>Create</var> is the constructor for the component instance. Create calls the inherited constructor using AOwner as the owner for the component instance. Create allocates resources needed for the vNotifierForm member, and sets the forms Visible property to False. When the Application singleton has been assigned, its BidiMode property is applied to the notifier form instance.
           </p>
         </descr>
         <seealso>
           <link id="TPopupNotifier.Destroy"/>
           <link id="TNotifierForm"/>
+          <link id="#lcl.forms.THintWindow.BidiMode">THintWindow.BidiMode</link>
         </seealso>
       </element>
 
