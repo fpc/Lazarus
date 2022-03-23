@@ -58,12 +58,16 @@ Base class for an RTTI-enabled object inspector grid.
 <descr/>
 <seealso>
 <link id="TTIPropertyGrid"/>
+<!--
+<link id="#ideintf.objectinspector.TCustomPropertiesGrid">
+TCustomPropertiesGrid</link>
+-->
 </seealso>
 </element>
 
 <element name="TTIPropertyGrid">
 <short>
-Grid control used for property names and values for specified persistent
+Grid control used for property names and values in a specified persistent
 object.
 </short>
 <descr>
@@ -248,8 +252,8 @@ grid.
 
 <element name="TTIGridProperty">
 <short>
-Contains information for the editor and its windowed editing control for an
-individual property on an RTTI-enabled property grid.
+Contains information about the editor and its windowed editing control for
+an individual property on an RTTI-enabled property grid.
 </short>
 <descr/>
 <seealso/>
@@ -321,7 +325,7 @@ individual property on an RTTI-enabled property grid.
 
 <element name="TTIGridProperty.GetEditorControl">
 <short>
-Gets the windowed control with the cell Editor for the Grid control.
+Gets the windowed control with the Editor for the Grid control.
 </short>
 <descr/>
 <seealso/>
@@ -331,51 +335,86 @@ Gets the windowed control with the cell Editor for the Grid control.
 </element>
 
 <element name="TTIGridProperty.GetButtonEditorControl">
-<short/>
+<short>
+Gets the windowed control with the button-style Editor for the Grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTIGridProperty.GetButtonEditorControl.Result">
-<short/>
+<short>TWinControl instance used to edit the property.</short>
 </element>
 
 <element name="TTIGridProperty.PropName">
-<short/>
+<short>
+Gets the property name from RTTI property information in the Editor for the
+control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIGridProperty.PropInfo"/>
+<link id="TTIGridProperty.Editor"/>
+</seealso>
 </element>
 <element name="TTIGridProperty.PropName.Result">
-<short/>
+<short>
+Name of the property maintained in the property Editor.
+</short>
 </element>
 
 <element name="TTIGridProperty.Editor">
-<short/>
+<short>
+Property editor class instance for the property in PropName.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTIGridProperty.Grid">
-<short/>
+<short>
+RTTI-enabled grid control for property in the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTIGridProperty.Index">
-<short/>
+<short>
+Position for the grid property passed as an argument to the constructor.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTIGridProperty.Title">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Title displayed for the grid property.
+</short>
+<descr>
+<p>
+The default value assigned in Create is the property name from the RTTI
+property information.
+</p>
+</descr>
+<seealso>
+<link id="TTIGridProperty.PropName"/>
+<link id="TTIGridProperty.PropInfo"/>
+</seealso>
 </element>
 
 <element name="TTIListDirection">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents the display layout for objects on a TTICustomGrid component.
+</short>
+<descr>
+<p>
+TTIListDirection is the type used for the ListDirection property in
+TTICustomGrid.
+</p>
+</descr>
+<seealso>
+<link id="TTICustomGrid.ListDirection"/>
+</seealso>
 </element>
 <element name="TTIListDirection.tldObjectsAsRows">
 <short>
@@ -395,19 +434,32 @@ PropHeaderLines (FixedCols).
 </element>
 
 <element name="TTIGridState">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Represents grid states that occur when updating a RTTI-enabled grid control.
+</short>
+<descr>
+<p>
+Used in the implementation of the TTICustomGrid control.
+</p>
+</descr>
+<seealso>
+<link id="TTIGridStates"/>
+<link id="TTICustomGrid"/>
+</seealso>
 </element>
 <element name="TTIGridState.tgsRebuildTIListNeeded">
-<short/>
+<short>
+Indicates the ListObject in a RTTI-enabled grid needs to be reloaded.
+</short>
 </element>
 <element name="TTIGridState.tgsRebuildingTIList">
-<short/>
+<short>
+Indicates the ListObject in a RTTI-enabled grid is being updated.
+</short>
 </element>
 <element name="TTIGridState.tgsDefaultDrawing">
 <short>
-Set during default drawing.
+Set during default drawing for items on a RTTI-enabled grid control.
 </short>
 </element>
 
@@ -415,8 +467,15 @@ Set during default drawing.
 <short>
 Set type used to store values from the TTIGridState enumeration.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Used in the implementation of the TTICustomGrid control.
+</p>
+</descr>
+<seealso>
+<link id="TTIGridState"/>
+<link id="TTICustomGrid"/>
+</seealso>
 </element>
 
 <element name="TTIGridCellType">
@@ -524,66 +583,119 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTIGridGetObjectCount">
-<short/>
+<short>
+Specifies an event handler signalled to get the number of persistent
+objects defined for a RTTI-enabled grid control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomGrid.OnGetObjectCount"/>
+</seealso>
 </element>
 <element name="TTIGridGetObjectCount.Sender">
-<short/>
+<short>Object (TTICustomGrid) instance for the event notification.</short>
 </element>
 <element name="TTIGridGetObjectCount.ListObject">
-<short/>
+<short>
+Container with the list of persistent objects examined in the method.
+</short>
 </element>
 <element name="TTIGridGetObjectCount.ObjCount">
-<short/>
+<short>
+Number of persistent objects found in ListObject.
+</short>
 </element>
 
 <element name="TTIGridGetObjectName">
-<short/>
+<short>
+Specifies an event handler signalled to get the name for a given
+persistent object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomGrid.OnGetObjectName"/>
+</seealso>
 </element>
 <element name="TTIGridGetObjectName.Sender">
-<short/>
+<short>
+Object (TTICustomGrid) instance for the event notification.
+</short>
 </element>
 <element name="TTIGridGetObjectName.Index">
-<short/>
+<short>
+Ordinal position for the persistent object examined in the event handler.
+</short>
 </element>
 <element name="TTIGridGetObjectName.TIObject">
-<short/>
+<short>
+Reference to the persistent object examined in the event handler.
+</short>
 </element>
 <element name="TTIGridGetObjectName.ObjName">
-<short/>
+<short>
+Returns the name for the specified persistent object.
+</short>
 </element>
 
 <element name="TTIGridCreateCellEditor">
-<short/>
+<short>
+Specifies an event handler used to get a cell editor for a RTTI-enabled
+grid control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomGrid.OnCreateCellEditor"/>
+<link id="TTICustomGrid.GetEditorControl"/>
+</seealso>
 </element>
 <element name="TTIGridCreateCellEditor.GridProp">
-<short/>
+<short>
+Property editor for the cell editor created in the event handler.
+</short>
 </element>
 <element name="TTIGridCreateCellEditor.NewEditorControl">
-<short/>
+<short>
+Control used as the cell editor for the specified grid property.
+</short>
 </element>
 
 <element name="TTIGridInitCellEditor">
-<short/>
+<short>
+Specifies an event handler used to initialize an editor control for a grid
+property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomGrid.OnInitCellEditor"/>
+<link id="TTICustomGrid.GetEditorControl"/>
+</seealso>
 </element>
 <element name="TTIGridInitCellEditor.GridProp">
-<short/>
+<short>
+TTIGridProperty instance with property information for the editor control.
+</short>
 </element>
 <element name="TTIGridInitCellEditor.TheEditorControl">
-<short/>
+<short>
+Editor control updated in the event handler.
+</short>
 </element>
 
 <element name="TTICustomGrid">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Specifies a grid control which uses RTTI type information to access and
+maintain a list of properties in a linked object.
+</short>
+<descr>
+<p>
+TTICustomGrid is a TCustomGrid descendant and the base class for the
+TTIGrid control.
+</p>
+</descr>
+<seealso>
+<link id="TTIGrid"/>
+<link id="#lcl.grids.TCustomGrid">TCustomGrid</link>
+</seealso>
 </element>
 
 <element name="TTICustomGrid.FAliasPropertyNames"/>
@@ -608,121 +720,58 @@ Object instances retrieved at the specified position.
 <element name="TTICustomGrid.FProperties"/>
 <element name="TTICustomGrid.FExtraBtnEditor"/>
 
-<element name="TTICustomGrid.GetProperties">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.GetProperties.Result">
-<short/>
-</element>
-<element name="TTICustomGrid.GetProperties.Index">
-<short/>
-</element>
-
-<element name="TTICustomGrid.GetPropertyCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.GetPropertyCount.Result">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetAliasPropertyNames">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetAliasPropertyNames.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetFilter">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetFilter.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetHideProperties">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetHideProperties.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetListDirection">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetListDirection.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetListObject">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetListObject.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetPropertyOrder">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetPropertyOrder.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetShowOnlyProperties">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetShowOnlyProperties.AValue">
-<short/>
-</element>
-
-<element name="TTICustomGrid.SetTIOptions">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.SetTIOptions.NewOptions">
-<short/>
-</element>
-
-<element name="TTICustomGrid.DebugEditor">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGrid.DebugEditor.msg">
-<short/>
-</element>
-<element name="TTICustomGrid.DebugEditor.aEditor">
-<short/>
-</element>
+<!-- private -->
+<element name="TTICustomGrid.GetProperties"/>
+<element name="TTICustomGrid.GetProperties.Result"/>
+<element name="TTICustomGrid.GetProperties.Index"/>
+<element name="TTICustomGrid.GetPropertyCount"/>
+<element name="TTICustomGrid.GetPropertyCount.Result"/>
+<element name="TTICustomGrid.SetAliasPropertyNames"/>
+<element name="TTICustomGrid.SetAliasPropertyNames.AValue"/>
+<element name="TTICustomGrid.SetFilter"/>
+<element name="TTICustomGrid.SetFilter.AValue"/>
+<element name="TTICustomGrid.SetHideProperties"/>
+<element name="TTICustomGrid.SetHideProperties.AValue"/>
+<element name="TTICustomGrid.SetListDirection"/>
+<element name="TTICustomGrid.SetListDirection.AValue"/>
+<element name="TTICustomGrid.SetListObject"/>
+<element name="TTICustomGrid.SetListObject.AValue"/>
+<element name="TTICustomGrid.SetPropertyOrder"/>
+<element name="TTICustomGrid.SetPropertyOrder.AValue"/>
+<element name="TTICustomGrid.SetShowOnlyProperties"/>
+<element name="TTICustomGrid.SetShowOnlyProperties.AValue"/>
+<element name="TTICustomGrid.SetTIOptions"/>
+<element name="TTICustomGrid.SetTIOptions.NewOptions"/>
+<element name="TTICustomGrid.DebugEditor"/>
+<element name="TTICustomGrid.DebugEditor.msg"/>
+<element name="TTICustomGrid.DebugEditor.aEditor"/>
 
 <element name="TTICustomGrid.RebuildGridLayout">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Populates the list of Properties for the grid control from RTTI property
+information for the linked object.
+</short>
+<descr>
+<p>
+Existing values in Properties are discarded by calling the ClearProperties
+method. No actions are performed in the method if a TList instance has not
+been allocated for the Properties member.
+</p>
+</descr>
+<seealso>
+<link id="TTICustomGrid.Properties"/>
+</seealso>
 </element>
 
 <element name="TTICustomGrid.AddHeaderPropertyEditor">
 <short/>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomGrid.RebuildGridLayout"/>
+</seealso>
+<notes>
+<note>???</note>
+</notes>
 </element>
 <element name="TTICustomGrid.AddHeaderPropertyEditor.Prop">
 <short/>
@@ -756,33 +805,91 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.DoEditorHide">
-<short/>
-<descr/>
+<short>
+Performs actions to hide the active Editor for the grid control.
+</short>
+<descr>
+<p>
+Locates the property link with the current Editor and removes both the
+object and property references in the property link. Calls the inherited
+method prior to exit.
+</p>
+<p>
+DoEditorHide is called from the EditorHide method when the active Editor is
+changed. It is also called when goAlwaysShowEditor is removed from the
+Options for the grid control.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.DoEditorShow">
-<short/>
-<descr/>
+<short>
+Performs actions to display the Editor for the active cell on the grid
+control.
+</short>
+<descr>
+<p>
+Calls the inherited DoEditorShow method on entry. DoEditorShow ensures that
+a button-style editor has its Parent property set to the grid control
+instance, and its Visible property is set to <b>True</b>.
+</p>
+<p>
+DoEditorShow is called from the EditorShow method, and occurs when the
+active cell editor has been changed or when the grid control receives
+focus. It is also called when goAlwaysShowEditor is added to the Options
+for the grid control.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.DrawCell">
-<short/>
-<descr/>
+<short>
+Draws the specified cell on the grid using a given grid drawing state.
+</short>
+<descr>
+<p>
+At run-time, DrawCell uses the OnDrawCell event handler (when assigned) to
+draw the cell at the specified coordinates. PrepareCanvas is called to
+configure the Brush, Pen, and Font for the canvas for the specified grid
+drawing state. When DefaultDrawing is enabled, the display rectangle is
+filled using the Brush for the canvas. The OnDrawCell event handler is
+signalled to perform the user-specified drawing operations.
+</p>
+<p>
+When OnDrawCell is omitted (or at design-time), the DefaultDrawCell method
+is called.
+</p>
+<p>
+DrawCell calls the DrawCellGrid method to draw fixed header cells and grid
+lines when enabled for the control.
+</p>
+<p>
+DrawCell is called from the DrawRow method.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TTICustomGrid.DrawCell.aCol">
-<short/>
+<short>
+Column number for the grid cell drawn in the method.
+</short>
 </element>
 <element name="TTICustomGrid.DrawCell.aRow">
-<short/>
+<short>
+Row number for the grid cell drawn in the method.
+</short>
 </element>
 <element name="TTICustomGrid.DrawCell.aRect">
-<short/>
+<short>
+Display rectangle for the content drawn on the grid cell.
+</short>
 </element>
 <element name="TTICustomGrid.DrawCell.aState">
-<short/>
+<short>
+Grid drawing state applied to the values drawn in the method.
+</short>
 </element>
 
 <element name="TTICustomGrid.EditorPosChanged">
@@ -909,102 +1016,199 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.Create">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance, and
+calls the inherited method on entry. It allocates resources needed for
+members in the class instance, including: Properties, HideProperties,
+PropertyOrder, ShowOnlyProperties, and AliasPropertyNames.
+</p>
+<p>
+Creates set the default values for the following properties:
+</p>
+<dl>
+<dt>Filter</dt>
+<dd>
+Configured to use RTTI property types: tkInteger, tkChar, tkEnumeration,
+tkFloat, tkSString, tkLString, tkAString, tkWString, tkVariant,tkWChar,
+tkBool, tkInt64, and tkQWord.
+</dd>
+<dt>ListDirection</dt>
+<dd>
+Set to tldObjectsAsRows.
+</dd>
+</dl>
+</descr>
+<seealso>
+<link id="TTICustomGrid.Destroy"/>
+</seealso>
 </element>
 <element name="TTICustomGrid.Create.TheOwner">
-<short/>
+<short>
+Owner of the class instance.
+</short>
 </element>
 
 <element name="TTICustomGrid.Destroy">
-<short/>
-<descr/>
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Destroy</var> calls ClearProperties to remove the RTTI property
+information for the linked object in the control. Destroy frees resources
+allocated for members including: Properties, HideProperties, PropertyOrder,
+ShowOnlyProperties, and AliasPropertyNames. Destroy calls the inherited
+destructor prior to exiting from the method.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.Loaded">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed when LCL component streaming has been completed.
+</short>
+<descr>
+<p>
+Calls the inherited method on entry.
+</p>
+<p>
+Calls the ReloadTIList method when tgsRebuildTIListNeeded has been included
+in the internal RTTI state flags.
+</p>
+</descr>
+<seealso>
+<link id="TTIGridState"/>
+<link id="TTIGridStates"/>
+</seealso>
 </element>
 
 <element name="TTICustomGrid.ReloadTIList">
-<short/>
+<short>
+Reloads RTTI property information in Properties and rebuilds the grid
+layout.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.ClearProperties">
-<short/>
+<short>
+Removes existing RTTI property information for the linked object in the
+grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.DefaultDrawCell">
-<short/>
+<short>
+Prepares the Canvas for the control and performs default drawing for values
+on the grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.DefaultDrawCell.aCol">
-<short/>
+<short>
+Column number for values drawn in the method.
+</short>
 </element>
 <element name="TTICustomGrid.DefaultDrawCell.aRow">
-<short/>
+<short>
+Row number for values drawn in the method.
+</short>
 </element>
 <element name="TTICustomGrid.DefaultDrawCell.aRect">
-<short/>
+<short>
+Display rectangle calculated in the method for the content displayed on the
+grid control.
+</short>
 </element>
 <element name="TTICustomGrid.DefaultDrawCell.aState">
-<short/>
+<short>
+Grid drawing state used to display the value for the grid cell.
+</short>
 </element>
 
 <element name="TTICustomGrid.DrawObjectName">
-<short/>
+<short>
+Draws the name / caption / title for the specified object found in the list
+or collection in ListObject.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.DrawObjectName.Index">
-<short/>
+<short>
+Ordinal position for the persistent object drawn in the method.
+</short>
 </element>
 <element name="TTICustomGrid.DrawObjectName.aRect">
-<short/>
+<short>
+Display rectangle for the object calculated in the method.
+</short>
 </element>
 <element name="TTICustomGrid.DrawObjectName.aState">
-<short/>
+<short>
+Grid drawing state for the name drawn in the method.
+</short>
 </element>
 
 <element name="TTICustomGrid.GetCellEditor">
-<short/>
+<short>
+Gets the property editor for the specified grid cell.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.GetCellEditor.aCol">
-<short/>
+<short>
+Column number for the editor retrieved in the method.
+</short>
 </element>
 <element name="TTICustomGrid.GetCellEditor.aRow">
-<short/>
+<short>
+Row number for the editor retrieved in the method.
+</short>
 </element>
 <element name="TTICustomGrid.GetCellEditor.aPropEditor">
-<short/>
+<short>
+Property editor class instance retrieved in the method.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.GetCellEditor.aIndependentEditor">
-<short/>
+<short>
+Contains True when the cell editor represents a persistent object instead
+of a named property.
+</short>
 </element>
 
 <element name="TTICustomGrid.FreeCellEditor">
-<short/>
+<short>
+Frees the specified property editor for cell in the grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.FreeCellEditor.PropEditor">
-<short/>
+<short>
+TPropertyEditor class instance freed in the method. Ensures that the
+PropertyHook for the editor is also freed.
+</short>
 </element>
 
 <element name="TTICustomGrid.GridStateToPropEditState">
-<short/>
+<short>
+Translates selected and focused grid draw state values to property editor
+state values.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1016,19 +1220,29 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.GetTIObject">
-<short/>
+<short>
+Gets the persistent object at the specified ordinal position in ListObject
+(or from OnGetObject).
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.GetTIObject.Result">
-<short/>
+<short>
+TPersistent class instance at the specified position.
+</short>
 </element>
 <element name="TTICustomGrid.GetTIObject.Index">
-<short/>
+<short>
+Ordinal position for the persistent object.
+</short>
 </element>
 
 <element name="TTICustomGrid.MapCell">
-<short/>
+<short>
+Gets the position for the object and property at the specified cell
+coordinates, and the type for the cell.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1049,7 +1263,10 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.GetCurrentGridProperty">
-<short/>
+<short>
+Gets the TTIGridProperty instance for a cell which represents a property
+value.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1058,27 +1275,41 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.IndexOfGridProperty">
-<short/>
+<short>
+Gets the ordinal position in Properties for the property with the specified
+name.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.IndexOfGridProperty.Result">
-<short/>
+<short>
+Ordinal position for the specified property name, or -1 when PropName is
+not found.
+</short>
 </element>
 <element name="TTICustomGrid.IndexOfGridProperty.PropName">
-<short/>
+<short>
+Name of the property to locate in the RTTI property information.
+</short>
 </element>
 
 <element name="TTICustomGrid.FindGridProperty">
-<short/>
+<short>
+Gets the TTIGridProperty instance for the property with the specified name.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TTICustomGrid.FindGridProperty.Result">
-<short/>
+<short>
+TTIGridProperty for the specified name, or -1 when not found.
+</short>
 </element>
 <element name="TTICustomGrid.FindGridProperty.PropName">
-<short/>
+<short>
+Name of the property to locate in the RTTI-enabled grid control.
+</short>
 </element>
 
 <element name="TTICustomGrid.MoveProperty">
@@ -1094,91 +1325,148 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.AliasPropertyNames">
-<short/>
+<short>
+Contains alternate text for property names used in the control.
+</short>
 <descr/>
+<p>
+AliasPropertyNames is a TAliasStrings property which provides an alias or
+alternate text for property names found in Properties.
+</p>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.DefaultRowHeight">
-<short/>
-<descr/>
+<short>
+Default height for a row drawn on the grid control.
+</short>
+<descr>
+<p>
+The default value for the property is 20 (pixels) in TTICustomGrid.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.Filter">
-<short/>
-<descr/>
+<short>
+Identifies the RTTI types eligible for use in the RTTI-enabled grid control.
+</short>
+<descr>
+<p>
+The default value for the property is a set which contains all TTypeKind
+enumeration values except tkUnknown.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.HideProperties">
-<short/>
+<short>
+Contains the list of properties in a persistent object which cannot be
+displayed or edited using the RTTI-enabled grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.ListDirection">
-<short/>
+<short>
+Indicates the layout direction for Properties on the grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.ListObject">
-<short/>
+<short>
+List or collection with the values which can be maintained using the grid
+control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnCreateCellEditor">
-<short/>
+<short>
+Event handler signalled to create a user-specified cell editor for the grid
+control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnGetObject">
-<short/>
+<short>
+Event handler signalled to get the persistent object at the specified
+position in a user-supplied list of objects.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnGetObjectCount">
-<short/>
+<short>
+Event handler signalled to get the number of persistent objects in
+ListObject.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnGetObjectName">
-<short/>
+<short>
+Event handler signalled to get the user-specified name for a persistent
+object on the grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnHeaderClick">
-<short/>
+<short>
+Event handler signalled when a fixed cell in the grid is clicked.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnHeaderSized">
-<short/>
+<short>
+Event handler signalled when a fixed cell in the grid is resized.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnInitCellEditor">
-<short/>
-<descr/>
+<short>
+Event handler signalled to initialize a cell editor for the grid control.
+</short>
+<descr>
+<p>
+Signalled from the GetEditorControl method after the editor class has been
+determined. It is signalled twice when a button-style editor is also used
+for a property value.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.OnPropertiesCreated">
-<short/>
+<short>
+Event handler signalled when the grid layout has been rebuilt for the
+Properties on the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.Properties">
-<short/>
+<short>
+Provides indexed access to RTTI property information used on the grid
+control.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1187,45 +1475,61 @@ Object instances retrieved at the specified position.
 </element>
 
 <element name="TTICustomGrid.PropertyCount">
-<short/>
+<short>
+Indicates the number of entries in Properties.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.PropertyOrder">
-<short/>
+<short>
+Contain property names in the order they are displayed on the grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.ShowOnlyProperties">
-<short/>
+<short>
+Contains property names to which the grid control is restricted.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.TIObjectCount">
-<short/>
+<short>
+Number of persistent objects in ListObject (or available to OnGetObject).
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGrid.TIOptions">
-<short/>
+<short>
+Contains the grid options enabled for the RTTI grid control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <!-- TODO: Needs description -->
 <element name="TTIGrid">
-<short/>
+<short>
+Implements a grid control which uses RTTI type information to access and
+maintain a list of properties in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomGrid"/>
+<link id="#lcl.grids.TCustomGrid">TCustomGrid</link>
+</seealso>
 </element>
 
 <element
 name="TTIGrid.AliasPropertyNames"
-link="#rtticontrols.rttigrids.TTICustomPropertyGrid.AliasPropertyNames"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomPropertyGrid.AliasPropertyNames"/>
 <element name="TTIGrid.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIGrid.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance"/>
@@ -1237,9 +1541,9 @@ link="#rtticontrols.rttigrids.TTICustomPropertyGrid.AliasPropertyNames"/>
 <element name="TTIGrid.DefaultDrawing" link="#lcl.grids.TCustomGrid.DefaultDrawing"/>
 <element
 name="TTIGrid.DefaultRowHeight"
-link="#rtticontrols.rttigrids.TTICustomGrid.DefaultRowHeight"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.DefaultRowHeight"/>
 <element name="TTIGrid.Enabled" link="#lcl.controls.TControl.Enabled"/>
-<element name="TTIGrid.Filter" link="#rtticontrols.rttigrids.TTICustomGrid.Filter"/>
+<element name="TTIGrid.Filter" link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.Filter"/>
 <element name="TTIGrid.FixedColor" link="#lcl.grids.TCustomGrid.FixedColor"/>
 <element name="TTIGrid.FixedCols" link="#lcl.grids.TCustomGrid.FixedCols"/>
 <element name="TTIGrid.FixedRows" link="#lcl.grids.TCustomGrid.FixedRows"/>
@@ -1247,35 +1551,35 @@ link="#rtticontrols.rttigrids.TTICustomGrid.DefaultRowHeight"/>
 <element name="TTIGrid.Font" link="#lcl.controls.TControl.Font"/>
 <element
 name="TTIGrid.HideProperties"
-link="#rtticontrols.rttigrids.TTICustomGrid.HideProperties"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.HideProperties"/>
 <element
 name="TTIGrid.ListDirection"
-link="#rtticontrols.rttigrids.TTICustomGrid.ListDirection"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.ListDirection"/>
 <element
 name="TTIGrid.OnCreateCellEditor"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnCreateCellEditor"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnCreateCellEditor"/>
 <element name="TTIGrid.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TTIGrid.OnEditButtonClick" link="#lcl.grids.TCustomGrid.OnEditButtonClick"/>
 <element name="TTIGrid.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
 <element name="TTIGrid.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 <element
 name="TTIGrid.OnGetObject"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnGetObject"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnGetObject"/>
 <element
 name="TTIGrid.OnGetObjectCount"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnGetObjectCount"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnGetObjectCount"/>
 <element
 name="TTIGrid.OnGetObjectName"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnGetObjectName"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnGetObjectName"/>
 <element
 name="TTIGrid.OnHeaderClick"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnHeaderClick"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnHeaderClick"/>
 <element
 name="TTIGrid.OnHeaderSized"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnHeaderSized"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnHeaderSized"/>
 <element
 name="TTIGrid.OnInitCellEditor"
-link="#rtticontrols.rttigrids.TTICustomGrid.OnInitCellEditor"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnInitCellEditor"/>
 <element name="TTIGrid.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
 <element name="TTIGrid.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
 <element name="TTIGrid.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
@@ -1283,22 +1587,22 @@ link="#rtticontrols.rttigrids.TTICustomGrid.OnInitCellEditor"/>
 <element name="TTIGrid.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTIGrid.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIGrid.OnPrepareCanvas" link="#lcl.grids.TCustomGrid.OnPrepareCanvas"/>
-<element name="TTIGrid.OnPropertiesCreated" link="#rtticontrols.rttigrids.TTICustomGrid.OnPropertiesCreated"/>
+<element name="TTIGrid.OnPropertiesCreated" link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.OnPropertiesCreated"/>
 <element name="TTIGrid.Options" link="#lcl.grids.TCustomGrid.Options"/>
 <element name="TTIGrid.ParentColor" link="#lcl.controls.TControl.ParentColor"/>
 <element name="TTIGrid.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
 <element name="TTIGrid.PopupMenu" link="#lcl.controls.TControl.PopupMenu"/>
 <element name="TTIGrid.PropertyOrder"
-link="#rtticontrols.rttigrids.TTICustomGrid.PropertyOrder"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.PropertyOrder"/>
 <element name="TTIGrid.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element
 name="TTIGrid.ShowOnlyProperties"
-link="#rtticontrols.rttigrids.TTICustomGrid.ShowOnlyProperties"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.ShowOnlyProperties"/>
 <element name="TTIGrid.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
 <element name="TTIGrid.TabStop" link="#lcl.grids.TCustomGrid.TabStop"/>
 <element
 name="TTIGrid.TIOptions"
-link="#rtticontrols.rttigrids.TTICustomGrid.TIOptions"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.TIOptions"/>
 <element name="TTIGrid.TitleFont" link="#lcl.grids.TCustomGrid.TitleFont"/>
 <element name="TTIGrid.Visible" link="#lcl.controls.TWinControl.Visible"/>
 
@@ -1347,7 +1651,7 @@ Class type for the editor needed to edit the property value.
 <element name="FindTIGridControl">
 <short>
 Gets the registered RTTI-enabled grid with the property editor for the
-specified property class type.
+specified property class.
 </short>
 <descr/>
 <seealso/>
