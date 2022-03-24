@@ -942,6 +942,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
     Top = 243
   end
   object Images: TImageList
+    Scaled = True
     Left = 304
     Top = 243
     Bitmap = {
