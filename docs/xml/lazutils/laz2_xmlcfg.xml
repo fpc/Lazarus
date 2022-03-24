@@ -50,6 +50,7 @@
         </seealso>
       </element>
 
+      <element name="TXMLConfig.ZeroSrc"/>
       <element name="TXMLConfig.FFilename"/>
       <element name="TXMLConfig.FReadFlags"/>
       <element name="TXMLConfig.FWriteFlags"/>
@@ -211,6 +212,75 @@
       </element>
       <element name="TXMLConfig.StrToExtended.ADefault">
         <short>Default value used when no value can be derived from the string.</short>
+      </element>
+
+      <element name="TXMLConfig.SizeOfTypeInfo">
+        <short>
+          Gets the number of bytes needed to store a value using the specified RTTI type.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfig.SizeOfTypeInfo.Result">
+        <short>
+          Number of bytes needed for a value of the specified type.
+        </short>
+      </element>
+      <element name="TXMLConfig.SizeOfTypeInfo.APTypeInfo">
+        <short>
+          Pointer to the RTTI type information for a given value.
+        </short>
+      </element>
+
+      <element name="TXMLConfig.ValueWithTypeInfoToString">
+        <short>
+          Gets the string representation for the specified value as the specified type.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfig.ValueWithTypeInfoToString.Result">
+        <short>
+          String with the value for the specified type.
+        </short>
+      </element>
+      <element name="TXMLConfig.ValueWithTypeInfoToString.AValue">
+        <short>
+          Untyped parameter with the value converted to a string in the method.
+        </short>
+      </element>
+      <element name="TXMLConfig.ValueWithTypeInfoToString.APTypeInfo">
+        <short>
+          Pointer to the RTTI type for the specified value.
+        </short>
+      </element>
+
+      <element name="TXMLConfig.StringToValueWithTypeInfo">
+        <short>
+          Converts the specified string value to a value using the specified type.
+        </short>
+        <descr/>
+        <seealso/>
+      </element>
+      <element name="TXMLConfig.StringToValueWithTypeInfo.Result">
+        <short>
+          The return value is overloaded in StringToValueWithTypeInfo. Returns True if the value is successfully converted to the type in APTypeInfo. Returns a string with the converted value in an overloaded variant.
+        </short>
+      </element>
+      <element name="TXMLConfig.StringToValueWithTypeInfo.AString">
+        <short>
+          String with the value converted to the specified type in the method.
+        </short>
+      </element>
+      <element name="TXMLConfig.StringToValueWithTypeInfo.APTypeInfo">
+        <short>
+          Pointer to the RTTI type information for the converted value.
+        </short>
+      </element>
+      <element name="TXMLConfig.StringToValueWithTypeInfo.AResult">
+        <short>
+          Untyped output parameter with the value converted to the specified type.
+        </short>
       </element>
 
       <element name="TXMLConfig.ReadXMLFile">
@@ -617,6 +687,9 @@
           <p>
             Use <var>GetExtendedValue</var> to get the value for a DOM node as an <var>Extended</var> (or <var>Float</var>) data type.
           </p>
+          <!--
+          TODO: describe recently added type information and output variable
+          -->
         </descr>
         <seealso>
           <link id="TXMLConfig.GetExtendedValue"/>
@@ -635,6 +708,16 @@
       </element>
       <element name="TXMLConfig.GetValue.ARect">
         <short>TRect with the value for the DOM node.</short>
+      </element>
+      <element name="TXMLConfig.GetValue.AResult">
+        <short>
+          Returns the value for a set or enumeration element as the type specified in APTypeInfo.
+        </short>
+      </element>
+      <element name="TXMLConfig.GetValue.APTypeInfo">
+        <short>
+          Pointer to the RTTI type information for the value.
+        </short>
       </element>
 
       <element name="TXMLConfig.GetExtendedValue">
@@ -672,6 +755,9 @@
           <p>
             Use SetExtendedValue to store an Extended data type in a specified DOM node.
           </p>
+          <!--
+          TODO: describe recently added type information
+          -->
         </descr>
         <seealso>
           <link id="TXMLConfig.SetExtendedValue"/>
@@ -686,10 +772,17 @@
       <element name="TXMLConfig.SetValue.AValue">
         <short>Value to store in the specified DOM node.</short>
       </element>
+      <element name="TXMLConfig.SetValue.APTypeInfo">
+        <short>
+          Pointer to the RTTI type information for the value.
+        </short>
+      </element>
 
       <element name="TXMLConfig.SetDeleteValue">
         <short>Updates or removes the value at the specified path </short>
-        <descr></descr>
+        <descr>
+          <!-- TODO: description needed. -->
+        </descr>
         <seealso></seealso>
       </element>
       <element name="TXMLConfig.SetDeleteValue.APath">
@@ -699,8 +792,16 @@
         <short>Value to store at the specified path.</short>
       </element>
       <element name="TXMLConfig.SetDeleteValue.DefValue">
-        <short>Value which indicates the path should be removed instead of updated.</short>
+        <short>
+          Value which indicates the path should be removed instead of updated.
+        </short>
       </element>
+      <element name="TXMLConfig.SetDeleteValue.APTypeInfo">
+        <short>
+          Pointer to the RTTI type information for the value / default value.
+        </short>
+      </element>
+
 
       <element name="TXMLConfig.SetExtendedValue">
         <short>
