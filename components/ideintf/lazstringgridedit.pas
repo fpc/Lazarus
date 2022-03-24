@@ -30,6 +30,7 @@ type
     BtnSave: TButton;
     BtnClean: TButton;
     GroupBox: TGroupBox;
+    Images: TImageList;
     OpenDialog: TOpenDialog;
     BtnPanel: TPanel;
     LoadSavePanel: TPanel;
