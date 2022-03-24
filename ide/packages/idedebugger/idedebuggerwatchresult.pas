@@ -470,7 +470,7 @@ end;
 
 function PrintWatchValue(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat): String;
 begin
-  PrintWatchValueEx(AResValue, ADispFormat, -1);
+  Result := PrintWatchValueEx(AResValue, ADispFormat, -1);
 end;
 
 const
