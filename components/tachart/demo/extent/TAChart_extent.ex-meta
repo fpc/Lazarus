@@ -1,0 +1,5 @@
+{ "TAChart_extent" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","extent","zoom"],
+   "Description" : "Shows how to vary the extent of a chart that is in view, effectivly allowing you to zoom into specific parts."}
+}

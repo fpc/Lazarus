@@ -1,0 +1,5 @@
+{ "TAChart_errorbars" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","ErrorBars"],
+   "Description" : "Demonstrates error bars in a chart."}
+}

@@ -1,0 +1,5 @@
+{ "TAChart_listbox" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart", "listbox", "TAChartListBox"],
+   "Description" : "Demonstrates TAChartListBox, a ListBox with chart specific attributes."}
+}

@@ -1,0 +1,5 @@
+{ "TAChart_navigate" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","navigate","zoom"],
+   "Description" : "Demonstrates how to navigate and zoom around a chart.\n\nHas a small navpanel that does not appear to work as expected."}
+}

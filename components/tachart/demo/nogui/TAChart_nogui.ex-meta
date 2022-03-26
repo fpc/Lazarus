@@ -1,0 +1,5 @@
+{ "TAChart_nogui" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","nogui","console mode"],
+   "Description" : "This demo does not have a GUI, when run, its writes its chart out to a png file in the working dir.\n\nNote: It used a unit, TADrawerFPCanv in ../../TADrawerFPCanvas.pas, I have now added that unit directly the demo directory to maintain stand alone status, DRB.\n\nNote: Window users must see the readme.txt about putting freetype.dll in current directory.\n\n"}
+}
