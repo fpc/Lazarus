@@ -4,7 +4,7 @@
 
    fpmake.pp for LazDebuggerIntf 0.0.1
 
-   This file was generated on 08/01/2022
+   This file was generated on 27-03-22
 }
 
 {$ifndef ALLPACKAGES} 
@@ -45,8 +45,10 @@ begin
     T:=P.Targets.AddUnit('lazdebuggerintfpackage.pas');
     D := T.Dependencies.AddUnit('LazDebuggerIntf');
     D := T.Dependencies.AddUnit('LazDebuggerTemplate');
+    D := T.Dependencies.AddUnit('LazDebuggerIntfBaseTypes');
     T := P.Targets.AddImplicitUnit('lazdebuggerintf.pas');
     T := P.Targets.AddImplicitUnit('lazdebuggertemplate.pas');
+    T := P.Targets.AddImplicitUnit('lazdebuggerintfbasetypes.pas');
 
     // copy the compiled file, so the IDE knows how the package was compiled
     P.Sources.AddSrc('LazDebuggerIntf.compiled');

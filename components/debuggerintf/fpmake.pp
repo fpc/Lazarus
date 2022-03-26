@@ -4,7 +4,7 @@
 
    fpmake.pp for DebuggerIntf 0.1
 
-   This file was generated on 17-06-20
+   This file was generated on 27-03-22
 }
 
 {$ifndef ALLPACKAGES} 
@@ -35,6 +35,7 @@ begin
 
     P.Flags.Add('LazarusDsgnPkg');
 
+    D := P.Dependencies.Add('lazdebuggerintf');
     D := P.Dependencies.Add('lclbase');
     P.Options.Add('-MObjFPC');
     P.Options.Add('-Scghi');
