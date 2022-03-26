@@ -1,0 +1,5 @@
+{ "TAChart_aggpas" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","aggpas","Needs Work"],
+   "Description" : "\n\nrequires the package tachartaggpas be installed before loading.\n\nRaises an Exception, SIGFPE at startup.\n"}
+}

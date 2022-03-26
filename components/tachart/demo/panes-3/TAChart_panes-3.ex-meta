@@ -1,0 +1,5 @@
+{ "TAChart_panes-3" : {
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","panes-3","multiple datasets"],
+   "Description" : "Demonstrates multiple datasets in the one chart, each with its own Y axis. "}
+}
