@@ -125,6 +125,7 @@ type
   public
     property AutoSelected;
     property Button;
+    property Edit;
   published
     property NumbersOnly;
     property Action;
