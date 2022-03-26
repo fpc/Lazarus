@@ -1,5 +1,5 @@
 { "TAChart_multi" : {
-   "Category" : "Components",
-   "Keywords" : ["TAChart", "Multi"],
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Multi"],
    "Description" : "Displays some Multi charts"}
 }

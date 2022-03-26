@@ -1,5 +1,5 @@
 { "TAChart_animate" : {
-   "Category" : "Components",
-   "Keywords" : ["TAChart", "Animated"],
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Animated"],
    "Description" : "Animate a TAChart in three different modes."}
 }

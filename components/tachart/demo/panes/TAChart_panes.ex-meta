@@ -1,5 +1,5 @@
 { "TAChart_panes" : {
-   "Category" : "Components",
-   "Keywords" : ["TAChart", "Panes"],
+   "Category" : "TAChart",
+   "Keywords" : ["TAChart","Panes"],
    "Description" : "Demonstrates using several panes in a TAChart."}
 }
