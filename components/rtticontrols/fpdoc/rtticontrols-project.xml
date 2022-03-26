@@ -18,7 +18,7 @@
     <!-- <option name="format" value="CHM"/> -->
   </options>
   <packages>
-    <package name="runtimetypeinfocontrols" output="rtticontrols" content="rtticontrols.xct">
+    <package name="runtimetypeinfocontrols" output="runtimetypeinfocontrols" content="runtimetypeinfocontrols.xct">
       <units>
         <unit file="../rttictrls.pas"/>
         <unit file="../rttigrids.pas"/>
