@@ -1,5 +1,5 @@
 { "tachart_imagelist" : {
-   "Category" : "Components",
+   "Category" : "TAChart",
    "Keywords" : ["TAchart","TAChartImagelist"],
    "Description" : "Shows how to display images in a TAChart Image List in a TAChart."}
 }

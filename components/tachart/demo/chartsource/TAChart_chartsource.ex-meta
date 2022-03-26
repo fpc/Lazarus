@@ -1,5 +1,5 @@
 { "TAChart_chartsource" : {
-   "Category" : "Components",
+   "Category" : "TAChart",
    "Keywords" : ["TAChart"],
    "Description" : "Demonstrates TAChart with different sources."}
 }
