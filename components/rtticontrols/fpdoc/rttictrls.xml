@@ -123,7 +123,7 @@ IDE:
 
 <element name="TAliasStrings">
 <short>
-TStringList descendant which maps alias names to their values.
+TStringList descendant which maps names to alias values.
 </short>
 <descr>
 <p>
@@ -143,9 +143,25 @@ TCustomPropertyLink.
 
 <element name="TAliasStrings.IndexOfValue">
 <short>
-Gets the ordinal position in the list where the specified value is stored.
+Gets the ordinal position in the list where the specified value is stored
+in the Strings property.
 </short>
-<descr/>
+<descr>
+<p>
+<var>IndexOfValue</var> searches the content in the Strings property to
+find the position where the AValue argument is stored in the Name/Value
+pair.
+</p>
+<p>
+The search occurs in reverse order, starting at Count-1, and a match is
+found when the AValue argument is found after the "=" sign in the Name/
+Value pair. Case is not significant.
+</p>
+<p>
+The return value is the ordinal position in Strings where a match was
+found, or -1 when no entry in Strings matches the specified value.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TAliasStrings.IndexOfValue.Result">
@@ -159,8 +175,7 @@ Ordinal position for the specified value, or -1 when the value is not found.
 
 <element name="TAliasStrings.ValueAt">
 <short>
-Gets the value for the alias stored at the specified ordinal position in
-the list.
+Gets the alias value stored at the specified ordinal position in the list.
 </short>
 <descr>
 <p>
@@ -206,7 +221,9 @@ alias using the NAME=VALUE format.
 </element>
 
 <element name="TPropertyLinkNotifier">
-<short/>
+<short>
+Forwards notification messages to a property Link in the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -214,30 +231,67 @@ alias using the NAME=VALUE format.
 <element name="TPropertyLinkNotifier.FLink"/>
 
 <element name="TPropertyLinkNotifier.Notification">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed when a component is added to or removed from the
+class instance.
+</short>
+<descr>
+<p>
+<var>Notification</var> is an overridden method in
+<var>TPropertyLinkNotifier</var>. It calls the inherited method on entry to
+remove a free notification when AComponent is removed. Each of the child
+Components (when assigned) calls their Notification method using the
+argument values.
+</p>
+<p>
+In TPropertyLinkNotifier, the method is extended to call the Notification
+method in the Link property (when assigned).
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TComponent.Notification">
+TComponent.Notification</link>
+</seealso>
 </element>
 <element name="TPropertyLinkNotifier.Notification.AComponent">
-<short/>
+<short>
+Component for the notification message.
+</short>
 </element>
 <element name="TPropertyLinkNotifier.Notification.Operation">
-<short/>
+<short>
+Operation performed for the specified component.
+</short>
 </element>
 
 <element name="TPropertyLinkNotifier.Create">
 <short>
 Constructor for the class instance.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>Create</var> is the reintroduced constructor for the class instance.
+It calls the inherited constructor on entry to set the ComponentStyle and
+Owner (<b>Nil</b> in this case) for the class instance. Create stores the
+value in TheLink to the Link property.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLinkNotifier.Link"/>
+</seealso>
 </element>
 <element name="TPropertyLinkNotifier.Create.TheLink">
-<short/>
+<short>
+TPropertyLink with the object, property, element name, and Editor for the
+class instance.
+</short>
 </element>
 
 <element name="TPropertyLinkNotifier.Link">
-<short/>
+<short>
+Provides access to the linked object, property, element, and property
+editor for the notifier.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -262,10 +316,10 @@ control.
 
 <!-- TODO:
 <element name="TPropertyLinkOption.ploDisableOnNil">
-<short>Disable control if link disconnected.</short>
+<short>Disable the control if the link is disconnected.</short>
 </element>
 <element name="TPropertyLinkOption.ploReadOnly">
-<short/>
+<short>Property value is read-only in the link.</short>
 </element>
 -->
 
@@ -273,8 +327,21 @@ control.
 <short>
 Set of options enabled for a RTTI control.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>TPropertyLinkOptions</var> is a set type used to store zero (0) or
+more values from the <var>TPropertyLinkOption</var> enumeration.
+</p>
+<p>
+TPropertyLinkOptions is the type used to implement the Options property in
+<var>TCustomPropertyLink</var> / <var>TPropertyLink</var>.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLinkOption"/>
+<link id="TCustomPropertyLink.Options"/>
+<link id="TPropertyLink.Options"/>
+</seealso>
 </element>
 
 <element name="DefaultLinkOptions">
@@ -282,26 +349,63 @@ Set of options enabled for a RTTI control.
 Contains the default options enabled in the property links for RTTI
 controls.
 </short>
-<descr/>
-<seealso/>
+<descr>
+<p>
+<var>DefaultLinkOptions</var> contains the default values assigned to the
+Options property in TCustomPropertyLink / TPropertyLink.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Options"/>
+<link id="TPropertyLink.Options"/>
+</seealso>
 </element>
 
 <element name="TTestEditing">
-<short/>
-<descr/>
-<seealso/>
+<short>
+<p>
+Specifies an event handler signalled to check whether a linked control is
+focused and actively editing its value(s).
+</p>
+</short>
+<descr>
+<p>
+<var>TTestEditing</var> is the type used for the OnTestEditing event
+handler in TCustomPropertyLink. An application must implement and assign an
+object method using the signature to respond to the event notification.
+</p>
+<p>
+The return value is set to <b>True</b> when the control is focused and its
+editor is visible / active. TTICustomComboBox provides an implementation
+of the handler in its LinkTestEditing method which is assigned to its
+OnTestEditing event handler.
+</p>
+</descr>
+<seealso>
+<link id="TTICustomComboBox.LinkTestEditing"/>
+<link id="TTICustomComboBox.OnTestEditing"/>
+</seealso>
 </element>
 <element name="TTestEditing.Result">
-<short/>
+<short>
+<b>True</b> if the linked control is focused and its editor is active.
+</short>
 </element>
 <element name="TTestEditing.Sender">
-<short/>
+<short>
+Object (TCustomPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TBeforeWriteProperty">
-<short/>
+<short>
+Specifies an event handler signalled prior to storing the value from a RTTI
+control to a property in its linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomPropertyLink.OnBeforeWrite"/>
+</seealso>
 </element>
 <element name="TBeforeWriteProperty.Sender">
 <short/>
@@ -312,12 +416,14 @@ controls.
 
 <element name="TCustomPropertyLink">
 <short>
-Provides the connection between an RTTI control and a property editor.
+Provides the connection between an RTTI control and a property editor for a
+value in a linked object.
 </short>
 <descr/>
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TCustomPropertyLink.FAliasValues"/>
 <element name="TCustomPropertyLink.FCollectedValues"/>
 <element name="TCustomPropertyLink.FCollectedValues"/>
@@ -340,277 +446,649 @@ Provides the connection between an RTTI control and a property editor.
 <element name="TCustomPropertyLink.FTIElementName"/>
 <element name="TCustomPropertyLink.FTIObject"/>
 <element name="TCustomPropertyLink.FTIPropertyName"/>
-
-<element name="TCustomPropertyLink.SetCollectValues">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetCollectValues.AValue">
-<short/>
-</element>
-
-<element name="TCustomPropertyLink.SetEditor">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetEditor.AValue">
-<short/>
-</element>
-
-<element name="TCustomPropertyLink.SetFilter">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetFilter.AValue">
-<short/>
-</element>
-
-<element name="TCustomPropertyLink.SetOptions">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetOptions.NewOptions">
-<short/>
-</element>
-
-<element name="TCustomPropertyLink.SetTIElementName">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetTIElementName.AValue">
-<short/>
-</element>
-
-<element name="TCustomPropertyLink.SetTIObject">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetTIObject.AValue">
-<short/>
-</element>
-
-<element name="TCustomPropertyLink.SetTIPropertyName">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TCustomPropertyLink.SetTIPropertyName.AValue">
-<short/>
-</element>
+<element name="TCustomPropertyLink.SetCollectValues"/>
+<element name="TCustomPropertyLink.SetCollectValues.AValue"/>
+<element name="TCustomPropertyLink.SetEditor"/>
+<element name="TCustomPropertyLink.SetEditor.AValue"/>
+<element name="TCustomPropertyLink.SetFilter"/>
+<element name="TCustomPropertyLink.SetFilter.AValue"/>
+<element name="TCustomPropertyLink.SetOptions"/>
+<element name="TCustomPropertyLink.SetOptions.NewOptions"/>
+<element name="TCustomPropertyLink.SetTIElementName"/>
+<element name="TCustomPropertyLink.SetTIElementName.AValue"/>
+<element name="TCustomPropertyLink.SetTIObject"/>
+<element name="TCustomPropertyLink.SetTIObject.AValue"/>
+<element name="TCustomPropertyLink.SetTIPropertyName"/>
+<element name="TCustomPropertyLink.SetTIPropertyName.AValue"/>
 
 <element name="TCustomPropertyLink.GetCanModify">
-<short/>
+<short>
+Gets the value for the CanModify property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomPropertyLink.CanModify"/>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.GetCanModify.Result">
-<short/>
+<short>
+Value for the CanModify property.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.EditorChanged">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed when the value in the Editor property has been
+changed.
+</short>
+<descr>
+<p>
+EditorChanged updates values in the TIObject and TIPropertyName properties
+based on the current value in Editor.
+</p>
+<p>
+When Editor is unassigned <b>(Nil)</b>, TIObject is also set to <b>Nil</b>
+and TIPropertyName is set to an empty string ('').
+</p>
+<p>
+Otherwise, TIObject is set to the first persistent object instance in the
+property list for Editor. The Getname method in Editor is used to get the
+value for the TIPropertyName property.
+</p>
+<p>
+EditorChanged is called after a new value has been assigned to the Editor
+property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TCustomPropertyLink.TIObject"/>
+<link id="TCustomPropertyLink.TIPropertyName"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.SetPropertyEditor">
-<short/>
+<short>
+Stores the property editor used to apply a new value to the linked object.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.SetPropertyEditor.APropertyEditor">
-<short/>
+<short>
+TPropertyEditor instance for the property link.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.CheckPropInfo">
-<short/>
-<descr/>
+<short>
+Checks whether the specified RTTI property has the same name as the
+TIPropertyName property.
+</short>
+<descr>
+<p>
+Called from the CreateEditor method when the persistent properties for
+TIObject are retrieved.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.CheckPropInfo.Result">
-<short/>
+<short>
+<b>True</b> when the values have the same property name.
+</short>
 </element>
 <element name="TCustomPropertyLink.CheckPropInfo.APropInfo">
-<short/>
+<short>
+Pointer to the RTTI property information examined in the method.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.CreateHook">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Creates the TPropertyEditorHook instance used in the Hook property.
+</short>
+<descr>
+<p>
+Called from the CreateEditor method when the Editor for the class is
+created. It is called before RTTI property information is retrieved for
+TIObject and TIPropertyName.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Hook"/>
+<link id="TCustomPropertyLink.CreateEditor"/>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TCustomPropertyLink.TIObject"/>
+<link id="TCustomPropertyLink.TIPropertyName"/>
+<link id="TPropertyEditorHook"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.UpdateIdleHandler">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Ensures that the OnApplicationIdle event handler is added to or removed
+from the Application based on the Options for the property link.
+</short>
+<descr>
+<p>
+If the Application singleton has been assigned, the values in Options are
+compared the current state for the idle handler.
+</p>
+<p>
+ploReadOnIdle in Option causes the OnApplicationIdle event handler to be
+added to the Application if it has not been applied. This allows the value
+for the linked property to be read from the linked object when the
+application is idle and the editor for the property value is not focused
+and active.
+</p>
+<p>
+If ploReadOnIdle is not in Options, the OnApplicationIdle handler is
+removed from the handlers in the Application singleton.
+</p>
+<p>
+UpdateIdleHandler is called from the CreateEditor method, and when a new
+value is assigned to the Options property.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.OnApplicationIdle"/>
+<link id="TCustomPropertyLink.Options"/>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TCustomPropertyLink.CreateEditor"/>
+<link id="#lcl.forms.TApplication.AddOnIdleHandler">
+TApplication.AddOnIdleHandler</link>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.OnApplicationIdle">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements an idle handler which reads the linked property value when
+enabled in Options.
+</short>
+<descr>
+<p>
+<var>OnApplicationIdle</var> implements an idle handler which allows the
+value for the property link to be read when the Application is idle. It is
+added to the idle handlers in the Application singleton when ploReadOnIdle
+is present in the Options property. It is removed from the Application
+singleton when it is not used in Options.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Options"/>
+<link id="#lcl.forms.TApplication.AddOnIdleHandler">
+TApplication.AddOnIdleHandler</link>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.OnApplicationIdle.Sender">
-<short/>
+<short>
+Not used in the implementation of the idle handler.
+</short>
 </element>
 <element name="TCustomPropertyLink.OnApplicationIdle.Done">
-<short/>
+<short>
+Not used in the implementation of the idle handler.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.Notification">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions needed when a component is added to or removed from the
+class instance.
+</short>
+<descr>
+<p>
+<var>Notification</var> is an overridden method in TCustomPropertyLink, and
+calls the inherited method on entry. Notification is used to update the
+free notification list for the specified component and any child
+components. When Operation is opRemove, the component is removed from the
+free notification list. This method ensures that the Notification method in
+the Link property is called for the specified component and operation.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TComponent.Notification">
+TComponent.Notification</link>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.Notification.AComponent">
-<short/>
+<short>
+Component for the notification.
+</short>
 </element>
 <element name="TCustomPropertyLink.Notification.Operation">
-<short/>
+<short>
+Operation performed for the specified component.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.GetEditorValues">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Adds the specified value to the CollectedValues for the property link.
+</short>
+<descr>
+<p>
+<var>GetEditorValues</var> ensures that a TStringList instance has been
+allocated for the CollectedValues member, and calls its Add method to store
+the string in <var>NewValue</var>.
+</p>
+<p>
+GetEditorValues is called from the FetchValues method to store the values
+provided by the Editor for the property link.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.FetchValues"/>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TPropertyEditor.GetValues"/>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.GetEditorValues.NewValue">
 <short/>
 </element>
 
 <element name="TCustomPropertyLink.Create">
-<short/>
-<descr/>
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the overloaded constructor for the class instance. The
+variant with a TheOwner argument allows the component which is the Owner of
+the class instance to be specified. Owner receives a free notification when
+the class instance is destroyed.
+</p>
+<p>
+Create calls the inherited constructor on entry, and allocates resources
+needed for the AliasValues and LinkNotifier properties. The default values
+for properties are assigned, including:
+</p>
+<dl>
+<dt>Owner</dt>
+<dd>
+Set to the value in TheOwner, or Nil when TheOwner is omitted.
+</dd>
+<dt>Filter</dt>
+<dd>
+Set to the constant which represents all values in the TTypeKind
+enumeration.
+</dd>
+<dt>Options</dt>
+<dd>
+Set to the value in the DefaultLinkOptions constant.
+</dd>
+<dt>SaveEnabled</dt>
+<dd>
+Set to <b>True</b>.
+</dd>
+</dl>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.Create.TheOwner">
-<short/>
+<short>
+Optional component which owns the class instance. When omitted, the Owner
+property is set to <b>Nil</b>.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.Destroy">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Destructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Destroy</var> is the overridden destructor for the class instance. It
+ensures that resources allocated in the class instance are freed,
+including:
+</p>
+<ul>
+<li>Hook</li>
+<li>Editor</li>
+<li>AliasValues</li>
+<li>CollectedValues</li>
+<li>LinkNotifier</li>
+</ul>
+<p>
+An idle handler routine assigned to TApplication is also removed in the
+method.
+</p>
+<p>
+Destroy calls the inherited destructor prior to exiting from the method.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Hook"/>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TCustomPropertyLink.AliasValues"/>
+<link id="TCustomPropertyLink.CollectedValues"/>
+<link id="TCustomPropertyLink.LinkNotifier"/>
+<link id="#rtl.classes.TPersistent.Destroy">TPersistent.Destroy</link>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.Assign">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements persistence for a TCustomPropertyLink instance in Source.
+</short>
+<descr>
+<p>
+<var>Assign</var> is an overridden method in TCustomPropertyLink. It
+implements the persistence mechanism for a TPersistent instance specified
+in the <var>Source</var> argument.
+</p>
+<p>
+If Source is derived from <var>TCustomPropertyLink</var>, the
+SetObjectAndProperty method is called to apply the values in TIObject,
+TIPropertyName, and TIElementName. This also causes the Editor to be
+(re-)created and the OnLoadFromProperty event handler is signalled (when
+assigned).
+</p>
+<p>
+If Source is not derived from TCustomPropertyLink, the inherited Assign
+method is called using Source as an argument.
+</p>
+</descr>
+<seealso>
+<link id="#rtl.classes.TPersistent.Assign">TPersistent.Assign</link>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.Assign.Source">
-<short/>
+<short>
+TPersistent object instance with values copied in the method.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.SetObjectAndProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Copies values from the specified arguments to the TIObject, TIPropertyName,
+and TIElementName properties.
+</short>
+<descr>
+<p>
+SetObjectAndProperty is called from the Assign method to implement object
+persistence for the TCustomPropertyLink class type. A free notification
+handler is removed and re-created for TIObject when it is derived from
+TComponent. The value in Editor is recreated when needed, and
+LoadFromProperty is called to signal the OnLoadFromProperty event handler
+(when assigned).
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Assign"/>
+<link id="TCustomPropertyLink.TIObject"/>
+<link id="TCustomPropertyLink.TIPropertyName"/>
+<link id="TCustomPropertyLink.TIElementName"/>
+<link id="TCustomPropertyLink.LinkNotifier"/>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.SetObjectAndProperty.NewPersistent">
-<short/>
+<short>
+TPersistent instance to store in TIObject.
+</short>
 </element>
 <element name="TCustomPropertyLink.SetObjectAndProperty.NewPropertyName">
-<short/>
+<short>
+New property name to store in TIPropertyName.
+</short>
 </element>
 <element name="TCustomPropertyLink.SetObjectAndProperty.NewElementName">
-<short/>
+<short>
+New element name to store in TIElementName.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.InvalidateEditor">
-<short/>
-<descr/>
+<short>
+Frees the value in the Editor property and sets Editor to Nil.
+</short>
+<descr>
+<p>
+<var>InvalidateEditor</var> is called when a new value is assigned for
+properties like:
+</p>
+<ul>
+<li>TIObject</li>
+<li>TIPropertyName</li>
+<li>TIElementName</li>
+<li>Filter</li>
+</ul>
+<p>
+It is also called when the class instance is freed in the Destroy method.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.CreateEditor">
-<short/>
-<descr/>
+<short>
+Ensures that a valid property Editor exists for the values in TIObject and
+TIPropertyName.
+</short>
+<descr>
+<p>
+No actions are performed in the method when Editor has already been
+assigned, or when either TIObject or TIPropertyName are unassigned.
+</p>
+<p>
+<var>CreateEditor</var> calls CreateHook to allocate the
+TPropertyEditorHook instance for the Hook property if it has not already
+been assigned. CreateEditor gets RTTI property information for the
+persistent object in TIObject, and assigns the property Editor when needed.
+When CollectValues is set to True, FetchValues is called to gather the
+values which can be selected in the property Editor.
+</p>
+<p>
+The OnEditorChanged event handler is signalled (when assigned) if the value
+in Editor was changed in the method.
+</p>
+<p>
+UpdateIdleHandler is called to add or remove the OnApplicationIdle handler
+in the idle handlers for the Application. Values in Options are used to
+determine whether the handler is added or removed.
+</p>
+<p>
+CreateEditor is called from methods like LoadFromProperty, SaveProperty,
+BuildEnumAliasValues, and GetSetTypeData.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.FetchValues">
-<short/>
-<descr/>
+<short>
+Gets the values that can be maintained using the property Editor.
+</short>
+<descr>
+<p>
+<var>FetchValues</var> contains the current list of values for the property
+<var>Editor</var> in the class instance. It may contain a single value when
+the linked property is a simple text property. It may contain multiple
+values when TIObject is linked to a property which is a set or collection
+type, or a TStrings instance.
+</p>
+<p>
+FetchValues frees and re-creates the TStrings instance in the
+<var>CollectedValues</var> property. <var>GetEditorValues</var> is called
+to add the current value(s) from the linked property to CollectedValues.
+</p>
+<p>
+FetchValues is called from the <var>CreateEditor</var> method, and when a
+new value is assigned to the <var>CollectValues</var> property.
+</p>
+</descr>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.LoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions when the class instance is loaded using LCL streaming.
+</short>
+<descr>
+<p>
+<var>LoadFromProperty</var> is a method used to perform actions needed when
+the class instance has been Loaded from the LCL streaming mechanism.
+</p>
+<p>
+LoadFromProperty calls CreateEditor to load RTTI property information for
+the class instance and to create its property Editor. The
+OnLoadFromProperty event handler is signalled (when assigned) prior to
+exiting from the method.
+</p>
+<p>
+No actions are performed in the method when either the class instance or
+the assigned component in Owner is being freed.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Loaded"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.SaveToProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Performs actions to save the property value when SaveEnabled is set to True.
+</short>
+<descr>
+<p>
+<var>SaveToProperty</var> ensures that the Editor for the property link is
+valid by calling the CreateEditor method. The OnSaveToProperty event
+handler is signalled (when assigned) to store the property value, and
+normally executes the LinkSaveToProperty method in an RTTI-enabled control.
+</p>
+<p>
+No actions are performed in the method at design-time, when SaveEnabled is
+<b>False</b>, or when the component in Owner is being loaded or freed.
+</p>
+<p>
+SaveToProperty is called from the EditingDone method when ploAutoSave has
+been included in the Options for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.CreateEditor"/>
+<link id="TCustomPropertyLink.EditingDone"/>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TCustomPropertyLink.OnSaveToProperty"/>
+<link id="TCustomPropertyLink.SaveEnabled"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.EditingDone">
-<short/>
+<short>
+Saves the value for the linked property when editing is completed in an
+RTTI-enabled control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.SetAsText">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Sets the property value in Editor to the specified string value.
+</short>
+<descr>
+<p>
+Displays a dialog with an exception message handled when setting the
+property value.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.Editor"/>
+<link id="TCustomPropertyLink.TIElementName"/>
+<link id="TCustomPropertyLink.SetElementValue"/>
+<link id="TPropertyEditor.SetValue"/>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.SetAsText.NewText">
-<short/>
+<short>
+New value for the linked property specified as a String type.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.GetAsText">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Gets the value for the linked property as a String type.
+</short>
+<descr>
+<p>
+Displays a dialog with an exception message handled when getting the
+property value.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.AliasValues"/>
+<link id="TCustomPropertyLink.GetSetElementValue"/>
+</seealso>
 </element>
 <element name="TCustomPropertyLink.GetAsText.Result">
-<short/>
+<short>Value for the linked property as a String type.</short>
 </element>
 
 <element name="TCustomPropertyLink.SetAsInt">
-<short/>
+<short>
+Sets the value for the linked property to the specified Integer value.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.SetAsInt.NewInt">
-<short/>
+<short>
+Integer value for the linked property.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.GetAsInt">
-<short/>
+<short>
+Gets the value for the linked property as an Integer type.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.GetAsInt.Result">
-<short/>
+<short>
+Integer value for the linked property.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.CheckBeforeWrite">
-<short/>
-<descr/>
+<short>
+Checks for a valid value prior to storing it in the linked property.
+</short>
+<descr>
+<p>
+Signals the OnBeforeWrite event handler (when assigned) to check the value
+for the linked property prior to storage. The return value is <b>True</b>
+if OnBeforeWrite has not been assigned.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.CheckBeforeWrite.Result">
-<short/>
+<short>
+Returns <b>True</b> if the property value can be stored to the linked
+property.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.CheckAfterWrite">
-<short/>
+<short>
+Performs actions needed after the property value has been stored in the
+linked property.
+</short>
+<descr>
+<p>
+  Signals the OnAfterWrite event handler when assigned.
+</p>
+</descr>
+<seealso/>
 </element>
 
 <element name="TCustomPropertyLink.DoError">
-<short/>
+<short>
+Displays a dialog with an exception message handled for the property link.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -622,7 +1100,10 @@ Provides the connection between an RTTI control and a property editor.
 </element>
 
 <element name="TCustomPropertyLink.MapValues">
-<short/>
+<short>
+Consolidates the specified values and aliases for use with the property
+Editor in the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -679,12 +1160,16 @@ Provides the connection between an RTTI control and a property editor.
 </element>
 
 <element name="TCustomPropertyLink.HasAliasValues">
-<short/>
+<short>
+Indicates whether AliasValues has mappings with ALIAS / VALUE pairs.
+</short>
 <descr/>
 <seealso/>
 </element>
 <element name="TCustomPropertyLink.HasAliasValues.Result">
-<short/>
+<short>
+<b>True</b> when AliasValues has been assigned and contains entries.
+</short>
 </element>
 
 <element name="TCustomPropertyLink.BuildEnumAliasValues">
@@ -717,15 +1202,15 @@ Provides the connection between an RTTI control and a property editor.
 <short/>
 </element>
 
-<element name="TCustomPropertyLink.SetSetElementValue">
+<element name="TCustomPropertyLink.SetElementValue">
 <short/>
 <descr/>
 <seealso/>
 </element>
-<element name="TCustomPropertyLink.SetSetElementValue.AliasName">
+<element name="TCustomPropertyLink.SetElementValue.AliasName">
 <short/>
 </element>
-<element name="TCustomPropertyLink.SetSetElementValue.NewValue">
+<element name="TCustomPropertyLink.SetElementValue.NewValue">
 <short/>
 </element>
 
@@ -766,8 +1251,16 @@ Provides the connection between an RTTI control and a property editor.
 </element>
 
 <element name="TCustomPropertyLink.CanModify">
-<short/>
-<descr/>
+<short>
+Indicates whether the Editor for the property link can be modified.
+</short>
+<descr>
+<p>
+CanModify is a read-only Boolean property which indicates if the Editor for
+the property link has been assigned and can be modified. Calls the
+IsReadonly method in Editor to check its attributes for the paReadOnly flag.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -784,32 +1277,47 @@ Provides the connection between an RTTI control and a property editor.
 </element>
 
 <element name="TCustomPropertyLink.Editor">
-<short/>
+<short>
+Property editor for the association.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.Filter">
-<short/>
+<short>
+Indicates the RTTI types which can be represented in the property link.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.Hook">
-<short/>
+<short>
+Provides a hook or callback to locate and perform actions upon the property
+editor for the association.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.LinkNotifier">
-<short/>
+<short>
+Forwards notification messages for the property link.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TCustomPropertyLink.OnEditorChanged">
-<short/>
-<descr/>
+<short>
+Event handler signalled then the class instance in Editor has been changed.
+</short>
+<descr>
+<p>
+Called from the CreateEditor method. Occurs after the value in Hook has been updated, RTTI property information has been retrieved, and CollectedValues has been populated. Occurs before the idle handler is assigned to the Application instance.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -834,15 +1342,34 @@ Do not publish; it is used internally by the RTTI controls.
 </element>
 
 <element name="TCustomPropertyLink.OnBeforeWrite">
-<short/>
+<short>
+Event handler signalled to determine if a new value can be stored in the
+linked property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomPropertyLink.CheckBeforeWrite"/>
+<link id="TCustomPropertyLink.SetAsText"/>
+<link id="TCustomPropertyLink.SetAsInt"/>
+<link id="TCustomPropertyLink.CheckAfterWrite"/>
+<link id="TCustomPropertyLink.OnAfterWrite"/>
+<link id="TBeforeWriteProperty"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.OnAfterWrite">
-<short/>
+<short>
+Event handler signalled to perform actions needed after a new value has
+been stored in the linked property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TCustomPropertyLink.SetAsText"/>
+<link id="TCustomPropertyLink.SetAsInt"/>
+<link id="TCustomPropertyLink.CheckAfterWrite"/>
+<link id="TCustomPropertyLink.CheckBeforeWrite"/>
+<link id="TCustomPropertyLink.OnBeforeWrite"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.OnTestEditing">
@@ -852,13 +1379,26 @@ Do not publish; it is used internally by the RTTI controls.
 </element>
 
 <element name="TCustomPropertyLink.OnTestEditor">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Event handler signalled to check for an active and focused editor for the
+linked property.
+</short>
+<descr>
+<p>
+Normally contains the address of the LinkTestEditor method in the RTTI-
+enabled control which implements the property link.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.CreateEditor"/>
+<link id="TPropertyNamePropertyEditor.TestEditor"/>
+</seealso>
 </element>
 
 <element name="TCustomPropertyLink.Options">
-<short/>
+<short>
+Set of options enabled for the property link.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -876,8 +1416,15 @@ Do not publish; it is used internally by the RTTI controls.
 </element>
 
 <element name="TCustomPropertyLink.PropertyLoaded">
-<short/>
-<descr/>
+<short>
+Indicates whether the value for the linked property is available in the
+property Editor.
+</short>
+<descr>
+<p>
+Set to <b>False</b> by default in SetObjectAndProperty and CreateEditor. Set to <b>True</b> in LoadFromProperty after values have been assigned in TIObject, TIPropertyName, TIElementName, and Editor.
+</p>
+</descr>
 <seealso/>
 </element>
 
@@ -903,13 +1450,27 @@ given here.
 </element>
 
 <element name="TPropertyLink">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the connection between an RTTI control and a property editor for
+a value in a linked object.
+</short>
+<descr>
+<p>
+<var>TPropertyLink</var> is a <var>TCustomPropertyLink</var> descendant. It
+sets the visibility for properties introduced in the ancestor class. It
+also provides methods used to define, read and write properties used during
+LCL component streaming, like AliasValues.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TPropertyLink.ReadAliasValuesData">
-<short/>
+<short>
+Reads the data for the AliasValues property during LCL component streaming.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -918,7 +1479,9 @@ given here.
 </element>
 
 <element name="TPropertyLink.WriteAliasValuesData">
-<short/>
+<short>
+Writes the data for the AliasValues property during LCL component streaming.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -927,7 +1490,10 @@ given here.
 </element>
 
 <element name="TPropertyLink.DefineProperties">
-<short/>
+<short>
+Defines properties included in LCL component streaming, and the procedures
+used to read or write the data for the properties.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -935,14 +1501,13 @@ given here.
 <short/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
-<element name="TPropertyLink.AliasValues"/>
-<element name="TPropertyLink.OnBeforeWrite"/>
-<element name="TPropertyLink.OnAfterWrite"/>
-<element name="TPropertyLink.Options"/>
-<element name="TPropertyLink.TIObject"/>
-<element name="TPropertyLink.TIPropertyName"/>
-<element name="TPropertyLink.TIElementName"/>
+<element name="TPropertyLink.AliasValues" link="TCustomPropertyLink.AliasValues"/>
+<element name="TPropertyLink.OnBeforeWrite" link="TCustomPropertyLink.OnBeforeWrite"/>
+<element name="TPropertyLink.OnAfterWrite" link="TCustomPropertyLink.OnAfterWrite"/>
+<element name="TPropertyLink.Options" link="TCustomPropertyLink.Options"/>
+<element name="TPropertyLink.TIObject" link="TCustomPropertyLink.TIObject"/>
+<element name="TPropertyLink.TIPropertyName" link="TCustomPropertyLink.TIPropertyName"/>
+<element name="TPropertyLink.TIElementName" link="TCustomPropertyLink.TIElementName"/>
 
 <element name="TPropertyLinkPropertyEditor">
 <short>
@@ -955,16 +1520,39 @@ Implements the property editor for the TPropertyLink type.
 </element>
 
 <element name="TPropertyLinkPropertyEditor.GetAttributes">
-<short/>
+<short>
+Gets the set of property attributes enabled in the class instance.
+</short>
+<descr>
+<p>
+The return value is:
+</p>
+<code>[paMultiSelect, paSubProperties, paReadOnly]</code>
+</descr>
 </element>
 <element name="TPropertyLinkPropertyEditor.GetAttributes.Result">
-<short/>
+<short>
+Set of property attributes enabled in the class instance.
+</short>
 </element>
 
 <element name="TTIObjectPropertyEditor">
-<short/>
+<short>
+Identifies the property editor used for persistent objects assigned to
+TPropertyLink or TMultiPropertyLink class instances.
+</short>
 <descr/>
-<seealso/>
+<p>
+It does allow editing of the property. It allows the user to set the
+value this property to point to a component in any form or datamodule
+that is type compatible with the property being edited (e. g. the
+DataSource property).
+</p>
+<seealso>
+<link id="TCustomPropertyLink.TIObject"/>
+<link id="TPropertyLink.TIObject"/>
+<link id="TMultiPropertyLink.TIObject"/>
+</seealso>
 </element>
 
 <element name="TPropertyNamePropertyEditor">
@@ -974,7 +1562,8 @@ TCustomPropertyLink.TIPropertyName.
 </short>
 <descr>
 <p>
-It displays all compatible properties.
+It displays all properties which are type compatible with the Filter in the
+property link.
 </p>
 </descr>
 <seealso/>
@@ -1199,70 +1788,53 @@ controls at once.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TMultiPropertyLink.FTIObject"/>
 <element name="TMultiPropertyLink.FMaintainGrandChilds"/>
 <element name="TMultiPropertyLink.FMaintainSiblings"/>
 <element name="TMultiPropertyLink.FOnSetTIObject"/>
 <element name="TMultiPropertyLink.FParentControl"/>
 <element name="TMultiPropertyLink.FRootComponent"/>
-
-<element name="TMultiPropertyLink.SetTIObject">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TMultiPropertyLink.SetTIObject.AValue">
-<short/>
-</element>
-
-<element name="TMultiPropertyLink.SetMaintainGrandChilds">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TMultiPropertyLink.SetMaintainGrandChilds.AValue">
-<short/>
-</element>
-
-<element name="TMultiPropertyLink.SetMaintainSiblings">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TMultiPropertyLink.SetMaintainSiblings.AValue">
-<short/>
-</element>
-
-<element name="TMultiPropertyLink.SetParentControl">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TMultiPropertyLink.SetParentControl.AValue">
-<short/>
-</element>
-
-<element name="TMultiPropertyLink.SetRootComponent">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TMultiPropertyLink.SetRootComponent.AValue">
-<short/>
-</element>
+<element name="TMultiPropertyLink.SetTIObject"/>
+<element name="TMultiPropertyLink.SetTIObject.AValue"/>
+<element name="TMultiPropertyLink.SetMaintainGrandChilds"/>
+<element name="TMultiPropertyLink.SetMaintainGrandChilds.AValue"/>
+<element name="TMultiPropertyLink.SetMaintainSiblings"/>
+<element name="TMultiPropertyLink.SetMaintainSiblings.AValue"/>
+<element name="TMultiPropertyLink.SetParentControl"/>
+<element name="TMultiPropertyLink.SetParentControl.AValue"/>
+<element name="TMultiPropertyLink.SetRootComponent"/>
+<element name="TMultiPropertyLink.SetRootComponent.AValue"/>
 
 <element name="TMultiPropertyLink.Create">
-<short/>
-<descr/>
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+<var>Create</var> is the overridden constructor for the class instance. It
+calls the inherited constructor on entry, and sets the default value for
+the MaintainSiblings property to <b>True</b>.
+</p>
+</descr>
 <seealso/>
 </element>
 <element name="TMultiPropertyLink.Create.TheOwner">
-<short/>
+<short>
+Component which owns the class instance, or <b>Nil</b>.
+</short>
 </element>
 
 <element name="TMultiPropertyLink.SetLinks">
 <short/>
 <descr/>
+<notes>
+<note>
+RootComponent => child Components
+ParentControl => siblings or all descendants?
+Owner => child components
+</note>
+</notes>
 <seealso/>
 </element>
 
@@ -1330,29 +1902,64 @@ controls at once.
 </element>
 
 <element name="TTICustomEdit">
-<short/>
-<descr/>
+<short>
+Base class for an edit control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
+<descr>
+
+<!-- WIP: HERE -->
+<p>
+Extends TCustomEdit with methods and properties...
+</p>
+<p>
+Use the Link property to specify the persistent object instance and the
+property name represented in the edit control.
+</p>
+<p>
+Provides overridden methods needed to...
+</p>
+<p>
+Implements methods need to retrieve and save the value for the property in
+Link.
+</p>
+
+</descr>
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TTICustomEdit.FLink"/>
-
-<element name="TTICustomEdit.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomEdit.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomEdit.SetLink"/>
+<element name="TTICustomEdit.SetLink.AValue"/>
 
 <element name="TTICustomEdit.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
+the value assigned to the Text property in the control.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomEdit.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomEdit.LinkSaveToProperty">
@@ -1365,7 +1972,9 @@ controls at once.
 </element>
 
 <element name="TTICustomEdit.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1374,97 +1983,129 @@ controls at once.
 </element>
 
 <element name="TTICustomEdit.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomEdit.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomEdit.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomEdit.Link">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TTIEdit">
-<short/>
+<short>
+Provides a link to the persistent object and property with the text value
+for the control.
+</short>
 <descr/>
 <seealso>
-<link id="TTICustomEdit"/>
+<link id="TPropertyLink"/>
 </seealso>
 </element>
 
-<!-- TODO: needs links to ancestors -->
-<element name="TTIEdit.Action"/>
-<element name="TTIEdit.Align"/>
-<element name="TTIEdit.Anchors"/>
-<element name="TTIEdit.AutoSize"/>
-<element name="TTIEdit.BorderSpacing"/>
-<element name="TTIEdit.Constraints"/>
-<element name="TTIEdit.CharCase"/>
-<element name="TTIEdit.DragMode"/>
-<element name="TTIEdit.EchoMode"/>
-<element name="TTIEdit.Enabled"/>
-<element name="TTIEdit.Link"/>
-<element name="TTIEdit.MaxLength"/>
-<element name="TTIEdit.OnChange"/>
-<element name="TTIEdit.OnChangeBounds"/>
-<element name="TTIEdit.OnClick"/>
-<element name="TTIEdit.OnEditingDone"/>
-<element name="TTIEdit.OnEnter"/>
-<element name="TTIEdit.OnExit"/>
-<element name="TTIEdit.OnKeyDown"/>
-<element name="TTIEdit.OnKeyPress"/>
-<element name="TTIEdit.OnKeyUp"/>
-<element name="TTIEdit.OnMouseDown"/>
-<element name="TTIEdit.OnMouseMove"/>
-<element name="TTIEdit.OnMouseUp"/>
-<element name="TTIEdit.OnResize"/>
-<element name="TTIEdit.ParentFont"/>
-<element name="TTIEdit.ParentShowHint"/>
-<element name="TTIEdit.PasswordChar"/>
-<element name="TTIEdit.PopupMenu"/>
-<element name="TTIEdit.ReadOnly"/>
-<element name="TTIEdit.ShowHint"/>
-<element name="TTIEdit.TabStop"/>
-<element name="TTIEdit.TabOrder"/>
-<element name="TTIEdit.Visible"/>
+<element name="TTIEdit">
+<short>
+Implements an edit control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
+<descr/>
+<seealso>
+<link id="TTICustomEdit"/>
+<link id="#lcl.stdctrls.TCustomEdit">TCustomEdit</link>
+</seealso>
+</element>
+
+<element name="TTIEdit.Action" link="#lcl.controls.TControl.Action"/>
+<element name="TTIEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIEdit.AutoSize" link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
+<element name="TTIEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTIEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TTIEdit.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
+<element name="TTIEdit.DragMode" link="#lcl.controls.TControl.DragMode"/>
+<element name="TTIEdit.EchoMode" link="#lcl.stdctrls.TCustomEdit.EchoMode"/>
+<element name="TTIEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TTIEdit.Link" link="#runtimetypeinfocontrols.rttictrls.TTICustomEdit.Link"/>
+<element name="TTIEdit.MaxLength" link="#lcl.stdctrls.TCustomEdit.MaxLength"/>
+<element name="TTIEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
+<element name="TTIEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIEdit.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+<element name="TTIEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTIEdit.ParentFont"  link="#lcl.controls.TControl.ParentFont"/>
+<element name="TTIEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+<element name="TTIEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TTIEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTIEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TTIEdit.TabOrder" link="#lcl.stdctrls.TCustomEdit.TabOrder"/>
+<element name="TTIEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomMaskEdit">
-<short/>
+<short>
+Base class for a masked edit control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIMaskEdit"/>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomMaskEdit.FLink"/>
-
-<element name="TTICustomMaskEdit.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomMaskEdit.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomMaskEdit.SetLink"/>
+<element name="TTICustomMaskEdit.SetLink.AValue"/>
 
 <element name="TTICustomMaskEdit.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
+the value assigned to the Text property in the control.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomMaskEdit.LinkLoadFromProperty.Sender">
-<short/>
+<short>Object (TPropertyLink) for the event notification.</short>
 </element>
 
 <element name="TTICustomMaskEdit.LinkSaveToProperty">
@@ -1477,7 +2118,9 @@ controls at once.
 </element>
 
 <element name="TTICustomMaskEdit.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1486,115 +2129,141 @@ controls at once.
 </element>
 
 <element name="TTICustomMaskEdit.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomMaskEdit.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomMaskEdit.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomMaskEdit.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the text value
+for the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTIMaskEdit">
-<short/>
+<short>
+Implements a masked edit control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
 <seealso>
 <link id="TTICustomMaskEdit"/>
 </seealso>
 </element>
 
-<!-- TODO: needs links to ancestors -->
-<element name="TTIMaskEdit.Align"/>
-<element name="TTIMaskEdit.Anchors"/>
-<element name="TTIMaskEdit.AutoSize"/>
-<element name="TTIMaskEdit.BorderSpacing"/>
-<element name="TTIMaskEdit.CharCase"/>
-<element name="TTIMaskEdit.Color"/>
-<element name="TTIMaskEdit.Constraints"/>
-<element name="TTIMaskEdit.DragCursor"/>
-<element name="TTIMaskEdit.DragKind"/>
-<element name="TTIMaskEdit.DragMode"/>
-<element name="TTIMaskEdit.Enabled"/>
-<element name="TTIMaskEdit.EditMask"/>
-<element name="TTIMaskEdit.Font"/>
+<element name="TTIMaskEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIMaskEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIMaskEdit.AutoSize" link="#lcl.stdctrls.TCustomEdit.AutoSize"/>
+<element name="TTIMaskEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTIMaskEdit.CharCase" link="#lcl.stdctrls.TCustomEdit.CharCase"/>
+<element name="TTIMaskEdit.Color" link="#lcl.controls.TControl.Color"/>
+<element name="TTIMaskEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TTIMaskEdit.DragCursor" link="#lcl.controls.TControl.DragCursor"/>
+<element name="TTIMaskEdit.DragKind" link="#lcl.controls.TControl.DragKind"/>
+<element name="TTIMaskEdit.DragMode" link="#lcl.controls.TControl.DragMode"/>
+<element name="TTIMaskEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TTIMaskEdit.EditMask" link="#lcl.maskedit.TCustomMaskEdit.EditMask"/>
+<element name="TTIMaskEdit.Font" link="#lcl.controls.TControl.Font"/>
 <element name="TTIMaskEdit.Link"/>
-<element name="TTIMaskEdit.MaxLength"/>
-<element name="TTIMaskEdit.ParentColor"/>
-<element name="TTIMaskEdit.ParentFont"/>
-<element name="TTIMaskEdit.ParentShowHint"/>
-<element name="TTIMaskEdit.PasswordChar"/>
-<element name="TTIMaskEdit.PopupMenu"/>
-<element name="TTIMaskEdit.ReadOnly"/>
-<element name="TTIMaskEdit.ShowHint"/>
-<element name="TTIMaskEdit.TabOrder"/>
-<element name="TTIMaskEdit.TabStop"/>
-<element name="TTIMaskEdit.Visible"/>
-<element name="TTIMaskEdit.OnChange"/>
-<element name="TTIMaskEdit.OnClick"/>
-<element name="TTIMaskEdit.OnDblClick"/>
-<element name="TTIMaskEdit.OnDragDrop"/>
-<element name="TTIMaskEdit.OnDragOver"/>
-<element name="TTIMaskEdit.OnEditingDone"/>
-<element name="TTIMaskEdit.OnEndDrag"/>
-<element name="TTIMaskEdit.OnEnter"/>
-<element name="TTIMaskEdit.OnExit"/>
-<element name="TTIMaskEdit.OnKeyDown"/>
-<element name="TTIMaskEdit.OnKeyPress"/>
-<element name="TTIMaskEdit.OnKeyUp"/>
-<element name="TTIMaskEdit.OnMouseDown"/>
-<element name="TTIMaskEdit.OnMouseMove"/>
-<element name="TTIMaskEdit.OnMouseUp"/>
-<element name="TTIMaskEdit.OnStartDrag"/>
+<element name="TTIMaskEdit.MaxLength" link="#lcl.maskedit.TCustomMaskEdit.MaxLength"/>
+<element name="TTIMaskEdit.ParentColor" link="#lcl.stdctrls.TCustomEdit.ParentColor"/>
+<element name="TTIMaskEdit.ParentFont"  link="#lcl.controls.TControl.ParentFont"/>
+<element name="TTIMaskEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIMaskEdit.PasswordChar" link="#lcl.stdctrls.TCustomEdit.PasswordChar"/>
+<element name="TTIMaskEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIMaskEdit.ReadOnly" link="#lcl.stdctrls.TCustomEdit.ReadOnly"/>
+<element name="TTIMaskEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTIMaskEdit.TabOrder" link="#lcl.stdctrls.TCustomEdit.TabOrder"/>
+<element name="TTIMaskEdit.TabStop" link="#lcl.stdctrls.TCustomEdit.TabStop"/>
+<element name="TTIMaskEdit.Visible" link="#lcl.controls.TControl.Visible"/>
+<element name="TTIMaskEdit.OnChange" link="#lcl.stdctrls.TCustomEdit.OnChange"/>
+<element name="TTIMaskEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIMaskEdit.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TTIMaskEdit.OnDragDrop" link="#lcl.controls.TControl.OnDragDrop"/>
+<element name="TTIMaskEdit.OnDragOver" link="#lcl.controls.TControl.OnDragOver"/>
+<element name="TTIMaskEdit.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+<element name="TTIMaskEdit.OnEndDrag" link="#lcl.controls.TControl.OnEndDrag"/>
+<element name="TTIMaskEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIMaskEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIMaskEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIMaskEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIMaskEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIMaskEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIMaskEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIMaskEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIMaskEdit.OnStartDrag" link="#lcl.controls.TControl.OnStartDrag"/>
 
 <element name="TTICustomComboBox">
-<short/>
+<short>
+Base class for an combo-box control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIComboBox"/>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomComboBox.FHistoryCaseSensitive"/>
 <element name="TTICustomComboBox.FLink"/>
 <element name="TTICustomComboBox.FMaxHistoryCount"/>
-
-<element name="TTICustomComboBox.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomComboBox.SetLink.AValue">
-<short/>
-</element>
-
-<element name="TTICustomComboBox.SetMaxHistoryCount">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomComboBox.SetMaxHistoryCount.AValue">
-<short/>
-</element>
+<element name="TTICustomComboBox.SetLink"/>
+<element name="TTICustomComboBox.SetLink.AValue"/>
+<element name="TTICustomComboBox.SetMaxHistoryCount"/>
+<element name="TTICustomComboBox.SetMaxHistoryCount.AValue"/>
 
 <element name="TTICustomComboBox.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
+the value assigned to the Text property in the control.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomComboBox.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1651,7 +2320,9 @@ controls at once.
 </element>
 
 <element name="TTICustomComboBox.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1660,27 +2331,39 @@ controls at once.
 </element>
 
 <element name="TTICustomComboBox.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomComboBox.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomComboBox.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomComboBox.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the values for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTICustomComboBox.MaxHistoryCount">
@@ -1698,76 +2381,103 @@ control.
 <seealso/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
-<element name="TTIComboBox" link="TTICustomComboBox">
-<short/>
+<element name="TTIComboBox">
+<short>
+Implements a combo-box control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomComboBox"/>
+<link id="TCustomComboBox"/>
+</seealso>
 </element>
 
-<element name="TTIComboBox.ItemIndex"/>
-<element name="TTIComboBox.Align"/>
-<element name="TTIComboBox.Anchors"/>
-<element name="TTIComboBox.ArrowKeysTraverseList"/>
-<element name="TTIComboBox.AutoComplete"/>
-<element name="TTIComboBox.AutoCompleteText"/>
-<element name="TTIComboBox.AutoDropDown"/>
-<element name="TTIComboBox.BorderSpacing"/>
-<element name="TTIComboBox.DropDownCount"/>
-<element name="TTIComboBox.Enabled"/>
-<element name="TTIComboBox.Font"/>
-<element name="TTIComboBox.HistoryCaseSensitive"/>
-<element name="TTIComboBox.Link"/>
-<element name="TTIComboBox.MaxHistoryCount"/>
-<element name="TTIComboBox.MaxLength"/>
-<element name="TTIComboBox.OnChange"/>
-<element name="TTIComboBox.OnChangeBounds"/>
-<element name="TTIComboBox.OnClick"/>
-<element name="TTIComboBox.OnCloseUp"/>
-<element name="TTIComboBox.OnDrawItem"/>
-<element name="TTIComboBox.OnDropDown"/>
-<element name="TTIComboBox.OnEditingDone"/>
-<element name="TTIComboBox.OnEnter"/>
-<element name="TTIComboBox.OnExit"/>
-<element name="TTIComboBox.OnGetItems"/>
-<element name="TTIComboBox.OnKeyDown"/>
-<element name="TTIComboBox.OnKeyPress"/>
-<element name="TTIComboBox.OnKeyUp"/>
-<element name="TTIComboBox.OnMouseDown"/>
-<element name="TTIComboBox.OnMouseMove"/>
-<element name="TTIComboBox.OnMouseUp"/>
-<element name="TTIComboBox.OnSelect"/>
-<element name="TTIComboBox.ParentFont"/>
-<element name="TTIComboBox.ParentShowHint"/>
-<element name="TTIComboBox.ShowHint"/>
-<element name="TTIComboBox.Sorted"/>
-<element name="TTIComboBox.Style"/>
-<element name="TTIComboBox.TabOrder"/>
-<element name="TTIComboBox.TabStop"/>
-<element name="TTIComboBox.Visible"/>
+<element name="TTIComboBox.ItemIndex" link="#lcl.stdctrls.TCustomComboBox.ItemIndex"/>
+<element name="TTIComboBox.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIComboBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIComboBox.ArrowKeysTraverseList" link="#lcl.stdctrls.TCustomComboBox.ArrowKeysTraverseList"/>
+<element name="TTIComboBox.AutoComplete" link="#lcl.stdctrls.TCustomComboBox.AutoComplete"/>
+<element name="TTIComboBox.AutoCompleteText" link="#lcl.stdctrls.TCustomComboBox.AutoCompleteText"/>
+<element name="TTIComboBox.AutoDropDown" link="#lcl.stdctrls.TCustomComboBox.AutoDropDown"/>
+<element name="TTIComboBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTIComboBox.DropDownCount" link="#lcl.stdctrls.TCustomComboBox.DropDownCount"/>
+<element name="TTIComboBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
+<element name="TTIComboBox.Font" link="#lcl.controls.TControl.Font"/>
+<element name="TTIComboBox.HistoryCaseSensitive" link="#runtimetypeinfocontrols.rttctrls.TTICustomComboBox.HistoryCaseSensitive"/>
+<element name="TTIComboBox.Link" link="#runtimetypeinfocontrols.rttctrls.TTICustomComboBox.Link"/>
+<element name="TTIComboBox.MaxHistoryCount" link="#runtimetypeinfocontrols.rttctrls.TTICustomComboBox.MaxHistoryCount"/>
+<element name="TTIComboBox.MaxLength" link="#lcl.stdctrls.TCustomComboBox.MaxLength"/>
+<element name="TTIComboBox.OnChange" link="#lcl.stdctrls.TCustomComboBox.OnChange"/>
+<element name="TTIComboBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIComboBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIComboBox.OnCloseUp" link="#lcl.stdctrls.TCustomComboBox.OnCloseUp"/>
+<element name="TTIComboBox.OnDrawItem" link="#lcl.stdctrls.TCustomComboBox.OnDrawItem"/>
+<element name="TTIComboBox.OnDropDown" link="#lcl.stdctrls.TCustomComboBox.OnDropDown"/>
+<element name="TTIComboBox.OnEditingDone" link="#lcl.controls.TControl.OnEditingDone"/>
+<element name="TTIComboBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIComboBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIComboBox.OnGetItems" link="#lcl.stdctrls.TCustomComboBox.OnGetItems"/>
+<element name="TTIComboBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIComboBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIComboBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIComboBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIComboBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIComboBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIComboBox.OnSelect" link="#lcl.stdctrls.TCustomComboBox.OnSelect"/>
+<element name="TTIComboBox.ParentFont" link="#lcl.controls.TControl.ParentFont"/>
+<element name="TTIComboBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIComboBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTIComboBox.Sorted" link="#lcl.stdctrls.TCustomComboBox.Sorted"/>
+<element name="TTIComboBox.Style" link="#lcl.stdctrls.TCustomComboBox.Style"/>
+<element name="TTIComboBox.TabOrder" link="#lcl.controls.TWinControl.TabOrder"/>
+<element name="TTIComboBox.TabStop" link="#lcl.stdctrls.TCustomComboBox.TabStop"/>
+<element name="TTIComboBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomRadioGroup">
-<short/>
+<short>
+Specifies a radio group control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIRadioGroup"/>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomRadioGroup.FLink"/>
-
-<element name="TTICustomRadioGroup.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomRadioGroup.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomRadioGroup.SetLink"/>
+<element name="TTICustomRadioGroup.SetLink.AValue"/>
 
 <element name="TTICustomRadioGroup.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
+the property value and sets ItemIndex to the position where the value is
+stored in Items.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomRadioGroup.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomRadioGroup.LinkSaveToProperty">
@@ -1789,7 +2499,9 @@ control.
 </element>
 
 <element name="TTICustomRadioGroup.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1798,91 +2510,130 @@ control.
 </element>
 
 <element name="TTICustomRadioGroup.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomRadioGroup.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomRadioGroup.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomRadioGroup.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the values for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
+</element>
+
+<element name="TTIRadioGroup">
+<short>
+Implements a radio group control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
+<descr/>
+<seealso>
+<link id="TTICustomRadioGroup"/>
+<link id="#lcl.extctrls.TCustomRadioGroup">TCustomRadioGroup</link>
+</seealso>
 </element>
 
 <!-- TODO: Add links to ancestors -->
-<element name="TTIRadioGroup" link="TTICustomRadioGroup">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TTIRadioGroup.Align"/>
-<element name="TTIRadioGroup.Anchors"/>
-<element name="TTIRadioGroup.BorderSpacing"/>
+<element name="TTIRadioGroup.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIRadioGroup.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIRadioGroup.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIRadioGroup.Caption"/>
 <element name="TTIRadioGroup.ChildSizing"/>
 <element name="TTIRadioGroup.Color"/>
 <element name="TTIRadioGroup.ColumnLayout"/>
 <element name="TTIRadioGroup.Columns"/>
-<element name="TTIRadioGroup.Constraints"/>
-<element name="TTIRadioGroup.Enabled"/>
+<element name="TTIRadioGroup.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TTIRadioGroup.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTIRadioGroup.ItemIndex"/>
 <element name="TTIRadioGroup.Link"/>
-<element name="TTIRadioGroup.OnChangeBounds"/>
-<element name="TTIRadioGroup.OnClick"/>
-<element name="TTIRadioGroup.OnDblClick"/>
-<element name="TTIRadioGroup.OnEditingDone"/>
-<element name="TTIRadioGroup.OnEnter"/>
-<element name="TTIRadioGroup.OnExit"/>
-<element name="TTIRadioGroup.OnKeyDown"/>
-<element name="TTIRadioGroup.OnKeyPress"/>
-<element name="TTIRadioGroup.OnKeyUp"/>
-<element name="TTIRadioGroup.OnMouseDown"/>
-<element name="TTIRadioGroup.OnMouseMove"/>
-<element name="TTIRadioGroup.OnMouseUp"/>
-<element name="TTIRadioGroup.OnResize"/>
+<element name="TTIRadioGroup.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIRadioGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIRadioGroup.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TTIRadioGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIRadioGroup.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIRadioGroup.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIRadioGroup.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIRadioGroup.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIRadioGroup.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIRadioGroup.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIRadioGroup.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIRadioGroup.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIRadioGroup.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTIRadioGroup.ParentColor"/>
-<element name="TTIRadioGroup.ParentShowHint"/>
-<element name="TTIRadioGroup.PopupMenu"/>
-<element name="TTIRadioGroup.ShowHint"/>
-<element name="TTIRadioGroup.Visible"/>
+<element name="TTIRadioGroup.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIRadioGroup.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIRadioGroup.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTIRadioGroup.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomCheckGroup">
-<short/>
+<short>
+Specifies a grouped check box control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICheckGroup"/>
+<link id="#lcl.stdctrls.TCustomGroupBox">TCustomGroupBox</link>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomCheckGroup.FLink"/>
-
-<element name="TTICustomCheckGroup.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomCheckGroup.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomCheckGroup.SetLink"/>
+<element name="TTICustomCheckGroup.SetLink.AValue"/>
 
 <element name="TTICustomCheckGroup.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetSetElementValue in Link for
+each of the values in Items. The corresponding Checked property is updated
+for the values in Items.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomCheckGroup.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomCheckGroup.LinkSaveToProperty">
@@ -1904,7 +2655,9 @@ control.
 </element>
 
 <element name="TTICustomCheckGroup.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -1913,93 +2666,130 @@ control.
 </element>
 
 <element name="TTICustomCheckGroup.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckGroup.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckGroup.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckGroup.Link">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<!-- TODO: Needs links to ancestors -->
-<element name="TTICheckGroup">
-<short/>
+<short>
+Provides a link to the persistent object and property with the values for
+the control.
+</short>
 <descr/>
 <seealso>
-<link id="TTICustomCheckGroup"/>
+<link id="TPropertyLink"/>
 </seealso>
 </element>
 
-<element name="TTICheckGroup.Align"/>
-<element name="TTICheckGroup.Anchors"/>
-<element name="TTICheckGroup.BorderSpacing"/>
+<element name="TTICheckGroup">
+<short>
+Implements a grouped check box control which uses RTTI to access and
+maintain property values in a linked object.
+</short>
+<descr/>
+<seealso>
+<link id="TTICustomCheckGroup"/>
+<link id="#lcl.stdctrls.TCustomGroupBox">TCustomGroupBox</link>
+</seealso>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICheckGroup.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTICheckGroup.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTICheckGroup.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTICheckGroup.Caption"/>
 <element name="TTICheckGroup.Color"/>
 <element name="TTICheckGroup.ColumnLayout"/>
 <element name="TTICheckGroup.Columns"/>
-<element name="TTICheckGroup.Constraints"/>
-<element name="TTICheckGroup.Enabled"/>
+<element name="TTICheckGroup.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TTICheckGroup.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTICheckGroup.Items"/>
 <element name="TTICheckGroup.Link"/>
-<element name="TTICheckGroup.OnChangeBounds"/>
-<element name="TTICheckGroup.OnClick"/>
-<element name="TTICheckGroup.OnDblClick"/>
-<element name="TTICheckGroup.OnEditingDone"/>
-<element name="TTICheckGroup.OnEnter"/>
-<element name="TTICheckGroup.OnExit"/>
+<element name="TTICheckGroup.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTICheckGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTICheckGroup.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TTICheckGroup.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTICheckGroup.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTICheckGroup.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
 <element name="TTICheckGroup.OnItemClick"/>
-<element name="TTICheckGroup.OnKeyDown"/>
-<element name="TTICheckGroup.OnKeyPress"/>
-<element name="TTICheckGroup.OnKeyUp"/>
-<element name="TTICheckGroup.OnMouseDown"/>
-<element name="TTICheckGroup.OnMouseMove"/>
-<element name="TTICheckGroup.OnMouseUp"/>
-<element name="TTICheckGroup.OnResize"/>
+<element name="TTICheckGroup.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTICheckGroup.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTICheckGroup.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTICheckGroup.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTICheckGroup.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTICheckGroup.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTICheckGroup.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTICheckGroup.ParentColor"/>
-<element name="TTICheckGroup.ParentShowHint"/>
-<element name="TTICheckGroup.PopupMenu"/>
-<element name="TTICheckGroup.ShowHint"/>
-<element name="TTICheckGroup.Visible"/>
+<element name="TTICheckGroup.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTICheckGroup.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTICheckGroup.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTICheckGroup.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomCheckListBox">
-<short/>
+<short>
+Specifies a list with check box controls which uses RTTI to access and
+maintain property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICheckListBox"/>
+<link id="#lcl.checklst.TCustomCheckListBox">TCustomCheckListBox</link>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomCheckListBox.FLink"/>
-
-<element name="TTICustomCheckListBox.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomCheckListBox.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomCheckListBox.SetLink"/>
+<element name="TTICustomCheckListBox.SetLink.AValue"/>
 
 <element name="TTICustomCheckListBox.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetSetElementValue method in Link
+for each of the values in Items, and sets the value in the corresponding
+Checked property.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomCheckListBox.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomCheckListBox.LinkSaveToProperty">
@@ -2021,7 +2811,9 @@ control.
 </element>
 
 <element name="TTICustomCheckListBox.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2030,94 +2822,130 @@ control.
 </element>
 
 <element name="TTICustomCheckListBox.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckListBox.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckListBox.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckListBox.Link">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<!-- TODO: Needs links to ancestors -->
-<element name="TTICheckListBox">
-<short/>
+<short>
+Provides a link to the persistent object and property with the text values
+for the control.
+</short>
 <descr/>
 <seealso>
-<link id="TTICustomCheckListBox"/>
+<link id="TPropertyLink"/>
 </seealso>
 </element>
 
-<element name="TTICheckListBox.Align"/>
-<element name="TTICheckListBox.Anchors"/>
-<element name="TTICheckListBox.BorderSpacing"/>
+<element name="TTICheckListBox">
+<short>
+Implements a list of check box controls which uses RTTI to access and
+maintain property values in a linked object.
+</short>
+<descr/>
+<seealso>
+<link id="TTICustomCheckListBox"/>
+<link id="#lcl.checklst.TCustomCheckListBox">TCustomCheckListBox</link>
+</seealso>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICheckListBox.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTICheckListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTICheckListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTICheckListBox.BorderStyle"/>
-<element name="TTICheckListBox.Constraints"/>
+<element name="TTICheckListBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTICheckListBox.ExtendedSelect"/>
 <element name="TTICheckListBox.Items"/>
 <element name="TTICheckListBox.ItemHeight"/>
 <element name="TTICheckListBox.Link"/>
 <element name="TTICheckListBox.MultiSelect"/>
-<element name="TTICheckListBox.OnClick"/>
-<element name="TTICheckListBox.OnDblClick"/>
+<element name="TTICheckListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTICheckListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TTICheckListBox.OnDrawItem"/>
-<element name="TTICheckListBox.OnEditingDone"/>
-<element name="TTICheckListBox.OnEnter"/>
-<element name="TTICheckListBox.OnExit"/>
-<element name="TTICheckListBox.OnKeyPress"/>
-<element name="TTICheckListBox.OnKeyDown"/>
-<element name="TTICheckListBox.OnKeyUp"/>
-<element name="TTICheckListBox.OnMouseMove"/>
-<element name="TTICheckListBox.OnMouseDown"/>
-<element name="TTICheckListBox.OnMouseUp"/>
-<element name="TTICheckListBox.OnResize"/>
-<element name="TTICheckListBox.ParentShowHint"/>
-<element name="TTICheckListBox.ShowHint"/>
+<element name="TTICheckListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTICheckListBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTICheckListBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTICheckListBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTICheckListBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTICheckListBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTICheckListBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTICheckListBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTICheckListBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTICheckListBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTICheckListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTICheckListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTICheckListBox.Sorted"/>
 <element name="TTICheckListBox.Style"/>
 <element name="TTICheckListBox.TabOrder"/>
 <element name="TTICheckListBox.TabStop"/>
 <element name="TTICheckListBox.TopIndex"/>
-<element name="TTICheckListBox.Visible"/>
+<element name="TTICheckListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomListBox">
 <short/>
 <descr/>
-<seealso/>
+<seealso>
+<link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomListBox.FLink"/>
-
-<element name="TTICustomListBox.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomListBox.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomListBox.SetLink"/>
+<element name="TTICustomListBox.SetLink.AValue"/>
 
 <element name="TTICustomListBox.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> loads values using methods in the Link
+property. When the Editor in Link is a Set property editor, the
+GetSetElementValue is called for each of the values in Items and the
+corresponding value in Selected is set to the element value. For other
+property editor types, the GetAsText method in Link is called, and the
+value in ItemIndex is set to the value in Items.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomListBox.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomListBox.LinkSaveToProperty">
@@ -2154,7 +2982,9 @@ control.
 </element>
 
 <element name="TTICustomListBox.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2163,111 +2993,142 @@ control.
 </element>
 
 <element name="TTICustomListBox.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomListBox.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomListBox.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomListBox.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the values for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIListBox">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomListBox"/>
+<link id="#lcl.stdctrls.TCustomListBox">TCustomListBox</link>
 </seealso>
 </element>
 
-<element name="TTIListBox.Align"/>
-<element name="TTIListBox.Anchors"/>
-<element name="TTIListBox.BorderSpacing"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIListBox.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIListBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIListBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIListBox.BorderStyle"/>
 <element name="TTIListBox.ClickOnSelChange"/>
-<element name="TTIListBox.Constraints"/>
+<element name="TTIListBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIListBox.ExtendedSelect"/>
 <element name="TTIListBox.Font"/>
 <element name="TTIListBox.IntegralHeight"/>
 <element name="TTIListBox.ItemHeight"/>
 <element name="TTIListBox.MultiSelect"/>
 <element name="TTIListBox.Link"/>
-<element name="TTIListBox.OnChangeBounds"/>
-<element name="TTIListBox.OnClick"/>
-<element name="TTIListBox.OnDblClick"/>
+<element name="TTIListBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIListBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
 <element name="TTIListBox.OnDrawItem"/>
-<element name="TTIListBox.OnEditingDone"/>
-<element name="TTIListBox.OnEnter"/>
-<element name="TTIListBox.OnExit"/>
-<element name="TTIListBox.OnKeyPress"/>
-<element name="TTIListBox.OnKeyDown"/>
-<element name="TTIListBox.OnKeyUp"/>
-<element name="TTIListBox.OnMouseMove"/>
-<element name="TTIListBox.OnMouseDown"/>
-<element name="TTIListBox.OnMouseUp"/>
+<element name="TTIListBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIListBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIListBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIListBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIListBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIListBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIListBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIListBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIListBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIListBox.OnMouseEnter"/>
 <element name="TTIListBox.OnMouseLeave"/>
 <element name="TTIListBox.OnMouseWheel"/>
 <element name="TTIListBox.OnMouseWheelDown"/>
 <element name="TTIListBox.OnMouseWheelUp"/>
-<element name="TTIListBox.OnResize"/>
+<element name="TTIListBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTIListBox.OnSelectionChange"/>
-<element name="TTIListBox.ParentShowHint"/>
+<element name="TTIListBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
 <element name="TTIListBox.ParentFont"/>
-<element name="TTIListBox.PopupMenu"/>
-<element name="TTIListBox.ShowHint"/>
+<element name="TTIListBox.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIListBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTIListBox.Sorted"/>
 <element name="TTIListBox.Style"/>
 <element name="TTIListBox.TabOrder"/>
 <element name="TTIListBox.TabStop"/>
 <element name="TTIListBox.TopIndex"/>
-<element name="TTIListBox.Visible"/>
+<element name="TTIListBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
+<element name="TTICustomCheckBox">
+<short/>
+<descr/>
+<seealso>
+<link id="TTICheckBox"/>
+<link id="#lcl.stdctrls.TCustomCheckBox">TCustomCheckBox</link>
+</seealso>
+</element>
+
+<!-- private -->
 <element name="TTICustomCheckBox.FLink"/>
 <element name="TTICustomCheckBox.FLinkValueFalse"/>
 <element name="TTICustomCheckBox.FLinkValueTrue"/>
 <element name="TTICustomCheckBox.FPropertyNameAsCaption"/>
-
-<element name="TTICustomCheckBox.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomCheckBox.SetLink.AValue">
-<short/>
-</element>
-
-<element name="TTICustomCheckBox.SetPropertyNameAsCaption">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomCheckBox.SetPropertyNameAsCaption.AValue">
-<short/>
-</element>
+<element name="TTICustomCheckBox.SetLink"/>
+<element name="TTICustomCheckBox.SetLink.AValue"/>
+<element name="TTICustomCheckBox.SetPropertyNameAsCaption"/>
+<element name="TTICustomCheckBox.SetPropertyNameAsCaption.AValue"/>
 
 <element name="TTICustomCheckBox.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link to get
+the property value and sets Checked to True when the value is different
+than LinkValueFalse. When PropertyNameAsCaption is set, Caption is set   to
+the property name from the Editor in Link.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomCheckBox.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomCheckBox.LinkSaveToProperty">
@@ -2289,7 +3150,9 @@ control.
 </element>
 
 <element name="TTICustomCheckBox.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2298,19 +3161,26 @@ control.
 </element>
 
 <element name="TTICustomCheckBox.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckBox.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCheckBox.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2328,9 +3198,14 @@ control.
 </element>
 
 <element name="TTICustomCheckBox.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTICustomCheckBox.PropertyNameAsCaption">
@@ -2339,68 +3214,66 @@ control.
 <seealso/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTICheckBox">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomCheckBox"/>
+<link id="#lcl.stdctrls.TCustomCheckBox">TCustomCheckBox</link>
 </seealso>
 </element>
 
+<!-- TODO: Needs links to ancestors -->
 <element name="TTICheckBox.Action"/>
-<element name="TTICheckBox.Align"/>
+<element name="TTICheckBox.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTICheckBox.AllowGrayed"/>
-<element name="TTICheckBox.Anchors"/>
+<element name="TTICheckBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTICheckBox.AutoSize"/>
-<element name="TTICheckBox.BorderSpacing"/>
+<element name="TTICheckBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTICheckBox.Caption"/>
-<element name="TTICheckBox.Constraints"/>
+<element name="TTICheckBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTICheckBox.DragCursor"/>
 <element name="TTICheckBox.DragKind"/>
 <element name="TTICheckBox.DragMode"/>
-<element name="TTICheckBox.Enabled"/>
+<element name="TTICheckBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTICheckBox.Hint"/>
 <element name="TTICheckBox.Link"/>
 <element name="TTICheckBox.OnChange"/>
-<element name="TTICheckBox.OnChangeBounds"/>
-<element name="TTICheckBox.OnClick"/>
+<element name="TTICheckBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTICheckBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTICheckBox.OnDragDrop"/>
 <element name="TTICheckBox.OnDragOver"/>
-<element name="TTICheckBox.OnEditingDone"/>
+<element name="TTICheckBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTICheckBox.OnEndDrag"/>
-<element name="TTICheckBox.OnEnter"/>
-<element name="TTICheckBox.OnExit"/>
-<element name="TTICheckBox.OnMouseDown"/>
-<element name="TTICheckBox.OnMouseMove"/>
-<element name="TTICheckBox.OnMouseUp"/>
-<element name="TTICheckBox.OnResize"/>
+<element name="TTICheckBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTICheckBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTICheckBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTICheckBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTICheckBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTICheckBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTICheckBox.OnStartDrag"/>
-<element name="TTICheckBox.ParentShowHint"/>
-<element name="TTICheckBox.PopupMenu"/>
+<element name="TTICheckBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTICheckBox.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTICheckBox.PropertyNameAsCaption"/>
-<element name="TTICheckBox.ShowHint"/>
+<element name="TTICheckBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTICheckBox.State"/>
 <element name="TTICheckBox.TabOrder"/>
 <element name="TTICheckBox.TabStop"/>
-<element name="TTICheckBox.Visible"/>
+<element name="TTICheckBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomButton">
 <short/>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIButton"/>
+<link id="#lcl.stdctrls.TCustomButton">TCustomButton</link>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomButton.FLink"/>
-
-<element name="TTICustomButton.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomButton.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomButton.SetLink"/>
+<element name="TTICustomButton.SetLink.AValue"/>
 
 <element name="TTICustomButton.LinkTestEditor">
 <short/>
@@ -2415,7 +3288,9 @@ control.
 </element>
 
 <element name="TTICustomButton.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2424,7 +3299,9 @@ control.
 </element>
 
 <element name="TTICustomButton.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2436,66 +3313,68 @@ control.
 </element>
 
 <element name="TTICustomButton.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the caption and
+action for the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIButton">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomButton"/>
+<link id="#lcl.stdctrls.TCustomButton">TCustomButton</link>
 </seealso>
 </element>
 
+<!-- TODO: Needs links to ancestors -->
 <element name="TTIButton.Action"/>
-<element name="TTIButton.Align"/>
-<element name="TTIButton.Anchors"/>
-<element name="TTIButton.BorderSpacing"/>
+<element name="TTIButton.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIButton.Cancel"/>
 <element name="TTIButton.Caption"/>
-<element name="TTIButton.Constraints"/>
+<element name="TTIButton.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIButton.Default"/>
-<element name="TTIButton.Enabled"/>
+<element name="TTIButton.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTIButton.Font"/>
 <element name="TTIButton.Link"/>
 <element name="TTIButton.ModalResult"/>
-<element name="TTIButton.OnClick"/>
-<element name="TTIButton.OnEditingDone"/>
-<element name="TTIButton.OnEnter"/>
-<element name="TTIButton.OnExit"/>
-<element name="TTIButton.OnKeyDown"/>
-<element name="TTIButton.OnKeyPress"/>
-<element name="TTIButton.OnKeyUp"/>
-<element name="TTIButton.OnMouseDown"/>
-<element name="TTIButton.OnMouseMove"/>
-<element name="TTIButton.OnMouseUp"/>
-<element name="TTIButton.OnResize"/>
-<element name="TTIButton.ParentShowHint"/>
-<element name="TTIButton.PopupMenu"/>
-<element name="TTIButton.ShowHint"/>
+<element name="TTIButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIButton.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIButton.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIButton.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIButton.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIButton.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIButton.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTIButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIButton.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTIButton.TabOrder"/>
 <element name="TTIButton.TabStop"/>
-<element name="TTIButton.Visible"/>
+<element name="TTIButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomLabel">
 <short/>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTILabel"/>
+<link id="#lcl.stdctrls.TCustomLabel">TCustomLabel</link>
+</seealso>
 </element>
 
 <element name="TTICustomLabel.FLink"/>
-
-<element name="TTICustomLabel.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomLabel.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomLabel.SetLink"/>
+<element name="TTICustomLabel.SetLink.AValue"/>
 
 <element name="TTICustomLabel.GetLabelText">
 <short/>
@@ -2507,16 +3386,38 @@ control.
 </element>
 
 <element name="TTICustomLabel.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link, and
+stores the value in the Caption property.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomLabel.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomLabel.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2525,85 +3426,114 @@ control.
 </element>
 
 <element name="TTICustomLabel.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomLabel.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomLabel.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the text value
+for the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTILabel">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomLabel"/>
+<link id="#lcl.stdctrls.TCustomLabel">TCustomLabel</link>
 </seealso>
 </element>
 
-<element name="TTILabel.Align"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTILabel.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTILabel.Alignment"/>
-<element name="TTILabel.Anchors"/>
+<element name="TTILabel.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTILabel.AutoSize"/>
-<element name="TTILabel.BorderSpacing"/>
+<element name="TTILabel.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTILabel.Color"/>
-<element name="TTILabel.Constraints"/>
+<element name="TTILabel.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTILabel.FocusControl"/>
 <element name="TTILabel.Font"/>
 <element name="TTILabel.Layout"/>
 <element name="TTILabel.Link"/>
-<element name="TTILabel.OnChangeBounds"/>
-<element name="TTILabel.OnClick"/>
-<element name="TTILabel.OnDblClick"/>
-<element name="TTILabel.OnMouseDown"/>
+<element name="TTILabel.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTILabel.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTILabel.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TTILabel.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTILabel.OnMouseEnter"/>
 <element name="TTILabel.OnMouseLeave"/>
-<element name="TTILabel.OnMouseMove"/>
-<element name="TTILabel.OnMouseUp"/>
-<element name="TTILabel.OnResize"/>
+<element name="TTILabel.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTILabel.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTILabel.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTILabel.ParentFont"/>
 <element name="TTILabel.ShowAccelChar"/>
-<element name="TTILabel.Visible"/>
+<element name="TTILabel.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TTILabel.WordWrap"/>
 
 <element name="TTICustomGroupbox">
 <short/>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIGroupBox"/>
+<link id="#lcl.stdctrls.TCustomGroupBox">TCustomGroupBox</link>
+</seealso>
 </element>
 
 <element name="TTICustomGroupbox.FLink"/>
-
-<element name="TTICustomGroupbox.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomGroupbox.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomGroupbox.SetLink"/>
+<element name="TTICustomGroupbox.SetLink.AValue"/>
 
 <element name="TTICustomGroupbox.LinkLoadFromProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
+<descr>
+<p>
+<var>LinkLoadFromProperty</var> calls the GetAsText method in Link, and
+stores the value in the Caption property.
+</p>
+<p>
+No actions are performed in the method if the Editor in the Link property
+has not been assigned.
+</p>
+<p>
+<var>LinkLoadFromProperty</var> is assigned to the OnLoadFromProperty
+property in Link in the constructor for the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomGroupbox.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomGroupbox.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2612,89 +3542,104 @@ control.
 </element>
 
 <element name="TTICustomGroupbox.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGroupbox.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomGroupbox.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the values for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIGroupBox">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomGroupbox"/>
+<link id="#lcl.stdctrls.TCustomGroupBox">TCustomGroupBox</link>
 </seealso>
 </element>
 
-<element name="TTIGroupBox.Align"/>
-<element name="TTIGroupBox.Anchors"/>
-<element name="TTIGroupBox.BorderSpacing"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIGroupBox.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIGroupBox.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIGroupBox.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIGroupBox.ChildSizing"/>
 <element name="TTIGroupBox.ClientHeight"/>
 <element name="TTIGroupBox.ClientWidth"/>
 <element name="TTIGroupBox.Color"/>
-<element name="TTIGroupBox.Constraints"/>
-<element name="TTIGroupBox.Enabled"/>
+<element name="TTIGroupBox.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TTIGroupBox.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTIGroupBox.Font"/>
 <element name="TTIGroupBox.Link"/>
-<element name="TTIGroupBox.OnChangeBounds"/>
-<element name="TTIGroupBox.OnClick"/>
-<element name="TTIGroupBox.OnDblClick"/>
-<element name="TTIGroupBox.OnEditingDone"/>
-<element name="TTIGroupBox.OnEnter"/>
-<element name="TTIGroupBox.OnExit"/>
-<element name="TTIGroupBox.OnKeyDown"/>
-<element name="TTIGroupBox.OnKeyPress"/>
-<element name="TTIGroupBox.OnKeyUp"/>
-<element name="TTIGroupBox.OnMouseDown"/>
-<element name="TTIGroupBox.OnMouseMove"/>
-<element name="TTIGroupBox.OnMouseUp"/>
-<element name="TTIGroupBox.OnResize"/>
+<element name="TTIGroupBox.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIGroupBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIGroupBox.OnDblClick" link="#lcl.controls.TControl.OnDblClick"/>
+<element name="TTIGroupBox.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIGroupBox.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIGroupBox.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIGroupBox.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIGroupBox.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIGroupBox.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIGroupBox.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIGroupBox.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIGroupBox.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIGroupBox.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTIGroupBox.ParentColor"/>
 <element name="TTIGroupBox.ParentFont"/>
-<element name="TTIGroupBox.ParentShowHint"/>
-<element name="TTIGroupBox.PopupMenu"/>
-<element name="TTIGroupBox.ShowHint"/>
+<element name="TTIGroupBox.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIGroupBox.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIGroupBox.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTIGroupBox.TabOrder"/>
 <element name="TTIGroupBox.TabStop"/>
-<element name="TTIGroupBox.Visible"/>
+<element name="TTIGroupBox.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomMemo">
 <short/>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIMemo"/>
+<link id="#lcl.stdctrls.TCustomMemo">TCustomMemo</link>
+</seealso>
 </element>
 
+<!-- private -->
 <element name="TTICustomMemo.FLink"/>
-
-<element name="TTICustomMemo.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomMemo.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomMemo.SetLink"/>
+<element name="TTICustomMemo.SetLink.AValue"/>
 
 <element name="TTICustomMemo.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomMemo.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomMemo.LinkSaveToProperty">
@@ -2719,7 +3664,9 @@ control.
 </element>
 
 <element name="TTICustomMemo.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2728,65 +3675,78 @@ control.
 </element>
 
 <element name="TTICustomMemo.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomMemo.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomMemo.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomMemo.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIMemo">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomMemo"/>
+<link id="#lcl.stdctrls.TCustomMemo">TCustomMemo</link>
 </seealso>
 </element>
 
-<element name="TTIMemo.Align"/>
-<element name="TTIMemo.Anchors"/>
-<element name="TTIMemo.BorderSpacing"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIMemo.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIMemo.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIMemo.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIMemo.Color"/>
-<element name="TTIMemo.Constraints"/>
+<element name="TTIMemo.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIMemo.Font"/>
 <element name="TTIMemo.Lines"/>
 <element name="TTIMemo.Link"/>
 <element name="TTIMemo.MaxLength"/>
 <element name="TTIMemo.OnChange"/>
-<element name="TTIMemo.OnEditingDone"/>
-<element name="TTIMemo.OnEnter"/>
-<element name="TTIMemo.OnExit"/>
-<element name="TTIMemo.OnKeyDown"/>
-<element name="TTIMemo.OnKeyPress"/>
-<element name="TTIMemo.OnKeyUp"/>
-<element name="TTIMemo.OnMouseDown"/>
-<element name="TTIMemo.OnMouseUp"/>
-<element name="TTIMemo.OnMouseMove"/>
+<element name="TTIMemo.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIMemo.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIMemo.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIMemo.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIMemo.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIMemo.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIMemo.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIMemo.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIMemo.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
 <element name="TTIMemo.OnMouseEnter"/>
 <element name="TTIMemo.OnMouseLeave"/>
 <element name="TTIMemo.ParentFont"/>
-<element name="TTIMemo.PopupMenu"/>
+<element name="TTIMemo.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTIMemo.ReadOnly"/>
 <element name="TTIMemo.ScrollBars"/>
 <element name="TTIMemo.Tabstop"/>
-<element name="TTIMemo.Visible"/>
+<element name="TTIMemo.Visible" link="#lcl.controls.TControl.Visible"/>
 <element name="TTIMemo.WordWrap"/>
 
 <element name="TTICustomCalendar">
@@ -2795,24 +3755,25 @@ control.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TTICustomCalendar.FLink"/>
-
-<element name="TTICustomCalendar.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomCalendar.SetLink.AValue">
-<short/>
-</element>
+<element name="TTICustomCalendar.SetLink"/>
+<element name="TTICustomCalendar.SetLink.AValue"/>
 
 <element name="TTICustomCalendar.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomCalendar.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomCalendar.LinkSaveToProperty">
@@ -2837,7 +3798,9 @@ control.
 </element>
 
 <element name="TTICustomCalendar.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2846,30 +3809,41 @@ control.
 </element>
 
 <element name="TTICustomCalendar.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCalendar.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCalendar.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomCalendar.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the values for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTICalendar">
 <short/>
 <descr/>
@@ -2878,33 +3852,34 @@ control.
 </seealso>
 </element>
 
-<element name="TTICalendar.Align"/>
-<element name="TTICalendar.Anchors"/>
-<element name="TTICalendar.BorderSpacing"/>
-<element name="TTICalendar.Constraints"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTICalendar.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTICalendar.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTICalendar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTICalendar.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTICalendar.DisplaySettings"/>
 <element name="TTICalendar.Link"/>
 <element name="TTICalendar.OnChange"/>
-<element name="TTICalendar.OnChangeBounds"/>
-<element name="TTICalendar.OnClick"/>
+<element name="TTICalendar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTICalendar.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTICalendar.OnDayChanged"/>
-<element name="TTICalendar.OnEditingDone"/>
-<element name="TTICalendar.OnEnter"/>
-<element name="TTICalendar.OnExit"/>
-<element name="TTICalendar.OnKeyDown"/>
-<element name="TTICalendar.OnKeyPress"/>
-<element name="TTICalendar.OnKeyUp"/>
+<element name="TTICalendar.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTICalendar.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTICalendar.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTICalendar.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTICalendar.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTICalendar.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
 <element name="TTICalendar.OnMonthChanged"/>
-<element name="TTICalendar.OnMouseDown"/>
+<element name="TTICalendar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTICalendar.OnMouseEnter"/>
 <element name="TTICalendar.OnMouseLeave"/>
-<element name="TTICalendar.OnMouseMove"/>
-<element name="TTICalendar.OnMouseUp"/>
-<element name="TTICalendar.OnResize"/>
+<element name="TTICalendar.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTICalendar.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTICalendar.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTICalendar.OnYearChanged"/>
-<element name="TTICalendar.PopupMenu"/>
+<element name="TTICalendar.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTICalendar.Tabstop"/>
-<element name="TTICalendar.Visible"/>
+<element name="TTICalendar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomImage">
 <short/>
@@ -2914,22 +3889,24 @@ control.
 
 <element name="TTICustomImage.FLink"/>
 
-<element name="TTICustomImage.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomImage.SetLink.AValue">
-<short/>
-</element>
+<!-- private -->
+<element name="TTICustomImage.SetLink"/>
+<element name="TTICustomImage.SetLink.AValue"/>
 
 <element name="TTICustomImage.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomImage.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomImage.LinkTestEditor">
@@ -2945,7 +3922,9 @@ control.
 </element>
 
 <element name="TTICustomImage.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -2954,52 +3933,63 @@ control.
 </element>
 
 <element name="TTICustomImage.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomImage.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomImage.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIImage">
 <short/>
 <descr/>
 <seealso>
 <link id="TTICustomImage"/>
+<link id="#lcl.extctrls.TCustomImage">TCustomImage</link>
 </seealso>
 </element>
 
-<element name="TTIImage.Align"/>
-<element name="TTIImage.Anchors"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIImage.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIImage.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIImage.AutoSize"/>
-<element name="TTIImage.BorderSpacing"/>
+<element name="TTIImage.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIImage.Center"/>
-<element name="TTIImage.Constraints"/>
+<element name="TTIImage.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIImage.Link"/>
-<element name="TTIImage.OnChangeBounds"/>
-<element name="TTIImage.OnClick"/>
-<element name="TTIImage.OnMouseDown"/>
+<element name="TTIImage.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIImage.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIImage.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTIImage.OnMouseEnter"/>
 <element name="TTIImage.OnMouseLeave"/>
-<element name="TTIImage.OnMouseMove"/>
-<element name="TTIImage.OnMouseUp"/>
+<element name="TTIImage.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIImage.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIImage.OnPaint"/>
-<element name="TTIImage.OnResize"/>
+<element name="TTIImage.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTIImage.Proportional"/>
 <element name="TTIImage.Stretch"/>
 <element name="TTIImage.Transparent"/>
-<element name="TTIImage.Visible"/>
+<element name="TTIImage.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomFloatSpinEdit">
 <short/>
@@ -3007,34 +3997,28 @@ control.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TTICustomFloatSpinEdit.FLink"/>
 <element name="TTICustomFloatSpinEdit.FUseRTTIMinMax"/>
-
-<element name="TTICustomFloatSpinEdit.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomFloatSpinEdit.SetLink.AValue">
-<short/>
-</element>
-
-<element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax.AValue">
-<short/>
-</element>
+<element name="TTICustomFloatSpinEdit.SetLink"/>
+<element name="TTICustomFloatSpinEdit.SetLink.AValue"/>
+<element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax"/>
+<element name="TTICustomFloatSpinEdit.SetUseRTTIMinMax.AValue"/>
 
 <element name="TTICustomFloatSpinEdit.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomFloatSpinEdit.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomFloatSpinEdit.LinkSaveToProperty">
@@ -3062,7 +4046,9 @@ control.
 </element>
 
 <element name="TTICustomFloatSpinEdit.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -3071,36 +4057,50 @@ control.
 </element>
 
 <element name="TTICustomFloatSpinEdit.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomFloatSpinEdit.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomFloatSpinEdit.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomFloatSpinEdit.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTICustomFloatSpinEdit.UseRTTIMinMax">
-<short/>
+<short>
+Indicates whether MinValue and MaxValue constraints in the linked control
+are used.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIFloatSpinEdit">
 <short/>
 <descr/>
@@ -3109,36 +4109,37 @@ control.
 </seealso>
 </element>
 
-<element name="TTIFloatSpinEdit.Align"/>
-<element name="TTIFloatSpinEdit.Anchors"/>
-<element name="TTIFloatSpinEdit.BorderSpacing"/>
-<element name="TTIFloatSpinEdit.Constraints"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIFloatSpinEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIFloatSpinEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIFloatSpinEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTIFloatSpinEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIFloatSpinEdit.DecimalPlaces"/>
-<element name="TTIFloatSpinEdit.Enabled"/>
+<element name="TTIFloatSpinEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTIFloatSpinEdit.Increment"/>
 <element name="TTIFloatSpinEdit.Link"/>
 <element name="TTIFloatSpinEdit.MaxValue"/>
 <element name="TTIFloatSpinEdit.MinValue"/>
 <element name="TTIFloatSpinEdit.OnChange"/>
-<element name="TTIFloatSpinEdit.OnChangeBounds"/>
-<element name="TTIFloatSpinEdit.OnClick"/>
-<element name="TTIFloatSpinEdit.OnEditingDone"/>
-<element name="TTIFloatSpinEdit.OnEnter"/>
-<element name="TTIFloatSpinEdit.OnExit"/>
-<element name="TTIFloatSpinEdit.OnKeyDown"/>
-<element name="TTIFloatSpinEdit.OnKeyPress"/>
-<element name="TTIFloatSpinEdit.OnKeyUp"/>
-<element name="TTIFloatSpinEdit.OnMouseDown"/>
-<element name="TTIFloatSpinEdit.OnMouseMove"/>
-<element name="TTIFloatSpinEdit.OnMouseUp"/>
-<element name="TTIFloatSpinEdit.OnResize"/>
-<element name="TTIFloatSpinEdit.ParentShowHint"/>
-<element name="TTIFloatSpinEdit.PopupMenu"/>
-<element name="TTIFloatSpinEdit.ShowHint"/>
+<element name="TTIFloatSpinEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTIFloatSpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIFloatSpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTIFloatSpinEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIFloatSpinEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIFloatSpinEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTIFloatSpinEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTIFloatSpinEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTIFloatSpinEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIFloatSpinEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIFloatSpinEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTIFloatSpinEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTIFloatSpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIFloatSpinEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIFloatSpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTIFloatSpinEdit.TabStop"/>
 <element name="TTIFloatSpinEdit.TabOrder"/>
 <element name="TTIFloatSpinEdit.UseRTTIMinMax"/>
-<element name="TTIFloatSpinEdit.Visible"/>
+<element name="TTIFloatSpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomSpinEdit">
 <short/>
@@ -3168,12 +4169,19 @@ control.
 </element>
 
 <element name="TTICustomSpinEdit.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomSpinEdit.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomSpinEdit.LinkSaveToProperty">
@@ -3201,7 +4209,9 @@ control.
 </element>
 
 <element name="TTICustomSpinEdit.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -3210,36 +4220,50 @@ control.
 </element>
 
 <element name="TTICustomSpinEdit.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomSpinEdit.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomSpinEdit.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomSpinEdit.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTICustomSpinEdit.UseRTTIMinMax">
-<short/>
+<short>
+Indicates whether MinValue and MaxValue constraints in the linked control
+are used.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTISpinEdit">
 <short/>
 <descr/>
@@ -3248,35 +4272,36 @@ control.
 </seealso>
 </element>
 
-<element name="TTISpinEdit.Align"/>
-<element name="TTISpinEdit.Anchors"/>
-<element name="TTISpinEdit.BorderSpacing"/>
-<element name="TTISpinEdit.Constraints"/>
-<element name="TTISpinEdit.Enabled"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTISpinEdit.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTISpinEdit.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTISpinEdit.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTISpinEdit.Constraints" link="#lcl.controls.TControl.Constraints"/>
+<element name="TTISpinEdit.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTISpinEdit.Increment"/>
 <element name="TTISpinEdit.Link"/>
 <element name="TTISpinEdit.MaxValue"/>
 <element name="TTISpinEdit.MinValue"/>
 <element name="TTISpinEdit.OnChange"/>
-<element name="TTISpinEdit.OnChangeBounds"/>
-<element name="TTISpinEdit.OnClick"/>
-<element name="TTISpinEdit.OnEditingDone"/>
-<element name="TTISpinEdit.OnEnter"/>
-<element name="TTISpinEdit.OnExit"/>
-<element name="TTISpinEdit.OnKeyDown"/>
-<element name="TTISpinEdit.OnKeyPress"/>
-<element name="TTISpinEdit.OnKeyUp"/>
-<element name="TTISpinEdit.OnMouseDown"/>
-<element name="TTISpinEdit.OnMouseMove"/>
-<element name="TTISpinEdit.OnMouseUp"/>
-<element name="TTISpinEdit.OnResize"/>
-<element name="TTISpinEdit.ParentShowHint"/>
-<element name="TTISpinEdit.PopupMenu"/>
-<element name="TTISpinEdit.ShowHint"/>
+<element name="TTISpinEdit.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTISpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTISpinEdit.OnClick" link="#lcl.controls.TControl.OnClick"/>
+<element name="TTISpinEdit.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTISpinEdit.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTISpinEdit.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTISpinEdit.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTISpinEdit.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTISpinEdit.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTISpinEdit.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTISpinEdit.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTISpinEdit.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTISpinEdit.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTISpinEdit.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTISpinEdit.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTISpinEdit.TabStop"/>
 <element name="TTISpinEdit.TabOrder"/>
 <element name="TTISpinEdit.UseRTTIMinMax"/>
-<element name="TTISpinEdit.Visible"/>
+<element name="TTISpinEdit.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomTrackBar">
 <short/>
@@ -3284,34 +4309,28 @@ control.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TTICustomTrackBar.FLink"/>
 <element name="TTICustomTrackBar.FUseRTTIMinMax"/>
-
-<element name="TTICustomTrackBar.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomTrackBar.SetLink.AValue">
-<short/>
-</element>
-
-<element name="TTICustomTrackBar.SetUseRTTIMinMax">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomTrackBar.SetUseRTTIMinMax.AValue">
-<short/>
-</element>
+<element name="TTICustomTrackBar.SetLink"/>
+<element name="TTICustomTrackBar.SetLink.AValue"/>
+<element name="TTICustomTrackBar.SetUseRTTIMinMax"/>
+<element name="TTICustomTrackBar.SetUseRTTIMinMax.AValue"/>
 
 <element name="TTICustomTrackBar.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomTrackBar.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertylink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomTrackBar.LinkSaveToProperty">
@@ -3339,7 +4358,9 @@ control.
 </element>
 
 <element name="TTICustomTrackBar.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -3348,36 +4369,50 @@ control.
 </element>
 
 <element name="TTICustomTrackBar.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomTrackBar.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomTrackBar.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomTrackBar.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTICustomTrackBar.UseRTTIMinMax">
-<short/>
+<short>
+Indicates whether MinValue and MaxValue constraints in the linked control
+are used in the Min and Max properties.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTITrackBar">
 <short/>
 <descr/>
@@ -3386,13 +4421,14 @@ control.
 </seealso>
 </element>
 
-<element name="TTITrackBar.Align"/>
-<element name="TTITrackBar.Anchors"/>
-<element name="TTITrackBar.BorderSpacing"/>
-<element name="TTITrackBar.Constraints"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTITrackBar.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTITrackBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTITrackBar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
+<element name="TTITrackBar.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTITrackBar.DragCursor"/>
 <element name="TTITrackBar.DragMode"/>
-<element name="TTITrackBar.Enabled"/>
+<element name="TTITrackBar.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTITrackBar.Frequency"/>
 <element name="TTITrackBar.Hint"/>
 <element name="TTITrackBar.LineSize"/>
@@ -3400,36 +4436,36 @@ control.
 <element name="TTITrackBar.Max"/>
 <element name="TTITrackBar.Min"/>
 <element name="TTITrackBar.OnChange"/>
-<element name="TTITrackBar.OnChangeBounds"/>
-<element name="TTITrackBar.OnClick"/>
+<element name="TTITrackBar.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
+<element name="TTITrackBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTITrackBar.OnDragDrop"/>
 <element name="TTITrackBar.OnDragOver"/>
-<element name="TTITrackBar.OnEditingDone"/>
+<element name="TTITrackBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTITrackBar.OnEndDrag"/>
-<element name="TTITrackBar.OnEnter"/>
-<element name="TTITrackBar.OnExit"/>
-<element name="TTITrackBar.OnMouseDown"/>
+<element name="TTITrackBar.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTITrackBar.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTITrackBar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
 <element name="TTITrackBar.OnMouseEnter"/>
 <element name="TTITrackBar.OnMouseLeave"/>
-<element name="TTITrackBar.OnMouseMove"/>
-<element name="TTITrackBar.OnMouseUp"/>
-<element name="TTITrackBar.OnKeyDown"/>
-<element name="TTITrackBar.OnKeyPress"/>
-<element name="TTITrackBar.OnKeyUp"/>
-<element name="TTITrackBar.OnResize"/>
+<element name="TTITrackBar.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTITrackBar.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
+<element name="TTITrackBar.OnKeyDown" link="#lcl.controls.TWinControl.OnKeyDown"/>
+<element name="TTITrackBar.OnKeyPress" link="#lcl.controls.TWinControl.OnKeyPress"/>
+<element name="TTITrackBar.OnKeyUp" link="#lcl.controls.TWinControl.OnKeyUp"/>
+<element name="TTITrackBar.OnResize" link="#lcl.controls.TControl.OnResize"/>
 <element name="TTITrackBar.OnStartDrag"/>
 <element name="TTITrackBar.Orientation"/>
 <element name="TTITrackBar.PageSize"/>
-<element name="TTITrackBar.ParentShowHint"/>
-<element name="TTITrackBar.PopupMenu"/>
+<element name="TTITrackBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTITrackBar.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTITrackBar.ScalePos"/>
-<element name="TTITrackBar.ShowHint"/>
+<element name="TTITrackBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTITrackBar.TabOrder"/>
 <element name="TTITrackBar.TabStop"/>
 <element name="TTITrackBar.TickMarks"/>
 <element name="TTITrackBar.TickStyle"/>
 <element name="TTITrackBar.UseRTTIMinMax"/>
-<element name="TTITrackBar.Visible"/>
+<element name="TTITrackBar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomProgressBar">
 <short/>
@@ -3437,34 +4473,28 @@ control.
 <seealso/>
 </element>
 
+<!-- private -->
 <element name="TTICustomProgressBar.FLink"/>
 <element name="TTICustomProgressBar.FUseRTTIMinMax"/>
-
-<element name="TTICustomProgressBar.SetLink">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomProgressBar.SetLink.AValue">
-<short/>
-</element>
-
-<element name="TTICustomProgressBar.SetUseRTTIMinMax">
-<short/>
-<descr/>
-<seealso/>
-</element>
-<element name="TTICustomProgressBar.SetUseRTTIMinMax.AValue">
-<short/>
-</element>
+<element name="TTICustomProgressBar.SetLink"/>
+<element name="TTICustomProgressBar.SetLink.AValue"/>
+<element name="TTICustomProgressBar.SetUseRTTIMinMax"/>
+<element name="TTICustomProgressBar.SetUseRTTIMinMax.AValue"/>
 
 <element name="TTICustomProgressBar.LinkLoadFromProperty">
-<short/>
+<short>
+Implements the event handler signalled when the value for the control is
+loaded from its property Link.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomProgressBar.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomProgressBar.LinkSaveToProperty">
@@ -3486,13 +4516,18 @@ control.
 </element>
 
 <element name="TTICustomProgressBar.GetRTTIMinMax">
-<short/>
+<short>
+Gets the minimum and maximum value constraints from the RTTI type
+information for the linked object and property.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomProgressBar.Create">
-<short/>
+<short>
+Constructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
@@ -3501,36 +4536,50 @@ control.
 </element>
 
 <element name="TTICustomProgressBar.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomProgressBar.Loaded">
-<short/>
+<short>
+Loads the value from the property Link when LCL component streaming has
+been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomProgressBar.EditingDone">
-<short/>
+<short>
+Saves the property value when editing has been completed in the control.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomProgressBar.Link">
-<short/>
+<short>
+Provides a link to the persistent object and property with the value for
+the control.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
 </element>
 
 <element name="TTICustomProgressBar.UseRTTIMinMax">
-<short/>
+<short>
+Indicates whether minimum and maximum values from the linked control are
+used.
+</short>
 <descr/>
 <seealso/>
 </element>
 
-<!-- TODO: Needs links to ancestors -->
 <element name="TTIProgressBar">
 <short/>
 <descr/>
@@ -3539,76 +4588,115 @@ control.
 </seealso>
 </element>
 
-<element name="TTIProgressBar.Align"/>
-<element name="TTIProgressBar.Anchors"/>
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIProgressBar.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIProgressBar.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIProgressBar.BarShowText"/>
-<element name="TTIProgressBar.BorderSpacing"/>
+<element name="TTIProgressBar.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIProgressBar.BorderWidth"/>
-<element name="TTIProgressBar.Constraints"/>
+<element name="TTIProgressBar.Constraints" link="#lcl.controls.TControl.Constraints"/>
 <element name="TTIProgressBar.DragCursor"/>
 <element name="TTIProgressBar.DragKind"/>
 <element name="TTIProgressBar.DragMode"/>
-<element name="TTIProgressBar.Enabled"/>
+<element name="TTIProgressBar.Enabled" link="#lcl.controls.TControl.Enabled"/>
 <element name="TTIProgressBar.Hint"/>
 <element name="TTIProgressBar.Link"/>
 <element name="TTIProgressBar.Max"/>
 <element name="TTIProgressBar.Min"/>
 <element name="TTIProgressBar.OnDragDrop"/>
 <element name="TTIProgressBar.OnDragOver"/>
-<element name="TTIProgressBar.OnEditingDone"/>
+<element name="TTIProgressBar.OnClick" link="#lcl.controls.TControl.OnClick"/>
 <element name="TTIProgressBar.OnEndDrag"/>
-<element name="TTIProgressBar.OnEnter"/>
-<element name="TTIProgressBar.OnExit"/>
-<element name="TTIProgressBar.OnMouseDown"/>
-<element name="TTIProgressBar.OnMouseMove"/>
-<element name="TTIProgressBar.OnMouseUp"/>
+<element name="TTIProgressBar.OnEnter" link="#lcl.controls.TWinControl.OnEnter"/>
+<element name="TTIProgressBar.OnExit" link="#lcl.controls.TWinControl.OnExit"/>
+<element name="TTIProgressBar.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIProgressBar.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIProgressBar.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIProgressBar.OnStartDock"/>
 <element name="TTIProgressBar.OnStartDrag"/>
 <element name="TTIProgressBar.Orientation"/>
-<element name="TTIProgressBar.ParentShowHint"/>
-<element name="TTIProgressBar.PopupMenu"/>
+<element name="TTIProgressBar.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIProgressBar.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
 <element name="TTIProgressBar.Position"/>
-<element name="TTIProgressBar.ShowHint"/>
+<element name="TTIProgressBar.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
 <element name="TTIProgressBar.Smooth"/>
 <element name="TTIProgressBar.Step"/>
 <element name="TTIProgressBar.TabOrder"/>
 <element name="TTIProgressBar.TabStop"/>
 <element name="TTIProgressBar.UseRTTIMinMax"/>
-<element name="TTIProgressBar.Visible"/>
+<element name="TTIProgressBar.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="TTICustomColorButton">
-<short/>
+<short>
+Specifies a color button control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTIColorButton"/>
+<link id="#lcl.dialogs.TColorButton">TColorButton</link>
+</seealso>
 </element>
 
 <element name="TTICustomColorButton.FLink"/>
 
 <element name="TTICustomColorButton.SetLink">
-<short/>
+<short>
+Sets the value for the Link property.
+</short>
 <descr/>
-<seealso/>
+<seealso>
+<link id="TTICustomColorButton.Link"/>
+</seealso>
 </element>
 <element name="TTICustomColorButton.SetLink.AValue">
-<short/>
+<short>
+New value for the Link property.
+</short>
 </element>
 
-<element name="'TTICustomColorButton.LinkLoadFromProperty'">
-<short/>
-<descr/>
-<seealso/>
+<element name="TTICustomColorButton.LinkLoadFromProperty">
+<short>
+Gets the TColor value for the control from the object and property defined
+in Link.
+</short>
+<descr>
+<p>
+LinkLoadFromProperty implements the routine assigned to the
+OnLoadFromProperty event handler in Link in the constructor for the class
+instance.
+</p>
+</descr>
+<seealso>
+<link id="TTICustomColorButton.Link"/>
+<link id="TCustomPropertyLink.OnLoadFromProperty"/>
+</seealso>
 </element>
 <element name="TTICustomColorButton.LinkLoadFromProperty.Sender">
-<short/>
+<short>
+Object (TCustomPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomColorButton.LinkSaveToProperty">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Stores the TColor value in the control to the object and property defined
+in Link.
+</short>
+<p>
+LinkSaveToProperty implements the routine assigned to the
+OnSaveToProperty event handler in Link in the constructor for the class
+instance.
+</p>
+<seealso>
+<link id="TTICustomColorButton.Link"/>
+<link id="TCustomPropertyLink.OnSaveToProperty"/>
+</seealso>
 </element>
 <element name="TTICustomColorButton.LinkSaveToProperty.Sender">
-<short/>
+<short>
+Object (TCustomPropertyLink) for the event notification.
+</short>
 </element>
 
 <element name="TTICustomColorButton.LinkTestEditor">
@@ -3630,100 +4718,195 @@ control.
 </element>
 
 <element name="TTICustomColorButton.Create">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Constructor for the class instance.
+</short>
+<descr>
+<p>
+Create is the overridden constructor for the class instance, and calls
+calls the inherited constructor on entry.
+</p>
+<p>
+Create allocates resources for the Link member and configures it to
+access properties using the Integer type. Its OnLoadFromProperty and
+OnSaveToProperty event handlers are set to the LinkLoadFromProperty and
+LinkSaveToProperty methods (respectively) in the class instance.
+</p>
+</descr>
+<seealso>
+<link id="TTICustomColorButton.Link"/>
+<link id="TTICustomColorButton.LinkLoadFromProperty"/>
+<link id="TTICustomColorButton.LinkSaveToProperty"/>
+<link id="TCustomPropertyLink.OnLoadFromProperty"/>
+<link id="TCustomPropertyLink.OnSaveToProperty"/>
+</seealso>
 </element>
 <element name="TTICustomColorButton.Create.TheOwner">
-<short/>
+<short>
+Component which is the owner of the class instance.
+</short>
 </element>
 
 <element name="TTICustomColorButton.Destroy">
-<short/>
+<short>
+Destructor for the class instance.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomColorButton.Loaded">
-<short/>
+<short>
+Loads the value for the control from the object and property in Link when
+LCL component streaming has been completed.
+</short>
 <descr/>
 <seealso/>
 </element>
 
 <element name="TTICustomColorButton.EditingDone">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<element name="TTICustomColorButton.Link">
-<short/>
-<descr/>
-<seealso/>
-</element>
-
-<!-- TODO: Needs links to ancestors -->
-<element name="TTIColorButton">
-<short/>
+<short>
+Applies the color value to the linked property when editing is
+completed in the control.
+</short>
 <descr/>
 <seealso>
-<link id="TTICustomColorButton"/>
+<link id="TTICustomColorButton.Link"/>
+<link id="TPropertyLink"/>
+<link id="#lcl.controls.TControl.EditingDone">TControl.EditingDone</link>
 </seealso>
 </element>
 
-<element name="TTIColorButton.Align"/>
-<element name="TTIColorButton.Anchors"/>
-<element name="TTIColorButton.BorderSpacing"/>
+<element name="TTICustomColorButton.Link">
+<short>
+Provides a link to the persistent object and property with the color value
+for the control.
+</short>
+<descr/>
+<seealso>
+<link id="TPropertyLink"/>
+</seealso>
+</element>
+
+<element name="TTIColorButton">
+<short>
+Implements a color button control which uses RTTI to access and maintain
+property values in a linked object.
+</short>
+<descr/>
+<seealso>
+<link id="TTICustomColorButton"/>
+<link id="#lcl.dialogs.TColorButton">TColorButton</link>
+</seealso>
+</element>
+
+<!-- TODO: Needs links to ancestors -->
+<element name="TTIColorButton.Align" link="#lcl.controls.TControl.Align"/>
+<element name="TTIColorButton.Anchors" link="#lcl.controls.TControl.Anchors"/>
+<element name="TTIColorButton.BorderSpacing" link="#lcl.controls.TControl.BorderSpacing"/>
 <element name="TTIColorButton.BorderWidth"/>
 <element name="TTIColorButton.ButtonColor"/>
 <element name="TTIColorButton.Hint"/>
 <element name="TTIColorButton.Link"/>
-<element name="TTIColorButton.OnChangeBounds"/>
+<element name="TTIColorButton.OnChangeBounds" link="#lcl.controls.TControl.OnChangeBounds"/>
 <element name="TTIColorButton.OnColorChanged"/>
-<element name="TTIColorButton.OnMouseDown"/>
-<element name="TTIColorButton.OnMouseMove"/>
-<element name="TTIColorButton.OnMouseUp"/>
+<element name="TTIColorButton.OnMouseDown" link="#lcl.controls.TControl.OnMouseDown"/>
+<element name="TTIColorButton.OnMouseMove" link="#lcl.controls.TControl.OnMouseMove"/>
+<element name="TTIColorButton.OnMouseUp" link="#lcl.controls.TControl.OnMouseUp"/>
 <element name="TTIColorButton.OnPaint"/>
-<element name="TTIColorButton.OnResize"/>
-<element name="TTIColorButton.ParentShowHint"/>
-<element name="TTIColorButton.PopupMenu"/>
-<element name="TTIColorButton.ShowHint"/>
-<element name="TTIColorButton.Visible"/>
+<element name="TTIColorButton.OnResize" link="#lcl.controls.TControl.OnResize"/>
+<element name="TTIColorButton.ParentShowHint" link="#lcl.controls.TControl.ParentShowHint"/>
+<element name="TTIColorButton.PopupMenu" link="#lcl.stdctrls.TCustomEdit.PopupMenu"/>
+<element name="TTIColorButton.ShowHint" link="#lcl.controls.TControl.ShowHint"/>
+<element name="TTIColorButton.Visible" link="#lcl.controls.TControl.Visible"/>
 
 <element name="GetPropertyLinkOfComponent">
 <short/>
-<descr/>
-<seealso/>
+<descr>
+<p>
+Called from the SaveActivePropertyLink routine. Also used in the
+implementation of the SetLinksForChildControls and
+SetLinksForChildComponents methods in TMultiPropertyLink.
+</p>
+</descr>
+<errors>
+An EPropertyError exception raised in the routine when AComponent does not
+have a Link property using the TCustomPropertyLink type is handled and
+ignored.
+</errors>
+<seealso>
+<link id="TCustomPropertyLink"/>
+<link id="TMultiPropertyLink.SetLinksForChildComponents"/>
+<link id="TMultiPropertyLink.SetLinksForChildControls"/>
+<link id="#rtl.typinfo.GetObjectProp">GetObjectProp</link>
+</seealso>
 </element>
 <element name="GetPropertyLinkOfComponent.Result">
-<short/>
+<short>
+TCustomPropertyLink instance for the Link property in the specified
+Component.
+</short>
 </element>
 <element name="GetPropertyLinkOfComponent.AComponent">
-<short/>
+<short>
+TComponent instance examined for a Link property in the routine.
+</short>
 </element>
 
 <element name="SaveActivePropertyLink">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Saves the value for the active control on a form using its propertylink.
+</short>
+<descr>
+<p>
+<var>SaveActivePropertyLink</var> is a procedure used to save the value for
+the active control on the specified form using the <var>TPropertyLink</var>
+instance for the control.
+</p>
+</descr>
+<seealso>
+<link id="GetPropertyLinkOfComponent"/>
+<link id="TCustomPropertyLink.SaveToProperty"/>
+<link id="#lcl.forms.TCustomForm.ActiveControl">
+TCustomForm.ActiveControl</link>
+</seealso>
 </element>
 <element name="SaveActivePropertyLink.AForm">
-<short/>
+<short>
+TCustomForm instance with the control updated in the routine.
+</short>
 </element>
 
 <element name="CreateEnumAliasValues">
-<short/>
-<descr/>
-<seealso/>
+<short>
+Fills a TStrings instance with enumeration value names and their aliases
+for the specified RTTI type information.
+</short>
+<descr>
+<p>
+Called from the BuildEnumAliasValues method in TCustomPropertyLink.
+</p>
+</descr>
+<seealso>
+<link id="TCustomPropertyLink.BuildEnumAliasValues"/>
+</seealso>
 </element>
 <element name="CreateEnumAliasValues.EnumType">
-<short/>
+<short>
+Pointer to the RTTI type information for an enumeration property.
+</short>
 </element>
 <element name="CreateEnumAliasValues.List">
-<short/>
+<short>
+TStrings instance where enumeration value names and their aliases are
+stored.
+</short>
 </element>
 <element name="CreateEnumAliasValues.AStringArray">
-<short/>
+<short>
+Array with the aliases for the enumeration values in the specified type
+information.
+</short>
 </element>
 
 <element name="Register">
