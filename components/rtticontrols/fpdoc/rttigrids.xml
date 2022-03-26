@@ -1529,7 +1529,7 @@ maintain a list of properties in a linked object.
 
 <element
 name="TTIGrid.AliasPropertyNames"
-link="#runtimetypeinfocontrols.rttigrids.TTICustomPropertyGrid.AliasPropertyNames"/>
+link="#runtimetypeinfocontrols.rttigrids.TTICustomGrid.AliasPropertyNames"/>
 <element name="TTIGrid.Align" link="#lcl.controls.TControl.Align"/>
 <element name="TTIGrid.Anchors" link="#lcl.controls.TControl.Anchors"/>
 <element name="TTIGrid.AutoAdvance" link="#lcl.grids.TCustomGrid.AutoAdvance"/>
