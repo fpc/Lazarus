@@ -16,7 +16,7 @@ echo "RTTIControls package"
 $fpcdir/fpdoc.exe --project=rtticontrols-project.xml --format=chm --import="$docdir/chm/rtl.xct,ms-its:rtl.chm::/" --import="$docdir/chm/fcl.xct,ms-its:fcl.chm::/" --import="$docdir/chm/lcl.xct,ms-its:lcl.chm::/" --import="$docdir/chm/lazutils.xct,ms-its:lazutils.chm::/"
 
 # copy generated chm help to lazarus docs directory
-cp -v rtticontrols.{chm,xct} $docdir/chm/
+cp -v runtimetypeinfocontrols.{chm,xct} $docdir/chm/
 
 # generate html format without footers
 # imports done manually to set the correct prefix for the output format
