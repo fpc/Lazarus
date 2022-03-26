@@ -236,13 +236,17 @@ type
   private
     FValue: String;
     FValueDone: Boolean;
-    function GetDynamicCodePage(Addr: TFpDbgMemLocation; out Codepage: TSystemCodePage): Boolean;
+    FDynamicCodePage: TSystemCodePage;
+    function GetCodePage: TSystemCodePage;
+    function ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out Codepage: TSystemCodePage): Boolean;
   protected
     function IsValidTypeCast: Boolean; override;
     procedure Reset; override;
     function GetFieldFlags: TFpValueFieldFlags; override;
     function GetAsString: AnsiString; override;
     function GetAsWideString: WideString; override;
+  public
+    property DynamicCodePage: TSystemCodePage read GetCodePage;
   end;
 
   { TFpSymbolDwarfFreePascalDataProc }
@@ -1340,6 +1344,12 @@ end;
 
 { TFpValueDwarfV3FreePascalString }
 
+function TFpValueDwarfV3FreePascalString.GetCodePage: TSystemCodePage;
+begin
+  GetAsString;
+  Result := FDynamicCodePage;
+end;
+
 function TFpValueDwarfV3FreePascalString.IsValidTypeCast: Boolean;
 var
   f: TFpValueFieldFlags;
@@ -1494,8 +1504,11 @@ begin
       Result := '';
       SetLastError(Context.LastMemError);
     end else begin
-      if GetDynamicCodePage(Addr, Codepage) then
+      if ObtainDynamicCodePage(Addr, Codepage) then
+        begin
         SetCodePage(RResult, Codepage, False);
+        FDynamicCodePage:=Codepage;
+        end;
       Result := RResult;
     end;
   end;
@@ -1509,7 +1522,7 @@ begin
   Result := GetAsString;
 end;
 
-function TFpValueDwarfV3FreePascalString.GetDynamicCodePage(Addr: TFpDbgMemLocation; out
+function TFpValueDwarfV3FreePascalString.ObtainDynamicCodePage(Addr: TFpDbgMemLocation; out
   Codepage: TSystemCodePage): Boolean;
 var
   CodepageOffset: SmallInt;
