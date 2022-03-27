@@ -517,7 +517,10 @@
           Edit is the TEbEdit control used to perform direct input for the value in the grouped edit control.
         </short>
         <descr></descr>
-        <seealso></seealso>
+        <seealso>
+          <link id="TEbEdit"/>
+          <link id="#lcl.groupededit.TCustomAbstractGroupedEdit.BaseEditor">TCustomAbstractGroupedEdit.BaseEditor</link>
+        </seealso>
       </element>
 
       <element name="TCustomEditButton.Flat">
@@ -648,6 +651,7 @@
 
       <element name="TEditButton.AutoSelected" link="#lcl.groupededit.TCustomAbstractGroupedEdit.AutoSelected"/>
       <element name="TEditButton.Button" link="#lcl.editbtn.TCustomEditButton.Button"/>
+      <element name="TEditButton.Edit" link="#lcl.editbtn.TCustomEditButton.Edit"/>
       <element name="TEditButton.NumbersOnly" link="#lcl.groupededit.TCustomAbstractGroupedEdit.NumbersOnly"/>
       <element name="TEditButton.Action" link="#lcl.controls.TControl.Action"/>
       <element name="TEditButton.AutoSelect" link="#lcl.stdctrls.TCustomEdit.AutoSelect"/>
