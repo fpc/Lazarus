@@ -202,6 +202,9 @@ components/tinipropstorage_200.png
 components/tjsonpropstorage.png
 components/tjsonpropstorage_150.png
 components/tjsonpropstorage_200.png
+components/tjsondataset.png
+components/tjsondataset_150.png
+components/tjsondataset_200.png
 components/tlabel.png
 components/tlabel_150.png
 components/tlabel_200.png
