@@ -3479,6 +3479,7 @@ begin
       FNeedPositionConfirmed := True;
   end;
   {$ENDIF}
+  FOwner.PaintTimer.RestartCycle;
 end;
 
 procedure TSynEditScreenCaretPainterInternal.BeginPaint(rcClip: TRect);
