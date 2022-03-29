@@ -462,6 +462,7 @@ type
     procedure FinishScroll(dx, dy: Integer; const rcScroll, rcClip: TRect; Success: Boolean); virtual;
     procedure BeginPaint(rcClip: TRect); virtual;
     procedure FinishPaint(rcClip: TRect); virtual;
+    procedure WaitForPaint; virtual;
   public
     constructor Create(AHandleOwner: TWinControl; AOwner: TSynEditScreenCaret);
     function CreateCaret(w, h: Integer): Boolean; virtual;
@@ -515,6 +516,7 @@ type
     FState: TPainterStates;
     FCanPaint: Boolean;
     FInRect: TIsInRectState;
+    FWaitForPaint: Boolean;
 
     function dbgsIRState(s: TIsInRectState): String;
     procedure DoTimer(Sender: TObject);
@@ -535,6 +537,7 @@ type
     procedure FinishScroll(dx, dy: Integer; const rcScroll, rcClip: TRect; Success: Boolean); override;
     procedure BeginPaint(rcClip: TRect); override;
     procedure FinishPaint(rcClip: TRect); override;
+    procedure WaitForPaint; override;
   public
     destructor Destroy; override;
     function CreateCaret(w, h: Integer): Boolean; override;
@@ -616,6 +619,7 @@ type
     procedure FinishScroll(dx, dy: Integer; const rcScroll, rcClip: TRect; Success: Boolean);
     procedure BeginPaint(rcClip: TRect);
     procedure FinishPaint(rcClip: TRect);
+    procedure WaitForPaint;
     procedure Lock;
     procedure UnLock;
     procedure AfterPaintEvent;  // next async
@@ -3168,6 +3172,11 @@ begin
   FInPaint := False;
 end;
 
+procedure TSynEditScreenCaretPainter.WaitForPaint;
+begin
+  //
+end;
+
 { TSynEditScreenCaretPainterSystem }
 
 procedure TSynEditScreenCaretPainterSystem.BeginScroll(dx, dy: Integer;
@@ -3271,7 +3280,9 @@ var
   l: Integer;
   am: TAntialiasingMode;
 begin
-  if ForcePaintEvents and (not FInPaint) then begin
+  if (ForcePaintEvents and (not FInPaint)) or
+     FWaitForPaint
+  then begin
    Invalidate;
    exit;
   end;
@@ -3476,6 +3487,7 @@ begin
 
   FInRect := IsInRect(rcClip);
   FCanPaint := FInRect = irInside;
+  FWaitForPaint := False;
 
   if (psCleanOld in FState) and not FCanPaint then begin
     if IsInRect(rcClip, FOldX, FOldY, FOldW, FOldH) <> irInside then begin
@@ -3512,6 +3524,12 @@ begin
 
   inherited FinishPaint(rcClip);
   FCanPaint := True;
+end;
+
+procedure TSynEditScreenCaretPainterInternal.WaitForPaint;
+begin
+  inherited WaitForPaint;
+  FWaitForPaint := True;
 end;
 
 destructor TSynEditScreenCaretPainterInternal.Destroy;
@@ -3651,6 +3669,11 @@ end;
 procedure TSynEditScreenCaret.FinishPaint(rcClip: TRect);
 begin
   Painter.FinishPaint(rcClip);
+end;
+
+procedure TSynEditScreenCaret.WaitForPaint;
+begin
+  FCaretPainter.WaitForPaint;
 end;
 
 procedure TSynEditScreenCaret.Hide;

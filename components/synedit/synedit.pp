@@ -2979,6 +2979,7 @@ begin
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnExit(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self)]);
     {$ENDIF}
+    FScreenCaret.WaitForPaint;
     end;
 end;
 
@@ -3005,6 +3006,7 @@ begin
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnExit(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self)]);
     {$ENDIF}
+    FScreenCaret.WaitForPaint;
   end;
 end;
 
