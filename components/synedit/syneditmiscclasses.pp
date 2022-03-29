@@ -1222,50 +1222,46 @@ end;
 function TSynSelectedColorMergeResult.CalculateInfo(var AnInfo: TSynSelectedColorMergeInfo;
   ANoneColor: TColor; IsFrame: Boolean): TColor;
 var
-  i, j, c, p: Integer;
+  i, j, k, c, p, p2: Integer;
   tmp: TSynSelectedColorAlphaEntry;
   C1, C2, C3, M1, M2, M3, Alpha: Integer;
   Col: TColor;
 begin
   p := AnInfo.BasePriority;
+
   c := AnInfo.AlphaCount - 1;
+  j := -1;
 
-  //if c >= 0 then begin
-    while (c >= 0) and (AnInfo.AlphaStack[c].Priority < p) do
-      dec(c);
-    i := 1;
-    while i <= c do begin
-      if AnInfo.AlphaStack[i].Priority < p then begin
-        AnInfo.AlphaStack[i] := AnInfo.AlphaStack[c];
-        dec(c);
-        while (c >= 0) and (AnInfo.AlphaStack[c].Priority < p) do
-          dec(c);
-        Continue;
-      end;
+  for i := 0 to c do begin
+    p2 := AnInfo.AlphaStack[i].Priority;
+    if (p2 < p) then
+      continue;
 
-      j := i - 1;
-      if AnInfo.AlphaStack[j].Priority > AnInfo.AlphaStack[i].Priority then begin
-        tmp := AnInfo.AlphaStack[i];
-        AnInfo.AlphaStack[i] := AnInfo.AlphaStack[j];
-        while (j > 0) and (AnInfo.AlphaStack[j-1].Priority > AnInfo.AlphaStack[j].Priority) do begin
-          AnInfo.AlphaStack[j] := AnInfo.AlphaStack[j-1];
-          dec(j);
-        end;
-        AnInfo.AlphaStack[j] := tmp;
-      end;
+    inc(j);
+    k := j;
+    while (k > 0) and (p2 < AnInfo.AlphaStack[k - 1].Priority) do
+      dec(k);
+    if k = i then
+      continue;
 
-      inc(i);
-    end;
-  //end;
+    if k < j then begin
+      tmp := AnInfo.AlphaStack[i];
+      move(AnInfo.AlphaStack[k], AnInfo.AlphaStack[k + 1], (j-k) * sizeof(AnInfo.AlphaStack[0]));
+      AnInfo.AlphaStack[k] := tmp;
+    end
+    else
+      AnInfo.AlphaStack[k] := AnInfo.AlphaStack[i];
+  end;
+  c := j;
+  AnInfo.AlphaCount := j;
 
   Result := AnInfo.BaseColor;
-
   // The highlighter may have merged, before defaults where set in
   // TLazSynPaintTokenBreaker.GetNextHighlighterTokenFromView / InitSynAttr
   if (Result = clNone) and (not IsFrame) then
     Result := ANoneColor;
 
-  if (c >= 0) and (AnInfo.AlphaStack[0].Priority >= p) then begin
+  if (c >= 0) then begin
     if (Result = clNone) then
       Result := ANoneColor;
     Result := ColorToRGB(Result);  // no system color.
