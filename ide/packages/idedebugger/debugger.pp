@@ -38,7 +38,7 @@ unit Debugger;
 interface
 
 uses
-  TypInfo, Classes, SysUtils, math,
+  TypInfo, Classes, SysUtils, math, Types,
   // LazUtils
   Laz2_XMLCfg, LazFileUtils, LazStringUtils, LazUtilities, LazLoggerBase,
   LazClasses, Maps, LazMethodList,
@@ -662,6 +662,8 @@ type
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
     procedure CreatePointerValue(AnAddrValue: TDbgPtr);
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+    procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
+    procedure CreateSetValue(const ANames: TStringDynArray);
 
     procedure CreateError(AVal: String);
 
@@ -3176,7 +3178,8 @@ end;
 
 procedure TCurrentResData.CreatePrePrinted(AVal: String);
 begin
-  assert(FNewResultData=nil, 'TCurrentResData.SetPrePrinted: FNewResultData=nil');
+  FNewResultData.Free; // ONLY TEMP: fallback for unsuported types  // This frees: FOwnerCurrentData.FNewResultData.DerefData
+  //assert(FNewResultData=nil, 'TCurrentResData.SetPrePrinted: FNewResultData=nil');
   FNewResultData := TWatchResultDataPrePrinted.Create(AVal);
   AfterDataCreated;
 end;
@@ -3218,6 +3221,24 @@ procedure TCurrentResData.CreateFloatValue(AFloatValue: Extended;
 begin
   assert(FNewResultData=nil, 'TCurrentResData.SetFloatValue: FNewResultData=nil');
   FNewResultData := TWatchResultDataFloat.Create(AFloatValue, APrecission);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateEnumValue(ANumValue: QWord; AName: String;
+  AByteSize: Integer; AnIsEnumIdent: Boolean);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.CreateEnumValue: FNewResultData=nil');
+  if AnIsEnumIdent then
+    FNewResultData := TWatchResultDataEnumVal.Create(ANumValue, AName, AByteSize)
+  else
+    FNewResultData := TWatchResultDataEnum.Create(ANumValue, AName, AByteSize);
+  AfterDataCreated;
+end;
+
+procedure TCurrentResData.CreateSetValue(const ANames: TStringDynArray);
+begin
+  assert(FNewResultData=nil, 'TCurrentResData.CreateSetValue: FNewResultData=nil');
+  FNewResultData := TWatchResultDataSet.Create(ANames);
   AfterDataCreated;
 end;
 

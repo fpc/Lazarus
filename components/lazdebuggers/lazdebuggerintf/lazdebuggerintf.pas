@@ -21,7 +21,7 @@ unit LazDebuggerIntf;
 interface
 
 uses
-  Classes, SysUtils, LazDebuggerIntfBaseTypes;
+  Classes, SysUtils, Types, LazDebuggerIntfBaseTypes;
 
 type
   TDBGState = LazDebuggerIntfBaseTypes.TDBGState deprecated 'Use LazDebuggerIntfBaseTypes.TDBGState';
@@ -121,6 +121,8 @@ type
     procedure CreateNumValue(ANumValue: QWord; ASigned: Boolean; AByteSize: Integer = 0);
     procedure CreatePointerValue(AnAddrValue: TDbgPtr);
     procedure CreateFloatValue(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
+    procedure CreateEnumValue(ANumValue: QWord; AName: String; AByteSize: Integer = 0; AnIsEnumIdent: Boolean = False);
+    procedure CreateSetValue(const ANames: TStringDynArray); //; const AOrdValues: array of Integer);
 
     procedure CreateError(AVal: String);
 

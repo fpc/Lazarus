@@ -6,7 +6,7 @@ interface
 
 uses
   FpDbgInfo, FpPascalBuilder, FpdMemoryTools, FpErrorMessages, DbgIntfBaseTypes,
-  fgl, LazDebuggerIntf;
+  fgl, SysUtils, LazDebuggerIntf;
 
 type
 
@@ -29,6 +29,9 @@ type
 
     function StringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
     function WideStringToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+
+    function EnumToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
+    function SetToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
 
     function FloatToResData(AnFpValue: TFpValue; AnResData: TLzDbgWatchDataIntf): Boolean;
   public
@@ -194,6 +197,46 @@ begin
   AddTypeNameToResData(AnFpValue, AnResData);
 end;
 
+function TFpWatchResultConvertor.EnumToResData(AnFpValue: TFpValue;
+  AnResData: TLzDbgWatchDataIntf): Boolean;
+var
+  ValSize: TFpDbgValueSize;
+begin
+  Result := True;
+  if not( (svfSize in AnFpValue.FieldFlags) and AnFpValue.GetSize(ValSize) ) then
+    ValSize := ZeroSize;
+  if IsError(AnFpValue.LastError) then
+    ValSize := ZeroSize;
+  AnFpValue.ResetError;
+
+  AnResData.CreateEnumValue(AnFpValue.AsCardinal, AnFpValue.AsString, SizeToFullBytes(ValSize), AnFpValue.Kind=skEnumValue);
+  AddTypeNameToResData(AnFpValue, AnResData);
+end;
+
+function TFpWatchResultConvertor.SetToResData(AnFpValue: TFpValue;
+  AnResData: TLzDbgWatchDataIntf): Boolean;
+var
+  m: TFpValue;
+  Names: array of String;
+  i: Integer;
+begin
+  Result := True;
+  SetLength(Names, AnFpValue.MemberCount);
+  for i := 0 to AnFpValue.MemberCount-1 do begin
+    m := AnFpValue.Member[i];
+    if svfIdentifier in m.FieldFlags then
+      Names[i] := m.AsString
+    else
+    if svfOrdinal in m.FieldFlags then // set of byte
+      Names[i] := IntToStr(m.AsCardinal)
+    else
+      Names[i] := '';
+    m.ReleaseReference;
+  end;
+  AnResData.CreateSetValue(Names);
+  AddTypeNameToResData(AnFpValue, AnResData);
+end;
+
 function TFpWatchResultConvertor.FloatToResData(AnFpValue: TFpValue;
   AnResData: TLzDbgWatchDataIntf): Boolean;
 var
@@ -258,9 +301,9 @@ begin
       skBoolean: ;
       skCurrency: ;
       skVariant: ;
-      skEnum: ;
-      skEnumValue: ;
-      skSet: ;
+      skEnum,
+      skEnumValue: Result := EnumToResData(AnFpValue, AnResData);
+      skSet:       Result := SetToResData(AnFpValue, AnResData);
       skArray: ;
       skRegister: ;
       skAddress: ;

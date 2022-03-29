@@ -1,11 +1,12 @@
 unit IdeDebuggerWatchResult;
 
 {$mode objfpc}{$H+}
+{$ModeSwitch typehelpers}
 
 interface
 
 uses
-  Classes, SysUtils, IdeDebuggerUtils, LazDebuggerIntf,
+  Classes, SysUtils, Types, IdeDebuggerUtils, LazDebuggerIntf,
   LazDebuggerIntfBaseTypes, LazUTF8, Laz2_XMLCfg, StrUtils;
 
 type
@@ -14,7 +15,8 @@ type
     rdkUnknown,
     rdkError, rdkPrePrinted,
     rdkString, rdkWideString,
-    rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal
+    rdkSignedNumVal, rdkUnsignedNumVal, rdkPointerVal, rdkFloatVal,
+    rdkEnum, rdkEnumVal, rdkSet
   );
 
   TWatchResultData = class;
@@ -28,9 +30,11 @@ type
     function GetAsQWord: QWord; inline;
     function GetAsInt64: Int64; inline;
     function GetAsFloat: Extended; inline;
-    function GetByteSize: Integer; inline;
+    function GetByteSize: Integer; inline;                         // Int, Enum
     function GetFloatPrecission: TLzDbgFloatPrecission; inline;
-    function GetDerefData: TWatchResultData; inline;
+    function GetCount: Integer; inline;                            // Set (Active Elements)
+    function GetElementName(AnIndex: integer): String; inline;     // Set
+    function GetDerefData: TWatchResultData; inline;               // Ptr
 
     procedure AfterAssign;
     procedure DoFree;
@@ -160,6 +164,45 @@ type
     procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
   end;
 
+  { TWatchResultValueEnumBase }
+
+  TWatchResultValueEnumBase = object(TWatchResultValueOrdNumBase)
+  private
+    FName: String;
+  protected
+    property GetAsString: String read FName;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+  end;
+
+  { TWatchResultValueEnum }
+
+  TWatchResultValueEnum = object(TWatchResultValueEnumBase)
+  protected const
+    VKind = rdkEnum;
+  end;
+
+  { TWatchResultValueEnumVal }
+
+  TWatchResultValueEnumVal = object(TWatchResultValueEnumBase)
+  protected const
+    VKind = rdkEnumVal;
+  end;
+
+  { TWatchResultValueSet }
+
+  TWatchResultValueSet = object(TWatchResultValue)
+  protected const
+    VKind = rdkSet;
+  private
+    FNames: Array of String;
+  protected
+    function GetCount: Integer; inline;
+    function GetElementName(AnIndex: integer): String; inline;
+    procedure LoadDataFromXMLConfig(const AConfig: TXMLConfig; const APath: string);
+    procedure SaveDataToXMLConfig(const AConfig: TXMLConfig; const APath: string);
+  end;
+
   { TWatchResultValueError }
 
   TWatchResultValueError = object(TWatchResultValueTextBase)
@@ -175,6 +218,9 @@ type
     wdUNum,      // TWatchResultDataUnSignedNum
     wdPtr,       // TWatchResultDataPointer
     wdFloat,     // TWatchResultDataFloat
+    wdEnum,      // TWatchResultDataEnum
+    wdEnumVal,   // TWatchResultDataEnumVal
+    wdSet,       // TWatchResultDataSet
     wdErr        // TWatchResultDataError
   );
 
@@ -196,6 +242,8 @@ type
     function GetAsFloat: Extended; virtual; abstract;
     function GetByteSize: Integer; virtual; abstract;
     function GetFloatPrecission: TLzDbgFloatPrecission; virtual; abstract;
+    function GetCount: Integer; virtual; abstract;
+    function GetElementName(AnIndex: integer): String; virtual; abstract;
     function GetDerefData: TWatchResultData; virtual; abstract;
   public
     class function CreateFromXMLConfig(const AConfig: TXMLConfig; const APath: string): TWatchResultData;
@@ -234,6 +282,8 @@ type
     function GetAsQWord: QWord; override;
     function GetAsInt64: Int64; override;
     function GetAsFloat: Extended; override;
+    function GetCount: Integer; override;
+    function GetElementName(AnIndex: integer): String; override;
     function GetDerefData: TWatchResultData; override;
 
     function GetByteSize: Integer; override;
@@ -325,6 +375,33 @@ type
     constructor Create(AFloatValue: Extended; APrecission: TLzDbgFloatPrecission);
   end;
 
+  { TWatchResultDataEnum }
+
+  TWatchResultDataEnum = class(specialize TGenericWatchResultDataWithType<TWatchResultValueEnum, TWatchResultTypeOrdNum>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  public
+    constructor Create(ANumValue: QWord; AName: String; AByteSize: Integer = 0);
+  end;
+
+  { TWatchResultDataEnumVal }
+
+  TWatchResultDataEnumVal = class(specialize TGenericWatchResultDataWithType<TWatchResultValueEnumVal, TWatchResultTypeOrdNum>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  public
+    constructor Create(ANumValue: QWord; AName: String; AByteSize: Integer = 0);
+  end;
+
+  { TWatchResultDataSet }
+
+  TWatchResultDataSet = class(specialize TGenericWatchResultData<TWatchResultValueSet>)
+  private
+    function GetClassID: TWatchResultDataClassID; override;
+  public
+    constructor Create(const ANames: TStringDynArray);
+  end;
+
   { TWatchResultDataError }
 
   TWatchResultDataError = class(specialize TGenericWatchResultData<TWatchResultValueError>)
@@ -341,7 +418,7 @@ implementation
 
 function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDisplayFormat; ANestLvl: Integer): String;
 
-  function PrintNumber(ANumValue: TWatchResultData; AByteSize: Integer; AnIsPointer: Boolean; ADispFormat: TWatchDisplayFormat): String;
+  function PrintNumber(ANumValue: TWatchResultData; AnIsPointer: Boolean; ADispFormat: TWatchDisplayFormat): String;
   var
     num: QWord;
     n, i, j: Integer;
@@ -375,20 +452,52 @@ function PrintWatchValueEx(AResValue: TWatchResultData; ADispFormat: TWatchDispl
         Result := IntToStr(ANumValue.AsQWord)
       end;
       wdfHex: begin
-        n := HexDigicCount(ANumValue.AsQWord, AByteSize, AnIsPointer);
+        n := HexDigicCount(ANumValue.AsQWord, ANumValue.ByteSize, AnIsPointer);
         Result := '$'+IntToHex(ANumValue.AsQWord, n);
       end;
       wdfBinary: begin
-        n := HexDigicCount(ANumValue.AsQWord, AByteSize, AnIsPointer);
+        n := HexDigicCount(ANumValue.AsQWord, ANumValue.ByteSize, AnIsPointer);
         Result := '%'+IntToBin(ANumValue.AsInt64, n*4);
       end;
       wdfPointer: begin
-        n := HexDigicCount(ANumValue.AsQWord, AByteSize, True);
+        n := HexDigicCount(ANumValue.AsQWord, ANumValue.ByteSize, True);
         Result := '$'+IntToHex(ANumValue.AsQWord, n);
       end;
       else begin // wdfDecimal
         Result := IntToStr(ANumValue.AsInt64);
       end;
+    end;
+  end;
+
+  function PrintEnum: String;
+  begin
+    if (ADispFormat = wdfDefault) and (AResValue.ValueKind = rdkEnumVal) then
+      ADispFormat := wdfStructure;
+    case ADispFormat of
+      wdfStructure:
+        Result := AResValue.AsString + ' = ' +  PrintNumber(AResValue, False, wdfDecimal);
+      wdfUnsigned,
+      wdfDecimal,
+      wdfHex,
+      wdfBinary:
+        Result := PrintNumber(AResValue, False, ADispFormat);
+      else
+        Result := AResValue.AsString;
+    end;
+  end;
+
+  function PrintSet: String;
+  var
+    i: Integer;
+  begin
+    Result := '';
+    for i := 0 to AResValue.GetCount - 1 do
+      Result := Result + ',' + AResValue.GetElementName(i);
+    if Result = '' then
+      Result := '[]'
+    else begin
+      Result[1] := '[';
+      Result := Result + ']'
     end;
   end;
 
@@ -402,6 +511,8 @@ begin
   case AResValue.ValueKind of
     rdkError:
       Result := 'Error: ' + AResValue.AsString;
+    rdkUnknown:
+      Result := 'Error: Unknown';
     rdkPrePrinted: begin
       Result := AResValue.AsString;
     end;
@@ -422,7 +533,7 @@ begin
             ADispFormat := wdfDecimal;
         end;
 
-        Result := PrintNumber(AResValue, AResValue.ByteSize, False, ADispFormat);
+        Result := PrintNumber(AResValue, False, ADispFormat);
       end;
     end;
     rdkPointerVal: begin
@@ -441,7 +552,7 @@ begin
           //wdfDefault, wdfStructure, wdfChar, wdfString, wdfFloat
           ADispFormat := wdfPointer;
 
-        Result := PrintNumber(AResValue, 0, True, ADispFormat);
+        Result := PrintNumber(AResValue, True, ADispFormat);
       end;
 
       if ResTypeName <> '' then
@@ -465,6 +576,9 @@ begin
     end;
     rdkString:     Result := QuoteText(AResValue.AsString);
     rdkWideString: Result := QuoteWideText(AResValue.AsWideString);
+    rdkEnum, rdkEnumVal:
+                   Result := PrintEnum;
+    rdkSet:        Result := PrintSet;
   end;
 end;
 
@@ -482,6 +596,9 @@ const
     TWatchResultDataUnSignedNum,   // wdUNum
     TWatchResultDataPointer,       // wdPtr
     TWatchResultDataFloat,         // wdFloat
+    TWatchResultDataEnum,          // wdEnum
+    TWatchResultDataEnumVal,       // wdEnumVal
+    TWatchResultDataSet,           // wdSet
     TWatchResultDataError          // wdErr
   );
 
@@ -520,6 +637,16 @@ end;
 function TWatchResultValue.GetFloatPrecission: TLzDbgFloatPrecission;
 begin
   Result := dfpSingle;
+end;
+
+function TWatchResultValue.GetCount: Integer;
+begin
+  Result := 0;
+end;
+
+function TWatchResultValue.GetElementName(AnIndex: integer): String;
+begin
+  Result := '';
 end;
 
 function TWatchResultValue.GetDerefData: TWatchResultData;
@@ -715,6 +842,48 @@ begin
   AConfig.SetDeleteValue(APath + 'Prec', FFloatPrecission, ord(dfpSingle), TypeInfo(TLzDbgFloatPrecission));
 end;
 
+{ TWatchResultValueEnumBase }
+
+procedure TWatchResultValueEnumBase.LoadDataFromXMLConfig(
+  const AConfig: TXMLConfig; const APath: string);
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath);
+  FName := AConfig.GetValue(APath + 'Enum', '');
+end;
+
+procedure TWatchResultValueEnumBase.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath);
+  AConfig.SetDeleteValue(APath + 'Enum', FName, '');
+end;
+
+{ TWatchResultValueSet }
+
+function TWatchResultValueSet.GetCount: Integer;
+begin
+  Result := Length(FNames);
+end;
+
+function TWatchResultValueSet.GetElementName(AnIndex: integer): String;
+begin
+  Result := FNames[AnIndex];
+end;
+
+procedure TWatchResultValueSet.LoadDataFromXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+begin
+  inherited LoadDataFromXMLConfig(AConfig, APath);
+  FNames := AConfig.GetValue(APath + 'Set', '').Split([',']);
+end;
+
+procedure TWatchResultValueSet.SaveDataToXMLConfig(const AConfig: TXMLConfig;
+  const APath: string);
+begin
+  inherited SaveDataToXMLConfig(AConfig, APath);
+  AConfig.SetDeleteValue(APath + 'Set', ''.Join(',', FNames), '');
+end;
+
 { TWatchResultData }
 
 function TWatchResultData.GetValueKind: TWatchResultDataKind;
@@ -803,6 +972,16 @@ end;
 function TGenericWatchResultData.GetAsFloat: Extended;
 begin
   Result := FData.GetAsFloat;
+end;
+
+function TGenericWatchResultData.GetCount: Integer;
+begin
+  Result := FData.GetCount;
+end;
+
+function TGenericWatchResultData.GetElementName(AnIndex: integer): String;
+begin
+  Result := FData.GetElementName(AnIndex);
 end;
 
 function TGenericWatchResultData.GetDerefData: TWatchResultData;
@@ -995,6 +1174,51 @@ begin
   inherited Create;
   FData.FFloatValue := AFloatValue;
   FType.FFloatPrecission := APrecission;
+end;
+
+{ TWatchResultDataEnum }
+
+function TWatchResultDataEnum.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdEnum;
+end;
+
+constructor TWatchResultDataEnum.Create(ANumValue: QWord; AName: String;
+  AByteSize: Integer);
+begin
+  inherited Create;
+  FData.FNumValue    := ANumValue;
+  FData.FName        := AName;
+  FType.FNumByteSize := AByteSize;
+end;
+
+{ TWatchResultDataEnumVal }
+
+function TWatchResultDataEnumVal.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdEnumVal;
+end;
+
+constructor TWatchResultDataEnumVal.Create(ANumValue: QWord; AName: String;
+  AByteSize: Integer);
+begin
+  inherited Create;
+  FData.FNumValue    := ANumValue;
+  FData.FName        := AName;
+  FType.FNumByteSize := AByteSize;
+end;
+
+{ TWatchResultDataSet }
+
+function TWatchResultDataSet.GetClassID: TWatchResultDataClassID;
+begin
+  Result := wdSet;
+end;
+
+constructor TWatchResultDataSet.Create(const ANames: TStringDynArray);
+begin
+  inherited Create;
+  FData.FNames := ANames;
 end;
 
 { TWatchResultDataError }
