@@ -5518,7 +5518,7 @@ begin
   // Register the tree reference clipboard format. Others will be handled in InternalClipboarFormats.
   CF_VTREFERENCE := ClipboardRegisterFormat(CFSTR_VTREFERENCE);
 
-  UtilityImages := CreateBitmapFromResourceName(0, BuildResourceName('laz_vt_utilities'));
+  UtilityImages := CreateBitmapFromResourceName(TheInstance, BuildResourceName('laz_vt_utilities'));
   UtilityImageSize := UtilityImages.Height;
 
   SystemCheckImages := CreateCheckImageList(ckSystemDefault);
