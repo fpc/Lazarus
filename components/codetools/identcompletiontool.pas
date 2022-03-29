@@ -2163,7 +2163,7 @@ begin
                           [btSetIgnoreErrorPos]);
   // Return if CleanCursorPos is before Tree.Root.StartNode.
   // For example a comment at the beginning of a unit.
-  if Tree.Root.StartPos>CleanCursorPos then
+  if (Tree.Root=nil) or (Tree.Root.StartPos>CleanCursorPos) then
     Exit;
   if FindDeepestNodeAtPos(CleanCursorPos,false)=nil then
   begin
