@@ -174,7 +174,7 @@
       </element>
       <element name="TWindowState.wsFullScreen">
         <short>
-          The window appears in full screen mode, when allowed by the platform. It will, for example, attempt to appear on the top of taskbars and other static platform user interface elements.
+          The window appears in full screen mode, when allowed by the platform. It will, for example, attempt to appear on the top of taskbars and other static platform user interface elements. wsFullScreen is converted to wsMaximized for use on the the Windows platform; the API does not provide a full screen option.
         </short>
       </element>
 
@@ -251,10 +251,14 @@
         <short>Default style; not used in the current LCL version.</short>
       </element>
       <element name="TScrollBarStyle.ssFlat">
-        <short>Scroll bar appears flat; Not used in the current LCL version.</short>
+        <short>
+          Scroll bar appears flat; Not used in the current LCL version.
+        </short>
       </element>
       <element name="TScrollBarStyle.ssHotTrack">
-        <short>Scroll bar sends HotTrack messages; Not used in the current LCL version.</short>
+        <short>
+          Scroll bar sends HotTrack messages; Not used in the current LCL version.
+        </short>
       </element>
 
       <element name="EScrollBar">
@@ -1061,7 +1065,7 @@
         <short>Creates the window handle for the control.</short>
         <descr>
           <p>
-            Ensures that the scroll bar page, range, and visibiity are established when the handles for the windowed control are created. Temporarily disables auto-sizing in the method, and re-enables auto-sizing prior to exit. Calls the inherited method to create the window and its handles.
+            Ensures that the scroll bar page, range, and visibility are established when the handles for the windowed control are created. Temporarily disables auto-sizing in the method, and re-enables auto-sizing prior to exit. Calls the inherited method to create the window and its handles.
           </p>
         </descr>
         <seealso>
@@ -1085,18 +1089,20 @@
         <short>Returns the full virtual ClientRect.</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.GetLogicalClientRect">TControl.GetLogicalClientRect</link>
+          <link id="#lcl.controls.TControl.GetLogicalClientRect">TControl.GetLogicalClientRect</link>
         </seealso>
       </element>
       <element name="TScrollingWinControl.GetLogicalClientRect.Result">
-        <short/>
+        <short>
+          TRect instance with the client rectangle adjusted for scroll bars visible on the control.
+        </short>
       </element>
 
       <element name="TScrollingWinControl.DoOnResize" link="#lcl.controls.TControl.DoOnResize">
         <short>Also updates scroll bars if needed.</short>
         <descr/>
         <seealso>
-          <link id="#LCL.Controls.TControl.DoOnResize">TControl.DoOnResize</link>
+          <link id="#lcl.controls.TControl.DoOnResize">TControl.DoOnResize</link>
         </seealso>
       </element>
 
@@ -1144,21 +1150,35 @@
       </element>
 
       <element name="TScrollingWinControl.WMHScroll">
-        <short>Delegates scroll messages to the horizontal ScrollBar.</short>
+        <short>
+          Delegates scroll messages to the handler for the horizontal scroll bar.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScrollingWinControl.HorzScrollBar"/>
+          <link id="TControlScrollBar.ScrollHandler"/>
+        </seealso>
       </element>
       <element name="TScrollingWinControl.WMHScroll.Message">
-        <short/>
+        <short>
+          Message forwarded to the scroll bar.
+        </short>
       </element>
 
       <element name="TScrollingWinControl.WMVScroll">
-        <short>Delegates scroll messages to the vertical ScrollBar.</short>
+        <short>
+          Delegates scroll messages to the handler for the vertical scroll bar.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScrollingWinControl.VertScrollBar"/>
+          <link id="TControlScrollBar.ScrollHandler"/>
+        </seealso>
       </element>
       <element name="TScrollingWinControl.WMVScroll.Message">
-        <short/>
+        <short>
+          Message forwarded to the scroll bar.
+        </short>
       </element>
 
       <element name="TScrollingWinControl.ComputeScrollbars">
@@ -1169,7 +1189,9 @@
         <seealso/>
       </element>
       <element name="TScrollingWinControl.ComputeScrollbars.Result">
-        <short>True when something has been changed in the scroll bar settings.</short>
+        <short>
+          True when something has been changed in the scroll bar settings.
+        </short>
       </element>
 
       <element name="TScrollingWinControl.SetAutoScroll">
@@ -1217,10 +1239,16 @@
             Resizing is an empty implementation in TScrollingWinControl. It must be implemented in a descendent class.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomForm.WindowState"/>
+          <link id="TCustomForm.Resizing"/>
+          <link id="TWindowState"/>
+        </seealso>
       </element>
       <element name="TScrollingWinControl.Resizing.State">
-        <short/>
+        <short>
+          Window state for the windowed control.
+        </short>
       </element>
 
       <element name="TScrollingWinControl.AutoScroll">
@@ -1232,7 +1260,7 @@
             <var>AutoScroll</var> is a <var>Boolean</var> property which indicates if scroll bars are automatically displayed or hidden on the control as needed. The default value for the property is <b>False</b>.
           </p>
           <p>
-            Changing the value for the property causes the <var>Visible</var> property in both <var>HorzScrollBar</var> and <var>VertScrollBar</var> to be updated (if needed). When set to <b>True</b>, the <var>UpdateScrollBars</var> method is called to calculate the page, range, and visibiity for the scroll bars. When set to <var>False</var>, the <var>HideScrollbars</var> method is called to reset and hide the scroll bars (when assigned).
+            Changing the value for the property causes the <var>Visible</var> property in both <var>HorzScrollBar</var> and <var>VertScrollBar</var> to be updated (if needed). When set to <b>True</b>, the <var>UpdateScrollBars</var> method is called to calculate the page, range, and visibility for the scroll bars. When set to <var>False</var>, the <var>HideScrollbars</var> method is called to reset and hide the scroll bars (when assigned).
           </p>
         </descr>
         <seealso>
@@ -1302,9 +1330,24 @@
       <element name="TScrollingWinControl.UpdateScrollbars">
         <short>Initializes or updates the scroll bars for the control.</short>
         <descr>
-          Ignores recursive calls.
+          <p>
+            <var>UpdateScrollbars</var> is a method used to update the scroll bars used on the windowed control.
+          </p>
+          <p>
+            When automatic scrollbars are enabled using AutoScroll, the scroll bar information is initialized as needed for the visible scroll bars. The UpdateScrollBar method in both VertScrollBar and HorzScrollBar is called to recalculate the current page and range in the scroll bars.
+          </p>
+          <p>
+            No actions are performed in the method if a handle has not been allocated for the control, or when either HorzScrollBar or VertScrollBar has not been assigned.
+          </p>
+          <p>
+            Recursive calls to the method are also ignored.
+          </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TScrollingWinControl.AutoScroll"/>
+          <link id="TScrollingWinControl.ComputeScrollbars"/>
+          <link id="TControlScrollBar.UpdateScrollBar"/>
+        </seealso>
       </element>
 
       <element name="TScrollingWinControl.GetControlClassDefaultSize" link="#lcl.controls.TControl.GetControlClassDefaultSize"/>
@@ -1313,19 +1356,27 @@
       </element>
 
       <element name="TScrollingWinControl.ScrollBy">
-        <short>Tells the widget to scroll the client area relative.</short>
-        <descr>The still visible part doesn't deserve a repaint (optimization).</descr>
+        <short>
+          Tells the widget to scroll the client area by the specified relative values.
+        </short>
+        <descr>
+          <p>
+            ScrollBy calls the inherited ScrollBy_WS to apply the relative horizontal and vertical values to the widgetset class instance. An exception is raised if the handle has not been allocated. The still visible part doesn't deserve a repaint (optimization).
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TScrollingWinControl.ScrollBy.DeltaX">
-        <short/>
+        <short>Horizontal distance for the scroll operation.</short>
       </element>
       <element name="TScrollingWinControl.ScrollBy.DeltaY">
-        <short/>
+        <short>Vertical distance for the scroll operation.</short>
       </element>
 
       <element name="TScrollingWinControl.ScrollInView">
-        <short>Aligns the specified control to its parent and scrolls it into view.</short>
+        <short>
+          Aligns the specified control to its parent and scrolls it into view.
+        </short>
         <descr>
           <p>
             <var>ScrollInView</var> is a method used to align and scroll the control in <var>AControl</var> into the visible area for the scrolling window control. No actions are performed in the method under the following conditions:
@@ -1427,10 +1478,10 @@
         </short>
         <descr>
           <p>
-            AutoScroll is a Boolean property which indicates if scroll bars are automatically displayed or hidden on the control as needed. The default value for the property is True in TScrollBox.
+            <var>AutoScroll</var> is a <var>Boolean</var> property which indicates if scroll bars are automatically displayed or hidden on the control as needed. The default value for the property is <b>True</b> in TScrollBox.
           </p>
           <p>
-            Changing the value for the property causes the Visible property in both HorzScrollBar and VertScrollBar to be updated (if needed). When set to True, the UpdateScrollBars method is called to calculate the page, range, and visibiity for the scroll bars. When set to False , the HideScrollbars method is called to reset and hide the scroll bars (when assigned).
+            Changing the value for the property causes the Visible property in both HorzScrollBar and VertScrollBar to be updated (if needed). When set to <b>True</b>, the UpdateScrollBars method is called to calculate the page, range, and visibility for the scroll bars. When set to <b>False</b>, the HideScrollbars method is called to reset and hide the scroll bars (when assigned).
           </p>
         </descr>
         <seealso>
@@ -2684,7 +2735,6 @@
           <link id="TCustomForm.OnClose"/>
           <link id="TCustomForm.ModalResult"/>
           <link id="TCustomForm.Release"/>
-          <link id="TCustomForm.AddHandler"/>
           <link id="TCustomForm.AddHandlerClose"/>
           <link id="TApplication.HandleException"/>
           <link id="TCloseAction"/>
@@ -2851,7 +2901,9 @@
       </element>
 
       <element name="TCustomForm.AddHandler">
-        <short>Adds a form notification handler with the specified type and code.</short>
+        <short>
+          Adds a form notification handler with the specified type and code.
+        </short>
         <descr>
           <p>
             <var>AddHandler</var> is a procedure used to add a form notification handler to the list of handlers in the form instance.
@@ -2896,7 +2948,9 @@
         <short>Code to execute for the form handler.</short>
       </element>
       <element name="TCustomForm.AddHandler.AsFirst">
-        <short>True if the new form handler becomes the first handler in the list of handlers.</short>
+        <short>
+          <b>True</b> if the new form handler is stored first in the list of handlers.
+        </short>
       </element>
       <element name="TCustomForm.RemoveHandler">
         <short>Removes a form notification handler of the specified type.</short>
@@ -2907,8 +2961,11 @@
         <short/>
       </element>
       <element name="TCustomForm.RemoveHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
+
       <element name="TCustomForm.FindDefaultForActiveControl">
         <short>Returns the first control in the form Tab order.</short>
         <descr/>
@@ -4824,20 +4881,30 @@
       </element>
 
       <element name="TCustomForm.AddHandlerFirstShow">
-        <short>Adds a handler for the first Show of the form.</short>
+        <short>
+          Adds a handler routine called the first time the form is shown.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TFormHandlerType"/>
+        </seealso>
         <notes><note>Used in TAnchorDockHostSite.CreateNew.</note></notes>
       </element>
       <element name="TCustomForm.AddHandlerFirstShow.OnFirstShowHandler">
-        <short/>
+        <short>
+          Handler routine added to the list of fhtFirstShow handlers in the class instance.
+        </short>
       </element>
       <element name="TCustomForm.AddHandlerFirstShow.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TCustomForm.RemoveHandlerFirstShow">
-        <short>Removes a handler for the first Show of the form.</short>
+        <short>
+          Removes the handler called the first time the form executes its Show method.
+        </short>
         <descr/>
         <seealso/>
         <notes><note>Not used in the current LCL version.</note></notes>
@@ -4847,51 +4914,131 @@
       </element>
 
       <element name="TCustomForm.AddHandlerClose">
-        <short>Adds a handler for form Close.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Adds a handler for a form close event.
+        </short>
+        <descr>
+          <p>
+            <var>AddHandlerClose</var> is a method used to add the <var>TCloseEvent</var> handler specified in <var>OnCloseHandler</var> to the list of form handlers for the type. It allows a form instance to have additional event handlers which behave just like the <var>OnClose</var> event handler.
+          </p>
+          <p>
+            AddHandlerClose calls the <var>AddHandler</var> method to create the TMethod entry used to represent the handler routine. When <var>AsFirst</var> is <b>True</b>, the routine in OnCloseHandler is inserted as the first item in the list of form close handlers.
+          </p>
+          <p>
+            Applications must implement and assign an object procedure using the signature in TCloseEvent to perform actions needed when the <var>Close</var> or <var>CloseModal</var> method is called for the form instance.
+          </p>
+          <p>
+            A handler added using AddHandlerClose is signalled after the <var>OnClose</var> event handler for the form instance.
+          </p>
+          <p>
+            Use <var>RemoveHandlerClose</var> to remove a form close handler added in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.Close"/>
+          <link id="TCustomForm.OnClose"/>
+          <link id="TCustomForm.RemoveHandlerClose"/>
+          <link id="TCloseEvent"/>
+        </seealso>
       </element>
       <element name="TCustomForm.AddHandlerClose.OnCloseHandler">
-        <short/>
+        <short>
+          Form close handler routine added in the method.
+        </short>
       </element>
       <element name="TCustomForm.AddHandlerClose.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is stored as the first entry in the list of form close handlers.
+        </short>
       </element>
 
       <element name="TCustomForm.RemoveHandlerClose">
-        <short>Removes a handler for form Close.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Removes a form close handler added to the form instance.
+        </short>
+        <descr>
+          <p>
+            <var>RemoveHandlerClose</var> is a method used to remove the form close handler specified in <var>OnCloseHandler</var> from the list of handlers for the type. RemoveHandlerClose reverses the action performed in the AddHandlerClose method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.AddHandlerClose"/>
+          <link id="TCloseEvent"/>
+        </seealso>
       </element>
       <element name="TCustomForm.RemoveHandlerClose.OnCloseHandler">
-        <short/>
+        <short>
+          Form close handler removed in the method.
+        </short>
       </element>
 
       <element name="TCustomForm.AddHandlerCreate">
-        <short>Adds a handler for form Create.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Adds a handler for a form create event.
+        </short>
+        <descr>
+          <p>
+            <var>AddHandlerCreate</var> is a method used to add the <var>TNotifyEvent</var> handler specified in <var>OnCreateHandler</var> to the list of form handlers for the type. It allows a form instance to have additional event handlers which behave just like the <var>OnCreate</var> event handler.
+          </p>
+          <p>
+            AddHandlerCreate calls the <var>AddHandler</var> method to create the TMethod entry used to represent the handler routine. When <var>AsFirst</var> is <b>True</b>, the routine in OnCreateHandler is inserted as the first item in the list of form create handlers.
+          </p>
+          <p>
+            Applications must implement and assign an object procedure using the signature in TNotifyEvent to perform actions needed when the form instance has been created and its bounds have been assigned.
+          </p>
+          <p>
+            A handler added using AddHandlerCreate is signalled after the <var>OnCreate</var> event handler for the form instance.
+          </p>
+          <p>
+            Use <var>RemoveHandlerCreate</var> to remove a form create handler added in the method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.Create"/>
+          <link id="TCustomForm.OnCreate"/>
+          <link id="TCustomForm.AfterConstruction"/>
+          <link id="TCustomForm.Destroy"/>
+          <link id="TCustomForm.RemoveHandlerCreate"/>
+          <link id="#rtl.classes.TNotifyEvent">TNotifyEvent</link>
+        </seealso>
       </element>
       <element name="TCustomForm.AddHandlerCreate.OnCreateHandler">
-        <short/>
+        <short>
+          Form create handler added in the method.
+        </short>
       </element>
       <element name="TCustomForm.AddHandlerCreate.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is stored as the first entry in the list of form create handlers.
+        </short>
       </element>
 
       <element name="TCustomForm.RemoveHandlerCreate">
-        <short>Removes a handler for form Create.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Removes a form create handler added to the form instance.
+        </short>
+        <descr>
+          <p>
+            <var>RemoveHandlerCreate</var> is a method used to remove the form create handler specified in <var>OnCreateHandler</var> from the list of handlers for the type. RemoveHandlerCreate reverses the action performed in the AddHandlerCreate method.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomForm.AddHandlerCreate"/>
+          <link id="#rtl.classes.TNotifyEvent"/>
+        </seealso>
       </element>
       <element name="TCustomForm.RemoveHandlerCreate.OnCreateHandler">
-        <short/>
+        <short>
+          Form create handler removed in the method.
+        </short>
       </element>
 
       <element name="TCustomForm.ActiveMDIChild">
         <short>Returns the currently active MDI child form.</short>
         <descr>
-          A non-<b>Nil</b> result is returned only when FormStyle contains <var>fsMDIForm</var> or <var>fsMDIChild</var>; otherwise Result is <b>nil</b>.
+          <p>
+            A non-<b>Nil</b> result is returned only when FormStyle contains <var>fsMDIForm</var> or <var>fsMDIChild</var>; otherwise Result is <b>nil</b>.
+          </p>
         </descr>
         <seealso/>
       </element>
@@ -4901,7 +5048,9 @@
 
       <element name="TCustomForm.GetMDIChildren" link="#lcl.forms.TCustomForm.MDIChildren"/>
       <element name="TCustomForm.GetMDIChildren.Result">
-        <short>Nil if caller isn't an MDI type or handle isn't allocated.</short>
+        <short>
+          Nil if the caller is not a MDI form type or a handle has not been allocated for the form.
+        </short>
       </element>
       <element name="TCustomForm.GetMDIChildren.AIndex">
         <short/>
@@ -4909,7 +5058,9 @@
 
       <element name="TCustomForm.MDIChildCount" link="#lcl.forms.TCustomForm.MDIChildren"/>
       <element name="TCustomForm.MDIChildCount.Result">
-        <short>-1 if caller isn't an MDI form or handle is not allocated.</short>
+        <short>
+          -1 if caller isn't an MDI form or handle is not allocated.
+        </short>
       </element>
 
       <element name="TCustomForm.AutoScale">
@@ -4954,7 +5105,9 @@
       </element>
 
       <element name="TCustomForm.UpdateDockCaption">
-        <short>Gets the combined Caption for DockClients on the form.</short>
+        <short>
+          Gets the combined Caption for DockClients on the form.
+        </short>
         <descr>
           <p>
             <var>UpdateDockCaption</var> is an overridden method used to get the combined Caption for all <var>DockClients</var> on the form. It does <b>not</b> call the inherited method.
@@ -4978,7 +5131,9 @@
       </element>
 
       <element name="TCustomForm.Active">
-        <short>Indicates if the form is enabled, visible, and has focus.</short>
+        <short>
+          Indicates if the form is enabled, visible, and has focus.
+        </short>
         <descr>
           <p>
             <var>Active</var> is a read-only <var>Boolean</var> property which indicates if the form is enabled, visible, and has focus.
@@ -5068,7 +5223,9 @@
       </element>
 
       <element name="TCustomForm.AlphaBlendValue">
-        <short>The translucence level for the form (0=transparent, 255=opaque).</short>
+        <short>
+          The translucence level for the form (0=transparent, 255=opaque).
+        </short>
         <descr>
           <p>
             <var>AlphaBlendValue</var> is a <var>Byte</var> property which indicates the level of translucency for the form when <var>AlphaBlend</var> is set to <b>True</b>. AlphaBlendValue must be in the range 0..255 (for the Byte data type), where 0 represents 100% transparency and 255 is for full opacity.
@@ -5575,7 +5732,9 @@
       <element name="TCustomForm.OnDeactivate">
         <short>Handler called when the form is deactivated (loses focus).</short>
         <descr>
-          OnDeactivate is a TNotifyEvent property which contains an event handler signalled when form is deactivated (loses focus). OnDeactivate is signalled from the Deactivate method (when assigned).
+          <p>
+            <var>OnDeactivate</var> is a <var>TNotifyEvent</var> property which contains an event handler signalled when form is deactivated (loses focus). OnDeactivate is signalled from the Deactivate method (when assigned).
+          </p>
         </descr>
         <seealso>
           <link id="TApplication.OnDeactivate"/>
@@ -5716,7 +5875,9 @@
       </element>
 
       <element name="TCustomForm.OnShowModalFinished">
-        <short>Event handler signalled when modal display of the form has been completed.</short>
+        <short>
+          Event handler signalled when modal display of the form has been completed.
+        </short>
         <descr>
           <p>
             <var>OnShowModalFinished</var> is a <var>TModalDialogFinished</var> property that implements the event handler signalled when modal display of the form has been completed. An application must implement an object procedure using the signature in <var>TModalDialogFinished</var>, and assign it to the property to respond to the event notification.
@@ -5894,6 +6055,9 @@
           <p>
             Changing the value for the property at run-time causes the <var>ShowWindow</var> routine to be called with the Integer display command representing the new property value. The action is not performed at design-time, or when <var>Showing</var> is set to <b>False</b>.
           </p>
+          <remark>
+            For the Windows platform, wsFullScreen is converted to wsMaximized when calling the ShowWindow API function; the Windows API does not provide a full-screen option.
+          </remark>
         </descr>
         <seealso>
           <link id="TCustomForm.Show"/>
@@ -7544,34 +7708,73 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.AddHandler">
-        <short>Adds a notification handler with the specified type.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Adds a handler routine to the list for the specified handler type.
+        </short>
+        <descr>
+          <p>
+            <var>AddHandler</var> is a procedure used to add a screen notification handler to the list of handlers in the TScreen instance.
+          </p>
+          <p>
+            <var>HandlerType</var> is a <var>TScreenNotification</var> enumeration value that defines the situation(s) where the screen  handler can be executed. See TScreenNotification for more information about values in the enumeration.
+          </p>
+          <p>
+            <var>Handler</var> is a <var>TMethod</var> record with pointers to the code and optional data executed when the handler is invoked.
+          </p>
+          <p>
+            <var>AsFirst</var> indicates if the handler should be inserted as the initial handler in the method list (when <b>True</b>), or appended to the end of the list (when <b>False</b>).
+          </p>
+          <p>
+            AddHandler calls <var>RaiseGDBException</var> to raise an exception when the pointer to the Code in Handler has not been assigned.
+          </p>
+          <p>
+            AddHandler ensures that a <var>TMethodList</var> exists for handlers using the value in HandlerType, and calls the <var>Add</var> method in the <var>TMethodList</var> to store the Handler at the position needed for AsFirst.
+          </p>
+          <p>
+            AddHandler is called from the implementation of more specialized methods like AddHandlerFormAdded, AddHandlerRemoveForm, AddHandlerActiveControlChanged, AddHandlerActiveFormChanged, and AddHandlerFormVisibleChanged.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.AddHandlerFormAdded"/>
+          <link id="TScreen.AddHandlerActiveControlChanged"/>
+          <link id="TScreen.AddHandlerActiveFormChanged"/>
+          <link id="TScreen.AddHandlerFormVisibleChanged"/>
+          <link id="TScreen.AddHandlerRemoveForm"/>
+          <link id="TScreenNotification"/>
+        </seealso>
       </element>
       <element name="TScreen.AddHandler.HandlerType">
-        <short>The notification (event) type.</short>
+        <short>The handler type where the routine is stored.</short>
       </element>
       <element name="TScreen.AddHandler.Handler">
-        <short>The notification handler.</short>
+        <short>The handler routine added in the method.</short>
       </element>
       <element name="TScreen.AddHandler.AsFirst">
-        <short>Add the handler as the first (True) or last (False) handler.</short>
+        <short>
+          Add the handler as the first (True) or last (False) handler in the internal list.
+        </short>
       </element>
 
       <element name="TScreen.RemoveHandler">
-        <short>Removes a notification handler with the specified type.</short>
+        <short>
+          Removes a screen notification handler with the specified type.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreenNotificationAddHandler"/>
+        </seealso>
       </element>
       <element name="TScreen.RemoveHandler.HandlerType">
-        <short>The notification (event) type.</short>
+        <short>The screen notification (event) type.</short>
       </element>
       <element name="TScreen.RemoveHandler.Handler">
-        <short>The notification handler.</short>
+        <short>The screen notification handler removed in the method.</short>
       </element>
 
       <element name="TScreen.DoAddDataModule">
-        <short>Adds the specified data module to the list.</short>
+        <short>
+          Adds the specified data module to the internal list for the screen.
+        </short>
         <descr/>
         <seealso>
           <link id="TScreen.DataModules"/>
@@ -7582,7 +7785,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.DoRemoveDataModule">
-        <short>Removes the specified data module from the list.</short>
+        <short>Removes the specified data module from the internal list.</short>
         <descr/>
         <seealso>
           <link id="TScreen.DataModules"/>
@@ -7593,12 +7796,29 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.NotifyScreenFormHandler">
-        <short>Notifies all registered handlers for the given event type.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Notifies all registered handlers for the given event type.
+        </short>
+        <descr>
+          <p>
+            <var>NotifyScreenFormHandler</var> retrieves the internal <var>TMethodList</var> instance used for handler routines with the type specified in <var>HandlerType</var>. Each of the <var>TScreenFormEvent</var> instances is signalled using the current class (Self) and Form as arguments.
+          </p>
+          <p>
+            NotifyScreenFormHandler is called from methods in TScreen like AddForm, RemoveForm, and UpdateLastActive. It is also called (via the Screen singleton) from the VisibleChanged method in TCustomForm.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TScreen.AddForm"/>
+          <link id="TScreen.RemoveForm"/>
+          <link id="TScreen.UpdateLastActive"/>
+          <link id="TCustomForm.VisibleChanged"/>
+          <link id="TScreenFormEvent"/>
+          <link id="TScreenNotification"/>
+          <link id="#lazutils.lazmethodlist.TMethodList">TMethodList</link>
+        </seealso>
       </element>
       <element name="TScreen.NotifyScreenFormHandler.HandlerType">
-        <short>Event type for the notification.</short>
+        <short>Form event type for the notification.</short>
       </element>
       <element name="TScreen.NotifyScreenFormHandler.Form">
         <short>Form instance for the notification.</short>
@@ -7754,14 +7974,18 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TScreen.FormIndex.Result">
-        <short>Ordinal position in Forms for the TForm instance, or -1 when not found.</short>
+        <short>
+          Ordinal position in Forms for the TForm instance, or -1 when not found.
+        </short>
       </element>
       <element name="TScreen.FormIndex.AForm">
         <short>The TForm instance to locate in Forms.</short>
       </element>
 
       <element name="TScreen.CustomFormZIndex">
-        <short>Gets the position in CustomFormsZOrdered for the specified form.</short>
+        <short>
+          Gets the position in CustomFormsZOrdered for the specified form.
+        </short>
         <descr>
           <p>
             The return value contains the z-order for the specified form, with the currently active form at index position zero (<b>0</b>).
@@ -8007,13 +8231,20 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TScreen.RemoveAllHandlersOfObject.AnObject">
-        <short/>
+        <short>
+          Object instance with the handlers removed in the method.
+        </short>
       </element>
 
       <element name="TScreen.AddHandlerFormAdded">
-        <short>Adds a form added notification handler to the class instance.</short>
+        <short>
+          Adds a form added notification handler to the class instance.
+        </short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.RemoveHandlerFormAdded"/>
+          <link id="TScreenFormEvent"/>
+        </seealso>
       </element>
       <element name="TScreen.AddHandlerFormAdded.OnFormAdded">
         <short>Routine added as the form added notification handler.</short>
@@ -8027,7 +8258,10 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TScreen.RemoveHandlerFormAdded">
         <short>Removes a form added notification handler.</short>
         <descr/>
-        <seealso/>
+        <seealso>
+          <link id="TScreen.AddHandlerFormAdded"/>
+          <link id="TScreenFormEvent"/>
+        </seealso>
       </element>
       <element name="TScreen.RemoveHandlerFormAdded.OnFormAdded">
         <short>Form added handler removed in the method.</short>
@@ -8157,11 +8391,15 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TScreen.EnableForms.AFormList">
-        <short>The list containing the forms to enable. The list is destroyed on exit.</short>
+        <short>
+          The list containing the forms to enable. The list is destroyed on exit.
+        </short>
       </element>
 
       <element name="TScreen.MonitorFromPoint">
-        <short>Finds the monitor containing the given screen coordinates.</short>
+        <short>
+          Finds the monitor containing the given screen coordinates.
+        </short>
         <descr>
           <p>
             <var>MonitorFromPoint</var> is a <var>TMonitor</var> function used to get the monitor with the coordinates in the <var>Point</var> argument.
@@ -8785,7 +9023,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TScreen.IconFont">
-        <short>The Icon font used for desktop icons.</short>
+        <short>The font used for desktop icons.</short>
         <descr>
           <p>
             IconFont is passed to the InitStockFont method in the widgetset to initialize the font.
@@ -9661,7 +9899,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.FComponentsReleasing">
-        <short>The list of components which currently are released (destroyed).</short>
+        <short>
+          The list of components which currently are released (destroyed).
+        </short>
         <descr/>
         <seealso>
           <link id="TApplication.Release"/>
@@ -9791,7 +10031,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       <element name="TApplication.GetActive.Result"/>
 
       <element name="TApplication.GetCurrentHelpFile">
-        <short>Gets the HelpFile name for the active form, or the Application.</short>
+        <short>
+          Gets the HelpFile name for the active form, or the Application.
+        </short>
         <descr>
           <p>
             <var>GetCurrentHelpFile</var> is a <var>String</var> function used to get the help file name for the active form or application.
@@ -9841,7 +10083,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.GetMainFormHandle">
-        <short>Determines the main form handle, using all available handlers.</short>
+        <short>
+          Determines the main form handle, using all available handlers.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplication.OnGetMainFormHandle"/>
@@ -10073,32 +10317,122 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.AddHandler">
-        <short>Adds an application notification handler.</short>
-        <descr/>
+        <short>
+          Adds an application notification handler to the list of handlers for the specified type.
+        </short>
+        <descr>
+          <p>
+            <var>AddHandler</var> is a procedure used to add an application notification handler to the list of handlers in the TApplication instance.
+          </p>
+          <p>
+            <var>HandlerType</var> is a <var>TApplicationHandlerType</var> enumeration value that defines the situation(s) where the handler can be executed. See TApplicationHandlerType for more information about values in the enumeration.
+          </p>
+          <p>
+            <var>Handler</var> is a <var>TMethod</var> record with pointers to the code and optional data executed when the handler is invoked.
+          </p>
+          <p>
+            <var>AsFirst</var> indicates if the handler should be inserted as the initial handler in the method list (when <b>True</b>), or appended to the end of the list (when <b>False</b>).
+          </p>
+          <p>
+            AddHandler calls <var>RaiseGDBException</var> to raise an exception when the pointer to the Code in Handler has not been assigned.
+          </p>
+          <p>
+            AddHandler ensures that a <var>TMethodList</var> exists for handlers using the value in HandlerType, and calls the <var>Add</var> method in the <var>TMethodList</var> to store the Handler at the position needed for AsFirst.
+          </p>
+          <p>
+            AddHandler is called from the implementation of methods specialized for a specific application handler type, like:
+          </p>
+          <ul>
+            <li>AddOnIdleHandler</li>
+            <li>AddOnIdleEndHandler</li>
+            <li>AddOnUserInputHandler</li>
+            <li>AddOnKeyDownBeforeHandler</li>
+            <li>AddOnKeyDownHandler</li>
+            <li>AddOnActivateHandler</li>
+            <li>AddOnDeactivateHandler</li>
+            <li>AddOnExceptionHandler</li>
+            <li>AddOnEndSessionHandler</li>
+            <li>AddOnQueryEndSessionHandler</li>
+            <li>AddOnMinimizeHandler</li>
+            <li>AddOnModalBeginHandler</li>
+            <li>AddOnModalEndHandler</li>
+            <li>AddOnRestoreHandler</li>
+            <li>AddOnDropFilesHandler</li>
+            <li>AddOnHelpHandler</li>
+            <li>AddOnHintHandler</li>
+            <li>AddOnShowHintHandler</li>
+            <li>AddOnGetMainFormHandleHandler</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TApplicationHandlerType"/>
+        </seealso>
         <seealso>
         </seealso>
       </element>
       <element name="TApplication.AddHandler.HandlerType">
-        <short/>
+        <short>
+          Application handler type for the handler routine.
+        </short>
       </element>
       <element name="TApplication.AddHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method.
+        </short>
       </element>
       <element name="TApplication.AddHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is stored as the first entry in the list of handlers for the type. <b>False</b> to append the handler to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveHandler">
-        <short>Removes an application notification handler.</short>
-        <descr/>
+        <short>
+          Removes an application notification handler from the list for the specified handler type.
+        </short>
+        <descr>
+          <p>
+            Calls the Remove method in the TMethodList for the application handler type in the HandlerType argument. Handler contains the TMethod instance to locate and remove from the application handlers for the type.
+          </p>
+          <p>
+            RemoveHandler is called from other methods which operate on a specific TApplicationHandlerType, like:
+          </p>
+          <ul>
+            <li>RemoveOnIdleHandler</li>
+            <li>RemoveOnIdleEndHandler</li>
+            <li>RemoveOnUserInputHandler</li>
+            <li>RemoveOnKeyDownBeforeHandler</li>
+            <li>RemoveOnKeyDownHandler</li>
+            <li>RemoveOnActivateHandler</li>
+            <li>RemoveOnDeactivateHandler</li>
+            <li>RemoveOnExceptionHandler</li>
+            <li>RemoveOnEndSessionHandler</li>
+            <li>RemoveOnQueryEndSessionHandler</li>
+            <li>RemoveOnMinimizeHandler</li>
+            <li>RemoveOnModalBeginHandler</li>
+            <li>RemoveOnModalEndHandler</li>
+            <li>RemoveOnRestoreHandler</li>
+            <li>RemoveOnDropFilesHandler</li>
+            <li>RemoveOnHelpHandler</li>
+            <li>RemoveOnHintHandler</li>
+            <li>RemoveOnShowHintHandler</li>
+            <li>RemoveOnGetMainFormHandleHandler</li>
+          </ul>
+        </descr>
         <seealso>
+          <link id="TApplication.AddHandler"/>
+          <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveHandler.HandlerType">
-        <short/>
+        <short>
+          Application notification type for the handler removed in the method.
+        </short>
       </element>
       <element name="TApplication.RemoveHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.RunLoop">
@@ -10106,15 +10440,16 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.Activate">
-        <short>Handler for application activation, notifies all activation handlers.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Handler for application activation, notifies all activation handlers.
+        </short>
       </element>
 
       <element name="TApplication.Deactivate">
-        <short>Handler for application deactivation, notifies all deactivation handlers.</short>
+        <short>
+          Handler for application deactivation, notifies all deactivation handlers.
+        </short>
         <descr/>
-        <seealso/>
       </element>
       <element name="TApplication.Deactivate.Force">
         <short>True when called from the widgetset.</short>
@@ -10149,12 +10484,23 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.NotifyIdleHandler.Done">
-        <short>True when all handlers are done, meaning: wait for next message.</short>
+        <short>
+          <b>True</b> when all handlers are done, meaning: wait for the next message.
+        </short>
       </element>
 
       <element name="TApplication.NotifyIdleEndHandler">
-        <short>Notifies all Idle End handlers when a new message has arrived.</short>
-        <descr/>
+        <short>
+          Notifies all Idle End handlers when a new message has arrived.
+        </short>
+        <descr>
+          <p>
+            Executes the <var>CallNotifyEvents</var> method in the TMethodList for the handler type. Te application instance is passed as an argument to the method.
+          </p>
+          <p>
+            NotifyIdleEndHandler is called when AppIdleEndSent is included in the Flags for the TApplication instance. It occurs after the OnIdleEnd event handler has been signalled (when assigned).
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.OnIdleEnd"/>
           <link id="TApplicationHandlerType"/>
@@ -10162,8 +10508,15 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.NotifyActivateHandler">
-        <short>Notifies all Activation handlers for the application.</short>
-        <descr/>
+        <short>Notifies all Activate handlers for the application.</short>
+        <descr>
+          <p>
+            <var>NotifyActivateHandler</var> signals the <var>OnActivate</var> event handler (when assigned) using the <var>TApplication</var> instance as the Sender for the notification event. The <var>CallNotifyEvents</var> method in the TMethodList is called to signal each of the routines  for the handler type.
+          </p>
+          <p>
+            NotifyActivateHandler is called when an application is initially executed, and when focus is acquired from a different application.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.OnActivate"/>
           <link id="TApplicationHandlerType"/>
@@ -10171,24 +10524,42 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.NotifyDeactivateHandler">
-        <short>Notifies all Deactivation handlers for the application.</short>
-        <descr/>
+        <short>Notifies all Deactivate handlers for the application.</short>
+        <descr>
+          <p>
+            <var>NotifyDeactivateHandler</var> is a method used to signal all of the deactivate handlers for the application. OnDeactivate is signalled (when assigned) using the application instance as an argument.
+          </p>
+          <p>
+            CallNotifyEvents is executed for each of the handlers in the TMethodList for the ahtDeactivate notification type. Use AddOnDeactivateHandler and RemoveOnDeactivateHandler to maintain  an additional handler for the notification type.
+          </p>
+          <p>
+            NotifyDeactivateHandler is called from the Deactivate method, and occurs when focus is changed to another application or the application is closed.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.OnDeactivate"/>
+          <link id="TApplication.AddOnDeactivateHandler"/>
+          <link id="TApplication.RemoveOnDeactivateHandler"/>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
 
       <element name="TApplication.NotifyCustomForms">
-        <short>Performs the specified message for all custom forms in the application.</short>
+        <short>
+          Performs the specified message for all custom forms in the application.
+        </short>
         <descr>
           <p>
             Calls the <var>Perform</var> method for custom forms in the application using <var>Msg</var> as an argument.
           </p>
+          <p>
+            NotifyCustomForms is called when theme options for button or menu glyphs are changed to sbgSystem in the application instance.
+          </p>
         </descr>
         <seealso>
-          <link id="Screen"/>
           <link id="TScreen.CustomForms"/>
+          <link id="Screen"/>
+          <link id="TApplication.IntfThemeOptionChange"/>
           <link id="#lcl.controls.TControl.Perform">TControl.Perform</link>
         </seealso>
       </element>
@@ -10218,7 +10589,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </short>
         <descr>
           <p>
-            Signals the OnHelp message handler. Tries the OnHelp handlers for the active form and the Application, as well as handler routines added for the ahtHelp handler type.
+            Signals the OnHelp message handler. DoOnHelp tries the OnHelp handlers for the active form and the Application, as well as handler routines added for the ahtHelp handler type.
           </p>
           <p>
             DoOnHelp is called from the HelpCommand method.
@@ -10233,33 +10604,67 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <short>True when the message was handled.</short>
       </element>
       <element name="TApplication.DoOnHelp.Command">
-        <short/>
+        <short>
+          Help command to handle in the event handler(s).
+        </short>
       </element>
       <element name="TApplication.DoOnHelp.Data">
-        <short/>
+        <short>
+          Pointer to the help data used in the event handler(s).
+        </short>
       </element>
       <element name="TApplication.DoOnHelp.CallHelp">
         <short/>
       </element>
 
       <element name="TApplication.DoOnMouseMove">
-        <short>OnMouseMove message handler, updates the Hint.</short>
-        <descr/>
+        <short>
+          OnMouseMove message handler, updates the Hint.
+        </short>
+        <descr>
+          <p>
+            <var>DoOnMouseMove</var> performs actions needed when a mouse move message is received and applied for the application. It retrieves the current position for the mouse pointer, and calls the ActivateHint method to build / display a hint for the active form / control in the application.
+          </p>
+          <p>
+            DoOnMouseMove is called from the NotifyUserInputHandler method.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
       <element name="TApplication.ShowHintWindow">
-        <short>Shows or hides the Hint window.</short>
-        <descr/>
+        <short>Shows or hides the Hint window for the application.</short>
+        <descr>
+          <p>
+            When a parented HintControl has been assigned, handler routines are signalled to check whether the hint can be display in the event handler. The OnShowHint event handler is signalled first (when assigned). Additional application handlers assigned using AddOnShowHintHandler are signalled next.
+          </p>
+          <p>
+            If the hint text is not empty, it is displayed and its timer is started. Otherwise the HideHint method is called to hide the hint window.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.ShowHintWindow.Info">
-        <short>Is updated with the Hint related information.</short>
+        <short>
+          Updated with the Hint-related information for a parent control or form.
+        </short>
       </element>
 
       <element name="TApplication.OnHintTimer">
-        <short>Event handler for timing the duration of hints.</short>
-        <descr/>
+        <short>
+          Implements an event handler signalled when the timer for a hint display has elapsed.
+        </short>
+        <descr>
+          <p>
+            <var>OnHintTimer</var> is an implementation of the event handler assigned to the OnTimer event handler in the internal timer for the application instance.
+          </p>
+          <p>
+            It calls StopHintTimer to ensure that the timer is disabled. If the mouse pointer is not within the client area for the current form or control, HideHint is called to hide the hint window. Otherwise, hint information for the control under the mouse pointer is retrieved and ShowHintWindow is called to start a new hint display.
+          </p>
+          <p>
+            OnHintTimer is called directly from the StartHintTimer method when Internal is set to 0 (or a negative value).
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.OnHintTimer.Sender">
@@ -10303,7 +10708,17 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.DoIdleActions">
         <short>Updates all Actions and hides splash screens.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>DoIdleActions</var> ensures that the UpdateActions method is called for visible and enabled forms in the application. This allows the TBasicAction instances in menus and controls on each form to be updated as well.
+          </p>
+          <p>
+            DoIdleActions hides any form instance in Screen which uses fsSplash in its FormStyle property.
+          </p>
+          <p>
+            DoIdleActions is called from the Idle method after OnIdle and other idle event handlers have been signalled and indicated that they have been completed successfully.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -10338,7 +10753,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.ReleaseComponents">
         <short>Destroys all components marked for release.</short>
-        <descr/>
+        <descr>
+          <p>
+            ReleaseComponents ensures that any component in the internal list calls ReleaseComponent to handle the free notification for a reference-counted LCL component.
+          </p>
+          <p>
+            ReleaseComponents is called from the Idle and FreeComponent methods.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -10811,7 +11233,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         <seealso/>
       </element>
       <element name="TApplication.ShowHelpForObject.Sender">
-        <short>Should be a TControl, else nothing will happen.</short>
+        <short>Should be a TControl, otherwise no help is displayed.</short>
       </element>
 
       <element name="TApplication.RemoveStayOnTop">
@@ -10830,7 +11252,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.RestoreStayOnTop">
-        <short>Restores StayOnTop for all forms changed by RemoveStayOnTop.</short>
+        <short>
+          Restores StayOnTop for all forms changed by RemoveStayOnTop.
+        </short>
         <descr>
         </descr>
         <seealso>
@@ -10855,7 +11279,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.CancelHint">
-        <short>Called when the Hint time has expired, to stop showing the Hint.</short>
+        <short>
+          Called when the Hint timer has expired to stop showing the Hint.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11089,24 +11515,54 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.ShowException">
-        <short>Shows the exception message and asks the user to abort or continue.</short>
-        <descr/>
+        <short>
+          Shows the message for the specified exception and asks the user to abort or continue.
+        </short>
+        <descr>
+          <p>
+            <var>E</var> is the Exception instance with the message displayed in the method. If the message contains an invalid UTF-8 codepoint, AnsiToUtf8 is called to get a valid UTF-8 value for the exception message.
+          </p>
+          <p>
+            ShowException creates a dialog to display the exception message. If the exception occurred before the application was fully initialized, the inherited ShowException method is called.
+          </p>
+          <p>
+            The value in the ExceptionDialog property determines the type of dialog displayed for the message, and the buttons available on the dialog. While the dialog is active, the OnIdle event handlers in the application are disabled. They are re-enabled when the dialog is closed. The modal result from the dialog determines whether the application is terminated by calling Halt, or allowed to continue.
+          </p>
+          <remark>
+            No actions are performed in the method when AppNoExceptionMessages has been included in the Flags for the application. The exception message is not displayed and control is returned to the calling routine.
+          </remark>
+        </descr>
         <seealso>
+          <link id="TApplication.ExceptionDialog"/>
+          <link id="TApplication.Flags"/>
+          <link id="TApplicationFlags"/>
+          <link id="TApplicationFlag"/>
           <link id="#fcl.CustApp.TCustomApplication.ShowException">TCustomApplication.ShowException</link>
-        </seealso>
-      </element>
-      <element name="TApplication.ShowException.E">
-        <short>The exception to display for the application.</short>
-        <seealso>
+          <link id="#rtl.system.Halt">Halt</link>
           <link id="#rtl.sysutils.Exception">Exception</link>
         </seealso>
       </element>
+      <element name="TApplication.ShowException.E">
+        <short>
+          The exception with the message to display in the method.
+        </short>
+      </element>
 
       <element name="TApplication.Terminate">
-        <short>The application is terminated and the component engine is shutdown.</short>
-        <descr/>
+        <short>
+          The application is terminated and the component engine is shutdown.
+        </short>
+        <descr>
+          <p>
+            <var>Terminate</var> is an overridden method in <var>TApplication</var>, and calls the inherited method on entry to set the values in Terminated and ExitCode. It calls the AppTerminate method the widgetset class instance to perform actions needed to halt the application using the mechanism(s) for the operating system or platform.
+          </p>
+          <p>
+            Use Terminated to determine if the method has already been called and has not yet been completed in the widgetset class.
+          </p>
+        </descr>
         <seealso>
-          <link id="#fcl.CustApp.TCustomApplication.Terminate">TCustomApplication.Terminate</link>
+          <link id="#fcl.custapp.TCustomApplication.Terminate">TCustomApplication.Terminate</link>
+          <link id="#fcl.custapp.TCustomApplication.Terminated">TCustomApplication.Terminated</link>
         </seealso>
       </element>
 
@@ -11146,13 +11602,25 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.NotifyUserInputHandler">
         <short>Notifies all user input handlers of the specified message.</short>
-        <descr/>
+        <descr>
+          <p>
+            Ensures that ActivateHint or CancelHint is called for a mouse message in the Msg argument.
+          </p>
+          <p>
+            Signals the OnUserInput event handler when assigned to allow filtering messages at the application level. Signals each of the user input handlers for the application using the Sender object instance and Msg as arguments. Sender defaults to the application instance when unassigned.
+          </p>
+          <p>
+            <var>NotifyUserInputHandler</var> is used to pass mouse and character events between a widgetset class instance and the forms and controls in an application. It is called from the message processing mechanism that is part of the LCL interface.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.NotifyUserInputHandler.Msg">
-        <short/>
+        <short>
+          Message examined in the method for mouse or character events.
+        </short>
       </element>
 
       <element name="TApplication.NotifyKeyDownBeforeHandler">
@@ -11163,99 +11631,119 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.NotifyKeyDownBeforeHandler.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
       <element name="TApplication.NotifyKeyDownBeforeHandler.Key">
-        <short/>
+        <short>Key code examined in the event handler.</short>
       </element>
       <element name="TApplication.NotifyKeyDownBeforeHandler.Shift">
-        <short/>
+        <short>Ctrl, Alt, Shift modifier for the key code.</short>
       </element>
 
       <element name="TApplication.NotifyKeyDownHandler">
-        <short>Notifies all ahtKeyDownAfter handlers, eventually reacts on F1 (Help).</short>
+        <short>
+          Notifies all ahtKeyDownAfter handlers, and eventually reacts to F1 (Help).
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.NotifyKeyDownHandler.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
       <element name="TApplication.NotifyKeyDownHandler.Key">
-        <short/>
+        <short>Key code examined in the event handler.</short>
       </element>
       <element name="TApplication.NotifyKeyDownHandler.Shift">
-        <short/>
+        <short>Ctrl, Alt, Shift modifier for the key code.</short>
       </element>
 
       <element name="TApplication.ControlKeyDown">
-        <short>Handles KeyDown events in a Control, e.g. handles navigation keys.</short>
+        <short>
+          Handles KeyDown events in a Control, e.g. handles navigation keys.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TApplication.ControlKeyDown.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
       <element name="TApplication.ControlKeyDown.Key">
-        <short/>
+        <short>Key code examined in the event handler.</short>
       </element>
       <element name="TApplication.ControlKeyDown.Shift">
-        <short/>
+        <short>Ctrl, Alt, Shift modifier for the key code.</short>
       </element>
 
       <element name="TApplication.ControlKeyUp">
-        <short>Handles KeyUp events in a Control, e.g. handles Enter and Esc keys.</short>
+        <short>
+          Handles KeyUp events in a Control, e.g. handles Enter and Esc keys.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TApplication.ControlKeyUp.Sender">
-        <short/>
+        <short>Object for the event notification.</short>
       </element>
       <element name="TApplication.ControlKeyUp.Key">
-        <short/>
+        <short>Key code examined in the event handler.</short>
       </element>
       <element name="TApplication.ControlKeyUp.Shift">
-        <short/>
+        <short>Ctrl, Alt, Shift modifier for the key code.</short>
       </element>
 
       <element name="TApplication.AddOnIdleHandler">
-        <short>Adds an application Idle handler.</short>
+        <short>
+          Adds an application Idle handler to the list of handlers for the type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnIdleHandler.Handler">
-        <short/>
+        <short>Idle handler Routine added to the handlers for the type.</short>
       </element>
       <element name="TApplication.AddOnIdleHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first item in the list. <b>False</b> if the handler is appended to the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnIdleHandler">
-        <short>Removes an application Idle handler.</short>
+        <short>
+          Removes an application Idle handler for the list of handlers for the type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnIdleHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed from the list of idle handlers.
+        </short>
       </element>
 
       <element name="TApplication.AddOnIdleEndHandler">
-        <short>Adds an application IdleEnd handler.</short>
+        <short>
+          Adds an application IdleEnd handler to the list of handlers for the type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnIdleEndHandler.Handler">
-        <short/>
+        <short>
+          Idle end handler routine added to the list of handlers.
+        </short>
       </element>
       <element name="TApplication.AddOnIdleEndHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first item in the list. <b>False</b> if the handler is appended to the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnIdleEndHandler">
@@ -11266,32 +11754,42 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnIdleEndHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnUserInputHandler">
-        <short>Adds an application user input handler.</short>
+        <short>
+          Adds an application user input handler to the list of handlers for the type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnUserInputHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers.
+        </short>
       </element>
       <element name="TApplication.AddOnUserInputHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler routine is inserted as the first entry in the list. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnUserInputHandler">
-        <short>Removes an application user input handler.</short>
+        <short>
+          Removes an application user input handler from the list of handlers for the type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnUserInputHandler.Handler">
-        <short/>
+        <short>Handler routine removed from the list of handlers.</short>
       </element>
 
       <element name="TApplication.AddOnKeyDownBeforeHandler">
@@ -11302,10 +11800,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnKeyDownBeforeHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnKeyDownBeforeHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnKeyDownBeforeHandler">
@@ -11316,21 +11818,29 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnKeyDownBeforeHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnKeyDownHandler">
-        <short>Adds an application key down after interface handler.</short>
+        <short>
+          Adds an application key down handler to the list for the type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnKeyDownHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnKeyDownHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnKeyDownHandler">
@@ -11341,7 +11851,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnKeyDownHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnActivateHandler">
@@ -11352,10 +11864,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnActivateHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnActivateHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnActivateHandler">
@@ -11366,7 +11882,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnActivateHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnDeactivateHandler">
@@ -11377,10 +11895,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnDeactivateHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnDeactivateHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnDeactivateHandler">
@@ -11391,7 +11913,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnDeactivateHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnExceptionHandler">
@@ -11402,10 +11926,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnExceptionHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnExceptionHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnExceptionHandler">
@@ -11416,7 +11944,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnExceptionHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnEndSessionHandler">
@@ -11427,10 +11957,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnEndSessionHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnEndSessionHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnEndSessionHandler">
@@ -11441,7 +11975,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnEndSessionHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnQueryEndSessionHandler">
@@ -11452,10 +11988,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnQueryEndSessionHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnQueryEndSessionHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnQueryEndSessionHandler">
@@ -11466,7 +12006,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnQueryEndSessionHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnMinimizeHandler">
@@ -11477,10 +12019,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnMinimizeHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnMinimizeHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnMinimizeHandler">
@@ -11491,7 +12037,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnMinimizeHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnModalBeginHandler">
@@ -11502,10 +12050,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnModalBeginHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnModalBeginHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnModalBeginHandler">
@@ -11516,7 +12068,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnModalBeginHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnModalEndHandler">
@@ -11527,10 +12081,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnModalEndHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnModalEndHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnModalEndHandler">
@@ -11541,7 +12099,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnModalEndHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnRestoreHandler">
@@ -11552,10 +12112,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnRestoreHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnRestoreHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnRestoreHandler">
@@ -11566,7 +12130,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnRestoreHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnDropFilesHandler">
@@ -11577,10 +12143,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnDropFilesHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnDropFilesHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnDropFilesHandler">
@@ -11591,7 +12161,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnDropFilesHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnHelpHandler">
@@ -11602,10 +12174,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnHelpHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnHelpHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnHelpHandler">
@@ -11616,7 +12192,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnHelpHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnHintHandler">
@@ -11627,10 +12205,14 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.AddOnHintHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnHintHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnHintHandler">
@@ -11641,62 +12223,90 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
         </seealso>
       </element>
       <element name="TApplication.RemoveOnHintHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnShowHintHandler">
-        <short>Adds an application Hint show handler.</short>
+        <short>
+          Adds an application Hint show handler to the list for the handler type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnShowHintHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnShowHintHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnShowHintHandler">
-        <short>Removes an application Hint show handler.</short>
+        <short>
+          Removes an application Hint show handler from the list for the handler type.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnShowHintHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.AddOnGetMainFormHandleHandler">
-        <short>Adds an application MainForm Handle handler.</short>
+        <short>
+          Adds a handler signalled when the application MainForm handle is retrieved.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.AddOnGetMainFormHandleHandler.Handler">
-        <short/>
+        <short>
+          Handler routine added in the method to the list of handlers for the type.
+        </short>
       </element>
       <element name="TApplication.AddOnGetMainFormHandleHandler.AsFirst">
-        <short/>
+        <short>
+          <b>True</b> if the handler is inserted as the first routine in the list of handlers. <b>False</b> if it is appended to the end of the list.
+        </short>
       </element>
 
       <element name="TApplication.RemoveOnGetMainFormHandleHandler">
-        <short>Removes an application MainForm Handle handler.</short>
+        <short>
+          Removes a handler used to get the handle for the main form in the application.
+        </short>
         <descr/>
         <seealso>
           <link id="TApplicationHandlerType"/>
         </seealso>
       </element>
       <element name="TApplication.RemoveOnGetMainFormHandleHandler.Handler">
-        <short/>
+        <short>
+          Handler routine removed in the method.
+        </short>
       </element>
 
       <element name="TApplication.RemoveAllHandlersOfObject">
-        <short>Removes all handlers implemented in the given object.</short>
-        <descr/>
+        <short>
+          Removes all handlers implemented for the specified object.
+        </short>
+        <descr>
+          <p>
+            <var>RemoveAllHandlersOfObject</var> ensures that all handler routines for the object specified in AnObject are removed from the method lists for each of the TApplicationHandlerType values. The RemoveAllMethodsOfObject method in each of the TMethodList instances is called to remove the handlers for the specified object.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.RemoveAllHandlersOfObject.AnObject">
@@ -11704,29 +12314,66 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.DoBeforeMouseMessage">
-        <short>Things to be done before a mouse message is processed.</short>
-        <descr/>
+        <short>
+          Performs actions needed before a mouse message is processed in the application.
+        </short>
+        <descr>
+          <p>
+            DoBeforeMouseMessage ensures that the value in MouseControl is updated before the mouse message is handled in the application. It calls UpdateMouseControl to assign the control under the mouse pointer to the CurMouseControl argument.
+          </p>
+          <p>
+            DoBeforeMouseMessage is called when messages are exchanged between a widgetset class instance and the LCL application.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.DoBeforeMouseMessage.CurMouseControl">
-        <short/>
+        <short>
+          Current value for the MouseControl property. May be updated with the new control under the mouse pointer in the method.
+        </short>
       </element>
 
       <element name="TApplication.IsShortcut">
-        <short>Asks all shortcut handlers to handle the key.</short>
-        <descr/>
+        <short>
+          Checks whether a handler is available for the shortcut key in the message.
+        </short>
+        <descr>
+          <p>
+            The return value is set to True if the key code in the message is handled by the application or one of the enabled forms or controls in the application.
+          </p>
+          <p>
+            IsShortCut signals the OnShortcut event handler (when assigned) to determine if the accelerator is handled at the application level. If it is handled in OnShortcut, no additional actions are performed in the method.
+          </p>
+          <p>
+            Next, an enabled modal form on the screen calls its IsShortCut method to examine the accelerator.
+          </p>
+          <p>
+            The active form for the Screen is checked when it is enabled by calling its IsShortCut method.
+          </p>
+          <p>
+            Finally, the main form for the application is checked by calling its IsShortCut method.
+          </p>
+          <p>
+            The return value is False when the shortcut is not handled in any of the preceding calls to IsShortCut.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TApplication.IsShortcut.Result">
-        <short>True when the shortcut was handled.</short>
+        <short>True when the shortcut is handled.</short>
       </element>
       <element name="TApplication.IsShortcut.Message">
-        <short/>
+        <short>
+          Message with the key code for the accelerator.
+        </short>
       </element>
 
       <element name="TApplication.IntfQueryEndSession">
         <short>Called by the interface to confirm the end of a session.</short>
-        <descr>Asks all QueryEndSession handlers to confirm termination of the application.
+        <descr>
+          <p>
+            Asks all QueryEndSession handlers to confirm termination of the application.
+          </p>
         </descr>
         <seealso>
           <link id="TApplication.OnQueryEndSession"/>
@@ -11748,7 +12395,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.IntfAppActivate">
         <short>Called by the interface on application activation.</short>
-        <descr>Notifies all activation handlers.</descr>
+        <descr>
+          Notifies all activation handlers.
+        </descr>
         <seealso>
           <link id="TApplication.OnActivate"/>
           <link id="TApplicationHandlerType"/>
@@ -11839,7 +12488,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.Direction">
-        <short>Gets the BidiMode value for the specified language name.</short>
+        <short>
+          Gets the TBidiMode value with the direction for the specified language name.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11941,14 +12592,24 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.CaptureExceptions">
-        <short>Enables exception handling by Application.</short>
+        <short>Enables exception handling in the Application.</short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="TApplication.DoubleBuffered">
         <short>Indicates if the application uses double buffering.</short>
-        <descr>Default value is adbDefault. Hint: platform specific.</descr>
+        <descr>
+          <p>
+            Double buffering is a technique used to reduce screen flickering when form and controls are (re)drawn. When enabled, an off-screen buffer is used to accelerate drawing operations.
+          </p>
+          <p>
+            The default value for the property is adbDefault and indicates that the application uses the default capabilities provided by the widgetset.
+          </p>
+          <remark>
+            DoubleBuffered is a platform-specific property. Only the Windows platform implements double buffering (at the widgetset level) in the current LCL version. Changing the value for the property to True has no effect if double buffering is not implemented for the widgetset used in the Application.
+          </remark>
+        </descr>
         <seealso/>
       </element>
 
@@ -11970,7 +12631,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.ExceptionDialog">
-        <short>Indicates the dialog type used for an exception in the application.</short>
+        <short>
+          Indicates the dialog type used for an exception in the application.
+        </short>
         <descr>
           <p>
             <var>ExceptionDialog</var> is a <var>TApplicationExceptionDlg</var> property which indicates the dialog type displayed for an exception handled by the application instance. The default value for the property is <var>aedOkCancelDialog</var>, as assigned in the <var>Create</var> constructor.
@@ -11988,7 +12651,11 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.FindGlobalComponentEnabled">
         <short>Enables searching for global components by name.</short>
-        <descr/>
+        <descr>
+          <p>
+            This property is used by TReader to auto rename forms in the application to unique names.
+          </p>
+        </descr>
         <seealso/>
       </element>
 
@@ -12054,7 +12721,17 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.HintColor">
         <short>The background color for a Hint window.</short>
-        <descr/>
+        <descr>
+          <p>
+            <var>HintColor</var> is a <var>TColor</var> property with the color for the background in a <var>Hint</var> window.
+          </p>
+          <p>
+            The default value for the property is defined in the <var>DefHintColor</var> constant and assigned in the constructor for the application instance. Changing the value for the property causes the color in the internal <var>THintWindow</var> instance to be updated with the new property value.
+          </p>
+          <p>
+            HintColor is used in the <var>ShowHintWindow</var> method to configure the hint information displayed using a CM_HINTSHOW control message. It may be updated in the same method to use the value returned when the message is handled for the application.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.Hint"/>
           <link id="TApplication.ShowHint"/>
@@ -12064,8 +12741,17 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.HintHidePause">
-        <short>How long a Hint stays visible after the mouse pointer is moved.</short>
-        <descr/>
+        <short>
+          Indicates how long a Hint remains visible after the mouse pointer is moved.
+        </short>
+        <descr>
+          <p>
+            <var>HintHidePause</var> is an <var>Integer</var> property with the number of milliseconds (or ticks) that a Hint display remains visible after the mouse pointer leaves the control or form. The default value is defined in the DefHintHidePause constant and assigned to the property in the constructor for the application instance.
+          </p>
+          <p>
+            HintHidePause is used in the ShowHintWindow method to configure the hint information displayed using a CM_HINTSHOW control message.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.Hint"/>
         </seealso>
@@ -12073,7 +12759,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.HintHidePausePerChar">
         <short>
-          How long a keystroke extends the time a Hint remains visible (added to HintHidePause).
+          Indicates how long a keystroke extends the time a Hint remains visible (added to HintHidePause).
         </short>
         <descr/>
         <seealso>
@@ -12083,16 +12769,32 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.HintPause">
-        <short>The delay before a Hint is shown.</short>
-        <descr/>
+        <short>The delay before a Hint is shown for a form or control.</short>
+        <descr>
+          <p>
+            HintPause is an Integer property with the number of milliseconds to wait before a Hint window is displayed for a form or control.
+          </p>
+          <p>
+            The default value is defines in the DefHintPause constant and assigned to the property in the constructor for the application instance.
+          </p>
+          <p>
+            HintPause is used in the ActivateHint method, and provides the interval for the internal timer instance used for hints in the application.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.Hint"/>
         </seealso>
       </element>
 
       <element name="TApplication.HintShortCuts">
-        <short>Enables the display of keyboard shortcuts (e.g. on menu entries).</short>
-        <descr/>
+        <short>
+          Enables or disables display of keyboard shortcuts (e. g. on menu items).
+        </short>
+        <descr>
+          <p>
+            HintShortCuts is a Boolean property controls display of shortcut characters for action-enabled items in the application. This applies to controls which utilize the TControlActionLink class. The default value for the property is <b>True</b>, and enables display of keyboard shortcuts or accelerators.
+          </p>
+        </descr>
         <seealso>
           <link id="TApplication.Hint"/>
         </seealso>
@@ -12108,9 +12810,17 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.Icon">
         <short>The icon associated with this application.</short>
-        <descr/>
+        <descr>
+          <p>
+            Icon is TIcon property with the image used to represent the application on the desktop, task bar, and system menus.
+          </p>
+          <p>
+            The image can be assigned to TIcon at design-time using the Lazarus object inspector, or by setting values in the Project options dialog. The image can also be assigned at run-time using properties and methods in the TIcon instance.
+          </p>
+        </descr>
         <seealso/>
       </element>
+
       <element name="TApplication.LayoutAdjustmentPolicy">
         <short>
           Indicates the layout and sizing policy used for forms and controls in the application.
@@ -12256,10 +12966,10 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.MouseControl">
-        <short>The control currently under the mouse.</short>
+        <short>Contains the control currently under the mouse pointer.</short>
         <descr>
           <p>
-            Used to detect when the mouse enters and leaves a control.
+            Used to detect when the mouse enters and leaves a control. MouseControl is updated and used in methods like GetControlAtMouse and UpdateMouseControl.
           </p>
         </descr>
         <seealso>
@@ -12517,7 +13227,7 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
 
       <element name="TApplication.OnModalBegin">
         <short>
-          Event handler signalled a form in the application is displayed as a modal form.
+          Event handler signalled when a form in the application is displayed as a modal form.
         </short>
         <descr>
           <p>
@@ -12597,7 +13307,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.OnHelp">
-        <short>Event handler signalled when help is requested in the application.</short>
+        <short>
+          Event handler signalled when help is requested in the application.
+        </short>
         <descr>
           <p>
             <var>OnHelp</var> is a <var>THelpEvent</var> property with the event handler signalled (if assigned) when help is requested in the application. It is signalled from the <var>DoOnHelp</var> method when the <var>ActiveForm</var> does not have an assigned <var>OnHelp</var> event handler or does not respond the specified help command. It occurs before other application handlers using the <var>ahtHelp</var> handler type are notified.
@@ -12646,7 +13358,9 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="TApplication.OnShowHint">
-        <short>Event handler signalled prior to displaying a hint window.</short>
+        <short>
+          Event handler signalled prior to displaying a hint window.
+        </short>
         <descr>
           <p>
             <var>OnShowHint</var> is a <var>TShowHintEvent</var> property with the event handler signalled prior to displaying a hint window for the application.
@@ -12810,19 +13524,25 @@ HintWindow.ActivateHint(Rect, 'This is the hint');
       </element>
 
       <element name="DefHintPause">
-        <short>The default pause before the hint window displays (in milliseconds).</short>
+        <short>
+          The default pause before the hint window is displayed (in milliseconds).
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="DefHintShortPause">
-        <short>The default Hint re-display pause (in milliseconds).</short>
+        <short>
+          The default pause (in milliseconds) before a Hint is re-displayed.
+        </short>
         <descr/>
         <seealso/>
       </element>
 
       <element name="DefHintHidePause">
-        <short>The default pause before hint is hidden (in milliseconds).</short>
+        <short>
+          The default pause before a hint is hidden (in milliseconds).
+        </short>
         <descr/>
         <seealso/>
       </element>
