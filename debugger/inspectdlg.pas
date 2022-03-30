@@ -898,6 +898,12 @@ procedure TIDEInspectDlg.EvaluateCallback(Sender: TObject; ASuccess: Boolean;
   ResultText: String; ResultDBGType: TDBGType);
 begin
   FUpdateLock := False;
+  if FUpdateNeeded then begin
+    Clear;
+    UpdateData;
+    exit;
+  end;
+
   FExpressionWasEvaluated := True;
 
   FHumanReadable := ResultText;
