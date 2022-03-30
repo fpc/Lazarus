@@ -558,6 +558,7 @@ begin
             '  test_int1(42);' +
             'end.',
             42);
+{$IFDEF PasMacroNativeCalls}
     TestInt('test_int1(-3)',
             'begin' +
             '  test_int1(-3);' +
@@ -674,6 +675,7 @@ begin
     AssertEQ('Failed varpoint x', 990, TestResultInt1);
     AssertEQ('Failed varpoint y', 991, TestResultInt2);
     AssertEQ('Failed varpoint new', True, TestResultBool1);
+{$ENDIF}
 
     // string
     TestResultStr1 := 'no no';
@@ -687,6 +689,7 @@ begin
     AssertEQ('Failed str1 param', '123', TestResultStr1);
     AssertEQ('Failed str1 param', 'abc', TestResultStr2);
 
+{$IFDEF PasMacroNativeCalls}
     TestInputStr1 := '123';
     TestInputStr2 := '456';
     RunMacro('var s: String;' +
@@ -765,6 +768,7 @@ begin
     TestSyn('InsertTextAtCaret',
             'begin Caller.InsertTextAtCaret(''Foo'', scamEnd); end.',
             'Foo');
+{$ENDIF}
 
     TestSyn('TextBetweenPoints',
             '123456',
@@ -776,6 +780,7 @@ begin
             'Test XYZ XYZde 123'
             );
 
+{$IFDEF PasMacroNativeCalls}
     TestSyn('Replace word',   'Test abc abcde 123',
             'begin Caller.SearchReplace(''abc'', ''XYZ'', [ssoReplace, ssoWholeWord]); end.',
             'Test XYZ abcde 123'
@@ -799,6 +804,7 @@ begin
             'begin if ''123'' = Caller.Lines[3] then begin Caller.SelectAll; ecChar(''M''); end; end.',
             'M'
             );
+{$ENDIF}
 
       Result := True;
     finally
