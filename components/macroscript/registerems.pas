@@ -9,7 +9,7 @@ uses
   // LCL
   Dialogs,
   // IdeIntf
-  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  SrcEditorIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEUtils,
   // MacroScript
   EMScriptMacro, EMSSelfTest, EMSIdeOptions, EMSStrings;
 
@@ -28,6 +28,9 @@ begin
   RegisterIDEOptionsEditor(OptionsGroup, TEMSIdeOptionsFrame, 1);
 
   if not EMSSupported then {%H-}exit;
+
+  if GetSkipCheckByKey('MacroScript') or GetSkipCheckByKey('All') then
+    exit;
 
   conf := GetEMSConf;
   try
