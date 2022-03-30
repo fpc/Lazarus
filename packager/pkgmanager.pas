@@ -1536,7 +1536,7 @@ var
 begin
   StaticPackages:=LazarusPackageIntf.RegisteredPackages;
   if StaticPackages=nil then exit;
-  Quiet:=false;
+  Quiet:=GetSkipCheck(skcMissingPackageFile) or GetSkipCheck(skcAll);
   PackageGraph.AbortRegistration:=false;
   // register components in Lazarus packages
   for i:=0 to StaticPackages.Count-1 do begin

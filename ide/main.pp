@@ -1116,6 +1116,9 @@ begin
     AddHelp([BreakString(space+lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                         75, 22), LazConf.GetSecondaryConfigPath]);
     AddHelp(['']);
+    AddHelp([SkipChecksOptLong,''.Join(',', SkipChecksKeys)]);
+    AddHelp([BreakString(space+lisSkipStartupChecks, 75, 22)]);
+    AddHelp(['']);
     AddHelp([DebugLogOpt,' <file>']);
     AddHelp([BreakString(space+lisFileWhereDebugOutputIsWritten, 75, 22)]);
     AddHelp(['']);
@@ -1265,7 +1268,8 @@ begin
     end;
   end
   else
-  if (CompareFilenames(LastCalled,CurPrgName)<>0) and
+  if (not (GetSkipCheck(skcLastCalled) or GetSkipCheck(skcAll)) ) and
+     (CompareFilenames(LastCalled,CurPrgName)<>0) and
      (CompareFilenames(LastCalled,AltPrgName)<>0) and
      (CompareFilenames(CurPrgName,AltPrgName)<>0) // we can NOT check, if we only have the path inside the PCP
   then begin
@@ -1393,12 +1397,18 @@ var
   Note: string;
   OI: TSimpleWindowLayout;
   ConfigFile: string;
+  SkipAllTests: Boolean;
 begin
   {$IFDEF DebugSearchFPCSrcThread}
   ShowSetupDialog:=true;
   {$ENDIF}
+
+  SkipAllTests := GetSkipCheck(skcSetup) or GetSkipCheck(skcAll);
+
   // check lazarus directory
   if (not ShowSetupDialog)
+  and (not SkipAllTests)
+  and (not GetSkipCheck(skcLazDir))
   and (CheckLazarusDirectoryQuality(EnvironmentOptions.GetParsedLazarusDirectory,Note)<>sddqCompatible)
   then begin
     debugln(['Warning: (lazarus) incompatible Lazarus directory: ',EnvironmentOptions.GetParsedLazarusDirectory]);
@@ -1407,6 +1417,8 @@ begin
 
   // check compiler
   if (not ShowSetupDialog)
+  and (not SkipAllTests)
+  and (not GetSkipCheck(skcFpcExe))
   and (CheckFPCExeQuality(EnvironmentOptions.GetParsedCompilerFilename,Note,
                        CodeToolBoss.CompilerDefinesCache.TestFilename)=sddqInvalid)
   then begin
@@ -1415,8 +1427,10 @@ begin
   end;
 
   // check FPC source directory
-  if (not ShowSetupDialog) then
-  begin
+  if (not ShowSetupDialog)
+  and (not SkipAllTests)
+  and (not GetSkipCheck(skcFpcSrc))
+  then begin
     CfgCache:=CodeToolBoss.CompilerDefinesCache.ConfigCaches.Find(
       EnvironmentOptions.GetParsedCompilerFilename,'','','',true);
     if CheckFPCSrcDirQuality(EnvironmentOptions.GetParsedFPCSourceDirectory,Note,
@@ -1429,6 +1443,8 @@ begin
 
   // check 'make' utility
   if (not ShowSetupDialog)
+  and (not SkipAllTests)
+  and (not GetSkipCheck(skcMake))
   and not (CheckMakeExeQuality(EnvironmentOptions.GetParsedMakeFilename,Note) in [sddqCompatible, sddqMakeNotWithFpc])
   then begin
     debugln(['Warning: (lazarus) incompatible make utility: ',EnvironmentOptions.GetParsedMakeFilename]);
@@ -1436,9 +1452,12 @@ begin
   end;
 
   // check debugger
-  if (not ShowSetupDialog) then begin
-    // PackageBoss is not yet loaded...
-    RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
+  // PackageBoss is not yet loaded...
+  RegisterDebugger(TGDBMIDebugger); // make sure we can read the config
+  if (not ShowSetupDialog)
+  and (not SkipAllTests)
+  and (not GetSkipCheck(skcDebugger))
+  then begin
     // Todo: add LldbFpDebugger for Mac
     // If the default debugger is of a class that is not yet Registered, then the dialog is not shown
     Note:='';
@@ -1457,6 +1476,8 @@ begin
   ConfigFile:=EnvironmentOptions.GetParsedFppkgConfig;
   // check fppkg configuration
   if (not ShowSetupDialog)
+  and (not SkipAllTests)
+  and (not GetSkipCheck(skcFppkg))
   and (CheckFppkgConfiguration(ConfigFile, Note)<>sddqCompatible)
   then begin
     debugln('Warning: (lazarus) fppkg not properly configured.');

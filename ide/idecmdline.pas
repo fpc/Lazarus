@@ -40,10 +40,26 @@ interface
 uses 
   Classes, SysUtils,
   // LazUtils
-  FileUtil, LazFileUtils, LazStringUtils, LazUTF8, LazLogger,
+  FileUtil, LazFileUtils, LazStringUtils, LazUTF8, LazLogger, IDEUtils,
   // IDE
   LazConf;
 
+// Checks at startup that can be skipped
+// Packages may add there own...
+type
+  TSkipAbleChecks = (
+    skcLazDir,         // Correct Lazarus-dir / CheckLazarusDirectoryQuality
+    skcFpcExe,         // fpc.exe / CheckFPCExeQuality
+    skcFpcSrc,         // fpc source dir / CheckFPCSrcDirQuality
+    skcMake,           // make.exe / CheckMakeExeQuality
+    skcDebugger,       // CheckDebuggerQuality
+    skcFppkg,          // CheckFppkgConfiguration
+    skcSetup,          // **All** of the above
+    skcMissingPackageFile, // lisPkgSysPackageFileNotFound = 'Package file not found';
+    skcLastCalled,     // Config was last used by this/other installation
+    skcUniqueInstance, // Other running IDE // Attempt to get lock file
+    skcAll             // **ALL**
+  );
 const
   // IDE cmd line options
   ShowSetupDialogOptLong='--setup';
@@ -60,6 +76,20 @@ const
   DebugLogOptEnable='--debug-enable=';
   LanguageOpt='--language=';
   LazarusDirOpt ='--lazarusdir=';
+  SkipChecksOptLong='--skip-checks=';
+  SkipChecksKeys: array[TSkipAbleChecks] of string = (
+    'LazarusDir',
+    'FpcExe',
+    'FpcSrc',
+    'Make',
+    'Debbugger',
+    'Fppkg',
+    'Setup',
+    'MissingPackageFile',
+    'InstallDir',
+    'SingleInstance',
+    'All'
+  );
 const
   // startlazarus options
   StartLazarusPidOpt   = '--lazarus-pid=';
@@ -89,6 +119,10 @@ function GetParamsAndCfgFile: TStrings;
 function ParamsAndCfgCount: Integer;
 function ParamsAndCfgStr(Idx: Integer): String;
 procedure ResetParamsAndCfg;
+
+function GetSkipCheck(AKey: TSkipAbleChecks): Boolean;
+function GetSkipCheckByKey(AKey: String): Boolean;
+
 
 implementation
 
@@ -199,6 +233,34 @@ end;
 procedure ResetParamsAndCfg;
 begin
   FreeAndNil(ParamsAndCfgFileContent);
+end;
+
+function GetSkipCheck(AKey: TSkipAbleChecks): Boolean;
+begin
+  Result := GetSkipCheckByKey(SkipChecksKeys[AKey]);
+end;
+
+function GetSkipCheckByKey(AKey: String): Boolean;
+var
+  i: integer;
+  AValue: string;
+begin
+  // return language specified in command line (empty string if no language specified)
+  Result := False;
+  AKey := ','+UpperCase(AKey)+',';
+  AValue := '';
+  i := 1;
+  while i <= ParamsAndCfgCount do
+  begin
+    if ParamIsOptionPlusValue(i, SkipChecksOptLong, AValue) = true then
+    begin
+      AValue := ','+UpperCase(AValue)+',';
+      Result := Pos(AKey, AValue) > 0;
+      if Result then
+        exit;
+    end;
+    inc(i);
+  end;
 end;
 
 procedure ParseCommandLine(aCmdLineParams: TStrings; out IDEPid: Integer; out
@@ -419,6 +481,7 @@ end;
 
 initialization
   InitLogger;
+  SetSkipCheckByKeyProc(@GetSkipCheckByKey);
 finalization
   FreeAndNil(CfgFileContent);
   FreeAndNil(ParamsAndCfgFileContent);

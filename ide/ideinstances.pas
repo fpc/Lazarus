@@ -107,6 +107,7 @@ type
     FMainServer: TMainServer;//running IDE
     FStartIDE: Boolean;// = True;
     FForceNewInstance: Boolean;
+    FSkipAllChecks: Boolean;
     FFilesToOpen: TStrings;
 
     class procedure AddFilesToParams(const aFiles: TStrings;
@@ -208,7 +209,7 @@ end;
 
 function TIDEInstances.StartIDE: Boolean;
 begin
-  Result := FStartIDE;
+  Result := FStartIDE or FSkipAllChecks;
 end;
 
 function TIDEInstances.ProjectIsOpenInAnotherInstance(aProjectFileName: string
@@ -219,6 +220,9 @@ var
   xServerIDs: TStringList;
   xProjFileName: string;
 begin
+  if FSkipAllChecks then
+    exit(False);
+
   aProjectFileName := ExtractFilePath(aProjectFileName)+ExtractFileNameOnly(aProjectFileName);
 
   xStartClient := nil;
@@ -258,6 +262,8 @@ procedure TIDEInstances.StartListening(
   const aStartNewInstanceEvent: TStartNewInstanceEvent;
   const aGetCurrentProjectEvent: TGetCurrentProjectEvent);
 begin
+  if FSkipAllChecks then
+    exit;
   Assert(Assigned(FMainServer));
 
   FMainServer.StartListening(aStartNewInstanceEvent, aGetCurrentProjectEvent);
@@ -266,6 +272,8 @@ end;
 procedure TIDEInstances.StartServer;
 begin
   Assert(FMainServer = nil);
+  if FSkipAllChecks then
+    exit;
 
   FMainServer := TMainServer.Create(Self);
   FMainServer.StartUnique(LazServerPrefix);
@@ -273,6 +281,8 @@ end;
 
 procedure TIDEInstances.StopListening;
 begin
+  if FMainServer = nil then
+    exit;
   FMainServer.StopListening;
 end;
 
@@ -548,6 +558,8 @@ var
 begin
   if not FStartIDE then//InitIDEInstances->CollectOtherOpeningFiles decided not to start the IDE
     Exit;
+  if FSkipAllChecks then
+    exit;
 
   // set primary config path
   PCP:=ExtractPrimaryConfigPath(GetParamsAndCfgFile);
@@ -732,12 +744,15 @@ var
   I: Integer;
 begin
   FForceNewInstance := CheckParamsForForceNewInstanceOpt;
+  FSkipAllChecks := GetSkipCheck(skcUniqueInstance) or GetSkipCheck(skcAll);
 
   //get cmd line filenames
   FFilesToOpen := ExtractCmdLineFilenames;
   for I := 0 to FilesToOpen.Count-1 do
     FilesToOpen[I] := CleanAndExpandFilename(FilesToOpen[I]);
 
+  if FSkipAllChecks then
+    exit;
   if FilesToOpen.Count > 0 then//if there are file in the cmd, check for multiple starting instances
   begin
     CollectFiles(xFilesWereSentToCollectingServer);
