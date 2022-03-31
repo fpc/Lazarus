@@ -3957,7 +3957,9 @@ begin
     IDECommandList.FindIDECommand(ecCut).Enabled := SelEditable;
     IDECommandList.FindIDECommand(ecCopy).Enabled := SelAvail;
     IDECommandList.FindIDECommand(ecPaste).Enabled := Editable;
-    IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ASrcEdit) and (ASrcEdit.SourceText<>'');
+    IDECommandList.FindIDECommand(ecSelectAll).Enabled := Assigned(ASrcEdit) and
+      ((ASrcEdit.LineCount>1) or ((ASrcEdit.LineCount=1) and (ASrcEdit.Lines[0] <> '')));
+
   end;
 
   IDECommandList.FindIDECommand(ecMultiPaste).Enabled := Editable;
