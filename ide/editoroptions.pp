@@ -291,9 +291,9 @@ type
     function Equals(Other: TColorSchemeAttribute): Boolean; reintroduce;
     function GetStoredValuesForAttrib: TColorSchemeAttribute; // The IDE default colors from the resources
     function GetSchemeGlobal: TColorSchemeAttribute;
-    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
+    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
                           Defaults: TColorSchemeAttribute; Version: Integer);
-    procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
+    procedure SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
                         Defaults: TColorSchemeAttribute);
     property Group: TAhaGroupName read FGroup write FGroup;
     property IsUsingSchemeGlobals: Boolean read GetIsUsingSchemeGlobals;
@@ -318,7 +318,7 @@ type
     FLanguageName: String;
     FIsSchemeDefault: Boolean;
     FFormatVersion: integer;
-    function GetAttribute(Index: String): TColorSchemeAttribute;
+    function GetAttribute(const Index: String): TColorSchemeAttribute;
     function GetAttributeAtPos(Index: Integer): TColorSchemeAttribute;
     function GetAttributeByEnum(Index: TAdditionalHilightAttribute): TColorSchemeAttribute;
     function GetName: String;
@@ -345,7 +345,7 @@ type
     property  Name: String read GetName;
     property  Language: TLazSyntaxHighlighter read FLanguage;
     property  LanguageName: String read FLanguageName;
-    property  Attribute[Index: String]: TColorSchemeAttribute read GetAttribute;
+    property  Attribute[const Index: String]: TColorSchemeAttribute read GetAttribute;
     property  AttributeByEnum[Index: TAdditionalHilightAttribute]: TColorSchemeAttribute
               read GetAttributeByEnum;
     property  AttributeAtPos[Index: Integer]: TColorSchemeAttribute read GetAttributeAtPos;
@@ -368,9 +368,9 @@ type
     destructor  Destroy; override;
     procedure Assign(Src: TColorScheme); reintroduce;
     function GetStoredValuesForScheme: TColorScheme; // The IDE default colors from the resources
-    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
-                          Defaults: TColorScheme; aOldPath: String = '');
-    procedure SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String; Defaults: TColorScheme);
+    procedure LoadFromXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
+                          Defaults: TColorScheme; const aOldPath: String = '');
+    procedure SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String; Defaults: TColorScheme);
     property  Name: string read FName;
     property  DefaultColors: TColorSchemeLanguage read FDefaultColors;
     property  ColorScheme[Index: TLazSyntaxHighlighter]: TColorSchemeLanguage read GetColorScheme;
@@ -382,7 +382,7 @@ type
   TColorSchemeFactory = class(TObject)
   private
     FMappings: TQuickStringlist; // TColorScheme
-    function GetColorSchemeGroup(Index: String): TColorScheme;
+    function GetColorSchemeGroup(const Index: String): TColorScheme;
     function GetColorSchemeGroupAtPos(Index: Integer): TColorScheme;
   public
     constructor Create;
@@ -393,9 +393,9 @@ type
       Defaults: TColorSchemeFactory; const aOldPath: String = '');
     procedure SaveToXml(aXMLConfig: TRttiXMLConfig; const aPath: String;
       Defaults: TColorSchemeFactory);
-    procedure RegisterScheme(aXMLConfig: TRttiXMLConfig; AName, aPath: String);
+    procedure RegisterScheme(aXMLConfig: TRttiXMLConfig; AName: String; const  aPath: String);
     procedure GetRegisteredSchemes(AList: TStrings);
-    property  ColorSchemeGroup[Index: String]: TColorScheme read GetColorSchemeGroup;
+    property  ColorSchemeGroup[const Index: String]: TColorScheme read GetColorSchemeGroup;
     property  ColorSchemeGroupAtPos[Index: Integer]: TColorScheme read GetColorSchemeGroupAtPos;
   end;
 
@@ -6294,8 +6294,8 @@ begin
   end;
 end;
 
-procedure TColorSchemeAttribute.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
-  Defaults: TColorSchemeAttribute; Version: Integer);
+procedure TColorSchemeAttribute.LoadFromXml(aXMLConfig: TRttiXMLConfig;
+  const aPath: String; Defaults: TColorSchemeAttribute; Version: Integer);
 var
   Path: String;
 begin
@@ -6327,8 +6327,8 @@ begin
   end;
 end;
 
-procedure TColorSchemeAttribute.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
-  Defaults: TColorSchemeAttribute);
+procedure TColorSchemeAttribute.SaveToXml(aXMLConfig: TRttiXMLConfig;
+  const aPath: String; Defaults: TColorSchemeAttribute);
 var
   AttriName: String;
 begin
@@ -6344,7 +6344,8 @@ end;
 
 { TColorSchemeLanguage }
 
-function TColorSchemeLanguage.GetAttribute(Index: String): TColorSchemeAttribute;
+function TColorSchemeLanguage.GetAttribute(const Index: String
+  ): TColorSchemeAttribute;
 var
   Idx: Integer;
 begin
@@ -6977,8 +6978,8 @@ begin
   end;
 end;
 
-procedure TColorScheme.LoadFromXml(aXMLConfig: TRttiXMLConfig; aPath: String;
-  Defaults: TColorScheme; aOldPath: String);
+procedure TColorScheme.LoadFromXml(aXMLConfig: TRttiXMLConfig;
+  const aPath: String; Defaults: TColorScheme; const aOldPath: String);
 var
   i: TLazSyntaxHighlighter;
   Def: TColorSchemeLanguage;
@@ -7000,8 +7001,8 @@ begin
     end;
 end;
 
-procedure TColorScheme.SaveToXml(aXMLConfig: TRttiXMLConfig; aPath: String;
-  Defaults: TColorScheme);
+procedure TColorScheme.SaveToXml(aXMLConfig: TRttiXMLConfig;
+  const aPath: String; Defaults: TColorScheme);
 var
   i: TLazSyntaxHighlighter;
   Def: TColorSchemeLanguage;
@@ -7026,7 +7027,8 @@ end;
 
 { TColorSchemeFactory }
 
-function TColorSchemeFactory.GetColorSchemeGroup(Index: String): TColorScheme;
+function TColorSchemeFactory.GetColorSchemeGroup(const Index: String
+  ): TColorScheme;
 var
   Idx: integer;
 begin
@@ -7118,7 +7120,8 @@ begin
   end
 end;
 
-procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig; AName, aPath: String);
+procedure TColorSchemeFactory.RegisterScheme(aXMLConfig: TRttiXMLConfig;
+  AName: String; const aPath: String);
 var
   lMapping: TColorScheme;
   i, j: integer;
