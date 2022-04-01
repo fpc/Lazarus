@@ -76,6 +76,7 @@ type
   private
     FLineMapCount: integer;
     FLineMap: array of integer;
+    FSkipTextToView: Boolean;
     function GetLineMap(Index: Integer): Integer;
     procedure SetLineMap(Index: Integer; AValue: Integer);
     procedure SetLineMapCount(AValue: integer);
@@ -1222,6 +1223,11 @@ var
   i: Integer;
   r: TLineRange;
 begin
+  if FSkipTextToView then begin
+    Result.Top := AIndex;
+    Result.Bottom := AIndex;
+    exit;
+  end;
   Result.Top := -1;
   Result.Bottom := -1;
   r := inherited TextToViewIndex(AIndex);
@@ -1554,11 +1560,13 @@ begin
       Invalidate; // TODO: move to PaintArea
     end;
 
+    FTopInfoDisplay.FSkipTextToView := True;
     for i := 0 to ListCnt - 1 do begin
       if FTopInfoDisplay.LineMap[ListCnt-1-i] <> InfList[i].LineIndex then
         TSourceLazSynSurfaceManager(FPaintArea).ExtraManager.InvalidateLines(ListCnt-1-i, ListCnt-1-i);
       FTopInfoDisplay.LineMap[ListCnt-1-i] := InfList[i].LineIndex;
     end;
+    FTopInfoDisplay.FSkipTextToView := False;
 
   finally
     FSrcSynCaretChangedLock := False;
