@@ -1721,6 +1721,7 @@ begin
 
   {%region *** Goto Marks section ***}
   SrcEditMenuSectionMarks:=RegisterIDEMenuSection(SourceEditorMenuRoot, 'Marks section');
+  AParent:=SrcEditMenuSectionMarks;
     // register the Goto Bookmarks Submenu
     SrcEditSubMenuGotoBookmarks:=RegisterIDESubMenu(AParent,
         'Goto bookmarks', uemGotoBookmark,
@@ -1743,6 +1744,7 @@ begin
   {%endregion}
 
   {%region *** Toggle Bookmarks Submenu ***}
+  AParent:=SrcEditMenuSectionMarks;
     SrcEditSubMenuToggleBookmarks:=RegisterIDESubMenu(AParent,
         'Toggle bookmarks', uemToggleBookmark,
         nil, TNotifyProcedure(@TToolButton_ToggleBookmarks.ShowAloneMenu),
