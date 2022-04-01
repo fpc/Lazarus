@@ -154,7 +154,7 @@ type
     constructor Create(AOwner: TWinControl; ATextDrawer: TheTextDrawer);
     destructor Destroy; override;
     procedure Assign(Src: TLazSynSurface); override;
-    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
 
     function ScreenColumnToXValue(Col: integer): integer;  // map screen column to screen pixel
     function RowColumnToPixels(const RowCol: TPoint): TPoint;
@@ -239,9 +239,9 @@ type
     procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TWinControl);
-    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
-    procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
-    procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
+    procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); virtual;
+    procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); virtual;
 
     property LeftGutterArea:  TLazSynSurfaceWithText read GetLeftGutterArea  write SetLeftGutterArea;
     property RightGutterArea: TLazSynSurfaceWithText read GetRightGutterArea write SetRightGutterArea;
@@ -1160,7 +1160,8 @@ begin
   FRightGutterWidth := 0;
 end;
 
-procedure TLazSynSurfaceManager.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TLazSynSurfaceManager.InvalidateLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 var
   rcInval: TRect;
   ViewedRange: TLineRange;
@@ -1169,14 +1170,14 @@ begin
   if (FirstTextLine >= 0) then begin
     ViewedRange := DisplayView.TextToViewIndex(FirstTextLine);
     rcInval.Top := Max(TextArea.TextBounds.Top,
-                       TextArea.TextBounds.Top + (ViewedRange.Top
+                       TextArea.TextBounds.Top + (ViewedRange.Top + AScreenLineOffset
                           - TextArea.TopLine + 1) * TextArea.LineHeight);
   end;
   if (LastTextLine >= 0) then begin
     if LastTextLine <> FirstTextLine then
       ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
-                          TextArea.TextBounds.Top + (ViewedRange.Bottom
+                          TextArea.TextBounds.Top + (ViewedRange.Bottom + AScreenLineOffset
                              - TextArea.TopLine + 2)  * TextArea.LineHeight);
   end;
 
@@ -1187,15 +1188,17 @@ begin
     InvalidateRect(Handle, @rcInval, FALSE);
 end;
 
-procedure TLazSynSurfaceManager.InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TLazSynSurfaceManager.InvalidateTextLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 begin
-  FTextArea.InvalidateLines(FirstTextLine, LastTextLine);
+  FTextArea.InvalidateLines(FirstTextLine, LastTextLine, AScreenLineOffset);
 end;
 
-procedure TLazSynSurfaceManager.InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TLazSynSurfaceManager.InvalidateGutterLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 begin
-  FLeftGutterArea.InvalidateLines(FirstTextLine, LastTextLine);
-  FRightGutterArea.InvalidateLines(FirstTextLine, LastTextLine);
+  FLeftGutterArea.InvalidateLines(FirstTextLine, LastTextLine, AScreenLineOffset);
+  FRightGutterArea.InvalidateLines(FirstTextLine, LastTextLine, AScreenLineOffset);
 end;
 
 { TLazSynTextArea }
@@ -1361,7 +1364,8 @@ begin
   BoundsChanged;
 end;
 
-procedure TLazSynTextArea.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TLazSynTextArea.InvalidateLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 var
   rcInval: TRect;
   ViewedRange: TLineRange;
@@ -1370,13 +1374,13 @@ begin
   if (FirstTextLine >= 0) then begin
     ViewedRange := DisplayView.TextToViewIndex(FirstTextLine);
     rcInval.Top := Max(TextBounds.Top,
-                       TextBounds.Top + (ViewedRange.Top - TopLine + 1) * LineHeight);
+                       TextBounds.Top + (ViewedRange.Top + AScreenLineOffset - TopLine + 1) * LineHeight);
   end;
   if (LastTextLine >= 0) then begin
     if LastTextLine <> FirstTextLine then
       ViewedRange := DisplayView.TextToViewIndex(LastTextLine);
     rcInval.Bottom := Min(TextBounds.Bottom,
-                          TextBounds.Top + (ViewedRange.Bottom - TopLine + 2)  * LineHeight);
+                          TextBounds.Top + (ViewedRange.Bottom + AScreenLineOffset - TopLine + 2)  * LineHeight);
   end;
 
   {$IFDEF VerboseSynEditInvalidate}

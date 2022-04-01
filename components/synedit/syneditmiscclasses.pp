@@ -593,7 +593,7 @@ type
     procedure RemoveBoundsChangeHandler(AHandler: TNotifyEvent);
 
     procedure Paint(ACanvas: TCanvas; AClip: TRect);
-    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); virtual;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); virtual;
     procedure SetBounds(ATop, ALeft, ABottom, ARight: Integer);
 
     property Left: Integer   read FBounds.Left;
@@ -1634,7 +1634,8 @@ begin
   DoPaint(ACanvas, AClip);
 end;
 
-procedure TLazSynSurface.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TLazSynSurface.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx;
+  AScreenLineOffset: Integer);
 begin
   //
 end;

@@ -108,7 +108,7 @@ type
   protected
     procedure DoPaint(ACanvas: TCanvas; AClip: TRect); override;
   public
-    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
+    procedure InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
     procedure Assign(Src: TLazSynSurface); override;
     property Gutter: TSynGutter read FGutter write SetGutter;
     property TextBounds: TRect read GetTextBounds;
@@ -144,7 +144,8 @@ begin
   FGutter.Paint(ACanvas, Self, AClip, ScreenRow1, ScreenRow2);
 end;
 
-procedure TLazSynGutterArea.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TLazSynGutterArea.InvalidateLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 var
   rcInval: TRect;
 begin
@@ -152,12 +153,12 @@ begin
   if (FirstTextLine >= 0) then
     rcInval.Top := Max(TextArea.TextBounds.Top,
                        TextArea.TextBounds.Top
-                       + (DisplayView.TextToViewIndex(FirstTextLine).Top
+                       + (DisplayView.TextToViewIndex(FirstTextLine).Top + AScreenLineOffset
                           - TextArea.TopLine + 1) * TextArea.LineHeight);
   if (LastTextLine >= 0) then
     rcInval.Bottom := Min(TextArea.TextBounds.Bottom,
                           TextArea.TextBounds.Top
-                          + (DisplayView.TextToViewIndex(LastTextLine).Bottom
+                          + (DisplayView.TextToViewIndex(LastTextLine).Bottom + AScreenLineOffset
                              - TextArea.TopLine + 2)  * TextArea.LineHeight);
 
   {$IFDEF VerboseSynEditInvalidate}

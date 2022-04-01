@@ -2953,6 +2953,8 @@ begin
 end;
 
 procedure TCustomSynEdit.InvalidateGutterLines(FirstLine, LastLine: integer);   // Todo: move to gutter
+var
+  offs: Integer;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then begin
@@ -2969,12 +2971,12 @@ begin
       if (LastLine <> -1) and (LastLine < FirstLine) then
         SwapInt(FirstLine, LastLine);
 
+      offs := 0;
       if FPaintLock > 0 then begin
         // pretend we haven't scrolled
-        FirstLine := FirstLine - (FOldTopView - TopView);
-        LastLine  := LastLine - (FOldTopView - TopView);
+        offs := - (FOldTopView - TopView);
       end;
-      FPaintArea.InvalidateGutterLines(FirstLine-1, LastLine-1);
+      FPaintArea.InvalidateGutterLines(FirstLine-1, LastLine-1, offs);
     end;
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnExit(['TCustomSynEdit.InvalidateGutterLines ',DbgSName(self)]);
@@ -2984,6 +2986,8 @@ begin
 end;
 
 procedure TCustomSynEdit.InvalidateLines(FirstLine, LastLine: integer);
+var
+  offs: Integer;
 begin
   if sfPainting in fStateFlags then exit;
   if Visible and HandleAllocated then begin
@@ -2996,12 +3000,12 @@ begin
       if (LastLine <> -1) and (LastLine < FirstLine) then
         SwapInt(FirstLine, LastLine);
 
+      offs := 0;
       if FPaintLock > 0 then begin
         // pretend we haven't scrolled
-        FirstLine := FirstLine - (FOldTopView - TopView);
-        LastLine  := LastLine - (FOldTopView - TopView);
+        offs := - (FOldTopView - TopView);
       end;
-      FPaintArea.InvalidateTextLines(FirstLine-1, LastLine-1);
+      FPaintArea.InvalidateTextLines(FirstLine-1, LastLine-1, offs);
     end;
     {$IFDEF VerboseSynEditInvalidate}
     DebugLnExit(['TCustomSynEdit.InvalidateTextLines ',DbgSName(self)]);

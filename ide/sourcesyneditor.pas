@@ -131,9 +131,9 @@ type
   public
     constructor Create(AOwner: TWinControl; AnOriginalManager: TLazSynSurfaceManager);
     destructor Destroy; override;
-    procedure  InvalidateLines(FirstTextLine, LastTextLine: TLineIdx); override;
-    procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx); override;
-    procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx); override;
+    procedure  InvalidateLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
+    procedure InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
+    procedure InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx; AScreenLineOffset: Integer = 0); override;
     property ExtraManager: TLazSynSurfaceManager read FExtraManager write FExtraManager;
     property OriginalManager: TLazSynSurfaceManager read FOriginalManager write FOriginalManager;
     property TopLineCount: Integer read FTopLineCount write SetTopLineCount;
@@ -1418,21 +1418,24 @@ begin
   FOriginalManager.Free;
 end;
 
-procedure TSourceLazSynSurfaceManager.InvalidateLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TSourceLazSynSurfaceManager.InvalidateLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 begin
-  FOriginalManager.InvalidateLines(FirstTextLine, LastTextLine);
+  FOriginalManager.InvalidateLines(FirstTextLine, LastTextLine, AScreenLineOffset);
   FExtraManager.InvalidateLines(FirstTextLine, LastTextLine);
 end;
 
-procedure TSourceLazSynSurfaceManager.InvalidateTextLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TSourceLazSynSurfaceManager.InvalidateTextLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 begin
-  FOriginalManager.InvalidateTextLines(FirstTextLine, LastTextLine);
+  FOriginalManager.InvalidateTextLines(FirstTextLine, LastTextLine, AScreenLineOffset);
   FExtraManager.InvalidateTextLines(FirstTextLine, LastTextLine);
 end;
 
-procedure TSourceLazSynSurfaceManager.InvalidateGutterLines(FirstTextLine, LastTextLine: TLineIdx);
+procedure TSourceLazSynSurfaceManager.InvalidateGutterLines(FirstTextLine,
+  LastTextLine: TLineIdx; AScreenLineOffset: Integer);
 begin
-  FOriginalManager.InvalidateGutterLines(FirstTextLine, LastTextLine);
+  FOriginalManager.InvalidateGutterLines(FirstTextLine, LastTextLine, AScreenLineOffset);
   FExtraManager.InvalidateGutterLines(FirstTextLine, LastTextLine);
 end;
 
