@@ -51,7 +51,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
   { TApacheApplicationDescriptor }
 
@@ -61,7 +61,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
   { TCustomCGIApplicationDescriptor }
@@ -71,7 +71,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
   { TCustomFCGIApplicationDescriptor }
@@ -81,7 +81,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
   { TFCGIApplicationDescriptor }
@@ -92,7 +92,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
   { TFileDescPascalUnitWithCGIDataModule }
@@ -195,7 +195,6 @@ type
     FDir,
     FLoc : String;
     FPort : Integer;
-    FDefaultFiles : Boolean;
     FStandardModule : TStandardModule;
     function GetOptions: TModalResult;
   public
@@ -204,7 +203,7 @@ type
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
-    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles({%H-}AProject: TLazProject): TModalResult; override;
   end;
 
 var
@@ -225,6 +224,8 @@ var
 procedure Register;
 
 implementation
+
+{$R fpweb_images.res}
 
 uses LazarusPackageIntf,FormEditingIntf, PropEdits, DBPropEdits, sqldbwebdata, LResources,
      frmrpcmoduleoptions, registersqldb, sqlstringspropertyeditordlg;
@@ -1253,9 +1254,6 @@ procedure TJSFileDescriptor.UpdateDefaultPascalFileExtension(
 begin
   inherited UpdateDefaultPascalFileExtension(DefPasExt);
 end;
-
-initialization
- {$i fpweb_images.inc}
 
 finalization
   FreeAndNil(AChecker);
