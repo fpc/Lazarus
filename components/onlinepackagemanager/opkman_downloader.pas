@@ -487,6 +487,7 @@ begin
   FreeOnTerminate := True;
   FMS := TMemoryStream.Create;
   FHTTPClient := TFPHTTPClient.Create(nil);
+  FHTTPClient.AllowRedirect := True;
   if Options.ProxyEnabled then
   begin
     FHTTPClient.Proxy.Host:= Options.ProxyServer;
