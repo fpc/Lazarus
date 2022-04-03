@@ -546,6 +546,9 @@ menu/menu_codetoolsoptions_200.png
 menu/menu_comment.png
 menu/menu_comment_150.png
 menu/menu_comment_200.png
+menu/menu_compile.png
+menu/menu_compile_150.png
+menu/menu_compile_200.png
 menu/menu_compiler_options.png
 menu/menu_compiler_options_150.png
 menu/menu_compiler_options_200.png
