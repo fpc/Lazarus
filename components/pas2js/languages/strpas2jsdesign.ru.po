@@ -234,11 +234,11 @@ msgstr "Экземпляры серверов будут запускаться 
 
 #: strpas2jsdesign.pjsdserviceworker
 msgid "Pas2JS Service Worker"
-msgstr ""
+msgstr "Вспомогательный процесс Pas2JS"
 
 #: strpas2jsdesign.pjsdserviceworkerdescription
 msgid "A pas2js program running as cache for a web app. It does not run standalone."
-msgstr ""
+msgstr "Программа pas2js, использующаяся в качестве кэша веб-приложения. Она не запускается самостоятельно."
 
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
