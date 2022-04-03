@@ -39,7 +39,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Graphics, ImgList, Controls, StdCtrls, ComCtrls,
+  Graphics, ImgList, Controls, StdCtrls, ComCtrls, IntegerList,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSExtCtrls, WSToolwin, WSFactory;
 
@@ -178,6 +178,11 @@ type
     // for every item previously checked. Only widgetsets that don't support native sort
     // AND/OR that don't support native checkboxes should have this method return true
     class function RestoreItemCheckedAfterSort(const ALV: TCustomListView): Boolean; virtual;
+
+    // Multi-selection
+    class function GetFirstSelected(const ALV: TCustomListView): TListItem; virtual;
+    class procedure InitMultiSelList(const ALV: TCustomListView; AEnable: Boolean); virtual;
+    class procedure UpdateMultiSelList(const ALV: TCustomListView; AItem: TListItem; Add: Boolean); virtual;
   end;
 
   TWSCustomListViewClass = class of TWSCustomListView;
@@ -483,6 +488,9 @@ begin
 end;
     
 { TWSCustomListView }
+
+type
+  TCustomListViewAccess = class(TCustomListView);
 
 class procedure TWSCustomListView.ColumnDelete(const ALV: TCustomListView;
   const AIndex: Integer);
@@ -844,6 +852,56 @@ begin
       end;
   end;
 end;
+
+class function TWSCustomListView.GetFirstSelected(const ALV: TCustomListView): TListItem;
+var
+  idx: Integer;
+begin
+  Result := nil;
+  with TCustomListViewAccess(ALV) do
+  begin
+    if (FMultiSelList <> nil) and (FMultiSelList.Count > 0) then
+    begin
+      idx := FMultiSelList[0];
+      Result := Items[idx];
+    end;
+  end;
+end;
+
+class procedure TWSCustomListView.InitMultiSelList(const ALV: TCustomListView; AEnable: Boolean);
+begin
+  with TCustomListViewAccess(ALV) do
+  begin
+    FMultiSelList.Free;
+    FMultiSelList := nil;
+    if AEnable then FMultiSelList := TIntegerList.Create;
+  end;
+end;
+
+class procedure TWSCustomListView.UpdateMultiSelList(const ALV: TCustomListView;
+  AItem: TListItem; Add: Boolean);
+var
+  idx: Integer;
+begin
+  with TCustomListViewAccess(ALV) do
+  begin
+    if FMultiSelList = nil then
+      FMultiSelList := TIntegerList.Create;
+    idx := FMultiSelList.IndexOf(AItem.Index);
+    if Add then
+    begin
+      if idx = -1 then 
+      begin
+        FMultiSelList.Add(AItem.Index);
+        FMultiSelList.Sort;
+      end;
+    end else
+    begin
+      if idx > -1 then FMultiSelList.Delete(idx);
+    end;
+  end;
+end;
+
 
 { TWSProgressBar }
 

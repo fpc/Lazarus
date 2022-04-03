@@ -1484,3 +1484,27 @@ begin
   Index := ListView_GetNextItem(ALV.Handle, Index, Flags);
   if Index <> -1 then Result := ALV.Items[Index];
 end;
+
+
+// Multi-selection in virtual mode
+// Is handled by Windows. We don't need the MultiSelList.
+
+class function TWin32WSCustomListView.GetFirstSelected(const ALV: TCustomListView): TListItem; 
+var
+  idx: Integer;
+begin
+  idx := ListView_GetNextItem(ALV.Handle, -1, LVNI_ALL + LVNI_SELECTED);
+  if idx > -1 then
+    Result := ALV.Items[idx]
+  else
+    Result := nil;
+end;
+
+class procedure TWin32WSCustomListView.InitMultiSelList(const ALV: TCustomListView; AEnable: Boolean); 
+begin
+end;
+
+class procedure TWin32WSCustomListView.UpdateMultiSelList(const ALV: TCustomListView; AItem: TListItem; Add: Boolean); 
+begin
+end;
+

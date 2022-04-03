@@ -195,6 +195,11 @@ type
       const ASortDirection: TSortDirection); override;
     class procedure SetViewOrigin(const ALV: TCustomListView; const AValue: TPoint); override;
     class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); override;
+
+    // Multi-selection
+    class function GetFirstSelected(const ALV: TCustomListView): TListItem; override;
+    class procedure InitMultiSelList(const ALV: TCustomListView; AEnable: Boolean); override;
+    class procedure UpdateMultiSelList(const ALV: TCustomListView; AItem: TListItem; Add: Boolean); override;
   end;
 
   { TWin32WSListView }

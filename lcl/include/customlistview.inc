@@ -347,6 +347,9 @@ begin
           if (((nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)))
           or (not (lffSelectedValid in FFlags) and (nm^.uNewState and LVIS_SELECTED <> 0)) then
           begin
+            if MultiSelect and OwnerData then
+              UpdateMultiSelList(Item, nm^.uNewState and LVIS_SELECTED <> 0);
+
             // select state changed
             if (nm^.uNewState and LVIS_SELECTED) = 0 then
             begin
@@ -1443,20 +1446,27 @@ begin
       not the last selected one see issue #16773 }
     if not (lffSelectedValid in FFlags) or MultiSelect then
     begin
-      FSelected := nil;
-      if (not FOwnerData) or (FSelectedIdx >= 0) then
+      if MultiSelect and OwnerData then
       begin
-        if MultiSelect and FOwnerData and (FSelectedIdx >= 0) then
-          FSelected := Items[FSelectedIdx]
-        else
-          for i := 0 to Items.Count - 1 do
-          begin
-            if Items[i].Selected then
+        FSelected := GetFirstSelected;
+        if FSelected <> nil then FSelectedIdx := FSelected.Index else FSelectedIdx := -1;
+      end else
+      begin
+        FSelected := nil;
+        if (not FOwnerData) or (FSelectedIdx >= 0) then
+        begin
+          if MultiSelect and FOwnerData and (FSelectedIdx >= 0) then
+            FSelected := Items[FSelectedIdx]
+          else
+            for i := 0 to Items.Count - 1 do
             begin
-              FSelected := Items[i];
-              break;
+              if Items[i].Selected then
+              begin
+                FSelected := Items[i];
+                break;
+              end;
             end;
-          end;
+        end;
       end;
       Include(FFlags, lffSelectedValid);
     end;
@@ -1824,5 +1834,21 @@ begin
   exit;
 
   if not HandleAllocated then exit;
+end;
+
+// Multi-selection
+procedure TCustomListView.InitMultiSelList(AEnable: Boolean);
+begin
+  TWSCustomListViewClass(WidgetSetClass).InitMultiSelList(Self, AEnable);
+end;
+
+procedure TCustomListView.UpdateMultiSelList(AItem: TListItem; Add: Boolean);
+begin
+  TWSCustomListViewClass(WidgetSetClass).UpdateMultiSelList(Self, AItem, Add);
+end;
+
+function TCustomListView.GetFirstSelected: TListItem;
+begin
+  Result := TWSCustomListViewClass(WidgetSetClass).GetFirstSelected(Self);
 end;
 

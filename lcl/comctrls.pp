@@ -29,7 +29,7 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Types, Classes, Math, Laz_AVL_Tree,
+  SysUtils, Types, Classes, Math, Laz_AVL_Tree, IntegerList,
   // LCL
   LCLStrConsts, LResources, LCLIntf, LCLType, LCLProc, LMessages, WSLCLClasses,
   WSReferences, Graphics, ImgList, ActnList, Themes, Menus,
@@ -1545,6 +1545,14 @@ type
     function DoOwnerDataHint(AStartIndex, AEndIndex: Integer): Boolean; virtual;
     function DoOwnerDataStateChange(AStartIndex, AEndIndex: Integer; AOldState,
       ANewState: TListItemStates): Boolean; virtual;
+
+  protected
+    // Multiselection
+    FMultiSelList: TIntegerList;
+    function GetFirstSelected: TListItem;
+    procedure InitMultiSelList(AEnable: Boolean);
+    procedure UpdateMultiSelList(AItem: TListItem; Add: Boolean);
+
   protected
     procedure DblClick; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
