@@ -17,6 +17,7 @@ uses
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
+  ProjDescNamePas2JSServiceWorker = 'Pas2JS Service Worker';
   ProjDescNamePas2JSNodeJSApp = 'NodeJS Application';
   ProjDescNamePas2JSModuleApp = 'Pas2JS Library';
   FileDescNameClassFromHTMLFile = 'Class definition from HTML file';
@@ -62,7 +63,21 @@ type
     Property ProjectURL : String Read FProjectURL Write FProjectURL;
   end;
 
+  { TProjectPas2JSServiceWorker }
+
+  TProjectPas2JSServiceWorker = class(TProjectDescriptor)
+  protected
+    function CreateProjectSource: String; virtual;
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
   { TProjectPas2JSNodeJSApp }
+
   TNodeJSApplicationOption = (naoUseNodeJSApp);      // Use NodeJS app object
   TNodeJSApplicationOptions = set of TNodeJSApplicationOption;
 
@@ -109,7 +124,7 @@ type
                   var {%H-}NewSource: string; {%H-}Quiet: boolean): TModalResult; override;
     function ShowOptionDialog : TModalResult;
     function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
+                          {%H-}ResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -124,8 +139,8 @@ type
     destructor destroy; override;
     function Init(var {%H-}NewFilename: string; {%H-}NewOwner: TObject;
                   var {%H-}NewSource: string; {%H-}Quiet: boolean): TModalResult; override;
-    function CreateSource(const Filename, SourceName,
-                          ResourceName: string): string; override;
+    function CreateSource(const {%H-}Filename, SourceName,
+                          {%H-}ResourceName: string): string; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
   end;
@@ -203,6 +218,7 @@ begin
   TPJSController.Instance.Hook;
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
+  RegisterProjectDescriptor(TProjectPas2JSServiceWorker.Create);
   RegisterProjectDescriptor(TProjectPas2JSNodeJSApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSModuleApp.Create);
   Pas2JSHTMLClassDef:=TPas2JSHTMLClassDef.Create;
@@ -232,8 +248,111 @@ begin
   PrjMnuItemAll:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
       'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@MenuHandler.OnRefreshProjHTMLFormAllContext);
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@MenuHandler.OnPrjInspPopup);
+end;
 
+{ TProjectPas2JSServiceWorker }
 
+function TProjectPas2JSServiceWorker.CreateProjectSource: String;
+var
+  Src: TStringList;
+
+  procedure Add(const s: string);
+  begin
+    Src.Add(s);
+  end;
+
+begin
+  Src:=TStringList.Create;
+  try
+    Add('program ServiceWorker;');
+    Add('');
+    Add('{$mode objfpc}');
+    Add('');
+    Add('uses');
+    Add('  Classes, ServiceWorkerApp;');
+    Add('');
+    Add('const');
+    Add('  YourCacheName = ''v1''; // usually increased with every version');
+    Add('   // The cache is specific to your domain, so no need to include your app name.');
+    Add('');
+    Add('type');
+    Add('');
+    Add('  { TApplication }');
+    Add('');
+    Add('  TApplication = class(TServiceWorkerApplication)');
+    Add('  public');
+    Add('    constructor Create(AOwner: TComponent); override;');
+    Add('  end;');
+    Add('');
+    Add('{ TApplication }');
+    Add('');
+    Add('constructor TApplication.Create(AOwner: TComponent);');
+    Add('begin');
+    Add('  inherited Create(AOwner);');
+    Add('');
+    Add('  FCacheName:=YourCacheName;');
+    Add('  FResources:=[');
+    Add('    ''/images/error.png''');
+    Add('    ];');
+    Add('  FallbackURL := ''/images/error.png'';');
+    Add('end;');
+    Add('');
+    Add('var');
+    Add('  App: TApplication;');
+    Add('begin');
+    Add('  App:=TApplication.Create(nil);');
+    Add('  App.Run;');
+    Add('end.');
+    Result:=Src.Text;
+  finally
+    Src.Free;
+  end;
+end;
+
+constructor TProjectPas2JSServiceWorker.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNamePas2JSServiceWorker;
+  Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+end;
+
+function TProjectPas2JSServiceWorker.GetLocalizedName: string;
+begin
+  Result:=pjsdServiceWorker;
+end;
+
+function TProjectPas2JSServiceWorker.GetLocalizedDescription: string;
+begin
+  Result:=pjsdServiceWorkerDescription;
+end;
+
+function TProjectPas2JSServiceWorker.InitProject(AProject: TLazProject
+  ): TModalResult;
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+begin
+  Result:=inherited InitProject(AProject);
+  MainFile:=AProject.CreateProjectFile('ServiceWorker.lpr');
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultServiceWorkerCompileOptions(CompOpts);
+  CompOpts.TargetFilename:='ServiceWorker';
+  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
+  AProject.MainFile.SetSourceText(CreateProjectSource,true);
+  AProject.CustomData.Values[PJSProject]:='1';
+  AProject.CustomData.Values[PJSProjectServiceWorker]:='1';
+end;
+
+function TProjectPas2JSServiceWorker.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+begin
+  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+  if Result<>mrOK then
+     exit;
 end;
 
 { TPas2JSDTSToPasUnitDef }
@@ -249,7 +368,6 @@ begin
   FreeAndNil(FConverter);
   inherited destroy;
 end;
-
 
 function TPas2JSDTSToPasUnitDef.Init(var NewFilename: string;
   NewOwner: TObject; var NewSource: string; Quiet: boolean): TModalResult;
@@ -1008,7 +1126,7 @@ begin
   SetDefaultWebCompileOptions(CompOpts);
   CompOpts.TargetFilename:='project1';
   if baoUseModule in Options then
-     CompOpts.TargetOS:='module';
+    CompOpts.TargetOS:='module';
   SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProject]:='1';
@@ -1032,7 +1150,6 @@ begin
   // create html source
   if baoCreateHtml in Options then
     begin
-    debugln(['AAA2 TProjectPas2JSWebApp.InitProject ']);
     HTMLFile:=CreateHTMLFile(aProject,'project1.js');
     HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
     if baoMaintainHTML in Options then

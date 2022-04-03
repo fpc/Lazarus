@@ -230,6 +230,14 @@ msgstr "Selecionar executável %s"
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
 msgstr "Instâncias servidoras serão iniciadas com uma porta começando por este número, aumentando à cada novo projeto"
 
+#: strpas2jsdesign.pjsdserviceworker
+msgid "Pas2JS Service Worker"
+msgstr ""
+
+#: strpas2jsdesign.pjsdserviceworkerdescription
+msgid "A pas2js program running as cache for a web app. It does not run standalone."
+msgstr ""
+
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
 msgstr "Iniciar servidor HTTP na porta"

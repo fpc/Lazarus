@@ -232,6 +232,14 @@ msgstr "Выберите исполнимый файл %s"
 msgid "Server instances will be started with a port starting from this number, increasing per new project"
 msgstr "Экземпляры серверов будут запускаться на портах с номерами, начинающимися с указанного и увеличивающимися в каждом новом проекте"
 
+#: strpas2jsdesign.pjsdserviceworker
+msgid "Pas2JS Service Worker"
+msgstr ""
+
+#: strpas2jsdesign.pjsdserviceworkerdescription
+msgid "A pas2js program running as cache for a web app. It does not run standalone."
+msgstr ""
+
 #: strpas2jsdesign.pjsdstarthttpserveronport
 msgid "Start HTTP Server on port"
 msgstr "Запускать сервер HTTP на порту"

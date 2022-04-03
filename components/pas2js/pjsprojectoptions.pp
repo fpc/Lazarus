@@ -56,8 +56,10 @@ type
   end;
 
 Procedure SetDefaultWebRunParams(RunParams : TAbstractRunParamsOptionsMode);
+Procedure SetDefaultServiceWorkerRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultNodeRunParams(RunParams : TAbstractRunParamsOptionsMode);
 Procedure SetDefaultWebCompileOptions(CompOpts: TLazCompilerOptions);
+Procedure SetDefaultServiceWorkerCompileOptions(CompOpts: TLazCompilerOptions);
 Procedure SetDefaultNodeJSCompileOptions(CompOpts: TLazCompilerOptions);
 Procedure SetDefaultModuleCompileOptions(CompOpts: TLazCompilerOptions);
 
@@ -79,6 +81,14 @@ Procedure SetDefaultWebRunParams(RunParams : TAbstractRunParamsOptionsMode);
 begin
   ResetRunParams(RunParams);
   RunParams.LaunchingApplicationPathPlusParams:='"$(Pas2JSBrowser)" "$(Pas2JSProjectURL)"';
+end;
+
+procedure SetDefaultServiceWorkerRunParams(
+  RunParams: TAbstractRunParamsOptionsMode);
+begin
+  RunParams.HostApplicationFilename:='';
+  RunParams.CmdLineParams:='';
+  RunParams.UseLaunchingApplication:=False;
 end;
 
 Procedure SetDefaultNodeRunParams(RunParams : TAbstractRunParamsOptionsMode);
@@ -125,6 +135,11 @@ end;
 
 Procedure SetDefaultWebCompileOptions(CompOpts: TLazCompilerOptions);
 
+begin
+  SetPasJSCompileOptions(CompOpts,'browser','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
+end;
+
+procedure SetDefaultServiceWorkerCompileOptions(CompOpts: TLazCompilerOptions);
 begin
   SetPasJSCompileOptions(CompOpts,'browser','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
 end;
