@@ -177,6 +177,14 @@ msgstr "%s útvonala, makró $(Pas2JSWebServer)"
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr "A portok lefoglalása e porttól kezdődik, makró $(Pas2JSWebServerPort)"
 
+#: strpas2jsdesign.pjsdprogressivewebappdescription
+msgid "A Web Application using a service worker, a manifest, and more to be installable."
+msgstr ""
+
+#: strpas2jsdesign.pjsdprogressivewebapplication
+msgid "Progressive Web Application"
+msgstr ""
+
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
 msgstr "A projekt HTML lapja:"

@@ -178,6 +178,14 @@ msgstr ""
 msgid "Port number to start allocating from, macro $(Pas2JSWebServerPort)"
 msgstr ""
 
+#: strpas2jsdesign.pjsdprogressivewebappdescription
+msgid "A Web Application using a service worker, a manifest, and more to be installable."
+msgstr ""
+
+#: strpas2jsdesign.pjsdprogressivewebapplication
+msgid "Progressive Web Application"
+msgstr ""
+
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
 msgstr ""

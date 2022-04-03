@@ -5,18 +5,25 @@ unit PJSDsgnRegister;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, fpjson,
   // LCL
-  Forms, Controls,
+  Forms, Controls, Dialogs,
   // LazUtils
-  LazLoggerBase,
+  LazLoggerBase, LazFileUtils,
   // IdeIntf
-  ProjectIntf, CompOptsIntf, LazIDEIntf, IDEOptionsIntf, IDEOptEditorIntf, IDEMsgIntf, IDEExternToolIntf,
+  IDECommands, ToolbarIntf, MenuIntf, ProjectIntf, CompOptsIntf, LazIDEIntf,
+  IDEOptionsIntf, IDEOptEditorIntf, ComponentEditors, SrcEditorIntf, IDEMsgIntf,
+  IDEDialogs, IDEExternToolIntf,
   // Pas2js
-  idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame, idedtstopas;
+  idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame, idedtstopas,
+  frmpas2jswebservers, frmpas2jsnodejsprojectoptions,
+  frmpas2jsbrowserprojectoptions, pjsprojectoptions, idehtmltools,
+  frmhtmltoform, pjscontroller, strpas2jsdesign;
+
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
+  ProjDescNamePas2JSProgressiveWebApp = 'Progressive Web Application';
   ProjDescNamePas2JSServiceWorker = 'Pas2JS Service Worker';
   ProjDescNamePas2JSNodeJSApp = 'NodeJS Application';
   ProjDescNamePas2JSModuleApp = 'Pas2JS Library';
@@ -41,26 +48,36 @@ type
 
   TProjectPas2JSWebApp = class(TProjectDescriptor)
   private
+    FHTMLFilename: string;
+    FMainSrcFileName: string;
+    FMainSrcName: string;
     FOptions: TBrowserApplicationOptions;
     FProjectPort: integer;
     FProjectURL: String;
     FProjectWasmURL : String;
+    function GetHTMLFilename: string;
+    function GetMainSrcFileName: string;
+    function GetMainSrcName: string;
   protected
     function CreateHTMLFile(AProject: TLazProject; AFileName: String
       ): TLazProjectFile; virtual;
     function CreateProjectSource: String; virtual;
+    Function DoInitDescriptor : TModalResult; override;
     function GetNextPort: Word; virtual;
     function ShowOptionsDialog: TModalResult; virtual;
+    function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm): TModalResult; virtual;
   public
     constructor Create; override;
-    Function DoInitDescriptor : TModalResult; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
-    Property Options : TBrowserApplicationOptions read FOptions Write Foptions;
-    Property ProjectPort : integer Read FProjectPort Write FProjectPort;
-    Property ProjectURL : String Read FProjectURL Write FProjectURL;
+    property Options : TBrowserApplicationOptions read FOptions Write Foptions;
+    property ProjectPort : integer Read FProjectPort Write FProjectPort;
+    property ProjectURL : String Read FProjectURL Write FProjectURL;
+    property MainSrcFileName: string read GetMainSrcFileName write FMainSrcFileName;
+    property MainSrcName: string read GetMainSrcName write FMainSrcName;
+    property HTMLFilename: string read GetHTMLFilename write FHTMLFilename;
   end;
 
   { TProjectPas2JSServiceWorker }
@@ -74,6 +91,34 @@ type
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
     function CreateStartFiles(AProject: TLazProject): TModalResult; override;
+  end;
+
+  { TProjectPas2JSProgressiveWebApp }
+
+  TProjectPas2JSProgressiveWebApp = class(TProjectPas2JSWebApp)
+  private
+    FCSSDir: string;
+    FImagesDir: string;
+    FManifestFilename: string;
+    FProjectDir: string;
+    FServiceWorkerLPR: string;
+    FWebDir: string;
+  protected
+    function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm
+      ): TModalResult; override;
+    function CreateManifestFile(AProject: TLazProject; AFileName: String
+      ): TLazProjectFile; virtual;
+  public
+    constructor Create; override;
+    function GetLocalizedName: string; override;
+    function GetLocalizedDescription: string; override;
+    function InitProject(AProject: TLazProject): TModalResult; override;
+    property ProjectDir: string read FProjectDir write FProjectDir;
+    property ServiceWorkerLPR: string read FServiceWorkerLPR write FServiceWorkerLPR;
+    property CSSDir: string read FCSSDir write FCSSDir;
+    property ImagesDir: string read FImagesDir write FImagesDir;
+    property WebDir: string read FWebDir write FWebDir;
+    property ManifestFilename: string read FManifestFilename write FManifestFilename;
   end;
 
   { TProjectPas2JSNodeJSApp }
@@ -158,21 +203,8 @@ procedure Register;
 
 implementation
 
-uses
-  ComponentEditors,
-  dialogs,
-  frmpas2jswebservers,
-  frmpas2jsnodejsprojectoptions,
-  frmpas2jsbrowserprojectoptions,
-  pjsprojectoptions,
-  idehtmltools,
-  frmhtmltoform,
-  fpjson, pjscontroller, srceditorintf, strpas2jsdesign, IDECommands, ToolbarIntf, MenuIntf;
-
 Var
   SrcMnuItem,PrjMnuItem,PrjMnuItemAll : TIDEmenuCommand;
-
-
 
 procedure ShowServerDialog(Sender: TObject);
 begin
@@ -248,6 +280,218 @@ begin
   PrjMnuItemAll:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
       'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@MenuHandler.OnRefreshProjHTMLFormAllContext);
   ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@MenuHandler.OnPrjInspPopup);
+end;
+
+{ TProjectPas2JSProgressiveWebApp }
+
+function TProjectPas2JSProgressiveWebApp.ShowModalOptions(
+  Frm: TWebBrowserProjectOptionsForm): TModalResult;
+var
+  CurProjDir, LPRFilename: String;
+  Overwrites: TStringList;
+
+  function CheckOverwriteFile(aFilename: string): string;
+  begin
+    if FileExists(aFilename) then
+      Overwrites.Add(aFilename);
+    Result:=aFilename;
+  end;
+
+  function CheckOverwriteDir(aDir: string): string;
+  begin
+    aDir:=ChompPathDelim(aDir);
+    if FileExists(aDir)  and not DirectoryExistsUTF8(aDir) then
+      Overwrites.Add(aDir);
+    Result:=AppendPathDelim(aDir);
+  end;
+
+begin
+  Result:=inherited ShowModalOptions(Frm);
+  if Result<>mrOk then exit;
+
+  CurProjDir:=LazSelectDirectory('Project directory');
+  if CurProjDir='' then exit(mrCancel);
+  CurProjDir:=AppendPathDelim(CleanAndExpandDirectory(CurProjDir));
+  ProjectDir:=CurProjDir;
+
+  Overwrites:=TStringList.Create;
+  try
+    LPRFilename:=CheckOverwriteFile(CurProjDir+ExtractFileName(MainSrcFileName));
+    CheckOverwriteFile(ChangeFileExt(LPRFilename,'.lpi'));
+
+    ServiceWorkerLPR:=CheckOverwriteFile(ProjectDir+ServiceWorkerLPR);
+    CheckOverwriteFile(ChangeFileExt(ServiceWorkerLPR,'.lpi'));
+
+    WebDir:=CheckOverwriteDir(CurProjDir+WebDir);
+
+    HTMLFilename:=CheckOverwriteFile(WebDir+HTMLFilename);
+    ManifestFilename:=CheckOverwriteFile(WebDir+ManifestFilename);
+
+    CSSDir:=CheckOverwriteDir(WebDir+CSSDir);
+    ImagesDir:=CheckOverwriteDir(WebDir+ImagesDir);
+
+    if Overwrites.Count>0 then
+    begin
+      if IDEMessageDialog('Overwrite?','Overwrite files:'+sLineBreak+Overwrites.Text,
+          mtConfirmation,[mbOk,mbCancel])<>mrOk then
+        exit(mrCancel);
+    end;
+
+  finally
+    Overwrites.Free;
+  end;
+
+  MainSrcFileName:=LPRFilename;
+  if CompareFilenames(ExtractFileNameOnly(MainSrcFileName),MainSrcName)<>0 then
+    MainSrcName:=ExtractFileNameOnly(MainSrcFileName);
+end;
+
+function TProjectPas2JSProgressiveWebApp.CreateManifestFile(
+  AProject: TLazProject; AFileName: String): TLazProjectFile;
+const
+  IconSizes: array[1..8] of word = (72,96,128,144,152,192,384,512);
+var
+  Src: TStringList;
+  i: Integer;
+  h: String;
+begin
+  Result:=AProject.CreateProjectFile(AFileName);
+  Result.IsPartOfProject:=true;
+  AProject.CustomData.Values[PJSProjectManifestFile]:=Result.Filename;
+  AProject.AddFile(Result,false);
+  Src:=TStringList.Create;
+  try
+    Src.Add('{');
+    Src.Add('  "name": "Your application name",');
+    Src.Add('  "short_name": "Max12CharsSN",');
+    Src.Add('  "start_url": "'+ExtractFileName(HTMLFilename)+'",');
+    Src.Add('  "display": "standalone",');
+    Src.Add('  "background_color": "#f0f0f0",');
+    Src.Add('  "theme_color": "#d04030",');
+    Src.Add('  "orientation": "portrait-primary",');
+    Src.Add('  "icons": [');
+    for i:=low(IconSizes) to high(IconSizes) do
+    begin
+      h:=IntToStr(IconSizes[i]);
+      h:=h+'x'+h;
+      Src.Add('    {');
+      Src.Add('      "src": "/'+ExtractFileNameOnly(ChompPathDelim(ImagesDir))+'/icon-'+h+'.png",');
+      Src.Add('      "type": "image/png", "sizes": "'+h+'"');
+      h:='    }';
+      if i<High(IconSizes) then
+        h:=h+',';
+      Src.Add(h);
+    end;
+    Src.Add('  ]');
+    Src.Add('}');
+    Result.SetSourceText(Src.Text);
+  finally
+    Src.Free;
+  end;
+end;
+
+constructor TProjectPas2JSProgressiveWebApp.Create;
+begin
+  inherited Create;
+  Name:=ProjDescNamePas2JSProgressiveWebApp;
+  FCSSDir:='css';
+  FImagesDir:='images';
+  FWebDir:='www';
+  FManifestFilename:='manifest.json';
+  FHTMLFilename:='index.html';
+  FServiceWorkerLPR:='ServiceWorker.lpr';
+end;
+
+function TProjectPas2JSProgressiveWebApp.GetLocalizedName: string;
+begin
+  Result:=pjsdProgressiveWebApplication;
+end;
+
+function TProjectPas2JSProgressiveWebApp.GetLocalizedDescription: string;
+begin
+  Result:=pjsdProgressiveWebAppDescription;
+end;
+
+function TProjectPas2JSProgressiveWebApp.InitProject(AProject: TLazProject
+  ): TModalResult;
+
+  function CheckDir(Dir: string; AutoDelete: boolean): boolean;
+  begin
+    Dir:=ChompPathDelim(Dir);
+    if DirectoryExistsUTF8(Dir) then
+      exit(true);
+    Result:=false;
+    if FileExists(Dir) then
+    begin
+      if AutoDelete then
+      begin
+        if not DeleteFileUTF8(Dir) then
+        begin
+          IDEMessageDialog('Error','Unable to create directory "'+Dir+'", because unable to delete file.',mtError,[mbOK]);
+          exit;
+        end;
+      end else begin
+        IDEMessageDialog('Error','Unable to create directory "'+Dir+'", because file already exists.',mtError,[mbOK]);
+        exit;
+      end;
+    end;
+    if not ForceDirectoriesUTF8(Dir) then
+    begin
+      IDEMessageDialog('Error','Unable to create directory "'+Dir+'".',mtError,[mbOK]);
+      exit;
+    end;
+    Result:=true;
+  end;
+
+var
+  CurProjDir: String;
+begin
+  Result:=inherited InitProject(AProject);
+  if Result<>mrOk then exit;
+  Result:=mrCancel;
+
+  // create directories
+  CurProjDir:=ChompPathDelim(AProject.Directory);
+  if not FilenameIsAbsolute(CurProjDir) then
+  begin
+    debugln(['Error (pas2jsdsgn): [20220403220423] TProjectPas2JSProgressiveWebApp.InitProject project directory not absolute: '+CurProjDir]);
+    exit;
+  end;
+  if CompareFilenames(CurProjDir,ChompPathDelim(ProjectDir))<>0 then
+  begin
+    debugln(['Error (pas2jsdsgn): [20220403221017] TProjectPas2JSProgressiveWebApp.InitProject project directory has switched: '+CurProjDir]);
+    exit;
+  end;
+
+  if not ForceDirectoriesUTF8(CurProjDir) then
+  begin
+    IDEMessageDialog('Error','Unable to create directory "'+CurProjDir+'".',mtError,[mbOK]);
+    exit;
+  end;
+
+  CurProjDir:=AppendPathDelim(CurProjDir);
+
+  if not CheckDir(WebDir,true) then exit;
+  if not CheckDir(CSSDir,true) then exit;
+  if not CheckDir(ImagesDir,true) then exit;
+
+  // index.html
+  if LazarusIDE.DoSaveEditorFile(HTMLFilename,[sfProjectSaving])<>mrOk then exit;
+
+  // manifest.json
+  CreateManifestFile(AProject,ManifestFilename);
+  if LazarusIDE.DoSaveEditorFile(ManifestFilename,[sfProjectSaving])<>mrOk then exit;
+
+  // css/style.css
+  // favicon.ico
+  // images/icon-.png
+
+  // serviceworker.lpr/lpi
+
+  // save lpr
+  // save lpi
+
+  Result:=mrOk;
 end;
 
 { TProjectPas2JSServiceWorker }
@@ -837,7 +1081,7 @@ begin
   AProject.CustomData.Values[PJSProjectNodeJS]:='1';
   CompOpts:=AProject.LazBuildModes.BuildModes[0].LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);
-  CompOpts.TargetFilename:='project1';
+  CompOpts.TargetFilename:=ExtractFileNameOnly(MainFile.Filename);
 
   SetDefaultNodeRunParams(AProject.RunParameters.GetOrCreate('Default'));
 
@@ -863,6 +1107,7 @@ begin
   inherited Create;
   Name:=ProjDescNamePas2JSWebApp;
   Flags:=DefaultProjectNoApplicationFlags-[pfRunnable];
+  FMainSrcName:='Project1';
 end;
 
 function TProjectPas2JSWebApp.GetNextPort : Word;
@@ -894,9 +1139,11 @@ function TProjectPas2JSWebApp.ShowOptionsDialog : TModalResult;
       Exclude(Foptions,O)
   end;
 
-
+var
+  Frm: TWebBrowserProjectOptionsForm;
 begin
-  With TWebBrowserProjectOptionsForm.Create(Nil) do
+  Frm:=TWebBrowserProjectOptionsForm.Create(Nil);
+  With Frm do
     try
       CreateHTML:=CO(baoCreateHtml);
       MaintainHTML:=CO(baoCreateHtml) and Co(baoMaintainHTML);
@@ -913,7 +1160,7 @@ begin
       WasmProgramURL:='';
       if Not CO(baoStartServer) then
         UseURL:=CO(baoUseURL);
-      Result:=ShowModal;
+      Result:=ShowModalOptions(Frm);
       if Result=mrOK then
         begin
         SO(CreateHTML,baoCreateHtml);
@@ -930,7 +1177,7 @@ begin
         SO(UseURL,baoUseURL);
         if baoStartServer in FOptions then
           begin
-          DebugLN(['Start server port: ', Self.ProjectPort,'from: ',ServerPort]);
+          DebugLN(['Info: Start server port: ', Self.ProjectPort,'from: ',ServerPort]);
           end
         else
           begin
@@ -942,6 +1189,12 @@ begin
     finally
       Free;
     end;
+end;
+
+function TProjectPas2JSWebApp.ShowModalOptions(
+  Frm: TWebBrowserProjectOptionsForm): TModalResult;
+begin
+  Result:=Frm.ShowModal;
 end;
 
 function TProjectPas2JSWebApp.DoInitDescriptor: TModalResult;
@@ -963,6 +1216,27 @@ begin
   Result:=pjsdWebAppDescription;
 end;
 
+function TProjectPas2JSWebApp.GetMainSrcFileName: string;
+begin
+  if FMainSrcFileName='' then
+    FMainSrcFileName:=AnsiLowerCase(MainSrcName)+'.lpr';
+  Result:=FMainSrcFileName;
+end;
+
+function TProjectPas2JSWebApp.GetHTMLFilename: string;
+begin
+  if FHTMLFilename='' then
+    FHTMLFilename:=ChangeFileExt(MainSrcFileName,'.html');
+  Result:=FHTMLFilename;
+end;
+
+function TProjectPas2JSWebApp.GetMainSrcName: string;
+begin
+  if FMainSrcName='' then
+    FMainSrcName:='project1';
+  Result:=FMainSrcName;
+end;
+
 function TProjectPas2JSWebApp.CreateHTMLFile(AProject: TLazProject;
   AFileName: String): TLazProjectFile;
 
@@ -974,7 +1248,7 @@ Const
     +'<head>'+LineEnding
     +'  <meta http-equiv="Content-type" content="text/html; charset=utf-8">'+LineEnding
     +'  <meta name="viewport" content="width=device-width, initial-scale=1">'+LineEnding
-    +'  <title>Project1</title>'+LineEnding
+    +'  <title>%s</title>'+LineEnding
     +'  <script %s src="%s"></script>'+LineEnding
     +'</head>'+LineEnding
     +'<body>'+LineEnding
@@ -990,7 +1264,7 @@ Var
   ScriptType, RunScript,Content : String;
 
 begin
-  HTMLFile:=AProject.CreateProjectFile('project1.html');
+  HTMLFile:=AProject.CreateProjectFile(HTMLFilename);
   HTMLFile.IsPartOfProject:=true;
   AProject.CustomData.Values[PJSProjectHTMLFile]:=HTMLFile.Filename;
   AProject.AddFile(HTMLFile,false);
@@ -1017,7 +1291,7 @@ begin
                +RunScript
                +'  </script>'+LineEnding
     end;
-  HTMLSource:=Format(TemplateHTMLSource,[ScriptType,aFileName,RunScript,Content]);
+  HTMLSource:=Format(TemplateHTMLSource,[MainSrcName,ScriptType,aFileName,RunScript,Content]);
   HTMLFile.SetSourceText(HTMLSource);
   Result:=HTMLFile;
 end;
@@ -1057,7 +1331,7 @@ begin
   Src:=TStringList.Create;
   try
     // create program source
-    AddLn('program Project1');
+    AddLn('program '+MainSrcName);
     AddLn('');
     Add('{$mode objfpc}');
     Add('');
@@ -1118,13 +1392,13 @@ var
 
 begin
   Result:=inherited InitProject(AProject);
-  MainFile:=AProject.CreateProjectFile('project1.lpr');
+  MainFile:=AProject.CreateProjectFile(MainSrcFileName);
   MainFile.IsPartOfProject:=true;
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultWebCompileOptions(CompOpts);
-  CompOpts.TargetFilename:='project1';
+  CompOpts.TargetFilename:=ExtractFileNameOnly(MainFile.Filename);
   if baoUseModule in Options then
     CompOpts.TargetOS:='module';
   SetDefaultWebRunParams(AProject.RunParameters.GetOrCreate('Default'));
@@ -1150,7 +1424,7 @@ begin
   // create html source
   if baoCreateHtml in Options then
     begin
-    HTMLFile:=CreateHTMLFile(aProject,'project1.js');
+    HTMLFile:=CreateHTMLFile(aProject,HTMLFilename);
     HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
     if baoMaintainHTML in Options then
       AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
@@ -1166,14 +1440,17 @@ end;
 
 function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject
   ): TModalResult;
+var
+  MainFile: TLazProjectFile;
 begin
-  Result:=LazarusIDE.DoOpenEditorFile(AProject.MainFile.Filename,-1,-1,
+  MainFile:=AProject.MainFile;
+  Result:=LazarusIDE.DoOpenEditorFile(MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
   if Result<>mrOK then
      exit;
 
   if baoCreateHtml in Options then
-    Result:=LazarusIDE.DoOpenEditorFile('project1.html',-1,-1,
+    Result:=LazarusIDE.DoOpenEditorFile(ChangeFileExt(MainFile.Filename,'.html'),-1,-1,
                                         [ofProjectLoading,ofRegularFile]);
 end;
 

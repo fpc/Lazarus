@@ -10,6 +10,8 @@ Resourcestring
   // "Create new" dialog
   pjsdWebApplication = 'Web Browser Application';
   pjsdWebAppDescription = 'A pas2js program running in the browser.';
+  pjsdProgressiveWebApplication = 'Progressive Web Application';
+  pjsdProgressiveWebAppDescription = 'A Web Application using a service worker, a manifest, and more to be installable.';
   pjsdServiceWorker = 'Pas2JS Service Worker';
   pjsdServiceWorkerDescription = 'A pas2js program running as cache for a web app. It does not run standalone.';
   pjsdNodeJSApplication = 'Node.js Application';

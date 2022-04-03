@@ -88,6 +88,7 @@ Const
   PJSProjectHTMLFile = 'PasJSHTMLFile';
   PJSIsProjectHTMLFile = 'PasJSIsProjectHTMLFile';
   PJSProjectMaintainHTML = 'MaintainHTML';
+  PJSProjectManifestFile = 'PasJSManifestFile';
   PJSProjectUseBrowserConsole = 'BrowserConsole';
   PJSProjectRunAtReady = 'RunAtReady';
   PJSProjectPort = 'PasJSPort';
