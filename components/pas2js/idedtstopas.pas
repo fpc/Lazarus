@@ -123,7 +123,7 @@ procedure TCreateUnitFromDTS.ExecuteLocal;
 
 Var
   ToolOpts : TIDEExternalToolOptions;
-  InFN,AliasFN,OutFN,Opts : string;
+  AliasFN,OutFN,Opts : string;
 
 begin
   AliasFN:='';
@@ -134,7 +134,6 @@ begin
     OutFN:=GetTempFileName;
     ToolOpts.Executable:=PJSOptions.DTS2Pas;
     ToolOpts.ResolveMacros:=True;
-    InFN:=LocalFileName;
     Opts:='-i '+MaybeQuote(LocalFileName)+' -o '+MaybeQuote(outFN)+' -u '+TargetUnitName;
     if UseWeb then
       opts:=Opts+' -w';

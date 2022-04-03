@@ -23,12 +23,12 @@ type
     FCommands : TStrings;
     FActivationCommands : TStrings;
     FFiles : TStrings;
-    procedure AddCSSFile(aProject: TLazProject);
+    procedure AddCSSFile({%H-}aProject: TLazProject);
     procedure AddFileToProject(const aFileName: string);
-    procedure AddGlueFile(aProject: TLazProject);
-    procedure AddKeyMapFile(aProject: TLazProject);
-    procedure AddMenuFile(aProject: TLazProject);
-    procedure AddPackageJSONFile(aProject: TLazProject);
+    procedure AddGlueFile({%H-}aProject: TLazProject);
+    procedure AddKeyMapFile({%H-}aProject: TLazProject);
+    procedure AddMenuFile({%H-}aProject: TLazProject);
+    procedure AddPackageJSONFile({%H-}aProject: TLazProject);
     procedure AddProjectFile(AProject: TLazProject);
     procedure CreateProjectDirs;
     procedure CreateProjectSource(Src: TStrings);

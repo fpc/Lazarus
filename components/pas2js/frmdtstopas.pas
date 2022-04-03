@@ -46,7 +46,7 @@ type
     TSOptions: TTabSheet;
     VLEAliases: TValueListEditor;
     procedure cbModuleEnter(Sender: TObject);
-    procedure cbModuleKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure cbModuleKeyUp(Sender: TObject; var {%H-}Key: Word; {%H-}Shift: TShiftState);
     procedure FEDtsEnter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -116,9 +116,6 @@ end;
 
 procedure TGetModulesThread.DoSetStringList;
 
-Var
-  I : Integer;
-
 begin
   ModuleList.Clear;
   ModuleList.BeginUpdate;
@@ -142,9 +139,7 @@ end;
 procedure TGetModulesThread.Execute;
 
 Var
-  URL,Res : String;
-  I : Integer;
-
+  URL: String;
 begin
   FreeOnTerminate:=true;
   try

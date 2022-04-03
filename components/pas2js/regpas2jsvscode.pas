@@ -5,7 +5,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs,
-  ProjectIntf, BaseIDEIntf, LazIDEIntf, LazFileUtils;
+  ProjectIntf, LazIDEIntf, LazFileUtils;
 
 type
 
@@ -24,11 +24,11 @@ type
     FContributesCommands : TStrings;
     FFiles : TStrings;
     procedure AddFileToProject(const aFileName: string);
-    procedure AddGlueFile(aProject: TLazProject);
-    procedure AddLaunchFile(aProject: TLazProject);
-    procedure AddPackageJSONFile(aProject: TLazProject);
+    procedure AddGlueFile({%H-}aProject: TLazProject);
+    procedure AddLaunchFile({%H-}aProject: TLazProject);
+    procedure AddPackageJSONFile({%H-}aProject: TLazProject);
     procedure AddProjectFile(AProject: TLazProject);
-    procedure AddTasksFile(aProject: TLazProject);
+    procedure AddTasksFile({%H-}aProject: TLazProject);
     procedure CreateProjectDirs;
     procedure CreateProjectSource(Src: TStrings);
     procedure DoDefaultReplaceMents(Src: TStrings);
@@ -56,7 +56,7 @@ implementation
 
 uses
   fpjson,frmpas2jsvscodeextensionsettings,  CompOptsIntf, pjscontroller,
-  NewItemIntf, MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
+  MenuIntf, pjsprojectoptions, pjsdsgnoptions, strpas2jsdesign;
 
 Var
   VSCodeProjDesc:TVSCodeExtensionProjectDescriptor;
@@ -241,7 +241,7 @@ Var
   procedure AddLn(aLine : String);
 
   begin
-    Src.Insert(aIndex+Cnt,'  '+aLine);
+    Src.Insert(aIndex+Cnt,Space(aIndent)+aLine);
     inc(cnt);
   end;
 Var
