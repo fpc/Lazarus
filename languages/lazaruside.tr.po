@@ -877,20 +877,20 @@ msgstr "Yerleştirilmiş masaüstünü, ayrılmış ortamda kullanamazsınız ve
 
 #: lazarusidestrconsts.dlgcaretbackcolor
 msgid "Multi/2nd (NotXor)"
-msgstr "İkincil imleç (çoklu imleç modu)"
+msgstr "Çoklu/2. (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretcolor
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret"
-msgstr "İmleç (Metin İmleci)"
+msgstr "Düzeltme işareti"
 
 #: lazarusidestrconsts.dlgcaretforecolor
 msgid "Color (NotXor)"
-msgstr "Ana veya birincil imleç"
+msgstr "Renk (NotXor)"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
-msgstr "İmleç (Metin İmleç)"
+msgstr "Düzeltme işareti (Metin İmleç)"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgid "&Case sensitive"
@@ -13621,7 +13621,7 @@ msgstr "Küçük harf seçimi"
 
 #: lazarusidestrconsts.lismenumacrolistview
 msgid "Editor Macros ..."
-msgstr "Editör Makroları"
+msgstr "Editör Makroları ..."
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
