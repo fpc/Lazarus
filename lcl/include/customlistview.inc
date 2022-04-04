@@ -260,6 +260,7 @@ var
   nm: PNMListView;
   Item: TListItem;
   n: Integer;
+  oldSelected: TListItem;
 begin
   nm := PNMListView(AMessage.NMHdr);
   // ignore any notifications while initializing items
@@ -347,6 +348,7 @@ begin
           if (((nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)))
           or (not (lffSelectedValid in FFlags) and (nm^.uNewState and LVIS_SELECTED <> 0)) then
           begin
+            oldSelected := FSelected;
             if MultiSelect and OwnerData then
               UpdateMultiSelList(Item, nm^.uNewState and LVIS_SELECTED <> 0);
 
@@ -358,9 +360,12 @@ begin
                 if FSelected = Item then
                   InvalidateSelected
               end else
+              begin
                 if (nm^.iItem < 0) or (nm^.iItem = FSelectedIdx) then
                   if not MultiSelect then
                     InvalidateSelected;
+                Item := oldSelected;
+              end;
             end else
             begin
               FSelected := Item;
