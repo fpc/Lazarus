@@ -16,7 +16,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 6
-    Width = 173
+    Width = 160
     BorderSpacing.Left = 6
     BorderSpacing.Top = 6
     Caption = 'Create initial HTML page'
@@ -32,7 +32,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 122
-    Width = 213
+    Width = 198
     BorderSpacing.Top = 6
     Caption = 'Use Browser Application object'
     OnChange = CBUseBrowserAppChange
@@ -44,16 +44,16 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 213
-    Width = 341
+    Top = 216
+    Width = 313
     BorderSpacing.Top = 6
     Caption = 'Use Browser Console unit to display writeln() output'
     TabOrder = 2
   end
   object BPHelpOptions: TButtonPanel
     Left = 6
-    Height = 38
-    Top = 494
+    Height = 40
+    Top = 492
     Width = 623
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -67,13 +67,14 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     ShowButtons = [pbOK, pbCancel]
   end
   object SEPort: TSpinEdit
-    AnchorSideLeft.Control = edtWasmProgram
+    AnchorSideLeft.Control = RBStartServerAt
     AnchorSideTop.Control = RBStartServerAt
     AnchorSideTop.Side = asrBottom
     Left = 70
-    Height = 27
-    Top = 300
+    Height = 30
+    Top = 303
     Width = 128
+    BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     MaxValue = 65354
     MinValue = 1024
@@ -86,8 +87,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 242
-    Width = 194
+    Top = 245
+    Width = 182
     BorderSpacing.Top = 6
     Caption = 'Project needs a HTTP Server'
     OnChange = CBUseHTTPServerChange
@@ -99,8 +100,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 38
     Height = 23
-    Top = 271
-    Width = 180
+    Top = 274
+    Width = 168
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Start HTTP Server on port'
@@ -114,23 +115,24 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 38
     Height = 23
-    Top = 329
-    Width = 173
+    Top = 335
+    Width = 161
     BorderSpacing.Top = 2
     Caption = 'Use this URL to start app'
     TabOrder = 7
   end
   object CBServerURL: TComboBox
-    AnchorSideLeft.Control = edtWasmProgram
+    AnchorSideLeft.Control = RBUseURL
     AnchorSideTop.Control = RBUseURL
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = edtWasmProgram
     AnchorSideRight.Side = asrBottom
     Left = 70
-    Height = 27
-    Top = 358
+    Height = 30
+    Top = 364
     Width = 559
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
     ItemHeight = 0
@@ -143,7 +145,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 35
-    Width = 151
+    Width = 137
     BorderSpacing.Top = 6
     Caption = 'Maintain HTML Page'
     TabOrder = 9
@@ -155,7 +157,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 64
-    Width = 313
+    Width = 287
     BorderSpacing.Top = 6
     Caption = 'Run rtl when all page resources are fully loaded'
     TabOrder = 10
@@ -167,7 +169,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 6
     Height = 23
     Top = 93
-    Width = 226
+    Width = 209
     BorderSpacing.Top = 6
     Caption = 'Let rtl show uncaught exceptions'
     TabOrder = 11
@@ -179,7 +181,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     Left = 38
     Height = 23
     Top = 151
-    Width = 193
+    Width = 176
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Host webassembly program'
@@ -193,7 +195,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 70
-    Height = 27
+    Height = 30
     Top = 180
     Width = 559
     Anchors = [akTop, akLeft, akRight]
@@ -210,8 +212,8 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 391
-    Width = 293
+    Top = 400
+    Width = 272
     BorderSpacing.Top = 6
     Caption = 'Create a javascript module instead of a script'
     OnChange = CBUseHTTPServerChange

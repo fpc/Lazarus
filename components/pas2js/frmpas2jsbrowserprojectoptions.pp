@@ -44,6 +44,8 @@ type
     procedure SetURL(AValue: String);
     procedure SetWasmProgramURL(AValue: String);
   public
+    procedure HideWASM; virtual;
+    procedure HideModule; virtual;
     property CreateHTML : Boolean Index 0 read GetB Write SetB;
     property MaintainHTML : Boolean Index 1 read GetB Write SetB;
     property UseBrowserApp : Boolean Index 2 read GetB Write SetB;
@@ -215,6 +217,17 @@ end;
 procedure TWebBrowserProjectOptionsForm.SetWasmProgramURL(AValue: String);
 begin
   edtWasmProgram.Text:=aValue;
+end;
+
+procedure TWebBrowserProjectOptionsForm.HideWASM;
+begin
+  CBUseWASI.Visible:=false;
+  edtWasmProgram.Visible:=false;
+end;
+
+procedure TWebBrowserProjectOptionsForm.HideModule;
+begin
+  CBUseModule.Visible:=false;
 end;
 
 end.
