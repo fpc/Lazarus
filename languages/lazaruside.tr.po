@@ -3,7 +3,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: Lazarus ide\n"
 "POT-Creation-Date: 18.06.2019\n"
-"PO-Revision-Date: 2022-01-01 01:51+0300\n"
+"PO-Revision-Date: 2022-04-03 04:42+0300\n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.4.3\n"
@@ -96,7 +96,7 @@ msgstr "Tüm ayarları sıfırla"
 
 #: lazarusidestrconsts.dlfmouseresetgutter
 msgid "Reset all gutter settings"
-msgstr "Tüm cilt ayarlarını sıfırla"
+msgstr "Tüm oluk ayarlarını sıfırla"
 
 #: lazarusidestrconsts.dlfmouseresettext
 msgid "Reset all text settings"
@@ -136,7 +136,7 @@ msgstr "Geçmiş İleri"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonmulticarettoggle
 msgid "Toggle extra Caret"
-msgstr "Ekstra düzenleme işaretini aç/kapat"
+msgstr "Ekstra imleç aç/kapat"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonnothing
 msgctxt "lazarusidestrconsts.dlfmousesimplebuttonnothing"
@@ -151,7 +151,7 @@ msgstr "Yapıştır"
 #: lazarusidestrconsts.dlfmousesimplebuttonselcontinue
 #, object-pascal-format
 msgid "Continue %0:s (Bound to: %1:s)"
-msgstr "Devam et %0:s (%1:s bağlantılı)"
+msgstr "Devam et %0:s (%1:s bağlı)"
 
 #: lazarusidestrconsts.dlfmousesimplebuttonselcontinueplain
 #, object-pascal-format
@@ -217,28 +217,28 @@ msgstr "Genel"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftdown
 msgid "Standard, All actions (breakpoint, fold) on mouse down"
-msgstr "Standart, Tüm eylemler (kesme noktası, katlama) fareyle aşağıya doğru"
+msgstr "Standart, Tüm eylemler (kesme noktası, katlama) fare aşağı"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftup
 msgid "Extended, Actions (breakpoint, fold) on mouse up. Selection on mouse down and move"
-msgstr "Genişletilmiş, Eylemler (kesme noktası, katlama) fareyle yukarı doğru fare üzerinde aşağıya doğru seçim ve taşıma"
+msgstr "Genişletilmiş, Eylemler (kesme noktası, katlama) fareyle yukarı doğru. Seçim fare ile aşağıya doğru ve fare hareketi"
 
 #: lazarusidestrconsts.dlfmousesimplegutterleftupright
 msgid "Extended, Actions, right gutter half only"
-msgstr "Genişletilmiş, Eylemler, sağ cilt payı f sadece yarım"
+msgstr "Genişletilmiş, Eylemler, yalnızca sağ oluk yarısı"
 
 #: lazarusidestrconsts.dlfmousesimplegutterlines
 msgid "Use line numbers to select lines"
-msgstr "Satırları seçmek için satır sayısını kullanın"
+msgstr "Satırları seçmek için satır numaralarını kullanın"
 
 #: lazarusidestrconsts.dlfmousesimpleguttersect
 msgctxt "lazarusidestrconsts.dlfmousesimpleguttersect"
 msgid "Gutter"
-msgstr "Cilt Payı"
+msgstr "Oluk"
 
 #: lazarusidestrconsts.dlfmousesimplerightmovecaret
 msgid "Right button click includes caret move"
-msgstr "Sağ fare hareketi içerir"
+msgstr "Sağ düğme tıklaması, imleci taşır"
 
 #: lazarusidestrconsts.dlfmousesimpletextsect
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsect"
@@ -247,11 +247,11 @@ msgstr "Metin"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltctrllabel
 msgid "Alt-Ctrl Button"
-msgstr "Alt-Ctrl Düğmesi"
+msgstr "Alt-Ctrl Buton"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltctrlwheellabel
 msgid "Alt-Ctrl Wheel"
-msgstr "Alt-Ctrl Tekerleği"
+msgstr "Alt-Ctrl Tekerlek"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectaltlabel
 msgid "Alt Button"
@@ -263,7 +263,7 @@ msgstr "Alt Tekerlek"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrllabel
 msgid "Ctrl Button"
-msgstr "Ctrl Düğmesi"
+msgstr "Ctrl Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectctrlwheellabel
 msgid "Ctrl Wheel"
@@ -275,7 +275,7 @@ msgstr "Seçimi sürükleyin (kopyala / yapıştır)"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra1label
 msgid "Extra-1 Button"
-msgstr "Ekstra-1 Düğmesi"
+msgstr "Ekstra-1 Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectextra2label
 msgid "Extra-2 Button"
@@ -283,20 +283,20 @@ msgstr "Ekstra 2 Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublealtlabel
 msgid "Alt Double"
-msgstr "Alt Çift"
+msgstr "Alt Çift tıkla"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublectrllabel
 msgid "Ctrl Double"
-msgstr "Ctrl Çift"
+msgstr "Ctrl Çift tıkla"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoublelabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectldoublelabel"
 msgid "Double"
-msgstr "Çift"
+msgstr "Çift tıkla"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectldoubleshiftlabel
 msgid "Shift Double"
-msgstr "Shift Çift"
+msgstr "Shift Çift tıkla"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectlquadlabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectlquadlabel"
@@ -355,7 +355,7 @@ msgstr "Sağ Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrllabel
 msgid "Shift-Alt-Ctrl Button"
-msgstr "Shift-Alt-Ctrl Düğmesi"
+msgstr "Shift-Alt-Ctrl Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltctrlwheellabel
 msgid "Shift-Alt-Ctrl"
@@ -363,7 +363,7 @@ msgstr "Shift-Alt-Ctrl"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltlabel
 msgid "Shift-Alt Button"
-msgstr "ÜstKrkt-Alt Düğmesi"
+msgstr "ÜstKrkt-Alt Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftaltwheellabel
 msgid "Shift-Alt Wheel"
@@ -371,15 +371,15 @@ msgstr "ÜstKrkt-Alt Tekerlek"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrllabel
 msgid "Shift-Ctrl Button"
-msgstr "Shift-Ctrl Düğmesi"
+msgstr "Shift-Ctrl Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftctrlwheellabel
 msgid "Shift-Ctrl Wheel"
-msgstr "Üst Karakter-Ctrl Tekerleği"
+msgstr "Üst Karakter-Ctrl Tekerlek"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectshiftlabel
 msgid "Shift Button"
-msgstr "Üst Karakter Düğmesi"
+msgstr "Üst Karakter Düğme"
 
 #: lazarusidestrconsts.dlfmousesimpletextsectwheellabel
 msgctxt "lazarusidestrconsts.dlfmousesimpletextsectwheellabel"
@@ -450,7 +450,7 @@ msgstr "<Hiçbiri>"
 #: lazarusidestrconsts.dlfreadonlycolor
 msgctxt "lazarusidestrconsts.dlfreadonlycolor"
 msgid "Read Only"
-msgstr "Sadece oku"
+msgstr "Salt okunur"
 
 #: lazarusidestrconsts.dlg1up2low
 msgid "Lowercase, first letter up"
@@ -494,7 +494,7 @@ msgstr "Hata satırı"
 
 #: lazarusidestrconsts.dlgaddhiattrexecutionpoint
 msgid "Execution point"
-msgstr "Uygulama noktası"
+msgstr "Yürütme noktası"
 
 #: lazarusidestrconsts.dlgaddhiattrfoldedcode
 msgid "Folded code marker"
@@ -512,7 +512,7 @@ msgstr "Küresel"
 #: lazarusidestrconsts.dlgaddhiattrgroupgutter
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupgutter"
 msgid "Gutter"
-msgstr "Cilt Payı"
+msgstr "Oluk"
 
 #: lazarusidestrconsts.dlgaddhiattrgroupifdef
 msgctxt "lazarusidestrconsts.dlgaddhiattrgroupifdef"
@@ -543,7 +543,7 @@ msgstr "Metin"
 
 #: lazarusidestrconsts.dlgaddhiattrgutterseparator
 msgid "Gutter Separator"
-msgstr "Cilt Payı Ayırıcı"
+msgstr "Oluk Ayırıcı"
 
 #: lazarusidestrconsts.dlgaddhiattrhiddencodeline
 msgid "Hide start-line"
@@ -677,7 +677,7 @@ msgstr "Kelime-Parantezler"
 
 #: lazarusidestrconsts.dlgaddhispecialvisiblechars
 msgid "Visualized Special Chars"
-msgstr "Görselleştirilen Özel Kare"
+msgstr "Görselleştirilen Özel Karekterler"
 
 #: lazarusidestrconsts.dlgaddnewmode
 msgid "Add new mode"
@@ -685,7 +685,7 @@ msgstr "Yeni mod ekle"
 
 #: lazarusidestrconsts.dlgaddsemicolon
 msgid "Add semicolon"
-msgstr "Noktalı virgül ekleyin"
+msgstr "Noktalı virgül ekle"
 
 #: lazarusidestrconsts.dlgadjusttopline
 msgid "Adjust top line due to comment in front"
@@ -697,7 +697,7 @@ msgstr "Alfabetik"
 
 #: lazarusidestrconsts.dlgalwaysvisiblecursor
 msgid "Always keep caret in visible area of editor"
-msgstr "Düzeltme işaretleri daima editörün görünür alanında tutun"
+msgstr "İmleci daima editörün görünür alanında tut"
 
 #: lazarusidestrconsts.dlgambigfileact
 msgid "Ambiguous file action:"
@@ -705,7 +705,7 @@ msgstr "Belirsiz dosya eylemi:"
 
 #: lazarusidestrconsts.dlgambigwarn
 msgid "Warn on compile"
-msgstr "Derleme uyarısı"
+msgstr "Derleme uyarıları"
 
 #: lazarusidestrconsts.dlganiconforerrorwarninghintisshown
 msgid "An icon for error/warning/hint is shown in front of a message. The same icon shows in source editor gutter in any case."
@@ -734,15 +734,15 @@ msgstr "Masaüstünü seçerseniz, ilişkili hata ayıklama masaüstü de seçil
 
 #: lazarusidestrconsts.dlgautocreateforms
 msgid "Auto-create forms:"
-msgstr "Formları otomatik oluştur:"
+msgstr "Otomatik oluşturulacak formlar:"
 
 #: lazarusidestrconsts.dlgautocreateformshint
 msgid "Main .lpr unit creates each form with Application.CreateForm(). They are also freed automatically."
-msgstr "Ana .lpr birimi, her formu Application.CreateForm () ile oluşturur ve otomatik olarak serbest bırakılır."
+msgstr "Ana .lpr birimi, her formu Application.CreateForm () ile oluşturur ve otomatik olarak serbest (free eder) bırakılır."
 
 #: lazarusidestrconsts.dlgautocreatenewforms
 msgid "Auto-create new forms"
-msgstr "Yeni formları Otomatik oluştur"
+msgstr "Otomatik oluşturulacak yeni formlar"
 
 #: lazarusidestrconsts.dlgautodel
 msgid "Auto delete file"
@@ -750,7 +750,7 @@ msgstr "Dosyayı otomatik sil"
 
 #: lazarusidestrconsts.dlgautodisplayfuncproto
 msgid "Auto Display Function Prototypes"
-msgstr "Otomatik Görüntü İşlev Prototipleri"
+msgstr "Otomatik Görüntüle Fonksiyon Prototipleri"
 
 #: lazarusidestrconsts.dlgautohidecursor
 msgid "Hide mouse pointer when typing"
@@ -776,7 +776,7 @@ msgstr "Boş yöntemleri otomatik olarak kaldır"
 
 #: lazarusidestrconsts.dlgautoren
 msgid "Auto rename file lowercase"
-msgstr "Otomatik olarak küçük harfleri yeniden adlandır"
+msgstr "Dosyayı küçük harfle otomatik olarak yeniden adlandır"
 
 #: lazarusidestrconsts.dlgautosaveactivedesktop
 msgid "Auto save active desktop"
@@ -788,7 +788,7 @@ msgid ""
 "Save debug desktop on IDE close and debug end"
 msgstr ""
 "IDE'ye aktif masaüstünü kaydet kapat\n"
-"IDE'ye hata ayıklama masaüstünden tasarruf edin"
+"IDE kapanışında ve hata ayıklama sonunda hata ayıklama masaüstünü kaydedin"
 
 #: lazarusidestrconsts.dlgavailableforms
 msgid "Available forms:"
@@ -825,11 +825,11 @@ msgstr "Seçim"
 
 #: lazarusidestrconsts.dlgblockindent
 msgid "Block indent (spaces)"
-msgstr "Girintiyi engelle (boşluklar)"
+msgstr "Blok girintisi (boşluklar)"
 
 #: lazarusidestrconsts.dlgblockindentkeys
 msgid "Block indent"
-msgstr "Girintiyi engelle"
+msgstr "Blok girintisi"
 
 #: lazarusidestrconsts.dlgblockindentlink
 msgid "(edit keys)"
@@ -837,11 +837,11 @@ msgstr "(Tuşları düzenle)"
 
 #: lazarusidestrconsts.dlgblockindenttypecopy
 msgid "Space/tab as prev Line"
-msgstr "Alan/sekme prev satırı"
+msgstr "Önceki Satır olarak boşluk/sekme"
 
 #: lazarusidestrconsts.dlgblockindenttypepos
 msgid "Position only"
-msgstr "Yalnızca pozisyon"
+msgstr "Sadece Pozisyon"
 
 #: lazarusidestrconsts.dlgblockindenttypespace
 msgid "Spaces"
@@ -849,7 +849,7 @@ msgstr "Boşluklar"
 
 #: lazarusidestrconsts.dlgblockindenttypetabonly
 msgid "Tabs, cut off"
-msgstr "Sekmeler, kesildi"
+msgstr "Sekmeler, kesilmiş"
 
 #: lazarusidestrconsts.dlgblockindenttypetabspace
 msgid "Tabs, then spaces"
@@ -857,11 +857,11 @@ msgstr "Sekmeler, ardından boşluklar"
 
 #: lazarusidestrconsts.dlgblocktabindent
 msgid "Block indent (tabs)"
-msgstr "Girintiyi engelle (sekmeler)"
+msgstr "Blok girintisi (sekmeler)"
 
 #: lazarusidestrconsts.dlgborderspacecanbesetinanchoreditor
 msgid "Border space can be set in Anchor editor. A red line is shown if spacing > 0."
-msgstr "Sınır alanı, Çapa düzenleyicide ayarlanabilir. Boşluk> 0 dan büyük ise kırmızı bir çizgi gösterilir."
+msgstr "Çapa düzenleyicide kenarlık alanı ayarlanabilir. Boşluk > 0 ise kırmızı bir çizgi gösterilir."
 
 #: lazarusidestrconsts.dlgbrackethighlight
 msgid "Bracket highlight"
@@ -869,38 +869,32 @@ msgstr "Parantezi vurgula"
 
 #: lazarusidestrconsts.dlgbracketmatchgroup
 msgid "Matching bracket and quote pairs"
-msgstr "Eşleştirme parantezi ve alıntı çiftleri"
+msgstr "Eşleşen parantez ve alıntı çiftleri"
 
 #: lazarusidestrconsts.dlgcannotusedockedundockeddesktop
 msgid "You cannot use docked desktop in undocked environment and vice versa."
-msgstr "Yerleşik masaüstünü yerleştirilmemiş bir ortamda kullanamazsınız."
+msgstr "Yerleştirilmiş masaüstünü, ayrılmış ortamda kullanamazsınız ve bunun tersi de geçerlidir."
 
 #: lazarusidestrconsts.dlgcaretbackcolor
-#, fuzzy
-#| msgid "Multi/2nd (NotXor)"
 msgid "Secondary carets (multi-caret mode)"
-msgstr "Çoklu/2. (NotXor)"
+msgstr "İkincil imleç (çoklu imleç modu)"
 
 #: lazarusidestrconsts.dlgcaretcolor
-#, fuzzy
-#| msgid "Caret"
 msgctxt "lazarusidestrconsts.dlgcaretcolor"
 msgid "Caret (Text-Cursor)"
-msgstr "Düzeltme işareti"
+msgstr "İmleç (Metin İmleci)"
 
 #: lazarusidestrconsts.dlgcaretcolorinfo
 msgid "The caret color depends on the colors of text and background under the caret. Each pixel's RGB are bitwise inverted and XOR'ed with the chosen color's RGB."
-msgstr ""
+msgstr "İmleç rengi, imlecin altındaki metin ve arka planın renklerine bağlıdır. Her pikselin RGB'si bit düzeyinde ters çevrilir ve seçilen rengin RGB'si ile XOR'lanır."
 
 #: lazarusidestrconsts.dlgcaretforecolor
-#, fuzzy
-#| msgid "Color (NotXor)"
 msgid "Main or primary caret"
-msgstr "Renk (NotXor)"
+msgstr "Ana veya birincil imleç"
 
 #: lazarusidestrconsts.dlgcaretgroupoptions
 msgid "Caret (Text Cursor)"
-msgstr "Düzeltme işareti (Metin İmleç)"
+msgstr "İmleç (Metin İmleç)"
 
 #: lazarusidestrconsts.dlgcasesensitive
 msgid "&Case sensitive"
@@ -908,7 +902,7 @@ msgstr "&Harfe duyarlı"
 
 #: lazarusidestrconsts.dlgccocaption
 msgid "Checking compiler options"
-msgstr "Derleyici seçeneklerini kontrol etme"
+msgstr "Derleyici seçenekleri kontrol ediliyor"
 
 #: lazarusidestrconsts.dlgccoorphanedfilefound
 #, object-pascal-format
@@ -929,15 +923,15 @@ msgstr "Test: Derleyici denetleniyor ..."
 
 #: lazarusidestrconsts.dlgccotestcheckingcompilerconfig
 msgid "Test: Checking compiler configuration ..."
-msgstr "Test: derleyici yapılandırmasını denetleme ..."
+msgstr "Test: Derleyici yapılandırması denetleniyor ..."
 
 #: lazarusidestrconsts.dlgccotestcompilerdate
 msgid "Test: Checking compiler date ..."
-msgstr "Test: Derleyici tarihini denetleme ..."
+msgstr "Test: Derleyici tarihi denetleniyor ..."
 
 #: lazarusidestrconsts.dlgccotestcompilingemptyfile
 msgid "Test: Compiling an empty file ..."
-msgstr "Test: boş bir dosyayı derleme ..."
+msgstr "Test: Boş bir dosya derleniyor ..."
 
 #: lazarusidestrconsts.dlgccotestrtlunits
 msgid "Test: Checking RTL units ..."
@@ -945,11 +939,11 @@ msgstr "Test: RTL birimlerini kontrol ediyor ..."
 
 #: lazarusidestrconsts.dlgccotestsrcinppupaths
 msgid "Test: Checking sources in fpc ppu search paths ..."
-msgstr "Test: fpc ppu arama yollarındaki kaynakları kontrol et ..."
+msgstr "Test: fpc ppu arama yollarındaki kaynakları kontrol ediliyor ..."
 
 #: lazarusidestrconsts.dlgccotesttoolcompilingemptyfile
 msgid "Test: Compiling an empty file"
-msgstr "Test: boş bir dosyayı derleme"
+msgstr "Test: Boş bir dosya derleniyor"
 
 #: lazarusidestrconsts.dlgccousingconfigfile
 #, object-pascal-format
@@ -1002,11 +996,11 @@ msgstr "Dosyaları Kontrol Et ve Otomatik Kaydet"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreate
 msgid "Check packages on form create"
-msgstr "Form oluşturma paketlerini kontrol et"
+msgstr "Form oluşturulurken paketleri kontrol et"
 
 #: lazarusidestrconsts.dlgcheckpackagesonformcreatehint
 msgid "The form may require a package to work. Install such a package automatically."
-msgstr "Formun çalışması için bir paket gerekebilir, böyle bir paketi otomatik olarak yükleyin."
+msgstr "Formun çalışması için bir paket gerekebilir, böyle bir paketi otomatik olarak kurun."
 
 #: lazarusidestrconsts.dlgchscodetempl
 msgid "Choose code template file (*.dci)"
@@ -1014,11 +1008,11 @@ msgstr "Kod şablon dosyası (* .dci) seç"
 
 #: lazarusidestrconsts.dlgclosebuttonsnotebook
 msgid "Show close buttons in notebook"
-msgstr "Not defterinde yakın düğmeleri göster"
+msgstr "Not defterinde kapat düğmelerini göster"
 
 #: lazarusidestrconsts.dlgclrscheme
 msgid "Color Scheme"
-msgstr "Renk uyumu"
+msgstr "Renk şeması"
 
 #: lazarusidestrconsts.dlgcmacro
 msgid "C style macros (global)"
@@ -1040,7 +1034,7 @@ msgstr "Mesajlar"
 
 #: lazarusidestrconsts.dlgcochecksandassertion
 msgid "Checks and assertion"
-msgstr "Çekler ve iddia"
+msgstr "Kontroller ve onay"
 
 #: lazarusidestrconsts.dlgcocompilercommands
 msgid "Compiler Commands"
@@ -1065,7 +1059,7 @@ msgstr "Hata ayıklayıcı yolunun eklenmesi (yok):"
 
 #: lazarusidestrconsts.dlgcodecreation
 msgid "Code Creation"
-msgstr "Kod Oluştur"
+msgstr "Kod Oluşturma"
 
 #: lazarusidestrconsts.dlgcodefoldenableboth
 msgid "Both"
@@ -1085,7 +1079,7 @@ msgstr "Açılır pencerede katlama sırasını tersine çevir"
 
 #: lazarusidestrconsts.dlgcogdb
 msgid "Generate info for the debugger (slower / increases exe-size)"
-msgstr "Hata ayıklayıcı için bilgi üret (yavaş / exe-boyutu artar)"
+msgstr "Hata ayıklayıcı için bilgi oluşturun (daha yavaş / exe boyutunu artırır)"
 
 #: lazarusidestrconsts.dlgcoheaptrc
 msgid "Use Heaptrc unit (check for mem-leaks)"
@@ -1133,7 +1127,7 @@ msgstr "Komut satırı parametreleri (uygulama adı olmadan)"
 
 #: lazarusidestrconsts.dlgcommentalignmaxdefault
 msgid "Max indent for new line if prefix is based on start of comment on first comment line:"
-msgstr "Yorum, sütunda açılırsa yeni satıra varsayılan girinti yapın:"
+msgstr "Önek, ilk yorum satırındaki yorumun başlangıcını temel alıyorsa, yeni satır için maksimum girinti:"
 
 #: lazarusidestrconsts.dlgcommentalignmaxtoken
 msgid "Limit indent to"
@@ -1153,7 +1147,7 @@ msgstr "\"*\" \"(* İşaretinin dahil olduğu metin eşleşmesi"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchline
 msgid "Match whole line"
-msgstr "Bütün satırla eşleş"
+msgstr "Tüm satırı eşleştir"
 
 #: lazarusidestrconsts.dlgcommentcontinuematchtext
 #, object-pascal-format
@@ -1163,23 +1157,23 @@ msgstr "\"%s\" belirtecinden sonraki metni eşleştir"
 #: lazarusidestrconsts.dlgcommentcontinuematchtoken
 #, object-pascal-format
 msgid "Match text including token \"%s\""
-msgstr "\"%s\" belirteci içeren eşleme metni"
+msgstr "\"%s\" belirteci içeren metni eşleştir"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefix
 msgid "Prefix new line"
-msgstr "Yeni satırı önekle"
+msgstr "Önek yeni satır"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixinddefault
 msgid "Align Prefix at indent of previous line"
-msgstr "Bir önceki satırın girintisine Hizala Önek"
+msgstr "Öneki önceki satırın girintisine hizala"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixindmatch
 msgid "Align Prefix below start of comment on first comment line"
-msgstr "İlk yorum satırında yorum başlangıcının altındaki Öneki Hizala"
+msgstr "İlk yorum satırında yorumun başlangıcının altındaki Öneki Hizala"
 
 #: lazarusidestrconsts.dlgcommentcontinueprefixindnone
 msgid "Do not indent prefix"
-msgstr "Önek girinti yapmayın"
+msgstr "Önek girintisi yapma"
 
 #: lazarusidestrconsts.dlgcommentindentgroupoptions
 msgid "Comments and Strings"
@@ -1187,19 +1181,19 @@ msgstr "Yorumlar ve Stringler"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalways
 msgid "Extend if matched or not matched"
-msgstr "Eşleştirilirse veya eşleştirilmemişse uzat"
+msgstr "Eşleşirse veya eşleşmezse uzat"
 
 #: lazarusidestrconsts.dlgcommentshlashextendalwayssplit
 msgid "Extend if matched or not matched (not at EOL)"
-msgstr "Eşleştirilirse veya eşleştirilmemişse (EOL'de değil) genişlesin"
+msgstr "Eşleşirse veya eşleşmezse uzat (EOL'de değil)"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatch
 msgid "Extend if matched"
-msgstr "Eşleştirilirse uzat"
+msgstr "Eşleşirse uzat"
 
 #: lazarusidestrconsts.dlgcommentshlashextendmatchsplit
 msgid "Extend if matched and caret in the middle of text (not at EOL)"
-msgstr "Metnin ortasında eşleştirilirse ve metnin ortasına getirilirse (EOL'de değil) genişlesin"
+msgstr "Eşleşirse uzatın ve metnin ortasına imleci koyun (EOL'de değil)"
 
 #: lazarusidestrconsts.dlgcompilationandlinking
 msgid "Compilation and Linking"
@@ -1211,7 +1205,7 @@ msgstr "Derleyici mesajları"
 
 #: lazarusidestrconsts.dlgcompilermessages
 msgid "Compiler messages language file (*.msg)"
-msgstr "Derleyici ileti dili dosyası (* .msg)"
+msgstr "Derleyici ileti dil dosyası (* .msg)"
 
 #: lazarusidestrconsts.dlgcompileroptions
 msgid "Compiler Options"
@@ -1223,7 +1217,7 @@ msgstr "Komple özellikleri"
 
 #: lazarusidestrconsts.dlgcomponentundermousecursorisfirstselected
 msgid "Component under mouse cursor is first selected, then the popup menu commands work on it."
-msgstr "Önce fare imleci altındaki bileşen seçildiğinde açılır menü komutları üzerinde çalışıyor."
+msgstr "Önce fare imlecinin altındaki bileşen seçilir, ardından açılır menü komutları üzerinde çalışır."
 
 #: lazarusidestrconsts.dlgconfigandtarget
 msgid "Config and Target"
@@ -1251,7 +1245,7 @@ msgstr "Katlama bilgileriyle birlikte kopyala / yapıştır"
 
 #: lazarusidestrconsts.dlgcopywordatcursoroncopynone
 msgid "Copy current word when no selection exists"
-msgstr "Seçim yapılmadan kopyalanamaz"
+msgstr "Seçim olmadığında geçerli kelimeyi kopyala"
 
 #: lazarusidestrconsts.dlgcorange
 msgctxt "lazarusidestrconsts.dlgcorange"
@@ -1288,7 +1282,7 @@ msgstr "Yığın"
 
 #: lazarusidestrconsts.dlgcostrip
 msgid "Strip symbols from executable"
-msgstr "Çalıştırılabilir simgeleri şeritten çıkarma"
+msgstr "Çalıştırılabilir dosyadan sembolleri çıkar"
 
 #: lazarusidestrconsts.dlgcosymboltype
 msgid "Type of debug info"
@@ -1317,7 +1311,7 @@ msgstr "Stabs"
 
 #: lazarusidestrconsts.dlgcotrashvariables
 msgid "Trash variables"
-msgstr "Çöp değişkenleri"
+msgstr "Değişkenleri çöpe at"
 
 #: lazarusidestrconsts.dlgcounitstyle
 msgid "Unit style"
@@ -1337,7 +1331,7 @@ msgstr "C ++ styled INLINE"
 
 #: lazarusidestrconsts.dlgcreatenewrunparameterssettings
 msgid "Create new Run Parameters settings"
-msgstr "Yeni Çalıştırma Parametreleri ayarı oluştur"
+msgstr "Yeni Çalıştırma Parametreleri ayarları oluşturun"
 
 #: lazarusidestrconsts.dlgcurlycommenttab
 msgid "Curly { }"
@@ -1345,7 +1339,7 @@ msgstr "Kıvırcık { }"
 
 #: lazarusidestrconsts.dlgcurrentlyrespectedbymessageswindow
 msgid "Currently respected by messages window, jump history and search results."
-msgstr "Şu anda mesaj penceresinde saygın, atlama geçmişi ve arama sonuçları."
+msgstr "Şu anda mesajlar penceresi, atlama geçmişi ve arama sonuçları tarafından saygı duyulur."
 
 #: lazarusidestrconsts.dlgcursorbeyondeol
 msgid "Cursor beyond EOL"
@@ -1373,7 +1367,7 @@ msgstr "hata ayıkla"
 
 #: lazarusidestrconsts.dlgdebugoptionspatheditordlgcaption
 msgid "Path Editor"
-msgstr "Yol Editörü"
+msgstr "Editör yolu"
 
 #: lazarusidestrconsts.dlgdebugtype
 msgid "Debugger type and path"
@@ -1385,7 +1379,7 @@ msgstr "Varsayılan düzenleyici yazı tipi"
 
 #: lazarusidestrconsts.dlgdefaulttabfont
 msgid "Default tab font"
-msgstr ""
+msgstr "Varsayılan sekme yazı tipi"
 
 #: lazarusidestrconsts.dlgdefvaluecolor
 msgid "Default Value"
@@ -1676,7 +1670,7 @@ msgstr "Sor"
 
 #: lazarusidestrconsts.dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
-msgstr "Notlar: Proje dosyaları, proje dizinindeki tüm dosyalardır"
+msgstr "Not: Proje dosyaları, proje dizinindeki tüm dosyalardır"
 
 #: lazarusidestrconsts.dlgenvbckup
 msgid "Backup"
@@ -1891,7 +1885,7 @@ msgstr "Açıklama"
 #: lazarusidestrconsts.dlgfoldhtmlnode
 msgctxt "lazarusidestrconsts.dlgfoldhtmlnode"
 msgid "Node"
-msgstr "Düğüm"
+msgstr "Node"
 
 #: lazarusidestrconsts.dlgfoldlfmitem
 msgid "Item"
@@ -2040,7 +2034,7 @@ msgstr "Düğüm"
 
 #: lazarusidestrconsts.dlgfoldxmlprocess
 msgid "Processing Instruction"
-msgstr "İşleme Yönergesi"
+msgstr "İşleme Talimatı"
 
 #: lazarusidestrconsts.dlgforcedpiscalingindesigntime
 msgid "Force DPI scaling in design-time"
@@ -2060,7 +2054,7 @@ msgstr "Ön plan"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspector
 msgid "Change Object Inspector contents on clicking form title bar"
-msgstr "Form başlığı çubuğuna tıklayarak Nesne Denetçisi içeriğini değiştir"
+msgstr "Form başlığı çubuğuna tıklayarak Nesne Denetçisi içeriğini değiştirin"
 
 #: lazarusidestrconsts.dlgformtitlebarchangesobjectinspectorhint
 msgid "Show a form's properties in Object Inspector by clicking on its title bar."
@@ -2168,7 +2162,7 @@ msgstr "Editör"
 #: lazarusidestrconsts.dlggroupenvironment
 msgctxt "lazarusidestrconsts.dlggroupenvironment"
 msgid "Environment"
-msgstr "Çevre"
+msgstr "Ortam"
 
 #: lazarusidestrconsts.dlggroupundo
 msgid "Group Undo"
@@ -2185,23 +2179,23 @@ msgstr "Bir denetim başka denetimlerle yatay veya dikey olarak hizalandığınd
 #: lazarusidestrconsts.dlggutter
 msgctxt "lazarusidestrconsts.dlggutter"
 msgid "Gutter"
-msgstr "Cilt Payı"
+msgstr "Oluk"
 
 #: lazarusidestrconsts.dlgguttercollapsedcolor
 msgid "Collapsed"
-msgstr "Çöktü"
+msgstr "Daraltılmış"
 
 #: lazarusidestrconsts.dlgguttercolor
 msgid "Gutter Color"
-msgstr "Cilt Payı Boyası"
+msgstr "Oluk rengi"
 
 #: lazarusidestrconsts.dlggutteredgecolor
 msgid "Gutter Edge Color"
-msgstr "Gutter Edge Color"
+msgstr "Oluk kenar rengi"
 
 #: lazarusidestrconsts.dlggutterseparatorindex
 msgid "Gutter separator index"
-msgstr "Cilt ayırıcı indeksi"
+msgstr "Oluk ayırıcı indeksi"
 
 #: lazarusidestrconsts.dlghalfpagescroll
 msgid "Half page scroll"
@@ -2217,7 +2211,7 @@ msgstr "Yığın boyutu"
 
 #: lazarusidestrconsts.dlgheightofonepropertyingrid
 msgid "Height of one property in the grid."
-msgstr "Şebekedeki bir mülkün yüksekliği."
+msgstr "Izgaradaki bir özelliğin yüksekliği."
 
 #: lazarusidestrconsts.dlgheightpos
 msgid "Height:"
@@ -2245,15 +2239,15 @@ msgstr "Yazı tipi rengini vurgula"
 
 #: lazarusidestrconsts.dlghighlightleftofcursor
 msgid "Left Of Caret"
-msgstr "Sola Düzeltme işareti"
+msgstr "İmleç solu"
 
 #: lazarusidestrconsts.dlghighlightrightofcursor
 msgid "Right Of Caret"
-msgstr "Sağa Düzeltme işareti"
+msgstr "İmleç sağı"
 
 #: lazarusidestrconsts.dlghintsparametersendernotused
 msgid "Show hints for parameter \"Sender\" not used"
-msgstr "Kullanılmayan \"Sender\" parametresinin ipuçlarını göster"
+msgstr "Kullanılmayan \"Sender\" parametresi için ipuçlarını göster"
 
 #: lazarusidestrconsts.dlghintsunused
 msgid "Show hints for unused units in main"
@@ -2269,7 +2263,7 @@ msgstr "Ana bilgisayar uygulaması"
 
 #: lazarusidestrconsts.dlgidentifiercompletion
 msgid "Identifier Completion"
-msgstr "Tanımlayıcı Tamamlama"
+msgstr "Tamamlama Tanımlayıcı"
 
 #: lazarusidestrconsts.dlgidentifierpolicy
 msgid "Identifier policy"
@@ -2285,23 +2279,23 @@ msgstr "Aktif $IFDEF kodu"
 
 #: lazarusidestrconsts.dlgifdefblockinactive
 msgid "Inactive $IFDEF code"
-msgstr "Etkin değil $IFDEF kodu"
+msgstr "Pasif $IFDEF kodu"
 
 #: lazarusidestrconsts.dlgifdefblocktmpactive
 msgid "Included mixed state $IFDEF code"
-msgstr "Karma durum $IFDEF kodu dahil"
+msgstr "Dahil edilen karma durum $IFDEF kodu"
 
 #: lazarusidestrconsts.dlgifdefnodeactive
 msgid "Active $IFDEF node"
-msgstr "Aktif $IFDEF düğümü"
+msgstr "Aktif $IFDEF node"
 
 #: lazarusidestrconsts.dlgifdefnodeinactive
 msgid "Inactive $IFDEF node"
-msgstr "$IFDEF düğümünü pasif et"
+msgstr "Pasif $IFDEF node"
 
 #: lazarusidestrconsts.dlgifdefnodetmpactive
 msgid "Included mixed state $IFDEF node"
-msgstr "Karma durum $IFDEF düğümü dahil et"
+msgstr "Dahil edilen karma durum $IFDEF node"
 
 #: lazarusidestrconsts.dlgimportdesktopexists
 msgid ""
@@ -2313,11 +2307,11 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgincludecodetemplatestoidentcompl
 msgid "Include code templates"
-msgstr "Kod şablonları ekle"
+msgstr "Kod şablonlarını dahil et"
 
 #: lazarusidestrconsts.dlgincludeidentifierscontainingprefix
 msgid "Include identifiers containing prefix"
-msgstr "Önek içeren tanımlayıcıları dahil et"
+msgstr "Önek içeren tanımlayıcılarını dahil et"
 
 #: lazarusidestrconsts.dlgincludesystemvariables
 msgid "Include system variables"
@@ -2349,27 +2343,27 @@ msgstr "Sekmeler"
 
 #: lazarusidestrconsts.dlginfrontofmethods
 msgid "In front of methods"
-msgstr "Yöntemlerin önünde"
+msgstr "Metodların önünde"
 
 #: lazarusidestrconsts.dlginitdoneonly
 msgid "Constructor name must be 'init' (destructor must be 'done')"
-msgstr "Yapıcı adı 'init' olmalıdır (yıkıcı 'yapılmalıdır')"
+msgstr "Constructor adı 'init' olmalıdır (destructor 'bitmiş' olmalıdır)"
 
 #: lazarusidestrconsts.dlginsertclassparts
 msgid "Insert class parts"
-msgstr "Sınıf parçaları ekle"
+msgstr "Sınıf parçalarını ekle"
 
 #: lazarusidestrconsts.dlginsertimplementation
 msgid "Implementation"
-msgstr "Uygulama"
+msgstr "Implementation"
 
 #: lazarusidestrconsts.dlginsertinterface
 msgid "Interface"
-msgstr "Arayüz"
+msgstr "Interface"
 
 #: lazarusidestrconsts.dlginsertmethods
 msgid "Insert method implementations"
-msgstr "Implementations bölümüne ekle"
+msgstr "Implementations metodlarını ekle"
 
 #: lazarusidestrconsts.dlginsertsection
 msgid "Insert into Uses section of"
@@ -2393,7 +2387,7 @@ msgstr "Bir kod bloğu için dikey konum % cinsinden atlama (0 = üst, 100 = alt
 
 #: lazarusidestrconsts.dlgjumpingetc
 msgid "Jumping (e.g. Method Jumping)"
-msgstr "Atlama (ör. Yöntem Atlama)"
+msgstr "Atlama (ör. Metoda Atlama)"
 
 #: lazarusidestrconsts.dlgjumpsinglelinepos
 msgid "Vertical position for a single line jump in % (0=top, 100=bottom)"
@@ -2405,7 +2399,7 @@ msgstr "Doğrudan yöntem gövdesine atla"
 
 #: lazarusidestrconsts.dlgkeepcursorx
 msgid "Keep caret X position when navigating up/down"
-msgstr "İmleci X konumunda tut"
+msgstr "Yukarı/aşağı gezinirken imlecin X konumunu koruyun"
 
 #: lazarusidestrconsts.dlgkeylink
 msgid "(Edit Key)"
@@ -2450,7 +2444,7 @@ msgstr "Kılavuz Çizgileri Sol, Üst"
 
 #: lazarusidestrconsts.dlglevel1opt
 msgid "1 (quick, debugger friendly with small limitations)"
-msgstr "1 (hızlı, hata ayıklayıcı küçük sınırlamalarla)"
+msgstr "1 (küçük sınırlamalarla hızlı, hata ayıklayıcı dostu)"
 
 #: lazarusidestrconsts.dlglevel2opt
 msgid "2 (-O1 + quick optimizations)"
@@ -2478,7 +2472,7 @@ msgstr "Akıllı bağlantı"
 
 #: lazarusidestrconsts.dlglnumsbct
 msgid "Display line numbers in run-time error backtraces"
-msgstr "Çalışma zamanı hatasındaki geriye dönük izleme satır numaralarını görüntüle"
+msgstr "Çalışma zamanı hata geri izlemelerinde satır numaralarını görüntüle"
 
 #: lazarusidestrconsts.dlgmainmenu
 msgid "Main Menu"
@@ -2490,7 +2484,7 @@ msgstr "Proje Formlarını Görüntüle"
 
 #: lazarusidestrconsts.dlgmainviewframes
 msgid "View Project Frames"
-msgstr "Proje Çerçevelerini Görüntüle"
+msgstr "Proje Framelerini Görüntüle"
 
 #: lazarusidestrconsts.dlgmainviewunits
 msgid "View Project Units"
@@ -2498,7 +2492,7 @@ msgstr "Proje Birimlerini Görüntüle"
 
 #: lazarusidestrconsts.dlgmakeexecutable
 msgid "\"Make\" executable"
-msgstr "Çalıştırılablir Yap"
+msgstr "Yürütülebilir \"yap\""
 
 #: lazarusidestrconsts.dlgmanagedesktops
 msgid "Manage desktops"
@@ -2506,7 +2500,7 @@ msgstr "Masaüstlerini yönet"
 
 #: lazarusidestrconsts.dlgmargingutter
 msgid "Margin and gutter"
-msgstr "Kenar boşluğu ve cilt payı"
+msgstr "Kenar boşluğu ve oluk"
 
 #: lazarusidestrconsts.dlgmarkercolor
 msgid "Marker color"
@@ -2514,11 +2508,11 @@ msgstr "İşaretçi rengi"
 
 #: lazarusidestrconsts.dlgmarkupfoldcolor
 msgid "Vertical-mark"
-msgstr "Dikey-işareti"
+msgstr "Dikey-işaret"
 
 #: lazarusidestrconsts.dlgmarkupgroup
 msgid "Highlight all occurrences of Word under Caret"
-msgstr "Şapka işareti altındaki kelimenin bütün oluşumlarını vurgula"
+msgstr "İmleç altındaki kelimenin bütün oluşumlarını vurgula"
 
 #: lazarusidestrconsts.dlgmarkupoutline
 msgid "Outline (global)"
@@ -2594,7 +2588,7 @@ msgstr "Terim başında sınırlandırılmış ayarla"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylen
 msgid "Ignore bounds for terms longer than"
-msgstr "Sınırlarından daha uzun olan terimler için sınırları yoksay"
+msgstr "Şundan daha uzun terimler için sınırları yoksay"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeylenselect
 msgid "selection"
@@ -2606,11 +2600,11 @@ msgstr "geçerli kelime"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeyopts
 msgid "Settings for terms added by key"
-msgstr "Tuş tarafından eklenen terimlerin ayarları"
+msgstr "Tuş tarafından eklenen terimler için ayarlar"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewbykeysmartselect
 msgid "Smart match selection bounds"
-msgstr "Akıllı eşleşme seçimi sınırlar"
+msgstr "Akıllı eşleşme seçim sınırları"
 
 #: lazarusidestrconsts.dlgmarkupuserdefinednewname
 msgid "New list"
@@ -2634,11 +2628,11 @@ msgstr "Ana ayarlar"
 
 #: lazarusidestrconsts.dlgmarkupwordbracket
 msgid "Keyword brackets on caret (global)"
-msgstr "Şapkadaki anahtar sözcükler (global)"
+msgstr "İmleçteki anahtar sözcükler (global)"
 
 #: lazarusidestrconsts.dlgmarkupwordfulllen
 msgid "Match whole words, if length is less or equal to:"
-msgstr "Bu uzunluğa kadar kelimelerin kelime sınırlarını eşleştirin:"
+msgstr "Uzunluk şundan küçük veya eşitse, tam kelimeleri eşleştirin:"
 
 #: lazarusidestrconsts.dlgmarkupwordnokeyword
 msgid "Ignore keywords"
@@ -2729,7 +2723,7 @@ msgstr "Ekstra 2"
 #: lazarusidestrconsts.dlgmouseoptbtnleft
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnleft"
 msgid "Left"
-msgstr "Ayrıldı"
+msgstr "Sol"
 
 #: lazarusidestrconsts.dlgmouseoptbtnmiddle
 msgctxt "lazarusidestrconsts.dlgmouseoptbtnmiddle"
@@ -2747,7 +2741,7 @@ msgstr "Sağ"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheeldown
 msgid "Wheel down"
-msgstr "Tekerlek indir"
+msgstr "Tekerlek aşağı"
 
 #: lazarusidestrconsts.dlgmouseoptbtnwheelleft
 msgid "Wheel left"
@@ -2763,15 +2757,15 @@ msgstr "Tekerlek yukarı"
 
 #: lazarusidestrconsts.dlgmouseoptcapture
 msgid "Capture"
-msgstr "Ele geçirmek"
+msgstr "Almak"
 
 #: lazarusidestrconsts.dlgmouseoptcaretmove
 msgid "Move Caret (extra)"
-msgstr "Taşıyıcıyı Taşı (ekstra)"
+msgstr "İmleci Taşı (ekstra)"
 
 #: lazarusidestrconsts.dlgmouseoptcheckupdown
 msgid "Act on Mouse up"
-msgstr "Fareyi yukarı kaldırma yasası"
+msgstr "Fare yukarı hareket aksiyonu"
 
 #: lazarusidestrconsts.dlgmouseoptdescaction
 msgctxt "lazarusidestrconsts.dlgmouseoptdescaction"
@@ -2808,11 +2802,11 @@ msgstr "Düğme"
 #: lazarusidestrconsts.dlgmouseoptheadcaret
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcaret"
 msgid "Caret"
-msgstr "Düzeltme işareti"
+msgstr "İmleç"
 
 #: lazarusidestrconsts.dlgmouseoptheadcontext
 msgid "Context"
-msgstr "Bağlam"
+msgstr "İçerik"
 
 #: lazarusidestrconsts.dlgmouseoptheadcount
 msgctxt "lazarusidestrconsts.dlgmouseoptheadcount"
@@ -2831,7 +2825,7 @@ msgstr "Aksiyon"
 
 #: lazarusidestrconsts.dlgmouseoptheaddir
 msgid "Up/Down"
-msgstr "Yukarı aşağı"
+msgstr "Yukarı/aşağı"
 
 #: lazarusidestrconsts.dlgmouseoptheadopt
 msgid "Option"
@@ -2839,7 +2833,7 @@ msgstr "Seçenek"
 
 #: lazarusidestrconsts.dlgmouseoptheadorder
 msgid "Order"
-msgstr "Sipariş"
+msgstr "Sıra"
 
 #: lazarusidestrconsts.dlgmouseoptheadpriority
 msgctxt "lazarusidestrconsts.dlgmouseoptheadpriority"
@@ -2857,7 +2851,7 @@ msgstr "Fare"
 
 #: lazarusidestrconsts.dlgmouseoptionsadv
 msgid "Advanced"
-msgstr "İleri"
+msgstr "Gelişmiş"
 
 #: lazarusidestrconsts.dlgmouseoptionsyncommand
 msgid "IDE-Command"
@@ -2899,12 +2893,12 @@ msgstr "Y"
 #: lazarusidestrconsts.dlgmouseoptnodeall
 msgctxt "lazarusidestrconsts.dlgmouseoptnodeall"
 msgid "All"
-msgstr "Herşey"
+msgstr "Tümü"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutter
 msgctxt "lazarusidestrconsts.dlgmouseoptnodegutter"
 msgid "Gutter"
-msgstr "Cilt Payı"
+msgstr "Oluk"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterchanges
 msgid "Line Changes"
@@ -2928,7 +2922,7 @@ msgstr "Genel bakış"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlineoverviewmarks
 msgid "Overview Mark"
-msgstr "Genel Bakış Mark"
+msgstr "Genel Bakış İşareti"
 
 #: lazarusidestrconsts.dlgmouseoptnodegutterlines
 msgid "Line Numbers"
@@ -2958,7 +2952,7 @@ msgstr "Değiştirme Tuşları, Ayrıntılı Ayarlar, Tek/Çift, Yukarı/Aşağ�
 
 #: lazarusidestrconsts.dlgmouseoptotheracttoggle
 msgid "Filter Mod-Keys"
-msgstr "Filtre Mod Anahtarları"
+msgstr "Filtre Mod - tuşları"
 
 #: lazarusidestrconsts.dlgmouseoptpriorlabel
 msgctxt "lazarusidestrconsts.dlgmouseoptpriorlabel"
@@ -3020,11 +3014,11 @@ msgstr "Ayrıntılı"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose2
 msgid "Verbose 2"
-msgstr "Verbose 2"
+msgstr "Ayrıntılı 2"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentverbose3
 msgid "Verbose 3"
-msgstr "Verbose 3"
+msgstr "Ayrıntılı 3"
 
 #: lazarusidestrconsts.dlgmsgwincolorurgentwarning
 msgctxt "lazarusidestrconsts.dlgmsgwincolorurgentwarning"
@@ -3041,7 +3035,7 @@ msgstr "EOL'deki silme anahtarını atla (satırlara katılma)"
 
 #: lazarusidestrconsts.dlgmulticaretgroupoptions
 msgid "Multi-caret"
-msgstr "Çok Düzeltme işareti"
+msgstr "Çoklu-imleç"
 
 #: lazarusidestrconsts.dlgmulticaretmode
 msgid "Navigation keys move all carets"
@@ -3049,7 +3043,7 @@ msgstr "İmleçle birlikte çok satırlı hareket"
 
 #: lazarusidestrconsts.dlgmulticaretoncolumnselection
 msgid "Enable multi-caret for column selection"
-msgstr "Sütun seçimi için çoklu dizge etkinleştir"
+msgstr "Sütun seçimi için çoklu imleci etkinleştir"
 
 #: lazarusidestrconsts.dlgmultipleinstances_alwaysstartnew
 msgid "always start a new instance"
@@ -3073,7 +3067,7 @@ msgstr "Birden çok editör arasında hedef önceliğini atla"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorder
 msgid "Order to use for editors matching the same criteria"
-msgstr "Aynı kriterlere uyan editörler için kullanmak üzere sipariş ver"
+msgstr "Aynı kriterlere uyan editörler için kullanım sırası"
 
 #: lazarusidestrconsts.dlgmultiwinaccessorderedit
 msgid "Most recent focused editor for this file"
@@ -3129,11 +3123,11 @@ msgstr "Kaynak sekmeleri konumu"
 
 #: lazarusidestrconsts.dlgnotsplitlineafter
 msgid "Do not split line after"
-msgstr "Satırın sonuna bölme"
+msgstr "Satırın sonunu bölme"
 
 #: lazarusidestrconsts.dlgnotsplitlinefront
 msgid "Do not split line in front of"
-msgstr "Satırın önüne bölme"
+msgstr "Satırın önünü bölme"
 
 #: lazarusidestrconsts.dlgnsprincipalclass
 msgid "NSPrincipalClass"
@@ -3196,7 +3190,7 @@ msgstr "Sayfa"
 
 #: lazarusidestrconsts.dlgoverwriteblock
 msgid "Overwrite block"
-msgstr "Üstüne yaz blok"
+msgstr "Bloğun üzerine yaz"
 
 #: lazarusidestrconsts.dlgoverwritedesktop
 #, object-pascal-format
@@ -3225,7 +3219,7 @@ msgstr "Genişletilmiş Pascal Anahtar Kelime Seçenekleri"
 
 #: lazarusidestrconsts.dlgpaskeywordsmarkup
 msgid "Markup (on caret)"
-msgstr "İşaretle (şapka işareti üzerinde)"
+msgstr "İşaretle (İmleç üzerinde)"
 
 #: lazarusidestrconsts.dlgpaskeywordsmatches
 msgid "Matching Keywords"
@@ -3233,11 +3227,11 @@ msgstr "Eşleşen Anahtar Kelimeler"
 
 #: lazarusidestrconsts.dlgpaskeywordsoutline
 msgid "Outline"
-msgstr "Taslak"
+msgstr "Anahat"
 
 #: lazarusidestrconsts.dlgpassoptslinker
 msgid "Pass options to linker with \"-k\", delimiter is space"
-msgstr "Seçenekleri \"-k\" ile birleştiriciye geçir, sınırlayıcı boşluktur"
+msgstr "\"-k\" ile bağlayıcıya geçiş seçenekleri, sınırlayıcı boşluktur"
 
 #: lazarusidestrconsts.dlgpasstringkeywords
 msgid "Highlight \"String\" keyword(s)"
@@ -3263,11 +3257,11 @@ msgstr "Kalıcı blok"
 
 #: lazarusidestrconsts.dlgpersistentcursor
 msgid "Visible caret in unfocused editor"
-msgstr "Kalıcı imleç"
+msgstr "Odaklanmamış düzenleyicide imleci göster"
 
 #: lazarusidestrconsts.dlgpersistentcursornoblink
 msgid "Caret in unfocused editor does not blink"
-msgstr "Odaklanmamış düzenleyicideki şapka işareti yanıp sönmüyor"
+msgstr "Odaklanmamış düzenleyicideki imleç yanıp sönsün"
 
 #: lazarusidestrconsts.dlgpoansiutf8
 msgid "ANSI codepage is UTF-8 (Windows 10 1903+)"
@@ -3279,15 +3273,15 @@ msgstr "Uygulama"
 
 #: lazarusidestrconsts.dlgpoasinvoker
 msgid "as invoker (asInvoker)"
-msgstr "invoker (asInvoker) olarak"
+msgstr "çağıran olarak (asInvoker)"
 
 #: lazarusidestrconsts.dlgpoclearicon
 msgid "&Clear Icon"
-msgstr "&Simgeyi Sil"
+msgstr "&Ikonu temizle"
 
 #: lazarusidestrconsts.dlgpocreateappbundle
 msgid "Create Application Bundle"
-msgstr "Uygulama Paketini Oluşturun"
+msgstr "Uygulama Paketi Oluştur"
 
 #: lazarusidestrconsts.dlgpodebugger
 msgctxt "lazarusidestrconsts.dlgpodebugger"
@@ -3357,7 +3351,7 @@ msgstr "&Simge Yükle"
 
 #: lazarusidestrconsts.dlgpolongpathaware
 msgid "Long path awareness"
-msgstr "Uzun yol farkındalığı"
+msgstr "Uzun yol biçimlendirme"
 
 #: lazarusidestrconsts.dlgpomisc
 msgctxt "lazarusidestrconsts.dlgpomisc"
@@ -3402,7 +3396,7 @@ msgstr "Temaları etkinleştirmek için manifest dosyasını kullanın"
 
 #: lazarusidestrconsts.dlgpreferdoubleclickoversingleclick
 msgid "Prefer double-click over single-click"
-msgstr "Tek tıklamayla çift tıklamayı tercih et"
+msgstr "Tek tıklama yerine çift tıklamayı tercih edin"
 
 #: lazarusidestrconsts.dlgpriorities
 msgid "Priorities"
@@ -3432,15 +3426,15 @@ msgstr "Proje Dosyaları"
 
 #: lazarusidestrconsts.dlgpromptonreplace
 msgid "&Prompt on replace"
-msgstr "&Yeniden sor"
+msgstr "&Değiştirme istemi"
 
 #: lazarusidestrconsts.dlgpropertycompletion
 msgid "Property completion"
-msgstr "Mülk tamamlanması"
+msgstr "Property tamamlanması"
 
 #: lazarusidestrconsts.dlgpropnamecolor
 msgid "Property Name"
-msgstr "Mülkiyet adı"
+msgstr "Property adı"
 
 #: lazarusidestrconsts.dlgqopenlastprj
 msgid "Open last project and packages at start"
@@ -3511,7 +3505,7 @@ msgstr "Kılavuz çizgiler sağ, alt"
 
 #: lazarusidestrconsts.dlgrightclickselects
 msgid "Right click selects"
-msgstr "Sağ tıklama"
+msgstr "Sağ tıklamayla seç"
 
 #: lazarusidestrconsts.dlgrightmargin
 msgid "Right margin"
@@ -3523,15 +3517,15 @@ msgstr "Çalışma dizini"
 
 #: lazarusidestrconsts.dlgrubberbandselectsgrandchildren
 msgid "Select grandchildren"
-msgstr "Torunları seç"
+msgstr "Alt bileşenleride seç"
 
 #: lazarusidestrconsts.dlgruberbandcreationcolor
 msgid "Rubberband Creation"
-msgstr "Kauçuk Bant Yaratma"
+msgstr "Lastik Bant Oluşturma"
 
 #: lazarusidestrconsts.dlgruberbandselectioncolor
 msgid "Rubberband Selection"
-msgstr "Kauçuk bant seçimi"
+msgstr "Lastik Bant Seç"
 
 #: lazarusidestrconsts.dlgrunninginstancemodalerror
 #, object-pascal-format
@@ -3548,7 +3542,7 @@ msgstr ""
 
 #: lazarusidestrconsts.dlgrunninginstancenotrespondingerror
 msgid "Lazarus instance is running but not responding."
-msgstr "Lazarus örneği çalışıyor ancak yanıt vermiyor."
+msgstr "Lazarus çalışıyor ancak yanıt vermiyor."
 
 #: lazarusidestrconsts.dlgrunodisplay
 msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
@@ -3557,7 +3551,7 @@ msgstr "Görüntüleme (win32 için değil, ör. 198.112.45.11:0, x.org:1, hydra
 #: lazarusidestrconsts.dlgrunoenvironment
 msgctxt "lazarusidestrconsts.dlgrunoenvironment"
 msgid "Environment"
-msgstr "Çevre"
+msgstr "Ortam"
 
 #: lazarusidestrconsts.dlgrunolocal
 msgid "Local"
@@ -3638,12 +3632,12 @@ msgstr "Dosyanın sonuna kaydır"
 
 #: lazarusidestrconsts.dlgscrollpastendline
 msgid "Allow caret to move past end of line"
-msgstr "Düzeltme çizgisini çizginin sonundan geçmesine izin ver"
+msgstr "İmlecin satırın sonunu geçmesine izin ver"
 
 #: lazarusidestrconsts.dlgseachdirectorynotfound
 #, object-pascal-format
 msgid "Search directory \"%s\" not found."
-msgstr "Arama dizini \"%s\" bulunamadı."
+msgstr "Aranan dizin \"%s\" bulunamadı."
 
 #: lazarusidestrconsts.dlgsearchabort
 msgid "Search terminated by user."
@@ -3651,7 +3645,7 @@ msgstr "Arama kullanıcı tarafından sonlandırıldı."
 
 #: lazarusidestrconsts.dlgsearchcaption
 msgid "Searching ..."
-msgstr "Arama ..."
+msgstr "Aranıyor...."
 
 #: lazarusidestrconsts.dlgsearchpaths
 msgid "Paths"
@@ -3663,7 +3657,7 @@ msgstr "Arama kapsamı"
 
 #: lazarusidestrconsts.dlgselectallchildcontrols
 msgid "Select all child controls together with their parent."
-msgstr "Tüm çocuk kontrollerini ebeveynleriyle birlikte seçin."
+msgstr "Tüm alt bileşenleri parent birleşen ile birlikte seçin."
 
 #: lazarusidestrconsts.dlgselectallnoscroll
 msgid "Do not scroll on Select-All / Paragraph or To-Brace"
@@ -3693,11 +3687,11 @@ msgstr "Öğe değerini varsayılana ayarla"
 
 #: lazarusidestrconsts.dlgsetpropertyvariable
 msgid "Set property Variable"
-msgstr "Set property Variable"
+msgstr "Değişken özelliklerini ayarla"
 
 #: lazarusidestrconsts.dlgsetpropertyvariablehint
 msgid "The parameter name for the default setter procedure."
-msgstr "Varsayılan ayarlayıcı yordamın parametre adı."
+msgstr "Varsayılan ayarlayıcı prosedürü için parametre adı."
 
 #: lazarusidestrconsts.dlgsetpropertyvariableisprefix
 msgid "is prefix"
@@ -3705,7 +3699,7 @@ msgstr "öneki"
 
 #: lazarusidestrconsts.dlgsetpropertyvariableisprefixhint
 msgid "If checked, the \"Set property Variable\" is a prefix. Otherwise it is a fixed name."
-msgstr "İşaretliyse, \"Set property Variable\" bir önek. Aksi takdirde sabit bir isimdir."
+msgstr "\"Değişken özelliklerini ayarla\" işaretlenirse bir önektir. Aksi takdirde sabit bir isimdir."
 
 #: lazarusidestrconsts.dlgsetpropertyvariableuseconst
 msgid "use const"
@@ -3713,7 +3707,7 @@ msgstr "const kullan"
 
 #: lazarusidestrconsts.dlgsetpropertyvariableuseconsthint
 msgid "If checked, the setter parameter is marked with \"const\"."
-msgstr "İşaretlenirse, setter parametresi \"const\" ile işaretlenmiştir."
+msgstr "İşaretlenirse, ayarlayıcı parametresi \"const\" ile işaretlenir."
 
 #: lazarusidestrconsts.dlgshowallunits
 msgid "Show all units"
@@ -3734,7 +3728,7 @@ msgstr "Satır numaralarını göster"
 
 #: lazarusidestrconsts.dlgshowconditionals
 msgid "Show conditionals"
-msgstr "Şartları göster"
+msgstr "Koşul şartlarını göster"
 
 #: lazarusidestrconsts.dlgshowdebuginfo
 msgid "Show debug info"
@@ -3766,7 +3760,7 @@ msgstr "Genel bilgiyi göster"
 
 #: lazarusidestrconsts.dlgshowgutterhints
 msgid "Show gutter hints"
-msgstr "Kanal ipuçlarını göster"
+msgstr "Oluk ipuçlarını göster"
 
 #: lazarusidestrconsts.dlgshowhint
 msgctxt "lazarusidestrconsts.dlgshowhint"
@@ -3784,7 +3778,7 @@ msgstr "Satır numaralarını göster"
 
 #: lazarusidestrconsts.dlgshowmessagesicons
 msgid "Show Messages Icons"
-msgstr "Mesajlar Simgelerini Göster"
+msgstr "Mesaj Simgelerini Göster"
 
 #: lazarusidestrconsts.dlgshownotes
 msgid "Show notes"
@@ -3890,7 +3884,7 @@ msgstr "String ''"
 
 #: lazarusidestrconsts.dlgstringenableautocontinue
 msgid "Extend strings on linebreak"
-msgstr "Stringleri satırbaşında uzat"
+msgstr "Satır sonuna Stringleri uzat"
 
 #: lazarusidestrconsts.dlgsubpropcolor
 msgid "SubProperties"
@@ -3910,7 +3904,7 @@ msgstr "Sekme numaralarını deftere göster"
 
 #: lazarusidestrconsts.dlgtabstospaces
 msgid "Tabs to spaces"
-msgstr "Sekmeler boşluğu"
+msgstr "Sekme boşluğu"
 
 #: lazarusidestrconsts.dlgtabwidths
 msgid "Tab widths"
@@ -3956,12 +3950,12 @@ msgstr "Öğe, şemaları kullanır (ve düzenler):"
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtncaption
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtncaption"
 msgid "Toggle as debug desktop"
-msgstr "Masaüstünde hata ayıklama ayarı olarak değiştir"
+msgstr "Hata ayıklama masaüstü olarak değiştir"
 
 #: lazarusidestrconsts.dlgtoggledebugdesktopbtnhint
 msgctxt "lazarusidestrconsts.dlgtoggledebugdesktopbtnhint"
 msgid "Toggle as debug desktop"
-msgstr "Masaüstünde hata ayıklama ayarı olarak değiştir"
+msgstr "Hata ayıklama masaüstü olarak değiştir"
 
 #: lazarusidestrconsts.dlgtopinfohint
 msgid "Current Class/Proc Hint"
@@ -3969,11 +3963,11 @@ msgstr "Geçerli Sınıf / Proc İpucu"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaption
 msgid "Trim spaces style"
-msgstr "Döşeme boşlukları stili"
+msgstr "Boşluk stilini kırp"
 
 #: lazarusidestrconsts.dlgtrimspacetypecaretmove
 msgid "Caret or Edit"
-msgstr "Şapka işareti veya Düzenle"
+msgstr "İmleç veya Düzenle"
 
 #: lazarusidestrconsts.dlgtrimspacetypeeditline
 msgid "Line Edited"
@@ -3985,11 +3979,11 @@ msgstr "Satır bırak"
 
 #: lazarusidestrconsts.dlgtrimspacetypeposonly
 msgid "Position Only"
-msgstr "Sadece Pozisyon"
+msgstr "Yalnızca pozisyon"
 
 #: lazarusidestrconsts.dlgtrimtrailingspaces
 msgid "Trim trailing spaces"
-msgstr "Arka boşlukları süsleyin"
+msgstr "Sondaki boşlukları kırp"
 
 #: lazarusidestrconsts.dlgundoaftersave
 msgid "Undo after save"
@@ -4001,7 +3995,7 @@ msgstr "Geri Al/İleri al"
 
 #: lazarusidestrconsts.dlgundolimit
 msgid "Undo limit"
-msgstr "Sınırı geri al"
+msgstr "Geri alma limiti"
 
 #: lazarusidestrconsts.dlgunitdepcaption
 msgctxt "lazarusidestrconsts.dlgunitdepcaption"
@@ -4042,7 +4036,7 @@ msgstr "Vurgulamayı Kullan"
 
 #: lazarusidestrconsts.dlguseiconsincompletionbox
 msgid "Icons in code completion box"
-msgstr "Kod tamamlama kutusunda simgeler"
+msgstr "Kod tamamlama kutusundaki simgeler"
 
 #: lazarusidestrconsts.dlguselaunchingapp
 msgid "Use launching application"
@@ -4055,7 +4049,7 @@ msgstr "Sistem tarafından işlenen IME"
 #: lazarusidestrconsts.dlguserschemeerror
 #, object-pascal-format
 msgid "Failed to load user-scheme file %s"
-msgstr "%s kullanıcı şeması dosyası yüklenemedi"
+msgstr "%s kullanıcı şema dosyası yüklenemedi"
 
 #: lazarusidestrconsts.dlguseschemedefaults
 msgid "- Scheme globals -"
@@ -4084,7 +4078,7 @@ msgstr "Değer"
 
 #: lazarusidestrconsts.dlgverbosity
 msgid "Verbosity during compilation:"
-msgstr "Derleme Sırasındaki Ayrıntılılık:"
+msgstr "Derleme sırasında ayrıntı:"
 
 #: lazarusidestrconsts.dlgvisiblegutter
 msgid "Visible gutter"
@@ -4096,7 +4090,7 @@ msgstr "Sağ kenar boşluğu görünsün"
 
 #: lazarusidestrconsts.dlgwholewordsonly
 msgid "&Whole words only"
-msgstr "&Sadece butun kelimeler"
+msgstr "&Sadece bütün kelimeler"
 
 #: lazarusidestrconsts.dlgwidthpos
 msgid "Width:"
@@ -4151,7 +4145,7 @@ msgstr "Ayna Dikey"
 
 #: lazarusidestrconsts.fdmorderbackone
 msgid "Back One"
-msgstr "Geri Bir"
+msgstr "Bir Geri"
 
 #: lazarusidestrconsts.fdmorderforwardone
 msgid "Forward One"
@@ -4325,7 +4319,7 @@ msgstr "Pakette \"%s\" dosyası zaten var."
 
 #: lazarusidestrconsts.lisa2pfileisused
 msgid "File is used"
-msgstr "Dosya kullanılır"
+msgstr "Dosya kullanılıyor"
 
 #: lazarusidestrconsts.lisa2pfilename2
 msgid "Filename/URL"
@@ -4532,7 +4526,7 @@ msgstr "Yoksay"
 
 #: lazarusidestrconsts.lisabortloadingproject
 msgid "Abort loading project"
-msgstr "Yükleme projesini iptal et"
+msgstr "Projeyi yüklemeyi iptal et"
 
 #: lazarusidestrconsts.lisabortwholeloading
 msgid "Abort whole loading"
@@ -4643,7 +4637,7 @@ msgstr "%s için \"%s\" özelliği eklendi."
 
 #: lazarusidestrconsts.lisaddfcutf8
 msgid "Add -FcUTF8"
-msgstr "Ekle -FcUTF8"
+msgstr "-FcUTF8 Ekle"
 
 #: lazarusidestrconsts.lisaddfcutf8hint
 msgid "May be needed if source files have non-ansistring literals."
@@ -4671,20 +4665,20 @@ msgstr "Anahtar kelime ekle \"do\""
 
 #: lazarusidestrconsts.lisaddmodifieroverload
 msgid "Add modifier \"overload\""
-msgstr "\"Aşırı yük\" değiştiricisini ekle"
+msgstr "\"overload\" değiştiricisini ekle"
 
 #: lazarusidestrconsts.lisaddmodifieroverride
 msgid "Add modifier \"override\""
-msgstr "\"Geçersiz kıl\" değiştiricisini ekle"
+msgstr "\"override\" değiştiricisini ekle"
 
 #: lazarusidestrconsts.lisaddmodifierreintroduce
 msgid "Add modifier \"reintroduce\""
-msgstr "\"Yeniden tanıt\" değiştiricisini ekle"
+msgstr "\"reintroduce\" değiştiricisini ekle"
 
 #: lazarusidestrconsts.lisaddnewbuildmodecopyingsettingsfrom
 #, object-pascal-format
 msgid "Add new build mode, copying settings from \"%s\""
-msgstr "Ayarları \"%s\" den kopyalarken yeni yapı modu ekle"
+msgstr "Ayarları \"%s\" den kopyalayarak yeni oluşturma modu ekleyin"
 
 #: lazarusidestrconsts.lisaddnewmacro
 msgid "Add new macro"
@@ -4700,7 +4694,7 @@ msgstr "Paket gereksinimi eklensin mi?"
 
 #: lazarusidestrconsts.lisaddpackagestolistofinstalledpackagescombinewithbui
 msgid "add package(s) to list of installed packages (combine with --build-ide to rebuild IDE)."
-msgstr "yüklü paketlerin listesine paket (ler) ekleyin (IDE'yi yeniden oluşturmak için --build-ide ile birleştirin)."
+msgstr "kurulu paket listesine paket (ler) ekleyin (IDE'yi yeniden oluşturmak için --build-ide ile birleştirin)."
 
 #: lazarusidestrconsts.lisaddpackagetoproject2
 msgid "Add package to project"
@@ -4730,11 +4724,11 @@ msgstr "%s projeye ekle?"
 
 #: lazarusidestrconsts.lisaddtostartupcomponents
 msgid "Add to startup components?"
-msgstr "Başlangıç bileşenlerine ekle?"
+msgstr "Başlangıç bileşenlerine eklensin mi?"
 
 #: lazarusidestrconsts.lisaddtounitsearchpath
 msgid "Add to unit search path?"
-msgstr "Birim arama yoluna ekle?"
+msgstr "Birim arama yoluna eklensin mi?"
 
 #: lazarusidestrconsts.lisaddunitinterfaces
 msgid "Add unit interfaces"
@@ -4801,11 +4795,11 @@ msgstr "\"%s\" adı olan bir filtre zaten var."
 
 #: lazarusidestrconsts.lisaftercleaningupswitchtoautomaticclean
 msgid "After cleaning up (clean all or clean common files), switch to clean automatically"
-msgstr "Temizledikten sonra (tümünü temizleyin veya ortak dosyaları temizleyin), otomatik olarak temizlemeye geçin"
+msgstr "Temizledikten sonra (tümünü temizle veya genel dosyaları temizle), otomatik olarak temizlemeye geç"
 
 #: lazarusidestrconsts.lisalignment
 msgid "Alignment"
-msgstr "Uyum"
+msgstr "Hizalama"
 
 #: lazarusidestrconsts.lisallblockslooksok
 msgid "All blocks look ok."
@@ -4833,7 +4827,7 @@ msgstr "Birden fazla satırı aramaya izin ver"
 
 #: lazarusidestrconsts.lisallparametersofthisfunctionarealreadysetatthiscall
 msgid "All parameters of this function are already set at this call. Nothing to add."
-msgstr "Bu işlevin tüm parametreleri zaten bu çağrıda ayarlanmış.Eklenecek bir şey yok."
+msgstr "Bu function un tüm parametreleri zaten bu çağrıda ayarlanmış. Eklenecek bir şey yok."
 
 #: lazarusidestrconsts.lisallyourmodificationstowillbelostandthefilereopened
 #, object-pascal-format
@@ -4858,11 +4852,11 @@ msgstr "Her zaman"
 
 #: lazarusidestrconsts.lisalwaysconvertsuggesteddefaultfilenametolowercase
 msgid "Always convert suggested default file name to lowercase"
-msgstr "Önerilen varsayılan dosya adını her zaman küçük harfe çevir"
+msgstr "Önerilen varsayılan dosya adını her zaman küçük harfe dönüştürün"
 
 #: lazarusidestrconsts.lisalwaysdrawselecteditemsfocused
 msgid "Always draw selected items focused"
-msgstr "Seçili nesneleri daima odaklanmış olarak çiz"
+msgstr "Daima seçili öğeleri odaklı çiz"
 
 #: lazarusidestrconsts.lisalwaysignore
 msgid "Always ignore"
@@ -4879,7 +4873,7 @@ msgstr "Belirsiz dosya bulundu"
 #: lazarusidestrconsts.lisambiguousfilefoundthisfilecanbemistakenwithdelete
 #, object-pascal-format
 msgid "Ambiguous file found: \"%s\"%sThis file can be mistaken with \"%s\"%sDelete the ambiguous file?"
-msgstr "Belirsiz dosya bulundu: \"%s\" %s Bu dosya \"%s\" ile yanlış yapılabilir %s Belirsiz dosyayı silsin mi?"
+msgstr "Belirsiz dosya bulundu: \"%s\"%sBu dosya \"%s\" ile karıştırılabilir %sBelirsiz dosya silinsin mi?"
 
 #: lazarusidestrconsts.lisambiguousfilesfound
 msgid "Ambiguous files found"
@@ -4891,20 +4885,20 @@ msgstr "Belirsiz birim bulundu"
 
 #: lazarusidestrconsts.lisanchorbottomtobottomside
 msgid "Anchor bottom side to bottom side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
-msgstr "Alt tarafı kardeşin alt tarafına tutturun. Bir mesafe ayarlamak için BorderSpacing kullanın. Kardeşin bordürünün boşluğu yok sayılır."
+msgstr "Kardeşin alt tarafından alt tarafına tutturun. Bir mesafe ayarlamak için BorderSpacing'i kullanın. Kardeşin BorderSpacing'i yok sayılır."
 
 #: lazarusidestrconsts.lisanchorbottomtotopside
 msgid "Anchor bottom side to top side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
-msgstr "Alt tarafı kardeşin üst tarafına tutturun. Tutulan mesafe, bunun hem BorderSpacing özellikleri hem de kardeşleri tarafından tanımlanır."
+msgstr "Kardeşin alt tarafından üst tarafına tutturun. Korunan mesafe, hem bu hem de kardeşin BorderSpacing özellikleri tarafından tanımlanır."
 
 #: lazarusidestrconsts.lisanchoreditornocontrolselected
 msgid "Anchor Editor - no control selected"
-msgstr "Çapa Düzenleyici - hiçbir kontrol seçilmedi"
+msgstr "Tutturucu Düzenleyici - kontrol seçilmedi"
 
 #: lazarusidestrconsts.lisanchorenabledhint
 #, object-pascal-format
 msgid "Enabled = Include %s in Anchors"
-msgstr "Etkin = Çapa %s ekle"
+msgstr "Etkin = %s'yi Tutturuculara Dahil Et"
 
 #: lazarusidestrconsts.lisanchorlefttoleftside
 msgid "Anchor left side to left side of sibling. Use BorderSpacing to set a distance. BorderSpacing of sibling is ignored."
@@ -4925,11 +4919,11 @@ msgstr "Kardeşin sağ tarafından sağ tarafına tutturun. Bir mesafe ayarlamak
 #: lazarusidestrconsts.lisanchorsof
 #, object-pascal-format
 msgid "Anchors of %s"
-msgstr "%s çapa"
+msgstr "%s tutturucu"
 
 #: lazarusidestrconsts.lisanchorsofselectedcontrols
 msgid "Anchors of selected controls"
-msgstr "Seçilen kontrollerin çapaları"
+msgstr "Seçilen kontrollerin tutturucuları"
 
 #: lazarusidestrconsts.lisanchortoptobottomside
 msgid "Anchor top side to bottom side of sibling. The kept distance is defined by both BorderSpacing properties of this and sibling."
@@ -4999,7 +4993,7 @@ msgstr "Yeni dosyada dosya adı sor"
 
 #: lazarusidestrconsts.lisasknameoncreate
 msgid "Ask name on create"
-msgstr "Oluşturmada ad sor"
+msgstr "Forma yeni bileşen oluşturmada ad sor"
 
 #: lazarusidestrconsts.lisausefulsettingonwindowssystemsislazarusdirmingwbin
 msgid "A useful setting on Windows systems is: $(LazarusDir)\\mingw\\$(TargetCPU)-$(TargetOS)\\bin\\gdb.exe"
@@ -5031,7 +5025,7 @@ msgstr "Sonradan otomatik devam et:"
 
 #: lazarusidestrconsts.lisautomarkup
 msgid "Markup and Matches"
-msgstr "İşaretleme ve Maçlar"
+msgstr "İşaretleme ve Eşleşmeler"
 
 #: lazarusidestrconsts.lisautomatic
 msgctxt "lazarusidestrconsts.lisautomatic"
@@ -5052,7 +5046,7 @@ msgstr "seçimi tamamlama"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeafterpoint
 msgid "Automatically invoke after point"
-msgstr "Sonradan otomatik olarak çağır"
+msgstr "Noktadan sonra otomatik olarak çağır"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeontype
 msgid "Automatically invoke on typing"
@@ -5060,7 +5054,7 @@ msgstr "Yazarken otomatik olarak çağır"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeontypeminlength
 msgid "Only complete if word is longer or equal"
-msgstr "Yalnızca sözcük daha uzun veya eşitse tamamlanır"
+msgstr "Yalnızca kelime daha uzun veya eşitse tamamlayın"
 
 #: lazarusidestrconsts.lisautomaticallyinvokeontypeonlywordend
 msgid "Only complete when at end of word"
@@ -5088,11 +5082,11 @@ msgstr "kelime sonu"
 
 #: lazarusidestrconsts.lisautomaticallyremovecharacter
 msgid "do not add character"
-msgstr "karakter eklenemedi"
+msgstr "karakter ekleme"
 
 #: lazarusidestrconsts.lisautomaticallyusesinglepossibleident
 msgid "Automatically use single possible identifier"
-msgstr "Otomatik olarak tek olası tanımlayıcı kullan"
+msgstr "Tek olası tanımlayıcıyı otomatik olarak kullan"
 
 #: lazarusidestrconsts.lisautomaticfeatures
 msgid "Completion and Hints"
@@ -5104,15 +5098,15 @@ msgstr "Otomatik göster"
 
 #: lazarusidestrconsts.lisavailableforinstallation
 msgid "Available for installation"
-msgstr "Yükleme için kullanılabilir"
+msgstr "Kurulum için kullanılabilir"
 
 #: lazarusidestrconsts.lisavailableprojectbuildmodes
 msgid "Available project build modes:"
-msgstr "Kullanılabilir proje oluşturma modları:"
+msgstr "Mevcut proje oluşturma modları:"
 
 #: lazarusidestrconsts.lisbackupchangedfiles
 msgid "Make backup of changed files"
-msgstr "Değiştirilen dosyaların yedeklenmesi"
+msgstr "Değiştirilen dosyaların yedeğini alın"
 
 #: lazarusidestrconsts.lisbackupfilefailed
 msgid "Backup file failed"
@@ -5120,12 +5114,12 @@ msgstr "Yedek dosyası başarısız oldu"
 
 #: lazarusidestrconsts.lisbackuphint
 msgid "Creates a Backup directory under project directory"
-msgstr "Proje dizini altında bir yedek dizin oluşturur"
+msgstr "Proje dizini altında bir yedek dizini oluşturur"
 
 #: lazarusidestrconsts.lisbddchangingthepackagenameorversionbreaksdependencies
 #, object-pascal-format
 msgid "Changing the package name or version breaks dependencies. Should these dependencies be changed as well?%sSelect Yes to change all listed dependencies.%sSelect Ignore to break the dependencies and continue."
-msgstr "Paket adını veya sürümünü değiştirmek bağımlılıkları bozuyor. Bu bağımlılıklar da değişmeli mi?%s Listelenen tüm bağımlılıkları değiştirmek için Evet seçeneğini seçin.%s Bağımlılıkları kırmak ve devam etmek için Yoksay'ı seçin."
+msgstr "Paket adını veya sürümünü değiştirmek bağımlılıkları bozar. Bu bağımlılıklar da değişmeli mi?%sListelenen tüm bağımlılıkları değiştirmek için Evet'i seçin.%sBağımlılıkları kırmak ve devam etmek için Yoksay'ı seçin."
 
 #: lazarusidestrconsts.lisbegins
 msgid "begins"
@@ -5133,23 +5127,23 @@ msgstr "başla(begins)"
 
 #: lazarusidestrconsts.lisbehindrelated
 msgid "Behind related"
-msgstr "İlişkinin arkasında"
+msgstr "Arkasında ilgili"
 
 #: lazarusidestrconsts.lisbelessverbosecanbegivenmultipletimes
 msgid "be less verbose, can be given multiple times"
-msgstr "daha az ayrıntılı, birkaç kez verilebilir"
+msgstr "daha az ayrıntılı olun, birden çok kez verilebilir"
 
 #: lazarusidestrconsts.lisbemoreverbosecanbegivenmultipletimes
 msgid "be more verbose, can be given multiple times"
-msgstr "daha ayrıntılı olmak, birden çok kez verilebilir"
+msgstr "daha ayrıntılı olun, birden çok kez verilebilir"
 
 #: lazarusidestrconsts.lisbestviewedbyinstallingahtmlcontrolliketurbopowerip
 msgid "Best viewed by installing a HTML control like turbopoweriprodsgn"
-msgstr "En iyisi turbopoweriprodsgn gibi bir HTML denetimi yükleyerek görüldü"
+msgstr "En iyi turbopoweriprodsgn gibi bir HTML denetimi yükleyerek görüntülenir"
 
 #: lazarusidestrconsts.lisbfalwaysbuildbeforerun
 msgid "Always build before run"
-msgstr "Çalıştırmadan önce her zaman oluştur"
+msgstr "Her zaman çalıştırmadan önce inşa et"
 
 #: lazarusidestrconsts.lisbfbuildcommand
 msgid "Build Command"
@@ -5157,11 +5151,11 @@ msgstr "Yapı Komutu"
 
 #: lazarusidestrconsts.lisbfonbuildprojectexecutethebuildfilecommandinstead
 msgid "On build project execute the Build File command instead"
-msgstr "Yapı projesinde bunun yerine Yapı Dosya komutunu yürütün"
+msgstr "Derleme projesinde bunun yerine Dosyayı Derle komutunu yürütün"
 
 #: lazarusidestrconsts.lisbfonrunprojectexecutetherunfilecommandinstead
 msgid "On run project execute the Run File command instead"
-msgstr "Çalıştırma projesinde Çalıştır Dosya komut yerine"
+msgstr "Çalıştırma projesinde bunun yerine Dosyayı Çalıştır komutunu çalıştırın"
 
 #: lazarusidestrconsts.lisbfruncommand
 msgid "Run Command"
@@ -5169,7 +5163,7 @@ msgstr "Çalıştır Komutu"
 
 #: lazarusidestrconsts.lisbfwhenthisfileisactiveinsourceeditor
 msgid "When this file is active in source editor"
-msgstr "Bu dosya kaynak düzenleyicide etkin olduğunda"
+msgstr "Bu dosya kaynak düzenleyicide aktif olduğunda"
 
 #: lazarusidestrconsts.lisbfworkingdirectoryleaveemptyforfilepath
 msgid "Working directory (leave empty for file path)"
@@ -5199,7 +5193,7 @@ msgstr "Alt kenarlık alanı. Bu değer taban sınır alanına eklenir ve kontro
 
 #: lazarusidestrconsts.lisbottomgroupboxcaption
 msgid "Bottom anchoring"
-msgstr "Alt çapa"
+msgstr "Alt tutucu"
 
 #: lazarusidestrconsts.lisbottoms
 msgid "Bottoms"
@@ -5211,7 +5205,7 @@ msgstr "Bu, alt tarafın tutturulduğu kardeş kontrolüdür. Ankraj için Delph
 
 #: lazarusidestrconsts.lisbottomspaceequally
 msgid "Bottom space equally"
-msgstr "Alt alan eşit"
+msgstr "Alt boşluk eşit"
 
 #: lazarusidestrconsts.lisbpsdisabled
 msgctxt "lazarusidestrconsts.lisbpsdisabled"
@@ -5294,7 +5288,7 @@ msgstr "Derle"
 
 #: lazarusidestrconsts.lisbuildallfilesofprojectpackageide
 msgid "build all files of project/package/IDE"
-msgstr "proje/paket/IDE'nin tüm dosyalarını oluşturun"
+msgstr "tüm proje/paket/IDE dosyalarını oluştur"
 
 #: lazarusidestrconsts.lisbuildcaption
 msgctxt "lazarusidestrconsts.lisbuildcaption"
@@ -5307,7 +5301,7 @@ msgstr "IDE oluştur"
 
 #: lazarusidestrconsts.lisbuildidewithpackages
 msgid "build IDE with packages"
-msgstr "paketlerle IDE kur"
+msgstr "paketlerle IDE oluştur"
 
 #: lazarusidestrconsts.lisbuilding
 msgid "Building"
@@ -5380,11 +5374,11 @@ msgstr "İptal"
 
 #: lazarusidestrconsts.liscancelloadingthiscomponent
 msgid "Cancel loading this component"
-msgstr "Bu bileşen yüklenmeyi iptal et"
+msgstr "Bu bileşeni yüklemeyi iptal et"
 
 #: lazarusidestrconsts.liscancelloadingunit
 msgid "Cancel loading unit"
-msgstr "Yükleme birimini iptal et"
+msgstr "Birimi yüklemeyi iptal et"
 
 #: lazarusidestrconsts.liscancelrenaming
 msgid "Cancel renaming"
@@ -5644,7 +5638,7 @@ msgstr "Boş sınıf bölümleri"
 
 #: lazarusidestrconsts.lisceemptygroup
 msgid "Empty constructs"
-msgstr "Boş yapılar"
+msgstr "Boş yapıcılar"
 
 #: lazarusidestrconsts.lisceemptyprocedures
 msgid "Empty procedures"
@@ -5670,7 +5664,7 @@ msgstr "Kök kontrol"
 
 #: lazarusidestrconsts.liscelongparamlistcount
 msgid "Parameters count treated as \"many\""
-msgstr "Parametre sayısı \"çok\" olarak kabul edilen"
+msgstr "Parametreler \"çok\" olarak kabul edilir"
 
 #: lazarusidestrconsts.liscelongprocedures
 msgid "Long procedures"
@@ -5682,7 +5676,7 @@ msgstr "\"Uzun\" olarak kabul edilen işlemin satır sayısı"
 
 #: lazarusidestrconsts.liscemanynestedprocedures
 msgid "Many nested procedures"
-msgstr "Birçok yuvalanmış prosedür"
+msgstr "Birçok iç içe prosedür"
 
 #: lazarusidestrconsts.liscemanyparameters
 msgid "Many parameters"
@@ -5702,15 +5696,15 @@ msgstr "Çok fazla İç içe geçmiş prosedürler"
 
 #: lazarusidestrconsts.liscenteralostwindow
 msgid "Center a lost window"
-msgstr "Kayıp bir pencere"
+msgstr "Kayıp bir pencereyi ortala"
 
 #: lazarusidestrconsts.liscentercontrolhorizontallyrelativetosibling
 msgid "Center control horizontally relative to the given sibling. BorderSpacing is ignored."
-msgstr "Verilen kardeşe göre yatay olarak merkez kontrolü .BorderSpacing göz ardı edilir."
+msgstr "Verilen kardeşe göre kontrolü yatay olarak ortalayın. BorderSpacing yoksayılır."
 
 #: lazarusidestrconsts.liscentercontrolverticallyrelativetosibling
 msgid "Center control vertically relative to the given sibling. BorderSpacing is ignored."
-msgstr "Verilen kardeşe göre dikey olarak merkez kontrolü .BorderSpacing göz ardı edilir."
+msgstr "Verilen kardeşe göre kontrolü dikey olarak ortalayın. BorderSpacing yoksayılır."
 
 #: lazarusidestrconsts.liscenterform
 msgid "Center Form"
@@ -5765,7 +5759,7 @@ msgstr "Güncelleştir"
 
 #: lazarusidestrconsts.lisceowhenswitchingfile
 msgid "When switching file in source editor"
-msgstr "Kaynak editörde dosya değiştirirken"
+msgstr "Kaynak düzenleyicide dosya değiştirilirken"
 
 #: lazarusidestrconsts.lisceprocedures
 msgid "Procedures"
@@ -5782,7 +5776,7 @@ msgstr "Varsayılan olmadan yayınlanmış özellikler"
 
 #: lazarusidestrconsts.lisceshowcodeobserver
 msgid "Show observations about"
-msgstr "Gözlemleri göster"
+msgstr "Şununla ilgili gözlemleri göster"
 
 #: lazarusidestrconsts.liscestylegroup
 msgctxt "lazarusidestrconsts.liscestylegroup"
@@ -5860,7 +5854,7 @@ msgstr "Bu form düzenleme seçimini nasıl kopyalayacağımı bilmiyorum"
 
 #: lazarusidestrconsts.liscfedonotknowhowtocutthisformeditingselection
 msgid "Do not know how to cut this form editing selection"
-msgstr "Bu form düzenleme seçimini kesme yöntemini bilmiyorum"
+msgstr "Bu form düzenleme seçimini nasıl keseceğinizi bilmiyorum"
 
 #: lazarusidestrconsts.liscfedonotknowhowtodeletethisformeditingselection
 msgid "Do not know how to delete this form editing selection"
@@ -5958,7 +5952,7 @@ msgstr "%s türü bileşeni, sahibi %s:%s olarak ayarlanamadı"
 #: lazarusidestrconsts.liscfeunabletocleartheformeditingselection
 #, object-pascal-format
 msgid "Unable to clear the form editing selection%s%s"
-msgstr "%s %s form seçimi düzenleme temizlenemiyor"
+msgstr "Form düzenleme seçimi silinemiyor%s%s"
 
 #: lazarusidestrconsts.lischange
 msgctxt "lazarusidestrconsts.lischange"
@@ -6022,7 +6016,7 @@ msgstr "Disk dosyası değişikliklerini zaman damgası yerine içerik aracılı
 #: lazarusidestrconsts.lischeckifpackagecreatesppuchecknothingdeletesthisfil
 #, object-pascal-format
 msgid ". Check if package %s creates %s.ppu, check nothing deletes this file and check that no two packages have access to the unit source."
-msgstr ". %s  paketinin %s.ppu dosyasının oluşturup oluşturmadığını kontrol edin, ve dosyayı silmediğinizden emin olun. ve iki paketin birim kaynağına erişimi olmadığını kontrol edin."
+msgstr ". %s paketinin %s.ppu oluşturup oluşturmadığını kontrol edin, hiçbir şeyin bu dosyayı silip silmediğini kontrol edin ve birim kaynağına hiçbir iki paketin erişimi olmadığını kontrol edin."
 
 #: lazarusidestrconsts.lischeckifpackageisinthedependencies
 #, object-pascal-format
@@ -6041,17 +6035,17 @@ msgstr "Seçenekleri kontrol et"
 #: lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme
 #, object-pascal-format
 msgid ". Check search path of package %s, try a clean rebuild, check implementation uses sections."
-msgstr ". %s paketinin arama yolunu kontrol edin, temiz bir yeniden oluşturma deneyin, uygulama kullanım bölümlerini kontrol edin."
+msgstr ". %s paketinin arama yolunu kontrol edin, temiz bir yeniden oluşturmayı deneyin, implementation uses bölümünü kontrol edin."
 
 #: lazarusidestrconsts.lischeckthenexttokeninsourceandaddasemicolonifneeded
 msgid "Check the next token in source and add a semicolon if needed."
-msgstr "Kaynaktaki bir sonraki jetonu kontrol edin ve gerekirse noktalı virgül ekleyin."
+msgstr "Kaynaktaki bir sonraki belirteci kontrol edin ve gerekirse noktalı virgül ekleyin."
 
 #: lazarusidestrconsts.lischeckthetargetoscpulclwidgettypemaybeyouhavetoreco
 #, object-pascal-format
 msgctxt "lazarusidestrconsts.lischecksearchpathpackagetryacleanrebuildcheckimpleme"
 msgid "%s Check the target (OS, CPU, LCL widget type). Maybe you have to recompile the package for this target or set another target for the project."
-msgstr "%s Hedefi kontrol edin (OS, CPU, LCL widget türü). Belki de bu hedef için paketi yeniden derlemeniz veya proje için başka bir hedef belirlemeniz gerekir."
+msgstr "%s Hedefi kontrol edin (OS, CPU, LCL widget tipi). Belki bu hedef için paketi yeniden derlemeniz veya proje için başka bir hedef belirlemeniz gerekir."
 
 #: lazarusidestrconsts.lischeckuncheckall
 msgid "Check/uncheck all"
@@ -6160,7 +6154,7 @@ msgstr "Program kaynağını seçin (* .pp, *. Pas, *. Lpr)"
 
 #: lazarusidestrconsts.lischoosestructuretoencloseselection
 msgid "Choose structure to enclose selection"
-msgstr "Seçimi içine almak için yapı seçin"
+msgstr "Seçimi kapsayacak yapıyı seçin"
 
 #: lazarusidestrconsts.lischoosetestbuilddir
 msgid "Choose the directory for tests"
@@ -6168,7 +6162,7 @@ msgstr "Test dizini seç"
 
 #: lazarusidestrconsts.liscirculardependencydetected
 msgid "Circular dependency detected"
-msgstr "Dairesel bağımlılık tespit edildi"
+msgstr "Dairesel bağımlılık algılandı"
 
 #: lazarusidestrconsts.lisclass
 msgid "&Class"
@@ -6180,7 +6174,7 @@ msgstr "Sınıf Tamamlama"
 
 #: lazarusidestrconsts.lisclassesandpropertiesexistvalueswerenotchecked
 msgid "Classes and properties exist. Values were not checked."
-msgstr "Sınıflar ve özellikler var, değerler kontrol edilmedi."
+msgstr "Sınıflar ve özellikler mevcuttur. Değerler kontrol edilmedi."
 
 #: lazarusidestrconsts.lisclassisnotaregisteredcomponentclassunabletopaste
 #, object-pascal-format
@@ -6199,7 +6193,7 @@ msgstr "Sınıf %s %s ( %s, %s) bulunamadı"
 #: lazarusidestrconsts.lisclassofmethodnotfound
 #, object-pascal-format
 msgid "Class \"%s\" of method \"%s\" not found."
-msgstr "\"%s\" sınıfı \"%s\" yönteminde bulunamadı."
+msgstr "\"%s\" yönteminin \"%s\" sınıfı bulunamadı."
 
 #: lazarusidestrconsts.liscldirclean
 msgid "Clean"
@@ -6219,7 +6213,7 @@ msgstr "Tüm metin dosyalarını sakla"
 
 #: lazarusidestrconsts.liscldirkeepfilesmatchingfilter
 msgid "Keep files matching filter"
-msgstr "Dosyaları eşleşen dosyaları filtreleyin"
+msgstr "Dosyalarla eşleşen filtreyi koru"
 
 #: lazarusidestrconsts.liscldirremovefilesmatchingfilter
 msgid "Remove files matching filter"
@@ -6243,7 +6237,7 @@ msgstr "Lazarus Kaynağını Temizle"
 
 #: lazarusidestrconsts.liscleanonlyonce
 msgid "Switch after building to automatically"
-msgstr "Otomatik olarak derledikten sonra geçiş yapın"
+msgstr "Oluşturduktan sonra otomatik olarak geçiş yap"
 
 #: lazarusidestrconsts.liscleanup
 msgid "Clean up"
@@ -6278,7 +6272,7 @@ msgstr "Dizini Temizle?"
 
 #: lazarusidestrconsts.lisclearfilter
 msgid "Clear filter"
-msgstr ""
+msgstr "Filtreyi temizle"
 
 #: lazarusidestrconsts.lisclearthefilterforoptions
 msgid "Clear the filter for options"
@@ -6312,7 +6306,7 @@ msgstr "Hepsini kapat"
 
 #: lazarusidestrconsts.liscloseallchecked
 msgid "Close All Checked"
-msgstr "Seçilenleri  Kapat"
+msgstr "Tüm İşaretlileri Kapat"
 
 #: lazarusidestrconsts.lisclosealltabsclose
 msgid "Close files"
@@ -6325,7 +6319,7 @@ msgstr "Pencereyi gizle"
 
 #: lazarusidestrconsts.lisclosealltabsquestion
 msgid "Closing a Source Editor Window. Do you want close all files or hide the window?"
-msgstr "Kaynak Düzenleyici Penceresini Kapatma. Tüm dosyaları kapatmak mı yoksa pencereyi mi gizlemek istiyorsunuz?"
+msgstr "Bir Kaynak Düzenleyici Penceresini Kapatma. Tüm dosyaları kapatmak mı yoksa pencereyi gizlemek mi istiyorsunuz?"
 
 #: lazarusidestrconsts.lisclosealltabstitle
 msgid "Close Source Editor Window"
@@ -6379,7 +6373,7 @@ msgstr "Çağrı:"
 #: lazarusidestrconsts.liscoclickokifaresuretodothat
 #, object-pascal-format
 msgid "%s%sClick OK if you definitely want to do that."
-msgstr "%s%s Tamamen yapmak isterseniz Tamam'ı tıklayın."
+msgstr "%s%sBunu kesinlikle yapmak istiyorsanız Tamam'ı tıklayın."
 
 #: lazarusidestrconsts.liscocommand
 msgctxt "lazarusidestrconsts.liscocommand"
@@ -6516,7 +6510,7 @@ msgstr "Kısa"
 #: lazarusidestrconsts.liscodeobignoreconstinfuncs
 msgctxt "lazarusidestrconsts.liscodeobignoreconstinfuncs"
 msgid "Ignore constants in next functions"
-msgstr "Bir sonraki işleve ait sabitler yoksayılanlar"
+msgstr "Sonraki function larda sabitleri yoksay"
 
 #: lazarusidestrconsts.liscodeobscharconst
 msgctxt "lazarusidestrconsts.liscodeobscharconst"
@@ -6548,7 +6542,7 @@ msgstr " \"%s\" simgesi zaten var! "
 
 #: lazarusidestrconsts.liscodetemplautocompleteon
 msgid "Auto complete on"
-msgstr "Otomatik Tamamlama"
+msgstr "Otomatik Tamamlama açık"
 
 #: lazarusidestrconsts.liscodetemplchange
 msgctxt "lazarusidestrconsts.liscodetemplchange"
@@ -6580,7 +6574,7 @@ msgstr "Eylem: %s"
 #: lazarusidestrconsts.liscodetoolsdefsautocreatednodesreadonly
 #, object-pascal-format
 msgid "Auto created nodes cannot be edited,%snor can they have non auto created child nodes."
-msgstr "Otomatik oluşturulmuş düğümler düzenlenemez, %snor otomatik oluşturulmamış alt düğümlere sahip olabilirler."
+msgstr "Otomatik oluşturulan düğümler düzenlenemez, %sveya otomatik olarak oluşturulmamış alt düğümleri olabilir."
 
 #: lazarusidestrconsts.liscodetoolsdefsautogenerated
 #, object-pascal-format
@@ -6635,7 +6629,7 @@ msgstr "Tanımla"
 
 #: lazarusidestrconsts.liscodetoolsdefsdefinerecurse
 msgid "Define Recurse"
-msgstr "Recurse Tanımla"
+msgstr "Özyinelemeyi Tanımla"
 
 #: lazarusidestrconsts.liscodetoolsdefsdeletenode
 msgid "Delete node"
@@ -6865,7 +6859,7 @@ msgstr "Free Pascal SVN kaynak dizini."
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforexample
 #, object-pascal-format
 msgid "The path to the Free Pascal compiler.%s For example %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
-msgstr "Serbest Pascal derleyici yolu %s Örneğin %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
+msgstr "Free Pascal derleyici yolu %s Örneğin %s/usr/bin/%s -n%s or %s/usr/local/bin/fpc @/etc/fpc.cfg%s."
 
 #: lazarusidestrconsts.liscodetoolsdefsthepathtothefreepascalcompilerforthisproject
 msgid "The path to the Free Pascal compiler for this project. Only required if you set the FPC Git source below. Used to autocreate macros."
@@ -6891,11 +6885,11 @@ msgstr "Hepsini tanımla"
 
 #: lazarusidestrconsts.liscodetoolsdefsundefinerecurse
 msgid "Undefine Recurse"
-msgstr "Recurse'u tanımlayın"
+msgstr "Tanımsız Özyineleme"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueasfilepaths
 msgid "Value as File Paths"
-msgstr "Dosya Yolları Olarak Değer"
+msgstr "Dosya Yolu Olarak Değer"
 
 #: lazarusidestrconsts.liscodetoolsdefsvalueastext
 msgid "Value as Text"
@@ -7077,7 +7071,7 @@ msgstr "İpucu: Araçlar -> Seçenekler -> Dosyalar -> Derleyici Yolu'nda derley
 #: lazarusidestrconsts.liscompilermessagesfilenotfound
 #, object-pascal-format
 msgid "Compiler messages file not found:%s%s"
-msgstr "Derleyici iletileri dosyası bulunamadı: %s %s"
+msgstr "Derleyici mesajları dosyası bulunamadı: %s %s"
 
 #: lazarusidestrconsts.liscompilernotecodetoolsconfigfilenotfoundusingdefaults
 msgid "NOTE: codetools config file not found - using defaults"
@@ -7115,7 +7109,7 @@ msgstr "En sola doğru uzatın"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttypelittleleft
 msgid "Extend some left"
-msgstr "Biraz uzat"
+msgstr "Biraz sola uzat"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttypenone
 msgctxt "lazarusidestrconsts.liscompletionlonglinehinttypenone"
@@ -7124,7 +7118,7 @@ msgstr "Asla"
 
 #: lazarusidestrconsts.liscompletionlonglinehinttyperightonly
 msgid "Extend right only"
-msgstr "Yalnızca genişlet"
+msgstr "Yalnızca sağa uzat"
 
 #: lazarusidestrconsts.liscomponentnameisapascalkeyword
 #, object-pascal-format
@@ -7159,7 +7153,7 @@ msgstr "Sıkıştır"
 
 #: lazarusidestrconsts.liscompresshint
 msgid "The resulting directory will be compressed into a ZIP file."
-msgstr "Çıkan dizin bir ZIP dosyasına sıkıştırılacaktır."
+msgstr "Ortaya çıkan dizin bir ZIP dosyasına sıkıştırılacaktır."
 
 #: lazarusidestrconsts.liscomptest
 msgctxt "lazarusidestrconsts.liscomptest"
@@ -7181,7 +7175,7 @@ msgstr "Lazarus yapılandırma dizini"
 
 #: lazarusidestrconsts.lisconfigfileofadditions
 msgid "Config file of additions:"
-msgstr "Eklemelerin yapılandırma dosyası:"
+msgstr "Eklerin yapılandırma dosyası:"
 
 #: lazarusidestrconsts.lisconfigurebuild
 #, object-pascal-format
@@ -7257,7 +7251,7 @@ msgstr "Konsol uygulaması"
 
 #: lazarusidestrconsts.lisconsoleapplicationprogramdescriptor
 msgid "A Free Pascal command line program using TCustomApplication to easily check command line options, handling exceptions, etc."
-msgstr "Komut satırı seçeneklerini kolayca kontrol etmek için TCustomApplication kullanarak bir Free Pascal komut satırı programı."
+msgstr "Komut satırı seçeneklerini, istisnaları işleme vb. kolayca kontrol etmek için TCustomApplication kullanan Ücretsiz bir Pascal komut satırı programı."
 
 #: lazarusidestrconsts.lisconstructorcode
 msgid "Constructor code"
@@ -7312,7 +7306,7 @@ msgstr "Birim adından sonra MODE Delphi sözdizimi değiştiricisi eklendi."
 #: lazarusidestrconsts.lisconvaddingflagforregister
 #, object-pascal-format
 msgid "Adding flag for \"Register\" procedure in unit %s."
-msgstr "%s biriminde \"Register\" işlemi için bayrak eklenmesi."
+msgstr "%s biriminde \"Register\" işlemi için bayrak eklendi."
 
 #: lazarusidestrconsts.lisconvbracketmissingfromreplfunc
 #, object-pascal-format
@@ -7330,7 +7324,7 @@ msgstr " {*%s  dan çevirildi *}"
 
 #: lazarusidestrconsts.lisconvcoordhint
 msgid "An offset is added to Top coordinate of controls inside visual containers"
-msgstr "Görsel kaplardaki denetimlerin üst koordinatına bir ofset eklenir"
+msgstr "Görsel kaplar içindeki kontrollerin Üst koordinatına bir ofset eklenir"
 
 #: lazarusidestrconsts.lisconvcoordoffs
 msgid "Coordinate offsets"
@@ -7359,7 +7353,7 @@ msgstr "USES bölümüne \"%s\" birimi eklendi."
 #: lazarusidestrconsts.lisconvdelphiallsubdirsscanned
 msgctxt "lazarusidestrconsts.lisconvdelphiallsubdirsscanned"
 msgid "All sub-directories will be scanned for unit files"
-msgstr "Tüm alt dizinler birim dosyalar için taranacak"
+msgstr "Tüm alt dizinler birim dosyaları için taranacak"
 
 #: lazarusidestrconsts.lisconvdelphibegincodetoolsfailed
 msgid "BeginCodeTools failed!"
@@ -7414,7 +7408,7 @@ msgstr "Hata = \"%s\""
 
 #: lazarusidestrconsts.lisconvdelphiexceptionduringconversion
 msgid "Exception happened during unit conversion. Continuing with form files of already converted units..."
-msgstr "Birim dönüştürme sırasında istisna oldu. Dönüştürülmüş haldeki birimlerin form dosyalarına devam edilmesi..."
+msgstr "Birim dönüştürme sırasında istisna oluştu. Halihazırda dönüştürülmüş birimlerin form dosyalarıyla devam ediliyor..."
 
 #: lazarusidestrconsts.lisconvdelphifailedconvertingunit
 msgid "Failed converting unit"
@@ -7488,7 +7482,7 @@ msgstr "Birimadı LCL'de var"
 #: lazarusidestrconsts.lisconvdelphiunitstoreplacein
 #, object-pascal-format
 msgid "Units to replace in %s"
-msgstr "%s içinde değiştirilecek birimler"
+msgstr "%s olarak değiştirilecek birimler"
 
 #: lazarusidestrconsts.lisconvdelphiunitwithnameexistsinlcl
 #, object-pascal-format
@@ -7650,7 +7644,7 @@ msgstr "Birim Değiştirme"
 
 #: lazarusidestrconsts.lisconvunitreplhint
 msgid "Unit names in uses section of a source unit"
-msgstr "Bir kaynak biriminin kullandığı bölümdeki birim adları"
+msgstr "Bir kaynak birimin uses bölümündeki birim adları"
 
 #: lazarusidestrconsts.lisconvunitstoreplace
 msgid "Units to replace"
@@ -7663,7 +7657,7 @@ msgstr "Bilinmeyen özellikler"
 #: lazarusidestrconsts.lisconvuserselectedtoendconversion
 #, object-pascal-format
 msgid "User selected to end conversion with file %s"
-msgstr "Kullanıcı, %s dosyası ile dönüşüm işlemini sonlandırmak için seçildi"
+msgstr "Kullanıcı %s dosyasıyla dönüştürmeyi bitirmek için seçildi"
 
 #: lazarusidestrconsts.liscoolbaraddconfigdelete
 msgid "Add/Config/Delete Toolbar(s)"
@@ -7727,7 +7721,7 @@ msgstr "Genel Coolbar Ayarları"
 
 #: lazarusidestrconsts.liscoolbargrabstyle
 msgid "Toolbars grab style"
-msgstr "Araç çubukları stili yakala"
+msgstr "Araç çubukları yakalama stili"
 
 #: lazarusidestrconsts.liscoolbargrabstyleitem0
 msgid "Simple"
@@ -7944,7 +7938,7 @@ msgstr "Ana kaynaktan \"{$R %s}\" kaldırılamadı!"
 
 #: lazarusidestrconsts.liscowarningtheadditionalcompilerconfigfilehasthesamena
 msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the Free Pascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
-msgstr "Uyarı: Ek derleyici yapılandırma dosyası, Free Pascal derleyicisinin aradığı standart yapılandırma dosya adlarından biriyle aynı ada sahiptir. Bu SADECE ek yapılandırma ayrıştırma ve standart yapılandırma atlayarak neden olabilir."
+msgstr "Uyarı: Ek derleyici yapılandırma dosyası, Free Pascal derleyicisinin aradığı standart yapılandırma dosya adlarından biriyle aynı ada sahiptir. Bu, YALNIZCA ek yapılandırmanın ayrıştırılmasına ve standart yapılandırmanın atlanmasına neden olabilir."
 
 #: lazarusidestrconsts.liscpopenpackage
 #, object-pascal-format
@@ -7963,7 +7957,7 @@ msgstr ", CPU: %s"
 
 #: lazarusidestrconsts.liscreateandedit
 msgid "Create and edit"
-msgstr ""
+msgstr "Oluştur ve düzenle"
 
 #: lazarusidestrconsts.liscreateaprojectfirst
 msgid "Create a project first!"
@@ -8051,7 +8045,7 @@ msgstr "Şablonları tanımla"
 
 #: lazarusidestrconsts.lisctdefnovariableselected
 msgid "<no variable selected>"
-msgstr "<seçilen değişken yok>"
+msgstr "<seçili değişken yok>"
 
 #: lazarusidestrconsts.lisctdefsopenpreview
 msgid "Open Preview"
@@ -8197,7 +8191,7 @@ msgstr "Hepsini etkinleştir"
 
 #: lazarusidestrconsts.lisdbgasmcopyaddresstoclipboard
 msgid "Copy address to Clipboard"
-msgstr ""
+msgstr "Adresi panoya kopyala"
 
 #: lazarusidestrconsts.lisdbgasmcopytoclipboard
 msgid "Copy to Clipboard"
@@ -8258,7 +8252,7 @@ msgstr "Hata Ayıklama String Çıktısı"
 
 #: lazarusidestrconsts.lisdbgenprocessexit
 msgid "Process Exit"
-msgstr "İşlem Çık"
+msgstr "İşlem Çıkışı"
 
 #: lazarusidestrconsts.lisdbgenprocessstart
 msgid "Process Start"
@@ -8266,19 +8260,19 @@ msgstr "Süreç Başlat"
 
 #: lazarusidestrconsts.lisdbgenthreadexit
 msgid "Thread Exit"
-msgstr "Konu Çık"
+msgstr "Thread Çıkışı"
 
 #: lazarusidestrconsts.lisdbgenthreadstart
 msgid "Thread Start"
-msgstr "Konu Başlat"
+msgstr "Thread Başlat"
 
 #: lazarusidestrconsts.lisdbgenwindowsmessageposted
 msgid "Windows Message Posted"
-msgstr "Windows İleti Gönderildi"
+msgstr "Windows Message Posted"
 
 #: lazarusidestrconsts.lisdbgenwindowsmessagesent
 msgid "Windows Message Sent"
-msgstr "Gönderilen Windows İletisi"
+msgstr "Windows Mesajı Gönderildi"
 
 #: lazarusidestrconsts.lisdbgitemdeletehint
 msgctxt "lazarusidestrconsts.lisdbgitemdeletehint"
@@ -8316,7 +8310,7 @@ msgstr "Kesme noktasını yine de ayarla"
 #: lazarusidestrconsts.lisdbgmangthereisnodebuggerspecifiedsettingbreakpointshaveno
 #, object-pascal-format
 msgid "There is no debugger specified.%sSetting breakpoints have no effect until you set up a Debugger in the debugger options dialog in the menu."
-msgstr "Belirtilen hata ayıklayıcı yok.%s Menüdeki hata ayıklayıcı seçenekleri iletişim kutusunda bir Hata Ayıklayıcı ayarlayana kadar kesme noktalarının etkisinin olmaması."
+msgstr "Belirtilen hata ayıklayıcı yok.%sMenüdeki hata ayıklayıcı seçenekleri iletişim kutusunda bir Hata Ayıklayıcı ayarlayana kadar kesme noktalarının ayarlanmasının hiçbir etkisi olmaz."
 
 #: lazarusidestrconsts.lisdbgterminal
 msgctxt "lazarusidestrconsts.lisdbgterminal"
@@ -8344,7 +8338,7 @@ msgstr "Hata ayıklayıcı"
 #: lazarusidestrconsts.lisdebuggererrorooopsthedebuggerenteredtheerrorstate
 #, object-pascal-format
 msgid "Debugger error%sOoops, the debugger entered the error state%sSave your work now !%sHit Stop, and hope the best, we're pulling the plug."
-msgstr "Hata ayıklayıcı hatası%sHata ayıklayıcı%s hata durumuna girdi Hata isini koru!%s Vurmak Durdur ve en iyisini um, fişi çekiyoruz."
+msgstr "Hata ayıklayıcı hatası%sHata, hata ayıklayıcı hata durumuna girdi%sÇalışmanızı şimdi kaydedin !%s Durdur'a basın ve en iyisini umarız, fişi çekiyoruz."
 
 #: lazarusidestrconsts.lisdebuggerfeedbackerror
 msgid "Debugger Error"
@@ -8381,7 +8375,7 @@ msgstr "Ek arama yolu"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmallowfunctioncalls
 msgid "BETA: Allow function calls in watches (if supported by backend)"
-msgstr "BETA: Saatlerde fonksiyon çağrılarına izin ver (arka uç tarafından destekleniyorsa)"
+msgstr "BETA: Eşleşmelerde fonksiyon çağrılarına izin ver (arka uç tarafından destekleniyorsa)"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautocloseasm
 msgid "Automatically close the assembler window, after source not found"
@@ -8389,7 +8383,7 @@ msgstr "Kaynak bulunamadıktan sonra assembler penceresini otomatik olarak kapat
 
 #: lazarusidestrconsts.lisdebugoptionsfrmautoinstanceclass
 msgid "Automatically set \"use instance class type\" for new watches"
-msgstr "Yeni saatler için \"örnek sınıfı türünü kullan\"ı otomatik olarak ayarla"
+msgstr "Yeni eşleşmelerde için \"örnek sınıfı türünü kullan\"ı otomatik olarak ayarla"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmbackend
 msgid "Debugger backend"
@@ -8430,7 +8424,7 @@ msgstr "Tür Değiştir"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmeditclasswarn
 msgid "Changing the type for the current debugger backend. Use \"Add\" or \"Copy\" to create a new backend with a new type."
-msgstr "Geçerli hata ayıklayıcı arka ucunun türünü değiştirmek ve. Yeni bir türle yeni bir arka uç oluşturmak için \"Ekle\" veya \"Kopyala\"yı kullanın."
+msgstr "Geçerli hata ayıklayıcı arka ucunun türünü değiştirme. Yeni bir türle yeni bir arka uç oluşturmak için \"Ekle\" veya \"Kopyala\"yı kullanın."
 
 #: lazarusidestrconsts.lisdebugoptionsfrmenterexceptionname
 msgid "Enter the name of the exception"
@@ -8501,11 +8495,11 @@ msgstr "Devam et"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresumehandled
 msgid "Resume Handled"
-msgstr "İşlenen sürdür"
+msgstr "İşlenmişe devam et"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmresumeunhandled
 msgid "Resume Unhandled"
-msgstr "İşlenmemiş Sürdür"
+msgstr "İşlenmemiş devam et"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmshowexitcodeonstop
 msgid "Show message on stop with Error (Exit-code <> 0)"
@@ -8521,7 +8515,7 @@ msgstr "Sinyaller"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmthread
 msgid "Thread"
-msgstr "Konu"
+msgstr "Thread"
 
 #: lazarusidestrconsts.lisdebugoptionsfrmunknowndebuggerbacke
 #, object-pascal-format
@@ -8561,7 +8555,7 @@ msgstr "Varsayılan"
 
 #: lazarusidestrconsts.lisdefaultclassvisibilitysectionofnewmethodsforexampl
 msgid "Default class visibility section of new methods. For example code completion on OnShow:="
-msgstr "Yeni yöntemlerin varsayılan sınıf görünürlük bölümü. Örneğin, OnShow'da kod tamamlama: ="
+msgstr "Yeni yöntemlerin varsayılan sınıf görünürlüğü bölümü. Örneğin OnShow'da kod tamamlama:="
 
 #: lazarusidestrconsts.lisdefaultiscomboboxwithtrueandfalse
 msgid "The default is ComboBox with \"True\" and \"False\" selections"
@@ -8581,7 +8575,7 @@ msgstr "Tamamlama kutusu gecikmesi"
 
 #: lazarusidestrconsts.lisdelayforcompletionlonglinehint
 msgid "Delay for long line hints in completion box"
-msgstr "Uzun satır ipuçları tamamlama kutusunda gecikme"
+msgstr "Tamamlama kutusundaki uzun satır ipuçları için gecikme"
 
 #: lazarusidestrconsts.lisdelayforhints
 msgid "Delay for hints"
@@ -8705,7 +8699,7 @@ msgstr "Delphi uyumlu kaynaklar. Önerilir."
 
 #: lazarusidestrconsts.lisdesigntimepackagesaddcomponentsandmenuitemstotheid
 msgid "\"Design time\" packages add components and menu items to the IDE. They can be used by projects but are not compiled into the project. The compiler will not find units of this package when compiling the project."
-msgstr "\"Tasarım zamanı\" paketleri IDE'ye bileşenler ve menü öğeleri ekler. Projeler tarafından kullanılabilirler ancak projeye derlenmezler. Proje derlerken derleyici bu paketin birimlerini bulamaz."
+msgstr "\"Tasarım zamanı\" paketleri, IDE'ye bileşenler ve menü öğeleri ekler. Projeler tarafından kullanılabilirler ancak projede derlenmezler. Derleyici projeyi derlerken bu paketin birimlerini bulamaz."
 
 #: lazarusidestrconsts.lisdesktops
 msgid "Desktops ..."
@@ -8733,7 +8727,7 @@ msgstr "Dosya2"
 
 #: lazarusidestrconsts.lisdiffdlgignoreifemptylineswereadd
 msgid "Ignore if empty lines were added or removed"
-msgstr "Boş satırlar eklenip eklenmediğini yok sayın"
+msgstr "Boş satırların eklenip eklenmediğini veya kaldırıldığını yoksay"
 
 #: lazarusidestrconsts.lisdiffdlgignoreiflineendcharsdiffe
 msgid "Ignore difference in line ends (e.g. #10 = #13#10)"
@@ -8741,7 +8735,7 @@ msgstr "Satır sonlarındaki farkı yok sayın (ör. # 10 = # 13 # 10)"
 
 #: lazarusidestrconsts.lisdiffdlgignoreifspacecharswereadd
 msgid "Ignore amount of space chars"
-msgstr "Boşluk miktarını yoksay"
+msgstr "Boşluk karakterlerinin miktarını yoksay"
 
 #: lazarusidestrconsts.lisdiffdlgignorespaces
 msgid "Ignore spaces (newline chars not included)"
@@ -8757,7 +8751,7 @@ msgstr "Satırın başındaki boşlukları yoksay"
 
 #: lazarusidestrconsts.lisdiffdlgonlyselection
 msgid "Only selection"
-msgstr "Sadece seçim"
+msgstr "Sadece seçilen"
 
 #: lazarusidestrconsts.lisdiffdlgopendiffineditor
 msgid "Open difference in editor"
@@ -8899,7 +8893,7 @@ msgstr "Tüm değişiklikleri yoksay"
 
 #: lazarusidestrconsts.lisdiskdiffreloadcheckedfilesfromdisk
 msgid "Reload checked files from disk"
-msgstr "Dosyayı tekrar yükle"
+msgstr "Kontrol edilen dosyaları diskten yeniden yükle"
 
 #: lazarusidestrconsts.lisdiskdiffsomefileshavechangedondisk
 msgid "Some files have changed on disk:"
@@ -8996,7 +8990,7 @@ msgstr "Bu mesajı tekrar gösterme"
 
 #: lazarusidestrconsts.lisdonotwriteupdatedprojectinfoafterbuild
 msgid "Do not write updated project info file after build. If not specified, build number will be incremented if configured."
-msgstr "Derlemeden sonra güncellenmiş proje bilgi dosyasını yazmayın. Belirtilmezse, yapılandırılmışsa derleme numarası artırılır."
+msgstr "Derlemeden sonra güncellenmiş proje bilgi dosyasını yazmayın. Belirtilmezse, yapılandırılırsa yapı numarası artırılır."
 
 #: lazarusidestrconsts.lisdonwloadonlinepackages
 #, object-pascal-format
@@ -9042,7 +9036,7 @@ msgstr "Izgara çizgileri çiz"
 
 #: lazarusidestrconsts.lisdrawtheselectionfocusedevenifthemessageswindowhasn
 msgid "Draw the selection focused even if the Messages window has no focus. Use this if your theme has a hardly visible unfocused drawing."
-msgstr "Mesajlar penceresinin odağı olmasa bile seçimi odaklanmış olarak çizin. Temanızda neredeyse hiç net görünmeyen bir çizim varsa, bunu kullanın."
+msgstr "Mesajlar penceresinin odağı olmasa bile seçimi odaklanmış olarak çizin. Temanızda zar zor görünen odaklanmamış bir çizim varsa bunu kullanın."
 
 #: lazarusidestrconsts.lisdropdowncount
 msgid "Drop Down Count"
@@ -9058,7 +9052,7 @@ msgstr "Seçilen bileşenleri panoya kopyala"
 
 #: lazarusidestrconsts.lisdsgorderbackone
 msgid "Move component one back"
-msgstr "Bileşeni geriye taşıyın"
+msgstr "Bileşeni bir geriye taşıyın"
 
 #: lazarusidestrconsts.lisdsgorderforwardone
 msgid "Move component one forward"
@@ -9175,7 +9169,7 @@ msgstr "Düzen"
 
 #: lazarusidestrconsts.liseditadditionalhelpformessages
 msgid "Edit additional help for messages"
-msgstr "İletiler için ek yardım düzenleme"
+msgstr "Mesajlar için ek yardım düzenleme"
 
 #: lazarusidestrconsts.liseditcontexthelp
 msgid "Edit context help"
@@ -9324,7 +9318,7 @@ msgstr "Boş Yöntemler"
 
 #: lazarusidestrconsts.lisemdfoundemptymethods
 msgid "Found empty methods:"
-msgstr "Boş yöntemler bulundu:"
+msgstr "Bulunan boş metodlar:"
 
 #: lazarusidestrconsts.lisemdnoclass
 msgid "No class"
@@ -9337,7 +9331,7 @@ msgstr "Sınıf %s yok (%s,%s)"
 
 #: lazarusidestrconsts.lisemdonlypublished
 msgid "Only published"
-msgstr "Sadece yayınlandı"
+msgstr "Sadece Published"
 
 #: lazarusidestrconsts.lisemdpublic
 msgid "Public"
@@ -9345,11 +9339,11 @@ msgstr "Halka açık"
 
 #: lazarusidestrconsts.lisemdpublished
 msgid "Published"
-msgstr "Yayınlanan"
+msgstr "Published"
 
 #: lazarusidestrconsts.lisemdremovemethods
 msgid "Remove methods"
-msgstr "Yöntemleri kaldır"
+msgstr "Metodları kaldır"
 
 #: lazarusidestrconsts.lisemdsearchintheseclasssections
 msgid "Search in these class sections:"
@@ -9436,15 +9430,15 @@ msgstr "-Xg seçeneğini etkinleştir"
 
 #: lazarusidestrconsts.lisenablereplacewholeidentifierdisablereplaceprefix
 msgid "Enable = pressing Return replaces whole identifier and Shift+Return replaces prefix, Disable = pressing Return replaces prefix and Shift+Return replaces whole identifier"
-msgstr "Aktif = Return tuşuna basıldığında tüm tanımlayıcı değiştirilir ve Shift + Return öneki değiştirir, Pasif = Return tuşuna basıldığında öneki değiştirir ve Shift + Return tüm tanımlayıcıyı değiştirir"
+msgstr "Etkinleştir = Return'e basılması tüm tanımlayıcının yerini alır ve Shift+Return öneki değiştirir, Disable = Return'e basıldığında önek değiştirilir ve Shift+Return tüm tanımlayıcının yerini alır"
 
 #: lazarusidestrconsts.lisenclose
 msgid "Enclose"
-msgstr "Dahil et"
+msgstr "İçine al"
 
 #: lazarusidestrconsts.lisencloseinifdef
 msgid "Enclose in $IFDEF"
-msgstr "$IFDEF dahil et"
+msgstr "$IFDEF içine al"
 
 #: lazarusidestrconsts.lisencodingnumberoffilesfailed
 #, object-pascal-format
@@ -9699,7 +9693,7 @@ msgstr "Her \"n\" inci satır numarası"
 
 #: lazarusidestrconsts.lisexamplefile
 msgid "Example file:"
-msgstr "Örnek dosyası:"
+msgstr "Örnek dosya:"
 
 #: lazarusidestrconsts.lisexamplesbuildallselected
 msgid "Build all selected"
@@ -9716,7 +9710,7 @@ msgstr "İlk seçileni aç"
 
 #: lazarusidestrconsts.lisexceptiondialog
 msgid "Debugger Exception Notification"
-msgstr "Hata ayıklayıcı Özel Durum Bildirimi"
+msgstr "Hata Ayıklayıcı İstisna Bildirimi"
 
 #: lazarusidestrconsts.lisexcludedatruntime
 #, object-pascal-format
@@ -9969,11 +9963,11 @@ msgstr "Dosya \"%s\" değiştirildi.Değişiklikler kaydedilsin mi?"
 
 #: lazarusidestrconsts.lisfilehasnoproject
 msgid "File has no project"
-msgstr "Dosyanın hiçbir proje yok"
+msgstr "Dosyanın projesi yok"
 
 #: lazarusidestrconsts.lisfileisdirectory
 msgid "File is directory"
-msgstr "Dosya dizinidir"
+msgstr "Dosya dizin"
 
 #: lazarusidestrconsts.lisfileisnotanexecutable
 msgid "File is not an executable"
@@ -10039,7 +10033,7 @@ msgstr "Dosya küçük harf değil"
 
 #: lazarusidestrconsts.lisfilenottext
 msgid "File not text"
-msgstr "Dosya değil metin"
+msgstr "Metin değil dosya"
 
 #: lazarusidestrconsts.lisfilescountconvertedtotextformat
 #, object-pascal-format
@@ -10105,19 +10099,19 @@ msgstr "Filtre zaten var"
 
 #: lazarusidestrconsts.lisfilterdebugmessagesandbelow
 msgid "Filter Debug Messages and below"
-msgstr "Hata Ayıklama Mesajlarını ve Altını Filtrele"
+msgstr "Hata Ayıklama Mesajlarını ve altındakileri filtreleyin"
 
 #: lazarusidestrconsts.lisfilterhintsandbelow
 msgid "Filter Hints and below"
-msgstr "İpuçlarını ve altını filtrele"
+msgstr "İpuçlarını ve altındakileri filtrele"
 
 #: lazarusidestrconsts.lisfilterhintswithoutsourceposition
 msgid "Filter Hints without Source Position"
-msgstr "Kaynak Konumu Olmayan İpuçları Filtrele"
+msgstr "Kaynak Konumu Olmayan İpuçlarını Filtrele"
 
 #: lazarusidestrconsts.lisfilternonedonotfilterbyurgency
 msgid "Filter None, do not filter by urgency"
-msgstr "Filtre Yok, acil olarak filtreleme yapmayın"
+msgstr "Filtre Yok, aciliyete göre filtrelemeyin"
 
 #: lazarusidestrconsts.lisfilternonurgentmessages
 msgid "Filter non urgent Messages"
@@ -10182,7 +10176,7 @@ msgstr "aktif dosya için&de ara"
 
 #: lazarusidestrconsts.lisfindfilesearchindirectories
 msgid "search in &directories"
-msgstr "dizinlerde &arama"
+msgstr "dizinlerde &ara"
 
 #: lazarusidestrconsts.lisfindfilessearchinprojectgroup
 msgid "search in project &group"
@@ -10226,7 +10220,7 @@ msgstr "Yeniden adlandırmayı zorla"
 
 #: lazarusidestrconsts.lisforexampleshowattopthelocalvariablesthenthemembers
 msgid "For example show at top the local variables, then the members of current class, then of the ancestors, then the current unit, then of used units"
-msgstr "Örneğin, yerel değişkenleri, sonra geçerli sınıfın üyelerini, sonra ataları, sonra geçerli birimi, sonra kullanılan birimleri gösterir"
+msgstr "Örneğin, en üstte yerel değişkenleri, ardından mevcut sınıfın üyelerini, ardından ataları, sonra mevcut birimi, sonra kullanılmış birimleri gösterin"
 
 #: lazarusidestrconsts.lisform
 msgid "Form"
@@ -10247,7 +10241,7 @@ msgstr "Windows için"
 #: lazarusidestrconsts.lisfoundversionexpected
 #, object-pascal-format
 msgid "Found version %s, expected %s"
-msgstr "Sürüm %s bulundu, bekleniyor %s"
+msgstr "%s sürümü bulundu, %s bekleniyor"
 
 #: lazarusidestrconsts.lisfpcfullversioneg20701
 msgid "FPC version as one number (e.g. 20701)"
@@ -10337,7 +10331,7 @@ msgstr "İlk önce uyarılar çözülmek zorunda"
 
 #: lazarusidestrconsts.lisfppkgconfiguration
 msgid "The configuration file typically has the name \"fppkg.cfg\". When incorrect it may be impossible to resolve dependencies on Free Pascal packages. Leave empty to use the default."
-msgstr "Yapılandırma dosyası genellikle \"fppkg.cfg\" adına sahiptir. Hatalı olduğunda Free Pascal paketlerine bağımlılıkları çözmek mümkün olmayabilir. Varsayılanı kullanmak için boş bırakın."
+msgstr "Yapılandırma dosyası genellikle \"fppkg.cfg\" adına sahiptir. Yanlış olduğunda, Free Pascal paketlerindeki bağımlılıkları çözmek imkansız olabilir. Varsayılanı kullanmak için boş bırakın."
 
 #: lazarusidestrconsts.lisfppkgcreatefilefailed
 #, object-pascal-format
@@ -10366,7 +10360,7 @@ msgstr "Yapılandırma dosyalarını oluşturmak için güncel bir sürüm gerek
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgprobtooold
 msgid "It is probably too old to create the configuration files."
-msgstr "Konfigürasyon dosyalarını oluşturmak için muhtemelen çok eskidir."
+msgstr "Konfigürasyon dosyalarını oluşturmak için muhtemelen çok eski."
 
 #: lazarusidestrconsts.lisfppkgfpcmkcfgtooold
 #, object-pascal-format
@@ -10394,9 +10388,7 @@ msgstr "Fppkg yapılandırmasıyla ilgili sorun"
 
 #: lazarusidestrconsts.lisfppkgrecentfpcmkcfgneeded
 msgid "Make sure a recent version is installed and available in the path or alongside the compiler-executable."
-msgstr ""
-"Son sürümün yüklendiğinden ve yolun mevcut olduğundan veya derleyici tarafından çalıştırılabilir olduğundan emin olun.\n"
-"."
+msgstr "Son sürümün yüklendiğinden ve yolun mevcut olduğundan veya derleyici tarafından çalıştırılabilir olduğundan emin olun."
 
 #: lazarusidestrconsts.lisfppkgrtlnotfound
 msgid "Fppkg reports that the RTL is not installed."
@@ -10418,7 +10410,7 @@ msgstr "Yeni yapılandırma dosyaları yaz"
 
 #: lazarusidestrconsts.lisframe
 msgid "Frame"
-msgstr "Çerçeve"
+msgstr "Frame"
 
 #: lazarusidestrconsts.lisfrbackwardsearch
 msgid "&Backward search"
@@ -10584,16 +10576,16 @@ msgstr "Var olan \"%s\" grubuna ata?"
 #: lazarusidestrconsts.lisgroupemptydelete
 #, object-pascal-format
 msgid "No more breakpoints are assigned to group \"%s\", delete it?"
-msgstr "\"%s\" grubuna daha fazla kesme noktası atanmadı, silinsin mi?"
+msgstr "\"%s\" grubuna başka kesme noktası atanmadı, silinsin mi?"
 
 #: lazarusidestrconsts.lisgroupemptydeletemore
 #, object-pascal-format
 msgid "%sThere are %d more empty groups, delete all?"
-msgstr "%sDaha fazla boş grup var %d hepsini silinsin mi?"
+msgstr "%sDaha fazla boş grup var %d hepsi silinsin mi?"
 
 #: lazarusidestrconsts.lisgrouplocalvariables
 msgid "Group automatically defined local variables"
-msgstr "Grup otomatik olarak tanımlanmış yerel değişkenleri"
+msgstr "Otomatik olarak tanımlanmış yerel değişkenleri gruplandırın"
 
 #: lazarusidestrconsts.lisgroupnameemptyclearinstead
 msgid "The group name cannot be empty. Clear breakpoints' group(s)?"
@@ -10613,7 +10605,7 @@ msgstr "Yeni gurup ayarla ..."
 
 #: lazarusidestrconsts.lisgroupsetnone
 msgid "Clear group(s)"
-msgstr "Temiz gruplar"
+msgstr "Grubu Temizle"
 
 #: lazarusidestrconsts.lisgroupsfordebugoutput
 msgid "Enable or Disable groups of debug output. Valid Options are:"
@@ -10666,7 +10658,7 @@ msgstr "%s adresindeki mesajı IDE yönergesi {% H-}\" ekleyerek gizle"
 
 #: lazarusidestrconsts.lishidemessagebyinsertingidedirectiveh
 msgid "Hide message by inserting IDE directive {%H-}"
-msgstr "IDE direktifi {% H-}\" ekleyerek iletiyi gizle"
+msgstr "IDE direktifi {% H-}\" ekleyerek mesajları gizle"
 
 #: lazarusidestrconsts.lishidemessagebyinsertingwarnofftounit
 #, object-pascal-format
@@ -10703,7 +10695,7 @@ msgstr "İpucu: Koşullarda varsayılan bir değer tanımlanabilir."
 
 #: lazarusidestrconsts.lishintatpropertysnameshowsdescription
 msgid "A hint at property's name shows its description."
-msgstr "Mülkiyet adına verilen bir ipucu onun açıklamasını göstermektedir."
+msgstr "Property adına verilen bir ipucu onun açıklamasını göstermektedir."
 
 #: lazarusidestrconsts.lishintcheckiftwopackagescontainaunitwiththesamename
 msgid "Hint: Check if two packages contain a unit with the same name."
@@ -10711,7 +10703,7 @@ msgstr "İpucu: İki paketin aynı ada sahip bir birimi olup olmadığını kont
 
 #: lazarusidestrconsts.lishintclickonshowoptionstofindoutwhereinheritedpaths
 msgid "Hint: Click on \"Show Options\" to find out where inherited paths are coming from."
-msgstr "İpucu: Miras alınan yolların nereden geldiğini öğrenmek için \"Seçenekleri Göster\" i tıklayın."
+msgstr "İpucu: inherited den Miras alınan yolların nereden geldiğini öğrenmek için \"Seçenekleri Göster\" i tıklayın."
 
 #: lazarusidestrconsts.lishints
 #, object-pascal-format
@@ -10821,7 +10813,7 @@ msgstr "%s paketi için Makefile oluşturuluyor"
 #: lazarusidestrconsts.lisideinfoerrorrunningcompileaftertoolfailedforpackage
 #, object-pascal-format
 msgid "Error: running 'compile after' tool failed for package %s"
-msgstr "Hata: 'derleme sonrası' aracı çalıştırılıyor%s paketi için başarısız oldu"
+msgstr "Hata: %s paketi için 'derleme sonrası' aracı çalıştırılamadı"
 
 #: lazarusidestrconsts.lisideinfoinformationabouttheide
 msgid "Information about the IDE"
@@ -10838,7 +10830,7 @@ msgstr "IDE Makroları"
 
 #: lazarusidestrconsts.lisidemaintainsscaledinmainunit
 msgid "The IDE maintains Application.Scaled (Hi-DPI) in main unit."
-msgstr "IDE, Uygulamayı sürdürür. Ana ünitede ölçeklendirilmiş (Yüksek DPI)."
+msgstr "IDE, ana ünitede Application.Scaled (Hi-DPI) tutar."
 
 #: lazarusidestrconsts.lisidemaintainsthetitleinmainunit
 msgid "The IDE maintains the title in main unit."
@@ -10862,7 +10854,7 @@ msgstr "IDE Seçenekleri:"
 
 #: lazarusidestrconsts.lisidetitleshowsbuildmode
 msgid "IDE title shows selected build mode"
-msgstr "IDE başlığında seçili yapı modu gösterilsin"
+msgstr "IDE başlığında seçilen yapı modunu göster"
 
 #: lazarusidestrconsts.lisidetitleshowsprojectdir
 msgid "IDE title shows project directory"
@@ -10904,11 +10896,11 @@ msgstr "Dışa aktarma dosyası var"
 #: lazarusidestrconsts.lisiecoexportfileexistsopenfileandreplaceonlycompileropti
 #, object-pascal-format
 msgid "Export file \"%s\" exists.%sOpen file and replace only compiler options?%s(Other settings will be kept.)"
-msgstr "Dışa aktarma dosyası \"%s\" var.%s Dosyayı aç ve sadece derleyici seçeneklerini değiştirilsin mi?%s (Diğer ayarlar korunur.)"
+msgstr "\"%s\" dışa aktarma dosyası var.%sDosyayı aç ve yalnızca derleyici seçeneklerini değiştir?%s(Diğer ayarlar korunacak.)"
 
 #: lazarusidestrconsts.lisiecoimportcompileroptions
 msgid "Import Compiler Options"
-msgstr "Alma Derleyici Seçenekleri"
+msgstr "Derleyici Seçeneklerini İçe Aktar"
 
 #: lazarusidestrconsts.lisiecoloadfromfile
 msgid "Load from file"
@@ -10925,7 +10917,7 @@ msgstr "Son Dosyalar"
 
 #: lazarusidestrconsts.lisiecosavetofile
 msgid "Save to file"
-msgstr "Dosyaya kaydet"
+msgstr "Dosyayı kaydet"
 
 #: lazarusidestrconsts.lisifnotchecked
 msgid "If not checked:"
@@ -10943,7 +10935,7 @@ msgstr "İki farklı Lazarus sürümü kullanmak istiyorsanız, ikinci Lazarus'a
 #: lazarusidestrconsts.lisignore
 msgctxt "lazarusidestrconsts.lisignore"
 msgid "Ignore"
-msgstr "Aldırmamak"
+msgstr "Yoksay"
 
 #: lazarusidestrconsts.lisignoreall
 msgid "Ignore all"
@@ -10964,7 +10956,7 @@ msgstr "Yoksay, %s atası olarak kullan"
 
 #: lazarusidestrconsts.lisimitateindentationofcurrentunitprojectorpackage
 msgid "Imitate indentation of current unit, project or package"
-msgstr "Mevcut birimin, projenin veya paketin taklitini taklit edin"
+msgstr "Geçerli birim, proje veya paketin girintisini taklit edin"
 
 #: lazarusidestrconsts.lisimplementationcommentforclass
 msgid "Implementation comment for class"
@@ -11012,7 +11004,7 @@ msgstr "Paketin kaynak dizininde \"%s\"."
 
 #: lazarusidestrconsts.lisinasourcedirectoryoftheprojectcheckforduplicates
 msgid "In a source directory of the project. Check for duplicates."
-msgstr "Projenin bir kaynak dizininde çoğaltıcı olup olmadığını kontrol edin."
+msgstr "Projenin kaynak dizininde. Yinelenenleri kontrol edin."
 
 #: lazarusidestrconsts.lisincludeallsubdirectories
 msgid "Include all subdirectories"
@@ -11096,7 +11088,7 @@ msgstr "Yerel Değişken Başlat"
 #: lazarusidestrconsts.lisinordertocreateacleancopyoftheprojectpackageallfil
 #, object-pascal-format
 msgid "In order to create a clean copy of the project/package, all files in the following directory will be deleted and all its content will be lost.%sDelete all files in \"%s\"?"
-msgstr "Projenin/paketin temiz bir kopyasını oluşturmak için, aşağıdaki dizindeki tüm dosyalar silinecek ve tüm içeriği kaybolacak.%s \"%s\" içindeki tüm dosyaları sil?"
+msgstr "Projenin/paketin temiz bir kopyasını oluşturmak için, aşağıdaki dizindeki tüm dosyalar silinecek ve tüm içeriği kaybolacak.%s \"%s\" içindeki tüm dosyalar silinsin mi?"
 
 #: lazarusidestrconsts.lisinsert
 msgctxt "lazarusidestrconsts.lisinsert"
@@ -11251,7 +11243,7 @@ msgstr "Hata Ayıklama Denetçisi"
 
 #: lazarusidestrconsts.lisinspectmethods
 msgid "Methods"
-msgstr "Yöntemler"
+msgstr "Methods"
 
 #: lazarusidestrconsts.lisinspectpointerto
 #, object-pascal-format
@@ -11547,7 +11539,7 @@ msgstr "Tuş (veya 2 tuş dizisi)"
 
 #: lazarusidestrconsts.liskmabortbuilding
 msgid "Abort building"
-msgstr "İnşaattan vazgeç"
+msgstr "İnşaadan vazgeç"
 
 #: lazarusidestrconsts.liskmaddbpaddress
 msgid "Add Address Breakpoint"
@@ -12057,11 +12049,11 @@ msgstr "Kaynak Düzenleyicisi görünümü Aç/Kapat"
 #: lazarusidestrconsts.liskmtoggleviewthreads
 msgctxt "lazarusidestrconsts.liskmtoggleviewthreads"
 msgid "View Threads"
-msgstr "Konuları Görüntüle"
+msgstr "Threads Görüntüle"
 
 #: lazarusidestrconsts.liskmtoggleviewwatches
 msgid "View Watches"
-msgstr "Saatleri Görüntüle"
+msgstr "İzlemeleri Görüntüle"
 
 #: lazarusidestrconsts.liskmviewjumphistory
 msgid "View jump history"
@@ -12135,7 +12127,7 @@ msgstr "Aksiyon"
 
 #: lazarusidestrconsts.lislazbuildabochooseoutputdir
 msgid "Choose output directory of the IDE executable "
-msgstr "Çalıştırılabilir IDE çıktı dizinini seçin "
+msgstr "IDE yürütülebilir dosyasının çıktı dizinini seçin "
 
 #: lazarusidestrconsts.lislazbuildareyousureyouwanttodeletethisbuildprofile
 msgid "Are you sure you want to delete this build profile?"
@@ -12205,7 +12197,7 @@ msgstr "Yeni Profil Ekle"
 
 #: lazarusidestrconsts.lislazbuildnewprofinfo
 msgid "Current build options will be associated with:"
-msgstr "Mevcut yapı seçenekleri ile ilişkili:"
+msgstr "Mevcut derleme seçenekleri şunlarla ilişkilendirilecektir:"
 
 #: lazarusidestrconsts.lislazbuildnormalide
 msgid "Normal IDE"
@@ -12221,7 +12213,7 @@ msgstr "Seçenekler:"
 
 #: lazarusidestrconsts.lislazbuildoptionspassedtocompiler
 msgid "Options passed to compiler"
-msgstr "Seçenekler derleyiciye geçti"
+msgstr "Derleyiciye geçirilen seçenekler"
 
 #: lazarusidestrconsts.lislazbuildprofile
 msgid "Profile to build"
@@ -12307,7 +12299,7 @@ msgstr "%s geçerli bir FPDoc yolu yok.%s %s için fpdoc dosyası oluşturmaktan
 
 #: lazarusidestrconsts.lisldmoveentriestoinherited
 msgid "Move entries to inherited"
-msgstr "Taşınır girişleri devralınan"
+msgstr "Girişleri devralınanlara taşı"
 
 #: lazarusidestrconsts.lisldnovalidfpdocpath
 msgid "No valid FPDoc path"
@@ -12325,11 +12317,11 @@ msgstr "Sol"
 
 #: lazarusidestrconsts.lisleftborderspacespinedithint
 msgid "Left borderspace. This value is added to base borderspace and used for the space left to the control."
-msgstr "Sol kenarlık: Bu değer taban sınırlarına eklenir ve devam için sola boşluk kullanılır."
+msgstr "Sol sınır alanı. Bu değer base borderspace'e eklenir ve kontrole bırakılan boşluk için kullanılır."
 
 #: lazarusidestrconsts.lisleftgroupboxcaption
 msgid "Left anchoring"
-msgstr "Sol çapa"
+msgstr "Sola tuttur"
 
 #: lazarusidestrconsts.lisleftsiblingcomboboxhint
 msgid "This is the sibling control to which the left side is anchored. Leave empty for anchoring to parent in Delphi style (BorderSpacing and ReferenceSide do not matter)."
@@ -12466,7 +12458,7 @@ msgstr "Yereller değerlendirilmedi"
 
 #: lazarusidestrconsts.lislogcallstack
 msgid "Log Call Stack"
-msgstr "Günlük Çağrı Yığını"
+msgstr "Çağrı Yığını Günlüğü"
 
 #: lazarusidestrconsts.lislogcallstacklimit
 msgid "(frames limit. 0 - no limits)"
@@ -12479,7 +12471,7 @@ msgstr "Eval ifadesi"
 
 #: lazarusidestrconsts.lislogmessage
 msgid "Log Message"
-msgstr "Günlük Mesajı"
+msgstr "Mesaj Günlüğü"
 
 #: lazarusidestrconsts.lislowercasestring
 msgid "lowercase string"
@@ -12558,7 +12550,7 @@ msgstr "Yürütülebilir Dosyayı Yap"
 
 #: lazarusidestrconsts.lismakenotfound
 msgid "Make not found"
-msgstr "Bulunamadı"
+msgstr "Make Bulunamadı"
 
 #: lazarusidestrconsts.lismakeresourcestring
 msgid "Make ResourceString"
@@ -12571,7 +12563,7 @@ msgstr "Bölümüne ekle"
 #: lazarusidestrconsts.lismakeresstrchooseanothername
 #, object-pascal-format
 msgid "The resourcestring \"%s\" already exists.%sPlease choose another name.%sUse Ignore to add it anyway."
-msgstr "\"%s\" kaynak sorgusu zaten var.%sLütfen başka bir ad seçin.%s Yine de eklemek için Yoksay'ı kullanın."
+msgstr "\"%s\" kaynak zaten var.%sLütfen başka bir ad seçin.%s Yine de eklemek için Yoksay'ı kullanın."
 
 #: lazarusidestrconsts.lismakeresstrconversionoptions
 msgid "Conversion Options"
@@ -12608,7 +12600,7 @@ msgstr "Geçersiz Kaynak string seçimi"
 
 #: lazarusidestrconsts.lismakeresstrpleasechoosearesourcestring
 msgid "Please choose a resourcestring section from the list."
-msgstr "Lütfen listeden bir kaynak seçme bölümü seçin."
+msgstr "Lütfen listeden bir kaynak dizisi bölümü seçin."
 
 #: lazarusidestrconsts.lismakeresstrresourcestringalreadyexis
 msgid "Resourcestring already exists"
@@ -12624,11 +12616,11 @@ msgstr "Kaynak önizleme"
 
 #: lazarusidestrconsts.lismakeresstrstringconstantinsource
 msgid "String constant in source"
-msgstr "Kaynaktaki sabit sabit"
+msgstr "Kaynaktaki string sabiti"
 
 #: lazarusidestrconsts.lismakeresstrstringswithsamevalue
 msgid "Strings with same value:"
-msgstr "Aynı değere sahip dizeler:"
+msgstr "Aynı değere sahip stringler:"
 
 #: lazarusidestrconsts.lismakesureallppufilesofapackageareinitsoutputdirecto
 msgid "Make sure all ppu files of a package are in its output directory."
@@ -12762,11 +12754,11 @@ msgstr "Birçok Modda Derleyin ..."
 
 #: lazarusidestrconsts.lismenucompletecode
 msgid "Complete Code"
-msgstr "Komple Kod"
+msgstr "Kodu Tamamla"
 
 #: lazarusidestrconsts.lismenucompletecodeinteractive
 msgid "Complete Code (with dialog)"
-msgstr "Komple Kod (iletişim kutusuyla)"
+msgstr "Kodu Tamamla (iletişim kutusuyla)"
 
 #: lazarusidestrconsts.lismenuconfigbuildfile
 msgid "Configure Build+Run File ..."
@@ -12950,7 +12942,7 @@ msgstr "Başlık"
 #: lazarusidestrconsts.lismenueditorcaptioneditemss
 #, object-pascal-format
 msgid "Captioned items: %s"
-msgstr "Başlık öğeleri:%s"
+msgstr "Altyazılı öğeler: %s"
 
 #: lazarusidestrconsts.lismenueditorcaptionshouldnotbeblank
 msgid "Caption should not be blank"
@@ -13412,7 +13404,7 @@ msgid ""
 "You have to change the shortcut from %s\n"
 "to avoid a conflict"
 msgstr ""
-"Anlaşmazlığı önlemek için kısayolu %s konumundan\n"
+"Çakışmayı önlemek için kısayolu %s konumundan\n"
 "değiştirmeniz gerekiyor"
 
 #: lazarusidestrconsts.lismenueditoryoumustentertextforthecaption
@@ -13641,11 +13633,9 @@ msgid "Lowercase Selection"
 msgstr "Küçük harf seçimi"
 
 #: lazarusidestrconsts.lismenumacrolistview
-#, fuzzy
-#| msgid "Editor Macros ..."
 msgctxt "lazarusidestrconsts.lismenumacrolistview"
 msgid "Editor Macros"
-msgstr "Editör Makroları ..."
+msgstr "Editör Makroları"
 
 #: lazarusidestrconsts.lismenumakeresourcestring
 msgid "Make Resource String ..."
@@ -15066,7 +15056,7 @@ msgstr "XML dosyası olarak aç"
 
 #: lazarusidestrconsts.lisopendesigneronopenunit
 msgid "Open designer on open unit"
-msgstr "Açık ünitede açık tasarımcı"
+msgstr "Açık ünitede tasarımcıyı aç"
 
 #: lazarusidestrconsts.lisopendesigneronopenunithint
 msgid "Form is loaded in designer always when source unit is opened."
@@ -17018,7 +17008,7 @@ msgstr "Proje çalıştırılabilir"
 
 #: lazarusidestrconsts.lisprojectisrunnablehint
 msgid "Generates a binary executable which can be run."
-msgstr "Çalıştırılabilen bir ikili çalıştırılabilir üretir."
+msgstr "Çalıştırılabilen bir ikili(binary) yürütülebilir dosya oluşturur."
 
 #: lazarusidestrconsts.lisprojectmacro
 msgctxt "lazarusidestrconsts.lisprojectmacro"
@@ -21902,27 +21892,27 @@ msgstr "programı duraklat"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretclearall
 msgid "Clear all extra carets"
-msgstr "Tüm ekstra şapka işaretini temizle"
+msgstr "Tüm ekstra imleçleri temizle"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretmodecancelonmove
 msgid "Cursor keys clear all extra carets"
-msgstr "İmleç tuşlarını tüm ekstra şapka işaretinden temizle"
+msgstr "İmleç tuşları tüm ekstra imleçleri temizler"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretmodemoveall
 msgid "Cursor keys move all extra carets"
-msgstr "İmleç tuşlarını tüm ekstra şapka işaretine taşır"
+msgstr "İmleç tuşları tüm ekstra imleçlere taşır"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretsetcaret
 msgid "Add extra caret"
-msgstr "Ekstra şapka işareti ekle"
+msgstr "Ekstra imleç ekle"
 
 #: lazarusidestrconsts.srkmecpluginmulticarettogglecaret
 msgid "Toggle extra caret"
-msgstr "Ekstra şapka işareti arasında geçiş yap"
+msgstr "Ekstra imleç arasında geçiş yap"
 
 #: lazarusidestrconsts.srkmecpluginmulticaretunsetcaret
 msgid "Remove extra caret"
-msgstr "Ekstra şapka işaretini kaldır"
+msgstr "Ekstra imleci kaldır"
 
 #: lazarusidestrconsts.srkmecprevbookmark
 msgid "Previous Bookmark"
@@ -21954,11 +21944,11 @@ msgstr "kesme noktasını kaldır"
 
 #: lazarusidestrconsts.srkmecremoveemptymethods
 msgid "Remove Empty Methods"
-msgstr "Boş Yöntemleri Kaldır"
+msgstr "Boş Metodları Kaldır"
 
 #: lazarusidestrconsts.srkmecremoveunusedunits
 msgid "Remove Unused Units"
-msgstr "Kullanılmayan Birimleri Kaldır"
+msgstr "Kullanılmayan Birimleri (unitleri) Kaldır"
 
 #: lazarusidestrconsts.srkmecrenameidentifier
 msgid "Rename Identifier"
@@ -22023,7 +22013,7 @@ msgstr "Hepsini seç"
 
 #: lazarusidestrconsts.srkmecselectiontabs2spaces
 msgid "Convert tabs to spaces in selection"
-msgstr "Sekmeleri seçimde boşluklara dönüştür"
+msgstr "Sekmeleri seçimdeki boşluklara dönüştür"
 
 #: lazarusidestrconsts.srkmecseleditorbottom
 msgid "Select to absolute end"
@@ -22035,7 +22025,7 @@ msgstr "Mutlak başlangıç için seç"
 
 #: lazarusidestrconsts.srkmecselgotoxy
 msgid "Select Goto XY"
-msgstr "Seçiliye git XY"
+msgstr "Seçili XY ye git"
 
 #: lazarusidestrconsts.srkmecselhalfwordleft
 msgid "Select part-word left (e.g. CamelCase)"
@@ -22438,7 +22428,7 @@ msgstr "bilinmeyen editör komutu"
 
 #: lazarusidestrconsts.srkmecunusedunits
 msgid "Unused Units ..."
-msgstr "Kullanılmayan Birimler ..."
+msgstr "Kullanılmayan Birimler (Unitler) ..."
 
 #: lazarusidestrconsts.srkmecup
 msgid "Move cursor up"
@@ -22450,7 +22440,7 @@ msgstr "Çapa editörünü görüntüle"
 
 #: lazarusidestrconsts.srkmecviewcomponents
 msgid "View components"
-msgstr "Bileşenleri görüntüleme"
+msgstr "Bileşenleri görüntüle"
 
 #: lazarusidestrconsts.srkmecvieweditormacros
 msgid "View editor macros"
@@ -22471,7 +22461,7 @@ msgstr "Terminal Çıkışını Görüntüle"
 
 #: lazarusidestrconsts.srkmecviewtaborder
 msgid "View Tab Order"
-msgstr "Görünüm Sekmesi Sırası"
+msgstr "Sekme Sırasını Görüntüle"
 
 #: lazarusidestrconsts.srkmecviewthreads
 msgctxt "lazarusidestrconsts.srkmecviewthreads"
@@ -22496,19 +22486,19 @@ msgstr "Kelime Tamamlama"
 
 #: lazarusidestrconsts.srkmecwordendleft
 msgid "Move cursor word-end left"
-msgstr "İmleç kelimesi-bitiş sola taşı"
+msgstr "İmleci kelime sonu sola taşı"
 
 #: lazarusidestrconsts.srkmecwordendright
 msgid "Move cursor word-end right"
-msgstr "İmleç kelime sonunu sağa taşı"
+msgstr "İmleci kelime sonu sağa taşı"
 
 #: lazarusidestrconsts.srkmecwordleft
 msgid "Move cursor word left"
-msgstr "İmleç kelimesini sola taşı"
+msgstr "İmleci kelime soluna taşı"
 
 #: lazarusidestrconsts.srkmecwordright
 msgid "Move cursor word right"
-msgstr "İmleci sağa taşır"
+msgstr "İmleci kelime sağına taşı"
 
 #: lazarusidestrconsts.srkmeczoomin
 msgid "Zoom in"
@@ -22692,11 +22682,11 @@ msgstr "Dosya Adını Kopyala"
 
 #: lazarusidestrconsts.uemcopytonewwindow
 msgid "Clone to New Window"
-msgstr "Yeni Pencereye Klon"
+msgstr "Yeni Pencereye Klonla"
 
 #: lazarusidestrconsts.uemcopytootherwindow
 msgid "Clone to Other Window"
-msgstr "Diğer Pencereye Klon Yap"
+msgstr "Diğer Pencereye Klonla"
 
 #: lazarusidestrconsts.uemcopytootherwindownew
 msgctxt "lazarusidestrconsts.uemcopytootherwindownew"
@@ -22748,7 +22738,7 @@ msgstr "Atamayı Ters Çevir"
 
 #: lazarusidestrconsts.uemlineending
 msgid "Line Ending"
-msgstr "Satır Sona Erme"
+msgstr "Satır Sonu"
 
 #: lazarusidestrconsts.uemlockpage
 msgid "&Lock Page"
@@ -22764,11 +22754,11 @@ msgstr "Sayfa En Sola Taşı"
 
 #: lazarusidestrconsts.uemmovepageright
 msgid "Move Page Right"
-msgstr "Sayfayı Doğru Taşı"
+msgstr "Sayfayı sağa Taşı"
 
 #: lazarusidestrconsts.uemmovepagerightmost
 msgid "Move Page Rightmost"
-msgstr "Sayfanın En Yakına Taşın"
+msgstr "Sayfayı en sağa taşı"
 
 #: lazarusidestrconsts.uemmovetonewwindow
 msgid "Move to New Window"
@@ -22797,11 +22787,11 @@ msgstr "&İmleç Dosyasını Aç"
 
 #: lazarusidestrconsts.uemprevbookmark
 msgid "Goto Previous Bookmark"
-msgstr "Önceki Sık Kullanılana Git"
+msgstr "Önceki yer imine Git"
 
 #: lazarusidestrconsts.uemprocedurejump
 msgid "Procedure Jump"
-msgstr "Prosedür Atlama"
+msgstr "Prosedüre Atla"
 
 #: lazarusidestrconsts.uemreadonly
 msgctxt "lazarusidestrconsts.uemreadonly"
@@ -22810,7 +22800,7 @@ msgstr "Salt okunur"
 
 #: lazarusidestrconsts.uemrefactor
 msgid "Refactoring"
-msgstr "Yeniden düzenleme"
+msgstr "Yeniden düzenle"
 
 #: lazarusidestrconsts.uemsetfreebookmark
 msgctxt "lazarusidestrconsts.uemsetfreebookmark"
@@ -22871,11 +22861,11 @@ msgstr "Salt Okunur"
 
 #: lazarusidestrconsts.unitdepoptionsforpackage
 msgid "Options for Package graph"
-msgstr "Paket grafiği için seçenekleri"
+msgstr "Paket grafiği için seçenekler"
 
 #: lazarusidestrconsts.unitdepoptionsforunit
 msgid "Options for Unit graph"
-msgstr "Birim grafiği için seçenekleri"
+msgstr "Birim grafiği için seçenekler"
 
 #: lazarusidestrconsts.versioninfotitle
 msgid "Version Info"
