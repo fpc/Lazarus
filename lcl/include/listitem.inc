@@ -757,6 +757,8 @@ begin
 
   if not WSUpdateAllowed and not IsOwnerData then Exit;
   LV := FOwner.FOwner;
+  if (LV.OwnerData) and (LV.MultiSelect) and (AState = lisSelected) then
+    LV.UpdateMultiSelList(Self, AIsSet);
   TWSCustomListViewClass(LV.WidgetSetClass).ItemSetState(LV, GetIndex, Self, AState, AIsSet);
 end;
 
