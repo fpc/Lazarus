@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-03-21 13:46+0100\n"
+"PO-Revision-Date: 2022-04-06 00:06+0200\n"
 "Last-Translator: Swen Heinig <swen@heinig.email>\n"
 "Language-Team: Deutsch <lazarus@miraclec.com>\n"
 "Language: de\n"
@@ -191,6 +191,8 @@ msgid ""
 "Error message:\n"
 "%s"
 msgstr ""
+"Fehlermeldung:\n"
+"%s"
 
 #: objinspstrconsts.fesfetitle
 msgid "Edit Fields ..."
@@ -239,14 +241,10 @@ msgid "&Name:"
 msgstr "&Name:"
 
 #: objinspstrconsts.fesnofields
-#, fuzzy
-#| msgid "It was not possible to get the dataset field's list"
 msgid "It was not possible to get the dataset fields list."
 msgstr "Es war nicht möglich, die Liste der Felder des Datasets zu lesen"
 
 #: objinspstrconsts.fesnofieldsnote
-#, fuzzy
-#| msgid "Field's list is not available, can't check for duplicates"
 msgid "Fields list is not available, can't check for duplicates."
 msgstr "Feldliste ist nicht verfügbar, kann nicht auf Duplikate prüfen"
 
@@ -273,7 +271,7 @@ msgstr "&Typ:"
 
 #: objinspstrconsts.fpflowpaneleditor
 msgid "FlowPanel Editor"
-msgstr ""
+msgstr "FlowPanel-Editor"
 
 #: objinspstrconsts.ilesadd
 msgctxt "objinspstrconsts.ilesadd"
@@ -858,11 +856,11 @@ msgstr "Alle Felder auswählen"
 
 #: objinspstrconsts.oisselectedcontrol
 msgid "Selected control"
-msgstr ""
+msgstr "Ausgewähltes Steuerelement"
 
 #: objinspstrconsts.oisselectedcontrols
 msgid "Selected controls"
-msgstr ""
+msgstr "Ausgewählte Steuerelemente"
 
 #: objinspstrconsts.oisselectedproperties
 msgid "&Selected Properties"
@@ -883,7 +881,7 @@ msgstr "Setze MaxHeight=%d, MaxWidth=%d"
 
 #: objinspstrconsts.oissetmaxconstraintshint
 msgid "Use current size as Max Constraints"
-msgstr ""
+msgstr "Setze aktuelle Größe als obere Grenze"
 
 #: objinspstrconsts.oissetminconstraints
 #, object-pascal-format
@@ -892,7 +890,7 @@ msgstr "Setze MinHeight=%d, MinWidth=%d"
 
 #: objinspstrconsts.oissetminconstraintshint
 msgid "Use current size as Min Constraints"
-msgstr ""
+msgstr "Setze aktuelle Größe als untere Grenze"
 
 #: objinspstrconsts.oissettodefault
 #, object-pascal-format
@@ -1584,10 +1582,13 @@ msgstr "StringGrid Editor"
 msgid "Clean"
 msgstr "Löschen"
 
+#: objinspstrconsts.sccssgedtcolrowinfo
+#, object-pascal-format
+msgid "(%d columns, %d rows)"
+msgstr ""
+
 #: objinspstrconsts.sccssgedtdelcol
-#, fuzzy
-#| msgid "Delete Col"
-msgid "Delete Column"
+msgid "Delete column"
 msgstr "Spalte löschen"
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1604,18 +1605,28 @@ msgstr "Zeile löschen"
 msgid "Delete row #%d?"
 msgstr "Zeile Nr. %d löschen?"
 
+#: objinspstrconsts.sccssgedteditcoltitle
+msgid "Edit column title"
+msgstr "Spaltentitel bearbeiten"
+
+#: objinspstrconsts.sccssgedteditfixedcoltitle
+msgid "Edit fixed column title"
+msgstr "Titel der festen Spalte bearbeiten"
+
+#: objinspstrconsts.sccssgedteditrowheader
+msgid "Edit row header"
+msgstr "Zeilenkopf bearbeiten"
+
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
 msgstr "String-Gitter"
 
 #: objinspstrconsts.sccssgedtinscol
-#, fuzzy
-#| msgid "Insert Col"
-msgid "Insert Column"
+msgid "Insert column"
 msgstr "Spalte einfügen"
 
 #: objinspstrconsts.sccssgedtinsrow
-msgid "Insert Row"
+msgid "Insert row"
 msgstr "Zeile einfügen"
 
 #: objinspstrconsts.sccssgedtload
@@ -1623,8 +1634,6 @@ msgid "Load ..."
 msgstr "Laden..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-#, fuzzy
-#| msgid "Move Rows/Cols"
 msgid "Move Rows/Columns"
 msgstr "Zeilen/Spalten verschieben"
 
@@ -1642,6 +1651,10 @@ msgstr "Sichern..."
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
 msgstr "Speichern"
+
+#: objinspstrconsts.sccssgedttitle
+msgid "Title"
+msgstr "Titel"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"
@@ -1779,4 +1792,3 @@ msgstr "Tab nach links bewegen"
 #: objinspstrconsts.tccesmovetabright
 msgid "Move tab right"
 msgstr "Tab nach rechts bewegen"
-

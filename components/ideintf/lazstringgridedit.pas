@@ -52,6 +52,8 @@ type
     procedure FormActivate(Sender: TObject);
     procedure FormClose(Sender: TObject; var {%H-}CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure StringGridHeaderClick(Sender: TObject; IsColumn: Boolean; 
+      Index: Integer);
     procedure StringGridPrepareCanvas({%H-}sender: TObject; Col, Row: Integer;
       {%H-}aState: TGridDrawState);
     procedure ManageGrid(Sender:TObject);
@@ -59,6 +61,10 @@ type
   private
     FModified: Boolean;
     FStringGrid: TStringGrid;
+    FGroupBoxHeader: String;
+    procedure AssignGrid(Dest, Src: TStringGrid);
+    procedure UpdateBtnStates;
+    procedure UpdateGridInfo;
   public
     property Modified: Boolean read FModified;
     procedure LoadFromGrid(AStringGrid: TStringGrid);
@@ -69,18 +75,44 @@ implementation
 
 {$R *.lfm}
 
-procedure AssignGrid(Dest, Src: TStringGrid; Full: Boolean);
+var
+  saved_InputQueryEditSizePercents: Integer;
+  
+type
+  TStringGridAccess = class(TStringGrid)
+  public
+    function ColumnIndexFromGridColumn(AIndex: Integer):Integer;
+  end;
+  
+function TStringGridAccess.ColumnIndexFromGridColumn(AIndex: Integer): Integer;
+begin
+  Result := inherited;
+end;
+
+{ TStringGridEditorDlg }
+
+procedure TStringGridEditorDlg.AssignGrid(Dest, Src: TStringGrid);
 var
   I, J: Integer;
+  col: TGridColumn;
 begin
   Dest.BeginUpdate;
   try
-    if Full then
+    Dest.Clear;  
+    Dest.RowCount := Src.RowCount;
+
+    if Src.Columns.Enabled then
     begin
-      Dest.Clear;
+      Dest.Columns.Clear;
+      for I := 0 to Src.Columns.Count-1 do
+      begin
+        col := Dest.Columns.Add;
+        col.Assign(Src.Columns[I]);
+      end;
+      Dest.FixedCols := Src.FixedCols;
+      Dest.FixedRows := Src.FixedRows;
+    end else      
       Dest.ColCount := Src.ColCount;
-      Dest.RowCount := Src.RowCount;
-    end;
 
     for I := 0 to Src.RowCount - 1 do
       Dest.RowHeights[I] := Src.RowHeights[I];
@@ -96,11 +128,10 @@ begin
   end;
 end;
 
-
-{ TStringGridEditorDlg }
-
 procedure TStringGridEditorDlg.FormCreate(Sender: TObject);
 begin
+  FGroupBoxHeader := Groupbox.Caption;
+
   Caption := sccsSGEdtCaption;
 
   GroupBox.Caption := sccsSGEdtGrp;
@@ -129,10 +160,45 @@ begin
   IDEDialogLayoutList.ApplyLayout(Self);
 end;
 
+procedure TStringGridEditorDlg.StringGridHeaderClick(Sender: TObject; 
+  IsColumn: Boolean; Index: Integer);
+var
+  s: String;
+  colIndex: Integer;
+  mouseCell: TPoint;
+begin
+  mouseCell := StringGrid.MouseToCell(StringGrid.ScreenToClient(Mouse.CursorPos));
+  if IsColumn then
+  begin
+    if StringGrid.Columns.Enabled and (Index >= StringGrid.FixedCols) then
+    begin
+      colIndex := TStringGridAccess(StringGrid).ColumnIndexFromGridColumn(Index);
+      if mouseCell.Y = 0 then
+      begin
+        s := InputBox(sccsSGEdtEditColTitle, sccsSGEdtTitle, StringGrid.Columns[colIndex].Title.Caption);
+        StringGrid.Columns[colIndex].Title.Caption := s;
+      end else
+      begin
+        s := InputBox(sccsSGEdtEditColTitle, sccsSGEdtTitle, StringGrid.Cells[Index, mouseCell.Y]);
+        StringGrid.Cells[Index, mouseCell.Y] := s;
+      end;
+    end else
+    begin
+      s := InputBox(sccsSGEdtEditFixedColTitle, sccsSGEdtTitle, StringGrid.Cells[Index, mouseCell.Y]);
+      StringGrid.Cells[Index, mouseCell.Y] := s;
+    end;
+  end else
+  begin
+    s := InputBox(sccsSGEdtEditRowHeader, sccsSGEdtTitle, StringGrid.Cells[mouseCell.X, Index]);
+    StringGrid.Cells[mouseCell.X, Index] := s;
+  end;
+end;
+
 procedure TStringGridEditorDlg.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
   IDEDialogLayoutList.SaveLayout(Self);
+  cInputQueryEditSizePercents := saved_InputQueryEditSizePercents;
 end;
 
 procedure TStringGridEditorDlg.BtnApplyClick(Sender: TObject);
@@ -167,7 +233,12 @@ procedure TStringGridEditorDlg.FormActivate(Sender: TObject);
 var
   delta: Integer;
 begin
-  delta := Groupbox.BorderSpacing.Around;  // Assuming all borderspacings are equal
+  // Avoid the ultra-wide InputBox.
+  saved_InputQueryEditSizePercents := cInputQueryEditSizePercents;
+  cInputQueryEditSizePercents := 0;
+
+  // Adjust constraints (assuming all borderspacings are equal)
+  delta := Groupbox.BorderSpacing.Around;  
   Constraints.MinWidth := BtnColRight.Left + BtnColRight.Width + 
     (BtnClean.Left + BtnClean.Width - BtnLoad.Left) + 6*delta;
   if Width < Constraints.MinWidth then
@@ -184,12 +255,15 @@ end;
 procedure TStringGridEditorDlg.ManageGrid(Sender:TObject);
 var 
   irow, icol: integer;
+  fixed: Integer;
 begin
   irow := StringGrid.Row;
   icol := StringGrid.Col;
   if (Sender = BtnAddRow) then
   begin
+    fixed := StringGrid.FixedRows;
     StringGrid.InsertColRow(false, irow);
+    StringGrid.FixedRows := fixed;
     StringGrid.Row := StringGrid.Row-1;
   end 
   else
@@ -200,37 +274,38 @@ begin
   end else
   if Sender = BtnAddCol then
   begin
+    fixed := StringGrid.FixedCols;
     StringGrid.InsertColRow(true, icol);
+    StringGrid.FixedCols := fixed;
     StringGrid.Col := StringGrid.Col - 1;
   end
   else
   if (Sender = BtnDelCol) and (icol >= 0) then
     if MessageDlg(Application.Title, Format(sccsSGEdtDelColNo, [icol]), mtConfirmation, mbYesNo, 0) = mrYes then
       StringGrid.DeleteCol(icol);
+  UpdateBtnStates;
+  UpdateGridInfo;
 end;
 
 procedure TStringGridEditorDlg.SwapRowCol(Sender:TObject);
 begin
   if Sender = BtnColLeft then begin
-    if StringGrid.Col > 0 then
-      StringGrid.ExchangeColRow(true,StringGrid.Col,StringGrid.Col-1);
-      //StringGrid.Col := StringGrid.Col - 1;
+    if StringGrid.Col > StringGrid.FixedCols then
+      StringGrid.ExchangeColRow(true,StringGrid.Col-1,StringGrid.Col);
   end else
   if Sender = BtnRowUp then begin
-    if StringGrid.Row > 0 then
-      StringGrid.ExchangeColRow(false,StringGrid.Row,StringGrid.Row-1);
-      //StringGrid.Row := StringGrid.Row - 1;
+    if StringGrid.Row > StringGrid.FixedRows then
+      StringGrid.ExchangeColRow(false,StringGrid.Row-1,StringGrid.Row);
   end;
   if Sender = BtnColRight then begin
     if StringGrid.Col < StringGrid.ColCount-1 then
       StringGrid.ExchangeColRow(true,StringGrid.Col,StringGrid.Col+1);
-      //StringGrid.Col := StringGrid.Col + 1;
   end;
   if Sender = BtnRowDown then begin
     if StringGrid.Row < StringGrid.RowCount-1 then
       StringGrid.ExchangeColRow(false,StringGrid.Row,StringGrid.Row+1);
-      //StringGrid.Row := StringGrid.Row + 1;
   end;
+  UpdateBtnStates;
 end;
 
 procedure TStringGridEditorDlg.LoadFromGrid(AStringGrid: TStringGrid);
@@ -238,8 +313,9 @@ begin
   if Assigned(AStringGrid) then
   begin
     FStringGrid := AStringGrid;
-
-    AssignGrid(StringGrid, AStringGrid, True);
+    AssignGrid(StringGrid, AStringGrid);
+    UpdateBtnStates;
+    UpdateGridInfo;
     FModified := False;
   end;
 end;
@@ -248,9 +324,25 @@ procedure TStringGridEditorDlg.SaveToGrid;
 begin
   if Assigned(FStringGrid) then
   begin
-    AssignGrid(FStringGrid, StringGrid, true);
+    AssignGrid(FStringGrid, StringGrid);
     FModified := True;
   end;
+end;
+
+procedure TStringGridEditorDlg.UpdateBtnStates;
+begin
+  BtnDelRow.Enabled := StringGrid.RowCount > StringGrid.FixedRows;
+  BtnDelCol.Enabled := StringGrid.ColCount > StringGrid.FixedCols;
+  BtnColLeft.Enabled := StringGrid.Col > StringGrid.FixedCols;
+  BtnRowUp.Enabled := StringGrid.Row > StringGrid.FixedRows;
+  BtnColRight.Enabled := StringGrid.Col < StringGrid.ColCount-1;
+  BtnRowDown.Enabled := StringGrid.Row < StringGrid.RowCount-1;
+end;
+
+procedure TStringGridEditorDlg.UpdateGridInfo;
+begin
+  GroupBox.Caption := FGroupboxHeader + ' ' +
+    Format(sccsSGEdtColRowInfo, [StringGrid.ColCount, StringGrid.RowCount]);
 end;
 
 end.

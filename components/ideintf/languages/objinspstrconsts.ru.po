@@ -1579,8 +1579,15 @@ msgstr "Редактор StringGrid"
 msgid "Clean"
 msgstr "Очистить"
 
+#: objinspstrconsts.sccssgedtcolrowinfo
+#, object-pascal-format
+msgid "(%d columns, %d rows)"
+msgstr ""
+
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Column"
+#, fuzzy
+#| msgid "Delete Column"
+msgid "Delete column"
 msgstr "Удалить столбец"
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1597,16 +1604,32 @@ msgstr "Удалить строку"
 msgid "Delete row #%d?"
 msgstr "Удалить строку №%d?"
 
+#: objinspstrconsts.sccssgedteditcoltitle
+msgid "Edit column title"
+msgstr ""
+
+#: objinspstrconsts.sccssgedteditfixedcoltitle
+msgid "Edit fixed column title"
+msgstr ""
+
+#: objinspstrconsts.sccssgedteditrowheader
+msgid "Edit row header"
+msgstr ""
+
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Column"
+#, fuzzy
+#| msgid "Insert Column"
+msgid "Insert column"
 msgstr "Вставить столбец"
 
 #: objinspstrconsts.sccssgedtinsrow
-msgid "Insert Row"
+#, fuzzy
+#| msgid "Insert Row"
+msgid "Insert row"
 msgstr "Вставить строку"
 
 #: objinspstrconsts.sccssgedtload
@@ -1631,6 +1654,10 @@ msgstr "Сохранить ..."
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
 msgstr "Сохранить"
+
+#: objinspstrconsts.sccssgedttitle
+msgid "Title"
+msgstr ""
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"

@@ -184,11 +184,16 @@ resourcestring
   sccsSGEdtSaveDialog = 'Save';
   sccsSGEdtMoveRowsCols = 'Move Rows/Columns';
   sccsSGEdtDelRow     = 'Delete Row';
-  sccsSGEdtDelCol     = 'Delete Column';
-  sccsSGEdtInsRow     = 'Insert Row';
-  sccsSGEdtInsCol     = 'Insert Column';
+  sccsSGEdtDelCol     = 'Delete column';
+  sccsSGEdtInsRow     = 'Insert row';
+  sccsSGEdtInsCol     = 'Insert column';
   sccsSGEdtDelRowNo   = 'Delete row #%d?';
   sccsSGEdtDelColNo   = 'Delete column #%d?';
+  sccsSGEdtTitle      = 'Title';
+  sccsSGEdtEditColTitle = 'Edit column title';
+  sccsSGEdtEditFixedColTitle = 'Edit fixed column title';
+  sccsSGEdtEditRowHeader = 'Edit row header';
+  sccsSGEdtColRowInfo = '(%d columns, %d rows)';
 
   // HeaderControl Editor
   sccsHCEditSections  = 'Sections Editor ...';

@@ -38,6 +38,7 @@ object StringGridEditorDlg: TStringGridEditorDlg
       FixedRows = 0
       Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRowSizing, goColSizing, goRowMoving, goColMoving, goEditing, goSmoothScroll]
       TabOrder = 0
+      OnHeaderClick = StringGridHeaderClick
       OnPrepareCanvas = StringGridPrepareCanvas
     end
     object LoadSavePanel: TPanel

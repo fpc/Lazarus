@@ -1634,8 +1634,13 @@ msgstr "StringGrid Bewerker"
 msgid "Clean"
 msgstr ""
 
+#: objinspstrconsts.sccssgedtcolrowinfo
+#, object-pascal-format
+msgid "(%d columns, %d rows)"
+msgstr ""
+
 #: objinspstrconsts.sccssgedtdelcol
-msgid "Delete Column"
+msgid "Delete column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelcolno
@@ -1652,16 +1657,28 @@ msgstr ""
 msgid "Delete row #%d?"
 msgstr ""
 
+#: objinspstrconsts.sccssgedteditcoltitle
+msgid "Edit column title"
+msgstr ""
+
+#: objinspstrconsts.sccssgedteditfixedcoltitle
+msgid "Edit fixed column title"
+msgstr ""
+
+#: objinspstrconsts.sccssgedteditrowheader
+msgid "Edit row header"
+msgstr ""
+
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
 msgstr "String Grid"
 
 #: objinspstrconsts.sccssgedtinscol
-msgid "Insert Column"
+msgid "Insert column"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtinsrow
-msgid "Insert Row"
+msgid "Insert row"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtload
@@ -1693,6 +1710,10 @@ msgstr "Opslaan..."
 msgctxt "objinspstrconsts.sccssgedtsavedialog"
 msgid "Save"
 msgstr "Opslaan"
+
+#: objinspstrconsts.sccssgedttitle
+msgid "Title"
+msgstr ""
 
 #: objinspstrconsts.sccstredt
 #, fuzzy
