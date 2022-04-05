@@ -2,9 +2,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
   Left = 0
   Height = 372
   Top = 0
-  Width = 495
+  Width = 492
   ClientHeight = 372
-  ClientWidth = 495
+  ClientWidth = 492
   TabOrder = 0
   DesignLeft = 473
   DesignTop = 400
@@ -12,7 +12,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Left = 12
     Height = 23
     Top = 8
-    Width = 267
+    Width = 250
     Caption = 'Project is a Web Browser (pas2js) project'
     OnChange = CBWebProjectChange
     TabOrder = 0
@@ -22,11 +22,12 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = CBWebProject
     AnchorSideTop.Side = asrBottom
     Left = 12
-    Height = 16
+    Height = 15
     Top = 37
-    Width = 107
+    Width = 98
     BorderSpacing.Top = 6
     Caption = 'Project HTML file:'
+    ParentColor = False
   end
   object CBHTMLFile: TComboBox
     AnchorSideLeft.Control = CBWebProject
@@ -35,9 +36,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 12
-    Height = 29
-    Top = 55
-    Width = 467
+    Height = 30
+    Top = 54
+    Width = 464
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     BorderSpacing.Right = 16
@@ -52,7 +53,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Left = 12
     Height = 23
     Top = 90
-    Width = 142
+    Width = 129
     BorderSpacing.Top = 6
     Caption = 'Maintain HTML File'
     OnChange = CBMaintainHTMLFileChange
@@ -65,7 +66,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Left = 36
     Height = 23
     Top = 148
-    Width = 313
+    Width = 287
     BorderSpacing.Top = 6
     Caption = 'Run rtl when all page resources are fully loaded'
     TabOrder = 3
@@ -75,7 +76,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Control = RBStartServerAt
     AnchorSideTop.Side = asrBottom
     Left = 76
-    Height = 27
+    Height = 30
     Top = 231
     Width = 82
     BorderSpacing.Left = 32
@@ -92,7 +93,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Left = 44
     Height = 23
     Top = 206
-    Width = 180
+    Width = 168
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Start HTTP Server on port'
@@ -108,9 +109,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
     Left = 76
-    Height = 27
-    Top = 285
-    Width = 403
+    Height = 30
+    Top = 288
+    Width = 400
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Top = 2
     BorderSpacing.Right = 16
@@ -123,8 +124,8 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideTop.Side = asrBottom
     Left = 44
     Height = 23
-    Top = 260
-    Width = 173
+    Top = 263
+    Width = 161
     BorderSpacing.Top = 2
     Caption = 'Use this URL to start app'
     OnChange = RBUseURLChange
@@ -137,7 +138,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Left = 12
     Height = 23
     Top = 177
-    Width = 194
+    Width = 182
     BorderSpacing.Top = 6
     Caption = 'Project needs a HTTP Server'
     OnChange = CBUseHTTPServerChange
@@ -150,7 +151,7 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     Left = 36
     Height = 23
     Top = 119
-    Width = 341
+    Width = 313
     BorderSpacing.Left = 24
     BorderSpacing.Top = 6
     Caption = 'Use Browser Console unit to display writeln() output'
@@ -161,9 +162,9 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 12
-    Height = 30
-    Top = 336
-    Width = 138
+    Height = 31
+    Top = 335
+    Width = 130
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Bottom = 6
@@ -176,10 +177,10 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 156
-    Height = 30
-    Top = 336
-    Width = 161
+    Left = 148
+    Height = 31
+    Top = 335
+    Width = 150
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6
@@ -193,10 +194,10 @@ object Pas2JSProjectOptionsFrame: TPas2JSProjectOptionsFrame
     AnchorSideLeft.Side = asrBottom
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
-    Left = 323
-    Height = 30
-    Top = 336
-    Width = 133
+    Left = 304
+    Height = 31
+    Top = 335
+    Width = 124
     Anchors = [akLeft, akBottom]
     AutoSize = True
     BorderSpacing.Left = 6

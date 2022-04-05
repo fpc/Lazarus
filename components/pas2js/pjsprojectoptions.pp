@@ -105,7 +105,7 @@ Var
   Compiler : String;
 
 begin
-  DebugLn(['SetPasJSCompileOptions START']);
+  //DebugLn(['SetPasJSCompileOptions START']);
   CompOpts.UnitOutputDirectory:='js';
 
   CompOpts.TargetFileExt:='.js';

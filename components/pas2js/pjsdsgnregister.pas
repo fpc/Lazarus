@@ -68,7 +68,7 @@ type
     function CreateHTMLFile(AProject: TLazProject; aScriptFileName: String
       ): TLazProjectFile; virtual;
     function CreateProjectSource: String; virtual;
-    Function DoInitDescriptor : TModalResult; override;
+    Function DoInitDescriptor: TModalResult; override;
     function GetNextPort: Word; virtual;
     function ShowOptionsDialog: TModalResult; virtual;
     function ShowModalOptions(Frm: TWebBrowserProjectOptionsForm): TModalResult; virtual;
@@ -92,10 +92,11 @@ type
   { TProjectPas2JSServiceWorker }
 
   TProjectPas2JSServiceWorker = class(TProjectDescriptor)
-  protected
-    function CreateProjectSource: String; virtual;
   public
     constructor Create; override;
+    function CreateProjectSource: String; virtual;
+    function InitServiceWorkerProject(AProject: TLazProject;
+      LPRFilename: string): TModalResult; virtual;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     function InitProject(AProject: TLazProject): TModalResult; override;
@@ -111,6 +112,7 @@ type
     FImagesDir: string;
     FManifestFilename: string;
     FProjectDir: string;
+    FServiceWorker: TProjectPas2JSServiceWorker;
     FServiceWorkerLPR: string;
     FWebDir: string;
   protected
@@ -141,6 +143,7 @@ type
     property WebDir: string read FWebDir write FWebDir;
     property ManifestFilename: string read FManifestFilename write FManifestFilename;
     property IconSizes: TWordDynArray read FIconSizes write FIconSizes;
+    property ServiceWorker: TProjectPas2JSServiceWorker read FServiceWorker write FServiceWorker;
   end;
 
   { TProjectPas2JSNodeJSApp }
@@ -261,6 +264,8 @@ procedure Register;
 Var
   ViewCategory : TIDECommandCategory;
   IDECommand : TIDECommand;
+  SrvWorker: TProjectPas2JSServiceWorker;
+  PWA: TProjectPas2JSProgressiveWebApp;
 
 begin
   MenuHandler:=TPas2JSMenuHandler.Create;
@@ -271,8 +276,11 @@ begin
 
   // register new-project items
   RegisterProjectDescriptor(TProjectPas2JSWebApp.Create);
-  RegisterProjectDescriptor(TProjectPas2JSProgressiveWebApp.Create);
-  RegisterProjectDescriptor(TProjectPas2JSServiceWorker.Create);
+  PWA:=TProjectPas2JSProgressiveWebApp.Create;
+  RegisterProjectDescriptor(PWA);
+  SrvWorker:=TProjectPas2JSServiceWorker.Create;
+  RegisterProjectDescriptor(SrvWorker);
+  PWA.ServiceWorker:=SrvWorker;
   RegisterProjectDescriptor(TProjectPas2JSNodeJSApp.Create);
   RegisterProjectDescriptor(TProjectPas2JSModuleApp.Create);
   Pas2JSHTMLClassDef:=TPas2JSHTMLClassDef.Create;
@@ -313,7 +321,6 @@ function TProjectPas2JSProgressiveWebApp.FileToWebFile(aFilename: string
   ): string;
 begin
   Result:=CreateRelativePath(aFilename,WebDir);
-  debugln(['AAA1 TProjectPas2JSProgressiveWebApp.FileToWebFile File=',aFilename,' WebDir=',WebDir,' Result=',Result]);
   Result:=FilenameToURLPath(Result);
 end;
 
@@ -338,8 +345,9 @@ end;
 function TProjectPas2JSProgressiveWebApp.ShowModalOptions(
   Frm: TWebBrowserProjectOptionsForm): TModalResult;
 var
-  CurProjDir, LPRFilename: String;
+  CurProjDir: String;
   Overwrites: TStringList;
+  SaveDlg: TIDESaveDialog;
 
   function CheckOverwriteFile(aFilename: string): string;
   begin
@@ -364,15 +372,35 @@ begin
   Result:=inherited ShowModalOptions(Frm);
   if Result<>mrOk then exit;
 
-  CurProjDir:=LazSelectDirectory('Project directory');
-  if CurProjDir='' then exit(mrCancel);
-  CurProjDir:=AppendPathDelim(CleanAndExpandDirectory(CurProjDir));
-  ProjectDir:=CurProjDir;
-
+  SaveDlg:=IDESaveDialogClass.Create(nil);
   Overwrites:=TStringList.Create;
   try
-    LPRFilename:=CheckOverwriteFile(CurProjDir+ExtractFileName(MainSrcFileName));
-    CheckOverwriteFile(ChangeFileExt(LPRFilename,'.lpi'));
+    InitIDEFileDialog(SaveDlg);
+    SaveDlg.Title:='New project file (.lpr)';
+    SaveDlg.Filter:='Project Pascal file (*.lpr;*.pas)|*.lpr;*.pas';
+
+    if not SaveDlg.Execute then
+      exit(mrCancel);
+
+    MainSrcFileName:=SaveDlg.FileName;
+    if not FilenameIsAbsolute(MainSrcFileName) then
+      begin
+      IDEMessageDialog('Error','Please choose a file with full path.',mtError,[mbOk]);
+      exit(mrCancel);
+      end;
+
+    MainSrcFileName:=CleanAndExpandFilename(MainSrcFileName);
+    if CompareFileExt(MainSrcFileName,'.lpi')=0 then
+      MainSrcFileName:=ChangeFileExt(MainSrcFileName,'.lpr');
+    if ExtractFileExt(MainSrcFileName)='' then
+      MainSrcFileName:=MainSrcFileName+'.lpr';
+    CurProjDir:=ExtractFilePath(MainSrcFileName);
+    if CurProjDir='' then exit(mrCancel);
+    CurProjDir:=AppendPathDelim(CurProjDir);
+    ProjectDir:=CurProjDir;
+
+    CheckOverwriteFile(MainSrcFileName);
+    CheckOverwriteFile(ChangeFileExt(MainSrcFileName,'.lpi'));
     ScriptFilename:=ExtractFileNameOnly(MainSrcFileName)+'.js';
 
     ServiceWorkerLPR:=CheckOverwriteFile(ProjectDir+ServiceWorkerLPR);
@@ -393,10 +421,10 @@ begin
       end;
 
   finally
+    SaveDlg.Free;
     Overwrites.Free;
   end;
 
-  MainSrcFileName:=LPRFilename;
   if CompareFilenames(ExtractFileNameOnly(MainSrcFileName),MainSrcName)<>0 then
     MainSrcName:=ExtractFileNameOnly(MainSrcFileName);
 end;
@@ -411,7 +439,7 @@ begin
   //debugln(['Info: [TProjectPas2JSProgressiveWebApp.CreateManifestFile] "',AFileName,'"']);
   Result:=AProject.CreateProjectFile(AFileName);
   Result.IsPartOfProject:=true;
-  AProject.CustomData.Values[PJSProjectManifestFile]:=CreateRelativePath(ProjectDir,Result.Filename);
+  AProject.CustomData.Values[PJSProjectManifestFile]:=CreateRelativePath(Result.Filename,ProjectDir);
   AProject.AddFile(Result,false);
   Src:=TStringList.Create;
   try
@@ -615,17 +643,10 @@ end;
 function TProjectPas2JSProgressiveWebApp.InitProject(AProject: TLazProject
   ): TModalResult;
 var
-  CurProjDir, MainFilename, TargetFilename: String;
-  CompOpts: TLazCompilerOptions;
+  CurProjDir: String;
 begin
-  Result:=inherited InitProject(AProject);
-  if Result<>mrOk then exit;
   Result:=mrCancel;
-
-  // lpi
-  MainFilename:=AProject.MainFile.Filename;
-  CurProjDir:=ChompPathDelim(ExtractFilePath(MainFilename));
-  AProject.ProjectInfoFile:=ChangeFileExt(MainFilename,'.lpi');
+  CurProjDir:=ChompPathDelim(ProjectDir);
 
   // create directories
   if not FilenameIsAbsolute(CurProjDir) then
@@ -633,30 +654,72 @@ begin
     debugln(['Error (pas2jsdsgn): [20220403220423] TProjectPas2JSProgressiveWebApp.InitProject project directory not absolute: '+CurProjDir]);
     exit;
     end;
-  if CompareFilenames(CurProjDir,ChompPathDelim(ProjectDir))<>0 then
-    begin
-    debugln(['Error (pas2jsdsgn): [20220403221017] TProjectPas2JSProgressiveWebApp.InitProject project directory has switched: '+CurProjDir]);
-    exit;
-    end;
-
-  if not ForceDirectoriesUTF8(CurProjDir) then
+  if not InteractiveForceDir(CurProjDir,false) then
     begin
     IDEMessageDialog('Error','Unable to create directory "'+CurProjDir+'".',mtError,[mbOK]);
     exit;
     end;
+  CurProjDir:=AppendPathDelim(CurProjDir);
 
   if not InteractiveForceDir(WebDir,true) then exit;
   if not InteractiveForceDir(ImagesDir,true) then exit;
 
+  // create service worker project
+  AProject.ProjectInfoFile:=ChangeFileExt(ServiceWorkerLPR,'.lpi');
+  Result:=ServiceWorker.InitServiceWorkerProject(AProject,ServiceWorkerLPR);
+  if Result<>mrOk then exit;
+
+  Result:=mrOk;
+end;
+
+function TProjectPas2JSProgressiveWebApp.CreateStartFiles(AProject: TLazProject
+  ): TModalResult;
+var
+  CompOpts: TLazCompilerOptions;
+  TargetFilename, MainFilename: String;
+begin
+  Result:=mrCancel;
+
+  // Note: InitProject has initialized the ServiceWorker project
   CompOpts:=AProject.LazCompilerOptions;
+  TargetFilename:=AppendPathDelim(WebDir)+'ServiceWorker';
+
+  // save ServiceWorker.lpr
+  if not InteractiveSaveFile(ServiceWorkerLPR) then exit;
+  LazarusIDE.DoOpenEditorFile(ServiceWorkerLPR,-1,-1,
+                                      [ofProjectLoading,ofRegularFile]);
+  // save ServiceWorker.lpi
+  if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+  LazarusIDE.DoCloseEditorFile(ServiceWorkerLPR,[cfQuiet,cfProjectClosing]);
+
+  // delete ServiceWorker.lpr from project
+  if AProject.MainFileID<>0 then
+    raise Exception.Create('20220405231537');
+  AProject.MainFileID:=-1;
+  AProject.RemoveUnit(0,false);
+
+  AProject.CustomData.Remove(PJSProjectServiceWorker);
+
+  // initialize PWA project
+  AProject.ProjectInfoFile:=ChangeFileExt(MainSrcFileName,'.lpi');
+  // create PWA lpr and index.html
+  if inherited InitProject(AProject)<>mrOk then exit;
+  // make sure lpi has same case as lpr
+  MainFilename:=AProject.MainFile.Filename;
+  AProject.ProjectInfoFile:=ChangeFileExt(MainFilename,'.lpi');
+
+  // set PWA targetfilename
   TargetFilename:=AppendPathDelim(WebDir)+MainSrcName;
   CompOpts.TargetFilename:=TargetFilename;
 
-  // index.html (created in inherited InitProject)
+  // save index.html
   if baoCreateHtml in Options then
     begin
     if not InteractiveSaveFile(HTMLFilename) then exit;
     end;
+
+  // open lpr and index.html in source editor
+  if inherited CreateStartFiles(AProject)<>mrOk then exit;
 
   // manifest.json
   CreateManifestFile(AProject,ManifestFilename);
@@ -669,20 +732,13 @@ begin
   if not CopyFavIcon then exit;
   if not CopyIcons then exit;
 
-  // serviceworker.lpr/lpi
-
   // save lpr
   if not InteractiveSaveFile(MainFilename) then exit;
 
-  Result:=mrOk;
-end;
-
-function TProjectPas2JSProgressiveWebApp.CreateStartFiles(AProject: TLazProject
-  ): TModalResult;
-begin
-  Result:=inherited CreateStartFiles(AProject);
   // save lpi
-  LazarusIDE.DoSaveProject([sfQuietUnitCheck]);
+  if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+
+  Result:=mrOk;
 end;
 
 { TProjectPas2JSServiceWorker }
@@ -744,6 +800,26 @@ begin
   end;
 end;
 
+function TProjectPas2JSServiceWorker.InitServiceWorkerProject(
+  AProject: TLazProject; LPRFilename: string): TModalResult;
+var
+  MainFile: TLazProjectFile;
+  CompOpts: TLazCompilerOptions;
+begin
+  MainFile:=AProject.CreateProjectFile(LPRFilename);
+  MainFile.IsPartOfProject:=true;
+  AProject.AddFile(MainFile,false);
+  AProject.MainFileID:=0;
+  CompOpts:=AProject.LazCompilerOptions;
+  SetDefaultServiceWorkerCompileOptions(CompOpts);
+  CompOpts.TargetFilename:=ExtractFileNameOnly(LPRFilename);
+  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
+  AProject.MainFile.SetSourceText(CreateProjectSource,true);
+  AProject.CustomData.Values[PJSProject]:='1';
+  AProject.CustomData.Values[PJSProjectServiceWorker]:='1';
+  Result:=mrOk;
+end;
+
 constructor TProjectPas2JSServiceWorker.Create;
 begin
   inherited Create;
@@ -763,22 +839,11 @@ end;
 
 function TProjectPas2JSServiceWorker.InitProject(AProject: TLazProject
   ): TModalResult;
-var
-  MainFile: TLazProjectFile;
-  CompOpts: TLazCompilerOptions;
 begin
   Result:=inherited InitProject(AProject);
-  MainFile:=AProject.CreateProjectFile('ServiceWorker.lpr');
-  MainFile.IsPartOfProject:=true;
-  AProject.AddFile(MainFile,false);
-  AProject.MainFileID:=0;
-  CompOpts:=AProject.LazCompilerOptions;
-  SetDefaultServiceWorkerCompileOptions(CompOpts);
-  CompOpts.TargetFilename:='ServiceWorker';
-  SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
-  AProject.MainFile.SetSourceText(CreateProjectSource,true);
-  AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectServiceWorker]:='1';
+  if Result<>mrOk then
+    exit;
+  Result:=InitServiceWorkerProject(AProject,'ServiceWorker.lpr');
 end;
 
 function TProjectPas2JSServiceWorker.CreateStartFiles(AProject: TLazProject
@@ -1489,6 +1554,15 @@ begin
   finally
     Src.Free;
   end;
+
+  HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
+  if baoMaintainHTML in Options then
+    AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
+  if baoUseBrowserConsole in Options then
+    AProject.CustomData[PJSProjectWebBrowser]:='1';
+  if baoRunOnReady in options then
+    AProject.CustomData[PJSProjectRunAtReady]:='1';
+
   Result:=HTMLFile;
 end;
 
@@ -1580,8 +1654,7 @@ end;
 function TProjectPas2JSWebApp.InitProject(AProject: TLazProject): TModalResult;
 
 var
-  MainFile,
-  HTMLFile : TLazProjectFile;
+  MainFile: TLazProjectFile;
   CompOpts: TLazCompilerOptions;
 
 begin
@@ -1620,18 +1693,8 @@ begin
   if baoCreateHtml in Options then
     begin
     debugln(['Info: [TProjectPas2JSWebApp.InitProject] HTMLFilename=',HTMLFilename]);
-    HTMLFile:=CreateHTMLFile(aProject,ScriptFilename);
-    HTMLFile.CustomData[PJSIsProjectHTMLFile]:='1';
-    if baoMaintainHTML in Options then
-      AProject.CustomData.Values[PJSProjectMaintainHTML]:='1';
-    if baoUseBrowserConsole in Options then
-      AProject.CustomData[PJSProjectWebBrowser]:='1';
-    if baoRunOnReady in options then
-      AProject.CustomData[PJSProjectRunAtReady]:='1';
+    CreateHTMLFile(AProject,ScriptFilename);
     end;
-  //AProject.AddPackageDependency('pas2js_rtl');
-  //if baoUseBrowserApp in Options then
-  //  AProject.AddPackageDependency('fcl_base_pas2js');
 end;
 
 function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject
@@ -1639,12 +1702,14 @@ function TProjectPas2JSWebApp.CreateStartFiles(AProject: TLazProject
 var
   MainFile: TLazProjectFile;
 begin
+  // open lpr in source editor
   MainFile:=AProject.MainFile;
   Result:=LazarusIDE.DoOpenEditorFile(MainFile.Filename,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
   if Result<>mrOK then
      exit;
 
+  // open html in source editor
   if baoCreateHtml in Options then
     Result:=LazarusIDE.DoOpenEditorFile(HTMLFilename,-1,-1,
                                         [ofProjectLoading,ofRegularFile]);
