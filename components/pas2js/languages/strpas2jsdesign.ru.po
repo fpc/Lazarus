@@ -180,11 +180,11 @@ msgstr "Начало диапазона запрашиваемых портов,
 
 #: strpas2jsdesign.pjsdprogressivewebappdescription
 msgid "A Web Application using a service worker, a manifest, and more to be installable."
-msgstr ""
+msgstr "Веб-приложение, использующее вспомогательный процесс, файл описания (manifest) и другие средства для обеспечения возможности быть установленным."
 
 #: strpas2jsdesign.pjsdprogressivewebapplication
 msgid "Progressive Web Application"
-msgstr ""
+msgstr "Прогрессивное веб-приложение"
 
 #: strpas2jsdesign.pjsdprojecthtmlpage
 msgid "Project HTML page:"
