@@ -49,6 +49,7 @@
       <element name="Classes"/>
       <element name="Math"/>
       <element name="Laz_AVL_Tree"/>
+      <element name="IntegerList"/>
       <element name="LCLStrConsts"/>
       <element name="LResources"/>
       <element name="LCLIntf"/>
@@ -6383,14 +6384,20 @@
         <short>
           Sets the value for the property identified by the AState argument.
         </short>
-        <descr/>
+        <descr>
+          <p>
+            <var>SetState</var> is used as the write access specifier for the Cut, DropTarget, and Focused properties.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TListItem.SetState.AState">
-        <short>TListItemState value which identifies the property updated.</short>
+        <short>
+          TListItemState value which identifies the property updated.
+        </short>
       </element>
       <element name="TListItem.SetState.AIsSet">
-        <short>New value for the property.</short>
+        <short>New value for the corresponding property.</short>
       </element>
 
       <element name="TListItem.SetData">
@@ -9583,6 +9590,7 @@
         <seealso/>
       </element>
 
+      <!-- private -->
       <element name="TCustomListView.CNNotify">
         <short>Handles the CN_NOTIFY message for the control.</short>
         <descr>
@@ -9601,7 +9609,7 @@
             <dd>Handles a mouse click on a column header.</dd>
             <dt>LVN_ITEMCHANGED</dt>
             <dd>
-              Updates the control when the focus, selection, or state values for a list item are  changed.
+              Updates the control when the focus, selection(s), or state values for a list item are changed.
             </dd>
           </dl>
           <p>
@@ -10008,12 +10016,16 @@
       </element>
 
       <element name="TCustomListView.DoItemChecked">
-        <short>Synchronizes the checked state for an item with the widgetset class.</short>
+        <short>
+          Synchronizes the checked state for an item with the widgetset class.
+        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCustomListView.DoItemChecked.AItem">
-        <short/>
+        <short>
+          List item with the checked state updated in the method.
+        </short>
       </element>
 
       <element name="TCustomListView.DoSelectItem">
@@ -10024,10 +10036,14 @@
         <seealso/>
       </element>
       <element name="TCustomListView.DoSelectItem.AItem">
-        <short/>
+        <short>
+          List item for the event notification.
+        </short>
       </element>
       <element name="TCustomListView.DoSelectItem.ASelected">
-        <short/>
+        <short>
+          True if the list item is selected.
+        </short>
       </element>
 
       <element name="TCustomListView.DoAutoAdjustLayout">
@@ -10356,6 +10372,99 @@
         <short/>
       </element>
 
+      <element name="FMultiSelList">
+        <short>
+          Member used to store the multi-selection list in the class instance.
+        </short>
+      </element>
+
+      <element name="TCustomListView.GetFirstSelected">
+        <short>
+          Gets the first item in the list view with its Selected property set to <b>True</b>.
+        </short>
+        <descr>
+          <p>
+            The return value is the <var>TListItem</var> instance returned from the corresponding method in the widgetset class instance.
+          </p>
+          <p>
+            <var>GetFirstSelected</var> is called when the value for the Selected property is read when both MultiSelect and OwnerData are enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Selected"/>
+          <link id="TCustomListView.MultiSelect"/>
+          <link id="TCustomListView.OwnerData"/>
+          <link id="TListItem"/>
+        </seealso>
+      </element>
+      <element name="TCustomListView.GetFirstSelected.Result">
+        <short>
+          The first TListItem instance with its Selected property set to True.
+        </short>
+      </element>
+
+      <element name="TCustomListView.InitMultiSelList">
+        <short>
+          Enables or disables the internal multi-selection list in the control.
+        </short>
+        <descr>
+          <p>
+            Calls the corresponding method in the widgetset class instance to apply the value in the AEnabled argument. When AEnabled is <b>True</b>, the widget (re-)creates the internal <var>TIntegerList</var> used for multi-selected items when both <var>OwnerData</var> and <var>MultiSelect</var> are set to <b>True</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.MultiSelect"/>
+          <link id="TCustomListView.OwnerData"/>
+          <link id="TCustomListView.Items"/>
+          <link id="TCustomListView.Selected"/>
+          <link id="TCustomListView.LastSelected"/>
+          <link id="TCustomListView.FMultiSelList"/>
+          <link id="#lazutils.integerlist.TIntegerList">TIntegerList</link>
+        </seealso>
+      </element>
+      <element name="TCustomListView.InitMultiSelList.AEnable">
+        <short>
+          True if the internal multi-selection list needs to be initialized. False when MultiSelect is not enabled and the list is not required.
+        </short>
+      </element>
+
+      <element name="TCustomListView.UpdateMultiSelList">
+        <short>
+          Updates the specified list item in the multi-selection list for the control.
+        </short>
+        <descr>
+          <p>
+            <var>UpdateMultiSelList</var> is a method used to add or remove the list item specified in <var>AItem</var> in the multi-selection list for the control. It calls the corresponding method in the widgetset class instance to apply the argument values.
+          </p>
+          <p>
+            The widget ensures that the internal <var>TIntegerList</var> instance used for multi-selected items is allocated when needed.
+          </p>
+          <p>
+            AItem is the <var>TListItem</var> instance added or removed in the method. When Add is <b>True</b>, the index for the list item is added to the multi-selection list if it is not already present. The Sort method in the list is called to reorder the index values after the addition. When Add is <b>False</b>, the index for the list item is deleted from the multi-selection list.
+          </p>
+          <p>
+            UpdateMultiSelList is called from the CNNotify method when LVN_ITEMCHANGED messages are handled for the control and both <var>MultiSelect</var> and <var>OwnerData</var> are enabled.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.FMultiSelList"/>
+          <link id="TCustomListView.MultiSelect"/>
+          <link id="TCustomListView.OwnerData"/>
+          <link id="TListItem.Index"/>
+          <link id="#lazutils.integerlist.TIntegerList">TIntegerList</link>
+        </seealso>
+      </element>
+      <element name="TCustomListView.UpdateMultiSelList.AItem">
+        <short>
+          The TListItem instance that is added or removed in the method.
+        </short>
+      </element>
+      <element name="TCustomListView.UpdateMultiSelList.Add">
+        <short>
+          <b>True</b> to add the list item to the multi-selection list. <b>False</b> to remove the item from the multi-selection list.
+        </short>
+      </element>
+
       <element name="TCustomListView.DblClick">
         <short>Performs actions needed when the control is double clicked.</short>
         <descr>
@@ -10403,7 +10512,7 @@
         </short>
         <descr>
           <p>
-            <var>AutoSort</var> is a <var>Boolean</var> property used to determine whether the sort column and order indicator are automatically updated when a Report view column header on the control is clicked. The default value for the property is True.
+            <var>AutoSort</var> is a <var>Boolean</var> property used to determine whether the sort column and order indicator are automatically updated when a Report view column header on the control is clicked. The default value for the property is <b>True</b>.
           </p>
           <p>
             When enabled, the value in SortColumn is set to the position for the clicked column header. Use AutoSortIndicator to control whether the sort indicator is  automatically updated for the Columns defined for the control.
@@ -10788,7 +10897,7 @@
         <short>Width of the images in the StateImages property.</short>
         <descr>
           <p>
-            StateImagesWidth is an Integer property the represents width used for state images displayed in the list view. The default value for the property is zero (0) and indicates that a default image width has not been specified.
+            <var>StateImagesWidth</var> is an <var>Integer</var> property that  represents the width used for state images displayed in the list view. The default value for the property is zero (0) and indicates that a default image width has not been specified.
           </p>
         </descr>
         <seealso/>
@@ -11026,10 +11135,16 @@
         </short>
         <descr>
           <p>
-            <var>OnSelectItem</var> is signalled when a LVIS_SELECTED message is handled for the control, and occurs after the OnChange event handler has been executed (when assigned). The value in Item may be Nil when Selected has been cleared for the list view control.
+            <var>OnSelectItem</var> is signalled from the DoSelectItem method when a LVIS_SELECTED message is handled for the control. It occurs after the OnChange event handler has been executed (when assigned), and after the value in the Selected property has been updated. The Item parameter may be <b>Nil</b> when Selected has been cleared for the list view control, or the previously selected list item when OwnerData is enabled. The ASelected argument is <var>True</var> when the list item is selected.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TCustomListView.Change"/>
+          <link id="TCustomListView.OnChange"/>
+          <link id="TCustomListView.Selected"/>
+          <link id="TCustomListView.LastSelected"/>
+          <link id="TLVSelectItemEvent"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.OnCustomDraw">
@@ -11184,7 +11299,9 @@
       </element>
 
       <element name="TCustomListView.Repaint">
-        <short>Updates the OwnerData (when used), and repaints the control.</short>
+        <short>
+          Updates the OwnerData (when used), and repaints the control.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -11266,7 +11383,7 @@
         <short>Locates the list item closest to the specified position.</short>
         <descr>
           <p>
-            GetNearestItem is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item.If no item is found Nil is returned.
+            <var>GetNearestItem</var> is used to locate a list item from a position specified in pixel coordinates relative to the top left corner of the list view. It starts looking at the position specified by the Point parameter, and moves in the direction indicated by the Direction parameter until it locates a list item.If no item is found Nil is returned.
           </p>
         </descr>
         <seealso/>
@@ -11282,31 +11399,64 @@
       </element>
 
       <element name="TCustomListView.GetNextItem">
-        <short>Gets the next list item in the given direction from the starting item.</short>
+        <short>
+          Gets the next list item in the given direction from the starting item.
+        </short>
         <descr>
           <p>
-            GetNextItem is a TListItem function used to find the next list item after StartItem in the direction given by the Direction parameter. Only items in the state indicated by the States parameter are considered. If no item is found, Nil is returned.
+            <var>GetNextItem</var> is a <var>TListItem</var> function used to find the next list item after StartItem in the direction given by the Direction parameter. Only items which include the state values in the States parameter are considered.
+          </p>
+          <p>
+            GetNextItem calls the corresponding method in the widgetset class instance to get the TListItem which meets the specified search criteria. If no list item is found for the search criteria, the return value is <b>Nil</b>.
           </p>
         </descr>
-        <seealso/>
+        <seealso>
+          <link id="TListItem"/>
+          <link id="TSearchDirection"/>
+          <link id="TListItemState"/>
+          <link id="TListItemStates"/>
+        </seealso>
       </element>
       <element name="TCustomListView.GetNextItem.Result">
-        <short/>
+        <short>
+          Next list item in the specified direction.
+        </short>
       </element>
       <element name="TCustomListView.GetNextItem.StartItem">
-        <short/>
+        <short>
+          Initial list item used to find the eligible item.
+        </short>
       </element>
       <element name="TCustomListView.GetNextItem.Direction">
-        <short/>
+        <short>
+          Direction of the search for the next list item.
+        </short>
       </element>
       <element name="TCustomListView.GetNextItem.States">
-        <short/>
+        <short>
+          Set of states values for eligible list items in the search.
+        </short>
       </element>
 
       <element name="TCustomListView.ClearSelection">
-        <short>Clears single or multi-selections in the control.</short>
-        <descr/>
-        <seealso/>
+        <short>Clears the selected items for the list view control.</short>
+        <descr>
+          <p>
+            <var>ClearSelection</var> is a method used to remove the selected attribute for one or more of the Items in the list view control.
+          </p>
+          <p>
+            When <var>MultiSelect</var> is enabled, the widgetset class instance calls its SelectAll method to set Selected attributes to <b>False</b>. The ClearSelection method in Items is also called to clear the Selected attributes stored in the class instance.
+          </p>
+          <p>
+            If MultiSelect is not enabled, the entry in Items at the position in ItemIndex sets its Selected property to <b>False</b>.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCustomListView.Items"/>
+          <link id="TCustomListView.MultiSelect"/>
+          <link id="TListItem.Selected"/>
+          <link id="TListItems.ClearSelection"/>
+        </seealso>
       </element>
 
       <element name="TCustomListView.SelectAll">
@@ -26987,7 +27137,9 @@ OldExpanded.Free;
       </element>
 
       <element name="RegisterCustomTabControl">
-        <short>Registers TCustomTabControl and its widgetset class type when needed.</short>
+        <short>
+          Registers TCustomTabControl and its widgetset class type when needed.
+        </short>
         <descr/>
         <seealso/>
       </element>
