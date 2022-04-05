@@ -1114,7 +1114,6 @@ type
     property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
-    property ProjectInfoFile: string read GetProjectInfoFile write SetProjectInfoFile;
     property PublishOptions: TPublishProjectOptions read FPublishOptions write FPublishOptions;
     property ProjResources: TProjectResources read GetProjResources;
 
