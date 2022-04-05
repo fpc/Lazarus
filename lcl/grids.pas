@@ -13120,8 +13120,15 @@ begin
   if HasIndex(Index) then
     if HasIndex(WithIndex) then begin
       BeginUpdate;
-      Items[WithIndex].Index := Index;
-      Items[Index+1].Index := WithIndex;
+      if Index < WithIndex then
+      begin
+        Items[WithIndex].Index := Index;
+        Items[Index+1].Index := WithIndex;
+      end else
+      begin
+        Items[Index].Index := WithIndex;
+        Items[WithIndex+1].Index := Index;
+      end;
       EndUpdate;
     end else
       raise Exception.Create('WithIndex out of range')
