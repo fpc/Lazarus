@@ -579,8 +579,8 @@ procedure FreeUnusedLCLHelpSystem;
 
 // URL functions
 // used names:
-//  URL: Type + Path + Params e.g. http://www.freepascal.org?param
-//  URLType: e.g. file or http
+//  URL: Scheme + Path + Params e.g. http://www.freepascal.org?param
+//  URLScheme: e.g. file or http
 //  URLPath: URL without type and without parameters (always / as path delimiter)
 //  URLParams: parameters appended by ? or #
 function FilenameToURL(const Filename: string): string;
