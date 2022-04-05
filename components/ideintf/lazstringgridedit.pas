@@ -130,8 +130,6 @@ end;
 
 procedure TStringGridEditorDlg.FormCreate(Sender: TObject);
 begin
-  FGroupBoxHeader := Groupbox.Caption;
-
   Caption := sccsSGEdtCaption;
 
   GroupBox.Caption := sccsSGEdtGrp;
@@ -158,6 +156,8 @@ begin
 
   StringGrid.ExtendedColSizing := True;
   IDEDialogLayoutList.ApplyLayout(Self);
+
+  FGroupBoxHeader := Groupbox.Caption;
 end;
 
 procedure TStringGridEditorDlg.StringGridHeaderClick(Sender: TObject; 

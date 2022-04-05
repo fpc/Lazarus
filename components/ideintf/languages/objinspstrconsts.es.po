@@ -1600,7 +1600,7 @@ msgid "Delete column #%d?"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelrow
-msgid "Delete Row"
+msgid "Delete row"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelrowno
@@ -1639,7 +1639,7 @@ msgstr "Cargar ..."
 #: objinspstrconsts.sccssgedtmoverowscols
 #, fuzzy
 #| msgid "Move Rows/Cols"
-msgid "Move Rows/Columns"
+msgid "Move rows/columns"
 msgstr "Mover Filas/Col."
 
 #: objinspstrconsts.sccssgedtopendialog

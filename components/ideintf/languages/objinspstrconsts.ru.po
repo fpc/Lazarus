@@ -5,7 +5,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2022-03-22 01:25+0300\n"
+"PO-Revision-Date: 2022-04-06 01:56+0300\n"
 "Last-Translator: Maxim Ganetsky <maxkill@mail.ru>\n"
 "Language-Team: \n"
 "Language: ru\n"
@@ -1582,11 +1582,9 @@ msgstr "Очистить"
 #: objinspstrconsts.sccssgedtcolrowinfo
 #, object-pascal-format
 msgid "(%d columns, %d rows)"
-msgstr ""
+msgstr "(столбцов: %d, строк: %d)"
 
 #: objinspstrconsts.sccssgedtdelcol
-#, fuzzy
-#| msgid "Delete Column"
 msgid "Delete column"
 msgstr "Удалить столбец"
 
@@ -1596,7 +1594,7 @@ msgid "Delete column #%d?"
 msgstr "Удалить столбец №%d?"
 
 #: objinspstrconsts.sccssgedtdelrow
-msgid "Delete Row"
+msgid "Delete row"
 msgstr "Удалить строку"
 
 #: objinspstrconsts.sccssgedtdelrowno
@@ -1606,29 +1604,25 @@ msgstr "Удалить строку №%d?"
 
 #: objinspstrconsts.sccssgedteditcoltitle
 msgid "Edit column title"
-msgstr ""
+msgstr "Редактирование заголовка столбца"
 
 #: objinspstrconsts.sccssgedteditfixedcoltitle
 msgid "Edit fixed column title"
-msgstr ""
+msgstr "Редактирование заголовка фиксированного столбца"
 
 #: objinspstrconsts.sccssgedteditrowheader
 msgid "Edit row header"
-msgstr ""
+msgstr "Редактирование заголовка строки"
 
 #: objinspstrconsts.sccssgedtgrp
 msgid "String Grid"
-msgstr "String Grid"
+msgstr "Таблица со строками"
 
 #: objinspstrconsts.sccssgedtinscol
-#, fuzzy
-#| msgid "Insert Column"
 msgid "Insert column"
 msgstr "Вставить столбец"
 
 #: objinspstrconsts.sccssgedtinsrow
-#, fuzzy
-#| msgid "Insert Row"
 msgid "Insert row"
 msgstr "Вставить строку"
 
@@ -1637,7 +1631,7 @@ msgid "Load ..."
 msgstr "Загрузить ..."
 
 #: objinspstrconsts.sccssgedtmoverowscols
-msgid "Move Rows/Columns"
+msgid "Move rows/columns"
 msgstr "Переместить строки/столбцы"
 
 #: objinspstrconsts.sccssgedtopendialog
@@ -1657,7 +1651,7 @@ msgstr "Сохранить"
 
 #: objinspstrconsts.sccssgedttitle
 msgid "Title"
-msgstr ""
+msgstr "Заголовок"
 
 #: objinspstrconsts.sccstredt
 msgctxt "objinspstrconsts.sccstredt"

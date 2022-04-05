@@ -1606,7 +1606,7 @@ msgid "Delete column #%d?"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelrow
-msgid "Delete Row"
+msgid "Delete row"
 msgstr ""
 
 #: objinspstrconsts.sccssgedtdelrowno
@@ -1645,7 +1645,7 @@ msgstr "読み込み ..."
 #: objinspstrconsts.sccssgedtmoverowscols
 #, fuzzy
 #| msgid "Move Rows/Cols"
-msgid "Move Rows/Columns"
+msgid "Move rows/columns"
 msgstr "行/列を移動"
 
 #: objinspstrconsts.sccssgedtopendialog
