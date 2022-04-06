@@ -19,7 +19,7 @@ program CreateMacApplication;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, SysUtils, CustApp, MacOSFiles, MacApplicationRes, FileUtil;
+  Classes, SysUtils, CustApp, MacOSFiles, MacApplicationRes, LazFileUtils;
   
 type
 
