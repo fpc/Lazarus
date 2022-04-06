@@ -4171,8 +4171,30 @@
 
       <element name="TGridColumns.ExchangeColumn">
         <short>Exchanges the positions for the specified columns.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>ExchangeColumn</var> is a method used to swap the positions for the grid columns specified in the Index and WithIndex parameters. The arguments contain the ordinal positions for the respective grid columns in Items that are swapped in the method.
+          </p>
+          <p>
+            ExchangeColumn calls HasIndex to ensure that both values within the range allowed (0..Count-1). An exception is raised if either value is not in the required range for the column collection.
+          </p>
+          <p>
+            The order for the index positions is not significant; the column with the larger of the two index values is updated first. This prevents an exception from being raised when the column positions are swapped.
+          </p>
+          <p>
+            ExchangeColumn swaps the values for the Index properties for the corresponding TGridColumn instances in Items. The Grid control associated with the collection is notified when the Index properties are updated, and the grid moves the content for the updated columns.
+          </p>
+        </descr>
+        <errors>
+          Raises an Exception if values in Index or WithIndex are not within the range allowed for the collection.
+        </errors>
+        <seealso>
+          <link id="TGridColumns.Items"/>
+          <link id="TGridColumns.Grid"/>
+          <link id="TGridColumn"/>
+          <link id="TCustomGrid"/>
+          <link id="#rtl.classes.TCollectionItem.Index">TCollectionItem.Index</link>
+        </seealso>
       </element>
       <element name="TGridColumns.ExchangeColumn.Index">
         <short>Position of a column exchanged in the method.</short>
@@ -4183,8 +4205,21 @@
 
       <element name="TGridColumns.InsertColumn">
         <short>Inserts a column at the specified index position.</short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            InsertColumn calls the Add method to create a new column instance using the ItemClass for the collection. MoveColumn is called to relocate the newly stored column to the position in the Index argument.
+          </p>
+          <p>
+            Use the Items property to access the new column by its index position.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TGridColumns.Add"/>
+          <link id="TGridColumns.MoveColumn"/>
+          <link id="TGridColumns.Items"/>
+          <link id="TGridColumn"/>
+          <link id="#rtl.classes.TCollection.ItemClass">TCollection.ItemClass</link>
+        </seealso>
       </element>
       <element name="TGridColumns.InsertColumn.Index">
         <short>Position in the collection where the column is inserted.</short>
