@@ -3555,11 +3555,13 @@ const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (2, 0); // GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 
 var
-  Adjustment: PGtkAdjustment;
+  Adjustment,hadj,vadj: PGtkAdjustment;
   AWidget: TGtk3Widget;
+  ACenter:PGtkWidget;
   ARange: PGtkRange;
   AScrollWin: PGtkScrolledWindow;
   IsScrollbarVis: Boolean;
+  w,h:gint;
 begin
   Result := 0;
   if not IsValidHandle(Handle) then
@@ -3586,18 +3588,41 @@ begin
       DebugLn('ERROR: TGtk3WidgetSet.SetScrollInfo: Wrong class extracted for scrollwin ',dbgsName(TGtk3Widget(Handle).LCLObject));
       AScrollWin := nil;
     end;
+    if Assigned(AScrollWin) then
+    begin
+      hadj := AScrollWin^.get_hadjustment;
+      vadj := AScrollWin^.get_vadjustment;
+    end else
+    begin
+      hadj:=nil;
+      vadj:=nil;
+    end;
   end;
 
   case SBStyle of
     SB_Horz:
     begin
       if not Assigned(Adjustment) and Assigned(AScrollWin) then
-        Adjustment := AScrollWin^.get_hadjustment;
+      begin
+        Adjustment := hadj;
+        if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
+        begin
+          ACenter:=AWidget.GetContainerWidget;
+          Acenter^.set_size_request(ScrollInfo.nMax - ScrollInfo.nMin,round(vadj^.upper));
+        end;
+      end;
     end;
     SB_Vert:
     begin
       if not Assigned(Adjustment) and Assigned(AScrollWin) then
-        Adjustment := AScrollWin^.get_vadjustment;
+      begin
+        Adjustment := vadj;
+        if (ScrollInfo.fMask and SIF_RANGE) <> 0 then
+        begin
+          ACenter:=AWidget.GetContainerWidget;
+          Acenter^.set_size_request(round(hadj^.upper),ScrollInfo.nMax - ScrollInfo.nMin);
+        end;
+      end;
     end;
     SB_CTL:
     begin
