@@ -132,7 +132,7 @@ type
     procedure Init; virtual;
     function  DoGetIsTypeCast: Boolean; virtual; deprecated;
     function  DoGetResultValue: TFpValue; virtual;
-    procedure ResetEvaluation;
+    procedure ResetEvaluation; virtual;
 
     Procedure ReplaceInParent(AReplacement: TFpPascalExpressionPart);
     procedure DoHandleEndOfExpression; virtual;
@@ -175,6 +175,7 @@ type
     procedure SetLastItem(AValue: TFpPascalExpressionPart);
   protected
     procedure Init; override;
+    procedure ResetEvaluation; override;
     function DebugDump(AIndent: String; AWithResults: Boolean): String; override;
   public
     destructor Destroy; override;
@@ -2411,6 +2412,15 @@ procedure TFpPascalExpressionPartContainer.Init;
 begin
   FList := TList.Create;
   inherited Init;
+end;
+
+procedure TFpPascalExpressionPartContainer.ResetEvaluation;
+var
+  i: Integer;
+begin
+  inherited ResetEvaluation;
+  for i := 0 to Count - 1 do
+    Items[i].ResetEvaluation;
 end;
 
 function TFpPascalExpressionPartContainer.DebugDump(AIndent: String;
