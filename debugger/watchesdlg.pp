@@ -1015,7 +1015,7 @@ begin
   FCurrentWatchInUpDateItem := AWatch;
   try
     tvWatches.NodeText[VNode, COL_WATCH_EXPR-1]:= AWatch.Expression;
-    if AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
+    if AWatch.Enabled and AWatch.HasAllValidParents(GetThreadId, GetStackframe) then begin
       WatchValue := AWatch.Values[GetThreadId, GetStackframe];
       if (WatchValue <> nil) and
          ( (GetSelectedSnapshot = nil) or not(WatchValue.Validity in [ddsUnknown, ddsEvaluating, ddsRequested]) )
@@ -1057,6 +1057,9 @@ begin
         end;
       end;
     end
+    else
+    if not AWatch.Enabled then
+      tvWatches.NodeText[VNode, COL_WATCH_VALUE-1]:= '<disabled>'
     else
     if (GetSelectedSnapshot = nil) and
        (DebugBoss <> nil) and (DebugBoss.State in [dsPause, dsInternalPause])
