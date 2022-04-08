@@ -105,7 +105,7 @@
             There are predefined color constants like those in Delphi, such as: <var>clBlack</var>, <var>clRed</var>, <var>clGreen</var>, and <var>clBlue</var>. There are extended color constants, like: <var>clMoneyGreen</var> and <var>clMedGray</var>. There are special color constants like: <var>clDefault</var> and <var>clNone</var>.
           </p>
           <p>
-            Additionally, there are system color constants like: <var>clWindowText</var> and <var>clForm</var>. These constants have a color and/or pattern depending on the users theme, the LCL control,  or the drawing tool (Pen, Brush, Font).
+            Additionally, there are system color constants like: <var>clWindowText</var> and <var>clForm</var>. These constants have a color and/or pattern depending on the users theme, the LCL control, or the drawing tool (Pen, Brush, Font).
           </p>
           <p>
             See <link id="ColorToRGB">ColorToRGB</link> and <link id="RGBToColor">RGBToColor</link>.
@@ -3253,7 +3253,8 @@
         <short>The <var>Brush</var> to be used to <var>Paint</var> on the current <var>Canvas</var>.
        </short>
         <descr>
-          <p>A <var>Brush</var> is typically used to fill an enclosed area on the<var>Canvas</var> with one particular color or colored pattern.
+          <p>
+            A <var>Brush</var> is typically used to fill an enclosed area on the <var>Canvas</var> with one particular color or colored pattern.
           </p>
         </descr>
         <seealso/>
@@ -3265,8 +3266,6 @@
       <element name="TBrush.FInternalUpdateIndex"/>
       <element name="TBrush.FreeReference">
         <short>Frees the widgetset reference for the Brush.</short>
-        <descr/>
-        <seealso/>
       </element>
       <element name="TBrush.GetHandle">
         <short>Gets the value for the Handle property.</short>
@@ -4597,13 +4596,17 @@
         <seealso/>
       </element>
       <element name="TGraphic.PaletteModified">
-        <short>Has the palette of colors been modified?</short>
-        <descr/>
+        <short>Indicates whether the palette of colors been modified.</short>
+        <descr>
+          <p>
+            Currently, it is used in the <file>jvcllaz</file> package in the <var>TJvImageControl</var> class.
+          </p>
+        </descr>
         <seealso/>
       </element>
       <element name="TGraphic.Transparent">
         <short>
-          <var>Transparent</var> - Some parts of the image are not opaque. i.e. the background can be seen through.
+          Indicates whether some parts of the image are not opaque.
        </short>
       </element>
       <element name="TGraphic.Width">
@@ -5524,17 +5527,31 @@
         <descr/>
         <seealso/>
       </element>
+
       <element name="TDefaultColorType">
-        <short>Indicates whether a default color applies to a font or a brush.</short>
-        <descr/>
-        <seealso/>
+        <short>
+          Indicates whether a default color applies to a font or a brush.
+        </short>
+        <descr>
+          <p>
+            Values from TDefaultColorType are passed as an argument to the GetdefaultColor method in TCanvas. It allows the the color clDefault to be resolved to the correct color value in the class instance.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCanvas.GetDefaultColor"/>
+        </seealso>
       </element>
       <element name="TDefaultColorType.dctBrush">
-        <short/>
+        <short>
+          Default color refers to the the Brush color.
+        </short>
       </element>
       <element name="TDefaultColorType.dctFont">
-        <short/>
+        <short>
+          Default color refers to the the Font color.
+        </short>
       </element>
+
       <element name="TCanvas">
         <short>Implements a drawing surface for a visual control or bitmap image.</short>
         <descr>
@@ -5882,13 +5899,15 @@
         <short>TPoint instance with the canvas coordinates for the pen.</short>
       </element>
       <element name="TCanvas.DoLockCanvas">
-        <short>Enters the critical section used to lock the canvas, and calls the inherited method.
+        <short>
+          Enters the critical section used to lock the canvas, and calls the inherited method.
        </short>
         <descr/>
         <seealso/>
       </element>
       <element name="TCanvas.DoUnlockCanvas">
-        <short>Leaves the critical section used to lock the canvas, and calls the inherited method.
+        <short>
+          Leaves the critical section used to lock the canvas, and calls the inherited method.
        </short>
         <descr/>
         <seealso/>
@@ -5914,8 +5933,7 @@
       </element>
       <element name="TCanvas.DoGetTextSize">
         <short>
-          <var>DoGetTextSize</var> calls
-          <var>TextExtent</var> to find width and height of specified text string.
+          Calls TextExtent to find the width and height of the specified text.
        </short>
         <descr/>
         <seealso>
@@ -6114,8 +6132,7 @@
       </element>
       <element name="TCanvas.DoFloodFill">
         <short>
-          <var>DoFloodFill</var> calls
-          <var>FloodFill</var>.
+          <var>DoFloodFill</var> calls the <var>FloodFill</var> method.
        </short>
         <descr/>
         <seealso>
@@ -6130,8 +6147,7 @@
       </element>
       <element name="TCanvas.DoMoveTo">
         <short>
-          <var>DoMoveTo</var> calls
-          <var>MoveTo</var>.
+          <var>DoMoveTo</var> calls the <var>MoveTo</var> method.
        </short>
         <descr/>
         <seealso/>
@@ -6144,8 +6160,7 @@
       </element>
       <element name="TCanvas.DoLineTo">
         <short>
-          <var>DoLineTo</var> calls
-          <var>LineTo</var>.
+          <var>DoLineTo</var> calls the <var>LineTo</var> method.
        </short>
         <descr/>
         <seealso/>
@@ -6180,12 +6195,11 @@
         <short>Verifies and copies the source canvas.</short>
         <descr>
           <p>
-            <var>DoCopyRect</var> checks that
-            <var>SrcCanvas</var> is of correct type then copies coordinates and calls
-            <var>CopyRect</var>.
+            <var>DoCopyRect</var> checks that <var>SrcCanvas</var> is of correct type then copies coordinates and calls <var>CopyRect</var>.
           </p>
         </descr>
-        <errors>If <var>SrcCanvas</var> is not of type <var>TCanvas</var> then writes a warning to the debug output that copying is not supported
+        <errors>
+          If <var>SrcCanvas</var> is not of type <var>TCanvas</var> then writes a warning to the debug output that copying is not supported
         </errors>
         <seealso>
           <link id="TCanvas.CopyRect"/>
@@ -6221,10 +6235,12 @@
         <short/>
       </element>
       <element name="TCanvas.CheckHelper">
-        <short>Ignored in the current implementation of the class.
+        <short>
+          Ignored in the current implementation of the class.
        </short>
         <descr/>
-        <errors>Writes a message to debug output indicating the call is ignored.
+        <errors>
+          Writes a message to debug output indicating the call is ignored.
         </errors>
         <seealso/>
       </element>
@@ -6255,7 +6271,8 @@
       <element name="TCanvas.SetClipRect">
         <short>Sets the value for the ClipRect property.</short>
         <descr>
-          <p>Overrides the method defined in the TFPCustomCanvas ancestor. Calls the inherited method. Handles conversion of the logical coordinates in the clipping rectangle to device coordinates,  and sets the clipping region to the converted values.
+          <p>
+            Overrides the method defined in the TFPCustomCanvas ancestor. Calls the inherited method. Handles conversion of the logical coordinates in the clipping rectangle to device coordinates, and sets the clipping region to the converted values.
           </p>
         </descr>
         <seealso/>
@@ -6385,50 +6402,79 @@
       <element name="TCanvas.PenChanging.APen">
         <short>Object for the event notification.</short>
       </element>
+
       <element name="TCanvas.FontChanging">
         <short>
-          <var>FontChanging</var>
-          <var/> - software emulation for call to
-          <var>OnChanging</var> event for Font.
-       </short>
-        <descr/>
-        <seealso/>
+          Implements the OnChanging event handler for the Font used on the canvas.
+        </short>
+        <descr>
+          <p>
+            <var>FontChanging</var> is assigned as the OnChanging event handler for the Font property in the constructor for the class instance. It allows the canvas class to be notified and updated when a new font is assigned to the canvas.
+          </p>
+          <p>
+            FontChanging ensures that both the Handle and the Font for the canvas are valid. No actions are performed in the method if State does not contain the values csFontValid and csHandleValid. It removes csFontValid from the States property and reselects the handle for the Font in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCanvas.Font"/>
+          <link id="TCanvas.Create"/>
+          <link id="TCanvas.OnChange"/>
+          <link id="TFont"/>
+        </seealso>
       </element>
-      <element name="TCanvas.FontChanging.APen">
-        <short/>
+      <element name="TCanvas.FontChanging.AFont">
+        <short>Not used in the current implementation of the method.</short>
       </element>
+
       <element name="TCanvas.BrushChanging">
         <short>
-          <var>BrushChanging</var>
-          <var/> - software emulation for call to
-          <var>OnChanging</var> event for Brush.
-       </short>
-        <descr/>
-        <seealso/>
+          Implements the OnChanging event handler for the Brush on the canvas.
+        </short>
+        <descr>
+          <p>
+            <var>BrushChanging</var> is assigned as the OnChanging event handler for the Brush property in the constructor for the class instance. It allows the canvas class to be notified and updated when a new brush is assigned to the canvas.
+          </p>
+          <p>
+            BrushChanging ensures that both the Handle and the Brush for the canvas are valid. No actions are performed in the method if State does not contain the values csBrushValid and csHandleValid. It removes csBrushValid from the States property and reselects the handle for the Brush in the control.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCanvas.Brush"/>
+          <link id="TCanvas.Create"/>
+          <link id="TCanvas.OnChange"/>
+          <link id="TBrush"/>
+        </seealso>
       </element>
-      <element name="TCanvas.BrushChanging.APen">
-        <short/>
+      <element name="TCanvas.BrushChanging.ABrush">
+        <short>Not used in the current implementation of the method.</short>
       </element>
+
       <element name="TCanvas.RegionChanging">
         <short>
-          <var>RegionChanging</var>
-          <var/> - software emulation for call to
-          <var>OnChanging</var> event for Region.
-       </short>
-        <descr/>
+          Implements the OnChanging event handler for the Region on the canvas.
+        </short>
+        <descr>
+          <p>
+            <var>RegionChanging</var> is assigned as the OnChanging event handler for the Region property in the constructor for the class instance. It allows the canvas class to be notified and updated when the region for the canvas is modified.
+          </p>
+          <p>
+            RegionChanging ensures that both the Handle and the Region for the canvas are valid. No actions are performed in the method if State does not contain the values csRegionValid and csHandleValid. It removes csRegionValid from the States property and reselects the handle for the Region on the control.
+          </p>
+        </descr>
         <seealso/>
       </element>
-      <element name="TCanvas.RegionChanging.APen">
-        <short/>
+      <element name="TCanvas.RegionChanging.ARegion">
+        <short>Not used in the current implementation of the method.</short>
       </element>
+
       <element name="TCanvas.RealizeAutoRedraw">
-        <short>Implements the AutoRedraw feature, when enabled.</short>
+        <short>Implements the AutoRedraw feature when enabled.</short>
         <descr>
-          <p>RealizeAutoRedraw is called when a new value for the AutoRedraw property is assigned.
+          <p>
+            RealizeAutoRedraw is called when a new value for the AutoRedraw property is assigned. No actions are performed in the method when AutoRedraw is <b>False</b>, or when the Handle for the canvas has not been allocated.
           </p>
-          <p>No actions are performed in the method when AutoRedraw is False, or when the Handle for the canvas has not been allocated.
-          </p>
-          <p>Calls the DCRedraw method in the widgetset class using the value in Handle as the device context.
+          <p>
+            RealizeAutoRedraw calls the DCRedraw method in the widgetset class using the value in Handle as the device context.
           </p>
         </descr>
         <seealso>
@@ -6436,51 +6482,63 @@
           <link id="TCanvas.Handle"/>
         </seealso>
       </element>
+
       <element name="TCanvas.RealizeAntialiasing">
         <short>Implements the Anti-aliasing feature for the canvas.</short>
         <descr>
           <p>
-            <var>RealizeAntialiasing</var> is called when a new value has been assigned to the
-            <var>AntialiasingMode</var> property. No actions are performed in the method if the
-            <var>Handle</var> has not been allocated for the canvas.
+            <var>RealizeAntialiasing</var> is called when a new value has been assigned to the <var>AntialiasingMode</var> property. No actions are performed in the method if the <var>Handle</var> has not been allocated for the canvas.
           </p>
-          <p>RealizeAntialiasing uses the value in AntialiasingMode to determine the action required in the  method.
+          <p>
+            RealizeAntialiasing uses the value in AntialiasingMode to determine the action required in the method.
           </p>
           <dl>
             <dt>amOn</dt>
-            <dd>Calls DCSetAntialiasing in the widgetset to enable anti-aliasing for the Handle.</dd>
+            <dd>
+              Calls DCSetAntialiasing in the widgetset to enable anti-aliasing for the Handle.
+            </dd>
             <dt>amOff</dt>
-            <dd>Calls DCSetAntialiasing in the widgetset to disable anti-aliasing for the Handle.</dd>
+            <dd>
+              Calls DCSetAntialiasing in the widgetset to disable anti-aliasing for the Handle.
+            </dd>
             <dt>amDontCare</dt>
-            <dd>Calls DCSetAntialiasing using the default capabilities for the widgetset.</dd>
+            <dd>
+              Calls DCSetAntialiasing using the default capabilities for the widgetset.
+            </dd>
           </dl>
         </descr>
         <seealso/>
       </element>
+
       <element name="TCanvas.RequiredState">
         <short>Ensures that all handles needed for the canvas are valid.</short>
         <descr>
           <p>
-            <var>RequiredState</var> is a procedure used to ensure that the canvas state flags include the values specified in the ReqState parameter. The
-            <var>TCanvasStates</var> values represent handles that must be allocated for the canvas.
+            <var>RequiredState</var> is a procedure used to ensure that the canvas state flags include the values specified in the ReqState parameter. The <var>TCanvasStates</var> values represent handles that must be allocated for the canvas.
           </p>
-          <p>When a state value is not present in the flags, the corresponding routine used to create the required handle is called.
+          <p>
+            When a state value is not present in the flags, the corresponding routine used to create the required handle is called.
           </p>
           <dl>
             <dt>csHandleValid</dt>
-            <dd>Calls CreateHandle, and raises an EInvalidOperation if the handle could not be allocated. Sets the AntialiasingMode for the canvas. Includes csHandleValid in the canvas state flags on success.
+            <dd>
+              Calls CreateHandle, and raises an EInvalidOperation if the handle could not be allocated. Sets the AntialiasingMode for the canvas. Includes csHandleValid in the canvas state flags on success.
             </dd>
             <dt>csFontValid</dt>
-            <dd>Calls CreateFont, and includes csFontValid in the canvas state flags on success.
+            <dd>
+              Calls CreateFont, and includes csFontValid in the canvas state flags on success.
             </dd>
             <dt>csPenValid</dt>
-            <dd>Calls CreatePen. Includes csBrushValid in the canvas state flags when the Pen style is a Brush pattern (psDash, psDot, psDashDot, psDashDotDot). Includes csPenValid in the canvas state flags on success.
+            <dd>
+              Calls CreatePen. Includes csBrushValid in the canvas state flags when the Pen style is a Brush pattern (psDash, psDot, psDashDot, psDashDotDot). Includes csPenValid in the canvas state flags on success.
             </dd>
             <dt>csBrushValid</dt>
-            <dd>Calls CreateBrush. Includes csBrushValid in the canvas state flags on success.
+            <dd>
+              Calls CreateBrush. Includes csBrushValid in the canvas state flags on success.
             </dd>
           </dl>
-          <p>RequiredState is called from method implementations prior to performing an operation which requires a specific canvas state (or handles).
+          <p>
+            RequiredState is called from method implementations prior to performing an operation which requires a specific canvas state (or handles).
           </p>
         </descr>
         <seealso/>
@@ -6491,8 +6549,8 @@
       <element name="TCanvas.SetHandle">
         <short>Sets the value for the Handle property.</short>
         <descr>
-          <p>De-selects any existing handles in the class instance, and sets the new value for the property.
-            Applies the anti-aliasing mode when the handle is valid. Updates the state flags for the canvas.
+          <p>
+            De-selects any existing handles in the class instance, and sets the new value for the property. Applies the anti-aliasing mode when the handle is valid. Updates the state flags for the canvas.
           </p>
         </descr>
         <seealso>
@@ -6532,45 +6590,39 @@
         <short>Frees the Handle for the canvas.</short>
         <descr>
           <p>
-            <var>FreeHandle</var> is a procedure used to free the
-            <var>Handle</var> for the canvas. FreeHandle sets the value in Handle to
-            <b>0</b> (
-            <b>zero</b>) to indicate that it is unassigned.
+            <var>FreeHandle</var> is a procedure used to free the <var>Handle</var> for the canvas. FreeHandle sets the value in Handle to <b>0 (zero)</b> to indicate that it is unassigned.
           </p>
         </descr>
         <seealso>
           <link id="TCanvas.Handle"/>
         </seealso>
       </element>
+
       <element name="TCanvas.Create">
         <short>
-          <var>Create</var> - constructor for
-          <var>TCanvas</var>: calls inherited
-          <var>Create</var> and sets defaults for many properties and actions.
+          Constructor for the class instance.
        </short>
         <descr>
           <p>
-            <var>Create</var> - constructor for
-            <var>TCanvas</var>: calls inherited
-            <var>Create</var> and sets defaults for many properties and actions.
+            <var>Create</var> is the constructor for <var>TCanvas</var>. It calls the inherited <var>Create</var> method and sets defaults for many properties and actions.
           </p>
-          <p>Initializes Font, Pen, and Brush and assigns their event handlers. Sets default values for Alignment, Layout, Clipping and Opacity.
+          <p>
+            It also initializes Font, Pen, and Brush properties and assigns their event handlers. It sets default values for Alignment, Layout, Clipping and Opacity.
           </p>
         </descr>
         <seealso/>
       </element>
+
       <element name="TCanvas.Destroy">
         <short>Destructor for the class instance.</short>
         <descr>
           <p>
-            <var>Destroy</var> is the destructor for
-            <var>TCanvas</var>. It  frees handles and regions, and calls the inherited
-            <var>Destroy</var>, sets font, pen and brush resources to nil
-            <var>TCanvas</var> and makes its resources available.
+            <var>Destroy</var> is the destructor for <var>TCanvas</var>. It  frees handles and regions, and calls the inherited Destroy method, sets font, pen and brush resources to <b>Nil</b> in the TCanvas class instance and makes its resources available.
           </p>
         </descr>
         <seealso/>
       </element>
+
       <element name="TCanvas.Lock">
         <short>
           <var>Lock</var>  the canvas, making it unavailable for drawing.
@@ -6591,7 +6643,8 @@
           <var>Unlock</var> or release a previously locked Canvas.
        </short>
         <descr>
-          <p>Calls the <var>UnlockCanvas</var> method in the <var>TFPCustomCanvas</var> ancestor.
+          <p>
+            Calls the <var>UnlockCanvas</var> method in the <var>TFPCustomCanvas</var> ancestor.
           </p>
         </descr>
         <seealso/>
@@ -6626,19 +6679,14 @@
           <link id="TCanvas.OnChange"/>
         </seealso>
       </element>
+
       <element name="TCanvas.SaveHandleState">
         <short>Stores the state for the Handle in the canvas.</short>
         <descr>
           <p>
-            <var>SaveHandleState</var> is used in the LCL instead of direct calls to
-            <var>SaveDC</var> and
-            <var>RestoreDC</var> in widgetset classes. Used along with
-            <var>RestoreHandleState</var>. It allows multiple device contexts to be captured and handled in a LIFO fashion.
+            <var>SaveHandleState</var> is used in the LCL instead of direct calls to <var>SaveDC</var> and <var>RestoreDC</var> in widgetset classes. Used along with <var>RestoreHandleState</var>. It allows multiple device contexts to be captured and handled in a LIFO fashion.
           </p>
         </descr>
-        <notes>
-          <note>This needs a better description. Usage?</note>
-        </notes>
         <seealso>
           <link id="TCanvas.RestoreHandleState"/>
         </seealso>
@@ -6646,33 +6694,35 @@
       <element name="TCanvas.RestoreHandleState">
         <short>Restores the previous Handle state for the canvas.</short>
         <descr/>
-        <notes>
-          <note>This needs a description. Usage?</note>
-        </notes>
         <seealso/>
       </element>
+
       <element name="TCanvas.Arc">
-        <short>Use <var>Arc</var>  to draw an elliptically curved line with the current Pen.
-       </short>
+        <short>
+          Use <var>Arc</var>  to draw an elliptically curved line with the current Pen.
+        </short>
         <descr>
-          <p>Use <var>Arc</var> to draw an elliptically curved line with the current Pen. Arc is re-introduced in TCanvas to provide additional overloads for the method found in the platform-specific LCL interface object. Parameter values passed to the overloaded methods are in turn passed to the widgetset class for the platform.
+          <p>
+            Use <var>Arc</var> to draw an elliptically curved line with the current Pen. Arc is re-introduced in TCanvas to provide additional overloads for the method found in the platform-specific LCL interface object. Parameter values passed to the overloaded methods are in turn passed to the widgetset class for the platform.
           </p>
           <p>
-            <var>ALeft</var>,
-            <var>ATop</var>,
-            <var>ABottom</var>, and
-            <var>ARight</var> represent the canvas bounds in which the drawing operation is performed.
+            <var>ALeft</var>, <var>ATop</var>, <var>ABottom</var>, and <var>ARight</var> represent the canvas bounds in which the drawing operation is performed.
           </p>
-          <p>One variant of the method provides the <var>Angle16Deg</var> and <var>Angle16DegLength</var> arguments.
+          <p>
+            One variant of the method provides the <var>Angle16Deg</var> and <var>Angle16DegLength</var> arguments.
           </p>
-          <p>Angle16Deg contains the central angle which defines the direction for the arc endpoint. Positive values indicate a counter-clockwise direction.Zero degrees lies at the 3 o'clock position. These value is expressed in 1/16ths of a degree. For example, a full  circle equals 5760 (16*360) increments.
+          <p>
+            Angle16Deg contains the central angle which defines the direction for the arc endpoint. Positive values indicate a counter-clockwise direction.Zero degrees lies at the 3 o'clock position. These value is expressed in 1/16ths of a degree. For example, a full  circle equals 5760 (16*360) increments.
           </p>
-          <p>Angle16DegLength contains the arc length used to determine the over-all circumference of the circle for with the arc is a segment.
+          <p>
+            Angle16DegLength contains the arc length used to determine the over-all circumference of the circle for with the arc is a segment.
           </p>
-          <p>Another variant provides the <var>SX</var>, <var>SY</var> and <var>EX</var>, <var>EY</var>  arguments representing the starting and ending radial points between which the Arc is drawn.
+          <p>
+            Another variant provides the <var>SX</var>, <var>SY</var> and <var>EX</var>, <var>EY</var>  arguments representing the starting and ending radial points between which the Arc is drawn.
           </p>
         </descr>
-        <version>Drawing methods which reintroduce those in the TFPCustomCanvas ancestor class were added  in LCL version 2.6.1.
+        <version>
+          Drawing methods which reintroduce those in the TFPCustomCanvas ancestor class were added  in LCL version 2.6.1.
         </version>
       </element>
       <element name="TCanvas.Arc.ALeft">
@@ -6759,8 +6809,10 @@
         <descr/>
         <seealso/>
       </element>
+
       <element name="TCanvas.BrushCopy">
-        <short>Copies part of a bitmap to a rectangle on the canvas and replaces a color with the Brush color.
+        <short>
+          Copies part of a bitmap to a rectangle on the canvas and replaces the transparent color with the Brush color.
        </short>
         <descr/>
         <seealso/>
@@ -6777,17 +6829,23 @@
       <element name="TCanvas.BrushCopy.TransparentColor">
         <short/>
       </element>
+
       <element name="TCanvas.Chord">
-        <short>Draw a filled chord shape starting and finishing at the specified angular positions on the circumference.
+        <short>
+          Draw a filled chord shape starting and finishing at the specified angular positions on the circumference.
        </short>
         <descr>
-          <p>Use Chord to draw a filled Chord-shape on the canvas.
+          <p>
+            Use Chord to draw a filled Chord-shape on the canvas.
           </p>
-          <p>The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
+          <p>
+            The angles angle1 and angle2 are 1/16th of a degree. For example, a full circle equals 5760 (16*360).
           </p>
-          <p>Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
+          <p>
+            Positive values of Angle and AngleLength mean counter-clockwise while negative values mean clockwise direction. Zero degrees is at the 3 o'clock position.
           </p>
-          <p>Alternatively the starting and ending points may be specified as radial points (sx, sy, ex, ey).
+          <p>
+            Alternatively the starting and ending points may be specified as radial points (sx, sy, ex, ey).
           </p>
         </descr>
       </element>
@@ -6895,6 +6953,7 @@
       <element name="TCanvas.StretchDraw.SrcGraphic">
         <short/>
       </element>
+
       <element name="TCanvas.Ellipse">
         <short>Draws a filled ellipse (or circle) on the canvas.</short>
         <descr/>
@@ -6917,125 +6976,312 @@
       <element name="TCanvas.Ellipse.y2">
         <short/>
       </element>
+
       <element name="TCanvas.FillRect">
         <short>
-          <var>FillRect</var> - draw a filled rectangle in the specified coordinate space, using the method for the current interface or widget set.
-       </short>
-        <descr/>
+          Fills a rectangular area on the canvas using the current Brush settings.
+        </short>
+        <descr>
+          <p>
+            <var>FillRect</var> is an overloaded method used to fill a rectangular area on the canvas using the style, color, or bitmap defined in Brush. The overloaded variants allow the vertices for the rectangle to be specified as either:
+          </p>
+          <ul>
+            <li>
+              Four separate Integer coordinates representing the top/left and bottom/right of the shape.
+            </li>
+            <li>
+              A TRect instance where the vertices are represented as either four Integers, two TPoint instances for TopLeft and BottomRight, or a vector using the TArray4IntegerType.
+            </li>
+          </ul>
+          <p>
+            FillRect calls the routine in the LCL interface used to implement the method for a specific widgetset.
+          </p>
+          <p>
+            Use Rectangle to draw a filled rectangle with borders. Use FloodFill to fill a rectangular area bounded by a specified color value.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.lclintf.FillRect">FillRect</link>
+          <link id="TCanvas.Brush"/>
+          <link id="TCanvas.FloodFill"/>
+          <link id="TCanvas.Rectangle"/>
+          <link id="#lcl.lclintf.FillRect">LCLIntf.FillRect</link>
         </seealso>
       </element>
       <element name="TCanvas.FillRect.ARect">
-        <short/>
+        <short>
+          TRect instance with the vertices for the rectangular area filled in the method.
+        </short>
       </element>
       <element name="TCanvas.FillRect.X1">
-        <short/>
+        <short>Left coordinate for the Top, Left of the rectangle.</short>
       </element>
       <element name="TCanvas.FillRect.Y1">
-        <short/>
+        <short>Top coordinate for the Top, Left of the rectangle.</short>
       </element>
       <element name="TCanvas.FillRect.X2">
-        <short/>
+        <short>Right coordinate for the Bottom, Right of the rectangle.</short>
       </element>
       <element name="TCanvas.FillRect.Y2">
-        <short/>
+        <short>Bottom coordinate for the Bottom, Right of the rectangle.</short>
       </element>
+
       <element name="TCanvas.FloodFill">
         <short>
-          <var>FloodFill</var> flood-fills an area with the given color, starting from the specified point; uses the
-          <var>FloodFill</var> method for the current interface or widget set.
-       </short>
-        <descr/>
+          Fills an area at the specified coordinates with the current Brush for the canvas.
+        </short>
+        <descr>
+          <p>
+            FloodFill is a method used to fill the area at the point specified in X, Y with the style, color, or bitmap defined in Brush.
+          </p>
+          <p>
+            FillColor contains the color value for the boundary of the fill, or the area to be filled, depending on the value in FillStyle.
+          </p>
+          <p>
+            FillStyle determines the type of fill operation performed in the method. For example:
+          </p>
+          <dl>
+            <dt>
+              fsBorder
+            </dt>
+            <dd>
+              The fill area is bounded by pixels with the color specified in FillColor. Pixels are filled in all directions with the Brush until the a pixel with the specified color is found.
+            </dd>
+            <dt>
+              fsSurface
+            </dt>
+            <dd>
+              The fill area is defined as the color specified in FillColor. Pixels with this color are filled in all directions with the Brush until no more pixels with this color are found.
+            </dd>
+          </dl>
+          <p>
+            Please note that comments in the TGraphicsFillStyle source code have these conditions reversed.
+          </p>
+          <p>
+            FloodFill calls the routine in the LCL interface used to implement the method for the widgetset. The return value from the LCL interface is ignored.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.lclintf.FloodFill">FloodFill</link>
+          <link id="TCanvas.Brush"/>
+          <link id="TColor"/>
+          <link id="TFillStyle"/>
+          <link id="TGraphicsFillStyle"/>
+          <link id="#lcl.lclintf.FloodFill">LCLIntf.FloodFill</link>
         </seealso>
       </element>
       <element name="TCanvas.FloodFill.X">
-        <short/>
+        <short>
+          Horizontal coordinate where the fill operation is performed.
+        </short>
       </element>
       <element name="TCanvas.FloodFill.Y">
-        <short/>
+        <short>
+          Vertical coordinate where the fill operation is performed.
+        </short>
       </element>
       <element name="TCanvas.FloodFill.FillColor">
-        <short/>
+        <short>
+          Color replaced or used as a boundary in the fill operation.
+        </short>
       </element>
       <element name="TCanvas.FloodFill.FillStyle">
-        <short/>
-      </element>
-      <element name="TCanvas.Frame3d">
         <short>
-          <var>Frame3d</var> - produce a frame with 3-D effect (with beveled edges etc) in the specified rectangle.
-       </short>
-        <descr/>
+          Determines whether FillColor is the boundary or the target for the fill operation.
+        </short>
+      </element>
+
+      <element name="TCanvas.Frame3D">
+        <short>
+          Draws a frame for the specified rectangle with a 3-dimensional appearance.
+        </short>
+        <descr>
+          <p>
+            <var>Frame3D</var> is an overloaded method used to draw a frame for the specified rectangle with a 3-dimensional appearance. It draws the frame using the Brush for the canvas with the style, colors, and size passed in the parameter values. Frame3D does not fill the inner area for the rectangle; it draws the frame or borders only.
+          </p>
+          <p>
+            <var>ARect</var> is the <var>TRect</var> instance with the bounds where the drawing operation is performed. It is a variable parameter updated in the method to return the inner area for the rectangle without the frame area.
+          </p>
+          <p>
+            The overloaded variants allow the drawing style and size for the 3-dimensional frame to be specified.
+          </p>
+          <p>
+            <var>Style</var> contains a value from the TGraphicsBevelCut enumeration and is used when a beveled frame is desired.
+          </p>
+          <p>
+            <var>TColor</var> values can be provided to use colors to simulate 3-Dimensional relief. <var>TopColor</var> is the color used to draw the top and left edges on the frame. <var>BottomColor</var> is used to draw the bottom and right edges on the frame. System colors like cl3DLight, cl3DHilight, cl3DDkShadow, cl3DShadow, and cl3DFace are commonly used in these parameters.
+          </p>
+          <p>
+            <var>FrameWidth</var> contains the thickness for the 3-D frame; for left and right edges it is the border width, for top and bottom edges it is the border height. The bounds in ARect are inflated by this value before exit.
+          </p>
+        </descr>
         <seealso>
-          <link id="#lcl.lclintf.Frame3d">Frame3d</link>
+          <link id="TCanvas.Brush"/>
+          <link id="TColor"/>
+          <link id="#lazutils.graphtype.TGraphicsBevelCut">TGraphicsBevelCut</link>
+          <link id="#lcl.lclintf.Frame3d">LCLIntf.Frame3D</link>
         </seealso>
       </element>
-      <element name="TCanvas.Frame3d.ARect">
-        <short/>
+      <element name="TCanvas.Frame3D.ARect">
+        <short>
+          Bounds for the rectangle on entry, the inner rectangle without the frame area on exit.
+        </short>
       </element>
-      <element name="TCanvas.Frame3d.FrameWidth">
-        <short/>
+      <element name="TCanvas.Frame3D.FrameWidth">
+        <short>
+          Thickness for the borders drawn in the method.
+        </short>
       </element>
-      <element name="TCanvas.Frame3d.Style">
-        <short/>
+      <element name="TCanvas.Frame3D.Style">
+        <short>
+          Bevel style used to draw the borders on the rectangle.
+        </short>
       </element>
+      <element name="TCanvas.Frame3D.TopColor">
+        <short>
+          Color used for the top and left edges of the frame.
+        </short>
+      </element>
+      <element name="TCanvas.Frame3D.BottomColor">
+        <short>
+          Color used for the bottom and right edges of the frame.
+        </short>
+      </element>
+
       <element name="TCanvas.Frame">
         <short>
-          Produces a <var>Frame</var> or border around the specified rectangle with a Pen.
+          Draws a frame or border around the specified rectangle using the Pen for the canvas.
         </short>
-        <descr/>
-        <seealso/>
+        <descr>
+          <p>
+            <var>Frame</var> is method used to draw a border or frame for the specified rectangle use the Pen for the canvas. Overloaded variants of the method are provided which allow the rectangle to be specified as:
+          </p>
+          <ul>
+            <li>
+              Four separate Integer coordinates representing the top/left and bottom/right of the rectangle.
+            </li>
+            <li>
+              A TRect instance where the vertices are represented as either four Integers, two TPoint instances for TopLeft and BottomRight, or a vector using the TArray4IntegerType.
+            </li>
+          </ul>
+          <p>
+            Frame sets the Style property in Brush to bsClear. This suppresses  filling the interior of the rectangle with the Color for the Brush. In others words, the area in side the frame is transparent. The Brush style is restored to its previous value prior to exit.
+          </p>
+          <p>
+            Frame calls the Rectangle method to draw the borders on the frame using the Pen for the canvas.
+          </p>
+          <p>
+            Set property values in Pen prior to calling the method, including:
+          </p>
+          <ul>
+            <li>Mode</li>
+            <li>Style</li>
+            <li>Color</li>
+            <li>Width</li>
+            <li>JoinStyle</li>
+            <li>EndCap</li>
+          </ul>
+        </descr>
+        <seealso>
+          <link id="TCanvas.Rectangle"/>
+          <link id="TCanvas.FrameRect"/>
+          <link id="TCanvas.Frame3D"/>
+          <link id="TCanvas.FloodFill"/>
+        </seealso>
       </element>
       <element name="TCanvas.Frame.ARect">
-        <short/>
+        <short>
+          TRect instance with the bounds for the rectangle.
+        </short>
       </element>
       <element name="TCanvas.Frame.X1">
-        <short/>
+        <short>
+          Left coordinate for the Top, Left of the rectangle.
+        </short>
       </element>
       <element name="TCanvas.Frame.Y1">
-        <short/>
+        <short>
+          Top coordinate for the Top, Left of the rectangle.
+        </short>
       </element>
       <element name="TCanvas.Frame.X2">
-        <short/>
+        <short>
+          Right coordinate for the Bottom, Right of the rectangle.
+        </short>
       </element>
       <element name="TCanvas.Frame.Y2">
-        <short/>
+        <short>
+          Bottom coordinate for the Bottom, Right of the rectangle.
+        </short>
       </element>
+
       <element name="TCanvas.FrameRect">
         <short>
-          <var>FrameRect</var> - produce a border around the specified rectangle with a Brush; uses the
-          <var>FrameRect</var> method of the current interface or widget set.
-       </short>
-        <descr/>
+          Draws a border around the specified rectangle with the Brush for the canvas.
+        </short>
+        <descr>
+          <p>
+            <var>FrameRect</var> is an overloaded method used to draw a frame or border for the specified rectangular area using the Brush for the canvas. Overloaded variants allow the bounds for the rectangle to be defined using:
+          </p>
+          <p>
+            Four separate Integer values representing the Top/Left and Bottom/Right coordinates for the rectangle.
+          </p>
+          <p>
+            A TRect instance where the vertices are represented as either four Integers, two TPoint instances for TopLeft and BottomRight, or a vector using the TArray4IntegerType.
+          </p>
+          <p>
+            FrameRect draws the border for the shape using the style, color, or bitmap defined in Brush. The drawing operation is always performed using a 1 pixel width / height.
+          </p>
+          <p>
+            FrameRect calls the routine in the LCL interface which implements the method for the widgetset. The return value from the LCL interface is ignored.
+          </p>
+          <p>
+            Use Frame to draw borders on a rectangle using the Pen for the canvas. Use Frame3D to draw borders using a specified bevel style or colors which simulate 3-dimensional relief.
+          </p>
+        </descr>
         <seealso>
+          <link id="TCanvas.Brush"/>
+          <link id="TCanvas.Frame"/>
+          <link id="TCanvas.Frame3D"/>
+          <link id="TCanvas.Rectangle"/>
           <link id="#LCL.LCLIntf.FrameRect">LCLIntf.FrameRect</link>
         </seealso>
       </element>
       <element name="TCanvas.FrameRect.ARect">
-        <short/>
+        <short>
+          TRect instance with the bounds for the rectangle.
+        </short>
       </element>
       <element name="TCanvas.FrameRect.X1">
-        <short/>
+        <short>
+          Left coordinate for the Top, Left of the rectangle.
+        </short>
       </element>
       <element name="TCanvas.FrameRect.Y1">
-        <short/>
+        <short>
+          Top coordinate for the Top, Left of the rectangle.
+        </short>
       </element>
       <element name="TCanvas.FrameRect.X2">
-        <short/>
+        <short>
+          Right coordinate for the Bottom, Right of the rectangle.
+        </short>
       </element>
       <element name="TCanvas.FrameRect.Y2">
-        <short/>
+        <short>
+          Bottom coordinate for the Bottom, Right of the rectangle.
+        </short>
       </element>
+
       <element name="TCanvas.GetTextMetrics">
         <short>Gets text metrics for the canvas font.</short>
         <descr>
-          <p>Calls <var>RequiredState</var> to check state flags for the canvas, and ensure that the Handle and the Font are valid. RequiredState raises an Exception if the <var>Handle</var> for the canvas is not valid.
+          <p>
+            Calls <var>RequiredState</var> to check state flags for the canvas, and ensure that the Handle and the Font are valid. RequiredState raises an Exception if the <var>Handle</var> for the canvas is not valid.
           </p>
-          <p>Calls GetTextMetrics in the LCL interface to retrieve the ascender, descender, and height metrics for the canvas Handle. The values are assigned to members in the <var>TM</var> output argument.
+          <p>
+            Calls GetTextMetrics in the LCL interface to retrieve the ascender, descender, and height metrics for the canvas Handle. The values are assigned to members in the <var>TM</var> output argument.
           </p>
-          <p>The return value is <b>True</b> when text metrics were successfully retrieved from the widgetset.
+          <p>
+            The return value is <b>True</b> when text metrics were successfully retrieved from the widgetset.
           </p>
         </descr>
         <seealso/>
@@ -7046,25 +7292,60 @@
       <element name="TCanvas.GetTextMetrics.TM">
         <short>Structure with the text metrics.</short>
       </element>
+
       <element name="TCanvas.GradientFill">
         <short>
-          <var>GradientFill</var> - fill the specified rectangle with the specified colors in a gradient with the specified direction.
-       </short>
-        <descr/>
-        <seealso/>
+          Fills a rectangle with a color gradient using the specified colors in a given direction.
+        </short>
+        <descr>
+          <p>
+            <var>GradientFill</var> fills the area inside the specified rectangle using a color gradient with the specified start and stop colors.
+          </p>
+          <p>
+            No actions are performed in the method when ARect has no discernible area; both the calculated height and width for the rectangle are 0 or a negative number.
+          </p>
+          <p>
+            The direction for the color gradient is specified in the ADirection argument. gdVertical causes the color variations to be drawn from top to bottom in the rectangle starting with the color in AStart and ending with the color in AStop. gdHorizontal causes the color variations to be draw from left to right in the rectangle, also starting with the color in AStart and ending with the color in AStop.
+          </p>
+          <p>
+            GradientFill decomposes color values in AStart and AStop into their Red, Green, and Blue component values. The differences between the byte values are varied evenly in the color gradient, and drawn as colored lines oriented in the direction opposite to the color gradient. The color setting in Pen is updated, and LineTo is used to draw the number of 1 pixel lines available in the gradient direction.
+          </p>
+          <p>
+            Please note that the settings in Pen are not stored on entry, or restored prior to exiting from the method. The Pen color will contain the color in AStop on exit.
+          </p>
+          <p>
+            Use FloodFill to fill a rectangular area bounded by or filled with a specified color value. Use FillRect to fill a rectangular area with the Brush for the canvas.
+          </p>
+        </descr>
+        <seealso>
+          <link id="TCanvas.Pen"/>
+          <link id="TCanvas.FloodFill"/>
+          <link id="TCanvas.FillRect"/>
+          <link id="TCanvas.Rectangle"/>
+          <link id="TGradientDirection"/>
+        </seealso>
       </element>
       <element name="TCanvas.GradientFill.ARect">
-        <short/>
+        <short>
+          TRect instance with the bounds for the rectangle.
+        </short>
       </element>
       <element name="TCanvas.GradientFill.AStart">
-        <short/>
+        <short>
+          TColor value used at the start of the color gradient.
+        </short>
       </element>
       <element name="TCanvas.GradientFill.AStop">
-        <short/>
+        <short>
+          TColor value used at the end of the color gradient.
+        </short>
       </element>
       <element name="TCanvas.GradientFill.ADirection">
-        <short/>
+        <short>
+          Direction for the color gradient.
+        </short>
       </element>
+
       <element name="TCanvas.RadialPie">
         <short>
           <var>RadialPie</var> draws a filled pie-shaped wedge on the canvas with specified start and end coordinates, and starting and ending angular positions.
@@ -7176,7 +7457,7 @@
       </element>
       <element name="TCanvas.Polygon">
         <short>
-          <var>Polygon</var>    draws a closed, many-sided shape on the canvas, using the value   of Pen.
+          Draws a closed, many-sided shape using the Pen for the canvas.
        </short>
         <descr>
           <p>Use <var>Polygon</var> to draw a closed, many-sided shape on the canvas, using the <var>Pen</var> for the canvas. After drawing the complete shape, <var>Polygon</var> fills the shape using the canvas <var>Brush</var>.
@@ -7220,7 +7501,8 @@
         <short/>
       </element>
       <element name="TCanvas.Polyline">
-        <short>Draws a line to connects a set of points on the canvas.
+        <short>
+          Draws a line which connects a set of points on the canvas.
        </short>
         <descr>
           <p>Use <var>Polyline</var> to connect a set of points on the <var>Canvas</var>.  If you specify only two points, <var>Polyline</var> draws a single line. The <var>Points</var> parameter is an array of points to be connected.
@@ -7240,70 +7522,135 @@
         <seealso/>
       </element>
       <element name="TCanvas.Polyline.Points">
-        <short/>
+        <short>
+          Array of or pointer to the TPoint instances for the line.
+        </short>
       </element>
       <element name="TCanvas.Polyline.StartIndex">
-        <short/>
+        <short>
+          Position of the first point used when drawing the line.
+        </short>
       </element>
       <element name="TCanvas.Polyline.NumPts">
-        <short/>
+        <short>
+          Number of points available in the pointer.
+        </short>
       </element>
+
       <element name="TCanvas.Rectangle">
-        <short>Draws a <var>Rectangle</var> with the specified coordinates.
+        <short>
+          Draws a <var>Rectangle</var> with the specified coordinates.
        </short>
         <descr>
-          <p>Uses the <var>Rectangle</var> method for the current widget set.
+          <p>
+            <var>Rectangle</var> is an overloaded method reintroduced in TCanvas. It is used to draw a rectangular shape on the drawing area for the canvas. The overloaded variants allow the coordinates to be specified as either:
+          </p>
+          <ul>
+            <li>
+              Four separate Integer values representing the top, left, bottom, and right vertices for the shape (X1, Y1, X2, Y2).
+            </li>
+            <li>
+              A TRect instance where the vertices are represented as either four Integers, two TPoint instances for TopLeft and BottomRight, or a vector using the TArray4IntegerType (Rect).
+            </li>
+          </ul>
+          <p>
+            Rectangle draws an outline (or borders) for the shape using the mode, style and width defined in Pen. The rectangle is also filled using the style, color and/or bitmap defined in Brush.
+          </p>
+          <p>
+            Use FillRect to fill a rectangular area with the current Brush without drawing its borders. Use FrameRect to draw the borders for the shape using the current Brush without filling the interior. Use Frame to draw borders for the shape using the current Pen and a clear Brush for the interior.
+          </p>
+          <p>
+            Rectangle calls the routine in the LCL interface used to implement the method for the current widgetset.
           </p>
         </descr>
         <seealso>
-          <link id="#lcl.lclintf.Rectangle">Rectangle</link>
+          <link id="TCanvas.Pen"/>
+          <link id="TCanvas.Brush"/>
+          <link id="TCanvas.FillRect"/>
+          <link id="TCanvas.FloodFill"/>
+          <link id="TCanvas.Frame"/>
+          <link id="TCanvas.FrameRect"/>
+          <link id="TCanvas.Frame3D"/>
+          <link id="#lcl.lclintf.Rectangle">LCLIntf.Rectangle</link>
         </seealso>
       </element>
       <element name="TCanvas.Rectangle.X1">
-        <short/>
+        <short>Left coordinate for the top, left of the rectangle.</short>
       </element>
       <element name="TCanvas.Rectangle.Y1">
-        <short/>
+        <short>Top coordinate for the top, left of the rectangle.</short>
       </element>
       <element name="TCanvas.Rectangle.X2">
-        <short/>
+        <short>Right coordinate for the bottom, right of the rectangle.</short>
       </element>
       <element name="TCanvas.Rectangle.Y2">
-        <short/>
+        <short>Bottom coordinate for the bottom, right of the rectangle.</short>
       </element>
       <element name="TCanvas.Rectangle.Rect">
-        <short/>
+        <short>
+          TRect instance with the coordinates for the rectangle vertices.
+        </short>
       </element>
+
       <element name="TCanvas.RoundRect">
         <short>
-          <var>RoundRect</var> - draws a rectangle at the specified position, with corners rounded by the factors RX, RY; uses the
-          <var>RoundRect</var> method of the current interface or widget set.
-       </short>
-        <descr/>
+          Draws a rectangle with rounded (or radiused) corners at the specified position.
+        </short>
+        <descr>
+          <p>
+            <var>RoundRect</var> is an overloaded method in TCanvas used to draw a rectangle with rounded (or radiused) corners. The overloaded variants allow the coordinates to be specified as either:
+          </p>
+          <ul>
+            <li>
+              Four separate Integer values representing the top, left, bottom, and right vertices for the shape (X1, Y1, X2, Y2).
+            </li>
+            <li>
+              A TRect instance where the vertices are represented as either four Integers, two TPoint instances for TopLeft and BottomRight, or a vector using the TArray4IntegerType (Rect).
+            </li>
+          </ul>
+          <p>
+            RX and RY contain the width and height (respectively) for an ellipse used to draw arc segments for the rounded corners on the rectangular shape.
+          </p>
+          <p>
+            RoundRect (like Rectangle) draws an outline (or borders) for the shape using the mode, style and width defined in Pen. The rounded rectangle is also filled using the style, color and/or bitmap defined in Brush.
+          </p>
+          <p>
+            RoundRect calls the routine in the LCL interface used to implement the method for the current widgetset.
+          </p>
+        </descr>
         <seealso>
-          <link id="#LCL.LCLIntf.RoundRect">LCLIntf.RoundRect</link>
+          <link id="#lcl.lclintf.RoundRect">LCLIntf.RoundRect</link>
         </seealso>
       </element>
       <element name="TCanvas.RoundRect.X1">
-        <short/>
+        <short>Left coordinate for the top, left of the rectangle.</short>
       </element>
       <element name="TCanvas.RoundRect.Y1">
-        <short/>
+        <short>Top coordinate for the top, left of the rectangle.</short>
       </element>
       <element name="TCanvas.RoundRect.X2">
-        <short/>
+        <short>Right coordinate for the bottom, right of the rectangle.</short>
       </element>
       <element name="TCanvas.RoundRect.Y2">
-        <short/>
+        <short>Bottom coordinate for the bottom, right of the rectangle.</short>
       </element>
       <short/>
-      <element name="TCanvas.RoundRect.RX"/>
+      <element name="TCanvas.RoundRect.RX">
+        <short>
+          Horizontal distance to the ellipse origin used for the rounded corners.
+        </short>
+      </element>
       <element name="TCanvas.RoundRect.RY">
-        <short/>
+        <short>
+          Vertical distance to the ellipse origin used for the rounded corners.
+        </short>
       </element>
       <element name="TCanvas.RoundRect.Rect">
-        <short/>
+        <short>
+          TRect instance with the coordinates for the rectangle vertices.
+        </short>
       </element>
+
       <element name="TCanvas.TextOut">
         <short>Writes text at the specified position on the canvas.
        </short>
@@ -7502,20 +7849,23 @@
       <element name="TCanvas.GetUpdatedHandle.ReqState">
         <short>Canvas state flags required in the method.</short>
       </element>
+
       <element name="TCanvas.Pixels">
-        <short>The color of the <var>Pixels</var> located at the specified position.</short>
+        <short>
+          The color of the <var>Pixels</var> located at the specified position.
+        </short>
         <descr>
           <p>
-            <var>Pixels</var> is an indexed
-            <var>TColor</var> color property which provides access to the color for pixels on the drawing surface. The
-            <var>X</var> and
-            <var>Y</var> arguments provide the horizontal and vertical offsets on the drawing surface.
+            <var>Pixels</var> is an indexed <var>TColor</var> color property which provides access to the color for pixels on the drawing surface. The <var>X</var> and <var>Y</var> arguments provide the horizontal and vertical offsets on the drawing surface.
           </p>
-          <p>Read and write access to color values in the property requires a valid <var>Handle</var> (or device context) for the canvas. <var>RequiredState</var> is called, and allocates a Handle if one does not already exist. An <var>EInvalidGraphicOperation</var> exception may be raised in the method if a valid handle cannot be acquired.
+          <p>
+            Read and write access to color values in the property requires a valid <var>Handle</var> (or device context) for the canvas. <var>RequiredState</var> is called, and allocates a Handle if one does not already exist. An <var>EInvalidGraphicOperation</var> exception may be raised in the method if a valid handle cannot be acquired.
           </p>
-          <p>Methods in the widgetset class are called to read or write the pixel color using the Handle.
+          <p>
+            Methods in the widgetset class are called to read or write the pixel color using the Handle.
           </p>
-          <p>When setting a new color for a pixel, the <var>Changing</var> method is called to signal the <var>OnChanging</var> event handler (when assigned). After setting the new color, the <var>Changed</var> method is called to signal the <var>OnChange</var> event handler (when assigned).
+          <p>
+            When setting a new color for a pixel, the <var>Changing</var> method is called to signal the <var>OnChanging</var> event handler (when assigned). After setting the new color, the <var>Changed</var> method is called to signal the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
         <seealso>
@@ -7535,12 +7885,12 @@
       <element name="TCanvas.Pixels.Y">
         <short>Vertical offset on the drawing surface.</short>
       </element>
+
       <element name="TCanvas.Handle">
         <short>Handle (or device context) for the drawing surface.</short>
         <descr>
           <p>
-            <var>Handle</var> is a
-            <var>HDC</var> property that provides the device context for the drawing surface. A valid Handle is required for nearly all operations performed on the canvas.
+            <var>Handle</var> is a <var>HDC</var> property that provides the device context for the drawing surface. A valid Handle is required for nearly all operations performed on the canvas.
           </p>
           <p>Read access calls <var>RequiredState</var>, and allocates a Handle by calling <var>CreateHandle</var> if one does not already exist. An <var>EInvalidGraphicOperation</var> exception may be raised in the method if a valid handle cannot be acquired.
           </p>
@@ -7563,14 +7913,13 @@
         <short>Text style attributes used to draw text on the canvas.</short>
         <descr>
           <p>
-            <var>TextStyle</var> is a
-            <var>TTextStyle</var> property with the attributes applied to text drawn on the canvas. It is used in methods which output text to the drawing surface, like
-            <var>TextOut</var> and
-            <var>TextRect</var>.
+            <var>TextStyle</var> is a <var>TTextStyle</var> property with the attributes applied to text drawn on the canvas. It is used in methods which output text to the drawing surface, like <var>TextOut</var> and <var>TextRect</var>.
           </p>
-          <p>Default values in the property are assigned in the constructor.
+          <p>
+            Default values in the property are assigned in the constructor.
           </p>
-          <p>See <link id="TTextStyle">TTextStyle</link> for details about members in the record and their usage.
+          <p>
+            See <link id="TTextStyle">TTextStyle</link> for details about members in the record and their usage.
           </p>
         </descr>
         <seealso>
@@ -7622,7 +7971,7 @@
             <var>Brush</var> is a
             <var>TBrush</var> property with the tool used to paint the interior of filled shapes on the drawing surface. It has settings like Color and Style, but may also use a Bitmap to fill the interior of shapes.
           </p>
-          <p>Setting a new value for the property causes the handle for the Brush to be freed and re-created in the cached resources for the canvas.The values from the new Brush are assigned to the member variable for the property.  The <var>BrushChanged</var> method is called to update the state flags for the canvas.
+          <p>Setting a new value for the property causes the handle for the Brush to be freed and re-created in the cached resources for the canvas.The values from the new Brush are assigned to the member variable for the property. The <var>BrushChanged</var> method is called to update the state flags for the canvas.
           </p>
           <p>Use <var>Pen</var> to configure the tool used to draw lines and curves on the drawing surface.
           </p>
@@ -11488,21 +11837,20 @@
       <element name="TIconImage.ReleasePalette.Result">
         <short/>
       </element>
+
       <element name="TIconImage.UpdateHandles">
         <short>
           <var>UpdateHandles</var> - returns True when Bitmap and Mask handles have been updated.
-       </short>
+        </short>
         <descr>
           <p>
-            <var>UpdateHandles</var> is a
-            <var>Boolean</var> function used to set the handles for the Bitmap and its optional Mask to the specified values.
-            <var>DeleteObject</var> is called to remove existing handle value(s) in the
-            <var>Handle</var> and
-            <var>MaskHandle</var> properties.
+            <var>UpdateHandles</var> is a <var>Boolean</var> function used to set the handles for the Bitmap and its optional Mask to the specified values. <var>DeleteObject</var> is called to remove existing handle value(s) in the <var>Handle</var> and <var>MaskHandle</var> properties.
           </p>
-          <p>The return value is <b>True</b> when the value(s) in Handle and/or MaskHandle are successfully set to the specified values.
+          <p>
+            The return value is <b>True</b> when the value(s) in Handle and/or MaskHandle are successfully set to the specified values.
           </p>
-          <p>UpdateHandles emulates the method with the same name in <var>TCustomBitmap</var>. UpdateHandles is called when the <var>TIcon</var> instance where the icon image is used calls its <var>UpdateHandles</var> method.
+          <p>
+            UpdateHandles emulates the method with the same name in <var>TCustomBitmap</var>. UpdateHandles is called when the <var>TIcon</var> instance where the icon image is used calls its <var>UpdateHandles</var> method.
           </p>
         </descr>
         <seealso/>
@@ -11516,6 +11864,7 @@
       <element name="TIconImage.UpdateHandles.AMask">
         <short>Handle for the Mask stored in the method.</short>
       </element>
+
       <element name="TIconImage.Height">
         <short>The <var>Height</var> of the Icon.</short>
         <descr/>
