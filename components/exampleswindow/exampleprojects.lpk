@@ -17,7 +17,7 @@
     </CompilerOptions>
     <Description Value="Example Projects."/>
     <License Value="GPL"/>
-    <Version Minor="7"/>
+    <Version Minor="8"/>
     <Files>
       <Item>
         <Filename Value="uintf.pas"/>

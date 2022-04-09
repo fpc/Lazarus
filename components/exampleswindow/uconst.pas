@@ -24,6 +24,8 @@ const
                                          // Immediate Local dir name under which we copy or
   cExamplesDir = 'examples_work_dir';    // download examples to. Carefull about simplifying it
   cConfigFileName = 'exampleprojectscfg.xml';
+  BaseURL = 'https://gitlab.com/dbannon/laz_examples/-/tree/main/';   // Online Examples, there for testing for now...
+
 
 resourcestring
 
@@ -50,6 +52,8 @@ resourcestring
     rsExampleDownload = 'Download';                         //  "
     rsExampleClose = 'Close';                               //  "
     rsExampleCategory = 'Category';                         //  "
+    rsExampleCopy = 'Copy to work area';                    //  "
+    rsExampleView = 'View in Browser';                      //  "
 
     // Settings Frame
     rsDirWhereExamplesGo = 'Directory where Examples go';
