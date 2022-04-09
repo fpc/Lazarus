@@ -73,7 +73,6 @@ uses PackageIntf;
 function ShowProjectWizardDlg(out ARecentProject: String): TProjectWizardSelectionType;
 var
   ProjectWizardDialog: TProjectWizardDialog;
-  Pkg: TIDEPackage;
 begin
   Result := tpws_closeIDE;
   ARecentProject := '';

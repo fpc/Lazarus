@@ -7684,7 +7684,6 @@ end;
 
 function TMainIDE.DoExampleManager: TModalResult;
 var
-  AKey : word;
   ExCommand : TIDECommand;
 begin
   Result := mrOK;

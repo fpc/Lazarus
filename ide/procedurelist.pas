@@ -94,8 +94,8 @@ type
     procedure SGDblClick(Sender: TObject);
     procedure SGDrawCell(Sender: TObject; aCol, aRow: Integer; aRect: TRect;
       {%H-}aState: TGridDrawState);
-    procedure SGMouseWheel(Sender: TObject; Shift: TShiftState;
-      WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure SGMouseWheel(Sender: TObject; {%H-}Shift: TShiftState;
+      WheelDelta: Integer; {%H-}MousePos: TPoint; var Handled: Boolean);
     procedure SGSelectCell(Sender: TObject; {%H-}aCol, aRow: Integer;
       var {%H-}CanSelect: Boolean);
     procedure SomethingChange(Sender: TObject);
