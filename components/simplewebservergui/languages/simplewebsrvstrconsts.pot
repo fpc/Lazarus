@@ -1,8 +1,16 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: simplewebsrvstrconsts.rsswaddextracommandlineoptionsforthecommandwhichstarts
+msgid "Add extra command-line options for the command which starts the webserver."
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswbindingofsocketfailed
 msgid "Binding of socket failed"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
+msgid "Browser to open HTML page, macro $(SWSBrowser)"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswdirectorynotfound
@@ -67,6 +75,10 @@ msgstr ""
 msgid "Server exe is not executable: \"%s\""
 msgstr ""
 
+#: simplewebsrvstrconsts.rsswserverextracommandlineoptionsoneperline
+msgid "Server extra command-line options (one per line)"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswsimplewebserveraddress
 msgid "Simple Web Server Address"
 msgstr ""
@@ -101,6 +113,10 @@ msgstr ""
 
 #: simplewebsrvstrconsts.rsswtryanotherport
 msgid "Try another port"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswusethisbrowserwhenopeningtheurlorhtmlfileofawebbro
+msgid "Use this browser when opening the URL or HTML file of a web browser project"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswwrongcompileserverexe

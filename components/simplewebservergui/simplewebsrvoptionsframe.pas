@@ -18,6 +18,11 @@ type
 
   TSimpleWebSrvOptsFrame = class(TAbstractIDEOptionsEditor)
     BindAnyCheckBox: TCheckBox;
+    BrowserKindComboBox: TComboBox;
+    BrowserCmdComboBox: TComboBox;
+    BrowserLabel: TLabel;
+    ServerOptionsMemo: TMemo;
+    ServerOptsLabel: TLabel;
     ServerAddrLabel: TLabel;
     ServerAddrComboBox: TComboBox;
     PortComboBox: TComboBox;
@@ -25,11 +30,13 @@ type
     ServerExeBrowseButton: TButton;
     ServerExeComboBox: TComboBox;
     ServerExeLabel: TLabel;
+    procedure BrowserKindComboBoxSelect(Sender: TObject);
     procedure ServerExeBrowseButtonClick(Sender: TObject);
   private
     FOldOptions: TSimpleWebServerOptions;
     procedure SetCombobox(aComboBox: TComboBox; const aValue: string; ListItems: TStrings);
     procedure SetComboBoxText(aComboBox: TComboBox; const aValue: string);
+    procedure BrowserKindComboBoxChanged;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -105,6 +112,11 @@ begin
   end;
 end;
 
+procedure TSimpleWebSrvOptsFrame.BrowserKindComboBoxSelect(Sender: TObject);
+begin
+  BrowserKindComboBoxChanged;
+end;
+
 procedure TSimpleWebSrvOptsFrame.SetCombobox(aComboBox: TComboBox;
   const aValue: string; ListItems: TStrings);
 begin
@@ -125,6 +137,14 @@ begin
     end;
   aComboBox.Items.Insert(0,aValue);
   aComboBox.ItemIndex:=0;
+end;
+
+procedure TSimpleWebSrvOptsFrame.BrowserKindComboBoxChanged;
+var
+  Kind: TSWSBrowserKind;
+begin
+  Kind:=StrToBrowserKind(BrowserKindComboBox.Text);
+  BrowserCmdComboBox.Enabled:=Kind=swsbkCustom;
 end;
 
 constructor TSimpleWebSrvOptsFrame.Create(TheOwner: TComponent);
@@ -155,6 +175,7 @@ procedure TSimpleWebSrvOptsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
 var
   sl: TStringList;
   Options: TSimpleWebServerOptions;
+  bk: TSWSBrowserKind;
 begin
   if not (AOptions is SupportedOptionsClass) then exit;
 
@@ -175,7 +196,20 @@ begin
 
     sl.Assign(Options.RecentLists[swsrlServerPort]);
     AddDefault(sl,IntToStr(SWSDefaultServerPort));
-    SetCombobox(PortComboBox,IntToStr(Options.Port),sl);
+    SetCombobox(PortComboBox,IntToStr(Options.ServerPort),sl);
+
+    ServerOptionsMemo.Lines:=Options.ServerOpts;
+
+    sl.Clear;
+    for bk in TSWSBrowserKind do
+      sl.Add(SWSBrowserKindNames[bk]);
+    SetCombobox(BrowserKindComboBox,SWSBrowserKindNames[Options.BrowserKind],sl);
+
+    BrowserCmdComboBox.Enabled:=Options.BrowserKind=swsbkCustom;
+    sl.Assign(Options.RecentLists[swsrlBrowserCmd]);
+    AddDefault(sl,Options.BrowserCmd);
+    SetCombobox(BrowserCmdComboBox,Options.BrowserCmd,sl);
+
   finally
     sl.Free;
   end;
@@ -185,8 +219,16 @@ procedure TSimpleWebSrvOptsFrame.Setup(ADialog: TAbstractOptionsEditorDialog);
 begin
   ServerExeLabel.Caption:=rsSWSPathOfCompileserver;
   ServerAddrLabel.Caption:=rsSWSAddress;
+
   BindAnyCheckBox.Caption:=rsSWSBindAny+' (0.0.0.0)';
+
   PortLabel.Caption:=rsSWSPort;
+
+  ServerOptsLabel.Caption:=rsSWServerExtraCommandLineOptionsOnePerLine;
+  ServerOptsLabel.Hint:=rsSWAddExtraCommandLineOptionsForTheCommandWhichStarts;
+
+  BrowserLabel.Caption:=rsSWBrowserToOpenHTMLPageMacroSWSBrowser;
+  BrowserLabel.Hint:= rsSWUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro;
 end;
 
 class function TSimpleWebSrvOptsFrame.SupportedOptionsClass: TAbstractIDEOptionsClass;
@@ -242,8 +284,12 @@ begin
   s:=Trim(PortComboBox.Text);
   i:=StrToIntDef(s,0);
   if (i>0) and (i<=65535) then
-    Options.Port:=i;
-  SetRecentList(swsrlServerPort,PortComboBox.Items,IntToStr(Options.Port));
+    Options.ServerPort:=i;
+  SetRecentList(swsrlServerPort,PortComboBox.Items,IntToStr(Options.ServerPort));
+
+  Options.BrowserKind:=StrToBrowserKind(BrowserKindComboBox.Text);
+  Options.BrowserCmd:=BrowserCmdComboBox.Text;
+  SetRecentList(swsrlBrowserCmd,BrowserCmdComboBox.Items,Options.BrowserCmd);
 
   if Options.Modified then
   begin

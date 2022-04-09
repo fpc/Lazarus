@@ -6,19 +6,20 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
   ClientHeight = 339
   ClientWidth = 565
   TabOrder = 0
-  DesignLeft = 359
-  DesignTop = 176
+  DesignLeft = 469
+  DesignTop = 358
   object ServerAddrLabel: TLabel
     AnchorSideTop.Control = ServerAddrComboBox
     AnchorSideTop.Side = asrCenter
     AnchorSideRight.Control = ServerAddrComboBox
     Left = 8
     Height = 15
-    Top = 54
+    Top = 67
     Width = 44
     BorderSpacing.Left = 20
     BorderSpacing.Right = 2
     Caption = 'Address'
+    ParentColor = False
   end
   object ServerAddrComboBox: TComboBox
     AnchorSideLeft.Control = ServerAddrLabel
@@ -27,7 +28,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 54
     Height = 30
-    Top = 46
+    Top = 59
     Width = 136
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -42,10 +43,11 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideRight.Control = PortComboBox
     Left = 8
     Height = 15
-    Top = 90
+    Top = 103
     Width = 24
     BorderSpacing.Right = 2
     Caption = 'Port'
+    ParentColor = False
   end
   object PortComboBox: TComboBox
     AnchorSideLeft.Control = PortLabel
@@ -54,7 +56,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideTop.Side = asrBottom
     Left = 34
     Height = 30
-    Top = 82
+    Top = 95
     Width = 100
     BorderSpacing.Top = 6
     BorderSpacing.Bottom = 6
@@ -63,27 +65,28 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     Text = '7777'
   end
   object ServerExeLabel: TLabel
-    AnchorSideLeft.Control = ServerAddrLabel
-    AnchorSideTop.Control = ServerExeComboBox
-    AnchorSideTop.Side = asrCenter
-    Left = 8
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
     Height = 15
-    Top = 18
+    Top = 6
     Width = 120
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Path of compileserver'
+    ParentColor = False
   end
   object ServerExeComboBox: TComboBox
     AnchorSideLeft.Control = ServerExeLabel
-    AnchorSideLeft.Side = asrBottom
+    AnchorSideTop.Control = ServerExeLabel
     AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = ServerExeBrowseButton
-    Left = 134
+    Left = 6
     Height = 30
-    Top = 10
-    Width = 400
+    Top = 23
+    Width = 528
     Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 6
-    BorderSpacing.Top = 6
+    BorderSpacing.Top = 2
     BorderSpacing.Bottom = 6
     ItemHeight = 0
     TabOrder = 2
@@ -97,7 +100,7 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideBottom.Side = asrBottom
     Left = 534
     Height = 30
-    Top = 10
+    Top = 23
     Width = 25
     Anchors = [akTop, akRight, akBottom]
     AutoSize = True
@@ -113,10 +116,86 @@ object SimpleWebSrvOptsFrame: TSimpleWebSrvOptsFrame
     AnchorSideTop.Side = asrCenter
     Left = 196
     Height = 23
-    Top = 50
+    Top = 63
     Width = 123
     BorderSpacing.Left = 6
     Caption = 'Bind Any (0.0.0.0)'
     TabOrder = 4
+  end
+  object ServerOptsLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = PortComboBox
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 131
+    Width = 268
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    Caption = 'Server extra command-line options (one per line)'
+    ParentColor = False
+  end
+  object BrowserKindComboBox: TComboBox
+    AnchorSideLeft.Control = BrowserLabel
+    AnchorSideTop.Control = BrowserLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 30
+    Top = 253
+    Width = 186
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    ItemHeight = 0
+    OnSelect = BrowserKindComboBoxSelect
+    Style = csDropDownList
+    TabOrder = 5
+  end
+  object BrowserLabel: TLabel
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ServerOptionsMemo
+    AnchorSideTop.Side = asrBottom
+    Left = 6
+    Height = 15
+    Top = 236
+    Width = 258
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 15
+    Caption = 'Browser to launch when opening project HTML'
+    ParentColor = False
+  end
+  object ServerOptionsMemo: TMemo
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = ServerOptsLabel
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 73
+    Top = 148
+    Width = 553
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    TabOrder = 6
+  end
+  object BrowserCmdComboBox: TComboBox
+    AnchorSideLeft.Control = BrowserKindComboBox
+    AnchorSideTop.Control = BrowserKindComboBox
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 21
+    Height = 30
+    Top = 285
+    Width = 538
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 15
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
+    ItemHeight = 0
+    TabOrder = 7
+    Text = 'BrowserCmdComboBox'
   end
 end

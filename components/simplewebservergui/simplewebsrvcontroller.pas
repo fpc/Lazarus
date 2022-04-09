@@ -410,7 +410,7 @@ begin
   FMainSrvBindAny:=Options.BindAny;
   FMainSrvAddr:=Options.ServerAddr;
   FMainSrvInstance.Exe:=Options.ServerExe;
-  FMainSrvInstance.Port:=Options.Port;
+  FMainSrvInstance.Port:=Options.ServerPort;
   if OldRunning then
     StartMainServer(true);
 end;
@@ -1216,6 +1216,8 @@ begin
   FMainSrvInstance.Params:=TStringListUTF8Fast.Create;
   FMainSrvInstance.Params.Add('-c');
   FMainSrvInstance.Params.Add(IniFilename);
+  // append custom options last
+  FMainSrvInstance.Params.AddStrings(Options.ServerOpts);
 
   FMainSrvInstance.Path:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'simplewebserverdir';
 

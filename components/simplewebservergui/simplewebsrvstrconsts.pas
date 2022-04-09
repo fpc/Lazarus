@@ -9,6 +9,14 @@ resourcestring
   rsSWSPathOfCompileserver = 'Path of compileserver';
   rsSWSAddress = 'Address';
   rsSWSPort = 'Port';
+  rsSWServerExtraCommandLineOptionsOnePerLine = 'Server extra command-line '
+    +'options (one per line)';
+  rsSWBrowserToOpenHTMLPageMacroSWSBrowser = 'Browser to open HTML page, macro'
+    +' $(SWSBrowser)';
+  rsSWAddExtraCommandLineOptionsForTheCommandWhichStarts = 'Add extra command-'
+    +'line options for the command which starts the webserver.';
+  rsSWUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '
+    +'when opening the URL or HTML file of a web browser project';
   rsSWSBindAny = 'Bind Any';
   rsSWSUserOrigin = 'User';
   rsSWError = 'Error';
