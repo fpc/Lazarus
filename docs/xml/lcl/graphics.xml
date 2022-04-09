@@ -167,12 +167,7 @@
       <element name="TFontStyle">
         <short>Represents font styles or variants.</short>
         <descr>
-          <var>TFontStyle</var> is an enumerated type with values used to represent a style or variant for a typeface. Value(s) from TFontStyle are stored in the
-          <var>TFontStyles</var> and
-          <var>TFontStylesBase</var> set types, and used to implement the
-          <var>Style</var> members in
-          <var>TFontData</var> and
-          <var>TFont</var>.
+          <var>TFontStyle</var> is an enumerated type with values used to represent a style or variant for a typeface. Value(s) from TFontStyle are stored in the <var>TFontStyles</var> and <var>TFontStylesBase</var> set types, and used to implement the <var>Style</var> members in <var>TFontData</var> and <var>TFont</var>.
         </descr>
         <seealso>
           <link id="TFontStyles"/>
@@ -196,9 +191,7 @@
         <short>Set type used to store TFontStyle value(s).</short>
         <descr>
           <p>
-            <var>TFontStyles</var> is a set type used to store
-            <b>0</b> (
-            <b>zero</b>) or more values from the
+            <var>TFontStyles</var> is a set type used to store <b>0</b> (<b>zero</b>) or more values from the
             <var>TFontStyle</var> enumeration.
           </p>
         </descr>
@@ -212,13 +205,7 @@
         <short>Set type used to store TFontStyle value(s).</short>
         <descr>
           <p>
-            <var>TFontStylesBase</var> is a set type used to store
-            <b>0</b> (
-            <b>zero</b>) or more values from the
-            <var>TFontStyle</var> enumeration.  It is used to implement the
-            <var>Style</var> member in
-            <var>TFontData</var> and
-            <var>TFont</var>.
+            <var>TFontStylesBase</var> is a set type used to store <b>0</b> (<b>zero</b>) or more values from the <var>TFontStyle</var> enumeration. It is used to implement the <var>Style</var> member in <var>TFontData</var> and <var>TFont</var>.
           </p>
         </descr>
         <seealso>
@@ -303,7 +290,7 @@
         </seealso>
       </element>
       <element name="TFontData.Handle">
-        <short>The Operating System <var>Handle</var> for the  <var>Font</var>.
+        <short>The Operating System <var>Handle</var> for the <var>Font</var>.
        </short>
       </element>
       <element name="TFontData.Height">
@@ -1827,13 +1814,10 @@
         <short>Frees the widgetset font reference in the class instance.</short>
         <descr>
           <p>
-            <var>FreeReference</var> calls the inherited
-            <var>Changing</var> method to signal the
-            <var>OnChanging</var> event handler (when assigned). FreeReference ensures that a cache font handle for the font reference is removed from the FontResourceCache. If the font handle is not cached, the handle is deleted and the LCL handle in the font reference is set to
-            <b>0</b> (
-            <b>zero</b>).
+            <var>FreeReference</var> calls the inherited <var>Changing</var> method to signal the <var>OnChanging</var> event handler (when assigned). FreeReference ensures that a cache font handle for the font reference is removed from the FontResourceCache. If the font handle is not cached, the handle is deleted and the LCL handle in the font reference is set to <b>0</b> (<b>zero</b>).
           </p>
-          <p>FreeReference is called from methods which set the value in font properties like: Name, Size, Pitch, Height, Style, and Orientation. It is also called when the class instance is freed.
+          <p>
+            FreeReference is called from methods which set the value in font properties like: Name, Size, Pitch, Height, Style, and Orientation. It is also called when the class instance is freed.
           </p>
         </descr>
         <seealso>
@@ -3055,7 +3039,7 @@
         <seealso/>
       </element>
       <element name="TPen.Color">
-        <short>The <var>Color </var>of the current <var>Pen</var>.
+        <short>The <var>Color</var> of the current <var>Pen</var>.
        </short>
         <descr>
           <p>
@@ -3069,15 +3053,16 @@
         <short>Whether the Pen is <var>Cosmetic</var>, or non-geometric.</short>
         <descr>
           <p>
-            <var>Cosmetic</var> is a
-            <var>Boolean</var> property which indicates whether the pen is a Cosmetic one. When set to
-            <b>False</b>, it is a Geometric Pen.
+            <var>Cosmetic</var> is a <var>Boolean</var> property which indicates whether the pen is a Cosmetic one. When set to <b>False</b>, it is a Geometric Pen.
           </p>
-          <p>A Pen can be either Cosmetic or Geometric. A cosmetic pen is always 1 pixel wide, while a geometric pen can have any width. The width of a geometric pen is defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to a canvas. Operations using a cosmetic pen are faster.
+          <p>
+            A Pen can be either Cosmetic or Geometric. A cosmetic pen is always 1 pixel wide, while a geometric pen can have any width. The width of a geometric pen is defined in world units and thus depends on transforms (scaling, rotation, shear, reflection) applied to a canvas. Operations using a cosmetic pen are faster.
           </p>
-          <p>The default value for the property is <b>True</b>.
+          <p>
+            The default value for the property is <b>True</b>.
           </p>
-          <p>Setting a new value for the property causes the pen <var>Reference</var> to be re-created. The <var>Changed</var> method is called to signal the <var>OnChange</var> event handler (when assigned).
+          <p>
+            Setting a new value for the property causes the pen <var>Reference</var> to be re-created. The <var>Changed</var> method is called to signal the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
       </element>
@@ -3330,7 +3315,7 @@
       <element name="TBrush.DoCopyProps">
         <short>
           <var>DoCopyProps</var> - if the
-          <var>From</var>argument is another
+          <var>From</var> argument is another
           <var>Brush</var>, frees reference before calling inherited method, then sets the
           <var>Changed</var> property.
         </short>
@@ -3884,12 +3869,10 @@
        </short>
         <descr>
           <p>
-            <var>Changed</var> is a procedure used to perform actions needed when the image data for the class instance has been changed. Changed sets the value in
-            <var>Modified</var> to
-            <b>True</b>, and signals the
-            <var>OnChange</var> event handler (when assigned).
+            <var>Changed</var> is a procedure used to perform actions needed when the image data for the class instance has been changed. Changed sets the value in <var>Modified</var> to <b>True</b>, and signals the <var>OnChange</var> event handler (when assigned).
           </p>
-          <p>Changed is called when the value in Modified is changed from <b>False</b> to <b>True</b>.
+          <p>
+            Changed is called when the value in Modified is changed from <b>False</b> to <b>True</b>.
           </p>
         </descr>
         <seealso>
@@ -3932,16 +3915,13 @@
        </short>
         <descr>
           <p>
-            <var>Draw</var> is an
-            <b>abstract virtual</b> procedure used to render data in the graphic to the specified Canvas using the given coordinate rectangle. Draw must be implemented in a descendent class to perform actions required for a specific image format.
+            <var>Draw</var> is an <b>abstract virtual</b> procedure used to render data in the graphic to the specified Canvas using the given coordinate rectangle. Draw must be implemented in a descendent class to perform actions required for a specific image format.
           </p>
           <p>
-            <var>Canvas</var> is the
-            <var>TCanvas</var> instance where the graphic is rendered.
+            <var>Canvas</var> is the <var>TCanvas</var> instance where the graphic is rendered.
           </p>
           <p>
-            <var>Rect</var> is a
-            <var>TRect</var> instance with the coordinates where graphic is drawn on the Canvas.
+            <var>Rect</var> is a <var>TRect</var> instance with the coordinates where graphic is drawn on the Canvas.
           </p>
         </descr>
         <seealso/>
@@ -3957,12 +3937,10 @@
        </short>
         <descr>
           <p>
-            <var>GetEmpty</var> is an
-            <b>abstract virtual</b>
-            <var>Boolean</var> function used to get the value for the Empty property. The return value is
-            <b>True</b> when no image data exists for the graphic.
+            <var>GetEmpty</var> is an <b>abstract virtual</b> <var>Boolean</var> function used to get the value for the Empty property. The return value is <b>True</b> when no image data exists for the graphic.
           </p>
-          <p>GetEmpty must be implemented in a descendent class to provide support for a specific image format.
+          <p>
+            GetEmpty must be implemented in a descendent class to provide support for a specific image format.
           </p>
         </descr>
         <seealso>
@@ -4456,8 +4434,7 @@
             <var>GetFileExtensions</var> is a
             <var>String</var> class function used to get a delimited list of file extensions used for graphic files supported in the class. The
             <b>'.'</b> character is omitted from file extension(s), and extensions are separated by a
-            <b>SemiColon</b> (
-            <b>;</b>) character. For example:
+            <b>SemiColon</b> (<b>;</b>) character. For example:
           </p>
           <code>'jpeg;jpg;jpe;jfif'</code>
           <p>GetFileExtensions is declared as a virtual class method, and is overridden in descendants to return the value(s) used for the supported graphic format. In TGraphic, the return value is always an empty string (<b>''</b>).
@@ -4498,8 +4475,7 @@
         <descr>
           <p>
             <var>Empty</var> is a read-only
-            <var>Boolean</var> property which indicates if the graphic is empty (contains no data). The return value is
-            <b>True</b> when no image data exists for the graphic.
+            <var>Boolean</var> property which indicates if the graphic is empty (contains no data). The return value is <b>True</b> when no image data exists for the graphic.
           </p>
         </descr>
         <seealso/>
@@ -4523,12 +4499,10 @@
         <descr>
           <p>
             <var>Modified</var> is a
-            <var>Boolean</var> property which indicates if the graphic data in the class instance has been modified. Setting the value in Modified to
-            <b>True</b> causes the
-            <var>Changed</var> method to be called to signal the
-            <var>OnChange</var> event handler (when assigned).
+            <var>Boolean</var> property which indicates if the graphic data in the class instance has been modified. Setting the value in Modified to <b>True</b> causes the <var>Changed</var> method to be called to signal the <var>OnChange</var> event handler (when assigned).
           </p>
-          <p>Modified is updated when methods in descendent classes call the <var>Changed</var> method.
+          <p>
+            Modified is updated when methods in descendent classes call the <var>Changed</var> method.
           </p>
         </descr>
         <seealso/>
@@ -4659,8 +4633,7 @@
               <var>LoadFromClipboardFormat</var> - Reads the picture from the handle provided in the given clipboard format.  If the format is not supported, an exception is generated.
             </li>
             <li>
-              <var>SaveToClipboardFormats</var> - Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are
-              <b>Nil</b>.
+              <var>SaveToClipboardFormats</var> - Allocates a global handle and writes the picture in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are <b>Nil</b>.
             </li>
             <li>
               <var>SupportsClipboardFormat</var> - Returns true if the given clipboard format  is supported by
@@ -5039,8 +5012,7 @@
           <p>
             <var>Changed</var> performs actions needed when value(s) in the class instance have been modified. In
             <var>TPicture</var>, it signals the
-            <var>OnChange</var> event handler (when assigned). No actions are performed in the method when OnChange has not been assigned (contains
-            <b>Nil</b>).
+            <var>OnChange</var> event handler (when assigned). No actions are performed in the method when OnChange has not been assigned (contains <b>Nil</b>).
           </p>
         </descr>
         <seealso>
@@ -5251,8 +5223,7 @@
           <p>
             <var>SaveToClipboardFormats</var> - Allocates a global handle and writes the picture in its native clipboard format (
             <var>CF_BITMAP</var> for bitmaps,
-            <var>CF_METAFILE</var> for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are
-            <b>Nil</b>.
+            <var>CF_METAFILE</var> for metafiles, etc.).  Formats will contain the formats written.  Returns the number of clipboard items written to the array pointed to by Formats and Datas or would be written if either Formats or Datas are <b>Nil</b>.
           </p>
         </descr>
       </element>
@@ -5405,29 +5376,25 @@
           <var>PNG</var> - Returns a png.
        </short>
         <descr>
-          <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are discarded and a blank png (
-          <var>TPortableNetworkGraphic</var>) is returned.
+          <var>PNG</var> - Returns a png.  If the contents is not already a png, the  contents are discarded and a blank png (<var>TPortableNetworkGraphic</var>) is returned.
         </descr>
       </element>
       <element name="TPicture.PNM">
         <short>
-          <var>PNM </var>- a
-          <b>PortableAnyMapGraphic </b>image.
+          <var>PNM</var> - a <b>PortableAnyMapGraphic</b> image.
        </short>
         <descr>
           <p>
-            <var>PNM </var>- a
-            <b>PortableAnyMapGraphic </b>image.
+            <var>PNM</var> - a <b>PortableAnyMapGraphic</b> image.
           </p>
-          <p>Reads a PNM image. If it is not a valid PNM image, the contents are discarded and a blank PNM is generated.
+          <p>
+            Reads a PNM image. If it is not a valid PNM image, the contents are discarded and a blank PNM is generated.
           </p>
         </descr>
       </element>
       <element name="TPicture.Graphic">
         <short>
-          <var>Graphic</var> - The
-          <var>TGraphic</var> object contained by the
-          <var>TPicture</var>.
+          <var>Graphic</var> - The <var>TGraphic</var> object contained by the <var>TPicture</var>.
        </short>
       </element>
       <element name="TPicture.Height">
@@ -7700,10 +7667,7 @@
             <var>Style</var> argument is omitted, defaults are assumed.
           </p>
           <p>
-            <b>Note:</b>
-            The exact text position depends on the specified rectangle, the
-            <var>X, Y</var> coordinates, and
-            settings in
+            <b>Note:</b> The exact text position depends on the specified rectangle, the <var>X, Y</var> coordinates, and settings in
             <var>TextStyle</var>:
           </p>
           <ul>
@@ -7951,12 +7915,10 @@
         <descr>
           <p>
             <var>AutoRedraw</var> is a
-            <var>Boolean</var> property which indicates if the window for the canvas is automatically redrawn when updated. When set to
-            <b>True</b>, the
-            <var>DCRedraw</var> method in the widgetset class is called to enable the feature for the
-            <var>Handle</var> in the canvas.
+            <var>Boolean</var> property which indicates if the window for the canvas is automatically redrawn when updated. When set to <b>True</b>, the <var>DCRedraw</var> method in the widgetset class is called to enable the feature for the <var>Handle</var> in the canvas.
           </p>
-          <p>The default value for the property is <b>False</b>.
+          <p>
+            The default value for the property is <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -8122,12 +8084,10 @@
         </seealso>
       </element>
       <element name="TCanvas.Region">
-        <short>The <var>Region</var>where the Canvas is located.</short>
+        <short>The <var>Region</var> where the Canvas is located.</short>
         <descr>
           <p>
-            <var>Region</var> is a
-            <var>TRegion</var> property which contains the rectangular area(s) which define the bounding box for the drawing surface. See
-            <link id="TRegion">TRegion</link> for more information.
+            <var>Region</var> is a <var>TRegion</var> property which contains the rectangular area(s) which define the bounding box for the drawing surface. See <link id="TRegion">TRegion</link> for more information.
           </p>
         </descr>
         <seealso>
@@ -8286,12 +8246,10 @@
           <p>Implements the abstract virtual method defined in the <var>TSharedImage</var> ancestor.
           </p>
           <p>
-            <var>FreeHandle</var> calls the
-            <var>DeleteObject</var> routine to remove the handle from the widgetset class. FreeHandle sets the value for the internal handle to
-            <b>0</b> (
-            <b>zero</b>) to indicate that it is not assigned or no longer valid.
+            <var>FreeHandle</var> calls the <var>DeleteObject</var> routine to remove the handle from the widgetset class. FreeHandle sets the value for the internal handle to <b>0</b> (<b>zero</b>) to indicate that it is not assigned or no longer valid.
           </p>
-          <p>No actions are performed in the method when the handle is already set to <b>0</b>.
+          <p>
+            No actions are performed in the method when the handle is already set to <b>0</b>.
           </p>
         </descr>
         <seealso>
@@ -8321,11 +8279,7 @@
         <descr>
           <p>
             <var>IsEmpy</var> is a
-            <var>Boolean</var> function which indicates if image content has been assigned for the shared image. The return value is
-            <b>True</b> when both the Handle and the
-            <var>SaveStream</var> for the shared image are unassigned. Specifically, Handle contains
-            <b>0</b> and SaveStream is
-            <b>Nil</b>.
+            <var>Boolean</var> function which indicates if image content has been assigned for the shared image. The return value is <b>True</b> when both the Handle and the <var>SaveStream</var> for the shared image are unassigned. Specifically, Handle contains <b>0</b> and SaveStream is <b>Nil</b>.
           </p>
         </descr>
         <seealso/>
@@ -8510,11 +8464,10 @@
         <short>Frees the Device Context (DC) for the Canvas (when assigned).</short>
         <descr>
           <p>
-            <var>FreeCanvasContext</var> is a procedure used to free the device context (DC) for the
-            <var>Canvas</var> in the raster image. No actions are performed in the method when Canvas has not been assigned (contains
-            <b>Nil</b>).
+            <var>FreeCanvasContext</var> is a procedure used to free the device context (DC) for the <var>Canvas</var> in the raster image. No actions are performed in the method when Canvas has not been assigned (contains <b>Nil</b>).
           </p>
-          <p>FreeCanvasContext casts the Canvas to a <var>TBitmapCanvas</var> class instance and calls its <var>FreeDC</var> method.
+          <p>
+            FreeCanvasContext casts the Canvas to a <var>TBitmapCanvas</var> class instance and calls its <var>FreeDC</var> method.
           </p>
           <p>FreeCanvasContext is called when values in the <var>BitmapHandle</var>, <var>MaskHandle</var>, or <var>Palette</var> properties are updated.
           </p>
@@ -8601,12 +8554,7 @@
        </short>
         <descr>
           <p>
-            <var>CanShareImage</var> is a
-            <var>Boolean</var> function which indicate if the raster image uses a shareable image class. The return value is
-            <b>True</b> when
-            <var>AClass</var> matches the value returned from the
-            <var>GetSharedImageClass</var> method, and is not
-            <var>TSharedCustomBitmap</var>. Only images of the same class type can be shared.
+            <var>CanShareImage</var> is a <var>Boolean</var> function which indicate if the raster image uses a shareable image class. The return value is <b>True</b> when <var>AClass</var> matches the value returned from the <var>GetSharedImageClass</var> method, and is not <var>TSharedCustomBitmap</var>. Only images of the same class type can be shared.
           </p>
         </descr>
         <seealso/>
@@ -8843,8 +8791,7 @@
         <descr>
           <p>
             <var>BitmapHandleNeeded</var> is a procedure used to ensures that handles for both the image and its mask are valid for the RawImage data. No actions are performed in the method when
-            <var>BitmapHandleAllocated</var> returns
-            <b>True</b>, or when RawImage data does not exist.
+            <var>BitmapHandleAllocated</var> returns <b>True</b>, or when RawImage data does not exist.
           </p>
           <p>The <var>MaskHandle</var> is not created when:
           </p>
@@ -9281,12 +9228,11 @@
         <short>Removes raw image data and frees the internal save stream.</short>
         <descr>
           <p>
-            <var>Clear</var> is an overridden method used to remove raw image data and free the internal save stream in the class instance. No actions are performed in the method when
-            <var>Empty</var> returns
+            <var>Clear</var> is an overridden method used to remove raw image data and free the internal save stream in the class instance. No actions are performed in the method when <var>Empty</var> returns
             <b>True</b>.
           </p>
-          <p>Clears set the values in <var>Height</var> and <var>Width</var> to <b>0</b> (<b>zero</b>) to reflect the new size for the image. Clear calls the <var>Changed</var> method when a
-            <var>BeginUpdate</var> process is not active.
+          <p>
+            Clears set the values in <var>Height</var> and <var>Width</var> to <b>0</b> (<b>zero</b>) to reflect the new size for the image. Clear calls the <var>Changed</var> method when a <var>BeginUpdate</var> process is not active.
           </p>
         </descr>
         <seealso>
@@ -9333,10 +9279,10 @@
           <p>When a full update was requested (loading image data), the device context for the <var>Canvas</var> and an allocated <var>BitmapHandle</var> are freed.
           </p>
           <p>
-            <var>AStreamIsValid</var> indicates if the save stream for the shared image is valid. When set to
-            <b>False</b>,  the save stream is freed. Any operation that modifies the save stream for the shared image should be performed within bracketed BeginUpdate / EndUpdate calls.
+            <var>AStreamIsValid</var> indicates if the save stream for the shared image is valid. When set to <b>False</b>,  the save stream is freed. Any operation that modifies the save stream for the shared image should be performed within bracketed BeginUpdate / EndUpdate calls.
           </p>
-          <p>EndUpdate calls <var>Changed</var> to set the value in <var>Modified</var> and to signal the  <var>OnChange</var> event handler (when assigned).
+          <p>
+            EndUpdate calls <var>Changed</var> to set the value in <var>Modified</var> and to signal the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
         <errors>Raises an EInvalidGraphicOperation exception with the message in rsRasterImageEndUpdate if the counter is already at <b>0</b> (<b>zero</b>) when EndUpdate is called.
@@ -9496,11 +9442,7 @@
           <p>The Image Descriptor in AImage is assigned to the internal <var>TRawImage</var> instance to capture the image metadata.
           </p>
           <p>
-            <var>ADataOwner</var> indicates if the internal TRawImage instance is the owner for the image data in AImage. When set to
-            <b>True</b>, values in AImage data are assigned directly to the pointer to the internal raw image data. Values include the size and content for the image data, the image mask, and the palette. When set to
-            <b>False</b>, storage for values is allocated using
-            <var>GetMem</var> and copied from AImage using the
-            <var>Move</var> routine.
+            <var>ADataOwner</var> indicates if the internal TRawImage instance is the owner for the image data in AImage. When set to <b>True</b>, values in AImage data are assigned directly to the pointer to the internal raw image data. Values include the size and content for the image data, the image mask, and the palette. When set to <b>False</b>, storage for values is allocated using <var>GetMem</var> and copied from AImage using the <var>Move</var> routine.
           </p>
         </descr>
         <seealso>
@@ -9684,11 +9626,7 @@
        </short>
         <descr>
           <p>
-            <var>HandleAllocated</var> is a
-            <var>Boolean</var> function which indicates if a valid handle has been assigned for the internal
-            <var>TSharedRasterImage</var> instance in the class. The return value is
-            <b>True</b> when the handle in the shared image contains a
-            <b>non-zero</b> value.
+            <var>HandleAllocated</var> is a <var>Boolean</var> function which indicates if a valid handle has been assigned for the internal <var>TSharedRasterImage</var> instance in the class. The return value is <b>True</b> when the handle in the shared image contains a <b>non-zero</b> value.
           </p>
           <p>Use <var>BitmapHandleAllocated</var> to determine if a <var>HBITMAP</var> handle has been assigned for the Bitmap in the class instance.
           </p>
@@ -9760,17 +9698,16 @@
             <var>Pointer</var> property which provides access to a scan line in the raster image. The scan line consists of a single row of pixels in the the raw image data.
           </p>
           <p>
-            <var>Row</var> contains the row number read from the
-            <var>TRawImage</var> instance provided by the
-            <var>GetRawImage</var> method. Row number values start at
-            <b>0</b> (
-            <b>zero</b>).
+            <var>Row</var> contains the row number read from the <var>TRawImage</var> instance provided by the <var>GetRawImage</var> method. Row number values start at <b>0</b> (<b>zero</b>).
           </p>
-          <p>The return value is a Pointer to the byte values for the requested row in the raw image data.
+          <p>
+            The return value is a Pointer to the byte values for the requested row in the raw image data.
           </p>
-          <p>Reading a value in ScanLines should always be performed inside a <b>BeginUpdate ... EndUpdate</b> sequence.
+          <p>
+            Reading a value in ScanLines should always be performed inside a <b>BeginUpdate ... EndUpdate</b> sequence.
           </p>
-          <p>ScanLine is a platform-specific property, and may not be implemented for all platforms or widgetsets.
+          <p>
+            ScanLine is a platform-specific property, and may not be implemented for all platforms or widgetsets.
           </p>
         </descr>
         <seealso/>
@@ -9796,11 +9733,10 @@
           <p>When setting a new value for the property, the TransparentMode property is updated as well. When clDefault is assigned to the property, TransparentMode is set to <var>tmAuto</var>.  For other color values, TransparentMode is set to <var>tmFixed</var>.
           </p>
           <p>
-            <var>MaskHandleAllocated</var> is called to determine if a HBITMAP handle has been allocated for the MaskHandle property. When
-            <b>True</b>, the
-            <var>MaskHandle</var> is reset to 0 to indicate the handle is no longer in use or is invalid.
+            <var>MaskHandleAllocated</var> is called to determine if a HBITMAP handle has been allocated for the MaskHandle property. When <b>True</b>, the <var>MaskHandle</var> is reset to 0 to indicate the handle is no longer in use or is invalid.
           </p>
-          <p>The <var>Changed</var> method is called to update the internal save stream for the image (when needed), set <var>Modified</var> to <b>True</b>, and signal the <var>OnChange</var> event handler (when assigned).
+          <p>
+            The <var>Changed</var> method is called to update the internal save stream for the image (when needed), set <var>Modified</var> to <b>True</b>, and signal the <var>OnChange</var> event handler (when assigned).
           </p>
         </descr>
         <seealso>
@@ -9897,13 +9833,10 @@
         <short>Frees the handle in the Palette property.</short>
         <descr>
           <p>
-            <var>FreePalette</var> is a procedure used to free the handle assigned for the
-            <var>Palette</var>. FreePalette calls
-            <var>DeleteObject</var> to release the Palette handle. The Palette handle is set to
-            <b>0</b> (
-            <b>zero</b>) to indicate that the handle is no longer in use or is invalid.
+            <var>FreePalette</var> is a procedure used to free the handle assigned for the <var>Palette</var>. FreePalette calls <var>DeleteObject</var> to release the Palette handle. The Palette handle is set to <b>0</b> (<b>zero</b>) to indicate that the handle is no longer in use or is invalid.
           </p>
-          <p>No actions are performed in the method when the Palette handle contains <b>0</b> on entry.
+          <p>
+            No actions are performed in the method when the Palette handle contains <b>0</b> on entry.
           </p>
         </descr>
         <seealso/>
@@ -10030,11 +9963,7 @@
        </short>
         <descr>
           <p>
-            <var>ImageAllocated</var> is a
-            <var>Boolean</var> function which indicates if the internal raw image data has been allocated for the shared bitmap. The return value is
-            <b>True</b> when the
-            <var>TRawImage</var> instance in the class has a value other than
-            <var>ricfNone</var> in its image descriptor.
+            <var>ImageAllocated</var> is a <var>Boolean</var> function which indicates if the internal raw image data has been allocated for the shared bitmap. The return value is <b>True</b> when the <var>TRawImage</var> instance in the class has a value other than <var>ricfNone</var> in its image descriptor.
           </p>
         </descr>
         <seealso>
@@ -10062,11 +9991,7 @@
         <short>The <var>Height</var> of the Bitmap.</short>
         <descr>
           <p>
-            <var>Height</var> is a read-only
-            <var>Integer</var> property which contains the height for the shared bitmap image as indicated in the descriptor for the raw image data. The property value is always
-            <b>0</b> (
-            <b>zero</b>) when the descriptor for the internal raw image data contains
-            <var>ricfNone</var>.
+            <var>Height</var> is a read-only <var>Integer</var> property which contains the height for the shared bitmap image as indicated in the descriptor for the raw image data. The property value is always <b>0</b> (<b>zero</b>) when the descriptor for the internal raw image data contains <var>ricfNone</var>.
           </p>
         </descr>
         <seealso>
@@ -10094,11 +10019,7 @@
         <short>The Width of the Bitmap.</short>
         <descr>
           <p>
-            <var>Width</var> is a read-only
-            <var>Integer</var> property which contains the width for the shared bitmap image as indicated in the descriptor for the raw image data. The property value is always
-            <b>0</b> (
-            <b>zero</b>) when the descriptor for the internal raw image data contains
-            <var>ricfNone</var>.
+            <var>Width</var> is a read-only <var>Integer</var> property which contains the width for the shared bitmap image as indicated in the descriptor for the raw image data. The property value is always <b>0</b> (<b>zero</b>) when the descriptor for the internal raw image data contains <var>ricfNone</var>.
           </p>
         </descr>
         <seealso>
@@ -10109,17 +10030,14 @@
       </element>
       <element name="TCustomBitmap">
         <short>
-          <var>TCustomBitmap </var>- the base class for
-          <var>TBitmap</var>.
+          <var>TCustomBitmap</var> - the base class for <var>TBitmap</var>.
        </short>
         <descr>
           <p>
-            <var>TCustomBitmap</var> is a
-            <var>TRasterImage</var> descendant which implements the base class for TBitmap. It contains image data using the
-            <b>.bmp (Windows bitmap)</b> or
-            <b>.xpm (XPixMap)</b> formats. Image data can be loaded from a file, stream, or resource. The loading routine automatically recognizes the format, and can be used to load images from a Delphi form streams (.dfm files).
+            <var>TCustomBitmap</var> is a <var>TRasterImage</var> descendant which implements the base class for TBitmap. It contains image data using the <b>.bmp (Windows bitmap)</b> or <b>.xpm (XPixMap)</b> formats. Image data can be loaded from a file, stream, or resource. The loading routine automatically recognizes the format, and can be used to load images from a Delphi form streams (.dfm files).
           </p>
-          <p>When the handle is created, it is up to the widgetset interface (gtk, qt, win32, etc.) to automatically convert it to the best internal format for the platform. That is the reason the Handle is interface dependent. To access the raw image data, see <var>TLazIntfImage</var> in <file>IntfGraphics.pas</file>.
+          <p>
+            When the handle is created, it is up to the widgetset interface (gtk, qt, win32, etc.) to automatically convert it to the best internal format for the platform. That is the reason the Handle is interface dependent. To access the raw image data, see <var>TLazIntfImage</var> in <file>IntfGraphics.pas</file>.
           </p>
           <p>Do not create instances of TCustomBitmap; use the TBitmap descendant.
           </p>
@@ -10418,11 +10336,7 @@
           <p>Ensures that the <var>RawImage</var> property is allocated prior to accessing values in the raw image data.
           </p>
           <p>
-            <var>ADescOnly</var> indicates whether the image descriptor or the the complete raw image data is required. When ADescOnly is
-            <b>True</b>, only the
-            <var>TRawImageDescription</var> in the raw image is needed. When set to
-            <var>False</var>, all values in the
-            <var>TRawImage</var> instance are required.
+            <var>ADescOnly</var> indicates whether the image descriptor or the the complete raw image data is required. When ADescOnly is <b>True</b>, only the <var>TRawImageDescription</var> in the raw image is needed. When set to <var>False</var>, all values in the <var>TRawImage</var> instance are required.
           </p>
           <p>RawImageNeeded is called from methods access the raw image data, and occurs before the value in RawImage is accessed. For example:
           </p>
@@ -11134,13 +11048,13 @@
         <short>Initializes the image reader to use the transparency settings in the class instance.</short>
         <descr>
           <p>
-            <var>InitializeReader</var> is an overridden procedure used to apply transparency settings to the image reader in
-            <var>AReader</var>. InitializeReader calls the inherited method on entry to signal the
-            <var>OnProgress</var> event handler (when assigned).
+            <var>InitializeReader</var> is an overridden procedure used to apply transparency settings to the image reader in <var>AReader</var>. InitializeReader calls the inherited method on entry to signal the <var>OnProgress</var> event handler (when assigned).
           </p>
-          <p>InitializeReader ensures that AReader is derived from <var>TLazReaderBMP</var>. No additional actions are performed in the method when AReader is not a TLazReaderBMP class instance.
+          <p>
+            InitializeReader ensures that AReader is derived from <var>TLazReaderBMP</var>. No additional actions are performed in the method when AReader is not a TLazReaderBMP class instance.
           </p>
-          <p>InitializeReader applies values from the <var>TransparentMode</var> and <var>TransparentColor</var> properties to the mask settings in AReader.
+          <p>
+            InitializeReader applies values from the <var>TransparentMode</var> and <var>TransparentColor</var> properties to the mask settings in AReader.
           </p>
           <p>
             <b>TransparentMode</b>
@@ -11241,13 +11155,10 @@
         <short>Gets the file extensions supported for the image type.</short>
         <descr>
           <p>
-            <var>GetFileExtensions</var> is an overridden
-            <var>String</var> class function used to get a delimited list of file extensions used for graphic files supported in the class. The
-            <b>'.'</b> character is omitted from file extension(s), and extensions are separated by a
-            <b>SemiColon</b> (
-            <b>;</b>) character.
+            <var>GetFileExtensions</var> is an overridden <var>String</var> class function used to get a delimited list of file extensions used for graphic files supported in the class. The <b>'.'</b> character is omitted from file extension(s), and extensions are separated by a <b>SemiColon</b> (<b>;</b>) character.
           </p>
-          <p>In TBitmap, the method returns the value <b>'bmp'</b> for the Windows Bitmap format supported in the class.
+          <p>
+            In TBitmap, the method returns the value <b>'bmp'</b> for the Windows Bitmap format supported in the class.
           </p>
         </descr>
         <seealso>
@@ -11308,10 +11219,7 @@
         <short>Implements support for the XPM (Pixmap) image format.</short>
         <descr>
           <p>
-            <var>TPixMap</var> is a
-            <var>TFPImageBitmap</var> descendant, and is a wrapper used to  handle the
-            <b>Pixmap</b> (
-            <b>'XPM'</b>) image format.
+            <var>TPixMap</var> is a <var>TFPImageBitmap</var> descendant, and is a wrapper used to  handle the <b>Pixmap</b> (<b>'XPM'</b>) image format.
           </p>
           <p>Pixmap is an image file format used by the X Window System. It is intended primarily for creating icons, and supports transparent pixels. Derived from the earlier XBM syntax, it is a plain text file using the XPM2 format or a C programming language syntax, which can be included in a source code file.
           </p>
@@ -11360,11 +11268,7 @@
         <short>Gets the file extensions supported for the image type.</short>
         <descr>
           <p>
-            <var>GetFileExtensions</var> is an overridden
-            <var>String</var> class function used to get a delimited list of file extensions used for graphic files supported in the class. The
-            <b>'.'</b> character is omitted from file extension(s), and extensions are separated by a
-            <b>SemiColon</b> (
-            <b>;</b>) character.
+            <var>GetFileExtensions</var> is an overridden <var>String</var> class function used to get a delimited list of file extensions used for graphic files supported in the class. The <b>'.'</b> character is omitted from file extension(s), and extensions are separated by a <b>SemiColon</b> (<b>;</b>) character.
           </p>
           <p>In TPixmap, the method returns the value <b>'xpm'</b> for the Pixmap format supported in the class.
           </p>
@@ -11398,14 +11302,13 @@
         <short>Implements support for the PNG image format.</short>
         <descr>
           <p>
-            <var>TPortableNetworkGraphic</var> is a
-            <var>TFPImageBitmap</var> descendant which implements support for the
-            <b>PNG</b> (
-            <b>Portable Network Graphics</b>) image format. PNG is a raster graphic file format that supports loss-less data compression. PNG was developed as an improved, non-patented replacement for GIF (Graphics Interchange Format).
+            <var>TPortableNetworkGraphic</var> is a <var>TFPImageBitmap</var> descendant which implements support for the <b>PNG</b> (<b>Portable Network Graphics</b>) image format. PNG is a raster graphic file format that supports loss-less data compression. PNG was developed as an improved, non-patented replacement for GIF (Graphics Interchange Format).
           </p>
-          <p>PNG supports palette-based images (using 24-bit RGB or 32-bit RGBA colors), grayscale images (with or without alpha channel  transparency), and full-color non-palette-based RGB or RGBA images. A PNG file contains a single image in an extensible chunk structure, and uses encoding to compress repetitive pixel values in the image.
+          <p>
+            PNG supports palette-based images (using 24-bit RGB or 32-bit RGBA colors), grayscale images (with or without alpha channel  transparency), and full-color non-palette-based RGB or RGBA images. A PNG file contains a single image in an extensible chunk structure, and uses encoding to compress repetitive pixel values in the image.
           </p>
-          <p>PNG image files use the file extension <b>PNG</b> or <b>png</b>, and uses the MIME media type <b>'image/png'</b>.
+          <p>
+            PNG image files use the file extension <b>PNG</b> or <b>png</b>, and uses the MIME media type <b>'image/png'</b>.
           </p>
         </descr>
         <seealso>
@@ -11474,14 +11377,12 @@
         <short>Implements an image which supports for the Portable Any Map (PNM) graphic format.
        </short>
         <descr>
-          <var>TPortableAnyMapGraphic</var> is a
-          <var>TFPImageBitmap</var> descendant which implements support for the Portable Any Map (PNM) graphic format.
-
-          <b>PNM</b> is a member of the NetPBM family of image formats and includes
-          <b>PBM</b>,
-          <b>PGM</b>, and
-          <b>PPM</b> image formats. The group is referred to collectively as the Portable Any Map format, and uses the
-          <b>.PNM</b> file extension.
+          <p>
+            <var>TPortableAnyMapGraphic</var> is a <var>TFPImageBitmap</var> descendant which implements support for the Portable Any Map (PNM) graphic format.
+          </p>
+          <p>
+            <b>PNM</b> is a member of the NetPBM family of image formats and includes <b>PBM</b>, <b>PGM</b>, and <b>PPM</b> image formats. The group is referred to collectively as the Portable Any Map format, and uses the <b>.PNM</b> file extension.
+          </p>
         </descr>
         <seealso>
           <link id="TFPImageBitmap"/>
@@ -11560,8 +11461,7 @@
             <var>FreeHandle</var> is an overridden method in
             <var>TSharedIcon</var>. It calls
             <var>DestroyIcon</var> to free the Handle for the shared Icon in the widgetset class. It does not call the inherited method. No actions are performed in the method when Handle contains
-            <b>0</b> (
-            <b>zero</b>).
+            <b>0</b> (<b>zero</b>).
           </p>
         </descr>
         <seealso>
@@ -11802,8 +11702,7 @@
             <var>ReleaseHandle</var> is a
             <var>HBITMAP</var> function used to release the
             <var>Handle</var> assigned for the icon image. The return value contains the HBITMAP value for Handle before it is released. ReleaseHandle sets the value in Handle to
-            <b>0</b> (
-            <b>zero</b>) to indicate that the handle is no longer in use or invalid.
+            <b>0</b> (<b>zero</b>) to indicate that the handle is no longer in use or invalid.
           </p>
           <p>ReleaseHandle is called when a <var>TCustomIcon</var> descendant calls its <var>InternalReleaseBitmapHandle</var> method.
           </p>
@@ -12361,16 +12260,16 @@
           <p>When sharing is stopped, the internal TSharedIcon instance in the class is re-created.
           </p>
           <p>
-            <var>CopyContent</var> indicates whether existing content from icon images is copied into the new image list. When set to
-            <b>True</b>,
-            <var>TIconImage</var> instances are re-created for each of the icon images and their existing content is copied. When set to
-            <b>False</b>, image data for the icon is empty.
+            <var>CopyContent</var> indicates whether existing content from icon images is copied into the new image list. When set to <b>True</b>, <var>TIconImage</var> instances are re-created for each of the icon images and their existing content is copied. When set to <b>False</b>, image data for the icon is empty.
           </p>
-          <p>UnshareImage calls <var>FreeCanvasContext</var> to discard the device context used in the Canvas.
+          <p>
+            UnshareImage calls <var>FreeCanvasContext</var> to discard the device context used in the Canvas.
           </p>
-          <p>UnshareImage calls the <var>Release</var> method for the old TSharedIcon instance.
+          <p>
+            UnshareImage calls the <var>Release</var> method for the old TSharedIcon instance.
           </p>
-          <p>UnshareImage is called from methods which alter the handle or image content for the icon, including:
+          <p>
+            UnshareImage is called from methods which alter the handle or image content for the icon, including:
           </p>
           <ul>
             <li>SetHandle</li>
@@ -12613,13 +12512,13 @@
         <short>Removes the image content for the icon.</short>
         <descr>
           <p>
-            <var>Clear</var> is an overridden method used to remove the image content for the icon. Clear frees the internal save stream for the image. The internal shared image is also freed and re-created. The value in
-            <var>Current</var> is set to
-            <b>-1</b> to indicate that an icon image has not been selected.
+            <var>Clear</var> is an overridden method used to remove the image content for the icon. Clear frees the internal save stream for the image. The internal shared image is also freed and re-created. The value in <var>Current</var> is set to <b>-1</b> to indicate that an icon image has not been selected.
           </p>
-          <p>Clear calls the <var>Changed</var> method to set the value in <var>Modified</var> and signal the <var>OnChange</var> event handler (when assigned).
+          <p>
+            Clear calls the <var>Changed</var> method to set the value in <var>Modified</var> and signal the <var>OnChange</var> event handler (when assigned).
           </p>
-          <p>No actions are performed in the method when <var>Empty</var> returns <b>True</b>.
+          <p>
+            No actions are performed in the method when <var>Empty</var> returns <b>True</b>.
           </p>
           <remark>Clear does not call the method inherited from TRasterImage.
           </remark>
@@ -13594,10 +13493,9 @@
           <p>
             <var>TJPEGImage</var> is a
             <var>TFPImageBitmap</var> descendant which implements support for the
-            <b>JPEG</b> (
-            <b>Joint Photographic Experts Group</b>) image format. JPEG images are commonly used for storing digital photographs. They can represent detailed color photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality.
+            <b>JPEG</b> (<b>Joint Photographic Experts Group</b>) image format. JPEG images are commonly used for storing digital photographs. They can represent detailed color photos using a high degree of compression, resulting in very efficient storage, though with some loss of quality.
           </p>
-          <p>JPEG image files normally have a file extension like:  <b>jpeg, jpg, jpe, or jfif</b>.
+          <p>JPEG image files normally have a file extension like: <b>jpeg, jpg, jpe, or jfif</b>.
           </p>
           <p>The <var>CompressionQuality</var> and <var>Performance</var> properties can be used to
             set the  balance between storage efficiency and picture quality. CompressionQuality is an Integer value between 1 and 100, with 100 representing the best quality. Performance is an enumerated variable with two states: <var>BestQuality</var> or <var>BestSpeed</var> (for compression).
@@ -14051,8 +13949,7 @@
           <p>
             <var>TGIFImage</var> is a
             <var>TFPImageBitmap</var> descendant which implements support for the
-            <b>GIF</b> (
-            <b>Graphics Interchange Format</b>) image format. GIF images support up to 8 bits per pixel in the image data, and a color palette of up to 256  colors from the 24-bit RGB color space. While GIF images allow animation, the LCL implementation does not support the feature.
+            <b>GIF</b> (<b>Graphics Interchange Format</b>) image format. GIF images support up to 8 bits per pixel in the image data, and a color palette of up to 256  colors from the 24-bit RGB color space. While GIF images allow animation, the LCL implementation does not support the feature.
           </p>
         </descr>
         <seealso>
@@ -14272,10 +14169,7 @@
       </element>
       <element name="ColorToIdent.Ident">
         <short>
-          <var>Ident </var>- the name of the supplied
-          <var>Color</var> as found in the look-up table of
-
-          <var>Colors</var>.
+          <var>Ident</var> - the name of the supplied <var>Color</var> as found in the look-up table of <var>Colors</var>.
        </short>
       </element>
       <element name="IdentToColor">
@@ -14367,7 +14261,7 @@
         <short>Returns the name of the color, expressed as a string (like 'Green').</short>
       </element>
       <element name="ColorToString.Color">
-        <short>The <var>Color </var> to examine in the routine.</short>
+        <short>The <var>Color</var> to examine in the routine.</short>
       </element>
       <element name="StringToColor">
         <short>
@@ -14382,7 +14276,7 @@
       </element>
       <element name="StringToColor.S">
         <short>
-          <var>S </var>- the name of the required color, expressed as a string.
+          <var>S</var> - the name of the required color, expressed as a string.
        </short>
       </element>
       <element name="StringToColorDef">
@@ -14540,15 +14434,15 @@
         <short>The color for processing, expressed as RGB.</short>
       </element>
       <element name="RedGreenBlue.Red">
-        <short>The  <var>Red </var>component of the color defined in <var>RGB</var>.
+        <short>The  <var>Red</var> component of the color defined in <var>RGB</var>.
        </short>
       </element>
       <element name="RedGreenBlue.Green">
-        <short>The  <var>Green</var>component of the color defined in <var>RGB</var>.
+        <short>The  <var>Green</var> component of the color defined in <var>RGB</var>.
        </short>
       </element>
       <element name="RedGreenBlue.Blue">
-        <short>The  <var>Blue </var>component of the color defined in <var>RGB</var>.
+        <short>The  <var>Blue</var> component of the color defined in <var>RGB</var>.
        </short>
       </element>
       <element name="FPColorToTColorRef">
@@ -14566,7 +14460,7 @@
       <element name="FPColorToTColor">
         <short>
           <var>FPColorToTColor</var> - converts a color specified as a
-          <var>FPColor </var>to a color of type
+          <var>FPColor</var> to a color of type
           <var>TColor</var>.
        </short>
         <descr/>
@@ -14583,7 +14477,7 @@
       <element name="TColorToFPColor">
         <short>
           <var>TColorToFPColor</var> - converts a color of type
-          <var>TColor </var>to one specified as a
+          <var>TColor</var> to one specified as a
 
           <var>FPColor</var>.
        </short>
@@ -15389,7 +15283,7 @@
                   If <var>OnProgress</var> is called at all, the first call for a graphic operation will be with <var>Stage = psStarting</var>, to allow the <var>OnProgress</var> event handler to allocate whatever resources it needs to process subsequent progress notifications.  After <var>Stage = psStarting</var>, you are guaranteed that  <var>OnProgress</var> will be called again with <var>Stage = psEnding</var> to allow you to free those resources, even if the graphic operation is aborted by an exception.
                 </p>
                 <p>
-                  Zero or more calls to  <var>OnProgress </var>with <var>Stage = psRunning</var> may occur between the <var>psStarting</var> and  <var>psEnding</var> calls.
+                  Zero or more calls to  <var>OnProgress</var> with <var>Stage = psRunning</var> may occur between the <var>psStarting</var> and  <var>psEnding</var> calls.
                 </p>
               </td>
             </tr>
@@ -15401,7 +15295,7 @@
             </tr>
             <tr>
               <td>RedrawNow</td>
-              <td>Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call <var>Update</var> to force a control to be redrawn immediately in the <var>OnProgress </var>event handler. Redrawing a graphic when RedrawNow = False could corrupt the image and/or cause exceptions.
+              <td>Indicates whether the graphic can be/should be redrawn immediately.  Useful for showing successive approximations of an image as data is available instead of waiting for all the data to arrive before drawing anything.  Since there is no message loop activity during graphic operations, you should call <var>Update</var> to force a control to be redrawn immediately in the <var>OnProgress</var> event handler. Redrawing a graphic when RedrawNow = False could corrupt the image and/or cause exceptions.
               </td>
             </tr>
             <tr>

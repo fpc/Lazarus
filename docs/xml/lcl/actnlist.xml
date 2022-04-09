@@ -1196,17 +1196,17 @@
       <!-- property Visibility: public -->
       <element name="TCustomAction.GroupIndex">
         <short>
-          <var>GroupIndex </var>- Index of the action within its group.</short>
+          <var>GroupIndex</var>- Index of the action within its group.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.HelpContext">
         <short>
-          <var>HelpContext </var>- the index for a context-based help message.</short>
+          <var>HelpContext</var> - the index for a context-based help message.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.HelpKeyword">
         <short>
-          <var>HelpKeyWord </var>- the keyword of a context-based help message.</short>
+          <var>HelpKeyWord</var> - the keyword of a context-based help message.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.HelpType">
@@ -1221,12 +1221,13 @@
       <!-- property Visibility: public -->
       <element name="TCustomAction.ImageIndex">
         <short>
-          <var>ImageIndex </var>- the index number of the image to be associated with this action.</short>
+          <var>ImageIndex</var> - the index number of the image to be associated with this action.
+        </short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.ShortCut">
         <short>
-          <var>ShortCut </var>- an index to a shortcut list.</short>
+          <var>ShortCut</var>- an index to a shortcut list.</short>
       </element>
       <!-- property Visibility: public -->
       <element name="TCustomAction.SecondaryShortCuts">
@@ -1600,7 +1601,9 @@
       </element>
       <!-- function Visibility: public -->
       <element name="TActionLink.IsImageIndexLinked">
-        <short>Is the action's <var>ImageIndex </var>property linked to the client?</short>
+        <short>
+          Indicates if the action's <var>ImageIndex</var> property linked to the client.
+        </short>
         <descr/>
         <seealso/>
       </element>

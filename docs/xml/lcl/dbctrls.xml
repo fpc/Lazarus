@@ -958,7 +958,7 @@
       </element>
       <element name="TDBEdit">
         <short>
-          <var>TDBEdit </var> - a data-aware edit box for processing a single text-string from a dataset.
+          <var>TDBEdit</var> - a data-aware edit box for processing a single text-string from a dataset.
         </short>
         <descr>
           <p>
@@ -2331,7 +2331,7 @@
         </short>
         <descr>
           <p>
-            <var>TDBListBox </var> implements a data-aware version of
+            <var>TDBListBox</var> implements a data-aware version of
             <var>TListBox</var>.
             The control allows selection and storage of a value from a scrolling list of choices to the current record in a linked dataset.
           </p>
@@ -4057,7 +4057,7 @@
       <element link="#lcl.controls.TControl.PopupMenu" name="TDBCheckBox.PopupMenu"/>
       <element name="TDBCheckBox.ReadOnly">
         <short>
-          <var>ReadOnly </var>- if
+          <var>ReadOnly</var> - if
           <b>True</b>, data may be read but not written or modified (doesn't make much sense for a check-box unless the box is NOT Enabled!).
         </short>
         <descr/>
@@ -4594,13 +4594,13 @@
         </short>
         <descr>
           <p>
-            <var>TDBComboBox </var>has properties similar to
-            <var>TComboBox</var> and
-            <var>TCustomComboBox</var>. It consists of an Edit Box which is the Data-aware part of the component, and a drop-down list box.
+            <var>TDBComboBox</var> has properties similar to <var>TComboBox</var> and <var>TCustomComboBox</var>. It consists of an Edit Box which is the Data-aware part of the component, and a drop-down list box.
           </p>
-          <p>In a typical application a user would be presented with the drop-down list, would make a selection and then this would appear in the edit box and become the data value for that cell in the database.
+          <p>
+            In a typical application a user would be presented with the drop-down list, would make a selection and then this would appear in the edit box and become the data value for that cell in the database.
           </p>
-          <p>As an example, a list of countries might be presented, and the selected value from the list would be used to populate the appropriate field ('Country') in that record of the database.
+          <p>
+            As an example, a list of countries might be presented, and the selected value from the list would be used to populate the appropriate field ('Country') in that record of the database.
           </p>
         </descr>
         <seealso>
@@ -4682,9 +4682,7 @@
         </short>
         <descr>
           <p>
-            <var>AutoDropDown </var> indicates whether the drop-down list for the control appears as soon as the control receives the input focus. When set to
-            <b>False</b>, the drop-down list appears when the downward triangular glyph for the control is clicked. The default value for the property is
-            <b>False</b>.
+            <var>AutoDropDown</var> indicates whether the drop-down list for the control appears as soon as the control receives the input focus. When set to <b>False</b>, the drop-down list appears when the downward triangular glyph for the control is clicked. The default value for the property is <b>False</b>.
           </p>
         </descr>
         <seealso>
@@ -5251,7 +5249,7 @@
       <element link="#lcl.controls.TControl.Visible" name="TDBLookupComboBox.Visible"/>
       <element name="TDBMemo">
         <short>
-          <var>TDBMemo </var> - a data-aware Memo box to process the multi-line text of a single field in a dataset.
+          <var>TDBMemo</var> - a data-aware Memo box to process the multi-line text of a single field in a dataset.
         </short>
         <descr>
           <p>
@@ -6219,7 +6217,7 @@
 
       <element name="TDBImage">
         <short>
-          <var>TDBImage </var>- a data-aware Image box to display a single image from a dataset.
+          <var>TDBImage</var> - a data-aware Image box to display a single image from a dataset.
         </short>
         <descr>
           <p>TDBImage is a TCustomImage descendant which implements a data-aware image control.
@@ -7988,7 +7986,7 @@
 
       <element  name="TDBNavigator">
         <short>
-          <var>TDBNavigator </var>- a data-aware Button-Bar to facilitate navigating between records of a dataset.
+          <var>TDBNavigator</var> - a data-aware Button-Bar to facilitate navigating between records of a dataset.
         </short>
         <descr>
           <p>
