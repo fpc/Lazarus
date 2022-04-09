@@ -214,7 +214,7 @@
             GuessEncoding checks S for various Byte Order Marks at the start of the value, including: <var>UTF8BOM</var>, <var>UTF16LEBOM</var>, and <var>UTF16BEBOM</var>. When present, the BOM determines the encoding used for the value.
           </p>
           <p>
-            Next, it checks for an explict '<b>{%encoding </b>' marker at the start of the value. When present, the value after the marker (up to the closing '<b>}</b>' character) is normalized and used as the return value.
+            Next, it checks for an explict '<b>{%encoding</b>' marker at the start of the value. When present, the value after the marker (up to the closing '<b>}</b>' character) is normalized and used as the return value.
           </p>
           <p>
             Finally, it checks for a valid UTF-8 encoding (which includes ASII characters).

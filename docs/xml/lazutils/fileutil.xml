@@ -443,11 +443,11 @@ ShowMessage('File: ' + sFile + LineEnding +
 
       <element name="CreateAbsoluteSearchPath">
         <short>
-          Forms an absolute search path for files from values in <var>BaseDirectory </var>and <var>SearchPath</var>.
+          Forms an absolute search path for files from values in <var>BaseDirectory</var> and <var>SearchPath</var>.
         </short>
         <descr>
           <p>
-            <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory </var> and <var>SearchPath</var> to form an absolute path to search for files.
+            <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory</var> and <var>SearchPath</var> to form an absolute path to search for files.
           </p>
           <p>
             The routine adds the appropriate path delimiters to the BaseDirectory string, and adds the search path. Each directory in the search path is examined to ensure that each is also an absolute directory path. The return value contains the fully-formed absolute search path.
@@ -727,7 +727,7 @@ ShowMessage('File: ' + sFile + LineEnding +
       </element>
       <element name="SearchAllFilesInPath.BasePath">
         <short>
-          The <var>BasePath </var>to be used for the search.
+          The <var>BasePath</var> to be used for the search.
         </short>
       </element>
       <element name="SearchAllFilesInPath.SearchPath">
@@ -738,7 +738,7 @@ ShowMessage('File: ' + sFile + LineEnding +
       </element>
       <element name="SearchAllFilesInPath.Flags">
         <short>
-          <var>Flags </var>specifying how to search: e.g. don't search in base path, case independent search.
+          <var>Flags</var> specifying how to search: e.g. don't search in base path, case independent search.
         </short>
       </element>
 

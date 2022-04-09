@@ -1370,11 +1370,11 @@ ShowMessage('File: ' + vFile + LineEnding +
 
       <element name="CreateAbsoluteSearchPath">
         <short>
-          <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory </var>and <var>SearchPath</var> to form an absolute path to search for files.
+          <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory</var> and <var>SearchPath</var> to form an absolute path to search for files.
         </short>
         <descr>
           <p>
-            <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory </var> and <var>SearchPath</var> to form an absolute path to search for files.
+            <var>CreateAbsoluteSearchPath</var> - concatenates <var>BaseDirectory</var> and <var>SearchPath</var> to form an absolute path to search for files.
           </p>
           <p>
             The routine adds the appropriate path delimiters to the BaseDirectory string, and adds the search path. Each directory in the search path is examined to ensure that each is also an absolute directory path. The return value contains the fully-formed absolute search path.
