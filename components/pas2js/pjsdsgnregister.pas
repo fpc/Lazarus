@@ -684,15 +684,15 @@ begin
   CompOpts:=AProject.LazCompilerOptions;
   TargetFilename:=AppendPathDelim(WebDir)+'ServiceWorker';
 
-  // save ServiceWorker.lpr
+  // save ServiceWorker.lpr and open it in source editor
   if not InteractiveSaveFile(ServiceWorkerLPR) then exit;
   LazarusIDE.DoOpenEditorFile(ServiceWorkerLPR,-1,-1,
                                       [ofProjectLoading,ofRegularFile]);
   // save ServiceWorker.lpi
   if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
-  LazarusIDE.DoCloseEditorFile(ServiceWorkerLPR,[cfQuiet,cfProjectClosing]);
 
   // delete ServiceWorker.lpr from project
+  LazarusIDE.DoCloseEditorFile(ServiceWorkerLPR,[cfQuiet,cfProjectClosing]);
   if AProject.MainFileID<>0 then
     raise Exception.Create('20220405231537');
   AProject.MainFileID:=-1;

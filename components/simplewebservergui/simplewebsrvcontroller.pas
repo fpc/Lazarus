@@ -31,7 +31,7 @@ Working:
 
 ToDos:
  - log with time and port
- - ide macro SWSExe param: 'resolved', 'base', 'used' and ''
+ - ide macro SWSExe param: 'base', 'used' and ''
  - Windows: add GetUDPTable2
  - resourcestrings
  - SSL
@@ -52,7 +52,7 @@ uses
   Forms, Dialogs, Controls,
   // IDEIntf
   IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEExternToolIntf, MacroIntf,
-  MacroDefIntf, SimpleWebSrvUtils, SimpleWebSrvOptions;
+  MacroDefIntf, SimpleWebSrvUtils, SimpleWebSrvOptions, SimpleWebSrvStrConsts;
 
 type
   ESimpleWebServerException = class(Exception)
@@ -450,22 +450,25 @@ begin
         IPAddr:=StrToHostAddr(MainSrvAddr);
       if not FUtility.FindProcessListeningOnPort(IPAddr,MainSrvPort,aProcDescription,aPID) then
       begin
-        IDEMessageDialog('Error',
+        IDEMessageDialog(rsSWError,
            ViewCaption+':'+sLineBreak
-           +'Binding of socket failed: '+MainSrvAddr+':'+IntToStr(MainSrvPort),mtError,[mbOk]);
+           +rsSWBindingOfSocketFailed+': '+MainSrvAddr+':'+IntToStr(MainSrvPort
+             ), mtError, [mbOk]);
         exit;
       end;
 
-      r:=IDEQuestionDialog('Error',
+      r:=IDEQuestionDialog(rsSWError,
          ViewCaption+':'+sLineBreak
-         +'Binding of socket failed: '+MainSrvAddr+':'+IntToStr(MainSrvPort)+sLineBreak
+         +rsSWBindingOfSocketFailed+': '+MainSrvAddr+':'+IntToStr(MainSrvPort)+
+           sLineBreak
          +sLineBreak
-         +'The following process already listens:'+sLineBreak
+         +rsSWTheFollowingProcessAlreadyListens+sLineBreak
          +'PID: '+IntToStr(aPID)+sLineBreak
          +aProcDescription+sLineBreak
          +sLineBreak
-         +'Kill process?'
-         ,mtError,[mrYes,'Kill PID '+IntToStr(aPID),mrRetry,'Try another port',mrCancel],'');
+         +rsSWKillProcess
+         , mtError, [mrYes, Format(rsSWKillPID, [IntToStr(aPID)]), mrRetry,
+           rsSWTryAnotherPort, mrCancel], '');
 
       case r of
       mrYes:
@@ -891,7 +894,7 @@ begin
       Instance.ErrorDesc:='missing server exe. '+LinePostfix;
       AddIDEMessageInfo('20220127115641',Instance.ErrorDesc);
       if Interactive then
-        ErrDlg('Missing Server Exe','Missing server executable',true);
+        ErrDlg(rsSWError, rsSWMissingServerExecutable, true);
       exit;
     end;
     if PathUsed='' then
@@ -899,7 +902,7 @@ begin
       Instance.ErrorDesc:='missing local directory. '+LinePostfix;
       AddIDEMessageInfo('20220127115738',Instance.ErrorDesc);
       if Interactive then
-        ErrDlg('Missing Local Directory','Missing local directory',false);
+        ErrDlg(rsSWError, rsSWMissingLocalDirectory, false);
       exit;
     end;
 
@@ -911,7 +914,8 @@ begin
       Instance.ErrorDesc:='server directory not found "'+PathUsed+'". '+LinePostfix;
       AddIDEMessageInfo('20220127122933',Instance.ErrorDesc);
       if Interactive then
-        ErrDlg('Missing Server Directory','Server directory "'+PathUsed+'" not found.',false);
+        ErrDlg(rsSWError, Format(rsSWServerDirectoryNotFound, [PathUsed]), false
+          );
       exit;
     end;
 
@@ -926,7 +930,8 @@ begin
         Instance.ErrorDesc:='server exe "'+ExeUsed+'" not found in PATH. '+LinePostfix;
         AddIDEMessageInfo('20220127115917',Instance.ErrorDesc);
         if Interactive then
-          ErrDlg('Missing Server Exe','Server executable "'+ExeUsed+'" not found in PATH.',true);
+          ErrDlg(rsSWError, Format(rsSWServerExecutableNotFoundInPATH, [ExeUsed]
+            ), true);
         exit;
       end;
       ExeUsed:=s;
@@ -939,14 +944,15 @@ begin
       begin
       AddIDEMessageInfo('20220127114637','Error: server exe not found "'+ExeUsed+'"');
       if Interactive then
-        ErrDlg('Error','File not found: "'+ExeUsed+'"',true);
+        ErrDlg(rsSWError, Format(rsSWFileNotFound, [ExeUsed]), true);
       exit;
     end;
     if not FileIsExecutable(ExeUsed) then
     begin
       AddIDEMessageInfo('20220127121636','Error: server exe not executable "'+ExeUsed+'"');
       if Interactive then
-        ErrDlg('Error','Server exe is not executable: "'+ExeUsed+'"',true);
+        ErrDlg(rsSWError, Format(rsSWServerExeIsNotExecutable, [ExeUsed]), true
+          );
       exit;
     end;
 
@@ -1223,7 +1229,7 @@ begin
     debugln(['Error: [TSimpleWebServerController.StartServerInstance] invalid ServerExe="',Options.ServerExe,'". ',ErrMsg]);
     AddIDEMessageInfo('20220118164525',ErrMsg);
     if Interactive then
-      ErrDlg('Error','Wrong compileserver exe: '+ErrMsg,true);
+      ErrDlg(rsSWError, Format(rsSWWrongCompileserverExe, [ErrMsg]), true);
     exit;
   end;
 
@@ -1232,9 +1238,9 @@ begin
   begin
     if CreateDirUTF8(PathUsed) then
       break;
-    MsgResult:=IDEMessageDialog('Error',
+    MsgResult:=IDEMessageDialog(rsSWError,
       ViewCaption+':'+sLineBreak
-      +'Error creating directory'+sLineBreak
+      +rsSWErrorCreatingDirectory+sLineBreak
       +'"'+PathUsed+'"'+sLineBreak,
       mtError,[mbRetry,mbCancel]);
     case MsgResult of
@@ -1265,7 +1271,7 @@ begin
       if not DirectoryExists(Loc.Path) then
       begin
         AddIDEMessageInfo('20220118165651','Warn: location "'+Loc.Location+'" directory not found: "'+Loc.Path+'"');
-        Loc.ErrorDesc:='Directory not found';
+        Loc.ErrorDesc:=rsSWDirectoryNotFound;
         continue;
       end else
         Loc.ErrorDesc:='';
@@ -1285,9 +1291,9 @@ begin
           AddIDEMessageInfo('20220127123435',FMainSrvInstance.ErrorDesc);
           if Interactive then
           begin
-            MsgResult:=IDEMessageDialog('Error',
+            MsgResult:=IDEMessageDialog(rsSWError,
               ViewCaption+':'+sLineBreak
-              +'Error writing "'+IniFilename+'"'+sLineBreak
+              +Format(rsSWErrorWriting, [IniFilename])+sLineBreak
               +E.Message,
             mtError,[mbRetry,mbCancel]);
             case MsgResult of
@@ -1351,7 +1357,7 @@ begin
     // already exists
     Result:=Locations[i];
     if DirNotFound then
-      Result.ErrorDesc:='Directory not found';
+      Result.ErrorDesc:=rsSWDirectoryNotFound;
     if (Result.Enable=Enable) and (Result.Path=ExpPath) and (Result.Origin=Origin) then
       exit;
     if Result.Enable then
@@ -1585,9 +1591,9 @@ procedure TSimpleWebServerController.HookMacros;
   end;
 
 begin
-  IDEMacroSWSAddress:=Add('SWSAddress', 'Simple Web Server Address', @GetSWSAddress);
-  IDEMacroSWSPort:=Add('SWSPort', 'Simple Web Server Port', @GetSWSPort);
-  IDEMacroSWSExe:=Add('SWSExe', 'Simple Web Server Executable', @GetSWSExe);
+  IDEMacroSWSAddress:=Add('SWSAddress', rsSWSimpleWebServerAddress, @GetSWSAddress);
+  IDEMacroSWSPort:=Add('SWSPort', rsSWSimpleWebServerPort, @GetSWSPort);
+  IDEMacroSWSExe:=Add('SWSExe', rsSWSimpleWebServerExecutable, @GetSWSExe);
 end;
 
 procedure TSimpleWebServerController.UnhookMacros;

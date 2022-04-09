@@ -11,6 +11,49 @@ msgstr ""
 "Language: ru\n"
 "X-Generator: Poedit 2.4.3\n"
 
+#: simplewebsrvstrconsts.rsswbindingofsocketfailed
+msgid "Binding of socket failed"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswdirectorynotfound
+msgid "Directory not found"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswerror
+msgid "Error"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswerrorcreatingdirectory
+msgid "Error creating directory"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswerrorwriting
+#, object-pascal-format
+msgid "Error writing \"%s\""
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswfilenotfound
+#, object-pascal-format
+msgid "File not found: \"%s\""
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswkillpid
+#, object-pascal-format
+msgid "Kill PID %s"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswkillprocess
+msgid "Kill process?"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswmissinglocaldirectory
+msgid "Missing local directory"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswmissingserverexecutable
+msgid "Missing server executable"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswsaddress
 msgid "Address"
 msgstr "Адрес"
@@ -18,6 +61,33 @@ msgstr "Адрес"
 #: simplewebsrvstrconsts.rsswsbindany
 msgid "Bind Any"
 msgstr "Привязать все"
+
+#: simplewebsrvstrconsts.rsswserverdirectorynotfound
+#, object-pascal-format
+msgid "Server directory \"%s\" not found."
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath
+#, object-pascal-format
+msgid "Server executable \"%s\" not found in PATH."
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswserverexeisnotexecutable
+#, object-pascal-format
+msgid "Server exe is not executable: \"%s\""
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswsimplewebserveraddress
+msgid "Simple Web Server Address"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswsimplewebserverexecutable
+msgid "Simple Web Server Executable"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswsimplewebserverport
+msgid "Simple Web Server Port"
+msgstr ""
 
 #: simplewebsrvstrconsts.rsswspathofcompileserver
 msgid "Path of compileserver"
@@ -34,4 +104,17 @@ msgstr "Простой веб-сервер"
 #: simplewebsrvstrconsts.rsswsuserorigin
 msgid "User"
 msgstr "Пользователь"
+
+#: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens
+msgid "The following process already listens:"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswtryanotherport
+msgid "Try another port"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswwrongcompileserverexe
+#, object-pascal-format
+msgid "Wrong compileserver exe: %s"
+msgstr ""
 
