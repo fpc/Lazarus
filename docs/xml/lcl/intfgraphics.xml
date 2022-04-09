@@ -1982,7 +1982,9 @@
         <seealso/>
       </element>
       <element name="TLazAVLPalette">
-        <short>Descendant of <var>TFPPalette </var> which uses an AVL tree for speed up.</short>
+        <short>
+          Descendant of <var>TFPPalette</var> which uses an AVL tree for speed up.
+        </short>
         <descr/>
         <seealso/>
       </element>
@@ -2863,7 +2865,8 @@
 
       <element name="TLazReaderBMP">
         <short>
-          <var>TLazReaderBMP </var>- This is an improved <var>FPImage</var> reader for bmp images.</short>
+          <var>TLazReaderBMP</var> - This is an improved <var>FPImage</var> reader for bmp images.
+        </short>
         <descr/>
         <seealso/>
       </element>

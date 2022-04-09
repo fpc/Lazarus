@@ -80,7 +80,7 @@
 
       <element name="THintAction">
         <short>
-          <var>THintAction </var>- standard action for dealing with requests
+          <var>THintAction</var> - standard action for dealing with requests
           for a <var>Hint</var>.
         </short>
         <descr/>
@@ -1480,7 +1480,7 @@
 
       <element name="TFontEdit">
         <short>
-          <var>TFontEdit </var>- standard action for opening a
+          <var>TFontEdit</var> - standard action for opening a
           <var>Font Edit</var> dialog.
         </short>
         <descr/>

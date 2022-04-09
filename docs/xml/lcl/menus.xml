@@ -799,7 +799,7 @@
         </short>
         <descr>
           <p>
-            <var>ActionChange </var>- changes the action associated with this menu item to a new action, provided <var>Sender</var> is of type <var>TCustomAction</var>. No actions are performed in the method when Sender is not derived from TCustomAction.
+            <var>ActionChange</var>- changes the action associated with this menu item to a new action, provided <var>Sender</var> is of type <var>TCustomAction</var>. No actions are performed in the method when Sender is not derived from TCustomAction.
           </p>
           <p>
             ActionChange updates property values in the current class instance to reflect the values in Sender when <var>CheckDefaults</var> has not been enabled. The following properties are updated from the values in the action:
@@ -984,7 +984,7 @@
 
       <element name="TMenuItem.DoClicked">
         <short>
-          <var>DoClicked </var>- process the system message signifying that a click has occurred over this menu item.
+          <var>DoClicked</var>- process the system message signifying that a click has occurred over this menu item.
         </short>
         <descr>
           <p>
@@ -2286,7 +2286,7 @@
 
       <element name="TMenuItem.SubMenuImages">
         <short>
-          <var>SubMenuImages </var> - will images be shown for sub-menu items as well as the main item?
+          <var>SubMenuImages</var> - will images be shown for sub-menu items as well as the main item?
         </short>
       </element>
 
@@ -3254,7 +3254,7 @@
 
       <element name="TPopupMenu">
         <short>
-          <var>TPopupMenu </var> - a menu panel that pops up on the desktop when the right mouse button is clicked.
+          <var>TPopupMenu</var> - a menu panel that pops up on the desktop when the right mouse button is clicked.
         </short>
         <descr>
           <p>
