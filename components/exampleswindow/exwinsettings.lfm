@@ -12,9 +12,9 @@ object ExWinSettingsFrame: TExWinSettingsFrame
     AnchorSideLeft.Control = DirectoryEdit1
     AnchorSideTop.Control = DirectoryEdit1
     AnchorSideTop.Side = asrBottom
-    Left = 20
+    Left = 6
     Height = 25
-    Top = 159
+    Top = 56
     Width = 75
     BorderSpacing.Top = 10
     Caption = 'Default'
@@ -23,28 +23,36 @@ object ExWinSettingsFrame: TExWinSettingsFrame
   end
   object DirectoryEdit1: TDirectoryEdit
     AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Label1
+    AnchorSideTop.Side = asrBottom
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    Left = 20
-    Height = 29
-    Top = 120
-    Width = 280
+    Left = 6
+    Height = 23
+    Top = 23
+    Width = 308
     Directory = 'DirectoryEdit1'
     ShowHidden = False
     ButtonWidth = 23
     NumGlyphs = 1
-    Anchors = [akLeft, akRight]
-    BorderSpacing.Left = 20
-    BorderSpacing.Right = 20
+    Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 2
+    BorderSpacing.Right = 6
     MaxLength = 0
     TabOrder = 1
     Text = 'DirectoryEdit1'
   end
   object Label1: TLabel
-    Left = 27
-    Height = 21
-    Top = 91
-    Width = 287
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = Owner
+    Left = 6
+    Height = 15
+    Top = 6
+    Width = 188
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
     Caption = 'Directory where examples are saved'
+    ParentColor = False
   end
 end
