@@ -1,7 +1,7 @@
 object FormLazExam: TFormLazExam
-  Left = 562
+  Left = 55
   Height = 574
-  Top = 168
+  Top = 143
   Width = 781
   Caption = 'Prototype Lazarus Examples Window'
   ClientHeight = 574
@@ -18,7 +18,7 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = CheckGroupCategory
     Left = 5
-    Height = 216
+    Height = 209
     Top = 225
     Width = 771
     Anchors = [akTop, akLeft, akRight, akBottom]
@@ -71,8 +71,8 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Control = ButtonClose
     AnchorSideBottom.Control = StatusBar1
     Left = 10
-    Height = 105
-    Top = 446
+    Height = 112
+    Top = 439
     Width = 577
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoFill = True
@@ -88,6 +88,7 @@ object FormLazExam: TFormLazExam
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 2
     Columns = 2
+    OnDblClick = CheckGroupCategoryDblClick
     OnItemClick = CheckGroupCategoryItemClick
     TabOrder = 3
   end
@@ -151,10 +152,10 @@ object FormLazExam: TFormLazExam
     AnchorSideLeft.Control = ButtonClose
     AnchorSideRight.Control = Owner
     AnchorSideRight.Side = asrBottom
-    AnchorSideBottom.Control = ButtonClose
+    AnchorSideBottom.Control = ButtonView
     Left = 597
-    Height = 35
-    Top = 481
+    Height = 28
+    Top = 467
     Width = 179
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Right = 5
@@ -167,8 +168,8 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = StatusBar1
     Left = 597
-    Height = 35
-    Top = 516
+    Height = 28
+    Top = 523
     Width = 179
     Anchors = [akRight, akBottom]
     BorderSpacing.Right = 5
@@ -182,13 +183,28 @@ object FormLazExam: TFormLazExam
     AnchorSideRight.Side = asrBottom
     AnchorSideBottom.Control = ButtonDownload
     Left = 597
-    Height = 35
-    Top = 446
+    Height = 28
+    Top = 439
     Width = 179
     Anchors = [akLeft, akRight, akBottom]
     BorderSpacing.Right = 5
     Caption = 'Open'
     OnClick = ButtonOpenClick
     TabOrder = 8
+  end
+  object ButtonView: TButton
+    AnchorSideLeft.Control = ButtonClose
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    AnchorSideBottom.Control = ButtonClose
+    Left = 597
+    Height = 28
+    Top = 495
+    Width = 179
+    Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.Right = 5
+    Caption = 'ButtonView'
+    OnClick = ButtonViewClick
+    TabOrder = 9
   end
 end

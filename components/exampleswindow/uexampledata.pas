@@ -38,6 +38,10 @@ This unit does not interact directly with user but it does (hopefully not often)
 generate some error messages that may need i18n.  Only network errors have been done.
 
 
+WARNING - This unit includes code to download (and even upload) from a gitlab
+repo. At present its not being used and should get stripped out during linking.
+If it appears, long term, we are never to use the online approach, remove it !
+Code would be greatly simplified if we were not trying to also support OnLine.
 }
 
 {$mode ObjFPC}{$H+}
@@ -46,8 +50,8 @@ interface
 
 uses Classes, SysUtils, fpjson, jsonparser ;
 
-const MetaFileExt = '.ex-meta';
-
+const
+    MetaFileExt = '.ex-meta';              // Extension of meta files.
 
 type TExampleDataSource = ( FromGitlabTree,    // Read all remote project meta files
                             FromLocalTree,     // Read all local Git project meta files
@@ -57,10 +61,10 @@ type TExampleDataSource = ( FromGitlabTree,    // Read all remote project meta f
 type
     PExRec=^TExRec;
     TExRec = record
-          EName    : string;      // CamelCase version of last part of FFName
+          EName    : string;      // CamelCase version of the example name, filenameonly of metadata file.
           Category : string;      // eg Beginner, NoDesign (read from remote data)
-          Keywords : TStringList; // a list of (possibly multi-word) words
-          FFName   : string;      // Path and filename of meta file. Maybe absolute or relative
+          Keywords : TStringList; // a list of (possibly multi-word) words, nil acceptable
+          FFName   : string;      // Path and filename of meta file. Maybe absolute or relative, no extension
           Desc     : string;      // 1..many lines of description
     end;
 
@@ -102,13 +106,13 @@ type
             ErrorString : String;
             ExList : TExampleList;
             GetListDataIndex : integer;
-            LazConfigDir : string; // dir (eg OPM) under which we might find more Examples
+
                                 // Gets a Full URL and returns with St containing content, usually as JSON
             function Downloader(URL: string; out SomeString: String): boolean;
                                 // Does a binary safe download of a file, URL will get repositary info prepended
                                 // and file ends up in FullDest which should be a full path and filename.
             function DownLoadFile(const URL, FullDest: string): boolean;
-            //function EscJSON(InStr: string): string;
+                                //function EscJSON(InStr: string): string;
             function ExtractArrayFromJSON(const Field: string; jItem: TJSONData; STL: TStringList): boolean;
                                 // Passed a json block, returns the indicated field, cannot handle arrays.
                                 // Don't rely on its base64 decoding a binary file, see DownLoadFile() instead.
@@ -117,14 +121,10 @@ type
                                         Res: string; Base64: boolean = false): boolean;
             function GetLazDir: string;
 
-                                // The returned date string down to seconds includes time zone in ISO8601
-                                // eg  2022-01-09T11:56:51+11:00
-            function GetLocalTime: ANSIstring;
-
                                 // Receives a pretested JSON (not just a field) containing metadata of an Example
                                 // Returns false if data missing, drops msg to console about bad field.
                                 // Path may be relative or absolute (ie starting with '/' or '\'). Ones without
-                                // a leading slash are remote, ie gitlab. Ones with a slash should be resolable
+                                // a leading slash are remote, ie gitlab. Ones with a slash should be resolvable
                                 // locally. Note when indexing a local git tree, relative must be used, ie top of
                                 // git tree. In this mode of course, the entry will not be resolvable locally.
             function InsertJSONData(jItem: TJSONData; FFName: string; AName: string = '' ): boolean;
@@ -142,12 +142,11 @@ type
             function ScanOneTree(Path: string; out St: string): boolean;
             procedure fSetErrorString(Er : string);
 
-            function WriteMasterMeta(FFileName: string): boolean;
-
         public
+            LazConfigDir : string; // Where Lazarus keeps it config.
             RemoteRepo : string; // eg  https://gitlab.com/api/v4/projects/32480729/repository/
 
-            ExamplesHome : string; // dir where we will save a working copy of examples too, usually LazConfigDir
+            ExamplesHome : string; // dir above examples_working_dir where we copy examples to, set by uintf.pas, usually <lazConf>/
             LazSrcDir    : string; // Laz dir where, eg ~/examples lives
             GitDir     : string; // where we look for a local git repo containg examples
             KeyFilter : string;  // A list of words, possibly grouped by " to filter Keywords
@@ -155,25 +154,31 @@ type
                                  // A service function, tests passed St to ensure its
                                  // a valid lump of Example Meta Data.
             function TestJSON(const J: string; out Error, Cat: string): boolean;
-                        // Public, returns with next set of data, false if no more available.
-                        // Filters using CatFilter if CatFilter is not empty.
-                        // If passed KeyList is not nil, filters keywords against KeyList.
+                                // Returns a path (with trailing delim) to where we will putting our downloaded
+                                // or copied Example Projects. It includes the working dir. Usually something
+                                // like <lazConfig>/examples_work_dir/ but is user configurable via Laz Settings.
+            function ExampleWorkingDir: string;
+                                // Public, returns with next set of data, false if no more available.
+                                // Filters using CatFilter if CatFilter is not empty.
+                                // If passed KeyList is not nil, filters keywords against KeyList.
             function GetListData(out Proj, Cat, Path, Keys: string; GetFirst: boolean;
                 KeyList: TStringList = nil): boolean;
                                 // Passed a created TStrings that it clears and fills in with all know categories
             function getCategoryData(const CatList : TStrings) : boolean;
+                                // Pass the relative path and fileNameOnly of metafile, no extension (?)
             function GetDesc(const FFname: string): string;
             constructor Create;
             procedure LoadExData(DataSource: TExampleDataSource);
             destructor Destroy; override;
             procedure DumpExData();
-                        // A service method, called by the GUI to download a project/
-                        // Pass it a full example remote dir (eg Beginner/Laz_Hello/).
+                                // A service method, called by the GUI to download a project/
+                                // Pass it a full example remote dir (eg Beginner/Laz_Hello/).
             function DownLoadDir(const FExampDir: string): boolean;
             function Count : integer;
-            function MasterMeta(DirOnly: boolean = false): string;                     // returns the full Master Metafile name
             function ExtractFieldsFromJSON(const JStr: string; out EName, Cat, Keys, Desc,
                 Error: string): boolean;
+                                // Rets T if passed name is already in list as a project name
+            function DoesNameExist(AName : string) : boolean;
             property ErrorMsg : string read ErrorString write FSetErrorString;
             class function EscJSON(InStr: string): string;
     end;
@@ -190,13 +195,13 @@ uses LCLProc,
     ssockets, fpopenssl,
     lazfileutils, fileutil,
     jsonscanner,                        // these are the FPC JSON tools
-    base64
-    , laz2_DOM, laz2_XMLRead            // just to get LazarusDirectory, remove if we find a better way !
-    {$ifdef LINUX},Unix {$endif}        // We call a ReReadLocalTime();
-    {, IDEOptionsIntf}, LazIDEIntf;
+    base64,
+    laz2_DOM, laz2_XMLRead            // just to get LazarusDirectory, remove if we find a better way !
+    {, IDEOptionsIntf} ;
 
 const
-    LastUpDate = 'LastUpDate';              // Name of JSON item were we store last update
+    LastUpDate = 'LastUpDate';              // Name of JSON item were we store last update date
+
 
 { A URL starts with eg 'https://gitlab.com/api/v4/projects/32480729/repository/'
 It contains a multidigit number that identifies the gitlab project. The number is a
@@ -311,16 +316,12 @@ begin
     Debugln(ErrorString);
 end;
 
-// Rets a path to where we will putting our downloaded or copied ex projects.
-// At present, this is the <lazconfig>/downloaded_examples/
-// if not true, returns the FFName of the master meta file, same place.
-function TExampleData.MasterMeta(DirOnly : boolean = false) : string;
+function TExampleData.ExampleWorkingDir() : string;
 begin
-    //result := LazConfigDir + cExamplesDir + pathdelim;
-    result := AppendPathDelim(ExamplesHome);
-    if not DirOnly then
-        result := Result + 'master' + MetaFileExt;
+    result := AppendPathDelim(ExamplesHome) + cExamplesDir + PathDelim ;
 end;
+
+
 
 function TExampleData.ExtractFieldsFromJSON(const JStr: string; out EName, Cat,
                                                         Keys, Desc, Error: string): boolean;
@@ -353,6 +354,16 @@ begin
         STL.Free;
         JData.Free;
     end;
+end;
+
+function TExampleData.DoesNameExist(AName: string): boolean;
+var
+    P : PExRec;
+begin
+    for P in ExList do
+        if lowercase(AName) = lowercase(P^.EName) then
+            exit(True);
+    result := False;
 end;
 
 function TExampleData.TestJSON(const J : string; out Error, Cat : string) : boolean;
@@ -402,6 +413,7 @@ var
     // index : integer;
     KeyWords : TStringList;
 begin
+    Result := False;
     ExtractFromJSON('Category', jItem, Cat);        // An empty Cat is acceptable but undesirable.
     if not ExtractFromJSON('Description', jItem, Desc) then exit(False);
     KeyWords := TStringList.Create;
@@ -411,7 +423,11 @@ begin
     else
         if not ExtractFromJSON('Name', jItem, AnotherName) then
             AnotherName := '';
-    Result := ExList.InsertData(Cat, Desc, FFName, AnotherName, KeyWords);
+    if DoesNameExist(AnotherName) then begin
+        debugln('TExampleData.InsertJSONData - WARNING duplicate Example Name found = '
+            + AnotherName + ' ' + FFName);
+    end
+    else Result := ExList.InsertData(Cat, Desc, FFName, AnotherName, KeyWords);
     if not Result then KeyWords.Free;              // false means its not gone into list so our responsibility go free
 end;
 
@@ -427,7 +443,6 @@ begin
     STL := FindAllFiles(Path, '*' + MetaFileExt, True);
     try
         for St in STL do begin
-            //debugln('TExampleData.ScanLocalTree 1 Looking at ' + St);
             if pos('master' + MetaFileExt, St) > 0 then continue;    // don't do master if you stumble across one
             if pos(cExamplesDir, St) > 0 then continue;               // thats our downloaded location
             FileContent := TStringList.Create;
@@ -498,41 +513,39 @@ end;
 constructor TExampleData.Create();
 begin
     ExList := TExampleList.Create;
-    LazConfigDir :=  appendPathDelim(LazarusIDE.GetPrimaryConfigPath);
 end;
 
 procedure TExampleData.LoadExData(DataSource: TExampleDataSource);
 begin
     // If we are loading the data from either the remote gitlab tree or a local
     // git tree, we save the master file.
-    if not DirectoryExists(MasterMeta(True)) then
-        if not ForceDirectory(MasterMeta(True)) then exit;
+    if not DirectoryExists(ExampleWorkingDir()) then
+        if not ForceDirectory(ExampleWorkingDir()) then exit;
     case DataSource of
         FromGitLabTree : begin                           // too slow to be useful
                             ScanRemoteTree('');
-                            WriteMasterMeta('master' + MetaFileExt);   // save in working dir
                          end;
         FromLocalTree  : begin                           // not used in Lazarus Package
                             if ScanLocalTree(GitDir, False) then        // This should leave relative paths, suitable to upload to gitlab
-                               WriteMasterMeta(GitDir + 'master' + MetaFileExt);   // save in git tree ready to upload.
                          end;
         FromLazSrcTree : begin
                                ScanLocalTree(GetLazDir(), True);                 // Scan the Lazarus SRC tree
-                               ScanLocalTree(LazConfigDir, True);                // Get, eg, any OPM Examples
+                               ScanLocalTree(ExamplesHome, True);                // Get, eg, any OPM Examples
+                               // in the above line, we assume if user has moved Examples, then they will have OPM there too.
                          end;
         FromCacheFile  : begin
-                            if not LoadCacheFile(MasterMeta()) then begin
-                                DownLoadFile('master' + MetaFileExt, MasterMeta());
-                                LoadCacheFile(MasterMeta());                  // ToDo : Test that worked
+                            if not LoadCacheFile(ExampleWorkingDir()+ 'master' + MetaFileExt) then begin
+                                DownLoadFile('master' + MetaFileExt, ExampleWorkingDir()+ 'master' + MetaFileExt);
+                                LoadCacheFile(ExampleWorkingDir()+ 'master' + MetaFileExt);                  // ToDo : Test that worked
                             end;
-                            ScanLocalTree(LazConfigDir, True);                // Get, eg, any OPM Examples
+                            ScanLocalTree(ExamplesHome, True);                // Get, eg, any OPM Examples
                          end;
     end;
 //    if ExList.Count = 0 then begin
-        debugln('TExampleData.LoadExData - found examples = ' + inttostr(ExList.Count));
-        debugln('Lazarus Dir (ie source tree) = ' + GetLazDir());
-        debugln('Lazarus Config Dir = ' + LazConfigDir);
-        debugln('Examples Home Dir  = ' + ExamplesHome);
+//        debugln('TExampleData.LoadExData - found examples = ' + inttostr(ExList.Count));
+//        debugln('Lazarus Dir (ie source tree) = ' + GetLazDir());
+//        debugln('Lazarus Config Dir = ' + LazConfigDir);
+//        debugln('Examples Home Dir  = ' + ExamplesHome);
 //    end;
 end;
 
@@ -605,7 +618,7 @@ var
     Node, Node1 : TDOMNode;
 begin
     Result := '';
-    ReadXMLFile(Doc, LazConfigDir + 'environmentoptions.xml');
+    ReadXMLFile(Doc, LazConfigDir + 'environmentoptions.xml');       // even in EXTESTMODE LazConfigDir should be valid
     Node1 := Doc.DocumentElement.FindNode('EnvironmentOptions');
     if Node1 <> nil then begin
        Node := Node1.FindNode('LazarusDirectory');
@@ -616,30 +629,7 @@ begin
             // will be wrong anyway. Further research is indicated.
     end;
     Doc.free;
-    debugln('TExampleData.GetLazDir = ' + Result);
-end;
-
-function TExampleData.GetLocalTime: ANSIstring;
-var
-   ThisMoment : TDateTime;
-   Res : ANSIString;
-   Off : longint;
-begin
-    {$ifdef LINUX}
-    ReReadLocalTime();    // in case we are near daylight saving time changeover
-    {$endif}
-    ThisMoment:=Now;
-    Result := FormatDateTime('YYYY-MM-DD',ThisMoment) + 'T'
-                    + FormatDateTime('hh:mm:ss',ThisMoment);
-    Off := GetLocalTimeOffset();
-    if (Off div -60) >= 0 then Res := '+'
-	else Res := '-';
-	if abs(Off div -60) < 10 then Res := Res + '0';
-	Res := Res + inttostr(abs(Off div -60)) + ':';
-       	if (Off mod 60) = 0 then
-		Res := res + '00'
-	else Res := Res + inttostr(abs(Off mod 60));
-    Result := Result + res;
+    // debugln('TExampleData.GetLazDir = ' + Result);
 end;
 
 class function TExampleData.EscJSON(InStr : string) : string;
@@ -649,38 +639,6 @@ begin
     Result := Result.Replace(#10, '\n', [rfReplaceAll] );   // LF
     Result := Result.Replace(#13, '', [rfReplaceAll] );     // CR
     Result := Result.Replace(#09, '', [rfReplaceAll] );     // tab
-end;
-
-function TExampleData.WriteMasterMeta(FFileName : string) : boolean;
-var
-   i : integer;
-   STL : TStringList;
-   St, StIndexed : string;
-begin
-    STL := TStringList.Create;
-    StL.Add('{'#10'"' + LastUpDate + '":"' + GetLocalTime() +'",');
-
-    for i := 0 to ExList.Count-1 do begin
-        StL.Add('"' + EscJSON(ExList.Items[i]^.FFname) + '" : {');              // Must be unique
-        StL.Add('  "Name" : "' + EscJSON(ExList.Items[i]^.EName) + '",');
-        StL.Add('  "Category" : "' + EscJSON(ExList.Items[i]^.Category) + '",');
-        St := '';
-        for StIndexed in ExList.Items[i]^.Keywords do
-            St := St + '"' + StIndexed + '",';
-        if St.Length > 0 then delete(St, St.Length, 1);                         // Remove trailing comma
-        StL.Add('  "Keywords" : [' + St + '],');
-        StL.Add('  "Description" : "' + EscJSON(ExList.Items[i]^.Desc) + '"},');
-    end;
-    if STL.Count > 1 then begin
-        St := STL[STL.Count-1];
-        delete(St, St.Length, 1);
-        STL[STL.Count-1] := St;
-    end;
-    Stl.Add('}');
-    deletefile(FFileName);        // ToDo : test its there first and then test delete worked
-    STL.SaveToFile(FFileName);
-    STL.Free;
-    Result := fileexists(FFileName);
 end;
 
 
@@ -749,15 +707,14 @@ function TExampleData.GetDesc(const FFname: string): string;
 var
    P : PExRec;
 begin
+    Result := '';
     for P in ExList do begin
         if (lowercase(P^.FFname) = lowercase(FFname)+MetaFileExt) then begin     // extension must remain lower case
             exit(P^.Desc);
         end;
     end;
-    Result := '';
-    debugln('TExampleData.GetDesc - did not find Desc for ' + FFname);
-    debugln('Spelling of Name must match directory name (case insensitive)');
-    ExList.DumpList('TExampleData.GetDesc', True);
+    debugln('TExampleData.GetDesc - ERROR did not find Desc for ' + FFname);
+    //ExList.DumpList('TExampleData.GetDesc', True);
 end;
 
 
@@ -772,9 +729,9 @@ begin
     try
         result := ScanRemoteTree(FExampDir, STL);
         for St in STL do begin
-            if not DirectoryExistsUTF8(MasterMeta(True) + ExtractFileDir(St)) then
-                ForceDirectory(MasterMeta(True) + ExtractFileDir(St));          // ToDo : but that might fail
-            DownLoadFile(St, MasterMeta(True) + St);
+            if not DirectoryExistsUTF8(ExampleWorkingDir() + ExtractFileDir(St)) then
+                ForceDirectory(ExampleWorkingDir() + ExtractFileDir(St));          // ToDo : but that might fail
+            DownLoadFile(St, ExampleWorkingDir() + St);
         end;
     finally
         STL.Free;

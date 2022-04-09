@@ -41,8 +41,8 @@ begin
       Config := GetIDEConfigStorage(cConfigFileName, true);
       try
         Result := Config.GetValue('Examples/Directory',
-            AppendPathDelim(LazarusIDE.GetPrimaryConfigPath) +
-            AppendPathDelim(cExamplesDir));
+            AppendPathDelim(LazarusIDE.GetPrimaryConfigPath));
+            // + AppendPathDelim(cExamplesDir));
 
       finally
         Config.Free;
@@ -64,6 +64,7 @@ begin
   try
     FormLazExam.ExamplesHome := GetExamplesHomeDir();
     FormLazExam.RemoteRepo := cRemoteRepository;
+    FormLazExam.LazConfigDir := AppendPathDelim(LazarusIDE.GetPrimaryConfigPath);
     FormLazExam.ShowModal;
     ProjectFFile := FormLazExam.ProjectToOpen;
   finally

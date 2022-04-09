@@ -23,6 +23,10 @@ msgstr "Категория"
 msgid "Close"
 msgstr "Закрыть"
 
+#: uconst.rsexamplecopy
+msgid "Copy to work area"
+msgstr ""
+
 #: uconst.rsexampledownload
 msgid "Download"
 msgstr "Загрузить"
@@ -46,6 +50,10 @@ msgstr "Путь"
 #: uconst.rsexampleprojects
 msgid "Example Projects"
 msgstr "Примеры проектов"
+
+#: uconst.rsexampleview
+msgid "View in Browser"
+msgstr ""
 
 #: uconst.rsexcopyingproject
 msgid "Copying Project ..."
