@@ -2035,7 +2035,7 @@
 
       <element name="TColumn.Field">
         <short>
-          <var>Field </var> in the <var>Dataset</var> associated with this <var>Column</var>.
+          <var>Field</var> in the <var>Dataset</var> associated with this <var>Column</var>.
         </short>
         <descr>
           <p>
@@ -2371,7 +2371,7 @@
 
       <element name="TCustomDBGrid">
         <short>
-          <var>TCustomDBGrid </var> is the base class for <var>TDBGrid</var>
+          <var>TCustomDBGrid</var> is the base class for <var>TDBGrid</var>
         </short>
         <descr>
           <p>
@@ -4947,7 +4947,7 @@
         </descr>
         <seealso></seealso>
       </element>
-            
+
       <element name="TCustomDBGrid.SaveGridOptions">
         <short>
           Saves values in the Options property to the specified XML configuration file.

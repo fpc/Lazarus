@@ -1608,7 +1608,7 @@
         </short>
         <descr>
           <p>
-            <var>Click </var> is an overridden method in TCustomBitBtn. It ensures that the correct actions are performed based on the value in the Kind property. When Kind is set to bkClose, the non-nested parent form is closed for the following conditions:
+            <var>Click</var> is an overridden method in TCustomBitBtn. It ensures that the correct actions are performed based on the value in the Kind property. When Kind is set to bkClose, the non-nested parent form is closed for the following conditions:
           </p>
           <ul>
             <li>ModalResult is set to mrNone, or</li>

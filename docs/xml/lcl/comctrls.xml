@@ -1039,7 +1039,7 @@
         </short>
         <descr>
           <p>
-            <var>SimplePanel </var> is a Boolean property which indicates if a single panel is displayed in the status bar with the text in SimpleText
+            <var>SimplePanel</var> is a Boolean property which indicates if a single panel is displayed in the status bar with the text in SimpleText
           </p>
           <p>
             If <b>True</b>, the value of <var>SimpleText</var> is displayed; if <b>False</b>, the contents of the individual <var>Panels</var> is displayed.
@@ -4896,7 +4896,7 @@
             <var>TTabControl</var> - a series of <var>Tabs</var> along the edge of a display area; selection of a <var>Tab</var> governs the contents of the <var>DisplayRect</var>
           </p>
           <p>
-            Use <var>TTabControl </var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be added or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list or removed altogether as required.
+            Use <var>TTabControl</var>by selecting its icon from the Common Controls tab of the IDE Component Palette and placing it at the desired location on the <var>Form</var>. Use the Form Designer and Object Inspector to adjust its shape, size, alignment, anchoring and other properties. Tabs can be added or removed from the component by selecting it, then right-clicking with the mouse to get a pop-up menu whose first item is 'Add Tab'. Once created, the Tabs can be edited by selecting the <var>Tabs</var> entry in the Object Inspector and selecting the ellipsis (...) which will cause a pop-up String editor to appear. The tabs can be given new captions, moved up and down the list or removed altogether as required.
           </p>
           <p>
             Each Tab has an Index (starting from 0) and this index can be used to specify an entry from <var>Images</var> for display in the <var>DisplayRect</var>.
@@ -11950,11 +11950,11 @@
 
       <element name="TListView">
         <short>
-          <var>TListView </var> - a window showing a list of <var>Items</var> which may or may not have associated icons.
+          <var>TListView</var> - a window showing a list of <var>Items</var> which may or may not have associated icons.
         </short>
         <descr>
           <p>
-            <var>TListView </var>- a window showing a list of items which may or may not have associated icons.
+            <var>TListView</var>- a window showing a list of items which may or may not have associated icons.
           </p>
           <p>
             At first this control looks very like <link id="#lcl.stdctrls.TListBox">TListBox</link> but it has a much higher degree of complexity. It is capable of displaying Items in <var>Columns</var> of <var>Rows</var> and it can have images associated with the list <var>Items</var>.
@@ -14438,7 +14438,7 @@
 
       <element name="TToolButton.Index">
         <short>
-          <var>Index </var>- is the sequence number for the button in ButtonList.
+          <var>Index</var>- is the sequence number for the button in ButtonList.
         </short>
         <descr>
           <p>
@@ -15673,7 +15673,7 @@ AToolbar.ButtonHeight := 30;
         <short>List with images displayed when a tool button is not enabled.</short>
         <descr>
           <p>
-            <var>DisabledImages </var> is a <var>TCustomImageList</var> property with icon images displayed on tool buttons when they are not Enabled. Use <var>Images</var> for the images displayed when the tool button are enabled but not hovered. Use <var>HotImages</var> for the images displayed when tool buttons are hovered under the mouse cursor.
+            <var>DisabledImages</var> is a <var>TCustomImageList</var> property with icon images displayed on tool buttons when they are not Enabled. Use <var>Images</var> for the images displayed when the tool button are enabled but not hovered. Use <var>HotImages</var> for the images displayed when tool buttons are hovered under the mouse cursor.
           </p>
           <p>
             The image position for a tool button is stored in the ImageIndex property in the TToolButton instance.This requires the image at a given position in the image lists to target the same button on the tool bar control.
@@ -17647,7 +17647,7 @@ AToolbar.ButtonHeight := 30;
         <short>Drawing style used for a grabber or gripper displayed on the control.</short>
         <descr>
           <p>
-            <var>GrabStyle</var> is a <var>TGrabStyle </var>property with the drawing style used for a grabber or gripper displayed for the control. The default value for the property is defined in the <var>cDefGrabStyle</var> constant.
+            <var>GrabStyle</var> is a <var>TGrabStyle</var>property with the drawing style used for a grabber or gripper displayed for the control. The default value for the property is defined in the <var>cDefGrabStyle</var> constant.
           </p>
         </descr>
         <seealso/>
@@ -18272,7 +18272,7 @@ AToolbar.ButtonHeight := 30;
         </short>
         <descr>
           <p>
-            <var>Tickmarks </var> indicates where the ticks appear relative to the slider in the track bar control.
+            <var>Tickmarks</var> indicates where the ticks appear relative to the slider in the track bar control.
           </p>
           <dl>
             <dt>tmBottomRight</dt>
@@ -19597,7 +19597,7 @@ AToolbar.ButtonHeight := 30;
 
       <element name="TTreeNode.DisplayRect">
         <short>
-          <var>DisplayRect</var> - returns the coordinates of the rectangle containing the current entry; if <var>TextOnly </var>is True, returns the coordinates for the text.
+          <var>DisplayRect</var> - returns the coordinates of the rectangle containing the current entry; if <var>TextOnly</var>is True, returns the coordinates for the text.
         </short>
         <descr/>
         <seealso/>
@@ -26149,7 +26149,7 @@ OldExpanded.Free;
 
       <element name="THeaderSection.Width">
         <short>
-          The <var>Width </var>of the section that appears on the <var>THeaderControl</var>.
+          The <var>Width</var>of the section that appears on the <var>THeaderControl</var>.
         </short>
       </element>
 
@@ -26643,7 +26643,7 @@ OldExpanded.Free;
 
       <element name="TCustomHeaderControl.SectionDrag">
         <short>
-          <var>SectionDrag</var> - method to emulate the <var>OnSectionDrag </var>event.
+          <var>SectionDrag</var> - method to emulate the <var>OnSectionDrag</var>event.
         </short>
         <descr/>
         <seealso/>

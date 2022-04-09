@@ -1895,7 +1895,7 @@
 
       <element name="TCustomSplitter.AnchorSplitter">
         <short>
-          <var>AnchorSplitter</var> anchors the splitter to <var>AControl </var>using the specified <var>Kind</var> of anchor.
+          <var>AnchorSplitter</var> anchors the splitter to <var>AControl</var> using the specified <var>Kind</var> of anchor.
         </short>
         <descr>
           <p>
@@ -4405,12 +4405,11 @@
 
       <element name="TCustomCheckGroup.ColumnLayout">
         <short>
-          <var>ColumnLayout</var>
-          <var>HorizontalThenVertical </var> or vice versa.
+          <var>ColumnLayout</var> - <var>HorizontalThenVertical</var> or vice versa.
         </short>
         <descr>
           <p>
-            <var>ColumnLayout</var> is a <var>TColumnLayout</var> property which specifies the layout strategy used when rendering the <var>Items</var> in the grouped edit control. The default value for the property is      <var>clHorizontalThenVertical</var>, and causes check boxes to be drawn horizontally for the required number of <var>Columns</var> before advancing.
+            <var>ColumnLayout</var> is a <var>TColumnLayout</var> property which specifies the layout strategy used when rendering the <var>Items</var> in the grouped edit control. The default value for the property is <var>clHorizontalThenVertical</var>, and causes check boxes to be drawn horizontally for the required number of <var>Columns</var> before advancing.
           </p>
           <p>
             Assigning a new value for the property causes <var>ChildSizing</var> to be updated to use the corresponding value in its <var>Layout</var> property.
@@ -4865,12 +4864,12 @@
 
       <element name="TCustomLabeledEdit.EditLabel">
         <short>
-          <var>EditLabel </var>- the label attached to the edit box.</short>
+          <var>EditLabel</var> - the label attached to the edit box.</short>
       </element>
 
       <element name="TCustomLabeledEdit.LabelPosition">
         <short>
-          <var>LabelPosition </var> - whether above, below, to the left or to the right of the Edit box.
+          <var>LabelPosition</var> - whether above, below, to the left or to the right of the Edit box.
         </short>
       </element>
 
@@ -4988,7 +4987,7 @@
             <var>TCustomPanel</var>is the base type for <var>TPanel</var>.
           </p>
           <p>
-            A Panel is a defined rectangular area on a form into which other components can be placed to group them functionally and geographically. <var>TCustomPanel </var> defines the positioning and beveling properties of any descendent classes, and provides methods for painting and writing text to the panel.
+            A Panel is a defined rectangular area on a form into which other components can be placed to group them functionally and geographically. <var>TCustomPanel</var> defines the positioning and beveling properties of any descendent classes, and provides methods for painting and writing text to the panel.
           </p>
         </descr>
       </element>
@@ -5363,7 +5362,7 @@
 
       <element name="TCustomPanel.BevelWidth">
         <short>
-          <var>BevelWidth </var>- the Width of the panel's bevel in pixels.
+          <var>BevelWidth</var> - the Width of the panel's bevel in pixels.
         </short>
       </element>
 
@@ -6232,7 +6231,7 @@
         </short>
         <descr>
           <p>
-            <var>TCustomTrayIcon </var> is the base class for <var>TTrayIcon</var>, a multi-platform system tray icon component. It allows an icon to be displayed in the system tray when the Application or Form is active. TCustomTrayIcon provides properties, methods, and events used to configure, display, and control the tray icon. The component is supported on multiple platforms, but its implementation is platform-specific.
+            <var>TCustomTrayIcon</var> is the base class for <var>TTrayIcon</var>, a multi-platform system tray icon component. It allows an icon to be displayed in the system tray when the Application or Form is active. TCustomTrayIcon provides properties, methods, and events used to configure, display, and control the tray icon. The component is supported on multiple platforms, but its implementation is platform-specific.
           </p>
           <p>
             On the Windows platform, the system tray is usually located on the bottom-right corner of the screen, but it can be located on other edges for the physical screen. For other platforms, the position and other features varies according to the window or display manager in use.

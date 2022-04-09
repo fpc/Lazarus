@@ -11022,7 +11022,7 @@
             <var>IsParentOf</var> is a <var>Boolean</var> function used to determine if the current control instance is ultimately a parent of the control specified in AControl. No actions are performed in the method when AControl has not been assigned (<b>Nil</b>), and the return value is set to <b>False</b>.
           </p>
           <p>
-            IsParentOf visits each control in the Parent control hierarchy, and returns <b>True </b> if the current class instance (Self) is found in the tree. The return value is <b>False</b> if the current control instance is not found in the Parent control tree.
+            IsParentOf visits each control in the Parent control hierarchy, and returns <b>True</b> if the current class instance (Self) is found in the tree. The return value is <b>False</b> if the current control instance is not found in the Parent control tree.
           </p>
         </descr>
         <seealso>
@@ -20578,7 +20578,7 @@ BoundsRect.Left:=3; // WRONG: common newbie mistake
           <p>
             <b>procedure SetClientHeight(Value: Integer);</b> <br/>
             <b>procedure SetClientSize(Value: TPoint);</b> <br/>
-            <b>procedure SetClientWidth(Value: Integer); </b>
+            <b>procedure SetClientWidth(Value: Integer);</b>
           </p>
           <p>
             Exists for Delphi compatibility too. Resizes the control, to get the wanted ClientRect size.
