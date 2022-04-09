@@ -313,10 +313,10 @@ const
   PixelOffset = 0.5; // Cairo API needs 0.5 pixel offset to not make blurry lines
 
 const
-  Dash_Dash:        array [0..1] of double = (18, 6);             //____ ____
-  Dash_Dot:         array [0..1] of double = (3, 3);              //.........
-  Dash_DashDot:     array [0..3] of double = (9, 6, 3, 6);        //__ . __ .
-  Dash_DashDotDot:  array [0..5] of double = (9, 3, 3, 3, 3, 3);  //__ . . __
+  Dash_Dash:        array [0..1] of double = (3, 2);              //____ ____
+  Dash_Dot:         array [0..1] of double = (1, 2);              //.........
+  Dash_DashDot:     array [0..3] of double = (3, 2, 1, 2);        //__ . __ .
+  Dash_DashDotDot:  array [0..5] of double = (3, 2, 1, 2, 1, 2);  //__ . . __
 
 var
   FDefaultContext: TGtk3DeviceContext = nil;
