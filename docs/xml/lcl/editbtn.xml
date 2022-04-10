@@ -2257,7 +2257,7 @@
             <var>TAcceptDateEvent</var> is an object procedure which specifies an event handler used to examine and verify a <var>TDateTime</var> value.
           </p>
           <p>
-            <var>Sender</var>is the object generating the event notification.
+            <var>Sender</var> is the object generating the event notification.
           </p>
           <p>
             <var>ADate</var> is the <var>TDateTime</var> value examined in the event handler.

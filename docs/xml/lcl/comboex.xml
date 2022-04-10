@@ -1974,7 +1974,7 @@
         <short>Displays the drop down for the combo-box.</short>
         <descr>
           <p>
-            <var>DropDown</var> is an overridden method used to display the drop down for the combo-box if it is not already visible. DropDown calls the inherited method to trigger the <var>OnDropDown</var> method (when assigned). When the drop down is already visible, the value in an enabled at <var>ItemIndex</var> is   <var>Toggle</var>d.
+            <var>DropDown</var> is an overridden method used to display the drop down for the combo-box if it is not already visible. DropDown calls the inherited method to trigger the <var>OnDropDown</var> method (when assigned). When the drop down is already visible, the value in an enabled at <var>ItemIndex</var> is <var>Toggled</var>.
           </p>
         </descr>
         <seealso>

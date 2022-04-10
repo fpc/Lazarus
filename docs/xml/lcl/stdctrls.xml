@@ -4809,7 +4809,7 @@
             <var>OnMeasureItem</var> is a <var>TMeasureItemEvent</var> property with the event handler signalled to get the height for specified item in the list box control. OnMeasureItem is signalled (when assigned) from the <var>MeasureItem</var> method, and occurs when the <b>LM_MeasureItem</b> message is handled for the control. MeasureItem provides the arguments passed to the event handler, while the message handler stores the calculated height in <var>ItemHeight</var> when it is not 0 (zero).
           </p>
           <p>
-            An application must implement an object procedure to respond to the event notification. <var>Index</var> contains the position in <var>Items</var> with the string to examine in the event handler. On entry, <var>TheHeight</var> contains the text height for the current <var></var>Font calculated using the <var>Canvas</var> in the control. The value in TheHeight can be updated with the value derived in the event handler.
+            An application must implement an object procedure to respond to the event notification. <var>Index</var> contains the position in <var>Items</var> with the string to examine in the event handler. On entry, <var>TheHeight</var> contains the text height for the current <var>Font</var> calculated using the <var>Canvas</var> in the control. The value in TheHeight can be updated with the value derived in the event handler.
           </p>
         </descr>
         <seealso>

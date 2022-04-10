@@ -3576,7 +3576,7 @@ ADialog.CustomColors.Values['ColorA'] := 'FFFF00';
         <short>Set of common buttons displayed on the Task dialog.</short>
         <descr>
           <p>
-            <var>CommonButtons</var>is a <var>TTaskDialogCommonButtons</var> property with the set of common buttons displayed on the Task dialog. Values from the <var>TTaskDialogCommonButton</var> enumeration are included in the set to make buttons visible. Values are excluded from the set to remove the buttons. The default value for the property is <var>[tcbOk, tcbCancel]</var>,  and enables the <b>OK</b> and <b>Cancel</b> buttons for the Task dialog.
+            <var>CommonButtons</var> is a <var>TTaskDialogCommonButtons</var> property with the set of common buttons displayed on the Task dialog. Values from the <var>TTaskDialogCommonButton</var> enumeration are included in the set to make buttons visible. Values are excluded from the set to remove the buttons. The default value for the property is <var>[tcbOk, tcbCancel]</var>,  and enables the <b>OK</b> and <b>Cancel</b> buttons for the Task dialog.
           </p>
           <p>
             CommonButtons is used in conjunction with the <var>Buttons</var> collection, which contains custom button definitions that do not fit the common button definitions. Both CommonButtons and Buttons are used in <var>DoExecute</var>, and passed as arguments to the wrapper in <file>LCLTaskDialog</file>.

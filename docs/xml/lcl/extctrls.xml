@@ -3917,7 +3917,7 @@
 
       <element name="TCustomCheckGroup">
         <short>
-          <var>TCustomCheckGroup</var>is the base type for <var>TCheckGroup</var>.
+          <var>TCustomCheckGroup</var> is the base type for <var>TCheckGroup</var>.
         </short>
         <descr>
           <p>
@@ -4883,7 +4883,7 @@
         <short>Labelled Edit is an Edit Box with a permanently attached Label.</short>
         <descr>
           <p>
-            <var>TLabeledEdit</var>is an Edit Box with a permanently attached Label.
+            <var>TLabeledEdit</var> is an Edit Box with a permanently attached Label.
           </p>
           <p>
             Saves time and effort over placing separate Label and Edit Box on Form. The properties are described in the parent component, <link id="#lcl.ExtCtrls.TCustomLabeledEdit">TCustomLabeledEdit</link> from which most of the properties are inherited.
@@ -4984,7 +4984,7 @@
         </short>
         <descr>
           <p>
-            <var>TCustomPanel</var>is the base type for <var>TPanel</var>.
+            <var>TCustomPanel</var> is the base type for <var>TPanel</var>.
           </p>
           <p>
             A Panel is a defined rectangular area on a form into which other components can be placed to group them functionally and geographically. <var>TCustomPanel</var> defines the positioning and beveling properties of any descendent classes, and provides methods for painting and writing text to the panel.
