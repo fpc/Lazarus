@@ -1,4 +1,4 @@
-unit strpas2jsdesign;
+unit StrPas2JSDesign;
 
 {$mode objfpc}{$H+}
 

@@ -23,6 +23,7 @@ const
   SWSCompileServerIni = 'simplewebservergui.ini';
   SWSMainServerPath = 'simplewebserver';
   SWSRecentListCapacity = 30;
+  SWSTestprojectOrigin = 'TestProject';
 
 const
   SWSKeyBindAny = 'Server/BindAny';
@@ -56,7 +57,13 @@ type
     swsbkDefault,
     swsbkFirefox,
     swsbkChrome,
+    swsbkOpera,
+    {$IFDEF Darwin}
     swsbkSafari,
+    {$ENDIF}
+    {$IFDEF MSWindows}
+    swsbkEdge,
+    {$ENDIF}
     swsbkCustom
     );
   TSWSBrowserKinds = set of TSWSBrowserKind;
@@ -66,7 +73,13 @@ const
     'Default',
     'Firefox',
     'Chrome',
+    'Opera',
+    {$IFDEF Darwin}
     'Safari',
+    {$ENDIF}
+    {$IFDEF MSWindows}
+    'Edge',
+    {$ENDIF}
     'Custom'
     );
 

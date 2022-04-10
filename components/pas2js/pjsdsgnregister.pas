@@ -10,6 +10,8 @@ uses
   Forms, Controls, Dialogs, LazHelpIntf,
   // LazUtils
   LazLoggerBase, LazFileUtils, FileUtil,
+  // codetools
+  CodeToolManager, CodeCache,
   // IdeIntf
   IDECommands, ToolbarIntf, MenuIntf, ProjectIntf, CompOptsIntf, LazIDEIntf,
   IDEOptionsIntf, IDEOptEditorIntf, ComponentEditors, SrcEditorIntf, IDEMsgIntf,
@@ -18,8 +20,7 @@ uses
   idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame, idedtstopas,
   frmpas2jswebservers, frmpas2jsnodejsprojectoptions,
   frmpas2jsbrowserprojectoptions, pjsprojectoptions, idehtmltools,
-  frmhtmltoform, pjscontroller, strpas2jsdesign, CodeToolManager, CodeCache;
-
+  frmhtmltoform, pjscontroller, StrPas2JSDesign;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
@@ -35,6 +36,7 @@ const
 type
 
   { TProjectPas2JSWebApp }
+
   TBrowserApplicationOption = (baoCreateHtml,        // Create template HTML page
                                baoMaintainHTML,      // Maintain the template HTML page
                                baoRunOnReady,        // Run in document.onReady
@@ -237,18 +239,19 @@ end;
 
 Type
 
-  { TPas2JSMenuHandler }
+  { TPas2JSHandler }
 
-  TPas2JSMenuHandler = Class(TObject)
-    procedure DoConvLog(Sender: TObject; const Msg: String);
-    Procedure OnRefreshHTMLFormContext(Sender : TObject);
-    Procedure OnRefreshProjHTMLFormContext(Sender : TObject);
-    Procedure OnRefreshProjHTMLFormAllContext(Sender : TObject);
-    Procedure OnSrcEditPopup(Sender : TObject);
-    Procedure OnPrjInspPopup(Sender : TObject);
-  private
-    function AskUserFile(aUnitName,aHTMLFileName: String): string;
-    function RefreshHTML(aFile: TLazProjectFile; out aSource: String): Boolean;
+  TPas2JSHandler = Class(TObject)
+  protected
+    function AskUserFile(aUnitName,aHTMLFileName: String): string; virtual;
+    function RefreshHTML(aFile: TLazProjectFile; out aSource: String): Boolean; virtual;
+  public
+    procedure DoConvLog(Sender: TObject; const Msg: String); virtual;
+    Procedure OnRefreshHTMLFormContext(Sender : TObject); virtual;
+    Procedure OnRefreshProjHTMLFormContext(Sender : TObject); virtual;
+    Procedure OnRefreshProjHTMLFormAllContext(Sender : TObject); virtual;
+    Procedure OnSrcEditPopup(Sender : TObject); virtual;
+    Procedure OnPrjInspPopup(Sender : TObject); virtual;
   end;
 
 Const
@@ -257,7 +260,7 @@ Const
 Var
   Pas2JSHTMLClassDef : TPas2JSHTMLClassDef;
   Pas2JSDTSToPasUnitDef : TPas2JSDTSToPasUnitDef;
-  MenuHandler : TPas2JSMenuHandler;
+  Pas2JSHandler : TPas2JSHandler;
 
 procedure Register;
 
@@ -268,8 +271,8 @@ Var
   PWA: TProjectPas2JSProgressiveWebApp;
 
 begin
-  MenuHandler:=TPas2JSMenuHandler.Create;
-  if Assigned(MenuHandler) then; // Silence compiler warning
+  Pas2JSHandler:=TPas2JSHandler.Create;
+  if Assigned(Pas2JSHandler) then; // Silence compiler warning
   PJSOptions:=TPas2jsOptions.Create;
   PJSOptions.Load;
   TPJSController.Instance.Hook;
@@ -306,13 +309,13 @@ begin
 
   // pop menu items
   SrcMnuItem:=RegisterIDEMenuCommand(SrcEditMenuSectionFirstStatic,
-     'HTMLFormClassRefresh', pjsRefreshClassFromHTML,@MenuHandler.OnRefreshHTMLFormContext);
-  SourceEditorMenuRoot.AddHandlerOnShow(@MenuHandler.OnSrcEditPopup);
+     'HTMLFormClassRefresh', pjsRefreshClassFromHTML,@Pas2JSHandler.OnRefreshHTMLFormContext);
+  SourceEditorMenuRoot.AddHandlerOnShow(@Pas2JSHandler.OnSrcEditPopup);
   PrjMnuItem:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
-      'PrjHTMLFormClassRefresh',pjsRefreshClassFromHTML,@MenuHandler.OnRefreshProjHTMLFormContext);
+      'PrjHTMLFormClassRefresh',pjsRefreshClassFromHTML,@Pas2JSHandler.OnRefreshProjHTMLFormContext);
   PrjMnuItemAll:=RegisterIDEMenuCommand(ProjInspMenuSectionFiles,
-      'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@MenuHandler.OnRefreshProjHTMLFormAllContext);
-  ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@MenuHandler.OnPrjInspPopup);
+      'PrjHTMLFormClassRefreshAll',pjsRefreshAllClassesFromHTML,@Pas2JSHandler.OnRefreshProjHTMLFormAllContext);
+  ProjectInspectorItemsMenuRoot.AddHandlerOnShow(@Pas2JSHandler.OnPrjInspPopup);
 end;
 
 { TProjectPas2JSProgressiveWebApp }
@@ -899,12 +902,12 @@ end;
 
 { TPas2JSMenuHandler }
 
-procedure TPas2JSMenuHandler.DoConvLog(Sender: TObject; const Msg: String);
+procedure TPas2JSHandler.DoConvLog(Sender: TObject; const Msg: String);
 begin
   IDEMessagesWindow.AddCustomMessage(TMessageLineUrgency.mluProgress,Msg,'',0,0,SMessageViewHTMLToForm);
 end;
 
-procedure TPas2JSMenuHandler.OnSrcEditPopup(Sender: TObject);
+procedure TPas2JSHandler.OnSrcEditPopup(Sender: TObject);
 
 Var
   Editor : TSourceEditorInterface;
@@ -919,7 +922,7 @@ begin
   SrcMnuItem.Visible:=IsPas2js and Assigned(AFile) and (aFile.CustomData.Values[SHTML2FormOptions]<>'');
 end;
 
-procedure TPas2JSMenuHandler.OnPrjInspPopup(Sender: TObject);
+procedure TPas2JSHandler.OnPrjInspPopup(Sender: TObject);
 
 Var
   Idx : Integer;
@@ -961,7 +964,7 @@ begin
   PrjMnuItemAll.Visible:=AnyOK;
 end;
 
-function TPas2JSMenuHandler.AskUserFile(aUnitName,aHTMLFileName: String): string;
+function TPas2JSHandler.AskUserFile(aUnitName,aHTMLFileName: String): string;
 
 Var
   Dlg : TOpenDialog;
@@ -984,7 +987,7 @@ begin
   end;
 end;
 
-procedure TPas2JSMenuHandler.OnRefreshHTMLFormContext(Sender: TObject);
+procedure TPas2JSHandler.OnRefreshHTMLFormContext(Sender: TObject);
 Var
   Editor : TSourceEditorInterface;
   aFile : TLazProjectFile;
@@ -1002,12 +1005,13 @@ begin
     end;
 end;
 
-Function TPas2JSMenuHandler.RefreshHTML(aFile : TLazProjectFile; Out aSource : String) : Boolean;
+function TPas2JSHandler.RefreshHTML(aFile: TLazProjectFile; out aSource: String
+  ): Boolean;
 
 Var
   aOptions: THTML2ClassOptions;
   CG : TFormCodeGen;
-  Conv : THTMLToFormELements;
+  Conv : THTMLToFormElements;
   aFileName : String;
 
 begin
@@ -1028,7 +1032,7 @@ begin
        LazarusIDE.ActiveProject.Modified:=True;
        end;
     CG:=TFormCodeGen.Create(Nil);
-    Conv:=THTMLToFormELements.Create(nil);
+    Conv:=THTMLToFormElements.Create(nil);
     Conv.LoadOptions(aOptions);
     Conv.LoadFromFile(aoptions.HTMLFileName);
     Conv.OnLog:=@DoConvLog;
@@ -1045,7 +1049,7 @@ begin
   end;
 end;
 
-procedure TPas2JSMenuHandler.OnRefreshProjHTMLFormContext(Sender: TObject);
+procedure TPas2JSHandler.OnRefreshProjHTMLFormContext(Sender: TObject);
 
 Var
   Idx : Integer;
@@ -1075,7 +1079,7 @@ begin
    end;
 end;
 
-procedure TPas2JSMenuHandler.OnRefreshProjHTMLFormAllContext(Sender: TObject);
+procedure TPas2JSHandler.OnRefreshProjHTMLFormAllContext(Sender: TObject);
 Var
   Idx : Integer;
   HasHTMLInfo : Boolean;
@@ -1156,14 +1160,14 @@ function TPas2JSHTMLClassDef.CreateSource(const Filename, SourceName, ResourceNa
 
 Var
   CG : TFormCodeGen;
-  Conv : THTMLToFormELements;
+  Conv : THTMLToFormElements;
   HTMLFile : TLazProjectFile;
 
 begin
   Conv:=Nil;
   CG:=TFormCodeGen.Create(Nil);
   try
-    Conv:=THTMLToFormELements.Create(nil);
+    Conv:=THTMLToFormElements.Create(nil);
     Conv.LoadOptions(FOptions);
     Conv.LoadFromFile(Foptions.HTMLFileName);
     Conv.OnLog:=@DoConvLog;
@@ -1367,7 +1371,7 @@ end;
 procedure TProjectPas2JSWebApp.Clear;
 begin
   // Reset options
-  FOptions:=[baoCreateHtml,baoMaintainHTML];
+  FOptions:=[baoCreateHtml,baoMaintainHTML,baoStartServer];
   ProjectPort:=0;
   ProjectURL:='';
 end;

@@ -7,8 +7,9 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ButtonPanel,
   ComCtrls, ExtCtrls, StdCtrls, LazIDEIntf, IDEDialogs, MacroIntf, LazUTF8,
-  LazFileUtils, FileUtil, LazLoggerBase, SimpleWebSrvStrConsts,
-  SimpleWebSrvController, SimpleWebSrvOptions, SimpleWebSrvUtils;
+  LazFileUtils, FileUtil, LazLoggerBase,
+  SimpleWebSrvStrConsts, SimpleWebSrvController, SimpleWebSrvOptions,
+  SimpleWebSrvUtils;
 
 type
 
@@ -83,29 +84,30 @@ end;
 procedure TSimpleWebSrvAddDialog.FormCreate(Sender: TObject);
 begin
   // localize
-  Caption:='Add Simple Web Server Location';
+  Caption:=rsSWAddSimpleWebServerLocation;
 
   // add location page
-  LocationLabel.Caption:='Location';
+  LocationLabel.Caption:=rsSWLocation;
   LocationComboBox.TextHint:='location';
-  LocationComboBox.Hint:='An arbitrary name for the URL subfolder';
+  LocationComboBox.Hint:=rsSWAnArbitraryNameForTheURLSubfolder;
 
-  LocationDirLabel.Caption:='Local Directory';
-  LocationDirComboBox.Hint:='Working directory on disk, usually where the server fetches files from';
+  LocationDirLabel.Caption:=rsSWLocalDirectory;
+  LocationDirComboBox.Hint:=
+    rsSWWorkingDirectoryOnDiskUsuallyWhereTheServerFetches;
 
-  LocButtonPanel.OKButton.Caption:='Add Location';
+  LocButtonPanel.OKButton.Caption:=rsSWAddLocation;
 
   // add server page
-  SrvPortLabel.Caption:='Port';
-  SrvPortComboBox.Hint:='TCP Port 1024..65535, you can use macro $(Port) for below params';
-  SrvExeLabel.Caption:='Executable';
+  SrvPortLabel.Caption:=rsSWSPort;
+  SrvPortComboBox.Hint:=rsSWTCPPort102465535YouCanUseMacroPortForBelowParams;
+  SrvExeLabel.Caption:=rsSWExecutable;
   SrvExeComboBox.Hint:='';
-  SrvWorkDirLabel.Caption:='Working Directory';
+  SrvWorkDirLabel.Caption:=rsSWWorkingDirectory;
   SrvWorkDirComboBox.Hint:=LocationDirComboBox.Hint;
-  SrvParamsLabel.Caption:='Parameters, please use macro $(port)';
-  SrvParamsComboBox.Hint:='Command line parameters';
+  SrvParamsLabel.Caption:=rsSWParametersPleaseUseMacroPort;
+  SrvParamsComboBox.Hint:=rsSWCommandLineParameters;
 
-  SrvButtonPanel.OKButton.Caption:='Add Custom Server';
+  SrvButtonPanel.OKButton.Caption:=rsSWAddCustomServer;
 
   // hook
   LocButtonPanel.OKButton.OnClick:=@LocButtonPanelOKButtonClick;
@@ -121,7 +123,7 @@ var
 begin
   Dlg:=TSelectDirectoryDialog.Create(nil);
   try
-    Dlg.Title:='Select Directory';
+    Dlg.Title:=rsSWSelectDirectory;
     s:='$Project(OutputDir)';
     IDEMacros.SubstituteMacros(s);
     Dlg.InitialDir:=s;
@@ -210,7 +212,6 @@ begin
 
   ParamsList:=TStringListUTF8Fast.Create;
   SplitCmdLineParams(Params,ParamsList);
-  debugln(['BBB1 TSimpleWebSrvAddDialog.SrvButtonPanelOKButtonClick ',ParamsList.Count]);
   Server:=Controller.AddServer(Port,aExe,ParamsList,aWorkDir,rsSWSUserOrigin,false,true);
   if Server=nil then exit;
 
@@ -243,12 +244,15 @@ begin
   Loc:=Controller.AddLocation(aLoc,aPath,rsSWSUserOrigin,true);
   if Loc=nil then
   begin
-    IDEMessageDialog('Error','Unable to add location [20220129122529]',mtError,[mbOK]);
+    IDEMessageDialog(rsSWError, 'Unable to add location [20220129122529]',
+      mtError, [mbOK]);
     exit;
   end;
   if Loc.ErrorDesc<>'' then
   begin
-    IDEMessageDialog('Error','Unable to add location:'+sLineBreak+Loc.ErrorDesc,mtError,[mbOK]);
+    IDEMessageDialog(rsSWError, rsSWUnableToAddLocation+sLineBreak+Loc.
+      ErrorDesc,
+      mtError, [mbOK]);
     exit;
   end;
 
@@ -265,7 +269,7 @@ var
   aLoc: TCaption;
 begin
   if Controller=nil then
-    LocationURLLabel.Caption:='missing controller'
+    LocationURLLabel.Caption:=rsSWMissingController
   else begin
     aLoc:=LocationComboBox.Text;
     CheckLocationName(aLoc,false);
@@ -285,7 +289,7 @@ begin
   if aLoc='' then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Missing Location',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWMissingLocation, mtError, [mbOK]);
     exit;
   end;
 
@@ -298,7 +302,8 @@ begin
     else
       continue;
     if Interactive then
-      IDEMessageDialog('Error','Invalid char '+s+' in Location',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, 'Invalid char '+s+' in Location', mtError, [
+        mbOK]);
     exit;
   end;
 
@@ -306,7 +311,7 @@ begin
      or (Controller.FindLocation(aLoc)<>nil) then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Location already used',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWLocationAlreadyUsed, mtError, [mbOK]);
     exit;
   end;
 
@@ -323,13 +328,14 @@ begin
   if aPath='' then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Missing local directory',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWMissingLocalDirectory, mtError, [mbOK]);
     exit;
   end;
   if not DirectoryExists(aPath) then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Local directory not found:'+sLineBreak+aPath,mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWLocalDirectoryNotFound+sLineBreak+
+        aPath, mtError, [mbOK]);
     exit;
   end;
   Result:=true;
@@ -346,14 +352,14 @@ begin
   if length(aPort)>5 then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Invalid Port',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWInvalidPort, mtError, [mbOK]);
     exit;
   end;
   p:=StrToIntDef(aPort,-1);
   if (p<0) or (p>65535) then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Invalid Port',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWInvalidPort, mtError, [mbOK]);
     exit;
   end;
 
@@ -362,10 +368,10 @@ begin
 
   aPort:=IntToStr(p);
 
-  if (p>0) and (Controller.FindServer(p)<>nil) then
+  if (p>0) and (Controller.FindServerWithPort(p)<>nil) then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Port already used',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWPortAlreadyUsed, mtError, [mbOK]);
     exit;
   end;
 
@@ -383,7 +389,7 @@ begin
   if ExtractFilename(aExe)='' then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Missing server executable',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWMissingServerExecutable, mtError, [mbOK]);
     exit;
   end;
 
@@ -395,7 +401,9 @@ begin
     if aExe='' then
     begin
       if Interactive then
-        IDEMessageDialog('Error','Server executable not found in PATH',mtError,[mbOK]);
+        IDEMessageDialog(rsSWError, rsSWServerExecutableNotFoundInPATH2,
+          mtError,
+          [mbOK]);
       exit;
     end;
   end else begin
@@ -405,13 +413,15 @@ begin
   if not FileExists(aExe) then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Server executable not found',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWServerExecutableNotFound, mtError, [mbOK]
+        );
     exit;
   end;
   if not FileIsExecutable(aExe) then
   begin
     if Interactive then
-      IDEMessageDialog('Error','Server exe is not executable',mtError,[mbOK]);
+      IDEMessageDialog(rsSWError, rsSWServerExeIsNotExecutable2, mtError, [mbOK]
+        );
     exit;
   end;
 
@@ -463,7 +473,7 @@ begin
   for i:=1 to 65535 do
   begin
     aPort:=GetNextIPPort(aPort);
-    if Controller.FindServer(aPort)=nil then
+    if Controller.FindServerWithPort(aPort)=nil then
       exit(IntToStr(aPort));
   end;
   Result:=IntToStr(GetNextIPPort(Controller.MainSrvPort));

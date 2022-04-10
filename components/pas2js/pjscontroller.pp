@@ -7,11 +7,14 @@ interface
 uses
   Classes, SysUtils, process,
   // LazUtils
-  LazLoggerBase, LazUtilities,
+  LazLoggerBase, LazUtilities, FileUtil, LazFileUtils,
   // LCL
   Forms, Controls,
   // IdeIntf
-  MacroIntf, MacroDefIntf, LazIDEIntf;
+  MacroIntf, MacroDefIntf, ProjectIntf, CompOptsIntf, LazIDEIntf,
+  // pas2js
+  SimpleWebSrvController, StrPas2JSDesign, PJSDsgnOptions, CodeToolManager,
+  CodeCache;
 
 Type
 
@@ -51,6 +54,7 @@ Type
     Function AddInstance(aPort : Word; Const ABaseURL, aServerName : String) : TServerInstance;
     Property Instances [AIndex : Integer] : TServerInstance Read GetInstance; default;
   end;
+
   { TPJSController }
 
   TPJSController = Class
@@ -63,7 +67,14 @@ Type
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
-    function MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
+    function OnProjectBuilding(Sender: TObject): TModalResult;
+    function OnRunDebugInit(Sender: TObject; var Handled: boolean
+      ): TModalResult;
+    function OnRunWithoutDebugInit(Sender: TObject; var Handled: boolean): TModalResult;
+    function GetHTMLFilename(aProject: TLazProject; UseTestDir: boolean): string;
+    function GetWebDir(aProject: TLazProject): string;
+    function RunProject(Sender: TObject; WithDebug: boolean; var Handled: boolean): TModalResult;
+    function SaveHTMLFileToTestDir(aProject: TLazProject): boolean;
   Public
     Constructor Create;
     Destructor Destroy; override;
@@ -84,7 +95,7 @@ Const
   PJSProjectNodeJS =  'PJSProjectNodeJS'; // NodeJS project
   PJSProjectModule =  'PJSProjectModule'; // Module project
   PJSProjectVSCode =  'PJSProjectVSCode'; // VS Code project
-  PJSProjectAtom =  'PJSProjectAtom'; // VS Code project
+  PJSProjectAtom =  'PJSProjectAtom'; // Atom project
   PJSProjectHTMLFile = 'PasJSHTMLFile';
   PJSIsProjectHTMLFile = 'PasJSIsProjectHTMLFile';
   PJSProjectMaintainHTML = 'MaintainHTML';
@@ -97,8 +108,6 @@ Const
 
 
 implementation
-
-uses FileUtil, LazFileUtils, PJSDsgnOptions, strpas2jsdesign;
 
 Var
   ctrl : TPJSController;
@@ -300,7 +309,29 @@ begin
     DebugLN(['GetPas2jsProjectURL : ',Result]);
 end;
 
-function TPJSController.MaybeStartServer(Sender: TObject; var Handled: boolean): TModalResult;
+function TPJSController.OnProjectBuilding(Sender: TObject): TModalResult;
+var
+  aProject: TLazProject;
+begin
+  Result:=mrOk;
+  aProject:=LazarusIDE.ActiveProject;
+  debugln(['AAA1 TPJSController.OnProjectBuilding ']);
+  if aProject=nil then exit;
+  if aProject.IsVirtual then
+    begin
+    if not SaveHTMLFileToTestDir(aProject) then
+      exit(mrCancel);
+    end;
+end;
+
+function TPJSController.OnRunDebugInit(Sender: TObject; var Handled: boolean
+  ): TModalResult;
+begin
+  debugln(['AAA2 TPJSController.OnRunDebugInit ']);
+  Result:=RunProject(Sender,true,Handled);
+end;
+
+function TPJSController.OnRunWithoutDebugInit(Sender: TObject; var Handled: boolean): TModalResult;
 
 Var
   ServerPort : Word;
@@ -309,14 +340,15 @@ Var
   aInstance : TServerInstance;
 
 begin
+  debugln(['AAA3 TPJSController.OnRunWithoutDebugInit ']);
   Result:=mrOK;
   With LazarusIDE.ActiveProject do
     begin
     if ConsoleVerbosity>=0 then
       begin
-      DebugLn(['WebProject=',CustomData[PJSProjectWebBrowser]]);
-      DebugLn(['ServerPort=',CustomData[PJSProjectPort]]);
-      DebugLn(['BaseDir=',ProjectInfoFile]);
+      DebugLn(['Info: WebProject=',CustomData[PJSProjectWebBrowser]]);
+      DebugLn(['Info: ServerPort=',CustomData[PJSProjectPort]]);
+      DebugLn(['Info: BaseDir=',ProjectInfoFile]);
       end;
     WebProject:=CustomData[PJSProjectWebBrowser]='1';
     ServerPort:=StrToIntDef(CustomData[PJSProjectPort],0);
@@ -329,11 +361,11 @@ begin
   If Ainstance<>Nil then
     begin
     if ConsoleVerbosity>=0 then
-      Writeln('Have instance running on port ',ServerPort);
+      DebugLn(['Info: Have instance running on port ',ServerPort]);
     if Not SameFileName(BaseDir,aInstance.BaseDir) then
       begin
       if ConsoleVerbosity>=0 then
-        Writeln('Instance on port ',ServerPort,' serves different directory: ',aInstance.BaseDir);
+        DebugLN(['Info: Instance on port ',ServerPort,' serves different directory: ',aInstance.BaseDir]);
       // We should ask the user what to do ?
       If aInstance.Running then
         aInstance.StopServer;
@@ -341,12 +373,147 @@ begin
     end
   else
     begin
-//    Writeln('No instance running on port ',ServerPort, 'allocating it');
+    Debugln(['Info: No instance running on port ',ServerPort, 'allocating it']);
     aInstance:=ServerInstances.AddInstance(ServerPort,BaseDir,PJSOptions.GetParsedWebServerFilename);
     end;
   aInstance.LastProject:=LazarusIDE.ActiveProject.ProjectInfoFile;
   aInstance.StartServer;
   Handled:=False;
+end;
+
+function TPJSController.GetHTMLFilename(aProject: TLazProject;
+  UseTestDir: boolean): string;
+var
+  HTMLFile: TLazProjectFile;
+begin
+  Result:=aProject.CustomData.Values[PJSProjectHTMLFile];
+  if Result='' then exit;
+  if aProject.IsVirtual then
+    begin
+    HTMLFile:=aProject.FindFile(Result,[pfsfOnlyProjectFiles]);
+    if HTMLFile=nil then
+      exit('');
+    Result:=HTMLFile.Filename;
+    if (not FilenameIsAbsolute(Result)) and UseTestDir then
+      Result:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory)+Result;
+    end
+  else
+    begin
+    if not FilenameIsAbsolute(Result) then
+      Result:=ExtractFilePath(aProject.ProjectInfoFile)+Result;
+    HTMLFile:=aProject.FindFile(Result,[pfsfOnlyProjectFiles]);
+    if HTMLFile=nil then
+      exit('');
+    Result:=HTMLFile.Filename;
+    end;
+end;
+
+function TPJSController.GetWebDir(aProject: TLazProject): string;
+var
+  HTMLFilename: String;
+begin
+  Result:='';
+
+  HTMLFilename:=GetHTMLFilename(aProject,true);
+  if HTMLFilename<>'' then
+    Result:=ExtractFilePath(HTMLFilename);
+
+  if Result='' then
+    if aProject.IsVirtual then
+      Result:=LazarusIDE.GetTestBuildDirectory
+    else
+      Result:=ExtractFilePath(aProject.ProjectInfoFile);
+end;
+
+function TPJSController.RunProject(Sender: TObject; WithDebug: boolean;
+  var Handled: boolean): TModalResult;
+var
+  aProject: TLazProject;
+  IsWebProject: Boolean;
+  ServerPort: Integer;
+  WebDir, HTMLFilename: String;
+  aServer: TSWSInstance;
+begin
+  Result:=mrOk;
+  if Sender=nil then ;
+  if WithDebug then ;
+
+  aProject:=LazarusIDE.ActiveProject;
+  if aProject=nil then exit;
+
+  IsWebProject:=aProject.CustomData[PJSProjectWebBrowser]='1';
+  ServerPort:=StrToIntDef(aProject.CustomData[PJSProjectPort],-1);
+  if not IsWebProject or (ServerPort<0) then
+    exit;
+
+  Handled:=true;
+
+  // compile
+  Result:=LazarusIDE.DoBuildProject(crRun,[]);
+  if Result<>mrOk then exit;
+
+  // start web server
+  WebDir:=GetWebDir(aProject);
+  if WebDir='' then
+    begin
+    debugln(['Warning: TPJSController.RunProject missing webdir']);
+    exit(mrCancel);
+    end;
+  aServer:=SimpleWebServerController.AddProjectServer(aProject,ServerPort,WebDir,true);
+  if aServer=nil then
+    exit(mrCancel);
+
+  // start browser
+  HTMLFilename:=GetHTMLFilename(aProject,true);
+  if HTMLFilename='' then
+    begin
+    debugln(['Info: TPJSController.RunProject missing htmlfile']);
+    exit(mrCancel);
+    end;
+  if not SimpleWebServerController.OpenBrowserWithServer(aServer,HTMLFilename) then
+    exit(mrCancel);
+end;
+
+function TPJSController.SaveHTMLFileToTestDir(aProject: TLazProject): boolean;
+var
+  HTMLFilename, FullHTMLFilename: String;
+  HTMLFile: TLazProjectFile;
+  Code: TCodeBuffer;
+begin
+  // if project has a pas2js html filename, save it to the test directory
+  Result:=false;
+  HTMLFilename:=aProject.CustomData.Values[PJSProjectHTMLFile];
+  debugln(['AAA7 TPJSController.SaveHTMLFileToTestDir ',HTMLFilename]);
+  if (HTMLFilename='') then
+    exit(true);
+  if FilenameIsAbsolute(HTMLFilename) then
+    begin
+    debugln(['Warning: TPJSController.SaveHTMLFileToTestDir html file is absolute: "',HTMLFilename,'"']);
+    exit(true);
+    end;
+  HTMLFile:=aProject.FindFile(HTMLFilename,[pfsfOnlyProjectFiles]);
+  if HTMLFile=nil then
+    begin
+    debugln(['Warning: TPJSController.SaveHTMLFileToTestDir invalid aProject.CustomData.Values[',PJSProjectHTMLFile,']']);
+    exit;
+    end;
+  HTMLFilename:=HTMLFile.Filename;
+
+  Code:=CodeToolBoss.FindFile(HTMLFilename);
+  if Code=nil then
+    begin
+    debugln(['Error: TPJSController.SaveHTMLFileToTestDir missing codebuffer "',HTMLFilename,'"']);
+    exit;
+    end;
+
+  FullHTMLFilename:=AppendPathDelim(LazarusIDE.GetTestBuildDirectory)+HTMLFilename;
+  if not Code.SaveToFile(FullHTMLFilename) then
+    begin
+    debugln(['Error: TPJSController.SaveHTMLFileToTestDir write error: ',Code.LastError,' File="',FullHTMLFilename,'"']);
+    exit;
+    end;
+
+  Result:=true;
 end;
 
 constructor TPJSController.Create;
@@ -376,7 +543,9 @@ begin
     pjsdPas2JSSelectedNodeJSExcutable, @GetPas2JSNodeJS, []));
   IDEMacros.Add(TTransferMacro.Create('Pas2JSProjectURL', '',
     pjsdPas2JSCurrentProjectURL, @GetPas2jsProjectURL, []));
-  LazarusIDE.AddHandlerOnRunWithoutDebugInit(@MaybeStartServer);
+  LazarusIDE.AddHandlerOnProjectBuilding(@OnProjectBuilding);
+  LazarusIDE.AddHandlerOnRunDebugInit(@OnRunDebugInit);
+  LazarusIDE.AddHandlerOnRunWithoutDebugInit(@OnRunWithoutDebugInit);
 end;
 
 procedure TPJSController.UnHook;

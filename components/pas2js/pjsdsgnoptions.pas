@@ -102,26 +102,28 @@ type
     procedure IncreaseChangeStamp; inline;
     procedure Load;
     procedure Save;
-    function GetParsedBrowserFilename: string;
     function GetParsedCompilerFilename: string;
-    function GetParsedWebServerFilename: string;
-    function GetParsedWebServerPort: string;
     function GetParsedNodeJSFilename: string;
     procedure LoadFromConfig(Cfg: TConfigStorage);
     procedure SaveToConfig(Cfg: TConfigStorage);
   public
     property CompilerFilename: string read GetCompilerFilename write SetCompilerFilename;
-    Property WebServerFileName : string Read GetWebServerFileName Write SetWebServerFileName;
-    Property HTTPServerOpts : TStrings Read FHTTPServerOpts Write SetHTTPServerOpts;
     Property NodeJSFileName : string Read GetNodeJSFileName Write SetNodeJSFileName;
-    Property BrowserFileName : String Read GetBrowserFileName Write SetBrowserFileName;
-    Property StartAtPort : Word Read GetStartAtPort Write SetStartAtPort;
     property ChangeStamp: int64 read FChangeStamp;
     property Modified: boolean read GetModified write SetModified;
     Property AtomTemplateDir : String Read GetAtomTemplateDir Write SetAtomTemplateDir;
     Property VSCodeTemplateDir : String Read GetVSCodeTemplateDir Write SetVSCodeTemplateDir;
     Property DTS2Pas : String Read GetDTS2Pas Write SetDTS2Pas;
     Property DTS2PasServiceURL : String Read GetDTS2PasService Write SetDTS2PasService;
+  public
+    // ToDo: remove when migrated to SimpleWebServerGUI
+    function GetParsedBrowserFilename: string;
+    function GetParsedWebServerFilename: string;
+    function GetParsedWebServerPort: string;
+    Property WebServerFileName : string Read GetWebServerFileName Write SetWebServerFileName;
+    Property HTTPServerOpts : TStrings Read FHTTPServerOpts Write SetHTTPServerOpts;
+    Property BrowserFileName : String Read GetBrowserFileName Write SetBrowserFileName;
+    Property StartAtPort : Word Read GetStartAtPort Write SetStartAtPort;
   end;
 
 var
@@ -150,7 +152,11 @@ function GetStandardNodeJS: string;
 begin
   Result:=PJSDefaultNodeJS;
   if not IDEMacros.SubstituteMacros(Result) then
-    Result:='nodejs'+GetExeExt;
+    begin
+    Result:='$MakeExe(IDE,node)';
+    if not IDEMacros.SubstituteMacros(Result) then
+      Result:='nodejs'+GetExeExt;
+    end;
 end;
 
 function GetStandardWebServerExe: string;

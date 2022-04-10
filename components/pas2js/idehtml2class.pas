@@ -173,9 +173,9 @@ Type
   end;
 
 
-  { THTMLToFormELements }
+  { THTMLToFormElements }
 
-  THTMLToFormELements = class(TComponent)
+  THTMLToFormElements = class(TComponent)
   private
     FBelowID: String;
     FDefaultElements: Boolean;
@@ -222,7 +222,7 @@ Type
     FLevel: Integer;
     FList: TStrings;
   Protected
-    procedure DoStartElement(Sender: TObject; const {%H-}NamespaceURI, LocalName,
+    procedure DoStartElement(Sender: TObject; const {%H-}NamespaceURI, {%H-}LocalName,
       {%H-}QName: SAXString; Atts: TSAXAttributes);  virtual;
     procedure DoEndElement(Sender: TObject; const {%H-}NamespaceURI, {%H-}LocalName,
       {%H-}QName: SAXString);  virtual;
@@ -297,7 +297,7 @@ Type
     procedure SetFormElements(AValue: TFormElementList);
   Protected
     function BaseUnits : String; override;
-    Function CreateHTMLToFormELements: THTMLToFormELements;  virtual;
+    Function CreateHTMLToFormELements: THTMLToFormElements;  virtual;
     Class Function CreateElementList : TFormElementList;  virtual;
     procedure EmitFormFile; virtual;
     function CreateFormFileGen : TFormFileCodeGen; virtual;
@@ -343,9 +343,7 @@ uses TypInfo, bufstream;
 procedure THTMLExtractIDS.DoStartElement(Sender: TObject; const NamespaceURI, LocalName, QName: SAXString; Atts: TSAXAttributes);
 
 Var
-  aID,aType : String;
-  El : TFormElement;
-
+  aID: String;
 begin
   if Not Assigned(atts) then exit;
   aID:=UTF8Encode(Atts.GetValue('','id'));
@@ -396,7 +394,7 @@ begin
   try
     ExtractIDS(aInput,L);
     L.Sort;
-    Setlength(Result,L.Count);
+    Setlength(Result{%H-},L.Count);
     For I:=0 to L.Count-1 do
       Result[I]:=L[i];
   finally
@@ -432,7 +430,7 @@ begin
   try
     ExtractIDS(aFileName,L);
     L.Sort;
-    Setlength(Result,L.Count);
+    Setlength(Result{%H-},L.Count);
     For I:=0 to L.Count-1 do
       Result[I]:=L[i];
   finally
@@ -984,26 +982,26 @@ begin
 end;
 
 
-{ THTMLToFormELements }
+{ THTMLToFormElements }
 
-procedure THTMLToFormELements.SetFormElements(AValue: TFormElementList);
+procedure THTMLToFormElements.SetFormElements(AValue: TFormElementList);
 begin
   if FFormElements=AValue then Exit;
   FFormElements:=AValue;
 end;
 
-procedure THTMLToFormELements.DoLog(const Msg: String);
+procedure THTMLToFormElements.DoLog(const Msg: String);
 begin
   if Assigned(FOnLog) then
     FOnLog(Self,Msg);
 end;
 
-procedure THTMLToFormELements.DoLog(const Fmt: String; Args: array of const);
+procedure THTMLToFormElements.DoLog(const Fmt: String; Args: array of const);
 begin
   DoLog(Format(Fmt,Args));
 end;
 
-function THTMLToFormELements.Maptype(aTag: SAXString; Atts: TSAXAttributes): String;
+function THTMLToFormElements.Maptype(aTag: SAXString; Atts: TSAXAttributes): String;
 
 var
   t : string;
@@ -1034,7 +1032,7 @@ begin
   end;
 end;
 
-function THTMLToFormELements.MakeValidName(aID: string): string;
+function THTMLToFormElements.MakeValidName(aID: string): string;
 
 Var
   C : Char;
@@ -1048,13 +1046,13 @@ begin
       Result:=Result+'_';
 end;
 
-procedure THTMLToFormELements.SetExcludeIDS(AValue: TStrings);
+procedure THTMLToFormElements.SetExcludeIDS(AValue: TStrings);
 begin
   if FExcludeIDS=AValue then Exit;
   FExcludeIDs.AddStrings(AValue,True);
 end;
 
-procedure THTMLToFormELements.DoStartElement(Sender: TObject;
+procedure THTMLToFormElements.DoStartElement(Sender: TObject;
   const NamespaceURI, LocalName, QName: SAXString; Atts: TSAXAttributes);
 
 Var
@@ -1081,7 +1079,7 @@ begin
     end
 end;
 
-procedure THTMLToFormELements.GetEvents(aEl : TFormElement; Atts : TSAXAttributes);
+procedure THTMLToFormElements.GetEvents(aEl : TFormElement; Atts : TSAXAttributes);
 
 Var
   I,aLen : Integer;
@@ -1097,25 +1095,25 @@ begin
     end;
 end;
 
-procedure THTMLToFormELements.DoEndElement(Sender: TObject; const NamespaceURI,
+procedure THTMLToFormElements.DoEndElement(Sender: TObject; const NamespaceURI,
   LocalName, QName: SAXString);
 begin
   if Level>0 then
   Dec(FLevel);
 end;
 
-class function THTMLToFormELements.CreateElementList: TFormElementList;
+class function THTMLToFormElements.CreateElementList: TFormElementList;
 begin
   Result:=TFormElementList.Create(TFormElement);
 end;
 
-function THTMLToFormELements.CreateHTMLElementMapList: THTMLElementMapList;
+function THTMLToFormElements.CreateHTMLElementMapList: THTMLElementMapList;
 
 begin
   Result:=THTMLElementMapList.Create(THTMLElementMap);
 end;
 
-constructor THTMLToFormELements.Create(aOwner: TComponent);
+constructor THTMLToFormElements.Create(aOwner: TComponent);
 begin
   inherited Create(aOwner);
   FMap:=CreateHTMLElementMapList;
@@ -1124,7 +1122,7 @@ begin
   TStringList(FExcludeIDS).Sorted:=True;
 end;
 
-destructor THTMLToFormELements.Destroy;
+destructor THTMLToFormElements.Destroy;
 begin
   FreeAndNil(FMap);
   FreeAndNil(FExcludeIDS);
@@ -1132,12 +1130,12 @@ begin
   inherited Destroy;
 end;
 
-procedure THTMLToFormELements.Clear;
+procedure THTMLToFormElements.Clear;
 begin
   FFormElements.Clear;
 end;
 
-procedure THTMLToFormELements.LoadFromStream(aInput: TStream);
+procedure THTMLToFormElements.LoadFromStream(aInput: TStream);
 
 var
   MyReader : THTMLReader;
@@ -1153,7 +1151,7 @@ begin
   end;
 end;
 
-procedure THTMLToFormELements.LoadFromFile(const aFileName: String);
+procedure THTMLToFormElements.LoadFromFile(const aFileName: String);
 var
   F : TFileStream;
 begin
@@ -1165,7 +1163,7 @@ begin
   end;
 end;
 
-procedure THTMLToFormELements.LoadOptions(aOptions: THTML2ClassOptions);
+procedure THTMLToFormElements.LoadOptions(aOptions: THTML2ClassOptions);
 begin
   BelowID:=aoptions.BelowID;
   ExcludeIDS:=aOptions.ExcludeElements;
@@ -1343,10 +1341,10 @@ begin
   Result:=TFormFileCodeGen.Create(Nil);
 end;
 
-function TFormCodeGen.CreateHTMLToFormELements: THTMLToFormELements;
+function TFormCodeGen.CreateHTMLToFormELements: THTMLToFormElements;
 
 begin
-  Result:=THTMLToFormELements.Create(Self);
+  Result:=THTMLToFormElements.Create(Self);
 end;
 
 

@@ -46,12 +46,15 @@ uses
   Sockets,
   // lazutils
   LazLoggerBase, FileUtil, LazUTF8, LazFileUtils, LazMethodList, LazUtilities,
-  LazStringUtils,
+  LazStringUtils, LazFileCache,
   // LCL
-  Forms, Dialogs, Controls,
+  Forms, Dialogs, Controls, LazHelpIntf, LCLIntf,
   // IDEIntf
   IDEDialogs, IDEMsgIntf, LazIDEIntf, IDEExternToolIntf, MacroIntf,
-  MacroDefIntf, SimpleWebSrvUtils, SimpleWebSrvOptions, SimpleWebSrvStrConsts;
+  MacroDefIntf,
+  // sws
+  ProjectIntf, SimpleWebSrvUtils, SimpleWebSrvOptions,
+  SimpleWebSrvStrConsts;
 
 type
   ESimpleWebServerException = class(Exception)
@@ -231,10 +234,29 @@ type
     // custom servers
     function AddServer(Port: word; Exe: string; Params: TStrings;
       Path, Origin: string; ResolveMacros, Interactive: boolean): TSWSInstance; virtual;
-    function FindServer(Port: word): TSWSInstance; virtual;
+    function AddProjectServer(aProject: TLazProject; Port: word;
+      Path: string; Interactive: boolean): TSWSInstance; virtual;
+    function FindServerWithPort(Port: word): TSWSInstance; virtual;
+    function FindServerWithOrigin(Origin: string): TSWSInstance; virtual;
     function FindFreePort(Interactive: boolean; aStartPort: word = 0): word; virtual;
     function StopServer(Instance: TSWSInstance; Interactive: boolean): boolean; virtual;
     function SubstitutePortMacro(aValue, aPort: string): string;
+    function SubstituteURLMacro(aValue, AnURL: string): string;
+    function GetDefaultServerExe: string; virtual;
+    // browser
+    function GetURLWithServer(aServer: TSWSInstance; HTMLFilename: string): string; virtual;
+    function OpenBrowserWithServer(aServer: TSWSInstance; HTMLFilename: string): boolean; virtual;
+    function FindBrowserFile(ShortFilename: string): string; virtual;
+    function FindBrowserPath(Filenames: array of string; URL: string; Params: TStrings): string; virtual;
+    function GetBrowserChrome(URL: string; Params: TStrings): string; virtual;
+    function GetBrowserFirefox(URL: string; Params: TStrings): string; virtual;
+    function GetBrowserOpera(URL: string; Params: TStrings): string; virtual;
+    {$IFDEF Darwin}
+    function GetBrowserSafari(URL: string; Params: TStrings): string; virtual;
+    {$ENDIF}
+    {$IFDEF MSWindows}
+    function GetBrowserEdge(URL: string; Params: TStrings): string; virtual;
+    {$ENDIF}
   public
     property Destroying: boolean read FDestroying;
     property LocationCount: integer read GetLocationCount;
@@ -1516,7 +1538,7 @@ begin
   try
     if Port=0 then
       Port:=FindFreePort(Interactive);
-    if FindServer(Port)<>nil then
+    if FindServerWithPort(Port)<>nil then
       raise ESimpleWebServerException.Create('port '+IntToStr(Port)+' already in use');
 
     Result:=TSWSInstance.Create;
@@ -1539,12 +1561,88 @@ begin
   end;
 end;
 
-function TSimpleWebServerController.FindServer(Port: word): TSWSInstance;
+function TSimpleWebServerController.AddProjectServer(aProject: TLazProject;
+  Port: word; Path: string; Interactive: boolean): TSWSInstance;
+var
+  aServer: TSWSInstance;
+
+  function StopOldServer(ID: int64; const Msg: string): boolean;
+  begin
+    if not StopServer(aServer,Interactive) then
+    begin
+      debugln(['Error: TSimpleWebServerController.AddProjectServer ',ID,': ',Msg,', unable to stop old server']);
+      exit(false);
+    end;
+    aServer:=nil;
+    Result:=true;
+  end;
+
+var
+  Exe, Origin: String;
+  Params: TStringList;
+begin
+  Result:=nil;
+
+  if aProject.IsVirtual then
+    Origin:=SWSTestprojectOrigin
+  else
+    Origin:=aProject.ProjectInfoFile;
+  aServer:=FindServerWithOrigin(Origin);
+
+  if (aServer<>nil) and (aServer.Path<>Path) then
+    if not StopOldServer(20220410145323,'Path changed') then exit;
+
+  if (aServer<>nil) and (Port>0) and (aServer.Port<>Port) then
+    if not StopOldServer(20220410145340,'Port changed') then exit;
+
+  Exe:=GetDefaultServerExe;
+  if (aServer<>nil) and (aServer.Exe<>Exe) then
+    if not StopOldServer(20220410145357,'ServerExe changed') then exit;
+
+  if Port=0 then
+  begin
+    if aServer<>nil then
+      Port:=aServer.Port // keep port
+    else
+      Port:=FindFreePort(Interactive);
+  end;
+
+  Params:=TStringList.Create;
+  try
+    Params.Add('-s');
+    Params.Add('-n');
+    Params.Add('-I');
+    Params.Add('127.0.0.1');
+    Params.Add('--port='+IntToStr(Port));
+    if (aServer<>nil) and not Params.Equals(aServer.Params) then
+      if not StopOldServer(20220410145559,'Params changed') then exit;
+
+    if aServer<>nil then
+      exit(aServer);
+
+    Result:=AddServer(Port,Exe,Params,Path,Origin,false,Interactive);
+  finally
+    Params.Free;
+  end;
+end;
+
+function TSimpleWebServerController.FindServerWithPort(Port: word): TSWSInstance;
 var
   i: Integer;
 begin
   for i:=0 to ServerCount-1 do
     if Servers[i].Port=Port then
+     exit(Servers[i]);
+  Result:=nil;
+end;
+
+function TSimpleWebServerController.FindServerWithOrigin(Origin: string
+  ): TSWSInstance;
+var
+  i: Integer;
+begin
+  for i:=0 to ServerCount-1 do
+    if Servers[i].Origin=Origin then
      exit(Servers[i]);
   Result:=nil;
 end;
@@ -1581,6 +1679,178 @@ begin
   end;
   //debugln(['TSimpleWebServerController.SubstitutePortMacro Result="',Result,'"']);
 end;
+
+function TSimpleWebServerController.SubstituteURLMacro(aValue, AnURL: string
+  ): string;
+var
+  l, i: SizeInt;
+begin
+  Result:=aValue;
+  l:=length('$(url)');
+  for i:=length(Result)-l+1 downto 1 do
+  begin
+    if (Result[i]='$') and SameText(copy(Result,i,l),'$(url)') then
+      LazStringUtils.ReplaceSubstring(Result,i,l,AnURL);
+  end;
+end;
+
+function TSimpleWebServerController.GetDefaultServerExe: string;
+begin
+  Result:=Options.ServerExe;
+  if IDEMacros.SubstituteMacros(Result) then
+    exit;
+  debugln(['TSimpleWebServerController.GetDefaultServerExe Options.ServerExe=[',Options.ServerExe,']']);
+  raise Exception.Create('TSimpleWebServerController.GetDefaultServerExe: invalid macro');
+end;
+
+function TSimpleWebServerController.GetURLWithServer(aServer: TSWSInstance;
+  HTMLFilename: string): string;
+begin
+  Result:=CreateRelativePath(HTMLFilename,aServer.Path);
+  Result:=FilenameToURLPath(Result);
+  Result:='http://127.0.0.1:'+IntToStr(aServer.Port)+'/'+Result;
+end;
+
+function TSimpleWebServerController.OpenBrowserWithServer(
+  aServer: TSWSInstance; HTMLFilename: string): boolean;
+var
+  URL, Cmd, Exe: String;
+  Params: TStringList;
+  Tool: TIDEExternalToolOptions;
+begin
+  if aServer=nil then
+    raise Exception.Create('TSimpleWebServerController.OpenBrowserWithServer 20220410185207');
+  if not FilenameIsAbsolute(HTMLFilename) then
+    raise Exception.Create('TSimpleWebServerController.OpenBrowserWithServer 20220410185208');
+
+  URL:=GetURLWithServer(aServer,HTMLFilename);
+
+  Params:=TStringList.Create;
+  try
+    case Options.BrowserKind of
+    swsbkCustom:
+      begin
+        Cmd:=Options.BrowserCmd;
+        Cmd:=SubstituteURLMacro(Cmd,URL);
+        if not IDEMacros.SubstituteMacros(Cmd) then
+        begin
+          IDEMessageDialog(rsSWError, rsSWInvalidMacroSee+sLineBreak +
+            rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbOk]);
+          exit(false);
+        end;
+        SplitCmdLineParams(Cmd,Params);
+        Exe:=Params[0];
+        Params.Delete(0);
+      end;
+    swsbkFirefox: Exe:=GetBrowserFirefox(URL,Params);
+    swsbkChrome: Exe:=GetBrowserChrome(URL,Params);
+    swsbkOpera: Exe:=GetBrowserOpera(URL,Params);
+    {$IFDEF Darwin}
+    swsbkSafari: Exe:=GetBrowserSafari(URL,Params);
+    {$ENDIF}
+    {$IFDEF MSWindows}
+    swsbkEdge: Exe:=GetBrowserEdge(URL,Params);
+    {$ENDIF}
+    else
+      begin
+        Result:=OpenURL(URL);
+        exit;
+      end;
+    end;
+
+    if Exe='' then
+    begin
+      IDEMessageDialog(rsSWError,
+        rsSWCannotFindBrowserSee+sLineBreak
+        +rsSWToolsOptionsSimpleWebServerBrowser,mtError,[mbOk]);
+      exit(false);
+    end;
+
+    Tool:=TIDEExternalToolOptions.Create;
+    Tool.Title:='Browser('+ExtractFileName(Exe)+')';
+    Tool.Executable:=Exe;
+    Tool.CmdLineParams:=MergeCmdLineParams(Params);
+    Tool.WorkingDirectory:=ExtractFilePath(HTMLFilename);
+    Tool.MaxIdleInMS:=1000;
+    Result:=RunExternalTool(Tool);
+  finally
+    Params.Free;
+  end;
+end;
+
+function TSimpleWebServerController.FindBrowserFile(ShortFilename: string
+  ): string;
+begin
+  Result := SearchFileInPath(ShortFilename + GetExeExt, '',
+                    GetEnvironmentVariableUTF8('PATH'), PathSeparator,
+                    [sffDontSearchInBasePath]);
+end;
+
+function TSimpleWebServerController.FindBrowserPath(Filenames: array of string;
+  URL: string; Params: TStrings): string;
+var
+  i: Integer;
+  aFilename: String;
+begin
+  Result:='';
+  for i:=low(Filenames) to high(Filenames) do
+  begin
+    aFilename:=Filenames[i];
+    if FilenameIsAbsolute(aFilename) then
+    begin
+      if FileExistsCached(aFilename) then
+      begin
+        Result:=aFilename;
+        break;
+      end;
+    end else begin
+      Result := FindBrowserFile(aFilename);
+      if Result<>'' then break;
+    end;
+  end;
+  if Result<>'' then
+  begin
+    Params.Add(URL);
+  end;
+end;
+
+function TSimpleWebServerController.GetBrowserChrome(URL: string;
+  Params: TStrings): string;
+begin
+  Result := FindBrowserPath([
+    {$IFDEF Darwin}'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',{$ENDIF}
+    'google-chrome'],URL,Params);
+end;
+
+function TSimpleWebServerController.GetBrowserFirefox(URL: string;
+  Params: TStrings): string;
+begin
+  Result := FindBrowserPath([
+    {$IFDEF Darwin}'/Applications/Firefox.app/Contents/MacOS/firefox',{$ENDIF}
+    'firefox','mozilla'],URL,Params);
+end;
+
+function TSimpleWebServerController.GetBrowserOpera(URL: string;
+  Params: TStrings): string;
+begin
+  Result := FindBrowserPath(['opera'],URL,Params);
+end;
+
+{$IFDEF Darwin}
+function TTMSWebcoreIDEOptions.GetBrowserEdge(URL: string; Params: TStrings
+  ): string;
+begin
+  Result := FindBrowserPath(['/Applications/Safari.app/Contents/MacOS/Safari','safari'],URL,Params);
+end;
+{$ENDIF}
+
+{$IFDEF MSWindows}
+function TTMSWebcoreIDEOptions.GetBrowserEdge(URL: string; Params: TStrings
+  ): string;
+begin
+  Result := FindBrowserPath(['edge'],URL,Params);
+end;
+{$ENDIF}
 
 procedure TSimpleWebServerController.HookMacros;
 

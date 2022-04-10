@@ -60,8 +60,8 @@ type
     procedure CBEventsChange(Sender: TObject);
     procedure FEHTMLFileEditingDone(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure TSHTMLContextPopup(Sender: TObject; MousePos: TPoint;
-      var Handled: Boolean);
+    procedure TSHTMLContextPopup(Sender: TObject; {%H-}MousePos: TPoint;
+      var {%H-}Handled: Boolean);
 
   private
     procedure CheckEventEdits;

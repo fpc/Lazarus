@@ -9,6 +9,14 @@ resourcestring
   rsSWSPathOfCompileserver = 'Path of compileserver';
   rsSWSAddress = 'Address';
   rsSWSPort = 'Port';
+  rsSWTCPPort102465535YouCanUseMacroPortForBelowParams = 'TCP Port 1024..65535'
+    +', you can use macro $(Port) for below params';
+  rsSWExecutable = 'Executable';
+  rsSWWorkingDirectory = 'Working Directory';
+  rsSWParametersPleaseUseMacroPort = 'Parameters, please use macro $(port)';
+  rsSWCommandLineParameters = 'Command line parameters';
+  rsSWAddCustomServer = 'Add Custom Server';
+  rsSWSelectDirectory = 'Select Directory';
   rsSWServerExtraCommandLineOptionsOnePerLine = 'Server extra command-line '
     +'options (one per line)';
   rsSWBrowserToOpenHTMLPageMacroSWSBrowser = 'Browser to open HTML page, macro'
@@ -19,7 +27,28 @@ resourcestring
     +'when opening the URL or HTML file of a web browser project';
   rsSWSBindAny = 'Bind Any';
   rsSWSUserOrigin = 'User';
+  rsSWUnableToAddLocation = 'Unable to add location:';
+  rsSWMissingController = 'missing controller';
+  rsSWMissingLocation = 'Missing Location';
+  rsSWAddSimpleWebServerLocation = 'Add Simple Web Server Location';
+  rsSWLocation = 'Location';
+  rsSWAnArbitraryNameForTheURLSubfolder = 'An arbitrary name for the URL '
+    +'subfolder';
+  rsSWLocalDirectory = 'Local Directory';
+  rsSWWorkingDirectoryOnDiskUsuallyWhereTheServerFetches = 'Working directory '
+    +'on disk, usually where the server fetches files from';
+  rsSWAddLocation = 'Add Location';
   rsSWError = 'Error';
+  rsSWCannotFindBrowserSee = 'Cannot find browser. See';
+  rsSWInvalidMacroSee = 'Invalid macro. See';
+  rsSWToolsOptionsSimpleWebServerBrowser = 'Tools / Options / Simple Web '
+    +'Server / Browser';
+  rsSWServerExecutableNotFound = 'Server executable not found';
+  rsSWServerExeIsNotExecutable2 = 'Server exe is not executable';
+  rsSWInvalidPort = 'Invalid Port';
+  rsSWPortAlreadyUsed = 'Port already used';
+  rsSWLocalDirectoryNotFound = 'Local directory not found:';
+  rsSWLocationAlreadyUsed = 'Location already used';
   rsSWErrorWriting = 'Error writing "%s"';
   rsSWErrorCreatingDirectory = 'Error creating directory';
   rsSWDirectoryNotFound = 'Directory not found';
@@ -39,7 +68,13 @@ resourcestring
   rsSWKillPID = 'Kill PID %s';
   rsSWTryAnotherPort = 'Try another port';
   rsSWMissingServerExecutable = 'Missing server executable';
+  rsSWServerExecutableNotFoundInPATH2 = 'Server executable not found in PATH';
   rsSWMissingLocalDirectory = 'Missing local directory';
+  rsSWStartServer = 'Start Server';
+  rsSWStopServer = 'Stop Server';
+  rsSWDelete = 'Delete?';
+  rsSWDeleteServerAt = 'Delete server at "%s"?';
+  rsSWDeleteLocation = 'Delete location "%s"?';
 
 implementation
 

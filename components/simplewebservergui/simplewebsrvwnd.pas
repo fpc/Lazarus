@@ -19,7 +19,7 @@ uses
   // IDEIntf
   IDECommands, MenuIntf, IDEWindowIntf, LazIDEIntf,
   IDEOptEditorIntf, IDEDialogs, IDEOptionsIntf, SimpleWebSrvOptionsFrame,
-  SimpleWebSrvController, SimpleWebSrvAdd;
+  SimpleWebSrvController, SimpleWebSrvAdd, SimpleWebSrvStrConsts;
 
 const
   SimpleWebSrvWindowName = 'SimpleWebServerWindow';
@@ -111,9 +111,10 @@ begin
 
   // Windows - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ViewSimpleWebServerWindowCommand:=RegisterIDECommand(CmdCatView, 'SimpleWebServer',
-    'Simple Web Server', CleanIDEShortCut, CleanIDEShortCut, nil, @ShowSimpleWebServerWindow);
+    rsSWSTitle, CleanIDEShortCut, CleanIDEShortCut, nil, @
+      ShowSimpleWebServerWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewSimpleWebServer',
-    'Simple Web Server', nil, nil, ViewSimpleWebServerWindowCommand);
+    rsSWSTitle, nil, nil, ViewSimpleWebServerWindowCommand);
 
   // Options Frame - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   SimpleWebServerOptionID:=RegisterIDEOptionsEditor(GroupEnvironment,
@@ -246,9 +247,9 @@ end;
 procedure TSimpleWebServerWindow.UpdateButtons;
 begin
   case Controller.MainSrvState of
-    swssNone: StartStopServerButton.Caption:='Start Server';
+    swssNone: StartStopServerButton.Caption:=rsSWStartServer;
     swssStarting: ;
-    swssRunning: StartStopServerButton.Caption:='Stop Server';
+    swssRunning: StartStopServerButton.Caption:=rsSWStopServer;
     swssStopping: ;
   end;
   StartStopServerButton.Enabled:=Controller.MainSrvState in [swssNone,swssRunning];
@@ -271,7 +272,7 @@ begin
     aPort:=StrToIntDef(copy(s,length(ServerPrefix)+1,5),-1);
     if (aPort>0) and (aPort<=65535) then
     begin
-      Result:=Controller.FindServer(aPort);
+      Result:=Controller.FindServerWithPort(aPort);
       if Result<>nil then exit;
     end;
   end;
@@ -288,15 +289,15 @@ begin
   Obj:=CaptionToControllerObj(aCaption);
   if Obj is TSWSLocation then
   begin
-    r:=IDEMessageDialog('Delete '+aCaption,
-      'Delete location "'+aCaption+'"?',mtConfirmation,[mbYes,mbNo]);
+    r:=IDEMessageDialog(rsSWDelete,
+      Format(rsSWDeleteLocation, [aCaption]), mtConfirmation, [mbYes, mbNo]);
     if r=mrYes then
       Controller.DeleteLocation(aCaption);
   end else if Obj is TSWSInstance then
   begin
     Server:=TSWSInstance(Obj);
-    r:=IDEMessageDialog('Delete '+aCaption,
-      'Delete server at "'+aCaption+'"?',mtConfirmation,[mbYes,mbNo]);
+    r:=IDEMessageDialog(rsSWDelete,
+      Format(rsSWDeleteServerAt, [aCaption]), mtConfirmation, [mbYes, mbNo]);
     if r=mrYes then
       Controller.StopServer(Server,true);
   end;
