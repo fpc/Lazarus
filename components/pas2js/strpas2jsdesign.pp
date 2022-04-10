@@ -23,23 +23,6 @@ Resourcestring
   pjsdNewVSCodeExtension = 'Visual Studio Code extension';
   pjsdNewVSCodeExtensionDescr = 'A pas2js program running as Visual Studio Code extension.';
 
-  // menu item
-  SPasJSWebserverCaption = 'Pas2JS WebServers';
-
-  // Static texts webservers form
-  SWebserversStatus  = 'Status';
-  SWebserversPort    = 'Port';
-  SWebserversBaseDir = 'Root directory';
-  SWebserversProject = 'Project';
-  SWebserversExtra   = 'Additional info';
-  SWebserversCount   = 'Number of webserver processes: %s';
-  SWebserversCaption = 'Web server processes';
-
-  // Dynamic texts webservers form
-  SStatusRunning = 'Running';
-  SStatusStopped = 'Stopped';
-  SStatusError   = 'Error starting';
-
   // IDE options frame
   pjsdSelectPas2jsExecutable = 'Select pas2js executable';
   pjsdSelectXExecutable = 'Select %s executable';

@@ -364,7 +364,7 @@ begin
   end;
 
   if (p=0) and ResolvePort0 then
-    p:=Controller.FindFreePort(Interactive);
+    p:=Controller.FindFreePort(Interactive,false);
 
   aPort:=IntToStr(p);
 

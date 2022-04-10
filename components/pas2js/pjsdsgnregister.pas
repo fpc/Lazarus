@@ -13,14 +13,14 @@ uses
   // codetools
   CodeToolManager, CodeCache,
   // IdeIntf
-  IDECommands, ToolbarIntf, MenuIntf, ProjectIntf, CompOptsIntf, LazIDEIntf,
+  IDECommands, MenuIntf, ProjectIntf, CompOptsIntf, LazIDEIntf,
   IDEOptionsIntf, IDEOptEditorIntf, ComponentEditors, SrcEditorIntf, IDEMsgIntf,
   IDEDialogs, IDEExternToolIntf, MacroIntf, PackageIntf,
   // Pas2js
   idehtml2class, PJSDsgnOptions, PJSDsgnOptsFrame, idedtstopas,
-  frmpas2jswebservers, frmpas2jsnodejsprojectoptions,
-  frmpas2jsbrowserprojectoptions, pjsprojectoptions, idehtmltools,
-  frmhtmltoform, pjscontroller, StrPas2JSDesign;
+  frmpas2jsnodejsprojectoptions,
+  frmpas2jsbrowserprojectoptions, PJSProjectOptions, idehtmltools,
+  frmhtmltoform, PJSController, StrPas2JSDesign;
 
 const
   ProjDescNamePas2JSWebApp = 'Web Application';
@@ -231,12 +231,6 @@ implementation
 Var
   SrcMnuItem,PrjMnuItem,PrjMnuItemAll : TIDEmenuCommand;
 
-procedure ShowServerDialog(Sender: TObject);
-begin
-  TPasJSWebserverProcessesForm.Instance.Show;
-  TPasJSWebserverProcessesForm.Instance.BringToFront;
-end;
-
 Type
 
   { TPas2JSHandler }
@@ -254,22 +248,15 @@ Type
     Procedure OnPrjInspPopup(Sender : TObject); virtual;
   end;
 
-Const
-  sPas2JSWebserverName = 'Pas2JSWebservers';
-
 Var
   Pas2JSHTMLClassDef : TPas2JSHTMLClassDef;
   Pas2JSDTSToPasUnitDef : TPas2JSDTSToPasUnitDef;
   Pas2JSHandler : TPas2JSHandler;
 
 procedure Register;
-
 Var
-  ViewCategory : TIDECommandCategory;
-  IDECommand : TIDECommand;
   SrvWorker: TProjectPas2JSServiceWorker;
   PWA: TProjectPas2JSProgressiveWebApp;
-
 begin
   Pas2JSHandler:=TPas2JSHandler.Create;
   if Assigned(Pas2JSHandler) then; // Silence compiler warning
@@ -294,15 +281,6 @@ begin
   // add IDE options frame
   PJSOptionsFrameID:=RegisterIDEOptionsEditor(GroupEnvironment,TPas2jsOptionsFrame,
                                               PJSOptionsFrameID)^.Index;
-  ViewCategory := IDECommandList.FindCategoryByName(CommandCategoryViewName);
-  if ViewCategory <> nil then
-    begin
-    IDECommand := RegisterIDECommand(ViewCategory,sPas2JSWebserverName,SPasJSWebserverCaption,
-                                     CleanIDEShortCut,CleanIDEShortCut,Nil,@ShowServerDialog);
-    if IDECommand <> nil then
-      RegisterIDEButtonCommand(IDECommand);
-    end;
-  RegisterIdeMenuCommand(itmViewDebugWindows,sPas2JSWebserverName,SPasJSWebserverCaption,nil,@ShowServerDialog);
 
   // Add project options frame
   RegisterIDEOptionsEditor(GroupProject,TPas2JSProjectOptionsFrame, Pas2JSOptionsIndex);
@@ -1438,12 +1416,11 @@ begin
         SO(ShowUncaughtExceptions,baoShowException);
         SO(UseWASI,baoUseWASI);
         SO(UseModule,baoUseModule);
-        SO(StartHTTPServer,baoStartServer);
         Self.ProjectPort:=ServerPort;
         SO(UseURL,baoUseURL);
         if baoStartServer in FOptions then
           begin
-          DebugLN(['Info: Start server port: ', Self.ProjectPort,'from: ',ServerPort]);
+          DebugLN(['Info: Start server port: ', Self.ProjectPort,' from: ',ServerPort]);
           end
         else
           begin

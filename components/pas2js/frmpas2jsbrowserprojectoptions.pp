@@ -156,7 +156,6 @@ begin
   else
     Result:=False;
   end;
-//  Writeln('Reporting ',AIndex,' : ',Result);
 end;
 
 function TWebBrowserProjectOptionsForm.GetServerPort: Word;

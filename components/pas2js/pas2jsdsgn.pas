@@ -9,11 +9,11 @@ interface
 
 uses
   PJSDsgnRegister, PJSDsgnOptsFrame, frmpas2jsbrowserprojectoptions, 
-  PJSDsgnOptions, frmpas2jsnodejsprojectoptions, pjscontroller, 
-  frmpas2jswebservers, strpas2jsdesign, pjsprojectoptions, 
-  frmPas2jsAtomPackageSettings, regpas2jsatom, regpas2jsvscode, 
-  frmPas2jsVSCodeExtensionSettings, frmhtmltoform, idehtml2class, frmdtstopas, 
-  idedtstopas, idehtmltools, LazarusPackageIntf;
+  PJSDsgnOptions, frmpas2jsnodejsprojectoptions, PJSController, 
+  StrPas2JSDesign, PJSProjectOptions, frmPas2jsAtomPackageSettings, 
+  regpas2jsatom, regpas2jsvscode, frmPas2jsVSCodeExtensionSettings, 
+  frmhtmltoform, idehtml2class, frmdtstopas, idedtstopas, idehtmltools, 
+  LazarusPackageIntf;
 
 implementation
 

@@ -1,4 +1,4 @@
-unit pjsprojectoptions;
+unit PJSProjectOptions;
 
 {$mode objfpc}{$H+}
 

@@ -42,7 +42,7 @@ unit SimpleWebSrvController;
 interface
 
 uses
-  Math, Classes, SysUtils, process, Pipes, Contnrs, fpjson, fphttpclient,
+  Math, Types, Classes, SysUtils, process, Pipes, Contnrs, fpjson, fphttpclient,
   Sockets,
   // lazutils
   LazLoggerBase, FileUtil, LazUTF8, LazFileUtils, LazMethodList, LazUtilities,
@@ -238,13 +238,14 @@ type
       Path: string; Interactive: boolean): TSWSInstance; virtual;
     function FindServerWithPort(Port: word): TSWSInstance; virtual;
     function FindServerWithOrigin(Origin: string): TSWSInstance; virtual;
-    function FindFreePort(Interactive: boolean; aStartPort: word = 0): word; virtual;
+    function FindFreePort(Interactive, CheckServers: boolean; aStartPort: word = 0): word; virtual;
     function StopServer(Instance: TSWSInstance; Interactive: boolean): boolean; virtual;
     function SubstitutePortMacro(aValue, aPort: string): string;
     function SubstituteURLMacro(aValue, AnURL: string): string;
     function GetDefaultServerExe: string; virtual;
     // browser
     function GetURLWithServer(aServer: TSWSInstance; HTMLFilename: string): string; virtual;
+    function OpenBrowserWithURL(URL, WorkDir: string): boolean; virtual;
     function OpenBrowserWithServer(aServer: TSWSInstance; HTMLFilename: string): boolean; virtual;
     function FindBrowserFile(ShortFilename: string): string; virtual;
     function FindBrowserPath(Filenames: array of string; URL: string; Params: TStrings): string; virtual;
@@ -497,7 +498,7 @@ begin
           exit;
       mrRetry:
         begin
-          NewPort:=FindFreePort(true);
+          NewPort:=FindFreePort(true,false);
           if NewPort=0 then
             NewPort:=GetNextIPPort(MainSrvInstance.Port);
           FMainSrvInstance.Port:=NewPort;
@@ -1537,7 +1538,7 @@ begin
   Result:=nil;
   try
     if Port=0 then
-      Port:=FindFreePort(Interactive);
+      Port:=FindFreePort(Interactive,true);
     if FindServerWithPort(Port)<>nil then
       raise ESimpleWebServerException.Create('port '+IntToStr(Port)+' already in use');
 
@@ -1580,6 +1581,7 @@ var
 var
   Exe, Origin: String;
   Params: TStringList;
+  ConflictServer: TSWSInstance;
 begin
   Result:=nil;
 
@@ -1588,6 +1590,9 @@ begin
   else
     Origin:=aProject.ProjectInfoFile;
   aServer:=FindServerWithOrigin(Origin);
+
+  if (aServer=nil) and not aProject.IsVirtual then
+    aServer:=FindServerWithOrigin(SWSTestprojectOrigin);
 
   if (aServer<>nil) and (aServer.Path<>Path) then
     if not StopOldServer(20220410145323,'Path changed') then exit;
@@ -1604,7 +1609,11 @@ begin
     if aServer<>nil then
       Port:=aServer.Port // keep port
     else
-      Port:=FindFreePort(Interactive);
+      Port:=FindFreePort(Interactive,true);
+  end else begin
+    ConflictServer:=FindServerWithPort(Port);
+    if (ConflictServer<>aServer) then
+      Port:=FindFreePort(Interactive,true);
   end;
 
   Params:=TStringList.Create;
@@ -1618,7 +1627,10 @@ begin
       if not StopOldServer(20220410145559,'Params changed') then exit;
 
     if aServer<>nil then
+      begin
+      aServer.Origin:=Origin;
       exit(aServer);
+      end;
 
     Result:=AddServer(Port,Exe,Params,Path,Origin,false,Interactive);
   finally
@@ -1647,12 +1659,23 @@ begin
   Result:=nil;
 end;
 
-function TSimpleWebServerController.FindFreePort(Interactive: boolean;
-  aStartPort: word): word;
+function TSimpleWebServerController.FindFreePort(Interactive,
+  CheckServers: boolean; aStartPort: word): word;
+var
+  AvoidPorts: TWordDynArray;
+  i: Integer;
 begin
   if aStartPort=0 then
     aStartPort:=MainSrvPort;
-  Result:=FUtility.FindFreePort(aStartPort,Interactive);
+  if CheckServers then
+  begin
+    Setlength(AvoidPorts,ServerCount);
+    for i:=0 to ServerCount-1 do
+      AvoidPorts[i]:=Servers[i].Port;
+  end else
+    AvoidPorts:=nil;
+
+  Result:=FUtility.FindFreePort(aStartPort,Interactive,AvoidPorts);
 end;
 
 function TSimpleWebServerController.StopServer(Instance: TSWSInstance;
@@ -1711,20 +1734,13 @@ begin
   Result:='http://127.0.0.1:'+IntToStr(aServer.Port)+'/'+Result;
 end;
 
-function TSimpleWebServerController.OpenBrowserWithServer(
-  aServer: TSWSInstance; HTMLFilename: string): boolean;
+function TSimpleWebServerController.OpenBrowserWithURL(URL, WorkDir: string
+  ): boolean;
 var
-  URL, Cmd, Exe: String;
   Params: TStringList;
+  Cmd, Exe: String;
   Tool: TIDEExternalToolOptions;
 begin
-  if aServer=nil then
-    raise Exception.Create('TSimpleWebServerController.OpenBrowserWithServer 20220410185207');
-  if not FilenameIsAbsolute(HTMLFilename) then
-    raise Exception.Create('TSimpleWebServerController.OpenBrowserWithServer 20220410185208');
-
-  URL:=GetURLWithServer(aServer,HTMLFilename);
-
   Params:=TStringList.Create;
   try
     case Options.BrowserKind of
@@ -1770,12 +1786,27 @@ begin
     Tool.Title:='Browser('+ExtractFileName(Exe)+')';
     Tool.Executable:=Exe;
     Tool.CmdLineParams:=MergeCmdLineParams(Params);
-    Tool.WorkingDirectory:=ExtractFilePath(HTMLFilename);
+    Tool.WorkingDirectory:=WorkDir;
     Tool.MaxIdleInMS:=1000;
     Result:=RunExternalTool(Tool);
   finally
     Params.Free;
   end;
+end;
+
+function TSimpleWebServerController.OpenBrowserWithServer(
+  aServer: TSWSInstance; HTMLFilename: string): boolean;
+var
+  URL: String;
+begin
+  if aServer=nil then
+    raise Exception.Create('TSimpleWebServerController.OpenBrowserWithServer 20220410185207');
+  if not FilenameIsAbsolute(HTMLFilename) then
+    raise Exception.Create('TSimpleWebServerController.OpenBrowserWithServer 20220410185208');
+
+  URL:=GetURLWithServer(aServer,HTMLFilename);
+
+  Result:=OpenBrowserWithURL(URL,ExtractFilePath(HTMLFilename));
 end;
 
 function TSimpleWebServerController.FindBrowserFile(ShortFilename: string
