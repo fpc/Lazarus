@@ -4,8 +4,8 @@
 Working:
 - Start/Stop compileserver
 - server log
-- on socketerror find conflicting process (Linux, Windows, macos)
-- on socketerror find free port (Linux, Windows, macos)
+- on socketerror find conflicting process (Linux, Windows, Macos)
+- on socketerror find free port (Linux, Windows, Macos)
 - option: port
 - option: interfaceaddress
 - change port
@@ -33,7 +33,6 @@ ToDos:
  - log with time and port
  - ide macro SWSExe param: 'base', 'used' and ''
  - Windows: add GetUDPTable2
- - resourcestrings
  - SSL
 }
 unit SimpleWebSrvController;

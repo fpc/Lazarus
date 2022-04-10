@@ -14,6 +14,7 @@ uses
   SimpleWebSrvStrConsts, SimpleWebSrvOptions, SimpleWebSrvController;
 
 type
+
   { TSimpleWebSrvOptsFrame }
 
   TSimpleWebSrvOptsFrame = class(TAbstractIDEOptionsEditor)
