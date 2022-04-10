@@ -984,6 +984,13 @@ end;
 
 function TExternalTools.RunToolAndDetach(ToolOptions: TIDEExternalToolOptions): boolean;
 // simply run and detach
+
+  procedure Err(Msg: string);
+  begin
+    debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: ',Msg]);
+    // ToDo: show user
+  end;
+
 var
   i: Integer;
   Proc: TProcessUTF8;
@@ -998,13 +1005,13 @@ begin
     s:=ToolOptions.WorkingDirectory;
     if ToolOptions.ResolveMacros then begin
       if not GlobalMacroList.SubstituteStr(s) then begin
-        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: macros of WorkerDirectory: "',ToolOptions.WorkingDirectory,'"']);
+        Err('macros of WorkingDirectory: "'+ToolOptions.WorkingDirectory+'"');
         exit;
       end;
     end;
     s:=ChompPathDelim(CleanAndExpandDirectory(s));
     if not DirectoryExistsUTF8(s) then begin
-      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: missing directory "',s,'"']);
+      Err('missing directory "'+s+'"');
       exit;
     end;
     Proc.CurrentDirectory:=s;
@@ -1016,7 +1023,7 @@ begin
       for i:=0 to Proc.Environment.Count-1 do begin
         s:=Proc.Environment[i];
         if not GlobalMacroList.SubstituteStr(s) then begin
-          debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: environment override "',Proc.Environment,'"']);
+          Err('environment override "'+Proc.Environment[i]+'"');
           exit;
         end;
         Proc.Environment[i]:=s;
@@ -1027,7 +1034,7 @@ begin
     s:=ToolOptions.Executable;
     if ToolOptions.ResolveMacros then begin
       if not GlobalMacroList.SubstituteStr(s) then begin
-        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: macros of Executable: "',ToolOptions.Executable,'"']);
+        Err('invalid macros in Executable: "'+ToolOptions.Executable+'"');
         exit;
       end;
     end;
@@ -1047,20 +1054,24 @@ begin
       end;
       {$ENDIF}
       if s='' then begin
-        debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,' failed: missing executable "',ToolOptions.Executable,'"']);
+        Err('missing executable "'+ToolOptions.Executable+'"');
         exit;
       end;
     end;
-    if not ( FilenameIsAbsolute(s) and FileExistsUTF8(s) ) then begin
-      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: missing executable: "',s,'"']);
+    if not FilenameIsAbsolute(s) then begin
+      Err('missing executable: "'+s+'"');
+      exit;
+    end;
+    if not FileExistsUTF8(s) then begin
+      Err('missing executable: "'+s+'"');
       exit;
     end;
     if DirectoryExistsUTF8(s) {$IFDEF DARWIN}and (ExtractFileExt(s)<>'.app'){$ENDIF} then begin
-      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: executable is a directory: "',s,'"']);
+      Err('executable is a directory: "'+s+'"');
       exit;
     end;
     if {$IFDEF DARWIN}(ExtractFileExt(s)<>'.app') and{$ENDIF} not FileIsExecutable(s) then begin
-      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,'  failed: executable lacks permission to run: "',s,'"']);
+      Err('executable lacks permission to run: "'+s+'"');
       exit;
     end;
 
@@ -1079,8 +1090,7 @@ begin
 
     // params
     if ToolOptions.ResolveMacros and not GlobalMacroList.SubstituteStr(s) then begin
-      debugln(['Error: (lazarus) [TExternalTools.RunToolAndDetach] ',ToolOptions.Title,
-               ' failed: macros in cmd line params "',ToolOptions.CmdLineParams,'"']);
+      Err('invalid macros in cmd line params "'+ToolOptions.CmdLineParams+'"');
       exit;
     end;
     sl:=TStringList.Create;
@@ -1139,6 +1149,7 @@ begin
       Tool.Process.ShowWindow:=swoHide
     else
       Tool.Process.ShowWindow:=swoShow;
+    Tool.MaxIdleInMS:=ToolOptions.MaxIdleInMS;
     if ToolOptions.ResolveMacros and not Tool.ResolveMacros then begin
       debugln(['Error: (lazarus) [TExternalTools.RunToolWithParsers] failed to resolve macros']);
       exit;
@@ -1527,6 +1538,7 @@ var
   ErrMsg: String;
   ok: Boolean;
   HasOutput: Boolean;
+  IdleCount: Integer;
 begin
   {$IFDEF VerboseExtToolThread}
   Title:=Tool.Title;
@@ -1609,6 +1621,7 @@ begin
       OutputLine:='';
       StdErrLine:='';
       LastUpdate:=GetTickCount64;
+      IdleCount:=0;
       while (Tool<>nil) and (Tool.Stage=etsRunning) do begin
         if Tool.ReadStdOutBeforeErr then begin
           HasOutput:=ReadInputPipe(Tool.Process.Output,OutputLine,false)
@@ -1617,7 +1630,9 @@ begin
           HasOutput:=ReadInputPipe(Tool.Process.Stderr,StdErrLine,true)
                   or ReadInputPipe(Tool.Process.Output,OutputLine,false);
         end;
-        if (not HasOutput) then begin
+        if HasOutput then
+          IdleCount:=0
+        else begin
           // no more pending output
           if not Tool.Process.Running then break;
         end;
@@ -1636,7 +1651,13 @@ begin
         if (not HasOutput) then begin
           // no more pending output and process is still running
           // => tool needs some time
-          Sleep(50);
+          if Tool.MaxIdleInMS>0 then begin
+            if IdleCount>Tool.MaxIdleInMS then break;
+            Sleep(20);
+            inc(IdleCount,20);
+          end else begin
+            Sleep(50);
+          end;
         end;
       end;
       {$IFDEF VerboseExtToolThread}
@@ -1667,8 +1688,11 @@ begin
         {$IFDEF VerboseExtToolThread}
         DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' reading exit status ...']);
         {$ENDIF}
-        Tool.ExitStatus:=Tool.Process.ExitStatus;
-        Tool.ExitCode:=Tool.Process.ExitCode;
+        if (Tool.MaxIdleInMS>0) and (IdleCount>Tool.MaxIdleInMS) then
+        begin
+          Tool.ExitStatus:=Tool.Process.ExitStatus;
+          Tool.ExitCode:=Tool.Process.ExitCode;
+        end;
         {$IFDEF VerboseExtToolThread}
         if Tool.ExitStatus<>0 then
           DebuglnThreadLog(['TExternalToolThread.Execute ',Title,' exit status=',Tool.ExitStatus,' ExitCode=',Tool.ExitCode]);

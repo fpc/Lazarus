@@ -472,6 +472,7 @@ type
     FFreeData: boolean;
     FGroup: TExternalToolGroup;
     FHint: string;
+    FMaxIdleInMS: integer;
     FReadStdOutBeforeErr: boolean;
     FResolveMacrosOnExecute: boolean;
     FThread: TThread;
@@ -560,6 +561,7 @@ type
     property ExitStatus: integer read FExitStatus write FExitStatus;
     property ErrorMessage: string read FErrorMessage write FErrorMessage; // error executing tool
     property ReadStdOutBeforeErr: boolean read FReadStdOutBeforeErr write FReadStdOutBeforeErr;
+    property MaxIdleInMS: integer read FMaxIdleInMS write FMaxIdleInMS; // if >0 then free Process after this time without output (detach, PID is not killed)
 
     // output
     property WorkerOutput: TStrings read FWorkerOutput; // the raw output
@@ -679,6 +681,7 @@ type
     FExecutable: string;
     FHideWindow: boolean;
     FHint: string;
+    FMaxIdleInMS: integer;
     FQuiet: boolean;
     FResolveMacros: boolean;
     FParserNames: TStrings;
@@ -707,6 +710,7 @@ type
     property ResolveMacros: boolean read FResolveMacros write FResolveMacros default true;
     property CustomMacroFunction: TETMacroFunction read FCustomMacroFunction write FCustomMacroFunction;
     property Quiet: boolean read FQuiet write FQuiet; // no user dialogs about errors
+    property MaxIdleInMS: integer read FMaxIdleInMS write FMaxIdleInMS; // free process after this time without output (PID is not killed)
   end;
 
 type
