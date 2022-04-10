@@ -7196,7 +7196,7 @@
         <short>Enumerated type with methods for getting the attribute node value.</short>
         <descr>
           <p>
-            <var>TAttrDefault</var> is an enumerated type with values which indicates how the value for a default attribute node was specified. TAttrDefault is the type used to implement the <var>Default</var>property in <var>TDOMAttrDef</var>.
+            <var>TAttrDefault</var> is an enumerated type with values which indicates how the value for a default attribute node was specified. TAttrDefault is the type used to implement the <var>Default</var> property in <var>TDOMAttrDef</var>.
           </p>
         </descr>
         <seealso>

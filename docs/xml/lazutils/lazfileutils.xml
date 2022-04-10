@@ -259,7 +259,7 @@
             <var>CaseSensitive</var> indicates if case-sensitivity is used when comparing the parameter values. When set to <b>True</b>, the comparison is limited to characters in the ASCII character set. <var>StrLComp</var> or <var>StrLIComp</var> is called to compare the value in Filename to the values in Exts.
           </p>
           <p>
-            The return value is <b>True</b> when Filename uses one the file extension in Exts. The return value is <b>False</b>when Filename is an empty string (<b>''</b>), does not include a '<b>.</b>' character that marks the start of the file extension, or does not use one of the values in Exts.
+            The return value is <b>True</b> when Filename uses one the file extension in Exts. The return value is <b>False</b> when Filename is an empty string (<b>''</b>), does not include a '<b>.</b>'  character that marks the start of the file extension, or does not use one of the values in Exts.
           </p>
         </descr>
         <seealso>

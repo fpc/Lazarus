@@ -345,7 +345,7 @@
 
       <element name="TPointerToPointerTree">
         <short>
-          <var>TPointerToPointerTree</var>is an associative array of PointerToPointer Items, or a tree of trees.
+          <var>TPointerToPointerTree</var> is an associative array of PointerToPointer Items, or a tree of trees.
         </short>
         <descr>
           <p>
