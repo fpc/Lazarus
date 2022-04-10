@@ -1786,7 +1786,7 @@ var
 
   procedure AddIdentifier;
   begin
-    while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9'] do
+    while TokenEndPtr^ in ['a'..'z', 'A'..'Z', '_', '0'..'9', '$'] do
       inc(TokenEndPtr);
     // TODO: Check functions not, and, in, as, is ...
     if (CurPart <> nil) and (CurPart.CanHaveOperatorAsNext) then
