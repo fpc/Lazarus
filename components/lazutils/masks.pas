@@ -244,10 +244,10 @@ type
     procedure DumpMaskCompiled;
     {$ENDIF}
 
-    constructor Create(const aMask: String);
-    constructor Create(const aMask: String; aCaseSensitive: Boolean);
+    constructor Create(const aMask: String); overload;
+    constructor Create(const aMask: String; aCaseSensitive: Boolean); overload;
     constructor Create(const aMask: String; aCaseSensitive: Boolean; aOpcodesAllowed: TMaskOpCodes); virtual; overload;
-    constructor Create(const aMask: String; aOptions: TMaskOptions);
+    constructor Create(const aMask: String; aOptions: TMaskOptions); overload;
         deprecated 'Use Create with TMaskOpCodes params.'; // in Lazarus 2.3, remove in 2.5.
 
     procedure Compile; override;
@@ -1342,9 +1342,6 @@ begin
 end;
 
 procedure TWindowsMaskUTF8.CompileOtherSpecialChars;
-var
-  lCharsGroupInsertSize: integer;
-  ZeroCount: Integer;
 begin
   inherited CompileOtherSpecialChars;
   if (fMask[fMaskInd]=#0) and not (wqFileNameEnd in self.fWindowsQuirkInUse) then
