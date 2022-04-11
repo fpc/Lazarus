@@ -18,7 +18,7 @@
     <Description Value="Adds a Lazarus project for pas2js browser applications."/>
     <License Value="GPL-2"/>
     <Version Major="1" Release="2"/>
-    <Files Count="21">
+    <Files Count="20">
       <Item1>
         <Filename Value="pjsdsgnregister.pas"/>
         <HasRegisterProc Value="True"/>
@@ -42,70 +42,66 @@
       </Item5>
       <Item6>
         <Filename Value="pjscontroller.pp"/>
-        <UnitName Value="pjscontroller"/>
+        <UnitName Value="PJSController"/>
       </Item6>
       <Item7>
-        <Filename Value="frmpas2jswebservers.pp"/>
-        <UnitName Value="frmpas2jswebservers"/>
+        <Filename Value="strpas2jsdesign.pp"/>
+        <UnitName Value="StrPas2JSDesign"/>
       </Item7>
       <Item8>
-        <Filename Value="strpas2jsdesign.pp"/>
-        <UnitName Value="strpas2jsdesign"/>
+        <Filename Value="pjsprojectoptions.pp"/>
+        <UnitName Value="PJSProjectOptions"/>
       </Item8>
       <Item9>
-        <Filename Value="pjsprojectoptions.pp"/>
-        <UnitName Value="pjsprojectoptions"/>
-      </Item9>
-      <Item10>
         <Filename Value="frmpas2jsatompackagesettings.lfm"/>
         <Type Value="LFM"/>
-      </Item10>
-      <Item11>
+      </Item9>
+      <Item10>
         <Filename Value="frmpas2jsatompackagesettings.pas"/>
         <UnitName Value="frmPas2jsAtomPackageSettings"/>
-      </Item11>
-      <Item12>
+      </Item10>
+      <Item11>
         <Filename Value="regpas2jsatom.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="regpas2jsatom"/>
-      </Item12>
-      <Item13>
+      </Item11>
+      <Item12>
         <Filename Value="atomdefaults.inc"/>
         <Type Value="Include"/>
-      </Item13>
-      <Item14>
+      </Item12>
+      <Item13>
         <Filename Value="regpas2jsvscode.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="regpas2jsvscode"/>
-      </Item14>
-      <Item15>
+      </Item13>
+      <Item14>
         <Filename Value="vscodedefaults.inc"/>
         <Type Value="Include"/>
-      </Item15>
-      <Item16>
+      </Item14>
+      <Item15>
         <Filename Value="frmpas2jsvscodeextensionsettings.pas"/>
         <UnitName Value="frmPas2jsVSCodeExtensionSettings"/>
-      </Item16>
-      <Item17>
+      </Item15>
+      <Item16>
         <Filename Value="frmhtmltoform.pas"/>
         <UnitName Value="frmhtmltoform"/>
-      </Item17>
-      <Item18>
+      </Item16>
+      <Item17>
         <Filename Value="idehtml2class.pas"/>
         <UnitName Value="idehtml2class"/>
-      </Item18>
-      <Item19>
+      </Item17>
+      <Item18>
         <Filename Value="frmdtstopas.pas"/>
         <UnitName Value="frmdtstopas"/>
-      </Item19>
-      <Item20>
+      </Item18>
+      <Item19>
         <Filename Value="idedtstopas.pas"/>
         <UnitName Value="idedtstopas"/>
-      </Item20>
-      <Item21>
+      </Item19>
+      <Item20>
         <Filename Value="idehtmltools.pas"/>
         <UnitName Value="idehtmltools"/>
-      </Item21>
+      </Item20>
     </Files>
     <CompatibilityMode Value="True"/>
     <i18n>
