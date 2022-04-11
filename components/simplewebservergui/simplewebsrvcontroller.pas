@@ -1868,7 +1868,7 @@ begin
 end;
 
 {$IFDEF Darwin}
-function TTMSWebcoreIDEOptions.GetBrowserEdge(URL: string; Params: TStrings
+function TSimpleWebServerController.GetBrowserSafari(URL: string; Params: TStrings
   ): string;
 begin
   Result := FindBrowserPath(['/Applications/Safari.app/Contents/MacOS/Safari','safari'],URL,Params);
@@ -1876,7 +1876,7 @@ end;
 {$ENDIF}
 
 {$IFDEF MSWindows}
-function TTMSWebcoreIDEOptions.GetBrowserEdge(URL: string; Params: TStrings
+function TSimpleWebServerController.GetBrowserEdge(URL: string; Params: TStrings
   ): string;
 begin
   Result := FindBrowserPath(['edge'],URL,Params);
