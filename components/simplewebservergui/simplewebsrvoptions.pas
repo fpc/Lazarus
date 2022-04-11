@@ -58,6 +58,7 @@ type
     swsbkFirefox,
     swsbkChrome,
     swsbkOpera,
+    swsbkVivaldi,
     {$IFDEF Darwin}
     swsbkSafari,
     {$ENDIF}
@@ -74,6 +75,7 @@ const
     'Firefox',
     'Chrome',
     'Opera',
+    'Vivaldi',
     {$IFDEF Darwin}
     'Safari',
     {$ENDIF}

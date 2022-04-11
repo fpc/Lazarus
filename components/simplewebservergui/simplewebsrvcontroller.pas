@@ -252,6 +252,7 @@ type
     function GetBrowserChrome(URL: string; Params: TStrings): string; virtual;
     function GetBrowserFirefox(URL: string; Params: TStrings): string; virtual;
     function GetBrowserOpera(URL: string; Params: TStrings): string; virtual;
+    function GetBrowserVivaldi(URL: string; Params: TStrings): string; virtual;
     {$IFDEF Darwin}
     function GetBrowserSafari(URL: string; Params: TStrings): string; virtual;
     {$ENDIF}
@@ -1761,6 +1762,7 @@ begin
     swsbkFirefox: Exe:=GetBrowserFirefox(URL,Params);
     swsbkChrome: Exe:=GetBrowserChrome(URL,Params);
     swsbkOpera: Exe:=GetBrowserOpera(URL,Params);
+    swsbkVivaldi: Exe:=GetBrowserVivaldi(URL,Params);
     {$IFDEF Darwin}
     swsbkSafari: Exe:=GetBrowserSafari(URL,Params);
     {$ENDIF}
@@ -1864,7 +1866,17 @@ end;
 function TSimpleWebServerController.GetBrowserOpera(URL: string;
   Params: TStrings): string;
 begin
-  Result := FindBrowserPath(['opera'],URL,Params);
+  Result := FindBrowserPath([
+    {$IFDEF Darwin}'/Applications/Opera.app/Contents/MacOS/Opera',{$ENDIF}
+    'opera'],URL,Params);
+end;
+
+function TSimpleWebServerController.GetBrowserVivaldi(URL: string;
+  Params: TStrings): string;
+begin
+  Result := FindBrowserPath([
+    {$IFDEF Darwin}'/Applications/Vivaldi.app/Contents/MacOS/Vivaldi',{$ENDIF}
+    'vivaldi'],URL,Params);
 end;
 
 {$IFDEF Darwin}
