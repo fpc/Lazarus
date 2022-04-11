@@ -420,7 +420,6 @@ begin
   //debugln(['Info: [TProjectPas2JSProgressiveWebApp.CreateManifestFile] "',AFileName,'"']);
   Result:=AProject.CreateProjectFile(AFileName);
   Result.IsPartOfProject:=true;
-  AProject.CustomData.Values[PJSProjectManifestFile]:=CreateRelativePath(Result.Filename,ProjectDir);
   AProject.AddFile(Result,false);
   Src:=TStringList.Create;
   try
@@ -462,7 +461,6 @@ begin
   //debugln(['Info: [TProjectPas2JSProgressiveWebApp.CreateCSSStyle] "',AFileName,'"']);
   Result:=AProject.CreateProjectFile(AFileName);
   Result.IsPartOfProject:=true;
-  AProject.CustomData.Values[PJSProjectCSSFile]:=CreateRelativePath(Result.Filename,ProjectDir);
   AProject.AddFile(Result,false);
   Src:=TStringList.Create;
   try

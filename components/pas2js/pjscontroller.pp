@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, process,
   // LazUtils
-  LazLoggerBase, LazUtilities, FileUtil, LazFileUtils,
+  LazLoggerBase, LazUtilities, FileUtil, LazFileUtils, AvgLvlTree,
   // LCL
   Forms, Controls, LazHelpIntf,
   // IdeIntf
@@ -29,6 +29,8 @@ Type
     function GetPas2JSBrowser(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2JSNodeJS(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
     function GetPas2jsProjectURL(const s: string; const {%H-}Data: PtrInt; var Abort: boolean): string;
+    procedure OnLoadSaveCustomData(Sender: TObject; Load: boolean;
+      CustomData: TStringToStringTree; PathDelimChanged: boolean);
     function OnProjectBuilding(Sender: TObject): TModalResult;
     function OnRunDebugInit(Sender: TObject; var Handled: boolean
       ): TModalResult;
@@ -60,8 +62,6 @@ Const
   PJSProjectHTMLFile = 'PasJSHTMLFile';
   PJSIsProjectHTMLFile = 'PasJSIsProjectHTMLFile';
   PJSProjectMaintainHTML = 'MaintainHTML';
-  PJSProjectManifestFile = 'PasJSManifestFile';
-  PJSProjectCSSFile = 'PasJSCSSFile';
   PJSProjectUseBrowserConsole = 'BrowserConsole';
   PJSProjectRunAtReady = 'RunAtReady';
   PJSProjectPort = 'PasJSPort';
@@ -161,6 +161,31 @@ begin
   Abort:=(Result='');
   if ConsoleVerbosity>0 then
     DebugLN(['GetPas2jsProjectURL : ',Result]);
+end;
+
+procedure TPJSController.OnLoadSaveCustomData(Sender: TObject; Load: boolean;
+  CustomData: TStringToStringTree; PathDelimChanged: boolean);
+var
+  fn: String;
+  aProject: TLazProject;
+begin
+  if Sender is TLazProject then
+    begin
+    aProject:=TLazProject(Sender);
+    if CustomData[PJSProjectWebBrowser]='1' then
+      begin
+      fn:=CustomData[PJSProjectHTMLFile];
+      if fn<>'' then
+        begin
+        if Load then
+          aProject.ConvertFromLPIFilename(fn)
+        else
+          aProject.ConvertToLPIFilename(fn);
+        CustomData[PJSProjectHTMLFile]:=fn;
+        end;
+      end;
+    end;
+  if PathDelimChanged then ;
 end;
 
 function TPJSController.OnProjectBuilding(Sender: TObject): TModalResult;
@@ -297,7 +322,7 @@ begin
     end;
 
   if not WithDebug then
-    exit; // compile normally and run the run parameters
+    exit; // compile normally and run the run-parameters
 
   ServerPort:=StrToIntDef(aProject.CustomData[PJSProjectPort],-1);
   URL:=aProject.CustomData[PJSProjectURL];
@@ -420,6 +445,7 @@ begin
   LazarusIDE.AddHandlerOnProjectBuilding(@OnProjectBuilding);
   LazarusIDE.AddHandlerOnRunDebugInit(@OnRunDebugInit);
   LazarusIDE.AddHandlerOnRunWithoutDebugInit(@OnRunWithoutDebugInit);
+  LazarusIDE.AddHandlerOnLoadSaveCustomData(@OnLoadSaveCustomData);
 end;
 
 procedure TPJSController.UnHook;
