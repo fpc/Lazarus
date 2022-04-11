@@ -2911,7 +2911,7 @@ procedure TProject.LoadCustomData(Sender: TObject; Data: TStringToStringTree;
   XMLConfig: TXMLConfig; const Path: string);
 begin
   LoadStringToStringTree(XMLConfig,Data,Path);
-  if Assigned(OnLoadSafeCustomData) then
+  if Assigned(OnLoadSafeCustomData) and (Data.Count>0) then
     OnLoadSafeCustomData(Sender,true,Data,fPathDelimChanged);
 end;
 
