@@ -55,7 +55,7 @@ uses
   LinkScanner, CodeToolManager, CodeCache, CodeTree, FileProcs, StdCodeTools,
   // LazUtils
   FPCAdds, LazUtilities, FileUtil, LazFileUtils, LazFileCache, LazMethodList,
-  LazLoggerBase, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps,
+  LazLoggerBase, FileReferenceList, LazUTF8, Laz2_XMLCfg, Maps, AvgLvlTree,
   // IDEIntf
   PropEdits, UnitResources, EditorSyntaxHighlighterDef,
   CompOptsIntf, ProjectIntf, MacroIntf, MacroDefIntf, SrcEditorIntf,
@@ -725,6 +725,7 @@ type
     FHistoryLists: THistoryLists;
     FLastCompileComplete: boolean;
     FMacroEngine: TTransferMacroList;
+    FOnLoadSafeCustomData: TLazLoadSaveCustomDataEvent;
     FTmpAutoCreatedForms: TStrings; // temporary, used to apply auto create forms changes
     FAutoOpenDesignerFormsDisabled: boolean;
     FBookmarks: TProjectBookmarkList;
@@ -842,6 +843,8 @@ type
     function LoadOldProjectType(const Path: string): TOldProjectType;
     procedure LoadFlags(const Path: string);
     procedure LoadOtherDefines(const Path: string);
+    procedure LoadCustomData(Sender: TObject; Data: TStringToStringTree;
+      XMLConfig: TXMLConfig; const Path: string);
     procedure LoadSessionInfo(const Path: string; Merge: boolean);
     procedure LoadFromLPI;
     procedure LoadFromSession;
@@ -852,6 +855,8 @@ type
     procedure SaveFlags(const Path: string);
     procedure SaveUnits(const Path: string; SaveSession: boolean);
     procedure SaveOtherDefines(const Path: string);
+    procedure SaveCustomData(Sender: TObject; Data: TStringToStringTree;
+      XMLConfig: TXMLConfig; const Path: string);
     procedure SaveSessionInfo(const Path: string);
     procedure SaveToLPI;
     procedure SaveToSession;
@@ -1113,6 +1118,7 @@ type
                                                    write FOnSaveProjectInfo;
     property OnSaveUnitSessionInfo: TOnSaveUnitSessionInfoInfo
       read FOnSaveUnitSessionInfo write FOnSaveUnitSessionInfo;
+    property OnLoadSafeCustomData: TLazLoadSaveCustomDataEvent read FOnLoadSafeCustomData write FOnLoadSafeCustomData;
     property POOutputDirectory: string read FPOOutputDirectory write SetPOOutputDirectory;
     property PublishOptions: TPublishProjectOptions read FPublishOptions write FPublishOptions;
     property ProjResources: TProjectResources read GetProjResources;
@@ -1817,7 +1823,7 @@ begin
     if (s<>'') and (ExtractFileNameOnly(Filename)=s) then s:=''; // only save if UnitName differs from filename
     XMLConfig.SetDeleteValue(Path+'UnitName/Value',s,'');
     // save custom data
-    SaveStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
+    Project.SaveCustomData(Self,CustomData,XMLConfig,Path+'CustomData/');
   end;
 
   // session data
@@ -1903,7 +1909,7 @@ begin
       FUnitName:='';
 
     // save custom data
-    LoadStringToStringTree(XMLConfig,CustomData,Path+'CustomData/');
+    Project.LoadCustomData(Self,CustomData,XMLConfig,Path+'CustomData/');
   end;
 
   // session data
@@ -2901,6 +2907,14 @@ begin
   end;
 end;
 
+procedure TProject.LoadCustomData(Sender: TObject; Data: TStringToStringTree;
+  XMLConfig: TXMLConfig; const Path: string);
+begin
+  LoadStringToStringTree(XMLConfig,Data,Path);
+  if Assigned(OnLoadSafeCustomData) then
+    OnLoadSafeCustomData(Sender,true,Data,fPathDelimChanged);
+end;
+
 procedure TProject.LoadSessionInfo(const Path: string; Merge: boolean);
 // Note: the session can be stored in the lpi as well
 // So this method is used for loading the lpi units as well
@@ -3008,7 +3022,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
 
   // load custom data
-  LoadStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
+  LoadCustomData(Self,CustomData,FXMLConfig,Path+'CustomData/');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=Directory;
   CodeToolBoss.DefineTree.ClearCache;
@@ -3274,6 +3288,26 @@ begin
   FXMLConfig.SetDeleteValue(Path+'OtherDefines/Count',FOtherDefines.Count,0);
 end;
 
+procedure TProject.SaveCustomData(Sender: TObject; Data: TStringToStringTree;
+  XMLConfig: TXMLConfig; const Path: string);
+var
+  NewData: TStringToStringTree;
+begin
+  if Assigned(OnLoadSafeCustomData) and (Data.Count>0) then
+  begin
+    NewData:=TStringToStringTree.Create(Data.CompareItemsFunc,Data.CompareKeyItemFunc,Data.CaseSensitive);
+    try
+      NewData.Assign(Data);
+      OnLoadSafeCustomData(Sender,false,NewData,fPathDelimChanged);
+      SaveStringToStringTree(XMLConfig,NewData,Path);
+    finally
+      NewData.Free;
+    end;
+  end else begin
+    SaveStringToStringTree(XMLConfig,Data,Path);
+  end;
+end;
+
 procedure TProject.SaveSessionInfo(const Path: string);
 begin
   FXMLConfig.DeleteValue(Path+'General/ActiveEditorIndexAtStart/Value');
@@ -3341,7 +3375,7 @@ begin
   // Resources
   ProjResources.WriteToProjectFile(FXMLConfig, Path);
   // save custom data
-  SaveStringToStringTree(FXMLConfig,CustomData,Path+'CustomData/');
+  SaveCustomData(Self,CustomData,FXMLConfig,Path+'CustomData/');
   // Save the macro values and compiler options
   BuildModes.SaveProjOptsToXMLConfig(FXMLConfig, Path, FSaveSessionInLPI, UseLegacyLists);
   BuildModes.SaveSharedMatrixOptions(Path);

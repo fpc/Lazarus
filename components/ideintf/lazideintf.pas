@@ -20,7 +20,7 @@ uses
   // LCL
   Forms, Controls, LazHelpHTML,
   // LazUtils
-  UITypes, LazMethodList,
+  UITypes, LazMethodList, AvgLvlTree,
   // BuildIntf
   BaseIDEIntf, IDEOptionsIntf, CompOptsIntf, ProjectIntf, IDEExternToolIntf,
   // IdeIntf
@@ -245,6 +245,7 @@ type
     lihtProjectBuildingFinished, // called after IDE builds the project
     lihtLazarusBuilding, // called before IDE builds Lazarus IDE
     lihtLazarusBuildingFinished, // called after IDE builds Lazarus IDE
+    lihtLoadSafeCustomData, // called before saving and after loading CustomData
     lihtQuickSyntaxCheck,  // called when quick syntax check is clicked (menu item or shortcut)
     lihtGetFPCFrontEndParams, // called when the IDE gets the parameters of the 'fpc' front end tool
     lihtGetFPCFrontEndPath, // called when the IDE gets the path of the 'fpc' front end tool
@@ -272,6 +273,7 @@ type
   TLazToolStatusChangeEvent = procedure(Sender: TObject; OldStatus, NewStatus: TLazToolStatus) of object;
 
   TLazBuildingFinishedEvent = procedure(Sender: TObject; BuildSuccessful: Boolean) of object;
+  TLazLoadSaveCustomDataEvent = procedure(Sender: TObject; Load: boolean; CustomData: TStringToStringTree; PathDelimChanged: boolean) of object;
 
   { TLazIDEInterface }
 
@@ -520,6 +522,10 @@ type
                            AsLast: boolean = false);
     procedure RemoveHandlerOnLazarusBuildingFinished(
                                const OnLazBuildingFinishedEvent: TLazBuildingFinishedEvent);
+    procedure AddHandlerOnLoadSaveCustomData(const OnLoadSaveEvent: TLazLoadSaveCustomDataEvent;
+                           AsLast: boolean = false);
+    procedure RemoveHandlerOnLoadSaveCustomData(const OnLoadSaveEvent: TLazLoadSaveCustomDataEvent;
+                           AsLast: boolean = false);
     procedure AddHandlerOnQuickSyntaxCheck(
                            const OnQuickSyntaxCheckEvent: TModalHandledFunction;
                            AsLast: boolean = false);
@@ -917,6 +923,18 @@ procedure TLazIDEInterface.RemoveHandlerOnLazarusBuildingFinished(
   const OnLazBuildingFinishedEvent: TLazBuildingFinishedEvent);
 begin
   RemoveHandler(lihtLazarusBuildingFinished,TMethod(OnLazBuildingFinishedEvent));
+end;
+
+procedure TLazIDEInterface.AddHandlerOnLoadSaveCustomData(
+  const OnLoadSaveEvent: TLazLoadSaveCustomDataEvent; AsLast: boolean);
+begin
+  AddHandler(lihtLoadSafeCustomData,TMethod(OnLoadSaveEvent),AsLast);
+end;
+
+procedure TLazIDEInterface.RemoveHandlerOnLoadSaveCustomData(
+  const OnLoadSaveEvent: TLazLoadSaveCustomDataEvent; AsLast: boolean);
+begin
+  RemoveHandler(lihtLoadSafeCustomData,TMethod(OnLoadSaveEvent));
 end;
 
 procedure TLazIDEInterface.AddHandlerOnIDEClose(
