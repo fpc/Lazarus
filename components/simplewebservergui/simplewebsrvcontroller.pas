@@ -1669,7 +1669,7 @@ begin
     aStartPort:=MainSrvPort;
   if CheckServers then
   begin
-    Setlength(AvoidPorts,ServerCount);
+    Setlength(AvoidPorts{%H-},ServerCount);
     for i:=0 to ServerCount-1 do
       AvoidPorts[i]:=Servers[i].Port;
   end else

@@ -598,7 +598,7 @@ var
   i: Integer;
 begin
   inherited Clear;
-  FOptions:=[baoCreateHtml,baoMaintainHTML,baoUseBrowserApp];
+  FOptions:=[baoCreateHtml,baoMaintainHTML,baoUseBrowserApp,baoStartServer];
   FWebDir:='www';
   FImagesDir:='images';
   FHTMLFilename:='index.html';
@@ -1501,7 +1501,7 @@ Var
 begin
   HTMLFile:=AProject.CreateProjectFile(HTMLFilename);
   HTMLFile.IsPartOfProject:=true;
-  AProject.CustomData.Values[PJSProjectHTMLFile]:=ExtractFileName(HTMLFile.Filename);
+  AProject.CustomData.Values[PJSProjectHTMLFile]:=HTMLFile.Filename;
   AProject.AddFile(HTMLFile,false);
   ScriptType:='';
   if baoUseModule in Options then
