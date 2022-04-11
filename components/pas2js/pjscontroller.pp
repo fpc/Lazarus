@@ -282,12 +282,22 @@ begin
   aProject:=LazarusIDE.ActiveProject;
   if aProject=nil then exit;
 
-  if not WithDebug then
-    exit; // compile normally and run the run parameters
-
   IsWebProject:=aProject.CustomData[PJSProjectWebBrowser]='1';
   if not IsWebProject then
     exit;
+
+  if SimpleWebServerController.Options.ServerExe='compileserver'+GetExeExt then
+    begin
+    // simplewebservergui package has default value
+    if CompareFilenames(ExtractFilename(PJSOptions.WebServerFileName),'compileserver'+GetExeExt)=0 then
+      begin
+      // this package has a compileserver -> for compatibility set our value
+      SimpleWebServerController.Options.ServerExe:=PJSOptions.WebServerFileName;
+      end;
+    end;
+
+  if not WithDebug then
+    exit; // compile normally and run the run parameters
 
   ServerPort:=StrToIntDef(aProject.CustomData[PJSProjectPort],-1);
   URL:=aProject.CustomData[PJSProjectURL];

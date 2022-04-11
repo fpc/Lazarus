@@ -175,7 +175,9 @@ Const
 
 Var
   S : String;
+  {$IFDEF UNIX}
   L : String;
+  {$ENDIF}
 
 begin
   FPackageDir:=IncludeLeadingPathDelimiter(FPackageDir);
