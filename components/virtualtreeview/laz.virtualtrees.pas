@@ -14392,9 +14392,12 @@ begin
   Size.cy := Size.cx;
 
   {$ifdef ThemeSupport}
-  {$ifdef Windows}
+  {$ifdef LCLWin}
     if tsUseThemes in FStates then
     begin
+      {for direct OS calls we need to implement GetNativeHandle():TLCLHandle in widgetset
+       because eg window handle in lclqt is TQtWidget(Handle).Widget, not Handle
+       by itself.}
       Theme := OpenThemeData(Handle, 'TREEVIEW');
       if IsWinVistaOrAbove and (toUseExplorerTheme in FOptions.FPaintOptions) then
       begin
@@ -14502,7 +14505,7 @@ begin
     end;
 
     {$ifdef ThemeSupport}
-    {$ifdef Windows}
+    {$ifdef LCLWin}
       // Overwrite glyph images if theme is active.
       if (tsUseThemes in FStates) and (Theme <> 0) then
       begin
@@ -14544,7 +14547,7 @@ begin
   end;
 
   {$ifdef ThemeSupport}
-  {$ifdef Windows}
+  {$ifdef LCLWin}
     if tsUseThemes in FStates then
       CloseThemeData(Theme);
   {$endif}
