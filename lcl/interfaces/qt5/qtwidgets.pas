@@ -3229,6 +3229,9 @@ begin
   if QEvent_type(Event) = QEventKeyRelease then
     LCLModifiers := LCLModifiers or KF_UP;
 
+  // Loads the UTF-8 character associated with the keypress, if any
+  QKeyEvent_text(QKeyEventH(Event), @Text);
+
   {$ifdef windows}
   ACharCode := QKeyEvent_nativeVirtualKey(QKeyEventH(Event));
   KeyMsg.CharCode := ACharCode;
@@ -3247,12 +3250,17 @@ begin
       if QEvent_type(Event) = QEventKeyRelease then
         LCLModifiers := LCLModifiers or KF_UP;
     end;
+  end else
+  if (Modifiers = QtAltModifier or QtControlModifier or QtShiftModifier) and
+   (ACharCode > 0) and (length(Text) > 0) then
+  begin
+    IsSysKey := False;
+    if QKeyEvent_isAutoRepeat(QKeyEventH(Event)) then
+      LCLModifiers := LCLModifiers or KF_REPEAT;
   end;
   {$endif}
-  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
 
-  // Loads the UTF-8 character associated with the keypress, if any
-  QKeyEvent_text(QKeyEventH(Event), @Text);
+  KeyMsg.KeyData := PtrInt((AKeyCode shl 16) or (LCLModifiers shl 16) or $0001);
 
   {$IFDEF DARWIN}
   // qt on mac passes #3 instead of #13 when QtKey_Enter (numpad) is pressed
