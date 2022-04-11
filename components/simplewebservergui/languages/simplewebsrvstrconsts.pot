@@ -59,8 +59,22 @@ msgstr ""
 msgid "Error"
 msgstr ""
 
+#: simplewebsrvstrconsts.rsswerrorcheckingwhichprocessusestcpport
+#, object-pascal-format
+msgid "Error checking which process uses TCP port %s"
+msgstr ""
+
 #: simplewebsrvstrconsts.rsswerrorcreatingdirectory
 msgid "Error creating directory"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswerrorfindingfreetcpport
+msgid "Error finding free TCP port:"
+msgstr ""
+
+#: simplewebsrvstrconsts.rsswerrorkillingprocess
+#, object-pascal-format
+msgid "Error killing process %s"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswerrorwriting

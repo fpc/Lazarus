@@ -17,9 +17,13 @@ uses
   BaseUnix, Errors,
   {$ENDIF}
   Classes, SysUtils, Types, Sockets, Process,
+  // lazutils
   LazLoggerBase, FileUtil,
+  // LCL
   Dialogs,
-  IDEDialogs;
+  // IDEIntf
+  IDEDialogs,
+  SimpleWebSrvStrConsts;
 
 type
 
@@ -133,9 +137,10 @@ begin
     {$ENDIF}
   except
     on E: Exception do begin
-      IDEMessageDialog('Error',
+      IDEMessageDialog(rsSWError,
         ViewCaption+':'+sLineBreak
-        +'Error checking which process uses TCP port '+IntToStr(aPort)+sLineBreak
+        +Format(rsSWErrorCheckingWhichProcessUsesTCPPort, [IntToStr(aPort)])+
+          sLineBreak
         +E.Message,mtError,[mbOK]);
     end;
   end;
@@ -156,9 +161,9 @@ begin
     {$ENDIF}
   except
     on E: Exception do begin
-      IDEMessageDialog('Error',
+      IDEMessageDialog(rsSWError,
         ViewCaption+':'+sLineBreak
-        +'Error killing process '+IntToStr(aPID)+sLineBreak
+        +Format(rsSWErrorKillingProcess, [IntToStr(aPID)])+sLineBreak
         +E.Message,mtError,[mbOK]);
     end;
   end;
@@ -182,9 +187,9 @@ begin
     on E: Exception do begin
       if not Interactive then
         exit(0);
-      IDEMessageDialog('Error',
+      IDEMessageDialog(rsSWError,
         ViewCaption+':'+sLineBreak
-        +'Error finding free TCP port:'+sLineBreak
+        +rsSWErrorFindingFreeTCPPort+sLineBreak
         +E.Message,mtError,[mbOK]);
     end;
   end;

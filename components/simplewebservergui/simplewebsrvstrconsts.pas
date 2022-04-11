@@ -39,6 +39,10 @@ resourcestring
     +'on disk, usually where the server fetches files from';
   rsSWAddLocation = 'Add Location';
   rsSWError = 'Error';
+  rsSWErrorFindingFreeTCPPort = 'Error finding free TCP port:';
+  rsSWErrorKillingProcess = 'Error killing process %s';
+  rsSWErrorCheckingWhichProcessUsesTCPPort = 'Error checking which process '
+    +'uses TCP port %s';
   rsSWCannotFindBrowserSee = 'Cannot find browser. See';
   rsSWInvalidMacroSee = 'Invalid macro. See';
   rsSWToolsOptionsSimpleWebServerBrowser = 'Tools / Options / Simple Web '

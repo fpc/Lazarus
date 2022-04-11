@@ -1580,9 +1580,12 @@ var
   end;
 
 var
-  Exe, Origin: String;
+  Exe, Origin, aProcDescription, SrvAddr: String;
   Params: TStringList;
   ConflictServer: TSWSInstance;
+  IPAddr: in_addr;
+  aPID: integer;
+  r: TModalResult;
 begin
   Result:=nil;
 
@@ -1613,8 +1616,59 @@ begin
       Port:=FindFreePort(Interactive,true);
   end else begin
     ConflictServer:=FindServerWithPort(Port);
-    if (ConflictServer<>aServer) then
-      Port:=FindFreePort(Interactive,true);
+    if (ConflictServer<>nil) and (ConflictServer<>aServer) then
+    begin
+      // conflicting server
+      if (ConflictServer=MainSrvInstance) or not Interactive then
+        r:=mrRetry
+      else
+        r:=IDEQuestionDialog(rsSWError,
+          'There is already a server on port '+IntToStr(Port)+':'+sLineBreak
+          +'Origin: '+ConflictServer.Origin+sLineBreak
+          +'Path: '+ConflictServer.Path+sLineBreak,
+          mtError,[mrYes, 'Stop server', mrRetry, rsSWTryAnotherPort, mrCancel],
+          '');
+      case r of
+      mrYes:
+        if not StopServer(ConflictServer,Interactive) then
+          exit;
+      mrRetry:
+        Port:=FindFreePort(Interactive,true);
+      else
+        exit;
+      end;
+    end
+    else if (aServer=nil) or (aServer.ErrorDesc<>'') then begin
+      SrvAddr:='127.0.0.1';
+      IPAddr:=StrToHostAddr(SrvAddr);
+      if FUtility.FindProcessListeningOnPort(IPAddr,Port,aProcDescription,aPID) then
+      begin
+        // conflicting foreign process
+        r:=IDEQuestionDialog(rsSWError,
+           ViewCaption+':'+sLineBreak
+           +rsSWBindingOfSocketFailed+': '+MainSrvAddr+':'+IntToStr(MainSrvPort)+sLineBreak
+           +sLineBreak
+           +rsSWTheFollowingProcessAlreadyListens+sLineBreak
+           +'PID: '+IntToStr(aPID)+sLineBreak
+           +aProcDescription+sLineBreak
+           +sLineBreak
+           +rsSWKillProcess
+           , mtError, [mrYes, Format(rsSWKillPID, [IntToStr(aPID)]), mrRetry,
+             rsSWTryAnotherPort, mrCancel], '');
+
+        case r of
+        mrYes:
+          if not FUtility.KillProcess(aPID) then
+            exit;
+        mrRetry:
+          begin
+            Port:=FindFreePort(true,true);
+          end;
+        else
+          exit;
+        end;
+      end;
+    end;
   end;
 
   Params:=TStringList.Create;
@@ -1630,7 +1684,8 @@ begin
     if aServer<>nil then
       begin
       aServer.Origin:=Origin;
-      exit(aServer);
+      Result:=aServer;
+      exit;
       end;
 
     Result:=AddServer(Port,Exe,Params,Path,Origin,false,Interactive);
