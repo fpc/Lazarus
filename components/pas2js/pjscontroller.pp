@@ -324,6 +324,8 @@ begin
     aServer:=SimpleWebServerController.AddProjectServer(aProject,ServerPort,WebDir,true);
     if aServer=nil then
       exit(mrCancel);
+    if aServer.ErrorDesc<>'' then
+      exit(mrCancel);
 
     // start browser
     HTMLFilename:=GetHTMLFilename(aProject,true);
