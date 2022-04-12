@@ -205,6 +205,10 @@ msgstr "Скинути команду компіляції"
 msgid "Reset Run command"
 msgstr "Скинути команду запуску"
 
+#: strpas2jsdesign.pjsdrun
+msgid "Run"
+msgstr ""
+
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
 msgstr "Після повного завантаження всіх ресурсів сторінки запустити RTL"

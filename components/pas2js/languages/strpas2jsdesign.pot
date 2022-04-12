@@ -193,6 +193,10 @@ msgstr ""
 msgid "Reset Run command"
 msgstr ""
 
+#: strpas2jsdesign.pjsdrun
+msgid "Run"
+msgstr ""
+
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
 msgstr ""

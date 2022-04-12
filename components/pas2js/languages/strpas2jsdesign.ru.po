@@ -13,7 +13,7 @@ msgstr ""
 
 #: strpas2jsdesign.pjscreateajavascriptmoduleinsteadofascript
 msgid "Create a javascript module instead of a script"
-msgstr ""
+msgstr "Создать не сценарий, а модуль JavaScript"
 
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
@@ -206,6 +206,10 @@ msgstr "Сбросить команду компиляции"
 msgid "Reset Run command"
 msgstr "Сбросить команду запуска"
 
+#: strpas2jsdesign.pjsdrun
+msgid "Run"
+msgstr "Запуск"
+
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
 msgstr "Запускать RTL после полной загрузки всех ресурсов страницы"
@@ -257,10 +261,8 @@ msgid "Use Browser Application object"
 msgstr "Использовать объект приложения для браузера"
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
-#, fuzzy
-#| msgid "Use Browser Console unit to display writeln() output"
 msgid "Use BrowserConsole unit to display writeln() output"
-msgstr "Отображать вывод writeln() посредством модуля консоли браузера"
+msgstr "Отображать вывод writeln() посредством модуля BrowserConsole"
 
 #: strpas2jsdesign.pjsdusenodejsapplicationobject
 msgid "Use NodeJS Application object"
@@ -301,11 +303,11 @@ msgstr "Можно использовать макросы IDE, например
 
 #: strpas2jsdesign.pjsexecuterunparameters
 msgid "Execute Run Parameters"
-msgstr ""
+msgstr "Исполнять команду с параметрами запуска"
 
 #: strpas2jsdesign.pjsmakepas2jsproject
 msgid "Make pas2js project"
-msgstr ""
+msgstr "Собрать проект Pas2JS"
 
 #: strpas2jsdesign.pjsrefreshallclassesfromhtml
 msgid "Refresh all classes from HTML source"

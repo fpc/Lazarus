@@ -205,6 +205,10 @@ msgstr "A fordítás parancs alaphelyzetbe állítása"
 msgid "Reset Run command"
 msgstr "A futtatás parancs alaphelyzetbe állítása"
 
+#: strpas2jsdesign.pjsdrun
+msgid "Run"
+msgstr ""
+
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
 msgstr "Az RTL csak a lap minden erőforrásának betöltése után induljon"

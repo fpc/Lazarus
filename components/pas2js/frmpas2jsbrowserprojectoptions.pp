@@ -141,6 +141,7 @@ begin
   CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
   CBUseModule.Caption:=pjsCreateAJavascriptModuleInsteadOfAScript;
 
+  RunGroupBox.Caption:=pjsdRun;
   RBRunServerAt.Caption:=pjsdStartHTTPServerOnPort;
   RBRunBrowserWithURL.Caption:=pjsdUseThisURLToStartApplication;
   RBRunDefault.Caption:=pjsExecuteRunParameters;

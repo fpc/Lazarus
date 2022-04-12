@@ -60,6 +60,7 @@ Resourcestring
     +'to display writeln() output';
   pjsdRunRTLWhenAllPageResourcesAreFullyLoaded = 'Run RTL when all page '
     +'resources are fully loaded';
+  pjsdRun = 'Run';
   pjsdStartHTTPServerOnPort = 'Start HTTP Server on port';
   pjsCreateAJavascriptModuleInsteadOfAScript = 'Create a javascript module '
     +'instead of a script';

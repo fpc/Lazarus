@@ -203,6 +203,10 @@ msgstr "Réinitialiser la commande de compilation"
 msgid "Reset Run command"
 msgstr "Réinitialiser la commande d'exécution"
 
+#: strpas2jsdesign.pjsdrun
+msgid "Run"
+msgstr ""
+
 #: strpas2jsdesign.pjsdrunrtlwhenallpageresourcesarefullyloaded
 msgid "Run RTL when all page resources are fully loaded"
 msgstr "Exécuter la RTL quand toutes les pages de ressources sont totalement chargées"

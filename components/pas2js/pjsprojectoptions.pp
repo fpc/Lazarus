@@ -171,6 +171,7 @@ begin
   CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
   CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
 
+  RunGroupBox.Caption:=pjsdRun;
   RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
   RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
   RBRunDefault.Caption:=pjsExecuteRunParameters;
