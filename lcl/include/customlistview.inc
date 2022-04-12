@@ -331,7 +331,11 @@ begin
           // checkbox
           if Checkboxes then
             DoItemChecked(Item);
-
+                       
+          // end editing
+          if FEditor.Visible then
+            HideEditor;
+                         
           // focus
           if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED) then
           begin
