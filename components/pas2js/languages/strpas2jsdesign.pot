@@ -1,6 +1,10 @@
 msgid ""
 msgstr "Content-Type: text/plain; charset=UTF-8"
 
+#: strpas2jsdesign.pjscreateajavascriptmoduleinsteadofascript
+msgid "Create a javascript module instead of a script"
+msgstr ""
+
 #: strpas2jsdesign.pjsdatompackagetemplatedirectory
 msgid "Atom package template directory"
 msgstr ""
@@ -181,10 +185,6 @@ msgstr ""
 msgid "Project is a Web Browser (pas2js) project"
 msgstr ""
 
-#: strpas2jsdesign.pjsdprojectneedsahttpserver
-msgid "Project needs a HTTP server"
-msgstr ""
-
 #: strpas2jsdesign.pjsdresetcompilecommand
 msgid "Reset Compile command"
 msgstr ""
@@ -244,7 +244,7 @@ msgid "Use Browser Application object"
 msgstr ""
 
 #: strpas2jsdesign.pjsdusebrowserconsoleunittodisplaywritelnoutput
-msgid "Use Browser Console unit to display writeln() output"
+msgid "Use BrowserConsole unit to display writeln() output"
 msgstr ""
 
 #: strpas2jsdesign.pjsdusenodejsapplicationobject
@@ -282,6 +282,14 @@ msgstr ""
 #: strpas2jsdesign.pjsdyoucanuseidemacroslikemakeexewithoutafullpathissea
 #, object-pascal-format
 msgid "You can use IDE macros like $MakeExe(). Without a full path, %s is searched in PATH."
+msgstr ""
+
+#: strpas2jsdesign.pjsexecuterunparameters
+msgid "Execute Run Parameters"
+msgstr ""
+
+#: strpas2jsdesign.pjsmakepas2jsproject
+msgid "Make pas2js project"
 msgstr ""
 
 #: strpas2jsdesign.pjsrefreshallclassesfromhtml

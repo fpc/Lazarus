@@ -40,13 +40,13 @@ type
   TBrowserApplicationOption = (baoCreateHtml,        // Create template HTML page
                                baoMaintainHTML,      // Maintain the template HTML page
                                baoRunOnReady,        // Run in document.onReady
-                               baoUseBrowserApp,     // Use browser app object
-                               baoUseBrowserConsole, // use browserconsole unit to display Writeln()
-                               baoStartServer,       // Start simple server
-                               baoUseURL,            // Use this URL to run/show project in browser
                                baoShowException,     // let RTL show uncaught exceptions
+                               baoUseBrowserApp,     // Use browser app object
                                baoUseWASI,           // Use WASI browser app object
-                               baoUseModule          // include as module as opposed to regular script
+                               baoUseBrowserConsole, // use browserconsole unit to display Writeln()
+                               baoUseModule,         // include as module as opposed to regular script
+                               baoStartServer,       // Start simple server
+                               baoUseURL             // Use this URL to run/show project in browser
                                );
   TBrowserApplicationOptions = set of TBrowserApplicationOption;
 
@@ -677,8 +677,6 @@ begin
   AProject.MainFileID:=-1;
   AProject.RemoveUnit(0,false);
 
-  AProject.CustomData.Remove(PJSProjectServiceWorker);
-
   // initialize PWA project
   AProject.ProjectInfoFile:=ChangeFileExt(MainSrcFileName,'.lpi');
   // create PWA lpr and index.html
@@ -795,7 +793,6 @@ begin
   SetDefaultServiceWorkerRunParams(AProject.RunParameters.GetOrCreate('Default'));
   AProject.MainFile.SetSourceText(CreateProjectSource,true);
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectServiceWorker]:='1';
   Result:=mrOk;
 end;
 
@@ -1312,7 +1309,6 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectNodeJS]:='1';
   CompOpts:=AProject.LazBuildModes.BuildModes[0].LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);
   CompOpts.TargetFilename:=ExtractFileNameOnly(MainFile.Filename);
@@ -1389,44 +1385,51 @@ begin
     try
       CreateHTML:=CO(baoCreateHtml);
       MaintainHTML:=CO(baoCreateHtml) and Co(baoMaintainHTML);
-      UseBrowserApp:=CO(baoUseBrowserApp);
-      UseBrowserConsole:=CO(baoUseBrowserConsole);
-      StartHTTPServer:=CO(baoStartServer);
       UseRunOnReady:=CO(baoRunOnReady);
-      UseWASI:=CO(baoUseWASI);
-      UseModule:=CO(baoUseModule);
       ShowUncaughtExceptions:=CO(baoShowException);
+      UseBrowserConsole:=CO(baoUseBrowserConsole);
+
+      UseBrowserApp:=CO(baoUseBrowserApp);
+      UseWASI:=CO(baoUseWASI);
+      WasmProgramURL:='';
+
+      UseModule:=CO(baoUseModule);
+
+      if CO(baoStartServer) then
+        RunServerAtPort:=true
+      else if CO(baoUseURL) then
+        RunBrowserWithURL:=true
+      else
+        RunDefault:=true;
+
       // We allocate the new port in all cases.
       ServerPort:=GetNextPort;
       URL:='';
-      WasmProgramURL:='';
-      if Not CO(baoStartServer) then
-        UseURL:=CO(baoUseURL);
+
       Result:=ShowModalOptions(Frm);
       if Result=mrOK then
         begin
         SO(CreateHTML,baoCreateHtml);
         SO(MaintainHTML,baoCreateHtml);
-        SO(UseBrowserApp,baoUseBrowserApp);
-        SO(UseBrowserConsole,baoUseBrowserConsole);
-        SO(StartHTTPServer,baoStartServer);
         SO(UseRunOnReady,baoRunOnReady);
+        SO(UseBrowserConsole,baoUseBrowserConsole);
         SO(ShowUncaughtExceptions,baoShowException);
+
+        SO(UseBrowserApp,baoUseBrowserApp);
         SO(UseWASI,baoUseWASI);
-        SO(UseModule,baoUseModule);
-        Self.ProjectPort:=ServerPort;
-        SO(UseURL,baoUseURL);
-        if baoStartServer in FOptions then
-          begin
-          DebugLN(['Info: Start server port: ', Self.ProjectPort,' from: ',ServerPort]);
-          end
-        else
-          begin
-          if baoUseURL in Options then
-            FProjectURL:=URL;
-          end;
-        end;
         FProjectWasmURL:=WasmProgramURL;
+
+        SO(UseModule,baoUseModule);
+
+        Self.ProjectPort:=ServerPort;
+        SO(RunServerAtPort,baoStartServer);
+        SO(RunBrowserWithURL,baoUseURL);
+        if baoStartServer in FOptions then
+          DebugLN(['Info: Start server port: ', Self.ProjectPort,' from: ',ServerPort])
+        else if baoUseURL in FOptions then
+          FProjectURL:=URL;
+
+        end;
     finally
       Free;
     end;
@@ -1566,12 +1569,12 @@ Var
 begin
   Units:='';
   if baoUseBrowserConsole in Options then
-    Units:=' browserconsole,';
+    Units:=' BrowserConsole,';
   if baoUseBrowserApp in Options then
     begin
-    Units:=Units+' browserapp,' ;
+    Units:=Units+' BrowserApp,' ;
     if baoUseWASI in options then
-      Units:=Units+' wasihostapp,' ;
+      Units:=Units+' WASIHostApp,' ;
     end;
   Units:=Units+' JS, Classes, SysUtils, Web';
   Src:=TStringList.Create;
@@ -1782,7 +1785,6 @@ begin
   AProject.AddFile(MainFile,false);
   AProject.MainFileID:=0;
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectModule]:='1';
   CompOpts:=AProject.LazBuildModes.BuildModes[0].LazCompilerOptions;
   SetDefaultModuleCompileOptions(CompOpts);
   CompOpts.TargetFilename:='js/project1';

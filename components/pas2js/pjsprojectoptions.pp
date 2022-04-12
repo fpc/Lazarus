@@ -5,13 +5,15 @@ unit PJSProjectOptions;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Math,
   // LCL
   StdCtrls, Spin,
   // LazUtils
   LazLoggerBase, LazFileUtils, LazUTF8,
   // IdeIntf
-  LazIDEIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, IDEOptEditorIntf;
+  LazIDEIntf, ProjectIntf, CompOptsIntf, IDEOptionsIntf, IDEOptEditorIntf,
+  // pas2js
+  PJSDsgnOptions, PJSController, StrPas2JSDesign;
 
 type
 
@@ -24,29 +26,27 @@ type
     CBRunOnReady: TCheckBox;
     CBServerURL: TComboBox;
     CBUseBrowserConsole: TCheckBox;
-    CBUseHTTPServer: TCheckBox;
     CBWebProject: TCheckBox;
     CBHTMLFile: TComboBox;
     CBMaintainHTMLFile: TCheckBox;
     LCBProjectHTMLFile: TLabel;
+    RBRunDefault: TRadioButton;
     RBStartServerAt: TRadioButton;
     RBUseURL: TRadioButton;
+    RunGroupBox: TGroupBox;
     SEPort: TSpinEdit;
     procedure BMakePas2jsPojectClick(Sender: TObject);
     procedure BResetCompileCommandClick(Sender: TObject);
     procedure BResetRunCommandClick(Sender: TObject);
     procedure CBMaintainHTMLFileChange(Sender: TObject);
-    procedure CBUseHTTPServerChange(Sender: TObject);
     procedure CBWebProjectChange(Sender: TObject);
     procedure RBStartServerAtChange(Sender: TObject);
     procedure RBUseURLChange(Sender: TObject);
   private
     procedure CheckAllControls(aEnabled: Boolean);
-    procedure CheckHTMLOptions(aEnabled: Boolean);
-    procedure CheckServerOptions(aEnabled: Boolean);
+    procedure UpdateHTMLControls;
     function FillFilesCombo(PRJ: TLazProject): Integer;
-    procedure ToggleCB(CB: TCheckBox; aEnabled: Boolean);
-
+    procedure UpdateRunControls;
   public
     function GetTitle: string; override;
     procedure Setup({%H-}ADialog: TAbstractOptionsEditorDialog); override;
@@ -66,7 +66,7 @@ Procedure SetDefaultModuleCompileOptions(CompOpts: TLazCompilerOptions);
 
 implementation
 
-uses pjsdsgnoptions, pjscontroller, strpas2jsdesign;
+{$R *.lfm}
 
 Procedure ResetRunParams(RunParams : TAbstractRunParamsOptionsMode);
 
@@ -156,9 +156,6 @@ begin
   SetPasJSCompileOptions(CompOpts,'module','-Jeutf-8 -Jirtl.js -Jc -Jminclude');
 end;
 
-
-{$R *.lfm}
-
 { TPas2JSProjectOptionsFrame }
 
 function TPas2JSProjectOptionsFrame.GetTitle: string;
@@ -173,11 +170,14 @@ begin
   CBMaintainHTMLFile.Caption:=pjsdMaintainHTMLPage;
   CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
   CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
-  CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;
+
   RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
   RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
+  RBRunDefault.Caption:=pjsExecuteRunParameters;
+
   BResetRunCommand.Caption:=pjsdResetRunCommand;
   BResetCompileCommand.Caption:=pjsdResetCompileCommand;
+  BMakePas2jsPoject.Caption:=pjsMakePas2jsProject;
 end;
 
 procedure TPas2JSProjectOptionsFrame.CBWebProjectChange(Sender: TObject);
@@ -187,17 +187,17 @@ end;
 
 procedure TPas2JSProjectOptionsFrame.RBStartServerAtChange(Sender: TObject);
 begin
-  SEPort.Enabled:=RBStartServerAt.Enabled and RBStartServerAt.Checked;;
+  UpdateRunControls;
 end;
 
 procedure TPas2JSProjectOptionsFrame.RBUseURLChange(Sender: TObject);
 begin
-  CBServerURL.Enabled:=RBUseURL.Enabled and RBUseURL.Checked;
+  UpdateRunControls;
 end;
 
 procedure TPas2JSProjectOptionsFrame.CBMaintainHTMLFileChange(Sender: TObject);
 begin
-  CheckHTMLOptions(CBMaintainHTMLFile.Checked);
+  UpdateHTMLControls;
 end;
 
 procedure TPas2JSProjectOptionsFrame.BResetRunCommandClick(Sender: TObject);
@@ -230,54 +230,34 @@ begin
   PRJ.CustomData.Values[PJSProject]:='1';
 end;
 
-procedure TPas2JSProjectOptionsFrame.CBUseHTTPServerChange(Sender: TObject);
+procedure TPas2JSProjectOptionsFrame.UpdateHTMLControls;
 begin
-  CheckServerOptions(CBUseHTTPServer.Checked);
-end;
-
-procedure TPas2JSProjectOptionsFrame.ToggleCB(CB : TCheckBox; aEnabled: Boolean);
-
-begin
-  With CB do
-    begin
-    Enabled:=aEnabled;
-    if not AEnabled then
-      Checked:=False;
-    end;
-end;
-
-procedure TPas2JSProjectOptionsFrame.CheckHTMLOptions(aEnabled : Boolean);
-
-begin
-  ToggleCB(CBUseBrowserConsole,aEnabled);
-  ToggleCB(CBRunOnReady,aEnabled);
-end;
-
-procedure TPas2JSProjectOptionsFrame.CheckServerOptions(aEnabled : Boolean);
-
-begin
-  RBStartServerAt.Enabled:=aEnabled;
-  RBUseURL.Enabled:=aEnabled;
-  SEPort.Enabled:=aEnabled and RBStartServerAt.Checked;
-  CBServerURL.Enabled:=aEnabled and RBUseURL.Checked;
+  CBUseBrowserConsole.Enabled:=CBWebProject.Enabled and CBMaintainHTMLFile.Enabled;
+  CBRunOnReady.Enabled:=CBUseBrowserConsole.Enabled;
 end;
 
 procedure TPas2JSProjectOptionsFrame.CheckAllControls(aEnabled : Boolean);
 
 begin
+  CBHTMLFile.Enabled:=aEnabled;
+
+  CBMaintainHTMLFile.Enabled:=aEnabled;
+  CBUseBrowserConsole.Enabled:=aEnabled;
+  CBRunOnReady.Enabled:=aEnabled;
+
+  RBStartServerAt.Enabled:=aEnabled;
+  SEPort.Enabled:=aEnabled and RBStartServerAt.Checked;
+  RBUseURL.Enabled:=aEnabled;
+  CBServerURL.Enabled:=aEnabled and RBUseURL.Checked;
+  RBRunDefault.Enabled:=aEnabled;
+
   BResetRunCommand.enabled:=aEnabled;
   BResetCompileCommand.Enabled:=aEnabled;
-  CBHTMLFile.Enabled:=aEnabled;
-  ToggleCB(CBMaintainHTMLFile,aEnabled);
-  CheckHTMLOptions(CBMaintainHTMLFile.Checked);
-  ToggleCB(CBUseHTTPServer,aEnabled);
-  CheckServerOptions(CBUseHTTPServer.Checked)
 end;
-
 
 // Fill combo with HTM(L) files.
 // Return index of file that has IsProjectHTMLFile set.
-Function TPas2JSProjectOptionsFrame.FillFilesCombo(PRJ : TLazProject) : Integer;
+function TPas2JSProjectOptionsFrame.FillFilesCombo(PRJ: TLazProject): Integer;
 
 Var
   I : integer;
@@ -299,13 +279,19 @@ begin
           HPF:=PF;
         end;
       end;
-      L.Sort;
-      CBHTMLFile.Items:=L;
+    L.Sort;
+    CBHTMLFile.Items:=L;
   finally
     L.Free;
   end;
   if (HPF<>Nil) then
     Result:=CBHTMLFile.Items.IndexOfObject(HPF);
+end;
+
+procedure TPas2JSProjectOptionsFrame.UpdateRunControls;
+begin
+  SEPort.Enabled:=CBWebProject.Enabled and RBStartServerAt.Enabled and RBStartServerAt.Checked;
+  CBServerURL.Enabled:=CBWebProject.Enabled and RBUseURL.Enabled and RBUseURL.Checked;
 end;
 
 procedure TPas2JSProjectOptionsFrame.ReadSettings(AOptions: TAbstractIDEOptions);
@@ -319,48 +305,56 @@ Var
 
 begin
   if AOptions=nil then ;
-  PRJ:=LazarusIDE.ActiveProject;
-  HTMLIdx:=FillFilesCombo(PRJ);
-  CBWebProject.Checked:=PRJ.CustomData[PJSProjectWebBrowser]='1';
+  Prj:=LazarusIDE.ActiveProject;
+  HTMLIdx:=FillFilesCombo(Prj);
+  CBWebProject.Checked:=Prj.CustomData[PJSProjectWebBrowser]='1';
   if HTMLIdx=-1 then
     begin
-    HFN:=PRJ.CustomData[PJSProjectHTMLFile];
+    HFN:=Prj.CustomData[PJSProjectHTMLFile];
     HTMLIdx:=CBHTMLFile.Items.IndexOf(HFN);
     end;
   CBHTMLFile.ItemIndex:=HTMLIdx;
-  CBMaintainHTMLFile.Checked:=PRJ.CustomData[PJSProjectMaintainHTML]='1';
-  CBUseBrowserConsole.Checked:=PRJ.CustomData[PJSProjectWebBrowser]='1';
-  CBRunOnReady.Checked:=PRJ.CustomData[PJSProjectRunAtReady]='1';
-  Port:=StrToIntDef(PRJ.CustomData[PJSProjectPort],0);
-  URL:=PRJ.CustomData[PJSProjectURL];
-  CBUseHTTPServer.Checked:=(Port>0) or (URL<>'');
-  SEPort.Value:=Port;
+
+  CBMaintainHTMLFile.Checked:=Prj.CustomData[PJSProjectMaintainHTML]='1';
+  CBUseBrowserConsole.Checked:=Prj.CustomData[PJSProjectUseBrowserConsole]='1';
+  CBRunOnReady.Checked:=Prj.CustomData[PJSProjectRunAtReady]='1';
+
+  Port:=StrToIntDef(Prj.CustomData[PJSProjectPort],0);
+  URL:=Prj.CustomData[PJSProjectURL];
+  SEPort.Value:=Min(Max(0,Port),65535);
   CBServerURL.AddHistoryItem(URL,10,True,False);
+  if Prj.CustomData.Contains(PJSProjectPort) then
+    RBStartServerAt.Checked:=true
+  else if Prj.CustomData.Contains(PJSProjectURL) then
+    RBUseURL.Checked:=true
+  else
+    RBRunDefault.Checked:=true;
+
+  UpdateHTMLControls;
+  UpdateRunControls;
 end;
 
 procedure TPas2JSProjectOptionsFrame.WriteSettings(AOptions: TAbstractIDEOptions);
-
 Var
   Prj : TLazProject;
 
   Procedure DoBool(N : String; AValue : Boolean);
-
   begin
     if AValue then
-      PRJ.CustomData[N]:='1';
+      Prj.CustomData[N]:='1';
   end;
 
 begin
   if AOptions=nil then ;
-  PRJ:=LazarusIDE.ActiveProject;
+  Prj:=LazarusIDE.ActiveProject;
   // Clear everything
-  With PRJ.CustomData do
+  With Prj.CustomData do
     begin
     Remove(PJSProject);
-    Remove(PJSProjectHTMLFile);
-    Remove(PJSProjectNodeJS);
-    Remove(PJSProjectMaintainHTML);
     Remove(PJSProjectWebBrowser);
+    Remove(PJSProjectHTMLFile);
+    Remove(PJSProjectMaintainHTML);
+    Remove(PJSProjectUseBrowserConsole);
     Remove(PJSProjectRunAtReady);
     Remove(PJSProjectPort);
     Remove(PJSProjectURL);
@@ -368,21 +362,22 @@ begin
   // Set what is needed
   if CBWebProject.Checked then
     begin
-    PRJ.CustomData[PJSProject]:='1';
-    PRJ.CustomData[PJSProjectWebBrowser]:='1';
+    Prj.CustomData[PJSProject]:='1';
+    Prj.CustomData[PJSProjectWebBrowser]:='1';
+
     With CBHTMLFile do
       if ItemIndex<>-1 then
         (Items.Objects[ItemIndex] as TLazProjectFile).CustomData[PJSIsProjectHTMLFile]:='1';
+
     DoBool(PJSProjectMaintainHTML,CBMaintainHTMLFile.Checked);
-    DoBool(PJSProjectWebBrowser,CBUseBrowserConsole.Checked);
+    DoBool(PJSProjectUseBrowserConsole,CBUseBrowserConsole.Checked);
     DoBool(PJSProjectRunAtReady,CBRunOnReady.Checked);
-    if CBUseHTTPServer.Checked then
-      begin
-      if RBStartServerAt.Checked and (SEPort.Value>0) then
-        PRJ.CustomData[PJSProjectPort]:=IntToStr(SEPort.Value);
-      if RBUseURL.Checked and (CBServerURL.Text<>'') then
-        PRJ.CustomData[PJSProjectURL]:=CBServerURL.Text;
-      end;
+
+    if RBStartServerAt.Checked and (SEPort.Value>=0) then
+      Prj.CustomData[PJSProjectPort]:=IntToStr(SEPort.Value)
+    else if RBUseURL.Checked and (CBServerURL.Text<>'') then
+      Prj.CustomData[PJSProjectURL]:=CBServerURL.Text;
+
     end;
 end;
 

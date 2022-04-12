@@ -1,13 +1,12 @@
 object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
-  Left = 431
-  Height = 538
-  Top = 310
+  Left = 1434
+  Height = 490
+  Top = 765
   Width = 632
   Caption = 'Pas2JS Browser project options'
-  ClientHeight = 538
+  ClientHeight = 490
   ClientWidth = 632
   OnCreate = FormCreate
-  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '2.3.0.0'
   object CBCreateHTML: TCheckBox
@@ -27,11 +26,11 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   end
   object CBUseBrowserApp: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
-    AnchorSideTop.Control = cbShowUncaughtExceptions
+    AnchorSideTop.Control = CBUseBrowserConsole
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 122
+    Top = 151
     Width = 198
     BorderSpacing.Top = 6
     Caption = 'Use Browser Application object'
@@ -40,12 +39,13 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   end
   object CBUseBrowserConsole: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
-    AnchorSideTop.Control = edtWasmProgram
+    AnchorSideTop.Control = cbShowUncaughtExceptions
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 38
     Height = 23
-    Top = 216
+    Top = 122
     Width = 313
+    BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Use Browser Console unit to display writeln() output'
     TabOrder = 2
@@ -53,7 +53,7 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
   object BPHelpOptions: TButtonPanel
     Left = 6
     Height = 40
-    Top = 492
+    Top = 444
     Width = 620
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
@@ -66,114 +66,44 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     TabOrder = 3
     ShowButtons = [pbOK, pbCancel]
   end
-  object SEPort: TSpinEdit
-    AnchorSideLeft.Control = RBStartServerAt
-    AnchorSideTop.Control = RBStartServerAt
-    AnchorSideTop.Side = asrBottom
-    Left = 70
-    Height = 30
-    Top = 303
-    Width = 128
-    BorderSpacing.Left = 32
-    BorderSpacing.Top = 6
-    MaxValue = 65354
-    MinValue = 1024
-    TabOrder = 4
-    Value = 3000
-  end
-  object CBUseHTTPServer: TCheckBox
-    AnchorSideLeft.Control = CBCreateHTML
-    AnchorSideTop.Control = CBUseBrowserConsole
-    AnchorSideTop.Side = asrBottom
-    Left = 6
-    Height = 23
-    Top = 245
-    Width = 182
-    BorderSpacing.Top = 6
-    Caption = 'Project needs a HTTP Server'
-    OnChange = CBUseHTTPServerChange
-    TabOrder = 5
-  end
-  object RBStartServerAt: TRadioButton
-    AnchorSideLeft.Control = CBCreateHTML
-    AnchorSideTop.Control = CBUseHTTPServer
-    AnchorSideTop.Side = asrBottom
-    Left = 38
-    Height = 23
-    Top = 274
-    Width = 168
-    BorderSpacing.Left = 32
-    BorderSpacing.Top = 6
-    Caption = 'Start HTTP Server on port'
-    Checked = True
-    TabOrder = 6
-    TabStop = True
-  end
-  object RBUseURL: TRadioButton
-    AnchorSideLeft.Control = RBStartServerAt
-    AnchorSideTop.Control = SEPort
-    AnchorSideTop.Side = asrBottom
-    Left = 38
-    Height = 23
-    Top = 335
-    Width = 161
-    BorderSpacing.Top = 2
-    Caption = 'Use this URL to start app'
-    TabOrder = 7
-  end
-  object CBServerURL: TComboBox
-    AnchorSideLeft.Control = RBUseURL
-    AnchorSideTop.Control = RBUseURL
-    AnchorSideTop.Side = asrBottom
-    AnchorSideRight.Control = Owner
-    AnchorSideRight.Side = asrBottom
-    Left = 70
-    Height = 30
-    Top = 364
-    Width = 556
-    Anchors = [akTop, akLeft, akRight]
-    BorderSpacing.Left = 32
-    BorderSpacing.Top = 6
-    BorderSpacing.Right = 6
-    BorderSpacing.Bottom = 6
-    ItemHeight = 0
-    TabOrder = 8
-  end
   object CBMaintainPage: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
     AnchorSideTop.Control = CBCreateHTML
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 38
     Height = 23
     Top = 35
     Width = 137
+    BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Maintain HTML Page'
-    TabOrder = 9
+    TabOrder = 4
   end
   object CBRunOnReady: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
     AnchorSideTop.Control = CBMaintainPage
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 38
     Height = 23
     Top = 64
     Width = 287
+    BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Run rtl when all page resources are fully loaded'
-    TabOrder = 10
+    TabOrder = 5
   end
   object cbShowUncaughtExceptions: TCheckBox
-    AnchorSideLeft.Control = CBRunOnReady
+    AnchorSideLeft.Control = CBCreateHTML
     AnchorSideTop.Control = CBRunOnReady
     AnchorSideTop.Side = asrBottom
-    Left = 6
+    Left = 38
     Height = 23
     Top = 93
     Width = 209
+    BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Let rtl show uncaught exceptions'
-    TabOrder = 11
+    TabOrder = 6
   end
   object CBUseWASI: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
@@ -181,13 +111,13 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideTop.Side = asrBottom
     Left = 38
     Height = 23
-    Top = 151
+    Top = 180
     Width = 176
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     Caption = 'Host webassembly program'
     Enabled = False
-    TabOrder = 12
+    TabOrder = 7
   end
   object edtWasmProgram: TEdit
     AnchorSideLeft.Control = CBUseWASI
@@ -197,27 +127,120 @@ object WebBrowserProjectOptionsForm: TWebBrowserProjectOptionsForm
     AnchorSideRight.Side = asrBottom
     Left = 70
     Height = 30
-    Top = 180
+    Top = 209
     Width = 556
     Anchors = [akTop, akLeft, akRight]
     BorderSpacing.Left = 32
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     Enabled = False
-    TabOrder = 13
+    TabOrder = 8
     TextHint = 'Name of your webassembly file'
   end
   object CBUseModule: TCheckBox
     AnchorSideLeft.Control = CBCreateHTML
-    AnchorSideTop.Control = CBServerURL
+    AnchorSideTop.Control = edtWasmProgram
     AnchorSideTop.Side = asrBottom
     Left = 6
     Height = 23
-    Top = 400
+    Top = 245
     Width = 272
     BorderSpacing.Top = 6
     Caption = 'Create a javascript module instead of a script'
     OnChange = CBUseHTTPServerChange
-    TabOrder = 14
+    TabOrder = 9
+  end
+  object RunGroupBox: TGroupBox
+    AnchorSideLeft.Control = Owner
+    AnchorSideTop.Control = CBUseModule
+    AnchorSideTop.Side = asrBottom
+    AnchorSideRight.Control = Owner
+    AnchorSideRight.Side = asrBottom
+    Left = 6
+    Height = 123
+    Top = 274
+    Width = 620
+    Anchors = [akTop, akLeft, akRight]
+    AutoSize = True
+    BorderSpacing.Around = 6
+    Caption = 'Run'
+    ClientHeight = 107
+    ClientWidth = 618
+    TabOrder = 10
+    object RBRunServerAt: TRadioButton
+      AnchorSideLeft.Control = RunGroupBox
+      AnchorSideTop.Control = SEPort
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 23
+      Top = 10
+      Width = 168
+      BorderSpacing.Left = 6
+      Caption = 'Start HTTP Server on port'
+      Checked = True
+      OnChange = RBRunServerAtChange
+      TabOrder = 4
+      TabStop = True
+    end
+    object SEPort: TSpinEdit
+      AnchorSideLeft.Control = RBRunServerAt
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = RunGroupBox
+      Left = 180
+      Height = 30
+      Top = 6
+      Width = 76
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      MaxValue = 65354
+      MinValue = 1024
+      TabOrder = 0
+      Value = 3000
+    end
+    object RBRunBrowserWithURL: TRadioButton
+      AnchorSideLeft.Control = RBRunServerAt
+      AnchorSideTop.Control = CBServerURL
+      AnchorSideTop.Side = asrCenter
+      Left = 6
+      Height = 23
+      Top = 46
+      Width = 138
+      Caption = 'Use URL to start app'
+      OnChange = RBRunBrowserWithURLChange
+      TabOrder = 1
+    end
+    object CBServerURL: TComboBox
+      AnchorSideLeft.Control = RBRunBrowserWithURL
+      AnchorSideLeft.Side = asrBottom
+      AnchorSideTop.Control = SEPort
+      AnchorSideTop.Side = asrBottom
+      AnchorSideRight.Control = RunGroupBox
+      AnchorSideRight.Side = asrBottom
+      Left = 150
+      Height = 30
+      Top = 42
+      Width = 462
+      Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Right = 6
+      BorderSpacing.Bottom = 6
+      ItemHeight = 0
+      TabOrder = 2
+    end
+    object RBRunDefault: TRadioButton
+      AnchorSideTop.Control = CBServerURL
+      AnchorSideTop.Side = asrBottom
+      Left = 6
+      Height = 23
+      Top = 78
+      Width = 162
+      BorderSpacing.Left = 6
+      BorderSpacing.Top = 6
+      BorderSpacing.Bottom = 6
+      Caption = 'Execute Run Parameters'
+      OnChange = RBRunDefaultChange
+      TabOrder = 3
+    end
   end
 end

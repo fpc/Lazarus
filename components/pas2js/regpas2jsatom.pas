@@ -481,7 +481,6 @@ begin
   AProject.Title:=FPackageName;
   AProject.ProjectInfoFile:=FPackageDir+StripNonIdentifierChars(FPackageName)+'.lpi';
   AProject.CustomData.Values[PJSProject]:='1';
-  AProject.CustomData.Values[PJSProjectAtom]:='1';
   CreateProjectDirs;
   CompOpts:=AProject.LazCompilerOptions;
   SetDefaultNodeJSCompileOptions(CompOpts);

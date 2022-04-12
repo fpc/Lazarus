@@ -56,15 +56,18 @@ Resourcestring
     +'project';
   pjsdProjectHTMLPage = 'Project HTML page:';
   pjsdMaintainHTMLPage = 'Maintain HTML page';
-  pjsdUseBrowserConsoleUnitToDisplayWritelnOutput = 'Use Browser Console unit '
+  pjsdUseBrowserConsoleUnitToDisplayWritelnOutput = 'Use BrowserConsole unit '
     +'to display writeln() output';
   pjsdRunRTLWhenAllPageResourcesAreFullyLoaded = 'Run RTL when all page '
     +'resources are fully loaded';
-  pjsdProjectNeedsAHTTPServer = 'Project needs a HTTP server';
   pjsdStartHTTPServerOnPort = 'Start HTTP Server on port';
+  pjsCreateAJavascriptModuleInsteadOfAScript = 'Create a javascript module '
+    +'instead of a script';
   pjsdUseThisURLToStartApplication = 'Use this URL to start application';
+  pjsExecuteRunParameters = 'Execute Run Parameters';
   pjsdResetRunCommand = 'Reset Run command';
   pjsdResetCompileCommand = 'Reset Compile command';
+  pjsMakePas2jsProject = 'Make pas2js project';
 
   // New browser project options form
   pjsdPas2JSBrowserProjectOptions = 'Pas2JS Browser project options';

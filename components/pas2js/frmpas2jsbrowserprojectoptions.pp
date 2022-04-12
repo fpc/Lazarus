@@ -8,6 +8,18 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ButtonPanel,
   Spin, strpas2jsdesign;
 
+const
+  WBBoolCreateHTML = 0;
+  WBBoolMainHTML = 1;
+  WBBoolRunOnReady = 2;
+  WBBoolShowUncaughtExceptions = 3;
+  WBBoolUseBrowserApp = 4;
+  WBBoolUseWASI = 5;
+  WBBoolUseBrowserConsole = 6;
+  WBBoolUseModule = 7;
+  WBBoolRunServerAtPort = 8;
+  WBBoolRunBrowserWithURL = 9;
+  WBBoolRunDefault = 10;
 type
 
   { TWebBrowserProjectOptionsForm }
@@ -15,26 +27,28 @@ type
   TWebBrowserProjectOptionsForm = class(TForm)
     BPHelpOptions: TButtonPanel;
     CBCreateHTML: TCheckBox;
+    CBServerURL: TComboBox;
     CBUseBrowserApp: TCheckBox;
     CBUseModule: TCheckBox;
     CBUseWASI: TCheckBox;
     CBUseBrowserConsole: TCheckBox;
-    CBUseHTTPServer: TCheckBox;
-    CBServerURL: TComboBox;
     CBMaintainPage: TCheckBox;
     CBRunOnReady: TCheckBox;
     cbShowUncaughtExceptions: TCheckBox;
     edtWasmProgram: TEdit;
-    RBUseURL: TRadioButton;
-    RBStartServerAt: TRadioButton;
+    RBRunDefault: TRadioButton;
+    RBRunServerAt: TRadioButton;
+    RBRunBrowserWithURL: TRadioButton;
+    RunGroupBox: TGroupBox;
     SEPort: TSpinEdit;
     procedure CBCreateHTMLChange(Sender: TObject);
     procedure CBUseBrowserAppChange(Sender: TObject);
     procedure CBUseHTTPServerChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    procedure RBRunDefaultChange(Sender: TObject);
+    procedure RBRunServerAtChange(Sender: TObject);
+    procedure RBRunBrowserWithURLChange(Sender: TObject);
   private
-    procedure CheckWasi;
     function GetB(AIndex: Integer): Boolean;
     function GetServerPort: Word;
     function GetURL: String;
@@ -43,22 +57,30 @@ type
     procedure SetServerPort(AValue: Word);
     procedure SetURL(AValue: String);
     procedure SetWasmProgramURL(AValue: String);
+    procedure UpdateHTMLControls;
+    procedure UpdateBrowserAppControls;
+    procedure UpdateRunControls;
   public
     procedure HideWASM; virtual;
     procedure HideModule; virtual;
-    property CreateHTML : Boolean Index 0 read GetB Write SetB;
-    property MaintainHTML : Boolean Index 1 read GetB Write SetB;
-    property UseBrowserApp : Boolean Index 2 read GetB Write SetB;
-    property UseBrowserConsole : Boolean Index 3 read GetB Write SetB;
-    property StartHTTPServer : Boolean Index 4 read GetB Write SetB;
-    property UseURL : Boolean Index 5 read GetB Write SetB;
-    property UseRunOnReady : Boolean Index 6 read GetB Write SetB;
-    property ShowUncaughtExceptions : Boolean Index 7 read GetB Write SetB;
-    property UseWASI : Boolean Index 8 read GetB Write SetB;
-    property UseModule : Boolean Index 9 read GetB Write SetB;
-    Property ServerPort : Word Read GetServerPort Write SetServerPort;
-    Property URL : String Read GetURL Write SetURL;
-    Property WasmProgramURL : String Read GetWasmProgramURL Write SetWasmProgramURL;
+
+    property CreateHTML : Boolean Index WBBoolCreateHTML read GetB Write SetB;
+    property MaintainHTML : Boolean Index WBBoolMainHTML read GetB Write SetB;
+    property UseRunOnReady : Boolean Index WBBoolRunOnReady read GetB Write SetB;
+    property ShowUncaughtExceptions : Boolean Index WBBoolShowUncaughtExceptions read GetB Write SetB;
+
+    property UseBrowserApp : Boolean Index WBBoolUseBrowserApp read GetB Write SetB;
+    property UseWASI : Boolean Index WBBoolUseWASI read GetB Write SetB;
+    property WasmProgramURL : String Read GetWasmProgramURL Write SetWasmProgramURL;
+
+    property UseBrowserConsole : Boolean Index WBBoolUseBrowserConsole read GetB Write SetB;
+    property UseModule : Boolean Index WBBoolUseModule read GetB Write SetB;
+
+    property RunServerAtPort : Boolean Index WBBoolRunServerAtPort read GetB Write SetB;
+    property ServerPort : Word Read GetServerPort Write SetServerPort;
+    property RunBrowserWithURL : Boolean Index WBBoolRunBrowserWithURL read GetB Write SetB;
+    property URL : String Read GetURL Write SetURL;
+    property RunDefault : Boolean Index WBBoolRunDefault read GetB Write SetB;
   end;
 
 var
@@ -81,78 +103,80 @@ procedure TWebBrowserProjectOptionsForm.CBCreateHTMLChange(Sender: TObject);
   end;
 
 begin
-  DoCB(CBRunOnReady);
+  UpdateHTMLControls;
   DoCB(CBMaintainPage);
+  DoCB(CBRunOnReady);
 end;
 
 procedure TWebBrowserProjectOptionsForm.CBUseBrowserAppChange(Sender: TObject);
 begin
-  CheckWASI;
+  UpdateBrowserAppControls;
 end;
 
-procedure TWebBrowserProjectOptionsForm.CheckWasi;
+procedure TWebBrowserProjectOptionsForm.CBUseHTTPServerChange(Sender: TObject);
+begin
+
+end;
+
+procedure TWebBrowserProjectOptionsForm.UpdateBrowserAppControls;
 
 begin
   CBUseWASI.Enabled:=UseBrowserApp;
   edtWasmProgram.Enabled:=UseBrowserApp;
 end;
 
-procedure TWebBrowserProjectOptionsForm.CBUseHTTPServerChange(Sender: TObject);
-
-  procedure disen(C : TControl);
-
-  begin
-    C.Enabled:=CBUseHTTPServer.Checked;
-    if C is TRadioButton then
-      if not C.Enabled then
-        TRadioButton(C).Checked:=False;
-  end;
-
-begin
-  disen(RBStartServerAt);
-  disen(RBUseURL);
-  disen(SEPort);
-  disen(CBServerURL);
-end;
-
 procedure TWebBrowserProjectOptionsForm.FormCreate(Sender: TObject);
 begin
+  // localize
   Caption:=pjsdPas2JSBrowserProjectOptions;
   CBCreateHTML.Caption:=pjsdCreateInitialHTMLPage;
   CBMaintainPage.Caption:=pjsdMaintainHTMLPage;
   CBRunOnReady.Caption:=pjsdRunRTLWhenAllPageResourcesAreFullyLoaded;
   cbShowUncaughtExceptions.Caption:=pjsdLetRTLShowUncaughtExceptions;
+
   CBUseBrowserApp.Caption:=pjsdUseBrowserApplicationObject;
-  CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
-  CBUseHTTPServer.Caption:=pjsdProjectNeedsAHTTPServer;
-  RBStartServerAt.Caption:=pjsdStartHTTPServerOnPort;
-  RBUseURL.Caption:=pjsdUseThisURLToStartApplication;
   CBUseWASI.Caption:=pjsdUseWASIApplicationObject;
   edtWasmProgram.TextHint:=pjsWasiProgramFileTextHint;
+
+  CBUseBrowserConsole.Caption:=pjsdUseBrowserConsoleUnitToDisplayWritelnOutput;
+  CBUseModule.Caption:=pjsCreateAJavascriptModuleInsteadOfAScript;
+
+  RBRunServerAt.Caption:=pjsdStartHTTPServerOnPort;
+  RBRunBrowserWithURL.Caption:=pjsdUseThisURLToStartApplication;
+  RBRunDefault.Caption:=pjsExecuteRunParameters;
+
   CBCreateHTMLChange(self);
-  CBUseHTTPServerChange(Self);
 end;
 
-procedure TWebBrowserProjectOptionsForm.FormShow(Sender: TObject);
+procedure TWebBrowserProjectOptionsForm.RBRunDefaultChange(Sender: TObject);
 begin
-  // Need to do this again, in case options were set before show
-  CBCreateHTMLChange(self);
-  CBUseHTTPServerChange(Self);
+  UpdateRunControls;
+end;
+
+procedure TWebBrowserProjectOptionsForm.RBRunServerAtChange(Sender: TObject);
+begin
+  UpdateRunControls;
+end;
+
+procedure TWebBrowserProjectOptionsForm.RBRunBrowserWithURLChange(Sender: TObject);
+begin
+  UpdateRunControls;
 end;
 
 function TWebBrowserProjectOptionsForm.GetB(AIndex: Integer): Boolean;
 begin
   Case Aindex of
-    0 : Result:=CBCreateHTML.Checked;
-    1 : Result:=CBMaintainPage.Checked;
-    2 : Result:=CBUseBrowserApp.Checked;
-    3 : Result:=CBUseBrowserConsole.Checked;
-    4 : Result:=RBStartServerAt.Checked;
-    5 : Result:=RBUseURL.Checked;
-    6 : Result:=CBRunOnReady.Checked;
-    7 : Result:=cbShowUncaughtExceptions.Checked;
-    8 : Result:=cbUseWASI.Checked;
-    9 : Result:=cbUseModule.Checked;
+    WBBoolCreateHTML : Result:=CBCreateHTML.Checked;
+    WBBoolMainHTML : Result:=CBMaintainPage.Checked;
+    WBBoolRunOnReady : Result:=CBRunOnReady.Checked;
+    WBBoolShowUncaughtExceptions : Result:=cbShowUncaughtExceptions.Checked;
+    WBBoolUseBrowserApp : Result:=CBUseBrowserApp.Checked;
+    WBBoolUseWASI : Result:=cbUseWASI.Checked;
+    WBBoolUseBrowserConsole : Result:=CBUseBrowserConsole.Checked;
+    WBBoolUseModule : Result:=cbUseModule.Checked;
+    WBBoolRunServerAtPort : Result:=RBRunServerAt.Checked;
+    WBBoolRunBrowserWithURL : Result:=RBRunBrowserWithURL.Checked;
+    WBBoolRunDefault : Result:=RBRunDefault.Checked;
   else
     Result:=False;
   end;
@@ -176,30 +200,17 @@ end;
 procedure TWebBrowserProjectOptionsForm.SetB(AIndex: Integer; AValue: Boolean);
 begin
   Case Aindex of
-    0 : CBCreateHTML.Checked:=AValue;
-    1 : CBMaintainPage.Checked:=AValue;
-    2 :
-       begin
-       CBUseBrowserApp.Checked:=AValue;
-       CheckWASI;
-       end;
-    3 : CBUseBrowserConsole.Checked:=AValue;
-    4 :
-      begin
-      RBStartServerAt.Checked:=AValue;
-      if AValue then
-        CBUseHTTPServer.Checked:=true
-      end;
-    5 :
-      begin
-      RBUseURL.Checked:=AValue;
-      if AValue then
-        CBUseHTTPServer.Checked:=true
-      end;
-    6 : CBRunOnReady.Checked:=Avalue;
-    7 : cbShowUncaughtExceptions.Checked:=aValue;
-    8 : cbUseWASI.Checked:=aValue;
-    9 : cbUseModule.Checked:=aValue;
+  WBBoolCreateHTML : begin CBCreateHTML.Checked:=AValue; UpdateHTMLControls; end;
+    WBBoolMainHTML : CBMaintainPage.Checked:=AValue;
+    WBBoolRunOnReady : CBRunOnReady.Checked:=AValue;
+    WBBoolShowUncaughtExceptions : cbShowUncaughtExceptions.Checked:=AValue;
+    WBBoolUseBrowserConsole : CBUseBrowserConsole.Checked:=AValue;
+  WBBoolUseBrowserApp : begin CBUseBrowserApp.Checked:=AValue; UpdateBrowserAppControls; end;
+  WBBoolUseWASI : begin cbUseWASI.Checked:=AValue; UpdateBrowserAppControls; end;
+  WBBoolUseModule : cbUseModule.Checked:=AValue;
+  WBBoolRunServerAtPort : begin RBRunServerAt.Checked:=AValue; UpdateRunControls; end;
+  WBBoolRunBrowserWithURL : begin RBRunBrowserWithURL.Checked:=AValue; UpdateRunControls; end;
+  WBBoolRunDefault : begin RBRunDefault.Checked:=AValue; UpdateRunControls; end;
   end;
 end;
 
@@ -216,6 +227,23 @@ end;
 procedure TWebBrowserProjectOptionsForm.SetWasmProgramURL(AValue: String);
 begin
   edtWasmProgram.Text:=aValue;
+end;
+
+procedure TWebBrowserProjectOptionsForm.UpdateHTMLControls;
+var
+  aEnabled: Boolean;
+begin
+  aEnabled:=CBCreateHTML.Checked;
+  CBMaintainPage.Enabled:=aEnabled;
+  CBRunOnReady.Enabled:=aEnabled;
+  cbShowUncaughtExceptions.Enabled:=aEnabled;
+  CBUseBrowserConsole.Enabled:=aEnabled;
+end;
+
+procedure TWebBrowserProjectOptionsForm.UpdateRunControls;
+begin
+  SEPort.Enabled:=RBRunServerAt.Enabled and RBRunServerAt.Checked;
+  CBServerURL.Enabled:=RBRunBrowserWithURL.Enabled and RBRunBrowserWithURL.Checked;
 end;
 
 procedure TWebBrowserProjectOptionsForm.HideWASM;
