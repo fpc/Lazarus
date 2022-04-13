@@ -313,7 +313,7 @@ begin
 end;
 
 function TChartListbox.CreateLegendItems: TChartLegendItems;
-{ creates the a TLegendItems list and populates it with information for
+{ Creates a TLegendItems list and populates it with information for
   all series contained in the Chart. In case of MultiLegend items, only
   a single legend item is used }
 var
@@ -606,6 +606,9 @@ var
   list: TIntegerList;
   i, idx: Integer;
 begin
+  if (csDestroying in ComponentState) then
+    exit;
+  
   Items.BeginUpdate;
   list := TIntegerList.Create;
   try
