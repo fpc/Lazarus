@@ -29,7 +29,7 @@ resourcestring
   rsSWSUserOrigin = 'User';
   rsSWUnableToAddLocation = 'Unable to add location:';
   rsSWMissingController = 'missing controller';
-  rsSWMissingLocation = 'Missing Location';
+  rsSWMissingLocation = 'Missing Location.';
   rsSWAddSimpleWebServerLocation = 'Add Simple Web Server Location';
   rsSWLocation = 'Location';
   rsSWAnArbitraryNameForTheURLSubfolder = 'An arbitrary name for the URL '
@@ -40,22 +40,22 @@ resourcestring
   rsSWAddLocation = 'Add Location';
   rsSWError = 'Error';
   rsSWErrorFindingFreeTCPPort = 'Error finding free TCP port:';
-  rsSWErrorKillingProcess = 'Error killing process %s';
+  rsSWErrorKillingProcess = 'Error killing process %s:';
   rsSWErrorCheckingWhichProcessUsesTCPPort = 'Error checking which process '
-    +'uses TCP port %s';
+    +'uses TCP port %s:';
   rsSWCannotFindBrowserSee = 'Cannot find browser. See';
   rsSWInvalidMacroSee = 'Invalid macro. See';
   rsSWToolsOptionsSimpleWebServerBrowser = 'Tools / Options / Simple Web '
     +'Server / Browser';
-  rsSWServerExecutableNotFound = 'Server executable not found';
-  rsSWServerExeIsNotExecutable2 = 'Server exe is not executable';
-  rsSWInvalidPort = 'Invalid Port';
-  rsSWPortAlreadyUsed = 'Port already used';
+  rsSWServerExecutableNotFound = 'Server executable not found.';
+  rsSWServerExeIsNotExecutable2 = 'Server exe is not executable.';
+  rsSWInvalidPort = 'Invalid Port.';
+  rsSWPortAlreadyUsed = 'Port already used.';
   rsSWLocalDirectoryNotFound = 'Local directory not found:';
-  rsSWLocationAlreadyUsed = 'Location already used';
-  rsSWErrorWriting = 'Error writing "%s"';
+  rsSWLocationAlreadyUsed = 'Location already used.';
+  rsSWErrorWriting = 'Error writing "%s":';
   rsSWErrorCreatingDirectory = 'Error creating directory';
-  rsSWDirectoryNotFound = 'Directory not found';
+  rsSWDirectoryNotFound = 'Directory not found.';
   rsSWSimpleWebServerAddress = 'Simple Web Server Address';
   rsSWSimpleWebServerPort = 'Simple Web Server Port';
   rsSWSimpleWebServerExecutable = 'Simple Web Server Executable';
@@ -71,9 +71,9 @@ resourcestring
   rsSWKillProcess = 'Kill process?';
   rsSWKillPID = 'Kill PID %s';
   rsSWTryAnotherPort = 'Try another port';
-  rsSWMissingServerExecutable = 'Missing server executable';
-  rsSWServerExecutableNotFoundInPATH2 = 'Server executable not found in PATH';
-  rsSWMissingLocalDirectory = 'Missing local directory';
+  rsSWMissingServerExecutable = 'Missing server executable.';
+  rsSWServerExecutableNotFoundInPATH2 = 'Server executable not found in PATH.';
+  rsSWMissingLocalDirectory = 'Missing local directory.';
   rsSWStartServer = 'Start Server';
   rsSWStopServer = 'Stop Server';
   rsSWDelete = 'Delete?';
