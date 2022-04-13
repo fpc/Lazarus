@@ -322,7 +322,7 @@ begin
   ServerPort:=StrToIntDef(aProject.CustomData[PJSProjectPort],-1);
   URL:=aProject.CustomData[PJSProjectURL];
   if (ServerPort<0) and (URL='') then
-    exit;
+    exit; // compile normally and run the run-parameters
 
   // Run webproject with Debug: build, start webserver, open browser
 

@@ -131,6 +131,7 @@ type
     function InteractiveForceDir(Dir: string; AutoDelete: boolean): boolean; virtual;
     function InteractiveSaveFile(aFilename: string): boolean; virtual;
     function InteractiveCopyFile(Src, Dest: string): boolean; virtual;
+    function CreateProjectGroup(AProject: TLazProject): boolean; virtual;
   public
     constructor Create; override;
     procedure Clear; override;
@@ -584,6 +585,12 @@ begin
   Result:=false;
 end;
 
+function TProjectPas2JSProgressiveWebApp.CreateProjectGroup(
+  AProject: TLazProject): boolean;
+begin
+  Result:=true;
+end;
+
 constructor TProjectPas2JSProgressiveWebApp.Create;
 begin
   inherited Create;
@@ -714,6 +721,9 @@ begin
 
   // save lpi
   if LazarusIDE.DoSaveProject([sfQuietUnitCheck])<>mrOk then exit;
+
+  // project group
+  if not CreateProjectGroup(AProject) then exit;
 
   Result:=mrOk;
 end;
