@@ -26,7 +26,7 @@ msgid "Binding of socket failed"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
-msgid "Browser to open HTML page, macro $(SWSBrowser)"
+msgid "Browser to open HTML page (macro $(SWSBrowser))"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswcannotfindbrowsersee
@@ -141,7 +141,7 @@ msgid "Missing server executable"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
-msgid "Parameters, please use macro $(port)"
+msgid "Parameters (please use macro $(port))"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswportalreadyused
@@ -228,7 +228,7 @@ msgid "User"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswtcpport102465535youcanusemacroportforbelowparams
-msgid "TCP Port 1024..65535, you can use macro $(Port) for below params"
+msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens

@@ -10,17 +10,17 @@ resourcestring
   rsSWSAddress = 'Address';
   rsSWSPort = 'Port';
   rsSWTCPPort102465535YouCanUseMacroPortForBelowParams = 'TCP Port 1024..65535'
-    +', you can use macro $(Port) for below params';
+    +' (you can use macro $(port) for below params)';
   rsSWExecutable = 'Executable';
   rsSWWorkingDirectory = 'Working Directory';
-  rsSWParametersPleaseUseMacroPort = 'Parameters, please use macro $(port)';
+  rsSWParametersPleaseUseMacroPort = 'Parameters (please use macro $(port))';
   rsSWCommandLineParameters = 'Command line parameters';
   rsSWAddCustomServer = 'Add Custom Server';
   rsSWSelectDirectory = 'Select Directory';
   rsSWServerExtraCommandLineOptionsOnePerLine = 'Server extra command-line '
     +'options (one per line)';
-  rsSWBrowserToOpenHTMLPageMacroSWSBrowser = 'Browser to open HTML page, macro'
-    +' $(SWSBrowser)';
+  rsSWBrowserToOpenHTMLPageMacroSWSBrowser = 'Browser to open HTML page (macro'
+    +' $(SWSBrowser))';
   rsSWAddExtraCommandLineOptionsForTheCommandWhichStarts = 'Add extra command-'
     +'line options for the command which starts the webserver.';
   rsSWUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '

@@ -36,8 +36,8 @@ msgid "Binding of socket failed"
 msgstr "Не удалось привязать сокет"
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
-msgid "Browser to open HTML page, macro $(SWSBrowser)"
-msgstr "Браузер для открытия страницы HTML, макрос $(SWSBrowser)"
+msgid "Browser to open HTML page (macro $(SWSBrowser))"
+msgstr "Браузер для открытия страницы HTML (макрос $(SWSBrowser))"
 
 #: simplewebsrvstrconsts.rsswcannotfindbrowsersee
 msgid "Cannot find browser. See"
@@ -151,8 +151,8 @@ msgid "Missing server executable"
 msgstr "Отсутствует исполнимый файл сервера"
 
 #: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
-msgid "Parameters, please use macro $(port)"
-msgstr "Параметры, используйте макрос $(port)"
+msgid "Parameters (please use macro $(port))"
+msgstr "Параметры (используйте макрос $(port))"
 
 #: simplewebsrvstrconsts.rsswportalreadyused
 msgid "Port already used"
@@ -238,8 +238,8 @@ msgid "User"
 msgstr "Пользователь"
 
 #: simplewebsrvstrconsts.rsswtcpport102465535youcanusemacroportforbelowparams
-msgid "TCP Port 1024..65535, you can use macro $(Port) for below params"
-msgstr "Порт TCP из диапазона 1024..65535, можно использовать макрос $(Port) в параметрах ниже"
+msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
+msgstr "Порт TCP из диапазона 1024..65535 (можно использовать макрос $(port) в параметрах ниже)"
 
 #: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens
 msgid "The following process already listens:"
