@@ -3673,6 +3673,7 @@ debug: fpc_debug
 smart: fpc_smart
 release: fpc_release
 units: fpc_units
+examples:
 shared: fpc_shared
 sourceinstall: fpc_sourceinstall
 exampleinstall: fpc_exampleinstall
@@ -3683,7 +3684,7 @@ zipexampleinstall: fpc_zipexampleinstall
 zipdistinstall: fpc_zipdistinstall
 info: fpc_info
 makefiles: fpc_makefiles
-.PHONY: debug smart release units shared sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall info makefiles
+.PHONY: debug smart release units examples shared sourceinstall exampleinstall distinstall zipinstall zipsourceinstall zipexampleinstall zipdistinstall info makefiles
 ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
