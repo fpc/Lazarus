@@ -333,7 +333,7 @@ begin
             DoItemChecked(Item);
                        
           // end editing
-          if FEditor.Visible then
+          if IsEditing then
             HideEditor;
                          
           // focus
@@ -1222,8 +1222,8 @@ end;
 
 function TCustomListView.CanEdit(Item: TListItem): Boolean;
 begin
-  Result := True;
-  if Assigned(FOnEditing) then
+  Result := not (OwnerData and MultiSelect and (SelCount > 1));
+  if Result and Assigned(FOnEditing) then
     FOnEditing(Self, Item, Result);
 end;
 
