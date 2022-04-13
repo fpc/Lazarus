@@ -23,14 +23,13 @@ interface
 
 uses
   Classes, SysUtils, fpWeb, fpHTML, fpdatasetform,
-  fpextjs, extjsjson, extjsxml, fpjsonrpc, jstree,jsparser,
+  extjsjson, extjsxml, fpjsonrpc, jstree,jsparser,
   fpextdirect,fpwebdata, fpwebfile,
 {$IF FPC_FULLVERSION>=30004}
   fphttpclient,
   fphttpserver,
 {$ENDIF}
 {$IF FPC_FULLVERSION>=30100}
-  fphttpwebclient,
   fpoauth2,
   fpoauth2ini,
 {$ENDIF}

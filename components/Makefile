@@ -1896,6 +1896,7 @@ bigide:
 	$(MAKE) -C virtualtreeview
 	$(MAKE) -C onlinepackagemanager
 	$(MAKE) -C simplewebservergui
+	$(MAKE) -C projectgroups
 	$(MAKE) -C pas2js
 	$(MAKE) -C exampleswindow
 all: base
@@ -1943,6 +1944,7 @@ clean:
 	$(MAKE) -C virtualtreeview clean
 	$(MAKE) -C onlinepackagemanager clean
 	$(MAKE) -C simplewebservergui clean
+	$(MAKE) -C projectgroups clean
 	$(MAKE) -C pas2js clean
 	$(MAKE) -C exampleswindow clean
 cleanall: clean
@@ -1991,6 +1993,7 @@ distclean:
 	$(MAKE) -C virtualtreeview distclean
 	$(MAKE) -C onlinepackagemanager distclean
 	$(MAKE) -C simplewebservergui distclean
+	$(MAKE) -C projectgroups distclean
 	$(MAKE) -C pas2js distclean
 	$(MAKE) -C anchordocking/design distclean
 	$(MAKE) -C anchordocking distclean

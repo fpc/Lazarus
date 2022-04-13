@@ -208,8 +208,9 @@ Type
     FEditor: TForm;
     function GetCurrentProjectGroup: TProjectGroup; virtual; abstract;
   public
-    procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); virtual; abstract;
-    procedure SaveProjectGroup; virtual; abstract;
+    function NewProjectGroup(AddActiveProject: boolean): boolean; virtual; abstract;
+    function LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions): boolean; virtual; abstract;
+    function SaveProjectGroup: boolean; virtual; abstract;
     function GetSrcPaths: string; virtual; abstract;
     function CanUndo: boolean; virtual; abstract;
     function CanRedo: boolean; virtual; abstract;

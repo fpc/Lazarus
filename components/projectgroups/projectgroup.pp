@@ -250,8 +250,9 @@ type
     function CanRedo: boolean; override;
     procedure Undo; override;
     procedure Redo; override;
-    procedure LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions); override;
-    procedure SaveProjectGroup; override;
+    function NewProjectGroup(AddActiveProject: boolean): boolean; override;
+    function LoadProjectGroup(AFileName: string; AOptions: TProjectGroupLoadOptions): boolean; override;
+    function SaveProjectGroup: boolean; override;
     function GetSrcPaths: string; override;
   public
     property Options: TIDEProjectGroupOptions read FOptions;
@@ -643,25 +644,8 @@ begin
 end;
 
 procedure TIDEProjectGroupManager.DoNewClick(Sender: TObject);
-var
-  AProject: TLazProject;
-  aTarget: TIDECompileTarget;
 begin
-  if Not CheckSaved then
-    Exit;
-  FreeAndNil(FProjectGroup);
-  FProjectGroup:=TIDEProjectGroup.Create(nil);
-  MnuCmdSaveProjectGroupAs.Enabled:=true;
-
-  // add current project
-  AProject:=LazarusIDE.ActiveProject;
-  if (AProject<>nil) and FilenameIsAbsolute(AProject.ProjectInfoFile)
-  and FileExistsCached(AProject.ProjectInfoFile) then begin
-    aTarget:=FProjectGroup.AddTarget(AProject.ProjectInfoFile) as TIDECompileTarget;
-    aTarget.LoadTarget(true);
-  end;
-
-  ShowProjectGroupEditor;
+  NewProjectGroup(true);
 end;
 
 procedure TIDEProjectGroupManager.DoOpenClick(Sender: TObject);
@@ -982,28 +966,62 @@ begin
 
 end;
 
-procedure TIDEProjectGroupManager.LoadProjectGroup(AFileName: string;
-  AOptions: TProjectGroupLoadOptions);
+function TIDEProjectGroupManager.NewProjectGroup(AddActiveProject: boolean
+  ): boolean;
+var
+  AProject: TLazProject;
+  aTarget: TIDECompileTarget;
+begin
+  Result:=true;
+
+  if Not CheckSaved then
+    Exit(false);
+  FreeAndNil(FProjectGroup);
+
+  FProjectGroup:=TIDEProjectGroup.Create(nil);
+  MnuCmdSaveProjectGroupAs.Enabled:=true;
+
+  if AddActiveProject then begin
+    // add current project
+    AProject:=LazarusIDE.ActiveProject;
+    if (AProject<>nil) and FilenameIsAbsolute(AProject.ProjectInfoFile)
+    and FileExistsCached(AProject.ProjectInfoFile) then begin
+      aTarget:=FProjectGroup.AddTarget(AProject.ProjectInfoFile) as TIDECompileTarget;
+      aTarget.LoadTarget(true);
+    end;
+  end;
+
+  ShowProjectGroupEditor;
+end;
+
+function TIDEProjectGroupManager.LoadProjectGroup(AFileName: string;
+  AOptions: TProjectGroupLoadOptions): boolean;
 begin
   AFileName:=TrimAndExpandFilename(AFileName);
   if Not CheckSaved then
-    Exit;
+    Exit(false);
   FreeAndNil(FProjectGroup);
 
   AddToRecentGroups(AFileName);
   FProjectGroup:=TIDEProjectGroup.Create(nil);
   FProjectGroup.FileName:=AFileName;
-  FProjectGroup.LoadFromFile(AOptions);
+  Result:=FProjectGroup.LoadFromFile(AOptions);
+  if not Result then
+    exit;
   if not (pgloSkipDialog in AOptions) then
     ShowProjectGroupEditor;
   MnuCmdSaveProjectGroupAs.Enabled:=true;
+
+  Result:=true;
 end;
 
-procedure TIDEProjectGroupManager.SaveProjectGroup;
+function TIDEProjectGroupManager.SaveProjectGroup: boolean;
 begin
-  if not Assigned(FProjectGroup) then exit;
+  Result:=true;
+  if not Assigned(FProjectGroup) then
+    exit;
   if (FProjectGroup.FileName<>'') or GetNewFileName then begin
-    FProjectGroup.SaveToFile;
+    Result:=FProjectGroup.SaveToFile;
     AddToRecentGroups(FProjectGroup.FileName);
   end;
 end;
