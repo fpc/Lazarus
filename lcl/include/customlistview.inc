@@ -335,7 +335,7 @@ begin
           // end editing
           if IsEditing then
             HideEditor;
-                         
+
           // focus
           if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED) then
           begin
@@ -446,7 +446,12 @@ var
 begin
   S := FEditor.Text;
   if FEditor.Item <> nil then
-    DoEndEdit(FEditor.Item, S);
+  begin
+    if MultiSelect and OwnerData then
+      DoEndEdit(Items[FSelectedIdx], S)
+    else
+      DoEndEdit(FEditor.Item, S);
+  end;
   FEditor.Item := nil;
   FEditor.Visible := False;
   FEditor.SetBounds(0, 0, 0, 0);
@@ -1222,8 +1227,8 @@ end;
 
 function TCustomListView.CanEdit(Item: TListItem): Boolean;
 begin
-  Result := not (OwnerData and MultiSelect and (SelCount > 1));
-  if Result and Assigned(FOnEditing) then
+  Result := True;
+  if Assigned(FOnEditing) then
     FOnEditing(Self, Item, Result);
 end;
 
