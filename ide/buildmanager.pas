@@ -57,6 +57,9 @@ uses
   Compiler, FPCSrcScan, PackageDefs, PackageSystem, Project, ProjectIcon,
   ModeMatrixOpts, BaseBuildManager, ApplicationBundle, RunParamsOpts;
   
+const
+  cInvalidCompiler = 'InvalidCompiler';
+
 type
 
   { TBuildManager }
@@ -717,8 +720,14 @@ begin
         Result:=''
       else if (Pos('$',Result)<1) and (FilenameIsAbsolute(Result)) then
         Result:=TrimFilename(Result)
-      else
+      else begin
         Result:=FBuildTarget.GetCompilerFilename;
+        if Result='' then
+        begin
+          Result:=cInvalidCompiler;
+          debugln(['Error: (lazarus) [TBuildManager.GetCompilerFilename] invalid compiler "',Opts.CompilerPath,'"']);
+        end;
+      end;
       //debugln(['TBuildManager.GetCompilerFilename project compiler="',Result,'"']);
     end;
   end;
@@ -2823,7 +2832,7 @@ var
   LCLTargetChanged: Boolean;
   CompilerTargetOS: string;
   CompilerTargetCPU: string;
-  CompQueryOptions: String;
+  CompQueryOptions, CompilerFilename: String;
 begin
   {$IFDEF VerboseDefaultCompilerTarget}
   debugln(['TBuildManager.SetBuildTarget TargetOS="',TargetOS,'" TargetCPU="',TargetCPU,'" LCLWidgetType="',LCLWidgetType,'"']);
@@ -2864,8 +2873,12 @@ begin
     else if fTargetOS<>'' then
       CompQueryOptions:='-T'+GetFPCTargetOS(fTargetOS);
     // Note: resolving the comiler filename requires macros
+    CompilerFilename:=GetCompilerFilename;
+    if CompilerFilename=cInvalidCompiler then
+      exit;
+
     CodeToolBoss.CompilerDefinesCache.ConfigCaches.GetDefaultCompilerTarget(
-      GetCompilerFilename,CompQueryOptions,CompilerTargetOS,CompilerTargetCPU);
+      CompilerFilename,CompQueryOptions,CompilerTargetOS,CompilerTargetCPU);
     if fTargetOS='' then
       fTargetOS:=CompilerTargetOS;
     if fTargetOS='' then

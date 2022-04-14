@@ -366,7 +366,7 @@ end;
 
 procedure TCompiler.WriteError(const Msg: string);
 begin
-  DebugLn('TCompiler.WriteError ',Msg);
+  DebugLn(Msg,' [TCompiler.WriteError]');
   if IDEMessagesWindow<>nil then
     IDEMessagesWindow.AddCustomMessage(mluError,Msg);
 end;
