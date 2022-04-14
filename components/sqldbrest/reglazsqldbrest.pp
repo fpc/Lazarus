@@ -5,9 +5,9 @@ unit reglazsqldbrest;
 interface
 
 uses
-  Classes, SysUtils, PropEdits, ComponentEditors, ProjectIntf, sqldb, sqldbrestschema,
-  sqldbrestcsv ,sqldbrestxml, sqldbrestcds, sqldbrestado,
-  sqldbrestio, sqldbrestauth, sqldbrestbridge, sqldbrestmodule;
+  Classes, SysUtils, PropEdits, ComponentEditors, PropEditUtils, ProjectIntf,
+  sqldb, sqldbrestschema, sqldbrestcsv, sqldbrestxml, sqldbrestcds,
+  sqldbrestado, sqldbrestio, sqldbrestauth, sqldbrestbridge, sqldbrestmodule;
 
 Type
 
@@ -613,7 +613,7 @@ begin
   begin
     ConnDef := GetConnectionDef(NewValue);
     if Assigned(ConnDef) then
-      CodeToolBoss.AddUnitToMainUsesSection(Code, ConnDef.UnitName, '');
+      CodeToolBoss.AddUnitToMainUsesSection(Code, GetSourceClassUnitName(ConnDef.ClassType), '');
   end;
   inherited;
 end;

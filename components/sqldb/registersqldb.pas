@@ -128,7 +128,7 @@ uses
   IDEExternToolIntf,
   ComponentEditors,
   fieldseditor,
-  bufdatasetdsgn,
+  bufdatasetdsgn, PropEditUtils,
   CodeCache,
   CodeToolManager;
 
@@ -485,7 +485,7 @@ begin
   begin
     ConnDef := GetConnectionDef(NewValue);
     if Assigned(ConnDef) then
-      CodeToolBoss.AddUnitToMainUsesSection(Code, ConnDef.UnitName, '');
+      CodeToolBoss.AddUnitToMainUsesSection(Code, GetSourceClassUnitName(ConnDef.ClassType), '');
   end;
   inherited;
 end;
