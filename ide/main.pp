@@ -608,6 +608,7 @@ type
                                      const Filename: string; var Source: string);
     function CodeToolBossGetMethodName(const Method: TMethod;
                                        PropOwner: TObject): String;
+    function CodeToolBossGetClassUnitName(aClass: TClass): string;
     procedure CodeToolBossGetIndenterExamples(Sender: TObject;
                 Code: TCodeBuffer; Step: integer; // starting at 0
                 var CodeBuffers: TFPList; // stopping when CodeBuffers=nil
@@ -9588,6 +9589,7 @@ begin
     OnSearchUsedUnit:=@CodeToolBossSearchUsedUnit;
     OnFindDefineProperty:=@CodeToolBossFindDefineProperty;
     OnGetMethodName:=@CodeToolBossGetMethodName;
+    OnGetClassUnitName:=@CodeToolBossGetClassUnitName;
     OnGetIndenterExamples:=@CodeToolBossGetIndenterExamples;
     OnScannerInit:=@CodeToolBossScannerInit;
     OnFindFPCMangledSource:=@CodeToolBossFindFPCMangledSource;
@@ -9888,6 +9890,11 @@ begin
   if IsJITMethod(Method) then
     DebugLn(['TMainIDE.OnCodeToolBossGetMethodName ',Result,' ',IsJITMethod(Method)]);
   {$ENDIF}
+end;
+
+function TMainIDE.CodeToolBossGetClassUnitName(aClass: TClass): string;
+begin
+  Result:=GetSourceClassUnitName(aClass);
 end;
 
 procedure TMainIDE.CodeToolBossScannerInit(Self: TCodeToolManager; Scanner: TLinkScanner);

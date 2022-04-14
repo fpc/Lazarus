@@ -7533,7 +7533,7 @@ begin
   if Value=nil then
     Result:=''
   else
-    Result:=Value.UnitName;
+    Result:=GetSourceClassUnitName(Value)
 end;
 
 procedure CreateComponentEvent(AComponent: TComponent; const EventName: string);

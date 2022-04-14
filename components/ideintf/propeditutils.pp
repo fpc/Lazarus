@@ -6,7 +6,7 @@
 }
 unit PropEditUtils;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -77,9 +77,14 @@ type
   end;
 
 function GetLookupRootForComponent(APersistent: TPersistent): TPersistent;
+function GetSourceClassUnitName(AClass: TClass): string;
 
 type
   TGetLookupRoot = function(APersistent: TPersistent): TPersistent;
+  TGetSourceClassUnitname = function(AClass: TClass): string;
+
+var
+  OnGetSourceClassUnitname: TGetSourceClassUnitname = nil; // set by IDE
 
 procedure RegisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
 procedure UnregisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);
@@ -113,6 +118,16 @@ begin
       exit;
     Result := AOwner
   until False;
+end;
+
+function GetSourceClassUnitName(AClass: TClass): string;
+begin
+  if AClass=nil then
+    Result:=''
+  else if Assigned(OnGetSourceClassUnitname) then
+    Result:=OnGetSourceClassUnitname(AClass)
+  else
+    Result:=AClass.UnitName;
 end;
 
 procedure RegisterGetLookupRoot(const OnGetLookupRoot: TGetLookupRoot);

@@ -24,7 +24,7 @@ uses
   LCLProc, Forms, Controls, Menus, ExtCtrls, CustomTimer,
   Grids, CheckLst, ComCtrls, Dialogs,
   // LazUtils
-  Maps, LazLoggerBase,
+  Maps, LazLoggerBase, LazUTF8,
   // IdeIntf
   LazStringGridEdit, CheckListboxEditorDlg, CheckGroupEditorDlg,
   PropEdits, PropEditUtils, ComponentReg, ObjInspStrConsts;
@@ -1421,28 +1421,47 @@ end;
 
 { RegisterComponentRequirements }
 type
-  PComponentClassReqRec = ^TComponentClassReqRec;
-  TComponentClassReqRec = record
+
+  { TComponentClassReq }
+
+  TComponentClassReq = class
     ComponentClass: TComponentClass;
     RequirementsClass: TComponentRequirementsClass;
+    Requirements: TComponentRequirements;
+    MainUnitname: string;
+    destructor Destroy; override;
   end;
 
 const
-  ComponentClassReqList: TList = Nil;
+  ComponentClassReqList: TFPList = Nil; // list of TComponentClassReq
+
+procedure ClearComponentRequirementCaches;
+var
+  i: Integer;
+  R: TComponentClassReq;
+begin
+  if ComponentClassReqList=nil then exit;
+  for i:=0 to ComponentClassReqList.Count-1 do
+  begin
+    R := TComponentClassReq(ComponentClassReqList[i]);
+    FreeAndNil(R.Requirements);
+    R.MainUnitname:='';
+  end;
+end;
 
 procedure RegisterComponentRequirements(ComponentClass: TComponentClass;
   ComponentRequirements: TComponentRequirementsClass);
 var
-  P: PComponentClassReqRec;
+  R: TComponentClassReq;
 begin
   if not Assigned(ComponentClass) or not Assigned(ComponentRequirements) then
     Exit;
   if not Assigned(ComponentClassReqList) then
-    ComponentClassReqList := TList.Create;
-  New(P);
-  P^.ComponentClass := ComponentClass;
-  P^.RequirementsClass := ComponentRequirements;
-  ComponentClassReqList.Add(P);
+    ComponentClassReqList := TFPList.Create;
+  R:=TComponentClassReq.Create;
+  R.ComponentClass := ComponentClass;
+  R.RequirementsClass := ComponentRequirements;
+  ComponentClassReqList.Add(R);
 end;
 
 procedure RegisterComponentRequirements(ComponentClasses: array of TComponentClass;
@@ -1454,21 +1473,77 @@ begin
     RegisterComponentRequirements(ComponentClasses[I], ComponentRequirements);
 end;
 
-function GetComponentRequirements(ComponentClass: TComponentClass): TComponentRequirements;
+function InternalGetComponentRequirements(ComponentClass: TComponentClass): TComponentClassReq;
 var
   I: Integer;
-  P: PComponentClassReqRec;
+  R: TComponentClassReq;
 begin
   if (ComponentClass=Nil) or (ComponentClassReqList=Nil) then
     Exit(Nil);
+
   for I := 0 to ComponentClassReqList.Count - 1 do
   begin
-    P := PComponentClassReqRec(ComponentClassReqList[i]);
-    if P^.ComponentClass = ComponentClass then
-      Exit(P^.RequirementsClass.Create(ComponentClass));
+    R := TComponentClassReq(ComponentClassReqList[i]);
+    if R.ComponentClass = ComponentClass then
+    begin
+      if R.Requirements=nil then
+        R.Requirements:=R.RequirementsClass.Create(ComponentClass);
+      exit(R);
+    end;
   end;
   Result := Nil;
 end;
+
+function GetComponentRequirements(ComponentClass: TComponentClass): TComponentRequirements;
+var
+  R: TComponentClassReq;
+begin
+  Result:=nil;
+  if (ComponentClass=Nil) or (ComponentClassReqList=Nil) then
+    Exit;
+  R:=InternalGetComponentRequirements(ComponentClass);
+  if R=nil then
+    Exit;
+  Result:=R.Requirements;
+end;
+
+function InternalGetSourceClassUnitName(aClass: TClass): string;
+var
+  UnitList: TStringListUTF8Fast;
+  R: TComponentClassReq;
+begin
+  Result:=aClass.UnitName;
+  if aClass.InheritsFrom(TComponent) then
+  begin
+    R:=InternalGetComponentRequirements(TComponentClass(aClass.ClassType));
+    if R=nil then exit;
+    Result:=R.MainUnitname;
+    if Result<>'' then
+      exit;
+    UnitList:=TStringListUTF8Fast.Create;
+    try
+      UnitList.Add(Result);
+      R.Requirements.RequiredUnits(UnitList);
+      if (UnitList.Count>0) and IsValidIdent(UnitList[0],true,true) then
+        Result:=UnitList[0]
+      else
+        Result:=aClass.UnitName;
+    finally
+      UnitList.Free;
+    end;
+    R.MainUnitname:=Result;
+    exit;
+  end;
+end;
+
+{ TComponentClassReq }
+
+destructor TComponentClassReq.Destroy;
+begin
+  FreeAndNil(Requirements);
+  inherited Destroy;
+end;
+
 
 { TComponentRequirements }
 
@@ -1493,8 +1568,8 @@ end;
 procedure InternalFinal;
 var
   p: PComponentClassRec;
-  pq: PComponentClassReqRec;
   i: integer;
+  R: TComponentClassReq;
 begin
   if ComponentClassList<>nil then begin
     for i:=0 to ComponentClassList.Count-1 do begin
@@ -1502,13 +1577,16 @@ begin
       Dispose(p);
     end;
     ComponentClassList.Free;
+    ComponentClassList:=nil;
   end;
   if Assigned(ComponentClassReqList) then begin
+    ClearComponentRequirementCaches;
     for i:=0 to ComponentClassReqList.Count-1 do begin
-      pq:=PComponentClassReqRec(ComponentClassReqList[i]);
-      Dispose(pq);
+      R:=TComponentClassReq(ComponentClassReqList[i]);
+      R.Free;
     end;
     ComponentClassReqList.Free;
+    ComponentClassReqList:=nil;
   end;
 
   EditorForms.Free;
@@ -1746,6 +1824,7 @@ initialization
   RegisterComponentEditor(TToolBar, TToolBarComponentEditor);
   RegisterComponentEditor(TCommonDialog, TCommonDialogComponentEditor);
   RegisterComponentEditor(TCustomTimer, TTimerComponentEditor);
+  OnGetSourceClassUnitname:=@InternalGetSourceClassUnitName;
 
 finalization
   InternalFinal;

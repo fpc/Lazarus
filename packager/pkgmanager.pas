@@ -4556,33 +4556,29 @@ begin
           UnitList.Sorted:=True;
           UnitList.Duplicates:=dupIgnore;
         end;
-        try
-          if CurRegComp.ComponentClass<>nil then
-          begin
-            CurUnitName:=CurRegComp.ComponentClass.UnitName;
-            CurCompReq:=GetComponentRequirements(CurRegComp.ComponentClass);
-          end;
-          //DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurCompClass=',DbgSName(CurCompClass),' CurUnitName=',CurUnitName,' CurCompReq=',DbgSName(CurCompReq)]);
-          if CurUnitName='' then
-            CurUnitName:=CurRegComp.GetUnitName;
-          //Assert(CurUnitNames.IndexOf(CurUnitName)<0,
-          //  'TPkgManager.GetUnitsAndDepsForComps: Name already in CurUnitNames.');
-          CurUnitNames.Add(CurUnitName);
-          if CurCompReq<>nil then
-            CurCompReq.RequiredUnits(CurUnitNames);
-          for CurUnitIdx:=0 to CurUnitNames.Count-1 do
-          begin
-            CurUnitName:=CurUnitNames[CurUnitIdx];
-            UnitList.Add(CurUnitName);
-            PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
-            AddPkgDep(CurCompReq,PkgFile);
-            if TPkgComponent(CurRegComp).PkgFile<>PkgFile then
-              // e.g. a designtime package has registered the componentclass
-              AddPkgDep(CurCompReq,TPkgComponent(CurRegComp).PkgFile);
-          end;  // for CurUnitIdx:=
-        finally
-          CurCompReq.Free;
+        if CurRegComp.ComponentClass<>nil then
+        begin
+          CurUnitName:=CurRegComp.ComponentClass.UnitName;
+          CurCompReq:=GetComponentRequirements(CurRegComp.ComponentClass);
         end;
+        //DebugLn(['TPkgManager.GetUnitsAndDepsForComps: CurCompClass=',DbgSName(CurCompClass),' CurUnitName=',CurUnitName,' CurCompReq=',DbgSName(CurCompReq)]);
+        if CurUnitName='' then
+          CurUnitName:=CurRegComp.GetUnitName;
+        //Assert(CurUnitNames.IndexOf(CurUnitName)<0,
+        //  'TPkgManager.GetUnitsAndDepsForComps: Name already in CurUnitNames.');
+        CurUnitNames.Add(CurUnitName);
+        if CurCompReq<>nil then
+          CurCompReq.RequiredUnits(CurUnitNames);
+        for CurUnitIdx:=0 to CurUnitNames.Count-1 do
+        begin
+          CurUnitName:=CurUnitNames[CurUnitIdx];
+          UnitList.Add(CurUnitName);
+          PkgFile:=PackageGraph.FindUnitInAllPackages(CurUnitName,true);
+          AddPkgDep(CurCompReq,PkgFile);
+          if TPkgComponent(CurRegComp).PkgFile<>PkgFile then
+            // e.g. a designtime package has registered the componentclass
+            AddPkgDep(CurCompReq,TPkgComponent(CurRegComp).PkgFile);
+        end;  // for CurUnitIdx:=
       end;
     end;  // for CurClassID:=...
     if Assigned(AllPackages) and (AllPackages.Count>0) then
