@@ -1250,8 +1250,7 @@ begin
   FMainSrvInstance.Params.Add(IniFilename);
   // append custom options last
   FMainSrvInstance.Params.AddStrings(Options.ServerOpts);
-
-  FMainSrvInstance.Path:=AppendPathDelim(LazarusIDE.GetPrimaryConfigPath)+'simplewebserverdir';
+  FMainSrvInstance.Path:=PathUsed;
 
   ExeUsed:=Options.ServerExe;
   ErrMsg:=CheckCompileServerExeQuality(ExeUsed,'',false);
