@@ -26,7 +26,7 @@ msgid "Binding of socket failed"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
-msgid "Browser to open HTML page, macro $(SWSBrowser)"
+msgid "Browser to open HTML page (macro $(SWSBrowser))"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswcannotfindbrowsersee
@@ -52,7 +52,7 @@ msgid "Delete server at \"%s\"?"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswdirectorynotfound
-msgid "Directory not found"
+msgid "Directory not found."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswerror
@@ -61,7 +61,7 @@ msgstr ""
 
 #: simplewebsrvstrconsts.rsswerrorcheckingwhichprocessusestcpport
 #, object-pascal-format
-msgid "Error checking which process uses TCP port %s"
+msgid "Error checking which process uses TCP port %s:"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswerrorcreatingdirectory
@@ -74,12 +74,12 @@ msgstr ""
 
 #: simplewebsrvstrconsts.rsswerrorkillingprocess
 #, object-pascal-format
-msgid "Error killing process %s"
+msgid "Error killing process %s:"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswerrorwriting
 #, object-pascal-format
-msgid "Error writing \"%s\""
+msgid "Error writing \"%s\":"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswexecutable
@@ -96,7 +96,7 @@ msgid "Invalid macro. See"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswinvalidport
-msgid "Invalid Port"
+msgid "Invalid Port."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswkillpid
@@ -121,7 +121,7 @@ msgid "Location"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswlocationalreadyused
-msgid "Location already used"
+msgid "Location already used."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
@@ -129,23 +129,23 @@ msgid "missing controller"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissinglocaldirectory
-msgid "Missing local directory"
+msgid "Missing local directory."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissinglocation
-msgid "Missing Location"
+msgid "Missing Location."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswmissingserverexecutable
-msgid "Missing server executable"
+msgid "Missing server executable."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
-msgid "Parameters, please use macro $(port)"
+msgid "Parameters (please use macro $(port))"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswportalreadyused
-msgid "Port already used"
+msgid "Port already used."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswsaddress
@@ -166,7 +166,7 @@ msgid "Server directory \"%s\" not found."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswserverexecutablenotfound
-msgid "Server executable not found"
+msgid "Server executable not found."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath
@@ -175,7 +175,7 @@ msgid "Server executable \"%s\" not found in PATH."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath2
-msgid "Server executable not found in PATH"
+msgid "Server executable not found in PATH."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswserverexeisnotexecutable
@@ -184,7 +184,7 @@ msgid "Server exe is not executable: \"%s\""
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswserverexeisnotexecutable2
-msgid "Server exe is not executable"
+msgid "Server exe is not executable."
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswserverextracommandlineoptionsoneperline
@@ -228,7 +228,7 @@ msgid "User"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswtcpport102465535youcanusemacroportforbelowparams
-msgid "TCP Port 1024..65535, you can use macro $(Port) for below params"
+msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
 msgstr ""
 
 #: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens
