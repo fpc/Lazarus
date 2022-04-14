@@ -1521,9 +1521,9 @@ begin
           AMenuItem.Caption := AForm.Caption;
     else                                 // form
       if EnvironmentOptions.Desktop.IDENameForDesignedFormList then
-        AMenuItem.Caption := AForm.Name
+        AMenuItem.Caption := AForm.Name+' - Designer'
       else
-        AMenuItem.Caption := AForm.Caption;
+        AMenuItem.Caption := AForm.Caption+' - Designer';
     end;
   AMenuItem.UserTag := {%H-}PtrUInt(AForm);
 end;
@@ -1531,9 +1531,23 @@ end;
 procedure TMainIDEBase.UpdateWindowMenu;
 var
   WindowsList: TFPList;
+
+  function CanBeAdded(aForm: TCustomForm): boolean;
+  begin
+    if WindowsList.IndexOf(AForm)>=0 then
+      exit(false);
+    if IDEDockMaster<>nil then
+    begin
+      Result:=IDEDockMaster.AddableInWindowMenu(AForm);
+    end else begin
+      Result:=(AForm.Parent=nil) and AForm.IsVisible;
+    end;
+  end;
+
+var
   i, EditorIndex, ItemCountProject, ItemCountOther, IconInd: Integer;
   CurMenuItem: TIDEMenuItem;
-  AForm: TForm;
+  AForm: TCustomForm;
   EdList: TStringListUTF8Fast;
   se: TSourceEditor;
   P: TIDEPackage;
@@ -1557,35 +1571,30 @@ begin
   for i := 0 to Screen.FormCount-1 do begin
     AForm := Screen.Forms[i];
     //debugln(['TMainIDEBase.UpdateWindowMenu ',DbgSName(AForm),' Vis=',AForm.IsVisible,' Des=',DbgSName(AForm.Designer)]);
-    if (AForm=MainIDEBar) or (AForm=SplashForm) or IsFormDesign(AForm)
-    or (WindowsList.IndexOf(AForm)>=0) then
+    if (AForm=MainIDEBar) or (AForm=SplashForm) or IsFormDesign(AForm) then
       continue;
-    if IDEDockMaster<>nil then
-    begin
-      if not IDEDockMaster.AddableInWindowMenu(AForm) then continue;
-    end else begin
-      if (AForm.Parent<>nil) or not AForm.IsVisible then continue;
-    end;
+    if not CanBeAdded(AForm) then continue;
     WindowsList.Add(AForm);
   end;
   // add designer forms and datamodule forms
   for i := 0 to Screen.FormCount-1 do begin
     AForm := Screen.Forms[i];
-    if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
+    if (AForm.Designer<>nil) and CanBeAdded(AForm) then
       WindowsList.Add(AForm);
   end;
   // create menuitems for all windows
   for i := 0 to WindowsList.Count-1 do
   begin
-    IconInd := GetIconIndex(TWinControl(WindowsList[i]));
+    AForm:=TCustomForm(WindowsList[i]);
+    IconInd := GetIconIndex(AForm);
     // in the 'bring to front' list
     CurMenuItem := GetMenuItem(i, itmWindowLists);
-    InitMenuItem(CurMenuItem, TCustomForm(WindowsList[i]), IconInd);
-    CurMenuItem.Checked := WindowMenuActiveForm = TCustomForm(WindowsList[i]);
+    InitMenuItem(CurMenuItem, AForm, IconInd);
+    CurMenuItem.Checked := WindowMenuActiveForm = AForm;
     CurMenuItem.OnClick := @mnuWindowItemClick;
     // in the 'center' list
     CurMenuItem := GetMenuItem(i, itmCenterWindowLists);
-    InitMenuItem(CurMenuItem, TCustomForm(WindowsList[i]), IconInd);
+    InitMenuItem(CurMenuItem, AForm, IconInd);
     CurMenuItem.OnClick := @mnuCenterWindowItemClick;
   end;
   //create source page menuitems

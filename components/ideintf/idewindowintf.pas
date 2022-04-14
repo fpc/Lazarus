@@ -2165,15 +2165,40 @@ function TIDEWindowCreatorList.GetForm(aFormName: string; AutoCreate: boolean;
   DisableAutoSizing: boolean): TCustomForm;
 var
   Item: TIDEWindowCreator;
+  aForm: TCustomForm;
+  i: Integer;
 begin
-  Result:=Screen.FindForm(aFormName);
+  Result:=nil;
+  for i:=0 to Screen.CustomFormCount-1 do
+  begin
+    aForm:=Screen.CustomForms[i];
+    if not SameText(aForm.Name,aFormName) then continue;
+    if (Result=nil) or not (csDesigning in Result.ComponentState) then
+      Result:=aForm;
+  end;
+
+  Item:=nil;
+  if (Result<>nil) and (csDesigning in Result.ComponentState) then
+  begin
+    if AutoCreate then
+    begin
+      Item:=FindWithName(aFormName);
+      if (Item<>nil) then begin
+        // there is designer for a form that can be autocreated
+        //debugln(['TIDEWindowCreatorList.GetForm ',DbgSName(Result),' Design=',csDesigning in Result.ComponentState,' Owner=',DbgSName(Result.Owner)]);
+        Result:=nil;
+      end;
+    end;
+  end;
+
   if Result<>nil then begin
     if DisableAutoSizing then
       Result.DisableAutoSizing{$IFDEF DebugDisableAutoSizing}('TAnchorDockMaster Delayed'){$ENDIF};
     exit;
   end;
   if AutoCreate then begin
-    Item:=FindWithName(aFormName);
+    if Item=nil then
+      Item:=FindWithName(aFormName);
     if Item=nil then begin
       debugln(['TIDEWindowCreatorList.GetForm no creator for ',aFormName]);
       exit;
