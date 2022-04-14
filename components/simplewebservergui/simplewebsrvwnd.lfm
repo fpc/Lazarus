@@ -1,11 +1,11 @@
 object SimpleWebServerWindow: TSimpleWebServerWindow
-  Left = 445
-  Height = 425
-  Top = 319
-  Width = 621
+  Left = 569
+  Height = 282
+  Top = 309
+  Width = 770
   Caption = 'Simple Web Server'
-  ClientHeight = 425
-  ClientWidth = 621
+  ClientHeight = 282
+  ClientWidth = 770
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   LCLVersion = '2.3.0.0'
@@ -18,19 +18,19 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
     AnchorSideBottom.Control = Owner
     AnchorSideBottom.Side = asrBottom
     Left = 0
-    Height = 201
+    Height = 58
     Top = 224
-    Width = 621
+    Width = 770
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Server Log'
-    ClientHeight = 185
-    ClientWidth = 619
+    ClientHeight = 42
+    ClientWidth = 768
     TabOrder = 3
     inline ServerLogSynEdit: TSynEdit
       Left = 0
-      Height = 185
+      Height = 42
       Top = 0
-      Width = 619
+      Width = 768
       Align = alClient
       Font.Height = 13
       Font.Name = 'DejaVu Sans Mono'
@@ -529,11 +529,11 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
     Left = 0
     Height = 45
     Top = 0
-    Width = 621
+    Width = 770
     Align = alTop
     AutoSize = True
     ClientHeight = 45
-    ClientWidth = 621
+    ClientWidth = 770
     TabOrder = 0
     object StartStopServerButton: TButton
       AnchorSideLeft.Control = OptionsPanel
@@ -608,7 +608,7 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
     Left = 0
     Height = 4
     Top = 220
-    Width = 621
+    Width = 770
     Align = alNone
     Anchors = [akTop, akLeft, akRight]
     ResizeAnchor = akBottom
@@ -623,7 +623,7 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
     Left = 0
     Height = 175
     Top = 45
-    Width = 621
+    Width = 770
     Anchors = [akTop, akLeft, akRight, akBottom]
     AutoWidthLastColumn = True
     Checkboxes = True
@@ -642,7 +642,7 @@ object SimpleWebServerWindow: TSimpleWebServerWindow
       end    
       item
         Caption = 'Note'
-        Width = 139
+        Width = 288
       end>
     HideSelection = False
     PopupMenu = LocationsPopupMenu

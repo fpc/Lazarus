@@ -72,6 +72,8 @@ type
     function CaptionToControllerObj(s: string): TObject;
     procedure DeleteLocation(aCaption: string);
   public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     property Controller: TSimpleWebServerController read GetController;
   end;
 
@@ -111,8 +113,7 @@ begin
 
   // Windows - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   ViewSimpleWebServerWindowCommand:=RegisterIDECommand(CmdCatView, 'SimpleWebServer',
-    rsSWSTitle, CleanIDEShortCut, CleanIDEShortCut, nil, @
-      ShowSimpleWebServerWindow);
+    rsSWSTitle, CleanIDEShortCut, CleanIDEShortCut, nil, @ShowSimpleWebServerWindow);
   RegisterIDEMenuCommand(itmViewMainWindows, 'ViewSimpleWebServer',
     rsSWSTitle, nil, nil, ViewSimpleWebServerWindowCommand);
 
@@ -125,7 +126,10 @@ end;
 
 procedure ShowSimpleWebServerWindow(Sender: TObject);
 begin
-  IDEWindowCreators.ShowForm(SimpleWebServerWindowCreator.FormName,true);
+  if SimpleWebServerWindow=nil then
+    IDEWindowCreators.ShowForm(SimpleWebServerWindowCreator.FormName,true)
+  else
+    IDEWindowCreators.ShowForm(SimpleWebServerWindow,true);
 end;
 
 procedure CreateSimpleWebServerWindow(Sender: TObject; aFormName: string;
@@ -301,6 +305,18 @@ begin
     if r=mrYes then
       Controller.StopServer(Server,true);
   end;
+end;
+
+constructor TSimpleWebServerWindow.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  SimpleWebServerWindow:=Self;
+end;
+
+destructor TSimpleWebServerWindow.Destroy;
+begin
+  inherited Destroy;
+  SimpleWebServerWindow:=nil;
 end;
 
 procedure TSimpleWebServerWindow.FormCreate(Sender: TObject);
