@@ -10,17 +10,17 @@ resourcestring
   rsSWSAddress = 'Address';
   rsSWSPort = 'Port';
   rsSWTCPPort102465535YouCanUseMacroPortForBelowParams = 'TCP Port 1024..65535'
-    +' (you can use macro $(port) for below params)';
+    +', you can use macro $(Port) for below params';
   rsSWExecutable = 'Executable';
   rsSWWorkingDirectory = 'Working Directory';
-  rsSWParametersPleaseUseMacroPort = 'Parameters (please use macro $(port))';
+  rsSWParametersPleaseUseMacroPort = 'Parameters, please use macro $(port)';
   rsSWCommandLineParameters = 'Command line parameters';
   rsSWAddCustomServer = 'Add Custom Server';
   rsSWSelectDirectory = 'Select Directory';
   rsSWServerExtraCommandLineOptionsOnePerLine = 'Server extra command-line '
     +'options (one per line)';
-  rsSWBrowserToOpenHTMLPageMacroSWSBrowser = 'Browser to open HTML page (macro'
-    +' $(SWSBrowser))';
+  rsSWBrowserToOpenHTMLPageMacroSWSBrowser = 'Browser to open HTML page, macro'
+    +' $(SWSBrowser)';
   rsSWAddExtraCommandLineOptionsForTheCommandWhichStarts = 'Add extra command-'
     +'line options for the command which starts the webserver.';
   rsSWUseThisBrowserWhenOpeningTheURLOrHTMLFileOfAWebBro = 'Use this browser '
@@ -29,7 +29,7 @@ resourcestring
   rsSWSUserOrigin = 'User';
   rsSWUnableToAddLocation = 'Unable to add location:';
   rsSWMissingController = 'missing controller';
-  rsSWMissingLocation = 'Missing Location.';
+  rsSWMissingLocation = 'Missing Location';
   rsSWAddSimpleWebServerLocation = 'Add Simple Web Server Location';
   rsSWLocation = 'Location';
   rsSWAnArbitraryNameForTheURLSubfolder = 'An arbitrary name for the URL '
@@ -39,23 +39,25 @@ resourcestring
     +'on disk, usually where the server fetches files from';
   rsSWAddLocation = 'Add Location';
   rsSWError = 'Error';
+  rsSWThereIsAlreadyAServerOnPortOriginPath = 'There is already a server on '
+    +'port %s:%sOrigin: %sPath: %s';
   rsSWErrorFindingFreeTCPPort = 'Error finding free TCP port:';
-  rsSWErrorKillingProcess = 'Error killing process %s:';
+  rsSWErrorKillingProcess = 'Error killing process %s';
   rsSWErrorCheckingWhichProcessUsesTCPPort = 'Error checking which process '
-    +'uses TCP port %s:';
+    +'uses TCP port %s';
   rsSWCannotFindBrowserSee = 'Cannot find browser. See';
   rsSWInvalidMacroSee = 'Invalid macro. See';
   rsSWToolsOptionsSimpleWebServerBrowser = 'Tools / Options / Simple Web '
     +'Server / Browser';
-  rsSWServerExecutableNotFound = 'Server executable not found.';
-  rsSWServerExeIsNotExecutable2 = 'Server exe is not executable.';
-  rsSWInvalidPort = 'Invalid Port.';
-  rsSWPortAlreadyUsed = 'Port already used.';
+  rsSWServerExecutableNotFound = 'Server executable not found';
+  rsSWServerExeIsNotExecutable2 = 'Server exe is not executable';
+  rsSWInvalidPort = 'Invalid Port';
+  rsSWPortAlreadyUsed = 'Port already used';
   rsSWLocalDirectoryNotFound = 'Local directory not found:';
-  rsSWLocationAlreadyUsed = 'Location already used.';
-  rsSWErrorWriting = 'Error writing "%s":';
+  rsSWLocationAlreadyUsed = 'Location already used';
+  rsSWErrorWriting = 'Error writing "%s"';
   rsSWErrorCreatingDirectory = 'Error creating directory';
-  rsSWDirectoryNotFound = 'Directory not found.';
+  rsSWDirectoryNotFound = 'Directory not found';
   rsSWSimpleWebServerAddress = 'Simple Web Server Address';
   rsSWSimpleWebServerPort = 'Simple Web Server Port';
   rsSWSimpleWebServerExecutable = 'Simple Web Server Executable';
@@ -71,9 +73,9 @@ resourcestring
   rsSWKillProcess = 'Kill process?';
   rsSWKillPID = 'Kill PID %s';
   rsSWTryAnotherPort = 'Try another port';
-  rsSWMissingServerExecutable = 'Missing server executable.';
-  rsSWServerExecutableNotFoundInPATH2 = 'Server executable not found in PATH.';
-  rsSWMissingLocalDirectory = 'Missing local directory.';
+  rsSWMissingServerExecutable = 'Missing server executable';
+  rsSWServerExecutableNotFoundInPATH2 = 'Server executable not found in PATH';
+  rsSWMissingLocalDirectory = 'Missing local directory';
   rsSWStartServer = 'Start Server';
   rsSWStopServer = 'Stop Server';
   rsSWDelete = 'Delete?';

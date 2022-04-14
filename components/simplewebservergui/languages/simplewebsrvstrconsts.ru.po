@@ -36,7 +36,9 @@ msgid "Binding of socket failed"
 msgstr "Не удалось привязать сокет"
 
 #: simplewebsrvstrconsts.rsswbrowsertoopenhtmlpagemacroswsbrowser
-msgid "Browser to open HTML page (macro $(SWSBrowser))"
+#, fuzzy
+#| msgid "Browser to open HTML page (macro $(SWSBrowser))"
+msgid "Browser to open HTML page, macro $(SWSBrowser)"
 msgstr "Браузер для открытия страницы HTML (макрос $(SWSBrowser))"
 
 #: simplewebsrvstrconsts.rsswcannotfindbrowsersee
@@ -62,7 +64,9 @@ msgid "Delete server at \"%s\"?"
 msgstr "Удалить сервер, расположенный в \"%s\"?"
 
 #: simplewebsrvstrconsts.rsswdirectorynotfound
-msgid "Directory not found."
+#, fuzzy
+#| msgid "Directory not found."
+msgid "Directory not found"
 msgstr "Каталог не найден."
 
 #: simplewebsrvstrconsts.rsswerror
@@ -70,8 +74,9 @@ msgid "Error"
 msgstr "Ошибка"
 
 #: simplewebsrvstrconsts.rsswerrorcheckingwhichprocessusestcpport
-#, object-pascal-format
-msgid "Error checking which process uses TCP port %s:"
+#, object-pascal-format, fuzzy
+#| msgid "Error checking which process uses TCP port %s:"
+msgid "Error checking which process uses TCP port %s"
 msgstr "Ошибка при поиске процесса, использующего порт %s:"
 
 #: simplewebsrvstrconsts.rsswerrorcreatingdirectory
@@ -83,13 +88,15 @@ msgid "Error finding free TCP port:"
 msgstr "Ошибка при поиске свободного порта TCP:"
 
 #: simplewebsrvstrconsts.rsswerrorkillingprocess
-#, object-pascal-format
-msgid "Error killing process %s:"
+#, object-pascal-format, fuzzy
+#| msgid "Error killing process %s:"
+msgid "Error killing process %s"
 msgstr "Ошибка при принудительном завершении процесса %s:"
 
 #: simplewebsrvstrconsts.rsswerrorwriting
-#, object-pascal-format
-msgid "Error writing \"%s\":"
+#, object-pascal-format, fuzzy
+#| msgid "Error writing \"%s\":"
+msgid "Error writing \"%s\""
 msgstr "Ошибка при записи \"%s\":"
 
 #: simplewebsrvstrconsts.rsswexecutable
@@ -106,7 +113,9 @@ msgid "Invalid macro. See"
 msgstr "Некорректный макрос. Смотрите"
 
 #: simplewebsrvstrconsts.rsswinvalidport
-msgid "Invalid Port."
+#, fuzzy
+#| msgid "Invalid Port."
+msgid "Invalid Port"
 msgstr "Некорректный порт."
 
 #: simplewebsrvstrconsts.rsswkillpid
@@ -131,7 +140,9 @@ msgid "Location"
 msgstr "Расположение"
 
 #: simplewebsrvstrconsts.rsswlocationalreadyused
-msgid "Location already used."
+#, fuzzy
+#| msgid "Location already used."
+msgid "Location already used"
 msgstr "Расположение уже используется."
 
 #: simplewebsrvstrconsts.rsswmissingcontroller
@@ -139,23 +150,33 @@ msgid "missing controller"
 msgstr "отсутствует контроллер"
 
 #: simplewebsrvstrconsts.rsswmissinglocaldirectory
-msgid "Missing local directory."
+#, fuzzy
+#| msgid "Missing local directory."
+msgid "Missing local directory"
 msgstr "Отсутствует локальный каталог."
 
 #: simplewebsrvstrconsts.rsswmissinglocation
-msgid "Missing Location."
+#, fuzzy
+#| msgid "Missing Location."
+msgid "Missing Location"
 msgstr "Отсутствует расположение."
 
 #: simplewebsrvstrconsts.rsswmissingserverexecutable
-msgid "Missing server executable."
+#, fuzzy
+#| msgid "Missing server executable."
+msgid "Missing server executable"
 msgstr "Отсутствует исполнимый файл сервера."
 
 #: simplewebsrvstrconsts.rsswparameterspleaseusemacroport
-msgid "Parameters (please use macro $(port))"
+#, fuzzy
+#| msgid "Parameters (please use macro $(port))"
+msgid "Parameters, please use macro $(port)"
 msgstr "Параметры (используйте макрос $(port))"
 
 #: simplewebsrvstrconsts.rsswportalreadyused
-msgid "Port already used."
+#, fuzzy
+#| msgid "Port already used."
+msgid "Port already used"
 msgstr "Порт уже используется."
 
 #: simplewebsrvstrconsts.rsswsaddress
@@ -176,7 +197,9 @@ msgid "Server directory \"%s\" not found."
 msgstr "Каталог сервера \"%s\" не найден."
 
 #: simplewebsrvstrconsts.rsswserverexecutablenotfound
-msgid "Server executable not found."
+#, fuzzy
+#| msgid "Server executable not found."
+msgid "Server executable not found"
 msgstr "Исполнимый файл сервера не найден."
 
 #: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath
@@ -185,7 +208,9 @@ msgid "Server executable \"%s\" not found in PATH."
 msgstr "Исполнимый файл сервера \"%s\" не найден в PATH."
 
 #: simplewebsrvstrconsts.rsswserverexecutablenotfoundinpath2
-msgid "Server executable not found in PATH."
+#, fuzzy
+#| msgid "Server executable not found in PATH."
+msgid "Server executable not found in PATH"
 msgstr "Исполнимый файл сервера не найден в PATH."
 
 #: simplewebsrvstrconsts.rsswserverexeisnotexecutable
@@ -194,7 +219,9 @@ msgid "Server exe is not executable: \"%s\""
 msgstr "Файл сервера не является исполнимым: \"%s\""
 
 #: simplewebsrvstrconsts.rsswserverexeisnotexecutable2
-msgid "Server exe is not executable."
+#, fuzzy
+#| msgid "Server exe is not executable."
+msgid "Server exe is not executable"
 msgstr "Файл сервера не является исполнимым."
 
 #: simplewebsrvstrconsts.rsswserverextracommandlineoptionsoneperline
@@ -238,12 +265,19 @@ msgid "User"
 msgstr "Пользователь"
 
 #: simplewebsrvstrconsts.rsswtcpport102465535youcanusemacroportforbelowparams
-msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
+#, fuzzy
+#| msgid "TCP Port 1024..65535 (you can use macro $(port) for below params)"
+msgid "TCP Port 1024..65535, you can use macro $(Port) for below params"
 msgstr "Порт TCP из диапазона 1024..65535 (можно использовать макрос $(port) в параметрах ниже)"
 
 #: simplewebsrvstrconsts.rsswthefollowingprocessalreadylistens
 msgid "The following process already listens:"
 msgstr "Его уже занял следующий процесс:"
+
+#: simplewebsrvstrconsts.rsswthereisalreadyaserveronportoriginpath
+#, object-pascal-format
+msgid "There is already a server on port %s:%sOrigin: %sPath: %s"
+msgstr ""
 
 #: simplewebsrvstrconsts.rsswtoolsoptionssimplewebserverbrowser
 msgid "Tools / Options / Simple Web Server / Browser"

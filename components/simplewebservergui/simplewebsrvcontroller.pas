@@ -1235,6 +1235,15 @@ begin
   for i:=0 to 15 do
     FAPIKey:=FAPIKey+HexStr(PByte(@SecretGUID)[i],2);
 
+  if not ForceDirectoriesUTF8(PathUsed) then
+  begin
+    ErrMsg:=rsSWErrorCreatingDirectory+' "'+PathUsed+'"';
+    AddIDEMessageInfo('20220414180151',ErrMsg);
+    if Interactive then
+      ErrDlg(rsSWError, ErrMsg, false);
+    exit;
+  end;
+
   FMainSrvInstance.Params.Free;
   FMainSrvInstance.Params:=TStringListUTF8Fast.Create;
   FMainSrvInstance.Params.Add('-c');
@@ -1251,7 +1260,7 @@ begin
   begin
     if Options.ServerExe<>ExeUsed then
       ErrMsg:=ErrMsg+'. Path="'+ExeUsed+'"';
-    debugln(['Error: [TSimpleWebServerController.StartServerInstance] invalid ServerExe="',Options.ServerExe,'". ',ErrMsg]);
+    debugln(['Error: [TSimpleWebServerController.StartServerInstance] invalid ServerExe="',Options.ServerExe,'".']);
     AddIDEMessageInfo('20220118164525',ErrMsg);
     if Interactive then
       ErrDlg(rsSWError, Format(rsSWWrongCompileserverExe, [ErrMsg]), true);
@@ -1623,10 +1632,10 @@ begin
         r:=mrRetry
       else
         r:=IDEQuestionDialog(rsSWError,
-          'There is already a server on port '+IntToStr(Port)+':'+sLineBreak
-          +'Origin: '+ConflictServer.Origin+sLineBreak
-          +'Path: '+ConflictServer.Path+sLineBreak,
-          mtError,[mrYes, 'Stop server', mrRetry, rsSWTryAnotherPort, mrCancel],
+          Format(rsSWThereIsAlreadyAServerOnPortOriginPath, [IntToStr(Port),
+            sLineBreak, ConflictServer.Origin+sLineBreak, ConflictServer.Path+
+            sLineBreak]),
+          mtError,[mrYes, rsSWStopServer, mrRetry, rsSWTryAnotherPort, mrCancel],
           '');
       case r of
       mrYes:

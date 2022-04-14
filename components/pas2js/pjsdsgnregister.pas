@@ -589,7 +589,6 @@ function TProjectPas2JSProgressiveWebApp.CreateProjectGroup(
   AProject: TLazProject): boolean;
 var
   LPGFilename, ServiceWorkerLPI, WebAppLPI: String;
-  Cfg: TXMLConfig;
   Grp: TProjectGroup;
 begin
   Result:=false;
