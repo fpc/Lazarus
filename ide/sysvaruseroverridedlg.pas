@@ -53,7 +53,7 @@ var
   ok: boolean;
   Vals: array of string;
 begin
-  SetLength(Vals, 2);
+  SetLength(Vals{%H-}, 2);
   Vals[0]:= AName;
   Vals[1]:= AValue;
 
