@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="79.6294mm" height="79.6294mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 7187.86 7187.86"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:xodm="http://www.corel.com/coreldraw/odm/2003">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil3 {fill:#FEFEFE}
+    .fil5 {fill:#E31E24}
+    .fil1 {fill:#1F1B20}
+    .fil0 {fill:#008DD2}
+    .fil4 {fill:#1F1B20;fill-rule:nonzero}
+    .fil2 {fill:#1F1B20;fill-rule:nonzero}
+   ]]>
+  </style>
+ </defs>
+ <g id="Layer_x0020_1">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g id="_1792001564288">
+   <rect class="fil0" width="7187.86" height="7187.86"/>
+   <rect class="fil1" x="2901.82" y="2584.67" width="3894.97" height="4581.6"/>
+   <path class="fil2" d="M2085.23 5161.93l0.09 486.54 -740.94 -13.63c-288.2,-5.3 -518.81,-144.68 -725.23,-309.6 -150.94,-120.6 -338.92,-379.14 -340,-679.62l-8.53 -2363.78 517.8 219.41 5.47 2136.05c-1.99,247.06 199.91,499.61 577.33,508.24l714.01 16.37z"/>
+   <rect class="fil3" x="3425.5" y="3009.52" width="2869.83" height="3736.23"/>
+   <rect class="fil1" x="3759.12" y="3351.45" width="2174.01" height="402.8"/>
+   <rect class="fil1" x="3746.33" y="4224.25" width="1087" height="402.8"/>
+   <rect class="fil1" x="3746.33" y="6005.95" width="1087" height="402.8"/>
+   <rect class="fil1" x="3746.34" y="5097.05" width="2174.01" height="402.8"/>
+   <polygon class="fil4" points="2797.14,579.89 1135.86,1203.87 2797.78,1873.11 2794.43,2386.08 253.22,1341.61 253.22,1063.92 2794.43,21.66 "/>
+   <polygon class="fil4" points="4256.18,558.23 5917.46,1182.21 4255.54,1851.44 4258.89,2364.42 6800.09,1319.95 6800.09,1042.26 4258.89,0 "/>
+   <polygon class="fil5" points="2017.46,4701.69 2016.6,6093.93 3786.2,5466.68 "/>
+  </g>
+ </g>
+</svg>
