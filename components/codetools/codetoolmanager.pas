@@ -126,6 +126,7 @@ type
     FOnFindDefinePropertyForContext: TOnFindDefinePropertyForContext;
     FOnFindDefineProperty: TOnFindDefineProperty;
     FOnGatherUserIdentifiers: TOnGatherUserIdentifiers;
+    FOnGetClassUnitName: TOnGetClassUnitName;
     FOnGetIndenterExamples: TOnGetFABExamples;
     FOnGetMethodName: TOnGetMethodname;
     FOnRescanFPCDirectoryCache: TNotifyEvent;
@@ -160,6 +161,7 @@ type
           const AFilename: string): string;
     function DoOnInternalGetMethodName(const AMethod: TMethod;
                                      CheckOwner: TObject): string;
+    function DoOnInternalGetClassUnitName(aClass: TClass): string;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     procedure SetAbortable(const AValue: boolean);
@@ -381,6 +383,8 @@ type
     // miscellaneous
     property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
                                                write FOnGetMethodName;
+    property OnGetClassUnitName: TOnGetClassUnitName read FOnGetClassUnitName
+                                                      write FOnGetClassUnitName;
     property OnGetIndenterExamples: TOnGetFABExamples
                        read FOnGetIndenterExamples write FOnGetIndenterExamples;
     property OnGatherUserIdentifiers: TOnGatherUserIdentifiers
@@ -5963,6 +5967,14 @@ begin
     Result:=TObject(AMethod.Data).MethodName(AMethod.Code);
 end;
 
+function TCodeToolManager.DoOnInternalGetClassUnitName(aClass: TClass): string;
+begin
+  if Assigned(OnGetClassUnitName) then
+    Result:=OnGetClassUnitName(aClass)
+  else
+    Result:=aClass.UnitName;
+end;
+
 function TCodeToolManager.DoOnParserProgress(Tool: TCustomCodeTool): boolean;
 begin
   Result:=true;
@@ -6247,6 +6259,7 @@ begin
     TCodeTool(Result).OnFindUsedUnit:=@DoOnFindUsedUnit;
     TCodeTool(Result).OnGetSrcPathForCompiledUnit:=@DoOnGetSrcPathForCompiledUnit;
     TCodeTool(Result).OnGetMethodName:=@DoOnInternalGetMethodName;
+    TCodeTool(Result).OnGetClassUnitName:=@DoOnInternalGetClassUnitName;
     TCodeTool(Result).OnRescanFPCDirectoryCache:=@DoOnRescanFPCDirectoryCache;
     TCodeTool(Result).OnGatherUserIdentifiers:=@DoOnGatherUserIdentifiers;
     TCodeTool(Result).DirectoryCache:=

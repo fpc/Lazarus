@@ -1094,7 +1094,7 @@ begin
   FindContext:=CleanFindContext;
   AClassName:=Instance.ClassName;
   if AClassName='' then exit;
-  AUnitName:=Instance.UnitName;
+  AUnitName:=GetClassUnitName(Instance.ClassType);
   {$IFDEF VerboseMethodPropEdit}
   debugln(['TEventsCodeTool.FindClassOfInstance Unit=',ExtractFileNameOnly(MainFilename),' Class=',AClassName,' Instance.Unit=',AUnitName]);
   {$ENDIF}

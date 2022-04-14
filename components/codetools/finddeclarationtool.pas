@@ -143,6 +143,7 @@ type
   //----------------------------------------------------------------------------
   TOnGetMethodName = function(const AMethod: TMethod;
                               CheckOwner: TObject): string of object;
+  TOnGetClassUnitName = function(aClass: TClass): string of object;
 
   //----------------------------------------------------------------------------
   // flags/states for searching
@@ -749,6 +750,7 @@ type
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     FInterfaceHelperCache: array[TFDHelpersListKind] of TFDHelpersList;
     FOnFindUsedUnit: TOnFindUsedUnit;
+    FOnGetClassUnitName: TOnGetClassUnitName;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnGetDirectoryCache: TOnGetDirectoryCache;
     FOnGetMethodName: TOnGetMethodname;
@@ -929,6 +931,7 @@ type
     destructor Destroy; override;
     procedure ConsistencyCheck; override;
     procedure CalcMemSize(Stats: TCTMemStats); override;
+    function GetClassUnitName(aClass: TClass): string;
 
     procedure BeginParsing(Range: TLinkScannerRange); override;
     procedure ValidateToolDependencies; override;
@@ -1106,6 +1109,7 @@ type
            read FOnGetSrcPathForCompiledUnit write fOnGetSrcPathForCompiledUnit;
     property OnGetMethodName: TOnGetMethodname read FOnGetMethodName
                                                write FOnGetMethodName;
+    property OnGetClassUnitName: TOnGetClassUnitName read FOnGetClassUnitName write FOnGetClassUnitName;
     property AdjustTopLineDueToComment: boolean
                read FAdjustTopLineDueToComment write FAdjustTopLineDueToComment;
     property DirectoryCache: TCTDirectoryCache read FDirectoryCache write FDirectoryCache;
@@ -12431,6 +12435,14 @@ begin
   if FDependsOnCodeTools<>nil then
     Stats.Add('TFindDeclarationTool.FDependsOnCodeTools',
       FDependsOnCodeTools.Count*SizeOf(TAVLTreeNode));
+end;
+
+function TFindDeclarationTool.GetClassUnitName(aClass: TClass): string;
+begin
+  if Assigned(OnGetClassUnitName) then
+    Result:=OnGetClassUnitName(aClass)
+  else
+    Result:=aClass.UnitName;
 end;
 
 procedure TFindDeclarationTool.ValidateToolDependencies;
